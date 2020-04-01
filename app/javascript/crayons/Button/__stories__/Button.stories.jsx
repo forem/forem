@@ -20,6 +20,8 @@ export const Default = () => (
     variant={text('variant')}
     className={text('className')}
     as={text('as', 'button')}
+    url={text('url')}
+    buttonType={text('buttonType')}
   >
     Hello world!
   </Button>
@@ -34,6 +36,8 @@ export const Secondary = () => (
     icon={object('icon')}
     className={text('className')}
     as={text('as', 'button')}
+    url={text('url')}
+    buttonType={text('buttonType')}
   >
     Hello world!
   </SecondaryButton>
@@ -48,6 +52,8 @@ export const Outlined = () => (
     icon={object('icon')}
     className={text('className')}
     as={text('as', 'button')}
+    url={text('url')}
+    buttonType={text('buttonType')}
   >
     Hello world!
   </OutlinedButton>
@@ -62,6 +68,8 @@ export const Danger = () => (
     icon={object('icon')}
     className={text('className')}
     as={text('as', 'button')}
+    url={text('url')}
+    buttonType={text('buttonType')}
   >
     Hello world!
   </DangerButton>
@@ -89,6 +97,8 @@ export const IconWithText = () => {
       variant={text('variant')}
       className={text('className')}
       as={text('as', 'button')}
+      url={text('url')}
+      buttonType={text('buttonType')}
     >
       Hello world!
     </Button>
@@ -105,6 +115,8 @@ export const ButtonAsLink = () => (
     className={text('className')}
     as={text('as', 'a')}
     icon={object('icon')}
+    url={text('url', '#')}
+    buttonType={text('buttonType')}
   >
     Hello world!
   </Button>

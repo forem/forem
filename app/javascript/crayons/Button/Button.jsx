@@ -2,8 +2,6 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { defaultChildrenPropTypes } from '../../src/components/common-prop-types';
 
-// crayons-btn--full
-
 function getAdditionalClassNames({ variant, className, icon }) {
   let additionalClassNames = '';
 
@@ -28,9 +26,12 @@ export const Button = ({
   as = 'button',
   className,
   icon,
+  url,
+  buttonType,
 }) => {
   const ComponentName = as;
   const Icon = icon;
+  const otherProps = as === 'button' ? { type: buttonType } : { href: url };
 
   return (
     <ComponentName
@@ -39,7 +40,7 @@ export const Button = ({
         className,
         icon,
       })}`}
-      type="button"
+      {...otherProps}
     >
       {Icon && <Icon />}
       {children}
@@ -52,6 +53,8 @@ Button.displayName = 'Button';
 Button.defaultProps = {
   className: undefined,
   icon: undefined,
+  url: undefined,
+  buttonType: 'button',
 };
 
 Button.propTypes = {
@@ -61,4 +64,6 @@ Button.propTypes = {
   as: PropTypes.oneOf(['a', 'button']).isRequired,
   className: PropTypes.string,
   icon: PropTypes.node,
+  url: PropTypes.string,
+  buttonType: PropTypes.string,
 };
