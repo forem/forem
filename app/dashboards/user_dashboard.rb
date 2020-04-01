@@ -18,7 +18,6 @@ class UserDashboard < Administrate::BaseDashboard
     summary: Field::String,
     email: Field::String,
     website_url: Field::String,
-    org_admin: Field::Boolean,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
     articles: Field::HasMany,
@@ -26,8 +25,6 @@ class UserDashboard < Administrate::BaseDashboard
     reputation_modifier: Field::Number,
     signup_cta_variant: Field::String,
     onboarding_package_requested: Field::Boolean,
-    onboarding_package_fulfilled: Field::Boolean,
-    onboarding_package_requested_again: Field::Boolean,
     twitter_followers_count: Field::Number,
     bg_color_hex: Field::String,
     text_color_hex: Field::String,
@@ -76,7 +73,6 @@ class UserDashboard < Administrate::BaseDashboard
     twitter_username
     github_username
     profile_image
-    org_admin
     summary
     website_url
     facebook_url
