@@ -160,6 +160,7 @@ class User < ApplicationRecord
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
   alias_attribute :positive_reactions_count, :reactions_count
+  alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
 
   scope :with_this_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)

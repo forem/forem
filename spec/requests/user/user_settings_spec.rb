@@ -114,10 +114,10 @@ RSpec.describe "UserSettings", type: :request do
 
     it "can toggle welcome notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", welcome_notifications: 0 } }
-      expect(user.reload.welcome_notifications).to be(false)
+      expect(user.reload.subscribed_to_welcome_notifications?).to be(false)
 
       put "/users/#{user.id}", params: { user: { tab: "notifications", welcome_notifications: 1 } }
-      expect(user.reload.welcome_notifications).to be(true)
+      expect(user.reload.subscribed_to_welcome_notifications?).to be(true)
     end
 
     it "updates username to too short username" do
