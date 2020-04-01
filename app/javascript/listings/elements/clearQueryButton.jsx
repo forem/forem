@@ -6,9 +6,7 @@ const ClearQueryButton = ({ onClick, shouldRender }) =>
     <button type="button" className="classified-search-clear" onClick={onClick}>
       ×
     </button>
-  ) : (
-    ''
-  );
+  ) : null;
 
 ClearQueryButton.propTypes = {
   onClick: PropTypes.func.isRequired,
