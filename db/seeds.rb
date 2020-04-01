@@ -93,6 +93,8 @@ Organization.find_each do |organization|
   end
 end
 
+users_in_random_order = User.order(Arel.sql("RANDOM()"))
+
 ##############################################################################
 
 counter += 1
@@ -321,11 +323,21 @@ HtmlVariant.create!(
 counter += 1
 Rails.logger.info "#{counter}. Creating Badges"
 
-Badge.create!(
-  title: Faker::Lorem.word,
-  description: Faker::Lorem.sentence,
-  badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-)
+5.times do
+  Badge.create!(
+    title: "#{Faker::Lorem.word} #{rand(100)}",
+    description: Faker::Lorem.sentence,
+    badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+  )
+end
+
+users_in_random_order.limit(10).each do |user|
+  user.badge_achievements.create!(
+    badge: Badge.order(Arel.sql("RANDOM()")).limit(1).take,
+    rewarding_context_message_markdown: Faker::Lorem.sentence,
+  )
+end
+
 
 ##############################################################################
 
@@ -372,8 +384,8 @@ end
 counter += 1
 Rails.logger.info "#{counter}. Creating Classified Listings"
 
-users = User.order(Arel.sql("RANDOM()")).to_a
-users.each { |user| Credit.add_to(user, rand(100)) }
+users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
+users = users_in_random_order.to_a
 
 listings_categories = ClassifiedListing.categories_available.keys
 listings_categories.each_with_index do |category, index|
