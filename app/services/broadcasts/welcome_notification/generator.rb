@@ -1,6 +1,8 @@
 module Broadcasts
   module WelcomeNotification
     class Generator
+      NOTIFICATIONS_SET_LIVE_DATE = "2020-04-05 00:00:00 UTC".to_date
+
       def initialize(receiver_id)
         @user = User.find(receiver_id)
         @notification_enqueued = false
