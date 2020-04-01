@@ -46,10 +46,11 @@ module Moderator
       return unless user.articles.any?
 
       # preload associations that are going to be used during indexing
-      user.articles.preload(:taggings, :organization).find_each do |article|
+      user.articles.preload(:taggings, :organization, :tag_taggings, :tags).find_each do |article|
         path = "/#{@ghost.username}/#{article.slug}"
         article.update_columns(user_id: @ghost.id, path: path)
         article.index!
+        article.index_to_elasticsearch_inline
       end
     end
   end
