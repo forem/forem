@@ -4,6 +4,7 @@ import { fetchSearch } from '../src/utils/search';
 import SingleListing from './singleListing';
 import ClearQueryButton from './elements/clearQueryButton';
 import ModalBg from './elements/modalBg';
+import MessageModal from './elements/messageModal';
 
 /**
  * How many listings to show per page
@@ -407,69 +408,7 @@ export class Listings extends Component {
     }
 
     let modal = '';
-    let messageModal = '';
     if (openedListing) {
-      if (openedListing.contact_via_connect) {
-        messageModal = (
-          <form
-            id="listings-message-form"
-            className="listings-contact-via-connect"
-            onSubmit={this.handleSubmitMessage}
-          >
-            {openedListing.user_id !== currentUserId ? (
-              <p>
-                <b>
-                  Contact
-                  {` ${openedListing.author.name} `}
-                  via DEV Connect
-                </b>
-              </p>
-            ) : (
-              <p>
-                This is your active listing. Any member can contact you via this
-                form.
-              </p>
-            )}
-            <textarea
-              value={message}
-              onChange={this.handleDraftingMessage}
-              id="new-message"
-              rows="4"
-              cols="70"
-              placeholder="Enter your message here..."
-            />
-            <button type="submit" value="Submit" className="submit-button cta">
-              SEND
-            </button>
-            <p>
-              {openedListing.contact_via_connect &&
-              openedListing.user_id !== currentUserId ? (
-                <em>
-                  Message must be relevant and on-topic with the listing. All
-                  {' '}
-                  private interactions 
-                  {' '}
-                  <b>must</b>
-                  {' '}
-                  abide by the
-                  {' '}
-                  <a href="/code-of-conduct">code of conduct</a>
-                </em>
-              ) : (
-                <em>
-                  All private interactions 
-                  {' '}
-                  <b>must</b>
-                  {' '}
-                  abide by the
-                  {' '}
-                  <a href="/code-of-conduct">code of conduct</a>
-                </em>
-              )}
-            </p>
-          </form>
-        );
-      }
       modal = (
         <div className="single-classified-listing-container">
           <div
@@ -488,7 +427,12 @@ export class Listings extends Component {
               onOpenModal={this.handleOpenModal}
               isOpen
             />
-            {messageModal}
+            <MessageModal
+              onSubmit={this.handleSubmitMessage}
+              onChange={this.handleDraftingMessage}
+              message={message}
+              listining={openedListing}
+            />
             <a
               href="/about-listings"
               className="single-classified-listing-info-link"
