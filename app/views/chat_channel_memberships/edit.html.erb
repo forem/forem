@@ -1,0 +1,99 @@
+<% if flash[:settings_notice].present? %>
+  <div class="notice" id="notice">
+    <%= flash[:settings_notice] %>
+  </div>
+<% elsif flash[:error].present? %>
+  <div class="notice error-notice" id="notice" style="text-align:center;color:red">
+    ERROR
+    <%= flash[:error] %>
+  </div>
+<% end %>
+<div class="user-settings-page">
+  <h1><%= @channel.channel_name %></h1>
+  <% if @membership.role == "mod" %>
+    <h3>You are a channel mod</h3>
+  <% end %>
+  <p>
+    <%= @channel.description %>
+  </p>
+  <div class="settings-form">
+    <div class="settings-form-userlist">
+      <h3>Members</h3>
+      <% @channel.active_memberships.includes(:user).each do |active_membership| %>
+        <div class="settings-form-userlistrow" >
+          <a href="<%= active_membership.user.path %>"><img src="<%= ProfileImage.new(active_membership.user).get(width: 90) %>" /><%= active_membership.user.name %></a>
+          <% if @membership.role == "mod" && active_membership.role != "mod" %>
+            <%= form_tag "/chat_channel_memberships/remove_membership", class: "inline-button-form-hidden" do %>
+              <%= hidden_field_tag(:chat_channel_id, @channel.id) %>
+              <%= hidden_field_tag(:membership_id, active_membership.id) %>
+            <%= submit_tag "×" %>
+          <% end %>
+        <% end %>
+        </div>
+      <% end %>
+    </div>
+    <% if @membership.role == "mod" %>
+      <div class="settings-form-userlist">
+        <h3>Pending Invitations</h3>
+        <% @channel.pending_memberships.includes(:user).each do |pending_membership| %>
+          <div class="settings-form-userlistrow" >
+            <a href="<%= pending_membership.user.path %>"><img src="<%= ProfileImage.new(pending_membership.user).get(width: 90) %>" /><%= pending_membership.user.name %></a>
+            <%= form_tag "/chat_channel_memberships/remove_membership", class: "inline-button-form" do %>
+            <%= hidden_field_tag(:status, "pending") %>
+            <%= hidden_field_tag(:chat_channel_id, @channel.id) %>
+            <%= hidden_field_tag(:membership_id, pending_membership.id) %>
+            <%= submit_tag "×" %>
+          <% end %>
+          </div>
+        <% end %>
+      </div>
+      <%= form_for ChatChannelMembership.new do |f| %>
+        <div class="field">
+          <%= f.hidden_field :chat_channel_id, value: @channel.id %>
+          <%= f.label "Usernames to Invite" %>
+          <%= f.text_field :invitation_usernames, placeholder: "Comma separated" %>
+        </div>
+        <div class="field">
+          <%= f.submit "SUBMIT", class: "cta" %>
+        </div>
+      <% end %>
+    <% end %>
+    <% if @membership.role == "mod" %>
+      <hr class="settings-hr"/>
+      <h1>Channel Settings</h1>
+      <h3>Notifications</h3>
+      <%= form_for(@channel) do |f| %>
+        <div class="field">
+          <%= f.label :description %>
+          <%= f.text_area :description %>
+        </div>
+        <div class="field">
+          <%= f.submit "SUBMIT", class: "cta" %>
+        </div>
+      <% end %>
+    <% end %>
+    <hr class="settings-hr"/>
+    <h1>Personal Settings</h1>
+    <h3>Notifications</h3>
+    <%= form_for(@membership) do |f| %>
+      <div class="field">
+        <%= f.label :show_global_badge_notification, "Receive Notifications for New Messages" %>
+        <%= f.check_box :show_global_badge_notification %>
+      </div>
+      <div class="field">
+        <%= f.submit "SUBMIT", class: "cta" %>
+      </div>
+    <% end %>
+    <hr class="settings-hr"/>
+    <% if @membership.role == "mod" %>
+      <p>Questions about Connect Channel moderation? Contact <a href="mailto:yo@dev.to">yo@dev.to</a></p>
+    <% else %>
+      <h3>Danger Zone</h3>
+      <%= form_for(@membership, html: { method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to leave this channel? This action is permanent.');" } ) do |f| %>
+        <div class="field">
+          <%= f.submit "LEAVE CHANNEL", class: "cta cta-danger" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+</div>

@@ -1,5 +1,4 @@
 @import 'variables';
-@import 'connect/_channel-details';
 @import 'mixins';
 
 // High level classes
@@ -645,54 +644,19 @@
   }
 }
 
-.activecontent__githubrepo {
-}
-
-.activecontent__githubrepoheader {
-  padding-left: 30px;
-  padding-bottom: 3px;
-  min-height: 30px;
-  margin-top: -9px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 0.9em;
-}
-
-.activecontent__githubrepofiles {
-  border-bottom: 1px solid $light-medium-gray;
-  font-size: 0.8em;
-  overflow: auto;
-
-  &.activecontent__githubrepofiles--root {
-    height: 280px;
-    max-height: 40vh;
-  }
-}
-
-.activecontent__githubreporeadme {
-  font-size: 0.8em;
-
-  img {
-    max-width: 100%;
-  }
-}
-
-.activecontent__githubrepofilerow {
-  padding: 4px 2px;
-  border-top: 1px solid $light-medium-gray;
-}
-
-.chat__channelinvitationsindicator button {
-  background: $green;
+.chat__channelinvitationsindicator a {
+  background: linear-gradient(10deg, darken($green, 25%), darken($green, 15%));
   text-align: center;
-  padding: 10px 0px;
+  padding: 30px 0px;
   display: block;
   border-radius: 3px;
   margin: 3px 0px;
   border: 0px;
-  width: 93%;
-  font-size: 0.9em;
+  width: 94%;
+  color: white;
+  font-size: 1.1em;
+  font-weight: 700;
+  -webkit-appearance: unset;
 }
 
 .chatchannels {
@@ -1255,6 +1219,9 @@
   border-left: 3px solid #4e57ef;
   height: 50px;
   overflow: hidden;
+  p {
+    margin: 18px 0;
+  }
 }
 
 .closeEdit {
