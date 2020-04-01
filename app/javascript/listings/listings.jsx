@@ -3,6 +3,7 @@ import debounceAction from '../src/utils/debounceAction';
 import { fetchSearch } from '../src/utils/search';
 import SingleListing from './singleListing';
 import ClearQueryButton from './elements/clearQueryButton';
+import ModalBg from './elements/modalBg';
 
 /**
  * How many listings to show per page
@@ -406,17 +407,8 @@ export class Listings extends Component {
     }
 
     let modal = '';
-    let modalBg = '';
     let messageModal = '';
     if (openedListing) {
-      modalBg = (
-        <div
-          className="classified-listings-modal-background"
-          onClick={this.handleCloseModal}
-          role="presentation"
-          id="classified-listings-modal-background"
-        />
-      );
       if (openedListing.contact_via_connect) {
         messageModal = (
           <form
@@ -513,7 +505,7 @@ export class Listings extends Component {
     }
     return (
       <div className="listings__container">
-        {modalBg}
+        <ModalBg shouldRender={openedListing} onClick={this.handleCloseModal} />
         <div className="classified-filters" id="classified-filters">
           <div className="classified-filters-categories">
             <a
