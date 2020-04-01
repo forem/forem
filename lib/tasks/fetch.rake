@@ -25,10 +25,6 @@ task expire_old_listings: :environment do
   end
 end
 
-task remove_old_notifications: :environment do
-  Notification.fast_destroy_old_notifications
-end
-
 task save_nil_hotness_scores: :environment do
   Article.published.where(hotness_score: nil).find_each(&:save)
 end
