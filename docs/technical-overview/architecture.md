@@ -10,9 +10,9 @@ version 5.2.3, due for an upgrade to 6.x.x.
 
 To decrease loading time, we use edge-caching extensively. Taking advantage of
 edge-caching means that we do not go all the way to the server to render every
-page. Therefore, on pages that are cached we don't have access to helper methods
-like `current_user`. A page is edge-cached through our CDN ([Fastly][fastly]) if
-the controller contains this line for the relevant action:
+page. However this means that, on cached pages, we don't have access to helper
+methods like `current_user`. A page is edge-cached through our CDN
+([Fastly][fastly]) if the controller contains this line for the relevant action:
 
 ```
 before_action :set_cache_control_headers
