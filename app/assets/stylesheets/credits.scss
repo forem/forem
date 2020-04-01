@@ -248,12 +248,14 @@
     text-align: center;
 
     @media screen and ( min-width:949px ) {
-      margin: 67px auto;
+      margin: 0 auto $su-6;
       border-radius: 0;
     }
 
     @media screen and ( min-width:380px ) {
-      padding: 30px 20px;
+      padding: 24px 8px;
+
+      white-space: nowrap;
     }
 
     .existing-credits-status {
