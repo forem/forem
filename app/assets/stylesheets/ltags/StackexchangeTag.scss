@@ -1,6 +1,6 @@
 @import 'variables';
 
-.ltag__stackexchange--card {
+.ltag__stackexchange--container {
   max-width: 620px;
   border: 1px solid $light-medium-gray;
   border-radius: 3px;
@@ -136,7 +136,7 @@
     }
   }
 
-  .ltag__stackexchange--btn--card {
+  .ltag__stackexchange--btn--container {
     padding: 0.1em 0 1.15em;
     z-index: 100;
     text-align: center;
