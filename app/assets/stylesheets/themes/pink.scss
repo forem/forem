@@ -26,9 +26,9 @@
   --accent-brand-lighter: #ff99b9;
 
   // Success
-  --accent-success: #71DB92;
-  --accent-success-darker: #5ABF79;
-  --accent-success-lighter: #93EDAF;
+  --accent-success: #71db92;
+  --accent-success-darker: #5abf79;
+  --accent-success-lighter: #93edaf;
 
   // Warning
   --accent-warning: #ffcf4c;
@@ -60,6 +60,8 @@
 
   // Header
   --header-bg: var(--base-40);
+  --header-bg-hover: var(--base-50);
+  --header-bg-current: var(--base-50);
   --header-shadow: transparent;
   --header-icons-color: var(--base-10);
   --header-icons-color-hover: var(--base-0);
