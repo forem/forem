@@ -424,8 +424,7 @@ export class Listings extends Component {
             className="listings-contact-via-connect"
             onSubmit={this.handleSubmitMessage}
           >
-            {openedListing.contact_via_connect &&
-            openedListing.user_id !== currentUserId ? (
+            {openedListing.user_id !== currentUserId ? (
               <p>
                 <b>
                   Contact
