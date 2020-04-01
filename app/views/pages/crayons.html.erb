@@ -627,99 +627,10 @@
 
 <div class="container">
   <div class="body">
-    <h2>Boxes</h2>
-    <p>“Box” will be a background element used for many other components, for example banners, dropdowns, modals. This component does not have any guidelines in terms of placement or spacing, since it’s supposed to be used to build other components.</p>
-    <p>There are:</p>
-    <ul>
-      <li>2 types: outlined  & filled,</li>
-      <li>5 styles: default, danger, warning, info, success,</li>
-      <li>4 eleveations: 0, 1, 2, 3.</li>
-    </ul>
-    <p>By default use “outlined” type unless you really have to make something stand out - then use “filled”. But double check if it makes sense since “filled” style really steals attention.</p>
-    <p>Use style that makes the most sense for you current use case. It’s pretty obvious when to use Danger, Warning and Success. But for Default and Info - it’s more up to designer to make a good call :).</p>
-    <p>Elevations should define what kind of element it is:</p>
-    <ul>
-      <li>0: something inside content.</li>
-      <li>1: that can also be used in content but for elements that need more attention, like notices...</li>
-      <li>2: dropdowns</li>
-      <li>3: modals</li>
-    </ul>
-  </div>
-
-  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-gap: 16px;">
-    <div class="crayons-box">box, level 0</div>
-    <div class="crayons-box crayons-box--level-1">box, level 1</div>
-    <div class="crayons-box crayons-box--level-2">box, level 2</div>
-    <div class="crayons-box crayons-box--level-3">box, level 3</div>
-    <div class="crayons-box crayons-box--filled ">filled box, level 0</div>
-    <div class="crayons-box crayons-box--filled crayons-box--level-1">filled box, level 1</div>
-    <div class="crayons-box crayons-box--filled crayons-box--level-2">filled box, level 2</div>
-    <div class="crayons-box crayons-box--filled crayons-box--level-3">filled box, level 3</div>
-
-    <div class="crayons-box crayons-box--danger">box, level 0</div>
-    <div class="crayons-box crayons-box--danger crayons-box--level-1">box, level 1</div>
-    <div class="crayons-box crayons-box--danger crayons-box--level-2">box, level 2</div>
-    <div class="crayons-box crayons-box--danger crayons-box--level-3">box, level 3</div>
-    <div class="crayons-box crayons-box--danger crayons-box--filled ">filled box, level 0</div>
-    <div class="crayons-box crayons-box--danger crayons-box--filled crayons-box--level-1">filled box, level 1</div>
-    <div class="crayons-box crayons-box--danger crayons-box--filled crayons-box--level-2">filled box, level 2</div>
-    <div class="crayons-box crayons-box--danger crayons-box--filled crayons-box--level-3">filled box, level 3</div>
-
-    <div class="crayons-box crayons-box--warning">box, level 0</div>
-    <div class="crayons-box crayons-box--warning crayons-box--level-1">box, level 1</div>
-    <div class="crayons-box crayons-box--warning crayons-box--level-2">box, level 2</div>
-    <div class="crayons-box crayons-box--warning crayons-box--level-3">box, level 3</div>
-    <div class="crayons-box crayons-box--warning crayons-box--filled ">filled box, level 0</div>
-    <div class="crayons-box crayons-box--warning crayons-box--filled crayons-box--level-1">filled box, level 1</div>
-    <div class="crayons-box crayons-box--warning crayons-box--filled crayons-box--level-2">filled box, level 2</div>
-    <div class="crayons-box crayons-box--warning crayons-box--filled crayons-box--level-3">filled box, level 3</div>
-
-    <div class="crayons-box crayons-box--success">box, level 0</div>
-    <div class="crayons-box crayons-box--success crayons-box--level-1">box, level 1</div>
-    <div class="crayons-box crayons-box--success crayons-box--level-2">box, level 2</div>
-    <div class="crayons-box crayons-box--success crayons-box--level-3">box, level 3</div>
-    <div class="crayons-box crayons-box--success crayons-box--filled ">filled box, level 0</div>
-    <div class="crayons-box crayons-box--success crayons-box--filled crayons-box--level-1">filled box, level 1</div>
-    <div class="crayons-box crayons-box--success crayons-box--filled crayons-box--level-2">filled box, level 2</div>
-    <div class="crayons-box crayons-box--success crayons-box--filled crayons-box--level-3">filled box, level 3</div>
-
-    <div class="crayons-box crayons-box--info">box, level 0</div>
-    <div class="crayons-box crayons-box--info crayons-box--level-1">box, level 1</div>
-    <div class="crayons-box crayons-box--info crayons-box--level-2">box, level 2</div>
-    <div class="crayons-box crayons-box--info crayons-box--level-3">box, level 3</div>
-    <div class="crayons-box crayons-box--info crayons-box--filled ">filled box, level 0</div>
-    <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-1">filled box, level 1</div>
-    <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-2">filled box, level 2</div>
-    <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-3">filled box, level 3</div>
-  </div>
-
-  <pre><%='
-  <!-- default: outlined, black -->
-  <div class="crayons-box">box, level 0</div>
-
-  <-- levels 0-3 -->
-  <div class="... crayons-box--level-1">box, level 1</div>
-  <div class="... crayons-box--level-2">box, level 2</div>
-  <div class="... crayons-box--level-3">box, level 3</div>
-
-  <-- filled variation -->
-  <div class="... crayons-box--filled">filled box, level 0</div>
-
-  <-- styles: danger, success, warning, info -->
-  <div class="... crayons-box--danger">
-  <div class="... crayons-box--success">
-  <div class="... crayons-box--warning">
-  <div class="... crayons-box--info">
-  '.rstrip %></pre>
-</div>
-
-<div class="container">
-  <div class="body">
     <h2>Dropdowns</h2>
     <p>Dropdowns should have position relative to it’s trigger. They can be used for some 2nd level navigations, contextual configurations, etc...</p>
     <p>Dropdowns should not be bigger than 320px (unless it's smallest breakpoint, then dropdowns become full width).</p>
     <p>Dropdown default padding is set to 16px.</p>
-    <p>FYI: Dropdowns use “Box” component as background, with Level 3 elevation.</p>
     <p>By default dropdowns are hidden with <code>display: none;</code> so keep that in mind if you ever use dropdowns and can't see them :D.</p>
   </div>
 
@@ -748,7 +659,6 @@
     </ul>
     <p>Use your best judgements when choosing the right size.</p>
     <p>If you need to utilize entire modal area and you have to get rid of default padding, please use modifier class <code>crayons-modal--padding-0</code>.</p>
-    <p>FYI: Modals use “Box” component as background, with Level 3 elevation.</p>
   </div>
 
   <div>
