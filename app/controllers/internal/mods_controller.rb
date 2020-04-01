@@ -1,21 +1,18 @@
 class Internal::ModsController < Internal::ApplicationController
   layout "internal"
 
+  INDEX_ATTRIBUTES = %i[
+    id
+    username
+    comments_count
+    badge_achievements_count
+    last_comment_at
+  ].freeze
+
   def index
-    @mods = if params[:state] == "tag"
-              User.with_role(:tag_moderator, :any).page(params[:page]).per(50)
-            elsif params[:state] == "potential"
-              User.without_role(:trusted).order("comments_count DESC").page(params[:page]).per(100)
-            else
-              User.with_role(:trusted).page(params[:page]).per(50)
-            end
-
-    return if params[:search].blank?
-
-    @mods = @mods.where(
-      "users.username ILIKE :search OR users.name ILIKE :search",
-      search: "%#{params[:search]}%",
-    )
+    @mods = Internal::ModeratorsQuery.call(
+      User.select(INDEX_ATTRIBUTES), safe_params
+    ).page(params[:page]).per(50)
   end
 
   def update
@@ -23,6 +20,13 @@ class Internal::ModsController < Internal::ApplicationController
 
     AssignTagModerator.add_trusted_role(@user)
 
-    render body: nil # No response needed at the moment
+    redirect_to internal_mods_path(state: :potential),
+                flash: { success: "#{@user.username} now has Trusted role!" }
+  end
+
+  private
+
+  def safe_params
+    params.permit(:state, :search, :page)
   end
 end
