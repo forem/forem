@@ -52,21 +52,23 @@
 
   // Main colors
   --body-bg: #f9fafa; // todo: replace with `var(--base-10);` when ready.
-  --body-color: var(--base-100); // todo: replace with `var(--base-100);` when ready.
+  --body-color: var(
+    --base-100
+  ); // todo: replace with `var(--base-100);` when ready.
   --body-color-inverted: var(--base-inverted);
 
   // Main content containers
   --card-bg: var(--base-inverted);
   --card-color: var(--base-100);
   --card-color-secondary: var(--base-70);
-  --card-color-tertiary: var(--base-50);
+  --card-color-tertiary: var(--base-60);
   --card-secondary-bg: var(--base-0);
   --card-secondary-color: var(--base-90);
   --card-headline-color: var(--base-100);
 
   // Header
   --header-bg: var(--base-inverted);
-  --header-shadow: rgba(0,0,0,0.1);
+  --header-shadow: rgba(0, 0, 0, 0.1);
   --header-icons-color: var(--base-70);
   --header-icons-color-hover: var(--base-100);
 
