@@ -146,8 +146,12 @@ module ApplicationHelper
     end
   end
 
+  def community_name
+    @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
+  end
+
   def community_qualified_name
-    "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
+    "#{community_name} Community"
   end
 
   def cache_key_heroku_slug(path)
@@ -155,6 +159,15 @@ module ApplicationHelper
     return path if heroku_slug_commit.blank?
 
     "#{path}-#{heroku_slug_commit}"
+  end
+
+  def copyright_notice
+    start_year = ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"]
+    current_year = Time.current.year.to_s
+    return start_year if current_year == start_year
+    return current_year if start_year.strip.length.zero?
+
+    "#{start_year} - #{current_year}"
   end
 
   # Creates an app internal URL

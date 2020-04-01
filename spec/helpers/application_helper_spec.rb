@@ -1,9 +1,16 @@
 require "rails_helper"
 
 RSpec.describe ApplicationHelper, type: :helper do
+  describe "#community_name" do
+    it "equals to the community name" do
+      allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("SLOAN")
+      expect(helper.community_name).to eq("SLOAN")
+    end
+  end
+
   describe "#community_qualified_name" do
     it "equals to the full qualified community name" do
-      expected_name = "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
+      expected_name = "#{ApplicationConfig['COMMUNITY_NAME']} Community"
       expect(helper.community_qualified_name).to eq(expected_name)
     end
   end
@@ -35,6 +42,31 @@ RSpec.describe ApplicationHelper, type: :helper do
     it "appends the HEROKU_SLUG_COMMIT if it is set" do
       allow(ApplicationConfig).to receive(:[]).with("HEROKU_SLUG_COMMIT").and_return("abc123")
       expect(helper.cache_key_heroku_slug("cache-me")).to eq("cache-me-abc123")
+    end
+  end
+
+  describe "#copyright_notice" do
+    let(:current_year) { Time.current.year.to_s }
+
+    context "when the start year and current year is the same" do
+      it "returns the current year only" do
+        allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return(current_year)
+        expect(helper.copyright_notice).to eq(current_year)
+      end
+    end
+
+    context "when the start year and current year is different" do
+      it "returns the start and current year" do
+        allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return("2014")
+        expect(helper.copyright_notice).to eq("2014 - #{current_year}")
+      end
+    end
+
+    context "when the start year is blank" do
+      it "returns the current year" do
+        allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return(" ")
+        expect(helper.copyright_notice).to eq(current_year)
+      end
     end
   end
 

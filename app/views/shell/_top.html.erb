@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <% title = yield(:title) %>
-    <title><%= title || "#{ApplicationConfig['COMMUNITY_NAME']} Community" %></title>
+    <title><%= title || "#{community_qualified_name}" %></title>
     <% unless internal_navigation? %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">

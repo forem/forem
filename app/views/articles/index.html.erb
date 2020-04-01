@@ -1,6 +1,6 @@
 <%= content_for :page_meta do %>
   <% title_with_timeframe(
-       page_title: "#{ApplicationConfig['COMMUNITY_NAME']} Community  👩‍💻👨‍💻",
+       page_title: "#{community_qualified_name} 👩‍💻👨‍💻",
        timeframe: params[:timeframe],
        content_for: true,
      ) %>
@@ -21,7 +21,7 @@
   <meta name="twitter:description" content="<%= SiteConfig.community_description %>">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">
-  <%= auto_discovery_link_tag(:rss, app_url("feed"), title: "#{ApplicationConfig['COMMUNITY_NAME']} RSS Feed") %>
+  <%= auto_discovery_link_tag(:rss, app_url("feed"), title: "#{community_name} RSS Feed") %>
 <% end %>
 <%= javascript_packs_with_chunks_tag "homePage", defer: true %>
 

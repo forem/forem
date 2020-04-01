@@ -1,5 +1,25 @@
 class User < ApplicationRecord
-  self.ignored_columns = ["organization_id"]
+  self.ignored_columns = %w[
+    base_cover_letter
+    membership_started_at
+    onboarding_checklist
+    onboarding_package_form_submmitted_at
+    onboarding_package_fulfilled
+    onboarding_package_requested_again
+    org_admin
+    personal_data_updated_at
+    resume_html
+    shipping_validated
+    shipping_validated_at
+    shirt_gender
+    shirt_size
+    signup_refer_code
+    signup_referring_site
+    specialty
+    tabs_or_spaces
+    text_only_name
+    top_languages
+  ]
 
   include CloudinaryHelper
 
@@ -118,18 +138,6 @@ class User < ApplicationRecord
   validates :twitch_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
-  validates :shirt_gender,
-            inclusion: { in: %w[unisex womens],
-                         message: "%<value>s is not a valid shirt style" },
-            allow_blank: true
-  validates :shirt_size,
-            inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
-                         message: "%<value>s is not a valid size" },
-            allow_blank: true
-  validates :tabs_or_spaces,
-            inclusion: { in: %w[tabs spaces],
-                         message: "%<value>s is not a valid answer" },
-            allow_blank: true
   validates :editor_version,
             inclusion: { in: %w[v1 v2],
                          message: "%<value>s must be either v1 or v2" }
@@ -160,6 +168,7 @@ class User < ApplicationRecord
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
   alias_attribute :positive_reactions_count, :reactions_count
+  alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
 
   scope :with_this_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
@@ -364,11 +373,6 @@ class User < ApplicationRecord
       tag_ids = roles.where(name: "tag_moderator").pluck(:resource_id)
       Tag.where(id: tag_ids).pluck(:name)
     end
-  end
-
-  def scholar
-    valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
-    has_role?(:workshop_pass) && valid_pass
   end
 
   def comment_banned

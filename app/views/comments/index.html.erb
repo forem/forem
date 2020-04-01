@@ -1,7 +1,7 @@
 <% if @root_comment.present? %>
-  <% title @root_comment.title + " — DEV" %>
+  <% title("#{@root_comment.title} - #{community_name}") %>
 <% else %>
-  <% title "Discussion of " + @commentable.title + " — DEV" %>
+  <% title("Discussion of #{@commentable.title} - #{community_name}") %>
 <% end %>
 
 <%= content_for :page_meta do %>
@@ -10,23 +10,23 @@
 
   <meta property="og:type" content="article" />
   <meta property="og:title" content="Discussion of <%= @commentable.title %>" />
-  <meta property="og:description" content="<%= @commentable.description || "A DEV Comment" %>" />
-  <meta property="og:site_name" content="The DEV Community" />
+  <meta property="og:description" content="<%= @commentable.description || "#{community_name} Comment" %>" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
   <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
   <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
   <meta name="twitter:title" content="<%= @commentable.title %>">
-  <meta name="twitter:description" content="<%= @commentable.description || "A DEV Comment" %>">
+  <meta name="twitter:description" content="<%= @commentable.description || "#{community_name} Comment" %>">
 
   <% if @root_comment.present? %>
-    <link rel="canonical" href="https://dev.to<%= @root_comment.path %>" />
-    <meta property="og:url" content="https://dev.to<%= @root_comment.path %>" />
+    <link rel="canonical" href="<%= app_url(@root_comment.path) %>" />
+    <meta property="og:url" content="<%= app_url(@root_comment.path) %>" />
     <meta property="og:title" content="<%= truncate(strip_tags(@root_comment.processed_html), length: 50) %> — DEV" />
     <meta name="twitter:title" content="<%= truncate(strip_tags(@root_comment.processed_html), length: 50) %> — DEV">
     <meta property="og:image" content="<%= comment_social_image_url(@root_comment) %>" />
     <meta name="twitter:image:src" content="<%= comment_social_image_url(@root_comment) %>">
   <% else %>
-    <link rel="canonical" href="https://dev.to<%= @commentable.path %>/comments" />
-    <meta property="og:url" content="https://dev.to<%= @commentable.path %>/comments" />
+    <link rel="canonical" href="<%= app_url("#{@commentable.path}/comments") %>" />
+    <meta property="og:url" content="<%= app_url("#{@commentable.path}/comments") %>" />
     <meta property="og:title" content="[Discussion] <%= @commentable.title %> — DEV" />
     <meta name="twitter:title" content="[Discussion] <%= @commentable.title %> — DEV">
     <% if @commentable.class.name == "Article" && @commentable.published %>

@@ -25,11 +25,11 @@ module Users
       user.rating_votes.delete_all
       user.response_templates.delete_all
       user.classified_listings.destroy_all
-      handle_feedback_messages(user)
+      delete_feedback_messages(user)
     end
 
     # delete_all will nullify the corresponding foreign_key field bacause of the dependent: :nullify strategy
-    def handle_feedback_messages(user)
+    def delete_feedback_messages(user)
       user.offender_feedback_messages.delete_all
       user.reporter_feedback_messages.delete_all
       user.affected_feedback_messages.delete_all

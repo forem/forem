@@ -115,4 +115,12 @@
   // Default box
   --box: var(--base-90);
   --box-darker: var(--base-100);
+
+  // Indicators
+  --indicator-accent-bg: var(--accent-brand);
+  --indicator-accent-color: var(--body-color);
+  --indicator-critical-bg: var(--accent-danger);
+  --indicator-critical-color: var(--body-color);
+  --indicator-default-bg: var(--button-secondary-bg);
+  --indicator-default-color: var(--button-secondary-color);
 }

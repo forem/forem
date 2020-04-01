@@ -115,4 +115,12 @@
   // Default box
   --box: var(--card-bg);
   --box-darker: var(--base-100);
+
+  // Indicators
+  --indicator-accent-bg: var(--link-brand-color);
+  --indicator-accent-color: var(--body-color-inverted);
+  --indicator-critical-bg: var(--base-80);
+  --indicator-critical-color: var(--body-color-inverted);
+  --indicator-dimmed-bg: var(--base-30);
+  --indicator-dimmed-color: var(--base-70);
 }

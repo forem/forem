@@ -1,11 +1,11 @@
 <%= content_for :page_meta do %>
   <% title "#{@event.title} - DEV" %>
-  <link rel="canonical" href="https://dev.to/<%= @event.slug %>" />
+  <link rel="canonical" href="<%= app_url("/#{@event.slug}") %>" />
   <meta name="description" content="dev.to | Events">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/<%= @event.slug %>" />
+  <meta property="og:url" content="<%= app_url("/#{@event.slug}") %>" />
   <meta property="og:title" content="<%= @event.title %>" />
   <% if @event.cover_image.present? %>
     <meta property="og:image" content="<%= @event.cover_image_url %>" />
@@ -13,7 +13,7 @@
     <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
   <% end %>
   <meta property="og:description" content="<%= truncate(strip_tags(@event.description_html), length: 140) %>" />
-  <meta property="og:site_name" content="The Practical Dev" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">

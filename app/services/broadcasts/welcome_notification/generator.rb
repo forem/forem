@@ -12,11 +12,12 @@ module Broadcasts
 
       def call
         # TODO: [@thepracticaldev/delightful] Move this check into the rake task logic once it has been implemented.
-        return unless user.welcome_notifications
+        return unless user.subscribed_to_welcome_notifications?
 
         send_welcome_notification unless notification_enqueued
         send_authentication_notification unless notification_enqueued
         send_ux_customization_notification unless notification_enqueued
+        send_feed_customization_notification unless notification_enqueued
       end
 
       private
@@ -38,10 +39,16 @@ module Broadcasts
       end
 
       def send_ux_customization_notification
-        return if received_notification?(customize_broadcast) || user.created_at > 5.days.ago
+        return if received_notification?(customize_ux_broadcast) || user.created_at > 5.days.ago
 
-        Notification.send_welcome_notification(user.id, customize_broadcast.id)
+        Notification.send_welcome_notification(user.id, customize_ux_broadcast.id)
         @notification_enqueued = true
+      end
+
+      def send_feed_customization_notification
+        return if user_is_following_tags? || received_notification?(customize_feed_broadcast) || user.created_at > 3.days.ago
+
+        Notification.send_welcome_notification(user.id, customize_feed_broadcast.id)
       end
 
       def received_notification?(broadcast)
@@ -57,12 +64,20 @@ module Broadcasts
         identities.count == SiteConfig.authentication_providers.count
       end
 
+      def user_is_following_tags?
+        user.cached_followed_tag_names.count > 1
+      end
+
       def welcome_broadcast
         @welcome_broadcast ||= Broadcast.find_by(title: "Welcome Notification: welcome_thread")
       end
 
-      def customize_broadcast
-        @customize_broadcast ||= Broadcast.find_by(title: "Welcome Notification: customize_experience")
+      def customize_ux_broadcast
+        @customize_ux_broadcast ||= Broadcast.find_by(title: "Welcome Notification: customize_experience")
+      end
+
+      def customize_feed_broadcast
+        @customize_feed_broadcast ||= Broadcast.find_by(title: "Welcome Notification: customize_feed")
       end
 
       def identities

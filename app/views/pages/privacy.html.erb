@@ -1,22 +1,22 @@
 <% title "Privacy Policy for DEV" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/privacy" />
-  <meta name="description" content="Privacy Policy for DEV">
+  <link rel="canonical" href="<%= app_url("/privacy") %>" />
+  <meta name="description" content="Privacy Policy for <%= community_name %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/privacy" />
-  <meta property="og:title" content="Privacy Policy for DEV" />
-  <meta property="og:image" content="http://i.imgur.com/B4JNl1w.png" />
-  <meta property="og:description" content="The Practical Dev is great!" />
-  <meta property="og:site_name" content="The Practical Dev" />
+  <meta property="og:url" content="<%= app_url("/privacy") %>" />
+  <meta property="og:title" content="Privacy Policy for <%= community_name %>" />
+  <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
+  <meta property="og:description" content="<%= community_qualified_name %> is great!" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@ThePracticalDev">
-  <meta name="twitter:title" content="Privacy Policy for DEV">
-  <meta name="twitter:description" content="The Practical Dev is great!">
-  <meta name="twitter:image:src" content="http://i.imgur.com/B4JNl1w.png">
+  <meta name="twitter:title" content="Privacy Policy for <%= community_name %>">
+  <meta name="twitter:description" content="<%= community_qualified_name %> is great!">
+  <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
 
 <div class="blank-space"></div>

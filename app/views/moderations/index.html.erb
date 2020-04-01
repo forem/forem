@@ -15,7 +15,7 @@
   <% cache("mod-data-header-#{params[:tag]}", expires_in: 6.hours) do %>
     <div class="mod-index-hero">
       <h1><%= "#" + @tag.name.titleize if @tag %> Moderators</h1>
-      <h2>We build the <%= ApplicationConfig["COMMUNITY_NAME"] %> Community</h2>
+      <h2>We build the <%= community_qualified_name %></h2>
       <div class="mod-index-hero-data-pod">
         <div class="mod-index-hero-data-pod-number">
           <%= number_with_delimiter(@tag ? Article.cached_tagged_with(@tag).published.where("published_at > ?", 7.days.ago).size : Article.published.where("published_at > ?", 7.days.ago).size) %>
