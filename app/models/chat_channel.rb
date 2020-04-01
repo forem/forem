@@ -17,6 +17,7 @@ class ChatChannel < ApplicationRecord
   validates :channel_type, presence: true, inclusion: { in: %w[open invite_only direct] }
   validates :status, presence: true, inclusion: { in: %w[active inactive blocked] }
   validates :slug, uniqueness: true, presence: true
+  validates :description, length: { maximum: 200 }, allow_blank: true
 
   def open?
     channel_type == "open"
@@ -51,40 +52,67 @@ class ChatChannel < ApplicationRecord
     chat_channel_memberships.where(user_id: user.id).pluck(:last_opened_at).first
   end
 
-  def self.create_with_users(users, channel_type = "direct", contrived_name = "New Channel")
-    raise "Invalid direct channel" if users.size != 2 && channel_type == "direct"
+  class << self
+    def create_with_users(users:, channel_type: "direct", contrived_name: "New Channel", membership_role: "member")
+      raise "Invalid direct channel" if users.size != 2 && channel_type == "direct"
 
-    if channel_type == "direct"
-      usernames = users.map(&:username).sort # .map as `users` is an array
-      contrived_name = "Direct chat between " + usernames.join(" and ")
-      slug = usernames.join("/")
-    else
-      slug = contrived_name.to_s.parameterize + "-" + rand(100_000).to_s(26)
+      usernames = users.map(&:username).sort
+      slug = channel_type == "direct" ? usernames.join("/") : contrived_name.to_s.parameterize + "-" + rand(100_000).to_s(26)
+      contrived_name = "Direct chat between " + usernames.join(" and ") if channel_type == "direct"
+      channel = find_or_create_chat_channel(channel_type, slug, contrived_name)
+      if channel_type == "direct"
+        channel.add_users(users)
+      else
+        channel.invite_users(users: users, membership_role: membership_role)
+      end
+      channel
     end
 
-    channel = ChatChannel.find_by(slug: slug)
-    if channel
-      raise "Blocked channel" if channel.status == "blocked"
+    private
 
-      channel.status = "active"
-      channel.save
-    else
-      channel = create(
-        channel_type: channel_type,
-        channel_name: contrived_name,
-        slug: slug,
-        last_message_at: 1.week.ago,
-        status: "active",
-      )
-      channel.add_users(users)
+    def find_or_create_chat_channel(channel_type, slug, contrived_name)
+      channel = ChatChannel.find_by(slug: slug)
+      if channel
+        raise "Blocked channel" if channel.status == "blocked"
+
+        channel.status = "active"
+        channel.save
+      else
+        create(
+          channel_type: channel_type,
+          channel_name: contrived_name,
+          slug: slug,
+          last_message_at: 1.week.ago,
+          status: "active",
+        )
+      end
     end
-    channel
   end
 
   def add_users(users)
     Array(users).each do |user|
       ChatChannelMembership.create!(user_id: user.id, chat_channel_id: id)
     end
+  end
+
+  def invite_users(users:, membership_role: "member", inviter: nil)
+    invitation_sent = 0
+    Array(users).each do |user|
+      existing_membership = ChatChannelMembership.find_by(user_id: user.id, chat_channel_id: id)
+      if existing_membership.present? && %w[active pending].exclude?(existing_membership.status)
+        if existing_membership.update(status: "pending", role: membership_role)
+          NotifyMailer.channel_invite_email(existing_membership, inviter).deliver_later
+          invitation_sent += 1
+        end
+      else
+        membership = ChatChannelMembership.create(user_id: user.id, chat_channel_id: id, role: membership_role, status: "pending")
+        if membership.persisted?
+          NotifyMailer.channel_invite_email(membership, inviter).deliver_later
+          invitation_sent += 1
+        end
+      end
+    end
+    invitation_sent
   end
 
   def remove_user(user)

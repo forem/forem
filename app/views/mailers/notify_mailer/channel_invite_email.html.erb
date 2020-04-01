@@ -1,0 +1,45 @@
+<table style="width:100%;max-width:700px;margin:auto;font-size:18px;">
+  <tbody>
+    <tr>
+      <td style="padding:4%;">
+          <% if @membership.role == "mod" %>
+            <h2 style="font-size: 25px; text-align: center;">
+              You have been invited to be a Moderator of a connect group on <%= ApplicationConfig["COMMUNITY_NAME"] %>.
+            </h2>
+          <% else %>
+            <h2 style="font-size: 25px; text-align: center;">
+              <%= link_to(@inviter.name, ApplicationController.helpers.user_url(@inviter)) %> sent you an invitation to join a connect group on <%= ApplicationConfig["COMMUNITY_NAME"] %>.
+            </h2>
+          <% end %>
+        <table>
+          <tbody>
+            <tr>
+              <td style="color:#c3c3c3;font-size:14px;padding-bottom:8px;">
+                <br>
+              </td>
+            </tr>
+            <tr>
+              <td style="width: 700px; padding: 20px 10px 30px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; font-size: 19px; background-color: rgb(244, 244, 244); text-align: center; background-position: initial initial; background-repeat: initial initial;">
+                <div style="text-align: center;">
+                  <h1><%= @membership.chat_channel.channel_name %></h1>
+                </div>
+                <br>
+                  <% if @membership.role == "mod" %>
+                    <img src="https://media.giphy.com/media/VGG8UY1nEl66Y/giphy.gif" style="width: 300px;">
+                  <% else %>
+                    <img src="https://media.giphy.com/media/kHs1lBhZWaK5rj7lt3/giphy.gif" style="width: 300px;">
+                  <% end %>
+                <br>
+                <br>
+                <div>
+                  <p style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none; margin-top:4px;"><%= link_to("Check Invitation", ApplicationController.helpers.app_url("connect?ref=group_invite")) %> </p>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <br>
+      </td>
+    </tr>
+  </tbody>
+</table>

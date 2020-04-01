@@ -294,7 +294,7 @@ Rails.logger.info "#{counter}. Creating Chat Channels and Messages"
   )
 end
 
-direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
+direct_channel = ChatChannel.create_with_users(users: User.last(2), channel_type: "direct")
 Message.create!(
   chat_channel: direct_channel,
   user: User.last,
