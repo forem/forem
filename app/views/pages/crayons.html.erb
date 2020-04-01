@@ -52,129 +52,6 @@
 
 <div class="container">
   <div class="body">
-    <h2>Cards</h2>
-    <p>Cards are basically content containers. There are two types of cards:</p>
-    <ul>
-      <li>Primary (default) - main content, like whole article or feed cards.</li>
-      <li>Secondary - secondary content, used for example for sidebar widgets.</li>
-    </ul>
-    <p>The visual difference between the two is basically in color: secodanry cards are a <strong>little</strong> less visible.</p>
-  </div>
-
-  <div class="p-6 bg-base-10">
-    <div class="crayons-card mb-4">
-      <div class="crayons-card__body">
-        Hello, I am a primary card.
-      </div>
-    </div>
-
-    <div class="crayons-card crayons-card--secondary mb-4">
-      <div class="crayons-card__body">
-        ...And I am a secondary card.
-      </div>
-    </div>
-  </div>
-
-  <pre><%='
-  <div class="crayons-card mb-4">
-    <div class="crayons-card__body">
-      Hello, I am a primary card.
-    </div>
-  </div>
-
-  <div class="crayons-card crayons-card--secondary mb-4">
-    <div class="crayons-card__body">
-      ...And I am a secondary card.
-    </div>
-  </div>
-  '.rstrip %></pre>
-    
-    <div class="crayons-card mb-4">
-      <header class="crayons-card__header">
-        <h3 class="crayons-card__title">Header</h3>
-      </header>
-      <div class="crayons-card__body">
-        Hello, I'm a simple widget with Header.
-      </div>
-    </div>
-
-    <div class="crayons-card mb-4">
-      <header class="crayons-card__header">
-        <h3 class="crayons-card__title">Header</h3>
-        <div class="crayons-card__actions">
-          <a href="#">Link</a>
-        </div>
-      </header>
-      <div class="crayons-card__body">
-        Hello, I'm a simple widget with Header and action.
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="container">
-  <div class="body">
-    <h2>Subscribe dropdown</h2>
-  </div>
-
-  <div>
-    <p>This is default state:</p>
-    <div class="crayons-btn-group mb-4">
-      <a href="#" class="crayons-btn crayons-btn--outlined">Subscribe</a>
-    </div>
-
-    <p>This is subscribed state, so it has additional cog button:</p>
-    <div class="crayons-btn-group mb-4">
-      <a href="#" class="crayons-btn crayons-btn--outlined">Unsubscribe</a>
-      <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--icon-alone">
-        <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Customize subscription") %>
-      </a>
-    </div>
-    
-    <p>This is subscribed state, and the cog button has <code>.crayons-btn--outlined--active</code> class applied so it has darker border and color.</p>
-    <div class="crayons-btn-group mb-4">
-      <a href="#" class="crayons-btn crayons-btn--outlined">Unsubscribe</a>
-      <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--outlined--active crayons-btn--icon-alone">
-        <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Customize subscription") %>
-      </a>
-    </div>
-    
-    <p>This is our dropdown. It has additional utility classes <code>inline-block static</code> only for purpose of this demo.</p>
-    <div class="crayons-dropdown inline-block static">
-      <div class="crayons-fields mb-5">
-        <div class="crayons-field crayons-field--radio">
-          <input type="radio" id="subscribe-all" name="subscribe_comments" class="crayons-radio" checked>
-          <label for="subscribe-all" class="crayons-field__label">
-            All comments
-            <p class="crayons-field__description">You’ll receive notifications for all new comments.</p>
-          </label>
-        </div>
-
-        <div class="crayons-field crayons-field--radio">
-          <input type="radio" id="subscribe-toplevel" name="subscribe_comments" class="crayons-radio">
-          <label for="subscribe-toplevel" class="crayons-field__label">
-            Top-level comments
-            <p class="crayons-field__description">You’ll receive notifications only for all new top-level comments.</p>
-          </label>
-        </div>
-
-        <div class="crayons-field crayons-field--radio">
-          <input type="radio" id="subscribe-author" name="subscribe_comments" class="crayons-radio">
-          <label for="subscribe-author" class="crayons-field__label">
-            Post author comments
-            <p class="crayons-field__description">You’ll receive notifications only if post author sends a new comment.</p>
-          </label>
-        </div>
-      </div>
-      
-      <button class="crayons-btn w-100">Done</button>
-    </div>
-    </div>
-  </div>
-</div>
-
-<div class="container">
-  <div class="body">
     <h2>Main Typography</h2>
     <p>Default font is set to 16px (fs-base). It should be standard in UI. Smaller and bigger font sizes should be used carefully with respect to good visual rythm between elements.</p>
     <p>XS size should be used as little as possible in edge cases. Even though it’s readable we could consider it not meeting DEV’s standards. So keep it for like “asterisk copy” etc.</p>
@@ -300,6 +177,93 @@
   <!-- line heights -->
   <p class="... lh-base"></p> <!-- default: 1.5 -->
   <p class="... lh-tight"></p> <!-- tight: 1.25 -->
+  '.rstrip %></pre>
+</div>
+
+
+<div class="container">
+  <div class="body">
+    <h2>Cards</h2>
+    <p>Cards are basically content containers. There are two types of cards:</p>
+    <ul>
+      <li>Primary (default) - main content, like whole article or feed cards.</li>
+      <li>Secondary - secondary content, used for example for sidebar widgets.</li>
+    </ul>
+    <p>The visual difference between the two is basically in color: secodanry cards are a <strong>little</strong> less visible.</p>
+  </div>
+
+  <div class="p-6 bg-base-10">
+    <div class="crayons-card mb-4">
+      <div class="crayons-card__body">
+        Hello, I am a primary card.
+      </div>
+    </div>
+
+    <div class="crayons-card crayons-card--secondary">
+      <div class="crayons-card__body">
+        ...And I am a secondary card.
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-card">
+    <div class="crayons-card__body">
+      Hello, I am a primary card.
+    </div>
+  </div>
+
+  <div class="crayons-card crayons-card--secondary">
+    <div class="crayons-card__body">
+      ...And I am a secondary card.
+    </div>
+  </div>
+  '.rstrip %></pre>
+
+  <div class="body">
+    <p>If you need headers, cards do have them as well.</p>
+  </div>
+
+  <div class="p-6 bg-base-10">
+    <div class="crayons-card crayons-card--secondary mb-4">
+      <div class="crayons-card__header">
+        <h3 class="crayons-card__headline">Card title.</h3>
+      </div>
+      <div class="crayons-card__body">
+        I'm a card content.
+      </div>
+    </div>
+
+    <div class="crayons-card crayons-card--secondary">
+      <div class="crayons-card__header">
+        <h3 class="crayons-card__headline">Card title.</h3>
+        <div class="crayons-card__actions">
+          <a href="#" class="crayons-link--branded">Action</a>
+        </div>
+      </div>
+      <div class="crayons-card__body">
+        I'm a card content.
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-card crayons-card--secondary">
+    <div class="crayons-card__header">
+      <h3 class="crayons-card__headline">Card title.</h3>
+    </div>
+    <div class="crayons-card__body">...</div>
+  </div>
+
+  <div class="crayons-card crayons-card--secondary">
+    <div class="crayons-card__header">
+      <h3 class="crayons-card__headline">Card title.</h3>
+      <div class="crayons-card__actions">
+        <a href="#" class="crayons-link--branded">Action</a>
+      </div>
+    </div>
+    <div class="crayons-card__body">...</div>
+  </div>
   '.rstrip %></pre>
 </div>
 

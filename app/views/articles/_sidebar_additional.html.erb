@@ -27,22 +27,19 @@
       <% end %>
       <%= render "articles/sidebar_campaign" if SiteConfig.campaign_sidebar_enabled? %>
       <% if params[:timeframe].blank? && @classified_listings.any? %>
-        <div class="crayons-widget mb-4">
-          <header class="crayons-widget__header">
-            <h3 class="crayons-widget__title">Listings</h3>
-            <div class="crayons-widget__actions">
-              <a href="/listings" class="fs-s color-accent-brand">See all</a>
-            </div>
+        <div class="widget" id="sidebar-listings-widget">
+          <header class="widget-header-listings">
+            <a href="/listings"><h4>Listings <span class="widget-listing-live-count"><%= @classified_listings.size %></span></h4></a>
+            <button type="button" class="widget-minimize-button" id="sidebar-listings-widget-minimize-button">-</button>
           </header>
-          <div class="crayons-widget__body p-0">
-            <% @classified_listings.order("bumped_at DESC").limit(5).each do |listing| %>
-              <a href="<%= listing.path %>" class="crayons-widget__link">
-                <%= listing.title %>
-                <div class="crayons-widget__link__additional">
-                  <%= listing.category %>
-                </div>
+          <div class="widget-body widget-body-listings">
+            <% @classified_listings.order("bumped_at DESC").limit(8).each do |listing| %>
+              <a class="widget-listing-link" href="<%= listing.path %>">
+                <span class="widget-listing-link-title"><%= listing.title %></span>
+                <span class="widget-listing-link-category"><%= listing.category %></span>
               </a>
             <% end %>
+            <a class="cta cta-button" href="/listings/new">CREATE A LISTING</a>
           </div>
         </div>
       <% end %>

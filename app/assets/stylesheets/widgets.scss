@@ -476,11 +476,11 @@
 
   a.sidebar-nav-link {
     @include sidebar-link;
-    color: var(--link-dimmed-color);
+    color: var(--link-color);
     font-weight: 400;
 
     &.sidebar-nav-link-tag {
-      color: var(--link-dimmed-color);
+      color: var(--link-color);
     }
   }
   a.sidebar-nav-link-follow {
@@ -515,6 +515,6 @@
   a {
     @include sidebar-link;
     font-size: 0.9em;
-    color: var(--link-dimmed-color-secondary);
+    color: var(--link-color-secondary);
   }
 }

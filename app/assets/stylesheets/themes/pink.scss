@@ -71,17 +71,16 @@
   --footer-link-color: var(--base-80);
   --footer-link-color-hover: var(--base-100);
 
-  // Links in content
-  --link-brand-color: #4e57ef;
-  --link-brand-color-hover: var(--accent-brand-darker);
-
-  // Greyscale links, for places where we don't want to make them use accent color
-  --link-dimmed-color: var(--base-90);
-  --link-dimmed-color-secondary: var(--base-80);
-  --link-dimmed-bg-hover: var(--base-10);
-  --link-dimmed-color-hover: var(--base-100);
-  --link-dimmed-bg-current: var(--base-inverted);
-  --link-dimmed-color-current: var(--base-100);
+  // Links
+  --link-color: var(--base-90);
+  --link-color-hover: var(--accent-brand-darker);
+  --link-color-current: var(--base-100);
+  --link-color-secondary: var(--base-70);
+  --link-color-secondary-hover: var(--base-80);
+  --link-branded-color: #4e57ef;
+  --link-bg: var(--base-0);
+  --link-bg-hover: var(--base-10);
+  --link-bg-current: var(--base-inverted);
 
   // Primary buttons
   --button-primary-bg: var(--accent-brand);
