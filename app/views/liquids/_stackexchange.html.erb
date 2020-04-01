@@ -1,4 +1,4 @@
-<div class="ltag__stackexchange--container">
+<div class="ltag__stackexchange--card">
   <div class="ltag__stackexchange--title-container">
     <header>
       <div class="ltag__stackexchange--title">
@@ -31,7 +31,7 @@
       <%= (HTML_Truncator.truncate body, 50).html_safe %>
     </p>
   </div>
-  <div class="ltag__stackexchange--btn--container">
+  <div class="ltag__stackexchange--btn--card">
     <button class="ltag__stackexchange--btn" type="button">
       <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">Open Full <%= post_type.capitalize %></a>
     </button>

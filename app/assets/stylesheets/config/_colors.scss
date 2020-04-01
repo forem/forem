@@ -56,19 +56,13 @@
   --body-color-inverted: var(--base-inverted);
 
   // Main content containers
-  --container-bg: var(--base-inverted);
-  --container-color: var(--base-100);
-  --container-color-secondary: var(--base-70);
-  --container-color-tertiary: var(--base-50);
-
-  // Secondary content containers
-  --widget-bg: var(--base-0);
-  --widget-bg-hover: var(--base-inverted);
-  --widget-color: var(--base-90);
-  --widget-color-hover: var(--accent-brand);
-  --widget-color-secondary: var(--base-70);
-  --widget-color-tertiary: var(--base-50);
-  --widget-headline: var(--base-100);
+  --card-bg: var(--base-inverted);
+  --card-color: var(--base-100);
+  --card-color-secondary: var(--base-70);
+  --card-color-tertiary: var(--base-50);
+  --card-secondary-bg: var(--base-0);
+  --card-secondary-color: var(--base-90);
+  --card-headline-color: var(--base-100);
 
   // Header
   --header-bg: var(--base-inverted);

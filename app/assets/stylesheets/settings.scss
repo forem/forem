@@ -402,8 +402,8 @@ $input-width: 650px;
       width: 70%;
     }
     .single-app-integration {
-      background: var(--container-bg);
-      border: 1px solid var(--container-color-tertiary);
+      background: var(--card-bg);
+      border: 1px solid var(--card-color-tertiary);
       border-radius: 8px;
       padding: 10px;
       h2 {
@@ -412,7 +412,7 @@ $input-width: 650px;
         font-size: 1.5em;
       }
       sup {
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
       img {
         height: 1em;
@@ -500,7 +500,7 @@ $input-width: 650px;
 .github-repos {
   max-height: 400px;
   overflow-y: auto;
-  background: var(--container-bg);
+  background: var(--card-bg);
   box-shadow: $shadow;
   &.loading-repos {
     height: 400px;
@@ -512,7 +512,7 @@ $input-width: 650px;
     height: 400px;
   }
   .github-repo-row {
-    background: var(--container-bg);
+    background: var(--card-bg);
     padding: 12px;
     margin: 5px 0px;
     transition: all 0.6s ease;
@@ -755,7 +755,7 @@ ul.delete__account {
   align-items: center;
   justify-content: space-between;
   flex-flow: row wrap;
-  background: var(--container-bg);
+  background: var(--card-bg);
   border-radius: 5px;
   border: 1px solid $light-medium-gray;
   padding: 0.5rem 0 0.8rem 0.5rem;

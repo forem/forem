@@ -50,49 +50,64 @@
   }
 </style>
 
-<div class="container" style="background: transparent; box-shadow: none; max-width: 316px; margin: 0 auto; padding: 100px 0; ">
-  <div class="crayons-widget mb-4">
-    <div class="crayons-widget__body">
-      Hello, I'm a simple widget.
-    </div>
+<div class="container">
+  <div class="body">
+    <h2>Cards</h2>
+    <p>Cards are basically content containers. There are two types of cards:</p>
+    <ul>
+      <li>Primary (default) - main content, like whole article or feed cards.</li>
+      <li>Secondary - secondary content, used for example for sidebar widgets.</li>
+    </ul>
+    <p>The visual difference between the two is basically in color: secodanry cards are a <strong>little</strong> less visible.</p>
   </div>
-  
-  <div class="crayons-widget mb-4">
-    <header class="crayons-widget__header">
-      <h3 class="crayons-widget__title">Header</h3>
-    </header>
-    <div class="crayons-widget__body">
-      Hello, I'm a simple widget with Header.
+
+  <div class="p-6 bg-base-10">
+    <div class="crayons-card mb-4">
+      <div class="crayons-card__body">
+        Hello, I am a primary card.
+      </div>
+    </div>
+
+    <div class="crayons-card crayons-card--secondary mb-4">
+      <div class="crayons-card__body">
+        ...And I am a secondary card.
+      </div>
     </div>
   </div>
 
-  <div class="crayons-widget mb-4">
-    <header class="crayons-widget__header">
-      <h3 class="crayons-widget__title">Header</h3>
-      <div class="crayons-widget__actions">
-        <a href="#">Link</a>
-      </div>
-    </header>
-    <div class="crayons-widget__body">
-      Hello, I'm a simple widget with Header and action.
+  <pre><%='
+  <div class="crayons-card mb-4">
+    <div class="crayons-card__body">
+      Hello, I am a primary card.
     </div>
   </div>
 
-  <div class="crayons-widget mb-4">
-    <header class="crayons-widget__header">
-      <h3 class="crayons-widget__title">Listings</h3>
-      <div class="crayons-widget__actions">
-        <a href="#" class="fs-s color-accent-brand">See all</a>
+  <div class="crayons-card crayons-card--secondary mb-4">
+    <div class="crayons-card__body">
+      ...And I am a secondary card.
+    </div>
+  </div>
+  '.rstrip %></pre>
+    
+    <div class="crayons-card mb-4">
+      <header class="crayons-card__header">
+        <h3 class="crayons-card__title">Header</h3>
+      </header>
+      <div class="crayons-card__body">
+        Hello, I'm a simple widget with Header.
       </div>
-    </header>
-    <div class="crayons-widget__body p-0">
-      <a href="#" class="crayons-link crayons-link--contentful">
-        Take part in the global microservices survey!
-        <div class="crayons-link__secondary">
-          <span class="crayons-indicator crayons-indicator--accent mr-2">New</span>
-          Collabs
+    </div>
+
+    <div class="crayons-card mb-4">
+      <header class="crayons-card__header">
+        <h3 class="crayons-card__title">Header</h3>
+        <div class="crayons-card__actions">
+          <a href="#">Link</a>
         </div>
-      </a>
+      </header>
+      <div class="crayons-card__body">
+        Hello, I'm a simple widget with Header and action.
+      </div>
     </div>
   </div>
 </div>

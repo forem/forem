@@ -42,7 +42,7 @@
   @include indicator(&, accent, var(--accent-brand));
   @include indicator(&, critical, var(--accent-danger));
   @include indicator(&, success, var(--accent-success));
-  @include indicator(&, inverted, var(--widget-color));
+  @include indicator(&, inverted, var(--card-secondary-color));
 
   // Circle, no text
   &--bullet {
