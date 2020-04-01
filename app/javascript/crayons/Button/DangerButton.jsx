@@ -3,25 +3,15 @@ import PropTypes from 'prop-types';
 import { defaultChildrenPropTypes } from '../../src/components/common-prop-types';
 import { Button } from './Button';
 
-export const DangerButton = ({
-  children,
-  as = 'button',
-  className,
-  url,
-  buttonType,
-  disabled,
-}) => (
-  <Button
-    variant="danger"
-    as={as}
-    className={className}
-    url={url}
-    buttonType={buttonType}
-    disabled={disabled}
-  >
-    {children}
-  </Button>
-);
+export const DangerButton = (props) => {
+  const { children, ...otherProps } = props;
+
+  return (
+    <Button variant="danger" {...otherProps}>
+      {children}
+    </Button>
+  );
+};
 
 DangerButton.defaultProps = {
   className: undefined,
