@@ -309,6 +309,7 @@ class Article < ApplicationRecord
   def touch_by_reaction
     async_score_calc
     index!
+    index_to_elasticsearch
   end
 
   def comments_blob
