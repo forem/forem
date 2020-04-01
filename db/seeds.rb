@@ -334,7 +334,7 @@ end
 users_in_random_order.limit(10).each do |user|
   user.badge_achievements.create!(
     badge: Badge.order(Arel.sql("RANDOM()")).limit(1).take,
-    rewarding_context_message_markdown: Faker::Lorem.sentence,
+    rewarding_context_message_markdown: Faker::Markdown.random,
   )
 end
 
