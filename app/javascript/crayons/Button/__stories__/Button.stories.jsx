@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { withKnobs, object, text } from '@storybook/addon-knobs/react';
+import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
 import {
   Button,
   DangerButton,
@@ -22,6 +22,7 @@ export const Default = () => (
     as={text('as', 'button')}
     url={text('url')}
     buttonType={text('buttonType')}
+    disabled={boolean('disabled', false)}
   >
     Hello world!
   </Button>
@@ -38,6 +39,7 @@ export const Secondary = () => (
     as={text('as', 'button')}
     url={text('url')}
     buttonType={text('buttonType')}
+    disabled={boolean('disabled', false)}
   >
     Hello world!
   </SecondaryButton>
@@ -54,6 +56,7 @@ export const Outlined = () => (
     as={text('as', 'button')}
     url={text('url')}
     buttonType={text('buttonType')}
+    disabled={boolean('disabled', false)}
   >
     Hello world!
   </OutlinedButton>
@@ -70,6 +73,7 @@ export const Danger = () => (
     as={text('as', 'button')}
     url={text('url')}
     buttonType={text('buttonType')}
+    disabled={boolean('disabled', false)}
   >
     Hello world!
   </DangerButton>
@@ -99,6 +103,7 @@ export const IconWithText = () => {
       as={text('as', 'button')}
       url={text('url')}
       buttonType={text('buttonType')}
+      disabled={boolean('disabled', false)}
     >
       Hello world!
     </Button>
@@ -117,6 +122,7 @@ export const ButtonAsLink = () => (
     icon={object('icon')}
     url={text('url', '#')}
     buttonType={text('buttonType')}
+    disabled={boolean('disabled', false)}
   >
     Hello world!
   </Button>

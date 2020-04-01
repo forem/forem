@@ -9,6 +9,7 @@ export const SecondaryButton = ({
   className,
   url,
   buttonType,
+  disabled,
 }) => (
   <Button
     variant="secondary"
@@ -16,6 +17,7 @@ export const SecondaryButton = ({
     className={className}
     url={url}
     buttonType={buttonType}
+    disabled={disabled}
   >
     {children}
   </Button>
@@ -25,6 +27,7 @@ SecondaryButton.defaultProps = {
   className: undefined,
   url: undefined,
   buttonType: 'button',
+  disabled: false,
 };
 
 SecondaryButton.displayName = 'SecondaryButton';
@@ -35,4 +38,5 @@ SecondaryButton.propTypes = {
   className: PropTypes.string,
   url: PropTypes.string,
   buttonType: PropTypes.string,
+  disabled: PropTypes.bool,
 };

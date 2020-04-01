@@ -9,6 +9,7 @@ export const DangerButton = ({
   className,
   url,
   buttonType,
+  disabled,
 }) => (
   <Button
     variant="danger"
@@ -16,6 +17,7 @@ export const DangerButton = ({
     className={className}
     url={url}
     buttonType={buttonType}
+    disabled={disabled}
   >
     {children}
   </Button>
@@ -25,6 +27,7 @@ DangerButton.defaultProps = {
   className: undefined,
   url: undefined,
   buttonType: 'button',
+  disabled: false,
 };
 
 DangerButton.displayName = 'DangerButton';
@@ -35,4 +38,5 @@ DangerButton.propTypes = {
   className: PropTypes.string,
   url: PropTypes.string,
   buttonType: PropTypes.string,
+  disabled: PropTypes.bool,
 };

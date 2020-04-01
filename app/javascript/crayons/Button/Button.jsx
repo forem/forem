@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { defaultChildrenPropTypes } from '../../src/components/common-prop-types';
 
-function getAdditionalClassNames({ variant, className, icon }) {
+function getAdditionalClassNames({ variant, className, icon, disabled }) {
   let additionalClassNames = '';
 
   if (variant && variant.length > 0 && variant !== 'primary') {
@@ -11,6 +11,10 @@ function getAdditionalClassNames({ variant, className, icon }) {
 
   if (icon) {
     additionalClassNames += ' crayons-btn--icon-left';
+  }
+
+  if (disabled) {
+    additionalClassNames += ' crayons-btn--disabled';
   }
 
   if (className && className.length > 0) {
@@ -28,17 +32,20 @@ export const Button = ({
   icon,
   url,
   buttonType,
+  disabled,
 }) => {
   const ComponentName = as;
   const Icon = icon;
-  const otherProps = as === 'button' ? { type: buttonType } : { href: url };
+  const otherProps =
+    as === 'button' ? { type: buttonType, disabled } : { href: url };
 
   return (
     <ComponentName
-      className={`crayons-btn ${getAdditionalClassNames({
+      className={`crayons-btn${getAdditionalClassNames({
         variant,
         className,
         icon,
+        disabled: as === 'a' && disabled,
       })}`}
       {...otherProps}
     >
@@ -55,6 +62,7 @@ Button.defaultProps = {
   icon: undefined,
   url: undefined,
   buttonType: 'button',
+  disabled: false,
 };
 
 Button.propTypes = {
@@ -66,4 +74,5 @@ Button.propTypes = {
   icon: PropTypes.node,
   url: PropTypes.string,
   buttonType: PropTypes.string,
+  disabled: PropTypes.bool,
 };

@@ -9,6 +9,7 @@ export const OutlinedButton = ({
   className,
   url,
   buttonType,
+  disabled,
 }) => (
   <Button
     variant="outlined"
@@ -16,6 +17,7 @@ export const OutlinedButton = ({
     className={className}
     url={url}
     buttonType={buttonType}
+    disabled={disabled}
   >
     {children}
   </Button>
@@ -25,6 +27,7 @@ OutlinedButton.defaultProps = {
   className: undefined,
   url: undefined,
   buttonType: 'button',
+  disabled: false,
 };
 
 OutlinedButton.displayName = 'OutlinedButton';
@@ -35,4 +38,5 @@ OutlinedButton.propTypes = {
   className: PropTypes.string,
   url: PropTypes.string,
   buttonType: PropTypes.string,
+  disabled: PropTypes.bool,
 };
