@@ -6,7 +6,11 @@ namespace :broadcasts do
     # and will ultimately be superseded by 7.days.ago when it's larger than feature_live_date.
     notifications_live_at = SiteConfig.welcome_notifications_live_at
     week_ago = 7.days.ago
-    latest_date = notifications_live_at > week_ago ? notifications_live_at : week_ago
+    latest_date = if notifications_live_at
+                    notifications_live_at > week_ago ? notifications_live_at : week_ago
+                  else
+                    week_ago
+                  end
 
     User.where("created_at > ?", latest_date).find_each do |user|
       Broadcasts::WelcomeNotification::Generator.call(user.id)
