@@ -6,7 +6,7 @@ function initializeHeroBannerClose() {
 
   if (banner && closeIcon) {
     closeIcon.addEventListener('click', () => {
-      localStorage.setItem('exited_hero', banner.dataset.name); // Hardcoded. TODO: generalize.
+      localStorage.setItem('exited_hero', banner.dataset.name); // Banner data-name needs to include the proper value.
       banner.style.display = 'none';
     });
   }

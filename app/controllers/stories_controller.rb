@@ -60,7 +60,7 @@ class StoriesController < ApplicationController
   def assign_hero_html
     return if SiteConfig.campaign_hero_html_variant_name.blank?
 
-    @hero_html = HtmlVariant.relevant.select(:html).
+    @hero_html = HtmlVariant.relevant.select(:name, :html).
       find_by(group: "campaign", name: SiteConfig.campaign_hero_html_variant_name)&.html
   end
 
