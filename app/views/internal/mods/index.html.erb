@@ -2,13 +2,13 @@
   <div class="col">
     <ul class="nav nav-pills">
       <li class="nav-item">
-        <a href="/internal/mods" class="nav-link <%= "active" if params[:state].blank? %>">General Community</a>
+        <%= link_to "General Community", internal_mods_path, class: "nav-link #{'active' if params[:state].blank?}" %>
       </li>
       <li class="nav-item">
-        <a href="/internal/mods?state=tag_moderator" class="nav-link <%= "active" if params[:state] == "tag_moderator" %>">Tag Mods</a>
+        <%= link_to "Tag Mods", internal_mods_path(state: :tag_moderator), class: "nav-link #{'active' if params[:state] == 'tag_moderator'}" %>
       </li>
       <li class="nav-item">
-        <a href="/internal/mods?state=potential" class="nav-link <%= "active" if params[:state] == "potential" %>">Potential Mods</a>
+        <%= link_to "Potential Mods", internal_mods_path(state: :potential), class: "nav-link #{'active' if params[:state] == 'potential'}" %>
       </li>
     </ul>
   </div>

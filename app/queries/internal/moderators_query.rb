@@ -4,17 +4,18 @@ module Internal
       state: :trusted
     }.with_indifferent_access.freeze
 
-    def self.call(relation = User.all, options = {})
+    def self.call(relation: User.all, options: {})
       options = DEFAULT_OPTIONS.merge(options)
       state, search = options.values_at(:state, :search)
 
-      relation = if state == "potential"
+      relation = if state.to_s == "potential"
                    relation.where(
-                     "id not in (select user_id from users_roles where role_id = ?)",
+                     "id NOT IN (SELECT user_id FROM users_roles WHERE role_id = ?)",
                      role_id_for(:trusted),
                    ).order("users.comments_count DESC")
                  else
-                   relation.joins(:users_roles).where(users_roles: { role_id: role_id_for(state) })
+                   relation.joins(:users_roles).
+                     where(users_roles: { role_id: role_id_for(state) })
                  end
 
       relation = search_relation(relation, search) if search.presence
@@ -23,7 +24,7 @@ module Internal
     end
 
     def self.role_id_for(role)
-      Role.find_by(name: role)&.id
+      Role.find_by!(name: role).id
     end
 
     def self.search_relation(relation, search)

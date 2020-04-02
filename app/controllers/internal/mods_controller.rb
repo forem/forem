@@ -11,7 +11,8 @@ class Internal::ModsController < Internal::ApplicationController
 
   def index
     @mods = Internal::ModeratorsQuery.call(
-      User.select(INDEX_ATTRIBUTES), safe_params
+      relation: User.select(INDEX_ATTRIBUTES),
+      options: permitted_params,
     ).page(params[:page]).per(50)
   end
 
@@ -26,7 +27,7 @@ class Internal::ModsController < Internal::ApplicationController
 
   private
 
-  def safe_params
+  def permitted_params
     params.permit(:state, :search, :page)
   end
 end
