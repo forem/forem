@@ -27,13 +27,14 @@ $outlined-border-width: 2px;
 
   &--disabled,
   &[disabled] {
-    opacity: 0.6;
+    // TODO: Remove !important once legacy styles are no longer causing issues
+    opacity: 0.6 !important;
     cursor: not-allowed;
   }
 
-  &:enabled:hover,
-  &:enabled:active,
-  &--active:enabled {
+  &:enabled:not(&--disabled):hover,
+  &:enabled:not(&--disabled):active,
+  &--active:enabled:not(&--disabled) {
     background-color: var(--button-primary-bg-hover);
     color: var(--button-primary-color-hover);
     z-index: 2;
@@ -43,9 +44,9 @@ $outlined-border-width: 2px;
     background-color: var(--button-secondary-bg);
     color: var(--button-secondary-color);
 
-    &:enabled:hover,
-    &:enabled:active,
-    &--active:enabled {
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
       background-color: var(--button-secondary-bg-hover);
       color: var(--button-secondary-color-hover);
     }
@@ -58,9 +59,9 @@ $outlined-border-width: 2px;
     border: $outlined-border-width solid var(--button-outlined-bg);
     color: var(--button-outlined-color);
 
-    &:enabled:hover,
-    &:enabled:active,
-    &--active:enabled {
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
       background-color: transparent;
       color: var(--button-outlined-color-hover);
       border-color: var(--button-outlined-bg-hover);
@@ -71,9 +72,9 @@ $outlined-border-width: 2px;
     background-color: var(--accent-danger);
     color: var(--base-inverted);
 
-    &:enabled:hover,
-    &:enabled:active,
-    &--active:enabled {
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
       background-color: var(--accent-danger-darker);
       color: var(--base-inverted);
     }
@@ -83,9 +84,9 @@ $outlined-border-width: 2px;
     background-color: transparent;
     color: var(--link-brand);
 
-    &:enabled:hover,
-    &:enabled:active,
-    &--active:enabled {
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
       background-color: transparent;
       color: var(--link-brand-hover);
     }
