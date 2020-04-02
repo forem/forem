@@ -86,6 +86,7 @@
   align-items: center;
   color: var(--header-icons-color);
   outline: 0;
+  transition: background $transition-props;
 
   &:hover,
   &:focus {
@@ -95,9 +96,7 @@
     background: var(--header-bg-hover);
   }
 
-  &--current,
-  &--current:hover,
-  &--current:focus {
+  &--current {
     --indicator-outline: var(--header-bg-current);
 
     color: var(--header-icons-color-hover);
@@ -113,13 +112,11 @@
 
   &__trigger {
     all: unset;
-    display: flex;
     padding: $su-1;
     margin: 0 $su-1;
     border-radius: 50%;
-    align-items: center;
-    cursor: pointer;
     color: var(--header-icons-color);
+    cursor: pointer;
   }
 
   &__dropdown {
