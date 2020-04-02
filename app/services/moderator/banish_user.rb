@@ -21,7 +21,6 @@ module Moderator
       delete_articles
       Users::CleanupChatChannels.call(user)
       user.remove_from_algolia_index
-      user.index_to_elasticsearch
       reassign_and_bust_username
       delete_vomit_reactions
     end

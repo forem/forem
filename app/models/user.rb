@@ -28,7 +28,8 @@ class User < ApplicationRecord
     :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify
   )
 
-  rolify
+  rolify after_add: :index_roles, after_remove: :index_roles
+
   include AlgoliaSearch
   include Storext.model
   include Searchable
@@ -709,5 +710,9 @@ class User < ApplicationRecord
     follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
     follows.destroy_all
+  end
+
+  def index_roles(_role)
+    index_to_elasticsearch_inline
   end
 end
