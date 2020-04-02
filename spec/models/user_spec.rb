@@ -489,6 +489,33 @@ RSpec.describe User, type: :model do
       end
     end
 
+    describe "#send_welcome_notification" do
+      let(:mascot_account) { create(:user) }
+      let!(:set_up_profile_broadcast) { create(:set_up_profile_broadcast) }
+
+      before do
+        allow(described_class).to receive(:mascot_account).and_return(mascot_account)
+      end
+
+      it "sends a setup welcome notification when an active broadcast exists" do
+        new_user = nil
+        sidekiq_perform_enqueued_jobs do
+          new_user = create(:user)
+        end
+        expect(new_user.reload.notifications.count).to eq(1)
+        expect(new_user.reload.notifications.first.notifiable).to eq(set_up_profile_broadcast)
+      end
+
+      it "does not send a setup welcome notification without an active broadcast" do
+        set_up_profile_broadcast.update!(active: false)
+        new_user = nil
+        sidekiq_perform_enqueued_jobs do
+          new_user = create(:user)
+        end
+        expect(new_user.reload.notifications.count).to eq(0)
+      end
+    end
+
     describe "#preferred_languages_array" do
       it "returns proper preferred_languages_array" do
         user = nil

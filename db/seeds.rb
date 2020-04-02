@@ -239,14 +239,6 @@ end
 counter += 1
 Rails.logger.info "#{counter}. Creating Broadcasts and Welcome Thread"
 
-# TODO: [@thepracticaldev/delightful] Remove this once we have launched welcome notifications.
-Broadcast.create!(
-  title: "Welcome Notification",
-  processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.",
-  type_of: "Onboarding",
-  active: true,
-)
-
 broadcast_messages = {
   set_up_profile: "Welcome to DEV! 👋 I'm Sloan, the community mascot and I'm here to help get you started. Let's begin by <a href='/settings'>setting up your profile</a>!",
   welcome_thread: "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
