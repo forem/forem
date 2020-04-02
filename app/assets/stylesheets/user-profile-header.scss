@@ -9,7 +9,7 @@
   width: 1216px;
   max-width: 92%;
   margin: 24px auto;
-  background: var(--container-bg);
+  background: var(--card-bg);
   border-radius: 3px;
   @media screen and (min-width: 950px) {
     max-width: 98%;
@@ -185,7 +185,7 @@
         padding: 0px 0px;
         margin: 0;
         font-style: italic;
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
         width: 94%;
         font-size: 0.9em;
         margin-top: 12px;
@@ -276,7 +276,7 @@
         font-size: 0.7em;
         font-weight: 800;
         margin-bottom: 2px;
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
       .value {
         display: inline-block;
@@ -510,7 +510,7 @@
       right: 3px;
       border: 1px solid $light-medium-gray;
       border-radius: 3px;
-      background: var(--container-bg);
+      background: var(--card-bg);
       z-index: 20;
       width: 200px;
       box-shadow: $shadow;

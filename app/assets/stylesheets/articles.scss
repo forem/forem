@@ -36,7 +36,7 @@
         display: block;
         .side-bar {
           display: block;
-          background: var(--container-bg);
+          background: var(--card-bg);
           height: 100%;
           overflow-y: auto;
         }
@@ -70,7 +70,7 @@
     z-index: 5;
     padding: 16px 0;
     box-sizing: border-box;
-    color: var(--widget-color);
+    color: var(--card-secondary-color);
     &.sidebar-additional {
       display: none;
       &.showing {
@@ -220,11 +220,11 @@
   padding: 5px 0px 15px;
   display: none;
   font-size: 1.1em;
-  background: var(--container-bg);
+  background: var(--card-bg);
   a {
     display: block;
     text-align: center;
-    color: var(--container-color);
+    color: var(--card-color);
     padding: 20px 0px;
     &.selected {
       background: var(--accent-brand-lighter);
@@ -416,7 +416,7 @@
   }
 
   a {
-    color: var(--container-color);
+    color: var(--card-color);
   }
 
   .placeholder-div {
@@ -510,7 +510,7 @@
         theme-container-accent-background,
         darken($light-gray, 6%)
       );
-      color: var(--container-color);
+      color: var(--card-color);
       padding: 8px;
       border-radius: 3px 0 3px 0;
       font-weight: 600;
@@ -599,7 +599,7 @@
       }
     }
     .time-ago-indicator {
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       display: inline-block;
       margin-left: 4px;
       font-weight: 400;
@@ -622,7 +622,7 @@
       text-overflow: ellipsis;
       font-size: 0.8em;
       a {
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
 
       &:hover {
@@ -732,7 +732,7 @@
     bottom: 65px;
     font-size: 0.8em;
     a {
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
     }
     @media screen and (min-width: 450px) {
       font-size: 1em;
@@ -759,7 +759,7 @@
     font-size: 0.7em;
     padding: 6px 0px;
     z-index: 8;
-    color: var(--container-color-tertiary);
+    color: var(--card-color-tertiary);
   }
   .article-engagement-count {
     font-size: 13px;
@@ -772,12 +772,12 @@
     border: 0;
     -webkit-appearance: none;
     font-family: $helvetica-condensed;
-    color: var(--container-color-tertiary);
+    color: var(--card-color-tertiary);
     a {
       &:hover {
         opacity: 1;
       }
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
     }
     img {
       height: 18px;
@@ -875,7 +875,7 @@
   display: flex;
   padding: 8px 16px;
   font-size: 0.8em;
-  color: var(--container-color-tertiary);
+  color: var(--card-color-tertiary);
 
   img {
     height: 50px;
@@ -897,7 +897,7 @@
     }
     padding-top: 0.2em;
     font-weight: 500;
-    color: var(--container-color);
+    color: var(--card-color);
   }
   &:hover {
     @include themeable(
@@ -932,7 +932,7 @@
     width: 27%;
     padding: 9px 0px;
     text-align: center;
-    color: var(--container-color-tertiary);
+    color: var(--card-color-tertiary);
     margin: 1%;
   }
   .query-filter-button {
@@ -945,7 +945,7 @@
     padding: 9px 0px;
     text-align: left;
     border-radius: 100px;
-    color: var(--container-color);
+    color: var(--card-color);
     text-align: center;
     margin: 1%;
 

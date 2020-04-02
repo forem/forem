@@ -1,4 +1,7 @@
 class BadgeAchievement < ApplicationRecord
+  CONTEXT_MESSAGE_ALLOWED_TAGS = %w[strong em i b u a code].freeze
+  CONTEXT_MESSAGE_ALLOWED_ATTRIBUTES = %w[href name].freeze
+
   belongs_to :user
   belongs_to :badge
   belongs_to :rewarder, class_name: "User", optional: true
@@ -7,30 +10,34 @@ class BadgeAchievement < ApplicationRecord
 
   validates :badge_id, uniqueness: { scope: :user_id }
 
+  after_create :award_credits
   after_create_commit :notify_recipient
   after_create_commit :send_email_notification
-  after_create :award_credits
   before_validation :render_rewarding_context_message_html
 
+  private
+
   def render_rewarding_context_message_html
-    return if rewarding_context_message_markdown.blank?
+    return unless rewarding_context_message_markdown
 
     parsed_markdown = MarkdownParser.new(rewarding_context_message_markdown)
     html = parsed_markdown.finalize
-    final_html = ActionController::Base.helpers.sanitize html,
-                                                         tags: %w[strong em i b u a code],
-                                                         attributes: %w[href name]
+    final_html = ActionController::Base.helpers.sanitize(
+      html,
+      tags: CONTEXT_MESSAGE_ALLOWED_TAGS,
+      attributes: CONTEXT_MESSAGE_ALLOWED_ATTRIBUTES,
+    )
+
     self.rewarding_context_message = final_html
   end
-
-  private
 
   def notify_recipient
     Notification.send_new_badge_achievement_notification(self)
   end
 
   def send_email_notification
-    return unless user.class.name == "User" && user.email.present? && user.email_badge_notifications
+    return unless user.is_a?(User)
+    return unless user.email && user.email_badge_notifications
 
     BadgeAchievements::SendEmailNotificationWorker.perform_async(id)
   end

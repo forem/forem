@@ -6,7 +6,7 @@
   font-family: $helvetica;
   margin: 0.95em 0 1.2em;
   position: relative;
-  border: 1px solid var(--container-color-tertiary);
+  border: 1px solid var(--card-color-tertiary);
   box-shadow: $shadow;
   border-radius: 3px;
   @media screen and (min-width: 760px) {
@@ -53,12 +53,12 @@
       display: block;
       width: 100px;
       a {
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
     }
 
     a {
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       line-height: initial;
       align-self: center;
       margin-right: 6px;

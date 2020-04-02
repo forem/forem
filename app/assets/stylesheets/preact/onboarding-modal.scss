@@ -26,7 +26,7 @@
   }
 
   a {
-    color: var(--link-brand-color);
+    color: var(--link-branded-color);
   }
 }
 
@@ -120,7 +120,7 @@
   }
 
   .subtitle {
-    color: var(--container-color-secondary);
+    color: var(--card-color-secondary);
     font-size: $fs-xl;
     font-weight: $fw-medium;
     letter-spacing: normal;
@@ -239,7 +239,7 @@
       }
 
       input[type='checkbox']:checked {
-        background: var(--link-brand-color);
+        background: var(--link-branded-color);
       }
     }
   }
