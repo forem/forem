@@ -286,6 +286,127 @@ a.header-link {
     .field {
       margin-bottom: 0px;
     }
+    .response-templates-container {
+      &.hidden {
+        display: none;
+      }
+      display: flex;
+      width: calc(100% - 52px);
+      max-height: calc(40vh + 80px);
+      margin: 15px auto 2px;
+      flex-direction: column;
+      overflow-y: auto;
+      font-size: 16px;
+      font-family: $helvetica;
+      @include themeable(background, theme-container-accent-background, $light-gray);
+      @include themeable(color, theme-color, $black);
+
+      .loading-img {
+        display: inline-block;
+        margin: 0 auto;
+        width: 75px;
+        &.hidden {
+          display: none;
+        }
+      }
+
+      header>h3 {
+        padding: 18px 12px;
+        margin: 0px;
+        font-size: calc(20px + 0.4vw);
+        text-align: left;
+      }
+      header>button {
+        font-family: $helvetica-condensed;
+        font-stretch: condensed;
+        color: $bold-blue;
+        border: 1px solid $bold-blue;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 5px 0px;
+        border-radius: 3px;
+        background: none;
+        width: 125px;
+        margin: 5px;
+        &.active {
+          background: $bold-blue;
+          color: white;
+        }
+        &.hidden {
+          display: none;
+        }
+      }
+
+      .mod-response-wrapper {
+        text-align: left;
+        padding: 10px;
+        position: relative;
+        @include themeable(background, theme-container-background, white);
+        margin: 5px auto;
+        border-radius: 8px;
+        width: calc(100% - 20px);
+        box-sizing: border-box;
+        span {
+          font-weight: bold;
+          display: block;
+          width: calc(100% - 140px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;  
+        }
+
+        p {
+          font-weight: normal;
+          display: block;
+          width: calc(100% - 140px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin: 0.5em 0;
+          @include themeable(color, theme-secondary-color, $medium-gray);
+        }
+        &.mod-response-wrapper-empty {
+          text-align: center;
+          p {
+            width: 100%;
+            font-size: 1.05em;
+            font-weight: bold;
+            margin: 1.5em 0;
+            @include themeable(color, theme-color, $black);
+          }
+        }
+
+        button {
+          font-family: $helvetica-condensed;
+          font-stretch: condensed;
+          color: white;
+          border: 0px;
+          font-size: 13px;
+          font-weight: 500;
+          margin-top: 3px;
+          padding: 5px 0px;
+          border-radius: 3px;
+          cursor: pointer;
+          margin-right: 10px;
+          background: $bold-blue;
+          position: absolute;
+          top: 5px;
+          right: 0px;
+          width: 125px;
+        }
+        .moderator-submit-button {
+          background: $green;
+          color: $black;
+          top: 36px;
+        }
+      }
+
+      a {
+        text-align: left;
+        padding: 12px;
+        font-weight: bold;
+      }
+    }
     .article-comment-form-preamble {
       font-size: 0.7em;
       margin-left: 20px;
@@ -1132,4 +1253,7 @@ a.header-link {
   p {
     font-style: italic;
   }
+}
+#response-templates-data {
+  display: none;
 }

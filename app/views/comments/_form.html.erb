@@ -1,4 +1,7 @@
-<%= javascript_packs_with_chunks_tag "validateFileInputs", defer: true %>
+<% if user_signed_in? %>
+  <%= javascript_packs_with_chunks_tag "validateFileInputs", "responseTemplates", defer: true %>
+  <div id="response-templates-data"></div>
+<% end %>
 
 <% if @comment.errors.any? %>
   <div id="error_explanation">
@@ -28,6 +31,20 @@
     <%= f.hidden_field :parent_id, value: @parent_comment.id if @parent_comment %>
   <% end %>
   <div class="field" id="textarea-wrapper">
+    <div class="response-templates-container hidden">
+        <header>
+          <button type="button" class="personal-template-button active" data-type="personal" data-fetched="false">PERSONAL</button>
+          <button type="button" class="moderator-template-button hidden" data-type="moderator" data-fetched="false">MODERATOR</button>
+        </header>
+        <img class="loading-img hidden" src="<%= asset_path("loading-ellipsis.svg") %>" alt="loading">
+        <div class="personal-responses-container">
+          <%# filled by JS %>
+        </div>
+        <div class="moderator-responses-container hidden">
+          <%# filled by JS %>
+        </div>
+        <a target="_blank" rel="noopener nofollow" href="<% user_settings_path(tab: "response-templates") %>" class="mod-response-create-new">Create new template</a>
+    </div>
     <%= f.text_area :body_markdown,
                     placeholder: "Add to the discussion",
                     onfocus: "handleFocus(event)",

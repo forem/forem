@@ -36,6 +36,11 @@
   <% end %>
 <% end %>
 
+<% if user_signed_in? %>
+  <div id="response-templates-data" style="display: none;"></div>
+  <%= javascript_packs_with_chunks_tag "responseTemplates", defer: true %>
+<% end %>
+
 <% if @root_comment %>
   <div class="single-comment-header"></div>
 <% else %>
