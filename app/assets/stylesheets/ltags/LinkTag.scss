@@ -80,9 +80,9 @@
       margin-bottom: 0;
       font-weight: bold;
       color: $medium-gray;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       a {
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
     }
     .ltag__link__taglist {
@@ -98,7 +98,7 @@
       margin-left: 1px;
     }
     .ltag__link__servicename {
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       font-size: 0.7em;
       img {
         vertical-align: -5px;

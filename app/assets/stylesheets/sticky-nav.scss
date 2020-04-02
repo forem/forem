@@ -21,7 +21,7 @@
   }
   .primary-sticky-nav-author {
     a {
-      color: var(--container-color);
+      color: var(--card-color);
     }
     .primary-sticky-nav-author-top-profile-image {
       width: 35px;
@@ -40,7 +40,7 @@
     }
     .primary-sticky-nav-author-summary {
       font-weight: 400;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       padding: 10px 0px 5px;
       font-style: italic;
       font-size: 0.88em;
@@ -76,7 +76,7 @@
       vertical-align: -1px;
     }
     a {
-      color: var(--container-color);
+      color: var(--card-color);
       display: inline-block;
     }
   }
@@ -87,13 +87,13 @@
     font-weight: bold;
     @include dev-card;
     margin-left: 10px;
-    color: var(--container-color);
+    color: var(--card-color);
     width: 262px;
     border-radius: 3px;
     .primary-sticky-nav-element-details {
       margin-top: 9px;
       font-size: 0.8em;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
     }
   }
   .user-metadata-details {
@@ -109,7 +109,7 @@
       font-size: 0.8em;
       font-weight: 800;
       margin-bottom: 2px;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
     }
     .value {
       display: inline-block;
@@ -124,7 +124,7 @@
 
 .primary-sticky-nav-org-summary {
   font-weight: 400;
-  color: var(--container-color);
+  color: var(--card-color);
   padding: 4px 0px;
   font-size: 0.95em;
   margin-top: 20px;

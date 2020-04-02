@@ -95,7 +95,7 @@
     padding: 10px 5px;
     a {
       text-decoration: underline;
-      color: var(--link-brand-color);
+      color: var(--link-branded-color);
     }
     @media screen and (min-width: 950px) {
       font-size: 1.4em;
@@ -104,7 +104,7 @@
   }
   .bulk-description {
     text-align: center;
-    color: var(--container-color-tertiary);
+    color: var(--card-color-tertiary);
     padding: 25px 12px;
     font-size: 0.8em;
     @include themeable(
@@ -125,7 +125,7 @@
     margin: 3px auto;
     padding: 10px 0px;
     border: 1px solid $light-gray;
-    background: var(--container-bg);
+    background: var(--card-bg);
     font-weight: bold;
     display: inline-block;
     font-size: 15px;
@@ -153,10 +153,10 @@
     cursor: pointer;
     font-size: 0.8em;
     user-select: none;
-    color: var(--link-brand-color);
+    color: var(--link-branded-color);
     div {
       margin-top: 5px;
-      background: var(--container-bg);
+      background: var(--card-bg);
       padding: 10px 15px;
       border-radius: 8px;
       box-shadow: 0 1px 3px 0 #cfd7df;

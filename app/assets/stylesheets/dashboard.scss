@@ -102,7 +102,7 @@
           theme-container-accent-background,
           $purple
         );
-        color: var(--container-color);
+        color: var(--card-color);
       }
 
       &:not(.active):hover {
@@ -112,7 +112,7 @@
           theme-container-background-hover,
           $light-medium-purple
         );
-        color: var(--container-color);
+        color: var(--card-color);
       }
 
       &:not(:last-child) {
@@ -411,11 +411,11 @@
     .dashboard-meta-details {
       font-size: 0.85em;
       padding: 3px 0px 6px;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
     }
 
     a {
-      color: var(--container-color);
+      color: var(--card-color);
       &.block-link {
         display: block;
       }

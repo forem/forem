@@ -65,7 +65,7 @@ a.header-link {
     max-width: 100%;
     margin: 50px auto 10px;
     padding: 0px 0px 90px;
-    background: var(--container-bg);
+    background: var(--card-bg);
     z-index: 3;
     position: relative;
     @media screen and (min-width: 820px) {
@@ -102,7 +102,7 @@ a.header-link {
       margin: auto;
       margin-bottom: -35px;
       .read-more {
-        color: var(--link-brand-color);
+        color: var(--link-branded-color);
         display: inline-block;
         &:hover {
           opacity: 0.96;
@@ -305,7 +305,7 @@ a.header-link {
       &.preview-loading {
         background: white url(image-src('loading-ellipsis.svg')) no-repeat
           center center;
-        background-color: var(--container-bg);
+        background-color: var(--card-bg);
         color: var(--body-color-inverted);
         background-size: 50px;
       }
@@ -319,7 +319,7 @@ a.header-link {
       text-align: left;
       font-size: 19px;
       font-family: $helvetica;
-      background: var(--container-bg);
+      background: var(--card-bg);
       box-shadow: $shadow;
       width: calc(100% - 80px);
       margin: 19px auto 8px;
@@ -386,7 +386,7 @@ a.header-link {
       text-align: right;
       font-size: 0.9em;
       font-weight: 500;
-      color: var(--link-brand-color);
+      color: var(--link-branded-color);
       &.sub-comment-code-of-conduct {
         font-size: 1em;
       }
@@ -396,7 +396,7 @@ a.header-link {
         margin: 5px 0px;
       }
       a {
-        color: var(--link-brand-color);
+        color: var(--link-branded-color);
       }
     }
     input[type='submit'] {
@@ -483,7 +483,7 @@ a.header-link {
     .root-comment {
       margin-top: -80px;
       .comment-parent-link {
-        background: var(--container-bg);
+        background: var(--card-bg);
         @include themeable(
           border,
           theme-container-border,
@@ -758,7 +758,7 @@ a.header-link {
   .details {
     padding: 0px;
     border-top-left-radius: 3px;
-    color: var(--link-brand-color);
+    color: var(--link-branded-color);
     position: relative;
     .comment-date {
       border: none;
@@ -768,7 +768,7 @@ a.header-link {
       font-size: 12px;
       text-align: right;
       a {
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
     }
     .dropbtn {
@@ -1067,7 +1067,7 @@ a.header-link {
   .inner-comment {
     padding: 0px;
     border: 1px solid $light-medium-gray;
-    background: var(--container-bg);
+    background: var(--card-bg);
     &.comment-created-via-fetch {
       animation: comment-create 1.2s;
       .body {
