@@ -2,7 +2,6 @@
 title: Testing/QA Guide
 items:
   - acceptance-tests.md
-  - approvals-tests.md
   - integration-tests.md
   - unit-functional-tests.md
   - frontend-tests.md

@@ -39,14 +39,9 @@ class PartnershipsController < ApplicationController
       sponsorable: sponsorable,
     )
 
-    Slack::Messengers::Sponsorship.call(
-      user: current_user,
-      organization: @organization,
-      level: @level,
-      tag: @tag,
-    )
+    slackbot_ping(tag_sponsorship)
 
-    redirect_back(fallback_location: partnerships_path)
+    redirect_back(fallback_location: "/partnerships")
   end
 
   private
@@ -85,5 +80,20 @@ class PartnershipsController < ApplicationController
         cost: cost,
       )
     end
+  end
+
+  def slackbot_ping(tag_sponsorship)
+    text = if tag_sponsorship
+             "@#{current_user.username} bought a ##{@tag.name} sponsorship for @#{@organization.username}"
+           else
+             "@#{current_user.username} bought a #{@level} sponsorship for @#{@organization.username}"
+           end
+
+    SlackBot.ping(
+      text,
+      channel: "incoming-partners",
+      username: "media_sponsor",
+      icon_emoji: ":partyparrot:",
+    )
   end
 end

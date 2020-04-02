@@ -1,7 +1,7 @@
 @import 'variables';
 .ltag__link__link {
   color: $black !important;
-  color: var(--body-color) !important;
+  color: var(--theme-color, $black) !important;
   &:active {
     opacity: 0.7;
   }
@@ -80,9 +80,10 @@
       margin-bottom: 0;
       font-weight: bold;
       color: $medium-gray;
-      color: var(--card-color-tertiary);
+      color: var(--theme-secondary-color, $medium-gray);
       a {
-        color: var(--card-color-tertiary);
+        color: $medium-gray;
+        color: var(--theme-secondary-color, $black);
       }
     }
     .ltag__link__taglist {
@@ -98,7 +99,8 @@
       margin-left: 1px;
     }
     .ltag__link__servicename {
-      color: var(--card-color-tertiary);
+      color: $medium-gray;
+      color: var(--theme-secondary-color, $medium-gray);
       font-size: 0.7em;
       img {
         vertical-align: -5px;

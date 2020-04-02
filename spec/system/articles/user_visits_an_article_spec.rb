@@ -52,7 +52,6 @@ RSpec.describe "Views an article", type: :system do
     context "with regular articles" do
       it "lists the articles in ascending published_at order" do
         articles = create_list(:article, 2)
-        articles.first.update(published_at: 1.week.ago)
         articles.each { |a| a.update_columns(collection_id: collection.id) }
 
         visit articles.first.path

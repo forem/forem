@@ -1,10 +1,6 @@
 class Internal::ArticlesController < Internal::ApplicationController
   layout "internal"
 
-  after_action only: [:update] do
-    Audit::Logger.log(:moderator, current_user, params.dup)
-  end
-
   def index
     @pending_buffer_updates = BufferUpdate.where(status: "pending").includes(:article)
 

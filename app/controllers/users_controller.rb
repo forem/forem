@@ -143,10 +143,8 @@ class UsersController < ApplicationController
 
   def onboarding_update
     if params[:user]
-      sanitize_user_params
       permitted_params = %i[summary location employment_title employer_name last_onboarding_page]
       current_user.assign_attributes(params[:user].permit(permitted_params))
-      current_user.profile_updated_at = Time.current
     end
     current_user.saw_onboarding = true
     authorize User
@@ -243,18 +241,12 @@ class UsersController < ApplicationController
       handle_pro_membership_tab
     when "account"
       handle_account_tab
-    when "response-templates"
-      handle_response_templates_tab
     else
       not_found unless @tab_list.map { |t| t.downcase.tr(" ", "-") }.include? @tab
     end
   end
 
   private
-
-  def sanitize_user_params
-    params[:user].delete_if { |_k, v| v.blank? }
-  end
 
   def render_update_response
     if current_user.save
@@ -313,11 +305,6 @@ class UsersController < ApplicationController
       %0A
       YOUR-DEV-USERNAME-HERE
     HEREDOC
-  end
-
-  def handle_response_templates_tab
-    @response_templates = current_user.response_templates
-    @response_template = ResponseTemplate.find_or_initialize_by(id: params[:id], user: current_user)
   end
 
   def set_user

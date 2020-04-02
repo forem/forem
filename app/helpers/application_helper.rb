@@ -146,12 +146,8 @@ module ApplicationHelper
     end
   end
 
-  def community_name
-    @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
-  end
-
   def community_qualified_name
-    "#{community_name} Community"
+    "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
   end
 
   def cache_key_heroku_slug(path)
@@ -159,15 +155,6 @@ module ApplicationHelper
     return path if heroku_slug_commit.blank?
 
     "#{path}-#{heroku_slug_commit}"
-  end
-
-  def copyright_notice
-    start_year = ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"]
-    current_year = Time.current.year.to_s
-    return start_year if current_year == start_year
-    return current_year if start_year.strip.length.zero?
-
-    "#{start_year} - #{current_year}"
   end
 
   # Creates an app internal URL
@@ -179,18 +166,9 @@ module ApplicationHelper
   # @example Add a path
   #  app_url("internal") #=> "https://dev.to/internal"
   def app_url(uri = nil)
-    URL.url(uri)
-  end
+    base_url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+    return base_url unless uri
 
-  def tag_url(tag, page)
-    URL.tag(tag, page)
-  end
-
-  def article_url(article)
-    URL.article(article)
-  end
-
-  def user_url(user)
-    URL.user(user)
+    URI.parse(base_url).merge(uri).to_s
   end
 end

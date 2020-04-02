@@ -6,26 +6,22 @@
     {
       "title": "Repo",
       "href": "https://github.com/thepracticaldev/dev.to",
-      "target": "_blank",
-      "rel": "noopener noreferrer nofollow"
+      "target": "_blank"
     },
     {
       "title": "DEV",
       "href": "https://dev.to",
-      "target": "_blank",
-      "rel": "noopener noreferrer nofollow"
+      "target": "_blank"
     },
     {
       "title": "Ruby doc",
       "href": "http://docs.dev.to/ruby-doc",
-      "target": "_blank",
-      "rel": "noopener noreferrer nofollow"
+      "target": "_blank"
     },
     {
       "title": "API doc",
       "href": "http://docs.dev.to/api",
-      "target": "_blank",
-      "rel": "noopener noreferrer nofollow"
+      "target": "_blank"
     }
   ]
 }

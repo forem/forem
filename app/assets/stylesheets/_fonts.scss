@@ -19,3 +19,8 @@
   font-family: OpenDyslexic-Italic;
   @include font-src('OpenDyslexic-Italic.otf');
 }
+
+button {
+  font-family: OpenDyslexic-Italic;
+  background-color: red;
+}

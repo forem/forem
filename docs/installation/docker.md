@@ -2,9 +2,10 @@
 title: Docker
 ---
 
-# Installing DEV with Docker
+# Installing DEV with Docker [Beta]
 
-If you encounter any errors with our Docker setup, please kindly
+Our docker implementation is incomplete and may not work smoothly. Please,
+kindly
 [report any issues](https://github.com/thepracticaldev/dev.to/issues/new/choose)!
 
 ## Installing prerequisites
@@ -50,23 +51,28 @@ well.
      GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
      ```
 
+   - Update the redis url variables by adding the following lines into
+     `config/application.yml`:
+
+     ```shell
+      REDIS_URL: "redis://redis:6379"
+      REDIS_SESSIONS_URL: "redis://redis:6379"
+     ```
+
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-## Running the Docker app via docker-compose (recommended)
+## Running the Docker app (basic)
 
 _Docker compose will by default use postgres:9.6 as the database version, should
 you want to update that set the `POSTGRES_VERSION` variable in your environment
 and start the container again_
 
-1. Run `bin/docker-setup`
-2. That's it! Navigate to <http://localhost:3000>
-
-The script executes the following steps:
-
-1. `docker-compose build`
-2. `docker-compose run web rails db:setup db:migrate search:setup`
-3. `docker-compose up`
+1. run `docker-compose build`
+1. run `docker-compose run web rails db:setup`
+1. run `docker-compose run web rails search:setup`
+1. run `docker-compose up`
+1. That's it! Navigate to <http://localhost:3000>
 
 ## Running the Docker app (advanced)
 

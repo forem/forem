@@ -13,7 +13,7 @@ import FollowUsers from '../components/FollowUsers';
 global.fetch = fetch;
 
 function flushPromises() {
-  return new Promise((resolve) => setImmediate(resolve));
+  return new Promise(resolve => setImmediate(resolve));
 }
 
 function initializeSlides(currentSlide, dataUser = null, mockData = null) {
@@ -284,19 +284,18 @@ describe('<Onboarding />', () => {
     });
 
     test('should render three tags', async () => {
-      expect(onboardingSlides.find('.onboarding-tags__item').length).toBe(3);
+      expect(onboardingSlides.find('.tag').length).toBe(3);
     });
 
     test('should allow a user to add a tag', async () => {
       fetch.once({});
       const followTags = onboardingSlides.find(<FollowTags />);
-      const firstButton = onboardingSlides
-        .find('.onboarding-tags__button')
-        .first();
 
-      firstButton.simulate('click');
+      onboardingSlides
+        .find('.tag')
+        .first()
+        .simulate('click');
       expect(followTags.state('selectedTags').length).toBe(1);
-
       onboardingSlides.find('.next-button').simulate('click');
       fetch.once(fakeUsersResponse);
       await flushPromises();
@@ -329,7 +328,10 @@ describe('<Onboarding />', () => {
       fetch.once({});
       const followUsers = onboardingSlides.find(<FollowUsers />);
 
-      onboardingSlides.find('.user').first().simulate('click');
+      onboardingSlides
+        .find('.user')
+        .first()
+        .simulate('click');
       expect(followUsers.state('selectedUsers').length).toBe(2);
       onboardingSlides.find('.next-button').simulate('click');
       await flushPromises();

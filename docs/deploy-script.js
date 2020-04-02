@@ -1,5 +1,5 @@
 const exec = require('child_process').exec;
-const subdomain = process.env.subdomain;
+const subdomain = process.env.URL;
 
 let buildCommand;
 switch (subdomain) {
@@ -10,7 +10,7 @@ switch (subdomain) {
     buildCommand = 'cd .. && npm install && npm run build-storybook';
     break;
   default:
-    throw `Subdomain ${subdomain} is invalid`;
+    throw `Domain ${subdomain} is invalid`;
 }
 
 async function execute(command) {

@@ -32,12 +32,6 @@ module.exports = {
       },
     ],
     'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
-    'import/no-unresolved': [
-      'error',
-      {
-        ignore: ['@crayons'],
-      },
-    ],
   },
   globals: {
     getCsrfToken: false,

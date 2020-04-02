@@ -34,7 +34,7 @@
     display: inline-block;
     width: fit-content;
     margin-bottom: 10px;
-    color: var(--body-color);
+    @include themeable(color, theme-color, $black);
     @include themeable(
       background,
       theme-container-background,
@@ -86,7 +86,7 @@
       flex-grow: 1;
       flex-shrink: 0;
       width: 100%;
-      color: var(--body-color);
+      @include themeable(color, theme-color, $black);
       padding: 10px 0px;
       border-radius: 3px;
       min-width: 115px;
@@ -102,7 +102,7 @@
           theme-container-accent-background,
           $purple
         );
-        color: var(--card-color);
+        @include themeable(color, theme-container-color, $black);
       }
 
       &:not(.active):hover {
@@ -112,7 +112,7 @@
           theme-container-background-hover,
           $light-medium-purple
         );
-        color: var(--card-color);
+        @include themeable(color, theme-container-color, $black);
       }
 
       &:not(:last-child) {
@@ -398,7 +398,7 @@
           theme-container-accent-background,
           darken($light-gray, 6%)
         );
-        color: var(--body-color);
+        @include themeable(color, theme-color, $black);
         margin-right: 5px;
         padding: 3px 10px;
         border-radius: 100px;
@@ -411,11 +411,11 @@
     .dashboard-meta-details {
       font-size: 0.85em;
       padding: 3px 0px 6px;
-      color: var(--card-color-tertiary);
+      @include themeable(color, theme-secondary-color, $medium-gray);
     }
 
     a {
-      color: var(--card-color);
+      @include themeable(color, theme-container-color, $black);
       &.block-link {
         display: block;
       }

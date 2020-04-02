@@ -16,8 +16,8 @@ class SlackBotPingWorker
     # Double check for any nil values
     return unless message && channel && username && icon_emoji
 
-    Slack::Announcer.call(
-      message: message,
+    SlackBot.ping(
+      message,
       channel: channel,
       username: username,
       icon_emoji: icon_emoji,

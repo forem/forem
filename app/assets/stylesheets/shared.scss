@@ -1,6 +1,4 @@
-@import 'config/import';
 @import 'variables';
-
 #audiocontent {
   position: fixed;
   bottom: 0px;
@@ -191,10 +189,9 @@
   position: fixed;
   top: 0;
   left: -20%;
-  background: var(--accent-brand);
-  box-shadow: 0 -2px $su-1 var(--accent-brand);
+  background: $green;
   z-index: 100;
-  height: $su-1;
+  height: 43px;
   width: 0%;
   &.showing {
     display: block;

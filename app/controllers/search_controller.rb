@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-  before_action :authenticate_user!, only: %i[tags chat_channels]
+  before_action :authenticate_user!
   before_action :format_integer_params
   before_action :sanitize_params, only: %i[classified_listings]
 
@@ -53,34 +53,18 @@ class SearchController < ApplicationController
   end
 
   def users
-    render json: { result: user_search }
+    user_docs = Search::User.search_documents(params: user_params.to_h)
+
+    render json: { result: user_docs }
   end
 
   def feed_content
-    feed_docs = if params[:class_name].blank?
-                  # If we are in the main feed and not filtering by type return
-                  # all articles, podcast episodes, and users
-                  feed_content_search.concat(user_search)
-                elsif params[:class_name] == "User"
-                  # No need to check for articles or podcast episodes if we know we only want users
-                  user_search
-                else
-                  # if params[:class_name] == PodcastEpisode or Article then skip user lookup
-                  feed_content_search
-                end
+    feed_docs = Search::FeedContent.search_documents(params: feed_params.to_h)
 
     render json: { result: feed_docs }
   end
 
   private
-
-  def feed_content_search
-    Search::FeedContent.search_documents(params: feed_params.to_h)
-  end
-
-  def user_search
-    Search::User.search_documents(params: user_params.to_h)
-  end
 
   def chat_channel_params
     accessible = %i[

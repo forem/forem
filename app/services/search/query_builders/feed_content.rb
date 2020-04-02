@@ -19,8 +19,7 @@ module Search
         tag_names: "tags.name",
         approved: "approved",
         user_id: "user.id",
-        class_name: "class_name",
-        published: "published"
+        class_name: "class_name"
       }.freeze
 
       RANGE_KEYS = %i[
@@ -37,31 +36,10 @@ module Search
         body_text
       ].freeze
 
-      SOURCE = %i[
-        id
-        class_name
-        comments_count
-        flare_tag_hash
-        main_image
-        path
-        positive_reactions_count
-        published_at
-        readable_publish_date_string
-        reading_time
-        slug
-        tags
-        title
-        user
-      ].freeze
-
       attr_accessor :params, :body
 
       def initialize(params)
         @params = params.deep_symbolize_keys
-
-        # Default to only showing published articles to start
-        @params[:published] = true
-
         build_body
       end
 
@@ -72,13 +50,9 @@ module Search
         HIGHLIGHT_FIELDS.each do |field_name|
           # This hash can be filled with options to further customize our highlighting
           # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting
-          highlight_fields[:fields][field_name] = { order: :score, number_of_fragments: 2, fragment_size: 75 }
+          highlight_fields[:fields][field_name] = { order: :score }
         end
         @body[:highlight] = highlight_fields
-      end
-
-      def filter_source
-        @body[:_source] = SOURCE
       end
 
       def build_queries

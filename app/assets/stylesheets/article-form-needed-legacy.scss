@@ -1,6 +1,10 @@
 @import 'variables';
 @import 'mixins';
 
+.hidden {
+  display: none;
+}
+
 .job-listing-header {
   color: #007777;
   background: #bafff1;
@@ -205,6 +209,25 @@
     }
   }
 
+  .org-publish-check-wrapper {
+    font-family: $helvetica;
+    @include themeable(background, theme-background, $lightest-gray);
+    padding: 20px 14px;
+    text-align: center;
+    font-size: 24px;
+    line-height: 33px;
+    margin-top: 8px;
+
+    label {
+      padding: 1px 10px 3px;
+    }
+
+    input {
+      vertical-align: 2px;
+      max-width: 30px;
+    }
+  }
+
   .editor-main {
     margin-top: 15px;
     position: relative;
@@ -315,8 +338,8 @@
     padding: 12px 15px 18px;
     font-family: 'Lucida Console', Monaco, monospace, sans-serif;
     font-size: 17px;
-    background: var(--card-bg);
-    color: var(--body-color);
+    @include themeable(background, theme-container-background, white);
+    @include themeable(color, theme-color, $black);
 
     &::placeholder {
       color: #8f949c;

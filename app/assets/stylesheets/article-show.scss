@@ -1,6 +1,10 @@
 @import 'variables';
 @import 'mixins';
 
+.stories-show {
+  @include themeable(background, theme-background, $lightest-gray);
+}
+
 .unpublished {
   background: $red;
   display: block;
@@ -116,7 +120,7 @@ article {
     margin: auto;
 
     .org-branded-title-link {
-      color: var(--card-color-secondary);
+      @include themeable(color, theme-color, lighten($black, 4%));
       .org-branded-title {
         font-size: calc(0.9em + 0.3vw);
         padding: 8px 0 6px;
@@ -191,7 +195,7 @@ article {
       padding: 0;
       padding: 0 3px 16px;
       font-weight: 500;
-      color: var(--card-color-tertiary);
+      @include themeable(color, theme-secondary-color, $medium-gray);
       font-size: 13.5px;
       line-height: 1.8em;
 
@@ -210,7 +214,7 @@ article {
       }
 
       a {
-        color: var(--card-color-tertiary);
+        @include themeable(color, theme-secondary-color, $medium-gray);
         text-decoration: none;
       }
 
@@ -304,7 +308,7 @@ article {
       position: relative;
       z-index: 8;
       a {
-        color: var(--body-color);
+        @include themeable(color, theme-color, $black);
         padding: calc(0.1vw + 9px);
         display: block;
         position: relative;
@@ -319,9 +323,20 @@ article {
           border-bottom-right-radius: 5px;
         }
 
+        &:hover {
+          @include themeable(
+            background,
+            theme-series-article-hover,
+            $lightest-gray
+          );
+        }
+
         &.current-article {
-          background: var(--accent-brand-lighter);
-          color: var(--body-color-inverted);
+          @include themeable(
+            background,
+            theme-series-article-background,
+            lighten($sky-blue, 21%)
+          );
         }
 
         &.coming-soon {
@@ -350,7 +365,7 @@ article {
       'Book Antiqua', Georgia, serif;
     font-size: 21px;
     line-height: 32px;
-    background: var(--card-bg);
+    @include themeable(background, theme-container-background, #fff);
     position: relative;
     z-index: 5;
     padding: 5px 0px;
@@ -407,7 +422,7 @@ article {
       opacity: 0.1;
       border-width: 1px;
       border-style: solid;
-      border-color: var(--body-color);
+      @include themeable(border-color, theme-color, $black);
       margin: 1.3em auto 1.5em;
     }
 
@@ -463,7 +478,7 @@ article {
       text-align: center;
       font-size: 0.8em;
       line-height: 1.4em;
-      color: var(--body-color);
+      @include themeable(color, theme-color, darken($medium-gray, 8%));
       display: block;
     }
 
@@ -538,9 +553,10 @@ article {
 
     code {
       margin: auto;
-      background: rgba(0, 0, 0, 0.1);
+      @include themeable(background, theme-code-background, $lightest-gray);
       padding: 0.1em 0.3em 0;
       border-radius: 2px;
+      @include themeable(color, theme-code-color, #333842);
       font-size: 0.84em;
       vertical-align: 0;
       max-width: 100%;
@@ -653,7 +669,7 @@ article {
       th {
         border: 1px solid $light-medium-gray;
         padding: 5px 1vw;
-        background: var(--body-bg);
+        @include themeable(background, theme-background, $lightest-gray);
         text-align: left;
       }
 
@@ -675,11 +691,11 @@ article {
     position: relative;
     overflow: hidden;
     padding: 0px 0px 5px;
-    background: var(--card-bg);
+    @include themeable(background, theme-container-background, white);
     font-family: $helvetica;
 
     a {
-      color: var(--body-color);
+      @include themeable(color, theme-color, $black);
     }
 
     @media screen and (min-width: 520px) {
@@ -745,9 +761,24 @@ article {
         font-size: 0.85em;
 
         a {
-          color: var(--card-color-tertiary);
+          @include themeable(color, theme-secondary-color, $medium-gray);
           margin-right: 6px;
           display: inline-block;
+
+          .icon-img {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            vertical-align: -2px;
+            margin: 0;
+            opacity: 0.7;
+            background: transparent;
+            @include themeable(
+              background,
+              theme-social-icon-color,
+              transparent
+            );
+          }
         }
       }
     }
@@ -761,6 +792,7 @@ article {
     z-index: 22;
     width: 100%;
     @include themeable(background, theme-container-background, $tan);
+    @include themeable(border, theme-container-border, none);
     @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
 
     @media screen and (min-width: 950px) {
@@ -918,7 +950,11 @@ article {
         padding: 4px;
         border-radius: 100px;
         transition: box-shadow 0.18s;
-        background: var(--card-bg);
+        @include themeable(
+          background,
+          theme-reaction-background,
+          darken($light-gray, 3%)
+        );
         @media screen and (min-width: 500px) {
           height: 26px;
           width: 26px;
@@ -939,7 +975,8 @@ article {
       }
       &:hover {
         img {
-          box-shadow: 0px 0px 0px 2px var(--accent-brand-lighter);
+          box-shadow: 0px 0px 0px 2px
+            var(--theme-container-accent-background, $purple);
         }
       }
 
@@ -948,7 +985,7 @@ article {
         vertical-align: 6px;
         margin-left: 5px;
         vertical-align: 10px;
-        color: var(--card-color-tertiary);
+        @include themeable(color, theme-secondary-color, $medium-gray);
         font-size: 13px;
         width: 27px;
 
@@ -1043,7 +1080,7 @@ article {
         right: 0;
         left: 0;
         z-index: 100;
-        background: var(--header-bg);
+        @include themeable(background, theme-top-bar-background, $tan);
         font-size: 1em;
         text-align: left;
         min-width: 300px;
@@ -1095,11 +1132,18 @@ article {
 
           a {
             font-weight: bold;
-            color: var(--body-color);
+            @include themeable(color, theme-color, $black);
             padding: 12px 18px;
             width: calc(100% - 36px);
             display: block;
             font-size: 0.8em;
+            &:hover {
+              @include themeable(
+                background,
+                theme-top-bar-background-hover,
+                $light-gray
+              );
+            }
           }
 
           &.notification-subscriptions-area-row {
@@ -1124,6 +1168,11 @@ article {
               background,
               theme-container-background,
               darken($tan, 3%)
+            );
+            @include themeable-important(
+              border-bottom,
+              theme-subtle-border,
+              1px solid $light-medium-gray
             );
             button.notification-subscription-label {
               display: inline-block;
@@ -1153,7 +1202,14 @@ article {
             padding-left: 13px !important;
             margin: auto !important;
             cursor: pointer !important;
-            color: var(--body-color);
+            @include themeable-important(color, theme-color, $black);
+            &:hover {
+              @include themeable-important(
+                background,
+                theme-top-bar-background-hover,
+                $light-gray
+              );
+            }
             .selected-emoji {
               visibility: hidden;
               margin-left: 4px;
@@ -1165,7 +1221,7 @@ article {
                 display: inline-block;
                 visibility: visible;
               }
-              color: var(--body-color);
+              @include themeable-important(color, theme-color, $black);
             }
           }
         }
@@ -1175,7 +1231,7 @@ article {
     .article-actions-comments-count {
       display: none;
       position: relative;
-      color: var(--card-color-tertiary);
+      @include themeable(color, theme-secondary-color, $medium-gray);
       font-weight: bold;
       font-size: calc(0.8em + 0.1vw);
       vertical-align: calc(7px - 0.07vw);
@@ -1259,6 +1315,9 @@ article {
   .container {
     .article-actions {
       padding: 4px 0 0;
+
+      border-bottom: 1px solid $tan;
+      border-bottom: 1px solid var(--theme-background, $tan);
       border-top: 1px solid rgba(0, 0, 0, 0.33);
       transition: padding 0.33s;
 
@@ -1338,7 +1397,7 @@ article {
   padding-bottom: 20px;
 
   a {
-    color: var(--body-color);
+    @include themeable(color, theme-color, $black);
   }
 
   .inner {

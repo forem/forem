@@ -45,7 +45,7 @@
                 @include themeable(color, theme-color, rgba($black, 0.8));
 
                 &:hover {
-                  color: var(--body-color);
+                  @include themeable(color, theme-color, $black);
                 }
               }
             }
@@ -87,14 +87,14 @@
 
     .write {
       margin: 8px -16px;
-      background: var(--button-primary-bg);
-      color: var(--button-primary-color);
+      @include themeable(background, theme-top-bar-write-background, #1ab3a6);
+      @include themeable(color, theme-opposite-color, white);
     }
 
     .all-stories {
       @include themeable(border, theme-border, 2px solid $outline-color);
-      color: var(--body-color);
-      background: var(--base-inverted);
+      @include themeable(color, theme-color, $black);
+      @include themeable(background, theme-opposite-color, white);
     }
   }
 }

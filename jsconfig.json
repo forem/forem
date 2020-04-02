@@ -1,9 +1,0 @@
-{
-  "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "@crayons/*": ["app/javascript/crayons/*"]
-    }
-  },
-  "exclude": ["node_modules", "**/node_modules/*"]
-}

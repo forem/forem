@@ -127,7 +127,6 @@ A more complete overview of our stack is available in
 - [@juliannatetreault](https://dev.to/juliannatetreault)
 - [@ridhwana](https://dev.to/ridhwana)
 - [@fdoxyz](https://dev.to/fdoxyz)
-- [@msarit](https://dev.to/msarit)
 
 ## Vulnerability disclosure
 

@@ -5,10 +5,6 @@ class Comment < ApplicationRecord
   has_ancestry
   resourcify
   include Reactable
-  include Searchable
-
-  SEARCH_SERIALIZER = Search::CommentSerializer
-  SEARCH_CLASS = Search::FeedContent
 
   belongs_to :commentable, polymorphic: true, optional: true
   counter_culture :commentable
@@ -39,8 +35,6 @@ class Comment < ApplicationRecord
   after_create_commit :send_email_notification, if: :should_send_email_notification?
   after_create_commit :create_first_reaction
   after_create_commit :send_to_moderator
-  after_commit :index_to_elasticsearch, on: %i[create update]
-  after_commit :remove_from_elasticsearch, on: [:destroy]
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :remove_notifications, if: :deleted
@@ -52,10 +46,6 @@ class Comment < ApplicationRecord
 
   def self.tree_for(commentable, limit = 0)
     commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
-  end
-
-  def search_id
-    "comment_#{id}"
   end
 
   def path

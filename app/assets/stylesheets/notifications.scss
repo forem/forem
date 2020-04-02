@@ -52,13 +52,6 @@
               font-weight: 500;
             }
           }
-          &.broadcast-content {
-            .opt-out {
-              padding-top: 24px;
-              font-size: 12px;
-              font-style: italic;
-            }
-          }
           &.reaction-content {
             width: calc(100% - 145px);
           }
@@ -99,12 +92,12 @@
             p.badge-reward-message {
               margin: 8px auto;
               width: 90%;
-              color: var(--body-color);
+              @include themeable(color, theme-color, $black);
             }
             p.badge-credit-message {
               margin: 8px auto;
               width: 100%;
-              color: var(--body-color);
+              @include themeable(color, theme-color, $dark-gray);
               font-size: 0.94em;
               line-height: 1.35em;
               strong a {
@@ -150,6 +143,7 @@
             max-width: 100%;
             display: inline-block;
             margin-bottom: 3px;
+            @include themeable-important(color, theme-color, $black);
             &:hover {
               @include themeable(
                 background,
@@ -164,7 +158,7 @@
             margin-top: 10px;
             border: 1px solid lighten($dark-gray, 18%);
             border-radius: 3px;
-            color: var(--body-color);
+            @include themeable(color, theme-color, $black);
             position: relative;
             .notification-new-post-title {
               font-size: 1.7em;
@@ -197,7 +191,7 @@
           margin-top: 10px;
           border: 1px solid lighten($dark-gray, 18%);
           border-radius: 3px;
-          color: var(--body-color);
+          @include themeable(color, theme-color, $black);
           position: relative;
           .comment-text-header {
             display: block;
@@ -234,7 +228,7 @@
             font-size: 1.2em;
           }
           p {
-            color: var(--body-color);
+            @include themeable(color, theme-color, $black);
             width: 99%;
             padding: 0;
             margin-left: 0;
@@ -392,8 +386,8 @@
               theme-container-background,
               1px solid rgb(232, 229, 229)
             );
-            background: var(--card-bg);
-            color: var(--body-color);
+            @include themeable(background, theme-container-background, #fff);
+            @include themeable(color, theme-color, $black);
           }
           input[type='submit'] {
             margin-right: 15px;

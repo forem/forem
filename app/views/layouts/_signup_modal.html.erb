@@ -6,12 +6,12 @@
   </div>
   <div class="global-signup-modal--inner-a">
     <%= image_tag(cloudinary(SiteConfig.mascot_image_url, 300), class: "mascot-image", alt: "Sloan, the sloth mascot", loading: "lazy") %>
-    <h1>Join our <%= community_qualified_name %> :)</h1>
+    <h1>Join our <%= ApplicationConfig["COMMUNITY_NAME"] %> Community :)</h1>
     <p>
       <%= SiteConfig.tagline %>
     </p>
     <% if SiteConfig.auth_allowed?("twitter") %>
-      <a href="/users/auth/twitter?callback_url=<%= app_url %>/users/auth/twitter/callback" class="sign-up-link cta" data-no-instant>
+      <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link cta" data-no-instant>
         <img src="<%= asset_path("twitter-logo.svg") %>" class="icon-img" alt="Twitter logo" /> Auth With Twitter
       </a>
     <% end %>

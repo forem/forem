@@ -6,7 +6,8 @@
   font-family: $helvetica;
   margin: 0.95em 0 1.2em;
   position: relative;
-  border: 1px solid var(--card-color-tertiary);
+  border: 1px solid $light-medium-gray;
+  border: 1px solid var(--theme-color, $light-medium-gray);
   box-shadow: $shadow;
   border-radius: 3px;
   @media screen and (min-width: 760px) {
@@ -53,12 +54,14 @@
       display: block;
       width: 100px;
       a {
-        color: var(--card-color-tertiary);
+        color: $medium-gray;
+        color: var(--theme-secondary-color, $medium-gray);
       }
     }
 
     a {
-      color: var(--card-color-tertiary);
+      color: lighten($dark-gray, 3%);
+      color: var(--theme-secondary-color, lighten($dark-gray, 3%));
       line-height: initial;
       align-self: center;
       margin-right: 6px;
@@ -74,7 +77,7 @@
   .body {
     font-family: $helvetica;
     color: $black;
-    color: var(--body-color);
+    color: var(--theme-color, $black);
     font-size: 0.95em;
     line-height: 1.35em;
     overflow: hidden;
@@ -168,7 +171,7 @@
       margin: auto;
       white-space: nowrap;
       background: $lightest-gray;
-      background: var(--body-bg);
+      background: var(--theme-background, $lightest-gray);
       padding: 1px 5px 0px;
       border-radius: 2px;
       color: #333842;

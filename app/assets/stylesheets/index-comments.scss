@@ -3,7 +3,7 @@
 .index-comments {
   text-align: left;
   padding-bottom: calc(0.6vw + 5px);
-  background: var(--card-bg);
+  @include themeable(background, theme-container-background, #fff);
   border-radius: 3px;
   @include themeable(border, theme-container-border, none);
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
@@ -38,7 +38,7 @@
     }
   }
   a {
-    color: var(--body-color);
+    @include themeable(color, theme-color, $black);
     display: block;
     padding-left: 13px;
     padding-right: 13px;
@@ -53,14 +53,14 @@
     }
     .comment-date {
       font-size: 0.7em;
-      color: var(--card-color-tertiary);
+      @include themeable(color, theme-secondary-color, $medium-gray);
       margin-left: 5px;
       vertical-align: 2px;
       display: inline-block;
     }
     .comment-preview {
       font-size: 0.9em;
-      color: var(--card-color-tertiary);
+      @include themeable(color, theme-secondary-color, $medium-gray);
     }
     @media screen and (min-width: 430px) {
       padding: 5px 0px;

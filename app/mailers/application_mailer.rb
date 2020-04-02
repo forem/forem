@@ -1,6 +1,5 @@
 class ApplicationMailer < ActionMailer::Base
   layout "mailer"
-  helper ApplicationHelper
 
   default(
     from: -> { "DEV Community <#{SiteConfig.default_site_email}>" },

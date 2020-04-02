@@ -27,7 +27,7 @@ footer {
       }
     }
     a {
-      color: var(--body-color);
+      @include themeable(color, theme-color, $black);
       display: inline-block;
       margin-right: 12px;
       &:hover {

@@ -27,7 +27,7 @@
         theme-container-accent-background,
         lighten($light-gray, 2%)
       );
-      color: var(--body-color);
+      @include themeable(color, theme-color, $black);
     }
 
     .filters-header {
@@ -38,7 +38,7 @@
         font-size: 0.9em;
         font-family: $monospace;
         text-decoration: underline;
-        color: var(--card-color-tertiary);
+        @include themeable(color, theme-secondary-color, $medium-gray);
       }
       .filters-header-action {
         font-size: 0.8em;
@@ -54,7 +54,7 @@
         padding: 5px 0px;
         position: relative;
         padding-left: 5px;
-        color: var(--body-color);
+        @include themeable(color, theme-color, $black);
 
         &:hover {
           @include themeable(
@@ -125,13 +125,13 @@
           border-radius: 3px;
           background: transparent;
           border: 1px solid $black;
-          color: var(--card-color-tertiary);
+          @include themeable(color, theme-secondary-color, $medium-gray);
           @include themeable(border-color, theme-secondary-color, $medium-gray);
         }
       }
 
       .item {
-        color: var(--body-color);
+        @include themeable(color, theme-color, $black);
         font-size: 0.8em;
         padding: 17px 17px 25px;
         @include themeable(
@@ -149,7 +149,7 @@
         .item-details {
           a {
             display: inline-block;
-            color: var(--card-color-tertiary);
+            @include themeable(color, theme-secondary-color, $medium-gray);
 
             &.item-user {
               margin-right: 5px;

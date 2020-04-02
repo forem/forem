@@ -1,4 +1,3 @@
-# TODO: [@thepracticaldev/oss] remove this when Sidekiq has exhausted these workers
 class RateLimitCheckerWorker
   include Sidekiq::Worker
   sidekiq_options queue: :default, retry: 10

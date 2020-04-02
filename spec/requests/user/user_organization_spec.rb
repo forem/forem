@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "UserOrganization", type: :request do
   let(:user)          { create(:user) }
-  let(:organization)  { create(:organization, secret: "SECRET") }
+  let(:organization)  { create(:organization, secret: "SECRET", approved: true) }
 
   context "when joining an org" do
     before { sign_in user }

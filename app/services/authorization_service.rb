@@ -111,6 +111,11 @@ class AuthorizationService
   end
 
   def flag_spam_user(user)
-    Slack::Messengers::PotentialSpammer.call(user: user)
+    SlackBot.ping(
+      "Potential spam user! https://dev.to/#{user.username}",
+      channel: "potential-spam",
+      username: "spam_account_checker_bot",
+      icon_emoji: ":exclamation:",
+    )
   end
 end

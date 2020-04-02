@@ -3,18 +3,16 @@ import PropTypes from 'prop-types';
 
 const Navigation = ({ next, prev, hideNext, hidePrev }) => (
   <nav className="onboarding-navigation">
-    <div className="navigation-content">
-      {!hidePrev && (
-        <button onClick={prev} className="back-button" type="button">
-          Back
-        </button>
-      )}
-      {!hideNext && (
-        <button onClick={next} className="next-button" type="button">
-          Continue
-        </button>
-      )}
-    </div>
+    {!hidePrev && (
+      <button onClick={prev} className="back-button" type="button">
+        BACK
+      </button>
+    )}
+    {!hideNext && (
+      <button onClick={next} className="next-button" type="button">
+        Continue
+      </button>
+    )}
   </nav>
 );
 

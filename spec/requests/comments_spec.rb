@@ -3,10 +3,31 @@ require "requests/shared_examples/comment_hide_or_unhide_request"
 
 RSpec.describe "Comments", type: :request do
   let(:user) { create(:user) }
-  let(:article) { create(:article, user: user) }
+  let(:article) { create(:article, user_id: user.id) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
-  let!(:comment) { create(:comment, commentable: article, user: user) }
+  let(:base_comment_params) do
+    {
+      comment: {
+        commentable_id: article.id,
+        commentable_type: "Article",
+        user_id: user.id,
+        body_markdown: "New comment #{rand(10)}"
+      }
+    }
+  end
+  let!(:comment) do
+    create(:comment,
+           commentable_id: article.id,
+           commentable_type: "Article",
+           user_id: user.id)
+  end
+  let(:podcast_comment) do
+    create(:comment,
+           commentable_id: podcast_episode.id,
+           commentable_type: "PodcastEpisode",
+           user_id: user.id)
+  end
 
   describe "GET comment index" do
     it "returns 200" do
@@ -45,7 +66,7 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the comment is a child comment" do
-      let(:child) { create(:comment, parent: comment, commentable: article, user: user) }
+      let(:child) { create(:comment, parent_id: comment.id, commentable: article, user_id: user.id) }
 
       it "displays proper button and text for child comment" do
         get child.path
@@ -62,10 +83,8 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the comment is two levels nested and hidden" do # child of a child
-      let(:child) { create(:comment, parent: comment, commentable: article, user: user) }
-      let(:child_of_child) do
-        create(:comment, parent_id: child.id, commentable: article, user: user, hidden_by_commentable_user: true)
-      end
+      let(:child) { create(:comment, parent_id: comment.id, commentable: article, user_id: user.id) }
+      let(:child_of_child) { create(:comment, parent_id: child.id, commentable: article, user_id: user.id, hidden_by_commentable_user: true) }
 
       it "does not display the hidden comment in the child's permalink" do
         get child.path
@@ -79,10 +98,8 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the comment is a sibling of a child comment and is hidden" do
-      let(:child) { create(:comment, parent: comment, commentable: article, user: user) }
-      let(:sibling) do
-        create(:comment, parent: comment, commentable: article, user: user, hidden_by_commentable_user: true)
-      end
+      let(:child) { create(:comment, parent_id: comment.id, commentable: article, user_id: user.id) }
+      let(:sibling) { create(:comment, parent_id: comment.id, commentable: article, user_id: user.id, hidden_by_commentable_user: true) }
 
       it "does not display the hidden comment in the article's comments section" do
         get "#{article.path}/comments"
@@ -107,14 +124,10 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the comment is three levels nested and hidden" do # child of a child of a child
-      let(:child) { create(:comment, parent: comment, commentable: article, user: user) }
-      let(:second_level_child) { create(:comment, parent: child, commentable: article, user: user) }
-      let(:third_level_child) do
-        create(:comment, parent: second_level_child, commentable: article, user: user, hidden_by_commentable_user: true)
-      end
-      let(:fourth_level_child) do
-        create(:comment, parent_id: third_level_child.id, commentable: article, user: user)
-      end
+      let(:child) { create(:comment, parent_id: comment.id, commentable: article, user_id: user.id) }
+      let(:second_level_child) { create(:comment, parent_id: child.id, commentable: article, user_id: user.id) }
+      let(:third_level_child) { create(:comment, parent_id: second_level_child.id, commentable: article, user_id: user.id, hidden_by_commentable_user: true) }
+      let(:fourth_level_child) { create(:comment, parent_id: third_level_child.id, commentable: article, user_id: user.id) }
 
       it "does not show the hidden comment in the article's comments section" do
         get "#{article.path}/comments"
@@ -152,8 +165,6 @@ RSpec.describe "Comments", type: :request do
 
     context "when the comment is for a podcast's episode" do
       it "works" do
-        podcast_comment = create(:comment, commentable: podcast_episode, user: user)
-
         get podcast_comment.path
         expect(response).to have_http_status(:ok)
       end
@@ -172,22 +183,24 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the article is deleted" do
-      it "index action renders deleted_commentable_comment view" do
-        article = create(:article)
-        comment = create(:comment, commentable: article)
-
+      before do
+        comment
         article.destroy
+      end
 
+      it "index action renders deleted_commentable_comment view" do
         get comment.path
         expect(response.body).to include("Comment from a deleted article or podcast")
       end
     end
 
-    context "when the podcast episode is deleted" do
-      it "renders deleted_commentable_comment view" do
-        podcast_comment = create(:comment, commentable: podcast_episode)
+    context "when the podcast is deleted" do
+      before do
+        podcast_comment
         podcast_episode.destroy
+      end
 
+      it "renders deleted_commentable_comment view" do
         get podcast_comment.path
         expect(response.body).to include("Comment from a deleted article or podcast")
       end
@@ -222,14 +235,11 @@ RSpec.describe "Comments", type: :request do
     context "when the article is deleted" do
       before do
         sign_in user
+        comment
+        article.destroy
       end
 
       it "edit action returns 200" do
-        article = create(:article, user: user)
-        comment = create(:comment, commentable: article, user: user)
-
-        article.destroy
-
         get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
         expect(response).to have_http_status(:ok)
       end
@@ -250,15 +260,14 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the article is deleted" do
-      it "updates body markdown" do
-        article = create(:article, user: user)
-        comment = create(:comment, commentable: article, user: user)
-
+      before do
+        comment
         article.destroy
+      end
 
-        params = { comment: { body_markdown: "{edited comment}" } }
-        put "/comments/#{comment.id}", params: params
-
+      it "updates body markdown" do
+        put "/comments/#{comment.id}",
+            params: { comment: { body_markdown: "{edited comment}" } }
         comment.reload
         expect(comment.processed_html).to include("edited comment")
       end
@@ -292,17 +301,6 @@ RSpec.describe "Comments", type: :request do
   end
 
   describe "POST /comments" do
-    let(:base_comment_params) do
-      {
-        comment: {
-          commentable_id: article.id,
-          commentable_type: "Article",
-          user: user,
-          body_markdown: "New comment #{rand(10)}"
-        }
-      }
-    end
-
     context "when part of field test" do
       before do
         sign_in user
@@ -311,9 +309,7 @@ RSpec.describe "Comments", type: :request do
 
       it "converts field test" do
         post "/comments", params: base_comment_params
-
-        expected_args = [user.id, :user_home_feed, "user_creates_comment"]
-        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(*expected_args)
+        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_creates_comment")
       end
     end
   end
@@ -327,11 +323,6 @@ RSpec.describe "Comments", type: :request do
   end
 
   describe "DELETE /comments/:comment_id" do
-    # we're using local article and comments, to avoid removing data used by other tests,
-    # which will incur in ordering issues
-    let!(:article) { create(:article, user: user) }
-    let!(:comment) { create(:comment, commentable: article, user: user) }
-
     before { sign_in user }
 
     it "deletes a comment if the article is still present" do

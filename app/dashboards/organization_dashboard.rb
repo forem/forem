@@ -19,11 +19,19 @@ class OrganizationDashboard < Administrate::BaseDashboard
     url: Field::String,
     twitter_username: Field::String,
     github_username: Field::String,
+    jobs_url: Field::String,
+    jobs_email: Field::String,
+    address: Field::String,
+    city: Field::String,
+    state: Field::String,
+    zip_code: Field::String,
     bg_color_hex: Field::String,
     text_color_hex: Field::String,
+    country: Field::String,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
     users: Field::HasMany,
+    approved: Field::Boolean,
     cta_button_text: Field::String,
     cta_button_url: Field::String,
     cta_body_markdown: Field::Text
@@ -39,6 +47,7 @@ class OrganizationDashboard < Administrate::BaseDashboard
     name
     url
     twitter_username
+    approved
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -61,6 +70,14 @@ class OrganizationDashboard < Administrate::BaseDashboard
     text_color_hex
     twitter_username
     github_username
+    jobs_url
+    jobs_email
+    address
+    city
+    state
+    zip_code
+    country
+    approved
     cta_button_text
     cta_button_url
     cta_body_markdown

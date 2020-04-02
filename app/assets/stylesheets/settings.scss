@@ -1,11 +1,8 @@
 @import 'variables';
 @import 'mixins';
 @import 'functions';
-$input-width: 650px;
 
 #page-content.users-edit,
-#page-content.chat_channel_memberships-edit,
-#page-content.chat_channel_memberships-index,
 #page-content.users-update,
 #page-content.users-confirm_destroy,
 #page-content.organizations-create,
@@ -14,25 +11,18 @@ $input-width: 650px;
   #notice {
     background: $green;
     color: black;
-    padding: 40px 15px 40px;
+    padding: 40px 0px 40px;
     text-align: center;
     position: relative;
     top: 0;
     left: 0;
     right: 0;
-    font-weight: 700;
-    font-size: 1.05em;
     &.error-notice {
       background: rgba(255, 80, 80, 0.7);
       color: white;
     }
   }
   .user-settings-page {
-    h1,
-    h3,
-    p {
-      margin: 10px 0 !important;
-    }
     width: 900px;
     max-width: 94%;
     margin: 0 auto;
@@ -94,7 +84,7 @@ $input-width: 650px;
         padding-left: 5px;
         width: 100%;
         display: inline-block;
-        color: var(--body-color);
+        @include themeable(color, theme-color, $black);
         &.selected {
           @include themeable(
             background,
@@ -257,7 +247,7 @@ $input-width: 650px;
     }
     form {
       input {
-        width: $input-width;
+        width: 650px;
         max-width: calc(100% - 30px);
         padding: 12px;
         font-size: 19px;
@@ -284,7 +274,7 @@ $input-width: 650px;
       select {
         display: block;
         font-size: 19px;
-        width: $input-width;
+        width: 650px;
         max-width: calc(100% - 4px);
         padding: 12px;
         border: 1px solid rgb(222, 230, 233);
@@ -304,7 +294,7 @@ $input-width: 650px;
         cursor: pointer;
         &.danger-button {
           background-color: #b30000;
-          color: $white;
+          color: $off-white;
         }
         &:disabled {
           background-color: $light-medium-gray;
@@ -340,7 +330,7 @@ $input-width: 650px;
       }
       textarea {
         border: 1px solid rgb(222, 230, 233);
-        width: $input-width;
+        width: 550px;
         max-width: calc(100% - 30px);
         padding: 12px;
         border-radius: 3px;
@@ -348,27 +338,6 @@ $input-width: 650px;
         font-size: 16px;
         resize: none;
       }
-    }
-    %inline-button-form {
-      display: inline-block;
-      input[type='submit'] {
-        display: inline-block;
-        font-size: 17px;
-        border: 0px;
-        border-radius: 100px;
-        padding: 2px 10px;
-        width: auto;
-        margin: 0px;
-        margin-left: 5px;
-        color: white;
-        background: $black;
-      }
-    }
-    .inline-button-form {
-      @extend %inline-button-form;
-    }
-    .inline-button-form-hidden {
-      display: none;
     }
     h2 {
       font-size: calc(40px + 1vw);
@@ -432,8 +401,8 @@ $input-width: 650px;
       width: 70%;
     }
     .single-app-integration {
-      background: var(--card-bg);
-      border: 1px solid var(--card-color-tertiary);
+      @include themeable(background, theme-container-background, #fff);
+      @include themeable(border, theme-border, 1px solid $light-medium-gray);
       border-radius: 8px;
       padding: 10px;
       h2 {
@@ -442,7 +411,7 @@ $input-width: 650px;
         font-size: 1.5em;
       }
       sup {
-        color: var(--card-color-tertiary);
+        @include themeable(color, theme-secondary-color, $medium-gray);
       }
       img {
         height: 1em;
@@ -530,7 +499,7 @@ $input-width: 650px;
 .github-repos {
   max-height: 400px;
   overflow-y: auto;
-  background: var(--card-bg);
+  @include themeable(background, theme-container-background, #fff);
   box-shadow: $shadow;
   &.loading-repos {
     height: 400px;
@@ -542,7 +511,7 @@ $input-width: 650px;
     height: 400px;
   }
   .github-repo-row {
-    background: var(--card-bg);
+    @include themeable(background, theme-container-background, #fff);
     padding: 12px;
     margin: 5px 0px;
     transition: all 0.6s ease;
@@ -559,13 +528,8 @@ $input-width: 650px;
     }
     .github-repo-row-name {
       font-weight: bold;
-      form {
-        display: block;
-        float: right;
-      }
-      button,
-      a[role='button'] {
-        transition: all 0.4s ease;
+      button {
+        transition: all 0.6s ease;
         cursor: pointer;
         font-size: 1.2em;
         font-weight: bold;
@@ -580,9 +544,6 @@ $input-width: 650px;
         &:hover,
         &:focus {
           background: $green;
-          &.danger-button {
-            background: $red;
-          }
         }
         &:disabled {
           cursor: wait;
@@ -590,19 +551,23 @@ $input-width: 650px;
             center center;
           background-size: 75px;
         }
-        a {
-          color: $black;
-        }
       }
-      &.response-template-row-name {
-        button,
-        a[role='button'] {
-          width: 80px;
-          margin-left: 2.5px;
-          margin-right: 2.5px;
-          text-align: center;
-        }
-      }
+    }
+    .github-repo-fork {
+      margin-left: 5px;
+      font-weight: 400;
+      background: $purple;
+      color: $bold-blue;
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-size: 0.9em;
+    }
+    .github-repo-featured-indicator {
+      display: inline-block;
+      float: right;
+      background: $green;
+      color: white;
+      border: 0px;
     }
   }
 }
@@ -706,31 +671,6 @@ $input-width: 650px;
   }
 }
 
-.settings-form-userlist {
-  .settings-form-userlistrow {
-    font-size: 18px;
-    padding: 6px 0px;
-    min-height: 33px;
-    display: block;
-    @include themeable(color, theme-color, $black);
-    a {
-      @include themeable(color, theme-color, $black);
-    }
-    img {
-      height: 1.5em;
-      width: 1.5em;
-      border-radius: 100px;
-      vertical-align: -0.25em;
-      margin-right: 0.25em;
-    }
-    &:hover {
-      .inline-button-form-hidden {
-        @extend %inline-button-form;
-      }
-    }
-  }
-}
-
 .signout_confirm-wrapper {
   padding: calc(15% + 50px) 2% 30%;
   text-align: center;
@@ -757,7 +697,7 @@ ul.delete__account {
 
 .api__secret {
   &__container {
-    background-color: $white;
+    background-color: $off-white;
     height: 6.5rem;
     margin: 0.5rem 0;
     padding: 0.5rem;
@@ -810,7 +750,7 @@ ul.delete__account {
   align-items: center;
   justify-content: space-between;
   flex-flow: row wrap;
-  background: var(--card-bg);
+  @include themeable(background, theme-container-accent-background, $off-white);
   border-radius: 5px;
   border: 1px solid $light-medium-gray;
   padding: 0.5rem 0 0.8rem 0.5rem;
@@ -840,15 +780,4 @@ ul.delete__account {
 
 .membership-purchase-link {
   font-size: 2rem;
-}
-
-#page-content.chat_channel_memberships-edit,
-#page-content.chat_channel_memberships-index {
-  #page-content-inner {
-    margin-top: 40px;
-  }
-  .notice {
-    margin-top: -40px;
-    margin-bottom: 20px;
-  }
 }

@@ -23,10 +23,8 @@
 <% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
   <div class="api__secret__container">
     <div class="api__secret__desc">
-      <details>
-        <summary class="title"><%= api_secret.description %></summary>
-        <p class="content"><%= api_secret.secret %></p>
-      </details>
+      <p class="title"><%= api_secret.description %></p>
+      <p class="content"><%= api_secret.secret %></p>
       <p class="subtitle">Created <%= api_secret.created_at.to_date.to_s %></p>
     </div>
 

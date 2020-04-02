@@ -5,8 +5,8 @@
 @import 'fonts';
 
 body {
-  background: var(--body-bg);
-  color: var(--body-color);
+  @include themeable(background, theme-background, $lightest-gray);
+  @include themeable(color, theme-color, $black);
   font-family: $ff-default;
   padding: 0;
   margin: 0;
@@ -66,7 +66,7 @@ body {
 }
 
 a {
-  color: var(--link-branded-color);
+  @include themeable(color, theme-anchor-color, $sky-blue);
   text-decoration: none;
   &:hover {
     opacity: 0.9;
@@ -101,18 +101,6 @@ pre {
     background: #29292e;
     color: #eff0f9;
     white-space: pre;
-  }
-}
-
-.cta {
-  color: $black;
-  background: $green;
-  font-family: $helvetica-condensed;
-  -webkit-appearance: none;
-  font-stretch: condensed;
-  font-weight: bold;
-  &.cta-danger {
-    background: $red;
   }
 }
 
@@ -174,12 +162,13 @@ body.static-navbar-config {
   }
 }
 
+.pro-visible-block,
 .trusted-visible-block {
   display: none !important;
 }
 
 body.trusted-status-true .trusted-visible-block {
-  display: flex !important;
+  display: block !important;
 }
 
 body.hidden-shell {

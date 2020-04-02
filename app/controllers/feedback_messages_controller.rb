@@ -4,37 +4,66 @@ class FeedbackMessagesController < ApplicationController
 
   def create
     flash.clear
-
-    params = feedback_message_params.merge(reporter_id: current_user&.id)
-    @feedback_message = FeedbackMessage.new(params)
-
+    @feedback_message = FeedbackMessage.new(
+      feedback_message_params.merge(reporter_id: current_user&.id),
+    )
     if recaptcha_verified? && @feedback_message.save
-      Slack::Messengers::Feedback.call(
-        user: current_user,
-        type: feedback_message_params[:feedback_type],
-        category: feedback_message_params[:category],
-        reported_url: feedback_message_params[:reported_url],
-        message: feedback_message_params[:message],
-      )
-
-      redirect_to feedback_messages_path
+      send_slack_message
+      redirect_to "/feedback_messages"
     else
-      @previous_message = feedback_message_params[:message]
-
       flash[:notice] = "Make sure the forms are filled 🤖"
-      render "pages/report-abuse"
+      @previous_message = feedback_message_params[:message]
+      render "pages/report-abuse.html.erb"
     end
   end
 
   private
 
   def recaptcha_verified?
-    recaptcha_params = { secret_key: ApplicationConfig["RECAPTCHA_SECRET"] }
-    params["g-recaptcha-response"] && verify_recaptcha(recaptcha_params)
+    params["g-recaptcha-response"] &&
+      verify_recaptcha(secret_key: ApplicationConfig["RECAPTCHA_SECRET"])
+  end
+
+  def send_slack_message
+    SlackBot.ping(
+      generate_message,
+      channel: feedback_message_params[:feedback_type],
+      username: "#{feedback_message_params[:feedback_type]}_bot",
+      icon_emoji: ":#{emoji_for_feedback(feedback_message_params[:feedback_type])}:",
+    )
+  end
+
+  def generate_message
+    <<~HEREDOC
+      #{generate_user_detail}
+      Category: #{feedback_message_params[:category]}
+      Internal Report: https://#{ApplicationConfig['APP_DOMAIN']}/internal/reports
+      *_ Reported URL: #{feedback_message_params[:reported_url]} _*
+      -----
+      *Message:* #{feedback_message_params[:message]}
+    HEREDOC
+  end
+
+  def generate_user_detail
+    return "*Anonymous report:*" unless current_user
+
+    <<~HEREDOC
+      *Logged in user:*
+      reporter: #{current_user.username} - https://#{ApplicationConfig['APP_DOMAIN']}/#{current_user.username}
+      email: <mailto:#{current_user.email}|#{current_user.email}>
+    HEREDOC
+  end
+
+  def emoji_for_feedback(feedback_type)
+    case feedback_type
+    when "abuse-reports"
+      "cry"
+    else
+      "robot_face"
+    end
   end
 
   def feedback_message_params
-    allowed_params = %i[message feedback_type category reported_url]
-    params.require(:feedback_message).permit(allowed_params)
+    params[:feedback_message].permit(:message, :feedback_type, :category, :reported_url)
   end
 end

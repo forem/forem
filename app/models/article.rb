@@ -8,7 +8,6 @@ class Article < ApplicationRecord
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
-  REACTION_INDEXED_FIELDS = %w[body_markdown published tag_list title].freeze
 
   acts_as_taggable_on :tags
   resourcify
@@ -20,6 +19,7 @@ class Article < ApplicationRecord
   delegate :username, to: :user, prefix: true
 
   belongs_to :user
+  belongs_to :job_opportunity, optional: true
   belongs_to :organization, optional: true
   # touch: true was removed because when an article is updated, the associated collection
   # is touched along with all its articles(including this one). This causes eventually a deadlock.
@@ -75,45 +75,29 @@ class Article < ApplicationRecord
   after_save :notify_slack_channel_about_publication, if: -> { published && published_at > 30.seconds.ago }
 
   after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
-  after_update_commit :update_reading_list_reactions, if: proc { |article|
-    REACTION_INDEXED_FIELDS.any? { |field| article.saved_changes[field] } && reactions.readinglist.any?
-  }
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   before_destroy :before_destroy_actions, prepend: true
 
+  serialize :ids_for_suggested_articles
   serialize :cached_user
   serialize :cached_organization
 
   scope :published, -> { where(published: true) }
   scope :unpublished, -> { where(published: false) }
 
-  scope :admin_published_with, lambda { |tag_name|
-    published.
-      where(user_id: SiteConfig.staff_user_id).
-      order(published_at: :desc).
-      tagged_with(tag_name)
-  }
-
-  scope :user_published_with, lambda { |user_id, tag_name|
-    published.
-      where(user_id: user_id).
-      order(published_at: :desc).
-      tagged_with(tag_name)
-  }
-
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
   scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
   scope :active_help, lambda {
-    published.
-      cached_tagged_with("help").
-      order(created_at: :desc).
-      where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
-  }
+                        published.
+                          cached_tagged_with("help").
+                          order("created_at DESC").
+                          where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
+                      }
 
   scope :limited_column_select, lambda {
     select(:path, :title, :id, :published,
@@ -288,14 +272,6 @@ class Article < ApplicationRecord
     "article_#{id}"
   end
 
-  def update_reading_list_reactions
-    if published
-      reactions.readinglist.find_each(&:index_to_elasticsearch)
-    elsif saved_changes["published"]
-      reactions.readinglist.find_each(&:remove_from_elasticsearch)
-    end
-  end
-
   def processed_description
     text_portion = body_text.present? ? body_text[0..100].tr("\n", " ").strip.to_s : ""
     text_portion = text_portion.strip + "..." if body_text.size > 100
@@ -316,7 +292,6 @@ class Article < ApplicationRecord
   def touch_by_reaction
     async_score_calc
     index!
-    index_to_elasticsearch
   end
 
   def comments_blob
@@ -543,6 +518,7 @@ class Article < ApplicationRecord
     self.description = front_matter["description"] if front_matter["description"].present? || front_matter["title"].present? # Do this if frontmatte exists at all
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
+    self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
   end
 
   def determine_image(front_matter)
@@ -599,9 +575,9 @@ class Article < ApplicationRecord
   end
 
   def past_or_present_date
-    return unless published_at && published_at > Time.current
-
-    errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
+    if published_at && published_at > Time.current
+      errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
+    end
   end
 
   def canonical_url_must_not_have_spaces
@@ -637,9 +613,9 @@ class Article < ApplicationRecord
       self.cached_organization = OpenStruct.new(set_cached_object(organization))
     end
 
-    return unless user
-
-    self.cached_user = OpenStruct.new(set_cached_object(user))
+    if user
+      self.cached_user = OpenStruct.new(set_cached_object(user))
+    end
   end
 
   def set_cached_object(object)

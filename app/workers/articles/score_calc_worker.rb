@@ -10,7 +10,6 @@ module Articles
 
       article.update_score
       article.index!
-      article.index_to_elasticsearch_inline
     end
   end
 end

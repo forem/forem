@@ -9,7 +9,6 @@ import { getContentOfToken } from '../utilities';
 const setupFormTextField = ({
   labelText = '',
   entityName = '',
-  placeholderText = '',
   onChangeCallback,
 }) => {
   return (
@@ -19,7 +18,6 @@ const setupFormTextField = ({
         type="text"
         name={entityName}
         id={entityName}
-        placeholder={placeholderText}
         onChange={onChangeCallback}
         maxLength="60"
       />
@@ -101,32 +99,27 @@ class PersonalInfoForm extends Component {
     const { prev } = this.props;
     return (
       <div className="onboarding-main">
-        <Navigation prev={prev} next={this.onSubmit} />
-        <div className="onboarding-content">
-          <header className="onboarding-content-header">
-            <h1 className="title">About You</h1>
-          </header>
+        <div className="onboarding-content about">
+          <h2>About You!</h2>
           <form>
             {setupFormTextField({
               labelText: 'Where are you located?',
               entityName: 'location',
-              placeholderText: 'e.g. New York, NY',
               onChangeCallback: this.handleChange,
             })}
             {setupFormTextField({
               labelText: 'What is your title?',
               entityName: 'employment_title',
-              placeholderText: 'e.g. Software Engineer',
               onChangeCallback: this.handleChange,
             })}
             {setupFormTextField({
               labelText: 'Where do you work?',
               entityName: 'employer_name',
-              placeholderText: 'e.g. Company name, self-employed, etc.',
               onChangeCallback: this.handleChange,
             })}
           </form>
         </div>
+        <Navigation prev={prev} next={this.onSubmit} />
       </div>
     );
   }
@@ -135,7 +128,6 @@ class PersonalInfoForm extends Component {
 setupFormTextField.propTypes = {
   labelText: PropTypes.string.isRequired,
   entityName: PropTypes.string.isRequired,
-  placeholderText: PropTypes.string.isRequired,
   onChangeCallback: PropTypes.func.isRequired,
 };
 

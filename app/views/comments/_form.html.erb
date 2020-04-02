@@ -1,5 +1,3 @@
-<%= javascript_packs_with_chunks_tag "validateFileInputs", defer: true %>
-
 <% if @comment.errors.any? %>
   <div id="error_explanation">
     <h2><%= pluralize(@comment.errors.count, "error") %> prohibited this comment from being saved:</h2>

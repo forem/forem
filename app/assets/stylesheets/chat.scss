@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'connect/_channel-details';
 @import 'mixins';
 
 // High level classes
@@ -139,8 +140,8 @@
   padding: 8px;
   font-size: 14px;
   -webkit-appearance: none;
-  background: var(--card-bg);
-  color: var(--body-color);
+  @include themeable(background, theme-container-background, white);
+  @include themeable(color, theme-color, $black);
 
   @media screen and (min-width: 1000px) {
     width: calc(100% - 13px);
@@ -172,7 +173,7 @@
 }
 
 .chat__channeltypefilterbutton--active {
-  color: var(--link-branded-color);
+  @include themeable(color, theme-anchor-color, darken($sky-blue, 5%));
 
   @media screen and (min-width: 1300px) {
     border: 1px solid darken($light-medium-gray, 5%);
@@ -192,7 +193,7 @@
   padding: 3px 12px;
   display: inline-block;
   border-radius: 3px;
-  background: var(--body-bg);
+  @include themeable(background, theme-background, $lightest-gray);
   border: 1px solid $light-medium-gray;
   font-weight: bold;
   cursor: default;
@@ -308,7 +309,7 @@
   top: 0;
   padding: 80px 7%;
   z-index: 10;
-  background: var(--body-bg);
+  @include themeable(background, theme-background, white);
 }
 
 .chatNonChatView_exitbutton {
@@ -319,7 +320,7 @@
   background: transparent;
   border: 0px;
   font-size: 1.8em;
-  color: var(--body-color);
+  @include themeable(color, theme-color, $black);
 }
 
 .chatNonChatView_contentblock {
@@ -388,7 +389,7 @@
   justify-content: space-between;
   @include themeable(border, theme-container-border, 1px solid $outline-color);
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-  background: var(--card-bg);
+  @include themeable(background, theme-container-background, white);
   flex-flow: row nowrap;
 }
 
@@ -430,7 +431,7 @@
   position: relative;
 
   a {
-    color: var(--body-color);
+    @include themeable(color, theme-color, $black);
   }
 
   .activechatchannel__channelconfig {
@@ -514,7 +515,7 @@
     min-width: 45%;
   }
   -webkit-overflow-scrolling: touch;
-  background: var(--body-bg);
+  @include themeable(background, theme-background, $lightest-gray);
   z-index: 200;
   position: relative;
   box-sizing: border-box;
@@ -554,7 +555,7 @@
 .activechatchannel__activecontentexitbutton {
   border: 0px;
   font-size: 30px;
-  color: var(--card-color-tertiary);
+  @include themeable(color, theme-container-color, $medium-gray);
   padding: 0px;
   background: transparent;
   position: absolute;
@@ -644,19 +645,54 @@
   }
 }
 
-.chat__channelinvitationsindicator a {
-  background: linear-gradient(10deg, darken($green, 25%), darken($green, 15%));
+.activecontent__githubrepo {
+}
+
+.activecontent__githubrepoheader {
+  padding-left: 30px;
+  padding-bottom: 3px;
+  min-height: 30px;
+  margin-top: -9px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9em;
+}
+
+.activecontent__githubrepofiles {
+  border-bottom: 1px solid $light-medium-gray;
+  font-size: 0.8em;
+  overflow: auto;
+
+  &.activecontent__githubrepofiles--root {
+    height: 280px;
+    max-height: 40vh;
+  }
+}
+
+.activecontent__githubreporeadme {
+  font-size: 0.8em;
+
+  img {
+    max-width: 100%;
+  }
+}
+
+.activecontent__githubrepofilerow {
+  padding: 4px 2px;
+  border-top: 1px solid $light-medium-gray;
+}
+
+.chat__channelinvitationsindicator button {
+  background: $green;
   text-align: center;
-  padding: 30px 0px;
+  padding: 10px 0px;
   display: block;
   border-radius: 3px;
   margin: 3px 0px;
   border: 0px;
-  width: 94%;
-  color: white;
-  font-size: 1.1em;
-  font-weight: 700;
-  -webkit-appearance: unset;
+  width: 93%;
+  font-size: 0.9em;
 }
 
 .chatchannels {
@@ -674,7 +710,7 @@
   padding: 3px 0px;
   margin-bottom: -5px 0;
   box-sizing: border-box;
-  color: var(--body-color);
+  @include themeable(color, theme-color, $black);
 
   &:hover {
     .chatchanneltab--inactive {
@@ -707,7 +743,7 @@
 }
 
 .chatchanneltab--active {
-  background: var(--card-bg);
+  @include themeable(background, theme-container-background, white);
   border: 1px solid $dark-purple;
   box-shadow: 3px 3px 0px $dark-purple;
 }
@@ -738,7 +774,6 @@
     &.chatchanneltabindicatordirectimage {
       border: 2px solid $light-medium-gray;
       border-radius: 100px;
-      background: white;
     }
   }
 
@@ -794,7 +829,7 @@
   bottom: -14px;
   left: 0;
   right: 0;
-  background: var(--body-bg);
+  @include themeable(background, theme-background, $lightest-gray);
   border-top: 1px solid $light-medium-gray;
   padding: 8px 10px 20px;
   font-weight: bold;
@@ -857,6 +892,9 @@
       );
     }
   }
+}
+.invert-channel-image {
+  filter: var(--theme-invert-image, none);
 }
 .chatmessage__profileimage {
 }
@@ -950,8 +988,8 @@
   }
 
   a h1 {
-    color: var(--card-color);
-    border-color: var(--card-color);
+    @include themeable(color, theme-container-color, $black);
+    @include themeable-important(border-color, theme-container-color, #0a0a0a);
   }
 
   img {
@@ -982,9 +1020,9 @@
   resize: none;
   flex-grow: 1;
   height: 42px;
-  background: var(--card-bg);
+  @include themeable(background, theme-container-background, white);
   @include themeable(border, theme-border, 1px solid $outline-color);
-  color: var(--body-color);
+  @include themeable(color, theme-color, $black);
 }
 
 .messagecomposer__submit {
@@ -1067,8 +1105,8 @@
   position: absolute;
   bottom: 12px;
   right: 8px;
-  background: var(--body-bg);
-  color: var(--body-color);
+  background: var(--theme-background, #f5f6f7);
+  color: var(--theme-color, $black);
   border: 2px solid $black;
   padding: 7px 15px;
   border-radius: 20px;
@@ -1114,7 +1152,7 @@
   max-width: 670px;
   padding: 0px;
   margin-bottom: 6px;
-  background: var(--card-bg);
+  @include themeable(background, theme-container-background, white);
   .chatchannels__richlinkmainimage {
     position: relative;
     width: 100%;
@@ -1134,14 +1172,14 @@
       vertical-align: -0.25em;
       &.chatchannels__richlinkprofilepic {
         border-radius: 100px;
-        border: 1px solid var(--card-color-tertiary);
+        @include themeable(border, theme-border, 1px solid $light-medium-gray);
       }
     }
   }
   h4 {
     margin-top: -12px;
     margin-bottom: 15px;
-    color: var(--card-color-tertiary);
+    @include themeable(color, theme-secondary-color, $medium-gray);
     font-weight: 500;
     padding: 0px calc(10px + 0.2vw);
     img {
@@ -1149,7 +1187,7 @@
       width: 22px;
       border-radius: 100px;
       margin-right: 3px;
-      border: 1px solid var(--card-color-tertiary);
+      @include themeable(border, theme-border, 1px solid $light-medium-gray);
       vertical-align: -6px;
     }
   }
@@ -1176,8 +1214,8 @@
   transform: translate(-50%, -50%);
   padding: 1em;
   border: 2px solid;
-  background: var(--body-bg);
-  color: var(--body-color);
+  background: var(--theme-background, #f5f6f7);
+  color: var(--theme-color, $black);
 }
 
 .modal__content h3 {
@@ -1192,7 +1230,7 @@
 }
 
 .delete__action__buttons div {
-  border: 2px solid var(--body-color);
+  border: 2px solid var(--theme-color, $black);
   padding: 5px 20px;
   cursor: pointer;
   user-select: none;
@@ -1215,13 +1253,10 @@
   top: -53px;
   background: white;
   padding: 0px 5px;
-  border: 1px solid var(--header-bg);
+  border: 1px solid var(--theme-top-bar-background, #dbdbdb);
   border-left: 3px solid #4e57ef;
   height: 50px;
   overflow: hidden;
-  p {
-    margin: 18px 0;
-  }
 }
 
 .closeEdit {
@@ -1242,7 +1277,7 @@
 
 .mention__list {
   position: absolute;
-  background: var(--card-bg);
+  background: var(--theme-container-background, white);
   display: none;
   z-index: 1;
   border-top: 1px solid #dbdbdb;

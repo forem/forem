@@ -22,7 +22,7 @@
       font-weight: 500;
       font-size: 1.5em;
       a {
-        color: var(--body-color);
+        color: var(--theme-color, $black);
       }
     }
 
@@ -31,7 +31,7 @@
       margin: 5px 0 15px 0;
       font-size: 0.9em;
       a {
-        color: var(--body-color);
+        color: var(--theme-color, $black);
       }
     }
 
@@ -44,7 +44,12 @@
         margin-left: 1px;
 
         a {
-          color: var(--card-color-secondary);
+          @include themeable(color, theme-secondary-color, $dark-medium-gray);
+          @include themeable(
+            background,
+            theme-container-accent-background,
+            $light-medium-gray
+          );
           display: inline-block;
           margin: 2px;
           padding: 2px 7px;
@@ -55,7 +60,8 @@
     }
 
     .ltag__listing-author-info {
-      color: var(--card-color-tertiary);
+      color: #666666;
+      color: var(--theme-secondary-color, #666666);
       line-height: 1.3em;
       a {
         margin: 0.1vw 0;
@@ -63,7 +69,8 @@
         font-size: 0.7em;
         margin-bottom: 0;
         font-weight: bold;
-        color: var(--card-color-tertiary);
+        color: #666666;
+        color: var(--theme-secondary-color, #666666);
       }
     }
   }

@@ -1,6 +1,6 @@
 module Articles
   class Feed
-    RANDOM_OFFSET_VALUES = [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13].freeze
+    RANDOM_OFFSET_VALUES = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, 5, 6, 7, 8, 9, 10, 11].freeze
 
     def initialize(user: nil, number_of_articles: 35, page: 1, tag: nil)
       @user = user
@@ -40,7 +40,7 @@ module Articles
 
     def latest_feed
       published_articles_by_tag.order("published_at DESC").
-        where("featured_number > ? AND score > ?", 1_449_999_999, -20).
+        where("featured_number > ? AND score > ?", 1_449_999_999, -40).
         page(@page).per(@number_of_articles)
     end
 
@@ -100,7 +100,7 @@ module Articles
     end
 
     def mix_of_everything_experiment
-      case rand(10)
+      case rand(7)
       when 0
         default_home_feed(user_signed_in: true)
       when 1
@@ -115,38 +115,9 @@ module Articles
         more_comments_experiment
       when 6
         more_experience_level_weight_experiment
-      when 7
-        more_tag_weight_randomized_at_end_experiment
-      when 8
-        more_experience_level_weight_randomized_at_end_experiment
-      when 9
-        more_comments_randomized_at_end_experiment
       else
         default_home_feed(user_signed_in: true)
       end
-    end
-
-    # Randomized at end group for next three experiments
-    # Rather than randomizing *during* the ranking, rank solely by quality/match
-    # and randomize the top half of the ranked results.
-    # Resulting in more relevance and still more freshness.
-
-    def more_tag_weight_randomized_at_end_experiment
-      @randomness = 0
-      results = more_tag_weight_experiment
-      first_half(results).shuffle + last_half(results)
-    end
-
-    def more_experience_level_weight_randomized_at_end_experiment
-      @randomness = 0
-      results = more_experience_level_weight_experiment
-      first_half(results).shuffle + last_half(results)
-    end
-
-    def more_comments_randomized_at_end_experiment
-      @randomness = 0
-      results = more_comments_experiment
-      first_half(results).shuffle + last_half(results)
     end
 
     def rank_and_sort_articles(articles)
@@ -205,7 +176,7 @@ module Articles
 
     def globally_hot_articles(user_signed_in)
       hot_stories = published_articles_by_tag.
-        where("score > ? OR featured = ?", 7, true).
+        where("score > ? OR featured = ?", 8, true).
         order("hotness_score DESC")
       featured_story = hot_stories.where.not(main_image: nil).first
       if user_signed_in
@@ -231,14 +202,6 @@ module Articles
 
     def user_following_users_ids
       @user_following_users_ids ||= (@user&.cached_following_users_ids || [])
-    end
-
-    def first_half(array)
-      array[0...(array.length / 2)]
-    end
-
-    def last_half(array)
-      array[(array.length / 2)..array.length]
     end
   end
 end

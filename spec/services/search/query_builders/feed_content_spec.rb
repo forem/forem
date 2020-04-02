@@ -12,11 +12,6 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
       filter = described_class.new({})
       expect(filter.body).not_to be_nil
     end
-
-    it "sets published to true" do
-      filter = described_class.new({})
-      expect(filter.params).to include(published: true)
-    end
   end
 
   describe "#as_hash" do
@@ -41,7 +36,6 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
         { "terms" => { "tags.name" => ["beginner"] } },
         { "terms" => { "user.id" => [777] } },
         { "terms" => { "class_name" => ["Article"] } },
-        { "terms" => { "published" => [true] } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
     end
@@ -52,7 +46,6 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
         filter = described_class.new(params)
         exepcted_filters = [
           { "range" => { "published_at" => { lte: Time.current } } },
-          { "terms" => { "published" => [true] } },
         ]
         expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
       end
@@ -68,7 +61,6 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
         exepcted_filters = [
           { "range" => { "published_at" => { lte: Time.current } } },
           { "terms" => { "tags.name" => ["cfp"] } },
-          { "terms" => { "published" => [true] } },
         ]
         expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
         expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)

@@ -14,7 +14,6 @@ RSpec.describe "ChatChannels", type: :request do
   before do
     sign_in user
     chat_channel.add_users([user])
-    chat_channel.chat_channel_memberships.update(status: "active")
   end
 
   describe "GET /connect" do
@@ -137,13 +136,10 @@ RSpec.describe "ChatChannels", type: :request do
   describe "PUT /chat_channels/:id" do
     it "updates channel for valid user" do
       user.add_role(:super_admin)
-      membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
-      membership.update(role: "mod")
       put "/chat_channels/#{chat_channel.id}",
           params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channelly" } },
           headers: { HTTP_ACCEPT: "application/json" }
       expect(ChatChannel.last.slug).to eq("hello-channelly")
-      expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
     end
 
     it "dissallows invalid users" do
@@ -157,12 +153,10 @@ RSpec.describe "ChatChannels", type: :request do
     it "returns errors if channel is invalid" do
       # slug should be taken
       user.add_role(:super_admin)
-      membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
-      membership.update(role: "mod")
       put "/chat_channels/#{chat_channel.id}",
           params: { chat_channel: { channel_name: "HEy hey hoho", slug: invite_channel.slug } },
           headers: { HTTP_ACCEPT: "application/json" }
-      expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
+      expect(response.body).to include("Slug has already been taken")
     end
   end
 

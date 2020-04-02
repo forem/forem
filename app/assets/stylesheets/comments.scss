@@ -28,14 +28,15 @@ $indent-distance: calc(1.1vw + 13px);
 }
 
 a.header-link {
-  color: var(--body-color);
+  @include themeable(color, theme-color, $black);
   display: block;
   &:hover {
-    color: var(--body-color);
+    @include themeable(color, theme-color, $black);
   }
 }
 
 .comments {
+  @include themeable(background, theme-background, $light-gray);
   .picture {
     height: 180px;
     max-width: 900px;
@@ -65,7 +66,7 @@ a.header-link {
     max-width: 100%;
     margin: 50px auto 10px;
     padding: 0px 0px 90px;
-    background: var(--card-bg);
+    @include themeable(background, theme-container-background, #fff);
     z-index: 3;
     position: relative;
     @media screen and (min-width: 820px) {
@@ -102,7 +103,7 @@ a.header-link {
       margin: auto;
       margin-bottom: -35px;
       .read-more {
-        color: var(--link-branded-color);
+        @include themeable(color, theme-anchor-color, $sky-blue);
         display: inline-block;
         &:hover {
           opacity: 0.96;
@@ -283,15 +284,19 @@ a.header-link {
       display: block;
       resize: vertical;
       border-radius: 3px;
-      border: 1px solid var(--form-border);
+      @include themeable(
+        border,
+        theme-container-background,
+        1px solid rgb(232, 229, 229)
+      );
       height: 125px;
       font-size: 16px;
       padding: 6px;
       cursor: text;
-      background: var(--form-bg);
-      color: var(--body-color);
+      @include themeable(background, theme-container-background, #fff);
+      @include themeable(color, theme-color, $black);
       &::placeholder {
-        color: var(--form-placeholder);
+        color: #8f949c;
       }
       &.embiggened {
         height: calc(2vw + 115px);
@@ -305,8 +310,9 @@ a.header-link {
       &.preview-loading {
         background: white url(image-src('loading-ellipsis.svg')) no-repeat
           center center;
-        background-color: var(--card-bg);
-        color: var(--body-color-inverted);
+        @include themeable(background-color, theme-container-background, white);
+        @include themeable(color, theme-container-background, white);
+
         background-size: 50px;
       }
     }
@@ -319,7 +325,11 @@ a.header-link {
       text-align: left;
       font-size: 19px;
       font-family: $helvetica;
-      background: var(--card-bg);
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        lighten($yellow, 19%)
+      );
       box-shadow: $shadow;
       width: calc(100% - 80px);
       margin: 19px auto 8px;
@@ -386,7 +396,7 @@ a.header-link {
       text-align: right;
       font-size: 0.9em;
       font-weight: 500;
-      color: var(--link-branded-color);
+      @include themeable(color, theme-secondary-color, $dark-gray);
       &.sub-comment-code-of-conduct {
         font-size: 1em;
       }
@@ -396,7 +406,7 @@ a.header-link {
         margin: 5px 0px;
       }
       a {
-        color: var(--link-branded-color);
+        @include themeable(color, theme-anchor-color, $sky-blue);
       }
     }
     input[type='submit'] {
@@ -483,7 +493,7 @@ a.header-link {
     .root-comment {
       margin-top: -80px;
       .comment-parent-link {
-        background: var(--card-bg);
+        @include themeable(background, theme-container-background, white);
         @include themeable(
           border,
           theme-container-border,
@@ -758,7 +768,7 @@ a.header-link {
   .details {
     padding: 0px;
     border-top-left-radius: 3px;
-    color: var(--link-branded-color);
+    @include themeable(color, theme-secondary-color, $dark-gray);
     position: relative;
     .comment-date {
       border: none;
@@ -768,7 +778,7 @@ a.header-link {
       font-size: 12px;
       text-align: right;
       a {
-        color: var(--card-color-tertiary);
+        @include themeable(color, theme-secondary-color, $medium-gray);
       }
     }
     .dropbtn {
@@ -1067,7 +1077,7 @@ a.header-link {
   .inner-comment {
     padding: 0px;
     border: 1px solid $light-medium-gray;
-    background: var(--card-bg);
+    @include themeable(background, theme-container-background, #fff);
     &.comment-created-via-fetch {
       animation: comment-create 1.2s;
       .body {

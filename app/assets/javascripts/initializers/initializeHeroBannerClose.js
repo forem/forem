@@ -1,15 +1,13 @@
 'use strict';
 
 function initializeHeroBannerClose() {
-  let bannerWrapper = document.getElementById('hero-html-wrapper');
+  let banner = document.getElementById('js-hero-banner');
   let closeIcon = document.getElementById('js-hero-banner__x');
-  // Currently js-hero-banner__x button icon ID needs to be written into the abstract html
-  // In the future this could be extracted so the implementer doesn't need to worry about it.
 
-  if (bannerWrapper && closeIcon) {
+  if (banner && closeIcon) {
     closeIcon.addEventListener('click', () => {
-      localStorage.setItem('exited_hero', bannerWrapper.dataset.name);
-      bannerWrapper.style.display = 'none';
+      localStorage.setItem('exited_hero', 'shecoded'); // Hardcoded. TODO: generalize.
+      banner.style.display = 'none';
     });
   }
 }
