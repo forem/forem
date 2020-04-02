@@ -2,7 +2,13 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { defaultChildrenPropTypes } from '../../src/components/common-prop-types';
 
-function getAdditionalClassNames({ variant, className, icon, disabled }) {
+function getAdditionalClassNames({
+  variant,
+  className,
+  icon,
+  disabled,
+  children,
+}) {
   let additionalClassNames = '';
 
   if (variant && variant.length > 0 && variant !== 'primary') {
@@ -10,7 +16,10 @@ function getAdditionalClassNames({ variant, className, icon, disabled }) {
   }
 
   if (icon) {
-    additionalClassNames += ' crayons-btn--icon-left';
+    additionalClassNames +=
+      children.length > 0
+        ? ' crayons-btn--icon-left'
+        : ' crayons-btn--icon-alone';
   }
 
   if (disabled) {
@@ -53,6 +62,7 @@ export const Button = ({
         className,
         icon,
         disabled: as === 'a' && disabled,
+        children,
       })}`}
       onClick={onClick}
       onMouseOver={onMouseOver}

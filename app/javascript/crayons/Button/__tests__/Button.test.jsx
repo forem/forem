@@ -43,7 +43,7 @@ describe('<Button /> component', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('should render a button with with an icon when an icon is set', () => {
+  it('should render a button with with an icon when an icon is set and there is button text', () => {
     const Icon = () => (
       <svg
         width="24"
@@ -56,6 +56,22 @@ describe('<Button /> component', () => {
     );
 
     const tree = render(<Button icon={Icon}>Hello world!</Button>);
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render a button with with an icon when an icon is set and there is no button text', () => {
+    const Icon = () => (
+      <svg
+        width="24"
+        height="24"
+        xmlns="http://www.w3.org/2000/svg"
+        className="crayons-icon"
+      >
+        <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
+      </svg>
+    );
+
+    const tree = render(<Button icon={Icon} />);
     expect(tree).toMatchSnapshot();
   });
 
