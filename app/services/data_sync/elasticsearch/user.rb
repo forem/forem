@@ -9,6 +9,13 @@ module DataSync
         comments
       ].freeze
 
+      SHARED_USER_FIELDS = %i[
+        username
+        name
+        pro
+        profile_image_url
+      ].freeze
+
       attr_accessor :user, :updated_fields
 
       delegate :articles, :chat_channel_memberships, :comments, to: :@user
@@ -29,7 +36,7 @@ module DataSync
       private
 
       def sync_needed?
-        updated_fields.slice(:username, :name, :pro, :profile_image_url).any?
+        updated_fields.slice(*SHARED_USER_FIELDS).any?
       end
 
       def reactions
