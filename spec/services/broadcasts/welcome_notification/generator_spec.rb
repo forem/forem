@@ -36,7 +36,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
     it "sends only 1 notification at a time with the right notification" do
       user = create(:user, :with_identity, identities: ["github"], created_at: 1.day.ago)
-
       expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(welcome_broadcast)
 
@@ -55,6 +54,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       Timecop.travel(1.day.since)
       expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(discuss_and_ask_broadcast)
+      Timecop.return
     end
   end
 
