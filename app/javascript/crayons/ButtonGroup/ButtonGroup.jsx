@@ -8,5 +8,5 @@ export const ButtonGroup = ({ children }) => (
 ButtonGroup.displayName = 'ButtonGroup';
 
 ButtonGroup.propTypes = {
-  children: defaultChildrenPropTypes.isRequired, // TODO: Only allow buttons
+  children: defaultChildrenPropTypes.isRequired,
 };
