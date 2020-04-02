@@ -44,13 +44,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       end.to change(user.notifications, :count).by(0)
     end
 
-    it "sends only 1 notification at a time" do
-      expect do
-        sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
-      end.to change(user.notifications, :count).by(1)
-    end
-
-    it "sends notifications in the correct order" do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+    it "sends only 1 notification at a time, in the correct order" do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
       user.update!(created_at: 1.day.ago)
 
       expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
