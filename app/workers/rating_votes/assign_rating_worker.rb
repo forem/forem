@@ -11,7 +11,7 @@ module RatingVotes
       ratings = article.rating_votes.where(group: group).pluck(:rating)
       average = ratings.sum / ratings.size
 
-      article.update_columns(
+      article.update(
         experience_level_rating: average,
         experience_level_rating_distribution: ratings.max - ratings.min,
         last_experience_level_rating_at: Time.current,

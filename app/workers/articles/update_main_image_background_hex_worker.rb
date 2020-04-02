@@ -9,7 +9,7 @@ module Articles
 
       return unless article
 
-      article.update_column(:main_image_background_hex_color, ColorFromImage.new(article.main_image).main)
+      article.update(main_image_background_hex_color: ColorFromImage.new(article.main_image).main)
     end
   end
 end
