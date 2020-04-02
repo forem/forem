@@ -20,7 +20,7 @@ module Broadcasts
         send_ux_customization_notification unless notification_enqueued
         send_discuss_and_ask_notification unless notification_enqueued
       rescue ActiveRecord::RecordNotFound => e
-        Rails.logger.error(e)
+        Honeybadger.notify(e)
       end
 
       private
