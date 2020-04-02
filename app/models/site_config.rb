@@ -25,6 +25,9 @@ class SiteConfig < RailsSettings::Base
   # Authentication
   field :authentication_providers, type: :array, default: %w[twitter github]
 
+  # Broadcast
+  field :welcome_notifications_live_at, type: :date
+
   # campaign
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]
