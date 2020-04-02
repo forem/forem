@@ -13,9 +13,6 @@ require "action_view/railtie"
 require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
-# Silence all Ruby 2.7 deprecation warnings in development mode
-$VERBOSE = nil if Rails.env.development?
-
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
