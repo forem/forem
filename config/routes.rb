@@ -70,6 +70,7 @@ Rails.application.routes.draw do
         post "send_email"
         post "create_note"
         post "save_status"
+        post "update_reaction"
       end
     end
     resources :tags, only: %i[index update show]

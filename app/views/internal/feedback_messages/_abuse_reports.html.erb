@@ -27,7 +27,8 @@
       <div class="card-body" style="overflow: scroll; max-height: 500px;">
         <% @vomits.each do |reaction| %>
           <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
-          <div class="d-flex justify-content-between">
+          <div class="d-flex justify-content-between" id="div__reaction__id__<%= reaction.id %>">
+          <span>ID: <%= reaction.id %></span>
             <span>
               🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a>
             </span>
@@ -43,6 +44,8 @@
             </span>
             <span>
               <% if params[:status] == "Open" || params[:status].blank? %>
+              <input type="hidden" name="status" value="confirmed" id="status__reaction__id__<%= reaction.id %>">
+              <button class="btn btn-success btn-sm vomit-confirm" type="button" data-id="<%= reaction.id %>">CONFIRM 2</button>
                 <% if reaction.reactable_type == "User" %>
                   <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
                     <%= f.hidden_field :status, value: "confirmed" %>
@@ -56,7 +59,7 @@
                 <% end %>
                 <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
                   <%= f.hidden_field :status, value: "invalid" %>
-                  <%= f.submit "INVALID", class: "btn btn-danger btn-sm" %>
+                  <%= f.submit "INVALID", class: "btn btn-danger btn-sm vomit-confirm" %>
                 <% end %>
               <% end %>
             </span>
@@ -67,3 +70,46 @@
     </div>
   </div>
 </div>
+
+<script>
+  function updateReactionStatus(id){
+    var formData = new FormData();
+    formData.append('id', id);
+    formData.append('status', document.getElementById('status__reaction__id__' + id).value);
+
+    fetch('/internal/reports/update_reaction', {
+     method: 'POST',
+     headers: {
+       'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
+     },
+     body: formData,
+     credentials: 'same-origin'
+   })
+     .then(response => response.json()
+                                     .then(json => {
+                                       if (json.outcome === 'Success') {
+                                        removeReactionDiv(id)
+                                       } else {
+                                         // failedNote();
+                                       }
+                                     })
+                                     .catch(error => {
+                                       // failedNote();
+                                       console.log(error);
+                                     }))
+
+  }
+
+  function removeReactionDiv(id){
+    var reactionDiv = document.getElementById('div__reaction__id__' + id);
+    var reactionDivHr = reactionDiv.nextElementSibling;
+    reactionDiv.remove();
+    reactionDivHr.remove();
+  }
+
+  document.querySelectorAll('.vomit-confirm').forEach(item => {
+    item.addEventListener('click', function () {
+      updateReactionStatus(item.dataset.id);
+    });
+  });
+</script>

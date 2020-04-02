@@ -76,6 +76,15 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     end
   end
 
+  def update_reaction
+    reaction = Reaction.find(params[:id])
+    if reaction.update(status: params[:status])
+      render json: { outcome: "Success" }
+    else
+      render json: { outcome: reaction.errors.full_messages }
+    end
+  end
+
   private
 
   def get_vomits
