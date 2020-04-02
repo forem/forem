@@ -691,7 +691,7 @@ GEM
       unicode-display_width (>= 1.4.0, < 1.7)
     rubocop-performance (1.5.2)
       rubocop (>= 0.71.0)
-    rubocop-rails (2.5.0)
+    rubocop-rails (2.5.1)
       activesupport
       rack (>= 1.1)
       rubocop (>= 0.72.0)
