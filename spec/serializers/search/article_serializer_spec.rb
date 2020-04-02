@@ -12,7 +12,7 @@ RSpec.describe Search::ArticleSerializer do
     expect(data_hash[:user]).to eq(user_data)
     expect(data_hash.dig(:organization, :id)).to eq(organization.id)
     expect(data_hash.dig(:flare_tag_hash, :name)).to eq(tag.name)
-    expect(data_hash.keys).to include(:id, :body_text, :hotness_score)
+    expect(data_hash.keys).to include(:id, :body_text, :hotness_score, :search_score)
   end
 
   it "creates valid json for Elasticsearch", elasticsearch: true do
