@@ -29,7 +29,7 @@ module DataSync
       private
 
       def sync_needed?
-        updated_fields.key?(:username) || updated_fields.key?(:name)
+        updated_fields.slice(:username, :name, :pro, :profile_image_url).any?
       end
 
       def reactions
