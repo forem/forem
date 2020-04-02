@@ -12,7 +12,7 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
       create(:article, user_id: user.id)
       create(:article, user_id: user.id)
       create(:classified_listing, user: user)
-      ChatChannel.create_with_users([user, user2])
+      ChatChannel.create_with_users(users: [user, user2])
       user.follow(user2)
       described_class.new.perform(admin.id, user.id)
       user.reload

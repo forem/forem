@@ -152,9 +152,9 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     def create_badge_achievement(user, badge, rewarder)
       BadgeAchievement.create(
-        user_id: user.id,
-        badge_id: badge.id,
-        rewarder_id: rewarder.id,
+        user: user,
+        badge: badge,
+        rewarder: rewarder,
         rewarding_context_message_markdown: "Hello [Yoho](/hey)",
       )
     end
@@ -172,14 +172,74 @@ RSpec.describe NotifyMailer, type: :mailer do
       expect(email.to).to eq([user.email])
     end
 
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
+    context "when rendering the HTML email" do
+      it "includes the tracking pixel" do
+        expect(email.html_part.body).to include("open.gif")
+      end
+
+      it "includes UTM params" do
+        expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
+        expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
+        expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_badge_email"))
+      end
+
+      it "includes the user URL" do
+        expect(email.html_part.body).to include(CGI.escape(URL.user(user)))
+      end
+
+      it "includes the listings URL" do
+        expect(email.html_part.body).to include(
+          CGI.escape(
+            Rails.application.routes.url_helpers.classified_listings_url,
+          ),
+        )
+      end
+
+      it "includes the about listings URL" do
+        expect(email.html_part.body).to include(
+          CGI.escape(URL.url("/about-listings")),
+        )
+      end
+
+      it "includes the rewarding_context_message in the email" do
+        expect(email.html_part.body).to include("Hello <a")
+        expect(email.html_part.body).to include(CGI.escape(URL.url("/hey")))
+      end
+
+      it "does not include the rewarding_context_message in the email" do
+        allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
+
+        expect(email.html_part.body).not_to include("Hello <a")
+        expect(email.html_part.body).not_to include(CGI.escape(URL.url("/hey")))
+      end
     end
 
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_badge_email"))
+    context "when rendering the text email" do
+      it "includes the user URL" do
+        expect(email.text_part.body).to include(URL.user(user))
+      end
+
+      it "includes the listings URL" do
+        expect(email.text_part.body).to include(
+          Rails.application.routes.url_helpers.classified_listings_url,
+        )
+      end
+
+      it "includes the about listings URL" do
+        expect(email.text_part.body).to include(URL.url("/about-listings"))
+      end
+
+      it "includes the rewarding_context_message in the email" do
+        expect(email.text_part.body).to include("Hello Yoho")
+        expect(email.text_part.body).not_to include(URL.url("/hey"))
+      end
+
+      it "does not include the rewarding_context_message in the email" do
+        allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
+
+        expect(email.text_part.body).not_to include("Hello Yoho")
+        expect(email.text_part.body).not_to include(URL.url("/hey"))
+      end
     end
   end
 
@@ -261,7 +321,7 @@ RSpec.describe NotifyMailer, type: :mailer do
   end
 
   describe "#new_message_email" do
-    let(:direct_channel) { ChatChannel.create_with_users([user, user2], "direct") }
+    let(:direct_channel) { ChatChannel.create_with_users(users: [user, user2], channel_type: "direct") }
     let(:direct_message) { create(:message, user: user, chat_channel: direct_channel) }
     let(:email) { described_class.new_message_email(direct_message) }
 
@@ -405,6 +465,30 @@ RSpec.describe NotifyMailer, type: :mailer do
       expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
       expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
       expect(email.html_part.body).to include(CGI.escape("utm_campaign=trusted_role_email"))
+    end
+  end
+
+  describe "#channel_invite_email" do
+    let(:moderator_membership) { create(:chat_channel_membership, user_id: user2.id, role: "mod") }
+    let(:regular_membership) { create(:chat_channel_membership, user_id: user2.id, role: "member") }
+    let(:moderator_email) { described_class.channel_invite_email(moderator_membership, nil) }
+    let(:member_email) { described_class.channel_invite_email(regular_membership, user) }
+
+    it "renders proper subject" do
+      expect(moderator_email.subject).to eq("You are invited to Channel #{moderator_membership.chat_channel.channel_name} as moderator.")
+      expect(member_email.subject).to eq("You are invited to Channel #{regular_membership.chat_channel.channel_name} by #{user.name}.")
+    end
+
+    it "renders proper sender" do
+      expect(moderator_email.from).to eq([SiteConfig.default_site_email])
+      expect(moderator_email["from"].value).to eq("DEV Community <#{SiteConfig.default_site_email}>")
+      expect(member_email.from).to eq([SiteConfig.default_site_email])
+      expect(member_email["from"].value).to eq("DEV Community <#{SiteConfig.default_site_email}>")
+    end
+
+    it "renders proper receiver" do
+      expect(moderator_email.to).to eq([user2.email])
+      expect(member_email.to).to eq([user2.email])
     end
   end
 end

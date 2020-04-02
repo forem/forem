@@ -1,0 +1,47 @@
+<div class="row m-3">
+  <div class="col">
+  </div>
+  <div class="col">
+    <%= search_form_for @q, url: internal_negative_reactions_path, class: "form-inline justify-content-end" do |f| %>
+
+      <%= f.label :user_username_cont, "User", class: "sr-only" %>
+      <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control mx-3" %>
+
+      <%= f.select(
+        :category_eq,
+        options_for_select(["", "vomit", "thumbsdown"], @q.category_eq),
+        {},
+        class: "custom-select mx-3",
+      ) %>
+
+      <%= f.submit "Search", class: "btn btn-secondary" %>
+    <% end %>
+  </div>
+</div>
+
+<%= paginate @negative_reactions %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">User</th>
+      <th scope="col">Action</th>
+      <th scope="col">Content</th>
+      <th scope="col">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @negative_reactions.each do |action| %>
+      <tr>
+        <td><%= action.id %></td>
+        <td><%= link_to action.user.username, internal_user_path(action.user_id) %></td>
+        <td><%= action.category %></td>
+        <td><%= link_to action.reactable&.title || action.reactable&.username, action.reactable.path %></td>
+        <td><%= action.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @negative_reactions %>

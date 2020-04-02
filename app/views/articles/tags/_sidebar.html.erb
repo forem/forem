@@ -1,4 +1,4 @@
-<% cache "tag-sidebar-#{@tag}-#{@tag_model&.updated_at}-#{@tag_model&.taggings_count}-#{user_signed_in?}", expires_in: 5.hours do %>
+<% cache "tag-sidebar-#{@tag}-#{@tag_model&.updated_at}-#{@tag_model&.taggings_count}-#{user_signed_in?}-#{@page}", expires_in: 5.hours do %>
   <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
     <div class="sidebar-bg" id="sidebar-bg-left"></div>
     <div class="side-bar">
@@ -67,7 +67,7 @@
         </div>
         <% if user_signed_in? %>
           <span style="display:none;" id="tag-edit-button" data-tag="<%= @tag_model.name %>">
-            <a class="cta mod-action-button" href="/t/<%= @tag_model.name %>/edit" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
+            <a class="cta mod-action-button" href="<%= tag_url(@tag_model, @page) %>/edit" style="color:<%= @tag_model.text_color_hex %>;background-color:<%= @tag_model.bg_color_hex %>">
               EDIT
             </a>
           </span>
@@ -76,6 +76,28 @@
               MODERATE
             </a>
           </span>
+        <% else %>
+          <% number_of_pages = @num_published_articles / @number_of_articles %>
+          <% range = (number_of_pages < 10 || @page < 4) ? 1..[number_of_pages, 9].min : [@page - 3, 1].max..[@page + 5, number_of_pages].min %>
+          <% if number_of_pages > 1 %>
+            <hr />
+            <div class="olderposts-header">Older #<%= @tag %> posts</div>
+            <div class="olderposts-links">
+              <% range.each do |n| %>
+                <% if @page == n %>
+                    <span class="olderposts-pagenumber"><%= n %></span>
+                <% else %>
+                    <a href="<%= tag_url(@tag_model, n) %>" class="olderposts-pagenumber"><%= n %></a>
+                <% end %>
+              <% end %>
+              <% if @page == 1 && number_of_pages > 100 %>
+                <div>
+                  …<a href="<%= tag_url(@tag_model, 75) %>" class="olderposts-pagenumber">75</a>
+                  …<a href="<%= tag_url(@tag_model, number_of_pages) %>" class="olderposts-pagenumber"><%= number_of_pages %></a>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
         <% end %>
       </div>
     </div>

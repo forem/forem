@@ -116,7 +116,7 @@
           <div class="primary-sticky-nav-element-wrapper">
             <% if index == 0 %>
               <div class="primary-sticky-nav-title">
-                <img src="<%= asset_path "emoji/apple-fire.png" %>" alt="Fire emoji" loading="lazy"> Trending on <a href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>"><%= ApplicationConfig["COMMUNITY_NAME"] %></a>
+                <img src="<%= asset_path "emoji/apple-fire.png" %>" alt="Fire emoji" loading="lazy"> Trending on <a href="<%= app_url %>"><%= ApplicationConfig["COMMUNITY_NAME"] %></a>
               </div>
             <% end %>
             <a class="primary-sticky-nav-element" href="<%= article.path %>">

@@ -2,11 +2,11 @@
 <html>
 <head>
   <title>You are not connected to the Internet</title>
-  <meta property="og:url" content="https://dev.to/offline.html" />
+  <meta property="og:url" content="<%= app_url("/offline.html") %>" />
   <meta property="og:title" content="Looks like you've lost your Internet connection" />
   <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/aio6nc08tpcqavej512d.png" />
   <meta property="og:description" content="Maybe you could go outside and get some fresh air." />
-  <meta property="og:site_name" content="The DEV Community" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@ThePracticalDev">
@@ -201,6 +201,8 @@
     let activePalette = 'default' // match key inside the palettes variable
 
     // Globally DOM nodes + variables
+    const paletteSelector = document.querySelector(".paletteSelector")
+    const colorSelector = document.querySelector(".colors")
     const canvas = document.querySelector('canvas')
     const context = canvas.getContext('2d')
     const colorDiv = document.querySelector(".colors")
@@ -297,6 +299,9 @@
     }
 
     function startPaint(event) {
+      colorSelector.style.pointerEvents = 'none'
+      paletteSelector.style.pointerEvents = 'none'
+
       addClick(event, this)
       paint = true
     }
@@ -304,6 +309,9 @@
     canvas.addEventListener('touchstart', startPaint)
 
     const exit = _ => {
+      colorSelector.style.pointerEvents = 'all'
+      paletteSelector.style.pointerEvents = 'all'
+
       paint = false
       firstX = null
       firstY = null
@@ -321,7 +329,6 @@
     canvas.addEventListener('mousemove', endPaint)
     canvas.addEventListener('touchmove', endPaint)
 
-    const paletteSelector = document.querySelector(".paletteSelector")
     paletteSelector.onchange = (event) => {
       activePalette = event.target.value
       render(palettes[activePalette])

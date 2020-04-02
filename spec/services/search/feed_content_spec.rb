@@ -30,6 +30,24 @@ RSpec.describe Search::FeedContent, type: :service do
       expect(doc_highlights).to include("I <em>love</em> <em>ruby</em>", "<em>Ruby</em> Tuesday is yummy")
     end
 
+    it "returns fields necessary for the view" do
+      allow(article1).to receive(:flare_tag).and_return(name: "help", bg_color_hex: nil, text_color_hex: nil)
+      view_keys = %w[
+        id title path class_name flare_tag tag_list user_id user published_at_int
+        published_timestamp readable_publish_date
+      ]
+      flare_tag_keys = %w[name bg_color_hex text_color_hex]
+      user_keys = %w[username name profile_image_90]
+      podcast_keys = %w[slug image_url title]
+      index_documents([article1])
+
+      feed_doc = described_class.search_documents(params: { size: 1 }).first
+      expect(feed_doc.keys).to include(*view_keys)
+      expect(feed_doc["user"].keys).to include(*user_keys)
+      expect(feed_doc["flare_tag"].keys).to include(*flare_tag_keys)
+      expect(feed_doc["podcast"].keys).to include(*podcast_keys)
+    end
+
     context "with a query" do
       it "searches by search_fields" do
         allow(article1).to receive(:title).and_return("ruby")
@@ -40,7 +58,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(2)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(article1.search_id, article2.search_id)
+        expect(doc_ids).to include(article1.id, article2.id)
       end
     end
 
@@ -54,7 +72,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(article1.search_id)
+        expect(doc_ids).to include(article1.id)
       end
 
       it "filters by user_id" do
@@ -64,7 +82,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(article1.search_id)
+        expect(doc_ids).to include(article1.id)
       end
 
       it "filters by approved" do
@@ -76,7 +94,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(article2.search_id)
+        expect(doc_ids).to include(article2.id)
       end
 
       it "filters by class_name" do
@@ -87,7 +105,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(pde.search_id)
+        expect(doc_ids).to include(pde.id)
       end
     end
 
@@ -101,7 +119,7 @@ RSpec.describe Search::FeedContent, type: :service do
         feed_docs = described_class.search_documents(params: query_params)
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
-        expect(doc_ids).to include(article2.search_id)
+        expect(doc_ids).to include(article2.id)
       end
     end
   end

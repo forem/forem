@@ -1,4 +1,7 @@
 class Tweet < ApplicationRecord
+  self.ignored_columns = %w[
+    primary_external_url
+  ]
   mount_uploader :profile_image, ProfileImageUploader
 
   belongs_to :user, optional: true
@@ -77,30 +80,35 @@ class Tweet < ApplicationRecord
       tweet.user_id = User.find_by(twitter_username: tweeted.user.screen_name)&.id
       tweet.favorite_count = tweeted.favorite_count
       tweet.retweet_count = tweeted.retweet_count
-      tweet.in_reply_to_user_id_code = tweeted.attrs[:in_reply_to_user_id_str]
-      tweet.in_reply_to_user_id_code = tweeted.attrs[:in_reply_to_status_id_str]
       tweet.twitter_user_following_count = tweeted.user.friends_count
       tweet.twitter_user_followers_count = tweeted.user.followers_count
-      tweet.twitter_id_code = tweeted.attrs[:id_str]
-      tweet.quoted_tweet_id_code = tweeted.attrs[:quoted_status_id_str]
       tweet.in_reply_to_username = tweeted.in_reply_to_screen_name
       tweet.source = tweeted.source
-      tweet.text = tweeted.attrs[:full_text]
       tweet.twitter_name = tweeted.user.name
       tweet.mentioned_usernames_serialized = tweeted.user_mentions.as_json
-      tweet.hashtags_serialized = tweeted.attrs[:entities][:hashtags]
       tweet.remote_profile_image_url = tweeted.user.profile_image_url
+      tweet.last_fetched_at = Time.current
+      tweet.user_is_verified = tweeted.user.verified?
+      tweet = handle_tweeted_attrs(tweet, tweeted)
+
+      tweet.save!
+
+      tweet
+    end
+
+    def handle_tweeted_attrs(tweet, tweeted)
+      tweet.in_reply_to_user_id_code = tweeted.attrs[:in_reply_to_user_id_str]
+      tweet.in_reply_to_status_id_code = tweeted.attrs[:in_reply_to_status_id_str]
+      tweet.twitter_id_code = tweeted.attrs[:id_str]
+      tweet.quoted_tweet_id_code = tweeted.attrs[:quoted_status_id_str]
+      tweet.text = tweeted.attrs[:full_text]
+      tweet.hashtags_serialized = tweeted.attrs[:entities][:hashtags]
       tweet.urls_serialized = tweeted.attrs[:entities][:urls]
       tweet.media_serialized = tweeted.attrs[:media]
       tweet.extended_entities_serialized = tweeted.attrs[:extended_entities]
       tweet.full_fetched_object_serialized = tweeted.attrs
       tweet.tweeted_at = tweeted.attrs[:created_at]
-      tweet.last_fetched_at = Time.current
-      tweet.user_is_verified = tweeted.user.verified?
       tweet.is_quote_status = tweeted.attrs[:is_quote_status]
-
-      tweet.save!
-
       tweet
     end
 

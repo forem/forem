@@ -13,7 +13,7 @@
 .cta-button {
   background: transparent;
   padding: 8px 0;
-  @include themeable(color, theme-color, darken($sky-blue, 17%));
+  color: var(--accent-brand);
   display: inline-block;
   &:hover {
     text-decoration: underline;

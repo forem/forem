@@ -53,6 +53,8 @@ WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
 RSpec::Matchers.define_negated_matcher :not_change, :change
 
+Rack::Attack.enabled = false
+
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -75,6 +77,12 @@ RSpec.configure do |config|
   config.around(:each, elasticsearch: true) do |example|
     Search::Cluster.recreate_indexes
     example.run
+  end
+
+  config.around(:each, throttle: true) do |example|
+    Rack::Attack.enabled = true
+    example.run
+    Rack::Attack.enabled = false
   end
 
   config.after do

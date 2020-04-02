@@ -1,6 +1,10 @@
 class Internal::UsersController < Internal::ApplicationController
   layout "internal"
 
+  after_action only: %i[update user_status banish full_delete merge] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
+
   def index
     @users = case params[:state]
              when /role\-/
@@ -19,11 +23,17 @@ class Internal::UsersController < Internal::ApplicationController
 
   def edit
     @user = User.find(params[:id])
+    @notes = @user.notes.order(created_at: :desc).limit(10).load
   end
 
   def show
     @user = User.find(params[:id])
-    @organizations = @user.organizations
+    @organizations = @user.organizations.order(:name)
+    @notes = @user.notes.order(created_at: :desc).limit(10)
+    @organization_memberships = @user.organization_memberships.
+      joins(:organization).
+      order("organizations.name ASC").
+      includes(:organization)
   end
 
   def update
@@ -68,6 +78,7 @@ class Internal::UsersController < Internal::ApplicationController
     rescue StandardError => e
       flash[:danger] = e.message
     end
+
     redirect_to "/internal/users/#{@user.id}/edit"
   end
 

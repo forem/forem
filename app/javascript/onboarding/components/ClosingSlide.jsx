@@ -27,7 +27,11 @@ class ClosingSlide extends Component {
           </div>
         );
       }
-      if (previousLocation !== 'none' && previousLocation !== null && !previousLocation.startsWith('javascript')) {
+      if (
+        previousLocation !== 'none' &&
+        previousLocation !== null &&
+        !previousLocation.startsWith('javascript')
+      ) {
         return (
           <a className="onboarding-previous-location" href={previousLocation}>
             <div>Or go back to the page you were on before you signed up</div>
@@ -105,6 +109,7 @@ class ClosingSlide extends Component {
                   maxWidth: '66%',
                   margin: 'auto',
                   marginTop: '1.5em',
+                  lineHeight: '1.3em',
                 }}
               >
                 <em>
@@ -119,35 +124,35 @@ class ClosingSlide extends Component {
       return (
         <div className="onboarding-what-next">
           <a href="/welcome" data-no-instant>
-            Join the Welcome Thread
-            <p className="whatnext-emoji">
-              <span role="img" aria-label="tada">
+            <p>
+              <span className="whatnext-emoji" role="img" aria-label="tada">
                 😊
               </span>
+              Join the Welcome Thread
             </p>
           </a>
           <a href="/new">
-            Write your first DEV post
-            <p className="whatnext-emoji">
-              <span role="img" aria-label="tada">
+            <p>
+              <span className="whatnext-emoji" role="img" aria-label="tada">
                 ✍️
               </span>
+              Write your first DEV post
             </p>
           </a>
           <a href="/top/infinity">
-            Read all-time top posts
-            <p className="whatnext-emoji">
-              <span role="img" aria-label="tada">
+            <p>
+              <span className="whatnext-emoji" role="img" aria-label="tada">
                 🤓
               </span>
+              Read all-time top posts
             </p>
           </a>
           <a href="/settings">
-            Customize your profile
-            <p className="whatnext-emoji">
-              <span role="img" aria-label="tada">
+            <p>
+              <span className="whatnext-emoji" role="img" aria-label="tada">
                 💅
               </span>
+              Customize your profile
             </p>
           </a>
         </div>
@@ -157,14 +162,17 @@ class ClosingSlide extends Component {
     return (
       <div className="onboarding-main">
         <div className="onboarding-content">
-          <h1>
-            You&lsquo;re part of the community!
-            <span role="img" aria-label="tada">
-              {' '}
-              🎉
-            </span>
-          </h1>
-          <h2 style={{ textAlign: 'center' }}>What next?</h2>
+          <header className="onboarding-content-header">
+            <h1 className="title">
+              You&lsquo;re a part of the community!
+              <span role="img" aria-label="tada">
+                {' '}
+                🎉
+              </span>
+            </h1>
+            <h2 className="subtitle">What next?</h2>
+          </header>
+
           {nextStepLinks()}
           {previousLocationListElement()}
         </div>

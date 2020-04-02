@@ -30,7 +30,7 @@
     border-radius: 12px;
     margin: 50px auto 40px;
     width: calc(100% - 20px);
-    @include themeable(border, theme-border, 1px solid $light-medium-gray);
+    border: 1px solid var(--card-color-tertiary);
     @include themeable(
       box-shadow,
       theme-container-box-shadow,
@@ -50,7 +50,7 @@
     h4 {
       font-size: 0.8em;
       margin: 3px 0px;
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--card-color-tertiary);
     }
     h3 {
       margin: 5px 0px;
@@ -102,7 +102,7 @@
       margin: 8px 0px;
       display: inline-block;
       border: 0px;
-      @include themeable(background, theme-anchor-color, $bold-blue);
+      background: var(--link-branded-color);
       @include themeable(color, theme-container-background, white);
     }
   }
@@ -125,7 +125,7 @@
     border-radius: 12px;
     margin: 10px 0px;
     display: inline-block;
-    @include themeable(border, theme-border, 1px solid $light-medium-gray);
+    border: 1px solid var(--card-color-tertiary);
     @include themeable(
       box-shadow,
       theme-container-box-shadow,
@@ -146,7 +146,7 @@
       text-align: center;
       border-radius: 5px;
       font-weight: bold;
-      @include themeable(background, theme-anchor-color, $bold-blue);
+      background: var(--link-branded-color);
       @include themeable(color, theme-container-background, white);
     }
   }

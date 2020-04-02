@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <%= @articles.each do |path, last_comment_at| %>
+  <% @articles.each do |path, last_comment_at| %>
     <url>
         <loc><%= ApplicationConfig['APP_PROTOCOL'] %><%= ApplicationConfig['APP_DOMAIN'] %><%= path %></loc>
         <lastmod><%= last_comment_at.strftime("%F") %></lastmod>

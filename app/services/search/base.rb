@@ -5,7 +5,7 @@ module Search
         Search::Client.index(
           id: doc_id,
           index: self::INDEX_ALIAS,
-          body: serialized_data,
+          body: serialized_data.merge(last_indexed_at: Time.current),
         )
       end
 
@@ -35,6 +35,10 @@ module Search
 
       def update_mappings(index_alias: self::INDEX_ALIAS)
         Search::Client.indices.put_mapping(index: index_alias, body: self::MAPPINGS)
+      end
+
+      def document_count
+        Search::Client.count(index: self::INDEX_ALIAS).dig("count")
       end
 
       private

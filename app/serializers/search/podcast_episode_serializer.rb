@@ -4,14 +4,16 @@ module Search
 
     attribute :id, &:search_id
 
-    attributes :body_text, :class_name, :comments_count,
-               :featured, :featured_number, :hotness_score, :path,
-               :positive_reactions_count, :published, :published_at, :quote,
+    attributes :body_text, :class_name, :comments_count, :hotness_score, :path,
+               :positive_reactions_count, :published_at, :quote,
                :reactions_count, :search_score, :subtitle, :summary, :title,
                :website_url
 
     attribute :main_image do |pde|
       ProfileImage.new(pde.podcast).get(width: 90)
+    end
+    attribute :published do |pde|
+      pde.podcast.published
     end
     attribute :slug, &:podcast_slug
 

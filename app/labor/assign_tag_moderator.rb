@@ -26,7 +26,11 @@ module AssignTagModerator
     if tag.mod_chat_channel_id
       ChatChannel.find(tag.mod_chat_channel_id).add_users(user) if user.chat_channels.where(id: tag.mod_chat_channel_id).none?
     else
-      channel = ChatChannel.create_with_users(([user] + User.with_role(:mod_relations_admin)).flatten.uniq, "invite_only", "##{tag.name} mods")
+      channel = ChatChannel.create_with_users(
+        users: ([user] + User.with_role(:mod_relations_admin)).flatten.uniq,
+        channel_type: "invite_only",
+        contrived_name: "##{tag.name} mods",
+      )
       tag.update_column(:mod_chat_channel_id, channel.id)
     end
   end

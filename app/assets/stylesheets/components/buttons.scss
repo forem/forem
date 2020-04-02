@@ -1,5 +1,7 @@
 @import '../config/import';
 
+$outlined-border-width: 2px;
+
 // Basic styling
 .crayons-btn {
   position: relative;
@@ -15,6 +17,7 @@
   text-decoration: none;
   cursor: pointer;
   transition: all $transition-props;
+  border: none;
 }
 
 // Styles
@@ -27,28 +30,36 @@
     opacity: 0.6;
   }
 
-  &:hover {
+  &:hover,
+  &:active,
+  &--active {
     background-color: var(--button-primary-bg-hover);
     color: var(--button-primary-color-hover);
+    z-index: 2;
   }
 
   &--secondary {
     background-color: var(--button-secondary-bg);
     color: var(--button-secondary-color);
 
-    &:hover {
+    &:hover,
+    &:active,
+    &--active {
       background-color: var(--button-secondary-bg-hover);
       color: var(--button-secondary-color-hover);
     }
   }
 
   &--outlined {
-    padding: 0.375em 1em;
+    padding: calc(0.5em - #{$outlined-border-width})
+      calc(1em - #{$outlined-border-width});
     background-color: transparent;
-    border: 2px solid var(--button-outlined-bg);
+    border: $outlined-border-width solid var(--button-outlined-bg);
     color: var(--button-outlined-color);
 
-    &:hover {
+    &:hover,
+    &:active,
+    &--active {
       background-color: transparent;
       color: var(--button-outlined-color-hover);
       border-color: var(--button-outlined-bg-hover);
@@ -59,7 +70,9 @@
     background-color: var(--accent-danger);
     color: var(--base-inverted);
 
-    &:hover {
+    &:hover,
+    &:active,
+    &--active {
       background-color: var(--accent-danger-darker);
       color: var(--base-inverted);
     }
@@ -69,11 +82,19 @@
     background-color: transparent;
     color: var(--link-brand);
 
-    &:hover {
+    &:hover,
+    &:active,
+    &--active {
       background-color: transparent;
       color: var(--link-brand-hover);
     }
   }
+}
+
+// Icon alone
+.crayons-btn--icon-alone {
+  padding-left: 0.75em;
+  padding-right: 0.75em;
 }
 
 // Icon Left
@@ -85,7 +106,29 @@
   }
 }
 
-// Full width
-.crayons-btn--full {
-  width: 100%;
+// Grouped buttons
+.crayons-btn-group {
+  display: flex;
+
+  .crayons-btn {
+    border-radius: 0;
+
+    + .crayons-btn:not(.crayons-btn--outlined) {
+      margin-left: 1px;
+    }
+
+    + .crayons-btn--outlined {
+      margin-left: -$outlined-border-width;
+    }
+
+    &:first-child {
+      border-top-left-radius: $br-default;
+      border-bottom-left-radius: $br-default;
+    }
+
+    &:last-child {
+      border-top-right-radius: $br-default;
+      border-bottom-right-radius: $br-default;
+    }
+  }
 }

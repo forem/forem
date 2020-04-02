@@ -62,5 +62,5 @@
   }
 }
 
-@include avatar-logo('avatar', 100%, var(--widget-color-tertiary));
+@include avatar-logo('avatar', 100%, var(--card-color-tertiary));
 @include avatar-logo('logo', $br-default, var(--body-color-inverted));

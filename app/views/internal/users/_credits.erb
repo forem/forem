@@ -4,18 +4,14 @@
     <hr>
     <h4 class="mt-3"><%= @user.username %></h4>
     <p>Available User Credits: <%= @user.unspent_credits_count %></p>
-
-    <h3>Add Credits</h3>
-    <%= form_for [:internal, @user], html: { class: "form-inline justify-content-between mb-2" } do |f| %>
+    <%= form_with scope: :user, url: internal_user_path(@user), method: :patch, local: true, html: { class: "form-inline justify-content-between mb-2" } do |f| %>
       <div class="form-group">
         <%= f.text_field :add_credits, placeholder: "#", size: 5, class: "form-control mr-3" %>
         <%= f.text_field :new_note, placeholder: "Why are you adding these credits?", size: 50, required: true, class: "form-control" %>
       </div>
       <%= f.submit "Add Credits", class: "btn btn-primary" %>
     <% end %>
-
-    <h3>Remove Credits</h3>
-    <%= form_for [:internal, @user], html: { class: "form-inline justify-content-between mb-2" } do |f| %>
+    <%= form_with scope: :user, url: internal_user_path(@user), method: :patch, local: true, html: { class: "form-inline justify-content-between mb-2" } do |f| %>
       <div class="form-group">
         <%= f.text_field :remove_credits, placeholder: "#", size: 5, class: "form-control mr-3" %>
         <%= f.text_field :new_note, placeholder: "Why are you removing these credits?", size: 50, required: true, class: "form-control" %>
@@ -25,30 +21,23 @@
     <hr>
   </div>
   <div class="col-12">
-    <% @organizations.sort.each do |org| %>
-      <h4 class="mt-3"><%= org.name %></h4>
-      <p>Available <%= org.name %> Credits: <%= org.unspent_credits_count %></p>
-
-      <h3>Add Org Credits</h3>
-      <%= form_for [:internal, @user], html: { class: "form-inline justify-content-between mb-2" } do |f| %>
-        <div class="form-group">
-          <%= f.hidden_field :organization_id, value: org.id %>
-          <%= f.text_field :add_org_credits, placeholder: "#", size: 5, class: "form-control mr-3" %>
-          <%= f.text_field :new_note, placeholder: "Why are you adding these credits?", size: 50, required: true, class: "form-control" %>
-        </div>
-        <%= f.submit "Add Org Credits", class: "btn btn-primary" %>
-      <% end %>
-
-      <h3>Remove Org Credits</h3>
-      <%= form_for [:internal, @user], html: { class: "form-inline justify-content-between mb-2" } do |f| %>
-        <div class="form-group">
-          <%= f.hidden_field :organization_id, value: org.id %>
-          <%= f.text_field :remove_org_credits, placeholder: "#", size: 5, class: "form-control mr-3" %>
-          <%= f.text_field :new_note, placeholder: "Why are you removing these credits?", size: 50, required: true, class: "form-control" %>
-        </div>
-        <%= f.submit "Remove Org Credits", class: "btn btn-danger" %>
-      <% end %>
-      <hr>
+    <h4>Organizations</h4>
+    <%= form_with scope: :user, url: internal_user_path(@user), method: :patch, local: true, html: { class: "form-inline justify-content-between mb-2" } do |f| %>
+      <div class="form-group">
+        <%= f.text_field :add_org_credits, placeholder: "#", size: 5, class: "form-control mr-3" %>
+        <%= f.text_field :new_note, placeholder: "Why are you adding these credits?", size: 50, required: true, class: "form-control mr-3" %>
+        <%= f.collection_select :organization_id, @organizations, :id, :name, {}, { class: 'form-control' } %>
+      </div>
+      <%= f.submit "Add Org Credits", class: "btn btn-primary" %>
+    <% end %> 
+    <%= form_with scope: :user, url: internal_user_path(@user), method: :patch, local: true, html: { class: "form-inline justify-content-between mb-2" } do |f| %>
+      <div class="form-group">
+        <%= f.text_field :remove_org_credits, placeholder: "#", size: 5, class: "form-control mr-3" %>
+        <%= f.text_field :new_note, placeholder: "Why are you removing these credits?", size: 50, required: true, class: "form-control mr-3" %>
+        <%= f.collection_select :organization_id, @organizations, :id, :name, {}, { class: 'form-control' } %>
+      </div>
+      <%= f.submit "Remove Org Credits", class: "btn btn-danger" %>
     <% end %>
+    <hr>
   </div>
 </div>

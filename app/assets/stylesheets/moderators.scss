@@ -55,7 +55,7 @@
   .mod-index-header-top-filters {
     padding: 10px 0px 25px;
     a {
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
       font-size: 0.86em;
       padding: 3px 18px;
       border-radius: 100px;
@@ -83,8 +83,8 @@
   width: 96%;
   max-width: 1600px;
   border-radius: 3px;
-  @include themeable(border, theme-border, 1px solid $light-medium-gray);
-  @include themeable(background, theme-container-background, white);
+  border: 1px solid var(--card-color-tertiary);
+  background: var(--card-bg);
 
   .mod-index-row {
     padding: 10px;
@@ -125,7 +125,7 @@
       }
       a {
         font-weight: 500;
-        @include themeable(color, theme-secondary-color, $medium-gray);
+        color: var(--card-color-tertiary);
       }
     }
     .quick-mod-button {
@@ -137,7 +137,7 @@
       margin: 10px 0px 5px;
       margin-right: 5px;
       background: transparent;
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
     }
     .mod-index-row-iframes {
       padding: 5px 0px;
@@ -161,7 +161,7 @@
   padding: 30px 0px;
   h2 {
     a {
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
     }
   }
   p {
@@ -239,7 +239,7 @@
     margin-bottom: 5px;
     border-radius: 3px;
     box-sizing: border-box;
-    @include themeable(border, theme-border, 1px solid $light-medium-gray);
+    border: 1px solid var(--card-color-tertiary);
   }
 
   .tag-mod-form form input[type='submit'] {
@@ -271,7 +271,7 @@
     height: 100px;
     box-sizing: boder-box;
     border-radius: 3px;
-    @include themeable(border, theme-border, 1px solid $light-medium-gray);
+    border: 1px solid var(--card-color-tertiary);
   }
 
   .level-rating-button {
@@ -294,7 +294,7 @@
   .tag-mod-addition-radio {
     padding: 5px 20px;
     border-radius: 3px;
-    @include themeable(border, theme-border, 1px solid $light-medium-gray);
+    border: 1px solid var(--card-color-tertiary);
     display: inline-block;
     margin: 30px auto 10px;
     min-width: 205px;
