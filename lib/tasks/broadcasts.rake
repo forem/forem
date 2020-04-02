@@ -9,7 +9,7 @@ namespace :broadcasts do
     notifications_live_at = SiteConfig.welcome_notifications_live_at
     week_ago = 7.days.ago
     latest_date = notifications_live_at > week_ago ? notifications_live_at : week_ago
-    User.where("created_at > ?", latest_date).find_each do |user|
+    User.select(:id).where("created_at > ?", latest_date).find_each do |user|
       Broadcasts::WelcomeNotification::Generator.call(user.id)
     end
   end
