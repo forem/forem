@@ -41,6 +41,9 @@
     "reactions_count": {
       "type": "integer"
     },
+    "roles": {
+      "type": "keyword"
+    },
     "search_fields": {
       "type": "text"
     },
