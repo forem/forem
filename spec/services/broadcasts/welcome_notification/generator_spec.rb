@@ -1,9 +1,15 @@
 require "rails_helper"
 
 RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
-  let(:mascot_account)             { create(:user) }
-  let!(:welcome_thread)            { create(:article, user: mascot_account, published: true, tags: "welcome") }
-  let!(:welcome_broadcast)         { create(:welcome_broadcast) }
+  let(:mascot_account)  { create(:user) }
+  let!(:welcome_thread) { create(:article, user: mascot_account, published: true, tags: "welcome") }
+
+  let_it_be_readonly(:welcome_broadcast)         { create(:welcome_broadcast) }
+  let_it_be_readonly(:twitter_connect_broadcast) { create(:twitter_connect_broadcast) }
+  let_it_be_readonly(:github_connect_broadcast)  { create(:github_connect_broadcast) }
+  let_it_be_readonly(:customize_feed_broadcast)  { create(:customize_feed_broadcast) }
+  let_it_be_readonly(:discuss_and_ask_broadcast) { create(:discuss_and_ask_broadcast) }
+  let_it_be_readonly(:customize_ux_broadcast)    { create(:customize_ux_broadcast) }
 
   before do
     allow(Notification).to receive(:send_welcome_notification).and_call_original
@@ -28,11 +34,27 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       end.to not_change(user.notifications, :count)
     end
 
-    it "sends only 1 notification at a time" do
-      user = create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago)
-      expect do
-        sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
-      end.to change(user.notifications, :count).by(1)
+    it "sends only 1 notification at a time, in the correct order" do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+      user = create(:user, :with_identity, identities: ["github"], created_at: 1.day.ago)
+      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect(user.notifications.last.notifiable).to eq(welcome_broadcast)
+
+      Timecop.travel(1.day.since)
+      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect(user.notifications.last.notifiable).to eq(twitter_connect_broadcast)
+
+      Timecop.travel(1.day.since)
+      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect(user.notifications.last.notifiable).to eq(customize_feed_broadcast)
+
+      Timecop.travel(2.days.since)
+      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect(user.notifications.last.notifiable).to eq(customize_ux_broadcast)
+
+      Timecop.travel(1.day.since)
+      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect(user.notifications.last.notifiable).to eq(discuss_and_ask_broadcast)
+      Timecop.return
     end
   end
 
@@ -64,9 +86,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   end
 
   describe "#send_authentication_notification" do
-    let!(:twitter_connect_broadcast) { create(:twitter_connect_broadcast) }
-    let!(:github_connect_broadcast)  { create(:github_connect_broadcast) }
-
     it "does not send notification if user is created less than a day ago" do
       user = create(:user, :with_identity, identities: ["github"])
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_authentication_notification) }
@@ -110,7 +129,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
   describe "#send_feed_customization_notification" do
     let!(:user) { create(:user, :with_identity, identities: %w[twitter github], created_at: 3.days.ago) }
-    let!(:customize_feed_broadcast)  { create(:customize_feed_broadcast) }
 
     it "does not send a notification to a newly-created user" do
       user.update!(created_at: Time.zone.now)
@@ -140,7 +158,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
   describe "#send_ux_customization_notification" do
     let!(:user) { create(:user, :with_identity, identities: %w[twitter github], created_at: 5.days.ago) }
-    let!(:customize_ux_broadcast) { create(:customize_ux_broadcast) }
 
     it "does not send a notification to a newly-created user" do
       user.update!(created_at: Time.zone.now)
@@ -164,9 +181,9 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
   describe "#send_discuss_and_ask_notification" do
     let!(:user) { create(:user, :with_identity, identities: %w[twitter github], created_at: 6.days.ago) }
-    let!(:ask_question_broadcast) { create(:ask_question_broadcast) }
-    let!(:start_discussion_broadcast) { create(:start_discussion_broadcast) }
-    let!(:discuss_and_ask_broadcast) { create(:discuss_and_ask_broadcast) }
+
+    let_it_be_readonly(:ask_question_broadcast) { create(:ask_question_broadcast) }
+    let_it_be_readonly(:start_discussion_broadcast) { create(:start_discussion_broadcast) }
 
     context "with a user who has asked a question" do
       it "generates the correct broadcast type and sends the notification to the user" do
