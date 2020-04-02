@@ -27,7 +27,9 @@ RSpec.describe "Broadcasts tasks", type: :task do
     end
 
     it "call upon users created less than a week ago" do
-      # Travel another week forward
+      # Fulfil "user created less than a week ago" but in the future date presumability set by
+      # SiteConfig.welcome_notifications_live_at. Here we travel another week forward while still
+      # assuming SiteConfig.welcome_notifications_live_at is set for next week.
       Timecop.travel(next_week_today + 1.week) do
         create_list(:user, 3, created_at: 6.days.ago)
         Rake::Task["broadcasts:send_welcome_notification_flow"].invoke
