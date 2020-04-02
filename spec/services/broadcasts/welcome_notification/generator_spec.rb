@@ -4,7 +4,8 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let(:mascot_account)  { create(:user) }
   let!(:welcome_thread) { create(:article, user: mascot_account, published: true, tags: "welcome") }
 
-  let_it_be_readonly(:welcome_broadcast)         { create(:welcome_broadcast) }
+  # welcome_broadcast is explicitly not readonly so that we can test against an inactive broadcast
+  let_it_be(:welcome_broadcast)                  { create(:welcome_broadcast) }
   let_it_be_readonly(:twitter_connect_broadcast) { create(:twitter_connect_broadcast) }
   let_it_be_readonly(:github_connect_broadcast)  { create(:github_connect_broadcast) }
   let_it_be_readonly(:customize_feed_broadcast)  { create(:customize_feed_broadcast) }
@@ -27,15 +28,25 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   end
 
   describe "::call" do
+    let(:user) { create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago) }
+
     it "does not send a notification to an unsubscribed user" do
-      user = create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago, welcome_notifications: false)
+      user.update!(welcome_notifications: false)
       expect do
         sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
       end.to not_change(user.notifications, :count)
     end
 
+    it "does not send a notification and if no active broadcast exists" do
+      welcome_broadcast.update!(active: false)
+      expect do
+        sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
+      end.to change(user.notifications, :count).by(0)
+    end
+
     it "sends only 1 notification at a time, in the correct order" do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
-      user = create(:user, :with_identity, identities: ["github"], created_at: 1.day.ago)
+      user.update!(created_at: 1.day.ago)
+
       expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(welcome_broadcast)
 
