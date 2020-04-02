@@ -56,7 +56,7 @@
 
   // Header
   --header-bg: var(--base-0);
-  --header-shadow: rgba(0,0,0,0.1);
+  --header-shadow: rgba(0, 0, 0, 0.1);
   --header-icons-color: #0a0a0a;
   --header-icons-color-hover: #000;
 
@@ -78,8 +78,8 @@
   --link-color-secondary: var(--base-70);
   --link-color-secondary-hover: var(--base-80);
   --link-branded-color: var(--accent-brand);
-  --link-bg: var(--base-0);
   --link-bg-hover: var(--base-0);
+  --link-bg-hover-alt: var(--base-10);
   --link-bg-current: var(--base-inverted);
 
   // Primary buttons

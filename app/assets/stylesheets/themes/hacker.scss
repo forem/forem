@@ -56,6 +56,7 @@
 
   // Header
   --header-bg: var(--base-10);
+  --header-shadow: rgba(0, 0, 0, 0.1);
   --header-icons-color: var(--base-70);
   --header-icons-color-hover: var(--base-100);
 
@@ -77,8 +78,8 @@
   --link-color-secondary: var(--accent-brand-darker);
   --link-color-secondary-hover: var(--accent-brand-darker);
   --link-branded-color: #e24ec1;
-  --link-bg: var(--base-0);
   --link-bg-hover: var(--base-0);
+  --link-bg-hover-alt: var(--base-0);
   --link-bg-current: var(--base-inverted);
 
   // Primary buttons
@@ -114,4 +115,12 @@
   // Default box
   --box: var(--base-90);
   --box-darker: var(--base-100);
+
+  // Indicators
+  --indicator-accent-bg: var(--accent-brand);
+  --indicator-accent-color: var(--body-color-inverted);
+  --indicator-critical-bg: var(--accent-danger);
+  --indicator-critical-color: var(--body-color-inverted);
+  --indicator-default-bg: var(--button-secondary-bg);
+  --indicator-default-color: var(--button-secondary-color);
 }

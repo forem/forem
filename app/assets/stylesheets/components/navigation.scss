@@ -7,7 +7,7 @@
     color: var(--link-branded-color);
   }
 
-  &:hover  {
+  &:hover {
     color: var(--link-color-hover);
   }
 
@@ -23,6 +23,10 @@
   align-items: center;
   padding: $su-3;
   border-radius: $br-default;
+
+  &:hover {
+    background: var(--link-bg-hover);
+  }
 
   @media (min-width: $breakpoint-s) {
     padding: $su-2;
@@ -67,17 +71,11 @@
   }
 
   &:hover {
+    background: var(--link-bg-hover-alt);
     .crayons-link__secondary {
       color: var(--link-color-secondary-hover);
     }
   }
-}
-
-.crayons-link--block,
-.crayons-link--contentful {
-  &:hover  {
-    background: var(--link-bg-hover);
-  } 
 }
 
 .crayons-tabs {
@@ -90,7 +88,7 @@
 
     &--current {
       background: transparent;
-      
+
       &::after {
         position: absolute;
         left: 0.5em;

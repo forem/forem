@@ -78,8 +78,8 @@
   --link-color-secondary: var(--base-70);
   --link-color-secondary-hover: var(--base-80);
   --link-branded-color: #4e57ef;
-  --link-bg: var(--base-0);
-  --link-bg-hover: var(--base-10);
+  --link-bg-hover: var(--base-0);
+  --link-bg-hover-alt: var(--base-inverted);
   --link-bg-current: var(--base-inverted);
 
   // Primary buttons
@@ -117,7 +117,7 @@
   --box-darker: var(--base-100);
 
   // Indicators
-  --indicator-accent-bg: var(--link-brand-color);
+  --indicator-accent-bg: var(--link-branded-color);
   --indicator-accent-color: var(--body-color-inverted);
   --indicator-critical-bg: var(--base-80);
   --indicator-critical-color: var(--body-color-inverted);
