@@ -84,6 +84,9 @@ function addClickListeners(responsesWrapper, commentReplyId) {
   const form = commentReplyId
     ? document.querySelector(`form#new-comment-${commentReplyId}`)
     : document.querySelector('form#new_comment');
+  const parentCommentId = form.id !== 'new_comment'
+    ? form.querySelector('input#comment_parent_id').value
+    : null;
   const insertButtons = Array.from(
     responsesWrapper.getElementsByClassName('insert-template-button'),
   );
@@ -102,7 +105,7 @@ function addClickListeners(responsesWrapper, commentReplyId) {
 
       if (textAreaReplaceable) {
         textArea.value = content;
-        responsesWrapper.parentElement.classList.remove('showing');
+        responsesWrapper.parentElement.classList.toggle('hidden');
       }
     });
   });
@@ -120,7 +123,8 @@ Make sure this is the appropriate comment for the situation.
 
 This action is not reversible.`;
       if (confirm(confirmMsg)) {
-        // submitAsModerator(e.target.dataset.responseTemplateId, parentCommentId);
+        submitAsModerator(e.target.dataset.responseTemplateId, parentCommentId);
+        responsesWrapper.parentElement.classList.toggle('hidden');
       }
     });
   });

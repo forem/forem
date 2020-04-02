@@ -115,6 +115,35 @@ class CommentsController < ApplicationController
     render json: { error: message }, status: :unprocessable_entity
   end
 
+  def moderator_create
+    return if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
+
+    response_template = ResponseTemplate.find(params[:response_template][:id])
+    authorize response_template, :moderator_create?
+
+    moderator = User.find(SiteConfig.mascot_user_id)
+    @comment = Comment.new(permitted_attributes(Comment))
+    @comment.user_id = moderator.id
+    @comment.body_markdown = response_template.content
+    @comment.moderator_id = current_user.id
+    authorize @comment
+
+    if @comment.save
+      Mention.create_all(@comment)
+      Notification.send_new_comment_notifications_without_delay(@comment)
+
+      render json: { status: "created", path: @comment.path }
+      # elsif is to prevent double submits
+    elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
+                                    commentable_id: @comment.commentable.id,
+                                    ancestry: @comment.ancestry)[1])
+      @comment.destroy
+      render json: { status: "comment already exists" }, status: :conflict
+    else
+      render json: { status: @comment&.errors&.full_messages&.to_sentence }, status: :unprocessable_entity
+    end
+  end
+
   # PATCH/PUT /comments/1
   # PATCH/PUT /comments/1.json
   def update
