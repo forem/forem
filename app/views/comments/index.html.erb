@@ -38,7 +38,7 @@
 
 <% if user_signed_in? %>
   <div id="response-templates-data" style="display: none;"></div>
-  <%= javascript_packs_with_chunks_tag "responseTemplates", defer: true %>
+  <%= javascript_packs_with_chunks_tag "responseTemplatesComments", defer: true %>
 <% end %>
 
 <% if @root_comment %>

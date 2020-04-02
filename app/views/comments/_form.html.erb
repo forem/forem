@@ -33,8 +33,8 @@
   <div class="field" id="textarea-wrapper">
     <div class="response-templates-container hidden">
         <header>
-          <button type="button" class="personal-template-button active" data-type="personal" data-fetched="false">PERSONAL</button>
-          <button type="button" class="moderator-template-button hidden" data-type="moderator" data-fetched="false">MODERATOR</button>
+          <button type="button" class="personal-template-button active" data-target-type="personal" data-form-id="new_comment">PERSONAL</button>
+          <button type="button" class="moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment">MODERATOR</button>
         </header>
         <img class="loading-img hidden" src="<%= asset_path("loading-ellipsis.svg") %>" alt="loading">
         <div class="personal-responses-container">
@@ -43,7 +43,7 @@
         <div class="moderator-responses-container hidden">
           <%# filled by JS %>
         </div>
-        <a target="_blank" rel="noopener nofollow" href="<% user_settings_path(tab: "response-templates") %>" class="mod-response-create-new">Create new template</a>
+        <a target="_blank" rel="noopener nofollow" href="<%= user_settings_path(tab: "response-templates") %>" class="mod-response-create-new">Create new template</a>
     </div>
     <%= f.text_area :body_markdown,
                     placeholder: "Add to the discussion",
@@ -73,7 +73,7 @@
   </div>
   <div class="editor-response-templates">
     <button class="response-templates-button" title="Use a response template" type="button">
-      <img src="<%= asset_path("response-template.svg") %>" alt="" class="icon-image">
+      <img src="<%= asset_path("response-template.svg") %>" alt="" class="icon-image" data-form-id="new_comment">
     </button>
   </div>
   <div class="actions" id="submit-wrapper">

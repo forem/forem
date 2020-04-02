@@ -1,17 +1,17 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
 
-export function toggleTemplateTypeButton(e) {
-  const targetType = e.target.dataset.type; // moderator
+export function toggleTemplateTypeButton(form, e) {
+  const { targetType } = e.target.dataset
   const activeType = targetType === 'personal' ? 'moderator' : 'personal';
-  // don't use document for comment replies
   e.target.classList.toggle('active');
-  document.querySelector(`.${activeType}-template-button`).classList.toggle('active');
-  document.querySelector(`.${targetType}-responses-container`).classList.toggle('hidden');
-  document.querySelector(`.${activeType}-responses-container`).classList.toggle('hidden');
+  form.querySelector(`.${activeType}-template-button`).classList.toggle('active');
+
+  form.querySelector(`.${targetType}-responses-container`).classList.toggle('hidden');
+  form.querySelector(`.${activeType}-responses-container`).classList.toggle('hidden');
 }
 
-function buildResponseTemplateHTML(response, typeOf) {
+function buildHTML(response, typeOf) {
   if (response.length === 0 && typeOf === 'personal_comment') {
     return `
 <div class="mod-response-wrapper mod-response-wrapper-empty">
@@ -80,18 +80,16 @@ function submitAsModerator(responseTemplateId, parentId) {
     });
 }
 
-function addClickListeners(responsesWrapper, commentReplyId) {
-  const form = commentReplyId
-    ? document.querySelector(`form#new-comment-${commentReplyId}`)
-    : document.querySelector('form#new_comment');
+function addClickListeners(form) {
+  const responsesContainer = form.querySelector('.response-templates-container')
   const parentCommentId = form.id !== 'new_comment'
     ? form.querySelector('input#comment_parent_id').value
     : null;
   const insertButtons = Array.from(
-    responsesWrapper.getElementsByClassName('insert-template-button'),
+    responsesContainer.getElementsByClassName('insert-template-button'),
   );
   const moderatorSubmitButtons = Array.from(
-    responsesWrapper.getElementsByClassName('moderator-submit-button'),
+    responsesContainer.getElementsByClassName('moderator-submit-button'),
   );
 
   insertButtons.forEach((button) => {
@@ -105,7 +103,7 @@ function addClickListeners(responsesWrapper, commentReplyId) {
 
       if (textAreaReplaceable) {
         textArea.value = content;
-        responsesWrapper.parentElement.classList.toggle('hidden');
+        responsesContainer.classList.toggle('hidden');
       }
     });
   });
@@ -124,27 +122,18 @@ Make sure this is the appropriate comment for the situation.
 This action is not reversible.`;
       if (confirm(confirmMsg)) {
         submitAsModerator(e.target.dataset.responseTemplateId, parentCommentId);
-        responsesWrapper.parentElement.classList.toggle('hidden');
       }
     });
   });
 }
 
-export function addToggleListener(responsesWrapper) {
-  const toggleButton = document.querySelector('.response-templates-button');
-
-  toggleButton.addEventListener('click', () => {
-    responsesWrapper.classList.toggle('hidden');
-  });
-}
-
-export function fetchResponseTemplates(typeOf) {
-  // const responsesData = document.querySelector('#response-templates-data');
+function fetchResponseTemplates(typeOf, formId) {
+  const form = document.getElementById(formId)
   let dataContainer;
   if (typeOf === 'personal_comment') {
-    dataContainer = document.querySelector('.personal-responses-container');
+    dataContainer = form.querySelector('.personal-responses-container');
   } else if (typeOf === 'mod_comment') {
-    dataContainer = document.querySelector('.moderator-responses-container');
+    dataContainer = form.querySelector('.moderator-responses-container');
   }
   /* eslint-disable-next-line no-undef */
   fetch(`/response_templates?type_of=${typeOf}`, {
@@ -157,55 +146,89 @@ export function fetchResponseTemplates(typeOf) {
   })
     .then((response) => response.json())
     .then((response) => {
-      document.querySelector('img.loading-img').classList.toggle('hidden');
-      dataContainer.innerHTML = buildResponseTemplateHTML(response, typeOf);
-      addClickListeners(dataContainer);
-      // if (responsesWrapper) {
-      //   responsesWrapper.innerHTML = dataContainer.innerHTML;
-      //   addClickListeners(responsesWrapper);
-      // }
+      form.querySelector('img.loading-img').classList.toggle('hidden');
+      dataContainer.innerHTML = buildHTML(response, typeOf);
+      const topLevelData = document.getElementById('response-templates-data')
+      topLevelData.innerHTML = dataContainer.parentElement.innerHTML
+      addClickListeners(form);
     });
 }
 
-export function addReplyObservers() {
-  const targetNodes = Array.from(
-    document.querySelectorAll('div.comment-submit-actions.actions'),
-  );
-  const config = { attributes: false, childList: true, characterData: false };
-  const containerWithData = document.getElementById('response-templates-data');
+function prepareHeaderButtons(form) {
+  const personalTemplateButton = form.querySelector('.personal-template-button');
+  const modTemplateButton = form.querySelector('.moderator-template-button');
 
-  const callback = (mutationsList) => {
-    const { target } = mutationsList[0];
-    if (mutationsList[0].addedNodes.length === 1) {
-      const button = target.querySelector('button.response-templates-button');
-      const responsesWrapper = target.querySelector(
-        '.response-templates-container',
-      );
-      if (containerWithData.innerHTML === '') {
-        fetchResponseTemplates(containerWithData, responsesWrapper);
-        responsesWrapper.innerHTML = containerWithData.innerHTML;
-      }
+  personalTemplateButton.addEventListener('click', (e) => {
+    toggleTemplateTypeButton(form, e)
+  });
+  modTemplateButton.addEventListener('click', (e) => {
+    toggleTemplateTypeButton(form, e)
+  });
+  modTemplateButton.classList.remove('hidden');
 
-      if (containerWithData.innerHTML !== '') {
-        responsesWrapper.innerHTML = containerWithData.innerHTML;
-        addClickListeners(responsesWrapper);
-      }
+  modTemplateButton.addEventListener('click', () => {
+    const topLevelData = document.getElementById('response-templates-data')
+    const modDataNotFetched = topLevelData.innerHTML !== ''
+      ? topLevelData.querySelector('.moderator-responses-container')
+          .childElementCount === 0
+      : false;
+    if (modDataNotFetched) {
+      form.querySelector('img.loading-img').classList.toggle('hidden')
+      fetchResponseTemplates('mod_comment', form.id)
+    }
+    }, { once: true });
+}
 
-      button.addEventListener('click', () => {
-        if (responsesWrapper.style.display === 'none') {
-          responsesWrapper.style.display = 'flex';
-        } else {
-          responsesWrapper.style.display = 'none';
-        }
-      });
+function copyData(responsesContainer) {
+  responsesContainer.innerHTML = document.getElementById(
+    'response-templates-data',
+  ).innerHTML;
+}
+
+function openButtonCallback(form) {
+  const responsesContainer = form.querySelector('.response-templates-container');
+  const dataFetched = document.getElementById('response-templates-data').innerHTML !== ''
+
+  responsesContainer.classList.toggle('hidden');
+
+  if (dataFetched && !responsesContainer.classList.contains('hidden')) {
+    copyData(responsesContainer)
+    addClickListeners(form)
+  } else {
+    form.querySelector('img.loading-img').classList.toggle('hidden');
+    fetchResponseTemplates('personal_comment', form.id);
+  }
+  /* eslint-disable-next-line no-undef */
+  if (userData().moderator_for_tags.length > 0) {
+    prepareHeaderButtons(form);
+  }
+}
+
+export function prepareOpenButton(form) {
+  const button = form.querySelector('.response-templates-button')
+  if (!button) {
+    return
+  }
+
+  button.addEventListener('click', () => {
+    openButtonCallback(form)
+  });
+}
+
+export function observeForReplyClick() {
+  const config = { childList: true, subtree: true };
+
+  const callback = (mutations) => {
+    const form = mutations[0].addedNodes[0];
+    if (form.nodeName === "FORM") {
+      prepareOpenButton(form)
     }
   };
 
   const observer = new MutationObserver(callback);
 
-  targetNodes.forEach((node) => {
-    observer.observe(node, config);
-  });
+  const commentTree = document.getElementById('comment-trees-container')
+  observer.observe(commentTree, config)
 
   window.addEventListener('beforeunload', () => {
     observer.disconnect();

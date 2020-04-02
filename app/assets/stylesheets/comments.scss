@@ -310,13 +310,7 @@ a.header-link {
         }
       }
 
-      header>h3 {
-        padding: 18px 12px;
-        margin: 0px;
-        font-size: calc(20px + 0.4vw);
-        text-align: left;
-      }
-      header>button {
+      header > button {
         font-family: $helvetica-condensed;
         font-stretch: condensed;
         color: $bold-blue;
@@ -328,6 +322,7 @@ a.header-link {
         background: none;
         width: 125px;
         margin: 5px;
+        float: left;
         &.active {
           background: $bold-blue;
           color: white;
