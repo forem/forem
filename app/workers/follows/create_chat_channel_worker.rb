@@ -9,7 +9,7 @@ module Follows
         find_by(id: follow_id, follower_type: "User", followable_type: "User")
       return unless follow&.followable&.following?(follow.follower)
 
-      ChatChannel.create_with_users([follow.followable, follow.follower])
+      ChatChannel.create_with_users(users: [follow.followable, follow.follower])
     end
   end
 end

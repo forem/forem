@@ -104,6 +104,18 @@ pre {
   }
 }
 
+.cta {
+  color: $black;
+  background: $green;
+  font-family: $helvetica-condensed;
+  -webkit-appearance: none;
+  font-stretch: condensed;
+  font-weight: bold;
+  &.cta-danger {
+    background: $red;
+  }
+}
+
 button {
   cursor: pointer;
 }

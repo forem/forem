@@ -251,7 +251,10 @@ broadcast_messages = {
   twitter_connect: "You're on a roll! 🎉 Let's connect your <a href='/settings'> Twitter account</a> to complete your identity so that we don't think you're a robot. 🤖",
   github_connect: "You're on a roll! 🎉 Let's connect your <a href='/settings'> GitHub account</a> to complete your identity so that we don't think you're a robot. 🤖",
   customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",
-  customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!"
+  customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!",
+  start_discussion: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; just click on 'Write a Post' in the sidebar of the tag page to get started!",
+  ask_question: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; just click on 'Write a Post' in the sidebar of the tag page to get started!",
+  discuss_and_ask: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or <a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; just click on 'Write a Post' in the sidebar of the tag page to get started!"
 }
 
 broadcast_messages.each do |type, message|
@@ -294,7 +297,7 @@ Rails.logger.info "#{counter}. Creating Chat Channels and Messages"
   )
 end
 
-direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
+direct_channel = ChatChannel.create_with_users(users: User.last(2), channel_type: "direct")
 Message.create!(
   chat_channel: direct_channel,
   user: User.last,
