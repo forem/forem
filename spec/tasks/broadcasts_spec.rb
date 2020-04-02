@@ -1,12 +1,13 @@
 require "rails_helper"
 
 RSpec.describe "Broadcasts tasks", type: :task do
-  let(:service) { Broadcasts::WelcomeNotification::Generator }
+  let(:service)         { Broadcasts::WelcomeNotification::Generator }
+  let(:next_week_today) { 1.week.since }
 
   let_it_be_readonly(:default_config_date) { SiteConfig.welcome_notifications_live_at }
 
   before do
-    SiteConfig.welcome_notifications_live_at = 1.week.since
+    SiteConfig.welcome_notifications_live_at = next_week_today
     allow(service).to receive(:call)
     Rake::Task.clear
     PracticalDeveloper::Application.load_tasks
@@ -18,7 +19,7 @@ RSpec.describe "Broadcasts tasks", type: :task do
 
   describe "#broadcast_welcome_notification_flow" do
     it "does not call upon users created before the start_date" do
-      Timecop.travel(SiteConfig.welcome_notifications_live_at) do
+      Timecop.travel(next_week_today) do
         create(:user, created_at: 1.day.ago)
         Rake::Task["broadcasts:send_welcome_notification_flow"].invoke
         expect(service).not_to have_received(:call)
@@ -26,7 +27,8 @@ RSpec.describe "Broadcasts tasks", type: :task do
     end
 
     it "call upon users created less than a week ago" do
-      Timecop.travel(SiteConfig.welcome_notifications_live_at + 1.week) do
+      # Travel another week forward
+      Timecop.travel(next_week_today + 1.week) do
         create_list(:user, 3, created_at: 6.days.ago)
         Rake::Task["broadcasts:send_welcome_notification_flow"].invoke
         expect(service).to have_received(:call).exactly(3)
