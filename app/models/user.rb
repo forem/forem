@@ -29,12 +29,14 @@ class User < ApplicationRecord
   )
 
   rolify
+
   include AlgoliaSearch
   include Storext.model
   include Searchable
 
   SEARCH_SERIALIZER = Search::UserSerializer
   SEARCH_CLASS = Search::User
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::User
 
   acts_as_followable
   acts_as_follower
@@ -198,6 +200,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification, :estimate_default_language
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
