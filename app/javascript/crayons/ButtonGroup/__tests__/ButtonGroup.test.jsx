@@ -1,12 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import {
-  Button,
-  ButtonGroup,
-  OutlinedButton,
-  DangerButton,
-  SecondaryButton,
-} from '@crayons';
+import { Button, ButtonGroup } from '@crayons';
 
 describe('<ButtonGroup /> component', () => {
   it('should render', () => {
@@ -23,12 +17,8 @@ describe('<ButtonGroup /> component', () => {
 
     const tree = render(
       <ButtonGroup>
-        {' '}
-        <Button>I&apos;m the primary</Button>
-        <OutlinedButton>I&apos;m outlined</OutlinedButton>
-        <DangerButton>Danger!</DangerButton>
-        <SecondaryButton icon={Icon}>Hello!</SecondaryButton>
-        <SecondaryButton icon={Icon} />
+        <Button>Hello World!</Button>
+        <Button icon={Icon} />
       </ButtonGroup>,
     );
     expect(tree).toMatchSnapshot();

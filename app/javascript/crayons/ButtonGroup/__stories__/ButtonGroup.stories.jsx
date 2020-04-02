@@ -1,11 +1,5 @@
 import { h } from 'preact';
-import {
-  Button,
-  SecondaryButton,
-  OutlinedButton,
-  DangerButton,
-  ButtonGroup,
-} from '@crayons';
+import { Button, ButtonGroup } from '@crayons';
 
 import '../../storybook-utiltiies/designSystem.scss';
 
@@ -27,11 +21,8 @@ export const Default = () => {
 
   return (
     <ButtonGroup>
-      <Button>I&apos;m the primary</Button>
-      <OutlinedButton>I&apos;m outlined</OutlinedButton>
-      <DangerButton>Danger!</DangerButton>
-      <SecondaryButton icon={Icon}>Hello!</SecondaryButton>
-      <SecondaryButton icon={Icon} />
+      <Button>Hello World!</Button>
+      <Button icon={Icon} />
     </ButtonGroup>
   );
 };
