@@ -14,5 +14,9 @@ module Search
                :profile_image_90,
                :reactions_count,
                :username
+
+    attribute :roles do |user|
+      user.roles.map(&:name)
+    end
   end
 end
