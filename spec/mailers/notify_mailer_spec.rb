@@ -152,9 +152,9 @@ RSpec.describe NotifyMailer, type: :mailer do
 
     def create_badge_achievement(user, badge, rewarder)
       BadgeAchievement.create(
-        user_id: user.id,
-        badge_id: badge.id,
-        rewarder_id: rewarder.id,
+        user: user,
+        badge: badge,
+        rewarder: rewarder,
         rewarding_context_message_markdown: "Hello [Yoho](/hey)",
       )
     end
@@ -172,14 +172,74 @@ RSpec.describe NotifyMailer, type: :mailer do
       expect(email.to).to eq([user.email])
     end
 
-    it "includes the tracking pixel" do
-      expect(email.html_part.body).to include("open.gif")
+    context "when rendering the HTML email" do
+      it "includes the tracking pixel" do
+        expect(email.html_part.body).to include("open.gif")
+      end
+
+      it "includes UTM params" do
+        expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
+        expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
+        expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_badge_email"))
+      end
+
+      it "includes the user URL" do
+        expect(email.html_part.body).to include(CGI.escape(URL.user(user)))
+      end
+
+      it "includes the listings URL" do
+        expect(email.html_part.body).to include(
+          CGI.escape(
+            Rails.application.routes.url_helpers.classified_listings_url,
+          ),
+        )
+      end
+
+      it "includes the about listings URL" do
+        expect(email.html_part.body).to include(
+          CGI.escape(URL.url("/about-listings")),
+        )
+      end
+
+      it "includes the rewarding_context_message in the email" do
+        expect(email.html_part.body).to include("Hello <a")
+        expect(email.html_part.body).to include(CGI.escape(URL.url("/hey")))
+      end
+
+      it "does not include the rewarding_context_message in the email" do
+        allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
+
+        expect(email.html_part.body).not_to include("Hello <a")
+        expect(email.html_part.body).not_to include(CGI.escape(URL.url("/hey")))
+      end
     end
 
-    it "includes UTM params" do
-      expect(email.html_part.body).to include(CGI.escape("utm_medium=email"))
-      expect(email.html_part.body).to include(CGI.escape("utm_source=notify_mailer"))
-      expect(email.html_part.body).to include(CGI.escape("utm_campaign=new_badge_email"))
+    context "when rendering the text email" do
+      it "includes the user URL" do
+        expect(email.text_part.body).to include(URL.user(user))
+      end
+
+      it "includes the listings URL" do
+        expect(email.text_part.body).to include(
+          Rails.application.routes.url_helpers.classified_listings_url,
+        )
+      end
+
+      it "includes the about listings URL" do
+        expect(email.text_part.body).to include(URL.url("/about-listings"))
+      end
+
+      it "includes the rewarding_context_message in the email" do
+        expect(email.text_part.body).to include("Hello Yoho")
+        expect(email.text_part.body).not_to include(URL.url("/hey"))
+      end
+
+      it "does not include the rewarding_context_message in the email" do
+        allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
+
+        expect(email.text_part.body).not_to include("Hello Yoho")
+        expect(email.text_part.body).not_to include(URL.url("/hey"))
+      end
     end
   end
 
