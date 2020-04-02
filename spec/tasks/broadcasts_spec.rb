@@ -18,6 +18,13 @@ RSpec.describe "Broadcasts tasks", type: :task do
   end
 
   describe "#broadcast_welcome_notification_flow" do
+    it "does nothing if SiteConfig.welcome_notifications_live_at is nil" do
+      SiteConfig.welcome_notifications_live_at = nil
+      create(:user, created_at: 1.day.ago)
+      Rake::Task["broadcasts:send_welcome_notification_flow"].invoke
+      expect(service).not_to have_received(:call)
+    end
+
     it "does not call upon users created before the start_date" do
       Timecop.travel(next_week_today) do
         create(:user, created_at: 1.day.ago)
