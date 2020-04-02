@@ -1,13 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "Broadcasts tasks", type: :task do
-  let(:service)         { Broadcasts::WelcomeNotification::Generator }
-  let(:next_week_today) { 1.week.since }
+  let(:service) { Broadcasts::WelcomeNotification::Generator }
+  let(:one_week_from_today) { 1.week.since }
 
   let_it_be_readonly(:default_config_date) { SiteConfig.welcome_notifications_live_at }
 
   before do
-    SiteConfig.welcome_notifications_live_at = next_week_today
+    # Set date to a week from today
+    SiteConfig.welcome_notifications_live_at = one_week_from_today
     allow(service).to receive(:call)
     Rake::Task.clear
     PracticalDeveloper::Application.load_tasks
@@ -26,7 +27,8 @@ RSpec.describe "Broadcasts tasks", type: :task do
     end
 
     it "does not call upon users created before the start_date" do
-      Timecop.travel(next_week_today) do
+      # Travel forward one week, and test that a user created 8 days ago does not receive notifications.
+      Timecop.travel(one_week_from_today) do
         create(:user, created_at: 1.day.ago)
         Rake::Task["broadcasts:send_welcome_notification_flow"].invoke
         expect(service).not_to have_received(:call)
@@ -34,11 +36,13 @@ RSpec.describe "Broadcasts tasks", type: :task do
     end
 
     it "call upon users created less than a week ago" do
-      # Fulfil "user created less than a week ago" but in the future date presumability set by
-      # SiteConfig.welcome_notifications_live_at. Here we travel another week forward while still
-      # assuming SiteConfig.welcome_notifications_live_at is set for next week.
-      Timecop.travel(next_week_today + 1.week) do
+      # Travel forward one week (7)
+      # then travel another week further (14 days)
+      # On day 14, pressume user is created 6 days ago (created on day 8)
+      # At this point notifications_live_at < week_ago is true and notifications_live_at is ignored.
+      Timecop.travel(one_week_from_today + 1.week) do
         create_list(:user, 3, created_at: 6.days.ago)
+        create_list(:user, 1, created_at: 10.days.ago)
         Rake::Task["broadcasts:send_welcome_notification_flow"].invoke
         expect(service).to have_received(:call).exactly(3)
       end
