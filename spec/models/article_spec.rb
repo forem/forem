@@ -851,4 +851,12 @@ RSpec.describe Article, type: :model do
       expect(feed_article.attributes.keys).to match_array(fields)
     end
   end
+
+  describe "#touch_by_reaction" do
+    it "reindexes elasticsearch doc" do
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.search_id]) do
+        article.touch_by_reaction
+      end
+    end
+  end
 end

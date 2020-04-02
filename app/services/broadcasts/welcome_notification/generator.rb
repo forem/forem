@@ -16,8 +16,9 @@ module Broadcasts
 
         send_welcome_notification unless notification_enqueued
         send_authentication_notification unless notification_enqueued
-        send_ux_customization_notification unless notification_enqueued
         send_feed_customization_notification unless notification_enqueued
+        send_ux_customization_notification unless notification_enqueued
+        send_discuss_and_ask_notification unless notification_enqueued
       end
 
       private
@@ -38,6 +39,12 @@ module Broadcasts
         @notification_enqueued = true
       end
 
+      def send_feed_customization_notification
+        return if user_is_following_tags? || received_notification?(customize_feed_broadcast) || user.created_at > 3.days.ago
+
+        Notification.send_welcome_notification(user.id, customize_feed_broadcast.id)
+      end
+
       def send_ux_customization_notification
         return if received_notification?(customize_ux_broadcast) || user.created_at > 5.days.ago
 
@@ -45,10 +52,11 @@ module Broadcasts
         @notification_enqueued = true
       end
 
-      def send_feed_customization_notification
-        return if user_is_following_tags? || received_notification?(customize_feed_broadcast) || user.created_at > 3.days.ago
+      def send_discuss_and_ask_notification
+        return if (asked_a_question && started_a_discussion) || received_notification?(discuss_and_ask_broadcast) || user.created_at > 6.days.ago
 
-        Notification.send_welcome_notification(user.id, customize_feed_broadcast.id)
+        Notification.send_welcome_notification(user.id, discuss_and_ask_broadcast.id)
+        @notification_enqueued = true
       end
 
       def received_notification?(broadcast)
@@ -80,12 +88,16 @@ module Broadcasts
         @customize_feed_broadcast ||= Broadcast.find_by(title: "Welcome Notification: customize_feed")
       end
 
-      def identities
-        @identities ||= user.identities.where(provider: SiteConfig.authentication_providers)
-      end
-
       def authentication_broadcast
         @authentication_broadcast ||= find_auth_broadcast
+      end
+
+      def discuss_and_ask_broadcast
+        @discuss_and_ask_broadcast ||= find_discuss_ask_broadcast
+      end
+
+      def identities
+        @identities ||= user.identities.where(provider: SiteConfig.authentication_providers)
       end
 
       def find_auth_broadcast
@@ -93,6 +105,25 @@ module Broadcasts
           identities.exists?(provider: provider) ? nil : "#{provider}_connect"
         end.compact
         Broadcast.find_by(title: "Welcome Notification: #{missing_identities.first}")
+      end
+
+      def find_discuss_ask_broadcast
+        type = if !asked_a_question && started_a_discussion
+                 "ask_question"
+               elsif !started_a_discussion && asked_a_question
+                 "start_discussion"
+               else
+                 "discuss_and_ask"
+               end
+        Broadcast.find_by(title: "Welcome Notification: #{type}")
+      end
+
+      def asked_a_question
+        @asked_a_question ||= Article.user_published_with(user.id, "explainlikeimfive").any?
+      end
+
+      def started_a_discussion
+        @started_a_discussion ||= Article.user_published_with(user.id, "discuss").any?
       end
     end
   end
