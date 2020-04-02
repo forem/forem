@@ -1,6 +1,6 @@
 namespace :broadcasts do
   desc "Send Welcome Notifications once a day"
-  task broadcast_welcome_notification_flow: :environment do
+  task send_welcome_notification_flow: :environment do
     # In order to prevent new users from receiving multiple welcome notifications in a day,
     # a feature_live_date is required. The script will only be effective after feature_live_date
     # and will ultimately be superseded by 7.days.ago when it's larger than feature_live_date
