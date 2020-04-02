@@ -38,12 +38,14 @@ RSpec.describe Search::FeedContent, type: :service do
       ]
       flare_tag_keys = %w[name bg_color_hex text_color_hex]
       user_keys = %w[username name profile_image_90]
+      podcast_keys = %w[slug image_url title]
       index_documents([article1])
 
       feed_doc = described_class.search_documents(params: { size: 1 }).first
       expect(feed_doc.keys).to include(*view_keys)
       expect(feed_doc["user"].keys).to include(*user_keys)
       expect(feed_doc["flare_tag"].keys).to include(*flare_tag_keys)
+      expect(feed_doc["podcast"].keys).to include(*podcast_keys)
     end
 
     context "with a query" do
