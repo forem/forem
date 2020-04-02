@@ -1,25 +1,35 @@
 @import '../config/import';
 
-.crayons-nav-block {
-  display: flex;
-  align-items: center;
-  padding: $su-3;
-  border-radius: $br-default;
-  color: var(--link-dimmed-color);
+.crayons-link {
+  color: var(--link-color);
 
-  @media (min-width: $breakpoint-s) {
-    padding: $su-2;
+  &--branded {
+    color: var(--link-branded-color);
   }
 
-  &:hover:not(&--current) {
-    background: var(--link-dimmed-bg-hover);
-    color: var(--link-dimmed-color-hover);
+  &:hover {
+    color: var(--link-color-hover);
   }
 
   &--current {
     font-weight: $fw-medium;
-    background: var(--link-dimmed-bg-current);
-    color: var(--link-dimmed-color-current);
+    color: var(--link-color-current);
+    background: var(--link-bg-current);
+  }
+}
+
+.crayons-link--block {
+  display: flex;
+  align-items: center;
+  padding: $su-3;
+  border-radius: $br-default;
+
+  &:hover {
+    background: var(--link-bg-hover);
+  }
+
+  @media (min-width: $breakpoint-s) {
+    padding: $su-2;
   }
 
   .crayons-icon {
@@ -43,22 +53,41 @@
   }
 }
 
+.crayons-link--contentful {
+  display: block;
+  padding: $su-4;
+  border-bottom: 1px solid var(--body-bg);
+
+  &:last-child {
+    border-bottom: 0;
+    border-bottom-right-radius: $br-default;
+    border-bottom-left-radius: $br-default;
+  }
+
+  .crayons-link__secondary {
+    color: var(--link-color-secondary);
+    font-size: $fs-s;
+    padding-top: $su-1;
+  }
+
+  &:hover {
+    background: var(--link-bg-hover-alt);
+    .crayons-link__secondary {
+      color: var(--link-color-secondary-hover);
+    }
+  }
+}
+
 .crayons-tabs {
   display: flex;
 
-  &__item {
+  .crayons-link {
     padding: 0 0.5em;
-    color: var(--link-dimmed-secondary-color);
     position: relative;
     display: inline-block;
 
-    &:hover {
-      color: var(--link-dimmed-color-hover);
-    }
-
     &--current {
-      color: var(--link-dimmed-color-current);
-      font-weight: $fw-medium;
+      background: transparent;
 
       &::after {
         position: absolute;

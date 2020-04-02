@@ -83,8 +83,8 @@
   width: 96%;
   max-width: 1600px;
   border-radius: 3px;
-  border: 1px solid var(--container-color-tertiary);
-  background: var(--container-bg);
+  border: 1px solid var(--card-color-tertiary);
+  background: var(--card-bg);
 
   .mod-index-row {
     padding: 10px;
@@ -125,7 +125,7 @@
       }
       a {
         font-weight: 500;
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
     }
     .quick-mod-button {
@@ -239,7 +239,7 @@
     margin-bottom: 5px;
     border-radius: 3px;
     box-sizing: border-box;
-    border: 1px solid var(--container-color-tertiary);
+    border: 1px solid var(--card-color-tertiary);
   }
 
   .tag-mod-form form input[type='submit'] {
@@ -271,7 +271,7 @@
     height: 100px;
     box-sizing: boder-box;
     border-radius: 3px;
-    border: 1px solid var(--container-color-tertiary);
+    border: 1px solid var(--card-color-tertiary);
   }
 
   .level-rating-button {
@@ -294,7 +294,7 @@
   .tag-mod-addition-radio {
     padding: 5px 20px;
     border-radius: 3px;
-    border: 1px solid var(--container-color-tertiary);
+    border: 1px solid var(--card-color-tertiary);
     display: inline-block;
     margin: 30px auto 10px;
     min-width: 205px;
