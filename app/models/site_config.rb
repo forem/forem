@@ -25,6 +25,9 @@ class SiteConfig < RailsSettings::Base
   # Authentication
   field :authentication_providers, type: :array, default: %w[twitter github]
 
+  # Broadcast
+  field :welcome_notifications_live_date, type: :date, default: "2030-01-01 00:00:00 UTC".to_date
+
   # campaign
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]

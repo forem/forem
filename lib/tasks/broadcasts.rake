@@ -4,7 +4,7 @@ namespace :broadcasts do
     # In order to prevent new users from receiving multiple welcome notifications in a day,
     # a feature_live_date is required. The script will only be effective after feature_live_date
     # and will ultimately be superseded by 7.days.ago when it's larger than feature_live_date
-    feature_live_date = Broadcasts::WelcomeNotification::Generator::NOTIFICATIONS_SET_LIVE_DATE
+    feature_live_date = SiteConfig.welcome_notifications_live_date
     week_ago = 7.days.ago
     latest_date = feature_live_date > week_ago ? feature_live_date : week_ago
 
