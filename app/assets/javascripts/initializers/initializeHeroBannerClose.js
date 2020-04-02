@@ -6,7 +6,7 @@ function initializeHeroBannerClose() {
 
   if (banner && closeIcon) {
     closeIcon.addEventListener('click', () => {
-      localStorage.setItem('exited_hero', 'shecoded'); // Hardcoded. TODO: generalize.
+      localStorage.setItem('exited_hero', banner.dataset.name); // Hardcoded. TODO: generalize.
       banner.style.display = 'none';
     });
   }

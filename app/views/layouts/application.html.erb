@@ -10,7 +10,8 @@
     <% if @hero_html %>
       <div id="hero-html-wrapper">
         <script>
-          if (localStorage.getItem('exited_hero') === 'shecoded') {
+          // Make sure html variant element has id js-hero-banner and data-name as its name
+          if (localStorage.getItem('exited_hero') === '<%= @hero_html.name %>') {
             document.getElementById('hero-html-wrapper').style.display = 'none';
           }
         </script>
