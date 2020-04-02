@@ -2,4 +2,4 @@
 # On Windows, the default git setting for `core.autocrlf`
 # means that when checking out code, LF endings get converted
 # to CRLF.
-*.svg text eol=lf
+# *.svg text eol=lf
