@@ -31,9 +31,9 @@ $outlined-border-width: 2px;
     cursor: not-allowed;
   }
 
-  &:hover,
-  &:active,
-  &--active {
+  &:enabled:hover,
+  &:enabled:active,
+  &--active:enabled {
     background-color: var(--button-primary-bg-hover);
     color: var(--button-primary-color-hover);
     z-index: 2;
@@ -43,9 +43,9 @@ $outlined-border-width: 2px;
     background-color: var(--button-secondary-bg);
     color: var(--button-secondary-color);
 
-    &:hover,
-    &:active,
-    &--active {
+    &:enabled:hover,
+    &:enabled:active,
+    &--active:enabled {
       background-color: var(--button-secondary-bg-hover);
       color: var(--button-secondary-color-hover);
     }
@@ -58,9 +58,9 @@ $outlined-border-width: 2px;
     border: $outlined-border-width solid var(--button-outlined-bg);
     color: var(--button-outlined-color);
 
-    &:hover,
-    &:active,
-    &--active {
+    &:enabled:hover,
+    &:enabled:active,
+    &--active:enabled {
       background-color: transparent;
       color: var(--button-outlined-color-hover);
       border-color: var(--button-outlined-bg-hover);
@@ -71,9 +71,9 @@ $outlined-border-width: 2px;
     background-color: var(--accent-danger);
     color: var(--base-inverted);
 
-    &:hover,
-    &:active,
-    &--active {
+    &:enabled:hover,
+    &:enabled:active,
+    &--active:enabled {
       background-color: var(--accent-danger-darker);
       color: var(--base-inverted);
     }
@@ -83,9 +83,9 @@ $outlined-border-width: 2px;
     background-color: transparent;
     color: var(--link-brand);
 
-    &:hover,
-    &:active,
-    &--active {
+    &:enabled:hover,
+    &:enabled:active,
+    &--active:enabled {
       background-color: transparent;
       color: var(--link-brand-hover);
     }
