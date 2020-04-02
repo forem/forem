@@ -29,12 +29,6 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   describe "::call" do
     let(:user) { create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago) }
 
-    it "sends only 1 notification at a time" do
-      expect do
-        sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
-      end.to change(user.notifications, :count).by(1)
-    end
-
     it "does not send a notification to an unsubscribed user" do
       user.update!(welcome_notifications: false)
       expect do
@@ -49,8 +43,15 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       end.to change(user.notifications, :count).by(0)
     end
 
-    it "sends only 1 notification at a time, in the correct order" do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
-      user = create(:user, :with_identity, identities: ["github"], created_at: 1.day.ago)
+    it "sends only 1 notification at a time" do
+      expect do
+        sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
+      end.to change(user.notifications, :count).by(1)
+    end
+
+    it "sends notifications in the correct order" do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+      user.update!(created_at: 1.day.ago)
+
       expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(welcome_broadcast)
 
