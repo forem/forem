@@ -37,9 +37,4 @@ functionality between views.
 
 New controllers can be added in `/app/javascript/internal/controllers`. Unit
 tests should exist for each controller in the adjacent
-`/app/javascript/internal/__tests__/contollers` directory. At the moment, it's
-necessary to import a shim into each test file:
-
-```javascript
-import '../../__mocks__/mutationObserver';
-```
+`/app/javascript/internal/__tests__/contollers` directory.
