@@ -11,8 +11,11 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let_it_be_readonly(:discuss_and_ask_broadcast) { create(:discuss_and_ask_broadcast) }
   let_it_be_readonly(:customize_ux_broadcast)    { create(:customize_ux_broadcast) }
 
+  let(:logger) { Rails.logger }
+
   before do
     allow(Notification).to receive(:send_welcome_notification).and_call_original
+    allow(Rails).to receive(:logger).and_return(logger)
     allow(User).to receive(:mascot_account).and_return(mascot_account)
     SiteConfig.staff_user_id = mascot_account.id
   end
@@ -27,8 +30,16 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   end
 
   describe "::call" do
+    let(:user) { create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago) }
+
+    it "sends only 1 notification at a time" do
+      expect do
+        sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
+      end.to change(user.notifications, :count).by(1)
+    end
+
     it "does not send a notification to an unsubscribed user" do
-      user = create(:user, :with_identity, identities: ["github"], created_at: 1.week.ago, welcome_notifications: false)
+      user.update!(welcome_notifications: false)
       expect do
         sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
       end.to not_change(user.notifications, :count)
