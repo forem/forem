@@ -4,7 +4,8 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let(:mascot_account)  { create(:user) }
   let!(:welcome_thread) { create(:article, user: mascot_account, published: true, tags: "welcome") }
 
-  let_it_be_readonly(:welcome_broadcast)         { create(:welcome_broadcast) }
+  # welcome_broadcast is explicitly not readonly so that we can test against an inactive broadcast
+  let_it_be(:welcome_broadcast)                  { create(:welcome_broadcast) }
   let_it_be_readonly(:twitter_connect_broadcast) { create(:twitter_connect_broadcast) }
   let_it_be_readonly(:github_connect_broadcast)  { create(:github_connect_broadcast) }
   let_it_be_readonly(:customize_feed_broadcast)  { create(:customize_feed_broadcast) }
