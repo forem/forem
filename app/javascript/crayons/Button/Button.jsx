@@ -42,7 +42,9 @@ export const Button = ({
   const ComponentName = as;
   const Icon = icon;
   const otherProps =
-    as === 'button' ? { type: buttonType, disabled } : { href: url };
+    as === 'button'
+      ? { type: buttonType, disabled }
+      : { href: disabled ? undefined : url };
 
   return (
     <ComponentName
