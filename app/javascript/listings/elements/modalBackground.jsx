@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const ModalBg = ({ shouldRender, onClick }) =>
+const ModalBackground = ({ shouldRender, onClick }) =>
   shouldRender && (
     <div
       className="classified-listings-modal-background"
@@ -11,9 +11,9 @@ const ModalBg = ({ shouldRender, onClick }) =>
     />
   );
 
-ModalBg.propTypes = {
+ModalBackground.propTypes = {
   shouldRender: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
 };
 
-export default ModalBg;
+export default ModalBackground;

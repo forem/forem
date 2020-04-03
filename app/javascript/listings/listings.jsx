@@ -3,7 +3,7 @@ import debounceAction from '../src/utils/debounceAction';
 import { fetchSearch } from '../src/utils/search';
 import SingleListing from './singleListing';
 import ClearQueryButton from './elements/clearQueryButton';
-import ModalBg from './elements/modalBg';
+import ModalBackground from './elements/modalBackground';
 import MessageModal from './elements/messageModal';
 
 /**
@@ -452,7 +452,10 @@ export class Listings extends Component {
     }
     return (
       <div className="listings__container">
-        <ModalBg shouldRender={openedListing} onClick={this.handleCloseModal} />
+        <ModalBackground
+          shouldRender={openedListing}
+          onClick={this.handleCloseModal}
+        />
         <div className="classified-filters" id="classified-filters">
           <div className="classified-filters-categories">
             <a
