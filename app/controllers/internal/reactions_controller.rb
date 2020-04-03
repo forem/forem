@@ -3,20 +3,13 @@ class Internal::ReactionsController < Internal::ApplicationController
     Audit::Logger.log(:moderator, current_user, params.dup)
   end
 
-  def update
-    # @reaction = Reaction.find(params[:id])
-    # @reaction.update(status: params[:reaction][:status])
-    # Moderator::SinkArticles.call(@reaction.reactable_id) if confirmed_vomit_reaction?
-    # redirect_to "/internal/reports"
-  end
-
   def update_reaction
     @reaction = Reaction.find(params[:id])
     if @reaction.update(status: params[:status])
       Moderator::SinkArticles.call(@reaction.reactable_id) if confirmed_vomit_reaction?
       render json: { outcome: "Success" }
     else
-      render json: { outcome: @reaction.errors.full_messages }
+      render json: { outcome: "Failure" }
     end
   end
 

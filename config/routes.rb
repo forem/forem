@@ -62,7 +62,7 @@ Rails.application.routes.draw do
         delete :remove_admin
       end
     end
-    resources :reactions, only: [:update] do
+    resources :reactions do
       collection do
         post "update_reaction"
       end

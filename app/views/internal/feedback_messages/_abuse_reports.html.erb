@@ -27,8 +27,7 @@
       <div class="card-body" style="overflow: scroll; max-height: 500px;">
         <% @vomits.each do |reaction| %>
           <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
-          <div class="d-flex justify-content-between" id="div__reaction__id__<%= reaction.id %>">
-          <span>ID: <%= reaction.id %></span>
+          <div class="d-flex justify-content-between" id="js__reaction__div__<%= reaction.id %>">
             <span>
               🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a>
             </span>
@@ -44,27 +43,16 @@
             </span>
             <span>
               <% if params[:status] == "Open" || params[:status].blank? %>
-              <input type="hidden" name="status" value="confirmed" id="status__reaction__id__<%= reaction.id %>">
-              <button class="btn btn-success btn-sm vomit-confirm" type="button" data-id="<%= reaction.id %>">CONFIRM 2</button>
                 <% if reaction.reactable_type == "User" %>
-                  <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
-                    <%= f.hidden_field :status, value: "confirmed" %>
-                    <%= f.submit "CONFIRMED", class: "btn btn-success btn-sm", data: { confirm: "Are you sure?" } %>
-                  <% end %>
+                  <button class="btn btn-success btn-sm js-reaction-confirm" type="button" data-reactable="user" data-id="<%= reaction.id %>" data-status="confirmed">CONFIRM</button>
                 <% else %>
-                  <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
-                    <%= f.hidden_field :status, value: "confirmed" %>
-                    <%= f.submit "CONFIRMED", class: "btn btn-success btn-sm" %>
-                  <% end %>
+                  <button class="btn btn-success btn-sm js-reaction-confirm" type="button" data-reactable="not-user" data-id="<%= reaction.id %>" data-status="confirmed">CONFIRM</button>
                 <% end %>
-                <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
-                  <%= f.hidden_field :status, value: "invalid" %>
-                  <%= f.submit "INVALID", class: "btn btn-danger btn-sm vomit-confirm" %>
-                <% end %>
+                <button class="btn btn-danger btn-sm js-reaction-confirm" type="button" data-id="<%= reaction.id %>" data-status="invalid">INVALID</button>
               <% end %>
             </span>
           </div>
-          <hr>
+          <hr id="js__reaction__div__hr__<%= reaction.id %>">
         <% end %>
       </div>
     </div>
@@ -72,10 +60,10 @@
 </div>
 
 <script>
-  function updateReactionStatus(id){
+  function updateReactionStatus(id, status){
     var formData = new FormData();
     formData.append('id', id);
-    formData.append('status', document.getElementById(`status__reaction__id__${id}`).value);
+    formData.append('status', status);
 
     fetch('/internal/reactions/update_reaction', {
      method: 'POST',
@@ -90,25 +78,26 @@
                                        if (json.outcome === 'Success') {
                                         removeReactionDiv(id)
                                        } else {
-                                         // failedNote();
+                                         console.log(json.outcome);
                                        }
                                      })
                                      .catch(error => {
-                                       // failedNote();
                                        console.log(error);
                                      }))
 
   }
 
   function removeReactionDiv(id){
-    var reactionDiv = document.getElementById(`div__reaction__id__${id}`);
-    reactionDiv.nextElementSibling.remove();
-    reactionDiv.remove();
+    document.getElementById(`js__reaction__div__${id}`).remove();
+    document.getElementById(`js__reaction__div__hr__${id}`).remove();
   }
 
-  document.querySelectorAll('.vomit-confirm').forEach(item => {
+  document.querySelectorAll('.js-reaction-confirm').forEach(item => {
     item.addEventListener('click', function () {
-      updateReactionStatus(item.dataset.id);
+      if (item.dataset.reactable && item.dataset.reactable === 'user') {
+        alert("You are confirming a vomit reaction for a User; are you sure?");
+      }
+      updateReactionStatus(item.dataset.id, item.dataset.status);
     });
   });
 </script>
