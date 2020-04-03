@@ -29,39 +29,101 @@
   {
     "@context": "http://schema.org",
     "@type": "Person",
-    "mainEntityOfPage": "True",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://dev.to/<%= @user.username %>"
+    },
     "url": "<%= user_url(@user) %>",
     "image": <%= ProfileImage.new(@user).get(width: 320) %>,
     "name": "<%= @user.name %>",
-    "description": "<%= @user.summary.presence || ["404 bio not found"].sample %>",
-    "email": "<%= @user.email %>",
-    "jobTitle": "<%= @user.employment_title %>",
+    "description": [
+      {
+        "<%= @user.summary.presence || ["404 bio not found"].sample %>",
+        "sameAs": [
+          <% if @user.mostly_work_with.present? %>
+            "<%= @user.mostly_work_with %>",
+          <% end %>
+          <% if @user.currently_hacking_on.present? %>
+            "<%= @user.currently_hacking_on %>",
+          <% end %>
+          <% if @user.currently_learning.present? %>
+            "<%= @user.currently_learning %>"
+          <% end %>
+          ],
+        ],
+      },
+    <% if @user.email_public %>
+      "email": "<%= @user.email %>",
+    <% end %>
+    <% if @user.employment_title.present? %>
+      "jobTitle": "<%= @user.employment_title %>",
+    <% end %>
+    "worksFor": [
+      {
+        <% if @user.employer_name.present? %>
+          "name": "<%= @user.employer_name %>",
+        <% end %>
+        <% if @user.employer_url.present? %>
+          "sameAs": "<%= @user.employer_url %>"
+        <% end %>
+      }
+    ],
+    <% if @user.education.present? %>
+      "alumniOf": "name": "<%= @user.education %>"
+    <% end %>
     "sameAs": [
-      "https://twitter.com/<%= @user.twitter_username %>",
-      "https://github.com/<%= @user.github_username %>",
-      "<%= @user.mastodon_url %>",
-      "<%= @user.facebook_url %>",
-      "<%= @user.linkedin_url %>",
-      "<%= @user.behance_url %>",
-      "<%= @user.stackoverflow_url %>",
-      "<%= @user.dribbble_url %>",
-      "<%= @user.medium_url %>",
-      "<%= @user.gitlab_url %>",
-      "<%= @user.instagram_url %>",
-      "<%= @user.twitch_url %>",
-      "<%= @user.website_url %>"
+      <% if @user.twitter_username? %>
+        "https://twitter.com/<%= @user.twitter_username %>",
+      <% end %>
+      <% if @user.github_username? %>
+        "https://github.com/<%= @user.github_username %>",
+      <% end %>
+      <% if @user.mastodon_url? %>
+        "<%= @user.mastodon_url %>",
+      <% end %>
+      <% if @user.facebook_url? %>
+        "<%= @user.facebook_url %>",
+      <% end %>
+      <% if @user.linkedin_url? %>
+        "<%= @user.linkedin_url %>",
+      <% end %>
+      <% if @user.behance_url? %>
+        "<%= @user.behance_url %>",
+      <% end %>
+      <% if @user.stackoverflow_url? %>
+        "<%= @user.stackoverflow_url %>",
+      <% end %>
+      <% if @user.dribbble_url? %>
+        "<%= @user.dribbble_url %>",
+      <% end %>
+      <% if @user.medium_url? %>
+        "<%= @user.medium_url %>",
+      <% end %>
+      <% if @user.gitlab_url? %>
+        "<%= @user.gitlab_url %>",
+      <% end %>
+      <% if @user.instagram_url? %>
+        "<%= @user.instagram_url %>",
+      <% end %>
+      <% if @user.twitch_username? %>
+        "<%= @user.twitch_url %>",
+      <% end %>
+      <% if @user.website_url? %>
+        "<%= @user.website_url %>"
+      <% end %>
     ]
   }
 </script>
 
-<div class="user-profile-header" style="<%= user_colors_style(@user) %>">
+  <div class="user-profile-header" style="<%= user_colors_style(@user) %>">
+    <meta content="https://dev.to/<%= @user.username %>">
     <div class="user-profile-header-container">
       <div class="profile-pic-wrapper">
         <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
       </div>
       <div class="profile-details">
         <h1>
-          <%= @user.name %><%= render "shared/pro_checkmark", style: nil, width: nil %>
+          <span><%= @user.name %><%= render "shared/pro_checkmark", style: nil, width: nil %></span>
           <span class="user-profile-follow-button-wrapper">
             <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
           </span>

@@ -35,7 +35,10 @@
   {
     "@context": "http://schema.org",
     "@type": "Article",
-    "mainEntityOfPage": "True",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": "https://dev.to/<%= article_url(@article) %>"
+    },
     "url": "<%= article_url(@article) %>",
     "image": "<%= article_social_image_url(@article) %>",
     "publisher": {
@@ -45,7 +48,7 @@
       "logo": {
         "@context": "http://schema.org",
         "@type": "ImageObject",
-        "url": "<%= cloudinary(SiteConfig.logo_png, "png") %>",
+        "url": "<%= cloudinary(SiteConfig.logo_png, 192, "png") %>",
         "width": "192",
         "height": "192"
       }
@@ -55,7 +58,21 @@
       "@context": "http://schema.org",
       "@type": "Person",
       "url": "<%= user_url(@user) %>",
-      "name": "<%= @user.name %>"
+      "name": "<%= @user.name %>",
+      <% if @organization %>
+        "organization": {
+          "@context": "http://schema.org",
+          "@type": "Organization",
+          "name": "<%= @organization.name %>",
+          "url": "<%= @organization.path %>"
+          "logo": {
+            "@context": "http://schema.org",
+            "@type": "ImageObject",
+            "url": "<%= ProfileImage.new(@organization).get(width: 50) %>",
+            "width": "50"
+          }
+        }
+      <% end %>
     },
     "datePublished": "<%= @article.published_timestamp %>"
   }
@@ -115,23 +132,33 @@
     <% if @article.video_state == "PROGRESSING" %>
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
-  <article>
-    <section>
-      <% if !@article.published %>
-        <a href="<%= @article.path %>/edit" class="unpublished">
-          Unpublished Post. This URL is public but secret, so share at your own discretion.
-          <em style="display: inline-block;">Click to edit.</em>
-        </a>
-      <% end %>
-      <% if @article.video.present? %>
-        <%= render "articles/video_player", meta_tags: true, article: @article %>
-      <% elsif @article.main_image.present? %>
-        <div class="image image-final" style="background-color:<%= @article.main_image_background_hex_color %>;background-image:url(<%= cloud_cover_url(@article.main_image) %>)">
+    <article>
+      <meta content="<%= article_url(@article) %>">
+      <meta content="<%= article_social_image_url(@article) %>">
+      <div>
+        <div>
+          <meta content="<%= cloudinary(SiteConfig.logo_png, 192, "png") %>">
+          <meta content="192">
+          <meta content="192">
         </div>
-      <% else %>
-        <div class="blank-space"></div>
-      <% end %>
-    </section>
+        <meta content="<%= community_qualified_name %>">
+      </div>
+      <section>
+        <% if !@article.published %>
+          <a href="<%= @article.path %>/edit" class="unpublished">
+            Unpublished Post. This URL is public but secret, so share at your own discretion.
+            <em style="display: inline-block;">Click to edit.</em>
+          </a>
+        <% end %>
+        <% if @article.video.present? %>
+          <%= render "articles/video_player", meta_tags: true, article: @article %>
+        <% elsif @article.main_image.present? %>
+          <div class="image image-final" style="background-color:<%= @article.main_image_background_hex_color %>;background-image:url(<%= cloud_cover_url(@article.main_image) %>)">
+          </div>
+        <% else %>
+          <div class="blank-space"></div>
+        <% end %>
+      </section>
       <header class="title" id="main-title">
         <% if @organization %>
           <a href="<%= @organization.path %>" class="org-branded-title-link">
@@ -140,12 +167,17 @@
             </div>
           </a>
         <% end %>
-        <h1 class="<%= @article.title_length_classification %>"></h1>
-
+        <h1 class="<%= @article.title_length_classification %>">
+          <%= @article.title %>
+        </h1>
         <h3>
-          <a href="/<%= @user.username %>" class="author">
-            <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
-          </a>
+          <span>
+            <meta content="<%= user_url(@user) %>">
+            <a href="/<%= @user.username %>" class="author">
+              <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
+              <span><%= @user.name %></span>
+            </a>
+          </span>
           <% if @user.twitter_username.present? %>
             <a href="http://twitter.com/<%= @user.twitter_username %>"><%= image_tag_or_inline_svg_tag "twitter", width: 18, height: 18 %></a>
           <% end %>
@@ -153,7 +185,7 @@
             <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg_tag "github", width: 18, height: 18 %></a>
           <% end %>
           <% if @article.published_timestamp.present? %>
-            <time><%= @article.readable_publish_date %></time>
+            <time datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
           <% end %>
           <% if @second_user.present? %>
             <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
@@ -194,7 +226,6 @@
                    articles: @collection_articles,
                    position: :top %>
       <% end %>
-
       <div class="body" data-article-id="<%= @article.id %>" id="article-body">
         <%= @article.processed_html.html_safe %>
       </div>
