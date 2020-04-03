@@ -4,8 +4,7 @@ class Broadcast < ApplicationRecord
   has_many :notifications, as: :notifiable, inverse_of: :notifiable
 
   validates :title, :type_of, :processed_html, presence: true
-  # TODO: [@thepracticaldev/delightful] Remove Onboarding type once we have launched welcome notifications.
-  validates :type_of, inclusion: { in: %w[Announcement Onboarding Welcome] }
+  validates :type_of, inclusion: { in: %w[Announcement Welcome] }
 
   scope :active, -> { where(active: true) }
 
