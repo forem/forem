@@ -1,7 +1,5 @@
-<% if user_signed_in? %>
-  <%= javascript_packs_with_chunks_tag "validateFileInputs", "responseTemplates", defer: true %>
-  <div id="response-templates-data"></div>
-<% end %>
+<div id="response-templates-data"></div>
+<%= javascript_packs_with_chunks_tag "validateFileInputs", "responseTemplates", defer: true %>
 
 <% if @comment.errors.any? %>
   <div id="error_explanation">
