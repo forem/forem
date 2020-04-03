@@ -33,6 +33,8 @@ RSpec.describe "Using the editor", type: :system do
       find("button", text: /\APREVIEW\z/).click
       article_body = find("div.body")["innerHTML"]
       article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
+
+      Percy.snapshot(page, name: "Using the editor: preview an article")
       Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
     end
   end
@@ -43,12 +45,16 @@ RSpec.describe "Using the editor", type: :system do
       find("button", text: /\ASAVE CHANGES\z/).click
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
       article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
+
+      Percy.snapshot(page, name: "Using the editor: submit an article")
       Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
     end
 
     it "user write and publish an article" do
       fill_markdown_with(template.gsub("false", "true"))
       find("button", text: /\ASAVE CHANGES\z/).click
+
+      Percy.snapshot(page, name: "Using the editor: publishing an article")
       ["Sample Article", template[-200..], "test"].each do |text|
         expect(page).to have_text(text)
       end
@@ -58,6 +64,7 @@ RSpec.describe "Using the editor", type: :system do
       fill_markdown_with(template.gsub("Sample Article", ""))
       find("button", text: /\ASAVE CHANGES\z/).click
       expect(page).to have_text(/title:  can't be blank/)
+      Percy.snapshot(page, name: "Using the editor: publishing an article without a title")
     end
   end
 end
