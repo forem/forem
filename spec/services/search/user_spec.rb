@@ -31,5 +31,19 @@ RSpec.describe Search::User, type: :service do
         expect(doc_ids).to include(user1.id, user2.id)
       end
     end
+
+    context "with a filter" do
+      it "searches by excluding roles" do
+        user1.add_role(:admin)
+        user2.add_role(:banned)
+        index_documents([user1, user2])
+        query_params = { size: 5, exclude_roles: ["banned"] }
+
+        user_docs = described_class.search_documents(params: query_params)
+        expect(user_docs.count).to eq(1)
+        doc_ids = user_docs.map { |t| t.dig("id") }
+        expect(doc_ids).to match_array([user1.id])
+      end
+    end
   end
 end
