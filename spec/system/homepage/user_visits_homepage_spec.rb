@@ -42,6 +42,8 @@ RSpec.describe "User visits a homepage", type: :system do
 
     it "offers to follow tags", js: true do
       visit "/"
+      Percy.snapshot(page, name: "Visits homepage: logged in user")
+
       within("#sidebar-nav-default-tags") do
         expect(page).to have_text("Follow tags to improve your feed")
       end
@@ -57,6 +59,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the followed tags", js: true do
+        Percy.snapshot(page, name: "Visits homepage: logged in user follows tags")
         expect(page).to have_text("My Tags")
 
         # Need to ensure the user data is loaded before doing any checks
