@@ -78,7 +78,7 @@ class ChatChannel < ApplicationRecord
         channel.status = "active"
         channel.save
       else
-        create(
+        channel = create(
           channel_type: channel_type,
           channel_name: contrived_name,
           slug: slug,
@@ -86,6 +86,7 @@ class ChatChannel < ApplicationRecord
           status: "active",
         )
       end
+      channel
     end
   end
 

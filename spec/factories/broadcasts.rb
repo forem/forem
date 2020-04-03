@@ -2,6 +2,12 @@ FactoryBot.define do
   factory :broadcast do
     active { true }
 
+    factory :set_up_profile_broadcast do
+      title          { "Welcome Notification: set_up_profile" }
+      type_of        { "Welcome" }
+      processed_html { "Welcome to DEV! 👋 I'm <a href='https://dev.to/sloan'>Sloan</a>, the community mascot and I'm here to help get you started. Let's begin by <a href='https://dev.to/settings'>setting up your profile</a>!" }
+    end
+
     factory :welcome_broadcast do
       title          { "Welcome Notification: welcome_thread" }
       type_of        { "Welcome" }

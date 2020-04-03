@@ -28,7 +28,8 @@ class User < ApplicationRecord
     :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify
   )
 
-  rolify
+  rolify after_add: :index_roles, after_remove: :index_roles
+
   include AlgoliaSearch
   include Storext.model
   include Searchable
@@ -530,9 +531,9 @@ class User < ApplicationRecord
   end
 
   def send_welcome_notification
-    return unless (welcome_broadcast = Broadcast.find_by(title: "Welcome Notification"))
+    return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
 
-    Notification.send_welcome_notification(id, welcome_broadcast.id)
+    Notification.send_welcome_notification(id, set_up_profile_broadcast.id)
   end
 
   def verify_twitter_username
@@ -709,5 +710,9 @@ class User < ApplicationRecord
     follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
     follows.destroy_all
+  end
+
+  def index_roles(_role)
+    index_to_elasticsearch_inline
   end
 end

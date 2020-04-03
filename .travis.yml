@@ -76,6 +76,7 @@ deploy:
 notifications:
   slack:
     if: branch = master
+    on_pull_requests: false
     on_success: change
     on_failure: always
     rooms:

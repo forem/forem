@@ -327,13 +327,14 @@ Rails.application.routes.draw do
   get "/mod/:tag" => "moderations#index"
   get "/page/crayons" => "pages#crayons"
 
+  get "/p/rlyweb", to: redirect("/rlyweb")
+
   post "/fallback_activity_recorder" => "ga_events#create"
 
   get "/page/:slug" => "pages#show"
 
   scope "p" do
-    pages_actions = %w[rly rlyweb welcome twitter_moniter editor_guide publishing_from_rss_guide information
-                       markdown_basics scholarships wall_of_patrons badges]
+    pages_actions = %w[welcome editor_guide publishing_from_rss_guide information markdown_basics badges].freeze
     pages_actions.each do |action|
       get action, action: action, controller: "pages"
     end
