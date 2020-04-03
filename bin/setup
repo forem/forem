@@ -1,13 +1,17 @@
 #!/usr/bin/env ruby
-require 'fileutils'
+require "fileutils"
 
 # path to your application root.
-APP_ROOT = File.expand_path('..', __dir__)
+APP_ROOT = File.expand_path("..", __dir__)
 
-DB = if ENV['DATABASE_URL'].to_s.empty?
-       'PracticalDeveloper_development'
+db_url = ENV["DATABASE_URL"].to_s
+
+# We explicitly unset DATABASE_URL for Gitpod so bin/setup can do its job.
+# See: https://github.com/thepracticaldev/dev.to/issues/7040
+DB = if db_url.to_s.empty? || db_url == "postgresql://gitpod@localhost"
+       "PracticalDeveloper_development"
      else
-       ENV['DATABASE_URL']
+       db_url
      end
 
 def system!(*args)
@@ -19,39 +23,39 @@ FileUtils.chdir APP_ROOT do
   # This script is idempotent, so that you can run it at anytime and get an expectable outcome.
   # Add necessary setup steps to this file.
 
-  puts '== Installing dependencies =='
-  system! 'gem install bundler --conservative'
-  system('bundle check') || system!('bundle install')
+  puts "== Installing dependencies =="
+  system! "gem install bundler --conservative"
+  system("bundle check") || system!("bundle install")
 
-  system! 'gem install foreman'
+  system! "gem install foreman"
 
   # Install JavaScript dependencies if using Yarn
-  system('bin/yarn')
+  system("bin/yarn")
 
   puts "\n== Copying sample files =="
-  unless File.exist?('config/database.yml')
-    FileUtils.cp 'config/database.yml.sample', 'config/database.yml'
+  unless File.exist?("config/database.yml")
+    FileUtils.cp "config/database.yml.sample", "config/database.yml"
   end
 
   puts "\n== Preparing database =="
   command = "psql -o /dev/null -q -n -c 'select 1' #{DB}"
   db_exists = system(command)
   if db_exists
-    system! 'bin/rails db:migrate'
+    system! "bin/rails db:migrate"
   else
-    system! 'bin/rails db:setup'
+    system! "bin/rails db:setup"
   end
 
   puts "\n== Preparing Elasticsearch =="
-  system! 'bin/rails search:setup'
+  system! "bin/rails search:setup"
   system! 'RAILS_ENV="test" bin/rails search:setup'
 
   puts "\n== Updating Data =="
-  system! 'bin/rails data_updates:run'
+  system! "bin/rails data_updates:run"
 
   puts "\n== Removing old logs and tempfiles =="
-  system! 'bin/rails log:clear tmp:clear'
+  system! "bin/rails log:clear tmp:clear"
 
   puts "\n== Restarting application server =="
-  system! 'bin/rails restart'
+  system! "bin/rails restart"
 end
