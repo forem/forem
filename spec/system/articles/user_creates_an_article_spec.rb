@@ -17,6 +17,8 @@ RSpec.describe "Creating an article with the editor", type: :system do
     visit new_path
     fill_in "article_body_markdown", with: template
     click_button "SAVE CHANGES"
+    Percy.snapshot(page, name: "Creating an article: shows the title")
+
     expect(page).to have_selector("header h1", text: "Sample Article")
   end
 
