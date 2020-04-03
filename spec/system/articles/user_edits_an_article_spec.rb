@@ -13,6 +13,8 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("PREVIEW")
+    Percy.snapshot(page, name: "Editing an article: shows the title")
+
     expect(page).to have_text("Yooo")
     expect(find(".active").text).to have_text("EDIT")
   end
@@ -28,6 +30,8 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("true", "false")
     click_button("SAVE CHANGES")
+    Percy.snapshot(page, name: "Editing an article: shows when unpublished")
+
     expect(page).to have_text("Unpublished Post.")
   end
 end
