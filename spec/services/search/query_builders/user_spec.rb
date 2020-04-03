@@ -26,6 +26,29 @@ RSpec.describe Search::QueryBuilders::User, type: :service do
       expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
     end
 
+    it "applies EXCLUDED_TERM_KEYS by default" do
+      filter = described_class.new({})
+      expected_filters = [
+        { "terms" => { "roles" => ["banned"] } },
+      ]
+      expect(filter.as_hash.dig("query", "bool", "must_not")).to match_array(expected_filters)
+    end
+
+    it "applies EXCLUDED_TERM_KEYS and QUERY_KEYS" do
+      params = { search_fields: "test" }
+      filter = described_class.new(params)
+      expected_query = [{
+        "simple_query_string" => {
+          "query" => "test*", "fields" => [:search_fields], "lenient" => true, "analyze_wildcard" => true
+        }
+      }]
+      expected_filters = [
+        { "terms" => { "roles" => ["banned"] } },
+      ]
+      expect(filter.as_hash.dig("query", "bool", "must_not")).to match_array(expected_filters)
+      expect(filter.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
+    end
+
     it "ignores params we don't support" do
       params = { not_supported: "trash", search_fields: "cfp" }
       filter = described_class.new(params)

@@ -72,7 +72,7 @@ class Article < ApplicationRecord
   before_save :update_cached_user
 
   after_save :bust_cache, :detect_human_language
-  after_save :notify_slack_channel_about_publication, if: -> { published && published_at > 30.seconds.ago }
+  after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   after_update_commit :update_reading_list_reactions, if: proc { |article|
@@ -427,16 +427,16 @@ class Article < ApplicationRecord
                    spaminess_rating: BlackBox.calculate_spaminess(self))
   end
 
-  def search_score
-    calculated_score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
-    calculated_score.to_i
-  end
-
   private
 
   def delete_related_objects
     Search::RemoveFromIndexWorker.new.perform("searchables_#{Rails.env}", index_id)
     Search::RemoveFromIndexWorker.new.perform("ordered_articles_#{Rails.env}", index_id)
+  end
+
+  def search_score
+    calculated_score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
+    calculated_score.to_i
   end
 
   def tag_keywords_for_search
@@ -718,18 +718,6 @@ class Article < ApplicationRecord
   end
 
   def notify_slack_channel_about_publication
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-
-    message = <<~MESSAGE.chomp
-      New Article Published: #{title}
-      #{url}#{path}
-    MESSAGE
-
-    SlackBotPingWorker.perform_async(
-      message: message,
-      channel: "activity",
-      username: "article_bot",
-      icon_emoji: ":writing_hand:",
-    )
+    Slack::Messengers::ArticlePublished.call(article: self)
   end
 end

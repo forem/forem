@@ -92,7 +92,7 @@ class ChatChannel < ApplicationRecord
 
   def add_users(users)
     Array(users).each do |user|
-      ChatChannelMembership.create!(user_id: user.id, chat_channel_id: id)
+      ChatChannelMembership.find_or_create_by!(user_id: user.id, chat_channel_id: id)
     end
   end
 
