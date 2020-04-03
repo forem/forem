@@ -364,6 +364,9 @@ export class Listings extends Component {
         isOpen={false}
       />
     ));
+
+    const shouldRenderClearQueryButton = query.length > 0;
+
     const selectedTags = tags.map((tag) => (
       <span className="classified-tag">
         <a
@@ -477,10 +480,9 @@ export class Listings extends Component {
               defaultValue={query}
               onKeyUp={this.debouncedClassifiedListingSearch}
             />
-            <ClearQueryButton
-              shouldRender={query.length > 0}
-              onClick={this.clearQuery}
-            />
+            {shouldRenderClearQueryButton && (
+              <ClearQueryButton onClick={this.clearQuery} />
+            )}
             {selectedTags}
           </div>
         </div>
