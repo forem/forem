@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 source "https://rubygems.org"
-ruby "2.6.5"
+ruby "2.7.0"
 
 gem "activerecord", "~> 5.2.3" # Databases on Rails
 gem "yard", "~> 0.9.19" # YARD is a documentation generation tool for the Ruby programming language
