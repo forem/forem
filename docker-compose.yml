@@ -11,7 +11,8 @@ services:
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
-      ELASTICSEARCH_URL: http://elasticsearch:9200
+      YARN_INTEGRITY_ENABLED: "false"
+      ELASTICSEARCH_URL: elasticsearch
       REDIS_URL: redis://redis:6379
       REDIS_SESSIONS_URL: redis://redis:6379
     volumes:
@@ -64,3 +65,10 @@ services:
         - ./docker_data/elasticsearch/data:/usr/share/elasticsearch/data
     ports:
       - "9200:9200"
+
+volumes:
+  db:
+  redis:
+  elasticsearch:
+  webpacker:
+  sidekiq:
