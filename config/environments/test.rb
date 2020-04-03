@@ -1,3 +1,6 @@
+# Silence all Ruby 2.7 deprecation warnings
+$VERBOSE = nil unless ENV["CI"]
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 

@@ -14,6 +14,14 @@ RSpec.describe Users::DeleteArticles, type: :service do
     expect(Article.find(article3.id)).to be_present
   end
 
+  it "removes article from Elasticsearch" do
+    sidekiq_perform_enqueued_jobs
+    expect(article.elasticsearch_doc).not_to be_nil
+
+    sidekiq_perform_enqueued_jobs { described_class.call(user) }
+    expect { article.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+  end
+
   context "with comments" do
     let(:buster) { double }
 
@@ -43,6 +51,19 @@ RSpec.describe Users::DeleteArticles, type: :service do
       expect(buster).to have_received(:bust_comment).with(article).twice
       expect(buster).to have_received(:bust_user).with(user2).at_least(:once)
       expect(buster).to have_received(:bust_article).with(article)
+    end
+
+    it "removes comments from Elasticsearch", :aggregate_failures do
+      sidekiq_perform_enqueued_jobs
+      comments = article.comments
+      comments.each { |comment| expect(comment.elasticsearch_doc).not_to be_nil }
+      sidekiq_perform_enqueued_jobs(only: Search::RemoveFromElasticsearchIndexWorker) do
+        described_class.call(user)
+      end
+
+      comments.each do |comment|
+        expect { comment.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+      end
     end
   end
 end

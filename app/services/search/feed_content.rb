@@ -29,6 +29,11 @@ module Search
         source["user_id"] = source.dig("user", "id")
         source["highlight"] = hit["highlight"]
         source["readable_publish_date"] = source["readable_publish_date_string"]
+        source["podcast"] = {
+          "slug" => source["slug"],
+          "image_url" => source["main_image"],
+          "title" => source["title"]
+        }
 
         source.merge(timestamps_hash(hit))
       end

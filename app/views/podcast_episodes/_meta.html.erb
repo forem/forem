@@ -12,7 +12,7 @@
     <meta property="og:image" content="https://res.cloudinary.com/practicaldev/image/fetch/c_scale,h_300,w_300,r_max/u_listennow_kjml1x,y_45/<%= cloudinary(@podcast.image_url, 300) %>">
 
     <meta property="og:description" content="<%= @podcast.description %>" />
-    <meta property="og:site_name" content="The Practical Dev" />
+    <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@ThePracticalDev">
@@ -34,7 +34,7 @@
     <meta property="og:image" content="http://i.imgur.com/e5tJ9L9.png">
 
     <meta property="og:description" content="Discover technical podcasts for developers" />
-    <meta property="og:site_name" content="The Practical Dev" />
+    <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@ThePracticalDev">

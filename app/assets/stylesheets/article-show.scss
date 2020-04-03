@@ -116,7 +116,7 @@ article {
     margin: auto;
 
     .org-branded-title-link {
-      color: var(--container-color-secondary);
+      color: var(--card-color-secondary);
       .org-branded-title {
         font-size: calc(0.9em + 0.3vw);
         padding: 8px 0 6px;
@@ -191,7 +191,7 @@ article {
       padding: 0;
       padding: 0 3px 16px;
       font-weight: 500;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       font-size: 13.5px;
       line-height: 1.8em;
 
@@ -210,7 +210,7 @@ article {
       }
 
       a {
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
         text-decoration: none;
       }
 
@@ -350,7 +350,7 @@ article {
       'Book Antiqua', Georgia, serif;
     font-size: 21px;
     line-height: 32px;
-    background: var(--container-bg);
+    background: var(--card-bg);
     position: relative;
     z-index: 5;
     padding: 5px 0px;
@@ -675,7 +675,7 @@ article {
     position: relative;
     overflow: hidden;
     padding: 0px 0px 5px;
-    background: var(--container-bg);
+    background: var(--card-bg);
     font-family: $helvetica;
 
     a {
@@ -745,7 +745,7 @@ article {
         font-size: 0.85em;
 
         a {
-          color: var(--container-color-tertiary);
+          color: var(--card-color-tertiary);
           margin-right: 6px;
           display: inline-block;
         }
@@ -918,7 +918,7 @@ article {
         padding: 4px;
         border-radius: 100px;
         transition: box-shadow 0.18s;
-        background: var(--container-bg);
+        background: var(--card-bg);
         @media screen and (min-width: 500px) {
           height: 26px;
           width: 26px;
@@ -948,7 +948,7 @@ article {
         vertical-align: 6px;
         margin-left: 5px;
         vertical-align: 10px;
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
         font-size: 13px;
         width: 27px;
 
@@ -1175,7 +1175,7 @@ article {
     .article-actions-comments-count {
       display: none;
       position: relative;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       font-weight: bold;
       font-size: calc(0.8em + 0.1vw);
       vertical-align: calc(7px - 0.07vw);

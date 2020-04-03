@@ -35,6 +35,15 @@ RSpec.describe Users::Delete, type: :service do
     expect(Rails.cache).to have_received(:delete).with("user-destroy-token-#{user.id}")
   end
 
+  it "removes user from Elasticsearch" do
+    sidekiq_perform_enqueued_jobs { user }
+    expect(user.elasticsearch_doc).not_to be_nil
+    sidekiq_perform_enqueued_jobs do
+      described_class.call(user)
+    end
+    expect { user.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+  end
+
   # check that all the associated records are being destroyed, except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
     let(:kept_association_names) { %i[created_podcasts notes offender_feedback_messages reporter_feedback_messages affected_feedback_messages] }
@@ -91,13 +100,13 @@ RSpec.describe Users::Delete, type: :service do
     let_it_be(:other_user) { create(:user) }
 
     it "deletes the user's private chat channels" do
-      chat_channel = ChatChannel.create_with_users([user, other_user])
+      chat_channel = ChatChannel.create_with_users(users: [user, other_user])
       described_class.call(user)
       expect(ChatChannel.find_by(id: chat_channel.id)).to be_nil
     end
 
     it "does not delete the user's open channels" do
-      chat_channel = ChatChannel.create_with_users([user, other_user], "open")
+      chat_channel = ChatChannel.create_with_users(users: [user, other_user], channel_type: "open")
       described_class.call(user)
       expect(ChatChannel.find_by(id: chat_channel.id)).not_to be_nil
     end

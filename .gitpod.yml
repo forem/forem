@@ -16,9 +16,7 @@ ports:
 tasks:
   - command: redis-server
   - command: /home/gitpod/elasticsearch-7.5.2/bin/elasticsearch
-  - init: >
-      cp config/sample_application.yml config/application.yml &&
-      bin/setup 2>/dev/null || true
+  - init: cp config/sample_application.yml config/application.yml
     command: >
       while [ -z "${ALGOLIASEARCH_APPLICATION_ID:=$(cat config/application.yml | grep ALGOLIASEARCH_APPLICATION_ID | sed 's/.*:\s*//')}" ] ||
             [ -z "${ALGOLIASEARCH_SEARCH_ONLY_KEY:=$(cat config/application.yml | grep ALGOLIASEARCH_SEARCH_ONLY_KEY | sed 's/.*:\s*//')}" ] ||

@@ -1,440 +1,554 @@
 @import 'variables';
 @import 'mixins';
+@import 'components/buttons';
+@import 'components/modals';
+@import 'components/forms';
+@import 'config/import';
+
+#onboarding-container {
+  min-height: calc(100vh - 350px);
+}
 
 .pages-onboarding {
   min-height: initial;
 }
 
-.onboarding-body {
-  background-color: var(--body-bg);
-  position: fixed;
-  margin-top: 50px;
-  bottom: 0;
-  height: 100vh;
-  width: 100%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  line-height: 200%;
-  z-index: 11;
-  margin: 0;
-  background-image: url('/assets/onboarding-background-white.png');
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  /* Center the image */
-  background-position: center;
-  /* Do not repeat the image */
-  background-repeat: no-repeat;
+// modal box card
+.onboarding-main {
+  @extend .crayons-modal;
+  @extend .crayons-modal--l;
+  @extend .crayons-modal--padding-0;
+  border: none;
+  z-index: 1;
+
+  @media screen and (min-width: 600px) {
+    border-width: 2px;
+  }
 
   a {
-    color: var(--link-brand-color);
+    color: var(--link-branded-color);
   }
+}
 
-  .sticker-logo {
-    height: 80px;
-    width: 80px;
-    transform: rotate(-5deg);
-    padding: 10px;
-    vertical-align: middle;
-    top: -10px;
-    padding-top: 5px;
-  }
+// modal inner content spacing
+.onboarding-content {
+  box-sizing: border-box;
+  flex: 1 0 auto;
+  padding: $su-4;
+  width: 100%;
 
-  .onboarding-main {
-    display: flex;
-    flex-direction: column;
-    width: 800px;
-    height: 466px;
-    @include themeable(background-color, theme-container-background, $white);
-    border: 8px solid #6b55c9;
-    @include themeable(border-color, theme-container-border, #6b55c9);
-    padding: 30px;
-    border-radius: 3px;
-    z-index: 1;
-    font-size: 20px;
-    box-shadow: 0 0 8px 2px rgba(0, 0, 0, 0.3), 8px 0px 13px rgba(0, 0, 0, 0.21);
-    align-items: center;
+  @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
+    padding: $su-7 $su-8 $su-8;
+  }
+}
+
+// window background
+.onboarding-body {
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  -webkit-background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  height: 100vh;
+  justify-content: start;
+  line-height: 200%;
+  margin: 0;
+  overflow-y: scroll;
+  position: fixed;
+  top: 0;
+  width: 100%;
+
+  @media screen and (min-width: 600px) {
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-image: url('/assets/onboarding-background-white.png');
   }
 
-  .onboarding-content {
-    flex: 1 0 auto;
+  &:before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.65);
+    height: 100%;
     width: 100%;
-    margin-top: 5px;
+  }
+}
 
-    h1 {
-      margin-top: 15px;
-      line-height: 1.1em;
+// modal navigation
+.onboarding-navigation {
+  align-self: flex-end;
+  flex-shrink: 0;
+  width: 100%;
+  border-bottom: 2px solid var(--box-darker);
+
+  .navigation-content {
+    display: flex;
+    justify-content: space-between;
+    padding: $su-4;
+
+    button {
+      @extend .crayons-btn;
     }
+  }
+}
+
+// modal header
+.onboarding-content-header {
+  margin-bottom: $su-4;
+
+  @media screen and (min-width: $breakpoint-s) {
+    margin-bottom: $su-6;
+  }
+
+  .title,
+  .subtitle {
+    margin: 0;
+  }
+
+  .title {
+    font-weight: $fw-heavy;
+    margin-bottom: $su-1;
+    text-align: left;
+  }
+
+  .subtitle {
+    color: var(--card-color-secondary);
+    font-size: $fs-xl;
+    font-weight: $fw-medium;
+    letter-spacing: normal;
+    line-height: $lh-base;
+  }
+}
+
+// modal selection status
+.onboarding-selection-status {
+  align-self: flex-end;
+  flex-shrink: 0;
+  width: 100%;
+  border-top: 2px solid var(--box-darker);
+
+  .selection-status-content {
+    display: block;
+    padding: $su-4;
+    text-align: center;
+  }
+}
+
+// override crayons notice
+.onboarding-body {
+  .crayons-notice {
+    display: block;
+    margin-bottom: $su-2;
+  }
+}
+// modal overflow scrolling
+.onboarding-modal-scroll-container {
+  height: auto;
+  min-height: 436px;
+  @media screen and (min-width: $breakpoint-s) {
+    max-height: 500px;
+    overflow-y: scroll;
+    position: relative;
+  }
+}
+
+// tag styles
+.onboarding-tags {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: $su-4;
+  width: 100%;
+  min-height: 316px;
+
+  @media screen and (min-width: 800px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &__button {
+    @extend .crayons-btn;
+    border: 0;
+    display: block;
+    position: absolute;
+    left: $su-4;
+    right: $su-4;
+    bottom: $su-4;
+    width: calc(100% - 32px);
+    transform: translateY(0px);
+    font-family: $ff-default;
+    $button: &;
 
     @media screen and (min-width: 800px) {
-      height: 440px;
+      transform: translateY(60px);
+    }
+
+    &-default {
+      display: inline-block;
+    }
+
+    &-alt {
+      display: none;
     }
   }
 
-  .onboarding-navigation {
-    align-self: flex-end;
-    flex-shrink: 0;
-    width: 100%;
-  }
-
-  .background-image {
-    z-index: -1;
-    position: absolute;
-    top: 60px;
-    left: 0px;
-  }
-
-  h1 {
-    text-align: center;
-  }
-
-  h2 {
-    margin-top: 20px;
-    font-size: 15px;
-
-    @media screen and (min-width: 600px) {
-      font-size: 26px;
-    }
-  }
-
-  p {
-    line-height: 1.25em;
-  }
-
-  button {
-    width: 130px;
-    padding: 6px 0px;
-    height: auto;
-    margin: 11px 20px;
-    text-align: center;
-    font-weight: bold;
-    border-radius: 3px;
-    border: 2px solid #0a0a0a;
-    @include themeable(border-color, theme-color, #0a0a0a);
-    @include themeable(color, theme-color, #0a0a0a);
-    @include themeable(
-      background-color,
-      theme-container-accent-background,
-      $light-gray
-    );
-    font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
-      'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
-      'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
-      'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
-      'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
-    -webkit-appearance: none;
-    font-stretch: condensed;
-    font-size: 26px;
-  }
-
-  .next-button {
-    color: var(--button-primary-color);
-    background: var(--button-primary-bg);
-    float: right;
-  }
-
-  .about {
-    width: 100%;
-
-    label,
-    input,
-    textarea {
-      display: block;
-      width: 95%;
-      margin: 0 auto;
-    }
-
-    input,
-    textarea {
-      padding: 12px;
-      font-size: 19px;
-      text-emphasis: bold;
-      border: 1px solid #dee6e9;
-      border-radius: 3px;
-    }
-
-    textarea {
-      height: 120px;
-    }
-  }
-
-  .checkbox-slide {
-    label {
-      display: block;
-      cursor: pointer;
-    }
-
-    input[type='checkbox'] {
-      -webkit-appearance: none;
-      width: 19px;
-      height: 19px;
-      background: transparent;
-      border-radius: 5px;
-      border: 2px solid #555;
-      vertical-align: middle;
-      margin: 8px;
-      cursor: pointer;
-    }
-
-    input[type='checkbox']:checked {
-      background: var(--link-brand-color);
-    }
-  }
-
-  .warning-message {
-    background-color: red;
-    opacity: 0.7;
-    padding: 10px;
-    width: 100%;
-    border-radius: 3px;
-    color: white;
-  }
-
-  .scroll {
-    height: 365px;
-    overflow: auto;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    border-bottom: 1px solid $light-medium-gray;
-  }
-
-  .tag {
-    padding: 44px 6px 46px;
-    font-size: 20px;
-    margin: 5px;
-    border-radius: 3px;
-    font-weight: bold;
-    border: none;
-    outline: none;
-    overflow: hidden;
+  &__item {
+    border-radius: $br-default;
     position: relative;
-    text-overflow: ellipsis;
-    width: 100%;
-    opacity: 0.8;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-      'Segoe UI Symbol';
+    overflow: hidden;
+    height: 150px;
+    $item: &;
 
-    @media screen and (min-width: 600px) {
-      width: 255px;
-    }
-
-    &.tag-selected {
-      opacity: 1;
+    &__inner {
+      background: var(--base-10);
+      bottom: 0;
+      font-family: $ff-accent;
+      hyphens: auto;
+      left: 0;
+      padding: $su-4;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: all ease-in-out 0.1s;
+      z-index: 2;
     }
 
     &:hover {
-      opacity: 1;
-    }
-
-    .onboarding-tag-follow-indicator {
-      position: absolute;
-      bottom: 22px;
-      left: 0px;
-      right: 0px;
-      text-align: center;
-      font-size: 0.66em;
-    }
-  }
-
-  .select-all-button-wrapper {
-    width: 100%;
-
-    button {
-      width: 300px;
-      line-height: 1em;
-      text-align: left;
-      padding-left: 15px;
-    }
-  }
-
-  .user {
-    width: calc(100% - 40px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-      Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-      'Segoe UI Symbol';
-    font-size: 15px;
-    padding: 5px;
-    border-radius: 3px;
-    text-align: center;
-    margin-right: 5px;
-    position: relative;
-    color: $black;
-
-    .onboarding-user-follow-status {
-      position: absolute;
-      color: #32a99c;
-      right: 8px;
-      top: 5px;
-      font-size: 0.88em;
-    }
-
-    span {
-      display: block;
-      width: 100%;
-    }
-
-    p {
-      font-weight: 400;
-      height: 55px;
-    }
-
-    @media screen and (min-width: 600px) {
-      width: 365px;
-    }
-
-    img {
-      height: 80px;
-      width: 80px;
-      border-radius: 50%;
-      padding: 5px;
-      margin: 10px auto;
-      display: block;
-    }
-  }
-
-  .user:active {
-    background-color: red;
-  }
-
-  .badge-image {
-    position: absolute;
-  }
-
-  .onboarding-what-next {
-    display: flex;
-    flex-direction: column;
-    height: 250px;
-    overflow: auto;
-
-    @media screen and (min-width: 600px) {
-      flex-direction: row;
-    }
-
-    a {
-      background: #d9e7ff;
-      padding: 15px 4px 0px 12px;
-      height: 140px;
-      margin: 4px auto;
-      border-radius: 3px;
-      width: 350px;
-      display: block;
-      line-height: 1.2em;
-      font-weight: bold;
-      position: relative;
-      text-align: center;
-
-      @media screen and (min-width: 600px) {
-        height: 220px;
-        margin: 4px 4px;
-        text-align: left;
-        padding: 20px 4px 0px 12px;
+      #{$item}__inner {
+        background: transparent;
       }
 
-      .whatnext-emoji {
-        display: none;
-        text-align: center;
-        position: absolute;
-        bottom: 22px;
-        left: 0;
-        right: 0;
-        font-size: 50px;
+      .onboarding-tags__button {
+        transform: translateY(0);
 
-        @media screen and (min-width: 600px) {
-          display: block;
+        &:hover {
+          transform: translateY(-2px);
         }
       }
     }
-  }
 
-  .onboarding-previous-location {
-    text-align: center;
-    margin-top: 10px;
-    font-weight: bold;
-    display: none;
+    &--selected {
+      #{$item}__inner {
+        background: transparent;
+      }
 
-    @media screen and (min-width: 600px) {
-      display: block;
-    }
-
-    code {
-      font-size: 0.6em;
-      margin-top: -10px;
-      display: block;
-      font-weight: 400;
+      input[type='checkbox']:checked {
+        background: var(--link-branded-color);
+      }
     }
   }
+}
 
-  @media screen and (max-width: 800px) {
-    .onboarding-main {
-      width: 100%;
-      height: 100%;
-      background-image: url('/assets/mobile-onboarding-background.png');
-      background-size: cover;
-      /* Center the image */
-      background-position: center;
-      /* Do not repeat the image */
-      background-repeat: no-repeat;
-      border: none;
-      color: $black;
+// Onboarding Intro
+.onboarding-main.introduction {
+  width: 578px;
+
+  .onboarding-content {
+    background: var(--base-100);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    padding: $su-8;
+
+    @media screen and (min-width: $breakpoint-s) {
+      justify-content: center;
     }
+  }
 
-    .onboarding-content {
-      flex: 0 0 auto;
+  figure {
+    margin: 0 0 $su-2 0;
 
-      h1,
-      h2 {
-        margin-top: initial;
+    .sticker-logo {
+      height: $su-8;
+      width: $su-8;
+      transform: rotate(-30deg);
+      padding: $su-3;
+      vertical-align: middle;
+    }
+  }
+
+  .introduction-title,
+  .introduction-subtitle {
+    margin: 0;
+  }
+
+  .introduction-title {
+    font-size: $fs-5xl;
+    font-weight: $fw-heavy;
+    line-height: $lh-tight;
+  }
+
+  .introduction-subtitle {
+    font-size: $fs-2xl;
+    font-weight: $fw-normal;
+    line-height: $lh-base;
+  }
+
+  .navigation-content {
+    padding: $su-7;
+    justify-content: center;
+
+    button {
+      @extend .crayons-btn;
+    }
+  }
+}
+
+// follow users slide
+$onboarding-user-unselected-hover: rgba(71, 85, 235, 0.05);
+$onboarding-user-selected: rgba(71, 85, 235, 0.1);
+$onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
+
+.onboarding-body {
+  .content-row {
+    align-items: center;
+    border: none;
+    box-sizing: border-box;
+    color: var(--body-color);
+    display: flex;
+    padding: $su-2 $su-4;
+    text-align: left;
+    width: 100%;
+
+    &.unselected {
+      &:hover {
+        background-color: $onboarding-user-unselected-hover;
+        cursor: pointer;
+      }
+
+      button {
+        @extend .crayons-btn;
+        @extend .crayons-btn--outlined;
       }
     }
 
-    span {
-      display: block;
+    &.selected {
+      background-color: $onboarding-user-selected;
+
+      &:hover {
+        background-color: $onboarding-user-selected-hover;
+        cursor: pointer;
+      }
+
+      button {
+        @extend .crayons-btn;
+      }
     }
   }
 
-  @media screen and (max-width: 650px) {
-    .onboarding-main {
-      font-size: 18px;
-    }
+  .user-avatar-container {
+    align-self: baseline;
+    margin: 0 $su-4 0 0;
 
-    button {
-      width: 100px;
-      font-size: 20px;
+    @media screen and (min-width: $breakpoint-s) {
+      align-self: center;
     }
   }
 
-  @media screen and (max-width: 450px) {
-    .onboarding-main {
-      font-size: 16px;
-    }
+  .user-avatar {
+    border-radius: 100%;
+    height: $su-8;
+    width: $su-8;
+    object-fit: cover;
+    border: 1px solid var(--base-10);
+  }
 
-    button {
-      width: 100px;
-      font-size: 18px;
+  .user-name,
+  .user-summary {
+    margin: 0;
+    line-height: $lh-tight;
+  }
+
+  .user-name {
+    font-size: $fs-base;
+  }
+  
+  .user-info {
+    width: 100%;
+  }
+
+  .user-summary {
+    font-size: $fs-s;
+  }
+
+  .user-following-status {
+    margin-left: $su-7;
+  }
+}
+
+// closing slide
+.onboarding-what-next {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+  min-height: 250px;
+
+  @media screen and (min-width: $breakpoint-s) {
+    flex-direction: column;
+  }
+
+  p {
+    align-items: center;
+    display: inline-flex;
+  }
+
+  a {
+    background: #d9e7ff;
+    margin: 4px auto;
+    border-radius: 3px;
+    display: block;
+    font-weight: 800;
+    width: 100%;
+    padding: 0.25em;
+    position: relative;
+    text-align: center;
+    box-sizing: border-box;
+
+    .whatnext-emoji {
+      text-align: center;
+      font-size: 32px;
+      margin-right: 8px;
+    }
+  }
+}
+
+.onboarding-previous-location {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: bold;
+  display: none;
+
+  @media screen and (min-width: 600px) {
+    display: block;
+  }
+
+  code {
+    font-size: 0.6em;
+    margin-top: -10px;
+    display: block;
+    font-weight: 400;
+  }
+}
+
+// Follow user
+.onboarding-body {
+  .content-row {
+    align-items: center;
+    color: #202428;
+    display: flex;
+    padding: 8px 16px;
+    text-align: left;
+    width: 100%;
+
+    &:hover {
+      background-color: #eef0f1 !important;
     }
   }
 
-  @media screen and (max-width: 330px) {
-    button {
-      width: 80px;
-      font-size: 14px;
+  .user-avatar-container {
+    margin: 0 16px 0 0;
+  }
+
+  .user-avatar {
+    border-radius: 100%;
+    height: 48px;
+    width: 48px;
+    object-fit: cover;
+    border: 1px solid #eef0f1;
+  }
+
+  .user-name,
+  .user-summary {
+    margin: 0;
+  }
+
+  .user-following-status {
+    margin-left: 32px;
+  }
+}
+
+// Forms
+.onboarding-main {
+  fieldset {
+    padding: 0;
+    border: none;
+    margin-bottom: $su-6;
+
+    &:last-child {
+      margin-bottom: 0;
     }
 
-    .sticker-logo {
-      height: 40px;
-      width: 40px;
+    ul {
+      list-style-type: none;
+      margin: 0;
+      padding-left: 0;
     }
+  }
 
-    h1 {
-      font-size: 20px;
+  legend {
+    color: var(--body-color);
+    font-weight: $fw-medium;
+  }
+
+  input[type='text'],
+  textarea {
+    @extend .crayons-textfield;
+    box-sizing: border-box;
+  }
+
+  textarea {
+    min-height: 120px;
+  }
+
+  label {
+    @extend .crayons-field;
+    @extend .crayons-field__label;
+    margin-bottom: $su-4;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // Checkboxes
+  .checkbox-item {
+    label {
+      @extend .crayons-field__label;
+      align-items: baseline;
+      border-radius: $br-default;
+      display: inline-block;
+      flex-direction: row;
+      padding: 0 $su-1;
+      width: 100%;
+
+      @media screen and (min-width: $breakpoint-s) {
+        align-items: center;
+      }
+
+      &:hover {
+        background: var(--body-bg);
+        cursor: pointer;
+      }
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      a {
+        display: contents;
+      }
+
+      input[type='checkbox'] {
+        @extend .crayons-checkbox;
+        margin-right: $su-2 !important;
+      }
     }
   }
 }

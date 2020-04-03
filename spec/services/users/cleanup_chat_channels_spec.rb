@@ -4,10 +4,10 @@ RSpec.describe Users::CleanupChatChannels, type: :service do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
   let!(:dm_channel) do
-    ChatChannel.create_with_users([user, other_user])
+    ChatChannel.create_with_users(users: [user, other_user])
   end
   let!(:open_channel) do
-    ChatChannel.create_with_users([user, other_user], "open")
+    ChatChannel.create_with_users(users: [user, other_user], channel_type: "open")
   end
 
   it "deletes direct chat channels" do

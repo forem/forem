@@ -1,4 +1,6 @@
 class ChatChannelMembership < ApplicationRecord
+  attr_accessor :invitation_usernames
+
   include Searchable
   SEARCH_SERIALIZER = Search::ChatChannelMembershipSerializer
   SEARCH_CLASS = Search::ChatChannelMembership
@@ -8,7 +10,7 @@ class ChatChannelMembership < ApplicationRecord
 
   validates :user_id, presence: true, uniqueness: { scope: :chat_channel_id }
   validates :chat_channel_id, presence: true, uniqueness: { scope: :user_id }
-  validates :status, inclusion: { in: %w[active inactive pending rejected left_channel] }
+  validates :status, inclusion: { in: %w[active inactive pending rejected left_channel removed_from_channel] }
   validates :role, inclusion: { in: %w[member mod] }
   validate  :permission
 

@@ -10,6 +10,9 @@ enable_defaults! { ENV["RACK_ENV"] != "production" }
 # App domain + Protocol setting for development
 variable :APP_DOMAIN, :String, default: "localhost:3000"
 variable :APP_PROTOCOL, :String, default: "http://"
+
+# Community Related Variables
+variable :COMMUNITY_COPYRIGHT_START_YEAR, :String, default: "2016"
 variable :COMMUNITY_NAME, :String, default: "DEV(local)"
 
 # Service timeout length

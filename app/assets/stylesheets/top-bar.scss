@@ -3,6 +3,9 @@
 @import 'mixins';
 
 .top-bar {
+  --indicator-outline: var(--header-bg);
+  --dropdown-display: none;
+
   position: fixed;
   top: 0px;
   left: 0px;
@@ -31,9 +34,9 @@
 
   .crayons-indicator {
     position: absolute;
-    top: $su-1;
-    right: $su-1;
-    box-shadow: 0 0 0 2px var(--header-bg);
+    top: -$su-1;
+    right: 0;
+    box-shadow: 0 0 0 2px var(--indicator-outline);
   }
 }
 
@@ -77,51 +80,58 @@
 .top-bar__link {
   position: relative;
   display: flex;
-  padding: 0 $su-3;
-  height: 100%;
+  padding: $su-2;
+  margin: 0 $su-1;
+  border-radius: 50%;
   align-items: center;
   color: var(--header-icons-color);
+  outline: 0;
+  transition: background $transition-props;
 
-  &:hover {
+  &:hover,
+  &:focus {
+    --indicator-outline: var(--header-bg-hover);
+
     color: var(--header-icons-color-hover);
+    background: var(--header-bg-hover);
+  }
+
+  &--current {
+    --indicator-outline: var(--header-bg-current);
+
+    color: var(--header-icons-color-hover);
+    background: var(--header-bg-current);
   }
 }
 
 // Dropdown under profile picture / hamburger icon
 .top-bar__menu {
   height: 100%;
+  display: flex;
+  align-items: center;
 
   &__trigger {
     all: unset;
-    display: flex;
-    height: 100%;
-    padding: 0 $su-2;
-    align-items: center;
-    cursor: pointer;
+    padding: $su-1;
+    margin: 0 $su-1;
+    border-radius: 50%;
     color: var(--header-icons-color);
-
-    &:hover {
-      color: var(--header-icons-color-hover);
-    }
+    cursor: pointer;
   }
 
   &__dropdown {
+    display: var(--dropdown-display);
     top: $header-height;
   }
 
-  &.showing {
-    .top-bar__menu__dropdown {
-      display: block;
-    }
-  }
+  &.showing,
+  &.desktop:hover,
+  &.desktop:focus {
+    --dropdown-display: block;
 
-  &.desktop {
-    &:hover,
-    &:active,
-    &:focus {
-      .top-bar__menu__dropdown {
-        display: block;
-      }
+    .top-bar__menu__trigger {
+      color: var(--header-icons-color-hover);
+      background: var(--header-bg-hover);
     }
   }
 }
@@ -138,6 +148,7 @@
   pointer-events: none;
   opacity: 0;
   border-radius: $br-default;
+  outline: 0;
 
   &:focus {
     pointer-events: auto;

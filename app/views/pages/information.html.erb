@@ -1,21 +1,21 @@
 <% title "About The Practical Dev" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/p/information" />
-  <meta name="description" content="All information about The Practical Dev">
+  <link rel="canonical" href="<%= app_url("/p/information") %>" />
+  <meta name="description" content="All information about <%= community_qualified_name %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/p/information" />
-  <meta property="og:title" content="All information about The Practical Dev" />
+  <meta property="og:url" content="<%= app_url("/p/information") %>" />
+  <meta property="og:title" content="All information about <%= community_qualified_name %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
-  <meta property="og:description" content="The DEV Community is great!" />
-  <meta property="og:site_name" content="The DEV Community" />
+  <meta property="og:description" content="<%= community_qualified_name %> is great!" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@ThePracticalDev">
-  <meta name="twitter:title" content="All information about The Practical Dev">
-  <meta name="twitter:description" content="The DEV Community is great!">
+  <meta name="twitter:title" content="All information about <%= community_qualified_name %>">
+  <meta name="twitter:description" content="<%= community_qualified_name %> is great!">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
 

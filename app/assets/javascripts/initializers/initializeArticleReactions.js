@@ -1,7 +1,5 @@
 /* global sendHapticMessage, showModal */
 
-'use strict';
-
 // Set reaction count to correct number
 function setReactionCount(reactionName, newCount) {
   var reactionClassList = document.getElementById(
@@ -83,7 +81,7 @@ function reactToArticle(articleId, reaction) {
 
   getCsrfToken()
     .then(sendFetch('reaction-creation', createFormdata()))
-    .then(response => {
+    .then((response) => {
       if (response.status === 200) {
         return response.json().then(() => {
           document.getElementById('reaction-butt-' + reaction).disabled = false;
@@ -93,7 +91,7 @@ function reactToArticle(articleId, reaction) {
       document.getElementById('reaction-butt-' + reaction).disabled = false;
       return undefined;
     })
-    .catch(error => {
+    .catch((error) => {
       toggleReaction();
       document.getElementById('reaction-butt-' + reaction).disabled = false;
     });
@@ -106,7 +104,7 @@ function setCollectionFunctionality() {
     );
     var inbetweenLinksLength = inbetweenLinks.length;
     for (var i = 0; i < inbetweenLinks.length; i += 1) {
-      inbetweenLinks[i].onclick = e => {
+      inbetweenLinks[i].onclick = (e) => {
         e.preventDefault();
         var els = document.getElementsByClassName('collection-link-hidden');
         var elsLength = els.length;
@@ -131,10 +129,10 @@ function requestReactionCounts(articleId) {
   ajaxReq.onreadystatechange = () => {
     if (ajaxReq.readyState === XMLHttpRequest.DONE) {
       var json = JSON.parse(ajaxReq.response);
-      json.article_reaction_counts.forEach(reaction => {
+      json.article_reaction_counts.forEach((reaction) => {
         setReactionCount(reaction.category, reaction.count);
       });
-      json.reactions.forEach(reaction => {
+      json.reactions.forEach((reaction) => {
         if (document.getElementById('reaction-butt-' + reaction.category)) {
           showUserReaction(reaction.category, 'not-user-animated');
         }
@@ -146,7 +144,7 @@ function requestReactionCounts(articleId) {
 }
 
 function jumpToComments() {
-  document.getElementById('jump-to-comments').onclick = e => {
+  document.getElementById('jump-to-comments').onclick = (e) => {
     e.preventDefault();
     document.getElementById('comments').scrollIntoView({
       behavior: 'instant',
@@ -157,22 +155,26 @@ function jumpToComments() {
 
 function initializeArticleReactions() {
   setCollectionFunctionality();
+
   setTimeout(() => {
-    var articleId;
-    if (document.getElementById('article-body')) {
-      articleId = document.getElementById('article-body').dataset.articleId;
-      if (document.getElementById('article-reaction-actions')) {
-        requestReactionCounts(articleId);
-      }
-    }
     var reactionButts = document.getElementsByClassName(
       'article-reaction-butt',
     );
-    for (var i = 0; i < reactionButts.length; i += 1) {
-      reactionButts[i].onclick = function addReactionOnClick(e) {
-        reactToArticle(articleId, this.dataset.category);
-      };
+
+    // we wait for the article to appear,
+    // we also check that reaction buttons are there as draft articles don't have them
+    if (document.getElementById('article-body') && reactionButts.length > 0) {
+      var articleId = document.getElementById('article-body').dataset.articleId;
+
+      requestReactionCounts(articleId);
+
+      for (var i = 0; i < reactionButts.length; i += 1) {
+        reactionButts[i].onclick = function addReactionOnClick(e) {
+          reactToArticle(articleId, this.dataset.category);
+        };
+      }
     }
+
     if (document.getElementById('jump-to-comments')) {
       jumpToComments();
     }

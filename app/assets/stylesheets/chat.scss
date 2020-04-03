@@ -1,5 +1,4 @@
 @import 'variables';
-@import 'connect/_channel-details';
 @import 'mixins';
 
 // High level classes
@@ -140,7 +139,7 @@
   padding: 8px;
   font-size: 14px;
   -webkit-appearance: none;
-  background: var(--container-bg);
+  background: var(--card-bg);
   color: var(--body-color);
 
   @media screen and (min-width: 1000px) {
@@ -173,7 +172,7 @@
 }
 
 .chat__channeltypefilterbutton--active {
-  color: var(--link-brand-color);
+  color: var(--link-branded-color);
 
   @media screen and (min-width: 1300px) {
     border: 1px solid darken($light-medium-gray, 5%);
@@ -389,7 +388,7 @@
   justify-content: space-between;
   @include themeable(border, theme-container-border, 1px solid $outline-color);
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-  background: var(--container-bg);
+  background: var(--card-bg);
   flex-flow: row nowrap;
 }
 
@@ -555,7 +554,7 @@
 .activechatchannel__activecontentexitbutton {
   border: 0px;
   font-size: 30px;
-  color: var(--container-color-tertiary);
+  color: var(--card-color-tertiary);
   padding: 0px;
   background: transparent;
   position: absolute;
@@ -645,54 +644,19 @@
   }
 }
 
-.activecontent__githubrepo {
-}
-
-.activecontent__githubrepoheader {
-  padding-left: 30px;
-  padding-bottom: 3px;
-  min-height: 30px;
-  margin-top: -9px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 0.9em;
-}
-
-.activecontent__githubrepofiles {
-  border-bottom: 1px solid $light-medium-gray;
-  font-size: 0.8em;
-  overflow: auto;
-
-  &.activecontent__githubrepofiles--root {
-    height: 280px;
-    max-height: 40vh;
-  }
-}
-
-.activecontent__githubreporeadme {
-  font-size: 0.8em;
-
-  img {
-    max-width: 100%;
-  }
-}
-
-.activecontent__githubrepofilerow {
-  padding: 4px 2px;
-  border-top: 1px solid $light-medium-gray;
-}
-
-.chat__channelinvitationsindicator button {
-  background: $green;
+.chat__channelinvitationsindicator a {
+  background: linear-gradient(10deg, darken($green, 25%), darken($green, 15%));
   text-align: center;
-  padding: 10px 0px;
+  padding: 30px 0px;
   display: block;
   border-radius: 3px;
   margin: 3px 0px;
   border: 0px;
-  width: 93%;
-  font-size: 0.9em;
+  width: 94%;
+  color: white;
+  font-size: 1.1em;
+  font-weight: 700;
+  -webkit-appearance: unset;
 }
 
 .chatchannels {
@@ -743,7 +707,7 @@
 }
 
 .chatchanneltab--active {
-  background: var(--container-bg);
+  background: var(--card-bg);
   border: 1px solid $dark-purple;
   box-shadow: 3px 3px 0px $dark-purple;
 }
@@ -986,8 +950,8 @@
   }
 
   a h1 {
-    color: var(--container-color);
-    border-color: var(--container-color);
+    color: var(--card-color);
+    border-color: var(--card-color);
   }
 
   img {
@@ -1018,7 +982,7 @@
   resize: none;
   flex-grow: 1;
   height: 42px;
-  background: var(--container-bg);
+  background: var(--card-bg);
   @include themeable(border, theme-border, 1px solid $outline-color);
   color: var(--body-color);
 }
@@ -1150,7 +1114,7 @@
   max-width: 670px;
   padding: 0px;
   margin-bottom: 6px;
-  background: var(--container-bg);
+  background: var(--card-bg);
   .chatchannels__richlinkmainimage {
     position: relative;
     width: 100%;
@@ -1170,14 +1134,14 @@
       vertical-align: -0.25em;
       &.chatchannels__richlinkprofilepic {
         border-radius: 100px;
-        border: 1px solid var(--container-color-tertiary);
+        border: 1px solid var(--card-color-tertiary);
       }
     }
   }
   h4 {
     margin-top: -12px;
     margin-bottom: 15px;
-    color: var(--container-color-tertiary);
+    color: var(--card-color-tertiary);
     font-weight: 500;
     padding: 0px calc(10px + 0.2vw);
     img {
@@ -1185,7 +1149,7 @@
       width: 22px;
       border-radius: 100px;
       margin-right: 3px;
-      border: 1px solid var(--container-color-tertiary);
+      border: 1px solid var(--card-color-tertiary);
       vertical-align: -6px;
     }
   }
@@ -1255,6 +1219,9 @@
   border-left: 3px solid #4e57ef;
   height: 50px;
   overflow: hidden;
+  p {
+    margin: 18px 0;
+  }
 }
 
 .closeEdit {
@@ -1275,7 +1242,7 @@
 
 .mention__list {
   position: absolute;
-  background: var(--container-bg);
+  background: var(--card-bg);
   display: none;
   z-index: 1;
   border-top: 1px solid #dbdbdb;

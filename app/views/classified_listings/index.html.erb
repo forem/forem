@@ -1,11 +1,11 @@
 <%= content_for :page_meta do %>
   <% title "Listings" %>
 
-  <link rel="canonical" href="https://dev.to<%= request.path %>" />
+  <link rel="canonical" href="<%= app_url(request.path) %>" />
   <meta name="description" content="<%= SiteConfig.community_description %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://dev.to<%= request.path %>" />
+  <meta property="og:url" content="<%= app_url(request.path) %>" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
   <% if @displayed_classified_listing %>
     <meta property="og:title" content="<%= truncate @displayed_classified_listing.title, length: 54 %>">

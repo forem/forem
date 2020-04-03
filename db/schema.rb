@@ -1027,7 +1027,6 @@ ActiveRecord::Schema.define(version: 2020_04_02_152601) do
     t.string "short_summary"
     t.string "social_image"
     t.string "social_preview_template", default: "article"
-    t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0

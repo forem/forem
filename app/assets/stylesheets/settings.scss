@@ -4,6 +4,8 @@
 $input-width: 650px;
 
 #page-content.users-edit,
+#page-content.chat_channel_memberships-edit,
+#page-content.chat_channel_memberships-index,
 #page-content.users-update,
 #page-content.users-confirm_destroy,
 #page-content.organizations-create,
@@ -12,18 +14,25 @@ $input-width: 650px;
   #notice {
     background: $green;
     color: black;
-    padding: 40px 0px 40px;
+    padding: 40px 15px 40px;
     text-align: center;
     position: relative;
     top: 0;
     left: 0;
     right: 0;
+    font-weight: 700;
+    font-size: 1.05em;
     &.error-notice {
       background: rgba(255, 80, 80, 0.7);
       color: white;
     }
   }
   .user-settings-page {
+    h1,
+    h3,
+    p {
+      margin: 10px 0 !important;
+    }
     width: 900px;
     max-width: 94%;
     margin: 0 auto;
@@ -340,6 +349,27 @@ $input-width: 650px;
         resize: none;
       }
     }
+    %inline-button-form {
+      display: inline-block;
+      input[type='submit'] {
+        display: inline-block;
+        font-size: 17px;
+        border: 0px;
+        border-radius: 100px;
+        padding: 2px 10px;
+        width: auto;
+        margin: 0px;
+        margin-left: 5px;
+        color: white;
+        background: $black;
+      }
+    }
+    .inline-button-form {
+      @extend %inline-button-form;
+    }
+    .inline-button-form-hidden {
+      display: none;
+    }
     h2 {
       font-size: calc(40px + 1vw);
       font-family: $helvetica-condensed;
@@ -402,8 +432,8 @@ $input-width: 650px;
       width: 70%;
     }
     .single-app-integration {
-      background: var(--container-bg);
-      border: 1px solid var(--container-color-tertiary);
+      background: var(--card-bg);
+      border: 1px solid var(--card-color-tertiary);
       border-radius: 8px;
       padding: 10px;
       h2 {
@@ -412,7 +442,7 @@ $input-width: 650px;
         font-size: 1.5em;
       }
       sup {
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
       img {
         height: 1em;
@@ -500,7 +530,7 @@ $input-width: 650px;
 .github-repos {
   max-height: 400px;
   overflow-y: auto;
-  background: var(--container-bg);
+  background: var(--card-bg);
   box-shadow: $shadow;
   &.loading-repos {
     height: 400px;
@@ -512,7 +542,7 @@ $input-width: 650px;
     height: 400px;
   }
   .github-repo-row {
-    background: var(--container-bg);
+    background: var(--card-bg);
     padding: 12px;
     margin: 5px 0px;
     transition: all 0.6s ease;
@@ -676,6 +706,31 @@ $input-width: 650px;
   }
 }
 
+.settings-form-userlist {
+  .settings-form-userlistrow {
+    font-size: 18px;
+    padding: 6px 0px;
+    min-height: 33px;
+    display: block;
+    @include themeable(color, theme-color, $black);
+    a {
+      @include themeable(color, theme-color, $black);
+    }
+    img {
+      height: 1.5em;
+      width: 1.5em;
+      border-radius: 100px;
+      vertical-align: -0.25em;
+      margin-right: 0.25em;
+    }
+    &:hover {
+      .inline-button-form-hidden {
+        @extend %inline-button-form;
+      }
+    }
+  }
+}
+
 .signout_confirm-wrapper {
   padding: calc(15% + 50px) 2% 30%;
   text-align: center;
@@ -755,7 +810,7 @@ ul.delete__account {
   align-items: center;
   justify-content: space-between;
   flex-flow: row wrap;
-  background: var(--container-bg);
+  background: var(--card-bg);
   border-radius: 5px;
   border: 1px solid $light-medium-gray;
   padding: 0.5rem 0 0.8rem 0.5rem;
@@ -785,4 +840,15 @@ ul.delete__account {
 
 .membership-purchase-link {
   font-size: 2rem;
+}
+
+#page-content.chat_channel_memberships-edit,
+#page-content.chat_channel_memberships-index {
+  #page-content-inner {
+    margin-top: 40px;
+  }
+  .notice {
+    margin-top: -40px;
+    margin-bottom: 20px;
+  }
 }
