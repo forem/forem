@@ -10,7 +10,7 @@ exports[`<Button /> component should render a button as a specific button type (
 </button>
 `;
 
-exports[`<Button /> component should render a button as an anchor element if "as" is set to "a" 1`] = `
+exports[`<Button /> component should render a button as an anchor element if "tagName" is set to "a" 1`] = `
 <a
   class="crayons-btn"
   href="https://dev.to"

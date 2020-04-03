@@ -1,12 +1,7 @@
 import { h } from 'preact';
 import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
 import { action } from '@storybook/addon-actions';
-import {
-  Button,
-  DangerButton,
-  OutlinedButton,
-  SecondaryButton,
-} from '@crayons';
+import { Button } from '@crayons';
 
 import '../../storybook-utiltiies/designSystem.scss';
 
@@ -43,7 +38,8 @@ Default.story = {
 };
 
 export const Secondary = () => (
-  <SecondaryButton
+  <Button
+    variant={text('variant', 'secondary')}
     icon={object('icon')}
     className={text('className')}
     tagName={text('tagName', 'button')}
@@ -53,7 +49,7 @@ export const Secondary = () => (
     {...commonProps}
   >
     Hello world!
-  </SecondaryButton>
+  </Button>
 );
 
 Secondary.story = {
@@ -61,7 +57,8 @@ Secondary.story = {
 };
 
 export const Outlined = () => (
-  <OutlinedButton
+  <Button
+    variant={text('variant', 'outlined')}
     icon={object('icon')}
     className={text('className')}
     tagName={text('tagName', 'button')}
@@ -71,7 +68,7 @@ export const Outlined = () => (
     {...commonProps}
   >
     Hello world!
-  </OutlinedButton>
+  </Button>
 );
 
 Outlined.story = {
@@ -79,7 +76,8 @@ Outlined.story = {
 };
 
 export const Danger = () => (
-  <DangerButton
+  <Button
+    variant={text('variant', 'danger')}
     icon={object('icon')}
     className={text('className')}
     tagName={text('tagName', 'button')}
@@ -89,7 +87,7 @@ export const Danger = () => (
     {...commonProps}
   >
     Hello world!
-  </DangerButton>
+  </Button>
 );
 
 Danger.story = {

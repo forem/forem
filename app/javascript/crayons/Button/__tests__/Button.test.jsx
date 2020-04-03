@@ -75,9 +75,9 @@ describe('<Button /> component', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('should render a button as an anchor element if "as" is set to "a"', () => {
+  it('should render a button as an anchor element if "tagName" is set to "a"', () => {
     const tree = render(
-      <Button as="a" url="https://dev.to">
+      <Button tagName="a" url="https://dev.to">
         Hello world!
       </Button>,
     );
