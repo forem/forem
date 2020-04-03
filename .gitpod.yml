@@ -16,9 +16,7 @@ ports:
 tasks:
   - command: redis-server
   - command: /home/gitpod/elasticsearch-7.5.2/bin/elasticsearch
-  - init: >
-      cp config/sample_application.yml config/application.yml &&
-      bin/setup 2>/dev/null || true
+  - init: cp config/sample_application.yml config/application.yml
     # We explicitly unset DATABASE_URL so bin/setup can do its job.
     # See: https://github.com/thepracticaldev/dev.to/issues/7040
     command: >
