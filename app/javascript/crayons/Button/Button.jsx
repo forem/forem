@@ -36,7 +36,7 @@ function getAdditionalClassNames({
 export const Button = ({
   children,
   variant = 'primary',
-  as = 'button',
+  tagName = 'button',
   className,
   icon,
   url,
@@ -48,10 +48,10 @@ export const Button = ({
   onFocus,
   onBlur,
 }) => {
-  const ComponentName = as;
+  const ComponentName = tagName;
   const Icon = icon;
   const otherProps =
-    as === 'button'
+    tagName === 'button'
       ? { type: buttonType, disabled }
       : { href: disabled ? undefined : url };
 
@@ -61,7 +61,7 @@ export const Button = ({
         variant,
         className,
         icon,
-        disabled: as === 'a' && disabled,
+        disabled: tagName === 'a' && disabled,
         children,
       })}`}
       onClick={onClick}
@@ -96,7 +96,7 @@ Button.propTypes = {
   children: defaultChildrenPropTypes.isRequired,
   variant: PropTypes.oneOf(['primary', 'secondary', 'outlined', 'danger'])
     .isRequired,
-  as: PropTypes.oneOf(['a', 'button']).isRequired,
+  tagName: PropTypes.oneOf(['a', 'button']).isRequired,
   className: PropTypes.string,
   icon: PropTypes.node,
   url: PropTypes.string,

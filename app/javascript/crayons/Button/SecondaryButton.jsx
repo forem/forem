@@ -24,7 +24,7 @@ SecondaryButton.displayName = 'SecondaryButton';
 
 SecondaryButton.propTypes = {
   children: defaultChildrenPropTypes.isRequired,
-  as: PropTypes.oneOf(['a', 'button']).isRequired,
+  tagName: PropTypes.oneOf(['a', 'button']).isRequired,
   className: PropTypes.string,
   url: PropTypes.string,
   buttonType: PropTypes.string,

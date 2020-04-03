@@ -28,7 +28,7 @@ export const Default = () => (
     icon={object('icon')}
     variant={text('variant')}
     className={text('className')}
-    as={text('as', 'button')}
+    tagName={text('tagName', 'button')}
     url={text('url')}
     buttonType={text('buttonType')}
     disabled={boolean('disabled', false)}
@@ -46,7 +46,7 @@ export const Secondary = () => (
   <SecondaryButton
     icon={object('icon')}
     className={text('className')}
-    as={text('as', 'button')}
+    tagName={text('tagName', 'button')}
     url={text('url')}
     buttonType={text('buttonType')}
     disabled={boolean('disabled', false)}
@@ -64,7 +64,7 @@ export const Outlined = () => (
   <OutlinedButton
     icon={object('icon')}
     className={text('className')}
-    as={text('as', 'button')}
+    tagName={text('tagName', 'button')}
     url={text('url')}
     buttonType={text('buttonType')}
     disabled={boolean('disabled', false)}
@@ -82,7 +82,7 @@ export const Danger = () => (
   <DangerButton
     icon={object('icon')}
     className={text('className')}
-    as={text('as', 'button')}
+    tagName={text('tagName', 'button')}
     url={text('url')}
     buttonType={text('buttonType')}
     disabled={boolean('disabled', false)}
@@ -113,7 +113,7 @@ export const IconWithText = () => {
       icon={object('icon', Icon)}
       variant={text('variant')}
       className={text('className')}
-      as={text('as', 'button')}
+      tagName={text('tagName', 'button')}
       url={text('url')}
       buttonType={text('buttonType')}
       disabled={boolean('disabled', false)}
@@ -145,7 +145,7 @@ export const IconOnly = () => {
       icon={object('icon', Icon)}
       variant={text('variant')}
       className={text('className')}
-      as={text('as', 'button')}
+      tagName={text('tagName', 'button')}
       url={text('url')}
       buttonType={text('buttonType')}
       disabled={boolean('disabled', false)}
@@ -162,7 +162,7 @@ export const ButtonAsLink = () => (
   <Button
     variant={text('variant')}
     className={text('className')}
-    as={text('as', 'a')}
+    tagName={text('tagName', 'a')}
     icon={object('icon')}
     url={text('url', '#')}
     buttonType={text('buttonType')}
