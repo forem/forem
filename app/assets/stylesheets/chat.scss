@@ -3,7 +3,7 @@
 
 // High level classes
 .chat-page-wrapper {
-  margin: 24px auto 0px;
+  margin: 10px auto 0px;
   width: 96%;
   max-width: calc(1540px + 10vw);
 }
@@ -1125,8 +1125,9 @@
     padding-top: 42%;
   }
   h1 {
-    margin-top: 15px;
+    margin-top: 8px;
     padding: 0px calc(10px + 0.2vw);
+    line-height: 1.1em;
     img {
       height: 1.2em;
       width: 1.2em;
@@ -1139,7 +1140,7 @@
     }
   }
   h4 {
-    margin-top: -12px;
+    margin-top: 12px;
     margin-bottom: 15px;
     color: var(--card-color-tertiary);
     font-weight: 500;

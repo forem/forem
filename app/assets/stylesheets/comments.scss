@@ -1038,6 +1038,7 @@ a.header-link {
       position: relative;
       width: calc(100% + 60px);
       margin-left: -58px;
+      font-family: $helvetica;
       &.submitting {
         input[type='submit'] {
           background: $bold-blue;
