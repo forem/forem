@@ -12,8 +12,8 @@ module Metrics
 
         next unless model.const_defined?(:SEARCH_CLASS)
 
-        document_count = if model::SEARCH_CLASS.respond_to?("#{model.to_s.underscore}_document_count")
-                           model::SEARCH_CLASS.public_send("#{model.to_s.underscore}_document_count")
+        document_count = if model::SEARCH_CLASS.respond_to?("#{model.to_s.underscore.pluralize}_document_count")
+                           model::SEARCH_CLASS.public_send("#{model.to_s.underscore.pluralize}_document_count")
                          else
                            model::SEARCH_CLASS.document_count
                          end
