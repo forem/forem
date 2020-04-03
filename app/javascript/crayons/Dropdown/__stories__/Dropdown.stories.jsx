@@ -5,7 +5,7 @@ import { Dropdown } from '@crayons';
 import './dropdown-css-helper.scss';
 
 export default {
-  title: 'Components/Dropdowns/JSX',
+  title: 'Components/Dropdowns',
   decorators: [withKnobs],
 };
 
