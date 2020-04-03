@@ -182,12 +182,20 @@ module ApplicationHelper
     URL.url(uri)
   end
 
-  def tag_url(tag, page)
-    URL.tag(tag, page)
-  end
-
   def article_url(article)
     URL.article(article)
+  end
+
+  def comment_url(comment)
+    URL.comment(comment)
+  end
+
+  def reaction_url(reaction)
+    URL.reaction(reaction)
+  end
+
+  def tag_url(tag, page)
+    URL.tag(tag, page)
   end
 
   def user_url(user)

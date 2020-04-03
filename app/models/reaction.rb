@@ -216,19 +216,6 @@ class Reaction < ApplicationRecord
   end
 
   def notify_slack_channel_about_vomit_reaction
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-
-    message = <<~MESSAGE.chomp
-      #{user.name} (#{url}#{user.path})
-      reacted with a #{category} on
-      #{url}#{reactable.path}
-    MESSAGE
-
-    SlackBotPingWorker.perform_async(
-      message: message,
-      channel: "abuse-reports",
-      username: "abuse_bot",
-      icon_emoji: ":cry:",
-    )
+    Slack::Messengers::ReactionVomit.call(reaction: self)
   end
 end

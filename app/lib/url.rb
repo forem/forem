@@ -30,7 +30,23 @@ module URL
     url(article.path)
   end
 
-  # Creates an article URL
+  # Creates a comment URL
+  #
+  # @param comment [Comment] the comment to create the URL for
+  def self.comment(comment)
+    url(comment.path)
+  end
+
+  # Creates a reaction URL
+  #
+  # A reaction URL is the URL of its reactable.
+  #
+  # @param reactable [Reaction] the reaction to create the URL for
+  def self.reaction(reaction)
+    url(reaction.reactable.path)
+  end
+
+  # Creates a tag URL
   #
   # @param tag [Tag] the tag to create the URL for
   def self.tag(tag, page = 1)
