@@ -32,6 +32,12 @@ class NotifyMailerPreview < ActionMailer::Preview
     NotifyMailer.new_badge_email(badge_achievement)
   end
 
+  def channel_invite_email
+    user = User.first
+    membership = ChatChannelMembership.last
+    NotifyMailer.channel_invite_email(membership, user)
+  end
+
   def tag_moderator_confirmation_email
     NotifyMailer.tag_moderator_confirmation_email(User.first, "discuss")
   end

@@ -4,10 +4,10 @@ Congratulations, <%= @user.name %>! You got the <%= @badge.title %> badge! Be su
 
 <%= strip_tags @badge_achievement.rewarding_context_message %>
 
-https://dev.to/<%= @user.username %>
+<%= user_url(@user) %>
 
-You also get 5 new credits to use for community listings if you have anything you'd like to promote: https://dev.to/listings
+You also get 5 new credits to use for community listings if you have anything you'd like to promote: <%= classified_listings_url %>
 
-To manage your credits: visit: https://dev.to/credits
+To manage your credits: visit: <%= credits_url %>
 
-For more information about listings, visit: https://dev.to/about-listings
+For more information about listings, visit: <%= app_url("/about-listings") %>

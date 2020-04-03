@@ -1,12 +1,12 @@
 <%= content_for :page_meta do %>
   <% title "Videos" %>
 
-  <link rel="canonical" href="https://dev.to<%= request.path %>" />
+  <link rel="canonical" href="<%= app_url(request.path) %>" />
   <meta name="description" content="<%= SiteConfig.community_description %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://dev.to<%= request.path %>" />
+  <meta property="og:url" content="<%= app_url(request.path) %>" />
   <meta property="og:title" content="<% title "Videos" %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
   <meta property="og:description" content="All videos on DEV" />

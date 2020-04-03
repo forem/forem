@@ -17,7 +17,8 @@ For the Dev.to tech stack we use:
 - [_Sidekiq_](https://github.com/mperham/sidekiq) and
   [_Active Job_](https://guides.rubyonrails.org/active_job_basics.html) for
   background workers
-- [_Algolia_](https://www.algolia.com/) for search
+- [_Algolia_](https://www.algolia.com/) for search (Algolia will be phased out
+  in favor of [_Elasticsearch_](https://www.elastic.co/))
 - [Ransack](https://github.com/activerecord-hackery/ransack) for internal search
 - [_Redcarpet_](https://github.com/vmg/redcarpet) and
   [_Rouge_](https://github.com/jneen/rouge) to parse Markdown

@@ -7,7 +7,7 @@
 <br>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.6.5-green.svg" alt="ruby version">
+    <img src="https://img.shields.io/badge/Ruby-v2.7.0-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
@@ -127,6 +127,7 @@ A more complete overview of our stack is available in
 - [@juliannatetreault](https://dev.to/juliannatetreault)
 - [@ridhwana](https://dev.to/ridhwana)
 - [@fdoxyz](https://dev.to/fdoxyz)
+- [@msarit](https://dev.to/msarit)
 
 ## Vulnerability disclosure
 

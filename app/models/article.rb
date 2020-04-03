@@ -8,6 +8,7 @@ class Article < ApplicationRecord
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
+  REACTION_INDEXED_FIELDS = %w[body_markdown published tag_list title].freeze
 
   acts_as_taggable_on :tags
   resourcify
@@ -71,9 +72,12 @@ class Article < ApplicationRecord
   before_save :update_cached_user
 
   after_save :bust_cache, :detect_human_language
-  after_save :notify_slack_channel_about_publication, if: -> { published && published_at > 30.seconds.ago }
+  after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
+  after_update_commit :update_reading_list_reactions, if: proc { |article|
+    REACTION_INDEXED_FIELDS.any? { |field| article.saved_changes[field] } && reactions.readinglist.any?
+  }
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
@@ -89,6 +93,13 @@ class Article < ApplicationRecord
   scope :admin_published_with, lambda { |tag_name|
     published.
       where(user_id: SiteConfig.staff_user_id).
+      order(published_at: :desc).
+      tagged_with(tag_name)
+  }
+
+  scope :user_published_with, lambda { |user_id, tag_name|
+    published.
+      where(user_id: user_id).
       order(published_at: :desc).
       tagged_with(tag_name)
   }
@@ -277,6 +288,14 @@ class Article < ApplicationRecord
     "article_#{id}"
   end
 
+  def update_reading_list_reactions
+    if published
+      reactions.readinglist.find_each(&:index_to_elasticsearch)
+    elsif saved_changes["published"]
+      reactions.readinglist.find_each(&:remove_from_elasticsearch)
+    end
+  end
+
   def processed_description
     text_portion = body_text.present? ? body_text[0..100].tr("\n", " ").strip.to_s : ""
     text_portion = text_portion.strip + "..." if body_text.size > 100
@@ -297,6 +316,7 @@ class Article < ApplicationRecord
   def touch_by_reaction
     async_score_calc
     index!
+    index_to_elasticsearch
   end
 
   def comments_blob
@@ -698,18 +718,6 @@ class Article < ApplicationRecord
   end
 
   def notify_slack_channel_about_publication
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-
-    message = <<~MESSAGE.chomp
-      New Article Published: #{title}
-      #{url}#{path}
-    MESSAGE
-
-    SlackBotPingWorker.perform_async(
-      message: message,
-      channel: "activity",
-      username: "article_bot",
-      icon_emoji: ":writing_hand:",
-    )
+    Slack::Messengers::ArticlePublished.call(article: self)
   end
 end

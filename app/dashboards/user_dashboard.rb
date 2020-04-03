@@ -8,7 +8,6 @@ class UserDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-    organization: Field::BelongsTo,
     id: Field::Number,
     name: Field::String,
     profile_image: CarrierwaveField,
@@ -18,7 +17,6 @@ class UserDashboard < Administrate::BaseDashboard
     summary: Field::String,
     email: Field::String,
     website_url: Field::String,
-    org_admin: Field::Boolean,
     created_at: Field::DateTime,
     updated_at: Field::DateTime,
     articles: Field::HasMany,
@@ -26,8 +24,6 @@ class UserDashboard < Administrate::BaseDashboard
     reputation_modifier: Field::Number,
     signup_cta_variant: Field::String,
     onboarding_package_requested: Field::Boolean,
-    onboarding_package_fulfilled: Field::Boolean,
-    onboarding_package_requested_again: Field::Boolean,
     twitter_followers_count: Field::Number,
     bg_color_hex: Field::String,
     text_color_hex: Field::String,
@@ -70,13 +66,11 @@ class UserDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
-    organization
     name
     username
     twitter_username
     github_username
     profile_image
-    org_admin
     summary
     website_url
     facebook_url

@@ -234,7 +234,7 @@
     left: 8px;
     right: 155px;
   }
-  background: var(--container-bg);
+  background: var(--card-bg);
   border: 1px solid var(--body-color);
   font-family: $monospace;
   z-index: 20;
@@ -294,7 +294,7 @@
 }
 
 .articleform__tagoptionsummary {
-  color: var(--container-color-secondary);
+  color: var(--card-color-secondary);
   font-weight: 400;
 }
 
@@ -371,8 +371,8 @@
   // scrollbars not needed because the preact-textarea-autosize package
   // automatically resizes the article form
   overflow: hidden;
-  background: var(--container-bg);
-  color: var(--container-color);
+  background: var(--card-bg);
+  color: var(--card-color);
   @media screen and (min-width: 600px) {
     font-size: 18px;
     min-height: calc(85vh - 280px);
@@ -402,7 +402,7 @@
   bottom: 0px;
   left: 0;
   right: 0;
-  background: var(--container-bg);
+  background: var(--card-bg);
   z-index: 20;
   &::after {
     position: absolute;
@@ -435,7 +435,7 @@
       display: inline-block;
       margin-bottom: 2px;
       font-size: 11px;
-      color: var(--container-color-secondary);
+      color: var(--card-color-secondary);
       font-style: italic;
       margin-left: -2px;
     }
@@ -456,7 +456,7 @@
       border: none;
       box-shadow: none;
       color: $medium-gray;
-      color: var(--container-color-secondary);
+      color: var(--card-color-secondary);
       font-family: sans-serif;
       font-size: 1rem;
       cursor: pointer;

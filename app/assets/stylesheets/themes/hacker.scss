@@ -46,20 +46,19 @@
   --body-color-inverted: var(--base-inverted);
 
   // Main content containers
-  --container-bg: var(--base-inverted);
-  --container-color: var(--accent-brand);
-  --container-color-secondary: var(--accent-brand-darker);
-  --container-color-tertiary: var(--base-50);
-
-  // Secondary content containers
-  --widget-bg: var(--base-10);
-  --widget-color: var(--accent-brand);
-  --widget-color-secondary: var(--accent-brand-darker);
-  --widget-color-tertiary: var(--base-50);
-  --widget-headline: var(--accent-brand-lighter);
+  --card-bg: var(--base-inverted);
+  --card-color: var(--accent-brand);
+  --card-color-secondary: var(--accent-brand-darker);
+  --card-color-tertiary: var(--base-50);
+  --card-secondary-bg: var(--base-10);
+  --card-secondary-color: var(--base-90);
+  --card-headline-color: var(--accent-brand-lighter);
 
   // Header
   --header-bg: var(--base-10);
+  --header-bg-hover: var(--base-20);
+  --header-bg-current: var(--base-0);
+  --header-shadow: rgba(0, 0, 0, 0.1);
   --header-icons-color: var(--base-70);
   --header-icons-color-hover: var(--base-100);
 
@@ -74,17 +73,16 @@
   --footer-link-color: var(--accent-brand);
   --footer-link-color-hover: var(--accent-brand-lighter);
 
-  // Links in content
-  --link-brand-color: #e24ec1;
-  --link-brand-color-hover: #ff53d9;
-
-  // Greyscale links, for places where we don't want to make them use accent color
-  --link-dimmed-color: var(--accent-brand);
-  --link-dimmed-color-secondary: var(--accent-brand-darker);
-  --link-dimmed-bg-hover: var(--base-0);
-  --link-dimmed-color-hover: var(--accent-brand-lighter);
-  --link-dimmed-bg-current: var(--base-inverted);
-  --link-dimmed-color-current: var(--accent-brand-lighter);
+  // Links
+  --link-color: var(--accent-brand);
+  --link-color-hover: var(--accent-brand-darker); // #ff53d9;
+  --link-color-current: var(--accent-brand-lighter);
+  --link-color-secondary: var(--accent-brand-darker);
+  --link-color-secondary-hover: var(--accent-brand-darker);
+  --link-branded-color: #e24ec1;
+  --link-bg-hover: var(--base-0);
+  --link-bg-hover-alt: var(--base-0);
+  --link-bg-current: var(--base-inverted);
 
   // Primary buttons
   --button-primary-bg: var(--accent-brand);
@@ -119,4 +117,12 @@
   // Default box
   --box: var(--base-90);
   --box-darker: var(--base-100);
+
+  // Indicators
+  --indicator-accent-bg: var(--accent-brand);
+  --indicator-accent-color: var(--body-color-inverted);
+  --indicator-critical-bg: var(--accent-danger);
+  --indicator-critical-color: var(--body-color-inverted);
+  --indicator-default-bg: var(--button-secondary-bg);
+  --indicator-default-color: var(--button-secondary-color);
 }

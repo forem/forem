@@ -21,7 +21,7 @@ gem "algoliasearch-rails", "~> 1.24" # Algolia Search is a hosted search engine 
 gem "algorithmia", "~> 1.1" # Ruby Client for Algorithmia Algorithms and Data API
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.7" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
-gem "aws-sdk-lambda", "~> 1.37" # Official AWS Ruby gem for AWS Lambda
+gem "aws-sdk-lambda", "~> 1.38" # Official AWS Ruby gem for AWS Lambda
 gem "blazer", "~> 2.2.1" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
@@ -30,7 +30,7 @@ gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bo
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.13" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.3" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.33.1" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.34.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "dogstatsd-ruby", "~> 4.7" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.3" # Oauth 2 provider
@@ -77,7 +77,7 @@ gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have b
 gem "rails", "~> 5.2" # Ruby on Rails
 gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "ransack", "~> 2.3" # Searching and sorting
-gem "recaptcha", "~> 5.4", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
+gem "recaptcha", "~> 5.5", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
 gem "redis", "~> 4.1.3" # Redis ruby client
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
@@ -128,7 +128,7 @@ end
 group :development, :test do
   gem "awesome_print", "~> 1.8" # Great Ruby dubugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.31" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.32" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 2.11" # A library for generating fake data such as names, addresses, and phone numbers
   gem "parallel_tests", "~> 2.32" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution

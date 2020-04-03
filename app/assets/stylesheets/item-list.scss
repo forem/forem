@@ -38,7 +38,7 @@
         font-size: 0.9em;
         font-family: $monospace;
         text-decoration: underline;
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
       .filters-header-action {
         font-size: 0.8em;
@@ -125,7 +125,7 @@
           border-radius: 3px;
           background: transparent;
           border: 1px solid $black;
-          color: var(--container-color-tertiary);
+          color: var(--card-color-tertiary);
           @include themeable(border-color, theme-secondary-color, $medium-gray);
         }
       }
@@ -149,7 +149,7 @@
         .item-details {
           a {
             display: inline-block;
-            color: var(--container-color-tertiary);
+            color: var(--card-color-tertiary);
 
             &.item-user {
               margin-right: 5px;
