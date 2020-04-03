@@ -427,16 +427,16 @@ class Article < ApplicationRecord
                    spaminess_rating: BlackBox.calculate_spaminess(self))
   end
 
-  def search_score
-    calculated_score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
-    calculated_score.to_i
-  end
-
   private
 
   def delete_related_objects
     Search::RemoveFromIndexWorker.new.perform("searchables_#{Rails.env}", index_id)
     Search::RemoveFromIndexWorker.new.perform("ordered_articles_#{Rails.env}", index_id)
+  end
+
+  def search_score
+    calculated_score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
+    calculated_score.to_i
   end
 
   def tag_keywords_for_search
