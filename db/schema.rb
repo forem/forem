@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_29_103305) do
+ActiveRecord::Schema.define(version: 2020_03_31_155903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1026,7 +1026,6 @@ ActiveRecord::Schema.define(version: 2020_03_29_103305) do
     t.string "short_summary"
     t.string "social_image"
     t.string "social_preview_template", default: "article"
-    t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0
