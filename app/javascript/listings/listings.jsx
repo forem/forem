@@ -418,10 +418,9 @@ export class Listings extends Component {
     }
     return (
       <div className="listings__container">
-        <ModalBackground
-          shouldRender={openedListing}
-          onClick={this.handleCloseModal}
-        />
+        {shouldRenderModal && (
+          <ModalBackground onClick={this.handleCloseModal} />
+        )}
         <div className="classified-filters" id="classified-filters">
           <div className="classified-filters-categories">
             <a
