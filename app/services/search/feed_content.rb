@@ -6,6 +6,8 @@ module Search
     DEFAULT_PAGE = 0
     DEFAULT_PER_PAGE = 60
 
+    INCLUDED_CLASS_NAMES = %w[Article Comment PodcastEpisode].freeze
+
     class << self
       def search_documents(params:)
         set_query_size(params)
@@ -16,6 +18,14 @@ module Search
           prepare_doc(feed_doc)
         end
         paginate_hits(hits, params)
+      end
+
+      INCLUDED_CLASS_NAMES.each do |class_name|
+        define_method("#{class_name.underscore.pluralize}_document_count") do
+          Search::Client.count(
+            index: self::INDEX_ALIAS, body: count_filter(class_name),
+          ).dig("count")
+        end
       end
 
       private
@@ -44,6 +54,16 @@ module Search
         {
           "published_at_int" => published_at_timestamp.to_i,
           "published_timestamp" => published_at
+        }
+      end
+
+      def count_filter(class_name)
+        {
+          query: {
+            bool: {
+              filter: { term: { class_name: class_name } }
+            }
+          }
         }
       end
 
