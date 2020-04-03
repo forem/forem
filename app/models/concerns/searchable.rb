@@ -22,4 +22,8 @@ module Searchable
   def elasticsearch_doc
     self.class::SEARCH_CLASS.find_document(search_id)
   end
+
+  def sync_related_elasticsearch_docs
+    self.class::DATA_SYNC_CLASS.new(self, saved_changes).sync_documents
+  end
 end

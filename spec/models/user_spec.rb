@@ -105,6 +105,12 @@ RSpec.describe User, type: :model do
       end
     end
 
+    it "on update syncs elasticsearch data" do
+      allow(user).to receive(:sync_related_elasticsearch_docs)
+      user.save
+      expect(user).to have_received(:sync_related_elasticsearch_docs)
+    end
+
     it "on destroy enqueues job to delete user from elasticsearch" do
       user.save
       sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
