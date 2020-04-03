@@ -65,6 +65,11 @@ body {
   font-size: 18px;
 }
 
+a {
+  color: var(--link-branded-color);
+  text-decoration: none;
+}
+
 div {
   &.field,
   &.actions {
