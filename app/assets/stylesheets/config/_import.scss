@@ -2,14 +2,14 @@
 // Colors. /////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 //
-// List of colors to be used to generate utility-frist classes,
+// List of colors to be used to generate utility-first classes,
 // using generate-classes() function. See files from /base folder
 // for reference.
 //
 // These colors are defined using some colors CSS variables defined
 // in config/_colors.scss. We only utilize some of these variables
 // for utility-classes because it doesn't make much sense to create
-// utility-class for ever single variable in config/_colors.scss.
+// utility-class for every single variable in config/_colors.scss.
 
 $colors: (
   'base-100': var(--base-100),
@@ -44,7 +44,7 @@ $colors: (
 //
 // The reason why header height is set here instead of caluclating it based on its
 // content is because header is sometimes fixed and we need to offset page content
-// by specific value.. And that's the value.
+// by specific value... And that's the value.
 
 $header-height: 56px;
 $site-width: 1280px;
@@ -53,7 +53,7 @@ $site-width: 1280px;
 // [DRAFT] Responsiveness Breakpoints. /////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 //
-// List of breakpoints for our responsivness. Right now these are not
+// List of breakpoints for our responsiveness. Right now these are not
 // used anywhere. They are here as a placeholder.
 
 $breakpoint-s: 640px;
@@ -75,7 +75,7 @@ $breakpoints: (
 ////////////////////////////////////////////////////////////////////////////////////
 //
 // List of spacing units to use across all our components.
-//  • $(negaitve-)spacing-units variables are used for
+//  • $(negative-)spacing-units variables are used for
 //    generate-classes() function.
 
 $su-1: 0.25rem; // 4px
@@ -178,8 +178,8 @@ $lh-base: 1.5; // 24px for 16px font-size
 // Helpers /////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 //
-// Generators & functions utilized in other SCSS files. They are meant to simplify
-// process of creating styles etc.
+// Generators & functions utilized in other SCSS files. They are meant to simplify the
+// process of creating styles, etc.
 
 // pow() - Raise number to the nth power
 //
@@ -239,7 +239,7 @@ $lh-base: 1.5; // 24px for 16px font-size
 // @param {string || list} $properties    Defines CSS property(ies) that, for example `margin-right`
 // @param {list} $values-1                List of values for which we gonna generate classes
 // @param {list} $values-2                Additional list of values, useful when we want to combine two lists.
-// @param {boolean} $responsive           Wheather or not class should be responsive.
+// @param {boolean} $responsive           Whether or not class should be responsive.
 // @param {string} $separator             Separator between prefix and value.
 
 @mixin generate-classes(
