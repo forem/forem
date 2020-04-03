@@ -489,8 +489,8 @@ RSpec.describe NotifyMailer, type: :mailer do
     let(:member_email) { described_class.channel_invite_email(regular_membership, user) }
 
     it "renders proper subject" do
-      expect(moderator_email.subject).to eq("You are invited to Channel #{moderator_membership.chat_channel.channel_name} as moderator.")
-      expect(member_email.subject).to eq("You are invited to Channel #{regular_membership.chat_channel.channel_name} by #{user.name}.")
+      expect(moderator_email.subject).to eq("You are invited to the #{moderator_membership.chat_channel.channel_name} channel as moderator.")
+      expect(member_email.subject).to eq("You are invited to the #{regular_membership.chat_channel.channel_name} channel.")
     end
 
     it "renders proper sender" do
