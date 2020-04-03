@@ -4,7 +4,7 @@ import { fetchSearch } from '../src/utils/search';
 import SingleListing from './singleListing';
 import ClearQueryButton from './elements/clearQueryButton';
 import ModalBackground from './elements/modalBackground';
-import MessageModal from './elements/messageModal';
+import Modal from './elements/modal';
 
 /**
  * How many listings to show per page
@@ -354,6 +354,9 @@ export class Listings extends Component {
       initialFetch,
       message,
     } = this.state;
+
+    const shouldRenderModal = openedListing != null && undefined;
+
     const allListings = listings.map((listing) => (
       <SingleListing
         onAddTag={this.addTag}
@@ -410,43 +413,6 @@ export class Listings extends Component {
       );
     }
 
-    let modal = '';
-    if (openedListing) {
-      modal = (
-        <div className="single-classified-listing-container">
-          <div
-            id="single-classified-listing-container__inner"
-            className="single-classified-listing-container__inner"
-            onClick={this.handleCloseModal}
-            role="button"
-            onKeyPress={this.handleCloseModal}
-            tabIndex="0"
-          >
-            <SingleListing
-              onAddTag={this.addTag}
-              onChangeCategory={this.selectCategory}
-              listing={openedListing}
-              currentUserId={currentUserId}
-              onOpenModal={this.handleOpenModal}
-              isOpen
-            />
-            <MessageModal
-              onSubmit={this.handleSubmitMessage}
-              onChange={this.handleDraftingMessage}
-              message={message}
-              listining={openedListing}
-            />
-            <a
-              href="/about-listings"
-              className="single-classified-listing-info-link"
-            >
-              About DEV Listings
-            </a>
-            <div className="single-classified-listing-container__spacer" />
-          </div>
-        </div>
-      );
-    }
     if (initialFetch) {
       this.triggerMasonry();
     }
@@ -493,7 +459,19 @@ export class Listings extends Component {
           {allListings}
         </div>
         {nextPageButt}
-        {modal}
+        {shouldRenderModal && (
+          <Modal
+            currentUserId={currentUserId}
+            onAddTag={this.addTag}
+            onChange={this.handleDraftingMessage}
+            onClick={this.handleCloseModal}
+            onChangeCategory={this.selectCategory}
+            onOpenModal={this.handleOpenModal}
+            onSubmit={this.handleSubmitMessage}
+            listing={openedListing}
+            message={message}
+          />
+        )}
       </div>
     );
   }
