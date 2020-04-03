@@ -27,8 +27,7 @@ $outlined-border-width: 2px;
 
   &--disabled,
   &[disabled] {
-    // TODO: Remove !important once legacy styles are no longer causing issues
-    opacity: 0.6 !important;
+    opacity: 0.6;
     cursor: not-allowed;
   }
 
