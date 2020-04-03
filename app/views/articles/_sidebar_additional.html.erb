@@ -33,7 +33,7 @@
             <button type="button" class="widget-minimize-button" id="sidebar-listings-widget-minimize-button">-</button>
           </header>
           <div class="widget-body widget-body-listings">
-            <% @classified_listings.order("bumped_at DESC").limit(8).each do |listing| %>
+            <% @classified_listings.order("bumped_at DESC").limit(5).each do |listing| %>
               <a class="widget-listing-link" href="<%= listing.path %>">
                 <span class="widget-listing-link-title"><%= listing.title %></span>
                 <span class="widget-listing-link-category"><%= listing.category %></span>
@@ -51,7 +51,7 @@
           <div class="widget-body">
             <div class="widget-link-list">
               <% if tag == "help" %>
-                <% Article.active_help.limit(8).pluck(:path, :title, :comments_count, :created_at).each do |plucked_article| %>
+                <% Article.active_help.limit(5).pluck(:path, :title, :comments_count, :created_at).each do |plucked_article| %>
                   <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
                 <% end %>
               <% else %>
