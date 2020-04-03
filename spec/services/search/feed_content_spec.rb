@@ -131,7 +131,7 @@ RSpec.describe Search::FeedContent, type: :service do
       pde = create(:podcast_episode)
       index_documents([article, comment, pde])
       described_class::INCLUDED_CLASS_NAMES.each do |class_name|
-        expect(described_class.send("#{class_name.underscore}_document_count")).to eq(1)
+        expect(described_class.public_send("#{class_name.underscore.pluralize}_document_count")).to eq(1)
       end
     end
   end

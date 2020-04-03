@@ -21,7 +21,7 @@ module Search
       end
 
       INCLUDED_CLASS_NAMES.each do |class_name|
-        define_method("#{class_name.underscore}_document_count") do
+        define_method("#{class_name.underscore.pluralize}_document_count") do
           Search::Client.count(
             index: self::INDEX_ALIAS, body: count_filter(class_name),
           ).dig("count")
