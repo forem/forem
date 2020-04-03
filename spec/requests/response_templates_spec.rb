@@ -26,9 +26,8 @@ RSpec.describe "ResponseTemplate", type: :request do
 
       it "returns an array of all the user's response templates" do
         total_response_templates = 2
-        create(:response_template, user: nil, type_of: "mod_comment")
         create_list(:response_template, total_response_templates, user: user, type_of: "personal_comment")
-        get response_templates_path, headers: { HTTP_ACCEPT: "application/json" }
+        get response_templates_path, params: { type_of: "personal_comment" }, headers: { HTTP_ACCEPT: "application/json" }
         parsed_response = JSON.parse(response.body)
         expect(parsed_response.class).to eq Array
         expect(parsed_response.length).to eq total_response_templates
