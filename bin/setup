@@ -8,7 +8,7 @@ db_url = ENV["DATABASE_URL"].to_s
 
 # We explicitly unset DATABASE_URL for Gitpod so bin/setup can do its job.
 # See: https://github.com/thepracticaldev/dev.to/issues/7040
-DB = if db_url.to_s.empty? || db_url = "postgresql://gitpod@localhost"
+DB = if db_url.to_s.empty? || db_url == "postgresql://gitpod@localhost"
        "PracticalDeveloper_development"
      else
        db_url
