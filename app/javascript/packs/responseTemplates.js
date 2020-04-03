@@ -1,20 +1,29 @@
-import { handleLoggedOut, observeForReplyClick, prepareOpenButton } from '../responseTemplates/responseTemplates';
+import {
+  handleLoggedOut,
+  observeForReplyClick,
+  prepareOpenButton,
+} from '../responseTemplates/responseTemplates';
 
 const { userStatus } = document.body.dataset;
 
-const form = document.getElementById('new_comment')
+const form = document.getElementById('new_comment');
 
 window.InstantClick.on('change', () => {
   if (userStatus === 'logged-out') {
     handleLoggedOut();
   } else {
-    prepareOpenButton(form);
+    if (form) {
+      prepareOpenButton(form);
+    }
+    observeForReplyClick();
   }
 });
 
 if (userStatus === 'logged-out') {
   handleLoggedOut();
 } else {
-  prepareOpenButton(form);
+  if (form) {
+    prepareOpenButton(form);
+  }
   observeForReplyClick();
 }
