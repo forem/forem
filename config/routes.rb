@@ -62,7 +62,11 @@ Rails.application.routes.draw do
         delete :remove_admin
       end
     end
-    resources :reactions, only: [:update]
+    resources :reactions, only: [:update] do
+      collection do
+        post "update_reaction"
+      end
+    end
     resources :response_templates, only: %i[index new edit create update destroy]
     resources :chat_channels, only: %i[index create update]
     resources :reports, only: %i[index show], controller: "feedback_messages" do
@@ -70,7 +74,6 @@ Rails.application.routes.draw do
         post "send_email"
         post "create_note"
         post "save_status"
-        post "update_reaction"
       end
     end
     resources :tags, only: %i[index update show]

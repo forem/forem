@@ -75,9 +75,9 @@
   function updateReactionStatus(id){
     var formData = new FormData();
     formData.append('id', id);
-    formData.append('status', document.getElementById('status__reaction__id__' + id).value);
+    formData.append('status', document.getElementById(`status__reaction__id__${id}`).value);
 
-    fetch('/internal/reports/update_reaction', {
+    fetch('/internal/reactions/update_reaction', {
      method: 'POST',
      headers: {
        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
@@ -101,10 +101,9 @@
   }
 
   function removeReactionDiv(id){
-    var reactionDiv = document.getElementById('div__reaction__id__' + id);
-    var reactionDivHr = reactionDiv.nextElementSibling;
+    var reactionDiv = document.getElementById(`div__reaction__id__${id}`);
+    reactionDiv.nextElementSibling.remove();
     reactionDiv.remove();
-    reactionDivHr.remove();
   }
 
   document.querySelectorAll('.vomit-confirm').forEach(item => {
