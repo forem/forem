@@ -29,6 +29,7 @@ class Article < ApplicationRecord
   counter_culture :organization
 
   has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :top_comments, -> { where("comments.score > ? and ancestry is null", 10).order("comments.score DESC").limit(2) }, as: :commentable, inverse_of: :commentable, class_name: "Comment"
   has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
   has_many :buffer_updates, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -112,7 +113,8 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :language,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
-           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
+           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds,
+           :last_comment_at)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -408,8 +410,11 @@ class Article < ApplicationRecord
                    spaminess_rating: BlackBox.calculate_spaminess(self))
   end
 
-  def top_comments
-    comments.where("score > ? and ancestry is null", 10).limit(2)
+  def cached_top_comments
+    cache_name = "article-#{id}-#{last_comment_at&.rfc3339}/top_comments"
+    Rails.cache.fetch(cache_name, expires_in: 24.hours) do
+      top_comments.to_a
+    end
   end
 
   private

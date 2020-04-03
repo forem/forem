@@ -6,7 +6,7 @@ article_attributes_to_include = %i[
 article_methods_to_include = %i[
   readable_publish_date flare_tag class_name
   cloudinary_video_url video_duration_in_minutes published_at_int
-  published_timestamp top_comments
+  published_timestamp
 ]
 
 json.array!(@stories) do |article|
@@ -24,5 +24,6 @@ json.array!(@stories) do |article|
   end
 
   json.tag_list article.cached_tag_list_array
+  json.top_comments article.cached_top_comments
   json.extract! article, *article_methods_to_include
 end
