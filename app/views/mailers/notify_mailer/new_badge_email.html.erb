@@ -9,7 +9,7 @@
     <%= @badge.description %>
   </p>
 
-  <% if @badge_achievement.rewarding_context_message %>
+  <% if @badge_achievement.rewarding_context_message.present? %>
     <p>
       <em>
         <%= @badge_achievement.rewarding_context_message.html_safe %>

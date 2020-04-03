@@ -4,11 +4,15 @@
       <td style="padding:4%;">
           <% if @membership.role == "mod" %>
             <h2 style="font-size: 25px; text-align: center;">
-              You have been invited to be a Moderator of a connect group on <%= ApplicationConfig["COMMUNITY_NAME"] %>.
+              You have been invited to be a Moderator of a Connect group on <%= ApplicationConfig["COMMUNITY_NAME"] %>.
+            </h2>
+          <% elsif @inviter %>
+            <h2 style="font-size: 25px; text-align: center;">
+              <%= link_to(@inviter.name, ApplicationController.helpers.user_url(@inviter)) %> sent you an invitation to join a Connect group on <%= ApplicationConfig["COMMUNITY_NAME"] %>.
             </h2>
           <% else %>
             <h2 style="font-size: 25px; text-align: center;">
-              <%= link_to(@inviter.name, ApplicationController.helpers.user_url(@inviter)) %> sent you an invitation to join a connect group on <%= ApplicationConfig["COMMUNITY_NAME"] %>.
+              You have been invited to a Connect group on <%= ApplicationConfig["COMMUNITY_NAME"] %>.
             </h2>
           <% end %>
         <table>
@@ -32,7 +36,9 @@
                 <br>
                 <br>
                 <div>
-                  <p style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none; margin-top:4px;"><%= link_to("Check Invitation", ApplicationController.helpers.app_url("connect?ref=group_invite")) %> </p>
+                  <p style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none; margin-top:4px;">
+                    <%= link_to("Check Invitation", ApplicationController.helpers.app_url("connect?ref=group_invite"), style: "color: white;font-size:1.4em;font-weight: bold;text-decoration: none;padding: 15px 0px; display: block;") %>
+                  </p>
                 </div>
               </td>
             </tr>

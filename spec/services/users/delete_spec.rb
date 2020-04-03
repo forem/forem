@@ -35,6 +35,15 @@ RSpec.describe Users::Delete, type: :service do
     expect(Rails.cache).to have_received(:delete).with("user-destroy-token-#{user.id}")
   end
 
+  it "removes user from Elasticsearch" do
+    sidekiq_perform_enqueued_jobs { user }
+    expect(user.elasticsearch_doc).not_to be_nil
+    sidekiq_perform_enqueued_jobs do
+      described_class.call(user)
+    end
+    expect { user.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+  end
+
   # check that all the associated records are being destroyed, except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
     let(:kept_association_names) { %i[created_podcasts notes offender_feedback_messages reporter_feedback_messages affected_feedback_messages] }

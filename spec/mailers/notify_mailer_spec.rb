@@ -206,8 +206,15 @@ RSpec.describe NotifyMailer, type: :mailer do
         expect(email.html_part.body).to include(CGI.escape(URL.url("/hey")))
       end
 
-      it "does not include the rewarding_context_message in the email" do
+      it "does not include the nil rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
+
+        expect(email.html_part.body).not_to include("Hello <a")
+        expect(email.html_part.body).not_to include(CGI.escape(URL.url("/hey")))
+      end
+
+      it "does not include the empty rewarding_context_message in the email" do
+        allow(badge_achievement).to receive(:rewarding_context_message).and_return("")
 
         expect(email.html_part.body).not_to include("Hello <a")
         expect(email.html_part.body).not_to include(CGI.escape(URL.url("/hey")))
@@ -234,8 +241,15 @@ RSpec.describe NotifyMailer, type: :mailer do
         expect(email.text_part.body).not_to include(URL.url("/hey"))
       end
 
-      it "does not include the rewarding_context_message in the email" do
+      it "does not include the nil rewarding_context_message in the email" do
         allow(badge_achievement).to receive(:rewarding_context_message).and_return(nil)
+
+        expect(email.text_part.body).not_to include("Hello Yoho")
+        expect(email.text_part.body).not_to include(URL.url("/hey"))
+      end
+
+      it "does not include the empty rewarding_context_message in the email" do
+        allow(badge_achievement).to receive(:rewarding_context_message).and_return("")
 
         expect(email.text_part.body).not_to include("Hello Yoho")
         expect(email.text_part.body).not_to include(URL.url("/hey"))
@@ -475,8 +489,8 @@ RSpec.describe NotifyMailer, type: :mailer do
     let(:member_email) { described_class.channel_invite_email(regular_membership, user) }
 
     it "renders proper subject" do
-      expect(moderator_email.subject).to eq("You are invited to Channel #{moderator_membership.chat_channel.channel_name} as moderator.")
-      expect(member_email.subject).to eq("You are invited to Channel #{regular_membership.chat_channel.channel_name} by #{user.name}.")
+      expect(moderator_email.subject).to eq("You are invited to the #{moderator_membership.chat_channel.channel_name} channel as moderator.")
+      expect(member_email.subject).to eq("You are invited to the #{regular_membership.chat_channel.channel_name} channel.")
     end
 
     it "renders proper sender" do
