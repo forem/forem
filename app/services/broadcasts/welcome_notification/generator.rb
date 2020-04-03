@@ -11,7 +11,6 @@ module Broadcasts
       end
 
       def call
-        # TODO: [@thepracticaldev/delightful] Move this check into the rake task logic once it has been implemented.
         return unless user.subscribed_to_welcome_notifications?
 
         send_welcome_notification unless notification_enqueued

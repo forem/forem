@@ -3,7 +3,7 @@ require "requests/shared_examples/internal_policy_dependant_request"
 
 RSpec.describe "/internal/broadcasts", type: :request do
   let(:get_resource) { get "/internal/broadcasts" }
-  let(:params) { { title: "Hello!", processed_html: "<pHello!</p>", type_of: "Onboarding", sent: true } }
+  let(:params) { { title: "Hello!", processed_html: "<pHello!</p>", type_of: "Welcome", sent: true } }
   let(:post_resource) { post "/internal/broadcasts", params: params }
 
   it_behaves_like "an InternalPolicy dependant request", Broadcast do
