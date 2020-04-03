@@ -45,6 +45,28 @@ RSpec.describe URL, type: :lib do
     end
   end
 
+  describe ".comment" do
+    let(:comment) { build(:comment) }
+
+    it "returns the correct URL for a comment" do
+      expect(described_class.comment(comment)).to eq("https://dev.to#{comment.path}")
+    end
+  end
+
+  describe ".reaction" do
+    it "returns the correct URL for an article's reaction" do
+      article = build(:article, path: "/username1/slug")
+      reaction = build(:reaction, reactable: article)
+      expect(described_class.reaction(reaction)).to eq("https://dev.to#{article.path}")
+    end
+
+    it "returns the correct URL for a comment's reaction" do
+      comment = build(:comment)
+      reaction = build(:reaction, reactable: comment)
+      expect(described_class.reaction(reaction)).to eq("https://dev.to#{comment.path}")
+    end
+  end
+
   describe ".user" do
     let(:user) { build(:user) }
 

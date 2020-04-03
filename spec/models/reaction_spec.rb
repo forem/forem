@@ -181,7 +181,7 @@ RSpec.describe Reaction, type: :model do
   end
 
   context "when callbacks are called after create" do
-    describe "slack notifications" do
+    describe "slack messages" do
       let_it_be_changeable(:user) { create(:user, :trusted) }
       let_it_be_readonly(:article) { create(:article, user: user) }
 
@@ -190,28 +190,19 @@ RSpec.describe Reaction, type: :model do
         sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
       end
 
-      it "notifies proper slack channel about vomit reaction" do
-        url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-        message = "#{user.name} (#{url}#{user.path})\nreacted with a vomit on\n#{url}#{article.path}"
-        args = {
-          message: message,
-          channel: "abuse-reports",
-          username: "abuse_bot",
-          icon_emoji: ":cry:"
-        }.stringify_keys
-
-        sidekiq_assert_enqueued_with(job: SlackBotPingWorker, args: [args]) do
+      it "queues a slack message to be sent for a vomit reaction" do
+        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
           create(:reaction, reactable: article, user: user, category: "vomit")
         end
       end
 
-      it "does not send notification for like reaction" do
+      it "does not queue a message for a like reaction" do
         sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
           create(:reaction, reactable: article, user: user, category: "like")
         end
       end
 
-      it "does not send notification for thumbsdown reaction" do
+      it "does not queue a message for a thumbsdown reaction" do
         sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
           create(:reaction, reactable: article, user: user, category: "thumbsdown")
         end

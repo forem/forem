@@ -793,46 +793,33 @@ RSpec.describe Article, type: :model do
       end
     end
 
-    describe "slack notifications" do
+    describe "slack messages" do
       before do
         # making sure there are no other enqueued jobs from other tests
         sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
       end
 
-      it "notifies the proper slack channel about a recently published new article" do
-        Timecop.freeze(Time.current) do
-          article = create(:article, published: true)
-
-          url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-          message = "New Article Published: #{article.title}\n#{url}#{article.path}"
-          args = {
-            message: message,
-            channel: "activity",
-            username: "article_bot",
-            icon_emoji: ":writing_hand:"
-          }.stringify_keys
-
-          sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker)
-          job = sidekiq_enqueued_jobs(worker: SlackBotPingWorker).last
-          expect(job["args"]).to eq([args])
+      it "queues a slack message to be sent" do
+        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+          article.update(published: true, published_at: Time.current)
         end
       end
 
-      it "does not send a notification for a new article published more than 30 seconds ago" do
+      it "does not queue a message for an article published more than 30 seconds ago" do
         Timecop.freeze(Time.current) do
           sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
-            create(:article, published: true, published_at: 31.seconds.ago)
+            article.update(published: true, published_at: 31.seconds.ago)
           end
         end
       end
 
-      it "does not send a notification for a non published article" do
+      it "does not queue a message for a draft article" do
         sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
-          create(:article, published: false)
+          article.update(body_markdown: "foobar", published: false)
         end
       end
 
-      it "sends a notification for a draft article that gets published" do
+      it "queues a message for a draft article that gets published" do
         Timecop.freeze(Time.current) do
           sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
             article.update_columns(published: false)
