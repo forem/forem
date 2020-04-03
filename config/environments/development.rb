@@ -1,3 +1,6 @@
+# Silence all Ruby 2.7 deprecation warnings
+$VERBOSE = nil
+
 Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
   # As the integrity check is currently broken under Docker with webpacker,
