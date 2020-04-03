@@ -28,7 +28,7 @@ class CommentPolicy < ApplicationPolicy
   end
 
   def moderator_create?
-    !user_is_banned? && !user_is_comment_banned? && !user_is_blocked? && (user_is_moderator? || minimal_admin?)
+    !user_is_blocked? && (user_is_moderator? || minimal_admin?)
   end
 
   def hide?
