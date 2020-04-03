@@ -19,6 +19,8 @@ tasks:
   - init: >
       cp config/sample_application.yml config/application.yml &&
       bin/setup 2>/dev/null || true
+    # We explicitly unset DATABASE_URL so bin/setup can do its job.
+    # See: https://github.com/thepracticaldev/dev.to/issues/7040
     command: >
       while [ -z "${ALGOLIASEARCH_APPLICATION_ID:=$(cat config/application.yml | grep ALGOLIASEARCH_APPLICATION_ID | sed 's/.*:\s*//')}" ] ||
             [ -z "${ALGOLIASEARCH_SEARCH_ONLY_KEY:=$(cat config/application.yml | grep ALGOLIASEARCH_SEARCH_ONLY_KEY | sed 's/.*:\s*//')}" ] ||
@@ -28,6 +30,7 @@ tasks:
         printf "❗ To get them, please follow https://docs.dev.to/backend/algolia/#get-api-keys\n\n" &&
         read -p "Add them to config/application.yml, save the file, and press any key to continue... " -n 1 -r
       done ;
+      eval $(gp env -e DATABASE_URL='')
       bin/setup &&
       bin/startup
 github:
