@@ -6,6 +6,7 @@ import ModalBackground from './elements/modalBackground';
 import Modal from './elements/modal';
 import AllListings from './elements/allListings';
 import SelectedTags from './elements/selectedTags';
+import CategoryLinks from './elements/categoryLinks';
 
 /**
  * How many listings to show per page
@@ -365,17 +366,6 @@ export class Listings extends Component {
     const shouldRenderModal = openedListing != null && undefined;
     const shouldRenderClearQueryButton = query.length > 0;
 
-    const categoryLinks = allCategories.map((cat) => (
-      <a
-        href={`/listings/${cat.slug}`}
-        className={cat.slug === category ? 'selected' : ''}
-        onClick={(e) => this.selectCategory(e, cat.slug)}
-        data-no-instant
-      >
-        {cat.name}
-      </a>
-    ));
-
     let nextPageButt = '';
     if (showNextPageButt) {
       nextPageButt = (
@@ -405,7 +395,10 @@ export class Listings extends Component {
             >
               all
             </a>
-            {categoryLinks}
+            <CategoryLinks
+              categories={allCategories}
+              onClick={this.selectCategory}
+            />
             <a href="/listings/new" className="classified-create-link">
               Create a Listing
             </a>
