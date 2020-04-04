@@ -7,6 +7,7 @@ import Modal from './elements/modal';
 import AllListings from './elements/allListings';
 import SelectedTags from './elements/selectedTags';
 import CategoryLinks from './elements/categoryLinks';
+import NextPageButton from './elements/nextPageButton';
 
 /**
  * How many listings to show per page
@@ -366,17 +367,6 @@ export class Listings extends Component {
     const shouldRenderModal = openedListing != null && undefined;
     const shouldRenderClearQueryButton = query.length > 0;
 
-    let nextPageButt = '';
-    if (showNextPageButt) {
-      nextPageButt = (
-        <div className="classifieds-load-more-button">
-          <button onClick={(e) => this.loadNextPage(e)} type="button">
-            Load More Listings
-          </button>
-        </div>
-      );
-    }
-
     if (initialFetch) {
       this.triggerMasonry();
     }
@@ -434,7 +424,7 @@ export class Listings extends Component {
             onOpenModal={this.handleOpenModal}
           />
         </div>
-        {nextPageButt}
+        {showNextPageButt && <NextPageButton onClick={this.loadNextPage} />}
         {shouldRenderModal && (
           <Modal
             currentUserId={currentUserId}
