@@ -13,5 +13,5 @@ Rails.application.config.session_store :redis_store,
                                        servers: servers,
                                        expire_after: expires_after,
                                        signed: true,
-                                       secure: true,
+                                       secure: true, #TODO
                                        httponly: true
