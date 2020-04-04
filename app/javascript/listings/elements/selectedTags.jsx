@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 const SelectedTags = ({ tags, onClick, onKeyPress }) =>
   tags.map((tag) => (
-    <span className="classified-tag">
+    <span className="classified-tag" key={tag.id}>
       <a
         href="/listings?tags="
         className="tag-name"
