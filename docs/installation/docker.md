@@ -50,14 +50,6 @@ well.
      GITHUB_SECRET: "ANOTHER_REAL_SECURE_KEY_HERE"
      ```
 
-   - Update the redis url variables by adding the following lines into
-     `config/application.yml`:
-
-     ```shell
-      REDIS_URL: "redis://redis:6379"
-      REDIS_SESSIONS_URL: "redis://redis:6379"
-     ```
-
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
@@ -67,7 +59,7 @@ _Docker compose will by default use postgres:9.6 as the database version, should
 you want to update that set the `POSTGRES_VERSION` variable in your environment
 and start the container again_
 
-1. Run `bin/docker_setup`
+1. Run `bin/docker-setup`
 2. That's it! Navigate to <http://localhost:3000>
 
 The script executes the following steps:

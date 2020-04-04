@@ -9,10 +9,10 @@
       <div class="github-repo-row <%= "github-repo-row-selected" if response_template.id == params[:id].to_i %>">
         <div class="github-repo-row-name response-template-row-name">
           <%= response_template.title %>
-          <%= form_with path: response_template_path(response_template), method: :delete, onsubmit: "return confirm('Are you sure you want to delete: #{response_template.title}?');" do %>
+          <%= form_with url: response_template_path(response_template.id), method: :delete, local: true, html: { onsubmit: "return confirm('Are you sure you want to delete: #{response_template.title}?');" } do %>
             <button type="submit" class="cta danger-button">DELETE</button>
           <% end %>
-          <a class="cta" href="/settings/response-templates?id=<%= response_template.id %>" role="button">EDIT</a>
+          <a class="cta" href="/settings/response-templates/<%= response_template.id %>" role="button">EDIT</a>
         </div>
       </div>
     <% end %>

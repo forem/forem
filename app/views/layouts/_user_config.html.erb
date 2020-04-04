@@ -1,15 +1,28 @@
 <script>
   try {
-    var bodyClass = localStorage.getItem('config_body_class');
-    document.body.className = bodyClass;
-    if (bodyClass.includes('night-theme')) {
-      document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/night.css"].to_s.squish.html_safe %></style>';
-    } else if (bodyClass.includes('ten-x-hacker-theme')) {
-      document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/hacker.css"].to_s.squish.html_safe %></style>'
-    } else if (bodyClass.includes('pink-theme')) {
-      document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/pink.css"].to_s.squish.html_safe %></style>'
-    } else if(bodyClass.includes('minimal-light-theme')) {
-      document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/minimal.css"].to_s.squish.html_safe %></style>'
+    const bodyClass = localStorage.getItem('config_body_class');
+
+    if (bodyClass) {
+      document.getElementsByTagName("body")[0].className = bodyClass;
+
+      if (bodyClass.includes('night-theme')) {
+        document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/night.css"].to_s.squish.html_safe %></style>';
+      } else if (bodyClass.includes('ten-x-hacker-theme')) {
+        document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/hacker.css"].to_s.squish.html_safe %></style>'
+      } else if (bodyClass.includes('pink-theme')) {
+        document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/pink.css"].to_s.squish.html_safe %></style>'
+      } else if(bodyClass.includes('minimal-light-theme')) {
+        document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/minimal.css"].to_s.squish.html_safe %></style>'
+      }
+
+      if (bodyClass.includes('open-dyslexic-article-body')) { // Preloading custom font for anticipated use
+        const link = document.createElement('link');
+        link.as = 'font'
+        link.rel = 'preload'
+        crossorigin = 'anonymous'
+        link.href = '<%= asset_path "OpenDyslexic-Regular.otf" %>';
+        document.getElementsByTagName('head')[0].appendChild(link);
+      }
     }
     if (navigator.userAgent === 'DEV-Native-ios') {
       document.getElementsByTagName("body")[0].classList.add("dev-ios-native-body");
@@ -19,14 +32,6 @@
     }
     if (window.frameElement) { // Hide top bar and footer when loaded within iframe
       document.getElementsByTagName("body")[0].classList.add("hidden-shell");
-    }
-    if (bodyClass.includes('open-dyslexic-article-body')) { // Preloading custom font for anticipated use
-      var link = document.createElement('link');
-      link.as = 'font'
-      link.rel = 'preload'
-      crossorigin = 'anonymous'
-      link.href = '<%= asset_path "OpenDyslexic-Regular.otf" %>';
-      document.getElementsByTagName('head')[0].appendChild(link);
     }
   } catch(e) {
       Honeybadger.notify(e);

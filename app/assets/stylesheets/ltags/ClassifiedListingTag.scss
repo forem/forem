@@ -44,7 +44,7 @@
         margin-left: 1px;
 
         a {
-          color: var(--container-color-secondary);
+          color: var(--card-color-secondary);
           display: inline-block;
           margin: 2px;
           padding: 2px 7px;
@@ -55,7 +55,7 @@
     }
 
     .ltag__listing-author-info {
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       line-height: 1.3em;
       a {
         margin: 0.1vw 0;
@@ -63,7 +63,7 @@
         font-size: 0.7em;
         margin-bottom: 0;
         font-weight: bold;
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
     }
   }

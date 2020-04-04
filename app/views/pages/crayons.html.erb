@@ -180,6 +180,93 @@
   '.rstrip %></pre>
 </div>
 
+
+<div class="container">
+  <div class="body">
+    <h2>Cards</h2>
+    <p>Cards are basically content containers. There are two types of cards:</p>
+    <ul>
+      <li>Primary (default) - main content, like whole article or feed cards.</li>
+      <li>Secondary - secondary content, used for example for sidebar widgets.</li>
+    </ul>
+    <p>The visual difference between the two is basically in color: secodanry cards are a <strong>little</strong> less visible.</p>
+  </div>
+
+  <div class="p-6 bg-base-10">
+    <div class="crayons-card mb-4">
+      <div class="crayons-card__body">
+        Hello, I am a primary card.
+      </div>
+    </div>
+
+    <div class="crayons-card crayons-card--secondary">
+      <div class="crayons-card__body">
+        ...And I am a secondary card.
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-card">
+    <div class="crayons-card__body">
+      Hello, I am a primary card.
+    </div>
+  </div>
+
+  <div class="crayons-card crayons-card--secondary">
+    <div class="crayons-card__body">
+      ...And I am a secondary card.
+    </div>
+  </div>
+  '.rstrip %></pre>
+
+  <div class="body">
+    <p>If you need headers, cards do have them as well.</p>
+  </div>
+
+  <div class="p-6 bg-base-10">
+    <div class="crayons-card crayons-card--secondary mb-4">
+      <div class="crayons-card__header">
+        <h3 class="crayons-card__headline">Card title.</h3>
+      </div>
+      <div class="crayons-card__body">
+        I'm a card content.
+      </div>
+    </div>
+
+    <div class="crayons-card crayons-card--secondary">
+      <div class="crayons-card__header">
+        <h3 class="crayons-card__headline">Card title.</h3>
+        <div class="crayons-card__actions">
+          <a href="#" class="crayons-link--branded">Action</a>
+        </div>
+      </div>
+      <div class="crayons-card__body">
+        I'm a card content.
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-card crayons-card--secondary">
+    <div class="crayons-card__header">
+      <h3 class="crayons-card__headline">Card title.</h3>
+    </div>
+    <div class="crayons-card__body">...</div>
+  </div>
+
+  <div class="crayons-card crayons-card--secondary">
+    <div class="crayons-card__header">
+      <h3 class="crayons-card__headline">Card title.</h3>
+      <div class="crayons-card__actions">
+        <a href="#" class="crayons-link--branded">Action</a>
+      </div>
+    </div>
+    <div class="crayons-card__body">...</div>
+  </div>
+  '.rstrip %></pre>
+</div>
+
 <div class="container">
   <div class="body">
     <h2>Form elements</h2>
@@ -485,6 +572,7 @@
     <a href="#" class="crayons-btn crayons-btn--outlined">Outlined Button label</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--text">Text Button label</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--danger">Danger Button label</a><br><br>
+    <a href="#" class="crayons-btn crayons-btn--icon-alone"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg></a><br><br>
     <a href="#" class="crayons-btn crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a><br><br>
     <a href="#" class="crayons-btn crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon"><path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" /></svg>Button</a>
   </div>
@@ -496,96 +584,44 @@
   <a href="#" class="... crayons-btn--outlined">Outlined Button label</a>
   <a href="#" class="... crayons-btn--text">Text Button label</a>
   <a href="#" class="... crayons-btn--danger">Danger Button label</a>
-  <a href="#" class="... crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon">...</svg>Button</a>
-  <a href="#" class="... crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" class="crayons-icon">...</svg>Button</a>
+  <a href="#" class="... crayons-btn--icon-alone"><svg class="crayons-icon" ...>...</svg></a>
+  <a href="#" class="... crayons-btn--icon-left"><svg class="crayons-icon" ...>...</svg>Button</a>
+  <a href="#" class="... crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg class="crayons-icon" ...>...</svg>Button</a>
   '.rstrip %></pre>
-</div>
 
-<div class="container">
   <div class="body">
-    <h2>Boxes</h2>
-    <p>“Box” will be a background element used for many other components, for example banners, dropdowns, modals. This component does not have any guidelines in terms of placement or spacing, since it’s supposed to be used to build other components.</p>
-    <p>There are:</p>
-    <ul>
-      <li>2 types: outlined  & filled,</li>
-      <li>5 styles: default, danger, warning, info, success,</li>
-      <li>4 eleveations: 0, 1, 2, 3.</li>
-    </ul>
-    <p>By default use “outlined” type unless you really have to make something stand out - then use “filled”. But double check if it makes sense since “filled” style really steals attention.</p>
-    <p>Use style that makes the most sense for you current use case. It’s pretty obvious when to use Danger, Warning and Success. But for Default and Info - it’s more up to designer to make a good call :).</p>
-    <p>Elevations should define what kind of element it is:</p>
-    <ul>
-      <li>0: something inside content.</li>
-      <li>1: that can also be used in content but for elements that need more attention, like notices...</li>
-      <li>2: dropdowns</li>
-      <li>3: modals</li>
-    </ul>
+    <h2>Buttons Group</h2>
+    <p>It is possible to combine two or more buttons into a visual group.</p>
+    <p>Use your best judgment for when it should be used. If you think every time you have more than one button you should create this kind of group, then no it's wrong.</p>
+    <p>Think of it as <em>an extension</em> to the button itself: this component lets you <strong>visually</strong> create an <em>actionable area</em> for cases when you need something more than just a classic button.</p>
   </div>
 
-  <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; grid-gap: 16px;">
-    <div class="crayons-box">box, level 0</div>
-    <div class="crayons-box crayons-box--level-1">box, level 1</div>
-    <div class="crayons-box crayons-box--level-2">box, level 2</div>
-    <div class="crayons-box crayons-box--level-3">box, level 3</div>
-    <div class="crayons-box crayons-box--filled ">filled box, level 0</div>
-    <div class="crayons-box crayons-box--filled crayons-box--level-1">filled box, level 1</div>
-    <div class="crayons-box crayons-box--filled crayons-box--level-2">filled box, level 2</div>
-    <div class="crayons-box crayons-box--filled crayons-box--level-3">filled box, level 3</div>
+  <div>
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn">Action 1</a>
+      <a href="#" class="crayons-btn">Action 2</a>
+      <a href="#" class="crayons-btn crayons-btn--icon-alone"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
+    </div>
 
-    <div class="crayons-box crayons-box--danger">box, level 0</div>
-    <div class="crayons-box crayons-box--danger crayons-box--level-1">box, level 1</div>
-    <div class="crayons-box crayons-box--danger crayons-box--level-2">box, level 2</div>
-    <div class="crayons-box crayons-box--danger crayons-box--level-3">box, level 3</div>
-    <div class="crayons-box crayons-box--danger crayons-box--filled ">filled box, level 0</div>
-    <div class="crayons-box crayons-box--danger crayons-box--filled crayons-box--level-1">filled box, level 1</div>
-    <div class="crayons-box crayons-box--danger crayons-box--filled crayons-box--level-2">filled box, level 2</div>
-    <div class="crayons-box crayons-box--danger crayons-box--filled crayons-box--level-3">filled box, level 3</div>
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn crayons-btn--secondary">Action 1</a>
+      <a href="#" class="crayons-btn crayons-btn--secondary">Action 2</a>
+      <a href="#" class="crayons-btn crayons-btn--secondary crayons-btn--icon-alone"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
+    </div>
 
-    <div class="crayons-box crayons-box--warning">box, level 0</div>
-    <div class="crayons-box crayons-box--warning crayons-box--level-1">box, level 1</div>
-    <div class="crayons-box crayons-box--warning crayons-box--level-2">box, level 2</div>
-    <div class="crayons-box crayons-box--warning crayons-box--level-3">box, level 3</div>
-    <div class="crayons-box crayons-box--warning crayons-box--filled ">filled box, level 0</div>
-    <div class="crayons-box crayons-box--warning crayons-box--filled crayons-box--level-1">filled box, level 1</div>
-    <div class="crayons-box crayons-box--warning crayons-box--filled crayons-box--level-2">filled box, level 2</div>
-    <div class="crayons-box crayons-box--warning crayons-box--filled crayons-box--level-3">filled box, level 3</div>
-
-    <div class="crayons-box crayons-box--success">box, level 0</div>
-    <div class="crayons-box crayons-box--success crayons-box--level-1">box, level 1</div>
-    <div class="crayons-box crayons-box--success crayons-box--level-2">box, level 2</div>
-    <div class="crayons-box crayons-box--success crayons-box--level-3">box, level 3</div>
-    <div class="crayons-box crayons-box--success crayons-box--filled ">filled box, level 0</div>
-    <div class="crayons-box crayons-box--success crayons-box--filled crayons-box--level-1">filled box, level 1</div>
-    <div class="crayons-box crayons-box--success crayons-box--filled crayons-box--level-2">filled box, level 2</div>
-    <div class="crayons-box crayons-box--success crayons-box--filled crayons-box--level-3">filled box, level 3</div>
-
-    <div class="crayons-box crayons-box--info">box, level 0</div>
-    <div class="crayons-box crayons-box--info crayons-box--level-1">box, level 1</div>
-    <div class="crayons-box crayons-box--info crayons-box--level-2">box, level 2</div>
-    <div class="crayons-box crayons-box--info crayons-box--level-3">box, level 3</div>
-    <div class="crayons-box crayons-box--info crayons-box--filled ">filled box, level 0</div>
-    <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-1">filled box, level 1</div>
-    <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-2">filled box, level 2</div>
-    <div class="crayons-box crayons-box--info crayons-box--filled crayons-box--level-3">filled box, level 3</div>
+    <div class="crayons-btn-group mb-4">
+      <a href="#" class="crayons-btn crayons-btn--outlined">Action 1</a>
+      <a href="#" class="crayons-btn crayons-btn--outlined">Action 2</a>
+      <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--icon-alone"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
+    </div>
   </div>
+
 
   <pre><%='
-  <!-- default: outlined, black -->
-  <div class="crayons-box">box, level 0</div>
-
-  <-- levels 0-3 -->
-  <div class="... crayons-box--level-1">box, level 1</div>
-  <div class="... crayons-box--level-2">box, level 2</div>
-  <div class="... crayons-box--level-3">box, level 3</div>
-
-  <-- filled variation -->
-  <div class="... crayons-box--filled">filled box, level 0</div>
-
-  <-- styles: danger, success, warning, info -->
-  <div class="... crayons-box--danger">
-  <div class="... crayons-box--success">
-  <div class="... crayons-box--warning">
-  <div class="... crayons-box--info">
+  <div class="crayons-btn-group">
+    <a href="#" class="crayons-btn">Action 1</a>
+    ...
+  </div>
   '.rstrip %></pre>
 </div>
 
@@ -595,7 +631,6 @@
     <p>Dropdowns should have position relative to it’s trigger. They can be used for some 2nd level navigations, contextual configurations, etc...</p>
     <p>Dropdowns should not be bigger than 320px (unless it's smallest breakpoint, then dropdowns become full width).</p>
     <p>Dropdown default padding is set to 16px.</p>
-    <p>FYI: Dropdowns use “Box” component as background, with Level 3 elevation.</p>
     <p>By default dropdowns are hidden with <code>display: none;</code> so keep that in mind if you ever use dropdowns and can't see them :D.</p>
   </div>
 
@@ -624,7 +659,6 @@
     </ul>
     <p>Use your best judgements when choosing the right size.</p>
     <p>If you need to utilize entire modal area and you have to get rid of default padding, please use modifier class <code>crayons-modal--padding-0</code>.</p>
-    <p>FYI: Modals use “Box” component as background, with Level 3 elevation.</p>
   </div>
 
   <div>
@@ -713,12 +747,11 @@
       <li>Rectangle with label (text or number)</li>
       <li>Bullet - just a circle without any text on it.</li>
     </ul>
-    <p>And there're four styles to pick from:</p>
+    <p>And there're 3 styles to pick from:</p>
     <ul>
-      <li>Default (grey) - nothing really crucial, basic information about something.</li>
-      <li>Accent (blueish) - something we want user to be aware of but it's also not crucial information</li>
+      <li>Default (dimmed grey) - nothing really crucial, basic information about something.</li>
+      <li>Accent - something we want user to be aware of but it's also not crucial information</li>
       <li>Critical (red) - something super important, don't overuse it!!</li>
-      <li>Inverted (dark grey) - alternative to the default one, especially when we need to show two defautl indicators next to each other.</li>
     </ul>
   </div>
   <div>
@@ -730,23 +763,16 @@
 
   <div>
     <span class="crayons-indicator crayons-indicator--accent">Label</span>
-    <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--accent">Outlined</span>
+    <span class="crayons-indicator crayons-indicator--accent crayons-indicator--outlined">Outlined</span>
     <span class="crayons-indicator crayons-indicator--accent">1</span>
     <span class="crayons-indicator crayons-indicator--accent crayons-indicator--bullet"></span>
   </div>
 
   <div>
     <span class="crayons-indicator crayons-indicator--critical">Label</span>
-    <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--critical">Outlined</span>
+    <span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined">Outlined</span>
     <span class="crayons-indicator crayons-indicator--critical">1</span>
     <span class="crayons-indicator crayons-indicator--critical crayons-indicator--bullet"></span>
-  </div>
-
-  <div>
-    <span class="crayons-indicator crayons-indicator--inverted">Label</span>
-    <span class="crayons-indicator crayons-indicator--outlined crayons-indicator--inverted">Outlined</span>
-    <span class="crayons-indicator crayons-indicator--inverted">1</span>
-    <span class="crayons-indicator crayons-indicator--inverted crayons-indicator--bullet"></span>
   </div>
 
   <pre><%='
@@ -754,10 +780,9 @@
   <span class="crayons-indicator">1</span>
   <span class="crayons-indicator crayons-indicator--bullet"></span>
 
-  <!-- styles: accent, critical, inverted -->
+  <!-- styles: accent, critical -->
   <span class="... crayons-indicator--accent">...</span>
   <span class="... crayons-indicator--critical">...</span>
-  <span class="... crayons-indicator--inverted">...</span>
   '.rstrip %></pre>
 </div>
 
@@ -816,34 +841,80 @@
 
 <div class="container">
   <div class="body">
-    <h2>Navigation: Main nav</h2>
-    <p>Used as main nav in left sidebar or dropdowns...</p>
-    <p>This comoponent is being responsive: for resolutions smaller than <code>$breakpoint-s</code> they have some extra padding to make it easier to tap.</p>
-    <p>Can contain icons.</p>
+    <h2>Navigation: Link</h2>
+    <p>Crayons comes with bunch of navigation compontents - each being a variation of <code>.crayons-link</code> which itself is a simple text link.</p>
+    <p>By defualt <code>.crayons-link</code> has similar color to contnet. But we have a variation to make it stand out if needed.</p>
+
   </div>
 
-  <div class="p-6 bg-base-10">
-    <a href="#" class="crayons-nav-block crayons-nav-block--current"><span class="crayons-icon">🏡</span>Home</a>
-    <a href="#" class="crayons-nav-block"><span class="crayons-icon">📻</span>Podcasts</a>
-    <a href="#" class="crayons-nav-block"><span class="crayons-icon">🏷</span>Tags</a>
-    <a href="#" class="crayons-nav-block"><span class="crayons-icon">📑</span>Listings <span class="crayons-indicator">3</span></a>
-    <a href="#" class="crayons-nav-block"><span class="crayons-icon">👍</span>Code of Conduct</a>
-    <a href="#" class="crayons-nav-block crayons-nav-block--indented">More...</a>
+  <div class="p-6">
+    <a href="#" class="crayons-link">Hello, I am default link.</a><br><br>
+    <a href="#" class="crayons-link crayons-link--branded">Hello, I am colored link.</a>
   </div>
 
   <pre><%='
-  <a href="#" class="crayons-nav-block">...</a>
-  <a href="#" class="crayons-nav-block crayons-nav-block--current">...</a>
+  <a href="#" class="crayons-link">Hello, I am default link.</a>
+  <a href="#" class="crayons-link crayons-link--branded">Hello, I am colored link.</a>
+  '.rstrip %></pre>
+</div>
 
-  <!-- icon inside -->
-  <a href="#" class="crayons-nav-block"><span class="crayons-icon">📻</span>...</a>
-  <a href="#" class="crayons-nav-block"><svg class="crayons-icon" ...>...</svg>...</a>
-  
-  <!-- indicator inside -->
-  <a href="#" class="crayons-nav-block">...<span class="crayons-indicator">3</span></a>
-  
-  <!-- indented -->
-  <a href="#" class="crayons-nav-block crayons-nav-block--indented">More...</a>
+<div class="container">
+  <div class="body">
+    <h2>Navigation: Link: Block</h2>
+    <p>This component is extension for classic <code>.crayons-link</code> and it comes with more visual hover and current states.</p>
+    <p>It can be used for example for nav, where links are rather short and stacked one under another. Think of main navigation or contextual navigation in dropdowns.</p>
+    <p>It's responsive: for resolutions smaller than <code>$breakpoint-s</code> it has extra padding to make it easier to tap.</p>
+    <p>It can contain extras, like icon or indicator. Or actually anything else - everything will be in the same line since this component has <code>display: flex</code> applied by default.</p>
+    <p>These links cna also be indented for scenarios like below (see last link "More...").</p>
+  </div>
+
+  <div class="p-6 bg-base-10">
+    <a href="#" class="crayons-link crayons-link--current crayons-link--block"><span class="crayons-icon">🏡</span>Home</a>
+    <a href="#" class="crayons-link crayons-link--block"><span class="crayons-icon">📻</span>Podcasts</a>
+    <a href="#" class="crayons-link crayons-link--block"><span class="crayons-icon">🏷</span>Tags</a>
+    <a href="#" class="crayons-link crayons-link--block"><span class="crayons-icon">📑</span>Listings <span class="crayons-indicator">3</span></a>
+    <a href="#" class="crayons-link crayons-link--block"><span class="crayons-icon">👍</span>Code of Conduct</a>
+    <a href="#" class="crayons-link crayons-link--block crayons-link--block--indented">More...</a>
+  </div>
+
+  <pre><%='
+  <a href="#" class="crayons-link crayons-link--current crayons-link--block"><span class="crayons-icon">🏡</span>Home</a>
+  <a href="#" class="... crayons-link--block">...</a>
+  <a href="#" class="... crayons-link--block">... <span class="crayons-indicator">3</span></a>
+  <a href="#" class="... crayons-link--block crayons-link--block--indented">More...</a>
+  '.rstrip %></pre>
+</div>
+
+<div class="container">
+  <div class="body">
+    <h2>Navigation: Link: Contentful</h2>
+    <p>This component is extension for classic <code>.crayons-link</code> and is meant to be used where we have to display more contnet inside.</p>
+    <p><code>.crayons-link--contentful</code> can be used in sidebar widgets where we list posts or listings. It can have secondary contnet.</p>
+    <p>Contenful Links will be automatically divided by a line.</p>
+  </div>
+
+  <div class="p-6 bg-base-0">
+    <a href="#" class="crayons-link crayons-link--contentful">
+      <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi iusto dolorem.</div>
+      <span class="crayons-link__secondary">
+        <span class="crayons-indicator crayons-indicator--accent">NEW</span>
+        Category name
+      </span>
+    </a>
+
+    <a href="#" class="crayons-link crayons-link--contentful">
+      <div>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eligendi iusto dolorem.</div>
+      <span class="crayons-link__secondary">
+        Category name
+      </span>
+    </a>
+  </div>
+
+  <pre><%='
+  <a href="#" class="crayons-link crayons-link--contentful">
+    <div>Lorem ...</div>
+    <span class="crayons-link__secondary">Category ...</span>
+  </a>
   '.rstrip %></pre>
 </div>
 
@@ -851,21 +922,19 @@
   <div class="body">
     <h2>Navigation: Tabs</h2>
     <p>Use tabs as 2nd level navigation or filtering options.</p>
+    <p>Tabs can be created by also using <code>.crayons-link</code> elements but wrapped with extra container <code>.crayons-tabs</code>.</p>
   </div>
-
-  <div>
-    <div class="crayons-tabs">
-      <a href="#" class="crayons-tabs__item crayons-tabs__item--current">Feed</a>
-      <a href="#" class="crayons-tabs__item">Popular</a>
-      <a href="#" class="crayons-tabs__item">Latest</a>
-    </div>
+  <div class="crayons-tabs">
+    <a href="#" class="crayons-link crayons-link--current">Feed</a>
+    <a href="#" class="crayons-link">Popular</a>
+    <a href="#" class="crayons-link">Latest</a>
   </div>
 
   <pre><%='
   <div class="crayons-tabs">
-    <a href="#" class="crayons-tabs__item crayons-tabs__item--current">Feed</a>
-    <a href="#" class="crayons-tabs__item">Popular</a>
-    <a href="#" class="crayons-tabs__item">Latest</a>
+    <a href="#" class="crayons-link crayons-link--current">Feed</a>
+    <a href="#" class="crayons-link">Popular</a>
+    <a href="#" class="crayons-link">Latest</a>
   </div>
   '.rstrip %></pre>
 </div>

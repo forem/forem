@@ -42,18 +42,22 @@ RSpec.describe Credits::Buyer, type: :service do
 
     it "updates the updated_at of the user" do
       create_list(:credit, 2, user: user)
-      Timecop.freeze(Time.current) do
+
+      old_updated_at = user.updated_at
+      Timecop.travel(1.minute.from_now) do
         described_class.call(purchaser: user, purchase: listing, cost: 2)
-        expect(user.reload.updated_at.to_i >= Time.current.to_i).to be(true)
       end
+      expect(user.reload.updated_at.to_i >= old_updated_at.to_i).to be(true)
     end
 
     it "updates the updated_at of the organization" do
       create_list(:credit, 2, organization: org)
-      Timecop.freeze(Time.current) do
+
+      old_updated_at = user.updated_at
+      Timecop.travel(1.minute.from_now) do
         described_class.call(purchaser: org, purchase: listing, cost: 2)
-        expect(org.reload.updated_at.to_i >= Time.current.to_i).to be(true)
       end
+      expect(org.reload.updated_at.to_i >= old_updated_at.to_i).to be(true)
     end
   end
 end

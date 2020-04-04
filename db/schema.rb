@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_26_111645) do
+ActiveRecord::Schema.define(version: 2020_03_31_155903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -569,21 +569,6 @@ ActiveRecord::Schema.define(version: 2020_03_26_111645) do
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
   end
 
-  create_table "job_opportunities", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "experience_level"
-    t.string "location_city"
-    t.string "location_country_code"
-    t.string "location_given"
-    t.decimal "location_lat", precision: 10, scale: 6
-    t.decimal "location_long", precision: 10, scale: 6
-    t.string "location_postal_code"
-    t.string "permanency"
-    t.string "remoteness"
-    t.string "time_commitment"
-    t.datetime "updated_at", null: false
-  end
-
   create_table "mentions", id: :serial, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "mentionable_id"
@@ -1041,7 +1026,6 @@ ActiveRecord::Schema.define(version: 2020_03_26_111645) do
     t.string "short_summary"
     t.string "social_image"
     t.string "social_preview_template", default: "article"
-    t.string "submission_rules_headsup"
     t.text "submission_template"
     t.boolean "supported", default: false
     t.integer "taggings_count", default: 0

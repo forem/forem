@@ -1,4 +1,12 @@
 class PodcastEpisode < ApplicationRecord
+  self.ignored_columns = %w[
+    deepgram_id_code
+    duration_in_seconds
+    featured
+    featured_number
+    order_key
+  ]
+
   include AlgoliaSearch
   include Searchable
 
@@ -35,6 +43,9 @@ class PodcastEpisode < ApplicationRecord
   scope :reachable, -> { where(reachable: true) }
   scope :published, -> { joins(:podcast).where(podcasts: { published: true }) }
   scope :available, -> { reachable.published }
+  scope :for_user, lambda { |user|
+    joins(:podcast).where(podcasts: { creator_id: user.id })
+  }
 
   algoliasearch per_environment: true do
     attribute :id

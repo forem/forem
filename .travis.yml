@@ -6,7 +6,7 @@ cache:
     - node_modules
     - $HOME/.nvm
 rvm:
-  - 2.6.5
+  - 2.7.0
 addons:
   postgresql: '9.6'
   chrome: 'stable'
@@ -75,6 +75,7 @@ deploy:
     condition: $TRAVIS_COMMIT_MESSAGE =~ \[deploy\]
 notifications:
   slack:
+    if: branch = master
     on_pull_requests: false
     on_success: change
     on_failure: always

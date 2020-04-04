@@ -9,11 +9,13 @@
     <button id="reaction-butt-readinglist" class="article-reaction-butt readinglist-reaction-button" data-category="readinglist" alt="unicorn-emoji" title="reading list">
       <img alt="reading list" src="<%= asset_path("emoji/emoji-one-bookmark.png") %>" /><span class="reaction-number" id="reaction-number-readinglist"></span>
     </button>
-    <a class="article-actions-tweet-button"
-      id="article-actions-tweet-button"
+
+    <% display_name = @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %>
+    <a
+      class="article-actions-tweet-button"
       rel="noopener"
       target='_blank'
-      href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
+      href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= display_name %> %23DEVcommunity <%= article_url(@article) %>'>
       <img src="<%= asset_path("twitter.svg") %>" alt="twitter logo">
     </a>
   <% end %>
@@ -52,7 +54,7 @@
         <% end %>
         <div class="dropdown-link-row">
           <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer">
-            <input type="text" id="article-copy-link-input" value="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %><%= @article.path %>" readonly />
+            <input type="text" id="article-copy-link-input" value="<%= article_url(@article) %>" readonly />
             <img id="article-copy-icon" src="<%= asset_path("content-copy.svg") %>" alt="Copy to Clipboard" />
             <span id="article-copy-link-announcer" role="alert" hidden>Copied to Clipboard</span>
           </clipboard-copy>

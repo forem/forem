@@ -30,8 +30,14 @@ class ChatChannelsController < ApplicationController
   end
 
   def update
-    ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
-    render_chat_channel
+    if ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
+      flash[:settings_notice] = "Channel settings updated."
+    else
+      default_error_message = "Channel settings updation failed. Try again later."
+      flash[:error] = @chat_channel.errors.full_messages.to_sentence.presence || default_error_message
+    end
+    current_user_membership = @chat_channel.mod_memberships.find_by!(user: current_user)
+    redirect_to edit_chat_channel_membership_path(current_user_membership)
   end
 
   def open
@@ -75,7 +81,7 @@ class ChatChannelsController < ApplicationController
     valid_listing = ClassifiedListing.where(user_id: params[:user_id], contact_via_connect: true).limit(1)
     authorize ChatChannel
     if chat_recipient.inbox_type == "open" || valid_listing.length == 1
-      chat = ChatChannel.create_with_users([current_user, chat_recipient], "direct")
+      chat = ChatChannel.create_with_users(users: [current_user, chat_recipient], channel_type: "direct")
       message_markdown = params[:message]
       message = Message.new(
         chat_channel: chat,

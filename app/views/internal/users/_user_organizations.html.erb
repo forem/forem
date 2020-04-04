@@ -2,7 +2,7 @@
   <div class="col-12">
     <h2>Organization Memberships</h2>
     <h3>Add to New Organization</h3>
-    <%= form_for [:internal, OrganizationMembership.new], html: { class: "form-inline justify-content-between my-3" } do |f| %>
+    <%= form_with model: [:internal, OrganizationMembership.new], local: true, html: { class: "form-inline justify-content-between my-3" } do |f| %>
       <%= f.hidden_field :user_id, value: @user.id %>
       <div class="form-group">
         <%= f.label "Organization ID:", class: "mr-3" %>
@@ -14,27 +14,35 @@
         <%= f.submit "Add to Org", class: "btn btn-primary" %>
       </div>
     <% end %>
-    <% if @user.organization_memberships.size.positive? %>
+    <% unless @organization_memberships.load.empty? %>
       <h3>Manage Memberships</h3>
-      <hr>
-      <% @user.organization_memberships.includes(:organization).each do |org_membership| %>
-        <h3>
-          <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener">
-            <%= org_membership.organization.name %>
-          </a>
-        </h3>
-        <%= form_for [:internal, org_membership], html: { class: "form-inline justify-content-between" } do |f| %>
-          <div class="form-group">
-            <%= f.label "Permission Level:", class: "mr-3" %>
-            <%= f.select("type_of_user", options_for_select(%w[member admin], selected: org_membership.type_of_user)) %>
-          </div>
-          <%= f.submit "Update Permissions", class: "btn btn-primary " %>
-        <% end %>
-        <%= form_for([:internal, org_membership], html: { method: :delete, onsubmit: "return confirm('Are you sure you want to remove them from #{org_membership.organization.name}?)", class: "d-flex justify-content-end my-2" }) do |f| %>
-          <%= f.submit "Remove From Org", class: "btn btn-danger" %>
-        <% end %>
-        <hr>
-      <% end %>
+      <table class='table'>
+        <tbody>
+          <% @organization_memberships.each do |org_membership| %>
+            <tr>
+              <td>
+                <a href="<%= org_membership.organization.path %>" target="_blank" rel="noopener">
+                  <h3><%= org_membership.organization.name %></h3>
+                </a>
+              </td>
+              <td>
+                <%= form_with model: [:internal, org_membership], method: :patch, local: true, html: { class: "form-inline justify-content-between" } do |f| %>
+                  <div class="form-group">
+                    <%= f.label "Permission Level:", class: "mr-3" %>
+                    <%= f.select("type_of_user", options_for_select(%w[member admin], selected: org_membership.type_of_user)) %>
+                  </div>
+                  <%= f.submit "Update Permissions", class: "btn btn-primary " %>
+                <% end %>
+              </td>
+              <td>
+                <%= form_with model: [:internal, org_membership], method: :delete, local: true, html: { class: "d-flex justify-content-end" } do |f| %>
+                  <%= f.submit "Remove From Org", class: "btn btn-danger", data: { confirm: "Are you sure you want to remove them from #{org_membership.organization.name}?" } %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     <% end %>
   </div>
 </div>

@@ -104,7 +104,7 @@
             p.badge-credit-message {
               margin: 8px auto;
               width: 100%;
-              @include themeable(color, theme-color, $dark-gray);
+              color: var(--body-color);
               font-size: 0.94em;
               line-height: 1.35em;
               strong a {
@@ -150,7 +150,6 @@
             max-width: 100%;
             display: inline-block;
             margin-bottom: 3px;
-            @include themeable-important(color, theme-color, $black);
             &:hover {
               @include themeable(
                 background,
@@ -393,7 +392,7 @@
               theme-container-background,
               1px solid rgb(232, 229, 229)
             );
-            background: var(--container-bg);
+            background: var(--card-bg);
             color: var(--body-color);
           }
           input[type='submit'] {

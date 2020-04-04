@@ -11,6 +11,7 @@ module.exports = {
         useBuiltIns: 'entry',
         corejs: { version: 3, proposals: false },
         exclude: ['transform-regenerator'],
+        bugfixes: true,
       },
     ],
     'preact',

@@ -1,4 +1,4 @@
-FROM ruby:2.6.5-alpine3.10
+FROM ruby:2.7.0-alpine3.10
 
 #------------------------------------------------------------------------------
 #
@@ -70,6 +70,10 @@ ENV	DATABASE_URL="postgresql://devto:devto@db:5432/PracticalDeveloper_developmen
 # DB setup / migrate script triggers on boot
 ENV DB_SETUP="false" \
   DB_MIGRATE="false"
+
+# In order for redis to work, these should be set
+ENV REDIS_URL="redis://redis:6379" \
+  REDIS_SESSIONS_URL="redis://redis:6379"
 
 #
 # Let's setup the public uploads folder volume

@@ -82,7 +82,7 @@ class Message < ApplicationRecord
       HTML
     elsif username == "all" && chat_channel.channel_type == "invite_only"
       <<~HTML
-        <a class='comment-mentioned-user comment-mentioned-all' data-content="chat_channels/#{chat_channel.id}" href='#' target="_blank">@#{username}</a>
+        <a class='comment-mentioned-user comment-mentioned-all' data-content="sidecar_all" href="#">@#{username}</a>
       HTML
     else
       mention

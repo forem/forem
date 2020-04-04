@@ -143,8 +143,10 @@ class UsersController < ApplicationController
 
   def onboarding_update
     if params[:user]
+      sanitize_user_params
       permitted_params = %i[summary location employment_title employer_name last_onboarding_page]
       current_user.assign_attributes(params[:user].permit(permitted_params))
+      current_user.profile_updated_at = Time.current
     end
     current_user.saw_onboarding = true
     authorize User
@@ -249,6 +251,10 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def sanitize_user_params
+    params[:user].delete_if { |_k, v| v.blank? }
+  end
 
   def render_update_response
     if current_user.save

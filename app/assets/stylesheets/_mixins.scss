@@ -32,7 +32,7 @@
 
   button {
     background: transparent;
-    border: 1px solid var(--container-color-tertiary);
+    border: 1px solid var(--card-color-tertiary);
     font-size: 17px;
     padding: 14px 5px;
     margin: 40px auto 70px;
@@ -46,7 +46,7 @@
 
 // Card styling
 @mixin dev-card {
-  background: var(--container-bg);
+  background: var(--card-bg);
   @include themeable(border, theme-container-border, none);
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
 
@@ -62,11 +62,11 @@
   padding: 8px 16px;
   margin: 0 -16px;
   border-radius: 3px;
-  color: var(--link-dimmed-color);
+  color: var(--link-color);
 
   &:hover {
-    color: var(--link-dimmed-color-hover);
-    background: var(--link-dimmed-bg-hover);
+    color: var(--link-color-hover);
+    background: var(--link-bg-hover);
   }
 }
 

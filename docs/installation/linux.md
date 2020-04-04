@@ -15,7 +15,7 @@ but they have only been tested on Ubuntu 18.04._
    [rbenv](https://github.com/rbenv/rbenv). Please follow their
    [installation guide](https://github.com/rbenv/rbenv#installation).
 1. With the Ruby version manager, install the Ruby version listed on our badge.
-   (ie with rbenv: `rbenv install 2.6.5`)
+   (ie with rbenv: `rbenv install 2.7.0`)
 
 For very detailed rbenv installation directions on several distros, please visit
 [DigitalOcean's guide](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04).

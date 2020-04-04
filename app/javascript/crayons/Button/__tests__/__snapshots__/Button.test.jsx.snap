@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Button /> component should render a button as a specific button type (HTML type attribute) when buttonType is set. 1`] = `
+<button
+  class="crayons-btn"
+  disabled={false}
+  type="submit"
+>
+  Hello world!
+</button>
+`;
+
+exports[`<Button /> component should render a button as an anchor element if "tagName" is set to "a" 1`] = `
+<a
+  class="crayons-btn"
+  href="https://dev.to"
+>
+  Hello world!
+</a>
+`;
+
+exports[`<Button /> component should render a button with addtional CSS classes when className is set 1`] = `
+<button
+  class="crayons-btn some-additional-class-name"
+  disabled={true}
+  type="button"
+>
+  Hello world!
+</button>
+`;
+
+exports[`<Button /> component should render a button with with an icon when an icon is set and there is button text 1`] = `
+<button
+  class="crayons-btn crayons-btn--icon-left"
+  disabled={false}
+  type="button"
+>
+  <svg
+    class="crayons-icon"
+    height="24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z"
+    />
+  </svg>
+  Hello world!
+</button>
+`;
+
+exports[`<Button /> component should render a button with with an icon when an icon is set and there is no button text 1`] = `
+<button
+  class="crayons-btn crayons-btn--icon-alone"
+  disabled={false}
+  type="button"
+>
+  <svg
+    class="crayons-icon"
+    height="24"
+    width="24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z"
+    />
+  </svg>
+</button>
+`;
+
+exports[`<Button /> component should render a danger button when using the variant "danger" 1`] = `
+<button
+  class="crayons-btn crayons-btn--danger"
+  disabled={false}
+  type="button"
+>
+  Hello world!
+</button>
+`;
+
+exports[`<Button /> component should render a disabled button when disabled is true 1`] = `
+<button
+  class="crayons-btn"
+  disabled={true}
+  type="button"
+>
+  Hello world!
+</button>
+`;
+
+exports[`<Button /> component should render a primary button when using default values 1`] = `
+<button
+  class="crayons-btn"
+  disabled={false}
+  type="button"
+>
+  Hello world!
+</button>
+`;
+
+exports[`<Button /> component should render a secondary button when using the variant "secondary" 1`] = `
+<button
+  class="crayons-btn crayons-btn--secondary"
+  disabled={false}
+  type="button"
+>
+  Hello world!
+</button>
+`;
+
+exports[`<Button /> component should render an enabled button when using default values 1`] = `
+<button
+  class="crayons-btn"
+  disabled={false}
+  type="button"
+>
+  Hello world!
+</button>
+`;
+
+exports[`<Button /> component should render an outlined button when using the variant "outlined" 1`] = `
+<button
+  class="crayons-btn crayons-btn--outlined"
+  disabled={false}
+  type="button"
+>
+  Hello world!
+</button>
+`;

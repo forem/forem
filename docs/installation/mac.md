@@ -12,7 +12,7 @@ title: macOS
    [rbenv](https://github.com/rbenv/rbenv). Please follow their
    [installation guide](https://github.com/rbenv/rbenv#installation).
 2. With the Ruby version manager, install the Ruby version listed on our badge.
-   (i.e. with rbenv: `rbenv install 2.6.5`)
+   (i.e. with rbenv: `rbenv install 2.7.0`)
 
 ### Yarn
 

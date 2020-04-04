@@ -1,29 +1,29 @@
 <div class="crayons-dropdown left-2 right-2 s:left-auto p-0 top-bar__menu__dropdown">
   <% if user_signed_in? %>
     <div id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1">...</div>
-    
+
     <div class="border-0 border-b-1 border-solid border-base-20 p-1">
-      <a href="/dashboard" class="crayons-nav-block">Dashboard</a>
-      <a href="/new" class="crayons-nav-block">Write a Post</a>
-      <a href="/readinglist" class="crayons-nav-block">Reading List</a>
-      <a href="/settings" class="crayons-nav-block">Settings</a>
-      <a href="/p/information" class="crayons-nav-block" id="second-last-nav-link">Key Links</a>
+      <a href="/dashboard" class="crayons-link crayons-link--block">Dashboard</a>
+      <a href="/new" class="crayons-link crayons-link--block">Write a Post</a>
+      <a href="/readinglist" class="crayons-link crayons-link--block">Reading List</a>
+      <a href="/settings" class="crayons-link crayons-link--block">Settings</a>
+      <a href="/p/information" class="crayons-link crayons-link--block" id="second-last-nav-link">Key Links</a>
     </div>
     <div class="p-1">
-      <a href="/signout_confirm" class="crayons-nav-block" id="last-nav-link">Sign Out</a>
+      <a href="/signout_confirm" class="crayons-link crayons-link--block" id="last-nav-link">Sign Out</a>
     </div>
   <% else %>
     <div class="border-0 border-b-1 border-solid border-base-20 p-1">
-      <a href="/enter" data-no-instant id="first-nav-link" class="crayons-nav-block fw-medium">Sign In/Up</a>
+      <a href="/enter" data-no-instant id="first-nav-link" class="crayons-link crayons-link--block fw-medium">Sign In/Up</a>
       <% if SiteConfig.auth_allowed?("twitter") %>
-        <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="crayons-nav-block pl-5" data-no-instant>Via Twitter</a>
+        <a href="/users/auth/twitter?callback_url=<%= app_url("/users/auth/twitter/callback") %>" class="crayons-link crayons-link--block pl-5" data-no-instant>Via Twitter</a>
       <% end %>
       <% if SiteConfig.auth_allowed?("github") %>
-        <a href="/users/auth/github?state=navbar_basic" class="crayons-nav-block pl-5" data-no-instant id="second-last-nav-link">Via GitHub</a>
+        <a href="/users/auth/github?state=navbar_basic" class="crayons-link crayons-link--block pl-5" data-no-instant id="second-last-nav-link">Via GitHub</a>
       <% end %>
     </div>
     <div class="p-1">
-      <a href="/p/information" class="crayons-nav-block" id="last-nav-link">All about <%= ApplicationConfig["COMMUNITY_NAME"] %></a>
+      <a href="/p/information" class="crayons-link crayons-link--block" id="last-nav-link">All about <%= ApplicationConfig["COMMUNITY_NAME"] %></a>
     </div>
   <% end %>
 </div>
