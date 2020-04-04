@@ -5,7 +5,8 @@
     </button>
   </div>
   <div class="global-signup-modal--inner-a">
-    <%= image_tag(cloudinary(SiteConfig.mascot_image_url, 300), class: "mascot-image", alt: "Sloan, the sloth mascot", loading: "lazy") %>
+    <%= image_tag(cloudinary(SiteConfig.mascot_image_url, 300),
+                  class: "mascot-image", alt: SiteConfig.mascot_image_description, loading: "lazy") %>
     <h1>Join our <%= community_qualified_name %> :)</h1>
     <p>
       <%= SiteConfig.tagline %>

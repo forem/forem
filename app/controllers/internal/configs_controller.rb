@@ -24,7 +24,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       campaign_hero_html_variant_name campaign_sidebar_enabled campaign_featured_tags
       campaign_sidebar_image
       main_social_image favicon_url logo_svg logo_png primary_sticker_image_url
-      mascot_image_url
+      mascot_image_url mascot_image_description
       rate_limit_follow_count_daily
       ga_view_id ga_fetch_rate community_description authentication_providers
       community_member_description tagline
