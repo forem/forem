@@ -11,6 +11,7 @@ import NextPageButton from './elements/nextPageButton';
 import {
   LISTING_PAGE_SIZE,
   updateListings,
+  getQueryParams,
   resizeAllMasonryItems,
 } from './utils';
 
@@ -31,8 +32,7 @@ export class Listings extends Component {
   };
 
   componentWillMount() {
-    const params = this.getQueryParams();
-    const t = this;
+    const params = getQueryParams();
     const container = document.getElementById('classifieds-index-container');
     const category = container.dataset.category || '';
     const allCategories = JSON.parse(container.dataset.allcategories || []);
@@ -57,12 +57,12 @@ export class Listings extends Component {
       document.body.classList.add('modal-open');
     }
 
-    t.debouncedClassifiedListingSearch = debounceAction(
+    this.debouncedClassifiedListingSearch = debounceAction(
       this.handleQuery.bind(this),
       { time: 150, config: { leading: true } },
     );
 
-    t.setState({
+    this.setState({
       query,
       tags,
       category,
@@ -71,10 +71,10 @@ export class Listings extends Component {
       openedListing,
       slug,
     });
-    t.listingSearch(query, tags, category, slug);
-    t.setUser();
+    this.listingSearch(query, tags, category, slug);
+    this.setUser();
 
-    document.body.addEventListener('keydown', t.handleKeyDown);
+    document.body.addEventListener('keydown', this.handleKeyDown);
 
     /*
       The width of the columns also changes when the browser is resized
@@ -206,22 +206,6 @@ export class Listings extends Component {
     this.listingSearch('', tags, category, null);
   };
 
-  getQueryParams = () => {
-    let qs = document.location.search;
-    qs = qs.split('+').join(' ');
-
-    const params = {};
-    let tokens;
-    const re = /[?&]?([^=]+)=([^&]*)/g;
-
-    // eslint-disable-next-line no-cond-assign
-    while ((tokens = re.exec(qs))) {
-      params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
-    }
-
-    return params;
-  };
-
   loadNextPage = () => {
     const { query, tags, category, slug, page } = this.state;
     this.setState({ page: page + 1 });
@@ -277,8 +261,7 @@ export class Listings extends Component {
    * @returns {Promise} A promise object with response formatted as JSON.
    */
   listingSearch(query, tags, category, slug) {
-    const t = this;
-    const { page } = t.state;
+    const { page } = this.state;
     const dataHash = {
       category,
       classified_listing_search: query,
@@ -291,10 +274,10 @@ export class Listings extends Component {
     return responsePromise.then((response) => {
       const classifiedListings = response.result;
       const fullListings = updateListings(classifiedListings);
-      t.setState({
+      this.setState({
         listings: fullListings,
         initialFetch: false,
-        showNextPageButt: classifiedListings.length === LISTING_PAGE_SIZE,
+        showNextPageButton: classifiedListings.length === LISTING_PAGE_SIZE,
       });
       this.setLocation(query, tags, category, slug);
     });
@@ -309,7 +292,7 @@ export class Listings extends Component {
       allCategories,
       currentUserId,
       openedListing,
-      showNextPageButton: showNextPageButt,
+      showNextPageButton,
       initialFetch,
       message,
     } = this.state;
@@ -352,7 +335,7 @@ export class Listings extends Component {
               placeholder="search"
               id="listings-search"
               autoComplete="off"
-              defaultValue={query}
+              defaultValue={message}
               onKeyUp={this.debouncedClassifiedListingSearch}
             />
             {shouldRenderClearQueryButton && (
@@ -374,7 +357,7 @@ export class Listings extends Component {
             onOpenModal={this.handleOpenModal}
           />
         </div>
-        {showNextPageButt && <NextPageButton onClick={this.loadNextPage} />}
+        {showNextPageButton && <NextPageButton onClick={this.loadNextPage} />}
         {shouldRenderModal && (
           <Modal
             currentUserId={currentUserId}
