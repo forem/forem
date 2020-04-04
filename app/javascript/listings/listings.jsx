@@ -5,6 +5,7 @@ import ClearQueryButton from './elements/clearQueryButton';
 import ModalBackground from './elements/modalBackground';
 import Modal from './elements/modal';
 import AllListings from './elements/allListings';
+import SelectedTags from './elements/selectedTags';
 
 /**
  * How many listings to show per page
@@ -161,6 +162,12 @@ export class Listings extends Component {
     }
     this.setState({ tags: newTags, page: 0 });
     this.listingSearch(query, newTags, category, null);
+  };
+
+  handleKeyPressedOnSelectedTags = (e, tag) => {
+    if (e.key === 'Enter') {
+      this.removeTag(e, tag);
+    }
   };
 
   selectCategory = (e, cat) => {
@@ -358,28 +365,6 @@ export class Listings extends Component {
     const shouldRenderModal = openedListing != null && undefined;
     const shouldRenderClearQueryButton = query.length > 0;
 
-    const selectedTags = tags.map((tag) => (
-      <span className="classified-tag">
-        <a
-          href="/listings?tags="
-          className="tag-name"
-          onClick={(e) => this.removeTag(e, tag)}
-          data-no-instant
-        >
-          <span>{tag}</span>
-          <span
-            className="tag-close"
-            onClick={(e) => this.removeTag(e, tag)}
-            data-no-instant
-            role="button"
-            onKeyPress={(e) => e.key === 'Enter' && this.removeTag(e, tag)}
-            tabIndex="0"
-          >
-            ×
-          </span>
-        </a>
-      </span>
-    ));
     const categoryLinks = allCategories.map((cat) => (
       <a
         href={`/listings/${cat.slug}`}
@@ -390,6 +375,7 @@ export class Listings extends Component {
         {cat.name}
       </a>
     ));
+
     let nextPageButt = '';
     if (showNextPageButt) {
       nextPageButt = (
@@ -439,7 +425,11 @@ export class Listings extends Component {
             {shouldRenderClearQueryButton && (
               <ClearQueryButton onClick={this.clearQuery} />
             )}
-            {selectedTags}
+            <SelectedTags
+              tags={tags}
+              onClick={this.removeTag}
+              onKeyPress={this.handleKeyPressedOnSelectedTags}
+            />
           </div>
         </div>
         <div className="classifieds-columns" id="classified-listings-results">
