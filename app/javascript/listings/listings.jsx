@@ -8,39 +8,11 @@ import AllListings from './elements/allListings';
 import SelectedTags from './elements/selectedTags';
 import CategoryLinks from './elements/categoryLinks';
 import NextPageButton from './elements/nextPageButton';
-import { resizeMasonryItem } from './utils';
-
-/**
- * How many listings to show per page
- * @constant {number}
- */
-const LISTING_PAGE_SIZE = 75;
-
-function resizeAllMasonryItems() {
-  // Get all item class objects in one list
-  const allItems = document.getElementsByClassName('single-classified-listing');
-
-  /*
-   * Loop through the above list and execute the spanning function to
-   * each list-item (i.e. each masonry item)
-   */
-  // eslint-disable-next-line vars-on-top
-  for (let i = 0; i < allItems.length; i += 1) {
-    resizeMasonryItem(allItems[i]);
-  }
-}
-
-function updateListings(classifiedListings) {
-  const fullListings = [];
-
-  classifiedListings.forEach((listing) => {
-    if (listing.bumped_at) {
-      fullListings.push(listing);
-    }
-  });
-
-  return fullListings;
-}
+import {
+  LISTING_PAGE_SIZE,
+  updateListings,
+  resizeAllMasonryItems,
+} from './utils';
 
 export class Listings extends Component {
   state = {
@@ -55,7 +27,7 @@ export class Listings extends Component {
     message: '',
     slug: null,
     page: 0,
-    showNextPageButt: false,
+    showNextPageButton: false,
   };
 
   componentWillMount() {
@@ -337,7 +309,7 @@ export class Listings extends Component {
       allCategories,
       currentUserId,
       openedListing,
-      showNextPageButt,
+      showNextPageButton: showNextPageButt,
       initialFetch,
       message,
     } = this.state;
