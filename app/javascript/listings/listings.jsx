@@ -1,10 +1,10 @@
 import { h, Component } from 'preact';
 import debounceAction from '../src/utils/debounceAction';
 import { fetchSearch } from '../src/utils/search';
-import SingleListing from './singleListing';
 import ClearQueryButton from './elements/clearQueryButton';
 import ModalBackground from './elements/modalBackground';
 import Modal from './elements/modal';
+import AllListings from './elements/allListings';
 
 /**
  * How many listings to show per page
@@ -356,18 +356,6 @@ export class Listings extends Component {
     } = this.state;
 
     const shouldRenderModal = openedListing != null && undefined;
-
-    const allListings = listings.map((listing) => (
-      <SingleListing
-        onAddTag={this.addTag}
-        onChangeCategory={this.selectCategory}
-        listing={listing}
-        currentUserId={currentUserId}
-        onOpenModal={this.handleOpenModal}
-        isOpen={false}
-      />
-    ));
-
     const shouldRenderClearQueryButton = query.length > 0;
 
     const selectedTags = tags.map((tag) => (
@@ -455,7 +443,13 @@ export class Listings extends Component {
           </div>
         </div>
         <div className="classifieds-columns" id="classified-listings-results">
-          {allListings}
+          <AllListings
+            listings={listings}
+            onAddTag={this.addTag}
+            onChangeCategory={this.selectCategory}
+            currentUserId={currentUserId}
+            onOpenModal={this.handleOpenModal}
+          />
         </div>
         {nextPageButt}
         {shouldRenderModal && (
