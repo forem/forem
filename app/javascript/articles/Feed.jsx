@@ -8,8 +8,9 @@ export class Feed extends Component {
   componentDidMount() {
     const { timeFrame } = this.props;
     const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
+    const feedStyle = "images"
 
-    this.setState({ bookmarkedFeedItems: new Set(reading_list_ids) });
+    this.setState({ bookmarkedFeedItems: new Set(reading_list_ids), feedStyle });
 
     Feed.getFeedItems(timeFrame).then(feedItems => {
       // Ensure first article is one with a main_image
@@ -131,7 +132,9 @@ export class Feed extends Component {
 
   render() {
     const { renderFeed } = this.props;
+    console.log(feedStyle)
     const {
+      feedStyle,
       feedItems = [],
       podcastEpisodes = [],
       bookmarkedFeedItems = new Set(),
@@ -144,6 +147,7 @@ export class Feed extends Component {
         }}
       >
         {renderFeed({
+          feedStyle,
           feedItems,
           feedIcons: FEED_ICONS,
           podcastEpisodes,

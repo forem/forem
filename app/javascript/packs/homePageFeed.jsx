@@ -66,6 +66,7 @@ export const renderFeed = timeFrame => {
     <Feed
       timeFrame={timeFrame}
       renderFeed={({
+        feedStyle,
         feedItems,
         feedIcons,
         podcastEpisodes,
@@ -80,9 +81,11 @@ export const renderFeed = timeFrame => {
         const commonProps = {
           reactionsIcon: feedIcons.REACTIONS_ICON,
           commentsIcon: feedIcons.COMMENTS_ICON,
+          feedStyle,
           bookmarkClick,
         };
-
+        console.log(feedItems.length)
+        console.log(feedStyle)
         const [featuredStory, ...subStories] = feedItems;
 
         sendFeaturedArticleAnalytics(featuredStory.id);

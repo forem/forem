@@ -24,6 +24,7 @@ export const Article = ({
   commentsIcon,
   videoIcon,
   bookmarkClick,
+  feedStyle,
 }) => {
   if (article && article.type_of === 'podcast_episodes') {
     return <PodcastArticle article={article} />;
@@ -34,24 +35,33 @@ export const Article = ({
     formatter: x => x,
   })
 
+  let mainContent = ''
+  console.log(feedStyle)
+  console.log(article.main_image)
+  console.log(article.cloudinary_video_url)
+  if (article.cloudinary_video_url) {
+    mainContent = <a
+        href={article.path}
+        className="single-article-video-preview"
+        style={`background-image:url(${article.cloudinary_video_url})`}
+      >
+        <div className="single-article-video-duration">
+          <img src={videoIcon} alt="video camera" loading="lazy" />
+          {article.video_duration_in_minutes}
+        </div>
+      </a>
+  } else if (feedStyle === "images" && article.main_image) {
+    mainContent = <a href={article.path}>
+      <img src={article.main_image} class="single-article-main-image"/>
+    </a>
+  }
+
   return (
     <div
       className="single-article single-article-small-pic"
       data-content-user-id={article.user_id}
     >
-      {article.cloudinary_video_url && (
-        <a
-          href={article.path}
-          className="single-article-video-preview"
-          style={`background-image:url(${article.cloudinary_video_url})`}
-        >
-          <div className="single-article-video-duration">
-            <img src={videoIcon} alt="video camera" loading="lazy" />
-            {article.video_duration_in_minutes}
-          </div>
-        </a>
-      )}
-
+      {mainContent}
       <OrganizationHeadline organization={article.organization} />
       <div className="small-pic">
         <a
