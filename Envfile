@@ -36,6 +36,9 @@ variable :REDIS_SIDEKIQ_URL, :String, default: "redis://localhost:6379"
 # Elasticsearch
 variable :ELASTICSEARCH_URL, :String, default: "http://localhost:9200"
 
+# SSL config
+variable :FORCE_SSL_IN_RAILS, String, default: "not applicable in dev"
+
 ################################################
 ############## 3rd Party Services ##############
 ################################################
