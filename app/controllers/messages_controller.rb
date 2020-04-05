@@ -94,7 +94,8 @@ class MessagesController < ApplicationController
       edited_at: new_message.edited_at,
       timestamp: Time.current,
       color: new_message.preferred_user_color,
-      reception_method: "pushed"
+      reception_method: "pushed",
+      action: new_message.chat_action
     }
 
     if new_message.chat_channel.group?

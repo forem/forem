@@ -46,6 +46,7 @@ class ChatChannelMembershipsController < ApplicationController
       @chat_channel_membership.destroy
       flash[:settings_notice] = "Invitation removed."
     else
+      Message.create("message_markdown" => "@#{current_user.username} removed @#{@chat_channel_membership.user.username} from #{@chat_channel_membership.channel_name}", "user_id" => current_user.id, "chat_channel_id" => @chat_channel_membership.chat_channel_id, "chat_action" => "removed_from_channel")
       @chat_channel_membership.update(status: "removed_from_channel")
       flash[:settings_notice] = "Removed #{@chat_channel_membership.user.name}"
     end
@@ -69,6 +70,7 @@ class ChatChannelMembershipsController < ApplicationController
     @chat_channel_membership = ChatChannelMembership.find(params[:id])
     authorize @chat_channel_membership
     channel_name = @chat_channel_membership.chat_channel.channel_name
+    Message.create("message_markdown" => "@#{current_user.username} left #{@chat_channel_membership.channel_name}", "user_id" => current_user.id, "chat_channel_id" => @chat_channel_membership.chat_channel_id, "chat_action" => "left_channel")
     @chat_channel_membership.update(status: "left_channel")
     @chat_channels_memberships = []
     flash[:settings_notice] = "You have left the channel #{channel_name}. It may take a moment to be removed from your list."
@@ -85,6 +87,7 @@ class ChatChannelMembershipsController < ApplicationController
     if permitted_params[:user_action] == "accept"
       @chat_channel_membership.update(status: "active")
       channel_name = @chat_channel_membership.chat_channel.channel_name
+      Message.create("message_markdown" => "@#{current_user.username} joined #{@chat_channel_membership.channel_name}", "user_id" => current_user.id, "chat_channel_id" => @chat_channel_membership.chat_channel_id, "chat_action" => "joined")
       flash[:settings_notice] = "Invitation to  #{channel_name} accepted. It may take a moment to show up in your list."
     else
       @chat_channel_membership.update(status: "rejected")
