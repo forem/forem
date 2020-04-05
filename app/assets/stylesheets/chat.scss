@@ -1287,3 +1287,32 @@
 .active__message__list {
   background: var(--theme-container-accent-background, #f5f6f7);
 }
+.chatmessage__action {
+  justify-content: center;
+  &:hover {
+    background: none;
+  }
+  .action__message {
+    display: grid;
+    justify-content: center;
+    .chatmessage__profilepic {
+      justify-self: center;
+    }
+    .chatmessage__bodytext {
+      margin: 0;
+      font-size: 12px;
+      font-style: italic;
+      p {
+        width: 250px;
+        text-align: center;
+      }
+      a {
+        text-decoration: none;
+        color: var(--body-color);
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

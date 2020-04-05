@@ -307,6 +307,7 @@ ActiveRecord::Schema.define(version: 2020_04_05_103927) do
     t.string "slug"
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listings", force: :cascade do |t|
