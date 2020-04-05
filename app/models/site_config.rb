@@ -72,6 +72,12 @@ class SiteConfig < RailsSettings::Base
   field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
   field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
 
+  # Default ux config
+  field :feed_style, type: :string, default: "base" # Should the feed show images?
+
+  # User-generated-content
+  field :main_image_crop, type: :string, default: "base"
+
   # Helpful methods
   def self.auth_allowed?(provider)
     authentication_providers.include?(provider)
