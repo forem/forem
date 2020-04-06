@@ -82,6 +82,10 @@ function submitAsModerator(responseTemplateId, parentId) {
     .then((response) => {
       if (response.status === 'created') {
         window.location.pathname = response.path;
+      } else if (response.status === 'comment already exists') {
+        alert('This comment already exists.')
+      } else if (response.error === 'error') {
+        alert(`There was a problem submitting this comment: ${response.status}`)
       }
     });
 }

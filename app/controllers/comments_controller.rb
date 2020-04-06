@@ -144,6 +144,13 @@ class CommentsController < ApplicationController
     else
       render json: { status: @comment&.errors&.full_messages&.to_sentence }, status: :unprocessable_entity
     end
+    rescue StandardError => e
+      skip_authorization
+
+      Rails.logger.error(e)
+      message = "There was an error in your markdown: #{e}"
+      render json: { error: "error", status: message }, status: :unprocessable_entity
+    end
   end
 
   # PATCH/PUT /comments/1
