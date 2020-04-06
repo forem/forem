@@ -1,0 +1,64 @@
+@import '../config/import';
+
+.crayons-story {
+  margin-bottom: $su-2;
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__title {
+    color: var(--card-color);
+    a {
+      color: inherit;
+      display: block;
+
+      &:hover {
+        color: var(--link-color-hover);
+      }
+    }
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: $fs-s;
+    line-height: $lh-tight;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+  }
+
+  &__secondary {
+    color: var(--card-color-secondary);
+  }
+
+  &__tertiary {
+    color: var(--card-color-tertiary);
+  }
+
+  &__media {
+    margin-bottom: -$su-2;
+    &__cover {
+      border-top-right-radius: $br-default;
+      border-top-left-radius: $br-default;
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+    }
+  }
+}
