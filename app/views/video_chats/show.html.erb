@@ -1,0 +1,13 @@
+<div class="video-chat-wrapper" id="chat" data-token="<%= @token %>" data-channel="<%= params[:id] %>">
+
+</div>
+<h1>This is an experiment</h1>
+<h3>It's only a partially implemented view.</h3>
+<h4>But this could be a more straightforward way to do video chat within /connect.</h4>
+<%# TODO Make paramsp[:id] map to a chat channel and ensure the users have permission %>
+<%# That part is pretty straightforward %>
+<%# Then close the loop on the JavaScript part of it. %>
+<%# Also should be *fairly* straightforward in terms of following a basic tutorial. %>
+<%# Then we drop a link in chat rather than trying to make video work with complicated state in chat. %>
+<%# The complicated part has always been chat state/channels etc. Doing in sidecar means more containerization of logic. %>
+<%= javascript_packs_with_chunks_tag "videoChat", defer: true %>
