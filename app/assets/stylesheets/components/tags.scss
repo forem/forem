@@ -1,0 +1,18 @@
+@import '../config/import';
+
+.crayons-tag {
+  font-family: $ff-accent;
+  font-size: $fs-s;
+  color: var(--tag-color);
+  line-height: $lh-tight;
+  border-radius: $br-default;
+  padding: $su-1;
+
+  &__prefix {
+    opacity: 0.5;
+  }
+
+  &:hover {
+    color: var(--tag-color-hover);
+  }
+}

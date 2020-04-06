@@ -51,7 +51,7 @@
   ////////////////////////////////////////////////////////////////////////////////////
 
   // Main colors
-  --body-bg: #f9fafa; // todo: replace with `var(--base-10);` when ready.
+  --body-bg: var(--base-10); //#f9fafa; // todo: replace with `var(--base-10);` when ready.
   --body-color: var(
     --base-100
   ); // todo: replace with `var(--base-100);` when ready.
@@ -137,4 +137,8 @@
   --indicator-critical-color: var(--body-color-inverted);
   --indicator-default-bg: var(--button-secondary-bg);
   --indicator-default-color: var(--button-secondary-color);
+
+  // Tags
+  --tag-color: var(--base-70);
+  --tag-color-hover: var(--base-100);
 }

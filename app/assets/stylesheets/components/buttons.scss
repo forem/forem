@@ -5,7 +5,8 @@ $outlined-border-width: 2px;
 // Basic styling
 .crayons-btn {
   position: relative;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   padding: 0.5em 1em;
   border-radius: $br-default;
   outline: none;
@@ -79,27 +80,28 @@ $outlined-border-width: 2px;
     }
   }
 
-  &--text {
+  &--ghost {
     background-color: transparent;
-    color: var(--link-brand);
+    color: var(--link-color);
+    padding: 0;
 
     &:enabled:not(&--disabled):hover,
     &:enabled:not(&--disabled):active,
     &--active:enabled:not(&--disabled) {
       background-color: transparent;
-      color: var(--link-brand-hover);
+      color: var(--link-color-hover);
     }
   }
 }
 
 // Icon alone
-.crayons-btn--icon-alone {
+.crayons-btn--icon-alone:not(.crayons-btn--ghost) {
   padding-left: 0.75em;
   padding-right: 0.75em;
 }
 
 // Icon Left
-.crayons-btn--icon-left {
+.crayons-btn--icon-left:not(.crayons-btn--ghost) {
   padding-left: 0.75em;
 
   .crayons-icon {
