@@ -1,7 +1,7 @@
 FROM gitpod/workspace-postgres
 
 # Install Ruby
-ENV RUBY_VERSION=2.6.5
+ENV RUBY_VERSION=2.7.0
 RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --default"
 
 # Install Redis.
