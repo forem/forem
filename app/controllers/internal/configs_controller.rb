@@ -3,6 +3,8 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   before_action :extra_authorization_and_confirmation, only: [:create]
 
+  SOCIAL_MEDIA_HANDLES = %i[facebook github instagram twitch twitter]
+
   def show
     @logo_svg = SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
   end
