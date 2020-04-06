@@ -48,14 +48,28 @@
                                 placeholder: "email@staff.com" %>
               <div class="alert alert-info">Email of the staff account</div>
             </div>
+          </div>
+        </div>
 
+        <div class="card mt-3">
+          <div class="card-header">Public Social Media Handles</div>
+          <div class="card-body">
             <div class="form-group">
-              <%= f.label :social_networks_handle %>
-              <%= f.text_field :social_networks_handle,
-                               class: "form-control",
-                               value: SiteConfig.social_networks_handle,
-                               placeholder: "thepracticaldev" %>
-              <div class="alert alert-info">Social networks handle (eg. Twitter, GitHub)</div>
+
+              <%= f.fields_for :social_media_handles do |ff| %>
+
+                <% @social_media_handles.each do |social_media_handle| %>
+                  <div>
+                    <%= ff.label social_media_handle %>
+                    <%= ff.text_field social_media_handle,
+                                     class: "form-control",
+                                     value: SiteConfig.try(:social_media_handles)[social_media_handle],
+                                     placeholder: "" %>
+                    <div class="alert alert-info"><%= social_media_handle.capitalize() %> Username</div>
+                  </div>
+                <% end %>
+
+              <% end %>
             </div>
           </div>
         </div>

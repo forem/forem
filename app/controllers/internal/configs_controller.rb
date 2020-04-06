@@ -6,6 +6,7 @@ class Internal::ConfigsController < Internal::ApplicationController
   SOCIAL_MEDIA_HANDLES = %i[facebook github instagram twitch twitter]
 
   def show
+    @social_media_handles = SOCIAL_MEDIA_HANDLES
     @logo_svg = SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
   end
 
