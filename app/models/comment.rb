@@ -152,7 +152,7 @@ class Comment < ApplicationRecord
   end
 
   def adjust_comment_parent_based_on_depth
-    self.parent_id = parent.descendant_ids.last if root_exists? && (parent.depth > 1 && parent.has_children?)
+    self.parent_id = parent.descendant_ids.last if parent_exists? && (parent.depth > 1 && parent.has_children?)
   end
 
   def wrap_timestamps_if_video_present!
@@ -227,7 +227,7 @@ class Comment < ApplicationRecord
   end
 
   def should_send_email_notification?
-    root_exists? &&
+    parent_exists? &&
       parent_user.class.name != "Podcast" &&
       parent_user != user &&
       parent_user.email_comment_notifications &&
@@ -258,5 +258,9 @@ class Comment < ApplicationRecord
 
   def notify_slack_channel_about_warned_users
     Slack::Messengers::CommentUserWarned.call(comment: self)
+  end
+
+  def parent_exists?
+    parent_id && Comment.exists?(id: parent_id)
   end
 end
