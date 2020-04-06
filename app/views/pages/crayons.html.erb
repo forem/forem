@@ -55,6 +55,111 @@
   }
 </style>
 
+<div style="max-width: 700px;" class="mx-auto py-8">
+  <div class="crayons-card crayons-story">
+    <div class="crayons-story__media">
+      <img src="https://placehold.it/800x500?text=Cover" class="crayons-story__media__cover" alt="">
+    </div>
+
+    <div class="crayons-story__top p-6">
+      <a href="#" class="crayons-story__meta">
+        <span class="crayons-avatar crayons-avatar--l mr-2"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+        <div>
+          <span class="crayons-story__secondary block fw-bold">Ryan Westlund</span>
+          <span class="crayons-story__tertiary block">Posted 2h ago</span>
+        </div>
+      </a>
+
+      <button class="crayons-btn crayons-btn--ghost hidden">
+        <%= inline_svg_tag("overflow-horizontal.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "More") %>
+      </button>
+    </div>
+
+    <div class="p-6 pl-8">
+      <h2 class="crayons-story__title lh-tight mb-2"><a href="#">My review of the Responsive Web Design Certificate from Free Code Camp</a></h2>
+
+      <div class="mb-2">
+        <a href="#" class="crayons-tag color-base-inverted" style="background: #FF3565;"><span class="crayons-tag__prefix">#</span>testing</a>
+        <a href="#" class="crayons-tag"><span class="crayons-tag__prefix">#</span>codenewbie</a>
+        <a href="#" class="crayons-tag"><span class="crayons-tag__prefix">#</span>codepen</a>
+      </div>
+
+      <div class="crayons-story__bottom">
+        <div class="crayons-story__actions crayons-story__secondary">
+          <span class="crayons-story__info mr-6">
+            <%= inline_svg_tag("small-heart.svg", aria: true, width: 24, height: 24, class: "mr-1 crayons-icon", title: "Save") %>
+            11 reactions
+          </span>
+
+          <span class="crayons-story__info">
+            <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "mr-1 crayons-icon", title: "Save") %>
+            3 comments
+          </span>          
+        </div>
+
+        <button class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s">
+          <%= inline_svg_tag("small-save.svg", aria: true, width: 24, height: 24, class: "mr-1 crayons-icon", title: "Save") %>
+          Save
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="max-width: 700px;" class="mx-auto py-8">
+  <div class="crayons-card crayons-story">
+    <div class="crayons-story__media">
+      <img src="https://placehold.it/800x500?text=Cover" class="crayons-story__media__cover" alt="">
+    </div>
+    <div class="crayons-card__body p-6">
+      <div class="crayons-story__top mb-3">
+        <div>
+          <a href="#" class="crayons-tag color-base-inverted" style="background: #FF3565;"><span class="crayons-tag__prefix">#</span>testing</a>
+          <a href="#" class="crayons-tag"><span class="crayons-tag__prefix">#</span>codenewbie</a>
+          <a href="#" class="crayons-tag"><span class="crayons-tag__prefix">#</span>codepen</a>
+        </div>
+
+        <button class="crayons-btn crayons-btn--ghost hidden">
+          <%= inline_svg_tag("overflow-horizontal.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "More") %>
+        </button>
+      </div>
+
+      <h2 class="crayons-story__title lh-tight mb-3"><a href="#">My review of the Responsive Web Design Certificate from Free Code Camp</a></h2>
+
+      <div class="crayons-story__bottom">
+        <div class="crayons-story__actions flex items-center">
+          <a href="#" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-story__secondary mr-5">
+            <%= inline_svg_tag("small-heart.svg", aria: true, width: 24, height: 24, class: "mr-1 crayons-icon", title: "Save") %>
+            11
+          </a>          
+
+          <a href="#" class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-story__secondary mr-5">
+            <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "mr-1 crayons-icon", title: "Save") %>
+            7
+          </a>
+
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left crayons-story__secondary">
+            <%= inline_svg_tag("small-save.svg", aria: true, width: 24, height: 24, class: "mr-1 crayons-icon", title: "Save") %>
+            Save
+          </button>
+        </div>
+        <!-- <p class="crayons-story__tertiary">18 reactions and 7 comments</p> -->
+        <a href="#" class="crayons-story__meta">
+          <div class="align-right">
+            <span class="crayons-story__secondary block fw-bold">Ryan Westlund</span>
+            <span class="crayons-story__tertiary block">Posted 2h ago</span>
+          </div>
+          <span class="crayons-avatar crayons-avatar--l ml-2"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span>
+        </a>
+      </div>
+    </div>
+    <div class="bg-base-0 p-5">
+      Comments
+    </div>
+  </div>
+  
+</div>
+
 <div class="container">
   <div class="body">
     <h2>Main Typography</h2>
