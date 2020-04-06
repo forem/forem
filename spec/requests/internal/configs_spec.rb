@@ -129,7 +129,7 @@ RSpec.describe "/internal/config", type: :request do
         it "updates mascot_image_description" do
           description = "Hey hey #{rand(100)}"
           post "/internal/config", params: { site_config: { mascot_image_description: description }, confirmation: confirmation_message }
-          expect(SiteConfig.mascot_image_description).to eq(expected_image_url)
+          expect(SiteConfig.mascot_image_description).to eq(description)
         end
 
         it "rejects update without proper confirmation" do
