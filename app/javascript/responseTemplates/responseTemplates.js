@@ -16,14 +16,16 @@ function toggleTemplateTypeButton(form, e) {
     .classList.toggle('hidden');
 }
 
-function buildHTML(response, typeOf) {
-  if (response.length === 0 && typeOf === 'personal_comment') {
-    return `
+const noResponsesHTML = `
 <div class="mod-response-wrapper mod-response-wrapper-empty">
   <p>🤔... It looks like you don't have any templates yet.</p>
   <p>Create templates to quickly answer FAQs or store snippets for re-use.</p>
 </div>
 `;
+
+function buildHTML(response, typeOf) {
+  if (response.length === 0 && typeOf === 'personal_comment') {
+    return noResponsesHTML;
   }
   if (typeOf === 'personal_comment') {
     return response
@@ -90,6 +92,15 @@ function submitAsModerator(responseTemplateId, parentId) {
     });
 }
 
+const confirmMsg = `
+Are you sure you want to submit this comment as Sloan?
+
+It will be sent immediately and users will be notified.
+
+Make sure this is the appropriate comment for the situation.
+
+This action is not reversible.`
+
 function addClickListeners(form) {
   const responsesContainer = form.querySelector(
     '.response-templates-container',
@@ -125,14 +136,6 @@ function addClickListeners(form) {
     button.addEventListener('click', (e) => {
       e.preventDefault();
 
-      const confirmMsg = `
-Are you sure you want to submit this comment as Sloan?
-
-It will be sent immediately and users will be notified.
-
-Make sure this is the appropriate comment for the situation.
-
-This action is not reversible.`;
       if (confirm(confirmMsg)) {
         submitAsModerator(e.target.dataset.responseTemplateId, parentCommentId);
       }
