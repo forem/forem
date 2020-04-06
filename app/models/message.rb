@@ -118,6 +118,14 @@ class Message < ApplicationRecord
             #{user.name}
           </h1>
           </a>".html_safe
+      elsif anchor["href"].include?("/video_chats/")
+        html += "<a href='#{anchor['href']}'
+          class='chatchannels__richlink'
+          target='_blank' data-content='sidecar-video'>
+          <h1 data-content='sidecar-video'>
+            👾 Experimental Video Chat Started
+          </h1>
+          </a>".html_safe
       end
     end
     html
