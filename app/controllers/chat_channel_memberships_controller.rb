@@ -1,5 +1,6 @@
 class ChatChannelMembershipsController < ApplicationController
   after_action :verify_authorized
+  include MessagesHelper
 
   def index
     skip_authorization
@@ -97,48 +98,8 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def send_chat_action_message(message, user, channel_id, action)
-    @temp_message_id = (0...20).map { ("a".."z").to_a[rand(8)] }.join
-    @message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id, "chat_action" => action)
-    pusher_message_created(false)
-  end
-
-  def pusher_message_created(is_single)
-    return unless @message.valid?
-
-    begin
-      message_json = create_pusher_payload(@message, @temp_message_id)
-      if is_single
-        Pusher.trigger("private-message-notifications-#{@message.user_id}", "message-created", message_json)
-      else
-        Pusher.trigger(@message.chat_channel.pusher_channels, "message-created", message_json)
-      end
-    rescue Pusher::Error => e
-      logger.info "PUSHER ERROR: #{e.message}"
-    end
-  end
-
-  def create_pusher_payload(new_message, temp_id)
-    payload = {
-      temp_id: temp_id,
-      id: new_message.id,
-      user_id: new_message.user.id,
-      chat_channel_id: new_message.chat_channel.id,
-      chat_channel_adjusted_slug: new_message.chat_channel.adjusted_slug(current_user, "sender"),
-      channel_type: new_message.chat_channel.channel_type,
-      username: new_message.user.username,
-      profile_image_url: ProfileImage.new(new_message.user).get(width: 90),
-      message: new_message.message_html,
-      markdown: new_message.message_markdown,
-      edited_at: new_message.edited_at,
-      timestamp: Time.current,
-      color: new_message.preferred_user_color,
-      reception_method: "pushed",
-      action: new_message.chat_action
-    }
-
-    if new_message.chat_channel.group?
-      payload[:chat_channel_adjusted_slug] = new_message.chat_channel.adjusted_slug
-    end
-    payload.to_json
+    temp_message_id = (0...20).map { ("a".."z").to_a[rand(8)] }.join
+    message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id, "chat_action" => action)
+    pusher_message_created(false, message, temp_message_id)
   end
 end
