@@ -81,7 +81,7 @@ function submitAsModerator(responseTemplateId, parentId) {
 }
 
 function addClickListeners(form) {
-  const responsesContainer = form.querySelector('.response-templates-container')
+  const responsesContainer = form.querySelector('.response-templates-container');
   const parentCommentId = form.id !== 'new_comment'
     ? form.querySelector('input#comment_parent_id').value
     : null;
@@ -128,7 +128,7 @@ This action is not reversible.`;
 }
 
 function fetchResponseTemplates(typeOf, formId) {
-  const form = document.getElementById(formId)
+  const form = document.getElementById(formId);
   let dataContainer;
   if (typeOf === 'personal_comment') {
     dataContainer = form.querySelector('.personal-responses-container');
@@ -148,8 +148,8 @@ function fetchResponseTemplates(typeOf, formId) {
     .then((response) => {
       form.querySelector('img.loading-img').classList.toggle('hidden');
       dataContainer.innerHTML = buildHTML(response, typeOf);
-      const topLevelData = document.getElementById('response-templates-data')
-      topLevelData.innerHTML = dataContainer.parentElement.innerHTML
+      const topLevelData = document.getElementById('response-templates-data');
+      topLevelData.innerHTML = dataContainer.parentElement.innerHTML;
       addClickListeners(form);
     });
 }
@@ -167,14 +167,14 @@ function prepareHeaderButtons(form) {
   modTemplateButton.classList.remove('hidden');
 
   modTemplateButton.addEventListener('click', () => {
-    const topLevelData = document.getElementById('response-templates-data')
+    const topLevelData = document.getElementById('response-templates-data');
     const modDataNotFetched = topLevelData.innerHTML !== ''
       ? topLevelData.querySelector('.moderator-responses-container')
           .childElementCount === 0
       : false;
     if (modDataNotFetched) {
-      form.querySelector('img.loading-img').classList.toggle('hidden')
-      fetchResponseTemplates('mod_comment', form.id)
+      form.querySelector('img.loading-img').classList.toggle('hidden');
+      fetchResponseTemplates('mod_comment', form.id);
     }
     }, { once: true });
 }
@@ -187,13 +187,13 @@ function copyData(responsesContainer) {
 
 function openButtonCallback(form) {
   const responsesContainer = form.querySelector('.response-templates-container');
-  const dataFetched = document.getElementById('response-templates-data').innerHTML !== ''
+  const dataFetched = document.getElementById('response-templates-data').innerHTML !== '';
 
   responsesContainer.classList.toggle('hidden');
 
   if (dataFetched && !responsesContainer.classList.contains('hidden')) {
-    copyData(responsesContainer)
-    addClickListeners(form)
+    copyData(responsesContainer);
+    addClickListeners(form);
   } else {
     form.querySelector('img.loading-img').classList.toggle('hidden');
     fetchResponseTemplates('personal_comment', form.id);
@@ -205,13 +205,13 @@ function openButtonCallback(form) {
 }
 
 export function prepareOpenButton(form) {
-  const button = form.querySelector('.response-templates-button')
+  const button = form.querySelector('.response-templates-button');
   if (!button) {
     return
   }
 
   button.addEventListener('click', () => {
-    openButtonCallback(form)
+    openButtonCallback(form);
   });
 }
 
@@ -221,14 +221,14 @@ export function observeForReplyClick() {
   const callback = (mutations) => {
     const form = mutations[0].addedNodes[0];
     if (form.nodeName === "FORM") {
-      prepareOpenButton(form)
+      prepareOpenButton(form);
     }
   };
 
   const observer = new MutationObserver(callback);
 
-  const commentTree = document.getElementById('comment-trees-container')
-  observer.observe(commentTree, config)
+  const commentTree = document.getElementById('comment-trees-container');
+  observer.observe(commentTree, config);
 
   window.addEventListener('beforeunload', () => {
     observer.disconnect();
