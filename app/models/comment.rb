@@ -219,7 +219,7 @@ class Comment < ApplicationRecord
   end
 
   def root_exists?
-    ancestry && Comment.find_by(id: ancestry)
+    ancestry && Comment.exists?(id: ancestry)
   end
 
   def send_email_notification
