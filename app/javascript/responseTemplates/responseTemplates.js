@@ -75,7 +75,7 @@ function submitAsModerator(responseTemplateId, parentId) {
     .then((response) => response.json())
     .then((response) => {
       if (response.status === 'created') {
-        window.location = response.path;
+        window.location.pathname = response.path;
       }
     });
 }
