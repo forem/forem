@@ -55,12 +55,5 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html { "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or <a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; just click on 'Write a Post' in the sidebar of the tag page to get started!" }
     end
-
-    # TODO: [@thepracticaldev/delightful] Remove onboarding factory once welcome notifications are live.
-    factory :onboarding_broadcast do
-      title          { "Welcome Notification" }
-      type_of        { "Onboarding" }
-      processed_html { "Welcome! Introduce yourself in our <a href='/welcome'>welcome thread!</a>" }
-    end
   end
 end
