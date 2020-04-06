@@ -123,4 +123,16 @@ RSpec.describe Search::FeedContent, type: :service do
       end
     end
   end
+
+  describe "document counts" do
+    it "returns counts for each document class", elasticsearch: true do
+      article = create(:article)
+      comment = create(:comment)
+      pde = create(:podcast_episode)
+      index_documents([article, comment, pde])
+      described_class::INCLUDED_CLASS_NAMES.each do |class_name|
+        expect(described_class.public_send("#{class_name.underscore.pluralize}_document_count")).to eq(1)
+      end
+    end
+  end
 end
