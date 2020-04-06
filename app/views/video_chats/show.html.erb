@@ -1,9 +1,51 @@
-<div class="video-chat-wrapper" id="chat" data-token="<%= @token %>" data-channel="<%= params[:id] %>">
+<style>
+  .video-chat-wrapper {
+    position: relative;
+    height: 95vh;
+    background: black;
+    overflow: scroll;
+  }
+  video {
+    border-radius: 8px;
+  }
+  .individual-video video {
+    width: 96%;
+    max-width: 800px;
+    margin: 2%;
+  }
+  #local-media video {
+    width: 130px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+  }
+  .individual-video {
+    position: relative;
+  }
+  .participant-name {
+    background: black;
+    padding: 3px 8px;
+    border-radius: 3px;
+    position: absolute;
+    bottom: 4%;
+    left: 3%;
+    color: white;
+    font-size: 16px;
+  }
+  .video-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+  }
+</style>
 
+<div class="video-chat-wrapper" id="chat" data-token="<%= @token %>" data-channel="<%= params[:id] %>" data-user="<%= @username %>">
+  <div id="remote-media"></div>
+  <div id="local-media"></div>
+  <div class="video-controls">
+  <button id="mute-toggle" data-muted="false">Mute</button>
+  <button id="videohide-toggle" data-hidden="false">Hide Video</button>
 </div>
-<h1>This is an experiment</h1>
-<h3>It's only a partially implemented view.</h3>
-<h4>But this could be a more straightforward way to do video chat within /connect.</h4>
 <%# TODO Make paramsp[:id] map to a chat channel and ensure the users have permission %>
 <%# That part is pretty straightforward %>
 <%# Then close the loop on the JavaScript part of it. %>
