@@ -150,7 +150,7 @@ a.header-link {
     align-items: center;
     font-size: 0.8em;
     position: absolute;
-    left: calc(0.2vw + 43px);
+    left: calc(0.2vw + 70px);
     bottom: 0px;
     width: initial;
     text-align: left;
@@ -201,7 +201,7 @@ a.header-link {
   }
   .editor-response-templates {
     position: absolute;
-    left: 77px;
+    left: 52px;
     bottom: 4px;
     button {
       background: none;
@@ -210,8 +210,7 @@ a.header-link {
     }
     &.in-reply {
       z-index: 6;
-      left: 79px;
-      bottom: 2px;
+      bottom: 3px;
     }
   }
 

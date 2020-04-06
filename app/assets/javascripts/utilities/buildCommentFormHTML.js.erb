@@ -37,6 +37,11 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
             <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">\
               <img alt="markdown guide" class="icon-image" src="<%= asset_path('info.svg') %>" />\
             </a>\
+            <div class="editor-response-templates in-reply">\
+              <button class="response-templates-button" title="Use a response template" type="button">\
+                <img src="<%= asset_path("response-template.svg") %>" alt="" class="icon-image">\
+              </button>\
+            </div>\
             <div class="editor-image-upload">\
               <input type="file" id="image-upload-' + randomIdNumber + '"  name="file" accept="image/*" style="display:none">\
               <button title="Upload Image" class="image-upload-button" id="image-upload-button-' + randomIdNumber + '" onclick="handleImageUpload(event,'+ randomIdNumber + ')">\
@@ -45,11 +50,6 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
               <label  class="image-upload-file-label" id="image-upload-file-label-' + randomIdNumber + '"></label>\
               <input type="submit" id="image-upload-submit-' + randomIdNumber + '" value="Upload" style="display:none">\
               <input class="uploaded-image" id="uploaded-image-' + randomIdNumber + '" />\
-            </div>\
-            <div class="editor-response-templates in-reply">\
-              <button class="response-templates-button" title="Use a response template" type="button">\
-                <img src="<%= asset_path("response-template.svg") %>" alt="" class="icon-image">\
-              </button>\
             </div>\
             <div class="actions reply-actions">\
               <a href="#" class="cancel" onclick="cancel(event,this)">CANCEL</a>\
