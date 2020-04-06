@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Stories::FeedsIndex", type: :request do
+RSpec.describe "Stories::Feeds", type: :request do
   let(:title) { "My post" }
   let(:user) { create(:user, name: "Josh") }
   let(:organization) { create(:organization, name: "JoshCo") }
@@ -11,7 +11,7 @@ RSpec.describe "Stories::FeedsIndex", type: :request do
     article
   end
 
-  describe "GET feeds index" do
+  describe "GET feeds show" do
     let(:response_json) { JSON.parse(response.body) }
     let(:response_article) { response_json.first }
 
@@ -19,13 +19,15 @@ RSpec.describe "Stories::FeedsIndex", type: :request do
       get "/stories/feed", headers: headers
 
       expect(response.content_type).to eq("application/json")
-      expect(response_article["id"]).to eq article.id
-      expect(response_article["title"]).to eq title
-      expect(response_article["user_id"]).to eq user.id
-      expect(response_article["user"]["name"]).to eq user.name
-      expect(response_article["organization_id"]).to eq organization.id
-      expect(response_article["organization"]["name"]).to eq organization.name
-      expect(response_article["tag_list"]).to eq article.decorate.cached_tag_list_array
+      expect(response_article).to include(
+        "id" => article.id,
+        "title" => title,
+        "user_id" => user.id,
+        "user" => hash_including("name" => user.name),
+        "organization_id" => organization.id,
+        "organization" => hash_including("name" => organization.name),
+        "tag_list" => article.decorate.cached_tag_list_array,
+      )
     end
 
     context "when rendering an article with an image" do
