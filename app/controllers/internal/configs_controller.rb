@@ -13,7 +13,11 @@ class Internal::ConfigsController < Internal::ApplicationController
   def create
     clean_up_params
     config_params.keys.each do |key|
-      SiteConfig.public_send("#{key}=", config_params[key].strip) unless config_params[key].nil?
+      if key == "social_media_handles"
+        SiteConfig.public_send("#{key}=", config_params[key].to_h) unless config_params[key].empty?
+      else
+        SiteConfig.public_send("#{key}=", config_params[key].strip) unless config_params[key].nil?
+      end
     end
     bust_relevant_caches
     redirect_to internal_config_path, notice: "Site configuration was successfully updated."
@@ -23,7 +27,7 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def config_params
     allowed_params = %i[
-      default_site_email social_networks_handle mascot_user_id
+      default_site_email mascot_user_id
       campaign_hero_html_variant_name campaign_sidebar_enabled campaign_featured_tags
       campaign_sidebar_image
       main_social_image favicon_url logo_svg logo_png primary_sticker_image_url
@@ -35,7 +39,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       rate_limit_comment_creation rate_limit_published_article_creation
       rate_limit_image_upload rate_limit_email_recipient sidebar_tags
     ]
-    params.require(:site_config).permit(allowed_params)
+    params.require(:site_config).permit(allowed_params, :social_media_handles => SOCIAL_MEDIA_HANDLES)
   end
 
   def extra_authorization_and_confirmation
