@@ -9,7 +9,7 @@ class ResponseTemplatesController < ApplicationController
   def index
     raise ArgumentError, "Missing param type_of" if params[:type_of].blank?
 
-    user_id = params[:type_of].include?("personal") ? current_user.id : nil
+    user_id = params[:type_of] == "personal_comment" ? current_user.id : nil
     @response_templates = ResponseTemplate.where(type_of: params[:type_of], user_id: user_id)
 
     if MOD_TYPES.include?(params[:type_of])
