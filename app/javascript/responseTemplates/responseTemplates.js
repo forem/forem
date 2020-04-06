@@ -1,14 +1,19 @@
 /* eslint-disable no-alert */
 /* eslint-disable no-restricted-globals */
 
-export function toggleTemplateTypeButton(form, e) {
-  const { targetType } = e.target.dataset
+function toggleTemplateTypeButton(form, e) {
+  const { targetType } = e.target.dataset;
   const activeType = targetType === 'personal' ? 'moderator' : 'personal';
   e.target.classList.toggle('active');
-  form.querySelector(`.${activeType}-template-button`).classList.toggle('active');
-
-  form.querySelector(`.${targetType}-responses-container`).classList.toggle('hidden');
-  form.querySelector(`.${activeType}-responses-container`).classList.toggle('hidden');
+  form
+    .querySelector(`.${activeType}-template-button`)
+    .classList.toggle('active');
+  form
+    .querySelector(`.${targetType}-responses-container`)
+    .classList.toggle('hidden');
+  form
+    .querySelector(`.${activeType}-responses-container`)
+    .classList.toggle('hidden');
 }
 
 function buildHTML(response, typeOf) {
@@ -34,8 +39,9 @@ function buildHTML(response, typeOf) {
       .join('');
   }
   if (typeOf === 'mod_comment') {
-    return response.map((obj) => {
-      return `
+    return response
+      .map((obj) => {
+        return `
             <div class="mod-response-wrapper">
               <span>${obj.title}</span>
               <p>${obj.content}</p>
@@ -43,8 +49,8 @@ function buildHTML(response, typeOf) {
               <button class="moderator-submit-button" type="submit" data-response-template-id="${obj.id}">SEND AS MOD</button>
             </div>
           `;
-    })
-    .join('');
+      })
+      .join('');
   }
   return `Error 😞`;
 }
@@ -81,10 +87,13 @@ function submitAsModerator(responseTemplateId, parentId) {
 }
 
 function addClickListeners(form) {
-  const responsesContainer = form.querySelector('.response-templates-container');
-  const parentCommentId = form.id !== 'new_comment'
-    ? form.querySelector('input#comment_parent_id').value
-    : null;
+  const responsesContainer = form.querySelector(
+    '.response-templates-container',
+  );
+  const parentCommentId =
+    form.id !== 'new_comment'
+      ? form.querySelector('input#comment_parent_id').value
+      : null;
   const insertButtons = Array.from(
     responsesContainer.getElementsByClassName('insert-template-button'),
   );
@@ -155,28 +164,35 @@ function fetchResponseTemplates(typeOf, formId) {
 }
 
 function prepareHeaderButtons(form) {
-  const personalTemplateButton = form.querySelector('.personal-template-button');
+  const personalTemplateButton = form.querySelector(
+    '.personal-template-button',
+  );
   const modTemplateButton = form.querySelector('.moderator-template-button');
 
   personalTemplateButton.addEventListener('click', (e) => {
-    toggleTemplateTypeButton(form, e)
+    toggleTemplateTypeButton(form, e);
   });
   modTemplateButton.addEventListener('click', (e) => {
-    toggleTemplateTypeButton(form, e)
+    toggleTemplateTypeButton(form, e);
   });
   modTemplateButton.classList.remove('hidden');
 
-  modTemplateButton.addEventListener('click', () => {
-    const topLevelData = document.getElementById('response-templates-data');
-    const modDataNotFetched = topLevelData.innerHTML !== ''
-      ? topLevelData.querySelector('.moderator-responses-container')
-          .childElementCount === 0
-      : false;
-    if (modDataNotFetched) {
-      form.querySelector('img.loading-img').classList.toggle('hidden');
-      fetchResponseTemplates('mod_comment', form.id);
-    }
-    }, { once: true });
+  modTemplateButton.addEventListener(
+    'click',
+    () => {
+      const topLevelData = document.getElementById('response-templates-data');
+      const modDataNotFetched =
+        topLevelData.innerHTML !== ''
+          ? topLevelData.querySelector('.moderator-responses-container')
+              .childElementCount === 0
+          : false;
+      if (modDataNotFetched) {
+        form.querySelector('img.loading-img').classList.toggle('hidden');
+        fetchResponseTemplates('mod_comment', form.id);
+      }
+    },
+    { once: true },
+  );
 }
 
 function copyData(responsesContainer) {
@@ -186,8 +202,11 @@ function copyData(responsesContainer) {
 }
 
 function openButtonCallback(form) {
-  const responsesContainer = form.querySelector('.response-templates-container');
-  const dataFetched = document.getElementById('response-templates-data').innerHTML !== '';
+  const responsesContainer = form.querySelector(
+    '.response-templates-container',
+  );
+  const dataFetched =
+    document.getElementById('response-templates-data').innerHTML !== '';
 
   responsesContainer.classList.toggle('hidden');
 
@@ -204,10 +223,10 @@ function openButtonCallback(form) {
   }
 }
 
-export function prepareOpenButton(form) {
+function prepareOpenButton(form) {
   const button = form.querySelector('.response-templates-button');
   if (!button) {
-    return
+    return;
   }
 
   button.addEventListener('click', () => {
@@ -215,12 +234,12 @@ export function prepareOpenButton(form) {
   });
 }
 
-export function observeForReplyClick() {
+function observeForReplyClick() {
   const config = { childList: true, subtree: true };
 
   const callback = (mutations) => {
     const form = mutations[0].addedNodes[0];
-    if (form.nodeName === "FORM") {
+    if (form.nodeName === 'FORM') {
       prepareOpenButton(form);
     }
   };
@@ -239,7 +258,7 @@ export function observeForReplyClick() {
   });
 }
 
-export function handleLoggedOut() {
+function handleLoggedOut() {
   const toggleButton = document.querySelector('.response-templates-button');
   // global method from app/assets/javascripts/utilities/showModal.js
   /* eslint-disable-next-line no-undef */
@@ -247,3 +266,17 @@ export function handleLoggedOut() {
 }
 /* eslint-enable no-alert */
 /* eslint-enable no-restricted-globals */
+
+export function loadResponseTemplates() {
+  const { userStatus } = document.body.dataset;
+  const form = document.getElementById('new_comment');
+
+  if (userStatus === 'logged-out') {
+    handleLoggedOut();
+  } else {
+    if (form) {
+      prepareOpenButton(form);
+    }
+    observeForReplyClick();
+  }
+}
