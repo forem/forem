@@ -19,7 +19,7 @@
       "@id": "https://dev.to/<%= @user.username %>"
     },
     "url": "<%= user_url(@user) %>",
-    "image": <%= ProfileImage.new(@user).get(width: 320) %>
+    "image": "<%= ProfileImage.new(@user).get(width: 320) %>",
     "name": "<%= sanitize @user.name %>",
     "description": "<%= sanitize(@user.summary.presence || "404 bio not found") %>"
   }

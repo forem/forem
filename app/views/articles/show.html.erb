@@ -59,7 +59,7 @@
       "@type": "Person",
       "url": "<%= user_url(@user) %>",
       "name": "<%= @user.name %>",
-      <% if @organization %>
+      <% if @organization.present? %>
         "organization": {
           "@context": "http://schema.org",
           "@type": "Organization",
@@ -70,11 +70,12 @@
             "@type": "ImageObject",
             "url": "<%= ProfileImage.new(@organization).get(width: 50) %>",
             "width": "50"
-          }
-        }
+          },
+        },
       <% end %>
     },
-    "datePublished": "<%= @article.published_timestamp %>"
+    "datePublished": "<%= @article.published_timestamp %>",
+    "dateModified": "<%= @article.edited_at&.utc&.iso8601 %>"
   }
 </script>
 

@@ -1,14 +1,12 @@
 <div class="video-player-header">
-  <% if meta_tags %>
-    <meta content="<%= article.published_at %>" />
-    <meta content="<%= article.title %>" />
-    <meta content="<%= article.description %>" />
-    <meta content="<%= cloudinary(article.video_thumbnail_url, 880) %>" />
-    <meta content="<%= article.video_source_url %>" />
-    <% minutes, seconds = article.video_duration_in_minutes.split(":") %>
-    <meta content="<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>" />
-    <div id="video-player-source" data-source="<%= article.video_source_url %>"></div>
-  <% end %>
+  <%= article.published_at %>
+  <%= article.title %>
+  <%= article.description %>
+  <%= cloudinary(article.video_thumbnail_url, 880) %>
+  <%= article.video_source_url %>
+  <% minutes, seconds = article.video_duration_in_minutes.split(":") %>
+  <%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>
+  <div id="video-player-source" data-source="<%= article.video_source_url %>"></div>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async></script>
   <div id="video-player-<%= article.id %>" class="video-player"></div>
 
@@ -17,7 +15,7 @@
       "@context": "https://schema.org",
       "@type": "VideoObject",
       "url": "<%= article.video_source_url %>",
-      "datePublished": "<%= article.published_at&.rfc3339 %>",
+      "uploadDate": "<%= article.published_at&.rfc3339 %>",
       "name": "<%= article.title %>",
       "description": "<%= article.description %>",
       "thumbnailUrl": "<%= cloudinary(article.video_thumbnail_url, 880) %>",

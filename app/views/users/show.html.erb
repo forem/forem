@@ -34,7 +34,7 @@
       "@id": "https://dev.to/<%= @user.username %>"
     },
     "url": "<%= user_url(@user) %>",
-    "image": <%= ProfileImage.new(@user).get(width: 320) %>,
+    "image": "<%= ProfileImage.new(@user).get(width: 320) %>",
     "name": "<%= @user.name %>",
     "description": [
       {
@@ -69,7 +69,7 @@
       }
     ],
     <% if @user.education.present? %>
-      "alumniOf": "name": "<%= @user.education %>"
+      "alumniOf": "<%= @user.education %>"
     <% end %>
     "sameAs": [
       <% if @user.twitter_username? %>
