@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Internal::ModeratorsQuery, type: :query do
+RSpec.describe Internal::ModeratorsQuery, type: :query, elasticsearch: true do
   subject { described_class.call(options: options) }
 
   let_it_be_readonly(:user)  { create(:user, :trusted, name: "Greg") }
@@ -9,6 +9,10 @@ RSpec.describe Internal::ModeratorsQuery, type: :query do
   let_it_be_readonly(:user4) { create(:user, :admin, name: "Susi", comments_count: 10) }
   let_it_be_readonly(:user5) { create(:user, :trusted, :admin, name: "Beth") }
   let_it_be_readonly(:user6) { create(:user, :admin, name: "Jean", comments_count: 5) }
+
+  before do
+    index_documents([user, user2, user3, user4, user5, user6])
+  end
 
   describe ".call" do
     context "when no arguments are given" do

@@ -4,34 +4,21 @@ module Internal
       state: :trusted
     }.with_indifferent_access.freeze
 
-    def self.call(relation: User.all, options: {})
+    def self.call(options: {})
       options = DEFAULT_OPTIONS.merge(options)
       state, search = options.values_at(:state, :search)
 
-      relation = if state.to_s == "potential"
-                   relation.where(
-                     "id NOT IN (SELECT user_id FROM users_roles WHERE role_id = ?)",
-                     role_id_for(:trusted),
-                   ).order("users.comments_count DESC")
-                 else
-                   relation.joins(:users_roles).
-                     where(users_roles: { role_id: role_id_for(state) })
-                 end
+      formatted_params = if state.to_s == "potential"
+                           { exclude_roles: ["trusted"], sort_by: "comments_count", sort_direction: "desc" }
+                         else
+                           { roles: [state] }
+                         end
 
-      relation = search_relation(relation, search) if search.presence
+      formatted_params = formatted_params.merge(name_fields: search) if search.presence
+      results = Search::User.search_documents(params: formatted_params.merge(options.slice(:page, :per_page)))
+      user_ids = results.map { |doc| doc["id"] }
 
-      relation
-    end
-
-    def self.role_id_for(role)
-      Role.find_by!(name: role).id
-    end
-
-    def self.search_relation(relation, search)
-      relation.where(
-        "users.username ILIKE :search OR users.name ILIKE :search",
-        search: "%#{search}%",
-      )
+      Kaminari.paginate_array(User.find(user_ids), total_count: results.first&.dig("total"))
     end
   end
 end

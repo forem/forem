@@ -1,9 +1,13 @@
 require "rails_helper"
 
-RSpec.describe "/internal/mods", type: :request do
+RSpec.describe "/internal/mods", type: :request, elasticsearch: true do
   let!(:admin) { create(:user, :admin) }
   let!(:regular_user) { create(:user) }
   let!(:moderator) { create(:user, :trusted) }
+
+  before do
+    index_documents([admin, regular_user, moderator], Search::User)
+  end
 
   describe "GET /internal/mods" do
     before do

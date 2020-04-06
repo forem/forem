@@ -1,19 +1,10 @@
 class Internal::ModsController < Internal::ApplicationController
   layout "internal"
 
-  INDEX_ATTRIBUTES = %i[
-    id
-    username
-    comments_count
-    badge_achievements_count
-    last_comment_at
-  ].freeze
+  DEFAULT_PER_PAGE = 50
 
   def index
-    @mods = Internal::ModeratorsQuery.call(
-      relation: User.select(INDEX_ATTRIBUTES),
-      options: permitted_params,
-    ).page(params[:page]).per(50)
+    @mods = Internal::ModeratorsQuery.call(options: permitted_params).page(params[:page]).per(DEFAULT_PER_PAGE)
   end
 
   def update
@@ -28,6 +19,6 @@ class Internal::ModsController < Internal::ApplicationController
   private
 
   def permitted_params
-    params.permit(:state, :search, :page)
+    params.permit(:state, :search, :page).merge(per_page: DEFAULT_PER_PAGE)
   end
 end

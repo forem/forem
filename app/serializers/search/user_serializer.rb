@@ -4,9 +4,11 @@ module Search
 
     attributes :id,
                :available_for,
+               :badge_achievements_count,
                :comments_count,
                :employer_name,
                :hotness_score,
+               :last_comment_at,
                :mostly_work_with,
                :name,
                :path,

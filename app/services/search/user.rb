@@ -8,12 +8,15 @@ module Search
 
     class << self
       def search_documents(params:)
+        params = params.deep_symbolize_keys
+
         set_query_size(params)
         query_hash = Search::QueryBuilders::User.new(params).as_hash
 
         results = search(body: query_hash)
+        total = results.dig("hits", "total", "value")
         hits = results.dig("hits", "hits").map do |user_doc|
-          prepare_doc(user_doc.dig("_source"))
+          prepare_doc(user_doc.dig("_source").merge(total: total))
         end
         paginate_hits(hits, params)
       end
@@ -31,7 +34,12 @@ module Search
           "path" => hit["path"],
           "id" => hit["id"],
           "class_name" => "User",
-          "positive_reactions_count" => hit["positive_reactions_count"]
+          "positive_reactions_count" => hit["positive_reactions_count"],
+          "comments_count" => hit["comments_count"],
+          "badge_achievements_count" => hit["badge_achievements_count"],
+          "last_comment_at" => hit["last_comment_at"],
+          "roles" => hit["roles"],
+          "total" => hit["total"]
         }
       end
 
