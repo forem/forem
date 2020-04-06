@@ -185,7 +185,11 @@ class Comment < ApplicationRecord
   end
 
   def expire_root_fragment
-    root.touch
+    if root_exists?
+      root.touch
+    else
+      touch
+    end
   end
 
   def create_first_reaction
@@ -212,6 +216,10 @@ class Comment < ApplicationRecord
     user.touch(:last_comment_at)
     CacheBuster.bust(commentable.path.to_s) if commentable
     expire_root_fragment
+  end
+
+  def root_exists?
+    ancestry && Comment.exists?(id: ancestry)
   end
 
   def send_email_notification
