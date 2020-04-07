@@ -59,4 +59,20 @@ module URL
   def self.user(user)
     url(user.username)
   end
+
+  # Ensures we don't consider serviceworker.js as referer
+  #
+  # @param referer [String] the unsanitized referer
+  # @example A safe referer
+  #  sanitized_referer("/some/path") #=> "/some/path"
+  # @example serviceworker.js as referer
+  #  sanitized_referer("serviceworker.js") #=> nil
+  # @example An empty string
+  #  sanitized_referer("") #=> nil
+  def self.sanitized_referer(referer)
+    return if referer.blank?
+    return if URI(referer).path == "/serviceworker.js"
+
+    referer
+  end
 end
