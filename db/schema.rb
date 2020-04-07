@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_31_155903) do
+ActiveRecord::Schema.define(version: 2020_04_07_090218) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1050,7 +1050,6 @@ ActiveRecord::Schema.define(version: 2020_03_31_155903) do
     t.datetime "last_fetched_at"
     t.text "media_serialized", default: "--- []\n"
     t.string "mentioned_usernames_serialized", default: "--- []\n"
-    t.string "primary_external_url"
     t.string "profile_image"
     t.string "quoted_tweet_id_code"
     t.integer "retweet_count"
