@@ -1,7 +1,11 @@
 class VideoChatsController < ApplicationController
   before_action :authenticate_user!
+  after_action :verify_authorized
 
   def show
+    @chat_channel = ChatChannel.find(params[:id]) || not_found
+    authorize @chat_channel
+
     account_sid = ApplicationConfig["TWILIO_ACCOUNT_SID"]
     api_key = ApplicationConfig["TWILIO_VIDEO_API_KEY"]
     api_secret = ApplicationConfig["TWILIO_VIDEO_API_SECRET"]
