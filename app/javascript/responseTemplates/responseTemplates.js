@@ -85,9 +85,11 @@ function submitAsModerator(responseTemplateId, parentId) {
       if (response.status === 'created') {
         window.location.pathname = response.path;
       } else if (response.status === 'comment already exists') {
-        alert('This comment already exists.')
+        alert('This comment already exists.');
       } else if (response.error === 'error') {
-        alert(`There was a problem submitting this comment: ${response.status}`)
+        alert(
+          `There was a problem submitting this comment: ${response.status}`,
+        );
       }
     });
 }
@@ -99,7 +101,7 @@ It will be sent immediately and users will be notified.
 
 Make sure this is the appropriate comment for the situation.
 
-This action is not reversible.`
+This action is not reversible.`;
 
 function addClickListeners(form) {
   const responsesContainer = form.querySelector(
@@ -280,7 +282,8 @@ export function loadResponseTemplates() {
 
   if (userStatus === 'logged-out') {
     handleLoggedOut();
-  } else {
+  }
+  if (document.getElementById('response-templates-data')) {
     if (form) {
       prepareOpenButton(form);
     }

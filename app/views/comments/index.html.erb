@@ -71,7 +71,7 @@
      data-commentable-id="<%= @commentable.id %>"
      data-commentable-type="<%= @commentable.class.name %>">
   <% if @root_comment %>
-    <div id="response-templates-data" style="display: none;"></div>
+    <div id="response-templates-data"></div>
     <%= javascript_packs_with_chunks_tag "responseTemplates", defer: true %>
     <div class="top-level-actions">
       <h3>re: <%= @commentable.title %> <a href="<%= @commentable.path %>">VIEW POST</a></h3>
