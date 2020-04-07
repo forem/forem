@@ -1,11 +1,12 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-export const RadioButton = ({ id, value, className, checked }) => {
+export const RadioButton = ({ id, value, name, className, checked }) => {
   return (
     <input
       id={id}
       value={value}
+      name={name}
       className={`crayons-radio${
         className && className.length > 0 ? ` ${className}` : ''
       }`}
@@ -21,6 +22,7 @@ RadioButton.defaultProps = {
   id: undefined,
   className: undefined,
   checked: false,
+  name: undefined,
 };
 
 RadioButton.propTypes = {
@@ -28,4 +30,5 @@ RadioButton.propTypes = {
   value: PropTypes.string.isRequired,
   className: PropTypes.string,
   checked: PropTypes.bool,
+  name: PropTypes.string,
 };
