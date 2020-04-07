@@ -1,4 +1,4 @@
-# Copied from the deprecate fastly-rails gem
+# Copied from the deprecated fastly-rails gem
 # https://github.com/fastly/fastly-rails/blob/master/lib/fastly-rails/active_record/surrogate_key.rb
 #
 # This concern handles purge and purge_all calls to purge the edge cache (Fastly)
