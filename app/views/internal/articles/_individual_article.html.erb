@@ -209,7 +209,7 @@
                    end %>
               </textarea>
         </div>
-        <button class="btn btn-primary mb-2">🦅 Tweet to @<%= SiteConfig.social_networks_handle %></button>
+        <button class="btn btn-primary mb-2">🦅 Tweet to @<%= SiteConfig.social_media_handles["twitter"] %></button>
         <% end %>
 
         <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
