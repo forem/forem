@@ -17,6 +17,16 @@ class GitlabApi
     get(path)
   end
 
+  def issue(issue_id)
+    path = "/projects/#{escaped_project}/issues/#{issue_id}"
+    get(path)
+  end
+
+  def merge_request(merge_request_id)
+    path = "/projects/#{escaped_project}/merge_requests/#{merge_request_id}"
+    get(path)
+  end
+
   def repository_file(file_path, ref)
     file_path = escape(file_path)
     path = "/projects/#{escaped_project}/repository/files/#{file_path}?ref=#{ref}"
@@ -24,7 +34,7 @@ class GitlabApi
   end
 
   def markdown(text)
-    path = "https://gitlab.com/api/v4/markdown"
+    path = "/markdown"
     body = {
       text: text,
       project: project_name

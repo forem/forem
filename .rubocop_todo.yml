@@ -57,6 +57,7 @@ Rails/OutputSafety:
     - 'app/helpers/comments_helper.rb'
     - 'app/labor/markdown_parser.rb'
     - 'app/liquid_tags/github_tag/github_issue_tag.rb'
+    - 'app/liquid_tags/gitlab_tag/gitlab_issue_tag.rb'
     - 'app/liquid_tags/liquid_tag_base.rb'
     - 'app/models/comment.rb'
     - 'app/models/display_ad.rb'

@@ -1,5 +1,5 @@
 @import 'variables';
-.ltag_github-liquid-tag {
+.ltag_gitlab-liquid-tag {
   margin: 1.1em auto 1.3em;
   max-width: 580px;
   h1 {
@@ -14,7 +14,14 @@
       color: $black;
       color: var(--theme-color, $black);
     }
-
+    .issue-title {
+      font-weight: normal;
+    }
+    .issue-number {
+      font-weight: 300;
+      color: #a3aab1;
+      letter-spacing: -1px;
+    }
     img.gitlab-logo {
       width: 1.15em !important;
       max-width: 1.1em !important;
@@ -27,6 +34,95 @@
       left: 0 !important;
       filter: invert(0);
       filter: var(--theme-social-icon-invert, invert(0));
+    }
+  }
+}
+
+.gitlab-thread {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  background-color: #fff;
+  background-color: var(--theme-container-background, #fff);
+  border: 1px solid #d1d5da;
+  box-shadow: $shadow;
+  border-radius: 3px;
+  font-size: 0.77em;
+  line-height: 1.15em;
+  margin: 0;
+  width: 98%;
+  overflow: hidden;
+  .arrow-left-outer {
+    display: none;
+    @media screen and (min-width: 500px) {
+      display: block;
+      width: 0;
+      height: 0;
+      border-width: 8px;
+      border-color: transparent;
+      border-style: solid solid outset;
+      border-right-color: #d1d5da;
+      content: ' ';
+      float: left;
+      margin-left: -31px;
+      margin-top: 13px;
+    }
+  }
+
+  .arrow-left-inner {
+    display: none;
+    @media screen and (min-width: 500px) {
+      display: block;
+      width: 0;
+      height: 0;
+      border-width: 8px;
+      border-color: transparent;
+      border-style: solid solid outset;
+      border-right-color: #f6f8fa;
+      content: ' ';
+      float: left;
+      margin-left: -30px;
+      margin-top: 13px;
+    }
+  }
+
+  .timeline-comment-header {
+    display: flex;
+    background: #f6f8fa;
+    background: var(--theme-container-background, #f6f8fa);
+    border-bottom: 1px solid #d1d5da;
+    padding: 0px 15px;
+
+    @media screen and (min-width: 500px) {
+      display: block;
+    }
+
+    img.gitlab-liquid-tag-img {
+      min-height: inherit;
+      width: 44px;
+      height: 44px;
+      border-radius: 3px;
+      float: none;
+      padding: 10px 0 10px 12px;
+      margin: inherit;
+
+      @media screen and (min-width: 500px) {
+        float: left;
+        padding: 0;
+        margin-left: -75px;
+      }
+    }
+  }
+
+  .timeline-comment-header-text {
+    padding: 10px 0px;
+
+    a {
+      color: rgb(88, 96, 105);
+    }
+
+    a:hover {
+      color: rgb(88, 96, 105);
+      text-decoration: underline;
     }
   }
 }

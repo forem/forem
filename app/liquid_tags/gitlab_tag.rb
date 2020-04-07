@@ -17,10 +17,9 @@ class GitlabTag < LiquidTagBase
 
   def pre_render
     if issue_or_readme == "issue"
-      raise NotImplementedError
+      GitlabTag::GitlabIssueTag.new(@link).render
     elsif issue_or_readme == "readme"
-      gt = GitlabTag::GitlabReadmeTag.new(@link)
-      gt.render
+      GitlabTag::GitlabReadmeTag.new(@link).render
     end
   rescue StandardError => e
     raise StandardError, e.message

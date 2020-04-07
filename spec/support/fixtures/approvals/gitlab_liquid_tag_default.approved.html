@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body>
+    <div class="ltag_gitlab-liquid-tag">
+  <h1>
+    <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/1">
+      <img class="gitlab-logo" alt="GitLab logo" src="/assets/gitlab-6ee1e69f4a0b9eff5f4479e4f095cf3bfab0fae7894c3a29f0d94c8439a67475.svg" /><span class="issue-title">
+        500 error on MR approvers edit page
+      </span>
+      <span class="issue-number">#382515</span>
+    </a>
+  </h1>
+  <div class="gitlab-thread">
+    <div class="timeline-comment-header">
+      <a href="https://gitlab.com/jacobvosmaer">
+        <img class="gitlab-liquid-tag-img" src="https://secure.gravatar.com/avatar/e66d11c0eedf8c07b3b18fca46599807?s=80&amp;d=identicon" alt="jacobvosmaer avatar" /></a>
+      <span class="arrow-left-outer"></span>
+      <span class="arrow-left-inner"></span>
+      <div class="timeline-comment-header-text">
+        <strong>
+          <a href="https://gitlab.com/jacobvosmaer">jacobvosmaer</a>
+        </strong> commented on <a href="https://gitlab.com/gitlab-org/gitlab/-/issues/1">Jul 30, 2015</a><span class="timestamp"></span>
+      </div>
+    </div>
+    <div class="ltag-gitlab-body">
+      <p data-sourcepos="1:1-1:23">Observed on gitlab.com.</p>
+<pre data-sourcepos="3:1-15:3"><code>worker2 production.log: Completed 500 Internal Server Error in 287ms (ActiveRecord: 11.7ms)
+worker2 production.log: 
+worker2 production.log: ActionView::Template::Error (undefined method `name' for nil:NilClass):
+worker2 production.log:     54:         %ul.well-list
+worker2 production.log:     55:           - @project.approvers.each do |approver|
+worker2 production.log:     56:             %li
+worker2 production.log:     57:               = link_to approver.user.name, approver.user
+worker2 production.log:     58:               .pull-right
+worker2 production.log:     59:                 = link_to namespace_project_approver_path(@project.namespace, @project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+worker2 production.log:     60:                   = icon("sign-out")
+worker2 production.log:   app/views/projects/_merge_request_settings.html.haml:57:in `block in _app_views_projects__merge_request_settings_html_haml___545752523034962009_57962180'
+</code></pre>
+<p data-sourcepos="17:1-17:105">I checked the Rails console, this project has a number of approvers but the user ID of the last one is 0.</p>
+<p data-sourcepos="19:1-19:19">cc @sytses @vsizov</p>
+    </div>
+    <div class="gh-btn-container"><a class="gh-btn" href="https://gitlab.com/gitlab-org/gitlab/-/issues/1">View on GitLab</a></div>
+  </div>
+</div>
+  </body>
+</html>
