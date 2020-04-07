@@ -770,6 +770,7 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.text "body"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
+    t.integer "duration_in_seconds"
     t.string "guid", null: false
     t.boolean "https", default: true
     t.string "image"

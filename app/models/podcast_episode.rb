@@ -1,4 +1,8 @@
 class PodcastEpisode < ApplicationRecord
+  self.ignored_columns = %w[
+    duration_in_seconds
+  ]
+
   include AlgoliaSearch
   include Searchable
 
