@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_05_103927) do
+ActiveRecord::Schema.define(version: 2020_04_07_083405) do
+
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -857,7 +858,6 @@ ActiveRecord::Schema.define(version: 2020_04_05_103927) do
   end
 
   create_table "polls", force: :cascade do |t|
-    t.boolean "allow_multiple_selections", default: false
     t.bigint "article_id"
     t.datetime "created_at", null: false
     t.integer "poll_options_count", default: 0, null: false

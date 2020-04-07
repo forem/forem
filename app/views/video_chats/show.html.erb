@@ -1,0 +1,81 @@
+<style>
+  .video-chat-wrapper {
+    position: relative;
+    height: 100vh;
+    background: black;
+    overflow: scroll;
+  }
+  video {
+    border-radius: 8px;
+  }
+  .individual-video video {
+    width: 96%;
+    max-width: 800px;
+    margin: 2%;
+    display: inline-block;
+    background: grey;
+  }
+
+  .video-chat-wrapper-num-two-per .individual-video {
+    width: 50%;
+  }
+  .video-chat-wrapper-num-three-per .individual-video {
+    width: 33%;
+  }
+  .video-chat-wrapper-num-four-per .individual-video {
+    width: 25%;
+  }
+
+  
+  #local-media video {
+    width: 130px;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    z-index: 5;
+  }
+  .individual-video {
+    position: relative;
+    display: inline-block;
+  }
+  .participant-name {
+    background: black;
+    padding: 3px 8px;
+    border-radius: 3px;
+    position: absolute;
+    bottom: 4%;
+    left: 3%;
+    color: white;
+    font-size: 16px;
+  }
+  .video-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+  }
+  .video-controls button {
+    font-size: 16px;
+    color: white;
+    background: black;
+    border: 2px solid grey;
+    border-radius: 100px;
+  }
+  .video-controls button.active {
+    background: red;
+  }
+</style>
+
+<div class="video-chat-wrapper" id="videochat" data-token="<%= @token %>" data-channel="<%= params[:id] %>" data-user="<%= @username %>">
+  <div id="remote-media"></div>
+  <div id="local-media"></div>
+  <div class="video-controls">
+  <button id="mute-toggle" data-muted="false">Mute</button>
+  <button id="videohide-toggle" data-hidden="false">Hide Video</button>
+</div>
+<%# TODO Make paramsp[:id] map to a chat channel and ensure the users have permission %>
+<%# That part is pretty straightforward %>
+<%# Then close the loop on the JavaScript part of it. %>
+<%# Also should be *fairly* straightforward in terms of following a basic tutorial. %>
+<%# Then we drop a link in chat rather than trying to make video work with complicated state in chat. %>
+<%# The complicated part has always been chat state/channels etc. Doing in sidecar means more containerization of logic. %>
+<%= javascript_packs_with_chunks_tag "videoChat", defer: true %>

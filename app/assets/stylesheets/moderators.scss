@@ -5,7 +5,7 @@
   margin: 0 auto;
   padding: 90px 5px;
   text-align: center;
-  background: #d4fffe;
+  background: var(--body-bg);
   h1 {
     font-size: calc(1.8em + 2vw);
   }
@@ -20,7 +20,7 @@
     margin: 10px;
     width: 90%;
     font-weight: bold;
-    border: 3px solid $black;
+    border: 3px solid var(--body-color);
     padding: 20px 0px;
     .mod-index-hero-data-pod-number {
       font-size: 2.8em;
@@ -61,7 +61,7 @@
       border-radius: 100px;
       border: 1px solid transparent;
       &.mod-index-top-filter-link--active {
-        @include themeable(border, theme-border, 1px solid $black);
+        border: 1px solid var(--body-color);
       }
     }
   }
@@ -93,15 +93,12 @@
       theme-border,
       1px solid $light-medium-gray
     );
-    &:hover {
-      background: $lightest-gray;
-    }
     a.mod-index-article-title {
       font-size: calc(1.2em + 0.3vw);
       font-weight: bold;
       margin-right: 6px;
       display: inline-block;
-      color: $black;
+      color: var(--body-color);
     }
     .mod-index-article-tagslist {
       display: inline-block;
