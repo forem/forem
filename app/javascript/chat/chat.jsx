@@ -961,6 +961,8 @@ export default class Chat extends Component {
           user={message.username}
           profileImageUrl={message.profile_image_url}
           message={message.message}
+          timestamp={showTimestamp ? message.timestamp : null}
+          color={message.color}
           onContentTrigger={this.triggerActiveContent}
         />
       ) : (
