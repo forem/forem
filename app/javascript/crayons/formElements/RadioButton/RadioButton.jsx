@@ -1,7 +1,14 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-export const RadioButton = ({ id, value, name, className, checked }) => {
+export const RadioButton = ({
+  id,
+  value,
+  name,
+  className,
+  checked,
+  onClick,
+}) => {
   return (
     <input
       id={id}
@@ -11,6 +18,7 @@ export const RadioButton = ({ id, value, name, className, checked }) => {
         className && className.length > 0 ? ` ${className}` : ''
       }`}
       checked={checked}
+      onClick={onClick}
       type="radio"
     />
   );
@@ -31,4 +39,5 @@ RadioButton.propTypes = {
   className: PropTypes.string,
   checked: PropTypes.bool,
   name: PropTypes.string,
+  onClick: PropTypes.func.isRequired,
 };
