@@ -820,7 +820,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
   end
 
   create_table "poll_options", force: :cascade do |t|
-    t.boolean "counts_in_tabulation"
     t.datetime "created_at", null: false
     t.string "markdown"
     t.bigint "poll_id"
