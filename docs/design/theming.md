@@ -6,7 +6,7 @@ title: Theming Guidelines
 
 DEV supports different themes, such as Default, Night, Pink.
 
-You can switch the theme at <http://localhost:3000/settings/misc> in the "Style
+You can switch the theme at <http://localhost:3000/settings/ux> in the "Style
 Customization" section.
 
 These themes are powered by [CSS custom
