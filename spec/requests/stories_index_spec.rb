@@ -81,6 +81,14 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
 
+    it "sets Fastly Surrogate-Key headers" do
+      get "/"
+      expect(response.status).to eq(200)
+
+      expected_surrogate_key_headers = %w[main_app_home_page]
+      expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+    end
+
     context "with campaign hero" do
       let_it_be_readonly(:hero_html) do
         create(
@@ -181,6 +189,30 @@ RSpec.describe "StoriesIndex", type: :request do
     it "renders page with proper header" do
       get "/t/#{tag.name}"
       expect(response.body).to include(tag.name)
+    end
+
+    it "sets Fastly Cache-Control headers" do
+      get "/t/#{tag.name}"
+      expect(response.status).to eq(200)
+
+      expected_cache_control_headers = %w[public no-cache]
+      expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
+    end
+
+    it "sets Fastly Surrogate-Control headers" do
+      get "/t/#{tag.name}"
+      expect(response.status).to eq(200)
+
+      expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
+      expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
+    end
+
+    it "sets Fastly Surrogate-Key headers" do
+      get "/t/#{tag.name}"
+      expect(response.status).to eq(200)
+
+      expected_surrogate_key_headers = %W[articles-#{tag}]
+      expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
     end
 
     it "renders page with top/week etc." do

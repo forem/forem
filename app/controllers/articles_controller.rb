@@ -24,7 +24,10 @@ class ArticlesController < ApplicationController
     end
 
     set_surrogate_key_header "feed"
-    response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
+
+    set_cache_control_headers(600,
+                              stale_while_revalidate: 30,
+                              stale_if_error: 86_400)
 
     render layout: false
   end
