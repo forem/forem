@@ -125,7 +125,7 @@ class Message < ApplicationRecord
   end
 
   def handle_call(html)
-    return html if html.exclude?("<p>/call</p>")
+    return html if html.to_s.exclude?("<p>/call</p>")
 
     "<a href='/video_chats/#{chat_channel_id}'
         class='chatchannels__richlink'
