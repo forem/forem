@@ -44,6 +44,12 @@ RSpec.describe Article, type: :model do
           article.destroy
         end
       end
+
+      it "on update syncs elasticsearch data" do
+        allow(article).to receive(:sync_related_elasticsearch_docs)
+        article.save
+        expect(article).to have_received(:sync_related_elasticsearch_docs)
+      end
     end
 
     describe "#after_update_commit" do
