@@ -93,4 +93,18 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(app_url(uri)).to eq("https://dev.to/internal#test")
     end
   end
+
+  describe "#sanitized_referer" do
+    it "returns a safe referrer unmodified" do
+      expect(sanitized_referer("/some/path")).to eq("/some/path")
+    end
+
+    it "returns nil if the referer is the service worker" do
+      expect(sanitized_referer("/serviceworker.js")).to be nil
+    end
+
+    it "returns nil if the referer is empty" do
+      expect(sanitized_referer("")).to be nil
+    end
+  end
 end
