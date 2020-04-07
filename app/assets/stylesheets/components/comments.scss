@@ -1,0 +1,24 @@
+@import '../config/import';
+
+.crayons-comment {
+  margin-bottom: $su-4;
+  font-size: $fs-s;
+
+  &__meta {
+    display: flex;
+    align-items: center;
+
+    a {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &__body {
+    padding-left: $su-7;
+
+    a:hover {
+      text-decoration: underline; //todo: default for all in-content links
+    }
+  }
+}
