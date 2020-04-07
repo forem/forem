@@ -178,7 +178,6 @@ Rails.application.routes.draw do
       get "/onboarding", to: "tags#onboarding"
     end
   end
-  resources :downloads, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
   resources :github_repos, only: %i[index create update] do
