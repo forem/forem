@@ -72,13 +72,6 @@ class PagesController < ApplicationController
     end
   end
 
-  def live
-    @active_channel = ChatChannel.find_by(channel_name: "Workshop")
-    @chat_channels = [@active_channel].to_json(
-      only: %i[channel_name channel_type last_message_at slug status id],
-    )
-  end
-
   def crayons
     @page = Page.find_by(slug: "crayons")
     render :show if @page
