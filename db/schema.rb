@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_31_155903) do
+ActiveRecord::Schema.define(version: 2020_04_07_084807) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -753,8 +753,6 @@ ActiveRecord::Schema.define(version: 2020_03_31_155903) do
     t.text "body_markdown"
     t.datetime "created_at", null: false
     t.string "description"
-    t.string "group"
-    t.integer "group_order_number"
     t.boolean "is_top_level_path", default: false
     t.text "processed_html"
     t.string "slug"
