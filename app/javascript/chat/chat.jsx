@@ -602,6 +602,10 @@ export default class Chat extends Component {
         message: '/call',
         mentionedUsersId: this.getMentionedUsers(message),
       };
+      this.setActiveContent({
+        path: '/video_chats/'+activeChannelId,
+        type_of: 'article',
+      });
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     } else if (message.startsWith('/new')) {
       this.setActiveContentState(activeChannelId, {
