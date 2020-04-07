@@ -110,88 +110,90 @@ export class CommentSubscription extends Component {
             />
           )}
         </ButtonGroup>
-        <Dropdown
-          className={showOptions ? 'inline-block w-full' : null}
-          ref={(element) => {
-            this.dropdownElement = element;
-          }}
-        >
-          <div className="crayons-fields mb-5">
-            <FormField variant="radio">
-              <RadioButton
-                id="subscribe-all"
-                name="subscribe_comments"
-                value="all_comments"
-                checked={
-                  commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.ALL
-                }
-                onClick={this.commentSubscriptionClick}
-              />
-              <label htmlFor="subscribe-all" className="crayons-field__label">
-                All comments
-                <p className="crayons-field__description">
-                  You’ll receive notifications for all new comments.
-                </p>
-              </label>
-            </FormField>
-
-            <FormField variant="radio">
-              <RadioButton
-                id="subscribe-toplevel"
-                name="subscribe_comments"
-                value="top_level_comments"
-                onClick={this.commentSubscriptionClick}
-                checked={
-                  commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.TOP
-                }
-              />
-              <label
-                htmlFor="subscribe-toplevel"
-                className="crayons-field__label"
-              >
-                Top-level comments
-                <p className="crayons-field__description">
-                  You’ll receive notifications only for all new top-level
-                  comments.
-                </p>
-              </label>
-            </FormField>
-
-            <FormField variant="radio">
-              <RadioButton
-                id="subscribe-author"
-                name="subscribe_comments"
-                value="only_author_comments"
-                onClick={this.commentSubscriptionClick}
-                checked={
-                  commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.AUTHOR
-                }
-              />
-              <label
-                htmlFor="subscribe-author"
-                className="crayons-field__label"
-              >
-                Post author comments
-                <p className="crayons-field__description">
-                  You’ll receive notifications only if post author sends a new
-                  comment.
-                </p>
-              </label>
-            </FormField>
-          </div>
-
-          <Button
-            className="w-100"
-            onClick={(_event) => {
-              onSubscribe(commentSubscriptionType);
-              this.setState({
-                showOptions: !showOptions,
-              });
+        {subscribed && (
+          <Dropdown
+            className={showOptions ? 'inline-block w-full' : null}
+            ref={(element) => {
+              this.dropdownElement = element;
             }}
           >
-            Done
-          </Button>
-        </Dropdown>
+            <div className="crayons-fields mb-5">
+              <FormField variant="radio">
+                <RadioButton
+                  id="subscribe-all"
+                  name="subscribe_comments"
+                  value="all_comments"
+                  checked={
+                    commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.ALL
+                  }
+                  onClick={this.commentSubscriptionClick}
+                />
+                <label htmlFor="subscribe-all" className="crayons-field__label">
+                  All comments
+                  <p className="crayons-field__description">
+                    You’ll receive notifications for all new comments.
+                  </p>
+                </label>
+              </FormField>
+
+              <FormField variant="radio">
+                <RadioButton
+                  id="subscribe-toplevel"
+                  name="subscribe_comments"
+                  value="top_level_comments"
+                  onClick={this.commentSubscriptionClick}
+                  checked={
+                    commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.TOP
+                  }
+                />
+                <label
+                  htmlFor="subscribe-toplevel"
+                  className="crayons-field__label"
+                >
+                  Top-level comments
+                  <p className="crayons-field__description">
+                    You’ll receive notifications only for all new top-level
+                    comments.
+                  </p>
+                </label>
+              </FormField>
+
+              <FormField variant="radio">
+                <RadioButton
+                  id="subscribe-author"
+                  name="subscribe_comments"
+                  value="only_author_comments"
+                  onClick={this.commentSubscriptionClick}
+                  checked={
+                    commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.AUTHOR
+                  }
+                />
+                <label
+                  htmlFor="subscribe-author"
+                  className="crayons-field__label"
+                >
+                  Post author comments
+                  <p className="crayons-field__description">
+                    You’ll receive notifications only if post author sends a new
+                    comment.
+                  </p>
+                </label>
+              </FormField>
+            </div>
+
+            <Button
+              className="w-100"
+              onClick={(_event) => {
+                onSubscribe(commentSubscriptionType);
+                this.setState({
+                  showOptions: !showOptions,
+                });
+              }}
+            >
+              Done
+            </Button>
+          </Dropdown>
+        )}
       </div>
     );
   }
