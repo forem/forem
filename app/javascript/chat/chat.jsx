@@ -601,12 +601,16 @@ export default class Chat extends Component {
     if (message.startsWith('/code')) {
       this.setActiveContentState(activeChannelId, { type_of: 'code_editor' });
     } else if (message.startsWith('/call')) {
-      this.setState({ activeVideoChannelId: activeChannelId });
-      window.pusher
-        .channel(`presence-channel-${activeChannelId}`)
-        .trigger('client-initiatevideocall', {
-          channelId: activeChannelId,
-        });
+      const messageObject = {
+        activeChannelId,
+        message: '/call',
+        mentionedUsersId: this.getMentionedUsers(message),
+      };
+      this.setActiveContent({
+        path: '/video_chats/'+activeChannelId,
+        type_of: 'article',
+      });
+      sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     } else if (message.startsWith('/new')) {
       this.setActiveContentState(activeChannelId, {
         type_of: 'loading-post',
