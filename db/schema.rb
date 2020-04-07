@@ -762,16 +762,12 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.text "body"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
-    t.string "deepgram_id_code"
     t.integer "duration_in_seconds"
-    t.boolean "featured", default: true
-    t.integer "featured_number"
     t.string "guid", null: false
     t.boolean "https", default: true
     t.string "image"
     t.string "itunes_url"
     t.string "media_url", null: false
-    t.string "order_key"
     t.integer "podcast_id"
     t.text "processed_html"
     t.datetime "published_at"
