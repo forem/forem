@@ -687,13 +687,9 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
   end
 
   create_table "organizations", id: :serial, force: :cascade do |t|
-    t.string "address"
-    t.boolean "approved", default: false
     t.integer "articles_count", default: 0, null: false
     t.string "bg_color_hex"
-    t.string "city"
     t.string "company_size"
-    t.string "country"
     t.datetime "created_at", null: false
     t.integer "credits_count", default: 0, null: false
     t.text "cta_body_markdown"
@@ -703,8 +699,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.string "dark_nav_image"
     t.string "email"
     t.string "github_username"
-    t.string "jobs_email"
-    t.string "jobs_url"
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.string "location"
     t.string "name"
@@ -717,7 +711,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.string "secret"
     t.string "slug"
     t.integer "spent_credits_count", default: 0, null: false
-    t.string "state"
     t.string "story"
     t.text "summary"
     t.string "tag_line"
@@ -727,7 +720,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url"
-    t.string "zip_code"
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
 
