@@ -38,6 +38,6 @@ class Stories::FeedsController < ApplicationController
   def ab_test_user_signed_in_feed(feed)
     test_variant = field_test(:user_home_feed, participant: current_user)
     Honeycomb.add_field("field_test_user_home_feed", test_variant) # Monitoring different variants
-    feed.public_send(*VARIANTS.fetch(test_variant, "base")) # Splat operator neccessary here for "base"
+    feed.public_send(*VARIANTS[test_variant || "base"]) # Splat operator required for the array variant
   end
 end
