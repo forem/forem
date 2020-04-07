@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { withKnobs, text, boolean } from '@storybook/addon-knobs/react';
+import { action } from '@storybook/addon-actions';
 import { RadioButton } from '@crayons';
 
 export default {
@@ -8,7 +9,11 @@ export default {
 };
 
 export const Default = () => (
-  <RadioButton name="some-radio-button" checked={boolean('checked', false)} />
+  <RadioButton
+    name="some-radio-button"
+    checked={boolean('checked', false)}
+    onClick={action('clicked')}
+  />
 );
 
 Default.story = {
@@ -20,6 +25,7 @@ export const AdditionalCssClassName = () => (
     name="some-radio-button"
     checked={boolean('checked', false)}
     className={text('className', 'mr-10')}
+    onClick={action('clicked')}
   />
 );
 
