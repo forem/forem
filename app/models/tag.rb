@@ -32,7 +32,7 @@ class Tag < ActsAsTaggableOn::Tag
   before_save :mark_as_updated
 
   after_commit :bust_cache
-  after_commit :index_to_elasticsearch, on: [:update]
+  after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   include Searchable
