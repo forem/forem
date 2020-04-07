@@ -1,53 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Onboarding /> BioForm renders properly 1`] = `
-preact-render-spy (1 nodes)
--------
-<main class="onboarding-body">
-  <div class="onboarding-main">
-    <nav class="onboarding-navigation">
-      <div class="navigation-content">
-        <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          Back
-        </button>
-        <button
-          onClick={[Function bound onSubmit]}
-          class="next-button"
-          type="button"
-        >
-          Continue
-        </button>
-      </div>
-    </nav>
-    <div class="onboarding-content about">
-      <header class="onboarding-content-header">
-        <h1 class="title">Introduce yourself</h1>
-        <h2 class="subtitle">
-          Tell the community about yourself. Write a quick bio about what you do, what you're interested in, or anything else.
-        </h2>
-      </header>
-      <form>
-        <label htmlFor="summary">
-          Bio
-          <textarea
-            name="summary"
-            placeholder="Tell us about yourself"
-            onChange={[Function bound handleChange]}
-            maxLength="120"
-          >
-          </textarea>
-        </label>
-      </form>
-    </div>
-  </div>
-</main>
-
-`;
-
 exports[`<Onboarding /> CloseSlide renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
@@ -471,7 +423,7 @@ preact-render-spy (1 nodes)
 
 `;
 
-exports[`<Onboarding /> PersonalInformationForm renders properly 1`] = `
+exports[`<Onboarding /> ProfileForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
@@ -494,11 +446,25 @@ preact-render-spy (1 nodes)
         </button>
       </div>
     </nav>
-    <div class="onboarding-content">
+    <div class="onboarding-content about">
       <header class="onboarding-content-header">
-        <h1 class="title">About You</h1>
+        <h1 class="title">Build your profile</h1>
+        <h2 class="subtitle">
+          Tell us a little bit about yourself — this is how others will see you on DEV. You’ll always be able to edit this later in your Settings.
+        </h2>
       </header>
       <form>
+        <label htmlFor="summary">
+          Bio
+          <textarea
+            name="summary"
+            id="summary"
+            placeholder="Tell us about yourself"
+            onChange={[Function bound handleChange]}
+            maxLength="120"
+          >
+          </textarea>
+        </label>
         <label htmlFor="location">
           Where are you located?
           <input

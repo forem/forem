@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Navigation from './Navigation';
 import { getContentOfToken, updateOnboarding } from '../utilities';
 
-class BioForm extends Component {
+class ProfileForm extends Component {
   constructor(props) {
     super(props);
 
@@ -13,6 +13,10 @@ class BioForm extends Component {
 
     this.state = {
       summary: '',
+      location: '',
+      employment_title: '',
+      employer_name: '',
+      last_onboarding_page: 'personal info form', // i may need this i'm not sure exactly why yet
     };
   }
 
@@ -22,28 +26,28 @@ class BioForm extends Component {
 
   onSubmit() {
     const csrfToken = getContentOfToken('csrf-token');
-    const { summary } = this.state;
+    const { summary, location, employment_title, employer_name, last_onboarding_page } = this.state;
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: { summary } }),
+      body: JSON.stringify({ user: { summary, location, employment_title, employer_name, last_onboarding_page } }),
       credentials: 'same-origin',
     }).then((response) => {
       if (response.ok) {
         const { next } = this.props;
         next();
       }
-    });
+    })
   }
 
   handleChange(e) {
-    const { value } = e.target;
+    const { name, value } = e.target;
 
     this.setState({
-      summary: value,
+      [name]: value,
     });
   }
 
@@ -66,9 +70,46 @@ class BioForm extends Component {
               Bio
               <textarea
                 name="summary"
+                id="summary"
                 placeholder="Tell us about yourself"
                 onChange={this.handleChange}
                 maxLength="120"
+              />
+            </label>
+
+            <label htmlFor="location">
+              Where are you located?
+              <input
+                type="text"
+                name="location"
+                id="location"
+                placeholder="e.g. New York, NY"
+                onChange={this.handleChange}
+                maxLength="60"
+              />
+            </label>
+
+            <label htmlFor="employment_title">
+              What is your title?
+              <input
+                type="text"
+                name="employment_title"
+                id="employment_title"
+                placeholder="e.g. Software Engineer"
+                onChange={this.handleChange}
+                maxLength="60"
+              />
+            </label>
+
+            <label htmlFor="employer_name">
+              Where do you work?
+              <input
+                type="text"
+                name="employer_name"
+                id="employer_name"
+                placeholder="e.g. Company name, self-employed, etc."
+                onChange={this.handleChange}
+                maxLength="60"
               />
             </label>
           </form>
@@ -78,9 +119,9 @@ class BioForm extends Component {
   }
 }
 
-BioForm.propTypes = {
+ProfileForm.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.string.isRequired,
 };
 
-export default BioForm;
+export default ProfileForm;
