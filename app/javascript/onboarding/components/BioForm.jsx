@@ -31,7 +31,7 @@ class BioForm extends Component {
       },
       body: JSON.stringify({ user: { summary } }),
       credentials: 'same-origin',
-    }).then(response => {
+    }).then((response) => {
       if (response.ok) {
         const { next } = this.props;
         next();
@@ -54,10 +54,11 @@ class BioForm extends Component {
         <Navigation prev={prev} next={this.onSubmit} />
         <div className="onboarding-content about">
           <header className="onboarding-content-header">
-            <h1 className="title">Introduce yourself</h1>
+            <h1 className="title">Build your profile</h1>
             <h2 className="subtitle">
-              Tell the community about yourself. Write a quick bio about what
-              you do, what you&apos;re interested in, or anything else.
+              Tell us a little bit about yourself — this is how others will see
+              you on DEV. You’ll always be able to edit this later in your
+              Settings.
             </h2>
           </header>
           <form>
