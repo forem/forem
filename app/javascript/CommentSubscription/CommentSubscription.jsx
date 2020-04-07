@@ -18,6 +18,7 @@ export class CommentSubscription extends Component {
   state = {
     showOptions: false,
     commentSubscriptionType: COMMENT_SUBSCRIPTION_TYPE.ALL,
+    subscribed: false,
   };
 
   componentDidMount() {
@@ -61,6 +62,9 @@ export class CommentSubscription extends Component {
   };
 
   render() {
+    const { showOptions, commentSubscriptionType, subscribed } = this.state;
+    const { onSubscribe, onUnsubscribe } = this.props;
+
     const CogIcon = () => (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -75,9 +79,6 @@ export class CommentSubscription extends Component {
       </svg>
     );
 
-    const { showOptions, commentSubscriptionType } = this.state;
-    const { onSubscribe } = this.props;
-
     return (
       <div className="relative">
         <ButtonGroup
@@ -85,18 +86,32 @@ export class CommentSubscription extends Component {
             this.buttonGroupElement = element;
           }}
         >
-          <Button onClick={(_event) => onSubscribe(commentSubscriptionType)}>
-            Subscribe
-          </Button>
           <Button
-            icon={CogIcon}
+            variant="outlined"
             onClick={(_event) => {
-              this.setState({ showOptions: !showOptions });
+              if (subscribed) {
+                onUnsubscribe();
+              } else {
+                onSubscribe(commentSubscriptionType);
+              }
+
+              this.setState({ subscribed: !subscribed });
             }}
-          />
+          >
+            {subscribed ? 'Unsubscribe' : 'Subscribe'}
+          </Button>
+          {subscribed && (
+            <Button
+              variant="outlined"
+              icon={CogIcon}
+              onClick={(_event) => {
+                this.setState({ showOptions: !showOptions });
+              }}
+            />
+          )}
         </ButtonGroup>
         <Dropdown
-          className={showOptions ? 'inline-block' : null}
+          className={showOptions ? 'inline-block w-full' : null}
           ref={(element) => {
             this.dropdownElement = element;
           }}
@@ -112,11 +127,7 @@ export class CommentSubscription extends Component {
                 }
                 onClick={this.commentSubscriptionClick}
               />
-              <label
-                htmlFor="subscribe-all"
-                className="crayons-field__label"
-                style={{ width: '300px' }}
-              >
+              <label htmlFor="subscribe-all" className="crayons-field__label">
                 All comments
                 <p className="crayons-field__description">
                   You’ll receive notifications for all new comments.
@@ -172,6 +183,7 @@ export class CommentSubscription extends Component {
           <Button
             className="w-100"
             onClick={(_event) => {
+              onSubscribe(commentSubscriptionType);
               this.setState({
                 showOptions: !showOptions,
               });
@@ -189,4 +201,5 @@ CommentSubscription.displayName = 'CommentSubscription';
 
 CommentSubscription.propTypes = {
   onSubscribe: PropTypes.func.isRequired,
+  onUnsubscribe: PropTypes.func.isRequired,
 };
