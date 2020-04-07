@@ -61,11 +61,12 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.default_site_email).to eq(expected_email)
         end
 
-        it "updates social_networks_handle" do
-          expected_handle = "tpd"
-          post "/internal/config", params: { site_config: { social_networks_handle: expected_handle },
+        it "updates social_media_handles" do
+          expected_handle = {"facebook"=>"tpd", "github"=>"", "instagram"=>"", "twitch"=>"", "twitter"=>""}
+          post "/internal/config", params: { site_config: { social_media_handles: expected_handle },
                                              confirmation: confirmation_message }
-          expect(SiteConfig.social_networks_handle).to eq(expected_handle)
+          expect(SiteConfig.social_media_handles[:facebook]).to eq("tpd")
+          expect(SiteConfig.social_media_handles[:github]).to eq("")
         end
       end
 
