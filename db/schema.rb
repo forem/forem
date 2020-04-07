@@ -1040,7 +1040,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.datetime "last_fetched_at"
     t.text "media_serialized", default: "--- []\n"
     t.string "mentioned_usernames_serialized", default: "--- []\n"
-    t.string "primary_external_url"
     t.string "profile_image"
     t.string "quoted_tweet_id_code"
     t.integer "retweet_count"
