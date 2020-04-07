@@ -607,7 +607,7 @@ export default class Chat extends Component {
         mentionedUsersId: this.getMentionedUsers(message),
       };
       this.setActiveContent({
-        path: '/video_chats/'+activeChannelId,
+        path: `/video_chats/${activeChannelId}`,
         type_of: 'article',
       });
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
@@ -1053,6 +1053,7 @@ export default class Chat extends Component {
               <span role="img" aria-label="emoji">
                 👋
               </span>
+              {' '}
               New Invitations!
             </a>
           </div>

@@ -13,14 +13,22 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def failure
-    Rails.logger.error "Omniauth failure",
-                       omniauth_failure: {
-                         error: request.env["omniauth.error"]&.inspect,
-                         error_type: request.env["omniauth.error.type"].to_s,
-                         auth: request.env["omniauth.auth"],
-                         provider: request.env["omniauth.strategy"].to_s,
-                         cookie: request.env["rack.request.cookie_hash"]
-                       }
+    error = request.env["omniauth.error"]
+
+    DatadogStatsClient.increment(
+      "omniauth.failure",
+      tags: [
+        "class:#{error}",
+        "message:#{error&.message}",
+        "reason:#{error&.error_reason}",
+        "type:#{error&.error}",
+        "uri:#{error&.error_uri}",
+        "provider:#{request.env['omniauth.strategy'].name}",
+        "origin:#{request.env['omniauth.strategy.origin']}",
+        "params:#{request.env['omniauth.params']}",
+      ],
+    )
+
     super
   end
 

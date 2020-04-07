@@ -1,15 +1,4 @@
 class Organization < ApplicationRecord
-  self.ignored_columns = %w[
-    address
-    approved
-    city
-    country
-    jobs_email
-    jobs_url
-    state
-    zip_code
-  ]
-
   include CloudinaryHelper
 
   acts_as_followable

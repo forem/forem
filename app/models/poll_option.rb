@@ -1,8 +1,4 @@
 class PollOption < ApplicationRecord
-  self.ignored_columns = %w[
-    counts_in_tabulation
-  ]
-
   belongs_to :poll
   has_many :poll_votes
 
