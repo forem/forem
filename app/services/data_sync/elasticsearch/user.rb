@@ -25,7 +25,7 @@ module DataSync
         @updated_fields = updated_fields.deep_symbolize_keys
       end
 
-      def sync_documents
+      def call
         return unless sync_needed?
 
         RELATED_DOCS.each do |relation_name|

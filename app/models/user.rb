@@ -6,6 +6,7 @@ class User < ApplicationRecord
     onboarding_package_form_submmitted_at
     onboarding_package_fulfilled
     onboarding_package_requested_again
+    onboarding_variant_version
     org_admin
     personal_data_updated_at
     resume_html
