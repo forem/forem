@@ -53,6 +53,8 @@ RSpec.describe "Authenticating with twitter" do
     end
 
     it "logging in with twitter using invalid credentials" do
+      allow(DatadogStatsClient).to receive(:increment)
+
       user_do_not_grants_authorization_on_twitter_popup
 
       visit root_path
@@ -62,6 +64,20 @@ RSpec.describe "Authenticating with twitter" do
       expect(page).to have_link "Via Twitter"
       expect(page).to have_link "Via GitHub"
       expect(page).to have_link "All about #{ApplicationConfig['COMMUNITY_NAME']}"
+
+      expect(DatadogStatsClient).to have_received(:increment).with(
+        "auth.failure",
+        tags: [
+          "class:",
+          "message:",
+          "reason:",
+          "type:",
+          "uri:",
+          "provider:twitter",
+          "origin:",
+          "params:{}",
+        ],
+      )
     end
   end
 end

@@ -15,19 +15,18 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def failure
     error = request.env["omniauth.error"]
 
-    Honeybadger.notify(
-      "Authentication failure",
-      error_message: error&.message,
-      error_class: error.to_s,
-      context: {
-        error_reason: error&.error_reason,
-        error_type: error&.error,
-        error_uri: error&.error_uri,
-        provider: request.env["omniauth.strategy"].name,
-        origin: request.env["omniauth.strategy.origin"],
-        params: request.env["omniauth.params"],
-        cookie: request.env["rack.request.cookie_hash"]
-      },
+    DatadogStatsClient.increment(
+      "auth.failure",
+      tags: [
+        "class:#{error}",
+        "message:#{error&.message}",
+        "reason:#{error&.error_reason}",
+        "type:#{error&.error}",
+        "uri:#{error&.error_uri}",
+        "provider:#{request.env['omniauth.strategy'].name}",
+        "origin:#{request.env['omniauth.strategy.origin']}",
+        "params:#{request.env['omniauth.params']}",
+      ],
     )
 
     super
