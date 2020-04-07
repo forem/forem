@@ -66,7 +66,7 @@ RSpec.describe "Authenticating with twitter" do
       expect(page).to have_link "All about #{ApplicationConfig['COMMUNITY_NAME']}"
 
       expect(DatadogStatsClient).to have_received(:increment).with(
-        "auth.failure",
+        "omniauth.failure",
         tags: [
           "class:",
           "message:",

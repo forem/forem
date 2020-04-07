@@ -16,7 +16,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     error = request.env["omniauth.error"]
 
     DatadogStatsClient.increment(
-      "auth.failure",
+      "omniauth.failure",
       tags: [
         "class:#{error}",
         "message:#{error&.message}",
