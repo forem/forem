@@ -1,15 +1,103 @@
 @import '../config/import';
 
 .crayons-story {
-  margin-bottom: $su-2;
+  background: var(--card-bg);
+  border-radius: $br-default;
+  margin-bottom: $su-2; // This is basically spacing between each feed card.
+  --story-padding: #{$su-4};
+  @media (min-width: $breakpoint-s) {
+    --story-padding: #{$su-6};
+  }
+
+  // Defining additional colors.
+  &__secondary {
+    color: var(--card-color-secondary);
+
+    &[href]:hover,
+    [enabled]:hover {
+      color: var(--card-color);
+    }
+  }
+
+  &__tertiary {
+    color: var(--card-color-tertiary);
+
+    &[href]:hover {
+      color: var(--card-color);
+    }
+  }
+
+
+  // Cover section for promoted (first) card.
+  &__cover {
+    display: block;
+
+    &__image {
+      border-radius: $br-default $br-default 0 0;
+      width: 100%;
+      height: auto;
+      max-height: 300px;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  &__body {
+    padding: var(--story-padding);
+  }
+
+  &__indention {
+    padding-left: calc(#{$su-7} + #{$su-2}); // avatar_width + avatar_margin
+  }
 
   &__top {
     display: flex;
+    align-items: center;
     justify-content: space-between;
+    margin-bottom: $su-4;
+  }
+
+  &__overflow {
+    color: var(--card-color-tertiary);
+    @media (min-width: $breakpoint-s) {
+      display: none;
+    }
+    &:hover {
+      color: var(--card-color);
+    }
+  }
+
+  &:hover {
+    .crayons-story__overflow {
+      display: inline-flex;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    line-height: $lh-tight;
+    font-size: $fs-s;
+  }
+
+  &__pic {
+    position: relative;
+  }
+
+  &__tags {
+    margin-bottom: $su-1;
   }
 
   &__title {
     color: var(--card-color);
+    line-height: $lh-tight;
+    margin-bottom: $su-2;
+    font-size: $fs-xl;
+
+    @media (min-width: $breakpoint-s) {
+      font-size: $fs-2xl;
+    }
+
     a {
       color: inherit;
       display: block;
@@ -28,37 +116,22 @@
     line-height: $lh-tight;
   }
 
-  &__actions {
-    display: flex;
-    align-items: center;
-  }
+  &__comments {
+    background: var(--card-secondary-bg);
+    padding: var(--story-padding);
+    padding-top: $su-4;
+    border-radius: 0 0 $br-default $br-default;
 
-  &__info {
-    display: flex;
-    align-items: center;
-  }
+    &__headline {
+      font-weight: $fw-bold;
+      font-size: $fs-s;
+      color: var(--card-color-secondary);
+      margin-bottom: $su-3;
+      padding-left: calc(#{$su-6} + #{$su-4});
+    }
 
-  &__meta {
-    display: flex;
-    align-items: center;
-  }
-
-  &__secondary {
-    color: var(--card-color-secondary);
-  }
-
-  &__tertiary {
-    color: var(--card-color-tertiary);
-  }
-
-  &__media {
-    margin-bottom: -$su-2;
-    &__cover {
-      border-top-right-radius: $br-default;
-      border-top-left-radius: $br-default;
-      width: 100%;
-      max-height: 300px;
-      object-fit: cover;
+    &__actions {
+      padding-left: calc(#{$su-6} + #{$su-4});
     }
   }
 }
