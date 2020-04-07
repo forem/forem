@@ -1,15 +1,15 @@
 class Internal::ReactionsController < Internal::ApplicationController
-  after_action only: [:update_reaction] do
+  after_action only: [:update] do
     Audit::Logger.log(:moderator, current_user, params.dup)
   end
 
-  def update_reaction
+  def update
     @reaction = Reaction.find(params[:id])
     if @reaction.update(status: params[:status])
       Moderator::SinkArticles.call(@reaction.reactable_id) if confirmed_vomit_reaction?
       render json: { outcome: "Success" }
     else
-      render json: { outcome: "Failure" }
+      render json: { outcome: "Failed to update reaction" }
     end
   end
 
