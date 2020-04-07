@@ -853,7 +853,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_084807) do
   end
 
   create_table "polls", force: :cascade do |t|
-    t.boolean "allow_multiple_selections", default: false
     t.bigint "article_id"
     t.datetime "created_at", null: false
     t.integer "poll_options_count", default: 0, null: false
