@@ -17,6 +17,13 @@ module FastlyHeaders
     response.headers["Surrogate-Control"] = opts[:surrogate_control] || build_surrogate_control(max_age, opts)
   end
 
+  # Sets Surrogate-Key HTTP header with one or more keys strips session data
+  # from the request
+  def set_surrogate_key_header(*surrogate_keys)
+    request.session_options[:skip] = true # No Set-Cookie
+    response.headers["Surrogate-Key"] = surrogate_keys.join(" ")
+  end
+
   private
 
   def build_surrogate_control(max_age, opts)

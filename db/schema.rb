@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_07_081312) do
+ActiveRecord::Schema.define(version: 2020_04_07_091449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -687,13 +687,9 @@ ActiveRecord::Schema.define(version: 2020_04_07_081312) do
   end
 
   create_table "organizations", id: :serial, force: :cascade do |t|
-    t.string "address"
-    t.boolean "approved", default: false
     t.integer "articles_count", default: 0, null: false
     t.string "bg_color_hex"
-    t.string "city"
     t.string "company_size"
-    t.string "country"
     t.datetime "created_at", null: false
     t.integer "credits_count", default: 0, null: false
     t.text "cta_body_markdown"
@@ -703,8 +699,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_081312) do
     t.string "dark_nav_image"
     t.string "email"
     t.string "github_username"
-    t.string "jobs_email"
-    t.string "jobs_url"
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.string "location"
     t.string "name"
@@ -717,7 +711,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_081312) do
     t.string "secret"
     t.string "slug"
     t.integer "spent_credits_count", default: 0, null: false
-    t.string "state"
     t.string "story"
     t.text "summary"
     t.string "tag_line"
@@ -727,7 +720,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_081312) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url"
-    t.string "zip_code"
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
 
@@ -854,7 +846,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_081312) do
   end
 
   create_table "polls", force: :cascade do |t|
-    t.boolean "allow_multiple_selections", default: false
     t.bigint "article_id"
     t.datetime "created_at", null: false
     t.integer "poll_options_count", default: 0, null: false
@@ -1090,7 +1081,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_081312) do
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
-    t.text "base_cover_letter"
     t.string "behance_url"
     t.string "bg_color_hex"
     t.bigint "blocked_by_count", default: 0, null: false
@@ -1167,7 +1157,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_081312) do
     t.boolean "looking_for_work_publicly", default: false
     t.string "mastodon_url"
     t.string "medium_url"
-    t.datetime "membership_started_at"
     t.boolean "mobile_comment_notifications", default: true
     t.boolean "mod_roundrobin_notifications", default: true
     t.integer "monthly_dues", default: 0
@@ -1175,16 +1164,9 @@ ActiveRecord::Schema.define(version: 2020_04_07_081312) do
     t.string "name"
     t.string "old_old_username"
     t.string "old_username"
-    t.string "onboarding_checklist", default: [], array: true
-    t.datetime "onboarding_package_form_submmitted_at"
-    t.boolean "onboarding_package_fulfilled", default: false
     t.boolean "onboarding_package_requested", default: false
-    t.boolean "onboarding_package_requested_again", default: false
-    t.string "onboarding_variant_version", default: "0"
-    t.boolean "org_admin", default: false
     t.datetime "organization_info_updated_at"
     t.boolean "permit_adjacent_sponsors", default: true
-    t.datetime "personal_data_updated_at"
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
@@ -1194,27 +1176,16 @@ ActiveRecord::Schema.define(version: 2020_04_07_081312) do
     t.float "reputation_modifier", default: 1.0
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"
-    t.text "resume_html"
     t.boolean "saw_onboarding", default: true
     t.integer "score", default: 0
     t.string "secret"
-    t.boolean "shipping_validated", default: false
-    t.datetime "shipping_validated_at"
-    t.string "shirt_gender"
-    t.string "shirt_size"
     t.integer "sign_in_count", default: 0, null: false
     t.string "signup_cta_variant"
-    t.string "signup_refer_code"
-    t.string "signup_referring_site"
-    t.string "specialty"
     t.integer "spent_credits_count", default: 0, null: false
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
     t.text "summary"
-    t.string "tabs_or_spaces"
     t.string "text_color_hex"
-    t.string "text_only_name"
-    t.string "top_languages"
     t.string "twitch_url"
     t.string "twitch_username"
     t.datetime "twitter_created_at"

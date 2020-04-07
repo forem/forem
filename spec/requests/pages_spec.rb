@@ -106,15 +106,6 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
-  describe "GET /live" do
-    context "when nothing is live" do
-      it "shows the correct message" do
-        get "/live"
-        expect(response.body).to include("We are working on more ways to bring live coding to the community")
-      end
-    end
-  end
-
   describe "GET /robots.txt" do
     it "has proper text" do
       get "/robots.txt"
