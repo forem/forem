@@ -1,8 +1,4 @@
 class Poll < ApplicationRecord
-  self.ignored_columns = %w[
-    allow_multiple_selections
-  ]
-
   attr_accessor :poll_options_input_array
 
   serialize :voting_data
