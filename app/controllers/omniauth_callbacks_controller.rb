@@ -13,14 +13,23 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def failure
-    Rails.logger.error "Omniauth failure",
-                       omniauth_failure: {
-                         error: request.env["omniauth.error"]&.inspect,
-                         error_type: request.env["omniauth.error.type"].to_s,
-                         auth: request.env["omniauth.auth"],
-                         provider: request.env["omniauth.strategy"].to_s,
-                         cookie: request.env["rack.request.cookie_hash"]
-                       }
+    error = request.env["omniauth.error"]
+
+    Honeybadger.notify(
+      "Authentication failure",
+      error_message: error.message,
+      error_class: error.to_s,
+      context: {
+        error_reason: error.error_reason,
+        error_type: error.error,
+        error_uri: error.error_uri,
+        provider: request.env["omniauth.strategy"].name,
+        origin: request.env["omniauth.strategy.origin"],
+        params: request.env["omniauth.params"],
+        cookie: request.env["rack.request.cookie_hash"]
+      },
+    )
+
     super
   end
 
