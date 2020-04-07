@@ -64,7 +64,9 @@
     fetch(`/internal/reactions/${id}`, {
      method: 'PATCH',
      headers: {
+      Accept: 'application/json',
        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
+       'Content-Type': 'application/json',
      },
      body: JSON.stringify({
        id: id,
