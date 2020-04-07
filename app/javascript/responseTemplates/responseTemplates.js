@@ -229,6 +229,8 @@ function openButtonCallback(form) {
   /* eslint-disable-next-line no-undef */
   if (userData().moderator_for_tags.length > 0) {
     prepareHeaderButtons(form);
+  } else {
+    form.querySelector('.personal-template-button').classList.toggle('hidden');
   }
 }
 
