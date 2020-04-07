@@ -36,7 +36,7 @@ class PagesController < ApplicationController
   end
 
   def report_abuse
-    referer = URI(request.referer || "").path == "/serviceworker.js" ? nil : request.referer
+    referer = URL.sanitized_referer(request.referer)
     reported_url = params[:reported_url] || params[:url] || referer
     @feedback_message = FeedbackMessage.new(
       reported_url: reported_url&.chomp("?i=i"),
@@ -70,13 +70,6 @@ class PagesController < ApplicationController
     else
       redirect_to "/notifications"
     end
-  end
-
-  def live
-    @active_channel = ChatChannel.find_by(channel_name: "Workshop")
-    @chat_channels = [@active_channel].to_json(
-      only: %i[channel_name channel_type last_message_at slug status id],
-    )
   end
 
   def crayons
