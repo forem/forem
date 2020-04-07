@@ -19,26 +19,3 @@
     </div>
   </div>
 </div>
-
-<div class="row">
-  <% @variants.each do |var| %>
-    <div class="col-sm-6 mt-3">
-      <div class="card">
-        <div class="card-header">
-          <strong>Variant: <%= var %></strong>
-        </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">
-            Average comments: <%= User.where("created_at > ?", num_days.day.ago).where(onboarding_variant_version: var).average(:comments_count) %>
-          </li>
-          <li class="list-group-item">
-            Average articles: <%= User.where("created_at > ?", num_days.day.ago).where(onboarding_variant_version: var).average(:articles_count) %>
-          </li>
-          <li class="list-group-item">
-            Average reactions: <%= User.where("created_at > ?", num_days.day.ago).where(onboarding_variant_version: var).average(:reactions_count) %>
-          </li>
-        </ul>
-      </div>
-    </div>
-  <% end %>
-</div>

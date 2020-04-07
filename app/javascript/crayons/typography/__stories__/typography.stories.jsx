@@ -34,7 +34,7 @@ Description.story = {
 };
 
 export const SampleTexts = () => (
-  <div>
+  <div className="sample-texts">
     <div>
       <p className="fs-xs">Lorem ipsum dolor sit amet.</p>
       <p className="fs-s">Lorem ipsum dolor sit amet.</p>
@@ -90,7 +90,7 @@ SampleTexts.story = {
 };
 
 export const DefaultLineHeight = () => (
-  <div>
+  <div className="sample-texts">
     <span className="ff-accent">Line height: 1.5 – .lh-base (default)</span>
     <h3 className="fs-2xl fw-bold">
       This is a bit longer text title to present line-height difference.
@@ -107,7 +107,7 @@ export const DefaultLineHeight = () => (
 DefaultLineHeight.story = { name: 'default line height' };
 
 export const TightLineHeight = () => (
-  <div>
+  <div className="sample-texts">
     <span className="ff-accent">Line height: 1.25 – .lh-tight</span>
 
     <h3 className="fs-2xl fw-bold lh-tight">

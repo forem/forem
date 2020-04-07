@@ -18,15 +18,19 @@ function setReactionCount(reactionName, newCount) {
 }
 
 function showUserReaction(reactionName, animatedClass) {
-  document
-    .getElementById('reaction-butt-' + reactionName)
-    .classList.add('user-activated', animatedClass);
+  const reactionButton = document.getElementById(
+    'reaction-butt-' + reactionName,
+  );
+  reactionButton.classList.add('user-activated', animatedClass);
+  reactionButton.setAttribute('aria-checked', 'true');
 }
 
 function hideUserReaction(reactionName) {
-  document
-    .getElementById('reaction-butt-' + reactionName)
-    .classList.remove('user-activated', 'user-animated');
+  const reactionButton = document.getElementById(
+    'reaction-butt-' + reactionName,
+  );
+  reactionButton.classList.remove('user-activated', 'user-animated');
+  reactionButton.setAttribute('aria-checked', 'false');
 }
 
 function hasUserReacted(reactionName) {
