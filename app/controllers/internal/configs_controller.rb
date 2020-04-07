@@ -3,10 +3,10 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   before_action :extra_authorization_and_confirmation, only: [:create]
 
-  SOCIAL_MEDIA_HANDLES = %i[facebook github instagram twitch twitter]
+  SOCIAL_MEDIA_PLATFORMS = %i[twitter facebook github instagram twitch]
 
   def show
-    @social_media_handles = SOCIAL_MEDIA_HANDLES
+    @social_media_platforms = SOCIAL_MEDIA_PLATFORMS
     @logo_svg = SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
   end
 
@@ -39,7 +39,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       rate_limit_comment_creation rate_limit_published_article_creation
       rate_limit_image_upload rate_limit_email_recipient sidebar_tags
     ]
-    params.require(:site_config).permit(allowed_params, :social_media_handles => SOCIAL_MEDIA_HANDLES)
+    params.require(:site_config).permit(allowed_params, :social_media_handles => SOCIAL_MEDIA_PLATFORMS)
   end
 
   def extra_authorization_and_confirmation
