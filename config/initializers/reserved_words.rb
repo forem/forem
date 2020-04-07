@@ -190,6 +190,7 @@ class ReservedWords
     start
     started
     startups
+    swagnets
     tag
     tags
     tea
