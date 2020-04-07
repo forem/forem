@@ -26,8 +26,7 @@ export const Description = () => (
 Description.story = { name: 'description' };
 
 export const SampleTexts = () => (
-  <div>
-    {' '}
+  <div className="sample-texts">
     <div>
       <p className="ff-accent fs-xs">Lorem ipsum dolor sit amet.</p>
       <p className="ff-accent fs-s">Lorem ipsum dolor sit amet.</p>
