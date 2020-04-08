@@ -9,3 +9,4 @@ export * from './ReactionsCount';
 export * from './SaveButton';
 export * from './SearchSnippet';
 export * from './TagList';
+export * from './Video';
