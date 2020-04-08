@@ -453,6 +453,17 @@ preact-render-spy (1 nodes)
           Tell us a little bit about yourself — this is how others will see you on DEV. You’ll always be able to edit this later in your Settings.
         </h2>
       </header>
+      <div class="current-user-info">
+        <figure class="current-user-avatar-container">
+          <img
+            class="current-user-avatar"
+            alt="profile"
+            src="mock_url_link"
+           />
+        </figure>
+        <h3>firstname lastname</h3>
+        <p>username</p>
+      </div>
       <form>
         <label htmlFor="summary">
           Bio

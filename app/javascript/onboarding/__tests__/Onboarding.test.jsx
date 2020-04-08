@@ -10,6 +10,13 @@ import FollowTags from '../components/FollowTags';
 import FollowUsers from '../components/FollowUsers';
 
 global.fetch = fetch;
+window.userData = function userData() {
+  return {
+    profile_image_90: 'mock_url_link',
+    name: 'firstname lastname',
+    username: 'username',
+  };
+};
 
 function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve));
@@ -217,9 +224,7 @@ describe('<Onboarding />', () => {
       onboardingSlides.find('#employer_name').simulate('change', employerEvent);
 
       expect(profileForm.state('summary')).toBe(summaryEvent.target.value);
-      expect(profileForm.state('location')).toBe(
-        locationEvent.target.value,
-      );
+      expect(profileForm.state('location')).toBe(locationEvent.target.value);
       expect(profileForm.state('employment_title')).toBe(
         titleEvent.target.value,
       );
