@@ -76,16 +76,21 @@ describe('<Onboarding />', () => {
   ]);
   const dataUser = JSON.stringify({
     followed_tag_names: ['javascript'],
+    profile_image_90: 'mock_url_link',
+    name: 'firstname lastname',
+    username: 'username',
   });
 
   describe('IntroSlide', () => {
     let onboardingSlides;
 
     beforeEach(() => {
-      onboardingSlides = initializeSlides(0);
+      onboardingSlides = initializeSlides(0, dataUser);
     });
 
     test('renders properly', () => {
+      // For some reason, this snapshot does not ever pick up on the dataUser properties
+      // so the snapshots do not render the user's name and render the fallback greeting instead.
       expect(onboardingSlides).toMatchSnapshot();
     });
 

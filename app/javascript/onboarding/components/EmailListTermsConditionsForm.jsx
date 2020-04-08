@@ -42,7 +42,7 @@ class EmailTermsConditionsForm extends Component {
       },
       body: JSON.stringify({ user: this.state }),
       credentials: 'same-origin',
-    }).then(response => {
+    }).then((response) => {
       if (response.ok) {
         localStorage.setItem('shouldRedirectToOnboarding', false);
         const { next } = this.props;
@@ -74,7 +74,7 @@ class EmailTermsConditionsForm extends Component {
 
   handleChange(event) {
     const { name } = event.target;
-    this.setState(currentState => ({
+    this.setState((currentState) => ({
       [name]: !currentState[name],
     }));
   }
@@ -101,14 +101,14 @@ class EmailTermsConditionsForm extends Component {
     if (textShowing) {
       return (
         <div className="onboarding-main">
-          <div className="onboarding-content checkbox-slide">
+          <div className="onboarding-content terms-and-conditions-wrapper">
             <button type="button" onClick={() => this.backToSlide()}>
               Back
             </button>
             <div
+              className="terms-and-conditions-content"
               /* eslint-disable react/no-danger */
               dangerouslySetInnerHTML={{ __html: textShowing }}
-              style={{ height: '360px', overflow: 'scroll' }}
               /* eslint-enable react/no-danger */
             />
           </div>
@@ -118,7 +118,7 @@ class EmailTermsConditionsForm extends Component {
     return (
       <div className="onboarding-main">
         <Navigation prev={prev} next={this.onSubmit} />
-        <div className="onboarding-content checkbox-slide">
+        <div className="onboarding-content terms-and-conditions-wrapper">
           <header className="onboarding-content-header">
             <h1 className="title">Getting started</h1>
             <h2 className="subtitle">Let&apos;s review a few things first</h2>
@@ -148,7 +148,7 @@ class EmailTermsConditionsForm extends Component {
                     <a
                       href="/code-of-conduct"
                       data-no-instant
-                      onClick={e => this.handleShowText(e, 'coc')}
+                      onClick={(e) => this.handleShowText(e, 'coc')}
                     >
                       Code of Conduct
                     </a>
@@ -169,7 +169,7 @@ class EmailTermsConditionsForm extends Component {
                     <a
                       href="/terms"
                       data-no-instant
-                      onClick={e => this.handleShowText(e, 'terms')}
+                      onClick={(e) => this.handleShowText(e, 'terms')}
                     >
                       Terms and Conditions
                     </a>

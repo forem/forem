@@ -148,7 +148,7 @@ preact-render-spy (1 nodes)
         </button>
       </div>
     </nav>
-    <div class="onboarding-content checkbox-slide">
+    <div class="onboarding-content terms-and-conditions-wrapper">
       <header class="onboarding-content-header">
         <h1 class="title">Getting started</h1>
         <h2 class="subtitle">Let's review a few things first</h2>

@@ -2,16 +2,14 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
-import { updateOnboarding } from '../utilities';
+import { userData, updateOnboarding } from '../utilities';
 
 class IntroSlide extends Component {
   constructor(props) {
     super(props);
 
-    const user = window.userData();
-    this.name = user.name;
-
     this.onSubmit = this.onSubmit.bind(this);
+    this.user = userData();
   }
 
   componentDidMount() {
@@ -25,6 +23,9 @@ class IntroSlide extends Component {
 
   render() {
     const { prev } = this.props;
+    const greeting = this.user
+      ? `${this.user.name} — welcome to DEV!`
+      : 'Welcome to DEV!';
 
     return (
       <div className="onboarding-main introduction">
@@ -36,11 +37,7 @@ class IntroSlide extends Component {
               alt="DEV"
             />
           </figure>
-          <h1 className="introduction-title">
-            {this.name}
-            {' '}
-            &mdash; welcome to DEV!
-          </h1>
+          <h1 className="introduction-title">{greeting}</h1>
           <h2 className="introduction-subtitle">
             DEV is where programmers share ideas and help each other grow.
           </h2>

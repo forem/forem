@@ -43,6 +43,20 @@
   }
 }
 
+// terms and conditions view
+.terms-and-conditions-wrapper {
+  $content-height: 358px;
+
+  button {
+    @extend .crayons-btn;
+  }
+  .terms-and-conditions-content {
+    height: $content-height;
+    overflow-y: scroll;
+    margin-top: 10px;
+  }
+}
+
 // window background
 .onboarding-body {
   -moz-background-size: cover;
@@ -369,7 +383,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   .user-name {
     font-size: $fs-base;
   }
-  
+
   .user-info {
     width: 100%;
   }
