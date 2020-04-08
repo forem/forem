@@ -53,6 +53,7 @@ class ProfileForm extends Component {
 
   render() {
     const { prev } = this.props;
+    const { profile_image_90, username, name } = window.userData();
     return (
       <div className="onboarding-main">
         <Navigation prev={prev} next={this.onSubmit} />
@@ -67,10 +68,10 @@ class ProfileForm extends Component {
           </header>
           <div className="current-user-info">
             <figure className="current-user-avatar-container">
-              <img className="current-user-avatar" alt="profile" src={window.userData().profile_image_90} />
+              <img className="current-user-avatar" alt="profile" src={profile_image_90} />
             </figure>
-            <h3>{window.userData().name}</h3>
-            <p>{window.userData().username}</p>
+            <h3>{name}</h3>
+            <p>{username}</p>
           </div>
           <form>
             <label htmlFor="summary">
