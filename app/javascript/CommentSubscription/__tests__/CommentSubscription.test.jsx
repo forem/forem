@@ -102,7 +102,7 @@ describe('<CommentSubscription />', () => {
     // Select the author comments only.
     const authorCommentsOnlyRadioButton = dropdown.find('RadioButton').last();
     expect(authorCommentsOnlyRadioButton.attr('value')).toEqual(
-      'only_author_comments',
+      ONLY_AUTHOR_COMMENTS,
     );
     authorCommentsOnlyRadioButton.simulate('click', {
       target: { value: ONLY_AUTHOR_COMMENTS },
