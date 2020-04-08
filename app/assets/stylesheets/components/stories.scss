@@ -185,6 +185,30 @@
       }
     }
   }
+
+  &__video {
+    position: relative;
+    padding-top: 56%;
+    display: block;
+    background-color: var(--base-100);
+    background-size: cover;
+
+    img {
+      width: 100%;
+    }
+
+    &__time {
+      position: absolute;
+      bottom: $su-4;
+      right: $su-4;
+      background: rgba(0, 0, 0, 0.8);
+      color: var(--base-inverted);
+      border-radius: $br-default;
+      padding: $su-1;
+      font-size: $fs-s;
+      font-family: $ff-accent;
+    }
+  }
 }
 
 .crayons-podcast-episode {
