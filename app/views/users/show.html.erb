@@ -34,43 +34,6 @@
       "@id": "https://dev.to/<%= @user.username %>"
     },
     "url": "<%= user_url(@user) %>",
-    "image": "<%= ProfileImage.new(@user).get(width: 320) %>",
-    "name": "<%= @user.name %>",
-    "description": "<%= @user.summary.presence || ["404 bio not found"].sample %>",
-    [
-      {
-        "sameAs": [
-          <% if @user.mostly_work_with.present? %>
-            "<%= @user.mostly_work_with %>",
-          <% end %>
-          <% if @user.currently_hacking_on.present? %>
-            "<%= @user.currently_hacking_on %>",
-          <% end %>
-          <% if @user.currently_learning.present? %>
-            "<%= @user.currently_learning %>"
-          <% end %>
-          ],
-        ],
-      },
-    <% if @user.email_public %>
-      "email": "<%= @user.email %>",
-    <% end %>
-    <% if @user.employment_title.present? %>
-      "jobTitle": "<%= @user.employment_title %>",
-    <% end %>
-    "worksFor": [
-      {
-        <% if @user.employer_name.present? %>
-          "name": "<%= @user.employer_name %>",
-        <% end %>
-        <% if @user.employer_url.present? %>
-          "sameAs": "<%= @user.employer_url %>"
-        <% end %>
-      }
-    ],
-    <% if @user.education.present? %>
-      "alumniOf": "<%= @user.education %>"
-    <% end %>
     "sameAs": [
       <% if @user.twitter_username? %>
         "https://twitter.com/<%= @user.twitter_username %>",
@@ -111,7 +74,41 @@
       <% if @user.website_url? %>
         "<%= @user.website_url %>"
       <% end %>
-    ]
+    ],
+    "image": "<%= ProfileImage.new(@user).get(width: 320) %>",
+    "name": "<%= @user.name %>",
+    <% if @user.email_public == true %>
+      "email": "<%= @user.email %>",
+    <% end %>
+    <% if @user.employment_title.present? %>
+      "jobTitle": "<%= @user.employment_title %>",
+    <% end %>
+    "description": "<%= @user.summary.presence || ["404 bio not found"].sample %>",
+    "disambiguatingDescription": [
+      <% if @user.mostly_work_with.present? %>
+        "<%= @user.mostly_work_with %>",
+      <% end %>
+      <% if @user.currently_hacking_on.present? %>
+        "<%= @user.currently_hacking_on %>",
+      <% end %>
+      <% if @user.currently_learning.present? %>
+        "<%= @user.currently_learning %>"
+      <% end %>
+      ],
+    "worksFor": [
+      {
+        "@type": "Organization",
+        <% if @user.employer_name.present? %>
+          "name": "<%= @user.employer_name %>",
+        <% end %>
+        <% if @user.employer_url.present? %>
+          "sameAs": [ "<%= @user.employer_url %>" ]
+        <% end %>
+      },
+    ],
+    <% if @user.education.present? %>
+      "alumniOf": "<%= @user.education %>"
+    <% end %>
   }
 </script>
 
