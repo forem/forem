@@ -69,7 +69,9 @@
 
   // Main colors
   --body-bg: #f9fafa; // todo: replace with `var(--base-10);` when ready.
-  --body-color: var(--base-100);
+  --body-color: var(
+    --base-100
+  ); // todo: replace with `var(--base-100);` when ready.
   --body-color-inverted: var(--base-inverted);
 
   // Main content containers
