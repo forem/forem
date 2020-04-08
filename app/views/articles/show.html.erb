@@ -134,15 +134,13 @@
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
     <article>
-      <meta content="<%= article_url(@article) %>">
-      <meta content="<%= article_social_image_url(@article) %>">
+      <% article_url(@article) %>
+      <% article_social_image_url(@article) %>
       <div>
         <div>
-          <meta content="<%= cloudinary(SiteConfig.logo_png, 192, "png") %>">
-          <meta content="192">
-          <meta content="192">
+          <% cloudinary(SiteConfig.logo_png, 192, "png") %>
         </div>
-        <meta content="<%= community_qualified_name %>">
+        <% community_qualified_name %>
       </div>
       <section>
         <% if !@article.published %>
@@ -173,7 +171,7 @@
         </h1>
         <h3>
           <span>
-            <meta content="<%= user_url(@user) %>">
+            <% user_url(@user) %>
             <a href="/<%= @user.username %>" class="author">
               <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
               <span><%= @user.name %></span>
