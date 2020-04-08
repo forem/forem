@@ -53,7 +53,7 @@ export const Author = ({ article, organization }) => (
         {organization &&
           !document.getElementById('organization-article-index') && (
             <span>
-              <span className="crayons-story__tertiary fw-normal">for</span>
+              <span className="crayons-story__tertiary fw-normal"> for </span>
               <a
                 href={`/${organization.slug}`}
                 className="crayons-story__secondary fw-bold"
