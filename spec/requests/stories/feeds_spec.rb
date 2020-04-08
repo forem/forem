@@ -113,5 +113,17 @@ RSpec.describe "Stories::Feeds", type: :request do
         expect(FieldTest::Membership.all.size).to be(0)
       end
     end
+
+    context "when user is signed in but there's no field_test" do
+      before do
+        sign_in user
+      end
+
+      it "does not sets a field test" do
+        allow_any_instance_of(Stories::FeedsController).to receive(:field_test) # rubocop:disable RSpec/AnyInstance
+        get "/stories/feed"
+        expect(FieldTest::Membership.all.count).to be(0)
+      end
+    end
   end
 end

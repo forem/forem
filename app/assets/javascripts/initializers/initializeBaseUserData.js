@@ -76,16 +76,13 @@ function addRelevantButtonsToComments(user) {
       if (parseInt(userId, 10) === user.id) {
         butt.style.display = 'inline-block';
       }
+
       if (
         action === 'hide-button' &&
         parseInt(commentableUserId, 10) === user.id
       ) {
         butt.style.display = 'inline-block';
-      } else if (
-        action === 'hide-button' &&
-        parseInt(commentableUserId, 10) !== user.id
-      ) {
-        butt.style.display = 'none';
+        butt.classList.remove('hidden');
       }
     }
 
