@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import { articlePropTypes } from '../src/components/common-prop-types/article-prop-types';
 import {
   CommentsCount,
+  CommentsList,
   ContentTitle,
-  OrganizationHeadline,
-  PublishDate,
-  ReadingTime,
+  Author,
+  OverflowNavigation,
   SaveButton,
   SearchSnippet,
   TagList,
@@ -20,8 +20,6 @@ export const Article = ({
   article,
   currentTag,
   isBookmarked,
-  reactionsIcon,
-  commentsIcon,
   videoIcon,
   bookmarkClick,
 }) => {
@@ -29,22 +27,17 @@ export const Article = ({
     return <PodcastArticle article={article} />;
   }
 
-  const timeAgoIndicator = timeAgo({
-    oldTimeInSeconds: article.published_at_int,
-    formatter: x => x,
-  })
-
   return (
     <div
-      className="single-article single-article-small-pic"
+      className="crayons-story"
       data-content-user-id={article.user_id}
     >
       {article.cloudinary_video_url && (
         <a
           href={article.path}
-          className="single-article-video-preview"
-          style={`background-image:url(${article.cloudinary_video_url})`}
+          className="crayons-story__cover"
         >
+          <img src={article.cloudinary_video_url} alt="Video for TODO: ARTICLE TITLE" loading="lazy" />
           <div className="single-article-video-duration">
             <img src={videoIcon} alt="video camera" loading="lazy" />
             {article.video_duration_in_minutes}
@@ -52,76 +45,45 @@ export const Article = ({
         </a>
       )}
 
-      <OrganizationHeadline organization={article.organization} />
-      <div className="small-pic">
-        <a
-          href={`/${article.user.username}`}
-          className="small-pic-link-wrapper"
-        >
-          <img
-            src={article.user.profile_image_90}
-            alt={`${article.user.username} profile`}
-            loading="lazy"
-          />
-        </a>
-      </div>
-      <a
-        href={article.path}
-        className="small-pic-link-wrapper index-article-link"
-        id={`article-link-${article.id}`}
-      >
-        <div className="content">
+      <div className="crayons-story__body">
+        <div className="crayons-story__top">
+          <Author article={article} organization={article.organization} />
+          <OverflowNavigation />
+        </div>
+
+        <div className="crayons-story__indention">
           <ContentTitle article={article} currentTag={currentTag} />
+
           {article.class_name === 'Article' && (
             // eslint-disable-next-line no-underscore-dangle
             <SearchSnippet snippetResult={article._snippetResult} />
           )}
-        </div>
-      </a>
-      <h4>
-        <a href={`/${article.user.username}`}>
-          {filterXSS(
-            article.class_name === 'User'
-              ? article.user.username
-              : article.user.name,
-          )}
-          {article.readable_publish_date ? '・' : ''}
-          {article.readable_publish_date && (
-            <PublishDate
-              readablePublishDate={article.readable_publish_date}
-              publishedTimestamp={article.published_timestamp}
-            />
-          )}
-          {article.published_at_int ? (
-            <span className="time-ago-indicator">
-              {timeAgoIndicator.length > 0 ? `(${timeAgoIndicator})`: '' }
-            </span>
-          ) : null}
-        </a>
-      </h4>
 
-      <TagList tags={article.tag_list} />
-      {article.class_name !== 'User' && (
-        <CommentsCount
-          count={article.comments_count}
-          articlePath={article.path}
-          icon={commentsIcon}
-        />
-      )}
-      {article.class_name !== 'User' && (
-        <ReactionsCount article={article} icon={reactionsIcon} />
-      )}
-      {article.class_name === 'Article' && (
-        <ReadingTime
-          articlePath={article.path}
-          readingTime={article.reading_time}
-        />
-      )}
-      <SaveButton
-        article={article}
-        isBookmarked={isBookmarked}
-        onClick={bookmarkClick}
-      />
+          <TagList tags={article.tag_list} />
+
+          <div className="crayons-story__bottom">
+            <div className="crayons-story__details">
+              {article.class_name !== 'User' && (
+                <ReactionsCount article={article} />
+              )}
+              {article.class_name !== 'User' && (
+                <CommentsCount
+                  count={article.comments_count}
+                  articlePath={article.path}
+                />
+              )}
+            </div>
+
+            <SaveButton
+              article={article}
+              isBookmarked={isBookmarked}
+              onClick={bookmarkClick}
+            />
+          </div>
+        </div>
+      </div>
+
+      <CommentsList />
     </div>
   );
 };
@@ -135,8 +97,6 @@ Article.propTypes = {
   article: articlePropTypes.isRequired,
   currentTag: PropTypes.string,
   isBookmarked: PropTypes.bool,
-  reactionsIcon: PropTypes.string.isRequired,
-  commentsIcon: PropTypes.string.isRequired,
   videoIcon: PropTypes.string.isRequired,
   bookmarkClick: PropTypes.func.isRequired,
 };
