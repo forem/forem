@@ -40,6 +40,7 @@ module Search
       SOURCE = %i[
         id
         class_name
+        cloudinary_video_url
         comments_count
         flare_tag_hash
         main_image
