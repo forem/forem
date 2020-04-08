@@ -51,31 +51,6 @@
           </div>
         </div>
 
-
-        <div class="card mt-3">
-          <div class="card-header">**********Public Social Media Handles</div>
-          <div class="card-body">
-            <div class="form-group">
-              
-              <%= f.fields_for :social_media_handles do |ff| %>
-
-                <% @social_media_platforms.each do |social_media_platform| %>
-                  <div>
-                    <%= ff.label social_media_platform %>
-                    <%= ff.text_field social_media_platform,
-                                     class: "form-control",
-                                     value: SiteConfig.try(:social_media_handles)[social_media_platform],
-                                     placeholder: "" %>
-                    <div class="alert alert-info"><%= social_media_platform.capitalize() %> Username</div>
-                  </div>
-                <% end %>
-
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-
         <div class="card mt-3">
           <div class="card-header">Public Social Media Handles</div>
           <div class="card-body">
