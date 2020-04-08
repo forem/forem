@@ -450,7 +450,7 @@ preact-render-spy (1 nodes)
           alt="DEV"
          />
       </figure>
-      <h1 class="introduction-title">Welcome to DEV!</h1>
+      <h1 class="introduction-title">firstname lastname — welcome to DEV!</h1>
       <h2 class="introduction-subtitle">
         DEV is where programmers share ideas and help each other grow.
       </h2>

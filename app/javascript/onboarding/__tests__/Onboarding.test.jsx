@@ -17,13 +17,13 @@ function flushPromises() {
 }
 
 function initializeSlides(currentSlide, dataUser = null, mockData = null) {
+  document.body.setAttribute('data-user', dataUser);
   const onboardingSlides = deep(<Onboarding />);
 
   if (mockData) {
     fetch.once(mockData);
   }
 
-  document.body.setAttribute('data-user', dataUser);
   onboardingSlides.setState({ currentSlide });
 
   return onboardingSlides;
@@ -89,8 +89,6 @@ describe('<Onboarding />', () => {
     });
 
     test('renders properly', () => {
-      // For some reason, this snapshot does not ever pick up on the dataUser properties
-      // so the snapshots do not render the user's name and render the fallback greeting instead.
       expect(onboardingSlides).toMatchSnapshot();
     });
 
