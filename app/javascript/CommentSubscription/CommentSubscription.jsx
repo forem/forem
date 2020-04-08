@@ -184,9 +184,10 @@ export class CommentSubscription extends Component {
             <Button
               className="w-100"
               onClick={(_event) => {
-                onSubscribe(commentSubscriptionType);
-                this.setState({
-                  showOptions: !showOptions,
+                this.setState((prevState) => {
+                  onSubscribe(prevState.commentSubscriptionType);
+
+                  return { ...prevState, showOptions: false };
                 });
               }}
             >

@@ -13,7 +13,7 @@ describe('<CommentSubscription />', () => {
   it('should subscribe to all comments by default', () => {
     const onSubscribe = jest.fn();
     const wrapper = deep(<CommentSubscription onSubscribe={onSubscribe} />);
-    wrapper.find('button').simulate('click');
+    wrapper.find('ButtonGroup').find('Button').first().simulate('click');
 
     expect(onSubscribe).toHaveBeenCalled();
   });
@@ -29,9 +29,8 @@ describe('<CommentSubscription />', () => {
     );
 
     // Need to subscribe first so that we can unsubscribe.
-    wrapper.find('button').first().simulate('click'); // Subscribe button
-
-    wrapper.find('button').first().simulate('click'); // Unsubscribe button
+    wrapper.find('ButtonGroup').find('Button').first().simulate('click'); // Subscribe button
+    wrapper.find('ButtonGroup').find('Button').first().simulate('click'); // Unsubscribe button
 
     expect(onUnsubscribe).toHaveBeenCalled();
   });
@@ -46,19 +45,20 @@ describe('<CommentSubscription />', () => {
       />,
     );
 
-    // Need to subscribe first so that we can unsubscribe.
-    wrapper.find('button').first().simulate('click'); // Subscribe button
-
-    wrapper.find('button:last-child').simulate('click'); // Cog icon button
+    wrapper.find('ButtonGroup').find('Button').first().simulate('click'); // Subscribe button
+    wrapper.find('ButtonGroup').find('Button').last().simulate('click'); // Cog icon button
 
     const dropdown = wrapper.find('Dropdown');
+    expect(dropdown.attr('className')).toEqual('inline-block w-full');
 
-    expect(dropdown.length).toEqual(1);
+    // 3 options for comment subscription
     expect(dropdown.find('RadioButton').length).toEqual(3);
+
+    // The done button
     expect(dropdown.find('Button').length).toEqual(1);
   });
 
-  it('should update comment subscription when the done button is clicked in the subscription options panel', () => {
+  it('should hide subscription options once subscribed if cog icon is clicked and the subscriptions options panel is open', () => {
     const onSubscribe = jest.fn();
     const onUnsubscribe = jest.fn();
     const wrapper = deep(
@@ -68,14 +68,50 @@ describe('<CommentSubscription />', () => {
       />,
     );
 
-    // Need to subscribe first so that we can unsubscribe.
-    wrapper.find('button').first().simulate('click'); // Subscribe button
+    wrapper.find('ButtonGroup').find('Button').first().simulate('click'); // Subscribe button
+    wrapper.find('ButtonGroup').find('Button').last().simulate('click'); // Cog icon button to open subscription options panel
+    wrapper.find('ButtonGroup').find('Button').last().simulate('click'); // Cog icon button to close subscription options panel
 
-    wrapper.find('button:last-child').simulate('click'); // Cog icon button
+    const dropdown = wrapper.find('Dropdown');
+    expect(dropdown.attr('className')).toBeNull();
+  });
 
-    const done = wrapper.find('Dropdown').find('Button');
+  it.skip('should update comment subscription when the done button is clicked in the subscription options panel', () => {
+    let commentType;
 
+    const onSubscribe = jest.fn((commentSubscriptionType) => {
+      commentType = commentSubscriptionType;
+    });
+    const onUnsubscribe = jest.fn();
+    const ONLY_AUTHOR_COMMENTS = 'only_author_comments';
+    const wrapper = deep(
+      <CommentSubscription
+        onSubscribe={onSubscribe}
+        onUnsubscribe={onUnsubscribe}
+      />,
+    );
+
+    wrapper.find('ButtonGroup').find('button').first().simulate('click'); // Subscribe button
+
+    expect(commentType).toEqual('all_comments');
+
+    wrapper.find('ButtonGroup').find('Button').last().simulate('click'); // Cog icon button
+
+    const dropdown = wrapper.find('Dropdown');
+
+    // Select the author comments only.
+    const authorCommentsOnlyRadioButton = dropdown.find('RadioButton').last();
+    expect(authorCommentsOnlyRadioButton.attr('value')).toEqual(
+      'only_author_comments',
+    );
+    authorCommentsOnlyRadioButton.simulate('click', {
+      target: { value: ONLY_AUTHOR_COMMENTS },
+    });
+
+    const done = dropdown.find('Button');
     done.simulate('click');
+
+    expect(commentType).toEqual(ONLY_AUTHOR_COMMENTS);
 
     // Called once by the initial subscribe and
     // a second time by clicking on the Done button.
