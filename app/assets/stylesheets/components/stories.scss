@@ -8,8 +8,14 @@
   margin-bottom: $su-2; // This is basically spacing between each feed card.
   box-shadow: $bold-shadow; // we will kill it at some point, don't worry. just not yet.
   --story-padding: #{$su-4};
+  --title-font-size: #{$fs-xl};
   @media (min-width: $breakpoint-s) {
     --story-padding: #{$su-4}; // Replace with $su-6 when ready.
+    --title-font-size: #{$fs-2xl};
+
+    &--featured {
+      --title-font-size: #{$fs-3xl};
+    }
   }
 
   // Defining additional colors.
@@ -95,11 +101,7 @@
     color: var(--card-color);
     line-height: $lh-tight;
     margin-bottom: $su-1;
-    font-size: $fs-xl;
-
-    @media (min-width: $breakpoint-s) {
-      font-size: $fs-2xl;
-    }
+    font-size: var(--title-font-size);
 
     a {
       color: inherit;

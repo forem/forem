@@ -4,6 +4,7 @@ import { articlePropTypes } from '../src/components/common-prop-types/article-pr
 import {
   CommentsCount,
   CommentsList,
+  Cover,
   ContentTitle,
   Author,
   OverflowNavigation,
@@ -28,26 +29,13 @@ export const Article = ({
 
   return (
     <div
-      className="crayons-story"
+      className={`crayons-story ${isFeatured && ("crayons-story--featured")}`}
       id={isFeatured && ("featured-story-marker")}
-      data-featued-article="TODO"
+      data-featured-article="TODO"
       data-content-user-id={article.user_id}
     >
       {isFeatured && (
-        <a
-          href={article.path}
-          className="crayons-story__cover"
-        >
-          <img
-            src={article.main_image}
-            className="crayons-story__cover__image"
-            style={{
-              backgroundColor: article.main_image_background_hex_color,
-            }}
-            alt={article.title}
-            loading="lazy"
-          />
-        </a>
+        <Cover article={article} />
       )}
       <div className="crayons-story__body">
         <div className="crayons-story__top">
@@ -56,7 +44,7 @@ export const Article = ({
         </div>
 
         <div className="crayons-story__indention">
-          <ContentTitle article={article} isFeatured={isFeatured} />
+          <ContentTitle article={article} />
           <TagList tags={article.tag_list} />
 
           {article.class_name === 'Article' && (

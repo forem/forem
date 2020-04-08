@@ -1,6 +1,7 @@
 export * from './Author';
 export * from './ContentTitle';
 export * from './CommentsCount';
+export * from './Cover';
 export * from './CommentsList';
 export * from './OverflowNavigation';
 export * from './PublishDate';
