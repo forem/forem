@@ -2,10 +2,10 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../../src/components/common-prop-types';
 
-export const ContentTitle = ({ article, currentTag }) => (
+export const ContentTitle = ({ article }) => (
   <h2 className="crayons-story__title">
     <a href={article.path} id={`article-link-${article.id}`} >
-      {article.flare_tag && currentTag !== article.flare_tag.name && (
+      {/* {article.flare_tag && currentTag !== article.flare_tag.name && (
         <span
           className="tag-identifier"
           style={{
@@ -26,19 +26,14 @@ export const ContentTitle = ({ article, currentTag }) => (
         >
           person
         </span>
-      )}
+      )} */}
       {filterXSS(article.title)}
     </a>
   </h2>
 );
 
-ContentTitle.defaultProps = {
-  currentTag: null,
-};
-
 ContentTitle.propTypes = {
   article: articlePropTypes.isRequired,
-  currentTag: PropTypes.string,
 };
 
 ContentTitle.displayName = 'ContentTitle';
