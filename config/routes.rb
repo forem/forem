@@ -178,7 +178,6 @@ Rails.application.routes.draw do
       get "/onboarding", to: "tags#onboarding"
     end
   end
-  resources :downloads, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
   resources :github_repos, only: %i[index create update] do
@@ -214,6 +213,7 @@ Rails.application.routes.draw do
   resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
   resources :podcasts, only: %i[new create]
   resources :article_approvals, only: %i[create]
+  resources :video_chats, only: %i[show]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
   namespace :followings, defaults: { format: :json } do
     get :users
@@ -304,8 +304,6 @@ Rails.application.routes.draw do
   get "/code-of-conduct" => "pages#code_of_conduct"
   get "/report-abuse" => "pages#report_abuse"
   get "/faq" => "pages#faq"
-  get "/live" => "pages#live"
-  get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
   get "/challenge" => "pages#challenge"
   get "/badge" => "pages#badge"

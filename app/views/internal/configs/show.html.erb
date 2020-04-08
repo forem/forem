@@ -37,6 +37,24 @@
           </div>
         </div>
 
+        <div class="form-group">
+          <%= f.label :community_member_description, "Community member description" %>
+          <%= f.text_field :community_member_description,
+                           class: "form-control",
+                           value: SiteConfig.community_member_description,
+                           placeholder: "amazing humans who code." %>
+          <div class="alert alert-info">Used in pre-login banners.</div>
+        </div>
+
+        <div class="form-group">
+          <%= f.label :tagline, "Tagline" %>
+          <%= f.text_field :tagline,
+                           class: "form-control",
+                           value: SiteConfig.tagline,
+                           placeholder: "We're a place where coders share, stay up-to-date and grow their careers." %>
+          <div class="alert alert-info">Used in signup modal.</div>
+        </div>
+
         <div class="card mt-3">
           <div class="card-header">Staff</div>
           <div class="card-body">
@@ -207,11 +225,29 @@
                   <img alt="main social image" class="img-fluid" src="<%= SiteConfig.primary_sticker_image_url %>" />
                 </div>
                 <div class="col-12">
-                  <div class="alert alert-info">
-                    <h5>Used as the primary sticker image</h5>
-                  </div>
+                  <div class="alert alert-info"> Used as the primary sticker image </div>
                 </div>
               </div>
+
+              <%= f.label :mascot_image_url %>
+              <%= f.text_field :mascot_image_url,
+                               class: "form-control",
+                               value: SiteConfig.mascot_image_url,
+                               placeholder: "https://image.url" %>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" />
+                </div>
+                <div class="col-12">
+                  <div class="alert alert-info"> Used as the mascot image. </div>
+                </div>
+              </div>
+
+              <%= f.label :mascot_image_description %>
+              <%= f.text_field :mascot_image_description,
+                               class: "form-control",
+                               value: SiteConfig.mascot_image_description %>
+              <div class="alert alert-info">Used as the alt text for the mascot image </div>
             </div>
           </div>
         </div>
