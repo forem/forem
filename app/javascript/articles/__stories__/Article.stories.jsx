@@ -9,6 +9,7 @@ import {
   articleWithReadingTimeGreaterThan1,
   articleWithReactions,
   articleWithComments,
+  featuredArticle,
   assetPath,
 } from '../__tests__/utilities/articleUtilities';
 import { articleDecorator } from './articleDecorator';
@@ -45,6 +46,23 @@ export const DefaultArticle = () => (
 
 DefaultArticle.story = {
   name: 'default',
+};
+
+export const IsFeatured = () => (
+  <Article
+    {...commonProps}
+    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
+    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
+    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
+    isBookmarked={boolean('isBookmarked', false)}
+    isFeatured={boolean('isFeatured', true)}
+    article={object('article', featuredArticle)}
+    currentTag={text('currentTag', 'javascript')}
+  />
+);
+
+IsFeatured.story = {
+  name: 'is featured',
 };
 
 export const WithOrganization = () => (

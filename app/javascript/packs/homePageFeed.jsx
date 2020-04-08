@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import PropTypes from 'prop-types';
-import { Article, FeaturedArticle, LoadingArticle } from '../articles';
+import { Article, LoadingArticle } from '../articles';
 import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../src/components/common-prop-types';
@@ -92,9 +92,10 @@ export const renderFeed = timeFrame => {
         // 3. Rest of the stories for the feed
         return (
           <div>
-            <FeaturedArticle
+            <Article
               {...commonProps}
               article={featuredStory}
+              isFeatured={true}
               isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
             />
             {podcastEpisodes.length > 0 && (
