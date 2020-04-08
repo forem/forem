@@ -15,6 +15,7 @@ class StoriesController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
+  # before_action :set_json_ld, only: :show
 
   rescue_from ArgumentError, with: :bad_request
 
@@ -330,4 +331,51 @@ class StoriesController < ApplicationController
   def assign_classified_listings
     @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
   end
+
+  # def set_json_ld
+  #   @user_json_ld = {
+  #     "@context": "http://schema.org",
+  #     "@type": "Person",
+  #     "mainEntityOfPage": {
+  #       "@type": "WebPage",
+  #       "@id": "https://dev.to/#{@user.username}",
+  #     },
+  #     "url": user_url(@user),
+  #     "image": ProfileImage.new(@user).get(width: 320),
+  #     "name": @user.name,
+  #     "description": @user.summary.presence || ["404 bio not found"].sample,
+  #       [
+  #         {
+  #           "sameAs": [
+  #             @user.mostly_work_with if @user.mostly_work_with.present?
+  #             @user.currently_hacking_on if @user.currently_hacking_on.present?
+  #             @user.currently_learning if @user.currently_learning.present?
+  #           ]
+  #         }
+  #     ]
+  #     "email": @user.email if @user.email_public
+  #     "jobTitle": @user.employment_title if @user.employment_title.present?
+  #     "worksFor": [
+  #       {
+  #         "name": @user.employer_name if @user.employer_name.present?
+  #         "sameAs": @user.employer_url if @user.employer_url.present?
+  #       }
+  #     ]
+  #     "alumniOf": @user.education if @user.education.present?
+  #     "sameAs": [
+  #       "https://twitter.com/#{@user.twitter_username}" if @user.twitter_username?
+  #       "https://github.com/#{@user.github_username}" if @user.github_username?
+  #       @user.mastodon_url if @user.mastodon_url?
+  #       @user.facebook_url if @user.facebook_url?
+  #       @user.linkedin_url if @user.linkedin_url?
+  #       @user.stackoverflow_url if @user.stackoverflow_url?
+  #       @user.dribbble_url if @user.dribbble_url?
+  #       @user.medium_url if @user.medium_url?
+  #       @user.gitlab_url if @user.gitlab_url?
+  #       @user.instagram_url if @user.instagram_url?
+  #       @user.twitch_url if @user.twitch_username?
+  #       @user.website_url if @user.website_url?
+  #     ]
+  #   }.to_json
+  # end
 end
