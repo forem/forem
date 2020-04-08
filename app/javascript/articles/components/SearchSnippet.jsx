@@ -35,11 +35,9 @@ export const SearchSnippet = ({ snippetResult }) => {
 
     if (bodyTextSnippet.length > 0 || commentsBlobSnippet.length > 0) {
       return (
-        <div className="search-snippet">
-          <span>
-            {bodyTextSnippet}
-            {commentsBlobSnippet}
-          </span>
+        <div className="crayons-story__snippet">
+          {bodyTextSnippet}
+          {commentsBlobSnippet}
         </div>
       );
     }

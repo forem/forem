@@ -81,7 +81,7 @@ export const Article = ({
         </div>
       </div>
 
-      <CommentsList />
+      {/* <CommentsList /> */}
     </div>
   );
 };
