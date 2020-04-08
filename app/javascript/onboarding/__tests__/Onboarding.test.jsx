@@ -10,14 +10,6 @@ import FollowTags from '../components/FollowTags';
 import FollowUsers from '../components/FollowUsers';
 
 global.fetch = fetch;
-window.userData = function userData() {
-  return {
-    profile_image_90: 'mock_url_link',
-    name: 'firstname lastname',
-    username: 'username',
-  };
-};
-
 function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve));
 }
@@ -82,6 +74,9 @@ describe('<Onboarding />', () => {
   ]);
   const dataUser = JSON.stringify({
     followed_tag_names: ['javascript'],
+    profile_image_90: 'mock_url_link',
+    name: 'firstname lastname',
+    username: 'username',
   });
 
   describe('IntroSlide', () => {

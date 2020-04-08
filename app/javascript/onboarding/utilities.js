@@ -19,3 +19,14 @@ export const updateOnboarding = lastPage => {
     credentials: 'same-origin',
   });
 };
+
+/**
+  * A util function to fetch the user's data from off of the document's body.
+  *
+  *
+  * @returns {Object} A JSON object with the parsed user data.
+  */
+ export const userData = () => {
+   const { user = null } = document.body.dataset;
+   return JSON.parse(user);
+ };

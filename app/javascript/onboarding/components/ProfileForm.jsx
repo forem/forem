@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import Navigation from './Navigation';
-import { getContentOfToken, updateOnboarding } from '../utilities';
+import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 
 class ProfileForm extends Component {
   constructor(props) {
@@ -10,6 +10,7 @@ class ProfileForm extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.user = userData();
 
     this.state = {
       summary: '',
@@ -26,14 +27,13 @@ class ProfileForm extends Component {
 
   onSubmit() {
     const csrfToken = getContentOfToken('csrf-token');
-    const { summary, location, employment_title, employer_name, last_onboarding_page } = this.state;
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: { summary, location, employment_title, employer_name, last_onboarding_page } }),
+      body: JSON.stringify({ user: { ...this.state } }),
       credentials: 'same-origin',
     }).then((response) => {
       if (response.ok) {
@@ -53,7 +53,7 @@ class ProfileForm extends Component {
 
   render() {
     const { prev } = this.props;
-    const { profile_image_90, username, name } = window.userData();
+    const { profile_image_90, username, name } = this.user;
     return (
       <div className="onboarding-main">
         <Navigation prev={prev} next={this.onSubmit} />
