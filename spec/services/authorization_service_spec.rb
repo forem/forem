@@ -22,6 +22,7 @@ RSpec.describe AuthorizationService, type: :service do
     end
 
     it "queues a slack message to be sent for a user whose identity is brand new" do
+      # TODO: build a new auth, don't access private data
       service.auth.extra.raw_info.created_at = 1.minute.ago.rfc3339
 
       sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
