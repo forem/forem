@@ -6,6 +6,26 @@ RSpec.describe Organization, type: :model do
   it { is_expected.to have_many(:sponsorships) }
   it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
 
+  describe "#after_commit" do
+    it "on update syncs elasticsearch data" do
+      article = create(:article, organization: organization)
+      sidekiq_perform_enqueued_jobs
+      new_org_name = "#{organization.name}+NEW"
+      organization.update(name: new_org_name)
+      sidekiq_perform_enqueued_jobs
+      expect(article.elasticsearch_doc.dig("_source", "organization", "name")).to eq(new_org_name)
+    end
+
+    it "on destroy removes data from elasticsearch" do
+      article = create(:article, organization: organization)
+      sidekiq_perform_enqueued_jobs
+      expect(article.elasticsearch_doc.dig("_source", "organization", "id")).to eq(organization.id)
+      organization.destroy
+      sidekiq_perform_enqueued_jobs
+      expect(article.elasticsearch_doc.dig("_source", "organization")).to be_nil
+    end
+  end
+
   describe "#name" do
     it "rejects names with over 50 characters" do
       organization.name = "x" * 51
