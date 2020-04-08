@@ -7,7 +7,6 @@
 
   self.addEventListener('install', event => {
     self.skipWaiting();
-
     // Populate initial serviceworker cache.
     event.waitUntil(
       caches.open(staticCacheName)
@@ -81,10 +80,12 @@
 
   self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
+
     if (/iPhone|CriOS|iPad/i.test(navigator.userAgent) && event.request.referrer.includes('t.co')) {
        // Twitter on iOS seems to cause problems
        return;
     }
+
     if (url.origin === location.origin) {
       if (event.clientId === "" && // Not fetched via AJAX after page load.
         event.request.method == "GET" && // Don't fetch on POST, DELETE, etc.
@@ -121,6 +122,12 @@
         !url.href.includes('/search/chat_channels') &&
         !url.href.includes('/search/classified_listings') &&
         !url.href.includes('/search/users') &&
+
+        // Don't run on redirects
+        !url.href.includes('/workshops') &&
+        !url.href.includes('/%F0%9F%92%B8') && // 💸 (hiring)
+        !url.href.includes('/podcasts') &&
+        !url.href.includes('/p/rlyweb') &&
 
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
