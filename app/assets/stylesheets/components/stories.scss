@@ -4,6 +4,7 @@
 .crayons-story {
   background: var(--card-bg);
   border-radius: $br-default;
+  font-size: $fs-base; // Todo: remove when ready.
   margin-bottom: $su-2; // This is basically spacing between each feed card.
   box-shadow: $bold-shadow; // we will kill it at some point, don't worry. just not yet.
   --story-padding: #{$su-4};
@@ -154,6 +155,16 @@
 
     &__actions {
       padding-left: calc(#{$su-6} + #{$su-4});
+    }
+  }
+  
+  &__snippet {
+    color: var(--card-secondary-color);
+    font-size: inherit;
+    em {
+      font-weight: $fw-medium;
+      color: var(--card-color);
+      background: var(--accent-warning-lighter);
     }
   }
 }
