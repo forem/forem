@@ -745,8 +745,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.text "body_markdown"
     t.datetime "created_at", null: false
     t.string "description"
-    t.string "group"
-    t.integer "group_order_number"
     t.boolean "is_top_level_path", default: false
     t.text "processed_html"
     t.string "slug"
