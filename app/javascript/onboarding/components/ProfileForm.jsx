@@ -17,7 +17,7 @@ class ProfileForm extends Component {
       location: '',
       employment_title: '',
       employer_name: '',
-      last_onboarding_page: 'personal info form', // i may need this i'm not sure exactly why yet
+      last_onboarding_page: 'personal info form',
     };
   }
 
