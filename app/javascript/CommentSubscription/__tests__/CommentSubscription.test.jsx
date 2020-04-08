@@ -76,7 +76,7 @@ describe('<CommentSubscription />', () => {
     expect(dropdown.attr('className')).toBeNull();
   });
 
-  it.skip('should update comment subscription when the done button is clicked in the subscription options panel', () => {
+  it('should update comment subscription when the done button is clicked in the subscription options panel', () => {
     let commentType;
 
     const onSubscribe = jest.fn((commentSubscriptionType) => {
