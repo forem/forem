@@ -65,6 +65,9 @@ class ProfileForm extends Component {
               Settings.
             </h2>
           </header>
+          <figure className="user-avatar-container">
+            <img className="user-avatar" alt="profile" src={window.userData().profile_image_90} />
+          </figure>
           <form>
             <label htmlFor="summary">
               Bio
