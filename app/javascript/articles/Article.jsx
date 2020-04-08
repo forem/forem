@@ -14,8 +14,6 @@ import {
 } from './components';
 import { PodcastArticle } from './PodcastArticle';
 
-/* global timeAgo */
-
 export const Article = ({
   article,
   currentTag,
