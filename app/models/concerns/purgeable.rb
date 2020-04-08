@@ -2,19 +2,15 @@
 # https://github.com/fastly/fastly-rails/blob/master/lib/fastly-rails/active_record/surrogate_key.rb
 #
 # This concern handles purge and purge_all calls to purge the edge cache (Fastly)
-module Purgable
+module Purgeable
   extend ActiveSupport::Concern
 
   module ClassMethods
     def purge_all
-      return unless Rails.env.production?
-
       service.purge_by_key(table_key)
     end
 
     def soft_purge_all
-      return unless Rails.env.production?
-
       service.purge_by_key(table_key, true)
     end
 
@@ -23,8 +19,6 @@ module Purgable
     end
 
     def fastly_service_identifier
-      return unless Rails.env.production?
-
       service.service_id
     end
   end
@@ -39,14 +33,10 @@ module Purgable
   end
 
   def purge
-    return unless Rails.env.production?
-
     service.purge_by_key(record_key)
   end
 
   def soft_purge
-    return unless Rails.env.production?
-
     service.purge_by_key(record_key, true)
   end
 
@@ -65,14 +55,10 @@ module Purgable
   private
 
   def fastly
-    return unless Rails.env.production?
-
     Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
   end
 
   def service
-    return unless Rails.env.production?
-
     Fastly::Service.new({ id: ApplicationConfig["FASTLY_SERVICE_ID"] }, fastly)
   end
 end

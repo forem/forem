@@ -1,7 +1,7 @@
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
-  include Purgable
+  include Purgeable
 
   QUERY_ESTIMATED_COUNT = <<~SQL.squish.freeze
     SELECT (

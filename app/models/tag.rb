@@ -40,7 +40,7 @@ class Tag < ActsAsTaggableOn::Tag
   SEARCH_CLASS = Search::Tag
 
   # This model doesn't inherit from ApplicationRecord so this has to be included
-  include Purgable
+  include Purgeable
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates
