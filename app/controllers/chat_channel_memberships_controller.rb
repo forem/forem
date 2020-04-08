@@ -1,5 +1,6 @@
 class ChatChannelMembershipsController < ApplicationController
   after_action :verify_authorized
+  include MessagesHelper
 
   def index
     skip_authorization
@@ -46,6 +47,7 @@ class ChatChannelMembershipsController < ApplicationController
       @chat_channel_membership.destroy
       flash[:settings_notice] = "Invitation removed."
     else
+      send_chat_action_message("@#{current_user.username} removed @#{@chat_channel_membership.user.username} from #{@chat_channel_membership.channel_name}", current_user, @chat_channel_membership.chat_channel_id, "removed_from_channel")
       @chat_channel_membership.update(status: "removed_from_channel")
       flash[:settings_notice] = "Removed #{@chat_channel_membership.user.name}"
     end
@@ -69,6 +71,7 @@ class ChatChannelMembershipsController < ApplicationController
     @chat_channel_membership = ChatChannelMembership.find(params[:id])
     authorize @chat_channel_membership
     channel_name = @chat_channel_membership.chat_channel.channel_name
+    send_chat_action_message("@#{current_user.username} left #{@chat_channel_membership.channel_name}", current_user, @chat_channel_membership.chat_channel_id, "left_channel")
     @chat_channel_membership.update(status: "left_channel")
     @chat_channels_memberships = []
     flash[:settings_notice] = "You have left the channel #{channel_name}. It may take a moment to be removed from your list."
@@ -85,11 +88,18 @@ class ChatChannelMembershipsController < ApplicationController
     if permitted_params[:user_action] == "accept"
       @chat_channel_membership.update(status: "active")
       channel_name = @chat_channel_membership.chat_channel.channel_name
+      send_chat_action_message("@#{current_user.username} joined #{@chat_channel_membership.channel_name}", current_user, @chat_channel_membership.chat_channel_id, "joined")
       flash[:settings_notice] = "Invitation to  #{channel_name} accepted. It may take a moment to show up in your list."
     else
       @chat_channel_membership.update(status: "rejected")
       flash[:settings_notice] = "Invitation rejected."
     end
     redirect_to chat_channel_memberships_path
+  end
+
+  def send_chat_action_message(message, user, channel_id, action)
+    temp_message_id = (0...20).map { ("a".."z").to_a[rand(8)] }.join
+    message = Message.create("message_markdown" => message, "user_id" => user.id, "chat_channel_id" => channel_id, "chat_action" => action)
+    pusher_message_created(false, message, temp_message_id)
   end
 end
