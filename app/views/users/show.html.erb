@@ -26,7 +26,7 @@
   </style>
 
 <script type="application/ld+json">
-  {
+{
     "@context": "http://schema.org",
     "@type": "Person",
     "mainEntityOfPage": {
@@ -36,9 +36,9 @@
     "url": "<%= user_url(@user) %>",
     "image": "<%= ProfileImage.new(@user).get(width: 320) %>",
     "name": "<%= @user.name %>",
-    "description": [
+    "description": "<%= @user.summary.presence || ["404 bio not found"].sample %>",
+    [
       {
-        "<%= @user.summary.presence || ["404 bio not found"].sample %>",
         "sameAs": [
           <% if @user.mostly_work_with.present? %>
             "<%= @user.mostly_work_with %>",
@@ -116,7 +116,7 @@
 </script>
 
   <div class="user-profile-header" style="<%= user_colors_style(@user) %>">
-    <meta content="https://dev.to/<%= @user.username %>">
+    <a href="https://dev.to/<%= @user.username %>"></a>
     <div class="user-profile-header-container">
       <div class="profile-pic-wrapper">
         <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
