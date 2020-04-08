@@ -2,7 +2,7 @@ module Search
   class IndexToElasticsearchWorker
     include Sidekiq::Worker
 
-    sidekiq_options queue: :high_priority
+    sidekiq_options queue: :high_priority, lock: :until_executing
 
     def perform(object_class, id)
       # PodcastEpisodes and Articles share an index so their IDs are prepended with their class names
