@@ -5,18 +5,18 @@ import { articlePropTypes } from '../../src/components/common-prop-types';
 export class SaveButton extends Component {
   componentDidMount() {
     const { isBookmarked } = this.props;
-    this.setState({ buttonText: isBookmarked ? 'SAVED' : 'SAVE' });
+    this.setState({ buttonText: isBookmarked ? 'Saved' : 'Save' });
   }
 
   render() {
     const { buttonText } = this.state;
     const { article, isBookmarked, onClick } = this.props;
     const mouseOut = _e => {
-      this.setState({ buttonText: isBookmarked ? 'SAVED' : 'SAVE' });
+      this.setState({ buttonText: isBookmarked ? 'Saved' : 'Save' });
     };
     const mouseOver = _e => {
       if (isBookmarked) {
-        this.setState({ buttonText: 'UNSAVE' });
+        this.setState({ buttonText: 'Unsave' });
       }
     };
 
@@ -24,7 +24,7 @@ export class SaveButton extends Component {
       return (
         <button
           type="button"
-          className={`article-engagement-count engage-button bookmark-button ${
+          className={`crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s ${
             isBookmarked ? 'selected' : ''
           }`}
           data-initial-feed
@@ -35,9 +35,8 @@ export class SaveButton extends Component {
           onMouseout={mouseOut}
           onBlur={mouseOut}
         >
-          <span className={isBookmarked ? 'bm-success' : 'bm-initial'}>
-            {buttonText}
-          </span>
+          <svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M6.75 4.5h10.5a.75.75 0 01.75.75v14.357a.375.375 0 01-.575.318L12 16.523l-5.426 3.401A.375.375 0 016 19.607V5.25a.75.75 0 01.75-.75zM16.5 6h-9v11.574l4.5-2.82 4.5 2.82V6z" /></svg>
+          {buttonText}
         </button>
       );
     }
@@ -45,8 +44,7 @@ export class SaveButton extends Component {
       return (
         <button
           type="button"
-          style={{ width: '122px' }}
-          className="article-engagement-count engage-button follow-action-button"
+          className="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s"
           data-info={`{"id":${article.id},"className":"User"}`}
           data-follow-action-button
         >

@@ -1,12 +1,14 @@
+@import '../variables';
 @import '../config/import';
 
 .crayons-story {
   background: var(--card-bg);
   border-radius: $br-default;
   margin-bottom: $su-2; // This is basically spacing between each feed card.
+  box-shadow: $bold-shadow; // we will kill it at some point, don't worry. just not yet.
   --story-padding: #{$su-4};
   @media (min-width: $breakpoint-s) {
-    --story-padding: #{$su-6};
+    --story-padding: #{$su-4}; // Replace with $su-6 when ready.
   }
 
   // Defining additional colors.
@@ -26,7 +28,6 @@
       color: var(--card-color);
     }
   }
-
 
   // Cover section for promoted (first) card.
   &__cover {
@@ -54,7 +55,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: $su-4;
+    margin-bottom: $su-3;
   }
 
   &__overflow {
@@ -80,8 +81,9 @@
     font-size: $fs-s;
   }
 
-  &__pic {
+  &__author-pic {
     position: relative;
+    margin-right: $su-2;
   }
 
   &__tags {
@@ -91,7 +93,7 @@
   &__title {
     color: var(--card-color);
     line-height: $lh-tight;
-    margin-bottom: $su-2;
+    margin-bottom: $su-1;
     font-size: $fs-xl;
 
     @media (min-width: $breakpoint-s) {
@@ -114,6 +116,26 @@
     align-items: center;
     font-size: $fs-s;
     line-height: $lh-tight;
+  }
+
+  &__details {
+    display: flex;
+    align-items: center;
+
+    &__item {
+      display: flex;
+      align-items: center;
+      margin-right: $su-5;
+      color: var(--card-color-secondary);
+
+      &[href]:hover {
+        color: var(--card-color);
+      }
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
   }
 
   &__comments {
