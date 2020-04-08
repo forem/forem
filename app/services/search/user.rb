@@ -31,7 +31,11 @@ module Search
           "path" => hit["path"],
           "id" => hit["id"],
           "class_name" => "User",
-          "positive_reactions_count" => hit["positive_reactions_count"]
+          "positive_reactions_count" => hit["positive_reactions_count"],
+          "comments_count" => hit["comments_count"],
+          "badge_achievements_count" => hit["badge_achievements_count"],
+          "last_comment_at" => hit["last_comment_at"],
+          "roles" => hit["roles"]
         }
       end
 

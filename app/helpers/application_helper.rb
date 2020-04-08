@@ -201,4 +201,8 @@ module ApplicationHelper
   def user_url(user)
     URL.user(user)
   end
+
+  def sanitized_referer(referer)
+    URL.sanitized_referer(referer)
+  end
 end

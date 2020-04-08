@@ -1,8 +1,9 @@
 module.exports = {
   collectCoverageFrom: [
-    'app/javascript/src/**/*.{js,jsx}',
+    'app/javascript/**/*.{js,jsx}',
     // This exclusion avoids running coverage on Barrel files, https://twitter.com/housecor/status/981558704708472832
-    '!app/javascript/src/**/components/**/index.js',
+    '!app/javascript/**/index.js',
+    '!app/javascript/packs/**/*.js', // avoids running coverage on webpacker pack files
     '!**/__tests__/**',
     '!**/__stories__/**',
   ],
