@@ -51,13 +51,12 @@ export const Article = ({
 
         <div className="crayons-story__indention">
           <ContentTitle article={article} />
+          <TagList tags={article.tag_list} />
 
           {article.class_name === 'Article' && (
             // eslint-disable-next-line no-underscore-dangle
             <SearchSnippet snippetResult={article._snippetResult} />
           )}
-
-          <TagList tags={article.tag_list} />
 
           <div className="crayons-story__bottom">
             <div className="crayons-story__details">
