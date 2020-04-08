@@ -6,7 +6,6 @@ import {
   article,
   articleWithOrganization,
   articleWithSnippetResult,
-  articleWithReadingTimeGreaterThan1,
   articleWithReactions,
   articleWithComments,
   featuredArticle,
@@ -111,22 +110,6 @@ export const WithSnippetResult = () => (
 
 WithSnippetResult.story = {
   name: 'with snippet result',
-};
-
-export const WithReadingTime = () => (
-  <Article
-    {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', articleWithReadingTimeGreaterThan1)}
-    currentTag={text('currentTag')}
-  />
-);
-
-WithReadingTime.story = {
-  name: 'with reading time',
 };
 
 export const WithReactions = () => (
