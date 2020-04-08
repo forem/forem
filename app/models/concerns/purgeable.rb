@@ -18,10 +18,6 @@ module Purgeable
       table_name
     end
 
-    def fastly_service_identifier
-      service.service_id
-    end
-
     def fastly
       Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
     end
@@ -54,10 +50,6 @@ module Purgeable
 
   def soft_purge_all
     self.class.soft_purge_all
-  end
-
-  def fastly_service_identifier
-    self.class.fastly_service_identifier
   end
 
   def fastly
