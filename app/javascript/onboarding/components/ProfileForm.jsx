@@ -65,9 +65,13 @@ class ProfileForm extends Component {
               Settings.
             </h2>
           </header>
-          <figure className="user-avatar-container">
-            <img className="user-avatar" alt="profile" src={window.userData().profile_image_90} />
-          </figure>
+          <div className="current-user-info">
+            <figure className="current-user-avatar-container">
+              <img className="current-user-avatar" alt="profile" src={window.userData().profile_image_90} />
+            </figure>
+            <h3>{window.userData().name}</h3>
+            <p>{window.userData().username}</p>
+          </div>
           <form>
             <label htmlFor="summary">
               Bio
@@ -79,7 +83,6 @@ class ProfileForm extends Component {
                 maxLength="120"
               />
             </label>
-
             <label htmlFor="location">
               Where are you located?
               <input
@@ -91,7 +94,6 @@ class ProfileForm extends Component {
                 maxLength="60"
               />
             </label>
-
             <label htmlFor="employment_title">
               What is your title?
               <input
@@ -103,7 +105,6 @@ class ProfileForm extends Component {
                 maxLength="60"
               />
             </label>
-
             <label htmlFor="employer_name">
               Where do you work?
               <input
