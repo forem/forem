@@ -21,6 +21,14 @@ module Purgeable
     def fastly_service_identifier
       service.service_id
     end
+
+    def fastly
+      Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
+    end
+
+    def service
+      Fastly::Service.new({ id: ApplicationConfig["FASTLY_SERVICE_ID"] }, fastly)
+    end
   end
 
   # Instance methods
@@ -52,13 +60,11 @@ module Purgeable
     self.class.fastly_service_identifier
   end
 
-  private
-
   def fastly
-    Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
+    self.class.fastly
   end
 
   def service
-    Fastly::Service.new({ id: ApplicationConfig["FASTLY_SERVICE_ID"] }, fastly)
+    self.class.service
   end
 end
