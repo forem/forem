@@ -17,6 +17,7 @@ import { PodcastArticle } from './PodcastArticle';
 export const Article = ({
   article,
   currentTag,
+  isFeatured,
   isBookmarked,
   // videoIcon,
   bookmarkClick,
@@ -28,21 +29,26 @@ export const Article = ({
   return (
     <div
       className="crayons-story"
+      id={isFeatured && ("featured-story-marker")}
+      data-featued-article="TODO"
       data-content-user-id={article.user_id}
     >
-      {article.cloudinary_video_url && (
+      {isFeatured && (
         <a
           href={article.path}
           className="crayons-story__cover"
         >
-          <img src={article.cloudinary_video_url} alt="Video for TODO: ARTICLE TITLE" loading="lazy" />
-          {/* <div className="single-article-video-duration">
-            <img src={videoIcon} alt="video camera" loading="lazy" />
-            {article.video_duration_in_minutes}
-          </div> */}
+          <img
+            src={article.main_image}
+            className="crayons-story__cover__image"
+            style={{
+              backgroundColor: article.main_image_background_hex_color,
+            }}
+            alt={article.title}
+            loading="lazy"
+          />
         </a>
       )}
-
       <div className="crayons-story__body">
         <div className="crayons-story__top">
           <Author article={article} organization={article.organization} />
@@ -50,7 +56,7 @@ export const Article = ({
         </div>
 
         <div className="crayons-story__indention">
-          <ContentTitle article={article} />
+          <ContentTitle article={article} isFeatured={isFeatured} />
           <TagList tags={article.tag_list} />
 
           {article.class_name === 'Article' && (
@@ -88,12 +94,14 @@ export const Article = ({
 Article.defaultProps = {
   currentTag: null,
   isBookmarked: false,
+  isFeatured: false,
 };
 
 Article.propTypes = {
   article: articlePropTypes.isRequired,
   currentTag: PropTypes.string,
   isBookmarked: PropTypes.bool,
+  isFeatured: PropTypes.bool,
   videoIcon: PropTypes.string.isRequired,
   bookmarkClick: PropTypes.func.isRequired,
 };

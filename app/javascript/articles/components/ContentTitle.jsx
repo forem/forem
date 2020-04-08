@@ -2,8 +2,8 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../../src/components/common-prop-types';
 
-export const ContentTitle = ({ article }) => (
-  <h2 className="crayons-story__title">
+export const ContentTitle = ({ article, isFeatured }) => (
+  <h2 className={`crayons-story__title ${isFeatured && (" fs-3xl")}`}>
     <a href={article.path} id={`article-link-${article.id}`} >
       {/* {article.flare_tag && currentTag !== article.flare_tag.name && (
         <span
@@ -34,6 +34,7 @@ export const ContentTitle = ({ article }) => (
 
 ContentTitle.propTypes = {
   article: articlePropTypes.isRequired,
+  isFeatured: PropTypes.bool.isRequired,
 };
 
 ContentTitle.displayName = 'ContentTitle';
