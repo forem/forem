@@ -28,9 +28,14 @@ RSpec.describe "/internal/reactions", type: :request do
       expect(reaction.reload.status).not_to eq("confirmedsssss")
     end
 
-    it "returns HTTP Status of 200 upon status update" do
+    it "returns HTTP Status 200 upon status update" do
       put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmed" }
       expect(response).to have_http_status(200)
+    end
+
+    it "returns HTTP Status 422 upon status update failure" do
+      put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmedsssss" }
+      expect(response).to have_http_status(422)
     end
 
     it "returns expected JSON upon status update" do
@@ -38,9 +43,9 @@ RSpec.describe "/internal/reactions", type: :request do
       expect(JSON.parse(response.body)).to eq("outcome" => "Success")
     end
 
-    it "returns expected JSON upon status update failure" do
+    it "returns error upon status update failure" do
       put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmedsssss" }
-      expect(JSON.parse(response.body)).to eq("outcome" => "Failed to update reaction")
+      expect(JSON.parse(response.body)).to include("error")
     end
   end
 
