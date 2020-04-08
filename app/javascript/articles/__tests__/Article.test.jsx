@@ -5,7 +5,6 @@ import {
   article,
   articleWithOrganization,
   articleWithSnippetResult,
-  articleWithReadingTimeGreaterThan1,
   articleWithReactions,
   videoArticle,
   articleWithComments,
@@ -61,17 +60,6 @@ describe('<Article /> component', () => {
         {...commonProps}
         isBookmarked={false}
         article={articleWithSnippetResult}
-      />,
-    );
-    expect(tree).toMatchSnapshot();
-  });
-
-  it('should render with a reading time', () => {
-    const tree = render(
-      <Article
-        {...commonProps}
-        isBookmarked={false}
-        article={articleWithReadingTimeGreaterThan1}
       />,
     );
     expect(tree).toMatchSnapshot();
