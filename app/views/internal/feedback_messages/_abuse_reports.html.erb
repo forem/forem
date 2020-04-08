@@ -27,7 +27,7 @@
       <div class="card-body" style="overflow: scroll; max-height: 500px;">
         <% @vomits.each do |reaction| %>
           <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
-          <div class="d-flex justify-content-between">
+          <div class="d-flex justify-content-between" id="js__reaction__div__<%= reaction.id %>">
             <span>
               🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a>
             </span>
@@ -44,26 +44,83 @@
             <span>
               <% if params[:status] == "Open" || params[:status].blank? %>
                 <% if reaction.reactable_type == "User" %>
-                  <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
-                    <%= f.hidden_field :status, value: "confirmed" %>
-                    <%= f.submit "CONFIRMED", class: "btn btn-success btn-sm", data: { confirm: "Are you sure?" } %>
-                  <% end %>
+                  <button
+                    class="btn btn-success btn-sm js-reaction-confirm"
+                    type="button"
+                    data-reactable="user"
+                    data-id="<%= reaction.id %>"
+                    data-status="confirmed">
+                    CONFIRM
+                  </button>
                 <% else %>
-                  <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
-                    <%= f.hidden_field :status, value: "confirmed" %>
-                    <%= f.submit "CONFIRMED", class: "btn btn-success btn-sm" %>
-                  <% end %>
+                  <button
+                    class="btn btn-success btn-sm js-reaction-confirm"
+                    type="button"
+                    data-reactable="not-user"
+                    data-id="<%= reaction.id %>"
+                    data-status="confirmed">
+                    CONFIRM
+                  </button>
                 <% end %>
-                <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
-                  <%= f.hidden_field :status, value: "invalid" %>
-                  <%= f.submit "INVALID", class: "btn btn-danger btn-sm" %>
-                <% end %>
+                <button
+                  class="btn btn-danger btn-sm js-reaction-confirm"
+                  type="button"
+                  data-id="<%= reaction.id %>"
+                  data-status="invalid">
+                  INVALID
+                </button>
               <% end %>
             </span>
           </div>
-          <hr>
+          <hr id="js__reaction__div__hr__<%= reaction.id %>">
         <% end %>
       </div>
     </div>
   </div>
 </div>
+
+<script>
+  function removeReactionDiv(id){
+    document.getElementById(`js__reaction__div__${id}`).remove();
+    document.getElementById(`js__reaction__div__hr__${id}`).remove();
+  }
+
+  function updateReactionStatus(id, status){
+    fetch(`/internal/reactions/${id}`, {
+     method: 'PATCH',
+     headers: {
+      Accept: 'application/json',
+       'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
+       'Content-Type': 'application/json',
+     },
+     body: JSON.stringify({
+       id: id,
+       status: status,
+      }),
+     credentials: 'same-origin'
+   })
+    .then(response => response.json()
+    .then(json => {
+      if (json.outcome === 'Success') {
+      removeReactionDiv(id)
+      } else {
+        alert(json.error)
+      }
+    })
+    .catch(error => {
+      alert(error);
+    }))
+  }
+
+  document.querySelectorAll('.js-reaction-confirm').forEach(item => {
+    item.addEventListener('click', function () {
+      if (item.dataset.reactable === 'user') {
+        if (confirm("You are confirming a reaction for a User; are you sure?")){
+          updateReactionStatus(item.dataset.id, item.dataset.status);
+        }
+      } else {
+        updateReactionStatus(item.dataset.id, item.dataset.status);
+      }
+    });
+  });
+</script>
