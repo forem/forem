@@ -18,7 +18,7 @@ export const Article = ({
   article,
   currentTag,
   isBookmarked,
-  videoIcon,
+  // videoIcon,
   bookmarkClick,
 }) => {
   if (article && article.type_of === 'podcast_episodes') {
@@ -36,10 +36,10 @@ export const Article = ({
           className="crayons-story__cover"
         >
           <img src={article.cloudinary_video_url} alt="Video for TODO: ARTICLE TITLE" loading="lazy" />
-          <div className="single-article-video-duration">
+          {/* <div className="single-article-video-duration">
             <img src={videoIcon} alt="video camera" loading="lazy" />
             {article.video_duration_in_minutes}
-          </div>
+          </div> */}
         </a>
       )}
 
@@ -50,7 +50,7 @@ export const Article = ({
         </div>
 
         <div className="crayons-story__indention">
-          <ContentTitle article={article} currentTag={currentTag} />
+          <ContentTitle article={article} />
 
           {article.class_name === 'Article' && (
             // eslint-disable-next-line no-underscore-dangle
