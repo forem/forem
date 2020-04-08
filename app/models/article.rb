@@ -8,6 +8,7 @@ class Article < ApplicationRecord
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
 
   acts_as_taggable_on :tags
   resourcify
@@ -19,7 +20,6 @@ class Article < ApplicationRecord
   delegate :username, to: :user, prefix: true
 
   belongs_to :user
-  belongs_to :job_opportunity, optional: true
   belongs_to :organization, optional: true
   # touch: true was removed because when an article is updated, the associated collection
   # is touched along with all its articles(including this one). This causes eventually a deadlock.
@@ -73,11 +73,12 @@ class Article < ApplicationRecord
   before_save :update_cached_user
 
   after_save :bust_cache, :detect_human_language
-  after_save :notify_slack_channel_about_publication, if: -> { published && published_at > 30.seconds.ago }
+  after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   before_destroy :before_destroy_actions, prepend: true
@@ -91,6 +92,13 @@ class Article < ApplicationRecord
   scope :admin_published_with, lambda { |tag_name|
     published.
       where(user_id: SiteConfig.staff_user_id).
+      order(published_at: :desc).
+      tagged_with(tag_name)
+  }
+
+  scope :user_published_with, lambda { |user_id, tag_name|
+    published.
+      where(user_id: user_id).
       order(published_at: :desc).
       tagged_with(tag_name)
   }
@@ -300,6 +308,7 @@ class Article < ApplicationRecord
   def touch_by_reaction
     async_score_calc
     index!
+    index_to_elasticsearch
   end
 
   def comments_blob
@@ -712,18 +721,6 @@ class Article < ApplicationRecord
   end
 
   def notify_slack_channel_about_publication
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-
-    message = <<~MESSAGE.chomp
-      New Article Published: #{title}
-      #{url}#{path}
-    MESSAGE
-
-    SlackBotPingWorker.perform_async(
-      message: message,
-      channel: "activity",
-      username: "article_bot",
-      icon_emoji: ":writing_hand:",
-    )
+    Slack::Messengers::ArticlePublished.call(article: self)
   end
 end

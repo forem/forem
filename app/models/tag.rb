@@ -1,8 +1,6 @@
-class Tag < ActsAsTaggableOn::Tag
-  self.ignored_columns = %w[
-    submission_rules_headsup
-  ]
+require_relative "../lib/acts_as_taggable_on/tag.rb"
 
+class Tag < ActsAsTaggableOn::Tag
   attr_accessor :points
 
   acts_as_followable
@@ -91,7 +89,7 @@ class Tag < ActsAsTaggableOn::Tag
     self.hotness_score = Article.tagged_with(name).
       where("articles.featured_number > ?", 7.days.ago.to_i).
       map do |article|
-        (article.comments_count * 14) + (article.reactions_count * 4) + rand(6) + ((taggings_count + 1) / 2)
+        (article.comments_count * 14) + article.score + rand(6) + ((taggings_count + 1) / 2)
       end.
       sum
   end

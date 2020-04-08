@@ -118,9 +118,9 @@
     margin: 60px auto 0px;
     width: 100%;
     max-width: 580px;
-    background: var(--container-bg);
+    background: var(--card-bg);
     box-sizing: border-box;
-    border: 1px solid var(--container-color-tertiary);
+    border: 1px solid var(--card-color-tertiary);
     @media screen and (min-width: 580px) {
       border-radius: 8px;
       margin: 20px auto 20px;
@@ -196,7 +196,7 @@
       cursor: pointer;
       font-size: 0.8em;
       padding: 8px 0px;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
     }
     .cta-main-listing-form {
       border: 0px;
@@ -255,7 +255,7 @@
       a {
         text-decoration: underline;
         display: inline-block;
-        color: var(--link-brand-color);
+        color: var(--link-branded-color);
       }
       @media screen and (min-width: 580px) {
         font-size: 1.1em;
@@ -266,14 +266,14 @@
     }
     p {
       font-size: 0.8em;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
     }
   }
   .classifieds-load-more-button {
     text-align: center;
     button {
       color: var(--body-color);
-      border: 1px solid var(--container-color-tertiary);
+      border: 1px solid var(--card-color-tertiary);
       font-size: 17px;
       padding: 14px 5px;
       margin: 40px auto 70px;
@@ -294,14 +294,14 @@
   padding: 5px;
   font-size: 17px;
   border-radius: 3px;
-  background: var(--container-bg);
+  background: var(--card-bg);
   margin-top: 10px;
   color: var(--body-color);
   border: 1px solid $light-medium-gray;
 }
 
 .listingform__tagsoptions {
-  border: 1px solid var(--container-color-tertiary);
+  border: 1px solid var(--card-color-tertiary);
   border-bottom-left-radius: 3px;
   border-bottom-right-radius: 3px;
 }
@@ -385,7 +385,7 @@
   text-overflow: ellipsis;
   font-size: 0.9em;
   break-inside: avoid;
-  background: var(--container-bg);
+  background: var(--card-bg);
   h3 {
     display: flex;
     justify-content: space-between;
@@ -467,7 +467,7 @@
   .single-classified-listing-tags {
     padding: 10px 15px;
     a {
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       @include themeable(
         background,
         theme-container-accent-background,
@@ -483,10 +483,10 @@
   }
   .single-classified-listing-author-info {
     font-size: 0.69em;
-    color: var(--container-color-tertiary);
+    color: var(--card-color-tertiary);
     padding: 0px 15px 4px;
     a {
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       display: inline-block;
       &.classified-listing-edit-button {
         margin-left: 4px;
@@ -524,7 +524,7 @@
   margin: 40px auto 10px;
   color: var(--body-color);
   border: 3px solid var(--body-color);
-  background: var(--container-bg);
+  background: var(--card-bg);
 }
 
 form.listings-contact-via-connect {
@@ -607,7 +607,7 @@ form.listings-contact-via-connect {
     }
 
     &.active {
-      background: var(--container-color-tertiary);
+      background: var(--card-color-tertiary);
       color: var(--body-color-inverted);
     }
   }
@@ -699,12 +699,12 @@ form.listings-contact-via-connect {
 
   .dashboard-listings-view {
     .dashboard-listing-row {
-      border: 1px solid var(--container-color-tertiary);
+      border: 1px solid var(--card-color-tertiary);
       padding: 5px 15px;
       margin-bottom: 13px;
       border-radius: 3px;
       position: relative;
-      background: var(--container-bg);
+      background: var(--card-bg);
 
       &.draft {
         background: var(--theme-container-accent-background, #fffeec);
@@ -715,7 +715,7 @@ form.listings-contact-via-connect {
       }
 
       .listing-org {
-        background: var(--container-color-secondary);
+        background: var(--card-color-secondary);
         color: var(--body-color-inverted);
         margin-right: 5px;
         padding: 3px 10px;
@@ -726,7 +726,7 @@ form.listings-contact-via-connect {
       }
 
       h2 {
-        color: var(--container-color);
+        color: var(--card-color);
         font-weight: 500;
         margin-bottom: 10px;
         margin-top: 8px;
@@ -740,14 +740,14 @@ form.listings-contact-via-connect {
       .dashboard-listing-date {
         font-size: 0.85em;
         padding: 3px 0px 6px;
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
 
       .dashboard-listing-category {
         padding: 10px 15px;
         a {
-          color: var(--container-color-tertiary);
-          background: var(--container-bg);
+          color: var(--card-color-tertiary);
+          background: var(--card-bg);
           display: inline-block;
           margin: 2px;
           padding: 2px 7px;
@@ -761,7 +761,7 @@ form.listings-contact-via-connect {
         font-size: 0.85em;
         padding: 3px 0px 6px;
         a {
-          color: var(--container-color);
+          color: var(--card-color);
         }
       }
 

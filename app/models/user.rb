@@ -1,6 +1,4 @@
 class User < ApplicationRecord
-  self.ignored_columns = ["organization_id"]
-
   include CloudinaryHelper
 
   attr_accessor(
@@ -8,13 +6,15 @@ class User < ApplicationRecord
     :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify
   )
 
-  rolify
+  rolify after_add: :index_roles, after_remove: :index_roles
+
   include AlgoliaSearch
   include Storext.model
   include Searchable
 
   SEARCH_SERIALIZER = Search::UserSerializer
   SEARCH_CLASS = Search::User
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::User
 
   acts_as_followable
   acts_as_follower
@@ -118,18 +118,6 @@ class User < ApplicationRecord
   validates :twitch_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
-  validates :shirt_gender,
-            inclusion: { in: %w[unisex womens],
-                         message: "%<value>s is not a valid shirt style" },
-            allow_blank: true
-  validates :shirt_size,
-            inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
-                         message: "%<value>s is not a valid size" },
-            allow_blank: true
-  validates :tabs_or_spaces,
-            inclusion: { in: %w[tabs spaces],
-                         message: "%<value>s is not a valid answer" },
-            allow_blank: true
   validates :editor_version,
             inclusion: { in: %w[v1 v2],
                          message: "%<value>s must be either v1 or v2" }
@@ -160,6 +148,7 @@ class User < ApplicationRecord
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
   alias_attribute :positive_reactions_count, :reactions_count
+  alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
 
   scope :with_this_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
@@ -189,6 +178,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification, :estimate_default_language
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
@@ -366,11 +356,6 @@ class User < ApplicationRecord
     end
   end
 
-  def scholar
-    valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
-    has_role?(:workshop_pass) && valid_pass
-  end
-
   def comment_banned
     has_role? :comment_banned
   end
@@ -526,9 +511,9 @@ class User < ApplicationRecord
   end
 
   def send_welcome_notification
-    return unless (welcome_broadcast = Broadcast.find_by(title: "Welcome Notification"))
+    return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
 
-    Notification.send_welcome_notification(id, welcome_broadcast.id)
+    Notification.send_welcome_notification(id, set_up_profile_broadcast.id)
   end
 
   def verify_twitter_username
@@ -705,5 +690,9 @@ class User < ApplicationRecord
     follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
     follows.destroy_all
+  end
+
+  def index_roles(_role)
+    index_to_elasticsearch_inline
   end
 end

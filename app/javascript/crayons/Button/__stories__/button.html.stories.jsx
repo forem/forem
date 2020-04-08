@@ -46,16 +46,6 @@ Outlined.story = {
   name: 'outlined',
 };
 
-export const Text = () => (
-  <a href="/" className="crayons-btn crayons-btn--text">
-    Text Button label
-  </a>
-);
-
-Text.story = {
-  name: 'story',
-};
-
 export const Danger = () => (
   <a href="/" className="crayons-btn crayons-btn--danger">
     Danger Button label

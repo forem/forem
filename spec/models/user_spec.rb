@@ -105,6 +105,12 @@ RSpec.describe User, type: :model do
       end
     end
 
+    it "on update syncs elasticsearch data" do
+      allow(user).to receive(:sync_related_elasticsearch_docs)
+      user.save
+      expect(user).to have_received(:sync_related_elasticsearch_docs)
+    end
+
     it "on destroy enqueues job to delete user from elasticsearch" do
       user.save
       sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
@@ -486,6 +492,33 @@ RSpec.describe User, type: :model do
         end
 
         expect(new_user.estimated_default_language).to eq(nil)
+      end
+    end
+
+    describe "#send_welcome_notification" do
+      let(:mascot_account) { create(:user) }
+      let!(:set_up_profile_broadcast) { create(:set_up_profile_broadcast) }
+
+      before do
+        allow(described_class).to receive(:mascot_account).and_return(mascot_account)
+      end
+
+      it "sends a setup welcome notification when an active broadcast exists" do
+        new_user = nil
+        sidekiq_perform_enqueued_jobs do
+          new_user = create(:user)
+        end
+        expect(new_user.reload.notifications.count).to eq(1)
+        expect(new_user.reload.notifications.first.notifiable).to eq(set_up_profile_broadcast)
+      end
+
+      it "does not send a setup welcome notification without an active broadcast" do
+        set_up_profile_broadcast.update!(active: false)
+        new_user = nil
+        sidekiq_perform_enqueued_jobs do
+          new_user = create(:user)
+        end
+        expect(new_user.reload.notifications.count).to eq(0)
       end
     end
 

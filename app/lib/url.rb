@@ -1,5 +1,7 @@
 # Utilities methods to safely build app wide URLs
 module URL
+  SERVICE_WORKER = "/serviceworker.js".freeze
+
   def self.protocol
     ApplicationConfig["APP_PROTOCOL"]
   end
@@ -30,7 +32,23 @@ module URL
     url(article.path)
   end
 
-  # Creates an article URL
+  # Creates a comment URL
+  #
+  # @param comment [Comment] the comment to create the URL for
+  def self.comment(comment)
+    url(comment.path)
+  end
+
+  # Creates a reaction URL
+  #
+  # A reaction URL is the URL of its reactable.
+  #
+  # @param reactable [Reaction] the reaction to create the URL for
+  def self.reaction(reaction)
+    url(reaction.reactable.path)
+  end
+
+  # Creates a tag URL
   #
   # @param tag [Tag] the tag to create the URL for
   def self.tag(tag, page = 1)
@@ -42,5 +60,20 @@ module URL
   # @param user [User] the user to create the URL for
   def self.user(user)
     url(user.username)
+  end
+
+  # Ensures we don't consider serviceworker.js as referer
+  #
+  # @param referer [String] the unsanitized referer
+  # @example A safe referer
+  #  sanitized_referer("/some/path") #=> "/some/path"
+  # @example serviceworker.js as referer
+  #  sanitized_referer("serviceworker.js") #=> nil
+  # @example An empty string
+  #  sanitized_referer("") #=> nil
+  def self.sanitized_referer(referer)
+    return if referer.blank? || URI(referer).path == SERVICE_WORKER
+
+    referer
   end
 end

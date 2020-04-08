@@ -39,17 +39,19 @@ module Search
 
       SOURCE = %i[
         id
-        title
-        path
         class_name
         comments_count
-        tags
-        readable_publish_date_string
-        positive_reactions_count
         flare_tag_hash
-        user
-        reading_time
+        main_image
+        path
+        positive_reactions_count
         published_at
+        readable_publish_date_string
+        reading_time
+        slug
+        tags
+        title
+        user
       ].freeze
 
       attr_accessor :params, :body

@@ -11,6 +11,7 @@ RSpec/DescribeClass:
   Exclude:
     - spec/requests/**/*
     - spec/system/**/*
+    - spec/tasks/**/*
 
 RSpec/ExampleLength:
   Max: 15

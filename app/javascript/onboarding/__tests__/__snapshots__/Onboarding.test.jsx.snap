@@ -5,13 +5,37 @@ preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
   <div class="onboarding-main">
+    <nav class="onboarding-navigation">
+      <div class="navigation-content">
+        <button
+          onClick={[Function bound prevSlide]}
+          class="back-button"
+          type="button"
+        >
+          Back
+        </button>
+        <button
+          onClick={[Function bound onSubmit]}
+          class="next-button"
+          type="button"
+        >
+          Continue
+        </button>
+      </div>
+    </nav>
     <div class="onboarding-content about">
-      <h2>About You!</h2>
+      <header class="onboarding-content-header">
+        <h1 class="title">Introduce yourself</h1>
+        <h2 class="subtitle">
+          Tell the community about yourself. Write a quick bio about what you do, what you're interested in, or anything else.
+        </h2>
+      </header>
       <form>
         <label htmlFor="summary">
-          Tell the community about yourself! Write a quick bio about what you do, what you're interested in, or anything else!
+          Bio
           <textarea
             name="summary"
+            placeholder="Tell us about yourself"
             onChange={[Function bound handleChange]}
             maxLength="120"
           >
@@ -19,22 +43,6 @@ preact-render-spy (1 nodes)
         </label>
       </form>
     </div>
-    <nav class="onboarding-navigation">
-      <button
-        onClick={[Function bound prevSlide]}
-        class="back-button"
-        type="button"
-      >
-        BACK
-      </button>
-      <button
-        onClick={[Function bound onSubmit]}
-        class="next-button"
-        type="button"
-      >
-        Continue
-      </button>
-    </nav>
   </div>
 </main>
 
@@ -46,62 +54,68 @@ preact-render-spy (1 nodes)
 <main class="onboarding-body">
   <div class="onboarding-main">
     <div class="onboarding-content">
-      <h1>
-        You‘re part of the community!
-        <span
-          role="img"
-          aria-label="tada"
-        >
-           🎉
-        </span>
-      </h1>
-      <h2 style="text-align: center;">What next?</h2>
+      <header class="onboarding-content-header">
+        <h1 class="title">
+          You‘re a part of the community!
+          <span
+            role="img"
+            aria-label="tada"
+          >
+             🎉
+          </span>
+        </h1>
+        <h2 class="subtitle">What next?</h2>
+      </header>
       <div class="onboarding-what-next">
         <a
           href="/welcome"
           data-no-instant={true}
         >
-          Join the Welcome Thread
-          <p class="whatnext-emoji">
+          <p>
             <span
+              class="whatnext-emoji"
               role="img"
               aria-label="tada"
             >
               😊
             </span>
+            Join the Welcome Thread
           </p>
         </a>
         <a href="/new">
-          Write your first DEV post
-          <p class="whatnext-emoji">
+          <p>
             <span
+              class="whatnext-emoji"
               role="img"
               aria-label="tada"
             >
               ✍️
             </span>
+            Write your first DEV post
           </p>
         </a>
         <a href="/top/infinity">
-          Read all-time top posts
-          <p class="whatnext-emoji">
+          <p>
             <span
+              class="whatnext-emoji"
               role="img"
               aria-label="tada"
             >
               🤓
             </span>
+            Read all-time top posts
           </p>
         </a>
         <a href="/settings">
-          Customize your profile
-          <p class="whatnext-emoji">
+          <p>
             <span
+              class="whatnext-emoji"
               role="img"
               aria-label="tada"
             >
               💅
             </span>
+            Customize your profile
           </p>
         </a>
       </div>
@@ -116,82 +130,104 @@ preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
   <div class="onboarding-main">
+    <nav class="onboarding-navigation">
+      <div class="navigation-content">
+        <button
+          onClick={[Function bound prevSlide]}
+          class="back-button"
+          type="button"
+        >
+          Back
+        </button>
+        <button
+          onClick={[Function bound onSubmit]}
+          class="next-button"
+          type="button"
+        >
+          Continue
+        </button>
+      </div>
+    </nav>
     <div class="onboarding-content checkbox-slide">
-      <h2>Some things to check off!</h2>
+      <header class="onboarding-content-header">
+        <h1 class="title">Getting started</h1>
+        <h2 class="subtitle">Let's review a few things first</h2>
+      </header>
       <form>
-        <label htmlFor="checked_code_of_conduct">
-          <input
-            type="checkbox"
-            id="checked_code_of_conduct"
-            name="checked_code_of_conduct"
-            checked={false}
-            onChange={[Function bound handleChange]}
-           />
-          You agree to uphold our 
-          <a
-            href="/code-of-conduct"
-            data-no-instant={true}
-            onClick={[Function onClick]}
-          >
-            Code of Conduct
-          </a>
-        </label>
-        <label htmlFor="checked_terms_and_conditions">
-          <input
-            type="checkbox"
-            id="checked_terms_and_conditions"
-            name="checked_terms_and_conditions"
-            checked={false}
-            onChange={[Function bound handleChange]}
-           />
-          You agree to our 
-          <a
-            href="/terms"
-            data-no-instant={true}
-            onClick={[Function onClick]}
-          >
-            Terms and Conditions
-          </a>
-        </label>
-        <h3>Email Preferences</h3>
-        <label htmlFor="email_newsletter">
-          <input
-            type="checkbox"
-            id="email_newsletter"
-            name="email_newsletter"
-            checked={true}
-            onChange={[Function bound handleChange]}
-           />
-          Do you want to receive our weekly newsletter emails?
-        </label>
-        <label htmlFor="email_digest_periodic">
-          <input
-            type="checkbox"
-            id="email_digest_periodic"
-            name="email_digest_periodic"
-            checked={true}
-            onChange={[Function bound handleChange]}
-           />
-          Do you want to receive a periodic digest with some of the top posts from your tags?
-        </label>
+        <fieldset>
+          <legend>Some things to check off</legend>
+          <ul>
+            <li class="checkbox-item">
+              <label htmlFor="checked_code_of_conduct">
+                <input
+                  type="checkbox"
+                  id="checked_code_of_conduct"
+                  name="checked_code_of_conduct"
+                  checked={false}
+                  onChange={[Function bound handleChange]}
+                 />
+                I agree to uphold the 
+                <a
+                  href="/code-of-conduct"
+                  data-no-instant={true}
+                  onClick={[Function onClick]}
+                >
+                  Code of Conduct
+                </a>
+              </label>
+            </li>
+            <li class="checkbox-item">
+              <label htmlFor="checked_terms_and_conditions">
+                <input
+                  type="checkbox"
+                  id="checked_terms_and_conditions"
+                  name="checked_terms_and_conditions"
+                  checked={false}
+                  onChange={[Function bound handleChange]}
+                 />
+                I agree to our 
+                <a
+                  href="/terms"
+                  data-no-instant={true}
+                  onClick={[Function onClick]}
+                >
+                  Terms and Conditions
+                </a>
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+        <fieldset>
+          <legend>Email preferences</legend>
+          <ul>
+            <li class="checkbox-item">
+              <label htmlFor="email_newsletter">
+                <input
+                  type="checkbox"
+                  id="email_newsletter"
+                  name="email_newsletter"
+                  checked={true}
+                  onChange={[Function bound handleChange]}
+                 />
+                I want to receive weekly newsletter emails.
+              </label>
+            </li>
+            <li class="checkbox-item">
+              <label htmlFor="email_digest_periodic">
+                <input
+                  type="checkbox"
+                  id="email_digest_periodic"
+                  name="email_digest_periodic"
+                  checked={true}
+                  onChange={[Function bound handleChange]}
+                 />
+                I want to receive a periodic digest with some of the top posts from your tags.
+              </label>
+            </li>
+          </ul>
+        </fieldset>
       </form>
     </div>
-    <nav class="onboarding-navigation">
-      <button
-        onClick={[Function bound prevSlide]}
-        class="back-button"
-        type="button"
-      >
-        BACK
-      </button>
-      <button
-        onClick={[Function bound onSubmit]}
-        class="next-button"
-        type="button"
-      >
-        Continue
-      </button>
-    </nav>
   </div>
 </main>
 
@@ -202,54 +238,82 @@ preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
   <div class="onboarding-main">
-    <div class="onboarding-content">
-      <h2>Follow tags to customize your feed</h2>
-      <div class="scroll">
+    <nav class="onboarding-navigation">
+      <div class="navigation-content">
         <button
+          onClick={[Function bound prevSlide]}
+          class="back-button"
           type="button"
-          onClick={[Function onClick]}
-          style="background-color: #000000; color: #ffffff;"
-          class="tag"
         >
-          #discuss
-          <div class="onboarding-tag-follow-indicator"></div>
+          Back
         </button>
         <button
+          onClick={[Function bound handleComplete]}
+          class="next-button"
           type="button"
-          onClick={[Function onClick]}
-          style="background-color: #f7df1e; color: #000000;"
-          class="tag"
         >
-          #javascript
-          <div class="onboarding-tag-follow-indicator"></div>
-        </button>
-        <button
-          type="button"
-          onClick={[Function onClick]}
-          style="background-color: #2a2566; color: #ffffff;"
-          class="tag"
-        >
-          #career
-          <div class="onboarding-tag-follow-indicator"></div>
+          Continue
         </button>
       </div>
-    </div>
-    <nav class="onboarding-navigation">
-      <button
-        onClick={[Function bound prevSlide]}
-        class="back-button"
-        type="button"
-      >
-        BACK
-      </button>
-      <button
-        onClick={[Function bound handleComplete]}
-        class="next-button"
-        type="button"
-      >
-        Continue
-      </button>
     </nav>
+    <div class="onboarding-content">
+      <header class="onboarding-content-header">
+        <h1 class="title">What are you interested in?</h1>
+        <h2 class="subtitle">Follow tags to customize your feed</h2>
+      </header>
+      <div class="onboarding-modal-scroll-container">
+        <div class="onboarding-tags">
+          <div
+            class="onboarding-tags__item false"
+            style="box-shadow: inset 0 0 0 2px #000000; color: ;"
+          >
+            <div class="onboarding-tags__item__inner">
+              #discuss
+              <button
+                type="button"
+                onClick={[Function onClick]}
+                class="onboarding-tags__button false"
+                style="background-color: #000000; color: #ffffff;"
+              >
+                + Follow
+              </button>
+            </div>
+          </div>
+          <div
+            class="onboarding-tags__item false"
+            style="box-shadow: inset 0 0 0 2px #f7df1e; color: ;"
+          >
+            <div class="onboarding-tags__item__inner">
+              #javascript
+              <button
+                type="button"
+                onClick={[Function onClick]}
+                class="onboarding-tags__button false"
+                style="background-color: #f7df1e; color: #000000;"
+              >
+                + Follow
+              </button>
+            </div>
+          </div>
+          <div
+            class="onboarding-tags__item false"
+            style="box-shadow: inset 0 0 0 2px #2a2566; color: ;"
+          >
+            <div class="onboarding-tags__item__inner">
+              #career
+              <button
+                type="button"
+                onClick={[Function onClick]}
+                class="onboarding-tags__button false"
+                style="background-color: #2a2566; color: #ffffff;"
+              >
+                + Follow
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </main>
 
@@ -260,79 +324,114 @@ preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
   <div class="onboarding-main">
+    <nav class="onboarding-navigation">
+      <div class="navigation-content">
+        <button
+          onClick={[Function bound prevSlide]}
+          class="back-button"
+          type="button"
+        >
+          Back
+        </button>
+        <button
+          onClick={[Function bound handleComplete]}
+          class="next-button"
+          type="button"
+        >
+          Continue
+        </button>
+      </div>
+    </nav>
     <div class="onboarding-content">
-      <h2>
-        Ok, here are some people we picked for you
-      </h2>
-      <div class="scroll">
-        <div class="select-all-button-wrapper">
+      <header class="onboarding-content-header">
+        <h1 class="title">Suggested people to follow</h1>
+        <h2 class="subtitle">Let's review a few things first</h2>
+      </header>
+      <div class="onboarding-modal-scroll-container">
+        <button
+          type="button"
+          onClick={[Function onClick]}
+          onKeyDown={[Function onKeyDown]}
+          class="user content-row selected"
+        >
+          <figure class="user-avatar-container">
+            <img
+              class="user-avatar"
+              src="ben.jpg"
+              alt="profile"
+             />
+          </figure>
+          <div class="user-info">
+            <h4 class="user-name">Ben Halpern</h4>
+            <p class="user-summary"></p>
+          </div>
           <button
             type="button"
-            onClick={[Function onClick]}
+            class="user-following-status"
           >
-            Select All ✅
+            Following
           </button>
-        </div>
-        <button
-          type="button"
-          style="background-color: #c7ffe8;"
-          onClick={[Function onClick]}
-          class="user"
-        >
-          <div class="onboarding-user-follow-status">selected</div>
-          <img
-            src="ben.jpg"
-            alt=""
-           />
-          <span>Ben Halpern</span>
-          <p></p>
         </button>
         <button
           type="button"
-          style="background-color: #c7ffe8;"
           onClick={[Function onClick]}
-          class="user"
+          onKeyDown={[Function onKeyDown]}
+          class="user content-row selected"
         >
-          <div class="onboarding-user-follow-status">selected</div>
-          <img
-            src="clown.jpg"
-            alt=""
-           />
-          <span>Krusty the Clown</span>
-          <p></p>
+          <figure class="user-avatar-container">
+            <img
+              class="user-avatar"
+              src="clown.jpg"
+              alt="profile"
+             />
+          </figure>
+          <div class="user-info">
+            <h4 class="user-name">Krusty the Clown</h4>
+            <p class="user-summary"></p>
+          </div>
+          <button
+            type="button"
+            class="user-following-status"
+          >
+            Following
+          </button>
         </button>
         <button
           type="button"
-          style="background-color: #c7ffe8;"
           onClick={[Function onClick]}
-          class="user"
+          onKeyDown={[Function onKeyDown]}
+          class="user content-row selected"
         >
-          <div class="onboarding-user-follow-status">selected</div>
-          <img
-            src="dev.jpg"
-            alt=""
-           />
-          <span>dev.to staff</span>
-          <p></p>
+          <figure class="user-avatar-container">
+            <img
+              class="user-avatar"
+              src="dev.jpg"
+              alt="profile"
+             />
+          </figure>
+          <div class="user-info">
+            <h4 class="user-name">dev.to staff</h4>
+            <p class="user-summary"></p>
+          </div>
+          <button
+            type="button"
+            class="user-following-status"
+          >
+            Following
+          </button>
         </button>
       </div>
     </div>
-    <nav class="onboarding-navigation">
-      <button
-        onClick={[Function bound prevSlide]}
-        class="back-button"
-        type="button"
-      >
-        BACK
-      </button>
-      <button
-        onClick={[Function bound handleComplete]}
-        class="next-button"
-        type="button"
-      >
-        Continue
-      </button>
-    </nav>
+    <div class="onboarding-selection-status">
+      <div class="selection-status-content">
+        <button
+          type="button"
+          onClick={[Function onClick]}
+        >
+          Select All ✅
+        </button>
+      </div>
+    </div>
   </div>
 </main>
 
@@ -342,51 +441,30 @@ exports[`<Onboarding /> IntroSlide renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
-  <div class="onboarding-main">
+  <div class="onboarding-main introduction">
     <div class="onboarding-content">
-      <h1>
-        <span>Welcome to the </span>
+      <figure>
         <img
           src="/assets/purple-dev-logo.png"
           class="sticker-logo"
           alt="DEV"
          />
-        <span>community!</span>
-      </h1>
-      <div>
-        <p>
-          DEV is where programmers share ideas and help each other grow.
-          <span
-            role="img"
-            aria-label="Nerd Face"
-          >
-            🤓
-          </span>
-        </p>
-        <p>
-          Ask questions, leave helpful comments, encourage others, and have fun!
-          <span
-            role="img"
-            aria-label="Raising Hands"
-          >
-            🙌
-          </span>
-        </p>
-        <p>
-          A few 
-          <strong>quick questions</strong>
-           for you before you get started...
-        </p>
-      </div>
+      </figure>
+      <h1 class="introduction-title">Welcome to DEV!</h1>
+      <h2 class="introduction-subtitle">
+        DEV is where programmers share ideas and help each other grow.
+      </h2>
     </div>
     <nav class="onboarding-navigation">
-      <button
-        onClick={[Function bound onSubmit]}
-        class="next-button"
-        type="button"
-      >
-        Continue
-      </button>
+      <div class="navigation-content">
+        <button
+          onClick={[Function bound onSubmit]}
+          class="next-button"
+          type="button"
+        >
+          Continue
+        </button>
+      </div>
     </nav>
   </div>
 </main>
@@ -398,8 +476,28 @@ preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
   <div class="onboarding-main">
-    <div class="onboarding-content about">
-      <h2>About You!</h2>
+    <nav class="onboarding-navigation">
+      <div class="navigation-content">
+        <button
+          onClick={[Function bound prevSlide]}
+          class="back-button"
+          type="button"
+        >
+          Back
+        </button>
+        <button
+          onClick={[Function bound onSubmit]}
+          class="next-button"
+          type="button"
+        >
+          Continue
+        </button>
+      </div>
+    </nav>
+    <div class="onboarding-content">
+      <header class="onboarding-content-header">
+        <h1 class="title">About You</h1>
+      </header>
       <form>
         <label htmlFor="location">
           Where are you located?
@@ -407,6 +505,7 @@ preact-render-spy (1 nodes)
             type="text"
             name="location"
             id="location"
+            placeholder="e.g. New York, NY"
             onChange={[Function bound handleChange]}
             maxLength="60"
            />
@@ -417,6 +516,7 @@ preact-render-spy (1 nodes)
             type="text"
             name="employment_title"
             id="employment_title"
+            placeholder="e.g. Software Engineer"
             onChange={[Function bound handleChange]}
             maxLength="60"
            />
@@ -427,28 +527,13 @@ preact-render-spy (1 nodes)
             type="text"
             name="employer_name"
             id="employer_name"
+            placeholder="e.g. Company name, self-employed, etc."
             onChange={[Function bound handleChange]}
             maxLength="60"
            />
         </label>
       </form>
     </div>
-    <nav class="onboarding-navigation">
-      <button
-        onClick={[Function bound prevSlide]}
-        class="back-button"
-        type="button"
-      >
-        BACK
-      </button>
-      <button
-        onClick={[Function bound onSubmit]}
-        class="next-button"
-        type="button"
-      >
-        Continue
-      </button>
-    </nav>
   </div>
 </main>
 

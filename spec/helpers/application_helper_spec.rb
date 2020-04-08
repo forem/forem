@@ -1,9 +1,16 @@
 require "rails_helper"
 
 RSpec.describe ApplicationHelper, type: :helper do
+  describe "#community_name" do
+    it "equals to the community name" do
+      allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_NAME").and_return("SLOAN")
+      expect(helper.community_name).to eq("SLOAN")
+    end
+  end
+
   describe "#community_qualified_name" do
     it "equals to the full qualified community name" do
-      expected_name = "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
+      expected_name = "#{ApplicationConfig['COMMUNITY_NAME']} Community"
       expect(helper.community_qualified_name).to eq(expected_name)
     end
   end
@@ -38,6 +45,31 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
+  describe "#copyright_notice" do
+    let(:current_year) { Time.current.year.to_s }
+
+    context "when the start year and current year is the same" do
+      it "returns the current year only" do
+        allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return(current_year)
+        expect(helper.copyright_notice).to eq(current_year)
+      end
+    end
+
+    context "when the start year and current year is different" do
+      it "returns the start and current year" do
+        allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return("2014")
+        expect(helper.copyright_notice).to eq("2014 - #{current_year}")
+      end
+    end
+
+    context "when the start year is blank" do
+      it "returns the current year" do
+        allow(ApplicationConfig).to receive(:[]).with("COMMUNITY_COPYRIGHT_START_YEAR").and_return(" ")
+        expect(helper.copyright_notice).to eq(current_year)
+      end
+    end
+  end
+
   describe "#app_url" do
     before do
       allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("https://")
@@ -59,6 +91,20 @@ RSpec.describe ApplicationHelper, type: :helper do
     it "works when called with an URI object" do
       uri = URI::Generic.build(path: "internal", fragment: "test")
       expect(app_url(uri)).to eq("https://dev.to/internal#test")
+    end
+  end
+
+  describe "#sanitized_referer" do
+    it "returns a safe referrer unmodified" do
+      expect(sanitized_referer("/some/path")).to eq("/some/path")
+    end
+
+    it "returns nil if the referer is the service worker" do
+      expect(sanitized_referer("/serviceworker.js")).to be nil
+    end
+
+    it "returns nil if the referer is empty" do
+      expect(sanitized_referer("")).to be nil
     end
   end
 end

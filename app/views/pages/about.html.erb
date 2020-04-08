@@ -1,22 +1,22 @@
-<% title "About #{ApplicationConfig['COMMUNITY_NAME']}" %>
+<% title "About #{community_name}" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/about" />
-  <meta name="description" content="About <%= ApplicationConfig["COMMUNITY_NAME"] %>">
+  <link rel="canonical" href="<%= app_url("/about") %>" />
+  <meta name="description" content="About <%= community_name %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/about" />
-  <meta property="og:title" content="About <%= ApplicationConfig["COMMUNITY_NAME"] %>" />
-  <meta property="og:image" content="http://i.imgur.com/B4JNl1w.png" />
-  <meta property="og:description" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> is great!" />
-  <meta property="og:site_name" content="<%= ApplicationConfig["COMMUNITY_NAME"] %>" />
+  <meta property="og:url" content="<%= app_url("/about") %>" />
+  <meta property="og:title" content="About <%= community_name %>" />
+  <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
+  <meta property="og:description" content="<%= community_name %> is great!" />
+  <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
-  <meta name="twitter:title" content="About <%= ApplicationConfig["COMMUNITY_NAME"] %>">
-  <meta name="twitter:description" content="<%= ApplicationConfig["COMMUNITY_NAME"] %> is great!">
-  <meta name="twitter:image:src" content="http://i.imgur.com/B4JNl1w.png">
+  <meta name="twitter:title" content="About <%= community_name %>">
+  <meta name="twitter:description" content="<%= community_name %> is great!">
+  <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
 
 <style>

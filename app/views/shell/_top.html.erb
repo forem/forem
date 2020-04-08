@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <% title = yield(:title) %>
-    <title><%= title || "#{ApplicationConfig['COMMUNITY_NAME']} Community" %></title>
+    <title><%= title || "#{community_qualified_name}" %></title>
     <% unless internal_navigation? %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
@@ -44,20 +44,20 @@
     <% end %>
   </head>
   <% unless internal_navigation? %>
-    <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
-      <div id="body-styles"></div>
-      <% if user_signed_in? %>
-        <%= render "layouts/user_config" %>
-      <% end %>
+    <% cache(cache_key_heroku_slug("top-html-and-config--#{user_signed_in?}")) do %>
+      <body data-user-status="<%= user_logged_in_status %>" data-pusher-key="<%= ApplicationConfig["PUSHER_KEY"] %>">
+        <div id="body-styles"></div>
+        <% if user_signed_in? %>
+          <%= render "layouts/user_config" %>
+        <% end %>
         <div id="audiocontent" data-podcast="">
           <%= yield(:audio) %>
         </div>
-      <% cache("application-top-bar--#{user_signed_in?}", expires_in: 100.hours) do %>
         <%= render "layouts/top_bar" %>
-      <% end %>
-      <div id="message-notice"></div>
-      <div class="app-shell-loader">
-        loading...
-      </div>
+        <div id="message-notice"></div>
+        <div class="app-shell-loader">
+          loading...
+        </div>
+    <% end %>
     <!-- End Top Shell -->
   <% end %>

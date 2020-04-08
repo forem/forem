@@ -1,7 +1,7 @@
-<% title "#{ApplicationConfig['COMMUNITY_NAME']} Sponsors" %>
+<% title "#{community_name} Sponsors" %>
 
 <%= content_for :page_meta do %>
-  <link rel="canonical" href="https://dev.to/sponsors" />
+  <link rel="canonical" href="<%= app_url("/sponsors") %>" />
   <meta name="description" content="dev.to | Sponsors">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 <% end %>

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Slack::Messengers::Feedback, type: :service do
-  let_it_be_readonly(:user) { create(:user) }
+  let(:user) { build(:user) }
   let(:default_params) do
     {
       type: "abuse-reports",

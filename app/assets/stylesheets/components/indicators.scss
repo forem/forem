@@ -10,10 +10,12 @@
 // @param {string} $name          Value for border-radius
 // @param {color} $color-1        Main color.
 
-@mixin indicator($this, $name, $color-1) {
+@mixin indicator($this, $name, $color-1, $color-2) {
   &#{'--' + $name} {
     background-color: $color-1;
-    color: var(--body-color-inverted);
+    border-color: $color-1;
+    color: $color-2;
+
     &#{$this + '--outlined'} {
       background-color: transparent;
       color: $color-1;
@@ -27,22 +29,32 @@
   font-family: $ff-accent;
   font-size: $fs-xs;
   padding: $su-1;
-  background-color: var(--button-secondary-bg);
+  background-color: var(--indicator-default-bg);
+  border: 1px solid var(--indicator-default-bg);
+  color: var(--indicator-default-color);
   text-align: center;
-  line-height: $lh-tight;
+  line-height: 1;
   border-radius: $br-default;
   display: inline-block;
 
   &--outlined {
     background-color: transparent;
-    border: 1px solid var(--button-secondary-bg);
-    color: var(--button-secondary-color);
+    border-color: var(--indicator-default-bg);
+    color: var(--indicator-default-color);
   }
 
-  @include indicator(&, accent, var(--accent-brand));
-  @include indicator(&, critical, var(--accent-danger));
-  @include indicator(&, success, var(--accent-success));
-  @include indicator(&, inverted, var(--widget-color));
+  @include indicator(
+    &,
+    accent,
+    var(--indicator-accent-bg),
+    var(--indicator-accent-color)
+  );
+  @include indicator(
+    &,
+    critical,
+    var(--indicator-critical-bg),
+    var(--indicator-critical-color)
+  );
 
   // Circle, no text
   &--bullet {

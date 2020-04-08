@@ -1,18 +1,17 @@
 <%= content_for :page_meta do %>
   <% title "DEV EVENTS" %>
-  <link rel="canonical" href="https://dev.to/events" />
-  <meta name="description" content="dev.to | Events">
+  <link rel="canonical" href="<%= app_url("/events") %>" />
+  <meta name="description" content="<%= community_name %> Events">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="https://dev.to/events" />
-  <meta property="og:title" content="dev.to | Events" />
+  <meta property="og:url" content="<%= app_url("/events") %>" />
+  <meta property="og:title" content="<%= community_name %> Events" />
   <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/bhavxzyx2e7bdsyvysve.jpg" />
   <meta property="og:description" content="Talks and workshops designed to help community members level up." />
-  <meta property="og:site_name" content="The Practical Dev" />
+  <meta property="og:site_name" content="<%= community_qualified_name %>" />
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
-  <meta name="twitter:title" content="dev.to | Events">
-  <meta property="og:description" content="Talks and workshops designed to help community members level up." />
+  <meta name="twitter:title" content="<%= community_name %> Events">
   <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/bhavxzyx2e7bdsyvysve.jpg">
 <% end %>
 

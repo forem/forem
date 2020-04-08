@@ -75,7 +75,7 @@
   <% end %>
   <div class="links">
     <% if SiteConfig.auth_allowed?("twitter") %>
-      <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="sign-up-link" data-no-instant>
+      <a href="/users/auth/twitter?callback_url=<%= app_url("/users/auth/twitter/callback") %>" class="sign-up-link" data-no-instant>
         <%= inline_svg_tag("twitter-logo.svg", class: "icon-img", aria: true, title: "twitter logo") %> Sign In with Twitter
       </a>
     <% end %>
