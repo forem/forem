@@ -1,6 +1,5 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { FEED_ICONS } from '../packs/feedIcons.js.erb';
 
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
 
@@ -145,7 +144,6 @@ export class Feed extends Component {
       >
         {renderFeed({
           feedItems,
-          feedIcons: FEED_ICONS,
           podcastEpisodes,
           bookmarkedFeedItems,
           bookmarkClick: this.bookmarkClick,
