@@ -12,6 +12,7 @@ import {
   SearchSnippet,
   TagList,
   ReactionsCount,
+  Video,
 } from './components';
 import { PodcastArticle } from './PodcastArticle';
 
@@ -20,7 +21,6 @@ export const Article = ({
   currentTag,
   isFeatured,
   isBookmarked,
-  // videoIcon,
   bookmarkClick,
 }) => {
   if (article && article.type_of === 'podcast_episodes') {
@@ -34,6 +34,10 @@ export const Article = ({
       data-featured-article="TODO"
       data-content-user-id={article.user_id}
     >
+      {article.cloudinary_video_url && (
+        <Video article={article} />
+      )}
+
       {isFeatured && (
         <Cover article={article} />
       )}
@@ -53,17 +57,15 @@ export const Article = ({
           )}
 
           <div className="crayons-story__bottom">
-            <div className="crayons-story__details">
-              {article.class_name !== 'User' && (
+            {article.class_name !== 'User' && (
+              <div className="crayons-story__details">
                 <ReactionsCount article={article} />
-              )}
-              {article.class_name !== 'User' && (
                 <CommentsCount
                   count={article.comments_count}
                   articlePath={article.path}
                 />
-              )}
-            </div>
+              </div>
+            )}
 
             <SaveButton
               article={article}
@@ -90,6 +92,5 @@ Article.propTypes = {
   currentTag: PropTypes.string,
   isBookmarked: PropTypes.bool,
   isFeatured: PropTypes.bool,
-  videoIcon: PropTypes.string.isRequired,
   bookmarkClick: PropTypes.func.isRequired,
 };

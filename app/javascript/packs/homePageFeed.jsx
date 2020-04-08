@@ -67,7 +67,6 @@ export const renderFeed = timeFrame => {
       timeFrame={timeFrame}
       renderFeed={({
         feedItems,
-        feedIcons,
         podcastEpisodes,
         bookmarkedFeedItems,
         bookmarkClick,
@@ -78,8 +77,6 @@ export const renderFeed = timeFrame => {
         }
 
         const commonProps = {
-          reactionsIcon: feedIcons.REACTIONS_ICON,
-          commentsIcon: feedIcons.COMMENTS_ICON,
           bookmarkClick,
         };
 
