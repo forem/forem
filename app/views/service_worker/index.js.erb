@@ -7,6 +7,7 @@
 
   self.addEventListener('install', event => {
     self.skipWaiting();
+
     // Populate initial serviceworker cache.
     event.waitUntil(
       caches.open(staticCacheName)
@@ -80,12 +81,10 @@
 
   self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
-
     if (/iPhone|CriOS|iPad/i.test(navigator.userAgent) && event.request.referrer.includes('t.co')) {
        // Twitter on iOS seems to cause problems
        return;
     }
-
     if (url.origin === location.origin) {
       if (event.clientId === "" && // Not fetched via AJAX after page load.
         event.request.method == "GET" && // Don't fetch on POST, DELETE, etc.
