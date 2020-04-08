@@ -5,9 +5,12 @@ class Internal::ReactionsController < Internal::ApplicationController
 
   def update
     @reaction = Reaction.find(params[:id])
-    @reaction.update(status: params[:reaction][:status])
-    Moderator::SinkArticles.call(@reaction.reactable_id) if confirmed_vomit_reaction?
-    redirect_to "/internal/reports"
+    if @reaction.update(status: params[:status])
+      Moderator::SinkArticles.call(@reaction.reactable_id) if confirmed_vomit_reaction?
+      render json: { outcome: "Success" }
+    else
+      render json: { error: @reaction.errors.full_messages.to_sentence }, status: :unprocessable_entity
+    end
   end
 
   private
