@@ -8,6 +8,9 @@ class IntroSlide extends Component {
   constructor(props) {
     super(props);
 
+    const user = window.userData();
+    this.name = user.name;
+
     this.onSubmit = this.onSubmit.bind(this);
   }
 
@@ -33,7 +36,11 @@ class IntroSlide extends Component {
               alt="DEV"
             />
           </figure>
-          <h1 className="introduction-title">Welcome to DEV!</h1>
+          <h1 className="introduction-title">
+            {this.name}
+            {' '}
+            &mdash; welcome to DEV!
+          </h1>
           <h2 className="introduction-subtitle">
             DEV is where programmers share ideas and help each other grow.
           </h2>
