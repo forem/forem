@@ -63,7 +63,7 @@
     <div class="crayons-story__body">
       <div class="crayons-story__top">
         <div class="crayons-story__meta">
-          <div class="crayons-story__pic mr-2">
+          <div class="crayons-story__author-pic">
             <a href="#" class="crayons-avatar crayons-avatar--l"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></a>
           </div>
 
@@ -89,16 +89,16 @@
         </div>
 
         <div class="crayons-story__bottom">
-          <div class="flex items-center crayons-story__secondary">
-            <span class="flex items-center mr-5">
+          <div class="crayons-story__details">
+            <a href="#" class="crayons-story__details__item">
               <%= inline_svg_tag("small-heart.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Save") %>
               11<span class="hidden s:inline">&nbsp;reactions</span>
-            </span>
+            </a>
 
-            <span class="flex items-center">
+            <a href="#" class="crayons-story__details__item">
               <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Save") %>
               7<span class="hidden s:inline">&nbsp;comments</>
-            </span>          
+            </a>
           </div>
 
           <button class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s">
@@ -155,7 +155,7 @@
     ...
     <div class="crayons-story__top">
       <div class="crayons-story__meta">
-        <div class="crayons-story__pic mr-2">
+        <div class="crayons-story__author-pic">
           <a href="#" class="crayons-logo crayons-logo--l"><img src="<%= asset_path("apple-icon.png") %>" class="crayons-logo__image" alt="Ben" /></a>
 
           <a href="#" class="crayons-avatar crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></a>

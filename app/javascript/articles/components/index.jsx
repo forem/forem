@@ -1,6 +1,6 @@
 export * from './ContentTitle';
 export * from './CommentsCount';
-export * from './OrganizationHeadline';
+export * from './Author';
 export * from './PublishDate';
 export * from './ReactionsCount';
 export * from './SaveButton';
