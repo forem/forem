@@ -17,13 +17,13 @@ def setup_omniauth_error(error)
   # for more details
   global_failure_handler = OmniAuth.config.on_failure
 
-  local_failure_handler = proc do |env|
+  local_failure_handler = lambda do |env|
     env["omniauth.error"] = error
     env
   end
   # here we compose the two handlers into a single function,
   # the result will be global_failure_handler(local_failure_handler(env))
-  failure_handler = global_failure_handler << local_failure_handler
+  failure_handler = local_failure_handler >> global_failure_handler
 
   OmniAuth.config.on_failure = failure_handler
 end
