@@ -20,7 +20,7 @@ function buildArticleHTML(article) {
     var tagList = article.tag_list || article.cached_tag_list_array
     if(tagList) {
       tagList.forEach(function(t){
-      tagString = tagString + '<a href="/t/'+t+'"><span class="tag">#'+t+'</span></a>\n'
+      tagString = tagString + '<a href="/t/'+t+'" class="crayons-tag"><span class="crayons-tag__prefix">#</span>'+t+'</a>\n'
       });
     }
     var commentsCountHTML = ""
@@ -72,9 +72,8 @@ function buildArticleHTML(article) {
       if (firstSnippetChar.toLowerCase() != firstSnippetChar.toUpperCase()){
         startingEllipsis = "…"
       }
-      bodyTextSnippet = startingEllipsis + article.highlight.body_text.join("...") + "…";
-      if (bodyTextSnippet.length > 0){
-        searchSnippetHTML = '<div class="search-snippet"><span>' + bodyTextSnippet + '</span></div>'
+      if ((bodyTextSnippet.length > 0 || commentsBlobSnippet.length > 0) && article.class_name == "Article"){
+        searchSnippetHTML = '<div class="crayons-story__snippet mb-1">'+bodyTextSnippet+commentsBlobSnippet+'</div>'
       }
     }
     var saveButton = '';
@@ -119,7 +118,17 @@ function buildArticleHTML(article) {
       '+videoHTML+'\
       <div class="crayons-story__body">\
         <div class="crayons-story__top">\
-          <!-- Author -->\
+          <div class="crayons-story__meta">\
+            <div class="crayons-story__author-pic">\
+              <a href="/" class="crayons-avatar crayons-avatar--l"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></a>\
+            </div>\
+            <div>\
+              <p>\
+                <a href="/" class="crayons-story__secondary fw-bold">Ryan Westlund</a>\
+              </p>\
+              <a href="/" class="crayons-story__tertiary">Posted 2h ago</a>\
+            </div>\
+          </div>\
           <button class="crayons-btn crayons-btn--ghost crayons-story__overflow" type="button">\
             <svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M7 12a2 2 0 11-4 0 2 2 0 014 0zm7 0a2 2 0 11-4 0 2 2 0 014 0zm5 2a2 2 0 100-4 2 2 0 000 4z"/></svg>\
           </button>\
@@ -132,28 +141,12 @@ function buildArticleHTML(article) {
         </div>\
         <div class="crayons-story__indention">\
           <h2 class="crayons-story__title"><a href="'+article.path+'" id="article-link-'+article.id+'">'+flareTag+filterXSS(article.title)+'</a></h2>\
-          '+searchSnippetHTML+'\
           <div class="crayons-story__tags">'+tagString+'</div>\
+          '+searchSnippetHTML+'\
           <div class="crayons-story__bottom">\
             <div class="crayons-story__details">'+commentsCountHTML+reactionsCountHTML+'</div>\
             '+saveButton+'\
           </div>\
-        </div>\
-      </div>\
-      <div class="crayons-story__comments">\
-        <p class="crayons-story__comments__headline">Top comments:</p>\
-        <div class="crayons-comment pl-2">\
-          <div class="crayons-comment__meta">\
-            <a href="#" class="crayons-story__secondary fw-medium">\
-              <span class="crayons-avatar mr-2"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></span> nickityonline71\
-            </a>\
-            <a href="#" class="crayons-story__tertiary ml-1">5 mins ago</a>\
-          </div>\
-          <div class="crayons-comment__body">Default font is set to 16px (fs-base). It should be standard in UI. Smaller and bigger font sizes should be <a href="#">used</a> carefully with respect to good visual rythm between elements. Medium should be used to emphasize something but not make it as loud as Bold.</div>\
-        </div>\
-        <div class="crayons-story__comments__actions">\
-          <a href="#" class="crayons-btn crayons-btn--secondary fs-s">See all 7 comments</a>\
-          <button class="crayons-btn crayons-btn--secondary fs-s">Subscribe</button>\
         </div>\
       </div>\
     </div>';

@@ -655,21 +655,7 @@
         }
       }
     }
-    .search-snippet {
-      font-size: 15px;
-      padding: 6px 0px 2px;
-      color: lighten($dark-gray, 8%);
-      line-height: 21px;
-      span {
-        background: darken($light-gray, 2%);
-        padding: 1px;
-      }
-      em {
-        font-weight: 600;
-        color: darken($dark-gray, 6%);
-        font-style: normal;
-      }
-    }
+    
     p {
       margin: 6px auto;
       line-height: 20px;
