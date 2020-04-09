@@ -9,7 +9,6 @@ const MessageModal = ({
   onChangeDraftingMessage,
 }) => {
   const isCurrentUserOnListining = listining.user_id === currentUserId;
-  console.log('is true? ', isCurrentUserOnListining);
 
   return (
     <form
