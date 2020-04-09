@@ -7,8 +7,10 @@
   font-size: $fs-base; // Todo: remove when ready.
   margin-bottom: $su-2; // This is basically spacing between each feed card.
   box-shadow: $bold-shadow; // we will kill it at some point, don't worry. just not yet.
+
   --story-padding: #{$su-4};
   --title-font-size: #{$fs-xl};
+
   @media (min-width: $breakpoint-s) {
     --story-padding: #{$su-4}; // Replace with $su-6 when ready.
     --title-font-size: #{$fs-2xl};
@@ -62,7 +64,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: $su-3;
+    margin-bottom: $su-2;
   }
 
   &__overflow {
@@ -159,7 +161,7 @@
       padding-left: calc(#{$su-6} + #{$su-4});
     }
   }
-  
+
   &__snippet {
     color: var(--card-secondary-color);
     font-size: inherit;
