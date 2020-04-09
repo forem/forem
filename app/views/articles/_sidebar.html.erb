@@ -30,7 +30,7 @@
         </header>
         <div class="widget-body social-icons">
           <% SiteConfig.social_media_handles.keys.each do |social_media_type| %>
-            <% if !SiteConfig.social_media_handles[social_media_type].empty? %>
+            <% if !SiteConfig.social_media_handles[social_media_type].blank? %>
               <a href="<%= "https://#{social_media_type}.com/#{SiteConfig.social_media_handles[social_media_type]}" %>" target="_blank" rel="noopener">
                 <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: "#{social_media_type.capitalize}", class: "crayons-icon") %>
               </a>

@@ -20,11 +20,11 @@ class SiteConfig < RailsSettings::Base
   field :staff_user_id, type: :integer, default: 1
   field :default_site_email, type: :string, default: "yo@dev.to"
   field :social_media_handles, type: :hash, default: {
-    twitter: "",
-    facebook: "",
-    github: "",
-    instagram: "",
-    twitch: ""
+    twitter: nil,
+    facebook: nil,
+    github: nil,
+    instagram: nil,
+    twitch: nil
   }
 
   # mascot account
