@@ -8,6 +8,7 @@ json.messages @chat_messages.reverse do |message|
   json.edited_at message.edited_at
   json.timestamp message.created_at
   json.color message.preferred_user_color
+  json.action message.chat_action
 end
 
 json.key_format! camelize: :lower

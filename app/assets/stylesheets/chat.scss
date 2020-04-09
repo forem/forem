@@ -1287,3 +1287,22 @@
 .active__message__list {
   background: var(--theme-container-accent-background, #f5f6f7);
 }
+.chatmessage__action {
+  &:hover {
+    background: none;
+  }
+
+  .chatmessage__bodytext {
+    margin: 0;
+    font-size: 12px;
+    font-style: italic;
+    color: var(--card-color-tertiary);
+    a {
+      text-decoration: none;
+      color: var(--card-color-tertiary);
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
