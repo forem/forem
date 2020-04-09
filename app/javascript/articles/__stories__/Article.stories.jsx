@@ -9,17 +9,10 @@ import {
   articleWithReactions,
   articleWithComments,
   featuredArticle,
-  assetPath,
 } from '../__tests__/utilities/articleUtilities';
 import { articleDecorator } from './articleDecorator';
 
 import '../../../assets/stylesheets/articles.scss';
-
-const ICONS = {
-  REACTIONS_ICON: assetPath('reactions-stack.png'),
-  COMMENTS_ICON: assetPath('comments-bubble.png'),
-  VIDEO_ICON: assetPath('video-camera.svg'),
-};
 
 const commonProps = {
   bookmarkClick: action('Saved/unsaved article'),
@@ -34,9 +27,6 @@ export default {
 export const DefaultArticle = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', article)}
     currentTag={text('currentTag', 'javascript')}
@@ -50,9 +40,6 @@ DefaultArticle.story = {
 export const IsFeatured = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     isFeatured={boolean('isFeatured', true)}
     article={object('article', featuredArticle)}
@@ -67,9 +54,6 @@ IsFeatured.story = {
 export const WithOrganization = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', articleWithOrganization)}
     currentTag={text('currentTag', 'javascript')}
@@ -83,9 +67,6 @@ WithOrganization.story = {
 export const WithFlareTag = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', article)}
     currentTag={text('currentTag')}
@@ -99,9 +80,6 @@ WithFlareTag.story = {
 export const WithSnippetResult = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', articleWithSnippetResult)}
     currentTag={text('currentTag')}
@@ -115,9 +93,6 @@ WithSnippetResult.story = {
 export const WithReactions = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', articleWithReactions)}
     currentTag={text('currentTag')}
@@ -131,9 +106,6 @@ WithReactions.story = {
 export const WithComments = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', articleWithComments)}
     currentTag={text('currentTag')}
@@ -147,9 +119,6 @@ WithComments.story = {
 export const OnReadingList = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', true)}
     article={object('article', articleWithComments)}
     currentTag={text('currentTag')}
