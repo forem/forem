@@ -100,7 +100,7 @@ preact-render-spy (1 nodes)
         </button>
       </div>
     </nav>
-    <div class="onboarding-content checkbox-slide">
+    <div class="onboarding-content terms-and-conditions-wrapper">
       <header class="onboarding-content-header">
         <h1 class="title">Getting started</h1>
         <h2 class="subtitle">Let's review a few things first</h2>
@@ -402,7 +402,7 @@ preact-render-spy (1 nodes)
           alt="DEV"
          />
       </figure>
-      <h1 class="introduction-title">Welcome to DEV!</h1>
+      <h1 class="introduction-title">firstname lastname — welcome to DEV!</h1>
       <h2 class="introduction-subtitle">
         DEV is where programmers share ideas and help each other grow.
       </h2>

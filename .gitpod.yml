@@ -26,6 +26,7 @@ tasks:
         printf "❗ To get them, please follow https://docs.dev.to/backend/algolia/#get-api-keys\n\n" &&
         read -p "Add them to config/application.yml, save the file, and press any key to continue... " -n 1 -r
       done ;
+      gem install solargraph;
       bin/setup &&
       bin/startup
 github:

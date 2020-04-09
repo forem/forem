@@ -21,11 +21,15 @@ class RateLimitChecker
   end
 
   def track_image_uploads
-    Rails.cache.increment("#{@user.id}_image_upload", count, expires_in: 30.seconds)
+    count = Rails.cache.read("#{@user.id}_image_upload").to_i
+    count += 1
+    Rails.cache.write("#{@user.id}_image_upload", count, expires_in: 30.seconds)
   end
 
   def track_article_updates
-    Rails.cache.increment("#{@user.id}_article_update", count, expires_in: 1.day)
+    count = Rails.cache.read("#{@user.id}_article_update").to_i
+    count += 1
+    Rails.cache.write("#{@user.id}_article_update", count, expires_in: 1.day)
   end
 
   def limit_by_email_recipient_address(address)
