@@ -44,7 +44,7 @@ function insertNext(params, buildCallback) {
     var distanceFromBottom = document.documentElement.scrollHeight - document.body.scrollTop;
     var newNode = document.createElement("div");
     newNode.innerHTML = newFollowersHTML;
-    var singleArticles = document.getElementsByClassName("single-article");
+    var singleArticles = document.getElementsByClassName("crayons-story");
     var lastElement = singleArticles[singleArticles.length - 1];
     insertAfter(newNode, lastElement);
     if (nextPage > 0) {
@@ -133,7 +133,7 @@ function insertVideos(videoArticles) {
   var newNode = document.createElement("div");
   newNode.innerHTML = newVideosHTML;
   newNode.className += "video-collection"
-  var singleArticles = document.getElementsByClassName("single-article");
+  var singleArticles = document.getElementsByClassName("crayons-story");
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);
   if (nextPage > 0) {
@@ -155,7 +155,7 @@ function insertArticles(articles) {
     if ( !['/', '/top/week', '/top/month', '/top/year', '/top/infinity', '/latest'].includes(window.location.pathname) &&
       existingEl &&
       existingEl.parentElement &&
-      existingEl.parentElement.classList.contains('single-article-small-pic') &&
+      existingEl.parentElement.classList.contains('crayons-story') &&
       !document.getElementById("video-player-"+article.id)) {
       existingEl.parentElement.outerHTML = buildArticleHTML(article);
     } else if(!existingEl) {
@@ -167,7 +167,7 @@ function insertArticles(articles) {
   var distanceFromBottom = document.documentElement.scrollHeight - document.body.scrollTop;
   var newNode = document.createElement("div");
   newNode.innerHTML = newArticlesHTML;
-  var singleArticles = document.getElementsByClassName("single-article");
+  var singleArticles = document.getElementsByClassName("crayons-story");
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);
   if (nextPage > 0) {
@@ -287,7 +287,7 @@ function fetchNextPageIfNearBottom() {
 }
 
 function checkIfNearBottomOfPage() {
-  if (document.getElementsByClassName("single-article").length < 2 || window.location.search.indexOf("q=") > -1 ) {
+  if (document.getElementsByClassName("crayons-story").length < 2 || window.location.search.indexOf("q=") > -1 ) {
     document.getElementById("loading-articles").style.display = "none";
     done = true;
   } else {
