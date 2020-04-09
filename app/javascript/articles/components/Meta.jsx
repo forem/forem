@@ -4,7 +4,7 @@ import {
   organizationPropType,
 } from '../../src/components/common-prop-types';
 
-export const Author = ({ article, organization }) => (
+export const Meta = ({ article, organization }) => (
   <div className="crayons-story__meta">
     <div className="crayons-story__author-pic">
       {organization && !document.getElementById('organization-article-index') && (
@@ -70,13 +70,13 @@ export const Author = ({ article, organization }) => (
   </div>
 );
 
-Author.defaultProps = {
+Meta.defaultProps = {
   organization: null,
 };
 
-Author.propTypes = {
+Meta.propTypes = {
   article: articlePropTypes.isRequired,
   organization: organizationPropType,
 };
 
-Author.displayName = 'Author';
+Meta.displayName = 'Meta';

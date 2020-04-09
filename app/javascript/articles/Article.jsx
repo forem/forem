@@ -6,7 +6,7 @@ import {
   CommentsList,
   Cover,
   ContentTitle,
-  Author,
+  Meta,
   OverflowNavigation,
   SaveButton,
   SearchSnippet,
@@ -43,7 +43,7 @@ export const Article = ({
       )}
       <div className="crayons-story__body">
         <div className="crayons-story__top">
-          <Author article={article} organization={article.organization} />
+          <Meta article={article} organization={article.organization} />
           <OverflowNavigation />
         </div>
 
