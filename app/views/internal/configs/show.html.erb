@@ -88,12 +88,6 @@
                                 placeholder: "email@staff.com" %>
               <div class="alert alert-info">Email of the staff account</div>
             </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <div class="card-header">Public Social Media Handles</div>
-          <div class="card-body">
             <div class="form-group">
               <%= f.fields_for :social_media_handles do |ff| %>
                 <% SiteConfig.social_media_handles.keys.each do |social_media_platform| %>
