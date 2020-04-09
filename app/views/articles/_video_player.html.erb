@@ -1,11 +1,5 @@
 <div class="video-player-header">
-  <%= article.published_at %>
-  <%= article.title %>
-  <%= article.description %>
-  <%= cloudinary(article.video_thumbnail_url, 880) %>
-  <%= article.video_source_url %>
   <% minutes, seconds = article.video_duration_in_minutes.split(":") %>
-  <%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>
   <div id="video-player-source" data-source="<%= article.video_source_url %>"></div>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async></script>
   <div id="video-player-<%= article.id %>" class="video-player"></div>
