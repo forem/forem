@@ -144,6 +144,16 @@ RSpec.describe "Articles", type: :request do
         expect(response).to have_http_status(:ok)
       end
     end
+
+    it "sets canonical url with base" do
+      get "/new"
+      expect(response.body).to include('<link rel="canonical" href="http://localhost:3000/new" />')
+    end
+
+    it "sets canonical url with prefil" do
+      get "/new?prefill=dsdweewewew"
+      expect(response.body).to include('<link rel="canonical" href="http://localhost:3000/new" />')
+    end
   end
 
   describe "GET /:path/edit" do
