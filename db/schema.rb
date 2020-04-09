@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,8 +13,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 2020_04_07_091449) do
-
-
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -308,7 +308,6 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.string "slug"
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listings", force: :cascade do |t|
@@ -919,6 +918,7 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["type_of"], name: "index_response_templates_on_type_of"
+    t.index ["user_id", "type_of"], name: "index_response_templates_on_user_id_and_type_of"
     t.index ["user_id"], name: "index_response_templates_on_user_id"
   end
 
