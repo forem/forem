@@ -30,12 +30,6 @@ RSpec.describe "VideoPlayerShow", type: :request do
       expect(response.body).to include CGI.escapeHTML(video_article.readable_publish_date)
     end
 
-    it "renders the proper modified at date" do
-      time_now = Time.current
-      video_article.edited_at = time_now
-      expect(response.body).to include CGI.escapeHTML(video_article.readable_edit_date)
-    end
-
     it "renders the proper author" do
       expect(response.body).to include CGI.escapeHTML(video_article.cached_user_username)
     end
