@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserShow", type: :request do
-  let_it_be(:user) { create(:user, email_public: true, employment_title: "SEO", employer_name: "DEV", currently_hacking_on: "JSON-LD", education: "DEV University", linkedin_url: "www.linkedin.com") }
+  let_it_be(:user) { create(:user, email_public: true, employment_title: "SEO", employer_name: "DEV", currently_hacking_on: "JSON-LD", education: "DEV University", linkedin_url: "www.linkedin.com/company/example/") }
 
   describe "GET /:slug (user)" do
     before do

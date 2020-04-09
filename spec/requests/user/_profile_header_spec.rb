@@ -1,8 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserShow", type: :request do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:org, reload: true) { create(:organization) }
+  let_it_be(:user, reload: true) { create(:user, profile_image: Faker::Avatar.image) }
 
   describe "GET /:slug (user)" do
     before do
@@ -21,9 +20,8 @@ RSpec.describe "UserShow", type: :request do
       expect(response.body).to include CGI.escapeHTML(user.summary)
     end
 
-    it "renders the proper organization that a user belongs to" do
-      user.update(organization: org)
-      expect(response.body).to include CGI.escapeHTML(user.organizations)
+    it "renders the proper profile image for a user" do
+      expect(response.body).to include CGI.escapeHTML(user.profile_image.to_s)
     end
   end
 end
