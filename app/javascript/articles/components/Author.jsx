@@ -42,7 +42,7 @@ export const Author = ({ article, organization }) => (
       <p>
         <a
           href={`/${article.user.username}`}
-          className="crayons-story__secondary fw-bold"
+          className="crayons-story__secondary fw-medium"
         >
           {filterXSS(
             article.class_name === 'User'
@@ -56,15 +56,15 @@ export const Author = ({ article, organization }) => (
               <span className="crayons-story__tertiary fw-normal"> for </span>
               <a
                 href={`/${organization.slug}`}
-                className="crayons-story__secondary fw-bold"
+                className="crayons-story__secondary fw-medium"
               >
                 {organization.name}
               </a>
             </span>
           )}
       </p>
-      <a href={article.path} className="crayons-story__tertiary">
-        Posted 7 hours ago
+      <a href={article.path} className="crayons-story__tertiary fs-xs">
+        7h ago
       </a>
     </div>
   </div>
