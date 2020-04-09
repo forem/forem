@@ -79,6 +79,8 @@ class ApplicationController < ActionController::Base
   def log_image_data_to_datadog
     images = Array.wrap(params.dig("user", "profile_image") || params["image"])
 
+    raise if images.empty?
+
     images.each do |image|
       tags = [
         "controller:#{params['controller']}",
