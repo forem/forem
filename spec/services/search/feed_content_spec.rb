@@ -33,8 +33,8 @@ RSpec.describe Search::FeedContent, type: :service do
     it "returns fields necessary for the view" do
       allow(article1).to receive(:flare_tag).and_return(name: "help", bg_color_hex: nil, text_color_hex: nil)
       view_keys = %w[
-        id title path class_name flare_tag tag_list user_id user published_at_int
-        published_timestamp readable_publish_date
+        id title path class_name cloudinary_video_url comments_count flare_tag tag_list user_id user
+        published_at_int published_timestamp readable_publish_date
       ]
       flare_tag_keys = %w[name bg_color_hex text_color_hex]
       user_keys = %w[username name profile_image_90]

@@ -186,6 +186,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
     context "when second user accept invitation" do
       it "sets chat channl membership status to rejected" do
+        allow(Pusher).to receive(:trigger).and_return(true)
         membership = ChatChannelMembership.last
         sign_in second_user
         put "/chat_channel_memberships/#{membership.id}", params: {
@@ -200,6 +201,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
     context "when second user rejects invitation" do
       it "sets chat channl membership status to rejected" do
+        allow(Pusher).to receive(:trigger).and_return(true)
         membership = ChatChannelMembership.last
         sign_in second_user
         put "/chat_channel_memberships/#{membership.id}", params: {
@@ -238,6 +240,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
   describe "DELETE /chat_channel_memberships/:id" do
     context "when user is logged in" do
       it "leaves chat channel" do
+        allow(Pusher).to receive(:trigger).and_return(true)
         chat_channel.add_users([second_user])
         membership = ChatChannelMembership.last
         sign_in second_user
@@ -265,6 +268,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
     context "when user is super admin" do
       it "removes member from channel" do
+        allow(Pusher).to receive(:trigger).and_return(true)
         user.add_role(:super_admin)
         membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
         removed_channel_membership = ChatChannelMembership.last
@@ -279,6 +283,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
     context "when user is moderator of channel" do
       it "removes member from channel" do
+        allow(Pusher).to receive(:trigger).and_return(true)
         membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
         membership.update(role: "mod")
         removed_channel_membership = ChatChannelMembership.last

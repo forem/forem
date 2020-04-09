@@ -12,6 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2020_04_07_091449) do
 
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -307,6 +308,7 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.string "slug"
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listings", force: :cascade do |t|
@@ -578,6 +580,7 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
   end
 
   create_table "messages", force: :cascade do |t|
+    t.string "chat_action"
     t.bigint "chat_channel_id", null: false
     t.datetime "created_at", null: false
     t.datetime "edited_at"

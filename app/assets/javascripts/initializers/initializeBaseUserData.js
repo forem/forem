@@ -1,6 +1,6 @@
 'use strict';
 
-/* global userData, filterXSS */
+/* global filterXSS */
 
 function initializeUserProfileContent(user) {
   document.getElementById('sidebar-profile--avatar').src = user.profile_image_90;
