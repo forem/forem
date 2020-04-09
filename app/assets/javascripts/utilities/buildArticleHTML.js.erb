@@ -61,9 +61,33 @@ function buildArticleHTML(article) {
       userName = article.user.name;
     }
     var orgHeadline = "";
+    var forOrganization = "";
+    var organizationLogo = "";
+    var organizationClasses = "crayons-avatar--l";
+
+
     if (article.organization && !document.getElementById("organization-article-index")) {
-      orgHeadline = '<div class="article-organization-headline"><a class="org-headline-filler" href="/'+article.organization.slug+'"><img alt="'+article.organization.name+' logo" src="'+article.organization.profile_image_90+'" loading="lazy">'+article.organization.name+'</a></div>'
+      var organizationLogo = '<a href="/'+article.organization.slug+'" class="crayons-logo crayons-logo--l"><img alt="'+article.organization.name+' logo" src="'+article.organization.profile_image_90+'" class="crayons-logo__image" loading="lazy"/></a>';
+      var forOrganization = '<span><span class="crayons-story__tertiary fw-normal"> for </span><a href="/'+article.organization.slug+'" class="crayons-story__secondary fw-medium">'+article.organization.name+'</a></span>';
+      var organizationClasses = "crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted";
     }
+
+    var meta = '<div class="crayons-story__meta">\
+      <div class="crayons-story__author-pic">\
+        '+organizationLogo+'\
+        <a href="/'+profileUsername+'" class="crayons-avatar '+organizationClasses+'">\
+          <img src="'+picUrl+'" alt="'+profileUsername+' profile" class="crayons-avatar__image" loading="lazy" />\
+        </a>\
+      </div>\
+      <div>\
+        <p>\
+          <a href="/'+profileUsername+'" class="crayons-story__secondary fw-medium">'+filterXSS(article.user.name)+'</a>\
+          '+forOrganization+'\
+        </p>\
+        <a href="'+article.path+'" class="crayons-story__tertiary fs-xs">7h ago</a>\
+      </div>\
+    </div>';
+
     var bodyTextSnippet = "";
     var searchSnippetHTML = "";
     if (article.highlight && article.highlight.body_text.length > 0){
@@ -84,7 +108,7 @@ function buildArticleHTML(article) {
                     </button>'
     } else if (article.class_name === "User") {
       saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s"\
-                       data-info=\'{"id":'+article.id+',"className":"User"}\' data-follow-action-button>\
+                       data-info=\'{"id":'+article.id+',"class":"User"}\' data-follow-action-button>\
                        &nbsp;\
                     </button>'
     }
@@ -98,15 +122,9 @@ function buildArticleHTML(article) {
       }
     }
 
-    var readingTimeHTML = '';
-    if (article.class_name === "Article") {
-      // we have ` ... || null` for the case article.reading_time is undefined
-      readingTimeHTML = '<a href="'+article.path+'" class="article-reading-time">'+ ((article.reading_time || null) < 1 ? '1 min' : article.reading_time + ' min') +' read</a>'
-    }
-
     var videoHTML = '';
     if (article.cloudinary_video_url) {
-      videoHTML = '<a href="'+article.path+'" class="single-article-video-preview" style="background-image:url('+article.cloudinary_video_url+')"><div class="single-article-video-duration"><img src="<%= asset_path("video-camera.svg") %>" alt="video camera">'+(article.video_duration_string || article.video_duration_in_minutes)+'</div></a>'
+      videoHTML = '<a href="'+article.path+'" class="crayons-story__video" style="background-image:url('+article.cloudinary_video_url+')"><div class="crayons-story__video__time"><img src="<%= asset_path("video-camera.svg") %>" alt="video camera">'+(article.video_duration_string || article.video_duration_in_minutes)+'</div></a>'
     }
 
     var timeAgoInWords = '';
@@ -118,17 +136,7 @@ function buildArticleHTML(article) {
       '+videoHTML+'\
       <div class="crayons-story__body">\
         <div class="crayons-story__top">\
-          <div class="crayons-story__meta">\
-            <div class="crayons-story__author-pic">\
-              <a href="/" class="crayons-avatar crayons-avatar--l"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></a>\
-            </div>\
-            <div>\
-              <p>\
-                <a href="/" class="crayons-story__secondary fw-bold">Ryan Westlund</a>\
-              </p>\
-              <a href="/" class="crayons-story__tertiary">Posted 2h ago</a>\
-            </div>\
-          </div>\
+          '+meta+'\
           <button class="crayons-btn crayons-btn--ghost crayons-story__overflow" type="button">\
             <svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" clipRule="evenodd" d="M7 12a2 2 0 11-4 0 2 2 0 014 0zm7 0a2 2 0 11-4 0 2 2 0 014 0zm5 2a2 2 0 100-4 2 2 0 000 4z"/></svg>\
           </button>\
@@ -150,24 +158,4 @@ function buildArticleHTML(article) {
         </div>\
       </div>\
     </div>';
-
-
-    <%# return '<div class="single-article single-article-small-pic" data-content-user-id="'+article.user_id+'">\
-      '+videoHTML+'\
-      '+orgHeadline+'\
-      <div class="small-pic">\
-       <a href="/'+profileUsername+'" class="small-pic-link-wrapper">\
-         <img src="'+picUrl+'" alt="'+profileUsername+' profile" loading="lazy">\
-       </a>\
-       </div>\
-       <a href="'+article.path+'" class="small-pic-link-wrapper index-article-link" id="article-link-'+article.id+'">\
-        <div class="content">\
-         <h3>'+flareTag+filterXSS(article.title)+'</h3>\
-         '+searchSnippetHTML+'\
-        </div>\
-       </a>\
-       <h4><a href="/'+profileUsername+'">'+filterXSS(userName)+publishDate+timeAgoInWords+'</a></h4>\
-       <div class="tags">'+tagString+'</div>\
-       '+saveButton+'</div>'; %>
-  }
 }
