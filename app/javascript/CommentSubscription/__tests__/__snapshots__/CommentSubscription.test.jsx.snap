@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<CommentSubscription /> should render as a plain subscribe button if not currently subscribed 1`] = `
+<div
+  class="relative"
+>
+  <div
+    class="crayons-btn-group"
+  >
+    <button
+      class="crayons-btn crayons-btn--outlined"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Subscribe
+    </button>
+  </div>
+</div>
+`;

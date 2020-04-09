@@ -61,7 +61,6 @@ class AsyncInfoController < ApplicationController
         experience_level: @user.experience_level,
         preferred_languages_array: @user.preferred_languages_array,
         config_body_class: @user.config_body_class,
-        onboarding_variant_version: @user.onboarding_variant_version,
         pro: @user.pro?
       }
     end

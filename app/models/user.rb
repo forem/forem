@@ -1,26 +1,4 @@
 class User < ApplicationRecord
-  self.ignored_columns = %w[
-    base_cover_letter
-    membership_started_at
-    onboarding_checklist
-    onboarding_package_form_submmitted_at
-    onboarding_package_fulfilled
-    onboarding_package_requested_again
-    org_admin
-    personal_data_updated_at
-    resume_html
-    shipping_validated
-    shipping_validated_at
-    shirt_gender
-    shirt_size
-    signup_refer_code
-    signup_referring_site
-    specialty
-    tabs_or_spaces
-    text_only_name
-    top_languages
-  ]
-
   include CloudinaryHelper
 
   attr_accessor(

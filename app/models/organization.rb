@@ -1,15 +1,4 @@
 class Organization < ApplicationRecord
-  self.ignored_columns = %w[
-    address
-    approved
-    city
-    country
-    jobs_email
-    jobs_url
-    state
-    zip_code
-  ]
-
   include CloudinaryHelper
 
   acts_as_followable
@@ -64,6 +53,8 @@ class Organization < ApplicationRecord
   before_validation :evaluate_markdown
 
   validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
+
+  after_commit :sync_related_elasticsearch_docs, on: %i[update destroy]
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
@@ -148,5 +139,9 @@ class Organization < ApplicationRecord
 
   def unique_slug_including_users_and_podcasts
     errors.add(:slug, "is taken.") if User.find_by(username: slug) || Podcast.find_by(slug: slug) || Page.find_by(slug: slug) || slug.include?("sitemap-")
+  end
+
+  def sync_related_elasticsearch_docs
+    DataSync::Elasticsearch::Organization.new(self, saved_changes).call
   end
 end
