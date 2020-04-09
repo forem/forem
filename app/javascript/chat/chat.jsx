@@ -19,6 +19,7 @@ import Alert from './alert';
 import Channels from './channels';
 import Compose from './compose';
 import Message from './message';
+import ActionMessage from './actionMessage';
 import Content from './content';
 import Video from './video';
 
@@ -957,23 +958,34 @@ export default class Chat extends Component {
         );
       }
     }
-    return messages[activeChannelId].map((message) => (
-      <Message
-        currentUserId={currentUserId}
-        id={message.id}
-        user={message.username}
-        userID={message.user_id}
-        profileImageUrl={message.profile_image_url}
-        message={message.message}
-        timestamp={showTimestamp ? message.timestamp : null}
-        editedAt={message.edited_at}
-        color={message.color}
-        type={message.type}
-        onContentTrigger={this.triggerActiveContent}
-        onDeleteMessageTrigger={this.triggerDeleteMessage}
-        onEditMessageTrigger={this.triggerEditMessage}
-      />
-    ));
+
+    return messages[activeChannelId].map((message) =>
+      message.action ? (
+        <ActionMessage
+          user={message.username}
+          profileImageUrl={message.profile_image_url}
+          message={message.message}
+          timestamp={showTimestamp ? message.timestamp : null}
+          color={message.color}
+          onContentTrigger={this.triggerActiveContent}
+        />
+      ) : (
+        <Message
+          currentUserId={currentUserId}
+          id={message.id}
+          user={message.username}
+          userID={message.user_id}
+          profileImageUrl={message.profile_image_url}
+          message={message.message}
+          timestamp={showTimestamp ? message.timestamp : null}
+          editedAt={message.edited_at}
+          color={message.color}
+          onContentTrigger={this.triggerActiveContent}
+          onDeleteMessageTrigger={this.triggerDeleteMessage}
+          onEditMessageTrigger={this.triggerEditMessage}
+        />
+      ),
+    );
   };
 
   triggerChannelFilter = (e) => {
