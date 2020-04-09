@@ -44,6 +44,7 @@ module Search
           "image_url" => source["main_image"],
           "title" => source["title"]
         }
+        source["_score"] = hit["_score"]
 
         source.merge(timestamps_hash(hit))
       end
