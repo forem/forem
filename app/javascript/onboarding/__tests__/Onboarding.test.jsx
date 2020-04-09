@@ -16,14 +16,14 @@ function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve));
 }
 
-function initializeSlides(currentSlide, dataUser = null, mockData = null) {
+function initializeSlides(currentSlide, userData = null, mockData = null) {
+  document.body.setAttribute('data-user', userData);
   const onboardingSlides = deep(<Onboarding />);
 
   if (mockData) {
     fetch.once(mockData);
   }
 
-  document.body.setAttribute('data-user', dataUser);
   onboardingSlides.setState({ currentSlide });
 
   return onboardingSlides;
@@ -74,15 +74,19 @@ describe('<Onboarding />', () => {
       profile_image_url: 'dev.jpg',
     },
   ]);
-  const dataUser = JSON.stringify({
-    followed_tag_names: ['javascript'],
-  });
+  const getUserData = () =>
+    JSON.stringify({
+      followed_tag_names: ['javascript'],
+      profile_image_90: 'mock_url_link',
+      name: 'firstname lastname',
+      username: 'username',
+    });
 
   describe('IntroSlide', () => {
     let onboardingSlides;
 
     beforeEach(() => {
-      onboardingSlides = initializeSlides(0);
+      onboardingSlides = initializeSlides(0, getUserData());
     });
 
     test('renders properly', () => {
@@ -127,7 +131,7 @@ describe('<Onboarding />', () => {
     };
 
     beforeEach(() => {
-      onboardingSlides = initializeSlides(1, dataUser);
+      onboardingSlides = initializeSlides(1, getUserData());
     });
 
     test('renders properly', () => {
@@ -191,7 +195,7 @@ describe('<Onboarding />', () => {
     document.body.appendChild(meta);
 
     beforeEach(() => {
-      onboardingSlides = initializeSlides(2, dataUser);
+      onboardingSlides = initializeSlides(2, getUserData());
     });
 
     test('renders properly', () => {
@@ -224,7 +228,7 @@ describe('<Onboarding />', () => {
     document.body.appendChild(meta);
 
     beforeEach(() => {
-      onboardingSlides = initializeSlides(3, dataUser);
+      onboardingSlides = initializeSlides(3, getUserData());
     });
 
     test('renders properly', () => {
@@ -275,7 +279,7 @@ describe('<Onboarding />', () => {
     let onboardingSlides;
 
     beforeEach(async () => {
-      onboardingSlides = initializeSlides(4, dataUser, fakeTagsResponse);
+      onboardingSlides = initializeSlides(4, getUserData(), fakeTagsResponse);
       await flushPromises();
     });
 
@@ -313,7 +317,7 @@ describe('<Onboarding />', () => {
     let onboardingSlides;
 
     beforeEach(async () => {
-      onboardingSlides = initializeSlides(5, dataUser, fakeUsersResponse);
+      onboardingSlides = initializeSlides(5, getUserData(), fakeUsersResponse);
       await flushPromises();
     });
 
@@ -348,7 +352,7 @@ describe('<Onboarding />', () => {
     let onboardingSlides;
 
     beforeEach(() => {
-      onboardingSlides = initializeSlides(6);
+      onboardingSlides = initializeSlides(6, getUserData());
     });
 
     test('renders properly', () => {
