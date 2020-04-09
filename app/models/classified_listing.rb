@@ -4,6 +4,7 @@ class ClassifiedListing < ApplicationRecord
   SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
   SEARCH_CLASS = Search::ClassifiedListing
 
+  # TODO: remove this once we are live with the new ClassifiedListingCategory model
   CATEGORIES_AVAILABLE = {
     cfp: { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form." },
     forhire: { cost: 1, name: "Available for Hire", rules: "You are available for hire." },
@@ -18,8 +19,12 @@ class ClassifiedListing < ApplicationRecord
     misc: { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
   }.with_indifferent_access.freeze
 
+  # TODO: remove this once we are live with the new ClassifiedListingCategory model
+  before_validation :assign_classified_listing_category
+
   attr_accessor :action
 
+  belongs_to :classified_listing_category
   belongs_to :user
   belongs_to :organization, optional: true
   before_save :evaluate_markdown
@@ -108,5 +113,13 @@ class ClassifiedListing < ApplicationRecord
 
   def create_slug
     self.slug = title.to_s.downcase.parameterize.tr("_", "") + "-" + rand(100_000).to_s(26)
+  end
+
+  def assign_classified_listing_category
+    category_name = CATEGORIES_AVAILABLE.dig(attributes["category"], :name)
+    category = ClassifiedListingCategory.find_by(name: category_name)
+    return unless category
+
+    self.classified_listing_category_id = category.id
   end
 end
