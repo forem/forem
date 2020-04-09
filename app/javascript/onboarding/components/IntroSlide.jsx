@@ -23,9 +23,6 @@ class IntroSlide extends Component {
 
   render() {
     const { prev } = this.props;
-    const greeting = this.user
-      ? `${this.user.name} — welcome to DEV!`
-      : 'Welcome to DEV!';
 
     return (
       <div className="onboarding-main introduction">
@@ -37,7 +34,11 @@ class IntroSlide extends Component {
               alt="DEV"
             />
           </figure>
-          <h1 className="introduction-title">{greeting}</h1>
+          <h1 className="introduction-title">
+            {this.user.name}
+            {' '}
+            &mdash; welcome to DEV!
+          </h1>
           <h2 className="introduction-subtitle">
             DEV is where programmers share ideas and help each other grow.
           </h2>
