@@ -108,7 +108,7 @@ function buildArticleHTML(article) {
                     </button>'
     } else if (article.class_name === "User") {
       saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s"\
-                       data-info=\'{"id":'+article.id+',"class":"User"}\' data-follow-action-button>\
+                       data-info=\'{"id":'+article.id+',"className":"User"}\' data-follow-action-button>\
                        &nbsp;\
                     </button>'
     }
@@ -158,4 +158,5 @@ function buildArticleHTML(article) {
         </div>\
       </div>\
     </div>';
+  }
 }
