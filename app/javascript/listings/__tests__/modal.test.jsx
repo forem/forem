@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { deep } from 'preact-render-spy';
 import Modal from '../elements/modal';
 
-const DefaultListing = {
+const defaultListing = {
   id: 22,
   category: 'misc',
   location: 'West Refugio',
@@ -51,7 +51,7 @@ const renderModal = (listing) =>
 describe('<Modal />', () => {
   it('Should render the MessageModal component when the listing.contact_via_connect is true', () => {
     const listingWithContactViaConnectTrue = {
-      ...DefaultListing,
+      ...defaultListing,
       contact_via_connect: true,
     };
     const context = renderModal(listingWithContactViaConnectTrue);
@@ -60,7 +60,7 @@ describe('<Modal />', () => {
 
   it('Should not render the MessageModal when the listing.contact_via_connect is false', () => {
     const listingWithContactViaConnectFalse = {
-      ...DefaultListing,
+      ...defaultListing,
       contact_via_connect: false,
     };
     const context = renderModal(listingWithContactViaConnectFalse);
