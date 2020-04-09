@@ -1,59 +1,5 @@
 <% if @featured_story.id %>
-  <div id="featured-story-marker" data-featured-article="articles-<%= @featured_story.id %>"></div>
-  <img src="<%= cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>" />
-  <a href="<%= @featured_story.path %>" id="article-link-<%= @featured_story.id %>" class="index-article-link" aria-label="Main Story" data-featured-article="articles-<%= @featured_story.id %>">
-    <div class="single-article big-article" data-content-user-id="<%= @featured_story.user_id %>">
-      <div class="picture image-final" style="background-color:<%= @featured_story.main_image_background_hex_color %>;background-image:url(<%= cloud_cover_url(@featured_story.main_image) %>)"></div>
-      <div class="content-wrapper">
-        <h3>
-          <%= @featured_story.title %>
-        </h3>
-      </div>
-      <a href="/<%= @featured_story.cached_user.username %>" class="featured-profile-button">
-        <img class="featured-profile-pic" src="<%= ProfileImage.new(@featured_story.cached_user).get(width: 90) %>" width="40" height="40" alt="<%= @featured_story.title %>" />
-      </a>
-      <div class="featured-user-name">
-        <a href="/<%= @featured_story.cached_user.username %>">
-          <%= @featured_story.cached_user.name %><%= render "shared/pro_checkmark" if @featured_story.cached_user.pro %>・<time datetime="<%= @featured_story.published_timestamp %>"><%= @featured_story.readable_publish_date %></time>
-          <span class="time-ago-indicator-initial-placeholder" data-seconds="<%= @featured_story.published_at_int %>"></span>
-        </a>
-      </div>
-      <div class="featured-tags tags">
-        <% @featured_story.cached_tag_list_array.each do |tag| %>
-          <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
-        <% end %>
-      </div>
-      <% if @featured_story.comments_count > 0 %>
-        <div class="article-engagement-count comments-count featured-engagement-count">
-          <a href="<%= @featured_story.path %>#comments"><img src="<%= asset_path("comments-bubble.png") %>" alt="chat" />
-            <span class="engagement-count-number"><%= @featured_story.comments_count %></span>
-          </a>
-        </div>
-      <% end %>
-      <% if @featured_story.positive_reactions_count > 0 %>
-        <div class="article-engagement-count reactions-count featured-engagement-count" data-reaction-count data-reactable-id="<%= @featured_story.id %>">
-          <a href="<%= @featured_story.path %>"><img src="<%= asset_path("reactions-stack.png") %>" alt="heart" /><span id="engagement-count-number-<%= @featured_story.id %>" class="engagement-count-number">
-              <%= @featured_story.positive_reactions_count %>
-            </span>
-          </a>
-        </div>
-      <% end %>
-      <a
-        href="<%= @featured_story.path %>"
-        class="article-reading-time">
-        <%= @featured_story.reading_time < 1 ? 1 : @featured_story.reading_time %> min read
-      </a>
-      <button
-        type="button"
-        class="article-engagement-count engage-button bookmark-button featured-engagement-count"
-        data-reactable-id="<%= @featured_story.id %>"
-        aria-label="Save to reading list"
-        title="Save to reading list">
-        <span class="bm-initial">SAVE</span>
-        <span class="bm-success">SAVED</span>
-      </button>
-    </div>
-  </a>
+  <%= render "articles/single_story", story: @featured_story, featured: true %>
 <% end %>
 
 <div id="article-index-podcast-div"></div>
@@ -65,7 +11,7 @@
       <% if !user_signed_in? && i == 4 %>
         <%= render "stories/sign_in_invitation" %>
       <% end %>
-      <%= render "articles/single_story", story: story %>
+      <%= render "articles/single_story", story: story, featured: false %>
     <% end %>
     <% if @stories.size > 1 %>
       <div class="placeholder-div"></div>
