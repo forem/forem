@@ -1,12 +1,11 @@
-<div class="card-header">
+<div
+  class="card-header"
+  data-toggle="<%= state %>"
+  data-target="#<%= target %>"
+  aria-expanded="<%= expanded %>"
+  aria-controls="<%= target %>">
   <span><%= header %></span>
-  <button
-    class="btn btn-secondary float-right"
-    type="button"
-    data-toggle="<%= state %>"
-    data-target="#<%= target %>"
-    aria-expanded="<%= expanded %>"
-    aria-controls="<%= target %>">
+  <div class="card-header__toggle float-right">
     Toggle
-  </button>
+  </div>
 </div>
