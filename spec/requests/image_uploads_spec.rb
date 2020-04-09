@@ -69,6 +69,21 @@ RSpec.describe "ImageUploads", type: :request do
         result = JSON.parse(response.body)
         expect(result["error"]).not_to be_nil
       end
+
+      it "catches error if image file name is too long" do
+        article_image_uploader = instance_double(ArticleImageUploader)
+        allow(ArticleImageUploader).to receive(:new).and_return(article_image_uploader)
+        allow(article_image_uploader).to receive(:store!).and_raise(Errno::ENAMETOOLONG)
+        allow(DatadogStatsClient).to receive(:increment)
+
+        expect do
+          post "/image_uploads", headers: headers, params: { image: [bad_image] }
+        end.to raise_error(Errno::ENAMETOOLONG)
+
+        tags = hash_including(tags: instance_of(Array))
+
+        expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
+      end
     end
 
     context "when uploading rate limiting works" do
