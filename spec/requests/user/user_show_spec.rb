@@ -1,10 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "UserShow", type: :request do
-  let_it_be(:user) { create(:user, email_public: true, employment_title: "SEO", employer_name: "DEV", currently_hacking_on: "JSON-LD", education: "DEV University", linkedin_url: "www.linkedin.com/company/example/") }
+  let_it_be(:user) { create(:user, email_public: true, currently_hacking_on: "JSON-LD", education: "DEV University") }
 
   describe "GET /:slug (user)" do
     before do
+      user.update_columns(employment_title: "SEO", employer_name: "DEV", linkedin_url: "www.linkedin.com/company/example/")
       get user.path
     end
 
@@ -41,7 +42,6 @@ RSpec.describe "UserShow", type: :request do
     end
 
     it "renders the proper additional username for a user when one is present" do
-      user.update(github_username: "username")
       expect(response.body).to include CGI.escapeHTML(user.github_username)
     end
 
