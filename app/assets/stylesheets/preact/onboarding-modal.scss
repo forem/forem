@@ -390,17 +390,16 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     }
 
     h3 {
-      margin-top: 6px;
+      margin-top: $su-2;
+      line-height: $lh-tight;
     }
 
     p {
-      font-size: 16px;
-      height: 24px;
+      font-size: $fs-base;
+      line-height: $lh-tight;
       color: var(--base-70);
-      margin-top: -10px
     }
   }
-
 
   .user-name,
   .user-summary {
