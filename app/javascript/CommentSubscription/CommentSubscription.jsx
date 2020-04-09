@@ -112,7 +112,7 @@ export class CommentSubscription extends Component {
         </ButtonGroup>
         {subscribed && (
           <Dropdown
-            className={showOptions ? 'inline-block w-full' : null}
+            className={showOptions ? 'inline-block w-full z-10 right-0' : null}
             ref={(element) => {
               this.dropdownElement = element;
             }}
