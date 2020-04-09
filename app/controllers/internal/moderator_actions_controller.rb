@@ -1,11 +1,6 @@
 class Internal::ModeratorActionsController < Internal::ApplicationController
   layout "internal"
 
-  # overrides internal/application_controller.rb#authorization_resource because this has a custom controller name
-  def authorization_resource
-    AuditLog
-  end
-
   def index
     @q = AuditLog.
       includes(:user).
