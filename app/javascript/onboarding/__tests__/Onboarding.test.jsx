@@ -4,14 +4,12 @@ import fetch from 'jest-fetch-mock';
 import { axe, toHaveNoViolations } from 'jest-axe';
 
 import Onboarding from '../Onboarding';
-import BioForm from '../components/BioForm';
-import PersonalInfoForm from '../components/PersonalInfoForm';
+import ProfileForm from '../components/ProfileForm';
 import EmailTermsConditionsForm from '../components/EmailListTermsConditionsForm';
 import FollowTags from '../components/FollowTags';
 import FollowUsers from '../components/FollowUsers';
 
 global.fetch = fetch;
-
 function flushPromises() {
   return new Promise((resolve) => setImmediate(resolve));
 }
@@ -187,7 +185,7 @@ describe('<Onboarding />', () => {
     });
   });
 
-  describe('BioForm', () => {
+  describe('ProfileForm', () => {
     let onboardingSlides;
     const meta = document.createElement('meta');
 
@@ -204,46 +202,8 @@ describe('<Onboarding />', () => {
 
     test('should allow user to fill forms and advance', async () => {
       fetch.once({});
-      const bioForm = onboardingSlides.find(<BioForm />);
-      const event = { target: { value: 'my bio', name: 'summary' } };
-
-      onboardingSlides.find('textarea').simulate('change', event);
-      expect(bioForm.state('summary')).toBe(event.target.value);
-      bioForm.find('.next-button').simulate('click');
-      await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(3);
-    });
-
-    it('should step backward', () => {
-      onboardingSlides.find('.back-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(1);
-    });
-  });
-
-  describe('PersonalInformationForm', () => {
-    let onboardingSlides;
-    const meta = document.createElement('meta');
-
-    meta.setAttribute('name', 'csrf-token');
-    document.body.appendChild(meta);
-
-    beforeEach(() => {
-      onboardingSlides = initializeSlides(3, getUserData());
-    });
-
-    test('renders properly', () => {
-      expect(onboardingSlides).toMatchSnapshot();
-    });
-
-    it('should move to the previous slide upon clicking the back button', () => {
-      onboardingSlides.find('.back-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(2);
-    });
-
-    test('should allow user to fill forms and advance', async () => {
-      fetch.once({});
-
-      const personalInfoForm = onboardingSlides.find(<PersonalInfoForm />);
+      const profileForm = onboardingSlides.find(<ProfileForm />);
+      const summaryEvent = { target: { value: 'my bio', name: 'summary' } };
       const locationEvent = {
         target: { value: 'my location', name: 'location' },
       };
@@ -254,24 +214,29 @@ describe('<Onboarding />', () => {
         target: { value: 'my employer name', name: 'employer_name' },
       };
 
+      onboardingSlides.find('textarea').simulate('change', summaryEvent);
       onboardingSlides.find('#location').simulate('change', locationEvent);
       onboardingSlides.find('#employment_title').simulate('change', titleEvent);
       onboardingSlides.find('#employer_name').simulate('change', employerEvent);
 
-      expect(personalInfoForm.state('location')).toBe(
-        locationEvent.target.value,
-      );
-      expect(personalInfoForm.state('employment_title')).toBe(
+      expect(profileForm.state('summary')).toBe(summaryEvent.target.value);
+      expect(profileForm.state('location')).toBe(locationEvent.target.value);
+      expect(profileForm.state('employment_title')).toBe(
         titleEvent.target.value,
       );
-      expect(personalInfoForm.state('employer_name')).toBe(
+      expect(profileForm.state('employer_name')).toBe(
         employerEvent.target.value,
       );
 
-      personalInfoForm.find('.next-button').simulate('click');
+      profileForm.find('.next-button').simulate('click');
       fetch.once(fakeTagsResponse);
       await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(4);
+      expect(onboardingSlides.state().currentSlide).toBe(3);
+    });
+
+    it('should step backward', () => {
+      onboardingSlides.find('.back-button').simulate('click');
+      expect(onboardingSlides.state().currentSlide).toBe(1);
     });
   });
 
@@ -279,7 +244,7 @@ describe('<Onboarding />', () => {
     let onboardingSlides;
 
     beforeEach(async () => {
-      onboardingSlides = initializeSlides(4, getUserData(), fakeTagsResponse);
+      onboardingSlides = initializeSlides(3, getUserData(), fakeTagsResponse);
       await flushPromises();
     });
 
@@ -304,12 +269,12 @@ describe('<Onboarding />', () => {
       onboardingSlides.find('.next-button').simulate('click');
       fetch.once(fakeUsersResponse);
       await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(5);
+      expect(onboardingSlides.state().currentSlide).toBe(4);
     });
 
     it('should step backward', () => {
       onboardingSlides.find('.back-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(3);
+      expect(onboardingSlides.state().currentSlide).toBe(2);
     });
   });
 
@@ -317,7 +282,7 @@ describe('<Onboarding />', () => {
     let onboardingSlides;
 
     beforeEach(async () => {
-      onboardingSlides = initializeSlides(5, getUserData(), fakeUsersResponse);
+      onboardingSlides = initializeSlides(4, getUserData(), fakeUsersResponse);
       await flushPromises();
     });
 
@@ -337,14 +302,14 @@ describe('<Onboarding />', () => {
       expect(followUsers.state('selectedUsers').length).toBe(2);
       onboardingSlides.find('.next-button').simulate('click');
       await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(6);
+      expect(onboardingSlides.state().currentSlide).toBe(5);
     });
 
     it('should step backward', async () => {
       fetch.once(fakeTagsResponse);
       onboardingSlides.find('.back-button').simulate('click');
       await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(4);
+      expect(onboardingSlides.state().currentSlide).toBe(3);
     });
   });
 
@@ -352,7 +317,7 @@ describe('<Onboarding />', () => {
     let onboardingSlides;
 
     beforeEach(() => {
-      onboardingSlides = initializeSlides(6, getUserData());
+      onboardingSlides = initializeSlides(5, getUserData());
     });
 
     test('renders properly', () => {
