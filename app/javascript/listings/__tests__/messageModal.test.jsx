@@ -11,6 +11,7 @@ const defaultListing = {
   slug: 'illo-iure-quos-perspiciatis-5hk7',
   title: 'Illo iure quos perspiciatis.',
   tags: ['go', 'git'],
+  user_id: 1,
   author: {
     name: 'Mrs. Yoko Christiansen',
     username: 'mrschristiansenyoko',
@@ -34,6 +35,11 @@ const renderMessageModal = (listing) =>
   deep(<MessageModal {...defaultProps} listining={listing} />);
 
 describe('<MessageModal />', () => {
+  it('Should render a text-area', () => {
+    const context = renderMessageModal(defaultListing);
+    expect(context.find('#new-message').exists()).toBe(true);
+  });
+
   describe('When the current user is the author', () => {
     const listingWithCurrentUserId = {
       ...defaultListing,
