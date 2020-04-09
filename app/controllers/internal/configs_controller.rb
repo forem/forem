@@ -10,7 +10,7 @@ class Internal::ConfigsController < Internal::ApplicationController
   def create
     clean_up_params
     config_params.keys.each do |key|
-      if key == "social_media_handles"
+      if config_params[key].respond_to?(:to_h)
         SiteConfig.public_send("#{key}=", config_params[key].to_h) unless config_params[key].empty?
       else
         SiteConfig.public_send("#{key}=", config_params[key].strip) unless config_params[key].nil?

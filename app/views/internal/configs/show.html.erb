@@ -95,7 +95,7 @@
                     <%= ff.label social_media_platform %>
                     <%= ff.text_field social_media_platform,
                                      class: "form-control",
-                                     value: SiteConfig.try(:social_media_handles)[social_media_platform],
+                                     value: SiteConfig.social_media_handles[social_media_platform],
                                      placeholder: "" %>
                     <div class="alert alert-info"><%= social_media_platform.capitalize() %> Username</div>
                   </div>
