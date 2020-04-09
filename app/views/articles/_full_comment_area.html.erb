@@ -3,12 +3,12 @@
     <% if @article.show_comments %>
       <div class="comments-container-container">
         <%# TODO: Fix margins, vertical centering %>
-        <div class="flex justify-between ml-8 mr-8">
+        <div class="flex justify-between ml-7 mr-8">
           <span class="fs-xl">Discussion</span>
           <div id="comment-subscription"></div>
         </div>
         <div
-          class="comments-container"
+          class="comments-container flex flex-col justify-between ml-7 mr-7"
           id="comments-container"
           data-commentable-id="<%= @article.id %>"
           data-commentable-type="Article">
