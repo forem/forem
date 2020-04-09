@@ -13,10 +13,10 @@
 
 <div class="row my-3" id="siteConfig">
   <div class="card w-100">
-    <div class="card-header" id="siteConfigHeader">
+    <div class="card-header" id="siteConfigHeader" data-toggle="collapse"
+      data-target="#siteConfigBodyContainer" aria-expanded="true" aria-controls="siteConfigBodyContainer">
       <h2 class="d-inline">Site Configuration</h2>
-      <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
-        data-target="#siteConfigBodyContainer" aria-expanded="true" aria-controls="siteConfigBodyContainer">
+      <button class="btn btn-secondary float-right" type="button">
         Toggle Site Configuration
       </button>
     </div>
@@ -479,10 +479,10 @@
 <% if current_user.has_role?(:single_resource_admin, Config) && current_user.has_role?(:super_admin) %>
   <div class="row my-3" id="siteConfig">
     <div class="card w-100">
-      <div class="card-header" id="appConfigHeader">
+      <div class="card-header" id="appConfigHeader" data-toggle="collapse"
+        data-target="#appConfigBodyContainer" aria-expanded="false" aria-controls="appConfigBodyContainer">
         <h2 class="d-inline">Environment variables / AppConfig (readonly)</h2>
-        <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
-          data-target="#appConfigBodyContainer" aria-expanded="false" aria-controls="appConfigBodyContainer">
+        <button class="btn btn-secondary float-right" type="button">
           Toggle Environment Variables
         </button>
       </div>
