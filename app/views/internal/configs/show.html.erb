@@ -89,11 +89,11 @@
               <div class="alert alert-info">Email of the staff account</div>
             </div>
             <div class="form-group">
-              <%= f.fields_for :social_media_handles do |ff| %>
+              <%= f.fields_for :social_media_handles do |social_media_field| %>
                 <% SiteConfig.social_media_handles.keys.each do |social_media_platform| %>
                   <div>
-                    <%= ff.label social_media_platform %>
-                    <%= ff.text_field social_media_platform,
+                    <%= social_media_field.label social_media_platform %>
+                    <%= social_media_field.text_field social_media_platform,
                                      class: "form-control",
                                      value: SiteConfig.social_media_handles[social_media_platform],
                                      placeholder: "" %>
