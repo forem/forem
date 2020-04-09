@@ -72,26 +72,26 @@ num_users.times do |i|
   )
 end
 
-Organization.find_each do |organization|
-  admins = []
-  admin_id = User.where.not(id: admins).order(Arel.sql("RANDOM()")).first.id
-
-  OrganizationMembership.create!(
-    user_id: admin_id,
-    organization_id: organization.id,
-    type_of_user: "admin",
-  )
-
-  admins << admin_id
-
-  2.times do
-    OrganizationMembership.create!(
-      user_id: User.where.not(id: OrganizationMembership.pluck(:user_id)).order(Arel.sql("RANDOM()")).first.id,
-      organization_id: organization.id,
-      type_of_user: "member",
-    )
-  end
-end
+# Organization.find_each do |organization|
+#   admins = []
+#   admin_id = User.where.not(id: admins).order(Arel.sql("RANDOM()")).first.id
+#
+#   OrganizationMembership.create!(
+#     user_id: admin_id,
+#     organization_id: organization.id,
+#     type_of_user: "admin",
+#   )
+#
+#   admins << admin_id
+#
+#   2.times do
+#     OrganizationMembership.create!(
+#       user_id: User.where.not(id: OrganizationMembership.pluck(:user_id)).order(Arel.sql("RANDOM()")).first.id,
+#       organization_id: organization.id,
+#       type_of_user: "member",
+#     )
+#   end
+# end
 
 users_in_random_order = User.order(Arel.sql("RANDOM()"))
 
@@ -315,23 +315,23 @@ HtmlVariant.create!(
 
 ##############################################################################
 
-counter += 1
-Rails.logger.info "#{counter}. Creating Badges"
-
-5.times do
-  Badge.create!(
-    title: "#{Faker::Lorem.word} #{rand(100)}",
-    description: Faker::Lorem.sentence,
-    badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-  )
-end
-
-users_in_random_order.limit(10).each do |user|
-  user.badge_achievements.create!(
-    badge: Badge.order(Arel.sql("RANDOM()")).limit(1).take,
-    rewarding_context_message_markdown: Faker::Markdown.random,
-  )
-end
+# counter += 1
+# Rails.logger.info "#{counter}. Creating Badges"
+#
+# 5.times do
+#   Badge.create!(
+#     title: "#{Faker::Lorem.word} #{rand(100)}",
+#     description: Faker::Lorem.sentence,
+#     badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+#   )
+# end
+#
+# users_in_random_order.limit(10).each do |user|
+#   user.badge_achievements.create!(
+#     badge: Badge.order(Arel.sql("RANDOM()")).limit(1).take,
+#     rewarding_context_message_markdown: Faker::Markdown.random,
+#   )
+# end
 
 ##############################################################################
 
