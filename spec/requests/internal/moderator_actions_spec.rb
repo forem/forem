@@ -10,7 +10,7 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
 
     it "blocks the request" do
       expect do
-        get "/internal/moderator_actions"
+        get internal_moderator_actions_path
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
@@ -35,13 +35,13 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
 
     it "does not block the request" do
       expect do
-        get "/internal/moderator_actions"
+        get internal_moderator_actions_path
       end.not_to raise_error
     end
 
     describe "GETS /internal/moderator_actions" do
       it "renders to appropriate page" do
-        get "/internal/moderator_actions"
+        get internal_moderator_actions_path
         expect(response.body).to include(admin.username)
         expect(response.body).to include(audit_log.id.to_s)
       end
