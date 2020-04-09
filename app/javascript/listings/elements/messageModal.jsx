@@ -8,7 +8,8 @@ const MessageModal = ({
   onSubmit,
   onChangeDraftingMessage,
 }) => {
-  const isCurrentUserOnListining = listining.user_id !== currentUserId;
+  const isCurrentUserOnListining = listining.user_id === currentUserId;
+  console.log('is true? ', isCurrentUserOnListining);
 
   return (
     <form
@@ -17,16 +18,16 @@ const MessageModal = ({
       onSubmit={onSubmit}
     >
       {isCurrentUserOnListining ? (
+        <p id="personal-contact-message">
+          This is your active listing. Any member can contact you via this form.
+        </p>
+      ) : (
         <p>
-          <b>
+          <b id="generic-contact-message">
             Contact
             {` ${listining.author.name} `}
             via DEV Connect
           </b>
-        </p>
-      ) : (
-        <p>
-          This is your active listing. Any member can contact you via this form.
         </p>
       )}
       <textarea
@@ -42,9 +43,8 @@ const MessageModal = ({
       </button>
       <p>
         {isCurrentUserOnListining ? (
-          <em>
-            Message must be relevant and on-topic with the listing. All private
-            interactions 
+          <em id="personal-message-about-interactions">
+            All private interactions 
             {' '}
             <b>must</b>
             {' '}
@@ -53,8 +53,9 @@ const MessageModal = ({
             <a href="/code-of-conduct">code of conduct</a>
           </em>
         ) : (
-          <em>
-            All private interactions 
+          <em id="generic-message-about-interactions">
+            Message must be relevant and on-topic with the listing. All private
+            interactions 
             {' '}
             <b>must</b>
             {' '}
