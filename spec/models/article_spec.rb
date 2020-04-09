@@ -861,10 +861,6 @@ RSpec.describe Article, type: :model do
         expect(article.top_comments.first.score).to be > 10
       end
 
-      it "returns a max of two comments" do
-        expect(article.top_comments.size).to eq 2
-      end
-
       it "only includes root comments" do
         expect(article.top_comments).not_to include(child_comment)
       end
