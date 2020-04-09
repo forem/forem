@@ -13,6 +13,8 @@ class SiteConfig < RailsSettings::Base
 
   # site content
   field :community_description, type: :string, default: "A constructive and inclusive social network. Open source and radically transparent."
+  field :community_member_description, type: :string, default: "amazing humans who code."
+  field :tagline, type: :string, default: "We're a place where coders share, stay up-to-date and grow their careers."
 
   # staff account
   field :staff_user_id, type: :integer, default: 1
@@ -40,6 +42,8 @@ class SiteConfig < RailsSettings::Base
   field :logo_png, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
   field :logo_svg, type: :string, default: ""
   field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
+  field :mascot_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+  field :mascot_image_description, type: :string, default: "Sloan, the sloth mascot"
 
   # rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
@@ -47,6 +51,7 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_published_article_creation, type: :integer, default: 9
   field :rate_limit_image_upload, type: :integer, default: 9
   field :rate_limit_email_recipient, type: :integer, default: 5
+  field :rate_limit_article_update, type: :integer, default: 150
 
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>

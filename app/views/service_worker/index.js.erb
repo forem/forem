@@ -122,6 +122,12 @@
         !url.href.includes('/search/classified_listings') &&
         !url.href.includes('/search/users') &&
 
+        // Don't run on redirects
+        !url.href.includes('/workshops') &&
+        !url.href.includes('/%F0%9F%92%B8') && // 💸 (hiring)
+        !url.href.includes('/podcasts') &&
+        !url.href.includes('/p/rlyweb') &&
+
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
         event.respondWith(createPageStream(event.request)); // Respond with the stream

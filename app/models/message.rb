@@ -42,6 +42,7 @@ class Message < ApplicationRecord
     html = MarkdownParser.new(message_markdown).evaluate_markdown
     html = append_rich_links(html)
     html = wrap_mentions_with_links(html)
+    html = handle_call(html)
     self.message_html = html
   end
 
@@ -121,6 +122,18 @@ class Message < ApplicationRecord
       end
     end
     html
+  end
+
+  def handle_call(html)
+    return html if html.to_s.exclude?("<p>/call</p>")
+
+    "<a href='/video_chats/#{chat_channel_id}'
+        class='chatchannels__richlink'
+        target='_blank' data-content='sidecar-video'>
+        <h1 data-content='sidecar-video' style='margin: 18px auto;'>
+          Let's video chat 😄
+        </h1>
+        </a>".html_safe
   end
 
   def cl_path(img_src)

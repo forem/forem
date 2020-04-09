@@ -1,4 +1,4 @@
-FROM ruby:2.7.0-alpine3.10
+FROM ruby:2.7.1-alpine3.10
 
 #------------------------------------------------------------------------------
 #
@@ -13,7 +13,7 @@ RUN apk update -qq && apk add git nodejs postgresql-client ruby-dev build-base \
 # Install required bundler version
 #
 #------------------------------------------------------------------------------
-RUN gem install bundler:2.0.2
+RUN gem install bundler:2.1.4
 
 #------------------------------------------------------------------------------
 #

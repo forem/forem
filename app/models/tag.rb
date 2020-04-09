@@ -1,3 +1,5 @@
+require_relative "../lib/acts_as_taggable_on/tag.rb"
+
 class Tag < ActsAsTaggableOn::Tag
   attr_accessor :points
 

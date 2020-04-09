@@ -119,6 +119,10 @@ class Comment < ApplicationRecord
     processed_html.html_safe
   end
 
+  def root_exists?
+    ancestry && Comment.exists?(id: ancestry)
+  end
+
   private
 
   def update_notifications
@@ -148,7 +152,7 @@ class Comment < ApplicationRecord
   end
 
   def adjust_comment_parent_based_on_depth
-    self.parent_id = parent.descendant_ids.last if parent && (parent.depth > 1 && parent.has_children?)
+    self.parent_id = parent.descendant_ids.last if parent_exists? && (parent.depth > 1 && parent.has_children?)
   end
 
   def wrap_timestamps_if_video_present!
@@ -185,7 +189,11 @@ class Comment < ApplicationRecord
   end
 
   def expire_root_fragment
-    root.touch
+    if root_exists?
+      root.touch
+    else
+      touch
+    end
   end
 
   def create_first_reaction
@@ -219,7 +227,8 @@ class Comment < ApplicationRecord
   end
 
   def should_send_email_notification?
-    parent_user.class.name != "Podcast" &&
+    parent_exists? &&
+      parent_user.class.name != "Podcast" &&
       parent_user != user &&
       parent_user.email_comment_notifications &&
       parent_user.email &&
@@ -249,5 +258,9 @@ class Comment < ApplicationRecord
 
   def notify_slack_channel_about_warned_users
     Slack::Messengers::CommentUserWarned.call(comment: self)
+  end
+
+  def parent_exists?
+    parent_id && Comment.exists?(id: parent_id)
   end
 end

@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   }
 
   require "sidekiq/web"
+  require "sidekiq_unique_jobs/web"
+
   authenticated :user, ->(user) { user.tech_admin? } do
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
     Sidekiq::Web.set :sessions, Rails.application.config.session_options
@@ -178,7 +180,6 @@ Rails.application.routes.draw do
       get "/onboarding", to: "tags#onboarding"
     end
   end
-  resources :downloads, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
   resources :github_repos, only: %i[index create update] do
@@ -214,6 +215,7 @@ Rails.application.routes.draw do
   resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
   resources :podcasts, only: %i[new create]
   resources :article_approvals, only: %i[create]
+  resources :video_chats, only: %i[show]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
   namespace :followings, defaults: { format: :json } do
     get :users
@@ -304,15 +306,12 @@ Rails.application.routes.draw do
   get "/code-of-conduct" => "pages#code_of_conduct"
   get "/report-abuse" => "pages#report_abuse"
   get "/faq" => "pages#faq"
-  get "/live" => "pages#live"
-  get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
   get "/challenge" => "pages#challenge"
   get "/badge" => "pages#badge"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
-  get "/now" => "pages#now"
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
   get "/sponsorship-info" => "pages#sponsorship_faq"
