@@ -14,7 +14,17 @@ RSpec.describe "/internal/response_templates", type: :request do
     context "when there are response templates to render" do
       it "renders with status 200" do
         create(:response_template)
-        get "/internal/response_templates"
+        get internal_response_templates_path
+        expect(response.status).to eq 200
+      end
+    end
+
+    context "when a single resource admin" do
+      let(:single_resource_admin) { create(:user, :single_resource_admin, resource: ResponseTemplate) }
+
+      it "renders with status 200" do
+        sign_in single_resource_admin
+        get internal_response_templates_path
         expect(response.status).to eq 200
       end
     end
