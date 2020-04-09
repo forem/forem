@@ -30,7 +30,7 @@ class Article < ApplicationRecord
 
   has_many :comments, as: :commentable, inverse_of: :commentable
   has_many :top_comments,
-           -> { where("comments.score > ? AND ancestry IS NULL", 10).order("comments.score DESC").limit(2) },
+           -> { where("comments.score > ? AND ancestry IS NULL", 10).order("comments.score DESC") },
            as: :commentable,
            inverse_of: :commentable,
            class_name: "Comment"
@@ -423,16 +423,6 @@ class Article < ApplicationRecord
                    spaminess_rating: BlackBox.calculate_spaminess(self))
   end
 
-  def top_comments_cache_name
-    "article-#{id}-#{last_comment_at&.rfc3339}/top_comments"
-  end
-
-  def cached_top_comments
-    Rails.cache.fetch(top_comments_cache_name, expires_in: 24.hours) do
-      top_comments.to_a
-    end
-  end
-
   private
 
   def delete_related_objects
@@ -492,7 +482,6 @@ class Article < ApplicationRecord
   def async_score_calc
     return if !published? || destroyed?
 
-    Rails.cache.delete(top_comments_cache_name)
     Articles::ScoreCalcWorker.perform_async(id)
   end
 

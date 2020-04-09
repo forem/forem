@@ -213,7 +213,7 @@ module Articles
         hot_stories = hot_stories.offset(offset)
         new_stories = Article.published.
           where("score > ?", -15).
-          limited_column_select.order("published_at DESC").limit(rand(15..80))
+          limited_column_select.includes(:top_comments).order("published_at DESC").limit(rand(15..80))
         hot_stories = hot_stories.to_a + new_stories.to_a
       end
       [featured_story, hot_stories.to_a]
