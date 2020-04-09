@@ -97,12 +97,13 @@
 
   &__tags {
     margin-bottom: $su-1;
+    margin-left: -$su-1;
   }
 
   &__title {
     color: var(--card-color);
     line-height: $lh-tight;
-    margin-bottom: $su-1;
+    margin-bottom: $su-2;
     font-size: var(--title-font-size);
 
     a {
@@ -126,6 +127,7 @@
   &__details {
     display: flex;
     align-items: center;
+    margin-left: -$su-1;
 
     &__item {
       display: flex;
