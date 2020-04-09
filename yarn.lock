@@ -1404,17 +1404,7 @@
     tslib "^1.10.0"
     urijs "~1.19.1"
 
-"@stoplight/json@^3.1.2":
-  version "3.5.1"
-  resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.5.1.tgz#afc6ffcbe2ada8f9b16680fd7885688cf9beec7e"
-  integrity sha512-O5WUW2yfAvtrqeq60YrbxpTvk87Ti2IeJ5oVa2XNJ2s+IIxx0CM+j316QoOjSGs+twrRpwb3jT9CFPrq7Ghkzg==
-  dependencies:
-    "@stoplight/types" "^11.4.0"
-    jsonc-parser "~2.2.0"
-    lodash "^4.17.15"
-    safe-stable-stringify "^1.1"
-
-"@stoplight/json@^3.6.0":
+"@stoplight/json@^3.1.2", "@stoplight/json@^3.6.0":
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/@stoplight/json/-/json-3.6.0.tgz#51ab4c677ec5aadcffd5c6ed67b6dbf51a5f93ba"
   integrity sha512-6hJN735r+aPzHP28HnBj30uC+RGyf/ZWEtAMlrXI4DntzocWvhgDqxLuLgOlmXkMd/4OAlD7fJQ/cI2RXNuWvQ==
@@ -1429,10 +1419,10 @@
   resolved "https://registry.yarnpkg.com/@stoplight/path/-/path-1.3.1.tgz#1246c983279af20dcfb806d138add9f81cb1efd2"
   integrity sha512-I6YEfxspGglxt7MbgNbKThHdqh8CJWnDC1x1JUk2rka2D7mCpMSEu5I8IiAp997Dp4YIXDY6Did6gge8OY8KnA==
 
-"@stoplight/spectral@5.2.0":
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.2.0.tgz#95eb3faeca34f3c84610d37c276a90b1c44ce843"
-  integrity sha512-2cWDhst+P+KE2tGnu3+r/uCi+njrvcK31auUvuhX/JEmC/F+NYV6hcYqsFTszuHRT2lGvF+S/a1s+2Xu/7qylA==
+"@stoplight/spectral@5.3.0":
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@stoplight/spectral/-/spectral-5.3.0.tgz#6807233000ec9f1593c343f74aecde8e6d3e04bf"
+  integrity sha512-8Om4sfyE9XV4obaU6i6qF7PumwA7zYgf/VoAuffQdXNRcwKd1LvXbiWu0eMp7ueue5B91KoXKABiY/PbHKBdIA==
   dependencies:
     "@stoplight/json" "^3.6.0"
     "@stoplight/json-ref-readers" "^1.1.1"
@@ -1450,7 +1440,7 @@
     fast-glob "^3.1.0"
     jsonpath-plus "~2.0"
     lodash ">=4.17.5"
-    nanoid "^2.1.6"
+    nanoid "^2.1.11"
     node-fetch "^2.6"
     proxy-agent "^3.1.1"
     strip-ansi "^6.0"
@@ -9312,7 +9302,7 @@ nan@^2.12.1, nan@^2.13.2:
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.0.tgz#7818f722027b2459a86f0295d434d1fc2336c52c"
   integrity sha512-INOFj37C7k3AfaNTtX8RhsTw7qRy7eLET14cROi9+5HAVbbHuIWUHEauBv5qT4Av2tWasiTY1Jw6puUNqRJXQg==
 
-nanoid@^2.1.6:
+nanoid@^2.1.11:
   version "2.1.11"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-2.1.11.tgz#ec24b8a758d591561531b4176a01e3ab4f0f0280"
   integrity sha512-s/snB+WGm6uwi0WjsZdaVcuf3KJXlfGl2LcxgwkEwJF0D/BWzVWAZW/XY4bFaiR7s0Jk3FPvlnepg1H1b1UwlA==
