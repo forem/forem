@@ -74,10 +74,7 @@ describe('<SingleListing />', () => {
 
     it('for listing tags', () => {
       expect(
-        context
-          .find('.single-classified-listing-tags')
-          .childAt(0)
-          .text(),
+        context.find('.single-classified-listing-tags').childAt(0).text(),
       ).toEqual(listing.tags[0]);
     });
 
@@ -109,10 +106,3 @@ describe('<SingleListing />', () => {
     });
   });
 });
-
-// describe('<AuthorInfo />', () => {
-//   it('should load the author info of a single listing', () => {
-//     const tree = deep(<AuthorInfo listing={listing} />);
-//     expect(tree).toMatchSnapshot();
-//   });
-// });
