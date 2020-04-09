@@ -96,7 +96,7 @@
           <div class="card-body">
             <div class="form-group">
               <%= f.fields_for :social_media_handles do |ff| %>
-                <% @social_media_platforms.each do |social_media_platform| %>
+                <% SiteConfig.social_media_handles.keys.each do |social_media_platform| %>
                   <div>
                     <%= ff.label social_media_platform %>
                     <%= ff.text_field social_media_platform,
