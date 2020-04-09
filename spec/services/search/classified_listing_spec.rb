@@ -148,12 +148,12 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
       classified_listing.update(bumped_at: 1.year.ago)
       classified_listing2 = FactoryBot.create(:classified_listing, bumped_at: Time.current)
       index_documents([classified_listing, classified_listing2])
-      first_page_params = { page: 0, per_page: 1, sort_by: "bumped_at", order: "dsc" }
+      first_page_params = { page: 1, per_page: 1, sort_by: "bumped_at", order: "dsc" }
 
       classified_listing_docs = described_class.search_documents(params: first_page_params)
       expect(classified_listing_docs.first["id"]).to eq(classified_listing2.id)
 
-      second_page_params = { page: 1, per_page: 1, sort_by: "bumped_at", order: "dsc" }
+      second_page_params = { page: 2, per_page: 1, sort_by: "bumped_at", order: "dsc" }
 
       classified_listing_docs = described_class.search_documents(params: second_page_params)
       expect(classified_listing_docs.first["id"]).to eq(classified_listing.id)

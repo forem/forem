@@ -3,7 +3,7 @@ module Search
     INDEX_NAME = "feed_content_#{Rails.env}".freeze
     INDEX_ALIAS = "feed_content_#{Rails.env}_alias".freeze
     MAPPINGS = JSON.parse(File.read("config/elasticsearch/mappings/feed_content.json"), symbolize_names: true).freeze
-    DEFAULT_PAGE = 0
+    DEFAULT_PAGE = 1
     DEFAULT_PER_PAGE = 60
 
     INCLUDED_CLASS_NAMES = %w[Article Comment PodcastEpisode].freeze

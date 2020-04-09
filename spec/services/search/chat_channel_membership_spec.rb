@@ -123,12 +123,12 @@ RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: tru
       allow(chat_channel_membership1).to receive(:channel_last_message_at).and_return(Time.current)
       allow(chat_channel_membership2).to receive(:channel_last_message_at).and_return(1.year.ago)
       index_documents([chat_channel_membership1, chat_channel_membership2])
-      first_page_params = { page: 0, per_page: 1, sort_by: "channel_last_message_at", order: "dsc", user_id: user.id }
+      first_page_params = { page: 1, per_page: 1, sort_by: "channel_last_message_at", order: "dsc" }
 
       chat_channel_membership_docs = described_class.search_documents(params: first_page_params)
       expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership1.id)
 
-      second_page_params = { page: 1, per_page: 1, sort_by: "channel_last_message_at", order: "dsc", user_id: user.id }
+      second_page_params = { page: 2, per_page: 1, sort_by: "channel_last_message_at", order: "dsc" }
 
       chat_channel_membership_docs = described_class.search_documents(params: second_page_params)
       expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership2.id)

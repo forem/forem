@@ -77,16 +77,30 @@ module Search
       end
 
       def set_query_size(params)
-        params[:page] ||= self::DEFAULT_PAGE
+        params[:page] = params[:page].to_i.zero? ? self::DEFAULT_PAGE : params[:page]
         params[:per_page] ||= self::DEFAULT_PER_PAGE
 
-        # pages start at 0
-        params[:size] = params[:per_page].to_i * (params[:page].to_i + 1)
+        params[:offset_value] = (params[:per_page] * (params[:page] - 1))
+        params[:size] = (params[:per_page].to_i * params[:page].to_i)
       end
 
       def paginate_hits(hits, params)
-        start = params[:per_page] * params[:page]
-        hits[start, params[:per_page]] || []
+        return [] if hits.empty?
+
+        hits[params[:offset_value], params[:per_page]] || []
+      end
+
+      def metadata(results, params)
+        total = results.dig("hits", "total", "value")
+
+        {
+          total_count: total,
+          total_pages: (total.to_f / params[:per_page]).ceil,
+          current_page: params[:page],
+          limit_value: params[:per_page],
+          offset_value: params[:offset_value],
+          size: params[:size]
+        }
       end
 
       def settings

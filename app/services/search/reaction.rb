@@ -3,7 +3,7 @@ module Search
     INDEX_NAME = "reactions_#{Rails.env}".freeze
     INDEX_ALIAS = "reactions_#{Rails.env}_alias".freeze
     MAPPINGS = JSON.parse(File.read("config/elasticsearch/mappings/reactions.json"), symbolize_names: true).freeze
-    DEFAULT_PAGE = 0
+    DEFAULT_PAGE = 1
     DEFAULT_PER_PAGE = 80
 
     class << self
