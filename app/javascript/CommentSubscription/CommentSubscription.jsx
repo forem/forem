@@ -21,15 +21,14 @@ export class CommentSubscription extends Component {
     subscribed: false,
   };
 
-  componentDidMount() {
-    window.addEventListener('scroll', this.dropdownPlacementHandler);
-  }
-
   componentDidUpdate() {
     const { showOptions } = this.state;
 
     if (showOptions) {
+      window.addEventListener('scroll', this.dropdownPlacementHandler);
       this.dropdownPlacementHandler();
+    } else {
+      window.removeEventListener('scroll', this.dropdownPlacementHandler);
     }
   }
 

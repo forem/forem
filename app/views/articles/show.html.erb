@@ -1,7 +1,7 @@
 <% title @article.title %>
 
 <%= render "shared/webcomponents_loader_script" %>
-<%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", defer: true %>
+<%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articleCommentSubscription", defer: true %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
