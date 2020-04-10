@@ -21,7 +21,7 @@ RSpec.describe "Pages", type: :request do
   describe "GET /about" do
     it "has proper headline" do
       get "/about"
-      expect(response.body).to include("About dev.to")
+      expect(response.body).to include("About")
     end
   end
 
@@ -49,7 +49,7 @@ RSpec.describe "Pages", type: :request do
   describe "GET /security" do
     it "has proper headline" do
       get "/security"
-      expect(response.body).to include("Reporting Vulnerabilities to dev.to")
+      expect(response.body).to include("Reporting Vulnerabilities")
     end
   end
 
