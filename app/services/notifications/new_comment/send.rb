@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # send notifications about the new comment
 
 module Notifications

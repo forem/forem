@@ -1,3 +1,5 @@
+# TODO: [@thepracticaldev/oss] test cops that are commented out
+
 inherit_from: .rubocop_todo.yml
 
 require:
@@ -16,12 +18,6 @@ AllCops:
   ExtraDetails: true
   TargetRubyVersion: 2.7
 
-#################### Bundler ###############################
-
-Bundler/GemComment:
-  Description: 'Add a comment describing each gem.'
-  Enabled: true
-
 #################### Layout ###########################
 
 # Layout/ClassStructure:
@@ -32,7 +28,7 @@ Bundler/GemComment:
 Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
   StyleGuide: '#consistent-multi-line-chains'
-  # TODO: enable leading
+  # TODO: [@thepracticaldev/oss] enable leading?
   EnforcedStyle: trailing
 
 # Layout/FirstArrayElementLineBreak:
@@ -351,7 +347,7 @@ Performance/ChainArrayAllocation:
                   Instead of chaining array methods that allocate new arrays, mutate an
                   existing array.
   Reference: 'https://twitter.com/schneems/status/1034123879978029057'
-  Enabled: true
+  Enabled: false
 
 Performance/OpenStruct:
   Description: 'Use `Struct` instead of `OpenStruct`.'
@@ -362,7 +358,7 @@ Rails/FilePath:
 
 # Rails cops from rubocop-rails
 # https://github.com/rubocop-hq/rubocop-rails/blob/master/config/default.yml
-# TODO: enable these:
+# TODO: [@thepracticaldev/oss] enable these Rails cops
 Rails/HasManyOrHasOneDependent:
   Description: 'Define the dependent option to the has_many and has_one associations.'
   StyleGuide: 'https://rails.rubystyle.guide#has_many-has_one-dependent-option'
@@ -385,10 +381,6 @@ Rails/SkipsModelValidations:
 RSpec/DescribeClass:
   Description: Check that the first argument to the top level describe is a constant.
   Enabled: true
-  # Exclude:
-  #   - spec/requests/**/*
-  #   - spec/system/**/*
-  #   - spec/tasks/**/*
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeClass
 
 RSpec/ExampleLength:

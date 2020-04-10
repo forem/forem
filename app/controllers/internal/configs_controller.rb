@@ -9,7 +9,7 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def create
     clean_up_params
-    config_params.keys.each do |key|
+    config_params.each_key do |key|
       if config_params[key].respond_to?(:to_h)
         SiteConfig.public_send("#{key}=", config_params[key].to_h) unless config_params[key].empty?
       else
