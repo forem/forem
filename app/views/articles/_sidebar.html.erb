@@ -4,11 +4,9 @@
     <% cache(cache_key_heroku_slug("main-sidebar-nav--#{user_signed_in?}"), expires_in: 5.days) do %>
       <%= render "articles/sidebar_nav" %>
       <div class="widget widget-sponsorship <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
-        <header>
+        <header class="flex items-center">
           <a href="/sponsors"><h4>Community sponsors</h4></a>
-          <span class="emoji">
-            <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart" />
-          </span>
+          <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default pl-1", title: "Sponsors") %>
         </header>
         <% @sponsorships = Sponsorship.gold.live.includes(:organization).order(featured_number: :asc) %>
         <%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
@@ -23,38 +21,6 @@
             </div>
           </div>
         <% end %>
-      </div>
-      <div class="widget">
-        <header>
-          <h4>Key links</h4>
-        </header>
-        <div class="widget-body social-icons">
-          <a href="https://twitter.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("twitter.svg", aria: true, title: "Twitter", class: "crayons-icon") %>
-          </a>
-          <a href="https://github.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("github.svg", aria: true, title: "Github", class: "crayons-icon") %>
-          </a>
-          <a href="https://instagram.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("instagram.svg", aria: true, title: "Instagram", class: "crayons-icon") %>
-          </a>
-          <a href="https://facebook.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("facebook.svg", aria: true, title: "Facebook", class: "crayons-icon") %>
-          </a>
-          <a href="https://twitch.tv/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("twitch.svg", aria: true, title: "Twitch", class: "crayons-icon") %>
-          </a>
-        </div>
-        <div class="side-footer">
-          <a href="/about">About</a>
-          <a href="/sponsors">Sponsors</a>
-          <a href="https://shop.dev.to/"><%= ApplicationConfig["COMMUNITY_NAME"] %> Shop</a>
-          <a href="/privacy">Privacy Policy</a>
-          <a href="/terms">Terms of Use</a>
-          <a href="/contact">Contact</a>
-          <a href="/faq">FAQ</a>
-          <a href="/code-of-conduct">Code of Conduct</a>
-        </div>
       </div>
     <% end %>
     <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>

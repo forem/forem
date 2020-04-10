@@ -35,12 +35,9 @@ function addReadingListCountToHomePage() {
   var user = userData();
   var readingListCount;
   if (user && document.getElementById('reading-list-count')) {
-    readingListCount =
-      user.reading_list_ids.length > 0 ? user.reading_list_ids.length : 'empty';
-    document.getElementById('reading-list-count').innerHTML =
-      '(' + readingListCount + ')';
-    document.getElementById('reading-list-count').dataset.count =
-      user.reading_list_ids.length;
+    readingListCount = user.reading_list_ids.length > 0 ? user.reading_list_ids.length : 'empty';
+    document.getElementById('reading-list-count').innerHTML = readingListCount;
+    document.getElementById('reading-list-count').dataset.count = user.reading_list_ids.length;
   }
 }
 
@@ -94,8 +91,7 @@ function renderNewSidebarCount(button, json) {
     newCount = count - 1;
   }
   document.getElementById('reading-list-count').dataset.count = newCount;
-  document.getElementById('reading-list-count').innerHTML =
-    '(' + newCount + ')';
+  document.getElementById('reading-list-count').innerHTML = newCount;
 }
 
 function buttonFormData(button) {
