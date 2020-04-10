@@ -67,13 +67,6 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
-  describe "GET /sponsorship-info" do
-    it "has proper headline" do
-      get "/sponsorship-info"
-      expect(response.body).to include("Sponsorship Information")
-    end
-  end
-
   describe "GET /welcome" do
     it "redirects to the latest welcome thread" do
       user = create(:user, id: 1)
