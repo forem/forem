@@ -140,7 +140,7 @@ module Search
       def query_hash(key, fields)
         {
           simple_query_string: {
-            query: key,
+            query: key.downcase,
             fields: fields,
             lenient: true,
             analyze_wildcard: true,
