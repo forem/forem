@@ -1,5 +1,5 @@
 <%= content_for :page_meta do %>
-  <% title "<%= community_name %> Videos" %>
+  <% title("#{community_name} Videos") %>
 
   <link rel="canonical" href="<%= app_url(request.path) %>" />
   <meta name="description" content="<%= SiteConfig.community_description %>">
