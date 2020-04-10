@@ -51,7 +51,7 @@ module Search
           url: ApplicationConfig["ELASTICSEARCH_URL"],
           retry_on_failure: 5,
           request_timeout: 30,
-          adapter: :typhoeus,
+          adapter: :patron,
           log: Rails.env.development?,
         )
       end
