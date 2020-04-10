@@ -24,7 +24,8 @@ class ClassifiedListing < ApplicationRecord
 
   attr_accessor :action
 
-  belongs_to :classified_listing_category
+  # TODO: this is optional for now to ease the migration
+  belongs_to :classified_listing_category, optional: true
   belongs_to :user
   belongs_to :organization, optional: true
   before_save :evaluate_markdown
