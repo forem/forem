@@ -72,24 +72,15 @@
         <%= inline_svg_tag("twemoji/contact.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "FAQ") %>
         Contact
       </a>
-
-      <div class="grid gap-2 grid-cols-5 p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
-        <a href="https://twitter.com/<%= SiteConfig.social_networks_handle %>" class="crayons-link crayons-link--secondary" target="_blank" rel="noopener">
-          <%= inline_svg_tag("twitter.svg", aria: true, title: "Twitter", class: "crayons-icon") %>
-        </a>
-        <a href="https://github.com/<%= SiteConfig.social_networks_handle %>" class="crayons-link crayons-link--secondary" target="_blank" rel="noopener">
-          <%= inline_svg_tag("github.svg", aria: true, title: "Github", class: "crayons-icon") %>
-        </a>
-        <a href="https://instagram.com/<%= SiteConfig.social_networks_handle %>" class="crayons-link crayons-link--secondary" target="_blank" rel="noopener">
-          <%= inline_svg_tag("instagram.svg", aria: true, title: "Instagram", class: "crayons-icon") %>
-        </a>
-        <a href="https://facebook.com/<%= SiteConfig.social_networks_handle %>" class="crayons-link crayons-link--secondary" target="_blank" rel="noopener">
-          <%= inline_svg_tag("facebook.svg", aria: true, title: "Facebook", class: "crayons-icon") %>
-        </a>
-        <a href="https://twitch.tv/<%= SiteConfig.social_networks_handle %>" class="crayons-link crayons-link--secondary" target="_blank" rel="noopener">
-          <%= inline_svg_tag("twitch.svg", aria: true, title: "Twitch", class: "crayons-icon") %>
-        </a>
-      </div>
+      <% SiteConfig.social_media_handles.keys.each do |social_media_type| %>
+        <div class="grid gap-2 grid-cols-5 p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
+          <% if SiteConfig.social_media_handles[social_media_type].present? %>
+            <a href="<%= "https://#{social_media_type}.com/#{SiteConfig.social_media_handles[social_media_type]}" %>" target="_blank" rel="noopener">
+              <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: "#{social_media_type.capitalize}", class: "crayons-icon") %>
+            </a>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </nav>
 

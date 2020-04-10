@@ -13,7 +13,7 @@
   <meta property="og:site_name" content="<%= community_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="About <%= community_name %>">
   <meta name="twitter:description" content="<%= community_name %> is great!">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
@@ -92,7 +92,7 @@
 
     <p>
       The platform was created in 2016. The Twitter account,
-      <a href="https://twitter.com/thepracticaldev">@ThePracticalDev</a> was around before then. We are based out of New York City.
+      <a href="https://twitter.com/<%= SiteConfig.social_media_handles["twitter"] %>">@<%= SiteConfig.social_media_handles["twitter"] %></a> was around before then. We are based out of New York City.
     </p>
   </div>
 </div>

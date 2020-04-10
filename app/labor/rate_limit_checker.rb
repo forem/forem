@@ -26,6 +26,12 @@ class RateLimitChecker
     Rails.cache.write("#{@user.id}_image_upload", count, expires_in: 30.seconds)
   end
 
+  def track_article_updates
+    count = Rails.cache.read("#{@user.id}_article_update").to_i
+    count += 1
+    Rails.cache.write("#{@user.id}_article_update", count, expires_in: 1.day)
+  end
+
   def limit_by_email_recipient_address(address)
     # This is related to the recipient, not the "user" initiator, like in action.
     EmailMessage.where(to: address).where("sent_at > ?", 2.minutes.ago).size >
@@ -47,6 +53,11 @@ class RateLimitChecker
   def check_image_upload_limit
     Rails.cache.read("#{user.id}_image_upload").to_i >
       SiteConfig.rate_limit_image_upload
+  end
+
+  def check_article_update_limit
+    Rails.cache.read("#{user.id}_article_update").to_i >
+      SiteConfig.rate_limit_article_update
   end
 
   def check_follow_account_limit
