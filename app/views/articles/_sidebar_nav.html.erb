@@ -72,15 +72,15 @@
         <%= inline_svg_tag("twemoji/contact.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "FAQ") %>
         Contact
       </a>
-      <% SiteConfig.social_media_handles.keys.each do |social_media_type| %>
-        <div class="grid gap-2 grid-cols-5 p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
+      <div class="grid gap-2 grid-cols-5 p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
+        <% SiteConfig.social_media_handles.keys.each do |social_media_type| %>
           <% if SiteConfig.social_media_handles[social_media_type].present? %>
             <a href="<%= "https://#{social_media_type}.com/#{SiteConfig.social_media_handles[social_media_type]}" %>" target="_blank" rel="noopener">
               <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: "#{social_media_type.capitalize}", class: "crayons-icon") %>
             </a>
           <% end %>
-        </div>
-      <% end %>
+        <% end %>
+      </div>
     </div>
   </nav>
 
