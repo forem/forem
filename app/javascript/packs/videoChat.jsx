@@ -5,7 +5,7 @@ const videoToggleButton = document.getElementById('videohide-toggle');
 const localMediaContainer = document.getElementById('local-media');
 const roomType = document.getElementById('room-type').dataset.type//Group
 
-connect(root.dataset.token, { name: 'room-name', audio: true, type: 'peer-to-peer', video: { width: 800 } }).then(room => {
+connect(root.dataset.token, { name: 'room-name', audio: true, type: roomType, video: { width: 800 } }).then(room => {
   room.participants.forEach(participantConnected);
   room.on('participantConnected', participantConnected);
 
