@@ -316,6 +316,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.string "name", null: false
     t.string "rules", null: false
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_classified_listing_categories_on_name", unique: true
   end
 
   create_table "classified_listings", force: :cascade do |t|
