@@ -8,7 +8,7 @@
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
      data-tag="<%= "organization_#{@organization.id}" %>"
      data-feed="<%= params[:timeframe] || "base-feed" %>"
-     data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
+     data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
   <%= render "organizations/sidebar" %>
   <div class="articles-list" id="articles-list">
     <div class="substories" id="substories">
