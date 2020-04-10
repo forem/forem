@@ -49,7 +49,9 @@ describe('<CommentSubscription />', () => {
     wrapper.find('ButtonGroup').find('Button').last().simulate('click'); // Cog icon button
 
     const dropdown = wrapper.find('Dropdown');
-    expect(dropdown.attr('className')).toEqual('inline-block w-full');
+    expect(dropdown.attr('className')).toEqual(
+      'inline-block w-full z-10 right-0',
+    );
 
     // 3 options for comment subscription
     expect(dropdown.find('RadioButton').length).toEqual(3);
