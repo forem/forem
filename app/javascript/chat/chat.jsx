@@ -21,7 +21,7 @@ import Compose from './compose';
 import Message from './message';
 import ActionMessage from './actionMessage';
 import Content from './content';
-import VideoContent from './videoContent'
+import VideoContent from './videoContent';
 
 import setupPusher from '../src/utils/pusher';
 import debounceAction from '../src/utils/debounceAction';
@@ -66,7 +66,6 @@ export default class Chat extends Component {
       isMobileDevice: typeof window.orientation !== 'undefined',
       subscribedPusherChannels: [],
       inviteChannels: [],
-      soundOn: true,
       messageOffset: 0,
       showDeleteModal: false,
       messageDeleteId: null,
@@ -561,7 +560,7 @@ export default class Chat extends Component {
         message: '/call',
         mentionedUsersId: this.getMentionedUsers(message),
       };
-      this.setState({videoPath: 'http://localhost:3000/video_chats/' + activeChannelId})
+      this.setState({ videoPath: `/video_chats/${  activeChannelId}` });
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     } else if (message.startsWith('/new')) {
       this.setActiveContentState(activeChannelId, {
@@ -735,7 +734,7 @@ export default class Chat extends Component {
           type_of: 'article',
         });
       } else if (content.startsWith('sidecar-video')) {
-        this.setState({videoPath: target.href || target.parentElement.href})
+        this.setState({ videoPath: target.href || target.parentElement.href });
       } else if (
         content.startsWith('sidecar') ||
         content.startsWith('article')
@@ -1173,17 +1172,17 @@ export default class Chat extends Component {
           pusherKey={props.pusherKey}
           githubToken={props.githubToken}
         />
-        <VideoContent 
+        <VideoContent
           videoPath={state.videoPath}
-          onExit ={this.triggerExitVideo}
+          onExit={this.triggerExitVideo}
         />
       </div>
     );
   };
 
   triggerExitVideo = () => {
-    this.setState({videoPath: null})
-  }
+    this.setState({ videoPath: null });
+  };
 
   handleMention = (e) => {
     const { activeChannel } = this.state;
@@ -1491,8 +1490,13 @@ export default class Chat extends Component {
       <div
         className={`chat chat--${
           state.expanded ? 'expanded' : 'contracted'
-        }${detectIOSSafariClass} chat--${ state.videoPath ? 'video-visible' : 'video-not-visible'
-        } chat--${state.activeContent[state.activeChannelId] ? 'content-visible' : 'content-not-visible'}`}
+        }${detectIOSSafariClass} chat--${
+          state.videoPath ? 'video-visible' : 'video-not-visible'
+        } chat--${
+          state.activeContent[state.activeChannelId]
+            ? 'content-visible'
+            : 'content-not-visible'
+        }`}
         data-no-instant
       >
         {this.renderChatChannels()}
