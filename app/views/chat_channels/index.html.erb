@@ -1,7 +1,7 @@
-<% title "DEV Connect 👩‍💻💬👨‍💻" %>
+<% title("#{community_name} Connect 👩‍💻💬👨‍💻") %>
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/connect") %>" />
-  <meta name="description" content="DEV Connect">
+  <meta name="description" content="<%= community_name %> Connect">
 <% end %>
 <%= csrf_meta_tags %>
 
