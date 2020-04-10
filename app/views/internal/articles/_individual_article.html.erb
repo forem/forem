@@ -126,7 +126,7 @@
     <div class="form-check">
       <input name="article[boosted_dev_digest_email]" type="checkbox"
         <%= "checked" if article.boosted_dev_digest_email %>>
-      <label>Boosted (DEV Digest)</label>
+      <label>Boosted (<%= community_name %> Digest)</label>
     </div>
 
     <% unless article.last_buffered %>

@@ -544,6 +544,50 @@
   }
 }
 
+.chat--video-visible {
+  .activechatchannel__conversation {
+    min-width: 25%;
+    @media screen and (min-width: 1440px) {
+      min-width: 45%;
+    }
+  }
+  .activechatchannel__activecontent {
+    &.activechatchannel__activecontent--video {
+      width: 380px;
+      min-width: 380px;
+      @media screen and (max-width: 426px) {
+        width: calc(100% - 16px);
+        min-width: calc(100% - 16px);
+      }  
+      iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 100%;
+        width: 100%;
+        border: 0px;
+      }
+    }
+    width: 300px;
+    min-width: 300px;
+    @media screen and (min-width: 1000px) {
+      width: 400px;
+      min-width: 400px;
+    }
+    @media screen and (min-width: 1300px) {
+      width: 500px;
+      min-width: 500px;
+    }
+  }
+}
+
+.chat--content-visible .activechatchannel__activecontent.activechatchannel__activecontent--video {
+  width: 280px;
+  min-width: 280px;
+}
+
 .live-chat-wrapper .activechatchannel__activecontent {
   min-width: 310px;
   margin-left: -180px;

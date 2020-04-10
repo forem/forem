@@ -25,13 +25,7 @@ export default function setupPusher(key, callbackObjects) {
     channel.bind('message-opened', callbackObjects.messageOpened);
     channel.bind('channel-cleared', callbackObjects.channelCleared);
     channel.bind('user-banned', callbackObjects.redactUserMessages);
-    channel.bind('client-livecode', callbackObjects.liveCoding);
-    channel.bind(
-      'client-initiatevideocall',
-      callbackObjects.videoCallInitiated,
-    );
 
-    channel.bind('client-endvideocall', callbackObjects.videoCallEnded);
     channel.bind('pusher:subscription_error', callbackObjects.channelError);
 
     return channel;
