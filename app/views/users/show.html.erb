@@ -77,36 +77,36 @@
     ],
     "image": "<%= ProfileImage.new(@user).get(width: 320) %>",
     "name": "<%= @user.name %>",
-    <% if @user.email_public == true %>
+    <% if @user.email_public %>
       "email": "<%= @user.email %>",
     <% end %>
-    <% if @user.employment_title.present? %>
+    <% if @user.employment_title.presence %>
       "jobTitle": "<%= @user.employment_title %>",
     <% end %>
     "description": "<%= @user.summary.presence || ["404 bio not found"].sample %>",
     "disambiguatingDescription": [
-      <% if @user.mostly_work_with.present? %>
+      <% if @user.mostly_work_with.presence %>
         "<%= @user.mostly_work_with %>",
       <% end %>
-      <% if @user.currently_hacking_on.present? %>
+      <% if @user.currently_hacking_on.presence %>
         "<%= @user.currently_hacking_on %>",
       <% end %>
-      <% if @user.currently_learning.present? %>
+      <% if @user.currently_learning.presence %>
         "<%= @user.currently_learning %>"
       <% end %>
       ],
     "worksFor": [
       {
         "@type": "Organization",
-        <% if @user.employer_name.present? %>
+        <% if @user.employer_name.presence %>
           "name": "<%= @user.employer_name %>",
         <% end %>
-        <% if @user.employer_url.present? %>
+        <% if @user.employer_url.presence %>
           "sameAs": [ "<%= @user.employer_url %>" ]
         <% end %>
       },
     ],
-    <% if @user.education.present? %>
+    <% if @user.education.presence %>
       "alumniOf": "<%= @user.education %>"
     <% end %>
   }
