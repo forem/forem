@@ -38,7 +38,7 @@ RSpec.describe ClassifiedListing, type: :model do
       create(:classified_listing_category)
 
       cl = build(:classified_listing, user_id: user.id)
-      cl.savez
+      cl.save
       expect(cl).to be_valid
       expect(cl.reload.classified_listing_category).to be_present
     end
