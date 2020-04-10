@@ -23,7 +23,8 @@ export default class VomitReactionController extends Controller {
         .json()
         .then((json) => {
           if (json.outcome === 'Success') {
-            // removeReactionDiv(id)
+            this.element.remove();
+            document.getElementById(`js__reaction__div__hr__${id}`).remove();
           } else {
             alert(json.error);
           }
