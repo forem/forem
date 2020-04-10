@@ -11,16 +11,12 @@ const Channels = ({
   expanded,
   filterQuery,
   channelsLoaded,
-  incomingVideoCallChannelIds,
 }) => {
   const channels = chatChannels.map(channel => {
     const isActive = parseInt(activeChannelId, 10) === channel.chat_channel_id;
     const isUnopened =
       !isActive && unopenedChannelIds.includes(channel.chat_channel_id);
     let newMessagesIndicator = isUnopened ? 'new' : 'old';
-    if (incomingVideoCallChannelIds.indexOf(channel.chat_channel_id) > -1) {
-      newMessagesIndicator = 'video';
-    }
     const otherClassname = isActive
       ? 'chatchanneltab--active'
       : 'chatchanneltab--inactive';
@@ -122,7 +118,6 @@ Channels.propTypes = {
   expanded: PropTypes.bool.isRequired,
   filterQuery: PropTypes.string.isRequired,
   channelsLoaded: PropTypes.bool.isRequired,
-  incomingVideoCallChannelIds: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
 export default Channels;
