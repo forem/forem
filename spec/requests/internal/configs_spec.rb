@@ -74,7 +74,7 @@ RSpec.describe "/internal/config", type: :request do
         end
 
         it "updates social_media_handles" do
-          expected_handle = {"facebook"=>"tpd", "github"=>"", "instagram"=>"", "twitch"=>"", "twitter"=>""}
+          expected_handle = { "facebook" => "tpd", "github" => "", "instagram" => "", "twitch" => "", "twitter" => "" }
           post "/internal/config", params: { site_config: { social_media_handles: expected_handle },
                                              confirmation: confirmation_message }
           expect(SiteConfig.social_media_handles[:facebook]).to eq("tpd")
