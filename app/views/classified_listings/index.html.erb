@@ -9,10 +9,10 @@
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
   <% if @displayed_classified_listing %>
     <meta property="og:title" content="<%= truncate @displayed_classified_listing.title, length: 54 %>">
-    <meta property="og:description" content="DEV Listing" />
+    <meta property="og:description" content="<%= community_name %> Listing" />
     <meta property="og:image" content="<%= listing_social_image_url @displayed_classified_listing %>">
     <meta name="twitter:title" content="<%= truncate @displayed_classified_listing.title, length: 54 %>">
-    <meta name="twitter:description" content="DEV Listing">
+    <meta name="twitter:description" content="<%= community_name %> Listing">
     <meta name="twitter:image:src" content="<%= listing_social_image_url @displayed_classified_listing %>">
   <% else %>
     <meta property="og:title" content="Listings" />
