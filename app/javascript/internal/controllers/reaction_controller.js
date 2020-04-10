@@ -1,7 +1,7 @@
 import { Controller } from 'stimulus';
 
-export default class VomitReactionController extends Controller {
-  static targets = ['invalid', 'status'];
+export default class ReactionController extends Controller {
+  static targets = ['invalid', 'confirmed'];
 
   // eslint-disable-next-line class-methods-use-this
   updateReaction(id, status) {
