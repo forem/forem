@@ -85,19 +85,18 @@ RSpec.describe "ImageUploads", type: :request do
     end
 
     context "when uploading rate limiting works" do
-      let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+      let(:cache_store) { ActiveSupport::Cache.lookup_store(:redis_cache_store) }
       let(:cache) { Rails.cache }
       let(:cache_key) { "#{user.id}_image_upload" }
 
       before do
         sign_in user
-        allow(Rails).to receive(:cache).and_return(memory_store)
-        Rails.cache.write(cache_key, 0)
+        allow(Rails).to receive(:cache).and_return(cache_store)
       end
 
       it "counts number of uploads in cache" do
         post "/image_uploads", headers: headers, params: { image: [image] }
-        expect(cache.read(cache_key)).to eq(1)
+        expect(cache.read(cache_key).to_i).to eq(1)
       end
 
       it "raises error with too many uploads" do
