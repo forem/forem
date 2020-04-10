@@ -374,6 +374,33 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     border: 1px solid var(--base-10);
   }
 
+  .current-user-info {
+    text-align: center;
+    margin-bottom: 1rem;
+
+    .current-user-avatar-container {
+      height: 80px;
+    }
+
+    .current-user-avatar {
+      border-radius: 100%;
+      height: inherit;
+      object-fit: cover;
+      border: 2px solid var(--base-90);
+    }
+
+    h3 {
+      margin-top: $su-2;
+      line-height: $lh-tight;
+    }
+
+    p {
+      font-size: $fs-base;
+      line-height: $lh-tight;
+      color: var(--base-70);
+    }
+  }
+
   .user-name,
   .user-summary {
     margin: 0;
@@ -518,7 +545,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   }
 
   textarea {
-    min-height: 120px;
+    min-height: 80px;
   }
 
   label {
