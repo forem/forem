@@ -1,20 +1,20 @@
-<% title "Add the DEV Badge to your personal site" %>
+<% title("Add the #{community_name} Badge to your personal site") %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/p/badges") %>" />
-  <meta name="description" content="Add the DEV Badge to your personal site">
+  <meta name="description" content="Add the <%= community_name %> Badge to your personal site">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/p/badges") %>" />
-  <meta property="og:title" content="Add the DEV Badge to your personal site" />
+  <meta property="og:title" content="Add the <%= community_name %> Badge to your personal site" />
   <meta property="og:image" content="https://thepracticaldev.s3.amazonaws.com/i/kjn1gduswyrrisc1basc.png" />
   <meta property="og:description" content="Show visitors that you are an active member of our wonderful community. Put the badge on your personal website or use it as you see fit." />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
-  <meta name="twitter:title" content="Add the DEV Badge to your personal site">
+  <meta name="twitter:title" content="Add the <%= community_name %> Badge to your personal site">
   <meta name="twitter:description" content="Show visitors that you are an active member of our wonderful community. Put the badge on your personal website or use it as you see fit.">
   <meta name="twitter:image:src" content="https://thepracticaldev.s3.amazonaws.com/i/kjn1gduswyrrisc1basc.png">
 <% end %>
@@ -23,7 +23,7 @@
 <div class="container article">
   <div class="title">
     <h1>
-      Add the DEV Badge to your personal site
+      Add the <%= community_name %> Badge to your personal site
     </h1>
   </div>
   <div class="body">
@@ -33,7 +33,7 @@
     <% if user_signed_in? %>
       <p>
         <a href="https://dev.to/<%= current_user.username %>">
-          <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s DEV Profile" height="30" width="30" class="dev-badge">
+          <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s <%= community_name %> Profile" height="30" width="30" class="dev-badge">
         </a>
       </p>
       <p>
@@ -46,15 +46,15 @@
       <pre class="embed-code">
 
 &lt;a href="https://dev.to/<%= current_user.username %>"&gt;
-  &lt;img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s DEV Profile" height="30" width="30"&gt;
+  &lt;img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s <%= community_name %> Profile" height="30" width="30"&gt;
 &lt;/a&gt;
         </pre>
-      <p>You can add the DEV badge via
+      <p>You can add the <%= community_name %> badge via
         <b><a href="https://fontawesome.com/icons/dev?style=brands" target="_blank" rel="noopoener">Font Awesome</a></b> with this snippet:
       </p>
       <pre class="embed-code">
 &lt;a href="https://dev.to/<%= current_user.username %>"&gt;
-  &lt;i class="fab fa-dev" title="<%= current_user.username %>'s DEV Profile"&gt;&lt;/i&gt;
+  &lt;i class="fab fa-dev" title="<%= current_user.username %>'s <%= community_name %> Profile"&gt;&lt;/i&gt;
 &lt;/a&gt;
         </pre>
       <p>
@@ -64,7 +64,7 @@
       </p>
     <% else %>
       <p>
-        <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="30" width="30" alt="DEV badge" class="dev-badge">
+        <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" height="30" width="30" alt="<%= community_name %> badge" class="dev-badge">
       </p>
       <h2 style="text-align:center;">
         <a href="/enter">Log in to view your custom embed code</a>

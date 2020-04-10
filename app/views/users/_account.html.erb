@@ -1,7 +1,7 @@
 <%= render "users/additional_authentication" %>
 
-<h2>DEV API Keys</h2>
-<p>You can generate personal API keys to use for authentication with the DEV API. The API is still in early beta though. The <a href="https://docs.dev.to/api/">DEV API documentation</a> contains further information.</a></p>
+<h2><%= community_name %> API Keys</h2>
+<p>You can generate personal API keys to use for authentication with the <%= community_name %> API. The API is still in early beta though. The <a href="https://docs.dev.to/api/"><%= community_name %> API documentation</a> contains further information.</a></p>
 <h3>Generate a new Key</h3>
 <%= form_tag users_api_secrets_path, method: :post do %>
   <%= fields_for :api_secret do |api_secret| %>
