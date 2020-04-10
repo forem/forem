@@ -80,7 +80,7 @@ class RssReader
           return nil unless real_link.include?("gist.github.com")
 
           iframe.name = "p"
-          iframe.each_key { |attr| iframe.remove_attribute(attr) }
+          iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
           iframe.inner_html = "{% gist #{real_link} %}"
         end
       end
@@ -116,7 +116,7 @@ class RssReader
         if /youtube\.com/.match?(iframe.attributes["src"].value)
           iframe.name = "p"
           youtube_id = iframe.attributes["src"].value.scan(/embed%2F(.{4,11})/).flatten.first
-          iframe.each_key { |attr| iframe.remove_attribute(attr) }
+          iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
           iframe.inner_html = "{% youtube #{youtube_id} %}"
         end
       end
