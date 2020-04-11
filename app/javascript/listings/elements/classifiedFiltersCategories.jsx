@@ -1,10 +1,11 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import CategoryLinks from "./categoryLinks";
+import CategoryLinks from './categoryLinks';
 
-const ClassifiedFiltersCategories = ({ allCategories, category, onClick }) => (
+const ClassifiedFiltersCategories = ({ categories, category, onClick }) => (
   <div className="classified-filters-categories">
     <a
+      id="listings-link"
       href="/listings"
       className={category === '' ? 'selected' : ''}
       onClick={(e) => onClick(e, '')}
@@ -12,18 +13,26 @@ const ClassifiedFiltersCategories = ({ allCategories, category, onClick }) => (
     >
       all
     </a>
-    <CategoryLinks categories={allCategories} onClick={onClick} />
-    <a href="/listings/new" className="classified-create-link">
+    <CategoryLinks categories={categories} onClick={onClick} />
+    <a
+      id="listings-new-link"
+      href="/listings/new"
+      className="classified-create-link"
+    >
       Create a Listing
     </a>
-    <a href="/listings/dashboard" className="classified-create-link">
+    <a
+      id="listings-dashboard-link"
+      href="/listings/dashboard"
+      className="classified-create-link"
+    >
       Manage Listings
     </a>
   </div>
 );
 
 ClassifiedFiltersCategories.propTypes = {
-  allCategories: PropTypes.isRequired,
+  categories: PropTypes.isRequired,
   onClick: PropTypes.func.isRequired,
   category: PropTypes.isRequired,
 };
