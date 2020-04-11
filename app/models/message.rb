@@ -79,7 +79,7 @@ class Message < ApplicationRecord
     username = mention.delete("@").downcase
     if User.find_by(username: username) && chat_channel.group?
       <<~HTML
-        <a class='comment-mentioned-user' data-content="sidecar-user" href='/#{username}' target="_blank">@#{username}</a>
+        <a class='comment-mentioned-user' data-content="sidecar-user" href='/#{username}' target="_blank" rel="noopener">@#{username}</a>
       HTML
     elsif username == "all" && chat_channel.channel_type == "invite_only"
       <<~HTML
@@ -96,7 +96,7 @@ class Message < ApplicationRecord
       if (article = rich_link_article(anchor))
         html += "<a href='#{article.current_state_path}'
         class='chatchannels__richlink'
-          target='_blank' data-content='sidecar-article'>
+          target='_blank' rel='noopener' data-content='sidecar-article'>
             #{"<div class='chatchannels__richlinkmainimage' style='background-image:url(" + cl_path(article.main_image) + ")' data-content='sidecar-article' ></div>" if article.main_image.present?}
           <h1 data-content='sidecar-article'>#{article.title}</h1>
           <h4 data-content='sidecar-article'><img src='#{ProfileImage.new(article.cached_user).get(width: 90)}' /> #{article.cached_user.name}・#{article.readable_publish_date || 'Draft Post'}</h4>
@@ -104,7 +104,7 @@ class Message < ApplicationRecord
       elsif (tag = rich_link_tag(anchor))
         html += "<a href='/t/#{tag.name}'
         class='chatchannels__richlink'
-          target='_blank' data-content='sidecar-tag'>
+          target='_blank' rel='noopener' data-content='sidecar-tag'>
           <h1 data-content='sidecar-tag'>
             #{"<img src='" + cl_path(tag.badge.badge_image_url) + "' data-content='sidecar-tag' style='transform:rotate(-5deg)' />" if tag.badge_id.present?}
             ##{tag.name}
@@ -113,7 +113,7 @@ class Message < ApplicationRecord
       elsif (user = rich_user_link(anchor))
         html += "<a href='#{user.path}'
         class='chatchannels__richlink'
-          target='_blank' data-content='sidecar-user'>
+          target='_blank' rel='noopener' data-content='sidecar-user'>
           <h1 data-content='sidecar-user'>
             <img src='#{ProfileImage.new(user).get(width: 90)}' data-content='sidecar-user' class='chatchannels__richlinkprofilepic' />
             #{user.name}
@@ -129,7 +129,7 @@ class Message < ApplicationRecord
 
     "<a href='/video_chats/#{chat_channel_id}'
         class='chatchannels__richlink'
-        target='_blank' data-content='sidecar-video'>
+        target='_blank' rel='noopener' data-content='sidecar-video'>
         <h1 data-content='sidecar-video' style='margin: 18px auto;'>
           Let's video chat 😄
         </h1>
