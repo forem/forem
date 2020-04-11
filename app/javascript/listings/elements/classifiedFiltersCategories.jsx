@@ -13,7 +13,11 @@ const ClassifiedFiltersCategories = ({ categories, category, onClick }) => (
     >
       all
     </a>
-    <CategoryLinks categories={categories} onClick={onClick} />
+    <CategoryLinks
+      categories={categories}
+      onClick={onClick}
+      selectedCategory={category}
+    />
     <a
       id="listings-new-link"
       href="/listings/new"
