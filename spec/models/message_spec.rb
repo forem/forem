@@ -54,7 +54,7 @@ RSpec.describe Message, type: :model do
         message.message_markdown = "hello http://#{ApplicationConfig['APP_DOMAIN']}#{user.path}"
         message.validate!
 
-        expect(message.message_html).to include("<a target='_blank'")
+        expect(message.message_html).to include("<a target=\"_blank\"")
       end
 
       it "creates rich link with proper link for user" do
