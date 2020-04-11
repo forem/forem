@@ -92,6 +92,8 @@ class Message < ApplicationRecord
   end
 
   def target_blank_links(html)
+    return html if html.blank?
+
     html = html.gsub("<a href", "<a target='_blank' rel='noopener nofollow' href")
     html
   end
