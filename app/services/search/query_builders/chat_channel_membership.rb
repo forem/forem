@@ -35,6 +35,7 @@ module Search
         @body[:query] = {}
         @body[:query][:bool] = { filter: filter_conditions }
         @body[:query][:bool][:must] = query_conditions if query_keys_present?
+        @body[:query][:bool][:should] = [{ "term" => { "channel_discoverable" => true } }]
       end
 
       def filter_conditions
