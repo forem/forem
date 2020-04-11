@@ -10,7 +10,6 @@ module Search
       def search_documents(params:, user_id:)
         set_query_size(params)
         query_hash = Search::QueryBuilders::ChatChannelMembership.new(params, user_id).as_hash
-
         results = search(body: query_hash)
         hits = results.dig("hits", "hits").map { |ccm_doc| ccm_doc.dig("_source") }
         paginate_hits(hits, params)

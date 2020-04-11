@@ -68,6 +68,10 @@ class ChatChannelMembership < ApplicationRecord
     user_id
   end
 
+  def channel_discoverable
+    chat_channel.discoverable
+  end
+
   private
 
   def channel_color
