@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { render } from 'preact-render-spy';
 import NextPageButton from '../elements/nextPageButton';
 
-describe('NextPageButton', () => {
+describe('<NextPageButton />', () => {
   const defaultProps = {
     onClick: () => {
       return 'onClick';
