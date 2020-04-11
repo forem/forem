@@ -25,4 +25,12 @@ class PodcastEpisodeDecorator < ApplicationDecorator
 
     published_at.utc.iso8601
   end
+
+  def mobile_player_metadata
+    {
+      podcastName: podcast.title,
+      episodeName: title,
+      podcastImageUrl: ApplicationController.helpers.app_url(podcast.image_url)
+    }
+  end
 end
