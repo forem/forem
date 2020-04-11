@@ -348,15 +348,13 @@ export class Listings extends Component {
             />
           </div>
         </div>
-        <div className="classifieds-columns" id="classified-listings-results">
-          <AllListings
-            listings={listings}
-            onAddTag={this.addTag}
-            onChangeCategory={this.selectCategory}
-            currentUserId={currentUserId}
-            onOpenModal={this.handleOpenModal}
-          />
-        </div>
+        <AllListings
+          listings={listings}
+          onAddTag={this.addTag}
+          onChangeCategory={this.selectCategory}
+          currentUserId={currentUserId}
+          onOpenModal={this.handleOpenModal}
+        />
         {showNextPageButton && <NextPageButton onClick={this.loadNextPage} />}
         {shouldRenderModal && (
           <Modal

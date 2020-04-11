@@ -1,4 +1,4 @@
-import { h, Fragment } from 'preact';
+import { h } from 'preact';
 import PropTypes from 'prop-types';
 import SingleListing from '../singleListing';
 
@@ -10,7 +10,7 @@ const AllListings = ({
   onOpenModal,
 }) => {
   return (
-    <Fragment>
+    <div className="classifieds-columns" id="classified-listings-results">
       {listings.map((listing) => (
         <SingleListing
           onAddTag={onAddTag}
@@ -21,7 +21,7 @@ const AllListings = ({
           isOpen={false}
         />
       ))}
-    </Fragment>
+    </div>
   );
 };
 
