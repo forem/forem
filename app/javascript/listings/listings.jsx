@@ -6,8 +6,8 @@ import ModalBackground from './elements/modalBackground';
 import Modal from './elements/modal';
 import AllListings from './elements/allListings';
 import SelectedTags from './elements/selectedTags';
-import CategoryLinks from './elements/categoryLinks';
 import NextPageButton from './elements/nextPageButton';
+import ClassifiedFiltersCategories from './elements/classifiedFiltersCategories';
 import {
   LISTING_PAGE_SIZE,
   updateListings,
@@ -309,26 +309,11 @@ export class Listings extends Component {
           <ModalBackground onClick={this.handleCloseModal} />
         )}
         <div className="classified-filters" id="classified-filters">
-          <div className="classified-filters-categories">
-            <a
-              href="/listings"
-              className={category === '' ? 'selected' : ''}
-              onClick={(e) => this.selectCategory(e, '')}
-              data-no-instant
-            >
-              all
-            </a>
-            <CategoryLinks
-              categories={allCategories}
-              onClick={this.selectCategory}
-            />
-            <a href="/listings/new" className="classified-create-link">
-              Create a Listing
-            </a>
-            <a href="/listings/dashboard" className="classified-create-link">
-              Manage Listings
-            </a>
-          </div>
+          <ClassifiedFiltersCategories
+            categories={allCategories}
+            category={category}
+            onClick={this.selectCategory}
+          />
           <div className="classified-filters-tags" id="classified-filters-tags">
             <input
               type="text"
