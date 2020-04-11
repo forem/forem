@@ -51,7 +51,7 @@ connect(root.dataset.token, { name: 'room-name', audio: true, type: roomType, vi
 
 createLocalVideoTrack().then(track => {
   localMediaContainer.appendChild(track.attach());
-
+  document.getElementById('video-controls').classList.add('showing');
 });
 
 

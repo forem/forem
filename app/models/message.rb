@@ -40,6 +40,7 @@ class Message < ApplicationRecord
 
   def evaluate_markdown
     html = MarkdownParser.new(message_markdown).evaluate_markdown
+    html = target_blank_links(html)
     html = append_rich_links(html)
     html = wrap_mentions_with_links(html)
     html = handle_call(html)
@@ -90,6 +91,13 @@ class Message < ApplicationRecord
     end
   end
 
+  def target_blank_links(html)
+    return html if html.blank?
+
+    html = html.gsub("<a href", "<a target='_blank' rel='noopener nofollow' href")
+    html
+  end
+
   def append_rich_links(html)
     doc = Nokogiri::HTML(html)
     doc.css("a").each do |anchor|
@@ -119,6 +127,14 @@ class Message < ApplicationRecord
             #{user.name}
           </h1>
           </a>".html_safe
+      elsif anchor["href"].include?("https://www.figma.com/file/") # Proof of concept
+        html += "<a href='https://www.figma.com/embed?embed_host=astra&url=#{anchor['href']}' class='chatchannels__richlink chatchannels__richlink--base' data-content='sidecar-embeddable' target='_blank'>
+        <h1 data-content='sidecar-embeddable'>Figma File</h1>
+          </a>".html_safe
+      elsif anchor["href"].starts_with?("https://docs.google.com/") # Proof of concept
+        html += "<a href='#{anchor['href']}' class='chatchannels__richlink chatchannels__richlink--base' data-content='sidecar-embeddable' target='_blank'>
+        <h1 data-content='sidecar-embeddable'>Google Docs</h1>
+          </a>".html_safe
       end
     end
     html
@@ -128,9 +144,9 @@ class Message < ApplicationRecord
     return html if html.to_s.exclude?("<p>/call</p>")
 
     "<a href='/video_chats/#{chat_channel_id}'
-        class='chatchannels__richlink'
+        class='chatchannels__richlink chatchannels__richlink--base'
         target='_blank' data-content='sidecar-video'>
-        <h1 data-content='sidecar-video' style='margin: 18px auto;'>
+        <h1 data-content='sidecar-video'>
           Let's video chat 😄
         </h1>
         </a>".html_safe
