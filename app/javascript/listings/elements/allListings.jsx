@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, Fragment } from 'preact';
 import PropTypes from 'prop-types';
 import SingleListing from '../singleListing';
 
@@ -8,21 +8,26 @@ const AllListings = ({
   onChangeCategory,
   currentUserId,
   onOpenModal,
-}) =>
-  listings.map((listing) => (
-    <SingleListing
-      onAddTag={onAddTag}
-      onChangeCategory={onChangeCategory}
-      listing={listing}
-      currentUserId={currentUserId}
-      onOpenModal={onOpenModal}
-      isOpen={false}
-    />
-  ));
+}) => {
+  return (
+    <Fragment>
+      {listings.map((listing) => (
+        <SingleListing
+          onAddTag={onAddTag}
+          onChangeCategory={onChangeCategory}
+          listing={listing}
+          currentUserId={currentUserId}
+          onOpenModal={onOpenModal}
+          isOpen={false}
+        />
+      ))}
+    </Fragment>
+  );
+};
 
 AllListings.propTypes = {
   currentUserId: PropTypes.number,
-  listing: PropTypes.isRequired,
+  listings: PropTypes.isRequired,
   onAddTag: PropTypes.func.isRequired,
   onChangeCategory: PropTypes.func.isRequired,
   onOpenModal: PropTypes.func.isRequired,
