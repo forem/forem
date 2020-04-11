@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import PropTypes from 'prop-types';
+import { selectedTagsPropTypes } from '../../src/components/common-prop-types';
 
 const SelectedTags = ({ tags, onClick, onKeyPress }) =>
   tags.map((tag) => (
@@ -25,10 +25,6 @@ const SelectedTags = ({ tags, onClick, onKeyPress }) =>
     </span>
   ));
 
-SelectedTags.propTypes = {
-  tags: PropTypes.isRequired,
-  onClick: PropTypes.func.isRequired,
-  onKeyPress: PropTypes.func.isRequired,
-};
+SelectedTags.propTypes = selectedTagsPropTypes;
 
 export default SelectedTags;
