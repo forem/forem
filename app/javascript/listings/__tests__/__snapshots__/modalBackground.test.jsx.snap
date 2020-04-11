@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ModalBackground /> Should match the snapshot 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div
+  class="classified-listings-modal-background"
+  onClick={[Function onClick]}
+  role="presentation"
+  id="classified-listings-modal-background"
+>
+</div>
+
+`;
