@@ -213,15 +213,15 @@ export class Listings extends Component {
   };
 
   setUser = () => {
-    const t = this;
+    const { currentUserId } = this.state;
     setTimeout(() => {
-      if (window.currentUser && t.state.currentUserId === null) {
-        t.setState({ currentUserId: window.currentUser.id });
+      if (window.currentUser && currentUserId === null) {
+        this.setState({ currentUserId: window.currentUser.id });
       }
     }, 300);
     setTimeout(() => {
-      if (window.currentUser && t.state.currentUserId === null) {
-        t.setState({ currentUserId: window.currentUser.id });
+      if (window.currentUser && currentUserId === null) {
+        this.setState({ currentUserId: window.currentUser.id });
       }
     }, 1000);
   };
