@@ -3,10 +3,9 @@ require "rails_helper"
 RSpec.describe RateLimitChecker, type: :labor do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
+  let(:rate_limit_checker) { described_class.new(user) }
 
   describe "#limit_by_action" do
-    let(:rate_limit_checker) { described_class.new(user) }
-
     it "returns false for invalid action" do
       expect(rate_limit_checker.limit_by_action("random-nothing")).to be(false)
     end
@@ -59,7 +58,7 @@ RSpec.describe RateLimitChecker, type: :labor do
     it "returns false if a user has followed less than <daily_limit> accounts today" do
       allow(rate_limit_checker).
         to receive(:user_today_follow_count).
-        and_return(SiteConfig.rate_limit_image_upload + 1)
+        and_return(SiteConfig.rate_limit_follow_count_daily)
 
       expect(rate_limit_checker.limit_by_action("follow_account")).to be(false)
     end
@@ -68,12 +67,58 @@ RSpec.describe RateLimitChecker, type: :labor do
       expect(described_class.new(user).limit_by_action("published_article_creation")).to be(false)
     end
 
-    it "returns false if a user uploads too many images" do
-      allow(rate_limit_checker).
-        to receive(:track_image_uploads).
-        and_return(SiteConfig.rate_limit_follow_count_daily - 1)
+    it "returns true if a user has uploaded too many images" do
+      allow(Rails.cache).
+        to receive(:read).with("#{user.id}_image_upload").
+        and_return(SiteConfig.rate_limit_image_upload + 1)
+
+      expect(rate_limit_checker.limit_by_action("image_upload")).to be(true)
+    end
+
+    it "returns false if a user hasn't uploaded too many images" do
+      allow(Rails.cache).
+        to receive(:read).with("#{user.id}_image_upload").
+        and_return(SiteConfig.rate_limit_image_upload)
 
       expect(rate_limit_checker.limit_by_action("image_upload")).to be(false)
+    end
+
+    it "returns true if a user has updated too many articles" do
+      allow(Rails.cache).
+        to receive(:read).with("#{user.id}_article_update").
+        and_return(SiteConfig.rate_limit_article_update + 1)
+
+      expect(rate_limit_checker.limit_by_action("article_update")).to be(true)
+    end
+
+    it "returns false if a user hasn't updated too many articles" do
+      allow(Rails.cache).
+        to receive(:read).with("#{user.id}_article_update").
+        and_return(SiteConfig.rate_limit_article_update)
+
+      expect(rate_limit_checker.limit_by_action("article_update")).to be(false)
+    end
+  end
+
+  describe ".track_image_uploads" do
+    it "calls the cache object correctly" do
+      allow(Rails.cache).to receive(:increment)
+
+      rate_limit_checker.track_image_uploads
+
+      key = "#{user.id}_image_upload"
+      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: 30.seconds)
+    end
+  end
+
+  describe ".track_article_updates" do
+    it "calls the cache object correctly" do
+      allow(Rails.cache).to receive(:increment)
+
+      rate_limit_checker.track_article_updates
+
+      key = "#{user.id}_article_update"
+      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: 30.seconds)
     end
   end
 
