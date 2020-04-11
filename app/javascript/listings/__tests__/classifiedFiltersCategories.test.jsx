@@ -36,8 +36,11 @@ describe('<ClassifiedFiltersCategories />', () => {
   describe('Should render the links to allow navigation', () => {
     const context = renderClassifiedFilterCategories();
 
-    it('Should render a link to listings', () => {
-      expect(context.find('#listings-link').attr('href')).toBe('/listings');
+    it('Should render a link and a message relative to listings', () => {
+      const listingsLink = context.find('#listings-link');
+
+      expect(listingsLink.attr('href')).toBe('/listings');
+      expect(listingsLink.text()).toBe('all');
     });
 
     it('Should render a link and a message relative to new listing', () => {
