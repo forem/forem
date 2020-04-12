@@ -5,7 +5,11 @@ const SelectedTags = ({ tags, onClick, onKeyPress }) => {
   return (
     <section>
       {tags.map((tag) => (
-        <span className="classified-tag" key={tag.id}>
+        <span
+          className="classified-tag"
+          key={tag.id}
+          id={`selected-tag-${tag.id}`}
+        >
           <a
             href="/listings?tags="
             className="tag-name"
