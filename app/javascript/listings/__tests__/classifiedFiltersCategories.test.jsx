@@ -30,8 +30,8 @@ describe('<ClassifiedFiltersCategories />', () => {
     },
   };
 
-  const renderClassifiedFilterCategories = () =>
-    deep(<ClassifiedFiltersCategories {...defaultProps} />);
+  const renderClassifiedFilterCategories = (props = defaultProps) =>
+    deep(<ClassifiedFiltersCategories {...props} />);
 
   describe('Should render the links to allow navigation', () => {
     const context = renderClassifiedFilterCategories();
@@ -40,13 +40,25 @@ describe('<ClassifiedFiltersCategories />', () => {
       const listingsLink = context.find('#listings-link');
 
       expect(listingsLink.attr('href')).toBe('/listings');
+      expect(listingsLink.attr('className')).toBe('');
       expect(listingsLink.text()).toBe('all');
+    });
+
+    it('When there\'s no category, the className of the listings link should be "selected"', () => {
+      const propsWithoutCategory = { ...defaultProps, category: '' };
+      const contextWithoutCategory = renderClassifiedFilterCategories(
+        propsWithoutCategory,
+      );
+
+      const listingsLink = contextWithoutCategory.find('#listings-link');
+      expect(listingsLink.attr('className')).toBe('selected');
     });
 
     it('Should render a link and a message relative to new listing', () => {
       const newListingLink = context.find('#listings-new-link');
 
       expect(newListingLink.attr('href')).toBe('/listings/new');
+      expect(newListingLink.attr('className')).toBe('classified-create-link');
       expect(newListingLink.text()).toBe('Create a Listing');
     });
 
@@ -54,6 +66,7 @@ describe('<ClassifiedFiltersCategories />', () => {
       const dashboardLink = context.find('#listings-dashboard-link');
 
       expect(dashboardLink.attr('href')).toBe('/listings/dashboard');
+      expect(dashboardLink.attr('className')).toBe('classified-create-link');
       expect(dashboardLink.text()).toBe('Manage Listings');
     });
   });
