@@ -1,0 +1,64 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` 1`] = `
+preact-render-spy (1 nodes)
+-------
+<div class="classified-filters-categories">
+  <a
+    id="listings-link"
+    href="/listings"
+    class=""
+    onClick={[Function onClick]}
+    data-no-instant={true}
+  >
+    all
+  </a>
+  <section>
+    <a
+      href="/listings/clojure"
+      id="category-link-20"
+      class="selected"
+      onClick={[Function onClick]}
+      data-no-instant={true}
+      Key={20}
+    >
+      Clojure
+    </a>
+    <a
+      href="/listings/illa-iara-ques-htyashsayas-6kj8"
+      id="category-link-21"
+      class=""
+      onClick={[Function onClick]}
+      data-no-instant={true}
+      Key={21}
+    >
+      Go
+    </a>
+    <a
+      href="/listings/alle-bece-tzehj-htyashsayas-7jh9"
+      id="category-link-22"
+      class=""
+      onClick={[Function onClick]}
+      data-no-instant={true}
+      Key={22}
+    >
+      csharp
+    </a>
+  </section>
+  <a
+    id="listings-new-link"
+    href="/listings/new"
+    class="classified-create-link"
+  >
+    Create a Listing
+  </a>
+  <a
+    id="listings-dashboard-link"
+    href="/listings/dashboard"
+    class="classified-create-link"
+  >
+    Manage Listings
+  </a>
+</div>
+
+`;

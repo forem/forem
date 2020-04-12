@@ -33,6 +33,11 @@ describe('<ClassifiedFiltersCategories />', () => {
   const renderClassifiedFilterCategories = (props = defaultProps) =>
     deep(<ClassifiedFiltersCategories {...props} />);
 
+  describe('Should match the snapshot', () => {
+    const tree = renderClassifiedFilterCategories();
+    expect(tree).toMatchSnapshot();
+  });
+
   describe('Should render the links to allow navigation', () => {
     const context = renderClassifiedFilterCategories();
 
