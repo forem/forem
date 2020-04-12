@@ -36,6 +36,12 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include("Style Customization")
       end
 
+      it "displays content on RSS tab properly" do
+        get "/settings/publishing-from-rss"
+        title = "Publishing to #{ApplicationConfig['COMMUNITY_NAME']} from RSS"
+        expect(response.body).to include(title)
+      end
+
       it "renders heads up dupe account message with proper param" do
         get "/settings?state=previous-registration"
         error_message = "There is an existing account authorized with that social account"
