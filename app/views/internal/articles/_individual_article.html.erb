@@ -1,7 +1,7 @@
 <div class="card my-3" data-controller="article" data-article-id="<%= article.id %>">
   <div class="card-header">
-    <a href="<%= article.path %>" target="_blank"><%= article.title %></a>
-    <a class="ml-2" href="<%= article.path %>/edit" target="_blank"><span class="badge badge-success">EDIT</span></a>
+    <a href="<%= article.path %>" target="_blank" rel="noopener"><%= article.title %></a>
+    <a class="ml-2" href="<%= article.path %>/edit" target="_blank" rel="noopener"><span class="badge badge-success">EDIT</span></a>
   </div>
 
   <% featured = article.featured ? "bg-featured" : "" %>
