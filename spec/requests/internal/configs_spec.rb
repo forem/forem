@@ -244,6 +244,13 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
+      describe "Shop" do
+        it "updates shop url" do
+          post "/internal/config", params: { site_config: { shop_url: "https://qshop.dev.to" }, confirmation: confirmation_message }
+          expect(SiteConfig.shop_url).to eq("https://qshop.dev.to")
+        end
+      end
+
       describe "Authentication" do
         it "removes space authentication_providers" do
           post "/internal/config", params: { site_config: { authentication_providers: "github, twitter" }, confirmation: confirmation_message }

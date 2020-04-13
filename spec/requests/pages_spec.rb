@@ -36,6 +36,8 @@ RSpec.describe "Pages", type: :request do
     it "has proper headline" do
       get "/privacy"
       expect(response.body).to include("Privacy Policy")
+      expect(response.body).to include("https://shop.dev.to")
+      expect(response.body).to include("DEV(local) Shop")
     end
   end
 
