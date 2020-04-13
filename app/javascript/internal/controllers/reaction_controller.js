@@ -26,11 +26,11 @@ export default class ReactionController extends Controller {
             this.element.remove();
             document.getElementById(`js__reaction__div__hr__${id}`).remove();
           } else {
-            alert(json.error);
+            console.log(json.error);
           }
         })
         .catch((error) => {
-          alert(error);
+          console.log(error);
         }),
     );
   }
