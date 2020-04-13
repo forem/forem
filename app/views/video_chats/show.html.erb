@@ -9,13 +9,16 @@
     overflow: scroll;
   }
   .individual-video video {
-    max-width: 800px;
+    max-width: 600px;
     background: #232324;
     width: 100%;
   }
 
   .individual-video {
     overflow: hidden;
+    position: relative;
+    display: inline-block;
+    line-height: 0;
   }
   .individual-video:last-child {
     margin-bottom: 100px;
@@ -36,7 +39,7 @@
 
   .individual-video {
     position: relative;
-    margin-bottom: -5px;
+    margin-bottom: -6px;
   }
   .participant-info {
     padding: 3px 8px;
@@ -113,6 +116,14 @@
     #local-media video {
       width: 90%;
       bottom: 85px;
+    }
+  }
+
+  @media screen and (min-width: 500px) {
+    .video-controls {
+      left: auto;
+      right: 170px;
+      width: 200px;
     }
   }
 </style>
