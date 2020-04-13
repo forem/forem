@@ -220,6 +220,7 @@
   @include themeable(border, theme-container-border, 1px solid $outline-color);
   background: var(--card-bg);
   flex-flow: row nowrap;
+  position: relative;
 }
 
 .activechatchannel__conversation {
@@ -407,23 +408,49 @@
   padding: 13px;
 }
 
+.chat--content-visible-full {
+  .activechatchannel__activecontent.activechatchannel__activecontent--sidecar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    min-width: 100%;
+    border-radius: 5px;
+  }
+  .activechatchannel__activecontent.activechatchannel__activecontent--video {
+    display: none;
+  }
+}
+
+.chat--video-visible-full {
+  .activechatchannel__activecontent.activechatchannel__activecontent--video {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    min-width: 100%;
+    border-radius: 5px;
+  }
+  .activechatchannel__activecontent.activechatchannel__activecontent--sidecar {
+    display: none;
+  }
+}
+
+
 .activechatchannel__activecontentexitbutton {
-  border: 0px;
   font-size: 30px;
-  color: var(--card-color-tertiary);
-  padding: 0px;
-  background: transparent;
   position: absolute;
   left: 4px;
   top: 4px;
-  @include themeable(background, theme-container-accent-background, white);
   z-index: 10;
-  height: 29px;
-  width: 29px;
-  line-height: 10px;
-  padding-bottom: 5px;
-  border-radius: 100px;
-  @include themeable(border, theme-border, 1px solid $medium-gray);
+  padding: 0px;
+  height: 28px;
+  width: 28px;
+  line-height: 0;
 }
 
 .activechatchannel__activeArticle {

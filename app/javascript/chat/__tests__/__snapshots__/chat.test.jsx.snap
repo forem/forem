@@ -2,7 +2,7 @@
 
 exports[`<Chat /> should load chat 1`] = `
 <div
-  class="chat chat--expanded chat--video-not-visible chat--content-not-visible"
+  class="chat chat--expanded chat--video-not-visible chat--content-not-visible "
   data-no-instant={true}
 >
   <div
