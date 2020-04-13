@@ -1,5 +1,6 @@
+# <https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema>
 class AuthorizationService
-  def initialize(auth_payload, current_user = nil, cta_variant = nil)
+  def initialize(auth_payload, current_user: nil, cta_variant: nil)
     @auth_payload = auth_payload
     @provider = load_auth_provider(auth_payload.provider)
 
@@ -8,9 +9,6 @@ class AuthorizationService
   end
 
   def get_user
-    # NOTE: what is this for?
-    auth_payload.extra.delete("access_token") if auth_payload.extra.access_token
-
     identity = prepare_identity
 
     return current_user if user_identity_exists?
@@ -34,19 +32,23 @@ class AuthorizationService
   attr_accessor :auth_payload, :current_user, :provider, :cta_variant
 
   # Loads the proper auth provider from the available ones
-  # TODO: raise exception if provider doesn't exist at all
   # TODO: raise exception if provider is available but not enabled for this app
   # TODO: available providers, enabled providers, unknownprovider exception
-  def load_auth_provider
-    provider_name = auth_payload.provider.titleize
-    "Authentication::Providers::#{provider_name}".safe_constantize
+  def load_auth_provider(provider_name)
+    "Authentication::Providers::#{provider_name.titleize}".constantize
+  rescue NameError => e
+    raise ::Authentication::Errors::ProviderNotFound, e
   end
 
   def prepare_identity
-    Identity.from_omniauth(auth_payload).tap do |identity|
-      # this will update the identity in the DB if it belongs to a known user
+    Identity.from_omniauth(provider, auth_payload).tap do |identity|
+      # update the identity in the DB if it belongs to a known user
       identity.save! if identity.user
     end
+  end
+
+  def user_identity_exists?
+    current_user && Identity.exists?(provider: provider.name, user: current_user)
   end
 
   def proper_user(identity)
@@ -62,57 +64,51 @@ class AuthorizationService
   def build_user
     info = auth_payload.info
 
-    existing_user = User.where("#{provider}_username" => info.nickname).take
+    existing_user = User.where(provider::USERNAME_FIELD => info.nickname).take
     return existing_user if existing_user
 
     User.new.tap do |user|
-      user.name = auth_payload.extra.raw_info.name || info.nickname
-
-      # TODO
-      user.github_username = (info.nickname if provider == "github")
-      user.twitter_username = (info.nickname if provider == "twitter")
-
-      user.email = info.email || ""
-      user.password = Devise.friendly_token(20)
-
-      user.remote_profile_image_url = (info.image || "").gsub("_normal", "")
-
-      user.signup_cta_variant = cta_variant
-      user.saw_onboarding = false
-
-      user.editor_version = "v2"
+      user.assign_attributes(provider.new_user_data(auth_payload))
+      user.assign_attributes(default_user_fields)
 
       user.skip_confirmation!
       user.set_remember_fields
-
-      add_social_identity_data(user)
-
       user.save!
     end
   end
 
+  def default_user_fields
+    {
+      password: Devise.friendly_token(20),
+      signup_cta_variant: cta_variant,
+      saw_onboarding: false,
+      editor_version: :v2
+    }
+  end
+
   def update_user(user)
-    user.set_remember_fields
-    # TODO: do we really care about this? if the username has not changed, the value
-    # will be the same as before, so we can just override this all the time
-    user.github_username = auth_payload.info.nickname if provider == "github" && auth_payload.info.nickname != user.github_username
-    user.twitter_username = auth_payload.info.nickname if provider == "twitter" && auth_payload.info.nickname != user.twitter_username
-    add_social_identity_data(user)
-    user.profile_updated_at = Time.current if user.twitter_username_changed? || user.github_username_changed?
-    user.save
-    user
+    user.tap do |model|
+      model.set_remember_fields
+      # TODO: do we really care about this? if the username has not changed, the value
+      # will be the same as before, so we can just override this all the time
+      model.github_username = auth_payload.info.nickname if provider.name == "github" && auth_payload.info.nickname != user.github_username
+      model.twitter_username = auth_payload.info.nickname if provider.name == "twitter" && auth_payload.info.nickname != user.twitter_username
+      add_social_identity_data(model)
+      model.profile_updated_at = Time.current if user.twitter_username_changed? || user.github_username_changed?
+      model.save!
+    end
   end
 
   def add_social_identity_data(user)
     # NOTE: is there a case for this?
     return unless auth_payload&.provider && auth_payload&.extra && auth_payload.extra.raw_info
 
-    if provider == "twitter"
+    if provider.name == "twitter"
       user.twitter_created_at = auth_payload.extra.raw_info.created_at
       user.twitter_followers_count = auth_payload.extra.raw_info.followers_count.to_i
       user.twitter_following_count = auth_payload.extra.raw_info.friends_count.to_i
-    else
-      user.github_created_at = auth_payload.extra.raw_info.created_at
+    # else
+      # user.github_created_at = auth_payload.extra.raw_info.created_at
     end
   end
 
@@ -121,10 +117,6 @@ class AuthorizationService
 
     identity.user = user
     identity.save!
-  end
-
-  def user_identity_exists?
-    current_user && Identity.exists?(provider: provider, user: current_user)
   end
 
   def account_less_than_a_week_old?(user, logged_in_identity)

@@ -37,7 +37,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def callback_for(provider)
     cta_variant = request.env["omniauth.params"]["state"].to_s
-    @user = AuthorizationService.new(request.env["omniauth.auth"], current_user, cta_variant).get_user
+    @user = AuthorizationService.new(
+      request.env["omniauth.auth"],
+      current_user: current_user,
+      cta_variant: cta_variant,
+    ).get_user
 
     if persisted_and_valid?
       # delete legacy session based cookie once the user has logged in again

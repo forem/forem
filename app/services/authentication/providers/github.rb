@@ -3,19 +3,28 @@ module Authentication
     # GitHub authentication provider, uses omniauth-github as backend
     module Github
       NAME = "github".freeze
+      USERNAME_FIELD = "github_username".freeze
 
-      # Returns identity data from the OmniAuth strategy payload
-      def self.identity_data(auth_payload)
-        return {} unless auth_payload.provider == NAME
-
-        { github_created_at: auth_payload.extra.raw_info.created_at }
+      def self.payload(auth_payload)
+        auth_payload.dup.tap do |auth|
+          auth.extra.delete("access_token")
+        end
       end
 
-      # Returns data to update the user with
-      def self.user_data(auth_payload)
-        return {} unless auth_payload.provider == NAME
+      def self.new_user_data(auth_payload)
+        info = auth_payload.info
+        raw_info = auth_payload.extra.raw_info
 
-        { github_username: auth_payload.info.nickname }
+        name = raw_info.name.presence || info.name
+        remote_profile_image_url = info.image.to_s.gsub("_normal", "")
+
+        {
+          email: info.email.to_s,
+          github_created_at: raw_info.created_at,
+          github_username: info.nickname,
+          name: name,
+          remote_profile_image_url: remote_profile_image_url,
+        }
       end
     end
   end

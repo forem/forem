@@ -12,13 +12,15 @@ class Identity < ApplicationRecord
   serialize :auth_data_dump
 
   # Builds an identity from OmniAuth's authentication payload
-  def self.from_omniauth(auth_payload)
+  def self.from_omniauth(provider, auth_payload)
+    payload = provider.payload(auth_payload)
+
     find_or_initialize_by(
-      provider: auth_payload.provider,
-      uid: auth_payload.uid,
-      token: auth_payload.credentials.token,
-      secret: auth_payload.credentials.secret,
-      auth_data_dump: auth_payload,
+      provider: payload.provider,
+      uid: payload.uid,
+      token: payload.credentials.token,
+      secret: payload.credentials.secret,
+      auth_data_dump: payload,
     )
   end
 end
