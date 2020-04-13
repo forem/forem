@@ -162,6 +162,22 @@ RSpec.describe AuthorizationService, type: :service do
         ).to be(true)
       end
     end
+
+    describe "user already logged in" do
+      it "returns the current user if the identity exists" do
+        user = create(:user, :with_identity, identities: [:github])
+        service = described_class.new(auth_payload, current_user: user)
+        expect(service.get_user).to eq(user)
+      end
+
+      it "creates the identity if for any reason it does not exist" do
+        user = create(:user)
+        service = described_class.new(auth_payload, current_user: user)
+        expect do
+          service.get_user
+        end.to change(Identity, :count).by(1)
+      end
+    end
   end
 
   context "when authenticating through Twitter" do
@@ -329,6 +345,22 @@ RSpec.describe AuthorizationService, type: :service do
         expect(
           user.profile_updated_at.to_i > original_profile_updated_at.to_i,
         ).to be(true)
+      end
+    end
+
+    describe "user already logged in" do
+      it "returns the current user if the identity exists" do
+        user = create(:user, :with_identity, identities: [:twitter])
+        service = described_class.new(auth_payload, current_user: user)
+        expect(service.get_user).to eq(user)
+      end
+
+      it "creates the identity if for any reason it does not exist" do
+        user = create(:user)
+        service = described_class.new(auth_payload, current_user: user)
+        expect do
+          service.get_user
+        end.to change(Identity, :count).by(1)
       end
     end
   end

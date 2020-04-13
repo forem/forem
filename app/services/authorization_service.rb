@@ -44,7 +44,7 @@ class AuthorizationService
   end
 
   def current_user_identity_exists?
-    current_user && Identity.exists?(provider: provider.name, user: current_user)
+    current_user&.identities&.exists?(provider: provider::NAME)
   end
 
   def proper_user(identity)
