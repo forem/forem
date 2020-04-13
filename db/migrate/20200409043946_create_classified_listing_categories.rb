@@ -9,5 +9,6 @@ class CreateClassifiedListingCategories < ActiveRecord::Migration[5.2]
       t.timestamps
     end
     add_index(:classified_listing_categories, :name, unique: true)
+    add_index(:classified_listing_categories, :slug, unique: true)
   end
 end
