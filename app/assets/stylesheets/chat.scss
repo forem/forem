@@ -448,9 +448,14 @@
   top: 4px;
   z-index: 10;
   padding: 0px;
-  height: 28px;
-  width: 28px;
+  height: 30px;
+  width: 30px;
   line-height: 0;
+  @media screen and (max-width: 800px) {
+    &.activechatchannel__activecontentexitbutton--fullscreen {
+      display: none;
+    }
+  }
 }
 
 .activechatchannel__activeArticle {
@@ -943,6 +948,7 @@
   font-size: 13px;
   text-transform: uppercase;
   font-weight: bold;
+  z-index: 7;
 }
 
 .chatchanneljumpback__hide {
