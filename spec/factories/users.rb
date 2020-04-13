@@ -132,5 +132,13 @@ FactoryBot.define do
         user.add_role :tag_moderator, tag
       end
     end
+
+    trait :with_optional_fields do
+      after(:create) do |user|
+        create(:optional_field, user: user)
+        create(:optional_field, user: user, field: "another field1", value: "another value1")
+        create(:optional_field, user: user, field: "another field2", value: "another value2")
+      end
+    end
   end
 end

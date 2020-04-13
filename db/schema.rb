@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_09_050122) do
+ActiveRecord::Schema.define(version: 2020_04_12_194408) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -307,7 +307,6 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.string "slug"
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listing_categories", force: :cascade do |t|
@@ -443,6 +442,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.bigint "user_id"
     t.datetime "verified_at"
     t.index ["user_id", "type_of"], name: "index_email_authorizations_on_user_id_and_type_of", unique: true
+    t.index ["user_id"], name: "index_email_authorizations_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -689,6 +689,15 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.string "uid", null: false
     t.datetime "updated_at", null: false
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
+  end
+
+  create_table "optional_fields", force: :cascade do |t|
+    t.string "field"
+    t.string "value"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_optional_fields_on_user_id"
   end
 
   create_table "organization_memberships", force: :cascade do |t|
@@ -1255,8 +1264,10 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
   add_foreign_key "oauth_access_grants", "users", column: "resource_owner_id"
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
+  add_foreign_key "optional_fields", "users"
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "podcasts", "users", column: "creator_id"
+  add_foreign_key "pro_memberships", "users"
   add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
