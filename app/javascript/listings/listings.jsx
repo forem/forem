@@ -8,12 +8,44 @@ import AllListings from './elements/allListings';
 import SelectedTags from './elements/selectedTags';
 import NextPageButton from './elements/nextPageButton';
 import ClassifiedFiltersCategories from './elements/classifiedFiltersCategories';
-import {
-  LISTING_PAGE_SIZE,
-  updateListings,
-  getQueryParams,
-  resizeAllMasonryItems,
-} from './utils';
+import { LISTING_PAGE_SIZE, updateListings, getQueryParams } from './utils';
+
+function resizeMasonryItem(item) {
+  /* Get the grid object, its row-gap, and the size of its implicit rows */
+  const grid = document.getElementsByClassName('classifieds-columns')[0];
+  const rowGap = parseInt(
+    window.getComputedStyle(grid).getPropertyValue('grid-row-gap'),
+    10,
+  );
+  const rowHeight = parseInt(
+    window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'),
+    10,
+  );
+
+  const rowSpan = Math.ceil(
+    (item.querySelector('.listing-content').getBoundingClientRect().height +
+      rowGap) /
+      (rowHeight + rowGap),
+  );
+
+  /* Set the spanning as calculated above (S) */
+  // eslint-disable-next-line no-param-reassign
+  item.style.gridRowEnd = `span ${rowSpan}`;
+}
+
+export function resizeAllMasonryItems() {
+  // Get all item class objects in one list
+  const allItems = document.getElementsByClassName('single-classified-listing');
+
+  /*
+   * Loop through the above list and execute the spanning function to
+   * each list-item (i.e. each masonry item)
+   */
+  // eslint-disable-next-line vars-on-top
+  for (let i = 0; i < allItems.length; i += 1) {
+    resizeMasonryItem(allItems[i]);
+  }
+}
 
 export class Listings extends Component {
   state = {
