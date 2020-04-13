@@ -30,12 +30,14 @@ module Authentication
       end
 
       def self.existing_user_data(auth_payload)
+        info = auth_payload.info
         raw_info = auth_payload.extra.raw_info
 
         {
           twitter_created_at: raw_info.created_at,
           twitter_followers_count: raw_info.followers_count.to_i,
-          twitter_following_count: raw_info.friends_count.to_i
+          twitter_following_count: raw_info.friends_count.to_i,
+          twitter_username: info.nickname
         }
       end
     end

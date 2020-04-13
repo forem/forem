@@ -7,7 +7,7 @@ RSpec.describe AuthorizationService, type: :service do
     it "raises ProviderNotFound" do
       auth_payload = OmniAuth.config.mock_auth[:github].merge(provider: "okta")
       expect { described_class.new(auth_payload) }.to raise_error(
-        Authentication::Errors::ProviderNotFound
+        Authentication::Errors::ProviderNotFound,
       )
     end
   end
@@ -77,10 +77,10 @@ RSpec.describe AuthorizationService, type: :service do
   end
 
   context "when authenticating through Twitter" do
-    describe "new user" do
-      let!(:auth_payload) { OmniAuth.config.mock_auth[:twitter] }
-      let!(:service) { described_class.new(auth_payload) }
+    let!(:auth_payload) { OmniAuth.config.mock_auth[:twitter] }
+    let!(:service) { described_class.new(auth_payload) }
 
+    describe "new user" do
       it "creates a new user" do
         expect do
           service.get_user
@@ -140,49 +140,87 @@ RSpec.describe AuthorizationService, type: :service do
         end
       end
     end
-  end
 
-  describe "existing user" do
-    let(:auth) { OmniAuth.config.mock_auth[:twitter] }
-    let(:user) { create(:user) }
+    describe "existing user" do
+      let(:user) { create(:user, :with_identity, identities: [:twitter]) }
 
-    before { OmniAuth.config.mock_auth[:twitter].info.email = user.email }
-
-    it "doesn't create a duplicate user" do
-      service = described_class.new(auth)
-      expect do
-        service.get_user
-      end.not_to change(User, :count)
-    end
-
-    it "sets remember_me for the existing user" do
-      user.update_columns(remember_token: nil, remember_created_at: nil)
-      service = described_class.new(auth)
-      service.get_user
-      user.reload
-      expect(user.remember_me).to be_truthy
-      expect(user.remember_token).to be_truthy
-      expect(user.remember_created_at).to be_truthy
-    end
-
-    context "when the user has a new Twitter username" do
-      it "updates their username properly" do
-        new_username = "new_username#{rand(1000)}"
-        auth.info.nickname = new_username
-        service = described_class.new(auth)
-        service.get_user
-        user.reload
-        expect(user.twitter_username).to eq new_username
+      before do
+        auth_payload.info.email = user.email
       end
 
-      it "touches the profile_updated_at timestamp" do
-        original_profile_updated_at = user.profile_updated_at
-        new_username = "new_username#{rand(1000)}"
-        auth.info.nickname = new_username
-        service = described_class.new(auth)
+      it "doesn't create a new user" do
+        expect do
+          service.get_user
+        end.not_to change(User, :count)
+      end
+
+      it "creates a new identity if the user doesn't have one" do
+        user = create(:user)
+        auth_payload.info.email = user.email
+        service = described_class.new(auth_payload)
+
+        expect do
+          service.get_user
+        end.to change(Identity, :count).by(1)
+      end
+
+      it "does not create a new identity if the user has one" do
+        expect do
+          service.get_user
+        end.not_to change(Identity, :count)
+      end
+
+      it "updates the proper data from the auth payload" do
+        # simulate changing twitter data
+        auth_payload.extra.raw_info.followers_count = rand(100).to_s
+        auth_payload.extra.raw_info.friends_count = rand(100).to_s
+
+        service = described_class.new(auth_payload)
+        user = service.get_user
+
+        raw_info = auth_payload.extra.raw_info
+
+        expect(user.twitter_created_at.to_i).to eq(Time.zone.parse(raw_info.created_at).to_i)
+        expect(user.twitter_followers_count).to eq(raw_info.followers_count.to_i)
+        expect(user.twitter_following_count).to eq(raw_info.friends_count.to_i)
+      end
+
+      it "sets remember_me for the existing user" do
+        user.update_columns(remember_token: nil, remember_created_at: nil)
+
         service.get_user
         user.reload
-        expect(user.profile_updated_at).to be > original_profile_updated_at
+
+        expect(user.remember_me).to be(true)
+        expect(user.remember_token).to be_present
+        expect(user.remember_created_at).to be_present
+      end
+
+      it "updates the username when it is changed on the provider" do
+        new_username = "new_username#{rand(1000)}"
+        auth_payload.info.nickname = new_username
+
+        service = described_class.new(auth_payload)
+        user = service.get_user
+
+        expect(user.twitter_username).to eq(new_username)
+      end
+
+      it "updates profile_updated_at when the username is changed" do
+        original_profile_updated_at = user.profile_updated_at
+
+        new_username = "new_username#{rand(1000)}"
+        auth_payload.info.nickname = new_username
+
+        Timecop.travel(1.minute.from_now) do
+          service = described_class.new(auth_payload)
+          service.get_user
+        end
+
+        user.reload
+        expect(
+          user.profile_updated_at.to_i > original_profile_updated_at.to_i,
+        ).to be(true)
       end
     end
   end

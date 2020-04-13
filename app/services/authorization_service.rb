@@ -9,21 +9,23 @@ class AuthorizationService
   end
 
   def get_user
-    identity = prepare_identity
+    identity = Identity.build_from_omniauth(provider, auth_payload)
 
     return current_user if user_identity_exists?
 
     user = proper_user(identity)
-
     user = if user.nil?
              build_user
            else
              update_user(user)
            end
 
-    set_identity(identity, user)
-    user.skip_confirmation!
+    save_identity(identity, user)
+
+    user.skip_confirmation! # TODO: test this
+
     flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
+
     user
   end
 
@@ -40,12 +42,7 @@ class AuthorizationService
     raise ::Authentication::Errors::ProviderNotFound, e
   end
 
-  def prepare_identity
-    Identity.from_omniauth(provider, auth_payload).tap do |identity|
-      # update the identity in the DB if it belongs to a known user
-      identity.save! if identity.user
-    end
-  end
+  def prepare_identity; end
 
   def user_identity_exists?
     current_user && Identity.exists?(provider: provider.name, user: current_user)
@@ -71,7 +68,6 @@ class AuthorizationService
       user.assign_attributes(provider.new_user_data(auth_payload))
       user.assign_attributes(default_user_fields)
 
-      user.skip_confirmation!
       user.set_remember_fields
       user.save!
     end
@@ -90,20 +86,16 @@ class AuthorizationService
     user.tap do |model|
       user.assign_attributes(provider.existing_user_data(auth_payload))
 
-      model.set_remember_fields
-      # TODO: do we really care about this? if the username has not changed, the value
-      # will be the same as before, so we can just override this all the time
-      model.github_username = auth_payload.info.nickname if provider.name == "github" && auth_payload.info.nickname != user.github_username
-      model.twitter_username = auth_payload.info.nickname if provider.name == "twitter" && auth_payload.info.nickname != user.twitter_username
+      model.github_username = auth_payload.info.nickname if provider::USERNAME_FIELD == "github" && auth_payload.info.nickname != user.github_username
       model.profile_updated_at = Time.current if user.twitter_username_changed? || user.github_username_changed?
+
+      model.set_remember_fields
       model.save!
     end
   end
 
-  def set_identity(identity, user)
-    return if identity.user_id.present?
-
-    identity.user = user
+  def save_identity(identity, user)
+    identity.user = user if identity.user_id.blank?
     identity.save!
   end
 
