@@ -12,7 +12,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_07_091449) do
+ActiveRecord::Schema.define(version: 2020_04_09_050122) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -310,11 +311,23 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "classified_listing_categories", force: :cascade do |t|
+    t.integer "cost", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.string "rules", null: false
+    t.string "slug", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_classified_listing_categories_on_name", unique: true
+    t.index ["slug"], name: "index_classified_listing_categories_on_slug", unique: true
+  end
+
   create_table "classified_listings", force: :cascade do |t|
     t.text "body_markdown"
     t.datetime "bumped_at"
     t.string "cached_tag_list"
     t.string "category"
+    t.bigint "classified_listing_category_id"
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
     t.datetime "expires_at"
@@ -327,6 +340,7 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["classified_listing_category_id"], name: "index_classified_listings_on_classified_listing_category_id"
     t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
     t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
@@ -1232,6 +1246,7 @@ ActiveRecord::Schema.define(version: 2020_04_07_091449) do
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
+  add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "users", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade

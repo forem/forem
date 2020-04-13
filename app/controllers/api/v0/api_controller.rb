@@ -65,10 +65,10 @@ class Api::V0::ApiController < ApplicationController
 
   def authenticate_with_api_key
     api_key = request.headers["api-key"]
-    return nil unless api_key
+    return unless api_key
 
     api_secret = ApiSecret.includes(:user).find_by(secret: api_key)
-    return nil unless api_secret
+    return unless api_secret
 
     # guard against timing attacks
     # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>

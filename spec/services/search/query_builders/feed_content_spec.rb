@@ -27,10 +27,14 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
       filter = described_class.new(params)
       exepcted_query = [{
         "simple_query_string" => {
-          "query" => "test*", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true
+          "query" => "test",
+          "fields" => query_fields,
+          "lenient" => true,
+          "analyze_wildcard" => true,
+          "minimum_should_match" => 2
         }
       }]
-      expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
+      expect(search_bool_clause(filter)["must"]).to match_array(exepcted_query)
     end
 
     it "applies TERM_KEYS from params" do
@@ -43,7 +47,7 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
         { "terms" => { "class_name" => ["Article"] } },
         { "terms" => { "published" => [true] } },
       ]
-      expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
+      expect(search_bool_clause(filter)["filter"]).to match_array(exepcted_filters)
     end
 
     it "applies RANGE_KEYS from params" do
@@ -54,7 +58,7 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
           { "range" => { "published_at" => { lte: Time.current } } },
           { "terms" => { "published" => [true] } },
         ]
-        expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
+        expect(search_bool_clause(filter)["filter"]).to match_array(exepcted_filters)
       end
     end
 
@@ -63,15 +67,15 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
         params = { search_fields: "ruby", published_at: { lte: Time.current }, tag_names: "cfp" }
         filter = described_class.new(params)
         exepcted_query = [{
-          "simple_query_string" => { "query" => "ruby*", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true }
+          "simple_query_string" => { "query" => "ruby", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true, "minimum_should_match" => 2 }
         }]
         exepcted_filters = [
           { "range" => { "published_at" => { lte: Time.current } } },
           { "terms" => { "tags.name" => ["cfp"] } },
           { "terms" => { "published" => [true] } },
         ]
-        expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
-        expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
+        expect(search_bool_clause(filter)["must"]).to match_array(exepcted_query)
+        expect(search_bool_clause(filter)["filter"]).to match_array(exepcted_filters)
       end
     end
 
@@ -80,10 +84,10 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
       filter = described_class.new(params)
       exepcted_query = [{
         "simple_query_string" => {
-          "query" => "cfp*", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true
+          "query" => "cfp", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true, "minimum_should_match" => 2
         }
       }]
-      expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
+      expect(search_bool_clause(filter)["must"]).to match_array(exepcted_query)
     end
 
     it "allows default params to be overriden" do
@@ -92,5 +96,14 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
       expect(filter.dig("sort")).to eq("published_at" => "asc")
       expect(filter.dig("size")).to eq(20)
     end
+
+    it "correctly sets default sort" do
+      filter = described_class.new({}).as_hash
+      expect(filter.dig("sort")).to eq(described_class::DEFAULT_PARAMS[:sort])
+    end
+  end
+
+  def search_bool_clause(query_builder)
+    query_builder.as_hash.dig("query", "function_score", "query", "bool")
   end
 end

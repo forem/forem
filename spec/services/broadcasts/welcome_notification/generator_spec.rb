@@ -44,7 +44,8 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       end.to change(user.notifications, :count).by(0)
     end
 
-    it "sends only 1 notification at a time, in the correct order" do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+    # rubocop:disable RSpec/ExampleLength
+    it "sends only 1 notification at a time, in the correct order" do
       user.update!(created_at: 1.day.ago)
 
       expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
@@ -67,6 +68,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       expect(user.notifications.last.notifiable).to eq(discuss_and_ask_broadcast)
       Timecop.return
     end
+    # rubocop:enable RSpec/ExampleLength
   end
 
   describe "#send_welcome_notification" do

@@ -10,8 +10,18 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
 
     it "blocks the request" do
       expect do
-        get "/internal/moderator_actions"
+        get internal_moderator_actions_path
       end.to raise_error(Pundit::NotAuthorizedError)
+    end
+  end
+
+  context "when the user is a single resource admin" do
+    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: ModeratorAction) }
+
+    it "renders with status 200" do
+      sign_in single_resource_admin
+      get internal_moderator_actions_path
+      expect(response.status).to eq 200
     end
   end
 
@@ -25,13 +35,13 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
 
     it "does not block the request" do
       expect do
-        get "/internal/moderator_actions"
+        get internal_moderator_actions_path
       end.not_to raise_error
     end
 
     describe "GETS /internal/moderator_actions" do
       it "renders to appropriate page" do
-        get "/internal/moderator_actions"
+        get internal_moderator_actions_path
         expect(response.body).to include(admin.username)
         expect(response.body).to include(audit_log.id.to_s)
       end

@@ -80,7 +80,7 @@ class RssReader
           return nil unless real_link.include?("gist.github.com")
 
           iframe.name = "p"
-          iframe.keys.each { |attr| iframe.remove_attribute(attr) }
+          iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
           iframe.inner_html = "{% gist #{real_link} %}"
         end
       end
@@ -116,7 +116,7 @@ class RssReader
         if /youtube\.com/.match?(iframe.attributes["src"].value)
           iframe.name = "p"
           youtube_id = iframe.attributes["src"].value.scan(/embed%2F(.{4,11})/).flatten.first
-          iframe.keys.each { |attr| iframe.remove_attribute(attr) }
+          iframe.keys.each { |attr| iframe.remove_attribute(attr) } # rubocop:disable Style/HashEachMethods
           iframe.inner_html = "{% youtube #{youtube_id} %}"
         end
       end
@@ -124,7 +124,9 @@ class RssReader
 
     def clean_relative_path!(html_doc, url)
       html_doc.css("img").each do |img_tag|
-        path = img_tag.attributes["src"].value
+        path = (img_tag.attributes["src"] || img_tag.attributes["data-src"])&.value
+        next unless path
+
         img_tag.attributes["src"].value = URI.join(url, path).to_s if path.start_with? "/"
       end
     end

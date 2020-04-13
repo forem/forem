@@ -6,14 +6,14 @@
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="(<%= app_url("/about") %>" />
+  <meta property="og:url" content="<%= app_url("/about") %>" />
   <meta property="og:title" content="Tags to follow on dev.to" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
   <meta property="og:description" content="<%= community_qualified_name %> is great!" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="About The Practical Dev">
   <meta name="twitter:description" content="<%= community_qualified_name %> is great!">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">

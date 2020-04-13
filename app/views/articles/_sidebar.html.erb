@@ -29,22 +29,15 @@
           <h4>Key links</h4>
         </header>
         <div class="widget-body social-icons">
-          <a href="https://twitter.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("twitter.svg", aria: true, title: "Twitter", class: "crayons-icon") %>
-          </a>
-          <a href="https://github.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("github.svg", aria: true, title: "Github", class: "crayons-icon") %>
-          </a>
-          <a href="https://instagram.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("instagram.svg", aria: true, title: "Instagram", class: "crayons-icon") %>
-          </a>
-          <a href="https://facebook.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("facebook.svg", aria: true, title: "Facebook", class: "crayons-icon") %>
-          </a>
-          <a href="https://twitch.tv/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("twitch.svg", aria: true, title: "Twitch", class: "crayons-icon") %>
-          </a>
+          <% SiteConfig.social_media_handles.keys.each do |social_media_type| %>
+            <% if SiteConfig.social_media_handles[social_media_type].present? %>
+              <a href="<%= "https://#{social_media_type}.com/#{SiteConfig.social_media_handles[social_media_type]}" %>" target="_blank" rel="noopener">
+                <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: "#{social_media_type.capitalize}", class: "crayons-icon") %>
+              </a>
+            <% end %>
+          <% end %>
         </div>
+
         <div class="side-footer">
           <a href="/about">About</a>
           <a href="/sponsors">Sponsors</a>
