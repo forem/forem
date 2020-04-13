@@ -1,4 +1,6 @@
 module OmniauthMacros
+  OMNIAUTH_DEFAULT_FAILURE_HANDLER = OmniAuth.config.on_failure
+
   INFO = OmniAuth::AuthHash::InfoHash.new(
     first_name: "fname",
     last_name: "lname",
@@ -42,8 +44,8 @@ module OmniauthMacros
     credentials: CREDENTIAL
   }.freeze
 
-  def mock_twitter_with_invalid_credentials
-    OmniAuth.config.mock_auth[:twitter] = :invalid_credentials
+  def mock_auth_with_invalid_credentials(provider)
+    OmniAuth.config.mock_auth[provider] = :invalid_credentials
   end
 
   def setup_omniauth_error(error)
@@ -51,17 +53,33 @@ module OmniauthMacros
     # failures in mocked/testing environments,
     # see <https://github.com/omniauth/omniauth/issues/654#issuecomment-610851884>
     # for more details
-    global_failure_handler = OmniAuth.config.on_failure
-
     local_failure_handler = lambda do |env|
       env["omniauth.error"] = error
       env
     end
+
     # here we compose the two handlers into a single function,
     # the result will be global_failure_handler(local_failure_handler(env))
-    failure_handler = local_failure_handler >> global_failure_handler
+    failure_handler = local_failure_handler >> OMNIAUTH_DEFAULT_FAILURE_HANDLER
 
     OmniAuth.config.on_failure = failure_handler
+  end
+
+  def omniauth_failure_args(error, provider, params)
+    class_name = error.present? ? error.class.name : ""
+
+    [
+      tags: [
+        "class:#{class_name}",
+        "message:#{error&.message}",
+        "reason:#{error.try(:error_reason)}",
+        "type:#{error.try(:error)}",
+        "uri:#{error.try(:error_uri)}",
+        "provider:#{provider}",
+        "origin:",
+        "params:#{params}",
+      ],
+    ]
   end
 
   def mock_auth_hash

@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe "Authenticating with Twitter" do
-  let(:sign_in_link) { "Sign In With Twitter" }
+RSpec.describe "Authenticating with GitHub" do
+  let(:sign_in_link) { "Sign In With GitHub" }
 
-  before { mock_twitter }
+  before { mock_github }
 
   context "when a user is new" do
     context "when using valid credentials" do
@@ -11,14 +11,14 @@ RSpec.describe "Authenticating with Twitter" do
         visit root_path
         click_link sign_in_link
 
-        expect(page).to have_current_path("/onboarding?referrer=none")
+        expect(page.current_path).to include("/onboarding")
         expect(page.html).to include("onboarding-container")
       end
     end
 
     context "when using invalid credentials" do
       before do
-        mock_auth_with_invalid_credentials(:twitter)
+        mock_auth_with_invalid_credentials(:github)
 
         allow(DatadogStatsClient).to receive(:increment)
       end
@@ -33,7 +33,7 @@ RSpec.describe "Authenticating with Twitter" do
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_link("Sign In/Up")
-        expect(page).to have_link("Via Twitter")
+        expect(page).to have_link("Via GitHub")
         expect(page).to have_link("All about #{ApplicationConfig['COMMUNITY_NAME']}")
       end
 
@@ -47,7 +47,7 @@ RSpec.describe "Authenticating with Twitter" do
         visit root_path
         click_link sign_in_link
 
-        args = omniauth_failure_args(error, "twitter", "{}")
+        args = omniauth_failure_args(error, "github", '{"state"=>"navbar_basic"}')
         expect(DatadogStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -63,7 +63,7 @@ RSpec.describe "Authenticating with Twitter" do
         visit root_path
         click_link sign_in_link
 
-        args = omniauth_failure_args(error, "twitter", "{}")
+        args = omniauth_failure_args(error, "github", '{"state"=>"navbar_basic"}')
         expect(DatadogStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -76,7 +76,7 @@ RSpec.describe "Authenticating with Twitter" do
         visit root_path
         click_link sign_in_link
 
-        args = omniauth_failure_args(error, "twitter", "{}")
+        args = omniauth_failure_args(error, "github", '{"state"=>"navbar_basic"}')
         expect(DatadogStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -85,8 +85,8 @@ RSpec.describe "Authenticating with Twitter" do
   end
 
   context "when a user already exists" do
-    let!(:auth_payload) { OmniAuth.config.mock_auth[:twitter] }
-    let(:user) { create(:user, :with_identity, identities: [:twitter]) }
+    let!(:auth_payload) { OmniAuth.config.mock_auth[:github] }
+    let(:user) { create(:user, :with_identity, identities: [:github]) }
 
     before do
       auth_payload.info.email = user.email
@@ -95,7 +95,7 @@ RSpec.describe "Authenticating with Twitter" do
 
     context "when using valid credentials" do
       it "logs in and redirects to the onboarding" do
-        visit "/users/auth/twitter"
+        visit "/users/auth/github"
 
         expect(page).to have_current_path("/dashboard?signin=true")
       end

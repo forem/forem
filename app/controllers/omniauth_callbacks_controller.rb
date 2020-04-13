@@ -35,6 +35,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
 
+  # TODO: [thepracticaldev/oss] test all of this
   def callback_for(provider)
     cta_variant = request.env["omniauth.params"]["state"].to_s
     @user = Authentication::Authenticator.call(
