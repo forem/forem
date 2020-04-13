@@ -2,32 +2,6 @@ require "rails_helper"
 
 global_failure_handler = OmniAuth.config.on_failure
 
-def user_grants_authorization_on_twitter(twitter_callback_hash)
-  OmniAuth.config.add_mock(:twitter, twitter_callback_hash)
-end
-
-def user_does_not_grant_authorization_on_twitter
-  OmniAuth.config.mock_auth[:twitter] = :invalid_credentials
-end
-
-def setup_omniauth_error(error)
-  # this hack is needed due to a limitation in how OmniAuth handles
-  # failures in mocked/testing environments,
-  # see <https://github.com/omniauth/omniauth/issues/654#issuecomment-610851884>
-  # for more details
-  global_failure_handler = OmniAuth.config.on_failure
-
-  local_failure_handler = lambda do |env|
-    env["omniauth.error"] = error
-    env
-  end
-  # here we compose the two handlers into a single function,
-  # the result will be global_failure_handler(local_failure_handler(env))
-  failure_handler = local_failure_handler >> global_failure_handler
-
-  OmniAuth.config.on_failure = failure_handler
-end
-
 def get_failure_args(error)
   class_name = error.present? ? error.class.name : ""
 
@@ -46,37 +20,12 @@ def get_failure_args(error)
 end
 
 RSpec.describe "Authenticating with Twitter" do
-  let(:twitter_callback_hash) do
-    {
-      provider: "twitter",
-      uid: "111111",
-      credentials: {
-        token: "222222",
-        secret: "333333"
-      },
-      extra: {
-        access_token: "",
-        raw_info: {
-          name: "Bruce Wayne",
-          created_at: "Thu Jul 4 00:00:00 +0000 2013" # This is mandatory
-        }
-      },
-      info: {
-        nickname: "batman",
-        name: "Bruce Wayne",
-        email: "batman@batcave.com"
-      }
-    }
-  end
+  before { mock_twitter }
 
   context "when a user is new" do
     let(:twitter_link) { "Sign In With Twitter" }
 
     context "when using valid credentials" do
-      before do
-        user_grants_authorization_on_twitter(twitter_callback_hash)
-      end
-
       it "logs in and redirects to the onboarding" do
         visit root_path
         click_link twitter_link
@@ -104,7 +53,7 @@ RSpec.describe "Authenticating with Twitter" do
       end
 
       before do
-        user_does_not_grant_authorization_on_twitter
+        mock_twitter_with_invalid_credentials
 
         allow(DatadogStatsClient).to receive(:increment)
       end
@@ -167,6 +116,25 @@ RSpec.describe "Authenticating with Twitter" do
         expect(DatadogStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
+      end
+    end
+  end
+
+  context "when a user already exists" do
+    let!(:auth_payload) { OmniAuth.config.mock_auth[:twitter] }
+    let(:user) { create(:user, :with_identity, identities: [:twitter]) }
+    let(:twitter_link) { "Sign In With Twitter" }
+
+    before do
+      auth_payload.info.email = user.email
+      sign_in user
+    end
+
+    context "when using valid credentials" do
+      it "logs in and redirects to the onboarding" do
+        visit "/users/auth/twitter"
+
+        expect(page).to have_current_path("/dashboard?signin=true")
       end
     end
   end
