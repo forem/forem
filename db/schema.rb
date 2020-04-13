@@ -315,6 +315,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.datetime "created_at", null: false
     t.string "name", null: false
     t.string "rules", null: false
+    t.string "slug", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_classified_listing_categories_on_name", unique: true
   end

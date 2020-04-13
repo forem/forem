@@ -4,6 +4,7 @@ class CreateClassifiedListingCategories < ActiveRecord::Migration[5.2]
       t.string :name, null: false
       t.integer :cost, null: false
       t.string :rules, null: false
+      t.string :slug, null: false
 
       t.timestamps
     end
