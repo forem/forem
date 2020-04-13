@@ -299,7 +299,7 @@ describe('<Onboarding />', () => {
       const followUsers = onboardingSlides.find(<FollowUsers />);
 
       onboardingSlides.find('.user').first().simulate('click');
-      expect(followUsers.state('selectedUsers').length).toBe(2);
+      expect(followUsers.state('selectedUsers').length).toBe(1);
       onboardingSlides.find('.next-button').simulate('click');
       await flushPromises();
       expect(onboardingSlides.state().currentSlide).toBe(5);
