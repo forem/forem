@@ -40,8 +40,11 @@
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
     padding: $su-7 $su-8 $su-8;
-    padding-bottom: 0px;
   }
+}
+
+.no-padding-bottom {
+  padding-bottom: 0px;
 }
 
 // terms and conditions view
