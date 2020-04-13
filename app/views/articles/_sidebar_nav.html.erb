@@ -20,21 +20,21 @@
       <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
       Reading list <span id="reading-list-count" class="crayons-indicator"></span>
     </a>
-    <a href="<%= tags_path %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/tag.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Tags") %>
-      Tags
-    </a>
     <a href="<%= classified_listings_path %>" class="crayons-link crayons-link--block">
       <%= inline_svg_tag("twemoji/listing.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Listings") %>
       Listings
+    </a>
+    <a href="<%= pod_path %>" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/mic.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Podcasts") %>
+      Podcasts
     </a>
     <a href="<%= videos_path %>" class="crayons-link crayons-link--block">
       <%= inline_svg_tag("twemoji/camera.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Videos") %>
       Videos
     </a>
-    <a href="<%= pod_path %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/mic.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Podcasts") %>
-      Podcasts
+    <a href="<%= tags_path %>" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/tag.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Tags") %>
+      Tags
     </a>
     
     <a href="#" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
@@ -61,15 +61,15 @@
         About
       </a>
       <a href="/privacy" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/smart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "FAQ") %>
+        <%= inline_svg_tag("twemoji/smart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Privacy policy") %>
         Privacy policy
       </a>
       <a href="/terms" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/look.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "FAQ") %>
+        <%= inline_svg_tag("twemoji/look.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Terms of use") %>
         Terms of use
       </a>
       <a href="/contact" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/contact.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "FAQ") %>
+        <%= inline_svg_tag("twemoji/contact.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Contact") %>
         Contact
       </a>
       <div class="grid gap-2 grid-cols-5 p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
