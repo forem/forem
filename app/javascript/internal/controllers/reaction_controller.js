@@ -9,9 +9,8 @@ export default class ReactionController extends Controller {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',
-        // 'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
-        //   .content,
-        'X-CSRF-Token': window.csrfToken,
+        'X-CSRF-Token': document.querySelector("meta[name='csrf-token']")
+          .content,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
