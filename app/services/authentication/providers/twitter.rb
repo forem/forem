@@ -33,6 +33,8 @@ module Authentication
 
       def cleanup_payload(auth_payload)
         auth_payload.tap do |auth|
+          # Twitter sends the server side access token keys in the payload
+          # for each authentication. We definitely do not want to store those
           auth.extra.delete("access_token")
         end
       end

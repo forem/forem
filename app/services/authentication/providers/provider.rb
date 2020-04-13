@@ -50,7 +50,7 @@ module Authentication
       protected
 
       # Remove sensible data from the payload
-      def cleanup_payload(auth_payload)
+      def cleanup_payload(_auth_payload)
         raise NotImplementedError
       end
 
