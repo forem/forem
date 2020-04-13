@@ -16,7 +16,7 @@ RSpec.describe Identity, type: :model do
   it { is_expected.to validate_inclusion_of(:provider).in_array(%w[github twitter]) }
   it { is_expected.to serialize(:auth_data_dump) }
 
-  describe ".from_omniauth" do
+  describe ".build_build_from_omniauth" do
     let(:user) { create(:user) }
 
     before do
@@ -24,22 +24,22 @@ RSpec.describe Identity, type: :model do
     end
 
     context "with Github payload" do
-      let(:provider) { Authentication::Providers::Github }
       let(:auth_payload) { OmniAuth.config.mock_auth[:github] }
+      let(:provider) { Authentication::Providers::Github.new(auth_payload) }
 
       it "initializes a new identity from the auth payload" do
-        identity = described_class.from_omniauth(provider, auth_payload)
+        identity = described_class.build_from_omniauth(provider)
 
         expect(identity.new_record?).to be(true)
         expect(identity.provider).to eq("github")
         expect(identity.uid).to eq(auth_payload.uid)
         expect(identity.token).to eq(auth_payload.credentials.token)
         expect(identity.secret).to eq(auth_payload.credentials.secret)
-        expect(identity.auth_data_dump).to eq(provider.payload(auth_payload))
+        expect(identity.auth_data_dump).to eq(provider.payload)
       end
 
       it "finds an existing identity" do
-        payload = provider.payload(auth_payload)
+        payload = provider.payload
 
         existing_identity = described_class.create!(
           user: user,
@@ -50,28 +50,28 @@ RSpec.describe Identity, type: :model do
           auth_data_dump: payload,
         )
 
-        identity = described_class.from_omniauth(provider, auth_payload)
+        identity = described_class.build_from_omniauth(provider)
         expect(identity).to eq(existing_identity)
       end
     end
 
     context "with Twitter payload" do
-      let(:provider) { Authentication::Providers::Twitter }
       let(:auth_payload) { OmniAuth.config.mock_auth[:twitter] }
+      let(:provider) { Authentication::Providers::Twitter.new(auth_payload) }
 
       it "initializes a new identity from the auth payload" do
-        identity = described_class.from_omniauth(provider, auth_payload)
+        identity = described_class.build_from_omniauth(provider)
 
         expect(identity.new_record?).to be(true)
         expect(identity.provider).to eq("twitter")
         expect(identity.uid).to eq(auth_payload.uid)
         expect(identity.token).to eq(auth_payload.credentials.token)
         expect(identity.secret).to eq(auth_payload.credentials.secret)
-        expect(identity.auth_data_dump).to eq(provider.payload(auth_payload))
+        expect(identity.auth_data_dump).to eq(provider.payload)
       end
 
       it "finds an existing identity" do
-        payload = provider.payload(auth_payload)
+        payload = provider.payload
 
         existing_identity = described_class.create!(
           user: user,
@@ -82,14 +82,14 @@ RSpec.describe Identity, type: :model do
           auth_data_dump: payload,
         )
 
-        identity = described_class.from_omniauth(provider, auth_payload)
+        identity = described_class.build_from_omniauth(provider)
         expect(identity).to eq(existing_identity)
       end
 
       it "does not store the access token in auth_data_dump" do
         expect(auth_payload.extra.access_token).not_to be_nil
 
-        identity = described_class.from_omniauth(provider, auth_payload)
+        identity = described_class.build_from_omniauth(provider)
 
         expect(identity.auth_data_dump.extra.access_token).to be_nil
       end

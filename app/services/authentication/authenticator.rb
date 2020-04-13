@@ -6,8 +6,7 @@ module Authentication
   class Authenticator
     # auth_payload is the payload schema, see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema
     def initialize(auth_payload, current_user: nil, cta_variant: nil)
-      @auth_payload = auth_payload
-      @provider = load_auth_provider(auth_payload.provider)
+      @provider = load_authentication_provider(auth_payload)
 
       @current_user = current_user
       @cta_variant = cta_variant
@@ -18,7 +17,7 @@ module Authentication
     end
 
     def call
-      identity = Identity.build_from_omniauth(provider, auth_payload)
+      identity = Identity.build_from_omniauth(provider)
 
       return current_user if current_user_identity_exists?
 
@@ -41,19 +40,21 @@ module Authentication
 
     private
 
-    attr_reader :auth_payload, :current_user, :provider, :cta_variant
+    attr_reader :provider, :current_user, :cta_variant
 
-    # Loads the proper auth provider from the available ones
+    # Loads the proper authentication provider from the available ones
     # TODO: [thepracticaldev/oss] raise exception if provider is available but not enabled for this app
     # TODO: [thepracticaldev/oss] add available providers, enabled providers
-    def load_auth_provider(provider_name)
-      "Authentication::Providers::#{provider_name.titleize}".constantize
+    def load_authentication_provider(auth_payload)
+      provider_name = auth_payload.provider
+      provider_class = "Authentication::Providers::#{provider_name.titleize}".constantize
+      provider_class.new(auth_payload)
     rescue NameError => e
       raise ::Authentication::Errors::ProviderNotFound, e
     end
 
     def current_user_identity_exists?
-      current_user&.identities&.exists?(provider: provider::NAME)
+      current_user&.identities&.exists?(provider: provider.name)
     end
 
     def proper_user(identity)
@@ -61,19 +62,19 @@ module Authentication
         current_user
       elsif identity.user
         identity.user
-      elsif auth_payload.info.email.present?
-        User.find_by(email: auth_payload.info.email)
+      elsif provider.user_email.present?
+        User.find_by(email: provider.user_email)
       end
     end
 
     def build_user
-      info = auth_payload.info
-
-      existing_user = User.where(provider::USERNAME_FIELD => info.nickname).take
+      existing_user = User.where(
+        provider.user_username_field => provider.user_nickname,
+      ).take
       return existing_user if existing_user
 
       User.new.tap do |user|
-        user.assign_attributes(provider.new_user_data(auth_payload))
+        user.assign_attributes(provider.new_user_data)
         user.assign_attributes(default_user_fields)
 
         user.set_remember_fields
@@ -91,7 +92,7 @@ module Authentication
 
     def update_user(user)
       user.tap do |model|
-        user.assign_attributes(provider.existing_user_data(auth_payload))
+        user.assign_attributes(provider.existing_user_data)
 
         update_profile_updated_at(model)
 
@@ -100,7 +101,7 @@ module Authentication
     end
 
     def update_profile_updated_at(user)
-      field_name = "#{provider::USERNAME_FIELD}_changed?"
+      field_name = "#{provider.user_username_field}_changed?"
       user.profile_updated_at = Time.current if user.public_send(field_name)
     end
 
@@ -110,7 +111,7 @@ module Authentication
     end
 
     def account_less_than_a_week_old?(user, logged_in_identity)
-      provider_created_at = user.public_send(provider::CREATED_AT_FIELD)
+      provider_created_at = user.public_send(provider.user_created_at_field)
       user_identity_age = provider_created_at ||
         Time.zone.parse(logged_in_identity.auth_data_dump.extra.raw_info.created_at)
 
