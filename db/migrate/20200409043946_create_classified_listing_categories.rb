@@ -1,6 +1,4 @@
 class CreateClassifiedListingCategories < ActiveRecord::Migration[5.2]
-  disable_ddl_transaction!
-
   def change
     create_table :classified_listing_categories do |t|
       t.string :name, null: false
@@ -9,6 +7,6 @@ class CreateClassifiedListingCategories < ActiveRecord::Migration[5.2]
 
       t.timestamps
     end
-    add_index(:classified_listing_categories, :name, unique: true, algorithm: :concurrently)
+    add_index(:classified_listing_categories, :name, unique: true)
   end
 end
