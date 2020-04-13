@@ -113,7 +113,7 @@ RSpec.configure do |config|
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
 
     stub_request(:post, /api.fastly.com/).
-      to_return(status: 200, body: "", headers: {})
+      to_return(status: 200, body: "".to_json, headers: {})
 
     stub_request(:post, /api.bufferapp.com/).
       to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
