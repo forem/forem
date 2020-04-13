@@ -560,7 +560,8 @@ export default class Chat extends Component {
   };
 
   handleMessageSubmit = (message) => {
-    const { activeChannelId } = this.state;
+    const { activeChannelId, activeContent } = this.state;
+    scrollToBottom();
     // should check if user has the privilege
     if (message.startsWith('/code')) {
       this.setActiveContentState(activeChannelId, { type_of: 'code_editor' });
@@ -578,6 +579,30 @@ export default class Chat extends Component {
       });
       this.setActiveContent({
         path: '/new',
+        type_of: 'article',
+      });
+    } else if (message.startsWith('/search')) {
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: '/search?q=' + message.replace('/search ', ''),
+        type_of: 'article',
+      });
+    } else if (message.startsWith('/s ')) {
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: '/search?q=' + message.replace('/s ', ''),
+        type_of: 'article',
+      });
+    } else if (message.startsWith('/')) {
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: message,
         type_of: 'article',
       });
     } else if (message.startsWith('/github')) {
@@ -691,6 +716,7 @@ export default class Chat extends Component {
 
   handleSuccess = (response) => {
     const { activeChannelId } = this.state;
+    scrollToBottom();
     if (response.status === 'success') {
       if (response.message.temp_id) {
         this.setState(({ messages }) => {
