@@ -79,10 +79,16 @@ export default class Chat extends Component {
       channelUsers: [],
       showMemberlist: false,
       memberFilterQuery: null,
+      rerenderIfUnchangedCheck: null
     };
     getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if(this.state.rerenderIfUnchangedCheck !== nextState.rerenderIfUnchangedCheck) {
+      return false;
+    }
+  }
   componentDidMount() {
     const {
       chatChannels,
@@ -335,10 +341,10 @@ export default class Chat extends Component {
 
   observerCallback = (entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        this.setState({ scrolled: false, showAlert: false });
-      } else {
-        this.setState({ scrolled: true });
+      if (entry.isIntersecting && this.state.scrolled === true) {
+        this.setState({ scrolled: false, showAlert: false, rerenderIfUnchangedCheck: Math.random() });
+      } else if (this.state.scrolled === false) {
+        this.setState({ scrolled: true, rerenderIfUnchangedCheck: Math.random() });
       }
     });
   };
@@ -623,6 +629,7 @@ export default class Chat extends Component {
       activeChannelId: parseInt(id, 10),
       scrolled: false,
       showAlert: false,
+      allMessagesLoaded: false,
       unopenedChannelIds: unopenedChannelIds.filter(
         (unopenedId) => unopenedId !== id,
       ),
@@ -1081,7 +1088,7 @@ export default class Chat extends Component {
     }
 
     const jumpbackButton = document.getElementById('jumpback_button');
-
+    
     if (this.scroller) {
       const scrolledRatio =
         (this.scroller.scrollTop + this.scroller.clientHeight) /
