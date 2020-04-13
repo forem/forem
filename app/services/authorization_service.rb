@@ -11,7 +11,7 @@ class AuthorizationService
   def get_user
     identity = Identity.build_from_omniauth(provider, auth_payload)
 
-    return current_user if user_identity_exists?
+    return current_user if current_user_identity_exists?
 
     user = proper_user(identity)
     user = if user.nil?
@@ -34,17 +34,15 @@ class AuthorizationService
   attr_accessor :auth_payload, :current_user, :provider, :cta_variant
 
   # Loads the proper auth provider from the available ones
-  # TODO: raise exception if provider is available but not enabled for this app
-  # TODO: available providers, enabled providers, unknownprovider exception
+  # TODO: [thepracticaldev/oss] raise exception if provider is available but not enabled for this app
+  # TODO: [thepracticaldev/oss] add available providers, enabled providers
   def load_auth_provider(provider_name)
     "Authentication::Providers::#{provider_name.titleize}".constantize
   rescue NameError => e
     raise ::Authentication::Errors::ProviderNotFound, e
   end
 
-  def prepare_identity; end
-
-  def user_identity_exists?
+  def current_user_identity_exists?
     current_user && Identity.exists?(provider: provider.name, user: current_user)
   end
 
@@ -86,12 +84,16 @@ class AuthorizationService
     user.tap do |model|
       user.assign_attributes(provider.existing_user_data(auth_payload))
 
-      model.github_username = auth_payload.info.nickname if provider::USERNAME_FIELD == "github" && auth_payload.info.nickname != user.github_username
-      model.profile_updated_at = Time.current if user.twitter_username_changed? || user.github_username_changed?
+      update_profile_updated_at(model)
 
       model.set_remember_fields
       model.save!
     end
+  end
+
+  def update_profile_updated_at(user)
+    field_name = "#{provider::USERNAME_FIELD}_changed?"
+    user.profile_updated_at = Time.current if user.public_send(field_name)
   end
 
   def save_identity(identity, user)

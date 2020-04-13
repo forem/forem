@@ -28,10 +28,12 @@ module Authentication
       end
 
       def self.existing_user_data(auth_payload)
+        info = auth_payload.info
         raw_info = auth_payload.extra.raw_info
 
         {
-          github_created_at: raw_info.created_at
+          github_created_at: raw_info.created_at,
+          github_username: info.nickname
         }
       end
     end
