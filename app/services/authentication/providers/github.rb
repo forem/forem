@@ -23,7 +23,15 @@ module Authentication
           github_created_at: raw_info.created_at,
           github_username: info.nickname,
           name: name,
-          remote_profile_image_url: remote_profile_image_url,
+          remote_profile_image_url: remote_profile_image_url
+        }
+      end
+
+      def self.existing_user_data(auth_payload)
+        raw_info = auth_payload.extra.raw_info
+
+        {
+          github_created_at: raw_info.created_at
         }
       end
     end

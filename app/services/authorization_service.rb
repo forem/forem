@@ -88,27 +88,15 @@ class AuthorizationService
 
   def update_user(user)
     user.tap do |model|
+      user.assign_attributes(provider.existing_user_data(auth_payload))
+
       model.set_remember_fields
       # TODO: do we really care about this? if the username has not changed, the value
       # will be the same as before, so we can just override this all the time
       model.github_username = auth_payload.info.nickname if provider.name == "github" && auth_payload.info.nickname != user.github_username
       model.twitter_username = auth_payload.info.nickname if provider.name == "twitter" && auth_payload.info.nickname != user.twitter_username
-      add_social_identity_data(model)
       model.profile_updated_at = Time.current if user.twitter_username_changed? || user.github_username_changed?
       model.save!
-    end
-  end
-
-  def add_social_identity_data(user)
-    # NOTE: is there a case for this?
-    return unless auth_payload&.provider && auth_payload&.extra && auth_payload.extra.raw_info
-
-    if provider.name == "twitter"
-      user.twitter_created_at = auth_payload.extra.raw_info.created_at
-      user.twitter_followers_count = auth_payload.extra.raw_info.followers_count.to_i
-      user.twitter_following_count = auth_payload.extra.raw_info.friends_count.to_i
-    # else
-      # user.github_created_at = auth_payload.extra.raw_info.created_at
     end
   end
 
