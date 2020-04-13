@@ -342,7 +342,7 @@ export default class Chat extends Component {
   observerCallback = (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting && this.state.scrolled === true) {
-        this.setState({ scrolled: false, showAlert: false, rerenderIfUnchangedCheck: Math.random() });
+        this.setState({ scrolled: false, showAlert: false });
       } else if (this.state.scrolled === false) {
         this.setState({ scrolled: true, rerenderIfUnchangedCheck: Math.random() });
       }
