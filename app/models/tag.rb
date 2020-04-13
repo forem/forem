@@ -39,6 +39,9 @@ class Tag < ActsAsTaggableOn::Tag
   SEARCH_SERIALIZER = Search::TagSerializer
   SEARCH_CLASS = Search::Tag
 
+  # This model doesn't inherit from ApplicationRecord so this has to be included
+  include Purgeable
+
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates
     Rails.root.join("app/views/social_previews/articles").children.map { |ch| File.basename(ch, ".html.erb") }
