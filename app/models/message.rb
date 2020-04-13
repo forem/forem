@@ -135,6 +135,10 @@ class Message < ApplicationRecord
         html += "<a href='#{anchor['href']}' class='chatchannels__richlink chatchannels__richlink--base' data-content='sidecar-embeddable' target='_blank'>
         <h1 data-content='sidecar-embeddable'>Google Docs</h1>
           </a>".html_safe
+      elsif anchor["href"].starts_with?("https://remote-hands.glitch.me/") # Proof of concept
+        html += "<a href='#{anchor['href']}' class='chatchannels__richlink chatchannels__richlink--base' data-content='sidecar-embeddable' target='_blank'>
+        <h1 data-content='sidecar-embeddable'>Glitch ~ Remote Hands</h1>
+          </a>".html_safe
       end
     end
     html

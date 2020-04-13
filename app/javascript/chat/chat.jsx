@@ -61,6 +61,7 @@ export default class Chat extends Component {
       currentUserId: chatOptions.currentUserId,
       notificationsPermission: null,
       activeContent: {},
+      fullscreenContent: null,
       videoPath: null,
       expanded: window.innerWidth > 600,
       isMobileDevice: typeof window.orientation !== 'undefined',
@@ -752,6 +753,10 @@ export default class Chat extends Component {
         });
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
+        this.setState({fullscreenContent: null})
+      } else if (target.dataset.content === 'fullscreen') {
+        const mode = this.state.fullscreenContent === 'sidecar' ? null : 'sidecar'
+        this.setState({fullscreenContent: mode})
       }
     }
     return false;
@@ -1184,17 +1189,25 @@ export default class Chat extends Component {
           activeChannel={state.activeChannel}
           pusherKey={props.pusherKey}
           githubToken={props.githubToken}
+          fullscreen={state.fullscreenContent === 'sidecar'}
         />
         <VideoContent
           videoPath={state.videoPath}
-          onExit={this.triggerExitVideo}
+          onTriggerVideoContent={this.onTriggerVideoContent}
+          fullscreen={state.fullscreenContent === 'video'}
         />
       </div>
     );
   };
 
-  triggerExitVideo = () => {
-    this.setState({ videoPath: null });
+  onTriggerVideoContent = e => {
+    if (e.target.dataset.content === 'exit') {
+      this.setState({ videoPath: null, fullscreenContent: null });
+    } else if (this.state.fullscreenContent === 'video') {
+      this.setState({ fullscreenContent: null });
+    } else {
+      this.setState({ fullscreenContent: 'video' });
+    }
   };
 
   handleMention = (e) => {
@@ -1499,6 +1512,12 @@ export default class Chat extends Component {
         </div>
       );
     }
+    let fullscreenMode = '';
+    if (state.fullscreenContent === 'sidecar') {
+      fullscreenMode = 'chat--content-visible-full'
+    } else if (state.fullscreenContent === 'video') {
+      fullscreenMode = 'chat--video-visible-full'
+    }
     return (
       <div
         className={`chat chat--${
@@ -1509,7 +1528,7 @@ export default class Chat extends Component {
           state.activeContent[state.activeChannelId]
             ? 'content-visible'
             : 'content-not-visible'
-        }`}
+        } ${fullscreenMode}`}
         data-no-instant
       >
         {this.renderChatChannels()}
