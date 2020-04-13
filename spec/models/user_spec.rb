@@ -2,8 +2,11 @@ require "rails_helper"
 
 def user_from_authorization_service(service_name, signed_in_resource, cta_variant)
   auth = OmniAuth.config.mock_auth[service_name]
-  service = AuthorizationService.new(auth, signed_in_resource, cta_variant)
-  service.get_user
+  Authentication::Authenticator.call(
+    auth,
+    current_user: signed_in_resource,
+    cta_variant: cta_variant,
+  )
 end
 
 RSpec.describe User, type: :model do

@@ -1,12 +1,12 @@
 require "rails_helper"
 
-RSpec.describe AuthorizationService, type: :service do
+RSpec.describe Authentication::Authenticator, type: :service do
   before { mock_auth_hash }
 
   context "when authenticating through an unknown provider" do
     it "raises ProviderNotFound" do
       auth_payload = OmniAuth.config.mock_auth[:github].merge(provider: "okta")
-      expect { described_class.new(auth_payload) }.to raise_error(
+      expect { described_class.call(auth_payload) }.to raise_error(
         Authentication::Errors::ProviderNotFound,
       )
     end
@@ -19,18 +19,18 @@ RSpec.describe AuthorizationService, type: :service do
     describe "new user" do
       it "creates a new user" do
         expect do
-          service.get_user
+          service.call
         end.to change(User, :count).by(1)
       end
 
       it "creates a new identity" do
         expect do
-          service.get_user
+          service.call
         end.to change(Identity, :count).by(1)
       end
 
       it "extracts the proper data from the auth payload" do
-        user = service.get_user
+        user = service.call
 
         info = auth_payload.info
         raw_info = auth_payload.extra.raw_info
@@ -43,7 +43,7 @@ RSpec.describe AuthorizationService, type: :service do
       end
 
       it "sets default fields" do
-        user = service.get_user
+        user = service.call
 
         expect(user.password).to be_present
         expect(user.signup_cta_variant).to be_nil
@@ -52,13 +52,13 @@ RSpec.describe AuthorizationService, type: :service do
       end
 
       it "sets the correct sign up cta variant" do
-        user = described_class.new(auth_payload, cta_variant: "awesome").get_user
+        user = described_class.call(auth_payload, cta_variant: "awesome")
 
         expect(user.signup_cta_variant).to eq("awesome")
       end
 
       it "sets remember_me for the new user" do
-        user = service.get_user
+        user = service.call
 
         expect(user.remember_me).to be(true)
         expect(user.remember_token).to be_present
@@ -66,17 +66,16 @@ RSpec.describe AuthorizationService, type: :service do
       end
 
       it "sets confirmed_at" do
-        user = service.get_user
+        user = service.call
 
         expect(user.confirmed_at).to be_present
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
         auth_payload.extra.raw_info.created_at = 1.minute.ago.rfc3339
-        service = described_class.new(auth_payload)
 
         sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
-          service.get_user
+          described_class.call(auth_payload)
         end
       end
     end
@@ -90,7 +89,7 @@ RSpec.describe AuthorizationService, type: :service do
 
       it "doesn't create a new user" do
         expect do
-          service.get_user
+          service.call
         end.not_to change(User, :count)
       end
 
@@ -98,23 +97,22 @@ RSpec.describe AuthorizationService, type: :service do
         user = create(:user)
         auth_payload.info.email = user.email
         auth_payload.uid = "#{user.email}-#{rand(10_000)}"
-        service = described_class.new(auth_payload)
 
         expect do
-          service.get_user
+          described_class.call(auth_payload)
         end.to change(Identity, :count).by(1)
       end
 
       it "does not create a new identity if the user has one" do
         expect do
-          service.get_user
+          service.call
         end.not_to change(Identity, :count)
       end
 
       it "sets remember_me for the existing user" do
         user.update_columns(remember_token: nil, remember_created_at: nil)
 
-        service.get_user
+        service.call
         user.reload
 
         expect(user.remember_me).to be(true)
@@ -126,7 +124,7 @@ RSpec.describe AuthorizationService, type: :service do
         original_confirmed_at = user.confirmed_at
 
         Timecop.travel(1.minute.from_now) do
-          service.get_user
+          service.call
         end
 
         user.reload
@@ -139,8 +137,7 @@ RSpec.describe AuthorizationService, type: :service do
         new_username = "new_username#{rand(1000)}"
         auth_payload.info.nickname = new_username
 
-        service = described_class.new(auth_payload)
-        user = service.get_user
+        user = described_class.call(auth_payload)
 
         expect(user.github_username).to eq(new_username)
       end
@@ -152,8 +149,7 @@ RSpec.describe AuthorizationService, type: :service do
         auth_payload.info.nickname = new_username
 
         Timecop.travel(1.minute.from_now) do
-          service = described_class.new(auth_payload)
-          service.get_user
+          described_class.call(auth_payload)
         end
 
         user.reload
@@ -166,15 +162,13 @@ RSpec.describe AuthorizationService, type: :service do
     describe "user already logged in" do
       it "returns the current user if the identity exists" do
         user = create(:user, :with_identity, identities: [:github])
-        service = described_class.new(auth_payload, current_user: user)
-        expect(service.get_user).to eq(user)
+        expect(described_class.call(auth_payload, current_user: user)).to eq(user)
       end
 
       it "creates the identity if for any reason it does not exist" do
         user = create(:user)
-        service = described_class.new(auth_payload, current_user: user)
         expect do
-          service.get_user
+          described_class.call(auth_payload, current_user: user)
         end.to change(Identity, :count).by(1)
       end
     end
@@ -187,18 +181,18 @@ RSpec.describe AuthorizationService, type: :service do
     describe "new user" do
       it "creates a new user" do
         expect do
-          service.get_user
+          service.call
         end.to change(User, :count).by(1)
       end
 
       it "creates a new identity" do
         expect do
-          service.get_user
+          service.call
         end.to change(Identity, :count).by(1)
       end
 
       it "extracts the proper data from the auth payload" do
-        user = service.get_user
+        user = service.call
 
         info = auth_payload.info
         raw_info = auth_payload.extra.raw_info
@@ -213,7 +207,7 @@ RSpec.describe AuthorizationService, type: :service do
       end
 
       it "sets default fields" do
-        user = service.get_user
+        user = service.call
 
         expect(user.password).to be_present
         expect(user.signup_cta_variant).to be_nil
@@ -222,13 +216,13 @@ RSpec.describe AuthorizationService, type: :service do
       end
 
       it "sets the correct sign up cta variant" do
-        user = described_class.new(auth_payload, cta_variant: "awesome").get_user
+        user = described_class.call(auth_payload, cta_variant: "awesome")
 
         expect(user.signup_cta_variant).to eq("awesome")
       end
 
       it "sets remember_me for the new user" do
-        user = service.get_user
+        user = service.call
 
         expect(user.remember_me).to be(true)
         expect(user.remember_token).to be_present
@@ -236,17 +230,16 @@ RSpec.describe AuthorizationService, type: :service do
       end
 
       it "sets confirmed_at" do
-        user = service.get_user
+        user = service.call
 
         expect(user.confirmed_at).to be_present
       end
 
       it "queues a slack message to be sent for a user whose identity is brand new" do
         auth_payload.extra.raw_info.created_at = 1.minute.ago.rfc3339
-        service = described_class.new(auth_payload)
 
         sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
-          service.get_user
+          described_class.call(auth_payload)
         end
       end
     end
@@ -260,7 +253,7 @@ RSpec.describe AuthorizationService, type: :service do
 
       it "doesn't create a new user" do
         expect do
-          service.get_user
+          service.call
         end.not_to change(User, :count)
       end
 
@@ -268,16 +261,15 @@ RSpec.describe AuthorizationService, type: :service do
         user = create(:user)
         auth_payload.info.email = user.email
         auth_payload.uid = "#{user.email}-#{rand(10_000)}"
-        service = described_class.new(auth_payload)
 
         expect do
-          service.get_user
+          described_class.call(auth_payload)
         end.to change(Identity, :count).by(1)
       end
 
       it "does not create a new identity if the user has one" do
         expect do
-          service.get_user
+          service.call
         end.not_to change(Identity, :count)
       end
 
@@ -286,8 +278,7 @@ RSpec.describe AuthorizationService, type: :service do
         auth_payload.extra.raw_info.followers_count = rand(100).to_s
         auth_payload.extra.raw_info.friends_count = rand(100).to_s
 
-        service = described_class.new(auth_payload)
-        user = service.get_user
+        user = described_class.call(auth_payload)
 
         raw_info = auth_payload.extra.raw_info
 
@@ -299,7 +290,7 @@ RSpec.describe AuthorizationService, type: :service do
       it "sets remember_me for the existing user" do
         user.update_columns(remember_token: nil, remember_created_at: nil)
 
-        service.get_user
+        service.call
         user.reload
 
         expect(user.remember_me).to be(true)
@@ -311,7 +302,7 @@ RSpec.describe AuthorizationService, type: :service do
         original_confirmed_at = user.confirmed_at
 
         Timecop.travel(1.minute.from_now) do
-          service.get_user
+          service.call
         end
 
         user.reload
@@ -324,8 +315,7 @@ RSpec.describe AuthorizationService, type: :service do
         new_username = "new_username#{rand(1000)}"
         auth_payload.info.nickname = new_username
 
-        service = described_class.new(auth_payload)
-        user = service.get_user
+        user = described_class.call(auth_payload)
 
         expect(user.twitter_username).to eq(new_username)
       end
@@ -337,8 +327,7 @@ RSpec.describe AuthorizationService, type: :service do
         auth_payload.info.nickname = new_username
 
         Timecop.travel(1.minute.from_now) do
-          service = described_class.new(auth_payload)
-          service.get_user
+          described_class.call(auth_payload)
         end
 
         user.reload
@@ -351,15 +340,13 @@ RSpec.describe AuthorizationService, type: :service do
     describe "user already logged in" do
       it "returns the current user if the identity exists" do
         user = create(:user, :with_identity, identities: [:twitter])
-        service = described_class.new(auth_payload, current_user: user)
-        expect(service.get_user).to eq(user)
+        expect(described_class.call(auth_payload, current_user: user)).to eq(user)
       end
 
       it "creates the identity if for any reason it does not exist" do
         user = create(:user)
-        service = described_class.new(auth_payload, current_user: user)
         expect do
-          service.get_user
+          described_class.call(auth_payload, current_user: user)
         end.to change(Identity, :count).by(1)
       end
     end
