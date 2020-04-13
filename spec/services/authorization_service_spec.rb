@@ -65,6 +65,12 @@ RSpec.describe AuthorizationService, type: :service do
         expect(user.remember_created_at).to be_present
       end
 
+      it "sets confirmed_at" do
+        user = service.get_user
+
+        expect(user.confirmed_at).to be_present
+      end
+
       it "queues a slack message to be sent for a user whose identity is brand new" do
         auth_payload.extra.raw_info.created_at = 1.minute.ago.rfc3339
         service = described_class.new(auth_payload)
@@ -114,6 +120,19 @@ RSpec.describe AuthorizationService, type: :service do
         expect(user.remember_me).to be(true)
         expect(user.remember_token).to be_present
         expect(user.remember_created_at).to be_present
+      end
+
+      it "updates confirmed_at with the current UTC time" do
+        original_confirmed_at = user.confirmed_at
+
+        Timecop.travel(1.minute.from_now) do
+          service.get_user
+        end
+
+        user.reload
+        expect(
+          user.confirmed_at.utc.to_i > original_confirmed_at.utc.to_i,
+        ).to be(true)
       end
 
       it "updates the username when it is changed on the provider" do
@@ -200,6 +219,12 @@ RSpec.describe AuthorizationService, type: :service do
         expect(user.remember_created_at).to be_present
       end
 
+      it "sets confirmed_at" do
+        user = service.get_user
+
+        expect(user.confirmed_at).to be_present
+      end
+
       it "queues a slack message to be sent for a user whose identity is brand new" do
         auth_payload.extra.raw_info.created_at = 1.minute.ago.rfc3339
         service = described_class.new(auth_payload)
@@ -264,6 +289,19 @@ RSpec.describe AuthorizationService, type: :service do
         expect(user.remember_me).to be(true)
         expect(user.remember_token).to be_present
         expect(user.remember_created_at).to be_present
+      end
+
+      it "updates confirmed_at with the current UTC time" do
+        original_confirmed_at = user.confirmed_at
+
+        Timecop.travel(1.minute.from_now) do
+          service.get_user
+        end
+
+        user.reload
+        expect(
+          user.confirmed_at.utc.to_i > original_confirmed_at.utc.to_i,
+        ).to be(true)
       end
 
       it "updates the username when it is changed on the provider" do

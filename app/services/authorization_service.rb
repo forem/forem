@@ -22,10 +22,11 @@ class AuthorizationService
 
     save_identity(identity, user)
 
-    user.skip_confirmation! # TODO: test this
+    user.skip_confirmation!
 
     flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
 
+    user.save!
     user
   end
 
@@ -67,7 +68,6 @@ class AuthorizationService
       user.assign_attributes(default_user_fields)
 
       user.set_remember_fields
-      user.save!
     end
   end
 
@@ -87,7 +87,6 @@ class AuthorizationService
       update_profile_updated_at(model)
 
       model.set_remember_fields
-      model.save!
     end
   end
 
