@@ -35,6 +35,8 @@ class Tag < ActsAsTaggableOn::Tag
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
+  scope :eager_load_serialized_data, -> {}
+
   include Searchable
   SEARCH_SERIALIZER = Search::TagSerializer
   SEARCH_CLASS = Search::Tag

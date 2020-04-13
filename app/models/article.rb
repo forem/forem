@@ -172,6 +172,8 @@ class Article < ApplicationRecord
 
   scope :with_video, -> { published.where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).where("score > ?", -4) }
 
+  scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
+
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_index do
     attribute :title
     add_index "searchables", id: :index_id, per_environment: true, enqueue: :trigger_index do
