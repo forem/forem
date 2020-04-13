@@ -30,7 +30,7 @@ class Article < ApplicationRecord
 
   has_many :comments, as: :commentable, inverse_of: :commentable
   has_many :top_comments,
-           -> { where("comments.score > ? AND ancestry IS NULL", 10).order("comments.score DESC") },
+           -> { where("comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE", 10).order("comments.score DESC") },
            as: :commentable,
            inverse_of: :commentable,
            class_name: "Comment"
