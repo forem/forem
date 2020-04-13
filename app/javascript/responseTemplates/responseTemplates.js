@@ -210,6 +210,11 @@ function copyData(responsesContainer) {
   ).innerHTML;
 }
 
+function loadData(form) {
+  form.querySelector('img.loading-img').classList.toggle('hidden');
+  fetchResponseTemplates('personal_comment', form.id);
+}
+
 function openButtonCallback(form) {
   const responsesContainer = form.querySelector(
     '.response-templates-container',
@@ -219,18 +224,19 @@ function openButtonCallback(form) {
 
   responsesContainer.classList.toggle('hidden');
 
-  if (dataFetched && !responsesContainer.classList.contains('hidden')) {
+  const containerHidden = responsesContainer.classList.contains('hidden');
+
+  if (dataFetched && !containerHidden) {
     copyData(responsesContainer);
     addClickListeners(form);
-  } else {
-    form.querySelector('img.loading-img').classList.toggle('hidden');
-    fetchResponseTemplates('personal_comment', form.id);
+  } else if (!dataFetched && !containerHidden) {
+    loadData(form)
   }
   /* eslint-disable-next-line no-undef */
   if (userData().moderator_for_tags.length > 0) {
     prepareHeaderButtons(form);
   } else {
-    form.querySelector('.personal-template-button').classList.toggle('hidden');
+    form.querySelector('.personal-template-button').classList.add('hidden');
   }
 }
 
@@ -243,6 +249,8 @@ function prepareOpenButton(form) {
   button.addEventListener('click', () => {
     openButtonCallback(form);
   });
+
+  button.dataset.hasListener = "true";
 }
 
 function observeForReplyClick() {
@@ -286,7 +294,10 @@ export function loadResponseTemplates() {
     handleLoggedOut();
   }
   if (document.getElementById('response-templates-data')) {
-    if (form) {
+    if (
+      form &&
+      form.querySelector('.response-templates-button').dataset.hasListener === 'false'
+    ) {
       prepareOpenButton(form);
     }
     observeForReplyClick();
