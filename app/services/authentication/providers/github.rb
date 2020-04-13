@@ -3,7 +3,8 @@ module Authentication
     # GitHub authentication provider, uses omniauth-github as backend
     module Github
       NAME = "github".freeze
-      USERNAME_FIELD = "github_username".freeze
+      CREATED_AT_FIELD = "#{NAME}_created_at".freeze
+      USERNAME_FIELD = "#{NAME}_username".freeze
 
       def self.payload(auth_payload)
         auth_payload.dup.tap do |auth|
