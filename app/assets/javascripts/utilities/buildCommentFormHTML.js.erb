@@ -22,7 +22,7 @@ function buildCommentFormHTML(commentableId, commentableType, parentId) {
             <textarea id="textarea-for-' + parentId + '" class="embiggened" name="comment[body_markdown]" id="comment_body_markdown" required onkeydown="handleKeyDown.bind(this)(event)"></textarea>\
             '+previewDiv+'\
                 '+codeOfConductHTML+'\
-            <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">\
+            <a href="/p/editor_guide" class="markdown-guide" target="_blank" rel="noopener" title="Markdown Guide">\
               <img alt="markdown guide" class="icon-image" src="<%= asset_path('info.svg') %>" />\
             </a>\
             <div class="editor-image-upload">\

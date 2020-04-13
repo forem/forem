@@ -9,13 +9,15 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def create
     clean_up_params
-    config_params.keys.each do |key|
-      if config_params[key].respond_to?(:to_h)
-        SiteConfig.public_send("#{key}=", config_params[key].to_h) unless config_params[key].empty?
+
+    config_params.each do |key, value|
+      if value.respond_to?(:to_h)
+        SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
       else
-        SiteConfig.public_send("#{key}=", config_params[key].strip) unless config_params[key].nil?
+        SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
       end
     end
+
     bust_relevant_caches
     redirect_to internal_config_path, notice: "Site configuration was successfully updated."
   end

@@ -11,6 +11,7 @@ module Articles
       new(*args).call
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def call
       rate_limiter = RateLimitChecker.new(user)
       raise if rate_limiter.limit_by_action("article_update")
@@ -53,6 +54,7 @@ module Articles
 
       article.decorate
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     private
 

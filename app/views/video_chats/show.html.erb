@@ -6,22 +6,28 @@
   .video-chat-wrapper {
     position: relative;
     height: 100vh;
-    background: #171717;
     overflow: scroll;
   }
   .individual-video video {
-    max-width: 800px;
+    max-width: 600px;
     background: #232324;
     width: 100%;
   }
 
   .individual-video {
     overflow: hidden;
+    position: relative;
+    display: inline-block;
+    line-height: 0;
   }
+  .individual-video:last-child {
+    margin-bottom: 100px;
+  }
+
   
   #local-media video {
     width: 150px;
-    position: absolute;
+    position: fixed;
     bottom: 10px;
     right: 10px;
     z-index: 5;
@@ -33,7 +39,7 @@
 
   .individual-video {
     position: relative;
-    margin-bottom: -5px;
+    margin-bottom: -6px;
   }
   .participant-info {
     padding: 3px 8px;
@@ -54,10 +60,16 @@
     margin: 8px;
   }
   .video-controls {
-    position: absolute;
+    position: fixed;
     bottom: 15px;
     left: 5px;
     width: calc(100% - 175px);
+    z-index: 10;
+    display: none;
+  }
+
+  .showing {
+    display: block;
   }
 
   .video-controls button {
@@ -95,13 +107,32 @@
     color: white;
     margin-top: 30px;
   }
+
+  @media screen and (max-width: 280px) {
+    .video-controls {
+      width: 92%;
+      bottom: 5px;
+    }
+    #local-media video {
+      width: 90%;
+      bottom: 85px;
+    }
+  }
+
+  @media screen and (min-width: 500px) {
+    .video-controls {
+      left: auto;
+      right: 170px;
+      width: 200px;
+    }
+  }
 </style>
 
 <div class="video-chat-wrapper" id="videochat" data-token="<%= @token %>" data-channel="<%= params[:id] %>" data-user="<%= @username %>">
   <div id="room-type" data-type="<%= @video_type %>"></div>
   <div id="remote-media"></div>
   <div id="local-media"></div>
-  <div class="video-controls">
+  <div id="video-controls" class="video-controls">
   <button id="mute-toggle" data-muted="false" class="crayons-btn crayons-btn--secondary">Mute</button>
   <button id="videohide-toggle" data-hidden="false" class="crayons-btn crayons-btn--secondary">Hide</button>
 </div>
