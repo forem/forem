@@ -162,8 +162,8 @@
     text-align: center;
 
     p {
-      font-size: 16px;
-      font-weight: bold;
+      font-size: $su-4;
+      font-weight: $fw-bold;
       line-height: 150%;
     }
 
@@ -171,8 +171,8 @@
       background: none;
       border: none;
       padding: 0px;
-      color: #3b49df;
-      font-size: 14px;
+      color: var(--accent-brand);
+      font-size: $fs-s;
     }
   }
 }
@@ -188,7 +188,7 @@
 .onboarding-modal-scroll-container {
   height: auto;
   min-height: 436px;
-  border-bottom: 1px solid #d2d6db;
+  border-bottom: 1px solid var(--base-20);
   @media screen and (min-width: $breakpoint-s) {
     max-height: 500px;
     overflow-y: scroll;
