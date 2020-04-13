@@ -25,9 +25,9 @@ class FollowUsers extends Component {
       },
       credentials: 'same-origin',
     })
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ users: data, selectedUsers: data });
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({ users: data });
       });
 
     const csrfToken = getContentOfToken('csrf-token');
@@ -79,7 +79,7 @@ class FollowUsers extends Component {
     let { selectedUsers } = this.state;
 
     if (!selectedUsers.includes(user)) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         selectedUsers: [...prevState.selectedUsers, user],
       }));
     } else {
@@ -95,6 +95,16 @@ class FollowUsers extends Component {
   render() {
     const { users, selectedUsers } = this.state;
     const { prev } = this.props;
+    let followingStatus;
+    if (selectedUsers < 2) {
+      followingStatus = "You're not following anyone";
+    } else {
+      const everyone =
+        selectedUsers.length === users.length ? ' (everyone)' : '';
+      const object = selectedUsers.length === 1 ? 'person' : 'people';
+      followingStatus = `You're following ${selectedUsers.length} ${object}${everyone}`;
+    }
+
     return (
       <div className="onboarding-main">
         <Navigation prev={prev} next={this.handleComplete} />
@@ -105,7 +115,7 @@ class FollowUsers extends Component {
           </header>
 
           <div className="onboarding-modal-scroll-container">
-            {users.map(user => (
+            {users.map((user) => (
               <button
                 type="button"
                 onClick={() => this.handleClick(user)}
@@ -136,10 +146,11 @@ class FollowUsers extends Component {
         </div>
         <div className="onboarding-selection-status">
           <div className="selection-status-content">
+            <p>{followingStatus}</p>
             <button type="button" onClick={() => this.handleSelectAll()}>
-              Select All 
-              {' '}
-              {selectedUsers.length === users.length ? '✅' : ''}
+              {selectedUsers.length === users.length
+                ? 'Deselect all'
+                : `Select all ${users.length} people`}
             </button>
           </div>
         </div>
