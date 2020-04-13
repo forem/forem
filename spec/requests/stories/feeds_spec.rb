@@ -114,6 +114,17 @@ RSpec.describe "Stories::Feeds", type: :request do
       end
     end
 
+    context "when there are highly rated comments" do
+      let(:comment) { create(:comment, score: 20) }
+      let(:article) { comment.commentable }
+
+      it "renders top comments for the article" do
+        get "/stories/feed/infinity", headers: headers
+
+        expect(response_article["top_comments"]).not_to be_nil
+      end
+    end
+
     context "when user is signed in but there's no field_test" do
       before do
         sign_in user
