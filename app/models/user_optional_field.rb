@@ -1,4 +1,4 @@
-class OptionalField < ApplicationRecord
+class UserOptionalField < ApplicationRecord
   belongs_to :user
 
   validates :field, presence: true, length: { maximum: 30 }
@@ -8,6 +8,6 @@ class OptionalField < ApplicationRecord
   def validate_quota
     return unless user
 
-    errors.add(:user_id, "already has the maximum allowable optional fields") unless user.optional_fields.count < 3
+    errors.add(:user_id, "already has the maximum allowable optional fields") unless user.user_optional_fields.count < 3
   end
 end

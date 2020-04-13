@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :optional_field do
+  factory :user_optional_field do
     user
     field { "Pronoun" }
     value { "They/them" }
