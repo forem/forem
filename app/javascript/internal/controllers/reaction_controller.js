@@ -1,10 +1,11 @@
+/* eslint-disable no-alert */
 import { Controller } from 'stimulus';
 
 export default class ReactionController extends Controller {
   static targets = ['invalid', 'confirmed'];
 
   // eslint-disable-next-line class-methods-use-this
-  // eslint no-alert: "error"
+  /* eslint no-alert: "error" */
   updateReaction(id, status) {
     fetch(`/internal/reactions/${id}`, {
       method: 'PATCH',
