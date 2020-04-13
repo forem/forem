@@ -10,7 +10,7 @@ RSpec.describe "UserShow", type: :request do
     end
 
     it "returns a 200 status when navigating to the user's page" do
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(:ok)
     end
 
     it "renders the proper username for a user" do

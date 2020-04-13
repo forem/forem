@@ -26,94 +26,11 @@
   </style>
 
 <script type="application/ld+json">
-{
-    "@context": "http://schema.org",
-    "@type": "Person",
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": "https://dev.to/<%= @user.username %>"
-    },
-    "url": "<%= user_url(@user) %>",
-    "sameAs": [
-      <% if @user.twitter_username? %>
-        "https://twitter.com/<%= @user.twitter_username %>",
-      <% end %>
-      <% if @user.github_username? %>
-        "https://github.com/<%= @user.github_username %>",
-      <% end %>
-      <% if @user.mastodon_url? %>
-        "<%= @user.mastodon_url %>",
-      <% end %>
-      <% if @user.facebook_url? %>
-        "<%= @user.facebook_url %>",
-      <% end %>
-      <% if @user.linkedin_url? %>
-        "<%= @user.linkedin_url %>",
-      <% end %>
-      <% if @user.behance_url? %>
-        "<%= @user.behance_url %>",
-      <% end %>
-      <% if @user.stackoverflow_url? %>
-        "<%= @user.stackoverflow_url %>",
-      <% end %>
-      <% if @user.dribbble_url? %>
-        "<%= @user.dribbble_url %>",
-      <% end %>
-      <% if @user.medium_url? %>
-        "<%= @user.medium_url %>",
-      <% end %>
-      <% if @user.gitlab_url? %>
-        "<%= @user.gitlab_url %>",
-      <% end %>
-      <% if @user.instagram_url? %>
-        "<%= @user.instagram_url %>",
-      <% end %>
-      <% if @user.twitch_username? %>
-        "<%= @user.twitch_url %>",
-      <% end %>
-      <% if @user.website_url? %>
-        "<%= @user.website_url %>"
-      <% end %>
-    ],
-    "image": "<%= ProfileImage.new(@user).get(width: 320) %>",
-    "name": "<%= @user.name %>",
-    <% if @user.email_public %>
-      "email": "<%= @user.email %>",
-    <% end %>
-    <% if @user.employment_title.presence %>
-      "jobTitle": "<%= @user.employment_title %>",
-    <% end %>
-    "description": "<%= @user.summary.presence || ["404 bio not found"].sample %>",
-    "disambiguatingDescription": [
-      <% if @user.mostly_work_with.presence %>
-        "<%= @user.mostly_work_with %>",
-      <% end %>
-      <% if @user.currently_hacking_on.presence %>
-        "<%= @user.currently_hacking_on %>",
-      <% end %>
-      <% if @user.currently_learning.presence %>
-        "<%= @user.currently_learning %>"
-      <% end %>
-      ],
-    "worksFor": [
-      {
-        "@type": "Organization",
-        <% if @user.employer_name.presence %>
-          "name": "<%= @user.employer_name %>",
-        <% end %>
-        <% if @user.employer_url.presence %>
-          "sameAs": [ "<%= @user.employer_url %>" ]
-        <% end %>
-      },
-    ],
-    <% if @user.education.presence %>
-      "alumniOf": "<%= @user.education %>"
-    <% end %>
-  }
+  <%= @user_json_ld.to_json.html_safe %>
 </script>
 
   <div class="user-profile-header" style="<%= user_colors_style(@user) %>">
-    <a href="https://dev.to/<%= @user.username %>"></a>
+    <a href="https://dev.to/<%= user_url(@user) %>"></a>
     <div class="user-profile-header-container">
       <div class="profile-pic-wrapper">
         <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />

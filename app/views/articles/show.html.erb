@@ -44,7 +44,7 @@
     "publisher": {
       "@context": "http://schema.org",
       "@type": "Organization",
-      "name": "<%= community_qualified_name %>"
+      "name": "<%= community_qualified_name %>",
       "logo": {
         "@context": "http://schema.org",
         "@type": "ImageObject",
@@ -57,25 +57,25 @@
     "author": {
       "@context": "http://schema.org",
       "@type": "Person",
-      "url": "<%= user_url(@user) %>",
-      "name": "<%= @user.name %>",
       <% if @organization.present? %>
         "organization": {
           "@context": "http://schema.org",
           "@type": "Organization",
           "name": "<%= @organization.name %>",
-          "url": "<%= @organization.path %>"
+          "url": "<%= app_url(organization.path) %>",
           "logo": {
             "@context": "http://schema.org",
             "@type": "ImageObject",
             "url": "<%= ProfileImage.new(@organization).get(width: 50) %>",
             "width": "50"
           },
-        },
+        }
       <% end %>
+      "url": "<%= user_url(@user) %>",
+      "name": "<%= @user.name %>"
     },
     "datePublished": "<%= @article.published_timestamp %>",
-    "dateModified": "<%= @article.edited_at&.utc&.iso8601 %>"
+    "dateModified": "<%= @article.edited_at || @article.published_timestamp %>"
   }
 </script>
 

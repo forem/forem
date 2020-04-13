@@ -12,7 +12,7 @@ RSpec.describe "ArticlesShow", type: :request do
     end
 
     it "returns a 200 status when navigating to the article's page" do
-      expect(response).to have_http_status(:success)
+      expect(response).to have_http_status(:ok)
     end
 
     it "renders the proper title" do

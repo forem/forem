@@ -15,7 +15,6 @@ class StoriesController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
-  # before_action :set_json_ld, only: :show
 
   rescue_from ArgumentError, with: :bad_request
 
@@ -206,6 +205,7 @@ class StoriesController < ApplicationController
     return if performed?
 
     set_surrogate_key_header "articles-user-#{@user.id}"
+    set_json_ld
     render template: "users/show"
   end
 
@@ -332,50 +332,53 @@ class StoriesController < ApplicationController
     @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
   end
 
-  # def set_json_ld
-  #   @user_json_ld = {
-  #     "@context": "http://schema.org",
-  #     "@type": "Person",
-  #     "mainEntityOfPage": {
-  #       "@type": "WebPage",
-  #       "@id": "https://dev.to/#{@user.username}",
-  #     },
-  #     "url": user_url(@user),
-  #     "image": ProfileImage.new(@user).get(width: 320),
-  #     "name": @user.name,
-  #     "description": @user.summary.presence || ["404 bio not found"].sample,
-  #       [
-  #         {
-  #           "sameAs": [
-  #             @user.mostly_work_with if @user.mostly_work_with.present?
-  #             @user.currently_hacking_on if @user.currently_hacking_on.present?
-  #             @user.currently_learning if @user.currently_learning.present?
-  #           ]
-  #         }
-  #     ]
-  #     "email": @user.email if @user.email_public
-  #     "jobTitle": @user.employment_title if @user.employment_title.present?
-  #     "worksFor": [
-  #       {
-  #         "name": @user.employer_name if @user.employer_name.present?
-  #         "sameAs": @user.employer_url if @user.employer_url.present?
-  #       }
-  #     ]
-  #     "alumniOf": @user.education if @user.education.present?
-  #     "sameAs": [
-  #       "https://twitter.com/#{@user.twitter_username}" if @user.twitter_username?
-  #       "https://github.com/#{@user.github_username}" if @user.github_username?
-  #       @user.mastodon_url if @user.mastodon_url?
-  #       @user.facebook_url if @user.facebook_url?
-  #       @user.linkedin_url if @user.linkedin_url?
-  #       @user.stackoverflow_url if @user.stackoverflow_url?
-  #       @user.dribbble_url if @user.dribbble_url?
-  #       @user.medium_url if @user.medium_url?
-  #       @user.gitlab_url if @user.gitlab_url?
-  #       @user.instagram_url if @user.instagram_url?
-  #       @user.twitch_url if @user.twitch_username?
-  #       @user.website_url if @user.website_url?
-  #     ]
-  #   }.to_json
-  # end
+  def set_json_ld
+    @user_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://dev.to/<%= user_url(@user) %>"
+      },
+      "url": "<%= user_url(@user) %>",
+      "sameAs": [],
+      "image": "<%= ProfileImage.new(@user).get(width: 320) %>",
+      "name": "<%= @user.name %>",
+      "email": "",
+      "jobTitle": "",
+      "description": "<%= @user.summary.presence || ['404 bio not found'].sample %>",
+      "disambiguatingDescription": [],
+      "worksFor": [
+        {
+          "@type": "Organization"
+        },
+      ],
+      "alumniOf": ""
+    }
+    @user_json_ld["disambiguatingDescription"]&.append(@user.mostly_work_with) if @user.mostly_work_with.present?
+    @user_json_ld["disambiguatingDescription"]&.append(@user.currently_hacking_on) if @user.currently_hacking_on.present?
+    @user_json_ld["disambiguatingDescription"]&.append(@user.currently_learning) if @user.currently_learning.present?
+    @user_json_ld["worksFor"]&.append(@user.employer_name) if @user.employer_name.present?
+    @user_json_ld["worksFor"]&.append(@user.employer_url) if @user.employer_url.present?
+    @user_json_ld["alumniOf"]&.append(@user.education) if @user.education.present?
+    @user_json_ld["email"]&.append(@user.email) if @user.email_public
+    @user_json_ld["jobTitle"]&.append(@user.employment_title) if @user.employment_title.present?
+    @user_json_ld["sameAs"]&.append(@user.twitter_username) if @user.twitter_username.present?
+    @user_json_ld["sameAs"]&.append(@user.github_username) if @user.github_username.present?
+    user_same_as
+  end
+
+  def user_same_as
+    @user_json_ld["sameAs"]&.append(@user.mastodon_url) if @user.mastodon_url.present?
+    @user_json_ld["sameAs"]&.append(@user.facebook_url) if @user.facebook_url.present?
+    @user_json_ld["sameAs"]&.append(@user.linkedin_url) if @user.linkedin_url.present?
+    @user_json_ld["sameAs"]&.append(@user.behance_url) if @user.behance_url.present?
+    @user_json_ld["sameAs"]&.append(@user.stackoverflow_url) if @user.stackoverflow_url.present?
+    @user_json_ld["sameAs"]&.append(@user.dribbble_url) if @user.dribbble_url.present?
+    @user_json_ld["sameAs"]&.append(@user.medium_url) if @user.medium_url.present?
+    @user_json_ld["sameAs"]&.append(@user.gitlab_url) if @user.gitlab_url.present?
+    @user_json_ld["sameAs"]&.append(@user.instagram_url) if @user.instagram_url.present?
+    @user_json_ld["sameAs"]&.append(@user.twitch_username) if @user.twitch_username.present?
+    @user_json_ld["sameAs"]&.append(@user.website_url) if @user.website_url.present?
+  end
 end
