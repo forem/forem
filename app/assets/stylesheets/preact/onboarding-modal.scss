@@ -36,6 +36,8 @@
   flex: 1 0 auto;
   padding: $su-4;
   width: 100%;
+  max-height: calc(100vh - 70px);
+  overflow: scroll;
 
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
@@ -592,4 +594,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
       }
     }
   }
+
+  @media screen and (max-height: 790px) {
+    .onboarding-form-input--last {
+      margin-bottom: 25px;
+    }
+  }  
 }
