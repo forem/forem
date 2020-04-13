@@ -24,7 +24,6 @@
     margin-bottom: 100px;
   }
 
-  
   #local-media video {
     width: 150px;
     position: fixed;
@@ -32,7 +31,7 @@
     right: 10px;
     z-index: 5;
   }
-  
+
   #local-media.video-hidden {
     opacity: 0.1;
   }
@@ -126,6 +125,17 @@
       width: 200px;
     }
   }
+
+  @media screen and (max-height: 400px) {
+    .video-controls {
+      width: 90px;
+    }
+    #local-media video {
+      width: 90px;
+      bottom: 5px;
+    }
+  }
+
 </style>
 
 <div class="video-chat-wrapper" id="videochat" data-token="<%= @token %>" data-channel="<%= params[:id] %>" data-user="<%= @username %>">

@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return,no-unused-vars,react/destructuring-assignment,react/no-access-state-in-setstate,react/button-has-type */
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import ConfigImage from '../../assets/images/three-dots.svg';
@@ -79,16 +80,11 @@ export default class Chat extends Component {
       channelUsers: [],
       showMemberlist: false,
       memberFilterQuery: null,
-      rerenderIfUnchangedCheck: null
+      rerenderIfUnchangedCheck: null,
     };
     getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if(this.state.rerenderIfUnchangedCheck !== nextState.rerenderIfUnchangedCheck) {
-      return false;
-    }
-  }
   componentDidMount() {
     const {
       chatChannels,
@@ -142,6 +138,14 @@ export default class Chat extends Component {
         .addEventListener('scroll', this.handleChannelScroll);
     }
     getChannelInvites(this.handleChannelInvites, null);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      this.state.rerenderIfUnchangedCheck !== nextState.rerenderIfUnchangedCheck
+    ) {
+      return false;
+    }
   }
 
   componentDidUpdate() {
@@ -342,9 +346,12 @@ export default class Chat extends Component {
   observerCallback = (entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting && this.state.scrolled === true) {
-        this.setState({ scrolled: false, showAlert: false, rerenderIfUnchangedCheck: Math.random() });
+        this.setState({ scrolled: false, showAlert: false });
       } else if (this.state.scrolled === false) {
-        this.setState({ scrolled: true, rerenderIfUnchangedCheck: Math.random() });
+        this.setState({
+          scrolled: true,
+          rerenderIfUnchangedCheck: Math.random(),
+        });
       }
     });
   };
@@ -570,7 +577,7 @@ export default class Chat extends Component {
         message: '/call',
         mentionedUsersId: this.getMentionedUsers(message),
       };
-      this.setState({ videoPath: `/video_chats/${  activeChannelId}` });
+      this.setState({ videoPath: `/video_chats/${activeChannelId}` });
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     } else if (message.startsWith('/new')) {
       this.setActiveContentState(activeChannelId, {
@@ -760,10 +767,11 @@ export default class Chat extends Component {
         });
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
-        this.setState({fullscreenContent: null})
+        this.setState({ fullscreenContent: null });
       } else if (target.dataset.content === 'fullscreen') {
-        const mode = this.state.fullscreenContent === 'sidecar' ? null : 'sidecar'
-        this.setState({fullscreenContent: mode})
+        const mode =
+          this.state.fullscreenContent === 'sidecar' ? null : 'sidecar';
+        this.setState({ fullscreenContent: mode });
       }
     }
     return false;
@@ -961,12 +969,12 @@ export default class Chat extends Component {
 
   toggleSearchShowing = () => {
     if (!this.state.searchShowing) {
-      setTimeout(function(){
-        document.getElementById("chatchannelsearchbar").focus()
-      },100)
+      setTimeout(function () {
+        document.getElementById('chatchannelsearchbar').focus();
+      }, 100);
     }
-    this.setState({searchShowing: !this.state.searchShowing})
-  }
+    this.setState({ searchShowing: !this.state.searchShowing });
+  };
 
   renderChatChannels = () => {
     const { state } = this;
@@ -1017,10 +1025,32 @@ export default class Chat extends Component {
             >
               {'<'}
             </button>
-            {state.searchShowing ? <input placeholder="Search Channels" onKeyUp={this.debouncedChannelFilter} id="chatchannelsearchbar" className="crayons-textfield" /> : ''}
+            {state.searchShowing ? (
+              <input
+                placeholder="Search Channels"
+                onKeyUp={this.debouncedChannelFilter}
+                id="chatchannelsearchbar"
+                className="crayons-textfield"
+              />
+            ) : (
+              ''
+            )}
             {invitesButton}
             <div className="chat__channeltypefilter">
-              <button className="chat__channelssearchtoggle" onClick={this.toggleSearchShowing}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"/></svg></button>
+              <button
+                className="chat__channelssearchtoggle"
+                onClick={this.toggleSearchShowing}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="17"
+                  height="17"
+                >
+                  <path fill="none" d="M0 0h24v24H0z" />
+                  <path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
+                </svg>
+              </button>
               {this.renderChannelFilterButton(
                 'all',
                 'all',
@@ -1088,7 +1118,7 @@ export default class Chat extends Component {
     }
 
     const jumpbackButton = document.getElementById('jumpback_button');
-    
+
     if (this.scroller) {
       const scrolledRatio =
         (this.scroller.scrollTop + this.scroller.clientHeight) /
@@ -1207,7 +1237,7 @@ export default class Chat extends Component {
     );
   };
 
-  onTriggerVideoContent = e => {
+  onTriggerVideoContent = (e) => {
     if (e.target.dataset.content === 'exit') {
       this.setState({ videoPath: null, fullscreenContent: null });
     } else if (this.state.fullscreenContent === 'video') {
@@ -1521,9 +1551,9 @@ export default class Chat extends Component {
     }
     let fullscreenMode = '';
     if (state.fullscreenContent === 'sidecar') {
-      fullscreenMode = 'chat--content-visible-full'
+      fullscreenMode = 'chat--content-visible-full';
     } else if (state.fullscreenContent === 'video') {
-      fullscreenMode = 'chat--video-visible-full'
+      fullscreenMode = 'chat--video-visible-full';
     }
     return (
       <div

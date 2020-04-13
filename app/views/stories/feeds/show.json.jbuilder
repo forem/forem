@@ -24,5 +24,6 @@ json.array!(@stories) do |article|
   end
 
   json.tag_list article.cached_tag_list_array
+  json.top_comments article.top_comments
   json.extract! article, *article_methods_to_include
 end
