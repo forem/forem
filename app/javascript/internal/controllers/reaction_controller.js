@@ -55,11 +55,11 @@ export default class ReactionController extends Controller {
   }
 
   get confirmedStatus() {
-    return this.statusTarget.dataset.status;
+    return this.confirmedTarget.dataset.status;
   }
 
   get reactableType() {
-    return this.statusTarget.dataset.reactable;
+    return this.confirmedTarget.dataset.reactable;
   }
 
   get invalidStatus() {

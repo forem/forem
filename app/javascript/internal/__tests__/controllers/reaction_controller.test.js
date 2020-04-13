@@ -1,5 +1,11 @@
+import fetch from 'jest-fetch-mock';
 import { Application } from 'stimulus';
 import ReactionController from '../../controllers/reaction_controller';
+
+global.fetch = fetch;
+window.alert = jest.fn((e) => {
+  console.log(e);
+});
 
 describe('ReactionController', () => {
   beforeEach(() => {
@@ -33,13 +39,13 @@ describe('ReactionController', () => {
   });
 
   describe('#updateReaction', () => {
+    window.confirm = jest.fn(() => true);
+
     it('removes both the div containing the button clicked, and the hr that follows', () => {
-      const parentDiv = document.querySelector('.container');
       const button = document.querySelectorAll(
         '[data-reaction-id="1"] button',
-      )[1];
+      )[0];
       button.click();
-      console.log(parentDiv.children.length);
     });
   });
 });
