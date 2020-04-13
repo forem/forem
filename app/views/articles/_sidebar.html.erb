@@ -29,13 +29,7 @@
           <h4>Key links</h4>
         </header>
         <div class="widget-body social-icons">
-          <% SiteConfig.social_media_handles.keys.each do |social_media_type| %>
-            <% if SiteConfig.social_media_handles[social_media_type].present? %>
-              <a href="<%= "https://#{social_media_type}.com/#{SiteConfig.social_media_handles[social_media_type]}" %>" target="_blank" rel="noopener">
-                <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: "#{social_media_type.capitalize}", class: "crayons-icon") %>
-              </a>
-            <% end %>
-          <% end %>
+          <%= render partial: "layouts/social_media" %>
         </div>
 
         <div class="side-footer">
