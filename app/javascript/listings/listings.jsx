@@ -122,7 +122,7 @@ export class Listings extends Component {
     }
   };
 
-  selectCategory = (e, cat) => {
+  selectCategory = (e, cat = '') => {
     e.preventDefault();
     const { query, tags } = this.state;
     this.setState({ category: cat, page: 0 });

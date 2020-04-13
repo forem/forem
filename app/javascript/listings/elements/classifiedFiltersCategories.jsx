@@ -8,7 +8,7 @@ const ClassifiedFiltersCategories = ({ categories, category, onClick }) => (
       id="listings-link"
       href="/listings"
       className={category === '' ? 'selected' : ''}
-      onClick={(e) => onClick(e, '')}
+      onClick={onClick}
       data-no-instant
     >
       all
