@@ -505,8 +505,11 @@ export default class Chat extends Component {
   };
 
   handleKeyDown = (e) => {
-    const { showMemberlist } = this.state;
+    const { showMemberlist, activeContent, activeChannelId } = this.state;
     const enterPressed = e.keyCode === 13;
+    const leftPressed = e.keyCode === 37;
+    const rightPressed = e.keyCode === 39;
+    const escPressed = e.keyCode === 27;
     const targetValue = e.target.value;
     const messageIsEmpty = targetValue.length === 0;
     const shiftPressed = e.shiftKey;
@@ -529,6 +532,33 @@ export default class Chat extends Component {
         e.preventDefault();
       }
     }
+    if (leftPressed && activeContent[activeChannelId] && e.target.value === '' && document.getElementById('activecontent-iframe')) {
+      e.preventDefault();
+      try {
+        e.target.value = document.getElementById('activecontent-iframe').contentWindow.location.href
+      } catch(err){
+        e.target.value = activeContent[activeChannelId].path
+      }
+    }
+    if (rightPressed && !activeContent[activeChannelId] && e.target.value === '') {
+      e.preventDefault();
+      const richLinks = document.querySelectorAll(".chatchannels__richlink");
+      if (richLinks.length === 0) {
+        return;
+      }
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: richLinks[richLinks.length - 1].href,
+        type_of: 'article',
+      });
+    }
+    if (escPressed && activeContent[activeChannelId]) {
+      this.setActiveContentState(activeChannelId, null);
+      this.setState({fullscreenContent: null});
+    }
+
   };
 
   handleKeyDownEdit = (e) => {
@@ -786,12 +816,13 @@ export default class Chat extends Component {
         });
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
-        this.setState({fullscreenContent: null})
+        this.setState({fullscreenContent: null});
       } else if (target.dataset.content === 'fullscreen') {
         const mode = this.state.fullscreenContent === 'sidecar' ? null : 'sidecar'
         this.setState({fullscreenContent: mode})
       }
     }
+    document.getElementById('messageform').focus();
     return false;
   };
 
