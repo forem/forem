@@ -93,7 +93,7 @@
 
 .chat__channels--expanded {
   width: 219px;
-  min-width: 183px;
+  min-width: 219px;
 
   @media screen and (min-width: 1000px) {
     width: 200px;
@@ -420,7 +420,13 @@
     border-radius: 5px;
   }
   .activechatchannel__activecontent.activechatchannel__activecontent--video {
-    display: none;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 200px;
+    min-width: 200px;
+    height: 300px;
+    z-index: 250;
   }
 }
 
@@ -981,13 +987,14 @@
 .chatchannels__richlink {
   border: 1px solid darken($light-medium-gray, 15%);
   border-radius: 3px;
-  box-shadow: 3px 3px 0px darken($light-medium-gray, 15%);
+  box-shadow: 2px 2px 0px darken($light-medium-gray, 15%);
   color: $black;
   display: block;
   max-width: 670px;
   padding: 0px;
   margin-bottom: 6px;
   background: var(--card-bg);
+  font-size: 0.9em;
   &.chatchannels__richlink--base {
     h1 {
       margin: 18px auto;
@@ -1006,6 +1013,7 @@
     margin-top: 8px;
     padding: 0px calc(10px + 0.2vw);
     line-height: 1.1em;
+    font-size: 1.8em;
     img {
       height: 1.2em;
       width: 1.2em;
