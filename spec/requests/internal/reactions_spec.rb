@@ -30,12 +30,12 @@ RSpec.describe "/internal/reactions", type: :request do
 
     it "returns HTTP Status 200 upon status update" do
       put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmed" }
-      expect(response).to have_http_status(200)
+      expect(response).to have_http_status(:ok)
     end
 
     it "returns HTTP Status 422 upon status update failure" do
       put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmedsssss" }
-      expect(response).to have_http_status(422)
+      expect(response).to have_http_status(:unprocessable_entity)
     end
 
     it "returns expected JSON upon status update" do

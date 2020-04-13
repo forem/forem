@@ -1,4 +1,6 @@
 class ResponseTemplate < ApplicationRecord
+  resourcify
+
   belongs_to :user, optional: true
 
   UNIQUENESS_SCOPE = %i[user_id type_of content_type].freeze
