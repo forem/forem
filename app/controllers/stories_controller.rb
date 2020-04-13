@@ -355,6 +355,11 @@ class StoriesController < ApplicationController
       ],
       "alumniOf": ""
     }
+    user_profile_details_json_ld
+    user_same_as_json_ld
+  end
+
+  def user_profile_details_json_ld
     @user_json_ld["disambiguatingDescription"]&.append(@user.mostly_work_with) if @user.mostly_work_with.present?
     @user_json_ld["disambiguatingDescription"]&.append(@user.currently_hacking_on) if @user.currently_hacking_on.present?
     @user_json_ld["disambiguatingDescription"]&.append(@user.currently_learning) if @user.currently_learning.present?
@@ -365,10 +370,9 @@ class StoriesController < ApplicationController
     @user_json_ld["jobTitle"]&.append(@user.employment_title) if @user.employment_title.present?
     @user_json_ld["sameAs"]&.append(@user.twitter_username) if @user.twitter_username.present?
     @user_json_ld["sameAs"]&.append(@user.github_username) if @user.github_username.present?
-    user_same_as
   end
 
-  def user_same_as
+  def user_same_as_json_ld
     @user_json_ld["sameAs"]&.append(@user.mastodon_url) if @user.mastodon_url.present?
     @user_json_ld["sameAs"]&.append(@user.facebook_url) if @user.facebook_url.present?
     @user_json_ld["sameAs"]&.append(@user.linkedin_url) if @user.linkedin_url.present?
