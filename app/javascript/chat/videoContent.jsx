@@ -20,9 +20,9 @@ export default class VideoContent extends Component {
           <svg data-content="exit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path data-content="exit" fill="none" d="M0 0h24v24H0z"/><path data-content="exit" d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"/></svg>
         </button>
         <button
-          className="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
+          className="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
           data-content="fullscreen"
-          style={{left: "36px"}}
+          style={{left: "39px"}}
         >
           {fullScreenIcon}
         </button>

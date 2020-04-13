@@ -29,11 +29,11 @@ exports[`<Content /> as loading-user should render and test snapshot 1`] = `
     </svg>
   </button>
   <button
-    class="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
+    class="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
     data-content="fullscreen"
     style={
       Object {
-        "left": "36px",
+        "left": "39px",
       }
     }
   >
