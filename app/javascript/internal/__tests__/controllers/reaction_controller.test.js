@@ -42,10 +42,14 @@ describe('ReactionController', () => {
     window.confirm = jest.fn(() => true);
 
     it('removes both the div containing the button clicked, and the hr that follows', () => {
+      const parentDiv = document.querySelector('.container');
       const button = document.querySelectorAll(
         '[data-reaction-id="1"] button',
       )[0];
+
       button.click();
+
+      expect(parentDiv.children.length).toBe(2);
     });
   });
 });
