@@ -57,20 +57,6 @@
     "author": {
       "@context": "http://schema.org",
       "@type": "Person",
-      <% if @organization.present? %>
-        "organization": {
-          "@context": "http://schema.org",
-          "@type": "Organization",
-          "name": "<%= @organization.name %>",
-          "url": "<%= app_url(organization.path) %>",
-          "logo": {
-            "@context": "http://schema.org",
-            "@type": "ImageObject",
-            "url": "<%= ProfileImage.new(@organization).get(width: 50) %>",
-            "width": "50"
-          },
-        }
-      <% end %>
       "url": "<%= user_url(@user) %>",
       "name": "<%= @user.name %>"
     },
