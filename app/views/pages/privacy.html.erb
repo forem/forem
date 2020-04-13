@@ -104,11 +104,18 @@
     <p><strong>Payment processing</strong>
       <br>
       <%= community_name %> does not process payments directly — we rely on third-party services such as Stripe, Shopify, and Paypal to receive payments and store any payment information.
-      <a href="https://shop.dev.to">The <%= community_name %> Shop</a> is run through Shopify, a third-party e-commerce platform with their own Privacy Policy.
+      <a href="<%= SiteConfig.shop_url %>">The <%= community_name %> Shop</a> is run through Shopify, a third-party e-commerce platform with their own Privacy Policy.
     </p>
     <p><strong>Third-Party Embeds</strong>
       <br>
-      Some of the content that you see displayed on <%= community_name %> is not hosted by <%= community_name %>. These “embeds” are hosted by a third-party and embedded in <%= community_name %>. For example: YouTube videos, Codepens, Twitter tweets, or GitHub code that appear within a <%= community_name %> post. These files send data to the hosted site just as if you were visiting that site directly (for example, when you load a <%= community_name %> post page with a YouTube video embedded in it, YouTube receives data about your activity). <%= community_name %> does not control what data third parties collect in cases like this, or what they will do with it. Third-party embeds on <%= community_name %> are not covered by this privacy policy; they are covered by the privacy policy of the third-party service. Be mindful when interacting with these services.
+      Some of the content that you see displayed on <%= community_name %> is not hosted by <%= community_name %>. These
+      “embeds” are hosted by a third-party and embedded in <%= community_name %>. For example: YouTube videos, Codepens,
+      Twitter tweets, or GitHub code that appear within a <%= community_name %> post. These files send data to the hosted
+      site just as if you were visiting that site directly (for example, when you load a <%= community_name %> post page with
+      a YouTube video embedded in it, YouTube receives data about your activity). <%= community_name %> does not control what
+      data third parties collect in cases like this, or what they will do with it. Third-party embeds on <%= community_name %>
+       are not covered by this privacy policy; they are covered by the privacy policy of the third-party service. Be mindful
+       when interacting with these services.
     </p>
     <p><strong>Facebook (visitor action pixel)</strong>
       <br>
@@ -123,7 +130,14 @@
       We use browser cookies and similar technologies to recognize you when you return to our Services. Third-party vendors may also use cookies for various reasons.
       <br>
       <br>
-      <%= community_name %> uses a specific cookie in order to facilitate the use of Google Universal Analytics for users logged-in to the Applications or the Platforms (“Logged-In User). If you are a Logged-In User, <%= community_name %> may use your <%= community_name %> user ID in combination with Google Universal Analytics and Google Analytics to track and analyze the pages of the Services you visit. We do this only to better understand how you use the Website and the other Services, with a view to offering improvements for all <%= community_name %> users; and to tailor our business and marketing activities accordingly, both generally and specifically to you. Google Analytics cookies do not provide <%= community_name %> with any Personal Information.You can prevent Google Analytics from recognizing you on return visits to this site by disabling cookies on your browser.
+      <%= community_name %> uses a specific cookie in order to facilitate the use of Google Universal Analytics for users
+      logged-in to the Applications or the Platforms (“Logged-In User). If you are a Logged-In User, <%= community_name %>
+      may use your <%= community_name %> user ID in combination with Google Universal Analytics and Google Analytics to track
+      and analyze the pages of the Services you visit. We do this only to better understand how you use the Website and the
+      other Services, with a view to offering improvements for all <%= community_name %> users; and to tailor our business
+      and marketing activities accordingly, both generally and specifically to you. Google Analytics cookies do not provide
+      <%= community_name %> with any Personal Information.You can prevent Google Analytics from recognizing you on return
+      visits to this site by disabling cookies on your browser.
       <br>
       <br>
       You may opt-out of this feature by installing the Google Analytics Opt-out Browser Add-on, by setting your web browser to refuse cookies, or by setting your browser to alert you when cookies are being sent. If you do so, note that some parts of the Site may not function properly.

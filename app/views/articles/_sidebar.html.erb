@@ -32,7 +32,7 @@
           <% SiteConfig.social_media_handles.keys.each do |social_media_type| %>
             <% if SiteConfig.social_media_handles[social_media_type].present? %>
               <a href="<%= "https://#{social_media_type}.com/#{SiteConfig.social_media_handles[social_media_type]}" %>" target="_blank" rel="noopener">
-                <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: "#{social_media_type.capitalize}", class: "crayons-icon") %>
+                <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: social_media_type.capitalize.to_s, class: "crayons-icon") %>
               </a>
             <% end %>
           <% end %>
@@ -41,7 +41,7 @@
         <div class="side-footer">
           <a href="/about">About</a>
           <a href="/sponsors">Sponsors</a>
-          <a href="https://shop.dev.to/"><%= ApplicationConfig["COMMUNITY_NAME"] %> Shop</a>
+          <a href="<%= SiteConfig.shop_url %>"><%= ApplicationConfig["COMMUNITY_NAME"] %> Shop</a>
           <a href="/privacy">Privacy Policy</a>
           <a href="/terms">Terms of Use</a>
           <a href="/contact">Contact</a>
