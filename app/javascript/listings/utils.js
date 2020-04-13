@@ -54,6 +54,7 @@ export function resizeAllMasonryItems() {
 }
 
 export function getQueryParams() {
+  console.log('document here', document.location.search);
   let queryString = document.location.search;
   queryString = queryString.split('+').join(' ');
 
