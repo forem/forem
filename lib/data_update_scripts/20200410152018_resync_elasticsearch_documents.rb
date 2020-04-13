@@ -23,7 +23,7 @@ module DataUpdateScripts
 
     # This is essentially doing a "find_each" in Elasticsearch by scrolling through
     # all of the documents and collecting their IDs. Then we remove the mismatched Postgres ones
-    def sync_docs(mysql_ids, doc_type)
+    def sync_docs(db_ids, doc_type)
       es_ids = []
       response = Search::Client.search(
         index: search_class(doc_type)::INDEX_ALIAS, scroll: "2m", body: search_body(doc_type), size: 3000,
@@ -39,16 +39,16 @@ module DataUpdateScripts
         response = Search::Client.scroll(body: { scroll_id: response["_scroll_id"] }, scroll: "2m")
       end
 
-      remove_ids(mysql_ids, es_ids, doc_type)
+      remove_ids(db_ids, es_ids, doc_type)
     end
 
-    def ids_to_remove(mysql_ids, es_ids, doc_type)
-      dif = es_ids - mysql_ids
+    def ids_to_remove(db_ids, es_ids, doc_type)
+      dif = es_ids - db_ids
       doc_type == "User" ? dif : dif.map { |id| "#{doc_type.downcase}_#{id}" }
     end
 
-    def remove_ids(mysql_ids, es_ids, doc_type)
-      dif_ids = ids_to_remove(mysql_ids, es_ids, doc_type)
+    def remove_ids(db_ids, es_ids, doc_type)
+      dif_ids = ids_to_remove(db_ids, es_ids, doc_type)
       index_name = search_class(doc_type)::INDEX_ALIAS
       dif_ids.map do |id|
         Search::Client.delete(id: id, index: index_name)
