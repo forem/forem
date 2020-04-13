@@ -543,6 +543,9 @@ export default class Chat extends Component {
     if (rightPressed && !activeContent[activeChannelId] && e.target.value === '') {
       e.preventDefault();
       const richLinks = document.querySelectorAll(".chatchannels__richlink");
+      if (richLinks.length === 0) {
+        return;
+      }
       this.setActiveContentState(activeChannelId, {
         type_of: 'loading-post',
       });
