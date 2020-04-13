@@ -399,6 +399,14 @@ a.header-link {
         text-align: left;
         padding: 12px;
         font-weight: bold;
+        svg {
+          width: 20px;
+          height: 20px;
+          position: relative;
+          top: 4px;
+          left: 3px;
+          @include themeable(fill, link-branded-color, #3b49df)
+        }
       }
     }
     .article-comment-form-preamble {

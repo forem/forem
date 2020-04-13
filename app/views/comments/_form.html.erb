@@ -41,7 +41,10 @@
         <div class="moderator-responses-container hidden">
           <%# filled by JS %>
         </div>
-        <a target="_blank" rel="noopener nofollow" href="<%= user_settings_path(tab: "response-templates") %>" class="mod-response-create-new">Create new template</a>
+        <a target="_blank" rel="noopener nofollow" href="<%= user_settings_path(tab: "response-templates") %>" class="mod-response-create-new">
+          Create new template
+          <%= inline_svg_tag("external-link-logo.svg", aria: true) %>
+        </a>
     </div>
     <%= f.text_area :body_markdown,
                     placeholder: "Add to the discussion",
