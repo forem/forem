@@ -1,7 +1,7 @@
 class UserOptionalField < ApplicationRecord
   belongs_to :user
 
-  validates :field, presence: true, length: { maximum: 30 }
+  validates :label, presence: true, length: { maximum: 30 }
   validates :value, presence: true, length: { maximum: 128 }
   validate :validate_quota
 

@@ -61,7 +61,7 @@ RSpec.describe User, type: :model do
 
       it "has at most three optional fields" do
         expect(user_with_user_optional_fields).to have_many(:user_optional_fields).dependent(:destroy)
-        fourth_field = user_with_user_optional_fields.user_optional_fields.create(field: "some field", value: "some value")
+        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field", value: "some value")
         expect(fourth_field).not_to be_valid
       end
 

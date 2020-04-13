@@ -136,8 +136,8 @@ FactoryBot.define do
     trait :with_user_optional_fields do
       after(:create) do |user|
         create(:user_optional_field, user: user)
-        create(:user_optional_field, user: user, field: "another field1", value: "another value1")
-        create(:user_optional_field, user: user, field: "another field2", value: "another value2")
+        create(:user_optional_field, user: user, label: "another field1", value: "another value1")
+        create(:user_optional_field, user: user, label: "another field2", value: "another value2")
       end
     end
   end

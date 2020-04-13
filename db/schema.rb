@@ -691,15 +691,6 @@ ActiveRecord::Schema.define(version: 2020_04_12_194408) do
     t.index ["uid"], name: "index_oauth_applications_on_uid", unique: true
   end
 
-  create_table "user_optional_fields", force: :cascade do |t|
-    t.string "field"
-    t.string "value"
-    t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
-  end
-
   create_table "organization_memberships", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "organization_id", null: false
@@ -1092,6 +1083,15 @@ ActiveRecord::Schema.define(version: 2020_04_12_194408) do
     t.bigint "user_id"
     t.index ["data"], name: "index_user_counters_on_data", using: :gin
     t.index ["user_id"], name: "index_user_counters_on_user_id", unique: true
+  end
+
+  create_table "user_optional_fields", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "label"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.string "value"
+    t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
