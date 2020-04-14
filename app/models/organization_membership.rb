@@ -22,7 +22,7 @@ class OrganizationMembership < ApplicationRecord
     return if type_of_user == "guest"
 
     role = type_of_user == "admin" ? "mod" : "member"
-    name = "@#{organization.slug} private chat"
+    name = "@#{organization.slug} private group chat"
     channel = ChatChannel.find_by(channel_name: name)
     if channel
       add_chat_channel_membership(user, channel, role)

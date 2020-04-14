@@ -47,15 +47,19 @@
           </div>
         <% end %>
       </div>
-      <%= form_for ChatChannelMembership.new do |f| %>
-        <div class="field">
-          <%= f.hidden_field :chat_channel_id, value: @channel.id %>
-          <%= f.label "Usernames to Invite" %>
-          <%= f.text_field :invitation_usernames, placeholder: "Comma separated" %>
-        </div>
-        <div class="field">
-          <%= f.submit "SUBMIT", class: "cta" %>
-        </div>
+      <% if @channel.private_org_channel? %>
+        <p><em>Invite new members by <a href="/settings/organization">inviting them to this organization.</a></em></p>
+      <% else %>
+        <%= form_for ChatChannelMembership.new do |f| %>
+          <div class="field">
+            <%= f.hidden_field :chat_channel_id, value: @channel.id %>
+            <%= f.label "Usernames to Invite" %>
+            <%= f.text_field :invitation_usernames, placeholder: "Comma separated" %>
+          </div>
+          <div class="field">
+            <%= f.submit "SUBMIT", class: "cta" %>
+          </div>
+        <% end %>
       <% end %>
     <% end %>
     <% if @membership.role == "mod" %>
