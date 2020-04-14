@@ -7,6 +7,8 @@ module Authentication
       # name of the field to store the upstream identity's username in
       USERNAME_FIELD = "".freeze
 
+      delegate :email, :nickname, to: :info, prefix: :user
+
       def initialize(auth_payload)
         @auth_payload = cleanup_payload(auth_payload.dup)
         @info = auth_payload.info
@@ -37,14 +39,6 @@ module Authentication
 
       def user_username_field
         self.class::USERNAME_FIELD
-      end
-
-      def user_email
-        info.email
-      end
-
-      def user_nickname
-        info.nickname
       end
 
       protected
