@@ -1,8 +1,8 @@
 module FastlyVCL
   # Handles updates to our VCL snippet on Fastly that whitelists params
   class WhitelistedParams
-    VCL_REGEX_START = "^(".freeze
-    VCL_REGEX_END = ")$".freeze
+    VCL_DELIMITER_START = "^(".freeze
+    VCL_DELIMITER_END = ")$".freeze
     FILE_PARAMS = YAML.load_file("config/fastly/whitelisted_params.yml").sort.freeze
 
     class << self
@@ -34,18 +34,18 @@ module FastlyVCL
       private
 
       def params_to_array(snippet_content)
-        snippet_suffix = snippet_content.split(VCL_REGEX_START).last
-        fastly_params = snippet_suffix.split(VCL_REGEX_END).first
+        snippet_suffix = snippet_content.split(VCL_DELIMITER_START).last
+        fastly_params = snippet_suffix.split(VCL_DELIMITER_END).first
 
         fastly_params.split("|").sort
       end
 
       def build_content(new_params, snippet_content)
         new_params = new_params.join("|")
-        snippet_prefix = snippet_content.split(VCL_REGEX_START).first
-        snippet_suffix = snippet_content.split(VCL_REGEX_END).last
+        snippet_prefix = snippet_content.split(VCL_DELIMITER_START).first
+        snippet_suffix = snippet_content.split(VCL_DELIMITER_END).last
 
-        snippet_prefix + VCL_REGEX_START + new_params + VCL_REGEX_END + snippet_suffix
+        snippet_prefix + VCL_DELIMITER_START + new_params + VCL_DELIMITER_END + snippet_suffix
       end
 
       def params_outdated?(snippet_content)

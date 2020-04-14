@@ -6,7 +6,7 @@ RSpec.describe FastlyVCL::WhitelistedParams, type: :service do
   let(:fastly_version) { instance_double(Fastly::Version) }
   let(:fastly_snippet) { instance_double(Fastly::Snippet) }
   let(:file_params) { YAML.load_file("config/fastly/whitelisted_params.yml").sort }
-  let(:snippet_content) { described_class::VCL_REGEX_START + file_params.join("|") + described_class::VCL_REGEX_END }
+  let(:snippet_content) { described_class::VCL_DELIMITER_START + file_params.join("|") + described_class::VCL_DELIMITER_END }
 
   # Fastly isn't setup for test or development environments so we have to stub
   # quite a bit here to simulate Fastly working ¯\_(ツ)_/¯
