@@ -5,8 +5,8 @@ RSpec.describe "Reactions", type: :request do
   let(:article) { create(:article, user: user) }
   let(:comment) { create(:comment, commentable: article) }
 
-  let_it_be(:max_age) { FastlyRails.configuration.max_age }
-  let_it_be(:stale_if_error) { FastlyRails.configuration.stale_if_error }
+  let_it_be(:max_age) { 1.day.to_i }
+  let_it_be(:stale_if_error) { 26_400 }
 
   describe "GET /reactions?article_id=:article_id" do
     before do
