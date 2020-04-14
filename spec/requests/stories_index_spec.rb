@@ -22,7 +22,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
     it "renders page with proper sidebar" do
       get "/"
-      expect(response.body).to include("<h4>Key links</h4>")
+      expect(response.body).to include("Reading list")
     end
 
     it "renders left display_ads when published and approved" do

@@ -10,16 +10,24 @@
   <% end %>
 
   <nav class="px-1">
+    <% unless user_signed_in? %>
+      <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block fw-bold">
+        <%= inline_svg_tag("twemoji/handshake.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sign In/Up") %>
+        Sign In/Up
+      </a>
+    <% end %>
     <% if false # Let's bring it when ready %>
       <a href="/" class="crayons-link crayons-link--block">
         <%= inline_svg_tag("twemoji/house.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Home") %>
         Home
       </a>
     <% end %>
-    <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
-      Reading list <span id="reading-list-count" class="crayons-indicator"></span>
-    </a>
+    <% if user_signed_in? %>
+      <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
+        <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
+        Reading list <span id="reading-list-count" class="crayons-indicator"></span>
+      </a>
+    <% end %>
     <a href="<%= classified_listings_path %>" class="crayons-link crayons-link--block">
       <%= inline_svg_tag("twemoji/listing.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Listings") %>
       Listings
@@ -84,13 +92,20 @@
     </div>
   </nav>
 
-  <% if user_signed_in? %>
     <div class="widget sidebar-nav-block sidebar-tag-block">
-      <header>My Tags</header>
       <div class="sidebar-nav-block-inner">
-        <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
+        <% if user_signed_in? %>
+          <header>My Tags</header>
+          <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
+        <% end %>
         <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
-          <header id="tag-separator">Other Popular Tags</header>
+          <header id="tag-separator">
+            <% if user_signed_in? %>
+              Other Popular Tags
+            <% else %>
+              Design Your Experience
+            <% end %>
+          </header>
           <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
             <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
               <a class="sidebar-nav-link sidebar-nav-link-tag" href="<%= tag_path(tag_array.second) %>">
@@ -108,5 +123,4 @@
         </div>
       </div>
     </div>
-  <% end %>
 </div>
