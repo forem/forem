@@ -1,13 +1,12 @@
 import { h, Component } from 'preact';
 import debounceAction from '../src/utils/debounceAction';
 import { fetchSearch } from '../src/utils/search';
-import ClearQueryButton from './elements/clearQueryButton';
 import ModalBackground from './elements/modalBackground';
 import Modal from './elements/modal';
 import AllListings from './elements/allListings';
-import SelectedTags from './elements/selectedTags';
 import NextPageButton from './elements/nextPageButton';
 import ClassifiedFiltersCategories from './elements/classifiedFiltersCategories';
+import ClassifiedFiltersTags from './elements/classifiedFiltersTags';
 import { LISTING_PAGE_SIZE, updateListings, getQueryParams } from './utils';
 
 function resizeMasonryItem(item) {
@@ -330,7 +329,6 @@ export class Listings extends Component {
     } = this.state;
 
     const shouldRenderModal = openedListing != null && undefined;
-    const shouldRenderClearQueryButton = query.length > 0;
 
     if (initialFetch) {
       this.triggerMasonry();
@@ -346,24 +344,15 @@ export class Listings extends Component {
             category={category}
             onClick={this.selectCategory}
           />
-          <div className="classified-filters-tags" id="classified-filters-tags">
-            <input
-              type="text"
-              placeholder="search"
-              id="listings-search"
-              autoComplete="off"
-              defaultValue={message}
-              onKeyUp={this.debouncedClassifiedListingSearch}
-            />
-            {shouldRenderClearQueryButton && (
-              <ClearQueryButton onClick={this.clearQuery} />
-            )}
-            <SelectedTags
-              tags={tags}
-              onClick={this.removeTag}
-              onKeyPress={this.handleKeyPressedOnSelectedTags}
-            />
-          </div>
+          <ClassifiedFiltersTags
+            message={message}
+            onKeyUp={this.debouncedClassifiedListingSearch}
+            onClearQuery={this.clearQuery}
+            onRemoveTag={this.removeTag}
+            tags={tags}
+            onKeyPress={this.handleKeyPressedOnSelectedTags}
+            query={query}
+          />
         </div>
         <AllListings
           listings={listings}
