@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import { articlePropTypes } from '../src/components/common-prop-types/article-prop-types';
 import {
   CommentsCount,
-  CommentsList,
   Cover,
   ContentTitle,
   Meta,
-  OverflowNavigation,
   SaveButton,
   SearchSnippet,
   TagList,
@@ -18,7 +16,6 @@ import { PodcastArticle } from './PodcastArticle';
 
 export const Article = ({
   article,
-  currentTag,
   isFeatured,
   isBookmarked,
   bookmarkClick,
@@ -44,7 +41,6 @@ export const Article = ({
       <div className="crayons-story__body">
         <div className="crayons-story__top">
           <Meta article={article} organization={article.organization} />
-          <OverflowNavigation />
         </div>
 
         <div className="crayons-story__indention">
@@ -75,21 +71,17 @@ export const Article = ({
           </div>
         </div>
       </div>
-
-      {/* <CommentsList /> */}
     </div>
   );
 };
 
 Article.defaultProps = {
-  currentTag: null,
   isBookmarked: false,
   isFeatured: false,
 };
 
 Article.propTypes = {
   article: articlePropTypes.isRequired,
-  currentTag: PropTypes.string,
   isBookmarked: PropTypes.bool,
   isFeatured: PropTypes.bool,
   bookmarkClick: PropTypes.func.isRequired,
