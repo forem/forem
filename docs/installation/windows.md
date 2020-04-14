@@ -144,11 +144,10 @@ WSL.
 
 ### Elasticsearch
 
-DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
-supported. We recommend version 7.5.2.
+DEV requires Elasticsearch 7+. We recommend version 7.6.
 
 We recommend following the install guide
-[in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/zip-windows.html)
+[in Elasticsearch's docs](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/zip-windows.html)
 for installing on Windows machines.
 
 NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.

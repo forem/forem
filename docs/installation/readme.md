@@ -1,8 +1,8 @@
 ---
 items:
-  - mac.md
-  - windows.md
+  - macos.md
   - linux.md
+  - windows.md
   - docker.md
   - gitpod.md
   - postgresql.md

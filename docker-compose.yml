@@ -46,7 +46,7 @@ services:
     ports:
       - "6379:6379"
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
     container_name: elasticsearch
     environment:
       - cluster.name=docker-cluster

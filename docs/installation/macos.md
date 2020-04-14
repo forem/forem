@@ -60,16 +60,35 @@ redis-cli ping
 
 ### Elasticsearch
 
-DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
-supported. We recommend version 7.5.2.
+DEV requires Elasticsearch 7+. We recommend version 7.6.
 
 You have the option of installing Elasticsearch with Homebrew or through an
-archive. We recommend installing from archive on Mac.
+archive. We recommend installing from Homebrew as it will be kept up to date
+automatically.
+
+### Installing Elasticsearch with Homebrew
+
+The following directions were
+[taken from the Elasticsearch docs themselves](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/brew.html),
+so check those out if you run into any issues or want further information. Make
+sure to download **the OSS version** of Elasticsearch, `elasticsearch-oss`.
+
+```shell
+brew tap elastic/tap
+brew install elasticsearch-oss
+```
+
+After installation you can manually test if the Elasticsearch server starts by
+issuing the command `elasticsearch` in the shell. You can then start the server
+as a service with `brew services start elasticsearch-oss`.
+
+You can find further info on your local Elasticsearch installation by typing
+`brew info elastic/tap/elasticsearch-oss`.
 
 ### Installing Elasticsearch from the archive
 
 The following directions were
-[taken from the Elasticsearch docs themselves](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-macos),
+[taken from the Elasticsearch docs themselves](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/targz.html#install-macos),
 so check those out if you run into any issues or want further information. Make
 sure to download **the OSS version** of Elasticsearch, `elasticsearch-oss`.
 
@@ -77,16 +96,16 @@ Please note that you will need `wget` in order to proceed with this installation
 (`brew install wget`).
 
 ```shell
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz.sha512
-shasum -a 512 -c elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz.sha512
-tar -xzf elasticsearch-oss-7.5.2-darwin-x86_64.tar.gz
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.6.2-darwin-x86_64.tar.gz
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-oss-7.6.2-darwin-x86_64.tar.gz.sha512
+shasum -a 512 -c elasticsearch-oss-7.6.2-darwin-x86_64.tar.gz.sha512
+tar -xzf elasticsearch-oss-7.6.2-darwin-x86_64.tar.gz
 ```
 
 To start elasticsearch, make sure you are in the correct directory:
 
 ```shell
-cd elasticsearch-7.5.2
+cd elasticsearch-7.6.2
 ```
 
 You can then start it by running:
@@ -100,25 +119,6 @@ To start elasticsearch as a daemonized process:
 ```shell
 ./bin/elasticsearch -d
 ```
-
-### Installing Elasticsearch with Homebrew
-
-As the default version of the Homebrew formula points to Elasticsearch 7.6, we
-need to retrieve the correct revision of the formula to make sure we install the
-latest supported version: 7.5.2.
-
-```shell
-brew tap elastic/tap
-brew install https://raw.githubusercontent.com/elastic/homebrew-tap/bed8bc6b03213c2c1a7df6e4b9f928e7082fae46/Formula/elasticsearch-oss.rb
-brew pin elasticsearch-oss
-```
-
-After installation you can manually test if the Elasticsearch server starts by
-issuing the command `elasticsearch` in the shell. You can then start the server
-as a service with `brew services start elasticsearch-oss`.
-
-You can find further info on your local Elasticsearch installation by typing
-`brew info elastic/tap/elasticsearch-oss`.
 
 #### Troubleshooting startup issues
 
@@ -178,13 +178,13 @@ your local Elasticsearch installation, for example:
   "cluster_name": "elasticsearch_...",
   "cluster_uuid": "...",
   "version": {
-    "number": "7.5.2",
+    "number": "7.6.2",
     "build_flavor": "oss",
     "build_type": "tar",
-    "build_hash": "8bec50e1e0ad29dad5653712cf3bb580cd1afcdf",
-    "build_date": "2020-01-15T12:11:52.313576Z",
+    "build_hash": "ef48eb35cf30adf4db14086e8aabd07ef6fb113f",
+    "build_date": "2020-03-26T06:34:37.794943Z",
     "build_snapshot": false,
-    "lucene_version": "8.3.0",
+    "lucene_version": "8.4.0",
     "minimum_wire_compatibility_version": "6.8.0",
     "minimum_index_compatibility_version": "6.0.0-beta1"
   },

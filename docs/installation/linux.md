@@ -67,16 +67,15 @@ We recommend following Digital Ocean's extensive
 
 ### Elasticsearch
 
-DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
-supported. We recommend version 7.5.2.
+DEV requires Elasticsearch 7+. We recommend version 7.6.
 
 We recommend following
-[Elasticsearch's guide for installing on Linux](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux).
+[Elasticsearch's guide for installing on Linux](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/targz.html#install-linux).
 
 Elasticsearch is also available as as
-[Debian package](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/deb.html)
+[Debian package](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/deb.html)
 or a
-[RPM package](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/rpm.html).
+[RPM package](https://www.elastic.co/guide/en/elasticsearch/reference/7.6/rpm.html).
 
 NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
