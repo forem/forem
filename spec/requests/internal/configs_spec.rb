@@ -245,9 +245,20 @@ RSpec.describe "/internal/config", type: :request do
       end
 
       describe "Shop" do
+        it "rejects update to shop_url without proper confirmation" do
+          expected_shop_url = "https://qshop.dev.to"
+          expect { post "/internal/config", params: { site_config: { shop_url: expected_shop_url }, confirmation: "Incorrect confirmation" } }.to raise_error Pundit::NotAuthorizedError
+          expect(SiteConfig.shop_url).not_to eq(expected_shop_url)
+          get "/"
+          expect(response.body).to include("https://shop.dev.to")
+        end
+
         it "updates shop url" do
-          post "/internal/config", params: { site_config: { shop_url: "https://qshop.dev.to" }, confirmation: confirmation_message }
-          expect(SiteConfig.shop_url).to eq("https://qshop.dev.to")
+          expected_shop_url = "https://qshop.dev.to"
+          post "/internal/config", params: { site_config: { shop_url: expected_shop_url }, confirmation: confirmation_message }
+          expect(SiteConfig.shop_url).to eq(expected_shop_url)
+          get "/"
+          expect(response.body).to include(expected_shop_url)
         end
       end
 
