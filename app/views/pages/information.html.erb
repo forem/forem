@@ -49,7 +49,9 @@
     <ul class="key-links">
       <li><a href="/">Home</a></li>
       <li><a href="/about">About</a></li>
-      <li><a href="<%= SiteConfig.shop_url %>"><%= community_name %> Shop</a></li>
+      <% if SiteConfig.shop_url.present? %>
+        <li><a href="<%= SiteConfig.shop_url %>"><%= community_name %> Shop</a></li>
+      <% end %>
       <li><a href="/sponsors">Sponsors</a></li>
       <li><a href="/faq">FAQ</a></li>
       <li><a href="/privacy">Privacy Policy</a></li>

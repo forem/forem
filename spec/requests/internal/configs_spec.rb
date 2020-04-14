@@ -251,6 +251,15 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.shop_url).not_to eq(expected_shop_url)
           get "/"
           expect(response.body).to include("https://shop.dev.to")
+          expect(response.body).to include("DEV(local) Shop")
+        end
+
+        it "sets shop_url to nil" do
+          post "/internal/config", params: { site_config: { shop_url: "" }, confirmation: confirmation_message }
+          expect(SiteConfig.shop_url).to eq("")
+          get "/"
+          expect(response.body).not_to include("https://shop.dev.to")
+          expect(response.body).not_to include("DEV(local) Shop")
         end
 
         it "updates shop url" do
@@ -259,6 +268,7 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.shop_url).to eq(expected_shop_url)
           get "/"
           expect(response.body).to include(expected_shop_url)
+          expect(response.body).to include("DEV(local) Shop")
         end
       end
 
