@@ -118,6 +118,60 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="crayons-story">
+    <a href="#" class="crayons-story__cover">
+      <img src="<%= asset_path('shecoded-background.jpg') %>" class="crayons-story__cover__image" alt="">
+    </a>
+    <div class="crayons-story__body">
+      <div class="crayons-story__top">
+        <div class="crayons-story__meta">
+          <div class="crayons-story__author-pic">
+            <a href="#" class="crayons-avatar crayons-avatar--l"><img src="<%= asset_path("ben.jpg") %>" class="crayons-avatar__image" alt="Ben" /></a>
+          </div>
+
+          <div>
+            <p>
+              <a href="#" class="crayons-story__secondary fw-bold">Ryan Westlund</a> 
+            </p>
+            <a href="#" class="crayons-story__tertiary">Posted 2h ago</a>
+          </div>
+        </div>
+
+        <button class="crayons-btn crayons-btn--ghost crayons-story__overflow">
+          <%= inline_svg_tag("overflow-horizontal.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "More") %>
+        </button>
+      </div>
+      <div class="crayons-story__indention">
+        <h2 class="crayons-story__title"><a href="#">My review of the Responsive Web Design Certificate from Free Code Camp</a></h2>
+
+        <div class="crayons-story__tags">
+          <a href="#" class="crayons-tag" style="background: #FF3565; color: #ffffff;"><span class="crayons-tag__prefix">#</span>testing</a>
+          <a href="#" class="crayons-tag"><span class="crayons-tag__prefix">#</span>codenewbie</a>
+          <a href="#" class="crayons-tag"><span class="crayons-tag__prefix">#</span>codepen</a>
+        </div>
+
+        <div class="crayons-story__bottom">
+          <div class="crayons-story__details">
+            <a href="#" class="crayons-story__details__item">
+              <%= inline_svg_tag("small-heart.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Save") %>
+              11<span class="hidden s:inline">&nbsp;reactions</span>
+            </a>
+
+            <a href="#" class="crayons-story__details__item">
+              <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Save") %>
+              7<span class="hidden s:inline">&nbsp;comments</>
+            </a>
+          </div>
+
+          <button class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s">
+            <%= inline_svg_tag("small-save.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Save") %>
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
 
     <div class="crayons-story__comments">
       <p class="crayons-story__comments__headline">Top comments:</p>
