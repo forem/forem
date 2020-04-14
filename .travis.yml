@@ -21,6 +21,7 @@ env:
     - RAILS_ENV=test
     - CC_TEST_REPORTER_ID=f39e060a8b1a558ebd8aff75d5b9760bf1ae98f3f85d628ae28814f3c66438cd
     - DATABASE_URL=postgres://postgres@localhost/
+    - CI_NODE_TOTAL=2
     # Dummy values needed to verify the app boots via "rails runner"
     - APP_PROTOCOL=http://
     - APP_DOMAIN=localhost:3000
@@ -30,6 +31,14 @@ env:
     - SENDGRID_PASSWORD_ACCEL=dummy
     - HEROKU_APP_URL=practicaldev.herokuapp.com
     - SECRET_KEY_BASE=dummydummydummy
+jobs:
+  include:
+    - env:
+      - RSPEC_TAG="~type:system"
+      - CI_NODE_INDEX=0
+    - env:
+      - RSPEC_TAG="type:system"
+      - CI_NODE_INDEX=1
 branches:
   only:
     - master
@@ -44,8 +53,10 @@ before_install:
   - echo -e '-XX:+DisableExplicitGC\n-Djdk.io.permissionsUseCanonicalPath=true\n-Dlog4j.skipJansi=true\n-server\n' | sudo tee -a /etc/elasticsearch/jvm.options
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
 install:
-  - bundle install --path vendor/bundle
+  - bundle install --jobs=3 --retry=3 --path vendor/bundle
   - yarn install
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
     > ./cc-test-reporter
@@ -56,16 +67,15 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'bundle exec rspec spec --color --tty'
+  - 'bundle exec rspec spec --color --tty --tag ${RSPEC_TAG}'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
-  - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
   - 'yarn test --colors'
-  - './cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json'
-  - './cc-test-reporter sum-coverage coverage/codeclimate.*.json'
-  - './cc-test-reporter upload-coverage'
   - 'bundle exec bundle-audit check --update --ignore CVE-2015-9284'
   - yarn build-storybook
   - bundle exec rails runner -e production 'puts "App booted successfully"'
+after_script:
+  - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$CI_NODE_INDEX.json ./coverage/spec/.resultset.json
+  - ./cc-test-reporter sum-coverage --output - --parts $CI_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
 deploy:
   provider: heroku
   api_key: '$HEROKU_AUTH_TOKEN'
