@@ -15,12 +15,12 @@ module Authentication
 
       # Extract data for a brand new user
       def new_user_data
-        raise NotImplementedError
+        raise SubclassResponsibility
       end
 
       # Extract data for an existing user
       def existing_user_data
-        raise NotImplementedError
+        raise SubclassResponsibility
       end
 
       def name
@@ -51,7 +51,7 @@ module Authentication
 
       # Remove sensible data from the payload
       def cleanup_payload(_auth_payload)
-        raise NotImplementedError
+        raise SubclassResponsibility
       end
 
       attr_reader :auth_payload, :info, :raw_info
