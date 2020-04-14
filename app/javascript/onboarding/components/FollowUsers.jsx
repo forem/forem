@@ -130,7 +130,7 @@ class FollowUsers extends Component {
     return (
       <div className="onboarding-main">
         <Navigation prev={prev} next={this.handleComplete} />
-        <div className="onboarding-content no-padding-bottom">
+        <div className="onboarding-content toggle-bottom">
           <header className="onboarding-content-header">
             <h1 className="title">Suggested people to follow</h1>
             <h2 className="subtitle">Let&apos;s review a few things first</h2>
