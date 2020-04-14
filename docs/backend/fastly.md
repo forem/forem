@@ -21,7 +21,8 @@ update Fastly.
 
 Previously this was a manual process done by an internal team member. Now we do
 it programmatically using the Fastly
-[gem](https://github.com/fastly/fastly-ruby) as of [this pr](insert_pr_url).
+[gem](https://github.com/fastly/fastly-ruby) as of
+[this pr](https://github.com/thepracticaldev/dev.to/pull/7279).
 
 ## How it works
 
