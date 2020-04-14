@@ -25,7 +25,7 @@ class OrganizationMembership < ApplicationRecord
     name = "@#{organization.slug} private chat"
     channel = ChatChannel.find_by(channel_name: name)
     if channel
-      channel.add_users(user)
+      add_chat_channel_membership(user, channel, role)
     else
       ChatChannel.create_with_users(
         users: [user],
@@ -34,5 +34,11 @@ class OrganizationMembership < ApplicationRecord
         membership_role: role,
       )
     end
+  end
+
+  def add_chat_channel_membership(user, channel, role)
+    membership = ChatChannelMembership.find_or_initialize_by(user_id: user.id, chat_channel_id: channel.id)
+    membership.role = role
+    membership.save
   end
 end

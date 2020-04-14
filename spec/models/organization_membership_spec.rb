@@ -23,5 +23,12 @@ RSpec.describe OrganizationMembership, type: :model do
       organization_membership = create(:organization_membership, type_of_user: "member", organization: organization)
       expect(chat_channel.active_users).to include(organization_membership.user)
     end
+
+    it "updates chat channel membership if org membership is updated" do
+      organization_membership = create(:organization_membership, type_of_user: "member", organization: organization)
+      expect(ChatChannelMembership.last.role).to eq("member")
+      organization_membership.update(type_of_user: "admin")
+      expect(ChatChannelMembership.last.role).to eq("mod")
+    end
   end
 end
