@@ -51,14 +51,9 @@ module Authentication
     attr_reader :provider, :current_user, :cta_variant
 
     # Loads the proper authentication provider from the available ones
-    # TODO: [thepracticaldev/oss] raise exception if provider is available but not enabled for this app
-    # TODO: [thepracticaldev/oss] add available providers, enabled providers
     def load_authentication_provider(auth_payload)
-      provider_name = auth_payload.provider
-      provider_class = "Authentication::Providers::#{provider_name.titleize}".constantize
+      provider_class = Authentication::Providers.get!(auth_payload.provider)
       provider_class.new(auth_payload)
-    rescue NameError => e
-      raise ::Authentication::Errors::ProviderNotFound, e
     end
 
     def current_user_identity_exists?
