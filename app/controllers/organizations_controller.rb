@@ -9,6 +9,7 @@ class OrganizationsController < ApplicationController
     authorize @organization
     if @organization.save
       @organization_membership = OrganizationMembership.create!(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
+      create_chat_channel
       flash[:settings_notice] = "Your organization was successfully created and you are an admin."
       redirect_to "/settings/organization/#{@organization.id}"
     else
@@ -39,6 +40,15 @@ class OrganizationsController < ApplicationController
   end
 
   private
+
+  def create_chat_channel
+    ChatChannel.create_with_users(
+      users: [current_user],
+      channel_type: "invite_only",
+      contrived_name: "@#{@organization.slug} general chat",
+      membership_role: "mod",
+    )
+  end
 
   def permitted_params
     accessible = %i[
