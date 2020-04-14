@@ -33,11 +33,13 @@ class Tag < ActsAsTaggableOn::Tag
 
   after_commit :bust_cache
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: [:update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   include Searchable
   SEARCH_SERIALIZER = Search::TagSerializer
   SEARCH_CLASS = Search::Tag
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::Tag
 
   # This model doesn't inherit from ApplicationRecord so this has to be included
   include Purgeable
