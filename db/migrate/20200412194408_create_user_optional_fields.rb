@@ -8,6 +8,6 @@ class CreateUserOptionalFields < ActiveRecord::Migration[5.2]
       t.timestamps
     end
 
-    add_index :user_optional_fields, :label , unique: true
+    add_index :user_optional_fields, [:label, :user_id], unique: true
   end
 end
