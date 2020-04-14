@@ -33,7 +33,7 @@ module FastlyVCL
 
       private
 
-      def params_to_array(snippet_content)
+      def params_to_sorted_array(snippet_content)
         snippet_suffix = snippet_content.split(VCL_DELIMITER_START).last
         fastly_params = snippet_suffix.split(VCL_DELIMITER_END).first
 
@@ -49,7 +49,7 @@ module FastlyVCL
       end
 
       def params_outdated?(snippet_content)
-        current_params = params_to_array(snippet_content)
+        current_params = params_to_sorted_array(snippet_content)
 
         current_params != FILE_PARAMS
       end

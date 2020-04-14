@@ -20,7 +20,7 @@ RSpec.describe FastlyVCL::WhitelistedParams, type: :service do
     allow(fastly_version).to receive(:clone).and_return(fastly_version)
     allow(described_class).to receive(:build_content).and_return(snippet_content)
     allow(fastly_snippet).to receive(:content).and_return(fastly_snippet)
-    allow(described_class).to receive(:params_to_array).and_return(file_params)
+    allow(described_class).to receive(:params_to_sorted_array).and_return(file_params)
     allow(fastly_snippet).to receive(:content=).and_return(snippet_content)
     allow(fastly_snippet).to receive(:save!).and_return(true)
     allow(fastly_version).to receive(:activate!).and_return(true)
