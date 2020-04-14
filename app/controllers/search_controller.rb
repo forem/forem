@@ -63,6 +63,20 @@ class SearchController < ApplicationController
     render json: { result: ccm_docs }
   end
 
+  def chat_channels_discoverable
+    ccm_docs_original = Search::ChatChannelMembership.search_documents(
+      params: chat_channel_params.to_h, user_id: current_user.id,
+    )
+    discoverable_params = chat_channel_params.to_h
+    discoverable_params[:channel_discoverable] = true
+
+    ccm_docs_discoverable = Search::ChatChannelMembership.search_documents(
+      params: discoverable_params, user_id: current_user.id,
+    )
+
+    render json: { result: ccm_docs_original.merge(ccm_docs_discoverable) }
+  end
+
   def classified_listings
     cl_docs = Search::ClassifiedListing.search_documents(
       params: classified_listing_params.to_h,

@@ -6,6 +6,7 @@ module Search
         channel_type
         status
         viewable_by
+        channel_discoverable
       ].freeze
 
       QUERY_KEYS = %i[
@@ -33,9 +34,14 @@ module Search
 
       def build_queries
         @body[:query] = {}
-        @body[:query][:bool] = { filter: filter_conditions }
-        @body[:query][:bool][:must] = query_conditions if query_keys_present?
-        @body[:query][:bool][:should] = [{ "term" => { "channel_discoverable" => true } }]
+        if !filter_conditions.select { |x| x[:term].key?(:channel_discoverable) }.empty?
+          @body[:query][:bool] = { filter: filter_conditions.reject! { |x| x[:term].key?(:viewable_by) } }
+          @body[:query][:bool][:must] = query_conditions
+          @body[:query][:bool][:must_not] = filter_conditions.select { |x| x[:term].key?(:viewable_by) }
+        else
+          @body[:query][:bool] = { filter: filter_conditions }
+          @body[:query][:bool][:must] = query_conditions if query_keys_present?
+        end
       end
 
       def filter_conditions
