@@ -92,18 +92,40 @@ class FollowUsers extends Component {
     }
   }
 
+  userFollowCountMessage() {
+    const { users, selectedUsers } = this.state;
+    let followingStatus;
+    if (selectedUsers.length === 0) {
+      followingStatus = "You're not following anyone";
+    } else if (selectedUsers.length === 1) {
+      followingStatus = "You're following 1 person";
+    } else if (selectedUsers.length === users.length) {
+      followingStatus = `You're following ${selectedUsers.length} people (everyone)`;
+    } else {
+      followingStatus = `You're following ${selectedUsers.length} people`;
+    }
+
+    return followingStatus;
+  }
+
+  renderFollowToggle() {
+    const { users, selectedUsers } = this.state;
+    if (users.length === 0) {
+      return '';
+    }
+
+    return (
+      <button type="button" onClick={() => this.handleSelectAll()}>
+        {selectedUsers.length !== users.length
+          ? `Select all ${users.length} people`
+          : 'Deselect all'}
+      </button>
+    );
+  }
+
   render() {
     const { users, selectedUsers } = this.state;
     const { prev } = this.props;
-    let followingStatus;
-    if (selectedUsers < 2) {
-      followingStatus = "You're not following anyone";
-    } else {
-      const everyone =
-        selectedUsers.length === users.length ? ' (everyone)' : '';
-      const object = selectedUsers.length === 1 ? 'person' : 'people';
-      followingStatus = `You're following ${selectedUsers.length} ${object}${everyone}`;
-    }
 
     return (
       <div className="onboarding-main">
@@ -146,12 +168,8 @@ class FollowUsers extends Component {
         </div>
         <div className="onboarding-selection-status">
           <div className="selection-status-content">
-            <p>{followingStatus}</p>
-            <button type="button" onClick={() => this.handleSelectAll()}>
-              {selectedUsers.length === users.length
-                ? 'Deselect all'
-                : `Select all ${users.length} people`}
-            </button>
+            <p>{this.userFollowCountMessage()}</p>
+            {this.renderFollowToggle()}
           </div>
         </div>
       </div>
