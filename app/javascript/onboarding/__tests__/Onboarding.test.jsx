@@ -158,7 +158,7 @@ describe('<Onboarding />', () => {
     });
   });
 
-  describe('EmailTermsConditionsForm', () => {
+  describe('EmailPreferencesForm', () => {
     let onboardingSlides;
 
     beforeEach(() => {

@@ -5,7 +5,7 @@ import Navigation from './Navigation';
 import { getContentOfToken, updateOnboarding } from '../utilities';
 
 /* eslint-disable camelcase */
-class EmailTermsConditionsForm extends Component {
+class EmailPreferencesForm extends Component {
   constructor(props) {
     super(props);
 
@@ -19,7 +19,7 @@ class EmailTermsConditionsForm extends Component {
   }
 
   componentDidMount() {
-    updateOnboarding('v2: email preferences');
+    updateOnboarding('v2: email preferences form');
   }
 
   onSubmit() {
@@ -57,8 +57,10 @@ class EmailTermsConditionsForm extends Component {
         <Navigation prev={prev} next={this.onSubmit} />
         <div className="onboarding-content terms-and-conditions-wrapper">
           <header className="onboarding-content-header">
-            <h1 className="title">Getting started</h1>
-            <h2 className="subtitle">Let&apos;s review a few things first</h2>
+            <h1 className="title">Almost there!</h1>
+            <h2 className="subtitle">
+              Review your email preferences before we continue.
+            </h2>
           </header>
 
           <form>
@@ -86,8 +88,8 @@ class EmailTermsConditionsForm extends Component {
                       checked={email_digest_periodic}
                       onChange={this.handleChange}
                     />
-                    I want to receive a periodic digest with some of the top
-                    posts from your tags.
+                    I want to receive a periodic digest of top posts from my
+                    tags.
                   </label>
                 </li>
               </ul>
@@ -99,11 +101,11 @@ class EmailTermsConditionsForm extends Component {
   }
 }
 
-EmailTermsConditionsForm.propTypes = {
+EmailPreferencesForm.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.string.isRequired,
 };
 
-export default EmailTermsConditionsForm;
+export default EmailPreferencesForm;
 
 /* eslint-enable camelcase */
