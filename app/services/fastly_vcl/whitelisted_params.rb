@@ -37,7 +37,7 @@ module FastlyVCL
         snippet_suffix = snippet_content.split(VCL_REGEX_START).last
         fastly_params = snippet_suffix.split(VCL_REGEX_END).first
 
-        fastly_params.split("|")
+        fastly_params.split("|").sort
       end
 
       def build_content(new_params, snippet_content)
@@ -49,7 +49,7 @@ module FastlyVCL
       end
 
       def params_outdated?(snippet_content)
-        current_params = params_to_array(snippet_content).sort
+        current_params = params_to_array(snippet_content)
 
         current_params != FILE_PARAMS
       end
