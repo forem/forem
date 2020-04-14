@@ -4,9 +4,10 @@ module Search
       # In order for highlighting to work properly we have to search the fields we want to highlight
       QUERY_KEYS = {
         search_fields: [
-          "tags.*",
-          "body_text",
-          "title",
+          "tags.keywords_for_search",
+          "tags.name^3",
+          "body_text^2",
+          "title^6",
           "user.name",
           "user.username",
           "organization.name",
@@ -28,8 +29,12 @@ module Search
       ].freeze
 
       DEFAULT_PARAMS = {
-        sort_by: "hotness_score",
-        sort_direction: "desc",
+        sort: [
+          :_score,
+          { score: "desc" },
+          { hotness_score: "desc" },
+          { comments_count: "desc" },
+        ],
         size: 0
       }.freeze
 
@@ -64,9 +69,16 @@ module Search
         @params[:published] = true
 
         build_body
+        add_function_scoring unless sort_params_present?
       end
 
       private
+
+      def add_sort
+        return @body[:sort] = DEFAULT_PARAMS[:sort] unless sort_params_present?
+
+        @body[:sort] = { @params[:sort_by] => @params[:sort_direction] }
+      end
 
       def add_highlight_fields
         highlight_fields = { fields: {} }
@@ -123,6 +135,48 @@ module Search
 
           { range: { range_key => @params[range_key] } }
         end.compact
+      end
+
+      def query_hash(key, fields)
+        {
+          simple_query_string: {
+            query: key,
+            fields: fields,
+            lenient: true,
+            analyze_wildcard: true,
+            minimum_should_match: 2
+          }
+        }
+      end
+
+      def add_function_scoring
+        @body[:query] = { function_score: { query: @body[:query] } }
+        @body[:query][:function_score][:functions] = scoring_functions
+      end
+
+      def scoring_functions
+        [
+          scoring_filter(1000, 2.5),
+          scoring_filter(500, 2),
+          scoring_filter(100, 1.5),
+        ]
+      end
+
+      def scoring_filter(score, weight)
+        {
+          filter: {
+            range: {
+              score: {
+                gte: score
+              }
+            }
+          },
+          weight: weight
+        }
+      end
+
+      def sort_params_present?
+        @params[:sort_by] && @params[:sort_direction]
       end
     end
   end

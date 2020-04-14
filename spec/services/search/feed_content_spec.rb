@@ -20,14 +20,14 @@ RSpec.describe Search::FeedContent, type: :service do
 
     it "returns highlighted fields" do
       allow(article1).to receive(:body_text).and_return("I love ruby")
-      allow(article2).to receive(:body_text).and_return("Ruby Tuesday is yummy")
+      allow(article2).to receive(:body_text).and_return("Ruby Tuesday is love")
       index_documents([article1, article2])
       query_params = { size: 5, search_fields: "love ruby" }
 
       feed_docs = described_class.search_documents(params: query_params)
       expect(feed_docs.count).to eq(2)
       doc_highlights = feed_docs.map { |t| t.dig("highlight", "body_text") }.flatten
-      expect(doc_highlights).to include("I <em>love</em> <em>ruby</em>", "<em>Ruby</em> Tuesday is yummy")
+      expect(doc_highlights).to include("I <em>love</em> <em>ruby</em>", "<em>Ruby</em> Tuesday is <em>love</em>")
     end
 
     it "returns fields necessary for the view" do
@@ -120,6 +120,22 @@ RSpec.describe Search::FeedContent, type: :service do
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
         expect(doc_ids).to include(article2.id)
+      end
+    end
+
+    context "with default sorting" do
+      it "sorts by Elasticsearch _score which is weighted based on article score" do
+        ruby_tag = create(:tag, name: "ruby")
+        allow(article1).to receive(:score).and_return(200)
+        article1.tags << ruby_tag
+        allow(article2).to receive(:score).and_return(1500)
+        article2.tags << ruby_tag
+        index_documents([article1, article2])
+        query_params = { size: 5, search_fields: "ruby" }
+
+        feed_docs = described_class.search_documents(params: query_params)
+        doc_ids = feed_docs.map { |t| t.dig("id") }
+        expect(doc_ids).to eq([article2.id, article1.id])
       end
     end
   end

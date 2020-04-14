@@ -10,8 +10,6 @@ RSpec.describe "ImageUploads", type: :request do
         "image/jpeg",
       )
     end
-    let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
-    let(:cache) { Rails.cache }
     let(:bad_image) do
       Rack::Test::UploadedFile.new(
         Rails.root.join("spec/support/fixtures/images/bad-image.jpg"),
@@ -69,18 +67,36 @@ RSpec.describe "ImageUploads", type: :request do
         result = JSON.parse(response.body)
         expect(result["error"]).not_to be_nil
       end
+
+      it "catches error if image file name is too long" do
+        article_image_uploader = instance_double(ArticleImageUploader)
+        allow(ArticleImageUploader).to receive(:new).and_return(article_image_uploader)
+        allow(article_image_uploader).to receive(:store!).and_raise(Errno::ENAMETOOLONG)
+        allow(DatadogStatsClient).to receive(:increment)
+
+        expect do
+          post "/image_uploads", headers: headers, params: { image: [bad_image] }
+        end.to raise_error(Errno::ENAMETOOLONG)
+
+        tags = hash_including(tags: instance_of(Array))
+
+        expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
+      end
     end
 
     context "when uploading rate limiting works" do
+      let(:cache_store) { ActiveSupport::Cache.lookup_store(:redis_cache_store) }
+      let(:cache) { Rails.cache }
+      let(:cache_key) { "#{user.id}_image_upload" }
+
       before do
         sign_in user
-        allow(Rails).to receive(:cache).and_return(memory_store)
-        Rails.cache.clear
+        allow(Rails).to receive(:cache).and_return(cache_store)
       end
 
       it "counts number of uploads in cache" do
         post "/image_uploads", headers: headers, params: { image: [image] }
-        expect(cache.read("#{user.id}_image_upload")).to eq(1)
+        expect(cache.read(cache_key).to_i).to eq(1)
       end
 
       it "raises error with too many uploads" do

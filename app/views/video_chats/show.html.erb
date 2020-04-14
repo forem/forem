@@ -1,76 +1,151 @@
 <style>
+  body {
+    height: 100vh;
+    overflow: hidden;
+  }
   .video-chat-wrapper {
     position: relative;
     height: 100vh;
-    background: black;
     overflow: scroll;
   }
-  video {
-    border-radius: 8px;
-  }
   .individual-video video {
-    width: 96%;
-    max-width: 800px;
-    margin: 2%;
-    display: inline-block;
-    background: grey;
+    max-width: 600px;
+    background: #232324;
+    width: 100%;
   }
 
-  .video-chat-wrapper-num-two-per .individual-video {
-    width: 50%;
+  .individual-video {
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+    line-height: 0;
   }
-  .video-chat-wrapper-num-three-per .individual-video {
-    width: 33%;
-  }
-  .video-chat-wrapper-num-four-per .individual-video {
-    width: 25%;
+  .individual-video:last-child {
+    margin-bottom: 100px;
   }
 
   
   #local-media video {
-    width: 130px;
-    position: absolute;
+    width: 150px;
+    position: fixed;
     bottom: 10px;
     right: 10px;
     z-index: 5;
   }
+  
+  #local-media.video-hidden {
+    opacity: 0.1;
+  }
+
   .individual-video {
     position: relative;
-    display: inline-block;
+    margin-bottom: -6px;
   }
-  .participant-name {
-    background: black;
+  .participant-info {
     padding: 3px 8px;
     border-radius: 3px;
     position: absolute;
-    bottom: 4%;
-    left: 3%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 13px;
+    text-align: center;
+  }
+  .participant-name {
+    display: inline-block;
     color: white;
-    font-size: 16px;
+    background: #171717;
+    padding: 4px 12px;
+    border-radius: 100px;
+    margin: 8px;
   }
   .video-controls {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
+    position: fixed;
+    bottom: 15px;
+    left: 5px;
+    width: calc(100% - 175px);
+    z-index: 10;
+    display: none;
   }
+
+  .showing {
+    display: block;
+  }
+
   .video-controls button {
-    font-size: 16px;
-    color: white;
-    background: black;
-    border: 2px solid grey;
-    border-radius: 100px;
+    font-size: 15px;
+    width: 100%;
+    margin: 3px 0px;
+    padding: 3px 0px;
   }
-  .video-controls button.active {
+
+  .disabled-video video {
+    opacity: 0.1;
+  }
+  .disabled-audio-indicator,.disabled-video-indicator {
     background: red;
+    color: white;
+    display: none;
+    position: absolute;
+    border-radius: 100px;
+    padding: 4px 10px;
+    right: 5px;
+    bottom: 12px;
   }
+  .disabled-audio-indicator {
+    right: auto;
+    left: 5px;
+  }
+  .disabled-video .disabled-video-indicator{
+    display: inline-block;
+  }
+  .disabled-audio .disabled-audio-indicator{
+    display: inline-block;
+  }
+  .platform-unavailable-message {
+    padding: 20px;
+    color: white;
+    margin-top: 30px;
+  }
+
+  @media screen and (max-width: 280px) {
+    .video-controls {
+      width: 92%;
+      bottom: 5px;
+    }
+    #local-media video {
+      width: 90%;
+      bottom: 85px;
+    }
+  }
+
+  @media screen and (min-width: 500px) {
+    .video-controls {
+      left: auto;
+      right: 170px;
+      width: 200px;
+    }
+  }
+
+  @media screen and (max-height: 400px) {
+    .video-controls {
+      width: 90px;
+    }
+    #local-media video {
+      width: 90px;
+      bottom: 5px;
+    }
+  }
+
 </style>
 
 <div class="video-chat-wrapper" id="videochat" data-token="<%= @token %>" data-channel="<%= params[:id] %>" data-user="<%= @username %>">
+  <div id="room-type" data-type="<%= @video_type %>"></div>
   <div id="remote-media"></div>
   <div id="local-media"></div>
-  <div class="video-controls">
-  <button id="mute-toggle" data-muted="false">Mute</button>
-  <button id="videohide-toggle" data-hidden="false">Hide Video</button>
+  <div id="video-controls" class="video-controls">
+  <button id="mute-toggle" data-muted="false" class="crayons-btn crayons-btn--secondary">Mute</button>
+  <button id="videohide-toggle" data-hidden="false" class="crayons-btn crayons-btn--secondary">Hide</button>
 </div>
 <%# TODO Make paramsp[:id] map to a chat channel and ensure the users have permission %>
 <%# That part is pretty straightforward %>

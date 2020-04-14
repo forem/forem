@@ -1,14 +1,10 @@
 class PagesController < ApplicationController
   # No authorization required for entirely public controller
-  before_action :set_cache_control_headers, only: %i[show rlyweb now badge bounty faq robots]
+  before_action :set_cache_control_headers, only: %i[show rlyweb badge bounty faq robots]
 
   def show
     @page = Page.find_by!(slug: params[:slug])
     set_surrogate_key_header "show-page-#{params[:slug]}"
-  end
-
-  def now
-    set_surrogate_key_header "now_page"
   end
 
   def about

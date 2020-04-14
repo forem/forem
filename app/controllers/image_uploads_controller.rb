@@ -1,6 +1,7 @@
 class ImageUploadsController < ApplicationController
   before_action :authenticate_user!
   after_action :verify_authorized
+  rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   def create
     authorize :image_upload

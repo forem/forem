@@ -4,6 +4,15 @@
   padding: 20px;
 }
 
+#siteConfig .card-header {
+  cursor: pointer;
+}
+
+#siteConfig .card-header__toggle {
+  font-size: 12px;
+  color: var(--secondary);
+}
+
 .pagination {
   justify-content: right;
 

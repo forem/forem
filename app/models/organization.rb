@@ -142,6 +142,6 @@ class Organization < ApplicationRecord
   end
 
   def sync_related_elasticsearch_docs
-    DataSync::Elasticsearch::Organization.new(self, saved_changes).call
+    DataSync::Elasticsearch::Organization.new(self).call
   end
 end
