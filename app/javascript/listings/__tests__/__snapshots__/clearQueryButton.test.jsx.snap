@@ -7,6 +7,7 @@ preact-render-spy (1 nodes)
   type="button"
   class="classified-search-clear"
   onClick={[Function onClick]}
+  id="clear-query-button"
 >
   ×
 </button>
