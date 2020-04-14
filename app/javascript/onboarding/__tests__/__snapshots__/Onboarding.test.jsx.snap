@@ -507,6 +507,7 @@ preact-render-spy (1 nodes)
             placeholder="e.g. Company name, self-employed, etc."
             onChange={[Function bound handleChange]}
             maxLength="60"
+            class="onboarding-form-input--last"
            />
         </label>
       </form>
