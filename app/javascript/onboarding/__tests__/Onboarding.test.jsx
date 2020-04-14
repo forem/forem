@@ -324,7 +324,7 @@ describe('<Onboarding />', () => {
     });
   });
 
-  describe('CloseSlide', () => {
+  describe('ClosingSlide', () => {
     let onboardingSlides;
 
     beforeEach(() => {

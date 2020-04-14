@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Onboarding /> CloseSlide renders properly 1`] = `
+exports[`<Onboarding /> ClosingSlide renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
