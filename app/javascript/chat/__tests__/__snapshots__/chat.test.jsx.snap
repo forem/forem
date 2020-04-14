@@ -2,7 +2,7 @@
 
 exports[`<Chat /> should load chat 1`] = `
 <div
-  class="chat chat--expanded"
+  class="chat chat--expanded chat--video-not-visible chat--content-not-visible "
   data-no-instant={true}
 >
   <div
@@ -15,15 +15,30 @@ exports[`<Chat /> should load chat 1`] = `
     >
       &lt;
     </button>
-    <input
-      onKeyUp={[Function]}
-      placeholder="Filter"
-    />
     <div
       class="chat__channeltypefilter"
     >
       <button
-        class="chat__channeltypefilterbutton chat__channeltypefilterbutton--active"
+        class="chat__channelssearchtoggle"
+        onClick={[Function]}
+      >
+        <svg
+          height="17"
+          viewBox="0 0 24 24"
+          width="17"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M0 0h24v24H0z"
+            fill="none"
+          />
+          <path
+            d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"
+          />
+        </svg>
+      </button>
+      <button
+        class="chat__channeltypefilterbutton crayons-indicator crayons-indicator--accent"
         data-channel-type="all"
         onClick={[Function]}
         type="button"
@@ -31,7 +46,7 @@ exports[`<Chat /> should load chat 1`] = `
         all
       </button>
       <button
-        class="chat__channeltypefilterbutton chat__channeltypefilterbutton--inactive"
+        class="chat__channeltypefilterbutton crayons-indicator crayons-indicator--"
         data-channel-type="direct"
         onClick={[Function]}
         type="button"
@@ -39,7 +54,7 @@ exports[`<Chat /> should load chat 1`] = `
         direct
       </button>
       <button
-        class="chat__channeltypefilterbutton chat__channeltypefilterbutton--inactive"
+        class="chat__channeltypefilterbutton crayons-indicator crayons-indicator--"
         data-channel-type="invite_only"
         onClick={[Function]}
         type="button"

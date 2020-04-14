@@ -28,7 +28,7 @@ module Search
         size: 0
       }.freeze
 
-      def initialize(params)
+      def initialize(params:)
         @params = params.deep_symbolize_keys
 
         # For now, we're not allowing searches for ClassifiedListings that are

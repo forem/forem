@@ -50,7 +50,7 @@ module Metrics
       user_ids_by_day = ids_by_day.map { |a| a & user_ids }
       distinct_user_values = user_ids_by_day.flatten.group_by(&:itself).transform_values(&:count).values
       distinct_counts = distinct_user_values.group_by(&:itself).transform_values(&:count)
-      distinct_counts.keys.each do |key|
+      distinct_counts.each_key do |key|
         DatadogStatsClient.count("users.active_days_past_week", distinct_counts[key], tags: { resource: "users", group: group, day_count: key })
       end
     end

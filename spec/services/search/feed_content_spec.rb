@@ -20,21 +20,21 @@ RSpec.describe Search::FeedContent, type: :service do
 
     it "returns highlighted fields" do
       allow(article1).to receive(:body_text).and_return("I love ruby")
-      allow(article2).to receive(:body_text).and_return("Ruby Tuesday is yummy")
+      allow(article2).to receive(:body_text).and_return("Ruby Tuesday is love")
       index_documents([article1, article2])
       query_params = { size: 5, search_fields: "love ruby" }
 
       feed_docs = described_class.search_documents(params: query_params)
       expect(feed_docs.count).to eq(2)
       doc_highlights = feed_docs.map { |t| t.dig("highlight", "body_text") }.flatten
-      expect(doc_highlights).to include("I <em>love</em> <em>ruby</em>", "<em>Ruby</em> Tuesday is yummy")
+      expect(doc_highlights).to include("I <em>love</em> <em>ruby</em>", "<em>Ruby</em> Tuesday is <em>love</em>")
     end
 
     it "returns fields necessary for the view" do
       allow(article1).to receive(:flare_tag).and_return(name: "help", bg_color_hex: nil, text_color_hex: nil)
       view_keys = %w[
-        id title path class_name flare_tag tag_list user_id user published_at_int
-        published_timestamp readable_publish_date
+        id title path class_name cloudinary_video_url comments_count flare_tag tag_list user_id user
+        published_at_int published_timestamp readable_publish_date
       ]
       flare_tag_keys = %w[name bg_color_hex text_color_hex]
       user_keys = %w[username name profile_image_90]
@@ -120,6 +120,34 @@ RSpec.describe Search::FeedContent, type: :service do
         expect(feed_docs.count).to eq(1)
         doc_ids = feed_docs.map { |t| t.dig("id") }
         expect(doc_ids).to include(article2.id)
+      end
+    end
+
+    context "with default sorting" do
+      it "sorts by Elasticsearch _score which is weighted based on article score" do
+        ruby_tag = create(:tag, name: "ruby")
+        allow(article1).to receive(:score).and_return(200)
+        article1.tags << ruby_tag
+        allow(article2).to receive(:score).and_return(1500)
+        article2.tags << ruby_tag
+        index_documents([article1, article2])
+        query_params = { size: 5, search_fields: "ruby" }
+
+        feed_docs = described_class.search_documents(params: query_params)
+        doc_ids = feed_docs.map { |t| t.dig("id") }
+        expect(doc_ids).to eq([article2.id, article1.id])
+      end
+    end
+  end
+
+  describe "document counts" do
+    it "returns counts for each document class", elasticsearch: true do
+      article = create(:article)
+      comment = create(:comment)
+      pde = create(:podcast_episode)
+      index_documents([article, comment, pde])
+      described_class::INCLUDED_CLASS_NAMES.each do |class_name|
+        expect(described_class.public_send("#{class_name.underscore.pluralize}_document_count")).to eq(1)
       end
     end
   end

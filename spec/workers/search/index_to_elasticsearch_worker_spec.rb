@@ -24,4 +24,8 @@ RSpec.describe Search::IndexToElasticsearchWorker, type: :worker, elasticsearch:
 
     expect(tag.elasticsearch_doc.dig("_source", "id")).to eql(tag.id)
   end
+
+  it "does not raise an error if Reaction record is not found" do
+    expect { worker.perform("Reaction", 1234) }.not_to raise_error(ActiveRecord::RecordNotFound)
+  end
 end

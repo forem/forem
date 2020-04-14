@@ -1,10 +1,6 @@
 class PodcastEpisode < ApplicationRecord
   self.ignored_columns = %w[
-    deepgram_id_code
     duration_in_seconds
-    featured
-    featured_number
-    order_key
   ]
 
   include AlgoliaSearch
@@ -30,12 +26,13 @@ class PodcastEpisode < ApplicationRecord
   validates :media_url, presence: true, uniqueness: true
   validates :guid, presence: true, uniqueness: true
 
+  # NOTE: Any create callbacks will not be run since we use activerecord-import to create episodes
+  # https://github.com/zdennis/activerecord-import#callbacks
   after_update :purge
-  after_create :purge_all
   after_destroy :purge, :purge_all
-  after_save    :bust_cache
+  after_save :bust_cache
 
-  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :index_to_elasticsearch, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   before_validation :process_html_and_prefix_all_images
@@ -91,7 +88,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def path
-    return nil unless podcast&.slug
+    return unless podcast&.slug
 
     "/#{podcast.slug}/#{slug}"
   end

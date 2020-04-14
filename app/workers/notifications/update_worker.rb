@@ -2,7 +2,7 @@ module Notifications
   class UpdateWorker
     include Sidekiq::Worker
 
-    sidekiq_options queue: :medium_priority, retry: 10
+    sidekiq_options queue: :medium_priority, retry: 10, lock: :until_executing
 
     def perform(notifiable_id, notifiable_class, action = nil)
       raise InvalidNotifiableForUpdate, notifiable_class unless %w[Article Comment].include?(notifiable_class)

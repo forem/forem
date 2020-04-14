@@ -51,7 +51,7 @@
     <meta property="og:title" content="<%= @article.title %>" />
     <meta property="og:description" content="<%= @article.description || "An article from the community" %>" />
     <meta property="og:site_name" content="<%= community_qualified_name %>" />
-    <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
+    <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
     <meta name="twitter:title" content="<%= @article.title %>">
     <meta name="twitter:description" content="<%= @article.description || "An article from the community" %>">
@@ -205,7 +205,7 @@
       <%= render "additional_content_boxes/article_box",
                  article: @classic_article,
                  classification: "classic",
-                 classification_text: "Classic DEV Post from #{@classic_article.readable_publish_date}",
+                 classification_text: "Classic #{community_name} Post from #{@classic_article.readable_publish_date}",
                  follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
     <% end %>
     <div id="additional-content-area" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>

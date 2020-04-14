@@ -7,31 +7,25 @@ module Search
     DEFAULT_PER_PAGE = 20
 
     class << self
-      def search_documents(params:)
-        set_query_size(params)
-        query_hash = Search::QueryBuilders::User.new(params).as_hash
-
-        results = search(body: query_hash)
-        hits = results.dig("hits", "hits").map do |user_doc|
-          prepare_doc(user_doc.dig("_source"))
-        end
-        paginate_hits(hits, params)
-      end
-
       private
 
       def prepare_doc(hit)
+        source = hit.dig("_source")
         {
           "user" => {
-            "username" => hit["username"],
-            "name" => hit["username"],
-            "profile_image_90" => hit["profile_image_90"]
+            "username" => source["username"],
+            "name" => source["username"],
+            "profile_image_90" => source["profile_image_90"]
           },
-          "title" => hit["name"],
-          "path" => hit["path"],
-          "id" => hit["id"],
+          "title" => source["name"],
+          "path" => source["path"],
+          "id" => source["id"],
           "class_name" => "User",
-          "positive_reactions_count" => hit["positive_reactions_count"]
+          "positive_reactions_count" => source["positive_reactions_count"],
+          "comments_count" => source["comments_count"],
+          "badge_achievements_count" => source["badge_achievements_count"],
+          "last_comment_at" => source["last_comment_at"],
+          "roles" => source["roles"]
         }
       end
 

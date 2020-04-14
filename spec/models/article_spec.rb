@@ -44,6 +44,12 @@ RSpec.describe Article, type: :model do
           article.destroy
         end
       end
+
+      it "on update syncs elasticsearch data" do
+        allow(article).to receive(:sync_related_elasticsearch_docs)
+        article.save
+        expect(article).to have_received(:sync_related_elasticsearch_docs)
+      end
     end
 
     describe "#after_update_commit" do
@@ -836,6 +842,34 @@ RSpec.describe Article, type: :model do
 
       fields = %w[id tag_list published_at processed_html user_id organization_id title path]
       expect(feed_article.attributes.keys).to match_array(fields)
+    end
+  end
+
+  describe "#top_comments" do
+    context "when article has comments" do
+      let(:root_comment) { create(:comment, commentable: article, score: 20) }
+      let(:child_comment) { create(:comment, commentable: article, score: 20, parent: root_comment) }
+
+      before do
+        root_comment
+        child_comment
+        create_list(:comment, 2, commentable: article, score: 20)
+        article.reload
+      end
+
+      it "returns comments with score greater than 10" do
+        expect(article.top_comments.first.score).to be > 10
+      end
+
+      it "only includes root comments" do
+        expect(article.top_comments).not_to include(child_comment)
+      end
+    end
+
+    context "when article does not have any comments" do
+      it "retrns empty set if there aren't any top comments" do
+        expect(article.top_comments).to be_empty
+      end
     end
   end
 

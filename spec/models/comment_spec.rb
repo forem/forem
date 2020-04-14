@@ -385,4 +385,18 @@ RSpec.describe Comment, type: :model do
       end
     end
   end
+
+  describe "#root_exists?" do
+    let(:root_comment) { create(:comment) }
+    let(:comment) { create(:comment, ancestry: root_comment.id) }
+
+    it "returns true if root is present" do
+      expect(comment.root_exists?).to eq(true)
+    end
+
+    it "returns false if root has been deleted" do
+      root_comment.destroy
+      expect(comment.reload.root_exists?).to eq(false)
+    end
+  end
 end

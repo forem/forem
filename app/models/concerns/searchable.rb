@@ -24,6 +24,6 @@ module Searchable
   end
 
   def sync_related_elasticsearch_docs
-    self.class::DATA_SYNC_CLASS.new(self, saved_changes).sync_documents
+    self.class::DATA_SYNC_CLASS.new(self).call
   end
 end

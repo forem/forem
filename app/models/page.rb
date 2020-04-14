@@ -1,9 +1,4 @@
 class Page < ApplicationRecord
-  self.ignored_columns = %w[
-    group
-    group_order_number
-  ]
-
   TEMPLATE_OPTIONS = %w[contained full_within_layout].freeze
 
   validates :title, presence: true

@@ -14,7 +14,7 @@ RSpec.describe "/internal/chat_channels", type: :request do
       sign_in user
       expect do
         post "/internal/chat_channels",
-             params: { chat_channel: { channel_name: "Hello Channel", usernames_string: "#{user.username}" } },
+             params: { chat_channel: { channel_name: "Hello Channel", usernames_string: user.username.to_s } },
              headers: { HTTP_ACCEPT: "application/json" }
       end.to change(ActionMailer::Base.deliveries, :length)
       expect(ChatChannel.last.channel_name).to eq("Hello Channel")
