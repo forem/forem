@@ -23,9 +23,11 @@ class SearchController < ApplicationController
     :per_page,
     :search_fields,
     :sort_by,
-    :tag_names,
     :user_id,
-    { published_at: [:gte] },
+    {
+      tag_names: [],
+      published_at: [:gte]
+    },
   ].freeze
 
   def tags
@@ -104,6 +106,7 @@ class SearchController < ApplicationController
   end
 
   def feed_params
+    params[:tag_names] = params[:tag_names].split(",") if params[:tag_names]
     params.permit(FEED_PARAMS)
   end
 
