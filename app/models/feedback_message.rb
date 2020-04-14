@@ -7,8 +7,8 @@ class FeedbackMessage < ApplicationRecord
   has_many :notes, as: :noteable, inverse_of: :noteable, dependent: :destroy
 
   validates :feedback_type, :message, presence: true
-  validates :reported_url, :category, presence: { if: :abuse_report? }, length: { maximum: 50 }
-  validates :message, length: { maximum: 500 }
+  validates :reported_url, :category, presence: { if: :abuse_report? }, length: { maximum: 250 }
+  validates :message, length: { maximum: 2500 }
   validates :category,
             inclusion: {
               in: ["spam", "other", "rude or vulgar", "harassment", "bug", "listings"]
