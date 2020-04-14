@@ -4,6 +4,7 @@ import { articlePropTypes } from '../src/components/common-prop-types/article-pr
 import {
   ArticleCoverImage,
   CommentsCount,
+  CommentsList,
   ContentTitle,
   Meta,
   SaveButton,
@@ -67,6 +68,8 @@ export const Article = ({
           </div>
         </div>
       </div>
+
+      <CommentsList />
     </div>
   );
 };
