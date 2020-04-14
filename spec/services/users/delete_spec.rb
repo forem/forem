@@ -35,6 +35,16 @@ RSpec.describe Users::Delete, type: :service do
     expect(Rails.cache).to have_received(:delete).with("user-destroy-token-#{user.id}")
   end
 
+  it "does not delete user's audit logs" do
+    audit_log = create(:audit_log, user: user)
+
+    expect do
+      described_class.call(user)
+    end.to change(AuditLog, :count).by(0)
+
+    expect(audit_log.reload.user_id).to be(nil)
+  end
+
   it "removes user from Elasticsearch" do
     sidekiq_perform_enqueued_jobs { user }
     expect(user.elasticsearch_doc).not_to be_nil
