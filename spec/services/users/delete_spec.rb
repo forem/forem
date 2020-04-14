@@ -56,7 +56,12 @@ RSpec.describe Users::Delete, type: :service do
 
   # check that all the associated records are being destroyed, except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
-    let(:kept_association_names) { %i[created_podcasts notes offender_feedback_messages reporter_feedback_messages affected_feedback_messages] }
+    let(:kept_association_names) do
+      %i[
+        affected_feedback_messages audit_logs created_podcasts notes
+        offender_feedback_messages reporter_feedback_messages
+      ]
+    end
     let(:direct_associations) { User.reflect_on_all_associations.reject { |a| a.options.key?(:join_table) || a.options.key?(:through) } }
     let!(:user_associations) do
       create_associations(direct_associations.reject { |a| kept_association_names.include?(a.name) })
