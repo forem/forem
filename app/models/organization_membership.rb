@@ -19,6 +19,20 @@ class OrganizationMembership < ApplicationRecord
   private
 
   def upsert_chat_channel_membership
-    # Add to channel or update to mod if user is org admin
+    return if type_of_user == "guest"
+
+    role = type_of_user == "admin" ? "mod" : "member"
+    name = "@#{organization.slug} private chat"
+    channel = ChatChannel.find_by(channel_name: name)
+    if channel
+      channel.add_users(user)
+    else
+      ChatChannel.create_with_users(
+        users: [user],
+        channel_type: "invite_only",
+        contrived_name: name,
+        membership_role: role,
+      )
+    end
   end
 end
