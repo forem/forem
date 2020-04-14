@@ -1,12 +1,12 @@
 <% cache("whole-comment-area-#{@article.id}-#{@article.last_comment_at}-#{@article.show_comments}", expires_in: 2.hours) do %>
   <div id="comments" data-updated-at="<%= Time.current %>">
     <% if @article.show_comments %>
-      <div class="comments-container-container">
+      <div class="flex justify-between items-center mx-2 s:mx-7 mb-2">
           <span class="fs-2xl fw-bold">Discussion</span>
           <div id="comment-subscription"></div>
         </div>
         <div
-          class="comments-container flex flex-col justify-between ml-7 mr-7"
+          class="comments-container mx-2 s:mx-7"
           id="comments-container"
           data-commentable-id="<%= @article.id %>"
           data-commentable-type="Article">
