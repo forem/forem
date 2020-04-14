@@ -37,7 +37,7 @@
   padding: $su-4;
   width: 100%;
   max-height: calc(100vh - 70px);
-  overflow: scroll;
+  overflow: auto;
 
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
