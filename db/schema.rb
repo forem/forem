@@ -1091,6 +1091,7 @@ ActiveRecord::Schema.define(version: 2020_04_12_194408) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.string "value"
+    t.index ["label"], name: "index_user_optional_fields_on_label", unique: true
     t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
   end
 
@@ -1275,6 +1276,7 @@ ActiveRecord::Schema.define(version: 2020_04_12_194408) do
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_counters", "users", on_delete: :cascade
+  add_foreign_key "user_optional_fields", "users"
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"
