@@ -3,6 +3,7 @@ module FastlyVCL
   class WhitelistedParams
     VCL_DELIMITER_START = "^(".freeze
     VCL_DELIMITER_END = ")$".freeze
+    SNIPPET_NAME = "Whitelist certain querystring parameters".freeze
     FILE_PARAMS = YAML.load_file("config/fastly/whitelisted_params.yml").sort.freeze
 
     class << self
@@ -13,7 +14,7 @@ module FastlyVCL
 
         snippet = fastly.get_snippet(ApplicationConfig["FASTLY_SERVICE_ID"],
                                      latest_version.number,
-                                     "Whitelist certain querystring parameters")
+                                     SNIPPET_NAME)
 
         unless params_outdated?(snippet.content)
           Rails.logger.info("No Fastly VCL updates needed for version #{latest_version.number}.")
@@ -23,7 +24,7 @@ module FastlyVCL
         new_version = latest_version.clone
         new_snippet = fastly.get_snippet(ApplicationConfig["FASTLY_SERVICE_ID"],
                                          new_version.number,
-                                         "Whitelist certain querystring parameters")
+                                         SNIPPET_NAME)
         new_content = build_content(FILE_PARAMS, new_snippet.content)
         new_snippet.content = new_content
         new_snippet.save!
