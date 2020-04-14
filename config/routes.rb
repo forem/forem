@@ -228,6 +228,7 @@ Rails.application.routes.draw do
 
   get "/search/tags" => "search#tags"
   get "/search/chat_channels" => "search#chat_channels"
+  get "/search/chat_channels_discoverable" => "search#chat_channels_discoverable"
   get "/search/classified_listings" => "search#classified_listings"
   get "/search/users" => "search#users"
   get "/search/feed_content" => "search#feed_content"
