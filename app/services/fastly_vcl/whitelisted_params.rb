@@ -25,8 +25,7 @@ module FastlyVCL
         new_snippet = fastly.get_snippet(ApplicationConfig["FASTLY_SERVICE_ID"],
                                          new_version.number,
                                          SNIPPET_NAME)
-        new_content = build_content(FILE_PARAMS, new_snippet.content)
-        new_snippet.content = new_content
+        new_snippet.content = build_content(FILE_PARAMS, new_snippet.content)
         new_snippet.save!
 
         new_version.activate!
