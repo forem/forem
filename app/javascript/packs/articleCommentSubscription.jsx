@@ -3,10 +3,14 @@ import { CommentSubscription } from '../CommentSubscription/CommentSubscription'
 
 const root = document.getElementById('comment-subscription');
 
+const onSubscribe = () => {};
+const onUnsubscribe = () => {};
+
 render(
   <CommentSubscription
-    onSubscribe={(_event) => console.log('subscribed')}
-    onUnsubscribe={(_event) => console.log('unsubscribed')}
+    positionType="static"
+    onSubscribe={(_event) => onSubscribe()}
+    onUnsubscribe={(_event) => onUnsubscribe()}
   />,
   root,
   root.firstElementChild,

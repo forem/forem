@@ -62,7 +62,11 @@ export class CommentSubscription extends Component {
 
   render() {
     const { showOptions, commentSubscriptionType, subscribed } = this.state;
-    const { onSubscribe, onUnsubscribe } = this.props;
+    const {
+      onSubscribe,
+      onUnsubscribe,
+      positionType = 'relative',
+    } = this.props;
 
     const CogIcon = () => (
       <svg
@@ -79,7 +83,7 @@ export class CommentSubscription extends Component {
     );
 
     return (
-      <div className="relative">
+      <div className={positionType}>
         <ButtonGroup
           ref={(element) => {
             this.buttonGroupElement = element;
@@ -112,7 +116,13 @@ export class CommentSubscription extends Component {
         </ButtonGroup>
         {subscribed && (
           <Dropdown
-            className={showOptions ? 'inline-block w-full z-10 right-0' : null}
+            className={
+              showOptions
+                ? `inline-block z-10 right-4 left-4 s:right-0 s:left-auto${
+                    positionType === 'relative' ? ' w-full' : ''
+                  }`
+                : null
+            }
             ref={(element) => {
               this.dropdownElement = element;
             }}
@@ -203,6 +213,7 @@ export class CommentSubscription extends Component {
 CommentSubscription.displayName = 'CommentSubscription';
 
 CommentSubscription.propTypes = {
+  positionType: PropTypes.oneOf(['absolute', 'relative', 'static']).isRequired,
   onSubscribe: PropTypes.func.isRequired,
   onUnsubscribe: PropTypes.func.isRequired,
 };
