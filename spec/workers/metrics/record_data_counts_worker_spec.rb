@@ -16,8 +16,10 @@ RSpec.describe Metrics::RecordDataCountsWorker, type: :worker do
 
     it "calls count on each model" do
       allow(User).to receive(:count)
+      allow(User).to receive(:estimated_count)
       described_class.new.perform
       expect(User).to have_received(:count)
+      expect(User).not_to have_received(:estimated_count)
     end
 
     it "calls estimated_count if count times out" do
