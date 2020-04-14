@@ -106,43 +106,17 @@ describe('<Onboarding />', () => {
     };
 
     beforeEach(() => {
-      onboardingSlides = initializeSlides(1, getUserData());
+      onboardingSlides = initializeSlides(0, getUserData());
     });
 
     test('renders properly', () => {
       expect(onboardingSlides).toMatchSnapshot();
     });
 
-    beforeEach(() => {
-      onboardingSlides = initializeSlides(0, getUserData());
-    });
-
-    test('should not advance if terms and conditions are not checked', () => {
-      // When none of the boxes are checked.
-      onboardingSlides.find('.next-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(0);
-
-      // When only the code of conduct is checked.
-      updateCodeOfConduct();
-      onboardingSlides.find('.next-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(0);
-    });
-
-    test('should not advance if code of conduct is not checked', () => {
-      // When none of the boxes are checked
-      onboardingSlides.find('.next-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(0);
-
-      // When only the terms and conditions are checked.
-      updateTermsAndConditions();
-      onboardingSlides.find('.next-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(0);
-    });
-
     test('should advance if required boxes are checked', async () => {
       fetch.once({});
+      expect(onboardingSlides.state().currentSlide).toBe(0);
 
-      // When both the code of conduct and terms and conditions are checked.
       updateCodeOfConduct();
       updateTermsAndConditions();
 
@@ -158,23 +132,6 @@ describe('<Onboarding />', () => {
     });
   });
 
-  describe('EmailPreferencesForm', () => {
-    let onboardingSlides;
-
-    beforeEach(() => {
-      onboardingSlides = initializeSlides(1, getUserData());
-    });
-
-    test('renders properly', () => {
-      expect(onboardingSlides).toMatchSnapshot();
-    });
-
-    it('should step backward', () => {
-      onboardingSlides.find('.back-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(0);
-    });
-  });
-
   describe('ProfileForm', () => {
     let onboardingSlides;
     const meta = document.createElement('meta');
@@ -183,7 +140,7 @@ describe('<Onboarding />', () => {
     document.body.appendChild(meta);
 
     beforeEach(() => {
-      onboardingSlides = initializeSlides(2, getUserData());
+      onboardingSlides = initializeSlides(1, getUserData());
     });
 
     test('renders properly', () => {
@@ -221,12 +178,12 @@ describe('<Onboarding />', () => {
       profileForm.find('.next-button').simulate('click');
       fetch.once(fakeTagsResponse);
       await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(3);
+      expect(onboardingSlides.state().currentSlide).toBe(2);
     });
 
     it('should step backward', () => {
       onboardingSlides.find('.back-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(1);
+      expect(onboardingSlides.state().currentSlide).toBe(0);
     });
   });
 
@@ -234,7 +191,7 @@ describe('<Onboarding />', () => {
     let onboardingSlides;
 
     beforeEach(async () => {
-      onboardingSlides = initializeSlides(3, getUserData(), fakeTagsResponse);
+      onboardingSlides = initializeSlides(2, getUserData(), fakeTagsResponse);
       await flushPromises();
     });
 
@@ -246,7 +203,7 @@ describe('<Onboarding />', () => {
       expect(onboardingSlides.find('.onboarding-tags__item').length).toBe(3);
     });
 
-    test('should allow a user to add a tag', async () => {
+    test('should allow a user to add a tag and advance', async () => {
       fetch.once({});
       const followTags = onboardingSlides.find(<FollowTags />);
       const firstButton = onboardingSlides
@@ -259,12 +216,12 @@ describe('<Onboarding />', () => {
       onboardingSlides.find('.next-button').simulate('click');
       fetch.once(fakeUsersResponse);
       await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(4);
+      expect(onboardingSlides.state().currentSlide).toBe(3);
     });
 
     it('should step backward', () => {
       onboardingSlides.find('.back-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(2);
+      expect(onboardingSlides.state().currentSlide).toBe(1);
     });
   });
 
@@ -272,7 +229,7 @@ describe('<Onboarding />', () => {
     let onboardingSlides;
 
     beforeEach(async () => {
-      onboardingSlides = initializeSlides(4, getUserData(), fakeUsersResponse);
+      onboardingSlides = initializeSlides(3, getUserData(), fakeUsersResponse);
       await flushPromises();
     });
 
@@ -299,7 +256,7 @@ describe('<Onboarding />', () => {
       expect(followUsers.state('selectedUsers').length).toBe(2);
       onboardingSlides.find('.next-button').simulate('click');
       await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(5);
+      expect(onboardingSlides.state().currentSlide).toBe(4);
     });
 
     test('should have a functioning select-all toggle', async () => {
@@ -320,6 +277,31 @@ describe('<Onboarding />', () => {
       fetch.once(fakeTagsResponse);
       onboardingSlides.find('.back-button').simulate('click');
       await flushPromises();
+      expect(onboardingSlides.state().currentSlide).toBe(2);
+    });
+  });
+
+  describe('EmailPreferencesForm', () => {
+    let onboardingSlides;
+
+    beforeEach(() => {
+      onboardingSlides = initializeSlides(4, getUserData());
+    });
+
+    test('renders properly', () => {
+      expect(onboardingSlides).toMatchSnapshot();
+    });
+
+    test('should allow user to advance', async () => {
+      fetch.once({});
+
+      onboardingSlides.find('.next-button').simulate('click');
+      await flushPromises();
+      expect(onboardingSlides.state().currentSlide).toBe(5);
+    });
+
+    it('should step backward', () => {
+      onboardingSlides.find('.back-button').simulate('click');
       expect(onboardingSlides.state().currentSlide).toBe(3);
     });
   });
