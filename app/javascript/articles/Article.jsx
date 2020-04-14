@@ -2,8 +2,8 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../src/components/common-prop-types/article-prop-types';
 import {
+  ArticleCoverImage,
   CommentsCount,
-  Cover,
   ContentTitle,
   Meta,
   SaveButton,
@@ -26,18 +26,14 @@ export const Article = ({
 
   return (
     <div
-      className={`crayons-story ${isFeatured && ("crayons-story--featured")}`}
-      id={isFeatured && ("featured-story-marker")}
+      className={`crayons-story ${isFeatured && 'crayons-story--featured'}`}
+      id={isFeatured && 'featured-story-marker'}
       data-featured-article="TODO"
       data-content-user-id={article.user_id}
     >
-      {article.cloudinary_video_url && (
-        <Video article={article} />
-      )}
+      {article.cloudinary_video_url && <Video article={article} />}
 
-      {isFeatured && (
-        <Cover article={article} />
-      )}
+      {isFeatured && <ArticleCoverImage article={article} />}
       <div className="crayons-story__body">
         <div className="crayons-story__top">
           <Meta article={article} organization={article.organization} />
