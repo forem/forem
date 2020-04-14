@@ -1,11 +1,31 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
 import { deep } from 'preact-render-spy';
-import { CommentSubscription } from '../CommentSubscription';
+import {
+  CommentSubscription,
+  COMMENT_SUBSCRIPTION_TYPE,
+} from '../CommentSubscription';
 
 describe('<CommentSubscription />', () => {
   it('should render as a plain subscribe button if not currently subscribed', () => {
     const tree = render(<CommentSubscription />);
+
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render as subscribed with all comments (default) as the subscription type', () => {
+    const tree = render(<CommentSubscription subscribed />);
+
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render as subscribed with non-default subscription type', () => {
+    const tree = render(
+      <CommentSubscription
+        subscribed
+        subscriptionType={COMMENT_SUBSCRIPTION_TYPE.AUTHOR}
+      />,
+    );
 
     expect(tree).toMatchSnapshot();
   });
@@ -50,7 +70,7 @@ describe('<CommentSubscription />', () => {
 
     const dropdown = wrapper.find('Dropdown');
     expect(dropdown.attr('className')).toEqual(
-      'inline-block w-full z-10 right-0',
+      'inline-block z-10 right-4 left-4 s:right-0 s:left-auto w-full',
     );
 
     // 3 options for comment subscription
@@ -58,6 +78,25 @@ describe('<CommentSubscription />', () => {
 
     // The done button
     expect(dropdown.find('Button').length).toEqual(1);
+  });
+
+  it('should not have full width for options when positionType is anything but "relative"', () => {
+    const onSubscribe = jest.fn();
+    const onUnsubscribe = jest.fn();
+    const wrapper = deep(
+      <CommentSubscription
+        onSubscribe={onSubscribe}
+        onUnsubscribe={onUnsubscribe}
+        positionType="static"
+        subscribed
+      />,
+    );
+
+    wrapper.find('ButtonGroup').find('Button').last().simulate('click'); // Cog icon button to open subscription options panel
+
+    expect(wrapper.find('Dropdown').attr('className')).toEqual(
+      'inline-block z-10 right-4 left-4 s:right-0 s:left-auto',
+    );
   });
 
   it('should hide subscription options once subscribed if cog icon is clicked and the subscriptions options panel is open', () => {

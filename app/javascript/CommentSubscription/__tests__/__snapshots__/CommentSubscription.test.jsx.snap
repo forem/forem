@@ -18,3 +18,265 @@ exports[`<CommentSubscription /> should render as a plain subscribe button if no
   </div>
 </div>
 `;
+
+exports[`<CommentSubscription /> should render as subscribed with all comments (default) as the subscription type 1`] = `
+<div
+  class="relative"
+>
+  <div
+    class="crayons-btn-group"
+  >
+    <button
+      class="crayons-btn crayons-btn--outlined"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Unsubscribe
+    </button>
+    <button
+      class="crayons-btn crayons-btn--outlined crayons-btn--icon-alone"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      <svg
+        aria-labelledby="ai2ols8ka2ohfp0z568lj68ic2du21s"
+        class="crayons-icon"
+        height="24"
+        role="img"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <title
+          id="ai2ols8ka2ohfp0z568lj68ic2du21s"
+        >
+          Preferences
+        </title>
+        <path
+          d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342 7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"
+        />
+      </svg>
+    </button>
+  </div>
+  <div
+    class="crayons-dropdown"
+  >
+    <div
+      class="crayons-fields mb-5"
+    >
+      <div
+        class="crayons-field crayons-field--radio"
+      >
+        <input
+          checked={true}
+          class="crayons-radio"
+          id="subscribe-all"
+          name="subscribe_comments"
+          onClick={[Function]}
+          type="radio"
+          value="all_comments"
+        />
+        <label
+          class="crayons-field__label"
+          htmlFor="subscribe-all"
+        >
+          All comments
+          <p
+            class="crayons-field__description"
+          >
+            You’ll receive notifications for all new comments.
+          </p>
+        </label>
+      </div>
+      <div
+        class="crayons-field crayons-field--radio"
+      >
+        <input
+          checked={false}
+          class="crayons-radio"
+          id="subscribe-toplevel"
+          name="subscribe_comments"
+          onClick={[Function]}
+          type="radio"
+          value="top_level_comments"
+        />
+        <label
+          class="crayons-field__label"
+          htmlFor="subscribe-toplevel"
+        >
+          Top-level comments
+          <p
+            class="crayons-field__description"
+          >
+            You’ll receive notifications only for all new top-level comments.
+          </p>
+        </label>
+      </div>
+      <div
+        class="crayons-field crayons-field--radio"
+      >
+        <input
+          checked={false}
+          class="crayons-radio"
+          id="subscribe-author"
+          name="subscribe_comments"
+          onClick={[Function]}
+          type="radio"
+          value="only_author_comments"
+        />
+        <label
+          class="crayons-field__label"
+          htmlFor="subscribe-author"
+        >
+          Post author comments
+          <p
+            class="crayons-field__description"
+          >
+            You’ll receive notifications only if post author sends a new comment.
+          </p>
+        </label>
+      </div>
+    </div>
+    <button
+      class="crayons-btn w-100"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Done
+    </button>
+  </div>
+</div>
+`;
+
+exports[`<CommentSubscription /> should render as subscribed with non-default subscription type 1`] = `
+<div
+  class="relative"
+>
+  <div
+    class="crayons-btn-group"
+  >
+    <button
+      class="crayons-btn crayons-btn--outlined"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Unsubscribe
+    </button>
+    <button
+      class="crayons-btn crayons-btn--outlined crayons-btn--icon-alone"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      <svg
+        aria-labelledby="ai2ols8ka2ohfp0z568lj68ic2du21s"
+        class="crayons-icon"
+        height="24"
+        role="img"
+        width="24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <title
+          id="ai2ols8ka2ohfp0z568lj68ic2du21s"
+        >
+          Preferences
+        </title>
+        <path
+          d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342 7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"
+        />
+      </svg>
+    </button>
+  </div>
+  <div
+    class="crayons-dropdown"
+  >
+    <div
+      class="crayons-fields mb-5"
+    >
+      <div
+        class="crayons-field crayons-field--radio"
+      >
+        <input
+          checked={false}
+          class="crayons-radio"
+          id="subscribe-all"
+          name="subscribe_comments"
+          onClick={[Function]}
+          type="radio"
+          value="all_comments"
+        />
+        <label
+          class="crayons-field__label"
+          htmlFor="subscribe-all"
+        >
+          All comments
+          <p
+            class="crayons-field__description"
+          >
+            You’ll receive notifications for all new comments.
+          </p>
+        </label>
+      </div>
+      <div
+        class="crayons-field crayons-field--radio"
+      >
+        <input
+          checked={false}
+          class="crayons-radio"
+          id="subscribe-toplevel"
+          name="subscribe_comments"
+          onClick={[Function]}
+          type="radio"
+          value="top_level_comments"
+        />
+        <label
+          class="crayons-field__label"
+          htmlFor="subscribe-toplevel"
+        >
+          Top-level comments
+          <p
+            class="crayons-field__description"
+          >
+            You’ll receive notifications only for all new top-level comments.
+          </p>
+        </label>
+      </div>
+      <div
+        class="crayons-field crayons-field--radio"
+      >
+        <input
+          checked={true}
+          class="crayons-radio"
+          id="subscribe-author"
+          name="subscribe_comments"
+          onClick={[Function]}
+          type="radio"
+          value="only_author_comments"
+        />
+        <label
+          class="crayons-field__label"
+          htmlFor="subscribe-author"
+        >
+          Post author comments
+          <p
+            class="crayons-field__description"
+          >
+            You’ll receive notifications only if post author sends a new comment.
+          </p>
+        </label>
+      </div>
+    </div>
+    <button
+      class="crayons-btn w-100"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Done
+    </button>
+  </div>
+</div>
+`;

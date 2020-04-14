@@ -8,18 +8,29 @@ import {
   RadioButton,
 } from '@crayons';
 
-const COMMENT_SUBSCRIPTION_TYPE = {
+export const COMMENT_SUBSCRIPTION_TYPE = Object.freeze({
   ALL: 'all_comments',
   TOP: 'top_level_comments',
   AUTHOR: 'only_author_comments',
-};
+});
 
 export class CommentSubscription extends Component {
   state = {
     showOptions: false,
-    commentSubscriptionType: COMMENT_SUBSCRIPTION_TYPE.ALL,
-    subscribed: false,
   };
+
+  constructor(props) {
+    const {
+      subscribed = false,
+      subscriptionType = COMMENT_SUBSCRIPTION_TYPE.ALL,
+    } = props;
+    super(props);
+
+    this.setState({
+      subscriptionType,
+      subscribed,
+    });
+  }
 
   componentDidUpdate() {
     const { showOptions } = this.state;
@@ -56,12 +67,12 @@ export class CommentSubscription extends Component {
 
   commentSubscriptionClick = (event) => {
     this.setState({
-      commentSubscriptionType: event.target.value,
+      subscriptionType: event.target.value,
     });
   };
 
   render() {
-    const { showOptions, commentSubscriptionType, subscribed } = this.state;
+    const { showOptions, subscriptionType, subscribed } = this.state;
     const {
       onSubscribe,
       onUnsubscribe,
@@ -95,7 +106,7 @@ export class CommentSubscription extends Component {
               if (subscribed) {
                 onUnsubscribe();
               } else {
-                onSubscribe(commentSubscriptionType);
+                onSubscribe(subscriptionType);
               }
 
               this.setState({ subscribed: !subscribed });
@@ -133,9 +144,7 @@ export class CommentSubscription extends Component {
                   id="subscribe-all"
                   name="subscribe_comments"
                   value="all_comments"
-                  checked={
-                    commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.ALL
-                  }
+                  checked={subscriptionType === COMMENT_SUBSCRIPTION_TYPE.ALL}
                   onClick={this.commentSubscriptionClick}
                 />
                 <label htmlFor="subscribe-all" className="crayons-field__label">
@@ -152,9 +161,7 @@ export class CommentSubscription extends Component {
                   name="subscribe_comments"
                   value="top_level_comments"
                   onClick={this.commentSubscriptionClick}
-                  checked={
-                    commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.TOP
-                  }
+                  checked={subscriptionType === COMMENT_SUBSCRIPTION_TYPE.TOP}
                 />
                 <label
                   htmlFor="subscribe-toplevel"
@@ -175,7 +182,7 @@ export class CommentSubscription extends Component {
                   value="only_author_comments"
                   onClick={this.commentSubscriptionClick}
                   checked={
-                    commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.AUTHOR
+                    subscriptionType === COMMENT_SUBSCRIPTION_TYPE.AUTHOR
                   }
                 />
                 <label
@@ -195,7 +202,7 @@ export class CommentSubscription extends Component {
               className="w-100"
               onClick={(_event) => {
                 this.setState((prevState) => {
-                  onSubscribe(prevState.commentSubscriptionType);
+                  onSubscribe(prevState.subscriptionType);
 
                   return { ...prevState, showOptions: false };
                 });
@@ -216,4 +223,6 @@ CommentSubscription.propTypes = {
   positionType: PropTypes.oneOf(['absolute', 'relative', 'static']).isRequired,
   onSubscribe: PropTypes.func.isRequired,
   onUnsubscribe: PropTypes.func.isRequired,
+  subscriptionType: PropTypes.oneOf(COMMENT_SUBSCRIPTION_TYPE).isRequired,
+  subscribed: PropTypes.bool.isRequired,
 };
