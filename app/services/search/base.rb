@@ -41,7 +41,20 @@ module Search
         Search::Client.count(index: self::INDEX_ALIAS).dig("count")
       end
 
+      def search_documents(params:)
+        set_query_size(params)
+        query_hash = "Search::QueryBuilders::#{name.demodulize}".safe_constantize.new(params: params).as_hash
+
+        results = search(body: query_hash)
+        hits = results.dig("hits", "hits").map { |hit| prepare_doc(hit) }
+        paginate_hits(hits, params)
+      end
+
       private
+
+      def prepare_doc(hit)
+        hit.dig("_source")
+      end
 
       def search(body:)
         Search::Client.search(index: self::INDEX_ALIAS, body: body)
