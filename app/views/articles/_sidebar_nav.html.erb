@@ -1,4 +1,4 @@
-<div class="sidebar-nav" id="sidebar-nav">
+<nav class="sidebar-nav" id="sidebar-nav">
   <% if user_signed_in? %>
     <a class="sidebar-profile" id="sidebar-profile" href="#">
       <img src="" class="sidebar-profile--avatar" id="sidebar-profile--avatar" alt="" width="48" height="48">
@@ -9,9 +9,9 @@
     </a>
   <% end %>
 
-  <nav class="px-1">
+  <div class="px-1">
     <% unless user_signed_in? %>
-      <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block fw-bold">
+      <a href="/enter" class="crayons-link crayons-link--block fw-bold">
         <%= inline_svg_tag("twemoji/handshake.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sign In/Up") %>
         Sign In/Up
       </a>
@@ -90,37 +90,37 @@
         <% end %>
       </div>
     </div>
-  </nav>
+  </div>
 
-    <div class="widget sidebar-nav-block sidebar-tag-block">
-      <div class="sidebar-nav-block-inner">
-        <% if user_signed_in? %>
-          <header>My Tags</header>
-          <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
-        <% end %>
-        <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
-          <header id="tag-separator">
-            <% if user_signed_in? %>
-              Other Popular Tags
-            <% else %>
-              Design Your Experience
-            <% end %>
-          </header>
-          <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
-            <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-              <a class="sidebar-nav-link sidebar-nav-link-tag" href="<%= tag_path(tag_array.second) %>">
-                <span class="sidebar-nav-tag-text">
-                  #<%= tag_array.second %>
-                </span>
-              </a>
-              <a class="follow-action-button sidebar-nav-link-follow cta"
-                href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
-                data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
-                + FOLLOW
-              </a>
-            </div>
+  <div class="widget sidebar-nav-block sidebar-tag-block">
+    <div class="sidebar-nav-block-inner">
+      <% if user_signed_in? %>
+        <header>My Tags</header>
+        <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
+      <% end %>
+      <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
+        <header id="tag-separator">
+          <% if user_signed_in? %>
+            Other Popular Tags
+          <% else %>
+            Design Your Experience
           <% end %>
-        </div>
+        </header>
+        <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
+          <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
+            <a class="sidebar-nav-link sidebar-nav-link-tag" href="<%= tag_path(tag_array.second) %>">
+              <span class="sidebar-nav-tag-text">
+                #<%= tag_array.second %>
+              </span>
+            </a>
+            <a class="follow-action-button sidebar-nav-link-follow cta"
+              href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
+              data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
+              + FOLLOW
+            </a>
+          </div>
+        <% end %>
       </div>
     </div>
-</div>
+  </div>
+</nav>
