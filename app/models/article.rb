@@ -29,6 +29,11 @@ class Article < ApplicationRecord
   counter_culture :organization
 
   has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :top_comments,
+           -> { where("comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE", 10).order("comments.score DESC") },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
   has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
   has_many :buffer_updates, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -120,7 +125,8 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :language,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
-           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
+           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds,
+           :last_comment_at)
   }
 
   scope :limited_columns_internal_select, lambda {

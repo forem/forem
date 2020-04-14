@@ -123,7 +123,7 @@
     "core-js": "3",
     "file-loader": "^6.0.0",
     "focus-visible": "^5.1.0",
-    "honeybadger-js": "2.2.0",
+    "honeybadger-js": "2.2.1",
     "intersection-observer": "^0.7.0",
     "linkstate": "^1.1.1",
     "lodash.debounce": "4.0.8",
