@@ -8,6 +8,8 @@ class FeedbackMessage < ApplicationRecord
 
   validates :feedback_type, :message, presence: true
   validates :reported_url, :category, presence: { if: :abuse_report? }
+  validates :reported_url, length: { maximum: 50 }
+  validates :message, length: { maximum: 500 }
   validates :category,
             inclusion: {
               in: ["spam", "other", "rude or vulgar", "harassment", "bug", "listings"]
