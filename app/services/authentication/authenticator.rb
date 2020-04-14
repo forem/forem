@@ -1,8 +1,16 @@
 module Authentication
+  # TODO: [thepracticaldev/oss] use strategy pattern for the three cases
+  #   described below.
+  #   Make the decision early which one of the 3 cases we're dealing with
+  #   and then call either NewUserStrategy, UpdateUserStrategy or
+  #   LoggedInUserStrategy. I think the resulting three classes would be much
+  #   easier to understand and they can still share methods by inheriting
+  #   from a basic AuthStrategy.
+
   # Authenticator will perform one of these tree operations:
   # 1. create a new user and match it to its authentication identity
-  # 1. update an existing user and align it to its authentication identity
-  # 1. return the current user if a user is given (already logged in scenario)
+  # 2. update an existing user and align it to its authentication identity
+  # 3. return the current user if a user is given (already logged in scenario)
   class Authenticator
     # auth_payload is the payload schema, see https://github.com/omniauth/omniauth/wiki/Auth-Hash-Schema
     def initialize(auth_payload, current_user: nil, cta_variant: nil)
