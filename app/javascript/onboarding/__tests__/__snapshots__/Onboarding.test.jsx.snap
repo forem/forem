@@ -294,7 +294,7 @@ preact-render-spy (1 nodes)
         </button>
       </div>
     </nav>
-    <div class="onboarding-content no-padding-bottom">
+    <div class="onboarding-content toggle-bottom">
       <header class="onboarding-content-header">
         <h1 class="title">Suggested people to follow</h1>
         <h2 class="subtitle">Let's review a few things first</h2>
