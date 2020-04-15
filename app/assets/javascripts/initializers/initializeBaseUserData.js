@@ -1,15 +1,17 @@
-'use strict';
+
 
 /* global filterXSS */
 
 function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile--avatar').src = user.profile_image_90;
+  document.getElementById('sidebar-profile--avatar').src =
+    user.profile_image_90;
   document.getElementById('sidebar-profile--avatar').alt = user.username;
 
   document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
     user.name,
   );
-  document.getElementById('sidebar-profile--username').innerHTML = '@' + user.username;
+  document.getElementById('sidebar-profile--username').innerHTML =
+    '@' + user.username;
   document.getElementById('sidebar-profile').href = '/' + user.username;
 }
 
@@ -23,7 +25,7 @@ function initializeUserSidebar(user) {
       ? 'Follow tags to improve your feed'
       : 'Other Popular Tags';
 
-  followedTags.forEach(tag => {
+  followedTags.forEach((tag) => {
     const element = document.getElementById(
       'default-sidebar-element-' + tag.name,
     );
@@ -39,6 +41,7 @@ function initializeUserSidebar(user) {
 
 function addRelevantButtonsToArticle(user) {
   var articleContainer = document.getElementById('article-show-container');
+  const actionSpace = document.getElementById('action-space');
   if (articleContainer) {
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
       let actions = [
@@ -54,12 +57,22 @@ function addRelevantButtonsToArticle(user) {
           `<a href="${articleContainer.dataset.path}/stats" rel="nofollow">STATS</a>`,
         );
       }
-      document.getElementById('action-space').innerHTML = actions.join('');
+      actionSpace.innerHTML = actions.join('');
     } else if (user.trusted) {
-      document.getElementById('action-space').innerHTML =
-        '<a href="' +
-        articleContainer.dataset.path +
-        '/mod" rel="nofollow">MODERATE <span class="post-word">POST</span></a>';
+      actionSpace.innerHTML =
+        '<a href="" rel="nofollow">MODERATE <span class="post-word">POST</span></a>';
+
+      actionSpace.addEventListener(
+        'click',
+        (e) => {
+          document
+            .querySelector('.mod-actions-menu')
+            .classList.toggle('hidden');
+          e.preventDefault();
+          e.stopPropagation();
+        },
+        false,
+      );
     }
   }
 }
@@ -100,9 +113,15 @@ function addRelevantButtonsToComments(user) {
 function initializeBaseUserData() {
   const user = userData();
   const userProfileLinkHTML =
-    '<a href="/' + user.username + '" id="first-nav-link" class="crayons-link crayons-link--block"><div>' +
-    '<span class="fw-medium block">' + user.name +'</span>' +
-    '<small class="fs-s color-base-50">@' + user.username + '</small>' +
+    '<a href="/' +
+    user.username +
+    '" id="first-nav-link" class="crayons-link crayons-link--block"><div>' +
+    '<span class="fw-medium block">' +
+    user.name +
+    '</span>' +
+    '<small class="fs-s color-base-50">@' +
+    user.username +
+    '</small>' +
     '</div></a>';
   document.getElementById(
     'user-profile-link-placeholder',
