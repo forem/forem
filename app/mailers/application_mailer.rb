@@ -3,7 +3,7 @@ class ApplicationMailer < ActionMailer::Base
   helper ApplicationHelper
 
   default(
-    from: -> { "DEV Community <#{SiteConfig.default_site_email}>" },
+    from: -> { "#{ApplicationConfig['COMMUNITY_NAME']} Community <#{SiteConfig.default_site_email}>" },
     template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
   )
 
