@@ -1,3 +1,4 @@
+<% if article %>
 <div class='ltag__link'>
   <% if article.video && article.cloudinary_video_url %>
     <a href='<%= article.path %>' class="video-image" style="background-image: url(<%= article.cloudinary_video_url %>)">
@@ -23,3 +24,12 @@
     </div>
   </a>
 </div>
+<% else %>
+<div class='ltag__link'>
+  <div class='ltag__link__content'>
+    <div class='missing'>
+      <h2>Article No Longer Available</h2>
+    </div>
+  </div>
+</div>
+<% end %>
