@@ -45,7 +45,7 @@
       Tags
     </a>
     
-    <a href="#" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
+    <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
     
     <div class="hidden" id="main-nav-more">
       <a href="/code-of-conduct" class="crayons-link crayons-link--block">
@@ -58,7 +58,7 @@
       </a>
       <a href="https://shop.dev.to/" class="crayons-link crayons-link--block">
         <%= inline_svg_tag("twemoji/shopping.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Shop") %>
-        <%= ApplicationConfig["COMMUNITY_NAME"] %> Shop
+        <%= community_name %> Shop
       </a>
       <a href="/sponsors" class="crayons-link crayons-link--block">
         <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sponsors") %>
@@ -80,14 +80,8 @@
         <%= inline_svg_tag("twemoji/contact.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Contact") %>
         Contact
       </a>
-      <div class="grid gap-2 grid-cols-5 p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
-        <% SiteConfig.social_media_handles.keys.each do |social_media_type| %>
-          <% if SiteConfig.social_media_handles[social_media_type].present? %>
-            <a href="<%= "https://#{social_media_type}.com/#{SiteConfig.social_media_handles[social_media_type]}" %>" target="_blank" rel="noopener" class="crayons-link crayons-link--secondary">
-              <%= inline_svg_tag("#{social_media_type}.svg", aria: true, title: "#{social_media_type.capitalize}", class: "crayons-icon") %>
-            </a>
-          <% end %>
-        <% end %>
+      <div class="flex justify-around p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
+        <%= render partial: "layouts/social_media" %>
       </div>
     </div>
   </div>

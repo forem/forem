@@ -849,10 +849,14 @@ RSpec.describe Article, type: :model do
     context "when article has comments" do
       let(:root_comment) { create(:comment, commentable: article, score: 20) }
       let(:child_comment) { create(:comment, commentable: article, score: 20, parent: root_comment) }
+      let(:hidden_comment) { create(:comment, commentable: article, score: 20, hidden_by_commentable_user: true) }
+      let(:deleted_comment) { create(:comment, commentable: article, score: 20, deleted: true) }
 
       before do
         root_comment
         child_comment
+        hidden_comment
+        deleted_comment
         create_list(:comment, 2, commentable: article, score: 20)
         article.reload
       end
@@ -863,6 +867,14 @@ RSpec.describe Article, type: :model do
 
       it "only includes root comments" do
         expect(article.top_comments).not_to include(child_comment)
+      end
+
+      it "doesn't include hidden comments" do
+        expect(article.top_comments).not_to include(hidden_comment)
+      end
+
+      it "doesn't include deleted comments" do
+        expect(article.top_comments).not_to include(deleted_comment)
       end
     end
 

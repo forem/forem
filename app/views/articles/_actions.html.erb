@@ -68,12 +68,12 @@
             <span id="article-copy-link-announcer" role="alert" hidden>Copied to Clipboard</span>
           </clipboard-copy>
         </div>
-        <web-share-wrapper shareurl="https://dev.to<%= @article.path %>" sharetext="<%= @article.title %>" template="web-share-button">
+        <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetext="<%= @article.title %>" template="web-share-button">
           <div class="dropdown-link-row">
             <a
               target="_blank"
               rel="noopener"
-              href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity https://dev.to<%= @article.path %>'>
+              href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity <%= article_url(@article) %>'>
               Share to Twitter
             </a>
           </div>
@@ -81,7 +81,7 @@
             <a
               target="_blank"
               rel="noopener"
-              href="https://www.linkedin.com/shareArticle?mini=true&url=https://dev.to<%= @article.path %>&title=<%= @article.title %>&summary=<%= @article.description %>&source=dev.to">
+              href="https://www.linkedin.com/shareArticle?mini=true&url=<%= article_url(@article) %>&title=<%= @article.title %>&summary=<%= @article.description %>&source=<%= community_name %>">
               Share to LinkedIn
             </a>
           </div>
@@ -89,7 +89,7 @@
             <a
               target="_blank"
               rel="noopener"
-              href="https://www.reddit.com/submit?url=https://dev.to<%= @article.path %>&title=<%= @article.title %>">
+              href="https://www.reddit.com/submit?url=<%= article_url(@article) %>&title=<%= @article.title %>">
               Share to Reddit
             </a>
           </div>
@@ -97,7 +97,7 @@
             <a
               target="_blank"
               rel="noopener"
-              href="https://news.ycombinator.com/submitlink?u=https://dev.to<%= @article.path %>&t=<%= @article.title %>">
+              href="https://news.ycombinator.com/submitlink?u=<%= article_url(@article) %>&t=<%= @article.title %>">
               Share to Hacker News
             </a>
           </div>
@@ -105,7 +105,7 @@
             <a
               target="_blank"
               rel="noopener"
-              href="https://www.facebook.com/sharer.php?u=https://dev.to<%= @article.path %>">
+              href="https://www.facebook.com/sharer.php?u=<%= article_url(@article) %>">
               Share to Facebook
             </a>
           </div>

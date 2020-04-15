@@ -3,7 +3,7 @@
 <header class="top-bar" id="top-bar">
   <a href="#articles-list" class="skip-content-link">Skip to content</a>
   <div class="top-bar__container">
-    <a href="/" class="top-bar--logo" aria-label="<%= ApplicationConfig["COMMUNITY_NAME"] %> Home"><%= logo_svg %></a>
+    <a href="/" class="top-bar--logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
 
     <div id="pwa-nav-buttons" class="pwa-nav-buttons">
       <button type="button" id="app-back-button">
@@ -29,7 +29,7 @@
       <a class="top-bar__link trusted-visible-block" aria-label="Modeartion" href="<%= mod_path %>">
         <%= inline_svg_tag("mod.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
       </a>
-      
+
       <a href="/connect" id="connect-link" class="top-bar__link" aria-label="Connect">
         <%= inline_svg_tag("connect.svg", aria: true, class: "crayons-icon", title: "Connect") %>
         <span class="crayons-indicator crayons-indicator--accent hidden" id="connect-number"></span>

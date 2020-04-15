@@ -91,6 +91,25 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
+  describe "GET /checkin" do
+    let_it_be(:user) { create(:user, username: "codenewbiestaff") }
+
+    it "redirects to the latest CodeNewbie staff thread" do
+      earlier_staff_thread = create(:article, user: user, tags: "staff")
+      earlier_staff_thread.update(published_at: 1.week.ago)
+      latest_staff_thread = create(:article, user: user, tags: "staff")
+      get "/checkin"
+
+      expect(response.body).to redirect_to(latest_staff_thread.path)
+    end
+
+    it "redirects to /notifications if there is no staff user post" do
+      get "/checkin"
+
+      expect(response.body).to redirect_to("/notifications")
+    end
+  end
+
   describe "GET /badge" do
     it "has proper headline" do
       html_variant = create(:html_variant, group: "badge_landing_page", published: true, approved: true)
