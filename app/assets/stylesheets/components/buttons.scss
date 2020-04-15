@@ -201,7 +201,6 @@
   &--ghost {
     background-color: transparent;
     color: var(--link-color);
-    padding: 0;
 
     &:enabled:not(&--disabled):hover,
     &:enabled:not(&--disabled):active,
@@ -246,7 +245,7 @@
 }
 
 // Icon Left
-.crayons-btn--icon-left:not(.crayons-btn--ghost) {
+.crayons-btn--icon-left {
   padding-left: 0.75em;
 
   .crayons-icon {
