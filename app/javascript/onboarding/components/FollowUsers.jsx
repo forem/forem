@@ -38,7 +38,7 @@ class FollowUsers extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user: { last_onboarding_page: 'follow users page' },
+        user: { last_onboarding_page: 'v2: follow users page' },
       }),
       credentials: 'same-origin',
     });
