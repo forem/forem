@@ -18,10 +18,10 @@ module ApplicationHelper
   end
 
   def title(page_title)
-    derived_title = if page_title.include?(ApplicationConfig["COMMUNITY_NAME"])
+    derived_title = if page_title.include?(community_name)
                       page_title
                     else
-                      page_title + " - #{ApplicationConfig['COMMUNITY_NAME']} Community 👩‍💻👨‍💻"
+                      "#{page_title} - #{community_qualified_name} 👩‍💻👨‍💻"
                     end
     content_for(:title) { derived_title }
     derived_title

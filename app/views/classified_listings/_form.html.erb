@@ -69,7 +69,7 @@
         <a href="/credits/new" class="cta cta-main-listing-form" data-no-instant>Purchase Credits Now</a>
       <% end %>
     </div>
-    <p><em><%= ApplicationConfig["COMMUNITY_NAME"] %> admins may modify tags and categories to ensure accuracy. We may also take down and refund inappropriate listings.</em></p>
+    <p><em><%= community_name %> admins may modify tags and categories to ensure accuracy. We may also take down and refund inappropriate listings.</em></p>
     <p><em>Listings expire 30 days after they are published or "bumped".</em></p>
     <div class="listings-current-credits">
       <% if @credits.size == 0 && (@organizations.blank? || @organizations.sum(:unspent_credits_count).zero?) %>
