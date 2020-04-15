@@ -3,7 +3,7 @@
 <%= render "shared/webcomponents_loader_script" %>
 <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", defer: true %>
 
-<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
+<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js"
             integrity="sha256-xOIPU/XvDtRLeDQ3qj9GOKmlbMSqKa6D7ZIS6ygHBSo="
@@ -30,40 +30,41 @@
       }, 500)
     </script>
   <% end %>
-
-<script type="application/ld+json">
-  {
-    "@context": "http://schema.org",
-    "@type": "Article",
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": "<%= article_url(@article) %>"
-    },
-    "url": "<%= article_url(@article) %>",
-    "image": "<%= article_social_image_url(@article) %>",
-    "publisher": {
-      "@context": "http://schema.org",
-      "@type": "Organization",
-      "name": "<%= community_qualified_name %>",
-      "logo": {
+  <% unless internal_navigation? || user_signed_in? %>
+    <script type="application/ld+json">
+      {
         "@context": "http://schema.org",
-        "@type": "ImageObject",
-        "url": "<%= cloudinary(SiteConfig.logo_png, 192, "png") %>",
-        "width": "192",
-        "height": "192"
+        "@type": "Article",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "<%= article_url(@article) %>"
+        },
+        "url": "<%= article_url(@article) %>",
+        "image": "<%= article_social_image_url(@article) %>",
+        "publisher": {
+          "@context": "http://schema.org",
+          "@type": "Organization",
+          "name": "<%= community_qualified_name %>",
+          "logo": {
+            "@context": "http://schema.org",
+            "@type": "ImageObject",
+            "url": "<%= cloudinary(SiteConfig.logo_png, 192, "png") %>",
+            "width": "192",
+            "height": "192"
+          }
+        },
+        "headline": "<%= @article.title %>",
+        "author": {
+          "@context": "http://schema.org",
+          "@type": "Person",
+          "url": "<%= user_url(@user) %>",
+          "name": "<%= @user.name %>"
+        },
+        "datePublished": "<%= @article.published_timestamp %>",
+        "dateModified": "<%= @article.edited_at&.iso8601 || @article.published_timestamp %>"
       }
-    },
-    "headline": "<%= @article.title %>",
-    "author": {
-      "@context": "http://schema.org",
-      "@type": "Person",
-      "url": "<%= user_url(@user) %>",
-      "name": "<%= @user.name %>"
-    },
-    "datePublished": "<%= @article.published_timestamp %>",
-    "dateModified": "<%= @article.edited_at&.iso8601 || @article.published_timestamp %>"
-  }
-</script>
+    </script>
+  <% end %>
 
   <% if @article.processed_html.include? "runkit-element" %>
     <%= javascript_include_tag "https://embed.runkit.com" %>
