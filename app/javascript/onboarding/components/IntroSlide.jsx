@@ -56,17 +56,13 @@ class IntroSlide extends Component {
     this.setState({ text: document.getElementById(id).innerHTML });
   }
 
-  buttonIsDisabled() {
+  isButtonDisabled() {
     const {
       checked_code_of_conduct,
       checked_terms_and_conditions,
     } = this.state;
 
     return !checked_code_of_conduct || !checked_terms_and_conditions;
-  }
-
-  backToSlide() {
-    this.setState({ text: false });
   }
 
   render() {
@@ -81,7 +77,7 @@ class IntroSlide extends Component {
       return (
         <div className="onboarding-main">
           <div className="onboarding-content terms-and-conditions-wrapper">
-            <button type="button" onClick={() => this.backToSlide()}>
+            <button type="button" onClick={() => this.setState({ text: null })}>
               Back
             </button>
             <div
@@ -166,7 +162,7 @@ class IntroSlide extends Component {
             </fieldset>
           </form>
           <Navigation
-            disabled={this.buttonIsDisabled()}
+            disabled={this.isButtonDisabled()}
             className="intro-slide"
             prev={prev}
             next={this.onSubmit}
