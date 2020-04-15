@@ -200,13 +200,13 @@
   
   &--ghost {
     background-color: transparent;
-    color: var(--link-color);
+    color: var(--link-color-secondary);
 
     &:enabled:not(&--disabled):hover,
     &:enabled:not(&--disabled):active,
     &--active:enabled:not(&--disabled) {
       background-color: transparent;
-      color: var(--link-color-hover);
+      color: var(--link-color-secondary-hover);
     }
   }
 }
