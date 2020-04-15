@@ -23,10 +23,17 @@ function buildArticleHTML(article) {
       tagString = tagString + '<a href="/t/'+t+'" class="crayons-tag"><span class="crayons-tag__prefix">#</span>'+t+'</a>\n'
       });
     }
-    var commentsCountHTML = ""
-    if ((article.comments_count || '0') > 0 && article.class_name != "User") {
-      commentsCountHTML = '<a href="'+article.path+'#comments" class="crayons-story__details__item"><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>'+(article.comments_count || '0')+'<span class="hidden s:inline">&nbsp;comments</span></a>'
+
+    var commentsDisplay = ''
+    var commentsCount = '0'
+    
+    if ((article.comments_count || '0') > 0) {
+      var commentsCount = (article.comments_count || '0')
     }
+    if (article.class_name != "User") {
+      var commentsDisplay = '<a href="'+article.path+'#comments" class="crayons-story__details__item"><svg class="crayons-icon mr-1" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>'+commentsCount+'<span class="hidden s:inline">&nbsp;comments</span></a>'
+    }
+
     var flareTag = ""
     if (container){
       var currentTag = JSON.parse(container.dataset.params).tag
@@ -72,6 +79,15 @@ function buildArticleHTML(article) {
       var organizationClasses = "crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted";
     }
 
+    var publishDate = '';
+    if (article.readable_publish_date) {
+      var displayDate = article.readable_publish_date;
+      if ( article.published_at_int ) {
+        var displayDate = timeAgo({ oldTimeInSeconds: article.published_at_int })
+      }
+      publishDate = '<time datetime="'+article.published_timestamp+'">'+displayDate+'</time>';
+    }
+
     var meta = '<div class="crayons-story__meta">\
       <div class="crayons-story__author-pic">\
         '+organizationLogo+'\
@@ -84,7 +100,9 @@ function buildArticleHTML(article) {
           <a href="/'+profileUsername+'" class="crayons-story__secondary fw-medium">'+filterXSS(article.user.name)+'</a>\
           '+forOrganization+'\
         </p>\
-        <a href="'+article.path+'" class="crayons-story__tertiary fs-xs">7h ago</a>\
+        <a href="'+article.path+'" class="crayons-story__tertiary fs-xs">\
+          '+publishDate+'\
+        </a>\
       </div>\
     </div>';
 
@@ -113,23 +131,9 @@ function buildArticleHTML(article) {
                     </button>'
     }
 
-    var publishDate = '';
-    if (article.readable_publish_date) {
-      if (article.published_timestamp) {
-        publishDate = '・' + '<time datetime="'+article.published_timestamp+'">'+article.readable_publish_date+'</time>';
-      } else {
-        publishDate = '・' + '<time>'+article.readable_publish_date+'</time>';
-      }
-    }
-
     var videoHTML = '';
     if (article.cloudinary_video_url) {
       videoHTML = '<a href="'+article.path+'" class="crayons-story__video" style="background-image:url('+article.cloudinary_video_url+')"><div class="crayons-story__video__time"><img src="<%= asset_path("video-camera.svg") %>" alt="video camera">'+(article.video_duration_string || article.video_duration_in_minutes)+'</div></a>'
-    }
-
-    var timeAgoInWords = '';
-    if (article.published_at_int) {
-      timeAgoInWords = timeAgo({ oldTimeInSeconds: article.published_at_int });
     }
 
     return '<div class="crayons-story" data-content-user-id="'+article.user_id+'">\
@@ -143,7 +147,7 @@ function buildArticleHTML(article) {
           <div class="crayons-story__tags">'+tagString+'</div>\
           '+searchSnippetHTML+'\
           <div class="crayons-story__bottom">\
-            <div class="crayons-story__details">'+commentsCountHTML+reactionsCountHTML+'</div>\
+            <div class="crayons-story__details">'+reactionsDisplay+commentsDisplay+'</div>\
             '+saveButton+'\
           </div>\
         </div>\
