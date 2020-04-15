@@ -16,10 +16,9 @@ module FastlyVCL
                                      latest_version.number,
                                      SNIPPET_NAME)
 
-        unless params_outdated?(snippet.content)
-          Rails.logger.info("No Fastly VCL updates needed for version #{latest_version.number}.")
-          return
-        end
+        current_params = params_to_sorted_array(snippet.content)
+
+        return if current_params == FILE_PARAMS # No update needed
 
         new_version = latest_version.clone
         new_snippet = fastly.get_snippet(ApplicationConfig["FASTLY_SERVICE_ID"],
@@ -29,6 +28,8 @@ module FastlyVCL
         new_snippet.save!
 
         new_version.activate!
+        Rails.logger.info("Fastly updated to version #{new_version.number}.")
+        log_params_diff_to_datadaog(current_params, new_version)
       end
 
       private
@@ -48,10 +49,14 @@ module FastlyVCL
         snippet_prefix + VCL_DELIMITER_START + new_params + VCL_DELIMITER_END + snippet_suffix
       end
 
-      def params_outdated?(snippet_content)
-        current_params = params_to_sorted_array(snippet_content)
+      def log_params_diff_to_datadaog(current_params, new_version)
+        tags = [
+          "added_params:#{(FILE_PARAMS - current_params).join(', ')}",
+          "removed_params:#{(current_params - FILE_PARAMS).join(', ')}",
+          "new_version:#{new_version.number}",
+        ]
 
-        current_params != FILE_PARAMS
+        DatadogStatsClient.increment("fastly.whitelist", tags: tags)
       end
     end
   end

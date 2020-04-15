@@ -18,6 +18,7 @@ RSpec.describe FastlyVCL::WhitelistedParams, type: :service do
     allow(fastly).to receive(:get_snippet).and_return(fastly_snippet)
     allow(fastly_snippet).to receive(:content).and_return(snippet_content)
     allow(fastly_version).to receive(:clone).and_return(fastly_version)
+    allow(fastly_version).to receive(:number).and_return(99)
     allow(described_class).to receive(:build_content).and_return(snippet_content)
     allow(fastly_snippet).to receive(:content).and_return(fastly_snippet)
     allow(described_class).to receive(:params_to_sorted_array).and_return(file_params)
@@ -28,9 +29,7 @@ RSpec.describe FastlyVCL::WhitelistedParams, type: :service do
 
   describe "::update" do
     it "doesn't update if the params haven't changed" do
-      allow(Rails.logger).to receive(:info)
       described_class.update
-      expect(Rails.logger).to have_received(:info)
       expect(fastly_version).not_to have_received(:clone)
     end
 
@@ -38,6 +37,22 @@ RSpec.describe FastlyVCL::WhitelistedParams, type: :service do
       stub_const("#{described_class}::FILE_PARAMS", ["TEST"])
       described_class.update
       expect(fastly_version).to have_received(:activate!)
+    end
+
+    it "logs success messages" do
+      allow(Rails.logger).to receive(:info)
+      allow(DatadogStatsClient).to receive(:increment)
+
+      old_param = file_params.last
+      new_params = file_params + ["new_param"] - [old_param]
+      stub_const("#{described_class}::FILE_PARAMS", new_params)
+      described_class.update
+
+      expect(Rails.logger).to have_received(:info)
+
+      tags = hash_including(tags: array_including("added_params:new_param", "removed_params:#{old_param}", "new_version:#{fastly_version.number}"))
+
+      expect(DatadogStatsClient).to have_received(:increment).with("fastly.whitelist", tags)
     end
   end
 end
