@@ -12,6 +12,7 @@ export const COMMENT_SUBSCRIPTION_TYPE = Object.freeze({
   ALL: 'all_comments',
   TOP: 'top_level_comments',
   AUTHOR: 'only_author_comments',
+  NOT_SUBSCRIBED: 'not_subscribed',
 });
 
 export class CommentSubscription extends Component {
@@ -104,7 +105,7 @@ export class CommentSubscription extends Component {
             variant="outlined"
             onClick={(_event) => {
               if (subscribed) {
-                onUnsubscribe();
+                onUnsubscribe(COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED);
               } else {
                 onSubscribe(subscriptionType);
               }
@@ -143,7 +144,7 @@ export class CommentSubscription extends Component {
                 <RadioButton
                   id="subscribe-all"
                   name="subscribe_comments"
-                  value="all_comments"
+                  value={COMMENT_SUBSCRIPTION_TYPE.ALL}
                   checked={subscriptionType === COMMENT_SUBSCRIPTION_TYPE.ALL}
                   onClick={this.commentSubscriptionClick}
                 />
@@ -159,7 +160,7 @@ export class CommentSubscription extends Component {
                 <RadioButton
                   id="subscribe-toplevel"
                   name="subscribe_comments"
-                  value="top_level_comments"
+                  value={COMMENT_SUBSCRIPTION_TYPE.TOP}
                   onClick={this.commentSubscriptionClick}
                   checked={subscriptionType === COMMENT_SUBSCRIPTION_TYPE.TOP}
                 />
@@ -179,7 +180,7 @@ export class CommentSubscription extends Component {
                 <RadioButton
                   id="subscribe-author"
                   name="subscribe_comments"
-                  value="only_author_comments"
+                  value={COMMENT_SUBSCRIPTION_TYPE.AUTHOR}
                   onClick={this.commentSubscriptionClick}
                   checked={
                     subscriptionType === COMMENT_SUBSCRIPTION_TYPE.AUTHOR
