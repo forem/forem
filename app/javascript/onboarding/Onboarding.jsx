@@ -2,7 +2,7 @@ import 'preact/devtools';
 import { h, Component } from 'preact';
 
 import IntroSlide from './components/IntroSlide';
-import EmailListTermsConditionsForm from './components/EmailListTermsConditionsForm';
+import EmailPreferencesForm from './components/EmailPreferencesForm';
 import ClosingSlide from './components/ClosingSlide';
 import FollowTags from './components/FollowTags';
 import FollowUsers from './components/FollowUsers';
@@ -20,10 +20,10 @@ export default class Onboarding extends Component {
 
     const slides = [
       IntroSlide,
-      EmailListTermsConditionsForm,
       ProfileForm,
       FollowTags,
       FollowUsers,
+      EmailPreferencesForm,
       ClosingSlide,
     ];
 
