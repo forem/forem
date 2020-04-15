@@ -599,10 +599,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   }
 
   .checkbox-form-wrapper {
-    padding: 32px;
+    padding: $su-7;
 
     .checkbox-form {
-      padding-bottom: 24px;
+      padding-bottom: $su-6;
     }
   }
 
@@ -645,5 +645,5 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     .onboarding-form-input--last {
       margin-bottom: 25px;
     }
-  }  
+  }
 }
