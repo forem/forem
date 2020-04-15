@@ -1,3 +1,5 @@
+require_relative "../lib/acts_as_taggable_on/tag.rb"
+
 class Tag < ActsAsTaggableOn::Tag
   attr_accessor :points
 
@@ -31,11 +33,16 @@ class Tag < ActsAsTaggableOn::Tag
 
   after_commit :bust_cache
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: [:update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   include Searchable
   SEARCH_SERIALIZER = Search::TagSerializer
   SEARCH_CLASS = Search::Tag
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::Tag
+
+  # This model doesn't inherit from ApplicationRecord so this has to be included
+  include Purgeable
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates
@@ -87,7 +94,7 @@ class Tag < ActsAsTaggableOn::Tag
     self.hotness_score = Article.tagged_with(name).
       where("articles.featured_number > ?", 7.days.ago.to_i).
       map do |article|
-        (article.comments_count * 14) + (article.reactions_count * 4) + rand(6) + ((taggings_count + 1) / 2)
+        (article.comments_count * 14) + article.score + rand(6) + ((taggings_count + 1) / 2)
       end.
       sum
   end

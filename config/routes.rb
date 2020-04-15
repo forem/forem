@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   }
 
   require "sidekiq/web"
+  require "sidekiq_unique_jobs/web"
+
   authenticated :user, ->(user) { user.tech_admin? } do
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
     Sidekiq::Web.set :sessions, Rails.application.config.session_options
@@ -52,6 +54,8 @@ Rails.application.routes.draw do
     resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
     resources :mods, only: %i[index update]
+    resources :moderator_actions, only: %i[index]
+    resources :negative_reactions, only: %i[index]
     resources :permissions, only: %i[index]
     resources :podcasts, only: %i[index edit update destroy] do
       member do
@@ -61,6 +65,7 @@ Rails.application.routes.draw do
       end
     end
     resources :reactions, only: [:update]
+    resources :response_templates, only: %i[index new edit create update destroy]
     resources :chat_channels, only: %i[index create update]
     resources :reports, only: %i[index show], controller: "feedback_messages" do
       collection do
@@ -78,6 +83,7 @@ Rails.application.routes.draw do
         post "merge"
         delete "remove_identity"
         post "recover_identity"
+        post "send_email"
       end
     end
     resources :organization_memberships, only: %i[update destroy create]
@@ -113,7 +119,6 @@ Rails.application.routes.draw do
       resources :comments, only: %i[index show]
       resources :videos, only: [:index]
       resources :podcast_episodes, only: [:index]
-      resources :reactions, only: [:create]
       resources :users, only: %i[show] do
         collection do
           get :me
@@ -148,7 +153,7 @@ Rails.application.routes.draw do
 
   resources :messages, only: [:create]
   resources :chat_channels, only: %i[index show create update]
-  resources :chat_channel_memberships, only: %i[create update destroy]
+  resources :chat_channel_memberships, only: %i[index create edit update destroy]
   resources :articles, only: %i[update create destroy]
   resources :article_mutes, only: %i[update]
   resources :comments, only: %i[create update destroy] do
@@ -162,6 +167,7 @@ Rails.application.routes.draw do
   end
   resources :twitch_live_streams, only: :show, param: :username
   resources :reactions, only: %i[index create]
+  resources :response_templates, only: %i[create edit update destroy]
   resources :feedback_messages, only: %i[index create]
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
@@ -174,7 +180,6 @@ Rails.application.routes.draw do
       get "/onboarding", to: "tags#onboarding"
     end
   end
-  resources :downloads, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
   resources :github_repos, only: %i[index create update] do
@@ -210,6 +215,7 @@ Rails.application.routes.draw do
   resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
   resources :podcasts, only: %i[new create]
   resources :article_approvals, only: %i[create]
+  resources :video_chats, only: %i[show]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
   namespace :followings, defaults: { format: :json } do
     get :users
@@ -224,6 +230,7 @@ Rails.application.routes.draw do
   get "/search/chat_channels" => "search#chat_channels"
   get "/search/classified_listings" => "search#classified_listings"
   get "/search/users" => "search#users"
+  get "/search/feed_content" => "search#feed_content"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"
@@ -246,6 +253,7 @@ Rails.application.routes.draw do
   get "/chat_channels/:id/channel_info", to: "chat_channels#channel_info", as: :chat_channel_info
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
+  post "/chat_channel_memberships/remove_membership" => "chat_channel_memberships#remove_membership"
   delete "/messages/:id" => "messages#destroy"
   patch "/messages/:id" => "messages#update"
   get "/live/:username" => "twitch_live_streams#show"
@@ -298,18 +306,15 @@ Rails.application.routes.draw do
   get "/code-of-conduct" => "pages#code_of_conduct"
   get "/report-abuse" => "pages#report_abuse"
   get "/faq" => "pages#faq"
-  get "/live" => "pages#live"
-  get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
   get "/challenge" => "pages#challenge"
+  get "/checkin" => "pages#checkin"
   get "/badge" => "pages#badge"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
-  get "/now" => "pages#now"
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
-  get "/sponsorship-info" => "pages#sponsorship_faq"
   get "/sponsors" => "pages#sponsors"
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
@@ -318,21 +323,24 @@ Rails.application.routes.draw do
   get "/shop", to: redirect("https://shop.dev.to/")
   get "/mod" => "moderations#index", :as => :mod
   get "/mod/:tag" => "moderations#index"
+  get "/page/crayons" => "pages#crayons"
+
+  get "/p/rlyweb", to: redirect("/rlyweb")
 
   post "/fallback_activity_recorder" => "ga_events#create"
 
   get "/page/:slug" => "pages#show"
 
   scope "p" do
-    pages_actions = %w[rly rlyweb welcome twitter_moniter editor_guide publishing_from_rss_guide information
-                       markdown_basics scholarships wall_of_patrons badges]
+    pages_actions = %w[welcome editor_guide publishing_from_rss_guide information markdown_basics badges].freeze
     pages_actions.each do |action|
       get action, action: action, controller: "pages"
     end
   end
 
   get "/settings/(:tab)" => "users#edit", :as => :user_settings
-  get "/settings/:tab/:org_id" => "users#edit"
+  get "/settings/:tab/:org_id" => "users#edit", :constraints => { tab: /organization/ }
+  get "/settings/:tab/:id" => "users#edit", :constraints => { tab: /response-templates/ }
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
   get "/dashboard/pro" => "dashboards#pro"
@@ -385,6 +393,7 @@ Rails.application.routes.draw do
   get "/t/:tag/admin", to: "tags#admin"
   patch "/tag/:id", to: "tags#update"
   get "/t/:tag/top/:timeframe" => "stories#index"
+  get "/t/:tag/page/:page" => "stories#index"
   get "/t/:tag/:timeframe" => "stories#index",
       :constraints => { timeframe: /latest/ }
 
@@ -417,6 +426,8 @@ Rails.application.routes.draw do
   get "/:username/:view" => "stories#index",
       :constraints => { view: /comments|moderate|admin/ }
   get "/:username/:slug" => "stories#show"
+  get "/:sitemap" => "sitemaps#show",
+      :constraints => { format: /xml/, sitemap: /sitemap\-.+/ }
   get "/:username" => "stories#index"
 
   root "stories#index"

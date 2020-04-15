@@ -20,9 +20,8 @@ module Moderator
       merge_follows
       merge_chat_mentions
       merge_profile
-      remove_additional_email
       update_social
-      @delete_user.delete
+      Users::DeleteWorker.new.perform(@delete_user.id, true)
       @keep_user.touch(:profile_updated_at)
 
       CacheBuster.bust("/#{@keep_user.username}")
@@ -47,24 +46,6 @@ module Moderator
         @keep_user.update_columns(github_username: @old_gu) if @keep_user.github_username.nil?
         @keep_user.touch(:profile_updated_at, :last_followed_at) # clears cache on sidebar
       end
-    end
-
-    def remove_additional_email
-      return if @delete_user.email.blank?
-
-      email_attr = {
-        email_comment_notifications: false,
-        email_digest_periodic: false,
-        email_follower_notifications: false,
-        email_mention_notifications: false,
-        email_newsletter: false,
-        email_unread_notifications: false,
-        email_badge_notifications: false,
-        email_membership_newsletter: false
-      }
-
-      @delete_user.update(email_attr)
-      @delete_user.unsubscribe_from_newsletters
     end
 
     def merge_profile

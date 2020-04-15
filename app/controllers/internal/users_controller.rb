@@ -1,6 +1,10 @@
 class Internal::UsersController < Internal::ApplicationController
   layout "internal"
 
+  after_action only: %i[update user_status banish full_delete merge] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
+
   def index
     @users = case params[:state]
              when /role\-/
@@ -10,20 +14,26 @@ class Internal::UsersController < Internal::ApplicationController
              end
     return if params[:search].blank?
 
-    @users = @users.where('users.name ILIKE :search OR
+    @users = @users.where("users.name ILIKE :search OR
       users.username ILIKE :search OR
       users.github_username ILIKE :search OR
       users.email ILIKE :search OR
-      users.twitter_username ILIKE :search', search: "%#{params[:search].strip}%")
+      users.twitter_username ILIKE :search", search: "%#{params[:search].strip}%")
   end
 
   def edit
     @user = User.find(params[:id])
+    @notes = @user.notes.order(created_at: :desc).limit(10).load
   end
 
   def show
     @user = User.find(params[:id])
-    @organizations = @user.organizations
+    @organizations = @user.organizations.order(:name)
+    @notes = @user.notes.order(created_at: :desc).limit(10)
+    @organization_memberships = @user.organization_memberships.
+      joins(:organization).
+      order("organizations.name ASC").
+      includes(:organization)
   end
 
   def update
@@ -45,13 +55,9 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def banish
-    @user = User.find(params[:id])
-    begin
-      Moderator::BanishUser.call(admin: current_user, user: @user)
-    rescue StandardError => e
-      flash[:danger] = e.message
-    end
-    redirect_to "/internal/users/#{@user.id}/edit"
+    Moderator::BanishUserWorker.perform_async(current_user.id, params[:id].to_i)
+    flash[:success] = "This user is being banished in the background. The job will complete soon."
+    redirect_to "/internal/users/#{params[:id]}/edit"
   end
 
   def full_delete
@@ -72,6 +78,7 @@ class Internal::UsersController < Internal::ApplicationController
     rescue StandardError => e
       flash[:danger] = e.message
     end
+
     redirect_to "/internal/users/#{@user.id}/edit"
   end
 
@@ -99,6 +106,14 @@ class Internal::UsersController < Internal::ApplicationController
       flash[:danger] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"
+  end
+
+  def send_email
+    if NotifyMailer.user_contact_email(params).deliver
+      redirect_back(fallback_location: "/users")
+    else
+      flash[:danger] = "Email failed to send!"
+    end
   end
 
   private

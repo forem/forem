@@ -63,7 +63,6 @@ class AuthorizationService
       add_social_identity_data(user)
       user.saw_onboarding = false
       user.editor_version = "v2"
-      user.onboarding_variant_version = %w[0 0 0 1 2 3 4 5 6 6 6 7 8 8 8 8 9].sample # 0, 6 and 8 promoted due to success
       user.save!
     end
     user
@@ -111,11 +110,6 @@ class AuthorizationService
   end
 
   def flag_spam_user(user)
-    SlackBot.ping(
-      "Potential spam user! https://dev.to/#{user.username}",
-      channel: "potential-spam",
-      username: "spam_account_checker_bot",
-      icon_emoji: ":exclamation:",
-    )
+    Slack::Messengers::PotentialSpammer.call(user: user)
   end
 end

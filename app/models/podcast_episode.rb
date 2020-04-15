@@ -1,4 +1,8 @@
 class PodcastEpisode < ApplicationRecord
+  self.ignored_columns = %w[
+    duration_in_seconds
+  ]
+
   include AlgoliaSearch
   include Searchable
 
@@ -22,12 +26,13 @@ class PodcastEpisode < ApplicationRecord
   validates :media_url, presence: true, uniqueness: true
   validates :guid, presence: true, uniqueness: true
 
+  # NOTE: Any create callbacks will not be run since we use activerecord-import to create episodes
+  # https://github.com/zdennis/activerecord-import#callbacks
   after_update :purge
-  after_create :purge_all
   after_destroy :purge, :purge_all
-  after_save    :bust_cache
+  after_save :bust_cache
 
-  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :index_to_elasticsearch, on: %i[update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   before_validation :process_html_and_prefix_all_images
@@ -35,6 +40,9 @@ class PodcastEpisode < ApplicationRecord
   scope :reachable, -> { where(reachable: true) }
   scope :published, -> { joins(:podcast).where(podcasts: { published: true }) }
   scope :available, -> { reachable.published }
+  scope :for_user, lambda { |user|
+    joins(:podcast).where(podcasts: { creator_id: user.id })
+  }
 
   algoliasearch per_environment: true do
     attribute :id
@@ -63,6 +71,10 @@ class PodcastEpisode < ApplicationRecord
     end
   end
 
+  def search_id
+    "podcast_episode_#{id}"
+  end
+
   def user_username
     podcast_slug
   end
@@ -76,7 +88,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def path
-    return nil unless podcast&.slug
+    return unless podcast&.slug
 
     "/#{podcast.slug}/#{slug}"
   end
@@ -134,6 +146,14 @@ class PodcastEpisode < ApplicationRecord
 
   def liquid_tags_used
     []
+  end
+
+  def mobile_player_metadata
+    {
+      podcastName: podcast.title,
+      episodeName: title,
+      podcastImageUrl: ApplicationController.helpers.app_url(podcast.image_url)
+    }
   end
 
   private

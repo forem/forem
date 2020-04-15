@@ -39,6 +39,26 @@ RSpec.describe "/internal/config", type: :request do
         sign_in(admin_plus_config)
       end
 
+      describe "content" do
+        it "updates the community_description" do
+          description = "Hey hey #{rand(100)}"
+          post "/internal/config", params: { site_config: { community_description: description }, confirmation: confirmation_message }
+          expect(SiteConfig.community_description).to eq(description)
+        end
+
+        it "updates the community_member_description" do
+          description = "Hey hey #{rand(100)}"
+          post "/internal/config", params: { site_config: { community_member_description: description }, confirmation: confirmation_message }
+          expect(SiteConfig.community_member_description).to eq(description)
+        end
+
+        it "updates the tagline" do
+          description = "Hey hey #{rand(100)}"
+          post "/internal/config", params: { site_config: { tagline: description }, confirmation: confirmation_message }
+          expect(SiteConfig.tagline).to eq(description)
+        end
+      end
+
       describe "staff" do
         it "does not allow the staff_user_id to be updated" do
           expect(SiteConfig.staff_user_id).to eq(1)
@@ -53,11 +73,12 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.default_site_email).to eq(expected_email)
         end
 
-        it "updates social_networks_handle" do
-          expected_handle = "tpd"
-          post "/internal/config", params: { site_config: { social_networks_handle: expected_handle },
+        it "updates social_media_handles" do
+          expected_handle = { "facebook" => "tpd", "github" => "", "instagram" => "", "twitch" => "", "twitter" => "" }
+          post "/internal/config", params: { site_config: { social_media_handles: expected_handle },
                                              confirmation: confirmation_message }
-          expect(SiteConfig.social_networks_handle).to eq(expected_handle)
+          expect(SiteConfig.social_media_handles[:facebook]).to eq("tpd")
+          expect(SiteConfig.social_media_handles[:github]).to eq("")
         end
       end
 
@@ -82,10 +103,34 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.favicon_url).to eq(expected_image_url)
         end
 
+        it "updates logo_png" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { logo_png: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.logo_png).to eq(expected_image_url)
+        end
+
         it "updates logo_svg" do
           expected_image_url = "https://dummyimage.com/300x300"
           post "/internal/config", params: { site_config: { logo_svg: expected_image_url }, confirmation: confirmation_message }
           expect(SiteConfig.logo_svg).to eq(expected_image_url)
+        end
+
+        it "updates primary_sticker_image_url" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { primary_sticker_image_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.primary_sticker_image_url).to eq(expected_image_url)
+        end
+
+        it "updates mascot_image_url" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { mascot_image_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
+        end
+
+        it "updates mascot_image_description" do
+          description = "Hey hey #{rand(100)}"
+          post "/internal/config", params: { site_config: { mascot_image_description: description }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_image_description).to eq(description)
         end
 
         it "rejects update without proper confirmation" do
@@ -196,6 +241,18 @@ RSpec.describe "/internal/config", type: :request do
         it "downcases sidebar_tags" do
           post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+      end
+
+      describe "Authentication" do
+        it "removes space authentication_providers" do
+          post "/internal/config", params: { site_config: { authentication_providers: "github, twitter" }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
+        end
+
+        it "downcases authentication_providers" do
+          post "/internal/config", params: { site_config: { authentication_providers: "GitHub, Twitter" }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
         end
       end
     end

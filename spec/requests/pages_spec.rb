@@ -21,7 +21,7 @@ RSpec.describe "Pages", type: :request do
   describe "GET /about" do
     it "has proper headline" do
       get "/about"
-      expect(response.body).to include("About dev.to")
+      expect(response.body).to include("About")
     end
   end
 
@@ -49,7 +49,7 @@ RSpec.describe "Pages", type: :request do
   describe "GET /security" do
     it "has proper headline" do
       get "/security"
-      expect(response.body).to include("Reporting Vulnerabilities to dev.to")
+      expect(response.body).to include("Reporting Vulnerabilities")
     end
   end
 
@@ -64,13 +64,6 @@ RSpec.describe "Pages", type: :request do
     it "has proper headline" do
       get "/rly"
       expect(response.body).to include("O RLY Cover Generator")
-    end
-  end
-
-  describe "GET /sponsorship-info" do
-    it "has proper headline" do
-      get "/sponsorship-info"
-      expect(response.body).to include("Sponsorship Information")
     end
   end
 
@@ -98,20 +91,30 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
+  describe "GET /checkin" do
+    let_it_be(:user) { create(:user, username: "codenewbiestaff") }
+
+    it "redirects to the latest CodeNewbie staff thread" do
+      earlier_staff_thread = create(:article, user: user, tags: "staff")
+      earlier_staff_thread.update(published_at: 1.week.ago)
+      latest_staff_thread = create(:article, user: user, tags: "staff")
+      get "/checkin"
+
+      expect(response.body).to redirect_to(latest_staff_thread.path)
+    end
+
+    it "redirects to /notifications if there is no staff user post" do
+      get "/checkin"
+
+      expect(response.body).to redirect_to("/notifications")
+    end
+  end
+
   describe "GET /badge" do
     it "has proper headline" do
       html_variant = create(:html_variant, group: "badge_landing_page", published: true, approved: true)
       get "/badge"
       expect(response.body).to include(html_variant.html)
-    end
-  end
-
-  describe "GET /live" do
-    context "when nothing is live" do
-      it "shows the correct message" do
-        get "/live"
-        expect(response.body).to include("We are working on more ways to bring live coding to the community")
-      end
     end
   end
 

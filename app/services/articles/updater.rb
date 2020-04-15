@@ -11,7 +11,11 @@ module Articles
       new(*args).call
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
     def call
+      rate_limiter = RateLimitChecker.new(user)
+      raise if rate_limiter.limit_by_action("article_update")
+
       article = load_article
       was_published = article.published
 
@@ -34,6 +38,7 @@ module Articles
       article_params[:edited_at] = Time.current if update_edited_at
 
       article.update!(article_params)
+      rate_limiter.track_article_updates
 
       # send notification only the first time an article is published
       send_notification = article.published && article.saved_change_to_published_at.present?
@@ -49,6 +54,7 @@ module Articles
 
       article.decorate
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     private
 

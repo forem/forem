@@ -12,44 +12,21 @@
   .preview-div-wrapper {
     overflow: hidden;
     position: relative;
-  }
-
-  .circle {
-    border-radius: 1000px;
     background: <%= accent_color %>;
-    position: absolute;
-  }
-
-  .circle1 {
-    height: 40vw;
-    width: 40vw;
-    right: -<%= not_so_rand.rand(2..15) %>vw;
-    bottom: -<%= not_so_rand.rand(2..15) %>vw;
-  }
-
-  .circle2 {
-    height: 30vw;
-    width: 30vw;
-    left: <%= not_so_rand.rand(2..16) %>vw;
-    bottom: -<%= not_so_rand.rand(2..15) %>vw;
-  }
-
-  .circle3 {
-    height: 24vw;
-    width: 24vw;
-    left: -8vw;
-    top: -<%= not_so_rand.rand(2..6) %>vw;
   }
 
   .preview-div {
     background: #fff;
     border: 0.25vw solid<%= dark_color %>;
-    box-shadow: 0.8vw 1vw 0px<%= dark_color %>;
-    width: 88vw;
-    height: 44vw;
-    margin: 2.5vw auto 5vw;
+    box-shadow: 0.8vw 1vw 0px <%= dark_color %>;
+    width: 94vw;
+    height: 45vw;
+    margin: 2.25vw auto 5vw;
     overflow: hidden;
     position: relative;
+    border-radius: 0.3vw;
+    border-top-left-radius: 2.3vw;
+    border-top-right-radius: 2.3vw;
   }
 
   h1 {
@@ -57,7 +34,7 @@
     width: 92%;
     margin: 10vw auto 0vw;
     font-family: "Helvetica Neue", Helvetica, Arial, "Lucida Grande", "Roboto", sans-serif;
-    font-size: 12vw;
+    font-size: <%= @tag.name.size > 10 ? "9.8" : "12" %>vw;
   }
 
   h1 img {
@@ -76,22 +53,23 @@
     font-size: 6vw;
   }
 
-  .preview-dev-logo {
+  .badge-images {
     position: absolute;
-    bottom: 2.1vw;
-    right: 2.1vw;
+    bottom: 1.4vw;
+    right: 1.5vw;
     text-align: right;
   }
 
-  .logo {
+  .badge-images img {
     height: 6vw;
+    right: 6vw;
     fill: <%= dark_color %>;
+    margin-left: 0.5vw;
+    transform: rotate(5deg);
   }
+
 </style>
 <div class="preview-div-wrapper">
-  <div class="circle circle1"></div>
-  <div class="circle circle2"></div>
-  <div class="circle circle3"></div>
   <div class="preview-div">
     <h1>
       #<%= @tag.name %>
@@ -101,8 +79,15 @@
         <%= @tag.pretty_name %>
       </h2>
     <% end %>
-    <div class="preview-dev-logo">
-      <%= inline_svg_tag("devplain.svg", class: "logo", size: "9vw * 9vw", aria: false, title: "DEV logo") %>
+    <div class="badge-images">
+      <% if @tag.badge_id %>
+        <%# Use a seed in Random so we don't break cache on every render %>
+        <% @badge = Badge.find(@tag.badge_id) %>
+        <% not_so_rand = Random.new(@badge.id) %>
+        <img src="<%= @badge.badge_image_url %>" style="transform: rotate(<%= not_so_rand.rand(-6..6) %>deg);" />
+      <% end %>
+      <img src="https://thepracticaldev.s3.amazonaws.com/i/bh2wmpcltaybu1xsnico.png" />
     </div>
+  </div>
   </div>
 </div>

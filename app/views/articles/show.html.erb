@@ -1,7 +1,7 @@
 <% title @article.title %>
 
 <%= render "shared/webcomponents_loader_script" %>
-<%= javascript_pack_tag "clipboardCopy", defer: true %>
+<%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", defer: true %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
@@ -47,11 +47,11 @@
     <meta name="keywords" content="<%= @article.cached_tag_list %>, software, coding, development, engineering, inclusive, community">
 
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="https://dev.to<%= @article.path %>" />
+    <meta property="og:url" content="<%= article_url(@article) %>" />
     <meta property="og:title" content="<%= @article.title %>" />
     <meta property="og:description" content="<%= @article.description || "An article from the community" %>" />
     <meta property="og:site_name" content="<%= community_qualified_name %>" />
-    <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
+    <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
     <meta name="twitter:creator" content="@<%= @user.twitter_username %>">
     <meta name="twitter:title" content="<%= @article.title %>">
     <meta name="twitter:description" content="<%= @article.description || "An article from the community" %>">
@@ -61,8 +61,13 @@
       <meta property="og:image" content="<%= article_social_image_url(@article) %>" />
       <meta name="twitter:image:src" content="<%= article_social_image_url(@article) %>">
     <% end %>
-    <% if !@article.published || (@article.positive_reactions_count < 7 && @article.user.comments_count < 1 && !@article.featured) ||
-      @article.featured_number.to_i < 1500000000 || @article.score < -10 %>
+    <% if !@article.published ||
+      (@article.score < 5 &&
+        @article.user.comments_count < 1 &&
+        !@article.featured &&
+        @article.processed_html.exclude?("<code>")) ||
+      @article.featured_number.to_i < 1500000000 ||
+      @article.score < -1 %>
       <meta name="googlebot" content="noindex">
       <meta name="googlebot" content="nofollow">
     <% end %>
@@ -81,15 +86,15 @@
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
     <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntity">
-      <meta itemprop="url" content="https://dev.to<%= @article.path %>">
+      <meta itemprop="url" content="<%= article_url(@article) %>">
       <meta itemprop="image" content="<%= article_social_image_url(@article) %>">
       <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
         <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
-          <meta itemprop="url" content="<%= asset_path "android-icon-192x192.png" %>">
+          <meta itemprop="url" content="<%= cloudinary(SiteConfig.logo_png, 192, "png") %>">
           <meta itemprop="width" content="192">
           <meta itemprop="height" content="192">
         </div>
-        <meta itemprop="name" content="DEV Community">
+        <meta itemprop="name" content="<%= community_qualified_name %>">
       </div>
       <section>
         <% if !@article.published %>
@@ -120,7 +125,7 @@
         </h1>
         <h3>
           <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-            <meta itemprop="url" content="https://dev.to/<%= @user.username %>">
+            <meta itemprop="url" content="<%= user_url(@user) %>">
             <a href="/<%= @user.username %>" class="author">
               <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
               <span itemprop="name"><%= @user.name %></span>
@@ -156,7 +161,7 @@
             </span>
           <% end %>
           <span class="published-at">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
-          <span class="action-space" id="action-space"></span>
+          <span class="action-space" id="action-space">&nbsp;</span>
         </h3>
         <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
           <div class="tags">
@@ -167,14 +172,22 @@
           </div>
         <% end %>
       </header>
-      <% if @article.collection_id %>
-        <%= render "articles/collection", position: "top" %>
+      <% if @collection %>
+        <%= render "articles/collection",
+                   rendered_article: @article,
+                   collection: @collection,
+                   articles: @collection_articles,
+                   position: :top %>
       <% end %>
       <div class="body" data-article-id="<%= @article.id %>" id="article-body" itemprop="articleBody">
         <%= @article.processed_html.html_safe %>
       </div>
-      <% if @article.body_markdown && @article.body_markdown.size > 900 && @article.collection_id %>
-        <%= render "articles/collection", position: "bottom" %>
+      <% if @article.body_markdown && @article.body_markdown.size > 900 && @collection %>
+        <%= render "articles/collection",
+                   rendered_article: @article,
+                   collection: @collection,
+                   articles: @collection_articles,
+                   position: :bottom %>
       <% end %>
       <%= render "articles/actions" %>
     </article>
@@ -192,7 +205,7 @@
       <%= render "additional_content_boxes/article_box",
                  article: @classic_article,
                  classification: "classic",
-                 classification_text: "Classic DEV Post from #{@classic_article.readable_publish_date}",
+                 classification_text: "Classic #{community_name} Post from #{@classic_article.readable_publish_date}",
                  follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
     <% end %>
     <div id="additional-content-area" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>
@@ -227,5 +240,3 @@
     <%= TweetTag.script.html_safe %>
   </script>
 <% end %>
-
-<%= javascript_pack_tag "webShare", defer: true %>

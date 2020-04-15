@@ -25,9 +25,9 @@ class FollowUsers extends Component {
       },
       credentials: 'same-origin',
     })
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ users: data, selectedUsers: data });
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({ users: data });
       });
 
     const csrfToken = getContentOfToken('csrf-token');
@@ -79,7 +79,7 @@ class FollowUsers extends Component {
     let { selectedUsers } = this.state;
 
     if (!selectedUsers.includes(user)) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         selectedUsers: [...prevState.selectedUsers, user],
       }));
     } else {
@@ -92,43 +92,86 @@ class FollowUsers extends Component {
     }
   }
 
+  userFollowCountMessage() {
+    const { users, selectedUsers } = this.state;
+    let followingStatus;
+    if (selectedUsers.length === 0) {
+      followingStatus = "You're not following anyone";
+    } else if (selectedUsers.length === 1) {
+      followingStatus = "You're following 1 person";
+    } else if (selectedUsers.length === users.length) {
+      followingStatus = `You're following ${selectedUsers.length} people (everyone)`;
+    } else {
+      followingStatus = `You're following ${selectedUsers.length} people`;
+    }
+
+    return followingStatus;
+  }
+
+  renderFollowToggle() {
+    const { users, selectedUsers } = this.state;
+    if (users.length === 0) {
+      return '';
+    }
+
+    return (
+      <button type="button" onClick={() => this.handleSelectAll()}>
+        {selectedUsers.length !== users.length
+          ? `Select all ${users.length} people`
+          : 'Deselect all'}
+      </button>
+    );
+  }
+
   render() {
     const { users, selectedUsers } = this.state;
     const { prev } = this.props;
+
     return (
       <div className="onboarding-main">
-        <div className="onboarding-content">
-          <h2>Ok, here are some people we picked for you</h2>
-          <div className="scroll">
-            <div className="select-all-button-wrapper">
-              <button type="button" onClick={() => this.handleSelectAll()}>
-                Select All 
-                {' '}
-                {selectedUsers.length === users.length ? '✅' : ''}
-              </button>
-            </div>
-            {users.map(user => (
+        <Navigation prev={prev} next={this.handleComplete} />
+        <div className="onboarding-content toggle-bottom">
+          <header className="onboarding-content-header">
+            <h1 className="title">Suggested people to follow</h1>
+            <h2 className="subtitle">Let&apos;s review a few things first</h2>
+          </header>
+
+          <div className="onboarding-modal-scroll-container">
+            {users.map((user) => (
               <button
                 type="button"
-                style={{
-                  backgroundColor: selectedUsers.includes(user)
-                    ? '#c7ffe8'
-                    : 'white',
-                }}
                 onClick={() => this.handleClick(user)}
-                className="user"
+                onKeyDown={() => this.handleKeyDown(user)}
+                className={
+                  selectedUsers.includes(user)
+                    ? 'user content-row selected'
+                    : 'user content-row unselected'
+                }
               >
-                <div className="onboarding-user-follow-status">
-                  {selectedUsers.includes(user) ? 'selected' : ''}
+                <figure className="user-avatar-container">
+                  <img
+                    className="user-avatar"
+                    src={user.profile_image_url}
+                    alt="profile"
+                  />
+                </figure>
+                <div className="user-info">
+                  <h4 className="user-name">{user.name}</h4>
+                  <p className="user-summary">{user.summary}</p>
                 </div>
-                <img src={user.profile_image_url} alt="" />
-                <span>{user.name}</span>
-                <p>{user.summary}</p>
+                <button type="button" className="user-following-status">
+                  {selectedUsers.includes(user) ? 'Following' : 'Follow'}
+                </button>
               </button>
             ))}
           </div>
         </div>
-        <Navigation prev={prev} next={this.handleComplete} />
+        <div className="onboarding-selection-status">
+          <div className="selection-status-content">
+            <p>{this.userFollowCountMessage()}</p>
+            {this.renderFollowToggle()}
+          </div>
+        </div>
       </div>
     );
   }

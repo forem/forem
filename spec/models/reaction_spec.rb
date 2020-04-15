@@ -68,6 +68,61 @@ RSpec.describe Reaction, type: :model do
     end
   end
 
+  describe "#after_commit" do
+    context "when category is readingList and reactable is published" do
+      it "on update enqueues job to index reaction to elasticsearch" do
+        reaction.save
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, reaction.id]) do
+          reaction.update(category: "readinglist")
+        end
+      end
+
+      it "on create enqueues job to index reaction to elasticsearch" do
+        reaction.category = "readinglist"
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker) do
+          reaction.save
+        end
+      end
+
+      it "on destroy enqueues job to delete reaction from elasticsearch" do
+        reaction.category = "readinglist"
+        reaction.save
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, reaction.id]) do
+          reaction.destroy
+        end
+      end
+    end
+
+    context "when category is not readinglist" do
+      before do
+        reaction.category = "like"
+        allow(reaction.user).to receive(:index_to_elasticsearch)
+        allow(reaction.reactable).to receive(:index_to_elasticsearch)
+        sidekiq_perform_enqueued_jobs
+      end
+
+      it "on update does not enqueue job to index reaction to elasticsearch" do
+        reaction.save
+        sidekiq_assert_no_enqueued_jobs(only: Search::IndexToElasticsearchWorker) do
+          reaction.update(category: "unicorn")
+        end
+      end
+
+      it "on create does not enqueue job to index reaction to elasticsearch" do
+        sidekiq_assert_no_enqueued_jobs(only: Search::IndexToElasticsearchWorker) do
+          reaction.save
+        end
+      end
+
+      it "on destroy does not enqueue job to delete reaction from elasticsearch" do
+        reaction.save
+        sidekiq_assert_no_enqueued_jobs(only: Search::RemoveFromElasticsearchIndexWorker) do
+          reaction.destroy
+        end
+      end
+    end
+  end
+
   describe "#skip_notification_for?" do
     let_it_be(:receiver) { build(:user) }
     let_it_be(:reaction) { build(:reaction, reactable: build(:article), user: nil) }
@@ -122,6 +177,36 @@ RSpec.describe Reaction, type: :model do
         { category: "unicorn", count: 1 },
       ]
       expect(described_class.count_for_article(article.id)).to eq(expected_result)
+    end
+  end
+
+  context "when callbacks are called after create" do
+    describe "slack messages" do
+      let_it_be_changeable(:user) { create(:user, :trusted) }
+      let_it_be_readonly(:article) { create(:article, user: user) }
+
+      before do
+        # making sure there are no other enqueued jobs from other tests
+        sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
+      end
+
+      it "queues a slack message to be sent for a vomit reaction" do
+        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+          create(:reaction, reactable: article, user: user, category: "vomit")
+        end
+      end
+
+      it "does not queue a message for a like reaction" do
+        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+          create(:reaction, reactable: article, user: user, category: "like")
+        end
+      end
+
+      it "does not queue a message for a thumbsdown reaction" do
+        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+          create(:reaction, reactable: article, user: user, category: "thumbsdown")
+        end
+      end
     end
   end
 

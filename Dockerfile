@@ -1,4 +1,4 @@
-FROM ruby:2.6.5-alpine3.10
+FROM ruby:2.7.1-alpine3.10
 
 #------------------------------------------------------------------------------
 #
@@ -6,14 +6,15 @@ FROM ruby:2.6.5-alpine3.10
 #
 #------------------------------------------------------------------------------
 RUN apk update -qq && apk add git nodejs postgresql-client ruby-dev build-base \
-  less libxml2-dev libxslt-dev pcre-dev libffi-dev postgresql-dev tzdata imagemagick
+  less libxml2-dev libxslt-dev pcre-dev libffi-dev postgresql-dev tzdata imagemagick \
+  libcurl curl-dev
 
 #------------------------------------------------------------------------------
 #
 # Install required bundler version
 #
 #------------------------------------------------------------------------------
-RUN gem install bundler:2.0.2
+RUN gem install bundler:2.1.4
 
 #------------------------------------------------------------------------------
 #
@@ -70,6 +71,10 @@ ENV	DATABASE_URL="postgresql://devto:devto@db:5432/PracticalDeveloper_developmen
 # DB setup / migrate script triggers on boot
 ENV DB_SETUP="false" \
   DB_MIGRATE="false"
+
+# In order for redis to work, these should be set
+ENV REDIS_URL="redis://redis:6379" \
+  REDIS_SESSIONS_URL="redis://redis:6379"
 
 #
 # Let's setup the public uploads folder volume

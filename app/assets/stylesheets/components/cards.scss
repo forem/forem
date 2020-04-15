@@ -1,0 +1,31 @@
+@import '../config/import';
+
+$card-divider: 1px solid var(--body-bg);
+
+.crayons-card {
+  border-radius: $br-default;
+  background: var(--card-bg);
+  color: var(--card-color);
+
+  &--secondary {
+    background: var(--card-secondary-bg);
+    color: var(--card-secondary-color);
+  }
+
+  &__header {
+    padding: $su-4 $su-4;
+    border-bottom: $card-divider;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__title {
+    color: var(--card-headline);
+    font-weight: $fw-bold;
+  }
+
+  &__body {
+    padding: $su-4;
+  }
+}

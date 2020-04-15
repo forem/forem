@@ -1,13 +1,13 @@
 require "rails_helper"
 
-RSpec.describe Search::User, type: :service, elasticsearch: true do
+RSpec.describe Search::User, type: :service do
   it "defines INDEX_NAME, INDEX_ALIAS, and MAPPINGS", :aggregate_failures do
     expect(described_class::INDEX_NAME).not_to be_nil
     expect(described_class::INDEX_ALIAS).not_to be_nil
     expect(described_class::MAPPINGS).not_to be_nil
   end
 
-  describe "::search_documents" do
+  describe "::search_documents", elasticsearch: true do
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }
 
@@ -29,6 +29,20 @@ RSpec.describe Search::User, type: :service, elasticsearch: true do
         expect(user_docs.count).to eq(2)
         doc_ids = user_docs.map { |t| t.dig("id") }
         expect(doc_ids).to include(user1.id, user2.id)
+      end
+    end
+
+    context "with a filter" do
+      it "searches by excluding roles" do
+        user1.add_role(:admin)
+        user2.add_role(:banned)
+        index_documents([user1, user2])
+        query_params = { size: 5, exclude_roles: ["banned"] }
+
+        user_docs = described_class.search_documents(params: query_params)
+        expect(user_docs.count).to eq(1)
+        doc_ids = user_docs.map { |t| t.dig("id") }
+        expect(doc_ids).to match_array([user1.id])
       end
     end
   end

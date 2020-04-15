@@ -1,28 +1,15 @@
-<%= javascript_pack_tag "colorPreview", defer: true %>
+<%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", defer: true %>
 
-<% unless @user.identities.exists?(provider: 'github') %>
-  <div class="field">
-    <a href="/users/auth/github" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path("github-logo.svg") %>" alt="github logo" /> CONNECT GITHUB ACCOUNT
-    </a>
-  </div>
-<% end %>
+<%= render "users/additional_authentication" %>
 
-<% unless @user.identities.exists?(provider: 'twitter') %>
-  <div class="field">
-    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path("twitter-logo.svg") %>" alt="twitter logo" /> CONNECT TWITTER ACCOUNT
-    </a>
-  </div>
-<% end %>
 <h4>
   <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= current_user.username %>" aria-label="Go to your profile page">
     <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg"
-         alt="DEV badge"
+         alt="<%= community_name %> badge"
          height="28" width="28"
          style="vertical-align:-7px;margin-right:4px;" class="dev-badge" />
   </a>
-  Add the DEV badge to your personal site. <a href="/p/badges">Click here for the code</a>
+  Add the <%= community_name %> badge to your personal site. <a href="/p/badges">Click here for the code</a>
 </h4>
 <%= form_for(@user) do |f| %>
   <div class="field">
@@ -46,7 +33,7 @@
     <% if @user.profile_image_url.present? %>
       <span class="image-present">
         <img alt="<%= @user.username %> profile image" src="<%= ProfileImage.new(@user).get(width: 50) %>" />
-        <%= f.file_field :profile_image %>
+        <%= f.file_field :profile_image, accept: "image/*" %>
       </span>
     <% end %>
   </div>

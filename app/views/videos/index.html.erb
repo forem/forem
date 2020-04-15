@@ -1,27 +1,27 @@
 <%= content_for :page_meta do %>
-  <% title "Videos" %>
+  <% title("#{community_name} Videos") %>
 
-  <link rel="canonical" href="https://dev.to<%= request.path %>" />
-  <meta name="description" content="Where programmers share ideas and help each other grow.">
+  <link rel="canonical" href="<%= app_url(request.path) %>" />
+  <meta name="description" content="<%= SiteConfig.community_description %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://dev.to<%= request.path %>" />
+  <meta property="og:url" content="<%= app_url(request.path) %>" />
   <meta property="og:title" content="<% title "Videos" %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>">
-  <meta property="og:description" content="All videos on DEV" />
+  <meta property="og:description" content="All videos on <%= community_name %>" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
-  <meta name="twitter:site" content="@ThePracticalDev">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="<% title "Videos" %>">
-  <meta name="twitter:description" content="All videos on DEV">
+  <meta name="twitter:description" content="All videos on <%= community_name %>">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 
 <div class="home video-page-title" id="index-container" data-which="videos" data-params="<%= params.to_json(only: %i[tag username q]) %>">
   <header>
-    <h1>DEV on Video</h1>
+    <h1><%= community_name %> on Video</h1>
   </header>
   <div class="video-collection" id="video-collection">
     <% @video_articles.each do |video_article| %>

@@ -51,18 +51,9 @@ allowed_sites = [
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
-# tell VCR to ignore browsers download sites
-# see <https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock>
-VCR.configure do |config|
-  config.ignore_hosts(
-    "chromedriver.storage.googleapis.com",
-    "github.com/mozilla/geckodriver/releases",
-    "selenium-release.storage.googleapis.com",
-    "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
-  )
-end
-
 RSpec::Matchers.define_negated_matcher :not_change, :change
+
+Rack::Attack.enabled = false
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
@@ -79,15 +70,23 @@ RSpec.configure do |config|
   config.include SidekiqTestHelpers
   config.include ElasticsearchHelpers, elasticsearch: true
 
-  config.before do
-    ActiveRecord::Base.observers.disable :all # <-- Turn 'em all off!
+  config.before(:suite) do
+    Search::Cluster.recreate_indexes
+  end
 
+  config.before do
     Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
   end
 
   config.around(:each, elasticsearch: true) do |example|
     Search::Cluster.recreate_indexes
     example.run
+  end
+
+  config.around(:each, throttle: true) do |example|
+    Rack::Attack.enabled = true
+    example.run
+    Rack::Attack.enabled = false
   end
 
   config.after do
@@ -103,7 +102,7 @@ RSpec.configure do |config|
     end
   end
 
-  # Allow testing with Stripe's test server. BECAREFUL
+  # Allow testing with Stripe's test server. BE CAREFUL
   if config.filter_manager.inclusions.rules.include?(:live)
     WebMock.allow_net_connect!
     StripeMock.toggle_live(true)
@@ -114,7 +113,7 @@ RSpec.configure do |config|
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
 
     stub_request(:post, /api.fastly.com/).
-      to_return(status: 200, body: "", headers: {})
+      to_return(status: 200, body: "".to_json, headers: {})
 
     stub_request(:post, /api.bufferapp.com/).
       to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
@@ -136,9 +135,4 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-end
-
-Doorkeeper.configure do
-  # hash_token_secrets on its own won't work in test
-  hash_token_secrets fallback: :plain
 end

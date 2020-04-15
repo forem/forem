@@ -18,7 +18,7 @@
               <%= render "articles/single_sponsor", sponsorship: sponsorship %>
             <% end %>
             <div class="sidebar-sponsor--footer">
-              We are grateful for wonderful sponsors who help sustain the <%= ApplicationConfig["COMMUNITY_NAME"] %> community.<br>
+              We are grateful for wonderful sponsors who help sustain the <%= community_qualified_name %>.<br>
               <a href="/sponsorship-info">Sponsorship Info/Policy</a>
             </div>
           </div>
@@ -28,17 +28,14 @@
         <header>
           <h4>Key links</h4>
         </header>
-        <div class="widget-body">
-          <a href="https://twitter.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="Twitter logo" class="social-icon" /></a>
-          <a href="https://github.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" alt="GitHub logo" class="social-icon" /></a>
-          <a href="https://instagram.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" alt="Instagram logo" class="social-icon" /></a>
-          <a href="https://facebook.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" alt="Facebook logo" class="social-icon" /></a>
-          <a href="https://twitch.tv/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" alt="Twitch logo" class="social-icon" /></a>
+        <div class="widget-body social-icons">
+          <%= render partial: "layouts/social_media" %>
         </div>
+
         <div class="side-footer">
           <a href="/about">About</a>
           <a href="/sponsors">Sponsors</a>
-          <a href="https://shop.dev.to/"><%= ApplicationConfig["COMMUNITY_NAME"] %> Shop</a>
+          <a href="https://shop.dev.to/"><%= community_name %> Shop</a>
           <a href="/privacy">Privacy Policy</a>
           <a href="/terms">Terms of Use</a>
           <a href="/contact">Contact</a>

@@ -1,60 +1,29 @@
-<div class="top-bar--menu-dropdown">
+<div class="crayons-dropdown left-2 right-2 s:left-auto p-0 top-bar__menu__dropdown">
   <% if user_signed_in? %>
-    <div id="user-profile-link-placeholder">
-      <div class="option">
-        ...
-      </div>
+    <div id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1">...</div>
+
+    <div class="border-0 border-b-1 border-solid border-base-20 p-1">
+      <a href="/dashboard" class="crayons-link crayons-link--block">Dashboard</a>
+      <a href="/new" class="crayons-link crayons-link--block">Write a Post</a>
+      <a href="/readinglist" class="crayons-link crayons-link--block">Reading List</a>
+      <a href="/settings" class="crayons-link crayons-link--block">Settings</a>
+      <a href="/p/information" class="crayons-link crayons-link--block" id="second-last-nav-link">Key Links</a>
     </div>
-    <a href="/dashboard">
-      <div class="option">
-        Dashboard
-      </div>
-    </a>
-    <a href="/new">
-      <div class="option">
-        Write a Post
-      </div>
-    </a>
-    <a href="/readinglist">
-      <div class="option">
-        Reading List
-      </div>
-    </a>
-    <a href="/settings">
-      <div class="option">
-        Settings
-      </div>
-    </a>
-    <a href="/p/information" id="second-last-nav-link">
-      <div class="option">
-        Key Links
-      </div>
-    </a>
-    <a href="/signout_confirm" id="last-nav-link">
-      <div class="option">
-        Sign Out
-      </div>
-    </a>
+    <div class="p-1">
+      <a href="/signout_confirm" class="crayons-link crayons-link--block" id="last-nav-link">Sign Out</a>
+    </div>
   <% else %>
-    <a href="/enter" data-no-instant id="first-nav-link">
-      <div class="header">
-        Sign In/Up
-      </div>
-    </a>
-    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" data-no-instant>
-      <div class="option">
-        Via Twitter
-      </div>
-    </a>
-    <a href="/users/auth/github?state=navbar_basic" data-no-instant id="second-last-nav-link">
-      <div class="option">
-        Via GitHub
-      </div>
-    </a>
-    <a href="/p/information" id="last-nav-link">
-      <div class="option">
-        All about dev.to
-      </div>
-    </a>
+    <div class="border-0 border-b-1 border-solid border-base-20 p-1">
+      <a href="/enter" data-no-instant id="first-nav-link" class="crayons-link crayons-link--block fw-medium">Sign In/Up</a>
+      <% if SiteConfig.auth_allowed?("twitter") %>
+        <a href="/users/auth/twitter?callback_url=<%= app_url("/users/auth/twitter/callback") %>" class="crayons-link crayons-link--block pl-5" data-no-instant>Via Twitter</a>
+      <% end %>
+      <% if SiteConfig.auth_allowed?("github") %>
+        <a href="/users/auth/github?state=navbar_basic" class="crayons-link crayons-link--block pl-5" data-no-instant id="second-last-nav-link">Via GitHub</a>
+      <% end %>
+    </div>
+    <div class="p-1">
+      <a href="/p/information" class="crayons-link crayons-link--block" id="last-nav-link">All about <%= community_name %></a>
+    </div>
   <% end %>
 </div>

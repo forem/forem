@@ -1,6 +1,9 @@
 class Internal::TagsController < Internal::ApplicationController
-  include AuditInstrumentation
   layout "internal"
+
+  after_action only: [:update] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
 
   def index
     @tags = if params[:state] == "supported"
@@ -25,7 +28,6 @@ class Internal::TagsController < Internal::ApplicationController
     remove_moderator if @remove_user_id
     @tag.update!(tag_params)
 
-    notify(:internal, current_user, __method__) { tag_params.dup }
     redirect_to "/internal/tags/#{params[:id]}"
   end
 

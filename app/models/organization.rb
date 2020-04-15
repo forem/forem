@@ -24,7 +24,6 @@ class Organization < ApplicationRecord
             length: { maximum: 250 }
   validates :tag_line,
             length: { maximum: 60 }
-  validates :jobs_email, email: true, allow_blank: true
   validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
   validates :slug,
@@ -54,6 +53,8 @@ class Organization < ApplicationRecord
   before_validation :evaluate_markdown
 
   validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
+
+  after_commit :sync_related_elasticsearch_docs, on: %i[update destroy]
 
   mount_uploader :profile_image, ProfileImageUploader
   mount_uploader :nav_image, ProfileImageUploader
@@ -137,6 +138,10 @@ class Organization < ApplicationRecord
   end
 
   def unique_slug_including_users_and_podcasts
-    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Podcast.find_by(slug: slug) || Page.find_by(slug: slug)
+    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Podcast.find_by(slug: slug) || Page.find_by(slug: slug) || slug.include?("sitemap-")
+  end
+
+  def sync_related_elasticsearch_docs
+    DataSync::Elasticsearch::Organization.new(self).call
   end
 end

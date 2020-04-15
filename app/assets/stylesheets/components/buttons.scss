@@ -1,4 +1,6 @@
-@import '../vars/variables';
+@import '../config/import';
+
+$outlined-border-width: 2px;
 
 // Basic styling
 .crayons-btn {
@@ -15,87 +17,85 @@
   text-decoration: none;
   cursor: pointer;
   transition: all $transition-props;
+  border: none;
 }
 
 // Styles
 .crayons-btn {
-  background-color: $dolphin;
-  color: $snowflake;
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-color);
 
   &--disabled,
   &[disabled] {
-    color: rgba($snowflake, 0.8);
-    background-color: $dolphin-lighter;
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 
-  &:hover {
-    background-color: $dolphin-darker;
+  &:enabled:not(&--disabled):hover,
+  &:enabled:not(&--disabled):active,
+  &--active:enabled:not(&--disabled) {
+    background-color: var(--button-primary-bg-hover);
+    color: var(--button-primary-color-hover);
+    z-index: 2;
   }
 
   &--secondary {
-    background-color: $smoke-20;
-    color: $smoke-80;
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-color);
 
-    &--disabled,
-    &[disabled] {
-      color: $smoke-40;
-      background-color: $smoke-10;
-    }
-
-    &:hover {
-      color: $smoke-100;
-      background-color: $smoke-30;
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
+      background-color: var(--button-secondary-bg-hover);
+      color: var(--button-secondary-color-hover);
     }
   }
 
   &--outlined {
-    border: 2px solid $smoke-30;
-    color: $smoke-80;
+    padding: calc(0.5em - #{$outlined-border-width})
+      calc(1em - #{$outlined-border-width});
     background-color: transparent;
+    border: $outlined-border-width solid var(--button-outlined-bg);
+    color: var(--button-outlined-color);
 
-    &--disabled,
-    &[disabled] {
-      color: $smoke-40;
-      border-color: $smoke-20;
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
       background-color: transparent;
-    }
-
-    &:hover {
-      color: $smoke-100;
-      border-color: $smoke-40;
-      background-color: transparent;
+      color: var(--button-outlined-color-hover);
+      border-color: var(--button-outlined-bg-hover);
     }
   }
 
   &--danger {
-    background-color: $raspberry;
+    background-color: var(--accent-danger);
+    color: var(--base-inverted);
 
-    &--disabled,
-    &[disabled] {
-      color: rgba($snowflake, 0.8);
-      background-color: $raspberry-lighter;
-    }
-
-    &:hover {
-      background-color: $raspberry-darker;
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
+      background-color: var(--accent-danger-darker);
+      color: var(--base-inverted);
     }
   }
 
   &--text {
     background-color: transparent;
-    color: $dolphin;
+    color: var(--link-brand);
 
-    &--disabled,
-    &[disabled] {
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
       background-color: transparent;
-      color: $dolphin-lighter;
-    }
-
-    &:hover {
-      background-color: transparent;
-      color: $dolphin-darker;
+      color: var(--link-brand-hover);
     }
   }
+}
+
+// Icon alone
+.crayons-btn--icon-alone {
+  padding-left: 0.75em;
+  padding-right: 0.75em;
 }
 
 // Icon Left
@@ -107,7 +107,29 @@
   }
 }
 
-// Full width
-.crayons-btn--full {
-  width: 100%;
+// Grouped buttons
+.crayons-btn-group {
+  display: flex;
+
+  .crayons-btn {
+    border-radius: 0;
+
+    + .crayons-btn:not(.crayons-btn--outlined) {
+      margin-left: 1px;
+    }
+
+    + .crayons-btn--outlined {
+      margin-left: -$outlined-border-width;
+    }
+
+    &:first-child {
+      border-top-left-radius: $br-default;
+      border-bottom-left-radius: $br-default;
+    }
+
+    &:last-child {
+      border-top-right-radius: $br-default;
+      border-bottom-right-radius: $br-default;
+    }
+  }
 }

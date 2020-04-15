@@ -8,6 +8,7 @@ class Article < ApplicationRecord
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
 
   acts_as_taggable_on :tags
   resourcify
@@ -19,7 +20,6 @@ class Article < ApplicationRecord
   delegate :username, to: :user, prefix: true
 
   belongs_to :user
-  belongs_to :job_opportunity, optional: true
   belongs_to :organization, optional: true
   # touch: true was removed because when an article is updated, the associated collection
   # is touched along with all its articles(including this one). This causes eventually a deadlock.
@@ -29,6 +29,11 @@ class Article < ApplicationRecord
   counter_culture :organization
 
   has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :top_comments,
+           -> { where("comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE", 10).order("comments.score DESC") },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
   has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
   has_many :buffer_updates, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -72,31 +77,46 @@ class Article < ApplicationRecord
   before_save :update_cached_user
 
   after_save :bust_cache, :detect_human_language
+  after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   before_destroy :before_destroy_actions, prepend: true
 
-  serialize :ids_for_suggested_articles
   serialize :cached_user
   serialize :cached_organization
 
   scope :published, -> { where(published: true) }
   scope :unpublished, -> { where(published: false) }
 
+  scope :admin_published_with, lambda { |tag_name|
+    published.
+      where(user_id: SiteConfig.staff_user_id).
+      order(published_at: :desc).
+      tagged_with(tag_name)
+  }
+
+  scope :user_published_with, lambda { |user_id, tag_name|
+    published.
+      where(user_id: user_id).
+      order(published_at: :desc).
+      tagged_with(tag_name)
+  }
+
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
 
   scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
   scope :active_help, lambda {
-                        published.
-                          cached_tagged_with("help").
-                          order("created_at DESC").
-                          where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
-                      }
+    published.
+      cached_tagged_with("help").
+      order(created_at: :desc).
+      where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
+  }
 
   scope :limited_column_select, lambda {
     select(:path, :title, :id, :published,
@@ -105,7 +125,8 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :language,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
-           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
+           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds,
+           :last_comment_at)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -267,6 +288,10 @@ class Article < ApplicationRecord
     end
   end
 
+  def search_id
+    "article_#{id}"
+  end
+
   def processed_description
     text_portion = body_text.present? ? body_text[0..100].tr("\n", " ").strip.to_s : ""
     text_portion = text_portion.strip + "..." if body_text.size > 100
@@ -287,6 +312,7 @@ class Article < ApplicationRecord
   def touch_by_reaction
     async_score_calc
     index!
+    index_to_elasticsearch
   end
 
   def comments_blob
@@ -513,7 +539,6 @@ class Article < ApplicationRecord
     self.description = front_matter["description"] if front_matter["description"].present? || front_matter["title"].present? # Do this if frontmatte exists at all
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
-    self.automatically_renew = front_matter["automatically_renew"] if front_matter["automatically_renew"].present? && tag_list.include?("hiring")
   end
 
   def determine_image(front_matter)
@@ -570,9 +595,9 @@ class Article < ApplicationRecord
   end
 
   def past_or_present_date
-    if published_at && published_at > Time.current
-      errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
-    end
+    return unless published_at && published_at > Time.current
+
+    errors.add(:date_time, "must be entered in DD/MM/YYYY format with current or past date")
   end
 
   def canonical_url_must_not_have_spaces
@@ -608,9 +633,9 @@ class Article < ApplicationRecord
       self.cached_organization = OpenStruct.new(set_cached_object(organization))
     end
 
-    if user
-      self.cached_user = OpenStruct.new(set_cached_object(user))
-    end
+    return unless user
+
+    self.cached_user = OpenStruct.new(set_cached_object(user))
   end
 
   def set_cached_object(object)
@@ -686,5 +711,9 @@ class Article < ApplicationRecord
 
   def touch_collection
     collection.touch if collection && previous_changes.present?
+  end
+
+  def notify_slack_channel_about_publication
+    Slack::Messengers::ArticlePublished.call(article: self)
   end
 end

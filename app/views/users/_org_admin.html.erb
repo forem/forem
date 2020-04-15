@@ -1,7 +1,6 @@
-<%= javascript_pack_tag "colorPreview", defer: true %>
+<%= javascript_packs_with_chunks_tag "colorPreview", "clipboardCopy", defer: true %>
 
 <%= render "shared/webcomponents_loader_script" %>
-<%= javascript_pack_tag "clipboardCopy", defer: true %>
 
 <style>
   .primary-sticky-nav-author, .primary-sticky-nav-author-element {
@@ -158,9 +157,12 @@
     <%= f.text_area :tech_stack, maxlength: 640, placeholder: "Limit of 640 characters" %>
   </div>
   <h2>Call-to-action box</h2>
-  <h4 style="margin-top:-25px">Customizable text that appears to the right of every post for your organization</h4>
-  <h4 style="margin-top:-15px">See an example from the
-    <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/devteam/the-dev-badge-is-available-on-font-awesome-2ihe" target="_blank">DEV Team</a>.
+  <h4>Customizable text that appears to the right of every post for your organization</h4>
+  <h4>See an example from the
+    <a
+      href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/devteam/the-dev-badge-is-available-on-font-awesome-2ihe"
+      target="_blank"
+      rel="noopener">DEV Team</a>.
   </h4>
   <div class="field">
     <%= f.label :cta_body_markdown, "Body text (Limited markdown — bold/italic/etc)" %>

@@ -1,23 +1,7 @@
-<% unless @user.identities.exists?(provider: "github") %>
-  <div class="field">
-    <a href="/users/auth/github" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path("github-logo.svg") %>" alt="github logo"> CONNECT GITHUB ACCOUNT
-    </a>
-  </div>
-  <hr />
-<% end %>
+<%= render "users/additional_authentication" %>
 
-<% unless @user.identities.exists?(provider: "twitter") %>
-  <div class="field">
-    <a href="/users/auth/twitter?callback_url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>/users/auth/twitter/callback" class="big-button cta" data-no-instant>
-      <img src="<%= asset_path("twitter-logo.svg") %> " alt="twitter logo"> CONNECT TWITTER ACCOUNT
-    </a>
-  </div>
-  <hr />
-<% end %>
-
-<h2>DEV API Keys</h2>
-<p>You can generate personal API keys to use for authentication with the DEV API. The API is still in early beta though. The <a href="https://docs.dev.to/api/">DEV API documentation</a> contains further information.</a></p>
+<h2><%= community_name %> API Keys</h2>
+<p>You can generate personal API keys to use for authentication with the <%= community_name %> API. The API is still in early beta though. The <a href="https://docs.dev.to/api/"><%= community_name %> API documentation</a> contains further information.</a></p>
 <h3>Generate a new Key</h3>
 <%= form_tag users_api_secrets_path, method: :post do %>
   <%= fields_for :api_secret do |api_secret| %>
@@ -39,15 +23,16 @@
 <% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
   <div class="api__secret__container">
     <div class="api__secret__desc">
-      <p class="title"><%= api_secret.description %></p>
-      <p class="content"><%= api_secret.secret %></p>
-      <p class="subtitle">Created <%= api_secret.created_at.to_date.to_s %></p>
-    </div>
-
-    <div class="api__secret__revoke">
-      <%= form_tag users_api_secret_path(api_secret.id), method: :delete do %>
-        <%= button_tag "Revoke", class: "big-action danger-button" %>
-      <% end %>
+      <details>
+        <summary class="title"><%= api_secret.description %></summary>
+        <p class="content"><%= api_secret.secret %></p>
+        <p class="subtitle">
+          Created: <time datetime="<%= api_secret.created_at.rfc3339 %>"><%= api_secret.created_at.to_s %></time>
+        </p>
+        <%= form_tag users_api_secret_path(api_secret.id), class: "api__secret__revoke", method: :delete do %>
+          <%= button_tag "Revoke", class: "big-action danger-button" %>
+        <% end %>
+      </details>
     </div>
   </div>
 <% end %>

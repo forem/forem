@@ -29,7 +29,7 @@ module Users
     # available twitter languages
     # https://developer.twitter.com/en/docs/developer-utilities/supported-languages/api-reference/get-help-languages
     def language_from_twitter(identity)
-      return nil unless identity
+      return unless identity
 
       twitter_lang = identity.auth_data_dump["extra"]["raw_info"]["lang"]
       return "en" if twitter_lang == "en-gb"

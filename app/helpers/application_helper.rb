@@ -18,10 +18,10 @@ module ApplicationHelper
   end
 
   def title(page_title)
-    derived_title = if page_title.include?(ApplicationConfig["COMMUNITY_NAME"])
+    derived_title = if page_title.include?(community_name)
                       page_title
                     else
-                      page_title + " - #{ApplicationConfig['COMMUNITY_NAME']} Community 👩‍💻👨‍💻"
+                      "#{page_title} - #{community_qualified_name} 👩‍💻👨‍💻"
                     end
     content_for(:title) { derived_title }
     derived_title
@@ -146,8 +146,12 @@ module ApplicationHelper
     end
   end
 
+  def community_name
+    @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
+  end
+
   def community_qualified_name
-    "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
+    "#{community_name} Community"
   end
 
   def cache_key_heroku_slug(path)
@@ -157,7 +161,48 @@ module ApplicationHelper
     "#{path}-#{heroku_slug_commit}"
   end
 
-  def app_protocol_and_domain
-    "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+  def copyright_notice
+    start_year = ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"]
+    current_year = Time.current.year.to_s
+    return start_year if current_year == start_year
+    return current_year if start_year.strip.length.zero?
+
+    "#{start_year} - #{current_year}"
+  end
+
+  # Creates an app internal URL
+  #
+  # @note Uses protocol and domain specified in the environment, ensure they are set.
+  # @param uri [URI, String] parts we want to merge into the URL, e.g. path, fragment
+  # @example Retrieve the base URL
+  #  app_url #=> "https://dev.to"
+  # @example Add a path
+  #  app_url("internal") #=> "https://dev.to/internal"
+  def app_url(uri = nil)
+    URL.url(uri)
+  end
+
+  def article_url(article)
+    URL.article(article)
+  end
+
+  def comment_url(comment)
+    URL.comment(comment)
+  end
+
+  def reaction_url(reaction)
+    URL.reaction(reaction)
+  end
+
+  def tag_url(tag, page)
+    URL.tag(tag, page)
+  end
+
+  def user_url(user)
+    URL.user(user)
+  end
+
+  def sanitized_referer(referer)
+    URL.sanitized_referer(referer)
   end
 end

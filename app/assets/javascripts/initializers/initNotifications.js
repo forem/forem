@@ -55,6 +55,10 @@ function fetchNotificationsCount() {
           document.getElementById('notifications-link').href,
           'force',
         );
+        InstantClick.preload(
+          document.getElementById('connect-link').href,
+          'force',
+        );
       }, 30);
     }
   }
@@ -122,7 +126,7 @@ function listenForNotificationsBellClick() {
     document.getElementById('notifications-link').onclick = function() {
       document
         .getElementById('notifications-number')
-        .classList.remove('showing');
+        .classList.add('hidden');
     };
   }, 180);
 }

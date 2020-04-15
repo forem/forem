@@ -1,6 +1,5 @@
 import { Application } from 'stimulus';
 import BufferController from '../../controllers/buffer_controller';
-import '../../__mocks__/mutationObserver';
 
 describe('BufferController', () => {
   beforeEach(() => {
@@ -45,7 +44,7 @@ describe('BufferController', () => {
       button.click();
 
       expect(
-        element.classList.contains('highlighted-bg', 'highlighted-border'),
+        element.classList.contains('bg-highlighted', 'border-highlighted'),
       ).toBe(true);
     });
   });

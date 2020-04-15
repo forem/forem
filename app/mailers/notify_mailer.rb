@@ -66,12 +66,30 @@ class NotifyMailer < ApplicationMailer
     mail(to: params[:email_to], subject: params[:email_subject])
   end
 
+  def user_contact_email(params)
+    @user = User.find(params[:user_id])
+    @email_body = params[:email_body]
+    track utm_campaign: "user_contact"
+    mail(to: @user.email, subject: params[:email_subject])
+  end
+
   def new_message_email(direct_message)
     @message = direct_message
     @user = @message.direct_receiver
     subject = "#{@message.user.name} just messaged you"
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_connect_messages)
     mail(to: @user.email, subject: subject)
+  end
+
+  def channel_invite_email(membership, inviter)
+    @membership = membership
+    @inviter = inviter
+    subject = if @membership.role == "mod"
+                "You are invited to the #{@membership.chat_channel.channel_name} channel as moderator."
+              else
+                "You are invited to the #{@membership.chat_channel.channel_name} channel."
+              end
+    mail(to: @membership.user.email, subject: subject)
   end
 
   def account_deleted_email(user)

@@ -1,0 +1,140 @@
+////////////////////////////////////////////////////////////////////////////////////
+// Colors. /////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////
+//
+// All --base-* and --accent-* color variables will be used to generate
+// utility-first classes (see config/import.scss & base/colors.scss for
+// reference). Other color variables are more functional and define usage
+// of particular colors in components and views.
+
+:root {
+  ////////////////////////////////////////////////////////////////////////////////////
+  // Fundamental color variables. ///////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  // Base
+  --base-100: #08090a;
+  --base-90: #202428;
+  --base-80: #363d44;
+  --base-70: #4d5760;
+  --base-60: #64707d;
+  --base-50: #7d8a97;
+  --base-40: #99a3ad;
+  --base-30: #b5bdc4;
+  --base-20: #d2d6db;
+  --base-10: #eef0f1;
+  --base-0: #f9fafa;
+  --base-inverted: #fff;
+
+  // Accent colors
+  --accent-brand: #3b49df;
+  --accent-brand-darker: #1827ce;
+  --accent-brand-lighter: #8d95f2;
+
+  // Success
+  --accent-success: #26d9ca;
+  --accent-success-darker: #1ab3a6;
+  --accent-success-lighter: #79ece2;
+
+  // Warning
+  --accent-warning: #ffcf4c;
+  --accent-warning-darker: #f5b400;
+  --accent-warning-lighter: #ffe499;
+
+  // Danger
+  --accent-danger: #dc1818;
+  --accent-danger-darker: #c20a0a;
+  --accent-danger-lighter: #ec5050;
+
+  ////////////////////////////////////////////////////////////////////////////////////
+  // Functional color variables. /////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////
+
+  // Main colors
+  --body-bg: #f9fafa; // todo: replace with `var(--base-10);` when ready.
+  --body-color: var(
+    --base-100
+  ); // todo: replace with `var(--base-100);` when ready.
+  --body-color-inverted: var(--base-inverted);
+
+  // Main content containers
+  --card-bg: var(--base-inverted);
+  --card-color: var(--base-100);
+  --card-color-secondary: var(--base-70);
+  --card-color-tertiary: var(--base-60);
+  --card-secondary-bg: var(--base-0);
+  --card-secondary-color: var(--base-90);
+  --card-headline-color: var(--base-100);
+
+  // Header
+  --header-bg: var(--base-inverted);
+  --header-bg-hover: var(--base-10);
+  --header-bg-current: var(--base-20);
+  --header-shadow: rgba(0, 0, 0, 0.1);
+  --header-icons-color: var(--base-70);
+  --header-icons-color-hover: var(--base-100);
+
+  // Logo
+  --logo-bg: var(--base-100);
+  --logo-color: var(--base-inverted);
+
+  // Footer
+  --footer-bg: var(--base-inverted);
+  --footer-copy-color: var(--base-80);
+  --footer-copy-secondary-color: var(--base-60);
+  --footer-link-color: var(--base-80);
+  --footer-link-color-hover: var(--base-100);
+
+  // Links
+  --link-color: var(--base-90);
+  --link-color-hover: var(--accent-brand-darker);
+  --link-color-current: var(--base-100);
+  --link-color-secondary: var(--base-60);
+  --link-color-secondary-hover: var(--base-70);
+  --link-branded-color: var(--accent-brand);
+  --link-bg-hover: var(--base-0);
+  --link-bg-hover-alt: var(--base-inverted);
+  --link-bg-current: var(--base-inverted);
+
+  // Primary buttons
+  --button-primary-bg: var(--accent-brand);
+  --button-primary-color: var(--base-0);
+  --button-primary-bg-hover: var(--accent-brand-darker);
+  --button-primary-color-hover: var(--base-0);
+
+  // Secondary buttons
+  --button-secondary-bg: var(--base-20);
+  --button-secondary-color: var(--base-80);
+  --button-secondary-bg-hover: var(--base-30);
+  --button-secondary-color-hover: var(--base-100);
+
+  // Outlined buttons
+  --button-outlined-bg: var(--base-20);
+  --button-outlined-color: var(--base-80);
+  --button-outlined-bg-hover: var(--base-40);
+  --button-outlined-color-hover: var(--base-100);
+
+  // Forms
+  --form-bg: var(--base-0);
+  --form-bg-focus: var(--base-0);
+  --form-border: var(--base-30);
+  --form-border-hover: var(--base-40);
+  --form-border-focus: var(--accent-brand);
+  --form-placeholder-color: var(--base-60);
+
+  // Form lables
+  --label-primary: var(--base-90);
+  --label-secondary: var(--base-60);
+
+  // Default box
+  --box: var(--base-90);
+  --box-darker: var(--base-100);
+
+  // Indicators
+  --indicator-accent-bg: var(--accent-brand);
+  --indicator-accent-color: var(--body-color-inverted);
+  --indicator-critical-bg: var(--accent-danger);
+  --indicator-critical-color: var(--body-color-inverted);
+  --indicator-default-bg: var(--button-secondary-bg);
+  --indicator-default-color: var(--button-secondary-color);
+}

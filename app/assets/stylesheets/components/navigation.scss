@@ -1,21 +1,35 @@
-@import '../vars/variables';
+@import '../config/import';
 
-.crayons-nav-block {
-  display: flex;
-  align-items: center;
-  padding: $su-2;
-  border-radius: $br-default;
-  color: $smoke-90;
+.crayons-link {
+  color: var(--link-color);
 
-  &:hover:not(&--current) {
-    background: $smoke-00;
-    color: $smoke-100;
+  &--branded {
+    color: var(--link-branded-color);
+  }
+
+  &:hover {
+    color: var(--link-color-hover);
   }
 
   &--current {
     font-weight: $fw-medium;
-    color: $smoke-100;
-    background: $snowflake;
+    color: var(--link-color-current);
+    background: var(--link-bg-current);
+  }
+}
+
+.crayons-link--block {
+  display: flex;
+  align-items: center;
+  padding: $su-3;
+  border-radius: $br-default;
+
+  &:hover {
+    background: var(--link-bg-hover);
+  }
+
+  @media (min-width: $breakpoint-s) {
+    padding: $su-2;
   }
 
   .crayons-icon {
@@ -39,22 +53,41 @@
   }
 }
 
+.crayons-link--contentful {
+  display: block;
+  padding: $su-4;
+  border-bottom: 1px solid var(--body-bg);
+
+  &:last-child {
+    border-bottom: 0;
+    border-bottom-right-radius: $br-default;
+    border-bottom-left-radius: $br-default;
+  }
+
+  .crayons-link__secondary {
+    color: var(--link-color-secondary);
+    font-size: $fs-s;
+    padding-top: $su-1;
+  }
+
+  &:hover {
+    background: var(--link-bg-hover-alt);
+    .crayons-link__secondary {
+      color: var(--link-color-secondary-hover);
+    }
+  }
+}
+
 .crayons-tabs {
   display: flex;
 
-  &__item {
+  .crayons-link {
     padding: 0 0.5em;
-    color: $smoke-80;
     position: relative;
     display: inline-block;
 
-    &:hover {
-      color: $smoke-100;
-    }
-
     &--current {
-      color: $smoke-100;
-      font-weight: $fw-medium;
+      background: transparent;
 
       &::after {
         position: absolute;
@@ -63,7 +96,7 @@
         bottom: -2px;
         height: 2px;
         content: '';
-        background-color: $dolphin;
+        background-color: var(--accent-brand);
       }
     }
   }

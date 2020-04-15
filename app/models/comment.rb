@@ -5,6 +5,10 @@ class Comment < ApplicationRecord
   has_ancestry
   resourcify
   include Reactable
+  include Searchable
+
+  SEARCH_SERIALIZER = Search::CommentSerializer
+  SEARCH_CLASS = Search::FeedContent
 
   belongs_to :commentable, polymorphic: true, optional: true
   counter_culture :commentable
@@ -23,6 +27,7 @@ class Comment < ApplicationRecord
   validates :commentable_type, inclusion: { in: %w[Article PodcastEpisode] }
   validates :user_id, presence: true
 
+  after_create :notify_slack_channel_about_warned_users
   after_create :after_create_checks
   after_create_commit :record_field_test_event
   after_commit :calculate_score
@@ -34,6 +39,8 @@ class Comment < ApplicationRecord
   after_create_commit :send_email_notification, if: :should_send_email_notification?
   after_create_commit :create_first_reaction
   after_create_commit :send_to_moderator
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
   before_save    :set_markdown_character_count, if: :body_markdown
   before_create  :adjust_comment_parent_based_on_depth
   after_update   :remove_notifications, if: :deleted
@@ -45,6 +52,10 @@ class Comment < ApplicationRecord
 
   def self.tree_for(commentable, limit = 0)
     commentable.comments.includes(:user).arrange(order: "score DESC").to_a[0..limit - 1].to_h
+  end
+
+  def search_id
+    "comment_#{id}"
   end
 
   def path
@@ -108,6 +119,10 @@ class Comment < ApplicationRecord
     processed_html.html_safe
   end
 
+  def root_exists?
+    ancestry && Comment.exists?(id: ancestry)
+  end
+
   private
 
   def update_notifications
@@ -137,7 +152,7 @@ class Comment < ApplicationRecord
   end
 
   def adjust_comment_parent_based_on_depth
-    self.parent_id = parent.descendant_ids.last if parent && (parent.depth > 1 && parent.has_children?)
+    self.parent_id = parent.descendant_ids.last if parent_exists? && (parent.depth > 1 && parent.has_children?)
   end
 
   def wrap_timestamps_if_video_present!
@@ -174,7 +189,11 @@ class Comment < ApplicationRecord
   end
 
   def expire_root_fragment
-    root.touch
+    if root_exists?
+      root.touch
+    else
+      touch
+    end
   end
 
   def create_first_reaction
@@ -208,7 +227,8 @@ class Comment < ApplicationRecord
   end
 
   def should_send_email_notification?
-    parent_user.class.name != "Podcast" &&
+    parent_exists? &&
+      parent_user.class.name != "Podcast" &&
       parent_user != user &&
       parent_user.email_comment_notifications &&
       parent_user.email &&
@@ -234,5 +254,13 @@ class Comment < ApplicationRecord
 
   def record_field_test_event
     Users::RecordFieldTestEventWorker.perform_async(user_id, :user_home_feed, "user_creates_comment")
+  end
+
+  def notify_slack_channel_about_warned_users
+    Slack::Messengers::CommentUserWarned.call(comment: self)
+  end
+
+  def parent_exists?
+    parent_id && Comment.exists?(id: parent_id)
   end
 end

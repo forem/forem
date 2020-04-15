@@ -5,7 +5,7 @@ module Search
         Search::Client.index(
           id: doc_id,
           index: self::INDEX_ALIAS,
-          body: serialized_data,
+          body: serialized_data.merge(last_indexed_at: Time.current),
         )
       end
 
@@ -37,10 +37,40 @@ module Search
         Search::Client.indices.put_mapping(index: index_alias, body: self::MAPPINGS)
       end
 
+      def document_count
+        Search::Client.count(index: self::INDEX_ALIAS).dig("count")
+      end
+
+      def search_documents(params:)
+        set_query_size(params)
+        query_hash = "Search::QueryBuilders::#{name.demodulize}".safe_constantize.new(params: params).as_hash
+
+        results = search(body: query_hash)
+        hits = results.dig("hits", "hits").map { |hit| prepare_doc(hit) }
+        paginate_hits(hits, params)
+      end
+
       private
+
+      def prepare_doc(hit)
+        hit.dig("_source")
+      end
 
       def search(body:)
         Search::Client.search(index: self::INDEX_ALIAS, body: body)
+      end
+
+      def set_query_size(params)
+        params[:page] ||= self::DEFAULT_PAGE
+        params[:per_page] ||= self::DEFAULT_PER_PAGE
+
+        # pages start at 0
+        params[:size] = params[:per_page].to_i * (params[:page].to_i + 1)
+      end
+
+      def paginate_hits(hits, params)
+        start = params[:per_page] * params[:page]
+        hits[start, params[:per_page]] || []
       end
 
       def settings

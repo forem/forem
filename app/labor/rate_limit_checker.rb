@@ -14,15 +14,18 @@ class RateLimitChecker
 
     if result
       @action = action
-      ping_admins
+
+      Slack::Messengers::RateLimit.call(user: user, action: action)
     end
     result
   end
 
   def track_image_uploads
-    count = Rails.cache.read("#{@user.id}_image_upload").to_i
-    count += 1
-    Rails.cache.write("#{@user.id}_image_upload", count, expires_in: 30.seconds)
+    Rails.cache.increment("#{@user.id}_image_upload", 1, expires_in: 30.seconds)
+  end
+
+  def track_article_updates
+    Rails.cache.increment("#{@user.id}_article_update", 1, expires_in: 30.seconds)
   end
 
   def limit_by_email_recipient_address(address)
@@ -48,12 +51,13 @@ class RateLimitChecker
       SiteConfig.rate_limit_image_upload
   end
 
-  def check_follow_account_limit
-    user_today_follow_count > SiteConfig.rate_limit_follow_count_daily
+  def check_article_update_limit
+    Rails.cache.read("#{user.id}_article_update").to_i >
+      SiteConfig.rate_limit_article_update
   end
 
-  def ping_admins
-    RateLimitCheckerWorker.perform_async(user.id, action)
+  def check_follow_account_limit
+    user_today_follow_count > SiteConfig.rate_limit_follow_count_daily
   end
 
   def user_today_follow_count

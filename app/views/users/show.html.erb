@@ -153,7 +153,7 @@
       <div id="user-profile-dropdownmenu" class="profile-dropdownmenu">
         <button id="user-profile-dropdownmenu-block-button" data-profile-user-id="<%= @user.id %>" class="block-button" type="button">Block @<%= @user.username %></button>
         <% if user_signed_in? %>
-          <%= javascript_pack_tag "profileDropdown", defer: true %>
+          <%= javascript_packs_with_chunks_tag "profileDropdown", defer: true %>
         <% end %>
         <a href="/report-abuse?url=https://dev.to/<%= @user.username %>">Report Abuse</a>
       </div>
@@ -172,7 +172,7 @@
 
 <div class="home sub-home" id="index-container"
      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
-     data-algolia-tag="<%= "user_#{@user.id}" %>"
+     data-tag="<%= "user_#{@user.id}" %>"
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="0">
   <%= render "users/sidebar" %>

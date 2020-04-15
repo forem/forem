@@ -1,3 +1,7 @@
+# rubocop:disable Metrics/BlockLength
+# Silence all Ruby 2.7 deprecation warnings
+$VERBOSE = nil
+
 Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
   # As the integrity check is currently broken under Docker with webpacker,
@@ -15,10 +19,11 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
-  # Show full error reports and disable caching.
+  # Show full error reports.
   config.consider_all_requests_local = true
 
   # Enable/disable caching. By default caching is disabled.
+  # Run rails dev:cache to toggle caching.
   if Rails.root.join("tmp/caching-dev.txt").exist?
     config.action_controller.perform_caching = true
 
@@ -34,8 +39,13 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  # Store uploaded files on the local file system (see config/storage.yml for options)
+  # config.active_storage.service = :local
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
+
+  config.action_mailer.perform_caching = false
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
@@ -93,6 +103,8 @@ Rails.application.configure do
 
   config.public_file_server.enabled = true
 
+  # Use an evented file watcher to asynchronously detect changes in source code,
+  # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # Debug is the default log_level, but can be changed per environment.
@@ -115,6 +127,7 @@ Rails.application.configure do
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
 
     # Check if there are any data update scripts to run during startup
     if %w[c console runner s server].include?(ENV["COMMAND"])
@@ -126,3 +139,4 @@ Rails.application.configure do
 end
 
 Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain }
+# rubocop:enable Metrics/BlockLength

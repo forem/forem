@@ -1,11 +1,13 @@
 # we use this to be able to increase the size of the seeded DB at will
 # eg.: `SEEDS_MULTIPLIER=2 rails db:seed` would double the amount of data
 SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
+counter = 0
 Rails.logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
 
 ##############################################################################
 
-Rails.logger.info "1. Creating Organizations"
+counter += 1
+Rails.logger.info "#{counter}. Creating Organizations"
 
 3.times do
   Organization.create!(
@@ -26,7 +28,8 @@ end
 
 num_users = 10 * SEEDS_MULTIPLIER
 
-Rails.logger.info "2. Creating #{num_users} Users"
+counter += 1
+Rails.logger.info "#{counter}. Creating #{num_users} Users"
 
 User.clear_index!
 
@@ -48,7 +51,11 @@ num_users.times do |i|
     password: "password",
   )
 
-  user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
+  if i.zero?
+    user.add_role(:trusted) # guarantee at least one moderator
+  else
+    user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
+  end
 
   Identity.create!(
     provider: "twitter",
@@ -65,9 +72,33 @@ num_users.times do |i|
   )
 end
 
+Organization.find_each do |organization|
+  admins = []
+  admin_id = User.where.not(id: admins).order(Arel.sql("RANDOM()")).first.id
+
+  OrganizationMembership.create!(
+    user_id: admin_id,
+    organization_id: organization.id,
+    type_of_user: "admin",
+  )
+
+  admins << admin_id
+
+  2.times do
+    OrganizationMembership.create!(
+      user_id: User.where.not(id: OrganizationMembership.pluck(:user_id)).order(Arel.sql("RANDOM()")).first.id,
+      organization_id: organization.id,
+      type_of_user: "member",
+    )
+  end
+end
+
+users_in_random_order = User.order(Arel.sql("RANDOM()"))
+
 ##############################################################################
 
-Rails.logger.info "3. Creating Tags"
+counter += 1
+Rails.logger.info "#{counter}. Creating Tags"
 
 tags = %w[beginners career computerscience git go
           java javascript linux productivity python security webdev]
@@ -85,7 +116,8 @@ end
 
 num_articles = 25 * SEEDS_MULTIPLIER
 
-Rails.logger.info "4. Creating #{num_articles} Articles"
+counter += 1
+Rails.logger.info "#{counter}. Creating #{num_articles} Articles"
 
 Article.clear_index!
 
@@ -119,7 +151,8 @@ end
 
 num_comments = 30 * SEEDS_MULTIPLIER
 
-Rails.logger.info "5. Creating #{num_comments} Comments"
+counter += 1
+Rails.logger.info "#{counter}. Creating #{num_comments} Comments"
 
 num_comments.times do
   attributes = {
@@ -134,7 +167,8 @@ end
 
 ##############################################################################
 
-Rails.logger.info "6. Creating Podcasts"
+counter += 1
+Rails.logger.info "#{counter}. Creating Podcasts"
 
 image_file = Rails.root.join("spec/support/fixtures/images/image1.jpeg")
 
@@ -202,21 +236,19 @@ end
 
 ##############################################################################
 
-Rails.logger.info "7. Creating Broadcasts"
-
-# TODO: [@thepracticaldev/delightful] Remove this once we have launched welcome notifications.
-Broadcast.create!(
-  title: "Welcome Notification",
-  processed_html: "Welcome to dev.to! Start by introducing yourself in <a href='/welcome' data-no-instant>the welcome thread</a>.",
-  type_of: "Onboarding",
-  active: true,
-)
+counter += 1
+Rails.logger.info "#{counter}. Creating Broadcasts and Welcome Thread"
 
 broadcast_messages = {
   set_up_profile: "Welcome to DEV! 👋 I'm Sloan, the community mascot and I'm here to help get you started. Let's begin by <a href='/settings'>setting up your profile</a>!",
   welcome_thread: "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
   twitter_connect: "You're on a roll! 🎉 Let's connect your <a href='/settings'> Twitter account</a> to complete your identity so that we don't think you're a robot. 🤖",
-  github_connect: "You're on a roll! 🎉 Let's connect your <a href='/settings'> GitHub account</a> to complete your identity so that we don't think you're a robot. 🤖"
+  github_connect: "You're on a roll! 🎉 Let's connect your <a href='/settings'> GitHub account</a> to complete your identity so that we don't think you're a robot. 🤖",
+  customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",
+  customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!",
+  start_discussion: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; just click on 'Write a Post' in the sidebar of the tag page to get started!",
+  ask_question: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; just click on 'Write a Post' in the sidebar of the tag page to get started!",
+  discuss_and_ask: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or <a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; just click on 'Write a Post' in the sidebar of the tag page to get started!"
 }
 
 broadcast_messages.each do |type, message|
@@ -228,9 +260,28 @@ broadcast_messages.each do |type, message|
   )
 end
 
+welcome_thread_content = <<~HEREDOC
+  ---
+  title: Welcome Thread - v0
+  published: true
+  description: Introduce yourself to the community!
+  tags: welcome
+  ---
+
+  Hey there! Welcome to #{ApplicationConfig['COMMUNITY_NAME']}!
+
+  Leave a comment below to introduce yourself to the community!✌️
+HEREDOC
+
+Article.create!(
+  body_markdown: welcome_thread_content,
+  user: User.dev_account,
+)
+
 ##############################################################################
 
-Rails.logger.info "8. Creating Chat Channels and Messages"
+counter += 1
+Rails.logger.info "#{counter}. Creating Chat Channels and Messages"
 
 %w[Workshop Meta General].each do |chan|
   ChatChannel.create!(
@@ -240,14 +291,17 @@ Rails.logger.info "8. Creating Chat Channels and Messages"
   )
 end
 
-direct_channel = ChatChannel.create_with_users(User.last(2), "direct")
+direct_channel = ChatChannel.create_with_users(users: User.last(2), channel_type: "direct")
 Message.create!(
   chat_channel: direct_channel,
   user: User.last,
   message_markdown: "This is **awesome**",
 )
 
-Rails.logger.info "9. Creating HTML Variants"
+##############################################################################
+
+counter += 1
+Rails.logger.info "#{counter}. Creating HTML Variants"
 
 HtmlVariant.create!(
   name: rand(100).to_s,
@@ -259,15 +313,32 @@ HtmlVariant.create!(
   user_id: User.first.id,
 )
 
-Rails.logger.info "10. Creating Badges"
+##############################################################################
 
-Badge.create!(
-  title: Faker::Lorem.word,
-  description: Faker::Lorem.sentence,
-  badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
-)
+counter += 1
+Rails.logger.info "#{counter}. Creating Badges"
 
-Rails.logger.info "11. Creating FeedbackMessages"
+5.times do
+  Badge.create!(
+    title: "#{Faker::Lorem.word} #{rand(100)}",
+    description: Faker::Lorem.sentence,
+    badge_image: File.open(Rails.root.join("app/assets/images/#{rand(1..40)}.png")),
+  )
+end
+
+users_in_random_order.limit(10).each do |user|
+  user.badge_achievements.create!(
+    badge: Badge.order(Arel.sql("RANDOM()")).limit(1).take,
+    rewarding_context_message_markdown: Faker::Markdown.random,
+  )
+end
+
+##############################################################################
+
+counter += 1
+Rails.logger.info "#{counter}. Creating FeedbackMessages"
+
+mod = User.first
 
 FeedbackMessage.create!(
   reporter: User.last,
@@ -278,7 +349,7 @@ FeedbackMessage.create!(
 )
 
 FeedbackMessage.create!(
-  reporter: User.first,
+  reporter: mod,
   feedback_type: "abuse-reports",
   message: Faker::Lorem.sentence,
   reported_url: "example.com",
@@ -286,10 +357,29 @@ FeedbackMessage.create!(
   status: "Open",
 )
 
-Rails.logger.info "12. Creating Classified listings"
+Reaction.create!(
+  category: "vomit",
+  reactable_id: User.last.id,
+  reactable_type: "User",
+  user_id: mod.id,
+)
 
-users = User.order(Arel.sql("RANDOM()")).to_a
-users.each { |user| Credit.add_to(user, rand(100)) }
+3.times do
+  Reaction.create!(
+    category: "vomit",
+    reactable_id: Article.order(Arel.sql("RANDOM()")).first.id,
+    reactable_type: "Article",
+    user_id: mod.id,
+  )
+end
+
+##############################################################################
+
+counter += 1
+Rails.logger.info "#{counter}. Creating Classified Listings"
+
+users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
+users = users_in_random_order.to_a
 
 listings_categories = ClassifiedListing.categories_available.keys
 listings_categories.each_with_index do |category, index|
@@ -301,13 +391,31 @@ listings_categories.each_with_index do |category, index|
       title: Faker::Lorem.sentence,
       body_markdown: Faker::Markdown.random,
       location: Faker::Address.city,
+      organization_id: user.organizations.first&.id,
       category: category,
       contact_via_connect: true,
       published: true,
       bumped_at: Time.current,
+      tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
     )
   end
 end
+
+##############################################################################
+
+counter += 1
+Rails.logger.info "#{counter}. Creating Pages"
+
+5.times do
+  Page.create!(
+    title: Faker::Hacker.say_something_smart,
+    body_markdown: Faker::Markdown.random,
+    slug: Faker::Internet.slug,
+    description: Faker::Books::Dune.quote,
+    template: %w[contained full_within_layout].sample,
+  )
+end
+
 ##############################################################################
 
 puts <<-ASCII # rubocop:disable Rails/Output

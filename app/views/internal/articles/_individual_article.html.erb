@@ -1,13 +1,15 @@
 <div class="card my-3" data-controller="article" data-article-id="<%= article.id %>">
   <div class="card-header">
-    <a href="<%= article.path %>" target="_blank"><%= article.title %></a>
-    <a class="ml-2" href="<%= article.path %>/edit" target="_blank"><span class="badge badge-success">EDIT</span></a>
+    <a href="<%= article.path %>" target="_blank" rel="noopener"><%= article.title %></a>
+    <a class="ml-2" href="<%= article.path %>/edit" target="_blank" rel="noopener"><span class="badge badge-success">EDIT</span></a>
   </div>
-  <div
-    class="card-body <%= "bg-danger" if !article.published? && article.published_from_feed? && !article.user&.feed_admin_publish_permission? %>">
-    <% featured = article.featured ? "featured-bg" : "" %>
-    <% featured = article.approved ? "approved-bg" : featured %>
 
+  <% featured = article.featured ? "bg-featured" : "" %>
+  <% approved = article.approved ? "bg-approved" : featured %>
+  <% background_color = approved %>
+
+  <div
+    class="card-body <%= background_color %> <%= "bg-danger" if !article.published? && article.published_from_feed? && !article.user&.feed_admin_publish_permission? %>">
     <button class="btn btn-primary float-right" href="/internal/users/<%= article.user_id %>">Manage User</button>
 
     <% if article.video %>
@@ -124,7 +126,7 @@
     <div class="form-check">
       <input name="article[boosted_dev_digest_email]" type="checkbox"
         <%= "checked" if article.boosted_dev_digest_email %>>
-      <label>Boosted (DEV Digest)</label>
+      <label>Boosted (<%= community_name %> Digest)</label>
     </div>
 
     <% unless article.last_buffered %>
@@ -194,7 +196,7 @@
       </div>
 
       <div>
-        <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
+        <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
         <input type="hidden" name="social_channel" value="main_twitter" />
         <input type="hidden" name="article_id" value="<%= article.id %>" />
         <h5>Twitter MAIN</h5>
@@ -207,11 +209,11 @@
                    end %>
               </textarea>
         </div>
-        <button class="btn btn-primary mb-2">🦅 Tweet to @<%= SiteConfig.social_networks_handle %></button>
+        <button class="btn btn-primary mb-2">🦅 Tweet to @<%= SiteConfig.social_media_handles["twitter"] %></button>
         <% end %>
 
         <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
-        <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
+        <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
         <input type="hidden" name="social_channel" value="satellite_twitter" />
         <input type="hidden" name="article_id" value="<%= article.id %>" />
         <h5>Twitter Satellite</h5>
@@ -229,7 +231,7 @@
         <% end %>
       </div>
 
-      <%= form_with url: "/internal/buffer_updates", html: { data: { action: "submit->article#highlightElement" } } do %>
+      <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
       <input type="hidden" name="social_channel" value="facebook" />
       <input type="hidden" name="article_id" value="<%= article.id %>" />
       <h5>Facebook & LinkedIn</h5>

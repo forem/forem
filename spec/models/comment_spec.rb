@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Comment, type: :model do
   let_it_be(:user) { create(:user) }
   let_it_be(:article) { create(:article, user: user) }
-  let_it_be(:comment) { create(:comment, user: user, commentable: article) }
+  let_it_be_changeable(:comment) { create(:comment, user: user, commentable: article) }
 
   include_examples "#sync_reactions_count", :article_comment
 
@@ -35,6 +35,28 @@ RSpec.describe Comment, type: :model do
       subject.commentable = build(:article, published: false)
       expect(subject).not_to be_valid
       # rubocop:enable RSpec/NamedSubject
+    end
+
+    describe "#after_commit" do
+      it "on update enqueues job to index comment to elasticsearch" do
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, comment.search_id]) do
+          comment.save
+        end
+      end
+
+      it "on destroy enqueues job to delete comment from elasticsearch" do
+        comment = create(:comment)
+
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, comment.search_id]) do
+          comment.destroy
+        end
+      end
+    end
+
+    describe "#search_id" do
+      it "returns comment_ID" do
+        expect(comment.search_id).to eq("comment_#{comment.id}")
+      end
     end
 
     describe "#processed_html" do
@@ -289,6 +311,29 @@ RSpec.describe Comment, type: :model do
 
       expect { comment.save }.to change(user, :last_comment_at)
     end
+
+    describe "slack messages" do
+      let!(:user) { create(:user) }
+
+      before do
+        # making sure there are no other enqueued jobs from other tests
+        sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
+      end
+
+      it "queues a slack message when a warned user leaves a comment" do
+        user.add_role(:warned)
+
+        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+          create(:comment, user: user, commentable: article)
+        end
+      end
+
+      it "does not send notification if a regular user leaves a comment" do
+        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+          create(:comment, commentable: article, user: user)
+        end
+      end
+    end
   end
 
   context "when callbacks are triggered before save" do
@@ -300,6 +345,7 @@ RSpec.describe Comment, type: :model do
 
   context "when callbacks are triggered after save" do
     it "updates user last comment date" do
+      comment = build(:comment, commentable: article, user: user)
       expect { comment.save }.to change(user, :last_comment_at)
     end
   end
@@ -326,18 +372,31 @@ RSpec.describe Comment, type: :model do
   end
 
   context "when callbacks are triggered after destroy" do
+    let!(:comment) { create(:comment, user: user, commentable: article) }
+
     it "updates user's last_comment_at" do
+      comment = create(:comment, user: user)
       expect { comment.destroy }.to change(user, :last_comment_at)
     end
 
     it "busts the comment cache" do
-      # here the comment is destroyed from the test above so we re-create one
-      new_comment = create(:comment, commentable: article)
-
-      # this replaces the use of expect_any_instance_of which is a RuboCop violation
-      sidekiq_assert_enqueued_with(job: Comments::BustCacheWorker, args: [new_comment.id]) do
-        new_comment.destroy
+      sidekiq_assert_enqueued_with(job: Comments::BustCacheWorker, args: [comment.id]) do
+        comment.destroy
       end
+    end
+  end
+
+  describe "#root_exists?" do
+    let(:root_comment) { create(:comment) }
+    let(:comment) { create(:comment, ancestry: root_comment.id) }
+
+    it "returns true if root is present" do
+      expect(comment.root_exists?).to eq(true)
+    end
+
+    it "returns false if root has been deleted" do
+      root_comment.destroy
+      expect(comment.reload.root_exists?).to eq(false)
     end
   end
 end

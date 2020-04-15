@@ -1,5 +1,7 @@
 @import 'variables';
 @import 'mixins';
+@import 'functions';
+
 .notifications-index {
   .home {
     .articles-list {
@@ -50,6 +52,13 @@
               font-weight: 500;
             }
           }
+          &.broadcast-content {
+            .opt-out {
+              padding-top: 24px;
+              font-size: 12px;
+              font-style: italic;
+            }
+          }
           &.reaction-content {
             width: calc(100% - 145px);
           }
@@ -90,12 +99,12 @@
             p.badge-reward-message {
               margin: 8px auto;
               width: 90%;
-              @include themeable(color, theme-color, $black);
+              color: var(--body-color);
             }
             p.badge-credit-message {
               margin: 8px auto;
               width: 100%;
-              @include themeable(color, theme-color, $dark-gray);
+              color: var(--body-color);
               font-size: 0.94em;
               line-height: 1.35em;
               strong a {
@@ -141,7 +150,6 @@
             max-width: 100%;
             display: inline-block;
             margin-bottom: 3px;
-            @include themeable-important(color, theme-color, $black);
             &:hover {
               @include themeable(
                 background,
@@ -156,7 +164,7 @@
             margin-top: 10px;
             border: 1px solid lighten($dark-gray, 18%);
             border-radius: 3px;
-            @include themeable(color, theme-color, $black);
+            color: var(--body-color);
             position: relative;
             .notification-new-post-title {
               font-size: 1.7em;
@@ -189,7 +197,7 @@
           margin-top: 10px;
           border: 1px solid lighten($dark-gray, 18%);
           border-radius: 3px;
-          @include themeable(color, theme-color, $black);
+          color: var(--body-color);
           position: relative;
           .comment-text-header {
             display: block;
@@ -226,7 +234,7 @@
             font-size: 1.2em;
           }
           p {
-            @include themeable(color, theme-color, $black);
+            color: var(--body-color);
             width: 99%;
             padding: 0;
             margin-left: 0;
@@ -349,7 +357,7 @@
             textarea {
               color: lighten($dark-gray, 25%);
               border: 1px solid $light-green;
-              background: #fff url(image_path('loading-ellipsis.svg')) no-repeat
+              background: #fff url(image-src('loading-ellipsis.svg')) no-repeat
                 center center;
               background-size: 50px;
             }
@@ -384,8 +392,8 @@
               theme-container-background,
               1px solid rgb(232, 229, 229)
             );
-            @include themeable(background, theme-container-background, #fff);
-            @include themeable(color, theme-color, $black);
+            background: var(--card-bg);
+            color: var(--body-color);
           }
           input[type='submit'] {
             margin-right: 15px;
