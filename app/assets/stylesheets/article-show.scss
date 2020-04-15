@@ -30,6 +30,18 @@
   height: 10px;
 }
 
+.mod-actions-menu {
+    position: fixed;
+    top: $header-height;
+    right: 0;
+    height: calc(100vh - 56px);
+    z-index: 200;
+
+    iframe {
+        height: 100%;
+    }
+}
+
 .video-player-header {
   background: $black;
   margin-top: 0;
