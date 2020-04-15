@@ -3,20 +3,21 @@
   <div id="video-player-source" data-source="<%= article.video_source_url %>"></div>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async></script>
   <div id="video-player-<%= article.id %>" class="video-player"></div>
-
-  <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "VideoObject",
-      "url": "<%= article.video_source_url %>",
-      "uploadDate": "<%= article.published_at&.rfc3339 %>",
-      "name": "<%= article.title %>",
-      "description": "<%= article.description %>",
-      "thumbnailUrl": "<%= cloudinary(article.video_thumbnail_url, 880) %>",
-      "contentUrl": "<%= article.video_source_url %>",
-      "duration": "<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>"
-    }
-  </script>
+  <% unless internal_navigation? || user_signed_in? %>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        "url": "<%= article.video_source_url %>",
+        "uploadDate": "<%= article.published_at&.rfc3339 %>",
+        "name": "<%= article.title %>",
+        "description": "<%= article.description %>",
+        "thumbnailUrl": "<%= cloudinary(article.video_thumbnail_url, 880) %>",
+        "contentUrl": "<%= article.video_source_url %>",
+        "duration": "<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>"
+      }
+    </script>
+  <% end %>
 </div>
 
 <script type="text/javascript" async>
