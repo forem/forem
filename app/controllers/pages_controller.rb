@@ -68,6 +68,21 @@ class PagesController < ApplicationController
     end
   end
 
+  def checkin
+    daily_thread =
+      Article.
+        published.
+        where(user: User.find_by(username: "codenewbiestaff")).
+        order("articles.published_at" => :desc).
+        first
+
+    if daily_thread
+      redirect_to daily_thread.path
+    else
+      redirect_to "/notifications"
+    end
+  end
+
   def crayons
     @page = Page.find_by(slug: "crayons")
     render :show if @page

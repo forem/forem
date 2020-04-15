@@ -88,7 +88,7 @@ class PodcastEpisode < ApplicationRecord
   end
 
   def path
-    return nil unless podcast&.slug
+    return unless podcast&.slug
 
     "/#{podcast.slug}/#{slug}"
   end

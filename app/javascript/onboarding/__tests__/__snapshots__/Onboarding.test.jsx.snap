@@ -208,7 +208,7 @@ preact-render-spy (1 nodes)
         </button>
       </div>
     </nav>
-    <div class="onboarding-content">
+    <div class="onboarding-content toggle-bottom">
       <header class="onboarding-content-header">
         <h1 class="title">What are you interested in?</h1>
         <h2 class="subtitle">Follow tags to customize your feed</h2>
@@ -265,6 +265,11 @@ preact-render-spy (1 nodes)
           </div>
         </div>
       </div>
+      <div class="onboarding-selection-status">
+        <div class="selection-status-content">
+          <p class="follow-count-message">0 tags selected</p>
+        </div>
+      </div>
     </div>
   </div>
 </main>
@@ -294,7 +299,7 @@ preact-render-spy (1 nodes)
         </button>
       </div>
     </nav>
-    <div class="onboarding-content">
+    <div class="onboarding-content toggle-bottom">
       <header class="onboarding-content-header">
         <h1 class="title">Suggested people to follow</h1>
         <h2 class="subtitle">Let's review a few things first</h2>
@@ -304,7 +309,7 @@ preact-render-spy (1 nodes)
           type="button"
           onClick={[Function onClick]}
           onKeyDown={[Function onKeyDown]}
-          class="user content-row selected"
+          class="user content-row unselected"
         >
           <figure class="user-avatar-container">
             <img
@@ -321,14 +326,14 @@ preact-render-spy (1 nodes)
             type="button"
             class="user-following-status"
           >
-            Following
+            Follow
           </button>
         </button>
         <button
           type="button"
           onClick={[Function onClick]}
           onKeyDown={[Function onKeyDown]}
-          class="user content-row selected"
+          class="user content-row unselected"
         >
           <figure class="user-avatar-container">
             <img
@@ -345,14 +350,14 @@ preact-render-spy (1 nodes)
             type="button"
             class="user-following-status"
           >
-            Following
+            Follow
           </button>
         </button>
         <button
           type="button"
           onClick={[Function onClick]}
           onKeyDown={[Function onKeyDown]}
-          class="user content-row selected"
+          class="user content-row unselected"
         >
           <figure class="user-avatar-container">
             <img
@@ -369,18 +374,19 @@ preact-render-spy (1 nodes)
             type="button"
             class="user-following-status"
           >
-            Following
+            Follow
           </button>
         </button>
       </div>
     </div>
     <div class="onboarding-selection-status">
       <div class="selection-status-content">
+        <p class="follow-count-message">You're not following anyone</p>
         <button
           type="button"
           onClick={[Function onClick]}
         >
-          Select All ✅
+          Select all 3 people
         </button>
       </div>
     </div>
@@ -507,6 +513,7 @@ preact-render-spy (1 nodes)
             placeholder="e.g. Company name, self-employed, etc."
             onChange={[Function bound handleChange]}
             maxLength="60"
+            class="onboarding-form-input--last"
            />
         </label>
       </form>

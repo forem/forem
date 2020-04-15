@@ -9,7 +9,7 @@
 }
 
 .live-chat {
-  height: calc(100vh - 80px);
+  height: calc(100vh - 70px);
 
   &.live-chat--iossafari {
     height: calc(100vh - 190px);
@@ -18,14 +18,14 @@
   overflow-y: hidden;
 
   @media screen and (min-width: 400px) {
-    height: calc(100vh - 80px);
+    height: calc(100vh - 70px);
   }
 }
 
 //chat
 .chat {
   display: flex;
-  height: calc(100vh - 91px);
+  height: calc(100vh - 80px);
 
   &.chat--iossafari {
     height: calc(100vh - 201px);
@@ -34,7 +34,7 @@
   padding-right: 3px;
 
   @media screen and (min-width: 400px) {
-    height: calc(100vh - 91px);
+    height: calc(100vh - 80px);
   }
 }
 
@@ -76,11 +76,24 @@
   height: inherit;
   position: relative;
   overflow: hidden;
+
+  .chat__channelssearchtoggle {
+    background: transparent;
+    border: 0px;
+    margin-left: 2px;
+    svg {
+      vertical-align: -5px;
+    }
+  }
+  input {
+    outline: 0;
+  }
+
 }
 
 .chat__channels--expanded {
-  width: 160px;
-  min-width: 160px;
+  width: 219px;
+  min-width: 219px;
 
   @media screen and (min-width: 1000px) {
     width: 200px;
@@ -149,39 +162,16 @@
 
 .chat__channeltypefilter {
   padding: 4px 0px 0px;
-  width: calc(100% - 13px);
+  width: calc(100% - 5px);
 }
 
 .chat__channeltypefilterbutton {
-  background: transparent;
-  border: 0px;
-  font-size: 15px;
-  font-weight: bold;
-  padding: 5px 15px;
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  border-bottom: 1px solid darken($light-medium-gray, 5%);
-
+  margin: 1px;
   @media screen and (min-width: 1300px) {
-    width: 33%;
-    display: inline-block;
-    border-top-left-radius: 3px;
-    border-top-right-radius: 3px;
+    margin: 5px 4px;
   }
 }
 
-.chat__channeltypefilterbutton--active {
-  color: var(--link-branded-color);
-
-  @media screen and (min-width: 1300px) {
-    border: 1px solid darken($light-medium-gray, 5%);
-  }
-}
-
-.chat__channeltypefilterbutton--inactive {
-  @include themeable(color, theme-secondary-color, lighten($medium-gray, 5%));
-}
 
 .chat_chatconfig {
   position: absolute;
@@ -220,185 +210,21 @@
   }
 }
 
-.chat__videocall {
-  height: calc(75vw - 60px);
-  width: calc(100% - 60px);
-  position: fixed;
-  background: $black;
-  left: 0px;
-  top: 0px;
-  text-align: center;
-  cursor: grab;
-  border-radius: 12px;
-  z-index: 10000;
-
-  @media screen and (min-width: 640px) {
-    width: 640px;
-    height: 480px;
-    left: 250px;
-    top: 150px;
-  }
-
-  &:active {
-    cursor: grabbing;
-  }
-
-  video {
-    border-radius: 12px;
-    width: 100%;
-    height: 100%;
-  }
-
-  .chat__remotevideoscreen-2 {
-    video {
-      margin-top: 20%;
-      width: 45%;
-      margin-left: 1%;
-      margin-right: 1%;
-    }
-  }
-
-  .chat__remotevideoscreen-3,
-  .chat__remotevideoscreen-4 {
-    video {
-      width: 45%;
-      margin-top: 1%;
-      margin-left: 1%;
-      margin-right: 1%;
-    }
-  }
-
-  .chat__remotevideoscreen-5,
-  .chat__remotevideoscreen-6 {
-    video {
-      width: 30%;
-      margin-top: 3%;
-      margin-left: 1%;
-      margin-right: 1%;
-    }
-  }
-
-  .chat__remotevideoscreen-7,
-  .chat__remotevideoscreen-8 {
-    video {
-      width: 24%;
-    }
-  }
-
-  .chat__localvideoscren {
-    height: 120px;
-    width: 160px;
-    position: absolute;
-    right: 15px;
-    bottom: 15px;
-    border-radius: 5px;
-    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.4);
-
-    video {
-      border-radius: 5px;
-    }
-  }
-}
-
-.chatNonChatView {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  padding: 80px 7%;
-  z-index: 10;
-  background: var(--body-bg);
-}
-
-.chatNonChatView_exitbutton {
-  position: absolute;
-  left: 4%;
-  top: 60px;
-  font-size: 25px;
-  background: transparent;
-  border: 0px;
-  font-size: 1.8em;
-  color: var(--body-color);
-}
-
-.chatNonChatView_contentblock {
-  border: 1px solid $medium-gray;
-  padding: 20px;
-  margin-bottom: 10px;
-  max-width: 900px;
-  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-
-  h2 {
-    margin: 5px auto 5px;
-  }
-
-  button {
-    font-size: 1.6em;
-    background: white;
-    border: 4px solid $black;
-    padding: 4px 12px;
-    border-radius: 3px;
-    margin: 20px 12px;
-  }
-}
-
-.chat__videocallexitbutton {
-  border: 0px;
-  font-size: 20px;
-  color: $medium-gray;
-  padding: 1px 6px 2px;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.1);
-  position: absolute;
-  left: 3px;
-  top: 3px;
-}
-
-.chat__videocallcontrolbutton {
-  border: 0px;
-  font-size: 14px;
-  color: $light-medium-gray;
-  padding: 3px 0px 4px;
-  border-radius: 6px;
-  background: rgba(0, 0, 0, 0.7);
-  position: absolute;
-  bottom: 10px;
-  left: 10px;
-  width: 125px;
-
-  &.chat__videocallcontrolbutton--videoonoff {
-    left: 140px;
-  }
-}
-
-.chat__videocalltrackdiv--audio {
-  display: none;
-}
-
-.chat__videocalltrackdiv--video {
-  display: inline;
-}
-
 .activechatchannel {
   height: inherit;
   max-height: inherit;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  border-radius: 5px;
   @include themeable(border, theme-container-border, 1px solid $outline-color);
-  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
   background: var(--card-bg);
   flex-flow: row nowrap;
+  position: relative;
 }
 
 .activechatchannel__conversation {
   position: relative;
-  @include themeable(
-    border-top,
-    theme-container-border,
-    1px solid $outline-color
-  );
   order: 1;
   display: flex;
   flex-direction: column;
@@ -406,7 +232,7 @@
   width: 100%;
   min-width: 50%;
   @media screen and (min-width: 1440px) {
-    min-width: 55%;
+    min-width: 35%;
   }
   @media screen and (max-width: 426px) {
     overflow-x: hidden;
@@ -421,12 +247,7 @@
   );
   padding: 10px 12px;
   font-weight: bold;
-  font-size: 14px;
-  @include themeable(
-    background,
-    theme-container-accent-background,
-    $light-gray
-  );
+  font-size: 17px;
   position: relative;
 
   a {
@@ -437,10 +258,9 @@
     height: 17px;
     position: absolute;
     right: 15px;
-    top: 10px;
+    top: 12px;
     cursor: pointer;
     @include themeable(filter, theme-social-icon-invert, invert(0));
-
     img {
       height: 100%;
     }
@@ -488,20 +308,11 @@
   );
   @include themeable(background, theme-container-accent-background, #ededed);
   width: 100%;
-  height: 60px;
+  height: 63px;
   position: relative;
-}
-
-.activechatchannel__incomingcall {
-  border: 2px solid $green;
-  box-shadow: 6px 6px 0px $green;
-  padding: 20px;
-  margin: 10px;
-  background: lighten($green, 28%);
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-  animation: pulser 0.5s linear infinite;
+  @media screen and (min-height: 1000px) {
+    height: 85px;
+  }
 }
 
 .activechatchannel__activecontent {
@@ -540,16 +351,14 @@
   @media screen and (min-width: 1300px) {
     margin-left: initial;
     padding: 18px;
-    max-width: 620px;
+    width: 750px;
+    max-width: 750px;
   }
 }
 
 .chat--video-visible {
   .activechatchannel__conversation {
-    min-width: 25%;
-    @media screen and (min-width: 1440px) {
-      min-width: 45%;
-    }
+    min-width: 20%;
   }
   .activechatchannel__activecontent {
     &.activechatchannel__activecontent--video {
@@ -576,16 +385,20 @@
       width: 400px;
       min-width: 400px;
     }
-    @media screen and (min-width: 1300px) {
-      width: 500px;
-      min-width: 500px;
+    @media screen and (min-width: 1500px) {
+      width: 750px;
+      min-width: 750px;
     }
   }
 }
 
+.chat--content-visible .activechatchannel__conversation {
+  max-width: 52%;
+}
+
 .chat--content-visible .activechatchannel__activecontent.activechatchannel__activecontent--video {
-  width: 280px;
-  min-width: 280px;
+  width: 180px;
+  min-width: 180px;
 }
 
 .live-chat-wrapper .activechatchannel__activecontent {
@@ -595,23 +408,60 @@
   padding: 13px;
 }
 
+.chat--content-visible-full {
+  .activechatchannel__activecontent.activechatchannel__activecontent--sidecar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    min-width: 100%;
+    border-radius: 5px;
+  }
+  .activechatchannel__activecontent.activechatchannel__activecontent--video {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 200px;
+    min-width: 200px;
+    height: 300px;
+    z-index: 250;
+  }
+}
+
+.chat--video-visible-full {
+  .activechatchannel__activecontent.activechatchannel__activecontent--video {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    min-width: 100%;
+    border-radius: 5px;
+  }
+  .activechatchannel__activecontent.activechatchannel__activecontent--sidecar {
+    display: none;
+  }
+}
+
+
 .activechatchannel__activecontentexitbutton {
-  border: 0px;
   font-size: 30px;
-  color: var(--card-color-tertiary);
-  padding: 0px;
-  background: transparent;
   position: absolute;
   left: 4px;
   top: 4px;
-  @include themeable(background, theme-container-accent-background, white);
   z-index: 10;
-  height: 29px;
-  width: 29px;
-  line-height: 10px;
-  padding-bottom: 5px;
-  border-radius: 100px;
-  @include themeable(border, theme-border, 1px solid $medium-gray);
+  padding: 0px;
+  height: 30px;
+  width: 30px;
+  line-height: 0;
+  @media screen and (max-width: 800px) {
+    &.activechatchannel__activecontentexitbutton--fullscreen {
+      display: none;
+    }
+  }
 }
 
 .activechatchannel__activeArticle {
@@ -715,16 +565,15 @@
   width: calc(95% - 2px);
   border: none;
   background: transparent;
-  padding: 3px 0px;
-  margin-bottom: -5px 0;
+  padding: 2px 0px;
+  margin-bottom: -12px;
   box-sizing: border-box;
   color: var(--body-color);
-
-  &:hover {
-    .chatchanneltab--inactive {
-      border: 1px solid $outline-color;
-      box-shadow: $bold-shadow;
-    }
+  display: block;
+  position: relative;
+  .crayons-indicator {
+    vertical-align: -1px;
+    margin-right: 4px;
   }
 }
 
@@ -736,30 +585,27 @@
   text-align: start;
   font-size: 11px;
   font-weight: 500;
-  padding: 6px 4px;
-  border: 1px solid transparent;
+  padding: 5px 4px;
   border-radius: 3px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   box-sizing: border-box;
-
-  @media screen and (min-width: 550px) {
-    font-size: 13px;
-    padding: 8px;
-  }
+  border: 1px solid transparent;
+  font-size: 13px;
+  padding: 8px;
 }
 
 .chatchanneltab--active {
-  background: var(--card-bg);
-  border: 1px solid $dark-purple;
-  box-shadow: 3px 3px 0px $dark-purple;
+  border: 1px solid var(--base-30);
 }
 
+
 .chatchanneltab--new {
-  background: lighten($yellow, 10%);
-  color: $black;
+  border: 1px solid var(--accent-brand);
+  color: var(--accent-brand-darker);
 }
+
 
 .chatchanneltab--video {
   background: lighten($green, 10%);
@@ -771,19 +617,14 @@
   min-height: 0.3em;
   min-width: 0.3em;
   border-radius: 100px;
-  margin-right: 3px;
+  margin-right: 5px;
+  border: 1px solid var(--base-30);
 
   img {
-    height: calc(20px + 0.3vw);
-    width: calc(20px + 0.3vw);
-    vertical-align: calc(-7px - 0.14vw);
-    border: 2px solid transparent;
-
-    &.chatchanneltabindicatordirectimage {
-      border: 2px solid $light-medium-gray;
-      border-radius: 100px;
-      background: white;
-    }
+    height: calc(22px + 0.3vw);
+    width: calc(22px + 0.3vw);
+    vertical-align: calc(-6px - 0.14vw);
+    border-radius: 100px;
   }
 
   .chatchanneltabgroupicon {
@@ -793,16 +634,7 @@
 }
 
 .chatchanneltabindicator--new {
-  background: $yellow;
-
-  img.chatchanneltabindicatordirectimage {
-    border: 2px solid $black;
-  }
-}
-
-.chatchanneltabindicator--phone {
-  background: $green;
-  padding: 0px 8px;
+  border: 1px solid var(--accent-brand);
 }
 
 .chatchannels__channelslist {
@@ -885,24 +717,23 @@
   padding: 3px 10px;
   display: flex;
   max-width: 100%;
-
-  &:hover {
-    @include themeable(
-      background,
-      theme-container-background-hover,
-      $light-gray
-    );
-
-    .chatmessagebody__username--link {
+  @media not all and (pointer: coarse) {
+      &:hover {
       @include themeable(
         background,
         theme-container-background-hover,
-        transparent
+        $light-gray
       );
+
+      .chatmessagebody__username--link {
+        @include themeable(
+          background,
+          theme-container-background-hover,
+          transparent
+        );
+      }
     }
   }
-}
-.chatmessage__profileimage {
 }
 
 .chatmessage__body {
@@ -1021,20 +852,23 @@
 .messagecomposer__input {
   border-radius: 3px;
   font-size: 16px;
-  margin: 4px 2px 4px 6px;
+  margin: 4px 4px 4px 6px;
   padding: 4px;
   resize: none;
   flex-grow: 1;
-  height: 42px;
+  height: 44px;
   background: var(--card-bg);
   @include themeable(border, theme-border, 1px solid $outline-color);
   color: var(--body-color);
+  @media screen and (min-height: 1000px) {
+    height: 66px;
+  }
 }
 
 .messagecomposer__submit {
   margin: 4px 6px 4px 0;
   border-radius: 3px;
-  background: $dark-purple;
+  background: var(--accent-brand);
   font-weight: 600px;
   font-family: $helvetica-condensed;
   color: white;
@@ -1120,6 +954,7 @@
   font-size: 13px;
   text-transform: uppercase;
   font-weight: bold;
+  z-index: 7;
 }
 
 .chatchanneljumpback__hide {
@@ -1152,13 +987,19 @@
 .chatchannels__richlink {
   border: 1px solid darken($light-medium-gray, 15%);
   border-radius: 3px;
-  box-shadow: 3px 3px 0px darken($light-medium-gray, 15%);
+  box-shadow: 2px 2px 0px darken($light-medium-gray, 15%);
   color: $black;
   display: block;
   max-width: 670px;
   padding: 0px;
   margin-bottom: 6px;
   background: var(--card-bg);
+  font-size: 0.9em;
+  &.chatchannels__richlink--base {
+    h1 {
+      margin: 18px auto;
+    }
+  }
   .chatchannels__richlinkmainimage {
     position: relative;
     width: 100%;
@@ -1172,6 +1013,7 @@
     margin-top: 8px;
     padding: 0px calc(10px + 0.2vw);
     line-height: 1.1em;
+    font-size: 1.8em;
     img {
       height: 1.2em;
       width: 1.2em;
@@ -1261,7 +1103,7 @@
   background: white;
   padding: 0px 5px;
   border: 1px solid var(--header-bg);
-  border-left: 3px solid #4e57ef;
+  border-left: 3px solid var(--accent-brand);
   height: 50px;
   overflow: hidden;
   p {
@@ -1274,13 +1116,13 @@
   user-select: none;
   cursor: pointer;
   padding: 2px 5px;
-  color: #4e57ef;
+  color: var(--accent-brand);
   font-weight: bold;
 }
 
 .editHead {
   position: absolute;
-  color: #4e57ef;
+  color: var(--accent-brand);
   font-size: 14px;
   font-weight: bold;
 }

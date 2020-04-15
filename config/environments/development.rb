@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 # Silence all Ruby 2.7 deprecation warnings
 $VERBOSE = nil
 
@@ -126,6 +127,7 @@ Rails.application.configure do
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
 
     # Check if there are any data update scripts to run during startup
     if %w[c console runner s server].include?(ENV["COMMAND"])
@@ -137,3 +139,4 @@ Rails.application.configure do
 end
 
 Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain }
+# rubocop:enable Metrics/BlockLength

@@ -17,9 +17,11 @@ RSpec.describe "User visits a homepage", type: :system do
 
     it "shows the tags block" do
       within("#sidebar-nav-default-tags") do
-        expect(page).to have_link("#ruby", href: "/t/ruby")
-        expect(page).to have_link("#webdev", href: "/t/webdev")
+        Tag.where(supported: true).limit(30).each do |tag|
+          expect(page).to have_link("##{tag.name}", href: "/t/#{tag.name}")
+        end
       end
+
       expect(page).to have_text("Design Your Experience")
     end
 

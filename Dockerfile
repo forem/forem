@@ -6,7 +6,8 @@ FROM ruby:2.7.1-alpine3.10
 #
 #------------------------------------------------------------------------------
 RUN apk update -qq && apk add git nodejs postgresql-client ruby-dev build-base \
-  less libxml2-dev libxslt-dev pcre-dev libffi-dev postgresql-dev tzdata imagemagick
+  less libxml2-dev libxslt-dev pcre-dev libffi-dev postgresql-dev tzdata imagemagick \
+  libcurl curl-dev yarn
 
 #------------------------------------------------------------------------------
 #
@@ -14,15 +15,6 @@ RUN apk update -qq && apk add git nodejs postgresql-client ruby-dev build-base \
 #
 #------------------------------------------------------------------------------
 RUN gem install bundler:2.1.4
-
-#------------------------------------------------------------------------------
-#
-# Install Yarn
-#
-#------------------------------------------------------------------------------
-ENV PATH=/root/.yarn/bin:$PATH
-RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community \
-  yarn
 
 #------------------------------------------------------------------------------
 #
@@ -45,7 +37,8 @@ RUN bundle install --jobs 20 --retry 5
 # Copy Package.json and yarn.lock
 #
 #------------------------------------------------------------------------------
-COPY ./package.json ./yarn.lock ./
+COPY ./package.json ./yarn.lock ./.yarnrc ./
+COPY ./.yarn ./.yarn
 
 #------------------------------------------------------------------------------
 #

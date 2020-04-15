@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Users::Delete, type: :service do
+  before { mock_github }
+
   let(:user) { create(:user, :with_identity, identities: ["github"]) }
 
   it "deletes user" do

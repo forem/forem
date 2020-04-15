@@ -53,7 +53,7 @@ const Channels = ({
               }
             />
           </span>
-          {channel.channel_name}
+          {isUnopened ? <span class="crayons-indicator crayons-indicator--accent crayons-indicator--bullet"></span> : ''}{channel.channel_name}
         </span>
       </button>
     );

@@ -38,7 +38,7 @@ class SearchController < ApplicationController
 
   def chat_channels
     ccm_docs = Search::ChatChannelMembership.search_documents(
-      params: chat_channel_params.to_h, user_id: current_user.id,
+      params: chat_channel_params.merge(user_id: current_user.id).to_h,
     )
 
     render json: { result: ccm_docs }
