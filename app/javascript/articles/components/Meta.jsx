@@ -65,7 +65,10 @@ export const Meta = ({ article, organization }) => (
           )}
       </p>
       <a href={article.path} className="crayons-story__tertiary fs-xs">
-        <PublishDate readablePublishDate={article.readablePublishDate} />
+        <PublishDate
+          readablePublishDate={article.readable_publish_date}
+          publishedTimestap={article.published_timestamp}
+        />
       </a>
     </div>
   </div>
