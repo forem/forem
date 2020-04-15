@@ -13,7 +13,7 @@ class GitlabIssue < ApplicationRecord
   def self.fetch(url)
     try_to_get_issue(url)
   rescue StandardError => e
-    raise StandardError, "A GitLab issue 404'ed and could not be found!" if e.message.include?("404 - Not Found")
+    raise StandardError, "A GitLab issue 404'ed and could not be found!" if e.message.include?("Not Found")
 
     raise StandardError, e.message
   end

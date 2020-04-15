@@ -1,0 +1,18 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <body><p data-sourcepos="1:1-1:23">Observed on gitlab.com.</p>
+<pre data-sourcepos="3:1-15:3"><code>worker2 production.log: Completed 500 Internal Server Error in 287ms (ActiveRecord: 11.7ms)
+worker2 production.log: 
+worker2 production.log: ActionView::Template::Error (undefined method `name' for nil:NilClass):
+worker2 production.log:     54:         %ul.well-list
+worker2 production.log:     55:           - @project.approvers.each do |approver|
+worker2 production.log:     56:             %li
+worker2 production.log:     57:               = link_to approver.user.name, approver.user
+worker2 production.log:     58:               .pull-right
+worker2 production.log:     59:                 = link_to namespace_project_approver_path(@project.namespace, @project, approver), data: { confirm: "Are you sure you want to remove approver #{approver.user.name}"}, method: :delete, class: "btn-xs btn btn-remove", title: 'Remove approver' do
+worker2 production.log:     60:                   = icon("sign-out")
+worker2 production.log:   app/views/projects/_merge_request_settings.html.haml:57:in `block in _app_views_projects__merge_request_settings_html_haml___545752523034962009_57962180'
+</code></pre>
+<p data-sourcepos="17:1-17:105">I checked the Rails console, this project has a number of approvers but the user ID of the last one is 0.</p>
+<p data-sourcepos="19:1-19:19">cc @sytses @vsizov</p></body>
+</html>
