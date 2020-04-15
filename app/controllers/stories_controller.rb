@@ -363,8 +363,8 @@ class StoriesController < ApplicationController
     @user_json_ld[:disambiguatingDescription].append(@user.mostly_work_with) if @user.mostly_work_with.present?
     @user_json_ld[:disambiguatingDescription].append(@user.currently_hacking_on) if @user.currently_hacking_on.present?
     @user_json_ld[:disambiguatingDescription].append(@user.currently_learning) if @user.currently_learning.present?
-    @user_json_ld[:worksFor][0][:employer_name] = @user.employer_name if @user.employer_name.present?
-    @user_json_ld[:worksFor][0][:employer_url] = @user.employer_url if @user.employer_url.present?
+    @user_json_ld[:worksFor][0][:name] = @user.employer_name if @user.employer_name.present?
+    @user_json_ld[:worksFor][0][:url] = @user.employer_url if @user.employer_url.present?
     @user_json_ld[:alumniOf] = @user.education if @user.education.present?
     @user_json_ld[:email] = @user.email if @user.email_public
     @user_json_ld[:jobTitle] = @user.employment_title if @user.employment_title.present?
