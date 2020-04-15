@@ -30,6 +30,8 @@ module FastlyVCL
         new_version.activate!
         Rails.logger.info("Fastly updated to version #{new_version.number}.")
         log_params_diff_to_datadaog(current_params, new_version)
+
+        true
       end
 
       private
