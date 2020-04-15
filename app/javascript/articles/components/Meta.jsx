@@ -3,6 +3,7 @@ import {
   articlePropTypes,
   organizationPropType,
 } from '../../src/components/common-prop-types';
+import { PublishDate } from './PublishDate';
 
 export const Meta = ({ article, organization }) => (
   <div className="crayons-story__meta">
@@ -20,7 +21,6 @@ export const Meta = ({ article, organization }) => (
           />
         </a>
       )}
-
       <a
         href={`/${article.user.username}`}
         className={`crayons-avatar ${
@@ -37,7 +37,6 @@ export const Meta = ({ article, organization }) => (
         />
       </a>
     </div>
-
     <div>
       <p>
         <a
@@ -53,7 +52,9 @@ export const Meta = ({ article, organization }) => (
         {organization &&
           !document.getElementById('organization-article-index') && (
             <span>
-              <span className="crayons-story__tertiary fw-normal"> for </span>
+              <span className="crayons-story__tertiary fw-normal">
+                {' for '}
+              </span>
               <a
                 href={`/${organization.slug}`}
                 className="crayons-story__secondary fw-medium"
@@ -64,7 +65,7 @@ export const Meta = ({ article, organization }) => (
           )}
       </p>
       <a href={article.path} className="crayons-story__tertiary fs-xs">
-        7h ago
+        <PublishDate readablePublishDate={article.readablePublishDate} />
       </a>
     </div>
   </div>
