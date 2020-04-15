@@ -50,7 +50,7 @@ export class SaveButton extends Component {
       return (
         <button
           type="button"
-          className={`crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s ${
+          className={`crayons-btn crayons-btn--icon-left fs-s ${
             isBookmarked ? 'crayons-btn--ghost' : 'crayons-btn--secondary'
           }`}
           data-initial-feed
