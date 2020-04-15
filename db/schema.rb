@@ -309,6 +309,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.string "slug"
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listing_categories", force: :cascade do |t|
@@ -932,7 +933,6 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["type_of"], name: "index_response_templates_on_type_of"
-    t.index ["user_id", "type_of"], name: "index_response_templates_on_user_id_and_type_of"
     t.index ["user_id"], name: "index_response_templates_on_user_id"
   end
 
