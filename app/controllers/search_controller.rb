@@ -106,7 +106,6 @@ class SearchController < ApplicationController
   end
 
   def feed_params
-    params[:tag_names] = params[:tag_names].split(",") if params[:tag_names]
     params.permit(FEED_PARAMS)
   end
 
