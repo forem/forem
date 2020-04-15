@@ -267,7 +267,7 @@ preact-render-spy (1 nodes)
       </div>
       <div class="onboarding-selection-status">
         <div class="selection-status-content">
-          <p class="follow-count-message">0 topic selected</p>
+          <p class="follow-count-message">0 tags selected</p>
         </div>
       </div>
     </div>

@@ -83,15 +83,15 @@ class FollowTags extends Component {
   renderFollowCount() {
     const { selectedTags } = this.state;
     let followingStatus;
-    if (selectedTags.length < 2) {
-      followingStatus = `${selectedTags.length} topic selected`;
+    if (selectedTags.length === 1) {
+      followingStatus = `${selectedTags.length} tag selected`;
     } else {
-      followingStatus = `${selectedTags.length} topics selected`;
+      followingStatus = `${selectedTags.length} tags selected`;
     }
 
-    const klassName =
+    const classStyle =
       selectedTags.length > 0 ? 'follow-count--active' : 'follow-count-message';
-    return <p className={klassName}>{followingStatus}</p>;
+    return <p className={classStyle}>{followingStatus}</p>;
   }
 
   render() {
