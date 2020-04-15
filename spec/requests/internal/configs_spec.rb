@@ -250,16 +250,17 @@ RSpec.describe "/internal/config", type: :request do
           expect { post "/internal/config", params: { site_config: { shop_url: expected_shop_url }, confirmation: "Incorrect confirmation" } }.to raise_error Pundit::NotAuthorizedError
           expect(SiteConfig.shop_url).not_to eq(expected_shop_url)
           get "/"
-          expect(response.body).to include("https://shop.dev.to")
-          expect(response.body).to include("DEV(local) Shop")
+          expect(response.body).not_to include(expected_shop_url)
+          expect(response.body).to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
         end
 
         it "sets shop_url to nil" do
+          previous_shop_url = SiteConfig.shop_url
           post "/internal/config", params: { site_config: { shop_url: "" }, confirmation: confirmation_message }
           expect(SiteConfig.shop_url).to eq("")
           get "/"
-          expect(response.body).not_to include("https://shop.dev.to")
-          expect(response.body).not_to include("DEV(local) Shop")
+          expect(response.body).not_to include(previous_shop_url)
+          expect(response.body).not_to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
         end
 
         it "updates shop url" do
@@ -268,7 +269,7 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.shop_url).to eq(expected_shop_url)
           get "/"
           expect(response.body).to include(expected_shop_url)
-          expect(response.body).to include("DEV(local) Shop")
+          expect(response.body).to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
         end
       end
 
