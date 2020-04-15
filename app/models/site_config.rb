@@ -81,6 +81,9 @@ class SiteConfig < RailsSettings::Base
   field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
   field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
 
+  # Shop
+  field :shop_url, type: :string, default: "https://shop.dev.to"
+
   # Helpful methods
   def self.auth_allowed?(provider)
     authentication_providers.include?(provider)
