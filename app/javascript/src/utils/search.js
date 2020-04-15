@@ -33,7 +33,7 @@ function fixedEncodeURIComponent(str) {
   // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
   return encodeURIComponent(str).replace(
     /[!'()*]/g,
-    c => `%${c.charCodeAt(0).toString(16)}`,
+    (c) => `%${c.charCodeAt(0).toString(16)}`,
   );
 }
 
@@ -79,6 +79,22 @@ export function preloadSearchResults({
   );
 }
 
+export function createSearchUrl(dataHash) {
+  const searchParams = new URLSearchParams();
+  Object.keys(dataHash).forEach((key) => {
+    const value = dataHash[key];
+    if (Array.isArray(value)) {
+      value.forEach((arrayValue) => {
+        searchParams.append(`${key}[]`, arrayValue);
+      });
+    } else {
+      searchParams.append(key, value);
+    }
+  });
+
+  return searchParams.toString();
+}
+
 /**
  * A helper method to call /search endpoints.
  *
@@ -88,9 +104,9 @@ export function preloadSearchResults({
  * @returns {Promise} A promise object with response formatted as JSON.
  */
 export function fetchSearch(endpoint, dataHash) {
-  const searchParams = new URLSearchParams(dataHash).toString();
+  const searchUrl = createSearchUrl(dataHash);
 
-  return fetch(`/search/${endpoint}?${searchParams}`, {
+  return fetch(`/search/${endpoint}?${searchUrl}`, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -98,5 +114,5 @@ export function fetchSearch(endpoint, dataHash) {
       'Content-Type': 'application/json',
     },
     credentials: 'same-origin',
-  }).then(response => response.json());
+  }).then((response) => response.json());
 }
