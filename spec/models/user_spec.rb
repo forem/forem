@@ -18,6 +18,8 @@ RSpec.describe User, type: :model do
 
   describe "validations" do
     describe "builtin validations" do
+      subject { user }
+
       it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
       it { is_expected.to have_many(:articles).dependent(:destroy) }
       it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
@@ -133,13 +135,36 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_one(:counters).class_name("UserCounter").dependent(:destroy) }
       it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
 
-      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+      it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
+      it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
+      it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
+      it { is_expected.to allow_value("#aabbcc").for(:bg_color_hex) }
+      it { is_expected.to allow_value("#aabbcc").for(:text_color_hex) }
+      it { is_expected.to allow_value("#abc").for(:bg_color_hex) }
+      it { is_expected.to allow_value("#abc").for(:text_color_hex) }
+      it { is_expected.to allow_value("AcMe_1").for(:username) }
+
+      it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+      it { is_expected.to validate_length_of(:available_for).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:behance_url).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:currently_hacking_on).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:currently_learning).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:education).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
+      it { is_expected.to validate_length_of(:employer_name).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:employer_url).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:employment_title).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
+      it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
+      it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
+      it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
       it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
       it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
-      it { is_expected.to validate_presence_of(:username) }
-      it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
-      it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
-      it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+      it { is_expected.to validate_url_of(:employer_url) }
+      it { is_expected.to validate_url_of(:website_url) }
     end
 
     it "validates username against reserved words" do
@@ -828,9 +853,9 @@ RSpec.describe User, type: :model do
     end
 
     it "assigns modified username if invalid" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = "invalid.username"
+      OmniAuth.config.mock_auth[:twitter].info.nickname = "invalid.user"
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.username).to eq("invalidusername")
+      expect(new_user.username).to eq("invaliduser")
     end
 
     it "assigns an identity to user" do
