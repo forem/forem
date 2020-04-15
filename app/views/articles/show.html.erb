@@ -61,7 +61,7 @@
       "name": "<%= @user.name %>"
     },
     "datePublished": "<%= @article.published_timestamp %>",
-    "dateModified": "<%= @article.edited_at || @article.published_timestamp %>"
+    "dateModified": "<%= @article.edited_at&.iso8601 || @article.published_timestamp %>"
   }
 </script>
 

@@ -338,15 +338,15 @@ class StoriesController < ApplicationController
       "@type": "Person",
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "<%= user_url(@user) %>"
+        "@id": "URL.user(@user)"
       },
-      "url": "<%= user_url(@user) %>",
+      "url": "URL.user(@user)",
       "sameAs": [],
-      "image": "<%= ProfileImage.new(@user).get(width: 320) %>",
-      "name": "<%= @user.name %>",
+      "image": "ProfileImage.new(@user).get(width: 320)",
+      "name": "@user.name",
       "email": "",
       "jobTitle": "",
-      "description": "<%= @user.summary.presence || ['404 bio not found'].sample %>",
+      "description": "@user.summary.presence || ['404 bio not found'].sample",
       "disambiguatingDescription": [],
       "worksFor": [
         {
@@ -365,9 +365,9 @@ class StoriesController < ApplicationController
     @user_json_ld[:disambiguatingDescription].append(@user.currently_learning) if @user.currently_learning.present?
     @user_json_ld[:worksFor][0][:employer_name] = @user.employer_name if @user.employer_name.present?
     @user_json_ld[:worksFor][0][:employer_url] = @user.employer_url if @user.employer_url.present?
-    @user_json_ld[:alumniOf].concat(@user.education) if @user.education.present?
-    @user_json_ld[:email].concat(@user.email) if @user.email_public
-    @user_json_ld[:jobTitle].concat(@user.employment_title) if @user.employment_title.present?
+    @user_json_ld[:alumniOf] = @user.education if @user.education.present?
+    @user_json_ld[:email] = @user.email if @user.email_public
+    @user_json_ld[:jobTitle] = @user.employment_title if @user.employment_title.present?
     @user_json_ld[:sameAs].append(@user.twitter_username) if @user.twitter_username.present?
     @user_json_ld[:sameAs].append(@user.github_username) if @user.github_username.present?
   end
