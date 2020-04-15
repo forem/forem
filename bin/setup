@@ -46,9 +46,6 @@ FileUtils.chdir APP_ROOT do
     system! "bin/rails db:setup"
   end
 
-  puts "\n== Updating Fastly =="
-  system! "bin/rails fastly:update_whitelisted_params"
-
   puts "\n== Preparing Elasticsearch =="
   system! "bin/rails search:setup"
   system! 'RAILS_ENV="test" bin/rails search:setup'
