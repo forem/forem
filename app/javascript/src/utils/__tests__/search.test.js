@@ -5,6 +5,7 @@ import {
   hasInstantClick,
   displaySearchResults,
   fetchSearch,
+  createSearchUrl,
 } from '../search';
 import '../../../../assets/javascripts/lib/xss';
 
@@ -246,6 +247,14 @@ describe('Search utilities', () => {
         expect(response).toBeInstanceOf(Object);
         expect(response).toMatchObject({ results: expect.any(Array) });
       });
+    });
+  });
+
+  describe('createSearchUrl', () => {
+    test('should return a url string', () => {
+      const dataHash = { name: 'jav', tags: ['one', 'two'] };
+      const responseString = createSearchUrl(dataHash);
+      expect(responseString).toEqual('name=jav&tags%5B%5D=one&tags%5B%5D=two');
     });
   });
 });

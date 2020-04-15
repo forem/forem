@@ -3,12 +3,14 @@ class SearchController < ApplicationController
   before_action :format_integer_params
   before_action :sanitize_params, only: %i[classified_listings]
 
-  CLASSIFIED_LISTINGS_PARAMS = %i[
-    category
-    classified_listing_search
-    page
-    per_page
-    tags
+  CLASSIFIED_LISTINGS_PARAMS = [
+    :category,
+    :classified_listing_search,
+    :page,
+    :per_page,
+    {
+      tags: []
+    },
   ].freeze
 
   USER_PARAMS = %i[
@@ -40,7 +42,7 @@ class SearchController < ApplicationController
 
   def chat_channels
     ccm_docs = Search::ChatChannelMembership.search_documents(
-      params: chat_channel_params.to_h, user_id: current_user.id,
+      params: chat_channel_params.merge(user_id: current_user.id).to_h,
     )
 
     render json: { result: ccm_docs }

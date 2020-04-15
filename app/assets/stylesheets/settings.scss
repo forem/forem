@@ -758,20 +758,15 @@ ul.delete__account {
 .api__secret {
   &__container {
     background-color: $white;
-    height: 6.5rem;
+    display: flex;
+    height: auto;
     margin: 0.5rem 0;
     padding: 0.5rem;
     border-radius: 3px;
     border: 1px solid $light-medium-gray;
-    @media screen and (min-width: 600px) {
-      height: 5rem;
-    }
   }
 
   &__desc {
-    width: 70%;
-    float: left;
-
     .title {
       color: $dark-gray;
       font-weight: bold;
@@ -795,13 +790,10 @@ ul.delete__account {
   }
 
   &__revoke {
-    text-align: right;
-    margin: 1.6rem auto 0;
+    text-align: left;
+    margin: 1rem auto 0;
     display: block;
-    @media screen and (min-width: 600px) {
-      float: left;
-      width: 30%;
-    }
+    width: 100%;
   }
 }
 

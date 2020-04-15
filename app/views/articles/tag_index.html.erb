@@ -82,7 +82,7 @@
           </div>
           <div class="narrow-nav-select" aria-label="feed-filter-select">
             <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>
-              <button type="button" id="narrow-feed-butt">&lt;MY <%= ApplicationConfig["COMMUNITY_NAME"] %> FEED&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;MY <%= community_name %> FEED&gt;</button>
             <% elsif timeframe_check('week') %>
               <button type="button" id="narrow-feed-butt">&lt;PAST WEEK&gt;</button>
             <% elsif timeframe_check('month') %>

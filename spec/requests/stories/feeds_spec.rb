@@ -115,13 +115,14 @@ RSpec.describe "Stories::Feeds", type: :request do
     end
 
     context "when there are highly rated comments" do
-      let(:comment) { create(:comment, score: 20) }
+      let(:comment) { create(:comment, score: 20, user: user) }
       let(:article) { comment.commentable }
 
       it "renders top comments for the article" do
         get "/stories/feed/infinity", headers: headers
 
         expect(response_article["top_comments"]).not_to be_nil
+        expect(response_article["top_comments"].first["username"]).not_to be_nil
       end
     end
 

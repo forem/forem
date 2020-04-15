@@ -32,7 +32,7 @@ RSpec.describe Article, type: :model do
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
         article.save
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.id]) do
           article.save
         end
       end
@@ -83,7 +83,7 @@ RSpec.describe Article, type: :model do
         allow(article).to receive(:index_to_elasticsearch)
         allow(article.user).to receive(:index_to_elasticsearch)
 
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: ["Reaction", reaction.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: ["Reaction", reaction.id]) do
           article.update(body_markdown: "---\ntitle: NEW TITLE#{rand(1000)}\n")
         end
       end
@@ -849,10 +849,14 @@ RSpec.describe Article, type: :model do
     context "when article has comments" do
       let(:root_comment) { create(:comment, commentable: article, score: 20) }
       let(:child_comment) { create(:comment, commentable: article, score: 20, parent: root_comment) }
+      let(:hidden_comment) { create(:comment, commentable: article, score: 20, hidden_by_commentable_user: true) }
+      let(:deleted_comment) { create(:comment, commentable: article, score: 20, deleted: true) }
 
       before do
         root_comment
         child_comment
+        hidden_comment
+        deleted_comment
         create_list(:comment, 2, commentable: article, score: 20)
         article.reload
       end
@@ -863,6 +867,14 @@ RSpec.describe Article, type: :model do
 
       it "only includes root comments" do
         expect(article.top_comments).not_to include(child_comment)
+      end
+
+      it "doesn't include hidden comments" do
+        expect(article.top_comments).not_to include(hidden_comment)
+      end
+
+      it "doesn't include deleted comments" do
+        expect(article.top_comments).not_to include(deleted_comment)
       end
     end
 
@@ -875,7 +887,7 @@ RSpec.describe Article, type: :model do
 
   describe "#touch_by_reaction" do
     it "reindexes elasticsearch doc" do
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.search_id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.id]) do
         article.touch_by_reaction
       end
     end
