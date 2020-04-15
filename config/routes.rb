@@ -308,6 +308,7 @@ Rails.application.routes.draw do
   get "/faq" => "pages#faq"
   get "/welcome" => "pages#welcome"
   get "/challenge" => "pages#challenge"
+  get "/checkin" => "pages#checkin"
   get "/badge" => "pages#badge"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
