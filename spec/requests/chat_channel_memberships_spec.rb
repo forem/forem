@@ -159,7 +159,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       end
 
       it "disallows invitation creation when org private group" do
-        chat_channel.update_columnb(:channel_name, "@org private group chat")
+        chat_channel.update_column(:channel_name, "@org private group chat")
         chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
         expect do
           post "/chat_channel_memberships", params: {
