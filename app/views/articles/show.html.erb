@@ -255,8 +255,8 @@
   <% end %>
 <% end %>
 
-
-<div class="mod-actions-menu"><iframe src="<%= "#{@article.path}/mod" %>"></iframe></div>
+<div class="mod-actions-menu hidden"></div>
+<div id="mod-actions-menu-btn-area"></div>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
