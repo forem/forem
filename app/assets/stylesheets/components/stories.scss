@@ -260,3 +260,15 @@
     }
   }
 }
+
+// Legacy
+.crayons-story {
+  .crayons-btn {
+    .bm-initial {
+      display: none;
+    }
+    .bm-success {
+      display: inline-flex;
+    }
+  }
+}

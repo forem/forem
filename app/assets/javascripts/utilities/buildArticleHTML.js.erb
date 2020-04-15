@@ -121,12 +121,12 @@ function buildArticleHTML(article) {
     }
     var saveButton = '';
     if (article.class_name === "Article") {
-      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s" data-reactable-id="'+article.id+'">\
-                      <span class="bm-initial">SAVE</span>\
-                      <span class="bm-success">SAVED</span>\
+      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary fs-s" data-reactable-id="'+article.id+'">\
+                      <span class="bm-initial">Save</span>\
+                      <span class="bm-success">Saved</span>\
                     </button>'
     } else if (article.class_name === "User") {
-      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s"\
+      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary fs-s"\
                        data-info=\'{"id":'+article.id+',"className":"User"}\' data-follow-action-button>\
                        &nbsp;\
                     </button>'
