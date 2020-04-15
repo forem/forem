@@ -4,12 +4,12 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
   describe "::intialize" do
     it "sets params" do
       filter_params = { foo: "bar" }
-      filter = described_class.new(filter_params)
+      filter = described_class.new(params: filter_params)
       expect(filter.params).to include(filter_params)
     end
 
     it "builds query body" do
-      filter = described_class.new({})
+      filter = described_class.new(params: {})
       expect(filter.body).not_to be_nil
     end
   end
@@ -17,7 +17,7 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
   describe "#as_hash" do
     it "applies TERM_KEYS from params" do
       params = { category: "cfp", tags: ["beginner"], contact_via_connect: false }
-      filter = described_class.new(params)
+      filter = described_class.new(params: params)
       exepcted_filters = [
         { "term" => { "category" => "cfp" } },
         { "term" => { "tags" => ["beginner"] } },
@@ -30,7 +30,7 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
     it "applies RANGE_KEYS from params" do
       Timecop.freeze(Time.current) do
         params = { bumped_at: Time.current, expires_at: 1.day.from_now }
-        filter = described_class.new(params)
+        filter = described_class.new(params: params)
         exepcted_filters = [
           { "range" => { "bumped_at" => Time.current } },
           { "range" => { "expires_at" => 1.day.from_now } },
@@ -42,7 +42,7 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
 
     it "applies QUERY_KEYS from params" do
       params = { classified_listing_search: "test" }
-      filter = described_class.new(params)
+      filter = described_class.new(params: params)
       exepcted_query = [{
         "simple_query_string" => {
           "query" => "test*", "fields" => [:classified_listing_search], "lenient" => true, "analyze_wildcard" => true
@@ -54,7 +54,7 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
     it "applies QUERY_KEYS, TERM_KEYS, and RANGE_KEYS from params" do
       Timecop.freeze(Time.current) do
         params = { classified_listing_search: "test", bumped_at: Time.current, category: "cfp" }
-        filter = described_class.new(params)
+        filter = described_class.new(params: params)
         exepcted_query = [{
           "simple_query_string" => { "query" => "test*", "fields" => [:classified_listing_search], "lenient" => true, "analyze_wildcard" => true }
         }]
@@ -70,7 +70,7 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
 
     it "ignores params we don't support" do
       params = { not_supported: "trash", category: "cfp" }
-      filter = described_class.new(params)
+      filter = described_class.new(params: params)
       exepcted_filters = [
         { "term" => { "category" => "cfp" } },
         { "term" => { "published" => true } },
@@ -79,7 +79,7 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
     end
 
     it "sets default params when not present" do
-      filter = described_class.new({}).as_hash
+      filter = described_class.new(params: {}).as_hash
       expect(filter.dig("sort")).to eq("bumped_at" => "desc")
       expect(filter.dig("size")).to eq(0)
       expect(filter.dig("query", "bool", "filter")).to match_array([{ "term" => { "published" => true } }])
@@ -87,7 +87,7 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
 
     it "allows default params to be overriden" do
       params = { sort_by: "category", sort_direction: "asc", size: 20 }
-      filter = described_class.new(params).as_hash
+      filter = described_class.new(params: params).as_hash
       expect(filter.dig("sort")).to eq("category" => "asc")
       expect(filter.dig("size")).to eq(20)
     end

@@ -4,7 +4,7 @@
     <% unless user_signed_in? %>
       <div class="widget signin-cta-widget">
         <header class="signin-cta-widget-header">
-          Join <%= ApplicationConfig["COMMUNITY_NAME"] %>
+          Join <%= community_name %>
         </header>
         <div class="widget-body">
           <% if SiteConfig.auth_allowed?("twitter") %>

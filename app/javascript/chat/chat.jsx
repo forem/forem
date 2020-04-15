@@ -512,8 +512,11 @@ export default class Chat extends Component {
   };
 
   handleKeyDown = (e) => {
-    const { showMemberlist } = this.state;
+    const { showMemberlist, activeContent, activeChannelId } = this.state;
     const enterPressed = e.keyCode === 13;
+    const leftPressed = e.keyCode === 37;
+    const rightPressed = e.keyCode === 39;
+    const escPressed = e.keyCode === 27;
     const targetValue = e.target.value;
     const messageIsEmpty = targetValue.length === 0;
     const shiftPressed = e.shiftKey;
@@ -536,6 +539,33 @@ export default class Chat extends Component {
         e.preventDefault();
       }
     }
+    if (leftPressed && activeContent[activeChannelId] && e.target.value === '' && document.getElementById('activecontent-iframe')) {
+      e.preventDefault();
+      try {
+        e.target.value = document.getElementById('activecontent-iframe').contentWindow.location.href
+      } catch(err){
+        e.target.value = activeContent[activeChannelId].path
+      }
+    }
+    if (rightPressed && !activeContent[activeChannelId] && e.target.value === '') {
+      e.preventDefault();
+      const richLinks = document.querySelectorAll(".chatchannels__richlink");
+      if (richLinks.length === 0) {
+        return;
+      }
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: richLinks[richLinks.length - 1].href,
+        type_of: 'article',
+      });
+    }
+    if (escPressed && activeContent[activeChannelId]) {
+      this.setActiveContentState(activeChannelId, null);
+      this.setState({fullscreenContent: null});
+    }
+
   };
 
   handleKeyDownEdit = (e) => {
@@ -567,7 +597,8 @@ export default class Chat extends Component {
   };
 
   handleMessageSubmit = (message) => {
-    const { activeChannelId } = this.state;
+    const { activeChannelId, activeContent } = this.state;
+    scrollToBottom();
     // should check if user has the privilege
     if (message.startsWith('/code')) {
       this.setActiveContentState(activeChannelId, { type_of: 'code_editor' });
@@ -585,6 +616,30 @@ export default class Chat extends Component {
       });
       this.setActiveContent({
         path: '/new',
+        type_of: 'article',
+      });
+    } else if (message.startsWith('/search')) {
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: '/search?q=' + message.replace('/search ', ''),
+        type_of: 'article',
+      });
+    } else if (message.startsWith('/s ')) {
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: '/search?q=' + message.replace('/s ', ''),
+        type_of: 'article',
+      });
+    } else if (message.startsWith('/')) {
+      this.setActiveContentState(activeChannelId, {
+        type_of: 'loading-post',
+      });
+      this.setActiveContent({
+        path: message,
         type_of: 'article',
       });
     } else if (message.startsWith('/github')) {
@@ -698,6 +753,7 @@ export default class Chat extends Component {
 
   handleSuccess = (response) => {
     const { activeChannelId } = this.state;
+    scrollToBottom();
     if (response.status === 'success') {
       if (response.message.temp_id) {
         this.setState(({ messages }) => {
@@ -774,6 +830,7 @@ export default class Chat extends Component {
         this.setState({ fullscreenContent: mode });
       }
     }
+    document.getElementById('messageform').focus();
     return false;
   };
 
