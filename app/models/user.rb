@@ -159,6 +159,7 @@ class User < ApplicationRecord
   scope :top_commenters, lambda { |number = 10|
     includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
   }
+  scope :eager_load_serialized_data, -> { includes(:roles) }
 
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter

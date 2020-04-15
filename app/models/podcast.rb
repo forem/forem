@@ -22,6 +22,7 @@ class Podcast < ApplicationRecord
   scope :reachable, -> { where(id: PodcastEpisode.reachable.select(:podcast_id)) }
   scope :published, -> { where(published: true) }
   scope :available, -> { reachable.published }
+  scope :eager_load_serialized_data, -> { includes(:user, :podcast, :tags) }
 
   alias_attribute :path, :slug
   alias_attribute :profile_image_url, :image_url
