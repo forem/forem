@@ -299,10 +299,31 @@ describe('<Onboarding />', () => {
       const followUsers = onboardingSlides.find(<FollowUsers />);
 
       onboardingSlides.find('.user').first().simulate('click');
+      expect(onboardingSlides.find('p').last().text()).toBe(
+        "You're following 1 person",
+      );
+      onboardingSlides.find('.user').last().simulate('click');
+      expect(onboardingSlides.find('p').last().text()).toBe(
+        "You're following 2 people",
+      );
       expect(followUsers.state('selectedUsers').length).toBe(2);
       onboardingSlides.find('.next-button').simulate('click');
       await flushPromises();
       expect(onboardingSlides.state().currentSlide).toBe(5);
+    });
+
+    test('should have a functioning select-all toggle', async () => {
+      fetch.once({});
+      const followUsers = onboardingSlides.find(<FollowUsers />);
+
+      expect(onboardingSlides.find('button').last().text()).toBe(
+        'Select all 3 people',
+      );
+      onboardingSlides.find('button').last().simulate('click');
+      expect(onboardingSlides.find('button').last().text()).toBe(
+        'Deselect all',
+      );
+      expect(followUsers.state('selectedUsers').length).toBe(3);
     });
 
     it('should step backward', async () => {

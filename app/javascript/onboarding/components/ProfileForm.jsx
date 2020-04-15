@@ -115,6 +115,7 @@ class ProfileForm extends Component {
                 placeholder="e.g. Company name, self-employed, etc."
                 onChange={this.handleChange}
                 maxLength="60"
+                className="onboarding-form-input--last"
               />
             </label>
           </form>
