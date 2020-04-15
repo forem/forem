@@ -62,7 +62,7 @@ module Search
 
       attr_accessor :params, :body
 
-      def initialize(params)
+      def initialize(params:)
         @params = params.deep_symbolize_keys
 
         # Default to only showing published articles to start
