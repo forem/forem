@@ -77,7 +77,12 @@ class ApplicationController < ActionController::Base
   end
 
   def log_image_data_to_datadog
-    images = Array.wrap(params.dig("user", "profile_image") || params["image"])
+    images = Array.wrap(
+      params.dig("user", "profile_image") ||
+      params.dig("podcast", "image") ||
+      params.dig("organization", "profile_image") ||
+      params["image"],
+    )
 
     raise if images.empty?
 

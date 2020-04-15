@@ -20,6 +20,7 @@ class Reaction < ApplicationRecord
 
   scope :positive, -> { where("points > ?", 0) }
   scope :readinglist, -> { where(category: "readinglist") }
+  scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }

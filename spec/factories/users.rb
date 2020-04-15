@@ -27,7 +27,11 @@ FactoryBot.define do
 
       after(:create) do |user, options|
         options.identities.each do |provider|
-          create(:identity, user: user, provider: provider)
+          auth = OmniAuth.config.mock_auth.fetch(provider.to_sym)
+          create(
+            :identity,
+            user: user, provider: provider, uid: auth.uid, auth_data_dump: auth,
+          )
         end
       end
     end

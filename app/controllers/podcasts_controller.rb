@@ -5,6 +5,8 @@ class PodcastsController < ApplicationController
   # method "current_user.add_role()" we have no control of
   around_action :skip_bullet, only: %i[create], if: -> { defined?(Bullet) }
 
+  rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
+
   def new
     @podcast = Podcast.new
     @podcasts = Podcast.available.order("title asc")
