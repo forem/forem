@@ -338,15 +338,15 @@ class StoriesController < ApplicationController
       "@type": "Person",
       "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "URL.user(@user)"
+        "@id": URL.user(@user)
       },
-      "url": "URL.user(@user)",
+      "url": URL.user(@user),
       "sameAs": [],
-      "image": "ProfileImage.new(@user).get(width: 320)",
-      "name": "@user.name",
+      "image": ProfileImage.new(@user).get(width: 320),
+      "name": @user.name,
       "email": "",
       "jobTitle": "",
-      "description": "@user.summary.presence || ['404 bio not found'].sample",
+      "description": @user.summary.presence || ["404 bio not found"].sample,
       "disambiguatingDescription": [],
       "worksFor": [
         {
