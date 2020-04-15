@@ -208,7 +208,7 @@ preact-render-spy (1 nodes)
         </button>
       </div>
     </nav>
-    <div class="onboarding-content">
+    <div class="onboarding-content toggle-bottom">
       <header class="onboarding-content-header">
         <h1 class="title">What are you interested in?</h1>
         <h2 class="subtitle">Follow tags to customize your feed</h2>
@@ -263,6 +263,11 @@ preact-render-spy (1 nodes)
               </button>
             </div>
           </div>
+        </div>
+      </div>
+      <div class="onboarding-selection-status">
+        <div class="selection-status-content">
+          <p class="follow-count-message">0 tags selected</p>
         </div>
       </div>
     </div>
@@ -376,7 +381,7 @@ preact-render-spy (1 nodes)
     </div>
     <div class="onboarding-selection-status">
       <div class="selection-status-content">
-        <p>You're not following anyone</p>
+        <p class="follow-count-message">You're not following anyone</p>
         <button
           type="button"
           onClick={[Function onClick]}

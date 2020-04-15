@@ -2,8 +2,11 @@ require "rails_helper"
 
 def user_from_authorization_service(service_name, signed_in_resource, cta_variant)
   auth = OmniAuth.config.mock_auth[service_name]
-  service = AuthorizationService.new(auth, signed_in_resource, cta_variant)
-  service.get_user
+  Authentication::Authenticator.call(
+    auth,
+    current_user: signed_in_resource,
+    cta_variant: cta_variant,
+  )
 end
 
 RSpec.describe User, type: :model do
@@ -15,34 +18,40 @@ RSpec.describe User, type: :model do
 
   describe "validations" do
     describe "builtin validations" do
-      it { is_expected.to have_many(:api_secrets) }
-      it { is_expected.to have_many(:articles) }
+      it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
+      it { is_expected.to have_many(:articles).dependent(:destroy) }
+      it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
       it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
       it { is_expected.to have_many(:badges).through(:badge_achievements) }
-      it { is_expected.to have_many(:collections).dependent(:destroy) }
-      it { is_expected.to have_many(:comments) }
-      it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message") }
-      it { is_expected.to have_many(:identities).dependent(:destroy) }
-      it { is_expected.to have_many(:mentions).dependent(:destroy) }
-      it { is_expected.to have_many(:notes) }
-      it { is_expected.to have_many(:notifications).dependent(:destroy) }
-      it { is_expected.to have_many(:reactions).dependent(:destroy) }
-      it { is_expected.to have_many(:tweets).dependent(:destroy) }
-      it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
+      it { is_expected.to have_many(:classified_listings).dependent(:destroy) }
+      it { is_expected.to have_many(:collections).dependent(:destroy) }
+      it { is_expected.to have_many(:comments).dependent(:destroy) }
+      it { is_expected.to have_many(:credits).dependent(:destroy) }
+      it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
+      it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
+      it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
+      it { is_expected.to have_many(:github_repos).dependent(:destroy) }
+      it { is_expected.to have_many(:html_variants).dependent(:destroy) }
+      it { is_expected.to have_many(:identities).dependent(:destroy) }
+      it { is_expected.to have_many(:mentions).dependent(:destroy) }
+      it { is_expected.to have_many(:messages).dependent(:destroy) }
+      it { is_expected.to have_many(:notes) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
-      it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
-      it { is_expected.to have_one(:counters).dependent(:destroy) }
+      it { is_expected.to have_many(:notifications).dependent(:destroy) }
+      it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
+      it { is_expected.to have_many(:organizations).through(:organization_memberships) }
+      it { is_expected.to have_many(:page_views).dependent(:destroy) }
+      it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
+      it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
+      it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:reactions).dependent(:destroy) }
+      it { is_expected.to have_many(:response_templates).dependent(:destroy) }
+      it { is_expected.to have_many(:tweets).dependent(:destroy) }
 
       # rubocop:disable RSpec/NamedSubject
-      it "has created_podcasts" do
-        expect(subject).to have_many(:created_podcasts).
-          class_name("Podcast").
-          with_foreign_key(:creator_id).
-          dependent(:nullify)
-      end
-
       it do
         expect(subject).to have_many(:access_grants).
           class_name("Doorkeeper::AccessGrant").
@@ -56,9 +65,73 @@ RSpec.describe User, type: :model do
           with_foreign_key("resource_owner_id").
           dependent(:delete_all)
       end
+
+      it do
+        expect(subject).to have_many(:affected_feedback_messages).
+          class_name("FeedbackMessage").
+          with_foreign_key("affected_id").
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:authored_notes).
+          class_name("Note").
+          with_foreign_key("author_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:backup_data).
+          class_name("BackupData").
+          with_foreign_key("instance_user_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:blocked_blocks).
+          class_name("UserBlock").
+          with_foreign_key("blocked_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:blocker_blocks).
+          class_name("UserBlock").
+          with_foreign_key("blocker_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:created_podcasts).
+          class_name("Podcast").
+          with_foreign_key(:creator_id).
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:offender_feedback_messages).
+          class_name("FeedbackMessage").
+          with_foreign_key(:offender_id).
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:reporter_feedback_messages).
+          class_name("FeedbackMessage").
+          with_foreign_key(:reporter_id).
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:webhook_endpoints).
+          class_name("Webhook::Endpoint").
+          with_foreign_key(:user_id).
+          dependent(:delete_all)
+      end
       # rubocop:enable RSpec/NamedSubject
 
-      it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
+      it { is_expected.to have_one(:counters).class_name("UserCounter").dependent(:destroy) }
+      it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
 
       it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
       it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }

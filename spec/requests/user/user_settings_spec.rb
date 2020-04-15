@@ -265,7 +265,10 @@ RSpec.describe "UserSettings", type: :request do
     context "when user has two identities" do
       let(:user) { create(:user, :with_identity, identities: %w[github twitter]) }
 
-      before { sign_in user }
+      before do
+        mock_auth_hash
+        sign_in user
+      end
 
       it "brings the identity count to 1" do
         delete "/users/remove_association", params: { provider: "twitter" }

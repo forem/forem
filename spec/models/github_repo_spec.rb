@@ -4,6 +4,8 @@ RSpec.describe GithubRepo, type: :model do
   let(:user) { create(:user, :with_identity, identities: ["github"]) }
   let(:repo) { build(:github_repo, user_id: user.id) }
 
+  before { mock_github }
+
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:url) }
   it { is_expected.to validate_uniqueness_of(:url) }

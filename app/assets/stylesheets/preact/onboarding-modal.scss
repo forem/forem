@@ -163,10 +163,14 @@
     display: block;
     text-align: center;
 
-    p {
+    .follow-count {
       font-size: $su-4;
-      font-weight: $fw-bold;
+      font-weight: $fw-medium;
       line-height: $lh-base;
+
+      &--active {
+        font-weight: $fw-bold;
+      }
     }
 
     button {
