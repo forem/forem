@@ -39,7 +39,7 @@ RSpec.describe Comment, type: :model do
 
     describe "#after_commit" do
       it "on update enqueues job to index comment to elasticsearch" do
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, comment.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, comment.id]) do
           comment.save
         end
       end
