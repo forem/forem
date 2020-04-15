@@ -938,3 +938,48 @@
   </div>
   '.rstrip %></pre>
 </div>
+
+<div class="container">
+  <div class="body">
+    <h2>Snackbars</h2>
+    <p>Snackbars inform users of a process that an app has performed. They appear temporarily, towards the bottom of the screen. They shouldn’t interrupt the user experience, and they don’t require user input to disappear.</p>
+    <p>A Snackbar can contain a single action. Because they disappear automatically, the action shouldn’t be “Dismiss” or “Cancel.”</p>
+    <p>A Snackbar should disappear after 5 secs. Countdown will be paused when user mouse over the snackbar.</p>
+  </div>
+
+  <div class="relative p-10 bg-base-10">
+    <div class="crayons-snackbar absolute">
+      <div class="crayons-snackbar__body">
+        <p>You have just downvoted this article.</p>
+      </div>
+      <div class="crayons-snackbar__actions">
+        <button type="button" class="crayons-btn crayons-btn--secondary">Undo</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="relative p-10 bg-base-10">
+    <div class="crayons-snackbar absolute">
+      <div class="crayons-snackbar__body">
+        <p>You have just downvoted this article.</p>
+      </div>
+      <div class="crayons-snackbar__actions">
+        <div class="crayons-btn-group">
+          <button type="button" class="crayons-btn crayons-btn--secondary">Action 1</button>
+          <button type="button" class="crayons-btn crayons-btn--secondary">Action 2</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <pre><%='
+  <div class="crayons-snackbar absolute">
+    <div class="crayons-snackbar__body">
+      <p>You have just downvoted this article.</p>
+    </div>
+    <div class="crayons-snackbar__actions">
+      <button type="button" class="crayons-btn crayons-btn--secondary">Undo</button>
+    </div>
+  </div>
+  '.rstrip %></pre>
+</div>
