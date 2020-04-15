@@ -60,7 +60,6 @@ class SiteConfig < RailsSettings::Base
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>
   field :ga_view_id, type: :string, default: ""
-  field :ga_fetch_rate, type: :integer, default: 25
 
   # Mailchimp lists IDs
   # <https://mailchimp.com/developer/>

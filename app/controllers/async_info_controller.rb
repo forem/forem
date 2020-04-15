@@ -18,7 +18,6 @@ class AsyncInfoController < ApplicationController
       remember_me(current_user)
     end
     @user = current_user.decorate
-    occasionally_update_analytics
     respond_to do |format|
       format.json do
         render json: {
@@ -83,13 +82,5 @@ class AsyncInfoController < ApplicationController
 
   def remember_user_token
     cookies[:remember_user_token]
-  end
-
-  private
-
-  def occasionally_update_analytics
-    return unless Rails.env.production? && rand(SiteConfig.ga_fetch_rate) == 1
-
-    Articles::UpdateAnalyticsWorker.perform_async(@user.id)
   end
 end

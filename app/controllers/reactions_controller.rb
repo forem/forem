@@ -76,6 +76,7 @@ class ReactionsController < ApplicationController
         Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
 
         Notification.send_reaction_notification(reaction, reaction.target_user)
+        Notification.send_milestone_notification(type: "Reaction", article_id: article.id)
         Notification.send_reaction_notification(reaction, reaction.reactable.organization) if reaction.reaction_on_organization_article?
 
         result = "create"

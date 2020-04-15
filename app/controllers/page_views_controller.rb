@@ -37,6 +37,7 @@ class PageViewsController < ApplicationMetalController
     @article.update_column(:page_views_count, new_page_views_count) if new_page_views_count > @article.page_views_count
 
     update_organic_page_views
+    update_pageviews_milestone
   end
 
   def page_view_params
@@ -58,5 +59,11 @@ class PageViewsController < ApplicationMetalController
     organic_count_past_month_count = page_views_from_google_com.
       where("created_at > ?", 1.month.ago).sum(:counts_for_number_of_views)
     @article.update_column(:organic_page_views_past_month_count, organic_count_past_month_count)
+  end
+
+  def update_pageviews_milestone
+    return if Rails.env.production? && @article.page_views_count > 1024 && rand(20) != 1 # We need to do this operation only once in a while.
+
+    Notification.send_milestone_notification(type: "View", article_id: @article.id)
   end
 end

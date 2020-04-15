@@ -176,11 +176,6 @@ RSpec.describe "/internal/config", type: :request do
           post "/internal/config", params: { site_config: { ga_view_id: "abc" }, confirmation: confirmation_message }
           expect(SiteConfig.ga_view_id).to eq("abc")
         end
-
-        it "updates ga_fetch_rate" do
-          post "/internal/config", params: { site_config: { ga_fetch_rate: 3 }, confirmation: confirmation_message }
-          expect(SiteConfig.ga_fetch_rate).to eq(3)
-        end
       end
 
       describe "Mailchimp lists IDs" do
