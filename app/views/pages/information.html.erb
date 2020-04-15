@@ -30,19 +30,13 @@
     filter: invert(0);
     filter: var(--theme-social-icon-invert, invert(0));
   }
-
-  .social-links img {
-    width: 35px;
-    height: 35px;
-    margin: 5px 10px;
-  }
 </style>
 
 <div class="blank-space"></div>
 <div class="container article">
   <div class="title">
     <h1>
-      More information about dev.to(👋)
+      More information about <%= community_name %> 👋
     </h1>
   </div>
   <div class="body">
@@ -62,11 +56,7 @@
       <li><a href="/downloads">Get the mobile app</a></li>
     </ul>
   </div>
-  <div class="social-links">
-    <a href="https://twitter.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitter-logo.svg") %>" alt="DEV Twitter profile"></a>
-    <a href="https://github.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("github-logo.svg") %>" alt="DEV GitHub profile"></a>
-    <a href="https://instagram.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("instagram-logo.svg") %>" alt="DEV Instagram profile"></a>
-    <a href="https://facebook.com/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("facebook-logo.svg") %>" alt="DEV Facebook profile"></a>
-    <a href="https://twitch.tv/thepracticaldev" target="_blank" rel="noopener"><img src="<%= asset_path("twitch-logo.svg") %>" alt="DEV Twitch profile"></a>
+  <div class="social-links flex justify-center p-4 mt-4">
+    <%= render partial: "layouts/social_media" %>
   </div>
 </div>

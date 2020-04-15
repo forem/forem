@@ -19,52 +19,52 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_many :organization_memberships, dependent: :destroy
-  has_many :organizations, through: :organization_memberships
+  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
   has_many :api_secrets, dependent: :destroy
   has_many :articles, dependent: :destroy
+  has_many :audit_logs, dependent: :nullify
+  has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
+  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
   has_many :badge_achievements, dependent: :destroy
   has_many :badges, through: :badge_achievements
+  has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
+  has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
+  has_many :chat_channel_memberships, dependent: :destroy
+  has_many :chat_channels, through: :chat_channel_memberships
+  has_many :classified_listings, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
-  has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
+  has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
+  has_many :credits, dependent: :destroy
+  has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
+  has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
   has_many :github_repos, dependent: :destroy
+  has_many :html_variants, dependent: :destroy
   has_many :identities, dependent: :destroy
   has_many :mentions, dependent: :destroy
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
-  has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
-  has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
-  has_many :notifications, dependent: :destroy
-  has_many :reactions, dependent: :destroy
-  has_many :tweets, dependent: :destroy
-  has_many :chat_channel_memberships, dependent: :destroy
-  has_many :chat_channels, through: :chat_channel_memberships
   has_many :notification_subscriptions, dependent: :destroy
-
+  has_many :notifications, dependent: :destroy
   has_many :offender_feedback_messages, class_name: "FeedbackMessage", inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
-  has_many :reporter_feedback_messages, class_name: "FeedbackMessage", inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
-  has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
-
-  has_many :rating_votes, dependent: :destroy
-  has_many :response_templates, foreign_key: :user_id, inverse_of: :user, dependent: :destroy
-  has_many :html_variants, dependent: :destroy
+  has_many :organization_memberships, dependent: :destroy
+  has_many :organizations, through: :organization_memberships
   has_many :page_views, dependent: :destroy
-  has_many :credits, dependent: :destroy
-  has_many :classified_listings, dependent: :destroy
-  has_many :poll_votes, dependent: :destroy
   has_many :poll_skips, dependent: :destroy
-  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
-  has_many :display_ad_events, dependent: :destroy
-  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
-  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :poll_votes, dependent: :destroy
+  has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
+  has_many :rating_votes, dependent: :destroy
+  has_many :reactions, dependent: :destroy
+  has_many :reporter_feedback_messages, class_name: "FeedbackMessage", inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
+  has_many :response_templates, foreign_key: :user_id, inverse_of: :user, dependent: :destroy
+  has_many :tweets, dependent: :destroy
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
-  has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
-  has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
-  has_one :pro_membership, dependent: :destroy
+
   has_one :counters, class_name: "UserCounter", dependent: :destroy
-  has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
+  has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -159,6 +159,7 @@ class User < ApplicationRecord
   scope :top_commenters, lambda { |number = 10|
     includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
   }
+  scope :eager_load_serialized_data, -> { includes(:roles) }
 
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter

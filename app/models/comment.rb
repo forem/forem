@@ -48,6 +48,8 @@ class Comment < ApplicationRecord
   before_validation :evaluate_markdown, if: -> { body_markdown }
   validate :permissions, if: :commentable
 
+  scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
+
   alias touch_by_reaction save
 
   def self.tree_for(commentable, limit = 0)

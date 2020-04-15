@@ -1,12 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "StoriesIndex", type: :request do
-  let!(:user) { create(:user) }
-  let!(:article) { create(:article, featured: true) }
-
   describe "GET stories index" do
     it "renders page with article list" do
+      article = create(:article, featured: true)
+
       get "/"
+
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
@@ -16,13 +16,16 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders page with min read" do
+      create(:article, featured: true)
+
       get "/"
+
       expect(response.body).to include("min read")
     end
 
     it "renders page with proper sidebar" do
       get "/"
-      expect(response.body).to include("<h4>Key links</h4>")
+      expect(response.body).to include("Podcasts")
     end
 
     it "renders left display_ads when published and approved" do
@@ -171,6 +174,7 @@ RSpec.describe "StoriesIndex", type: :request do
   end
 
   describe "GET tag index" do
+    let(:user) { create(:user) }
     let(:tag) { create(:tag) }
     let(:org) { create(:organization) }
 

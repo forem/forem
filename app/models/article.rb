@@ -30,7 +30,7 @@ class Article < ApplicationRecord
 
   has_many :comments, as: :commentable, inverse_of: :commentable
   has_many :top_comments,
-           -> { where("comments.score > ? AND ancestry IS NULL", 10).order("comments.score DESC") },
+           -> { where("comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE", 10).order("comments.score DESC") },
            as: :commentable,
            inverse_of: :commentable,
            class_name: "Comment"
@@ -171,6 +171,8 @@ class Article < ApplicationRecord
   scope :feed, -> { published.select(:id, :published_at, :processed_html, :user_id, :organization_id, :title, :path) }
 
   scope :with_video, -> { published.where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).where("score > ?", -4) }
+
+  scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_index do
     attribute :title

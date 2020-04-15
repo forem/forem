@@ -27,6 +27,30 @@ RSpec.describe Search::Base, type: :service, elasticsearch: true do
     end
   end
 
+  describe "::bulk_index" do
+    it "indexes a set of data hashes to Elasticsearch" do
+      id_list = [123, 456, 789]
+      id_list.each do |document_id|
+        expect { described_class.find_document(document_id) }.to raise_error(Search::Errors::Transport::NotFound)
+      end
+      data_hashes = id_list.map { |id| { id: id, name: "i_am_a_tag" } }
+      described_class.bulk_index(data_hashes)
+
+      id_list.each do |document_id|
+        doc = described_class.find_document(document_id)
+        expect(doc.dig("_source", "id")).to eql(document_id)
+      end
+    end
+
+    it "sets last_indexed_at field" do
+      Timecop.freeze(Time.current) do
+        described_class.bulk_index([{ id: document_id, name: "i_am_a_tag" }])
+        last_indexed_at = described_class.find_document(document_id).dig("_source", "last_indexed_at")
+        expect(Time.zone.parse(last_indexed_at).to_i).to eq(Time.current.to_i)
+      end
+    end
+  end
+
   describe "::find_document" do
     it "fetches a document for a given ID from elasticsearch" do
       described_class.index(document_id, id: document_id)

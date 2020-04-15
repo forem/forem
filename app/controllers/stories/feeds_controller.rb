@@ -37,7 +37,8 @@ class Stories::FeedsController < ApplicationController
   def ab_test_user_signed_in_feed(feed)
     test_variant = field_test(:user_home_feed, participant: current_user)
     Honeycomb.add_field("field_test_user_home_feed", test_variant) # Monitoring different variants
-    if test_variant == "base" || test_variant == "" || test_variant.nil?
+
+    if VARIANTS[test_variant].nil? || test_variant == "base"
       feed.default_home_feed(user_signed_in: true)
     else
       feed.public_send(VARIANTS[test_variant])
