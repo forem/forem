@@ -157,6 +157,19 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         expect(ChatChannelMembership.all.size).to eq(chat_channel_members_count + 1)
         expect(ChatChannelMembership.last.status).to eq("pending")
       end
+
+      it "disallows invitation creation when org private group" do
+        chat_channel.update_columnb(:channel_name, "@org private group chat")
+        chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
+        expect do
+          post "/chat_channel_memberships", params: {
+            chat_channel_membership: {
+              invitation_usernames: second_user.username.to_s,
+              chat_channel_id: chat_channel.id
+            }
+          }
+        end.to raise_error(Pundit::NotAuthorizedError)
+      end
     end
 
     context "when user is not authorized to add channel membership" do

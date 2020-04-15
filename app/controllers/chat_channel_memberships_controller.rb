@@ -26,8 +26,6 @@ class ChatChannelMembershipsController < ApplicationController
   def create
     membership_params = params[:chat_channel_membership]
     @chat_channel = ChatChannel.find(membership_params[:chat_channel_id])
-    raise Pundit::NotAuthorizedError if @chat_channel.private_org_channel? # Not available for invite.
-
     authorize @chat_channel, :update?
     usernames = membership_params[:invitation_usernames].split(",").map { |username| username.strip.delete("@") }
     users = User.where(username: usernames)
