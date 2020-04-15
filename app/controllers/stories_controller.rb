@@ -205,6 +205,7 @@ class StoriesController < ApplicationController
     return if performed?
 
     set_surrogate_key_header "articles-user-#{@user.id}"
+    set_json_ld
     render template: "users/show"
   end
 
@@ -329,5 +330,59 @@ class StoriesController < ApplicationController
 
   def assign_classified_listings
     @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
+  end
+
+  def set_json_ld
+    @user_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.user(@user)
+      },
+      "url": URL.user(@user),
+      "sameAs": [],
+      "image": ProfileImage.new(@user).get(width: 320),
+      "name": @user.name,
+      "email": "",
+      "jobTitle": "",
+      "description": @user.summary.presence || ["404 bio not found"].sample,
+      "disambiguatingDescription": [],
+      "worksFor": [
+        {
+          "@type": "Organization"
+        },
+      ],
+      "alumniOf": ""
+    }
+    set_user_profile_json_ld
+    set_user_same_as_json_ld
+  end
+
+  def set_user_profile_json_ld
+    @user_json_ld[:disambiguatingDescription].append(@user.mostly_work_with) if @user.mostly_work_with.present?
+    @user_json_ld[:disambiguatingDescription].append(@user.currently_hacking_on) if @user.currently_hacking_on.present?
+    @user_json_ld[:disambiguatingDescription].append(@user.currently_learning) if @user.currently_learning.present?
+    @user_json_ld[:worksFor][0][:employer_name] = @user.employer_name if @user.employer_name.present?
+    @user_json_ld[:worksFor][0][:employer_url] = @user.employer_url if @user.employer_url.present?
+    @user_json_ld[:alumniOf] = @user.education if @user.education.present?
+    @user_json_ld[:email] = @user.email if @user.email_public
+    @user_json_ld[:jobTitle] = @user.employment_title if @user.employment_title.present?
+    @user_json_ld[:sameAs].append("https://twitter.com/#{@user.twitter_username}") if @user.twitter_username.present?
+    @user_json_ld[:sameAs].append("https://github.com/#{@user.github_username}") if @user.github_username.present?
+  end
+
+  def set_user_same_as_json_ld
+    @user_json_ld[:sameAs].append(@user.mastodon_url) if @user.mastodon_url.present?
+    @user_json_ld[:sameAs].append(@user.facebook_url) if @user.facebook_url.present?
+    @user_json_ld[:sameAs].append(@user.linkedin_url) if @user.linkedin_url.present?
+    @user_json_ld[:sameAs].append(@user.behance_url) if @user.behance_url.present?
+    @user_json_ld[:sameAs].append(@user.stackoverflow_url) if @user.stackoverflow_url.present?
+    @user_json_ld[:sameAs].append(@user.dribbble_url) if @user.dribbble_url.present?
+    @user_json_ld[:sameAs].append(@user.medium_url) if @user.medium_url.present?
+    @user_json_ld[:sameAs].append(@user.gitlab_url) if @user.gitlab_url.present?
+    @user_json_ld[:sameAs].append(@user.instagram_url) if @user.instagram_url.present?
+    @user_json_ld[:sameAs].append(@user.twitch_username) if @user.twitch_username.present?
+    @user_json_ld[:sameAs].append(@user.website_url) if @user.website_url.present?
   end
 end
