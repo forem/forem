@@ -49,4 +49,41 @@ RSpec.describe "UserShow", type: :request do
       expect(response.body).to include CGI.escapeHTML(user.email)
     end
   end
+
+  context "when user signed in" do
+    before do
+      sign_in user
+      get user.path
+    end
+
+    describe "GET /:slug (user)" do
+      it "does not render json ld" do
+        expect(response.body).not_to include "application/ld+json"
+      end
+    end
+  end
+
+  context "when user not signed in" do
+    before do
+      get user.path
+    end
+
+    describe "GET /:slug (user)" do
+      it "does not render json ld" do
+        expect(response.body).to include "application/ld+json"
+      end
+    end
+  end
+
+  context "when user not signed in but internal nav triggered" do
+    before do
+      get user.path + "?i=i"
+    end
+
+    describe "GET /:slug (user)" do
+      it "does not render json ld" do
+        expect(response.body).not_to include "application/ld+json"
+      end
+    end
+  end
 end

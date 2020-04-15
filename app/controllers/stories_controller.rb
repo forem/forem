@@ -368,8 +368,8 @@ class StoriesController < ApplicationController
     @user_json_ld[:alumniOf] = @user.education if @user.education.present?
     @user_json_ld[:email] = @user.email if @user.email_public
     @user_json_ld[:jobTitle] = @user.employment_title if @user.employment_title.present?
-    @user_json_ld[:sameAs].append(@user.twitter_username) if @user.twitter_username.present?
-    @user_json_ld[:sameAs].append(@user.github_username) if @user.github_username.present?
+    @user_json_ld[:sameAs].append("https://twitter.com/#{@user.twitter_username}") if @user.twitter_username.present?
+    @user_json_ld[:sameAs].append("https://twitter.com/#{@user.github_username}") if @user.github_username.present?
   end
 
   def set_user_same_as_json_ld
