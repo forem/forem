@@ -3,12 +3,14 @@ class SearchController < ApplicationController
   before_action :format_integer_params
   before_action :sanitize_params, only: %i[classified_listings]
 
-  CLASSIFIED_LISTINGS_PARAMS = %i[
-    category
-    classified_listing_search
-    page
-    per_page
-    tags
+  CLASSIFIED_LISTINGS_PARAMS = [
+    :category,
+    :classified_listing_search,
+    :page,
+    :per_page,
+    {
+      tags: []
+    },
   ].freeze
 
   USER_PARAMS = %i[
@@ -17,15 +19,17 @@ class SearchController < ApplicationController
     per_page
   ].freeze
 
-  FEED_PARAMS = %i[
-    page
-    per_page
-    published_at
-    search_fields
-    sort_by
-    tag_names
-    user_id
-    class_name
+  FEED_PARAMS = [
+    :class_name,
+    :page,
+    :per_page,
+    :search_fields,
+    :sort_by,
+    :user_id,
+    {
+      tag_names: [],
+      published_at: [:gte]
+    },
   ].freeze
 
   def tags
