@@ -39,4 +39,4 @@ Whitelisted params on Fastly are updated automatically when a production deploy
 goes out.
 
 We do this by executing `bin/rails fastly:update_whitelisted_params` in our
-`bin/setup` script.
+`release-tasks.sh` script.
