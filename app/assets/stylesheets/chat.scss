@@ -88,7 +88,6 @@
   input {
     outline: 0;
   }
-
 }
 
 .chat__channels--expanded {
@@ -171,7 +170,6 @@
     margin: 5px 4px;
   }
 }
-
 
 .chat_chatconfig {
   position: absolute;
@@ -367,7 +365,7 @@
       @media screen and (max-width: 426px) {
         width: calc(100% - 16px);
         min-width: calc(100% - 16px);
-      }  
+      }
       iframe {
         position: absolute;
         top: 0;
@@ -396,7 +394,8 @@
   max-width: 52%;
 }
 
-.chat--content-visible .activechatchannel__activecontent.activechatchannel__activecontent--video {
+.chat--content-visible
+  .activechatchannel__activecontent.activechatchannel__activecontent--video {
   width: 180px;
   min-width: 180px;
 }
@@ -445,7 +444,6 @@
     display: none;
   }
 }
-
 
 .activechatchannel__activecontentexitbutton {
   font-size: 30px;
@@ -600,12 +598,10 @@
   border: 1px solid var(--base-30);
 }
 
-
 .chatchanneltab--new {
   border: 1px solid var(--accent-brand);
   color: var(--accent-brand-darker);
 }
-
 
 .chatchanneltab--video {
   background: lighten($green, 10%);
@@ -718,7 +714,7 @@
   display: flex;
   max-width: 100%;
   @media not all and (pointer: coarse) {
-      &:hover {
+    &:hover {
       @include themeable(
         background,
         theme-container-background-hover,

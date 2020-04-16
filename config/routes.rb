@@ -320,7 +320,11 @@ Rails.application.routes.draw do
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
-  get "/shop", to: redirect("https://shop.dev.to/")
+
+  # NOTE: can't remove the hardcoded URL here as SiteConfig is not available here, we should eventually
+  # setup dynamic redirects, see <https://github.com/thepracticaldev/dev.to/issues/7267>
+  get "/shop", to: redirect("https://shop.dev.to")
+
   get "/mod" => "moderations#index", :as => :mod
   get "/mod/:tag" => "moderations#index"
   get "/page/crayons" => "pages#crayons"

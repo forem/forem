@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Onboarding /> CloseSlide renders properly 1`] = `
+exports[`<Onboarding /> ClosingSlide renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
@@ -77,7 +77,7 @@ preact-render-spy (1 nodes)
 
 `;
 
-exports[`<Onboarding /> EmailTermsConditionsForm renders properly 1`] = `
+exports[`<Onboarding /> EmailPreferencesForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
@@ -102,53 +102,12 @@ preact-render-spy (1 nodes)
     </nav>
     <div class="onboarding-content terms-and-conditions-wrapper">
       <header class="onboarding-content-header">
-        <h1 class="title">Getting started</h1>
-        <h2 class="subtitle">Let's review a few things first</h2>
+        <h1 class="title">Almost there!</h1>
+        <h2 class="subtitle">
+          Review your email preferences before we continue.
+        </h2>
       </header>
       <form>
-        <fieldset>
-          <legend>Some things to check off</legend>
-          <ul>
-            <li class="checkbox-item">
-              <label htmlFor="checked_code_of_conduct">
-                <input
-                  type="checkbox"
-                  id="checked_code_of_conduct"
-                  name="checked_code_of_conduct"
-                  checked={false}
-                  onChange={[Function bound handleChange]}
-                 />
-                I agree to uphold the 
-                <a
-                  href="/code-of-conduct"
-                  data-no-instant={true}
-                  onClick={[Function onClick]}
-                >
-                  Code of Conduct
-                </a>
-              </label>
-            </li>
-            <li class="checkbox-item">
-              <label htmlFor="checked_terms_and_conditions">
-                <input
-                  type="checkbox"
-                  id="checked_terms_and_conditions"
-                  name="checked_terms_and_conditions"
-                  checked={false}
-                  onChange={[Function bound handleChange]}
-                 />
-                I agree to our 
-                <a
-                  href="/terms"
-                  data-no-instant={true}
-                  onClick={[Function onClick]}
-                >
-                  Terms and Conditions
-                </a>
-              </label>
-            </li>
-          </ul>
-        </fieldset>
         <fieldset>
           <legend>Email preferences</legend>
           <ul>
@@ -173,7 +132,7 @@ preact-render-spy (1 nodes)
                   checked={true}
                   onChange={[Function bound handleChange]}
                  />
-                I want to receive a periodic digest with some of the top posts from your tags.
+                I want to receive a periodic digest of top posts from my tags.
               </label>
             </li>
           </ul>
@@ -413,17 +372,66 @@ preact-render-spy (1 nodes)
         DEV is where programmers share ideas and help each other grow.
       </h2>
     </div>
-    <nav class="onboarding-navigation">
-      <div class="navigation-content">
-        <button
-          onClick={[Function bound onSubmit]}
-          class="next-button"
-          type="button"
-        >
-          Continue
-        </button>
-      </div>
-    </nav>
+    <div class="checkbox-form-wrapper">
+      <form class="checkbox-form">
+        <fieldset>
+          <ul>
+            <li class="checkbox-item">
+              <label htmlFor="checked_code_of_conduct">
+                <input
+                  type="checkbox"
+                  id="checked_code_of_conduct"
+                  name="checked_code_of_conduct"
+                  checked={false}
+                  onChange={[Function bound handleChange]}
+                 />
+                You agree to uphold our 
+                <a
+                  href="/code-of-conduct"
+                  data-no-instant={true}
+                  onClick={[Function onClick]}
+                >
+                  Code of Conduct
+                </a>
+                .
+              </label>
+            </li>
+            <li class="checkbox-item">
+              <label htmlFor="checked_terms_and_conditions">
+                <input
+                  type="checkbox"
+                  id="checked_terms_and_conditions"
+                  name="checked_terms_and_conditions"
+                  checked={false}
+                  onChange={[Function bound handleChange]}
+                 />
+                You agree to our 
+                <a
+                  href="/terms"
+                  data-no-instant={true}
+                  onClick={[Function onClick]}
+                >
+                  Terms and Conditions
+                </a>
+                .
+              </label>
+            </li>
+          </ul>
+        </fieldset>
+      </form>
+      <nav class="onboarding-navigation intro-slide">
+        <div class="navigation-content intro-slide">
+          <button
+            disabled={true}
+            onClick={[Function bound onSubmit]}
+            class="next-button"
+            type="button"
+          >
+            Continue
+          </button>
+        </div>
+      </nav>
+    </div>
   </div>
 </main>
 
