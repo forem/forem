@@ -130,7 +130,7 @@ GEM
     bindex (0.8.1)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    blazer (2.2.1)
+    blazer (2.2.2)
       activerecord (>= 5)
       chartkick (>= 3.2)
       railties (>= 5)
@@ -290,7 +290,7 @@ GEM
       rainbow
       rubocop (~> 0.79)
       smart_properties
-    errbase (0.1.1)
+    errbase (0.2.0)
     erubi (1.9.0)
     eventmachine (1.2.5)
     excon (0.73.0)
@@ -683,8 +683,8 @@ GEM
       rails (>= 3.1)
       sass-rails (>= 3.1)
     safe_yaml (1.0.5)
-    safely_block (0.2.1)
-      errbase
+    safely_block (0.3.0)
+      errbase (>= 0.1.1)
     sass (3.7.4)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -858,7 +858,7 @@ DEPENDENCIES
   aws-sdk-lambda (~> 1.38)
   better_errors (~> 2.6)
   binding_of_caller (~> 0.8)
-  blazer (~> 2.2.1)
+  blazer (~> 2.2.2)
   bootsnap (>= 1.1.0)
   brakeman (~> 4.8)
   buffer (~> 0.1)
