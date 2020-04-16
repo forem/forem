@@ -48,7 +48,7 @@ module FastlyVCL
         snippet_prefix = snippet_content.split(VCL_DELIMITER_START).first
         snippet_suffix = snippet_content.split(VCL_DELIMITER_END).last
 
-        snippet_prefix + VCL_DELIMITER_START + new_params + VCL_DELIMITER_END + snippet_suffix
+        "#{snippet_prefix}#{VCL_DELIMITER_START}#{new_params}#{VCL_DELIMITER_END}#{snippet_suffix}"
       end
 
       def log_params_diff_to_datadaog(current_params, new_version)
