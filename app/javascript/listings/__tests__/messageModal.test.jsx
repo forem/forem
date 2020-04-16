@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
-import MessageModal from '../components/messageModal';
+import MessageModal from '../components/MessageModal';
 
 const defaultListing = {
   id: 22,

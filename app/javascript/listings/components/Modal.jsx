@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import SingleListing from '../singleListing';
-import MessageModal from './messageModal';
+import MessageModal from './MessageModal';
 
 const Modal = ({
   currentUserId,

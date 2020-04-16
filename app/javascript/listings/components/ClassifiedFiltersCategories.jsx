@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import CategoryLinks from './categoryLinks';
+import CategoryLinks from './CategoryLinks';
 
 const ClassifiedFiltersCategories = ({ categories, category, onClick }) => (
   <div className="classified-filters-categories">

@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
-import BodyMarkdown from '../components/bodyMarkdown';
+import BodyMarkdown from '../components/BodyMarkdown';
 
 describe('<BodyMarkdown />', () => {
   const defaultProps = {

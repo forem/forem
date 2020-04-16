@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { tagPropTypes } from '../../src/components/common-prop-types';
-import ClearQueryButton from './clearQueryButton';
-import SelectedTags from './selectedTags';
+import ClearQueryButton from './ClearQueryButton';
+import SelectedTags from './SelectedTags';
 
 const ClassifiedFiltersTags = ({
   message,

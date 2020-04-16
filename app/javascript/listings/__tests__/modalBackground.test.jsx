@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { render } from 'preact-render-spy';
-import ModalBackground from '../components/modalBackground';
+import ModalBackground from '../components/ModalBackground';
 
 describe('<ModalBackground />', () => {
   const defaultProps = {

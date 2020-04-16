@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
-import ContactViaConnect from '../components/contactViaConnect';
+import ContactViaConnect from '../components/ContactViaConnect';
 
 describe('<ContactViaConnect />', () => {
   const defaultProps = {
