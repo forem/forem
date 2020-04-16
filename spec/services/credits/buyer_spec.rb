@@ -53,7 +53,7 @@ RSpec.describe Credits::Buyer, type: :service do
     it "updates the updated_at of the organization" do
       create_list(:credit, 2, organization: org)
 
-      old_updated_at = user.updated_at
+      old_updated_at = org.updated_at
       Timecop.travel(1.minute.from_now) do
         described_class.call(purchaser: org, purchase: listing, cost: 2)
       end
