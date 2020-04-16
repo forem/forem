@@ -44,9 +44,9 @@
       <%= inline_svg_tag("twemoji/tag.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Tags") %>
       Tags
     </a>
-    
+
     <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
-    
+
     <div class="hidden" id="main-nav-more">
       <a href="/code-of-conduct" class="crayons-link crayons-link--block">
         <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Code of Conduct") %>
@@ -56,7 +56,7 @@
         <%= inline_svg_tag("twemoji/bulb.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "FAQ") %>
         FAQ
       </a>
-      <a href="https://shop.dev.to/" class="crayons-link crayons-link--block">
+      <a href="<%= SiteConfig.shop_url %>" class="crayons-link crayons-link--block">
         <%= inline_svg_tag("twemoji/shopping.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Shop") %>
         <%= community_name %> Shop
       </a>
