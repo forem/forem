@@ -33,14 +33,14 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send, type: :service do
   it "tests JSON data" do
     json = notification.json_data
     expect(json["article"]["title"]).to start_with("Hello")
-    expect(json["adjustment_type"]). to eq "addition"
+    expect(json["adjustment_type"]).to eq "addition"
   end
 
   it "tests JSON data for removal" do
     tag_adjustment.adjustment_type = "removal"
     json = notification.json_data
     expect(json["article"]["title"]).to start_with("Hello")
-    expect(json["adjustment_type"]). to eq "removal"
+    expect(json["adjustment_type"]).to eq "removal"
   end
 
   specify "notification to be inserted on DB" do
