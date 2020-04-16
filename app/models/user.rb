@@ -438,6 +438,7 @@ class User < ApplicationRecord
       Notifications
       Publishing\ from\ RSS
       Organization
+      Response\ Templates
       Billing
       Account
       Misc
