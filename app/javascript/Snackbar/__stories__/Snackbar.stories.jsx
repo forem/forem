@@ -37,17 +37,18 @@ export const Description = () => (
         &lt;Snackbar lifespan=&quot;&apos;4000&quot;&apos;&gt;Hello
         World!&lt;/Snackbar&gt;
       </pre>
-      <Snackbar lifespan="4000">Hello World!</Snackbar>
       <h4>With One or More Actions</h4>
       <pre>
         const actions = &#91; &#123; text: &apos;Action 1&apos;, handler: event
         =&gt; &#123; console.log&#40;&apos;Action 1 clicked&apos;&#41; &#125;
         &#125;, &#123; text: &apos;Action 2&apos;, handler: event =&gt; &#123;
         console.log&#40;&apos;Action 2 clicked&apos;&#41; &#125; &#125;&#93;
-        &#13; &#13; &#13; &lt;Snackbar lifespan=&quot;&apos;3000&quot;&apos;
-        actions= &#123;actions&#125; &gt;Hello World!&lt;/Snackbar&gt;
+        <br />
+        <br />
+        <br />
+        &lt;Snackbar lifespan=&quot;&apos;3000&quot;&apos; actions=
+        &#123;actions&#125; &gt;Hello World!&lt;/Snackbar&gt;
       </pre>
-      <Snackbar lifespan="4000">Hello World!</Snackbar>
     </div>
   </div>
 );
