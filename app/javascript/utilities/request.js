@@ -44,8 +44,8 @@ export async function request(url, options = {}) {
       'Content-Type': 'application/json',
       ...headers,
     },
-    ...jsonifiedBody,
     credentials: 'same-origin',
+    ...jsonifiedBody,
     ...restOfOptions,
   };
 
