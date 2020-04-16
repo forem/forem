@@ -9,7 +9,6 @@ RSpec.describe Search::User, type: :service do
   end
 
   describe "::search_documents", elasticsearch: true do
-    let(:attributes) { described_class::SERIALIZER_CLASS.attributes_to_serialize.stringify_keys.keys }
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }
 
@@ -19,13 +18,6 @@ RSpec.describe Search::User, type: :service do
       described_class.search_documents(params: {})
 
       expect(described_class).to have_received(:search).with(body: a_kind_of(Hash))
-    end
-
-    it "returns user default attributes" do
-      index_documents([user1])
-      users = described_class.search_documents(params: {}).dig(:users)
-
-      expect(users.first).to include(*attributes)
     end
 
     context "when paginating results" do
@@ -42,12 +34,12 @@ RSpec.describe Search::User, type: :service do
 
       let(:expected_metadata) do
         {
-          total_count: 100,
-          total_pages: 10,
-          current_page: 2,
-          limit_value: 10,
-          offset_value: 10,
-          size: 20
+          "total_count" => 100,
+          "total_pages" => 10,
+          "current_page" => 2,
+          "limit_value" => 10,
+          "offset_value" => 10,
+          "size" => 20
         }
       end
 
@@ -57,7 +49,7 @@ RSpec.describe Search::User, type: :service do
 
       it "returns the correct metadata" do
         doc = described_class.search_documents(params: { page: 2, per_page: 10 })
-        expect(doc).to include(expected_metadata)
+        expect(doc.first).to include(expected_metadata)
       end
     end
 
@@ -72,8 +64,8 @@ RSpec.describe Search::User, type: :service do
 
       it "returns the correct users" do
         user_docs = described_class.search_documents(params: query_params)
-        expect(user_docs.dig("users").size).to eq(2)
-        doc_ids = user_docs.dig("users").map { |t| t.dig("id") }
+        expect(user_docs.size).to eq(2)
+        doc_ids = user_docs.map { |t| t.dig("id") }
         expect(doc_ids).to include(user1.id, user2.id)
       end
     end
@@ -89,8 +81,8 @@ RSpec.describe Search::User, type: :service do
 
       it "searches by excluding roles" do
         user_docs = described_class.search_documents(params: query_params)
-        expect(user_docs.dig("users").size).to eq(1)
-        doc_ids = user_docs.dig("users").map { |t| t.dig("id") }
+        expect(user_docs.size).to eq(1)
+        doc_ids = user_docs.map { |t| t.dig("id") }
         expect(doc_ids).to match_array([user1.id])
       end
     end
