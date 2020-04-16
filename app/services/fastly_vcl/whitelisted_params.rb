@@ -4,7 +4,7 @@ module FastlyVCL
     VCL_DELIMITER_START = "^(".freeze
     VCL_DELIMITER_END = ")$".freeze
     SNIPPET_NAME = "Whitelist certain querystring parameters".freeze
-    FILE_PARAMS = YAML.load_file("config/fastly/whitelisted_params.yml").sort.freeze
+    FILE_PARAMS = YAML.load_file("config/fastly/whitelisted_params.yml").freeze
 
     class << self
       def update
@@ -16,9 +16,9 @@ module FastlyVCL
                                      latest_version.number,
                                      SNIPPET_NAME)
 
-        current_params = params_to_sorted_array(snippet.content)
+        current_params = params_to_array(snippet.content)
 
-        return if current_params == FILE_PARAMS # No update needed
+        return unless params_updated?(current_params)
 
         new_version = latest_version.clone
         new_snippet = fastly.get_snippet(ApplicationConfig["FASTLY_SERVICE_ID"],
@@ -36,11 +36,15 @@ module FastlyVCL
 
       private
 
-      def params_to_sorted_array(snippet_content)
+      def params_updated?(current_params)
+        (current_params - FILE_PARAMS).any? && (FILE_PARAMS - current_params).any?
+      end
+
+      def params_to_array(snippet_content)
         snippet_suffix = snippet_content.split(VCL_DELIMITER_START).last
         fastly_params = snippet_suffix.split(VCL_DELIMITER_END).first
 
-        fastly_params.split("|").sort
+        fastly_params.split("|")
       end
 
       def build_content(new_params, snippet_content)

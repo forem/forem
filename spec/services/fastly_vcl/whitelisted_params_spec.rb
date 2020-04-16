@@ -5,8 +5,8 @@ RSpec.describe FastlyVCL::WhitelistedParams, type: :service do
   let(:fastly_service) { instance_double(Fastly::Service) }
   let(:fastly_version) { instance_double(Fastly::Version) }
   let(:fastly_snippet) { instance_double(Fastly::Snippet) }
-  let(:file_params) { YAML.load_file("config/fastly/whitelisted_params.yml").sort }
-  let(:snippet_content) { described_class::VCL_DELIMITER_START + file_params.join("|") + described_class::VCL_DELIMITER_END }
+  let(:file_params) { YAML.load_file("config/fastly/whitelisted_params.yml") }
+  let(:snippet_content) { "#{described_class::VCL_DELIMITER_START}#{file_params.join('|')}#{described_class::VCL_DELIMITER_END}" }
 
   # Fastly isn't setup for test or development environments so we have to stub
   # quite a bit here to simulate Fastly working ¯\_(ツ)_/¯
@@ -21,7 +21,7 @@ RSpec.describe FastlyVCL::WhitelistedParams, type: :service do
     allow(fastly_version).to receive(:number).and_return(99)
     allow(described_class).to receive(:build_content).and_return(snippet_content)
     allow(fastly_snippet).to receive(:content).and_return(fastly_snippet)
-    allow(described_class).to receive(:params_to_sorted_array).and_return(file_params)
+    allow(described_class).to receive(:params_to_array).and_return(file_params)
     allow(fastly_snippet).to receive(:content=).and_return(snippet_content)
     allow(fastly_snippet).to receive(:save!).and_return(true)
     allow(fastly_version).to receive(:activate!).and_return(true)
