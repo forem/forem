@@ -943,11 +943,12 @@
     <p>A Snackbar can contain a single action. Because they disappear automatically, the action shouldn’t be “Dismiss” or “Cancel.”</p>
     <p>A Snackbar should disappear after at least 5 secs. Countdown will be paused when user mouse over the snackbar.</p>
     <p>Snackbars can be stacked on top of each other if there's more of them. New ones show up at the bottom of snackbar. We can display maximum 3 snackbars at a time.</p>
+    <p>Keep in mind that Snackbar default styling has <code>display: none;</code> applied. To show it you have to overwrite it by applying <code>flex</code> (and not <code>block</code>!) utility class.</p>
   </div>
 
   <div class="relative p-10 bg-base-10">
     <div class="crayons-snackbar absolute">
-      <div class="crayons-snackbar__item">
+      <div class="crayons-snackbar__item flex">
         <div class="crayons-snackbar__body">
           <p>You have just downvoted this article.</p>
         </div>
@@ -958,7 +959,7 @@
         </div>
       </div>
 
-      <div class="crayons-snackbar__item">
+      <div class="crayons-snackbar__item flex">
         <div class="crayons-snackbar__body">
           <p>And now upvoted...</p>
         </div>
@@ -969,7 +970,7 @@
         </div>
       </div>
 
-      <div class="crayons-snackbar__item">
+      <div class="crayons-snackbar__item flex">
         <div class="crayons-snackbar__body">
           <p>And downvoted again...</p>
         </div>
@@ -984,7 +985,7 @@
 
   <div class="relative p-10 bg-base-10">
     <div class="crayons-snackbar absolute">
-      <div class="crayons-snackbar__item">
+      <div class="crayons-snackbar__item flex">
         <div class="crayons-snackbar__body">
           <p>You have just downvoted this article.</p>
         </div>
