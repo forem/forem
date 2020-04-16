@@ -295,26 +295,30 @@ function initializePodcastPlayback() {
     });
   }
 
+  function sendMetadataMessage() {
+    try {
+      var episodeContainer = getByClass('podcast-episode-container')[0];
+      if (episodeContainer === undefined) {
+        episodeContainer = getByClass('podcastliquidtag__record')[0];
+      }
+      var metadata = JSON.parse(episodeContainer.dataset.meta);
+      var message = {
+        action: 'metadata',
+        episodeName: metadata.episodeName,
+        podcastName: metadata.podcastName,
+        podcastImageUrl: metadata.podcastImageUrl,
+      }
+      sendPodcastMessage(message);
+    } catch (e) {
+      console.log('Unable to load Podcast Episode metadata', e); // eslint-disable-line no-console
+    }
+  }
+
   function startAudioPlayback(audio) {
     if (isNativeIOS()) {
-      try {
-        console.log('wat?');
-        var episodeContainer = getByClass('podcast-episode-container')[0];
-        if (episodeContainer === undefined) {
-          episodeContainer = getByClass('podcastliquidtag__record')[0];
-        }
-        var metadata = JSON.parse(episodeContainer.dataset.meta);
-        var message = {
-          action: 'metadata',
-          episodeName: metadata.episodeName,
-          podcastName: metadata.podcastName,
-          podcastImageUrl: metadata.podcastImageUrl,
-        };
-        sendPodcastMessage(message);
-      } catch (e) {
-        console.log('Unable to load Podcast Episode metadata', e); // eslint-disable-line no-console
-      }
+      sendMetadataMessage();
     }
+
     playAudio(audio)
       .then(function () {
         spinPodcastRecord();
@@ -534,11 +538,7 @@ function initializePodcastPlayback() {
       });
     }
     setTimeout(function () {
-      audio.addEventListener(
-        'timeupdate',
-        updateProgressListener(audio),
-        false,
-      );
+      audio.addEventListener('timeupdate', updateProgressListener(audio), false);
       addMutationObserver();
     }, 500);
     applyOnclickToPodcastBar(audio);
