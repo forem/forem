@@ -35,7 +35,7 @@ module FastlyVCL
       private
 
       def params_updated?(current_params)
-        (current_params - FILE_PARAMS).any? && (FILE_PARAMS - current_params).any?
+        (current_params - FILE_PARAMS).any? || (FILE_PARAMS - current_params).any?
       end
 
       def params_to_array(snippet_content)

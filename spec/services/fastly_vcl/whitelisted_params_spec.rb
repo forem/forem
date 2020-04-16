@@ -34,7 +34,22 @@ RSpec.describe FastlyVCL::WhitelistedParams, type: :service do
     end
 
     it "updates Fastly if new params are added" do
-      stub_const("#{described_class}::FILE_PARAMS", ["TEST"])
+      new_params = file_params + ["new_param"]
+      stub_const("#{described_class}::FILE_PARAMS", new_params)
+      described_class.update
+      expect(fastly_version).to have_received(:activate!)
+    end
+
+    it "updates Fastly if params are removed" do
+      new_params = file_params - [file_params.last]
+      stub_const("#{described_class}::FILE_PARAMS", new_params)
+      described_class.update
+      expect(fastly_version).to have_received(:activate!)
+    end
+
+    it "overwrites updates made directly in Fastly" do
+      new_fastly_params = file_params + ["new_fastly_param"]
+      allow(described_class).to receive(:params_to_array).and_return(new_fastly_params)
       described_class.update
       expect(fastly_version).to have_received(:activate!)
     end
