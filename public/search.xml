@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
- <OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
-   <ShortName>DEV Search</ShortName>
-   <Description>Find posts from the DEV community.</Description>
-   <Tags>software development</Tags>
-   <Contact>yo@dev.to</Contact>
-   <Url type="text/html" 
-        template="https://dev.to/search?q={searchTerms}"/>
- </OpenSearchDescription>
