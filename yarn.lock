@@ -7141,10 +7141,10 @@ interpret@^2.0.0:
   resolved "https://registry.yarnpkg.com/interpret/-/interpret-2.0.0.tgz#b783ffac0b8371503e9ab39561df223286aa5433"
   integrity sha512-e0/LknJ8wpMMhTiWcjivB+ESwIuvHnBSlBbmP/pSb8CQJldoj1p2qv7xGZ/+BtbTziYRFSz8OsvdbiX45LtYQA==
 
-intersection-observer@^0.7.0:
-  version "0.7.0"
-  resolved "https://registry.yarnpkg.com/intersection-observer/-/intersection-observer-0.7.0.tgz#ee16bee978db53516ead2f0a8154b09b400bbdc9"
-  integrity sha512-Id0Fij0HsB/vKWGeBe9PxeY45ttRiBmhFyyt/geBdDHBYNctMRTE3dC1U3ujzz3lap+hVXlEcVaB56kZP/eEUg==
+intersection-observer@^0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/intersection-observer/-/intersection-observer-0.8.0.tgz#e61274136f81dc114a7340a0b2e7a30b9787c438"
+  integrity sha512-o5nSHpitRPDRPe9NDBJNwKp24Wa11xQSDPOg/s6PsWIaGRoAOwBoMMY1R/UmlezBohjdFW6W4kJ9rkm3jCK+Hg==
 
 invariant@^2.2.0, invariant@^2.2.2, invariant@^2.2.3, invariant@^2.2.4:
   version "2.2.4"
