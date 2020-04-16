@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
-import SelectedTags from '../elements/selectedTags';
+import SelectedTags from '../components/selectedTags';
 
 const firstTag = {
   id: 1,

@@ -19,7 +19,7 @@ class Categories extends Component {
 
   details = () => {
     const { categoriesForDetails } = this.props;
-    const rules = categoriesForDetails.map(category => {
+    const rules = categoriesForDetails.map((category) => {
       const paragraphText = `${category.name}: ${category.rules}`;
       return <p>{paragraphText}</p>;
     });

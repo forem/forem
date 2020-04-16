@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
-import ClassifiedFiltersCategories from '../elements/classifiedFiltersCategories';
+import ClassifiedFiltersCategories from '../components/classifiedFiltersCategories';
 
 describe('<ClassifiedFiltersCategories />', () => {
   const firstCategory = {

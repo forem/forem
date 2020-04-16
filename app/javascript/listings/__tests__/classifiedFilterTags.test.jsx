@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
-import ClassifiedFiltersTags from '../elements/classifiedFiltersTags';
+import ClassifiedFiltersTags from '../components/classifiedFiltersTags';
 
 describe('<ClassifiedFilterTags />', () => {
   const firstTag = {

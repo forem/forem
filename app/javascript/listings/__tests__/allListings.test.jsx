@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
-import AllListings from '../elements/allListings';
+import AllListings from '../components/allListings';
 
 const firstListing = {
   id: 20,

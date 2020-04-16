@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { render } from 'preact-render-spy';
-import ClearQueryButton from '../elements/clearQueryButton';
+import ClearQueryButton from '../components/clearQueryButton';
 
 describe('<ClearQueryButton />', () => {
   const defaultProps = {

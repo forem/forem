@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { render } from 'preact-render-spy';
-import NextPageButton from '../elements/nextPageButton';
+import NextPageButton from '../components/nextPageButton';
 
 describe('<NextPageButton />', () => {
   const defaultProps = {

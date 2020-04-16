@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
-import Modal from '../elements/modal';
+import Modal from '../components/modal';
 
 const defaultListing = {
   id: 22,
