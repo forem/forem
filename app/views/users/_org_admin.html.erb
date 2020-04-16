@@ -146,7 +146,7 @@
   </div>
   <div class="field">
     <%= f.label :company_size, "Organization Size" %>
-    <%= f.text_field :company_size, maxlength: 10, placeholder: "Enter a number" %>
+    <%= f.text_field :company_size, maxlength: 7, placeholder: "Enter a number" %>
   </div>
   <div class="field">
     <%= f.label :story, "Our Story" %>
@@ -178,7 +178,7 @@ _italic_ and **bold** is okay. Links, and headers etc. will not show up.
   </div>
   <div class="field">
     <%= f.label :cta_button_url, "Link url" %>
-    <%= f.text_field :cta_button_url, placeholder: "https://example.com" %>
+    <%= f.text_field :cta_button_url, maxlength: 150, placeholder: "https://example.com" %>
   </div>
   <div class="field">
     <label></label>
