@@ -1,12 +1,12 @@
 import fetch from 'jest-fetch-mock';
-import { request } from '@utilities';
+import { request } from '@utilities/http';
 
 // NOTE: Everything that native fetch in the browser does, e.g. CREATE, DELETE etc. could be tested here, but that is pointless.
 // The tests below are really just to check the functionality that request offers on top of native fetch.
 
 /* global globalThis */
 describe('request', () => {
-  const csrfToken = 'this-is-a-bad-csrf-token';
+  const csrfToken = 'this-is-a-csrf-token';
 
   beforeAll(() => {
     globalThis.fetch = fetch;

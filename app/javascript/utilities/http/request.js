@@ -2,7 +2,7 @@
  * Generic request with all the default headers required by the application.
  *
  * @example
- * import { request } from '@utilities';
+ * import { request } from '@utilities/http';
  *
  * const response = await request('/notification_subscriptions/Article/26')
  *
