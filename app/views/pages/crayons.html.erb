@@ -49,7 +49,8 @@
     margin-top: 16px !important;
   }
 
-  .buttons-table td {
+  .buttons-table td,
+  .buttons-table th {
     padding: 10px;
   }
 </style>
@@ -570,17 +571,18 @@
     <p>For Stacking buttons (vertically or horizontally) please use 8px spacing unit for default size buttons (no matter if stacking horizontally or vertically).</p>
   </div>
 
+  <h2>Styles: </h2>
   <div class="buttons-table overflow-x-auto">
     <table class="w-max">
       <thead>
         <tr>
           <th>Style</th>
-          <th>n/a</th>
+          <th>Default</th>
           <th>--icon-left</th>
           <th>--icon-right</th>
           <th>--icon</th>
           <th>--icon--rounded</th>
-          <th>diabled / --disabled</th>
+          <th>disabled / --disabled</th>
         </tr>
       </thead>
       <tbody>
@@ -628,6 +630,58 @@
           <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon crayons-btn--icon--rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--danger" disabled>Button label</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Sizes: </h2>
+  <div class="buttons-table overflow-x-auto">
+    <table class="w-max">
+      <thead>
+        <tr>
+          <th>Style</th>
+          <th>--s</th>
+          <th>Default</th>
+          <th>--l</th>
+          <th>--xl</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="fs-s">Normal</td>
+          <td><button class="crayons-btn crayons-btn--s">Button label</button></td>
+          <td><button class="crayons-btn">Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--l">Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--xl">Button label</button></td>
+        </tr>
+        <tr>
+          <td class="fs-s">Outlined</td>
+          <td><button class="crayons-btn crayons-btn--outlined crayons-btn--s">Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--outlined">Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--outlined crayons-btn--l">Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--outlined crayons-btn--xl">Button label</button></td>
+        </tr>
+        <tr>
+          <td class="fs-s">Icon left</td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-left crayons-btn--s"><%= inline_svg_tag("small-bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-left"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-left crayons-btn--l"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-left crayons-btn--xl"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+        </tr>
+        <tr>
+          <td class="fs-s">Icon right</td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-right crayons-btn--s">Button label<%= inline_svg_tag("small-bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-right">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-right crayons-btn--l">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-right crayons-btn--xl">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+        </tr>
+        <tr>
+          <td class="fs-s">Only icon</td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon crayons-btn--s"><%= inline_svg_tag("small-bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon crayons-btn--l"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon crayons-btn--xl"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
         </tr>
       </tbody>
     </table>
