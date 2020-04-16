@@ -3,7 +3,7 @@ module DataUpdateScripts
     def run
       Reaction.readinglist.select(:id).in_batches do |batch|
         Search::BulkIndexToElasticsearchWorker.set(queue: :default).perform_async(
-          "Reaction", batch.map(&:id)
+          "Reaction", batch.pluck(:id)
         )
       end
     end

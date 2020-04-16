@@ -3,7 +3,7 @@ require Rails.root.join("lib/data_update_scripts/20200415200651_index_reading_li
 
 describe DataUpdateScripts::IndexReadingListReactions, elasticsearch: true do
   it "indexes feed content(articles, comments, podcast episodes) to Elasticsearch" do
-    reactions = Array.new(3).map { create(:reaction, category: "readinglist") }
+    reactions = create_list(:reaction, 3, category: "readinglist")
     Sidekiq::Worker.clear_all
 
     reactions.each do |reaction|
