@@ -4,6 +4,7 @@
 .crayons-btn {
   --border-width: 0px;
   --shadow-color: rgba(0,0,0,0.05);
+  --shadow: 0 1px 3px var(--shadow-color);
   --vertical-padding: #{$su-2};
   --horizontal-padding: #{$su-4};
   --font-size: #{$fs-base};
@@ -25,11 +26,12 @@
   cursor: pointer;
   transition: all $transition-props;
   border: var(--border-width) solid;
-  box-shadow: 0 1px 3px var(--shadow-color);
+  box-shadow: var(--shadow);
 
+  &[href]:hover,
   &:hover:enabled,
   &:active:enabled {
-    box-shadow: 0 2px 5px var(--shadow-color);
+    --shadow: 0 2px 5px var(--shadow-color);
   }
 
   &--s {
@@ -66,6 +68,7 @@
     cursor: not-allowed;
   }
 
+  &[href]:hover,
   &:hover:enabled,
   &:active:enabled {
     background-color: var(--button-primary-bg-hover);
@@ -77,6 +80,7 @@
     background-color: var(--button-secondary-bg);
     color: var(--button-secondary-color);
 
+    &[href]:hover,
     &:hover:enabled,
     &:active:enabled {
       background-color: var(--button-secondary-bg-hover);
@@ -90,6 +94,7 @@
     border-color: var(--button-outlined-bg);
     color: var(--button-outlined-color);
 
+    &[href]:hover,
     &:hover:enabled,
     &:active:enabled {
       background-color: var(--button-ghost-bg-hover);
@@ -102,6 +107,7 @@
     background-color: var(--accent-danger);
     color: var(--base-inverted);
 
+    &[href]:hover,
     &:hover:enabled,
     &:active:enabled {
       background-color: var(--accent-danger-darker);
@@ -112,13 +118,14 @@
   &--ghost {
     background-color: var(--button-ghost-bg);
     color: var(--button-ghost-color);
-    box-shadow: none;
-
+    --shadow: none;
+    
+    &[href]:hover,
     &:hover:enabled,
     &:active:enabled {
       background-color: var(--button-ghost-bg-hover);
       color: var(--button-ghost-color-hover);
-      box-shadow: none;
+      --shadow: none;
     }
   }
 }
@@ -171,11 +178,16 @@
     border-radius: 0;
 
     + .crayons-btn:not(.crayons-btn--outlined) {
-      margin-left: 1px;
+      box-shadow: var(--shadow), inset 1px 0 0 rgba(0,0,0,0.1);
+      margin-left: -1px;
+
+      &:hover {
+        box-shadow: 0 2px 5px var(--shadow-color), inset 0 0 0 rgba(0,0,0,0.1);
+      }
     }
 
     + .crayons-btn--outlined {
-      margin-left: var(--border-width);
+      margin-left: calc(-1 * var(--border-width));
     }
 
     &:first-child {

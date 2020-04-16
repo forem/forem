@@ -582,7 +582,7 @@
           <th>--icon-right</th>
           <th>--icon</th>
           <th>--icon--rounded</th>
-          <th>disabled / --disabled</th>
+          <th>[disabled]</th>
         </tr>
       </thead>
       <tbody>
@@ -623,6 +623,15 @@
           <td><button class="crayons-btn crayons-btn--ghost" disabled>Button label</button></td>
         </tr>
         <tr>
+          <td class="fs-s">.crayons-btn--danger</td>
+          <td><button class="crayons-btn crayons-btn--danger">Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon-left"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon-right">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon crayons-btn--icon--rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--danger" disabled>Button label</button></td>
+        </tr>
+        <tr class="bg-base-100 color-base-inverted">
           <td class="fs-s">.crayons-btn--danger</td>
           <td><button class="crayons-btn crayons-btn--danger">Button label</button></td>
           <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon-left"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
@@ -709,19 +718,19 @@
     <div class="crayons-btn-group mb-4">
       <a href="#" class="crayons-btn">Action 1</a>
       <a href="#" class="crayons-btn">Action 2</a>
-      <a href="#" class="crayons-btn crayons-btn--icon-alone"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
+      <a href="#" class="crayons-btn crayons-btn--icon"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
     </div>
 
     <div class="crayons-btn-group mb-4">
       <a href="#" class="crayons-btn crayons-btn--secondary">Action 1</a>
       <a href="#" class="crayons-btn crayons-btn--secondary">Action 2</a>
-      <a href="#" class="crayons-btn crayons-btn--secondary crayons-btn--icon-alone"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
+      <a href="#" class="crayons-btn crayons-btn--secondary crayons-btn--icon"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
     </div>
 
     <div class="crayons-btn-group mb-4">
       <a href="#" class="crayons-btn crayons-btn--outlined">Action 1</a>
       <a href="#" class="crayons-btn crayons-btn--outlined">Action 2</a>
-      <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--icon-alone"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
+      <a href="#" class="crayons-btn crayons-btn--outlined crayons-btn--icon"><%= inline_svg_tag("cog.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Preferences") %></a>
     </div>
   </div>
 
