@@ -49,7 +49,7 @@ const subscriptionRequestHandler = async (subscriptionType) => {
   }
 };
 
-setTimeout(async () => {
+(async () => {
   const { config: subscriptionType } = await getSubscriptionStatus();
 
   render(
@@ -62,4 +62,4 @@ setTimeout(async () => {
     root,
     root.firstElementChild,
   );
-}, 0);
+})();
