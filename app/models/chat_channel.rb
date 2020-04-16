@@ -35,6 +35,10 @@ class ChatChannel < ApplicationRecord
     channel_type != "direct"
   end
 
+  def private_org_channel?
+    channel_name.to_s.ends_with?(" private group chat") #e.g. @devteam private group chat
+  end
+
   def clear_channel
     messages.destroy_all
     Pusher.trigger(pusher_channels, "channel-cleared", { chat_channel_id: id }.to_json)
