@@ -2,19 +2,17 @@ import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
 import { Snackbar } from '../Snackbar';
 
-const snackbarDecorator = (story) => (
-  <div className="crayons-snackbar absolute">{story()}</div>
-);
-
 export default {
   title: 'App Components/Snackbar',
+  decorators: [
+    (story) => <div className="crayons-snackbar absolute">{story()}</div>,
+  ],
 };
 
 export const Default = () => <Snackbar>Hello world!</Snackbar>;
 
 Default.story = {
   name: 'default',
-  decorators: [snackbarDecorator],
 };
 
 export const WithOneAction = () => {
