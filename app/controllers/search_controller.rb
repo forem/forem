@@ -74,7 +74,7 @@ class SearchController < ApplicationController
       params: discoverable_params, user_id: current_user.id,
     )
 
-    render json: { result: ccm_docs_original.merge(ccm_docs_discoverable) }
+    render json: { result: (ccm_docs_original + ccm_docs_discoverable).uniq }
   end
 
   def classified_listings
