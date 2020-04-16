@@ -72,8 +72,6 @@ class ChatChannel < ApplicationRecord
       channel
     end
 
-    private
-
     def find_or_create_chat_channel(channel_type, slug, contrived_name)
       channel = ChatChannel.find_by(slug: slug)
       if channel

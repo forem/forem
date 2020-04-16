@@ -27,12 +27,9 @@ class OrganizationMembership < ApplicationRecord
     if channel
       add_chat_channel_membership(user, channel, role)
     else
-      ChatChannel.create_with_users(
-        users: [user],
-        channel_type: "invite_only",
-        contrived_name: name,
-        membership_role: role,
-      )
+       # find_or_create_chat_channel is custom method in class, not generic rails method
+      channel = ChatChannel.find_or_create_chat_channel("invite_only", "#{organization.slug}-private-group-chat", name)
+      add_chat_channel_membership(user, channel, role)
     end
   end
 
