@@ -1,5 +1,3 @@
-
-
 /* global filterXSS */
 
 function initializeUserProfileContent(user) {
@@ -41,7 +39,6 @@ function initializeUserSidebar(user) {
 
 function addRelevantButtonsToArticle(user) {
   var articleContainer = document.getElementById('article-show-container');
-  const actionSpace = document.getElementById('action-space');
   if (articleContainer) {
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
       let actions = [
@@ -57,22 +54,7 @@ function addRelevantButtonsToArticle(user) {
           `<a href="${articleContainer.dataset.path}/stats" rel="nofollow">STATS</a>`,
         );
       }
-      actionSpace.innerHTML = actions.join('');
-    } else if (user.trusted) {
-      actionSpace.innerHTML =
-        '<a href="" rel="nofollow">MODERATE <span class="post-word">POST</span></a>';
-
-      actionSpace.addEventListener(
-        'click',
-        (e) => {
-          document
-            .querySelector('.mod-actions-menu')
-            .classList.toggle('hidden');
-          e.preventDefault();
-          e.stopPropagation();
-        },
-        false,
-      );
+      document.getElementById('action-space').innerHTML = actions.join('');
     }
   }
 }
@@ -108,6 +90,10 @@ function addRelevantButtonsToComments(user) {
       }
     }
   }
+}
+
+function toggleModActionMenu() {
+  document.querySelector('.mod-actions-menu').classList.toggle('hidden');
 }
 
 function initializeBaseUserData() {
