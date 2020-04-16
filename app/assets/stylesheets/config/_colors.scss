@@ -92,6 +92,16 @@
   --link-color-secondary: var(--base-60);
   --link-color-secondary-hover: var(--base-70);
   --link-branded-color: var(--accent-brand);
+  
+  --link-success-color: var(--accent-success);
+  --link-success-color: var(--accent-success-darker);
+  
+  --link-warning-color: var(--accent-warning);
+  --link-warning-color-hover: var(--accent-warning-darker);
+  
+  --link-danger-color: var(--accent-danger);
+  --link-danger-color-hover: var(--accent-danger-darker);
+  
   --link-bg-hover: var(--base-0);
   --link-bg-hover-alt: var(--base-inverted);
   --link-bg-current: var(--base-inverted);
@@ -113,6 +123,12 @@
   --button-outlined-color: var(--base-80);
   --button-outlined-bg-hover: var(--base-40);
   --button-outlined-color-hover: var(--base-100);
+
+  // Ghost buttons
+  --button-ghost-bg: transparent;
+  --button-ghost-color: var(--base-80);
+  --button-ghost-bg-hover: var(--base-10);
+  --button-ghost-color-hover: var(--base-100);
 
   // Forms
   --form-bg: var(--base-0);

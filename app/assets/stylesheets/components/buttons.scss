@@ -1,23 +1,30 @@
 @import '../config/import';
 
-$outlined-border-width: 2px;
-
 // Basic styling
 .crayons-btn {
+  --border-width: 0px;
+  --shadow-color: rgba(0,0,0,0.05);
   position: relative;
   display: inline-block;
-  padding: 0.5em 1em;
+  padding: calc(#{$su-2} - var(--border-width))
+      calc(#{$su-4} - var(--border-width));
   border-radius: $br-default;
   outline: none;
   font-family: inherit;
   font-size: $fs-base;
-  line-height: $lh-base;
+  line-height: $su-6; // intentionally not using $lh-* variable.
   font-weight: $fw-medium;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   transition: all $transition-props;
-  border: none;
+  border: var(--border-width) solid;
+  box-shadow: 0 1px 3px var(--shadow-color);
+
+  &:hover:enabled,
+  &:active:enabled {
+    box-shadow: 0 2px 5px var(--shadow-color);
+  }
 }
 
 // Styles
@@ -25,15 +32,13 @@ $outlined-border-width: 2px;
   background-color: var(--button-primary-bg);
   color: var(--button-primary-color);
 
-  &--disabled,
   &[disabled] {
     opacity: 0.6;
     cursor: not-allowed;
   }
 
-  &:enabled:not(&--disabled):hover,
-  &:enabled:not(&--disabled):active,
-  &--active:enabled:not(&--disabled) {
+  &:hover:enabled,
+  &:active:enabled {
     background-color: var(--button-primary-bg-hover);
     color: var(--button-primary-color-hover);
     z-index: 2;
@@ -43,25 +48,22 @@ $outlined-border-width: 2px;
     background-color: var(--button-secondary-bg);
     color: var(--button-secondary-color);
 
-    &:enabled:not(&--disabled):hover,
-    &:enabled:not(&--disabled):active,
-    &--active:enabled:not(&--disabled) {
+    &:hover:enabled,
+    &:active:enabled {
       background-color: var(--button-secondary-bg-hover);
       color: var(--button-secondary-color-hover);
     }
   }
 
   &--outlined {
-    padding: calc(0.5em - #{$outlined-border-width})
-      calc(1em - #{$outlined-border-width});
+    --border-width: 1px;
     background-color: transparent;
-    border: $outlined-border-width solid var(--button-outlined-bg);
+    border-color: var(--button-outlined-bg);
     color: var(--button-outlined-color);
 
-    &:enabled:not(&--disabled):hover,
-    &:enabled:not(&--disabled):active,
-    &--active:enabled:not(&--disabled) {
-      background-color: transparent;
+    &:hover:enabled,
+    &:active:enabled {
+      background-color: var(--button-ghost-bg-hover);
       color: var(--button-outlined-color-hover);
       border-color: var(--button-outlined-bg-hover);
     }
@@ -71,39 +73,52 @@ $outlined-border-width: 2px;
     background-color: var(--accent-danger);
     color: var(--base-inverted);
 
-    &:enabled:not(&--disabled):hover,
-    &:enabled:not(&--disabled):active,
-    &--active:enabled:not(&--disabled) {
+    &:hover:enabled,
+    &:active:enabled {
       background-color: var(--accent-danger-darker);
       color: var(--base-inverted);
     }
   }
 
-  &--text {
-    background-color: transparent;
-    color: var(--link-brand);
+  &--ghost {
+    background-color: var(--button-ghost-bg);
+    color: var(--button-ghost-color);
+    box-shadow: none;
 
-    &:enabled:not(&--disabled):hover,
-    &:enabled:not(&--disabled):active,
-    &--active:enabled:not(&--disabled) {
-      background-color: transparent;
-      color: var(--link-brand-hover);
+    &:hover:enabled,
+    &:active:enabled {
+      background-color: var(--button-ghost-bg-hover);
+      color: var(--button-ghost-color-hover);
+      box-shadow: none;
     }
   }
 }
 
 // Icon alone
-.crayons-btn--icon-alone {
-  padding-left: 0.75em;
-  padding-right: 0.75em;
+.crayons-btn--icon {
+  padding-left: calc(#{$su-2} - var(--border-width));
+  padding-right: calc(#{$su-2} - var(--border-width));
+
+  &--rounded {
+    border-radius: 50%;
+  }
 }
 
 // Icon Left
 .crayons-btn--icon-left {
-  padding-left: 0.75em;
+  padding-left: calc(#{$su-3} - var(--border-width));
 
   .crayons-icon {
-    margin-right: 0.5em;
+    margin-right: $su-2;
+  }
+}
+
+// Icon Right
+.crayons-btn--icon-right {
+  padding-right: calc(#{$su-3} - var(--border-width));
+
+  .crayons-icon {
+    margin-left: $su-2;
   }
 }
 
@@ -119,7 +134,7 @@ $outlined-border-width: 2px;
     }
 
     + .crayons-btn--outlined {
-      margin-left: -$outlined-border-width;
+      margin-left: var(--border-width);
     }
 
     &:first-child {
