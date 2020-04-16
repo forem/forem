@@ -44,6 +44,11 @@ class UnopenedChannelNotice extends Component {
     if (unopenedChannels.length > 0) {
       number.classList.remove('hidden');
       number.innerHTML = unopenedChannels.length;
+      document.getElementById('connect-link').href = '/connect/' + unopenedChannels[0].adjusted_slug;
+      InstantClick.preload(
+        document.getElementById('connect-link').href,
+        'force',
+      );
     } else {
       number.classList.add('hidden');
     }
