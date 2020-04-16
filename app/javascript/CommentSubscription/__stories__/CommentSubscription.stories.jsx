@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, text, boolean } from '@storybook/addon-knobs/react';
+import { withKnobs, text } from '@storybook/addon-knobs/react';
 import {
   CommentSubscription,
   COMMENT_SUBSCRIPTION_TYPE,
@@ -18,37 +18,39 @@ const commonProps = {
 
 export const Default = () => (
   <CommentSubscription
-    subscribed={boolean('subscribed', false)}
     {...commonProps}
+    subscriptionType={text('subscriptionType')}
   />
 );
 
 Default.story = {
-  name: 'unsubscribed (default)',
+  name: 'unsubscribed with no subscription type (default)',
+};
+
+export const Unsubscribed = () => (
+  <CommentSubscription
+    {...commonProps}
+    subscriptionType={text(
+      'subscriptionType',
+      COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED,
+    )}
+  />
+);
+
+Unsubscribed.story = {
+  name: 'unsubscribed',
 };
 
 export const Subscribed = () => (
   <CommentSubscription
-    subscribed={boolean('subscribed', true)}
     {...commonProps}
+    subscriptionType={text(
+      'subscriptionType',
+      COMMENT_SUBSCRIPTION_TYPE.AUTHOR,
+    )}
   />
 );
 
 Subscribed.story = {
   name: 'subscribed',
-};
-
-export const SubscribedToNonDefaultSubscriptionType = () => (
-  <CommentSubscription
-    subscribed={boolean('subscribed', true)}
-    subscriptionType={text(
-      'subscriptionType',
-      COMMENT_SUBSCRIPTION_TYPE.AUTHOR,
-    )}
-    {...commonProps}
-  />
-);
-
-SubscribedToNonDefaultSubscriptionType.story = {
-  name: 'subscribed to non-default subscription type',
 };

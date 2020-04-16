@@ -1,28 +1,33 @@
 import { h, render } from 'preact';
-import {
-  CommentSubscription,
-  COMMENT_SUBSCRIPTION_TYPE,
-} from '../CommentSubscription/CommentSubscription';
-import { getContentOfToken } from '../onboarding/utilities';
+import { CommentSubscription } from '../CommentSubscription/CommentSubscription';
+import { request } from '../utilities/request';
 
 // TODO: Dynamic import only when user is logged on.
 
 const root = document.getElementById('comment-subscription');
 const { articleId } = document.getElementById('article-body').dataset;
 
+const getSubscriptionStatus = async () => {
+  try {
+    const response = await request(
+      `/notification_subscriptions/Article/${articleId}`,
+    );
+
+    const subscriptionStatus = await response.json();
+
+    return subscriptionStatus;
+  } catch (error) {
+    return new Error('An error occurred, please try again');
+  }
+};
+
 const subscriptionRequestHandler = async (subscriptionType) => {
   try {
-    const csrfToken = await getContentOfToken('csrf-token');
-    const response = await fetch(
+    const response = await request(
       `/notification_subscriptions/Article/${articleId}`,
       {
         method: 'POST',
-        headers: {
-          'X-CSRF-Token': csrfToken,
-          'Content-Type': 'application/json',
-        },
         body: JSON.stringify({ config: subscriptionType }),
-        credentials: 'same-origin',
       },
     );
 
@@ -44,15 +49,17 @@ const subscriptionRequestHandler = async (subscriptionType) => {
   }
 };
 
-const someSubscriptionType = COMMENT_SUBSCRIPTION_TYPE.TOP;
+setTimeout(async () => {
+  const { config: subscriptionType } = await getSubscriptionStatus();
 
-render(
-  <CommentSubscription
-    subscriptionType={someSubscriptionType}
-    positionType="static"
-    onSubscribe={subscriptionRequestHandler}
-    onUnsubscribe={subscriptionRequestHandler}
-  />,
-  root,
-  root.firstElementChild,
-);
+  render(
+    <CommentSubscription
+      subscriptionType={subscriptionType}
+      positionType="static"
+      onSubscribe={subscriptionRequestHandler}
+      onUnsubscribe={subscriptionRequestHandler}
+    />,
+    root,
+    root.firstElementChild,
+  );
+}, 0);

@@ -13,16 +13,9 @@ describe('<CommentSubscription />', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('should render as subscribed with all comments (default) as the subscription type', () => {
-    const tree = render(<CommentSubscription subscribed />);
-
-    expect(tree).toMatchSnapshot();
-  });
-
-  it('should render as subscribed with non-default subscription type', () => {
+  it('should render as subscribed with the given subscription type', () => {
     const tree = render(
       <CommentSubscription
-        subscribed
         subscriptionType={COMMENT_SUBSCRIPTION_TYPE.AUTHOR}
       />,
     );
@@ -30,7 +23,7 @@ describe('<CommentSubscription />', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  it('should subscribe to all comments by default', () => {
+  it('should subscribe when the subscribe button is pressed', () => {
     const onSubscribe = jest.fn();
     const wrapper = deep(<CommentSubscription onSubscribe={onSubscribe} />);
     wrapper.find('ButtonGroup').find('Button').first().simulate('click');
@@ -38,7 +31,7 @@ describe('<CommentSubscription />', () => {
     expect(onSubscribe).toHaveBeenCalled();
   });
 
-  it('should unsubscribe from all comments', () => {
+  it('should unsubscribe from all comments when the Unsubscribe button is pressed', () => {
     const onSubscribe = jest.fn();
     const onUnsubscribe = jest.fn();
     const wrapper = deep(
@@ -55,17 +48,17 @@ describe('<CommentSubscription />', () => {
     expect(onUnsubscribe).toHaveBeenCalled();
   });
 
-  it('should show subscription options once subscribed if cog icon is clicked', () => {
+  it('should show subscription options once subscribed if the cog button is clicked', () => {
     const onSubscribe = jest.fn();
     const onUnsubscribe = jest.fn();
     const wrapper = deep(
       <CommentSubscription
+        subscriptionType={COMMENT_SUBSCRIPTION_TYPE.AUTHOR}
         onSubscribe={onSubscribe}
         onUnsubscribe={onUnsubscribe}
       />,
     );
 
-    wrapper.find('ButtonGroup').find('Button').first().simulate('click'); // Subscribe button
     wrapper.find('ButtonGroup').find('Button').last().simulate('click'); // Cog icon button
 
     const dropdown = wrapper.find('Dropdown');
@@ -88,7 +81,7 @@ describe('<CommentSubscription />', () => {
         onSubscribe={onSubscribe}
         onUnsubscribe={onUnsubscribe}
         positionType="static"
-        subscribed
+        subscriptionType={COMMENT_SUBSCRIPTION_TYPE.AUTHOR}
       />,
     );
 
@@ -99,7 +92,7 @@ describe('<CommentSubscription />', () => {
     );
   });
 
-  it('should hide subscription options once subscribed if cog icon is clicked and the subscriptions options panel is open', () => {
+  it('should hide subscription options when the Done button is clicked', () => {
     const onSubscribe = jest.fn();
     const onUnsubscribe = jest.fn();
     const wrapper = deep(
@@ -118,15 +111,12 @@ describe('<CommentSubscription />', () => {
   });
 
   it('should update comment subscription when the done button is clicked in the subscription options panel', () => {
-    let commentType;
-
-    const onSubscribe = jest.fn((commentSubscriptionType) => {
-      commentType = commentSubscriptionType;
-    });
+    const onSubscribe = jest.fn();
     const onUnsubscribe = jest.fn();
-    const ONLY_AUTHOR_COMMENTS = 'only_author_comments';
+
     const wrapper = deep(
       <CommentSubscription
+        subscriptionType={COMMENT_SUBSCRIPTION_TYPE.TOP}
         onSubscribe={onSubscribe}
         onUnsubscribe={onUnsubscribe}
       />,
@@ -134,7 +124,9 @@ describe('<CommentSubscription />', () => {
 
     wrapper.find('ButtonGroup').find('button').first().simulate('click'); // Subscribe button
 
-    expect(commentType).toEqual('all_comments');
+    expect(wrapper.state('subscriptionType')).toEqual(
+      COMMENT_SUBSCRIPTION_TYPE.TOP,
+    );
 
     wrapper.find('ButtonGroup').find('Button').last().simulate('click'); // Cog icon button
 
@@ -143,19 +135,20 @@ describe('<CommentSubscription />', () => {
     // Select the author comments only.
     const authorCommentsOnlyRadioButton = dropdown.find('RadioButton').last();
     expect(authorCommentsOnlyRadioButton.attr('value')).toEqual(
-      ONLY_AUTHOR_COMMENTS,
+      COMMENT_SUBSCRIPTION_TYPE.AUTHOR,
     );
     authorCommentsOnlyRadioButton.simulate('click', {
-      target: { value: ONLY_AUTHOR_COMMENTS },
+      target: { value: COMMENT_SUBSCRIPTION_TYPE.AUTHOR },
     });
 
     const done = dropdown.find('Button');
     done.simulate('click');
 
-    expect(commentType).toEqual(ONLY_AUTHOR_COMMENTS);
+    expect(wrapper.state('subscriptionType')).toEqual(
+      COMMENT_SUBSCRIPTION_TYPE.AUTHOR,
+    );
 
-    // Called once by the initial subscribe and
     // a second time by clicking on the Done button.
-    expect(onSubscribe).toHaveBeenCalledTimes(2);
+    expect(onSubscribe).toHaveBeenCalled();
   });
 });

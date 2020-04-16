@@ -16,21 +16,24 @@ export const COMMENT_SUBSCRIPTION_TYPE = Object.freeze({
 });
 
 export class CommentSubscription extends Component {
-  state = {
-    showOptions: false,
-  };
-
   constructor(props) {
-    const {
-      subscribed = false,
-      subscriptionType = COMMENT_SUBSCRIPTION_TYPE.ALL,
-    } = props;
+    const { subscriptionType } = props;
     super(props);
 
-    this.setState({
-      subscriptionType,
+    const subscribed =
+      subscriptionType &&
+      (subscriptionType.length > 0 && subscriptionType) !==
+        COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED;
+
+    const initialState = {
+      subscriptionType: subscribed
+        ? subscriptionType
+        : COMMENT_SUBSCRIPTION_TYPE.ALL,
       subscribed,
-    });
+      showOptions: false,
+    };
+
+    this.state = initialState;
   }
 
   componentDidUpdate() {
@@ -225,5 +228,4 @@ CommentSubscription.propTypes = {
   onSubscribe: PropTypes.func.isRequired,
   onUnsubscribe: PropTypes.func.isRequired,
   subscriptionType: PropTypes.oneOf(COMMENT_SUBSCRIPTION_TYPE).isRequired,
-  subscribed: PropTypes.bool.isRequired,
 };
