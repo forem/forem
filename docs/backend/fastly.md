@@ -13,11 +13,18 @@ If you want to learn more about we use Fastly, check out this
 [@benhalpern](https://dev.to/ben), gave at RailsConf 2018 talking about how we
 made our app so fast it went viral.
 
+## Whitelisting query string parameters
+
 In the context of contributing, here's what you need to know about Fastly. In
-order for our servers to receive any sort of parameters in a request, they must
-first be whitelisted in Fastly. For example, if you're creating a new API
-endpoint or updating an existing one to accept new parameters, you'll need to
-update Fastly.
+order for our servers to receive any sort of query string parameters in a
+request, they must first be whitelisted in Fastly. For example, if you're
+creating a new API endpoint or updating an existing one to accept new
+parameters, you'll need to update Fastly.
+
+The reason we whitelist parameters in Fastly this way is so we don't have to
+consider junk parameters when busting the caches. Check out our
+[`CacheBuster`](https://github.com/thepracticaldev/dev.to/blob/master/app/labor/cache_buster.rb)
+to see examples of this.
 
 Previously this was a manual process done by an internal team member. Now we do
 it programmatically using the Fastly
