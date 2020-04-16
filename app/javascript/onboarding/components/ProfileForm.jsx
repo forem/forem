@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Navigation from './Navigation';
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 
+/* eslint-disable camelcase */
 class ProfileForm extends Component {
   constructor(props) {
     super(props);
@@ -40,7 +41,7 @@ class ProfileForm extends Component {
         const { next } = this.props;
         next();
       }
-    })
+    });
   }
 
   handleChange(e) {
@@ -68,7 +69,11 @@ class ProfileForm extends Component {
           </header>
           <div className="current-user-info">
             <figure className="current-user-avatar-container">
-              <img className="current-user-avatar" alt="profile" src={profile_image_90} />
+              <img
+                className="current-user-avatar"
+                alt="profile"
+                src={profile_image_90}
+              />
             </figure>
             <h3>{name}</h3>
             <p>{username}</p>
@@ -131,3 +136,5 @@ ProfileForm.propTypes = {
 };
 
 export default ProfileForm;
+
+/* eslint-enable camelcase */

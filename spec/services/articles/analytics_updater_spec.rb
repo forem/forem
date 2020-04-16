@@ -33,7 +33,7 @@ RSpec.describe Articles::AnalyticsUpdater, type: :service do
         analytics_updater_service.call
       end
 
-      it "sends send_milestone_notification for Reaction and View" do
+      xit "sends send_milestone_notification for Reaction and View" do
         %w[Reaction View].each do |type|
           expect(Notification).to have_received(:send_milestone_notification).with(type: type, article_id: article.id)
         end

@@ -38,7 +38,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       mailchimp_tag_moderators_id mailchimp_community_moderators_id
       periodic_email_digest_max periodic_email_digest_min suggested_tags
       rate_limit_comment_creation rate_limit_published_article_creation
-      rate_limit_image_upload rate_limit_email_recipient sidebar_tags
+      rate_limit_image_upload rate_limit_email_recipient sidebar_tags shop_url
     ]
     params.require(:site_config).permit(allowed_params, social_media_handles: SiteConfig.social_media_handles.keys)
   end

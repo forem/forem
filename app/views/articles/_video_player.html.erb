@@ -1,16 +1,23 @@
-<div itemscope itemtype="http://schema.org/VideoObject" class="video-player-header">
-  <% if meta_tags %>
-    <meta itemprop="uploadDate" content="<%= article.published_at %>" />
-    <meta itemprop="name" content="<%= article.title %>" />
-    <meta itemprop="description" content="<%= article.description %>" />
-    <meta itemprop="thumbnailUrl" content="<%= cloudinary(article.video_thumbnail_url, 880) %>" />
-    <meta itemprop="contentUrl" content="<%= article.video_source_url %>" />
-    <% minutes, seconds = article.video_duration_in_minutes.split(":") %>
-    <meta itemprop="duration" content="<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>" />
-    <div id="video-player-source" data-source="<%= article.video_source_url %>"></div>
-  <% end %>
+<div class="video-player-header">
+  <% minutes, seconds = article.video_duration_in_minutes.split(":") %>
+  <div id="video-player-source" data-source="<%= article.video_source_url %>"></div>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async></script>
   <div id="video-player-<%= article.id %>" class="video-player"></div>
+  <% unless internal_navigation? || user_signed_in? %>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "VideoObject",
+        "url": "<%= article.video_source_url %>",
+        "uploadDate": "<%= article.published_at&.rfc3339 %>",
+        "name": "<%= article.title %>",
+        "description": "<%= article.description %>",
+        "thumbnailUrl": "<%= cloudinary(article.video_thumbnail_url, 880) %>",
+        "contentUrl": "<%= article.video_source_url %>",
+        "duration": "<%= format("PT%<minutes>sM%<seconds>sS", minutes: minutes, seconds: seconds) %>"
+      }
+    </script>
+  <% end %>
 </div>
 
 <script type="text/javascript" async>
