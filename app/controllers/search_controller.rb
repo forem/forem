@@ -60,10 +60,10 @@ class SearchController < ApplicationController
     feed_docs = if params[:class_name].blank?
                   # If we are in the main feed and not filtering by type return
                   # all articles, podcast episodes, and users
-                  feed_content_search.concat(user_search.dig(:users))
+                  feed_content_search.concat(user_search)
                 elsif params[:class_name] == "User"
                   # No need to check for articles or podcast episodes if we know we only want users
-                  user_search.dig(:users)
+                  user_search
                 else
                   # if params[:class_name] == PodcastEpisode or Article then skip user lookup
                   feed_content_search
