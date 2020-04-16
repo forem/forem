@@ -1,4 +1,4 @@
-
+"use strict"
 
 /**
  * This script hunts for podcast's "Record" for both the podcast_episde's
@@ -299,7 +299,7 @@ function initializePodcastPlayback() {
     try {
       var episodeContainer = getByClass('podcast-episode-container')[0];
       if (episodeContainer === undefined) {
-        episodeContainer = getByClass('podcastliquidtag__record')[0];
+        episodeContainer = getByClass('podcastliquidtag')[0];
       }
       var metadata = JSON.parse(episodeContainer.dataset.meta);
       var message = {
@@ -307,7 +307,7 @@ function initializePodcastPlayback() {
         episodeName: metadata.episodeName,
         podcastName: metadata.podcastName,
         podcastImageUrl: metadata.podcastImageUrl,
-      }
+      };
       sendPodcastMessage(message);
     } catch (e) {
       console.log('Unable to load Podcast Episode metadata', e); // eslint-disable-line no-console
@@ -523,7 +523,7 @@ function initializePodcastPlayback() {
     var currentState = currentAudioState();
     document.getElementById('audiocontent').innerHTML = currentState.html;
     var audio = getById('audio');
-    if (audio === undefined) {
+    if (audio === undefined || audio === null) {
       audioInitialized = false;
       return;
     }
@@ -533,12 +533,15 @@ function initializePodcastPlayback() {
     loadAudio(audio);
     if (currentState.playing) {
       playAudio(audio).catch(function (error) {
-        console.log(error); // eslint-disable-line no-console
         pausePodcastBar();
       });
     }
     setTimeout(function () {
-      audio.addEventListener('timeupdate', updateProgressListener(audio), false);
+      audio.addEventListener(
+        'timeupdate',
+        updateProgressListener(audio),
+        false,
+      );
       addMutationObserver();
     }, 500);
     applyOnclickToPodcastBar(audio);
