@@ -11,39 +11,51 @@ class SiteConfig < RailsSettings::Base
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
 
-  # site content
+  # Community Content
   field :community_description, type: :string, default: "A constructive and inclusive social network. Open source and radically transparent."
+  field :community_member_description, type: :string, default: "amazing humans who code."
+  field :tagline, type: :string, default: "We're a place where coders share, stay up-to-date and grow their careers."
+  field :mascot_user_id, type: :integer, default: 1
 
-  # staff account
+  # Social Media and Email
   field :staff_user_id, type: :integer, default: 1
   field :default_site_email, type: :string, default: "yo@dev.to"
-  field :social_networks_handle, type: :string, default: "thepracticaldev"
-
-  # mascot account
-  field :mascot_user_id, type: :integer, default: 1
+  field :social_media_handles, type: :hash, default: {
+    twitter: nil,
+    facebook: nil,
+    github: nil,
+    instagram: nil,
+    twitch: nil
+  }
 
   # Authentication
   field :authentication_providers, type: :array, default: %w[twitter github]
 
-  # campaign
+  # Broadcast
+  field :welcome_notifications_live_at, type: :date
+
+  # Campaign
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
   field :campaign_sidebar_image, type: :string, default: nil
 
-  # images
+  # Images
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
   field :favicon_url, type: :string, default: "favicon.ico"
   field :logo_png, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
   field :logo_svg, type: :string, default: ""
   field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
+  field :mascot_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+  field :mascot_image_description, type: :string, default: "Sloan, the sloth mascot"
 
-  # rate limits
+  # Rate Limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_published_article_creation, type: :integer, default: 9
   field :rate_limit_image_upload, type: :integer, default: 9
   field :rate_limit_email_recipient, type: :integer, default: 5
+  field :rate_limit_article_update, type: :integer, default: 150
 
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>
@@ -68,6 +80,9 @@ class SiteConfig < RailsSettings::Base
   # Tags
   field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
   field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
+
+  # Shop
+  field :shop_url, type: :string, default: "https://shop.dev.to"
 
   # Helpful methods
   def self.auth_allowed?(provider)

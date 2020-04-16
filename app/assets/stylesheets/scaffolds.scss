@@ -66,11 +66,8 @@ body {
 }
 
 a {
-  color: var(--link-brand-color);
+  color: var(--link-branded-color);
   text-decoration: none;
-  &:hover {
-    opacity: 0.9;
-  }
 }
 
 div {
@@ -101,6 +98,18 @@ pre {
     background: #29292e;
     color: #eff0f9;
     white-space: pre;
+  }
+}
+
+.cta {
+  color: $black;
+  background: $green;
+  font-family: $helvetica-condensed;
+  -webkit-appearance: none;
+  font-stretch: condensed;
+  font-weight: bold;
+  &.cta-danger {
+    background: $red;
   }
 }
 

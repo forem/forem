@@ -1,8 +1,6 @@
-class Tag < ActsAsTaggableOn::Tag
-  self.ignored_columns = %w[
-    submission_rules_headsup
-  ]
+require_relative "../lib/acts_as_taggable_on/tag.rb"
 
+class Tag < ActsAsTaggableOn::Tag
   attr_accessor :points
 
   acts_as_followable
@@ -35,11 +33,18 @@ class Tag < ActsAsTaggableOn::Tag
 
   after_commit :bust_cache
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: [:update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
+
+  scope :eager_load_serialized_data, -> {}
 
   include Searchable
   SEARCH_SERIALIZER = Search::TagSerializer
   SEARCH_CLASS = Search::Tag
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::Tag
+
+  # This model doesn't inherit from ApplicationRecord so this has to be included
+  include Purgeable
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates

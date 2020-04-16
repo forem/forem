@@ -12,6 +12,7 @@ linters:
     allowed_types:
       - 'text/javascript'
       - 'text/x-tmpl'
+      - 'application/ld+json'
     allow_blank: true
     disallow_inline_scripts: false
   Rubocop:
@@ -37,7 +38,6 @@ linters:
           - '**/app/views/layouts/_styles.html.erb'
           - '**/app/views/liquid_embeds/show.html.erb'
           - '**/app/views/moderations/mod.html.erb'
-          - '**/app/views/pages/live.html.erb'
           - '**/app/views/pages/onboarding.html.erb'
           - '**/app/views/partnerships/show.html.erb'
           - '**/app/views/partnerships/index.html.erb'

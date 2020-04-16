@@ -8,7 +8,7 @@
 <% end %>
 
 <hr />
-<h3>Generate a personal blog from your DEV posts</h3>
+<h3>Generate a personal blog from your <%= community_name %> posts</h3>
 <div class="single-app-integration">
   <% if current_user.decorate.stackbit_integration? %>
     <h2>Connected to Stackbit <sup>beta</sup><img src="<%= asset_path("checkmark-green.svg") %>" /></h2>
@@ -17,7 +17,7 @@
 
   <% else %>
     <h2>Connect to Stackbit <sup>beta</sup></h2>
-    <p>Automatically generate a self-hosted static blog feed from your DEV posts.</p>
+    <p>Automatically generate a self-hosted static blog feed from your <%= community_name %> posts.</p>
     <p style="font-size: 1.1em"><strong><a href="/connecting-with-stackbit">Get Started</a></strong></p>
   <% end %>
 </div>

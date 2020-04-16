@@ -26,7 +26,7 @@
   }
 
   a {
-    color: var(--link-brand-color);
+    color: var(--link-branded-color);
   }
 }
 
@@ -36,10 +36,30 @@
   flex: 1 0 auto;
   padding: $su-4;
   width: 100%;
+  max-height: calc(100vh - 70px);
+  overflow: auto;
 
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
     padding: $su-7 $su-8 $su-8;
+  }
+}
+
+.toggle-bottom {
+  padding-bottom: 0px;
+}
+
+// terms and conditions view
+.terms-and-conditions-wrapper {
+  $content-height: 358px;
+
+  button {
+    @extend .crayons-btn;
+  }
+  .terms-and-conditions-content {
+    height: $content-height;
+    overflow-y: scroll;
+    margin-top: 10px;
   }
 }
 
@@ -89,10 +109,18 @@
   width: 100%;
   border-bottom: 2px solid var(--box-darker);
 
+  &.intro-slide {
+    border-bottom: none;
+  }
+
   .navigation-content {
     display: flex;
     justify-content: space-between;
     padding: $su-4;
+
+    &.intro-slide {
+      padding: 0;
+    }
 
     button {
       @extend .crayons-btn;
@@ -120,7 +148,7 @@
   }
 
   .subtitle {
-    color: var(--container-color-secondary);
+    color: var(--card-color-secondary);
     font-size: $fs-xl;
     font-weight: $fw-medium;
     letter-spacing: normal;
@@ -133,12 +161,33 @@
   align-self: flex-end;
   flex-shrink: 0;
   width: 100%;
-  border-top: 2px solid var(--box-darker);
+  line-height: 100%;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 
   .selection-status-content {
     display: block;
-    padding: $su-4;
     text-align: center;
+
+    .follow-count {
+      font-size: $su-4;
+      font-weight: $fw-medium;
+      line-height: $lh-base;
+
+      &--active {
+        font-weight: $fw-bold;
+      }
+    }
+
+    button {
+      background: none;
+      border: none;
+      padding: 0px;
+      color: var(--accent-brand);
+      font-size: $fs-s;
+    }
   }
 }
 
@@ -153,6 +202,7 @@
 .onboarding-modal-scroll-container {
   height: auto;
   min-height: 436px;
+  border-bottom: 1px solid var(--base-20);
   @media screen and (min-width: $breakpoint-s) {
     max-height: 500px;
     overflow-y: scroll;
@@ -239,7 +289,7 @@
       }
 
       input[type='checkbox']:checked {
-        background: var(--link-brand-color);
+        background: var(--link-branded-color);
       }
     }
   }
@@ -294,6 +344,10 @@
   .navigation-content {
     padding: $su-7;
     justify-content: center;
+
+    &.intro-slide {
+      padding: 0;
+    }
 
     button {
       @extend .crayons-btn;
@@ -360,6 +414,33 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     border: 1px solid var(--base-10);
   }
 
+  .current-user-info {
+    text-align: center;
+    margin-bottom: 1rem;
+
+    .current-user-avatar-container {
+      height: 80px;
+    }
+
+    .current-user-avatar {
+      border-radius: 100%;
+      height: inherit;
+      object-fit: cover;
+      border: 2px solid var(--base-90);
+    }
+
+    h3 {
+      margin-top: $su-2;
+      line-height: $lh-tight;
+    }
+
+    p {
+      font-size: $fs-base;
+      line-height: $lh-tight;
+      color: var(--base-70);
+    }
+  }
+
   .user-name,
   .user-summary {
     margin: 0;
@@ -369,7 +450,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   .user-name {
     font-size: $fs-base;
   }
-  
+
   .user-info {
     width: 100%;
   }
@@ -504,7 +585,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   }
 
   textarea {
-    min-height: 120px;
+    min-height: 80px;
   }
 
   label {
@@ -514,6 +595,14 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
     &:last-child {
       margin-bottom: 0;
+    }
+  }
+
+  .checkbox-form-wrapper {
+    padding: $su-7;
+
+    .checkbox-form {
+      padding-bottom: $su-6;
     }
   }
 
@@ -549,6 +638,12 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
         @extend .crayons-checkbox;
         margin-right: $su-2 !important;
       }
+    }
+  }
+
+  @media screen and (max-height: 790px) {
+    .onboarding-form-input--last {
+      margin-bottom: 25px;
     }
   }
 }

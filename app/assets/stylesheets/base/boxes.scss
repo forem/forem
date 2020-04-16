@@ -4,7 +4,7 @@
   $this: &; // Caching current element, source: https://css-tricks.com/snippets/sass/caching-current-selector-sass/
   border: 2px solid;
   border-radius: $br-default;
-  background-color: var(--container-bg);
+  background-color: var(--card-bg);
 
   @include box($this, var(--box), var(--box-darker));
 

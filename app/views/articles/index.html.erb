@@ -16,7 +16,7 @@
   <meta property="og:description" content="<%= SiteConfig.community_description %>" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
-  <meta name="twitter:site" content="@<%= SiteConfig.social_networks_handle %>">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
   <meta name="twitter:title" content="<%= title_with_timeframe(page_title: community_qualified_name, timeframe: params[:timeframe]) %>">
   <meta name="twitter:description" content="<%= SiteConfig.community_description %>">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
@@ -62,7 +62,7 @@
           </div>
           <div class="narrow-nav-select" aria-label="feed-filter-select">
             <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>
-              <button type="button" id="narrow-feed-butt">&lt;MY <%= ApplicationConfig["COMMUNITY_NAME"] %> FEED&gt;</button>
+              <button type="button" id="narrow-feed-butt">&lt;MY <%= community_name %> FEED&gt;</button>
             <% elsif timeframe_check('week') %>
               <button type="button" id="narrow-feed-butt">&lt;PAST WEEK&gt;</button>
             <% elsif timeframe_check('month') %>

@@ -1,6 +1,4 @@
 class User < ApplicationRecord
-  self.ignored_columns = ["organization_id"]
-
   include CloudinaryHelper
 
   attr_accessor(
@@ -8,63 +6,65 @@ class User < ApplicationRecord
     :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify
   )
 
-  rolify
+  rolify after_add: :index_roles, after_remove: :index_roles
+
   include AlgoliaSearch
   include Storext.model
   include Searchable
 
   SEARCH_SERIALIZER = Search::UserSerializer
   SEARCH_CLASS = Search::User
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::User
 
   acts_as_followable
   acts_as_follower
 
-  has_many :organization_memberships, dependent: :destroy
-  has_many :organizations, through: :organization_memberships
+  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
   has_many :api_secrets, dependent: :destroy
   has_many :articles, dependent: :destroy
+  has_many :audit_logs, dependent: :nullify
+  has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
+  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
   has_many :badge_achievements, dependent: :destroy
   has_many :badges, through: :badge_achievements
+  has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
+  has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
+  has_many :chat_channel_memberships, dependent: :destroy
+  has_many :chat_channels, through: :chat_channel_memberships
+  has_many :classified_listings, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
-  has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
+  has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
+  has_many :credits, dependent: :destroy
+  has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
+  has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
   has_many :github_repos, dependent: :destroy
+  has_many :html_variants, dependent: :destroy
   has_many :identities, dependent: :destroy
   has_many :mentions, dependent: :destroy
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
-  has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
-  has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
-  has_many :notifications, dependent: :destroy
-  has_many :reactions, dependent: :destroy
-  has_many :tweets, dependent: :destroy
-  has_many :chat_channel_memberships, dependent: :destroy
-  has_many :chat_channels, through: :chat_channel_memberships
   has_many :notification_subscriptions, dependent: :destroy
-
+  has_many :notifications, dependent: :destroy
   has_many :offender_feedback_messages, class_name: "FeedbackMessage", inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
-  has_many :reporter_feedback_messages, class_name: "FeedbackMessage", inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
-  has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
-
-  has_many :rating_votes, dependent: :destroy
-  has_many :response_templates, foreign_key: :user_id, inverse_of: :user, dependent: :destroy
-  has_many :html_variants, dependent: :destroy
+  has_many :organization_memberships, dependent: :destroy
+  has_many :organizations, through: :organization_memberships
   has_many :page_views, dependent: :destroy
-  has_many :credits, dependent: :destroy
-  has_many :classified_listings, dependent: :destroy
-  has_many :poll_votes, dependent: :destroy
   has_many :poll_skips, dependent: :destroy
-  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
-  has_many :display_ad_events, dependent: :destroy
-  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
-  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :poll_votes, dependent: :destroy
+  has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
+  has_many :rating_votes, dependent: :destroy
+  has_many :reactions, dependent: :destroy
+  has_many :reporter_feedback_messages, class_name: "FeedbackMessage", inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
+  has_many :response_templates, foreign_key: :user_id, inverse_of: :user, dependent: :destroy
+  has_many :tweets, dependent: :destroy
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
-  has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
-  has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
-  has_one :pro_membership, dependent: :destroy
+
   has_one :counters, class_name: "UserCounter", dependent: :destroy
-  has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
+  has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -118,18 +118,6 @@ class User < ApplicationRecord
   validates :twitch_url,
             allow_blank: true,
             format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
-  validates :shirt_gender,
-            inclusion: { in: %w[unisex womens],
-                         message: "%<value>s is not a valid shirt style" },
-            allow_blank: true
-  validates :shirt_size,
-            inclusion: { in: %w[xs s m l xl 2xl 3xl 4xl],
-                         message: "%<value>s is not a valid size" },
-            allow_blank: true
-  validates :tabs_or_spaces,
-            inclusion: { in: %w[tabs spaces],
-                         message: "%<value>s is not a valid answer" },
-            allow_blank: true
   validates :editor_version,
             inclusion: { in: %w[v1 v2],
                          message: "%<value>s must be either v1 or v2" }
@@ -160,6 +148,7 @@ class User < ApplicationRecord
   validate  :unique_including_orgs_and_podcasts, if: :username_changed?
 
   alias_attribute :positive_reactions_count, :reactions_count
+  alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
 
   scope :with_this_week_comments, lambda { |number|
     includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
@@ -170,6 +159,7 @@ class User < ApplicationRecord
   scope :top_commenters, lambda { |number = 10|
     includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
   }
+  scope :eager_load_serialized_data, -> { includes(:roles) }
 
   after_save :bust_cache
   after_save :subscribe_to_mailchimp_newsletter
@@ -189,6 +179,7 @@ class User < ApplicationRecord
 
   after_create_commit :send_welcome_notification, :estimate_default_language
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
@@ -366,11 +357,6 @@ class User < ApplicationRecord
     end
   end
 
-  def scholar
-    valid_pass = workshop_expiration.nil? || workshop_expiration > Time.current
-    has_role?(:workshop_pass) && valid_pass
-  end
-
   def comment_banned
     has_role? :comment_banned
   end
@@ -526,9 +512,9 @@ class User < ApplicationRecord
   end
 
   def send_welcome_notification
-    return unless (welcome_broadcast = Broadcast.find_by(title: "Welcome Notification"))
+    return unless (set_up_profile_broadcast = Broadcast.active.find_by(title: "Welcome Notification: set_up_profile"))
 
-    Notification.send_welcome_notification(id, welcome_broadcast.id)
+    Notification.send_welcome_notification(id, set_up_profile_broadcast.id)
   end
 
   def verify_twitter_username
@@ -705,5 +691,9 @@ class User < ApplicationRecord
     follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
     follows.destroy_all
+  end
+
+  def index_roles(_role)
+    index_to_elasticsearch_inline
   end
 end

@@ -70,6 +70,10 @@ RSpec.configure do |config|
   config.include SidekiqTestHelpers
   config.include ElasticsearchHelpers, elasticsearch: true
 
+  config.before(:suite) do
+    Search::Cluster.recreate_indexes
+  end
+
   config.before do
     Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
   end
@@ -109,7 +113,7 @@ RSpec.configure do |config|
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
 
     stub_request(:post, /api.fastly.com/).
-      to_return(status: 200, body: "", headers: {})
+      to_return(status: 200, body: "".to_json, headers: {})
 
     stub_request(:post, /api.bufferapp.com/).
       to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
@@ -119,6 +123,9 @@ RSpec.configure do |config|
       to_return(status: 200, body: "", headers: {})
 
     stub_request(:any, /api.mailchimp.com/).
+      to_return(status: 200, body: "", headers: {})
+
+    stub_request(:any, /dummyimage.com/).
       to_return(status: 200, body: "", headers: {})
   end
 

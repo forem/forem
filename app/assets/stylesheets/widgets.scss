@@ -1,5 +1,5 @@
 // Sidebar widgets
-
+@import 'config/import';
 @import 'variables';
 @import '_mixins';
 
@@ -7,6 +7,7 @@
 .sidebar-profile {
   @include sidebar-link;
   margin: 0;
+  margin-bottom: $su-2;
   display: flex;
   align-items: center;
 
@@ -27,7 +28,7 @@
   }
 
   .sidebar-profile--username {
-    color: var(--container-color-tertiary);
+    color: var(--card-color-tertiary);
   }
 }
 
@@ -46,7 +47,7 @@
     right: 0;
     width: 100%;
     height: 1px;
-    background: var(--widget-color-tertiary);
+    background: var(--card-color-tertiary);
     opacity: 0.25;
   }
 
@@ -94,9 +95,6 @@
       }
     }
   }
-  &.widget-sponsorship {
-    display: none;
-  }
   &.showing {
     display: block;
   }
@@ -141,7 +139,7 @@
       }
     }
     .suggest-podcast {
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       text-decoration: underline;
       padding: 0 5px;
     }
@@ -156,10 +154,10 @@
     padding: 8px 0;
     font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
       monospace;
-    color: var(--container-color);
+    color: var(--card-color);
     a {
       display: inline-block;
-      color: var(--container-color);
+      color: var(--card-color);
       h4 {
         display: inline-block;
         margin: 0;
@@ -243,7 +241,7 @@
       }
       .widget-listing-link-category {
         display: inline-block;
-        color: var(--widget-color-tertiary);
+        color: var(--card-color-tertiary);
         font-size: 0.8em;
         line-height: 1;
       }
@@ -270,7 +268,7 @@
     .widget-subtext {
       padding: 0;
       margin: 0;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       font-size: 0.85em;
     }
     .widget-user-pic {
@@ -320,7 +318,7 @@
         theme-container-accent-background,
         lighten($bold-blue, 10%)
       );
-      color: var(--container-color);
+      color: var(--card-color);
     }
     &.query-type-filter-button {
       &:hover {
@@ -369,10 +367,6 @@
       opacity: 0.9;
     }
   }
-  .social-icons a {
-    color: var(--widget-color);
-    margin-right: 8px;
-  }
   .row {
     position: relative;
     overflow: hidden;
@@ -407,7 +401,7 @@
 
   .discuss-list-comment-count {
     font-size: 0.8em;
-    color: var(--container-color-tertiary);
+    color: var(--card-color-tertiary);
     img {
       width: 20px;
       vertical-align: -3px;
@@ -426,22 +420,11 @@
 
 // Sidebar sponsors
 .sidebar-sponsor {
-  margin-bottom: 24px;
-  color: var(--widget-color-tertiary);
+  color: var(--card-color-tertiary);
   img {
     width: 100%;
-    max-width: 180px;
-  }
-}
-.sidebar-sponsor--footer {
-  font-size: 0.75em;
-  color: var(--container-color-tertiary);
-  a {
-    background: lighten($purple, 3%);
-    color: $black;
-    display: inline-block;
-    padding: 2px 6px;
-    font-weight: 500;
+    max-width: 140px;
+    margin-bottom: $su-2;
   }
 }
 
@@ -476,11 +459,11 @@
 
   a.sidebar-nav-link {
     @include sidebar-link;
-    color: var(--link-dimmed-color);
+    color: var(--link-color);
     font-weight: 400;
 
     &.sidebar-nav-link-tag {
-      color: var(--link-dimmed-color);
+      color: var(--link-color);
     }
   }
   a.sidebar-nav-link-follow {
@@ -507,7 +490,7 @@
   margin-bottom: 10px;
   font-family: $helvetica-condensed;
   font-stretch: condensed;
-  background: var(--widget-bg);
+  background: var(--card-secondary-bg);
 }
 
 // "Extra" links in sidebar: about, contact, ...
@@ -515,6 +498,6 @@
   a {
     @include sidebar-link;
     font-size: 0.9em;
-    color: var(--link-dimmed-color-secondary);
+    color: var(--link-color-secondary);
   }
 }

@@ -15,9 +15,9 @@
   <% other_classes = [published, featured, publish_permission].join(" ") %>
 
   <div class="row main-group <%= other_classes %>" data-retrieveddate="<%= article.created_at %>" style="<%= "background:#f2fff2;" if article.user.feed_admin_publish_permission %> <%= "background:#daf7ff;" if article.published %>">
-    <b><a href="<%= article.path %>" target="_blank"><%= article.title %></a></b>
-    <a href="<%= article.path %>/edit" target="_blank" style="background:#00da8b;color:white;padding:1px 6px">EDIT</a><br />
-    by <b><a href="<%= article.user.path %>" target="_blank"><%= article.username %></a></b>
+    <b><a href="<%= article.path %>" target="_blank" rel="noopener"><%= article.title %></a></b>
+    <a href="<%= article.path %>/edit" target="_blank" rel="noopener" style="background:#00da8b;color:white;padding:1px 6px">EDIT</a><br />
+    by <b><a href="<%= article.user.path %>" target="_blank" rel="noopener"><%= article.username %></a></b>
     <br />
     <br />
     <% article_length = article.body_markdown.length %>

@@ -6,16 +6,15 @@ module Search
     DEFAULT_PAGE = 0
     DEFAULT_PER_PAGE = 60
 
-    class << self
-      def search_documents(params:)
-        set_query_size(params)
-        query_hash = Search::QueryBuilders::FeedContent.new(params).as_hash
+    INCLUDED_CLASS_NAMES = %w[Article Comment PodcastEpisode].freeze
 
-        results = search(body: query_hash)
-        hits = results.dig("hits", "hits").map do |feed_doc|
-          prepare_doc(feed_doc)
+    class << self
+      INCLUDED_CLASS_NAMES.each do |class_name|
+        define_method("#{class_name.underscore.pluralize}_document_count") do
+          Search::Client.count(
+            index: self::INDEX_ALIAS, body: count_filter(class_name),
+          ).dig("count")
         end
-        paginate_hits(hits, params)
       end
 
       private
@@ -29,6 +28,12 @@ module Search
         source["user_id"] = source.dig("user", "id")
         source["highlight"] = hit["highlight"]
         source["readable_publish_date"] = source["readable_publish_date_string"]
+        source["podcast"] = {
+          "slug" => source["slug"],
+          "image_url" => source["main_image"],
+          "title" => source["title"]
+        }
+        source["_score"] = hit["_score"]
 
         source.merge(timestamps_hash(hit))
       end
@@ -39,6 +44,16 @@ module Search
         {
           "published_at_int" => published_at_timestamp.to_i,
           "published_timestamp" => published_at
+        }
+      end
+
+      def count_filter(class_name)
+        {
+          query: {
+            bool: {
+              filter: { term: { class_name: class_name } }
+            }
+          }
         }
       end
 

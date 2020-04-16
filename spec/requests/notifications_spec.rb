@@ -592,9 +592,8 @@ RSpec.describe "NotificationsIndex", type: :request do
     end
 
     context "when a user has a new welcome notification" do
-      # TODO: [@thepracticaldev/delightful] Only test against type_of Welcome once Onbarding notifications have been removed.
-      let(:active_broadcast) { create(:onboarding_broadcast) }
-      let(:inactive_broadcast) { create(:onboarding_broadcast, active: false) }
+      let(:active_broadcast) { create(:set_up_profile_broadcast) }
+      let(:inactive_broadcast) { create(:set_up_profile_broadcast, active: false) }
 
       before { sign_in user }
 

@@ -32,9 +32,14 @@
             <summary>Category details/rules</summary>
           </details>
         </div>
+        <%# The following tag_list field is overriden by the Tags JS component
+        from the listingForm. We keep this form field in place to facilitate
+        SSR. By having the form field loaded on the DOM first with this view,
+        we prevent the screen from "jumping" once the deferred JS is loaded
+        and executed. %>
         <div class="field">
-          <%= form.label "tags_list", "Tags" %>
-          <%= form.text_field "tags_list", placeholder: "8 tags max, comma separated, no spaces or special characters" %>
+          <%= form.label "tag_list", "Tags" %>
+          <%= form.text_field "tag_list", placeholder: "8 tags max, comma separated, no spaces or special characters" %>
         </div>
       <% if @organizations.present? && @organizations.size > 0 %>
         <div class="field">
@@ -64,7 +69,7 @@
         <a href="/credits/new" class="cta cta-main-listing-form" data-no-instant>Purchase Credits Now</a>
       <% end %>
     </div>
-    <p><em><%= ApplicationConfig["COMMUNITY_NAME"] %> admins may modify tags and categories to ensure accuracy. We may also take down and refund inappropriate listings.</em></p>
+    <p><em><%= community_name %> admins may modify tags and categories to ensure accuracy. We may also take down and refund inappropriate listings.</em></p>
     <p><em>Listings expire 30 days after they are published or "bumped".</em></p>
     <div class="listings-current-credits">
       <% if @credits.size == 0 && (@organizations.blank? || @organizations.sum(:unspent_credits_count).zero?) %>

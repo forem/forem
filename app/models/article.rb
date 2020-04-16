@@ -8,6 +8,7 @@ class Article < ApplicationRecord
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
 
   acts_as_taggable_on :tags
   resourcify
@@ -28,6 +29,11 @@ class Article < ApplicationRecord
   counter_culture :organization
 
   has_many :comments, as: :commentable, inverse_of: :commentable
+  has_many :top_comments,
+           -> { where("comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE", 10).order("comments.score DESC") },
+           as: :commentable,
+           inverse_of: :commentable,
+           class_name: "Comment"
   has_many :profile_pins, as: :pinnable, inverse_of: :pinnable
   has_many :buffer_updates, dependent: :destroy
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
@@ -71,11 +77,12 @@ class Article < ApplicationRecord
   before_save :update_cached_user
 
   after_save :bust_cache, :detect_human_language
-  after_save :notify_slack_channel_about_publication, if: -> { published && published_at > 30.seconds.ago }
+  after_save :notify_slack_channel_about_publication
 
   after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
 
   before_destroy :before_destroy_actions, prepend: true
@@ -89,6 +96,13 @@ class Article < ApplicationRecord
   scope :admin_published_with, lambda { |tag_name|
     published.
       where(user_id: SiteConfig.staff_user_id).
+      order(published_at: :desc).
+      tagged_with(tag_name)
+  }
+
+  scope :user_published_with, lambda { |user_id, tag_name|
+    published.
+      where(user_id: user_id).
       order(published_at: :desc).
       tagged_with(tag_name)
   }
@@ -111,7 +125,8 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :language,
            :experience_level_rating, :experience_level_rating_distribution, :cached_user, :cached_organization,
-           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds)
+           :published_at, :crossposted_at, :boost_states, :description, :reading_time, :video_duration_in_seconds,
+           :last_comment_at)
   }
 
   scope :limited_columns_internal_select, lambda {
@@ -156,6 +171,8 @@ class Article < ApplicationRecord
   scope :feed, -> { published.select(:id, :published_at, :processed_html, :user_id, :organization_id, :title, :path) }
 
   scope :with_video, -> { published.where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).where("score > ?", -4) }
+
+  scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 
   algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_index do
     attribute :title
@@ -297,6 +314,7 @@ class Article < ApplicationRecord
   def touch_by_reaction
     async_score_calc
     index!
+    index_to_elasticsearch
   end
 
   def comments_blob
@@ -698,18 +716,6 @@ class Article < ApplicationRecord
   end
 
   def notify_slack_channel_about_publication
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-
-    message = <<~MESSAGE.chomp
-      New Article Published: #{title}
-      #{url}#{path}
-    MESSAGE
-
-    SlackBotPingWorker.perform_async(
-      message: message,
-      channel: "activity",
-      username: "article_bot",
-      icon_emoji: ":writing_hand:",
-    )
+    Slack::Messengers::ArticlePublished.call(article: self)
   end
 end

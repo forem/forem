@@ -19,6 +19,8 @@ class Reaction < ApplicationRecord
   counter_culture :user
 
   scope :positive, -> { where("points > ?", 0) }
+  scope :readinglist, -> { where(category: "readinglist") }
+  scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -30,6 +32,8 @@ class Reaction < ApplicationRecord
   before_save :assign_points
   after_create_commit :record_field_test_event
   after_commit :async_bust, :bust_reactable_cache, :update_reactable
+  after_commit :index_to_elasticsearch, if: :indexable?, on: %i[create update]
+  after_commit :remove_from_elasticsearch, if: :indexable?, on: [:destroy]
   after_save :index_to_algolia
   after_save :touch_user
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
@@ -104,6 +108,10 @@ class Reaction < ApplicationRecord
   end
 
   private
+
+  def indexable?
+    category == "readinglist" && reactable && reactable.published
+  end
 
   def touch_user
     user.touch
@@ -209,19 +217,6 @@ class Reaction < ApplicationRecord
   end
 
   def notify_slack_channel_about_vomit_reaction
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-
-    message = <<~MESSAGE.chomp
-      #{user.name} (#{url}#{user.path})
-      reacted with a #{category} on
-      #{url}#{reactable.path}
-    MESSAGE
-
-    SlackBotPingWorker.perform_async(
-      message: message,
-      channel: "abuse-reports",
-      username: "abuse_bot",
-      icon_emoji: ":cry:",
-    )
+    Slack::Messengers::ReactionVomit.call(reaction: self)
   end
 end

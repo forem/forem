@@ -2,7 +2,6 @@
 
 <style>
   <% cache(cache_key_heroku_slug("onboarding-css"), expires_in: 10.hours) do %>
-    <%= Rails.application.assets["onboarding.css"].to_s.html_safe %>
     <%= Rails.application.assets["preact/onboarding-modal.css"].to_s.html_safe %>
   <% end %>
   footer {

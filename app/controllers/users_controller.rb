@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
+  rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   DEFAULT_FOLLOW_SUGGESTIONS = %w[ben jess peter maestromac andy liana].freeze
 
@@ -143,6 +144,7 @@ class UsersController < ApplicationController
 
   def onboarding_update
     if params[:user]
+      sanitize_user_params
       permitted_params = %i[summary location employment_title employer_name last_onboarding_page]
       current_user.assign_attributes(params[:user].permit(permitted_params))
       current_user.profile_updated_at = Time.current
@@ -250,6 +252,10 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def sanitize_user_params
+    params[:user].delete_if { |_k, v| v.blank? }
+  end
 
   def render_update_response
     if current_user.save

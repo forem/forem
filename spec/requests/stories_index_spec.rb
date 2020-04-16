@@ -1,12 +1,12 @@
 require "rails_helper"
 
 RSpec.describe "StoriesIndex", type: :request do
-  let!(:user) { create(:user) }
-  let!(:article) { create(:article, featured: true) }
-
   describe "GET stories index" do
     it "renders page with article list" do
+      article = create(:article, featured: true)
+
       get "/"
+
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
@@ -16,13 +16,16 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders page with min read" do
+      create(:article, featured: true)
+
       get "/"
+
       expect(response.body).to include("min read")
     end
 
     it "renders page with proper sidebar" do
       get "/"
-      expect(response.body).to include("<h4>Key links</h4>")
+      expect(response.body).to include("Podcasts")
     end
 
     it "renders left display_ads when published and approved" do
@@ -79,6 +82,14 @@ RSpec.describe "StoriesIndex", type: :request do
       listing = create(:classified_listing, user_id: user.id)
       get "/"
       expect(response.body).to include(CGI.escapeHTML(listing.title))
+    end
+
+    it "sets Fastly Surrogate-Key headers" do
+      get "/"
+      expect(response.status).to eq(200)
+
+      expected_surrogate_key_headers = %w[main_app_home_page]
+      expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
     end
 
     context "with campaign hero" do
@@ -163,6 +174,7 @@ RSpec.describe "StoriesIndex", type: :request do
   end
 
   describe "GET tag index" do
+    let(:user) { create(:user) }
     let(:tag) { create(:tag) }
     let(:org) { create(:organization) }
 
@@ -181,6 +193,30 @@ RSpec.describe "StoriesIndex", type: :request do
     it "renders page with proper header" do
       get "/t/#{tag.name}"
       expect(response.body).to include(tag.name)
+    end
+
+    it "sets Fastly Cache-Control headers" do
+      get "/t/#{tag.name}"
+      expect(response.status).to eq(200)
+
+      expected_cache_control_headers = %w[public no-cache]
+      expect(response.headers["Cache-Control"].split(", ")).to match_array(expected_cache_control_headers)
+    end
+
+    it "sets Fastly Surrogate-Control headers" do
+      get "/t/#{tag.name}"
+      expect(response.status).to eq(200)
+
+      expected_surrogate_control_headers = %w[max-age=600 stale-while-revalidate=30 stale-if-error=86400]
+      expect(response.headers["Surrogate-Control"].split(", ")).to match_array(expected_surrogate_control_headers)
+    end
+
+    it "sets Fastly Surrogate-Key headers" do
+      get "/t/#{tag.name}"
+      expect(response.status).to eq(200)
+
+      expected_surrogate_key_headers = %W[articles-#{tag}]
+      expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
     end
 
     it "renders page with top/week etc." do

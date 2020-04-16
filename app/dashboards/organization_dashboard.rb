@@ -61,7 +61,6 @@ class OrganizationDashboard < Administrate::BaseDashboard
     text_color_hex
     twitter_username
     github_username
-    address
     cta_button_text
     cta_button_url
     cta_body_markdown

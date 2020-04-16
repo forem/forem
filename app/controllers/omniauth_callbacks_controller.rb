@@ -13,22 +13,36 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def failure
-    Rails.logger.error "Omniauth failure",
-                       omniauth_failure: {
-                         error: request.env["omniauth.error"]&.inspect,
-                         error_type: request.env["omniauth.error.type"].to_s,
-                         auth: request.env["omniauth.auth"],
-                         provider: request.env["omniauth.strategy"].to_s,
-                         cookie: request.env["rack.request.cookie_hash"]
-                       }
+    error = request.env["omniauth.error"]
+    class_name = error.present? ? error.class.name : ""
+
+    DatadogStatsClient.increment(
+      "omniauth.failure",
+      tags: [
+        "class:#{class_name}",
+        "message:#{error&.message}",
+        "reason:#{error.try(:error_reason)}",
+        "type:#{error.try(:error)}",
+        "uri:#{error.try(:error_uri)}",
+        "provider:#{request.env['omniauth.strategy'].name}",
+        "origin:#{request.env['omniauth.strategy.origin']}",
+        "params:#{request.env['omniauth.params']}",
+      ],
+    )
+
     super
   end
 
   private
 
+  # TODO: [thepracticaldev/oss] test all of this
   def callback_for(provider)
     cta_variant = request.env["omniauth.params"]["state"].to_s
-    @user = AuthorizationService.new(request.env["omniauth.auth"], current_user, cta_variant).get_user
+    @user = Authentication::Authenticator.call(
+      request.env["omniauth.auth"],
+      current_user: current_user,
+      cta_variant: cta_variant,
+    )
 
     if persisted_and_valid?
       # delete legacy session based cookie once the user has logged in again

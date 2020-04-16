@@ -11,6 +11,8 @@ Rails.application.routes.draw do
   }
 
   require "sidekiq/web"
+  require "sidekiq_unique_jobs/web"
+
   authenticated :user, ->(user) { user.tech_admin? } do
     Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
     Sidekiq::Web.set :sessions, Rails.application.config.session_options
@@ -151,7 +153,7 @@ Rails.application.routes.draw do
 
   resources :messages, only: [:create]
   resources :chat_channels, only: %i[index show create update]
-  resources :chat_channel_memberships, only: %i[create update destroy]
+  resources :chat_channel_memberships, only: %i[index create edit update destroy]
   resources :articles, only: %i[update create destroy]
   resources :article_mutes, only: %i[update]
   resources :comments, only: %i[create update destroy] do
@@ -178,7 +180,6 @@ Rails.application.routes.draw do
       get "/onboarding", to: "tags#onboarding"
     end
   end
-  resources :downloads, only: [:index]
   resources :stripe_active_cards, only: %i[create update destroy]
   resources :live_articles, only: [:index]
   resources :github_repos, only: %i[index create update] do
@@ -214,6 +215,7 @@ Rails.application.routes.draw do
   resources :user_blocks, param: :blocked_id, only: %i[show create destroy]
   resources :podcasts, only: %i[new create]
   resources :article_approvals, only: %i[create]
+  resources :video_chats, only: %i[show]
   resolve("ProMembership") { [:pro_membership] } # see https://guides.rubyonrails.org/routing.html#using-resolve
   namespace :followings, defaults: { format: :json } do
     get :users
@@ -251,6 +253,7 @@ Rails.application.routes.draw do
   get "/chat_channels/:id/channel_info", to: "chat_channels#channel_info", as: :chat_channel_info
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
+  post "/chat_channel_memberships/remove_membership" => "chat_channel_memberships#remove_membership"
   delete "/messages/:id" => "messages#destroy"
   patch "/messages/:id" => "messages#update"
   get "/live/:username" => "twitch_live_streams#show"
@@ -303,18 +306,15 @@ Rails.application.routes.draw do
   get "/code-of-conduct" => "pages#code_of_conduct"
   get "/report-abuse" => "pages#report_abuse"
   get "/faq" => "pages#faq"
-  get "/live" => "pages#live"
-  get "/swagnets" => "pages#swagnets"
   get "/welcome" => "pages#welcome"
   get "/challenge" => "pages#challenge"
+  get "/checkin" => "pages#checkin"
   get "/badge" => "pages#badge"
   get "/💸", to: redirect("t/hiring")
   get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
-  get "/now" => "pages#now"
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
-  get "/sponsorship-info" => "pages#sponsorship_faq"
   get "/sponsors" => "pages#sponsors"
   get "/search" => "stories#search"
   post "articles/preview" => "articles#preview"
@@ -325,13 +325,14 @@ Rails.application.routes.draw do
   get "/mod/:tag" => "moderations#index"
   get "/page/crayons" => "pages#crayons"
 
+  get "/p/rlyweb", to: redirect("/rlyweb")
+
   post "/fallback_activity_recorder" => "ga_events#create"
 
   get "/page/:slug" => "pages#show"
 
   scope "p" do
-    pages_actions = %w[rly rlyweb welcome twitter_moniter editor_guide publishing_from_rss_guide information
-                       markdown_basics scholarships wall_of_patrons badges]
+    pages_actions = %w[welcome editor_guide publishing_from_rss_guide information markdown_basics badges].freeze
     pages_actions.each do |action|
       get action, action: action, controller: "pages"
     end

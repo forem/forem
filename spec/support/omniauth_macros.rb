@@ -1,4 +1,6 @@
 module OmniauthMacros
+  OMNIAUTH_DEFAULT_FAILURE_HANDLER = OmniAuth.config.on_failure
+
   INFO = OmniAuth::AuthHash::InfoHash.new(
     first_name: "fname",
     last_name: "lname",
@@ -7,27 +9,28 @@ module OmniauthMacros
     nickname: "fname.lname",
     email: "yourname@email.com",
     verified: true,
-    # info.image = "http://graph.facebook.com/123456/picture?type=square&#8221"
   )
 
-  EXTRA_INFO = Hashie::Mash.new(raw_info: Hashie::Mash.new(
-    email: "yourname@email.com",
-    first_name: "fname",
-    gender: "female",
-    id: "123456",
-    last_name: "lname",
-    link: "http://www.facebook.com/url&#8221",
-    lang: "fr",
-    locale: "en_US",
-    name: "fname lname",
-    timezone: 5.5,
-    updated_time: "2012-06-08T13:09:47+0000",
-    username: "fname.lname",
-    verified: true,
-    followers_count: 100,
-    friends_count: 1000,
-    created_at: "2017-06-08T13:09:47+0000",
-  ))
+  EXTRA_INFO = Hashie::Mash.new(
+    raw_info: Hashie::Mash.new(
+      email: "yourname@email.com",
+      first_name: "fname",
+      gender: "female",
+      id: "123456",
+      last_name: "lname",
+      link: "http://www.facebook.com/url&#8221",
+      lang: "fr",
+      locale: "en_US",
+      name: "fname lname",
+      timezone: 5.5,
+      updated_time: "2012-06-08T13:09:47+0000",
+      username: "fname.lname",
+      verified: true,
+      followers_count: 100,
+      friends_count: 1000,
+      created_at: "2017-06-08T13:09:47+0000",
+    ),
+  )
 
   CREDENTIAL = OmniAuth::AuthHash::InfoHash.new(
     token: "2735246777-jlOnuFlGlvybuwDJfyrIyESLUEgoo6CffyJCQUO",
@@ -41,20 +44,77 @@ module OmniauthMacros
     credentials: CREDENTIAL
   }.freeze
 
+  def mock_auth_with_invalid_credentials(provider)
+    OmniAuth.config.mock_auth[provider] = :invalid_credentials
+  end
+
+  def setup_omniauth_error(error)
+    # this hack is needed due to a limitation in how OmniAuth handles
+    # failures in mocked/testing environments,
+    # see <https://github.com/omniauth/omniauth/issues/654#issuecomment-610851884>
+    # for more details
+    local_failure_handler = lambda do |env|
+      env["omniauth.error"] = error
+      env
+    end
+
+    # here we compose the two handlers into a single function,
+    # the result will be global_failure_handler(local_failure_handler(env))
+    failure_handler = local_failure_handler >> OMNIAUTH_DEFAULT_FAILURE_HANDLER
+
+    OmniAuth.config.on_failure = failure_handler
+  end
+
+  def omniauth_failure_args(error, provider, params)
+    class_name = error.present? ? error.class.name : ""
+
+    [
+      tags: [
+        "class:#{class_name}",
+        "message:#{error&.message}",
+        "reason:#{error.try(:error_reason)}",
+        "type:#{error.try(:error)}",
+        "uri:#{error.try(:error_uri)}",
+        "provider:#{provider}",
+        "origin:",
+        "params:#{params}",
+      ],
+    ]
+  end
+
   def mock_auth_hash
     mock_twitter
     mock_github
   end
 
   def mock_twitter
+    info = BASIC_INFO[:info].merge(
+      image: "https://dummyimage.com/400x400_normal.jpg",
+    )
+
+    extra = BASIC_INFO[:extra].merge(
+      access_token: "value",
+    )
+
     OmniAuth.config.mock_auth[:twitter] = OmniAuth::AuthHash.new(
-      BASIC_INFO.merge(provider: "twitter"),
+      BASIC_INFO.merge(
+        provider: "twitter",
+        info: info,
+        extra: extra,
+      ),
     )
   end
 
   def mock_github
+    info = BASIC_INFO[:info].merge(
+      image: "https://dummyimage.com/400x400.jpg",
+    )
+
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(
-      BASIC_INFO.merge(provider: "github"),
+      BASIC_INFO.merge(
+        provider: "github",
+        info: info,
+      ),
     )
   end
 end

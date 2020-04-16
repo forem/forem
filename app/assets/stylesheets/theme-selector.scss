@@ -91,7 +91,7 @@
 .theme-selector__col--center {
   width: 20%;
   height: 85%;
-  background: var(--container-bg);
+  background: var(--card-bg);
   border-radius: 2px;
   border: var(--theme-container-border);
 }
@@ -107,7 +107,7 @@
 
 .theme-selector__posts {
   height: calc(100% - 18px);
-  background: var(--container-bg);
+  background: var(--card-bg);
   border: var(--theme-container-border);
   border-radius: 2px;
 }
@@ -119,7 +119,7 @@
   --body-color: #0a0a0a;
   --header-bg: #fdf9f3;
   --form-bg: #e8e7e7;
-  --container-bg: #fff;
+  --card-bg: #fff;
   --theme-container-border: 1px solid #d6d6d6;
 }
 
@@ -128,7 +128,7 @@
   --body-color: #fff;
   --header-bg: #1c2938;
   --form-bg: #424a54;
-  --container-bg: #202c3d;
+  --card-bg: #202c3d;
   --theme-container-border: 1px solid #141d26;
 }
 
@@ -137,7 +137,7 @@
   --body-color: #0a0a0a;
   --header-bg: #ff4983;
   --form-bg: #fff7f9;
-  --container-bg: #fff;
+  --card-bg: #fff;
   --theme-container-border: 1px solid #ff4983;
 }
 
@@ -146,7 +146,7 @@
   --body-color: #0a0a0a;
   --header-bg: #ffffff;
   --form-bg: #f4f5f7;
-  --container-bg: #fff;
+  --card-bg: #fff;
   --theme-container-border: 1px solid #d6d6d6;
 }
 
@@ -155,7 +155,7 @@
   --body-color: #42ff87;
   --header-bg: #1c1c1c;
   --form-bg: #0a0a0a;
-  --container-bg: #0a0a0a;
+  --card-bg: #0a0a0a;
   --theme-container-border: 1px solid #42ff87;
 }
 

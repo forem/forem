@@ -32,7 +32,7 @@ RSpec.describe Article, type: :model do
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
         article.save
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.id]) do
           article.save
         end
       end
@@ -42,6 +42,49 @@ RSpec.describe Article, type: :model do
 
         sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
+        end
+      end
+
+      it "on update syncs elasticsearch data" do
+        allow(article).to receive(:sync_related_elasticsearch_docs)
+        article.save
+        expect(article).to have_received(:sync_related_elasticsearch_docs)
+      end
+    end
+
+    describe "#after_update_commit" do
+      it "if article is unpublished removes reading list reactions from index" do
+        reaction = create(:reaction, reactable: article, category: "readinglist")
+        sidekiq_perform_enqueued_jobs
+        expect(reaction.elasticsearch_doc).not_to be_nil
+
+        unpublished_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: false\ntags: hiring\n---\n\nHello"
+        article.update(body_markdown: unpublished_body)
+        sidekiq_perform_enqueued_jobs
+        expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+      end
+
+      it "if article is published indexes reading list reactions" do
+        reaction = create(:reaction, reactable: article, category: "readinglist")
+        sidekiq_perform_enqueued_jobs
+        unpublished_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: false\ntags: hiring\n---\n\nHello"
+        article.update(body_markdown: unpublished_body)
+        sidekiq_perform_enqueued_jobs
+        expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+
+        published_body = "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: hiring\n---\n\nHello"
+        article.update(body_markdown: published_body)
+        sidekiq_perform_enqueued_jobs
+        expect(reaction.elasticsearch_doc).not_to be_nil
+      end
+
+      it "indexes reaction if a REACTION_INDEXED_FIELDS is changed" do
+        reaction = create(:reaction, reactable: article, category: "readinglist")
+        allow(article).to receive(:index_to_elasticsearch)
+        allow(article.user).to receive(:index_to_elasticsearch)
+
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: ["Reaction", reaction.id]) do
+          article.update(body_markdown: "---\ntitle: NEW TITLE#{rand(1000)}\n")
         end
       end
     end
@@ -756,46 +799,33 @@ RSpec.describe Article, type: :model do
       end
     end
 
-    describe "slack notifications" do
+    describe "slack messages" do
       before do
         # making sure there are no other enqueued jobs from other tests
         sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
       end
 
-      it "notifies the proper slack channel about a recently published new article" do
-        Timecop.freeze(Time.current) do
-          article = create(:article, published: true)
-
-          url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-          message = "New Article Published: #{article.title}\n#{url}#{article.path}"
-          args = {
-            message: message,
-            channel: "activity",
-            username: "article_bot",
-            icon_emoji: ":writing_hand:"
-          }.stringify_keys
-
-          sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker)
-          job = sidekiq_enqueued_jobs(worker: SlackBotPingWorker).last
-          expect(job["args"]).to eq([args])
+      it "queues a slack message to be sent" do
+        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+          article.update(published: true, published_at: Time.current)
         end
       end
 
-      it "does not send a notification for a new article published more than 30 seconds ago" do
+      it "does not queue a message for an article published more than 30 seconds ago" do
         Timecop.freeze(Time.current) do
           sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
-            create(:article, published: true, published_at: 31.seconds.ago)
+            article.update(published: true, published_at: 31.seconds.ago)
           end
         end
       end
 
-      it "does not send a notification for a non published article" do
+      it "does not queue a message for a draft article" do
         sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
-          create(:article, published: false)
+          article.update(body_markdown: "foobar", published: false)
         end
       end
 
-      it "sends a notification for a draft article that gets published" do
+      it "queues a message for a draft article that gets published" do
         Timecop.freeze(Time.current) do
           sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
             article.update_columns(published: false)
@@ -812,6 +842,54 @@ RSpec.describe Article, type: :model do
 
       fields = %w[id tag_list published_at processed_html user_id organization_id title path]
       expect(feed_article.attributes.keys).to match_array(fields)
+    end
+  end
+
+  describe "#top_comments" do
+    context "when article has comments" do
+      let(:root_comment) { create(:comment, commentable: article, score: 20) }
+      let(:child_comment) { create(:comment, commentable: article, score: 20, parent: root_comment) }
+      let(:hidden_comment) { create(:comment, commentable: article, score: 20, hidden_by_commentable_user: true) }
+      let(:deleted_comment) { create(:comment, commentable: article, score: 20, deleted: true) }
+
+      before do
+        root_comment
+        child_comment
+        hidden_comment
+        deleted_comment
+        create_list(:comment, 2, commentable: article, score: 20)
+        article.reload
+      end
+
+      it "returns comments with score greater than 10" do
+        expect(article.top_comments.first.score).to be > 10
+      end
+
+      it "only includes root comments" do
+        expect(article.top_comments).not_to include(child_comment)
+      end
+
+      it "doesn't include hidden comments" do
+        expect(article.top_comments).not_to include(hidden_comment)
+      end
+
+      it "doesn't include deleted comments" do
+        expect(article.top_comments).not_to include(deleted_comment)
+      end
+    end
+
+    context "when article does not have any comments" do
+      it "retrns empty set if there aren't any top comments" do
+        expect(article.top_comments).to be_empty
+      end
+    end
+  end
+
+  describe "#touch_by_reaction" do
+    it "reindexes elasticsearch doc" do
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.id]) do
+        article.touch_by_reaction
+      end
     end
   end
 end

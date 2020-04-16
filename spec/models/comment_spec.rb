@@ -39,7 +39,7 @@ RSpec.describe Comment, type: :model do
 
     describe "#after_commit" do
       it "on update enqueues job to index comment to elasticsearch" do
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, comment.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, comment.id]) do
           comment.save
         end
       end
@@ -312,35 +312,20 @@ RSpec.describe Comment, type: :model do
       expect { comment.save }.to change(user, :last_comment_at)
     end
 
-    describe "slack notifications" do
+    describe "slack messages" do
+      let!(:user) { create(:user) }
+
       before do
         # making sure there are no other enqueued jobs from other tests
         sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
       end
 
-      it "notifies proper slack channel when a warned user leaves a comment" do
-        user = create(:user)
+      it "queues a slack message when a warned user leaves a comment" do
         user.add_role(:warned)
-        comment = create(:comment, user: user, commentable: article)
 
-        url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
-        message = <<~MESSAGE.chomp
-          Activity: #{url}#{comment.path}
-          Comment text: #{comment.body_markdown.truncate(300)}
-          ---
-          Manage commenter - @#{user.username}: #{url}/internal/users/#{user.id}
-        MESSAGE
-
-        args = {
-          message: message,
-          channel: "warned-user-comments",
-          username: "sloan_watch_bot",
-          icon_emoji: ":sloan:"
-        }.stringify_keys
-
-        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker)
-        job = sidekiq_enqueued_jobs(worker: SlackBotPingWorker).last
-        expect(job["args"]).to eq([args])
+        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+          create(:comment, user: user, commentable: article)
+        end
       end
 
       it "does not send notification if a regular user leaves a comment" do
@@ -398,6 +383,20 @@ RSpec.describe Comment, type: :model do
       sidekiq_assert_enqueued_with(job: Comments::BustCacheWorker, args: [comment.id]) do
         comment.destroy
       end
+    end
+  end
+
+  describe "#root_exists?" do
+    let(:root_comment) { create(:comment) }
+    let(:comment) { create(:comment, ancestry: root_comment.id) }
+
+    it "returns true if root is present" do
+      expect(comment.root_exists?).to eq(true)
+    end
+
+    it "returns false if root has been deleted" do
+      root_comment.destroy
+      expect(comment.reload.root_exists?).to eq(false)
     end
   end
 end

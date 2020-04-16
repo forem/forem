@@ -29,7 +29,9 @@ module Podcasts
         conflict_target: %i[media_url],
         columns: %i[title slug subtitle summary website_url published_at reachable media_url https body]
       }
-      PodcastEpisode.find(import_result.ids.first)
+      episode = PodcastEpisode.find(import_result.ids.first)
+      finalize(episode)
+      episode
     end
 
     private
@@ -41,6 +43,11 @@ module Podcasts
       episode.reachable = result.reachable
       episode.media_url = result.url
       episode.https = result.https
+    end
+
+    def finalize(episode)
+      episode.purge_all
+      episode.index_to_elasticsearch
     end
   end
 end

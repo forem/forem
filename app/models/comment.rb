@@ -27,7 +27,7 @@ class Comment < ApplicationRecord
   validates :commentable_type, inclusion: { in: %w[Article PodcastEpisode] }
   validates :user_id, presence: true
 
-  after_create :notify_slack_channel_about_warned_users, if: -> { user.warned }
+  after_create :notify_slack_channel_about_warned_users
   after_create :after_create_checks
   after_create_commit :record_field_test_event
   after_commit :calculate_score
@@ -47,6 +47,8 @@ class Comment < ApplicationRecord
   after_update   :update_descendant_notifications, if: :deleted
   before_validation :evaluate_markdown, if: -> { body_markdown }
   validate :permissions, if: :commentable
+
+  scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
 
   alias touch_by_reaction save
 
@@ -119,6 +121,10 @@ class Comment < ApplicationRecord
     processed_html.html_safe
   end
 
+  def root_exists?
+    ancestry && Comment.exists?(id: ancestry)
+  end
+
   private
 
   def update_notifications
@@ -148,7 +154,7 @@ class Comment < ApplicationRecord
   end
 
   def adjust_comment_parent_based_on_depth
-    self.parent_id = parent.descendant_ids.last if parent && (parent.depth > 1 && parent.has_children?)
+    self.parent_id = parent.descendant_ids.last if parent_exists? && (parent.depth > 1 && parent.has_children?)
   end
 
   def wrap_timestamps_if_video_present!
@@ -185,7 +191,11 @@ class Comment < ApplicationRecord
   end
 
   def expire_root_fragment
-    root.touch
+    if root_exists?
+      root.touch
+    else
+      touch
+    end
   end
 
   def create_first_reaction
@@ -219,7 +229,8 @@ class Comment < ApplicationRecord
   end
 
   def should_send_email_notification?
-    parent_user.class.name != "Podcast" &&
+    parent_exists? &&
+      parent_user.class.name != "Podcast" &&
       parent_user != user &&
       parent_user.email_comment_notifications &&
       parent_user.email &&
@@ -248,20 +259,10 @@ class Comment < ApplicationRecord
   end
 
   def notify_slack_channel_about_warned_users
-    url = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
+    Slack::Messengers::CommentUserWarned.call(comment: self)
+  end
 
-    message = <<~MESSAGE.chomp
-      Activity: #{url}#{path}
-      Comment text: #{body_markdown.truncate(300)}
-      ---
-      Manage commenter - @#{user.username}: #{url}/internal/users/#{user.id}
-    MESSAGE
-
-    SlackBotPingWorker.perform_async(
-      message: message,
-      channel: "warned-user-comments",
-      username: "sloan_watch_bot",
-      icon_emoji: ":sloan:",
-    )
+  def parent_exists?
+    parent_id && Comment.exists?(id: parent_id)
   end
 end

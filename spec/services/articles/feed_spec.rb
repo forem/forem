@@ -153,8 +153,8 @@ RSpec.describe Articles::Feed, type: :service do
   describe "all non-default experiments" do
     it "returns articles for all experiments" do
       new_story = create(:article, published_at: 10.minutes.ago, score: 10)
-      NON_DEFAULT_EXPERIMENTS.each do |_method|
-        stories = feed.default_home_feed_with_more_randomness_experiment
+      NON_DEFAULT_EXPERIMENTS.each do |method|
+        stories = feed.public_send(method)
         expect(stories).to include(old_story)
         expect(stories).to include(new_story)
       end

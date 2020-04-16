@@ -1,3 +1,7 @@
+# rubocop:disable Metrics/BlockLength
+# Silence all Ruby 2.7 deprecation warnings
+$VERBOSE = nil
+
 Rails.application.configure do
   # Verifies that versions and hashed value of the package contents in the project's package.json
   # As the integrity check is currently broken under Docker with webpacker,
@@ -123,6 +127,9 @@ Rails.application.configure do
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "ApiSecret", association: :user)
     # acts-as-taggable-on has super weird eager loading problems: <https://github.com/mbleigh/acts-as-taggable-on/issues/91>
     Bullet.add_whitelist(type: :n_plus_one_query, class_name: "ActsAsTaggableOn::Tagging", association: :tag)
+    # Supress incorrect warnings from Bullet due to included columns: https://github.com/flyerhzm/bullet/issues/147
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Article", association: :top_comments)
+    Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
 
     # Check if there are any data update scripts to run during startup
     if %w[c console runner s server].include?(ENV["COMMAND"])
@@ -134,3 +141,4 @@ Rails.application.configure do
 end
 
 Rails.application.routes.default_url_options = { host: Rails.application.config.app_domain }
+# rubocop:enable Metrics/BlockLength
