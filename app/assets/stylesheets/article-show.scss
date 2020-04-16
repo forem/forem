@@ -31,15 +31,44 @@
 }
 
 .mod-actions-menu {
-    position: fixed;
-    top: $header-height;
-    right: 0;
-    height: calc(100vh - 56px);
-    z-index: 200;
+  position: fixed;
+  top: $header-height;
+  right: 0;
+  height: calc(100vh - 56px);
+  z-index: 200;
 
-    iframe {
-        height: 100%;
-    }
+  iframe {
+    height: 100%;
+  }
+}
+
+.mod-actions-menu-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 201;
+  cursor: pointer;
+  transition: 0.3s all ease;
+
+  background-color: #202428;
+  border-radius: 50px;
+}
+
+.actions-menu-svg {
+  color: white;
+}
+
+.mod-actions-menu-btn,
+.actions-menu-svg {
+  transition: 0.3s all ease;
+}
+
+.mod-actions-menu-btn:hover {
+  background-color: #3b49df;
+}
+
+.actions-menu-svg:hover {
+  color: white;
 }
 
 .video-player-header {
