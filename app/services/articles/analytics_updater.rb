@@ -24,8 +24,8 @@ module Articles
       qualified_articles.each_slice(15) do |chunk|
         chunk.each do |article|
           article.update_columns(previous_positive_reactions_count: article.positive_reactions_count)
-          Notification.send_milestone_notification(type: "Reaction", article_id: article.id)
-          Notification.send_milestone_notification(type: "View", article_id: article.id)
+          # Notification.send_milestone_notification(type: "Reaction", article_id: article.id)
+          # Notification.send_milestone_notification(type: "View", article_id: article.id)
         end
       end
     end
