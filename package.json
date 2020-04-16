@@ -93,7 +93,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.19.0",
     "faker": "^4.1.0",
-    "husky": "^4.2.3",
+    "husky": "^4.2.5",
     "ibm-openapi-validator": "0.26.0",
     "jest": "25.3.0",
     "jest-axe": "^3.4.0",
