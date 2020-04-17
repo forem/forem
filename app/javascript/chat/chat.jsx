@@ -82,7 +82,9 @@ export default class Chat extends Component {
       memberFilterQuery: null,
       rerenderIfUnchangedCheck: null,
     };
-    getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
+    if (chatOptions.activeChannelId) {
+      getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
+    }
   }
 
   componentDidMount() {
