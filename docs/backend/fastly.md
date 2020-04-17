@@ -45,5 +45,9 @@ _Fastly is not setup for development._
 Whitelisted params on Fastly are updated automatically when a production deploy
 goes out.
 
+Make sure you've set the `FASTLY_WHITELIST_PARAMS_SNIPPET_NAME` ENV variable
+with the name of the VCL snippet you have configured in Fastly. If this key is
+not set, this update will be skipped on deployments.
+
 We do this by executing `bin/rails fastly:update_whitelisted_params` in our
 `release-tasks.sh` script.
