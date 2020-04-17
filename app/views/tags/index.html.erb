@@ -1,20 +1,20 @@
-<% title "Tags on dev.to" %>
+<% title "Tags on #{community_name}" %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/about") %>" />
-  <meta name="description" content="Tags to follow on dev.to">
+  <meta name="description" content="Tags to follow on <%= community_name %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
-  <meta property="og:url" content="(<%= app_url("/about") %>" />
-  <meta property="og:title" content="Tags to follow on dev.to" />
+  <meta property="og:url" content="<%= app_url("/about") %>" />
+  <meta property="og:title" content="Tags to follow on <%= community_name %>" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
   <meta property="og:description" content="<%= community_qualified_name %> is great!" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:site" content="@ThePracticalDev">
-  <meta name="twitter:title" content="About The Practical Dev">
+  <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
+  <meta name="twitter:title" content="About <%= community_name %>">
   <meta name="twitter:description" content="<%= community_qualified_name %> is great!">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>

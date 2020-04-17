@@ -13,10 +13,10 @@
 
 <div class="row my-3" id="siteConfig">
   <div class="card w-100">
-    <div class="card-header" id="siteConfigHeader">
+    <div class="card-header" id="siteConfigHeader" data-toggle="collapse"
+      data-target="#siteConfigBodyContainer" aria-expanded="true" aria-controls="siteConfigBodyContainer">
       <h2 class="d-inline">Site Configuration</h2>
-      <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
-        data-target="#siteConfigBodyContainer" aria-expanded="true" aria-controls="siteConfigBodyContainer">
+      <button class="btn btn-secondary float-right" type="button">
         Toggle Site Configuration
       </button>
     </div>
@@ -25,12 +25,12 @@
 
         <div class="card mt-3">
           <%= render partial: "card_header",
-            locals: {
-              header: "Community Content",
-              state: "collapse",
-              target: "contentBodyContainer",
-              expanded: "false"
-          } %>
+                     locals: {
+                       header: "Community Content",
+                       state: "collapse",
+                       target: "contentBodyContainer",
+                       expanded: "false"
+                     } %>
           <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
             <div class="form-group">
               <%= f.label :community_description, "Community description" %>
@@ -73,12 +73,12 @@
 
         <div class="card mt-3">
           <%= render partial: "card_header",
-            locals: {
-              header: "Social Media and Email",
-              state: "collapse",
-              target: "socialMediaBodyContainer",
-              expanded: "false"
-          } %>
+                     locals: {
+                       header: "Social Media and Email",
+                       state: "collapse",
+                       target: "socialMediaBodyContainer",
+                       expanded: "false"
+                     } %>
           <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
             <div class="form-group">
               <%= f.label :default_site_email %>
@@ -88,26 +88,31 @@
                                 placeholder: "email@staff.com" %>
               <div class="alert alert-info">Email of the staff account</div>
             </div>
-
             <div class="form-group">
-              <%= f.label :social_networks_handle %>
-              <%= f.text_field :social_networks_handle,
-                               class: "form-control",
-                               value: SiteConfig.social_networks_handle,
-                               placeholder: "thepracticaldev" %>
-              <div class="alert alert-info">Social networks handle (eg. Twitter, GitHub)</div>
+              <%= f.fields_for :social_media_handles do |social_media_field| %>
+                <% SiteConfig.social_media_handles.keys.each do |social_media_platform| %>
+                  <div>
+                    <%= social_media_field.label social_media_platform %>
+                    <%= social_media_field.text_field social_media_platform,
+                                                      class: "form-control",
+                                                      value: SiteConfig.social_media_handles[social_media_platform],
+                                                      placeholder: "" %>
+                    <div class="alert alert-info"><%= social_media_platform.capitalize %> Username</div>
+                  </div>
+                <% end %>
+              <% end %>
             </div>
           </div>
         </div>
 
         <div class="card mt-3">
           <%= render partial: "card_header",
-            locals: {
-              header: "Authentication",
-              state: "collapse",
-              target: "authenticationBodyContainer",
-              expanded: "false"
-          } %>
+                     locals: {
+                       header: "Authentication",
+                       state: "collapse",
+                       target: "authenticationBodyContainer",
+                       expanded: "false"
+                     } %>
           <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
             <div class="form-group">
               <%= f.label :authentication_providers, "Authentication providers" %>
@@ -122,12 +127,12 @@
 
         <div class="card mt-3">
           <%= render partial: "card_header",
-            locals: {
-              header: "Campaign",
-              state: "collapse",
-              target: "campaignBodyContainer",
-              expanded: "false"
-          } %>
+                     locals: {
+                       header: "Campaign",
+                       state: "collapse",
+                       target: "campaignBodyContainer",
+                       expanded: "false"
+                     } %>
           <div id="campaignBodyContainer" class="card-body collapse hide" aria-labelledby="campaignBodyContainer">
             <div class="form-group">
               <%= f.label :campaign_hero_html_variant_name %>
@@ -173,12 +178,12 @@
 
         <div class="card mt-3">
           <%= render partial: "card_header",
-            locals: {
-              header: "Images",
-              state: "collapse",
-              target: "imagesBodyContainer",
-              expanded: "false"
-          } %>
+                     locals: {
+                       header: "Images",
+                       state: "collapse",
+                       target: "imagesBodyContainer",
+                       expanded: "false"
+                     } %>
           <div id="imagesBodyContainer" class="card-body collapse hide" aria-labelledby="imagesBodyContainer">
             <div class="form-group">
               <%= f.label :main_social_image %>
@@ -265,12 +270,12 @@
 
         <div class="card mt-3">
           <%= render partial: "card_header",
-            locals: {
-              header: "Rate limits",
-              state: "collapse",
-              target: "rateLimitsBodyContainer",
-              expanded: "false"
-          } %>
+                     locals: {
+                       header: "Rate limits",
+                       state: "collapse",
+                       target: "rateLimitsBodyContainer",
+                       expanded: "false"
+                     } %>
           <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
             <div class="form-group">
               <%= f.label :rate_limit_follow_count_daily %>
@@ -326,12 +331,12 @@
 
         <div class="card mt-3">
           <%= render partial: "card_header",
-            locals: {
-              header: "Google Analytics Reporting API v4",
-              state: "collapse",
-              target: "gaBodyContainer",
-              expanded: "false"
-          } %>
+                     locals: {
+                       header: "Google Analytics Reporting API v4",
+                       state: "collapse",
+                       target: "gaBodyContainer",
+                       expanded: "false"
+                     } %>
           <div id="gaBodyContainer" class="card-body collapse hide" aria-labelledby="gaBodyContainer">
             <div class="form-group">
               <%= f.label :ga_view_id, "View ID" %>
@@ -355,12 +360,12 @@
 
         <div class="card mt-3">
           <%= render partial: "card_header",
-            locals: {
-              header: "Mailchimp Lists IDs",
-              state: "collapse",
-              target: "mailchimpListBodyContainer",
-              expanded: "false"
-          } %>
+                     locals: {
+                       header: "Mailchimp Lists IDs",
+                       state: "collapse",
+                       target: "mailchimpListBodyContainer",
+                       expanded: "false"
+                     } %>
           <div id="mailchimpListBodyContainer" class="card-body collapse hide" aria-labelledby="mailchimpListBodyContainer">
             <div class="form-group">
               <%= f.label :mailchimp_newsletter_id, "Main Newsletter" %>
@@ -398,12 +403,12 @@
 
         <div class="card mt-3">
           <%= render partial: "card_header",
-            locals: {
-              header: "Email digest frequency",
-              state: "collapse",
-              target: "emailDigestBodyContainer",
-              expanded: "false"
-          } %>
+                     locals: {
+                       header: "Email digest frequency",
+                       state: "collapse",
+                       target: "emailDigestBodyContainer",
+                       expanded: "false"
+                     } %>
           <div id="emailDigestBodyContainer" class="card-body collapse hide" aria-labelledby="emailDigestBodyContainer">
             <div class="form-group">
               <%= f.label :periodic_email_digest_max %>
@@ -427,12 +432,12 @@
 
         <div class="card mt-3">
           <%= render partial: "card_header",
-            locals: {
-              header: "Tags",
-              state: "collapse",
-              target: "tagsBodyContainer",
-              expanded: "false"
-          } %>
+                     locals: {
+                       header: "Tags",
+                       state: "collapse",
+                       target: "tagsBodyContainer",
+                       expanded: "false"
+                     } %>
           <div id="tagsBodyContainer" class="card-body collapse hide" aria-labelledby="tagsBodyContainer">
             <div class="form-group">
               <%= f.label :suggested_tags %>
@@ -453,6 +458,27 @@
             </div>
           </div>
         </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "Shop",
+                       state: "collapse",
+                       target: "shopBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="shopBodyContainer" class="card-body collapse hide" aria-labelledby="shopBodyContainer">
+            <div class="form-group">
+              <%= f.label :shop_url %>
+              <%= f.text_field :shop_url,
+                               class: "form-control",
+                               value: SiteConfig.shop_url,
+                               placeholder: "Shop url" %>
+              <div class="alert alert-info">Used as the shop url of the community</div>
+            </div>
+          </div>
+        </div>
+
         <% if current_user.has_role?(:single_resource_admin, Config) %>
           <div class="card mt-3">
             <div class="card-header">Confirm and Submit</div>
@@ -474,10 +500,10 @@
 <% if current_user.has_role?(:single_resource_admin, Config) && current_user.has_role?(:super_admin) %>
   <div class="row my-3" id="siteConfig">
     <div class="card w-100">
-      <div class="card-header" id="appConfigHeader">
+      <div class="card-header" id="appConfigHeader" data-toggle="collapse"
+        data-target="#appConfigBodyContainer" aria-expanded="false" aria-controls="appConfigBodyContainer">
         <h2 class="d-inline">Environment variables / AppConfig (readonly)</h2>
-        <button class="btn btn-secondary float-right" type="button" data-toggle="collapse"
-          data-target="#appConfigBodyContainer" aria-expanded="false" aria-controls="appConfigBodyContainer">
+        <button class="btn btn-secondary float-right" type="button">
           Toggle Environment Variables
         </button>
       </div>

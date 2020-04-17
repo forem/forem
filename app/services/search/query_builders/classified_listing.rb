@@ -28,7 +28,7 @@ module Search
         size: 0
       }.freeze
 
-      def initialize(params)
+      def initialize(params:)
         @params = params.deep_symbolize_keys
 
         # For now, we're not allowing searches for ClassifiedListings that are
@@ -63,7 +63,7 @@ module Search
         TERM_KEYS.map do |term_key|
           next unless @params.key? term_key
 
-          { term: { term_key => @params[term_key] } }
+          { terms: { term_key => Array.wrap(@params[term_key]) } }
         end.compact
       end
 

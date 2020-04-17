@@ -3,58 +3,21 @@
   <div class="side-bar">
     <% cache(cache_key_heroku_slug("main-sidebar-nav--#{user_signed_in?}"), expires_in: 5.days) do %>
       <%= render "articles/sidebar_nav" %>
-      <div class="widget widget-sponsorship <%= "showing" unless user_signed_in? %>" id="sponsorship-widget">
-        <header>
-          <a href="/sponsors"><h4>Community sponsors</h4></a>
-          <span class="emoji">
-            <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="emoji heart" />
-          </span>
-        </header>
+      <div class="<%= "hidden" if user_signed_in? %> px-2" id="sponsorship-widget">
+        <h4 class="flex align-center fs-s ff-accent fw-bold tt-uppercase mb-4">
+          Community Sponsors
+          <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default ml-1", title: "Love") %>
+        </h4>
         <% @sponsorships = Sponsorship.gold.live.includes(:organization).order(featured_number: :asc) %>
         <%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
         <% if @sponsorships.present? %>
-          <div class="widget-body">
+          <div class="grid grid-cols-1 gap-6">
             <% @sponsorships.each do |sponsorship| %>
               <%= render "articles/single_sponsor", sponsorship: sponsorship %>
             <% end %>
-            <div class="sidebar-sponsor--footer">
-              We are grateful for wonderful sponsors who help sustain the <%= community_qualified_name %>.<br>
-              <a href="/sponsorship-info">Sponsorship Info/Policy</a>
-            </div>
+            <a href="/partnerships" class="crayons-btn crayons-btn--secondary fs-s">Become a sponsor</a>
           </div>
         <% end %>
-      </div>
-      <div class="widget">
-        <header>
-          <h4>Key links</h4>
-        </header>
-        <div class="widget-body social-icons">
-          <a href="https://twitter.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("twitter.svg", aria: true, title: "Twitter", class: "crayons-icon") %>
-          </a>
-          <a href="https://github.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("github.svg", aria: true, title: "Github", class: "crayons-icon") %>
-          </a>
-          <a href="https://instagram.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("instagram.svg", aria: true, title: "Instagram", class: "crayons-icon") %>
-          </a>
-          <a href="https://facebook.com/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("facebook.svg", aria: true, title: "Facebook", class: "crayons-icon") %>
-          </a>
-          <a href="https://twitch.tv/<%= SiteConfig.social_networks_handle %>" target="_blank" rel="noopener">
-            <%= inline_svg_tag("twitch.svg", aria: true, title: "Twitch", class: "crayons-icon") %>
-          </a>
-        </div>
-        <div class="side-footer">
-          <a href="/about">About</a>
-          <a href="/sponsors">Sponsors</a>
-          <a href="https://shop.dev.to/"><%= ApplicationConfig["COMMUNITY_NAME"] %> Shop</a>
-          <a href="/privacy">Privacy Policy</a>
-          <a href="/terms">Terms of Use</a>
-          <a href="/contact">Contact</a>
-          <a href="/faq">FAQ</a>
-          <a href="/code-of-conduct">Code of Conduct</a>
-        </div>
       </div>
     <% end %>
     <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>

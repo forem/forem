@@ -1,22 +1,11 @@
+# TODO: [@thepracticaldev/oss] test cops that are commented out
+
 inherit_from: .rubocop_todo.yml
 
 require:
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
-
-# our custom config
-# TODO: Uncomment it after fix rubocop-todo RSpec/MultipleExpectations
-RSpec/DescribeClass:
-  Exclude:
-    - spec/requests/**/*
-    - spec/system/**/*
-    - spec/tasks/**/*
-
-RSpec/ExampleLength:
-  Max: 15
-
-#############################
 
 AllCops:
   Exclude:
@@ -27,148 +16,75 @@ AllCops:
     - tmp/**/*
   DisplayStyleGuide: true
   ExtraDetails: true
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.7
 
-Lint/AmbiguousBlockAssociation:
-  Exclude:
-    - "spec/**/*"
+#################### Layout ###########################
 
-Naming/AccessorMethodName:
-  Description: Check the naming of accessor methods for get_/set_.
-  Enabled: false
-
-Metrics/ClassLength:
-  Description: 'Avoid classes longer than 100 lines of code.'
-  Enabled: false
-
-Metrics/ModuleLength:
-  Description: 'Avoid modules longer than 100 lines of code.'
-  Enabled: false
-
-# TODO: Uncomment it after fix rubocop-todo Metrics/BlockLength
-Metrics/BlockLength:
-  CountComments: false # count full line comments?
-  #   Max: 25
-  ExcludedMethods: []
-  Exclude:
-    - 'spec/**/*'
-
-Metrics/CyclomaticComplexity:
-  Description: >-
-    A complexity metric that is strongly correlated to the number
-    of test cases needed to validate a method.
-  Enabled: true
-  Max: 13
-
-Metrics/PerceivedComplexity:
-  Enabled: true
-  Max: 14
-
-Metrics/MethodLength:
-  Description: 'Avoid methods longer than 10 lines of code.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#short-methods'
-  Enabled: false
-
-Metrics/ParameterLists:
-  Description: 'Avoid parameter lists longer than three or four parameters.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#too-many-params'
-  Enabled: false
-
-Naming/PredicateName:
-  Description: 'Check the names of predicate methods.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#bool-methods-qmark'
-  ForbiddenPrefixes:
-    - is_
-  Exclude:
-    - spec/**/*
-
-# Style
-
-Style/AsciiComments:
-  Description: 'Use only ascii symbols in comments.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#english-comments'
-  Enabled: false
-
-Style/CollectionMethods:
-  Enabled: true
-  PreferredMethods:
-    find: detect
-    inject: reduce
-    collect: map
-    find_all: select
-
-Style/Documentation:
-  Description: 'Document classes and non-namespace modules.'
-  Enabled: false
-
-Style/Encoding:
-  Description: 'Use UTF-8 as the source file encoding.'
-  Enabled: false
-
-Style/FrozenStringLiteralComment:
-  Description: >-
-    Add the frozen_string_literal comment to the top of files
-    to help transition from Ruby 2.3.0 to Ruby 3.0.
-  Enabled: false
-
-# https://github.com/rubocop-hq/rubocop/blob/master/manual/cops_style.md#stylehashsyntax
-Style/HashSyntax:
-  Enabled: true
-  EnforcedStyle: ruby19_no_mixed_keys
-
-Style/IfUnlessModifier:
-  Description: >-
-    Favor modifier if/unless usage when you have a
-    single-line body.
-  Enabled: false
-
-Style/Next:
-  Description: 'Use `next` to skip iteration instead of a condition at the end.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals'
-  Enabled: false
-
-Style/RegexpLiteral:
-  Description: 'Use / or %r around regular expressions.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-r'
-  Enabled: false
-
-Style/SingleLineBlockParams:
-  Description: 'Enforces the names of some block params.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#reduce-blocks'
-  Enabled: false
-
-Style/StringLiterals:
-  Description: 'Checks if uses of quotes match the configured preference.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-string-literals'
-  EnforcedStyle: double_quotes
-  Enabled: true
-
-Style/TrailingCommaInArguments:
-  Description: 'Checks for trailing comma in argument lists.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
-  EnforcedStyleForMultiline: comma
-  Enabled: true
-
-Style/TrailingCommaInArrayLiteral:
-  Description: 'Checks for trailing comma in array literals.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
-  EnforcedStyleForMultiline: comma
-  Enabled: true
-
-Rails/FilePath:
-  EnforcedStyle: slashes
-
-# Layout
+# Layout/ClassStructure:
+#   Description: 'Enforces a configured order of definitions within a class body.'
+#   StyleGuide: '#consistent-classes'
+#   Enabled: false
 
 Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains'
+  StyleGuide: '#consistent-multi-line-chains'
+  # TODO: [@thepracticaldev/oss] enable leading?
   EnforcedStyle: trailing
 
-# # TODO: Uncomment this after fixing Layout/LineLength in .rubocop_todo.yml
-# Layout/LineLength:
-#   Description: 'Limit lines to 100 characters.'
-#   Max: 100
+# Layout/FirstArrayElementLineBreak:
+#   Description: >-
+#                  Checks for a line break before the first element in a
+#                  multi-line array.
+#   Enabled: false
+
+# Layout/FirstHashElementLineBreak:
+#   Description: >-
+#                  Checks for a line break before the first element in a
+#                  multi-line hash.
+#   Enabled: false
+
+# Layout/FirstMethodArgumentLineBreak:
+#   Description: >-
+#                  Checks for a line break before the first argument in a
+#                  multi-line method call.
+#   Enabled: false
+
+# Layout/FirstMethodParameterLineBreak:
+#   Description: >-
+#                  Checks for a line break before the first parameter in a
+#                  multi-line method parameter definition.
+#   Enabled: false
+
+# Layout/HeredocArgumentClosingParenthesis:
+#   Description: >-
+#                  Checks for the placement of the closing parenthesis in a
+#                  method call that passes a HEREDOC string as an argument.
+#   Enabled: false
+#   StyleGuide: '#heredoc-argument-closing-parentheses'
+
+
+# Layout/MultilineArrayLineBreaks:
+#   Description: >-
+#                  Checks that each item in a multi-line array literal
+#                  starts on a separate line.
+#   Enabled: false
+
+# Layout/MultilineAssignmentLayout:
+#   Description: 'Check for a newline after the assignment operator in multi-line assignments.'
+#   StyleGuide: '#indent-conditional-assignment'
+#   Enabled: false
+
+# Layout/MultilineHashKeyLineBreaks:
+#   Description: >-
+#                  Checks that each item in a multi-line hash literal
+#                  starts on a separate line.
+#   Enabled: false
+
+# Layout/MultilineMethodArgumentLineBreaks:
+#   Description: >-
+#                  Checks that each argument in a multi-line method call
+#                  starts on a separate line.
+#   Enabled: false
 
 Layout/MultilineOperationIndentation:
   Description: >-
@@ -184,17 +100,305 @@ Layout/MultilineMethodCallIndentation:
   Enabled: true
   EnforcedStyle: indented
 
-# Rails
-
-Rails:
+Layout/SpaceAroundMethodCallOperator:
+  Description: 'Checks method call operators to not have spaces around them.'
   Enabled: true
 
-Rails/HasAndBelongsToMany:
-  Description: 'Prefer has_many :through to has_and_belongs_to_many.'
+#################### Lint ##################################
+
+Lint/AmbiguousBlockAssociation:
+  Description: >-
+                 Checks for ambiguous block association with method when param passed without
+                 parentheses.
+  StyleGuide: '#syntax'
+  Enabled: true
+  Exclude:
+    - "spec/**/*"
+
+# Lint/HeredocMethodCallPosition:
+#   Description: >-
+#                  Checks for the ordering of a method call where
+#                  the receiver of the call is a HEREDOC.
+#   Enabled: false
+
+# Lint/NumberConversion:
+#   Description: 'Checks unsafe usage of number conversion methods.'
+#   Enabled: false
+
+Lint/RaiseException:
+  Description: Checks for `raise` or `fail` statements which are raising `Exception` class.
+  StyleGuide: '#raise-exception'
+  Enabled: true
+
+Lint/StructNewOverride:
+  Description: 'Disallow overriding the `Struct` built-in methods via `Struct.new`.'
+  Enabled: true
+
+#################### Metrics ###############################
+
+Metrics/BlockLength:
+  Description: 'Avoid long blocks with many lines.'
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+
+Metrics/ClassLength:
+  Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: false
 
+Metrics/CyclomaticComplexity:
+  Description: >-
+    A complexity metric that is strongly correlated to the number
+    of test cases needed to validate a method.
+  Enabled: true
+  Max: 13
+
+Metrics/MethodLength:
+  Description: 'Avoid methods longer than 10 lines of code.'
+  StyleGuide: '#short-methods'
+  Enabled: false
+
+Metrics/ModuleLength:
+  Description: 'Avoid modules longer than 100 lines of code.'
+  Enabled: false
+
+Metrics/ParameterLists:
+  Description: 'Avoid parameter lists longer than three or four parameters.'
+  StyleGuide: '#too-many-params'
+  Enabled: false
+
+Metrics/PerceivedComplexity:
+  Description: >-
+                 A complexity metric geared towards measuring complexity for a
+                 human reader.
+  Enabled: true
+  Max: 14
+
+#################### Naming ##############################
+
+Naming/AccessorMethodName:
+  Description: Check the naming of accessor methods for get_/set_.
+  StyleGuide: '#accessor_mutator_method_names'
+  Enabled: false
+
+Naming/PredicateName:
+  Description: 'Check the names of predicate methods.'
+  StyleGuide: '#bool-methods-qmark'
+  Enabled: true
+  ForbiddenPrefixes:
+    - is_
+  Exclude:
+    - spec/**/*
+
+#################### Style ###############################
+
+Style/AsciiComments:
+  Description: 'Use only ascii symbols in comments.'
+  StyleGuide: '#english-comments'
+  Enabled: false
+
+# Style/AutoResourceCleanup:
+#   Description: 'Suggests the usage of an auto resource cleanup version of a method (if available).'
+#   Enabled: false
+
+Style/CollectionMethods:
+  Description: 'Preferred collection methods.'
+  StyleGuide: '#map-find-select-reduce-include-size'
+  Enabled: true
+  PreferredMethods:
+    find: detect
+
+# Style/ConstantVisibility:
+#   Description: >-
+#                  Check that class- and module constants have
+#                  visibility declarations.
+#   Enabled: false
+
+# Style/DateTime:
+#   Description: 'Use Time over DateTime.'
+#   StyleGuide: '#no-datetime'
+#   Enabled: false
+
+Style/Documentation:
+  Description: 'Document classes and non-namespace modules.'
+  Enabled: false
+
+Style/Encoding:
+  Description: 'Use UTF-8 as the source file encoding.'
+  Enabled: false
+
+Style/ExponentialNotation:
+  Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
+  StyleGuide: '#exponential-notation'
+  Enabled: true
+  EnforcedStyle: scientific
+
+Style/FrozenStringLiteralComment:
+  Description: >-
+                 Add the frozen_string_literal comment to the top of files
+                 to help transition to frozen string literals by default.
+  Enabled: true
+  EnforcedStyle: never
+
+Style/HashSyntax:
+  Description: >-
+                 Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
+                 { :a => 1, :b => 2 }.
+  StyleGuide: '#hash-literals'
+  Enabled: true
+  EnforcedStyle: ruby19_no_mixed_keys
+
+Style/HashEachMethods:
+  Description: 'Use Hash#each_key and Hash#each_value.'
+  StyleGuide: '#hash-each'
+  Enabled: true
+
+Style/HashTransformKeys:
+  Description: 'Prefer `transform_keys` over `each_with_object` and `map`.'
+  StyleGuide: '#hash-transform-methods'
+  Enabled: true
+
+Style/HashTransformValues:
+  Description: 'Prefer `transform_values` over `each_with_object` and `map`.'
+  StyleGuide: '#hash-transform-methods'
+  Enabled: true
+
+Style/IfUnlessModifier:
+  Description: >-
+                 Favor modifier if/unless usage when you have a
+                 single-line body.
+  StyleGuide: '#if-as-a-modifier'
+  Enabled: false
+
+# Style/ImplicitRuntimeError:
+#   Description: >-
+#                  Use `raise` or `fail` with an explicit exception class and
+#                  message, rather than just a message.
+#   Enabled: false
+
+# Style/InlineComment:
+#   Description: 'Avoid trailing inline comments.'
+#   Enabled: false
+
+# Style/IpAddresses:
+#   Description: "Don't include literal IP addresses in code."
+#   Enabled: false
+
+# Style/MethodCallWithArgsParentheses:
+#   Description: 'Use parentheses for method calls with arguments.'
+#   StyleGuide: '#method-invocation-parens'
+#   Enabled: false
+
+# Style/MethodCalledOnDoEndBlock:
+#   Description: 'Avoid chaining a method call on a do...end block.'
+#   StyleGuide: '#single-line-blocks'
+#   Enabled: false
+
+# Style/OptionHash:
+#   Description: "Don't use option hashes when you can use keyword arguments."
+#   Enabled: false
+
+Style/Next:
+  Description: 'Use `next` to skip iteration instead of a condition at the end.'
+  StyleGuide: '#no-nested-conditionals'
+  Enabled: false
+
+Style/RegexpLiteral:
+  Description: 'Use / or %r around regular expressions.'
+  StyleGuide: '#percent-r'
+  Enabled: false
+
+Style/ReturnNil:
+  Description: 'Use return instead of return nil.'
+  Enabled: true
+
+# Style/Send:
+#   Description: 'Prefer `Object#__send__` or `Object#public_send` to `send`, as `send` may overlap with existing methods.'
+#   StyleGuide: '#prefer-public-send'
+#   Enabled: false
+
+Style/SingleLineBlockParams:
+  Description: 'Enforces the names of some block params.'
+  Enabled: true
+
+Style/StringLiterals:
+  Description: 'Checks if uses of quotes match the configured preference.'
+  StyleGuide: '#consistent-string-literals'
+  Enabled: true
+  EnforcedStyle: double_quotes
+  ConsistentQuotesInMultiline: true
+
+Style/TrailingCommaInArguments:
+  Description: 'Checks for trailing comma in argument lists.'
+  StyleGuide: '#no-trailing-params-comma'
+  Enabled: true
+  EnforcedStyleForMultiline: comma
+
+Style/TrailingCommaInArrayLiteral:
+  Description: 'Checks for trailing comma in array literals.'
+  StyleGuide: '#no-trailing-array-commas'
+  Enabled: true
+  EnforcedStyleForMultiline: comma
+
+# Style/TrailingCommaInBlockArgs:
+#   Description: 'Checks for useless trailing commas in block arguments.'
+#   Enabled: false
+
+# Performance cops from rubocop-performance
+# https://github.com/rubocop-hq/rubocop-performance/blob/master/config/default.yml
+Performance/CaseWhenSplat:
+  Description: >-
+                 Reordering `when` conditions with a splat to the end
+                 of the `when` branches can improve performance.
+  Enabled: true
+
+Performance/ChainArrayAllocation:
+  Description: >-
+                  Instead of chaining array methods that allocate new arrays, mutate an
+                  existing array.
+  Reference: 'https://twitter.com/schneems/status/1034123879978029057'
+  Enabled: false
+
+Performance/OpenStruct:
+  Description: 'Use `Struct` instead of `OpenStruct`.'
+  Enabled: true
+
+Rails/FilePath:
+  EnforcedStyle: slashes
+
+# Rails cops from rubocop-rails
+# https://github.com/rubocop-hq/rubocop-rails/blob/master/config/default.yml
+# TODO: [@thepracticaldev/oss] enable these Rails cops
 Rails/HasManyOrHasOneDependent:
+  Description: 'Define the dependent option to the has_many and has_one associations.'
+  StyleGuide: 'https://rails.rubystyle.guide#has_many-has_one-dependent-option'
+  Enabled: false
+
+Rails/SaveBang:
+  Description: 'Identifies possible cases where Active Record save! or related should be used.'
+  StyleGuide: 'https://rails.rubystyle.guide#save-bang'
   Enabled: false
 
 Rails/SkipsModelValidations:
+  Description: >-
+                 Use methods that skips model validations with caution.
+                 See reference for more information.
+  Reference: 'https://guides.rubyonrails.org/active_record_validations.html#skipping-validations'
   Enabled: false
+
+# RSpec cops from rubocop-rspec
+# https://github.com/rubocop-hq/rubocop-rspec/blob/master/config/default.yml
+RSpec/DescribeClass:
+  Description: Check that the first argument to the top level describe is a constant.
+  Enabled: true
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeClass
+  Exclude:
+    - 'spec/requests/**/*'
+    - 'spec/system/**/*'
+    - 'spec/tasks/**/*'
+
+RSpec/ExampleLength:
+  Description: Checks for long examples.
+  Enabled: true
+  Max: 15
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength

@@ -1,4 +1,4 @@
-<h3>Publishing to dev.to from RSS</h3>
+<h3>Publishing to <%= community_name %> from RSS</h3>
 <% if @user.feed_url.present? %>
   <%= form_for(@user) do |f| %>
     <div class="field">
@@ -15,7 +15,7 @@
 <% end %>
 <p>
   Posts will land in your <a href="/dashboard">dashboard</a>
-  <b><em>as drafts</em></b>, and then you can publish from there (or give dev.to admins permission to do so).
+  <b><em>as drafts</em></b>, and then you can publish from there (or give <%= community_name %> admins permission to do so).
 </p>
 <p>
   Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.
@@ -50,9 +50,9 @@
 
     <div class="sub-field">
       <%= f.check_box :feed_referential_link %>
-      <%= f.label :feed_referential_link, "Replace self-referential links with DEV-specific links" %>
+      <%= f.label :feed_referential_link, "Replace self-referential links with #{community_name}-specific links" %>
       <div class="field-explainer">
-        If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on DEV if available. This is primarily meant for folks migrating their entire blog onto DEV.
+        If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on <%= community_name %> if available. This is primarily meant for folks migrating their entire blog onto <%= community_name %>.
       </div>
     </div>
   </div>

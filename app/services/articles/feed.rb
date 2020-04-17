@@ -27,7 +27,7 @@ module Articles
     end
 
     def published_articles_by_tag
-      articles = Article.published.limited_column_select.page(@page).per(@number_of_articles)
+      articles = Article.published.limited_column_select.includes(top_comments: :user).page(@page).per(@number_of_articles)
       articles = articles.cached_tagged_with(@tag) if @tag.present? # More efficient than tagged_with
       articles
     end
@@ -213,7 +213,7 @@ module Articles
         hot_stories = hot_stories.offset(offset)
         new_stories = Article.published.
           where("score > ?", -15).
-          limited_column_select.order("published_at DESC").limit(rand(15..80))
+          limited_column_select.includes(top_comments: :user).order("published_at DESC").limit(rand(15..80))
         hot_stories = hot_stories.to_a + new_stories.to_a
       end
       [featured_story, hot_stories.to_a]

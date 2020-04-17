@@ -71,7 +71,7 @@ RSpec.describe GistTag, type: :liquid_tag do
 
     it "rejects XSS attempts" do
       bad_links.each do |link|
-        expect { generate_new_liquid(link) } .to raise_error(StandardError)
+        expect { generate_new_liquid(link) }.to raise_error(StandardError)
       end
     end
   end

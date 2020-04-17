@@ -4,7 +4,7 @@ module Searchable
   end
 
   def index_to_elasticsearch
-    Search::IndexToElasticsearchWorker.perform_async(self.class.name, search_id)
+    Search::IndexToElasticsearchWorker.perform_async(self.class.name, id)
   end
 
   def index_to_elasticsearch_inline
@@ -24,6 +24,6 @@ module Searchable
   end
 
   def sync_related_elasticsearch_docs
-    self.class::DATA_SYNC_CLASS.new(self, saved_changes).call
+    self.class::DATA_SYNC_CLASS.new(self).call
   end
 end

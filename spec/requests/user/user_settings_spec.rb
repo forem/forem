@@ -36,6 +36,12 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include("Style Customization")
       end
 
+      it "displays content on RSS tab properly" do
+        get "/settings/publishing-from-rss"
+        title = "Publishing to #{ApplicationConfig['COMMUNITY_NAME']} from RSS"
+        expect(response.body).to include(title)
+      end
+
       it "renders heads up dupe account message with proper param" do
         get "/settings?state=previous-registration"
         error_message = "There is an existing account authorized with that social account"
@@ -129,6 +135,20 @@ RSpec.describe "UserSettings", type: :request do
       profile_image = fixture_file_upload("files/large_profile_img.jpg", "image/jpeg")
       put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
       expect(response.body).to include("Profile image File size should be less than 2 MB")
+    end
+
+    it "catches error if Profile image file name is too long" do
+      allow(user).to receive(:update).and_raise(Errno::ENAMETOOLONG)
+      allow(DatadogStatsClient).to receive(:increment)
+      profile_image = fixture_file_upload("files/800x600.png", "image/png")
+
+      expect do
+        put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
+      end.to raise_error(Errno::ENAMETOOLONG)
+
+      tags = hash_including(tags: instance_of(Array))
+
+      expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
     end
 
     context "when requesting an export of the articles" do
@@ -245,7 +265,10 @@ RSpec.describe "UserSettings", type: :request do
     context "when user has two identities" do
       let(:user) { create(:user, :with_identity, identities: %w[github twitter]) }
 
-      before { sign_in user }
+      before do
+        mock_auth_hash
+        sign_in user
+      end
 
       it "brings the identity count to 1" do
         delete "/users/remove_association", params: { provider: "twitter" }
