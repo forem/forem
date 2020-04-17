@@ -19,7 +19,6 @@ RSpec.describe "User uses response templates settings", type: :system do
 
       it "shows the proper message when deleting a reponse template", js: true do
         visit "/settings/response-templates"
-        # page.driver.browser.switch_to.alert.accept
         accept_confirm { click_button "DELETE" }
         expect(page).to have_text "was deleted."
       end

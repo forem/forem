@@ -56,4 +56,16 @@ RSpec.describe ChatChannel, type: :model do
       expect(chat_channel.chat_channel_memberships.exists?(user_id: users.first.id)).to be(false)
     end
   end
+
+  describe "#private_org_channel?" do
+    it "detects private org channel if name matches" do
+      chat_channel.channel_name = "@org private group chat"
+      expect(chat_channel.private_org_channel?).to be(true)
+    end
+
+    it "detects not private org channel if name does not match" do
+      chat_channel.channel_name = "@org magoo"
+      expect(chat_channel.private_org_channel?).to be(false)
+    end
+  end
 end
