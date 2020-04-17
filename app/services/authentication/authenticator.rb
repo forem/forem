@@ -48,8 +48,6 @@ module Authentication
         user.save!
         user
       end
-    rescue StandardError => e
-      Rails.logger.error(e)
     end
 
     private
