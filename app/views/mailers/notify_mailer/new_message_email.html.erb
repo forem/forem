@@ -8,7 +8,7 @@
     <td style='padding:20px;padding-bottom:30px;border-radius:3px;font-size:19px;background:#f4f4f4'>
       <%= @message.message_html.html_safe %>
       <br /><br />
-      <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='<%= app_url("/connect/@#{@message.user.username}") %>'>view on <%= community_name %></a>
+      <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='<%= app_url("/connect/@#{@message.user.username}") %>'>View on <%= community_name %></a>
     </td>
   </tr>
 </table>
