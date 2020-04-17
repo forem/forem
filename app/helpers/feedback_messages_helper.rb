@@ -40,6 +40,6 @@ module FeedbackMessagesHelper
       DEV Team
     HEREDOC
 
-    { subject: "Courtesy Notice from DEV", body: body }.freeze
+    { subject: "Courtesy Notice from #{ApplicationConfig['COMMUNITY_NAME']}", body: body }.freeze
   end
 end
