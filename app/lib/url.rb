@@ -51,7 +51,7 @@ module URL
   # Creates a tag URL
   #
   # @param tag [Tag] the tag to create the URL for
-  def self.tag(tag, page)
+  def self.tag(tag, page=1)
     url(["/t/#{tag.name}", ("/page/#{page}" if page > 1)].join)
   end
 
