@@ -32,14 +32,14 @@
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
 
-    <% if user_signed_in? && current_user.created_at > 7.days.ago %>
-      <%= render "articles/sidebar" %>
-    <% end %>
+    <%= render "articles/sidebar" %>
 
     <%# BEGIN Feed menu bar %>
     <div class="articles-list" id="articles-list">
 
-      <%= render partial: "onboardings/task_card" %>
+      <% if user_signed_in? && current_user.created_at > 7.days.ago %>
+        <%= render partial: "onboardings/task_card" %>
+      <% end %>
 
       <div class="on-page-nav-controls" id="on-page-nav-controls">
         <div class="on-page-nav-label">
