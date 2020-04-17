@@ -17,9 +17,11 @@ RSpec.describe "User visits a homepage", type: :system do
 
     it "shows the tags block" do
       within("#sidebar-nav-default-tags") do
-        expect(page).to have_link("#ruby", href: "/t/ruby")
-        expect(page).to have_link("#webdev", href: "/t/webdev")
+        Tag.where(supported: true).limit(30).each do |tag|
+          expect(page).to have_link("##{tag.name}", href: "/t/#{tag.name}")
+        end
       end
+
       expect(page).to have_text("Design Your Experience")
     end
 
@@ -79,6 +81,28 @@ RSpec.describe "User visits a homepage", type: :system do
         within("#sidebar-nav-default-tags") do
           expect(page).to have_link("#webdev", href: "/t/webdev")
           expect(page).not_to have_link("#ruby", href: "/t/ruby")
+        end
+      end
+    end
+
+    describe "shop url" do
+      it "shows the link to the shop if present" do
+        SiteConfig.shop_url = "https://example.com"
+
+        visit "/"
+
+        within("#main-nav-more") do
+          expect(page).to have_link(href: SiteConfig.shop_url)
+        end
+      end
+
+      it "does not show the shop if not present" do
+        SiteConfig.shop_url = ""
+
+        visit "/"
+
+        within("#main-nav-more") do
+          expect(page).not_to have_text("Shop")
         end
       end
     end

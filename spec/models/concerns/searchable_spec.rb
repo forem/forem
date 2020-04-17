@@ -39,7 +39,7 @@ RSpec.describe Searchable do
 
   describe "#index_to_elasticsearch" do
     it "enqueues job to index document to elasticsearch" do
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: ["SearchableModel", searchable_model.search_id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: ["SearchableModel", searchable_model.id]) do
         searchable_model.index_to_elasticsearch
       end
     end

@@ -12,6 +12,7 @@ linters:
     allowed_types:
       - 'text/javascript'
       - 'text/x-tmpl'
+      - 'application/ld+json'
     allow_blank: true
     disallow_inline_scripts: false
   Rubocop:

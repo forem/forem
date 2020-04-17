@@ -5,6 +5,96 @@ RSpec.describe "ResponseTemplate", type: :request do
   let(:moderator) { create(:user, :tag_moderator) }
   let(:admin) { create(:user, :admin) }
 
+  describe "GET /response_templates #index" do
+    it "has status unauthorized if no user is logged in" do
+      get response_templates_path, headers: { HTTP_ACCEPT: "application/json" }
+      expect(response.status_message).to eq "Unauthorized"
+    end
+
+    context "when signed in as a regular user" do
+      before { sign_in user }
+
+      it "responds with JSON" do
+        create(:response_template, user: user, type_of: "personal_comment")
+        get response_templates_path, headers: { HTTP_ACCEPT: "application/json" }
+        expect(response.content_type).to eq "application/json"
+      end
+
+      it "raises RoutingError if the format is not JSON" do
+        expect { get response_templates_path }.to raise_error ActionController::RoutingError
+      end
+
+      it "returns an array of all the user's response templates" do
+        total_response_templates = 2
+        create_list(:response_template, total_response_templates, user: user, type_of: "personal_comment")
+        get response_templates_path, params: { type_of: "personal_comment" }, headers: { HTTP_ACCEPT: "application/json" }
+        expect(response.parsed_body.class).to eq Array
+        expect(response.parsed_body.length).to eq total_response_templates
+      end
+
+      it "returns only the users' response templates" do
+        create(:response_template, user: nil, type_of: "mod_comment")
+        create_list(:response_template, 2, user: user, type_of: "personal_comment")
+        get response_templates_path, params: { type_of: "personal_comment" }, headers: { HTTP_ACCEPT: "application/json" }
+        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
+        expect(user_ids).to eq [user.id, user.id]
+      end
+
+      it "raises an error if trying to view moderator response templates" do
+        create(:response_template, user: nil, type_of: "mod_comment")
+        expect do
+          get response_templates_path, params: { type_of: "mod_comment" }, headers: { HTTP_ACCEPT: "application/json" }
+        end.to raise_error Pundit::NotAuthorizedError
+      end
+
+      it "raises an error if trying to view admin response templates" do
+        create(:response_template, user: nil, type_of: "email_reply", content_type: "html")
+        expect do
+          get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
+        end.to raise_error Pundit::NotAuthorizedError
+      end
+    end
+
+    context "when signed in as a mod user" do
+      before { sign_in moderator }
+
+      it "responds with JSON" do
+        create(:response_template, user: moderator, type_of: "personal_comment")
+        get response_templates_path, params: { type_of: "mod_comment" }, headers: { HTTP_ACCEPT: "application/json" }
+        expect(response.content_type).to eq "application/json"
+      end
+
+      it "returns the correct amount of moderator response templates" do
+        create_list(:response_template, 2, user: nil, type_of: "mod_comment")
+        create_list(:response_template, 2, user: moderator, type_of: "personal_comment")
+        get response_templates_path, params: { type_of: "mod_comment" }, headers: { HTTP_ACCEPT: "application/json" }
+        expect(JSON.parse(response.body).length).to eq 2
+      end
+
+      it "raises unauthorized error if trying to view admin response templates" do
+        create_list(:response_template, 2, user: nil, type_of: "email_reply", content_type: "html")
+        expect do
+          get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
+        end.to raise_error Pundit::NotAuthorizedError
+      end
+    end
+
+    context "when signed in as an admin" do
+      before { sign_in admin }
+
+      it "allows access by responding with status OK" do
+        get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
+        expect(response.status_message).to eq "OK"
+      end
+
+      it "allows access and returns an array of admin level response templates" do
+        create_list(:response_template, 2, user: nil, type_of: "email_reply", content_type: "html")
+        get response_templates_path, params: { type_of: "email_reply" }, headers: { HTTP_ACCEPT: "application/json" }
+        expect(JSON.parse(response.body).length).to eq 2
+      end
+    end
+  end
+
   describe "POST /response_templates #create" do
     before { sign_in user }
 
