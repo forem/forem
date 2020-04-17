@@ -7,7 +7,7 @@ import '../../assets/javascripts/lib/xss';
 import '../../assets/javascripts/utilities/timeAgo';
 import './storybook.scss';
 
-function addStylesheets(theme) {
+function addStylesheet(theme) {
   if (theme === '') {
     return; // default theme
   }
@@ -30,7 +30,7 @@ const themeSwitcher = (event) => {
     currentTheme.parentElement.removeChild(currentTheme);
   }
 
-  addStylesheets(event.target.value);
+  addStylesheet(event.target.value);
 };
 
 const themeSwitcherDecorator = (storyFn) => (
