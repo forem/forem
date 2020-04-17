@@ -81,6 +81,11 @@ module Authentication
         user.assign_attributes(default_user_fields)
 
         user.set_remember_fields
+
+        # save_identity() requires users to have been saved in the DB prior
+        # to its execution, thus we need to make sure the new user is saved
+        # before that
+        user.save!
       end
     end
 
