@@ -13,7 +13,7 @@
       <%= @comment.processed_html.html_safe %>
       <a style="background:#3c7dc1;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='<%= comment_url(@comment) %>'>View on <%= community_name %></a>&nbsp;
       <% if @comment.commentable %>
-        <a style="background:#1f1f1f;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='<%= app_url %><%= @comment.commentable.path %>'>Read original post</a>
+        <a style="background:#1f1f1f;color:white;padding:5px 14px;border-radius:3px;text-decoration:none;display:inline-block;margin-top:4px;" href='<%= app_url(@comment.commentable.path) %>'>Read original post</a>
       <% end %>
     </td>
   </tr>
