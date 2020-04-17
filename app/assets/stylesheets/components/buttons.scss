@@ -4,7 +4,7 @@
 .crayons-btn {
   // Setup
   --border-width: 0px;
-  --shadow-color: rgba(0,0,0,0.05);
+  --shadow-color: rgba(0, 0, 0, 0.05);
   --vertical-padding: #{$su-2};
   --horizontal-padding: #{$su-4};
   --font-size: #{$fs-base};
@@ -14,7 +14,7 @@
   position: relative;
   display: inline-block;
   padding: calc(var(--vertical-padding) - var(--border-width))
-      calc(var(--horizontal-padding) - var(--border-width));
+    calc(var(--horizontal-padding) - var(--border-width));
   border-radius: $br-default;
   outline: none;
   font-family: inherit;
@@ -118,7 +118,7 @@
   --border-inverted-hover: var(--button-outlined-inverted-border-hover);
   --color-inverted: var(--button-outlined-inverted-color);
   --color-inverted-hover: var(--button-outlined-inverted-color-hover);
-  
+
   --border-width: 2px;
 }
 
@@ -198,7 +198,6 @@
   }
 }
 
-
 // Icon alone
 .crayons-btn--icon,
 .crayons-btn--icon-rounded {
@@ -248,11 +247,11 @@
     border-radius: 0;
 
     + .crayons-btn:not(.crayons-btn--outlined) {
-      box-shadow: var(--shadow), inset 1px 0 0 rgba(0,0,0,0.1);
+      box-shadow: var(--shadow), inset 1px 0 0 rgba(0, 0, 0, 0.1);
       margin-left: -1px;
 
       &:hover {
-        box-shadow: 0 2px 5px var(--shadow-color), inset 0 0 0 rgba(0,0,0,0.1);
+        box-shadow: var(--shadow-hover), inset 0 0 0 rgba(0, 0, 0, 0.1);
       }
     }
 
