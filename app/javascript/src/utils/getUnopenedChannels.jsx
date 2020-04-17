@@ -42,6 +42,9 @@ class UnopenedChannelNotice extends Component {
     const number = document.getElementById('connect-number');
     this.setState({ unopenedChannels });
     if (unopenedChannels.length > 0) {
+      if (unopenedChannels[0].adjusted_slug === "@"+JSON.parse(window.currentUser).username) {
+        return;
+      }
       number.classList.remove('hidden');
       number.innerHTML = unopenedChannels.length;
       document.getElementById('connect-link').href = '/connect/' + unopenedChannels[0].adjusted_slug;
