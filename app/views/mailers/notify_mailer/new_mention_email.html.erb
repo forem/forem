@@ -1,5 +1,5 @@
 <h2 style="font-size:25px;">
-  <a href="<%= app_url(@mentioner.username) %>"><%= @mentioner.name %></a> just mentioned you in their <%= @mention.mentionable_type.downcase %>!
+  <a href="<%= user_url(@mentioner) %>"><%= @mentioner.name %></a> just mentioned you in their <%= @mention.mentionable_type.downcase %>!
 </h2>
 <table>
   <tr>
