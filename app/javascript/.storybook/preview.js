@@ -39,10 +39,10 @@ const themeSwitcherDecorator = (storyFn) => (
       Theme{' '}
       <select onChange={themeSwitcher}>
         <option value="">Default</option>
-        <option value="minimal">Minimal</option>
-        <option value="hacker">Hacker</option>
         <option value="night">Night</option>
+        <option value="minimal">Minimal</option>
         <option value="pink">Pink</option>
+        <option value="hacker">Hacker</option>
       </select>
     </label>
     {storyFn()}
