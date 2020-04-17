@@ -25,6 +25,11 @@ export const Description = () => (
         A Snackbar disappears after 5000ms by default. Countdown will be paused
         when user mouse over the snackbar.
       </p>
+      <p>
+        Snackbars can be stacked on top of each other if there&apos;s more of
+        them. New ones show up at the bottom of snackbar. We can display maximum
+        3 snackbars at a time.
+      </p>
     </div>
     <div>
       <h3>Usage</h3>
@@ -33,21 +38,11 @@ export const Description = () => (
         lifespan` prop is provided.
       </p>
       <h4>No Actions</h4>
-      <pre>
-        &lt;Snackbar lifespan=&quot;&apos;4000&quot;&apos;&gt;Hello
-        World!&lt;/Snackbar&gt;
-      </pre>
+      <pre>&lt;Snackbar polling=&quot;300&quot; /&gt;</pre>
       <h4>With One or More Actions</h4>
       <pre>
-        const actions = &#91; &#123; text: &apos;Action 1&apos;, handler: event
-        =&gt; &#123; console.log&#40;&apos;Action 1 clicked&apos;&#41; &#125;
-        &#125;, &#123; text: &apos;Action 2&apos;, handler: event =&gt; &#123;
-        console.log&#40;&apos;Action 2 clicked&apos;&#41; &#125; &#125;&#93;
-        <br />
-        <br />
-        <br />
-        &lt;Snackbar lifespan=&quot;&apos;3000&quot;&apos; actions=
-        &#123;actions&#125; &gt;Hello World!&lt;/Snackbar&gt;
+        addSnackbarItem(&#123; text: &apos;Action 1&apos;, handler: event =&gt;
+        &#123; console.log&#40;&apos;Action 1 clicked&apos;&#41; &#125; &#125;)
       </pre>
     </div>
   </div>
