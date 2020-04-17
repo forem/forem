@@ -680,10 +680,9 @@
     &.big-article {
       padding: 0px;
       .picture {
-        padding-top: 42%;
+        padding-top: 14%;
         border-radius: 3px 3px 0 0;
-        background: no-repeat center center;
-        background-size: cover;
+        width: 100%;
       }
       .content-wrapper {
         padding-bottom: 115px;
