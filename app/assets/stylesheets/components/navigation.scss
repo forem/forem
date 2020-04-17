@@ -8,10 +8,10 @@
   }
 
   &--brand {
-    color: var(--link-brand-color);
+    color: var(--accent-brand);
 
     &:hover {
-      color: var(--link-brand-color-hover);
+      color: var(--accent-brand-darker);
     }
   }
 
