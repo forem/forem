@@ -1,6 +1,7 @@
 class ApplicationMailer < ActionMailer::Base
   layout "mailer"
   helper ApplicationHelper
+  helper Rails.application.routes.url_helpers
 
   default(
     from: -> { "#{ApplicationConfig['COMMUNITY_NAME']} Community <#{SiteConfig.default_site_email}>" },
