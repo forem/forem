@@ -58,6 +58,18 @@
   }
 }
 
+// .crayons-btn {
+//   --bg: var();
+//   --color: var();
+
+//   &[href]:hover,
+//   &:hover:enabled,
+//   &:active:enabled {
+//     --bg: var();
+//     --color: var();
+//   }
+// }
+
 // Styles
 .crayons-btn {
   background-color: var(--button-primary-bg);
@@ -76,6 +88,11 @@
     z-index: 2;
   }
 
+  &--inverted {
+    --button-primary-bg: var(--button-primary-inverted-bg);
+    --button-primary-bg-hover: var(--button-primary-inverted-bg-hover);
+  }
+
   &--secondary {
     background-color: var(--button-secondary-bg);
     color: var(--button-secondary-color);
@@ -86,12 +103,19 @@
       background-color: var(--button-secondary-bg-hover);
       color: var(--button-secondary-color-hover);
     }
+    
+    &.crayons-btn--inverted {
+      --button-secondary-bg: var(--button-secondary-inverted-bg);
+      --button-secondary-bg-hover: var(--button-secondary-inverted-bg-hover);
+      --button-secondary-color: var(--button-secondary-inverted-color);
+      --button-secondary-color-hover: var(--button-secondary-inverted-color-hover);
+    }
   }
 
   &--outlined {
-    --border-width: 1px;
+    --border-width: 2px;
     background-color: transparent;
-    border-color: var(--button-outlined-bg);
+    border-color: var(--button-outlined-border);
     color: var(--button-outlined-color);
 
     &[href]:hover,
@@ -99,7 +123,15 @@
     &:active:enabled {
       background-color: var(--button-ghost-bg-hover);
       color: var(--button-outlined-color-hover);
-      border-color: var(--button-outlined-bg-hover);
+      border-color: var(--button-outlined-border-hover);
+    }
+
+    &.crayons-btn--inverted {
+      --button-outlined-border: var(--button-outlined-inverted-border);
+      --button-outlined-border-hover: var(--button-outlined-inverted-border-hover);
+      --button-outlined-color: var(--button-outlined-inverted-color);
+      --button-outlined-color-hover: var(--button-outlined-inverted-color-hover);
+      --button-ghost-bg-hover: rgba(255,255,255,0.15);
     }
   }
 
@@ -123,9 +155,44 @@
     &[href]:hover,
     &:hover:enabled,
     &:active:enabled {
-      background-color: var(--button-ghost-bg-hover);
+      background-color: rgba(0,0,0,0.035);
       color: var(--button-ghost-color-hover);
       --shadow: none;
+    }
+
+    &.crayons-btn--inverted {
+      --button-ghost-color: var(--button-ghost-inverted-color);
+
+      &:hover {
+        background-color: rgba(255,255,255,0.15);
+        color: var(--button-ghost-inverted-color-hover);
+      }
+    }
+
+    &--success {
+      color: var(--accent-success);
+      &[href]:hover,
+      &:hover:enabled,
+      &:active:enabled {
+        color: var(--accent-success-darker);
+      }
+    }
+
+    &--warning {
+      color: var(--accent-warning);
+      &[href]:hover,
+      &:hover:enabled,
+      &:active:enabled {
+        color: var(--accent-warning-darker);
+      }
+    }
+    &--danger {
+      color: var(--accent-danger);
+      &[href]:hover,
+      &:hover:enabled,
+      &:active:enabled {
+        color: var(--accent-danger-lighter);
+      }
     }
   }
 }

@@ -583,6 +583,7 @@
           <th>--icon</th>
           <th>--icon--rounded</th>
           <th>[disabled]</th>
+          <th>--inverted</th>
         </tr>
       </thead>
       <tbody>
@@ -594,6 +595,7 @@
           <td><button class="crayons-btn crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--icon crayons-btn--icon--rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn" disabled>Button label</button></td>
+          <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--inverted">Button label</button></td>
         </tr>
         <tr>
           <td class="fs-s">.crayons-btn--secondary</td>
@@ -603,6 +605,7 @@
           <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon crayons-btn--icon--rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--secondary" disabled>Button label</button></td>
+          <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--secondary crayons-btn--inverted">Button label</button></td>
         </tr>
         <tr>
           <td class="fs-s">.crayons-btn--outlined</td>
@@ -612,6 +615,7 @@
           <td><button class="crayons-btn crayons-btn--outlined crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--outlined crayons-btn--icon crayons-btn--icon--rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--outlined" disabled>Button label</button></td>
+          <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--outlined crayons-btn--inverted">Button label</button></td>
         </tr>
         <tr>
           <td class="fs-s">.crayons-btn--ghost</td>
@@ -621,6 +625,37 @@
           <td><button class="crayons-btn crayons-btn--ghost crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--ghost crayons-btn--icon crayons-btn--icon--rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--ghost" disabled>Button label</button></td>
+          <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--ghost crayons-btn--inverted">Button label</button></td>
+        </tr>
+        <tr>
+          <td class="fs-s">.crayons-btn--ghost--success</td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--success">Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--success crayons-btn--icon-left"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--success crayons-btn--icon-right">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--success crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--success crayons-btn--icon crayons-btn--icon--rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--success" disabled>Button label</button></td>
+          <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--success crayons-btn--inverted">Button label</button></td>
+        </tr>
+        <tr>
+          <td class="fs-s">.crayons-btn--ghost--warning</td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--warning">Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--warning crayons-btn--icon-left"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--warning crayons-btn--icon-right">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--warning crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--warning crayons-btn--icon crayons-btn--icon--rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--warning" disabled>Button label</button></td>
+          <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--warning crayons-btn--inverted">Button label</button></td>
+        </tr>
+        <tr>
+          <td class="fs-s">.crayons-btn--ghost--danger</td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--danger">Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--danger crayons-btn--icon-left"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--danger crayons-btn--icon-right">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--danger crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--danger crayons-btn--icon crayons-btn--icon--rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--danger" disabled>Button label</button></td>
+          <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--ghost crayons-btn--ghost--danger crayons-btn--inverted">Button label</button></td>
         </tr>
         <tr>
           <td class="fs-s">.crayons-btn--danger</td>
@@ -630,15 +665,7 @@
           <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon crayons-btn--icon--rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
           <td><button class="crayons-btn crayons-btn--danger" disabled>Button label</button></td>
-        </tr>
-        <tr class="bg-base-100 color-base-inverted">
-          <td class="fs-s">.crayons-btn--danger</td>
-          <td><button class="crayons-btn crayons-btn--danger">Button label</button></td>
-          <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon-left"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
-          <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon-right">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
-          <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
-          <td><button class="crayons-btn crayons-btn--danger crayons-btn--icon crayons-btn--icon--rounded"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
-          <td><button class="crayons-btn crayons-btn--danger" disabled>Button label</button></td>
+          <td class="bg-base-100 color-base-inverted"><button class="crayons-btn crayons-btn--danger crayons-btn--inverted">Button label</button></td>
         </tr>
       </tbody>
     </table>
@@ -665,32 +692,25 @@
           <td><button class="crayons-btn crayons-btn--xl">Button label</button></td>
         </tr>
         <tr>
-          <td class="fs-s">Outlined</td>
-          <td><button class="crayons-btn crayons-btn--outlined crayons-btn--s">Button label</button></td>
-          <td><button class="crayons-btn crayons-btn--outlined">Button label</button></td>
-          <td><button class="crayons-btn crayons-btn--outlined crayons-btn--l">Button label</button></td>
-          <td><button class="crayons-btn crayons-btn--outlined crayons-btn--xl">Button label</button></td>
-        </tr>
-        <tr>
           <td class="fs-s">Icon left</td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-left crayons-btn--s"><%= inline_svg_tag("small-bell.svg", class: "crayons-icon") %>Button label</button></td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-left"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-left crayons-btn--l"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-left crayons-btn--xl"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--icon-left crayons-btn--s"><%= inline_svg_tag("small-bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--icon-left"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--icon-left crayons-btn--l"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
+          <td><button class="crayons-btn crayons-btn--icon-left crayons-btn--xl"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %>Button label</button></td>
         </tr>
         <tr>
           <td class="fs-s">Icon right</td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-right crayons-btn--s">Button label<%= inline_svg_tag("small-bell.svg", class: "crayons-icon") %></button></td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-right">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-right crayons-btn--l">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon-right crayons-btn--xl">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--icon-right crayons-btn--s">Button label<%= inline_svg_tag("small-bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--icon-right">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--icon-right crayons-btn--l">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--icon-right crayons-btn--xl">Button label<%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
         </tr>
         <tr>
           <td class="fs-s">Only icon</td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon crayons-btn--s"><%= inline_svg_tag("small-bell.svg", class: "crayons-icon") %></button></td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon crayons-btn--l"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
-          <td><button class="crayons-btn crayons-btn--secondary crayons-btn--icon crayons-btn--xl"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--icon crayons-btn--s"><%= inline_svg_tag("small-bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--icon"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--icon crayons-btn--l"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
+          <td><button class="crayons-btn crayons-btn--icon crayons-btn--xl"><%= inline_svg_tag("bell.svg", class: "crayons-icon") %></button></td>
         </tr>
       </tbody>
     </table>

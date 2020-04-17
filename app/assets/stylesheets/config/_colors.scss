@@ -52,9 +52,7 @@
 
   // Main colors
   --body-bg: #f9fafa; // todo: replace with `var(--base-10);` when ready.
-  --body-color: var(
-    --base-100
-  ); // todo: replace with `var(--base-100);` when ready.
+  --body-color: var(--base-100); // todo: replace with `var(--base-100);` when ready.
   --body-color-inverted: var(--base-inverted);
 
   // Main content containers
@@ -88,47 +86,68 @@
   // Links
   --link-color: var(--base-90);
   --link-color-hover: var(--accent-brand-darker);
-  --link-color-current: var(--base-100);
-  --link-color-secondary: var(--base-60);
-  --link-color-secondary-hover: var(--base-70);
-  --link-branded-color: var(--accent-brand);
-  
-  --link-success-color: var(--accent-success);
-  --link-success-color: var(--accent-success-darker);
-  
-  --link-warning-color: var(--accent-warning);
-  --link-warning-color-hover: var(--accent-warning-darker);
-  
-  --link-danger-color: var(--accent-danger);
-  --link-danger-color-hover: var(--accent-danger-darker);
-  
   --link-bg-hover: var(--base-0);
   --link-bg-hover-alt: var(--base-inverted);
+  //----
+  --link-brand-color: var(--accent-brand);
+  --link-brand-color-hover: var(--accent-brand-darker);
+  //----
+  // --link-success-color: var(--accent-success);
+  // --link-success-color-hover: var(--accent-success-darker);
+  //----
+  // --link-warning-color: var(--accent-warning);
+  // --link-warning-color-hover: var(--accent-warning-darker);
+  //----
+  // --link-danger-color: var(--accent-danger);
+  // --link-danger-color-hover: var(--accent-danger-darker);
+  //----
+  --link-color-secondary: var(--base-60);
+  --link-color-secondary-hover: var(--base-70);
+  //----
+  --link-color-current: var(--base-100);
   --link-bg-current: var(--base-inverted);
 
   // Primary buttons
-  --button-primary-bg: var(--accent-brand);
   --button-primary-color: var(--base-0);
-  --button-primary-bg-hover: var(--accent-brand-darker);
   --button-primary-color-hover: var(--base-0);
+  --button-primary-bg: var(--accent-brand);
+  --button-primary-bg-hover: var(--accent-brand-darker);
+  //-- Inverted
+  --button-primary-inverted-color: var(--base-0);
+  --button-primary-inverted-color-hover: var(--base-0);
+  --button-primary-inverted-bg: var(--accent-brand);
+  --button-primary-inverted-bg-hover: var(--accent-brand-darker);
 
   // Secondary buttons
-  --button-secondary-bg: var(--base-20);
   --button-secondary-color: var(--base-80);
-  --button-secondary-bg-hover: var(--base-30);
   --button-secondary-color-hover: var(--base-100);
+  --button-secondary-bg: var(--base-20);
+  --button-secondary-bg-hover: var(--base-30);
+  //-- Inverted
+  --button-secondary-inverted-color: var(--base-10);
+  --button-secondary-inverted-color-hover: var(--base-0);
+  --button-secondary-inverted-bg: var(--base-70);
+  --button-secondary-inverted-bg-hover: var(--base-60);
 
   // Outlined buttons
-  --button-outlined-bg: var(--base-20);
   --button-outlined-color: var(--base-80);
-  --button-outlined-bg-hover: var(--base-40);
   --button-outlined-color-hover: var(--base-100);
+  --button-outlined-border: var(--base-20);
+  --button-outlined-border-hover: var(--base-40);
+  //-- Inverted
+  --button-outlined-inverted-color: var(--base-30);
+  --button-outlined-inverted-color-hover: var(--base-10);
+  --button-outlined-inverted-border: var(--base-60);
+  --button-outlined-inverted-border-hover: var(--base-40);
 
   // Ghost buttons
   --button-ghost-bg: transparent;
-  --button-ghost-color: var(--base-80);
   --button-ghost-bg-hover: var(--base-10);
+  --button-ghost-color: var(--base-80);
   --button-ghost-color-hover: var(--base-100);
+  //-- Inverted
+  --button-ghost-inverted-color: var(--base-30);
+  --button-ghost-inverted-color-hover: var(--base-10);
 
   // Forms
   --form-bg: var(--base-0);
