@@ -34,9 +34,16 @@ export const Description = () => (
     <div>
       <h3>Usage</h3>
       <p>
-        The Snackbar component has a default lifespan of 5000ms, if `no
-        lifespan` prop is provided. By default, it has a polling time of 300ms
-        to check for new new Snackbar items.
+        The Snackbar component has a default lifespan of 5000ms if no
+        {' '}
+        <code>lifespan</code>
+        {' '}
+        prop is provided. It also has a default polling
+        time of 300ms to check for new Snackbar items if no
+        {' '}
+        <code>pollingTime</code>
+        {' '}
+        prop is provided.
       </p>
       <pre>
         &lt;Snackbar lifespan=&quot;3000&quot; pollingTime=&quot;300&quot; /&gt;
