@@ -55,6 +55,39 @@
             <%= hidden_field_tag(:membership_id, pending_membership.id) %>
             <button class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost" type="submit">×</button>
           <% end %>
+      </div>
+      <div class="crayons-card p-4 grid gap-2 mb-4">
+        <h3>Joining Request</h3>
+        <% @channel.requested_memberships.includes(:user).each do |requested_membership| %>
+          <div class="flex items-center">
+          <a href="<%= requested_membership.user.path %>">
+            <span class="crayons-avatar crayons-avatar--l mr-2">
+              <img src="<%= ProfileImage.new(requested_membership.user).get(width: 90) %>" class="crayons-avatar__image" />
+            </span>
+            <%= requested_membership.user.name %>
+          </a>
+            
+            <%= form_tag chat_channel_membership_path(@channel), method: :put, class: "inline-button-form" do %>
+              <%= hidden_field(:chat_channel_membership, :user_action, value: "accept") %>
+              <button class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost" type="submit">+</button>
+            <% end %>
+            <%= form_tag "/chat_channel_memberships/remove_membership", class: "inline-button-form" do %>
+              <%= hidden_field_tag(:status, "pending") %>
+              <%= hidden_field_tag(:chat_channel_id, @channel.id) %>
+              <%= hidden_field_tag(:membership_id, requested_membership.id) %>
+              <button class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost" type="submit">x</button>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      <%= form_for ChatChannelMembership.new do |f| %>
+        <div class="field">
+          <%= f.hidden_field :chat_channel_id, value: @channel.id %>
+          <%= f.label "Usernames to Invite" %>
+          <%= f.text_field :invitation_usernames, placeholder: "Comma separated" %>
+        </div>
+        <div class="field">
+          <%= f.submit "SUBMIT", class: "cta" %>
         </div>
       <% end %>
       <% if @channel.private_org_channel? %>
