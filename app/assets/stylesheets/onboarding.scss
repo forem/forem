@@ -1,13 +1,13 @@
 .onboarding-task-card {
   background: #3b49df;
-  border-radius: 3px;
+  border-radius: $br-default;
   padding: 40px 48px;
   display: none;
 }
 
 .task-card-title {
-  font-weight: 800;
-  font-size: 36px;
+  font-weight: $fw-heavy;
+  font-size: $fs-4xl;
   line-height: 125%;
   color: #ffffff;
 }
@@ -15,15 +15,14 @@
 .task-card-subtitle {
   color: #ffffff;
   opacity: 0.7;
-  font-weight: bold;
-  font-size: 14px;
-  line-height: 20px;
+  font-weight: $fw-medium;
+  font-size: $fs-s;
+  line-height: $lh-tight;
   letter-spacing: -0.02em;
-  text-transform: uppercase;
 }
 
 .task-card-action {
-  border-radius: 3px;
+  border-radius: $br-default;
   background-color: rgba(255, 255, 255, 0.2);
 
   &:hover {
@@ -33,7 +32,7 @@
 
 a.task-card-link {
   display: block;
-  border-radius: 3px;
+  border-radius: $br-default;
   padding: 20px 22px;
   margin-top: 16px;
   font-weight: bold;
