@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
 import { number } from '@storybook/addon-knobs';
-import { Snackbar } from '../Snackbar';
+import { Snackbar, addSnackbarItem } from '../Snackbar';
 
 export default {
   title: 'App Components/Snackbar',
@@ -57,54 +57,43 @@ Description.story = {
   name: 'description',
 };
 
-export const Default = () => (
-  <Snackbar lifespan={number('lifespan', 5000)}>Hello world!</Snackbar>
-);
+export const OneSnackbarItem = () => {
+  addSnackbarItem({
+    text: 'File uploaded successfully',
+    lifespan: 3000,
+  });
 
-Default.story = {
-  name: 'default',
+  return <Snackbar pollingTime={number('pollingTime', 300)} />;
 };
 
-export const WithOneAction = () => {
-  const actions = [
-    {
-      text: 'Action 1',
-      handler: action('Action 1 fired.'),
-    },
-  ];
-  return (
-    <Snackbar actions={actions} lifespan={number('lifespan', 5000)}>
-      Hello world!
-    </Snackbar>
-  );
+OneSnackbarItem.story = {
+  name: 'one snackbar item',
 };
 
-WithOneAction.story = {
-  name: 'with one action',
+export const MultipleSnackbarItems = () => {
+  addSnackbarItem({
+    text: 'File uploaded successfully',
+    lifespan: 3000,
+  });
+
+  addSnackbarItem({
+    text: 'Unable to save file',
+    actions: [
+      { text: 'Retry', handler: action('save file retry') },
+      { text: 'Abort', handler: action('abort file save') },
+    ],
+    lifespan: 2000,
+  });
+
+  addSnackbarItem({
+    text: 'There was a network error',
+    actions: [{ text: 'Retry', handler: action('retry network') }],
+    lifespan: 4000,
+  });
+
+  return <Snackbar pollingTime={number('pollingTime', 300)} />;
 };
 
-export const WithMultipleActions = () => {
-  const actions = [
-    {
-      text: 'Action 1',
-      handler: action('Action 1 fired.'),
-    },
-    {
-      text: 'Action 2',
-      handler: action('Action 2 fired.'),
-    },
-    {
-      text: 'Action 3',
-      handler: action('Action 3 fired.'),
-    },
-  ];
-  return (
-    <Snackbar actions={actions} lifespan={number('lifespan', 5000)}>
-      Hello world!
-    </Snackbar>
-  );
-};
-
-WithMultipleActions.story = {
-  name: 'with multiple actions',
+MultipleSnackbarItems.story = {
+  name: 'multiple snackbar items',
 };

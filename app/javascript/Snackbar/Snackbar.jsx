@@ -3,58 +3,30 @@ import PropTypes from 'prop-types';
 import { Button, ButtonGroup } from '@crayons';
 import { defaultChildrenPropTypes } from '../src/components/common-prop-types';
 
-export class Snackbar extends Component {
-  constructor(props) {
-    super(props);
+const snackbarItems = [];
 
-    const { children, lifespan = 5000 } = props;
+export const addSnackbarItem = (snackbarItem) => {
+  snackbarItems.push(snackbarItem);
+};
 
-    // 5 second lifespan by default before the snackbar is removed
-    this.state = {
-      lifespan,
-      contents: children,
-    };
-  }
+const SnackbarItem = ({ children, actions = [] }) => (
+  <div className="crayons-snackbar__item flex">
+    <div className="crayons-snackbar__body">{children}</div>
+    <div className="crayons-snackbar__actions">
+      <ButtonGroup>
+        {actions.map(({ text, handler }) => (
+          <Button variant="secondary" onClick={handler} key={text}>
+            {text}
+          </Button>
+        ))}
+      </ButtonGroup>
+    </div>
+  </div>
+);
 
-  componentDidMount() {
-    const { lifespan } = this.state;
+SnackbarItem.displayName = 'SnackbarItem';
 
-    setTimeout(() => {
-      this.setState({ contents: undefined });
-    }, lifespan);
-  }
-
-  render() {
-    const { actions = [] } = this.props;
-    const { contents } = this.state;
-
-    return contents ? (
-      <div className="crayons-snackbar">
-        <div
-          className="crayons-snackbar__item flex"
-          ref={(element) => {
-            this.element = element;
-          }}
-        >
-          <div className="crayons-snackbar__body">{contents}</div>
-          <div className="crayons-snackbar__actions">
-            <ButtonGroup>
-              {actions.map(({ text, handler }) => (
-                <Button variant="secondary" onClick={handler} key={text}>
-                  {text}
-                </Button>
-              ))}
-            </ButtonGroup>
-          </div>
-        </div>
-      </div>
-    ) : null;
-  }
-}
-
-Snackbar.displayName = 'Snackbar';
-
-Snackbar.propTypes = {
+SnackbarItem.propTypes = {
   children: defaultChildrenPropTypes.isRequired,
   actions: PropTypes.arrayOf(
     PropTypes.shape({
@@ -62,5 +34,69 @@ Snackbar.propTypes = {
       handler: PropTypes.func.isRequired,
     }),
   ).isRequired,
-  lifespan: PropTypes.number.isRequired,
+};
+
+export class Snackbar extends Component {
+  state = {
+    snacks: [],
+  };
+
+  watching = true;
+
+  watchId = 0;
+
+  componentDidMount() {
+    const { pollingTime } = this.props;
+
+    const snackCheck = () => {
+      if (snackbarItems.length > 0) {
+        this.setState((prevState) => {
+          const snacks = [...prevState.snacks, snackbarItems.pop()];
+
+          return { snacks };
+        });
+      }
+    };
+
+    const pollForSnacks = () => {
+      if (!this.watching) {
+        clearTimeout(this.watchId);
+        return;
+      }
+
+      snackCheck();
+
+      this.watchId = setTimeout(pollForSnacks, pollingTime);
+    };
+
+    pollForSnacks();
+  }
+
+  componentWillUnmount() {
+    this.watching = false;
+  }
+
+  render() {
+    const { snacks } = this.state;
+
+    return snacks.length > 0 ? (
+      <div className="crayons-snackbar">
+        {snacks.map(({ text, actions }) => (
+          <SnackbarItem key={text} actions={actions}>
+            {text}
+          </SnackbarItem>
+        ))}
+      </div>
+    ) : null;
+  }
+}
+
+Snackbar.displayName = 'Snackbar';
+
+Snackbar.defaultProps = {
+  pollingTime: 300,
+};
+
+Snackbar.propTypes = {
+  pollingTime: PropTypes.number,
 };
