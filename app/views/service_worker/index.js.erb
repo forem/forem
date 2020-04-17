@@ -125,11 +125,15 @@
         !url.href.includes('/search/feed_content') &&
         !url.href.includes('/search/users') &&
 
-        // Don't run on redirects
-        !url.href.includes('/workshops') &&
+        // Don't run on harcoded redirects (see config/routes.rb for the list)
         !url.href.includes('/%F0%9F%92%B8') && // 💸 (hiring)
-        !url.href.includes('/podcasts') &&
+        !url.href.includes('/api') &&
+        !url.href.includes('/future') &&
         !url.href.includes('/p/rlyweb') &&
+        !url.href.includes('/podcasts') &&
+        !url.href.includes('/shop') &&
+        !url.href.includes('/survey') &&
+        !url.href.includes('/workshops') &&
 
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
