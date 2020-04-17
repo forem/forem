@@ -52,7 +52,9 @@
 
   // Main colors
   --body-bg: #f9fafa; // todo: replace with `var(--base-10);` when ready.
-  --body-color: var(--base-100); // todo: replace with `var(--base-100);` when ready.
+  --body-color: var(
+    --base-100
+  ); // todo: replace with `var(--base-100);` when ready.
   --body-color-inverted: var(--base-inverted);
 
   // Main content containers
@@ -88,22 +90,10 @@
   --link-color-hover: var(--accent-brand-darker);
   --link-bg-hover: var(--base-0);
   --link-bg-hover-alt: var(--base-inverted);
-  //----
   --link-brand-color: var(--accent-brand);
   --link-brand-color-hover: var(--accent-brand-darker);
-  //----
-  // --link-success-color: var(--accent-success);
-  // --link-success-color-hover: var(--accent-success-darker);
-  //----
-  // --link-warning-color: var(--accent-warning);
-  // --link-warning-color-hover: var(--accent-warning-darker);
-  //----
-  // --link-danger-color: var(--accent-danger);
-  // --link-danger-color-hover: var(--accent-danger-darker);
-  //----
   --link-color-secondary: var(--base-60);
   --link-color-secondary-hover: var(--base-70);
-  //----
   --link-color-current: var(--base-100);
   --link-bg-current: var(--base-inverted);
 
@@ -131,14 +121,14 @@
 
   // Outlined buttons
   --button-outlined-bg: transparent;
-  --button-outlined-bg-hover: rgba(0,0,0,0.035);
+  --button-outlined-bg-hover: rgba(0, 0, 0, 0.035);
   --button-outlined-border: var(--base-20);
   --button-outlined-border-hover: var(--base-40);
   --button-outlined-color: var(--base-80);
   --button-outlined-color-hover: var(--base-100);
   //-- Inverted
   --button-outlined-inverted-bg: transparent;
-  --button-outlined-inverted-bg-hover: rgba(255,255,255,0.15);
+  --button-outlined-inverted-bg-hover: rgba(255, 255, 255, 0.15);
   --button-outlined-inverted-border: var(--base-60);
   --button-outlined-inverted-border-hover: var(--base-40);
   --button-outlined-inverted-color: var(--base-30);
@@ -146,12 +136,12 @@
 
   // Ghost buttons
   --button-ghost-bg: transparent;
-  --button-ghost-bg-hover: rgba(0,0,0,0.035);
+  --button-ghost-bg-hover: rgba(0, 0, 0, 0.035);
   --button-ghost-color: var(--base-80);
   --button-ghost-color-hover: var(--base-100);
   //-- Inverted
   --button-ghost-inverted-bg: transparent;
-  --button-ghost-inverted-bg-hover: rgba(255,255,255,0.15);
+  --button-ghost-inverted-bg-hover: rgba(255, 255, 255, 0.15);
   --button-ghost-inverted-color: var(--base-30);
   --button-ghost-inverted-color-hover: var(--base-10);
 
