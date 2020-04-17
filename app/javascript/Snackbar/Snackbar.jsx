@@ -6,6 +6,11 @@ import { defaultChildrenPropTypes } from '../src/components/common-prop-types';
 const snackbarItems = [];
 
 export const addSnackbarItem = (snackbarItem) => {
+  if (snackbarItems.length === 3) {
+    // eslint-disable-next-line no-console
+    console.warn('A maxium of three snackbar items are allowed.');
+  }
+
   snackbarItems.push(snackbarItem);
 };
 
@@ -51,7 +56,7 @@ export class Snackbar extends Component {
     const snackCheck = () => {
       if (snackbarItems.length > 0) {
         this.setState((prevState) => {
-          const snacks = [...prevState.snacks, snackbarItems.pop()];
+          const snacks = [snackbarItems.pop(), ...prevState.snacks];
 
           return { snacks };
         });
