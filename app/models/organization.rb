@@ -1,58 +1,60 @@
 class Organization < ApplicationRecord
   include CloudinaryHelper
 
+  COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
+  INTEGER_REGEXP = /\A\d+\z/.freeze
+  SLUG_REGEXP = /\A[a-zA-Z0-9\-_]+\z/.freeze
+  MESSAGES = {
+    integer_only: "Integer only. No sign allowed.",
+    reserved_word: "%<value>s is a reserved word. Contact site admins for help registering your organization."
+  }.freeze
+
   acts_as_followable
 
-  has_many :job_listings
-  has_many :organization_memberships, dependent: :delete_all
-  has_many :users, through: :organization_memberships
   has_many :api_secrets, through: :users
   has_many :articles
+  has_many :classified_listings
   has_many :collections
+  has_many :credits
   has_many :display_ads
   has_many :notifications
-  has_many :credits
-  has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
-  has_many :classified_listings
+  has_many :organization_memberships, dependent: :delete_all
   has_many :profile_pins, as: :profile, inverse_of: :profile
   has_many :sponsorships
+  has_many :unspent_credits, -> { where spent: false }, class_name: "Credit", inverse_of: :organization
+  has_many :users, through: :organization_memberships
 
-  validates :name, :summary, :url, :profile_image, presence: true
-  validates :name,
-            length: { maximum: 50 }
-  validates :summary,
-            length: { maximum: 250 }
-  validates :tag_line,
-            length: { maximum: 60 }
-  validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :slug,
-            presence: true,
-            uniqueness: { case_sensitive: false },
-            format: { with: /\A[a-zA-Z0-9\-_]+\Z/ },
-            length: { in: 2..18 },
-            exclusion: { in: ReservedWords.all,
-                         message: "%<value>s is a reserved word. Contact site admins for help registering your organization." }
-  validates :url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
-  validates :secret, uniqueness: { allow_blank: true }
-  validates :location, :email, :company_size, length: { maximum: 64 }
-  validates :company_size, format: { with: /\A\d+\z/,
-                                     message: "Integer only. No sign allowed.",
-                                     allow_blank: true }
-  validates :tech_stack, :story, length: { maximum: 640 }
-  validates :cta_button_url,
-            url: { allow_blank: true, no_local: true, schemes: %w[https http] }
-  validates :cta_button_text, length: { maximum: 20 }
+  validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
+  validates :company_size, format: { with: INTEGER_REGEXP, message: MESSAGES[:integer_only], allow_blank: true }
+  validates :company_size, length: { maximum: 7 }, allow_nil: true
   validates :cta_body_markdown, length: { maximum: 256 }
-  before_save :remove_at_from_usernames
-  after_save :bust_cache
-  before_save :generate_secret
-  before_save :update_articles
-  before_validation :downcase_slug
-  before_validation :check_for_slug_change
-  before_validation :evaluate_markdown
+  validates :cta_button_text, length: { maximum: 20 }
+  validates :cta_button_url, length: { maximum: 150 }, url: { allow_blank: true, no_local: true }
+  validates :github_username, length: { maximum: 50 }
+  validates :location, :email, length: { maximum: 64 }
+  validates :name, :summary, :url, :profile_image, presence: true
+  validates :name, length: { maximum: 50 }
+  validates :proof, length: { maximum: 1500 }
+  validates :secret, length: { is: 100 }, uniqueness: { allow_blank: true }, allow_blank: true
+  validates :slug, exclusion: { in: ReservedWords.all, message: MESSAGES[:reserved_word] }
+  validates :slug, format: { with: SLUG_REGEXP }, length: { in: 2..18 }
+  validates :slug, presence: true, uniqueness: { case_sensitive: false }
+  validates :summary, length: { maximum: 250 }
+  validates :tag_line, length: { maximum: 60 }
+  validates :tech_stack, :story, length: { maximum: 640 }
+  validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
+  validates :twitter_username, length: { maximum: 15 }
+  validates :url, length: { maximum: 200 }, url: { allow_blank: true, no_local: true }
 
   validate :unique_slug_including_users_and_podcasts, if: :slug_changed?
+
+  after_save :bust_cache
+  before_save :generate_secret
+  before_save :remove_at_from_usernames
+  before_save :update_articles
+  before_validation :check_for_slug_change
+  before_validation :downcase_slug
+  before_validation :evaluate_markdown
 
   after_commit :sync_related_elasticsearch_docs, on: %i[update destroy]
 
@@ -117,7 +119,7 @@ class Organization < ApplicationRecord
   end
 
   def downcase_slug
-    self.slug = slug.downcase
+    self.slug = slug&.downcase
   end
 
   def update_articles
@@ -138,10 +140,17 @@ class Organization < ApplicationRecord
   end
 
   def unique_slug_including_users_and_podcasts
-    errors.add(:slug, "is taken.") if User.find_by(username: slug) || Podcast.find_by(slug: slug) || Page.find_by(slug: slug) || slug.include?("sitemap-")
+    slug_taken = (
+      User.exists?(username: slug) ||
+      Podcast.exists?(slug: slug) ||
+      Page.exists?(slug: slug) ||
+      slug&.include?("sitemap-")
+    )
+
+    errors.add(:slug, "is taken.") if slug_taken
   end
 
   def sync_related_elasticsearch_docs
-    DataSync::Elasticsearch::Organization.new(self, saved_changes).call
+    DataSync::Elasticsearch::Organization.new(self).call
   end
 end

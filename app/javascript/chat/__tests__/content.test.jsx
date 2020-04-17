@@ -24,12 +24,6 @@ describe('<Content />', () => {
       expect(
         context.find('.activechatchannel__activecontent').exists(),
       ).toEqual(true);
-      const exitButton = context.find(
-        '.activechatchannel__activecontentexitbutton',
-      );
-      expect(exitButton.exists()).toEqual(true);
-      expect(exitButton.attr('data-content')).toEqual('exit');
-      expect(exitButton.text()).toEqual('×');
     });
   });
   /*

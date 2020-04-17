@@ -5,11 +5,11 @@
 <h4>
   <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= current_user.username %>" aria-label="Go to your profile page">
     <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg"
-         alt="DEV badge"
+         alt="<%= community_name %> badge"
          height="28" width="28"
          style="vertical-align:-7px;margin-right:4px;" class="dev-badge" />
   </a>
-  Add the DEV badge to your personal site. <a href="/p/badges">Click here for the code</a>
+  Add the <%= community_name %> badge to your personal site. <a href="/p/badges">Click here for the code</a>
 </h4>
 <%= form_for(@user) do |f| %>
   <div class="field">
@@ -26,7 +26,7 @@
   </div>
   <div class="field">
     <%= f.label :name %>
-    <%= f.text_field :name %>
+    <%= f.text_field :name, maxlength: 100 %>
   </div>
   <%= f.label :profile_image %>
   <div class="field">

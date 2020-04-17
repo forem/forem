@@ -5,6 +5,18 @@ RSpec.describe "/internal/reports", type: :request do
   let(:user)              { create(:user) }
   let(:admin)             { create(:user, :super_admin) }
 
+  describe "GET /internal/reports" do
+    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: FeedbackMessage) }
+
+    context "when the user is a single resource admin" do
+      it "renders with status 200" do
+        sign_in single_resource_admin
+        get internal_reports_path
+        expect(response.status).to eq 200
+      end
+    end
+  end
+
   describe "POST /save_status" do
     context "when a valid request is made" do
       let(:save_status_params) do

@@ -25,9 +25,9 @@ class FollowUsers extends Component {
       },
       credentials: 'same-origin',
     })
-      .then(response => response.json())
-      .then(data => {
-        this.setState({ users: data, selectedUsers: data });
+      .then((response) => response.json())
+      .then((data) => {
+        this.setState({ users: data });
       });
 
     const csrfToken = getContentOfToken('csrf-token');
@@ -38,7 +38,7 @@ class FollowUsers extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user: { last_onboarding_page: 'follow users page' },
+        user: { last_onboarding_page: 'v2: follow users page' },
       }),
       credentials: 'same-origin',
     });
@@ -79,7 +79,7 @@ class FollowUsers extends Component {
     let { selectedUsers } = this.state;
 
     if (!selectedUsers.includes(user)) {
-      this.setState(prevState => ({
+      this.setState((prevState) => ({
         selectedUsers: [...prevState.selectedUsers, user],
       }));
     } else {
@@ -92,20 +92,56 @@ class FollowUsers extends Component {
     }
   }
 
+  renderFollowCount() {
+    const { users, selectedUsers } = this.state;
+    let followingStatus;
+    if (selectedUsers.length === 0) {
+      followingStatus = "You're not following anyone";
+    } else if (selectedUsers.length === 1) {
+      followingStatus = "You're following 1 person";
+    } else if (selectedUsers.length === users.length) {
+      followingStatus = `You're following ${selectedUsers.length} people (everyone)`;
+    } else {
+      followingStatus = `You're following ${selectedUsers.length} people`;
+    }
+    const klassName =
+      selectedUsers.length > 0
+        ? 'follow-count--active'
+        : 'follow-count-message';
+
+    return <p className={klassName}>{followingStatus}</p>;
+  }
+
+  renderFollowToggle() {
+    const { users, selectedUsers } = this.state;
+    if (users.length === 0) {
+      return '';
+    }
+
+    return (
+      <button type="button" onClick={() => this.handleSelectAll()}>
+        {selectedUsers.length !== users.length
+          ? `Select all ${users.length} people`
+          : 'Deselect all'}
+      </button>
+    );
+  }
+
   render() {
     const { users, selectedUsers } = this.state;
     const { prev } = this.props;
+
     return (
       <div className="onboarding-main">
         <Navigation prev={prev} next={this.handleComplete} />
-        <div className="onboarding-content">
+        <div className="onboarding-content toggle-bottom">
           <header className="onboarding-content-header">
             <h1 className="title">Suggested people to follow</h1>
             <h2 className="subtitle">Let&apos;s review a few things first</h2>
           </header>
 
           <div className="onboarding-modal-scroll-container">
-            {users.map(user => (
+            {users.map((user) => (
               <button
                 type="button"
                 onClick={() => this.handleClick(user)}
@@ -136,11 +172,8 @@ class FollowUsers extends Component {
         </div>
         <div className="onboarding-selection-status">
           <div className="selection-status-content">
-            <button type="button" onClick={() => this.handleSelectAll()}>
-              Select All 
-              {' '}
-              {selectedUsers.length === users.length ? '✅' : ''}
-            </button>
+            {this.renderFollowCount()}
+            {this.renderFollowToggle()}
           </div>
         </div>
       </div>

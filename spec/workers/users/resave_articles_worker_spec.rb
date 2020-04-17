@@ -7,17 +7,17 @@ RSpec.describe Users::ResaveArticlesWorker, type: :worker do
     let(:worker) { subject }
 
     context "with user" do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:article) { create(:article, user: user) }
-
       it "resave articles" do
+        user = create(:user)
+        article = create(:article, user: user)
+
         old_updated_at = article.updated_at
 
-        Timecop.freeze(Time.current) do
+        Timecop.travel(1.minute.from_now) do
           worker.perform(user.id)
-
-          expect(article.reload.updated_at > old_updated_at).to be(true)
         end
+
+        expect(article.reload.updated_at).to be > old_updated_at
       end
     end
 

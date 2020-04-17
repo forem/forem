@@ -20,7 +20,7 @@ class ChatChannelsController < ApplicationController
   end
 
   def show
-    @chat_messages = @chat_channel.messages.includes(:user).order("created_at DESC").offset(params[:message_offset]).limit(150)
+    @chat_messages = @chat_channel.messages.includes(:user).order("created_at DESC").offset(params[:message_offset]).limit(50)
   end
 
   def create

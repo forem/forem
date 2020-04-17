@@ -9,17 +9,6 @@ module Search
     INCLUDED_CLASS_NAMES = %w[Article Comment PodcastEpisode].freeze
 
     class << self
-      def search_documents(params:)
-        set_query_size(params)
-        query_hash = Search::QueryBuilders::FeedContent.new(params).as_hash
-
-        results = search(body: query_hash)
-        hits = results.dig("hits", "hits").map do |feed_doc|
-          prepare_doc(feed_doc)
-        end
-        paginate_hits(hits, params)
-      end
-
       INCLUDED_CLASS_NAMES.each do |class_name|
         define_method("#{class_name.underscore.pluralize}_document_count") do
           Search::Client.count(
@@ -44,6 +33,7 @@ module Search
           "image_url" => source["main_image"],
           "title" => source["title"]
         }
+        source["_score"] = hit["_score"]
 
         source.merge(timestamps_hash(hit))
       end
