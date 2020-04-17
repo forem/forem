@@ -52,7 +52,9 @@
         <% @channel.requested_memberships.includes(:user).each do |requested_membership| %>
           <div class="settings-form-userlistrow">
             <a href="<%= requested_membership.user.path %>"><img src="<%= ProfileImage.new(requested_membership.user).get(width: 90) %>" /><%= requested_membership.user.name %></a>
-            <%= form_tag chat_channel_membership_path(requested_membership), method: :put, class: "inline-button-form" do %>
+            <%= form_tag "/chat_channel_memberships/add_membership", class: "inline-button-form" do %>
+              <%= hidden_field_tag(:chat_channel_id, @channel.id) %>
+              <%= hidden_field_tag(:membership_id, requested_membership.id) %>
               <%= hidden_field(:chat_channel_membership, :user_action, value: "accept") %>
               <%= submit_tag "+" %>
             <% end %>
