@@ -26,8 +26,8 @@ class ResponseTemplate < ApplicationRecord
   validate :user_nil_only_for_user_nil_types
 
   def user_nil_only_for_user_nil_types
-    if user_id.present? && USER_NIL_TYPE_OF_TYPES.include?(type_of)
-      errors.add(:type_of, USER_NIL_TYPE_OF_MSG)
-    end
+    return unless user_id.present? && USER_NIL_TYPE_OF_TYPES.include?(type_of)
+
+    errors.add(:type_of, USER_NIL_TYPE_OF_MSG)
   end
 end
