@@ -65,13 +65,13 @@ class SearchController < ApplicationController
 
   def chat_channels_discoverable
     ccm_docs_original = Search::ChatChannelMembership.search_documents(
-      params: chat_channel_params.to_h, user_id: current_user.id,
+      params: chat_channel_params.merge(user_id: current_user.id).to_h,
     )
-    discoverable_params = chat_channel_params.to_h
+    discoverable_params = chat_channel_params.merge(user_id: current_user.id).to_h
     discoverable_params[:channel_discoverable] = true
 
     ccm_docs_discoverable = Search::ChatChannelMembership.search_documents(
-      params: discoverable_params, user_id: current_user.id,
+      params: discoverable_params,
     )
 
     render json: { result: (ccm_docs_original + ccm_docs_discoverable).uniq }
