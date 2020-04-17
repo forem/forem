@@ -115,7 +115,9 @@ module Authentication
 
     def save_identity(identity, user)
       identity.user = user if identity.user_id.blank?
+      new_record = identity.new_record?
       identity.save!
+      record_identity_creation(identity) if new_record
     end
 
     def account_less_than_a_week_old?(user, logged_in_identity)
@@ -130,6 +132,10 @@ module Authentication
 
     def flag_spam_user(user)
       Slack::Messengers::PotentialSpammer.call(user: user)
+    end
+
+    def record_identity_creation(identity)
+      DatadogStatsClient.increment("identity.created", tags: [provider: identity.provider])
     end
   end
 end
