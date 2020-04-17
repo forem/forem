@@ -113,4 +113,31 @@ RSpec.describe "Search", type: :request, proper_status: true do
       expect(Search::FeedContent).to have_received(:search_documents)
     end
   end
+
+  describe "GET /search/reactions" do
+    let(:authorized_user) { create(:user) }
+    let(:mock_response) do
+      { "reactions" => [{ id: 123 }], "total" => 100 }
+    end
+
+    it "returns json with reactions and total" do
+      sign_in authorized_user
+      allow(Search::Reaction).to receive(:search_documents).and_return(
+        mock_response,
+      )
+      get "/search/reactions"
+      expect(response.parsed_body).to eq("result" => [{ "id" => 123 }], "total" => 100)
+    end
+
+    it "accepts array of tag names" do
+      sign_in authorized_user
+      allow(Search::Reaction).to receive(:search_documents).and_return(
+        mock_response,
+      )
+      get "/search/reactions?tag_names[]=1&tag_names[]=2"
+      expect(Search::Reaction).to have_received(
+        :search_documents,
+      ).with(params: { "tag_names" => %w[1 2], "user_id" => authorized_user.id })
+    end
+  end
 end
