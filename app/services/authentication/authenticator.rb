@@ -26,24 +26,30 @@ module Authentication
 
     def call
       identity = Identity.build_from_omniauth(provider)
-
       return current_user if current_user_identity_exists?
 
-      user = proper_user(identity)
-      user = if user.nil?
-               build_user
-             else
-               update_user(user)
-             end
+      ActiveRecord::Base.transaction do
+        user = proper_user(identity)
+        user = if user.nil?
+                 build_user!
+               else
+                 update_user(user)
+               end
 
-      save_identity(identity, user)
+        identity.user = user if identity.user_id.blank?
+        new_record = identity.new_record?
+        identity.save!
+        record_identity_creation(identity) if new_record
 
-      user.skip_confirmation!
+        user.skip_confirmation!
 
-      flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
+        flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
 
-      user.save!
-      user
+        user.save!
+        user
+      end
+    rescue StandardError => e
+      Rails.logger.error(e)
     end
 
     private
@@ -70,7 +76,7 @@ module Authentication
       end
     end
 
-    def build_user
+    def build_user!
       existing_user = User.where(
         provider.user_username_field => provider.user_nickname,
       ).take
@@ -82,9 +88,8 @@ module Authentication
 
         user.set_remember_fields
 
-        # save_identity() requires users to have been saved in the DB prior
-        # to its execution, thus we need to make sure the new user is saved
-        # before that
+        # The user must be saved in the database before
+        # we assign the user to a new identity.
         user.save!
       end
     end
@@ -111,13 +116,6 @@ module Authentication
     def update_profile_updated_at(user)
       field_name = "#{provider.user_username_field}_changed?"
       user.profile_updated_at = Time.current if user.public_send(field_name)
-    end
-
-    def save_identity(identity, user)
-      identity.user = user if identity.user_id.blank?
-      new_record = identity.new_record?
-      identity.save!
-      record_identity_creation(identity) if new_record
     end
 
     def account_less_than_a_week_old?(user, logged_in_identity)
