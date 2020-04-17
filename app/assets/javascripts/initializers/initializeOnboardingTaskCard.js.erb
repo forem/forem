@@ -1,0 +1,9 @@
+function initializeOnboardingTaskCard() {
+  if (localStorage.getItem('seen-onboarding') === 'yes') { return }
+
+  var el = document.getElementsByClassName("onboarding-task-card")[0];
+
+  if (el !== undefined) {
+    el.style.display = "block";
+  }
+}

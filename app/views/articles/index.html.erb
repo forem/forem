@@ -32,7 +32,9 @@
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
 
-    <%= render "articles/sidebar" %>
+    <% if user_signed_in? && current_user.created_at > 7.days.ago %>
+      <%= render "articles/sidebar" %>
+    <% end %>
 
     <%# BEGIN Feed menu bar %>
     <div class="articles-list" id="articles-list">
