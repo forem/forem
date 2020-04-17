@@ -107,7 +107,11 @@ class ChatChannel < ApplicationRecord
           invitation_sent += 1
         end
       else
-        membership = ChatChannelMembership.create(user_id: user.id, chat_channel_id: id, role: membership_role, status: "pending")
+        membership = if discoverable == true
+                       ChatChannelMembership.create(user_id: user.id, chat_channel_id: id, role: membership_role, status: "joining_request")
+                     else
+                       ChatChannelMembership.create(user_id: user.id, chat_channel_id: id, role: membership_role, status: "pending")
+                     end
         if membership.persisted?
           NotifyMailer.channel_invite_email(membership, inviter).deliver_later
           invitation_sent += 1
