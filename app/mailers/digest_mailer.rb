@@ -1,5 +1,5 @@
 class DigestMailer < ApplicationMailer
-  default from: -> { "DEV Digest <#{SiteConfig.default_site_email}>" }
+  default from: -> { "#{ApplicationConfig['COMMUNITY_NAME']} Digest <#{SiteConfig.default_site_email}>" }
 
   def digest_email(user, articles)
     @user = user
@@ -25,26 +25,27 @@ class DigestMailer < ApplicationMailer
   end
 
   def email_end_phrase
+    community_name = ApplicationConfig["COMMUNITY_NAME"]
     # "more trending DEV posts" won the previous split test
     # Included more often as per explore-exploit algorithm
     [
-      "more trending DEV posts",
-      "more trending DEV posts",
-      "more trending DEV posts",
-      "more trending DEV posts",
-      "more trending DEV posts",
-      "more trending DEV posts",
-      "more trending DEV posts",
-      "more trending DEV posts",
-      "more trending DEV posts",
+      "more trending #{community_name} posts",
+      "more trending #{community_name} posts",
+      "more trending #{community_name} posts",
+      "more trending #{community_name} posts",
+      "more trending #{community_name} posts",
+      "more trending #{community_name} posts",
+      "more trending #{community_name} posts",
+      "more trending #{community_name} posts",
+      "more trending #{community_name} posts",
       "other posts you might like",
-      "other DEV posts you might like",
-      "other trending DEV posts",
-      "other top DEV posts",
-      "more top DEV posts",
+      "other #{community_name} posts you might like",
+      "other trending #{community_name} posts",
+      "other top #{community_name} posts",
+      "more top #{community_name} posts",
       "more top reads from the community",
-      "more top DEV posts based on your interests",
-      "more trending DEV posts picked for you",
+      "more top #{community_name} posts based on your interests",
+      "more trending #{community_name} posts picked for you",
     ].sample
   end
 end
