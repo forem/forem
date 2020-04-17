@@ -80,7 +80,7 @@ class SearchController < ApplicationController
                   # No need to check for articles or podcast episodes if we know we only want users
                   user_search
                 else
-                  # if params[:class_name] == PodcastEpisode, Article, or Comment then skip user lookup
+                  # if params[:class_name] == PodcastEpisode or Article then skip user lookup
                   feed_content_search
                 end
 
