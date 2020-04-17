@@ -290,10 +290,10 @@ export function loadResponseTemplates() {
   const { userStatus } = document.body.dataset;
   const form = document.getElementById('new_comment');
 
-  if (userStatus === 'logged-out') {
-    handleLoggedOut();
-  }
   if (document.getElementById('response-templates-data')) {
+    if (userStatus === 'logged-out') {
+      handleLoggedOut();
+    }
     if (
       form &&
       form.querySelector('.response-templates-button').dataset.hasListener === 'false'
