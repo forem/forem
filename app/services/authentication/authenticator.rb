@@ -82,7 +82,7 @@ module Authentication
 
         user.set_remember_fields
 
-        # save_identity() requires uses to have been saved in the DB prior
+        # save_identity() requires users to have been saved in the DB prior
         # to its execution, thus we need to make sure the new user is saved
         # before that
         user.save!
