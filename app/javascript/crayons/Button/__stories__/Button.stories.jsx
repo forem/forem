@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
+import { withKnobs, object, text, boolean, select } from '@storybook/addon-knobs/react';
 import { action } from '@storybook/addon-actions';
 import { Button } from '@crayons';
 
@@ -20,10 +20,37 @@ export default {
 
 export const Default = () => (
   <Button
+    variant={select('variant', {
+      'Primary': 'primary', 
+      'Secondary': 'secondary', 
+      'Outlined': 'outlined', 
+      'Danger': 'danger', 
+      'Ghost': 'ghost', 
+      'Ghost Brand': 'ghost-brand', 
+      'Ghost Success': 'ghost-success', 
+      'Ghost Warning': 'ghost-warning', 
+      'Ghost Danger': 'ghost-danger', 
+    }, 'primary')}
+    size={select('size', {
+      'Small': 's', 
+      'Default': 'default', 
+      'Large': 'l', 
+      'Extra Large': 'xl',
+    }, 'default')}
+    contentType={select('contentType', {
+      'Text': 'text',
+      'Icon + Text': 'icon-left',
+      'Text + Icon': 'icon-right',
+      'Icon': 'icon',
+      'Icon Rounded': 'icon-rounded'
+    }, 'default')}
     icon={object('icon')}
-    variant={text('variant')}
+    inverted={boolean('inverted', false)}
     className={text('className')}
-    tagName={text('tagName', 'button')}
+    tagName={select('tagName', {
+      'Button': 'button', 
+      'A': 'a', 
+    }, 'button')}
     url={text('url')}
     buttonType={text('buttonType')}
     disabled={boolean('disabled', false)}
@@ -34,64 +61,7 @@ export const Default = () => (
 );
 
 Default.story = {
-  name: 'default',
-};
-
-export const Secondary = () => (
-  <Button
-    variant={text('variant', 'secondary')}
-    icon={object('icon')}
-    className={text('className')}
-    tagName={text('tagName', 'button')}
-    url={text('url')}
-    buttonType={text('buttonType')}
-    disabled={boolean('disabled', false)}
-    {...commonProps}
-  >
-    Hello world!
-  </Button>
-);
-
-Secondary.story = {
-  name: 'secondary',
-};
-
-export const Outlined = () => (
-  <Button
-    variant={text('variant', 'outlined')}
-    icon={object('icon')}
-    className={text('className')}
-    tagName={text('tagName', 'button')}
-    url={text('url')}
-    buttonType={text('buttonType')}
-    disabled={boolean('disabled', false)}
-    {...commonProps}
-  >
-    Hello world!
-  </Button>
-);
-
-Outlined.story = {
-  name: 'outlined',
-};
-
-export const Danger = () => (
-  <Button
-    variant={text('variant', 'danger')}
-    icon={object('icon')}
-    className={text('className')}
-    tagName={text('tagName', 'button')}
-    url={text('url')}
-    buttonType={text('buttonType')}
-    disabled={boolean('disabled', false)}
-    {...commonProps}
-  >
-    Hello world!
-  </Button>
-);
-
-Danger.story = {
-  name: 'danger',
+  name: 'Buttons',
 };
 
 export const IconWithText = () => {
@@ -110,6 +80,7 @@ export const IconWithText = () => {
     <Button
       icon={object('icon', Icon)}
       variant={text('variant')}
+      size={text('size')}
       className={text('className')}
       tagName={text('tagName', 'button')}
       url={text('url')}
@@ -142,6 +113,7 @@ export const IconOnly = () => {
     <Button
       icon={object('icon', Icon)}
       variant={text('variant')}
+      size={text('size')}
       className={text('className')}
       tagName={text('tagName', 'button')}
       url={text('url')}
@@ -154,23 +126,4 @@ export const IconOnly = () => {
 
 IconOnly.story = {
   name: 'icon only',
-};
-
-export const ButtonAsLink = () => (
-  <Button
-    variant={text('variant')}
-    className={text('className')}
-    tagName={text('tagName', 'a')}
-    icon={object('icon')}
-    url={text('url', '#')}
-    buttonType={text('buttonType')}
-    disabled={boolean('disabled', false)}
-    {...commonProps}
-  >
-    Hello world!
-  </Button>
-);
-
-ButtonAsLink.story = {
-  name: 'button as link',
 };
