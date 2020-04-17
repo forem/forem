@@ -57,10 +57,14 @@ Description.story = {
 export const OneSnackbarItem = () => {
   addSnackbarItem({
     text: 'File uploaded successfully',
-    lifespan: 3000,
   });
 
-  return <Snackbar pollingTime={number('pollingTime', 300)} />;
+  return (
+    <Snackbar
+      lifespan={number('lifespan', 5000)}
+      pollingTime={number('pollingTime', 300)}
+    />
+  );
 };
 
 OneSnackbarItem.story = {
@@ -70,7 +74,6 @@ OneSnackbarItem.story = {
 export const MultipleSnackbarItems = () => {
   addSnackbarItem({
     text: 'File uploaded successfully',
-    lifespan: 3000,
   });
 
   addSnackbarItem({
@@ -79,16 +82,19 @@ export const MultipleSnackbarItems = () => {
       { text: 'Retry', handler: action('save file retry') },
       { text: 'Abort', handler: action('abort file save') },
     ],
-    lifespan: 2000,
   });
 
   addSnackbarItem({
     text: 'There was a network error',
     actions: [{ text: 'Retry', handler: action('retry network') }],
-    lifespan: 4000,
   });
 
-  return <Snackbar pollingTime={number('pollingTime', 300)} />;
+  return (
+    <Snackbar
+      lifespan={number('lifespan', 5000)}
+      pollingTime={number('pollingTime', 300)}
+    />
+  );
 };
 
 MultipleSnackbarItems.story = {

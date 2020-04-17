@@ -51,12 +51,24 @@ export class Snackbar extends Component {
   watchId = 0;
 
   componentDidMount() {
-    const { pollingTime } = this.props;
+    const { pollingTime, lifespan } = this.props;
 
     const snackCheck = () => {
       if (snackbarItems.length > 0) {
+        const snack = snackbarItems.pop();
+
+        setTimeout(() => {
+          this.setState((prevState) => {
+            const snacks = prevState.snacks.filter(
+              (currentSnack) => currentSnack !== snack,
+            );
+
+            return { snacks };
+          });
+        }, lifespan);
+
         this.setState((prevState) => {
-          const snacks = [snackbarItems.pop(), ...prevState.snacks];
+          const snacks = [snack, ...prevState.snacks];
 
           return { snacks };
         });
@@ -100,8 +112,10 @@ Snackbar.displayName = 'Snackbar';
 
 Snackbar.defaultProps = {
   pollingTime: 300,
+  lifespan: 5000,
 };
 
 Snackbar.propTypes = {
   pollingTime: PropTypes.number,
+  lifespan: PropTypes.number,
 };
