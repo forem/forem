@@ -4,7 +4,7 @@ namespace :fastly do
     fastly_credentials = %w[
       FASTLY_API_KEY
       FASTLY_SERVICE_ID
-      WHITELIST_PARAMS_SNIPPET_NAME
+      FASTLY_WHITELIST_PARAMS_SNIPPET_NAME
     ]
 
     if fastly_credentials.any? { |cred| ApplicationConfig[cred].blank? }
