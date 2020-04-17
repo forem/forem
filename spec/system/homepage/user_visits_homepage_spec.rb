@@ -84,5 +84,27 @@ RSpec.describe "User visits a homepage", type: :system do
         end
       end
     end
+
+    describe "shop url" do
+      it "shows the link to the shop if present" do
+        SiteConfig.shop_url = "https://example.com"
+
+        visit "/"
+
+        within("#main-nav-more") do
+          expect(page).to have_link(href: SiteConfig.shop_url)
+        end
+      end
+
+      it "does not show the shop if not present" do
+        SiteConfig.shop_url = ""
+
+        visit "/"
+
+        within("#main-nav-more") do
+          expect(page).not_to have_text("Shop")
+        end
+      end
+    end
   end
 end

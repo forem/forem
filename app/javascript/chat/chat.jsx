@@ -82,7 +82,9 @@ export default class Chat extends Component {
       memberFilterQuery: null,
       rerenderIfUnchangedCheck: null,
     };
-    getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
+    if (chatOptions.activeChannelId) {
+      getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
+    }
   }
 
   componentDidMount() {
@@ -406,6 +408,11 @@ export default class Chat extends Component {
       unopenedChannelIds,
     } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
+    const messageList = document.getElementById('messagelist')
+    const nearBottom =  (messageList.scrollTop + messageList.offsetHeight + 400 > messageList.scrollHeight)
+    if (nearBottom) {
+      scrollToBottom();
+    }
     let newMessages = [];
     if (
       message.temp_id &&
@@ -424,7 +431,7 @@ export default class Chat extends Component {
       }
     }
     const newShowAlert =
-      activeChannelId === receivedChatChannelId ? { showAlert: scrolled } : {};
+      activeChannelId === receivedChatChannelId ? { showAlert: !nearBottom } : {};
     let newMessageChannelIndex = 0;
     let newMessageChannel = null;
     const newChannelsObj = chatChannels.map((channel, index) => {
@@ -597,7 +604,7 @@ export default class Chat extends Component {
   };
 
   handleMessageSubmit = (message) => {
-    const { activeChannelId, activeContent } = this.state;
+    const { activeChannelId } = this.state;
     scrollToBottom();
     // should check if user has the privilege
     if (message.startsWith('/code')) {
@@ -658,6 +665,7 @@ export default class Chat extends Component {
         message,
         mentionedUsersId: this.getMentionedUsers(message),
       };
+      this.setState({scrolled: false, showAlert: false})
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     }
   };
