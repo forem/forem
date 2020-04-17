@@ -428,7 +428,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
   describe "#tag_moderator_confirmation_email" do
     let(:tag) { create(:tag) }
-    let(:email) { described_class.tag_moderator_confirmation_email(user, tag.name) }
+    let(:email) { described_class.tag_moderator_confirmation_email(user, tag) }
 
     it "renders proper subject" do
       expect(email.subject).to eq("Congrats! You're the moderator for ##{tag.name}")
