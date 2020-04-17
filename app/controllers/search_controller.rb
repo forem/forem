@@ -1,7 +1,7 @@
 class SearchController < ApplicationController
-  before_action :authenticate_user!, only: %i[tags chat_channels]
+  before_action :authenticate_user!, only: %i[tags chat_channels reactions]
   before_action :format_integer_params
-  before_action :sanitize_params, only: %i[classified_listings]
+  before_action :sanitize_params, only: %i[classified_listings reactions]
 
   CLASSIFIED_LISTINGS_PARAMS = [
     :category,
@@ -10,6 +10,17 @@ class SearchController < ApplicationController
     :per_page,
     {
       tags: []
+    },
+  ].freeze
+
+  REACTION_PARAMS = [
+    :page,
+    :per_page,
+    :category,
+    :search_fields,
+    {
+      tag_names: [],
+      status: []
     },
   ].freeze
 
@@ -76,6 +87,14 @@ class SearchController < ApplicationController
     render json: { result: feed_docs }
   end
 
+  def reactions
+    result = Search::Reaction.search_documents(
+      params: reaction_params.merge(user_id: current_user.id).to_h,
+    )
+
+    render json: { result: result["reactions"], total: result["total"] }
+  end
+
   private
 
   def feed_content_search
@@ -109,6 +128,10 @@ class SearchController < ApplicationController
 
   def feed_params
     params.permit(FEED_PARAMS)
+  end
+
+  def reaction_params
+    params.permit(REACTION_PARAMS)
   end
 
   def format_integer_params
