@@ -7,10 +7,8 @@ function getAdditionalClassNames({
   className,
   contentType,
   size,
-  icon,
   inverted,
   disabled,
-  children,
 }) {
   let additionalClassNames = '';
 
@@ -85,8 +83,16 @@ export const Button = ({
       onBlur={onBlur}
       {...otherProps}
     >
-      {Icon && <Icon />}
-      {children}
+      {contentType !== 'text' && contentType !== 'icon-right' && Icon && (
+        <Icon />
+      )}
+      {(contentType === 'text' ||
+        contentType === 'icon-left' ||
+        contentType === 'icon-right') &&
+        children}
+      {contentType !== 'text' && contentType === 'icon-right' && Icon && (
+        <Icon />
+      )}
     </ComponentName>
   );
 };
@@ -125,7 +131,7 @@ Button.propTypes = {
     'icon-left',
     'icon-right',
     'icon',
-    'icon-rounded'
+    'icon-rounded',
   ]).isRequired,
   inverted: PropTypes.bool,
   tagName: PropTypes.oneOf(['a', 'button']).isRequired,
