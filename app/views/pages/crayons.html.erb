@@ -568,8 +568,7 @@
     <p>It is ok to use ONLY Secondary or outlined button without being accompanied by Primary one.</p>
     <p>For Stacking buttons (vertically or horizontally) please use 8px spacing unit for default size buttons (no matter if stacking horizontally or vertically).</p>
   </div>
-
-  <h2>Styles: </h2>
+  <h3>Styles: </h3>
   <div class="buttons-table overflow-x-auto">
     <table class="w-max">
       <thead>
@@ -679,7 +678,27 @@
     </table>
   </div>
 
-  <h2>Sizes: </h2>
+  <pre><%= '
+  <a href="#" class="crayons-btn">Button label</a>
+  <a href="#" class="... crayons-btn--secondary">Secondary Button label</a>
+  <a href="#" class="... crayons-btn--outlined">Outlined Button label</a>
+  <a href="#" class="... crayons-btn--ghost">Ghost Button label</a>
+  <a href="#" class="... crayons-btn--ghost-brand">Ghost Brand Button label</a>
+  <a href="#" class="... crayons-btn--ghost-success">Ghost Success Button label</a>
+  <a href="#" class="... crayons-btn--ghost-warning">Ghost Warning Button label</a>
+  <a href="#" class="... crayons-btn--ghost-danger">Ghost Danger Button label</a>
+  <a href="#" class="... crayons-btn--danger">Danger Button label</a>
+  <a href="#" class="... crayons-btn--icon"><svg class="crayons-icon" ...>...</svg></a>
+  <a href="#" class="... crayons-btn--icon-rounded"><svg class="crayons-icon" ...>...</svg></a>
+  <a href="#" class="... crayons-btn--icon-left"><svg class="crayons-icon" ...>...</svg>Button label</a>
+  <a href="#" class="... crayons-btn--icon-right">Button label<svg class="crayons-icon" ...>...</svg></a>
+  <a href="#" class="crayons-btn[--...] crayons-btn--inverted">Inverted style button</a>
+  '.rstrip %></pre>
+
+  <div class="body">
+    <h2>Sizes</h2>
+    <p>Buttons come with bunch of sizes.</p>
+  </div>
   <div class="buttons-table overflow-x-auto">
     <table class="w-max">
       <thead>
@@ -725,14 +744,10 @@
   </div>
 
   <pre><%= '
-  <a href="#" class="crayons-btn">Button label</a>
-  <a href="#" class="... crayons-btn--secondary">Secondary Button label</a>
-  <a href="#" class="... crayons-btn--outlined">Outlined Button label</a>
-  <a href="#" class="... crayons-btn--ghost">Ghost Button label</a>
-  <a href="#" class="... crayons-btn--danger">Danger Button label</a>
-  <a href="#" class="... crayons-btn--icon-alone"><svg class="crayons-icon" ...>...</svg></a>
-  <a href="#" class="... crayons-btn--icon-left"><svg class="crayons-icon" ...>...</svg>Button</a>
-  <a href="#" class="... crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"><svg class="crayons-icon" ...>...</svg>Button</a>
+  <a href="#" class="... crayons-btn--s">Small</a>
+  <a href="#" class="crayons-btn">Default size</a>
+  <a href="#" class="... crayons-btn--l">Large</a>
+  <a href="#" class="... crayons-btn--xl">Extra Large</a>
   '.rstrip %></pre>
 
   <div class="body">
