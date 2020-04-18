@@ -11,53 +11,105 @@ const Channels = ({
   expanded,
   filterQuery,
   channelsLoaded,
+  currentUserId,
 }) => {
-  const channels = chatChannels.map(channel => {
-    const isActive = parseInt(activeChannelId, 10) === channel.chat_channel_id;
-    const isUnopened =
-      !isActive && unopenedChannelIds.includes(channel.chat_channel_id);
-    let newMessagesIndicator = isUnopened ? 'new' : 'old';
-    const otherClassname = isActive
-      ? 'chatchanneltab--active'
-      : 'chatchanneltab--inactive';
-    return (
-      <button
-        type="button"
-        key={channel.id}
-        className="chatchanneltabbutton"
-        onClick={handleSwitchChannel}
-        data-channel-id={channel.chat_channel_id}
-        data-channel-slug={channel.channel_modified_slug}
-      >
-        <span
-          className={`chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator}`}
-          data-channel-id={channel.chat_channel_id}
-          data-channel-slug={channel.channel_modified_slug}
-          style={{
-            border: `1px solid ${channel.channel_color}`,
-            boxShadow: `3px 3px 0px ${channel.channel_color}`,
-          }}
+  const discoverableChannels = chatChannels
+    .filter((channel) => channel.viewable_by !== currentUserId)
+    .map((channel) => {
+      return (
+        <button
+          type="button"
+          key={channel.id}
+          className="chatchanneltabbutton"
+          // onClick={handleSwitchChannel}
+          // data-channel-id={channel.chat_channel_id}
+          // data-channel-slug={channel.channel_modified_slug}
         >
           <span
-            data-channel-slug={channel.channel_modified_slug}
-            className={`chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicator}`}
+            className="chatchanneltab chatchanneltab--inactive"
             data-channel-id={channel.chat_channel_id}
+            data-channel-slug={channel.channel_modified_slug}
+            style={{
+              border: `1px solid ${channel.channel_color}`,
+              boxShadow: `3px 3px 0px ${channel.channel_color}`,
+            }}
           >
-            <img
-              src={channel.channel_image}
-              alt="pic"
-              className={
-                channel.channel_type === 'direct'
-                  ? 'chatchanneltabindicatordirectimage'
-                  : 'chatchanneltabindicatordirectimage invert-channel-image'
-              }
-            />
+            <span
+              data-channel-slug={channel.channel_modified_slug}
+              className="chatchanneltabindicator"
+              data-channel-id={channel.chat_channel_id}
+            >
+              <img
+                src={channel.channel_image}
+                alt="pic"
+                className={
+                  channel.channel_type === 'direct'
+                    ? 'chatchanneltabindicatordirectimage'
+                    : 'chatchanneltabindicatordirectimage invert-channel-image'
+                }
+              />
+            </span>
+            {channel.channel_name}
           </span>
-          {isUnopened ? <span class="crayons-indicator crayons-indicator--accent crayons-indicator--bullet"></span> : ''}{channel.channel_name}
-        </span>
-      </button>
-    );
-  });
+        </button>
+      );
+    });
+  const channels = chatChannels
+    .filter((channel) => channel.viewable_by === currentUserId)
+    .map((channel) => {
+      const isActive =
+        parseInt(activeChannelId, 10) === channel.chat_channel_id;
+      const isUnopened =
+        !isActive && unopenedChannelIds.includes(channel.chat_channel_id);
+      const newMessagesIndicator = isUnopened ? 'new' : 'old';
+      const otherClassname = isActive
+        ? 'chatchanneltab--active'
+        : 'chatchanneltab--inactive';
+
+      return (
+        <button
+          type="button"
+          key={channel.id}
+          className="chatchanneltabbutton"
+          onClick={handleSwitchChannel}
+          data-channel-id={channel.chat_channel_id}
+          data-channel-slug={channel.channel_modified_slug}
+        >
+          <span
+            className={`chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator}`}
+            data-channel-id={channel.chat_channel_id}
+            data-channel-slug={channel.channel_modified_slug}
+            style={{
+              border: `1px solid ${channel.channel_color}`,
+              boxShadow: `3px 3px 0px ${channel.channel_color}`,
+            }}
+          >
+            <span
+              data-channel-slug={channel.channel_modified_slug}
+              className={`chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicator}`}
+              data-channel-id={channel.chat_channel_id}
+            >
+              <img
+                src={channel.channel_image}
+                alt="pic"
+                className={
+                  channel.channel_type === 'direct'
+                    ? 'chatchanneltabindicatordirectimage'
+                    : 'chatchanneltabindicatordirectimage invert-channel-image'
+                }
+              />
+            </span>
+            {isUnopened ? (
+              <span className="crayons-indicator crayons-indicator--accent crayons-indicator--bullet" />
+            ) : (
+              ''
+            )}
+            {channel.channel_name}
+          </span>
+        </button>
+      );
+    });
+
   let topNotice = '';
   if (
     expanded &&
@@ -103,6 +155,16 @@ const Channels = ({
       >
         {topNotice}
         {channels}
+        {discoverableChannels.length > 0 ? (
+          <div>
+            <span className="crayons-indicator crayons-indicator--">
+              Global Channel Search
+            </span>
+            {discoverableChannels}
+          </div>
+        ) : (
+          ''
+        )}
         {channelsListFooter}
       </div>
       {configFooter}
@@ -118,6 +180,7 @@ Channels.propTypes = {
   expanded: PropTypes.bool.isRequired,
   filterQuery: PropTypes.string.isRequired,
   channelsLoaded: PropTypes.bool.isRequired,
+  currentUserId: PropTypes.string.isRequired,
 };
 
 export default Channels;

@@ -6,7 +6,7 @@ export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
     'Content-Type': 'application/json',
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -29,7 +29,7 @@ export function sendMessage(messageObject, successCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -51,7 +51,7 @@ export function editMessage(editedMessage, successCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -67,7 +67,7 @@ export function sendOpen(activeChannelId, successCb, failureCb) {
     body: JSON.stringify({}),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -92,7 +92,7 @@ export function conductModeration(
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -117,11 +117,11 @@ export function getChannels(
 
   const responsePromise = fetchSearch('chat_channels', dataHash);
 
-  return responsePromise.then(response => {
+  return responsePromise.then((response) => {
     const channels = response.result;
     if (
       retrievalID === null ||
-      channels.filter(e => e.chat_channel_id === retrievalID).length === 1
+      channels.filter((e) => e.chat_channel_id === retrievalID).length === 1
     ) {
       successCb(channels, query);
     } else {
@@ -133,11 +133,56 @@ export function getChannels(
           credentials: 'same-origin',
         },
       )
-        .then(individualResponse => individualResponse.json())
-        .then(json => {
+        .then((individualResponse) => individualResponse.json())
+        .then((json) => {
           channels.unshift(json);
           successCb(channels, query);
         });
+    }
+  });
+}
+
+export function searchChannels(
+  query,
+  retrievalID,
+  props,
+  paginationNumber,
+  additionalFilters,
+  successCb,
+  _failureCb,
+) {
+  const dataHash = {};
+  if (additionalFilters.filters) {
+    const [key, value] = additionalFilters.filters.split(':');
+    dataHash[key] = value;
+  }
+  dataHash.per_page = 30;
+  dataHash.page = paginationNumber;
+  dataHash.channel_text = query;
+
+  const responsePromise = fetchSearch('chat_channels_discoverable', dataHash);
+
+  return responsePromise.then((response) => {
+    const channels = response.result;
+    if (
+      retrievalID === null ||
+      channels.filter((e) => e.chat_channel_id === retrievalID).length === 1
+    ) {
+      successCb(channels, query);
+    } else {
+      // fetch(
+      //   `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`,
+      //   {
+      //     Accept: 'application/json',
+      //     'Content-Type': 'application/json',
+      //     credentials: 'same-origin',
+      //   },
+      // )
+      //   .then(individualResponse => individualResponse.json())
+      //   .then(json => {
+      //     channels.unshift(json);
+      //     successCb(channels, query);
+      //   });
     }
   });
 }
@@ -146,8 +191,8 @@ export function getUnopenedChannelIds(successCb) {
   fetch('/chat_channels?state=unopened_ids', {
     credentials: 'same-origin',
   })
-    .then(response => response.json())
-    .then(json => {
+    .then((response) => response.json())
+    .then((json) => {
       successCb(json.unopened_ids);
     });
 }
@@ -158,7 +203,7 @@ export function getContent(url, successCb, failureCb) {
     'Content-Type': 'application/json',
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -169,7 +214,7 @@ export function getJSONContents(url, successCb, failureCb) {
     'Content-Type': 'application/json',
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -180,7 +225,7 @@ export function getChannelInvites(successCb, failureCb) {
     'Content-Type': 'application/json',
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -200,7 +245,7 @@ export function sendChannelInviteAction(id, action, successCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -220,7 +265,7 @@ export function deleteMessage(messageId, successCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }

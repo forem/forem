@@ -14,6 +14,7 @@ import {
   sendChannelInviteAction,
   deleteMessage,
   editMessage,
+  searchChannels,
 } from './actions';
 import { hideMessages, scrollToBottom, setupObserver } from './util';
 import Alert from './alert';
@@ -408,8 +409,10 @@ export default class Chat extends Component {
       unopenedChannelIds,
     } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
-    const messageList = document.getElementById('messagelist')
-    const nearBottom =  (messageList.scrollTop + messageList.offsetHeight + 400 > messageList.scrollHeight)
+    const messageList = document.getElementById('messagelist');
+    const nearBottom =
+      messageList.scrollTop + messageList.offsetHeight + 400 >
+      messageList.scrollHeight;
     if (nearBottom) {
       scrollToBottom();
     }
@@ -431,7 +434,9 @@ export default class Chat extends Component {
       }
     }
     const newShowAlert =
-      activeChannelId === receivedChatChannelId ? { showAlert: !nearBottom } : {};
+      activeChannelId === receivedChatChannelId
+        ? { showAlert: !nearBottom }
+        : {};
     let newMessageChannelIndex = 0;
     let newMessageChannel = null;
     const newChannelsObj = chatChannels.map((channel, index) => {
@@ -546,17 +551,28 @@ export default class Chat extends Component {
         e.preventDefault();
       }
     }
-    if (leftPressed && activeContent[activeChannelId] && e.target.value === '' && document.getElementById('activecontent-iframe')) {
+    if (
+      leftPressed &&
+      activeContent[activeChannelId] &&
+      e.target.value === '' &&
+      document.getElementById('activecontent-iframe')
+    ) {
       e.preventDefault();
       try {
-        e.target.value = document.getElementById('activecontent-iframe').contentWindow.location.href
-      } catch(err){
-        e.target.value = activeContent[activeChannelId].path
+        e.target.value = document.getElementById(
+          'activecontent-iframe',
+        ).contentWindow.location.href;
+      } catch (err) {
+        e.target.value = activeContent[activeChannelId].path;
       }
     }
-    if (rightPressed && !activeContent[activeChannelId] && e.target.value === '') {
+    if (
+      rightPressed &&
+      !activeContent[activeChannelId] &&
+      e.target.value === ''
+    ) {
       e.preventDefault();
-      const richLinks = document.querySelectorAll(".chatchannels__richlink");
+      const richLinks = document.querySelectorAll('.chatchannels__richlink');
       if (richLinks.length === 0) {
         return;
       }
@@ -570,9 +586,8 @@ export default class Chat extends Component {
     }
     if (escPressed && activeContent[activeChannelId]) {
       this.setActiveContentState(activeChannelId, null);
-      this.setState({fullscreenContent: null});
+      this.setState({ fullscreenContent: null });
     }
-
   };
 
   handleKeyDownEdit = (e) => {
@@ -630,7 +645,7 @@ export default class Chat extends Component {
         type_of: 'loading-post',
       });
       this.setActiveContent({
-        path: '/search?q=' + message.replace('/search ', ''),
+        path: `/search?q=${  message.replace('/search ', '')}`,
         type_of: 'article',
       });
     } else if (message.startsWith('/s ')) {
@@ -638,7 +653,7 @@ export default class Chat extends Component {
         type_of: 'loading-post',
       });
       this.setActiveContent({
-        path: '/search?q=' + message.replace('/s ', ''),
+        path: `/search?q=${  message.replace('/s ', '')}`,
         type_of: 'article',
       });
     } else if (message.startsWith('/')) {
@@ -665,7 +680,7 @@ export default class Chat extends Component {
         message,
         mentionedUsersId: this.getMentionedUsers(message),
       };
-      this.setState({scrolled: false, showAlert: false})
+      this.setState({ scrolled: false, showAlert: false });
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     }
   };
@@ -903,7 +918,18 @@ export default class Chat extends Component {
       fetchingPaginatedChannels: false,
     });
     const filters = type === 'all' ? {} : { filters: `channel_type:${type}` };
-    getChannels(filterQuery, null, this.props, 0, filters, this.loadChannels);
+    if (filterQuery && type !== 'direct') {
+      searchChannels(
+        filterQuery,
+        null,
+        this.props,
+        0,
+        filters,
+        this.loadChannels,
+      );
+    } else {
+      getChannels(filterQuery, null, this.props, 0, filters, this.loadChannels);
+    }
   };
 
   handleFailure = (err) => {
@@ -1005,14 +1031,25 @@ export default class Chat extends Component {
       channelTypeFilter === 'all'
         ? {}
         : { filters: `channel_type:${channelTypeFilter}` };
-    getChannels(
-      e.target.value,
-      null,
-      this.props,
-      0,
-      filters,
-      this.loadChannels,
-    );
+    if (e.target.value) {
+      searchChannels(
+        e.target.value,
+        null,
+        this.props,
+        0,
+        filters,
+        this.loadChannels,
+      );
+    } else {
+      getChannels(
+        e.target.value,
+        null,
+        this.props,
+        0,
+        filters,
+        this.loadChannels,
+      );
+    }
   };
 
   toggleExpand = () => {
@@ -1037,6 +1074,9 @@ export default class Chat extends Component {
       setTimeout(function () {
         document.getElementById('chatchannelsearchbar').focus();
       }, 100);
+    } else {
+      getChannels('', null, this.props, 0, '', this.loadChannels);
+      this.setState({ filterQuery: '' });
     }
     this.setState({ searchShowing: !this.state.searchShowing });
   };
@@ -1140,6 +1180,7 @@ export default class Chat extends Component {
               channelsLoaded={state.channelsLoaded}
               filterQuery={state.filterQuery}
               expanded={state.expanded}
+              currentUserId={state.currentUserId}
             />
             {notificationsState}
           </div>
