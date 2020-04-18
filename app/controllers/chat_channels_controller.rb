@@ -137,9 +137,9 @@ class ChatChannelsController < ApplicationController
   def render_unopened_json_response
     @chat_channels_memberships = if session_current_user_id
                                    ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
-                                     where("has_unopened_messages = ? OR status = ?",
-                                           true, "pending").
+                                     where(has_unopened_messages: true).
                                      where(show_global_badge_notification: true).
+                                     where.not(status: %w[removed_from_channel left_channel]).
                                      order("chat_channel_memberships.updated_at DESC")
                                  else
                                    []
@@ -161,7 +161,7 @@ class ChatChannelsController < ApplicationController
 
   def render_unopened_ids_response
     @unopened_ids = ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
-      where(has_unopened_messages: true).pluck(:chat_channel_id)
+      where(has_unopened_messages: true).where.not(status: %w[removed_from_channel left_channel]).pluck(:chat_channel_id)
     render json: { unopened_ids: @unopened_ids }
   end
 
