@@ -59,14 +59,14 @@ class ChatChannelMembershipsController < ApplicationController
     @chat_channel = ChatChannel.find(params[:chat_channel_id])
     authorize @chat_channel, :update?
     @chat_channel_membership = @chat_channel.chat_channel_memberships.find(params[:membership_id])
-    respond_to_invitation(@chat_channel_membership.user) if permitted_params[:user_action].present? && @chat_channel_membership.status == "joining_request"
+    respond_to_invitation(@chat_channel_membership.status) if permitted_params[:user_action].present? && @chat_channel_membership.status == "joining_request"
   end
 
   def update
     @chat_channel_membership = ChatChannelMembership.find(params[:id])
     authorize @chat_channel_membership
     if permitted_params[:user_action].present?
-      respond_to_invitation(current_user)
+      respond_to_invitation(@chat_channel_membership.status)
     else
       @chat_channel_membership.update(permitted_params)
       flash[:settings_notice] = "Personal settings updated."
@@ -91,11 +91,15 @@ class ChatChannelMembershipsController < ApplicationController
     params.require(:chat_channel_membership).permit(:user_action, :show_global_badge_notification)
   end
 
-  def respond_to_invitation(user)
+  def respond_to_invitation(previous_status)
     if permitted_params[:user_action] == "accept"
       @chat_channel_membership.update(status: "active")
       channel_name = @chat_channel_membership.chat_channel.channel_name
-      send_chat_action_message("@#{user.username} joined #{@chat_channel_membership.channel_name}", current_user, @chat_channel_membership.chat_channel_id, "joined")
+      if previous_status == "pending"
+        send_chat_action_message("@#{current_user.username} joined #{@chat_channel_membership.channel_name}", current_user, @chat_channel_membership.chat_channel_id, "joined")
+      else
+        send_chat_action_message("@#{current_user.username} added @#{@chat_channel_membership.user.username}", current_user, @chat_channel_membership.chat_channel_id, "joined")
+      end
       flash[:settings_notice] = "Invitation to  #{channel_name} accepted. It may take a moment to show up in your list."
     else
       @chat_channel_membership.update(status: "rejected")
