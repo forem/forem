@@ -1,5 +1,5 @@
 json.array! @podcast_episodes do |episode|
-  json.type_of            "podcast_episodes"
+  json.class_name         "PodcastEpisode"
   json.id                 episode.id
   json.path               episode.path
   json.image_url          episode.image_url || episode.podcast.image_url
