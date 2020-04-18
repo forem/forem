@@ -20,6 +20,8 @@ class ChatChannel < ApplicationRecord
   validates :slug, uniqueness: true, presence: true
   validates :description, length: { maximum: 200 }, allow_blank: true
 
+  after_commit :update_membership, on: [:update]
+
   def open?
     channel_type == "open"
   end
@@ -173,6 +175,10 @@ class ChatChannel < ApplicationRecord
 
   def pending_users_select_fields
     pending_users.select(:id, :username, :name, :updated_at)
+  end
+
+  def update_membership
+    chat_channel_memberships.update(updated_at: Time.zone.now)
   end
 
   private
