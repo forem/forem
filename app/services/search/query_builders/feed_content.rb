@@ -57,6 +57,8 @@ module Search
         slug
         tags
         title
+        video_duration_in_minutes
+        video_duration_string
         user
         organization
       ].freeze

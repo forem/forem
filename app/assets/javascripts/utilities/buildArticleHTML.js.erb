@@ -107,7 +107,7 @@ function buildArticleHTML(article) {
 
     var videoHTML = '';
     if (article.cloudinary_video_url) {
-      videoHTML = '<a href="'+article.path+'" class="single-article-video-preview" style="background-image:url('+article.cloudinary_video_url+')"><div class="single-article-video-duration"><img src="<%= asset_path("video-camera.svg") %>" alt="video camera">'+article.video_duration_in_minutes+'</div></a>'
+      videoHTML = '<a href="'+article.path+'" class="single-article-video-preview" style="background-image:url('+article.cloudinary_video_url+')"><div class="single-article-video-duration"><img src="<%= asset_path("video-camera.svg") %>" alt="video camera">'+article.video_duration_string || article.video_duration_in_minutes+'</div></a>'
     }
 
     var timeAgoInWords = '';
