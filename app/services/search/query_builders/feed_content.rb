@@ -58,6 +58,7 @@ module Search
         tags
         title
         user
+        organization
       ].freeze
 
       attr_accessor :params, :body
