@@ -57,7 +57,7 @@ var instantClick
     return target
   }
 
-  function isBlacklisted(elem) {
+  function isForbiddenFromPreloading(elem) {
     do {
       if (!elem.hasAttribute) { // Parent of <html>
         break
@@ -81,7 +81,7 @@ var instantClick
         || a.href.indexOf(domain + '/') != 0 // Another domain, or no href attribute
         || (a.href.indexOf('#') > -1
             && removeHash(a.href) == $currentLocationWithoutHash) // Anchor
-        || isBlacklisted(a)
+        || isForbiddenFromPreloading(a)
        ) {
       return false
     }
