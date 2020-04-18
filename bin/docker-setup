@@ -5,8 +5,22 @@ set -e
 echo "== Building Docker image (this may take a while) =="
 docker-compose build
 
+echo "== Ensuring Elasticsearch data directory is owned by the correct uid =="
+docker-compose run elasticsearch chown elasticsearch:elasticsearch /usr/share/elasticsearch/data
+
 echo "== Setting up database =="
-docker-compose run web rails db:setup db:migrate search:setup data_updates:run
+on_db_setup_failed() {
+  echo "Database setup failed with exit code $1." >&2
+  echo "" >&2
+  echo "Check the Docker logs using:" >&2
+  echo "    docker-compose logs" >&2
+  echo "" >&2
+  echo "Once you fixed the error, try running the script again." >&2
+  echo "To also delete all data, run this before retrying:" >&2
+  echo "    docker-compose down -v" >&2
+  exit $1
+}
+docker-compose run web rails db:setup db:migrate search:setup data_updates:run || on_db_setup_failed $?
 
 echo "== Starting app =="
 docker-compose up
