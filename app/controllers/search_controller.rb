@@ -36,6 +36,7 @@ class SearchController < ApplicationController
     :per_page,
     :search_fields,
     :sort_by,
+    :sort_direction,
     :user_id,
     {
       tag_names: [],
