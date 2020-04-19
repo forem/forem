@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Listings" do
+RSpec.describe "Api::V0::ClassifiedListings", type: :request do
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
     let(:user) { api_secret.user }
@@ -228,12 +228,12 @@ RSpec.describe "Api::V0::Listings" do
 
       it "fails with no api key" do
         post api_classified_listings_path, headers: { "content-type" => "application/json" }
-        expect(response). to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with the wrong api key" do
         post api_classified_listings_path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
-        expect(response). to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 

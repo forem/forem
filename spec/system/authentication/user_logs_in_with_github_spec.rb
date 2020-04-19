@@ -11,7 +11,7 @@ RSpec.describe "Authenticating with GitHub" do
         visit root_path
         click_link sign_in_link
 
-        expect(page.current_path).to include("/onboarding")
+        expect(page).to have_current_path("/onboarding", ignore_query: true)
         expect(page.html).to include("onboarding-container")
       end
     end

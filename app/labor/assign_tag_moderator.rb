@@ -17,7 +17,7 @@ module AssignTagModerator
       add_tag_mod_role(user, tag)
       add_trusted_role(user)
       add_to_chat_channels(user, tag)
-      NotifyMailer.tag_moderator_confirmation_email(user, tag.name).deliver unless tag.name == "go"
+      NotifyMailer.tag_moderator_confirmation_email(user, tag).deliver unless tag.name == "go"
     end
   end
 

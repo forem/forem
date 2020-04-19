@@ -78,6 +78,15 @@ RSpec.describe Authentication::Authenticator, type: :service do
           described_class.call(auth_payload)
         end
       end
+
+      it "records successful identity creation metric" do
+        allow(DatadogStatsClient).to receive(:increment)
+        service.call
+
+        expect(DatadogStatsClient).to have_received(:increment).with(
+          "identity.created", tags: [provider: "github"]
+        )
+      end
     end
 
     describe "existing user" do
@@ -107,6 +116,13 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect do
           service.call
         end.not_to change(Identity, :count)
+      end
+
+      it "does not record an identity creation metric" do
+        allow(DatadogStatsClient).to receive(:increment)
+        service.call
+
+        expect(DatadogStatsClient).not_to have_received(:increment)
       end
 
       it "sets remember_me for the existing user" do
@@ -242,6 +258,15 @@ RSpec.describe Authentication::Authenticator, type: :service do
           described_class.call(auth_payload)
         end
       end
+
+      it "records successful identity creation metric" do
+        allow(DatadogStatsClient).to receive(:increment)
+        service.call
+
+        expect(DatadogStatsClient).to have_received(:increment).with(
+          "identity.created", tags: [provider: "twitter"]
+        )
+      end
     end
 
     describe "existing user" do
@@ -271,6 +296,13 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect do
           service.call
         end.not_to change(Identity, :count)
+      end
+
+      it "does not record an identity creation metric" do
+        allow(DatadogStatsClient).to receive(:increment)
+        service.call
+
+        expect(DatadogStatsClient).not_to have_received(:increment)
       end
 
       it "updates the proper data from the auth payload" do
