@@ -34,7 +34,7 @@ class ArticlesController < ApplicationController
 
   def new
     base_editor_assigments
-    article_entity = Articles::Entity.new(current_user&.id, @user.name, @tag, @prefill)
+    article_entity = Articles::Entity.new(current_user&.id, @user&.name, @tag, @prefill)
 
     if @tag.present? && @user&.editor_version == "v2"
       authorize Article
