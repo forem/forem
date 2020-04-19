@@ -33,10 +33,10 @@ $input-width: 650px;
     p {
       margin: 10px 0 !important;
     }
-    width: 900px;
-    max-width: 94%;
-    margin: 0 auto;
-    font-size: 15px;
+    // width: 900px;
+    // max-width: 94%;
+    // margin: 0 auto;
+    // font-size: 15px;
     .finish-notice {
       background: rgb(102, 93, 162);
       max-width: 95%;
@@ -108,16 +108,16 @@ $input-width: 650px;
       }
     }
     .settings-form {
-      margin: 0px auto 50px;
-      width: 94%;
-      max-width: 700px;
-      float: left;
+      // margin: 0px auto 50px;
+      // width: 94%;
+      // max-width: 700px;
+      // float: left;
       h2 {
         font-size: 2.5em;
       }
-      @media screen and (min-width: 835px) {
-        width: 66%;
-      }
+      // @media screen and (min-width: 835px) {
+      //   width: 66%;
+      // }
     }
     #error_explanation {
       max-width: calc(95% - 18px);
@@ -137,11 +137,11 @@ $input-width: 650px;
         width: 1.2em;
       }
     }
-    label {
-      display: inline-block;
-      vertical-align: top;
-      padding: 14px 0px 8px;
-    }
+    // label {
+    //   display: inline-block;
+    //   vertical-align: top;
+    //   padding: 14px 0px 8px;
+    // }
     .field {
       input[type='checkbox'] {
         margin-top: 15px;
@@ -256,31 +256,31 @@ $input-width: 650px;
       }
     }
     form {
-      input {
-        width: $input-width;
-        max-width: calc(100% - 30px);
-        padding: 12px;
-        font-size: 19px;
-        border: 1px solid rgb(222, 230, 233);
-        border-radius: 3px;
-        &[type='file'] {
-          border: 0px;
-        }
-        &[type='submit'] {
-          width: 255px;
-          max-width: 100%;
-          padding: 14px 0px;
-          margin-top: 20px;
-          font-size: 1.5em;
-          cursor: pointer;
-          &.danger-button {
-            background: $red;
-          }
-          &:hover {
-            opacity: 0.88;
-          }
-        }
-      }
+      // input {
+      //   width: $input-width;
+      //   max-width: calc(100% - 30px);
+      //   padding: 12px;
+      //   font-size: 19px;
+      //   border: 1px solid rgb(222, 230, 233);
+      //   border-radius: 3px;
+      //   &[type='file'] {
+      //     border: 0px;
+      //   }
+      //   &[type='submit'] {
+      //     width: 255px;
+      //     max-width: 100%;
+      //     padding: 14px 0px;
+      //     margin-top: 20px;
+      //     font-size: 1.5em;
+      //     cursor: pointer;
+      //     &.danger-button {
+      //       background: $red;
+      //     }
+      //     &:hover {
+      //       opacity: 0.88;
+      //     }
+      //   }
+      // }
       select {
         display: block;
         font-size: 19px;
@@ -338,16 +338,16 @@ $input-width: 650px;
           vertical-align: top;
         }
       }
-      textarea {
-        border: 1px solid rgb(222, 230, 233);
-        width: $input-width;
-        max-width: calc(100% - 30px);
-        padding: 12px;
-        border-radius: 3px;
-        height: 120px;
-        font-size: 16px;
-        resize: none;
-      }
+      // textarea {
+      //   border: 1px solid rgb(222, 230, 233);
+      //   width: $input-width;
+      //   max-width: calc(100% - 30px);
+      //   padding: 12px;
+      //   border-radius: 3px;
+      //   height: 120px;
+      //   font-size: 16px;
+      //   resize: none;
+      // }
     }
     %inline-button-form {
       display: inline-block;
@@ -507,16 +507,16 @@ $input-width: 650px;
         color: $red;
       }
     }
-    form {
-      display: inline-block;
-      button {
-        cursor: pointer;
-        &:hover {
-          color: $blue;
-          border: 1px solid $blue;
-        }
-      }
-    }
+    // form {
+    //   display: inline-block;
+    //   button {
+    //     cursor: pointer;
+    //     &:hover {
+    //       color: $blue;
+    //       border: 1px solid $blue;
+    //     }
+    //   }
+    // }
   }
 }
 

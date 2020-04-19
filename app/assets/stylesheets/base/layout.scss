@@ -1,0 +1,28 @@
+@import '../config/import';
+
+:root {
+  --layout-sidebar-width: 200px;
+  --layout-gap: #{$su-6};
+  --layout-padding: #{$su-6};
+}
+
+.crayons-layout {
+  &__sidebar {
+  }
+
+  &__content {
+  }
+}
+
+.crayons-layout--default {
+  width: 100%;
+  max-width: $site-width;
+  margin: 0 auto;
+
+  @media (min-width: $breakpoint-s) {
+    display: grid;
+    grid-gap: var(--layout-gap);
+    grid-template-columns: var(--layout-sidebar-width) 1fr;
+    padding: var(--layout-padding);
+  }
+}
