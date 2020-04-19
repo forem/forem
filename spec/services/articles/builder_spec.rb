@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Articles::Entity, type: :service do
+RSpec.describe Articles::Builder, type: :service do
   let(:user) { create(:user) }
   let(:tag) { create(:tag) }
   let(:prefill) { "dsdweewewew" }

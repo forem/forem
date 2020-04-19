@@ -1,5 +1,5 @@
 module Articles
-  class Entity
+  class Builder
     attr_reader :user_id, :user_name
 
     def initialize(user_id, user_name, tag, prefill)

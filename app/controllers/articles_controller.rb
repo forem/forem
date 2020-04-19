@@ -34,34 +34,34 @@ class ArticlesController < ApplicationController
 
   def new
     base_editor_assigments
-    article_entity = Articles::Entity.new(current_user&.id, @user&.name, @tag, @prefill)
+    article_builder = Articles::Builder.new(current_user&.id, @user&.name, @tag, @prefill)
 
     if @tag.present? && @user&.editor_version == "v2"
       authorize Article
 
-      @article = article_entity.tag_user_editor_v2
+      @article = article_builder.tag_user_editor_v2
     elsif @tag&.submission_template.present? && @user
       authorize Article
 
-      @article = article_entity.tag_user
+      @article = article_builder.tag_user
     elsif @prefill.present? && @user&.editor_version == "v2"
       authorize Article
 
-      @article = article_entity.prefill_user_editor_v2
+      @article = article_builder.prefill_user_editor_v2
     elsif @prefill.present? && @user
       authorize Article
 
-      @article = article_entity.prefill_user
+      @article = article_builder.prefill_user
     elsif @tag.present?
       skip_authorization
 
-      @article = article_entity.tag
+      @article = article_builder.tag
     else
       skip_authorization
 
-      return article_entity.user_editor_v2 if @user&.editor_version == "v2"
+      return article_builder.user_editor_v2 if @user&.editor_version == "v2"
 
-      @article = article_entity.user_editor_v1
+      @article = article_builder.user_editor_v1
     end
   end
 
