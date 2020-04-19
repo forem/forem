@@ -19,36 +19,104 @@
 
 <% if user_signed_in? %>
   <div class="home" id="notifications-container">
+
     <div class="side-bar">
-      <div class="widget fixed-widget">
-        <header>
-          <h4>notifications</h4>
+      <div class="crayons-card fixed-widget">
+        <header class="crayons-card__header">
+          <h3 class="crayons-card__title">Filter</h3>
         </header>
-        <div class="widget-body">
-          <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">ALL</a>
-          <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">COMMENTS</a>
-          <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">POSTS</a>
+        <div class="crayons-card__body widget-body">
+          <section class="crayons-card__inner-section">
+            <% if @organizations.present? %>
+              <header class="crayons-card__section-header">
+                <h4 class="crayons-card__section-header__title">
+                  <span>@<%= @user.username %></span>
+                </h4>
+              </header>
+            <% end %>
+            <fieldset class="crayons-fieldset">
+              <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">
+                <div class="crayons-field crayons-field--radio">
+                  <input type="radio" name="all" id="r2" class="crayons-radio" <%= "checked" if params[:filter].blank? %>>
+                  <label for="all" class="crayons-field__label">
+                    All
+                  </label>
+                </div>
+              </a>
+              
+              <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">
+                <div class="crayons-field crayons-field--radio">
+                  <input type="radio" name="name1" id="r2" class="crayons-radio" <%= "checked" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>>
+                  <label for="r2" class="crayons-field__label">
+                    Comments
+                  </label>
+                </div>
+              </a>
+
+              <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">
+                <div class="crayons-field crayons-field--radio">
+                  <input type="radio" name="name1" id="r2" class="crayons-radio" <%= "checked" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>>
+                  <label for="r2" class="crayons-field__label">
+                    Posts
+                  </label>
+                </div>
+              </a>
+            </fieldset>
+          </section>
+          <section class="crayons-card__inner-section">
+            <% if @organizations.present? %>
+              <% @organizations.each do |org| %>
+                <header class="crayons-card__section-header">
+                  <h4 class="crayons-card__secondaray-header__title">
+                  <span>@<%= org.slug %></span>
+                  </h4>
+                </header>
+                <fieldset class="crayons-fieldset">
+                  <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
+                    <div class="crayons-field crayons-field--radio">
+                      <input type="radio" name="name1" id="r2" class="crayons-radio" <%= "checked" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>>
+                      <label for="r2" class="crayons-field__label">
+                        All
+                      </label>
+                    </div>
+                  </a>
+                  <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
+                    <div class="crayons-field crayons-field--radio">
+                      <input type="radio" name="name1" id="r2" class="crayons-radio" <%= "checked" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>>
+                      <label for="r2" class="crayons-field__label">
+                        Comments
+                      </label>
+                    </div>
+                  </a>
+                </fieldset>
+              <% end %>
+            <% end %>
+          </section>
         </div>
-        <% if @organizations.present? %>
-          <% @organizations.each do |org| %>
-            <hr>
-            <header>
-              <h4><%= org.name %></h4>
-            </header>
-            <div class="widget-body">
-              <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">ALL</a>
-              <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">COMMENTS</a>
-            </div>
-          <% end %>
-        <% end %>
+
       </div>
     </div>
+
     <div class="articles-list" id="articles-list">
-      <div class="notifications-mobile-filters">
-        <a class="query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">ALL</a>
-        <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">COMMENTS</a>
-        <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">POSTS</a>
+
+      <div class="crayons-tabs notifications-mobile-filters">
+        <a class="crayons-tabs--item query-filter-button <%= "selected" if params[:filter].blank? %>" href="/notifications">
+          <span class="crayons-tabs--label">
+            All
+          </span>
+        </a>
+        <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">
+          <span class="">
+            Comments
+          </span>
+        </a>
+        <a class="query-filter-button <%= "selected" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">
+          <span class="">
+            Posts
+          </span>
+        </a>
       </div>
+
       <% if @organizations.present? %>
         <% @organizations.each do |org| %>
           <div class="notifications-mobile-filters">
@@ -61,13 +129,14 @@
       <% end %>
 
       <%= render "notifications_list", params: params %>
+
     </div>
 
     <%# new or less active users that don't have a page worth of notifications
         won't be shown the "load more" button %>
     <% if @notifications.size >= @initial_page_size %>
       <div class="load-more-wrapper">
-        <button id="load-more-button" type="button">
+        <button id="load-more-button" type="button" class="crayons-btn--secondary">
           Load More
         </button>
       </div>

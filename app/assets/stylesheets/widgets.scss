@@ -418,6 +418,13 @@
   }
 }
 
+.query-filter-button {
+  box-sizing: border-box;
+  display: inline-block;
+  padding: $su-2 0;
+  width: 100%;
+}
+
 // Sidebar sponsors
 .sidebar-sponsor {
   color: var(--card-color-tertiary);

@@ -428,3 +428,36 @@
     @include load-more;
   }
 }
+
+
+// Notifications filtering on mobile.
+.notifications-mobile-filters {
+  @media screen and (min-width: 950px) {
+    display: none;
+  }
+
+  .organization-name {
+    font-size: 15px;
+    font-weight: bold;
+    border: 0px;
+    display: inline-block;
+    width: 27%;
+    padding: 9px 0px;
+    text-align: center;
+    color: var(--card-color-tertiary);
+    margin: 1%;
+  }
+
+  .query-filter-button {
+    background: transparent;
+    display: inline-block;
+    text-align: left;
+    border-radius: 100px;
+    color: var(--card-color);
+    text-align: center;
+
+    &.selected {
+      border-bottom: 2px solid var(--accent-brand);
+    }
+  }
+}
