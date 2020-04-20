@@ -269,3 +269,25 @@ export function deleteMessage(messageId, successCb, failureCb) {
     .then(successCb)
     .catch(failureCb);
 }
+
+export function sendChannelRequest(id, successCb, failureCb) {
+  fetch(`/chat_channel_memberships`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      chat_channel_membership: {
+        chat_channel_id: id,
+        invitation_usernames: window.currentUser.username,
+        status: 'joining_request',
+      },
+    }),
+    credentials: 'same-origin',
+  })
+    .then((response) => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
