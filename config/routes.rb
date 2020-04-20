@@ -260,6 +260,7 @@ Rails.application.routes.draw do
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   post "/chat_channel_memberships/remove_membership" => "chat_channel_memberships#remove_membership"
   post "/chat_channel_memberships/add_membership" => "chat_channel_memberships#add_membership"
+  post "/join_chat_channel" => "chat_channel_memberships#join_channel"
   delete "/messages/:id" => "messages#destroy"
   patch "/messages/:id" => "messages#update"
   get "/live/:username" => "twitch_live_streams#show"
