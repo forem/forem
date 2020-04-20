@@ -32,7 +32,7 @@ class FollowTags extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user: { last_onboarding_page: 'follow tags page' },
+        user: { last_onboarding_page: 'v2: follow tags page' },
       }),
       credentials: 'same-origin',
     });

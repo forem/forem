@@ -11,9 +11,7 @@
   right: $su-2;
   bottom: $su-2;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: $su-2;
+  flex-direction: column;
   color: var(--body-color-inverted);
 
   @media (min-width: $breakpoint-s) {
@@ -22,6 +20,18 @@
     left: $su-6;
     right: auto;
     bottom: $su-6;
+  }
+
+  &__item {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: $su-2;
+    border-bottom: 1px solid var(--box-darker);
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   &__body {

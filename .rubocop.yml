@@ -100,6 +100,10 @@ Layout/MultilineMethodCallIndentation:
   Enabled: true
   EnforcedStyle: indented
 
+Layout/SpaceAroundMethodCallOperator:
+  Description: 'Checks method call operators to not have spaces around them.'
+  Enabled: true
+
 #################### Lint ##################################
 
 Lint/AmbiguousBlockAssociation:
@@ -222,6 +226,12 @@ Style/Documentation:
 Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
   Enabled: false
+
+Style/ExponentialNotation:
+  Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
+  StyleGuide: '#exponential-notation'
+  Enabled: true
+  EnforcedStyle: scientific
 
 Style/FrozenStringLiteralComment:
   Description: >-
@@ -383,7 +393,9 @@ RSpec/DescribeClass:
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeClass
   Exclude:
+    - 'spec/requests/**/*'
     - 'spec/system/**/*'
+    - 'spec/tasks/**/*'
 
 RSpec/ExampleLength:
   Description: Checks for long examples.

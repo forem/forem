@@ -81,7 +81,7 @@ RSpec.describe CodesandboxTag, type: :liquid_tag do
 
     it "rejects bad ids" do
       bad_ids.each do |id|
-        expect { generate_tag(id) } .to raise_error(StandardError)
+        expect { generate_tag(id) }.to raise_error(StandardError)
       end
     end
   end
