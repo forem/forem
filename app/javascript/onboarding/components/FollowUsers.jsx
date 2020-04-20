@@ -38,7 +38,7 @@ class FollowUsers extends Component {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        user: { last_onboarding_page: 'follow users page' },
+        user: { last_onboarding_page: 'v2: follow users page' },
       }),
       credentials: 'same-origin',
     });
@@ -92,7 +92,7 @@ class FollowUsers extends Component {
     }
   }
 
-  userFollowCountMessage() {
+  renderFollowCount() {
     const { users, selectedUsers } = this.state;
     let followingStatus;
     if (selectedUsers.length === 0) {
@@ -104,8 +104,12 @@ class FollowUsers extends Component {
     } else {
       followingStatus = `You're following ${selectedUsers.length} people`;
     }
+    const klassName =
+      selectedUsers.length > 0
+        ? 'follow-count--active'
+        : 'follow-count-message';
 
-    return followingStatus;
+    return <p className={klassName}>{followingStatus}</p>;
   }
 
   renderFollowToggle() {
@@ -168,7 +172,7 @@ class FollowUsers extends Component {
         </div>
         <div className="onboarding-selection-status">
           <div className="selection-status-content">
-            <p>{this.userFollowCountMessage()}</p>
+            {this.renderFollowCount()}
             {this.renderFollowToggle()}
           </div>
         </div>

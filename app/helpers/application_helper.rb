@@ -194,7 +194,7 @@ module ApplicationHelper
     URL.reaction(reaction)
   end
 
-  def tag_url(tag, page)
+  def tag_url(tag, page = 1)
     URL.tag(tag, page)
   end
 

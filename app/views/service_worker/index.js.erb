@@ -115,18 +115,25 @@
         !url.href.includes('/enter') && // Don't run on registration.
         !url.href.includes('/sitemap-') && // Don't run on registration.
         !url.href.includes('/welcome') && // Don't run on welcome reroutes.
+        !url.href.includes('/checkin') && // Don't run on checkin reroutes.
 
         // Don't run on search endpoints
         !url.href.includes('/search/tags') &&
         !url.href.includes('/search/chat_channels') &&
         !url.href.includes('/search/classified_listings') &&
+        !url.href.includes('/search/reactions') &&
+        !url.href.includes('/search/feed_content') &&
         !url.href.includes('/search/users') &&
 
-        // Don't run on redirects
-        !url.href.includes('/workshops') &&
+        // Don't run on harcoded redirects (see config/routes.rb for the list)
         !url.href.includes('/%F0%9F%92%B8') && // 💸 (hiring)
-        !url.href.includes('/podcasts') &&
+        !url.href.includes('/api') &&
+        !url.href.includes('/future') &&
         !url.href.includes('/p/rlyweb') &&
+        !url.href.includes('/podcasts') &&
+        !url.href.includes('/shop') &&
+        !url.href.includes('/survey') &&
+        !url.href.includes('/workshops') &&
 
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.
