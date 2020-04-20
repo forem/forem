@@ -3,7 +3,7 @@
   <img src="<%= cloud_cover_url(@featured_story.main_image) %>" style="display:none" alt="<%= @featured_story.title %>" />
   <a href="<%= @featured_story.path %>" id="article-link-<%= @featured_story.id %>" class="index-article-link" aria-label="Main Story" data-featured-article="articles-<%= @featured_story.id %>">
     <div class="single-article big-article" data-content-user-id="<%= @featured_story.user_id %>">
-      <img class="picture image-final" src="<%= cloud_cover_url(@featured_story.main_image) %>" style="background-color:<%= @featured_story.main_image_background_hex_color %>;" alt="<% @featured_story.title %>%" />
+      <div class="picture image-final" style="background-color:<%= @featured_story.main_image_background_hex_color %>;background-image:url(<%= cloud_cover_url(@featured_story.main_image) %>)"></div>
       <div class="content-wrapper">
         <h3>
           <%= @featured_story.title %>
