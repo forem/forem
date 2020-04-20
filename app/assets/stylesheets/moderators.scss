@@ -173,20 +173,14 @@
       color: var(--base-70);
     }
     button.circle {
-      position: absolute;
       width: 40px;
       height: 40px;
       border: none;
-      border-radius: 40px;
-      right: 16px;
-      top: 16px;
+      border-radius: 100%;
       background: var(--base-10);
-      .chevron-right {
-        position: absolute;
-        top: 20%;
-        right: 33%;
-        left: 21%;
-      }
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
   h2 {
