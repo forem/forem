@@ -1,5 +1,6 @@
 class ImageUploadsController < ApplicationController
   before_action :authenticate_user!
+  before_action :validate_filename_length
   after_action :verify_authorized
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
@@ -45,6 +46,18 @@ class ImageUploadsController < ApplicationController
   end
 
   private
+
+  def validate_filename_length
+    images = params.dig("image")
+
+    images.each do |image|
+      next unless image&.original_filename && image.original_filename.length > MAX_FILENAME_LENGTH
+
+      respond_to do |format|
+        format.json { render json: { error: "filename too long (#{image.original_filename}) - the max is #{MAX_FILENAME_LENGTH} characters." }, status: :unprocessable_entity }
+      end
+    end
+  end
 
   def upload_images(images, rate_limiter)
     Array.wrap(images).map do |image|
