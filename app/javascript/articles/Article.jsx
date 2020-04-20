@@ -69,7 +69,10 @@ export const Article = ({
         </div>
       </div>
 
-      {/* <CommentsList /> */}
+      <CommentsList
+        comments={article.top_comments}
+        totalCount={article.comments_count}
+      />
     </div>
   );
 };
