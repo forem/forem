@@ -346,7 +346,7 @@ class UsersController < ApplicationController
   end
 
   def validate_filename_length
-    image = params.dig("image")
+    image = params.dig("user", "profile_image")
     return unless image&.original_filename && image.original_filename.length > MAX_FILENAME_LENGTH
 
     set_tabs(params["user"]["tab"])

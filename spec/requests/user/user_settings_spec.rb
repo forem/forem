@@ -152,12 +152,12 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     it "returns error if Profile image file name is too long" do
-      stub_const("MAX_FILENAME_LENGTH", 1)
       profile_image = fixture_file_upload("files/800x600.png", "image/png")
+      allow(profile_image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
 
       put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
 
-      expect(response).to redirect_to(user_settings_path(:profile))
+      expect(response).to have_http_status(:bad_request)
     end
 
     context "when requesting an export of the articles" do
