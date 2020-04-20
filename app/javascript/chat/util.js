@@ -30,6 +30,11 @@ const getWaitOnUserDataHandler = ({ resolve, reject, waitTime = 20 }) => {
   };
 };
 
+export const getCurrentUser = () => {
+  const { user } = document.body.dataset;
+  return JSON.parse(user);
+};
+
 export function getUserDataAndCsrfToken() {
   return new Promise((resolve, reject) => {
     getWaitOnUserDataHandler({ resolve, reject })();
@@ -52,7 +57,7 @@ export function setupObserver(callback) {
 export function hideMessages(messages, userId) {
   const cleanedMessages = Object.keys(messages).reduce(
     (accumulator, channelId) => {
-      const newMessages = messages[channelId].map(message => {
+      const newMessages = messages[channelId].map((message) => {
         if (message.user_id === userId) {
           const messageClone = Object.assign({ type: 'hidden' }, message);
           messageClone.message = '<message removed>';

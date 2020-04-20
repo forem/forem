@@ -12,6 +12,7 @@ const Channels = ({
   filterQuery,
   channelsLoaded,
   currentUserId,
+  triggerActiveContent,
 }) => {
   const discoverableChannels = chatChannels
     .filter((channel) => channel.viewable_by !== currentUserId)
@@ -20,14 +21,24 @@ const Channels = ({
         <button
           type="button"
           key={channel.id}
+<<<<<<< HEAD
           className="chatchanneltabbutton crayons-link"
           // onClick={handleSwitchChannel}
           // data-channel-id={channel.chat_channel_id}
           // data-channel-slug={channel.channel_modified_slug}
+=======
+          className="chatchanneltabbutton"
+          onClick={triggerActiveContent}
+          data-content="sidecar-channel-request"
+          data-channel-id={channel.chat_channel_id}
+          data-channel-name={channel.channel_name}
+          type="button"
+>>>>>>> 🚀Feature : Ability to send request to discoverable channel
         >
           <span
             className="chatchanneltab chatchanneltab--inactive"
             data-channel-id={channel.chat_channel_id}
+            data-channel-name={channel.channel_name}
             data-channel-slug={channel.channel_modified_slug}
             style={{
               border: `1px solid ${channel.channel_color}`,
@@ -37,6 +48,7 @@ const Channels = ({
             <span
               data-channel-slug={channel.channel_modified_slug}
               className="chatchanneltabindicator"
+              data-channel-name={channel.channel_name}
               data-channel-id={channel.chat_channel_id}
             >
               <img
@@ -175,6 +187,7 @@ Channels.propTypes = {
   chatChannels: PropTypes.arrayOf(PropTypes.objectOf()).isRequired,
   unopenedChannelIds: PropTypes.arrayOf().isRequired,
   handleSwitchChannel: PropTypes.func.isRequired,
+  triggerActiveContent: PropTypes.func.isRequired,
   expanded: PropTypes.bool.isRequired,
   filterQuery: PropTypes.string.isRequired,
   channelsLoaded: PropTypes.bool.isRequired,

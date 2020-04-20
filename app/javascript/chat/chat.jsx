@@ -16,7 +16,12 @@ import {
   editMessage,
   searchChannels,
 } from './actions';
-import { hideMessages, scrollToBottom, setupObserver } from './util';
+import {
+  hideMessages,
+  scrollToBottom,
+  setupObserver,
+  getCurrentUser,
+} from './util';
 import Alert from './alert';
 import Channels from './channels';
 import Compose from './compose';
@@ -652,7 +657,7 @@ export default class Chat extends Component {
         type_of: 'loading-post',
       });
       this.setActiveContent({
-        path: `/search?q=${  message.replace('/search ', '')}`,
+        path: `/search?q=${message.replace('/search ', '')}`,
         type_of: 'article',
       });
     } else if (message.startsWith('/s ')) {
@@ -660,7 +665,7 @@ export default class Chat extends Component {
         type_of: 'loading-post',
       });
       this.setActiveContent({
-        path: `/search?q=${  message.replace('/s ', '')}`,
+        path: `/search?q=${message.replace('/s ', '')}`,
         type_of: 'article',
       });
     } else if (message.startsWith('/')) {
@@ -820,16 +825,23 @@ export default class Chat extends Component {
       e.stopPropagation();
 
       const { activeChannelId, activeChannel } = this.state;
-      if (target.dataset.content.startsWith('chat_channels/')) {
+      if (content.startsWith('chat_channels/')) {
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-user',
         });
-        getContent(
-          `/${target.dataset.content}/channel_info`,
-          this.setActiveContent,
-          null,
-        );
-      } else if (target.dataset.content === 'sidecar_all') {
+        getContent(`/${content}/channel_info`, this.setActiveContent, null);
+      } else if (content === 'sidecar-channel-request') {
+        this.setActiveContent({
+          data: {
+            user: getCurrentUser(),
+            channel: {
+              id: target.dataset.channelId,
+              name: target.dataset.channelName,
+            },
+          },
+          type_of: 'channel-request',
+        });
+      } else if (content === 'sidecar_all') {
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-post',
         });
@@ -969,22 +981,15 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You and
-              {' '}
+              You and{' '}
               <a href={`/${activeChannel.channel_modified_slug}`}>
                 {activeChannel.channel_modified_slug}
-              </a>
-              {' '}
-              are connected because you both follow each other. All interactions
-              {' '}
+              </a>{' '}
+              are connected because you both follow each other. All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-              .
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -993,19 +998,11 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
-              {' '}
-              {activeChannel.channel_name}
-              ! All interactions
-              {' '}
+              You have joined {activeChannel.channel_name}! All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-              .
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -1128,8 +1125,7 @@ export default class Chat extends Component {
             >
               <span role="img" aria-label="emoji">
                 👋
-              </span>
-              {' '}
+              </span>{' '}
               New Invitations!
             </a>
           </div>
@@ -1197,6 +1193,7 @@ export default class Chat extends Component {
               filterQuery={state.filterQuery}
               expanded={state.expanded}
               currentUserId={state.currentUserId}
+              triggerActiveContent={this.triggerActiveContent}
             />
             {notificationsState}
           </div>
