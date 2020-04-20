@@ -102,7 +102,7 @@ a.header-link {
       margin: auto;
       margin-bottom: -35px;
       .read-more {
-        color: var(--link-brand-color);
+        color: var(--link-branded-color);
         display: inline-block;
         &:hover {
           opacity: 0.96;
@@ -524,7 +524,7 @@ a.header-link {
       text-align: right;
       font-size: 0.9em;
       font-weight: 500;
-      color: var(--link-brand-color);
+      color: var(--link-branded-color);
       &.sub-comment-code-of-conduct {
         font-size: 1em;
       }
@@ -534,7 +534,7 @@ a.header-link {
         margin: 5px 0px;
       }
       a {
-        color: var(--link-brand-color);
+        color: var(--link-branded-color);
       }
     }
     input[type='submit'] {
@@ -896,7 +896,7 @@ a.header-link {
   .details {
     padding: 0px;
     border-top-left-radius: 3px;
-    color: var(--link-brand-color);
+    color: var(--link-branded-color);
     position: relative;
     .comment-date {
       border: none;

@@ -51,7 +51,7 @@ exports[`<Button /> component should render a button with with an icon when an i
 
 exports[`<Button /> component should render a button with with an icon when an icon is set and there is no button text 1`] = `
 <button
-  class="crayons-btn crayons-btn--icon"
+  class="crayons-btn crayons-btn--icon-alone"
   disabled={false}
   type="button"
 >

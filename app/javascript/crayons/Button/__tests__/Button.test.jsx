@@ -55,11 +55,7 @@ describe('<Button /> component', () => {
       </svg>
     );
 
-    const tree = render(
-      <Button icon={Icon} contentType="icon-left">
-        Hello world!
-      </Button>,
-    );
+    const tree = render(<Button icon={Icon}>Hello world!</Button>);
     expect(tree).toMatchSnapshot();
   });
 
@@ -75,7 +71,7 @@ describe('<Button /> component', () => {
       </svg>
     );
 
-    const tree = render(<Button icon={Icon} contentType="icon" />);
+    const tree = render(<Button icon={Icon} />);
     expect(tree).toMatchSnapshot();
   });
 
