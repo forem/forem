@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import 'config/import';
 
 .mod-index-hero {
   margin: 0 auto;
@@ -155,20 +156,20 @@
 }
 
 .mod-container {
-  padding: 16px 0px;
+  padding: $su-4 0;
 
   header.top-header {
-    padding: 0px 16px;
+    padding: 0px $su-4;
     display: flex;
     flex-direction: column;
     text-align: left;
     h1 {
-      font-size: 18px;
-      font-weight: bold;
+      font-size: $fs-l;
+      font-weight: $fw-bold;
     }
     h2 {
-      font-size: 16px;
-      font-weight: normal;
+      font-size: $fs-base;
+      font-weight: $fw-normal;
       color: var(--base-70);
     }
     button.circle {
