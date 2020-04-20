@@ -61,7 +61,7 @@ function buildCommentHTML(comment) {
                     <a href="'+comment.url+'/settings">\
                       Settings\
                     </a>\
-                    <a href="/report-abuse?url=https://dev.to'+comment.url+'">Report Abuse</a>\
+                    <a href="/report-abuse?url=<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>'+comment.url+'">Report Abuse</a>\
                   </div>\
               </div>\
             </div>\

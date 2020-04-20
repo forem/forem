@@ -32,7 +32,7 @@
     </p>
     <% if user_signed_in? %>
       <p>
-        <a href="https://dev.to/<%= current_user.username %>">
+        <a href="<%= user_url(current_user) %>">
           <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s <%= community_name %> Profile" height="30" width="30" class="dev-badge">
         </a>
       </p>
