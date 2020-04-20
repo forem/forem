@@ -7,8 +7,13 @@
 <% end %>
 
 <div class="container mod-container" style="text-align: center">
-  <h2><a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
-  <h3><a href="<%= @moderatable.user.path %>">@<%= @moderatable.user.username %></a></h3>
+  <header class="top-header">
+    <h1>Moderate Post</h1>
+    <h2>Rate the quality of this post</h2>
+    <button class="circle" type="button">
+      <img class="chevron-right" src="<%= asset_path("chevron-right.svg") %>" alt="">
+    </button>
+  </header>
   <% if @moderatable.class.name == "Article" &&
        (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? && 
        (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) })

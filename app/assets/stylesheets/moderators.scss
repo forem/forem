@@ -155,7 +155,39 @@
 }
 
 .mod-container {
-  padding: 30px 0px;
+  padding: 16px 0px;
+
+  header.top-header {
+    padding: 0px 16px;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    h1 {
+      font-size: 18px;
+      font-weight: bold;
+    }
+    h2 {
+      font-size: 16px;
+      font-weight: normal;
+      color: var(--base-70);
+    }
+    button.circle {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 40px;
+      right: 16px;
+      top: 16px;
+      background: var(--base-10);
+      img.chevron-right {
+        position: absolute;
+        top: 20%;
+        right: 33%;
+        left: 21%;
+      }
+    }
+  }
   h2 {
     a {
       color: var(--body-color);
