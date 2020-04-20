@@ -104,6 +104,7 @@ export class CommentSubscription extends Component {
             <Button
               variant="outlined"
               icon={CogIcon}
+              contentType="icon"
               onClick={(_event) => {
                 this.setState({ showOptions: !showOptions });
               }}
