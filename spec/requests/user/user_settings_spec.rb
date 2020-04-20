@@ -151,6 +151,15 @@ RSpec.describe "UserSettings", type: :request do
       expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
     end
 
+    it "returns error if Profile image file name is too long" do
+      stub_const("MAX_FILENAME_LENGTH", 1)
+      profile_image = fixture_file_upload("files/800x600.png", "image/png")
+
+      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
+
+      expect(response).to redirect_to(user_settings_path(:profile))
+    end
+
     context "when requesting an export of the articles" do
       def send_request(flag = true)
         put "/users/#{user.id}", params: {

@@ -347,7 +347,7 @@ class UsersController < ApplicationController
 
   def check_filename_length
     image = params.dig("user", "profile_image")
-    return unless image.original_filename.length > MAX_FILENAME_LENGTH
+    return unless image&.original_filename && image.original_filename.length > MAX_FILENAME_LENGTH
 
     set_tabs(params["user"]["tab"])
     @user.errors.add(:profile_image, "filename too long - the max is #{MAX_FILENAME_LENGTH} characters.")
