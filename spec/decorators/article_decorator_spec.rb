@@ -41,7 +41,7 @@ RSpec.describe ArticleDecorator, type: :decorator do
   describe "#processed_canonical_url" do
     it "strips canonical_url" do
       article.canonical_url = " http://google.com "
-      expect(article.decorate.processed_canonical_url). to eq("http://google.com")
+      expect(article.decorate.processed_canonical_url).to eq("http://google.com")
     end
 
     it "returns the article url without a canonical_url" do
