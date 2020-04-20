@@ -169,20 +169,6 @@ export function searchChannels(
       channels.filter((e) => e.chat_channel_id === retrievalID).length === 1
     ) {
       successCb(channels, query);
-    } else {
-      // fetch(
-      //   `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`,
-      //   {
-      //     Accept: 'application/json',
-      //     'Content-Type': 'application/json',
-      //     credentials: 'same-origin',
-      //   },
-      // )
-      //   .then(individualResponse => individualResponse.json())
-      //   .then(json => {
-      //     channels.unshift(json);
-      //     successCb(channels, query);
-      //   });
     }
   });
 }

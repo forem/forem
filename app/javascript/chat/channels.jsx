@@ -21,19 +21,11 @@ const Channels = ({
         <button
           type="button"
           key={channel.id}
-<<<<<<< HEAD
-          className="chatchanneltabbutton crayons-link"
-          // onClick={handleSwitchChannel}
-          // data-channel-id={channel.chat_channel_id}
-          // data-channel-slug={channel.channel_modified_slug}
-=======
           className="chatchanneltabbutton"
           onClick={triggerActiveContent}
           data-content="sidecar-channel-request"
           data-channel-id={channel.chat_channel_id}
           data-channel-name={channel.channel_name}
-          type="button"
->>>>>>> 🚀Feature : Ability to send request to discoverable channel
         >
           <span
             className="chatchanneltab chatchanneltab--inactive"
