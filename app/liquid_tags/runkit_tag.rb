@@ -44,6 +44,8 @@ class RunkitTag < Liquid::Block
         }
       }, 200);
     }
+
+    waitForRunkitAndActivateTags();
   JAVASCRIPT
 
   def initialize(tag_name, markup, tokens)
