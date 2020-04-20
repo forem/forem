@@ -3,6 +3,7 @@ function initNotifications() {
   markNotificationsAsRead();
   initReactions();
   listenForNotificationsBellClick();
+  initFilter();
   initPagination();
   initLoadMoreButton();
 }
@@ -129,6 +130,27 @@ function listenForNotificationsBellClick() {
         .classList.add('hidden');
     };
   }, 180);
+}
+
+function initFilter() {
+  var navFilterMenu = document.getElementsByClassName("notifications-filter__menu");
+  var navFilterSelect = document.getElementById("notifications-filter__select");
+
+  for (var i = 0; i < navFilterMenu.length; i++) {
+    document.getElementById("notifications-filter__menu-overlay").classList.remove("showing");
+  }
+
+  if (navFilterSelect) {
+    navFilterSelect.onclick = function(){
+      document.getElementById("notifications-filter__menu-overlay").classList.add("showing");
+    }
+  }
+
+  for (var i = 0; i < navFilterMenu.length; i++) {
+    navFilterMenu[i].onclick = function(event){
+      document.getElementById("notifications-filter__menu-overlay").classList.remove("showing");
+    }
+  }
 }
 
 function initPagination() {
