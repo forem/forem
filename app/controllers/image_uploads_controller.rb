@@ -48,7 +48,7 @@ class ImageUploadsController < ApplicationController
   private
 
   def validate_filename_length
-    images = params.dig("image")
+    images = Array.wrap(params.dig("image"))
 
     images.each do |image|
       next unless image&.original_filename && image.original_filename.length > MAX_FILENAME_LENGTH

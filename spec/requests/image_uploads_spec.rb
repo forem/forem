@@ -82,6 +82,12 @@ RSpec.describe "ImageUploads", type: :request do
 
         expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
       end
+
+      it "returns error if image file name is too long" do
+        allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
+        post "/image_uploads", headers: headers, params: { image: image }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
 
     context "when uploading rate limiting works" do
