@@ -1,25 +1,25 @@
 <% title "Settings" %>
 
 <% if flash[:settings_notice] %>
-  <div class="notice" id="notice">
+  <div class="crayons-banner">
     <%= flash[:settings_notice] %>
   </div>
 <% end %>
 
 <% if flash[:error].present? %>
-  <div class="notice error-notice" id="notice">
+  <div class="crayons-banner crayons-banner--error">
     <%= flash[:error] %>
   </div>
 <% end %>
 
 <% if params[:state] == "previous-registration" %>
-  <div class="notice error-notice" id="notice">
+  <div class="crayons-banner crayons-banner--error">
     There is an existing account authorized with that social account. Contact
     <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if this is a mistake.
   </div>
 <% end %>
 
-<main class="crayons-layout--default user-settings-page">
+<main class="crayons-layout crayons-layout--max-l crayons-layout--default user-settings-page">
   <div class="crayons-layout__sidebar">
     <nav>
       <% @tab_list.each do |possible_tab| %>
@@ -31,9 +31,9 @@
   </div>
 
   <div class="crayons-layout__content">
-    <header class="crayons-lay__page-header">
+    <header class="crayons-layout__page-header mb-4">
       <% if @tab == "organization" && @organizations.present? %>
-        <h2>Settings for
+        <h1>Settings for
           <span class="organization-dropdown">
             <select id="organization-dropdown-select" onchange="window.location.href=this.value">
               <% options = @organizations.pluck(:slug, :id).each do |arr| %>
@@ -46,34 +46,30 @@
               <%# <option value="/settings/organization/new" selected>New Organization</option> %>
             </select>
           </span>
-        </h2>
+        </h1>
       <% else %>
-        <h2>Settings for <a href="/<%= @user.username %>">@<%= @user.username %></a></h2>
+        <h1>Settings for <a href="/<%= @user.username %>">@<%= @user.username %></a></h1>
       <% end %>
     </header>
 
     <% if current_user.email.blank? %>
-      <div class="finish-notice">
-        Confirm your email to complete your profile
-        <div class="small">
-          while you're at it, go ahead and fill everything out.<br />
+      <div class="crayons-notice crayons-notice--warning mb-6">
+        <h3 class="mb-2">Confirm your email to complete your profile.</h3>
+        <p>
+          While you're at it, go ahead and fill everything out.
           <% if @user.twitter_username.blank? %>
-            connect your twitter account as well to complete your identity.
+            Connect your twitter account as well to complete your identity.
           <% elsif @user.github_username.blank? %>
-            connect your github account as well to complete your identity.
+            Connect your github account as well to complete your identity.
           <% end %>
-        </div>
+        </p>
       </div>
     <% end %>
 
     <% if @user.unconfirmed_email.present? %>
-      <div class="field-notice">
-        Email Verification
-        <div class="small">
-          you have requested a change to
-          <a href="mailto:<%= @user.unconfirmed_email %>"><%= @user.unconfirmed_email %></a><br />
-          check your inbox for the verification link to finalize the change.
-        </div>
+      <div class="crayons-notice crayons-notice--warning mb-6">
+        <h3 class="mb-2">Email verification.</h3>
+        <p>You have requested a change to <a href="mailto:<%= @user.unconfirmed_email %>"><%= @user.unconfirmed_email %></a>. Check your inbox for the verification link to finalize the change.</p>
       </div>
     <% end %>
 
@@ -101,8 +97,6 @@
       </div>
     <% end %>
 
-    <div class="crayons-card p-6">
-      <%= render "users/" + @tab.tr("-", "_"), tab: @tab %>
-    </div>
+    <%= render "users/" + @tab.tr("-", "_"), tab: @tab %>
   </div>
 </main>

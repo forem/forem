@@ -7,18 +7,23 @@
 }
 
 .crayons-layout {
+  font-size: $fs-base; // todo: drop it when ready
+  width: 100%;
+  max-width: $site-width;
+  margin: 0 auto;
+
   &__sidebar {
   }
 
   &__content {
   }
+
+  &--max-l {
+    max-width: $breakpoint-l;
+  }
 }
 
 .crayons-layout--default {
-  width: 100%;
-  max-width: $site-width;
-  margin: 0 auto;
-
   @media (min-width: $breakpoint-s) {
     display: grid;
     grid-gap: var(--layout-gap);
