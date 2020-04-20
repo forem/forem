@@ -1,241 +1,109 @@
 @import '../config/import';
 
+$outlined-border-width: 2px;
+
 // Basic styling
 .crayons-btn {
-  // Setup
-  --border-width: 0px;
-  --shadow-color: rgba(0, 0, 0, 0.05);
-  --vertical-padding: #{$su-2};
-  --horizontal-padding: #{$su-4};
-  --font-size: #{$fs-base};
-  --with-icon-padding: #{$su-3};
-  --icon-margin: #{$su-2};
-
   position: relative;
   display: inline-block;
-  padding: calc(var(--vertical-padding) - var(--border-width))
-    calc(var(--horizontal-padding) - var(--border-width));
+  padding: 0.5em 1em;
   border-radius: $br-default;
   outline: none;
   font-family: inherit;
-  font-size: var(--font-size);
-  line-height: $su-6; // intentionally not using $lh-* variable.
+  font-size: $fs-base;
+  line-height: $lh-base;
   font-weight: $fw-medium;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
   transition: all $transition-props;
-  border: var(--border-width) solid;
+  border: none;
+}
 
-  // Styles
-  --bg: var(--button-primary-bg);
-  --bg-hover: var(--button-primary-bg-hover);
-  --border: transparent;
-  --border-hover: transparent;
-  --color: var(--button-primary-color);
-  --color-hover: var(--button-primary-color-hover);
-  --shadow: 0 1px 3px var(--shadow-color);
-  --shadow-hover: 0 2px 5px var(--shadow-color);
-  --bg-inverted: var(--button-primary-inverted-bg);
-  --bg-inverted-hover: var(--button-primary-inverted-bg-hover);
-  --color-inverted: var(--button-primary-inverted-color);
-  --color-inverted-hover: var(--button-primary-inverted-color-hover);
+// Styles
+.crayons-btn {
+  background-color: var(--button-primary-bg);
+  color: var(--button-primary-color);
 
-  background-color: var(--bg);
-  border-color: var(--border);
-  box-shadow: var(--shadow);
-  color: var(--color);
-
-  &[href]:hover,
-  &:hover:enabled,
-  &:active:enabled {
-    background-color: var(--bg-hover);
-    border-color: var(--border-hover);
-    box-shadow: var(--shadow-hover);
-    color: var(--color-hover);
-    z-index: 2;
-  }
-
-  &.crayons-btn--inverted {
-    --bg: var(--bg-inverted);
-    --bg-hover: var(--bg-inverted-hover);
-    --border: var(--border-inverted);
-    --border-hover: var(--border-inverted-hover);
-    --color: var(--color-inverted);
-    --color-hover: var(--color-inverted-hover);
-  }
-
+  &--disabled,
   &[disabled] {
     opacity: 0.6;
     cursor: not-allowed;
   }
 
-  &--s {
-    --vertical-padding: #{$su-1};
-    --horizontal-padding: #{$su-3};
-    --font-size: #{$fs-s};
-    --with-icon-padding: #{$su-2};
-    --icon-margin: #{$su-1};
+  &:enabled:not(&--disabled):hover,
+  &:enabled:not(&--disabled):active,
+  &--active:enabled:not(&--disabled) {
+    background-color: var(--button-primary-bg-hover);
+    color: var(--button-primary-color-hover);
+    z-index: 2;
   }
 
-  &--l {
-    --vertical-padding: #{$su-3};
-    --horizontal-padding: #{$su-5};
-    --with-icon-padding: #{$su-3};
-    --icon-margin: #{$su-2};
+  &--secondary {
+    background-color: var(--button-secondary-bg);
+    color: var(--button-secondary-color);
+
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
+      background-color: var(--button-secondary-bg-hover);
+      color: var(--button-secondary-color-hover);
+    }
   }
 
-  &--xl {
-    --vertical-padding: #{$su-4};
-    --horizontal-padding: #{$su-6};
-    --font-size: #{$fs-l};
-    --with-icon-padding: #{$su-5};
-    --icon-margin: #{$su-3};
-  }
-}
+  &--outlined {
+    padding: calc(0.5em - #{$outlined-border-width})
+      calc(1em - #{$outlined-border-width});
+    background-color: transparent;
+    border: $outlined-border-width solid var(--button-outlined-bg);
+    color: var(--button-outlined-color);
 
-.crayons-btn--secondary {
-  --bg: var(--button-secondary-bg);
-  --bg-hover: var(--button-secondary-bg-hover);
-  --color: var(--button-secondary-color);
-  --color-hover: var(--button-secondary-color-hover);
-  --bg-inverted: var(--button-secondary-inverted-bg);
-  --bg-inverted-hover: var(--button-secondary-inverted-bg-hover);
-  --color-inverted: var(--button-secondary-inverted-color);
-  --color-inverted-hover: var(--button-secondary-inverted-color-hover);
-}
-
-.crayons-btn--outlined {
-  --bg: var(--button-outlined-bg);
-  --bg-hover: var(--button-outlined-bg-hover);
-  --border: var(--button-outlined-border);
-  --border-hover: var(--button-outlined-border-hover);
-  --color: var(--button-outlined-color);
-  --color-hover: var(--button-outlined-color-hover);
-  --bg-inverted: var(--button-outlined-inverted-bg);
-  --bg-inverted-hover: var(--button-outlined-inverted-bg-hover);
-  --border-inverted: var(--button-outlined-inverted-border);
-  --border-inverted-hover: var(--button-outlined-inverted-border-hover);
-  --color-inverted: var(--button-outlined-inverted-color);
-  --color-inverted-hover: var(--button-outlined-inverted-color-hover);
-
-  --border-width: 2px;
-}
-
-.crayons-btn--danger {
-  --bg: var(--accent-danger);
-  --bg-hover: var(--accent-danger-darker);
-  --color: var(--base-inverted);
-  --color-hover: var(--base-inverted);
-  --bg-inverted: var(--accent-danger);
-  --bg-inverted-hover: var(--accent-danger-darker);
-  --color-inverted: var(--base-inverted);
-  --color-inverted-hover: var(--base-inverted);
-}
-
-.crayons-btn--ghost {
-  --bg: var(--button-ghost-bg);
-  --bg-hover: var(--button-ghost-bg-hover);
-  --color: var(--button-ghost-color);
-  --color-hover: var(--button-ghost-color-hover);
-  --shadow: none;
-  --shadow-hover: none;
-  --bg-inverted: var(--button-ghost-inverted-bg);
-  --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-  --color-inverted: var(--button-ghost-inverted-color);
-  --color-inverted-hover: var(--button-ghost-inverted-color-hover);
-
-  &-brand {
-    --bg: var(--button-ghost-bg);
-    --bg-hover: var(--button-ghost-bg-hover);
-    --color: var(--accent-brand);
-    --color-hover: var(--accent-brand-darker);
-    --shadow: none;
-    --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-brand-lighter);
-    --color-inverted-hover: var(--accent-brand-lighter);
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
+      background-color: transparent;
+      color: var(--button-outlined-color-hover);
+      border-color: var(--button-outlined-bg-hover);
+    }
   }
 
-  &-success {
-    --bg: var(--button-ghost-bg);
-    --bg-hover: var(--button-ghost-bg-hover);
-    --color: var(--accent-success);
-    --color-hover: var(--accent-success-darker);
-    --shadow: none;
-    --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-success);
-    --color-inverted-hover: var(--accent-success-darker);
+  &--danger {
+    background-color: var(--accent-danger);
+    color: var(--base-inverted);
+
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
+      background-color: var(--accent-danger-darker);
+      color: var(--base-inverted);
+    }
   }
 
-  &-warning {
-    --bg: var(--button-ghost-bg);
-    --bg-hover: var(--button-ghost-bg-hover);
-    --color: var(--accent-warning);
-    --color-hover: var(--accent-warning-darker);
-    --shadow: none;
-    --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-warning);
-    --color-inverted-hover: var(--accent-warning-darker);
-  }
+  &--text {
+    background-color: transparent;
+    color: var(--link-brand);
 
-  &-danger {
-    --bg: var(--button-ghost-bg);
-    --bg-hover: var(--button-ghost-bg-hover);
-    --color: var(--accent-danger);
-    --color-hover: var(--accent-danger-darker);
-    --shadow: none;
-    --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-danger);
-    --color-inverted-hover: var(--accent-danger-lighter);
+    &:enabled:not(&--disabled):hover,
+    &:enabled:not(&--disabled):active,
+    &--active:enabled:not(&--disabled) {
+      background-color: transparent;
+      color: var(--link-brand-hover);
+    }
   }
 }
 
 // Icon alone
-.crayons-btn--icon,
-.crayons-btn--icon-rounded {
-  --horizontal-padding: #{$su-2};
-  padding-left: calc(var(--horizontal-padding) - var(--border-width));
-  padding-right: calc(var(--horizontal-padding) - var(--border-width));
-  &.crayons-btn--s {
-    --horizontal-padding: #{$su-1};
-  }
-
-  &.crayons-btn--l {
-    --horizontal-padding: #{$su-3};
-  }
-
-  &.crayons-btn--xl {
-    --horizontal-padding: #{$su-4};
-  }
-}
-
-.crayons-btn--icon-rounded {
-  border-radius: 1000px;
+.crayons-btn--icon-alone {
+  padding-left: 0.75em;
+  padding-right: 0.75em;
 }
 
 // Icon Left
 .crayons-btn--icon-left {
-  padding-left: calc(var(--with-icon-padding) - var(--border-width));
+  padding-left: 0.75em;
 
   .crayons-icon {
-    margin-right: var(--icon-margin);
-  }
-}
-
-// Icon Right
-.crayons-btn--icon-right {
-  padding-right: calc(var(--with-icon-padding) - var(--border-width));
-
-  .crayons-icon {
-    margin-left: var(--icon-margin);
+    margin-right: 0.5em;
   }
 }
 
@@ -247,16 +115,11 @@
     border-radius: 0;
 
     + .crayons-btn:not(.crayons-btn--outlined) {
-      box-shadow: var(--shadow), inset 1px 0 0 rgba(0, 0, 0, 0.1);
-      margin-left: -1px;
-
-      &:hover {
-        box-shadow: var(--shadow-hover), inset 0 0 0 rgba(0, 0, 0, 0.1);
-      }
+      margin-left: 1px;
     }
 
     + .crayons-btn--outlined {
-      margin-left: calc(-1 * var(--border-width));
+      margin-left: -$outlined-border-width;
     }
 
     &:first-child {

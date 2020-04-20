@@ -7,97 +7,57 @@ export default {
 };
 
 export const Default = () => (
-  <button type="button" className="crayons-btn">
+  <a href="/" className="crayons-btn">
     Button label
-  </button>
+  </a>
 );
 
 Default.story = {
-  name: 'Default',
+  name: 'default',
+};
+
+export const Full = () => (
+  <a href="/" className="crayons-btn crayons-btn--full">
+    Full Button label
+  </a>
+);
+
+Full.story = {
+  name: 'full',
 };
 
 export const Secondary = () => (
-  <button type="button" className="crayons-btn crayons-btn--secondary">
+  <a href="/" className="crayons-btn crayons-btn--secondary">
     Secondary Button label
-  </button>
+  </a>
 );
 
 Secondary.story = {
-  name: 'Secondary',
+  name: 'secondary',
 };
 
 export const Outlined = () => (
-  <button type="button" className="crayons-btn crayons-btn--outlined">
+  <a href="/" className="crayons-btn crayons-btn--outlined">
     Outlined Button label
-  </button>
+  </a>
 );
 
 Outlined.story = {
-  name: 'Outlined',
+  name: 'outlined',
 };
 
 export const Danger = () => (
-  <button type="button" className="crayons-btn crayons-btn--danger">
+  <a href="/" className="crayons-btn crayons-btn--danger">
     Danger Button label
-  </button>
+  </a>
 );
 
 Danger.story = {
-  name: 'Danger',
-};
-
-export const Ghost = () => (
-  <button type="button" className="crayons-btn crayons-btn--ghost">
-    Ghost Button label
-  </button>
-);
-
-Ghost.story = {
-  name: 'Ghost',
-};
-
-export const GhostBrand = () => (
-  <button type="button" className="crayons-btn crayons-btn--ghost-brand">
-    Ghost Brand Button label
-  </button>
-);
-
-GhostBrand.story = {
-  name: 'Ghost Brand',
-};
-
-export const GhostSuccess = () => (
-  <button type="button" className="crayons-btn crayons-btn--ghost-success">
-    Ghost Success Button label
-  </button>
-);
-
-GhostSuccess.story = {
-  name: 'Ghost Success',
-};
-
-export const GhostWarning = () => (
-  <button type="button" className="crayons-btn crayons-btn--ghost-warning">
-    Ghost Warning Button label
-  </button>
-);
-
-GhostWarning.story = {
-  name: 'Ghost Warning',
-};
-
-export const GhostDanger = () => (
-  <button type="button" className="crayons-btn crayons-btn--ghost-danger">
-    Ghost Danger Button label
-  </button>
-);
-
-GhostDanger.story = {
-  name: 'Ghost Danger',
+  name: 'story',
 };
 
 export const IconLeft = () => (
-  <button type="button" className="crayons-btn crayons-btn--icon-left">
+  <a href="/" className="crayons-btn crayons-btn--icon-left">
     <svg
       width="24"
       height="24"
@@ -107,61 +67,30 @@ export const IconLeft = () => (
       <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
     </svg>
     Button
-  </button>
+  </a>
 );
 
 IconLeft.story = {
-  name: 'Icon to the left',
+  name: 'icon to the left',
 };
 
-export const IconRight = () => (
-  <button type="button" className="crayons-btn crayons-btn--icon-right">
+export const SecondaryFullIconLeft = () => (
+  <a
+    href="/"
+    className="crayons-btn crayons-btn--secondary crayons-btn--full crayons-btn--icon-left"
+  >
+    <svg
+      width="24"
+      height="24"
+      xmlns="http://www.w3.org/2000/svg"
+      className="crayons-icon"
+    >
+      <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
+    </svg>
     Button
-    <svg
-      width="24"
-      height="24"
-      xmlns="http://www.w3.org/2000/svg"
-      className="crayons-icon"
-    >
-      <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
-    </svg>
-  </button>
+  </a>
 );
 
-IconRight.story = {
-  name: 'Icon to the right',
-};
-
-export const IconAlone = () => (
-  <button type="button" className="crayons-btn crayons-btn--icon">
-    <svg
-      width="24"
-      height="24"
-      xmlns="http://www.w3.org/2000/svg"
-      className="crayons-icon"
-    >
-      <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
-    </svg>
-  </button>
-);
-
-IconAlone.story = {
-  name: 'Icon alone',
-};
-
-export const IconRounded = () => (
-  <button type="button" className="crayons-btn crayons-btn--icon-rounded">
-    <svg
-      width="24"
-      height="24"
-      xmlns="http://www.w3.org/2000/svg"
-      className="crayons-icon"
-    >
-      <path d="M9.99999 15.172L19.192 5.979L20.607 7.393L9.99999 18L3.63599 11.636L5.04999 10.222L9.99999 15.172Z" />
-    </svg>
-  </button>
-);
-
-IconRounded.story = {
-  name: 'Icon rounded',
+SecondaryFullIconLeft.story = {
+  name: 'secondary & full & icon to the left',
 };
