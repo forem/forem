@@ -74,6 +74,15 @@ export default class ImageManagement extends Component {
     });
   };
 
+  execCopyText = () => {
+    this.imageMarkdownInput.setSelectionRange(
+      0,
+      this.imageMarkdownInput.value.length,
+    );
+    document.execCommand('copy');
+    this.imageMarkdownAnnouncer.hidden = false;
+  }
+
   copyText = () => {
     this.imageMarkdownAnnouncer = document.getElementById(
       'image-markdown-copy-link-announcer',
@@ -87,22 +96,23 @@ export default class ImageManagement extends Component {
       typeof AndroidBridge !== "undefined" &&
       AndroidBridge !== null;
 
+    const isClipboardSupported =
+      typeof navigator.clipboard !== "undefined" &&
+      navigator.clipboard !== null;
+
     if (isNativeAndroid) {
       AndroidBridge.copyToClipboard(this.imageMarkdownInput.value);
       this.imageMarkdownAnnouncer.hidden = false;
-    } else {
+    } else if (isClipboardSupported) {
       navigator.clipboard.writeText(this.imageMarkdownInput.value)
         .then(() => {
           this.imageMarkdownAnnouncer.hidden = false;
         })
         .catch((err) => {
-          this.imageMarkdownInput.setSelectionRange(
-            0,
-            this.imageMarkdownInput.value.length,
-          );
-          document.execCommand('copy');
-          this.imageMarkdownAnnouncer.hidden = false;
+          this.execCopyText();
         });
+    } else {
+      this.execCopyText();
     }
   };
 
