@@ -53,13 +53,14 @@ article {
   padding: 0 0;
   position: relative;
 
+  /* TODO[team-delightful]: Remove background and background-size a few days post merge to avoid caching conflicts */
   .image {
     position: relative;
     width: 100%;
     margin: auto;
     max-width: 1024px;
     z-index: 2;
-    background: transparent no-repeat center center; /* TODO[team-delightful]: Remove background styling a few days after merge to avoid conflicts */
+    background: transparent no-repeat center center;
     background-size: cover;
     height: 42vh;
 
