@@ -173,14 +173,17 @@
       color: var(--base-70);
     }
     button.circle {
+      position: absolute;
+      right: $su-4;
+      top: $su-4;
       width: 40px;
       height: 40px;
       border: none;
       border-radius: 100%;
-      background: var(--base-10);
       display: flex;
       align-items: center;
       justify-content: center;
+      background: var(--base-10);
     }
   }
   h2 {
