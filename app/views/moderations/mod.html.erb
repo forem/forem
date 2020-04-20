@@ -51,15 +51,17 @@
     </button>
   </div>
 
-<hr />
-
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
-          data-reactable-id="<%= @moderatable.id %>"
-          data-category="vomit"
-          data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
-  </button>
+  <div style="margin: 0px auto;">
+    <button class="reaction-vomit-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.id %>"
+            data-category="vomit"
+            data-reactable-type="<%= @moderatable.class.name %>">
+      <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
+      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+      <span>Mark as spam</span>
+    </button>
+  </div>
+  
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
     <h3> <a href="<%= @moderatable.path %>/edit">Edit Post</a> |
       <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Internal:Article</a> |
