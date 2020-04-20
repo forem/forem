@@ -1,9 +1,9 @@
 <script>
   function closeTaskCard() {
-    var x = document.getElementsByClassName("onboarding-task-card")[0];
-    x.style.display = "none";
+    var taskCard = document.getElementsByClassName("onboarding-task-card")[0];
+    taskCard.style.display = "none";
 
-    localStorage.setItem('seen-onboarding', 'yes');
+    localStorage.setItem('task-card-closed', 'yes');
   }
 </script>
 

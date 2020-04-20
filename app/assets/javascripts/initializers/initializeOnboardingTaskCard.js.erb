@@ -1,9 +1,9 @@
 function initializeOnboardingTaskCard() {
-  if (localStorage.getItem('seen-onboarding') === 'yes') { return }
+  if (localStorage.getItem('task-card-closed') === 'yes') { return }
 
-  var el = document.getElementsByClassName("onboarding-task-card")[0];
+  var taskCard = document.getElementsByClassName("onboarding-task-card")[0];
 
-  if (el !== undefined) {
-    el.style.display = "block";
+  if (taskCard !== undefined) {
+    taskCard.style.display = "block";
   }
 }
