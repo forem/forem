@@ -8,19 +8,6 @@ export default {
 };
 
 export const Default = () => {
-  return (
-    <ButtonGroup>
-      <Button variant="outlined">Action 1</Button>
-      <Button variant="outlined">Action 2</Button>
-    </ButtonGroup>
-  );
-};
-
-Default.story = {
-  name: 'Text buttons',
-};
-
-export const TextIcon = () => {
   const Icon = () => (
     <svg
       width="24"
@@ -34,12 +21,8 @@ export const TextIcon = () => {
 
   return (
     <ButtonGroup>
-      <Button variant="secondary">Action 1</Button>
-      <Button variant="secondary" icon={Icon} contentType="icon" />
+      <Button>Hello World!</Button>
+      <Button icon={Icon} />
     </ButtonGroup>
   );
-};
-
-TextIcon.story = {
-  name: 'Text button + Icon',
 };

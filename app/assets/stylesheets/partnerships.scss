@@ -102,7 +102,7 @@
       margin: 8px 0px;
       display: inline-block;
       border: 0px;
-      background: var(--link-brand-color);
+      background: var(--link-branded-color);
       @include themeable(color, theme-container-background, white);
     }
   }
@@ -146,7 +146,7 @@
       text-align: center;
       border-radius: 5px;
       font-weight: bold;
-      background: var(--link-brand-color);
+      background: var(--link-branded-color);
       @include themeable(color, theme-container-background, white);
     }
   }
