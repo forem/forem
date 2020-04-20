@@ -10,6 +10,6 @@ class AddUniqueIndexToBadgesSlug < ActiveRecord::Migration[5.2]
   def down
     return unless index_exists?(:badges, :slug)
 
-    remove_index :badges, :slug, unique: true, algorithm: :concurrently
+    remove_index :badges, :slug
   end
 end
