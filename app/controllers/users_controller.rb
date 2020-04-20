@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
+  before_action :check_filename_length, only: %i[update]
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   DEFAULT_FOLLOW_SUGGESTIONS = %w[ben jess peter maestromac andy liana].freeze
@@ -342,5 +343,17 @@ class UsersController < ApplicationController
     user_identity_age = user.github_created_at || user.twitter_created_at || 8.days.ago
     # last one is a fallback in case both are nil
     range.cover? user_identity_age
+  end
+
+  def check_filename_length
+    image = params.dig("user", "profile_image")
+    return unless image.original_filename.length > MAX_FILENAME_LENGTH
+
+    set_tabs(params["user"]["tab"])
+    @user.errors.add(:profile_image, "filename too long - the max is #{MAX_FILENAME_LENGTH} characters.")
+
+    Honeycomb.add_field("error", @user.errors.messages)
+    Honeycomb.add_field("errored", true)
+    render :edit, status: :bad_request
   end
 end
