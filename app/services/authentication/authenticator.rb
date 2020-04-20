@@ -28,26 +28,44 @@ module Authentication
       identity = Identity.build_from_omniauth(provider)
       return current_user if current_user_identity_exists?
 
+      # These variables need to be set outside of the scope of the
+      # transaction in order to be used after the transaction is completed.
+      log_to_datadog = false
+      id_provider, authed_user = nil
+
       ActiveRecord::Base.transaction do
         user = proper_user(identity)
         user = if user.nil?
-                 build_user!
+                 find_or_create_user!
                else
                  update_user(user)
                end
 
         identity.user = user if identity.user_id.blank?
-        new_record = identity.new_record?
-        identity.save!
-        record_identity_creation(identity) if new_record
+        new_identity = identity.new_record?
+        successful_save = identity.save!
+
+        log_to_datadog = new_identity && successful_save
+        id_provider = identity.provider
 
         user.skip_confirmation!
 
         flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
 
         user.save!
-        user
+        authed_user = user
       end
+
+      if log_to_datadog
+        # Notify DataDog if a new identity was successfully created.
+        DatadogStatsClient.increment("identity.created", tags: [provider: id_provider])
+      end
+
+      # Return the successfully-authed used from the transaction.
+      authed_user
+    rescue StandardError => e
+      # Notify DataDog if something goes wrong in the transaction.
+      DatadogStatsClient.increment("identity.errors", tags: ["error:#{e.class}"], message: e.message)
     end
 
     private
@@ -74,7 +92,7 @@ module Authentication
       end
     end
 
-    def build_user!
+    def find_or_create_user!
       existing_user = User.where(
         provider.user_username_field => provider.user_nickname,
       ).take
@@ -128,10 +146,6 @@ module Authentication
 
     def flag_spam_user(user)
       Slack::Messengers::PotentialSpammer.call(user: user)
-    end
-
-    def record_identity_creation(identity)
-      DatadogStatsClient.increment("identity.created", tags: [provider: identity.provider])
     end
   end
 end
