@@ -6,7 +6,7 @@ RSpec.describe "/internal/reports", type: :request do
   let(:admin)             { create(:user, :super_admin) }
 
   describe "GET /internal/reports" do
-    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: FeedbackMessage)}
+    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: FeedbackMessage) }
 
     context "when the user is a single resource admin" do
       it "renders with status 200" do
