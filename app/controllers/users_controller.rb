@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
-  before_action :check_filename_length, only: %i[update]
+  before_action :validate_filename_length, only: %i[update]
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   DEFAULT_FOLLOW_SUGGESTIONS = %w[ben jess peter maestromac andy liana].freeze
@@ -345,8 +345,8 @@ class UsersController < ApplicationController
     range.cover? user_identity_age
   end
 
-  def check_filename_length
-    image = params.dig("user", "profile_image")
+  def validate_filename_length
+    image = params.dig("image")
     return unless image&.original_filename && image.original_filename.length > MAX_FILENAME_LENGTH
 
     set_tabs(params["user"]["tab"])
