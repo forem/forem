@@ -66,6 +66,7 @@
   height: inherit;
   position: relative;
   overflow: hidden;
+  padding-top: 5px;
 
   .chat__channelssearchtoggle {
     background: transparent;
@@ -145,7 +146,7 @@
   color: var(--body-color);
 
   @media screen and (min-width: 1000px) {
-    width: calc(100% - 13px);
+    width: 98%;
   }
 }
 

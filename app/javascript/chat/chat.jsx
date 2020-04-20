@@ -835,7 +835,7 @@ export default class Chat extends Component {
       } else if (target.dataset.content === 'fullscreen') {
         const mode =
           this.state.fullscreenContent === 'sidecar' ? null : 'sidecar';
-        this.setState({ fullscreenContent: mode, expanded: mode === null });
+        this.setState({ fullscreenContent: mode, expanded: (mode === null || window.innerWidth > 1600) });
       }
     }
     document.getElementById('messageform').focus();
@@ -1308,7 +1308,7 @@ export default class Chat extends Component {
     } else if (this.state.fullscreenContent === 'video') {
       this.setState({ fullscreenContent: null });
     } else {
-      this.setState({ fullscreenContent: 'video', expanded: false });
+      this.setState({ fullscreenContent: 'video', expanded: window.innerWidth > 1600 });
     }
   };
 
