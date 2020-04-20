@@ -38,6 +38,7 @@ class SearchController < ApplicationController
     :sort_by,
     :sort_direction,
     :user_id,
+    :organization_id,
     {
       tag_names: [],
       published_at: [:gte]
