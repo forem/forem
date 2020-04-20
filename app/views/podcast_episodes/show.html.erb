@@ -28,7 +28,7 @@
 
 <% end %>
 
-<div class="podcast-episode-container" data-meta="<%= @episode.mobile_player_metadata.to_json %>">
+<div class="podcast-episode-container" data-meta="<%= @episode.decorate.mobile_player_metadata.to_json %>">
   <div class="hero">
     <% image_url = cl_image_path(@podcast.pattern_image_url || "https://i.imgur.com/fKYKgo4.png",
                                  type: "fetch",

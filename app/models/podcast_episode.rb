@@ -148,14 +148,6 @@ class PodcastEpisode < ApplicationRecord
     []
   end
 
-  def mobile_player_metadata
-    {
-      podcastName: podcast.title,
-      episodeName: title,
-      podcastImageUrl: ApplicationController.helpers.app_url(podcast.image_url)
-    }
-  end
-
   private
 
   def index_id

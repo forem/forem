@@ -30,11 +30,11 @@
     </div>
   </div>
   <div class="home sub-home" id="index-container"
-      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which=""
+      data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username sort_by sort_direction]) %>" data-which=""
       data-tag="<%= @tag %>"
       data-feed="<%= params[:timeframe] || "base-feed" %>"
       data-requires-approval="<%= @tag_model.requires_approval %>"
-      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
+      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
     <%= render "articles/tags/sidebar" %>
     <div class="articles-list" id="articles-list">
       <% if @tag_model && @tag_model.supported %>
