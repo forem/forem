@@ -2,16 +2,16 @@
   Hey <%= @user.name %>!
 </p>
 <p>
-  This is an email to let you know that we've upgraded your account to have <b>basic moderation privileges</b>. This means you can apply "negative reactions" to posts as well as certain other actions which help us maintain a constructive community and uphold our <a href="https://dev.to/code-of-conduct">code of conduct</a>.
+  This is an email to let you know that we've upgraded your account to have <b>basic moderation privileges</b>. This means you can apply "negative reactions" to posts as well as certain other actions which help us maintain a constructive community and uphold our <a href="<%= app_url(code_of_conduct_path) %>">code of conduct</a>.
 </p>
 <p>
   There are no specific responsibilities with this new privilege except that you use it respectfully and empathetically. If for any reason you'd like to forego these new features, let us know.
 </p>
 <p>
-  You'll occasionally get on-site notifications asking you to take an action. You are never required to take any actions and feel free to unsubscribe in <a href="https://dev.to/settings/notifications">your notification settings</a> at any point without giving up the rest of the features.
+  You'll occasionally get on-site notifications asking you to take an action. You are never required to take any actions and feel free to unsubscribe in <a href="<%= app_url(user_settings_path(:notifications)) %>">your notification settings</a> at any point without giving up the rest of the features.
 </p>
 <p>
-  <b><a href="https://dev.to/community-moderation">Click here for full details about basic mod privileges.</b></a>
+  <b><a href="<%= app_url("/community-moderation") %>">Click here for full details about basic mod privileges.</b></a>
 </p>
 <p>
   Happy Coding!

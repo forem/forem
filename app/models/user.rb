@@ -1,5 +1,33 @@
 class User < ApplicationRecord
+  include AlgoliaSearch
   include CloudinaryHelper
+  include Searchable
+  include Storext.model
+
+  BEHANCE_URL_REGEXP = /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\z/.freeze
+  COLOR_HEX_REGEXP = /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/.freeze
+  DRIBBBLE_URL_REGEXP = /\A(http(s)?:\/\/)?(www.dribbble.com|dribbble.com)\/.*\z/.freeze
+  EDITORS = %w[v1 v2].freeze
+  FACEBOOK_URL_REGEXP = /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\z/.freeze
+  FONTS = %w[default sans_serif monospace comic_sans open_dyslexic].freeze
+  GITLAB_URL_REGEXP = /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\z/.freeze
+  INBOXES = %w[open private].freeze
+  INSTAGRAM_URL_REGEXP = /\A(http(s)?:\/\/)?(?:www.)?instagram.com\/(?=.{1,30}\/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+\/?\z/.freeze
+  LINKEDIN_URL_REGEXP = /\A(http(s)?:\/\/)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/.*\z/.freeze
+  MEDIUM_URL_REGEXP = /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\z/.freeze
+  NAVBARS = %w[default static].freeze
+  STACKOVERFLOW_URL_REGEXP = /\A(http(s)?:\/\/)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)\/.*\z/.freeze
+  STREAMING_PLATFORMS = %w[twitch].freeze
+  THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
+  TWITCH_URL_REGEXP = /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\z/.freeze
+  USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
+  MESSAGES = {
+    invalid_config_font: "%<value>s is not a valid font selection",
+    invalid_config_navbar: "%<value>s is not a valid navbar value",
+    invalid_config_theme: "%<value>s is not a valid theme",
+    invalid_editor_version: "%<value>s must be either v1 or v2",
+    reserved_username: "username is reserved"
+  }.freeze
 
   attr_accessor(
     :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
@@ -8,10 +36,6 @@ class User < ApplicationRecord
 
   rolify after_add: :index_roles, after_remove: :index_roles
 
-  include AlgoliaSearch
-  include Storext.model
-  include Searchable
-
   SEARCH_SERIALIZER = Search::UserSerializer
   SEARCH_CLASS = Search::User
   DATA_SYNC_CLASS = DataSync::Elasticsearch::User
@@ -19,133 +43,99 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_many :organization_memberships, dependent: :destroy
-  has_many :organizations, through: :organization_memberships
+  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
   has_many :api_secrets, dependent: :destroy
   has_many :articles, dependent: :destroy
+  has_many :audit_logs, dependent: :nullify
+  has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
+  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
   has_many :badge_achievements, dependent: :destroy
   has_many :badges, through: :badge_achievements
+  has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
+  has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
+  has_many :chat_channel_memberships, dependent: :destroy
+  has_many :chat_channels, through: :chat_channel_memberships
+  has_many :classified_listings, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
-  has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
+  has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
+  has_many :credits, dependent: :destroy
+  has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
+  has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
   has_many :github_repos, dependent: :destroy
+  has_many :html_variants, dependent: :destroy
   has_many :identities, dependent: :destroy
   has_many :mentions, dependent: :destroy
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
-  has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
-  has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
-  has_many :notifications, dependent: :destroy
-  has_many :reactions, dependent: :destroy
-  has_many :tweets, dependent: :destroy
-  has_many :chat_channel_memberships, dependent: :destroy
-  has_many :chat_channels, through: :chat_channel_memberships
   has_many :notification_subscriptions, dependent: :destroy
-
+  has_many :notifications, dependent: :destroy
   has_many :offender_feedback_messages, class_name: "FeedbackMessage", inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
-  has_many :reporter_feedback_messages, class_name: "FeedbackMessage", inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
-  has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
-
-  has_many :rating_votes, dependent: :destroy
-  has_many :response_templates, foreign_key: :user_id, inverse_of: :user, dependent: :destroy
-  has_many :html_variants, dependent: :destroy
+  has_many :organization_memberships, dependent: :destroy
+  has_many :organizations, through: :organization_memberships
   has_many :page_views, dependent: :destroy
-  has_many :credits, dependent: :destroy
-  has_many :classified_listings, dependent: :destroy
-  has_many :poll_votes, dependent: :destroy
   has_many :poll_skips, dependent: :destroy
-  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
-  has_many :display_ad_events, dependent: :destroy
-  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
-  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :poll_votes, dependent: :destroy
+  has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
+  has_many :rating_votes, dependent: :destroy
+  has_many :reactions, dependent: :destroy
+  has_many :reporter_feedback_messages, class_name: "FeedbackMessage", inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
+  has_many :response_templates, foreign_key: :user_id, inverse_of: :user, dependent: :destroy
+  has_many :tweets, dependent: :destroy
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
-  has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
-  has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
-  has_one :pro_membership, dependent: :destroy
+
   has_one :counters, class_name: "UserCounter", dependent: :destroy
-  has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
+  has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
 
   devise :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable
 
-  validates :email,
-            length: { maximum: 50 },
-            email: true,
-            allow_nil: true
+  validates :behance_url, length: { maximum: 100 }, allow_blank: true, format: BEHANCE_URL_REGEXP
+  validates :bg_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
+  validates :config_font, inclusion: { in: FONTS, message: MESSAGES[:invalid_config_font] }
+  validates :config_navbar, inclusion: { in: NAVBARS, message: MESSAGES[:invalid_config_navbar] }
+  validates :config_theme, inclusion: { in: THEMES, message: MESSAGES[:invalid_config_theme] }
+  validates :currently_streaming_on, inclusion: { in: STREAMING_PLATFORMS }, allow_nil: true
+  validates :dribbble_url, length: { maximum: 100 }, allow_blank: true, format: DRIBBBLE_URL_REGEXP
+  validates :editor_version, inclusion: { in: EDITORS, message: MESSAGES[:invalid_editor_version] }
+  validates :email, length: { maximum: 50 }, email: true, allow_nil: true
   validates :email, uniqueness: { allow_nil: true, case_sensitive: false }, if: :email_changed?
-  validates :name, length: { minimum: 1, maximum: 100 }
-  validates :username,
-            presence: true,
-            format: { with: /\A[a-zA-Z0-9_]+\Z/ },
-            length: { in: 2..30 },
-            exclusion: { in: ReservedWords.all, message: "username is reserved" }
-  validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
-  validates :twitter_username, uniqueness: { allow_nil: true }, if: :twitter_username_changed?
-  validates :github_username, uniqueness: { allow_nil: true }, if: :github_username_changed?
+  validates :employer_name, :employer_url, length: { maximum: 100 }
+  validates :employment_title, :education, :location, length: { maximum: 100 }
   validates :experience_level, numericality: { less_than_or_equal_to: 10 }, allow_blank: true
-  validates :text_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :bg_color_hex, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_blank: true
-  validates :website_url, :employer_url,
-            url: { allow_blank: true, no_local: true, schemes: %w[https http] }
-  validates :facebook_url,
-            format: /\A(http(s)?:\/\/)?(www.facebook.com|facebook.com)\/.*\Z/,
-            allow_blank: true
-  validates :stackoverflow_url,
-            allow_blank: true,
-            format:
-            /\A(http(s)?:\/\/)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)\/.*\Z/
-  validates :behance_url,
-            allow_blank: true,
-            format: /\A(http(s)?:\/\/)?(www.behance.net|behance.net)\/.*\Z/
-  validates :linkedin_url,
-            allow_blank: true,
-            format:
-              /\A(http(s)?:\/\/)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/.*\Z/
-  validates :dribbble_url,
-            allow_blank: true,
-            format: /\A(http(s)?:\/\/)?(www.dribbble.com|dribbble.com)\/.*\Z/
-  validates :medium_url,
-            allow_blank: true,
-            format: /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\Z/
-  validates :gitlab_url,
-            allow_blank: true,
-            format: /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\Z/
-  validates :instagram_url,
-            allow_blank: true,
-            format: /\A(http(s)?:\/\/)?(?:www.)?instagram.com\/(?=.{1,30}\/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+\/?\Z/
-  validates :twitch_url,
-            allow_blank: true,
-            format: /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\Z/
-  validates :editor_version,
-            inclusion: { in: %w[v1 v2],
-                         message: "%<value>s must be either v1 or v2" }
+  validates :facebook_url, length: { maximum: 1000 }, format: FACEBOOK_URL_REGEXP, allow_blank: true
+  validates :feed_referential_link, inclusion: { in: [true, false] }
+  validates :feed_url, length: { maximum: 500 }, allow_nil: true
+  validates :github_username, uniqueness: { allow_nil: true }, if: :github_username_changed?
+  validates :gitlab_url, length: { maximum: 100 }, allow_blank: true, format: GITLAB_URL_REGEXP
+  validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
+  validates :inbox_type, inclusion: { in: INBOXES }
+  validates :instagram_url, length: { maximum: 100 }, allow_blank: true, format: INSTAGRAM_URL_REGEXP
+  validates :linkedin_url, length: { maximum: 350 }, allow_blank: true, format: LINKEDIN_URL_REGEXP
+  validates :mastodon_url, length: { maximum: 100 }
+  validates :medium_url, length: { maximum: 200 }, allow_blank: true, format: MEDIUM_URL_REGEXP
+  validates :mostly_work_with, :currently_learning, :currently_hacking_on, :available_for, length: { maximum: 500 }
+  validates :name, length: { in: 1..100 }
+  validates :stackoverflow_url, length: { maximum: 150 }, allow_blank: true, format: STACKOVERFLOW_URL_REGEXP
+  validates :summary, length: { maximum: 1300 }, allow_nil: true
+  validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
+  validates :twitch_url, length: { maximum: 100 }, allow_blank: true, format: TWITCH_URL_REGEXP
+  validates :twitter_username, uniqueness: { allow_nil: true }, if: :twitter_username_changed?
+  validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
+  validates :username, length: { in: 2..30 }, format: USERNAME_REGEXP
+  validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
+  validates :website_url, :employer_url, url: { allow_blank: true, no_local: true }
+  validates :website_url, length: { maximum: 100 }, allow_nil: true
 
-  validates :config_theme,
-            inclusion: { in: %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme],
-                         message: "%<value>s is not a valid theme" }
-  validates :config_font,
-            inclusion: { in: %w[default sans_serif monospace comic_sans open_dyslexic],
-                         message: "%<value>s is not a valid font selection" }
-  validates :config_navbar,
-            inclusion: { in: %w[default static],
-                         message: "%<value>s is not a valid navbar value" }
-  validates :website_url, :employer_name, :employer_url,
-            length: { maximum: 100 }
-  validates :employment_title, :education, :location,
-            length: { maximum: 100 }
-  validates :mostly_work_with, :currently_learning,
-            :currently_hacking_on, :available_for,
-            length: { maximum: 500 }
-  validates :inbox_type, inclusion: { in: %w[open private] }
-  validates :currently_streaming_on, inclusion: { in: %w[twitch] }, allow_nil: true
-  validates :feed_referential_link, inclusion: [true, false]
-  validate  :conditionally_validate_summary
-  validate  :validate_mastodon_url
-  validate  :validate_feed_url, if: :feed_url_changed?
-  validate  :non_banished_username, :username_changed?
-  validate  :unique_including_orgs_and_podcasts, if: :username_changed?
+  validate :conditionally_validate_summary
+  validate :non_banished_username, :username_changed?
+  validate :unique_including_orgs_and_podcasts, if: :username_changed?
+  validate :validate_feed_url, if: :feed_url_changed?
+  validate :validate_mastodon_url
 
   alias_attribute :positive_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
@@ -278,7 +268,6 @@ class User < ApplicationRecord
 
   # handles both old (prefer_language_*) and new (Array of language codes) formats
   def preferred_languages_array
-    # return @prefer_languages_array if defined? @preferred_languages_array
     return @preferred_languages_array if defined?(@preferred_languages_array)
 
     if language_settings["preferred_languages"].present?
@@ -402,7 +391,13 @@ class User < ApplicationRecord
   end
 
   def unique_including_orgs_and_podcasts
-    errors.add(:username, "is taken.") if Organization.find_by(slug: username) || Podcast.find_by(slug: username) || Page.find_by(slug: username)
+    username_taken = (
+      Organization.exists?(slug: username) ||
+      Podcast.exists?(slug: username) ||
+      Page.exists?(slug: username)
+    )
+
+    errors.add(:username, "is taken.") if username_taken
   end
 
   def non_banished_username
@@ -443,6 +438,7 @@ class User < ApplicationRecord
       Notifications
       Publishing\ from\ RSS
       Organization
+      Response\ Templates
       Billing
       Account
       Misc
@@ -547,7 +543,7 @@ class User < ApplicationRecord
   end
 
   def temp_name_exists?
-    User.find_by(username: temp_username) || Organization.find_by(slug: temp_username)
+    User.exists?(username: temp_username) || Organization.exists?(slug: temp_username)
   end
 
   def temp_username
@@ -611,8 +607,9 @@ class User < ApplicationRecord
 
   def validate_feed_url
     return if feed_url.blank?
+    return if RssReader.new.valid_feed_url?(feed_url)
 
-    errors.add(:feed_url, "is not a valid rss feed") unless RssReader.new.valid_feed_url?(feed_url)
+    errors.add(:feed_url, "is not a valid RSS/Atom feed")
   end
 
   def validate_mastodon_url
@@ -623,7 +620,7 @@ class User < ApplicationRecord
 
     errors.add(:mastodon_url, "is not an allowed Mastodon instance")
   rescue URI::InvalidURIError
-    errors.add(:mastodon_url, "is not a valid url")
+    errors.add(:mastodon_url, "is not a valid URL")
   end
 
   def tag_list

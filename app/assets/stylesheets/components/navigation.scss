@@ -11,6 +11,14 @@
     color: var(--link-color-hover);
   }
 
+  &--secondary {
+    color: var(--link-color-secondary);
+
+    &:hover {
+      color: var(--link-color-secondary-hover);
+    }
+  }
+
   &--current {
     font-weight: $fw-medium;
     color: var(--link-color-current);
@@ -45,6 +53,10 @@
 
   .crayons-indicator {
     margin-left: $su-2;
+
+    &:empty {
+      display: none;
+    }
   }
 
   // Indented for when there's no icon

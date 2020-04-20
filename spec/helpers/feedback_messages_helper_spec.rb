@@ -15,7 +15,7 @@ RSpec.describe FeedbackMessagesHelper, type: :helper do
 
   describe "#affected_email_details" do
     it "have proper subject and body" do
-      expect(helper.affected_email_details).to include(subject: "Courtesy Notice from DEV", body: a_string_starting_with("Hi"))
+      expect(helper.affected_email_details).to include(subject: "Courtesy Notice from #{ApplicationConfig['COMMUNITY_NAME']}", body: a_string_starting_with("Hi"))
     end
   end
 end

@@ -3,7 +3,7 @@
 <%= render "shared/webcomponents_loader_script" %>
 <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", defer: true %>
 
-<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
+<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js"
             integrity="sha256-xOIPU/XvDtRLeDQ3qj9GOKmlbMSqKa6D7ZIS6ygHBSo="
@@ -28,6 +28,41 @@
           }
         }
       }, 500)
+    </script>
+  <% end %>
+  <% unless internal_navigation? || user_signed_in? %>
+    <script type="application/ld+json">
+      {
+        "@context": "http://schema.org",
+        "@type": "Article",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "<%= article_url(@article) %>"
+        },
+        "url": "<%= article_url(@article) %>",
+        "image": "<%= article_social_image_url(@article) %>",
+        "publisher": {
+          "@context": "http://schema.org",
+          "@type": "Organization",
+          "name": "<%= community_qualified_name %>",
+          "logo": {
+            "@context": "http://schema.org",
+            "@type": "ImageObject",
+            "url": "<%= cloudinary(SiteConfig.logo_png, 192, "png") %>",
+            "width": "192",
+            "height": "192"
+          }
+        },
+        "headline": "<%= @article.title %>",
+        "author": {
+          "@context": "http://schema.org",
+          "@type": "Person",
+          "url": "<%= user_url(@user) %>",
+          "name": "<%= @user.name %>"
+        },
+        "datePublished": "<%= @article.published_timestamp %>",
+        "dateModified": "<%= @article.edited_at&.iso8601 || @article.published_timestamp %>"
+      }
     </script>
   <% end %>
 
@@ -85,17 +120,7 @@
     <% if @article.video_state == "PROGRESSING" %>
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
-    <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntity">
-      <meta itemprop="url" content="<%= article_url(@article) %>">
-      <meta itemprop="image" content="<%= article_social_image_url(@article) %>">
-      <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
-        <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
-          <meta itemprop="url" content="<%= cloudinary(SiteConfig.logo_png, 192, "png") %>">
-          <meta itemprop="width" content="192">
-          <meta itemprop="height" content="192">
-        </div>
-        <meta itemprop="name" content="<%= community_qualified_name %>">
-      </div>
+    <article>
       <section>
         <% if !@article.published %>
           <a href="<%= @article.path %>/edit" class="unpublished">
@@ -120,15 +145,14 @@
             </div>
           </a>
         <% end %>
-        <h1 class="<%= @article.title_length_classification %>" itemprop="name headline">
+        <h1 class="<%= @article.title_length_classification %>">
           <%= @article.title %>
         </h1>
         <h3>
-          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-            <meta itemprop="url" content="<%= user_url(@user) %>">
+          <span>
             <a href="/<%= @user.username %>" class="author">
               <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
-              <span itemprop="name"><%= @user.name %></span>
+              <span><%= @user.name %></span>
             </a>
           </span>
           <% if @user.twitter_username.present? %>
@@ -138,7 +162,7 @@
             <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg_tag "github", width: 18, height: 18 %></a>
           <% end %>
           <% if @article.published_timestamp.present? %>
-            <time itemprop="datePublished" datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
+            <time datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
           <% end %>
           <% if @second_user.present? %>
             <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
@@ -147,7 +171,7 @@
             <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
           <% end %>
           <% if should_show_updated_on?(@article) %>
-            <span><em>Updated on <time itemprop="dateModified" datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em></span>
+            <span><em>Updated on <time datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em></span>
           <% elsif should_show_crossposted_on?(@article) %>
             <span>
               <em>
@@ -179,7 +203,7 @@
                    articles: @collection_articles,
                    position: :top %>
       <% end %>
-      <div class="body" data-article-id="<%= @article.id %>" id="article-body" itemprop="articleBody">
+      <div class="body" data-article-id="<%= @article.id %>" id="article-body">
         <%= @article.processed_html.html_safe %>
       </div>
       <% if @article.body_markdown && @article.body_markdown.size > 900 && @collection %>
@@ -231,8 +255,8 @@
   <% end %>
 <% end %>
 
-
-<div class="mod-actions-menu"><iframe src="<%= "#{@article.path}/mod" %>"></iframe></div>
+<div class="mod-actions-menu hidden"></div>
+<div id="mod-actions-menu-btn-area"></div>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
