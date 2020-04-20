@@ -7,17 +7,6 @@ module Search
     DEFAULT_PER_PAGE = 30
 
     class << self
-<<<<<<< HEAD
-=======
-      def search_documents(params:)
-        set_query_size(params)
-        query_hash = Search::QueryBuilders::ChatChannelMembership.new(params).as_hash
-        results = search(body: query_hash)
-        hits = results.dig("hits", "hits").map { |ccm_doc| ccm_doc.dig("_source") }
-        paginate_hits(hits, params)
-      end
-
->>>>>>> fixed merge error
       private
 
       def index_settings
