@@ -8,6 +8,8 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
+  MAX_FILENAME_LENGTH = 250
+
   def not_found
     raise ActiveRecord::RecordNotFound, "Not Found"
   end
