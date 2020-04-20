@@ -39,7 +39,7 @@ const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
 ChannelRequest.propTypes = {
   resource: PropTypes.shape({
     data: PropTypes.object,
-    handleJoiningRequest: PropTypes.func.isRequired,
   }).isRequired,
+  handleJoiningRequest: PropTypes.func.isRequired,
 };
 export default ChannelRequest;

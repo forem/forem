@@ -12,7 +12,6 @@ export default class Content extends Component {
   };
 
   handleJoiningRequest = (e) => {
-    console.log(e.target.dataset.channelId);
     sendChannelRequest(e.target.dataset.channelId, null, null);
   };
 

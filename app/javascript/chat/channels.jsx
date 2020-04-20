@@ -26,7 +26,6 @@ const Channels = ({
           data-content="sidecar-channel-request"
           data-channel-id={channel.chat_channel_id}
           data-channel-name={channel.channel_name}
-          type="button"
         >
           <span
             className="chatchanneltab chatchanneltab--inactive"
