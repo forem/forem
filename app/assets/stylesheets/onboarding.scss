@@ -1,14 +1,18 @@
+@import 'variables';
+@import 'mixins';
+@import 'config/import';
+
 .onboarding-task-card {
   background: #3b49df;
   border-radius: $br-default;
-  padding: 40px 48px;
+  padding: $su-7 $su-8 $su-8 $su-8;
   display: none;
 }
 
 .task-card-title {
   font-weight: $fw-heavy;
   font-size: $fs-4xl;
-  line-height: 125%;
+  line-height: $lh-tight;
   color: #ffffff;
 }
 
@@ -33,11 +37,11 @@
 a.task-card-link {
   display: block;
   border-radius: $br-default;
-  padding: 20px 22px;
-  margin-top: 16px;
-  font-weight: bold;
-  font-size: 16px;
-  line-height: 150%;
+  padding: $su-5 $su-5;
+  margin-top: $su-4;
+  font-weight: $fw-bold;
+  font-size: $fs-base;
+  line-height: $lh-base;
   letter-spacing: -0.02em;
   color: #ffffff;
   display: flex;
@@ -49,7 +53,7 @@ a.task-card-link {
   }
 
   .emoji {
-    margin-right: 8px;
+    margin-right: $su-2;
   }
 }
 
@@ -57,6 +61,6 @@ a.task-card-link {
   background: none;
   border: none;
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: $su-6;
+  right: $su-6;
 }
