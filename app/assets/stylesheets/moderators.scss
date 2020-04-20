@@ -183,18 +183,33 @@
     margin: 90px auto;
     border-radius: 12px;
   }
+
   .reaction-button {
     position: relative;
-    width: 80px;
-    height: 80px;
+    //width: 80px;
+    //height: 80px;
     background: white;
     border-color: white;
-    margin: 30px 30px;
+    //margin: 30px 30px;
     border-radius: 200px;
     border: 0px;
-    padding: 12px 12px;
+    //padding: 12px 12px;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: min-content;
+    height: min-content;
+    padding: 16px 24px;
+    border-radius: 3px;
+
+    &:hover {
+      background: rgba(59, 73, 223, 0.05);
+    }
     &:active {
       border: 0px;
+    }
+    &:hover .reaction-button-vote-div {
+      border-color: var(--accent-brand);
     }
   }
 
@@ -211,6 +226,73 @@
 
   .reaction-button.reacted .reacted-emoji {
     display: block;
+  }
+
+  .reaction-button.reacted {
+    background: var(--accent-brand);
+
+    .reaction-button-vote-div {
+      border-color: var(--accent-success);
+    }
+
+    .vote-text {
+      color: $white;
+    }
+  }
+
+  .reaction-button-vote-div {
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 64px;
+    height: 64px;
+    padding: 10px;
+    border: solid 2px var(--base-20);
+    border-radius: 50px;
+  }
+
+  .reaction-button-vote-div img {
+    position: absolute;
+    top: 30px;
+    width: 32px;
+    left: 26px;
+
+    &.upvote {
+      top: 24px;
+    }
+  }
+
+  img.upvote {
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    transform: rotate(180deg);
+  }
+
+  .vote-text {
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 150%;
+    margin-top: 8px;
+    color: var(--base-90);
+  }
+
+  .reaction-checkmark {
+    position: absolute;
+    top: 80px;
+    left: 86px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--accent-success);
+    border-radius: 50px;
+    border: 2px solid $white;
+    padding: 2px;
+    z-index: 3;
+    color: $white;
   }
 
   .tag-mod-form {

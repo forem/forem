@@ -10,9 +10,8 @@
   <h2><a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
   <h3><a href="<%= @moderatable.user.path %>">@<%= @moderatable.user.username %></a></h3>
   <% if @moderatable.class.name == "Article" &&
-       (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? && 
-       (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) })
-  %>
+       (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? &&
+       (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) }) %>
     <%= form_tag "/article_approvals", method: "post" do %>
       <%= hidden_field_tag(:id, @moderatable.id) %>
       <% if @moderatable.approved %>
@@ -26,13 +25,34 @@
     <hr />
   <% end %>
 
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
-          data-reactable-id="<%= @moderatable.id %>"
-          data-category="thumbsdown"
-          data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
-  </button>
+  <div style="display: flex; flex-wrap: wrap;">
+    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.id %>"
+            data-category="thumbsup"
+            data-reactable-type="<%= @moderatable.class.name %>">
+      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+      <div class="reaction-button-vote-div">
+        <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs up emoji", class: "upvote") %>
+        <img class="reacted-emoji upvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
+      </div>
+      <div class="vote-text">High Quality</div>
+    </button>
+
+    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.id %>"
+            data-category="thumbsdown"
+            data-reactable-type="<%= @moderatable.class.name %>">
+      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+      <div class="reaction-button-vote-div">
+        <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
+        <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
+      </div>
+      <div class="vote-text">Low Quality</div>
+    </button>
+  </div>
+
+<hr />
+
   <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
           data-reactable-id="<%= @moderatable.id %>"
           data-category="vomit"
