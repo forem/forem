@@ -59,16 +59,17 @@ article {
     margin: auto;
     max-width: 1024px;
     z-index: 2;
-    padding-top: 0;
+    background: transparent no-repeat center center; /* TODO[team-delightful]: Remove background styling a few days after merge to avoid conflicts */
+    background-size: cover;
     height: 42vh;
+
+    @media screen and (min-width: 880px) {
+      height: 370px;
+    }
 
     @media screen and (min-width: 950px) {
       border-top-left-radius: 2px;
       border-top-right-radius: 2px;
-    }
-
-    @media screen and (min-width: 880px) {
-      height: 370px;
     }
   }
 
