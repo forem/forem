@@ -90,105 +90,6 @@ $input-width: 650px;
   }
 }
 
-.settings-org-members {
-  margin-bottom: 50px;
-  width: 550px;
-  max-width: 92%;
-  h3 {
-    margin-bottom: 18px;
-  }
-  .settings-org-member-row {
-    padding: 10px;
-    font-size: 20px;
-    position: relative;
-    width: 100%;
-    background: $light-gray;
-    margin: 3px 0px;
-    border-left: 5px solid darken($light-gray, 5%);
-    &.settings-org-admin-row {
-      border-left: 5px solid $green;
-      background: $light-green;
-    }
-    .settings-org-member-actions {
-      margin-top: 5px;
-    }
-    form {
-      display: inline-block;
-    }
-    .settings-org-member {
-      background: $green;
-      color: white;
-      padding: 3px 8px;
-      border-radius: 3px;
-      font-size: 0.7em;
-      border: 0px;
-      cursor: pointer;
-      &.settings-org-member-admin-self {
-        cursor: default;
-        background: $medium-gray;
-      }
-      &.settings-org-member-admin-other {
-        background: $green;
-        cursor: default;
-      }
-      &.settings-org-member-make-admin {
-        color: $green;
-        background: $light-green;
-        border: 1px solid $green;
-      }
-      &.settings-org-member-remove {
-        color: $red;
-        background: lighten($red, 36%);
-        border: 1px solid $red;
-      }
-    }
-  }
-  h5 {
-    color: $medium-gray;
-    font-size: 0.9em;
-    margin-top: -18px;
-    margin-bottom: 10px;
-  }
-  .settings-org-secret {
-    overflow-x: scroll;
-    padding: 7px;
-    border: 1px dashed $medium-gray;
-    width: 100%;
-    border-radius: 3px;
-    font-size: 1.1em;
-    cursor: pointer;
-  }
-  .settings-generate-new-secret {
-    margin-top: 10px;
-    background: $black;
-    color: white;
-    border: 0px;
-    padding: 4px 14px;
-    border-radius: 3px;
-    font-size: 15px;
-    cursor: pointer;
-    &:hover {
-      background: lighten($black, 14%);
-    }
-  }
-  clipboard-copy {
-    cursor: pointer;
-    display: flex;
-    img {
-      max-width: 26px;
-      margin-left: 8px;
-    }
-  }
-  .copy-text-announcer {
-    display: block;
-    text-align: center;
-    padding-top: 10px;
-    &[hidden] {
-      display: none;
-    }
-  }
-}
-
 .settings-form-userlist {
   .settings-form-userlistrow {
     font-size: 18px;
@@ -206,11 +107,6 @@ $input-width: 650px;
       vertical-align: -0.25em;
       margin-right: 0.25em;
     }
-    &:hover {
-      .inline-button-form-hidden {
-        @extend %inline-button-form;
-      }
-    }
   }
 }
 
@@ -226,57 +122,9 @@ $input-width: 650px;
   }
 }
 
-.org-widget-preview .primary-sticky-nav {
-  margin-top: 10px;
-  position: initial;
-  font-size: 1.2em;
-}
-
 ul.delete__account {
   li {
     padding-bottom: 5px;
-  }
-}
-
-.api__secret {
-  &__container {
-    background-color: $white;
-    display: flex;
-    height: auto;
-    margin: 0.5rem 0;
-    padding: 0.5rem;
-    border-radius: 3px;
-    border: 1px solid $light-medium-gray;
-  }
-
-  &__desc {
-    .title {
-      color: $dark-gray;
-      font-weight: bold;
-      margin: 0;
-      padding-bottom: 0.25rem;
-    }
-    .content {
-      margin: 0;
-      color: $medium-gray;
-      font-weight: bold;
-      font-family: $monospace;
-      padding: 5px 8px;
-      border: 1px dashed $black;
-      overflow: hidden;
-      margin: 3px 0px;
-    }
-    .subtitle {
-      margin: 0;
-      color: $dark-medium-gray;
-    }
-  }
-
-  &__revoke {
-    text-align: left;
-    margin: 1rem auto 0;
-    display: block;
-    width: 100%;
   }
 }
 
@@ -315,15 +163,4 @@ ul.delete__account {
 
 .membership-purchase-link {
   font-size: 2rem;
-}
-
-#page-content.chat_channel_memberships-edit,
-#page-content.chat_channel_memberships-index {
-  #page-content-inner {
-    margin-top: 40px;
-  }
-  .notice {
-    margin-top: -40px;
-    margin-bottom: 20px;
-  }
 }
