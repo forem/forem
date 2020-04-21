@@ -1,5 +1,7 @@
 class Bufferizer
   attr_accessor :post_type, :post, :text
+  include ApplicationHelper
+
   def initialize(post_type, post, text)
     if post_type == "article"
       @article = post
@@ -36,11 +38,11 @@ class Bufferizer
   private
 
   def twitter_buffer_text
-    "#{text} https://dev.to#{@article.path}" if text.size <= 255
+    "#{text} #{article_url(@article)}" if text.size <= 255
   end
 
   def fb_buffer_text
-    "#{text} https://dev.to#{@article.path}"
+    "#{text} #{article_url(@article)}"
   end
 
   def social_tags
@@ -49,6 +51,6 @@ class Bufferizer
   end
 
   def listings_twitter_text
-    "#{text} https://dev.to#{@listing.path}" if text.size <= 255
+    "#{text} #{app_url(@listing.path)}" if text.size <= 255
   end
 end
