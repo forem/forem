@@ -16,4 +16,10 @@ class Rack::Attack
       request.env["HTTP_API_KEY"]
     end
   end
+
+  throttle("site_hits", limit: 10, period: 1) do |request|
+    if request.env["HTTP_FASTLY_CLIENT_IP"].present?
+      request.env["HTTP_FASTLY_CLIENT_IP"].to_s
+    end
+  end
 end
