@@ -8,7 +8,13 @@ function initializeOnboardingTaskCard() {
 
   var taskCard = document.getElementsByClassName("onboarding-task-card")[0];
 
-  if (taskCard) {
+  if (taskCard == null) { return }
+
+  var createdAt = new Date(userData().created_at);
+  var now = new Date();
+  var aWeekAgo = now.setDate(now.getDate() - 7);
+
+  if (createdAt > aWeekAgo) {
     taskCard.style.display = "block";
   }
 }
