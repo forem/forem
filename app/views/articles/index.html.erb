@@ -36,7 +36,6 @@
 
     <%# BEGIN Feed menu bar %>
     <div class="articles-list" id="articles-list">
-
       <% if user_signed_in? && current_user.created_at > 7.days.ago %>
         <%= render partial: "onboardings/task_card" %>
       <% end %>

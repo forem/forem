@@ -12,11 +12,11 @@
     font-weight: $fw-heavy;
     font-size: $fs-4xl;
     line-height: $lh-tight;
-    color: #ffffff;
+    color: var(--base-inverted);
   }
 
   .task-card-subtitle {
-    color: #ffffff;
+    color: var(--base-inverted);
     opacity: 0.7;
     font-weight: $fw-medium;
     font-size: $fs-s;
@@ -42,7 +42,7 @@
     font-size: $fs-base;
     line-height: $lh-base;
     letter-spacing: -0.02em;
-    color: #ffffff;
+    color: var(--base-inverted);
     display: flex;
     align-items: center;
     justify-content: space-between;
