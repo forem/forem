@@ -11,7 +11,7 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
   it "user creates an organization" do
     visit "settings/organization"
     fill_in_org_form
-    click_button "Save"
+    click_button "Create Organization"
     expect(page).to have_text("Your organization was successfully created and you are an admin.")
   end
 
