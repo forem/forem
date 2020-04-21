@@ -25,7 +25,7 @@ export async function request(url, options = {}) {
     headers,
     body,
     method = 'GET',
-    csrfToken = window.csrfToken,
+    csrfToken = await getCsrfToken(),
     // These are any other options that might be passed in e.g. keepalive
     ...restOfOptions
   } = options;

@@ -10,11 +10,11 @@ describe('request', () => {
 
   beforeAll(() => {
     globalThis.fetch = fetch;
-    window.csrfToken = csrfToken;
+    globalThis.getCsrfToken = async () => csrfToken;
   });
   afterAll(() => {
     delete globalThis.fetch;
-    delete window.csrfToken;
+    delete globalThis.getCsrfToken;
   });
 
   afterEach(() => {
