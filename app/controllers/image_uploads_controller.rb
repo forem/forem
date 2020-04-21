@@ -1,6 +1,5 @@
 class ImageUploadsController < ApplicationController
   before_action :authenticate_user!
-  before_action :validate_filename_length
   after_action :verify_authorized
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
@@ -12,6 +11,13 @@ class ImageUploadsController < ApplicationController
     begin
       raise RateLimitChecker::UploadRateLimitReached if rate_limiter.limit_by_action("image_upload")
       raise CarrierWave::IntegrityError if params[:image].blank?
+
+      unless valid_filename?
+        respond_to do |format|
+          format.json { render json: { error: "filename too long - the max is #{MAX_FILENAME_LENGTH} characters." }, status: :unprocessable_entity }
+        end
+        return
+      end
 
       uploaders = upload_images(params[:image], rate_limiter)
     rescue RateLimitChecker::UploadRateLimitReached
@@ -47,16 +53,18 @@ class ImageUploadsController < ApplicationController
 
   private
 
-  def validate_filename_length
+  def valid_filename?
+    is_filename_valid_length = true
     images = Array.wrap(params.dig("image"))
 
     images.each do |image|
       next unless long_filename?(image)
 
-      respond_to do |format|
-        format.json { render json: { error: "filename too long - the max is #{MAX_FILENAME_LENGTH} characters." }, status: :unprocessable_entity }
-      end
+      is_filename_valid_length = false
+      break
     end
+
+    is_filename_valid_length
   end
 
   def upload_images(images, rate_limiter)

@@ -1,5 +1,4 @@
 class OrganizationsController < ApplicationController
-  before_action :validate_filename_length, only: %i[create update]
   after_action :verify_authorized
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
@@ -7,6 +6,12 @@ class OrganizationsController < ApplicationController
     @tab = "organization"
     @user = current_user
     @tab_list = @user.settings_tab_list
+
+    unless valid_filename?
+      render template: "users/edit"
+      return
+    end
+
     @organization = Organization.new(organization_params)
     authorize @organization
     if @organization.save
@@ -23,6 +28,11 @@ class OrganizationsController < ApplicationController
     @tab = "organization"
     @tab_list = @user.settings_tab_list
     set_organization
+
+    unless valid_filename?
+      render template: "users/edit"
+      return
+    end
 
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
       flash[:settings_notice] = "Your organization was successfully updated."
@@ -87,24 +97,16 @@ class OrganizationsController < ApplicationController
     authorize @organization
   end
 
-  def validate_filename_length
+  def valid_filename?
     image = params.dig("organization", "profile_image")
-    return unless long_filename?(image)
+    return true unless long_filename?(image)
 
-    @tab = "organization"
-    @user = current_user
-    @tab_list = @user.settings_tab_list
-
-    case action_name
-    when "create"
+    if action_name == "create"
       @organization = Organization.new(organization_params.except(:profile_image))
-    when "update"
-      set_organization
       authorize @organization
     end
 
     @organization.errors.add(:profile_image, "filename too long - the max is #{MAX_FILENAME_LENGTH} characters.")
-
-    render template: "users/edit"
+    false
   end
 end

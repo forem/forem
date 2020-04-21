@@ -4,7 +4,6 @@ class UsersController < ApplicationController
   before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
-  before_action :validate_filename_length, only: %i[update]
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   DEFAULT_FOLLOW_SUGGESTIONS = %w[ben jess peter maestromac andy liana].freeze
@@ -45,6 +44,12 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/:id.:format
   def update
     set_tabs(params["user"]["tab"])
+
+    unless valid_filename?
+      render :edit, status: :bad_request
+      return
+    end
+
     if @user.update(permitted_attributes(@user))
       RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
@@ -345,15 +350,15 @@ class UsersController < ApplicationController
     range.cover? user_identity_age
   end
 
-  def validate_filename_length
+  def valid_filename?
     image = params.dig("user", "profile_image")
-    return unless long_filename?(image)
+    return true unless long_filename?(image)
 
-    set_tabs(params["user"]["tab"])
     @user.errors.add(:profile_image, "filename too long - the max is #{MAX_FILENAME_LENGTH} characters.")
 
     Honeycomb.add_field("error", @user.errors.messages)
     Honeycomb.add_field("errored", true)
-    render :edit, status: :bad_request
+
+    false
   end
 end
