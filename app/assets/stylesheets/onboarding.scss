@@ -57,8 +57,10 @@
   }
 
   .close {
+    // Overide standard button layout
     background: none;
     border: none;
+
     position: absolute;
     top: $su-6;
     right: $su-6;
