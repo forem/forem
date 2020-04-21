@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Button, ButtonGroup } from '@crayons';
+import { Button } from '@crayons';
 import { defaultChildrenPropTypes } from '../src/components/common-prop-types';
 
 const snackbarItemProps = {
@@ -18,13 +18,11 @@ export const SnackbarItem = ({ message, actions = [] }) => (
   <div className="crayons-snackbar__item flex">
     <div className="crayons-snackbar__body">{message}</div>
     <div className="crayons-snackbar__actions">
-      <ButtonGroup>
-        {actions.map(({ text, handler }) => (
-          <Button variant="secondary" onClick={handler} key={text}>
-            {text}
-          </Button>
-        ))}
-      </ButtonGroup>
+      {actions.map(({ text, handler }) => (
+        <Button variant="ghost-success" inverted onClick={handler} key={text}>
+          {text}
+        </Button>
+      ))}
     </div>
   </div>
 );
