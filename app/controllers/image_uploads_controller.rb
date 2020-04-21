@@ -14,7 +14,7 @@ class ImageUploadsController < ApplicationController
 
       unless valid_filename?
         respond_to do |format|
-          format.json { render json: { error: "filename too long - the max is #{MAX_FILENAME_LENGTH} characters." }, status: :unprocessable_entity }
+          format.json { render json: { error: FILENAME_TOO_LONG_MESSAGE }, status: :unprocessable_entity }
         end
         return
       end

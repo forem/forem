@@ -64,7 +64,7 @@ class PodcastsController < ApplicationController
 
     @podcast = Podcast.new(podcast_params.except(:image))
     @podcast.creator = current_user
-    @podcast.errors.add(:image, "filename too long - the max is #{MAX_FILENAME_LENGTH} characters.")
+    @podcast.errors.add(:image, FILENAME_TOO_LONG_MESSAGE)
 
     @podcasts = Podcast.available.order(title: :asc)
     @podcast_index = true

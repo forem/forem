@@ -106,7 +106,7 @@ class OrganizationsController < ApplicationController
       authorize @organization
     end
 
-    @organization.errors.add(:profile_image, "filename too long - the max is #{MAX_FILENAME_LENGTH} characters.")
+    @organization.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
     false
   end
 end

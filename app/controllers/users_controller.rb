@@ -354,7 +354,7 @@ class UsersController < ApplicationController
     image = params.dig("user", "profile_image")
     return true unless long_filename?(image)
 
-    @user.errors.add(:profile_image, "filename too long - the max is #{MAX_FILENAME_LENGTH} characters.")
+    @user.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
 
     Honeycomb.add_field("error", @user.errors.messages)
     Honeycomb.add_field("errored", true)
