@@ -66,6 +66,18 @@ RSpec.describe "UserOrganization", type: :request do
     expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
   end
 
+  it "returns error if image file name is too long" do
+    sign_in user
+    org_params = build(:organization).attributes
+    image = fixture_file_upload("files/800x600.png", "image/png")
+    allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
+    org_params["profile_image"] = image
+    allow(Organization).to receive(:new).and_return(organization)
+
+    post "/organizations", params: { organization: org_params }
+    expect(response.body).to include("filename too long")
+  end
+
   context "when leaving an org" do
     let(:org_member) { create(:user, :org_member) }
 
