@@ -89,7 +89,7 @@ class OrganizationsController < ApplicationController
 
   def validate_filename_length
     image = params.dig("organization", "profile_image")
-    return unless image&.original_filename && image.original_filename.length > MAX_FILENAME_LENGTH
+    return unless invalid_image?(image)
 
     @tab = "organization"
     @user = current_user
