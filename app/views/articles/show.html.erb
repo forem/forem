@@ -101,7 +101,7 @@
         <% if @article.video.present? %>
           <%= render "articles/video_player", meta_tags: true, article: @article %>
         <% elsif @article.main_image.present? %>
-          <img src="<%= cloud_cover_url(@article.main_image) %>" class="image image-final" style="background-color:<%= @article.main_image_background_hex_color %>;" />
+          <img src="<%= cloud_cover_url(@article.main_image) %>" class="image image-final" style="background-color:<%= @article.main_image_background_hex_color %>;" alt="Cover image for <%= @article.title %>" />
         <% else %>
           <div class="blank-space"></div>
         <% end %>
