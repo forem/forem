@@ -51,7 +51,7 @@ class ImageUploadsController < ApplicationController
     images = Array.wrap(params.dig("image"))
 
     images.each do |image|
-      next unless invalid_image?(image)
+      next unless long_filename?(image)
 
       respond_to do |format|
         format.json { render json: { error: "filename too long - the max is #{MAX_FILENAME_LENGTH} characters." }, status: :unprocessable_entity }

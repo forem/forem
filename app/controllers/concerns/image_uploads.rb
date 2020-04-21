@@ -3,7 +3,7 @@ module ImageUploads
 
   MAX_FILENAME_LENGTH = 250
 
-  def invalid_filename?(image)
+  def long_filename?(image)
     image&.original_filename && image.original_filename.length > MAX_FILENAME_LENGTH
   end
 

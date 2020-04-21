@@ -56,7 +56,7 @@ class PodcastsController < ApplicationController
 
   def validate_filename_length
     image = params.dig("podcast", "image")
-    return unless invalid_image?(image)
+    return unless long_filename?(image)
 
     @podcast = Podcast.new(podcast_params.except(:image))
     @podcast.creator = current_user
