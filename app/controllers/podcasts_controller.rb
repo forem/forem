@@ -58,7 +58,7 @@ class PodcastsController < ApplicationController
     image = params.dig("podcast", "image")
     return unless image&.original_filename && image.original_filename.length > MAX_FILENAME_LENGTH
 
-    @podcast = Podcast.new(podcast_params.except("image"))
+    @podcast = Podcast.new(podcast_params.except(:image))
     @podcast.creator = current_user
     @podcast.errors.add(:image, "filename too long - the max is #{MAX_FILENAME_LENGTH} characters.")
 
