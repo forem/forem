@@ -76,8 +76,8 @@ module ApplicationHelper
     end
   end
 
-  def cloud_cover_url(url)
-    CloudCoverUrl.new(url).call
+  def cloud_cover_url(url, options)
+    CloudCoverUrl.new(url, options).call
   end
 
   def tag_colors(tag)
