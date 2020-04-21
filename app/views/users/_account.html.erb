@@ -15,7 +15,7 @@
         <div class="crayons-field mb-6">
           <%= api_secret.label(:description, "Description", class: "crayons-field__label") %>
           <p class="crayons-field__description">What's this API key for?</p>
-          <%= api_secret.text_field(:description, placeholder: "", required: true, class: "crayons-textfield") %>
+          <%= api_secret.text_field(:description, placeholder: "My Project Name", required: true, class: "crayons-textfield") %>
         </div>
       <% end %>
       <button class="crayons-btn crayon-btn--secondary" id="new__api__secret__btn" type="submit">Generate API Key</button>
