@@ -15,6 +15,24 @@ class ModerationsController < ApplicationController
   end
 
   def article
+    load_article
+    render template: "moderations/mod"
+  end
+
+  def comment
+    authorize(User, :moderation_routes?)
+    @moderatable = Comment.find(params[:id_code].to_i(26))
+    render template: "moderations/mod"
+  end
+
+  def actions_panel
+    load_article
+    render template: "moderations/actions_panel"
+  end
+
+  private
+
+  def load_article
     authorize(User, :moderation_routes?)
     @tag_adjustment = TagAdjustment.new
     @moderatable = Article.find_by(slug: params[:slug])
@@ -24,12 +42,5 @@ class ModerationsController < ApplicationController
     @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
     @allowed_to_adjust = @moderatable.class.name == "Article" && (current_user.has_role?(:super_admin) || @tag_moderator_tags.any?)
     @hidden_comments = @moderatable.comments.where(hidden_by_commentable_user: true)
-    render template: "moderations/mod"
-  end
-
-  def comment
-    authorize(User, :moderation_routes?)
-    @moderatable = Comment.find(params[:id_code].to_i(26))
-    render template: "moderations/mod"
   end
 end
