@@ -26,6 +26,7 @@
 
   .task-card-action {
     border-radius: $br-default;
+    // Can't use hex + opacity because it will affect text.
     background-color: rgba(255, 255, 255, 0.2);
 
     &:hover {
