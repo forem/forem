@@ -3,7 +3,7 @@
 @import 'config/import';
 
 .onboarding-task-card {
-  background: #3b49df;
+  background: var(--accent-brand);
   border-radius: $br-default;
   padding: $su-7 $su-8 $su-8 $su-8;
   display: none;
