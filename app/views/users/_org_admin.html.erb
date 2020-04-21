@@ -80,7 +80,7 @@
   <div class="field">
     <%= f.label :slug, "Username" %>
     <%= f.text_field :slug, maxlength: 18, minlength: 2 %>
-    <i>Your organization's URL is: https://dev.to/<%= @organization.slug %></i>
+    <i>Your organization's URL is: <%= app_url(@organization.slug) %></i>
   </div>
   <%= f.label :profile_image %>
   <div class="field">
