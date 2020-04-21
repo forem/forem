@@ -1,8 +1,8 @@
 <%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", defer: true %>
 
-<div class="crayons-card mb-6 p-6 grid gap-6">
-  <%= render "users/additional_authentication" %>
+<%= render "users/additional_authentication" %>
 
+<div class="crayons-card mb-6 p-6 grid gap-6">
   <div class="flex items-center">
     <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/<%= current_user.username %>" aria-label="Go to your profile page" class="mr-2">
       <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= community_name %> badge" height="32" width="32" class="dev-badge crayons-icon" />
