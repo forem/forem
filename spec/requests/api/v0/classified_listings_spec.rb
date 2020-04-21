@@ -366,7 +366,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
         expect do
           post_classified_listing(draft_params)
         end.to change(ClassifiedListing, :count).by(1).
-        and change(user.credits.spent, :size).by(0)
+          and change(user.credits.spent, :size).by(0)
       end
 
       it "does not create a listing or subtract credits if the purchase does not go through" do
@@ -374,7 +374,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
         expect do
           post_classified_listing(listing_params)
         end.to change(ClassifiedListing, :count).by(0).
-        and change(user.credits.spent, :size).by(0)
+          and change(user.credits.spent, :size).by(0)
       end
 
       it "creates a classified listing belonging to the user" do
