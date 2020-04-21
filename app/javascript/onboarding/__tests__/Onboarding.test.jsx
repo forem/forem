@@ -34,6 +34,7 @@ describe('<Onboarding />', () => {
     fetch.resetMocks();
   });
 
+  // Use this to fetch mock response data before trying to render the `followTags` component.
   const fakeTagsResponse = JSON.stringify([
     {
       bg_color_hex: '#000000',
@@ -54,6 +55,8 @@ describe('<Onboarding />', () => {
       text_color_hex: '#ffffff',
     },
   ]);
+
+  // Use this to fetch mock response data before trying to render the `followUsers` component.
   const fakeUsersResponse = JSON.stringify([
     {
       id: 1,
@@ -122,6 +125,9 @@ describe('<Onboarding />', () => {
       updateTermsAndConditions();
 
       onboardingSlides.find('.next-button').simulate('click');
+
+      // Fetch the fakeTagsResponse before trying to render the next slide (followTags).
+      fetch.once(fakeTagsResponse);
       await flushPromises();
       expect(onboardingSlides.state().currentSlide).toBe(introSlideIndex + 1);
     });
@@ -133,9 +139,52 @@ describe('<Onboarding />', () => {
     });
   });
 
+  describe('FollowTags', () => {
+    let onboardingSlides;
+    const followTagsIndex = 1;
+
+    beforeEach(async () => {
+      onboardingSlides = initializeSlides(
+        followTagsIndex,
+        getUserData(),
+        fakeTagsResponse,
+      );
+      await flushPromises();
+    });
+
+    test('renders properly', () => {
+      expect(onboardingSlides).toMatchSnapshot();
+    });
+
+    test('should render three tags', async () => {
+      expect(onboardingSlides.find('.onboarding-tags__item').length).toBe(3);
+    });
+
+    test('should allow a user to add a tag and advance', async () => {
+      fetch.once({});
+      const followTags = onboardingSlides.find(<FollowTags />);
+      const firstButton = onboardingSlides
+        .find('.onboarding-tags__button')
+        .first();
+
+      firstButton.simulate('click');
+      expect(followTags.state('selectedTags').length).toBe(1);
+
+      onboardingSlides.find('.next-button').simulate('click');
+      fetch.once(fakeUsersResponse);
+      await flushPromises();
+      expect(onboardingSlides.state().currentSlide).toBe(followTagsIndex + 1);
+    });
+
+    it('should step backward', () => {
+      onboardingSlides.find('.back-button').simulate('click');
+      expect(onboardingSlides.state().currentSlide).toBe(followTagsIndex - 1);
+    });
+  });
+
   describe('ProfileForm', () => {
     let onboardingSlides;
-    const profileFormIndex = 1;
+    const profileFormIndex = 2;
     const meta = document.createElement('meta');
 
     meta.setAttribute('name', 'csrf-token');
@@ -184,51 +233,10 @@ describe('<Onboarding />', () => {
     });
 
     it('should step backward', () => {
+      // Fetch the fakeTagsResponse before trying to render the previous slide (followTags).
+      fetch.once(fakeTagsResponse);
       onboardingSlides.find('.back-button').simulate('click');
       expect(onboardingSlides.state().currentSlide).toBe(profileFormIndex - 1);
-    });
-  });
-
-  describe('FollowTags', () => {
-    let onboardingSlides;
-    const followTagsIndex = 2;
-
-    beforeEach(async () => {
-      onboardingSlides = initializeSlides(
-        followTagsIndex,
-        getUserData(),
-        fakeTagsResponse,
-      );
-      await flushPromises();
-    });
-
-    test('renders properly', () => {
-      expect(onboardingSlides).toMatchSnapshot();
-    });
-
-    test('should render three tags', async () => {
-      expect(onboardingSlides.find('.onboarding-tags__item').length).toBe(3);
-    });
-
-    test('should allow a user to add a tag and advance', async () => {
-      fetch.once({});
-      const followTags = onboardingSlides.find(<FollowTags />);
-      const firstButton = onboardingSlides
-        .find('.onboarding-tags__button')
-        .first();
-
-      firstButton.simulate('click');
-      expect(followTags.state('selectedTags').length).toBe(1);
-
-      onboardingSlides.find('.next-button').simulate('click');
-      fetch.once(fakeUsersResponse);
-      await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(followTagsIndex + 1);
-    });
-
-    it('should step backward', () => {
-      onboardingSlides.find('.back-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(followTagsIndex - 1);
     });
   });
 
@@ -286,7 +294,6 @@ describe('<Onboarding />', () => {
     });
 
     it('should step backward', async () => {
-      fetch.once(fakeTagsResponse);
       onboardingSlides.find('.back-button').simulate('click');
       await flushPromises();
       expect(onboardingSlides.state().currentSlide).toBe(followUsersIndex - 1);
