@@ -328,7 +328,7 @@
 
     img {
       position: absolute;
-      left: 80px;
+      left: 107px;
       width: 24px;
       height: 24px;
     }
@@ -338,6 +338,7 @@
       font-weight: 500;
       font-size: 14px;
       line-height: 125%;
+      color: var(--base-90);
     }
 
     .vomit-checkmark {
@@ -380,7 +381,11 @@
     }
 
     img {
-      left: 75px;
+      left: 102px;
+    }
+
+    span {
+      color: var(--accent-brand);
     }
   }
 

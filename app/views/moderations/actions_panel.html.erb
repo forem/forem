@@ -15,9 +15,8 @@
     </button>
   </header>
   <% if @moderatable.class.name == "Article" &&
-       (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? && 
-       (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) })
-  %>
+       (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? &&
+       (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) }) %>
     <%= form_tag "/article_approvals", method: "post" do %>
       <%= hidden_field_tag(:id, @moderatable.id) %>
       <% if @moderatable.approved %>
@@ -31,20 +30,44 @@
     <hr />
   <% end %>
 
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
-          data-reactable-id="<%= @moderatable.id %>"
-          data-category="thumbsdown"
-          data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
-  </button>
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
-          data-reactable-id="<%= @moderatable.id %>"
-          data-category="vomit"
-          data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
-  </button>
+  <div class="thumb-reactions">
+    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.id %>"
+            data-category="thumbsup"
+            data-reactable-type="<%= @moderatable.class.name %>">
+      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+      <div class="reaction-button-vote-div">
+        <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs up emoji", class: "upvote") %>
+        <img class="reacted-emoji upvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
+      </div>
+      <div class="vote-text">High Quality</div>
+    </button>
+
+    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.id %>"
+            data-category="thumbsdown"
+            data-reactable-type="<%= @moderatable.class.name %>">
+      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+      <div class="reaction-button-vote-div">
+        <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
+        <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
+      </div>
+      <div class="vote-text">Low Quality</div>
+    </button>
+  </div>
+
+  <div class="vomit-reaction-section">
+    <button class="reaction-vomit-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.id %>"
+            data-category="vomit"
+            data-reactable-type="<%= @moderatable.class.name %>">
+      <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
+      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+      <span>Mark as spam</span>
+      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: "Checkmark") %>
+    </button>
+  </div>
+
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
     <h3> <a href="<%= @moderatable.path %>/edit">Edit Post</a> |
       <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Internal:Article</a> |
@@ -180,7 +203,7 @@
 
 <script defer>
   setTimeout(function () {
-    var butts = document.getElementsByClassName('reaction-button');
+    var butts = document.querySelectorAll('.reaction-button, .reaction-vomit-button');
     for (var i = 0; i < butts.length; i++) {
       var butt = butts[i];
       butt.onclick = function (event) {
