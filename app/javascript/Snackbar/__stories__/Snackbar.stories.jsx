@@ -71,24 +71,24 @@ OneSnackbarItem.story = {
 };
 
 export const MultipleSnackbarItems = () => {
-  const snackbarItems = [];
+  const snackbarItems = [
+    {
+      message: 'File uploaded successfully',
+    },
 
-  snackbarItems.push({
-    message: 'File uploaded successfully',
-  });
+    {
+      message: 'Unable to save file',
+      actions: [
+        { text: 'Retry', handler: action('save file retry') },
+        { text: 'Abort', handler: action('abort file save') },
+      ],
+    },
 
-  snackbarItems.push({
-    message: 'Unable to save file',
-    actions: [
-      { text: 'Retry', handler: action('save file retry') },
-      { text: 'Abort', handler: action('abort file save') },
-    ],
-  });
-
-  snackbarItems.push({
-    message: 'There was a network error',
-    actions: [{ text: 'Retry', handler: action('retry network') }],
-  });
+    {
+      message: 'There was a network error',
+      actions: [{ text: 'Retry', handler: action('retry network') }],
+    },
+  ];
 
   return (
     <Snackbar>
