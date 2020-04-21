@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
-import { Snackbar, SnackbarItem } from '../Snackbar';
+import { Snackbar, SnackbarItem } from '..';
 
 export default {
   title: 'App Components/Snackbar',
