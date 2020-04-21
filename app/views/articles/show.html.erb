@@ -32,37 +32,7 @@
   <% end %>
   <% unless internal_navigation? || user_signed_in? %>
     <script type="application/ld+json">
-      {
-        "@context": "http://schema.org",
-        "@type": "Article",
-        "mainEntityOfPage": {
-          "@type": "WebPage",
-          "@id": "<%= article_url(@article) %>"
-        },
-        "url": "<%= article_url(@article) %>",
-        "image": "<%= article_social_image_url(@article) %>",
-        "publisher": {
-          "@context": "http://schema.org",
-          "@type": "Organization",
-          "name": "<%= community_qualified_name %>",
-          "logo": {
-            "@context": "http://schema.org",
-            "@type": "ImageObject",
-            "url": "<%= cloudinary(SiteConfig.logo_png, 192, "png") %>",
-            "width": "192",
-            "height": "192"
-          }
-        },
-        "headline": "<%= @article.title %>",
-        "author": {
-          "@context": "http://schema.org",
-          "@type": "Person",
-          "url": "<%= user_url(@user) %>",
-          "name": "<%= @user.name %>"
-        },
-        "datePublished": "<%= @article.published_timestamp %>",
-        "dateModified": "<%= @article.edited_at&.iso8601 || @article.published_timestamp %>"
-      }
+      <%= @article_json_ld.to_json.html_safe %>
     </script>
   <% end %>
 
