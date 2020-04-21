@@ -312,7 +312,7 @@ class UsersController < ApplicationController
       %0A
       Regards,
       %0A
-      YOUR-DEV-USERNAME-HERE
+      YOUR-#{community_name}-USERNAME-HERE
     HEREDOC
   end
 
