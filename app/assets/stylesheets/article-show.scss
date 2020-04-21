@@ -39,6 +39,9 @@
 
   iframe {
     height: 100%;
+    border: none;
+    box-shadow: -4px 0px 15px rgba(0, 0, 0, 0.1);
+    width: 360px;
   }
 }
 
