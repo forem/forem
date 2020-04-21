@@ -7,8 +7,13 @@
 <% end %>
 
 <div class="container mod-container" style="text-align: center">
-  <h2><a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
-  <h3><a href="<%= @moderatable.user.path %>">@<%= @moderatable.user.username %></a></h3>
+  <header class="top-header">
+    <h1>Moderate Post</h1>
+    <h2>Rate the quality of this post</h2>
+    <button class="circle" type="button">
+      <%= inline_svg_tag("chevron-right.svg", aria: true, title: "Close moderator actions panel") %>
+    </button>
+  </header>
   <% if @moderatable.class.name == "Article" &&
        (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? && 
        (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) })
@@ -57,6 +62,11 @@
   <p>
     Use <b>vomit</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
   </p>
+  <div class="other-things">
+    <header>
+      <h1 class="capitalized">Other things you can do</h1>
+    </header>
+  </div>
   <div class="tag-mod-form">
     <h2>Flag <a href="<%= @moderatable.user.path %>"><%= @moderatable.user.username %></a> as Abusive</h2>
     <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable.user, current_user, "vomit") ? "reacted" : "" %>"
