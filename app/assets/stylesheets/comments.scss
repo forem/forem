@@ -488,6 +488,20 @@ a.header-link {
         max-width: 100%;
       }
     }
+
+    // this css is added to ignore the code under highlight class and use default bg-color and color.
+
+    #preview-div div.highlight pre code {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    // this css is added to differentiate the code within a pre tag since pre tag already has black bg.
+
+    #preview-div pre code {
+      background-color: white;
+      color: black;
+    }
+
     .actions {
       text-align: right;
 
@@ -840,6 +854,8 @@ a.header-link {
       vertical-align: 0.1em;
       max-width: 100%;
       line-height: 1.4em;
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 0.1em 0.3em 0;
     }
     pre {
       width: 88%;
@@ -853,9 +869,12 @@ a.header-link {
       overflow-x: auto;
       code {
         background: #29292e;
-        color: #eff0f9;
+        color: black;
         white-space: pre;
         font-size: 1em;
+        background-color: white;
+        padding-top: 6%;
+        padding-bottom: 6%;
       }
     }
     img {
