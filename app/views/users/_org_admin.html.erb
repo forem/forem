@@ -179,9 +179,9 @@
       </p>
     </header>
     <div class="crayons-field">
-      <%= f.label :cta_body_markdown, "Body text (Limited markdown — bold/italic/etc)", class: "crayons-field__label" %>
+      <%= f.label :cta_body_markdown, "Body text", class: "crayons-field__label" %>
       <%= f.text_area :cta_body_markdown, maxlength: 256, class: "crayons-textfield", placeholder: "..." %>
-      <p class="crayons-field__description">Markdown: _italic_ and **bold** is okay. Links, and headers etc. will not show up. 256 character limit.</p>
+      <p class="crayons-field__description">Limited markdown: _italic_ and **bold** is okay. Links, and headers etc. will not show up. 256 character limit.</p>
     </div>
     <div class="crayons-field">
       <%= f.label :cta_button_text, "Link text", class: "crayons-field__label" %>

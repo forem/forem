@@ -18,7 +18,7 @@
       <p class="crayons-field__description">(optional)</p>
     </div>
 
-    <div><button type="submit" class="crayons-btn crayons-btn--l">Save Connect Settings</button></div>
+    <div><button type="submit" class="crayons-btn">Save Connect Settings</button></div>
   <% end %>
 </div>
 
@@ -42,7 +42,7 @@
     </div>
 
     <%= f.hidden_field :tab, value: @tab, id: nil %>
-    <div><button type="submit" class="crayons-btn crayons-btn--l">Save Sponsors Settings</button></div>
+    <div><button type="submit" class="crayons-btn">Save Sponsors Settings</button></div>
   <% end %>
 </div>
 
@@ -62,7 +62,7 @@
         <%= f.label :export_requested, "Request an export of your content", class: "crayons-field__label" %>
       </div>
       <%= f.hidden_field :tab, value: @tab, id: nil %>
-      <div><button type="submit" class="crayons-btn crayons-btn--l">Submit data request</button></div>
+      <div><button type="submit" class="crayons-btn">Submit data request</button></div>
     <% end %>
   <% end %>
 </div>
