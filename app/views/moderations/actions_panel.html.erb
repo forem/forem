@@ -36,11 +36,11 @@
             data-category="thumbsup"
             data-reactable-type="<%= @moderatable.class.name %>">
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
-      <div class="reaction-button-vote-div">
+      <div class="reaction-button-circle">
         <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs up emoji", class: "upvote") %>
         <img class="reacted-emoji upvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
       </div>
-      <div class="vote-text">High Quality</div>
+      <span class="vote-text">High Quality</span>
     </button>
 
     <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
@@ -48,11 +48,11 @@
             data-category="thumbsdown"
             data-reactable-type="<%= @moderatable.class.name %>">
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
-      <div class="reaction-button-vote-div">
+      <div class="reaction-button-circle">
         <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
         <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
       </div>
-      <div class="vote-text">Low Quality</div>
+      <span class="vote-text">Low Quality</span>
     </button>
   </div>
 
@@ -63,7 +63,7 @@
             data-reactable-type="<%= @moderatable.class.name %>">
       <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
       <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
-      <span>Mark as spam</span>
+      <span></span>
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: "Checkmark") %>
     </button>
   </div>

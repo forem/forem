@@ -218,9 +218,9 @@
 
   .thumb-reactions {
     display: flex;
-    flex-wrap: wrap;
+    //flex-wrap: wrap;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: $su-5;
   }
 
   .reaction-button {
@@ -230,11 +230,11 @@
     border: 0px;
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
+    //flex-wrap: wrap;
     width: min-content;
     height: min-content;
-    padding: 16px 24px;
-    border-radius: 3px;
+    padding: $su-4 $su-6;
+    border-radius: $br-default;
 
     &:hover {
       background: rgba(59, 73, 223, 0.05);
@@ -242,38 +242,42 @@
     &:active {
       border: 0px;
     }
-    &:hover .reaction-button-vote-div {
+    &:hover .reaction-button-circle {
       border-color: var(--accent-brand);
     }
   }
 
   .reaction-button img {
-    position: absolute;
-    top: 5px;
-    width: 70px;
-    left: 5px;
+    //position: absolute;
+    //top: 5px;
+    //width: 32px;
+    //left: 5px;
   }
 
-  .reaction-button-vote-div {
-    position: relative;
-    top: 0px;
-    left: 0px;
+  .reaction-button-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    //position: relative;
+    //top: 0px;
+    //left: 0px;
     width: 64px;
     height: 64px;
-    padding: 10px;
+    //padding: 10px;
     border: solid 2px var(--base-20);
-    border-radius: 50px;
+    //border-radius: 50px;
+    border-radius: 100%;
     background: $white;
   }
 
-  .reaction-button-vote-div img {
-    position: absolute;
-    top: 30px;
+  .reaction-button-circle img {
+    //position: absolute;
+    //top: 30px;
     width: 32px;
-    left: 26px;
+    //left: 26px;
 
     &.upvote {
-      top: 24px;
+      //top: 24px;
     }
   }
 
@@ -289,7 +293,7 @@
     font-weight: 600;
     font-size: 15px;
     line-height: 150%;
-    margin-top: 8px;
+    margin-top: $su-2;
     color: var(--base-90);
   }
 
@@ -304,7 +308,8 @@
     justify-content: center;
     align-items: center;
     background-color: var(--accent-success);
-    border-radius: 50px;
+    //border-radius: 50px;
+    border-radius: 100%;
     border: 2px solid $white;
     padding: 2px;
     z-index: 3;
@@ -314,7 +319,7 @@
   .vomit-reaction-section {
     display: flex;
     justify-content: center;
-    margin: 20px 0px;
+    margin: $su-5 0;
   }
 
   .reaction-vomit-button {
@@ -324,8 +329,8 @@
     background: $white;
     min-width: 145px;
     height: 32px;
-    padding: 4px 8px;
-    border-radius: 3px;
+    padding: $su-1 $su-2;
+    border-radius: $br-default;
 
     img {
       position: absolute;
@@ -340,6 +345,9 @@
       font-size: 14px;
       line-height: 125%;
       color: var(--base-90);
+      &:after {
+        content: 'Mark as spam';
+      }
     }
 
     .vomit-checkmark {
@@ -357,7 +365,7 @@
   .reaction-button.reacted {
     background: var(--accent-brand);
 
-    .reaction-button-vote-div {
+    .reaction-button-circle {
       border-color: var(--accent-success);
     }
 
@@ -387,6 +395,10 @@
 
     span {
       color: var(--accent-brand);
+
+      &:after {
+        content: 'Marked as spam';
+      }
     }
   }
 
@@ -400,6 +412,8 @@
     display: block;
   }
 
+  // Reaction Buttons END
+
   .tag-mod-form {
     border-top: 1px solid #dddddd;
     margin: 42px auto;
@@ -409,8 +423,6 @@
     text-align: left;
     font-size: 15px;
   }
-
-  // Reaction Buttons END
 
   .tag-mod-form form {
     width: 500px;
