@@ -187,6 +187,7 @@ class StoriesController < ApplicationController
       limited_column_select.
       order("published_at DESC").page(@page).per(8))
     @organization_article_index = true
+    set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
   end
@@ -205,7 +206,7 @@ class StoriesController < ApplicationController
     return if performed?
 
     set_surrogate_key_header "articles-user-#{@user.id}"
-    set_json_ld
+    set_user_json_ld
     render template: "users/show"
   end
 
@@ -272,6 +273,7 @@ class StoriesController < ApplicationController
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     assign_second_and_third_user
+    set_article_json_ld
     @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
@@ -332,7 +334,7 @@ class StoriesController < ApplicationController
     @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
   end
 
-  def set_json_ld
+  def set_user_json_ld
     @user_json_ld = {
       "@context": "http://schema.org",
       "@type": "Person",
@@ -346,7 +348,7 @@ class StoriesController < ApplicationController
       "name": @user.name,
       "email": "",
       "jobTitle": "",
-      "description": @user.summary.presence || ["404 bio not found"].sample,
+      "description": @user.summary.presence || "404 bio not found",
       "disambiguatingDescription": [],
       "worksFor": [
         {
@@ -359,17 +361,66 @@ class StoriesController < ApplicationController
     set_user_same_as_json_ld
   end
 
+  def set_article_json_ld
+    @article_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.article(@article)
+      },
+      "url": URL.article(@article),
+      "image": ApplicationController.helpers.article_social_image_url(@article),
+      "publisher": {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "name": "#{ApplicationConfig['COMMUNITY_NAME']} Community",
+        "logo": {
+          "@context": "http://schema.org",
+          "@type": "ImageObject",
+          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, "png"),
+          "width": "192",
+          "height": "192"
+        }
+      },
+      "headline": @article.title,
+      "author": {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        "url": URL.user(@user),
+        "name": @user.name
+      },
+      "datePublished": @article.published_timestamp,
+      "dateModified": @article.edited_at&.iso8601 || @article.published_timestamp
+    }
+  end
+
+  def set_organization_json_ld
+    @organization_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.organization(@organization)
+      },
+      "url": URL.organization(@organization),
+      "image": ProfileImage.new(@organization).get(width: 320),
+      "name": @organization.name,
+      "description": @user.summary.presence || "404 bio not found"
+    }
+  end
+
   def set_user_profile_json_ld
     @user_json_ld[:disambiguatingDescription].append(@user.mostly_work_with) if @user.mostly_work_with.present?
     @user_json_ld[:disambiguatingDescription].append(@user.currently_hacking_on) if @user.currently_hacking_on.present?
     @user_json_ld[:disambiguatingDescription].append(@user.currently_learning) if @user.currently_learning.present?
-    @user_json_ld[:worksFor][0][:employer_name] = @user.employer_name if @user.employer_name.present?
-    @user_json_ld[:worksFor][0][:employer_url] = @user.employer_url if @user.employer_url.present?
+    @user_json_ld[:worksFor][0][:name] = @user.employer_name if @user.employer_name.present?
+    @user_json_ld[:worksFor][0][:url] = @user.employer_url if @user.employer_url.present?
     @user_json_ld[:alumniOf] = @user.education if @user.education.present?
     @user_json_ld[:email] = @user.email if @user.email_public
     @user_json_ld[:jobTitle] = @user.employment_title if @user.employment_title.present?
-    @user_json_ld[:sameAs].append(@user.twitter_username) if @user.twitter_username.present?
-    @user_json_ld[:sameAs].append(@user.github_username) if @user.github_username.present?
+    @user_json_ld[:sameAs].append("https://twitter.com/#{@user.twitter_username}") if @user.twitter_username.present?
+    @user_json_ld[:sameAs].append("https://github.com/#{@user.github_username}") if @user.github_username.present?
   end
 
   def set_user_same_as_json_ld

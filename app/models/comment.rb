@@ -164,7 +164,7 @@ class Comment < ApplicationRecord
   end
 
   def shorten_urls!
-    doc = Nokogiri::HTML.parse(processed_html)
+    doc = Nokogiri::HTML.fragment(processed_html)
     doc.css("a").each do |anchor|
       unless anchor.to_s.include?("<img") || anchor.attr("class")&.include?("ltag")
         anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img")

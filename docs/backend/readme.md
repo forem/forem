@@ -7,6 +7,7 @@ items:
   - authorization.md
   - configuration.md
   - data-update-scripts.md
+  - fastly.md
   - roles.md
   - algolia.md
   - pusher.md

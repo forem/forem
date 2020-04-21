@@ -1,9 +1,13 @@
 class ApplicationMailer < ActionMailer::Base
   layout "mailer"
+  # the order of importing the helpers here is important
+  # we want the application helpers to override the Rails route helpers should there be a name conflict
+  # an example is the user_url
+  helper Rails.application.routes.url_helpers
   helper ApplicationHelper
 
   default(
-    from: -> { "DEV Community <#{SiteConfig.default_site_email}>" },
+    from: -> { "#{ApplicationConfig['COMMUNITY_NAME']} Community <#{SiteConfig.default_site_email}>" },
     template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
   )
 
