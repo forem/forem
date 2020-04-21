@@ -184,16 +184,19 @@
     border-radius: 12px;
   }
 
+  // Reaction Buttons START
+
+  .thumb-reactions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
   .reaction-button {
     position: relative;
-    //width: 80px;
-    //height: 80px;
     background: white;
     border-color: white;
-    //margin: 30px 30px;
-    border-radius: 200px;
     border: 0px;
-    //padding: 12px 12px;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -212,38 +215,12 @@
       border-color: var(--accent-brand);
     }
   }
-  .reaction-vomit-button {
-    img {
-      width: 24px;
-      height: 24px;
-    }
-  }
 
   .reaction-button img {
     position: absolute;
     top: 5px;
     width: 70px;
     left: 5px;
-  }
-
-  .reaction-button .reacted-emoji {
-    display: none;
-  }
-
-  .reaction-button.reacted .reacted-emoji {
-    display: block;
-  }
-
-  .reaction-button.reacted {
-    background: var(--accent-brand);
-
-    .reaction-button-vote-div {
-      border-color: var(--accent-success);
-    }
-
-    .vote-text {
-      color: $white;
-    }
   }
 
   .reaction-button-vote-div {
@@ -255,6 +232,7 @@
     padding: 10px;
     border: solid 2px var(--base-20);
     border-radius: 50px;
+    background: $white;
   }
 
   .reaction-button-vote-div img {
@@ -285,6 +263,7 @@
   }
 
   .reaction-checkmark {
+    opacity: 0;
     position: absolute;
     top: 80px;
     left: 86px;
@@ -301,6 +280,90 @@
     color: $white;
   }
 
+  .vomit-reaction-section {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0px;
+  }
+
+  .reaction-vomit-button {
+    display: flex;
+    align-items: center;
+    border: none;
+    background: $white;
+    min-width: 145px;
+    height: 32px;
+    padding: 4px 8px;
+    border-radius: 3px;
+
+    img {
+      position: absolute;
+      left: 80px;
+      width: 24px;
+      height: 24px;
+    }
+
+    span {
+      margin-left: 35px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 125%;
+    }
+
+    .vomit-checkmark {
+      width: 17px;
+      margin-left: 5px;
+      color: var(--accent-brand);
+      display: none;
+    }
+
+    &:hover {
+      background: rgba(59, 73, 223, 0.05);
+    }
+  }
+
+  .reaction-button.reacted {
+    background: var(--accent-brand);
+
+    .reaction-button-vote-div {
+      border-color: var(--accent-success);
+    }
+
+    .vote-text {
+      color: $white;
+    }
+
+    .reaction-checkmark {
+      opacity: 100;
+    }
+  }
+
+  .reaction-vomit-button.reacted {
+    background: rgba(59, 73, 223, 0.1);
+
+    .vomit-checkmark {
+      display: inline;
+    }
+
+    .reaction-vomit-button span {
+      margin-left: 40px;
+    }
+
+    img {
+      left: 75px;
+    }
+  }
+
+  .reaction-button .reacted-emoji,
+  .reaction-vomit-button .reacted-emoji {
+    display: none;
+  }
+
+  .reaction-button.reacted .reacted-emoji,
+  .reaction-vomit-button.reacted .reacted-emoji {
+    display: block;
+  }
+
   .tag-mod-form {
     border-top: 1px solid #dddddd;
     margin: 42px auto;
@@ -310,6 +373,8 @@
     text-align: left;
     font-size: 15px;
   }
+
+  // Reaction Buttons END
 
   .tag-mod-form form {
     width: 500px;
