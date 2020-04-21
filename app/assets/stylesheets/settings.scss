@@ -3,13 +3,6 @@
 @import 'functions';
 $input-width: 650px;
 
-.settings-hr {
-  opacity: 0.3;
-  width: 570px;
-  max-width: 98%;
-  margin: 0;
-}
-
 .github-repos {
   max-height: 400px;
   overflow-y: auto;
@@ -90,26 +83,6 @@ $input-width: 650px;
   }
 }
 
-.settings-form-userlist {
-  .settings-form-userlistrow {
-    font-size: 18px;
-    padding: 6px 0px;
-    min-height: 33px;
-    display: block;
-    @include themeable(color, theme-color, $black);
-    a {
-      @include themeable(color, theme-color, $black);
-    }
-    img {
-      height: 1.5em;
-      width: 1.5em;
-      border-radius: 100px;
-      vertical-align: -0.25em;
-      margin-right: 0.25em;
-    }
-  }
-}
-
 .signout_confirm-wrapper {
   padding: calc(15% + 50px) 2% 30%;
   text-align: center;
@@ -119,12 +92,6 @@ $input-width: 650px;
     border: 0px;
     border-radius: 3px;
     margin-top: 15px;
-  }
-}
-
-ul.delete__account {
-  li {
-    padding-bottom: 5px;
   }
 }
 
