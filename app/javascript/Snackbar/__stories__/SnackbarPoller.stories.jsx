@@ -9,14 +9,26 @@ export default {
 };
 
 export const SimulateAddingSnackbarItems = () => {
-  setInterval(() => {
-    const text = faker.lorem.word();
+  addSnackbarItem({
+    message: faker.hacker.phrase(),
+    actions: [
+      { text: faker.lorem.word(), handler: action('action 1 clicked') },
+    ],
+  });
 
-    addSnackbarItem({
-      message: faker.hacker.phrase(),
-      actions: [{ text, handler: action(text) }],
-    });
-  }, 4000);
+  addSnackbarItem({
+    message: faker.hacker.phrase(),
+    actions: [
+      { text: faker.lorem.word(), handler: action('action 2 clicked') },
+    ],
+  });
+
+  addSnackbarItem({
+    message: faker.hacker.phrase(),
+    actions: [
+      { text: faker.lorem.word(), handler: action('action 3 clicked') },
+    ],
+  });
 
   return (
     <SnackbarPoller
