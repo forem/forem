@@ -42,7 +42,7 @@ module Users
 
     def delete_profile_info(user)
       user.notifications.delete_all
-      user.reactions.delete_all
+      remove_reactions(user)
       user.follows.delete_all
       Follow.followable_user(user.id).delete_all
       user.messages.delete_all
@@ -53,6 +53,14 @@ module Users
       user.credits.delete_all
       user.organization_memberships.delete_all
       user.profile_pins.delete_all
+    end
+
+    def remove_reactions(user)
+      readinglist_ids = user.reactions.readinglist.pluck(:id)
+      user.reactions.delete_all
+      readinglist_ids.each do |id|
+        Search::RemoveFromElasticsearchIndexWorker.perform_async("Search::Reaction", id)
+      end
     end
   end
 end
