@@ -5,7 +5,7 @@ module Internal
 
     def index
       @event = Event.new(
-        location_name: "#{ApplicationConfig['APP_DOMAIN']}/live",
+        location_name: "#{URL.domain}/live",
         location_url: app_url,
         description_markdown: "*Description* *Pre-requisites:* *Bio*",
       )
