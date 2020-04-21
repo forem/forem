@@ -30,6 +30,13 @@ export const SimulateAddingSnackbarItems = () => {
     ],
   });
 
+  addSnackbarItem({
+    message: faker.hacker.phrase(),
+    actions: [
+      { text: faker.lorem.word(), handler: action('action 3 clicked') },
+    ],
+  });
+
   return (
     <SnackbarPoller
       lifespan={number('lifespan', 5)}

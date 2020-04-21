@@ -40,6 +40,15 @@ export class SnackbarPoller extends Component {
           let updatedSnacks = [...snacks, ...newSnacks];
 
           if (updatedSnacks.length > 3) {
+            const snacksToBeDiscarded = updatedSnacks.slice(
+              0,
+              updatedSnacks.length - 3,
+            );
+
+            snacksToBeDiscarded.forEach(({ lifespanTimeoutId }) => {
+              clearTimeout(lifespanTimeoutId);
+            });
+
             updatedSnacks = updatedSnacks.slice(updatedSnacks.length - 3);
           }
 
