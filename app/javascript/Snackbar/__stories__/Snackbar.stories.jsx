@@ -1,7 +1,6 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
-import { number } from '@storybook/addon-knobs';
-import { Snackbar, addSnackbarItem } from '../Snackbar';
+import { Snackbar, SnackbarItem } from '../Snackbar';
 
 export default {
   title: 'App Components/Snackbar',
@@ -34,10 +33,16 @@ export const Description = () => (
     <div>
       <h3>Usage</h3>
       <p>
-        The Snackbar component has a default lifespan of 5000ms if no{' '}
-        <code>lifespan</code> prop is provided. It also has a default polling
-        time of 300ms to check for new Snackbar items if no{' '}
-        <code>pollingTime</code> prop is provided.
+        The Snackbar component has a default lifespan of 5000ms if no
+        {' '}
+        <code>lifespan</code>
+        {' '}
+        prop is provided. It also has a default polling
+        time of 300ms to check for new Snackbar items if no
+        {' '}
+        <code>pollingTime</code>
+        {' '}
+        prop is provided.
       </p>
       <pre>
         &lt;Snackbar lifespan=&quot;3000&quot; pollingTime=&quot;300&quot; /&gt;
@@ -55,46 +60,42 @@ Description.story = {
   name: 'description',
 };
 
-export const OneSnackbarItem = () => {
-  addSnackbarItem({
-    text: 'File uploaded successfully',
-  });
-
-  return (
-    <Snackbar
-      lifespan={number('lifespan', 5)}
-      pollingTime={number('pollingTime', 300)}
-    />
-  );
-};
+export const OneSnackbarItem = () => (
+  <Snackbar>
+    <SnackbarItem message="File uploaded successfully" />
+  </Snackbar>
+);
 
 OneSnackbarItem.story = {
   name: 'one snackbar item',
 };
 
 export const MultipleSnackbarItems = () => {
-  addSnackbarItem({
-    text: 'File uploaded successfully',
+  const snackbarItems = [];
+
+  snackbarItems.push({
+    message: 'File uploaded successfully',
   });
 
-  addSnackbarItem({
-    text: 'Unable to save file',
+  snackbarItems.push({
+    message: 'Unable to save file',
     actions: [
       { text: 'Retry', handler: action('save file retry') },
       { text: 'Abort', handler: action('abort file save') },
     ],
   });
 
-  addSnackbarItem({
-    text: 'There was a network error',
+  snackbarItems.push({
+    message: 'There was a network error',
     actions: [{ text: 'Retry', handler: action('retry network') }],
   });
 
   return (
-    <Snackbar
-      lifespan={number('lifespan', 5)}
-      pollingTime={number('pollingTime', 300)}
-    />
+    <Snackbar>
+      {snackbarItems.map(({ message, actions = [] }) => (
+        <SnackbarItem message={message} actions={actions} />
+      ))}
+    </Snackbar>
   );
 };
 
