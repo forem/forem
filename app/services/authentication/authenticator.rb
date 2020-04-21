@@ -64,8 +64,10 @@ module Authentication
       # Return the successfully-authed used from the transaction.
       authed_user
     rescue StandardError => e
-      # Notify DataDog if something goes wrong in the transaction.
+      # Notify DataDog if something goes wrong in the transaction,
+      # and then ensure that we re-raise and bubble up the error.
       DatadogStatsClient.increment("identity.errors", tags: ["error:#{e.class}"], message: e.message)
+      raise e
     end
 
     private

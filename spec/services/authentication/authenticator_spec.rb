@@ -94,7 +94,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         # rubocop:enable RSpec/AnyInstance
         allow(DatadogStatsClient).to receive(:increment)
 
-        described_class.call(auth_payload)
+        expect { described_class.call(auth_payload) }.to raise_error(StandardError)
 
         tags = hash_including(tags: array_including("error:StandardError"))
         expect(DatadogStatsClient).to have_received(:increment).with("identity.errors", tags)
@@ -192,7 +192,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         # rubocop:enable RSpec/AnyInstance
         allow(DatadogStatsClient).to receive(:increment)
 
-        described_class.call(auth_payload)
+        expect { described_class.call(auth_payload) }.to raise_error(StandardError)
 
         tags = hash_including(tags: array_including("error:StandardError"))
         expect(DatadogStatsClient).to have_received(:increment).with("identity.errors", tags)
