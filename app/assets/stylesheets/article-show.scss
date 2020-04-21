@@ -53,15 +53,20 @@ article {
   padding: 0 0;
   position: relative;
 
+  /* TODO[team-delightful]: Remove background and background-size a few days post merge to avoid caching conflicts */
   .image {
     position: relative;
     width: 100%;
     margin: auto;
     max-width: 1024px;
+    z-index: 2;
     background: transparent no-repeat center center;
     background-size: cover;
-    z-index: 2;
-    padding-top: 42%;
+    height: 42vw;
+
+    @media screen and (min-width: 880px) {
+      height: 370px;
+    }
 
     @media screen and (min-width: 950px) {
       border-top-left-radius: 2px;
