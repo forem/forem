@@ -11,7 +11,7 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
   it "user creates an organization" do
     visit "settings/organization"
     fill_in_org_form
-    click_button "SUBMIT"
+    click_button "Save"
     expect(page).to have_text("Your organization was successfully created and you are an admin.")
   end
 
@@ -20,7 +20,7 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
     user2 = create(:user, username: "newuser")
     create(:organization_membership, user_id: user2.id, organization_id: organization.id)
     visit "settings/organization"
-    click_button("make admin")
+    click_button("Make admin")
     page.driver.browser.switch_to.alert.accept
     expect(page).to have_text("#{user2.name} is now an admin.")
   end
@@ -30,7 +30,7 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
     user2 = create(:user, username: "newuser")
     create(:organization_membership, user_id: user2.id, organization_id: organization.id, type_of_user: "admin")
     visit "settings/organization"
-    click_button("revoke admin status")
+    click_button("Revoke admin status")
     page.driver.browser.switch_to.alert.accept
     expect(page).to have_text("#{user2.name} is no longer an admin.")
   end
