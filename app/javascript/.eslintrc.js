@@ -48,5 +48,6 @@ module.exports = {
     algoliasearch: false,
     ga: false,
     Honeybadger: false,
+    AndroidBridge: false,
   },
 };
