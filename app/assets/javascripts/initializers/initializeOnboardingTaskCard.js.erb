@@ -1,9 +1,14 @@
+/**
+ * This script looks for the onboarding task card, which is hidden by default,
+ * and displays it if the user hasn't closed it yet.
+ */
+
 function initializeOnboardingTaskCard() {
   if (localStorage.getItem('task-card-closed') === 'yes') { return }
 
   var taskCard = document.getElementsByClassName("onboarding-task-card")[0];
 
-  if (taskCard !== undefined) {
+  if (taskCard) {
     taskCard.style.display = "block";
   }
 }
