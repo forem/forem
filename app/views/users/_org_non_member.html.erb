@@ -25,7 +25,7 @@
   <div class="field">
     <%= f.label :slug, "Username *" %>
     <%= f.text_field :slug %>
-    <sub><em>Your organization URL will be dev.to/{username}</em></sub>
+    <sub><em>Your organization URL will be <%= app_url %>/{username}</em></sub>
   </div>
   <div class="field">
     <%= f.label :profile_image, "Profile Image *" %>
