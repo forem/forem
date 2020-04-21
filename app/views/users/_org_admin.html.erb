@@ -88,7 +88,7 @@
     <div class="crayons-field">
       <%= f.label :slug, "Username", class: "crayons-field__label" %>
       <%= f.text_field :slug, maxlength: 18, minlength: 2, class: "crayons-textfield", placeholder: "acmeinc" %>
-      <p class="crayons-field__description">Your organization's URL is: dev.to/<%= @organization.slug %></p>
+      <p class="crayons-field__description">Your organization's URL is: <%= app_url(@organization.slug) %></p>
     </div>
 
     <div class="crayons-field">

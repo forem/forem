@@ -28,7 +28,7 @@
     <div class="crayons-field">
       <%= f.label :slug, "Username *", class: "crayons-field__label" %>
       <%= f.text_field :slug, class: "crayons-textfield", placeholder: "acmeinc" %>
-      <p class="crayons-field__description">Your organization URL will be dev.to/{username}</p>
+      <p class="crayons-field__description">Your organization URL will be <%= app_url %>/{username}</p>
     </div>
 
     <div class="crayons-field">
