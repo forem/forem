@@ -31,9 +31,9 @@
   </div>
 
   <div class="crayons-layout__content">
-    <header class="crayons-layout__page-header mb-4">
+    <header class="crayons-layout__page-header px-3 s:px-0 mb-4">
       <% if @tab == "organization" && @organizations.present? %>
-        <h1>Settings for
+        <h1 class="fs-xl s:fs-3xl">Settings for
           <span class="organization-dropdown">
             <select id="organization-dropdown-select" onchange="window.location.href=this.value">
               <% options = @organizations.pluck(:slug, :id).each do |arr| %>
@@ -48,7 +48,7 @@
           </span>
         </h1>
       <% else %>
-        <h1>Settings for <a href="/<%= @user.username %>">@<%= @user.username %></a></h1>
+        <h1 class="fs-xl s:fs-3xl">Settings for <a href="/<%= @user.username %>">@<%= @user.username %></a></h1>
       <% end %>
     </header>
 
