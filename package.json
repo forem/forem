@@ -110,7 +110,6 @@
     "redoc-cli": "0.9.7",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.1.4",
-    "wait-on": "^4.0.2",
     "webpack-dev-server": "^3.10.3"
   },
   "dependencies": {
