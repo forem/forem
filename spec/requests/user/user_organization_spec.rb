@@ -49,7 +49,7 @@ RSpec.describe "UserOrganization", type: :request do
     end
   end
 
-  it "catches error if image file name is too long" do
+  it "catches error if profile image file name is too long" do
     sign_in user
     org_params = build(:organization).attributes
     org_params["profile_image"] = fixture_file_upload("files/800x600.png", "image/png")
@@ -66,7 +66,7 @@ RSpec.describe "UserOrganization", type: :request do
     expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
   end
 
-  it "returns error if image file name is too long" do
+  it "returns error if profile image file name is too long" do
     sign_in user
     org_params = build(:organization).attributes
     image = fixture_file_upload("files/800x600.png", "image/png")

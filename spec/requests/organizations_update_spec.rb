@@ -43,7 +43,7 @@ RSpec.describe "OrganizationsUpdate", type: :request do
     end.to raise_error(ActiveRecord::RecordNotFound)
   end
 
-  it "catches error if image file name is too long" do
+  it "catches error if profile image file name is too long" do
     organization = user.organizations.first
     allow(Organization).to receive(:find_by).and_return(organization)
     allow(organization).to receive(:update).and_raise(Errno::ENAMETOOLONG)
@@ -58,7 +58,7 @@ RSpec.describe "OrganizationsUpdate", type: :request do
     expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
   end
 
-  it "returns error if image file name is too long" do
+  it "returns error if profile image file name is too long" do
     organization = user.organizations.first
     allow(Organization).to receive(:find_by).and_return(organization)
     image = fixture_file_upload("files/800x600.png", "image/png")
