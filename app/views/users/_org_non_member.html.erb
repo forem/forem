@@ -1,4 +1,5 @@
-<%= javascript_packs_with_chunks_tag "colorPicker", "validateFileInputs", defer: true %>
+<%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", defer: true %>
+
 <div class="crayons-card grid gap-6 p-6 mb-6">
   <h3>Join An Organization</h3>
   <%= form_tag "/users/join_org" do %>
@@ -46,17 +47,7 @@
       <%= f.text_field :github_username, class: "crayons-textfield" %>
     </div>
 
-    <div class="crayons-field">
-      <%= f.label :text_color_hex, "Text color (hex)", class: "crayons-field__label" %>
-      <%= text_field_tag "organization[text_color_hex]", "#000000", placeholder: "Click for color picker", class: "color-picker" %>
-      <div class="color-palette"></div>
-    </div>
-
-    <div class="crayons-field">
-      <%= f.label :bg_color_hex, "Background color (hex)", class: "crayons-field__label" %>
-      <%= text_field_tag "organization[bg_color_hex]", "#FFFFFF", placeholder: "Click for color picker", class: "color-picker" %>
-      <div class="color-palette"></div>
-    </div>
+    <%= render partial: "shared/logo_design", locals: { f: f, account: @user } %>
 
     <div class="crayons-field">
       <%= f.label :url, "Website url *", class: "crayons-field__label" %>
