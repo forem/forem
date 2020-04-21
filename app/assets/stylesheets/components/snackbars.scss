@@ -9,7 +9,6 @@
   bottom: $su-2;
   display: grid;
   grid-gap: $su-2;
-  justify-items: flex-start;
 
   @media (min-width: $breakpoint-s) {
     max-width: 480px;
@@ -17,6 +16,7 @@
     left: $su-6;
     right: auto;
     bottom: $su-6;
+    justify-items: flex-start;
   }
 
   &__item {
