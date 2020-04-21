@@ -3,7 +3,7 @@ module Articles
     include Rails.application.routes.url_helpers
     include CloudinaryHelper
 
-    def initialize(article, options)
+    def initialize(article, **options)
       @article = article
       @height = options[:height] || 420
       @width = options[:width] || 1000

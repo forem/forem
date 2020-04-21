@@ -76,7 +76,7 @@ module ApplicationHelper
     end
   end
 
-  def cloud_cover_url(url, options)
+  def cloud_cover_url(url, **options)
     CloudCoverUrl.new(url, options).call
   end
 
