@@ -1,5 +1,6 @@
 class PodcastsController < ApplicationController
   before_action :authenticate_user!
+  before_action :validate_filename_length, only: %i[create]
 
   # skip Bullet on create as it currently triggers an error inside the rolify
   # method "current_user.add_role()" we have no control of
@@ -51,5 +52,19 @@ class PodcastsController < ApplicationController
     yield
   ensure
     Bullet.enable = previous_value
+  end
+
+  def validate_filename_length
+    image = params.dig("podcast", "image")
+    return unless image&.original_filename && image.original_filename.length > MAX_FILENAME_LENGTH
+
+    @podcast = Podcast.new(podcast_params.except("image"))
+    @podcast.creator = current_user
+    @podcast.errors.add(:image, "filename too long - the max is #{MAX_FILENAME_LENGTH} characters.")
+
+    @podcasts = Podcast.available.order(title: :asc)
+    @podcast_index = true
+
+    render :new
   end
 end
