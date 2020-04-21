@@ -26,35 +26,10 @@ export class SnackbarPoller extends Component {
           lifespan,
         }));
 
-        const decreaseLifespan = (snack) => {
-          if (snack.lifespan === 0) {
-            clearTimeout(snack.lifespanTimeoutId);
-
-            this.setState((prevState) => {
-              const snacks = prevState.snacks.filter(
-                (currentSnack) => currentSnack !== snack,
-              );
-
-              return {
-                ...prevState,
-                snacks,
-              };
-            });
-
-            return;
-          }
-
-          snack.lifespan -= 1; // eslint-disable-line no-param-reassign
-          // eslint-disable-next-line no-param-reassign
-          snack.lifespanTimeoutId = setTimeout(() => {
-            decreaseLifespan(snack);
-          }, 1000); // eslint-disable-line no-param-reassign
-        };
-
         newSnacks.forEach((snack) => {
           // eslint-disable-next-line no-param-reassign
           snack.lifespanTimeoutId = setTimeout(() => {
-            decreaseLifespan(snack);
+            this.decreaseLifespan(snack);
           }, 1000);
         });
 
@@ -72,6 +47,31 @@ export class SnackbarPoller extends Component {
         });
       }
     }, pollingTime);
+  }
+
+  decreaseLifespan(snack) {
+    if (snack.lifespan === 0) {
+      clearTimeout(snack.lifespanTimeoutId);
+
+      this.setState((prevState) => {
+        const snacks = prevState.snacks.filter(
+          (currentSnack) => currentSnack !== snack,
+        );
+
+        return {
+          ...prevState,
+          snacks,
+        };
+      });
+
+      return;
+    }
+
+    snack.lifespan -= 1; // eslint-disable-line no-param-reassign
+    // eslint-disable-next-line no-param-reassign
+    snack.lifespanTimeoutId = setTimeout(() => {
+      this.decreaseLifespan(snack);
+    }, 1000); // eslint-disable-line no-param-reassign
   }
 
   render() {
