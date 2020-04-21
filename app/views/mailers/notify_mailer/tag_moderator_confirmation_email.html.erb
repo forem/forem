@@ -3,7 +3,7 @@
 </p>
 <p>
   Thanks for volunteering to be a <%= community_name %> tag moderator. We’ve added you as a moderator for
-  <a href="https://dev.to/t/<%= @tag_name %>"><%= @tag_name %></a>. You’re currently the only non-core <%= community_name %> member that’s moderating this tag. Over time, we’ll add additional mods to join you because we view moderation as a collaborative endeavor that benefits from the support of multiple people.
+  <a href="<%= tag_url(@tag) %>"><%= @tag.name %></a>. You’re currently the only non-core <%= community_name %> member that’s moderating this tag. Over time, we’ll add additional mods to join you because we view moderation as a collaborative endeavor that benefits from the support of multiple people.
 </p>
 <p>
   As a tag moderator, you are now able to:
@@ -17,10 +17,10 @@
   </li>
 </ul>
 <p><strong>For details on how to access these features, visit our
-  <a href="https://dev.to/tag-moderation">tag moderation</a> page.</strong></p>
+  <a href="<%= app_url("/tag-moderation") %>">tag moderation</a> page.</strong></p>
 <p>
   To aid in communication, we’ve added you to a tag moderator
-  <a href="https://dev.to/connect/tag-moderators"><%= community_name %> Connect channel</a>. You can use this channel to meet other tag moderators across site, and to coordinate with the <%= community_name %> team. When in doubt about how to exercise your new privileges, please ask!
+  <a href="<%= app_url("/connect/tag-moderators") %>"><%= community_name %> Connect channel</a>. You can use this channel to meet other tag moderators across site, and to coordinate with the <%= community_name %> team. When in doubt about how to exercise your new privileges, please ask!
 </p>
 <p>
   Tag moderation is still very much in beta, so we’ll be making adjustments and expanding features over time as we receive feedback.

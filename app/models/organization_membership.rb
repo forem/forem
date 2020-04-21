@@ -8,10 +8,31 @@ class OrganizationMembership < ApplicationRecord
   validates :user_id, uniqueness: { scope: :organization_id }
   validates :type_of_user, inclusion: { in: USER_TYPES }
 
-  after_create :update_user_organization_info_updated_at
+  after_save    :upsert_chat_channel_membership
+  after_create  :update_user_organization_info_updated_at
   after_destroy :update_user_organization_info_updated_at
 
   def update_user_organization_info_updated_at
     user.touch(:organization_info_updated_at)
+  end
+
+  private
+
+  def upsert_chat_channel_membership
+    return if type_of_user == "guest"
+
+    role = type_of_user == "admin" ? "mod" : "member"
+    name = "@#{organization.slug} private group chat"
+    channel = ChatChannel.find_by(channel_name: name)
+
+    channel ||= ChatChannel.find_or_create_chat_channel("invite_only", "#{organization.slug}-private-group-chat", name)
+
+    add_chat_channel_membership(user, channel, role)
+  end
+
+  def add_chat_channel_membership(user, channel, role)
+    membership = ChatChannelMembership.find_or_initialize_by(user_id: user.id, chat_channel_id: channel.id)
+    membership.role = role
+    membership.save
   end
 end

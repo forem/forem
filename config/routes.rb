@@ -159,6 +159,9 @@ Rails.application.routes.draw do
   resources :comments, only: %i[create update destroy] do
     patch "/hide", to: "comments#hide"
     patch "/unhide", to: "comments#unhide"
+    collection do
+      post "/moderator_create", to: "comments#moderator_create"
+    end
   end
   resources :comment_mutes, only: %i[update]
   resources :users, only: %i[index], defaults: { format: :json } # internal API
@@ -167,7 +170,7 @@ Rails.application.routes.draw do
   end
   resources :twitch_live_streams, only: :show, param: :username
   resources :reactions, only: %i[index create]
-  resources :response_templates, only: %i[create edit update destroy]
+  resources :response_templates, only: %i[index create edit update destroy]
   resources :feedback_messages, only: %i[index create]
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
@@ -231,6 +234,7 @@ Rails.application.routes.draw do
   get "/search/classified_listings" => "search#classified_listings"
   get "/search/users" => "search#users"
   get "/search/feed_content" => "search#feed_content"
+  get "/search/reactions" => "search#reactions"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"

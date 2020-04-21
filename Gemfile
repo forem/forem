@@ -83,7 +83,7 @@ gem "redis", "~> 4.1.3" # Redis ruby client
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
 gem "rolify", "~> 5.2" # Very simple Roles library
-gem "rouge", "~> 3.16" # A pure-ruby code highlighter
+gem "rouge", "~> 3.18" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sass-rails", "~> 6.0" # Sass adapter for the Rails asset pipeline
@@ -133,7 +133,7 @@ group :development, :test do
   gem "parallel_tests", "~> 2.32" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.79", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.82", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.5", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.5", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.38", require: false # Code style checking for RSpec files
@@ -156,7 +156,7 @@ group :test do
   gem "test-prof", "~> 0.11" # Ruby Tests Profiling Toolbox
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 5.1" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
-  gem "webdrivers", "~> 4.2" # Run Selenium tests more easily with install and updates for all supported webdrivers
+  gem "webdrivers", "~> 4.3" # Run Selenium tests more easily with install and updates for all supported webdrivers
   gem "webmock", "~> 3.8" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end

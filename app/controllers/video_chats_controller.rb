@@ -30,7 +30,7 @@ class VideoChatsController < ApplicationController
   private
 
   def display_username
-    return "@#{params[:username]}" if params[:username] && Rails.env.development? #simpler solo testing in dev
+    return "@#{params[:username]}" if params[:username] && Rails.env.development? # simpler solo testing in dev
 
     "@" + current_user.username
   end

@@ -32,7 +32,7 @@
     </p>
     <% if user_signed_in? %>
       <p>
-        <a href="https://dev.to/<%= current_user.username %>">
+        <a href="<%= user_url(current_user) %>">
           <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s <%= community_name %> Profile" height="30" width="30" class="dev-badge">
         </a>
       </p>
@@ -45,7 +45,7 @@
       </p>
       <pre class="embed-code">
 
-&lt;a href="https://dev.to/<%= current_user.username %>"&gt;
+&lt;a href="<%= user_url(current_user) %>"&gt;
   &lt;img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= current_user.name %>'s <%= community_name %> Profile" height="30" width="30"&gt;
 &lt;/a&gt;
         </pre>
@@ -53,7 +53,7 @@
         <b><a href="https://fontawesome.com/icons/dev?style=brands" target="_blank" rel="noopener">Font Awesome</a></b> with this snippet:
       </p>
       <pre class="embed-code">
-&lt;a href="https://dev.to/<%= current_user.username %>"&gt;
+&lt;a href="<%= user_url(current_user) %>"&gt;
   &lt;i class="fab fa-dev" title="<%= current_user.username %>'s <%= community_name %> Profile"&gt;&lt;/i&gt;
 &lt;/a&gt;
         </pre>
