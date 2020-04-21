@@ -15,6 +15,7 @@ import {
   deleteMessage,
   editMessage,
   searchChannels,
+  sendChannelRequest,
 } from './actions';
 import {
   hideMessages,
@@ -839,6 +840,7 @@ export default class Chat extends Component {
               name: target.dataset.channelName,
             },
           },
+          handleJoiningRequest: this.handleJoiningRequest,
           type_of: 'channel-request',
         });
       } else if (content === 'sidecar_all') {
@@ -1587,6 +1589,21 @@ export default class Chat extends Component {
     const { messageDeleteId } = this.state;
     deleteMessage(messageDeleteId);
     this.setState({ showDeleteModal: false });
+  };
+
+  handleJoiningRequest = (e) => {
+    sendChannelRequest(
+      e.target.dataset.channelId,
+      this.handleJoiningRequestSuccess,
+      null,
+    );
+  };
+
+  handleJoiningRequestSuccess = () => {
+    const { activeChannelId } = this.state;
+    this.setActiveContentState(activeChannelId, null);
+    this.setState({ fullscreenContent: null });
+    this.toggleSearchShowing();
   };
 
   renderChannelHeaderInner = () => {

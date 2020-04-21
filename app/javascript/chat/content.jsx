@@ -2,17 +2,12 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import Article from './article';
 import ChannelRequest from './channelRequest';
-import { sendChannelRequest } from './actions';
 export default class Content extends Component {
   static propTypes = {
     resource: PropTypes.object,
     activeChannelId: PropTypes.number,
     pusherKey: PropTypes.string,
     fullscreen: PropTypes.bool,
-  };
-
-  handleJoiningRequest = (e) => {
-    sendChannelRequest(e.target.dataset.channelId, null, null);
   };
 
   render() {
@@ -79,13 +74,13 @@ export default class Content extends Component {
         >
           {fullScreenIcon}
         </button>
-        {display(this.props, this.handleJoiningRequest)}
+        {display(this.props)}
       </div>
     );
   }
 }
 
-function display(props, handleJoiningRequest) {
+function display(props) {
   if (props.resource.type_of === 'loading-user') {
     return (
       <div
@@ -107,7 +102,7 @@ function display(props, handleJoiningRequest) {
     return (
       <ChannelRequest
         resource={props.resource.data}
-        handleJoiningRequest={handleJoiningRequest}
+        handleJoiningRequest={props.resource.handleJoiningRequest}
       />
     );
   }

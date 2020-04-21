@@ -257,7 +257,7 @@ export function deleteMessage(messageId, successCb, failureCb) {
 }
 
 export function sendChannelRequest(id, successCb, failureCb) {
-  fetch(`/chat_channel_memberships`, {
+  fetch(`/join_chat_channel`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -267,8 +267,7 @@ export function sendChannelRequest(id, successCb, failureCb) {
     body: JSON.stringify({
       chat_channel_membership: {
         chat_channel_id: id,
-        invitation_usernames: window.currentUser.username,
-        status: 'joining_request',
+        user_id: window.currentUser.id,
       },
     }),
     credentials: 'same-origin',

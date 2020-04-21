@@ -44,12 +44,7 @@ class ChatChannelMembershipsController < ApplicationController
     @chat_channel = ChatChannel.find(membership_params[:chat_channel_id])
     authorize @chat_channel, :update?
     user = User.find_by(id: membership_params[:user_id])
-    invitations_sent = @chat_channel.invite_users(users: user, membership_role: "member", inviter: current_user, status: "joining_request")
-    flash[:settings_notice] = if invitations_sent.zero?
-                                "No invitations sent. Check for username typos."
-                              else
-                                "#{invitations_sent} #{'invitation'.pluralize(invitations_sent)}  accepted."
-                              end
+    @chat_channel.invite_users(users: user, membership_role: "member", inviter: current_user, status: "joining_request")
     render json: {}, status: :ok
   end
 
