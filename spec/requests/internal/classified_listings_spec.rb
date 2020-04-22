@@ -11,11 +11,25 @@ RSpec.describe "/internal/listings", type: :request do
     end
 
     it "clears listing cache" do
-      put "/internal/listings/#{classified_listing.id}", params: {
+      put internal_listing_path(id: classified_listing.id), params: {
         classified_listing: { title: "updated" }
       }
       sidekiq_perform_enqueued_jobs
       expect(CacheBuster).to have_received(:bust_classified_listings)
+    end
+
+    describe "#index" do
+      let(:unpublished_listing) { create(:classified_listing) }
+
+      it "filters unpublished listings by default" do
+        get internal_listings_path
+        expect(response.body).not_to include(unpublished_listing.title)
+      end
+
+      it "includes unpublished listings when asked to" do
+        get internal_listings_path, params: { published: "0" }
+        expect(response.body).to include(unpublished_listing.title)
+      end
     end
   end
 end

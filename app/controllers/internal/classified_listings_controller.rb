@@ -4,6 +4,7 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
 
   def index
     @classified_listings = ClassifiedListing.includes(%i[user organization]).page(params[:page]).order("bumped_at DESC").per(50)
+    @classified_listings = @classified_listings.published unless include_unpublished?
     @classified_listings = @classified_listings.where(category: params[:filter]) if params[:filter].present?
   end
 
@@ -18,14 +19,14 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
     update_listing_details
     clear_listings_cache
     flash[:success] = "Listing updated successfully"
-    redirect_to "/internal/listings/#{@classified_listing.id}/edit"
+    redirect_to edit_internal_listing_path(id: @classified_listing.id)
   end
 
   def destroy
     @classified_listing = ClassifiedListing.find(params[:id])
     @classified_listing.destroy
     flash[:warning] = "'#{@classified_listing.title}' was destroyed successfully"
-    redirect_to "/internal/listings"
+    redirect_to internal_listings_path
   end
 
   private
@@ -38,5 +39,9 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
   def handle_publish_status
     unpublish_listing if listing_params[:published] == "0"
     publish_listing if listing_params[:published] == "1"
+  end
+
+  def include_unpublished?
+    params[:published] == "0"
   end
 end
