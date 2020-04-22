@@ -29,10 +29,16 @@ export const CommentsList = () => (
     </div>
 
     <div className="crayons-story__comments__actions">
-      <a href="/" className="crayons-btn crayons-btn--secondary fs-s mr-2">
+      <a
+        href="/"
+        className="crayons-btn crayons-btn--secondary crayons-btn--s mr-2"
+      >
         See all 7 comments
       </a>
-      <button className="crayons-btn crayons-btn--secondary fs-s" type="button">
+      <button
+        className="crayons-btn crayons-btn--secondary crayons-btn--s"
+        type="button"
+      >
         Subscribe
       </button>
     </div>
