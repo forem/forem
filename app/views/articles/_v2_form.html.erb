@@ -3,7 +3,7 @@
   data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
   data-version="<%= version %>">
-  <div class="crayons-layout crayons-layout--article-form">
+  <div class="crayons-layout crayons-layout--article-form pt-2">
     <div class="crayons-layout__narrow-sidebar">
       <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
     </div>
@@ -11,24 +11,30 @@
     <div class="crayons-layout__content">
       <% if organizations && organizations.size > 0 %>
         <div class="crayons-article-form__organization">
-          Publish under an organization:
-          <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select">
-            <%= options_for_select({ "None" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
-          </select>
+          <label class="crayons-field flex-row items-center">
+            <div class="crayons-field__label w-auto">Publish under an organization:</div>
+            <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto ml-2 mt-0">
+              <%= options_for_select({ "None" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
+            </select>
+          </label>
         </div>
       <% end %>
 
       <% if version == "v2" %>
         <div class="crayons-article-form__cover">
-          <button class="crayons-btn crayons-btn--secondary">Add a cover image</button>
+          <% if article.main_image.present? %>
+            <div class="crayons-article-form__cover__image"><img src="<%= article.main_image %>"></div>
+          <% else %>
+            <button class="crayons-btn crayons-btn--secondary">Add a cover image</button>
+          <% end %>
         </div>
 
         <div class="crayons-article-form__title">
-          <input class="crayons-textfield crayons-textfield--ghost" type="text" value="<%= article.title %>" placeholder="New post title here..." name="title" />
+          <input class="crayons-textfield crayons-textfield--ghost fs-5xl fw-heavy" type="text" value="<%= article.title %>" placeholder="New post title here..." name="title" autofocus />
         </div>
 
         <div class="crayons-article-form__tags">
-          <input type="text" class="crayons-textfield crayons-textfield--ghost" placeholder="Add up to 4 tags (no special characters)..." name="tags" value="<%= article.cached_tag_list %>" />
+          <input type="text" class="crayons-textfield crayons-textfield--ghost ff-accent" placeholder="Add up to 4 tags (no special characters)..." name="tags" value="<%= article.cached_tag_list %>" />
         </div>
 
         <div class="crayons-article-form__toolbar hidden">
@@ -37,7 +43,7 @@
       <% end %>
 
       <div class="crayons-article-form__body">
-        <textarea class="crayons-textfield crayons-textfield--ghost" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
+        <textarea class="crayons-textfield crayons-textfield--ghost fs-l ff-accent" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
       </div>
     </div>
 
@@ -53,7 +59,7 @@
     <div class="crayons-layout crayons-layout--article-form">
       <span></span>
       <div class="crayons-layout__content">
-        <button class="crayons-btn crayons-btn--primary mr-2">Publish</button>
+        <button class="crayons-btn crayons-btn--primary mr-2" type="submit">Publish</button>
         <button class="crayons-btn crayons-btn--secondary mr-2">Preview</button>
         <button class="crayons-btn crayons-btn--secondary mr-2">Save draft</button>
         <button class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2">
@@ -62,7 +68,7 @@
       </div>
     </div>
   </div>
-</div>
+</form>
 
 <!--
 <div class="articleformcontainer">
