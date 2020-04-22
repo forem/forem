@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
 import faker from 'faker';
 import { number } from '@storybook/addon-knobs';
-import { SnackbarItem, SnackbarPoller, addSnackbarItem } from '..';
+import { SnackbarPoller, addSnackbarItem } from '..';
 
 export default {
   title: 'App Components/Snackbar/SnackbarPoller',
@@ -41,13 +41,7 @@ export const SimulateAddingSnackbarItems = () => {
     <SnackbarPoller
       lifespan={number('lifespan', 5)}
       pollingTime={number('pollingTime', 300)}
-    >
-      {(snackbarItems) =>
-        snackbarItems.map(({ message, actions = [] }) => (
-          <SnackbarItem message={message} actions={actions} />
-        ))
-      }
-    </SnackbarPoller>
+    />
   );
 };
 

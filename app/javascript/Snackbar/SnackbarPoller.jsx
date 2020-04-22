@@ -1,6 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { Snackbar } from './Snackbar';
+import { SnackbarItem } from './SnackbarItem';
 
 let snackbarItems = [];
 
@@ -15,7 +16,7 @@ export class SnackbarPoller extends Component {
 
   pollingId;
 
-  pause = false;
+  paused = false;
 
   pauseLifespan;
 
@@ -66,21 +67,28 @@ export class SnackbarPoller extends Component {
   componentDidUpdate() {
     if (!this.pauseLifespan) {
       this.pauseLifespan = (_event) => {
-        this.pause = true;
+        this.paused = true;
+      };
+
+      this.resumeLifespan = (event) => {
+        event.stopPropagation();
+        this.paused = false;
       };
 
       this.element.base.addEventListener('mouseover', this.pauseLifespan);
+      this.element.base.addEventListener('mouseout', this.resumeLifespan, true);
     }
   }
 
   componentWillUnmount() {
     if (this.element) {
       this.element.base.removeEventListener('mouseover', this.pauseLifespan);
+      this.element.base.addEventListener('mouseout', this.resumeLifespan);
     }
   }
 
   decreaseLifespan(snack) {
-    if (snack.lifespan === 0) {
+    if (!this.paused && snack.lifespan === 0) {
       clearTimeout(snack.lifespanTimeoutId);
 
       this.setState((prevState) => {
@@ -97,7 +105,7 @@ export class SnackbarPoller extends Component {
       return;
     }
 
-    if (!this.pause) {
+    if (!this.paused) {
       snack.lifespan -= 1; // eslint-disable-line no-param-reassign
     }
 
@@ -109,7 +117,6 @@ export class SnackbarPoller extends Component {
 
   render() {
     const { snacks } = this.state;
-    const [render] = this.props.children; // eslint-disable-line react/destructuring-assignment
 
     return (
       <Snackbar
@@ -117,7 +124,9 @@ export class SnackbarPoller extends Component {
           this.element = element;
         }}
       >
-        {render(snacks)}
+        {snacks.map(({ message, actions = [] }) => (
+          <SnackbarItem message={message} actions={actions} />
+        ))}
       </Snackbar>
     );
   }
@@ -131,7 +140,6 @@ SnackbarPoller.defaultProps = {
 SnackbarPoller.displayName = 'SnackbarPoller';
 
 SnackbarPoller.propTypes = {
-  children: PropTypes.func.isRequired,
   lifespan: PropTypes.number,
   pollingTime: PropTypes.number,
 };
