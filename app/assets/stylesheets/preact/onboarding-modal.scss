@@ -126,6 +126,15 @@
       @extend .crayons-btn;
     }
 
+    .back-button {
+      @extend .crayons-btn;
+      @extend .crayons-btn--ghost;
+      @extend .crayons-btn--icon;
+
+      align-items: center;
+      display: flex;
+    }
+
     .stepper {
       display: flex;
       align-items: center;
