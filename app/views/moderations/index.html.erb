@@ -77,7 +77,7 @@
   <div class="mod-index-footer">
     <a href="/community-moderation" class="mod-link">Community Moderation Guide</a>
     <% if current_user.moderator_for_tags.any? %>
-      ・ <a href="/tag-moderation" class="mod-link">Tag Moderation Guide</a>
+      ・ <a href="<%= tag_moderation_url %>" class="mod-link">Tag Moderation Guide</a>
     <% end %>
   </div>
 <% else %>
