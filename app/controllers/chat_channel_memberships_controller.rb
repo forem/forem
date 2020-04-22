@@ -1,5 +1,5 @@
 class ChatChannelMembershipsController < ApplicationController
-  after_action :verify_authorized
+  after_action :verify_authorized, except: :join_channel
   include MessagesHelper
 
   def index
@@ -41,11 +41,21 @@ class ChatChannelMembershipsController < ApplicationController
 
   def join_channel
     membership_params = params[:chat_channel_membership]
-    @chat_channel = ChatChannel.find(membership_params[:chat_channel_id])
-    authorize @chat_channel, :update?
+    chat_channel = ChatChannel.find(membership_params[:chat_channel_id])
     user = User.find_by(id: membership_params[:user_id])
-    @chat_channel.invite_users(users: user, membership_role: "member", inviter: current_user, status: "joining_request")
-    render json: {}, status: :ok
+    membership = ChatChannelMembership.new(user_id: user.id, chat_channel_id: chat_channel.id, role: "member", status: "joining_request")
+    if membership.save
+      render json: { status: "success", message: "Request Sent" }
+    else
+      render json: {
+        status: "error",
+        message: {
+          chat_channel_id: chat_channel.id,
+          message: membership.errors.full_messages,
+          type: "error"
+        }
+      }
+    end
   end
 
   def remove_membership
