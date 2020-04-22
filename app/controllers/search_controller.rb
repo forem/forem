@@ -18,6 +18,7 @@ class SearchController < ApplicationController
     :per_page,
     :category,
     :search_fields,
+    :tag_boolean_mode,
     {
       tag_names: [],
       status: []

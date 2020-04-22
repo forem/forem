@@ -12,18 +12,7 @@
 
 <% unless internal_navigation? || user_signed_in? %>
   <script type="application/ld+json">
-    {
-      "@context": "http://schema.org",
-      "@type": "Organization",
-      "mainEntityOfPage": {
-        "@type": "WebPage",
-        "@id": "<%= user_url(@user) %>"
-      },
-      "url": "<%= user_url(@user) %>",
-      "image": "<%= ProfileImage.new(@user).get(width: 320) %>",
-      "name": "<%= sanitize @user.name %>",
-      "description": "<%= sanitize(@user.summary.presence || "404 bio not found") %>"
-    }
+    <%= @organization_json_ld.to_json.html_safe %>
   </script>
 <% end %>
 
