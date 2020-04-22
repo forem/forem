@@ -93,11 +93,12 @@
       </div>
     </div>
     <div class="articles-list" id="articles-list">
-      <section class="notifications-filter-menu__mobile">
+
+      <section class="notifications-filter">
         <% if @organizations.present? %>
           <% @organizations.each do |org| %>
             <div class="crayons-dropdown__container" aria-label="notifications-filter-menu">
-              <button type="button" id="notifications-filter__select" class="crayons-dropdown__select">
+              <button type="button" id="notifications-filter__select" class="notifications-filter__select">
                 <% if params[:org_id].blank? %>
                   @<%= @user.username %>
                 <% else %>
@@ -106,36 +107,37 @@
                 <%= inline_svg_tag("arrow-down-fill.svg", aria: true, class: "crayons-icon", title: "Arrow Down") %>
               </button>
             </div>
-            <div class="crayons-dropdown__menu-overlay" id="notifications-filter__menu-overlay">
-              <nav class="crayons-dropdown__menu notifications-filter__menu" aria-label="notifications-filter-menu">
-                <header class="crayons-dropdown__header">
-                  <h3 class="crayons-dropdown__title">
+
+            <div class="notifications-filter__menu-overlay" id="notifications-filter__menu-overlay">
+              <nav class="notifications-filter__menu notifications-filter__menu" aria-label="notifications-filter-menu">
+                <header class="notifications-filter__header">
+                  <h3 class="notifications-filter__title">
                     Filter
                   </h3>
                 </header>
-                <a href="/notifications" class="crayons-dropdown__option <%= "selected" if params[:org_id].blank? %>">
-                  <div class="crayons-dropdown__label">
-                    <span class="crayons-dropdown__label--title">
+                <a href="/notifications" class="notifications-filter__option <%= "selected" if params[:org_id].blank? %>">
+                  <div class="notifications-filter__label">
+                    <span class="notifications-filter__label--title">
                       <%= @user.name %>
                     </span>
-                    <span class="crayons-dropdown__label--subtitle">
+                    <span class="notifications-filter__label--subtitle">
                       @<%= @user.username %> · Personal
                     </span>
                   </div>
-                  <div class="crayons-dropdown__icon">
+                  <div class="notifications-filter__icon">
                     <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
                   </div>
                 </a>
-                <a href="/notifications/org/<%= org.id %>" class="crayons-dropdown__option <%= "selected" if params[:org_id].to_i == org.id %>">
-                  <div class="crayons-dropdown__label">
-                    <span class="crayons-dropdown__label--title">
+                <a href="/notifications/org/<%= org.id %>" class="notifications-filter__option <%= "selected" if params[:org_id].to_i == org.id %>">
+                  <div class="notifications-filter__label">
+                    <span class="notifications-filter__label--title">
                       <%= org.name %>
                     </span>
-                    <span class="crayons-dropdown__label--subtitle">
+                    <span class="notifications-filter__label--subtitle">
                       @<%= org.slug %> · Organization
                     </span>
                   </div>
-                  <div class="crayons-dropdown__icon">
+                  <div class="notifications-filter__icon">
                     <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
                   </div>
                 </a>
@@ -143,6 +145,7 @@
             </div>
           <% end %>
         <% end %>
+
         <div class="crayons-tabs notifications-mobile-filters <%= "showing" if params[:org_id].blank? %>">
           <a class="crayons-tabs--item <%= "crayons-tabs--item--current" if params[:filter].blank? %>" href="/notifications">
             <span class="crayons-tabs__label">

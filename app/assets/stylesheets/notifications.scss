@@ -432,15 +432,6 @@
   }
 }
 
-
-.notifications-filter-menu__mobile {
-  display: none;
-
-  @media screen and (max-width: $breakpoint-m) {
-    display: block;
-  }
-}
-
 // Notifications filtering on mobile.
 .notifications-mobile-filters {
   @media screen and (min-width: 950px) {
@@ -453,10 +444,15 @@
     display: flex;
   }
 
-  background:  var(--base-inverted);
+  background: var(--base-inverted);
 }
 
-.crayons-dropdown {
+.notifications-filter {
+  display: none;
+
+  @media screen and (max-width: $breakpoint-m) {
+    display: block;
+  }
 
   &__menu-overlay {
     display: none;
@@ -466,7 +462,7 @@
     }
 
     &:before {
-      content: "";
+      content: '';
       position: fixed;
       left: 0;
       right: 0;
@@ -474,7 +470,7 @@
       right: 0;
       height: 100%;
       width: 100%;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       z-index: 499;
     }
   }
@@ -511,10 +507,8 @@
     width: 100%;
     font-family: $ff-default;
 
-    &:hover
-    &:active,
-    &:focus
-    {
+    &:hover &:active,
+    &:focus {
       background-color: var(--base-10);
     }
   }
@@ -536,12 +530,8 @@
     }
 
     &.selected {
-      .crayons-dropdown__icon {
+      .notifications-filter__icon {
         display: inline-flex;
-
-        svg {
-          fill: var(--accent-brand);
-        }
       }
     }
   }
