@@ -40,7 +40,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       rate_limit_comment_creation rate_limit_published_article_creation
       rate_limit_image_upload rate_limit_email_recipient sidebar_tags shop_url
     ]
-    params.require(:site_config).permit(allowed_params, social_media_handles: SiteConfig.social_media_handles.keys)
+    params.require(:site_config).permit(allowed_params, social_media_handles: SiteConfig.social_media_handles.keys, email_addresses: SiteConfig.email_addresses.keys)
   end
 
   def extra_authorization_and_confirmation
