@@ -14,7 +14,7 @@ module Articles
     # rubocop:disable Metrics/CyclomaticComplexity
     def call
       rate_limiter = RateLimitChecker.new(user)
-      raise if rate_limiter.limit_by_action("article_update")
+      raise RateLimitChecker::LimitReached if rate_limiter.limit_by_action("article_update")
 
       article = load_article
       was_published = article.published

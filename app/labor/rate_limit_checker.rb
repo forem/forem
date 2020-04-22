@@ -5,9 +5,8 @@ class RateLimitChecker
     @user = user
   end
 
-  class UploadRateLimitReached < StandardError; end
-  class DailyFollowAccountLimitReached < StandardError; end
   class LimitReached < StandardError; end
+  class UploadRateLimitReached < LimitReached; end
 
   def limit_by_action(action)
     check_method = "check_#{action}_limit"
