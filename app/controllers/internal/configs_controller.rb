@@ -26,7 +26,7 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def config_params
     allowed_params = %i[
-      default_site_email mascot_user_id
+      mascot_user_id
       campaign_hero_html_variant_name campaign_sidebar_enabled campaign_featured_tags
       campaign_sidebar_image
       main_social_image favicon_url logo_svg logo_png primary_sticker_image_url
