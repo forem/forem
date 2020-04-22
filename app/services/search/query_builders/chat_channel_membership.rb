@@ -19,9 +19,9 @@ module Search
         size: 0
       }.freeze
 
-      def initialize(params)
+      def initialize(params:)
         @params = params.deep_symbolize_keys
-        @params[:viewable_by] = params[:user_id]
+        @params[:viewable_by] = @params[:user_id]
 
         # TODO: @mstruve: When we want to allow people like admins to
         # search ALL memberships this will need to change
