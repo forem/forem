@@ -302,6 +302,7 @@ describe('<Onboarding />', () => {
 
   describe('EmailPreferencesForm', () => {
     let onboardingSlides;
+    const { location } = window;
     const emailPreferencesFormIndex = 4;
 
     beforeEach(() => {
@@ -311,18 +312,32 @@ describe('<Onboarding />', () => {
       );
     });
 
+    afterEach(() => {
+      window.location = location;
+    });
+
     test('renders properly', () => {
       expect(onboardingSlides).toMatchSnapshot();
     });
 
-    test('should allow user to advance', async () => {
+    test('should redirect user when finished', async () => {
       fetch.once({});
 
+      // Setup: Enable window.location to be writable.
+      const url = 'https://dummy.com/onboarding';
+      Object.defineProperty(window, 'location', {
+        value: { href: url },
+        writable: true,
+      });
+
+      expect(window.location.href).toBe(url);
       onboardingSlides.find('.next-button').simulate('click');
       await flushPromises();
+      // No longer advance slide.
       expect(onboardingSlides.state().currentSlide).toBe(
-        emailPreferencesFormIndex + 1,
+        emailPreferencesFormIndex,
       );
+      expect(window.location.href).toBe('/');
     });
 
     it('should step backward', () => {
@@ -330,19 +345,6 @@ describe('<Onboarding />', () => {
       expect(onboardingSlides.state().currentSlide).toBe(
         emailPreferencesFormIndex - 1,
       );
-    });
-  });
-
-  describe('ClosingSlide', () => {
-    let onboardingSlides;
-    const closingSlideIndex = 5;
-
-    beforeEach(() => {
-      onboardingSlides = initializeSlides(closingSlideIndex, getUserData());
-    });
-
-    test('renders properly', () => {
-      expect(onboardingSlides).toMatchSnapshot();
     });
   });
 });

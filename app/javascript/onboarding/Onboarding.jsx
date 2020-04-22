@@ -3,7 +3,6 @@ import { h, Component } from 'preact';
 
 import IntroSlide from './components/IntroSlide';
 import EmailPreferencesForm from './components/EmailPreferencesForm';
-import ClosingSlide from './components/ClosingSlide';
 import FollowTags from './components/FollowTags';
 import FollowUsers from './components/FollowUsers';
 import ProfileForm from './components/ProfileForm';
@@ -24,7 +23,6 @@ export default class Onboarding extends Component {
       ProfileForm,
       FollowUsers,
       EmailPreferencesForm,
-      ClosingSlide,
     ];
 
     this.slides = slides.map((SlideComponent) => (
@@ -47,6 +45,8 @@ export default class Onboarding extends Component {
       this.setState({
         currentSlide: nextSlide,
       });
+    } else {
+      window.location.href = '/';
     }
   }
 
