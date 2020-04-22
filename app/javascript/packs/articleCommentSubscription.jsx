@@ -1,6 +1,8 @@
 import { h, render } from 'preact';
 import { CommentSubscription } from '../CommentSubscription/CommentSubscription';
+import { SnackbarPoller } from '../Snackbar';
 import { request } from '../utilities/http/request';
+import { addSnackbarItem } from '../Snackbar/SnackbarPoller';
 
 // TODO: Dynamic import only when user is logged on.
 
@@ -43,9 +45,9 @@ const subscriptionRequestHandler = async (subscriptionType) => {
       )}`;
     }
 
-    alert(message);
+    addSnackbarItem({ message });
   } catch (error) {
-    alert('An error occurred, please try again');
+    addSnackbarItem({ message: 'An error occurred, please try again' });
   }
 };
 
@@ -62,4 +64,8 @@ const subscriptionRequestHandler = async (subscriptionType) => {
     root,
     root.firstElementChild,
   );
+
+  const snackZone = document.getElementById('snack-zone');
+
+  render(<SnackbarPoller />, snackZone, snackZone.firstElementChild);
 })();

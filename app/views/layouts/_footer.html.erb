@@ -2,11 +2,12 @@
   <div id="footer-container" class="container <%= "centered-footer" unless current_page.include?("stories-show") %>">
     <div class="inner-footer-container">
       <a href="/">Home</a> <a href="/about">About</a> <a href="/privacy">Privacy Policy</a>
-      <a href="/terms">Terms of Use</a> <a href="/contact">Contact</a> <a href="/code-of-conduct">Code of Conduct</a><br/>
+      <a href="/terms">Terms of Use</a> <a href="/contact">Contact</a> <a href="/code-of-conduct">Code of Conduct</a><br />
       <%= community_qualified_name %> copyright <%= copyright_notice %>&nbsp; 🔥
     </div>
   </div>
 </footer>
+<div id="snack-zone"></div>
 <% if Rails.env.production? %>
   <%= javascript_include_tag "hello-dev.js", defer: true %>
 <% end %>
