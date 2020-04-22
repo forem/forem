@@ -1,11 +1,27 @@
 class RateLimitChecker
   attr_reader :user, :action
 
+  RETRY_AFTER = {
+    published_article_creation: 30,
+    article_update: 30
+  }.with_indifferent_access.freeze
+
   def initialize(user = nil)
     @user = user
   end
 
-  class LimitReached < StandardError; end
+  class LimitReached < StandardError
+    attr_reader :retry_after
+
+    def initialize(retry_after)
+      @retry_after = retry_after
+    end
+
+    def message
+      "Rate limit reached, try again in #{retry_after} seconds"
+    end
+  end
+
   class UploadRateLimitReached < LimitReached; end
 
   def limit_by_action(action)
@@ -25,7 +41,8 @@ class RateLimitChecker
   end
 
   def track_article_updates
-    Rails.cache.increment("#{@user.id}_article_update", 1, expires_in: 30.seconds)
+    expires_in = RETRY_AFTER[:article_update].seconds
+    Rails.cache.increment("#{@user.id}_article_update", 1, expires_in: expires_in)
   end
 
   def limit_by_email_recipient_address(address)

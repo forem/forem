@@ -11,8 +11,7 @@ module Articles
     end
 
     def call
-      rate_limiter = RateLimitChecker.new(user)
-      raise RateLimitChecker::LimitReached if rate_limiter.limit_by_action("published_article_creation")
+      rate_limit!
 
       article = save_article
 
@@ -29,6 +28,13 @@ module Articles
     private
 
     attr_reader :user, :article_params, :event_dispatcher
+
+    def rate_limit!
+      return unless RateLimitChecker.new(user).limit_by_action(:published_article_creation)
+
+      retry_after = RateLimitChecker::RETRY_AFTER[:published_article_creation]
+      raise RateLimitChecker::LimitReached, retry_after
+    end
 
     def dispatch_event(article)
       return unless article.published?
