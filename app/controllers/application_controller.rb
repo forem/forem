@@ -101,8 +101,4 @@ class ApplicationController < ActionController::Base
 
     raise
   end
-
-  def community_name
-    @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
-  end
 end

@@ -301,6 +301,7 @@ class UsersController < ApplicationController
   end
 
   def handle_account_tab
+    community_name = ApplicationConfig["COMMUNITY_NAME"]
     @email_body = <<~HEREDOC
       Hello #{community_name} Team,
       %0A
