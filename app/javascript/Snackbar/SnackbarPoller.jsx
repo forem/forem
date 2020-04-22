@@ -1,5 +1,6 @@
-import { Component } from 'preact';
+import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { Snackbar } from './Snackbar';
 
 let snackbarItems = [];
 
@@ -13,6 +14,10 @@ export class SnackbarPoller extends Component {
   };
 
   pollingId;
+
+  pause = false;
+
+  pauseLifespan;
 
   componentDidMount() {
     const { pollingTime, lifespan } = this.props;
@@ -58,6 +63,22 @@ export class SnackbarPoller extends Component {
     }, pollingTime);
   }
 
+  componentDidUpdate() {
+    if (!this.pauseLifespan) {
+      this.pauseLifespan = (_event) => {
+        this.pause = true;
+      };
+
+      this.element.base.addEventListener('mouseover', this.pauseLifespan);
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.element) {
+      this.element.base.removeEventListener('mouseover', this.pauseLifespan);
+    }
+  }
+
   decreaseLifespan(snack) {
     if (snack.lifespan === 0) {
       clearTimeout(snack.lifespanTimeoutId);
@@ -76,7 +97,10 @@ export class SnackbarPoller extends Component {
       return;
     }
 
-    snack.lifespan -= 1; // eslint-disable-line no-param-reassign
+    if (!this.pause) {
+      snack.lifespan -= 1; // eslint-disable-line no-param-reassign
+    }
+
     // eslint-disable-next-line no-param-reassign
     snack.lifespanTimeoutId = setTimeout(() => {
       this.decreaseLifespan(snack);
@@ -87,7 +111,15 @@ export class SnackbarPoller extends Component {
     const { snacks } = this.state;
     const [render] = this.props.children; // eslint-disable-line react/destructuring-assignment
 
-    return render(snacks);
+    return (
+      <Snackbar
+        ref={(element) => {
+          this.element = element;
+        }}
+      >
+        {render(snacks)}
+      </Snackbar>
+    );
   }
 }
 
