@@ -113,10 +113,10 @@ preact-render-spy (1 nodes)
         <button
           disabled={false}
           onClick={[Function bound handleComplete]}
-          class="next-button"
+          class="next-button skip-for-now"
           type="button"
         >
-          Continue
+          Skip for now
         </button>
       </div>
     </nav>
@@ -219,10 +219,10 @@ preact-render-spy (1 nodes)
         <button
           disabled={false}
           onClick={[Function bound handleComplete]}
-          class="next-button"
+          class="next-button skip-for-now"
           type="button"
         >
-          Continue
+          Skip for now
         </button>
       </div>
     </nav>
@@ -436,10 +436,10 @@ preact-render-spy (1 nodes)
         <button
           disabled={false}
           onClick={[Function bound onSubmit]}
-          class="next-button"
+          class="next-button skip-for-now"
           type="button"
         >
-          Continue
+          Skip for now
         </button>
       </div>
     </nav>

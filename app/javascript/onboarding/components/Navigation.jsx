@@ -28,7 +28,15 @@ class Navigation extends Component {
   }
 
   render() {
-    const { next, prev, hideNext, hidePrev, disabled, className } = this.props;
+    const {
+      next,
+      prev,
+      hideNext,
+      hidePrev,
+      disabled,
+      canSkip,
+      className,
+    } = this.props;
     return (
       <nav
         className={`onboarding-navigation${
@@ -60,10 +68,10 @@ class Navigation extends Component {
             <button
               disabled={disabled}
               onClick={next}
-              className="next-button"
+              className={`next-button${canSkip ? ' skip-for-now' : ''}`}
               type="button"
             >
-              Continue
+              {canSkip ? 'Skip for now' : 'Continue'}
             </button>
           )}
         </div>
@@ -74,6 +82,7 @@ class Navigation extends Component {
 
 Navigation.propTypes = {
   disabled: PropTypes.bool,
+  canSkip: PropTypes.bool,
   className: PropTypes.string,
   prev: PropTypes.func.isRequired,
   next: PropTypes.string.isRequired,
@@ -85,6 +94,7 @@ Navigation.propTypes = {
 
 Navigation.defaultProps = {
   disabled: false,
+  canSkip: false,
   hideNext: false,
   hidePrev: false,
   className: '',

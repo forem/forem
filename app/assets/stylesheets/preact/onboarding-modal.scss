@@ -124,6 +124,7 @@
 
     button {
       @extend .crayons-btn;
+      width: $su-10; // Explicitly set width to avoid buttons re-sizing with text.
     }
 
     .back-button {
@@ -135,9 +136,15 @@
       display: flex;
     }
 
+    .skip-for-now {
+      @extend .crayons-btn;
+      @extend .crayons-btn--secondary;
+    }
+
     .stepper {
       display: flex;
       align-items: center;
+      justify-content: center;
     }
 
     .dot {
