@@ -153,6 +153,13 @@ RSpec.describe Comment, type: :model do
         comment.validate!
         expect(comment.processed_html.include?(">1:52:30</a>")).to eq(false)
       end
+
+      it "does not add DOCTYPE and html body to processed html" do
+        comment.body_markdown = "Hello https://longurl.com/#{'x' * 100}?#{'y' * 100}"
+        comment.validate!
+        expect(comment.processed_html).not_to include("<!DOCTYPE")
+        expect(comment.processed_html).not_to include("<html><body>")
+      end
     end
   end
 

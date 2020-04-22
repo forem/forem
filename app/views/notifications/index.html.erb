@@ -2,19 +2,19 @@
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/notifications") %>" />
-  <meta name="description" content="Notifications inbox for dev.to">
+  <meta name="description" content="Notifications inbox for <%= community_name %>">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/notifications") %>" />
-  <meta property="og:title" content="Notifications - dev.to" />
-  <meta property="og:description" content="Notifications inbox for dev.to" />
+  <meta property="og:title" content="Notifications - <%= community_name %>" />
+  <meta property="og:description" content="Notifications inbox for <%= community_name %>" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
-  <meta name="twitter:title" content="Notifications - dev.to">
-  <meta name="twitter:description" content="Notifications inbox for dev.to">
+  <meta name="twitter:title" content="Notifications - <%= community_name %>">
+  <meta name="twitter:description" content="Notifications inbox for <%= community_name %>">
 <% end %>
 
 <% if user_signed_in? %>

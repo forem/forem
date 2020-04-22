@@ -202,6 +202,10 @@ module ApplicationHelper
     URL.user(user)
   end
 
+  def organization_url(organization)
+    URL.organization(organization)
+  end
+
   def sanitized_referer(referer)
     URL.sanitized_referer(referer)
   end
