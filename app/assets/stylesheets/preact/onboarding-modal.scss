@@ -125,6 +125,25 @@
     button {
       @extend .crayons-btn;
     }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+    }
+
+    .dot {
+      $dot-size: 10px;
+
+      background-color: var(--base-30);
+      border-radius: 50%;
+      width: $dot-size;
+      height: $dot-size;
+      margin: $su-1;
+    }
+
+    .active {
+      background-color: var(--base-90);
+    }
   }
 }
 
