@@ -57,7 +57,7 @@ class ClassifiedListing < ApplicationRecord
   end
 
   def cost
-    classified_listing_category&.cost ||
+    @cost = classified_listing_category&.cost ||
       ClassifiedListingCategory.select(:cost).find_by(slug: category)&.cost
   end
 

@@ -20,7 +20,7 @@ class ClassifiedListingsController < ApplicationController
       if params[:category].blank?
         published_listings.
           order("bumped_at DESC").
-          includes(:user, :organization, :taggings).
+          includes(:user, :organization, :taggings, :classified_listing_category).
           limit(12)
       else
         ClassifiedListing.none

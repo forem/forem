@@ -1,6 +1,6 @@
 json.type_of "classified_listing"
 
-json.call(
+json.extract!(
   listing,
   :id,
   :title,

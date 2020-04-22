@@ -16,7 +16,7 @@ RSpec.describe "/listings", type: :request do
     }
  end
 
-    describe "GETS /listings" do
+  describe "GET /listings" do
     it "has page content" do
       get "/listings"
       expect(response.body).to include("classified-filters")
