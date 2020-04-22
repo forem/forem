@@ -157,12 +157,29 @@
 
 .mod-container {
   padding: $su-4 0;
+  .circle {
+    border-radius: 100%;
+    &.centered-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 
-  header.top-header {
-    padding: 0px $su-4;
-    display: flex;
-    flex-direction: column;
-    text-align: left;
+  header {
+    &.top-header {
+      padding: 0px $su-4;
+      display: flex;
+      flex-direction: column;
+    }
+    &.other-things {
+      background: var(--base-0);
+      padding: $su-4;
+      h1 {
+        text-transform: uppercase;
+        font-size: $fs-s;
+      }
+    }
     h1 {
       font-size: $fs-l;
       font-weight: $fw-bold;
@@ -172,20 +189,67 @@
       font-weight: $fw-normal;
       color: var(--base-70);
     }
-    button.circle {
+    button.close-actions-panel {
+      border: none;
+      width: 40px;
+      height: 40px;
       position: absolute;
       right: $su-4;
       top: $su-4;
-      width: 40px;
-      height: 40px;
-      border: none;
-      border-radius: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
       background: var(--base-10);
     }
   }
+  .other-things-container {
+    background: var(--base-0);
+    height: 100%;
+    button {
+      background: inherit;
+      border: none;
+      padding: $su-3 $su-4;
+      width: 100%;
+      display: flex;
+      &.adjust-tags &:hover {
+        background: var(--base-inverted);
+        .icon {
+          background: var(--accent-brand);
+          svg {
+            fill: var(--base-inverted);
+          }
+        }
+        header h1 {
+          color: var(--accent-brand);
+        }
+      }
+      .icon {
+        background: var(--base-20);
+        width: 40px;
+        height: 40px;
+      }
+      header {
+        text-align: left;
+        margin-left: $su-3;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 2;
+        h2 {
+          color: var(--base-100);
+          font-size: $fs-base;
+          font-weight: $fw-medium;
+        }
+        h3 {
+          color: var(--base-70);
+          font-size: $fs-s;
+          font-weight: $fw-normal;
+        }
+      }
+      .toggle-chevron-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
   h2 {
     a {
       color: var(--body-color);
