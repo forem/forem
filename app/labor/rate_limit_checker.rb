@@ -7,6 +7,7 @@ class RateLimitChecker
 
   class UploadRateLimitReached < StandardError; end
   class DailyFollowAccountLimitReached < StandardError; end
+  class LimitReached < StandardError; end
 
   def limit_by_action(action)
     check_method = "check_#{action}_limit"
