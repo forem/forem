@@ -109,6 +109,9 @@ export class CommentSubscription extends Component {
             onClick={(_event) => {
               if (subscribed) {
                 onUnsubscribe(COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED);
+                this.setState({
+                  subscriptionType: COMMENT_SUBSCRIPTION_TYPE.ALL,
+                });
               } else {
                 onSubscribe(subscriptionType);
               }
