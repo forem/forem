@@ -75,6 +75,14 @@ RSpec.describe URL, type: :lib do
     end
   end
 
+  describe ".organization" do
+    let(:organization) { build(:organization) }
+
+    it "returns the correct URL for a user" do
+      expect(described_class.user(organization)).to eq("https://dev.to/#{organization.slug}")
+    end
+  end
+
   describe ".tag" do
     let(:tag) { build(:tag) }
 

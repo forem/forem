@@ -26,7 +26,7 @@ class DigestMailer < ApplicationMailer
 
   def email_end_phrase
     community_name = ApplicationConfig["COMMUNITY_NAME"]
-    # "more trending DEV posts" won the previous split test
+    # "more trending posts" won the previous split test
     # Included more often as per explore-exploit algorithm
     [
       "more trending #{community_name} posts",

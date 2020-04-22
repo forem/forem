@@ -112,8 +112,9 @@ variable :HCTI_API_KEY, :String, default: "Optional"
 
 # Fastly for edge caching
 # (https://docs.fastly.com/api/)
-variable :FASTLY_API_KEY, :String, default: "Optional"
-variable :FASTLY_SERVICE_ID, :String, default: "Optional"
+variable :FASTLY_API_KEY, :String, default: ""
+variable :FASTLY_SERVICE_ID, :String, default: ""
+variable :FASTLY_WHITELIST_PARAMS_SNIPPET_NAME, :String, default: ""
 
 # Honeycomb for monitoring and observability
 # (https://www.honeycomb.io/)

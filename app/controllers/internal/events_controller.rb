@@ -1,11 +1,12 @@
 module Internal
   class EventsController < ApplicationController
     layout "internal"
+    include ApplicationHelper
 
     def index
       @event = Event.new(
-        location_name: "dev.to/live",
-        location_url: "https://dev.to",
+        location_name: "#{URL.domain}/live",
+        location_url: app_url,
         description_markdown: "*Description* *Pre-requisites:* *Bio*",
       )
       @events = Event.order("starts_at DESC")

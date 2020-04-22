@@ -84,8 +84,20 @@ RSpec.describe Authentication::Authenticator, type: :service do
         service.call
 
         expect(DatadogStatsClient).to have_received(:increment).with(
-          "identity.created", tags: [provider: "github"]
+          "identity.created", tags: ["provider:github"]
         )
+      end
+
+      it "increments identity.errors if any errors occur in the transaction" do
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(Identity).to receive(:save!).and_raise(StandardError)
+        # rubocop:enable RSpec/AnyInstance
+        allow(DatadogStatsClient).to receive(:increment)
+
+        expect { described_class.call(auth_payload) }.to raise_error(StandardError)
+
+        tags = hash_including(tags: array_including("error:StandardError"))
+        expect(DatadogStatsClient).to have_received(:increment).with("identity.errors", tags)
       end
     end
 
@@ -172,6 +184,18 @@ RSpec.describe Authentication::Authenticator, type: :service do
         expect(
           user.profile_updated_at.to_i > original_profile_updated_at.to_i,
         ).to be(true)
+      end
+
+      it "increments identity.errors if any errors occur in the transaction" do
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(Identity).to receive(:save!).and_raise(StandardError)
+        # rubocop:enable RSpec/AnyInstance
+        allow(DatadogStatsClient).to receive(:increment)
+
+        expect { described_class.call(auth_payload) }.to raise_error(StandardError)
+
+        tags = hash_including(tags: array_including("error:StandardError"))
+        expect(DatadogStatsClient).to have_received(:increment).with("identity.errors", tags)
       end
     end
 
@@ -264,7 +288,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         service.call
 
         expect(DatadogStatsClient).to have_received(:increment).with(
-          "identity.created", tags: [provider: "twitter"]
+          "identity.created", tags: ["provider:twitter"]
         )
       end
     end

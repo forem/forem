@@ -30,7 +30,6 @@
     <% end %>
   </style>
   <div class="user-profile-header" style="<%= user_colors_style(@user) %>">
-    <a href="https://dev.to/<%= user_url(@user) %>"></a>
     <div class="user-profile-header-container">
       <div class="profile-pic-wrapper">
         <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
@@ -160,7 +159,7 @@
         <% if user_signed_in? %>
           <%= javascript_packs_with_chunks_tag "profileDropdown", defer: true %>
         <% end %>
-        <a href="/report-abuse?url=https://dev.to/<%= @user.username %>">Report Abuse</a>
+        <a href="/report-abuse?url=<%= user_url(@user) %>">Report Abuse</a>
       </div>
     </div>
   </div>

@@ -445,6 +445,15 @@ RSpec.describe "Api::V0::Articles", type: :request do
     let_it_be(:api_secret) { create(:api_secret) }
     let_it_be(:user) { api_secret.user }
 
+    context "when creation limit is reached" do
+      it "returns a 429 status code and error" do
+        allow(Articles::Creator).to receive(:call).and_raise(RateLimitChecker::LimitReached)
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        post api_articles_path, params: { article: { body_markdown: "" } }.to_json, headers: headers
+        expect(response).to have_http_status(:too_many_requests)
+      end
+    end
+
     context "when unauthorized" do
       it "fails with no api key" do
         post api_articles_path, headers: { "content-type" => "application/json" }
