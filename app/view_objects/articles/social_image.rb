@@ -5,7 +5,7 @@ module Articles
 
     def initialize(article, **options)
       @article = article
-      @height = options[:height] || 420
+      @height = options[:height] || 500
       @width = options[:width] || 1000
     end
 
