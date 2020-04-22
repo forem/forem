@@ -9,9 +9,10 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
   end
 
   it "user creates an organization" do
-    visit "settings/organization"
+    visit "/settings/organization"
     fill_in_org_form
     click_button "Create Organization"
+
     expect(page).to have_text("Your organization was successfully created and you are an admin.")
   end
 
@@ -52,8 +53,8 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
       "organization_profile_image",
       Rails.root.join("app/assets/images/android-icon-36x36.png"),
     )
-    fill_in "Text color (hex)", with: "#ffffff"
-    fill_in "Background color (hex)", with: "#000000"
+    fill_in "organization[bg_color_hex]", with: "#000000"
+    fill_in "organization[text_color_hex]", with: "#ffffff"
     fill_in "organization[url]", with: "http://company.com"
     fill_in "organization[summary]", with: "Summary"
     fill_in "organization[proof]", with: "Proof"
