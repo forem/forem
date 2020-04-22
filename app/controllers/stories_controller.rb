@@ -370,7 +370,11 @@ class StoriesController < ApplicationController
         "@id": URL.article(@article)
       },
       "url": URL.article(@article),
-      "image": ApplicationController.helpers.article_social_image_url(@article),
+      "image": [
+        ApplicationController.helpers.article_social_image_url(@article, width: 1080, height: 1080),
+        ApplicationController.helpers.article_social_image_url(@article, width: 1280, height: 720),
+        ApplicationController.helpers.article_social_image_url(@article, width: 1920, height: 1080),
+      ],
       "publisher": {
         "@context": "http://schema.org",
         "@type": "Organization",
