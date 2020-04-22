@@ -19,10 +19,10 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
       params = { category: "cfp", tags: ["beginner"], contact_via_connect: false }
       filter = described_class.new(params: params)
       exepcted_filters = [
-        { "term" => { "category" => "cfp" } },
-        { "term" => { "tags" => ["beginner"] } },
-        { "term" => { "contact_via_connect" => false } },
-        { "term" => { "published" => true } },
+        { "terms" => { "category" => ["cfp"] } },
+        { "terms" => { "tags" => ["beginner"] } },
+        { "terms" => { "contact_via_connect" => [false] } },
+        { "terms" => { "published" => [true] } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
     end
@@ -34,7 +34,7 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
         exepcted_filters = [
           { "range" => { "bumped_at" => Time.current } },
           { "range" => { "expires_at" => 1.day.from_now } },
-          { "term" => { "published" => true } },
+          { "terms" => { "published" => [true] } },
         ]
         expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
       end
@@ -60,8 +60,8 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
         }]
         exepcted_filters = [
           { "range" => { "bumped_at" => Time.current } },
-          { "term" => { "category" => "cfp" } },
-          { "term" => { "published" => true } },
+          { "terms" => { "category" => ["cfp"] } },
+          { "terms" => { "published" => [true] } },
         ]
         expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
         expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
@@ -72,8 +72,8 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
       params = { not_supported: "trash", category: "cfp" }
       filter = described_class.new(params: params)
       exepcted_filters = [
-        { "term" => { "category" => "cfp" } },
-        { "term" => { "published" => true } },
+        { "terms" => { "category" => ["cfp"] } },
+        { "terms" => { "published" => [true] } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
     end
@@ -82,7 +82,7 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
       filter = described_class.new(params: {}).as_hash
       expect(filter.dig("sort")).to eq("bumped_at" => "desc")
       expect(filter.dig("size")).to eq(0)
-      expect(filter.dig("query", "bool", "filter")).to match_array([{ "term" => { "published" => true } }])
+      expect(filter.dig("query", "bool", "filter")).to match_array([{ "terms" => { "published" => [true] } }])
     end
 
     it "allows default params to be overriden" do

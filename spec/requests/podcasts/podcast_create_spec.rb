@@ -74,5 +74,20 @@ RSpec.describe "Podcast Create", type: :request do
       post podcasts_path, params: { podcast: valid_attributes }
       expect(response.body).to include("Suggest a Podcast")
     end
+
+    it "catches error if image file name is too long" do
+      podcast = create(:podcast)
+      allow(Podcast).to receive(:new).and_return(podcast)
+      allow(podcast).to receive(:save).and_raise(Errno::ENAMETOOLONG)
+      allow(DatadogStatsClient).to receive(:increment)
+
+      expect do
+        post podcasts_path, params: { podcast: valid_attributes }
+      end.to raise_error(Errno::ENAMETOOLONG)
+
+      tags = hash_including(tags: instance_of(Array))
+
+      expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
+    end
   end
 end

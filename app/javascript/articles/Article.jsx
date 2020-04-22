@@ -46,7 +46,7 @@ export const Article = ({
 
           {article.class_name === 'Article' && (
             // eslint-disable-next-line no-underscore-dangle
-            <SearchSnippet snippetResult={article._snippetResult} />
+            <SearchSnippet highlightText={article.highlight} />
           )}
 
           <div className="crayons-story__bottom">

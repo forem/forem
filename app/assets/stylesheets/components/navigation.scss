@@ -3,12 +3,48 @@
 .crayons-link {
   color: var(--link-color);
 
-  &--branded {
-    color: var(--link-branded-color);
-  }
-
   &:hover {
     color: var(--link-color-hover);
+  }
+
+  &--brand {
+    color: var(--accent-brand);
+
+    &:hover {
+      color: var(--accent-brand-darker);
+    }
+  }
+
+  &--success {
+    color: var(--accent-success);
+
+    &:hover {
+      color: var(--accent-success-darker);
+    }
+  }
+
+  &--warning {
+    color: var(--accent-warning);
+
+    &:hover {
+      color: var(--accent-warning-darker);
+    }
+  }
+
+  &--danger {
+    color: var(--accent-danger);
+
+    &:hover {
+      color: var(--accent-danger-darker);
+    }
+  }
+
+  &--secondary {
+    color: var(--link-color-secondary);
+
+    &:hover {
+      color: var(--link-color-secondary-hover);
+    }
   }
 
   &--current {
@@ -45,6 +81,10 @@
 
   .crayons-indicator {
     margin-left: $su-2;
+
+    &:empty {
+      display: none;
+    }
   }
 
   // Indented for when there's no icon

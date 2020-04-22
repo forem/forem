@@ -244,6 +244,37 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
+      describe "Shop" do
+        it "rejects update to shop_url without proper confirmation" do
+          expected_shop_url = "https://qshop.dev.to"
+
+          expect do
+            params = { site_config: { shop_url: expected_shop_url }, confirmation: "Incorrect confirmation" }
+            post "/internal/config", params: params
+          end.to raise_error(Pundit::NotAuthorizedError)
+
+          expect(SiteConfig.shop_url).not_to eq(expected_shop_url)
+        end
+
+        it "sets shop_url to nil" do
+          previous_shop_url = SiteConfig.shop_url
+          post "/internal/config", params: { site_config: { shop_url: "" }, confirmation: confirmation_message }
+          expect(SiteConfig.shop_url).to eq("")
+          get "/privacy"
+          expect(response.body).not_to include(previous_shop_url)
+          expect(response.body).not_to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
+        end
+
+        it "updates shop url" do
+          expected_shop_url = "https://qshop.dev.to"
+          post "/internal/config", params: { site_config: { shop_url: expected_shop_url }, confirmation: confirmation_message }
+          expect(SiteConfig.shop_url).to eq(expected_shop_url)
+          get "/privacy"
+          expect(response.body).to include(expected_shop_url)
+          expect(response.body).to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
+        end
+      end
+
       describe "Authentication" do
         it "removes space authentication_providers" do
           post "/internal/config", params: { site_config: { authentication_providers: "github, twitter" }, confirmation: confirmation_message }

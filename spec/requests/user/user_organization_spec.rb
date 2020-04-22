@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "UserOrganization", type: :request do
   let(:user)          { create(:user) }
-  let(:organization)  { create(:organization, secret: "SECRET") }
+  let(:organization)  { create(:organization, secret: SecureRandom.hex(50)) }
 
   context "when joining an org" do
     before { sign_in user }
@@ -47,6 +47,23 @@ RSpec.describe "UserOrganization", type: :request do
       expect(response.status).to eq 302
       expect(response.redirect_url).to include "/settings/organization/#{Organization.last.id}"
     end
+  end
+
+  it "catches error if image file name is too long" do
+    sign_in user
+    org_params = build(:organization).attributes
+    org_params["profile_image"] = fixture_file_upload("files/800x600.png", "image/png")
+    allow(Organization).to receive(:new).and_return(organization)
+    allow(organization).to receive(:save).and_raise(Errno::ENAMETOOLONG)
+    allow(DatadogStatsClient).to receive(:increment)
+
+    expect do
+      post "/organizations", params: { organization: org_params }
+    end.to raise_error(Errno::ENAMETOOLONG)
+
+    tags = hash_including(tags: instance_of(Array))
+
+    expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
   end
 
   context "when leaving an org" do

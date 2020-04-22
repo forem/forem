@@ -19,6 +19,8 @@ class ChatChannelMembership < ApplicationRecord
 
   delegate :channel_type, to: :chat_channel
 
+  scope :eager_load_serialized_data, -> { includes(:user, :channel) }
+
   def channel_last_message_at
     chat_channel.last_message_at
   end

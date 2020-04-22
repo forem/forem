@@ -1,6 +1,8 @@
 require "rails_helper"
 
 RSpec.describe Users::Delete, type: :service do
+  before { mock_github }
+
   let(:user) { create(:user, :with_identity, identities: ["github"]) }
 
   it "deletes user" do
@@ -35,6 +37,16 @@ RSpec.describe Users::Delete, type: :service do
     expect(Rails.cache).to have_received(:delete).with("user-destroy-token-#{user.id}")
   end
 
+  it "does not delete user's audit logs" do
+    audit_log = create(:audit_log, user: user)
+
+    expect do
+      described_class.call(user)
+    end.to change(AuditLog, :count).by(0)
+
+    expect(audit_log.reload.user_id).to be(nil)
+  end
+
   it "removes user from Elasticsearch" do
     sidekiq_perform_enqueued_jobs { user }
     expect(user.elasticsearch_doc).not_to be_nil
@@ -44,9 +56,38 @@ RSpec.describe Users::Delete, type: :service do
     expect { user.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
   end
 
+  it "removes articles from Elasticsearch" do
+    article = create(:article, user: user)
+    sidekiq_perform_enqueued_jobs
+    expect(article.elasticsearch_doc).not_to be_nil
+    sidekiq_perform_enqueued_jobs do
+      described_class.call(user)
+    end
+    expect { article.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+  end
+
+  it "removes reactions from Elasticsearch" do
+    article = create(:article, user: user)
+    reaction = create(:reaction, category: "readinglist", reactable: article)
+    user_reaction = create(:reaction, user_id: user.id, category: "readinglist")
+    sidekiq_perform_enqueued_jobs
+    expect(reaction.elasticsearch_doc).not_to be_nil
+    expect(user_reaction.elasticsearch_doc).not_to be_nil
+    sidekiq_perform_enqueued_jobs do
+      described_class.call(user)
+    end
+    expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+    expect { user_reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+  end
+
   # check that all the associated records are being destroyed, except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
-    let(:kept_association_names) { %i[created_podcasts notes offender_feedback_messages reporter_feedback_messages affected_feedback_messages] }
+    let(:kept_association_names) do
+      %i[
+        affected_feedback_messages audit_logs created_podcasts notes
+        offender_feedback_messages reporter_feedback_messages
+      ]
+    end
     let(:direct_associations) { User.reflect_on_all_associations.reject { |a| a.options.key?(:join_table) || a.options.key?(:through) } }
     let!(:user_associations) do
       create_associations(direct_associations.reject { |a| kept_association_names.include?(a.name) })

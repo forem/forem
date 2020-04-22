@@ -55,10 +55,6 @@ function fetchNotificationsCount() {
           document.getElementById('notifications-link').href,
           'force',
         );
-        InstantClick.preload(
-          document.getElementById('connect-link').href,
-          'force',
-        );
       }, 30);
     }
   }
