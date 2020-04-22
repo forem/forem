@@ -129,11 +129,16 @@ class FollowUsers extends Component {
 
   render() {
     const { users, selectedUsers } = this.state;
-    const { prev } = this.props;
+    const { prev, slidesCount, currentSlideIndex } = this.props;
 
     return (
       <div className="onboarding-main">
-        <Navigation prev={prev} next={this.handleComplete} />
+        <Navigation
+          prev={prev}
+          next={this.handleComplete}
+          slidesCount={slidesCount}
+          currentSlideIndex={currentSlideIndex}
+        />
         <div className="onboarding-content toggle-bottom">
           <header className="onboarding-content-header">
             <h1 className="title">Suggested people to follow</h1>
@@ -184,6 +189,8 @@ class FollowUsers extends Component {
 FollowUsers.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.string.isRequired,
+  slidesCount: PropTypes.number.isRequired,
+  currentSlideIndex: PropTypes.func.isRequired,
 };
 
 export default FollowUsers;
