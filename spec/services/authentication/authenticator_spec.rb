@@ -84,7 +84,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         service.call
 
         expect(DatadogStatsClient).to have_received(:increment).with(
-          "identity.created", tags: [provider: "github"]
+          "identity.created", tags: ["provider:github"]
         )
       end
 
@@ -288,7 +288,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         service.call
 
         expect(DatadogStatsClient).to have_received(:increment).with(
-          "identity.created", tags: [provider: "twitter"]
+          "identity.created", tags: ["provider:twitter"]
         )
       end
     end
