@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <% title = yield(:title) %>
-    <title><%= title || "#{community_qualified_name}" %></title>
+    <title><%= title || community_qualified_name.to_s %></title>
     <% unless internal_navigation? %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
@@ -13,7 +13,6 @@
       <%= render "layouts/styles" %>
       <style>
         .home {
-          overflow: hidden;
           position: relative;
           margin: auto;
           max-width: 1250px;
