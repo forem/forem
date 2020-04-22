@@ -129,7 +129,7 @@ function listenForNotificationsBellClick() {
 }
 
 function initFilter() {
-  var navFilterMenu = document.getElementsByClassName("notifications-filter__menu");
+  var navFilterMenu = document.getElementsByClassName("notifications-filter__dropdown__menu");
   var navFilterSelect = document.getElementById("notifications-filter__select");
 
   for (var i = 0; i < navFilterMenu.length; i++) {

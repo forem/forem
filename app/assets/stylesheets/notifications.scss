@@ -432,25 +432,59 @@
   }
 }
 
-// Notifications filtering on mobile.
-.notifications-mobile-filters {
-  @media screen and (min-width: 950px) {
-    display: none;
-  }
 
+// Notifications filtering on mobile.
+.notifications-filter__tabs {
   display: none;
+
+  // @media screen and (min-width: 950px) {
+  //   display: none;
+  // }
 
   &.showing {
     display: flex;
   }
-
-  background: var(--base-inverted);
+  background:  var(--base-inverted);
 }
 
-.notifications-filter {
+.notifications-filter__list {
+  li {
+    margin-bottom: $su-1;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &--item {
+    align-items: center;
+    border-radius: $br-default;
+    box-sizing: border-box;
+    color: var(--card-color);
+    display: inline-flex;
+    font-weight: $fw-medium;
+    justify-content: space-between;
+    padding: $su-2;
+    width: 100%;
+
+    &:hover {
+      background: var(--base-10);
+    }
+
+    &.selected {
+      background: var(--base-10);
+
+      .notifications-filter__icon {
+        visibility: visible;
+      }
+    }
+  }
+}
+
+.notifications-filter__dropdown {
   display: none;
 
-  @media screen and (max-width: $breakpoint-m) {
+  @media screen and (max-width: 950px) {
     display: block;
   }
 
@@ -462,7 +496,7 @@
     }
 
     &:before {
-      content: '';
+      content: "";
       position: fixed;
       left: 0;
       right: 0;
@@ -470,7 +504,7 @@
       right: 0;
       height: 100%;
       width: 100%;
-      background: rgba(0, 0, 0, 0.5);
+      background: rgba(0,0,0,0.5);
       z-index: 499;
     }
   }
@@ -507,14 +541,16 @@
     width: 100%;
     font-family: $ff-default;
 
-    &:hover &:active,
-    &:focus {
+    &:hover
+    &:active,
+    &:focus
+    {
       background-color: var(--base-10);
     }
   }
 
   &__icon {
-    display: none;
+    visibility: hidden;
   }
 
   &__option {
@@ -530,9 +566,6 @@
     }
 
     &.selected {
-      .notifications-filter__icon {
-        display: inline-flex;
-      }
     }
   }
 
@@ -550,5 +583,18 @@
   &__label--subtitle {
     color: var(--base-60);
     font-size: $fs-s;
+  }
+}
+
+.notifications-filter__list,
+.notifications-filter__dropdown {
+  .notifications-filter__icon {
+    visibility: hidden;
+  }
+
+  .selected {
+    .notifications-filter__icon {
+      visibility: visible;
+    }
   }
 }
