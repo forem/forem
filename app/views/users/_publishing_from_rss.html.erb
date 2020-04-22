@@ -1,65 +1,52 @@
-<h3>Publishing to <%= community_name %> from RSS</h3>
-<% if @user.feed_url.present? %>
-  <%= form_for(@user) do |f| %>
-    <div class="field">
-      <label></label>
-      <%= f.hidden_field :feed_url, value: @user.feed_url %>
-      <%= f.hidden_field :tab, value: @tab %>
-      <%= f.submit "Fetch Feed Now", class: "cta" %>
-      <p><em>
-        Last Fetched: <time id="rss-fetch-time" datetime="<%= @user.feed_fetched_at.iso8601 %>">
-        </time>
-      </em></p>
-    </div>
-  <% end %>
-<% end %>
-<p>
-  Posts will land in your <a href="/dashboard">dashboard</a>
-  <b><em>as drafts</em></b>, and then you can publish from there (or give <%= community_name %> admins permission to do so).
-</p>
-<p>
-  Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.
-</p>
-<p>
-  To find out more about how drafts are created from your feed, read this
-  <a href="/p/publishing_from_rss_guide">guide</a>.
-</p>
-<p>
-  Your feed will be fetched every time you submit this form and updates will be automatically fetched periodically thereafter. Contact
-  <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if you encounter issues.
-</p>
-<p>
-  FYI: Medium RSS feed URLs are <em>https://medium.com/feed/@your_username</em>
-</p>
-<p>
-  <em>By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.</em>
-</p>
-<%= form_for(@user) do |f| %>
-  <div class="field">
-    <b><%= f.label :feed_url, "RSS Feed URL" %></b>
-    <%= f.url_field :feed_url, placeholder: "https://www.your-site-here.com/feed/" %>
+<div class="crayons-card grid p-6 mb-6 gap-6">
+  <div class="grid gap-4">
+    <h3>Publishing to <%= community_name %> from RSS</h3>
+    <% if @user.feed_url.present? %>
+      <%= form_for(@user) do |f| %>
+        <%= f.hidden_field :feed_url, value: @user.feed_url %>
+        <%= f.hidden_field :tab, value: @tab %>
+        <div class="flex items-center">
+          <button type="submit" class="crayons-btn crayons-btn--secondary">Fetch feed now</button>
+          <p>Last Fetched: <time id="rss-fetch-time" datetime="<%= @user.feed_fetched_at.iso8601 %>"></time></p>
+        </div>
+      <% end %>
+    <% end %>
+    <p>
+      Posts will land in your <a href="/dashboard">dashboard</a>
+      <strong>as drafts</strong>, and then you can publish from there (or give <%= community_name %> admins permission to do so).
+    </p>
+    <p>Formatting will typically look good, but you may have to make manual fixes. In the case of Medium, you may have to manually fix embeds.</p>
+    <p>
+      To find out more about how drafts are created from your feed, read this
+      <a href="/p/publishing_from_rss_guide">guide</a>.
+    </p>
+    <p>
+      Your feed will be fetched every time you submit this form and updates will be automatically fetched periodically thereafter. Contact
+      <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if you encounter issues.
+    </p>
+    <p>FYI: Medium RSS feed URLs are <em>https://medium.com/feed/@your_username</em></p>
+    <p><em>By submitting your RSS Feed URL, you agree that you own and/or have permission to syndicate the associated content.</em></p>
   </div>
-  <div class="checkbox-field">
-    <div class="sub-field">
-      <%= f.check_box :feed_mark_canonical %>
-      <%= f.label :feed_mark_canonical, "Mark the RSS source as canonical URL by default" %>
-      <div class="field-explainer">
-        If you check this box, the post will automatically mark the feed source as the canonical URL.
-      </div>
+
+  <%= form_for @user, html: { class: "grid gap-6" } do |f| %>
+    <div class="crayons-field">
+      <%= f.label :feed_url, "RSS Feed URL", class: "crayons-field__label" %>
+      <%= f.url_field :feed_url, placeholder: "https://yoursite.com/feed/", class: "crayons-textfield" %>
     </div>
 
-    <div class="sub-field">
-      <%= f.check_box :feed_referential_link %>
-      <%= f.label :feed_referential_link, "Replace self-referential links with #{community_name}-specific links" %>
-      <div class="field-explainer">
-        If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on <%= community_name %> if available. This is primarily meant for folks migrating their entire blog onto <%= community_name %>.
-      </div>
+    <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box :feed_mark_canonical, class: "crayons-checkbox" %>
+      <%= f.label :feed_mark_canonical, "Mark the RSS source as canonical URL by default <p class='crayons-field__description'>If you check this box, the post will automatically mark the feed source as the canonical URL.</p>".html_safe, class: "crayons-field__label" %>
     </div>
-  </div>
-  <div class="field">
-    <label></label>
+
+    <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box :feed_referential_link, class: "crayons-checkbox" %>
+      <%= f.label :feed_referential_link, "Replace self-referential links with #{community_name}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on #{community_name} if available. This is primarily meant for folks migrating their entire blog onto #{community_name}.</p>".html_safe, class: "crayons-field__label" %>
+    </div>
+
     <%= f.hidden_field :tab, value: @tab %>
-    <% button_text = @user.feed_url.present? ? "UPDATE" : "SUBMIT" %>
-    <%= f.submit button_text, class: "cta" %>
-  </div>
-<% end %>
+    <% button_text = @user.feed_url.present? ? "Save" : "Submit" %>
+    <div><button class="crayons-btn" type="submit"><%= button_text %></button></div>
+  <% end %>
+
+</div>

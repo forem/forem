@@ -1,106 +1,102 @@
 <% title "Settings" %>
 
 <% if flash[:settings_notice] %>
-  <div class="notice" id="notice">
+  <div class="crayons-banner">
     <%= flash[:settings_notice] %>
   </div>
 <% end %>
 
 <% if flash[:error].present? %>
-  <div class="notice error-notice" id="notice">
+  <div class="crayons-banner crayons-banner--error">
     <%= flash[:error] %>
   </div>
 <% end %>
 
 <% if params[:state] == "previous-registration" %>
-  <div class="notice error-notice" id="notice">
+  <div class="crayons-banner crayons-banner--error">
     There is an existing account authorized with that social account. Contact
     <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if this is a mistake.
   </div>
 <% end %>
 
-<div class="user-settings-page">
-  <% if @tab == "organization" && @organizations.present? %>
-    <h2>Settings for
-      <span class="organization-dropdown">
-        <select id="organization-dropdown-select" onchange="window.location.href=this.value">
-          <% options = @organizations.pluck(:slug, :id).each do |arr| %>
-            <% arr[0] = "@#{arr[0]}" %>
-            <% arr[1] = "/settings/organization/#{arr[1]}" %>
-          <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
-          <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
-          <%# For example: %>
-          <%# <option value="/settings/organization/1>@devteam</option> %>
-          <%# <option value="/settings/organization/new" selected>New Organization</option> %>
-        </select>
-      </span>
-    </h2>
-  <% else %>
-    <h2>Settings for <a href="/<%= @user.username %>">@<%= @user.username %></a></h2>
-  <% end %>
-  <% if current_user.email.blank? %>
-    <div class="finish-notice">
-      Confirm your email to complete your profile
-      <div class="small">
-        while you're at it, go ahead and fill everything out.<br />
-        <% if @user.twitter_username.blank? %>
-          connect your twitter account as well to complete your identity.
-        <% elsif @user.github_username.blank? %>
-          connect your github account as well to complete your identity.
-        <% end %>
-      </div>
-    </div>
-  <% end %>
-
-  <% if @user.unconfirmed_email.present? %>
-    <div class="field-notice">
-      Email Verification
-      <div class="small">
-        you have requested a change to
-        <a href="mailto:<%= @user.unconfirmed_email %>"><%= @user.unconfirmed_email %></a><br />
-        check your inbox for the verification link to finalize the change.
-      </div>
-    </div>
-  <% end %>
-
-  <% if @user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited your profile from being saved:</h2>
-
-      <ul>
-        <% @user.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <% if @organization && @organization.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@organization.errors.count, "error") %> prohibited your org profile from being saved:</h2>
-
-      <ul>
-        <% @organization.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="settings-hub">
-    <% @tab_list.each do |possible_tab| %>
-      <% if @tab == possible_tab.downcase.tr(" ", "-") %>
-        <div class="single-settings-tab selected">
-          <%= possible_tab %>
-        </div>
-      <% else %>
-        <a class="single-settings-tab" href="/settings/<%= possible_tab.downcase.tr(" ", "-") %>">
+<main class="crayons-layout crayons-layout--max-l crayons-layout--default">
+  <div class="crayons-layout__sidebar">
+    <nav>
+      <% @tab_list.each do |possible_tab| %>
+        <a class="crayons-link crayons-link--block <% if @tab == possible_tab.downcase.tr(' ', '-') %>crayons-link--current<% end %>" href="/settings/<%= possible_tab.downcase.tr(" ", "-") %>">
           <%= possible_tab %>
         </a>
       <% end %>
-    <% end %>
+    </nav>
   </div>
-  <div class="settings-form">
+
+  <div class="crayons-layout__content">
+    <header class="crayons-layout__page-header px-3 s:px-0 mb-4">
+      <% if @tab == "organization" && @organizations.present? %>
+        <h1 class="fs-xl s:fs-3xl">Settings for
+          <span class="organization-dropdown">
+            <select id="organization-dropdown-select" onchange="window.location.href=this.value">
+              <% options = @organizations.pluck(:slug, :id).each do |arr| %>
+                <% arr[0] = "@#{arr[0]}" %>
+                <% arr[1] = "/settings/organization/#{arr[1]}" %>
+              <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
+              <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
+              <%# For example: %>
+              <%# <option value="/settings/organization/1>@devteam</option> %>
+              <%# <option value="/settings/organization/new" selected>New Organization</option> %>
+            </select>
+          </span>
+        </h1>
+      <% else %>
+        <h1 class="fs-xl s:fs-3xl">Settings for <a href="/<%= @user.username %>">@<%= @user.username %></a></h1>
+      <% end %>
+    </header>
+
+    <% if current_user.email.blank? %>
+      <div class="crayons-notice crayons-notice--warning mb-6">
+        <h3 class="mb-2">Confirm your email to complete your profile.</h3>
+        <p>
+          While you're at it, go ahead and fill everything out.
+          <% if @user.twitter_username.blank? %>
+            Connect your twitter account as well to complete your identity.
+          <% elsif @user.github_username.blank? %>
+            Connect your github account as well to complete your identity.
+          <% end %>
+        </p>
+      </div>
+    <% end %>
+
+    <% if @user.unconfirmed_email.present? %>
+      <div class="crayons-notice crayons-notice--warning mb-6">
+        <h3 class="mb-2">Email verification.</h3>
+        <p>You have requested a change to <a href="mailto:<%= @user.unconfirmed_email %>"><%= @user.unconfirmed_email %></a>. Check your inbox for the verification link to finalize the change.</p>
+      </div>
+    <% end %>
+
+    <% if @user.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@user.errors.count, "error") %> prohibited your profile from being saved:</h2>
+
+        <ul>
+          <% @user.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <% if @organization && @organization.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(@organization.errors.count, "error") %> prohibited your org profile from being saved:</h2>
+
+        <ul>
+          <% @organization.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <%= render "users/" + @tab.tr("-", "_"), tab: @tab %>
   </div>
-</div>
+</main>
