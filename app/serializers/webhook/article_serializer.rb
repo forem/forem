@@ -4,7 +4,7 @@ module Webhook
 
     set_type :article
     attributes :title, :description, :readable_publish_date, :cached_tag_list, :cached_tag_list_array,
-               :slug, :path, :url, :comments_count, :positive_reactions_count, :body_markdown, :options
+               :slug, :path, :url, :comments_count, :positive_reactions_count, :body_markdown
 
     attribute :canonical_url, &:processed_canonical_url
     attribute :body_html, &:processed_html
@@ -24,7 +24,7 @@ module Webhook
       a.last_comment_at&.utc&.iso8601
     end
     attribute :cover_image do |a|
-      CloudCoverUrl.new(a.url, a.options).call
+      CloudCoverUrl.new(a.url).call
     end
     attribute :social_image do |article|
       Articles::SocialImage.new(article).url
