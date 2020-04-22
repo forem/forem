@@ -21,6 +21,8 @@ class Api::V0::ApiController < ApplicationController
     error_unauthorized
   end
 
+  rescue_from RateLimitChecker::LimitReached, with: :too_many_requests
+
   protected
 
   def error_unprocessable_entity(message)
@@ -33,6 +35,10 @@ class Api::V0::ApiController < ApplicationController
 
   def error_not_found
     render json: { error: "not found", status: 404 }, status: :not_found
+  end
+
+  def too_many_requests
+    render json: { error: "too many requests", status: 429 }, status: :too_many_requests
   end
 
   def authenticate!
