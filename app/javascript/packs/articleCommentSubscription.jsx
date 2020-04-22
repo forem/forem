@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import { CommentSubscription } from '../CommentSubscription/CommentSubscription';
-import { request } from '../utilities/request';
+import { request } from '../utilities/http/request';
 
 // TODO: Dynamic import only when user is logged on.
 
