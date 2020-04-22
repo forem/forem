@@ -17,7 +17,7 @@ class Rack::Attack
     end
   end
 
-  throttle("site_hits", limit: 20, period: 1) do |request|
+  throttle("site_hits", limit: 100, period: 2) do |request|
     if request.env["HTTP_FASTLY_CLIENT_IP"].present?
       request.env["HTTP_FASTLY_CLIENT_IP"].to_s
     end
