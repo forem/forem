@@ -11,7 +11,7 @@ module Articles
     end
 
     def call
-      raise if RateLimitChecker.new(user).limit_by_action("published_article_creation")
+      raise RateLimitChecker::LimitReached if RateLimitChecker.new(user).limit_by_action("published_article_creation")
 
       article = save_article
 
