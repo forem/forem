@@ -297,7 +297,7 @@
     border: 2px solid $white;
     padding: 2px;
     z-index: 3;
-    color: var(--base-0);
+    color: $white;
   }
 
   .vomit-reaction-section,
@@ -311,7 +311,7 @@
     display: flex;
     align-items: center;
     border: none;
-    background: var(--base-0);
+    background: $white;
     height: $su-7;
     padding: $su-1 $su-2;
     border-radius: $br-default;
@@ -354,7 +354,7 @@
     }
 
     .vote-text {
-      color: var(--base-0);
+      color: $white;
     }
 
     .reaction-checkmark {

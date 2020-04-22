@@ -67,9 +67,7 @@
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: "Checkmark") %>
     </button>
   </div>
-  <div class="how-this-works-section">
-    How does this work?
-  </div>
+  <span class="how-this-works-section">How does this work?</span>
 
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
     <h3> <a href="<%= @moderatable.path %>/edit">Edit Post</a> |
