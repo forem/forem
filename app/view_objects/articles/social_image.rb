@@ -16,8 +16,8 @@ module Articles
       if image.present?
         return cl_image_path(image,
                              type: "fetch",
-                             width: "1000",
-                             height: "500",
+                             width: height,
+                             height: width,
                              crop: "imagga_scale",
                              quality: "auto",
                              flags: "progressive",
