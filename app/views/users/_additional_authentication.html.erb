@@ -1,4 +1,4 @@
-<% if SiteConfig.auth_allowed?("github") && SiteConfig.auth_allowed?("twitter") && (!@user.identities.exists?(provider: "github") || !@user.identities.exists?(provider: "twitter")) %>
+<% if (SiteConfig.auth_allowed?("github") || SiteConfig.auth_allowed?("twitter")) && (!@user.identities.exists?(provider: "github") || !@user.identities.exists?(provider: "twitter")) %>
   <div class="crayons-card mb-6 p-6">
     <div class="flex">
       <% if SiteConfig.auth_allowed?("github") && !@user.identities.exists?(provider: "github") %>
