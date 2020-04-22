@@ -20,6 +20,8 @@ export class SnackbarPoller extends Component {
 
   pauseLifespan;
 
+  resumeLifespan;
+
   componentDidMount() {
     const { pollingTime, lifespan } = this.props;
 
@@ -88,6 +90,7 @@ export class SnackbarPoller extends Component {
   }
 
   decreaseLifespan(snack) {
+    /* eslint-disable  no-param-reassign */
     if (!this.paused && snack.lifespan === 0) {
       clearTimeout(snack.lifespanTimeoutId);
 
@@ -106,13 +109,13 @@ export class SnackbarPoller extends Component {
     }
 
     if (!this.paused) {
-      snack.lifespan -= 1; // eslint-disable-line no-param-reassign
+      snack.lifespan -= 1;
     }
 
-    // eslint-disable-next-line no-param-reassign
     snack.lifespanTimeoutId = setTimeout(() => {
       this.decreaseLifespan(snack);
-    }, 1000); // eslint-disable-line no-param-reassign
+    }, 1000);
+    /* eslint-enable  no-param-reassign */
   }
 
   render() {
