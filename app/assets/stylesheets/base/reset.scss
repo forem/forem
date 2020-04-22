@@ -91,6 +91,13 @@ button,
   -webkit-appearance: button;
 }
 
+// Remove default stylings for fieldset
+fieldset {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
 // Remove the inner border and padding in Firefox.
 button::-moz-focus-inner,
 [type='button']::-moz-focus-inner,
