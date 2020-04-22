@@ -14,7 +14,14 @@ preact-render-spy (1 nodes)
         >
           Back
         </button>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+        </div>
         <button
+          disabled={false}
           onClick={[Function bound onSubmit]}
           class="next-button"
           type="button"
@@ -81,7 +88,14 @@ preact-render-spy (1 nodes)
         >
           Back
         </button>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot "></span>
+          <span class="dot "></span>
+          <span class="dot "></span>
+        </div>
         <button
+          disabled={false}
           onClick={[Function bound handleComplete]}
           class="next-button"
           type="button"
@@ -172,7 +186,14 @@ preact-render-spy (1 nodes)
         >
           Back
         </button>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot "></span>
+        </div>
         <button
+          disabled={false}
           onClick={[Function bound handleComplete]}
           class="next-button"
           type="button"
@@ -374,7 +395,14 @@ preact-render-spy (1 nodes)
         >
           Back
         </button>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot "></span>
+          <span class="dot "></span>
+        </div>
         <button
+          disabled={false}
           onClick={[Function bound onSubmit]}
           class="next-button"
           type="button"
