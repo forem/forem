@@ -218,17 +218,4 @@ RSpec.describe "Articles", type: :request do
       end
     end
   end
-
-  describe "POST /create" do
-    before { sign_in user }
-
-    context "when creation limit is reached" do
-      it "raises a rate limit reached error" do
-        allow(Articles::Creator).to receive(:call).and_raise(RateLimitChecker::LimitReached)
-        expect do
-          post articles_path, params: { article: { markdown: "123" } }
-        end.to raise_error(RateLimitChecker::LimitReached)
-      end
-    end
-  end
 end
