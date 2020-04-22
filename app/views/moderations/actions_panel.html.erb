@@ -1,214 +1,51 @@
 <% title "Moderating " + @moderatable.title %>
 
 <% cache(cache_key_heroku_slug("mod-styling")) do %>
-  <style>
-    <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
-  </style>
+<style>
+  <%=Rails.application.assets["moderators.css"].to_s.html_safe %>
+</style>
 <% end %>
 
-<div class="container mod-container" style="text-align: center">
+<div class="container mod-container">
   <header class="top-header">
     <h1>Moderate Post</h1>
     <h2>Rate the quality of this post</h2>
-    <button class="circle" type="button">
+    <button class="close-actions-panel circle centered-icon" type="button">
       <%= inline_svg_tag("chevron-right.svg", aria: true, title: "Close moderator actions panel") %>
     </button>
   </header>
-  <% if @moderatable.class.name == "Article" &&
-       (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? && 
-       (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) })
-  %>
-    <%= form_tag "/article_approvals", method: "post" do %>
-      <%= hidden_field_tag(:id, @moderatable.id) %>
-      <% if @moderatable.approved %>
-        <%= hidden_field_tag(:approved, false) %>
-        <button class="cta approval-button approval-removal">Remove approval</button>
-      <% else %>
-        <%= hidden_field_tag(:approved, true) %>
-        <button class="cta approval-button">Mark as approved</button>
-      <% end %>
-    <% end %>
-    <hr />
-  <% end %>
-
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
-          data-reactable-id="<%= @moderatable.id %>"
-          data-category="thumbsdown"
-          data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
-  </button>
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
-          data-reactable-id="<%= @moderatable.id %>"
-          data-category="vomit"
-          data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
-  </button>
-  <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
-    <h3> <a href="<%= @moderatable.path %>/edit">Edit Post</a> |
-      <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Internal:Article</a> |
-      <a href="/admin/articles/<%= @moderatable.id %>" data-no-instant>Admin:Article</a></h3>
-  <% elsif current_user.has_role?(:super_admin) && @moderatable.class.name == "Comment" %>
-    <h3> <a href="/admin/comments/<%= @moderatable.id %>" data-no-instant>Admin:Comment</a> |
-      <a href="/admin/users/<%= @moderatable.user_id %>" data-no-instant>Admin:User</a></h3>
-  <% end %>
-  <p>
-    <b style="font-size:1.3em">All negative reactions are private.</b>
-  </p>
-  <p>
-    Use <b>thumbsdown</b> to move this content "down" for any reason (quality, usefulness, etc.).
-  </p>
-  <p>
-    Use <b>vomit</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
-  </p>
-  <div class="other-things">
-    <header>
-      <h1 class="capitalized">Other things you can do</h1>
+  <%# Rating buttons and options go here, to be added by Arit %>
+  <div class="other-things-container">
+    <header class="other-things">
+      <h1>Other things you can do</h1>
     </header>
-  </div>
-  <div class="tag-mod-form">
-    <h2>Flag <a href="<%= @moderatable.user.path %>"><%= @moderatable.user.username %></a> as Abusive</h2>
-    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable.user, current_user, "vomit") ? "reacted" : "" %>"
-            data-reactable-id="<%= @moderatable.user.id %>"
-            data-category="vomit"
-            data-reactable-type="<%= @moderatable.user.class.name %>">
-      <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
-      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
-    </button>
-    <p>
-      This is the equivalent of vomiting on <b>all</b> of this user's articles.
-    </p>
-  </div>
-  <% if @hidden_comments.present? %>
-    <div class="tag-mod-form">
-      <h2>Hidden Comments</h2>
-      <form>
-        <ul id="hidden-comments">
-        <% @hidden_comments.each do |comment| %>
-          <li>
-            <a href="<%= comment.path %>">Comment by <%= comment.user.username %></a>
-          </li>
-        <% end %>
-        </ul>
-      </form>
-    </div>
-  <% end %>
-  <% if @allowed_to_adjust %>
-    <div class="tag-mod-form">
-      <h2>Tag Adjustments</h2>
-      <%= form_for(@tag_adjustment) do |f| %>
-        <b>Current live tags:</b> <%= @moderatable.tag_list %><br>
-        <% if @tag_adjustment.errors.any? %>
-          <div id="error_explanation">
-            <h2><%= pluralize(@tag_adjustment.errors.count, "error") %> prohibited this block from being saved:</h2>
-            <ul>
-              <% @tag_adjustment.errors.full_messages.each do |message| %>
-                <li><%= message %></li>
-              <% end %>
-            </ul>
-          </div>
-        <% end %>
-        <%= f.hidden_field :article_id, value: @moderatable.id %>
-        <% if current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) } %>
-          <div class="tag-mod-addition-radio">
-            <%= f.radio_button :adjustment_type, "removal", required: true %>
-            <%= f.label :adjustment_type, "Remove", value: "removal" %>
-          </div>
-        <% end %>
-        <% if @moderatable.tag_list.size < 4 %>
-          <div class="tag-mod-addition-radio">
-            <%= f.radio_button :adjustment_type, "addition", required: true %>
-            <%= f.label :adjustment_type, "Add", value: "addition" %>
-          </div>
-        <% end %>
-        <% if current_user.has_role?(:super_admin) %>
-          <%= f.text_field :tag_name, placeholder: "Tag Name", required: true %>
-        <% else %>
-          <%= f.select :tag_name, @tag_moderator_tags, { prompt: "Select Tag" }, required: true %>
-        <% end %>
-        <%= f.text_area :reason_for_adjustment, placeholder: "Reason for adjustment (Be super kind) - Only the reason is needed, the notification will take care of the rest.", required: true %>
-        <%= f.submit "Submit Tag Adjustment" %>
-      <% end %>
-      <% if @adjustments.present? %>
-        <% @adjustments.each do |adjustment| %>
-          <% if current_user.any_admin? || adjustment.user_id == current_user.id %>
-            <%= form_for(adjustment, url: "/tag_adjustments/#{adjustment.id}", html: { method: :delete, onsubmit: "return confirm('Are you sure you want to undo the #{adjustment.adjustment_type} of the #{adjustment.tag_name} tag?')" }) do |f| %>
-              <b><%= adjustment.adjustment_type == "removal" ? "Currently removed tag" : "Currently added tag" %>:</b> <%= adjustment.tag_name %>
-              <%= f.submit "×", id: "undo" %>
-            <% end %>
-          <% end %>
-        <% end %>
-      <% end %>
-    </div>
-  <% end %>
-
-  <% if @moderatable.class.name == "Article" %>
-    <div class="tag-mod-form">
-      <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
-      <%= form_for(RatingVote.new) do |f| %>
-        <h2>Experience Level of Post</h2>
-        <%= f.hidden_field :article_id, value: @moderatable.id %>
-        <%= f.hidden_field :group, value: "experience_level" %>
-        <button value="1" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 1.0 %>">1</button>
-        <button value="2" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 2.0 %>">2</button>
-        <button value="3" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 3.0 %>">3</button>
-        <button value="4" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 4.0 %>">4</button>
-        <button value="5" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 5.0 %>">5</button>
-        <button value="6" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 6.0 %>">6</button>
-        <button value="7" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 7.0 %>">7</button>
-        <button value="8" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 8.0 %>">8</button>
-        <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 9.0 %>">9</button>
-        <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 10.0 %>">10</button>
-      <% end %>
-      <p>
-        Who <em>might</em> find this post most valuable, based on overall experience level?
-      </p>
-    </div>
-    <% if @moderatable.last_buffered.blank? %>
-      <div class="tag-mod-form">
-        <%= form_for(BufferUpdate.new) do |f| %>
-          <h2>Suggest a Tweet for @<%= SiteConfig.social_media_handles["twitter"] %></h2>
-          <%= f.hidden_field :article_id, value: @moderatable.id %>
-          <%= f.text_area :body_text, maxlength: 220, placeholder: "Can be a TLDR of the post, an interesting quote from the post, or bullet points from topics covered in the post, etc." %>
-          <%= f.submit "Share Tweet Suggestion" %>
-        <% end %>
+    <button class="adjust-tags" type="button">
+      <div class="icon circle centered-icon">
+        <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
       </div>
-    <% end %>
-  <% end %>
+      <header>
+        <h2>Adjust tags</h2>
+        <h3>Add or remove tags</h3>
+      </header>
+      <div class="toggle-chevron-container">
+        <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
+      </div>
+    </button>
+    <button class="set-experience" type="button">
+      <div class="icon circle centered-icon">
+        <%= inline_svg_tag("book.svg", aria: false) %>
+      </div>
+        <header>
+          <h2>Set experience level</h2>
+          <h3>Curate the most appropriate audience for this post</h3>
+        </header>
+        <div class="toggle-chevron-container">
+          <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
+        </div>
+      </div>
+    </button>
+  </div>
+  <footer>
+    <%# Flag user %>
+  </footer>
 </div>
-
-<script defer>
-  setTimeout(function () {
-    var butts = document.getElementsByClassName('reaction-button');
-    for (var i = 0; i < butts.length; i++) {
-      var butt = butts[i];
-      butt.onclick = function (event) {
-        event.preventDefault();
-        var thisButt = this;
-        thisButt.classList.add('reacted');
-
-        function successCb(response) {
-          if (response.result === 'create') {
-            thisButt.classList.add('reacted');
-          } else {
-            thisButt.classList.remove('reacted');
-          }
-        }
-
-        var formData = new FormData();
-        formData.append('reactable_type', thisButt.dataset.reactableType);
-        formData.append('category', thisButt.dataset.category);
-        formData.append('reactable_id', thisButt.dataset.reactableId);
-
-        getCsrfToken()
-          .then(sendFetch('reaction-creation', formData))
-          .then(function (response) {
-            if (response.status === 200) {
-              response.json().then(successCb);
-            }
-          });
-      };
-    }
-  }, 200)
-</script>
