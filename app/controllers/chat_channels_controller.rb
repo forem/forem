@@ -13,6 +13,9 @@ class ChatChannelsController < ApplicationController
     elsif params[:state] == "pending"
       authorize ChatChannel
       render_pending_json_response
+    elsif params[:state] == "joining_request"
+      authorize ChatChannel
+      render_joining_request_json_response
     else
       skip_authorization
       render_channels_html
@@ -163,6 +166,12 @@ class ChatChannelsController < ApplicationController
     @unopened_ids = ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
       where(has_unopened_messages: true).where.not(status: %w[removed_from_channel left_channel]).pluck(:chat_channel_id)
     render json: { unopened_ids: @unopened_ids }
+  end
+
+  def render_joining_request_json_response
+    requested_memberships = current_user.chat_channel_memberships.includes(:chat_channel).
+      where(chat_channels: { discoverable: true }, role: "mod").pluck(:chat_channel_id).map { |membership_id| ChatChannel.find_by(id: membership_id).requested_memberships }
+    render json: { joining_requests: requested_memberships.flatten }
   end
 
   def render_channels_html
