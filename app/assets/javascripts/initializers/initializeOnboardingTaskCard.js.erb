@@ -8,8 +8,7 @@ function initializeOnboardingTaskCard() {
   if (localStorage.getItem('task-card-closed') === 'yes') { return }
 
   var taskCard = document.getElementsByClassName("onboarding-task-card")[0];
-
-  if (taskCard == null) { return }
+  if (taskCard == null) { return } // This guard against both null and undefined taskCard
 
   var createdAt = new Date(userData().created_at);
   var now = new Date();
