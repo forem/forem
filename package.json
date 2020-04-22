@@ -47,7 +47,7 @@
       "bundle exec rubocop --require rubocop-rspec --safe-auto-correct"
     ],
     "app/**/*.html.erb": [
-      "bundle exec erblint"
+      "bundle exec erblint --autocorrect"
     ],
     "*.json": [
       "prettier --write"

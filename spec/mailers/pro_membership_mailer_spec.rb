@@ -12,7 +12,7 @@ RSpec.describe ProMembershipMailer, type: :mailer do
         expect(email.subject).to eq("Your Pro Membership will expire in 7 days!")
         expect(email.to).to eq([user.email])
         expect(email.from).to eq([SiteConfig.default_site_email])
-        expect(email["from"].value).to eq("DEV Pro Memberships <#{SiteConfig.default_site_email}>")
+        expect(email["from"].value).to eq("#{ApplicationConfig['COMMUNITY_NAME']} Pro Memberships <#{SiteConfig.default_site_email}>")
       end
     end
 

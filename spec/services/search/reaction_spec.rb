@@ -50,16 +50,33 @@ RSpec.describe Search::Reaction, type: :service do
     end
 
     context "with a filter term" do
+      let(:tag_one) { create(:tag) }
+      let(:tag_two) { create(:tag) }
+
       it "filters by tag names" do
-        article1.tags << create(:tag, name: "ruby")
-        article2.tags << create(:tag, name: "python")
+        article1.tags << tag_one
+        article2.tags << tag_two
         index_documents([reaction1, reaction2])
-        query_params[:tag_names] = "ruby"
+        query_params[:tag_names] = [tag_one.name]
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]
         expect(reaction_docs.count).to eq(1)
         doc_ids = reaction_docs.map { |t| t.dig("id") }
         expect(doc_ids).to include(reaction1.id)
+      end
+
+      it "filters by multiple tag names when tag_boolean_mode is set to all" do
+        article1.tags << tag_one
+        article2.tags << tag_two
+        article2.tags << tag_one
+        index_documents([reaction1, reaction2])
+        query_params[:tag_names] = [tag_one.name, tag_two.name]
+        query_params[:tag_boolean_mode] = "all"
+
+        reaction_docs = described_class.search_documents(params: query_params)["reactions"]
+        expect(reaction_docs.count).to eq(1)
+        doc_ids = reaction_docs.map { |t| t.dig("id") }
+        expect(doc_ids).to include(reaction2.id)
       end
 
       it "filters by user_id" do
