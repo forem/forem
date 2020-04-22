@@ -30,6 +30,7 @@ module Authentication
       return current_user if current_user_identity_exists?
 
       user = proper_user(identity)
+
       user = if user.nil?
                build_user
              else
