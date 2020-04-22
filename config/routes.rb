@@ -296,7 +296,6 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root
-  get "/about" => "pages#about"
   get "/robots.:format" => "pages#robots"
   get "/api", to: redirect("https://docs.dev.to/api")
   get "/privacy" => "pages#privacy"
@@ -309,13 +308,11 @@ Rails.application.routes.draw do
   get "/rly" => "pages#rlyweb"
   get "/code-of-conduct" => "pages#code_of_conduct"
   get "/report-abuse" => "pages#report_abuse"
-  get "/faq" => "pages#faq"
   get "/welcome" => "pages#welcome"
   get "/challenge" => "pages#challenge"
   get "/checkin" => "pages#checkin"
   get "/badge" => "pages#badge"
   get "/💸", to: redirect("t/hiring")
-  get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
@@ -324,6 +321,15 @@ Rails.application.routes.draw do
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
+
+  # These routes are required by links in the sites and will need to be replaced by a db page
+  get "/about" => "pages#about"
+  get "/security", to: "pages#bounty"
+  get "/faq" => "pages#faq"
+  get "/community-moderation" => "pages#community_moderation"
+  get "/page/post-a-job" => "pages#post_a_job"
+  get "/tag-moderation" => "pages#tag_moderation"
+  get "/about-listings" => "pages#about_listings"
 
   # NOTE: can't remove the hardcoded URL here as SiteConfig is not available here, we should eventually
   # setup dynamic redirects, see <https://github.com/thepracticaldev/dev.to/issues/7267>
