@@ -1,0 +1,48 @@
+@import '../config/import';
+
+:root {
+  --layout-sidebar-width: 200px;
+  --layout-aside-width: 316px;
+  --layout-gap: #{$su-6};
+  --layout-padding: #{$su-4};
+
+  --layout-narrow-sidebar-width: 66px;
+}
+
+.crayons-article-form__actions {
+  background: var(--base-10);
+}
+
+.crayons-article-form {
+  background: var(--card-bg); // todo: replace with proper variable (?)
+
+  &__logo {
+    display: flex;
+    margin-left: $su-2;
+    @media (min-width: $breakpoint-m) {
+      margin-left: $su-4;
+    }
+
+    .logo {
+      width: 50px;
+      height: 40px;
+      padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
+      background: var(--logo-bg);
+      fill: var(--logo-color);
+      border-radius: $br-default;
+    }
+  }
+
+  &__organization,
+  &__cover {
+    margin-bottom: $su-6;
+  }
+
+  &__title {
+    margin-bottom: $su-2;
+  }
+
+  &__tags {
+    margin-bottom: $su-9;
+  }
+}

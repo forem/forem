@@ -1,5 +1,70 @@
 <%= javascript_include_tag "https://embed.runkit.com", defer: true %>
+<form class="crayons-article-form" id="article-form"
+  data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
+  data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
+  data-version="<%= version %>">
+  <div class="crayons-layout crayons-layout--article-form">
+    <div class="crayons-layout__narrow-sidebar">
+      <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
+    </div>
 
+    <div class="crayons-layout__content">
+      <% if organizations && organizations.size > 0 %>
+        <div class="crayons-article-form__organization">
+          Publish under an organization:
+          <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select">
+            <%= options_for_select({ "None" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
+          </select>
+        </div>
+      <% end %>
+
+      <% if version == "v2" %>
+        <div class="crayons-article-form__cover">
+          <button class="crayons-btn crayons-btn--secondary">Add a cover image</button>
+        </div>
+
+        <div class="crayons-article-form__title">
+          <input class="crayons-textfield crayons-textfield--ghost" type="text" value="<%= article.title %>" placeholder="New post title here..." name="title" />
+        </div>
+
+        <div class="crayons-article-form__tags">
+          <input type="text" class="crayons-textfield crayons-textfield--ghost" placeholder="Add up to 4 tags (no special characters)..." name="tags" value="<%= article.cached_tag_list %>" />
+        </div>
+
+        <div class="crayons-article-form__toolbar hidden">
+          toolbar
+        </div>
+      <% end %>
+
+      <div class="crayons-article-form__body">
+        <textarea class="crayons-textfield crayons-textfield--ghost" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
+      </div>
+    </div>
+
+    <div class="crayons-layout--aside">
+      <ul class="list-disc pl-6">
+        <li>Think of post title as super short description. Like an overview of the actual post in one short sentence...</li>
+        <li>Be specific :)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="crayons-article-form__actions">
+    <div class="crayons-layout crayons-layout--article-form">
+      <span></span>
+      <div class="crayons-layout__content">
+        <button class="crayons-btn crayons-btn--primary mr-2">Publish</button>
+        <button class="crayons-btn crayons-btn--secondary mr-2">Preview</button>
+        <button class="crayons-btn crayons-btn--secondary mr-2">Save draft</button>
+        <button class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2">
+          <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Options") %>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--
 <div class="articleformcontainer">
   <div class="articleform"
        id="article-form"
@@ -50,9 +115,25 @@
     </div>
   </div>
 </div>
+-->
 
 <style>
-  #footer-container {
+  body {
+    padding-top: 0;
+  }
+
+  .crayons-article-form {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  .crayons-layout--article-form {
+    flex: 1;
+  }
+
+  body > footer,
+  #top-bar {
     display: none
   }
 </style>

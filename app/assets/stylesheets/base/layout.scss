@@ -1,0 +1,47 @@
+@import '../config/import';
+
+:root {
+  --layout-sidebar-width: 200px;
+  --layout-aside-width: 316px;
+  --layout-gap: #{$su-6};
+  --layout-padding: #{$su-4};
+
+  --layout-narrow-sidebar-width: 66px;
+}
+
+.crayons-layout {
+  font-size: $fs-base; // todo: drop it when ready
+  width: 100%;
+  max-width: $site-width;
+  margin: 0 auto;
+
+  &__sidebar {
+  }
+
+  &__content {
+  }
+
+  &--max-l {
+    max-width: $breakpoint-l;
+  }
+}
+
+.crayons-layout--default {
+  @media (min-width: $breakpoint-s) {
+    display: grid;
+    grid-gap: var(--layout-gap);
+    grid-template-columns: var(--layout-sidebar-width) 1fr;
+    padding: var(--layout-padding);
+  }
+}
+
+.crayons-layout--article-form {
+  @media (min-width: $breakpoint-s) {
+    display: grid;
+    grid-gap: var(--layout-gap);
+    grid-template-columns: var(--layout-narrow-sidebar-width) 1fr var(
+        --layout-aside-width
+      );
+    padding: var(--layout-padding);
+  }
+}
