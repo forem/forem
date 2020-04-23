@@ -38,6 +38,8 @@ class ApplicationController < ActionController::Base
     params[:signed_in] = user_signed_in?.to_s
   end
 
+  # This method is used by Devise to decide which is the path to redirect
+  # the user to after a successful log in
   def after_sign_in_path_for(resource)
     if current_user.saw_onboarding
       path = request.env["omniauth.origin"] || stored_location_for(resource) || dashboard_path
