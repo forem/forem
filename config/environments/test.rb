@@ -76,17 +76,17 @@ end
 
 # Prevent false success statuses from Travis when the build fails. Code snippet from:
 # https://docs.travis-ci.com/user/common-build-problems/#ruby-rspec-returns-0-even-though-the-build-failed
-if defined?(RUBY_ENGINE) && RUBY_ENGINE == "ruby" && RUBY_VERSION >= "1.9"
-  module Kernel
-    alias __at_exit at_exit
-    def at_exit
-      __at_exit do
-        exit_status = $ERROR_INFO.status if $ERROR_INFO.is_a?(SystemExit)
-        yield
-        exit exit_status if exit_status # rubocop:disable Rails/Exit
-      end
-    end
-  end
-end
+# if defined?(RUBY_ENGINE) && RUBY_ENGINE == "ruby" && RUBY_VERSION >= "1.9"
+#   module Kernel
+#     alias __at_exit at_exit
+#     def at_exit
+#       __at_exit do
+#         exit_status = $ERROR_INFO.status if $ERROR_INFO.is_a?(SystemExit)
+#         yield
+#         exit exit_status if exit_status # rubocop:disable Rails/Exit
+#       end
+#     end
+#   end
+# end
 
 Rails.application.routes.default_url_options = { host: "test.host" }
