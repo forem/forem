@@ -74,6 +74,8 @@ Rails.application.configure do
   end
 end
 
+# Prevent false success statuses from Travis when the build fails. Code snippet from:
+# https://docs.travis-ci.com/user/common-build-problems/#ruby-rspec-returns-0-even-though-the-build-failed
 if defined?(RUBY_ENGINE) && RUBY_ENGINE == "ruby" && RUBY_VERSION >= "1.9"
   module Kernel
     alias __at_exit at_exit
