@@ -371,11 +371,7 @@ class StoriesController < ApplicationController
         "@id": URL.article(@article)
       },
       "url": URL.article(@article),
-      "image": [
-        ApplicationController.helpers.article_social_image_url(@article, width: 1080, height: 1080),
-        ApplicationController.helpers.article_social_image_url(@article, width: 1280, height: 720),
-        ApplicationController.helpers.article_social_image_url(@article, width: 1600, height: 900),
-      ],
+      "image": seo_optimized_images,
       "publisher": {
         "@context": "http://schema.org",
         "@type": "Organization",
@@ -398,6 +394,15 @@ class StoriesController < ApplicationController
       "datePublished": @article.published_timestamp,
       "dateModified": @article.edited_at&.iso8601 || @article.published_timestamp
     }
+  end
+
+  def seo_optimized_images
+    # This array of images exists for SEO optimization purposes.
+    # For more info on this structure, please refer to this documentation:
+    # https://developers.google.com/search/docs/data-types/article
+    [ApplicationController.helpers.article_social_image_url(@article, width: 1080, height: 1080),
+     ApplicationController.helpers.article_social_image_url(@article, width: 1280, height: 720),
+     ApplicationController.helpers.article_social_image_url(@article, width: 1600, height: 900)]
   end
 
   def set_organization_json_ld

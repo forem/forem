@@ -33,7 +33,7 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).to include html_variant.html
     end
 
-    it "Does not render variant when no variants published" do
+    it "does not render variant when no variants published" do
       html_variant = create(:html_variant, published: false, approved: true)
       get article.path + "?variant_version=1"
       expect(response.body).not_to include html_variant.html
@@ -54,14 +54,14 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).to include html_variant.html
     end
 
-    it "Does not render below article html variant for short article" do
+    it "does not render below article html variant for short article" do
       html_variant = create(:html_variant, published: true, approved: true, group: "article_show_below_article_cta")
       article.update_column(:body_markdown, rand(36**100).to_s(36).to_s) # ensure too short
       get article.path + "?variant_version=0"
       expect(response.body).not_to include html_variant.html
     end
 
-    it "Does not render below article variant when no variants published" do
+    it "does not render below article variant when no variants published" do
       html_variant = create(:html_variant, published: false, approved: true, group: "article_show_below_article_cta")
       get article.path + "?variant_version=0"
       expect(response.body).not_to include html_variant.html
@@ -85,14 +85,14 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).to include "title"
     end
 
-    it "redirect to appropriate page if user changes username" do
+    it "redirects to appropriate page if user changes username" do
       old_username = user.username
       user.update(username: "new_hotness_#{rand(10_000)}")
       get "/#{old_username}/#{article.slug}"
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
     end
 
-    it "redirect to appropriate page if user changes username twice" do
+    it "redirects to appropriate page if user changes username twice" do
       old_username = user.username
       user.update(username: "new_hotness_#{rand(10_000)}")
       user.update(username: "new_new_username_#{rand(10_000)}")
@@ -100,7 +100,7 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
     end
 
-    it "redirect to appropriate page if user changes username twice and go to middle username" do
+    it "redirects to appropriate page if user changes username twice and go to middle username" do
       user.update(username: "new_hotness_#{rand(10_000)}")
       middle_username = user.username
       user.update(username: "new_new_username_#{rand(10_000)}")
@@ -114,7 +114,7 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).to include('"canonical" href="' + article.canonical_url.to_s + '"')
     end
 
-    it "shodoes not render canonical url when not on article model" do
+    it "does not render canonical url when not on article model" do
       article = create(:article, with_canonical_url: false)
       get article.path
       expect(response.body).not_to include('"canonical" href="' + article.canonical_url.to_s + '"')
