@@ -130,12 +130,14 @@ class FollowUsers extends Component {
   render() {
     const { users, selectedUsers } = this.state;
     const { prev, slidesCount, currentSlideIndex } = this.props;
+    const canSkip = selectedUsers.length === 0;
 
     return (
       <div className="onboarding-main">
         <Navigation
           prev={prev}
           next={this.handleComplete}
+          canSkip={canSkip}
           slidesCount={slidesCount}
           currentSlideIndex={currentSlideIndex}
         />
