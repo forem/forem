@@ -74,34 +74,52 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "Social Media and Email",
+                       header: "Social Media",
                        state: "collapse",
                        target: "socialMediaBodyContainer",
                        expanded: "false"
                      } %>
           <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
             <div class="form-group">
-              <%= f.label :default_site_email %>
-              <%= f.email_field :default_site_email,
-                                class: "form-control",
-                                value: SiteConfig.default_site_email,
-                                placeholder: "email@staff.com" %>
-              <div class="alert alert-info">Email of the staff account</div>
-            </div>
-            <div class="form-group">
               <%= f.fields_for :social_media_handles do |social_media_field| %>
-                <% SiteConfig.social_media_handles.keys.each do |social_media_platform| %>
+                <% SiteConfig.social_media_handles.each do |platform, username| %>
                   <div>
-                    <%= social_media_field.label social_media_platform %>
-                    <%= social_media_field.text_field social_media_platform,
+                    <%= social_media_field.label platform %>
+                    <%= social_media_field.text_field platform,
                                                       class: "form-control",
-                                                      value: SiteConfig.social_media_handles[social_media_platform],
+                                                      value: SiteConfig.social_media_handles[platform],
                                                       placeholder: "" %>
-                    <div class="alert alert-info"><%= social_media_platform.capitalize %> Username</div>
+                    <div class="alert alert-info"><%= platform.capitalize %> Username</div>
                   </div>
                 <% end %>
               <% end %>
             </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "Emails",
+                       state: "collapse",
+                       target: "emailBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
+           <div class="form-group">
+             <%= f.fields_for :email_addresses do |email_field| %>
+               <% SiteConfig.email_addresses.each do |type, address| %>
+                 <div>
+                   <%= email_field.label type %>
+                   <%= email_field.text_field type,
+                                              class: "form-control",
+                                              value: SiteConfig.email_addresses[type],
+                                              placeholder: "" %>
+                   <div class="alert alert-info"><%= type.capitalize %> Email</div>
+                 </div>
+               <% end %>
+             <% end %>
+           </div>
           </div>
         </div>
 

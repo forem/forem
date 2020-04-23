@@ -14,9 +14,6 @@ export default class Onboarding extends Component {
     const url = new URL(window.location);
     const previousLocation = url.searchParams.get('referrer');
 
-    this.nextSlide = this.nextSlide.bind(this);
-    this.prevSlide = this.prevSlide.bind(this);
-
     const slides = [
       IntroSlide,
       FollowTags,
@@ -25,17 +22,23 @@ export default class Onboarding extends Component {
       EmailPreferencesForm,
     ];
 
-    this.slides = slides.map((SlideComponent) => (
-      <SlideComponent
-        next={this.nextSlide}
-        prev={this.prevSlide}
-        previousLocation={previousLocation}
-      />
-    ));
+    this.nextSlide = this.nextSlide.bind(this);
+    this.prevSlide = this.prevSlide.bind(this);
+    this.slidesCount = slides.length;
 
     this.state = {
       currentSlide: 0,
     };
+
+    this.slides = slides.map((SlideComponent, index) => (
+      <SlideComponent
+        next={this.nextSlide}
+        prev={this.prevSlide}
+        slidesCount={this.slidesCount}
+        currentSlideIndex={index}
+        previousLocation={previousLocation}
+      />
+    ));
   }
 
   nextSlide() {
@@ -46,6 +49,7 @@ export default class Onboarding extends Component {
         currentSlide: nextSlide,
       });
     } else {
+      // Redirect to the main feed at the end of onboarding.
       window.location.href = '/';
     }
   }

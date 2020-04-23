@@ -19,13 +19,20 @@ class SiteConfig < RailsSettings::Base
 
   # Social Media and Email
   field :staff_user_id, type: :integer, default: 1
-  field :default_site_email, type: :string, default: "yo@dev.to"
   field :social_media_handles, type: :hash, default: {
     twitter: nil,
     facebook: nil,
     github: nil,
     instagram: nil,
     twitch: nil
+  }
+
+  # Emails
+  field :email_addresses, type: :hash, default: {
+    default: "yo@dev.to",
+    business: "partners@dev.to",
+    privacy: "privacy@dev.to",
+    members: "members@dev.to"
   }
 
   # Authentication

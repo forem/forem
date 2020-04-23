@@ -16,10 +16,13 @@ module Api
       def index
         @classified_listings = ClassifiedListing.published.
           select(ATTRIBUTES_FOR_SERIALIZATION).
-          includes(:user, :organization, :taggings)
+          includes(:user, :organization, :taggings, :classified_listing_category)
 
-        @classified_listings = @classified_listings.where(category: params[:category]) if params[:category].present?
-
+        if params[:category].present?
+          category = ClassifiedListingCategory.find_by(slug: params[:category])
+          @classified_listings =
+            @classified_listings.where(classified_listing_category: category)
+        end
         @classified_listings = @classified_listings.order(bumped_at: :desc)
 
         per_page = (params[:per_page] || 30).to_i
@@ -51,8 +54,8 @@ module Api
       end
 
       ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id user_id organization_id title slug body_markdown
-        cached_tag_list category processed_html published
+        id user_id organization_id title slug body_markdown cached_tag_list
+        category classified_listing_category_id category processed_html published
       ].freeze
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
