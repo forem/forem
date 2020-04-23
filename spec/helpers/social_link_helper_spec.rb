@@ -16,7 +16,7 @@ describe SocialLinkHelper do
       end
     end
 
-    context "when user doesn\'t have a username" do
+    context "when user doesn't have a username" do
       before do
         allow(user).to receive(:twitter_username).and_return(nil)
       end
@@ -40,7 +40,7 @@ describe SocialLinkHelper do
       end
     end
 
-    context "when user doesn\'t have a username" do
+    context "when user doesn't have a username" do
       before do
         allow(user).to receive(:github_username).and_return(nil)
       end

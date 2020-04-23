@@ -40,5 +40,11 @@ RSpec.describe Internal::UsersQuery, type: :query do
 
       it { is_expected.to eq([user5, user2, user]) }
     end
+
+    context "when role is admin" do
+      let(:options) { { role: "admin" } }
+
+      it { is_expected.to eq([user5, user4]) }
+    end
   end
 end
