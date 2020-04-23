@@ -65,7 +65,7 @@ RSpec.describe "UserSettings", type: :request do
       it "renders CONNECT_WITH_TWITTER and user with only github identity" do
         user.identities.where(provider: "twitter").delete_all
         get "/settings"
-        expect(response.body).to include "CONNECT TWITTER ACCOUNT"
+        expect(response.body).to include "Connect Twitter Account"
       end
 
       it "renders does not render CONNECT_WITH_TWITTER if SiteConfig does not include Twitter auth" do
@@ -74,7 +74,7 @@ RSpec.describe "UserSettings", type: :request do
         SiteConfig.authentication_providers = ["github"]
         SiteConfig.clear_cache
         get "/settings"
-        expect(response.body).not_to include "CONNECT TWITTER ACCOUNT"
+        expect(response.body).not_to include "Connect Twitter Account"
         SiteConfig.authentication_providers = current_auth_value # restore prior value
       end
 

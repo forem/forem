@@ -1,8 +1,9 @@
 @import '../config/import';
 
 %form-styling {
+  --border-width: 1px;
   background-color: var(--form-bg);
-  border: 1px solid var(--form-border);
+  border: var(--border-width) solid var(--form-border);
   color: var(--body-color);
   appearance: none;
   -webkit-appearance: none;
@@ -29,7 +30,7 @@
 // Text inputs and textareas.
 .crayons-textfield {
   line-height: $lh-base;
-  padding: 0.5em;
+  padding: calc(0.5em - var(--border-width)) 0.5em;
   font-family: inherit;
   font-size: $fs-base;
   width: 100%;
@@ -179,5 +180,22 @@
     > .crayons-field:not(:last-child) {
       margin-right: $su-4;
     }
+  }
+}
+
+
+.crayons-color-selector {
+  @extend %form-styling;
+  padding: calc(0.5em - var(--border-width)) 0.5em;
+  height: 40px;
+
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+    height: $su-6;
+    width: $su-6;
+  }
+
+  &::-webkit-color-swatch {
+    border: 0;
   }
 }

@@ -3,8 +3,10 @@ module Articles
     include Rails.application.routes.url_helpers
     include CloudinaryHelper
 
-    def initialize(article)
+    def initialize(article, **options)
       @article = article
+      @height = options[:height] || 500
+      @width = options[:width] || 1000
     end
 
     SOCIAL_PREVIEW_MIGRATION_DATETIME = Time.zone.parse("2019-04-22T00:00:00Z")
@@ -14,8 +16,8 @@ module Articles
       if image.present?
         return cl_image_path(image,
                              type: "fetch",
-                             width: "1000",
-                             height: "500",
+                             width: height,
+                             height: width,
                              crop: "imagga_scale",
                              quality: "auto",
                              flags: "progressive",
@@ -29,7 +31,7 @@ module Articles
 
     private
 
-    attr_reader :article
+    attr_reader :article, :height, :width
 
     def legacy_article_social_image
       cache_key = "article-social-img-#{article}-#{article.updated_at.rfc3339}-#{article.comments_count}"
