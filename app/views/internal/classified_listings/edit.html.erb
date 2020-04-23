@@ -2,7 +2,7 @@
 
 <h2>Edit <%= link_to @classified_listing.title, "/listings/#{@classified_listing.category}/#{@classified_listing.slug}", target: "_blank", rel: "noopener" %></h2>
 
-<%= form_for [:internal, @classified_listing] do |form| %>
+<%= form_with model: [:internal, @classified_listing], method: :patch do |form| %>
   <div class="form-group">
     <%= form.label :title %>
     <%= form.text_field :title, size: 100, maxlength: 128, class: "form-control" %>
@@ -17,8 +17,8 @@
     <%= form.text_field :tag_list, value: @classified_listing.cached_tag_list, size: 100, class: "form-control" %>
   </div>
   <div class="form-group">
-    <%= form.label :category %>
-    <%= form.select :category, options_for_select(ClassifiedListing.select_options_for_categories.map(&:last), @classified_listing.category) %>
+    <%= form.label :classified_listing_category_id %>
+    <%= form.select :classified_listing_category_id, ClassifiedListing.select_options_for_categories %>
   </div>
   <div class="form-check">
     <%= form.check_box :published, checked: @classified_listing.published? %>
@@ -28,7 +28,7 @@
 <% end %>
 <hr class="mt-5">
 <div class="d-flex justify-content-start">
-  <%= form_for [:internal, @classified_listing] do |f| %>
+  <%= form_with model: [:internal, @classified_listing], method: :patch do |f| %>
     <input type="hidden" name="classified_listing[action]" value="bump" />
     <%= f.submit "Bump Listing ⏫", class: "btn btn-secondary" %>
   <% end %>

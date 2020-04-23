@@ -32,18 +32,6 @@ RSpec.describe ClassifiedListing, type: :model do
     end
   end
 
-  # TODO: remove this once we are live with the new ClassifiedListingCategory model
-  describe "classified listing category" do
-    it "automatically assigns a category on save" do
-      create(:classified_listing_category)
-
-      cl = build(:classified_listing, user_id: user.id)
-      cl.save
-      expect(cl).to be_valid
-      expect(cl.reload.classified_listing_category).to be_present
-    end
-  end
-
   describe "body html" do
     it "converts markdown to html" do
       expect(classified_listing.processed_html).to include("<p>")
@@ -100,15 +88,5 @@ RSpec.describe ClassifiedListing, type: :model do
       end
     end
   end
-
-  describe ".cost_by_category" do
-    it "returns the cost per category" do
-      expected_cost = described_class::CATEGORIES_AVAILABLE.dig("cfp", "cost")
-      expect(described_class.cost_by_category("cfp")).to eq(expected_cost)
-    end
-
-    it "returns 0 with invalid category" do
-      expect(described_class.cost_by_category("invalid")).to eq(0)
-    end
-  end
 end
+

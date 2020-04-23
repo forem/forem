@@ -4,6 +4,7 @@ class StoriesController < ApplicationController
       title path id user_id comments_count positive_reactions_count organization_id
       reading_time video_thumbnail_url video video_duration_in_minutes language
       experience_level_rating experience_level_rating_distribution cached_user cached_organization
+      classified_listing_category_id
     ],
     methods: %i[
       readable_publish_date cached_tag_list_array flare_tag class_name
@@ -331,7 +332,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_classified_listings
-    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
+    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :classified_listing_category_id, :slug, :bumped_at)
   end
 
   def set_user_json_ld
