@@ -126,7 +126,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     end
 
     it "shows correct articles count" do
-      expect(feed.top_articles_by_timeframe(timeframe: "week").count).to eq(1)
+      expect(feed.top_articles_by_timeframe(timeframe: "week").count).to eq(2)
       expect(page).to have_selector(".single-article-small-pic", count: 1)
     end
 
@@ -145,7 +145,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/month" }
 
       it "shows correct articles count" do
-        expect(feed.top_articles_by_timeframe(timeframe: "month").count).to eq(2)
+        expect(feed.top_articles_by_timeframe(timeframe: "month").count).to eq(3)
         expect(page).to have_selector(".single-article-small-pic", count: 2)
       end
 
@@ -166,7 +166,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/year" }
 
       it "shows correct articles count" do
-        expect(feed.top_articles_by_timeframe(timeframe: "year").count).to eq(3)
+        expect(feed.top_articles_by_timeframe(timeframe: "year").count).to eq(4)
         expect(page).to have_selector(".single-article-small-pic", count: 3)
       end
 
@@ -188,7 +188,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/infinity" }
 
       it "shows correct articles count" do
-        expect(feed.top_articles_by_timeframe(timeframe: "infinity").count).to eq(4)
+        expect(feed.top_articles_by_timeframe(timeframe: "infinity").count).to eq(5)
         expect(page).to have_selector(".single-article-small-pic", count: 4)
       end
 
@@ -211,7 +211,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/latest" }
 
       it "shows correct articles" do
-        expect(feed.top_articles_by_timeframe(timeframe: "latest").count).to eq(4)
+        expect(feed.latest_feed.count).to eq(5)
         expect(page).to have_selector(".single-article-small-pic", count: 4)
       end
 
