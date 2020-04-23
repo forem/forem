@@ -571,6 +571,11 @@ class User < ApplicationRecord
     errors.add(:mastodon_url, "is not a valid URL")
   end
 
+  # TODO: @practicaldev/sre: Remove this redundant method
+  def user
+    self
+  end
+
   def tag_keywords_for_search
     employer_name.to_s + mostly_work_with.to_s + available_for.to_s
   end
