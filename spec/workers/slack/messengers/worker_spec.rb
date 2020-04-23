@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe SlackBotPingWorker, type: :worker do
+RSpec.describe Slack::Messengers::Worker, type: :worker do
   let(:worker) { subject }
   let(:params) do
     {

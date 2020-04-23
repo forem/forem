@@ -36,7 +36,7 @@ RSpec.describe "feedback_messages", type: :request do
       end
 
       it "queues a slack message to be sent" do
-        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params
         end
       end
@@ -49,7 +49,7 @@ RSpec.describe "feedback_messages", type: :request do
       end
 
       it "queues a slack message to be sent" do
-        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params
         end
       end
@@ -70,7 +70,7 @@ RSpec.describe "feedback_messages", type: :request do
       end
 
       it "queues a slack message to be sent" do
-        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params
         end
       end
@@ -88,7 +88,7 @@ RSpec.describe "feedback_messages", type: :request do
       end
 
       it "queues a slack message to be sent" do
-        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           post feedback_messages_path, params: valid_abuse_report_params
         end
       end
