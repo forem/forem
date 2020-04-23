@@ -122,7 +122,7 @@ describe('<CommentSubscription />', () => {
       />,
     );
 
-    wrapper.find('ButtonGroup').find('button').first().simulate('click'); // Subscribe button
+    wrapper.find('ButtonGroup').find('button').last().simulate('click'); // Subscribe button
 
     expect(wrapper.state('subscriptionType')).toEqual(
       COMMENT_SUBSCRIPTION_TYPE.TOP,

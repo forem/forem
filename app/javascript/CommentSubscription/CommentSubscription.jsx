@@ -215,7 +215,7 @@ export class CommentSubscription extends Component {
                 });
               }}
             >
-              Subscribe
+              Done
             </Button>
           </Dropdown>
         )}
