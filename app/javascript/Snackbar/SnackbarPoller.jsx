@@ -70,26 +70,30 @@ export class SnackbarPoller extends Component {
 
         snackbarItems = [];
 
-        this.setState((prevState) => {
-          let updatedSnacks = [...prevState.snacks, ...newSnacks];
-
-          if (updatedSnacks.length > 3) {
-            const snacksToBeDiscarded = updatedSnacks.slice(
-              0,
-              updatedSnacks.length - 3,
-            );
-
-            snacksToBeDiscarded.forEach(({ lifespanTimeoutId }) => {
-              clearTimeout(lifespanTimeoutId);
-            });
-
-            updatedSnacks = updatedSnacks.slice(updatedSnacks.length - 3);
-          }
-
-          return { ...prevState, snacks: updatedSnacks };
-        });
+        this.updateSnackbarItems(newSnacks);
       }
     }, pollingTime);
+  }
+
+  updateSnackbarItems(newSnacks) {
+    this.setState((prevState) => {
+      let updatedSnacks = [...prevState.snacks, ...newSnacks];
+
+      if (updatedSnacks.length > 3) {
+        const snacksToBeDiscarded = updatedSnacks.slice(
+          0,
+          updatedSnacks.length - 3,
+        );
+
+        snacksToBeDiscarded.forEach(({ lifespanTimeoutId }) => {
+          clearTimeout(lifespanTimeoutId);
+        });
+
+        updatedSnacks = updatedSnacks.slice(updatedSnacks.length - 3);
+      }
+
+      return { ...prevState, snacks: updatedSnacks };
+    });
   }
 
   decreaseLifespan(snack) {
