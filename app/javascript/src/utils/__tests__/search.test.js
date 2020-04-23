@@ -16,8 +16,7 @@ describe('Search utilities', () => {
     describe(`When the querystring key 'q' has a value`, () => {
       test(`should return the querystring key q's value`, () => {
         const expected = 'hello';
-        // const querystring = `?q=${expected}`;
-        const querystring = '?q=testTravis';
+        const querystring = `?q=${expected}`;
         const actual = getInitialSearchTerm(querystring);
         expect(actual).toEqual(expected);
       });
