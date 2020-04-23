@@ -8,7 +8,10 @@ namespace :fastly do
     ]
 
     if fastly_credentials.any? { |cred| ApplicationConfig[cred].blank? }
-      puts "Fastly not configured. Please set #{fastly_credentials.join(", ")} in your environment."
+      Rails.logger.info(
+        "Fastly not configured. Please set #{fastly_credentials.join(", ")} in your environment."
+      )
+
       next
     end
 

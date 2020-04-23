@@ -50,5 +50,5 @@ you have configured in Fastly.
 Safe params on Fastly are updated automatically when a production deploy goes
 out unless this key is not set (i.e. you don't have a similar custom VCL setup).
 
-We do this by executing `bin/rails fastly:update_whitelisted_params` in our
+We do this by executing `bin/rails fastly:update_safe_params` in our
 `release-tasks.sh` script.
