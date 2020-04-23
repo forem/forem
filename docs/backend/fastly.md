@@ -42,8 +42,14 @@ _Fastly is not setup for development._
 
 ## In production
 
+If you have Fastly configured in Production and have a similar custom VCL script
+to whitelist query string params, make sure you've set the
+`FASTLY_WHITELIST_PARAMS_SNIPPET_NAME` ENV variable with the name of the VCL
+snippet you have configured in Fastly.
+
 Whitelisted params on Fastly are updated automatically when a production deploy
-goes out.
+goes out unless this key is not set (i.e. you don't have a similar custom VCL
+setup).
 
 We do this by executing `bin/rails fastly:update_whitelisted_params` in our
 `release-tasks.sh` script.

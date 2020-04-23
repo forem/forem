@@ -53,11 +53,16 @@ class ProfileForm extends Component {
   }
 
   render() {
-    const { prev } = this.props;
+    const { prev, slidesCount, currentSlideIndex } = this.props;
     const { profile_image_90, username, name } = this.user;
     return (
       <div className="onboarding-main">
-        <Navigation prev={prev} next={this.onSubmit} />
+        <Navigation
+          prev={prev}
+          next={this.onSubmit}
+          slidesCount={slidesCount}
+          currentSlideIndex={currentSlideIndex}
+        />
         <div className="onboarding-content about">
           <header className="onboarding-content-header">
             <h1 className="title">Build your profile</h1>
@@ -132,7 +137,9 @@ class ProfileForm extends Component {
 
 ProfileForm.propTypes = {
   prev: PropTypes.func.isRequired,
-  next: PropTypes.string.isRequired,
+  next: PropTypes.func.isRequired,
+  slidesCount: PropTypes.number.isRequired,
+  currentSlideIndex: PropTypes.func.isRequired,
 };
 
 export default ProfileForm;

@@ -1,5 +1,5 @@
 class DigestMailer < ApplicationMailer
-  default from: -> { "#{ApplicationConfig['COMMUNITY_NAME']} Digest <#{SiteConfig.default_site_email}>" }
+  default from: -> { "#{ApplicationConfig['COMMUNITY_NAME']} Digest <#{SiteConfig.email_addresses[:default]}>" }
 
   def digest_email(user, articles)
     @user = user
@@ -26,7 +26,7 @@ class DigestMailer < ApplicationMailer
 
   def email_end_phrase
     community_name = ApplicationConfig["COMMUNITY_NAME"]
-    # "more trending DEV posts" won the previous split test
+    # "more trending posts" won the previous split test
     # Included more often as per explore-exploit algorithm
     [
       "more trending #{community_name} posts",
