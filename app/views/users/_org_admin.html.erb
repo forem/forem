@@ -1,187 +1,200 @@
 <%= javascript_packs_with_chunks_tag "colorPreview", "clipboardCopy", defer: true %>
-
 <%= render "shared/webcomponents_loader_script" %>
 
-<style>
-  .primary-sticky-nav-author, .primary-sticky-nav-author-element {
-    border: 1px solid <%= HexComparer.new([user_colors(@organization)[:bg], user_colors(@organization)[:text]]).brightness(0.88) %> !important;
-    box-shadow: 3px 4px 0px <%= HexComparer.new([user_colors(@organization)[:bg], user_colors(@organization)[:text]]).brightness(0.88) %> !important;
-  }
+<div class="crayons-card grid gap-6 p-6 mb-6">
+  <h2>Organization Members</h2>
 
-  .primary-sticky-nav-author button {
-    background-color: <%= user_colors(@organization)[:bg] %> !important;
-    color: <%= user_colors(@organization)[:text] %> !important;
-  <% if user_colors(@organization)[:bg].downcase == "#ffffff" %>
-    border: 1px solid <%= user_colors(@organization)[:text] %> !important;
-  <% end %>
-  }
-</style>
-<div class="settings-org-members">
-  <h3>Organization Members</h3>
-  <% @org_organization_memberships.each do |org_membership| %>
-    <div class="settings-org-member-row <%= "settings-org-admin-row" if org_membership.type_of_user == "admin" %>">
-      <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
-      <div class="settings-org-member-actions">
-        <% if org_membership.user == @user && org_membership.type_of_user == "admin" %>
-          <button class="settings-org-member settings-org-member-admin-self">you (admin)</button>
-        <% elsif org_membership.user != @user && org_membership.type_of_user == "admin" %>
-          <button class="settings-org-member settings-org-member-admin-other">admin</button>
-          <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('Are you sure you want to take away admin status from #{org_membership.user.name}?');" do %>
-            <%= hidden_field_tag "user_id", org_membership.user_id %>
-            <%= hidden_field_tag "organization_id", @organization.id %>
-            <button class="settings-org-member settings-org-member-remove" title="Revoke admin status" type="submit">revoke admin status</button>
+  <div class="grid gap-2">
+    <% @org_organization_memberships.each do |org_membership| %>
+      <div class="crayons-card crayons-card--secondary p-4 flex items-center">
+        <p class="fw-medium flex-1">
+          <a href="<%= org_membership.user.path %>"><%= org_membership.user.name %></a>
+          <% if org_membership.user == @user %>
+            <span class="crayons-indicator">You</span>
           <% end %>
-        <% else %>
-          <button class="settings-org-member settings-org-member-admin-self">org member</button>
-          <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('Are you sure you want to give #{org_membership.user.name} admin status?');" do %>
-            <%= hidden_field_tag "user_id", org_membership.user_id %>
-            <%= hidden_field_tag "organization_id", @organization.id %>
-            <button class="settings-org-member settings-org-member-make-admin" title="Make admin" type="submit">make admin</button>
+
+          <% if org_membership.type_of_user == "admin" %>
+            <span class="crayons-indicator crayons-indicator--critical">Admin</span>
           <% end %>
-          <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('Are you sure you want remove #{org_membership.user.name} from the organization?');" do %>
-            <%= hidden_field_tag "user_id", org_membership.user_id %>
-            <%= hidden_field_tag "organization_id", @organization.id %>
-            <button class="settings-org-member settings-org-member-remove" title="Remove from org" type="submit">remove from org</button>
+        </p>
+
+        <div class="flex">
+          <% if org_membership.user == @user && org_membership.type_of_user == "admin" %>
+          <!-- TODO: ? -->
+          <% elsif org_membership.user != @user && org_membership.type_of_user == "admin" %>
+            <%= form_tag "/users/remove_org_admin", onsubmit: "return confirm('Are you sure you want to take away admin status from #{org_membership.user.name}?');" do %>
+              <%= hidden_field_tag "user_id", org_membership.user_id %>
+              <%= hidden_field_tag "organization_id", @organization.id %>
+              <button class="crayons-btn crayons-btn--secondary ml-2" title="Revoke admin status" type="submit">Revoke admin status</button>
+            <% end %>
+          <% else %>
+            <%= form_tag "/users/add_org_admin", onsubmit: "return confirm('Are you sure you want to give #{org_membership.user.name} admin status?');" do %>
+              <%= hidden_field_tag "user_id", org_membership.user_id %>
+              <%= hidden_field_tag "organization_id", @organization.id %>
+              <button class="crayons-btn crayons-btn--secondary ml-2" title="Make admin" type="submit">Make admin</button>
+            <% end %>
+            <%= form_tag "/users/remove_from_org", onsubmit: "return confirm('Are you sure you want remove #{org_membership.user.name} from the organization?');" do %>
+              <%= hidden_field_tag "user_id", org_membership.user_id %>
+              <%= hidden_field_tag "organization_id", @organization.id %>
+              <button class="crayons-btn crayons-btn--secondary ml-2" title="Remove from org" type="submit">Remove from org</button>
+            <% end %>
           <% end %>
-        <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <header>
+    <h3 class="mb-2">Grow the team</h3>
+    <p>Invite teammates by sending them the secret and the following instructions:</p>
+  </header>
+
+  <div class="crayons-card crayons-card--secondary p-4">
+    <ol class="list-decimal pl-6 mb-2">
+      <li>Sign up at
+        <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>">https://<%= ApplicationConfig["APP_DOMAIN"] %></a></li>
+      <li>Navigate to
+        <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization">https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization</a>
+      </li>
+      <li>Paste the secret code below and click <b>Join Organization</b></li>
+    </ol>
+    <p>
+      Your secret code is:
+      <clipboard-copy for="settings-org-secret" onclick="nextElementSibling.hidden = false">
+        <input type="text" class="ff-accent ff-s fw-medium" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="Organization secret (to be rotated regularly)">
+        <%= inline_svg_tag("copy.svg", aria: true, class: "crayons-icon", title: "Copy to clipboard") %>
+      </clipboard-copy>
+      <span class="copy-text-announcer" id="copy-text-announcer" role="alert" hidden>Copied to clipboard!</span>
+  </div>
+
+  <div class="flex items-center">
+    <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('Are you sure you want to generate a new secret? All outstanding secrets will be invalid.');" do %>
+      <%= hidden_field_tag "organization[id]", @organization.id %>
+      <button type="submit" class="crayons-btn crayons-btn--secondary">Generate new secret</button>
+    <% end %>
+    <p class="fw-medium color-accent-danger ml-3">You should rotate this regularly!</p>
+  </div>
+</div>
+
+<div class="crayons-card grid gap-6 p-6 mb-6">
+  <h2>Organization details</h2>
+
+  <%= form_for @organization, html: { class: "grid gap-6" } do |f| %>
+    <%= f.hidden_field :id %>
+    <div class="crayons-field">
+      <%= f.label :name, class: "crayons-field__label" %>
+      <%= f.text_field :name, maxlength: 50, class: "crayons-textfield", placeholder: "Acme Inc." %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :slug, "Username", class: "crayons-field__label" %>
+      <%= f.text_field :slug, maxlength: 18, minlength: 2, class: "crayons-textfield", placeholder: "acmeinc" %>
+      <p class="crayons-field__description">Your organization's URL is: <%= app_url(@organization.slug) %></p>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :profile_image, "Profile image *", class: "crayons-field__label" %>
+      <div class="flex items-center">
+          <span class="crayons-logo crayons-logo--xl mr-2">
+            <% if @organization.profile_image_url.present? %>
+              <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.profile_image_url, 50) %>" class="crayons-logo__image" />
+            <% end %>
+          </span>
+          <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1" %>
       </div>
     </div>
-  <% end %>
-  <h3>Grow the team</h3>
-  <h5>Invite teammates by sending them the secret and the following instructions:</h5>
-  <ol style="margin-bottom: 30px">
-    <li>Sign up at
-      <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>">https://<%= ApplicationConfig["APP_DOMAIN"] %></a></li>
-    <li>Navigate to
-      <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization">https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization</a>
-    </li>
-    <li>Paste the secret code below and click <b>Join Organization</b></li>
-  </ol>
-  <h5>Your secret: (You should rotate this regularly)</h5>
-  <clipboard-copy for="settings-org-secret" onclick="nextElementSibling.hidden = false">
-    <input type="text" class="settings-org-secret" id="settings-org-secret" value="<%= @organization.secret %>" readonly aria-label="Organization secret (to be rotated regularly)">
-    <%= image_tag "content-copy.svg", alt: "Copy to clipboard" %>
-  </clipboard-copy>
-  <span class="copy-text-announcer" id="copy-text-announcer" role="alert" hidden>
-    Copied to clipboard!
-  </span>
-  <%= form_tag "/organizations/generate_new_secret", onsubmit: "return confirm('Are you sure you want to generate a new secret? All outstanding secrets will be invalid.');" do %>
-    <%= hidden_field_tag "organization[id]", @organization.id %>
-    <button class="settings-generate-new-secret">Generate New Secret</button>
+
+    <div class="crayons-field">
+      <%= f.label :nav_image, "Logo for light themes", class: "crayons-field__label" %>
+      <div class="flex items-center">
+        <% if @organization.nav_image_url.present? %>
+          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= cloudinary(@organization.nav_image_url, 50) %>" />
+        <% end %>
+        <%= f.file_field :nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1" %>
+      </div>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :dark_nav_image, "Logo for dark themes", class: "crayons-field__label" %>
+      <div class="flex items-center">
+        <% if @organization.dark_nav_image_url.present? %>
+          <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= cloudinary(@organization.dark_nav_image_url, 50) %>" />
+        <% end %>
+        <%= f.file_field :dark_nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1" %>
+      </div>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :twitter_username, "Twitter username", class: "crayons-field__label" %>
+      <%= f.text_field :twitter_username, class: "crayons-textfield" %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :github_username, "GitHub username", class: "crayons-field__label" %>
+      <%= f.text_field :github_username, class: "crayons-textfield" %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :url, "Website url", class: "crayons-field__label" %>
+      <%= f.url_field :url, maxlength: 128, placeholder: "https://yoursite.com", class: "crayons-textfield" %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :tag_line, class: "crayons-field__label" %>
+      <%= f.text_field :tag_line, maxlength: 60, class: "crayons-textfield" %>
+      <p class="crayons-field__description">Limit of 60 characters</p>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :summary, class: "crayons-field__label" %>
+      <%= f.text_area :summary, maxlength: 250, class: "crayons-textfield" %>
+      <p class="crayons-field__description">Limit of 250 characters</p>
+    </div>
+
+    <%= render partial: "shared/logo_design", locals: { f: f, account: @organization_membership.organization } %>
+
+    <div class="crayons-field">
+      <%= f.label :location, class: "crayons-field__label" %>
+      <%= f.text_field :location, maxlength: 64, class: "crayons-textfield", placeholder: "Halifax, Nova Scotia" %>
+      <p class="crayons-field__description">Limit of 64 characters</p>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :email, "Support email", class: "crayons-field__label" %>
+      <%= f.text_field :email, maxlength: 64, placeholder: "mail@example.com", class: "crayons-textfield" %>
+      <p class="crayons-field__description">Limit of 64 characters</p>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :company_size, "Organization size", class: "crayons-field__label" %>
+      <%= f.text_field :company_size, maxlength: 7, placeholder: "...", class: "crayons-textfield" %>
+      <p class="crayons-field__description">Enter a number</p>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :story, "Our story", class: "crayons-field__label" %>
+      <%= f.text_area :story, maxlength: 640, placeholder: "...", class: "crayons-textfield" %>
+      <p class="crayons-field__description">Limit of 640 characters</p>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :tech_stack, "Our stack", class: "crayons-field__label" %>
+      <%= f.text_area :tech_stack, maxlength: 640, placeholder: "...", class: "crayons-textfield" %>
+      <p class="crayons-field__description">Limit of 640 characters</p>
+    </div>
+    <header>
+      <h3 class="mb-2">Call-to-action box</h3>
+      <p>
+        Customizable text that appears to the right of every post for your organization.
+        See an example from the <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/devteam/the-dev-badge-is-available-on-font-awesome-2ihe" target="_blank" rel="noopener">DEV Team</a>.
+      </p>
+    </header>
+    <div class="crayons-field">
+      <%= f.label :cta_body_markdown, "Body text", class: "crayons-field__label" %>
+      <%= f.text_area :cta_body_markdown, maxlength: 256, class: "crayons-textfield", placeholder: "..." %>
+      <p class="crayons-field__description">Limited markdown: _italic_ and **bold** is okay. Links, and headers etc. will not show up. 256 character limit.</p>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :cta_button_text, "Link text", class: "crayons-field__label" %>
+      <%= f.text_field :cta_button_text, maxlength: 20, placeholder: "Visit Acme Site", class: "crayons-textfield" %>
+      <p class="crayons-field__description">Limit of 20 characters</p>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :cta_button_url, "Link url", class: "crayons-field__label" %>
+      <%= f.text_field :cta_button_url, maxlength: 150, placeholder: "https://example.com", class: "crayons-textfield" %>
+    </div>
+
+    <div><button class="crayons-btn" type="submit">Save</button></div>
   <% end %>
 </div>
-<h3>Organization Details</h3>
-<%= form_for(@organization) do |f| %>
-<%= f.hidden_field :id %>
-  <div class="field">
-    <%= f.label :name %>
-    <%= f.text_field :name, maxlength: 50 %>
-  </div>
-  <div class="field">
-    <%= f.label :slug, "Username" %>
-    <%= f.text_field :slug, maxlength: 18, minlength: 2 %>
-    <i>Your organization's URL is: <%= app_url(@organization.slug) %></i>
-  </div>
-  <%= f.label :profile_image %>
-  <div class="field">
-    <% if @organization.profile_image_url.present? %>
-      <span class="image-present">
-        <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.profile_image_url, 50) %>" />
-        <%= f.file_field :profile_image %>
-      </span>
-    <% else %>
-      <%= f.file_field :profile_image %>
-    <% end %>
-  </div>
-  <%= f.label :nav_image, "Image for the light theme" %>
-  <div class="field">
-    <% if @organization.nav_image_url.present? %>
-      <span class="image-present">
-        <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.nav_image_url, 50) %>" />
-        <%= f.file_field :nav_image %>
-      </span>
-    <% else %>
-      <%= f.file_field :nav_image %>
-    <% end %>
-  </div>
-  <%= f.label :dark_nav_image, "Image for the dark theme" %>
-  <div class="field">
-    <% if @organization.dark_nav_image_url.present? %>
-      <span class="image-present">
-        <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.dark_nav_image_url, 50) %>" />
-        <%= f.file_field :dark_nav_image %>
-      </span>
-    <% else %>
-      <%= f.file_field :dark_nav_image %>
-    <% end %>
-  </div>
-  <div class="field">
-    <%= f.label :twitter_username, "Twitter Username" %>
-    <%= f.text_field :twitter_username %>
-  </div>
-  <div class="field">
-    <%= f.label :github_username, "Github Username" %>
-    <%= f.text_field :github_username %>
-  </div>
-  <div class="field">
-    <%= f.label :url, "Site url" %>
-    <%= f.url_field :url, maxlength: 128, placeholder: "https://yoursite.com" %>
-  </div>
-  <div class="field">
-    <%= f.label :tag_line %>
-    <%= f.text_field :tag_line, maxlength: 60, placeholder: "Limit of 60 characters" %>
-  </div>
-  <div class="field">
-    <%= f.label :summary %>
-    <%= f.text_area :summary, maxlength: 250, placeholder: "Limit of 250 characters" %>
-  </div>
-  <%= render partial: "shared/logo_design", locals: { f: f, account: @organization_membership.organization } %>
-  <div class="field">
-    <%= f.label :location %>
-    <%= f.text_field :location, maxlength: 64, placeholder: "Limit of 64 characters" %>
-  </div>
-  <div class="field">
-    <%= f.label :email, "Support Email" %>
-  <%= f.text_field :email, maxlength: 64, placeholder: "Limit of 64 characters" %>
-  </div>
-  <div class="field">
-    <%= f.label :company_size, "Organization Size" %>
-    <%= f.text_field :company_size, maxlength: 7, placeholder: "Enter a number" %>
-  </div>
-  <div class="field">
-    <%= f.label :story, "Our Story" %>
-    <%= f.text_area :story, maxlength: 640, placeholder: "Limit of 640 characters" %>
-  </div>
-  <div class="field">
-    <%= f.label :tech_stack, "Our Stack" %>
-    <%= f.text_area :tech_stack, maxlength: 640, placeholder: "Limit of 640 characters" %>
-  </div>
-  <h2>Call-to-action box</h2>
-  <h4>Customizable text that appears to the right of every post for your organization</h4>
-  <h4>See an example from the
-    <a
-      href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/devteam/the-dev-badge-is-available-on-font-awesome-2ihe"
-      target="_blank"
-      rel="noopener">DEV Team</a>.
-  </h4>
-  <div class="field">
-    <%= f.label :cta_body_markdown, "Body text (Limited markdown — bold/italic/etc)" %>
-    <%= f.text_area :cta_body_markdown, maxlength: 256, placeholder: "**This is an example**
-
-_italic_ and **bold** is okay. Links, and headers etc. will not show up.
-
-256 character limit." %>
-  </div>
-  <div class="field">
-    <%= f.label :cta_button_text, "Link Text" %>
-    <%= f.text_field :cta_button_text, maxlength: 20, placeholder: "Limit of 20 characters" %>
-  </div>
-  <div class="field">
-    <%= f.label :cta_button_url, "Link url" %>
-    <%= f.text_field :cta_button_url, maxlength: 150, placeholder: "https://example.com" %>
-  </div>
-  <div class="field">
-    <label></label>
-    <%= f.submit "SUBMIT", class: "cta" %>
-  </div>
-<% end %>

@@ -66,7 +66,7 @@ class IntroSlide extends Component {
   }
 
   render() {
-    const { prev } = this.props;
+    const { slidesCount, currentSlideIndex, prev } = this.props;
     const {
       checked_code_of_conduct,
       checked_terms_and_conditions,
@@ -165,6 +165,8 @@ class IntroSlide extends Component {
             disabled={this.isButtonDisabled()}
             className="intro-slide"
             prev={prev}
+            slidesCount={slidesCount}
+            currentSlideIndex={currentSlideIndex}
             next={this.onSubmit}
             hidePrev
           />
@@ -176,7 +178,9 @@ class IntroSlide extends Component {
 
 IntroSlide.propTypes = {
   prev: PropTypes.func.isRequired,
-  next: PropTypes.string.isRequired,
+  next: PropTypes.func.isRequired,
+  slidesCount: PropTypes.number.isRequired,
+  currentSlideIndex: PropTypes.func.isRequired,
 };
 
 export default IntroSlide;

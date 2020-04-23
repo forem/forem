@@ -1,82 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Onboarding /> ClosingSlide renders properly 1`] = `
-preact-render-spy (1 nodes)
--------
-<main class="onboarding-body">
-  <div class="onboarding-main">
-    <div class="onboarding-content">
-      <header class="onboarding-content-header">
-        <h1 class="title">
-          You‘re a part of the community!
-          <span
-            role="img"
-            aria-label="tada"
-          >
-             🎉
-          </span>
-        </h1>
-        <h2 class="subtitle">What next?</h2>
-      </header>
-      <div class="onboarding-what-next">
-        <a
-          href="/welcome"
-          data-no-instant={true}
-        >
-          <p>
-            <span
-              class="whatnext-emoji"
-              role="img"
-              aria-label="tada"
-            >
-              😊
-            </span>
-            Join the Welcome Thread
-          </p>
-        </a>
-        <a href="/new">
-          <p>
-            <span
-              class="whatnext-emoji"
-              role="img"
-              aria-label="tada"
-            >
-              ✍️
-            </span>
-            Write your first DEV post
-          </p>
-        </a>
-        <a href="/top/infinity">
-          <p>
-            <span
-              class="whatnext-emoji"
-              role="img"
-              aria-label="tada"
-            >
-              🤓
-            </span>
-            Read all-time top posts
-          </p>
-        </a>
-        <a href="/settings">
-          <p>
-            <span
-              class="whatnext-emoji"
-              role="img"
-              aria-label="tada"
-            >
-              💅
-            </span>
-            Customize your profile
-          </p>
-        </a>
-      </div>
-    </div>
-  </div>
-</main>
-
-`;
-
 exports[`<Onboarding /> EmailPreferencesForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
@@ -89,9 +12,24 @@ preact-render-spy (1 nodes)
           class="back-button"
           type="button"
         >
-          Back
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            class="crayons-icon"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M3.828 7H16v2H3.828l5.364 5.364-1.414 1.414L0 8 7.778.222l1.414 1.414L3.828 7z"></path>
+          </svg>
         </button>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+        </div>
         <button
+          disabled={false}
           onClick={[Function bound onSubmit]}
           class="next-button"
           type="button"
@@ -156,9 +94,24 @@ preact-render-spy (1 nodes)
           class="back-button"
           type="button"
         >
-          Back
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            class="crayons-icon"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M3.828 7H16v2H3.828l5.364 5.364-1.414 1.414L0 8 7.778.222l1.414 1.414L3.828 7z"></path>
+          </svg>
         </button>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot "></span>
+          <span class="dot "></span>
+          <span class="dot "></span>
+        </div>
         <button
+          disabled={false}
           onClick={[Function bound handleComplete]}
           class="next-button"
           type="button"
@@ -247,9 +200,24 @@ preact-render-spy (1 nodes)
           class="back-button"
           type="button"
         >
-          Back
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            class="crayons-icon"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M3.828 7H16v2H3.828l5.364 5.364-1.414 1.414L0 8 7.778.222l1.414 1.414L3.828 7z"></path>
+          </svg>
         </button>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot "></span>
+        </div>
         <button
+          disabled={false}
           onClick={[Function bound handleComplete]}
           class="next-button"
           type="button"
@@ -449,9 +417,24 @@ preact-render-spy (1 nodes)
           class="back-button"
           type="button"
         >
-          Back
+          <svg
+            width="16"
+            height="16"
+            fill="none"
+            class="crayons-icon"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M3.828 7H16v2H3.828l5.364 5.364-1.414 1.414L0 8 7.778.222l1.414 1.414L3.828 7z"></path>
+          </svg>
         </button>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot "></span>
+          <span class="dot "></span>
+        </div>
         <button
+          disabled={false}
           onClick={[Function bound onSubmit]}
           class="next-button"
           type="button"

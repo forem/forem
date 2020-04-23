@@ -530,8 +530,6 @@
 
   &__select {
     appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
     border: none;
     display: flex;
     align-items: center;
@@ -543,7 +541,6 @@
 
     &:hover
     &:active,
-    &:focus
     {
       background-color: var(--base-10);
     }

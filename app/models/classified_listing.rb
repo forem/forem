@@ -4,28 +4,13 @@ class ClassifiedListing < ApplicationRecord
   SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
   SEARCH_CLASS = Search::ClassifiedListing
 
-  # TODO: remove this once we are live with the new ClassifiedListingCategory model
-  CATEGORIES_AVAILABLE = {
-    cfp: { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form." },
-    forhire: { cost: 1, name: "Available for Hire", rules: "You are available for hire." },
-    collabs: { cost: 1, name: "Contributors/Collaborators Wanted", rules: "Projects looking for volunteers. Not job listings." },
-    education: { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps." },
-    jobs: { cost: 25, name: "Job Listings", rules: "Companies offering employment right now." },
-    mentors: { cost: 1, name: "Offering Mentorship", rules: "You are available to mentor someone." },
-    products: { cost: 5, name: "Products/Tools", rules: "Must be available right now." },
-    mentees: { cost: 1, name: "Seeking a Mentor", rules: "You are looking for a mentor." },
-    forsale: { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale." },
-    events: { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included." },
-    misc: { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
-  }.with_indifferent_access.freeze
-
-  # TODO: remove this once we are live with the new ClassifiedListingCategory model
-  before_validation :assign_classified_listing_category
-
   attr_accessor :action
 
-  # TODO: this is optional for now to ease the migration
-  belongs_to :classified_listing_category, optional: true
+  # This allows to create a listing from a catgory string.
+  # TODO: [mkohl] refactor once column was dropped.
+  before_validation :assign_classified_listing_category
+
+  belongs_to :classified_listing_category
   belongs_to :user
   belongs_to :organization, optional: true
   before_save :evaluate_markdown
@@ -39,10 +24,8 @@ class ClassifiedListing < ApplicationRecord
   validates :user_id, presence: true
   validates :organization_id, presence: true, unless: :user_id?
 
-  validates :title, presence: true,
-                    length: { maximum: 128 }
-  validates :body_markdown, presence: true,
-                            length: { maximum: 400 }
+  validates :title, presence: true, length: { maximum: 128 }
+  validates :body_markdown, presence: true, length: { maximum: 400 }
   validates :location, length: { maximum: 32 }
   validate :restrict_markdown_input
   validate :validate_tags
@@ -50,30 +33,36 @@ class ClassifiedListing < ApplicationRecord
 
   scope :published, -> { where(published: true) }
 
-  def self.cost_by_category(category)
-    categories_available.dig(category, :cost) || 0
-  end
-
-  def author
-    organization || user
-  end
-
+  # TODO: refactor this class method block
   def self.select_options_for_categories
-    categories_available.keys.map do |key|
-      category = categories_available[key]
-      cost = category[:cost]
-      ["#{category[:name]} (#{cost} #{'Credit'.pluralize(cost)})", key]
+    ClassifiedListingCategory.select(:id, :name, :cost).map do |cl|
+      ["#{cl.name} (#{cl.cost} #{'Credit'.pluralize(cl.cost)})", cl.id]
     end
   end
 
   def self.categories_for_display
-    categories_available.keys.map do |key|
-      { slug: key, name: categories_available[key][:name] }
+    ClassifiedListingCategory.pluck(:slug, :name).map do |slug, name|
+      { slug: slug, name: name }
     end
   end
 
   def self.categories_available
-    CATEGORIES_AVAILABLE
+    ClassifiedListingCategory.all.each_with_object({}) do |cat, h|
+      h[cat.slug] = cat.attributes.slice("cost", "name", "rules")
+    end.deep_symbolize_keys
+  end
+
+  def category
+    classified_listing_category&.slug
+  end
+
+  def cost
+    @cost = classified_listing_category&.cost ||
+      ClassifiedListingCategory.select(:cost).find_by(slug: category)&.cost
+  end
+
+  def author
+    organization || user
   end
 
   def path
@@ -104,23 +93,26 @@ class ClassifiedListing < ApplicationRecord
     errors.add(:body_markdown, "is not allowed to include liquid tags.") if markdown_string.include?("{% ")
   end
 
+  def validate_category
+    categories = ClassifiedListingCategory.pluck(:slug)
+    errors.add(:category, "not a valid category") unless category.in?(categories)
+  end
+
   def validate_tags
     errors.add(:tag_list, "exceed the maximum of 8 tags") if tag_list.length > 8
   end
 
-  def validate_category
-    errors.add(:category, "not a valid category") unless CATEGORIES_AVAILABLE[category]
-  end
-
   def create_slug
-    self.slug = title.to_s.downcase.parameterize.tr("_", "") + "-" + rand(100_000).to_s(26)
+    self.slug = "#{title.downcase.parameterize.delete('_')}-#{rand(100_000).to_s(26)}"
   end
 
   def assign_classified_listing_category
-    category_name = CATEGORIES_AVAILABLE.dig(attributes["category"], :name)
-    category = ClassifiedListingCategory.find_by(name: category_name)
+    return if classified_listing_category_id.present?
+
+    category = ClassifiedListingCategory.find_by(slug: attributes["category"])
     return unless category
 
+    self.category = category.slug
     self.classified_listing_category_id = category.id
   end
 end
