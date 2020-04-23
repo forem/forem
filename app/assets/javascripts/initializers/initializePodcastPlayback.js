@@ -106,6 +106,14 @@ function initializePodcastPlayback() {
     return navigator.userAgent === 'DEV-Native-ios';
   }
 
+  function isNativeAndroid() {
+    return (
+      navigator.userAgent === 'DEV-Native-android' &&
+      typeof AndroidBridge !== "undefined" &&
+      AndroidBridge !== null
+    );
+  }
+
   function saveMediaState(state) {
     var currentState = state || currentAudioState();
     var newState = newAudioState();
@@ -180,6 +188,8 @@ function initializePodcastPlayback() {
         action: 'load',
         url: audio.querySelector('source').src,
       });
+    } else if(isNativeAndroid()) {
+      AndroidBridge.loadPodcast(audio.querySelector('source').src);
     } else {
       audio.load();
     }
@@ -278,6 +288,9 @@ function initializePodcastPlayback() {
         });
         setPlaying(true);
         resolve();
+      } else if (isNativeAndroid()) {
+        console.log("WAT?");
+        AndroidBridge.playPodcast(currentState.currentTime.toString());
       } else {
         audio.currrentTime = currentState.currentTime;
         audio
@@ -336,6 +349,8 @@ function initializePodcastPlayback() {
   function pauseAudioPlayback(audio) {
     if (isNativeIOS()) {
       sendPodcastMessage({ action: 'pause' });
+    } else if (isNativeAndroid()) {
+      AndroidBridge.pausePodcast();
     } else {
       audio.pause();
     }
@@ -482,6 +497,8 @@ function initializePodcastPlayback() {
     saveMediaState(newAudioState());
     if (isNativeIOS()) {
       sendPodcastMessage({ action: 'terminate' });
+    } else if (isNativeAndroid()) {
+      AndroidBridge.terminatePodcast();
     }
   }
 
