@@ -7,5 +7,4 @@ json.array!(@response_templates) do |response_template|
     :title,
     :content,
   )
-  json.content_truncated truncate(response_template.content, length: 200)
 end
