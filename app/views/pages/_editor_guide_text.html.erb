@@ -63,7 +63,7 @@
     <p>or this:</p>
     <code>{% post kazz/boost-your-productivity-using-markdown-1be %}</code>
     <h3><strong><%= community_name %> User Embed</strong></h3>
-    <p>All you need is the DEV username:</p>
+    <p>All you need is the <%= community_name %> username:</p>
     <code>{% user jess %}</code>
     <h3><strong><%= community_name %> Tag Embed</strong></h3>
     <p>All you need is the tag name:</p>
@@ -331,6 +331,13 @@
           <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
         </ul>
         <pre>{% stackexchange <span style="color: aquamarine;">170185</span> <span style="color: orange;">diy</span> %}</pre>
+        </p>
+        <h3><strong>Wikipedia Embed</strong></h3>
+        <p>Enter the full URL of the Wikipedia article you want to embed, with or without the anchor.</p>
+        <p>
+          <code>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia %}</code>
+          <br/>
+          <code>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia#Diversity %}</code>
         </p>
         <h3><strong>Asciinema Embed</strong></h3>
         <p>All you need is the Asciinema id:</p>

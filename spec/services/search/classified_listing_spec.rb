@@ -31,9 +31,10 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
 
     context "with a term filter" do
       it "searches by category" do
-        classified_listing.update(category: "forhire")
+        new_category = create(:classified_listing_category, :cfp)
+        classified_listing.update(classified_listing_category_id: new_category.id)
         index_documents(classified_listing)
-        params = { size: 5, category: "forhire" }
+        params = { size: 5, category: new_category.slug }
 
         classified_listing_docs = described_class.search_documents(params: params)
         expect(classified_listing_docs.count).to eq(1)
@@ -121,8 +122,9 @@ RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
     end
 
     it "sorts documents for a given field" do
-      classified_listing.update(category: "forhire")
-      classified_listing2 = FactoryBot.create(:classified_listing, category: "cfp")
+      classified_listing = create(:classified_listing)
+      cfp = create(:classified_listing_category, :cfp)
+      classified_listing2 = create(:classified_listing, classified_listing_category_id: cfp.id)
       index_documents([classified_listing, classified_listing2])
       params = { size: 5, sort_by: "category", sort_direction: "asc" }
 

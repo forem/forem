@@ -19,6 +19,7 @@ Honeybadger.configure do |config|
     Pundit::NotAuthorizedError,
     ActiveRecord::RecordNotFound,
     ActiveRecord::QueryCanceled,
+    RateLimitChecker::LimitReached,
   ]
   config.request.filter_keys += %w[authorization]
   config.sidekiq.attempt_threshold = 10

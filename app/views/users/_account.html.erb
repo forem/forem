@@ -1,108 +1,112 @@
 <%= render "users/additional_authentication" %>
 
-<h2><%= community_name %> API Keys</h2>
-<p>You can generate personal API keys to use for authentication with the <%= community_name %> API. The API is still in early beta though. The <a href="https://docs.dev.to/api/"><%= community_name %> API documentation</a> contains further information.</a></p>
-<h3>Generate a new Key</h3>
-<%= form_tag users_api_secrets_path, method: :post do %>
-  <%= fields_for :api_secret do |api_secret| %>
-    <div class="field">
-      <%= api_secret.label(:description, "Description") %>
-      <%= api_secret.text_field(:description, placeholder: "What's this API key for?", required: true) %>
+<div class="crayons-card mb-6 p-6 grid gap-6">
+  <header>
+    <h2 class="mb-2"><%= community_name %> API Keys</h2>
+    <p>You can generate personal API keys to use for authentication with the <%= community_name %> API. The API is still in early beta though. The <a href="https://docs.dev.to/api/"><%= community_name %> API documentation</a> contains further information.</a></p>
+  </header>
+
+  <div>
+    <h3 class="mb-2">Generate a new Key</h3>
+    <%= form_tag users_api_secrets_path, method: :post do %>
+      <%= fields_for :api_secret do |api_secret| %>
+        <div class="crayons-field mb-6">
+          <%= api_secret.label(:description, "Description", class: "crayons-field__label") %>
+          <p class="crayons-field__description">What's this API key for?</p>
+          <%= api_secret.text_field(:description, placeholder: "My Project Name", required: true, class: "crayons-textfield") %>
+        </div>
+      <% end %>
+      <button class="crayons-btn crayon-btn--secondary" id="new__api__secret__btn" type="submit">Generate API Key</button>
+    <% end %>
+  </div>
+
+  <% unless @user.api_secrets.empty? %>
+    <div>
+      <h3>Active API keys (never share these!)</h3>
+
+      <% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
+        <details class="p-4 mt-2 crayons-card crayons-card--secondary">
+          <summary class="title fw-medium"><%= api_secret.description %></summary>
+          <div class="flex pt-2">
+            <div class="flex-1 pl-4">
+              <p class="ff-accent"><%= api_secret.secret %></p>
+              <p class="fs-s">Created: <time datetime="<%= api_secret.created_at.rfc3339 %>"><%= api_secret.created_at.to_s %></time></p>
+            </div>
+            <%= form_tag users_api_secret_path(api_secret.id), class: "api__secret__revoke", method: :delete do %>
+              <%= button_tag "Revoke", class: "crayons-btn crayons-btn--danger" %>
+            <% end %>
+          </div>
+        </details>
+      <% end %>
     </div>
   <% end %>
-  <button class="big-action cta" id="new__api__secret__btn" type="submit">
-    Generate API Key
-  </button>
-<% end %>
+</div>
 
-<h3>Active API keys (never share these!)</h3>
-<% if @user.api_secrets.empty? %>
-  <p>None yet!</p>
-<% end %>
+<div class="crayons-box crayons-box--danger p-6 grid gap-6">
+  <h2 class="color-accent-danger">Danger Zone</h2>
 
-<% @user.api_secrets.order(created_at: :desc).each do |api_secret| %>
-  <div class="api__secret__container">
-    <div class="api__secret__desc">
-      <details>
-        <summary class="title"><%= api_secret.description %></summary>
-        <p class="content"><%= api_secret.secret %></p>
-        <p class="subtitle">
-          Created: <time datetime="<%= api_secret.created_at.rfc3339 %>"><%= api_secret.created_at.to_s %></time>
-        </p>
-        <%= form_tag users_api_secret_path(api_secret.id), class: "api__secret__revoke", method: :delete do %>
-          <%= button_tag "Revoke", class: "big-action danger-button" %>
-        <% end %>
-      </details>
+  <% if @user.identities.size == 2 %>
+    <div class="grid gap-2">
+      <h3>Remove OAuth Associations</h3>
+      <p>You can remove one of your authentication methods. We'll still need one to authenticate you.</p>
+      <p>Removing an OAuth association will:</p>
+      <ul class="list-disc pl-6">
+        <li>remove your ability to sign in with that account</li>
+        <li>remove the associated URL from your profile</li>
+      </ul>
+      <p>
+        Note that this does not revoke our OAuth app access; you will have to do so in your
+        <a href="https://twitter.com/settings/applications">Twitter profile settings</a> or your
+        <a href="https://github.com/settings/applications">GitHub profile settings</a>.
+      </p>
     </div>
-  </div>
-<% end %>
 
-<h2 style="color: #ff0000;">Danger Zone</h2>
-<% if @user.identities.size == 2 %>
-  <h3>Remove OAuth Associations</h3>
-  <h4 style="font-weight:400;">
-    You can remove one of your authentication methods. We'll still need one to authenticate you.
-    <br>
-    <br>
-    Removing an OAuth association will:
-    <ul>
-      <li>remove your ability to sign in with that account</li>
-      <li>remove the associated URL from your profile</li>
-    </ul>
-    <strong>
-      Note that this does not revoke our OAuth app access; you will have to do so in your
-      <a href="https://twitter.com/settings/applications">Twitter profile settings</a> or your
-      <a href="https://github.com/settings/applications">GitHub profile settings</a>.
-    </strong>
-    <br>
-    <br>
     <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your Twitter account?');" do %>
       <%= hidden_field_tag :provider, "twitter" %>
-      <button class="big-action danger-button small-button" type="submit">
-        <img src="<%= asset_path("twitter-logo.svg") %>" alt="twitter logo"> REMOVE TWITTER
+      <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
+        <%= inline_svg_tag("twitter.svg", aria: true, class: "crayons-icon", title: "Twitter") %>
+        Remove Twitter
       </button>
     <% end %>
-    <br />
+
     <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your GitHub account?');" do %>
       <%= hidden_field_tag :provider, "github" %>
-      <button class="big-action danger-button small-button" type="submit">
-        <img src="<%= asset_path("github-logo.svg") %>" alt="github logo"> REMOVE GITHUB
+      <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
+        <%= inline_svg_tag("github.svg", aria: true, class: "crayons-icon", title: "Twitter") %>
+        Remove GitHub
       </button>
     <% end %>
-  </h4>
-<% end %>
-
-<h3>Delete Account</h3>
-<% if current_user.email? %>
-  <h4 style="font-weight:400;">
-    <%= form_tag user_request_destroy_path, method: :post, autocomplete: "off", id: "delete__account" do %>
-      Deleting your account will:
-      <ul class="delete__account">
-        <li>delete your profile, along with your Twitter and/or GitHub associations.
-          This does not include app permissions. You will have to remove them yourself on
-          <a href="https://twitter.com/settings/applications">Twitter profile settings</a> and
-          <a href="https://github.com/settings/applications">GitHub profile settings</a>.
-        </li>
-        <%# TODO: expand the delete messaging later %>
-        <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
-        <li>allow your username to become available to anyone.</li>
-      </ul>
-      <button class="big-action danger-button small-button" id="delete__account__btn" type="submit">
-        DELETE ACCOUNT
-      </button>
+  <% end %>
+  <div class="grid gap-2">
+    <h3>Delete Account</h3>
+    <% if current_user.email? %>
+      <%= form_tag user_request_destroy_path, method: :post, autocomplete: "off", id: "delete__account", class: "grid gap-2" do %>
+        <p>Deleting your account will:</p>
+        <ul class="list-disc pl-6">
+          <li>delete your profile, along with your Twitter and/or GitHub associations.
+            This does not include app permissions. You will have to remove them yourself on
+            <a href="https://twitter.com/settings/applications">Twitter profile settings</a> and
+            <a href="https://github.com/settings/applications">GitHub profile settings</a>.
+          </li>
+          <%# TODO: expand the delete messaging later %>
+          <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
+          <li>allow your username to become available to anyone.</li>
+        </ul>
+        <div><button class="crayons-btn crayons-btn--danger" id="delete__account__btn" type="submit">Delete Account</button></div>
+      <% end %>
+    <% else %>
+      <p>Please, <%= link_to "provide an email", "/settings/profile" %> to fully delete your account.</p>
     <% end %>
-  </h4>
-<% else %>
-  <p>Please, <%= link_to "provide an email", "/settings/profile" %> to fully delete your account.</p>
-<% end %>
+  </div>
 
-<% if current_user.articles_count.positive? || current_user.comments_count.positive? %>
-  <p>
-    If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account,
-    please <a href="mailto:<%= SiteConfig.default_site_email %>?subject=Request Account Deletion&body=<%= @email_body %>">click here.</a>
-  </p>
-<% end %>
+  <div>
+    <% if current_user.articles_count.positive? || current_user.comments_count.positive? %>
+      <p>
+        If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account,
+        please <a href="mailto:<%= SiteConfig.default_site_email %>?subject=Request Account Deletion&body=<%= @email_body %>">click here.</a>
+      </p>
+    <% end %>
 
-<p>
-  Feel free to contact <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> with any questions.
-</p>
+    <p>Feel free to contact <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> with any questions.</p>
+  </div>
+</div>
