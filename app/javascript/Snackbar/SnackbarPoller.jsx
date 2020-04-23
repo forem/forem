@@ -23,47 +23,7 @@ export class SnackbarPoller extends Component {
   resumeLifespan;
 
   componentDidMount() {
-    const { pollingTime, lifespan } = this.props;
-
-    this.pollingId = setInterval(() => {
-      if (snackbarItems.length > 0) {
-        // Need to add the lifespan to snackbar items because each second that goes by, we
-        // decrease the lifespan until it is no more.
-        const newSnacks = snackbarItems.map((snackbarItem) => ({
-          ...snackbarItem,
-          lifespan,
-        }));
-
-        newSnacks.forEach((snack) => {
-          // eslint-disable-next-line no-param-reassign
-          snack.lifespanTimeoutId = setTimeout(() => {
-            this.decreaseLifespan(snack);
-          }, 1000);
-        });
-
-        snackbarItems = [];
-
-        this.setState((prevState) => {
-          const { snacks } = prevState;
-          let updatedSnacks = [...snacks, ...newSnacks];
-
-          if (updatedSnacks.length > 3) {
-            const snacksToBeDiscarded = updatedSnacks.slice(
-              0,
-              updatedSnacks.length - 3,
-            );
-
-            snacksToBeDiscarded.forEach(({ lifespanTimeoutId }) => {
-              clearTimeout(lifespanTimeoutId);
-            });
-
-            updatedSnacks = updatedSnacks.slice(updatedSnacks.length - 3);
-          }
-
-          return { ...prevState, snacks: updatedSnacks };
-        });
-      }
-    }, pollingTime);
+    this.initializePolling();
   }
 
   componentDidUpdate() {
@@ -87,6 +47,49 @@ export class SnackbarPoller extends Component {
       this.element.base.removeEventListener('mouseover', this.pauseLifespan);
       this.element.base.addEventListener('mouseout', this.resumeLifespan);
     }
+  }
+
+  initializePolling() {
+    const { pollingTime, lifespan } = this.props;
+
+    this.pollingId = setInterval(() => {
+      if (snackbarItems.length > 0) {
+        // Need to add the lifespan to snackbar items because each second that goes by, we
+        // decrease the lifespan until it is no more.
+        const newSnacks = snackbarItems.map((snackbarItem) => ({
+          ...snackbarItem,
+          lifespan,
+        }));
+
+        newSnacks.forEach((snack) => {
+          // eslint-disable-next-line no-param-reassign
+          snack.lifespanTimeoutId = setTimeout(() => {
+            this.decreaseLifespan(snack);
+          }, 1000);
+        });
+
+        snackbarItems = [];
+
+        this.setState((prevState) => {
+          let updatedSnacks = [...prevState.snacks, ...newSnacks];
+
+          if (updatedSnacks.length > 3) {
+            const snacksToBeDiscarded = updatedSnacks.slice(
+              0,
+              updatedSnacks.length - 3,
+            );
+
+            snacksToBeDiscarded.forEach(({ lifespanTimeoutId }) => {
+              clearTimeout(lifespanTimeoutId);
+            });
+
+            updatedSnacks = updatedSnacks.slice(updatedSnacks.length - 3);
+          }
+
+          return { ...prevState, snacks: updatedSnacks };
+        });
+      }
+    }, pollingTime);
   }
 
   decreaseLifespan(snack) {
