@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import 'config/import';
 
 .unpublished {
   background: $red;
@@ -36,6 +37,11 @@
   right: 0;
   height: calc(100vh - 56px);
   z-index: 200;
+  transform: translateX(360px);
+  transition: $transition-props;
+  &.showing {
+    transform: initial;
+  }
 
   iframe {
     height: 100%;
