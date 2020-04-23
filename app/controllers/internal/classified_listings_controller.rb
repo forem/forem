@@ -42,6 +42,6 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
   end
 
   def include_unpublished?
-    params[:published] == "0"
+    params[:include_unpublished] == "1"
   end
 end
