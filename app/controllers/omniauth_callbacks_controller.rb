@@ -1,6 +1,4 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  LEGACY_COOKIE_NAME = "_PracticalDeveloper_session".freeze
-
   # Don't need a policy for this since this is our sign up/in route
   include Devise::Controllers::Rememberable
 
@@ -50,10 +48,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     )
 
     if user_persisted_and_valid?
-      # TODO: [thepracticaldev/oss] remove this
-      # delete legacy session based cookie once the user has logged in again
-      request.cookie_jar.delete(LEGACY_COOKIE_NAME) if request.cookies[LEGACY_COOKIE_NAME]
-
       remember_me(@user)
 
       set_flash_message(:notice, :success, kind: provider.to_s.capitalize) if is_navigational_format?

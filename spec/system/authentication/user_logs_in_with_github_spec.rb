@@ -124,6 +124,7 @@ RSpec.describe "Authenticating with GitHub" do
 
     context "when a validation failure occurrs" do
       before do
+        # A User is invalid if their name is more than 100 chars long
         OmniAuth.config.mock_auth[:github].extra.raw_info.name = "X" * 101
       end
 
