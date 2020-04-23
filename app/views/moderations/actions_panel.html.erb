@@ -20,32 +20,35 @@
       <h1>Other things you can do</h1>
     </header>
     <button class="adjust-tags" type="button">
-      <div class="icon circle centered-icon">
-        <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
+      <div class="label-wrapper">
+        <div class="icon circle centered-icon">
+          <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
+        </div>
+        <header>
+          <h2>Adjust tags</h2>
+          <h3>Add or remove tags</h3>
+        </header>
       </div>
-      <header>
-        <h2>Adjust tags</h2>
-        <h3>Add or remove tags</h3>
-      </header>
       <div class="toggle-chevron-container">
         <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
       </div>
     </button>
     <button class="set-experience" type="button">
-      <div class="icon circle centered-icon">
-        <%= inline_svg_tag("book.svg", aria: false) %>
-      </div>
+      <div class="label-wrapper">
+        <div class="icon circle centered-icon">
+          <%= inline_svg_tag("book.svg", aria: false) %>
+        </div>
         <header>
           <h2>Set experience level</h2>
           <h3>Curate the most appropriate audience for this post</h3>
         </header>
-        <div class="toggle-chevron-container">
-          <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
-        </div>
+      </div>
+      <div class="toggle-chevron-container">
+        <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
       </div>
     </button>
   </div>
-  <footer>
-    <%# Flag user %>
-  </footer>
+  <div class="bottom-actions">
+    <button type="button">Flag user</button>
+  </div>
 </div>
