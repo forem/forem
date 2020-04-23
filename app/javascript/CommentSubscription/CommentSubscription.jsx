@@ -230,5 +230,7 @@ CommentSubscription.propTypes = {
   positionType: PropTypes.oneOf(['absolute', 'relative', 'static']).isRequired,
   onSubscribe: PropTypes.func.isRequired,
   onUnsubscribe: PropTypes.func.isRequired,
-  subscriptionType: PropTypes.oneOf(COMMENT_SUBSCRIPTION_TYPE).isRequired,
+  subscriptionType: PropTypes.oneOf(
+    Object.entries(COMMENT_SUBSCRIPTION_TYPE).map(([, value]) => value),
+  ).isRequired,
 };
