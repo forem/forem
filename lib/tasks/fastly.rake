@@ -9,7 +9,7 @@ namespace :fastly do
 
     if fastly_credentials.any? { |cred| ApplicationConfig[cred].blank? }
       puts "Fastly not configured. Please set #{fastly_credentials.join(", ")} in your environment."
-      exit
+      next
     end
 
     FastlyVCL::WhitelistedParams.update
