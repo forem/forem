@@ -7,21 +7,23 @@ preact-render-spy (1 nodes)
   <div class="onboarding-main">
     <nav class="onboarding-navigation">
       <div class="navigation-content">
-        <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          <svg
-            width="16"
-            height="16"
-            fill="none"
-            class="crayons-icon"
-            xmlns="http://www.w3.org/2000/svg"
+        <div class="back-button-container">
+          <button
+            onClick={[Function bound prevSlide]}
+            class="back-button"
+            type="button"
           >
-            <path d="M3.828 7H16v2H3.828l5.364 5.364-1.414 1.414L0 8 7.778.222l1.414 1.414L3.828 7z"></path>
-          </svg>
-        </button>
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              class="crayons-icon"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z"></path>
+            </svg>
+          </button>
+        </div>
         <div class="stepper">
           <span class="dot active"></span>
           <span class="dot active"></span>
@@ -34,7 +36,7 @@ preact-render-spy (1 nodes)
           class="next-button"
           type="button"
         >
-          Continue
+          Finish
         </button>
       </div>
     </nav>
@@ -89,21 +91,23 @@ preact-render-spy (1 nodes)
   <div class="onboarding-main">
     <nav class="onboarding-navigation">
       <div class="navigation-content">
-        <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          <svg
-            width="16"
-            height="16"
-            fill="none"
-            class="crayons-icon"
-            xmlns="http://www.w3.org/2000/svg"
+        <div class="back-button-container">
+          <button
+            onClick={[Function bound prevSlide]}
+            class="back-button"
+            type="button"
           >
-            <path d="M3.828 7H16v2H3.828l5.364 5.364-1.414 1.414L0 8 7.778.222l1.414 1.414L3.828 7z"></path>
-          </svg>
-        </button>
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              class="crayons-icon"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z"></path>
+            </svg>
+          </button>
+        </div>
         <div class="stepper">
           <span class="dot active"></span>
           <span class="dot "></span>
@@ -113,10 +117,10 @@ preact-render-spy (1 nodes)
         <button
           disabled={false}
           onClick={[Function bound handleComplete]}
-          class="next-button"
+          class="next-button skip-for-now"
           type="button"
         >
-          Continue
+          Skip for now
         </button>
       </div>
     </nav>
@@ -195,21 +199,23 @@ preact-render-spy (1 nodes)
   <div class="onboarding-main">
     <nav class="onboarding-navigation">
       <div class="navigation-content">
-        <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          <svg
-            width="16"
-            height="16"
-            fill="none"
-            class="crayons-icon"
-            xmlns="http://www.w3.org/2000/svg"
+        <div class="back-button-container">
+          <button
+            onClick={[Function bound prevSlide]}
+            class="back-button"
+            type="button"
           >
-            <path d="M3.828 7H16v2H3.828l5.364 5.364-1.414 1.414L0 8 7.778.222l1.414 1.414L3.828 7z"></path>
-          </svg>
-        </button>
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              class="crayons-icon"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z"></path>
+            </svg>
+          </button>
+        </div>
         <div class="stepper">
           <span class="dot active"></span>
           <span class="dot active"></span>
@@ -219,10 +225,10 @@ preact-render-spy (1 nodes)
         <button
           disabled={false}
           onClick={[Function bound handleComplete]}
-          class="next-button"
+          class="next-button skip-for-now"
           type="button"
         >
-          Continue
+          Skip for now
         </button>
       </div>
     </nav>
@@ -412,21 +418,23 @@ preact-render-spy (1 nodes)
   <div class="onboarding-main">
     <nav class="onboarding-navigation">
       <div class="navigation-content">
-        <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          <svg
-            width="16"
-            height="16"
-            fill="none"
-            class="crayons-icon"
-            xmlns="http://www.w3.org/2000/svg"
+        <div class="back-button-container">
+          <button
+            onClick={[Function bound prevSlide]}
+            class="back-button"
+            type="button"
           >
-            <path d="M3.828 7H16v2H3.828l5.364 5.364-1.414 1.414L0 8 7.778.222l1.414 1.414L3.828 7z"></path>
-          </svg>
-        </button>
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              class="crayons-icon"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z"></path>
+            </svg>
+          </button>
+        </div>
         <div class="stepper">
           <span class="dot active"></span>
           <span class="dot active"></span>
@@ -436,10 +444,10 @@ preact-render-spy (1 nodes)
         <button
           disabled={false}
           onClick={[Function bound onSubmit]}
-          class="next-button"
+          class="next-button skip-for-now"
           type="button"
         >
-          Continue
+          Skip for now
         </button>
       </div>
     </nav>
