@@ -2,8 +2,9 @@ class RateLimitChecker
   attr_reader :user, :action
 
   RETRY_AFTER = {
-    published_article_creation: 30,
-    article_update: 30
+    article_update: 30,
+    image_upload: 30,
+    published_article_creation: 30
   }.with_indifferent_access.freeze
 
   def initialize(user = nil)
