@@ -327,7 +327,7 @@ GEM
       thor (~> 0.14)
     fix-db-schema-conflicts (3.0.3)
       rubocop (>= 0.38.0)
-    fog-aws (3.6.2)
+    fog-aws (3.6.3)
       fog-core (~> 2.1)
       fog-json (~> 1.1)
       fog-xml (~> 0.1)
