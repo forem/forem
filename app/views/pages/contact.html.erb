@@ -1,20 +1,20 @@
-<% title "Contact The Practical Dev" %>
+<% title "Contact #{community_qualified_name}" %>
 
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/contact") %>" />
-  <meta name="description" content="Contact The Practical Dev">
+  <meta name="description" content="Contact #{community_qualified_name}">
   <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/contact") %>" />
-  <meta property="og:title" content="Contact The Practical Dev" />
+  <meta property="og:title" content="Contact #{community_qualified_name}" />
   <meta property="og:image" content="<%= SiteConfig.main_social_image %>" />
   <meta property="og:description" content="<%= community_qualified_name %> is great!" />
   <meta property="og:site_name" content="<%= community_qualified_name %>" />
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:site" content="@<%= SiteConfig.social_media_handles["twitter"] %>">
-  <meta name="twitter:title" content="Contact The Practical Dev">
+  <meta name="twitter:title" content="Contact #{community_qualified_name}">
   <meta name="twitter:description" content="<%= community_qualified_name %> is great!">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
@@ -27,7 +27,7 @@
   </div>
   <div class="body">
     <p>
-      The Practical Dev would love to hear from you!
+      <%= community_qualified_name %> would love to hear from you!
     </p>
     <p>
       Email: <a href="mailto:<%= SiteConfig.email_addresses[:default] %>"><%= SiteConfig.email_addresses[:default] %></a> 😁
