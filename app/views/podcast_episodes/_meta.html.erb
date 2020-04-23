@@ -24,12 +24,12 @@
 <% else %>
   <% title "Podcasts" %>
   <%= content_for :page_meta do %>
-    <link rel="canonical" href="<%= app_url("/pod") %>" />
+    <link rel="canonical" href="<%= app_url(pod_path) %>" />
     <meta name="description" content="Discover technical podcasts for developers">
     <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
 
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="<%= app_url("/pod") %>" />
+    <meta property="og:url" content="<%= app_url(pod_path) %>" />
     <meta property="og:title" content="Podcasts on <%= community_qualified_name %>" />
     <meta property="og:image" content="http://i.imgur.com/e5tJ9L9.png">
 
