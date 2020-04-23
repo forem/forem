@@ -216,9 +216,14 @@
 
   // Reaction Buttons START
 
-  .thumb-reactions {
-    display: flex;
-    justify-content: center;
+  .reactions-container {
+    padding: $su-4;
+  }
+
+  .thumb-reactions-container {
+    display: grid;
+    grid-gap: 16px;
+    grid-template-columns: 1fr 1fr;
   }
 
   .reaction-button {
@@ -229,28 +234,21 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 156px;
     height: $su-10;
     padding: $su-4 $su-6;
-    margin: $su-4 $su-2 $su-4 $su-4;
     border-radius: $br-default;
-
-    &:last-child {
-      margin: $su-4 $su-4 $su-4 $su-2;
-    }
 
     &:hover {
       background: rgba(59, 73, 223, 0.05);
     }
-    &:active {
-      border: 0;
-    }
+
     &:hover .reaction-button-circle {
       border-color: var(--accent-brand);
     }
   }
 
   .reaction-button-circle {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -259,19 +257,28 @@
     height: $su-9;
     border: solid 2px var(--base-20);
     border-radius: 100%;
-    background: $white;
-  }
+    background: var(--base-inverted);
 
-  .reaction-button-circle img {
-    width: $su-7;
-  }
+    img {
+      width: $su-7;
+    }
 
-  img.upvote {
-    -webkit-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    -o-transform: rotate(180deg);
-    transform: rotate(180deg);
+    .reaction-checkmark {
+      opacity: 0;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: $su-5;
+      height: $su-5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--accent-success);
+      border-radius: 100%;
+      border: 2px solid var(--base-inverted);
+      padding: 2px;
+      color: var(--base-inverted);
+    }
   }
 
   .vote-text {
@@ -282,49 +289,24 @@
     color: var(--base-90);
   }
 
-  .reaction-checkmark {
-    opacity: 0;
-    position: absolute;
-    top: 63px;
-    left: 86px;
-    width: $su-5;
-    height: $su-5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--accent-success);
-    border-radius: 100%;
-    border: 2px solid $white;
-    padding: 2px;
-    z-index: 3;
-    color: $white;
-  }
-
-  .vomit-reaction-section,
-  .how-this-works-section {
-    display: flex;
-    justify-content: center;
-    margin: 0 $su-4 $su-4 $su-4;
-  }
-
   .reaction-vomit-button {
     display: flex;
+    justify-content: center;
     align-items: center;
     border: none;
-    background: $white;
+    background: var(--base-inverted);
     height: $su-7;
     padding: $su-1 $su-2;
+    margin: $su-4 auto;
     border-radius: $br-default;
 
     img {
-      position: absolute;
-      left: 107px;
+      margin-right: $su-2;
       width: $su-6;
       height: $su-6;
     }
 
     span {
-      margin-left: 35px;
       font-weight: $fw-medium;
       font-size: $fs-s;
       line-height: $lh-tight;
@@ -335,8 +317,10 @@
     }
 
     .vomit-checkmark {
-      width: 17px;
-      margin-left: 5px;
+      width: $su-5;
+      height: auto;
+      font-weight: $fw-heavy;
+      margin-left: $su-2;
       color: var(--accent-brand);
       display: none;
     }
@@ -344,6 +328,15 @@
     &:hover {
       background: rgba(59, 73, 223, 0.05);
     }
+  }
+
+  .how-this-works-section {
+    font-weight: $fw-medium;
+    font-size: $fs-xs;
+    line-height: $lh-base;
+    letter-spacing: -0.02em;
+    color: var(--base-70);
+    cursor: pointer;
   }
 
   .reaction-button.reacted {
@@ -354,7 +347,7 @@
     }
 
     .vote-text {
-      color: $white;
+      color: var(--base-inverted);
     }
 
     .reaction-checkmark {
@@ -369,14 +362,6 @@
       display: inline;
     }
 
-    .reaction-vomit-button span {
-      margin-left: 40px;
-    }
-
-    img {
-      left: 94px;
-    }
-
     span {
       color: var(--accent-brand);
 
@@ -384,15 +369,6 @@
         content: 'Marked as spam';
       }
     }
-  }
-
-  .how-this-works-section {
-    font-weight: $fw-medium;
-    font-size: $fs-xs;
-    line-height: $lh-base;
-    letter-spacing: -0.02em;
-    color: var(--base-70);
-    cursor: pointer;
   }
 
   .reaction-button .reacted-emoji,

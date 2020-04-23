@@ -30,33 +30,32 @@
     <hr />
   <% end %>
 
-  <div class="thumb-reactions">
-    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
-            data-reactable-id="<%= @moderatable.id %>"
-            data-category="thumbsup"
-            data-reactable-type="<%= @moderatable.class.name %>">
-      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
-      <div class="reaction-button-circle">
-        <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs up emoji", class: "emoji-grey upvote") %>
-        <img class="reacted-emoji upvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
-      </div>
-      <span class="vote-text">High Quality</span>
-    </button>
+  <div class="reactions-container">
+    <div class="thumb-reactions-container">
+      <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
+              data-reactable-id="<%= @moderatable.id %>"
+              data-category="thumbsup"
+              data-reactable-type="<%= @moderatable.class.name %>">
+        <div class="reaction-button-circle">
+          <%= image_tag("emoji/emoji-one-thumbs-up-gray.png", alt: "Thumbs up emoji", class: "emoji-grey") %>
+          <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-up.png") %>" alt="Thumbs up emoji" />
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+        </div>
+        <span class="vote-text">High Quality</span>
+      </button>
 
-    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
-            data-reactable-id="<%= @moderatable.id %>"
-            data-category="thumbsdown"
-            data-reactable-type="<%= @moderatable.class.name %>">
-      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
-      <div class="reaction-button-circle">
-        <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji", class: "emoji-grey") %>
-        <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
-      </div>
-      <span class="vote-text">Low Quality</span>
-    </button>
-  </div>
-
-  <div class="vomit-reaction-section">
+      <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
+              data-reactable-id="<%= @moderatable.id %>"
+              data-category="thumbsdown"
+              data-reactable-type="<%= @moderatable.class.name %>">
+        <div class="reaction-button-circle">
+          <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji", class: "emoji-grey") %>
+          <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+        </div>
+        <span class="vote-text">Low Quality</span>
+      </button>
+    </div>
     <button class="reaction-vomit-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.id %>"
             data-category="vomit"
@@ -66,8 +65,8 @@
       <span></span>
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: "Checkmark") %>
     </button>
+    <span class="how-this-works-section">How does this work?</span>
   </div>
-  <span class="how-this-works-section">How does this work?</span>
 
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
     <h3> <a href="<%= @moderatable.path %>/edit">Edit Post</a> |
