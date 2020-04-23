@@ -127,7 +127,7 @@
     "file-loader": "^6.0.0",
     "focus-visible": "^5.1.0",
     "honeybadger-js": "2.2.1",
-    "intersection-observer": "^0.8.0",
+    "intersection-observer": "^0.9.0",
     "linkstate": "^1.1.1",
     "lodash.debounce": "4.0.8",
     "marked": "^0.8.2",
