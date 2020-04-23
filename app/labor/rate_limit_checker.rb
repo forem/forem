@@ -38,7 +38,8 @@ class RateLimitChecker
   end
 
   def track_image_uploads
-    Rails.cache.increment("#{@user.id}_image_upload", 1, expires_in: 30.seconds)
+    expires_in = RETRY_AFTER[:image_upload].seconds
+    Rails.cache.increment("#{@user.id}_image_upload", 1, expires_in: expires_in)
   end
 
   def track_article_updates
