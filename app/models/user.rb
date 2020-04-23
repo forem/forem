@@ -528,7 +528,7 @@ class User < ApplicationRecord
   end
 
   def conditionally_resave_articles
-    Users::ResaveArticlesWorker.perform_async(id) if core_profile_details_changed? && !user.banned
+    Users::ResaveArticlesWorker.perform_async(id) if core_profile_details_changed? && !banned
   end
 
   def bust_cache
