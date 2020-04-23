@@ -130,7 +130,7 @@
     "intersection-observer": "^0.9.0",
     "linkstate": "^1.1.1",
     "lodash.debounce": "4.0.8",
-    "marked": "^0.8.2",
+    "marked": "^1.0.0",
     "postscribe": "^2.0.8",
     "preact": "^8.5.3",
     "preact-compat": "^3.19.0",
