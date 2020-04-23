@@ -3,9 +3,7 @@ class PodcastEpisode < ApplicationRecord
     duration_in_seconds
   ]
 
-  include AlgoliaSearch
   include Searchable
-
   SEARCH_SERIALIZER = Search::PodcastEpisodeSerializer
   SEARCH_CLASS = Search::FeedContent
 
@@ -44,47 +42,8 @@ class PodcastEpisode < ApplicationRecord
     joins(:podcast).where(podcasts: { creator_id: user.id })
   }
 
-  algoliasearch per_environment: true do
-    attribute :id
-    add_index "searchables",
-              id: :index_id,
-              per_environment: true do
-      attribute :title, :body, :quote, :summary, :subtitle, :website_url,
-                :published_at, :comments_count, :path, :class_name,
-                :user_name, :user_username, :published, :comments_blob,
-                :body_text, :tag_list, :tag_keywords_for_search,
-                :positive_reactions_count, :search_score
-      attribute :user do
-        { name: podcast.name,
-          username: user_username,
-          profile_image_90: ProfileImage.new(user).get(width: 90) }
-      end
-      searchableAttributes ["unordered(title)",
-                            "body_text",
-                            "tag_list",
-                            "tag_keywords_for_search",
-                            "user_name",
-                            "user_username",
-                            "comments_blob"]
-      attributesForFaceting [:class_name]
-      customRanking ["desc(search_score)", "desc(hotness_score)"]
-    end
-  end
-
   def search_id
     "podcast_episode_#{id}"
-  end
-
-  def user_username
-    podcast_slug
-  end
-
-  def user_name
-    podcast_title
-  end
-
-  def comments_blob
-    comments.pluck(:body_markdown).join(" ")
   end
 
   def path
@@ -93,20 +52,8 @@ class PodcastEpisode < ApplicationRecord
     "/#{podcast.slug}/#{slug}"
   end
 
-  def published_at_int
-    published_at.to_i
-  end
-
-  def published
-    true
-  end
-
   def description
     ActionView::Base.full_sanitizer.sanitize(body)
-  end
-
-  def main_image
-    nil
   end
 
   def profile_image_url
@@ -115,10 +62,6 @@ class PodcastEpisode < ApplicationRecord
 
   def body_text
     ActionView::Base.full_sanitizer.sanitize(processed_html)
-  end
-
-  def user
-    podcast
   end
 
   def zero_method
@@ -144,15 +87,7 @@ class PodcastEpisode < ApplicationRecord
   alias second_user_id nil_method
   alias third_user_id nil_method
 
-  def liquid_tags_used
-    []
-  end
-
   private
-
-  def index_id
-    "podcast_episodes-#{id}"
-  end
 
   def bust_cache
     PodcastEpisodes::BustCacheWorker.perform_async(id, path, podcast_slug)
