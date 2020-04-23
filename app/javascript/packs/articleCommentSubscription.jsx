@@ -36,6 +36,11 @@ const subscriptionRequestHandler = async (subscriptionType) => {
     // true means you're subscribed, false means unsubscribed
     const subscribed = await response.json();
 
+    if (typeof subscribed !== 'boolean') {
+      addSnackbarItem({ message: 'An error occurred, please try again' });
+      return;
+    }
+
     let message = 'You have been unsubscribed from comments for this article';
 
     if (subscribed) {
