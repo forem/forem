@@ -69,17 +69,19 @@ class Navigation extends Component {
           }`}
         >
           {!hidePrev && (
-            <button onClick={prev} className="back-button" type="button">
-              <svg
-                width="16"
-                height="16"
-                fill="none"
-                className="crayons-icon"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M3.828 7H16v2H3.828l5.364 5.364-1.414 1.414L0 8 7.778.222l1.414 1.414L3.828 7z" />
-              </svg>
-            </button>
+            <div className="back-button-container">
+              <button onClick={prev} className="back-button" type="button">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  className="crayons-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z" />
+                </svg>
+              </button>
+            </div>
           )}
 
           {this.createStepper()}
