@@ -141,7 +141,7 @@
       $button-size: 40px; // Explicitly set size for accessibility.
 
       border-radius: 100%;
-      width: $button-size;
+      min-width: $button-size;
       height: $button-size;
       align-items: center;
       display: flex;
