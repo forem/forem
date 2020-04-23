@@ -34,7 +34,7 @@ preact-render-spy (1 nodes)
           class="next-button"
           type="button"
         >
-          Continue
+          Finish
         </button>
       </div>
     </nav>

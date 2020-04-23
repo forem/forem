@@ -27,6 +27,26 @@ class Navigation extends Component {
     return <div className="stepper">{stepsList}</div>;
   }
 
+  /**
+   * A function to render the text for the "next-button" within the `Navigation` component.
+   * By default, it renders "Continue" for every slide.
+   * If the slide can be skipped, it renders "Skip for now".
+   * On the final slide, it renders "Finish".
+   *
+   * @returns {String} The HTML markup for the stepper.
+   */
+  buttonText() {
+    const { canSkip, currentSlideIndex, slidesCount } = this.props;
+    if (slidesCount - 1 === currentSlideIndex) {
+      return 'Finish';
+    }
+    if (canSkip) {
+      return 'Skip for now';
+    }
+
+    return 'Continue';
+  }
+
   render() {
     const {
       next,
@@ -71,7 +91,7 @@ class Navigation extends Component {
               className={`next-button${canSkip ? ' skip-for-now' : ''}`}
               type="button"
             >
-              {canSkip ? 'Skip for now' : 'Continue'}
+              {this.buttonText()}
             </button>
           )}
         </div>
