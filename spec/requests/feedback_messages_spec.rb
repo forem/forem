@@ -2,13 +2,13 @@ require "rails_helper"
 
 RSpec.describe "feedback_messages", type: :request do
   describe "POST /feedback_messages" do
-    # rubocop:disable RSpec/AnyInstance
-    def verify_captcha_and_slack_ping
-      allow_any_instance_of(FeedbackMessagesController).
-        to receive(:recaptcha_verified?).and_return(true)
-      allow(SlackClient).to receive(:ping).and_return(true)
+    def mock_recaptcha_verification
+      # rubocop:disable RSpec/AnyInstance
+      allow_any_instance_of(FeedbackMessagesController).to(
+        receive(:recaptcha_verified?).and_return(true),
+      )
+      # rubocop:enable RSpec/AnyInstance
     end
-    # rubocop:enable RSpec/AnyInstance
 
     valid_abuse_report_params = {
       feedback_message: {
@@ -21,7 +21,7 @@ RSpec.describe "feedback_messages", type: :request do
 
     context "with valid params" do
       before do
-        verify_captcha_and_slack_ping
+        mock_recaptcha_verification
       end
 
       it "creates a feedback message" do
@@ -59,8 +59,9 @@ RSpec.describe "feedback_messages", type: :request do
       let(:user) { create(:user) }
 
       before do
-        verify_captcha_and_slack_ping
-        sign_in(user)
+        mock_recaptcha_verification
+
+        sign_in user
       end
 
       it "creates a feedback message reported by the user" do
@@ -78,7 +79,7 @@ RSpec.describe "feedback_messages", type: :request do
 
     context "when an anonymous user submits a report" do
       before do
-        verify_captcha_and_slack_ping
+        mock_recaptcha_verification
       end
 
       it "does not add any user as the reporter" do
