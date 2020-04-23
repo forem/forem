@@ -15,7 +15,7 @@
 <% if params[:state] == "previous-registration" %>
   <div class="crayons-banner crayons-banner--error">
     There is an existing account authorized with that social account. Contact
-    <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if this is a mistake.
+    <a href="mailto:<%= SiteConfig.email_addresses[:default] %>"><%= SiteConfig.email_addresses[:default] %></a> if this is a mistake.
   </div>
 <% end %>
 
