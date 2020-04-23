@@ -87,14 +87,14 @@ gem "rouge", "~> 3.18" # A pure-ruby code highlighter
 gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip files
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sass-rails", "~> 6.0" # Sass adapter for the Rails asset pipeline
-gem "sidekiq", "~> 6.0.6" # Sidekiq is used to process background jobs with the help of Redis
+gem "sidekiq", "~> 6.0.7" # Sidekiq is used to process background jobs with the help of Redis
 gem "sidekiq-unique-jobs", "~> 6.0.21" # Ensures that Sidekiq jobs are unique when enqueued
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.17" # Ruby library for the Stripe API
+gem "stripe", "~> 5.18" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.6" # Catch unsafe migrations
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
