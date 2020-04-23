@@ -1,8 +1,7 @@
 import { h, render } from 'preact';
 import { CommentSubscription } from '../CommentSubscription/CommentSubscription';
-import { SnackbarPoller } from '../Snackbar';
+import { Snackbar, addSnackbarItem } from '../Snackbar';
 import { request } from '../utilities/http/request';
-import { addSnackbarItem } from '../Snackbar/SnackbarPoller';
 
 // TODO: Dynamic import only when user is logged on.
 
@@ -72,5 +71,5 @@ const subscriptionRequestHandler = async (subscriptionType) => {
 
   const snackZone = document.getElementById('snack-zone');
 
-  render(<SnackbarPoller />, snackZone, snackZone.firstElementChild);
+  render(<Snackbar />, snackZone, snackZone.firstElementChild);
 })();
