@@ -60,16 +60,17 @@ export class Snackbar extends Component {
           lifespan,
         }));
 
+        snackbarItems = [];
+
+        this.updateSnackbarItems(newSnacks);
+
+        // Start the lifespan countdowns for each new snackbar item.
         newSnacks.forEach((snack) => {
           // eslint-disable-next-line no-param-reassign
           snack.lifespanTimeoutId = setTimeout(() => {
             this.decreaseLifespan(snack);
           }, 1000);
         });
-
-        snackbarItems = [];
-
-        this.updateSnackbarItems(newSnacks);
       }
     }, pollingTime);
   }
