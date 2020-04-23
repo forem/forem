@@ -55,8 +55,7 @@ class ImageUploadsController < ApplicationController
 
   def valid_filename?
     images = Array.wrap(params.dig("image"))
-    invalid_image = images.detect { |image| long_filename?(image) }
-    invalid_image.nil?
+    images.none? { |image| long_filename?(image) }
   end
 
   def upload_images(images, rate_limiter)
