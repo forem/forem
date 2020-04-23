@@ -7,7 +7,6 @@ RSpec.describe BlackBox, type: :black_box do
     let!(:article) { build_stubbed(:article, published_at: Time.current) }
 
     it "calls function caller" do
-      raise "Foo"
       allow(function_caller).to receive(:call).and_return(5)
       described_class.article_hotness_score(article, function_caller)
       expect(function_caller).to have_received(:call).once
