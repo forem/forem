@@ -202,11 +202,17 @@
 </div>
 
 <script defer>
+  function clearThumbReactions(buttons) {
+    buttons.forEach((button) => {
+      button.classList.remove('reacted');
+    });
+  }
   setTimeout(function () {
     var butts = document.querySelectorAll('.reaction-button, .reaction-vomit-button');
     for (var i = 0; i < butts.length; i++) {
       var butt = butts[i];
       butt.onclick = function (event) {
+        clearThumbReactions(butts);
         event.preventDefault();
         var thisButt = this;
         thisButt.classList.add('reacted');
