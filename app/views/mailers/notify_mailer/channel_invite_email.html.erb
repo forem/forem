@@ -10,6 +10,10 @@
             <h2 style="font-size: 25px; text-align: center;">
               <%= link_to(@inviter.name, ApplicationController.helpers.user_url(@inviter)) %> sent you an invitation to join a Connect group on <%= community_name %>.
             </h2>
+          <% elsif @membership.status == "joining_request" %>
+            <h2 style="font-size: 25px; text-align: center;">
+              Your request to join <%= community_name %> has been accepted.
+            </h2>
           <% else %>
             <h2 style="font-size: 25px; text-align: center;">
               You have been invited to a Connect group on <%= community_name %>.

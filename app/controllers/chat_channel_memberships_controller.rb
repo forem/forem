@@ -116,10 +116,12 @@ class ChatChannelMembershipsController < ApplicationController
       channel_name = @chat_channel_membership.chat_channel.channel_name
       if previous_status == "pending"
         send_chat_action_message("@#{current_user.username} joined #{@chat_channel_membership.channel_name}", current_user, @chat_channel_membership.chat_channel_id, "joined")
+        flash[:settings_notice] = "Invitation to  #{channel_name} accepted. It may take a moment to show up in your list."
       else
         send_chat_action_message("@#{current_user.username} added @#{@chat_channel_membership.user.username}", current_user, @chat_channel_membership.chat_channel_id, "joined")
+        NotifyMailer.channel_invite_email(@chat_channel_membership, @chat_channel_membership.user).deliver_later
+        flash[:settings_notice] = "Accepted request of #{@chat_channel_membership.user.username} to join  #{channel_name}."
       end
-      flash[:settings_notice] = "Invitation to  #{channel_name} accepted. It may take a moment to show up in your list."
     else
       @chat_channel_membership.update(status: "rejected")
       flash[:settings_notice] = "Invitation rejected."

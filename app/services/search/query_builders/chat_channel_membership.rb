@@ -34,11 +34,9 @@ module Search
 
       def build_queries
         @body[:query] = {}
-        if !filter_conditions.select { |x| x[:term].key?(:channel_discoverable) }.empty?
-          @body[:query][:bool] = { filter: filter_conditions.reject! { |x| x[:term].key?(:viewable_by) || x[:term].key?(:status) }.push({ terms: { status: %w[active joining_request] } }) }
-
+        if @params[:user_id] == "all"
+          @body[:query][:bool] = { filter: [{ terms: { status: %w[active joining_request] } }, { term: { channel_discoverable: true } }] }
           @body[:query][:bool][:must] = query_conditions
-          @body[:query][:bool][:must_not] = filter_conditions.select { |x| x[:term].key?(:viewable_by) }
         else
           @body[:query][:bool] = { filter: filter_conditions }
           @body[:query][:bool][:must] = query_conditions if query_keys_present?
