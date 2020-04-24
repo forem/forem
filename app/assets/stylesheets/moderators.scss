@@ -222,7 +222,7 @@
 
   .thumb-reactions-container {
     display: grid;
-    grid-gap: 16px;
+    grid-gap: $su-4;
     grid-template-columns: 1fr 1fr;
   }
 
@@ -396,6 +396,7 @@
       padding: $su-3 $su-4;
       width: 100%;
       display: flex;
+      justify-content: space-between;
       .label-wrapper {
         display: flex;
         align-items: center;
@@ -429,6 +430,11 @@
         justify-content: center;
         align-items: center;
         align-self: center;
+        transition-duration: 0.4s;
+
+        &.rotated {
+          transform: rotateZ(-180deg);
+        }
       }
       &:hover {
         background-color: var(--base-inverted);
@@ -441,6 +447,63 @@
         header h2 {
           color: var(--accent-brand);
         }
+      }
+    }
+  }
+  .set-experience-options {
+    display: flex;
+    flex-direction: column;
+    padding: 0 $su-4;
+    transition-duration: 1s;
+
+    button.level-rating-button {
+      background: inherit;
+      border: none;
+      padding: $su-2 0.125rem;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+
+      &:hover {
+        background: rgba(59, 73, 223, 0.05);
+      }
+
+      .level-rating-content {
+        display: flex;
+
+        .level-rating-number {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-weight: $fw-heavy;
+          font-size: $fs-base;
+          line-height: $lh-base;
+          color: var(--base-100);
+          width: $su-6;
+        }
+
+        .level-rating-text {
+          font-weight: $fw-normal;
+          font-size: $fs-base;
+          line-height: $lh-base;
+          color: var(--base-90);
+        }
+      }
+
+      svg {
+        color: var(--accent-brand);
+        width: $su-5;
+        height: auto;
+        margin-right: $su-2;
+        align-self: center;
+        display: none;
+      }
+    }
+
+    .level-rating-button.selected {
+      background: rgba(59, 73, 223, 0.05);
+      svg {
+        display: inline;
       }
     }
   }
@@ -542,19 +605,6 @@
     box-sizing: boder-box;
     border-radius: 3px;
     border: 1px solid var(--card-color-tertiary);
-  }
-
-  .level-rating-button {
-    border-radius: 8px;
-    font-size: 1.1em;
-    padding: 3px;
-    width: 42px;
-    border: 2px solid black;
-    font-weight: bold;
-  }
-
-  .level-rating-button.selected {
-    background: #9bebff;
   }
 
   input.undo {
