@@ -58,8 +58,13 @@ const Channels = ({
         </button>
       );
     });
+  console.log(chatChannels);
   const channels = chatChannels
-    .filter((channel) => channel.viewable_by === currentUserId)
+    .filter(
+      (channel) =>
+        channel.viewable_by === currentUserId &&
+        channel.status !== 'joining_request',
+    )
     .map((channel) => {
       const isActive =
         parseInt(activeChannelId, 10) === channel.chat_channel_id;
@@ -125,9 +130,11 @@ const Channels = ({
       <div className="chatchannels__channelslistheader">
         <span role="img" aria-label="emoji">
           👋
-        </span>{' '}
+        </span>
+        {' '}
         Welcome to
-        <b> DEV Connect</b>! You may message anyone you mutually follow.
+        <b> DEV Connect</b>
+        ! You may message anyone you mutually follow.
       </div>
     );
   }
