@@ -9,8 +9,8 @@
     <div id="listingform-data"
       data-listing="<%= classified_listing.to_json(only: %i[id title body_markdown category cached_tag_list]) %>"
       data-organizations="<%= @organizations.to_json(only: %i[id name]) %>"
-      data-categories-for-select="<%= ClassifiedListing.select_options_for_categories.to_json %>"
-      data-categories-for-details="<%= ClassifiedListing.categories_available.transform_values { |value_hash| value_hash.except(:cost) }.values.to_json %>">
+      data-categories-for-select="<%= select_options_for_categories.to_json %>"
+      data-categories-for-details="<%= categories_available.transform_values { |value_hash| value_hash.except(:cost) }.values.to_json %>">
       <div style="height: 745px;">
         <div class="field">
           <%= form.label "title" %>

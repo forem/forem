@@ -34,7 +34,7 @@
         author: { only: %i[username name], methods: %i[username profile_image_90] }
       }
     ) %>"
-    data-allcategories="<%= ClassifiedListing.categories_for_display.to_json %>"
+    data-allcategories="<%= categories_for_display.to_json %>"
     <% if @displayed_classified_listing %>
       data-displayedlisting="<%= @displayed_classified_listing.to_json(
           only: %i[title processed_html tag_list category id user_id slug contact_via_connect location],
@@ -46,7 +46,7 @@
   >
     <div class="classified-filters">
     <div class="classified-filters-categories">
-      <a href="/listings" class="<%= "selected" if params[:category].blank? %> data-no-instant="true">all</a><% ClassifiedListing.categories_for_display.each do |cat| %><a href="/listings/<%= cat[:slug] %>" class="<%= "selected" if params[:category] == cat[:slug] %> data-no-instant="true"><%= cat[:name] %></a><% end %><a href='/listings/new' class='classified-create-link'>Create a Listing</a>
+      <a href="/listings" class="<%= "selected" if params[:category].blank? %> data-no-instant="true">all</a><% categories_for_display.each do |cat| %><a href="/listings/<%= cat[:slug] %>" class="<%= "selected" if params[:category] == cat[:slug] %> data-no-instant="true"><%= cat[:name] %></a><% end %><a href='/listings/new' class='classified-create-link'>Create a Listing</a>
       <% if @displayed_classified_listing %>
         <div class="classified-listings-modal-background" role='presentation'></div>
       <% end %>

@@ -11,7 +11,7 @@
         </div>
         <div class="form-group">
           <%= label_tag(:filter, "Category") %>
-          <%= select_tag(:filter, options_for_select([""] + ClassifiedListing.categories_available.keys, params[:filter])) %>
+          <%= select_tag(:filter, options_for_select([""] + categories_available.keys, params[:filter])) %>
         </div>
         <div class="form-group">
           <%= submit_tag("Filter") %>

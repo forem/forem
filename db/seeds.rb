@@ -381,10 +381,10 @@ Rails.logger.info "#{counter}. Creating Classified Listings"
 users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
 users = users_in_random_order.to_a
 
-listings_categories = ClassifiedListing.categories_available.keys
-listings_categories.each_with_index do |category, index|
+listings_categories = ClassifiedListingCategory.pluck(:slug)
+listings_categories.each.with_index(1) do |category, index|
   # rotate users if they are less than the categories
-  user = users.at((index + 1) % users.length)
+  user = users.at(index % users.length)
   2.times do
     ClassifiedListing.create!(
       user: user,

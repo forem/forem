@@ -312,8 +312,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
         post_classified_listing(listing_params)
         expect(response).to have_http_status(:created)
 
-        listing_cost = ClassifiedListing.categories_available[:cfp][:cost]
-        expect(user.credits.spent.size).to eq(listing_cost)
+        expect(user.credits.spent.size).to eq(cfp_category.cost)
       end
 
       it "creates a listing draft under the org" do
