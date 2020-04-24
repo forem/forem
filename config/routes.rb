@@ -47,11 +47,12 @@ Rails.application.routes.draw do
     resources :articles, only: %i[index show update]
     resources :broadcasts, only: %i[index new create edit update]
     resources :buffer_updates, only: %i[create update]
+    # TODO: [mkohl] Change this to a single resource definition
     resources :classified_listings, only: %i[index edit update destroy]
+    resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :comments, only: [:index]
     resources :events, only: %i[index create update]
     resources :feedback_messages, only: %i[index show]
-    resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
     resources :mods, only: %i[index update]
     resources :moderator_actions, only: %i[index]
@@ -159,6 +160,9 @@ Rails.application.routes.draw do
   resources :comments, only: %i[create update destroy] do
     patch "/hide", to: "comments#hide"
     patch "/unhide", to: "comments#unhide"
+    collection do
+      post "/moderator_create", to: "comments#moderator_create"
+    end
   end
   resources :comment_mutes, only: %i[update]
   resources :users, only: %i[index], defaults: { format: :json } # internal API
@@ -167,7 +171,7 @@ Rails.application.routes.draw do
   end
   resources :twitch_live_streams, only: :show, param: :username
   resources :reactions, only: %i[index create]
-  resources :response_templates, only: %i[create edit update destroy]
+  resources :response_templates, only: %i[index create edit update destroy]
   resources :feedback_messages, only: %i[index create]
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
@@ -231,6 +235,7 @@ Rails.application.routes.draw do
   get "/search/classified_listings" => "search#classified_listings"
   get "/search/users" => "search#users"
   get "/search/feed_content" => "search#feed_content"
+  get "/search/reactions" => "search#reactions"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
   get "/listings/:category" => "classified_listings#index"
@@ -320,7 +325,11 @@ Rails.application.routes.draw do
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
-  get "/shop", to: redirect("https://shop.dev.to/")
+
+  # NOTE: can't remove the hardcoded URL here as SiteConfig is not available here, we should eventually
+  # setup dynamic redirects, see <https://github.com/thepracticaldev/dev.to/issues/7267>
+  get "/shop", to: redirect("https://shop.dev.to")
+
   get "/mod" => "moderations#index", :as => :mod
   get "/mod/:tag" => "moderations#index"
   get "/page/crayons" => "pages#crayons"

@@ -65,7 +65,7 @@ RSpec.describe "UserSettings", type: :request do
       it "renders CONNECT_WITH_TWITTER and user with only github identity" do
         user.identities.where(provider: "twitter").delete_all
         get "/settings"
-        expect(response.body).to include "CONNECT TWITTER ACCOUNT"
+        expect(response.body).to include "Connect Twitter Account"
       end
 
       it "renders does not render CONNECT_WITH_TWITTER if SiteConfig does not include Twitter auth" do
@@ -74,7 +74,7 @@ RSpec.describe "UserSettings", type: :request do
         SiteConfig.authentication_providers = ["github"]
         SiteConfig.clear_cache
         get "/settings"
-        expect(response.body).not_to include "CONNECT TWITTER ACCOUNT"
+        expect(response.body).not_to include "Connect Twitter Account"
         SiteConfig.authentication_providers = current_auth_value # restore prior value
       end
 
@@ -149,6 +149,15 @@ RSpec.describe "UserSettings", type: :request do
       tags = hash_including(tags: instance_of(Array))
 
       expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
+    end
+
+    it "returns error if Profile image file name is too long" do
+      profile_image = fixture_file_upload("files/800x600.png", "image/png")
+      allow(profile_image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
+
+      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
+
+      expect(response).to have_http_status(:bad_request)
     end
 
     context "when requesting an export of the articles" do
@@ -265,7 +274,10 @@ RSpec.describe "UserSettings", type: :request do
     context "when user has two identities" do
       let(:user) { create(:user, :with_identity, identities: %w[github twitter]) }
 
-      before { sign_in user }
+      before do
+        mock_auth_hash
+        sign_in user
+      end
 
       it "brings the identity count to 1" do
         delete "/users/remove_association", params: { provider: "twitter" }
@@ -311,7 +323,7 @@ RSpec.describe "UserSettings", type: :request do
       it "sets the proper error message" do
         delete "/users/remove_association", params: { provider: "github" }
         expect(flash[:error]).
-          to eq "An error occurred. Please try again or send an email to: #{SiteConfig.default_site_email}"
+          to eq "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
       end
 
       it "does not delete any identities" do

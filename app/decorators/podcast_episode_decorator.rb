@@ -25,4 +25,13 @@ class PodcastEpisodeDecorator < ApplicationDecorator
 
     published_at.utc.iso8601
   end
+
+  def mobile_player_metadata
+    image_url = ApplicationController.helpers.cloudinary(podcast.image_url, 600)
+    {
+      podcastName: podcast.title,
+      episodeName: title,
+      podcastImageUrl: image_url
+    }
+  end
 end

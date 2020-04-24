@@ -14,7 +14,7 @@ export default class ImageManagement extends Component {
     };
   }
 
-  handleMainImageUpload = e => {
+  handleMainImageUpload = (e) => {
     e.preventDefault();
 
     this.clearUploadError();
@@ -28,7 +28,7 @@ export default class ImageManagement extends Component {
     }
   };
 
-  handleInsertionImageUpload = e => {
+  handleInsertionImageUpload = (e) => {
     this.clearUploadError();
 
     const validFileInputs = validateFileInputs();
@@ -43,13 +43,13 @@ export default class ImageManagement extends Component {
     }
   };
 
-  handleInsertImageUploadSuccess = response => {
+  handleInsertImageUploadSuccess = (response) => {
     this.setState({
       insertionImageUrls: response.links,
     });
   };
 
-  triggerMainImageRemoval = e => {
+  triggerMainImageRemoval = (e) => {
     e.preventDefault();
 
     const { onMainImageUrlChange } = this.props;
@@ -66,12 +66,21 @@ export default class ImageManagement extends Component {
     });
   };
 
-  onUploadError = error => {
+  onUploadError = (error) => {
     this.setState({
       insertionImageUrls: [],
       uploadError: true,
       uploadErrorMessage: error.message,
     });
+  };
+
+  execCopyText = () => {
+    this.imageMarkdownInput.setSelectionRange(
+      0,
+      this.imageMarkdownInput.value.length,
+    );
+    document.execCommand('copy');
+    this.imageMarkdownAnnouncer.hidden = false;
   };
 
   copyText = () => {
@@ -82,32 +91,39 @@ export default class ImageManagement extends Component {
       'image-markdown-copy-link-input',
     );
 
-    const isIOSDevice =
-      navigator.userAgent.match(/iPhone|iPad/i) ||
-      navigator.userAgent.match('CriOS') ||
-      navigator.userAgent === 'DEV-Native-ios';
+    const isNativeAndroid =
+      navigator.userAgent === 'DEV-Native-android' &&
+      typeof AndroidBridge !== 'undefined' &&
+      AndroidBridge !== null;
 
-    if (isIOSDevice) {
-      this.imageMarkdownInput.setSelectionRange(
-        0,
-        this.imageMarkdownInput.value.length,
-      );
-      document.execCommand('copy');
+    const isClipboardSupported =
+      typeof navigator.clipboard !== 'undefined' &&
+      navigator.clipboard !== null;
+
+    if (isNativeAndroid) {
+      AndroidBridge.copyToClipboard(this.imageMarkdownInput.value);
+      this.imageMarkdownAnnouncer.hidden = false;
+    } else if (isClipboardSupported) {
+      navigator.clipboard
+        .writeText(this.imageMarkdownInput.value)
+        .then(() => {
+          this.imageMarkdownAnnouncer.hidden = false;
+        })
+        .catch((err) => {
+          this.execCopyText();
+        });
     } else {
-      this.imageMarkdownInput.focus();
-      this.imageMarkdownInput.setSelectionRange(
-        0,
-        this.imageMarkdownInput.value.length,
-      );
+      this.execCopyText();
     }
-    this.imageMarkdownAnnouncer.hidden = false;
   };
 
-  linksToMarkdownForm = imageLinks => {
-    return imageLinks.map(imageLink => `![Alt Text](${imageLink})`).join('\n');
+  linksToMarkdownForm = (imageLinks) => {
+    return imageLinks
+      .map((imageLink) => `![Alt Text](${imageLink})`)
+      .join('\n');
   };
 
-  linksToDirectForm = imageLinks => {
+  linksToDirectForm = (imageLinks) => {
     return imageLinks.join('\n');
   };
 

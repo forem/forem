@@ -4,6 +4,7 @@ class StoriesController < ApplicationController
       title path id user_id comments_count positive_reactions_count organization_id
       reading_time video_thumbnail_url video video_duration_in_minutes language
       experience_level_rating experience_level_rating_distribution cached_user cached_organization
+      classified_listing_category_id
     ],
     methods: %i[
       readable_publish_date cached_tag_list_array flare_tag class_name
@@ -187,6 +188,7 @@ class StoriesController < ApplicationController
       limited_column_select.
       order("published_at DESC").page(@page).per(8))
     @organization_article_index = true
+    set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
   end
@@ -205,6 +207,7 @@ class StoriesController < ApplicationController
     return if performed?
 
     set_surrogate_key_header "articles-user-#{@user.id}"
+    set_user_json_ld
     render template: "users/show"
   end
 
@@ -271,6 +274,7 @@ class StoriesController < ApplicationController
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     assign_second_and_third_user
+    set_article_json_ld
     @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
@@ -328,6 +332,118 @@ class StoriesController < ApplicationController
   end
 
   def assign_classified_listings
-    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
+    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :classified_listing_category_id, :slug, :bumped_at)
+  end
+
+  def set_user_json_ld
+    @user_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.user(@user)
+      },
+      "url": URL.user(@user),
+      "sameAs": [],
+      "image": ProfileImage.new(@user).get(width: 320),
+      "name": @user.name,
+      "email": "",
+      "jobTitle": "",
+      "description": @user.summary.presence || "404 bio not found",
+      "disambiguatingDescription": [],
+      "worksFor": [
+        {
+          "@type": "Organization"
+        },
+      ],
+      "alumniOf": ""
+    }
+    set_user_profile_json_ld
+    set_user_same_as_json_ld
+  end
+
+  def set_article_json_ld
+    @article_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.article(@article)
+      },
+      "url": URL.article(@article),
+      "image": seo_optimized_images,
+      "publisher": {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "name": "#{ApplicationConfig['COMMUNITY_NAME']} Community",
+        "logo": {
+          "@context": "http://schema.org",
+          "@type": "ImageObject",
+          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, "png"),
+          "width": "192",
+          "height": "192"
+        }
+      },
+      "headline": @article.title,
+      "author": {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        "url": URL.user(@user),
+        "name": @user.name
+      },
+      "datePublished": @article.published_timestamp,
+      "dateModified": @article.edited_at&.iso8601 || @article.published_timestamp
+    }
+  end
+
+  def seo_optimized_images
+    # This array of images exists for SEO optimization purposes.
+    # For more info on this structure, please refer to this documentation:
+    # https://developers.google.com/search/docs/data-types/article
+    [ApplicationController.helpers.article_social_image_url(@article, width: 1080, height: 1080),
+     ApplicationController.helpers.article_social_image_url(@article, width: 1280, height: 720),
+     ApplicationController.helpers.article_social_image_url(@article, width: 1600, height: 900)]
+  end
+
+  def set_organization_json_ld
+    @organization_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.organization(@organization)
+      },
+      "url": URL.organization(@organization),
+      "image": ProfileImage.new(@organization).get(width: 320),
+      "name": @organization.name,
+      "description": @user.summary.presence || "404 bio not found"
+    }
+  end
+
+  def set_user_profile_json_ld
+    @user_json_ld[:disambiguatingDescription].append(@user.mostly_work_with) if @user.mostly_work_with.present?
+    @user_json_ld[:disambiguatingDescription].append(@user.currently_hacking_on) if @user.currently_hacking_on.present?
+    @user_json_ld[:disambiguatingDescription].append(@user.currently_learning) if @user.currently_learning.present?
+    @user_json_ld[:worksFor][0][:name] = @user.employer_name if @user.employer_name.present?
+    @user_json_ld[:worksFor][0][:url] = @user.employer_url if @user.employer_url.present?
+    @user_json_ld[:alumniOf] = @user.education if @user.education.present?
+    @user_json_ld[:email] = @user.email if @user.email_public
+    @user_json_ld[:jobTitle] = @user.employment_title if @user.employment_title.present?
+    @user_json_ld[:sameAs].append("https://twitter.com/#{@user.twitter_username}") if @user.twitter_username.present?
+    @user_json_ld[:sameAs].append("https://github.com/#{@user.github_username}") if @user.github_username.present?
+  end
+
+  def set_user_same_as_json_ld
+    @user_json_ld[:sameAs].append(@user.mastodon_url) if @user.mastodon_url.present?
+    @user_json_ld[:sameAs].append(@user.facebook_url) if @user.facebook_url.present?
+    @user_json_ld[:sameAs].append(@user.linkedin_url) if @user.linkedin_url.present?
+    @user_json_ld[:sameAs].append(@user.behance_url) if @user.behance_url.present?
+    @user_json_ld[:sameAs].append(@user.stackoverflow_url) if @user.stackoverflow_url.present?
+    @user_json_ld[:sameAs].append(@user.dribbble_url) if @user.dribbble_url.present?
+    @user_json_ld[:sameAs].append(@user.medium_url) if @user.medium_url.present?
+    @user_json_ld[:sameAs].append(@user.gitlab_url) if @user.gitlab_url.present?
+    @user_json_ld[:sameAs].append(@user.instagram_url) if @user.instagram_url.present?
+    @user_json_ld[:sameAs].append(@user.twitch_username) if @user.twitch_username.present?
+    @user_json_ld[:sameAs].append(@user.website_url) if @user.website_url.present?
   end
 end

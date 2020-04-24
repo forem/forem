@@ -13,6 +13,15 @@ const frontPageFeedPathNames = new Map([
   ['/latest', 'latest'],
 ]);
 
+const mainNavMoreTrigger = document.getElementById('main-nav-more-trigger');
+function toggleMainNavMore() {
+  document.getElementById('main-nav-more').classList.remove('hidden');
+  mainNavMoreTrigger.classList.add('hidden');
+}
+if (mainNavMoreTrigger) {
+  mainNavMoreTrigger.addEventListener('click', toggleMainNavMore);
+}
+
 function toggleListingsMinimization() {
   if (document.body.classList.contains('config_minimize_newest_listings')) {
     // Un-minimize

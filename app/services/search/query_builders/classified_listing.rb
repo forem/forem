@@ -63,7 +63,7 @@ module Search
         TERM_KEYS.map do |term_key|
           next unless @params.key? term_key
 
-          { term: { term_key => @params[term_key] } }
+          { terms: { term_key => Array.wrap(@params[term_key]) } }
         end.compact
       end
 

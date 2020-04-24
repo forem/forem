@@ -1,5 +1,5 @@
 function buildArticleHTML(article) {
-  if (article && article.type_of == "podcast_episodes") {
+  if (article && article.class_name == "PodcastEpisode") {
     return '<div class="single-article single-article-small-pic single-article-single-podcast">\
       <div class="small-pic">\
        <a href="/'+article.podcast.slug+'" class="small-pic-link-wrapper">\
@@ -44,24 +44,40 @@ function buildArticleHTML(article) {
     if (article.class_name == "PodcastEpisode"){
       flareTag = "<span class='tag-identifier'>podcast</span>"
     }
+    if (article.class_name == "Comment"){
+      flareTag = "<span class='tag-identifier'>comment</span>"
+    }
     if (article.class_name == "User"){
       flareTag = "<span class='tag-identifier' style='background:#5874d9;color:white;'>person</span>"
     }
     
-    var rc = article.positive_reactions_count || article.reactions_count
+    var rc = article.positive_reactions_count
     var reactionsCount = (rc || '0')
     var reactionsDisplay = ''
 
-    if (article.class_name != "User") {
+    var reactionsCountHTML = ''
+    if ((rc || '0') > 0 && article.class_name != "User") {
       var reactionsDisplay = '<a href="'+article.path+'" class="crayons-story__details__item"><svg class="crayons-icon mr-1" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"/></svg>'+reactionsCount+'<span class="hidden s:inline">&nbsp;reactions</span></a>'
     }
 
 
-    var picUrl = article.user.profile_image_90
-    var profileUsername = article.user.username
+    var picUrl;
+    var profileUsername;
+    var userName;
+    if (article.class_name == "PodcastEpisode"){
+      picUrl = article.main_image;
+      profileUsername = article.slug;
+      userName = article.title;
+    } else {
+      picUrl = article.user.profile_image_90;
+      profileUsername = article.user.username;
+      userName = article.user.name;
+    }
     var forOrganization = "";
     var organizationLogo = "";
     var organizationClasses = "crayons-avatar--l";
+    var orgHeadline = "";
+
     if (article.organization && !document.getElementById("organization-article-index")) {
       var organizationLogo = '<a href="/'+article.organization.slug+'" class="crayons-logo crayons-logo--l"><img alt="'+article.organization.name+' logo" src="'+article.organization.profile_image_90+'" class="crayons-logo__image" loading="lazy"/></a>';
       var forOrganization = '<span><span class="crayons-story__tertiary fw-normal"> for </span><a href="/'+article.organization.slug+'" class="crayons-story__secondary fw-medium">'+article.organization.name+'</a></span>';
@@ -86,7 +102,7 @@ function buildArticleHTML(article) {
       </div>\
       <div>\
         <p>\
-          <a href="/'+profileUsername+'" class="crayons-story__secondary fw-medium">'+filterXSS(article.user.name)+'</a>\
+          <a href="/'+profileUsername+'" class="crayons-story__secondary fw-medium">'+filterXSS(userName)+'</a>\
           '+forOrganization+'\
         </p>\
         <a href="'+article.path+'" class="crayons-story__tertiary fs-xs">\
@@ -96,27 +112,16 @@ function buildArticleHTML(article) {
     </div>';
 
     var bodyTextSnippet = "";
-    var commentsBlobSnippet = "";
     var searchSnippetHTML = "";
-    if (article._snippetResult && article._snippetResult.body_text){
-      if (article._snippetResult.body_text.matchLevel != "none"){
-        var firstSnippetChar = article._snippetResult.body_text.value[0];
-        var startingEllipsis = ""
-        if (firstSnippetChar.toLowerCase() != firstSnippetChar.toUpperCase()){
-          startingEllipsis = "…"
-        }
-        bodyTextSnippet = startingEllipsis+article._snippetResult.body_text.value + "…"
+    if (article.highlight && article.highlight.body_text.length > 0){
+      var firstSnippetChar = article.highlight.body_text[0];
+      var startingEllipsis = ""
+      if (firstSnippetChar.toLowerCase() != firstSnippetChar.toUpperCase()){
+        startingEllipsis = "…"
       }
-      if (article._snippetResult.comments_blob.matchLevel != "none" && bodyTextSnippet === ""){
-        var firstSnippetChar = article._snippetResult.comments_blob.value[0];
-        var startingEllipsis = ""
-        if (firstSnippetChar.toLowerCase() != firstSnippetChar.toUpperCase()){
-          startingEllipsis = "…"
-        }
-        commentsBlobSnippet = startingEllipsis+article._snippetResult.comments_blob.value + "… <i>(comments)</i>"
-      }
-      if ((bodyTextSnippet.length > 0 || commentsBlobSnippet.length > 0) && article.class_name == "Article"){
-        searchSnippetHTML = '<div class="crayons-story__snippet mb-1">'+bodyTextSnippet+commentsBlobSnippet+'</div>'
+      bodyTextSnippet = startingEllipsis + article.highlight.body_text.join("...") + "…";
+      if (bodyTextSnippet.length > 0){
+        searchSnippetHTML = '<div class="crayons-story__snippet mb-1"><span>' + bodyTextSnippet + '</span></div>'
       }
     }
     var saveButton = '';
@@ -134,7 +139,12 @@ function buildArticleHTML(article) {
 
     var videoHTML = '';
     if (article.cloudinary_video_url) {
-      videoHTML = '<a href="'+article.path+'" class="crayons-story__video" style="background-image:url('+article.cloudinary_video_url+')"}><span class="crayons-story__video__time">'+article.video_duration_in_minutes+'</span></a>'
+      videoHTML = '<a href="'+article.path+'" class="crayons-story__video" style="background-image:url('+article.cloudinary_video_url+')"><div class="crayons-story__video__time"><img src="<%= asset_path("video-camera.svg") %>" alt="video camera">'+(article.video_duration_string || article.video_duration_in_minutes)+'</div></a>'
+    }
+
+    var timeAgoInWords = '';
+    if (article.published_at_int) {
+      timeAgoInWords = timeAgo({ oldTimeInSeconds: article.published_at_int });
     }
 
     return '<div class="crayons-story" data-content-user-id="'+article.user_id+'">\

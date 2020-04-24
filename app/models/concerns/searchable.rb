@@ -4,7 +4,7 @@ module Searchable
   end
 
   def index_to_elasticsearch
-    Search::IndexToElasticsearchWorker.perform_async(self.class.name, search_id)
+    Search::IndexToElasticsearchWorker.perform_async(self.class.name, id)
   end
 
   def index_to_elasticsearch_inline
