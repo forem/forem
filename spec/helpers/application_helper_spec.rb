@@ -107,4 +107,29 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(sanitized_referer("")).to be nil
     end
   end
+
+  describe "#mail_link" do
+    before do
+      allow(SiteConfig).to receive(:email_addresses).and_return({
+                                                                  default: "hi@dev.to",
+                                                                  business: "business@dev.to",
+                                                                  privacy: "privacy@dev.to",
+                                                                  members: "members@dev.to"
+                                                                })
+    end
+
+    it "returns an a tag" do
+      expect(helper.mail_link).to have_selector("a")
+    end
+
+    it "sets the correct href" do
+      expect(helper.mail_link).to have_link(href: "mailto:hi@dev.to")
+      expect(helper.mail_link(:business)).to have_link(href: "mailto:business@dev.to")
+    end
+
+    it "has the correct text" do
+      expect(helper.mail_link(text: "Link Name")).to have_text("Link Name")
+      expect(helper.mail_link).to have_text("hi@dev.to")
+    end
+  end
 end

@@ -170,6 +170,14 @@ module ApplicationHelper
     "#{start_year} - #{current_year}"
   end
 
+  def mail_link(type = :default, text: nil, rel: false)
+    email = SiteConfig.email_addresses[type]
+    options = { href: "mailto:#{email}" }
+    options[:rel] = "noopener noreferrer" if rel
+
+    content_tag("a", text || email, options)
+  end
+
   # Creates an app internal URL
   #
   # @note Uses protocol and domain specified in the environment, ensure they are set.
