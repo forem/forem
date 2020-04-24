@@ -93,7 +93,7 @@ function addRelevantButtonsToComments(user) {
 }
 
 function toggleModActionMenu() {
-  document.querySelector('.mod-actions-menu').classList.toggle('hidden');
+  document.querySelector('.mod-actions-menu').classList.toggle('showing');
 }
 
 function initializeModActionsMenu(user) {
