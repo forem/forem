@@ -1,8 +1,10 @@
 <% Authentication::Providers.enabled.each do |provider_name| %>
+  <% provider = Authentication::Providers.get!(provider_name) %>
+
   <a
     href="<%= Authentication::Providers.sign_in_path(provider_name, state: "navbar_basic") %>"
     class="crayons-link crayons-link--block pl-5"
     data-no-instant>
-    Via <%= provider_name.to_s.titleize %>
+    Via <%= provider.official_name %>
   </a>
 <% end %>

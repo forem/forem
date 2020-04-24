@@ -1,5 +1,6 @@
 <% Authentication::Providers.enabled.each do |provider_name| %>
-  <% if @user.identities.exists?(provider: provider_name) %>
+  <% unless @user.identities.exists?(provider: provider_name) %>
+    <% provider = Authentication::Providers.get!(provider_name) %>
     <a
       href="<%= Authentication::Providers.authentication_path(provider_name) %>"
       class="crayons-btn crayons-btn--outlined mr-2"
@@ -10,7 +11,7 @@
             class: "crayons-icon",
             title: provider_name.to_s.titleize.to_s,
           ) %>
-      Connect <%= provider_name.to_s.titleize %> Account
+      Connect <%= provider.official_name %> Account
     </a>
   <% end %>
 <% end %>
