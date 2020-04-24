@@ -5,11 +5,8 @@ function toggleModActionsMenu() {
 export function initializeModActionsMenu() {
   // eslint-disable-next-line no-undef
   const user = userData();
-  const articlePath = `${
-    document.getElementById('article-show-container').dataset.path
-  }/actions_panel`;
-  const articleAuthorId = document.getElementById('article-show-container')
-    .dataset.authorId;
+  const { authorId: articleAuthorId, path } = document.getElementById('article-show-container').dataset;
+  const articlePath = `${path}/actions_panel`;
 
   const modActionsMenuHTML = `<iframe src=${articlePath}></iframe>`;
   const modActionsMenuIconHTML = `<div class="mod-actions-menu-btn">
