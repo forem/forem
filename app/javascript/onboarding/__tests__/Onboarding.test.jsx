@@ -194,8 +194,16 @@ describe('<Onboarding />', () => {
         .find('.onboarding-tags__button')
         .first();
 
+      expect(onboardingSlides.find('.next-button').text()).toContain(
+        'Skip for now',
+      );
+
       firstButton.simulate('click');
       expect(followTags.state('selectedTags').length).toBe(1);
+
+      expect(onboardingSlides.find('.next-button').text()).toContain(
+        'Continue',
+      );
 
       onboardingSlides.find('.next-button').simulate('click');
       fetch.once(fakeUsersResponse);
@@ -243,18 +251,29 @@ describe('<Onboarding />', () => {
         target: { value: 'my employer name', name: 'employer_name' },
       };
 
+      expect(onboardingSlides.find('.next-button').text()).toContain(
+        'Skip for now',
+      );
+
       onboardingSlides.find('textarea').simulate('change', summaryEvent);
       onboardingSlides.find('#location').simulate('change', locationEvent);
       onboardingSlides.find('#employment_title').simulate('change', titleEvent);
       onboardingSlides.find('#employer_name').simulate('change', employerEvent);
-
-      expect(profileForm.state('summary')).toBe(summaryEvent.target.value);
-      expect(profileForm.state('location')).toBe(locationEvent.target.value);
-      expect(profileForm.state('employment_title')).toBe(
+      expect(profileForm.state().formValues.summary).toBe(
+        summaryEvent.target.value,
+      );
+      expect(profileForm.state().formValues.location).toBe(
+        locationEvent.target.value,
+      );
+      expect(profileForm.state().formValues.employment_title).toBe(
         titleEvent.target.value,
       );
-      expect(profileForm.state('employer_name')).toBe(
+      expect(profileForm.state().formValues.employer_name).toBe(
         employerEvent.target.value,
+      );
+
+      expect(onboardingSlides.find('.next-button').text()).toContain(
+        'Continue',
       );
 
       profileForm.find('.next-button').simulate('click');
@@ -300,6 +319,10 @@ describe('<Onboarding />', () => {
       fetch.once({});
       const followUsers = onboardingSlides.find(<FollowUsers />);
 
+      expect(onboardingSlides.find('.next-button').text()).toContain(
+        'Skip for now',
+      );
+
       onboardingSlides.find('.user').first().simulate('click');
       expect(onboardingSlides.find('p').last().text()).toBe(
         "You're following 1 person",
@@ -308,6 +331,11 @@ describe('<Onboarding />', () => {
       expect(onboardingSlides.find('p').last().text()).toBe(
         "You're following 2 people",
       );
+
+      expect(onboardingSlides.find('.next-button').text()).toContain(
+        'Continue',
+      );
+
       expect(followUsers.state('selectedUsers').length).toBe(2);
       onboardingSlides.find('.next-button').simulate('click');
       await flushPromises();

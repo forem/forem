@@ -27,8 +27,36 @@ class Navigation extends Component {
     return <div className="stepper">{stepsList}</div>;
   }
 
+  /**
+   * A function to render the text for the "next-button" within the `Navigation` component.
+   * By default, it renders "Continue" for every slide.
+   * If the slide can be skipped, it renders "Skip for now".
+   * On the final slide, it renders "Finish".
+   *
+   * @returns {String} The HTML markup for the stepper.
+   */
+  buttonText() {
+    const { canSkip, currentSlideIndex, slidesCount } = this.props;
+    if (slidesCount - 1 === currentSlideIndex) {
+      return 'Finish';
+    }
+    if (canSkip) {
+      return 'Skip for now';
+    }
+
+    return 'Continue';
+  }
+
   render() {
-    const { next, prev, hideNext, hidePrev, disabled, className } = this.props;
+    const {
+      next,
+      prev,
+      hideNext,
+      hidePrev,
+      disabled,
+      canSkip,
+      className,
+    } = this.props;
     return (
       <nav
         className={`onboarding-navigation${
@@ -41,17 +69,19 @@ class Navigation extends Component {
           }`}
         >
           {!hidePrev && (
-            <button onClick={prev} className="back-button" type="button">
-              <svg
-                width="16"
-                height="16"
-                fill="none"
-                className="crayons-icon"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M3.828 7H16v2H3.828l5.364 5.364-1.414 1.414L0 8 7.778.222l1.414 1.414L3.828 7z" />
-              </svg>
-            </button>
+            <div className="back-button-container">
+              <button onClick={prev} className="back-button" type="button">
+                <svg
+                  width="24"
+                  height="24"
+                  fill="none"
+                  className="crayons-icon"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z" />
+                </svg>
+              </button>
+            </div>
           )}
 
           {this.createStepper()}
@@ -60,10 +90,10 @@ class Navigation extends Component {
             <button
               disabled={disabled}
               onClick={next}
-              className="next-button"
+              className={`next-button${canSkip ? ' skip-for-now' : ''}`}
               type="button"
             >
-              Continue
+              {this.buttonText()}
             </button>
           )}
         </div>
@@ -74,6 +104,7 @@ class Navigation extends Component {
 
 Navigation.propTypes = {
   disabled: PropTypes.bool,
+  canSkip: PropTypes.bool,
   className: PropTypes.string,
   prev: PropTypes.func.isRequired,
   next: PropTypes.string.isRequired,
@@ -85,6 +116,7 @@ Navigation.propTypes = {
 
 Navigation.defaultProps = {
   disabled: false,
+  canSkip: false,
   hideNext: false,
   hidePrev: false,
   className: '',
