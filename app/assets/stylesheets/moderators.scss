@@ -390,7 +390,6 @@
   }
   .other-things-container {
     border-top: 1px solid var(--base-20);
-    height: 100%;
     button.other-things-btn {
       background: inherit;
       border: none;
@@ -449,6 +448,7 @@
     display: flex;
     justify-content: center;
     padding-bottom: $su-4;
+    margin-top: auto;
     button {
       display: initial;
       font-size: $fs-base;
