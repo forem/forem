@@ -171,7 +171,7 @@ module ApplicationHelper
   end
 
   def mail_link(type = :default, text: nil, rel: false)
-    email = SiteConfig.email_addresses[type]
+    email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:default]
     options = { href: "mailto:#{email}" }
     options[:rel] = "noopener noreferrer" if rel
 

@@ -131,5 +131,9 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(helper.mail_link(text: "Link Name")).to have_text("Link Name")
       expect(helper.mail_link).to have_text("hi@dev.to")
     end
+
+    it "returns the default if it doesn't understand the type parameter" do
+      expect(helper.mail_link(:nonsense)).to have_link(href: "mailto:hi@dev.to")
+    end
   end
 end
