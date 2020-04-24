@@ -170,12 +170,11 @@ module ApplicationHelper
     "#{start_year} - #{current_year}"
   end
 
-  def mail_link(type = :default, text: nil, rel: false, additional_info: nil)
+  def mail_link(type = :default, text: nil, additional_info: nil)
     email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:default]
 
     href = "mailto:#{email}#{"?#{additional_info}" if additional_info}"
     options = { href: href }
-    options[:rel] = "noopener noreferrer" if rel
 
     content_tag("a", text || email, options)
   end
