@@ -16,6 +16,7 @@ services:
       REDIS_SESSIONS_URL: redis://redis:6379
     volumes:
       - .:/usr/src/app
+      - /usr/src/app/node_modules
     command: bundle exec rails server -b 0.0.0.0 -p 3000
   webpacker:
     build: .
