@@ -45,7 +45,7 @@
     </script>
     <p>
       If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account,
-      please <a href="mailto:<%= SiteConfig.email_addresses[:default] %>?subject=Request Account Deletion&body=<%= @email_body %>">click here.</a>
+      please <%= mail_link(text: "click here", additional_info: "subject=Request Account Deletion&body=#{@email_body}") %>
     </p>
 
     <p>
