@@ -359,4 +359,27 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       end
     end
   end
+
+  describe "POST /join_chat_channel" do
+    let(:chat_channel_membership) do
+      {
+        chat_channel_id: chat_channel.id,
+        user_id: second_user.id
+      }
+    end
+
+    before do
+      allow(Pusher).to receive(:trigger).and_return(true)
+      post "/join_chat_channel", params: { chat_channel_membership: chat_channel_membership }
+    end
+
+    it "returns 200 upon success" do
+      allow(Pusher).to receive(:trigger).and_return(true)
+      expect(response.status).to eq(200)
+    end
+
+    it "returns in json" do
+      expect(response.content_type).to eq("application/json")
+    end
+  end
 end
