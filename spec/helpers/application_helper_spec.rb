@@ -110,12 +110,14 @@ RSpec.describe ApplicationHelper, type: :helper do
 
   describe "#mail_link" do
     before do
-      allow(SiteConfig).to receive(:email_addresses).and_return({
-                                                                  default: "hi@dev.to",
-                                                                  business: "business@dev.to",
-                                                                  privacy: "privacy@dev.to",
-                                                                  members: "members@dev.to"
-                                                                })
+      allow(SiteConfig).to receive(:email_addresses).and_return(
+        {
+          default: "hi@dev.to",
+          business: "business@dev.to",
+          privacy: "privacy@dev.to",
+          members: "members@dev.to"
+        },
+      )
     end
 
     it "returns an 'a' tag" do
