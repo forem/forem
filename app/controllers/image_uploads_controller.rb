@@ -11,6 +11,13 @@ class ImageUploadsController < ApplicationController
 
       raise CarrierWave::IntegrityError if params[:image].blank?
 
+      unless valid_filename?
+        respond_to do |format|
+          format.json { render json: { error: FILENAME_TOO_LONG_MESSAGE }, status: :unprocessable_entity }
+        end
+        return
+      end
+
       uploaders = upload_images(params[:image], rate_limiter)
     rescue RateLimitChecker::UploadRateLimitReached => e
       respond_to do |format|
@@ -60,6 +67,11 @@ class ImageUploadsController < ApplicationController
         raise RateLimitChecker::UploadRateLimitReached, retry_after
       end
     end
+  end
+
+  def valid_filename?
+    images = Array.wrap(params.dig("image"))
+    images.none? { |image| long_filename?(image) }
   end
 
   def upload_images(images, rate_limiter)

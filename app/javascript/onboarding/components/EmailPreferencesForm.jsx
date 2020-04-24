@@ -51,10 +51,15 @@ class EmailPreferencesForm extends Component {
 
   render() {
     const { email_newsletter, email_digest_periodic } = this.state;
-    const { prev } = this.props;
+    const { prev, slidesCount, currentSlideIndex } = this.props;
     return (
       <div className="onboarding-main">
-        <Navigation prev={prev} next={this.onSubmit} />
+        <Navigation
+          prev={prev}
+          next={this.onSubmit}
+          slidesCount={slidesCount}
+          currentSlideIndex={currentSlideIndex}
+        />
         <div className="onboarding-content terms-and-conditions-wrapper">
           <header className="onboarding-content-header">
             <h1 className="title">Almost there!</h1>
@@ -104,6 +109,8 @@ class EmailPreferencesForm extends Component {
 EmailPreferencesForm.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.string.isRequired,
+  slidesCount: PropTypes.number.isRequired,
+  currentSlideIndex: PropTypes.func.isRequired,
 };
 
 export default EmailPreferencesForm;

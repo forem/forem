@@ -4,6 +4,7 @@ class StoriesController < ApplicationController
       title path id user_id comments_count positive_reactions_count organization_id
       reading_time video_thumbnail_url video video_duration_in_minutes language
       experience_level_rating experience_level_rating_distribution cached_user cached_organization
+      classified_listing_category_id
     ],
     methods: %i[
       readable_publish_date cached_tag_list_array flare_tag class_name
@@ -331,7 +332,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_classified_listings
-    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
+    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :classified_listing_category_id, :slug, :bumped_at)
   end
 
   def set_user_json_ld
@@ -370,7 +371,7 @@ class StoriesController < ApplicationController
         "@id": URL.article(@article)
       },
       "url": URL.article(@article),
-      "image": ApplicationController.helpers.article_social_image_url(@article),
+      "image": seo_optimized_images,
       "publisher": {
         "@context": "http://schema.org",
         "@type": "Organization",
@@ -393,6 +394,15 @@ class StoriesController < ApplicationController
       "datePublished": @article.published_timestamp,
       "dateModified": @article.edited_at&.iso8601 || @article.published_timestamp
     }
+  end
+
+  def seo_optimized_images
+    # This array of images exists for SEO optimization purposes.
+    # For more info on this structure, please refer to this documentation:
+    # https://developers.google.com/search/docs/data-types/article
+    [ApplicationController.helpers.article_social_image_url(@article, width: 1080, height: 1080),
+     ApplicationController.helpers.article_social_image_url(@article, width: 1280, height: 720),
+     ApplicationController.helpers.article_social_image_url(@article, width: 1600, height: 900)]
   end
 
   def set_organization_json_ld
