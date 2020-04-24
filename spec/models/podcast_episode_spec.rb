@@ -60,13 +60,6 @@ RSpec.describe PodcastEpisode, type: :model do
     end
   end
 
-  describe "#index_id" do
-    it "is equal to articles-ID" do
-      # NOTE: we shouldn't test private things but cheating a bit for Algolia here
-      expect(podcast_episode.send(:index_id)).to eq("podcast_episodes-#{podcast_episode.id}")
-    end
-  end
-
   describe ".available" do
     let_it_be(:podcast) { create(:podcast) }
 
