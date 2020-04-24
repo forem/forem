@@ -74,7 +74,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
       it "queues a slack message to be sent for a user whose identity is brand new" do
         auth_payload.extra.raw_info.created_at = 1.minute.ago.rfc3339
 
-        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
           described_class.call(auth_payload)
         end
       end
@@ -278,7 +278,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
       it "queues a slack message to be sent for a user whose identity is brand new" do
         auth_payload.extra.raw_info.created_at = 1.minute.ago.rfc3339
 
-        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
           described_class.call(auth_payload)
         end
       end

@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe SlackBotPingWorker, type: :worker do
+RSpec.describe Slack::Messengers::Worker, type: :worker do
   let(:worker) { subject }
   let(:params) do
     {
@@ -16,15 +16,17 @@ RSpec.describe SlackBotPingWorker, type: :worker do
   ]
 
   describe "#perform_now" do
-    before { allow(Slack::Announcer).to receive(:call) }
+    it "sends a message to Slack" do
+      allow(Slack::Announcer).to receive(:call)
 
-    it "calls the SlackBot" do
       worker.perform(params)
 
       expect(Slack::Announcer).to have_received(:call).with(params)
     end
 
     it "does nothing if there is missing data" do
+      allow(SlackClient).to receive(:ping)
+
       worker.perform(
         message: nil,
         channel: nil,
@@ -32,10 +34,12 @@ RSpec.describe SlackBotPingWorker, type: :worker do
         icon_emoji: nil,
       )
 
-      expect(Slack::Announcer).not_to have_received(:call)
+      expect(SlackClient).not_to have_received(:ping)
     end
 
     it "works with keys as Strings" do
+      allow(Slack::Announcer).to receive(:call)
+
       worker.perform(params.stringify_keys)
 
       expect(Slack::Announcer).to have_received(:call).with(params)
