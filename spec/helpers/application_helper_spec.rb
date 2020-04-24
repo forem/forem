@@ -135,5 +135,13 @@ RSpec.describe ApplicationHelper, type: :helper do
     it "returns the default if it doesn't understand the type parameter" do
       expect(helper.mail_link(:nonsense)).to have_link(href: "mailto:hi@dev.to")
     end
+
+    it "displays the any extra parameters we pass through" do
+      additional_info = "subject=This is a subject test"
+      more_additional_info = "#{additional_info}&body=This is a body"
+
+      expect(helper.mail_link(additional_info: additional_info)).to have_link(href: "mailto:hi@dev.to?#{additional_info}")
+      expect(helper.mail_link(additional_info: more_additional_info)).to have_link(href: "mailto:hi@dev.to?#{more_additional_info}")
+    end
   end
 end
