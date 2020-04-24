@@ -55,7 +55,7 @@
     <header class="other-things">
       <h1>Other things you can do</h1>
     </header>
-    <button class="other-things-btn adjust-tags" type="button">
+    <button class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
           <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
@@ -69,20 +69,65 @@
         <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
       </div>
     </button>
-    <button class="other-things-btn set-experience" type="button">
-      <div class="label-wrapper">
-        <div class="icon circle centered-icon">
-          <%= inline_svg_tag("book.svg", aria: false) %>
+    <% if @moderatable.class.name == "Article" %>
+      <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
+      <button class="other-things-btn set-experience" type="button" data-other-things-type="set-experience">
+        <div class="label-wrapper">
+          <div class="icon circle centered-icon">
+            <%= inline_svg_tag("book.svg", aria: false) %>
+          </div>
+          <header>
+            <h2>Set experience level</h2>
+            <h3>Curate the most appropriate audience for this post</h3>
+          </header>
         </div>
-        <header>
-          <h2>Set experience level</h2>
-          <h3>Curate the most appropriate audience for this post</h3>
-        </header>
+        <div class="toggle-chevron-container">
+          <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
+        </div>
+      </button>
+      <div class="set-experience-options hidden">
+        <%= form_for(RatingVote.new) do |f| %>
+          <%= f.hidden_field :article_id, value: @moderatable.id %>
+          <%= f.hidden_field :group, value: "experience_level" %>
+          <button value="1" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 1.0 %>">
+            <div class="level-rating-content">
+              <span class="level-rating-number">1</span>
+              <span class="level-rating-text">Beginner</span>
+            </div>
+            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+          </button>
+          <button value="2" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 2.0 %>">
+            <div class="level-rating-content">
+              <span class="level-rating-number">2</span>
+              <span class="level-rating-text">Novice</span>
+            </div>
+            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+          </button>
+          <button value="3" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 3.0 %>">
+            <div class="level-rating-content">
+              <span class="level-rating-number">3</span>
+              <span class="level-rating-text">Mid-level</span>
+            </div>
+            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+          </button>
+          <button value="4" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 4.0 %>">
+            <div class="level-rating-content">
+              <span class="level-rating-number">4</span>
+              <span class="level-rating-text">Advanced</span>
+            </div>
+            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+          </button>
+          <button value="5" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 5.0 %>">
+            <div class="level-rating-content">
+              <span class="level-rating-number">5</span>
+              <span class="level-rating-text">Expert</span>
+            </div>
+            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+          </button>
+        <% end %>
+        <span class="how-this-works-section">How does this work?</span>
       </div>
-      <div class="toggle-chevron-container">
-        <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
-      </div>
-    </button>
+    <% end %>
   </div>
   <div class="bottom-actions">
     <button type="button">Flag user</button>
@@ -126,5 +171,15 @@
     document.documentElement.style.height = "100%";
     document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0;';
     document.getElementById('page-content').style.cssText = 'margin-top: 0 !important; margin-bottom: 0;';
+
+    //  rotate chevrons
+    document.querySelectorAll('button.other-things-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        let clickedBtn = e.currentTarget;
+        clickedBtn.querySelector('.label-wrapper > .icon').classList.toggle('hidden');
+        clickedBtn.querySelector('.toggle-chevron-container').classList.toggle('rotated');
+      })
+    });
   }, 200)
 </script>
