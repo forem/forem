@@ -6,19 +6,9 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def index
-    @users = case params[:state]
-             when /role\-/
-               User.with_role(params[:state].split("-")[1], :any).page(params[:page]).per(50)
-             else
-               User.order("created_at DESC").page(params[:page]).per(50)
-             end
-    return if params[:search].blank?
-
-    @users = @users.where("users.name ILIKE :search OR
-      users.username ILIKE :search OR
-      users.github_username ILIKE :search OR
-      users.email ILIKE :search OR
-      users.twitter_username ILIKE :search", search: "%#{params[:search].strip}%")
+    @users = Internal::UsersQuery.call(
+      options: params.permit(:role, :search),
+    ).page(params[:page]).per(50)
   end
 
   def edit
