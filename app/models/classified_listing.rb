@@ -6,10 +6,9 @@ class ClassifiedListing < ApplicationRecord
   SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
   SEARCH_CLASS = Search::ClassifiedListing
 
-  attr_accessor :action
+  attr_accessor :action, :category
 
   # This allows to create a listing from a catgory string.
-  # TODO: [mkohl] refactor once column was dropped.
   before_validation :assign_classified_listing_category
 
   belongs_to :classified_listing_category
