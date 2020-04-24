@@ -118,7 +118,7 @@ RSpec.describe ApplicationHelper, type: :helper do
                                                                 })
     end
 
-    it "returns an a tag" do
+    it "returns an 'a' tag" do
       expect(helper.mail_link).to have_selector("a")
     end
 
@@ -127,16 +127,16 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(helper.mail_link(:business)).to have_link(href: "mailto:business@dev.to")
     end
 
-    it "has the correct text" do
+    it "has the correct text in the a tag" do
       expect(helper.mail_link(text: "Link Name")).to have_text("Link Name")
       expect(helper.mail_link).to have_text("hi@dev.to")
     end
 
-    it "returns the default if it doesn't understand the type parameter" do
+    it "returns the default email if it doesn't understand the type parameter" do
       expect(helper.mail_link(:nonsense)).to have_link(href: "mailto:hi@dev.to")
     end
 
-    it "displays the any extra parameters we pass through" do
+    it "appends any additional_info parameters to the href" do
       additional_info = "subject=This is a subject test"
       more_additional_info = "#{additional_info}&body=This is a body"
 
