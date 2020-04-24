@@ -11,5 +11,5 @@ The <%= community_name %> team sees over 1000 new posts published every week to 
 You will be invited to a shared Slack channel to aid communication and provide a line of communication for deep collaboration.  It is an open line to our devrel experts available during extended US East business hours.
 </p>
 <% unless user_signed_in? %>
-  <h2>Email <a href="mailto:partners@dev.to">partners@dev.to</a> for pricing information</h2>
+  <h2>Email <a href="mailto:<%= SiteConfig.email_addresses[:business] %>"><%= SiteConfig.email_addresses[:business] %></a> for pricing information</h2>
 <% end %>

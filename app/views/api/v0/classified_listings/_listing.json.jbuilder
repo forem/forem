@@ -1,10 +1,16 @@
-json.type_of              "classified_listing"
-json.id                   listing.id
-json.title                listing.title
-json.slug                 listing.slug
-json.body_markdown        listing.body_markdown
-json.tag_list             listing.cached_tag_list
-json.tags                 listing.tag_list
-json.category             listing.category
-json.processed_html       listing.processed_html
-json.published            listing.published
+json.type_of "classified_listing"
+
+json.extract!(
+  listing,
+  :id,
+  :title,
+  :slug,
+  :body_markdown,
+  :category,
+  :classified_listing_category_id,
+  :processed_html,
+  :published,
+)
+
+json.tag_list listing.cached_tag_list
+json.tags     listing.tag_list

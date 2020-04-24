@@ -205,7 +205,7 @@
   ),
   (
     'grid-rows',
-    'grid-template-columns',
+    'grid-template-rows',
     (
       'none': none,
       '1': repeat(1, minmax(0, 1fr)),
@@ -225,6 +225,13 @@
       'row-dense': row dense,
       'col-dense': column dense
     ),
+    (),
+    true
+  ),
+  (
+    'grid-items',
+    'justify-items',
+    ('start': start, 'end': end, 'center': center, 'stretch': stretch),
     (),
     true
   ),
@@ -413,7 +420,15 @@
   (
     'w',
     'width',
-    ('0': 0, '25': 25%, '50': 50%, '100': 100%, 'auto': auto, 'full': 100vw, 'max': max-content),
+    (
+      '0': 0,
+      '25': 25%,
+      '50': 50%,
+      '100': 100%,
+      'auto': auto,
+      'full': 100vw,
+      'max': max-content
+    ),
     (),
     true
   ),
@@ -427,6 +442,13 @@
   ),
   ('min-h', 'min-height', ('0': 0, '100': 100%, 'full': 100vh), (), true),
   ('max-h', 'max-height', ('0': 0, '100': 100%, 'full': 100vh), (), true),
+  (
+    'max-w',
+    'max-width',
+    ('0': 0, '25': 25%, '50': 50%, '75': 75%, '100': 100%),
+    (),
+    true
+  ),
   ('m', 'margin', ('auto': auto, 'unset': unset, '0': 0), $spacing-units, true),
   ('-m', 'margin', $negative-spacing-units, (), true),
   (
@@ -627,5 +649,6 @@
     (),
     true,
     null
-  )
+  ),
+  (null, 'all', ('reset': unset), (), false, null)
 );

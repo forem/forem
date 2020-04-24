@@ -11,7 +11,6 @@ services:
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
-      YARN_INTEGRITY_ENABLED: "false"
       ELASTICSEARCH_URL: http://elasticsearch:9200
       REDIS_URL: redis://redis:6379
       REDIS_SESSIONS_URL: redis://redis:6379

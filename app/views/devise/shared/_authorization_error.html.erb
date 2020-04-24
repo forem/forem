@@ -25,6 +25,6 @@
       <%= flash[:alert] %>
       <br>
     <% end %>
-    Please try again below, or contact <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if this persists.
+    Please try again below, or contact <a href="mailto:<%= SiteConfig.email_addresses[:default] %>"><%= SiteConfig.email_addresses[:default] %></a> if this persists.
   </div>
 <% end %>
