@@ -172,7 +172,6 @@ module ApplicationHelper
 
   def mail_link(type = :default, text: nil, additional_info: nil)
     email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:default]
-
     href = "mailto:#{email}#{"?#{additional_info}" if additional_info}"
     options = { href: href }
 
