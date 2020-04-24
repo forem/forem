@@ -1,3 +1,3 @@
-import { initializeModActionsMenu } from '../actionsPanel/actionsPanel';
+import { initializeModActionsMenu } from '../actionsPanel/initializeActionsPanelToggle';
 
 initializeModActionsMenu();
