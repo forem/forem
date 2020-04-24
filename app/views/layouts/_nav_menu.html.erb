@@ -14,16 +14,18 @@
     </div>
   <% else %>
     <div class="border-0 border-b-1 border-solid border-base-20 p-1">
-      <a href="/enter" data-no-instant id="first-nav-link" class="crayons-link crayons-link--block fw-medium">Sign In/Up</a>
-      <% if SiteConfig.auth_allowed?("twitter") %>
-        <a href="/users/auth/twitter?callback_url=<%= app_url("/users/auth/twitter/callback") %>" class="crayons-link crayons-link--block pl-5" data-no-instant>Via Twitter</a>
-      <% end %>
-      <% if SiteConfig.auth_allowed?("github") %>
-        <a href="/users/auth/github?state=navbar_basic" class="crayons-link crayons-link--block pl-5" data-no-instant id="second-last-nav-link">Via GitHub</a>
-      <% end %>
+      <a
+        href="<%= sign_up_path %>"
+        id="first-nav-link"
+        class="crayons-link crayons-link--block fw-medium"
+        data-no-instant>
+        Sign In/Up
+      </a>
+
+      <%= render partial: "shared/authentication/providers_nav_menu" %>
     </div>
     <div class="p-1">
-      <a href="/p/information" class="crayons-link crayons-link--block" id="last-nav-link">All about <%= community_name %></a>
+      <a href="<%= information_path %>" class="crayons-link crayons-link--block" id="last-nav-link">All about <%= community_name %></a>
     </div>
   <% end %>
 </div>
