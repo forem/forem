@@ -6,11 +6,11 @@
   </style>
 <% end %>
 
-<div class="container mod-container" style="text-align: center">
+<div class="container mod-container">
   <header class="top-header">
     <h1>Moderate Post</h1>
     <h2>Rate the quality of this post</h2>
-    <button class="circle" type="button">
+    <button class="close-actions-panel circle centered-icon" type="button">
       <%= inline_svg_tag("chevron-right.svg", aria: true, title: "Close moderator actions panel") %>
     </button>
   </header>
@@ -27,7 +27,6 @@
         </div>
         <span class="vote-text">High Quality</span>
       </button>
-
       <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
               data-reactable-id="<%= @moderatable.id %>"
               data-category="thumbsdown"
@@ -56,7 +55,7 @@
     <header class="other-things">
       <h1>Other things you can do</h1>
     </header>
-    <button class="adjust-tags" type="button">
+    <button class="other-things-btn adjust-tags" type="button">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
           <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
@@ -70,7 +69,7 @@
         <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
       </div>
     </button>
-    <button class="set-experience" type="button">
+    <button class="other-things-btn set-experience" type="button">
       <div class="label-wrapper">
         <div class="icon circle centered-icon">
           <%= inline_svg_tag("book.svg", aria: false) %>
@@ -84,17 +83,18 @@
         <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
       </div>
     </button>
-    <div class="bottom-actions">
+  </div>
+  <div class="bottom-actions">
     <button type="button">Flag user</button>
   </div>
 </div>
 
 <script defer>
-  setTimeout(function () {
+  setTimeout(function() {
     var butts = document.querySelectorAll('.reaction-button, .reaction-vomit-button');
     for (var i = 0; i < butts.length; i++) {
       var butt = butts[i];
-      butt.onclick = function (event) {
+      butt.onclick = function(event) {
         event.preventDefault();
         var thisButt = this;
         thisButt.classList.add('reacted');
@@ -114,12 +114,17 @@
 
         getCsrfToken()
           .then(sendFetch('reaction-creation', formData))
-          .then(function (response) {
+          .then(function(response) {
             if (response.status === 200) {
               response.json().then(successCb);
             }
           });
       };
     }
+
+    // set actions panel heights
+    document.documentElement.style.height = "100%";
+    document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0;';
+    document.getElementById('page-content').style.cssText = 'margin-top: 0 !important; margin-bottom: 0;';
   }, 200)
 </script>

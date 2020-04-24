@@ -155,8 +155,14 @@
   padding: 30px 10px;
 }
 
+// these styles are to correct height and margin issues in the iframe
 .moderations-actions_panel {
   min-height: initial;
+  height: 100%;
+  #page-content-inner {
+    margin-bottom: 0;
+    height: 100%;
+  }
 }
 
 .mod-container {
@@ -165,6 +171,8 @@
   background-color: var(--base-0);
   border: none;
   box-shadow: none;
+  margin-bottom: 0;
+  height: 100%;
   .circle {
     border-radius: 100%;
     &.centered-icon {
@@ -207,107 +215,9 @@
       background-color: var(--base-10);
     }
   }
-  .other-things-container {
-    border-top: 1px solid var(--base-20);
-    height: 100%;
-    button {
-      background: inherit;
-      border: none;
-      padding: $su-3 $su-4;
-      width: 100%;
-      display: flex;
-      &:hover {
-        background-color: var(--base-inverted);
-        .label-wrapper > .icon {
-          background-color: var(--accent-brand);
-          svg {
-            fill: var(--base-inverted);
-          }
-        }
-        header h2 {
-          color: var(--accent-brand);
-        }
-      }
-      .label-wrapper {
-        display: flex;
-        align-items: center;
-        .icon {
-          background-color: var(--base-20);
-          width: 40px;
-          height: 40px;
-        }
-        header {
-          text-align: left;
-          margin-left: $su-3;
-          display: flex;
-          flex-direction: column;
-          width: 240px;
-          h2 {
-            color: var(--base-100);
-            font-size: $fs-base;
-            font-weight: $fw-medium;
-          }
-          h3 {
-            color: var(--base-70);
-            font-size: $fs-s;
-            font-weight: $fw-normal;
-          }
-        }
-      }
-      .toggle-chevron-container {
-        width: 16px;
-        height: 16px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        align-self: center;
-      }
-    }
-  }
-  .bottom-actions {
-    display: flex;
-    justify-content: center;
-    padding-bottom: $su-4;
-    button {
-      font-size: $fs-base;
-      color: var(--accent-brand);
-      border: none;
-      background: none;
-    }
-  }
-
-  h2 {
-    a {
-      color: var(--body-color);
-    }
-  }
-  p {
-    width: 98%;
-    max-width: 720px;
-    margin: 1.3em auto;
-    font-size: 0.9em;
-  }
-
-  hr {
-    margin: 30px auto;
-    width: 80%;
-    max-width: 400px;
-    opacity: 0.3;
-  }
-
-  #error_explanation {
-    margin: 10px auto 5px;
-    box-sizing: border-box;
-  }
-  @media screen and (min-width: 880px) {
-    margin: 90px auto;
-    border-radius: 12px;
-  }
-
-  // Reaction Buttons START
-
   .reactions-container {
     padding: $su-4;
+    background-color: var(--base-inverted);
   }
 
   .thumb-reactions-container {
@@ -427,13 +337,16 @@
     letter-spacing: -0.02em;
     color: var(--base-70);
     cursor: pointer;
+    padding: 0 $su-3;
+    display: flex;
+    justify-content: center;
   }
 
   .reaction-button.reacted {
     background: var(--accent-brand);
 
     .reaction-button-circle {
-      border-color: var(--accent-success);
+      border-color: var(--accent-brand-lighter);
     }
 
     .vote-text {
@@ -475,8 +388,103 @@
   .reaction-vomit-button.reacted .reacted-emoji {
     display: block;
   }
+  .other-things-container {
+    border-top: 1px solid var(--base-20);
+    height: 100%;
+    button.other-things-btn {
+      background: inherit;
+      border: none;
+      padding: $su-3 $su-4;
+      width: 100%;
+      display: flex;
+      &:hover {
+        background-color: var(--base-inverted);
+        .label-wrapper > .icon {
+          background-color: var(--accent-brand);
+          svg {
+            fill: var(--base-inverted);
+          }
+        }
+        header h2 {
+          color: var(--accent-brand);
+        }
+      }
+      .label-wrapper {
+        display: flex;
+        align-items: center;
+        .icon {
+          background-color: var(--base-20);
+          width: 40px;
+          height: 40px;
+        }
+        header {
+          text-align: left;
+          margin-left: $su-3;
+          display: flex;
+          flex-direction: column;
+          width: 240px;
+          h2 {
+            color: var(--base-100);
+            font-size: $fs-base;
+            font-weight: $fw-medium;
+          }
+          h3 {
+            color: var(--base-70);
+            font-size: $fs-s;
+            font-weight: $fw-normal;
+          }
+        }
+      }
+      .toggle-chevron-container {
+        width: 16px;
+        height: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-self: center;
+      }
+    }
+  }
+  .bottom-actions {
+    display: flex;
+    justify-content: center;
+    padding-bottom: $su-4;
+    button {
+      display: initial;
+      font-size: $fs-base;
+      color: var(--accent-brand);
+      border: none;
+      background: none;
+    }
+  }
 
-  // Reaction Buttons END
+  h2 {
+    a {
+      color: var(--body-color);
+    }
+  }
+  p {
+    width: 98%;
+    max-width: 720px;
+    margin: 1.3em auto;
+    font-size: 0.9em;
+  }
+
+  hr {
+    margin: 30px auto;
+    width: 80%;
+    max-width: 400px;
+    opacity: 0.3;
+  }
+
+  #error_explanation {
+    margin: 10px auto 5px;
+    box-sizing: border-box;
+  }
+  @media screen and (min-width: 880px) {
+    margin: 90px auto;
+    border-radius: 12px;
+  }
 
   .tag-mod-form {
     border-top: 1px solid #dddddd;
