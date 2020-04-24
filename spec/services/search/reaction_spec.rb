@@ -92,7 +92,7 @@ RSpec.describe Search::Reaction, type: :service do
       it "filters by status" do
         reaction1.update(status: "invalid")
         index_documents([reaction1, reaction2])
-        query_params[:status] = ["valid"]
+        query_params[:status] = %w[valid confirmed]
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]
         expect(reaction_docs.count).to eq(1)

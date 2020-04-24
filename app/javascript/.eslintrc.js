@@ -45,7 +45,6 @@ module.exports = {
     InstantClick: false,
     filterXSS: false,
     Pusher: false,
-    algoliasearch: false,
     ga: false,
     Honeybadger: false,
     AndroidBridge: false,
