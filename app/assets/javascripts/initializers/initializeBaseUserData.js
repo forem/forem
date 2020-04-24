@@ -98,7 +98,7 @@ function toggleModActionMenu() {
 
 function initializeModActionsMenu(user) {
   const articlePath =
-    document.getElementById('article-show-container').dataset.path + '/mod';
+    document.getElementById('article-show-container').dataset.path + '/actions_panel';
   const articleAuthorId = document.getElementById('article-show-container')
     .dataset.authorId;
   const modActionsMenuHTML = '<iframe src="' + articlePath + '"></iframe>';

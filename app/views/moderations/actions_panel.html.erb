@@ -1,4 +1,4 @@
-<% title "[Moderate] " + @moderatable.title %>
+<% title "Moderating " + @moderatable.title %>
 
 <% cache(cache_key_heroku_slug("mod-styling")) do %>
   <style>
@@ -7,8 +7,13 @@
 <% end %>
 
 <div class="container mod-container" style="text-align: center">
-  <h2><a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
-  <h3><a href="<%= @moderatable.user.path %>">@<%= @moderatable.user.username %></a></h3>
+  <header class="top-header">
+    <h1>Moderate Post</h1>
+    <h2>Rate the quality of this post</h2>
+    <button class="circle" type="button">
+      <%= inline_svg_tag("chevron-right.svg", aria: true, title: "Close moderator actions panel") %>
+    </button>
+  </header>
   <% if @moderatable.class.name == "Article" &&
        (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? &&
        (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) }) %>
@@ -25,20 +30,44 @@
     <hr />
   <% end %>
 
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
-          data-reactable-id="<%= @moderatable.id %>"
-          data-category="thumbsdown"
-          data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
-  </button>
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
-          data-reactable-id="<%= @moderatable.id %>"
-          data-category="vomit"
-          data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
-  </button>
+  <div class="reactions-container">
+    <div class="thumb-reactions-container">
+      <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
+              data-reactable-id="<%= @moderatable.id %>"
+              data-category="thumbsup"
+              data-reactable-type="<%= @moderatable.class.name %>">
+        <div class="reaction-button-circle">
+          <%= image_tag("emoji/emoji-one-thumbs-up-gray.png", alt: "Thumbs up emoji", class: "emoji-grey") %>
+          <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-up.png") %>" alt="Thumbs up emoji" />
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+        </div>
+        <span class="vote-text">High Quality</span>
+      </button>
+
+      <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
+              data-reactable-id="<%= @moderatable.id %>"
+              data-category="thumbsdown"
+              data-reactable-type="<%= @moderatable.class.name %>">
+        <div class="reaction-button-circle">
+          <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji", class: "emoji-grey") %>
+          <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+        </div>
+        <span class="vote-text">Low Quality</span>
+      </button>
+    </div>
+    <button class="reaction-vomit-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.id %>"
+            data-category="vomit"
+            data-reactable-type="<%= @moderatable.class.name %>">
+      <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
+      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+      <span></span>
+      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: "Checkmark") %>
+    </button>
+    <span class="how-this-works-section">How does this work?</span>
+  </div>
+
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
     <h3> <a href="<%= @moderatable.path %>/edit">Edit Post</a> |
       <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Internal:Article</a> |
@@ -56,6 +85,11 @@
   <p>
     Use <b>vomit</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
   </p>
+  <div class="other-things">
+    <header>
+      <h1 class="capitalized">Other things you can do</h1>
+    </header>
+  </div>
   <div class="tag-mod-form">
     <h2>Flag <a href="<%= @moderatable.user.path %>"><%= @moderatable.user.username %></a> as Abusive</h2>
     <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable.user, current_user, "vomit") ? "reacted" : "" %>"
