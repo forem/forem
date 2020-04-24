@@ -46,5 +46,19 @@ module Authentication
     def self.enabled?(provider_name)
       enabled.include?(provider_name.to_sym)
     end
+
+    # Returns the sign in URL for the given provider
+    def self.sign_in_url(provider_name, state: nil)
+      url_helpers = Rails.application.routes.url_helpers
+
+      callback_url_helper = "user_#{provider_name}_omniauth_callback_path"
+      params = {
+        callback_url: URL.url(url_helpers.public_send(callback_url_helper))
+      }
+
+      params[:state] = state if state
+
+      url_helpers.public_send("user_#{provider_name}_omniauth_authorize_path", params)
+    end
   end
 end

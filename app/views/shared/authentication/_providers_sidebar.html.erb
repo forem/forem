@@ -1,11 +1,6 @@
 <% Authentication::Providers.enabled.each do |provider_name| %>
-  <%# build full sign in link %>
-  <% href = public_send(
-       "user_#{provider_name}_omniauth_authorize_path",
-       callback_url: app_url(public_send("user_#{provider_name}_omniauth_callback_path")),
-     ) %>
   <a
-    href="<%= href %>"
+    href="<%= Authentication::Providers.sign_in_url(provider_name, state: "navbar_basic") %>"
     class="cta cta-button login-cta-button"
     data-no-instant>
     Sign In With <%= provider_name.to_s.titleize %>
