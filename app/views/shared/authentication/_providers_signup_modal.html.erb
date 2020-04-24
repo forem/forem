@@ -1,6 +1,6 @@
 <% Authentication::Providers.enabled.each do |provider_name| %>
   <a
-    href="<%= Authentication::Providers.sign_in_url(provider_name, state: "signup-modal") %>"
+    href="<%= Authentication::Providers.sign_in_path(provider_name, state: "signup-modal") %>"
     class="sign-up-link cta"
     data-no-instant>
     <img

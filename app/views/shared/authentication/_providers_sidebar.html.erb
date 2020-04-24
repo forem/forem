@@ -1,6 +1,6 @@
 <% Authentication::Providers.enabled.each do |provider_name| %>
   <a
-    href="<%= Authentication::Providers.sign_in_url(provider_name, state: "navbar_basic") %>"
+    href="<%= Authentication::Providers.sign_in_path(provider_name, state: "navbar_basic") %>"
     class="cta cta-button login-cta-button"
     data-no-instant>
     Sign In With <%= provider_name.to_s.titleize %>
