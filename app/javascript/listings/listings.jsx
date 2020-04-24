@@ -180,8 +180,6 @@ export class Listings extends Component {
     this.handleCloseModal(e);
   };
 
-  targetMatch = () => {};
-
   handleCloseModal = (e) => {
     const { openedListing } = this.state;
 
