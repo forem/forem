@@ -8,6 +8,11 @@ import SingleListing from './singleListing';
  * @constant {number}
  */
 const LISTING_PAGE_SIZE = 75;
+const MATCH_LISTING = [
+  'single-classified-listing-container__inner',
+  'classified-filters',
+  'classified-listings-modal-background',
+];
 
 function resizeMasonryItem(item) {
   /* Get the grid object, its row-gap, and the size of its implicit rows */
@@ -175,14 +180,15 @@ export class Listings extends Component {
     this.handleCloseModal(e);
   };
 
+  targetMatch = () => {};
+
   handleCloseModal = (e) => {
     const { openedListing } = this.state;
+
     if (
       e === 'close-modal' ||
       (openedListing !== null && e.key === 'Escape') ||
-      e.target.id === 'single-classified-listing-container__inner' ||
-      e.target.id === 'classified-filters' ||
-      e.target.id === 'classified-listings-modal-background'
+      MATCH_LISTING.includes(e.target.id)
     ) {
       const { query, tags, category } = this.state;
       this.setState({ openedListing: null, page: 0 });
