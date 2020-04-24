@@ -321,4 +321,42 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       end
     end
   end
+
+  describe "POST /chat_channel_memberships/add_membership" do
+    context "when user is moderator of channel" do
+      it "adds requested member to join closed channel" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+        channel = ChatChannel.first
+        membership = ChatChannelMembership.last
+        membership.update(status: "joining_request")
+        membership.update(role: "mod")
+        post "/chat_channel_memberships/add_membership", params: {
+          membership_id: membership.id,
+          chat_channel_id: channel.id,
+          chat_channel_membership: {
+            user_action: "accept"
+          }
+        }
+        expect(ChatChannelMembership.find(membership.id).status).to eq("active")
+        expect(response).to(redirect_to(chat_channel_memberships_path))
+      end
+    end
+
+    context "when user is member of channel" do
+      it "raise Pundit::NotAuthorizedError" do
+        expect do
+          channel = ChatChannel.first
+          membership = ChatChannelMembership.last
+          membership.update(status: "joining_request")
+          post "/chat_channel_memberships/add_membership", params: {
+            membership_id: membership.id,
+            chat_channel_id: channel.id,
+            chat_channel_membership: {
+              user_action: "accept"
+            }
+          }
+        end.to(raise_error(Pundit::NotAuthorizedError))
+      end
+    end
+  end
 end

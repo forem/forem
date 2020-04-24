@@ -37,6 +37,7 @@ module Search
         if @params[:user_id] == "all"
           @body[:query][:bool] = { filter: [{ terms: { status: %w[active joining_request] } }, { term: { channel_discoverable: true } }] }
           @body[:query][:bool][:must] = query_conditions
+          # TODO: Optimize it more to fetch uniq results
         else
           @body[:query][:bool] = { filter: filter_conditions }
           @body[:query][:bool][:must] = query_conditions if query_keys_present?
