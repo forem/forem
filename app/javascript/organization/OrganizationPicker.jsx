@@ -28,11 +28,12 @@ const orgOptions = (organizations, organizationId) => {
 export const OrganizationPicker = ({
   name,
   id,
+  className,
   organizations,
   organizationId,
   onToggle,
 }) => (
-  <select name={name} id={id} onBlur={onToggle}>
+  <select name={name} id={id} className={className} onBlur={onToggle}>
     {orgOptions(organizations, organizationId)}
   </select>
 );
@@ -40,6 +41,7 @@ export const OrganizationPicker = ({
 OrganizationPicker.propTypes = {
   name: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
+  className: PropTypes.string.isRequired,
   onToggle: PropTypes.func.isRequired,
   organizationId: PropTypes.number.isRequired,
   organizations: PropTypes.arrayOf(organizationPropType).isRequired,

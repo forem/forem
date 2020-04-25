@@ -36,12 +36,23 @@
 }
 
 .crayons-layout--article-form {
-  @media (min-width: $breakpoint-s) {
+  @media (min-width: $breakpoint-m) {
     display: grid;
+    grid-template-rows: 100%;
     grid-gap: var(--layout-gap);
-    grid-template-columns: var(--layout-narrow-sidebar-width) 1fr var(
-        --layout-aside-width
-      );
-    padding: var(--layout-padding);
+    grid-template-columns: calc(100% - var(--layout-aside-width) - var(--layout-gap)) var(--layout-aside-width);
+    padding: 
+      0
+      var(--layout-padding) 
+      0
+      calc( var(--layout-narrow-sidebar-width) + var(--layout-padding) );
+  }
+
+  .crayons-layout__content {
+    padding: $su-3;
+
+    @media (min-width: $breakpoint-m) {
+      padding: $su-6 $su-8;
+    }
   }
 }

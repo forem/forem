@@ -8,18 +8,23 @@ import ImageUploadIcon from 'images/image-upload.svg';
 // eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
-import BodyMarkdown from './elements/bodyMarkdown';
 import BodyPreview from './elements/bodyPreview';
-import PublishToggle from './elements/publishToggle';
 import Notice from './elements/notice';
-import Title from './elements/title';
 import MainImage from './elements/mainImage';
 import ImageManagement from './elements/imageManagement';
-import MoreConfig from './elements/moreConfig';
+// import MoreConfig from './elements/moreConfig';
 import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
-import Tags from '../shared/components/tags';
-import { OrganizationPicker } from '../organization/OrganizationPicker';
+
+import {
+  Actions,
+  Form,
+  Header,
+  Help,
+  Title,
+  Preview,
+  Modal,
+} from './components';
 
 const SetupImageButton = ({
   className,
@@ -103,7 +108,7 @@ export default class ArticleForm extends Component {
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
-      moreConfigShowing: false,
+      // moreConfigShowing: false,
       mainImage: this.article.main_image || null,
       organizations,
       organizationId: this.article.organization_id,
@@ -163,17 +168,26 @@ export default class ArticleForm extends Component {
     helpShowing = false,
     previewShowing = false,
     imageManagementShowing = false,
-    moreConfigShowing = false,
+    // moreConfigShowing = false,
   }) => {
     return {
       helpShowing,
       previewShowing,
       imageManagementShowing,
-      moreConfigShowing,
+      // moreConfigShowing,
     };
   };
 
-  toggleHelp = e => {
+  toggleHelpMarkdown = e => {
+    const { helpShowing } = this.state;
+    e.preventDefault();
+    window.scrollTo(0, 0);
+    this.setState({
+      ...this.setCommonProps({ helpShowing: !helpShowing }),
+    });
+  };
+
+  toggleHelpLiquid = e => {
     const { helpShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
@@ -205,13 +219,13 @@ export default class ArticleForm extends Component {
     });
   };
 
-  toggleMoreConfig = e => {
-    const { moreConfigShowing } = this.state;
-    e.preventDefault();
-    this.setState({
-      ...this.setCommonProps({ moreConfigShowing: !moreConfigShowing }),
-    });
-  };
+  // toggleMoreConfig = e => {
+  //   const { moreConfigShowing } = this.state;
+  //   e.preventDefault();
+  //   this.setState({
+  //     ...this.setCommonProps({ moreConfigShowing: !moreConfigShowing }),
+  //   });
+  // };
 
   showPreview = response => {
     if (response.processed_html) {
@@ -307,7 +321,7 @@ export default class ArticleForm extends Component {
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
-      moreConfigShowing: false,
+      // moreConfigShowing: false,
       mainImage: this.article.main_image || null,
       errors: null,
       edited: false,
@@ -344,7 +358,7 @@ export default class ArticleForm extends Component {
       helpHTML,
       submitting,
       imageManagementShowing,
-      moreConfigShowing,
+      // moreConfigShowing,
       organizations,
       organizationId,
       mainImage,
@@ -373,36 +387,22 @@ export default class ArticleForm extends Component {
     ) : (
       ''
     );
-    const moreConfig = moreConfigShowing ? (
-      <MoreConfig
-        onExit={this.toggleMoreConfig}
-        passedData={this.state}
-        onSaveDraft={this.onSaveDraft}
-        onConfigChange={this.handleConfigChange}
-      />
-    ) : (
-      ''
-    );
-    const orgArea =
-      organizations && organizations.length > 0 ? (
-        <div className="articleform__orgsettings">
-          Publish under an organization:
-          <OrganizationPicker
-            name="article[organization_id]"
-            id="article_publish_under_org"
-            organizations={organizations}
-            organizationId={organizationId}
-            onToggle={this.handleOrgIdChange}
-          />
-        </div>
-      ) : null;
+    // const moreConfig = moreConfigShowing ? (
+    //   <MoreConfig
+    //     onExit={this.toggleMoreConfig}
+    //     passedData={this.state}
+    //     onSaveDraft={this.onSaveDraft}
+    //     onConfigChange={this.handleConfigChange}
+    //   />
+    // ) : (
+    //   ''
+    // );
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
     let editorView = '';
     if (previewShowing) {
       editorView = (
         <div>
           {errorsArea}
-          {orgArea}
           {imageArea}
           <BodyPreview
             previewResponse={previewResponse}
@@ -440,13 +440,7 @@ export default class ArticleForm extends Component {
               onChange={linkState(this, 'title')}
             />
             <div className="articleform__detailfields">
-              <Tags
-                defaultValue={tagList}
-                onInput={linkState(this, 'tagList')}
-                maxTags={4}
-                autoComplete="off"
-                classPrefix="articleform"
-              />
+
               <SetupImageButton
                 className="articleform__detailsButton articleform__detailsButton--image"
                 imgSrc={ImageUploadIcon}
@@ -466,14 +460,8 @@ export default class ArticleForm extends Component {
       editorView = (
         <div>
           {errorsArea}
-          {orgArea}
           {imageArea}
           {controls}
-          <BodyMarkdown
-            defaultValue={bodyMarkdown}
-            onKeyDown={this.handleBodyKeyDown}
-            onChange={linkState(this, 'bodyMarkdown')}
-          />
           <button
             className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
             onClick={this.toggleImageManagement}
@@ -488,28 +476,65 @@ export default class ArticleForm extends Component {
     }
     return (
       <form
-        className={`articleform__form articleform__form--${version}`}
+        id="article-form"
+        className={`crayons-article-form articleform__form articleform__form--${version}`}
         onSubmit={this.onSubmit}
         onInput={this.toggleEdit}
       >
-        {editorView}
-        <PublishToggle
+        <Header
+          onPreview={this.fetchPreview}
+          previewShowing={previewShowing}
+          organizations={organizations}
+          organizationId={organizationId}
+          onToggle={this.handleOrgIdChange}
+        />
+
+        <div className="crayons-layout crayons-layout--article-form">
+          {!previewShowing && (
+            <Form
+              titleDefaultValue={title}
+              titleOnKeyDown={this.handleTitleKeyDown}
+              titleOnChange={linkState(this, 'title')}
+              tagsDefaultValue={tagList}
+              tagsOnInput={linkState(this, 'tagList')}
+              bodyDefaultValue={bodyMarkdown}
+              bodyOnKeyDown={this.handleBodyKeyDown}
+              bodyOnChange={linkState(this, 'bodyMarkdown')}
+              bodyHasFocus={false}
+              version={version}
+            />
+          )}
+          {previewShowing && (
+            <Preview
+              previewResponse={previewResponse}
+              articleState={this.state}
+              version="article-preview"
+            />
+          )}
+          <Help
+            previewShowing={previewShowing}
+            onHelpMarkdown={this.toggleHelpMarkdown}
+            onHelpLiquid={this.toggleHelpLiquid}
+          />
+        </div>
+
+        <Actions
           published={published}
           version={version}
-          previewShowing={previewShowing}
-          helpShowing={helpShowing}
-          onPreview={this.fetchPreview}
           onPublish={this.onPublish}
-          onHelp={this.toggleHelp}
           onSaveDraft={this.onSaveDraft}
           onClearChanges={this.onClearChanges}
           edited={edited}
-          onChange={linkState(this, 'published')}
+          passedData={this.state}
+          onConfigChange={this.handleConfigChange}
         />
+
+        {helpShowing && <Modal>Hello, this is help message.</Modal>}
+
         <KeyboardShortcutsHandler togglePreview={this.fetchPreview} />
-        {notice}
-        {imageManagement}
-        {moreConfig}
+        {/* {notice} */}
+        {/* {imageManagement} */}
+        {/* {moreConfig} */}
       </form>
     );
   }
