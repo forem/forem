@@ -36,6 +36,8 @@
 
     <%# BEGIN Feed menu bar %>
     <div class="articles-list" id="articles-list">
+      <%= render(partial: "onboardings/task_card") if user_signed_in? %>
+
       <div class="on-page-nav-controls" id="on-page-nav-controls">
         <div class="on-page-nav-label">
           <div class="wide-nav-links">

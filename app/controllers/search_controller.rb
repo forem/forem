@@ -1,7 +1,7 @@
 class SearchController < ApplicationController
   before_action :authenticate_user!, only: %i[tags chat_channels reactions]
   before_action :format_integer_params
-  before_action :sanitize_params, only: %i[classified_listings reactions]
+  before_action :sanitize_params, only: %i[classified_listings reactions feed_content]
 
   CLASSIFIED_LISTINGS_PARAMS = [
     :category,
@@ -18,6 +18,7 @@ class SearchController < ApplicationController
     :per_page,
     :category,
     :search_fields,
+    :tag_boolean_mode,
     {
       tag_names: [],
       status: []
@@ -31,7 +32,9 @@ class SearchController < ApplicationController
   ].freeze
 
   FEED_PARAMS = [
+    :approved,
     :class_name,
+    :organization_id,
     :page,
     :per_page,
     :search_fields,

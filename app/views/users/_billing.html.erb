@@ -1,85 +1,87 @@
-<h3>Billing Details</h3>
-<% if current_user.stripe_id_code.blank? %>
-  <%= form_tag "/stripe_active_cards", id: "credit-card-form", method: :post do %>
-    <article>
-      <% if flash[:error].present? %>
-        <div id="error_explanation">
-          <p><%= flash[:error] %></p>
-        </div>
-      <% end %>
-    </article>
-    <div class="stripe-button-wrapper" id="stripe-button-wrapper">
-      <button id="custom-stripe-button" class="credit-card-button">+ Add Credit Card</button>
-    </div>
-  <% end %>
-<% else %>
-  <div class="billing-history-header">Your Credit Cards</div>
-  <% @customer.sources.each do |source| %>
-    <div class="billing-item">
-      <div><%= source.brand %> ending in <%= source.last4 %></div>
-      <span class="billing-item-detail">Expires <%= source.exp_month %> / <%= source.exp_year %> </span>
-      <% if source.id == @customer.default_source %>
-        <span class="billing-item-detail billing-item-green">primary</span>
-        <%= form_tag "/stripe_active_cards/#{source.id}", method: :delete do %>
-          <button class="billing-item-detail billing-item-red">remove card</button>
+<div class="crayons-card grid gap-6 p-6 mb-6">
+  <h3>Billing Details</h3>
+  <% if current_user.stripe_id_code.blank? %>
+    <%= form_tag "/stripe_active_cards", id: "credit-card-form", method: :post do %>
+      <article>
+        <% if flash[:error].present? %>
+          <div id="error_explanation">
+            <p><%= flash[:error] %></p>
+          </div>
         <% end %>
-      <% else %>
-        <%= form_tag "/stripe_active_cards/#{source.id}", method: :patch do %>
-          <button class="billing-item-detail">make primary</button>
+      </article>
+      <div class="stripe-button-wrapper" id="stripe-button-wrapper">
+        <button id="custom-stripe-button" class="crayons-btn" type="button">Add Credit Card</button>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="billing-history-header">Your Credit Cards</div>
+    <% @customer.sources.each do |source| %>
+      <div class="billing-item">
+        <div><%= source.brand %> ending in <%= source.last4 %></div>
+        <span class="billing-item-detail">Expires <%= source.exp_month %> / <%= source.exp_year %> </span>
+        <% if source.id == @customer.default_source %>
+          <span class="billing-item-detail billing-item-green">primary</span>
+          <%= form_tag "/stripe_active_cards/#{source.id}", method: :delete do %>
+            <button class="billing-item-detail billing-item-red">remove card</button>
+          <% end %>
+        <% else %>
+          <%= form_tag "/stripe_active_cards/#{source.id}", method: :patch do %>
+            <button class="billing-item-detail">make primary</button>
+          <% end %>
+          <%= form_tag "/stripe_active_cards/#{source.id}", method: :delete do %>
+            <button class="billing-item-detail billing-item-red">remove card</button>
+          <% end %>
         <% end %>
-        <%= form_tag "/stripe_active_cards/#{source.id}", method: :delete do %>
-          <button class="billing-item-detail billing-item-red">remove card</button>
-        <% end %>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
+    <%= form_tag "/stripe_active_cards", id: "credit-card-form", method: :post do %>
+      <br />
+      <div class="stripe-button-wrapper">
+        <button id="add-credit-card-button" class="credit-card-button">+ Add Another Credit Card</button>
+      </div>
+    <% end %>
   <% end %>
-  <%= form_tag "/stripe_active_cards", id: "credit-card-form", method: :post do %>
-    <br />
-    <div class="stripe-button-wrapper">
-      <button id="add-credit-card-button" class="credit-card-button">+ Add Another Credit Card</button>
-    </div>
-  <% end %>
-<% end %>
-<script src="https://checkout.stripe.com/checkout.js"></script>
+  <script src="https://checkout.stripe.com/checkout.js"></script>
 
-<script>
-  setTimeout(function () {
-    var handler = StripeCheckout.configure({
-      key: '<%= Rails.configuration.stripe[:publishable_key] %>',
-      image: "https://thepracticaldev.s3.amazonaws.com/i/xoxvppfjorrnxudkzskw.jpg",
-      locale: 'auto',
-      token: function (token) {
-        var form = document.getElementById("credit-card-form")
-        addHidden(form, 'stripe_token', token.id);
-        form.submit();
-      }
-    });
-
-    document.getElementById('add-credit-card-button').addEventListener('click', function (e) {
-      // Open Checkout with further options:
-      handler.open({
-        description: 'Add Credit Card',
-        amount: 0,
-        email: "<%= current_user.email %>",
-        panelLabel: "Add Card",
-        allowRememberMe: false,
-        zipCode: true,
+  <script>
+    setTimeout(function () {
+      var handler = StripeCheckout.configure({
+        key: '<%= Rails.configuration.stripe[:publishable_key] %>',
+        image: "https://thepracticaldev.s3.amazonaws.com/i/xoxvppfjorrnxudkzskw.jpg",
+        locale: 'auto',
+        token: function (token) {
+          var form = document.getElementById("credit-card-form")
+          addHidden(form, 'stripe_token', token.id);
+          form.submit();
+        }
       });
-      e.preventDefault();
-    });
 
-    // Close Checkout on page navigation:
-    window.addEventListener('popstate', function () {
-      handler.close();
-    });
-  }, 220)
+      document.getElementById('add-credit-card-button').addEventListener('click', function (e) {
+        // Open Checkout with further options:
+        handler.open({
+          description: 'Add Credit Card',
+          amount: 0,
+          email: "<%= current_user.email %>",
+          panelLabel: "Add Card",
+          allowRememberMe: false,
+          zipCode: true,
+        });
+        e.preventDefault();
+      });
 
-  function addHidden(theForm, key, value) {
-    // Create a hidden input element, and append it to the form:
-    var input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = key; // 'the key/name of the attribute/field that is sent to the server
-    input.value = value;
-    theForm.appendChild(input);
-  }
-</script>
+      // Close Checkout on page navigation:
+      window.addEventListener('popstate', function () {
+        handler.close();
+      });
+    }, 220)
+
+    function addHidden(theForm, key, value) {
+      // Create a hidden input element, and append it to the form:
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = key; // 'the key/name of the attribute/field that is sent to the server
+      input.value = value;
+      theForm.appendChild(input);
+    }
+  </script>
+</div>

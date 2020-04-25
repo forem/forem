@@ -13,7 +13,7 @@ RSpec.describe "Looking For Work", type: :system do
     visit "/settings"
     page.check "Looking for work"
     sidekiq_perform_enqueued_jobs do
-      click_button("SUBMIT")
+      click_button("Save")
     end
     expect(page).to have_text("Your profile was successfully updated")
     expect(user.follows.count).to eq(1)

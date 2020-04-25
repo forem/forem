@@ -5,8 +5,7 @@
 <% end %>
 <%= render "users/profile_header" %>
 <div class="home sub-home" id="index-container"
-     data-params="<%= params.merge(sort_by: "published_at", sort_direction: "desc").to_json(only: %i[tag username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
-     data-tag="<%= "organization_#{@organization.id}" %>"
+     data-params="<%= params.merge(sort_by: "published_at", sort_direction: "desc", organization_id: @organization.id).to_json(only: %i[tag organization_id username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
      data-feed="<%= params[:timeframe] || "base-feed" %>"
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
   <%= render "organizations/sidebar" %>
