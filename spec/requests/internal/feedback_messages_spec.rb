@@ -117,7 +117,7 @@ RSpec.describe "/internal/reports", type: :request do
       end
 
       it "queues a slack message to be sent" do
-        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
           post create_note_internal_reports_path, params: note_params
         end
       end
