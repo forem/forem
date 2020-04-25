@@ -1,82 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Onboarding /> ClosingSlide renders properly 1`] = `
-preact-render-spy (1 nodes)
--------
-<main class="onboarding-body">
-  <div class="onboarding-main">
-    <div class="onboarding-content">
-      <header class="onboarding-content-header">
-        <h1 class="title">
-          You‘re a part of the community!
-          <span
-            role="img"
-            aria-label="tada"
-          >
-             🎉
-          </span>
-        </h1>
-        <h2 class="subtitle">What next?</h2>
-      </header>
-      <div class="onboarding-what-next">
-        <a
-          href="/welcome"
-          data-no-instant={true}
-        >
-          <p>
-            <span
-              class="whatnext-emoji"
-              role="img"
-              aria-label="tada"
-            >
-              😊
-            </span>
-            Join the Welcome Thread
-          </p>
-        </a>
-        <a href="/new">
-          <p>
-            <span
-              class="whatnext-emoji"
-              role="img"
-              aria-label="tada"
-            >
-              ✍️
-            </span>
-            Write your first DEV post
-          </p>
-        </a>
-        <a href="/top/infinity">
-          <p>
-            <span
-              class="whatnext-emoji"
-              role="img"
-              aria-label="tada"
-            >
-              🤓
-            </span>
-            Read all-time top posts
-          </p>
-        </a>
-        <a href="/settings">
-          <p>
-            <span
-              class="whatnext-emoji"
-              role="img"
-              aria-label="tada"
-            >
-              💅
-            </span>
-            Customize your profile
-          </p>
-        </a>
-      </div>
-    </div>
-  </div>
-</main>
-
-`;
-
 exports[`<Onboarding /> EmailPreferencesForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
@@ -84,19 +7,36 @@ preact-render-spy (1 nodes)
   <div class="onboarding-main">
     <nav class="onboarding-navigation">
       <div class="navigation-content">
+        <div class="back-button-container">
+          <button
+            onClick={[Function bound prevSlide]}
+            class="back-button"
+            type="button"
+          >
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              class="crayons-icon"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+        </div>
         <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          Back
-        </button>
-        <button
+          disabled={false}
           onClick={[Function bound onSubmit]}
           class="next-button"
           type="button"
         >
-          Continue
+          Finish
         </button>
       </div>
     </nav>
@@ -151,19 +91,36 @@ preact-render-spy (1 nodes)
   <div class="onboarding-main">
     <nav class="onboarding-navigation">
       <div class="navigation-content">
+        <div class="back-button-container">
+          <button
+            onClick={[Function bound prevSlide]}
+            class="back-button"
+            type="button"
+          >
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              class="crayons-icon"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot "></span>
+          <span class="dot "></span>
+          <span class="dot "></span>
+        </div>
         <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          Back
-        </button>
-        <button
+          disabled={false}
           onClick={[Function bound handleComplete]}
-          class="next-button"
+          class="next-button skip-for-now"
           type="button"
         >
-          Continue
+          Skip for now
         </button>
       </div>
     </nav>
@@ -242,19 +199,36 @@ preact-render-spy (1 nodes)
   <div class="onboarding-main">
     <nav class="onboarding-navigation">
       <div class="navigation-content">
+        <div class="back-button-container">
+          <button
+            onClick={[Function bound prevSlide]}
+            class="back-button"
+            type="button"
+          >
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              class="crayons-icon"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot "></span>
+        </div>
         <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          Back
-        </button>
-        <button
+          disabled={false}
           onClick={[Function bound handleComplete]}
-          class="next-button"
+          class="next-button skip-for-now"
           type="button"
         >
-          Continue
+          Skip for now
         </button>
       </div>
     </nav>
@@ -444,19 +418,36 @@ preact-render-spy (1 nodes)
   <div class="onboarding-main">
     <nav class="onboarding-navigation">
       <div class="navigation-content">
+        <div class="back-button-container">
+          <button
+            onClick={[Function bound prevSlide]}
+            class="back-button"
+            type="button"
+          >
+            <svg
+              width="24"
+              height="24"
+              fill="none"
+              class="crayons-icon"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="stepper">
+          <span class="dot active"></span>
+          <span class="dot active"></span>
+          <span class="dot "></span>
+          <span class="dot "></span>
+        </div>
         <button
-          onClick={[Function bound prevSlide]}
-          class="back-button"
-          type="button"
-        >
-          Back
-        </button>
-        <button
+          disabled={false}
           onClick={[Function bound onSubmit]}
-          class="next-button"
+          class="next-button skip-for-now"
           type="button"
         >
-          Continue
+          Skip for now
         </button>
       </div>
     </nav>

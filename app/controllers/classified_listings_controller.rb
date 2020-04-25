@@ -16,14 +16,15 @@ class ClassifiedListingsController < ApplicationController
       return redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
     end
 
-    @classified_listings = if params[:category].blank?
-                             published_listings.
-                               order("bumped_at DESC").
-                               includes(:user, :organization, :taggings).
-                               limit(12)
-                           else
-                             ClassifiedListing.none
-                           end
+    @classified_listings =
+      if params[:category].blank?
+        published_listings.
+          order("bumped_at DESC").
+          includes(:user, :organization, :taggings, :classified_listing_category).
+          limit(12)
+      else
+        ClassifiedListing.none
+      end
     set_surrogate_key_header "classified-listings-#{params[:category]}"
   end
 

@@ -1,5 +1,4 @@
 class User < ApplicationRecord
-  include AlgoliaSearch
   include CloudinaryHelper
   include Searchable
   include Storext.model
@@ -162,7 +161,6 @@ class User < ApplicationRecord
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
-  before_destroy :remove_from_algolia_index, prepend: true
   before_destroy :destroy_empty_dm_channels, prepend: true
   before_destroy :destroy_follows, prepend: true
   before_destroy :unsubscribe_from_newsletters, prepend: true
@@ -171,43 +169,6 @@ class User < ApplicationRecord
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :sync_related_elasticsearch_docs, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
-
-  algoliasearch per_environment: true, enqueue: :trigger_delayed_index do
-    attribute :name
-    add_index "searchables",
-              id: :index_id,
-              per_environment: true,
-              enqueue: true do
-      attribute :user do
-        {
-          username: user.username,
-          name: user.username,
-          profile_image_90: profile_image_90,
-          pro: user.pro?
-        }
-      end
-      attribute :title, :path, :tag_list, :main_image, :id,
-                :featured, :published, :published_at, :featured_number, :comments_count,
-                :reactions_count, :positive_reactions_count, :class_name, :user_name,
-                :user_username, :comments_blob, :body_text, :tag_keywords_for_search,
-                :search_score, :hotness_score
-      searchableAttributes ["unordered(title)",
-                            "body_text",
-                            "tag_list",
-                            "tag_keywords_for_search",
-                            "user_name",
-                            "user_username",
-                            "comments_blob"]
-      attributesForFaceting [:class_name]
-      customRanking ["desc(search_score)", "desc(hotness_score)"]
-    end
-  end
-
-  def self.trigger_delayed_index(record, remove)
-    return if remove
-
-    Search::IndexWorker.perform_async("User", record.id)
-  end
 
   def self.dev_account
     find_by(id: SiteConfig.staff_user_id)
@@ -449,11 +410,6 @@ class User < ApplicationRecord
     ProfileImage.new(self).get(width: 90)
   end
 
-  def remove_from_algolia_index
-    remove_from_index!
-    Search::RemoveFromIndexWorker.perform_async("searchables_#{Rails.env}", index_id)
-  end
-
   def unsubscribe_from_newsletters
     return if email.blank?
 
@@ -485,19 +441,11 @@ class User < ApplicationRecord
       email_follower_notifications
   end
 
-  def title
-    name
-  end
-
   def hotness_score
     search_score
   end
 
   private
-
-  def index_id
-    "users-#{id}"
-  end
 
   def estimate_default_language
     Users::EstimateDefaultLanguageWorker.perform_async(id)
@@ -580,7 +528,7 @@ class User < ApplicationRecord
   end
 
   def conditionally_resave_articles
-    Users::ResaveArticlesWorker.perform_async(id) if core_profile_details_changed? && !user.banned
+    Users::ResaveArticlesWorker.perform_async(id) if core_profile_details_changed? && !banned
   end
 
   def bust_cache
@@ -623,46 +571,9 @@ class User < ApplicationRecord
     errors.add(:mastodon_url, "is not a valid URL")
   end
 
-  def tag_list
-    "" # Unused but necessary for search index
-  end
-
-  def main_image; end
-
-  def featured
-    true
-  end
-
-  def published
-    true
-  end
-
-  def published_at; end
-
-  def featured_number; end
-
+  # TODO: @practicaldev/sre: Remove this redundant method
   def user
     self
-  end
-
-  def class_name
-    self.class.name
-  end
-
-  def user_name
-    username
-  end
-
-  def user_username
-    username
-  end
-
-  def comments_blob
-    "" # Unused but necessary for search index
-  end
-
-  def body_text
-    "" # Unused but necessary for search index
   end
 
   def tag_keywords_for_search

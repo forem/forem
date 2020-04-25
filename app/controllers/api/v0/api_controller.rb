@@ -13,12 +13,12 @@ class Api::V0::ApiController < ApplicationController
     error_unprocessable_entity(exc.message)
   end
 
-  rescue_from ActiveRecord::RecordNotFound do |_exc|
-    error_not_found
-  end
+  rescue_from ActiveRecord::RecordNotFound, with: :error_not_found
 
-  rescue_from Pundit::NotAuthorizedError do |_exc|
-    error_unauthorized
+  rescue_from Pundit::NotAuthorizedError, with: :error_unauthorized
+
+  rescue_from RateLimitChecker::LimitReached do |exc|
+    error_too_many_requests(exc)
   end
 
   protected
@@ -33,6 +33,11 @@ class Api::V0::ApiController < ApplicationController
 
   def error_not_found
     render json: { error: "not found", status: 404 }, status: :not_found
+  end
+
+  def error_too_many_requests(exc)
+    response.headers["Retry-After"] = exc.retry_after
+    render json: { error: exc.message, status: 429 }, status: :too_many_requests
   end
 
   def authenticate!
