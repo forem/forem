@@ -61,6 +61,16 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
 
+    it "always applies channel discoverable and status params" do
+      params = { user_id: "all" }
+      filter = described_class.new(params: params)
+      expected_filters = [
+        { "terms" => { "status" => %w[active joining_request] } },
+        { "term" => { "channel_discoverable" => true } },
+      ]
+      expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
+    end
+
     it "ignores params we dont support" do
       params = { not_supported: "direct", user_id: 1 }
       filter = described_class.new(params: params)
