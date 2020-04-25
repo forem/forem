@@ -297,7 +297,11 @@ a.header-link {
       overflow-y: auto;
       font-size: 16px;
       font-family: $helvetica;
-      @include themeable(background, theme-container-accent-background, $light-gray);
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        $light-gray
+      );
       @include themeable(color, theme-color, $black);
 
       .loading-img {
@@ -346,7 +350,7 @@ a.header-link {
           width: calc(100% - 140px);
           white-space: nowrap;
           overflow: hidden;
-          text-overflow: ellipsis;  
+          text-overflow: ellipsis;
         }
 
         p {
@@ -405,7 +409,7 @@ a.header-link {
           position: relative;
           top: 4px;
           left: 3px;
-          @include themeable(fill, link-branded-color, #3b49df)
+          @include themeable(fill, link-branded-color, #3b49df);
         }
       }
     }
@@ -873,8 +877,9 @@ a.header-link {
         white-space: pre;
         font-size: 1em;
         background-color: white;
-        padding-top: 6%;
-        padding-bottom: 6%;
+        padding-top: 0%;
+        padding-bottom: 2%;
+        overflow-x: auto;
       }
     }
     img {
