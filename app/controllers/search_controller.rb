@@ -72,8 +72,12 @@ class SearchController < ApplicationController
     ccm_docs_discoverable = Search::ChatChannelMembership.search_documents(
       params: discoverable_params,
     )
+    ccm_docs_original_list = ccm_docs_original.map { |membership| membership["chat_channel_id"] }
+    discoverable_result = ccm_docs_discoverable.
+      reject { |membership| membership["viewable_by"] == current_user.id || ccm_docs_original_list.include?(membership["chat_channel_id"]) }.
+      uniq { |membership| membership["chat_channel_id"] }
 
-    render json: { result: (ccm_docs_original + ccm_docs_discoverable).uniq }
+    render json: { viewable_result: ccm_docs_original, discoverable_result: discoverable_result }
   end
 
   def classified_listings
