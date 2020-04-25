@@ -15,7 +15,12 @@ const Channels = ({
   triggerActiveContent,
 }) => {
   const discoverableChannels = chatChannels
-    .filter((channel) => channel.viewable_by !== currentUserId)
+    .filter(
+      (channel) =>
+        (channel.viewable_by === currentUserId &&
+          channel.status === 'joining_request') ||
+        channel.viewable_by !== currentUserId,
+    )
     .map((channel) => {
       return (
         <button
@@ -26,12 +31,14 @@ const Channels = ({
           data-content="sidecar-channel-request"
           data-channel-id={channel.chat_channel_id}
           data-channel-name={channel.channel_name}
+          data-channel-status={channel.status}
         >
           <span
             className="chatchanneltab chatchanneltab--inactive"
             data-channel-id={channel.chat_channel_id}
             data-channel-name={channel.channel_name}
             data-channel-slug={channel.channel_modified_slug}
+            data-channel-status={channel.status}
             style={{
               border: `1px solid ${channel.channel_color}`,
               boxShadow: `3px 3px 0px ${channel.channel_color}`,
