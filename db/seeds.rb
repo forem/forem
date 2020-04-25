@@ -31,8 +31,6 @@ num_users = 10 * SEEDS_MULTIPLIER
 counter += 1
 Rails.logger.info "#{counter}. Creating #{num_users} Users"
 
-User.clear_index!
-
 roles = %i[trusted chatroom_beta_tester workshop_pass]
 
 num_users.times do |i|
