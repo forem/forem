@@ -51,6 +51,17 @@ RSpec.describe "ChatChannels", type: :request do
     end
   end
 
+  describe "get /chat_channels?state=joining_request" do
+    it "returns joining request channels" do
+      membership = ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "joining_request", role: "mod")
+      membership.chat_channel.update(discoverable: true)
+      sign_in user
+      get "/chat_channels?state=joining_request"
+      expect(response.body).to include("\"status\":\"joining_request\"")
+      expect(response.body).to include("joining_requests")
+    end
+  end
+
   describe "get /chat_channels?state=unopened_ids" do
     it "returns unopened chat channel ids" do
       direct_channel.add_users [user]
