@@ -1,5 +1,7 @@
 module Articles
   class Builder
+    LINE_BREAK = "\n".freeze
+
     def initialize(user, tag, prefill)
       @user = user
       @tag = tag
@@ -45,7 +47,7 @@ module Articles
         cached_tag_list: @tag.name,
         processed_html: "",
         user_id: @user.id,
-        title: submission_template.split("title:")[1].to_s.split("\n")[0].to_s.strip,
+        title: normalized_text(submission_template, "title:"),
       )
     end
 
@@ -60,10 +62,10 @@ module Articles
     def prefill_user_editor_v2
       Article.new(
         body_markdown: @prefill.split("---").last.to_s.strip,
-        cached_tag_list: @prefill.split("tags:")[1].to_s.split("\n")[0].to_s.strip,
+        cached_tag_list: normalized_text(@prefill, "tags:"),
         processed_html: "",
         user_id: @user.id,
-        title: @prefill.split("title:")[1].to_s.split("\n")[0].to_s.strip,
+        title: normalized_text(@prefill, "title:"),
       )
     end
 
@@ -93,6 +95,11 @@ module Articles
         processed_html: "",
         user_id: @user&.id,
       )
+    end
+
+    def normalized_text(source, split_pattern)
+      text = source.split(split_pattern)[1].to_s
+      text.split(LINE_BREAK)[0].to_s.strip
     end
   end
 end
