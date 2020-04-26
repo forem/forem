@@ -1,3 +1,13 @@
+<head>
+    <style type="text/css">
+      img {
+        max-width:100%;
+        height:auto;
+        border:none
+      }
+    </style>
+</head>
+
 <h2 style="font-size:25px;">
   <a href="<%= user_url(@mentioner) %>"><%= @mentioner.name %></a> just mentioned you in their <%= @mention.mentionable_type.downcase %>!
 </h2>

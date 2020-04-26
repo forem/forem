@@ -4,6 +4,12 @@
  */
 export const LISTING_PAGE_SIZE = 75;
 
+export const MATCH_LISTING = [
+  'single-classified-listing-container__inner',
+  'classified-filters',
+  'classified-listings-modal-background',
+];
+
 export function updateListings(classifiedListings) {
   const fullListings = [];
 

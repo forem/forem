@@ -9,6 +9,7 @@ import ClassifiedFiltersCategories from './components/ClassifiedFiltersCategorie
 import ClassifiedFiltersTags from './components/ClassifiedFiltersTags';
 import {
   LISTING_PAGE_SIZE,
+  MATCH_LISTING,
   updateListings,
   getQueryParams,
   resizeAllMasonryItems,
@@ -93,6 +94,9 @@ export class Listings extends Component {
 
   addTag = (e, tag) => {
     e.preventDefault();
+    if (document.body.classList.contains('modal-open')) {
+      this.handleCloseModal('close-modal');
+    }
     const { query, tags, category } = this.state;
     const newTags = tags;
     if (newTags.indexOf(tag) === -1) {
@@ -135,11 +139,9 @@ export class Listings extends Component {
 
   handleCloseModal = (e) => {
     const { openedListing } = this.state;
-    if (
+    if (e === 'close-modal' ||
       (openedListing !== null && e.key === 'Escape') ||
-      e.target.id === 'single-classified-listing-container__inner' ||
-      e.target.id === 'classified-filters' ||
-      e.target.id === 'classified-listings-modal-background'
+      MATCH_LISTING.includes(e.target.id)
     ) {
       const { query, tags, category } = this.state;
       this.setState({ openedListing: null, page: 0 });
