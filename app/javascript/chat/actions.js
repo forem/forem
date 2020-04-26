@@ -100,13 +100,14 @@ export function conductModeration(
 export function getChannels(
   query,
   retrievalID,
-  props,
+  searchType,
   paginationNumber,
   additionalFilters,
   successCb,
   _failureCb,
 ) {
   const dataHash = {};
+  let responsePromise;
   if (additionalFilters.filters) {
     const [key, value] = additionalFilters.filters.split(':');
     dataHash[key] = value;
@@ -114,8 +115,11 @@ export function getChannels(
   dataHash.per_page = 30;
   dataHash.page = paginationNumber;
   dataHash.channel_text = query;
-
-  const responsePromise = fetchSearch('chat_channels', dataHash);
+  if (searchType === 'discoverable') {
+    responsePromise = fetchSearch('chat_channels_discoverable', dataHash);
+  } else {
+    responsePromise = fetchSearch('chat_channels', dataHash);
+  }
 
   return responsePromise.then((response) => {
     const channels = response.result;
@@ -138,37 +142,6 @@ export function getChannels(
           channels.unshift(json);
           successCb(channels, query);
         });
-    }
-  });
-}
-
-export function searchChannels(
-  query,
-  retrievalID,
-  props,
-  paginationNumber,
-  additionalFilters,
-  successCb,
-  _failureCb,
-) {
-  const dataHash = {};
-  if (additionalFilters.filters) {
-    const [key, value] = additionalFilters.filters.split(':');
-    dataHash[key] = value;
-  }
-  dataHash.per_page = 30;
-  dataHash.page = paginationNumber;
-  dataHash.channel_text = query;
-
-  const responsePromise = fetchSearch('chat_channels_discoverable', dataHash);
-
-  return responsePromise.then((response) => {
-    const channels = response.result;
-    if (
-      retrievalID === null ||
-      channels.filter((e) => e.chat_channel_id === retrievalID).length === 1
-    ) {
-      successCb(channels, query);
     }
   });
 }
