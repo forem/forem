@@ -28,7 +28,7 @@ RSpec.describe Bufferizer, type: :labor do
 
   it "sends to buffer facebook" do
     post = "test facebook post"
-    described_class.new("article", article, post).facebook_post!
+    described_class.new("article", article, post, user.id).facebook_post!
     expect(article.facebook_last_buffered.utc.to_i).to be > 2.minutes.ago.to_i
   end
 

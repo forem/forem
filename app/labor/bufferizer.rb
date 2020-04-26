@@ -2,7 +2,7 @@ class Bufferizer
   attr_accessor :post_type, :post, :text
   include ApplicationHelper
 
-  def initialize(post_type, post, text, admin_id)
+  def initialize(post_type, post, text, admin_id = nil)
     if post_type == "article"
       @article = post
     else
