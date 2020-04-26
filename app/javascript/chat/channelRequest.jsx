@@ -4,12 +4,7 @@ import PropTypes from 'prop-types';
 const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
   <div className="activechatchannel__activeArticle activesendrequest">
     <div className="joining-message">
-      <h2>
-        Hey
-        {data.user.name}
-        {' '}
-        !
-      </h2>
+      <h2>Hey {data.user.name} !</h2>
       <h3>You are not a member of this group yet. Send request to join.</h3>
     </div>
     <div className="user-picture">
@@ -37,16 +32,12 @@ const ChannelRequest = ({ resource: data, handleJoiningRequest }) => (
           data-channel-id={data.channel.id}
         >
           {' '}
-          Join 
-          {' '}
-          {data.channel.name}
-          {' '}
+          Join {data.channel.name}{' '}
         </button>
       ) : (
         <button type="button" className="cta">
           {' '}
-          Requested Already
-          {' '}
+          Requested Already{' '}
         </button>
       )}
     </div>
