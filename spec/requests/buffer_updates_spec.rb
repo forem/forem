@@ -33,7 +33,7 @@ RSpec.describe "BufferUpdates", type: :request do
       post "/buffer_updates",
            params:
            { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
-      expect(article.featured).to be true
+      expect(article.reload.featured).to be true
     end
 
     it "creates buffer hashtag" do
