@@ -38,13 +38,13 @@ RSpec.describe ActiveSupport::Cache::RedisStore do
 
         expect(value).to eq(1)
         expect(first_pttl > 0).to be_truthy
-        expect(first_pttl < 100_000).to be_truthy
+        expect(first_pttl <= 100_000).to be_truthy
 
-        cache_db.increment(key, 1, expires_in: 100.seconds)
+        cache_db.increment(key, 1, expires_in: 200.seconds)
         second_pttl = pttl
 
         expect(value).to eq(2)
-        expect(second_pttl < first_pttl).to be_truthy
+        expect(second_pttl <= first_pttl).to be_truthy
       end
     end
   end
