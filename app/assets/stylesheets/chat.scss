@@ -3,38 +3,28 @@
 
 // High level classes
 .chat-page-wrapper {
-  margin: 10px auto 0px;
-  width: 96%;
+  margin: 0px auto 0px;
+  width: 100%;
   max-width: calc(1540px + 10vw);
 }
 
 .live-chat {
-  height: calc(100vh - 70px);
+  height: calc(100vh - 56px);
 
   &.live-chat--iossafari {
     height: calc(100vh - 190px);
   }
 
   overflow-y: hidden;
-
-  @media screen and (min-width: 400px) {
-    height: calc(100vh - 70px);
-  }
 }
 
 //chat
 .chat {
   display: flex;
-  height: calc(100vh - 80px);
+  height: calc(100vh - 56px);
 
   &.chat--iossafari {
     height: calc(100vh - 201px);
-  }
-
-  padding-right: 3px;
-
-  @media screen and (min-width: 400px) {
-    height: calc(100vh - 80px);
   }
 }
 
@@ -76,6 +66,7 @@
   height: inherit;
   position: relative;
   overflow: hidden;
+  padding-top: 5px;
 
   .chat__channelssearchtoggle {
     background: transparent;
@@ -156,7 +147,7 @@
   color: var(--body-color);
 
   @media screen and (min-width: 1000px) {
-    width: calc(100% - 13px);
+    width: 98%;
   }
 }
 
@@ -215,11 +206,22 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border-radius: 5px;
-  @include themeable(border, theme-container-border, 1px solid $outline-color);
   background: var(--card-bg);
   flex-flow: row nowrap;
   position: relative;
+  @include themeable(
+    border-left,
+    theme-container-border,
+    1px solid $outline-color
+  );
+  @media screen and (min-width: 1540px) {
+    @include themeable(
+      border,
+      theme-container-border,
+      1px solid $outline-color
+    );
+    border-top: 0px;
+  }
 }
 
 .activechatchannel__conversation {
@@ -300,17 +302,11 @@
 }
 
 .activechatchannel__form {
-  @include themeable(
-    border-top,
-    theme-container-border,
-    1px solid $outline-color
-  );
-  @include themeable(background, theme-container-accent-background, #ededed);
   width: 100%;
-  height: 63px;
+  height: 73px;
   position: relative;
   @media screen and (min-height: 1000px) {
-    height: 85px;
+    height: 95px;
   }
 }
 
@@ -417,7 +413,6 @@
     bottom: 0;
     width: 100%;
     min-width: 100%;
-    border-radius: 5px;
   }
   .activechatchannel__activecontent.activechatchannel__activecontent--video {
     position: absolute;
@@ -439,7 +434,6 @@
     bottom: 0;
     width: 100%;
     min-width: 100%;
-    border-radius: 5px;
   }
   .activechatchannel__activecontent.activechatchannel__activecontent--sidecar {
     display: none;
@@ -561,7 +555,7 @@
 }
 
 .chatchanneltabbutton {
-  width: calc(95% - 2px);
+  width: calc(100% - 2px);
   border: none;
   background: transparent;
   padding: 2px 0px;
@@ -597,10 +591,14 @@
 
 .chatchanneltab--active {
   border: 1px solid var(--base-30);
+  background: var(--base-10);
+  img {
+    border: 1px solid var(--base-30);
+  }
 }
 
 .chatchanneltab--new {
-  border: 1px solid var(--accent-brand);
+  border: 1px solid var(--accent-brand-darker);
   color: var(--accent-brand-darker);
 }
 
@@ -613,15 +611,15 @@
   display: inline-block;
   min-height: 0.3em;
   min-width: 0.3em;
-  border-radius: 100px;
   margin-right: 5px;
-  border: 1px solid var(--base-30);
 
   img {
     height: calc(22px + 0.3vw);
     width: calc(22px + 0.3vw);
     vertical-align: calc(-6px - 0.14vw);
     border-radius: 100px;
+    border: 1px solid var(--base-30);
+    background: white;
   }
 
   .chatchanneltabgroupicon {
@@ -630,7 +628,34 @@
   }
 }
 
-.chatchanneltabindicator--new {
+.chat--contracted {
+  .chatchannels {
+    width: 45px;
+  }
+  .chatchanneltabbutton {
+    margin-left: 1px;
+  }
+  .chatchanneltab {
+    padding: 6px 1px;
+    img {
+      height: 36px;
+      width: 36px;
+    }
+  }
+  .chatchanneltab--active {
+    background: var(--base-20);
+  }
+  .chatchanneltab--new {
+    background: var(--accent-brand-darker);
+    color: white;
+  }
+}
+
+.chatchanneltabindicator .chatchanneltabindicatorgroupimage {
+  border-radius: 3px;
+}
+
+.chatchanneltabindicator--new img {
   border: 1px solid var(--accent-brand);
 }
 
@@ -802,9 +827,6 @@
   }
 }
 
-.chatmessagebody__divider {
-}
-
 .chatmessagebody__message {
   p {
     margin-top: 0;
@@ -847,15 +869,15 @@
 }
 
 .messagecomposer__input {
-  border-radius: 3px;
+  border-radius: 5px;
   font-size: 16px;
-  margin: 4px 4px 4px 6px;
-  padding: 4px;
+  margin: 0px 4px 4px 6px;
+  padding: 5px;
   resize: none;
   flex-grow: 1;
   height: 44px;
   background: var(--card-bg);
-  @include themeable(border, theme-border, 1px solid $outline-color);
+  border: 1px solid var(--base-40);
   color: var(--body-color);
   @media screen and (min-height: 1000px) {
     height: 66px;
@@ -863,8 +885,8 @@
 }
 
 .messagecomposer__submit {
-  margin: 4px 6px 4px 0;
-  border-radius: 3px;
+  margin: 0px 6px 4px 0;
+  border-radius: 5px;
   background: var(--accent-brand);
   font-weight: 600px;
   font-family: $helvetica-condensed;
