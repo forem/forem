@@ -7,6 +7,7 @@ class Internal::ArticlesController < Internal::ApplicationController
 
   def index
     @pending_buffer_updates = BufferUpdate.where(status: "pending").includes(:article)
+    @user_buffer_updates = BufferUpdate.where(status: "sent_direct", approver_user_id: current_user.id).where("created_at > ?", 24.hours.ago)
 
     case params[:state]
     when /not\-buffered/
@@ -17,6 +18,8 @@ class Internal::ArticlesController < Internal::ApplicationController
       @articles = articles_top(months_ago)
     when "satellite"
       @articles = articles_satellite
+    when "satellite-not-bufffered"
+      @articles = articles_satellite.where(last_buffered: nil)
     when "boosted-additional-articles"
       @articles = articles_boosted_additional
     when "chronological"
