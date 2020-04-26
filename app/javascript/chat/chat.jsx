@@ -570,7 +570,7 @@ export default class Chat extends Component {
     }
     if (escPressed && activeContent[activeChannelId]) {
       this.setActiveContentState(activeChannelId, null);
-      this.setState({fullscreenContent: null});
+      this.setState({fullscreenContent: null, expanded: window.innerWidth > 600});
     }
 
   };
@@ -831,11 +831,11 @@ export default class Chat extends Component {
         });
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
-        this.setState({ fullscreenContent: null });
+        this.setState({ fullscreenContent: null, expanded: window.innerWidth > 600 });
       } else if (target.dataset.content === 'fullscreen') {
         const mode =
           this.state.fullscreenContent === 'sidecar' ? null : 'sidecar';
-        this.setState({ fullscreenContent: mode });
+        this.setState({ fullscreenContent: mode, expanded: (mode === null || window.innerWidth > 1600) });
       }
     }
     document.getElementById('messageform').focus();
@@ -1189,9 +1189,9 @@ export default class Chat extends Component {
         (this.scroller.scrollTop + this.scroller.clientHeight) /
         this.scroller.scrollHeight;
 
-      if (scrolledRatio < 0.7) {
+      if (scrolledRatio < 0.5) {
         jumpbackButton.classList.remove('chatchanneljumpback__hide');
-      } else if (scrolledRatio > 0.8) {
+      } else if (scrolledRatio > 0.6) {
         jumpbackButton.classList.add('chatchanneljumpback__hide');
       }
 
@@ -1304,11 +1304,11 @@ export default class Chat extends Component {
 
   onTriggerVideoContent = (e) => {
     if (e.target.dataset.content === 'exit') {
-      this.setState({ videoPath: null, fullscreenContent: null });
+      this.setState({ videoPath: null, fullscreenContent: null, expanded: window.innerWidth > 600 });
     } else if (this.state.fullscreenContent === 'video') {
       this.setState({ fullscreenContent: null });
     } else {
-      this.setState({ fullscreenContent: 'video' });
+      this.setState({ fullscreenContent: 'video', expanded: window.innerWidth > 1600 });
     }
   };
 
