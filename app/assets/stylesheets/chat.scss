@@ -875,10 +875,13 @@
   padding: 5px;
   resize: none;
   flex-grow: 1;
-  height: 44px;
+  height: 54px;
   background: var(--card-bg);
   border: 1px solid var(--base-40);
   color: var(--body-color);
+  @media screen and (min-width: 600px) {
+    height: 44px;
+  }
   @media screen and (min-height: 1000px) {
     height: 66px;
   }
