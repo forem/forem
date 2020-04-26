@@ -209,9 +209,17 @@
   background: var(--card-bg);
   flex-flow: row nowrap;
   position: relative;
-  @include themeable(border-left, theme-container-border, 1px solid $outline-color);
+  @include themeable(
+    border-left,
+    theme-container-border,
+    1px solid $outline-color
+  );
   @media screen and (min-width: 1540px) {
-    @include themeable(border, theme-container-border, 1px solid $outline-color);
+    @include themeable(
+      border,
+      theme-container-border,
+      1px solid $outline-color
+    );
     border-top: 0px;
   }
 }
@@ -625,7 +633,7 @@
     width: 45px;
   }
   .chatchanneltabbutton {
-    margin-left: 1px
+    margin-left: 1px;
   }
   .chatchanneltab {
     padding: 6px 1px;
@@ -646,8 +654,6 @@
 .chatchanneltabindicator .chatchanneltabindicatorgroupimage {
   border-radius: 3px;
 }
-
-
 
 .chatchanneltabindicator--new img {
   border: 1px solid var(--accent-brand);
@@ -819,9 +825,6 @@
       transparent
     );
   }
-}
-
-.chatmessagebody__divider {
 }
 
 .chatmessagebody__message {

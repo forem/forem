@@ -9,7 +9,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
     id="chatchannels__channelslist"
   >
     <button
-      class="chatchanneltabbutton"
+      class="chatchanneltabbutton crayons-link"
       data-channel-slug="@0"
       onClick={[Function]}
       type="button"
@@ -30,14 +30,14 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
         >
           <img
             alt="pic"
-            class="chatchanneltabindicatordirectimage invert-channel-image"
+            class="chatchanneltabindicatorgroupimage invert-channel-image"
           />
         </span>
         channel name 1
       </span>
     </button>
     <button
-      class="chatchanneltabbutton"
+      class="chatchanneltabbutton crayons-link"
       data-channel-slug="@1"
       onClick={[Function]}
       type="button"
@@ -65,7 +65,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
       </span>
     </button>
     <button
-      class="chatchanneltabbutton"
+      class="chatchanneltabbutton crayons-link"
       data-channel-slug="@2"
       onClick={[Function]}
       type="button"
@@ -86,7 +86,7 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
         >
           <img
             alt="pic"
-            class="chatchanneltabindicatordirectimage invert-channel-image"
+            class="chatchanneltabindicatorgroupimage invert-channel-image"
           />
         </span>
         group channel 3
@@ -186,7 +186,7 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
     id="chatchannels__channelslist"
   >
     <button
-      class="chatchanneltabbutton"
+      class="chatchanneltabbutton crayons-link"
       data-channel-slug="@0"
       onClick={[Function]}
       type="button"
@@ -207,14 +207,14 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
         >
           <img
             alt="pic"
-            class="chatchanneltabindicatordirectimage invert-channel-image"
+            class="chatchanneltabindicatorgroupimage invert-channel-image"
           />
         </span>
         channel name 1
       </span>
     </button>
     <button
-      class="chatchanneltabbutton"
+      class="chatchanneltabbutton crayons-link"
       data-channel-slug="@1"
       onClick={[Function]}
       type="button"
@@ -242,7 +242,7 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
       </span>
     </button>
     <button
-      class="chatchanneltabbutton"
+      class="chatchanneltabbutton crayons-link"
       data-channel-slug="@2"
       onClick={[Function]}
       type="button"
@@ -263,7 +263,7 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
         >
           <img
             alt="pic"
-            class="chatchanneltabindicatordirectimage invert-channel-image"
+            class="chatchanneltabindicatorgroupimage invert-channel-image"
           />
         </span>
         group channel 3
