@@ -271,7 +271,7 @@ export default class Chat extends Component {
   };
 
   loadPaginatedChannels = (channels) => {
-    const { state } = this.state;
+    const state = this.state;
     const currentChannels = state.chatChannels;
     const currentChannelIds = currentChannels.map((channel) => channel.id);
     const newChannels = currentChannels;
@@ -1146,25 +1146,25 @@ export default class Chat extends Component {
         );
       }
       return (
-        <div className="chat__channels">
-          {notificationsButton}
-          <button
-            className="chat__channelstogglebutt"
-            onClick={this.toggleExpand}
-            style={{ width: '100%' }}
-            type="button"
-          >
-            {'>'}
-          </button>
-          <Channels
-            activeChannelId={state.activeChannelId}
-            chatChannels={state.chatChannels}
-            unopenedChannelIds={state.unopenedChannelIds}
-            handleSwitchChannel={this.handleSwitchChannel}
-            expanded={state.expanded}
-          />
-          {notificationsState}
-        </div>
+          <div className="chat__channels">
+            {notificationsButton}
+            <button
+              className="chat__channelstogglebutt"
+              onClick={this.toggleExpand}
+              style={{ width: '100%' }}
+              type="button"
+            >
+              {'>'}
+            </button>
+            <Channels
+              activeChannelId={state.activeChannelId}
+              chatChannels={state.chatChannels}
+              unopenedChannelIds={state.unopenedChannelIds}
+              handleSwitchChannel={this.handleSwitchChannel}
+              expanded={state.expanded}
+            />
+            {notificationsState}
+          </div>
       );
     }
     return '';
