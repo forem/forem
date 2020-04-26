@@ -11,43 +11,16 @@ export default class Content extends Component {
   };
 
   render() {
+    const { onTriggerContent, fullscreen } = this.props;
     if (!this.props.resource) {
       return '';
     }
-    const fullScreenIcon = this.props.fullscreen ? (
-      <svg
-        data-content="fullscreen"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="24"
-        height="24"
-      >
-        <path data-content="fullscreen" fill="none" d="M0 0h24v24H0z" />
-        <path
-          data-content="fullscreen"
-          d="M18 7h4v2h-6V3h2v4zM8 9H2V7h4V3h2v6zm10 8v4h-2v-6h6v2h-4zM8 15v6H6v-4H2v-2h6z"
-        />
-      </svg>
-    ) : (
-      <svg
-        data-content="fullscreen"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="24"
-        height="24"
-      >
-        <path data-content="fullscreen" fill="none" d="M0 0h24v24H0z" />
-        <path
-          data-content="fullscreen"
-          d="M20 3h2v6h-2V5h-4V3h4zM4 3h4v2H4v4H2V3h2zm16 16v-4h2v6h-6v-2h4zM4 19h4v2H2v-6h2v4z"
-        />
-      </svg>
-    );
+
     return (
       <div
         className="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
         id="chat_activecontent"
-        onClick={this.props.onTriggerContent}
+        onClick={onTriggerContent}
       >
         <button
           className="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
@@ -72,7 +45,27 @@ export default class Content extends Component {
           data-content="fullscreen"
           style={{ left: '39px' }}
         >
-          {fullScreenIcon}
+          {' '}
+          <svg
+            data-content="fullscreen"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            width="24"
+            height="24"
+          >
+            <path data-content="fullscreen" fill="none" d="M0 0h24v24H0z" />
+            {fullscreen ? (
+              <path
+                data-content="fullscreen"
+                d="M18 7h4v2h-6V3h2v4zM8 9H2V7h4V3h2v6zm10 8v4h-2v-6h6v2h-4zM8 15v6H6v-4H2v-2h6z"
+              />
+            ) : (
+              <path
+                data-content="fullscreen"
+                d="M20 3h2v6h-2V5h-4V3h4zM4 3h4v2H4v4H2V3h2zm16 16v-4h2v6h-6v-2h4zM4 19h4v2H2v-6h2v4z"
+              />
+            )}
+          </svg>
         </button>
         {display(this.props)}
       </div>
@@ -81,7 +74,8 @@ export default class Content extends Component {
 }
 
 function display(props) {
-  if (props.resource.type_of === 'loading-user') {
+  const { resource } = props;
+  if (resource.type_of === 'loading-user') {
     return (
       <div
         style={{
@@ -95,14 +89,14 @@ function display(props) {
       />
     );
   }
-  if (props.resource.type_of === 'article') {
-    return <Article resource={props.resource} />;
+  if (resource.type_of === 'article') {
+    return <Article resource={resource} />;
   }
-  if (props.resource.type_of === 'channel-request') {
+  if (resource.type_of === 'channel-request') {
     return (
       <ChannelRequest
-        resource={props.resource.data}
-        handleJoiningRequest={props.resource.handleJoiningRequest}
+        resource={resource.data}
+        handleJoiningRequest={resource.handleJoiningRequest}
       />
     );
   }
