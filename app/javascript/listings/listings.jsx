@@ -8,6 +8,11 @@ import SingleListing from './singleListing';
  * @constant {number}
  */
 const LISTING_PAGE_SIZE = 75;
+const MATCH_LISTING = [
+  'single-classified-listing-container__inner',
+  'classified-filters',
+  'classified-listings-modal-background',
+];
 
 function resizeMasonryItem(item) {
   /* Get the grid object, its row-gap, and the size of its implicit rows */
@@ -49,7 +54,7 @@ function resizeAllMasonryItems() {
 function updateListings(classifiedListings) {
   const fullListings = [];
 
-  classifiedListings.forEach(listing => {
+  classifiedListings.forEach((listing) => {
     if (listing.bumped_at) {
       fullListings.push(listing);
     }
@@ -138,6 +143,9 @@ export class Listings extends Component {
 
   addTag = (e, tag) => {
     e.preventDefault();
+    if (document.body.classList.contains('modal-open')) {
+      this.handleCloseModal('close-modal');
+    }
     const { query, tags, category } = this.state;
     const newTags = tags;
     if (newTags.indexOf(tag) === -1) {
@@ -167,18 +175,18 @@ export class Listings extends Component {
     this.listingSearch(query, tags, cat, null);
   };
 
-  handleKeyDown = e => {
+  handleKeyDown = (e) => {
     // Enable Escape key to close an open listing.
     this.handleCloseModal(e);
   };
 
-  handleCloseModal = e => {
+  handleCloseModal = (e) => {
     const { openedListing } = this.state;
+
     if (
+      e === 'close-modal' ||
       (openedListing !== null && e.key === 'Escape') ||
-      e.target.id === 'single-classified-listing-container__inner' ||
-      e.target.id === 'classified-filters' ||
-      e.target.id === 'classified-listings-modal-background'
+      MATCH_LISTING.includes(e.target.id)
     ) {
       const { query, tags, category } = this.state;
       this.setState({ openedListing: null, page: 0 });
@@ -199,12 +207,12 @@ export class Listings extends Component {
     document.body.classList.add('modal-open');
   };
 
-  handleDraftingMessage = e => {
+  handleDraftingMessage = (e) => {
     e.preventDefault();
     this.setState({ message: e.target.value });
   };
 
-  handleSubmitMessage = e => {
+  handleSubmitMessage = (e) => {
     e.preventDefault();
     const { message, openedListing } = this.state;
     if (message.replace(/\s/g, '').length === 0) {
@@ -231,7 +239,7 @@ export class Listings extends Component {
       });
   };
 
-  handleQuery = e => {
+  handleQuery = (e) => {
     const { tags, category } = this.state;
     this.setState({ query: e.target.value, page: 0 });
     this.listingSearch(e.target.value, tags, category, null);
@@ -326,7 +334,7 @@ export class Listings extends Component {
     };
 
     const responsePromise = fetchSearch('classified_listings', dataHash);
-    return responsePromise.then(response => {
+    return responsePromise.then((response) => {
       const classifiedListings = response.result;
       const fullListings = updateListings(classifiedListings);
       t.setState({
@@ -351,7 +359,7 @@ export class Listings extends Component {
       initialFetch,
       message,
     } = this.state;
-    const allListings = listings.map(listing => (
+    const allListings = listings.map((listing) => (
       <SingleListing
         onAddTag={this.addTag}
         onChangeCategory={this.selectCategory}
@@ -361,21 +369,21 @@ export class Listings extends Component {
         isOpen={false}
       />
     ));
-    const selectedTags = tags.map(tag => (
+    const selectedTags = tags.map((tag) => (
       <span className="classified-tag">
         <a
           href="/listings?tags="
           className="tag-name"
-          onClick={e => this.removeTag(e, tag)}
+          onClick={(e) => this.removeTag(e, tag)}
           data-no-instant
         >
           <span>{tag}</span>
           <span
             className="tag-close"
-            onClick={e => this.removeTag(e, tag)}
+            onClick={(e) => this.removeTag(e, tag)}
             data-no-instant
             role="button"
-            onKeyPress={e => e.key === 'Enter' && this.removeTag(e, tag)}
+            onKeyPress={(e) => e.key === 'Enter' && this.removeTag(e, tag)}
             tabIndex="0"
           >
             ×
@@ -383,11 +391,11 @@ export class Listings extends Component {
         </a>
       </span>
     ));
-    const categoryLinks = allCategories.map(cat => (
+    const categoryLinks = allCategories.map((cat) => (
       <a
         href={`/listings/${cat.slug}`}
         className={cat.slug === category ? 'selected' : ''}
-        onClick={e => this.selectCategory(e, cat.slug)}
+        onClick={(e) => this.selectCategory(e, cat.slug)}
         data-no-instant
       >
         {cat.name}
@@ -397,7 +405,7 @@ export class Listings extends Component {
     if (showNextPageButt) {
       nextPageButt = (
         <div className="classifieds-load-more-button">
-          <button onClick={e => this.loadNextPage(e)} type="button">
+          <button onClick={(e) => this.loadNextPage(e)} type="button">
             Load More Listings
           </button>
         </div>
@@ -530,7 +538,7 @@ export class Listings extends Component {
             <a
               href="/listings"
               className={category === '' ? 'selected' : ''}
-              onClick={e => this.selectCategory(e, '')}
+              onClick={(e) => this.selectCategory(e, '')}
               data-no-instant
             >
               all
