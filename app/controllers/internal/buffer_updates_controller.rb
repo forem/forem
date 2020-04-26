@@ -6,7 +6,7 @@ class Internal::BufferUpdatesController < Internal::ApplicationController
     tweet = params[:tweet]
     listing_id = params[:listing_id]
     listing = ClassifiedListing.find(params[:listing_id]) if listing_id.present?
-    article.update(featured: true)
+    article&.update(featured: true)
     case params[:social_channel]
     when "main_twitter"
       Bufferizer.new("article", article, tweet, current_user.id).main_tweet!
