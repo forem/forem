@@ -14,7 +14,6 @@ import {
   sendChannelInviteAction,
   deleteMessage,
   editMessage,
-  searchChannels,
   sendChannelRequest,
 } from './actions';
 import {
@@ -131,7 +130,7 @@ export default class Chat extends Component {
       getChannels(
         '',
         activeChannelId,
-        this.props,
+        '',
         channelPaginationNum,
         filters,
         this.loadChannels,
@@ -517,7 +516,7 @@ export default class Chat extends Component {
       getChannels(
         filterQuery,
         activeChannelId,
-        this.props,
+        '',
         channelPaginationNum,
         filters,
         this.loadPaginatedChannels,
@@ -934,16 +933,16 @@ export default class Chat extends Component {
     });
     const filters = type === 'all' ? {} : { filters: `channel_type:${type}` };
     if (filterQuery && type !== 'direct') {
-      searchChannels(
+      getChannels(
         filterQuery,
         null,
-        this.props,
+        'discoverable',
         0,
         filters,
         this.loadChannels,
       );
     } else {
-      getChannels(filterQuery, null, this.props, 0, filters, this.loadChannels);
+      getChannels(filterQuery, null, '', 0, filters, this.loadChannels);
     }
   };
 
@@ -1047,23 +1046,16 @@ export default class Chat extends Component {
         ? {}
         : { filters: `channel_type:${channelTypeFilter}` };
     if (e.target.value) {
-      searchChannels(
+      getChannels(
         e.target.value,
         null,
-        this.props,
+        'discoverable',
         0,
         filters,
         this.loadChannels,
       );
     } else {
-      getChannels(
-        e.target.value,
-        null,
-        this.props,
-        0,
-        filters,
-        this.loadChannels,
-      );
+      getChannels(e.target.value, null, '', 0, filters, this.loadChannels);
     }
   };
 
@@ -1090,7 +1082,7 @@ export default class Chat extends Component {
         document.getElementById('chatchannelsearchbar').focus();
       }, 100);
     } else {
-      getChannels('', null, this.props, 0, '', this.loadChannels);
+      getChannels('', null, '', 0, '', this.loadChannels);
       this.setState({ filterQuery: '' });
     }
     this.setState({ searchShowing: !this.state.searchShowing });
