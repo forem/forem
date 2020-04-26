@@ -2,6 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ConfigImage from 'images/three-dots.svg';
+import ChannelButton from './components/channelButton';
 
 const Channels = ({
   activeChannelId,
@@ -23,49 +24,13 @@ const Channels = ({
     )
     .map((channel) => {
       return (
-        <button
-          type="button"
-          key={channel.id}
-          className="chatchanneltabbutton"
-          onClick={triggerActiveContent}
-          data-content="sidecar-channel-request"
-          data-channel-id={channel.chat_channel_id}
-          data-channel-name={channel.channel_name}
-          data-channel-status={channel.status}
-        >
-          <span
-            className="chatchanneltab chatchanneltab--inactive"
-            data-channel-id={channel.chat_channel_id}
-            data-channel-name={channel.channel_name}
-            data-channel-slug={channel.channel_modified_slug}
-            data-channel-status={channel.status}
-            style={{
-              border: `1px solid ${channel.channel_color}`,
-              boxShadow: `3px 3px 0px ${channel.channel_color}`,
-            }}
-          >
-            <span
-              data-channel-slug={channel.channel_modified_slug}
-              className="chatchanneltabindicator"
-              data-channel-name={channel.channel_name}
-              data-channel-id={channel.chat_channel_id}
-            >
-              <img
-                src={channel.channel_image}
-                alt="pic"
-                className={
-                  channel.channel_type === 'direct'
-                    ? 'chatchanneltabindicatordirectimage'
-                    : 'chatchanneltabindicatordirectimage invert-channel-image'
-                }
-              />
-            </span>
-            {channel.channel_name}
-          </span>
-        </button>
+        <ChannelButton
+          channel={channel}
+          discoverableChannel
+          triggerActiveContent={triggerActiveContent}
+        />
       );
     });
-  console.log(chatChannels);
   const channels = chatChannels
     .filter(
       (channel) =>
@@ -83,46 +48,13 @@ const Channels = ({
         : 'chatchanneltab--inactive';
 
       return (
-        <button
-          type="button"
-          key={channel.id}
-          className="chatchanneltabbutton"
-          onClick={handleSwitchChannel}
-          data-channel-id={channel.chat_channel_id}
-          data-channel-slug={channel.channel_modified_slug}
-        >
-          <span
-            className={`chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator}`}
-            data-channel-id={channel.chat_channel_id}
-            data-channel-slug={channel.channel_modified_slug}
-            style={{
-              border: `1px solid ${channel.channel_color}`,
-              boxShadow: `3px 3px 0px ${channel.channel_color}`,
-            }}
-          >
-            <span
-              data-channel-slug={channel.channel_modified_slug}
-              className={`chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicator}`}
-              data-channel-id={channel.chat_channel_id}
-            >
-              <img
-                src={channel.channel_image}
-                alt="pic"
-                className={
-                  channel.channel_type === 'direct'
-                    ? 'chatchanneltabindicatordirectimage'
-                    : 'chatchanneltabindicatordirectimage invert-channel-image'
-                }
-              />
-            </span>
-            {isUnopened ? (
-              <span className="crayons-indicator crayons-indicator--accent crayons-indicator--bullet" />
-            ) : (
-              ''
-            )}
-            {channel.channel_name}
-          </span>
-        </button>
+        <ChannelButton
+          channel={channel}
+          newMessagesIndicator={newMessagesIndicator}
+          otherClassname={otherClassname}
+          handleSwitchChannel={handleSwitchChannel}
+          isUnopened={isUnopened}
+        />
       );
     });
 
