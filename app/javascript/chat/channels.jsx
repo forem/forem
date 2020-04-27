@@ -15,6 +15,7 @@ const Channels = ({
   currentUserId,
   triggerActiveContent,
 }) => {
+
   const discoverableChannels = chatChannels
     .filter(
       (channel) =>
