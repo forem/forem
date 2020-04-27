@@ -9,6 +9,15 @@
 }
 
 .crayons-article {
+  &__cover {
+    margin: -#{$su-6} -#{$su-8} #{$su-7} -#{$su-8};
+    width: calc(100% + #{$su-8} + #{$su-8}); 
+    padding-top: percentage($cover-image-height / $cover-image-width); // TODO: fix ratio
+    background-size: cover;
+    background-position: center center;
+    border-radius: $br-default $br-default 0 0;
+  }
+
   &__header {
     margin-bottom: $su-6;
   }

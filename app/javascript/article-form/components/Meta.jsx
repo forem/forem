@@ -10,10 +10,15 @@ export const Meta = ({
   titleOnChange,
   tagsDefaultValue,
   tagsOnInput,
+  mainImage,
+  onMainImageUrlChange,
 }) => {
   return (
     <div>
-      <Cover />
+      <Cover
+        mainImage={mainImage}
+        onMainImageUrlChange={onMainImageUrlChange}
+      />
       <Title
         defaultValue={titleDefaultValue}
         onKeyDown={titleOnKeyDown}
@@ -33,6 +38,8 @@ Meta.propTypes = {
   titleOnChange: PropTypes.func.isRequired,
   tagsDefaultValue: PropTypes.string.isRequired,
   tagsOnInput: PropTypes.func.isRequired,
-}
+  mainImage: PropTypes.string.isRequired,
+  onMainImageUrlChange: PropTypes.func.isRequired
+};
 
 Meta.displayName = 'Meta';

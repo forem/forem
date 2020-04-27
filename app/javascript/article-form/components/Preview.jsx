@@ -1,18 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const CoverImage = ({ className, imageSrc, imageAlt }) => (
-  <div className={className}>
-    <img src={imageSrc} alt={imageAlt} />
-  </div>
-);
-
-CoverImage.propTypes = {
-  className: PropTypes.string.isRequired,
-  imageSrc: PropTypes.string.isRequired,
-  imageAlt: PropTypes.string.isRequired,
-};
-
 function titleArea(previewResponse, version, articleState) {
   if (version === 'help') {
     // possibly something different here in future.
@@ -24,7 +12,7 @@ function titleArea(previewResponse, version, articleState) {
   if (tagArray.length > 0 && tagArray[0].length > 0) {
     tags = tagArray.map((tag) => {
       return (
-        <span class="crayons-tag">{tag.length > 0 ? tag : ''}</span>
+        <span className="crayons-tag">{tag.length > 0 ? tag : ''}</span>
       );
     });
   }
@@ -41,25 +29,17 @@ function titleArea(previewResponse, version, articleState) {
     }
   }
 
-  const previewTitle = previewResponse.title || articleState.title || '';
-
-  let coverImageHTML = '';
-  if (coverImage.length > 0) {
-    coverImageHTML = (
-      <CoverImage
-        className="articleform__mainimage articleform__mainimagepreview"
-        imageSrc={coverImage}
-        imageAlt="cover"
-      />
-    );
-  }
+  const previewTitle = previewResponse.title || articleState.title || '👀';
 
   return (
     <header className="crayons-article__header">
-      {coverImageHTML}
-      <h1 className="fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6">
-        {previewTitle}
-      </h1>
+      {coverImage.length > 0 && (
+        <div
+          className="crayons-article__cover"
+          style={{ backgroundImage: `url(${coverImage})` }}
+        />
+      )}
+      <h1 className="fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6">{previewTitle}</h1>
       <div className="crayons-article__tags">{tags}</div>
     </header>
   );

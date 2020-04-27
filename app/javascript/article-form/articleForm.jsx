@@ -3,14 +3,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
-// eslint-disable-next-line import/no-unresolved
-import ImageUploadIcon from 'images/image-upload.svg';
-// eslint-disable-next-line import/no-unresolved
-import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
-import BodyPreview from './elements/bodyPreview';
-import Notice from './elements/notice';
-import MainImage from './elements/mainImage';
 import ImageManagement from './elements/imageManagement';
 import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
@@ -20,28 +13,8 @@ import {
   Form,
   Header,
   Help,
-  Title,
   Preview,
-  Modal,
 } from './components';
-
-const SetupImageButton = ({
-  className,
-  imgSrc,
-  imgAltText,
-  onClickCallback,
-}) => (
-  <button type="button" className={className} onClick={onClickCallback}>
-    <img src={imgSrc} alt={imgAltText} />
-  </button>
-);
-
-SetupImageButton.propTypes = {
-  className: PropTypes.string.isRequired,
-  imgSrc: PropTypes.string.isRequired,
-  imgAltText: PropTypes.string.isRequired,
-  onClickCallback: PropTypes.func.isRequired,
-};
 
 /*
   Although the state fields: id, description, canonicalUrl, series, allSeries and
@@ -101,13 +74,15 @@ export default class ArticleForm extends Component {
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
-      helpShowing: false,
+      modalShowing: false,
       previewResponse: '',
-      helpHTML: document.getElementById('editor-help-guide').innerHTML,
+      // helpHTML: document.getElementById('editor-help-guide').innerHTML,
+      liquidHelpHTML: document.getElementById('editor-liquid-help').innerHTML,
+      markdownHelpHTML: document.getElementById('editor-markdown-help').innerHTML,
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
-      // moreConfigShowing: false,
+      moreConfigShowing: false,
       mainImage: this.article.main_image || null,
       organizations,
       organizationId: this.article.organization_id,
@@ -164,34 +139,24 @@ export default class ArticleForm extends Component {
   };
 
   setCommonProps = ({
-    helpShowing = false,
+    modalShowing = false,
     previewShowing = false,
     imageManagementShowing = false,
-    // moreConfigShowing = false,
+    moreConfigShowing = false,
   }) => {
     return {
-      helpShowing,
+      modalShowing,
       previewShowing,
       imageManagementShowing,
-      // moreConfigShowing,
+      moreConfigShowing,
     };
   };
 
-  toggleHelpMarkdown = e => {
-    const { helpShowing } = this.state;
+  toggleHelp = e => {
+    const { modalShowing } = this.state;
     e.preventDefault();
-    window.scrollTo(0, 0);
     this.setState({
-      ...this.setCommonProps({ helpShowing: !helpShowing }),
-    });
-  };
-
-  toggleHelpLiquid = e => {
-    const { helpShowing } = this.state;
-    e.preventDefault();
-    window.scrollTo(0, 0);
-    this.setState({
-      ...this.setCommonProps({ helpShowing: !helpShowing }),
+      ...this.setCommonProps({ modalShowing: !modalShowing }),
     });
   };
 
@@ -218,13 +183,13 @@ export default class ArticleForm extends Component {
     });
   };
 
-  // toggleMoreConfig = e => {
-  //   const { moreConfigShowing } = this.state;
-  //   e.preventDefault();
-  //   this.setState({
-  //     ...this.setCommonProps({ moreConfigShowing: !moreConfigShowing }),
-  //   });
-  // };
+  toggleMoreConfig = e => {
+    const { moreConfigShowing } = this.state;
+    e.preventDefault();
+    this.setState({
+      ...this.setCommonProps({ moreConfigShowing: !moreConfigShowing }),
+    });
+  };
 
   showPreview = response => {
     if (response.processed_html) {
@@ -314,13 +279,15 @@ export default class ArticleForm extends Component {
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
-      helpShowing: false,
+      modalShowing: false,
       previewResponse: '',
-      helpHTML: document.getElementById('editor-help-guide').innerHTML,
+      // helpHTML: document.getElementById('editor-help-guide').innerHTML,
+      liquidHelpHTML: document.getElementById('editor-liquid-help').innerHTML,
+      markdownHelpHTML: document.getElementById('editor-markdown-help').innerHTML,
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
-      // moreConfigShowing: false,
+      moreConfigShowing: false,
       mainImage: this.article.main_image || null,
       errors: null,
       edited: false,
@@ -352,12 +319,14 @@ export default class ArticleForm extends Component {
       bodyMarkdown,
       published,
       previewShowing,
-      helpShowing,
+      modalShowing,
       previewResponse,
-      helpHTML,
+      // helpHTML,
+      liquidHelpHTML,
+      markdownHelpHTML,
       submitting,
       imageManagementShowing,
-      // moreConfigShowing,
+      moreConfigShowing,
       organizations,
       organizationId,
       mainImage,
@@ -365,17 +334,7 @@ export default class ArticleForm extends Component {
       edited,
       version,
     } = this.state;
-    const notice = submitting ? (
-      <Notice published={published} version={version} />
-    ) : (
-      ''
-    );
-    const imageArea =
-      mainImage && !previewShowing && version === 'v2' ? (
-        <MainImage mainImage={mainImage} onEdit={this.toggleImageManagement} />
-      ) : (
-        ''
-      );
+
     const imageManagement = imageManagementShowing ? (
       <ImageManagement
         onExit={this.toggleImageManagement}
@@ -386,31 +345,12 @@ export default class ArticleForm extends Component {
     ) : (
       ''
     );
-    // const moreConfig = moreConfigShowing ? (
-    //   <MoreConfig
-    //     onExit={this.toggleMoreConfig}
-    //     passedData={this.state}
-    //     onSaveDraft={this.onSaveDraft}
-    //     onConfigChange={this.handleConfigChange}
-    //   />
-    // ) : (
-    //   ''
-    // );
+
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
     // let editorView = '';
     if (previewShowing) {
-      // editorView = (
-      //   <div>
-      //     {errorsArea}
-      //     {imageArea}
-      //     <BodyPreview
-      //       previewResponse={previewResponse}
-      //       articleState={this.state}
-      //       version="article-preview"
-      //     />
-      //   </div>
-      // );
-    } else if (helpShowing) {
+      //
+    } else if (modalShowing) {
       // editorView = (
       //   <BodyPreview
       //     previewResponse={{ processed_html: helpHTML }}
@@ -419,59 +359,13 @@ export default class ArticleForm extends Component {
       // );
     } else {
       let controls = '';
-      let moreConfigBottomButton = '';
       if (version === 'v2') {
-        moreConfigBottomButton = (
-          <SetupImageButton
-            className="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
-            imgSrc={ThreeDotsIcon}
-            imgAltText="menu dots"
-            onClickCallback={this.toggleMoreConfig}
-          />
-        );
         controls = (
-          <div
-            className={title.length > 128 ? 'articleform__titleTooLong' : ''}
-          >
-            <Title
-              defaultValue={title}
-              onKeyDown={this.handleTitleKeyDown}
-              onChange={linkState(this, 'title')}
-            />
-            <div className="articleform__detailfields">
-
-              <SetupImageButton
-                className="articleform__detailsButton articleform__detailsButton--image"
-                imgSrc={ImageUploadIcon}
-                imgAltText="Upload images"
-                onClickCallback={this.toggleImageManagement}
-              />
-              <SetupImageButton
-                className="articleform__detailsButton articleform__detailsButton--moreconfig"
-                imgSrc={ThreeDotsIcon}
-                imgAltText="Menu"
-                onClickCallback={this.toggleMoreConfig}
-              />
-            </div>
-          </div>
+          <button type="button" onClick={this.toggleImageManagement}>
+            Upload images
+          </button>
         );
       }
-      // editorView = (
-      //   <div>
-      //     {errorsArea}
-      //     {imageArea}
-      //     {controls}
-      //     <button
-      //       className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
-      //       onClick={this.toggleImageManagement}
-      //       type="button"
-      //     >
-      //       <img src={ImageUploadIcon} alt="upload images" />
-      //       IMAGES
-      //     </button>
-      //     {moreConfigBottomButton}
-      //   </div>
-      // );
     }
     return (
       <form
@@ -514,8 +408,8 @@ export default class ArticleForm extends Component {
           )}
           <Help
             previewShowing={previewShowing}
-            onHelpMarkdown={this.toggleHelpMarkdown}
-            onHelpLiquid={this.toggleHelpLiquid}
+            toggleHelp={this.toggleHelp}
+            modalShowing={modalShowing}
           />
         </div>
 
@@ -528,12 +422,12 @@ export default class ArticleForm extends Component {
           edited={edited}
           passedData={this.state}
           onConfigChange={this.handleConfigChange}
+          toggleMoreConfig={this.toggleMoreConfig}
+          moreConfigShowing={moreConfigShowing}
+          submitting={submitting}
         />
 
-        {helpShowing && <Modal>Hello, this is help message.</Modal>}
-
         <KeyboardShortcutsHandler togglePreview={this.fetchPreview} />
-        {/* {notice} */}
         {/* {imageManagement} */}
       </form>
     );

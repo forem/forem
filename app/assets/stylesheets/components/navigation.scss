@@ -122,6 +122,9 @@
   display: flex;
 
   .crayons-link {
+    border: 0;
+    margin: 0;
+    background: transparent;
     padding: 0 0.5em;
     position: relative;
     display: inline-block;

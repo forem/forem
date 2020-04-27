@@ -55,6 +55,16 @@
   
   &__cover {
     margin-bottom: $su-6;
+    display: flex;
+    align-items: center;
+
+    &__image {
+      width: 250px;
+      height: 105px;
+      border-radius: $br-default;
+      margin-right: $su-4;
+      object-fit: cover;
+    }
   }
 
   &__title {

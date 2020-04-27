@@ -31,18 +31,37 @@
   }
   
   &__box {
-    padding: $su-7;
+    @extend %modal-style;
+    display: flex;
+    flex-direction: column;
     max-width: 800px;
     background: var(--card-bg); // TODO: ?
     z-index: 700;
     max-height: 100%;
-    overflow-y: auto;
     @media ( max-width: $breakpoint-s ) {
       border: 0 !important; // TODO: this is dirty...
     }
 
     @media ( min-width: $breakpoint-s ) {
       max-height: calc(100% - #{$su-6});
+    }
+
+    &__header {
+      position: static;
+      top: 0;
+      width: 100%;
+      border-bottom: 2px solid black;
+      display: flex;
+      align-items: center;
+      padding: $su-4;
+      justify-content: space-between;
+    }
+
+    &__body {
+      flex: 1 auto;
+      padding: $su-7;
+      max-height: 100%;
+      overflow-y: auto;
     }
   }
 
