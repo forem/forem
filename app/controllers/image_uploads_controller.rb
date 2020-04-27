@@ -38,7 +38,7 @@ class ImageUploadsController < ApplicationController
     rescue CarrierWave::ProcessingError # server error
       respond_to do |format|
         format.json do
-          render json: { error: "A server error has occurred!" }, status: :server_error
+          render json: { error: "A server error has occurred!" }, status: :unprocessable_entity
         end
       end
       return
