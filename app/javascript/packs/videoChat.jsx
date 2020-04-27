@@ -1,5 +1,6 @@
 const { createLocalVideoTrack, connect } = require('twilio-video');
 const root = document.getElementById('videochat');
+const remoteMedia = document.getElementById('remote-media');
 const muteButton = document.getElementById('mute-toggle');
 const videoToggleButton = document.getElementById('videohide-toggle');
 const localMediaContainer = document.getElementById('local-media');
@@ -56,9 +57,10 @@ createLocalVideoTrack().then(track => {
 
 
 function participantConnected(participant) {
+  const numExistingDivs = document.getElementsByClassName('individual-video').length;
   const div = document.createElement('div');
   div.id = participant.sid;
-  div.className = "individual-video"
+  div.className = "individual-video" + (numExistingDivs > 3 ? " one-of-many-videos" : "")
   div.innerHTML = '<div class="participant-info">\
       <div class="participant-name">'+ participant.identity + '</div>\
       <div class="disabled-audio-indicator">audio off</div>\
@@ -76,7 +78,7 @@ function participantConnected(participant) {
       trackSubscribed(div, publication.track);
     }
   });
-  root.appendChild(div);
+  remoteMedia.appendChild(div);
 }
 
 function participantDisconnected(participant) {
