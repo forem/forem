@@ -75,7 +75,7 @@ class SearchController < ApplicationController
     self_discoverable = ccm_docs_discoverable.select { |membership| membership["viewable_by"] == current_user.id }
     ccm_docs_discoverable = self_discoverable.empty? ? ccm_docs_discoverable.uniq : self_discoverable
 
-    render json: { result: ccm_docs_original + ccm_docs_discoverable }
+    render json: { result: (ccm_docs_original + ccm_docs_discoverable).uniq { |membership| membership["chat_channel_id"] } }
   end
 
   def classified_listings
