@@ -172,13 +172,25 @@
     document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0;';
     document.getElementById('page-content').style.cssText = 'margin-top: 0 !important; margin-bottom: 0;';
 
-    //  rotate chevrons
+    // toggle "Other Things" DropDowns
+    function toggleOtherThings(type) {
+      if (type === 'set-experience') {
+        document.querySelector('.set-experience-options').classList.toggle('hidden');
+      } else if (type === 'adjust-tags') {
+        document.querySelector('.adjust-tags-options').classList.toggle('hidden');
+      }
+    }
+
+    //  rotate chevrons & toggle dropdowns
     document.querySelectorAll('button.other-things-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         let clickedBtn = e.currentTarget;
         clickedBtn.querySelector('.label-wrapper > .icon').classList.toggle('hidden');
         clickedBtn.querySelector('.toggle-chevron-container').classList.toggle('rotated');
+
+        let btnType = clickedBtn.dataset.otherThingsType;
+        toggleOtherThings(btnType);
       })
     });
   }, 200)
