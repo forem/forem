@@ -16,11 +16,13 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
 
   describe "#as_hash" do
     it "applies TERM_KEYS from params" do
-      params = { category: "cfp", tags: ["beginner"], contact_via_connect: false }
+      params = { category: "cfp", tags: %w[beginner Intermediate Professional], contact_via_connect: false }
       filter = described_class.new(params: params)
       exepcted_filters = [
         { "terms" => { "category" => ["cfp"] } },
-        { "terms" => { "tags" => ["beginner"] } },
+        { "terms" => { "tags" => "beginner" } },
+        { "terms" => { "tags" => "Intermediate" } },
+        { "terms" => { "tags" => "Professional" } },
         { "terms" => { "contact_via_connect" => [false] } },
         { "terms" => { "published" => [true] } },
       ]

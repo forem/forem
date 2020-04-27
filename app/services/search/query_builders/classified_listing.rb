@@ -63,7 +63,13 @@ module Search
         TERM_KEYS.map do |term_key|
           next unless @params.key? term_key
 
-          { terms: { term_key => Array.wrap(@params[term_key]) } }
+          if tags_key?(term_key)
+            @params[term_key].map do |tag|
+              { terms: { term_key => tag } }
+            end.compact
+          else
+            { terms: { term_key => @params[term_key] } }
+          end
         end.compact
       end
 
@@ -77,6 +83,10 @@ module Search
 
       def range_keys_present?
         RANGE_KEYS.detect { |key| @params[key].present? }
+      end
+
+      def tags_key?(term_key)
+        (@params[term_key].is_a? Array) && (term_key == TERM_KEYS[5])
       end
     end
   end
