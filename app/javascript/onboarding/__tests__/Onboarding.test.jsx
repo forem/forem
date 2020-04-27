@@ -189,16 +189,16 @@ describe('<Onboarding />', () => {
 
     test('should allow a user to add a tag and advance', async () => {
       fetch.once({});
-      const followTags = onboardingSlides.find(<FollowTags />);
-      const firstButton = onboardingSlides
-        .find('.onboarding-tags__button')
-        .first();
-
       expect(onboardingSlides.find('.next-button').text()).toContain(
         'Skip for now',
       );
 
+      const firstButton = onboardingSlides
+        .find('.onboarding-tags__button')
+        .first();
+
       firstButton.simulate('click');
+      const followTags = onboardingSlides.find(<FollowTags />);
       expect(followTags.state('selectedTags').length).toBe(1);
 
       expect(onboardingSlides.find('.next-button').text()).toContain(
@@ -239,7 +239,6 @@ describe('<Onboarding />', () => {
 
     test('should allow user to fill forms and advance', async () => {
       fetch.once({});
-      const profileForm = onboardingSlides.find(<ProfileForm />);
       const summaryEvent = { target: { value: 'my bio', name: 'summary' } };
       const locationEvent = {
         target: { value: 'my location', name: 'location' },
@@ -259,6 +258,7 @@ describe('<Onboarding />', () => {
       onboardingSlides.find('#location').simulate('change', locationEvent);
       onboardingSlides.find('#employment_title').simulate('change', titleEvent);
       onboardingSlides.find('#employer_name').simulate('change', employerEvent);
+      const profileForm = onboardingSlides.find(<ProfileForm />);
       expect(profileForm.state().formValues.summary).toBe(
         summaryEvent.target.value,
       );
@@ -317,7 +317,6 @@ describe('<Onboarding />', () => {
 
     test('should allow a user to select and advance', async () => {
       fetch.once({});
-      const followUsers = onboardingSlides.find(<FollowUsers />);
 
       expect(onboardingSlides.find('.next-button').text()).toContain(
         'Skip for now',
@@ -336,6 +335,7 @@ describe('<Onboarding />', () => {
         'Continue',
       );
 
+      const followUsers = onboardingSlides.find(<FollowUsers />);
       expect(followUsers.state('selectedUsers').length).toBe(2);
       onboardingSlides.find('.next-button').simulate('click');
       await flushPromises();
@@ -344,7 +344,6 @@ describe('<Onboarding />', () => {
 
     test('should have a functioning select-all toggle', async () => {
       fetch.once({});
-      const followUsers = onboardingSlides.find(<FollowUsers />);
 
       expect(onboardingSlides.find('button').last().text()).toBe(
         'Select all 3 people',
@@ -353,6 +352,7 @@ describe('<Onboarding />', () => {
       expect(onboardingSlides.find('button').last().text()).toBe(
         'Deselect all',
       );
+      const followUsers = onboardingSlides.find(<FollowUsers />);
       expect(followUsers.state('selectedUsers').length).toBe(3);
     });
 
