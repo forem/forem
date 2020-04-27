@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_20_130910) do
+ActiveRecord::Schema.define(version: 2020_04_26_124118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1206,6 +1206,7 @@ ActiveRecord::Schema.define(version: 2020_04_20_130910) do
     t.datetime "updated_at", null: false
     t.string "username"
     t.string "website_url"
+    t.string "youtube_url"
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
