@@ -51,6 +51,15 @@
             </div>
 
             <div class="form-group">
+              <%= f.label :community_member_name, "Community member name" %>
+              <%= f.text_field :community_member_name,
+                               class: "form-control",
+                               value: SiteConfig.community_member_name,
+                               placeholder: "" %>
+              <div class="alert alert-info">Used to determine what members will be called e.g developers or hobbyists etc.</div>
+            </div>
+
+            <div class="form-group">
               <%= f.label :tagline, "Tagline" %>
               <%= f.text_field :tagline,
                                class: "form-control",
