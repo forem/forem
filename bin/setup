@@ -37,6 +37,10 @@ FileUtils.chdir APP_ROOT do
     FileUtils.cp "config/database.yml.sample", "config/database.yml"
   end
 
+  puts "\n== Preparing Elasticsearch =="
+  system! "bin/rails search:setup"
+  system! 'RAILS_ENV="test" bin/rails search:setup'
+
   puts "\n== Preparing database =="
   command = "psql -o /dev/null -q -n -c 'select 1' #{DB}"
   db_exists = system(command)
@@ -45,10 +49,6 @@ FileUtils.chdir APP_ROOT do
   else
     system! "bin/rails db:setup"
   end
-
-  puts "\n== Preparing Elasticsearch =="
-  system! "bin/rails search:setup"
-  system! 'RAILS_ENV="test" bin/rails search:setup'
 
   puts "\n== Updating Data =="
   system! "bin/rails data_updates:run"
