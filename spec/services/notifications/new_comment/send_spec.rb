@@ -88,4 +88,19 @@ RSpec.describe Notifications::NewComment::Send, type: :service do
     described_class.call(child_comment)
     expect(Notification.where(notifiable_type: "Comment", notifiable_id: child_comment.id, organization_id: organization.id)).to be_any
   end
+
+  it "sends Push Notifications using Pusher Beams when configured" do
+    allow(ApplicationConfig).to receive(:[]).with("PUSHER_BEAMS_KEY").and_return("x" * 64)
+    allow(ApplicationConfig).to receive(:[]).with("APP_PROTOCOL").and_return("http://")
+    allow(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").and_return("localhost:3000")
+
+    allow(Pusher::PushNotifications).to receive(:publish_to_interests)
+
+    comment_sent = child_comment
+    described_class.call(comment_sent)
+
+    channels = ["user-notifications-#{user2.id}", "user-notifications-#{user.id}"]
+    payload = described_class.new(comment_sent).send(:push_notification_payload)
+    expect(Pusher::PushNotifications).to have_received(:publish_to_interests).with(interests: channels, payload: payload)
+  end
 end

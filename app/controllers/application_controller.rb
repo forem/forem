@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   include ValidRequest
   include Pundit
   include FastlyHeaders
+  include ImageUploads
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
@@ -38,6 +39,8 @@ class ApplicationController < ActionController::Base
     params[:signed_in] = user_signed_in?.to_s
   end
 
+  # This method is used by Devise to decide which is the path to redirect
+  # the user to after a successful log in
   def after_sign_in_path_for(resource)
     if current_user.saw_onboarding
       path = request.env["omniauth.origin"] || stored_location_for(resource) || dashboard_path
@@ -74,31 +77,5 @@ class ApplicationController < ActionController::Base
 
   def touch_current_user
     current_user.touch
-  end
-
-  def log_image_data_to_datadog
-    images = Array.wrap(
-      params.dig("user", "profile_image") ||
-      params.dig("podcast", "image") ||
-      params.dig("organization", "profile_image") ||
-      params["image"],
-    )
-
-    raise if images.empty?
-
-    images.each do |image|
-      tags = [
-        "controller:#{params['controller']}",
-        "action:#{params['action']}",
-        "content_type:#{image.content_type}",
-        "original_filename:#{image.original_filename}",
-        "tempfile:#{image.tempfile}",
-        "size:#{image.size}",
-      ]
-
-      DatadogStatsClient.increment("image_upload_error", tags: tags)
-    end
-
-    raise
   end
 end

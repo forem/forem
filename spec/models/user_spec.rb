@@ -789,26 +789,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  context "when indexing and deindexing" do
-    it "triggers background auto-indexing when user is saved" do
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["User", user.id]) do
-        user.save
-      end
-    end
-
-    it "doesn't enqueue a job on destroy" do
-      user = build(:user)
-
-      sidekiq_perform_enqueued_jobs do
-        user.save
-      end
-
-      sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
-        user.destroy
-      end
-    end
-  end
-
   describe "user registration" do
     let(:user) { create(:user) }
 
@@ -841,7 +821,7 @@ RSpec.describe User, type: :model do
     end
 
     it "does not assign signup_cta_variant to non-new users" do
-      returning_user = build(:user, signup_cta_variant: nil)
+      returning_user = create(:user, signup_cta_variant: nil)
       new_user = user_from_authorization_service(:twitter, returning_user, "hey-hey-hey")
       expect(new_user.signup_cta_variant).to eq(nil)
     end

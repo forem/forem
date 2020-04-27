@@ -13,7 +13,7 @@ module Metrics
                    end
 
         Rails.logger.info("db_table_size", table_info: { table_name: model.table_name, table_size: db_count })
-        DatadogStatsClient.gauge("postgres.db_table_size", db_count, tags: { table_name: model.table_name })
+        DatadogStatsClient.gauge("postgres.db_table_size", db_count, tags: ["table_name:#{model.table_name}"])
 
         next unless model.const_defined?(:SEARCH_CLASS)
 
@@ -22,7 +22,7 @@ module Metrics
                          else
                            model::SEARCH_CLASS.document_count
                          end
-        DatadogStatsClient.gauge("elasticsearch.document_count", document_count, tags: { table_name: model.table_name })
+        DatadogStatsClient.gauge("elasticsearch.document_count", document_count, tags: ["table_name:#{model.table_name}"])
       end
     end
   end

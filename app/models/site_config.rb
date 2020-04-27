@@ -19,13 +19,20 @@ class SiteConfig < RailsSettings::Base
 
   # Social Media and Email
   field :staff_user_id, type: :integer, default: 1
-  field :default_site_email, type: :string, default: "yo@dev.to"
   field :social_media_handles, type: :hash, default: {
     twitter: nil,
     facebook: nil,
     github: nil,
     instagram: nil,
     twitch: nil
+  }
+
+  # Emails
+  field :email_addresses, type: :hash, default: {
+    default: "yo@dev.to",
+    business: "partners@dev.to",
+    privacy: "privacy@dev.to",
+    members: "members@dev.to"
   }
 
   # Authentication
@@ -46,6 +53,7 @@ class SiteConfig < RailsSettings::Base
   field :logo_png, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
   field :logo_svg, type: :string, default: ""
   field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
+  field :onboarding_taskcard_image, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/staggered-dev.svg"
   field :mascot_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
   field :mascot_image_description, type: :string, default: "Sloan, the sloth mascot"
 

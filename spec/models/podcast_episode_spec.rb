@@ -60,23 +60,6 @@ RSpec.describe PodcastEpisode, type: :model do
     end
   end
 
-  describe "#index_id" do
-    it "is equal to articles-ID" do
-      # NOTE: we shouldn't test private things but cheating a bit for Algolia here
-      expect(podcast_episode.send(:index_id)).to eq("podcast_episodes-#{podcast_episode.id}")
-    end
-  end
-
-  describe "#mobile_player_metadata" do
-    it "responds with a hash with metadata used in native mobile players" do
-      metadata = podcast_episode.mobile_player_metadata
-      expect(metadata).to be_instance_of(Hash)
-      expect(metadata[:podcastName]).to eq(podcast_episode.podcast.title)
-      expect(metadata[:episodeName]).to eq(podcast_episode.title)
-      expect(metadata[:podcastImageUrl]).to include(podcast_episode.podcast.image_url)
-    end
-  end
-
   describe ".available" do
     let_it_be(:podcast) { create(:podcast) }
 

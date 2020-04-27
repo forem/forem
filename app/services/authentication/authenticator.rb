@@ -26,24 +26,48 @@ module Authentication
 
     def call
       identity = Identity.build_from_omniauth(provider)
-
       return current_user if current_user_identity_exists?
 
-      user = proper_user(identity)
-      user = if user.nil?
-               build_user
-             else
-               update_user(user)
-             end
+      # These variables need to be set outside of the scope of the
+      # transaction in order to be used after the transaction is completed.
+      log_to_datadog = false
+      id_provider, authed_user = nil
 
-      save_identity(identity, user)
+      ActiveRecord::Base.transaction do
+        user = proper_user(identity)
+        user = if user.nil?
+                 find_or_create_user!
+               else
+                 update_user(user)
+               end
 
-      user.skip_confirmation!
+        identity.user = user if identity.user_id.blank?
+        new_identity = identity.new_record?
+        successful_save = identity.save!
 
-      flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
+        log_to_datadog = new_identity && successful_save
+        id_provider = identity.provider
 
-      user.save!
-      user
+        user.skip_confirmation!
+
+        flag_spam_user(user) if account_less_than_a_week_old?(user, identity)
+
+        user.save!
+        authed_user = user
+      end
+
+      if log_to_datadog
+        # Notify DataDog if a new identity was successfully created.
+        DatadogStatsClient.increment("identity.created", tags: ["provider:#{id_provider}"])
+      end
+
+      # Return the successfully-authed used from the transaction.
+      authed_user
+    rescue StandardError => e
+      # Notify DataDog if something goes wrong in the transaction,
+      # and then ensure that we re-raise and bubble up the error.
+      DatadogStatsClient.increment("identity.errors", tags: ["error:#{e.class}", "message:#{e.message}"])
+      raise e
     end
 
     private
@@ -70,7 +94,7 @@ module Authentication
       end
     end
 
-    def build_user
+    def find_or_create_user!
       existing_user = User.where(
         provider.user_username_field => provider.user_nickname,
       ).take
@@ -81,6 +105,10 @@ module Authentication
         user.assign_attributes(default_user_fields)
 
         user.set_remember_fields
+
+        # The user must be saved in the database before
+        # we assign the user to a new identity.
+        user.save!
       end
     end
 
@@ -106,11 +134,6 @@ module Authentication
     def update_profile_updated_at(user)
       field_name = "#{provider.user_username_field}_changed?"
       user.profile_updated_at = Time.current if user.public_send(field_name)
-    end
-
-    def save_identity(identity, user)
-      identity.user = user if identity.user_id.blank?
-      identity.save!
     end
 
     def account_less_than_a_week_old?(user, logged_in_identity)

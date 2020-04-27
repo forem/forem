@@ -7,12 +7,44 @@ RSpec.describe "Authenticating with Twitter" do
 
   context "when a user is new" do
     context "when using valid credentials" do
+      it "creates a new user" do
+        expect do
+          visit root_path
+          click_link sign_in_link
+        end.to change(User, :count).by(1)
+      end
+
       it "logs in and redirects to the onboarding" do
         visit root_path
         click_link sign_in_link
 
         expect(page).to have_current_path("/onboarding?referrer=none")
         expect(page.html).to include("onboarding-container")
+      end
+
+      it "remembers the user" do
+        visit root_path
+        click_link sign_in_link
+
+        user = User.last
+
+        expect(user.remember_token).to be_present
+        expect(user.remember_created_at).to be_present
+      end
+    end
+
+    context "when trying to register with an already existing username" do
+      it "creates a new user with a temporary username" do
+        username = OmniAuth.config.mock_auth[:twitter].extra.raw_info.username
+        user = create(:user, username: username.delete("."))
+
+        expect do
+          visit root_path
+          click_link sign_in_link
+        end.to change(User, :count).by(1)
+
+        expect(page).to have_current_path("/onboarding?referrer=none")
+        expect(User.last.username).to include(user.username)
       end
     end
 
@@ -25,6 +57,13 @@ RSpec.describe "Authenticating with Twitter" do
 
       after do
         OmniAuth.config.on_failure = OmniauthMacros.const_get("OMNIAUTH_DEFAULT_FAILURE_HANDLER")
+      end
+
+      it "does not create a new user" do
+        expect do
+          visit root_path
+          click_link sign_in_link
+        end.not_to change(User, :count)
       end
 
       it "does not log in" do
@@ -82,6 +121,36 @@ RSpec.describe "Authenticating with Twitter" do
         )
       end
     end
+
+    context "when a validation failure occurrs" do
+      before do
+        # A User is invalid if their name is more than 100 chars long
+        OmniAuth.config.mock_auth[:twitter].extra.raw_info.name = "X" * 101
+      end
+
+      it "does not create a new user" do
+        expect do
+          visit root_path
+          click_link sign_in_link
+        end.not_to change(User, :count)
+      end
+
+      it "redirects to the registration page" do
+        visit root_path
+        click_link sign_in_link
+
+        expect(page).to have_current_path("/users/sign_up")
+      end
+
+      it "logs errors" do
+        allow(Rails.logger).to receive(:error)
+
+        visit root_path
+        click_link sign_in_link
+
+        expect(Rails.logger).to have_received(:error).at_least(3).times
+      end
+    end
   end
 
   context "when a user already exists" do
@@ -94,7 +163,7 @@ RSpec.describe "Authenticating with Twitter" do
     end
 
     context "when using valid credentials" do
-      it "logs in and redirects to the onboarding" do
+      it "logs in and redirects to the dashboard" do
         visit "/users/auth/twitter"
 
         expect(page).to have_current_path("/dashboard?signin=true")

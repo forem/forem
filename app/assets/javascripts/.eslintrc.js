@@ -25,5 +25,6 @@ module.exports = {
     initializeAllFollowButts: false,
     initializeSponsorshipVisibility: false,
     ActiveXObject: false,
+    AndroidBridge: false,
   },
 };
