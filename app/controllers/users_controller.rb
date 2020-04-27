@@ -304,15 +304,12 @@ class UsersController < ApplicationController
     community_name = ApplicationConfig["COMMUNITY_NAME"]
     @email_body = <<~HEREDOC
       Hello #{community_name} Team,
-      %0A
-      %0A
+      \n
       I would like to delete my account.
-      %0A%0A
+      \n
       You can keep any comments and discussion posts under the Ghost account.
-      %0A
-      %0A
+      \n
       Regards,
-      %0A
       YOUR-#{community_name}-USERNAME-HERE
     HEREDOC
   end

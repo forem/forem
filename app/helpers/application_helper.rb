@@ -174,10 +174,18 @@ module ApplicationHelper
     # The allowed types for type is :default, :business, :privacy, and members.
     # The options can be found in field :email_addresses of models/site_config.rb
     email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:default]
-    href = "mailto:#{email}#{"?#{additional_info}" if additional_info}"
-    options = { href: href }
+    additional_info = (additional_info || {}).stringify_keys
 
-    content_tag("a", text || email, options)
+    sanitized_add_info = %w[cc bcc body subject reply_to].map! do |item|
+      option = additional_info.delete(item).presence || next
+      "#{item.dasherize}=#{ERB::Util.url_encode(option)}"
+    end.compact
+    sanitized_add_info = sanitized_add_info.empty? ? "".freeze : "?" + sanitized_add_info.join("&")
+
+    encoded_email_address = ERB::Util.url_encode(email).gsub("%40", "@")
+    additional_info["href"] = "mailto:#{encoded_email_address}#{sanitized_add_info}"
+
+    content_tag("a".freeze, text || email, additional_info)
   end
 
   # Creates an app internal URL

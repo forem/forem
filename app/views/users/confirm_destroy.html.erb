@@ -45,7 +45,7 @@
     </script>
     <p>
       If you would like to keep your content under the <%= link_to "@ghost", "/ghost" %> account,
-      please <%= email_link(text: "click here", additional_info: "subject=Request Account Deletion&body=#{@email_body}") %>
+      please <%= email_link(text: "click here", additional_info: { subject: "Request Account Deletion", body: @email_body }) %>
     </p>
 
     <p>
