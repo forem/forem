@@ -252,12 +252,12 @@
 // modal overflow scrolling
 .onboarding-modal-scroll-container {
   height: auto;
-  min-height: 436px;
+  max-height: calc(100vh - 289px);
+  overflow-y: scroll;
   border-bottom: 1px solid var(--base-20);
-  @media screen and (min-width: $breakpoint-s) {
-    max-height: 500px;
-    overflow-y: scroll;
-    position: relative;
+
+  @media screen and (min-height: 800px) {
+    max-height: 520px;
   }
 }
 
@@ -267,7 +267,6 @@
   grid-template-columns: repeat(2, 1fr);
   grid-gap: $su-4;
   width: 100%;
-  min-height: 316px;
 
   @media screen and (min-width: 800px) {
     grid-template-columns: repeat(3, 1fr);
