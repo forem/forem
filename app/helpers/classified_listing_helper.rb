@@ -17,4 +17,3 @@ module ClassifiedListingHelper
     end.deep_symbolize_keys
   end
 end
-

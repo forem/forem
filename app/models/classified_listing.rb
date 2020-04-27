@@ -6,12 +6,15 @@ class ClassifiedListing < ApplicationRecord
   SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
   SEARCH_CLASS = Search::ClassifiedListing
 
-  attr_accessor :action, :category
+  attr_accessor :action
 
-  # This allows to create a listing from a catgory string.
-  before_validation :assign_classified_listing_category
-
-  belongs_to :classified_listing_category
+  # Note: categories were hardcoded at first and the model was only added later.
+  # As the name clashed with the hardcoded one, the association name is a bit
+  # verbose, this simplifies it a bit.
+  belongs_to :category,
+             class_name: "ClassifiedListingCategory",
+             foreign_key: :classified_listing_category_id,
+             inverse_of: :listings
   belongs_to :user
   belongs_to :organization, optional: true
   before_save :evaluate_markdown
@@ -30,18 +33,11 @@ class ClassifiedListing < ApplicationRecord
   validates :location, length: { maximum: 32 }
   validate :restrict_markdown_input
   validate :validate_tags
-  validate :validate_category
 
+  delegate :cost, to: :category
   scope :published, -> { where(published: true) }
 
-  def category
-    classified_listing_category&.slug
-  end
-
-  def cost
-    @cost = classified_listing_category&.cost ||
-      ClassifiedListingCategory.select(:cost).find_by(slug: category)&.cost
-  end
+  delegate :slug, to: :category, prefix: true
 
   def author
     organization || user
@@ -64,7 +60,6 @@ class ClassifiedListing < ApplicationRecord
   def modify_inputs
     ActsAsTaggableOn::Taggable::Cache.included(ClassifiedListing)
     ActsAsTaggableOn.default_parser = ActsAsTaggableOn::TagParser
-    self.category = category.to_s.downcase
     self.body_markdown = body_markdown.to_s.gsub(/\r\n/, "\n")
   end
 
@@ -75,26 +70,11 @@ class ClassifiedListing < ApplicationRecord
     errors.add(:body_markdown, "is not allowed to include liquid tags.") if markdown_string.include?("{% ")
   end
 
-  def validate_category
-    categories = ClassifiedListingCategory.pluck(:slug)
-    errors.add(:category, "not a valid category") unless category.in?(categories)
-  end
-
   def validate_tags
     errors.add(:tag_list, "exceed the maximum of 8 tags") if tag_list.length > 8
   end
 
   def create_slug
     self.slug = "#{title.downcase.parameterize.delete('_')}-#{rand(100_000).to_s(26)}"
-  end
-
-  def assign_classified_listing_category
-    return if classified_listing_category_id.present?
-
-    category = ClassifiedListingCategory.find_by(slug: attributes["category"])
-    return unless category
-
-    self.category = category.slug
-    self.classified_listing_category_id = category.id
   end
 end
