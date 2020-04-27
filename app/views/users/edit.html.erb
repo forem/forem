@@ -80,7 +80,7 @@
     <% end %>
 
     <% if @organization&.errors&.any? %>
-      <%= render partial: "users/errors", locals: { errors: @organization.errors, title_suffix: "prohibited your org profile from being saved" } %>
+      <%= render partial: "users/errors", locals: { errors: @organization.errors, title_suffix: "prohibited your organization profile from being saved" } %>
     <% end %>
 
     <%= render "users/" + @tab.tr("-", "_"), tab: @tab %>
