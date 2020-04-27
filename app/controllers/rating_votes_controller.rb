@@ -12,10 +12,9 @@ class RatingVotesController < ApplicationController
     rating_vote.rating = rating_vote_params[:rating].to_f
     rating_vote.group = rating_vote_params[:group]
     if rating_vote.save
-      # redirect_back(fallback_location: "/mod")
       render json: { result: "Success" }
     else
-      render json: { result: "Not Updated Successfully" }
+      render json: { error: rating_vote.errors.full_messages.to_sentence }, status: :unprocessable_entity
     end
   end
 

@@ -93,7 +93,7 @@
           class="level-rating-button <%= "selected" if @rating_vote&.rating == 1.0 %>"
           data-user-id="<%= current_user.id %>"
           data-article-id="<%= @moderatable.id %>"
-          data-group="experience-level">
+          data-group="experience_level">
           <div class="level-rating-content">
             <span class="level-rating-number">1</span>
             <span class="level-rating-text">Beginner</span>
@@ -107,7 +107,7 @@
           class="level-rating-button <%= "selected" if @rating_vote&.rating == 2.0 %>"
           data-user-id="<%= current_user.id %>"
           data-article-id="<%= @moderatable.id %>"
-          data-group="experience-level">
+          data-group="experience_level">
           <div class="level-rating-content">
             <span class="level-rating-number">2</span>
             <span class="level-rating-text">Novice</span>
@@ -121,7 +121,7 @@
           class="level-rating-button <%= "selected" if @rating_vote&.rating == 3.0 %>"
           data-user-id="<%= current_user.id %>"
           data-article-id="<%= @moderatable.id %>"
-          data-group="experience-level">
+          data-group="experience_level">
           <div class="level-rating-content">
             <span class="level-rating-number">3</span>
             <span class="level-rating-text">Mid-level</span>
@@ -135,7 +135,7 @@
           class="level-rating-button <%= "selected" if @rating_vote&.rating == 4.0 %>"
           data-user-id="<%= current_user.id %>"
           data-article-id="<%= @moderatable.id %>"
-          data-group="experience-level">
+          data-group="experience_level">
           <div class="level-rating-content">
             <span class="level-rating-number">4</span>
             <span class="level-rating-text">Advanced</span>
@@ -149,7 +149,7 @@
           class="level-rating-button <%= "selected" if @rating_vote&.rating == 5.0 %>"
           data-user-id="<%= current_user.id %>"
           data-article-id="<%= @moderatable.id %>"
-          data-group="experience-level">
+          data-group="experience_level">
           <div class="level-rating-content">
             <span class="level-rating-number">5</span>
             <span class="level-rating-text">Expert</span>
@@ -225,9 +225,17 @@
       })
     });
 
+    function clearExpLevels() {
+      Array.from(
+        document.getElementsByClassName('level-rating-button selected')
+      ).forEach((el) => {
+        el.classList.remove('selected');
+      });
+    }
+
     function updateExperienceLevel(currentUserId, articleId, rating, group){
-      fetch('/create_or_update', {
-        method: 'PATCH',
+      fetch('/rating_votes', {
+        method: 'POST',
         headers: {
           Accept: 'application/json',
           'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
@@ -244,10 +252,8 @@
         .then(response => response.json()
           .then(json => {
             if (json.result === 'Success') {
-              let expLevel = document.getElementById(`js__rating__vote__${rating}`);
-              if (!expLevel.classList.contains('selected')){
-                expLevel.classList.add('selected');
-              }
+              clearExpLevels();
+              document.getElementById(`js__rating__vote__${rating}`).classList.add('selected');
             } else {
               alert(json.error)
             }
