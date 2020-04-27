@@ -20,6 +20,7 @@ const ChannelButton = ({
       data-channel-id={channel.chat_channel_id}
       data-channel-slug={channel.channel_modified_slug}
       data-channel-status={channel.status}
+      data-channel-name={channel.channel_name}
     >
       <span
         className={
@@ -31,6 +32,7 @@ const ChannelButton = ({
         data-content="sidecar-channel-request"
         data-channel-slug={channel.channel_modified_slug}
         data-channel-status={channel.status}
+        data-channel-name={channel.channel_name}
         style={{
           border: `1px solid ${channel.channel_color}`,
           boxShadow: `3px 3px 0px ${channel.channel_color}`,
