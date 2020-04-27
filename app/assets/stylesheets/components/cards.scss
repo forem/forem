@@ -20,6 +20,18 @@ $card-divider: 1px solid var(--body-bg);
     align-items: center;
   }
 
+  &__subheader {
+    padding: $su-2 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &__title {
+      color: var(--base-80);
+      font-weight: $fw-bold;
+    }
+  }
+
   &__title {
     color: var(--card-headline);
     font-weight: $fw-bold;
@@ -27,5 +39,17 @@ $card-divider: 1px solid var(--body-bg);
 
   &__body {
     padding: $su-4;
+  }
+
+  &__inner-section {
+    margin-bottom: $su-4;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    .crayons-card__section-header {
+      padding-top: 0;
+    }
   }
 }
