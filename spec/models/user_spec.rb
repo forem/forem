@@ -336,7 +336,7 @@ RSpec.describe User, type: :model do
         end
       end
 
-      it "does not accept invalid facebook url" do
+      it "does not accept invalid youtube url" do
         user.youtube_url = "ben.com"
         expect(user).not_to be_valid
       end
