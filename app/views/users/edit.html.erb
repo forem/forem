@@ -48,7 +48,9 @@
           </span>
         </h1>
       <% else %>
-        <h1 class="fs-xl s:fs-3xl">Settings for <a href="/<%= @user.username %>">@<%= @user.username %></a></h1>
+        <h1 class="fs-xl s:fs-3xl">
+          Settings for <a href="<%= user_url(@user) %>">@<%= @user.username.truncate(User::USERNAME_MAX_LENGTH) %></a>
+        </h1>
       <% end %>
     </header>
 
@@ -74,27 +76,11 @@
     <% end %>
 
     <% if @user.errors.any? %>
-      <div id="error_explanation">
-        <h2><%= pluralize(@user.errors.count, "error") %> prohibited your profile from being saved:</h2>
-
-        <ul>
-          <% @user.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
+      <%= render partial: "users/errors", locals: { errors: @user.errors, title_suffix: "prohibited your profile from being saved" } %>
     <% end %>
 
-    <% if @organization && @organization.errors.any? %>
-      <div id="error_explanation">
-        <h2><%= pluralize(@organization.errors.count, "error") %> prohibited your org profile from being saved:</h2>
-
-        <ul>
-          <% @organization.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
+    <% if @organization&.errors&.any? %>
+      <%= render partial: "users/errors", locals: { errors: @organization.errors, title_suffix: "prohibited your organization profile from being saved" } %>
     <% end %>
 
     <%= render "users/" + @tab.tr("-", "_"), tab: @tab %>
