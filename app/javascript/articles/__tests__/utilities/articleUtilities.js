@@ -26,6 +26,7 @@ export const article = {
   published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
   published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
+  top_comments: [],
 };
 
 export const articleWithOrganization = {
@@ -53,6 +54,7 @@ export const articleWithOrganization = {
   published_at_int: 1582037964819,
   published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
   readable_publish_date: 'February 18',
+  top_comments: [],
   organization: {
     id: 87120,
     name: 'Web info-mediaries',
@@ -87,6 +89,7 @@ export const articleWithSnippetResult = {
   published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
   published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
+  top_comments: [],
   highlight: {
     body_text: [
       'copying Rest withdrawal Handcrafted multi-state Pre-emptive e-markets feed',
@@ -121,6 +124,7 @@ export const articleWithReactions = {
   published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
   published_at: '2020-03-19T10:04:15-05:00',
   readable_publish_date: 'February 18',
+  top_comments: [],
   positive_reactions_count: 232,
 };
 
@@ -150,6 +154,7 @@ export const articleWithComments = {
   published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
   published_at: '2020-03-19T10:04:15-05:00',
   readable_publish_date: 'February 18',
+  top_comments: [],
   positive_reactions_count: 428,
   comments_count: 213,
 };
@@ -180,6 +185,7 @@ export const articleWithReadingTimeGreaterThan1 = {
   published_timestamp: 'Tue, 18 Feb 2020 14:59:24 GMT',
   published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
+  top_comments: [],
   reading_time: 8,
 };
 
