@@ -48,7 +48,7 @@
       <% end %>
       <h3 id="comments-header"><%= @commentable.title %></h3>
       <h4>
-        <%= @commentable.user.name %>
+        <%= @commentable.is_a?(PodcastEpisode) ? @commentable.podcast.name : @commentable.user.name %>
         <span class="published-at"><%= "on " + @commentable.published_at.strftime("%B %d, %Y") if @commentable.published_at %></span>
       </h4>
     </a>
