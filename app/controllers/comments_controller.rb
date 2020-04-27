@@ -54,7 +54,7 @@ class CommentsController < ApplicationController
   def create
     if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
       skip_authorization
-      render json: { error: "Too many requests" }, status: :too_many_requests
+      render json: { error: "too many requests" }, status: :too_many_requests
       return
     end
 
@@ -75,7 +75,7 @@ class CommentsController < ApplicationController
 
       if @comment.invalid?
         @comment.destroy
-        render json: { error: "comment already exists" }, status: :conflict
+        render json: { error: "comment already exists" }, status: :unprocessable_entity
         return
       end
 
@@ -106,7 +106,7 @@ class CommentsController < ApplicationController
     )[1])
 
       comment.destroy
-      render json: { error: "comment already exists" }, status: :conflict
+      render json: { error: "comment already exists" }, status: :unprocessable_entity
     else
       message = @comment.errors.full_messages.to_sentence
       render json: { error: message }, status: :unprocessable_entity
