@@ -41,7 +41,7 @@
 <% else %>
   <div class="article-header">
     <a href="<%= @commentable.path %>" class="header-link">
-      <% if @commentable.main_image.present? %>
+      <% if @commentable.respond_to?(:main_image) && @commentable.main_image.present? %>
         <div class="picture" style="background-image:url(<%= cloud_cover_url(@commentable.main_image) %>)"></div>
       <% else %>
         <div class="blank-comment-space"></div>
