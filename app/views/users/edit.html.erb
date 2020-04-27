@@ -76,11 +76,11 @@
     <% end %>
 
     <% if @user.errors.any? %>
-      <%= render partial: "errors", locals: { errors: @user.errors, title_suffix: "prohibited your profile from being saved" } %>
+      <%= render partial: "users/errors", locals: { errors: @user.errors, title_suffix: "prohibited your profile from being saved" } %>
     <% end %>
 
     <% if @organization&.errors&.any? %>
-      <%= render partial: "errors", locals: { errors: @organization.errors, title_suffix: "prohibited your org profile from being saved" } %>
+      <%= render partial: "users/errors", locals: { errors: @organization.errors, title_suffix: "prohibited your org profile from being saved" } %>
     <% end %>
 
     <%= render "users/" + @tab.tr("-", "_"), tab: @tab %>
