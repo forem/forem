@@ -22,9 +22,9 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
         { "terms" => { "category" => ["cfp"] } },
         { "terms" => { "contact_via_connect" => [false] } },
         { "terms" => { "published" => [true] } },
-        { "terms" => { "tags" => "beginner" } },
-        { "terms" => { "tags" => "Intermediate" } },
-        { "terms" => { "tags" => "Professional" } },
+        { "terms" => { "tags" => ["beginner"] } },
+        { "terms" => { "tags" => ["Intermediate"] } },
+        { "terms" => { "tags" => ["Professional"] } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
     end
@@ -34,9 +34,9 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
         params = { bumped_at: Time.current, expires_at: 1.day.from_now }
         filter = described_class.new(params: params)
         exepcted_filters = [
+          { "terms" => { "published" => [true] } },
           { "range" => { "bumped_at" => Time.current } },
           { "range" => { "expires_at" => 1.day.from_now } },
-          { "terms" => { "published" => [true] } },
         ]
         expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
       end
@@ -61,9 +61,9 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
           "simple_query_string" => { "query" => "test*", "fields" => [:classified_listing_search], "lenient" => true, "analyze_wildcard" => true }
         }]
         exepcted_filters = [
-          { "range" => { "bumped_at" => Time.current } },
           { "terms" => { "category" => ["cfp"] } },
           { "terms" => { "published" => [true] } },
+          { "range" => { "bumped_at" => Time.current } },
         ]
         expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
         expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
