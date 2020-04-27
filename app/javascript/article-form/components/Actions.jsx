@@ -59,7 +59,7 @@ export class Actions extends Component {
               passedData={passedData}
               onConfigChange={onConfigChange}
               onSaveDraft={onSaveDraft}
-              visible={showOptions}
+              showOptions={showOptions}
             />
           )}
         </div>

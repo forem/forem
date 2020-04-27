@@ -3,15 +3,12 @@ import PropTypes from 'prop-types';
 import { Dropdown, Button } from '@crayons';
 
 export class Options extends Component {
-  handleSeriesButtonClick = (e) => {
-    e.preventDefault();
-    const { onConfigChange } = this.props;
-    onConfigChange(e);
+  state = {
+    //
   };
 
   render() {
     const {
-      onExit,
       passedData: {
         published = false,
         allSeries = [],
@@ -20,7 +17,7 @@ export class Options extends Component {
       },
       onSaveDraft,
       onConfigChange,
-      visible
+      showOptions,
     } = this.props;
 
     let publishedField = '';
@@ -42,6 +39,7 @@ export class Options extends Component {
       existingSeries = (
         <p className="crayons-field__description">
           Existing series:
+          {` `}
           {seriesNames}
         </p>
       );
@@ -56,21 +54,28 @@ export class Options extends Component {
       );
     }
     return (
-      <Dropdown className={visible && `inline-block w-100 bottom-100`}>
-        <h3>Post options</h3>
+      <Dropdown className={showOptions && `inline-block bottom-100 w-360`}>
+        <style>
+          {/* TODO:fix globally */}
+          {`.w-360 { width: 360px }`}
+        </style>
+        <h3 className="mb-6">Post options</h3>
         <div className="crayons-field mb-6">
           <label htmlFor="canonicalUrl" className="crayons-field__label">
             Canonical URL
           </label>
           <p className="crayons-field__description">
             Change meta tag
+            {` `}
             <code>canonical_url</code>
+            {` `}
             if this post was first published elsewhere (like your own blog).
           </p>
           <input
             type="text"
             value={canonicalUrl}
             className="crayons-textfield"
+            placeholder="https://yoursite.com/post-title"
             name="canonicalUrl"
             onKeyUp={onConfigChange}
             id="canonicalUrl"
@@ -91,11 +96,18 @@ export class Options extends Component {
             name="series"
             onKeyUp={onConfigChange}
             id="series"
+            placeholder="..."
           />
           {existingSeries}
         </div>
         {publishedField}
-        <Button className="w-100" data-content="exit" onClick={onExit}>
+        <Button
+          className="w-100"
+          data-content="exit"
+          onClick={() => {
+            // TODO: close the dropdown.
+          }}
+        >
           Done
         </Button>
       </Dropdown>
@@ -104,7 +116,6 @@ export class Options extends Component {
 }
 
 Options.propTypes = {
-  onExit: PropTypes.func.isRequired,
   passedData: PropTypes.shape({
     published: PropTypes.bool.isRequired,
     allSeries: PropTypes.array.isRequired,
@@ -113,7 +124,7 @@ Options.propTypes = {
   }).isRequired,
   onSaveDraft: PropTypes.func.isRequired,
   onConfigChange: PropTypes.func.isRequired,
-  visible: PropTypes.bool.isRequired,
+  showOptions: PropTypes.bool.isRequired,
 };
 
 

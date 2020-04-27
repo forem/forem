@@ -12,7 +12,7 @@ export default class ImageManagement extends Component {
       uploadError: false,
       uploadErrorMessage: null,
     };
-  }
+  };
 
   handleMainImageUpload = e => {
     e.preventDefault();

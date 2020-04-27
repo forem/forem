@@ -13,7 +13,9 @@ export const Form = ({
   bodyOnKeyDown,
   bodyOnChange,
   bodyHasFocus,
-  version
+  version,
+  mainImage,
+  onMainImageUrlChange
 }) => {
   return (
     <div className="crayons-card crayons-layout__content crayons-article-form__fields">
@@ -24,6 +26,8 @@ export const Form = ({
           titleOnChange={titleOnChange}
           tagsDefaultValue={tagsDefaultValue}
           tagsOnInput={tagsOnInput}
+          mainImage={mainImage}
+          onMainImageUrlChange={onMainImageUrlChange}
         />
       )}
 
@@ -49,7 +53,9 @@ Form.propTypes = {
   bodyOnKeyDown: PropTypes.func.isRequired,
   bodyOnChange: PropTypes.func.isRequired,
   bodyHasFocus: PropTypes.bool.isRequired,
-  version: PropTypes.string.isRequired
+  version: PropTypes.string.isRequired,
+  mainImage: PropTypes.string.isRequired,
+  onMainImageUrlChange: PropTypes.func.isRequired,
 }
 
 Form.displayName = 'Form';

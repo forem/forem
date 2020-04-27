@@ -12,7 +12,6 @@ import BodyPreview from './elements/bodyPreview';
 import Notice from './elements/notice';
 import MainImage from './elements/mainImage';
 import ImageManagement from './elements/imageManagement';
-// import MoreConfig from './elements/moreConfig';
 import Errors from './elements/errors';
 import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 
@@ -398,26 +397,26 @@ export default class ArticleForm extends Component {
     //   ''
     // );
     const errorsArea = errors ? <Errors errorsList={errors} /> : '';
-    let editorView = '';
+    // let editorView = '';
     if (previewShowing) {
-      editorView = (
-        <div>
-          {errorsArea}
-          {imageArea}
-          <BodyPreview
-            previewResponse={previewResponse}
-            articleState={this.state}
-            version="article-preview"
-          />
-        </div>
-      );
+      // editorView = (
+      //   <div>
+      //     {errorsArea}
+      //     {imageArea}
+      //     <BodyPreview
+      //       previewResponse={previewResponse}
+      //       articleState={this.state}
+      //       version="article-preview"
+      //     />
+      //   </div>
+      // );
     } else if (helpShowing) {
-      editorView = (
-        <BodyPreview
-          previewResponse={{ processed_html: helpHTML }}
-          version="help"
-        />
-      );
+      // editorView = (
+      //   <BodyPreview
+      //     previewResponse={{ processed_html: helpHTML }}
+      //     version="help"
+      //   />
+      // );
     } else {
       let controls = '';
       let moreConfigBottomButton = '';
@@ -457,22 +456,22 @@ export default class ArticleForm extends Component {
           </div>
         );
       }
-      editorView = (
-        <div>
-          {errorsArea}
-          {imageArea}
-          {controls}
-          <button
-            className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
-            onClick={this.toggleImageManagement}
-            type="button"
-          >
-            <img src={ImageUploadIcon} alt="upload images" />
-            IMAGES
-          </button>
-          {moreConfigBottomButton}
-        </div>
-      );
+      // editorView = (
+      //   <div>
+      //     {errorsArea}
+      //     {imageArea}
+      //     {controls}
+      //     <button
+      //       className="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
+      //       onClick={this.toggleImageManagement}
+      //       type="button"
+      //     >
+      //       <img src={ImageUploadIcon} alt="upload images" />
+      //       IMAGES
+      //     </button>
+      //     {moreConfigBottomButton}
+      //   </div>
+      // );
     }
     return (
       <form
@@ -502,6 +501,8 @@ export default class ArticleForm extends Component {
               bodyOnChange={linkState(this, 'bodyMarkdown')}
               bodyHasFocus={false}
               version={version}
+              mainImage={mainImage}
+              onMainImageUrlChange={this.handleMainImageUrlChange}
             />
           )}
           {previewShowing && (
@@ -534,7 +535,6 @@ export default class ArticleForm extends Component {
         <KeyboardShortcutsHandler togglePreview={this.fetchPreview} />
         {/* {notice} */}
         {/* {imageManagement} */}
-        {/* {moreConfig} */}
       </form>
     );
   }
