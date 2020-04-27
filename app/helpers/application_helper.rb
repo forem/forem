@@ -170,7 +170,9 @@ module ApplicationHelper
     "#{start_year} - #{current_year}"
   end
 
-  def mail_link(type = :default, text: nil, additional_info: nil)
+  def email_link(type = :default, text: nil, additional_info: nil)
+    # The allowed types for type is :default, :business, :privacy, and members.
+    # The options can be found in field :email_addresses of models/site_config.rb
     email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:default]
     href = "mailto:#{email}#{"?#{additional_info}" if additional_info}"
     options = { href: href }

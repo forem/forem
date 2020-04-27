@@ -108,7 +108,7 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
   end
 
-  describe "#mail_link" do
+  describe "#email_link" do
     before do
       allow(SiteConfig).to receive(:email_addresses).and_return(
         {
@@ -121,29 +121,29 @@ RSpec.describe ApplicationHelper, type: :helper do
     end
 
     it "returns an 'a' tag" do
-      expect(helper.mail_link).to have_selector("a")
+      expect(helper.email_link).to have_selector("a")
     end
 
     it "sets the correct href" do
-      expect(helper.mail_link).to have_link(href: "mailto:hi@dev.to")
-      expect(helper.mail_link(:business)).to have_link(href: "mailto:business@dev.to")
+      expect(helper.email_link).to have_link(href: "mailto:hi@dev.to")
+      expect(helper.email_link(:business)).to have_link(href: "mailto:business@dev.to")
     end
 
     it "has the correct text in the a tag" do
-      expect(helper.mail_link(text: "Link Name")).to have_text("Link Name")
-      expect(helper.mail_link).to have_text("hi@dev.to")
+      expect(helper.email_link(text: "Link Name")).to have_text("Link Name")
+      expect(helper.email_link).to have_text("hi@dev.to")
     end
 
     it "returns the default email if it doesn't understand the type parameter" do
-      expect(helper.mail_link(:nonsense)).to have_link(href: "mailto:hi@dev.to")
+      expect(helper.email_link(:nonsense)).to have_link(href: "mailto:hi@dev.to")
     end
 
     it "appends any additional_info parameters to the href" do
       additional_info = "subject=This is a subject test"
       more_additional_info = "#{additional_info}&body=This is a body"
 
-      expect(helper.mail_link(additional_info: additional_info)).to have_link(href: "mailto:hi@dev.to?#{additional_info}")
-      expect(helper.mail_link(additional_info: more_additional_info)).to have_link(href: "mailto:hi@dev.to?#{more_additional_info}")
+      expect(helper.email_link(additional_info: additional_info)).to have_link(href: "mailto:hi@dev.to?#{additional_info}")
+      expect(helper.email_link(additional_info: more_additional_info)).to have_link(href: "mailto:hi@dev.to?#{more_additional_info}")
     end
   end
 end
