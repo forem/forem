@@ -7,9 +7,13 @@ class ApplicationMailer < ActionMailer::Base
   helper ApplicationHelper
 
   default(
-    from: -> { "#{ApplicationConfig['COMMUNITY_NAME']} Community <#{SiteConfig.email_addresses[:default]}>" },
+    from: -> { email_from("Community") },
     template_path: ->(mailer) { "mailers/#{mailer.class.name.underscore}" },
   )
+
+  def email_from(topic)
+    "#{ApplicationConfig['COMMUNITY_NAME']} #{topic} <#{SiteConfig.email_addresses[:default]}>"
+  end
 
   def generate_unsubscribe_token(id, email_type)
     Rails.application.message_verifier(:unsubscribe).generate(

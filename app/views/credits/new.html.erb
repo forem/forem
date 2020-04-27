@@ -37,7 +37,7 @@
     </div>
       <br />
     </div>
-    <p class="bulk-description"><em>Contact <a href="mailto:<%= SiteConfig.email_addresses[:business] %>?subject=Custom Bulk Pricing/Partnerships"><%= SiteConfig.email_addresses[:business] %></a> for custom bulk pricing and partnerships.</em></p>
+    <p class="bulk-description"><em>Contact <%= email_link(:business, additional_info: { subject: "Custom Bulk Pricing/Partnerships" }) %> for custom bulk pricing and partnerships.</em></p>
     <details>
       <summary>
         How many credits does one listing cost?
