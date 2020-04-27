@@ -1,0 +1,18 @@
+<% host = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}" %>
+<% verify_url = "#{host}/verify_email_ownership?confirmation_token=#{@user.email_authorizations.order('created_at DESC').first.confirmation_token}&username=#{@user.username}" %>
+
+<p>
+Hey <%= @user.username %>!
+</p>
+
+<p>
+We're sending this email to verify that you've got access to this email address.
+</p>
+
+<p>
+If you have no idea why you're getting this email, please ignore it!
+</p>
+
+<p>
+  Otherwise, <strong><%= link_to "click here", verify_url %></strong> to verify that you still have access to this email address.
+</p>

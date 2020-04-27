@@ -106,6 +106,15 @@ class Internal::UsersController < Internal::ApplicationController
     end
   end
 
+  def verify_email_ownership
+    if VerificationMailer.account_ownership_verification_email(params).deliver
+      flash[:success] = "Email Verification Mailer sent!"
+      redirect_back(fallback_location: "/users")
+    else
+      flash[:danger] = "Email failed to send!"
+    end
+  end
+
   private
 
   def manage_credits
