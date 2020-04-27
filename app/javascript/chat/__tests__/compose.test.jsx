@@ -96,7 +96,7 @@ describe('<Compose />', () => {
       expect(input.exists()).toEqual(true);
       expect(input.text()).toEqual('');
       expect(input.attr('maxLength')).toEqual('1000');
-      expect(input.attr('placeholder')).toEqual('Message goes here');
+      expect(input.attr('placeholder')).toEqual("Let's connect");
 
       const btn = context.find('.messagecomposer__submit');
       expect(btn.exists()).toEqual(true);

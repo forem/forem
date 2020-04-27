@@ -21,7 +21,7 @@ module Slack
           url: URL.user(user),
         )
 
-        SlackBotPingWorker.perform_async(
+        Slack::Messengers::Worker.perform_async(
           message: message,
           channel: "abuse-reports",
           username: "rate_limit",

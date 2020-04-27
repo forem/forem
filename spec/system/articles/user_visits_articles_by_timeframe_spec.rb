@@ -120,6 +120,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     let(:user) { create(:user) }
 
     before do
+      clear_elasticsearch_data(Search::FeedContent)
       sign_in user
       visit "/top/week"
     end

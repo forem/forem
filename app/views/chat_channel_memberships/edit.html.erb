@@ -98,7 +98,7 @@
 
   <div class="crayons-card grid gap-2 p-4">
     <% if @membership.role == "mod" %>
-      <p>Questions about Connect Channel moderation? Contact <a href="mailto:<%= SiteConfig.email_addresses[:default] %>"><%= SiteConfig.email_addresses[:default] %></a></p>
+      <p>Questions about Connect Channel moderation? Contact <%= email_link %></p>
     <% else %>
       <h3>Danger Zone</h3>
       <%= form_for(@membership, html: { method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to leave this channel? This action is permanent.');" }) do |f| %>

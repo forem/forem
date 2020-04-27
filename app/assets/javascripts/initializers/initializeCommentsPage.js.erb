@@ -198,13 +198,6 @@ function handleCommentSubmit(event) {
       if (response.status === 200) {
         response.json().then(function (newComment) {
           var newNode = document.createElement('div');
-          if (newComment.status == "comment already exists") {
-            return false;
-          }
-          if (newComment.status == "errors") {
-            alert("There was a problem submitting this comment.")
-            return false;
-          }
           newNode.innerHTML = buildCommentHTML(newComment);
           var docBody = document.getElementsByTagName('body')[0]
 
