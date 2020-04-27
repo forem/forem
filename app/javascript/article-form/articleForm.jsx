@@ -76,9 +76,6 @@ export default class ArticleForm extends Component {
       previewShowing: false,
       modalShowing: false,
       previewResponse: '',
-      // helpHTML: document.getElementById('editor-help-guide').innerHTML,
-      liquidHelpHTML: document.getElementById('editor-liquid-help').innerHTML,
-      markdownHelpHTML: document.getElementById('editor-markdown-help').innerHTML,
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
@@ -152,13 +149,7 @@ export default class ArticleForm extends Component {
     };
   };
 
-  toggleHelp = e => {
-    const { modalShowing } = this.state;
-    e.preventDefault();
-    this.setState({
-      ...this.setCommonProps({ modalShowing: !modalShowing }),
-    });
-  };
+  
 
   fetchPreview = e => {
     const { previewShowing, bodyMarkdown } = this.state;
@@ -253,14 +244,6 @@ export default class ArticleForm extends Component {
     submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
-  handleTitleKeyDown = e => {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-    }
-  };
-
-  handleBodyKeyDown = _e => {};
-
   onClearChanges = e => {
     e.preventDefault();
     // eslint-disable-next-line no-alert
@@ -281,9 +264,6 @@ export default class ArticleForm extends Component {
       previewShowing: false,
       modalShowing: false,
       previewResponse: '',
-      // helpHTML: document.getElementById('editor-help-guide').innerHTML,
-      liquidHelpHTML: document.getElementById('editor-liquid-help').innerHTML,
-      markdownHelpHTML: document.getElementById('editor-markdown-help').innerHTML,
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
@@ -321,9 +301,6 @@ export default class ArticleForm extends Component {
       previewShowing,
       modalShowing,
       previewResponse,
-      // helpHTML,
-      liquidHelpHTML,
-      markdownHelpHTML,
       submitting,
       imageManagementShowing,
       moreConfigShowing,
@@ -386,12 +363,10 @@ export default class ArticleForm extends Component {
           {!previewShowing && (
             <Form
               titleDefaultValue={title}
-              titleOnKeyDown={this.handleTitleKeyDown}
               titleOnChange={linkState(this, 'title')}
               tagsDefaultValue={tagList}
               tagsOnInput={linkState(this, 'tagList')}
               bodyDefaultValue={bodyMarkdown}
-              bodyOnKeyDown={this.handleBodyKeyDown}
               bodyOnChange={linkState(this, 'bodyMarkdown')}
               bodyHasFocus={false}
               version={version}
@@ -408,7 +383,6 @@ export default class ArticleForm extends Component {
           )}
           <Help
             previewShowing={previewShowing}
-            toggleHelp={this.toggleHelp}
             modalShowing={modalShowing}
           />
         </div>
