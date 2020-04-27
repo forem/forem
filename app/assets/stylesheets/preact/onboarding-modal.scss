@@ -174,7 +174,7 @@
     }
 
     .active {
-      background-color: var(--base-90);
+      background-color: var(--accent-brand);
     }
   }
 }
@@ -663,7 +663,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
       @extend .crayons-field__label;
       align-items: baseline;
       border-radius: $br-default;
-      display: inline-block;
+      display: flex;
       flex-direction: row;
       padding: 0 $su-1;
       width: 100%;
