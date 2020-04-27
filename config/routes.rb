@@ -322,7 +322,7 @@ Rails.application.routes.draw do
   post "comments/preview" => "comments#preview"
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
 
-  # These routes are required by links in the sites and will need to be replaced by a db page
+  # These routes are required by links in the sites and will most likely to be replaced by a db page
   get "/about" => "pages#about"
   get "/security", to: "pages#bounty"
   get "/faq" => "pages#faq"
