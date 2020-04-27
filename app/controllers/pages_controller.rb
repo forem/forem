@@ -13,10 +13,10 @@ class PagesController < ApplicationController
     set_surrogate_key_header "about_page"
   end
 
-  def faq
-    @page = Page.find_by(slug: "faq")
+  def about_listings
+    @page = Page.find_by(slug: "about-listings")
     render :show if @page
-    set_surrogate_key_header "faq_page"
+    set_surrogate_key_header "about_listings"
   end
 
   def bounty
@@ -31,10 +31,10 @@ class PagesController < ApplicationController
     set_surrogate_key_header "community_moderation_page"
   end
 
-  def tag_moderation
-    @page = Page.find_by(slug: "tag-moderation")
+  def faq
+    @page = Page.find_by(slug: "faq")
     render :show if @page
-    set_surrogate_key_header "tag_moderation_page"
+    set_surrogate_key_header "faq_page"
   end
 
   def post_a_job
@@ -43,10 +43,10 @@ class PagesController < ApplicationController
     set_surrogate_key_header " post_a_job_page"
   end
 
-  def about_listings
-    @page = Page.find_by(slug: "about-listings")
+  def tag_moderation
+    @page = Page.find_by(slug: "tag-moderation")
     render :show if @page
-    set_surrogate_key_header "about_listings"
+    set_surrogate_key_header "tag_moderation_page"
   end
 
   def badge

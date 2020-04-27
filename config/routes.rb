@@ -324,12 +324,12 @@ Rails.application.routes.draw do
 
   # These routes are required by links in the sites and will most likely to be replaced by a db page
   get "/about" => "pages#about"
+  get "/about-listings" => "pages#about_listings"
   get "/security", to: "pages#bounty"
-  get "/faq" => "pages#faq"
   get "/community-moderation" => "pages#community_moderation"
+  get "/faq" => "pages#faq"
   get "/page/post-a-job" => "pages#post_a_job"
   get "/tag-moderation" => "pages#tag_moderation"
-  get "/about-listings" => "pages#about_listings"
 
   # NOTE: can't remove the hardcoded URL here as SiteConfig is not available here, we should eventually
   # setup dynamic redirects, see <https://github.com/thepracticaldev/dev.to/issues/7267>
