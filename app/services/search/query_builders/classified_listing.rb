@@ -63,11 +63,12 @@ module Search
         TERM_KEYS.flat_map do |term_key|
           next unless @params.key? term_key
 
-          values = @params[term_key]
+          values = Array.wrap(@params[term_key])
+
           if term_key == :tags
             values.map { |tag| { terms: { term_key => Array.wrap(tag) } } }
           else
-            { terms: { term_key => Array.wrap(values) } }
+            { terms: { term_key => values } }
           end
         end.compact
       end
