@@ -48,7 +48,9 @@
           </span>
         </h1>
       <% else %>
-        <h1 class="fs-xl s:fs-3xl">Settings for <a href="/<%= @user.username %>">@<%= @user.username %></a></h1>
+        <h1 class="fs-xl s:fs-3xl">
+          Settings for <a href="<%= user_url(@user) %>">@<%= @user.username.truncate(User::USERNAME_MAX_LENGTH) %></a>
+        </h1>
       <% end %>
     </header>
 
