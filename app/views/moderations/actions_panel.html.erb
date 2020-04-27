@@ -86,45 +86,76 @@
         </div>
       </button>
       <div class="set-experience-options hidden">
-        <%= form_for(RatingVote.new) do |f| %>
-          <%= f.hidden_field :article_id, value: @moderatable.id %>
-          <%= f.hidden_field :group, value: "experience_level" %>
-          <button value="1" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 1.0 %>">
-            <div class="level-rating-content">
-              <span class="level-rating-number">1</span>
-              <span class="level-rating-text">Beginner</span>
-            </div>
-            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
-          </button>
-          <button value="2" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 2.0 %>">
-            <div class="level-rating-content">
-              <span class="level-rating-number">2</span>
-              <span class="level-rating-text">Novice</span>
-            </div>
-            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
-          </button>
-          <button value="3" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 3.0 %>">
-            <div class="level-rating-content">
-              <span class="level-rating-number">3</span>
-              <span class="level-rating-text">Mid-level</span>
-            </div>
-            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
-          </button>
-          <button value="4" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 4.0 %>">
-            <div class="level-rating-content">
-              <span class="level-rating-number">4</span>
-              <span class="level-rating-text">Advanced</span>
-            </div>
-            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
-          </button>
-          <button value="5" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 5.0 %>">
-            <div class="level-rating-content">
-              <span class="level-rating-number">5</span>
-              <span class="level-rating-text">Expert</span>
-            </div>
-            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
-          </button>
-        <% end %>
+        <button
+          value="1"
+          name="rating_vote_1"
+          id="js__rating__vote__1"
+          class="level-rating-button <%= "selected" if @rating_vote&.rating == 1.0 %>"
+          data-user-id="<%= current_user.id %>"
+          data-article-id="<%= @moderatable.id %>"
+          data-group="experience-level">
+          <div class="level-rating-content">
+            <span class="level-rating-number">1</span>
+            <span class="level-rating-text">Beginner</span>
+          </div>
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+        </button>
+        <button
+          value="2"
+          name="rating_vote_2"
+          id="js__rating__vote__2"
+          class="level-rating-button <%= "selected" if @rating_vote&.rating == 2.0 %>"
+          data-user-id="<%= current_user.id %>"
+          data-article-id="<%= @moderatable.id %>"
+          data-group="experience-level">
+          <div class="level-rating-content">
+            <span class="level-rating-number">2</span>
+            <span class="level-rating-text">Novice</span>
+          </div>
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+        </button>
+        <button
+          value="3"
+          name="rating_vote_3"
+          id="js__rating__vote__3"
+          class="level-rating-button <%= "selected" if @rating_vote&.rating == 3.0 %>"
+          data-user-id="<%= current_user.id %>"
+          data-article-id="<%= @moderatable.id %>"
+          data-group="experience-level">
+          <div class="level-rating-content">
+            <span class="level-rating-number">3</span>
+            <span class="level-rating-text">Mid-level</span>
+          </div>
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+        </button>
+        <button
+          value="4"
+          name="rating_vote_4"
+          id="js__rating__vote__4"
+          class="level-rating-button <%= "selected" if @rating_vote&.rating == 4.0 %>"
+          data-user-id="<%= current_user.id %>"
+          data-article-id="<%= @moderatable.id %>"
+          data-group="experience-level">
+          <div class="level-rating-content">
+            <span class="level-rating-number">4</span>
+            <span class="level-rating-text">Advanced</span>
+          </div>
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+        </button>
+        <button
+          value="5"
+          name="rating_vote_5"
+          id="js__rating__vote__5"
+          class="level-rating-button <%= "selected" if @rating_vote&.rating == 5.0 %>"
+          data-user-id="<%= current_user.id %>"
+          data-article-id="<%= @moderatable.id %>"
+          data-group="experience-level">
+          <div class="level-rating-content">
+            <span class="level-rating-number">5</span>
+            <span class="level-rating-text">Expert</span>
+          </div>
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+        </button>
         <span class="how-this-works-section">How does this work?</span>
       </div>
     <% end %>
@@ -192,6 +223,49 @@
         let btnType = clickedBtn.dataset.otherThingsType;
         toggleOtherThings(btnType);
       })
+    });
+
+    function updateExperienceLevel(currentUserId, articleId, rating, group){
+      fetch('/create_or_update', {
+        method: 'PATCH',
+        headers: {
+          Accept: 'application/json',
+          'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: currentUserId,
+          article_id: articleId,
+          rating: rating,
+          group: group,
+        }),
+        credentials: 'same-origin'
+      })
+        .then(response => response.json()
+          .then(json => {
+            if (json.result === 'Success') {
+              let expLevel = document.getElementById(`js__rating__vote__${rating}`);
+              if (!expLevel.classList.contains('selected')){
+                expLevel.classList.add('selected');
+              }
+            } else {
+              alert(json.error)
+            }
+          })
+          .catch(error => {
+            alert(error);
+          }))
+    }
+
+    document.querySelectorAll('.level-rating-button').forEach(btn => {
+      btn.addEventListener('click', function () {
+        updateExperienceLevel(
+          btn.dataset.userId,
+          btn.dataset.articleId,
+          btn.value,
+          btn.dataset.group
+        );
+      });
     });
   }, 200)
 </script>
