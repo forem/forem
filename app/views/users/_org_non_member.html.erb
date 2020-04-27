@@ -1,72 +1,71 @@
-<%= javascript_packs_with_chunks_tag "colorPicker", "validateFileInputs", defer: true %>
+<%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", defer: true %>
 
-<h3>Join An Organization</h3>
-<h5>Do you have the secret code?</h5>
-
-<%= form_tag "/users/join_org" do %>
-  <div class="field">
-    <%= label_tag :org_secret, "Secret" %>
-    <%= text_field_tag :org_secret, nil, placeholder: "Provided to you by an org admin" %>
-  </div>
-  <div class="field">
-    <%= submit_tag "Join Organization" %>
-  </div>
-<% end %>
-<br /><br />
-<hr class="settings-hr" />
-<h3><em>Or</em> Create An Organization</h3>
-<sub><em>Starred fields are required</em></sub>
-
-<%= form_for @organization do |f| %>
-  <div class="field">
-    <%= f.label :name, "Name *" %>
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :slug, "Username *" %>
-    <%= f.text_field :slug %>
-    <sub><em>Your organization URL will be <%= app_url %>/{username}</em></sub>
-  </div>
-  <div class="field">
-    <%= f.label :profile_image, "Profile Image *" %>
-    <%= f.file_field :profile_image, accept: "image/*" %>
-  </div>
-  <div class="field">
-    <%= f.label :twitter_username, "Twitter Username" %>
-    <%= f.text_field :twitter_username %>
-  </div>
-  <div class="field">
-    <%= f.label :github_username, "Github Username" %>
-    <%= f.text_field :github_username %>
-  </div>
-  <div class="field">
-    <%= f.label :text_color_hex, "Text color (hex)" %>
-    <%= text_field_tag "organization[text_color_hex]", "#000000", placeholder: "Click for color picker", class: "color-picker" %>
-    <div class="color-palette"></div>
-  </div>
-  <div class="field">
-    <%= f.label :bg_color_hex, "Background color (hex)" %>
-    <%= text_field_tag "organization[bg_color_hex]", "#FFFFFF", placeholder: "Click for color picker", class: "color-picker" %>
-    <div class="color-palette"></div>
-  </div>
-  <div class="field">
-    <%= f.label :url, "Website url *" %>
-    <%= f.url_field :url, placeholder: "https://yoursite.com" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :summary, "Summary *" %>
-    <%= f.text_area :summary %>
-  </div>
-  <div class="field">
-    <%= f.label :proof, "Proof *" %>
-    <%= f.text_area :proof, placeholder: "This is just a quick blurb indicating or link that shows that you clearly are associated with this organization." %>
-    <div style="width:560px;max-width:90%;">
-      You must have your organization's permission to submit this form. Dishonesty may result in a permanent suspension.
+<div class="crayons-card grid gap-6 p-6 mb-6">
+  <h3>Join An Organization</h3>
+  <%= form_tag "/users/join_org" do %>
+    <div class="crayons-field mb-6">
+      <%= label_tag :org_secret, "Secret code", class: "crayons-field__label" %>
+      <p class="crayons-field__description">Provided to you by an org admin</p>
+      <%= text_field_tag :org_secret, nil, placeholder: "...", class: "crayons-textfield" %>
     </div>
-  </div>
-  <div class="field">
-    <label></label>
-    <%= f.submit "SUBMIT", class: "cta" %>
-  </div>
-<% end %>
+
+    <button class="crayons-btn" type="submit">Join Organization</button>
+  <% end %>
+</div>
+
+<p class="align-center fs-small color-base-60 mb-6 fw-bold">OR</p>
+
+<div class="crayons-card grid gap-6 p-6 mb-6">
+  <header>
+    <h3 class="mb-2">Create An Organization</h3>
+    <p>Starred fields are required</p>
+  </header>
+
+  <%= form_for @organization, html: { class: "grid gap-6" } do |f| %>
+    <div class="crayons-field">
+      <%= f.label :name, "Name *", class: "crayons-field__label" %>
+      <%= f.text_field :name, class: "crayons-textfield", placeholder: "Acme Inc." %>
+    </div>
+    <div class="crayons-field">
+      <%= f.label :slug, "Username *", class: "crayons-field__label" %>
+      <%= f.text_field :slug, class: "crayons-textfield", placeholder: "acmeinc" %>
+      <p class="crayons-field__description">Your organization URL will be <%= app_url %>/{username}</p>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :profile_image, "Profile image *", class: "crayons-field__label" %>
+      <%= f.file_field :profile_image, accept: "image/*" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :twitter_username, "Twitter username", class: "crayons-field__label" %>
+      <%= f.text_field :twitter_username, class: "crayons-textfield" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :github_username, "GitHub username", class: "crayons-field__label" %>
+      <%= f.text_field :github_username, class: "crayons-textfield" %>
+    </div>
+
+    <%= render partial: "shared/logo_design", locals: { f: f, account: @user } %>
+
+    <div class="crayons-field">
+      <%= f.label :url, "Website url *", class: "crayons-field__label" %>
+      <%= f.url_field :url, placeholder: "https://yoursite.com", class: "crayons-textfield" %>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :summary, "Summary *", class: "crayons-field__label" %>
+      <%= f.text_area :summary, class: "crayons-textfield", rows: 3, placeholder: "..." %>
+    </div>
+
+    <div class="crayons-field">
+      <%= f.label :proof, "Proof *", class: "crayons-field__label" %>
+      <p class="crayons-field__description">This is just a quick blurb indicating or link that shows that you clearly are associated with this organization.</p>
+      <%= f.text_area :proof, placeholder: "...", class: "crayons-textfield" %>
+      <p class="crayons-field__description">You must have your organization's permission to submit this form. Dishonesty may result in a permanent suspension.</p>
+    </div>
+
+    <div><button class="crayons-btn" type="submit">Create Organization</button></div>
+  <% end %>
+</div>

@@ -3,7 +3,7 @@ module FastlyVCL
   class WhitelistedParams
     VCL_DELIMITER_START = "^(".freeze
     VCL_DELIMITER_END = ")$".freeze
-    SNIPPET_NAME = "Whitelist certain querystring parameters".freeze
+    SNIPPET_NAME = ApplicationConfig["FASTLY_WHITELIST_PARAMS_SNIPPET_NAME"].freeze
     FILE_PARAMS = YAML.load_file("config/fastly/whitelisted_params.yml").freeze
 
     class << self

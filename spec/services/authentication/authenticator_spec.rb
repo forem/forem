@@ -74,7 +74,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
       it "queues a slack message to be sent for a user whose identity is brand new" do
         auth_payload.extra.raw_info.created_at = 1.minute.ago.rfc3339
 
-        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
           described_class.call(auth_payload)
         end
       end
@@ -84,8 +84,20 @@ RSpec.describe Authentication::Authenticator, type: :service do
         service.call
 
         expect(DatadogStatsClient).to have_received(:increment).with(
-          "identity.created", tags: [provider: "github"]
+          "identity.created", tags: ["provider:github"]
         )
+      end
+
+      it "increments identity.errors if any errors occur in the transaction" do
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(Identity).to receive(:save!).and_raise(StandardError)
+        # rubocop:enable RSpec/AnyInstance
+        allow(DatadogStatsClient).to receive(:increment)
+
+        expect { described_class.call(auth_payload) }.to raise_error(StandardError)
+
+        tags = hash_including(tags: array_including("error:StandardError"))
+        expect(DatadogStatsClient).to have_received(:increment).with("identity.errors", tags)
       end
     end
 
@@ -173,6 +185,18 @@ RSpec.describe Authentication::Authenticator, type: :service do
           user.profile_updated_at.to_i > original_profile_updated_at.to_i,
         ).to be(true)
       end
+
+      it "increments identity.errors if any errors occur in the transaction" do
+        # rubocop:disable RSpec/AnyInstance
+        allow_any_instance_of(Identity).to receive(:save!).and_raise(StandardError)
+        # rubocop:enable RSpec/AnyInstance
+        allow(DatadogStatsClient).to receive(:increment)
+
+        expect { described_class.call(auth_payload) }.to raise_error(StandardError)
+
+        tags = hash_including(tags: array_including("error:StandardError"))
+        expect(DatadogStatsClient).to have_received(:increment).with("identity.errors", tags)
+      end
     end
 
     describe "user already logged in" do
@@ -254,7 +278,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
       it "queues a slack message to be sent for a user whose identity is brand new" do
         auth_payload.extra.raw_info.created_at = 1.minute.ago.rfc3339
 
-        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
           described_class.call(auth_payload)
         end
       end
@@ -264,7 +288,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
         service.call
 
         expect(DatadogStatsClient).to have_received(:increment).with(
-          "identity.created", tags: [provider: "twitter"]
+          "identity.created", tags: ["provider:twitter"]
         )
       end
     end

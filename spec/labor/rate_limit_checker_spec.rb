@@ -23,7 +23,7 @@ RSpec.describe RateLimitChecker, type: :labor do
       it "sends a slack message if a user leaves too any messages" do
         create_list(:comment, 2, user_id: user.id, commentable: article)
 
-        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
           rate_limit_checker.limit_by_action("comment_creation")
         end
       end

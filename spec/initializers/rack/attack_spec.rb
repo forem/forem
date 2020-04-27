@@ -5,6 +5,7 @@ describe Rack::Attack, type: :request, throttle: true do
     redis_url = "redis://localhost:6379"
     cache_db = ActiveSupport::Cache::RedisStore.new(redis_url)
     allow(Rails).to receive(:cache) { cache_db }
+    cache_db.data.flushdb
   end
 
   describe "search_throttle" do

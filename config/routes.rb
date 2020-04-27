@@ -47,11 +47,12 @@ Rails.application.routes.draw do
     resources :articles, only: %i[index show update]
     resources :broadcasts, only: %i[index new create edit update]
     resources :buffer_updates, only: %i[create update]
+    # TODO: [mkohl] Change this to a single resource definition
     resources :classified_listings, only: %i[index edit update destroy]
+    resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :comments, only: [:index]
     resources :events, only: %i[index create update]
     resources :feedback_messages, only: %i[index show]
-    resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
     resources :mods, only: %i[index update]
     resources :moderator_actions, only: %i[index]

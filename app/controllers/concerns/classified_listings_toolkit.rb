@@ -13,11 +13,14 @@ module ClassifiedListingsToolkit
     @classified_listing.save
   end
 
+  # TODO: why not just @classified_listing.update(listing_params)?
   def update_listing_details
     @classified_listing.title = listing_params[:title] if listing_params[:title]
     @classified_listing.body_markdown = listing_params[:body_markdown] if listing_params[:body_markdown]
     @classified_listing.tag_list = listing_params[:tag_list] if listing_params[:tag_list]
-    @classified_listing.category = listing_params[:category] if listing_params[:category]
+    if listing_params[:classified_listing_category_id]
+      @classified_listing.classified_listing_category_id = listing_params[:classified_listing_category_id]
+    end
     @classified_listing.location = listing_params[:location] if listing_params[:location]
     @classified_listing.expires_at = listing_params[:expires_at] if listing_params[:expires_at]
     @classified_listing.contact_via_connect = listing_params[:contact_via_connect] if listing_params[:contact_via_connect]
@@ -45,7 +48,6 @@ module ClassifiedListingsToolkit
     authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
 
     @classified_listing.user_id = current_user.id
-    cost = ClassifiedListing.cost_by_category(@classified_listing.category)
     org = Organization.find_by(id: @classified_listing.organization_id)
 
     if listing_params[:action] == "draft"
@@ -56,6 +58,14 @@ module ClassifiedListingsToolkit
     available_org_credits = org.credits.unspent if org
     available_user_credits = current_user.credits.unspent
 
+    unless @classified_listing.valid?
+      # TODO: [thepracticaldev/oss] For now the credits are needed in the view
+      @credits = current_user.credits.unspent
+      process_unsuccessful_creation
+      return
+    end
+
+    cost = @classified_listing.cost
     # we use the org's credits if available, otherwise we default to the user's
     if org && available_org_credits.size >= cost
       create_listing(org, cost)
@@ -66,14 +76,18 @@ module ClassifiedListingsToolkit
     end
   end
 
+  ALLOWED_PARAMS = %i[
+    title body_markdown category classified_listing_category_id tag_list
+    expires_at contact_via_connect location organization_id action
+  ].freeze
+
   # Never trust parameters from the scary internet, only allow a specific list through.
   def listing_params
     if params["classified_listing"]["tags"].present?
       params["classified_listing"]["tags"] = params["classified_listing"]["tags"].join(", ")
       params["classified_listing"]["tag_list"] = params["classified_listing"].delete "tags"
     end
-    accessible = %i[title body_markdown category tag_list expires_at contact_via_connect location organization_id action]
-    params.require(:classified_listing).permit(accessible)
+    params.require(:classified_listing).permit(ALLOWED_PARAMS)
   end
 
   def create_draft
@@ -124,7 +138,7 @@ module ClassifiedListingsToolkit
   def update
     authorize @classified_listing
 
-    cost = ClassifiedListing.cost_by_category(@classified_listing.category)
+    cost = @classified_listing.cost
 
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
     return bump_listing(cost) if listing_params[:action] == "bump"

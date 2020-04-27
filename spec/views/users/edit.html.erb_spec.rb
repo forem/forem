@@ -15,16 +15,16 @@ RSpec.describe "users/edit", type: :view do
       create(:identity, user: user, provider: "twitter")
 
       render
-      expect(rendered).to match(/CONNECT GITHUB ACCOUNT/)
-      expect(rendered).not_to match(/CONNECT TWITTER ACCOUNT/)
+      expect(rendered).to match(/Connect GitHub Account/)
+      expect(rendered).not_to match(/Connect Twitter Account/)
     end
 
     it "asks user to connect with twitter if it's missing" do
       create(:identity, user: user, provider: "github")
 
       render
-      expect(rendered).to match(/CONNECT TWITTER ACCOUNT/)
-      expect(rendered).not_to match(/CONNECT GITHUB ACCOUNT/)
+      expect(rendered).to match(/Connect Twitter Account/)
+      expect(rendered).not_to match(/Connect GitHub Account/)
     end
   end
 end

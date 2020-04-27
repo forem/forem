@@ -22,5 +22,5 @@ Sponsorship video insertion
 As a media sponsor, your company will be included in all relevant sections around the content.  For instance, in the <%= community_name %> post, in social media postings, email announcements, etc.
 </p>
 <% unless user_signed_in? %>
-  <h2>Email <a href="mailto:partners@dev.to">partners@dev.to</a> for pricing information</h2>
+  <h2>Email <a href="mailto:<%= SiteConfig.email_addresses[:business] %>"><%= SiteConfig.email_addresses[:business] %></a> for pricing information</h2>
 <% end %>
