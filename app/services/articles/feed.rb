@@ -134,73 +134,33 @@ module Articles
     def more_tag_weight_randomized_at_end_experiment
       @randomness = 0
       results = more_tag_weight_experiment
-      first_half(results).shuffle + last_half(results)
+      ArrayHelper.first_half(results).shuffle + ArrayHelper.last_half(results)
     end
 
     def more_experience_level_weight_randomized_at_end_experiment
       @randomness = 0
       results = more_experience_level_weight_experiment
-      first_half(results).shuffle + last_half(results)
+      ArrayHelper.first_half(results).shuffle + ArrayHelper.last_half(results)
     end
 
     def more_comments_randomized_at_end_experiment
       @randomness = 0
       results = more_comments_experiment
-      first_half(results).shuffle + last_half(results)
+      ArrayHelper.first_half(results).shuffle + ArrayHelper.last_half(results)
     end
+
+    private
 
     def rank_and_sort_articles(articles)
-      ranked_articles = articles.each_with_object({}) do |article, result|
-        article_points = score_single_article(article)
-        result[article] = article_points
-      end
-      ranked_articles = ranked_articles.sort_by { |_article, article_points| -article_points }.map(&:first)
-      ranked_articles.to(@number_of_articles - 1)
-    end
-
-    def score_single_article(article)
-      article_points = 0
-      article_points += score_followed_user(article)
-      article_points += score_followed_organization(article)
-      article_points += score_followed_tags(article)
-      article_points += score_randomness
-      article_points += score_language(article)
-      article_points += score_experience_level(article)
-      article_points += score_comments(article)
-      article_points
-    end
-
-    def score_followed_user(article)
-      user_following_users_ids.include?(article.user_id) ? 1 : 0
-    end
-
-    def score_followed_tags(article)
-      return 0 unless @user
-
-      article_tags = article.decorate.cached_tag_list_array
-      user_followed_tags.sum do |tag|
-        article_tags.include?(tag.name) ? tag.points * @tag_weight : 0
-      end
-    end
-
-    def score_followed_organization(article)
-      user_following_org_ids.include?(article.organization_id) ? 1 : 0
-    end
-
-    def score_randomness
-      rand(3) * @randomness
-    end
-
-    def score_language(article)
-      @user&.preferred_languages_array&.include?(article.language || "en") ? 1 : -15
-    end
-
-    def score_experience_level(article)
-      - (((article.experience_level_rating - (@user&.experience_level || 5)).abs / 2) * @experience_level_weight)
-    end
-
-    def score_comments(article)
-      article.comments_count * @comment_weight
+      @rank_and_sort_articles ||= Articles::RankedAndSorted.new(
+        articles: articles,
+        user: @user,
+        tag_weight: @tag_weight,
+        randomness: @randomness,
+        comment_weight: @comment_weight,
+        number_of_articles: @number_of_articles,
+        experience_level_weight: @experience_level_weight,
+      ).perform
     end
 
     def globally_hot_articles(user_signed_in)
@@ -217,28 +177,6 @@ module Articles
         hot_stories = hot_stories.to_a + new_stories.to_a
       end
       [featured_story, hot_stories.to_a]
-    end
-
-    private
-
-    def user_followed_tags
-      @user_followed_tags ||= (@user&.decorate&.cached_followed_tags || [])
-    end
-
-    def user_following_org_ids
-      @user_following_org_ids ||= (@user&.cached_following_organizations_ids || [])
-    end
-
-    def user_following_users_ids
-      @user_following_users_ids ||= (@user&.cached_following_users_ids || [])
-    end
-
-    def first_half(array)
-      array[0...(array.length / 2)]
-    end
-
-    def last_half(array)
-      array[(array.length / 2)..array.length]
     end
   end
 end
