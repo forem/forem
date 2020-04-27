@@ -159,4 +159,20 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).to redirect_to "/internal/users/#{user.id}"
     end
   end
+
+  describe "redirect to lowercase route" do
+    let(:user) { create(:user) }
+
+    before do
+      get "/#{user.username.capitalize}"
+    end
+
+    it "redirects to the lowercase route for usernames" do
+      expect(response.body).to include("/#{user.username.downcase}")
+    end
+
+    it "does not display the uppercase route for usernames" do
+      expect(response.body).not_to include("/#{user.username.capitalize}")
+    end
+  end
 end
