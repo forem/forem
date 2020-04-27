@@ -1,3 +1,13 @@
+<head>
+    <style type="text/css">
+      img {
+        max-width:100%;
+        height:auto;
+        border:none
+      }
+    </style>
+</head>
+
 <h2 style="font-size:25px;"><%= link_to(@comment.user.name, "#{user_url(@comment.user)}/#{}") %> replied to you on <%= community_name %></h2>
 <table>
   <tr>

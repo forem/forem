@@ -263,6 +263,20 @@
                 </div>
               </div>
 
+              <%= f.label :onboarding_taskcard_image %>
+              <%= f.text_field :onboarding_taskcard_image,
+                               class: "form-control",
+                               value: SiteConfig.onboarding_taskcard_image,
+                               placeholder: "https://image.url" %>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" />
+                </div>
+                <div class="col-12">
+                  <div class="alert alert-info"> Used as the onboarding task-card image </div>
+                </div>
+              </div>
+
               <%= f.label :mascot_image_url %>
               <%= f.text_field :mascot_image_url,
                                class: "form-control",

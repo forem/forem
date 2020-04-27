@@ -126,18 +126,41 @@
       @extend .crayons-btn;
     }
 
+    .back-button-container,
+    .next-button {
+      // Explicitly set width to avoid next-button re-sizing with text,
+      // and to ensure that back-button-container takes up the same amount of space.
+      width: $su-10;
+    }
+
     .back-button {
       @extend .crayons-btn;
       @extend .crayons-btn--ghost;
       @extend .crayons-btn--icon;
 
+      $button-size: 40px; // Explicitly set size for accessibility.
+
+      border-radius: 100%;
+      min-width: $button-size;
+      height: $button-size;
       align-items: center;
       display: flex;
+
+      &:hover,
+      &:active {
+        background: var(--base-10);
+      }
+    }
+
+    .skip-for-now {
+      @extend .crayons-btn;
+      @extend .crayons-btn--secondary;
     }
 
     .stepper {
       display: flex;
       align-items: center;
+      justify-content: center;
     }
 
     .dot {

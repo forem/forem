@@ -7,6 +7,7 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
       ClassifiedListing.includes(%i[user classified_listing_category]).
         page(params[:page]).order("bumped_at DESC").per(50)
 
+    @classified_listings = @classified_listings.published unless include_unpublished?
     @classified_listings = @classified_listings.where(category: params[:filter]) if params[:filter].present?
   end
 
@@ -45,5 +46,9 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
   def handle_publish_status
     unpublish_listing if listing_params[:published] == "0"
     publish_listing if listing_params[:published] == "1"
+  end
+
+  def include_unpublished?
+    params[:include_unpublished] == "1"
   end
 end

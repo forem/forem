@@ -140,4 +140,25 @@
       }
     }
   }
+
+  &--item {
+    padding: $su-3;
+    text-align: center;
+    width: 100%;
+
+    &--current {
+      border-bottom: 4px solid var(--accent-brand);
+
+      .crayons-tabs__label {
+        color: var(--link-color);
+        font-size: $fs-base;
+        font-weight: $fw-bold;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      background-color: var(--base-10);
+    }
+  }
 }

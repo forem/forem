@@ -802,32 +802,32 @@ RSpec.describe Article, type: :model do
     describe "slack messages" do
       before do
         # making sure there are no other enqueued jobs from other tests
-        sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
+        sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
       end
 
       it "queues a slack message to be sent" do
-        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           article.update(published: true, published_at: Time.current)
         end
       end
 
       it "does not queue a message for an article published more than 30 seconds ago" do
         Timecop.freeze(Time.current) do
-          sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+          sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
             article.update(published: true, published_at: 31.seconds.ago)
           end
         end
       end
 
       it "does not queue a message for a draft article" do
-        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
           article.update(body_markdown: "foobar", published: false)
         end
       end
 
       it "queues a message for a draft article that gets published" do
         Timecop.freeze(Time.current) do
-          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
             article.update_columns(published: false)
             article.update(published: true, published_at: Time.current)
           end

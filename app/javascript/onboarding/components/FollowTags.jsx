@@ -97,11 +97,14 @@ class FollowTags extends Component {
   render() {
     const { prev, currentSlideIndex, slidesCount } = this.props;
     const { selectedTags, allTags } = this.state;
+    const canSkip = selectedTags.length === 0;
+
     return (
       <div className="onboarding-main">
         <Navigation
           prev={prev}
           next={this.handleComplete}
+          canSkip={canSkip}
           slidesCount={slidesCount}
           currentSlideIndex={currentSlideIndex}
         />

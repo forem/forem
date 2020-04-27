@@ -80,6 +80,11 @@
               <%= inline_svg_tag("facebook-logo.svg", class: "icon-img", aria: true, title: "Facebook logo") %>
             </a>
           <% end %>
+          <% if @user.youtube_url? %>
+            <a href="<%= @user.youtube_url %>" target="_blank" rel="noopener me">
+              <%= inline_svg_tag("youtube-logo.svg", class: "icon-img", aria: true, title: "Youtube logo") %>
+            </a>
+          <% end %>
           <% if @user.linkedin_url? %>
             <a href="<%= @user.linkedin_url %>" target="_blank" rel="noopener me">
               <%= inline_svg_tag("linkedin_icon.svg", class: "icon-img", aria: true, title: "LinkedIn logo") %>

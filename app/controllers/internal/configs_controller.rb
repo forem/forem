@@ -26,19 +26,37 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def config_params
     allowed_params = %i[
-      mascot_user_id
-      campaign_hero_html_variant_name campaign_sidebar_enabled campaign_featured_tags
+      authentication_providers
+      campaign_featured_tags
+      campaign_hero_html_variant_name
+      campaign_sidebar_enabled
       campaign_sidebar_image
-      main_social_image favicon_url logo_svg logo_png primary_sticker_image_url
-      mascot_image_url mascot_image_description
-      rate_limit_follow_count_daily
-      ga_view_id ga_fetch_rate community_description authentication_providers
+      community_description
       community_member_description tagline
-      mailchimp_newsletter_id mailchimp_sustaining_members_id
-      mailchimp_tag_moderators_id mailchimp_community_moderators_id
-      periodic_email_digest_max periodic_email_digest_min suggested_tags
-      rate_limit_comment_creation rate_limit_published_article_creation
-      rate_limit_image_upload rate_limit_email_recipient sidebar_tags shop_url
+      favicon_url
+      ga_view_id ga_fetch_rate
+      logo_png
+      logo_svg
+      mailchimp_community_moderators_id
+      mailchimp_newsletter_id
+      mailchimp_sustaining_members_id
+      mailchimp_tag_moderators_id
+      main_social_image
+      mascot_image_description
+      mascot_image_url
+      mascot_user_id
+      onboarding_taskcard_image
+      periodic_email_digest_max
+      periodic_email_digest_min
+      primary_sticker_image_url
+      rate_limit_comment_creation
+      rate_limit_email_recipient
+      rate_limit_follow_count_daily
+      rate_limit_image_upload
+      rate_limit_published_article_creation
+      shop_url
+      sidebar_tags
+      suggested_tags
     ]
     params.require(:site_config).permit(allowed_params, social_media_handles: SiteConfig.social_media_handles.keys, email_addresses: SiteConfig.email_addresses.keys)
   end
