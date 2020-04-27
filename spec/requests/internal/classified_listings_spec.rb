@@ -23,12 +23,14 @@ RSpec.describe "/internal/listings", type: :request do
 
       it "filters unpublished listings by default" do
         get internal_listings_path
-        expect(response.body).not_to match(unpublished_listing.title)
+
+        expect(response.body).not_to include(CGI.escapeHTML(unpublished_listing.title))
       end
 
       it "includes unpublished listings when asked to" do
         get internal_listings_path, params: { include_unpublished: "1" }
-        expect(response.body).to match(unpublished_listing.title)
+
+        expect(response.body).to include(CGI.escapeHTML(unpublished_listing.title))
       end
     end
   end
