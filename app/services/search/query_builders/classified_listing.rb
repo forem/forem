@@ -65,10 +65,10 @@ module Search
 
           if tags_key?(term_key)
             @params[term_key].map do |tag|
-              { terms: { term_key => tag } }
+              { terms: { term_key => Array.wrap(tag) } }
             end.compact
           else
-            { terms: { term_key => @params[term_key] } }
+            { terms: { term_key => Array.wrap(@params[term_key]) } }
           end
         end.compact
       end
@@ -86,7 +86,7 @@ module Search
       end
 
       def tags_key?(term_key)
-        (@params[term_key].is_a? Array) && (term_key == TERM_KEYS[5])
+        (term_key == TERM_KEYS[5]) && (@params[term_key].is_a? Array)
       end
     end
   end
