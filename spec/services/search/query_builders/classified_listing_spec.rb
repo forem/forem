@@ -20,11 +20,11 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
       filter = described_class.new(params: params)
       exepcted_filters = [
         { "terms" => { "category" => ["cfp"] } },
+        { "terms" => { "contact_via_connect" => [false] } },
+        { "terms" => { "published" => [true] } },
         { "terms" => { "tags" => "beginner" } },
         { "terms" => { "tags" => "Intermediate" } },
         { "terms" => { "tags" => "Professional" } },
-        { "terms" => { "contact_via_connect" => [false] } },
-        { "terms" => { "published" => [true] } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
     end
