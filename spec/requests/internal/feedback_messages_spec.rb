@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "/internal/reports", type: :request do
   let(:feedback_message)  { create(:feedback_message, :abuse_report) }
   let(:user)              { create(:user) }
+  let(:trusted_user)      { create(:user, :trusted) }
   let(:admin)             { create(:user, :super_admin) }
 
   describe "GET /internal/reports" do
@@ -11,6 +12,16 @@ RSpec.describe "/internal/reports", type: :request do
     context "when the user is a single resource admin" do
       it "renders with status 200" do
         sign_in single_resource_admin
+        get internal_reports_path
+        expect(response.status).to eq 200
+      end
+    end
+
+    context "when there is a vomit reaction on a user" do
+      it "renders with status 200" do
+        trusted_user
+        create(:reaction, category: "vomit", reactable: user, user: trusted_user)
+        sign_in admin
         get internal_reports_path
         expect(response.status).to eq 200
       end
