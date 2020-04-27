@@ -1,4 +1,4 @@
-"use strict"
+
 
 /**
  * This script hunts for podcast's "Record" for both the podcast_episde's
@@ -102,6 +102,10 @@ function initializePodcastPlayback() {
     return podcastLiquidTagrecords;
   }
 
+  function isNativePlayer() {
+    return isNativeIOS() || isNativeAndroid();
+  }
+
   function isNativeIOS() {
     return navigator.userAgent === 'DEV-Native-ios';
   }
@@ -109,7 +113,7 @@ function initializePodcastPlayback() {
   function isNativeAndroid() {
     return (
       navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== "undefined" &&
+      typeof AndroidBridge !== 'undefined' &&
       AndroidBridge !== null
     );
   }
@@ -188,7 +192,7 @@ function initializePodcastPlayback() {
         action: 'load',
         url: audio.querySelector('source').src,
       });
-    } else if(isNativeAndroid()) {
+    } else if (isNativeAndroid()) {
       AndroidBridge.loadPodcast(audio.querySelector('source').src);
     } else {
       audio.load();
@@ -245,6 +249,8 @@ function initializePodcastPlayback() {
         action: 'rate',
         rate: currentState.playbackRate.toString(),
       });
+    } else if (isNativeAndroid()) {
+      AndroidBridge.ratePodcast(currentState.playbackRate);
     } else {
       audio.playbackRate = currentState.playbackRate;
     }
@@ -289,8 +295,9 @@ function initializePodcastPlayback() {
         setPlaying(true);
         resolve();
       } else if (isNativeAndroid()) {
-        console.log("WAT?");
         AndroidBridge.playPodcast(currentState.currentTime.toString());
+        setPlaying(true);
+        resolve();
       } else {
         audio.currrentTime = currentState.currentTime;
         audio
@@ -410,6 +417,8 @@ function initializePodcastPlayback() {
         action: 'muted',
         muted: currentState.muted.toString(),
       });
+    } else if (isNativeAndroid()) {
+      AndroidBridge.mutePodcast(currentState.muted);
     } else {
       audio.muted = currentState.muted;
     }
@@ -465,6 +474,8 @@ function initializePodcastPlayback() {
           action: 'seek',
           seconds: currentState.currentTime.toString(),
         });
+      } else if (isNativeAndroid()) {
+        AndroidBridge.seekPodcast(currentState.currentTime);
       } else {
         audio.currentTime = currentState.currentTime;
       }
