@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, text } from '@storybook/addon-knobs/react';
+import { withKnobs, select } from '@storybook/addon-knobs/react';
 import {
   CommentSubscription,
   COMMENT_SUBSCRIPTION_TYPE,
@@ -16,22 +16,12 @@ const commonProps = {
   onUnsubscribe: action('unsubscribed'),
 };
 
-export const Default = () => (
-  <CommentSubscription
-    {...commonProps}
-    subscriptionType={text('subscriptionType')}
-  />
-);
-
-Default.story = {
-  name: 'unsubscribed with no subscription type (default)',
-};
-
 export const Unsubscribed = () => (
   <CommentSubscription
     {...commonProps}
-    subscriptionType={text(
+    subscriptionType={select(
       'subscriptionType',
+      COMMENT_SUBSCRIPTION_TYPE,
       COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED,
     )}
   />
@@ -44,13 +34,29 @@ Unsubscribed.story = {
 export const Subscribed = () => (
   <CommentSubscription
     {...commonProps}
-    subscriptionType={text(
+    subscriptionType={select(
       'subscriptionType',
-      COMMENT_SUBSCRIPTION_TYPE.AUTHOR,
+      COMMENT_SUBSCRIPTION_TYPE,
+      COMMENT_SUBSCRIPTION_TYPE.ALL,
     )}
   />
 );
 
 Subscribed.story = {
   name: 'subscribed',
+};
+
+export const SubscribedButNotDefault = () => (
+  <CommentSubscription
+    {...commonProps}
+    subscriptionType={select(
+      'subscriptionType',
+      COMMENT_SUBSCRIPTION_TYPE,
+      COMMENT_SUBSCRIPTION_TYPE.AUTHOR,
+    )}
+  />
+);
+
+SubscribedButNotDefault.story = {
+  name: 'subscribed (with comment type other than the default',
 };
