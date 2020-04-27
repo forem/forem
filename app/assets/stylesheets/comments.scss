@@ -1,6 +1,7 @@
 @import 'variables';
 @import 'mixins';
 @import 'functions';
+@import 'config/import';
 
 %kbd {
   display: inline-block;
@@ -397,7 +398,7 @@ a.header-link {
 
       a {
         text-align: left;
-        padding: 12px;
+        padding: $su-3;
         font-weight: bold;
         svg {
           width: 20px;
@@ -407,6 +408,10 @@ a.header-link {
           left: 3px;
           @include themeable(fill, link-branded-color, #3b49df)
         }
+      }
+      p {
+        align-self: flex-start;
+        padding: 0 $su-3;
       }
     }
     .article-comment-form-preamble {
