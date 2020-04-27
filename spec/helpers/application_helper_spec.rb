@@ -138,13 +138,13 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(helper.email_link(:nonsense)).to have_link(href: "mailto:hi@dev.to")
     end
 
-    it "appends additional_info parameters in a url encoded format to the href" do
+    it "returns an href with additional_info parameters" do
       additional_info = {
         subject: "This is a long subject",
         body: "This is a longer body with a question mark ? \n and a newline"
       }
 
-      expect(email_link(text: "text", additional_info: additional_info)).to eq("<a href=\"mailto:yodsahdgafdghsj@dev.to?body=This%20is%20a%20longer%20body%20with%20a%20question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>")
+      expect(email_link(text: "text", additional_info: additional_info)).to eq("<a href=\"mailto:hi@dev.to?body=This%20is%20a%20longer%20body%20with%20a%20question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>")
     end
   end
 end

@@ -303,12 +303,9 @@ class UsersController < ApplicationController
   def handle_account_tab
     community_name = ApplicationConfig["COMMUNITY_NAME"]
     @email_body = <<~HEREDOC
-      Hello #{community_name} Team,
-      \n
-      I would like to delete my account.
-      \n
-      You can keep any comments and discussion posts under the Ghost account.
-      \n
+      Hello #{community_name} Team,\n
+      I would like to delete my account.\n
+      You can keep any comments and discussion posts under the Ghost account.\n
       Regards,
       YOUR-#{community_name}-USERNAME-HERE
     HEREDOC
