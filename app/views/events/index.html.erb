@@ -30,7 +30,7 @@
     <p><%= community_name %> Events is a series of ongoing talks and workshops designed to cover important topics to help community members level up. Because we have a global community we will be hosting events at varying times so nobody is restricted by time zone. Additionally,
       <strong>some workshops are repeated multiple times</strong> to further account for this.</p>
     <p>We have many more planned if you do not see a topic that interests you. Email
-      <a href="mailto:members@dev.to">members@dev.to</a> to request a topic. And if you're interested in speaking, please
+      <a href="mailto:<%= SiteConfig.email_addresses[:members] %>"><%= SiteConfig.email_addresses[:members] %></a> to request a topic. And if you're interested in speaking, please
       <a href="https://dev.to/jess/would-you-like-to-give-a-dev-talkworkshop--31c6">apply to our CFP</a>.</p>
 
     <% @events.each do |event| %>

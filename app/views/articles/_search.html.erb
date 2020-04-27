@@ -85,9 +85,20 @@
 
     if (searchTerm) { searchHash.search_fields = searchTerm; }
 
-    const searchParams = new URLSearchParams(searchHash).toString();
+    // Brute force copying code from a utlity for quick fix
+    const searchParams = new URLSearchParams();
+    Object.keys(searchHash).forEach((key) => {
+      const value = searchHash[key];
+      if (Array.isArray(value)) {
+        value.forEach((arrayValue) => {
+          searchParams.append(`${key}[]`, arrayValue);
+        });
+      } else {
+        searchParams.append(key, value);
+      }
+    });
 
-    fetch(`/search/feed_content?${searchParams}`, {
+    fetch(`/search/feed_content?${searchParams.toString()}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

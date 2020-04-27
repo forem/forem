@@ -153,6 +153,13 @@ RSpec.describe Comment, type: :model do
         comment.validate!
         expect(comment.processed_html.include?(">1:52:30</a>")).to eq(false)
       end
+
+      it "does not add DOCTYPE and html body to processed html" do
+        comment.body_markdown = "Hello https://longurl.com/#{'x' * 100}?#{'y' * 100}"
+        comment.validate!
+        expect(comment.processed_html).not_to include("<!DOCTYPE")
+        expect(comment.processed_html).not_to include("<html><body>")
+      end
     end
   end
 
@@ -317,19 +324,19 @@ RSpec.describe Comment, type: :model do
 
       before do
         # making sure there are no other enqueued jobs from other tests
-        sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
+        sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
       end
 
       it "queues a slack message when a warned user leaves a comment" do
         user.add_role(:warned)
 
-        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           create(:comment, user: user, commentable: article)
         end
       end
 
       it "does not send notification if a regular user leaves a comment" do
-        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
           create(:comment, commentable: article, user: user)
         end
       end

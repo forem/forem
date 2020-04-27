@@ -1,39 +1,43 @@
-<h3>Pin a few of your GitHub repos to your profile</h3>
-<% if @client %>
-  <div id="github-repos-container">
-    <div class="github-repos loading-repos">
+<div class="crayons-card grid gap-6 p-6 mb-6">
+  <h3>Pin a few of your GitHub repos to your profile</h3>
+  <% if @client %>
+    <div id="github-repos-container">
+      <div class="github-repos loading-repos">
+      </div>
     </div>
-  </div>
-  <%= javascript_packs_with_chunks_tag "githubRepos", defer: true %>
-<% end %>
-
-<hr />
-<h3>Generate a personal blog from your <%= community_name %> posts</h3>
-<div class="single-app-integration">
-  <% if current_user.decorate.stackbit_integration? %>
-    <h2>Connected to Stackbit <sup>beta</sup><img src="<%= asset_path("checkmark-green.svg") %>" /></h2>
-    <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/dashboard">Go To Your Stackbit Dashboard</a></strong></p>
-    <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/create?ref=devto">Create New Stackbit Site</a></strong></p>
-
-  <% else %>
-    <h2>Connect to Stackbit <sup>beta</sup></h2>
-    <p>Automatically generate a self-hosted static blog feed from your <%= community_name %> posts.</p>
-    <p style="font-size: 1.1em"><strong><a href="/connecting-with-stackbit">Get Started</a></strong></p>
+    <%= javascript_packs_with_chunks_tag "githubRepos", defer: true %>
   <% end %>
 </div>
 
+<div class="crayons-card grid gap-6 p-6 mb-6">
+  <h3>Generate a personal blog from your <%= community_name %> posts</h3>
+  <div class="single-app-integration">
+    <% if current_user.decorate.stackbit_integration? %>
+      <h3>Connected to Stackbit <sup>beta</sup><img src="<%= asset_path("checkmark-green.svg") %>" /></h3>
+      <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/dashboard">Go To Your Stackbit Dashboard</a></strong></p>
+      <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/create?ref=devto">Create New Stackbit Site</a></strong></p>
+    <% else %>
+      <h3>Connect to Stackbit <span class="crayons-indicator crayons-indicator--accent">beta</span></h3>
+      <p>Automatically generate a self-hosted static blog feed from your <%= community_name %> posts.</p>
+      <p style="font-size: 1.1em"><strong><a href="/connecting-with-stackbit">Get Started</a></strong></p>
+    <% end %>
+  </div>
+</div>
+
 <% if false # removed since isn't fully working right now %>
-  <hr />
+  <%= form_tag users_update_twitch_username_path, class: "crayons-card grid gap-6 p-6 mb-6" do |f| %>
+    <header class="grid gap-2">
+      <h3>Live Streaming <span class="crayons-indicator crayons-indicator--accent">beta</span></h3>
+      <p>Add your Twitch username, and then checkout <a href="/live/<%= @user.username %>">dev.to/live/<%= @user.username %></a>.</p>
+    </header>
 
-  <%= form_tag users_update_twitch_username_path do |f| %>
-    <h3>Live Streaming (Experimental)</h3>
-    <div class="field">
-      <%= label_tag "user[twitch_username]", "Twitch Username" %>
-      <%= text_field_tag "user[twitch_username]", @user.twitch_username %>
+    <div class="crayons-notice crayons-notice--warning">It's a new thing we're trying out. Soon we'll be able to indicate when any community member is currently streaming.</div>
+
+    <div class="crayons-field">
+      <%= label_tag "user[twitch_username]", "Twitch Username", class: "crayons-field__label" %>
+      <%= text_field_tag "user[twitch_username]", @user.twitch_username, class: "crayons-textfield" %>
     </div>
-    <p><em>Add your Twitch username, and then checkout <a href="/live/<%= @user.username %>">dev.to/live/<%= @user.username %></a>.</em></p>
-    <p><em>It's a new thing we're trying out. Soon we'll be able to indicate when any community member is currently streaming.</em></p>
 
-    <%= submit_tag "SUBMIT", class: "cta" %>
+    <div><button class="crayons-btn" type="submit">Submit</button></div>
   <% end %>
 <% end %>

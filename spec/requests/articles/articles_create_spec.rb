@@ -93,4 +93,16 @@ RSpec.describe "ArticlesCreate", type: :request do
       end
     end
   end
+
+  context "when creation limit is reached" do
+    it "raises a rate limit reached error" do
+      rate_limit_checker = instance_double(RateLimitChecker)
+      allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+      allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
+
+      expect do
+        post articles_path, params: { article: { body_markdown: "123" } }
+      end.to raise_error(RateLimitChecker::LimitReached)
+    end
+  end
 end

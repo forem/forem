@@ -22,6 +22,7 @@ environment.splitChunks((config) => {
           __dirname,
           '../../app/javascript/crayons',
         ) /* global __dirname */,
+        '@utilities': path.resolve(__dirname, '../../app/javascript/utlities'),
       },
     },
     optimization: {

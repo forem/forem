@@ -194,12 +194,16 @@ module ApplicationHelper
     URL.reaction(reaction)
   end
 
-  def tag_url(tag, page)
+  def tag_url(tag, page = 1)
     URL.tag(tag, page)
   end
 
   def user_url(user)
     URL.user(user)
+  end
+
+  def organization_url(organization)
+    URL.organization(organization)
   end
 
   def sanitized_referer(referer)

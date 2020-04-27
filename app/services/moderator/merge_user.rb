@@ -23,6 +23,7 @@ module Moderator
       update_social
       Users::DeleteWorker.new.perform(@delete_user.id, true)
       @keep_user.touch(:profile_updated_at)
+      Users::MergeSyncWorker.perform_async(@keep_user.id)
 
       CacheBuster.bust("/#{@keep_user.username}")
     end
