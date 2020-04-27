@@ -3,10 +3,12 @@ function toggleModActionsMenu() {
 }
 
 /** This initializes the mod actions button on the article show page (app/views/articles/show.html.erb). */
-export function initializeModActionsMenu() {
+export function initializeActionsPanel() {
   // eslint-disable-next-line no-undef
   const user = userData();
-  const { authorId: articleAuthorId, path } = document.getElementById('article-show-container').dataset;
+  const { authorId: articleAuthorId, path } = document.getElementById(
+    'article-show-container',
+  ).dataset;
 
   const modActionsMenuHTML = `<iframe src=${path}/actions_panel></iframe>`;
   const modActionsMenuIconHTML = `<div class="mod-actions-menu-btn">
