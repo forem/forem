@@ -4,32 +4,26 @@ module Authentication
     def self.get!(provider_name)
       name = provider_name.to_s.titleize
 
-      "Authentication::Providers::#{name}".safe_constantize.tap do |klass|
-        unless klass
-          raise(
-            ::Authentication::Errors::ProviderNotFound,
-            "Provider #{name} is not available!",
-          )
-        end
-
-        unless enabled?(provider_name)
-          raise(
-            ::Authentication::Errors::ProviderNotEnabled,
-            "Provider #{name} is not enabled!",
-          )
-        end
+      unless Authentication::Providers.const_defined?(name)
+        raise(
+          ::Authentication::Errors::ProviderNotFound,
+          "Provider #{name} is not available!",
+        )
       end
+
+      unless enabled?(provider_name)
+        raise(
+          ::Authentication::Errors::ProviderNotEnabled,
+          "Provider #{name} is not enabled!",
+        )
+      end
+
+      Authentication::Providers.const_get(name)
     end
 
     # Returns available providers
     def self.available
-      # as providers are lazily loaded, we need to load them all
-      # for .subclasses to work correctly
-      providers_path = Rails.root.join(
-        "app/services/authentication/providers/*.rb",
-      ).cleanpath
-      Dir[providers_path].each { |file| load(file) }
-
+      # the magic is done in <config/initializers/authentication_providers.rb>
       Authentication::Providers::Provider.subclasses.map do |subclass|
         subclass.name.demodulize.downcase.to_sym
       end.sort
