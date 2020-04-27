@@ -70,7 +70,7 @@ module Search
           else
             { terms: { term_key => Array.wrap(@params[term_key]) } }
           end
-        end.compact
+        end.compact.flatten
       end
 
       def range_keys
