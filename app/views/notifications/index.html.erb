@@ -97,38 +97,42 @@
 
       <section class="notifications-filter__dropdown">
         <% if @organizations.present? %>
-          <% @organizations.each do |org| %>
+          <% if @selected_organization %>
             <div aria-label="notifications-filter-menu">
               <button type="button" id="notifications-filter__select" class="notifications-filter__dropdown__select">
-                <% if params[:org_id].blank? %>
-                  @<%= @user.username %>
-                <% else %>
-                  @<%= org.slug %>
-                <% end %>
+                  @<%= @selected_organization.slug %>
                 <%= inline_svg_tag("arrow-down-fill.svg", aria: true, class: "crayons-icon", title: "Arrow Down") %>
               </button>
             </div>
-
-            <div class="notifications-filter__dropdown__menu-overlay" id="notifications-filter__menu-overlay">
-              <nav class="notifications-filter__dropdown__menu" aria-label="notifications-filter-menu">
-                <header class="notifications-filter__dropdown__header">
-                  <h3 class="notifications-filter__dropdown__title">
-                    Filter
-                  </h3>
-                </header>
-                <a href="/notifications" class="notifications-filter__dropdown__option <%= "selected" if params[:org_id].blank? %>">
-                  <div class="notifications-filter__dropdown__label">
-                    <span class="notifications-filter__dropdown__label--title">
-                      <%= @user.name %>
-                    </span>
-                    <span class="notifications-filter__dropdown__label--subtitle">
-                      @<%= @user.username %> · Personal
-                    </span>
-                  </div>
-                  <div class="notifications-filter__icon">
-                    <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
-                  </div>
-                </a>
+          <% else %>
+            <div aria-label="notifications-filter-menu">
+              <button type="button" id="notifications-filter__select" class="notifications-filter__dropdown__select">
+                  @<%= current_user.username %>
+                <%= inline_svg_tag("arrow-down-fill.svg", aria: true, class: "crayons-icon", title: "Arrow Down") %>
+              </button>
+            </div>
+          <% end %>
+          <div class="notifications-filter__dropdown__menu-overlay" id="notifications-filter__menu-overlay">
+            <nav class="notifications-filter__dropdown__menu" aria-label="notifications-filter-menu">
+              <header class="notifications-filter__dropdown__header">
+                <h3 class="notifications-filter__dropdown__title">
+                  Filter
+                </h3>
+              </header>
+              <a href="/notifications" class="notifications-filter__dropdown__option <%= "selected" if params[:org_id].blank? %>">
+                <div class="notifications-filter__dropdown__label">
+                  <span class="notifications-filter__dropdown__label--title">
+                    <%= @user.name %>
+                  </span>
+                  <span class="notifications-filter__dropdown__label--subtitle">
+                    @<%= @user.username %> · Personal
+                  </span>
+                </div>
+                <div class="notifications-filter__icon">
+                  <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+                </div>
+              </a>
+              <% @organizations.each do |org| %>
                 <a href="/notifications/org/<%= org.id %>" class="notifications-filter__dropdown__option <%= "selected" if params[:org_id].to_i == org.id %>">
                   <div class="notifications-filter__dropdown__label">
                     <span class="notifications-filter__dropdown__label--title">
@@ -142,9 +146,9 @@
                     <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
                   </div>
                 </a>
-              </nav>
-            </div>
-          <% end %>
+              <% end %>
+            </nav>
+          </div>
         <% end %>
 
         <div class="crayons-tabs notifications-filter__tabs <%= "showing" if params[:org_id].blank? %>">
