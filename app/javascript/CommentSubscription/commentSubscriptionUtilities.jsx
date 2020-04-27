@@ -50,6 +50,10 @@ async function setSubscription(articleId, subscriptionType) {
   }
 }
 
+/**
+ * Loads the comment subscription and snackbar components to provide comment
+ * subscriptions to logged on users.
+ */
 export async function loadCommentSubscription() {
   const root = document.querySelector('#comment-subscription');
   const { articleId } = document.querySelector('#article-body').dataset;
