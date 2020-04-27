@@ -87,9 +87,21 @@ RSpec.describe Reaction, type: :model do
       it "on destroy enqueues job to delete reaction from elasticsearch" do
         reaction.category = "readinglist"
         reaction.save
+        reaction.index_to_elasticsearch_inline
         sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, reaction.id]) do
           reaction.destroy
         end
+      end
+    end
+
+    context "when category is readingList and reactable is published but no elasticsearch doc is present" do
+      it "on destroy does NOT remove reaction from elasticsearch" do
+        reaction.category = "readinglist"
+        reaction.save
+        allow(reaction).to receive(:remove_from_elasticsearch)
+
+        reaction.destroy
+        expect(reaction).not_to have_received(:remove_from_elasticsearch)
       end
     end
 

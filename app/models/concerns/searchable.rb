@@ -26,4 +26,8 @@ module Searchable
   def sync_related_elasticsearch_docs
     self.class::DATA_SYNC_CLASS.new(self).call
   end
+
+  def elasticsearch_doc_exists?
+    self.class::SEARCH_CLASS.document_exists?(search_id)
+  end
 end

@@ -29,6 +29,10 @@ module Search
         Search::Client.get(id: doc_id, index: self::INDEX_ALIAS)
       end
 
+      def document_exists?(doc_id)
+        Search::Client.exists?(id: doc_id, index: self::INDEX_ALIAS)
+      end
+
       def delete_document(doc_id)
         Search::Client.delete(id: doc_id, index: self::INDEX_ALIAS)
       end

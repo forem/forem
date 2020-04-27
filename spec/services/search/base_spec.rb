@@ -58,6 +58,17 @@ RSpec.describe Search::Base, type: :service, elasticsearch: true do
     end
   end
 
+  describe "::document_exists?" do
+    it "returns true if document is in elasticsearch" do
+      described_class.index(document_id, id: document_id)
+      expect(described_class.document_exists?(document_id)).to eq(true)
+    end
+
+    it "returns false if document is NOT in elasticsearch" do
+      expect(described_class.document_exists?("bogus_id")).to eq(false)
+    end
+  end
+
   describe "::delete_document" do
     it "deletes a document for a given ID from elasticsearch" do
       described_class.index(document_id, id: document_id)

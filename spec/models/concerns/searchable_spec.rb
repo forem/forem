@@ -66,4 +66,12 @@ RSpec.describe Searchable do
       expect(model_class::SEARCH_CLASS).to have_received(:find_document)
     end
   end
+
+  describe "#elasticsearch_doc_exists?" do
+    it "checks elasticsearch for a document" do
+      allow(model_class::SEARCH_CLASS).to receive(:document_exists?)
+      searchable_model.elasticsearch_doc_exists?
+      expect(model_class::SEARCH_CLASS).to have_received(:document_exists?)
+    end
+  end
 end

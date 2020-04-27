@@ -34,7 +34,7 @@ class Reaction < ApplicationRecord
   after_create_commit :record_field_test_event
   after_commit :async_bust, :bust_reactable_cache, :update_reactable
   after_commit :index_to_elasticsearch, if: :indexable?, on: %i[create update]
-  after_commit :remove_from_elasticsearch, if: :indexable?, on: [:destroy]
+  after_commit :remove_from_elasticsearch, if: :can_remove_from_index?, on: [:destroy]
   after_save :index_to_algolia
   after_save :touch_user
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
@@ -112,6 +112,10 @@ class Reaction < ApplicationRecord
 
   def indexable?
     category == "readinglist" && reactable && reactable.published
+  end
+
+  def can_remove_from_index?
+    elasticsearch_doc_exists? && indexable?
   end
 
   def touch_user
