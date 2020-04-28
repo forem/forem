@@ -38,36 +38,46 @@
       <% end %>
     </div>
     <% if @membership.role == "mod" %>
-      <div class="settings-form-userlist">
+      <div class="p-4 grid gap-2 crayons-card mb-4">
         <h3>Pending Invitations</h3>
         <% @channel.pending_memberships.includes(:user).each do |pending_membership| %>
-          <div class="settings-form-userlistrow">
-            <a href="<%= pending_membership.user.path %>"><img src="<%= ProfileImage.new(pending_membership.user).get(width: 90) %>" /><%= pending_membership.user.name %></a>
+          <div class="flex items-center">
+            <a href="<%= pending_membership.user.path %>" class="flex items-center">
+              <span class="crayons-avatar crayons-avatar--l mr-2">
+                <img src="<%= ProfileImage.new(pending_membership.user).get(width: 90) %>" class="crayons-avatar__image" " />
+              </span>
+              <%= pending_membership.user.name %>
+            </a>
             <%= form_tag "/chat_channel_memberships/remove_membership", class: "inline-button-form" do %>
               <%= hidden_field_tag(:status, "pending") %>
               <%= hidden_field_tag(:chat_channel_id, @channel.id) %>
               <%= hidden_field_tag(:membership_id, pending_membership.id) %>
-              <%= submit_tag "×" %>
+              <button class=" crayons-btn crayons-btn--icon-rounded crayons-btn--ghost " type=" submit ">×</button>
             <% end %>
           </div>
         <% end %>
       </div>
-      <div class="settings-form-userlist">
+      <div class=" p-4 grid gap-2 crayons-card mb-4 ">
         <h3>Joining Request</h3>
         <% @channel.requested_memberships.includes(:user).each do |requested_membership| %>
-          <div class="settings-form-userlistrow">
-            <a href="<%= requested_membership.user.path %>"><img src="<%= ProfileImage.new(requested_membership.user).get(width: 90) %>" /><%= requested_membership.user.name %></a>
+          <div class=" flex items-center ">
+            <a href="<%= requested_membership.user.path %>" class=" flex items-center ">
+              <span class=" crayons-avatar crayons-avatar--l mr-2 ">
+                <img src="<%= ProfileImage.new(requested_membership.user).get(width: 90) %>" class=" crayons-avatar__image " " />
+              </span>
+              <%= requested_membership.user.name %>
+            </a>
             <%= form_tag "/chat_channel_memberships/add_membership", class: "inline-button-form" do %>
               <%= hidden_field_tag(:chat_channel_id, @channel.id) %>
               <%= hidden_field_tag(:membership_id, requested_membership.id) %>
               <%= hidden_field(:chat_channel_membership, :user_action, value: "accept") %>
-              <%= submit_tag "+" %>
+              <button class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost" type="submit">+</button>
             <% end %>
             <%= form_tag "/chat_channel_memberships/remove_membership", class: "inline-button-form" do %>
               <%= hidden_field_tag(:status, "pending") %>
               <%= hidden_field_tag(:chat_channel_id, @channel.id) %>
               <%= hidden_field_tag(:membership_id, requested_membership.id) %>
-              <%= submit_tag "×" %>
+              <button class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost" type="submit">×</button>
             <% end %>
           </div>
         <% end %>

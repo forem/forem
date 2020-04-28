@@ -29,7 +29,7 @@ class ChatChannelMembershipsController < ApplicationController
     authorize @chat_channel, :update?
     usernames = membership_params[:invitation_usernames].split(",").map { |username| username.strip.delete("@") }
     users = User.where(username: usernames)
-    invitations_sent = @chat_channel.invite_users(users: users, membership_role: "member", inviter: current_user, status: membership_params[:status])
+    invitations_sent = @chat_channel.invite_users(users: users, membership_role: "member", inviter: current_user)
     flash[:settings_notice] = if invitations_sent.zero?
                                 "No invitations sent. Check for username typos."
                               else
