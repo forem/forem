@@ -1,10 +1,3 @@
-# We require all authentication modules to make sure providers
-# are correctly preloaded both in development and in production and
-# ready to be used when needed at runtime
-Dir[Rails.root.join("app/services/authentication/**/*.rb")].each do |f|
-  require_dependency(f)
-end
-
 module Authentication
   module Providers
     # Retrieves a provider that is both available and enabled
@@ -30,10 +23,7 @@ module Authentication
 
     # Returns available providers
     def self.available
-      # the magic is done in <config/initializers/authentication_providers.rb>
-      Authentication::Providers::Provider.subclasses.map do |subclass|
-        subclass.name.demodulize.downcase.to_sym
-      end.sort
+      Devise.omniauth_providers.sort
     end
 
     # Returns enabled providers
