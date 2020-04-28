@@ -12,6 +12,7 @@ end
 RSpec.describe User, type: :model do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
+  let(:user_with_user_optional_fields) { create(:user, :with_user_optional_fields) }
   let(:org) { create(:organization) }
 
   before { mock_auth_hash }
@@ -132,9 +133,16 @@ RSpec.describe User, type: :model do
       end
       # rubocop:enable RSpec/NamedSubject
 
+      it "has at most three optional fields" do
+        expect(user_with_user_optional_fields).to have_many(:user_optional_fields).dependent(:destroy)
+        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field", value: "some value")
+        expect(fourth_field).not_to be_valid
+      end
+
+      it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_one(:counters).class_name("UserCounter").dependent(:destroy) }
       it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
-
+      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
       it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
       it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
