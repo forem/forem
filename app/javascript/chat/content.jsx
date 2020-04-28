@@ -76,18 +76,7 @@ export default class Content extends Component {
 function display(props) {
   const { resource } = props;
   if (resource.type_of === 'loading-user') {
-    return (
-      <div
-        style={{
-          height: '210px',
-          width: '210px',
-          margin: ' 15px auto',
-          display: 'block',
-          borderRadius: '500px',
-          backgroundColor: '#f5f6f7',
-        }}
-      />
-    );
+    return <div className="loading-user" />;
   }
   if (resource.type_of === 'article') {
     return <Article resource={resource} />;
