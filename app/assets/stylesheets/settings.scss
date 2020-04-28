@@ -131,3 +131,7 @@ $input-width: 650px;
 .membership-purchase-link {
   font-size: 2rem;
 }
+
+.crayons-notice--danger h3 {
+  color: var(--accent-danger-darker);
+}

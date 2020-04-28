@@ -136,6 +136,11 @@
     </div>
 
     <div class="crayons-field">
+      <%= f.label :youtube_url, "Youtube URL", class: "crayons-field__label" %>
+      <%= f.url_field :youtube_url, class: "crayons-textfield", placeholder: "https://www.youtube.com/channel/..." %>
+    </div>
+
+    <div class="crayons-field">
       <%= f.label :stackoverflow_url, "Stack Overflow profile URL", class: "crayons-field__label" %>
       <%= f.url_field :stackoverflow_url, class: "crayons-textfield", placeholder: "https://stackoverflow.com/users/..." %>
     </div>
