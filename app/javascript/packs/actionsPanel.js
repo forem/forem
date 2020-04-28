@@ -1,3 +1,3 @@
-import { initializeModActionsMenu } from '../actionsPanel/initializeActionsPanelToggle';
+import { addCloseListener } from '../actionsPanel/actionsPanel';
 
-initializeModActionsMenu();
+addCloseListener();
