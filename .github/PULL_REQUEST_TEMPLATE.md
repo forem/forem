@@ -9,7 +9,7 @@
      - 📖 Read the DEV Contributing Guide, https://github.com/thepracticaldev/dev.to/blob/master/CONTRIBUTING.md#create-a-pull-request and the Code of Conduct, https://github.com/thepracticaldev/dev.to/blob/master/CODE_OF_CONDUCT.md
      - 👷‍♀️ Create small PRs. While this is not always possible, in many cases, it is.
      - ✅ Provided tests for your changes
-     - 📝 Use descriptive commit messages
+     - 📝 Use descriptive commit messages.
      - 📗 Updated any relevant documentation and added any necessary screenshots
 -->
 
