@@ -49,6 +49,10 @@ RSpec.describe "Authenticating with GitHub" do
     end
 
     context "when using invalid credentials" do
+      let(:params) do
+        '{"callback_url"=>"http://localhost:3000/users/auth/github/callback", "state"=>"navbar_basic"}'
+      end
+
       before do
         mock_auth_with_invalid_credentials(:github)
 
@@ -86,7 +90,7 @@ RSpec.describe "Authenticating with GitHub" do
         visit root_path
         click_link sign_in_link
 
-        args = omniauth_failure_args(error, "github", '{"state"=>"navbar_basic"}')
+        args = omniauth_failure_args(error, "github", params)
         expect(DatadogStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -102,7 +106,7 @@ RSpec.describe "Authenticating with GitHub" do
         visit root_path
         click_link sign_in_link
 
-        args = omniauth_failure_args(error, "github", '{"state"=>"navbar_basic"}')
+        args = omniauth_failure_args(error, "github", params)
         expect(DatadogStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )
@@ -115,7 +119,7 @@ RSpec.describe "Authenticating with GitHub" do
         visit root_path
         click_link sign_in_link
 
-        args = omniauth_failure_args(error, "github", '{"state"=>"navbar_basic"}')
+        args = omniauth_failure_args(error, "github", params)
         expect(DatadogStatsClient).to have_received(:increment).with(
           "omniauth.failure", *args
         )

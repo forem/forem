@@ -62,22 +62,6 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include ghost_account_message
       end
 
-      it "renders CONNECT_WITH_TWITTER and user with only github identity" do
-        user.identities.where(provider: "twitter").delete_all
-        get "/settings"
-        expect(response.body).to include "Connect Twitter Account"
-      end
-
-      it "renders does not render CONNECT_WITH_TWITTER if SiteConfig does not include Twitter auth" do
-        user.identities.where(provider: "twitter").destroy_all
-        current_auth_value = SiteConfig.authentication_providers
-        SiteConfig.authentication_providers = ["github"]
-        SiteConfig.clear_cache
-        get "/settings"
-        expect(response.body).not_to include "Connect Twitter Account"
-        SiteConfig.authentication_providers = current_auth_value # restore prior value
-      end
-
       it "renders the proper organization page" do
         first_org, second_org = create_list(:organization, 2)
         create(:organization_membership, user: user, organization: first_org)
@@ -90,6 +74,43 @@ RSpec.describe "UserSettings", type: :request do
         response_template = create(:response_template, user: user)
         get user_settings_path(tab: "response-templates", id: response_template.id)
         expect(response.body).to include "Editing a response template"
+      end
+    end
+
+    describe "connect providers accounts" do
+      before do
+        mock_auth_hash
+      end
+
+      it "does not render the text for the enabled provider the user has an identity for" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user, :with_identity, identities: [:github])
+
+        sign_in user
+        get "/settings"
+
+        expect(response.body).not_to include("Connect GitHub Account")
+      end
+
+      it "does not render the text for the disabled provider the user has an identity for" do
+        providers = Authentication::Providers.available - %i[github]
+        allow(Authentication::Providers).to receive(:enabled).and_return(providers)
+        user = create(:user, :with_identity, identities: [:github])
+
+        sign_in user
+        get "/settings"
+
+        expect(response.body).not_to include("Connect GitHub Account")
+      end
+
+      it "renders the text for the enabled provider the user has no identity for" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user, :with_identity, identities: [:twitter])
+
+        sign_in user
+        get "/settings"
+
+        expect(response.body).to include("Connect GitHub Account")
       end
     end
   end

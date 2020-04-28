@@ -186,7 +186,11 @@
     </div>
   </div>
 
-  <%= f.hidden_field :tab, value: @tab %>
+  <div class="mb-6 grid gap-6 p-6">
+    <%= f.hidden_field :tab, value: @tab %>
+    <div>
+      <button type="submit" class="crayons-btn">Save</button>
+    </div>
+  </div>
 
-  <button type="submit" class="crayons-btn">Save</button>
 <% end %>

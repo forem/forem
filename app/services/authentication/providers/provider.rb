@@ -41,6 +41,11 @@ module Authentication
         self.class::USERNAME_FIELD
       end
 
+      # Returns the official name of the authentication provider
+      def self.official_name
+        raise SubclassResponsibility
+      end
+
       protected
 
       # Remove sensible data from the payload

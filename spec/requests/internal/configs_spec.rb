@@ -52,6 +52,12 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.community_member_description).to eq(description)
         end
 
+        it "updates the community_member_label" do
+          name = "developer"
+          post "/internal/config", params: { site_config: { community_member_label: name }, confirmation: confirmation_message }
+          expect(SiteConfig.community_member_label).to eq(name)
+        end
+
         it "updates the tagline" do
           description = "Hey hey #{rand(100)}"
           post "/internal/config", params: { site_config: { tagline: description }, confirmation: confirmation_message }
