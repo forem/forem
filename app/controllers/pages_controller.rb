@@ -16,7 +16,7 @@ class PagesController < ApplicationController
   def about_listings
     @page = Page.find_by(slug: "about-listings")
     render :show if @page
-    set_surrogate_key_header "about_listings"
+    set_surrogate_key_header "about_listings_page"
   end
 
   def bounty
@@ -40,7 +40,7 @@ class PagesController < ApplicationController
   def post_a_job
     @page = Page.find_by(slug: "post-a-job")
     render :show if @page
-    set_surrogate_key_header " post_a_job_page"
+    set_surrogate_key_header "post_a_job_page"
   end
 
   def tag_moderation
