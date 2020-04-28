@@ -39,6 +39,7 @@ class NotificationsController < ApplicationController
     @last_user_comment = @user.comments.last&.id
 
     @organizations = @user.member_organizations if @user.organizations
+    @selected_organization = Organization.find(params[:org_id]) if params[:org_id].present? 
 
     # The first call, the one coming from the browser URL bar will render the "index" view, which renders
     # the first few notifications. After that the JS frontend code (see `initNotification.js`)
