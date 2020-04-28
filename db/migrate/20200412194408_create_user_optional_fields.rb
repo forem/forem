@@ -1,8 +1,8 @@
 class CreateUserOptionalFields < ActiveRecord::Migration[5.2]
   def change
     create_table :user_optional_fields do |t|
-      t.string :label
-      t.string :value
+      t.string :label, null: false
+      t.string :value, null: false
       t.references :user, foreign_key: true
 
       t.timestamps
