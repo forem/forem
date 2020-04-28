@@ -36,7 +36,9 @@
 }
 
 .crayons-layout--article-form {
-  @media (min-width: $breakpoint-m) {
+  display: flex;
+
+  @media (min-width: $breakpoint-l) {
     display: grid;
     grid-template-rows: 100%;
     grid-gap: var(--layout-gap);
@@ -49,10 +51,22 @@
   }
 
   .crayons-layout__content {
-    padding: $su-3;
+    padding: $su-4;
+    flex: 1 auto;
 
     @media (min-width: $breakpoint-m) {
+      padding: $su-6;
+    }
+
+    @media (min-width: $breakpoint-l) {
       padding: $su-6 $su-8;
+    }
+  }
+
+  .crayons-layout__aside {
+    display: none;
+    @media (min-width: $breakpoint-l) {
+      display: block;
     }
   }
 }

@@ -1,12 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Errors } from './Errors';
 
-function titleArea(previewResponse, version, articleState) {
-  if (version === 'help') {
-    // possibly something different here in future.
-    return '';
-  }
-
+function titleArea(previewResponse, articleState, errors) {
   const tagArray = previewResponse.tags || articleState.tagList.split(', ');
   let tags = '';
   if (tagArray.length > 0 && tagArray[0].length > 0) {
@@ -39,7 +35,10 @@ function titleArea(previewResponse, version, articleState) {
           style={{ backgroundImage: `url(${coverImage})` }}
         />
       )}
-      <h1 className="fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6">{previewTitle}</h1>
+      {errors && <Errors errorsList={errors} />}
+      <h1 className="fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6">
+        {previewTitle}
+      </h1>
       <div className="crayons-article__tags">{tags}</div>
     </header>
   );
@@ -52,11 +51,11 @@ const previewResponsePropTypes = PropTypes.shape({
   cover_image: PropTypes.string,
 });
 
-export const Preview = ({ previewResponse, version, articleState }) => {
+export const Preview = ({ previewResponse, articleState, errors }) => {
   return (
     <div className="crayons-card crayons-layout__content">
       <article className="crayons-article">
-        {titleArea(previewResponse, version, articleState)}
+        {titleArea(previewResponse, articleState, errors)}
         <div
           className="crayons-article__body"
           // eslint-disable-next-line react/no-danger
@@ -70,7 +69,7 @@ export const Preview = ({ previewResponse, version, articleState }) => {
 
 Preview.propTypes = {
   previewResponse: previewResponsePropTypes.isRequired,
-  version: PropTypes.string.isRequired,
+  errors: PropTypes.string.isRequired,
   articleState: PropTypes.shape({
     id: PropTypes.number,
     title: PropTypes.string,

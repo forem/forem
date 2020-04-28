@@ -2,6 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Body } from './Body';
 import { Meta } from './Meta';
+import { Errors } from './Errors';
 
 export const Form = ({
   titleDefaultValue,
@@ -13,10 +14,13 @@ export const Form = ({
   bodyHasFocus,
   version,
   mainImage,
-  onMainImageUrlChange
+  onMainImageUrlChange,
+  errors
 }) => {
   return (
     <div className="crayons-card crayons-layout__content crayons-article-form__fields">
+      {errors && <Errors errorsList={errors} />}
+
       {version === 'v2' && (
         <Meta
           titleDefaultValue={titleDefaultValue}
@@ -50,6 +54,7 @@ Form.propTypes = {
   version: PropTypes.string.isRequired,
   mainImage: PropTypes.string.isRequired,
   onMainImageUrlChange: PropTypes.func.isRequired,
+  errors: PropTypes.func.isRequired,
 }
 
 Form.displayName = 'Form';

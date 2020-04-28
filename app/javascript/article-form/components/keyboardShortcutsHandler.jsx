@@ -1,7 +1,7 @@
 import { Component } from 'preact';
 import PropTypes from 'prop-types';
 
-class KeyboardShortcutsHandler extends Component {
+export class KeyboardShortcutsHandler extends Component {
   componentDidMount() {
     document.addEventListener('keydown', this.handleKeyDown());
   }
@@ -35,4 +35,4 @@ KeyboardShortcutsHandler.propTypes = {
   togglePreview: PropTypes.func.isRequired,
 };
 
-export default KeyboardShortcutsHandler;
+KeyboardShortcutsHandler.displayName = 'KeyboardShortcutsHandler';

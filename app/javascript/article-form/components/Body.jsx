@@ -12,7 +12,16 @@ export class Body extends Component {
     const { onChange, defaultValue } = this.props;
     const { hasFocus } = this.state;
     return (
-      <div className="crayons-article-form__body">
+      <div
+        className="crayons-article-form__body"
+        tabIndex={0} // eslint-disable-line
+        onFocus={(_event) => {
+          this.setState({ hasFocus: true });
+        }}
+        onBlur={(_event) => {
+          this.setState({ hasFocus: false });
+        }}
+      >
         <Toolbar visible={hasFocus} />
 
         <Textarea

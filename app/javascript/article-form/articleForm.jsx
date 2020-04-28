@@ -5,8 +5,6 @@ import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { submitArticle, previewArticle } from './actions';
 import ImageManagement from './elements/imageManagement';
-import Errors from './elements/errors';
-import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 
 import {
   Actions,
@@ -14,6 +12,7 @@ import {
   Header,
   Help,
   Preview,
+  KeyboardShortcutsHandler,
 } from './components';
 
 /*
@@ -292,35 +291,25 @@ export default class ArticleForm extends Component {
       version,
     } = this.state;
 
-    const imageManagement = imageManagementShowing ? (
+    const imageManagement = imageManagementShowing && (
       <ImageManagement
         onExit={this.toggleImageManagement}
         mainImage={mainImage}
         version={version}
         onMainImageUrlChange={this.handleMainImageUrlChange}
       />
-    ) : (
-      ''
     );
 
-    const errorsArea = errors ? <Errors errorsList={errors} /> : '';
-    // let editorView = '';
-    if (previewShowing) {
-      //
-    } else {
-      let controls = '';
-      if (version === 'v2') {
-        controls = (
-          <button type="button" onClick={this.toggleImageManagement}>
-            Upload images
-          </button>
-        );
-      }
-    }
+    const controls = version === 'v2' && (
+      <button type="button" onClick={this.toggleImageManagement}>
+        Upload images
+      </button>
+    );
+
     return (
       <form
         id="article-form"
-        className={`crayons-article-form articleform__form articleform__form--${version}`}
+        className="crayons-article-form"
         onSubmit={this.onSubmit}
         onInput={this.toggleEdit}
       >
@@ -345,18 +334,17 @@ export default class ArticleForm extends Component {
               version={version}
               mainImage={mainImage}
               onMainImageUrlChange={this.handleMainImageUrlChange}
+              errors={errors}
             />
           )}
           {previewShowing && (
             <Preview
               previewResponse={previewResponse}
               articleState={this.state}
-              version="article-preview"
+              errors={errors}
             />
           )}
-          <Help
-            previewShowing={previewShowing}
-          />
+          <Help previewShowing={previewShowing} />
         </div>
 
         <Actions

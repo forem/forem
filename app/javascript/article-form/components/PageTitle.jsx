@@ -5,10 +5,11 @@ import { OrganizationPicker } from '../../organization/OrganizationPicker';
 export const PageTitle = ({organizations, organizationId, onToggle}) => {
   return (
     <div className="crayons-field__label">
-      Write a new post
-      { organizations && organizations.length > 0 && (
+      <span className="hidden s:inline-block">Write a new post</span>
+      {organizations && organizations.length > 0 && (
         <span>
-          &nbsp;under:
+          <span className="hidden s:inline-block">&nbsp;under:</span>
+          <span className="s:hidden">&nbsp;Organization:</span>
           <OrganizationPicker
             name="article[organization_id]"
             id="article_publish_under_org"

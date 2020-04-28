@@ -8,7 +8,10 @@
     display: flex;
     padding: $su-2 $su-4;
     align-items: center;
-    padding-right: calc( var(--layout-aside-width) + var(--layout-padding) + var(--layout-gap) );
+
+    @media (min-width: $breakpoint-l) {
+      padding-right: calc( var(--layout-aside-width) + var(--layout-padding) + var(--layout-gap) );
+    }
   }
 
   &__logo {
@@ -26,9 +29,12 @@
   }
 
   &__close {
-    position: absolute;
-    right: $su-2;
-    top: $su-2;
+    margin-left: $su-4;
+    @media (min-width: $breakpoint-l) {
+      position: absolute;
+      right: $su-2;
+      top: $su-2;
+    }
   }
 
   &__tips {
@@ -44,6 +50,7 @@
   &__body {
     flex: 1 auto;
     position: relative;
+    outline: none;
   }
 
   &__toolbar {
@@ -82,13 +89,20 @@
   }
 
   &__actions {
-    position: sticky;
     background: var(--base-10);
+    position: sticky;
     bottom: 0;
-    display: flex;
-    align-items: center;
-    padding: $su-6 0;
-    padding-left: calc( var(--layout-narrow-sidebar-width) + var(--layout-gap) );
+    padding: $su-6 $su-2;
+
+    @media (min-width: $breakpoint-l) {
+      padding: $su-4 $su-2;
+      padding-left: calc( var(--layout-narrow-sidebar-width) + var(--layout-gap) );
+    }
+
+    &__buttons {
+      display: flex;
+      align-items: center;
+    }
   }
 }
 

@@ -49,7 +49,7 @@ export class Help extends Component {
     const { liquidHelpHTML, markdownHelpHTML, liquidShowing, markdownShowing } = this.state;
 
     return (
-      <div className="crayons-layout--aside">
+      <div className="crayons-layout__aside">
         {!previewShowing && (
           <div className="crayons-article-form__tips">
             <h4 className="mb-2 fs-l">How to write a good post title?</h4>
@@ -107,7 +107,7 @@ export class Help extends Component {
         )}
 
         {markdownShowing && (
-          <Modal onToggleHelp={this.toggleMarkdown} title="✍️Markdown">
+          <Modal onToggleHelp={this.toggleMarkdown} title="✍️ Markdown">
             {markdownHelpHTML}
           </Modal>
         )}

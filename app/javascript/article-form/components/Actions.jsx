@@ -57,19 +57,19 @@ export class Actions extends Component {
     );
 
     return (
-      <div>
-        {submitting && (
-          <div className="crayons-layout crayons-article-form__actions">
+      <div className="crayons-layout crayons-article-form__actions">
+        {submitting ? (
+          <div className="crayons-article-form__actions__buttons">
             <Button className="mr-2" onClick={onPublish} disabled>
               {published && version === 'v2'
                 ? 'Publishing...'
                 : `Saving ${version === 'v2' ? 'draft' : ''}...`}
             </Button>
           </div>
-        )}
-
-        {!submitting && (
-          <div className="crayons-layout crayons-article-form__actions">
+        )
+        :
+        (
+          <div className="crayons-article-form__actions__buttons">
             <Button className="mr-2" onClick={onPublish}>
               {published || version === 'v1' ? 'Save changes' : 'Publish'}
             </Button>

@@ -5,10 +5,7 @@
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
   data-version="<%= version %>"
 >
-  <form class="crayons-article-form articleform__form articleform__form--<%= version %> hidden"
-    data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
-    data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
-    data-version="<%= version %>">
+  <form class="crayons-article-form">
 
     <div class="crayons-article-form__header crayons-layout">
       <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
@@ -25,8 +22,7 @@
       </div>
 
       <div class="crayons-article-form__tabs ml-auto">
-        <button class="crayons-btn crayons-btn--ghost current" type="button">Edit</button>
-        <button class="crayons-btn crayons-btn--ghost" type="button">Preview</button>
+        <button class="crayons-btn crayons-btn--ghost current" type="button">Edit</button><button class="crayons-btn crayons-btn--ghost" type="button">Preview</button>
       </div>
 
       <div class="crayons-article-form__close">
@@ -77,8 +73,8 @@
       </div>
     </div>
 
-    <div>
-      <div class="crayons-layout crayons-article-form__actions">
+    <div class="crayons-layout crayons-article-form__actions">
+      <div class="crayons-layout crayons-article-form__actions__buttons">
         <button class="crayons-btn mr-2" type="button">Publish</button>
         <button class="crayons-btn crayons-btn--secondary mr-2" type="button">Save draft</button>
         <div class="relative">
