@@ -436,6 +436,7 @@ class StoriesController < ApplicationController
   def set_user_same_as_json_ld
     @user_json_ld[:sameAs].append(@user.mastodon_url) if @user.mastodon_url.present?
     @user_json_ld[:sameAs].append(@user.facebook_url) if @user.facebook_url.present?
+    @user_json_ld[:sameAs].append(@user.youtube_url) if @user.youtube_url.present?
     @user_json_ld[:sameAs].append(@user.linkedin_url) if @user.linkedin_url.present?
     @user_json_ld[:sameAs].append(@user.behance_url) if @user.behance_url.present?
     @user_json_ld[:sameAs].append(@user.stackoverflow_url) if @user.stackoverflow_url.present?

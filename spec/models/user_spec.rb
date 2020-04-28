@@ -328,6 +328,20 @@ RSpec.describe User, type: :model do
       end
     end
 
+    describe "#youtube_url" do
+      it "accepts valid https youtube url", :aggregate_failures do
+        %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
+          user.youtube_url = "https://youtube.com/#{username}"
+          expect(user).to be_valid
+        end
+      end
+
+      it "does not accept invalid youtube url" do
+        user.youtube_url = "ben.com"
+        expect(user).not_to be_valid
+      end
+    end
+
     describe "#behance_url" do
       it "accepts valid https behance url", :aggregate_failures do
         %w[jess jess/ je-ss jes_ss].each do |username|

@@ -40,5 +40,5 @@ It will also include a call-to-action to follow your organization directly in th
 As a Gold sponsor, you will receive special flair that lives on your organization page.  This visual cue will show the <%= community_name %> Community and broader ecosystem that you are an important community supporter, providing a natural draw for increased engagement on the platform.  And, of course, you’ll have bragging rights and company pride knowing that you’re supporting a wonderful community.
 </p>
 <% unless user_signed_in? %>
-    <h2>Email <a href="mailto:<%= SiteConfig.email_addresses[:business] %>"><%= SiteConfig.email_addresses[:business] %></a> for pricing information</h2>
+    <h2>Email <%= email_link(:business) %> for pricing information</h2>
 <% end %>

@@ -69,7 +69,7 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.include OmniauthMacros
   config.include SidekiqTestHelpers
-  config.include ElasticsearchHelpers, elasticsearch: true
+  config.include ElasticsearchHelpers
 
   config.before(:suite) do
     Search::Cluster.recreate_indexes
