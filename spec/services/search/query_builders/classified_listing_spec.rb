@@ -16,11 +16,25 @@ RSpec.describe Search::QueryBuilders::ClassifiedListing, type: :service do
 
   describe "#as_hash" do
     it "applies TERM_KEYS from params" do
-      params = { category: "cfp", tags: ["beginner"], contact_via_connect: false }
+      params = { category: "cfp", tags: %w[beginner intermediate professional], contact_via_connect: false }
+      filter = described_class.new(params: params)
+      exepcted_filters = [
+        { "terms" => { "category" => ["cfp"] } },
+        { "terms" => { "tags" => %w[beginner intermediate professional] } },
+        { "terms" => { "contact_via_connect" => [false] } },
+        { "terms" => { "published" => [true] } },
+      ]
+      expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(exepcted_filters)
+    end
+
+    it "applies TERM_KEYS from params with boolean mode" do
+      params = { category: "cfp", tags: %w[beginner intermediate professional], contact_via_connect: false, tag_boolean_mode: "all" }
       filter = described_class.new(params: params)
       exepcted_filters = [
         { "terms" => { "category" => ["cfp"] } },
         { "terms" => { "tags" => ["beginner"] } },
+        { "terms" => { "tags" => ["intermediate"] } },
+        { "terms" => { "tags" => ["professional"] } },
         { "terms" => { "contact_via_connect" => [false] } },
         { "terms" => { "published" => [true] } },
       ]

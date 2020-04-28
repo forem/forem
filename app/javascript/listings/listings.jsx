@@ -331,6 +331,7 @@ export class Listings extends Component {
       page,
       per_page: LISTING_PAGE_SIZE,
       tags,
+      tag_boolean_mode: 'all',
     };
 
     const responsePromise = fetchSearch('classified_listings', dataHash);
