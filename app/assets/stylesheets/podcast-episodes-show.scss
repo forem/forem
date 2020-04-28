@@ -196,34 +196,6 @@
       display: none;
     }
   }
-  .subscribe-buttons {
-    text-align: center;
-    a {
-      padding: 5px;
-      background-color: rgb(47, 61, 73);
-      color: white;
-      border-radius: 3px;
-      margin: 6px;
-      font-size: 14px;
-      display: inline-block;
-      width: 40%;
-      border: 1px solid rgb(60, 81, 99);
-      box-shadow: inset 1px 1px 0 rgb(72, 95, 116);
-      transition: background-color 250ms ease;
-      @media screen and (min-width: 590px) {
-        width: 112px;
-      }
-      &:hover {
-        background-color: rgb(41, 46, 52);
-      }
-      img {
-        width: 20px;
-        height: 20px;
-        vertical-align: -4px;
-        margin-right: 4px;
-      }
-    }
-  }
   .container {
     margin-bottom: 60px;
     margin-top: 20px;
