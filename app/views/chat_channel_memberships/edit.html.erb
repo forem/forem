@@ -71,38 +71,38 @@
             <% end %>
           </div>
         <% end %>
-      </div>
-      <%= form_for ChatChannelMembership.new do |f| %>
-        <div class="field">
-          <%= f.hidden_field :chat_channel_id, value: @channel.id %>
-          <%= f.hidden_field :status, value: "pending" %>
-          <%= f.label "Usernames to Invite" %>
-          <%= f.text_field :invitation_usernames, placeholder: "Comma separated" %>
-        </div>
-        <div class="field">
-          <%= f.submit "SUBMIT", class: "cta" %>
-        </div>
-      <% end %>
-    <% end %>
-    <% if @membership.role == "mod" %>
-      <hr class="settings-hr" />
-      <h1>Channel Settings</h1>
-      <h3>Notifications</h3>
-      <%= form_for(@channel) do |f| %>
-        <div class="field">
-          <%= f.label :description %>
-          <%= f.text_area :description %>
-        </div>
-        <div class="field">
-          <%= f.label :discoverable, "Channel Discoverable" %>
-          <%= f.check_box :discoverable %>
-        </div>
-        <div class="field">
-          <%= f.submit "SUBMIT", class: "cta" %>
-        </div>
-      <% end %>
 
     </div>
+
+    <% if @channel.private_org_channel? %>
+      <p><em>Invite new members by <a href="/settings/organization">inviting them to this organization.</a></em></p>
+    <% else %>
+    <%= form_for ChatChannelMembership.new, html: { class: "grid gap-4" } do |f| %>
+      <div class="crayons-card p-4 grid gap-2 mb-4">
+        <%= f.hidden_field :chat_channel_id, value: @channel.id %>
+        <%= f.label "Usernames to Invite", class: "crayons-field__label" %>
+        <%= f.text_field :invitation_usernames, placeholder: "Comma separated", class: "crayons-textfield" %>
+        <div><button type="submit" class="crayons-btn">Submit</button></div>
+      </div>
+    <% end %>
+
+    <div class="crayons-card p-4 grid gap-2 mb-4">
+      <h3>Channel Settings</h3>
+        <%= form_for(@channel) do |f| %>
+          <div class="crayons-field">
+            <%= f.label :description, class: "crayons-field__label" %>
+            <%= f.text_area :description, class: "crayons-textfield" %>
+          </div>
+          <div class="crayons-field crayons-field--checkbox">
+            <%= f.check_box :discoverable, class: "crayons-checkbox" %>
+            <%= f.label :discoverable, "Channel Discoverable", class: "crayons-field__label" %>
+          </div>
+          <div>
+            <button type="submit" class="crayons-btn">Submit</button>
+          </div>
+        <% end %>
+    </div>
+    <% end %>
   <% end %>
 
   <div class="crayons-card p-4 grid gap-2 mb-4">
