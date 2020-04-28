@@ -19,7 +19,6 @@ function toggleTemplateTypeButton(form, e) {
 const noResponsesHTML = `
 <div class="mod-response-wrapper mod-response-wrapper-empty">
   <p>🤔... It looks like you don't have any templates yet.</p>
-  <p>Create templates to quickly answer FAQs or store snippets for re-use.</p>
 </div>
 `;
 

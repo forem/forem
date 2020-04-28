@@ -45,7 +45,7 @@ COPY ./.yarn ./.yarn
 # Install packages
 #
 #------------------------------------------------------------------------------
-RUN yarn install && yarn check --integrity
+RUN yarn install
 
 # timeout extension required to ensure
 # system work properly on first time load

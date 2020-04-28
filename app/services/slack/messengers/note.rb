@@ -34,7 +34,7 @@ module Slack
           message: message,
         )
 
-        SlackBotPingWorker.perform_async(
+        Slack::Messengers::Worker.perform_async(
           message: final_message,
           channel: type,
           username: "new_note_bot",

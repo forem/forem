@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_09_050122) do
+ActiveRecord::Schema.define(version: 2020_04_26_124118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -172,6 +172,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.string "slug", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_badges_on_slug", unique: true
     t.index ["title"], name: "index_badges_on_title", unique: true
   end
 
@@ -307,7 +308,6 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.string "slug"
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listing_categories", force: :cascade do |t|
@@ -1206,6 +1206,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.datetime "updated_at", null: false
     t.string "username"
     t.string "website_url"
+    t.string "youtube_url"
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true

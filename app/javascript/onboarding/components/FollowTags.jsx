@@ -95,11 +95,19 @@ class FollowTags extends Component {
   }
 
   render() {
-    const { prev } = this.props;
+    const { prev, currentSlideIndex, slidesCount } = this.props;
     const { selectedTags, allTags } = this.state;
+    const canSkip = selectedTags.length === 0;
+
     return (
       <div className="onboarding-main">
-        <Navigation prev={prev} next={this.handleComplete} />
+        <Navigation
+          prev={prev}
+          next={this.handleComplete}
+          canSkip={canSkip}
+          slidesCount={slidesCount}
+          currentSlideIndex={currentSlideIndex}
+        />
         <div className="onboarding-content toggle-bottom">
           <header className="onboarding-content-header">
             <h1 className="title">What are you interested in?</h1>
@@ -171,6 +179,8 @@ class FollowTags extends Component {
 FollowTags.propTypes = {
   prev: PropTypes.func.isRequired,
   next: PropTypes.string.isRequired,
+  slidesCount: PropTypes.number.isRequired,
+  currentSlideIndex: PropTypes.func.isRequired,
 };
 
 export default FollowTags;

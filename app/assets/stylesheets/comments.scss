@@ -1,6 +1,7 @@
 @import 'variables';
 @import 'mixins';
 @import 'functions';
+@import 'config/import';
 
 %kbd {
   display: inline-block;
@@ -102,7 +103,7 @@ a.header-link {
       margin: auto;
       margin-bottom: -35px;
       .read-more {
-        color: var(--link-branded-color);
+        color: var(--link-brand-color);
         display: inline-block;
         &:hover {
           opacity: 0.96;
@@ -397,7 +398,7 @@ a.header-link {
 
       a {
         text-align: left;
-        padding: 12px;
+        padding: $su-3;
         font-weight: bold;
         svg {
           width: 20px;
@@ -407,6 +408,10 @@ a.header-link {
           left: 3px;
           @include themeable(fill, link-branded-color, #3b49df)
         }
+      }
+      p {
+        align-self: flex-start;
+        padding: 0 $su-3;
       }
     }
     .article-comment-form-preamble {
@@ -524,7 +529,7 @@ a.header-link {
       text-align: right;
       font-size: 0.9em;
       font-weight: 500;
-      color: var(--link-branded-color);
+      color: var(--link-brand-color);
       &.sub-comment-code-of-conduct {
         font-size: 1em;
       }
@@ -534,7 +539,7 @@ a.header-link {
         margin: 5px 0px;
       }
       a {
-        color: var(--link-branded-color);
+        color: var(--link-brand-color);
       }
     }
     input[type='submit'] {
@@ -896,7 +901,7 @@ a.header-link {
   .details {
     padding: 0px;
     border-top-left-radius: 3px;
-    color: var(--link-branded-color);
+    color: var(--link-brand-color);
     position: relative;
     .comment-date {
       border: none;

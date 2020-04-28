@@ -7,7 +7,7 @@ RSpec.describe "UserDestroy", type: :request do
     it "offers to delete account when user has an email" do
       sign_in user
       get "/settings/account"
-      expect(response.body).to include("DELETE ACCOUNT").and include("Deleting your account will")
+      expect(response.body).to include("Delete Account").and include("Deleting your account will")
     end
 
     it "offers to set an email when user doesn't have an email" do
