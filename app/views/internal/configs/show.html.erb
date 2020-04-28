@@ -200,9 +200,17 @@
                                placeholder: "List of campaign tags: comma separated, letters only e.g. shecoded,theycoded" %>
               <div class="alert alert-info">Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)</div>
             </div>
+
+            <div class="form-group">
+              <%= f.label :campaign_stories_start_date %>
+              <%= f.text_field :campaign_stories_start_date,
+                               class: "form-control",
+                               value: SiteConfig.campaign_stories_start_date,
+                               placeholder: "01/01/2020" %>
+              <div class="alert alert-info">Start date from which to show posts from featured tags</div>
+            </div>
           </div>
         </div>
-
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {

@@ -45,6 +45,7 @@ class SiteConfig < RailsSettings::Base
   # Campaign
   field :campaign_hero_html_variant_name, type: :string, default: ""
   field :campaign_featured_tags, type: :array, default: %w[]
+  field :campaign_stories_start_date, type: :string, default: "12/31/2019" # 12/31 makes the default clearly middle-endian
   field :campaign_sidebar_enabled, type: :boolean, default: 0
   field :campaign_sidebar_image, type: :string, default: nil
 

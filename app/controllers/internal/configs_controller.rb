@@ -28,6 +28,7 @@ class Internal::ConfigsController < Internal::ApplicationController
     allowed_params = %i[
       authentication_providers
       campaign_featured_tags
+      campaign_stories_start_date
       campaign_hero_html_variant_name
       campaign_sidebar_enabled
       campaign_sidebar_image
@@ -64,7 +65,7 @@ class Internal::ConfigsController < Internal::ApplicationController
   end
 
   def extra_authorization_and_confirmation
-    not_authorized unless current_user.has_role?(:single_resource_admin, Config) # Special additional permission
+    not_authorized unless current_user.has_role?(:single_resource_admin, Config) && current_user.has_role?(:super_admin) # Special additional permission
     not_authorized if params[:confirmation] != "My username is @#{current_user.username} and this action is 100% safe and appropriate."
   end
 
@@ -73,6 +74,11 @@ class Internal::ConfigsController < Internal::ApplicationController
     config[:suggested_tags] = config[:suggested_tags].downcase.delete(" ") if config[:suggested_tags]
     config[:authentication_providers] = config[:authentication_providers].downcase.delete(" ") if config[:authentication_providers]
     config[:sidebar_tags] = config[:sidebar_tags].downcase.delete(" ") if config[:sidebar_tags]
+    begin
+      Date.parse(config[:campaign_stories_start_date])
+    rescue ArgumentError
+      config[:campaign_stories_start_date] = "12/31/2019" # return valid default date if invalid date passed.
+    end
   end
 
   def bust_relevant_caches

@@ -306,6 +306,18 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
         end
       end
+
+      describe "Campaign" do
+        it "accepts proper date" do
+          post "/internal/config", params: { site_config: { campaign_stories_start_date: "01/25/20" }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq("01/25/20")
+        end
+
+        it "takes incorrect date and returns default instead" do
+          post "/internal/config", params: { site_config: { campaign_stories_start_date: "25/01/20" }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq("12/31/19")
+        end
+      end
     end
   end
   # rubocop:enable RSpec/NestedGroups
