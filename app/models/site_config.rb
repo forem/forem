@@ -14,6 +14,7 @@ class SiteConfig < RailsSettings::Base
   # Community Content
   field :community_description, type: :string, default: "A constructive and inclusive social network. Open source and radically transparent."
   field :community_member_description, type: :string, default: "amazing humans who code."
+  field :community_member_label, type: :string, default: "user"
   field :tagline, type: :string, default: "We're a place where coders share, stay up-to-date and grow their careers."
   field :mascot_user_id, type: :integer, default: 1
 
