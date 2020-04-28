@@ -21,7 +21,16 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :system, js: true) do
-    driven_by :headless_chrome
+    if ENV["SELENIUM_URL"].present?
+      # Support use of selenium-docker
+      Capybara.server_host = "0.0.0.0"
+      ip = Socket.ip_address_list.detect(&:ipv4_private?).ip_address
+      host! "http://#{ip}:#{Capybara.server_port}"
+
+      driven_by :selenium, using: :chrome, screen_size: [1400, 2000], options: { url: ENV["SELENIUM_URL"] }
+    else
+      driven_by :headless_chrome
+    end
   end
 end
 
