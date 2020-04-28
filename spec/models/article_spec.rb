@@ -613,13 +613,6 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "#index_id" do
-    it "is equal to articles-ID" do
-      # NOTE: we shouldn't test private things but cheating a bit for Algolia here
-      expect(article.send(:index_id)).to eq("articles-#{article.id}")
-    end
-  end
-
   describe ".seo_boostable" do
     let!(:top_article) do
       create(:article, organic_page_views_past_month_count: 20, score: 30, tags: "good, greatalicious", user: user)
@@ -648,60 +641,6 @@ RSpec.describe Article, type: :model do
     it "returns nothing if no tagged articles" do
       articles = described_class.seo_boostable("godsdsdsdsgoo")
       expect(articles).to be_empty
-    end
-  end
-
-  context "when indexing and deindexing" do
-    it "deindexes unpublished article from Article index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, article.id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n")
-      end
-    end
-
-    it "deindexes unpublished article from searchables index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["searchables_#{Rails.env}", article.index_id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n")
-      end
-    end
-
-    it "deindexes unpublished article from ordered_articles index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["ordered_articles_#{Rails.env}", article.index_id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n")
-      end
-    end
-
-    it "deindexes hiring article from Article index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, article.id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: true\ndescription:\ntags: hiring\n---\n\n")
-      end
-    end
-
-    it "deindexes hiring article from searchables index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["searchables_#{Rails.env}", article.index_id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: true\ndescription:\ntags: hiring\n---\n\n")
-      end
-    end
-
-    it "deindexes hiring article from ordered_articles index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["ordered_articles_#{Rails.env}", article.index_id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: true\ndescription:\ntags: hiring\n---\n\n")
-      end
-    end
-
-    it "indexes published non-hiring article" do
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Article", article.id]) do
-        article.update(published: false)
-      end
-    end
-
-    it "triggers auto removal from index on destroy" do
-      article = create(:article)
-
-      allow(article).to receive(:remove_from_index!)
-      allow(article).to receive(:delete_related_objects)
-      article.destroy
-      expect(article).to have_received(:remove_from_index!)
-      expect(article).to have_received(:delete_related_objects)
     end
   end
 

@@ -16,7 +16,6 @@ module Users
           comment.remove_from_elasticsearch
           comment.delete
         end
-        article.remove_algolia_index
         article.remove_from_elasticsearch
         article.delete
         article.purge
