@@ -74,12 +74,10 @@ export default class ArticleForm extends Component {
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
-      modalShowing: false,
       previewResponse: '',
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
-      moreConfigShowing: false,
       mainImage: this.article.main_image || null,
       organizations,
       organizationId: this.article.organization_id,
@@ -136,20 +134,14 @@ export default class ArticleForm extends Component {
   };
 
   setCommonProps = ({
-    modalShowing = false,
     previewShowing = false,
     imageManagementShowing = false,
-    moreConfigShowing = false,
   }) => {
     return {
-      modalShowing,
       previewShowing,
       imageManagementShowing,
-      moreConfigShowing,
     };
   };
-
-  
 
   fetchPreview = e => {
     const { previewShowing, bodyMarkdown } = this.state;
@@ -171,14 +163,6 @@ export default class ArticleForm extends Component {
       ...this.setCommonProps({
         imageManagementShowing: !imageManagementShowing,
       }),
-    });
-  };
-
-  toggleMoreConfig = e => {
-    const { moreConfigShowing } = this.state;
-    e.preventDefault();
-    this.setState({
-      ...this.setCommonProps({ moreConfigShowing: !moreConfigShowing }),
     });
   };
 
@@ -262,12 +246,10 @@ export default class ArticleForm extends Component {
       bodyMarkdown: this.article.body_markdown || '',
       published: this.article.published || false,
       previewShowing: false,
-      modalShowing: false,
       previewResponse: '',
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
       imageManagementShowing: false,
-      moreConfigShowing: false,
       mainImage: this.article.main_image || null,
       errors: null,
       edited: false,
@@ -299,11 +281,9 @@ export default class ArticleForm extends Component {
       bodyMarkdown,
       published,
       previewShowing,
-      modalShowing,
       previewResponse,
       submitting,
       imageManagementShowing,
-      moreConfigShowing,
       organizations,
       organizationId,
       mainImage,
@@ -327,13 +307,6 @@ export default class ArticleForm extends Component {
     // let editorView = '';
     if (previewShowing) {
       //
-    } else if (modalShowing) {
-      // editorView = (
-      //   <BodyPreview
-      //     previewResponse={{ processed_html: helpHTML }}
-      //     version="help"
-      //   />
-      // );
     } else {
       let controls = '';
       if (version === 'v2') {
@@ -383,7 +356,6 @@ export default class ArticleForm extends Component {
           )}
           <Help
             previewShowing={previewShowing}
-            modalShowing={modalShowing}
           />
         </div>
 
@@ -396,8 +368,6 @@ export default class ArticleForm extends Component {
           edited={edited}
           passedData={this.state}
           onConfigChange={this.handleConfigChange}
-          toggleMoreConfig={this.toggleMoreConfig}
-          moreConfigShowing={moreConfigShowing}
           submitting={submitting}
         />
 

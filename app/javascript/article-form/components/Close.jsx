@@ -1,6 +1,5 @@
 import { h } from 'preact';
-import PropTypes from 'prop-types';
-import { Button } from '../../crayons/Button';
+import { Button } from '@crayons';
 
 export const Close = () => {
   const Icon = () => (

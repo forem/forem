@@ -9,86 +9,95 @@
     data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
     data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
     data-version="<%= version %>">
-    <div class="crayons-article-form__close">
-      <a href="#" class="crayons-btn crayons-btn--ghost crayons-btn--icon">
-        <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Close") %>
-      </a>
-    </div>
 
-    <div class="crayons-layout crayons-layout--article-form pt-2">
-      <div class="crayons-layout__narrow-sidebar">
-        <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
+    <div class="crayons-article-form__header crayons-layout">
+      <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
+      
+      <div class="crayons-field__label">
+        Write a new post
+        <% if organizations && organizations.size > 0 %>
+          <span>under:
+            <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto ml-2 mt-0">
+              <%= options_for_select({ "None" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
+            </select>
+          </span>
+        <% end %>
       </div>
 
-      <div class="crayons-layout__content crayons-article-form__fields">
-        <% if organizations && organizations.size > 0 %>
-          <div class="crayons-article-form__organization">
-            <label class="crayons-field flex-row items-center">
-              <div class="crayons-field__label w-auto">Publish under an organization:</div>
-              <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto ml-2 mt-0">
-                <%= options_for_select({ "None" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
-              </select>
-            </label>
-          </div>
-        <% end %>
+      <div class="crayons-article-form__tabs ml-auto">
+        <button class="crayons-btn crayons-btn--ghost current" type="button">Edit</button>
+        <button class="crayons-btn crayons-btn--ghost" type="button">Preview</button>
+      </div>
 
+      <div class="crayons-article-form__close">
+        <a href="/" class="crayons-btn crayons-btn--ghost crayons-btn--icon">
+          <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Close") %>
+        </a>
+      </div>
+    </div>
+
+    <div class="crayons-layout crayons-layout--article-form">
+      <div class="crayons-card crayons-layout__content crayons-article-form__fields">
         <% if version == "v2" %>
-          <div class="crayons-article-form__cover">
-            <% if article.main_image.present? %>
-              <div class="crayons-article-form__cover__image"><img src="<%= article.main_image %>"></div>
-            <% else %>
-              <button class="crayons-btn crayons-btn--secondary">Add a cover image</button>
-            <% end %>
-          </div>
-
-          <div class="crayons-article-form__title">
-            <input class="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy" type="text" value="<%= article.title %>" placeholder="New post title here..." name="title" autofocus />
-          </div>
-
-          <div class="crayons-article-form__tagsfield">
-            <input type="text" class="crayons-textfield crayons-textfield--ghost ff-accent" placeholder="Add up to 4 tags (no special characters)..." name="tags" value="<%= article.cached_tag_list %>" />
+          <div>
+            <div class="crayons-article-form__cover" role="presentation">
+              <% if article.main_image.present? %>
+                <div class="crayons-article-form__cover__image"><img src="<%= article.main_image %>"></div>
+              <% end %>
+              <label class="crayons-btn crayons-btn--outlined mr-2"><% if article.main_image.present? %>Change the cover<% else %>Add a cover photo<% end %><input type="file" accept="image/*" class="w-0 h-0 absolute overflow-hidden z-negative opacity-0" data-max-file-size-mb="25"></label>
+            </div>
+            <div class="crayons-article-form__title">
+              <textarea class="crayons-textfield crayons-textfield--ghost fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px;"><%= article.title %></textarea>
+              <!--<input class="crayons-textfield crayons-textfield--ghost fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" value="<%= article.title %>" placeholder="New post title here..." name="title" autofocus />-->
+            </div>
+            <div class="crayons-article-form__tagsfield">
+              <input type="text" class="crayons-textfield crayons-textfield--ghost ff-accent crayons-article-form__tags" placeholder="Add up to 4 tags (no special characters)..." name="tags" value="<%= article.cached_tag_list %>" />
+            </div>
           </div>
         <% end %>
-
         <div class="crayons-article-form__body">
-          <div class="crayons-article-form__toolbar invisible">
-            toolbar
+          <div class="crayons-article-form__toolbar opacity-0">
+            <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left fw-normal" type="button">
+              <%= inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") %>
+              Upload image
+            </button>
           </div>
-          <textarea class="crayons-textfield crayons-textfield--ghost fs-l ff-accent h-100" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
+          <textarea class="crayons-textfield crayons-textfield--ghost fs-l ff-accent min-h-100" id="article_body_markdown" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
+          </div>
+      </div>
+      <div class="crayons-layout__aside">
+        <div class="crayons-article-form__tips">
+          <h4 class="mb-2 fs-l">How to write a good post title?</h4>
+          <ul class="list-disc pl-6 color-base-70">
+            <li>Use <a href="#markdown">Markdown</a> markdown to write and format posts.</li>
+            <li>Most of the time, you can write inline HTML directly into your posts.</li>
+            <li>You can use <a href="#liquid">Liquid tags</a> to make add rich content such as tweets and videos.</li>
+          </ul>
         </div>
       </div>
-
-      <div class="crayons-layout--aside">
-        <ul class="list-disc pl-6">
-          <li>Think of post title as super short description. Like an overview of the actual post in one short sentence...</li>
-          <li>Be specific :)</li>
-        </ul>
-      </div>
     </div>
 
-    <div class="crayons-article-form__actions">
-      <div class="crayons-layout crayons-layout--article-form">
-        <span></span>
-        <div class="crayons-layout__content flex">
-          <button class="crayons-btn crayons-btn--primary mr-2" type="submit">Publish</button>
-          <button class="crayons-btn crayons-btn--secondary mr-2">Preview</button>
-          <button class="crayons-btn crayons-btn--secondary mr-2">Save draft</button>
-          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2">
+    <div>
+      <div class="crayons-layout crayons-article-form__actions">
+        <button class="crayons-btn mr-2" type="button">Publish</button>
+        <button class="crayons-btn crayons-btn--secondary mr-2" type="button">Save draft</button>
+        <div class="relative">
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon" type="button">
             <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Options") %>
           </button>
         </div>
       </div>
     </div>
-  
-    <div style="display:none">
-      <% if version == "v2" %>
-        <%= render "pages/editor_markdown_help" %>
-        <%= render "pages/editor_liquid_help" %>
-      <% else %>
-        <%= render "pages/editor_guide_text", version: "1" %>
-      <% end %>
-    </div>
   </form>
+</div>
+
+<div class="hidden">
+  <% if version == "v2" %>
+    <%= render "pages/editor_markdown_help" %>
+    <%= render "pages/editor_liquid_help" %>
+  <% else %>
+    <%= render "pages/editor_guide_text", version: "1" %>
+  <% end %>
 </div>
 
 <style>

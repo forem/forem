@@ -31,6 +31,11 @@
     top: $su-2;
   }
 
+  &__tips {
+    position: sticky;
+    top: $su-9;
+  }
+
   &__fields {
     display: flex;
     flex-direction: column;

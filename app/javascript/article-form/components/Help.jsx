@@ -51,7 +51,7 @@ export class Help extends Component {
     return (
       <div className="crayons-layout--aside">
         {!previewShowing && (
-          <div className="pt-10">
+          <div className="crayons-article-form__tips">
             <h4 className="mb-2 fs-l">How to write a good post title?</h4>
             <ul className="list-disc pl-6 color-base-70 hidden">
               <li>
