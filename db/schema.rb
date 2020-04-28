@@ -1091,7 +1091,7 @@ ActiveRecord::Schema.define(version: 2020_04_20_130910) do
     t.datetime "created_at", null: false
     t.string "label", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id"
+    t.bigint "user_id", null: false
     t.string "value", null: false
     t.index ["label", "user_id"], name: "index_user_optional_fields_on_label_and_user_id", unique: true
     t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
