@@ -1,16 +1,17 @@
-<% if (SiteConfig.auth_allowed?("github") || SiteConfig.auth_allowed?("twitter")) && (!@user.identities.exists?(provider: "github") || !@user.identities.exists?(provider: "twitter")) %>
-  <div class="crayons-card mb-6 p-6">
-    <div class="flex">
-      <% if SiteConfig.auth_allowed?("github") && !@user.identities.exists?(provider: "github") %>
-        <a href="/users/auth/github" class="crayons-btn crayons-btn--outlined mr-2" data-no-instant>
-          <%= inline_svg_tag("github.svg", aria: true, class: "crayons-icon", title: "GitHub") %>Connect GitHub Account
-        </a>
-      <% end %>
-      <% if SiteConfig.auth_allowed?("twitter") && !@user.identities.exists?(provider: "twitter") %>
-        <a href="/users/auth/twitter?callback_url=<%= app_url("/users/auth/twitter/callback") %>" class="crayons-btn crayons-btn--outlined" data-no-instant>
-          <%= inline_svg_tag("twitter.svg", aria: true, class: "crayons-icon", title: "GitHub") %>Connect Twitter Account
-        </a>
-      <% end %>
-    </div>
-  </div>
+<% Authentication::Providers.enabled.each do |provider_name| %>
+  <% unless @user.identities.exists?(provider: provider_name) %>
+    <% provider = Authentication::Providers.get!(provider_name) %>
+    <a
+      href="<%= Authentication::Providers.authentication_path(provider_name) %>"
+      class="crayons-btn crayons-btn--outlined mr-2"
+      data-no-instant>
+      <%= inline_svg_tag(
+            "#{provider_name}.svg",
+            aria: true,
+            class: "crayons-icon",
+            title: provider_name.to_s.titleize.to_s,
+          ) %>
+      Connect <%= provider.official_name %> Account
+    </a>
+  <% end %>
 <% end %>

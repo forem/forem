@@ -6,21 +6,18 @@
   </div>
   <div class="global-signup-modal--inner-a">
     <%= image_tag(cloudinary(SiteConfig.mascot_image_url, 300),
-                  class: "mascot-image", alt: SiteConfig.mascot_image_description, loading: "lazy") %>
+                  class: "mascot-image",
+                  alt: SiteConfig.mascot_image_description,
+                  loading: "lazy") %>
+
     <h1>Join our <%= community_qualified_name %> :)</h1>
+
     <p>
       <%= SiteConfig.tagline %>
     </p>
-    <% if SiteConfig.auth_allowed?("twitter") %>
-      <a href="/users/auth/twitter?callback_url=<%= app_url %>/users/auth/twitter/callback" class="sign-up-link cta" data-no-instant>
-        <img src="<%= asset_path("twitter-logo.svg") %>" class="icon-img" alt="Twitter logo" /> Auth With Twitter
-      </a>
-    <% end %>
-    <% if SiteConfig.auth_allowed?("github") %>
-      <a href="/users/auth/github?state=signup-modal" class="sign-up-link cta" data-no-instant>
-        <img src="<%= asset_path("github-logo.svg") %>" class="icon-img" alt="GitHub logo" /> Auth With GitHub
-      </a>
-    <% end %>
+
+    <%= render partial: "shared/authentication/providers_signup_modal" %>
+
     <p>
       <em>We strive for transparency and don't collect excess data.</em>
     </p>

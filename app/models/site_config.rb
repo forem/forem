@@ -91,9 +91,4 @@ class SiteConfig < RailsSettings::Base
 
   # Shop
   field :shop_url, type: :string, default: "https://shop.dev.to"
-
-  # Helpful methods
-  def self.auth_allowed?(provider)
-    authentication_providers.include?(provider)
-  end
 end
