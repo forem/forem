@@ -117,8 +117,6 @@ num_articles = 25 * SEEDS_MULTIPLIER
 counter += 1
 Rails.logger.info "#{counter}. Creating #{num_articles} Articles"
 
-Article.clear_index!
-
 num_articles.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
