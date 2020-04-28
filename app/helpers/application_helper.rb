@@ -177,6 +177,10 @@ module ApplicationHelper
     mail_to email, text || email, additional_info
   end
 
+  def community_members_label
+    SiteConfig.community_member_label.pluralize
+  end
+
   # Creates an app internal URL
   #
   # @note Uses protocol and domain specified in the environment, ensure they are set.
