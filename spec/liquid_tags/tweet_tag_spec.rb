@@ -21,7 +21,7 @@ RSpec.describe TweetTag, type: :liquid_tag do
     end
   end
 
-  it "render properly", :vcr do
+  xit "render properly", :vcr do
     VCR.use_cassette("twitter_fetch_status") do
       Time.use_zone("Asia/Tokyo") do
         rendered = generate_tweet_liquid_tag(twitter_id).render
