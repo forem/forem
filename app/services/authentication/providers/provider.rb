@@ -41,6 +41,10 @@ module Authentication
         self.class::USERNAME_FIELD
       end
 
+      def self.provider_name
+        name.demodulize.downcase.to_sym
+      end
+
       # Returns the official name of the authentication provider
       def self.official_name
         raise SubclassResponsibility
