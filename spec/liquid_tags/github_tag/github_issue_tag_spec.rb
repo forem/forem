@@ -27,7 +27,7 @@ RSpec.describe GithubTag::GithubIssueTag, type: :liquid_tag, vcr: vcr_option do
       end.to raise_error(StandardError)
     end
 
-    it "renders properly" do
+    xit "renders properly" do
       output = generate_github_issue(github_link).render
       # NB: this approvals test is a little harder to update
       # because a legitimate github access token is required for octokit

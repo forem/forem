@@ -12,7 +12,7 @@ exports[`<Compose /> behavior with message should render and test snapshot 1`] =
       id="messageform"
       maxLength="1000"
       onKeyDown={[Function]}
-      placeholder="Message goes here"
+      placeholder="Let's connect"
     />
     <button
       class="messagecomposer__submit cta"

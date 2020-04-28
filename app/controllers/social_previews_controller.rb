@@ -51,6 +51,7 @@ class SocialPreviewsController < ApplicationController
 
   private
 
+  # TODO: [thepracticaldev/oss] don't hardcode this
   def define_categories
     cat_info = {
       "collabs": ["Collaborators Wanted", "#5AE8D9"],

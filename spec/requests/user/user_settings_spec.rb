@@ -62,22 +62,6 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include ghost_account_message
       end
 
-      it "renders CONNECT_WITH_TWITTER and user with only github identity" do
-        user.identities.where(provider: "twitter").delete_all
-        get "/settings"
-        expect(response.body).to include "CONNECT TWITTER ACCOUNT"
-      end
-
-      it "renders does not render CONNECT_WITH_TWITTER if SiteConfig does not include Twitter auth" do
-        user.identities.where(provider: "twitter").destroy_all
-        current_auth_value = SiteConfig.authentication_providers
-        SiteConfig.authentication_providers = ["github"]
-        SiteConfig.clear_cache
-        get "/settings"
-        expect(response.body).not_to include "CONNECT TWITTER ACCOUNT"
-        SiteConfig.authentication_providers = current_auth_value # restore prior value
-      end
-
       it "renders the proper organization page" do
         first_org, second_org = create_list(:organization, 2)
         create(:organization_membership, user: user, organization: first_org)
@@ -90,6 +74,43 @@ RSpec.describe "UserSettings", type: :request do
         response_template = create(:response_template, user: user)
         get user_settings_path(tab: "response-templates", id: response_template.id)
         expect(response.body).to include "Editing a response template"
+      end
+    end
+
+    describe "connect providers accounts" do
+      before do
+        mock_auth_hash
+      end
+
+      it "does not render the text for the enabled provider the user has an identity for" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user, :with_identity, identities: [:github])
+
+        sign_in user
+        get "/settings"
+
+        expect(response.body).not_to include("Connect GitHub Account")
+      end
+
+      it "does not render the text for the disabled provider the user has an identity for" do
+        providers = Authentication::Providers.available - %i[github]
+        allow(Authentication::Providers).to receive(:enabled).and_return(providers)
+        user = create(:user, :with_identity, identities: [:github])
+
+        sign_in user
+        get "/settings"
+
+        expect(response.body).not_to include("Connect GitHub Account")
+      end
+
+      it "renders the text for the enabled provider the user has no identity for" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user, :with_identity, identities: [:twitter])
+
+        sign_in user
+        get "/settings"
+
+        expect(response.body).to include("Connect GitHub Account")
       end
     end
   end
@@ -149,6 +170,15 @@ RSpec.describe "UserSettings", type: :request do
       tags = hash_including(tags: instance_of(Array))
 
       expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
+    end
+
+    it "returns error if Profile image file name is too long" do
+      profile_image = fixture_file_upload("files/800x600.png", "image/png")
+      allow(profile_image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
+
+      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
+
+      expect(response).to have_http_status(:bad_request)
     end
 
     context "when requesting an export of the articles" do
@@ -314,7 +344,7 @@ RSpec.describe "UserSettings", type: :request do
       it "sets the proper error message" do
         delete "/users/remove_association", params: { provider: "github" }
         expect(flash[:error]).
-          to eq "An error occurred. Please try again or send an email to: #{SiteConfig.default_site_email}"
+          to eq "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
       end
 
       it "does not delete any identities" do

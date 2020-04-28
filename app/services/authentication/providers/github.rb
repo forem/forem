@@ -2,6 +2,7 @@ module Authentication
   module Providers
     # GitHub authentication provider, uses omniauth-github as backend
     class Github < Provider
+      OFFICIAL_NAME = "GitHub".freeze
       CREATED_AT_FIELD = "github_created_at".freeze
       USERNAME_FIELD = "github_username".freeze
 
@@ -22,6 +23,10 @@ module Authentication
           github_created_at: raw_info.created_at,
           github_username: info.nickname
         }
+      end
+
+      def self.official_name
+        OFFICIAL_NAME
       end
 
       protected

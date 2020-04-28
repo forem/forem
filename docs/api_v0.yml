@@ -1030,6 +1030,10 @@ components:
       value:
         error: "param is missing or the value is empty: article"
         status: 422
+    ErrorTooManyRequests:
+      value:
+        error: "Rate limit reached, try again in 30 seconds"
+        status: 429
 
     ArticlesIndex:
       value:
@@ -1680,7 +1684,7 @@ paths:
 
         ### Rate limiting
 
-        There is a limit of 10 articles created each 30 seconds by the same user.
+        There is a limit of 10 requests per 30 seconds.
 
         ### Additional resources
 
@@ -1744,6 +1748,21 @@ paths:
               examples:
                 error-unprocessable-entity:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unprocessable-entity:
+                  $ref: "#/components/examples/ErrorTooManyRequests"
+          headers:
+            Retry-After:
+              description: The number of seconds to wait until the next request
+              schema:
+                type: integer
+                format: int32
       security:
         - api_key: []
         - oauth2: []
@@ -1818,7 +1837,7 @@ paths:
 
         ### Rate limiting
 
-        There are no limits on the amount of updates.
+        There is a limit of 150 requests per 30 seconds.
 
         ### Additional resources
 
@@ -1881,6 +1900,21 @@ paths:
               examples:
                 error-unprocessable-entity:
                   $ref: "#/components/examples/ErrorUnprocessableEntity"
+        "429":
+          description: Too Many Requests
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-unprocessable-entity:
+                  $ref: "#/components/examples/ErrorTooManyRequests"
+          headers:
+            Retry-After:
+              description: The number of seconds to wait until the next request
+              schema:
+                type: integer
+                format: int32
       security:
         - api_key: []
         - oauth2: []

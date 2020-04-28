@@ -53,6 +53,7 @@ Here is a bunch of liquid tags supported on DEV:
 {% spotify spotify:episode:5V4XZWqZQJvbddd31n56mf %}
 {% blogcast 1234 %}
 {% kotlin https://pl.kotl.in/owreUFFUG %}
+{% wikipedia https://en.wikipedia.org/wiki/Wikipedia %}
 ```
 
 ## How liquid tags are developed

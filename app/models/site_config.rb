@@ -14,18 +14,26 @@ class SiteConfig < RailsSettings::Base
   # Community Content
   field :community_description, type: :string, default: "A constructive and inclusive social network. Open source and radically transparent."
   field :community_member_description, type: :string, default: "amazing humans who code."
+  field :community_member_label, type: :string, default: "user"
   field :tagline, type: :string, default: "We're a place where coders share, stay up-to-date and grow their careers."
   field :mascot_user_id, type: :integer, default: 1
 
   # Social Media and Email
   field :staff_user_id, type: :integer, default: 1
-  field :default_site_email, type: :string, default: "yo@dev.to"
   field :social_media_handles, type: :hash, default: {
     twitter: nil,
     facebook: nil,
     github: nil,
     instagram: nil,
     twitch: nil
+  }
+
+  # Emails
+  field :email_addresses, type: :hash, default: {
+    default: "yo@dev.to",
+    business: "partners@dev.to",
+    privacy: "privacy@dev.to",
+    members: "members@dev.to"
   }
 
   # Authentication
@@ -46,6 +54,7 @@ class SiteConfig < RailsSettings::Base
   field :logo_png, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
   field :logo_svg, type: :string, default: ""
   field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
+  field :onboarding_taskcard_image, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/staggered-dev.svg"
   field :mascot_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
   field :mascot_image_description, type: :string, default: "Sloan, the sloth mascot"
 
@@ -83,9 +92,4 @@ class SiteConfig < RailsSettings::Base
 
   # Shop
   field :shop_url, type: :string, default: "https://shop.dev.to"
-
-  # Helpful methods
-  def self.auth_allowed?(provider)
-    authentication_providers.include?(provider)
-  end
 end

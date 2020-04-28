@@ -44,6 +44,12 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/:id.:format
   def update
     set_tabs(params["user"]["tab"])
+
+    unless valid_filename?
+      render :edit, status: :bad_request
+      return
+    end
+
     if @user.update(permitted_attributes(@user))
       RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
@@ -137,7 +143,7 @@ class UsersController < ApplicationController
 
       flash[:settings_notice] = "Your #{provider.capitalize} account was successfully removed."
     else
-      flash[:error] = "An error occurred. Please try again or send an email to: #{SiteConfig.default_site_email}"
+      flash[:error] = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
     end
     redirect_to "/settings/#{@tab}"
   end
@@ -301,18 +307,13 @@ class UsersController < ApplicationController
   end
 
   def handle_account_tab
+    community_name = ApplicationConfig["COMMUNITY_NAME"]
     @email_body = <<~HEREDOC
-      Hello #{ApplicationConfig['COMMUNITY_NAME']} Team,
-      %0A
-      %0A
-      I would like to delete my account.
-      %0A%0A
-      You can keep any comments and discussion posts under the Ghost account.
-      %0A
-      %0A
+      Hello #{community_name} Team,\n
+      I would like to delete my account.\n
+      You can keep any comments and discussion posts under the Ghost account.\n
       Regards,
-      %0A
-      YOUR-DEV-USERNAME-HERE
+      YOUR-#{community_name}-USERNAME-HERE
     HEREDOC
   end
 
@@ -341,5 +342,17 @@ class UsersController < ApplicationController
     user_identity_age = user.github_created_at || user.twitter_created_at || 8.days.ago
     # last one is a fallback in case both are nil
     range.cover? user_identity_age
+  end
+
+  def valid_filename?
+    image = params.dig("user", "profile_image")
+    return true unless long_filename?(image)
+
+    @user.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
+
+    Honeycomb.add_field("error", @user.errors.messages)
+    Honeycomb.add_field("errored", true)
+
+    false
   end
 end

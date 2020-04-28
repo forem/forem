@@ -19,7 +19,7 @@ class Categories extends Component {
 
   details = () => {
     const { categoriesForDetails } = this.props;
-    const rules = categoriesForDetails.map(category => {
+    const rules = categoriesForDetails.map((category) => {
       const paragraphText = `${category.name}: ${category.rules}`;
       return <p>{paragraphText}</p>;
     });
@@ -42,7 +42,7 @@ class Categories extends Component {
         <select
           id="category"
           className="listingform__input"
-          name="classified_listing[category]"
+          name="classified_listing[classified_listing_category_id]"
           onChange={onChange}
           onBlur={onChange}
         >

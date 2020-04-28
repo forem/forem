@@ -35,7 +35,7 @@ module.exports = {
     'import/no-unresolved': [
       'error',
       {
-        ignore: ['@crayons'],
+        ignore: ['@crayons', '@utilities'],
       },
     ],
   },
@@ -45,8 +45,8 @@ module.exports = {
     InstantClick: false,
     filterXSS: false,
     Pusher: false,
-    algoliasearch: false,
     ga: false,
     Honeybadger: false,
+    AndroidBridge: false,
   },
 };
