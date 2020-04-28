@@ -2,41 +2,35 @@
 
 exports[`<LoadingArticle /> should render 1`] = `
 <div
-  class="single-article single-article-small-pic big-article"
-  style={
-    Object {
-      "paddingBottom": "0",
-    }
-  }
+  class="crayons-story"
 >
   <div
-    class="small-pic"
+    class="crayons-story__body"
   >
     <div
-      class="color single-article-loading"
-    />
-  </div>
-  <div
-    class="content"
-  >
-    <h3
-      class="single-article-loading"
+      class="crayons-story__top mb-3"
     >
-       
-    </h3>
+      <div
+        class="crayons-story__meta w-100"
+      >
+        <div
+          class="crayons-scaffold-loading mr-2 w-0 h-0 p-4 radius-full"
+        />
+        <div
+          class="crayons-scaffold-loading w-25 h-0 py-2"
+        />
+      </div>
+    </div>
+    <div
+      class="crayons-story__indention"
+    >
+      <div
+        class="crayons-scaffold-loading w-75 h-0 py-3 mb-2"
+      />
+      <div
+        class="crayons-scaffold-loading w-50 h-0 py-2 mb-8"
+      />
+    </div>
   </div>
-  <h4
-    class="single-article-loading"
-    style={
-      Object {
-        "width": "46%",
-      }
-    }
-  >
-     
-  </h4>
-  <div
-    class="tags single-article-loading"
-  />
 </div>
 `;
