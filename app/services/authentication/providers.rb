@@ -1,10 +1,17 @@
+# We require all authentication modules to make sure providers
+# are correctly preloaded both in development and in production and
+# ready to be used when needed at runtime
+Dir[Rails.root.join("app/services/authentication/**/*.rb")].each do |f|
+  require_dependency(f)
+end
+
 module Authentication
   module Providers
     # Retrieves a provider that is both available and enabled
     def self.get!(provider_name)
       name = provider_name.to_s.titleize
 
-      unless Authentication::Providers.const_defined?(name)
+      unless available?(provider_name)
         raise(
           ::Authentication::Errors::ProviderNotFound,
           "Provider #{name} is not available!",
@@ -21,9 +28,14 @@ module Authentication
       Authentication::Providers.const_get(name)
     end
 
-    # Returns available providers
     def self.available
-      Devise.omniauth_providers.sort
+      Authentication::Providers::Provider.subclasses.map do |subclass|
+        subclass.name.demodulize.downcase.to_sym
+      end.sort
+    end
+
+    def self.available?(provider_name)
+      Authentication::Providers.const_defined?(provider_name.to_s.titleize)
     end
 
     # Returns enabled providers
@@ -33,7 +45,6 @@ module Authentication
       SiteConfig.authentication_providers.map(&:to_sym).sort
     end
 
-    # Returns true if a provider is enabled, false otherwise
     def self.enabled?(provider_name)
       enabled.include?(provider_name.to_sym)
     end

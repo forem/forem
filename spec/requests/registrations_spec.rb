@@ -15,10 +15,8 @@ RSpec.describe "Registrations", type: :request do
       it "redirects to /dashboard" do
         sign_in user
 
-        Timecop.freeze(Time.current) do
-          get "/enter"
-          expect(response).to redirect_to("/dashboard?signed-in-already&t=#{Time.current.to_i}")
-        end
+        get "/enter"
+        expect(response).to redirect_to("/dashboard")
       end
     end
   end
