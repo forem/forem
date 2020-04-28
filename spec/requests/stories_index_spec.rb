@@ -329,4 +329,14 @@ RSpec.describe "StoriesIndex", type: :request do
       end
     end
   end
+
+  describe "GET user_path" do
+    let(:user) { create(:user) }
+
+    it "redirects to the lowercase route for usernames" do
+      get "/#{user.username.capitalize}"
+      expect(response.body).to include("/#{user.username.downcase}")
+      expect(response.body).not_to include("/#{user.username.capitalize}")
+    end
+  end
 end
