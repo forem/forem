@@ -6,6 +6,10 @@ module Search
 
     def perform(search_class, id)
       search_class.safe_constantize.delete_document(id)
+    rescue Search::Errors::Transport::NotFound => e
+      return if search_class == "Search::Reaction"
+
+      raise e
     end
   end
 end
