@@ -15,7 +15,6 @@ const Channels = ({
   currentUserId,
   triggerActiveContent,
 }) => {
-
   const discoverableChannels = chatChannels
     .filter(
       (channel) =>
@@ -70,11 +69,9 @@ const Channels = ({
       <div className="chatchannels__channelslistheader">
         <span role="img" aria-label="emoji">
           👋
-        </span>
-        {' '}
+        </span>{' '}
         Welcome to
-        <b> DEV Connect</b>
-        ! You may message anyone you mutually follow.
+        <b> DEV Connect</b>! You may message anyone you mutually follow.
       </div>
     );
   }
