@@ -23,7 +23,7 @@ RSpec.describe "User index", type: :system do
       end
 
       it "shows user's articles" do
-        within(".single-article") do
+        within(".crayons-story") do
           expect(page).to have_content(article.title)
           expect(page).not_to have_content(other_article.title)
         end
@@ -85,7 +85,7 @@ RSpec.describe "User index", type: :system do
     end
 
     it "shows user's articles" do
-      within(".single-article") do
+      within(".crayons-story") do
         expect(page).to have_content(article.title)
         expect(page).not_to have_content(other_article.title)
       end
