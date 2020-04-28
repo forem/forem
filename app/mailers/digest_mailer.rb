@@ -1,5 +1,5 @@
 class DigestMailer < ApplicationMailer
-  default from: -> { "#{ApplicationConfig['COMMUNITY_NAME']} Digest <#{SiteConfig.email_addresses[:default]}>" }
+  default from: -> { email_from("Digest") }
 
   def digest_email(user, articles)
     @user = user

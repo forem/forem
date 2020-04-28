@@ -1,12 +1,14 @@
 require "rails_helper"
 
-RSpec.describe FastlyVCL::WhitelistedParams, type: :service do
+RSpec.describe FastlyVCL::SafeParams, type: :service do
   let(:fastly) { instance_double(Fastly) }
   let(:fastly_service) { instance_double(Fastly::Service) }
   let(:fastly_version) { instance_double(Fastly::Version) }
   let(:fastly_snippet) { instance_double(Fastly::Snippet) }
-  let(:file_params) { YAML.load_file("config/fastly/whitelisted_params.yml") }
-  let(:snippet_content) { "#{described_class::VCL_DELIMITER_START}#{file_params.join('|')}#{described_class::VCL_DELIMITER_END}" }
+  let(:file_params) { YAML.load_file("config/fastly/safe_params.yml") }
+  let(:snippet_content) do
+    "#{described_class::VCL_DELIMITER_START}#{file_params.join('|')}#{described_class::VCL_DELIMITER_END}"
+  end
 
   # Fastly isn't setup for test or development environments so we have to stub
   # quite a bit here to simulate Fastly working ¯\_(ツ)_/¯
@@ -67,7 +69,7 @@ RSpec.describe FastlyVCL::WhitelistedParams, type: :service do
 
       tags = hash_including(tags: array_including("added_params:new_param", "removed_params:#{old_param}", "new_version:#{fastly_version.number}"))
 
-      expect(DatadogStatsClient).to have_received(:increment).with("fastly.whitelist", tags)
+      expect(DatadogStatsClient).to have_received(:increment).with("fastly.safelist", tags)
     end
   end
 end

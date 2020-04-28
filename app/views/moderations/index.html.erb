@@ -85,7 +85,7 @@
     <h1 style="text-align: center"><%= community_name %> Mods</h1>
     <div class="body">
       <p>We periodically award some <%= community_name %> members with heightened privileges to help moderate the community.</p>
-      <p>Email <a href="mailto:<%= SiteConfig.email_addresses[:default] %>"><%= SiteConfig.email_addresses[:default] %></a> if you'd like to be considered right away.</p>
+      <p>Email <%= email_link %> if you'd like to be considered right away.</p>
       <% unless user_signed_in? %>
         <p><em>P.S. You are not currently signed in.</em></p>
       <% end %>

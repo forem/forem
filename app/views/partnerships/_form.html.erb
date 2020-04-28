@@ -50,7 +50,7 @@
             <div class="partner-explainer-notice">
               <%# this should never happen but better safe than sorry %>
               <% sponsorships.each do |sponsorship| %>
-              🛑 You are already subscribed as a <%= sponsorship.level %> sponsor. Contact <%= SiteConfig.email_addresses[:business] %> to change plans.
+              🛑 You are already subscribed as a <%= sponsorship.level %> sponsor. Contact <%= email_link(:business) %>to change plans.
               <% end %>
             </div>
           <% else %>
@@ -120,5 +120,5 @@
     <% end %>
   <% end %>
 <% else %>
-<h2>Contact <a href="mailto:<%= SiteConfig.email_addresses[:business] %>"><%= SiteConfig.email_addresses[:business] %></a> to sign up</h1>
+<h2>Contact <%= email_link(:business) %> to sign up</h1>
 <% end %>
