@@ -8,12 +8,4 @@ module AuthenticationHelper
       Authentication::Providers.get!(provider_name)
     end
   end
-
-  def authentication_path(provider_name, params = {})
-    Authentication::Providers.authentication_path(provider_name, params)
-  end
-
-  def sign_in_path(provider_name, params = {})
-    Authentication::Providers.sign_in_path(provider_name, params)
-  end
 end

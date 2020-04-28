@@ -50,6 +50,14 @@ module Authentication
         raise SubclassResponsibility
       end
 
+      def self.authentication_path(params = {})
+        ::Authentication::Paths.authentication_path(provider_name, params)
+      end
+
+      def self.sign_in_path(_params = {})
+        raise SubclassResponsibility
+      end
+
       protected
 
       # Remove sensible data from the payload

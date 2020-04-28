@@ -29,6 +29,13 @@ module Authentication
         OFFICIAL_NAME
       end
 
+      def self.sign_in_path(params = {})
+        ::Authentication::Paths.sign_in_path(
+          provider_name,
+          params,
+        )
+      end
+
       protected
 
       def cleanup_payload(auth_payload)
