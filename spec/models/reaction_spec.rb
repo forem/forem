@@ -248,11 +248,24 @@ RSpec.describe Reaction, type: :model do
   end
 
   context "when callbacks are called before destroy" do
+    let(:reaction) { create(:reaction, reactable: article, user: user) }
+
     it "enqueues a ScoreCalcWorker on article reaction destroy" do
-      reaction = create(:reaction, reactable: article, user: user)
       sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
         reaction.destroy
       end
+    end
+
+    it "updates reactable without delay" do
+      allow(reaction).to receive(:update_reactable_without_delay)
+      reaction.destroy
+      expect(reaction).to have_received(:update_reactable_without_delay)
+    end
+
+    it "busts reactable cache without delay" do
+      allow(reaction).to receive(:bust_reactable_cache_without_delay)
+      reaction.destroy
+      expect(reaction).to have_received(:bust_reactable_cache_without_delay)
     end
   end
 end
