@@ -26,12 +26,6 @@ export const CommentsList = ({ comments, articlePath, totalCount }) => {
             {' '}
             comments
           </a>
-          <button
-            className="crayons-btn crayons-btn--secondary fs-s"
-            type="button"
-          >
-            Subscribe
-          </button>
         </div>
       </div>
     );
