@@ -12,8 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_26_124118) do
-
+ActiveRecord::Schema.define(version: 2020_04_27_233631) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -438,13 +437,13 @@ ActiveRecord::Schema.define(version: 2020_04_26_124118) do
   end
 
   create_table "email_authorizations", force: :cascade do |t|
+    t.string "confirmation_token"
     t.datetime "created_at", null: false
     t.jsonb "json_data", default: {}, null: false
     t.string "type_of", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
-    t.index ["user_id", "type_of"], name: "index_email_authorizations_on_user_id_and_type_of", unique: true
   end
 
   create_table "events", force: :cascade do |t|
@@ -1208,9 +1207,9 @@ ActiveRecord::Schema.define(version: 2020_04_26_124118) do
     t.datetime "updated_at", null: false
     t.string "username"
     t.string "website_url"
-    t.string "youtube_url"
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
+    t.string "youtube_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
