@@ -334,10 +334,10 @@ RSpec.describe "StoriesIndex", type: :request do
     let(:user) { create(:user) }
 
     it "redirects to the lowercase route for usernames", :aggregate_failures do
-      get "/#{user.username.capitalize}"
+      get user_path(user.username.capitalize)
       expect(response).to have_http_status(:moved_permanently)
-      expect(response.body).to redirect_to("/#{user.username.downcase}")
-      expect(response.body).not_to redirect_to("/#{user.username.capitalize}")
+      expect(response).to redirect_to(user_path(user.username.downcase))
+      expect(response).not_to redirect_to(user_path(user.username.capitalize))
     end
   end
 end
