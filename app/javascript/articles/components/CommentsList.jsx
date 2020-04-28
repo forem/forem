@@ -2,7 +2,12 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { CommentListItem } from './CommentListItem';
 
-export const CommentsList = ({ comments, totalCount }) => {
+function linkToCommentsSection(articlePath) {
+  const str = `${articlePath}#comments-container`;
+  return str;
+}
+
+export const CommentsList = ({ comments, articlePath, totalCount }) => {
   if (comments.length > 0) {
     return (
       <div className="crayons-story__comments">
@@ -13,7 +18,10 @@ export const CommentsList = ({ comments, totalCount }) => {
         })}
 
         <div className="crayons-story__comments__actions">
-          <a href="/" className="crayons-btn crayons-btn--secondary fs-s mr-2">
+          <a
+            href={linkToCommentsSection(articlePath)}
+            className="crayons-btn crayons-btn--secondary fs-s mr-2"
+          >
             See all 
             {' '}
             {totalCount}
@@ -43,5 +51,6 @@ Comment.propTypes = PropTypes.shape({
 
 CommentsList.propTypes = {
   comments: PropTypes.arrayOf(Comment.propTypes).isRequired,
+  articlePath: PropTypes.string.isRequired,
   totalCount: PropTypes.number.isRequired,
 };

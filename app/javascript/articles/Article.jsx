@@ -71,6 +71,7 @@ export const Article = ({
 
       <CommentsList
         comments={article.top_comments}
+        articlePath={article.path}
         totalCount={article.comments_count}
       />
     </div>
