@@ -10,11 +10,11 @@
   <h1>Partner With <img src="<%= asset_path "rainbowdev.svg" %>" /> </h1>
   <h3>🚀 Reach</h3>
   <p>
-    <%= community_name %> serves millions of unique visitors per month.  This highly-targeted developer audience is comprised of registered members (<%= number_with_delimiter(User.estimated_count) %>) and visitors from the open web — many of whom visit <%= community_name %> as part of their daily routine.  You may be interested in the <a href="https://www.similarweb.com/website/dev.to">public analytics available on SimilarWeb</a>.
+    <%= community_name %> serves millions of unique visitors per month.  This highly-targeted  <%= SiteConfig.community_member_label %> audience is comprised of registered members (<%= number_with_delimiter(User.estimated_count) %>) and visitors from the open web — many of whom visit <%= community_name %> as part of their daily routine.  You may be interested in the <a href="https://www.similarweb.com/website/dev.to">public analytics available on SimilarWeb</a>.
   </p>
   <h3>❤️ Community</h3>
   <p>
-    <%= community_name %> is committed to maintaining an inclusive and constructive environment, and welcomes developers of all backgrounds and experience levels.  We work with a large group of community moderators who help us uphold and enforce our <a href="https://dev.to/code-of-conduct">Code of Conduct</a>.
+    <%= community_name %> is committed to maintaining an inclusive and constructive environment, and welcomes <%= community_members_label %> of all backgrounds and experience levels.  We work with a large group of community moderators who help us uphold and enforce our <a href="https://dev.to/code-of-conduct">Code of Conduct</a>.
   </p>
   <h3>💎 Quality</h3>
   <p>

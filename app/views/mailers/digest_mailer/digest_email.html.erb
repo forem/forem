@@ -14,7 +14,7 @@
 <div>
   👋 <b>Looking for work?</b> <a href="<%= app_url("/listings/jobs") %>">Browse job openings</a> or create an <a href="<%= app_url("/listings/forhire") %>">available for hire</a> listing.
   <br />
-  🔍 <b>Hiring developers?</b> Post your position(s) on <a href="<%= app_url(page_post_a_job_url) %>"><%= community_name %> Listings</a>.
+  🔍 <b>Hiring <%= community_members_label %>?</b> Post your position(s) on <a href="<%= app_url(page_post_a_job_url) %>"><%= community_name %> Listings</a>.
 </div>
 
 <center style="margin-top:50px;">
@@ -29,7 +29,7 @@
       You can change it any time in the future. Happy coding!
     <% elsif @user.follows.size == 0 %>
       <b>
-        <%= community_name %> Digest is a new periodic email featuring the best posts from our community of developers.
+        <%= community_name %> Digest is a new periodic email featuring the best posts from our community of <%= community_members_label %>.
       </b>
       <br /><br />
       Your digest is not yet customized. Follow the people and technologies on
