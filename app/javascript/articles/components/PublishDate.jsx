@@ -11,11 +11,16 @@ export const PublishDate = ({
   const timeAgoIndicator = timeAgo({
     oldTimeInSeconds: publishedAtInt,
     formatter: (x) => x,
+    maxDisplayedAge: 60 * 60 * 24 * 7,
   });
 
   return (
     <time dateTime={publishedTimestamp}>
-      {timeAgoIndicator.length > 0 ? timeAgoIndicator : readablePublishDate}
+      {readablePublishDate}
+      {' '}
+      (
+      {timeAgoIndicator}
+      )
     </time>
   );
 };
