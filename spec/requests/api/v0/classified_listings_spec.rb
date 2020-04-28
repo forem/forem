@@ -1,6 +1,13 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::ClassifiedListings", type: :request do
+  let_it_be_readonly(:cfp_category) do
+    create(:classified_listing_category, :cfp)
+  end
+  let_it_be_readonly(:edu_category) do
+    create(:classified_listing_category)
+  end
+
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
     let(:user) { api_secret.user }
@@ -12,14 +19,14 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
       {
         title: "Title",
         body_markdown: "Markdown text",
-        category: "cfp"
+        classified_listing_category_id: cfp_category.id
       }
     end
     let(:draft_params) do
       {
         title: "Title draft",
         body_markdown: "Markdown draft text",
-        category: "cfp",
+        classified_listing_category_id: cfp_category.id,
         action: "draft"
       }
     end
@@ -36,8 +43,8 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
     let(:user2) { create(:user) }
 
     before do
-      create_list(:classified_listing, 3, user: user1, category: "cfp")
-      create_list(:classified_listing, 4, user: user2)
+      create_list(:classified_listing, 3, user: user1, classified_listing_category_id: cfp_category.id)
+      create_list(:classified_listing, 4, user: user2, classified_listing_category_id: edu_category.id)
     end
   end
 
@@ -239,21 +246,31 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
 
     describe "user must have enough credit to create a classified listing" do
       include_context "when user is authorized"
+      include_context "when param list is valid"
 
       it "fails to create a classified listing if user does not have enough credit" do
-        post_classified_listing(category: "cfp")
+        post_classified_listing(listing_params)
         expect(response).to have_http_status(:payment_required)
       end
 
       it "fails to create a classifiedlisting if the org does not have enough credit" do
         org = user_admin_organization(user)
-        post_classified_listing(category: "cfp", organization_id: org.id)
+        post_classified_listing(
+          **listing_params,
+          organization_id: org.id,
+        )
         expect(response).to have_http_status(:payment_required)
       end
     end
 
     describe "user cannot create a classified with a request lacking mandatory parameters" do
-      let(:invalid_params) { { title: "Title", category: "cfp" } }
+      let(:invalid_params) do
+        {
+          title: "Title",
+          category: "cfp",
+          classified_listing_category_id: cfp_category.id
+        }
+      end
 
       include_context "when user is authorized"
       include_context "when user has enough credit"
@@ -338,15 +355,9 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
       end
 
       it "cannot create a draft due to internal error" do
-        listing = create(:classified_listing, user_id: user.id)
-        allow(ClassifiedListing).to receive_messages(cost_by_category: nil, new: listing)
         allow(Organization).to receive(:find_by)
-        allow(listing).to receive(:save) do
-          listing.errors.add(:base)
-          false
-        end
-        post_classified_listing(draft_params)
-        expect(response.parsed_body["errors"]["base"]).to eq(["is invalid"])
+        post_classified_listing(draft_params.except(:classified_listing_category_id))
+        expect(response.parsed_body["errors"]["category"]).to eq(["not a valid category"])
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
@@ -384,7 +395,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
 
         expect(listing.title).to eq(listing_params[:title])
         expect(listing.body_markdown).to eq(listing_params[:body_markdown])
-        expect(listing.category).to eq(listing_params[:category])
+        expect(listing.category).to eq(cfp_category.slug)
       end
 
       it "creates a classified listing with a location" do
@@ -491,7 +502,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
       end
 
       it "bumps the listing and subtract credits" do
-        cost = ClassifiedListing.cost_by_category(listing.category)
+        cost = listing.cost
         create_list(:credit, cost, user: user)
         previous_bumped_at = listing.bumped_at
         expect do
@@ -501,7 +512,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
       end
 
       it "bumps the org listing using org credits before user credits" do
-        cost = ClassifiedListing.cost_by_category(org_listing.category)
+        cost = org_listing.cost
         create_list(:credit, cost, organization: organization)
         create_list(:credit, cost, user: user)
         previous_bumped_at = org_listing.bumped_at
@@ -512,7 +523,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
       end
 
       it "bumps the org listing using user credits if org credits insufficient and user credits are" do
-        cost = ClassifiedListing.cost_by_category(org_listing.category)
+        cost = org_listing.cost
         create_list(:credit, cost, user: user)
         previous_bumped_at = org_listing.bumped_at
         expect do
@@ -526,7 +537,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
       include_context "when user is authorized"
 
       it "publishes a draft and charges user credits if first publish" do
-        cost = ClassifiedListing.cost_by_category(listing_draft.category)
+        cost = listing_draft.cost
         create_list(:credit, cost, user: user)
         expect do
           put_classified_listing(listing_draft.id, action: "publish")
@@ -534,14 +545,14 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
       end
 
       it "publishes a draft and ensures published column is true" do
-        cost = ClassifiedListing.cost_by_category(listing_draft.category)
+        cost = listing_draft.cost
         create_list(:credit, cost, user: user)
         put_classified_listing(listing_draft.id, action: "publish")
         expect(listing_draft.reload.published).to eq(true)
       end
 
       it "publishes an org draft and charges org credits if first publish" do
-        cost = ClassifiedListing.cost_by_category(org_listing_draft.category)
+        cost = org_listing_draft.cost
         create_list(:credit, cost, organization: organization)
         expect do
           put_classified_listing(org_listing_draft.id, action: "publish")
@@ -549,7 +560,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
       end
 
       it "publishes an org draft and ensures published column is true" do
-        cost = ClassifiedListing.cost_by_category(org_listing_draft.category)
+        cost = org_listing_draft.cost
         create_list(:credit, cost, organization: organization)
         put_classified_listing(org_listing_draft.id, action: "publish")
         expect(org_listing_draft.reload.published).to eq(true)
@@ -594,7 +605,8 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
       end
 
       it "fails if category is invalid" do
-        put_classified_listing(listing.id, title: "New title", category: "unknown")
+        max_id = ClassifiedListingCategory.maximum(:id)
+        put_classified_listing(listing.id, title: "New title", classified_listing_category_id: max_id + 1)
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.parsed_body.dig("errors", "category").first).to match(/not a valid category/)
       end

@@ -21,7 +21,8 @@ module Search
         approved: "approved",
         user_id: "user.id",
         class_name: "class_name",
-        published: "published"
+        published: "published",
+        organization_id: "organization.id"
       }.freeze
 
       RANGE_KEYS = %i[
@@ -57,7 +58,10 @@ module Search
         slug
         tags
         title
+        video_duration_in_minutes
+        video_duration_string
         user
+        organization
       ].freeze
 
       attr_accessor :params, :body

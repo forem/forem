@@ -11,10 +11,8 @@ module Articles
       new(*args).call
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
     def call
-      rate_limiter = RateLimitChecker.new(user)
-      raise if rate_limiter.limit_by_action("article_update")
+      rate_limiter = rate_limit!
 
       article = load_article
       was_published = article.published
@@ -54,11 +52,19 @@ module Articles
 
       article.decorate
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
 
     private
 
     attr_reader :user, :article_id, :article_params, :event_dispatcher
+
+    def rate_limit!
+      RateLimitChecker.new(user).tap do |rate_limiter|
+        if rate_limiter.limit_by_action(:article_update)
+          retry_after = RateLimitChecker::RETRY_AFTER[:article_update]
+          raise RateLimitChecker::LimitReached, retry_after
+        end
+      end
+    end
 
     def dispatch_event(article)
       event_dispatcher.call("article_updated", article)

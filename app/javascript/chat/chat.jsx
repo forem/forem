@@ -271,7 +271,7 @@ export default class Chat extends Component {
   };
 
   loadPaginatedChannels = (channels) => {
-    const { state } = this.state;
+    const state = this.state;
     const currentChannels = state.chatChannels;
     const currentChannelIds = currentChannels.map((channel) => channel.id);
     const newChannels = currentChannels;
@@ -570,7 +570,7 @@ export default class Chat extends Component {
     }
     if (escPressed && activeContent[activeChannelId]) {
       this.setActiveContentState(activeChannelId, null);
-      this.setState({fullscreenContent: null});
+      this.setState({fullscreenContent: null, expanded: window.innerWidth > 600});
     }
 
   };
@@ -616,6 +616,13 @@ export default class Chat extends Component {
         mentionedUsersId: this.getMentionedUsers(message),
       };
       this.setState({ videoPath: `/video_chats/${activeChannelId}` });
+      sendMessage(messageObject, this.handleSuccess, this.handleFailure);
+    } else if (message.startsWith('/play ')) {
+      const messageObject = {
+        activeChannelId,
+        message: message,
+        mentionedUsersId: this.getMentionedUsers(message),
+      };
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     } else if (message.startsWith('/new')) {
       this.setActiveContentState(activeChannelId, {
@@ -815,6 +822,15 @@ export default class Chat extends Component {
           path: `/chat_channel_memberships/${activeChannel.id}/edit`,
           type_of: 'article',
         });
+      } else if (content.startsWith('sidecar-content-plus-video')) {
+        this.setActiveContentState(activeChannelId, {
+          type_of: 'loading-post',
+        });
+        this.setActiveContent({
+          path: target.href || target.parentElement.href,
+          type_of: 'article',
+        });
+        this.setState({ videoPath: `/video_chats/${activeChannelId}` });
       } else if (content.startsWith('sidecar-video')) {
         this.setState({ videoPath: target.href || target.parentElement.href });
       } else if (
@@ -831,11 +847,11 @@ export default class Chat extends Component {
         });
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
-        this.setState({ fullscreenContent: null });
+        this.setState({ fullscreenContent: null, expanded: window.innerWidth > 600 });
       } else if (target.dataset.content === 'fullscreen') {
         const mode =
           this.state.fullscreenContent === 'sidecar' ? null : 'sidecar';
-        this.setState({ fullscreenContent: mode });
+        this.setState({ fullscreenContent: mode, expanded: (mode === null || window.innerWidth > 1600) });
       }
     }
     document.getElementById('messageform').focus();
@@ -1146,25 +1162,25 @@ export default class Chat extends Component {
         );
       }
       return (
-        <div className="chat__channels">
-          {notificationsButton}
-          <button
-            className="chat__channelstogglebutt"
-            onClick={this.toggleExpand}
-            style={{ width: '100%' }}
-            type="button"
-          >
-            {'>'}
-          </button>
-          <Channels
-            activeChannelId={state.activeChannelId}
-            chatChannels={state.chatChannels}
-            unopenedChannelIds={state.unopenedChannelIds}
-            handleSwitchChannel={this.handleSwitchChannel}
-            expanded={state.expanded}
-          />
-          {notificationsState}
-        </div>
+          <div className="chat__channels">
+            {notificationsButton}
+            <button
+              className="chat__channelstogglebutt"
+              onClick={this.toggleExpand}
+              style={{ width: '100%' }}
+              type="button"
+            >
+              {'>'}
+            </button>
+            <Channels
+              activeChannelId={state.activeChannelId}
+              chatChannels={state.chatChannels}
+              unopenedChannelIds={state.unopenedChannelIds}
+              handleSwitchChannel={this.handleSwitchChannel}
+              expanded={state.expanded}
+            />
+            {notificationsState}
+          </div>
       );
     }
     return '';
@@ -1189,9 +1205,9 @@ export default class Chat extends Component {
         (this.scroller.scrollTop + this.scroller.clientHeight) /
         this.scroller.scrollHeight;
 
-      if (scrolledRatio < 0.7) {
+      if (scrolledRatio < 0.5) {
         jumpbackButton.classList.remove('chatchanneljumpback__hide');
-      } else if (scrolledRatio > 0.8) {
+      } else if (scrolledRatio > 0.6) {
         jumpbackButton.classList.add('chatchanneljumpback__hide');
       }
 
@@ -1304,11 +1320,11 @@ export default class Chat extends Component {
 
   onTriggerVideoContent = (e) => {
     if (e.target.dataset.content === 'exit') {
-      this.setState({ videoPath: null, fullscreenContent: null });
+      this.setState({ videoPath: null, fullscreenContent: null, expanded: window.innerWidth > 600 });
     } else if (this.state.fullscreenContent === 'video') {
       this.setState({ fullscreenContent: null });
     } else {
-      this.setState({ fullscreenContent: 'video' });
+      this.setState({ fullscreenContent: 'video', expanded: window.innerWidth > 1600 });
     }
   };
 

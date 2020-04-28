@@ -26,7 +26,7 @@
   }
 
   a {
-    color: var(--link-branded-color);
+    color: var(--link-brand-color);
   }
 }
 
@@ -125,6 +125,57 @@
     button {
       @extend .crayons-btn;
     }
+
+    .back-button-container,
+    .next-button {
+      // Explicitly set width to avoid next-button re-sizing with text,
+      // and to ensure that back-button-container takes up the same amount of space.
+      width: $su-10;
+    }
+
+    .back-button {
+      @extend .crayons-btn;
+      @extend .crayons-btn--ghost;
+      @extend .crayons-btn--icon;
+
+      $button-size: 40px; // Explicitly set size for accessibility.
+
+      border-radius: 100%;
+      min-width: $button-size;
+      height: $button-size;
+      align-items: center;
+      display: flex;
+
+      &:hover,
+      &:active {
+        background: var(--base-10);
+      }
+    }
+
+    .skip-for-now {
+      @extend .crayons-btn;
+      @extend .crayons-btn--secondary;
+    }
+
+    .stepper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .dot {
+      $dot-size: 10px;
+
+      background-color: var(--base-30);
+      border-radius: 50%;
+      width: $dot-size;
+      height: $dot-size;
+      margin: $su-1;
+    }
+
+    .active {
+      background-color: var(--accent-brand);
+    }
   }
 }
 
@@ -201,12 +252,12 @@
 // modal overflow scrolling
 .onboarding-modal-scroll-container {
   height: auto;
-  min-height: 436px;
+  max-height: calc(100vh - 289px);
+  overflow-y: scroll;
   border-bottom: 1px solid var(--base-20);
-  @media screen and (min-width: $breakpoint-s) {
-    max-height: 500px;
-    overflow-y: scroll;
-    position: relative;
+
+  @media screen and (min-height: 800px) {
+    max-height: 520px;
   }
 }
 
@@ -216,7 +267,6 @@
   grid-template-columns: repeat(2, 1fr);
   grid-gap: $su-4;
   width: 100%;
-  min-height: 316px;
 
   @media screen and (min-width: 800px) {
     grid-template-columns: repeat(3, 1fr);
@@ -289,7 +339,7 @@
       }
 
       input[type='checkbox']:checked {
-        background: var(--link-branded-color);
+        background: var(--link-brand-color);
       }
     }
   }
@@ -612,7 +662,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
       @extend .crayons-field__label;
       align-items: baseline;
       border-radius: $br-default;
-      display: inline-block;
+      display: flex;
       flex-direction: row;
       padding: 0 $su-1;
       width: 100%;
