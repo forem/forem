@@ -1089,10 +1089,10 @@ ActiveRecord::Schema.define(version: 2020_04_20_130910) do
 
   create_table "user_optional_fields", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.string "label"
+    t.string "label", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.string "value"
+    t.string "value", null: false
     t.index ["label", "user_id"], name: "index_user_optional_fields_on_label_and_user_id", unique: true
     t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
   end
