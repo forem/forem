@@ -71,6 +71,10 @@ RSpec.configure do |config|
   config.include SidekiqTestHelpers
   config.include ElasticsearchHelpers
 
+  config.before(:suite) do
+    Search::Cluster.delete_indexes
+  end
+
   config.before do
     Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
   end
