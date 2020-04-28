@@ -25,6 +25,34 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
+  describe "GET /about-listings" do
+    it "has proper headline" do
+      get "/about-listings"
+      expect(response.body).to include("About #{ApplicationConfig['COMMUNITY_NAME']} Listings")
+    end
+  end
+
+  describe "GET /community-moderation" do
+    it "has proper headline" do
+      get "/community-moderation"
+      expect(response.body).to include("Community Moderation Guide")
+    end
+  end
+
+  describe "GET /tag-moderation" do
+    it "has proper headline" do
+      get "/tag-moderation"
+      expect(response.body).to include("Tag Moderation Guide")
+    end
+  end
+
+  describe "GET /page/post-a-job" do
+    it "has proper headline" do
+      get "/page/post-a-job"
+      expect(response.body).to include("Posting a Job on #{ApplicationConfig['COMMUNITY_NAME']} Listings")
+    end
+  end
+
   describe "GET /api" do
     it "redirects to the API docs" do
       get "/api"
