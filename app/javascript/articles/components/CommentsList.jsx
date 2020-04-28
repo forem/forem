@@ -11,8 +11,6 @@ export const CommentsList = ({ comments, articlePath, totalCount }) => {
   if (comments.length > 0) {
     return (
       <div className="crayons-story__comments">
-        <p className="crayons-story__comments__headline">Top comments:</p>
-
         {comments.slice(0, 2).map((comment) => {
           return <CommentListItem comment={comment} />;
         })}
