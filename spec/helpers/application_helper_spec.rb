@@ -149,8 +149,12 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe "#community_members_label" do
+    before do
+      allow(SiteConfig).to receive(:community_member_label).and_return("hobbyist")
+    end
+
     it "returns the pluralized community_member_label" do
-      expect(community_members_label).to eq("users")
+      expect(community_members_label).to eq("hobbyists")
     end
   end
 end
