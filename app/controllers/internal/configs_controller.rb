@@ -59,6 +59,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       shop_url
       sidebar_tags
       suggested_tags
+      twitter_hashtag
     ]
     params.require(:site_config).permit(allowed_params, social_media_handles: SiteConfig.social_media_handles.keys, email_addresses: SiteConfig.email_addresses.keys)
   end

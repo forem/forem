@@ -306,6 +306,14 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
         end
       end
+
+      describe "twitter_hashtag" do
+        it "updates twitter hashtag" do
+          twitter_hashtag = "#thepracticaldev"
+          post "/internal/config", params: { site_config: { twitter_hashtag: twitter_hashtag }, confirmation: confirmation_message }
+          expect(SiteConfig.twitter_hashtag).to eq twitter_hashtag
+        end
+      end
     end
   end
   # rubocop:enable RSpec/NestedGroups
