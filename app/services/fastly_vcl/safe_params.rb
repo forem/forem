@@ -1,10 +1,10 @@
 module FastlyVCL
-  # Handles updates to our VCL snippet on Fastly that whitelists params
-  class WhitelistedParams
+  # Handles updates to our VCL snippet on Fastly that lists safe params
+  class SafeParams
     VCL_DELIMITER_START = "^(".freeze
     VCL_DELIMITER_END = ")$".freeze
-    SNIPPET_NAME = ApplicationConfig["FASTLY_WHITELIST_PARAMS_SNIPPET_NAME"].freeze
-    FILE_PARAMS = YAML.load_file("config/fastly/whitelisted_params.yml").freeze
+    SNIPPET_NAME = ApplicationConfig["FASTLY_SAFE_PARAMS_SNIPPET_NAME"].freeze
+    FILE_PARAMS = YAML.load_file("config/fastly/safe_params.yml").freeze
 
     class << self
       def update
@@ -60,7 +60,7 @@ module FastlyVCL
           "new_version:#{new_version.number}",
         ]
 
-        DatadogStatsClient.increment("fastly.whitelist", tags: tags)
+        DatadogStatsClient.increment("fastly.safelist", tags: tags)
       end
     end
   end

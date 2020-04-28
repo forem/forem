@@ -43,7 +43,7 @@ class Message < ApplicationRecord
     html = target_blank_links(html)
     html = append_rich_links(html)
     html = wrap_mentions_with_links(html)
-    html = handle_call(html)
+    html = handle_slash_command(html)
     self.message_html = html
   end
 
@@ -144,16 +144,26 @@ class Message < ApplicationRecord
     html
   end
 
-  def handle_call(html)
-    return html if html.to_s.exclude?("<p>/call</p>")
-
-    "<a href='/video_chats/#{chat_channel_id}'
-        class='chatchannels__richlink chatchannels__richlink--base'
-        target='_blank' rel='noopener' data-content='sidecar-video'>
-        <h1 data-content='sidecar-video'>
-          Let's video chat 😄
-        </h1>
-        </a>".html_safe
+  def handle_slash_command(html)
+    response = if html.to_s.strip == "<p>/call</p>"
+                 "<a href='/video_chats/#{chat_channel_id}'
+                    class='chatchannels__richlink chatchannels__richlink--base'
+                    target='_blank' rel='noopener' data-content='sidecar-video'>
+                    <h1 data-content='sidecar-video'>
+                      Let's video chat 😄
+                    </h1>
+                    </a>".html_safe
+               elsif html.to_s.strip == "<p>/play codenames</p>" #proof of concept
+                 "<a href='https://www.horsepaste.com/connect-channel-#{rand(1_000_000_000)}'
+                    class='chatchannels__richlink chatchannels__richlink--base'
+                    target='_blank' rel='noopener' data-content='sidecar-content-plus-video'>
+                    <h1 data-content='sidecar-content-plus-video'>
+                      Let's play codenames 🤐
+                    </h1>
+                    </a>".html_safe
+                end
+    html = response if response
+    html
   end
 
   def cl_path(img_src)

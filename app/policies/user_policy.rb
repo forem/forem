@@ -28,6 +28,7 @@ class UserPolicy < ApplicationPolicy
     experience_level
     export_requested
     facebook_url
+    youtube_url
     feed_admin_publish_permission
     feed_mark_canonical
     feed_referential_link
