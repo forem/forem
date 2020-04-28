@@ -23,7 +23,7 @@ FactoryBot.define do
     email_digest_periodic        { false }
 
     trait :with_identity do
-      transient { identities { %i[github twitter] } }
+      transient { identities { Authentication::Providers.available } }
 
       after(:create) do |user, options|
         options.identities.each do |provider|
