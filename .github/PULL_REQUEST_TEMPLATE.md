@@ -10,7 +10,7 @@
      - 👷‍♀️ Create small PRs. While this is not always possible, in many cases, it is.
      - ✅ Provided tests for your changes
      - 📝 Use descriptive commit messages.
-     - 📗 Updated any relevant documentation and added any necessary screenshots
+     - 📗 Update any related documentation and include any relevant screenshots.
 -->
 
 ## What type of PR is this? (check all applicable)
