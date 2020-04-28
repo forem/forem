@@ -74,6 +74,13 @@ class Internal::ConfigsController < Internal::ApplicationController
     config[:suggested_tags] = config[:suggested_tags].downcase.delete(" ") if config[:suggested_tags]
     config[:authentication_providers] = config[:authentication_providers].downcase.delete(" ") if config[:authentication_providers]
     config[:sidebar_tags] = config[:sidebar_tags].downcase.delete(" ") if config[:sidebar_tags]
+
+    ensure_proper_date(config)
+  end
+
+  def ensure_proper_date(config)
+    return unless config[:campaign_stories_start_date]
+
     begin
       Date.parse(config[:campaign_stories_start_date])
     rescue ArgumentError
