@@ -65,7 +65,7 @@ module Search
 
           values = Array.wrap(@params[term_key])
 
-          if term_key == :tags
+          if params[:tag_boolean_mode] == "all" && term_key == :tags
             values.map { |tag| { terms: { term_key => Array.wrap(tag) } } }
           else
             { terms: { term_key => values } }
