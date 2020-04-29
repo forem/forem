@@ -3,7 +3,6 @@
 exports[`<Description /> should render the description 1`] = `
 <textarea
   class="articleform__description"
-  id="article-form-description"
   name="description"
   onChange={[Function]}
   placeholder="description"

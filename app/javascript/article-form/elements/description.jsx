@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 const Description = ({ onChange, defaultValue }) => (
   <textarea
     className="articleform__description"
-    id="article-form-description"
     type="text"
     placeholder="description"
     name="description"
