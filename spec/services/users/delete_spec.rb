@@ -80,6 +80,14 @@ RSpec.describe Users::Delete, type: :service do
     expect { user_reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
   end
 
+  it "deletes field tests memberships" do
+    create(:field_test_membership, participant_id: user.id)
+
+    expect do
+      described_class.call(user)
+    end.to change(FieldTest::Membership, :count).by(-1)
+  end
+
   # check that all the associated records are being destroyed, except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
     let(:kept_association_names) do
