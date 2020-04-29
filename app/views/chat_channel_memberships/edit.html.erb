@@ -97,27 +97,27 @@
         <div><button type="submit" class="crayons-btn">Submit</button></div>
       <% end %>
     </div>
-  <% end %>
 
-  <div class="crayons-card p-4 grid gap-2 mb-4">
-    <h3>Channel Settings</h3>
-      <%= form_for(@channel) do |f| %>
-      <div class="crayons-field">
-        <%= f.label :description, class: "crayons-field__label" %>
-        <%= f.text_area :description, class: "crayons-textfield" %>
-      </div>
-      <div class="crayons-card p-4 grid gap-2 mb-4">
-        <div class="crayons-field crayons-field--checkbox">
-          <%= f.check_box :discoverable, class: "crayons-checkbox" %>
-          <%= f.label :discoverable, "Channel Discoverable", class: "crayons-field__label" %>
+    <div class="crayons-card p-4 grid gap-2 mb-4">
+      <h3>Channel Settings</h3>
+        <%= form_for(@channel) do |f| %>
+        <div class="crayons-field">
+          <%= f.label :description, class: "crayons-field__label" %>
+          <%= f.text_area :description, class: "crayons-textfield" %>
         </div>
-      </div>
-      <div>
-        <button type="submit" class="crayons-btn">Submit</button>
-      </div>
+        <div class="crayons-card p-4 grid gap-2 mb-4">
+          <div class="crayons-field crayons-field--checkbox">
+            <%= f.check_box :discoverable, class: "crayons-checkbox" %>
+            <%= f.label :discoverable, "Channel Discoverable", class: "crayons-field__label" %>
+          </div>
+        </div>
+        <div>
+          <button type="submit" class="crayons-btn">Submit</button>
+        </div>
+        <% end %>
       <% end %>
-    <% end %>
-  </div>
+    </div>
+  <% end %>
 
   <div class="crayons-card p-4 grid gap-2 mb-4">
     <h3>Personal Settings</h3>
