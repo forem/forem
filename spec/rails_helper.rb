@@ -78,7 +78,7 @@ RSpec.configure do |config|
     Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
   end
 
-  config.around(:each, elasticsearch: true) do |example|
+  config.around(:each, elasticsearch_reset: true) do |example|
     Search::Cluster.recreate_indexes
     example.run
   end

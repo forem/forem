@@ -1,10 +1,12 @@
 require "rails_helper"
 
-RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: true do
+RSpec.describe Search::ChatChannelMembership, type: :service do
   describe "::search_documents" do
     let(:user) { create(:user) }
     let(:chat_channel_membership1) { create(:chat_channel_membership, user_id: user.id) }
     let(:chat_channel_membership2) { create(:chat_channel_membership, user_id: user.id) }
+
+    before { clear_elasticsearch_data(described_class) }
 
     it "parses chat_channel_membership document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }

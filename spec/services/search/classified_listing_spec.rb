@@ -1,8 +1,10 @@
 require "rails_helper"
 
-RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
+RSpec.describe Search::ClassifiedListing, type: :service do
   describe "::search_documents" do
     let(:classified_listing) { create(:classified_listing) }
+
+    before { clear_elasticsearch_data(described_class) }
 
     it "parses classified_listing document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }

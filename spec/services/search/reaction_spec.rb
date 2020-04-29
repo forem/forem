@@ -7,12 +7,14 @@ RSpec.describe Search::Reaction, type: :service do
     expect(described_class::MAPPINGS).not_to be_nil
   end
 
-  describe "::search_documents", elasticsearch: true do
+  describe "::search_documents" do
     let(:article1) { create(:article) }
     let(:article2) { create(:article) }
     let(:reaction1) { create(:reaction, category: "readinglist", reactable: article1) }
     let(:reaction2) { create(:reaction, category: "readinglist", reactable: article2) }
     let(:query_params) { { size: 5 } }
+
+    before { clear_elasticsearch_data(described_class) }
 
     it "parses reaction document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }

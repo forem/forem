@@ -7,9 +7,11 @@ RSpec.describe Search::FeedContent, type: :service do
     expect(described_class::MAPPINGS).not_to be_nil
   end
 
-  describe "::search_documents", elasticsearch: true do
+  describe "::search_documents" do
     let(:article1) { create(:article) }
     let(:article2) { create(:article) }
+
+    before { clear_elasticsearch_data(described_class) }
 
     it "parses feed content document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }
@@ -141,7 +143,9 @@ RSpec.describe Search::FeedContent, type: :service do
   end
 
   describe "document counts" do
-    it "returns counts for each document class", elasticsearch: true do
+    before { clear_elasticsearch_data(described_class) }
+
+    it "returns counts for each document class" do
       article = create(:article)
       comment = create(:comment)
       pde = create(:podcast_episode)

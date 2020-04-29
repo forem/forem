@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::Tag, type: :service, elasticsearch: true do
+RSpec.describe Search::Tag, type: :service do
   describe "::search_documents" do
     let(:tag_doc_1) { { "name" => "tag1" } }
     let(:tag_doc_2) { { "name" => "tag2" } }
@@ -14,6 +14,8 @@ RSpec.describe Search::Tag, type: :service, elasticsearch: true do
         }
       }
     end
+
+    before { clear_elasticsearch_data(described_class) }
 
     it "searches with name:tag" do
       tag = create(:tag, :search_indexed, name: "tag1")

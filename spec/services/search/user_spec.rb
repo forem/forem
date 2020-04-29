@@ -7,9 +7,11 @@ RSpec.describe Search::User, type: :service do
     expect(described_class::MAPPINGS).not_to be_nil
   end
 
-  describe "::search_documents", elasticsearch: true do
+  describe "::search_documents" do
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }
+
+    before { clear_elasticsearch_data(described_class) }
 
     it "parses user document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }

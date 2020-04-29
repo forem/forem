@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::Base, type: :service, elasticsearch: true do
+RSpec.describe Search::Base, type: :service, elasticsearch_reset: true do
   let(:document_id) { 123 }
 
   before do
