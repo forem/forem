@@ -87,6 +87,17 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
+      describe "meta keywords" do
+        it "updates meta keywords" do
+          expected_keywords = { "default" => "software, people", "article" => "user, experience", "tag" => "bye" }
+          post "/internal/config", params: { site_config: { meta_keywords: expected_keywords },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.meta_keywords[:default]).to eq("software, people")
+          expect(SiteConfig.meta_keywords[:article]).to eq("user, experience")
+          expect(SiteConfig.meta_keywords[:tag]).to eq("bye")
+        end
+      end
+
       describe "emails" do
         it "updates email_addresses" do
           expected_email_addresses = {

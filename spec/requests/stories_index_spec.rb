@@ -92,6 +92,12 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
     end
 
+    it "shows default meta keywords" do
+      SiteConfig.meta_keywords = { default: "cool developers, civil engineers" }
+      get "/"
+      expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
+    end
+
     context "with campaign hero" do
       let_it_be_readonly(:hero_html) do
         create(
@@ -251,6 +257,12 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/t/#{tag.name}"
       expect(response.body).to include("is sponsored by")
       expect(response.body).to include(sponsorship.blurb_html)
+    end
+
+    it "shows meta keywords" do
+      SiteConfig.meta_keywords = { tag: "software engineering, ruby" }
+      get "/t/#{tag.name}"
+      expect(response.body).to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
     end
 
     context "with user signed in" do

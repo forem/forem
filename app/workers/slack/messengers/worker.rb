@@ -25,6 +25,3 @@ module Slack
     end
   end
 end
-
-# TODO: [@thepracticaldev/oss] remove this when Sidekiq has exhausted Slack::Messengers::Worker workers
-SlackBotPingWorker = Slack::Messengers::Worker

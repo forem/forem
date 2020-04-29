@@ -1,10 +1,8 @@
-<% Authentication::Providers.enabled.each do |provider_name| %>
-  <% provider = Authentication::Providers.get!(provider_name) %>
-
+<% authentication_enabled_providers.each do |provider| %>
   <a
-    href="<%= Authentication::Providers.sign_in_path(provider_name, state: "join-club-page_basic") %>"
+    href="<%= provider.sign_in_path(state: "join-club-page_basic") %>"
     class="sign-up-link"
     data-no-instant>
-    <%= inline_svg_tag("#{provider_name}-logo.svg", class: "icon-img", aria: true, title: "#{provider_name} logo") %> Sign In with <%= provider.official_name %>
+    <%= inline_svg_tag("#{provider.provider_name}-logo.svg", class: "icon-img", aria: true, title: "#{provider.name} logo") %> Sign In with <%= provider.official_name %>
   </a>
 <% end %>

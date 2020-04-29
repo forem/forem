@@ -1,23 +1,23 @@
 require "rails_helper"
 
-RSpec.describe Search::IndexWorker, type: :worker do
+RSpec.describe Search::IndexWorker, type: :worker, elasticsearch: true do
   let(:worker) { subject }
 
-  include_examples "#enqueues_on_correct_queue", "medium_priority", ["User", 1]
+  include_examples "#enqueues_on_correct_queue", "high_priority", ["Tag", 1]
 
-  it "does nothing if there is wrong record type is passed" do
-    expect { worker.perform("SuperUser", 1) }.to raise_error(Search::InvalidRecordType)
+  it "raises an error if record is not found" do
+    expect { worker.perform("Tag", 1234) }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
-  it "doesn't fail if a record is not found" do
-    expect { worker.perform("User", -1) }.not_to raise_error
+  it "indexes document" do
+    tag = FactoryBot.create(:tag)
+    expect { tag.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+    worker.perform(tag.class.name, tag.id)
+
+    expect(tag.elasticsearch_doc.dig("_source", "id")).to eql(tag.id)
   end
 
-  it "indexes a record if everything is fine" do
-    user = double
-    allow(user).to receive(:index!)
-    allow(User).to receive(:find_by).and_return(user)
-    worker.perform("User", 1)
-    expect(user).to have_received(:index!)
+  it "does not raise an error if Reaction record is not found" do
+    expect { worker.perform("Reaction", 1234) }.not_to raise_error(ActiveRecord::RecordNotFound)
   end
 end

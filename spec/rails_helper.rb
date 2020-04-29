@@ -7,7 +7,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
-require "algolia/webmock"
 require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
@@ -67,7 +66,7 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include FactoryBot::Syntax::Methods
-  config.include OmniauthMacros
+  config.include OmniauthHelpers
   config.include SidekiqTestHelpers
   config.include ElasticsearchHelpers
 
