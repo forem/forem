@@ -34,6 +34,16 @@ module Authentication
         OFFICIAL_NAME
       end
 
+      def self.sign_in_path(params = {})
+        # see https://github.com/arunagw/omniauth-twitter#authentication-options
+        mandatory_params = { secure_image_url: true }
+
+        ::Authentication::Paths.sign_in_path(
+          provider_name,
+          params.merge(mandatory_params),
+        )
+      end
+
       protected
 
       def cleanup_payload(auth_payload)

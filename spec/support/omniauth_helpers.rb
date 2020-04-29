@@ -1,7 +1,7 @@
-module OmniauthMacros
+module OmniauthHelpers
   OMNIAUTH_DEFAULT_FAILURE_HANDLER = OmniAuth.config.on_failure
 
-  INFO = OmniAuth::AuthHash::InfoHash.new(
+  OMNIAUTH_INFO = OmniAuth::AuthHash::InfoHash.new(
     first_name: "fname",
     last_name: "lname",
     location: "location,state,country",
@@ -11,8 +11,8 @@ module OmniauthMacros
     verified: true,
   )
 
-  EXTRA_INFO = Hashie::Mash.new(
-    raw_info: Hashie::Mash.new(
+  OMNIAUTH_EXTRA_INFO = OmniAuth::AuthHash::InfoHash.new(
+    raw_info: OmniAuth::AuthHash::InfoHash.new(
       email: "yourname@email.com",
       first_name: "fname",
       gender: "female",
@@ -32,23 +32,21 @@ module OmniauthMacros
     ),
   )
 
-  CREDENTIAL = OmniAuth::AuthHash::InfoHash.new(
-    token: "2735246777-jlOnuFlGlvybuwDJfyrIyESLUEgoo6CffyJCQUO",
-    secret: "o0cu6ACtypMQfLyWhme3Vj99uSds7rjr4szuuTiykSYcN",
-  )
-
-  BASIC_INFO = {
+  OMNIAUTH_BASIC_INFO = {
     uid: "1234567",
-    info: INFO,
-    extra: EXTRA_INFO,
-    credentials: CREDENTIAL
+    info: OMNIAUTH_INFO,
+    extra: OMNIAUTH_EXTRA_INFO,
+    credentials: {
+      token: SecureRandom.hex,
+      secret: SecureRandom.hex
+    }
   }.freeze
 
-  def mock_auth_with_invalid_credentials(provider)
+  def omniauth_setup_invalid_credentials(provider)
     OmniAuth.config.mock_auth[provider] = :invalid_credentials
   end
 
-  def setup_omniauth_error(error)
+  def omniauth_setup_authentication_error(error)
     # this hack is needed due to a limitation in how OmniAuth handles
     # failures in mocked/testing environments,
     # see <https://github.com/omniauth/omniauth/issues/654#issuecomment-610851884>
@@ -82,38 +80,45 @@ module OmniauthMacros
     ]
   end
 
-  def mock_auth_hash
-    mock_twitter
-    mock_github
+  def omniauth_mock_providers_payload
+    Authentication::Providers.available.each do |provider_name|
+      public_send("omniauth_mock_#{provider_name}_payload")
+    end
   end
 
-  def mock_twitter
-    info = BASIC_INFO[:info].merge(
-      image: "https://dummyimage.com/400x400_normal.jpg",
-    )
-
-    extra = BASIC_INFO[:extra].merge(
-      access_token: "value",
-    )
-
-    OmniAuth.config.mock_auth[:twitter] = OmniAuth::AuthHash.new(
-      BASIC_INFO.merge(
-        provider: "twitter",
-        info: info,
-        extra: extra,
-      ),
-    )
+  def omniauth_reset_mock
+    Authentication::Providers.available.each do |provider_name|
+      OmniAuth.config.mock_auth[provider_name] = nil
+    end
   end
 
-  def mock_github
-    info = BASIC_INFO[:info].merge(
+  def omniauth_mock_github_payload
+    info = OMNIAUTH_BASIC_INFO[:info].merge(
       image: "https://dummyimage.com/400x400.jpg",
     )
 
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(
-      BASIC_INFO.merge(
+      OMNIAUTH_BASIC_INFO.merge(
         provider: "github",
         info: info,
+      ),
+    )
+  end
+
+  def omniauth_mock_twitter_payload
+    info = OMNIAUTH_BASIC_INFO[:info].merge(
+      image: "https://dummyimage.com/400x400_normal.jpg",
+    )
+
+    extra = OMNIAUTH_BASIC_INFO[:extra].merge(
+      access_token: "value",
+    )
+
+    OmniAuth.config.mock_auth[:twitter] = OmniAuth::AuthHash.new(
+      OMNIAUTH_BASIC_INFO.merge(
+        provider: "twitter",
+        info: info,
+        extra: extra,
       ),
     )
   end

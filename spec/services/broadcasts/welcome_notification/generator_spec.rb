@@ -13,7 +13,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let_it_be_readonly(:customize_ux_broadcast)    { create(:customize_ux_broadcast) }
 
   before do
-    mock_auth_hash
+    omniauth_mock_providers_payload
     allow(Notification).to receive(:send_welcome_notification).and_call_original
     allow(User).to receive(:mascot_account).and_return(mascot_account)
     SiteConfig.staff_user_id = mascot_account.id
@@ -143,7 +143,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
   describe "#send_feed_customization_notification" do
     let!(:user) do
-      mock_auth_hash
+      omniauth_mock_providers_payload
       create(:user, :with_identity, identities: %w[twitter github], created_at: 3.days.ago)
     end
 

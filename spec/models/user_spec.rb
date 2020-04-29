@@ -15,7 +15,7 @@ RSpec.describe User, type: :model do
   let(:user_with_user_optional_fields) { create(:user, :with_user_optional_fields) }
   let(:org) { create(:organization) }
 
-  before { mock_auth_hash }
+  before { omniauth_mock_providers_payload }
 
   describe "validations" do
     describe "builtin validations" do
