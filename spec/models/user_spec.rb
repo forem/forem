@@ -35,6 +35,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
+      it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
       it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:html_variants).dependent(:destroy) }
       it { is_expected.to have_many(:identities).dependent(:destroy) }
@@ -139,10 +140,8 @@ RSpec.describe User, type: :model do
         expect(fourth_field).not_to be_valid
       end
 
-      it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_one(:counters).class_name("UserCounter").dependent(:destroy) }
       it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
-      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
       it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
       it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
