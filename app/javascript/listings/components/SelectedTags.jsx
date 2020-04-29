@@ -19,7 +19,6 @@ const SelectedTags = ({ tags, onClick, onKeyPress }) => {
             <span>{tag}</span>
             <span
               className="tag-close"
-              onClick={onClick}
               data-no-instant
               role="button"
               onKeyPress={onKeyPress}
