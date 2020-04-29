@@ -40,6 +40,9 @@ connection string.
 
 ```yml
 DATABASE_URL: postgresql://USERNAME:PASSWORD@localhost
+
+# Incase you use a separate database for test. This is optional.
+DATABASE_URL_TEST: postgresql://USERNAME:PASSWORD@localhost
 ```
 
 1. Replace `USERNAME` with your database username, `PASSWORD` with your database
