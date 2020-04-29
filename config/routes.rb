@@ -10,6 +10,11 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
+  devise_scope :user do
+    get "/enter", to: "registrations#new", as: :sign_up
+    delete "/sign_out", to: "devise/sessions#destroy"
+  end
+
   require "sidekiq/web"
   require "sidekiq_unique_jobs/web"
 
@@ -21,11 +26,6 @@ Rails.application.routes.draw do
     end
     mount Sidekiq::Web => "/sidekiq"
     mount FieldTest::Engine, at: "abtests"
-  end
-
-  devise_scope :user do
-    delete "/sign_out" => "devise/sessions#destroy"
-    get "/enter" => "registrations#new", :as => :sign_up
   end
 
   namespace :admin do
