@@ -8,13 +8,10 @@ class ClassifiedListing < ApplicationRecord
 
   attr_accessor :action
 
-  # Note: categories were hardcoded at first and the model was only added later.
-  # As the name clashed with the hardcoded one, the association name is a bit
-  # verbose, this simplifies it a bit.
-  belongs_to :category,
-             class_name: "ClassifiedListingCategory",
-             foreign_key: :classified_listing_category_id,
-             inverse_of: :listings
+  # Note: categories were hardcoded at first and this model was only added later,
+  # so the association name is a bit verbose since the original "category" attribute
+  # was kept to minimize code changes.
+  belongs_to :classified_listing_category
   belongs_to :user
   belongs_to :organization, optional: true
   before_save :evaluate_markdown
@@ -37,7 +34,9 @@ class ClassifiedListing < ApplicationRecord
   delegate :cost, to: :category
   scope :published, -> { where(published: true) }
 
-  delegate :slug, to: :category, prefix: true
+  def category
+    classified_listing_category&.slug
+  end
 
   def author
     organization || user

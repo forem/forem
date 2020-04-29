@@ -66,7 +66,7 @@ module ClassifiedListingsToolkit
   end
 
   ALLOWED_PARAMS = %i[
-    title body_markdown category_id tag_list
+    title body_markdown classified_listing_category_id tag_list
     expires_at contact_via_connect location organization_id action
   ].freeze
 

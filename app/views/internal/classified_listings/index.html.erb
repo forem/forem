@@ -41,7 +41,7 @@
         <td><%= link_to listing.title, edit_internal_listing_path(listing.id), target: "_blank", rel: "noopener" %></td>
         <td><%= link_to listing.user.username, edit_internal_user_path(listing.user.id) %></td>
         <td><%= link_to listing.organization.name, internal_organization_path(listing.organization_id) if listing.organization_id.present? %></td>
-        <td><%= listing.category_slug %></td>
+        <td><%= listing.category %></td>
         <td><%= listing.cached_tag_list %></td>
         <td><%= listing.published ? "Yes" : "No" %></td>
         <td><%= listing.bumped_at ? time_ago_in_words(listing.bumped_at) + " ago" : "Draft" %></td>

@@ -6,8 +6,8 @@ json.extract!(
   :title,
   :slug,
   :body_markdown,
-  :category_slug,
-  :category_id,
+  :category,
+  :classified_listing_category_id,
   :processed_html,
   :published,
 )

@@ -3,7 +3,7 @@ class ClassifiedListingsController < ApplicationController
 
   JSON_OPTIONS = {
     only: %i[
-      title processed_html tag_list category_slug id user_id slug contact_via_connect location
+      title processed_html tag_list category id user_id slug contact_via_connect location
     ],
     include: {
       author: { only: %i[username name], methods: %i[username profile_image_90] }
