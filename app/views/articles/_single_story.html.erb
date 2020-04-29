@@ -72,16 +72,22 @@
             </a>
           <% end %>
         </div>
-
-        <button
-          type="button"
-          class="crayons-btn crayons-btn--secondary fs-s"
-          data-reactable-id="<%= story.id %>"
-          aria-label="Save to reading list"
-          title="Save to reading list">
-          <span class="bm-initial">Save</span>
-          <span class="bm-success">Saved</span>
-        </button>
+        <div class="crayons-fields crayons-fields--horizontal">
+          <a
+            href="<%= story.path %>"
+            class="crayons-story__details__item">
+            <%= story.reading_time < 1 ? 1 : story.reading_time %> min read
+          </a>
+          <button
+            type="button"
+            class="crayons-btn crayons-btn--secondary fs-s"
+            data-reactable-id="<%= story.id %>"
+            aria-label="Save to reading list"
+            title="Save to reading list">
+            <span class="bm-initial">Save</span>
+            <span class="bm-success">Saved</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>

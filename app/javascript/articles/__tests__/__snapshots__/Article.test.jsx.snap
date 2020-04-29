@@ -293,16 +293,26 @@ exports[`<Article /> component should render a standard article 1`] = `
             </span>
           </a>
         </div>
-        <button
-          class="crayons-btn fs-s crayons-btn--secondary"
-          data-initial-feed={true}
-          data-reactable-id={62407}
-          onBlur={[Function]}
-          onFocus={[Function]}
-          onMouseOver={[Function]}
-          onMouseout={[Function]}
-          type="button"
-        />
+        <div
+          class="crayons-fields crayons-fields--horizontal"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            undefined min read
+          </a>
+          <button
+            class="crayons-btn fs-s crayons-btn--secondary"
+            data-initial-feed={true}
+            data-reactable-id={62407}
+            onBlur={[Function]}
+            onFocus={[Function]}
+            onMouseOver={[Function]}
+            onMouseout={[Function]}
+            type="button"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -817,16 +827,26 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
             </span>
           </a>
         </div>
-        <button
-          class="crayons-btn fs-s crayons-btn--ghost"
-          data-initial-feed={true}
-          data-reactable-id={62407}
-          onBlur={[Function]}
-          onFocus={[Function]}
-          onMouseOver={[Function]}
-          onMouseout={[Function]}
-          type="button"
-        />
+        <div
+          class="crayons-fields crayons-fields--horizontal"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            undefined min read
+          </a>
+          <button
+            class="crayons-btn fs-s crayons-btn--ghost"
+            data-initial-feed={true}
+            data-reactable-id={62407}
+            onBlur={[Function]}
+            onFocus={[Function]}
+            onMouseOver={[Function]}
+            onMouseout={[Function]}
+            type="button"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1017,16 +1037,26 @@ exports[`<Article /> component should render with a flare tag 1`] = `
             </span>
           </a>
         </div>
-        <button
-          class="crayons-btn fs-s crayons-btn--secondary"
-          data-initial-feed={true}
-          data-reactable-id={62407}
-          onBlur={[Function]}
-          onFocus={[Function]}
-          onMouseOver={[Function]}
-          onMouseout={[Function]}
-          type="button"
-        />
+        <div
+          class="crayons-fields crayons-fields--horizontal"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            undefined min read
+          </a>
+          <button
+            class="crayons-btn fs-s crayons-btn--secondary"
+            data-initial-feed={true}
+            data-reactable-id={62407}
+            onBlur={[Function]}
+            onFocus={[Function]}
+            onMouseOver={[Function]}
+            onMouseout={[Function]}
+            type="button"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1172,16 +1202,26 @@ exports[`<Article /> component should render with a snippet result 1`] = `
             </span>
           </a>
         </div>
-        <button
-          class="crayons-btn fs-s crayons-btn--secondary"
-          data-initial-feed={true}
-          data-reactable-id={62407}
-          onBlur={[Function]}
-          onFocus={[Function]}
-          onMouseOver={[Function]}
-          onMouseout={[Function]}
-          type="button"
-        />
+        <div
+          class="crayons-fields crayons-fields--horizontal"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            undefined min read
+          </a>
+          <button
+            class="crayons-btn fs-s crayons-btn--secondary"
+            data-initial-feed={true}
+            data-reactable-id={62407}
+            onBlur={[Function]}
+            onFocus={[Function]}
+            onMouseOver={[Function]}
+            onMouseout={[Function]}
+            type="button"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1344,16 +1384,26 @@ exports[`<Article /> component should render with an organization 1`] = `
             </span>
           </a>
         </div>
-        <button
-          class="crayons-btn fs-s crayons-btn--secondary"
-          data-initial-feed={true}
-          data-reactable-id={62407}
-          onBlur={[Function]}
-          onFocus={[Function]}
-          onMouseOver={[Function]}
-          onMouseout={[Function]}
-          type="button"
-        />
+        <div
+          class="crayons-fields crayons-fields--horizontal"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            undefined min read
+          </a>
+          <button
+            class="crayons-btn fs-s crayons-btn--secondary"
+            data-initial-feed={true}
+            data-reactable-id={62407}
+            onBlur={[Function]}
+            onFocus={[Function]}
+            onMouseOver={[Function]}
+            onMouseout={[Function]}
+            type="button"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1513,16 +1563,26 @@ exports[`<Article /> component should render with comments 1`] = `
             </span>
           </a>
         </div>
-        <button
-          class="crayons-btn fs-s crayons-btn--secondary"
-          data-initial-feed={true}
-          data-reactable-id={62407}
-          onBlur={[Function]}
-          onFocus={[Function]}
-          onMouseOver={[Function]}
-          onMouseout={[Function]}
-          type="button"
-        />
+        <div
+          class="crayons-fields crayons-fields--horizontal"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            undefined min read
+          </a>
+          <button
+            class="crayons-btn fs-s crayons-btn--secondary"
+            data-initial-feed={true}
+            data-reactable-id={62407}
+            onBlur={[Function]}
+            onFocus={[Function]}
+            onMouseOver={[Function]}
+            onMouseout={[Function]}
+            type="button"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -1713,16 +1773,26 @@ exports[`<Article /> component should render with reactions 1`] = `
             </span>
           </a>
         </div>
-        <button
-          class="crayons-btn fs-s crayons-btn--secondary"
-          data-initial-feed={true}
-          data-reactable-id={62407}
-          onBlur={[Function]}
-          onFocus={[Function]}
-          onMouseOver={[Function]}
-          onMouseout={[Function]}
-          type="button"
-        />
+        <div
+          class="crayons-fields crayons-fields--horizontal"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            undefined min read
+          </a>
+          <button
+            class="crayons-btn fs-s crayons-btn--secondary"
+            data-initial-feed={true}
+            data-reactable-id={62407}
+            onBlur={[Function]}
+            onFocus={[Function]}
+            onMouseOver={[Function]}
+            onMouseout={[Function]}
+            type="button"
+          />
+        </div>
       </div>
     </div>
   </div>

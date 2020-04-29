@@ -5,6 +5,7 @@ export * from './CommentsList';
 export * from './Meta';
 export * from './PublishDate';
 export * from './ReactionsCount';
+export * from './ReadingTime';
 export * from './SaveButton';
 export * from './SearchSnippet';
 export * from './TagList';

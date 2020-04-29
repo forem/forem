@@ -7,9 +7,6 @@ export const ArticleCoverImage = ({ article }) => {
       <img
         src={article.main_image}
         className="crayons-story__cover__image"
-        style={{
-          backgroundColor: article.main_image_background_hex_color,
-        }}
         alt={article.title}
         loading="lazy"
       />
