@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::RemoveFromElasticsearchIndexWorker, type: :worker do
+RSpec.describe Search::RemoveFromIndexWorker, type: :worker do
   let(:worker) { subject }
   let(:search_class) { Search::Tag }
 

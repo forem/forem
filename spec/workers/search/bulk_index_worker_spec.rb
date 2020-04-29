@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::BulkIndexToElasticsearchWorker, type: :worker, elasticsearch: true do
+RSpec.describe Search::BulkIndexWorker, type: :worker, elasticsearch: true do
   let(:worker) { subject }
   let(:article) { create(:article) }
 

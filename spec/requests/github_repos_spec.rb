@@ -19,7 +19,7 @@ RSpec.describe "GithubRepos", type: :request do
   end
 
   before do
-    mock_github
+    omniauth_mock_github_payload
     allow(Octokit::Client).to receive(:new).and_return(my_octokit_client)
     allow(my_octokit_client).to receive(:repositories) { stubbed_github_repos }
   end

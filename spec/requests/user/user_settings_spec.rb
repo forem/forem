@@ -79,7 +79,7 @@ RSpec.describe "UserSettings", type: :request do
 
     describe "connect providers accounts" do
       before do
-        mock_auth_hash
+        omniauth_mock_providers_payload
       end
 
       it "does not render the text for the enabled provider the user has an identity for" do
@@ -296,7 +296,7 @@ RSpec.describe "UserSettings", type: :request do
       let(:user) { create(:user, :with_identity, identities: %w[github twitter]) }
 
       before do
-        mock_auth_hash
+        omniauth_mock_providers_payload
         sign_in user
       end
 

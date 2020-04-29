@@ -36,6 +36,13 @@ class SiteConfig < RailsSettings::Base
     members: "members@dev.to"
   }
 
+  # Meta keywords
+  field :meta_keywords, type: :hash, default: {
+    default: nil,
+    article: nil,
+    tag: nil
+  }
+
   # Authentication
   field :authentication_providers, type: :array, default: %w[twitter github]
 
