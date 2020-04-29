@@ -17,15 +17,15 @@ const SelectedTags = ({ tags, onClick, onKeyPress }) => {
             data-no-instant
           >
             <span>{tag}</span>
-            <span
+            <button
               className="tag-close"
+              t
+              type="button"
               data-no-instant
-              role="button"
               onKeyPress={onKeyPress}
-              tabIndex="0"
             >
               ×
-            </span>
+            </button>
           </a>
         </span>
       ))}
