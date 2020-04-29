@@ -9,7 +9,9 @@ module Organizations
 
       return unless organization
 
-      organization.articles.find_each { |article| article.update(path: article.path.gsub(old_slug, new_slug)) }
+      organization.articles.find_each do |article|
+        article.update(path: article.path.gsub(old_slug, new_slug))
+      end
     end
   end
 end
