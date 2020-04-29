@@ -44,6 +44,10 @@ module Authentication
         raise SubclassResponsibility
       end
 
+      def self.settings_url
+        raise SubclassResponsibility
+      end
+
       def self.authentication_path(params = {})
         ::Authentication::Paths.authentication_path(provider_name, params)
       end
