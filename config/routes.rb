@@ -285,7 +285,7 @@ Rails.application.routes.draw do
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
-  delete "users/remove_association", to: "users#remove_association"
+  delete "users/remove_identity", to: "users#remove_identity"
   post "users/request_destroy", to: "users#request_destroy", as: :user_request_destroy
   get "users/confirm_destroy/:token", to: "users#confirm_destroy", as: :user_confirm_destroy
   delete "users/full_delete", to: "users#full_delete", as: :user_full_delete

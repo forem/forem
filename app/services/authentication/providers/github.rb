@@ -25,6 +25,14 @@ module Authentication
         }
       end
 
+      def self.user_created_at_field
+        CREATED_AT_FIELD
+      end
+
+      def self.user_username_field
+        USERNAME_FIELD
+      end
+
       def self.official_name
         OFFICIAL_NAME
       end
