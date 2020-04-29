@@ -13,7 +13,7 @@ module FastlyConfig
     end
 
     def update(new_version)
-      updated_files.each { |filename| update_option(new_version, filename) }
+      updated_files.each { |filename| update_config(new_version, filename) }
     end
 
     private
@@ -25,11 +25,11 @@ module FastlyConfig
     end
 
     def file_updated?
-      raise FastlyConfig::Errors::Error, "Fastly options must implement their own file_updated? method"
+      raise FastlyConfig::Errors::Error, "Fastly configs must implement their own file_updated? method"
     end
 
-    def update_option
-      raise FastlyConfig::Errors::Error, "Fastly options must implement their own update_option method"
+    def update_config
+      raise FastlyConfig::Errors::Error, "Fastly configs must implement their own update_config method"
     end
   end
 end

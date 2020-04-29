@@ -3,12 +3,12 @@ module FastlyConfig
     class Error < StandardError
     end
 
-    class InvalidOptionsFormat < Error
+    class InvalidConfigsFormat < Error
     end
 
-    class InvalidOption < Error
-      def initialize(invalid_option, valid_options)
-        msg = "Invalid Fastly option - #{invalid_option}. Only #{valid_options.join(', ')} are valid."
+    class InvalidConfig < Error
+      def initialize(invalid_config, valid_configs)
+        msg = "Invalid Fastly config - #{invalid_config}. Only #{valid_configs.join(', ')} are valid."
         super(msg)
       end
     end

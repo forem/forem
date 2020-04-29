@@ -1,24 +1,24 @@
 module FastlyConfig
   # Handles updates to our Fastly configurations
   class Update
-    FASTLY_OPTIONS = %w[Snippets].freeze
+    FASTLY_CONFIGS = %w[Snippets].freeze
 
     class << self
-      def run(options: FASTLY_OPTIONS)
-        validate_options(options)
+      def run(configs: FASTLY_CONFIGS)
+        validate_configs(configs)
 
         fastly = Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
         service = fastly.get_service(ApplicationConfig["FASTLY_SERVICE_ID"])
         active_version = get_active_version(service)
-        option_handlers = options.map { |option| "FastlyConfig::#{option}".constantize.new(fastly, active_version) }
-        options_updated = option_handlers.any?(&:update_needed?)
+        config_handlers = configs.map { |config| "FastlyConfig::#{config}".constantize.new(fastly, active_version) }
+        configs_updated = config_handlers.any?(&:update_needed?)
 
-        return unless options_updated
+        return unless configs_updated
 
         new_version = service.version.clone
-        option_handlers.each { |option_handler| option_handler.update(new_version) }
+        config_handlers.each { |config_handler| config_handler.update(new_version) }
         new_version.activate!
-        log_to_datadog(options, new_version)
+        log_to_datadog(configs, new_version)
         Rails.logger.info("Fastly updated to version #{new_version.number}.")
       rescue Fastly::Error => e
         error_msg = JSON.parse(e.message)
@@ -37,20 +37,20 @@ module FastlyConfig
         end
       end
 
-      def log_to_datadog(options, new_version)
+      def log_to_datadog(configs, new_version)
         tags = [
           "new_version:#{new_version.number}",
-          "options_updated:#{options.join(', ')}",
+          "configs_updated:#{configs.join(', ')}",
         ]
 
         DatadogStatsClient.increment("fastly.update", tags: tags)
       end
 
-      def validate_options(options)
-        raise FastlyConfig::Errors::InvalidOptionsFormat, "Options must be an Array of Strings" unless options.is_a? Array
+      def validate_configs(configs)
+        raise FastlyConfig::Errors::InvalidConfigsFormat, "Configs must be an Array of Strings" unless configs.is_a? Array
 
-        options.each do |option|
-          raise FastlyConfig::Errors::InvalidOption.new(option, FASTLY_OPTIONS) unless FASTLY_OPTIONS.include? option
+        configs.each do |config|
+          raise FastlyConfig::Errors::InvalidConfig.new(config, FASTLY_CONFIGS) unless FASTLY_CONFIGS.include? config
         end
       end
 
