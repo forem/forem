@@ -139,10 +139,8 @@ RSpec.describe User, type: :model do
         expect(fourth_field).not_to be_valid
       end
 
-      it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
       it { is_expected.to have_one(:counters).class_name("UserCounter").dependent(:destroy) }
       it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
-      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
       it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
       it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
@@ -206,7 +204,7 @@ RSpec.describe User, type: :model do
   describe "#after_commit" do
     it "on update enqueues job to index user to elasticsearch" do
       user.save
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, user.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, user.id]) do
         user.save
       end
     end
@@ -219,7 +217,7 @@ RSpec.describe User, type: :model do
 
     it "on destroy enqueues job to delete user from elasticsearch" do
       user.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
         user.destroy
       end
     end

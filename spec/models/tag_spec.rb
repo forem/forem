@@ -92,14 +92,14 @@ RSpec.describe Tag, type: :model do
   describe "#after_commit" do
     it "on update enqueues job to index tag to elasticsearch" do
       tag.save
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, tag.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, tag.id]) do
         tag.save
       end
     end
 
     it "on destroy enqueues job to delete tag from elasticsearch" do
       tag.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, tag.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, tag.id]) do
         tag.destroy
       end
     end
