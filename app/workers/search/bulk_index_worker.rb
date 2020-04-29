@@ -1,5 +1,5 @@
 module Search
-  class BulkIndexToElasticsearchWorker
+  class BulkIndexWorker
     include Sidekiq::Worker
 
     sidekiq_options queue: :high_priority, lock: :until_executing
