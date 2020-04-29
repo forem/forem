@@ -32,7 +32,7 @@ RSpec.describe Article, type: :model do
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
         article.save
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, article.id]) do
           article.save
         end
       end
@@ -40,7 +40,7 @@ RSpec.describe Article, type: :model do
       it "on destroy enqueues job to delete article from elasticsearch" do
         article = create(:article)
 
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
         end
       end
@@ -83,7 +83,7 @@ RSpec.describe Article, type: :model do
         allow(article).to receive(:index_to_elasticsearch)
         allow(article.user).to receive(:index_to_elasticsearch)
 
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: ["Reaction", reaction.id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Reaction", reaction.id]) do
           article.update(body_markdown: "---\ntitle: NEW TITLE#{rand(1000)}\n")
         end
       end
@@ -826,7 +826,7 @@ RSpec.describe Article, type: :model do
 
   describe "#touch_by_reaction" do
     it "reindexes elasticsearch doc" do
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, article.id]) do
         article.touch_by_reaction
       end
     end

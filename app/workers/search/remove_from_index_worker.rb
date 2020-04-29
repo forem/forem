@@ -1,5 +1,5 @@
 module Search
-  class RemoveFromElasticsearchIndexWorker
+  class RemoveFromIndexWorker
     include Sidekiq::Worker
 
     sidekiq_options queue: :medium_priority, lock: :until_executing
