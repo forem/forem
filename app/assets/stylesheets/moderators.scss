@@ -337,7 +337,7 @@
     letter-spacing: -0.02em;
     color: var(--base-70);
     cursor: pointer;
-    padding: 0 $su-3;
+    padding: $su-4 $su-3;
     display: flex;
     justify-content: center;
   }
@@ -390,6 +390,7 @@
   }
   .other-things-container {
     border-top: 1px solid var(--base-20);
+    overflow-y: auto;
     button.other-things-btn {
       background: inherit;
       border: none;
