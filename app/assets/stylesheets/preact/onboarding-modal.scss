@@ -319,7 +319,8 @@
       z-index: 2;
     }
 
-    &:hover {
+    &:hover,
+    &:focus-within {
       #{$item}__inner {
         background: transparent;
       }
@@ -327,7 +328,8 @@
       .onboarding-tags__button {
         transform: translateY(0);
 
-        &:hover {
+        &:hover,
+        &:focus-within {
           transform: translateY(-2px);
         }
       }
