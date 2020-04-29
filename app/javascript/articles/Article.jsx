@@ -11,6 +11,7 @@ import {
   SearchSnippet,
   TagList,
   ReactionsCount,
+  ReadingTime,
   Video,
 } from './components';
 import { PodcastArticle } from './PodcastArticle';
@@ -60,11 +61,18 @@ export const Article = ({
               </div>
             )}
 
-            <SaveButton
-              article={article}
-              isBookmarked={isBookmarked}
-              onClick={bookmarkClick}
-            />
+            <div className="crayons-fields crayons-fields--horizontal">
+              <ReadingTime
+                articlePath={article.path}
+                readingTime={article.reading_time}
+              />
+
+              <SaveButton
+                article={article}
+                isBookmarked={isBookmarked}
+                onClick={bookmarkClick}
+              />
+            </div>
           </div>
         </div>
       </div>
