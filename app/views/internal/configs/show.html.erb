@@ -124,7 +124,7 @@
                                                        class: "form-control",
                                                        value: SiteConfig.meta_keywords[area],
                                                        placeholder: "" %>
-                    <div class="alert alert-info"><%= area.capitalize %> keywords</div>
+                    <div class="alert alert-info"><%= area.capitalize %><%= " page" unless area == "default" %> keywords</div>
                   </div>
                 <% end %>
               <% end %>
