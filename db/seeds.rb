@@ -5,6 +5,7 @@ counter = 0
 Rails.logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
 
 ##############################################################################/
+
 counter += 1
 Rails.logger.info "#{counter}. Creating Organizations"
 
