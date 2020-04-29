@@ -57,7 +57,7 @@ RSpec::Matchers.define_negated_matcher :not_change, :change
 Rack::Attack.enabled = false
 
 # `browser`, a dependency of `field_test`, starting from version 3.0
-# considers the empty user agent a bot, with will fail tests as we
+# considers the empty user agent a bot, which will fail tests as we
 # explicitly configure field tests to exclude bots
 # see https://github.com/fnando/browser/blob/master/CHANGELOG.md#300
 Browser::Bot.matchers.delete(Browser::Bot::EmptyUserAgentMatcher)
