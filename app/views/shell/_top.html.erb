@@ -3,12 +3,10 @@
   <head>
     <meta charset="utf-8">
     <% title = yield(:title) %>
-    <title><%= title || "#{community_qualified_name}" %></title>
+    <title><%= title || community_qualified_name.to_s %></title>
     <% unless internal_navigation? %>
       <meta name="last-updated" content="<%= Time.current %>">
       <meta name="user-signed-in" content="<%= user_signed_in? %>">
-      <meta name="algolia-public-id" content="<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>">
-      <meta name="algolia-public-key" content="<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>">
       <meta name="environment" content="<%= Rails.env %>">
       <%= render "layouts/styles" %>
       <style>
