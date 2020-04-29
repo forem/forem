@@ -73,5 +73,5 @@ export async function loadCommentSubscription() {
 
   const snackZone = document.getElementById('snack-zone');
 
-  render(<Snackbar />, snackZone, snackZone.firstElementChild);
+  render(<Snackbar lifespan="3" />, snackZone, snackZone.firstElementChild);
 }
