@@ -109,6 +109,32 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
+                       header: "Meta Keywords",
+                       state: "collapse",
+                       target: "metaKeywordsBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="metaKeywordsBodyContainer" class="card-body collapse hide" aria-labelledby="metaKeywordsBodyContainer">
+            <div class="form-group">
+              <%= f.fields_for :meta_keywords do |meta_keywords_field| %>
+                <% SiteConfig.meta_keywords.each do |area, keywords| %>
+                  <div>
+                    <%= meta_keywords_field.label area %>
+                    <%= meta_keywords_field.text_field area,
+                                                       class: "form-control",
+                                                       value: SiteConfig.meta_keywords[area],
+                                                       placeholder: "" %>
+                    <div class="alert alert-info"><%= area.capitalize %><%= " page" unless area == "default" %> keywords</div>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
                        header: "Emails",
                        state: "collapse",
                        target: "emailBodyContainer",
