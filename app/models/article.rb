@@ -1,7 +1,6 @@
 class Article < ApplicationRecord
   include CloudinaryHelper
   include ActionView::Helpers
-  include AlgoliaSearch
   include Storext.model
   include Reactable
   include Searchable
@@ -174,70 +173,6 @@ class Article < ApplicationRecord
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 
-  algoliasearch per_environment: true, auto_remove: false, enqueue: :trigger_index do
-    attribute :title
-    add_index "searchables", id: :index_id, per_environment: true, enqueue: :trigger_index do
-      attributes :title, :tag_list, :main_image, :id, :reading_time, :score,
-                 :featured, :published, :published_at, :featured_number,
-                 :comments_count, :reactions_count, :positive_reactions_count,
-                 :path, :class_name, :user_name, :user_username, :comments_blob,
-                 :body_text, :tag_keywords_for_search, :search_score, :readable_publish_date, :flare_tag, :approved
-      attribute :user do
-        { username: user.username, name: user.name,
-          profile_image_90: ProfileImage.new(user).get(width: 90), pro: user.pro? }
-      end
-      tags do
-        [tag_list,
-         "user_#{user_id}",
-         "username_#{user&.username}",
-         "lang_#{language || 'en'}",
-         ("organization_#{organization_id}" if organization)].flatten.compact
-      end
-      searchableAttributes ["unordered(title)",
-                            "body_text",
-                            "tag_list",
-                            "tag_keywords_for_search",
-                            "user_name",
-                            "user_username",
-                            "comments_blob"]
-      attributesForFaceting %i[class_name approved]
-      customRanking ["desc(search_score)", "desc(hotness_score)"]
-    end
-
-    add_index "ordered_articles", id: :index_id, per_environment: true, enqueue: :trigger_index do
-      attributes :title, :path, :class_name, :comments_count, :reading_time, :language,
-                 :tag_list, :positive_reactions_count, :id, :hotness_score, :score, :readable_publish_date, :flare_tag, :user_id,
-                 :organization_id, :cloudinary_video_url, :video_duration_in_minutes, :experience_level_rating, :experience_level_rating_distribution, :approved
-      attribute :published_at_int do
-        published_at.to_i
-      end
-      attribute :user do
-        { username: user.username,
-          name: user.name,
-          profile_image_90: ProfileImage.new(user).get(width: 90) }
-      end
-      attribute :organization do
-        if organization
-          { slug: organization.slug,
-            name: organization.name,
-            profile_image_90: ProfileImage.new(organization).get(width: 90) }
-        end
-      end
-      tags do
-        [tag_list, "user_#{user_id}", "username_#{user&.username}", "lang_#{language || 'en'}",
-         ("organization_#{organization_id}" if organization)].flatten.compact
-      end
-      ranking ["desc(hotness_score)"]
-      attributesForFaceting %i[class_name approved]
-      add_replica "ordered_articles_by_positive_reactions_count", inherit: true, per_environment: true do
-        ranking ["desc(positive_reactions_count)"]
-      end
-      add_replica "ordered_articles_by_published_at", inherit: true, per_environment: true do
-        ranking ["desc(published_at_int)"]
-      end
-    end
-  end
-
   store_attributes :boost_states do
     boosted_additional_articles Boolean, default: false
     boosted_dev_digest_email Boolean, default: false
@@ -277,19 +212,6 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.trigger_index(record, remove)
-    # on destroy an article is removed from index in a before_destroy callback #before_destroy_actions
-    return if remove
-
-    if record.published && record.tag_list.exclude?("hiring")
-      Search::IndexWorker.perform_async("Article", record.id)
-    else
-      Search::RemoveFromIndexWorker.perform_async(Article.algolia_index_name, record.id)
-      Search::RemoveFromIndexWorker.perform_async("searchables_#{Rails.env}", record.index_id)
-      Search::RemoveFromIndexWorker.perform_async("ordered_articles_#{Rails.env}", record.index_id)
-    end
-  end
-
   def search_id
     "article_#{id}"
   end
@@ -306,14 +228,8 @@ class Article < ApplicationRecord
     ActionView::Base.full_sanitizer.sanitize(processed_html)[0..7000]
   end
 
-  def remove_algolia_index
-    remove_from_index!
-    delete_related_objects
-  end
-
   def touch_by_reaction
     async_score_calc
-    index!
     index_to_elasticsearch
   end
 
@@ -412,11 +328,6 @@ class Article < ApplicationRecord
     (video_duration_in_seconds.to_i / 60) % 60
   end
 
-  # keep public because it's used in algolia jobs
-  def index_id
-    "articles-#{id}"
-  end
-
   def update_score
     new_score = reactions.sum(:points) + Reaction.where(reactable_id: user_id, reactable_type: "User").sum(:points)
     update_columns(score: new_score,
@@ -426,11 +337,6 @@ class Article < ApplicationRecord
   end
 
   private
-
-  def delete_related_objects
-    Search::RemoveFromIndexWorker.new.perform("searchables_#{Rails.env}", index_id)
-    Search::RemoveFromIndexWorker.new.perform("ordered_articles_#{Rails.env}", index_id)
-  end
 
   def search_score
     calculated_score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
@@ -513,7 +419,6 @@ class Article < ApplicationRecord
 
   def before_destroy_actions
     bust_cache
-    remove_algolia_index
     article_ids = user.article_ids.dup
     if organization
       organization.touch(:last_article_at)

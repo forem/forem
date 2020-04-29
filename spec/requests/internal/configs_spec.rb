@@ -52,6 +52,12 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.community_member_description).to eq(description)
         end
 
+        it "updates the community_member_label" do
+          name = "developer"
+          post "/internal/config", params: { site_config: { community_member_label: name }, confirmation: confirmation_message }
+          expect(SiteConfig.community_member_label).to eq(name)
+        end
+
         it "updates the tagline" do
           description = "Hey hey #{rand(100)}"
           post "/internal/config", params: { site_config: { tagline: description }, confirmation: confirmation_message }
@@ -127,6 +133,12 @@ RSpec.describe "/internal/config", type: :request do
           expected_image_url = "https://dummyimage.com/300x300"
           post "/internal/config", params: { site_config: { primary_sticker_image_url: expected_image_url }, confirmation: confirmation_message }
           expect(SiteConfig.primary_sticker_image_url).to eq(expected_image_url)
+        end
+
+        it "updates onboarding_taskcard_image" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { onboarding_taskcard_image: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
         end
 
         it "updates mascot_image_url" do

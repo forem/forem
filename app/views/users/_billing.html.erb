@@ -1,35 +1,35 @@
 <div class="crayons-card grid gap-6 p-6 mb-6">
   <h3>Billing Details</h3>
+
   <% if current_user.stripe_id_code.blank? %>
-    <%= form_tag "/stripe_active_cards", id: "credit-card-form", method: :post do %>
+    <%= form_tag stripe_active_cards_path, id: "credit-card-form", method: :post do %>
       <article>
         <% if flash[:error].present? %>
-          <div id="error_explanation">
+          <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger">
             <p><%= flash[:error] %></p>
           </div>
         <% end %>
       </article>
-      <div class="stripe-button-wrapper" id="stripe-button-wrapper">
-        <button id="custom-stripe-button" class="crayons-btn" type="button">Add Credit Card</button>
-      </div>
+
+      <button id="add-credit-card-button" class="crayons-btn credit-card-button" type="button">Add Credit Card</button>
     <% end %>
   <% else %>
     <div class="billing-history-header">Your Credit Cards</div>
     <% @customer.sources.each do |source| %>
       <div class="billing-item">
-        <div><%= source.brand %> ending in <%= source.last4 %></div>
-        <span class="billing-item-detail">Expires <%= source.exp_month %> / <%= source.exp_year %> </span>
+        <p><%= source.brand %> ending in <%= source.last4 %></p>
+        <p class="billing-item-detail">Expires <%= source.exp_month %> / <%= source.exp_year %></p>
         <% if source.id == @customer.default_source %>
-          <span class="billing-item-detail billing-item-green">primary</span>
+          <p class="billing-item-detail billing-item-green">primary</p>
           <%= form_tag "/stripe_active_cards/#{source.id}", method: :delete do %>
-            <button class="billing-item-detail billing-item-red">remove card</button>
+            <button class="crayons-btn crayons-btn--danger">Remove card</button>
           <% end %>
         <% else %>
           <%= form_tag "/stripe_active_cards/#{source.id}", method: :patch do %>
-            <button class="billing-item-detail">make primary</button>
+            <button class="crayons-btn crayons-btn--secondary">Make primary</button>
           <% end %>
           <%= form_tag "/stripe_active_cards/#{source.id}", method: :delete do %>
-            <button class="billing-item-detail billing-item-red">remove card</button>
+            <button class="crayons-btn crayons-btn--danger">Remove card</button>
           <% end %>
         <% end %>
       </div>
@@ -37,7 +37,7 @@
     <%= form_tag "/stripe_active_cards", id: "credit-card-form", method: :post do %>
       <br />
       <div class="stripe-button-wrapper">
-        <button id="add-credit-card-button" class="credit-card-button">+ Add Another Credit Card</button>
+        <button id="add-credit-card-button" class="crayons-btn credit-card-button">+ Add Another Credit Card</button>
       </div>
     <% end %>
   <% end %>

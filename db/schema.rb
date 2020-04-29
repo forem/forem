@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_20_130910) do
+ActiveRecord::Schema.define(version: 2020_04_26_124118) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -308,7 +308,6 @@ ActiveRecord::Schema.define(version: 2020_04_20_130910) do
     t.string "slug"
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listing_categories", force: :cascade do |t|
@@ -1087,6 +1086,16 @@ ActiveRecord::Schema.define(version: 2020_04_20_130910) do
     t.index ["user_id"], name: "index_user_counters_on_user_id", unique: true
   end
 
+  create_table "user_optional_fields", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "label", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.string "value", null: false
+    t.index ["label", "user_id"], name: "index_user_optional_fields_on_label_and_user_id", unique: true
+    t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
+  end
+
   create_table "users", id: :serial, force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
@@ -1207,6 +1216,7 @@ ActiveRecord::Schema.define(version: 2020_04_20_130910) do
     t.datetime "updated_at", null: false
     t.string "username"
     t.string "website_url"
+    t.string "youtube_url"
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
@@ -1268,6 +1278,7 @@ ActiveRecord::Schema.define(version: 2020_04_20_130910) do
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_counters", "users", on_delete: :cascade
+  add_foreign_key "user_optional_fields", "users"
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"

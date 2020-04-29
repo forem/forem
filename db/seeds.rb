@@ -4,8 +4,7 @@ SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
 counter = 0
 Rails.logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
 
-##############################################################################
-
+##############################################################################/
 counter += 1
 Rails.logger.info "#{counter}. Creating Organizations"
 
@@ -30,8 +29,6 @@ num_users = 10 * SEEDS_MULTIPLIER
 
 counter += 1
 Rails.logger.info "#{counter}. Creating #{num_users} Users"
-
-User.clear_index!
 
 roles = %i[trusted chatroom_beta_tester workshop_pass]
 
@@ -118,8 +115,6 @@ num_articles = 25 * SEEDS_MULTIPLIER
 
 counter += 1
 Rails.logger.info "#{counter}. Creating #{num_articles} Articles"
-
-Article.clear_index!
 
 num_articles.times do |i|
   tags = []
@@ -461,6 +456,49 @@ CATEGORIES = [
 ].freeze
 
 CATEGORIES.each { |attributes| ClassifiedListingCategory.create(attributes) }
+
+##############################################################################
+
+counter += 1
+Rails.logger.info "#{counter}. Creating Classified Listings"
+
+users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
+users = users_in_random_order.to_a
+
+listings_categories = ClassifiedListing.categories_available.keys
+listings_categories.each_with_index do |category, index|
+  # rotate users if they are less than the categories
+  user = users.at((index + 1) % users.length)
+  2.times do
+    ClassifiedListing.create!(
+      user: user,
+      title: Faker::Lorem.sentence,
+      body_markdown: Faker::Markdown.random,
+      location: Faker::Address.city,
+      organization_id: user.organizations.first&.id,
+      category: category,
+      contact_via_connect: true,
+      published: true,
+      bumped_at: Time.current,
+      tag_list: Tag.order(Arel.sql("RANDOM()")).first(2).pluck(:name),
+    )
+  end
+end
+
+##############################################################################
+
+counter += 1
+Rails.logger.info "#{counter}. Creating Pages"
+
+5.times do
+  Page.create!(
+    title: Faker::Hacker.say_something_smart,
+    body_markdown: Faker::Markdown.random,
+    slug: Faker::Internet.slug,
+    description: Faker::Books::Dune.quote,
+    template: %w[contained full_within_layout].sample,
+  )
+end
 
 ##############################################################################
 
