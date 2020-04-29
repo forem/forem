@@ -8,7 +8,7 @@ function linkToCommentsSection(articlePath) {
 }
 
 export const CommentsList = ({ comments, articlePath, totalCount }) => {
-  if (comments.length > 0) {
+  if (comments && comments.length > 0) {
     return (
       <div className="crayons-story__comments">
         {comments.slice(0, 2).map((comment) => {
