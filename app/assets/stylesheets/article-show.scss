@@ -79,6 +79,72 @@
   color: white;
 }
 
+.flag-user-modal-subcont {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(8, 9, 10, 0.5);
+  z-index: 300;
+  opacity: 1;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .flag-user-modal {
+    z-index: 400;
+
+    .flag-user-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #08090a;
+
+      .modal-header-text {
+        font-weight: bold;
+        font-size: 18px;
+        line-height: 125%;
+      }
+
+      .modal-header-close-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 100%;
+        background: #eef0f1;
+
+        img {
+          width: 13px;
+          height: 13px;
+        }
+      }
+    }
+
+    .flag-user-modal-body {
+      font-size: 16px;
+      line-height: 150%;
+
+      .crayons-fields {
+        margin-top: 16px;
+
+        .abuse-report-link {
+          margin: 16px 0 0 32px;
+        }
+      }
+
+      .buttons-container {
+        margin-top: 24px;
+      }
+    }
+  }
+}
+
 .video-player-header {
   background: $black;
   margin-top: 0;

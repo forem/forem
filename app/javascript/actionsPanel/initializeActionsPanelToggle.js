@@ -1,3 +1,57 @@
+const flagUserModalHTML = `
+    <div class="flag-user-modal-subcont">
+        <div class="crayons-modal flag-user-modal">
+          <div class="flag-user-modal-header">
+            <span class="modal-header-text">Flag User</span>
+            <span class="modal-header-close-icon">
+              <%= inline_svg_tag("cancel.svg", aria: true, class: "crayons-icon", title: "Cancel") %>
+            </span>
+
+          </div>
+          <div class="flag-user-modal-body">
+            <span>
+              Thanks for keeping DEV safe. Here is what you can do to flag this user:
+            </span>
+            <div class="crayons-fields">
+              <div class="crayons-field crayons-field--radio">
+                <input
+                  type="radio"
+                  id="vomit-all"
+                  name="flag-user"
+                  class="crayons-radio"
+                  data-reactable-id="<%= @article.user.id %>"
+                  data-category="vomit"
+                  data-reactable-type="<%= @article.user.class.name %>">
+                <label for="vomit-all" class="crayons-field__label">
+                  Make all posts by this author less visible
+                  <p class="crayons-field__description">
+                    This author consistently posts content that violates DEV's code of conduct because it is harassing, offensive or spammy.
+                  </p>
+                </label>
+              </div>
+              <a href="/report-abuse?url=<%= request.url %>" class="fs-base abuse-report-link">Report other inappropriate conduct</a>
+            </div>
+            <div class="buttons-container">
+              <a href="#" class="crayons-btn" id="confirm-flag-user-action">Confirm action</a>
+              <a href="#" class="crayons-btn" id="cancel-flag-user-action">Cancel</a>
+            </div>
+          </div>
+        </div>
+        <div class="crayons-snackbar">
+          <div class="crayons-snackbar__item" id="vomit-all-snackbar">
+            <div class="crayons-snackbar__body">
+              <p>All posts by this author will be less visible.</p>
+            </div>
+          </div>
+          <div class="crayons-snackbar__item" id="abuse-report-snackbar">
+            <div class="crayons-snackbar__body">
+              <p>Thanks for the report. Our team will review this.</p>
+            </div>
+          </div>
+        </div>
+    </div>
+`;
+
 function toggleModActionsMenu() {
   document.querySelector('.mod-actions-menu').classList.toggle('showing');
   document.querySelector('.mod-actions-menu-btn').classList.toggle('hidden');
@@ -22,6 +76,9 @@ export function initializeActionsPanel() {
     document.getElementById(
       'mod-actions-menu-btn-area',
     ).innerHTML = modActionsMenuIconHTML;
+    document.querySelector(
+      '.flag-user-modal-container',
+    ).innerHTML = flagUserModalHTML;
     document
       .querySelector('.mod-actions-menu-btn')
       .addEventListener('click', toggleModActionsMenu);
