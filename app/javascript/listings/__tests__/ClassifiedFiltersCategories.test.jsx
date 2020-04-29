@@ -22,15 +22,16 @@ describe('<ClassifiedFiltersCategories />', () => {
   };
 
   const categories = [firstCategory, secondCategory, thirdCategory];
-  const defaultProps = {
+
+  const getProps = () => ({
     categories,
     category: 'clojure',
     onClick: () => {
       return 'onClick';
     },
-  };
+  });
 
-  const renderClassifiedFilterCategories = (props = defaultProps) =>
+  const renderClassifiedFilterCategories = (props = getProps()) =>
     deep(<ClassifiedFiltersCategories {...props} />);
 
   describe('Should render the links to allow navigation', () => {
@@ -45,7 +46,7 @@ describe('<ClassifiedFiltersCategories />', () => {
     });
 
     it('When there\'s no category, the className of the listings link should be "selected"', () => {
-      const propsWithoutCategory = { ...defaultProps, category: '' };
+      const propsWithoutCategory = { ...getProps(), category: '' };
       const contextWithoutCategory = renderClassifiedFilterCategories(
         propsWithoutCategory,
       );
@@ -90,7 +91,7 @@ describe('<ClassifiedFiltersCategories />', () => {
 
     it('should set the class of the unselected categories as blank', () => {
       const unselectedCategories = categories.filter(
-        (category) => category.slug !== defaultProps.category,
+        (category) => category.slug !== getProps().category,
       );
       unselectedCategories.forEach((unselectedCategory) => {
         const unselectedCategoryLink = context.find(

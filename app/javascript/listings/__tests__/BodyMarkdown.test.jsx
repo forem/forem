@@ -1,17 +1,16 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import render from 'preact-render-to-json';
 import BodyMarkdown from '../components/BodyMarkdown';
 
 describe('<BodyMarkdown />', () => {
-  const defaultProps = {
+  const getProps = () => ({
     onChange: () => {
       return 'onChange';
     },
     default: 'defaultValue',
-  };
+  });
 
-  const renderBodyMarkdown = (props = defaultProps) =>
-    deep(<BodyMarkdown {...props} />);
+  const renderBodyMarkdown = () => render(<BodyMarkdown {...getProps()} />);
 
   it('Should match the snapshot', () => {
     const tree = renderBodyMarkdown();

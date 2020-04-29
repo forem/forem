@@ -1,15 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<ClearQueryButton /> Should match the snapshot 1`] = `
-preact-render-spy (1 nodes)
--------
 <button
-  type="button"
   class="classified-search-clear"
-  onClick={[Function onClick]}
   id="clear-query-button"
+  onClick={[Function]}
+  type="button"
 >
   ×
 </button>
-
 `;
