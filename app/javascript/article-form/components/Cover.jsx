@@ -81,16 +81,16 @@ export class Cover extends Component {
             alt=""
           />
         )}
-        <label className="crayons-btn crayons-btn--outlined mr-2">
+        <Button variant="outlined" className="mr-2">
           {uploadLabel}
           <input
             type="file"
             onChange={this.handleMainImageUpload}
             accept="image/*"
-            className="w-0 h-0 absolute overflow-hidden z-negative opacity-0"
+            className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
             data-max-file-size-mb="25"
           />
-        </label>
+        </Button>
         {mainImage && (
           <Button variant="ghost-danger" onClick={this.triggerMainImageRemoval}>
             Remove

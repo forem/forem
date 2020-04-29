@@ -1,10 +1,8 @@
-import 'preact/devtools';
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { submitArticle, previewArticle } from './actions';
-import ImageManagement from './elements/imageManagement';
 
 import {
   Actions,
@@ -76,7 +74,6 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
-      imageManagementShowing: false,
       mainImage: this.article.main_image || null,
       organizations,
       organizationId: this.article.organization_id,
@@ -134,11 +131,9 @@ export default class ArticleForm extends Component {
 
   setCommonProps = ({
     previewShowing = false,
-    imageManagementShowing = false,
   }) => {
     return {
       previewShowing,
-      imageManagementShowing,
     };
   };
 
@@ -152,17 +147,6 @@ export default class ArticleForm extends Component {
     } else {
       previewArticle(bodyMarkdown, this.showPreview, this.failedPreview);
     }
-  };
-
-  toggleImageManagement = e => {
-    const { imageManagementShowing } = this.state;
-    e.preventDefault();
-    window.scrollTo(0, 0);
-    this.setState({
-      ...this.setCommonProps({
-        imageManagementShowing: !imageManagementShowing,
-      }),
-    });
   };
 
   showPreview = response => {
@@ -201,7 +185,6 @@ export default class ArticleForm extends Component {
   handleMainImageUrlChange = payload => {
     this.setState({
       mainImage: payload.links[0],
-      imageManagementShowing: false,
     });
   };
 
@@ -248,7 +231,6 @@ export default class ArticleForm extends Component {
       previewResponse: '',
       submitting: false,
       editing: this.article.id !== null, // eslint-disable-line react/no-unused-state
-      imageManagementShowing: false,
       mainImage: this.article.main_image || null,
       errors: null,
       edited: false,
@@ -273,7 +255,6 @@ export default class ArticleForm extends Component {
   };
 
   render() {
-    // cover image url should asking for url OR providing option to upload an image
     const {
       title,
       tagList,
@@ -282,7 +263,6 @@ export default class ArticleForm extends Component {
       previewShowing,
       previewResponse,
       submitting,
-      imageManagementShowing,
       organizations,
       organizationId,
       mainImage,
@@ -290,21 +270,6 @@ export default class ArticleForm extends Component {
       edited,
       version,
     } = this.state;
-
-    const imageManagement = imageManagementShowing && (
-      <ImageManagement
-        onExit={this.toggleImageManagement}
-        mainImage={mainImage}
-        version={version}
-        onMainImageUrlChange={this.handleMainImageUrlChange}
-      />
-    );
-
-    const controls = version === 'v2' && (
-      <button type="button" onClick={this.toggleImageManagement}>
-        Upload images
-      </button>
-    );
 
     return (
       <form
@@ -360,7 +325,6 @@ export default class ArticleForm extends Component {
         />
 
         <KeyboardShortcutsHandler togglePreview={this.fetchPreview} />
-        {/* {imageManagement} */}
       </form>
     );
   }
