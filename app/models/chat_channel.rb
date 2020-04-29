@@ -106,13 +106,13 @@ class ChatChannel < ApplicationRecord
     Array(users).each do |user|
       existing_membership = ChatChannelMembership.find_by(user_id: user.id, chat_channel_id: id)
       if existing_membership.present? && %w[active pending].exclude?(existing_membership.status)
-        if existing_membership.update(status: status, role: membership_role)
+        if existing_membership.update(status: "pending", role: membership_role)
           NotifyMailer.channel_invite_email(existing_membership, inviter).deliver_later
           invitation_sent += 1
         end
       else
         membership = ChatChannelMembership.create(user_id: user.id, chat_channel_id: id, role: membership_role, status: "pending")
-        if membership.persisted? && membership.status == "pending"
+        if membership.persisted?
           NotifyMailer.channel_invite_email(membership, inviter).deliver_later
           invitation_sent += 1
         end
