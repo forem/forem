@@ -1,15 +1,14 @@
-<% Authentication::Providers.enabled.each do |provider_name| %>
-  <% unless @user.identities.exists?(provider: provider_name) %>
-    <% provider = Authentication::Providers.get!(provider_name) %>
+<% authentication_enabled_providers.each do |provider| %>
+  <% unless @user.identities.exists?(provider: provider.provider_name) %>
     <a
-      href="<%= Authentication::Providers.authentication_path(provider_name) %>"
+      href="<%= provider.authentication_path %>"
       class="crayons-btn crayons-btn--outlined mr-2"
       data-no-instant>
       <%= inline_svg_tag(
-            "#{provider_name}.svg",
+            "#{provider.provider_name}.svg",
             aria: true,
             class: "crayons-icon",
-            title: provider_name.to_s.titleize.to_s,
+            title: provider.official_name,
           ) %>
       Connect <%= provider.official_name %> Account
     </a>
