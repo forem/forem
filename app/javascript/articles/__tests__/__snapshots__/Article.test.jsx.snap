@@ -47,118 +47,149 @@ exports[`<Article /> component should render a podcast article 1`] = `
 
 exports[`<Article /> component should render a podcast episode 1`] = `
 <div
-  class="single-article single-article-small-pic"
+  class="crayons-story false"
   data-content-user-id={27683}
+  data-featured-article="articles-49020"
+  id={false}
 >
   <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Nova_Luettgen"
-    >
-      <img
-        alt="Nova_Luettgen profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-49020"
+    class="crayons-story__body"
   >
     <div
-      class="content"
+      class="crayons-story__top"
     >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
-            Object {
-              "background": "#000000",
-              "color": "#ffffff",
-            }
-          }
+      <div
+        class="crayons-story__meta"
+      >
+        <div
+          class="crayons-story__author-pic"
         >
-          #javascript
-        </span>
-        <span
-          class="tag-identifier"
-        >
-          podcast
-        </span>
-        monitor recontextualize
-      </h3>
+          <a
+            class="crayons-avatar crayons-avatar--l"
+            href="/Nova_Luettgen"
+          >
+            <img
+              alt="Nova_Luettgen profile"
+              class="crayons-avatar__image"
+              loading="lazy"
+              src="/images/10.png"
+            />
+          </a>
+        </div>
+        <div>
+          <p>
+            <a
+              class="crayons-story__secondary fw-medium"
+              href="/Nova_Luettgen"
+            >
+              Henri Gibson
+            </a>
+          </p>
+          <a
+            class="crayons-story__tertiary fs-xs"
+            href="/some-post/path"
+          >
+            <time
+              dateTime={null}
+            >
+              February 18 (just now)
+            </time>
+          </a>
+        </div>
+      </div>
     </div>
-  </a>
-  <h4>
-    <a
-      href="/Nova_Luettgen"
+    <div
+      class="crayons-story__indention"
     >
-      Henri Gibson・
-      <time
-        dateTime="Tue, 18 Feb 2020 15:11:02 GMT"
+      <h2
+        class="crayons-story__title"
       >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
+        <a
+          href="/some-post/path"
+          id="article-link-49020"
+        >
+          monitor recontextualize
+        </a>
+      </h2>
+      <div
+        class="crayons-story__tags"
       >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
+        <a
+          class="crayons-tag"
+          href="/t/javascript"
+        >
+          <span
+            class="crayons-tag__prefix"
+          >
+            #
+          </span>
+          javascript
+        </a>
+        <a
+          class="crayons-tag"
+          href="/t/ruby"
+        >
+          <span
+            class="crayons-tag__prefix"
+          >
+            #
+          </span>
+          ruby
+        </a>
+        <a
+          class="crayons-tag"
+          href="/t/go"
+        >
+          <span
+            class="crayons-tag__prefix"
+          >
+            #
+          </span>
+          go
+        </a>
+      </div>
+      <div
+        class="crayons-story__bottom"
       >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
+        <div
+          class="crayons-story__details"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            <svg
+              class="crayons-icon mr-1"
+              height="24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+              />
+            </svg>
+            0
+            <span
+              class="hidden s:inline"
+            >
+               reactions
+            </span>
+          </a>
+        </div>
+        <div
+          class="crayons-fields crayons-fields--horizontal"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            undefined min read
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-49020"
-      >
-        0
-      </span>
-    </a>
-  </div>
+  <div />
 </div>
 `;
 
@@ -166,7 +197,7 @@ exports[`<Article /> component should render a standard article 1`] = `
 <div
   class="crayons-story false"
   data-content-user-id={23289}
-  data-featured-article="TODO"
+  data-featured-article="articles-62407"
   id={false}
 >
   <div
@@ -322,356 +353,433 @@ exports[`<Article /> component should render a standard article 1`] = `
 
 exports[`<Article /> component should render a user article 1`] = `
 <div
-  class="single-article single-article-small-pic"
+  class="crayons-story false"
   data-content-user-id={7955}
+  data-featured-article="articles-24692"
+  id={false}
 >
   <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/phyllis.armstrong"
-    >
-      <img
-        alt="phyllis.armstrong profile"
-        loading="lazy"
-        src="/images/3.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    id="article-link-24692"
+    class="crayons-story__body"
   >
     <div
-      class="content"
+      class="crayons-story__top"
     >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
-            Object {
-              "background": "#5874d9",
-              "color": "white",
-            }
-          }
+      <div
+        class="crayons-story__meta"
+      >
+        <div
+          class="crayons-story__author-pic"
         >
-          person
-        </span>
-        Phyllis Armstrong
-      </h3>
+          <a
+            class="crayons-avatar crayons-avatar--l"
+            href="/phyllis.armstrong"
+          >
+            <img
+              alt="phyllis.armstrong profile"
+              class="crayons-avatar__image"
+              loading="lazy"
+              src="/images/3.png"
+            />
+          </a>
+        </div>
+        <div>
+          <p>
+            <a
+              class="crayons-story__secondary fw-medium"
+              href="/phyllis.armstrong"
+            >
+              phyllis.armstrong
+            </a>
+          </p>
+          <a
+            class="crayons-story__tertiary fs-xs"
+          >
+            <time
+              dateTime={null}
+            >
+               (NaN seconds ago)
+            </time>
+          </a>
+        </div>
+      </div>
     </div>
-  </a>
-  <h4>
-    <a
-      href="/phyllis.armstrong"
+    <div
+      class="crayons-story__indention"
     >
-      phyllis.armstrong
-    </a>
-  </h4>
-  <div
-    class="tags"
-  />
-  <button
-    class="article-engagement-count engage-button follow-action-button"
-    data-follow-action-button={true}
-    data-info="{\\"id\\":24692,\\"className\\":\\"User\\"}"
-    style={
-      Object {
-        "width": "122px",
-      }
-    }
-    type="button"
-  >
-     
-  </button>
+      <h2
+        class="crayons-story__title"
+      >
+        <a
+          id="article-link-24692"
+        >
+          Phyllis Armstrong
+        </a>
+      </h2>
+      <div
+        class="crayons-story__tags"
+      />
+      <div
+        class="crayons-story__bottom"
+      >
+        <div
+          class="crayons-fields crayons-fields--horizontal"
+        >
+          <a
+            class="crayons-story__details__item"
+          >
+            undefined min read
+          </a>
+          <button
+            class="crayons-btn crayons-btn--secondary fs-s"
+            data-follow-action-button={true}
+            data-info="{\\"id\\":24692,\\"className\\":\\"User\\"}"
+            type="button"
+          >
+             
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div />
 </div>
 `;
 
 exports[`<Article /> component should render a video article 1`] = `
 <div
-  class="single-article single-article-small-pic"
+  class="crayons-story false"
   data-content-user-id={27683}
+  data-featured-article="articles-49020"
+  id={false}
 >
   <a
-    class="single-article-video-preview"
+    class="crayons-story__video"
     href="/some-post/path"
     style="background-image:url(/images/onboarding-background.png)"
   >
-    <div
-      class="single-article-video-duration"
-    >
-      <img
-        alt="video camera"
-        loading="lazy"
-        src="/images/video-camera.svg"
-      />
-      10
-    </div>
-  </a>
-  <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Nova_Luettgen"
-    >
-      <img
-        alt="Nova_Luettgen profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-49020"
-  >
-    <div
-      class="content"
-    >
-      <h3>
-        monitor recontextualize
-      </h3>
-    </div>
-  </a>
-  <h4>
-    <a
-      href="/Nova_Luettgen"
-    >
-      Henri Gibson・
-      <time
-        dateTime="Tue, 18 Feb 2020 15:11:02 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
-  </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-49020"
-      >
-        0
-      </span>
-    </a>
-  </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    undefined min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button "
-    data-initial-feed={true}
-    data-reactable-id={49020}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
     <span
-      class="bm-initial"
-    />
-  </button>
+      class="crayons-story__video__time"
+    >
+      10
+    </span>
+  </a>
+  <div
+    class="crayons-story__body"
+  >
+    <div
+      class="crayons-story__top"
+    >
+      <div
+        class="crayons-story__meta"
+      >
+        <div
+          class="crayons-story__author-pic"
+        >
+          <a
+            class="crayons-avatar crayons-avatar--l"
+            href="/Nova_Luettgen"
+          >
+            <img
+              alt="Nova_Luettgen profile"
+              class="crayons-avatar__image"
+              loading="lazy"
+              src="/images/10.png"
+            />
+          </a>
+        </div>
+        <div>
+          <p>
+            <a
+              class="crayons-story__secondary fw-medium"
+              href="/Nova_Luettgen"
+            >
+              Henri Gibson
+            </a>
+          </p>
+          <a
+            class="crayons-story__tertiary fs-xs"
+            href="/some-post/path"
+          >
+            <time
+              dateTime={null}
+            >
+              February 18 (just now)
+            </time>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      class="crayons-story__indention"
+    >
+      <h2
+        class="crayons-story__title"
+      >
+        <a
+          href="/some-post/path"
+          id="article-link-49020"
+        >
+          monitor recontextualize
+        </a>
+      </h2>
+      <div
+        class="crayons-story__tags"
+      >
+        <a
+          class="crayons-tag"
+          href="/t/javascript"
+        >
+          <span
+            class="crayons-tag__prefix"
+          >
+            #
+          </span>
+          javascript
+        </a>
+        <a
+          class="crayons-tag"
+          href="/t/ruby"
+        >
+          <span
+            class="crayons-tag__prefix"
+          >
+            #
+          </span>
+          ruby
+        </a>
+        <a
+          class="crayons-tag"
+          href="/t/go"
+        >
+          <span
+            class="crayons-tag__prefix"
+          >
+            #
+          </span>
+          go
+        </a>
+      </div>
+      <div
+        class="crayons-story__bottom"
+      >
+        <div
+          class="crayons-story__details"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            <svg
+              class="crayons-icon mr-1"
+              height="24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+              />
+            </svg>
+            0
+            <span
+              class="hidden s:inline"
+            >
+               reactions
+            </span>
+          </a>
+        </div>
+        <div
+          class="crayons-fields crayons-fields--horizontal"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            undefined min read
+          </a>
+          <button
+            class="crayons-btn fs-s crayons-btn--secondary"
+            data-initial-feed={true}
+            data-reactable-id={49020}
+            onBlur={[Function]}
+            onFocus={[Function]}
+            onMouseOver={[Function]}
+            onMouseout={[Function]}
+            type="button"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div />
 </div>
 `;
 
 exports[`<Article /> component should render a video article with a flare tag 1`] = `
 <div
-  class="single-article single-article-small-pic"
+  class="crayons-story false"
   data-content-user-id={27683}
+  data-featured-article="articles-49020"
+  id={false}
 >
   <a
-    class="single-article-video-preview"
+    class="crayons-story__video"
     href="/some-post/path"
     style="background-image:url(/images/onboarding-background.png)"
   >
-    <div
-      class="single-article-video-duration"
-    >
-      <img
-        alt="video camera"
-        loading="lazy"
-        src="/images/video-camera.svg"
-      />
-      10
-    </div>
-  </a>
-  <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Nova_Luettgen"
-    >
-      <img
-        alt="Nova_Luettgen profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-49020"
-  >
-    <div
-      class="content"
-    >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
-            Object {
-              "background": "#000000",
-              "color": "#ffffff",
-            }
-          }
-        >
-          #javascript
-        </span>
-        monitor recontextualize
-      </h3>
-    </div>
-  </a>
-  <h4>
-    <a
-      href="/Nova_Luettgen"
-    >
-      Henri Gibson・
-      <time
-        dateTime="Tue, 18 Feb 2020 15:11:02 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
-  </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-49020"
-      >
-        0
-      </span>
-    </a>
-  </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    undefined min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button "
-    data-initial-feed={true}
-    data-reactable-id={49020}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
     <span
-      class="bm-initial"
-    />
-  </button>
+      class="crayons-story__video__time"
+    >
+      10
+    </span>
+  </a>
+  <div
+    class="crayons-story__body"
+  >
+    <div
+      class="crayons-story__top"
+    >
+      <div
+        class="crayons-story__meta"
+      >
+        <div
+          class="crayons-story__author-pic"
+        >
+          <a
+            class="crayons-avatar crayons-avatar--l"
+            href="/Nova_Luettgen"
+          >
+            <img
+              alt="Nova_Luettgen profile"
+              class="crayons-avatar__image"
+              loading="lazy"
+              src="/images/10.png"
+            />
+          </a>
+        </div>
+        <div>
+          <p>
+            <a
+              class="crayons-story__secondary fw-medium"
+              href="/Nova_Luettgen"
+            >
+              Henri Gibson
+            </a>
+          </p>
+          <a
+            class="crayons-story__tertiary fs-xs"
+            href="/some-post/path"
+          >
+            <time
+              dateTime={null}
+            >
+              February 18 (just now)
+            </time>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div
+      class="crayons-story__indention"
+    >
+      <h2
+        class="crayons-story__title"
+      >
+        <a
+          href="/some-post/path"
+          id="article-link-49020"
+        >
+          monitor recontextualize
+        </a>
+      </h2>
+      <div
+        class="crayons-story__tags"
+      >
+        <a
+          class="crayons-tag"
+          href="/t/javascript"
+        >
+          <span
+            class="crayons-tag__prefix"
+          >
+            #
+          </span>
+          javascript
+        </a>
+        <a
+          class="crayons-tag"
+          href="/t/ruby"
+        >
+          <span
+            class="crayons-tag__prefix"
+          >
+            #
+          </span>
+          ruby
+        </a>
+        <a
+          class="crayons-tag"
+          href="/t/go"
+        >
+          <span
+            class="crayons-tag__prefix"
+          >
+            #
+          </span>
+          go
+        </a>
+      </div>
+      <div
+        class="crayons-story__bottom"
+      >
+        <div
+          class="crayons-story__details"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            <svg
+              class="crayons-icon mr-1"
+              height="24"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+              />
+            </svg>
+            0
+            <span
+              class="hidden s:inline"
+            >
+               reactions
+            </span>
+          </a>
+        </div>
+        <div
+          class="crayons-fields crayons-fields--horizontal"
+        >
+          <a
+            class="crayons-story__details__item"
+            href="/some-post/path"
+          >
+            undefined min read
+          </a>
+          <button
+            class="crayons-btn fs-s crayons-btn--secondary"
+            data-initial-feed={true}
+            data-reactable-id={49020}
+            onBlur={[Function]}
+            onFocus={[Function]}
+            onMouseOver={[Function]}
+            onMouseout={[Function]}
+            type="button"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+  <div />
 </div>
 `;
 
@@ -679,7 +787,7 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
 <div
   class="crayons-story false"
   data-content-user-id={23289}
-  data-featured-article="TODO"
+  data-featured-article="articles-62407"
   id={false}
 >
   <div
@@ -910,7 +1018,7 @@ exports[`<Article /> component should render with a flare tag 1`] = `
 <div
   class="crayons-story false"
   data-content-user-id={23289}
-  data-featured-article="TODO"
+  data-featured-article="articles-62407"
   id={false}
 >
   <div
@@ -1068,7 +1176,7 @@ exports[`<Article /> component should render with a snippet result 1`] = `
 <div
   class="crayons-story false"
   data-content-user-id={23289}
-  data-featured-article="TODO"
+  data-featured-article="articles-62407"
   id={false}
 >
   <div
@@ -1233,7 +1341,7 @@ exports[`<Article /> component should render with an organization 1`] = `
 <div
   class="crayons-story false"
   data-content-user-id={23289}
-  data-featured-article="TODO"
+  data-featured-article="articles-62407"
   id={false}
 >
   <div
@@ -1415,7 +1523,7 @@ exports[`<Article /> component should render with comments 1`] = `
 <div
   class="crayons-story false"
   data-content-user-id={23289}
-  data-featured-article="TODO"
+  data-featured-article="articles-62407"
   id={false}
 >
   <div
@@ -1646,7 +1754,7 @@ exports[`<Article /> component should render with reactions 1`] = `
 <div
   class="crayons-story false"
   data-content-user-id={23289}
-  data-featured-article="TODO"
+  data-featured-article="articles-62407"
   id={false}
 >
   <div

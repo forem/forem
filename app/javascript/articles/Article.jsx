@@ -30,7 +30,7 @@ export const Article = ({
     <div
       className={`crayons-story ${isFeatured && 'crayons-story--featured'}`}
       id={isFeatured && 'featured-story-marker'}
-      data-featured-article="TODO"
+      data-featured-article={`articles-${article.id}`}
       data-content-user-id={article.user_id}
     >
       {article.cloudinary_video_url && <Video article={article} />}
