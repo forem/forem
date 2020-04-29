@@ -70,12 +70,16 @@ exports[`<Chat /> should load chat 1`] = `
         id="chatchannels__channelslist"
       >
         <button
-          class="chatchanneltabbutton crayons-link"
+          class="chatchanneltabbutton"
+          data-channel-name="channel name 1"
+          data-content="sidecar-channel-request"
           onClick={[Function]}
           type="button"
         >
           <span
             class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+            data-channel-name="channel name 1"
+            data-content="sidecar-channel-request"
             style={
               Object {
                 "border": "1px solid undefined",
@@ -88,19 +92,23 @@ exports[`<Chat /> should load chat 1`] = `
             >
               <img
                 alt="pic"
-                class="chatchanneltabindicatorgroupimage invert-channel-image"
+                class="chatchanneltabindicatordirectimage invert-channel-image"
               />
             </span>
             channel name 1
           </span>
         </button>
         <button
-          class="chatchanneltabbutton crayons-link"
+          class="chatchanneltabbutton"
+          data-channel-name="group channel 2"
+          data-content="sidecar-channel-request"
           onClick={[Function]}
           type="button"
         >
           <span
             class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+            data-channel-name="group channel 2"
+            data-content="sidecar-channel-request"
             style={
               Object {
                 "border": "1px solid undefined",
@@ -120,12 +128,16 @@ exports[`<Chat /> should load chat 1`] = `
           </span>
         </button>
         <button
-          class="chatchanneltabbutton crayons-link"
+          class="chatchanneltabbutton"
+          data-channel-name="group channel 3"
+          data-content="sidecar-channel-request"
           onClick={[Function]}
           type="button"
         >
           <span
             class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+            data-channel-name="group channel 3"
+            data-content="sidecar-channel-request"
             style={
               Object {
                 "border": "1px solid undefined",
@@ -138,7 +150,7 @@ exports[`<Chat /> should load chat 1`] = `
             >
               <img
                 alt="pic"
-                class="chatchanneltabindicatorgroupimage invert-channel-image"
+                class="chatchanneltabindicatordirectimage invert-channel-image"
               />
             </span>
             group channel 3
