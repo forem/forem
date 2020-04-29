@@ -8,10 +8,10 @@
      Before submitting a Pull Request, please ensure you've done the following:
      - 📖 Read the DEV Contributing Guide: https://github.com/thepracticaldev/dev.to/blob/master/CONTRIBUTING.md#create-a-pull-request.
      - 📖 Read the DEV Code of Conduct: https://github.com/thepracticaldev/dev.to/blob/master/CODE_OF_CONDUCT.md.
-     - 👷‍♀️ Create small PRs. This is not always possible, but in general it is.
-     - ✅ Provided tests for your changes
-     - 📝 Use descriptive commit messages
-     - 📗 Updated any relevant documentation and added any necessary screenshots
+     - 👷‍♀️ Create small PRs. In most cases this will be possible.
+     - ✅ Provide tests for your changes.
+     - 📝 Use descriptive commit messages.
+     - 📗 Update any related documentation and include any relevant screenshots.
 -->
 
 ## What type of PR is this? (check all applicable)
