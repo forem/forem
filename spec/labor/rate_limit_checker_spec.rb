@@ -98,6 +98,18 @@ RSpec.describe RateLimitChecker, type: :labor do
 
       expect(rate_limit_checker.limit_by_action("article_update")).to be(false)
     end
+
+    it "returns true if user has created too many organizations" do
+      allow(Rails.cache).
+        to receive(:read).with("#{user.id}_organization_creation").
+        and_return(SiteConfig.rate_limit_organization_creation + 1)
+
+      expect(rate_limit_checker.limit_by_action("organization_creation")).to be(true)
+    end
+
+    it "returns false if organization_creation limit has not been reached" do
+      expect(described_class.new(user).limit_by_action("organization_creation")).to be(false)
+    end
   end
 
   describe ".track_image_uploads" do

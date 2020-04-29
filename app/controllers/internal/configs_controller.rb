@@ -56,6 +56,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       rate_limit_follow_count_daily
       rate_limit_image_upload
       rate_limit_published_article_creation
+      rate_limit_organization_creation
       shop_url
       sidebar_tags
       suggested_tags
