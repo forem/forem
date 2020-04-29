@@ -298,7 +298,11 @@ a.header-link {
       overflow-y: auto;
       font-size: 16px;
       font-family: $helvetica;
-      @include themeable(background, theme-container-accent-background, $light-gray);
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        $light-gray
+      );
       @include themeable(color, theme-color, $black);
 
       .loading-img {
@@ -347,7 +351,7 @@ a.header-link {
           width: calc(100% - 140px);
           white-space: nowrap;
           overflow: hidden;
-          text-overflow: ellipsis;  
+          text-overflow: ellipsis;
         }
 
         p {
@@ -406,7 +410,7 @@ a.header-link {
           position: relative;
           top: 4px;
           left: 3px;
-          @include themeable(fill, link-branded-color, #3b49df)
+          @include themeable(fill, link-branded-color, #3b49df);
         }
       }
       p {
@@ -485,12 +489,28 @@ a.header-link {
 
       code {
         word-wrap: break-word;
+        background-color: rgba(0, 0, 0, 0.1);
+        padding: 0.1em 0.3em 0;
       }
 
       .article-body-image-wrapper img {
         max-width: 100%;
       }
     }
+
+    // this css is added to ignore the code under highlight class and use default bg-color and color.
+
+    #preview-div div.highlight pre code {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    // this css is added to differentiate the code within a pre tag since pre tag already has black bg.
+
+    #preview-div pre code {
+      background-color: white;
+      color: black;
+    }
+
     .actions {
       text-align: right;
 
@@ -843,6 +863,8 @@ a.header-link {
       vertical-align: 0.1em;
       max-width: 100%;
       line-height: 1.4em;
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 0.1em 0.3em 0;
     }
     pre {
       width: 88%;
@@ -856,9 +878,13 @@ a.header-link {
       overflow-x: auto;
       code {
         background: #29292e;
-        color: #eff0f9;
+        color: black;
         white-space: pre;
         font-size: 1em;
+        background-color: white;
+        padding-top: 0;
+        padding-bottom: 2%;
+        overflow-x: auto;
       }
     }
     img {
