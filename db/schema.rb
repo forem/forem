@@ -1213,11 +1213,12 @@ ActiveRecord::Schema.define(version: 2020_04_26_124118) do
     t.string "twitter_username"
     t.string "unconfirmed_email"
     t.integer "unspent_credits_count", default: 0, null: false
+    t.datetime "updated_at", null: false
     t.string "username"
     t.string "website_url"
+    t.string "youtube_url"
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
-    t.string "youtube_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
