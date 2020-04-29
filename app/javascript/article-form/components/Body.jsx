@@ -9,7 +9,7 @@ export class Body extends Component {
   }
 
   render() {
-    const { onChange, defaultValue } = this.props;
+    const { onChange, defaultValue, switchHelpContext } = this.props;
     const { hasFocus } = this.state;
     return (
       <div
@@ -31,6 +31,7 @@ export class Body extends Component {
           value={defaultValue}
           onInput={onChange}
           onFocus={(_event) => {
+            switchHelpContext(_event);
             this.setState({ hasFocus: true });
           }}
           onBlur={(_event) => {
@@ -46,6 +47,7 @@ export class Body extends Component {
 Body.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
+  switchHelpContext: PropTypes.func.isRequired,
 };
 
 Body.displayName = 'Body';

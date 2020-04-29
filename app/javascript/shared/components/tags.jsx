@@ -368,7 +368,7 @@ class Tags extends Component {
   render() {
     let searchResultsHTML = '';
     const { searchResults, selectedIndex, showingRulesForTag } = this.state;
-    const { classPrefix, defaultValue, maxTags, listing, fieldClassName } = this.props;
+    const { classPrefix, defaultValue, maxTags, listing, fieldClassName, onFocus } = this.props;
     const { activeElement } = document;
     const searchResultsRows = searchResults.map((tag, index) => (
       <div
@@ -441,7 +441,7 @@ class Tags extends Component {
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
-          onFocus={this.handleFocusChange}
+          onFocus={onFocus}
         />
         {searchResultsHTML}
       </div>
@@ -457,6 +457,7 @@ Tags.propTypes = {
   fieldClassName: PropTypes.string.isRequired,
   listing: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
+  onFocus: PropTypes.func.isRequired,
 };
 
 export default Tags;

@@ -44,6 +44,8 @@ export class Help extends Component {
   render () {
     const {
       previewShowing,
+      helpFor,
+      helpPosition
     } = this.props;
 
     const { liquidHelpHTML, markdownHelpHTML, liquidShowing, markdownShowing } = this.state;
@@ -51,52 +53,69 @@ export class Help extends Component {
     return (
       <div className="crayons-layout__aside">
         {!previewShowing && (
-          <div className="crayons-article-form__tips">
-            <h4 className="mb-2 fs-l">How to write a good post title?</h4>
-            <ul className="list-disc pl-6 color-base-70 hidden">
-              <li>
-                Think of post title as super short description. Like an overview
-                of the actual post in one short sentence...
-              </li>
-              <li>Be specific :)</li>
-            </ul>
+          <div className="crayons-article-form__tips" style={{ top: helpPosition }}>
+            {helpFor === 'article-form-title' && (
+              <div>
+                <h4 className="mb-2 fs-l">How to write a good post title?</h4>
+                <ul className="list-disc pl-6 color-base-70">
+                  <li>
+                    Think of post title as super short description. Like an
+                    overview of the actual post in one short sentence...
+                  </li>
+                  <li>Be specific :)</li>
+                </ul>
+              </div>
+            )}
 
-            <ul className="list-disc pl-6 color-base-70 hidden">
-              <li>Tags will help the right people find your post.</li>
-              <li>
-                Think of tags as topics or categories that you could identify
-                your post with.
-              </li>
-              <li>
-                Limit number of tags to maximum 4 and try to use existing tags.
-              </li>
-              <li>Remember that some tags have special posting guidelines.</li>
-            </ul>
+            {helpFor === 'tag-input' && (
+              <div>
+                <h4 className="mb-2 fs-l">Use appropriate tags</h4>
+                <ul className="list-disc pl-6 color-base-70">
+                  <li>Tags will help the right people find your post.</li>
+                  <li>
+                    Think of tags as topics or categories that you could
+                    identify your post with.
+                  </li>
+                  <li>
+                    Limit number of tags to maximum 4 and try to use existing
+                    tags.
+                  </li>
+                  <li>
+                    Remember that some tags have special posting guidelines.
+                  </li>
+                </ul>
+              </div>
+            )}
 
-            <ul className="list-disc pl-6 color-base-70">
-              <li>
-                Use
-                {' '}
-                <a href="#markdown" onClick={this.toggleMarkdown}>
-                  Markdown
-                </a>
-                {' '}
-                markdown to write and format posts.
-              </li>
-              <li>
-                Most of the time, you can write inline HTML directly into your
-                posts.
-              </li>
-              <li>
-                You can use
-                {' '}
-                <a href="#liquid" onClick={this.toggleLiquid}>
-                  Liquid tags
-                </a>
-                {' '}
-                to make add rich content such as tweets and videos.
-              </li>
-            </ul>
+            {helpFor === 'article_body_markdown' && (
+              <div>
+                <h4 className="mb-2 fs-l">How to use editor?</h4>
+                <ul className="list-disc pl-6 color-base-70">
+                  <li>
+                    Use
+                    {' '}
+                    <a href="#markdown" onClick={this.toggleMarkdown}>
+                      Markdown
+                    </a>
+                    {' '}
+                    markdown to write and format posts.
+                  </li>
+                  <li>
+                    Most of the time, you can write inline HTML directly into
+                    your posts.
+                  </li>
+                  <li>
+                    You can use
+                    {' '}
+                    <a href="#liquid" onClick={this.toggleLiquid}>
+                      Liquid tags
+                    </a>
+                    {' '}
+                    to make add rich content such as tweets and videos.
+                  </li>
+                </ul>
+              </div>
+            )}
           </div>
         )}
 
@@ -118,6 +137,8 @@ export class Help extends Component {
 
 Help.propTypes = {
   previewShowing: PropTypes.bool.isRequired,
+  helpFor: PropTypes.string.isRequired,
+  helpPosition: PropTypes.string.isRequired,
 };
 
 Help.displayName = 'Help';

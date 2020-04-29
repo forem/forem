@@ -12,6 +12,7 @@ export const Meta = ({
   tagsOnInput,
   mainImage,
   onMainImageUrlChange,
+  switchHelpContext
 }) => {
   return (
     <div>
@@ -23,9 +24,14 @@ export const Meta = ({
         defaultValue={titleDefaultValue}
         onKeyDown={titleOnKeyDown}
         onChange={titleOnChange}
+        switchHelpContext={switchHelpContext}
       />
 
-      <TagsField defaultValue={tagsDefaultValue} onInput={tagsOnInput} />
+      <TagsField
+        defaultValue={tagsDefaultValue}
+        onInput={tagsOnInput}
+        switchHelpContext={switchHelpContext}
+      />
     </div>
   );
 };
@@ -39,7 +45,8 @@ Meta.propTypes = {
   tagsDefaultValue: PropTypes.string.isRequired,
   tagsOnInput: PropTypes.func.isRequired,
   mainImage: PropTypes.string.isRequired,
-  onMainImageUrlChange: PropTypes.func.isRequired
+  onMainImageUrlChange: PropTypes.func.isRequired,
+  switchHelpContext: PropTypes.func.isRequired,
 };
 
 Meta.displayName = 'Meta';

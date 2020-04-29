@@ -15,6 +15,7 @@ export const Form = ({
   version,
   mainImage,
   onMainImageUrlChange,
+  switchHelpContext,
   errors
 }) => {
   return (
@@ -29,6 +30,7 @@ export const Form = ({
           tagsOnInput={tagsOnInput}
           mainImage={mainImage}
           onMainImageUrlChange={onMainImageUrlChange}
+          switchHelpContext={switchHelpContext}
         />
       )}
 
@@ -36,12 +38,11 @@ export const Form = ({
         defaultValue={bodyDefaultValue}
         onChange={bodyOnChange}
         hasFocus={bodyHasFocus}
+        switchHelpContext={switchHelpContext}
       />
     </div>
-  );
-};
-
-
+  )
+}
 
 Form.propTypes = {
   titleDefaultValue: PropTypes.string.isRequired,
@@ -54,7 +55,8 @@ Form.propTypes = {
   version: PropTypes.string.isRequired,
   mainImage: PropTypes.string.isRequired,
   onMainImageUrlChange: PropTypes.func.isRequired,
+  switchHelpContext: PropTypes.func.isRequired,
   errors: PropTypes.func.isRequired,
-}
+};
 
 Form.displayName = 'Form';

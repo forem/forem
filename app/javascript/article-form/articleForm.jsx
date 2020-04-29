@@ -81,6 +81,8 @@ export default class ArticleForm extends Component {
       edited: false,
       updatedAt: this.article.updated_at,
       version,
+      helpFor: null,
+      helpPosition: null
     };
   }
 
@@ -131,9 +133,13 @@ export default class ArticleForm extends Component {
 
   setCommonProps = ({
     previewShowing = false,
+    helpFor = null,
+    helpPosition = null
   }) => {
     return {
       previewShowing,
+      helpFor,
+      helpPosition
     };
   };
 
@@ -234,6 +240,8 @@ export default class ArticleForm extends Component {
       mainImage: this.article.main_image || null,
       errors: null,
       edited: false,
+      helpFor: null,
+      helpPosition: 0
     });
   };
 
@@ -254,6 +262,15 @@ export default class ArticleForm extends Component {
     });
   };
 
+  switchHelpContext = ({ target }) => {
+    this.setState({
+      ...this.setCommonProps({ 
+        helpFor: target.id, 
+        helpPosition: target.getBoundingClientRect().y,
+      }),
+    });
+  };
+
   render() {
     const {
       title,
@@ -269,6 +286,8 @@ export default class ArticleForm extends Component {
       errors,
       edited,
       version,
+      helpFor,
+      helpPosition
     } = this.state;
 
     return (
@@ -300,6 +319,7 @@ export default class ArticleForm extends Component {
               mainImage={mainImage}
               onMainImageUrlChange={this.handleMainImageUrlChange}
               errors={errors}
+              switchHelpContext={this.switchHelpContext}
             />
           )}
           {previewShowing && (
@@ -309,7 +329,11 @@ export default class ArticleForm extends Component {
               errors={errors}
             />
           )}
-          <Help previewShowing={previewShowing} />
+          <Help 
+            previewShowing={previewShowing} 
+            helpFor={helpFor} 
+            helpPosition={helpPosition} 
+          />
         </div>
 
         <Actions
