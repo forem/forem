@@ -54,7 +54,7 @@ class CommentsController < ApplicationController
   def create
     if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
       skip_authorization
-      render json: {}, status: :too_many_requests
+      render json: { error: "too many requests" }, status: :too_many_requests
       return
     end
 
@@ -75,9 +75,10 @@ class CommentsController < ApplicationController
 
       if @comment.invalid?
         @comment.destroy
-        render json: { status: "comment already exists" }
+        render json: { error: "comment already exists" }, status: :unprocessable_entity
         return
       end
+
       render json: {
         status: "created",
         css: @comment.custom_css,
@@ -98,13 +99,17 @@ class CommentsController < ApplicationController
           github_username: current_user.github_username
         }
       }
-    elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
-                                    commentable_id: @comment.commentable.id,
-                                    ancestry: @comment.ancestry)[1])
-      @comment.destroy
-      render json: { status: "comment already exists" }
+    elsif (comment = Comment.where(
+      body_markdown: @comment.body_markdown,
+      commentable_id: @comment.commentable.id,
+      ancestry: @comment.ancestry,
+    )[1])
+
+      comment.destroy
+      render json: { error: "comment already exists" }, status: :unprocessable_entity
     else
-      render json: { status: "errors" }
+      message = @comment.errors.full_messages.to_sentence
+      render json: { error: message }, status: :unprocessable_entity
     end
   # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
   # for details as to why this is necessary

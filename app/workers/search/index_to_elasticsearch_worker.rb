@@ -8,6 +8,8 @@ module Search
       object = object_class.constantize.find(id)
       object.index_to_elasticsearch_inline
     rescue ActiveRecord::RecordNotFound => e
+      # Reactions can often be destroyed before this indexing job can execute
+      # so we ignore this error
       return if object_class == "Reaction"
 
       raise e
