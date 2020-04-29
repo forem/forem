@@ -66,7 +66,6 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       filter = described_class.new(params: params)
       expected_filters = [
         { "terms" => { "status" => %w[active joining_request] } },
-        { "term" => { "channel_discoverable" => true } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
