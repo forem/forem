@@ -38,6 +38,15 @@ RSpec.describe "ArticlesShow", type: :request do
     end
   end
 
+  context "when keywords are set up" do
+    it "shows keywords" do
+      SiteConfig.meta_keywords = { article: "hello, world" }
+      article.update_column(:cached_tag_list, "super sheep")
+      get article.path
+      expect(response.body).to include('<meta name="keywords" content="super sheep, hello, world">')
+    end
+  end
+
   context "when user signed in" do
     before do
       sign_in user
