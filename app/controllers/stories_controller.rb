@@ -77,7 +77,7 @@ class StoriesController < ApplicationController
   end
 
   def redirect_to_changed_username_profile
-    potential_username = params[:username].tr("@", "").downcase
+    potential_username = params[:username].tr("@", "")
     user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
       Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
@@ -101,9 +101,9 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_or_organization_or_podcast_or_page_index
-    @podcast = Podcast.available.find_by(slug: params[:username].downcase)
-    @organization = Organization.find_by(slug: params[:username].downcase)
-    @page = Page.find_by(slug: params[:username].downcase, is_top_level_path: true)
+    @podcast = Podcast.available.find_by(slug: params[:username])
+    @organization = Organization.find_by(slug: params[:username])
+    @page = Page.find_by(slug: params[:username], is_top_level_path: true)
     if @podcast
       handle_podcast_index
     elsif @organization
@@ -195,7 +195,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_index
-    @user = User.find_by(username: params[:username].tr("@", "").downcase)
+    @user = User.find_by(username: params[:username].tr("@", ""))
     unless @user
       redirect_to_changed_username_profile
       return

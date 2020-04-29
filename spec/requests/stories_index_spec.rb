@@ -177,6 +177,14 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/" + podcast.slug
       expect(response.body).to include(podcast.title)
     end
+
+    it "redirects to the lowercase route for podcast slugs" do
+      podcast = create(:podcast)
+      get "/#{podcast.slug.capitalize}"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("/#{podcast.slug.downcase}")
+      expect(response).not_to redirect_to("/#{podcast.slug.capitalize}")
+    end
   end
 
   describe "GET tag index" do
@@ -332,12 +340,20 @@ RSpec.describe "StoriesIndex", type: :request do
 
   describe "GET user_path" do
     let(:user) { create(:user) }
+    let(:organization) { create(:organization) }
 
     it "redirects to the lowercase route for usernames", :aggregate_failures do
       get "/#{user.username.capitalize}"
       expect(response).to have_http_status(:moved_permanently)
       expect(response).to redirect_to("/#{user.username.downcase}")
       expect(response).not_to redirect_to("/#{user.username.capitalize}")
+    end
+
+    it "redirects to the lowercase route for orginzations" do
+      get "/#{organization.slug.capitalize}"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("/#{organization.slug.downcase}")
+      expect(response).not_to redirect_to("/#{organization.slug.capitalize}")
     end
   end
 end
