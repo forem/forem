@@ -4,6 +4,9 @@ module FastlyConfig
     end
 
     class InvalidConfigsFormat < Error
+      def initialize(msg = "configs: must be an Array of Strings")
+        super(msg)
+      end
     end
 
     class InvalidConfig < Error

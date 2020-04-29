@@ -47,7 +47,7 @@ module FastlyConfig
       end
 
       def validate_configs(configs)
-        raise FastlyConfig::Errors::InvalidConfigsFormat, "Configs must be an Array of Strings" unless configs.is_a? Array
+        raise FastlyConfig::Errors::InvalidConfigsFormat unless configs.is_a? Array
 
         configs.each do |config|
           raise FastlyConfig::Errors::InvalidConfig.new(config, FASTLY_CONFIGS) unless FASTLY_CONFIGS.include? config
