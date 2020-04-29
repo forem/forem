@@ -60,7 +60,10 @@ class Internal::ConfigsController < Internal::ApplicationController
       sidebar_tags
       suggested_tags
     ]
-    params.require(:site_config).permit(allowed_params, social_media_handles: SiteConfig.social_media_handles.keys, email_addresses: SiteConfig.email_addresses.keys)
+    params.require(:site_config).permit(allowed_params,
+                                        social_media_handles: SiteConfig.social_media_handles.keys,
+                                        email_addresses: SiteConfig.email_addresses.keys,
+                                        meta_keywords: SiteConfig.meta_keywords.keys)
   end
 
   def extra_authorization_and_confirmation
