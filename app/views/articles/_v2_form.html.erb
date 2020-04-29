@@ -40,11 +40,10 @@
               <% if article.main_image.present? %>
                 <div class="crayons-article-form__cover__image"><img src="<%= article.main_image %>"></div>
               <% end %>
-              <label class="crayons-btn crayons-btn--outlined mr-2"><% if article.main_image.present? %>Change the cover<% else %>Add a cover photo<% end %><input type="file" accept="image/*" class="w-0 h-0 absolute overflow-hidden z-negative opacity-0" data-max-file-size-mb="25"></label>
+              <button class="crayons-btn crayons-btn--outlined mr-2"><% if article.main_image.present? %>Change the cover<% else %>Add a cover photo<% end %><input type="file" accept="image/*" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" data-max-file-size-mb="25"></label>
             </div>
             <div class="crayons-article-form__title">
               <textarea class="crayons-textfield crayons-textfield--ghost fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px;"><%= article.title %></textarea>
-              <!--<input class="crayons-textfield crayons-textfield--ghost fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" value="<%= article.title %>" placeholder="New post title here..." name="title" autofocus />-->
             </div>
             <div class="crayons-article-form__tagsfield">
               <input type="text" class="crayons-textfield crayons-textfield--ghost ff-accent crayons-article-form__tags" placeholder="Add up to 4 tags (no special characters)..." name="tags" value="<%= article.cached_tag_list %>" />
@@ -53,9 +52,10 @@
         <% end %>
         <div class="crayons-article-form__body">
           <div class="crayons-article-form__toolbar opacity-0">
-            <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left fw-normal" type="button">
+            <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left fw-normal" type="button">
               <%= inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") %>
               Upload image
+              <input type="file" id="image-upload-field" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" multiple accept="image/*" data-max-file-size-mb="25" />
             </button>
           </div>
           <textarea class="crayons-textfield crayons-textfield--ghost fs-l ff-accent min-h-100" id="article_body_markdown" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>

@@ -53,14 +53,15 @@ class EmailPreferencesForm extends Component {
     const { email_newsletter, email_digest_periodic } = this.state;
     const { prev, slidesCount, currentSlideIndex } = this.props;
     return (
-      <div className="onboarding-main">
-        <Navigation
-          prev={prev}
-          next={this.onSubmit}
-          slidesCount={slidesCount}
-          currentSlideIndex={currentSlideIndex}
-        />
-        <div className="onboarding-content terms-and-conditions-wrapper">
+      <div className="onboarding-main crayons-modal">
+        <div className="crayons-modal__box">
+          <Navigation
+            prev={prev}
+            next={this.onSubmit}
+            slidesCount={slidesCount}
+            currentSlideIndex={currentSlideIndex}
+          />
+          <div className="onboarding-content terms-and-conditions-wrapper">
           <header className="onboarding-content-header">
             <h1 className="title">Almost there!</h1>
             <h2 className="subtitle">
@@ -100,6 +101,7 @@ class EmailPreferencesForm extends Component {
               </ul>
             </fieldset>
           </form>
+        </div>
         </div>
       </div>
     );

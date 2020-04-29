@@ -66,19 +66,14 @@
   }
 
   &--s {
-    max-width: 480px;
-    padding: $su-6;
-    @extend %modal-style;
+    .crayons-modal__box {
+      max-width: 480px;
+    }
   }
 
-  &--l {
-    max-width: 800px;
-    padding: $su-8;
-    @extend %modal-style;
-  }
-
-  &--padding-0 {
-    padding: 0;
-    @extend %modal-style;
+  &--m {
+    .crayons-modal__box {
+      max-width: 640px;
+    }
   }
 }

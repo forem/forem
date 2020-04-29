@@ -133,54 +133,56 @@ class FollowUsers extends Component {
     const canSkip = selectedUsers.length === 0;
 
     return (
-      <div className="onboarding-main">
-        <Navigation
-          prev={prev}
-          next={this.handleComplete}
-          canSkip={canSkip}
-          slidesCount={slidesCount}
-          currentSlideIndex={currentSlideIndex}
-        />
-        <div className="onboarding-content toggle-bottom">
-          <header className="onboarding-content-header">
-            <h1 className="title">Suggested people to follow</h1>
-            <h2 className="subtitle">Let&apos;s review a few things first</h2>
-          </header>
+      <div className="onboarding-main crayons-modal">
+        <div className="crayons-modal__box">
+          <Navigation
+            prev={prev}
+            next={this.handleComplete}
+            canSkip={canSkip}
+            slidesCount={slidesCount}
+            currentSlideIndex={currentSlideIndex}
+          />
+          <div className="onboarding-content toggle-bottom">
+            <header className="onboarding-content-header">
+              <h1 className="title">Suggested people to follow</h1>
+              <h2 className="subtitle">Let&apos;s review a few things first</h2>
+            </header>
 
-          <div className="onboarding-modal-scroll-container">
-            {users.map((user) => (
-              <button
-                type="button"
-                onClick={() => this.handleClick(user)}
-                onKeyDown={() => this.handleKeyDown(user)}
-                className={
-                  selectedUsers.includes(user)
-                    ? 'user content-row selected'
-                    : 'user content-row unselected'
-                }
-              >
-                <figure className="user-avatar-container">
-                  <img
-                    className="user-avatar"
-                    src={user.profile_image_url}
-                    alt="profile"
-                  />
-                </figure>
-                <div className="user-info">
-                  <h4 className="user-name">{user.name}</h4>
-                  <p className="user-summary">{user.summary}</p>
-                </div>
-                <button type="button" className="user-following-status">
-                  {selectedUsers.includes(user) ? 'Following' : 'Follow'}
+            <div className="onboarding-modal-scroll-container">
+              {users.map((user) => (
+                <button
+                  type="button"
+                  onClick={() => this.handleClick(user)}
+                  onKeyDown={() => this.handleKeyDown(user)}
+                  className={
+                    selectedUsers.includes(user)
+                      ? 'user content-row selected'
+                      : 'user content-row unselected'
+                  }
+                >
+                  <figure className="user-avatar-container">
+                    <img
+                      className="user-avatar"
+                      src={user.profile_image_url}
+                      alt="profile"
+                    />
+                  </figure>
+                  <div className="user-info">
+                    <h4 className="user-name">{user.name}</h4>
+                    <p className="user-summary">{user.summary}</p>
+                  </div>
+                  <button type="button" className="user-following-status">
+                    {selectedUsers.includes(user) ? 'Following' : 'Follow'}
+                  </button>
                 </button>
-              </button>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="onboarding-selection-status">
-          <div className="selection-status-content">
-            {this.renderFollowCount()}
-            {this.renderFollowToggle()}
+          <div className="onboarding-selection-status">
+            <div className="selection-status-content">
+              {this.renderFollowCount()}
+              {this.renderFollowToggle()}
+            </div>
           </div>
         </div>
       </div>

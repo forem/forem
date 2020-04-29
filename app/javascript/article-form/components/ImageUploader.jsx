@@ -119,7 +119,7 @@ export class ImageUploader extends Component {
     return (
       <div className="flex items-center">
         <Button
-          className="mr-2"
+          className="mr-2 fw-normal"
           variant="ghost"
           contentType="icon-left"
           icon={IconImage}

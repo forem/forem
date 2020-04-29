@@ -69,15 +69,16 @@ class ProfileForm extends Component {
     const { canSkip } = this.state;
 
     return (
-      <div className="onboarding-main">
-        <Navigation
-          prev={prev}
-          next={this.onSubmit}
-          canSkip={canSkip}
-          slidesCount={slidesCount}
-          currentSlideIndex={currentSlideIndex}
-        />
-        <div className="onboarding-content about">
+      <div className="onboarding-main crayons-modal">
+        <div className="crayons-modal__box">
+          <Navigation
+            prev={prev}
+            next={this.onSubmit}
+            canSkip={canSkip}
+            slidesCount={slidesCount}
+            currentSlideIndex={currentSlideIndex}
+          />
+          <div className="onboarding-content about">
           <header className="onboarding-content-header">
             <h1 className="title">Build your profile</h1>
             <h2 className="subtitle">
@@ -143,6 +144,7 @@ class ProfileForm extends Component {
               />
             </label>
           </form>
+        </div>
         </div>
       </div>
     );

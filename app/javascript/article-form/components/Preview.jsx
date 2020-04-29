@@ -8,7 +8,7 @@ function titleArea(previewResponse, articleState, errors) {
   if (tagArray.length > 0 && tagArray[0].length > 0) {
     tags = tagArray.map((tag) => {
       return (
-        <span className="crayons-tag">{tag.length > 0 ? tag : ''}</span>
+        <span className="crayons-tag mr-3">{tag.length > 0 ? tag : ''}</span>
       );
     });
   }
