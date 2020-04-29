@@ -101,7 +101,7 @@ class ChatChannel < ApplicationRecord
     end
   end
 
-  def invite_users(users:, membership_role: "member", inviter: nil, status: "pending")
+  def invite_users(users:, membership_role: "member", inviter: nil)
     invitation_sent = 0
     Array(users).each do |user|
       existing_membership = ChatChannelMembership.find_by(user_id: user.id, chat_channel_id: id)
@@ -111,7 +111,7 @@ class ChatChannel < ApplicationRecord
           invitation_sent += 1
         end
       else
-        membership = ChatChannelMembership.create(user_id: user.id, chat_channel_id: id, role: membership_role, status: status)
+        membership = ChatChannelMembership.create(user_id: user.id, chat_channel_id: id, role: membership_role, status: "pending")
         if membership.persisted? && membership.status == "pending"
           NotifyMailer.channel_invite_email(membership, inviter).deliver_later
           invitation_sent += 1
@@ -178,7 +178,7 @@ class ChatChannel < ApplicationRecord
   end
 
   def update_membership
-    chat_channel_memberships.update(updated_at: Time.zone.now)
+    chat_channel_memberships.includes([:user]).update(updated_at: Time.zone.now)
   end
 
   private

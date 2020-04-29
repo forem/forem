@@ -995,7 +995,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the 
+              abide by the
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
@@ -1007,7 +1007,7 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
+              You have joined
               {' '}
               {activeChannel.channel_name}
               ! All interactions
@@ -1016,7 +1016,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the 
+              abide by the
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
