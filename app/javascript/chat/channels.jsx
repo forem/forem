@@ -20,7 +20,7 @@ const Channels = ({
       (channel) =>
         (channel.viewable_by === currentUserId &&
           channel.status === 'joining_request') ||
-        channel.viewable_by !== currentUserId,
+        (channel.viewable_by !== currentUserId && channel.channel_discoverable),
     )
     .map((channel) => {
       return (
@@ -69,9 +69,11 @@ const Channels = ({
       <div className="chatchannels__channelslistheader">
         <span role="img" aria-label="emoji">
           👋
-        </span>{' '}
+        </span>
+        {' '}
         Welcome to
-        <b> DEV Connect</b>! You may message anyone you mutually follow.
+        <b> DEV Connect</b>
+        ! You may message anyone you mutually follow.
       </div>
     );
   }
