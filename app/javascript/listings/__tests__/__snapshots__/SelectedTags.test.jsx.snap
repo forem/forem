@@ -1,0 +1,87 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<SelectedTags /> Should render all the tags 1`] = `
+<section>
+  <span
+    class="classified-tag"
+    id="selected-tag-1"
+  >
+    <a
+      class="tag-name"
+      data-no-instant={true}
+      href="/listings?tags="
+      onClick={[Function]}
+    >
+      <span>
+        Object {
+          "id": 1,
+          "tag": "clojure",
+        }
+      </span>
+      <button
+        class="tag-close"
+        data-no-instant={true}
+        onKeyPress={[Function]}
+        t={true}
+        type="button"
+      >
+        ×
+      </button>
+    </a>
+  </span>
+  <span
+    class="classified-tag"
+    id="selected-tag-2"
+  >
+    <a
+      class="tag-name"
+      data-no-instant={true}
+      href="/listings?tags="
+      onClick={[Function]}
+    >
+      <span>
+        Object {
+          "id": 2,
+          "tag": "java",
+        }
+      </span>
+      <button
+        class="tag-close"
+        data-no-instant={true}
+        onKeyPress={[Function]}
+        t={true}
+        type="button"
+      >
+        ×
+      </button>
+    </a>
+  </span>
+  <span
+    class="classified-tag"
+    id="selected-tag-3"
+  >
+    <a
+      class="tag-name"
+      data-no-instant={true}
+      href="/listings?tags="
+      onClick={[Function]}
+    >
+      <span>
+        Object {
+          "id": 3,
+          "tag": "dotnet",
+        }
+      </span>
+      <button
+        class="tag-close"
+        data-no-instant={true}
+        onKeyPress={[Function]}
+        t={true}
+        type="button"
+      >
+        ×
+      </button>
+    </a>
+  </span>
+</section>
+`;

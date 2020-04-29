@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import render from 'preact-render-to-json';
 import AllListings from '../components/AllListings';
 
 const firstListing = {
@@ -58,7 +58,7 @@ const thirdListing = {
 
 const listings = [firstListing, secondtListing, thirdListing];
 
-const defaultProps = {
+const getProps = () => ({
   listings,
   onAddTag: () => {
     return 'onAddTag';
@@ -71,17 +71,13 @@ const defaultProps = {
   onOpenModal: () => {
     return 'onSubmit;';
   },
-};
+});
 
-const renderAllListings = () => deep(<AllListings {...defaultProps} />);
+const renderAllListings = () => render(<AllListings {...getProps()} />);
 
 describe('<AllListings />', () => {
   it('Should render all listings', () => {
     const context = renderAllListings();
-    listings.forEach((listing) => {
-      expect(
-        context.find(`#single-classified-listing-${listing.id}`).exists(),
-      ).toBe(true);
-    });
+    expect(context).toMatchSnapshot();
   });
 });

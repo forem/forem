@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import render from 'preact-render-to-json';
 import SelectedTags from '../components/SelectedTags';
 
 const firstTag = {
@@ -16,7 +16,7 @@ const thirdTag = {
 };
 
 const tags = [firstTag, secondTag, thirdTag];
-const defaultProps = {
+const getProps = () => ({
   tags,
   onClick: () => {
     return 'onClick';
@@ -24,17 +24,13 @@ const defaultProps = {
   onKeyPress: () => {
     return 'onKeyPress';
   },
-};
+});
 
 describe('<SelectedTags />', () => {
-  const renderSelectedTags = () => deep(<SelectedTags {...defaultProps} />);
+  const renderSelectedTags = () => render(<SelectedTags {...getProps()} />);
 
   it('Should render all the tags', () => {
     const context = renderSelectedTags();
-    tags.forEach((tag) => {
-      const selectedTag = context.find(`#selected-tag-${tag.id}`);
-
-      expect(selectedTag.text()).toBe('×');
-    });
+    expect(context).toMatchSnapshot();
   });
 });

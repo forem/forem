@@ -3,14 +3,14 @@ import { deep } from 'preact-render-spy';
 import ContactViaConnect from '../components/ContactViaConnect';
 
 describe('<ContactViaConnect />', () => {
-  const defaultProps = {
+  const getProps = () => ({
     onChange: () => {
       return 'onChange';
     },
     checked: true,
-  };
+  });
 
-  const renderContactViaConnect = (props = defaultProps) =>
+  const renderContactViaConnect = (props = getProps()) =>
     deep(<ContactViaConnect {...props} />);
 
   it('Should render a label with a message about chat via app', () => {
@@ -26,6 +26,6 @@ describe('<ContactViaConnect />', () => {
     const context = renderContactViaConnect();
     const input = context.find('#contact_via_connect');
 
-    expect(input.attr('checked')).toBe(defaultProps.checked);
+    expect(input.attr('checked')).toBe(getProps().checked);
   });
 });

@@ -16,9 +16,9 @@ describe('<ClassifiedFilterTags />', () => {
     tag: 'dotnet',
   };
 
-  const tags = [firstTag, secondTag, thirdTag];
+  const getTags = () => [firstTag, secondTag, thirdTag];
 
-  const defaultProps = {
+  const getProps = () => ({
     message: 'Some message',
     onKeyUp: () => {
       return 'onKeyUp';
@@ -33,10 +33,10 @@ describe('<ClassifiedFilterTags />', () => {
       return 'onKeyPress';
     },
     query: 'some-string&this=1',
-    tags,
-  };
+    tags: getTags(),
+  });
 
-  const renderClassifiedFilterTags = (props = defaultProps) =>
+  const renderClassifiedFilterTags = (props = getProps()) =>
     deep(<ClassifiedFiltersTags {...props} />);
 
   describe('Should render a search field', () => {
@@ -47,8 +47,8 @@ describe('<ClassifiedFilterTags />', () => {
       expect(searchField.attr('placeholder')).toBe('search');
     });
 
-    it(`Should have "${defaultProps.message}" as default value`, () => {
-      expect(searchField.attr('defaultValue')).toBe(defaultProps.message);
+    it(`Should have "${getProps().message}" as default value`, () => {
+      expect(searchField.attr('defaultValue')).toBe(getProps().message);
     });
 
     it('Should have auto-complete as off', () => {
@@ -64,7 +64,7 @@ describe('<ClassifiedFilterTags />', () => {
     });
 
     it('Should not render the clear query button', () => {
-      const propsWithoutQuery = { ...defaultProps, query: '' };
+      const propsWithoutQuery = { ...getProps(), query: '' };
       const contextWithAnotherProps = renderClassifiedFilterTags(
         propsWithoutQuery,
       );
@@ -77,7 +77,7 @@ describe('<ClassifiedFilterTags />', () => {
 
   it('Should render the selected Tags', () => {
     const context = renderClassifiedFilterTags();
-    tags.forEach((tag) => {
+    getTags().forEach((tag) => {
       const selectedTag = context.find(`#selected-tag-${tag.id}`);
 
       expect(selectedTag.text()).toBe('×');

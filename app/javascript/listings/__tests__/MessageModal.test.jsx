@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { deep } from 'preact-render-spy';
 import MessageModal from '../components/MessageModal';
 
-const defaultListing = {
+const getDefaultListing = () => ({
   id: 22,
   category: 'misc',
   location: 'West Refugio',
@@ -18,9 +18,9 @@ const defaultListing = {
     profile_image_90:
       '/uploads/user/profile_image/7/4b1c980a-beb0-4a5f-b3f2-acc91adc503c.png',
   },
-};
+});
 
-const defaultProps = {
+const getProps = () => ({
   currentUserId: 1,
   message: 'Something',
   onChangeDraftingMessage: () => {
@@ -29,20 +29,20 @@ const defaultProps = {
   onSubmit: () => {
     return 'onSubmit;';
   },
-};
+});
 
 const renderMessageModal = (listing) =>
-  deep(<MessageModal {...defaultProps} listining={listing} />);
+  deep(<MessageModal {...getProps()} listining={listing} />);
 
 describe('<MessageModal />', () => {
   it('Should render a text-area', () => {
-    const context = renderMessageModal(defaultListing);
+    const context = renderMessageModal(getDefaultListing());
     expect(context.find('#new-message').exists()).toBe(true);
   });
 
   describe('When the current user is the author', () => {
     const listingWithCurrentUserId = {
-      ...defaultListing,
+      ...getDefaultListing(),
       user_id: 1,
     };
     const context = renderMessageModal(listingWithCurrentUserId);
@@ -65,7 +65,7 @@ describe('<MessageModal />', () => {
 
   describe('When current user is not the author', () => {
     const listingWithDifferentCurrentUserId = {
-      ...defaultListing,
+      ...getDefaultListing(),
       user_id: 111,
     };
     const context = renderMessageModal(listingWithDifferentCurrentUserId);
