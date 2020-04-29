@@ -98,6 +98,7 @@ RSpec.describe Users::Delete, type: :service do
 
     def create_associations(names)
       associations = []
+
       names.each do |association|
         if user.public_send(association.name).present?
           associations.push(*user.public_send(association.name))
@@ -106,10 +107,20 @@ RSpec.describe Users::Delete, type: :service do
           class_name = association.options[:class_name] || singular_name
           possible_factory_name = class_name.underscore.tr("/", "_")
           inverse_of = association.options[:inverse_of] || association.options[:as] || :user
+
+          # as we can't be automatically sure that the other side of the relation
+          # has defined a `has_one` relation we need to guard against third party
+          # models that don't have them defined
+          model = class_name.safe_constantize
+          if model && !model.reflect_on_association(inverse_of)
+            next
+          end
+
           record = create(possible_factory_name, inverse_of => user)
-          associations.push record
+          associations.push(record)
         end
       end
+
       associations
     end
 
