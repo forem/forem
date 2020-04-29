@@ -432,7 +432,9 @@
         align-items: center;
         align-self: center;
         transition-duration: 0.4s;
-
+        svg {
+          fill: var(--base-80);
+        }
         &.rotated {
           transform: rotateZ(-180deg);
         }
@@ -449,9 +451,26 @@
           color: var(--accent-brand);
         }
       }
-      &:active {
+      &.active {
         header h2 {
           font-weight: $fw-bold;
+        }
+      }
+      &.inactive:not(.active) {
+        header h2 {
+          color: var(--base-50);
+        }
+        header h3 {
+          color: var(--base-40);
+        }
+        .icon {
+          background-color: var(--base-20);
+          svg {
+            fill: var(--base-50);
+          }
+        }
+        .toggle-chevron-container > svg {
+          fill: var(--base-60);
         }
       }
     }

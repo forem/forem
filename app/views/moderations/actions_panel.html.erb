@@ -76,8 +76,8 @@
       <% @moderatable.tag_list.each do |tag_name| %>
       <button class="adjustable-tag" type="button">
           <span class="num-sign">#</span><%= tag_name %>
-          <div class="circle centered-icon adjustment-icon">
-            <%= inline_svg_tag("plus.svg", aria: false) %>
+          <div class="circle centered-icon adjustment-icon selected">
+            <%= inline_svg_tag("subtract.svg", aria: false) %>
           </div>
       </button>
       <% end %>

@@ -22,7 +22,7 @@ function initializeHeight() {
     'margin-top: 0 !important; margin-bottom: 0;';
 }
 
-function toggleOtherThings(type) {
+function toggleDropdown(type) {
   if (type === 'set-experience') {
     document
       .querySelector('.set-experience-options')
@@ -95,15 +95,25 @@ function updateExperienceLevel(currentUserId, articleId, rating, group) {
 }
 
 function addBottomActionsListeners() {
-  document.querySelectorAll('button.other-things-btn').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      btn.querySelector('.label-wrapper > .icon').classList.toggle('hidden');
-      btn
-        .querySelector('.toggle-chevron-container')
-        .classList.toggle('rotated');
-      toggleOtherThings(btn.dataset.otherThingsType);
-    });
-  });
+  Array.from(document.getElementsByClassName('other-things-btn')).forEach(
+    (btn) => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+        const otherBtns = Array.from(
+          document.getElementsByClassName('other-things-btn'),
+        ).filter((otherBtn) => otherBtn !== btn);
+        otherBtns.forEach((otherBtn) => {
+          otherBtn.classList.toggle('inactive');
+        });
+
+        btn.querySelector('.label-wrapper > .icon').classList.toggle('hidden');
+        btn
+          .querySelector('.toggle-chevron-container')
+          .classList.toggle('rotated');
+        toggleDropdown(btn.dataset.otherThingsType);
+      });
+    },
+  );
 
   document.querySelectorAll('.level-rating-button').forEach((btn) => {
     btn.addEventListener('click', () => {
