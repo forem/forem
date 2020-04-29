@@ -32,4 +32,5 @@ export const articlePropTypes = PropTypes.shape({
   positive_reactions_count: PropTypes.number,
   reactions_count: PropTypes.number,
   comments_count: PropTypes.number,
+  reading_time: PropTypes.number,
 });
