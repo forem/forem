@@ -81,6 +81,7 @@ RSpec.configure do |config|
   config.around(:each, elasticsearch_reset: true) do |example|
     Search::Cluster.recreate_indexes
     example.run
+    Search::Cluster.recreate_indexes
   end
 
   config.around(:each, throttle: true) do |example|
