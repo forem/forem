@@ -331,6 +331,7 @@ export class Listings extends Component {
       page,
       per_page: LISTING_PAGE_SIZE,
       tags,
+      tag_boolean_mode: 'all',
     };
 
     const responsePromise = fetchSearch('classified_listings', dataHash);
@@ -380,7 +381,6 @@ export class Listings extends Component {
           <span>{tag}</span>
           <span
             className="tag-close"
-            onClick={(e) => this.removeTag(e, tag)}
             data-no-instant
             role="button"
             onKeyPress={(e) => e.key === 'Enter' && this.removeTag(e, tag)}

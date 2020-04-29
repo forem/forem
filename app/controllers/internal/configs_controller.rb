@@ -32,7 +32,9 @@ class Internal::ConfigsController < Internal::ApplicationController
       campaign_sidebar_enabled
       campaign_sidebar_image
       community_description
-      community_member_description tagline
+      community_member_description
+      community_member_label
+      tagline
       favicon_url
       ga_view_id ga_fetch_rate
       logo_png

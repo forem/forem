@@ -2,6 +2,7 @@ module Authentication
   module Providers
     # Twitter authentication provider, uses omniauth-twitter as backend
     class Twitter < Provider
+      OFFICIAL_NAME = "Twitter".freeze
       CREATED_AT_FIELD = "twitter_created_at".freeze
       USERNAME_FIELD = "twitter_username".freeze
 
@@ -27,6 +28,10 @@ module Authentication
           twitter_following_count: raw_info.friends_count.to_i,
           twitter_username: info.nickname
         }
+      end
+
+      def self.official_name
+        OFFICIAL_NAME
       end
 
       protected

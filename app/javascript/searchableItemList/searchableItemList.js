@@ -30,7 +30,11 @@ export function onSearchBoxType(event) {
   const { selectedTags, statusView } = component.state;
 
   component.setState({ page: 0 });
-  component.search(query, { tags: selectedTags, statusView });
+  component.search(query, {
+    tags: selectedTags,
+    statusView,
+    appendItems: false,
+  });
 }
 
 export function toggleTag(event, tag) {
@@ -45,7 +49,7 @@ export function toggleTag(event, tag) {
     newTags.splice(newTags.indexOf(tag), 1);
   }
   component.setState({ selectedTags: newTags, page: 0, items: [] });
-  component.search(query, { tags: newTags, statusView });
+  component.search(query, { tags: newTags, statusView, appendItems: false });
 }
 
 export function clearSelectedTags(event) {
@@ -55,7 +59,7 @@ export function clearSelectedTags(event) {
   const { query, statusView } = component.state;
   const newTags = [];
   component.setState({ selectedTags: newTags, page: 0, items: [] });
-  component.search(query, { tags: newTags, statusView });
+  component.search(query, { tags: newTags, statusView, appendItems: false });
 }
 
 // Perform the initial search
@@ -82,14 +86,15 @@ export function performInitialSearch({ searchOptions = {} }) {
 }
 
 // Main search function
-export function search(query, { page, tags, statusView }) {
+export function search(query, { page, tags, statusView, appendItems = false }) {
   const component = this;
 
   // allow the page number to come from the calling function
   // we check `undefined` because page can be 0
   const newPage = page === undefined ? component.state.page : page;
 
-  const { hitsPerPage } = component.state;
+  const { hitsPerPage, items: existingItems } = component.state;
+
   const dataHash = {
     search_fields: query,
     page: newPage,
@@ -108,12 +113,21 @@ export function search(query, { page, tags, statusView }) {
   const responsePromise = fetchSearch('reactions', dataHash);
   return responsePromise.then((response) => {
     const reactions = response.result;
+
+    let items;
+    if (appendItems) {
+      // we append the new reactions at the bottom of the list, for pagination
+      items = [...existingItems, ...reactions];
+    } else {
+      items = reactions;
+    }
+
     component.setState({
       query,
       page: newPage,
-      items: reactions,
+      items,
       totalCount: response.total,
-      showLoadMoreButton: reactions.length < response.total,
+      showLoadMoreButton: items.length < response.total,
     });
   });
 }
@@ -124,5 +138,9 @@ export function loadNextPage() {
 
   const { query, selectedTags, page, statusView } = component.state;
   component.setState({ page: page + 1 });
-  component.search(query, { tags: selectedTags, statusView });
+  component.search(query, {
+    tags: selectedTags,
+    statusView,
+    appendItems: true,
+  });
 }

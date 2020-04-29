@@ -617,6 +617,13 @@ export default class Chat extends Component {
       };
       this.setState({ videoPath: `/video_chats/${activeChannelId}` });
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
+    } else if (message.startsWith('/play ')) {
+      const messageObject = {
+        activeChannelId,
+        message: message,
+        mentionedUsersId: this.getMentionedUsers(message),
+      };
+      sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     } else if (message.startsWith('/new')) {
       this.setActiveContentState(activeChannelId, {
         type_of: 'loading-post',
@@ -815,6 +822,15 @@ export default class Chat extends Component {
           path: `/chat_channel_memberships/${activeChannel.id}/edit`,
           type_of: 'article',
         });
+      } else if (content.startsWith('sidecar-content-plus-video')) {
+        this.setActiveContentState(activeChannelId, {
+          type_of: 'loading-post',
+        });
+        this.setActiveContent({
+          path: target.href || target.parentElement.href,
+          type_of: 'article',
+        });
+        this.setState({ videoPath: `/video_chats/${activeChannelId}` });
       } else if (content.startsWith('sidecar-video')) {
         this.setState({ videoPath: target.href || target.parentElement.href });
       } else if (

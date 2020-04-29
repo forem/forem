@@ -16,9 +16,11 @@ class User < ApplicationRecord
   MEDIUM_URL_REGEXP = /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\z/.freeze
   NAVBARS = %w[default static].freeze
   STACKOVERFLOW_URL_REGEXP = /\A(http(s)?:\/\/)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)\/.*\z/.freeze
+  YOUTUBE_URL_REGEXP = /\A(http(s)?:\/\/)?(www.youtube.com|youtube.com)\/.*\z/.freeze
   STREAMING_PLATFORMS = %w[twitch].freeze
   THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
   TWITCH_URL_REGEXP = /\A(http(s)?:\/\/)?(www.twitch.tv|twitch.tv)\/.*\z/.freeze
+  USERNAME_MAX_LENGTH = 30
   USERNAME_REGEXP = /\A[a-zA-Z0-9_]+\z/.freeze
   MESSAGES = {
     invalid_config_font: "%<value>s is not a valid font selection",
@@ -71,6 +73,7 @@ class User < ApplicationRecord
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
   has_many :notification_subscriptions, dependent: :destroy
+  has_many :user_optional_fields, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :offender_feedback_messages, class_name: "FeedbackMessage", inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
   has_many :organization_memberships, dependent: :destroy
@@ -125,10 +128,11 @@ class User < ApplicationRecord
   validates :twitch_url, length: { maximum: 100 }, allow_blank: true, format: TWITCH_URL_REGEXP
   validates :twitter_username, uniqueness: { allow_nil: true }, if: :twitter_username_changed?
   validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
-  validates :username, length: { in: 2..30 }, format: USERNAME_REGEXP
+  validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
   validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
   validates :website_url, :employer_url, url: { allow_blank: true, no_local: true }
   validates :website_url, length: { maximum: 100 }, allow_nil: true
+  validates :youtube_url, length: { maximum: 1000 }, format: YOUTUBE_URL_REGEXP, allow_blank: true
 
   validate :conditionally_validate_summary
   validate :non_banished_username, :username_changed?
