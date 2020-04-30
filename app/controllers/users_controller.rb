@@ -13,12 +13,6 @@ class UsersController < ApplicationController
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
   def index
-    if !user_signed_in? || less_than_one_day_old?(current_user)
-      # Theoretically, no user should get to this point since they should
-      # already be signed in, but this is here as a safeguard in case they do.
-      @users = default_suggested_users
-      return
-    end
     @users =
       if params[:state] == "follow_suggestions"
         determine_follow_suggestions(current_user)
