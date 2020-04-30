@@ -28,10 +28,7 @@ RSpec.describe "ArticlesShow", type: :request do
     xit "renders the proper modified at date" do
       article.update(edited_at: Time.zone.now)
       get article.path
-
-      correct_date = CGI.escapeHTML(article.edited_at.strftime("%b %d, %Y"))
-      buffer_date = CGI.escapeHTML((article.edited_at + 1.day).strftime("%b %d, %Y"))
-      expect(response.body).to match(/#{correct_date}|#{buffer_date}/)
+      expect(response.body).to include GI.escapeHTML(article.edited_at.strftime("%b %d, %Y"))
     end
 
     it "renders the proper author" do
