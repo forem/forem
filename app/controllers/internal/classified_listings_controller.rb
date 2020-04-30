@@ -4,7 +4,7 @@ class Internal::ClassifiedListingsController < Internal::ApplicationController
 
   def index
     @classified_listings =
-      ClassifiedListing.includes(%i[user classified_listings_category]).
+      ClassifiedListing.includes(%i[user classified_listing_category]).
         page(params[:page]).order("bumped_at DESC").per(50)
 
     @classified_listings = @classified_listings.published unless include_unpublished?

@@ -31,8 +31,13 @@ class ClassifiedListing < ApplicationRecord
   validate :restrict_markdown_input
   validate :validate_tags
 
-  delegate :cost, to: :category
   scope :published, -> { where(published: true) }
+  scope :in_category, lambda { |slug|
+    joins(:classified_listing_category).
+      where("classified_listing_categories.slug" => slug)
+  }
+
+  delegate :cost, to: :classified_listing_category
 
   def category
     classified_listing_category&.slug

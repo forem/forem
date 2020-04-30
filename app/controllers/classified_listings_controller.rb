@@ -22,7 +22,7 @@ class ClassifiedListingsController < ApplicationController
 
     if params[:view] == "moderate"
       not_found unless @displayed_classified_listing
-      return redirect_to edit_internal_classified_listing_path(id: @displayed_classified_listing.id)
+      return redirect_to edit_internal_listing_path(id: @displayed_classified_listing.id)
     end
 
     @classified_listings =

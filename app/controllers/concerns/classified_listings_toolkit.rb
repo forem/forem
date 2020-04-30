@@ -74,8 +74,7 @@ module ClassifiedListingsToolkit
   def listing_params
     tags = params["classified_listing"].delete("tags")
     if tags.present?
-      params["classified_listing"]["tags"] = tags.join(", ")
-      params["classified_listing"]["tag_list"] = tags
+      params["classified_listing"]["tag_list"] = tags.join(", ")
     end
     params.require(:classified_listing).permit(ALLOWED_PARAMS)
   end
