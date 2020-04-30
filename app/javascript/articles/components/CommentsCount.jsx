@@ -1,8 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '../../crayons/Button';
 
 export const CommentsCount = ({ count, articlePath }) => {
-  const commentsSVG = (
+  const commentsSVG = () => (
     <svg
       className="crayons-icon mr-1"
       width="24"
@@ -14,27 +15,35 @@ export const CommentsCount = ({ count, articlePath }) => {
   );
   if (count > 0) {
     return (
-      <a
-        href={`${articlePath}#comments`}
-        className="crayons-story__details__item"
+      <Button
+        variant="ghost"
+        size="s"
+        contentType="icon-left"
+        url={`${articlePath}#comments`}
+        icon={commentsSVG}
+        tagName="a"
       >
-        {commentsSVG}
         {count}
         <span className="hidden s:inline">
           &nbsp;comment
           {count !== 1 ? 's' : ''}
         </span>
-      </a>
+      </Button>
     );
-  } if (count === 0) {
+  }
+  if (count === 0) {
     return (
-      <a
-        href={`${articlePath}#comments`}
-        className="crayons-story__details__item"
+      <Button
+        variant="ghost"
+        size="s"
+        contentType="icon-left"
+        url={`${articlePath}#comments`}
+        icon={commentsSVG}
+        tagName="a"
       >
-        {commentsSVG}
+        <span className="inline s:hidden">0</span>
         <span className="hidden s:inline">Add comment</span>
-      </a>
+      </Button>
     );
   }
 

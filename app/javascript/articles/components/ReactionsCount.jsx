@@ -1,11 +1,12 @@
 import { h } from 'preact';
 import { articlePropTypes } from '../../src/components/common-prop-types';
+import { Button } from '../../crayons/Button';
 
 export const ReactionsCount = ({ article }) => {
   const totalReactions = article.positive_reactions_count || 0;
-  const reactionsSVG = (
+  const reactionsSVG = () => (
     <svg
-      className="crayons-icon mr-1"
+      className="crayons-icon"
       width="24"
       height="24"
       xmlns="http://www.w3.org/2000/svg"
@@ -15,14 +16,20 @@ export const ReactionsCount = ({ article }) => {
   );
 
   return (
-    <a href={article.path} className="crayons-story__details__item">
-      {reactionsSVG}
+    <Button
+      variant="ghost"
+      size="s"
+      contentType="icon-left"
+      url={article.path}
+      icon={reactionsSVG}
+      tagName="a"
+    >
       {totalReactions}
       <span className="hidden s:inline">
         &nbsp;reaction
         {totalReactions !== 1 ? 's' : ''}
       </span>
-    </a>
+    </Button>
   );
 };
 
