@@ -307,14 +307,17 @@ RSpec.describe "/internal/config", type: :request do
       end
 
       describe "Authentication" do
-        it "removes space authentication_providers" do
-          post "/internal/config", params: { site_config: { authentication_providers: "github, twitter" }, confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
+        it "updates enabled authentication providers" do
+          enabled = Array.wrap(Authentication::Providers.available.first.to_s)
+          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq(enabled)
         end
 
-        it "downcases authentication_providers" do
-          post "/internal/config", params: { site_config: { authentication_providers: "GitHub, Twitter" }, confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
+        it "strips empty elements" do
+          provider = Authentication::Providers.available.first.to_s
+          enabled = [provider, "", nil]
+          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq([provider])
         end
       end
     end
