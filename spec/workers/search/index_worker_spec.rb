@@ -1,9 +1,7 @@
 require "rails_helper"
 
-RSpec.describe Search::IndexWorker, type: :worker do
+RSpec.describe Search::IndexWorker, type: :worker, elasticsearch: "Tag" do
   let(:worker) { subject }
-
-  before { clear_elasticsearch_data(Search::Tag) }
 
   include_examples "#enqueues_on_correct_queue", "high_priority", ["Tag", 1]
 

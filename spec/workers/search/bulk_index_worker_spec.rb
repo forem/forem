@@ -6,8 +6,7 @@ RSpec.describe Search::BulkIndexWorker, type: :worker do
 
   include_examples "#enqueues_on_correct_queue", "high_priority", ["Reaction", 1]
 
-  it "indexes documents for a set of given ids and object class" do
-    clear_elasticsearch_data(Search::Reaction)
+  it "indexes documents for a set of given ids and object class", elasticsearch: "Reaction" do
     reactions = [create(:reaction, reactable: article), create(:reaction), create(:reaction)]
     Sidekiq::Worker.clear_all
 
