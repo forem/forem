@@ -189,6 +189,12 @@ RSpec.describe "/internal/config", type: :request do
           end.to change(SiteConfig, :rate_limit_published_article_creation).from(9).to(3)
         end
 
+        it "updates rate_limit_organization_creation" do
+          expect do
+            post "/internal/config", params: { site_config: { rate_limit_organization_creation: 3 }, confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_organization_creation).from(1).to(3)
+        end
+
         it "updates rate_limit_image_upload" do
           expect do
             post "/internal/config", params: { site_config: { rate_limit_image_upload: 3 }, confirmation: confirmation_message }
@@ -307,14 +313,17 @@ RSpec.describe "/internal/config", type: :request do
       end
 
       describe "Authentication" do
-        it "removes space authentication_providers" do
-          post "/internal/config", params: { site_config: { authentication_providers: "github, twitter" }, confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
+        it "updates enabled authentication providers" do
+          enabled = Array.wrap(Authentication::Providers.available.first.to_s)
+          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq(enabled)
         end
 
-        it "downcases authentication_providers" do
-          post "/internal/config", params: { site_config: { authentication_providers: "GitHub, Twitter" }, confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
+        it "strips empty elements" do
+          provider = Authentication::Providers.available.first.to_s
+          enabled = [provider, "", nil]
+          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq([provider])
         end
       end
     end

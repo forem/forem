@@ -1,7 +1,9 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_suspended, only: %i[update]
-  before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
+  before_action :set_user, only: %i[
+    update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_identity
+  ]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
@@ -130,22 +132,34 @@ class UsersController < ApplicationController
     end
   end
 
-  def remove_association
-    provider = params[:provider]
-    identity = @user.identities.find_by(provider: provider)
+  def remove_identity
     set_tabs("account")
 
-    if @user.identities.size == 2 && identity
+    error_message = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+    unless Authentication::Providers.enabled?(params[:provider])
+      flash[:error] = error_message
+      redirect_to user_settings_path(@tab)
+      return
+    end
+
+    provider = Authentication::Providers.get!(params[:provider])
+
+    identity = @user.identities.find_by(provider: provider.provider_name)
+
+    if identity && @user.identities.size > 1
       identity.destroy
 
-      identity_username = "#{provider}_username".to_sym
-      @user.update(identity_username => nil, :profile_updated_at => Time.current)
+      @user.update(
+        provider.user_username_field => nil,
+        :profile_updated_at => Time.current,
+      )
 
-      flash[:settings_notice] = "Your #{provider.capitalize} account was successfully removed."
+      flash[:settings_notice] = "Your #{provider.official_name} account was successfully removed."
     else
-      flash[:error] = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+      flash[:error] = error_message
     end
-    redirect_to "/settings/#{@tab}"
+
+    redirect_to user_settings_path(@tab)
   end
 
   def onboarding_update
@@ -338,10 +352,19 @@ class UsersController < ApplicationController
   end
 
   def less_than_one_day_old?(user)
+    # we check all the `_created_at` fields for all available providers
+    # we use `.available` and not `.enabled` to avoid a situation in which
+    # an admin disables an authentication method after users have already
+    # registered, risking that they would be flagged as new
+    # the last one is a fallback in case all created_at fields are nil
+    user_identity_age = Authentication::Providers.available.map do |provider|
+      user.public_send("#{provider}_created_at")
+    end.detect(&:present?)
+
+    user_identity_age = user_identity_age.presence || 8.days.ago
+
     range = 1.day.ago.beginning_of_day..Time.current
-    user_identity_age = user.github_created_at || user.twitter_created_at || 8.days.ago
-    # last one is a fallback in case both are nil
-    range.cover? user_identity_age
+    range.cover?(user_identity_age)
   end
 
   def valid_filename?

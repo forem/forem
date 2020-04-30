@@ -55,10 +55,10 @@ error. Mappings for each index can be found in
 
 In order to index the data from Postgres into Elasticsearch, we rely on
 callbacks in our ActiveRecord models. Whenever a model is created or updated we
-use an `after_commit` callback to enqueue a `Search::IndexToElasticsearchWorker`
-which handles indexing the document into Elasticsearch. In order to translate
-our ActiveRecord data to Elasticsearch we use serializers. Each model has its
-own serializer which can be found in `app/serializers/search`
+use an `after_commit` callback to enqueue a `Search::IndexWorker` which handles
+indexing the document into Elasticsearch. In order to translate our ActiveRecord
+data to Elasticsearch we use serializers. Each model has its own serializer
+which can be found in `app/serializers/search`
 
 ### Searching Elasticsearch
 

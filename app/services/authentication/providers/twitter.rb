@@ -5,6 +5,7 @@ module Authentication
       OFFICIAL_NAME = "Twitter".freeze
       CREATED_AT_FIELD = "twitter_created_at".freeze
       USERNAME_FIELD = "twitter_username".freeze
+      SETTINGS_URL = "https://twitter.com/settings/applications".freeze
 
       def new_user_data
         name = raw_info.name.presence || info.name
@@ -30,8 +31,20 @@ module Authentication
         }
       end
 
+      def self.user_created_at_field
+        CREATED_AT_FIELD
+      end
+
+      def self.user_username_field
+        USERNAME_FIELD
+      end
+
       def self.official_name
         OFFICIAL_NAME
+      end
+
+      def self.settings_url
+        SETTINGS_URL
       end
 
       def self.sign_in_path(params = {})

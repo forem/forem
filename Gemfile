@@ -36,7 +36,7 @@ gem "doorkeeper", "~> 5.3" # Oauth 2 provider
 gem "dry-struct", "~> 1.2" # Typed structs and value objects
 gem "elasticsearch", "~> 7.6" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
-gem "emoji_regex", "~> 2.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
+gem "emoji_regex", "~> 3.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
 gem "fast_jsonapi", "~> 1.5" # Serializer for Ruby objects
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
@@ -71,7 +71,7 @@ gem "puma", "~> 4.3" # Puma is a simple, fast, threaded, and highly concurrent H
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 1.1" # Pusher Push Notifications Ruby server SDK
-gem "rack-attack", "~> 6.2.2" # Used to throttle requests to prevent brute force attacks
+gem "rack-attack", "~> 6.3.0" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 5.2" # Ruby on Rails
@@ -106,7 +106,7 @@ gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "webpacker", "~> 5.1.1" # Use webpack to manage app-like JavaScript modules in Rails
 
 group :development do
-  gem "better_errors", "~> 2.6" # Provides a better error page for Rails and other Rack apps
+  gem "better_errors", "~> 2.7" # Provides a better error page for Rails and other Rack apps
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
   gem "brakeman", "~> 4.8", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
