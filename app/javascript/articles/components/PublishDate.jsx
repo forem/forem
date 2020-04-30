@@ -14,13 +14,17 @@ export const PublishDate = ({
     maxDisplayedAge: 60 * 60 * 24 * 7,
   });
 
+  const timeAgoText = () => {
+    if (timeAgoIndicator) {
+      return ` (${timeAgoIndicator})`;
+    }
+    return '';
+  };
+
   return (
     <time dateTime={publishedTimestamp}>
       {readablePublishDate}
-      {' '}
-      (
-      {timeAgoIndicator}
-      )
+      {timeAgoText()}
     </time>
   );
 };
