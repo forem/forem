@@ -60,6 +60,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       shop_url
       sidebar_tags
       suggested_tags
+      suggested_users
       tagline
     ]
 
@@ -79,11 +80,13 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def clean_up_params
     config = params[:site_config]
-    config[:suggested_tags] = config[:suggested_tags].downcase.delete(" ") if config[:suggested_tags]
     config[:sidebar_tags] = config[:sidebar_tags].downcase.delete(" ") if config[:sidebar_tags]
+    config[:suggested_tags] = config[:suggested_tags].downcase.delete(" ") if config[:suggested_tags]
+    config[:suggested_users] = config[:suggested_users].downcase.delete(" ") if config[:suggested_users]
   end
 
   def bust_relevant_caches
-    CacheBuster.bust("/tags/onboarding") # Needs to change when suggested_tags is edited
+    # Needs to change when suggested_tags is edited.
+    CacheBuster.bust("/tags/onboarding")
   end
 end

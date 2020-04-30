@@ -294,6 +294,16 @@
             </div>
 
             <div class="form-group">
+              <%= f.label :suggested_users %>
+              <%= f.text_field :suggested_users,
+                               class: "form-control",
+                               value: SiteConfig.suggested_users.join(","),
+                               placeholder: "List of valid usernames: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin" %>
+              <div class="alert alert-info">Determines which tags are suggested to new users during onboarding (comma
+                separated, letters only)</div>
+            </div>
+
+            <div class="form-group">
               <%= f.label :suggested_tags %>
               <%= f.text_field :suggested_tags,
                                class: "form-control",
