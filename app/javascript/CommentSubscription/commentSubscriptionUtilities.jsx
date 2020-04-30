@@ -54,9 +54,8 @@ async function setSubscription(articleId, subscriptionType) {
  * Loads the comment subscription and snackbar components to provide comment
  * subscriptions to logged on users.
  */
-export async function loadCommentSubscription() {
+export async function loadCommentSubscription(articleId) {
   const root = document.querySelector('#comment-subscription');
-  const { articleId } = document.querySelector('#article-body').dataset;
   const { config: subscriptionType } = await getSubscriptionStatus(articleId);
   const subscriptionRequestHandler = (type) => setSubscription(articleId, type);
 
