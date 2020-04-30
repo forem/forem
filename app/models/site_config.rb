@@ -16,7 +16,11 @@ class SiteConfig < RailsSettings::Base
   field :community_member_description, type: :string, default: "amazing humans who code."
   field :community_member_label, type: :string, default: "user"
   field :tagline, type: :string, default: "We're a place where coders share, stay up-to-date and grow their careers."
+
+  # Mascot
   field :mascot_user_id, type: :integer, default: 1
+  field :mascot_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+  field :mascot_image_description, type: :string, default: "Sloan, the sloth mascot"
 
   # Social Media and Email
   field :staff_user_id, type: :integer, default: 1
@@ -55,15 +59,16 @@ class SiteConfig < RailsSettings::Base
   field :campaign_sidebar_enabled, type: :boolean, default: 0
   field :campaign_sidebar_image, type: :string, default: nil
 
+  # Onboarding
+  field :onboarding_taskcard_image, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/staggered-dev.svg"
+  field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
+
   # Images
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
   field :favicon_url, type: :string, default: "favicon.ico"
   field :logo_png, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
   field :logo_svg, type: :string, default: ""
   field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
-  field :onboarding_taskcard_image, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/staggered-dev.svg"
-  field :mascot_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
-  field :mascot_image_description, type: :string, default: "Sloan, the sloth mascot"
 
   # Rate Limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
@@ -95,7 +100,6 @@ class SiteConfig < RailsSettings::Base
   field :periodic_email_digest_min, type: :integer, default: 2
 
   # Tags
-  field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
   field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
 
   # Shop
