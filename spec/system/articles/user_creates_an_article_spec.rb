@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Creating an article with the editor", type: :system do
-  include_context "runkit_tag"
+  include_context "with runkit_tag"
 
   let(:user) { create(:user) }
   let!(:template) { file_fixture("article_published.txt").read }

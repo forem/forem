@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Creating Comment", type: :system, js: true do
-  include_context "runkit_tag"
+  include_context "with runkit_tag"
 
   let(:user) { create(:user) }
   let(:raw_comment) { Faker::Lorem.paragraph }
@@ -25,7 +25,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     expect(page).to have_text(raw_comment)
   end
 
-  context "Runkit tags" do
+  context "with Runkit tags" do
     before do
       visit article.path.to_s
 

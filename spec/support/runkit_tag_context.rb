@@ -1,4 +1,4 @@
-shared_context "runkit_tag" do
+shared_context "with runkit_tag" do
   def compose_runkit_comment(title)
     <<~COMMENT
       #{title}
