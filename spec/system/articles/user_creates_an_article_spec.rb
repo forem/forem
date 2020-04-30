@@ -36,6 +36,10 @@ RSpec.describe "Creating an article with the editor", type: :system do
 
       expect_runkit_tag_to_be_active
 
+      click_button "EDIT"
+
+      expect_no_runkit_tag_to_be_active
+
       click_button "SAVE CHANGES"
 
       expect_runkit_tag_to_be_active

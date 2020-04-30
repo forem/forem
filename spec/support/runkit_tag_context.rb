@@ -11,4 +11,8 @@ shared_context "with runkit_tag" do
   def expect_runkit_tag_to_be_active(count: 1)
     expect(page).to have_css(".runkit-element iframe", count: count)
   end
+
+  def expect_no_runkit_tag_to_be_active
+    expect_runkit_tag_to_be_active count: 0
+  end
 end
