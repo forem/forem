@@ -8,29 +8,26 @@ class UsersController < ApplicationController
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
-  DEFAULT_FOLLOW_SUGGESTIONS = %w[ben jess peter maestromac andy liana].freeze
+  DEFAULT_FOLLOW_SUGGESTIONS = SiteConfig.suggested_users
+  INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
+  private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
   def index
     if !user_signed_in? || less_than_one_day_old?(current_user)
-      @users = User.where(username: DEFAULT_FOLLOW_SUGGESTIONS)
+      # Theoretically, no user should get to this point since they should
+      # already be signed in, but this is here as a safeguard in case they do.
+      @users = default_suggested_users
       return
     end
-
     @users =
       if params[:state] == "follow_suggestions"
-        Suggester::Users::Recent.new(
-          current_user,
-          attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
-        ).suggest
+        determine_follow_suggestions(current_user)
       elsif params[:state] == "sidebar_suggestions"
         Suggester::Users::Sidebar.new(current_user, params[:tag]).suggest.sample(3)
       else
         User.none
       end
   end
-
-  INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
-  private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
   # GET /settings/@tab
   def edit
@@ -275,6 +272,19 @@ class UsersController < ApplicationController
 
   def sanitize_user_params
     params[:user].delete_if { |_k, v| v.blank? }
+  end
+
+  def default_suggested_users
+    @default_suggested_users ||= User.where(username: DEFAULT_FOLLOW_SUGGESTIONS)
+  end
+
+  def determine_follow_suggestions(current_user)
+    recent_suggestions = Suggester::Users::Recent.new(
+      current_user,
+      attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
+    ).suggest
+
+    recent_suggestions.empty? ? default_suggested_users : recent_suggestions
   end
 
   def render_update_response
