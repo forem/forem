@@ -46,11 +46,13 @@ exports[`<Article /> component should render a podcast article 1`] = `
 `;
 
 exports[`<Article /> component should render a podcast episode 1`] = `
-<div
-  class="crayons-story false"
+<button
+  class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={27683}
   data-featured-article="articles-49020"
   id={false}
+  onClick={[Function]}
+  type="button"
 >
   <div
     class="crayons-story__body"
@@ -108,6 +110,22 @@ exports[`<Article /> component should render a podcast episode 1`] = `
           href="/some-post/path"
           id="article-link-49020"
         >
+          <span
+            class="crayons-indicator"
+            style={
+              Object {
+                "background": "#000000",
+                "color": "#ffffff",
+              }
+            }
+          >
+            #javascript
+          </span>
+          <span
+            class="crayons-indicator"
+          >
+            podcast
+          </span>
           monitor recontextualize
         </a>
       </h2>
@@ -155,11 +173,11 @@ exports[`<Article /> component should render a podcast episode 1`] = `
           class="crayons-story__details"
         >
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -190,15 +208,17 @@ exports[`<Article /> component should render a podcast episode 1`] = `
     </div>
   </div>
   <div />
-</div>
+</button>
 `;
 
 exports[`<Article /> component should render a standard article 1`] = `
-<div
-  class="crayons-story false"
+<button
+  class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
+  onClick={[Function]}
+  type="button"
 >
   <div
     class="crayons-story__body"
@@ -256,6 +276,17 @@ exports[`<Article /> component should render a standard article 1`] = `
           href="/some-post/path"
           id="article-link-62407"
         >
+          <span
+            class="crayons-indicator"
+            style={
+              Object {
+                "background": "#000000",
+                "color": "#ffffff",
+              }
+            }
+          >
+            #javascript
+          </span>
           Unbranded Home Loan Account
         </a>
       </h2>
@@ -303,11 +334,11 @@ exports[`<Article /> component should render a standard article 1`] = `
           class="crayons-story__details"
         >
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -348,15 +379,17 @@ exports[`<Article /> component should render a standard article 1`] = `
     </div>
   </div>
   <div />
-</div>
+</button>
 `;
 
 exports[`<Article /> component should render a user article 1`] = `
-<div
-  class="crayons-story false"
+<button
+  class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={7955}
   data-featured-article="articles-24692"
   id={false}
+  onClick={[Function]}
+  type="button"
 >
   <div
     class="crayons-story__body"
@@ -412,6 +445,17 @@ exports[`<Article /> component should render a user article 1`] = `
         <a
           id="article-link-24692"
         >
+          <span
+            class="crayons-indicator"
+            style={
+              Object {
+                "background": "#5874d9",
+                "color": "white",
+              }
+            }
+          >
+            person
+          </span>
           Phyllis Armstrong
         </a>
       </h2>
@@ -442,15 +486,17 @@ exports[`<Article /> component should render a user article 1`] = `
     </div>
   </div>
   <div />
-</div>
+</button>
 `;
 
 exports[`<Article /> component should render a video article 1`] = `
-<div
-  class="crayons-story false"
+<button
+  class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={27683}
   data-featured-article="articles-49020"
   id={false}
+  onClick={[Function]}
+  type="button"
 >
   <a
     class="crayons-story__video"
@@ -519,6 +565,17 @@ exports[`<Article /> component should render a video article 1`] = `
           href="/some-post/path"
           id="article-link-49020"
         >
+          <span
+            class="crayons-indicator"
+            style={
+              Object {
+                "background": "#000000",
+                "color": "#ffffff",
+              }
+            }
+          >
+            #javascript
+          </span>
           monitor recontextualize
         </a>
       </h2>
@@ -566,11 +623,11 @@ exports[`<Article /> component should render a video article 1`] = `
           class="crayons-story__details"
         >
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -611,15 +668,17 @@ exports[`<Article /> component should render a video article 1`] = `
     </div>
   </div>
   <div />
-</div>
+</button>
 `;
 
 exports[`<Article /> component should render a video article with a flare tag 1`] = `
-<div
-  class="crayons-story false"
+<button
+  class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={27683}
   data-featured-article="articles-49020"
   id={false}
+  onClick={[Function]}
+  type="button"
 >
   <a
     class="crayons-story__video"
@@ -688,6 +747,17 @@ exports[`<Article /> component should render a video article with a flare tag 1`
           href="/some-post/path"
           id="article-link-49020"
         >
+          <span
+            class="crayons-indicator"
+            style={
+              Object {
+                "background": "#000000",
+                "color": "#ffffff",
+              }
+            }
+          >
+            #javascript
+          </span>
           monitor recontextualize
         </a>
       </h2>
@@ -735,11 +805,11 @@ exports[`<Article /> component should render a video article with a flare tag 1`
           class="crayons-story__details"
         >
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -780,15 +850,17 @@ exports[`<Article /> component should render a video article with a flare tag 1`
     </div>
   </div>
   <div />
-</div>
+</button>
 `;
 
 exports[`<Article /> component should render as saved on reading list 1`] = `
-<div
-  class="crayons-story false"
+<button
+  class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
+  onClick={[Function]}
+  type="button"
 >
   <div
     class="crayons-story__body"
@@ -846,6 +918,17 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
           href="/some-post/path"
           id="article-link-62407"
         >
+          <span
+            class="crayons-indicator"
+            style={
+              Object {
+                "background": "#000000",
+                "color": "#ffffff",
+              }
+            }
+          >
+            #javascript
+          </span>
           Unbranded Home Loan Account
         </a>
       </h2>
@@ -893,11 +976,11 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
           class="crayons-story__details"
         >
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -914,11 +997,11 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
             </span>
           </a>
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path#comments"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -1011,15 +1094,17 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
       </a>
     </div>
   </div>
-</div>
+</button>
 `;
 
 exports[`<Article /> component should render with a flare tag 1`] = `
-<div
-  class="crayons-story false"
+<button
+  class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
+  onClick={[Function]}
+  type="button"
 >
   <div
     class="crayons-story__body"
@@ -1077,6 +1162,17 @@ exports[`<Article /> component should render with a flare tag 1`] = `
           href="/some-post/path"
           id="article-link-62407"
         >
+          <span
+            class="crayons-indicator"
+            style={
+              Object {
+                "background": "#000000",
+                "color": "#ffffff",
+              }
+            }
+          >
+            #javascript
+          </span>
           Unbranded Home Loan Account
         </a>
       </h2>
@@ -1124,11 +1220,11 @@ exports[`<Article /> component should render with a flare tag 1`] = `
           class="crayons-story__details"
         >
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -1169,15 +1265,17 @@ exports[`<Article /> component should render with a flare tag 1`] = `
     </div>
   </div>
   <div />
-</div>
+</button>
 `;
 
 exports[`<Article /> component should render with a snippet result 1`] = `
-<div
-  class="crayons-story false"
+<button
+  class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
+  onClick={[Function]}
+  type="button"
 >
   <div
     class="crayons-story__body"
@@ -1235,6 +1333,17 @@ exports[`<Article /> component should render with a snippet result 1`] = `
           href="/some-post/path"
           id="article-link-62407"
         >
+          <span
+            class="crayons-indicator"
+            style={
+              Object {
+                "background": "#000000",
+                "color": "#ffffff",
+              }
+            }
+          >
+            #javascript
+          </span>
           Unbranded Home Loan Account
         </a>
       </h2>
@@ -1289,11 +1398,11 @@ exports[`<Article /> component should render with a snippet result 1`] = `
           class="crayons-story__details"
         >
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -1334,15 +1443,17 @@ exports[`<Article /> component should render with a snippet result 1`] = `
     </div>
   </div>
   <div />
-</div>
+</button>
 `;
 
 exports[`<Article /> component should render with an organization 1`] = `
-<div
-  class="crayons-story false"
+<button
+  class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
+  onClick={[Function]}
+  type="button"
 >
   <div
     class="crayons-story__body"
@@ -1424,6 +1535,17 @@ exports[`<Article /> component should render with an organization 1`] = `
           href="/some-post/path"
           id="article-link-62407"
         >
+          <span
+            class="crayons-indicator"
+            style={
+              Object {
+                "background": "#000000",
+                "color": "#ffffff",
+              }
+            }
+          >
+            #javascript
+          </span>
           Unbranded Home Loan Account
         </a>
       </h2>
@@ -1471,11 +1593,11 @@ exports[`<Article /> component should render with an organization 1`] = `
           class="crayons-story__details"
         >
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -1516,15 +1638,17 @@ exports[`<Article /> component should render with an organization 1`] = `
     </div>
   </div>
   <div />
-</div>
+</button>
 `;
 
 exports[`<Article /> component should render with comments 1`] = `
-<div
-  class="crayons-story false"
+<button
+  class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
+  onClick={[Function]}
+  type="button"
 >
   <div
     class="crayons-story__body"
@@ -1582,6 +1706,17 @@ exports[`<Article /> component should render with comments 1`] = `
           href="/some-post/path"
           id="article-link-62407"
         >
+          <span
+            class="crayons-indicator"
+            style={
+              Object {
+                "background": "#000000",
+                "color": "#ffffff",
+              }
+            }
+          >
+            #javascript
+          </span>
           Unbranded Home Loan Account
         </a>
       </h2>
@@ -1629,11 +1764,11 @@ exports[`<Article /> component should render with comments 1`] = `
           class="crayons-story__details"
         >
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -1650,11 +1785,11 @@ exports[`<Article /> component should render with comments 1`] = `
             </span>
           </a>
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path#comments"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -1747,15 +1882,17 @@ exports[`<Article /> component should render with comments 1`] = `
       </a>
     </div>
   </div>
-</div>
+</button>
 `;
 
 exports[`<Article /> component should render with reactions 1`] = `
-<div
-  class="crayons-story false"
+<button
+  class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
+  onClick={[Function]}
+  type="button"
 >
   <div
     class="crayons-story__body"
@@ -1813,6 +1950,17 @@ exports[`<Article /> component should render with reactions 1`] = `
           href="/some-post/path"
           id="article-link-62407"
         >
+          <span
+            class="crayons-indicator"
+            style={
+              Object {
+                "background": "#000000",
+                "color": "#ffffff",
+              }
+            }
+          >
+            #javascript
+          </span>
           Unbranded Home Loan Account
         </a>
       </h2>
@@ -1860,11 +2008,11 @@ exports[`<Article /> component should render with reactions 1`] = `
           class="crayons-story__details"
         >
           <a
-            class="crayons-story__details__item"
+            class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
             href="/some-post/path"
           >
             <svg
-              class="crayons-icon mr-1"
+              class="crayons-icon"
               height="24"
               width="24"
               xmlns="http://www.w3.org/2000/svg"
@@ -1905,5 +2053,5 @@ exports[`<Article /> component should render with reactions 1`] = `
     </div>
   </div>
   <div />
-</div>
+</button>
 `;

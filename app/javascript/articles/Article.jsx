@@ -27,11 +27,31 @@ export const Article = ({
   }
 
   return (
-    <div
-      className={`crayons-story ${isFeatured && 'crayons-story--featured'}`}
+    <button
+      className={`crayons-story w-100 align-left border-0 ${
+        isFeatured && 'crayons-story--featured'
+      }`}
       id={isFeatured && 'featured-story-marker'}
       data-featured-article={`articles-${article.id}`}
       data-content-user-id={article.user_id}
+      type="button"
+      onClick={(event) => {
+        const { classList } = event.target;
+
+        // This looks a little messy, but it's the only
+        // way to make the entire card clickable.
+        if (
+          classList.contains('crayons-story') ||
+          classList.contains('crayons-story__top') ||
+          classList.contains('crayons-story__body') ||
+          classList.contains('crayons-story__indention') ||
+          classList.contains('crayons-story__title') ||
+          classList.contains('crayons-story__tags') ||
+          classList.contains('crayons-story__bottom')
+        ) {
+          window.location = article.path;
+        }
+      }}
     >
       {article.cloudinary_video_url && <Video article={article} />}
 
@@ -82,7 +102,7 @@ export const Article = ({
         articlePath={article.path}
         totalCount={article.comments_count}
       />
-    </div>
+    </button>
   );
 };
 
