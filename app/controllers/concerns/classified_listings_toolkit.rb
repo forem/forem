@@ -48,7 +48,6 @@ module ClassifiedListingsToolkit
     available_user_credits = current_user.credits.unspent
 
     unless @classified_listing.valid?
-      # TODO: [thepracticaldev/oss] For now the credits are needed in the view
       @credits = current_user.credits.unspent
       process_unsuccessful_creation
       return
