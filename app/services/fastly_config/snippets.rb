@@ -22,7 +22,7 @@ module FastlyConfig
       if snippet
         snippet.content = new_snippet_content
         snippet.save!
-        log_to_datadog("update", snippet)
+        log_to_datadog("update", snippet, new_version)
       else
         snippet_options = {
           content: new_snippet_content,
