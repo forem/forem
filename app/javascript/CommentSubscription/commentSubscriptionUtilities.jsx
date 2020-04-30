@@ -1,9 +1,7 @@
-import { h, render } from 'preact';
 import { request } from '../utilities/http/request';
-import { Snackbar, addSnackbarItem } from '../Snackbar';
-import { CommentSubscription } from './CommentSubscription';
+import { addSnackbarItem } from '../Snackbar';
 
-async function getSubscriptionStatus(articleId) {
+export async function getSubscriptionStatus(articleId) {
   try {
     const response = await request(
       `/notification_subscriptions/Article/${articleId}`,
@@ -17,7 +15,7 @@ async function getSubscriptionStatus(articleId) {
   }
 }
 
-async function setSubscription(articleId, subscriptionType) {
+export async function setSubscription(articleId, subscriptionType) {
   try {
     const response = await request(
       `/notification_subscriptions/Article/${articleId}`,
@@ -48,29 +46,4 @@ async function setSubscription(articleId, subscriptionType) {
   } catch (error) {
     addSnackbarItem({ message: 'An error occurred, please try again' });
   }
-}
-
-/**
- * Loads the comment subscription and snackbar components to provide comment
- * subscriptions to logged on users.
- */
-export async function loadCommentSubscription(articleId) {
-  const root = document.querySelector('#comment-subscription');
-  const { config: subscriptionType } = await getSubscriptionStatus(articleId);
-  const subscriptionRequestHandler = (type) => setSubscription(articleId, type);
-
-  render(
-    <CommentSubscription
-      subscriptionType={subscriptionType}
-      positionType="static"
-      onSubscribe={subscriptionRequestHandler}
-      onUnsubscribe={subscriptionRequestHandler}
-    />,
-    root,
-    root.firstElementChild,
-  );
-
-  const snackZone = document.getElementById('snack-zone');
-
-  render(<Snackbar lifespan="3" />, snackZone, snackZone.firstElementChild);
 }
