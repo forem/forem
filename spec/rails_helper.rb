@@ -84,14 +84,12 @@ RSpec.configure do |config|
     Search::Cluster.recreate_indexes
   end
 
-  config.around do |ex|
-    if ex.metadata.key?(:elasticsearch)
-      klasses = Array.wrap(ex.metadata[:elasticsearch]).map do |search_class|
-        Search.const_get(search_class)
-      end
-      klasses.each { |klass| clear_elasticsearch_data(klass) }
-      ex.run
+  config.around(:each, :elasticsearch) do |ex|
+    klasses = Array.wrap(ex.metadata[:elasticsearch]).map do |search_class|
+      Search.const_get(search_class)
     end
+    klasses.each { |klass| clear_elasticsearch_data(klass) }
+    ex.run
   end
 
   config.around(:each, throttle: true) do |example|
