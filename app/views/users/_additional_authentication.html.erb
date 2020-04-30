@@ -1,7 +1,7 @@
 <% authentication_enabled_providers.each do |provider| %>
   <% unless @user.identities.exists?(provider: provider.provider_name) %>
     <a
-      href="<%= provider.authentication_path %>"
+      href="<%= provider.sign_in_path(state: "profile") %>"
       class="crayons-btn crayons-btn--outlined mr-2"
       data-no-instant>
       <%= inline_svg_tag(
