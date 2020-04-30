@@ -11,7 +11,9 @@ class Internal::ConfigsController < Internal::ApplicationController
     clean_up_params
 
     config_params.each do |key, value|
-      if value.respond_to?(:to_h)
+      if value.is_a?(Array)
+        SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
+      elsif value.respond_to?(:to_h)
         SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
       else
         SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
@@ -26,7 +28,6 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def config_params
     allowed_params = %i[
-      authentication_providers
       campaign_featured_tags
       campaign_hero_html_variant_name
       campaign_sidebar_enabled
@@ -34,7 +35,6 @@ class Internal::ConfigsController < Internal::ApplicationController
       community_description
       community_member_description
       community_member_label
-      tagline
       favicon_url
       ga_view_id ga_fetch_rate
       logo_png
@@ -59,11 +59,16 @@ class Internal::ConfigsController < Internal::ApplicationController
       shop_url
       sidebar_tags
       suggested_tags
+      tagline
     ]
-    params.require(:site_config).permit(allowed_params,
-                                        social_media_handles: SiteConfig.social_media_handles.keys,
-                                        email_addresses: SiteConfig.email_addresses.keys,
-                                        meta_keywords: SiteConfig.meta_keywords.keys)
+
+    params.require(:site_config).permit(
+      allowed_params,
+      authentication_providers: [],
+      social_media_handles: SiteConfig.social_media_handles.keys,
+      email_addresses: SiteConfig.email_addresses.keys,
+      meta_keywords: SiteConfig.meta_keywords.keys,
+    )
   end
 
   def extra_authorization_and_confirmation
@@ -74,7 +79,6 @@ class Internal::ConfigsController < Internal::ApplicationController
   def clean_up_params
     config = params[:site_config]
     config[:suggested_tags] = config[:suggested_tags].downcase.delete(" ") if config[:suggested_tags]
-    config[:authentication_providers] = config[:authentication_providers].downcase.delete(" ") if config[:authentication_providers]
     config[:sidebar_tags] = config[:sidebar_tags].downcase.delete(" ") if config[:sidebar_tags]
   end
 

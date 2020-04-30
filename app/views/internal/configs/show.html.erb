@@ -169,11 +169,16 @@
           <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
             <div class="form-group">
               <%= f.label :authentication_providers, "Authentication providers" %>
-              <%= f.text_field :authentication_providers,
-                               class: "form-control",
-                               value: SiteConfig.authentication_providers.join(","),
-                               placeholder: "List of valid providers: comma separated, letters only e.g. twitter,github" %>
-              <div class="alert alert-info">How can users sign in? (More options coming)</div>
+              <%= select_tag "site_config[authentication_providers]",
+                             options_from_collection_for_select(
+                               authentication_available_providers,
+                               :provider_name,
+                               :official_name,
+                               authentication_enabled_providers.map(&:provider_name),
+                             ),
+                             multiple: true,
+                             class: "form-control selectpicker" %>
+              <div class="alert alert-info">How can users sign in?</div>
             </div>
           </div>
         </div>
