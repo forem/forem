@@ -97,5 +97,12 @@ RSpec.describe "Podcast Create", type: :request do
       post podcasts_path, params: { podcast: valid_attributes }
       expect(response.body).to include("Suggest a Podcast")
     end
+
+    it "returns error if image is not a file" do
+      image = "A String"
+      valid_attributes[:image] = image
+      post podcasts_path, params: { podcast: valid_attributes }
+      expect(response.body).to include("Suggest a Podcast")
+    end
   end
 end
