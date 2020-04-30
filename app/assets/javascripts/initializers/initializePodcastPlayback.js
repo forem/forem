@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * This script hunts for podcast's "Record" for both the podcast_episde's
  * show page and an article page containing podcast liquid tag. It handles
