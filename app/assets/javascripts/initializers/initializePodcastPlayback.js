@@ -1,5 +1,3 @@
-
-
 /**
  * This script hunts for podcast's "Record" for both the podcast_episde's
  * show page and an article page containing podcast liquid tag. It handles
@@ -284,18 +282,22 @@ function initializePodcastPlayback() {
     getById('animated-bars').classList.remove('playing');
   }
 
+  function sendPlayMessage(atSeconds) {
+    if (isNativeIOS()) {
+      sendPodcastMessage({
+        action: 'play',
+        seconds: atSeconds,
+      });
+    } else {
+      AndroidBridge.playPodcast(atSeconds);
+    }
+  }
+
   function playAudio(audio) {
     return new Promise(function (resolve, reject) {
       var currentState = currentAudioState();
-      if (isNativeIOS()) {
-        sendPodcastMessage({
-          action: 'play',
-          seconds: currentState.currentTime.toString(),
-        });
-        setPlaying(true);
-        resolve();
-      } else if (isNativeAndroid()) {
-        AndroidBridge.playPodcast(currentState.currentTime.toString());
+      if (isNativeIOS() || isNativeAndroid()) {
+        sendPlayMessage(currentState.currentTime.toString());
         setPlaying(true);
         resolve();
       } else {
@@ -315,27 +317,40 @@ function initializePodcastPlayback() {
     });
   }
 
+  function fetchMetadataString() {
+    var episodeContainer = getByClass('podcast-episode-container')[0];
+    if (episodeContainer === undefined) {
+      episodeContainer = getByClass('podcastliquidtag')[0];
+    }
+    return episodeContainer.dataset.meta;
+  }
+
   function sendMetadataMessage() {
     try {
-      var episodeContainer = getByClass('podcast-episode-container')[0];
-      if (episodeContainer === undefined) {
-        episodeContainer = getByClass('podcastliquidtag')[0];
-      }
-      var metadata = JSON.parse(episodeContainer.dataset.meta);
+      var metadata = JSON.parse(fetchMetadataString());
       var message = {
         action: 'metadata',
         episodeName: metadata.episodeName,
         podcastName: metadata.podcastName,
         podcastImageUrl: metadata.podcastImageUrl,
       };
-      sendPodcastMessage(message);
+
+      if (isNativeIOS()) {
+        sendPodcastMessage(message);
+      } else {
+        AndroidBridge.metadataPodcast(
+          metadata.episodeName,
+          metadata.podcastName,
+          metadata.podcastImageUrl,
+        );
+      }
     } catch (e) {
       console.log('Unable to load Podcast Episode metadata', e); // eslint-disable-line no-console
     }
   }
 
   function startAudioPlayback(audio) {
-    if (isNativeIOS()) {
+    if (isNativeIOS() || isNativeAndroid()) {
       sendMetadataMessage();
     }
 
