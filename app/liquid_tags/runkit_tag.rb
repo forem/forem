@@ -3,7 +3,7 @@ class RunkitTag < Liquid::Block
 
   SCRIPT = <<~JAVASCRIPT.freeze
     function isRunkitTagAlreadyActive(runkitTag) {
-      return runkitTag.children[0].tagName !== "CODE";
+      return runkitTag.querySelector("iframe") !== null;
     };
 
     function activateRunkitTags() {
