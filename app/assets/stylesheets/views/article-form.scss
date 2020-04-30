@@ -10,7 +10,9 @@
     align-items: center;
 
     @media (min-width: $breakpoint-l) {
-      padding-right: calc( var(--layout-aside-width) + var(--layout-padding) + var(--layout-gap) );
+      padding-right: calc(
+        var(--layout-aside-width) + var(--layout-padding) + var(--layout-gap)
+      );
     }
   }
 
@@ -64,18 +66,29 @@
       margin-left: -$su-2;
     }
   }
-  
+
   &__cover {
     margin-bottom: $su-6;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    flex-direction: column;
+
+    @media (min-width: $breakpoint-s) {
+      flex-direction: row;
+      align-items: center;
+    }
 
     &__image {
       width: 250px;
       height: 105px;
       border-radius: $br-default;
-      margin-right: $su-4;
       object-fit: cover;
+      margin-bottom: $su-2;
+
+      @media (min-width: $breakpoint-s) {
+        margin-bottom: 0;
+        margin-right: $su-4;
+      }
     }
   }
 
@@ -96,7 +109,9 @@
 
     @media (min-width: $breakpoint-l) {
       padding: $su-4 $su-2;
-      padding-left: calc( var(--layout-narrow-sidebar-width) + var(--layout-gap) );
+      padding-left: calc(
+        var(--layout-narrow-sidebar-width) + var(--layout-gap)
+      );
     }
 
     &__buttons {
@@ -112,11 +127,21 @@
     @extend .crayons-box--level-2;
 
     position: absolute;
-    left: -$su-4;
-    right: -$su-4;
-    top: calc( 100% + #{$su-4} );
+    left: 0;
+    right: 0;
+    top: calc(100% + #{$su-4});
     z-index: 100;
     padding: $su-1;
+
+    @media (min-width: $breakpoint-s) {
+      left: -$su-2;
+      right: -$su-2;
+    }
+
+    @media (min-width: $breakpoint-m) {
+      left: -$su-4;
+      right: -$su-4;
+    }
   }
 
   &__tagname {
@@ -158,5 +183,4 @@
   &__tagsoptionsbottomrow {
     display: none;
   }
-
 }

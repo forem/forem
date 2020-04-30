@@ -3,17 +3,18 @@
 <div id="article-form"
   data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
-  data-version="<%= version %>"
->
+  data-version="<%= version %>">
   <form class="crayons-article-form">
 
     <div class="crayons-article-form__header crayons-layout">
       <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
-      
+
       <div class="crayons-field__label">
-        Write a new post
+        <span class="hidden s:inline-block">Write a new post</span>
         <% if organizations && organizations.size > 0 %>
-          <span>under:
+          <span>
+            <span class="hidden s:inline-block">&nbsp;under:</span>
+            <span class="s:hidden">&nbsp;Organization:</span>
             <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto ml-2 mt-0">
               <%= options_for_select({ "None" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
             </select>
@@ -38,15 +39,17 @@
           <div>
             <div class="crayons-article-form__cover" role="presentation">
               <% if article.main_image.present? %>
-                <div class="crayons-article-form__cover__image"><img src="<%= article.main_image %>"></div>
+                <img src="<%= article.main_image %>" width="250" height="105" alt="Post cover" class="crayons-article-form__cover__image">
               <% end %>
-              <button class="crayons-btn crayons-btn--outlined mr-2"><% if article.main_image.present? %>Change the cover<% else %>Add a cover photo<% end %><input type="file" accept="image/*" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" data-max-file-size-mb="25"></label>
+              <button class="crayons-btn crayons-btn--outlined mr-2">
+                <% if article.main_image.present? %>Change the cover<% else %>Add a cover<% end %><input type="file" accept="image/*" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" data-max-file-size-mb="25">
+              </button>
             </div>
             <div class="crayons-article-form__title">
               <textarea class="crayons-textfield crayons-textfield--ghost fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px;"><%= article.title %></textarea>
             </div>
             <div class="crayons-article-form__tagsfield">
-              <input type="text" class="crayons-textfield crayons-textfield--ghost ff-accent crayons-article-form__tags" placeholder="Add up to 4 tags (no special characters)..." name="tags" value="<%= article.cached_tag_list %>" />
+              <input type="text" class="crayons-textfield crayons-textfield--ghost fs-s s:fs-base ff-accent" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
             </div>
           </div>
         <% end %>

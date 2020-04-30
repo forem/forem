@@ -6,7 +6,7 @@ export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
   return (
     <div className="crayons-article-form__title">
       <Textarea
-        className="crayons-textfield crayons-textfield--ghost fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight"
+        className="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight"
         type="text"
         id="article-form-title"
         placeholder="New post title here..."
@@ -22,8 +22,8 @@ export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
         }}
       />
     </div>
-  )
-}
+  );
+};
 
 Title.propTypes = {
   onChange: PropTypes.func.isRequired,

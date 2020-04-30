@@ -9,11 +9,9 @@ export class Actions extends Component {
     this.state = {
       moreConfigShowing: false,
     };
-  };
+  }
 
-  setCommonProps = ({
-    moreConfigShowing = false,
-  }) => {
+  setCommonProps = ({ moreConfigShowing = false }) => {
     return {
       moreConfigShowing,
     };
@@ -40,9 +38,7 @@ export class Actions extends Component {
       submitting,
     } = this.props;
 
-    const {
-      moreConfigShowing,
-    } = this.state;
+    const { moreConfigShowing } = this.state;
 
     const Icon = () => (
       <svg
@@ -60,17 +56,19 @@ export class Actions extends Component {
       <div className="crayons-layout crayons-article-form__actions">
         {submitting ? (
           <div className="crayons-article-form__actions__buttons">
-            <Button className="mr-2" onClick={onPublish} disabled>
+            <Button
+              className="mr-2 whitespace-nowrap"
+              onClick={onPublish}
+              disabled
+            >
               {published && version === 'v2'
                 ? 'Publishing...'
                 : `Saving ${version === 'v2' ? 'draft' : ''}...`}
             </Button>
           </div>
-        )
-        :
-        (
+        ) : (
           <div className="crayons-article-form__actions__buttons">
-            <Button className="mr-2" onClick={onPublish}>
+            <Button className="mr-2 whitespace-nowrap" onClick={onPublish}>
               {published || version === 'v1' ? 'Save changes' : 'Publish'}
             </Button>
 
@@ -79,13 +77,13 @@ export class Actions extends Component {
             ) : (
               <Button
                 variant="secondary"
-                className="mr-2"
+                className="mr-2 whitespace-nowrap"
                 onClick={onSaveDraft}
               >
                 Save draft
               </Button>
             )}
-            <div className="relative">
+            <div className="s:relative">
               <Button
                 variant="ghost"
                 contentType="icon"
@@ -102,11 +100,16 @@ export class Actions extends Component {
                 />
               )}
             </div>
-            <p style={!edited && { visibility: 'hidden' }}>
-              <Button variant="ghost" onClick={onClearChanges} size="s">
+            {!edited && (
+              <Button
+                variant="ghost"
+                onClick={onClearChanges}
+                className="whitespace-nowrap fw-normal"
+                size="s"
+              >
                 Clear new changes
               </Button>
-            </p>
+            )}
           </div>
         )}
       </div>
@@ -123,7 +126,7 @@ Actions.propTypes = {
   onClearChanges: PropTypes.func.isRequired,
   passedData: PropTypes.string.isRequired,
   onConfigChange: PropTypes.func.isRequired,
-  submitting: PropTypes.bool.isRequired
+  submitting: PropTypes.bool.isRequired,
 };
 
 Actions.displayName = 'Actions';

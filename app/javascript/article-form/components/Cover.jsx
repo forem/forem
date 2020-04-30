@@ -11,7 +11,7 @@ export class Cover extends Component {
       uploadError: false,
       uploadErrorMessage: null,
     };
-  };
+  }
 
   handleMainImageUpload = (e) => {
     e.preventDefault();
@@ -27,7 +27,7 @@ export class Cover extends Component {
     }
   };
 
-  handleInsertionImageUpload = e => {
+  handleInsertionImageUpload = (e) => {
     this.clearUploadError();
 
     const validFileInputs = validateFileInputs();
@@ -49,14 +49,14 @@ export class Cover extends Component {
     });
   };
 
-  onUploadError = error => {
+  onUploadError = (error) => {
     this.setState({
       uploadError: true,
       uploadErrorMessage: error.message,
     });
   };
 
-  triggerMainImageRemoval = e => {
+  triggerMainImageRemoval = (e) => {
     e.preventDefault();
 
     const { onMainImageUrlChange } = this.props;
@@ -66,43 +66,48 @@ export class Cover extends Component {
     });
   };
 
-  render () {
+  render() {
     const { mainImage } = this.props;
     const { uploadError, uploadErrorMessage } = this.state;
-    const uploadLabel = mainImage ? 'Change the cover' : 'Add a cover photo';
+    const uploadLabel = mainImage ? 'Change' : 'Add a cover';
     return (
       <div className="crayons-article-form__cover" role="presentation">
         {mainImage && (
           <img
             src={mainImage}
             className="crayons-article-form__cover__image"
-            width="200"
-            height="100"
-            alt=""
+            width="250"
+            height="105"
+            alt="Post cover"
           />
         )}
-        <Button variant="outlined" className="mr-2">
-          {uploadLabel}
-          <input
-            type="file"
-            onChange={this.handleMainImageUpload}
-            accept="image/*"
-            className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
-            data-max-file-size-mb="25"
-          />
-        </Button>
-        {mainImage && (
-          <Button variant="ghost-danger" onClick={this.triggerMainImageRemoval}>
-            Remove
+        <div className="flex items-center">
+          <Button variant="outlined" className="mr-2 whitespace-nowrap">
+            {uploadLabel}
+            <input
+              type="file"
+              onChange={this.handleMainImageUpload}
+              accept="image/*"
+              className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
+              data-max-file-size-mb="25"
+            />
           </Button>
-        )}
+          {mainImage && (
+            <Button
+              variant="ghost-danger"
+              onClick={this.triggerMainImageRemoval}
+            >
+              Remove
+            </Button>
+          )}
+        </div>
         {uploadError && (
-          <span className="articleform__uploaderror">{uploadErrorMessage}</span>
+          <p className="articleform__uploaderror">{uploadErrorMessage}</p>
         )}
       </div>
     );
   }
-};
+}
 
 Cover.propTypes = {
   mainImage: PropTypes.string.isRequired,

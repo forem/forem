@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { Dropdown, Button } from '@crayons';
 
@@ -16,7 +16,7 @@ export const Options = ({
 }) => {
   let publishedField = '';
   let existingSeries = '';
-  
+
   if (allSeries.length > 0) {
     const seriesNames = allSeries.map((name) => {
       return (
@@ -42,17 +42,22 @@ export const Options = ({
   if (published) {
     publishedField = (
       <div className="crayons-field mb-6">
-        <div className="crayons-field__label color-accent-danger">Danger Zone</div>
-        <Button variant="danger" onClick={onSaveDraft}>Unpublish post</Button>
+        <div className="crayons-field__label color-accent-danger">
+          Danger Zone
+        </div>
+        <Button variant="danger" onClick={onSaveDraft}>
+          Unpublish post
+        </Button>
       </div>
     );
   }
   return (
-    <Dropdown className={moreConfigShowing && ("inline-block bottom-100 w-360")}>
-      <style>
-        {/* TODO:fix globally */}
-        {`.w-360 { width: 360px }`}
-      </style>
+    <Dropdown
+      className={
+        moreConfigShowing &&
+        'inline-block bottom-100 left-2 s:left-100 right-2 s:left-auto'
+      }
+    >
       <h3 className="mb-6">Post options</h3>
       <div className="crayons-field mb-6">
         <label htmlFor="canonicalUrl" className="crayons-field__label">
@@ -95,16 +100,12 @@ export const Options = ({
         {existingSeries}
       </div>
       {publishedField}
-      <Button
-        className="w-100"
-        data-content="exit"
-        onClick={toggleMoreConfig}
-      >
+      <Button className="w-100" data-content="exit" onClick={toggleMoreConfig}>
         Done
       </Button>
     </Dropdown>
   );
-}
+};
 
 Options.propTypes = {
   passedData: PropTypes.shape({
@@ -118,6 +119,5 @@ Options.propTypes = {
   toggleMoreConfig: PropTypes.func.isRequired,
   moreConfigShowing: PropTypes.bool.isRequired,
 };
-
 
 Options.displayName = 'Options';

@@ -11,5 +11,6 @@
 
   @media (min-width: $breakpoint-s) {
     max-width: 360px;
+    width: max-content;
   }
 }

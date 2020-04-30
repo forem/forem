@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import Tags from '../../shared/components/tags';
 
-export const TagsField = ({defaultValue, onInput, switchHelpContext}) => {
+export const TagsField = ({ defaultValue, onInput, switchHelpContext }) => {
   return (
     <div className="crayons-article-form__tagsfield">
       <Tags
@@ -11,7 +11,7 @@ export const TagsField = ({defaultValue, onInput, switchHelpContext}) => {
         onInput={onInput}
         onFocus={switchHelpContext}
         classPrefix="crayons-article-form"
-        fieldClassName="crayons-textfield crayons-textfield--ghost ff-accent"
+        fieldClassName="crayons-textfield crayons-textfield--ghost ff-accent fs-s s:fs-base"
       />
     </div>
   );
