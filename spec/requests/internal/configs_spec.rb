@@ -189,6 +189,12 @@ RSpec.describe "/internal/config", type: :request do
           end.to change(SiteConfig, :rate_limit_published_article_creation).from(9).to(3)
         end
 
+        it "updates rate_limit_organization_creation" do
+          expect do
+            post "/internal/config", params: { site_config: { rate_limit_organization_creation: 3 }, confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_organization_creation).from(1).to(3)
+        end
+
         it "updates rate_limit_image_upload" do
           expect do
             post "/internal/config", params: { site_config: { rate_limit_image_upload: 3 }, confirmation: confirmation_message }

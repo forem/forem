@@ -380,6 +380,16 @@
             </div>
 
             <div class="form-group">
+              <%= f.label :rate_limit_organization_creation %>
+              <%= f.number_field :rate_limit_organization_creation,
+                                 class: "form-control",
+                                 value: SiteConfig.rate_limit_organization_creation,
+                                 min: 1,
+                                 placeholder: 1 %>
+              <div class="alert alert-info">Number of organizations a user can create within a 5 minute period</div>
+            </div>
+
+            <div class="form-group">
               <%= f.label :rate_limit_image_upload %>
               <%= f.number_field :rate_limit_image_upload,
                                  class: "form-control",

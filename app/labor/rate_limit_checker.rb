@@ -1,11 +1,21 @@
 class RateLimitChecker
   attr_reader :user, :action
 
+  # Values are seconds until a user can retry
   RETRY_AFTER = {
     article_update: 30,
     image_upload: 30,
-    published_article_creation: 30
+    published_article_creation: 30,
+    organization_creation: 300
   }.with_indifferent_access.freeze
+
+  CONFIG_LIMIT_KEYS = %i[
+    rate_limit_follow_count_daily
+    rate_limit_comment_creation
+    rate_limit_published_article_creation
+    rate_limit_image_upload
+    rate_limit_email_recipient
+  ].freeze
 
   def initialize(user = nil)
     @user = user
@@ -53,6 +63,11 @@ class RateLimitChecker
       SiteConfig.rate_limit_email_recipient
   end
 
+  def track_organization_creation
+    expires_in = RETRY_AFTER[:organization_creation].seconds
+    Rails.cache.increment("#{@user.id}_organization_creation", 1, expires_in: expires_in)
+  end
+
   private
 
   def check_comment_creation_limit
@@ -63,6 +78,11 @@ class RateLimitChecker
   def check_published_article_creation_limit
     user.articles.published.where("created_at > ?", 30.seconds.ago).size >
       SiteConfig.rate_limit_published_article_creation
+  end
+
+  def check_organization_creation_limit
+    Rails.cache.read("#{user.id}_organization_creation").to_i >=
+      SiteConfig.rate_limit_organization_creation
   end
 
   def check_image_upload_limit
