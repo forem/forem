@@ -41,7 +41,6 @@ RSpec.describe "UserOrganization", type: :request do
 
     it "creates the correct organization_membership association" do
       create_org
-
       org_membership = OrganizationMembership.first
       expect(org_membership.persisted?).to eq true
       expect(org_membership.user).to eq user

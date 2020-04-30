@@ -1,6 +1,7 @@
 class RateLimitChecker
   attr_reader :user, :action
 
+  # Values are seconds until a user can retry
   RETRY_AFTER = {
     article_update: 30,
     image_upload: 30,
