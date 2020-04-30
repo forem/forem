@@ -2,13 +2,9 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { ImageUploader } from './ImageUploader';
 
-export const Toolbar = ({visible}) => {
+export const Toolbar = () => {
   return (
-    <div
-      className={`crayons-article-form__toolbar ${
-        visible ? '' : 'opacity-0'
-      }`}
-    >
+    <div className="crayons-article-form__toolbar">
       <ImageUploader />
     </div>
   );

@@ -81,6 +81,7 @@ export class Actions extends Component {
                 onClick={onSaveDraft}
               >
                 Save
+                {' '}
                 <span className="hidden s:inline">draft</span>
               </Button>
             )}

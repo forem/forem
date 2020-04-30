@@ -56,10 +56,16 @@
   }
 
   &__toolbar {
-    padding: $su-4 0;
     position: sticky;
+    background: linear-gradient(0deg, var(--base-0), var(--card-bg));
     top: 0;
-    background: var(--card-bg);
+    padding: $su-2 var(--layout-article-content-padding-x);
+    margin: 
+      0 
+      calc(var(--layout-article-content-padding-x) * -1)
+      $su-6
+      calc(var(--layout-article-content-padding-x) * -1);
+    border-radius: $br-default;
     transition: opacity $transition-props;
 
     > :first-child {
@@ -99,6 +105,7 @@
 
   &__tagsfield {
     position: relative;
+    margin-bottom: $su-7;
   }
 
   &__actions {

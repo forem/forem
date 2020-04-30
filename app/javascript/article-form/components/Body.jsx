@@ -1,47 +1,30 @@
-import { h, Component } from 'preact';
+import { h } from 'preact';
 import PropTypes from 'prop-types';
 import Textarea from 'preact-textarea-autosize';
 import { Toolbar } from './Toolbar';
 
-export class Body extends Component {
-  state = {
-    hasFocus: false,
-  };
+export const Body = ({
+  onChange, 
+  defaultValue, 
+  switchHelpContext
+}) => {
+  return (
+    <div className="crayons-article-form__body">
+      <Toolbar />
 
-  render() {
-    const { onChange, defaultValue, switchHelpContext } = this.props;
-    const { hasFocus } = this.state;
-    return (
-      <div
-        className="crayons-article-form__body"
-        tabIndex={0} // eslint-disable-line
+      <Textarea
+        className="crayons-textfield crayons-article-form__body__field crayons-textfield--ghost fs-l ff-accent whitespace-prewrap"
+        id="article_body_markdown"
+        placeholder="Write your post content here..."
+        value={defaultValue}
+        onInput={onChange}
         onFocus={(_event) => {
-          this.setState({ hasFocus: true });
+          switchHelpContext(_event);
         }}
-        onBlur={(_event) => {
-          this.setState({ hasFocus: false });
-        }}
-      >
-        <Toolbar visible={hasFocus} />
-
-        <Textarea
-          className="crayons-textfield crayons-textfield--ghost fs-l ff-accent min-h-100 whitespace-prewrap"
-          id="article_body_markdown"
-          placeholder="Write your post content here..."
-          value={defaultValue}
-          onInput={onChange}
-          onFocus={(_event) => {
-            switchHelpContext(_event);
-            this.setState({ hasFocus: true });
-          }}
-          onBlur={(_event) => {
-            this.setState({ hasFocus: false });
-          }}
-          name="body_markdown"
-        />
-      </div>
-    );
-  }
+        name="body_markdown"
+      />
+    </div>
+  );
 }
 
 Body.propTypes = {
