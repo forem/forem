@@ -330,11 +330,11 @@ class User < ApplicationRecord
   end
 
   def org_member?(organization)
-    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: %w[admin member])
+    OrganizationMembership.exists?(user: self, organization: organization, type_of_user: %w[admin member])
   end
 
   def org_admin?(organization)
-    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
+    OrganizationMembership.exists?(user: self, organization: organization, type_of_user: "admin")
   end
 
   def block; end
@@ -573,11 +573,6 @@ class User < ApplicationRecord
     errors.add(:mastodon_url, "is not an allowed Mastodon instance")
   rescue URI::InvalidURIError
     errors.add(:mastodon_url, "is not a valid URL")
-  end
-
-  # TODO: @practicaldev/sre: Remove this redundant method
-  def user
-    self
   end
 
   def tag_keywords_for_search
