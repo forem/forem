@@ -386,65 +386,17 @@
                        expanded: "false"
                      } %>
           <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
-            <div class="form-group">
-              <%= f.label :rate_limit_follow_count_daily %>
-              <%= f.number_field :rate_limit_follow_count_daily,
-                                 class: "form-control",
-                                 value: SiteConfig.rate_limit_follow_count_daily,
-                                 min: 0,
-                                 placeholder: 500 %>
-              <div class="alert alert-info">Used to limit the amount of users a person can follow daily</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :rate_limit_comment_creation %>
-              <%= f.number_field :rate_limit_comment_creation,
-                                 class: "form-control",
-                                 value: SiteConfig.rate_limit_comment_creation,
-                                 min: 0,
-                                 placeholder: 9 %>
-              <div class="alert alert-info">Used to limit the amount of comments a user can create within 30 seconds</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :rate_limit_published_article_creation %>
-              <%= f.number_field :rate_limit_published_article_creation,
-                                 class: "form-control",
-                                 value: SiteConfig.rate_limit_published_article_creation,
-                                 min: 0,
-                                 placeholder: 9 %>
-              <div class="alert alert-info">Used to limit the amount of articles a user can create within 30 seconds</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :rate_limit_organization_creation %>
-              <%= f.number_field :rate_limit_organization_creation,
-                                 class: "form-control",
-                                 value: SiteConfig.rate_limit_organization_creation,
-                                 min: 1,
-                                 placeholder: 1 %>
-              <div class="alert alert-info">Number of organizations a user can create within a 5 minute period</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :rate_limit_image_upload %>
-              <%= f.number_field :rate_limit_image_upload,
-                                 class: "form-control",
-                                 value: SiteConfig.rate_limit_image_upload,
-                                 min: 0,
-                                 placeholder: 9 %>
-              <div class="alert alert-info">Used to limit the amount of images a user can upload within 30 seconds</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :rate_limit_email_recipient %>
-              <%= f.number_field :rate_limit_email_recipient,
-                                 class: "form-control",
-                                 value: SiteConfig.rate_limit_email_recipient,
-                                 min: 0,
-                                 placeholder: 5 %>
-              <div class="alert alert-info">Used to limit the amount of emails we send to a user within 2 minutes</div>
-            </div>
+            <% RateLimitChecker::CONFIGURABLE_RATES.each do |key, field_hash| %>
+              <div class="form-group">
+                <%= f.label key %>
+                <%= f.number_field key,
+                                   class: "form-control",
+                                   value: SiteConfig.send(key),
+                                   min: field_hash[:min],
+                                   placeholder: field_hash[:placeholder] %>
+                <div class="alert alert-info"><%= field_hash[:description] %></div>
+              </div>
+            <% end %>
           </div>
         </div>
 
