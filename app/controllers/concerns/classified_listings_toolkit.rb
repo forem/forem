@@ -4,33 +4,22 @@ module ClassifiedListingsToolkit
   MANDATORY_FIELDS_FOR_UPDATE = %i[body_markdown title tag_list].freeze
 
   def unpublish_listing
-    @classified_listing.published = false
-    @classified_listing.save
+    @classified_listing.update(published: false)
   end
 
   def publish_listing
-    @classified_listing.published = true
-    @classified_listing.save
+    @classified_listing.update(published: true)
   end
 
-  # TODO: why not just @classified_listing.update(listing_params)?
   def update_listing_details
-    @classified_listing.title = listing_params[:title] if listing_params[:title]
-    @classified_listing.body_markdown = listing_params[:body_markdown] if listing_params[:body_markdown]
-    @classified_listing.tag_list = listing_params[:tag_list] if listing_params[:tag_list]
-    if listing_params[:classified_listing_category_id]
-      @classified_listing.classified_listing_category_id = listing_params[:classified_listing_category_id]
-    end
-    @classified_listing.location = listing_params[:location] if listing_params[:location]
-    @classified_listing.expires_at = listing_params[:expires_at] if listing_params[:expires_at]
-    @classified_listing.contact_via_connect = listing_params[:contact_via_connect] if listing_params[:contact_via_connect]
-    @classified_listing.save
+    # [thepracticaldev/oss] Not entirely sure what the intention behind the
+    # original code was, but at least this is more compact.
+    filtered_params = listing_params.reject { |_k, v| v.nil? }
+    @classified_listing.update(filtered_params)
   end
 
   def bump_listing_success
-    @classified_listing.bumped_at = Time.current
-    saved = @classified_listing.save
-    saved
+    @classified_listing.update(bumped_at: Time.current)
   end
 
   def clear_listings_cache
@@ -59,7 +48,6 @@ module ClassifiedListingsToolkit
     available_user_credits = current_user.credits.unspent
 
     unless @classified_listing.valid?
-      # TODO: [thepracticaldev/oss] For now the credits are needed in the view
       @credits = current_user.credits.unspent
       process_unsuccessful_creation
       return
@@ -77,15 +65,15 @@ module ClassifiedListingsToolkit
   end
 
   ALLOWED_PARAMS = %i[
-    title body_markdown category classified_listing_category_id tag_list
+    title body_markdown classified_listing_category_id tag_list
     expires_at contact_via_connect location organization_id action
   ].freeze
 
-  # Never trust parameters from the scary internet, only allow a specific list through.
+  # Filter for a set of known safe params
   def listing_params
-    if params["classified_listing"]["tags"].present?
-      params["classified_listing"]["tags"] = params["classified_listing"]["tags"].join(", ")
-      params["classified_listing"]["tag_list"] = params["classified_listing"].delete "tags"
+    tags = params["classified_listing"].delete("tags")
+    if tags.present?
+      params["classified_listing"]["tag_list"] = tags.join(", ")
     end
     params.require(:classified_listing).permit(ALLOWED_PARAMS)
   end

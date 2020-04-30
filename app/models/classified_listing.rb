@@ -1,4 +1,6 @@
 class ClassifiedListing < ApplicationRecord
+  self.ignored_columns = ["category"]
+
   include Searchable
 
   SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
@@ -6,10 +8,9 @@ class ClassifiedListing < ApplicationRecord
 
   attr_accessor :action
 
-  # This allows to create a listing from a catgory string.
-  # TODO: [mkohl] refactor once column was dropped.
-  before_validation :assign_classified_listing_category
-
+  # Note: categories were hardcoded at first and this model was only added later,
+  # so the association name is a bit verbose since the original "category" attribute
+  # was kept to minimize code changes.
   belongs_to :classified_listing_category
   belongs_to :user
   belongs_to :organization, optional: true
@@ -29,36 +30,17 @@ class ClassifiedListing < ApplicationRecord
   validates :location, length: { maximum: 32 }
   validate :restrict_markdown_input
   validate :validate_tags
-  validate :validate_category
 
   scope :published, -> { where(published: true) }
+  scope :in_category, lambda { |slug|
+    joins(:classified_listing_category).
+      where("classified_listing_categories.slug" => slug)
+  }
 
-  # TODO: refactor this class method block
-  def self.select_options_for_categories
-    ClassifiedListingCategory.select(:id, :name, :cost).map do |cl|
-      ["#{cl.name} (#{cl.cost} #{'Credit'.pluralize(cl.cost)})", cl.id]
-    end
-  end
-
-  def self.categories_for_display
-    ClassifiedListingCategory.pluck(:slug, :name).map do |slug, name|
-      { slug: slug, name: name }
-    end
-  end
-
-  def self.categories_available
-    ClassifiedListingCategory.all.each_with_object({}) do |cat, h|
-      h[cat.slug] = cat.attributes.slice("cost", "name", "rules")
-    end.deep_symbolize_keys
-  end
+  delegate :cost, to: :classified_listing_category
 
   def category
     classified_listing_category&.slug
-  end
-
-  def cost
-    @cost = classified_listing_category&.cost ||
-      ClassifiedListingCategory.select(:cost).find_by(slug: category)&.cost
   end
 
   def author
@@ -82,7 +64,6 @@ class ClassifiedListing < ApplicationRecord
   def modify_inputs
     ActsAsTaggableOn::Taggable::Cache.included(ClassifiedListing)
     ActsAsTaggableOn.default_parser = ActsAsTaggableOn::TagParser
-    self.category = category.to_s.downcase
     self.body_markdown = body_markdown.to_s.gsub(/\r\n/, "\n")
   end
 
@@ -93,26 +74,11 @@ class ClassifiedListing < ApplicationRecord
     errors.add(:body_markdown, "is not allowed to include liquid tags.") if markdown_string.include?("{% ")
   end
 
-  def validate_category
-    categories = ClassifiedListingCategory.pluck(:slug)
-    errors.add(:category, "not a valid category") unless category.in?(categories)
-  end
-
   def validate_tags
     errors.add(:tag_list, "exceed the maximum of 8 tags") if tag_list.length > 8
   end
 
   def create_slug
     self.slug = "#{title.downcase.parameterize.delete('_')}-#{rand(100_000).to_s(26)}"
-  end
-
-  def assign_classified_listing_category
-    return if classified_listing_category_id.present?
-
-    category = ClassifiedListingCategory.find_by(slug: attributes["category"])
-    return unless category
-
-    self.category = category.slug
-    self.classified_listing_category_id = category.id
   end
 end
