@@ -9,7 +9,7 @@ module FastlyConfig
 
         fastly = Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
         service = fastly.get_service(ApplicationConfig["FASTLY_SERVICE_ID"])
-        active_version = get_active_version(service)
+        active_version = service.versions.reverse_each.detect(&:active?)
         config_handlers = configs.map { |config| "FastlyConfig::#{config}".constantize.new(fastly, active_version) }
         configs_updated = config_handlers.any?(&:update_needed?)
 
@@ -28,14 +28,6 @@ module FastlyConfig
       end
 
       private
-
-      def get_active_version(service)
-        reverse_sorted_versions = service.versions.sort_by(&:number).reverse
-        reverse_sorted_versions.each_slice(3) do |version_slice|
-          active_version = version_slice.detect(&:active?)
-          break active_version if active_version
-        end
-      end
 
       def log_to_datadog(configs, new_version)
         tags = [
