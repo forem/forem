@@ -1,9 +1,8 @@
 require "rails_helper"
 require Rails.root.join("lib/data_update_scripts/20200415200651_index_reading_list_reactions.rb")
 
-describe DataUpdateScripts::IndexReadingListReactions do
+describe DataUpdateScripts::IndexReadingListReactions, elasticsearch: "Reaction" do
   it "indexes feed content(articles, comments, podcast episodes) to Elasticsearch" do
-    clear_elasticsearch_data(Search::Reaction)
     reactions = create_list(:reaction, 3, category: "readinglist")
     Sidekiq::Worker.clear_all
 
