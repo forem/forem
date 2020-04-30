@@ -1,6 +1,6 @@
 module FastlyConfig
   class Snippets < Base
-    FASTLY_FILES = Rails.root.join("app/services/fastly_config/snippets/*.vcl").freeze
+    FASTLY_FILES = Rails.root.join("config/fastly/snippets/*.vcl").freeze
 
     private
 
