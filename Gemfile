@@ -106,7 +106,7 @@ gem "validate_url", "~> 1.0" # Library for validating urls in Rails
 gem "webpacker", "~> 5.1.1" # Use webpack to manage app-like JavaScript modules in Rails
 
 group :development do
-  gem "better_errors", "~> 2.6" # Provides a better error page for Rails and other Rack apps
+  gem "better_errors", "~> 2.7" # Provides a better error page for Rails and other Rack apps
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
   gem "brakeman", "~> 4.8", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
