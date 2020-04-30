@@ -5,7 +5,7 @@ import { Button } from '../../crayons/Button';
 export const CommentsCount = ({ count, articlePath }) => {
   const commentsSVG = () => (
     <svg
-      className="crayons-icon mr-1"
+      className="crayons-icon"
       width="24"
       height="24"
       xmlns="http://www.w3.org/2000/svg"
