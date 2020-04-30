@@ -92,6 +92,12 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
     end
 
+    it "shows default meta keywords" do
+      SiteConfig.meta_keywords = { default: "cool developers, civil engineers" }
+      get "/"
+      expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
+    end
+
     context "with campaign hero" do
       let_it_be_readonly(:hero_html) do
         create(
@@ -253,6 +259,12 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(sponsorship.blurb_html)
     end
 
+    it "shows meta keywords" do
+      SiteConfig.meta_keywords = { tag: "software engineering, ruby" }
+      get "/t/#{tag.name}"
+      expect(response.body).to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
+    end
+
     context "with user signed in" do
       before do
         sign_in user
@@ -315,6 +327,17 @@ RSpec.describe "StoriesIndex", type: :request do
         get "/t/#{tag.name}/page/2"
         expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />")
       end
+    end
+  end
+
+  describe "GET user_path" do
+    let(:user) { create(:user) }
+
+    it "redirects to the lowercase route for usernames", :aggregate_failures do
+      get "/#{user.username.capitalize}"
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to("/#{user.username.downcase}")
+      expect(response).not_to redirect_to("/#{user.username.capitalize}")
     end
   end
 end

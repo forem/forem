@@ -1,5 +1,4 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  # Don't need a policy for this since this is our sign up/in route
   include Devise::Controllers::Rememberable
 
   # Called upon successful redirect from Twitter
@@ -36,22 +35,25 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   private
 
-  # TODO: [thepracticaldev/oss] investigate if there's a way to simplify this
-  # by using Devise+OmniAuth builtin integration
-  # <https://github.com/heartcombo/devise/wiki/OmniAuth:-Overview>
   def callback_for(provider)
+    auth_payload = request.env["omniauth.auth"]
     cta_variant = request.env["omniauth.params"]["state"].to_s
+
     @user = Authentication::Authenticator.call(
-      request.env["omniauth.auth"],
+      auth_payload,
       current_user: current_user,
       cta_variant: cta_variant,
     )
 
     if user_persisted_and_valid?
+      # Devise's Omniauthable does not automatically remember users
+      # see <https://github.com/heartcombo/devise/wiki/Omniauthable,-sign-out-action-and-rememberable>
       remember_me(@user)
 
-      set_flash_message(:notice, :success, kind: provider.to_s.capitalize) if is_navigational_format?
+      set_flash_message(:notice, :success, kind: provider.to_s.titleize) if is_navigational_format?
 
+      # `event: authentication` is only needed for Warden callbacks
+      # see <config/initializers/persistent_csrf_token_cookie.rb>
       sign_in_and_redirect(@user, event: :authentication)
     # NOTE: I can't find a way to test this path
     # as `User` will assign a temporary username if the username already exists
@@ -65,6 +67,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     # here in case of validation errors, see:
     # https://github.com/thepracticaldev/dev.to/blob/80737b540453afe8775128cb37bd379b7c09c7e8/app/services/authorization_service.rb#L77
     else
+      # Devise will clean this data when the user is not persisted
       session["devise.#{provider}_data"] = request.env["omniauth.auth"]
 
       user_errors = @user.errors.full_messages

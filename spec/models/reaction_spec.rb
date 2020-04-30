@@ -72,14 +72,14 @@ RSpec.describe Reaction, type: :model do
     context "when category is readingList and reactable is published" do
       it "on update enqueues job to index reaction to elasticsearch" do
         reaction.save
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, reaction.id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, reaction.id]) do
           reaction.update(category: "readinglist")
         end
       end
 
       it "on create enqueues job to index reaction to elasticsearch" do
         reaction.category = "readinglist"
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker) do
+        sidekiq_assert_enqueued_with(job: Search::IndexWorker) do
           reaction.save
         end
       end
@@ -87,7 +87,7 @@ RSpec.describe Reaction, type: :model do
       it "on destroy enqueues job to delete reaction from elasticsearch" do
         reaction.category = "readinglist"
         reaction.save
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, reaction.id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, reaction.id]) do
           reaction.destroy
         end
       end
@@ -103,20 +103,20 @@ RSpec.describe Reaction, type: :model do
 
       it "on update does not enqueue job to index reaction to elasticsearch" do
         reaction.save
-        sidekiq_assert_no_enqueued_jobs(only: Search::IndexToElasticsearchWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
           reaction.update(category: "unicorn")
         end
       end
 
       it "on create does not enqueue job to index reaction to elasticsearch" do
-        sidekiq_assert_no_enqueued_jobs(only: Search::IndexToElasticsearchWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
           reaction.save
         end
       end
 
       it "on destroy does not enqueue job to delete reaction from elasticsearch" do
         reaction.save
-        sidekiq_assert_no_enqueued_jobs(only: Search::RemoveFromElasticsearchIndexWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: Search::RemoveFromIndexWorker) do
           reaction.destroy
         end
       end

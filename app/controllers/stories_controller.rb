@@ -16,6 +16,7 @@ class StoriesController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
+  before_action :redirect_to_lowercase_username, only: %i[index]
 
   rescue_from ArgumentError, with: :bad_request
 
@@ -333,6 +334,12 @@ class StoriesController < ApplicationController
 
   def assign_classified_listings
     @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :classified_listing_category_id, :slug, :bumped_at)
+  end
+
+  def redirect_to_lowercase_username
+    return unless params[:username] && params[:username]&.match?(/[[:upper:]]/)
+
+    redirect_to "/#{params[:username].downcase}", status: :moved_permanently
   end
 
   def set_user_json_ld
