@@ -237,6 +237,43 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
+                       header: "Onboarding",
+                       state: "collapse",
+                       target: "onboardingBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
+            <div class="form-group">
+              <%= f.label :onboarding_taskcard_image %>
+              <%= f.text_field :onboarding_taskcard_image,
+                               class: "form-control",
+                               value: SiteConfig.onboarding_taskcard_image,
+                               placeholder: "https://image.url" %>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" />
+                </div>
+                <div class="col-12">
+                  <div class="alert alert-info"> Used as the onboarding task-card image </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :suggested_tags %>
+              <%= f.text_field :suggested_tags,
+                               class: "form-control",
+                               value: SiteConfig.suggested_tags.join(","),
+                               placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin" %>
+              <div class="alert alert-info">Determines which tags are suggested to new users during onboarding (comma
+                separated, letters only)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
                        header: "Images",
                        state: "collapse",
                        target: "imagesBodyContainer",
@@ -300,20 +337,6 @@
                 </div>
                 <div class="col-12">
                   <div class="alert alert-info"> Used as the primary sticker image </div>
-                </div>
-              </div>
-
-              <%= f.label :onboarding_taskcard_image %>
-              <%= f.text_field :onboarding_taskcard_image,
-                               class: "form-control",
-                               value: SiteConfig.onboarding_taskcard_image,
-                               placeholder: "https://image.url" %>
-              <div class="row mt-2">
-                <div class="col-12">
-                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" />
-                </div>
-                <div class="col-12">
-                  <div class="alert alert-info"> Used as the onboarding task-card image </div>
                 </div>
               </div>
 
@@ -521,15 +544,6 @@
                        expanded: "false"
                      } %>
           <div id="tagsBodyContainer" class="card-body collapse hide" aria-labelledby="tagsBodyContainer">
-            <div class="form-group">
-              <%= f.label :suggested_tags %>
-              <%= f.text_field :suggested_tags,
-                               class: "form-control",
-                               value: SiteConfig.suggested_tags.join(","),
-                               placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin" %>
-              <div class="alert alert-info">Determines which tags are suggested to new users during onboarding (comma
-                separated, letters only)</div>
-            </div>
             <div class="form-group">
               <%= f.label :sidebar_tags %>
               <%= f.text_field :sidebar_tags,
