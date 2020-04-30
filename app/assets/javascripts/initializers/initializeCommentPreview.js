@@ -1,4 +1,4 @@
-'use strict';
+/* global waitForRunkitAndActivateTags */
 
 function getAndShowPreview(markdownPreviewPane, markdownEditor) {
   function successCb(body) {
@@ -16,11 +16,11 @@ function getAndShowPreview(markdownPreviewPane, markdownEditor) {
   });
   getCsrfToken()
     .then(sendFetch('comment-preview', payload))
-    .then(response => {
+    .then((response) => {
       return response.json();
     })
     .then(successCb)
-    .catch(err => {
+    .catch((err) => {
       console.log('error!'); // eslint-disable-line
       console.log(err); // eslint-disable-line no-console
     });
