@@ -1,3 +1,6 @@
+def next?
+  File.basename(__FILE__) == "Gemfile.next"
+end
 # coding: utf-8
 
 git_source(:github) { |name| "https://github.com/#{name}.git" }
@@ -75,7 +78,11 @@ gem "pusher-push-notifications", "~> 1.1" # Pusher Push Notifications Ruby serve
 gem "rack-attack", "~> 6.3.1" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
-gem "rails", "~> 5.2" # Ruby on Rails
+if next?
+  gem "rails", "~> 6.0.1" # Ruby on Rails
+else
+  gem "rails", "~> 5.2" # Ruby on Rails
+end
 gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes managing a table of global key, value pairs easy.
 gem "ransack", "~> 2.3" # Searching and sorting
 gem "recaptcha", "~> 5.5", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
@@ -98,7 +105,11 @@ gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRe
 gem "stripe", "~> 5.22" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.6" # Catch unsafe migrations
 gem "timber", "~> 3.0" # Great Ruby logging made easy
-gem "timber-rails", "~> 1.0" #  Timber integration for Rails
+if next?
+  gem 'timber-rails', github: 'timberio/timber-ruby-rails', branch: 'master'
+else
+  gem "timber-rails", "~> 1.0" #  Timber integration for Rails
+end
 gem "twilio-ruby", "~> 5.35" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
