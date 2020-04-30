@@ -52,7 +52,7 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
+    if rate_limiter.limit_by_action(:comment_creation)
       skip_authorization
       render json: { error: "too many requests" }, status: :too_many_requests
       return
@@ -124,7 +124,7 @@ class CommentsController < ApplicationController
   end
 
   def moderator_create
-    return if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
+    return if rate_limiter.limit_by_action(:comment_creation)
 
     response_template = ResponseTemplate.find(params[:response_template][:id])
     authorize response_template, :moderator_create?

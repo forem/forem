@@ -78,4 +78,12 @@ class ApplicationController < ActionController::Base
   def touch_current_user
     current_user.touch
   end
+
+  def rate_limit!(action)
+    rate_limiter.check_limit!(action)
+  end
+
+  def rate_limiter
+    RateLimitChecker.new(current_user)
+  end
 end

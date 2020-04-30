@@ -34,7 +34,12 @@ class RateLimitChecker
     end
   end
 
-  class UploadRateLimitReached < LimitReached; end
+  def check_limit!(action)
+    return unless limit_by_action(action)
+
+    retry_after = RateLimitChecker::RETRY_AFTER[action]
+    raise RateLimitChecker::LimitReached, retry_after
+  end
 
   def limit_by_action(action)
     check_method = "check_#{action}_limit"

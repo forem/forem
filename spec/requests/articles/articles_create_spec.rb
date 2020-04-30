@@ -96,7 +96,7 @@ RSpec.describe "ArticlesCreate", type: :request do
 
   context "when creation limit is reached" do
     it "raises a rate limit reached error" do
-      rate_limit_checker = instance_double(RateLimitChecker)
+      rate_limit_checker = RateLimitChecker.new(user)
       allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
       allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
 
