@@ -144,7 +144,7 @@ end
 group :test do
   gem "approvals", "~> 0.0" # A library to make it easier to do golden-master style testing in Ruby
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
-  gem "factory_bot_rails", "~> 5.1" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
+  gem "factory_bot_rails", "~> 5.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
