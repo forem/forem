@@ -218,5 +218,21 @@ cd automake-1.10/
 make
 ```
 
+### WSL2 and System test
+
+In WSL2, hostname/IP address are no longer shared between Windows and Linux.
+There are currently two work-arounds.
+
+1. Use dockerized selenium, ie docker-selenium. You will need docker for the
+   following steps
+
+   1. `docker run -d --name selenium-hub -p 4444:4444 selenium/hub:3.141.59-20200409`
+   2. `CH=$(docker run --rm --name=ch --link selenium-hub:hub -v /dev/shm:/dev/shm selenium/node-chrome:3.141.59-20200409)`
+   3. Add `SELENIUM_URL: "http://localhost:4444/wd/hub"` to your
+      `application.yml`
+   4. Run your System test!
+
+2. Port forward with `socats` (more info needed).
+
 > If you encountered any errors that you subsequently resolved, **please
 > consider updating this section** with your errors and their solutions.
