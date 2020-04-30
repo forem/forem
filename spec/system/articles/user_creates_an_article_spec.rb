@@ -5,7 +5,7 @@ RSpec.describe "Creating an article with the editor", type: :system do
 
   let(:user) { create(:user) }
   let!(:template) { file_fixture("article_published.txt").read }
-  let!(:template_with_runkit) do
+  let!(:template_with_runkit_tag) do
     file_fixture("article_with_runkit_tag.txt").read
   end
 
@@ -23,7 +23,7 @@ RSpec.describe "Creating an article with the editor", type: :system do
   context "with Runkit tag", js: true do
     it "creates a new article with a Runkit tag" do
       visit new_path
-      fill_in "article_body_markdown", with: template_with_runkit
+      fill_in "article_body_markdown", with: template_with_runkit_tag
       click_button "SAVE CHANGES"
 
       expect_runkit_tag_to_be_active
@@ -31,7 +31,7 @@ RSpec.describe "Creating an article with the editor", type: :system do
 
     it "previews article with a Runkit tag and creates it" do
       visit new_path
-      fill_in "article_body_markdown", with: template_with_runkit
+      fill_in "article_body_markdown", with: template_with_runkit_tag
       click_button "PREVIEW"
 
       expect_runkit_tag_to_be_active
