@@ -20,11 +20,25 @@ RSpec.describe "Creating an article with the editor", type: :system do
     expect(page).to have_selector("header h1", text: "Sample Article")
   end
 
-  it "creates a new article with a Runkit tag", js: true do
-    visit new_path
-    fill_in "article_body_markdown", with: template_with_runkit
-    click_button "SAVE CHANGES"
+  context "with Runkit tag", js: true do
+    it "creates a new article with a Runkit tag" do
+      visit new_path
+      fill_in "article_body_markdown", with: template_with_runkit
+      click_button "SAVE CHANGES"
 
-    expect_runkit_tag_to_be_active
+      expect_runkit_tag_to_be_active
+    end
+
+    it "previews article with a Runkit tag and creates it" do
+      visit new_path
+      fill_in "article_body_markdown", with: template_with_runkit
+      click_button "PREVIEW"
+
+      expect_runkit_tag_to_be_active
+
+      click_button "SAVE CHANGES"
+
+      expect_runkit_tag_to_be_active
+    end
   end
 end
