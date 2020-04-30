@@ -3,6 +3,7 @@ module Authentication
     # Authentication provider
     class Provider
       delegate :email, :nickname, to: :info, prefix: :user
+      delegate :user_created_at_field, :user_username_field, to: :class
 
       def initialize(auth_payload)
         @auth_payload = cleanup_payload(auth_payload.dup)

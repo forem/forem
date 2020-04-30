@@ -96,7 +96,7 @@ module Authentication
 
     def find_or_create_user!
       existing_user = User.where(
-        provider.class.user_username_field => provider.user_nickname,
+        provider.user_username_field => provider.user_nickname,
       ).take
       return existing_user if existing_user
 
@@ -132,12 +132,12 @@ module Authentication
     end
 
     def update_profile_updated_at(user)
-      field_name = "#{provider.class.user_username_field}_changed?"
+      field_name = "#{provider.user_username_field}_changed?"
       user.profile_updated_at = Time.current if user.public_send(field_name)
     end
 
     def account_less_than_a_week_old?(user, logged_in_identity)
-      provider_created_at = user.public_send(provider.class.user_created_at_field)
+      provider_created_at = user.public_send(provider.user_created_at_field)
       user_identity_age = provider_created_at ||
         Time.zone.parse(logged_in_identity.auth_data_dump.extra.raw_info.created_at)
 
