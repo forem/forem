@@ -84,11 +84,13 @@ describe Rack::Attack, type: :request, throttle: true do
       dif_headers = { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
 
       Timecop.freeze do
-        valid_response = post messages_path, params: { message: new_message }, headers: headers
+        valid_responses = Array.new(2).map do
+          post messages_path, params: { message: new_message }, headers: headers
+        end
         throttled_response = post messages_path, params: { message: new_message }, headers: headers
         new_api_response = post messages_path, params: { message: new_message }, headers: dif_headers
 
-        expect(valid_response).not_to eq(429)
+        valid_responses.each { |r| expect(r).not_to eq(429) }
         expect(throttled_response).to eq(429)
         expect(new_api_response).not_to eq(429)
       end
