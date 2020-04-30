@@ -373,13 +373,29 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       post "/join_chat_channel", params: { chat_channel_membership: chat_channel_membership }
     end
 
-    it "returns 200 upon success" do
-      allow(Pusher).to receive(:trigger).and_return(true)
-      expect(response.status).to eq(200)
+    context "when user was not member of closed channel" do
+      it "requested to join closed channel" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+        expect(ChatChannelMembership.last.status).to eq("joining_request")
+        expect(response.status).to eq(200)
+      end
+
+      it "returns in json" do
+        expect(response.content_type).to eq("application/json")
+      end
     end
 
-    it "returns in json" do
-      expect(response.content_type).to eq("application/json")
+    context "when user was a member of channel, and than left channel" do
+      it "requested to join closed channel" do
+        ChatChannelMembership.create(chat_channel_id: chat_channel.id, user_id: second_user.id, status: "left_channel")
+        allow(Pusher).to receive(:trigger).and_return(true)
+        expect(ChatChannelMembership.last.status).to eq("joining_request")
+        expect(response.status).to eq(200)
+      end
+
+      it "returns in json" do
+        expect(response.content_type).to eq("application/json")
+      end
     end
   end
 end
