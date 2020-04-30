@@ -1,7 +1,7 @@
 require "rails_helper"
 
-RSpec.describe Search::ClassifiedListing, type: :service, elasticsearch: true do
-  describe "::search_documents" do
+RSpec.describe Search::ClassifiedListing, type: :service do
+  describe "::search_documents", elasticsearch: "ClassifiedListing" do
     let(:classified_listing) { create(:classified_listing) }
 
     it "parses classified_listing document hits from search response" do
