@@ -11380,10 +11380,12 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-pusher-js@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-5.1.1.tgz#267495d3a821d511bdb20cf3c624ba0556e0b7df"
-  integrity sha512-f2tdoA7NvJQkU8Y/iCH25ZSNGxnwCXrVbwos38isX6gnjsSZ1aksWvyZddm2N0sHJWyl+oPBz/MzU5cevVDyEQ==
+pusher-js@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/pusher-js/-/pusher-js-6.0.1.tgz#04fd2855b2eb8b54a817a55a189cb100450bc385"
+  integrity sha512-KU2n+9h7YRG/TeCYSzvCQpwN7cCCnx3Fw0HiTS8fBg+uAFNIhYwN4WXCJRPmVoH6xAMERoObC7iRaMknPr9/Pg==
+  dependencies:
+    tweetnacl "^1.0.3"
 
 q@^1.1.2:
   version "1.5.1"
@@ -13790,6 +13792,11 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   version "0.14.5"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
+
+tweetnacl@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
+  integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==
 
 twilio-video@^2.3.0:
   version "2.3.0"
