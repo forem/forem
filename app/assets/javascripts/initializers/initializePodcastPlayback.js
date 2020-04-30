@@ -298,7 +298,7 @@ function initializePodcastPlayback() {
   function playAudio(audio) {
     return new Promise(function (resolve, reject) {
       var currentState = currentAudioState();
-      if (isNativeIOS() || isNativeAndroid()) {
+      if (isNativePlayer()) {
         sendPlayMessage(currentState.currentTime.toString());
         setPlaying(true);
         resolve();
@@ -352,7 +352,7 @@ function initializePodcastPlayback() {
   }
 
   function startAudioPlayback(audio) {
-    if (isNativeIOS() || isNativeAndroid()) {
+    if (isNativePlayer()) {
       sendMetadataMessage();
     }
 
