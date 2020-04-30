@@ -44,7 +44,7 @@ class SiteConfig < RailsSettings::Base
   }
 
   # Authentication
-  field :authentication_providers, type: :array, default: %w[twitter github]
+  field :authentication_providers, type: :array, default: Authentication::Providers.available
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
