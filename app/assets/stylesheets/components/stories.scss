@@ -126,23 +126,7 @@
 
   &__details {
     display: flex;
-    align-items: center;
     margin-left: -$su-1;
-
-    &__item {
-      display: flex;
-      align-items: center;
-      margin-right: $su-5;
-      color: var(--card-color-secondary);
-
-      &[href]:hover {
-        color: var(--card-color);
-      }
-
-      &:last-child {
-        margin-right: 0;
-      }
-    }
   }
 
   &__comments {
