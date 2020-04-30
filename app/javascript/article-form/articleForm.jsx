@@ -82,7 +82,7 @@ export default class ArticleForm extends Component {
       updatedAt: this.article.updated_at,
       version,
       helpFor: null,
-      helpPosition: null
+      helpPosition: null,
     };
   }
 
@@ -134,16 +134,16 @@ export default class ArticleForm extends Component {
   setCommonProps = ({
     previewShowing = false,
     helpFor = null,
-    helpPosition = null
+    helpPosition = null,
   }) => {
     return {
       previewShowing,
       helpFor,
-      helpPosition
+      helpPosition,
     };
   };
 
-  fetchPreview = e => {
+  fetchPreview = (e) => {
     const { previewShowing, bodyMarkdown } = this.state;
     e.preventDefault();
     if (previewShowing) {
@@ -155,7 +155,7 @@ export default class ArticleForm extends Component {
     }
   };
 
-  showPreview = response => {
+  showPreview = (response) => {
     if (response.processed_html) {
       this.setState({
         ...this.setCommonProps({ previewShowing: true }),
@@ -170,25 +170,25 @@ export default class ArticleForm extends Component {
     }
   };
 
-  handleOrgIdChange = e => {
+  handleOrgIdChange = (e) => {
     const organizationId = e.target.selectedOptions[0].value;
     this.setState({ organizationId });
   };
 
-  failedPreview = response => {
+  failedPreview = (response) => {
     // TODO: console.log should not be part of production code. Remove it!
     // eslint-disable-next-line no-console
     console.log(response);
   };
 
-  handleConfigChange = e => {
+  handleConfigChange = (e) => {
     e.preventDefault();
     const newState = {};
     newState[e.target.name] = e.target.value;
     this.setState(newState);
   };
 
-  handleMainImageUrlChange = payload => {
+  handleMainImageUrlChange = (payload) => {
     this.setState({
       mainImage: payload.links[0],
     });
@@ -200,7 +200,7 @@ export default class ArticleForm extends Component {
     window.removeEventListener('beforeunload', this.localStoreContent);
   };
 
-  onPublish = e => {
+  onPublish = (e) => {
     e.preventDefault();
     this.setState({ submitting: true, published: true });
     const { state } = this;
@@ -208,7 +208,7 @@ export default class ArticleForm extends Component {
     submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
-  onSaveDraft = e => {
+  onSaveDraft = (e) => {
     e.preventDefault();
     this.setState({ submitting: true, published: false });
     const { state } = this;
@@ -216,7 +216,7 @@ export default class ArticleForm extends Component {
     submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
-  onClearChanges = e => {
+  onClearChanges = (e) => {
     e.preventDefault();
     // eslint-disable-next-line no-alert
     const revert = window.confirm(
@@ -241,11 +241,11 @@ export default class ArticleForm extends Component {
       errors: null,
       edited: false,
       helpFor: null,
-      helpPosition: 0
+      helpPosition: 0,
     });
   };
 
-  handleArticleError = response => {
+  handleArticleError = (response) => {
     window.scrollTo(0, 0);
     this.setState({
       errors: response,
@@ -264,8 +264,8 @@ export default class ArticleForm extends Component {
 
   switchHelpContext = ({ target }) => {
     this.setState({
-      ...this.setCommonProps({ 
-        helpFor: target.id, 
+      ...this.setCommonProps({
+        helpFor: target.id,
         helpPosition: target.getBoundingClientRect().y,
       }),
     });
@@ -287,7 +287,7 @@ export default class ArticleForm extends Component {
       edited,
       version,
       helpFor,
-      helpPosition
+      helpPosition,
     } = this.state;
 
     return (
@@ -329,10 +329,11 @@ export default class ArticleForm extends Component {
               errors={errors}
             />
           )}
-          <Help 
-            previewShowing={previewShowing} 
-            helpFor={helpFor} 
-            helpPosition={helpPosition} 
+          <Help
+            previewShowing={previewShowing}
+            helpFor={helpFor}
+            helpPosition={helpPosition}
+            version={version}
           />
         </div>
 

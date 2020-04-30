@@ -29,7 +29,7 @@
     bottom: 0;
     z-index: 600;
   }
-  
+
   &__box {
     @extend %modal-style;
     display: flex;
@@ -38,11 +38,11 @@
     background: var(--card-bg); // TODO: ?
     z-index: 700;
     max-height: 100%;
-    @media ( max-width: $breakpoint-s ) {
+    @media (max-width: $breakpoint-s) {
       border: 0 !important; // TODO: this is dirty...
     }
 
-    @media ( min-width: $breakpoint-s ) {
+    @media (min-width: $breakpoint-s) {
       max-height: calc(100% - #{$su-6});
     }
 
@@ -59,7 +59,7 @@
 
     &__body {
       flex: 1 auto;
-      padding: $su-7;
+      padding: $su-6 $su-8;
       max-height: 100%;
       overflow-y: auto;
     }

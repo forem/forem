@@ -80,7 +80,8 @@ export class Actions extends Component {
                 className="mr-2 whitespace-nowrap"
                 onClick={onSaveDraft}
               >
-                Save draft
+                Save
+                <span className="hidden s:inline">draft</span>
               </Button>
             )}
             <div className="s:relative">
@@ -100,14 +101,16 @@ export class Actions extends Component {
                 />
               )}
             </div>
-            {!edited && (
+            {edited && (
               <Button
                 variant="ghost"
                 onClick={onClearChanges}
                 className="whitespace-nowrap fw-normal"
                 size="s"
               >
-                Clear new changes
+                Revert 
+                {' '}
+                <span className="hidden s:inline">new changes</span>
               </Button>
             )}
           </div>

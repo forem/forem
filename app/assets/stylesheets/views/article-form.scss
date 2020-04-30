@@ -105,10 +105,10 @@
     background: var(--base-10);
     position: sticky;
     bottom: 0;
-    padding: $su-6 $su-2;
+    padding: $su-4 $su-2;
 
     @media (min-width: $breakpoint-l) {
-      padding: $su-4 $su-2;
+      padding: $su-6 $su-2;
       padding-left: calc(
         var(--layout-narrow-sidebar-width) + var(--layout-gap)
       );

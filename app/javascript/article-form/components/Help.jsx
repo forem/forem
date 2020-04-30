@@ -7,31 +7,36 @@ export class Help extends Component {
     super(props);
     this.state = {
       liquidHelpHTML: document.getElementById('editor-liquid-help').innerHTML,
-      markdownHelpHTML: document.getElementById('editor-markdown-help').innerHTML,
+      markdownHelpHTML: document.getElementById('editor-markdown-help')
+        .innerHTML,
+      frontmatterHelpHTML: document.getElementById('editor-frontmatter-help')
+        .innerHTML,
     };
-  };
+  }
 
   setCommonProps = ({
     liquidShowing = false,
     markdownShowing = false,
+    frontmatterShowing = false,
   }) => {
     return {
       liquidShowing,
       markdownShowing,
+      frontmatterShowing,
     };
   };
 
-  toggleLiquid = e => {
+  toggleLiquid = (e) => {
     const { liquidShowing } = this.state;
     e.preventDefault();
     this.setState({
-      ...this.setCommonProps({ 
+      ...this.setCommonProps({
         liquidShowing: !liquidShowing,
       }),
     });
   };
 
-  toggleMarkdown = e => {
+  toggleMarkdown = (e) => {
     const { markdownShowing } = this.state;
     e.preventDefault();
     this.setState({
@@ -41,19 +46,35 @@ export class Help extends Component {
     });
   };
 
-  render () {
-    const {
-      previewShowing,
-      helpFor,
-      helpPosition
-    } = this.props;
+  toggleFrontmatter = (e) => {
+    const { frontmatterShowing } = this.state;
+    e.preventDefault();
+    this.setState({
+      ...this.setCommonProps({
+        frontmatterShowing: !frontmatterShowing,
+      }),
+    });
+  };
 
-    const { liquidHelpHTML, markdownHelpHTML, liquidShowing, markdownShowing } = this.state;
+  render() {
+    const { previewShowing, helpFor, helpPosition, version } = this.props;
+
+    const {
+      liquidHelpHTML,
+      markdownHelpHTML,
+      frontmatterHelpHTML,
+      liquidShowing,
+      markdownShowing,
+      frontmatterShowing,
+    } = this.state;
 
     return (
       <div className="crayons-layout__aside">
         {!previewShowing && (
-          <div className="crayons-article-form__tips" style={{ top: helpPosition }}>
+          <div
+            className="crayons-article-form__tips"
+            style={{ top: version === 'v1' ? '56px' : helpPosition }}
+          >
             {helpFor === 'article-form-title' && (
               <div>
                 <h4 className="mb-2 fs-l">How to write a good post title?</h4>
@@ -87,8 +108,27 @@ export class Help extends Component {
               </div>
             )}
 
-            {helpFor === 'article_body_markdown' && (
+            {(helpFor === 'article_body_markdown' || version === 'v1') && (
               <div>
+                {version === 'v1' && (
+                  <div className="crayons-card crayons-card--secondary p-4 mb-6">
+                    You are currently using basic markdown editor that uses
+                    {' '}
+                    <a href="#frontmatter" onClick={this.toggleFrontmatter}>
+                      Jekyll front matter
+                    </a>
+                    . You can also use 
+                    {' '}
+                    <em>rich+markdown</em>
+                    {' '}
+                    editor you can
+                    find in 
+                    {' '}
+                    <a href="/settings/ux">UX settings</a>
+                    .
+                  </div>
+                )}
+
                 <h4 className="mb-2 fs-l">How to use editor?</h4>
                 <ul className="list-disc pl-6 color-base-70">
                   <li>
@@ -98,7 +138,7 @@ export class Help extends Component {
                       Markdown
                     </a>
                     {' '}
-                    markdown to write and format posts.
+                    to write and format posts.
                   </li>
                   <li>
                     Most of the time, you can write inline HTML directly into
@@ -111,7 +151,7 @@ export class Help extends Component {
                       Liquid tags
                     </a>
                     {' '}
-                    to make add rich content such as tweets and videos.
+                    to add rich content such as tweets and videos.
                   </li>
                 </ul>
               </div>
@@ -130,15 +170,25 @@ export class Help extends Component {
             {markdownHelpHTML}
           </Modal>
         )}
+
+        {frontmatterShowing && (
+          <Modal
+            onToggleHelp={this.toggleFrontmatter}
+            title="Jekyll Front Matter"
+          >
+            {frontmatterHelpHTML}
+          </Modal>
+        )}
       </div>
     );
   }
-};
+}
 
 Help.propTypes = {
   previewShowing: PropTypes.bool.isRequired,
   helpFor: PropTypes.string.isRequired,
   helpPosition: PropTypes.string.isRequired,
+  version: PropTypes.string.isRequired,
 };
 
 Help.displayName = 'Help';

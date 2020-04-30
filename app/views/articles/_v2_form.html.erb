@@ -64,16 +64,7 @@
           <textarea class="crayons-textfield crayons-textfield--ghost fs-l ff-accent min-h-100" id="article_body_markdown" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
           </div>
       </div>
-      <div class="crayons-layout__aside">
-        <div class="crayons-article-form__tips">
-          <h4 class="mb-2 fs-l">How to write a good post title?</h4>
-          <ul class="list-disc pl-6 color-base-70">
-            <li>Use <a href="#markdown">Markdown</a> markdown to write and format posts.</li>
-            <li>Most of the time, you can write inline HTML directly into your posts.</li>
-            <li>You can use <a href="#liquid">Liquid tags</a> to make add rich content such as tweets and videos.</li>
-          </ul>
-        </div>
-      </div>
+      <div class="crayons-layout__aside"></div>
     </div>
 
     <div class="crayons-layout crayons-article-form__actions">
@@ -91,12 +82,9 @@
 </div>
 
 <div class="hidden">
-  <% if version == "v2" %>
-    <%= render "pages/editor_markdown_help" %>
-    <%= render "pages/editor_liquid_help" %>
-  <% else %>
-    <%= render "pages/editor_guide_text", version: "1" %>
-  <% end %>
+  <%= render "pages/editor_markdown_help" %>
+  <%= render "pages/editor_liquid_help" %>
+  <%= render "pages/editor_frontmatter_help" %>
 </div>
 
 <style>
