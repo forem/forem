@@ -10,14 +10,18 @@
 
 .crayons-article {
   &__cover {
-    margin: -#{$su-6} -#{$su-8} #{$su-7} -#{$su-8};
-    width: calc(100% + #{$su-8} + #{$su-8});
-    padding-top: percentage(
-      $cover-image-height / $cover-image-width
-    ); // TODO: fix ratio
-    background-size: cover;
-    background-position: center center;
-    border-radius: $br-default $br-default 0 0;
+    margin: calc(var(--layout-article-content-padding-y) * -1)
+      calc(var(--layout-article-content-padding-x) * -1)
+      var(--layout-article-content-padding-x)
+      calc(var(--layout-article-content-padding-x) * -1);
+    width: calc(100% + (var(--layout-article-content-padding-x) * 2));
+
+    &__image {
+      border-radius: $br-default $br-default 0 0;
+      background-size: cover;
+      background-position: center center;
+      padding-top: percentage($cover-image-height / $cover-image-width);
+    }
   }
 
   &__header {

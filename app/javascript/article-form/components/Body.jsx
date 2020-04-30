@@ -5,8 +5,8 @@ import { Toolbar } from './Toolbar';
 
 export class Body extends Component {
   state = {
-    hasFocus: false
-  }
+    hasFocus: false,
+  };
 
   render() {
     const { onChange, defaultValue, switchHelpContext } = this.props;
@@ -25,7 +25,7 @@ export class Body extends Component {
         <Toolbar visible={hasFocus} />
 
         <Textarea
-          className="crayons-textfield crayons-textfield--ghost fs-l ff-accent min-h-100"
+          className="crayons-textfield crayons-textfield--ghost fs-l ff-accent min-h-100 whitespace-prewrap"
           id="article_body_markdown"
           placeholder="Write your post content here..."
           value={defaultValue}

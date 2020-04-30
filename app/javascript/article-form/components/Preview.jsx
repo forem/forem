@@ -30,13 +30,15 @@ function titleArea(previewResponse, articleState, errors) {
   return (
     <header className="crayons-article__header">
       {coverImage.length > 0 && (
-        <div
-          className="crayons-article__cover"
-          style={{ backgroundImage: `url(${coverImage})` }}
-        />
+        <div className="crayons-article__cover">
+          <div
+            className="crayons-article__cover__image"
+            style={{ backgroundImage: `url(${coverImage})` }}
+          />
+        </div>
       )}
       {errors && <Errors errorsList={errors} />}
-      <h1 className="fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6">
+      <h1 className="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6">
         {previewTitle}
       </h1>
       <div className="crayons-article__tags">{tags}</div>
@@ -64,8 +66,7 @@ export const Preview = ({ previewResponse, articleState, errors }) => {
       </article>
     </div>
   );
-
-}
+};
 
 Preview.propTypes = {
   previewResponse: previewResponsePropTypes.isRequired,

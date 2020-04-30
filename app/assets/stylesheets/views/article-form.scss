@@ -6,7 +6,7 @@
 
   &__header {
     display: flex;
-    padding: $su-2 $su-4;
+    padding: $su-2 var(--layout-padding);
     align-items: center;
 
     @media (min-width: $breakpoint-l) {

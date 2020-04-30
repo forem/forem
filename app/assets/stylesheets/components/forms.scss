@@ -227,6 +227,10 @@
   &--ghost[disabled] {
     all: unset;
     width: 100%;
+
+    &textarea {
+      white-space: pre-wrap;
+    }
   }
 }
 
