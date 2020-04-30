@@ -72,6 +72,7 @@ class ImageUploadsController < ApplicationController
 
   def validate_image
     images = Array.wrap(params.dig("image"))
+    return if images.blank?
     return IS_NOT_FILE_MESSAGE unless valid_image_files?(images)
     return FILENAME_TOO_LONG_MESSAGE unless valid_filenames?(images)
 

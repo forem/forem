@@ -103,6 +103,8 @@ class OrganizationsController < ApplicationController
   def valid_image?
     image = params.dig("organization", "profile_image")
 
+    return true unless image
+
     if action_name == "create"
       @organization = Organization.new(organization_params.except(:profile_image))
       authorize @organization

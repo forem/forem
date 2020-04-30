@@ -369,6 +369,8 @@ class UsersController < ApplicationController
 
   def valid_image?
     image = params.dig("user", "profile_image")
+    return true unless image
+
     return true if valid_image_file?(image) && valid_filename?(image)
 
     Honeycomb.add_field("error", @user.errors.messages)

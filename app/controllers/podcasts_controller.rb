@@ -60,6 +60,8 @@ class PodcastsController < ApplicationController
 
   def valid_image?
     image = params.dig("podcast", "image")
+    return true unless image
+
     @podcast = Podcast.new(podcast_params.except(:image))
     @podcast.creator = current_user
     return true if valid_image_file?(image) && valid_filename?(image)

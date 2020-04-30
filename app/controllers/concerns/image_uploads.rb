@@ -10,7 +10,7 @@ module ImageUploads
   end
 
   def file?(image)
-    image.present? && image.respond_to?(:original_filename)
+    image.respond_to?(:original_filename)
   end
 
   def log_image_data_to_datadog
