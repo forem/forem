@@ -62,7 +62,7 @@ RSpec.describe Search::ClassifiedListing, type: :service do
       end
 
       it "searches by slug" do
-        slug_classified_listing = FactoryBot.create(:classified_listing, title: "A slug is created from this title in a callback")
+        slug_classified_listing = create(:classified_listing, title: "A slug is created from this title in a callback")
         index_documents(slug_classified_listing)
         params = { size: 5, slug: "slug" }
 
@@ -136,7 +136,7 @@ RSpec.describe Search::ClassifiedListing, type: :service do
 
     it "sorts documents by bumped_at by default" do
       classified_listing.update(bumped_at: 1.year.ago)
-      classified_listing2 = FactoryBot.create(:classified_listing, bumped_at: Time.current)
+      classified_listing2 = create(:classified_listing, bumped_at: Time.current)
       index_documents([classified_listing, classified_listing2])
       params = { size: 5 }
 
@@ -148,7 +148,7 @@ RSpec.describe Search::ClassifiedListing, type: :service do
 
     it "paginates the results" do
       classified_listing.update(bumped_at: 1.year.ago)
-      classified_listing2 = FactoryBot.create(:classified_listing, bumped_at: Time.current)
+      classified_listing2 = create(:classified_listing, bumped_at: Time.current)
       index_documents([classified_listing, classified_listing2])
       first_page_params = { page: 0, per_page: 1, sort_by: "bumped_at", order: "dsc" }
 
@@ -162,8 +162,12 @@ RSpec.describe Search::ClassifiedListing, type: :service do
     end
 
     it "returns an empty Array if no results are found" do
-      classified_listing.update(category: "forhire")
-      classified_listing2 = FactoryBot.create(:classified_listing, category: "cfp")
+      jobs_category = create(:classified_listing_category, :jobs)
+      classified_listing.update(classified_listing_category: jobs_category)
+
+      cfp_category = create(:classified_listing_category, :cfp)
+      classified_listing2 = create(:classified_listing,
+                                   classified_listing_category: cfp_category)
       index_documents([classified_listing, classified_listing2])
       params = { page: 3, per_page: 1 }
 

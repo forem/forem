@@ -63,11 +63,25 @@ RSpec.describe "/internal/config", type: :request do
           post "/internal/config", params: { site_config: { tagline: description }, confirmation: confirmation_message }
           expect(SiteConfig.tagline).to eq(description)
         end
+      end
 
+      describe "mascot" do
         it "updates the mascot_user_id" do
           expected_mascot_user_id = 2
           post "/internal/config", params: { site_config: { mascot_user_id: expected_mascot_user_id }, confirmation: confirmation_message }
           expect(SiteConfig.mascot_user_id).to eq(expected_mascot_user_id)
+        end
+
+        it "updates mascot_image_url" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { mascot_image_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
+        end
+
+        it "updates mascot_image_description" do
+          description = "Hey hey #{rand(100)}"
+          post "/internal/config", params: { site_config: { mascot_image_description: description }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_image_description).to eq(description)
         end
       end
 
@@ -115,6 +129,24 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
+      describe "onboarding" do
+        it "updates onboarding_taskcard_image" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { onboarding_taskcard_image: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
+        end
+
+        it "removes space suggested_tags" do
+          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+
+        it "downcases suggested_tags" do
+          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+      end
+
       describe "images" do
         it "updates main_social_image" do
           expected_image_url = "https://dummyimage.com/300x300"
@@ -144,24 +176,6 @@ RSpec.describe "/internal/config", type: :request do
           expected_image_url = "https://dummyimage.com/300x300"
           post "/internal/config", params: { site_config: { primary_sticker_image_url: expected_image_url }, confirmation: confirmation_message }
           expect(SiteConfig.primary_sticker_image_url).to eq(expected_image_url)
-        end
-
-        it "updates onboarding_taskcard_image" do
-          expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { onboarding_taskcard_image: expected_image_url }, confirmation: confirmation_message }
-          expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
-        end
-
-        it "updates mascot_image_url" do
-          expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { mascot_image_url: expected_image_url }, confirmation: confirmation_message }
-          expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
-        end
-
-        it "updates mascot_image_description" do
-          description = "Hey hey #{rand(100)}"
-          post "/internal/config", params: { site_config: { mascot_image_description: description }, confirmation: confirmation_message }
-          expect(SiteConfig.mascot_image_description).to eq(description)
         end
 
         it "rejects update without proper confirmation" do
@@ -260,16 +274,6 @@ RSpec.describe "/internal/config", type: :request do
       end
 
       describe "Tags" do
-        it "removes space suggested_tags" do
-          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
-          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
-        end
-
-        it "downcases suggested_tags" do
-          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
-          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
-        end
-
         it "removes space sidebar_tags" do
           post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])

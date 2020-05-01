@@ -80,6 +80,14 @@ RSpec.describe Users::Delete, type: :service do
     expect { user_reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
   end
 
+  it "deletes field tests memberships" do
+    create(:field_test_membership, participant_id: user.id)
+
+    expect do
+      described_class.call(user)
+    end.to change(FieldTest::Membership, :count).by(-1)
+  end
+
   # check that all the associated records are being destroyed, except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
     let(:kept_association_names) do
@@ -98,6 +106,7 @@ RSpec.describe Users::Delete, type: :service do
 
     def create_associations(names)
       associations = []
+
       names.each do |association|
         if user.public_send(association.name).present?
           associations.push(*user.public_send(association.name))
@@ -106,10 +115,20 @@ RSpec.describe Users::Delete, type: :service do
           class_name = association.options[:class_name] || singular_name
           possible_factory_name = class_name.underscore.tr("/", "_")
           inverse_of = association.options[:inverse_of] || association.options[:as] || :user
+
+          # as we can't be automatically sure that the other side of the relation
+          # has defined a `has_one` relation we need to guard against third party
+          # models that don't have them defined
+          model = class_name.safe_constantize
+          if model && !model.reflect_on_association(inverse_of)
+            next
+          end
+
           record = create(possible_factory_name, inverse_of => user)
-          associations.push record
+          associations.push(record)
         end
       end
+
       associations
     end
 
