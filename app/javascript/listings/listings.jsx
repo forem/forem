@@ -139,7 +139,8 @@ export class Listings extends Component {
 
   handleCloseModal = (e) => {
     const { openedListing } = this.state;
-    if (e === 'close-modal' ||
+    if (
+      e === 'close-modal' ||
       (openedListing !== null && e.key === 'Escape') ||
       MATCH_LISTING.includes(e.target.id)
     ) {
@@ -215,11 +216,6 @@ export class Listings extends Component {
 
   setUser = () => {
     const { currentUserId } = this.state;
-    setTimeout(() => {
-      if (window.currentUser && currentUserId === null) {
-        this.setState({ currentUserId: window.currentUser.id });
-      }
-    }, 300);
     setTimeout(() => {
       if (window.currentUser && currentUserId === null) {
         this.setState({ currentUserId: window.currentUser.id });
