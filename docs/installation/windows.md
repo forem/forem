@@ -58,8 +58,8 @@ ruby -v
 
 ### Installing Rails
 
-As a pre-requisite to installing Rails, we're going to need to install a
-JavaScript runtime like Node.js.
+As a pre-requisite to install Rails, we're going to need to install a JavaScript
+runtime like Node.js.
 
 To install Node.js, we're going to add it using the official repository:
 
