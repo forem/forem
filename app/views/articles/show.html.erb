@@ -66,7 +66,7 @@
     </script>
   <% end %>
 
-  <%= javascript_include_tag "https://embed.runkit.com" %>
+  <%= javascript_include_tag "https://embed.runkit.com", defer: true %>
 <% end %>
 
 <% if internal_navigation? %>
