@@ -5,8 +5,7 @@ import ModalBackground from './components/ModalBackground';
 import Modal from './components/Modal';
 import AllListings from './components/AllListings';
 import NextPageButton from './components/NextPageButton';
-import ClassifiedFiltersCategories from './components/ClassifiedFiltersCategories';
-import ClassifiedFiltersTags from './components/ClassifiedFiltersTags';
+import ClassifiedFilters from './components/ClassifiedFilters';
 import {
   LISTING_PAGE_SIZE,
   MATCH_LISTING,
@@ -305,22 +304,18 @@ export class Listings extends Component {
         {shouldRenderModal && (
           <ModalBackground onClick={this.handleCloseModal} />
         )}
-        <div className="classified-filters" id="classified-filters">
-          <ClassifiedFiltersCategories
-            categories={allCategories}
-            category={category}
-            onClick={this.selectCategory}
-          />
-          <ClassifiedFiltersTags
-            message={message}
-            onKeyUp={this.debouncedClassifiedListingSearch}
-            onClearQuery={this.clearQuery}
-            onRemoveTag={this.removeTag}
-            tags={tags}
-            onKeyPress={this.handleKeyPressedOnSelectedTags}
-            query={query}
-          />
-        </div>
+        <ClassifiedFilters
+          categories={allCategories}
+          category={category}
+          onSelectCategory={this.selectCategory}
+          message={message}
+          onKeyUp={this.debouncedClassifiedListingSearch}
+          onClearQuery={this.clearQuery}
+          onRemoveTag={this.removeTag}
+          tags={tags}
+          onKeyPress={this.handleKeyPressedOnSelectedTags}
+          query={query}
+        />
         <AllListings
           listings={listings}
           onAddTag={this.addTag}
