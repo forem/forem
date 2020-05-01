@@ -136,7 +136,7 @@ export class CommentSubscription extends Component {
           <Dropdown
             className={
               showOptions
-                ? `inline-block z-10 right-4 left-4 s:right-0 s:left-auto${
+                ? `inline-block z-30 right-4 left-4 s:right-0 s:left-auto${
                     positionType === 'relative' ? ' w-full' : ''
                   }`
                 : null
