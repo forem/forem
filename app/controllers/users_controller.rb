@@ -6,9 +6,9 @@ class UsersController < ApplicationController
   ]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
+  before_action :set_suggested_users, only: %i[index]
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
-  DEFAULT_FOLLOW_SUGGESTIONS = SiteConfig.suggested_users
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
@@ -268,8 +268,12 @@ class UsersController < ApplicationController
     params[:user].delete_if { |_k, v| v.blank? }
   end
 
+  def set_suggested_users
+    @suggested_users = SiteConfig.suggested_users
+  end
+
   def default_suggested_users
-    @default_suggested_users ||= User.where(username: DEFAULT_FOLLOW_SUGGESTIONS)
+    @default_suggested_users ||= User.where(username: @suggested_users)
   end
 
   def determine_follow_suggestions(current_user)
