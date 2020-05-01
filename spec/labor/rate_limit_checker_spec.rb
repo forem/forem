@@ -110,6 +110,19 @@ RSpec.describe RateLimitChecker, type: :labor do
     it "returns false if organization_creation limit has not been reached" do
       expect(described_class.new(user).limit_by_action("organization_creation")).to be(false)
     end
+
+    it "logs a rate limit hit to datadog" do
+      allow(Rails.cache).
+        to receive(:read).with("#{user.id}_organization_creation").
+        and_return(SiteConfig.rate_limit_organization_creation + 1)
+      allow(DatadogStatsClient).to receive(:increment)
+      described_class.new(user).limit_by_action("organization_creation")
+
+      expect(DatadogStatsClient).to have_received(:increment).with(
+        "rate_limit.limit_reached",
+        tags: ["user:#{user.id}", "action:organization_creation"],
+      )
+    end
   end
 
   describe "#check_limit!" do
