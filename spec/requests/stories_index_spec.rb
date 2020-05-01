@@ -254,6 +254,7 @@ RSpec.describe "StoriesIndex", type: :request do
       tag2 = create(:tag, alias_for: tag.name)
       get "/t/#{tag2.name}"
       expect(response.body).to redirect_to "/t/#{tag.name}"
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "does not render sponsor if not live" do
