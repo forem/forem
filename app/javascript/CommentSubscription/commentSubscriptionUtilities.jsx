@@ -1,7 +1,13 @@
 import { request } from '../utilities/http/request';
-import { addSnackbarItem } from '../Snackbar';
 
-export async function getSubscriptionStatus(articleId) {
+/**
+ * Gets the comment subscription status for a given article.
+ *
+ * @param {number} articleId
+ *
+ * @returns {string} The subscription status.
+ */
+export async function getCommentSubscriptionStatus(articleId) {
   try {
     const response = await request(
       `/notification_subscriptions/Article/${articleId}`,
@@ -15,7 +21,20 @@ export async function getSubscriptionStatus(articleId) {
   }
 }
 
-export async function setSubscription(articleId, subscriptionType) {
+/**
+ * Set's the subscription status for a given article.
+ *
+ * @param {number} articleId
+ * @param {string} subscriptionType
+ *
+ * @returns {string} A friendly message in regards to subscription status.
+ */
+export async function setCommentSubscriptionStatus(
+  articleId,
+  subscriptionType,
+) {
+  let message;
+
   try {
     const response = await request(
       `/notification_subscriptions/Article/${articleId}`,
@@ -29,14 +48,12 @@ export async function setSubscription(articleId, subscriptionType) {
     const subscribed = await response.json();
 
     if (typeof subscribed !== 'boolean') {
-      addSnackbarItem({
-        message: 'An error occurred, please try again',
-        addCloseButton: true,
-      });
-      return;
+      message = 'An error occurred, please try again';
+
+      return message;
     }
 
-    let message = 'You have been unsubscribed from comments for this post';
+    message = 'You have been unsubscribed from comments for this post';
 
     if (subscribed) {
       message = `You have been subscribed to ${subscriptionType.replace(
@@ -44,12 +61,9 @@ export async function setSubscription(articleId, subscriptionType) {
         ' ',
       )}`;
     }
-
-    addSnackbarItem({ message, addCloseButton: true });
   } catch (error) {
-    addSnackbarItem({
-      message: 'An error occurred, please try again',
-      addCloseButton: true,
-    });
+    message = 'An error occurred, please try again';
   }
+
+  return message;
 }

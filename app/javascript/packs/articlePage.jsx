@@ -1,5 +1,5 @@
 import { h, render } from 'preact';
-import { Snackbar } from '../Snackbar';
+import { Snackbar, addSnackbarItem } from '../Snackbar';
 
 // The Snackbar for the article page
 const snackZone = document.getElementById('snack-zone');
@@ -22,17 +22,20 @@ const userDataIntervalID = setInterval(async () => {
 
     try {
       const {
-        getSubscriptionStatus,
-        setSubscription,
+        getCommentSubscriptionStatus,
+        setCommentSubscriptionStatus,
         CommentSubscription,
       } = await import('../CommentSubscription');
 
       const { articleId } = document.querySelector('#article-body').dataset;
-      const { config: subscriptionType } = await getSubscriptionStatus(
+      const { config: subscriptionType } = await getCommentSubscriptionStatus(
         articleId,
       );
-      const subscriptionRequestHandler = (type) =>
-        setSubscription(articleId, type);
+      const subscriptionRequestHandler = async (type) => {
+        const message = await setCommentSubscriptionStatus(articleId, type);
+
+        addSnackbarItem({ message, addCloseButton: true });
+      };
 
       render(
         <CommentSubscription
