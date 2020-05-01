@@ -2,7 +2,7 @@
   <div class="col-12">
     <h2>Email Tools</h2>
     <%= form_with url: verify_email_ownership_internal_user_path(@user), local: true do |f| %>
-      Email last verified at: <%= @user.email_authorizations.where.not(verified_at: nil).order("created_at DESC").first&.verified_at || "Never" %>
+      Email last verified at: <%= @last_email_verification_date %>
       <%= f.hidden_field(:user_id, value: @user.id) %>
       <%= f.submit "Verify Email Ownership", class: "btn btn-primary float-right" %>
     <% end %>

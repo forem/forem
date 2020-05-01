@@ -54,9 +54,7 @@ RSpec.describe "internal/users", type: :request do
   describe "POST internal/users/:id/verify_email_ownership" do
     it "allows a user to verify email ownership" do
       post "/internal/users/#{user.id}/verify_email_ownership", params: { user_id: user.id }
-
-      verification_link = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}/verify_email_ownership?confirmation_token=#{user.email_authorizations.order('created_at DESC').first.confirmation_token}&username=#{user.username}"
-
+      verification_link = app_url(verify_email_authorizations_path(confirmation_token: user.email_authorizations.first.confirmation_token, username: user.username))
       expect(ActionMailer::Base.deliveries.count).to eq(1)
       expect(ActionMailer::Base.deliveries.first.subject).to eq("Verify Your #{ApplicationConfig['COMMUNITY_NAME']} Account Ownership")
       expect(ActionMailer::Base.deliveries.first.text_part.body).to include(verification_link)

@@ -6,7 +6,7 @@ class EmailAuthorizationsController < ApplicationController
     email_authorization = user.email_authorizations.order("created_at DESC").first
     raise ActionController::RoutingError, "Not Found" unless email_authorization.confirmation_token == params[:confirmation_token]
 
-    email_authorization.update(verified_at: Time.now.utc)
-    redirect_to "/"
+    email_authorization.update(verified_at: Time.current)
+    redirect_to root_path
   end
 end

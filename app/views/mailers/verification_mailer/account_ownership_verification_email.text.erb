@@ -1,6 +1,3 @@
-<% host = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}" %>
-<% verify_url = "#{host}/verify_email_ownership?confirmation_token=#{@user.email_authorizations.order('created_at DESC').first.confirmation_token}&username=#{@user.username}" %>
-
 Hey <%= @user.username %>!
 
 We're sending this email to verify that you've got access to this email address.
@@ -9,4 +6,4 @@ If you have no idea why you're getting this email, please ignore it!
 
 Otherwise, visit the following URL to verify that you still have access to this email address:
 
-<%= verify_url %>
+<%= app_url(verify_email_authorizations_path(confirmation_token: @confirmation_token, username: @user.username)) %>

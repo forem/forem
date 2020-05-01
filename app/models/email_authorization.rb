@@ -15,6 +15,6 @@ class EmailAuthorization < ApplicationRecord
   def generate_confirmation_token
     return if confirmation_token.present?
 
-    self.confirmation_token = SecureRandom.urlsafe_base64.to_s
+    self.confirmation_token = SecureRandom.urlsafe_base64
   end
 end
