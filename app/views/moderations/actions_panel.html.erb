@@ -52,37 +52,62 @@
     </button>
     <span class="how-this-works-section">How does this work?</span>
   </div>
-  <%# Rating buttons and options go here, to be added by Arit %>
   <div class="other-things-container">
     <header class="other-things">
       <h1>Other things you can do</h1>
     </header>
-    <button class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags">
-      <div class="label-wrapper">
-        <div class="icon circle centered-icon">
-          <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
-        </div>
-        <header>
-          <h2>Adjust tags</h2>
-          <h3>Add or remove tags</h3>
-        </header>
-      </div>
-      <div class="toggle-chevron-container">
-        <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
-      </div>
-    </button>
-    <% if @allowed_to_adjust %>
-    <div class="adjust-tags-options dropdown-options hidden">
-      <% @moderatable.tag_list.each do |tag_name| %>
-      <button class="adjustable-tag" type="button">
-          <span class="num-sign">#</span><%= tag_name %>
-          <div class="circle centered-icon adjustment-icon selected">
-            <%= inline_svg_tag("subtract.svg", aria: false) %>
+    <% unless @moderatable.tag_list.size == 4 && @moderatable_tags.length.zero? && !current_user.any_admin? %>
+      <button class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags">
+        <div class="label-wrapper">
+          <div class="icon circle centered-icon">
+            <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
           </div>
+          <header>
+            <h2>Adjust tags</h2>
+            <h3>Add or remove tags</h3>
+          </header>
+        </div>
+        <div class="toggle-chevron-container">
+          <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
+        </div>
       </button>
-      <% end %>
-      <span class="how-this-works-section">How does this work?</span>
-    </div>
+
+      <div class="adjust-tags-options dropdown-options hidden">
+        <% if current_user.any_admin? %>
+        <div class="add-tag-container" data-allowed-to-adjust="<%= @allowed_to_adjust %>">
+          <input class="crayons-textfield" type="text" placeholder="Add a tag">
+        </div>
+        <% elsif @moderatable.tag_list.size < 4 %>
+          <% @tag_moderator_tags.each do |tag| %>
+            <button class="adjustable-tag" type="button" data-adjustment-type="addition" data-tag-id="<%= tag.id %>" data-article-id="<%= @moderatable.id %>">
+              <span class="num-sign">#</span><%= tag.name %>
+              <div class="circle centered-icon adjustment-icon">
+                <%= inline_svg_tag("plus.svg", aria: false) %>
+              </div>
+            </button>
+          <% end %>
+        <% end %>
+        <% if @moderatable_tags.length.positive? %>
+          <% @moderatable_tags.each do |tag| %>
+            <button class="adjustable-tag" type="button" data-adjustment-type="removal" data-tag-id="<%= tag.id %>">
+              <span class="num-sign">#</span><%= tag.name %>
+              <div class="circle centered-icon adjustment-icon selected">
+                <%= inline_svg_tag("subtract.svg", aria: false) %>
+              </div>
+            </button>
+          <% end %>
+        <% elsif current_user.any_admin? %>
+          <% @moderatable.tags.each do |tag| %>
+            <button class="adjustable-tag" type="button" data-adjustment-type="removal" data-tag-id="<%= tag.id %>">
+              <span class="num-sign">#</span><%= tag.name %>
+              <div class="circle centered-icon adjustment-icon selected">
+                <%= inline_svg_tag("subtract.svg", aria: false) %>
+              </div>
+            </button>
+          <% end %>
+        <% end %>
+        <span class="how-this-works-section">How does this work?</span>
+      </div>
     <% end %>
     <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
     <button class="other-things-btn set-experience" type="button" data-other-things-type="set-experience">

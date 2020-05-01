@@ -481,6 +481,9 @@
       transition-duration: 1s;
     }
     .adjust-tags-options {
+      .add-tag-container {
+        padding: $su-2 $su-1;
+      }
       button.adjustable-tag {
         background: inherit;
         border: none;
@@ -510,8 +513,7 @@
         &:hover {
           background: rgba(59, 73, 223, 0.05);
         }
-        &.selected {
-        }
+        // &.selected {}
       }
     }
     .set-experience-options {
