@@ -14,6 +14,6 @@ namespace :fastly do
       next
     end
 
-    FastlyConfig::Update.run
+    FastlyConfig::Update.call
   end
 end
