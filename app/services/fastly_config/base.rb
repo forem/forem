@@ -25,11 +25,11 @@ module FastlyConfig
     end
 
     def file_updated?
-      raise FastlyConfig::Errors::Error, "Fastly configs must implement their own file_updated? method"
+      raise SubclassResponsibility, "Fastly configs must implement their own file_updated? method"
     end
 
     def upsert_config
-      raise FastlyConfig::Errors::Error, "Fastly configs must implement their own update_config method"
+      raise SubclassResponsibility, "Fastly configs must implement their own update_config method"
     end
   end
 end
