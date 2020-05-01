@@ -182,7 +182,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
   describe "GET podcast index" do
     include_examples "redirects to the lowercase route" do
-      let(:path) { "/#{create(:podcast).slug.upcase}" }
+      let(:path) { "/#{build(:podcast).slug.upcase}" }
     end
 
     it "renders page with proper header" do
@@ -346,13 +346,13 @@ RSpec.describe "StoriesIndex", type: :request do
 
   describe "GET user_path" do
     include_examples "redirects to the lowercase route" do
-      let(:path) { "/#{create(:user).username.upcase}" }
+      let(:path) { "/#{build(:user).username.upcase}" }
     end
   end
 
   describe "GET organization_path" do
     include_examples "redirects to the lowercase route" do
-      let(:path) { "/#{create(:organization).slug.upcase}" }
+      let(:path) { "/#{build(:organization).slug.upcase}" }
     end
   end
 end
