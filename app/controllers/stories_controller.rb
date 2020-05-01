@@ -81,7 +81,7 @@ class StoriesController < ApplicationController
     user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
       Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
-      redirect_to user_or_org.path
+      redirect_to user_or_org.path, status: :moved_permanently
     else
       not_found
     end
@@ -91,10 +91,10 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
-      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path
+      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path, status: :moved_permanently
       return
     elsif (@organization = @article.organization)
-      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path
+      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path, status: :moved_permanently
       return
     end
     not_found
@@ -121,7 +121,7 @@ class StoriesController < ApplicationController
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
-      redirect_to "/t/#{@tag_model.alias_for}"
+      redirect_to "/t/#{@tag_model.alias_for}", status: :moved_permanently
       return
     end
 
