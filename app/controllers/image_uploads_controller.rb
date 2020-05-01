@@ -18,14 +18,6 @@ class ImageUploadsController < ApplicationController
       end
 
       uploaders = upload_images(params[:image])
-    rescue RateLimitChecker::LimitReached => e
-      respond_to do |format|
-        format.json do
-          response.headers["Retry-After"] = e.retry_after
-          render json: { error: e.message }, status: :too_many_requests
-        end
-      end
-      return
     rescue CarrierWave::IntegrityError => e # client error
       respond_to do |format|
         format.json do

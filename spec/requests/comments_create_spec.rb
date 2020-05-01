@@ -5,7 +5,7 @@ RSpec.describe "CommentsCreate", type: :request do
   let(:blocker) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:new_body) { -> { "NEW BODY #{rand(100)}" } }
-  let(:rate_limit_checker) { instance_double(RateLimitChecker) }
+  let(:rate_limit_checker) { RateLimitChecker.new(user) }
 
   before do
     sign_in user
@@ -75,7 +75,7 @@ RSpec.describe "CommentsCreate", type: :request do
   context "when an error is raised before authorization is performed" do
     before do
       allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
-      allow(rate_limit_checker).to receive(:limit_by_action).and_raise(StandardError)
+      allow(rate_limit_checker).to receive(:check_limit!).and_raise(StandardError)
     end
 
     it "returns an unprocessable_entity response code" do

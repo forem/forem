@@ -9,6 +9,10 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 
+  rescue_from RateLimitChecker::LimitReached do |exc|
+    error_too_many_requests(exc)
+  end
+
   def not_found
     raise ActiveRecord::RecordNotFound, "Not Found"
   end
@@ -24,6 +28,11 @@ class ApplicationController < ActionController::Base
 
   def bad_request
     render json: "Error: Bad Request", status: :bad_request
+  end
+
+  def error_too_many_requests(exc)
+    response.headers["Retry-After"] = exc.retry_after
+    render json: { error: exc.message, status: 429 }, status: :too_many_requests
   end
 
   def authenticate_user!

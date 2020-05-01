@@ -109,7 +109,7 @@ class CommentsController < ApplicationController
     end
   # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
   # for details as to why this is necessary
-  rescue Pundit::NotAuthorizedError
+  rescue Pundit::NotAuthorizedError, RateLimitChecker::LimitReached
     raise
   rescue StandardError => e
     skip_authorization
