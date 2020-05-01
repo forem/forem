@@ -90,6 +90,17 @@ RSpec.describe "UserOrganization", type: :request do
     expect(response.body).to include("filename too long")
   end
 
+  it "returns error if profile image is not a file" do
+    sign_in user
+    org_params = build(:organization).attributes
+    image = "A String"
+    org_params["profile_image"] = image
+    allow(Organization).to receive(:new).and_return(organization)
+
+    post "/organizations", params: { organization: org_params }
+    expect(response.body).to include("invalid file type")
+  end
+
   context "when leaving an org" do
     let(:org_member) { create(:user, :org_member) }
 

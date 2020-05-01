@@ -277,22 +277,54 @@
   </div>
   <div>
     <input type="text" class="crayons-textfield" placeholder="This is placeholder..."><br><br>
-    <input type="text" class="crayons-textfield" placeholder="This is placeholder..." value="Disabled field" disabled>
+    <input type="text" class="crayons-textfield" placeholder="This is placeholder..." value="Disabled field" disabled><br><br>
+    <input type="text" class="crayons-textfield crayons-textfield--ghost" placeholder="This is placeholder for ghost textfield...">
   </div>
 
   <pre><%= '
   <input type="text" class="crayons-textfield" placeholder="This is placeholder...">
   <input type="text" class="crayons-textfield" placeholder="This is placeholder..." value="Disabled field" disabled>
+  <input type="text" class="crayons-textfield crayons-textfield--ghost" placeholder="This is placeholder for ghost textfield...">
   '.rstrip %></pre>
 
   <div>
-    <textarea class="crayons-textfield" placeholder="This is palceholder..."></textarea><br><br>
-    <textarea class="crayons-textfield" placeholder="This is palceholder..." disabled>Disabled textarea</textarea>
+    <textarea class="crayons-textfield" placeholder="This is placeholder..."></textarea><br><br>
+    <textarea class="crayons-textfield" placeholder="This is placeholder..." disabled>Disabled textarea</textarea><br><br>
+    <textarea class="crayons-textfield crayons-textfield--ghost" placeholder="This is placeholder for ghost textarea..."></textarea>
   </div>
 
   <pre><%= '
-  <textarea class="crayons-textfield" placeholder="This is palceholder..."></textarea>
-  <textarea class="crayons-textfield" placeholder="This is palceholder..." disabled>Disabled textarea</textarea>
+  <textarea class="crayons-textfield" placeholder="This is placeholder..."></textarea>
+  <textarea class="crayons-textfield" placeholder="This is placeholder..." disabled>Disabled textarea</textarea>
+  <textarea class="crayons-textfield crayons-textfield--ghost" placeholder="This is placeholder for ghost textarea..."></textarea>
+  '.rstrip %></pre>
+
+  <div>
+    <select class="crayons-select">
+      <option>Option 1</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+      <option>Option 4</option>
+      <option>Option 5</option>
+    </select><br><br>
+
+    <select class="crayons-select" disabled>
+      <option>Option 1 disabled</option>
+      <option>Option 2</option>
+      <option>Option 3</option>
+    </select>
+  </div>
+
+  <pre><%= '
+  <select class="crayons-select">
+    <option>Option 1</option>
+    ...
+  </select>
+
+  <select class="crayons-select" disabled>
+    <option>Option 1 disbled</option>
+    ...
+  </select>
   '.rstrip %></pre>
 
   <div>
