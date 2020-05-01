@@ -1,4 +1,4 @@
-"use strict"
+'use strict';
 
 /**
  * This script hunts for podcast's "Record" for both the podcast_episde's
@@ -102,8 +102,20 @@ function initializePodcastPlayback() {
     return podcastLiquidTagrecords;
   }
 
+  function isNativePlayer() {
+    return isNativeIOS() || isNativeAndroid();
+  }
+
   function isNativeIOS() {
     return navigator.userAgent === 'DEV-Native-ios';
+  }
+
+  function isNativeAndroid() {
+    return (
+      navigator.userAgent === 'DEV-Native-android' &&
+      typeof AndroidBridge !== 'undefined' &&
+      AndroidBridge !== null
+    );
   }
 
   function saveMediaState(state) {
@@ -180,6 +192,8 @@ function initializePodcastPlayback() {
         action: 'load',
         url: audio.querySelector('source').src,
       });
+    } else if (isNativeAndroid()) {
+      AndroidBridge.loadPodcast(audio.querySelector('source').src);
     } else {
       audio.load();
     }
@@ -235,6 +249,8 @@ function initializePodcastPlayback() {
         action: 'rate',
         rate: currentState.playbackRate.toString(),
       });
+    } else if (isNativeAndroid()) {
+      AndroidBridge.ratePodcast(currentState.playbackRate);
     } else {
       audio.playbackRate = currentState.playbackRate;
     }
@@ -268,14 +284,22 @@ function initializePodcastPlayback() {
     getById('animated-bars').classList.remove('playing');
   }
 
+  function sendPlayMessage(atSeconds) {
+    if (isNativeIOS()) {
+      sendPodcastMessage({
+        action: 'play',
+        seconds: atSeconds,
+      });
+    } else {
+      AndroidBridge.playPodcast(atSeconds);
+    }
+  }
+
   function playAudio(audio) {
     return new Promise(function (resolve, reject) {
       var currentState = currentAudioState();
-      if (isNativeIOS()) {
-        sendPodcastMessage({
-          action: 'play',
-          seconds: currentState.currentTime.toString(),
-        });
+      if (isNativePlayer()) {
+        sendPlayMessage(currentState.currentTime.toString());
         setPlaying(true);
         resolve();
       } else {
@@ -295,27 +319,40 @@ function initializePodcastPlayback() {
     });
   }
 
+  function fetchMetadataString() {
+    var episodeContainer = getByClass('podcast-episode-container')[0];
+    if (episodeContainer === undefined) {
+      episodeContainer = getByClass('podcastliquidtag')[0];
+    }
+    return episodeContainer.dataset.meta;
+  }
+
   function sendMetadataMessage() {
     try {
-      var episodeContainer = getByClass('podcast-episode-container')[0];
-      if (episodeContainer === undefined) {
-        episodeContainer = getByClass('podcastliquidtag')[0];
-      }
-      var metadata = JSON.parse(episodeContainer.dataset.meta);
+      var metadata = JSON.parse(fetchMetadataString());
       var message = {
         action: 'metadata',
         episodeName: metadata.episodeName,
         podcastName: metadata.podcastName,
         podcastImageUrl: metadata.podcastImageUrl,
       };
-      sendPodcastMessage(message);
+
+      if (isNativeIOS()) {
+        sendPodcastMessage(message);
+      } else {
+        AndroidBridge.metadataPodcast(
+          metadata.episodeName,
+          metadata.podcastName,
+          metadata.podcastImageUrl,
+        );
+      }
     } catch (e) {
       console.log('Unable to load Podcast Episode metadata', e); // eslint-disable-line no-console
     }
   }
 
   function startAudioPlayback(audio) {
-    if (isNativeIOS()) {
+    if (isNativePlayer()) {
       sendMetadataMessage();
     }
 
@@ -336,6 +373,8 @@ function initializePodcastPlayback() {
   function pauseAudioPlayback(audio) {
     if (isNativeIOS()) {
       sendPodcastMessage({ action: 'pause' });
+    } else if (isNativeAndroid()) {
+      AndroidBridge.pausePodcast();
     } else {
       audio.pause();
     }
@@ -395,6 +434,8 @@ function initializePodcastPlayback() {
         action: 'muted',
         muted: currentState.muted.toString(),
       });
+    } else if (isNativeAndroid()) {
+      AndroidBridge.mutePodcast(currentState.muted);
     } else {
       audio.muted = currentState.muted;
     }
@@ -450,6 +491,8 @@ function initializePodcastPlayback() {
           action: 'seek',
           seconds: currentState.currentTime.toString(),
         });
+      } else if (isNativeAndroid()) {
+        AndroidBridge.seekPodcast(currentState.currentTime);
       } else {
         audio.currentTime = currentState.currentTime;
       }
@@ -482,6 +525,8 @@ function initializePodcastPlayback() {
     saveMediaState(newAudioState());
     if (isNativeIOS()) {
       sendPodcastMessage({ action: 'terminate' });
+    } else if (isNativeAndroid()) {
+      AndroidBridge.terminatePodcast();
     }
   }
 
