@@ -47,8 +47,7 @@ class RateLimitChecker
 
     if result
       @action = action
-
-      Slack::Messengers::RateLimit.call(user: user, action: action)
+      log_to_datadog
     end
     result
   end
@@ -111,5 +110,9 @@ class RateLimitChecker
 
     now = Time.zone.now
     user.follows.where(created_at: (now.beginning_of_day..now)).size
+  end
+
+  def log_to_datadog
+    DatadogStatsClient.increment("rate_limit.limit_reached", tags: ["user:#{user.id}", "action:#{action}"])
   end
 end
