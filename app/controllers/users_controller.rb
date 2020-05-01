@@ -282,7 +282,7 @@ class UsersController < ApplicationController
       attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
     ).suggest
 
-    recent_suggestions.empty? ? default_suggested_users : recent_suggestions
+    recent_suggestions.presence || default_suggested_users
   end
 
   def render_update_response
