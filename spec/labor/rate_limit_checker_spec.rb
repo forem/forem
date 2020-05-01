@@ -112,6 +112,18 @@ RSpec.describe RateLimitChecker, type: :labor do
     end
   end
 
+  describe "#check_limit!" do
+    it "returns nil if limit_by_action is false" do
+      allow(rate_limit_checker).to receive(:limit_by_action).and_return(false)
+      expect(rate_limit_checker.check_limit!(:image_upload)).to be_nil
+    end
+
+    it "raises an error if limit_by_action is true" do
+      allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
+      expect { rate_limit_checker.check_limit!(:image_upload) }.to raise_error(RateLimitChecker::LimitReached)
+    end
+  end
+
   describe ".track_image_uploads" do
     it "calls the cache object correctly" do
       allow(Rails.cache).to receive(:increment)

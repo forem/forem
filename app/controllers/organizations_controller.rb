@@ -3,7 +3,7 @@ class OrganizationsController < ApplicationController
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   def create
-    rate_limit!
+    rate_limit!(:organization_creation)
 
     @tab = "organization"
     @user = current_user
@@ -129,18 +129,5 @@ class OrganizationsController < ApplicationController
     @organization.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
 
     false
-  end
-
-  def rate_limit!
-    rate_limiter.tap do |rate_limiter|
-      if rate_limiter.limit_by_action(:organization_creation)
-        retry_after = RateLimitChecker::RETRY_AFTER[:organization_creation]
-        raise RateLimitChecker::LimitReached, retry_after
-      end
-    end
-  end
-
-  def rate_limiter
-    RateLimitChecker.new(current_user)
   end
 end
