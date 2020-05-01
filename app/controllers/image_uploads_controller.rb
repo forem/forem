@@ -11,9 +11,10 @@ class ImageUploadsController < ApplicationController
 
       raise CarrierWave::IntegrityError if params[:image].blank?
 
-      unless valid_filename?
+      invalid_image_error_message = validate_image
+      unless invalid_image_error_message.nil?
         respond_to do |format|
-          format.json { render json: { error: FILENAME_TOO_LONG_MESSAGE }, status: :unprocessable_entity }
+          format.json { render json: { error: invalid_image_error_message }, status: :unprocessable_entity }
         end
         return
       end
@@ -69,8 +70,20 @@ class ImageUploadsController < ApplicationController
     end
   end
 
-  def valid_filename?
+  def validate_image
     images = Array.wrap(params.dig("image"))
+    return if images.blank?
+    return IS_NOT_FILE_MESSAGE unless valid_image_files?(images)
+    return FILENAME_TOO_LONG_MESSAGE unless valid_filenames?(images)
+
+    nil
+  end
+
+  def valid_image_files?(images)
+    images.none? { |image| !file?(image) }
+  end
+
+  def valid_filenames?(images)
     images.none? { |image| long_filename?(image) }
   end
 
