@@ -1,5 +1,6 @@
 class ImageUploadsController < ApplicationController
   before_action :authenticate_user!
+  before_action :limit_uploads, only: [:create]
   after_action :verify_authorized
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
@@ -7,8 +8,6 @@ class ImageUploadsController < ApplicationController
     authorize :image_upload
 
     begin
-      limit_uploads
-
       raise CarrierWave::IntegrityError if params[:image].blank?
 
       unless valid_filename?

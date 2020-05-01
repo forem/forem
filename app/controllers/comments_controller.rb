@@ -52,11 +52,7 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    if rate_limiter.limit_by_action(:comment_creation)
-      skip_authorization
-      render json: { error: "too many requests" }, status: :too_many_requests
-      return
-    end
+    rate_limit!(:comment_creation)
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
