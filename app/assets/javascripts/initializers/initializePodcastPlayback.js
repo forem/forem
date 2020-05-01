@@ -114,7 +114,8 @@ function initializePodcastPlayback() {
     return (
       navigator.userAgent === 'DEV-Native-android' &&
       typeof AndroidBridge !== 'undefined' &&
-      AndroidBridge !== null
+      AndroidBridge !== null &&
+      AndroidBridge.metadataPodcast !== undefined
     );
   }
 
