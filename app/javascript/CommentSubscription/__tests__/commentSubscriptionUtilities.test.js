@@ -72,7 +72,7 @@ describe('Comment Subscription Utilities', () => {
       );
     });
 
-    it('should return a friendly error message', async () => {
+    it('should return a friendly error message if HTML is returned', async () => {
       fetch.mockResponse('<html><body>error</body></html>');
 
       const subscriptionStatusMessage = await setCommentSubscriptionStatus(
@@ -85,8 +85,21 @@ describe('Comment Subscription Utilities', () => {
       );
     });
 
-    it('should return a friendly error message if the request', async () => {
+    it('should return a friendly error message if an error occurs', async () => {
       fetch.mockReject(() => new Error('oh no'));
+
+      const subscriptionStatusMessage = await setCommentSubscriptionStatus(
+        articleID,
+        'all_comments',
+      );
+
+      expect(subscriptionStatusMessage).toEqual(
+        'An error occurred, please try again',
+      );
+    });
+
+    it('should return a friendly error message if an HTTP status object is returned', async () => {
+      fetch.mockResponse('{"status":405,"error":"Method Not Allowed"}');
 
       const subscriptionStatusMessage = await setCommentSubscriptionStatus(
         articleID,
