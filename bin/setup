@@ -4,16 +4,6 @@ require "fileutils"
 # path to your application root.
 APP_ROOT = File.expand_path("..", __dir__)
 
-db_url = ENV["DATABASE_URL"].to_s
-
-# We explicitly unset DATABASE_URL for Gitpod so bin/setup can do its job.
-# See: https://github.com/thepracticaldev/dev.to/issues/7040
-DB = if db_url.to_s.empty? || db_url == "postgresql://gitpod@localhost"
-       "PracticalDeveloper_development"
-     else
-       db_url
-     end
-
 def system!(*args)
   system(*args) || abort("\n== Command #{args} failed ==")
 end
@@ -42,11 +32,7 @@ FileUtils.chdir APP_ROOT do
   system! 'RAILS_ENV="test" bin/rails search:setup'
 
   puts "\n== Preparing database =="
-  command = "psql -o /dev/null -q -n -c 'select 1' #{DB}"
-  db_exists = system(command)
-  if db_exists
-    system! "bin/rails db:migrate"
-  else
+  unless system("bin/rails db:migrate")
     system! "bin/rails db:setup"
   end
 

@@ -23,9 +23,12 @@ RSpec.describe "ArticlesShow", type: :request do
       expect(response.body).to include CGI.escapeHTML(article.readable_publish_date)
     end
 
-    it "renders the proper modified at date" do
+    # This is a flakey spec. Due to how we are localizing date times, sometimes
+    # the date is off. See https://github.com/thepracticaldev/dev.to/issues/7086.
+    xit "renders the proper modified at date" do
       article.update(edited_at: Time.zone.now)
-      expect(response.body).to include CGI.escapeHTML(article.edited_at.strftime("%b %d, %Y"))
+      get article.path
+      expect(response.body).to include GI.escapeHTML(article.edited_at.strftime("%b %d, %Y"))
     end
 
     it "renders the proper author" do

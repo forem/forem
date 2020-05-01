@@ -33,7 +33,7 @@ module OmniauthHelpers
   )
 
   OMNIAUTH_BASIC_INFO = {
-    uid: "1234567",
+    uid: SecureRandom.hex(3),
     info: OMNIAUTH_INFO,
     extra: OMNIAUTH_EXTRA_INFO,
     credentials: {

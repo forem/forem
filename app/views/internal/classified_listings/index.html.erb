@@ -11,7 +11,7 @@
         </div>
         <div class="form-group">
           <%= label_tag(:filter, "Category") %>
-          <%= select_tag(:filter, options_for_select(ClassifiedListing.categories_available.keys, params[:filter]), include_blank: true) %>
+          <%= select_tag(:filter, options_for_select(categories_available.keys, params[:filter]), include_blank: true) %>
         </div>
         <div class="form-group">
           <%= label_tag(:include_unpublished, "Include unpublished listings") %>
