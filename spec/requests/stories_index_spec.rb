@@ -1,5 +1,15 @@
 require "rails_helper"
 
+RSpec.shared_examples "redirects to the lowercase route" do
+  context "when a path contains uppercase characters" do
+    it "redirects to the lowercase route" do
+      get path
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to(path.downcase)
+    end
+  end
+end
+
 RSpec.describe "StoriesIndex", type: :request do
   describe "GET stories index" do
     it "renders page with article list" do
@@ -171,6 +181,10 @@ RSpec.describe "StoriesIndex", type: :request do
   end
 
   describe "GET podcast index" do
+    include_examples "redirects to the lowercase route" do
+      let(:path) { "/#{build(:podcast).slug.upcase}" }
+    end
+
     it "renders page with proper header" do
       podcast = create(:podcast)
       create(:podcast_episode, podcast: podcast)
@@ -331,13 +345,14 @@ RSpec.describe "StoriesIndex", type: :request do
   end
 
   describe "GET user_path" do
-    let(:user) { create(:user) }
+    include_examples "redirects to the lowercase route" do
+      let(:path) { "/#{build(:user).username.upcase}" }
+    end
+  end
 
-    it "redirects to the lowercase route for usernames", :aggregate_failures do
-      get "/#{user.username.capitalize}"
-      expect(response).to have_http_status(:moved_permanently)
-      expect(response).to redirect_to("/#{user.username.downcase}")
-      expect(response).not_to redirect_to("/#{user.username.capitalize}")
+  describe "GET organization_path" do
+    include_examples "redirects to the lowercase route" do
+      let(:path) { "/#{build(:organization).slug.upcase}" }
     end
   end
 end
