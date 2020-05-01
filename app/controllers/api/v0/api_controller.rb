@@ -17,10 +17,6 @@ class Api::V0::ApiController < ApplicationController
 
   rescue_from Pundit::NotAuthorizedError, with: :error_unauthorized
 
-  rescue_from RateLimitChecker::LimitReached do |exc|
-    error_too_many_requests(exc)
-  end
-
   protected
 
   def error_unprocessable_entity(message)
@@ -33,11 +29,6 @@ class Api::V0::ApiController < ApplicationController
 
   def error_not_found
     render json: { error: "not found", status: 404 }, status: :not_found
-  end
-
-  def error_too_many_requests(exc)
-    response.headers["Retry-After"] = exc.retry_after
-    render json: { error: exc.message, status: 429 }, status: :too_many_requests
   end
 
   def authenticate!
