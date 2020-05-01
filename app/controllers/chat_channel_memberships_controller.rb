@@ -120,6 +120,8 @@ class ChatChannelMembershipsController < ApplicationController
         send_chat_action_message("@#{current_user.username} added @#{@chat_channel_membership.user.username}", current_user, @chat_channel_membership.chat_channel_id, "joined")
         NotifyMailer.channel_invite_email(@chat_channel_membership, @chat_channel_membership.user).deliver_later
         flash[:settings_notice] = "Accepted request of #{@chat_channel_membership.user.username} to join  #{channel_name}."
+        membership = ChatChannelMembership.find_by!(chat_channel_id: @chat_channel_membership.chat_channel.id, user: current_user)
+        redirect_to(edit_chat_channel_membership_path(membership)) && return
       end
     else
       @chat_channel_membership.update(status: "rejected")
