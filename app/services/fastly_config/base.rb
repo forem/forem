@@ -13,7 +13,7 @@ module FastlyConfig
     end
 
     def update(new_version)
-      updated_files.each { |filename| update_config(new_version, filename) }
+      updated_files.each { |filename| upsert_config(new_version, filename) }
     end
 
     private
@@ -27,7 +27,7 @@ module FastlyConfig
     end
 
     def upsert_config
-      raise SubclassResponsibility, "Fastly configs must implement their own update_config method"
+      raise SubclassResponsibility, "Fastly configs must implement their own upsert_config method"
     end
   end
 end
