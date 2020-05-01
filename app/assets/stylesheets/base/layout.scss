@@ -47,6 +47,7 @@
 
 .crayons-layout--article-form {
   display: flex;
+  flex: 1;
 
   @media (min-width: $breakpoint-l) {
     display: grid;

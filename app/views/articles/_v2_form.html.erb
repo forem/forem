@@ -56,8 +56,7 @@
         <div class="crayons-article-form__body">
           <div class="crayons-article-form__toolbar">
             <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left fw-normal" type="button">
-              <%= inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") -%>
-              Upload image
+              <%= (inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") + "Upload image").delete!("\n").html_safe %>
               <input type="file" id="image-upload-field" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" multiple accept="image/*" data-max-file-size-mb="25" />
             </button>
           </div>
@@ -90,12 +89,6 @@
 <style>
   body {
     padding-top: 0;
-  }
-
-  .crayons-article-form {
-    display: flex;
-    min-height: 100vh;
-    flex-direction: column;
   }
 
   .crayons-layout--article-form {
