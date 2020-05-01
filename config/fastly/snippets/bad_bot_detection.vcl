@@ -12,7 +12,6 @@ sub vcl_recv {
     || req.http.user-agent ~ "^Mozilla$"
     || req.http.user-agent ~ "libwww"
     || req.http.user-agent ~ "lwp-trivial"
-    || req.http.user-agent ~ "PHP/"
     || req.http.user-agent ~ "urllib"
     || req.http.user-agent ~ "GT:WWW"
     || req.http.user-agent ~ "Snoopy"
