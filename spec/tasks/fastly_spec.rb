@@ -6,16 +6,16 @@ RSpec.describe "Fastly tasks", type: :task do
     PracticalDeveloper::Application.load_tasks
   end
 
-  describe "#update_safe_params" do
+  describe "#update_configs" do
     it "doesn't run if Fastly isn't configured" do
-      %w[FASTLY_API_KEY FASTLY_SERVICE_ID FASTLY_SAFE_PARAMS_SNIPPET_NAME].each do |var|
+      %w[FASTLY_API_KEY FASTLY_SERVICE_ID].each do |var|
         allow(ApplicationConfig).to receive(:[]).with(var).and_return(nil)
       end
-      allow(FastlyVCL::SafeParams).to receive(:update)
+      allow(FastlyConfig::Update).to receive(:call)
 
-      Rake::Task["fastly:update_safe_params"].invoke
+      Rake::Task["fastly:update_configs"].invoke
 
-      expect(FastlyVCL::SafeParams).not_to have_received(:update)
+      expect(FastlyConfig::Update).not_to have_received(:call)
     end
   end
 end
