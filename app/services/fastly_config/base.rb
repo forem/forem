@@ -19,9 +19,7 @@ module FastlyConfig
     private
 
     def get_updated_files(files: self.class::FASTLY_FILES)
-      updated_files = []
-      Dir.glob(files).each { |filename| updated_files << filename if file_updated?(filename) }
-      updated_files
+      Dir.glob(files).filter_map { |filename| filename if file_updated?(filename) }
     end
 
     def file_updated?
