@@ -14,7 +14,7 @@ module FastlyConfig
       new_snippet_content != snippet.content
     end
 
-    def update_config(new_version, filename)
+    def upsert_config(new_version, filename)
       snippet_name = File.basename(filename, ".vcl").humanize
       snippet = find_snippet(fastly, new_version, snippet_name)
       new_snippet_content = File.read(filename)

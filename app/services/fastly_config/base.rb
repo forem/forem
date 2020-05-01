@@ -28,7 +28,7 @@ module FastlyConfig
       raise FastlyConfig::Errors::Error, "Fastly configs must implement their own file_updated? method"
     end
 
-    def update_config
+    def upsert_config
       raise FastlyConfig::Errors::Error, "Fastly configs must implement their own update_config method"
     end
   end

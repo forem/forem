@@ -13,7 +13,7 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
     expect(snippets_config.update_needed?).to be true
   end
 
-  describe "update_config" do
+  describe "upsert_config" do
     it "creates a new snippet if one isn't found" do
       allow(fastly_version).to receive(:number).and_return(1)
       allow(fastly).to receive(:get_snippet).and_return(nil)
