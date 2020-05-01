@@ -28,14 +28,19 @@ RSpec.describe "UserOrganization", type: :request do
   end
 
   context "when creating a new org" do
+    let(:org_params) { build(:organization).attributes }
+    let(:rate_limiter) { RateLimitChecker.new(user) }
+    let(:create_org) { post "/organizations", params: { organization: org_params } }
+
     before do
       sign_in user
-      org_params = build(:organization).attributes
       org_params["profile_image"] = Rack::Test::UploadedFile.new(Rails.root.join("app/assets/images/android-icon-36x36.png"), "image/jpeg")
-      post "/organizations", params: { organization: org_params }
+      allow(RateLimitChecker).to receive(:new).and_return(rate_limiter)
+      allow(rate_limiter).to receive(:limit_by_action).and_return(false)
     end
 
     it "creates the correct organization_membership association" do
+      create_org
       org_membership = OrganizationMembership.first
       expect(org_membership.persisted?).to eq true
       expect(org_membership.user).to eq user
@@ -44,8 +49,15 @@ RSpec.describe "UserOrganization", type: :request do
     end
 
     it "redirects to the proper org settings page" do
+      create_org
       expect(response.status).to eq 302
       expect(response.redirect_url).to include "/settings/organization/#{Organization.last.id}"
+    end
+
+    it "raises a Rate limit error if the rate limit is reached" do
+      allow(rate_limiter).to receive(:limit_by_action).and_return(true)
+
+      expect { create_org }.to raise_error(RateLimitChecker::LimitReached)
     end
   end
 

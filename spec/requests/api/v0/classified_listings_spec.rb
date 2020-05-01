@@ -127,7 +127,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
 
   describe "GET /api/listings/:id" do
     include_context "with 7 listings and 2 user"
-    let(:listing) { ClassifiedListing.where(category: "cfp").last }
+    let(:listing) { ClassifiedListing.in_category("cfp").last }
 
     context "when unauthenticated" do
       it "returns a published listing" do
@@ -293,7 +293,8 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
       it "fails if category is invalid" do
         post_classified_listing(title: "Title", body_markdown: "body", category: "unknown")
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body.dig("errors", "category").first).to match(/not a valid category/)
+        expect(response.parsed_body.dig("errors", "classified_listing_category").first).
+          to match(/must exist/)
       end
 
       it "does not subtract credits or create a listing if the listing is not valid" do
@@ -312,8 +313,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
         post_classified_listing(listing_params)
         expect(response).to have_http_status(:created)
 
-        listing_cost = ClassifiedListing.categories_available[:cfp][:cost]
-        expect(user.credits.spent.size).to eq(listing_cost)
+        expect(user.credits.spent.size).to eq(cfp_category.cost)
       end
 
       it "creates a listing draft under the org" do
@@ -357,7 +357,8 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
       it "cannot create a draft due to internal error" do
         allow(Organization).to receive(:find_by)
         post_classified_listing(draft_params.except(:classified_listing_category_id))
-        expect(response.parsed_body["errors"]["category"]).to eq(["not a valid category"])
+        expect(response.parsed_body.dig("errors", "classified_listing_category").first).
+          to match(/must exist/)
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
@@ -608,7 +609,8 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
         max_id = ClassifiedListingCategory.maximum(:id)
         put_classified_listing(listing.id, title: "New title", classified_listing_category_id: max_id + 1)
         expect(response).to have_http_status(:unprocessable_entity)
-        expect(response.parsed_body.dig("errors", "category").first).to match(/not a valid category/)
+        expect(response.parsed_body.dig("errors", "classified_listing_category").first).
+          to match(/must exist/)
       end
 
       it "updates the title of his listing" do

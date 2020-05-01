@@ -2,12 +2,8 @@ module Authentication
   module Providers
     # Authentication provider
     class Provider
-      # name of the field to store the upstream identity's creation date in
-      CREATED_AT_FIELD = "".freeze
-      # name of the field to store the upstream identity's username in
-      USERNAME_FIELD = "".freeze
-
       delegate :email, :nickname, to: :info, prefix: :user
+      delegate :user_created_at_field, :user_username_field, to: :class
 
       def initialize(auth_payload)
         @auth_payload = cleanup_payload(auth_payload.dup)
@@ -33,20 +29,23 @@ module Authentication
         auth_payload
       end
 
-      def user_created_at_field
-        self.class::CREATED_AT_FIELD
-      end
-
-      def user_username_field
-        self.class::USERNAME_FIELD
-      end
-
       def self.provider_name
         name.demodulize.downcase.to_sym
       end
 
-      # Returns the official name of the authentication provider
+      def self.user_created_at_field
+        raise SubclassResponsibility
+      end
+
+      def self.user_username_field
+        raise SubclassResponsibility
+      end
+
       def self.official_name
+        raise SubclassResponsibility
+      end
+
+      def self.settings_url
         raise SubclassResponsibility
       end
 

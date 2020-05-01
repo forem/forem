@@ -291,71 +291,93 @@ RSpec.describe "UserSettings", type: :request do
     end
   end
 
-  describe "DELETE /users/remove_association" do
-    context "when user has two identities" do
-      let(:user) { create(:user, :with_identity, identities: %w[github twitter]) }
+  describe "DELETE /users/remove_identity" do
+    let(:provider) { Authentication::Providers.available.first }
+
+    context "when user has multiple identities" do
+      let(:user) { create(:user, :with_identity) }
 
       before do
         omniauth_mock_providers_payload
         sign_in user
       end
 
-      it "brings the identity count to 1" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(user.identities.count).to eq 1
-      end
-
       it "removes the correct identity" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(user.identities.first.provider).to eq "github"
+        expect do
+          delete "/users/remove_identity", params: { provider: provider }
+        end.to change(user.identities, :count).by(-1)
+
+        expect(user.identities.map(&:provider)).not_to include(provider)
       end
 
-      it "removes their associated username" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(user.twitter_username).to eq nil
+      it "empties their associated username" do
+        delete "/users/remove_identity", params: { provider: provider }
+
+        expect(user.public_send("#{provider}_username")).to be(nil)
       end
 
-      it "touches the profile_updated_at timestamp" do
+      it "updates the profile_updated_at timestamp" do
         original_profile_updated_at = user.profile_updated_at
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(user.profile_updated_at).to be > original_profile_updated_at
+        delete "/users/remove_identity", params: { provider: provider }
+        expect(user.profile_updated_at.to_i).to be > original_profile_updated_at.to_i
       end
 
       it "redirects successfully to /settings/account" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(response).to redirect_to "/settings/account"
+        delete "/users/remove_identity", params: { provider: provider }
+        expect(response).to redirect_to("/settings/account")
       end
 
       it "renders a successful response message" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(flash[:settings_notice]).to eq "Your Twitter account was successfully removed."
+        delete "/users/remove_identity", params: { provider: provider }
+        auth_provider = Authentication::Providers.get!(provider)
+
+        expected_notice = "Your #{auth_provider.official_name} account was successfully removed."
+        expect(flash[:settings_notice]).to eq(expected_notice)
       end
 
-      it "does not show the Remove OAuth section afterward" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(response.body).not_to include "Remove OAuth Associations"
+      it "redirects the user with an error if the corresponding provider has been since disabled" do
+        providers = Authentication::Providers.available - [provider]
+        allow(Authentication::Providers).to receive(:enabled).and_return(providers)
+        delete "/users/remove_identity", params: { provider: provider }
+        expect(response).to redirect_to("/settings/account")
+
+        expected_error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        expect(flash[:error]).to eq(expected_error)
+      end
+
+      it "does not show the 'Remove OAuth' section afterwards if only one identity remains" do
+        providers = Authentication::Providers.available.first(2)
+        allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
+
+        delete "/users/remove_identity", params: { provider: providers.first }
+        expect(response.body).not_to include("Remove OAuth Associations")
       end
     end
 
     # Users won't be able to do this via the view, but in case they hit the route somehow...
     context "when user has only one identity" do
-      before { sign_in user }
+      let(:user) { create(:user, :with_identity, identities: [provider]) }
 
-      it "sets the proper error message" do
-        delete "/users/remove_association", params: { provider: "github" }
-        expect(flash[:error]).
-          to eq "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+      before do
+        sign_in user
+      end
+
+      it "sets the proper flash error message" do
+        delete "/users/remove_identity", params: { provider: provider }
+
+        expected_error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        expect(flash[:error]).to eq(expected_error)
       end
 
       it "does not delete any identities" do
-        original_identity_count = user.identities.count
-        delete "/users/remove_association", params: { provider: "github" }
-        expect(user.identities.count).to eq original_identity_count
+        expect do
+          delete "/users/remove_identity", params: { provider: provider }
+        end.not_to change(user.identities, :count)
       end
 
       it "redirects successfully to /settings/account" do
-        delete "/users/remove_association", params: { provider: "github" }
-        expect(response).to redirect_to "/settings/account"
+        delete "/users/remove_identity", params: { provider: provider }
+        expect(response).to redirect_to("/settings/account")
       end
     end
   end
