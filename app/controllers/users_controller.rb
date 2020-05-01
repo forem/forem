@@ -47,7 +47,7 @@ class UsersController < ApplicationController
   def update
     set_tabs(params["user"]["tab"])
 
-    unless valid_filename?
+    unless valid_image?
       render :edit, status: :bad_request
       return
     end
@@ -367,15 +367,29 @@ class UsersController < ApplicationController
     range.cover?(user_identity_age)
   end
 
-  def valid_filename?
+  def valid_image?
     image = params.dig("user", "profile_image")
-    return true unless long_filename?(image)
+    return true unless image
 
-    @user.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
+    return true if valid_image_file?(image) && valid_filename?(image)
 
     Honeycomb.add_field("error", @user.errors.messages)
     Honeycomb.add_field("errored", true)
 
+    false
+  end
+
+  def valid_image_file?(image)
+    return true if file?(image)
+
+    @user.errors.add(:profile_image, IS_NOT_FILE_MESSAGE)
+    false
+  end
+
+  def valid_filename?(image)
+    return true unless long_filename?(image)
+
+    @user.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
     false
   end
 end

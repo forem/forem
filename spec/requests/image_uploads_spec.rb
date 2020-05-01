@@ -87,6 +87,12 @@ RSpec.describe "ImageUploads", type: :request do
         post "/image_uploads", headers: headers, params: { image: image }
         expect(response).to have_http_status(:unprocessable_entity)
       end
+
+      it "returns error if image file is not a file" do
+        allow(bad_image).to receive(:respond_to?).with(:original_filename).and_return(false)
+        post "/image_uploads", headers: headers, params: { image: bad_image }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
 
     context "when uploading rate limiting works" do
