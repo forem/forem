@@ -33,7 +33,7 @@ export async function setSubscription(articleId, subscriptionType) {
       return;
     }
 
-    let message = 'You have been unsubscribed from comments for this article';
+    let message = 'You have been unsubscribed from comments for this post';
 
     if (subscribed) {
       message = `You have been subscribed to ${subscriptionType.replace(
