@@ -5,6 +5,10 @@ import { SnackbarItem } from './SnackbarItem';
 let snackbarItems = [];
 
 export function addSnackbarItem(snackbarItem) {
+  if (!Array.isArray(snackbarItem.actions)) {
+    snackbarItem.actions = []; // eslint-disable-line no-param-reassign
+  }
+
   snackbarItems.push(snackbarItem);
 }
 
@@ -70,6 +74,24 @@ export class Snackbar extends Component {
           snack.lifespanTimeoutId = setTimeout(() => {
             this.decreaseLifespan(snack);
           }, 1000);
+
+          if (snack.addCloseButton) {
+            // Adds an optional close button if addDefaultACtion is true.
+            snack.actions.push({
+              text: 'CLOSE',
+              handler: () => {
+                this.setState((prevState) => {
+                  return {
+                    prevState,
+                    snacks: prevState.snacks.filter(
+                      (potentialSnackToFilterOut) =>
+                        potentialSnackToFilterOut !== snack,
+                    ),
+                  };
+                });
+              },
+            });
+          }
         });
       }
     }, pollingTime);

@@ -29,7 +29,10 @@ export async function setSubscription(articleId, subscriptionType) {
     const subscribed = await response.json();
 
     if (typeof subscribed !== 'boolean') {
-      addSnackbarItem({ message: 'An error occurred, please try again' });
+      addSnackbarItem({
+        message: 'An error occurred, please try again',
+        addCloseButton: true,
+      });
       return;
     }
 
@@ -42,8 +45,11 @@ export async function setSubscription(articleId, subscriptionType) {
       )}`;
     }
 
-    addSnackbarItem({ message });
+    addSnackbarItem({ message, addCloseButton: true });
   } catch (error) {
-    addSnackbarItem({ message: 'An error occurred, please try again' });
+    addSnackbarItem({
+      message: 'An error occurred, please try again',
+      addCloseButton: true,
+    });
   }
 }
