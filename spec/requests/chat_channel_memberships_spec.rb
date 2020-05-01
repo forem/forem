@@ -338,7 +338,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
           }
         }
         expect(ChatChannelMembership.find(membership.id).status).to eq("active")
-        expect(response).to(redirect_to(chat_channel_memberships_path))
+        expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
       end
     end
 
