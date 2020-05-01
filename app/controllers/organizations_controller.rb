@@ -3,6 +3,8 @@ class OrganizationsController < ApplicationController
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   def create
+    rate_limit!
+
     @tab = "organization"
     @user = current_user
     @tab_list = @user.settings_tab_list
@@ -15,6 +17,7 @@ class OrganizationsController < ApplicationController
     @organization = Organization.new(organization_params)
     authorize @organization
     if @organization.save
+      rate_limiter.track_organization_creation
       @organization_membership = OrganizationMembership.create!(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
       flash[:settings_notice] = "Your organization was successfully created and you are an admin."
       redirect_to "/settings/organization/#{@organization.id}"
@@ -108,5 +111,18 @@ class OrganizationsController < ApplicationController
 
     @organization.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
     false
+  end
+
+  def rate_limit!
+    rate_limiter.tap do |rate_limiter|
+      if rate_limiter.limit_by_action(:organization_creation)
+        retry_after = RateLimitChecker::RETRY_AFTER[:organization_creation]
+        raise RateLimitChecker::LimitReached, retry_after
+      end
+    end
+  end
+
+  def rate_limiter
+    RateLimitChecker.new(current_user)
   end
 end

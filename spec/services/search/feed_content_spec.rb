@@ -7,7 +7,7 @@ RSpec.describe Search::FeedContent, type: :service do
     expect(described_class::MAPPINGS).not_to be_nil
   end
 
-  describe "::search_documents", elasticsearch: true do
+  describe "::search_documents", elasticsearch: "FeedContent" do
     let(:article1) { create(:article) }
     let(:article2) { create(:article) }
 
@@ -140,8 +140,8 @@ RSpec.describe Search::FeedContent, type: :service do
     end
   end
 
-  describe "document counts" do
-    it "returns counts for each document class", elasticsearch: true do
+  describe "document counts", elasticsearch: "FeedContent" do
+    it "returns counts for each document class" do
       article = create(:article)
       comment = create(:comment)
       pde = create(:podcast_episode)
