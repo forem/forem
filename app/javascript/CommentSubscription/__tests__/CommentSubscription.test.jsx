@@ -63,7 +63,7 @@ describe('<CommentSubscription />', () => {
 
     const dropdown = wrapper.find('Dropdown');
     expect(dropdown.attr('className')).toEqual(
-      'inline-block z-10 right-4 left-4 s:right-0 s:left-auto w-full',
+      'inline-block z-30 right-4 left-4 s:right-0 s:left-auto w-full',
     );
 
     // 3 options for comment subscription
@@ -88,7 +88,7 @@ describe('<CommentSubscription />', () => {
     wrapper.find('ButtonGroup').find('Button').last().simulate('click'); // Cog icon button to open subscription options panel
 
     expect(wrapper.find('Dropdown').attr('className')).toEqual(
-      'inline-block z-10 right-4 left-4 s:right-0 s:left-auto',
+      'inline-block z-30 right-4 left-4 s:right-0 s:left-auto',
     );
   });
 
