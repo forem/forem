@@ -74,3 +74,29 @@ export function resizeAllMasonryItems() {
     resizeMasonryItem(allItems[i]);
   }
 }
+
+export function getLocation({ query = '', tags = [], category = '', slug }) {
+  const urlBase = '/listings';
+
+  if (slug) {
+    return `${urlBase}/${category}/${slug}`;
+  }
+
+  if (query.length > 0 && tags.length > 0) {
+    return `${urlBase}/${category}?q=${query}&t=${tags}`;
+  }
+
+  if (query.length > 0) {
+    return `${urlBase}/${category}?q=${query}`;
+  }
+
+  if (tags.length > 0) {
+    return `${urlBase}/${category}?t=${tags}`;
+  }
+
+  if (category.length > 0) {
+    return `${urlBase}/${category}`;
+  }
+
+  return urlBase;
+}

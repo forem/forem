@@ -1,4 +1,4 @@
-import { updateListings, getQueryParams } from '../utils';
+import { updateListings, getQueryParams, getLocation } from '../utils';
 
 describe('updateListings', () => {
   const firstListing = {
@@ -82,6 +82,85 @@ describe('updateListings', () => {
       crkw: 'buy-a-lot',
       crsource: 'test',
     };
+
+    expect(result).toEqual(expectedResult);
+  });
+});
+
+describe('getLocation', () => {
+  let slug;
+  let tags;
+  let category;
+  let query;
+
+  test('Should return a location with slug and category', () => {
+    slug = 'slug';
+    tags = ['clojure', 'functional'];
+    category = 'clojure';
+    query = 'test&crsource=test&crkw=buy-a-lot';
+
+    const result = getLocation({ query, tags, category, slug });
+    const expectedResult = `/listings/${category}/${slug}`;
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('Should return a location with category, query and tags', () => {
+    slug = undefined;
+    tags = ['clojure', 'functional'];
+    category = 'clojure';
+    query = 'test&crsource=test&crkw=buy-a-lot';
+
+    const result = getLocation({ query, tags, category, slug });
+    const expectedResult = `/listings/${category}?q=${query}&t=${tags}`;
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('Should return a location with category and query', () => {
+    slug = undefined;
+    tags = [];
+    category = 'clojure';
+    query = 'test&crsource=test&crkw=buy-a-lot';
+
+    const result = getLocation({ query, tags, category, slug });
+    const expectedResult = `/listings/${category}?q=${query}`;
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('Should return a location with category and tags', () => {
+    slug = undefined;
+    tags = ['clojure', 'functional'];
+    category = 'clojure';
+    query = '';
+
+    const result = getLocation({ query, tags, category, slug });
+    const expectedResult = `/listings/${category}?t=${tags}`;
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('Should return a location with category', () => {
+    slug = undefined;
+    tags = [];
+    category = 'clojure';
+    query = '';
+
+    const result = getLocation({ query, tags, category, slug });
+    const expectedResult = `/listings/${category}`;
+
+    expect(result).toEqual(expectedResult);
+  });
+
+  test('Should return just the URL base', () => {
+    slug = undefined;
+    tags = [];
+    category = '';
+    query = '';
+
+    const result = getLocation({ query, tags, category, slug });
+    const expectedResult = '/listings';
 
     expect(result).toEqual(expectedResult);
   });

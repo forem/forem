@@ -12,6 +12,7 @@ import {
   updateListings,
   getQueryParams,
   resizeAllMasonryItems,
+  getLocation,
 } from './utils';
 
 export class Listings extends Component {
@@ -229,20 +230,7 @@ export class Listings extends Component {
   };
 
   setLocation = (query, tags, category, slug) => {
-    let newLocation = '';
-    if (slug) {
-      newLocation = `/listings/${category}/${slug}`;
-    } else if (query.length > 0 && tags.length > 0) {
-      newLocation = `/listings/${category}?q=${query}&t=${tags}`;
-    } else if (query.length > 0) {
-      newLocation = `/listings/${category}?q=${query}`;
-    } else if (tags.length > 0) {
-      newLocation = `/listings/${category}?t=${tags}`;
-    } else if (category.length > 0) {
-      newLocation = `/listings/${category}`;
-    } else {
-      newLocation = '/listings';
-    }
+    const newLocation = getLocation({ query, tags, category, slug });
     window.history.replaceState(null, null, newLocation);
   };
 
