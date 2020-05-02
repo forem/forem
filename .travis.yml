@@ -15,6 +15,9 @@ addons:
       - $(ls tmp/screenshots/*.png | tr "\n" ":")
       - $(ls tmp/csvs/*.csv | tr "\n" ":")
     debug: true
+gemfile:
+- Gemfile
+- Gemfile.next
 services:
   - redis-server
 env:
