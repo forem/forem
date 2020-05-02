@@ -58,19 +58,21 @@ ruby -v
 
 ### Installing Rails
 
-Since Rails ships with so many dependencies these days, we're going to need to
-install a JavaScript runtime like NodeJS. This lets you use CoffeeScript and the
-Asset Pipeline in Rails which combines and minifies your JavaScript to provide a
-faster production environment.
+As a pre-requisite to install Rails, we're going to need to install a JavaScript
+runtime like Node.js.
 
-To install NodeJS, we're going to add it using the official repository:
+To install Node.js, we're going to add it using the official repository:
 
 ```shell
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt-get install -y nodejs
 node -v
 npm -v
 ```
+
+Please refer to
+[NodeSource installation instructions](https://github.com/nodesource/distributions#installation-instructions)
+for further details.
 
 If `npm -v` gives `Syntax error: word unexpected (expecting "in")`, restart the
 terminal and try again.
@@ -78,7 +80,7 @@ terminal and try again.
 And now, for rails itself:
 
 ```shell
-gem install rails -v 5.2.3
+gem install rails -v 5.2.4.2
 ```
 
 Then run `rbenv rehash` to make the Rails executable available. Check it out by
@@ -87,7 +89,6 @@ using `rails -v` command
 ```shell
 rbenv rehash
 rails -v
-# Rails 5.2.3
 ```
 
 ### Yarn
@@ -217,6 +218,22 @@ cd automake-1.10/
 ./configure --prefix=/usr/local
 make
 ```
+
+### WSL2 and System test
+
+In WSL2, hostname/IP address are no longer shared between Windows and Linux.
+There are currently two work-arounds.
+
+1. Use dockerized selenium, ie docker-selenium. You will need docker for the
+   following steps
+
+   1. `docker run -d --name selenium-hub -p 4444:4444 selenium/hub:3.141.59-20200409`
+   2. `CH=$(docker run --rm --name=ch --link selenium-hub:hub -v /dev/shm:/dev/shm selenium/node-chrome:3.141.59-20200409)`
+   3. Add `SELENIUM_URL: "http://localhost:4444/wd/hub"` to your
+      `application.yml`
+   4. Run your System test!
+
+2. Port forward with `socats` (more info needed).
 
 > If you encountered any errors that you subsequently resolved, **please
 > consider updating this section** with your errors and their solutions.

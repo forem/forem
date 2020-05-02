@@ -2,68 +2,84 @@ require "rails_helper"
 
 RSpec.describe "Users", type: :request do
   describe "GET /users" do
-    it "returns no users if state is not present" do
-      get users_path
+    let(:user) { create(:user) }
+    let!(:suggested_users_list) { %w[eeyore] }
+    let!(:suggested_user) { create(:user, name: "Eeyore", username: "eeyore", summary: "I am always sad :(") }
 
-      expect(response).to have_http_status(:ok)
-
-      expect(response.parsed_body).to be_empty
+    before do
+      allow(SiteConfig).to receive(:suggested_users).and_return(suggested_users_list)
     end
 
-    it "returns users from the original core team if they are present" do
-      user = create(:user, username: "ben", summary: "Something something")
+    context "when no state params are present" do
+      it "returns no users" do
+        sign_in user
+        get users_path
 
-      get users_path
-
-      expect(response).to have_http_status(:ok)
-
-      response_user = response.parsed_body.first
-      expect(response_user["id"]).to eq(user.id)
-      expect(response_user["name"]).to eq(user.name)
-      expect(response_user["username"]).to eq(user.username)
-      expect(response_user["summary"]).to eq(user.summary)
-      expect(response_user["profile_image_url"]).to eq(ProfileImage.new(user).get(width: 90))
-      expect(response_user["following"]).to be(false)
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body).to be_empty
+      end
     end
 
-    it "returns follow suggestions for an authenticated user" do
-      user = create(:user)
-      tag = create(:tag)
-      user.follow(tag)
+    context "when follow_suggestions params are present and no suggestions are found" do
+      it "returns the default suggested_users from SiteConfig if they are present" do
+        sign_in user
 
-      other_user = create(:user)
-      create(:article, user: other_user, tags: [tag.name])
+        get users_path(state: "follow_suggestions")
 
-      sign_in user
-
-      get users_path(state: "follow_suggestions")
-
-      response_user = response.parsed_body.first
-      expect(response_user["id"]).to eq(other_user.id)
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.first).to include(
+          "id" => suggested_user.id,
+          "name" => suggested_user.name,
+          "username" => suggested_user.username,
+          "summary" => suggested_user.summary,
+          "profile_image_url" => ProfileImage.new(suggested_user).get(width: 90),
+          "following" => false,
+        )
+      end
     end
 
-    it "returns follow suggestions that have profile images" do
-      user = create(:user)
-      tag = create(:tag)
-      user.follow(tag)
+    context "when follow_suggestions params are present" do
+      it "returns follow suggestions for an authenticated user" do
+        user = create(:user)
+        tag = create(:tag)
+        user.follow(tag)
 
-      other_user = create(:user)
-      create(:article, user: other_user, tags: [tag.name])
+        other_user = create(:user)
+        create(:article, user: other_user, tags: [tag.name])
 
-      sign_in user
+        sign_in user
 
-      get users_path(state: "follow_suggestions")
+        get users_path(state: "follow_suggestions")
 
-      response_user = response.parsed_body.first
-      expect(response_user["profile_image_url"]).to eq(other_user.profile_image_url)
+        response_user = response.parsed_body.first
+        expect(response_user["id"]).to eq(other_user.id)
+      end
+
+      it "returns follow suggestions that have profile images" do
+        user = create(:user)
+        tag = create(:tag)
+        user.follow(tag)
+
+        other_user = create(:user)
+        create(:article, user: other_user, tags: [tag.name])
+
+        sign_in user
+
+        get users_path(state: "follow_suggestions")
+
+        response_user = response.parsed_body.first
+        expect(response_user["profile_image_url"]).to eq(other_user.profile_image_url)
+      end
     end
 
-    it "returns no sidebar suggestions for an authenticated user" do
-      sign_in create(:user)
+    context "when sidebar_suggestions params are present" do
+      it "returns no sidebar suggestions for an authenticated user" do
+        sign_in create(:user)
 
-      get users_path(state: "sidebar_suggestions")
+        get users_path(state: "sidebar_suggestions")
 
-      expect(response.parsed_body).to be_empty
+        expect(response.parsed_body).to be_empty
+      end
     end
   end
 end

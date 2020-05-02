@@ -45,7 +45,7 @@
 <div class="crayons-box crayons-box--danger p-6 grid gap-6">
   <h2 class="color-accent-danger">Danger Zone</h2>
 
-  <% if @user.identities.size == 2 %>
+  <% if @user.identities.size > 1 %>
     <div class="grid gap-2">
       <h3>Remove OAuth Associations</h3>
       <p>You can remove one of your authentication methods. We'll still need one to authenticate you.</p>
@@ -55,39 +55,40 @@
         <li>remove the associated URL from your profile</li>
       </ul>
       <p>
-        Note that this does not revoke our OAuth app access; you will have to do so in your
-        <a href="https://twitter.com/settings/applications">Twitter profile settings</a> or your
-        <a href="https://github.com/settings/applications">GitHub profile settings</a>.
+        Note that this does not revoke our OAuth app access;
+        you will have to do so in your settings for the specific provider:
+
+        <%= render partial: "users/account_providers_settings" %>
       </p>
     </div>
 
-    <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your Twitter account?');" do %>
-      <%= hidden_field_tag :provider, "twitter" %>
-      <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
-        <%= inline_svg_tag("twitter.svg", aria: true, class: "crayons-icon", title: "Twitter") %>
-        Remove Twitter
-      </button>
-    <% end %>
+    <% authentication_enabled_providers.each do |provider| %>
+      <% onsubmit = "return confirm('Are you absolutely sure you want to remove your #{provider.official_name} account?');" %>
+      <%= form_tag users_remove_identity_path, method: :delete, onsubmit: onsubmit do %>
+        <%= hidden_field_tag :provider, provider.provider_name %>
 
-    <%= form_tag "/users/remove_association", method: :delete, onsubmit: "return confirm('Are you absolutely sure you want to remove your GitHub account?');" do %>
-      <%= hidden_field_tag :provider, "github" %>
-      <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
-        <%= inline_svg_tag("github.svg", aria: true, class: "crayons-icon", title: "Twitter") %>
-        Remove GitHub
-      </button>
+        <button class="crayons-btn crayons-btn--danger crayons-btn--icon-left" type="submit">
+          <%= inline_svg_tag("#{provider.provider_name}.svg", aria: true, class: "crayons-icon", title: provider.official_name) %>
+          Remove <%= provider.official_name %>
+        </button>
+      <% end %>
     <% end %>
   <% end %>
+
   <div class="grid gap-2">
     <h3>Delete Account</h3>
+
     <% if current_user.email? %>
       <%= form_tag user_request_destroy_path, method: :post, autocomplete: "off", id: "delete__account", class: "grid gap-2" do %>
         <p>Deleting your account will:</p>
         <ul class="list-disc pl-6">
-          <li>delete your profile, along with your Twitter and/or GitHub associations.
-            This does not include app permissions. You will have to remove them yourself on
-            <a href="https://twitter.com/settings/applications">Twitter profile settings</a> and
-            <a href="https://github.com/settings/applications">GitHub profile settings</a>.
+          <li>delete your profile, along with your authentication associations.
+
+            This does not include applications permissions. You will have to remove them yourself:
+
+            <%= render partial: "users/account_providers_settings" %>
           </li>
+
           <%# TODO: expand the delete messaging later %>
           <li>delete any and all content you have, such as articles, comments, your reading list or chat messages.</li>
           <li>allow your username to become available to anyone.</li>
