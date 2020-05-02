@@ -147,6 +147,7 @@
     &:focus-within {
       .crayons-article-form__toolbar {
         opacity: 1;
+        pointer-events: auto;
       }
     }
   }
@@ -154,6 +155,7 @@
   &__toolbar {
     position: sticky;
     opacity: 0;
+    pointer-events: none;
     top: 0;
     background: var(--card-bg);
     transition: opacity $transition-props;
