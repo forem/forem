@@ -48,8 +48,8 @@ variable :FORCE_SSL_IN_RAILS, :String, default: "not applicable in dev"
 
 # Github for github related access
 # (https://developer.github.com/v3/guides/basics-of-authentication/)
-variable :GITHUB_KEY, :String, default: "Optional"
-variable :GITHUB_SECRET, :String, default: "Optional"
+variable :GITHUB_KEY, :String, default: ""
+variable :GITHUB_SECRET, :String, default: ""
 
 # Twitter for normal twitter access
 # (https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens)
