@@ -1,0 +1,70 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/0
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      Accept:
+      - application/vnd.github.v3+json
+      Content-Type:
+      - application/json
+      X-Honeycomb-Trace:
+      - 1;dataset=,trace_id=366d25f6-8fb6-475b-bc51-c9d89dfe4993,parent_id=e8e0ff80-b705-4ff6-b87f-7f73f1ffa4ee,context=e30=
+      Expect:
+      - ''
+  response:
+    status:
+      code: 404
+      message: Not Found
+    headers:
+      Date:
+      - Sat, 02 May 2020 15:59:33 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '104'
+      Server:
+      - GitHub.com
+      Status:
+      - 404 Not Found
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4985'
+      X-Ratelimit-Reset:
+      - '1588435893'
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
+        X-GitHub-Media-Type, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      Vary:
+      - Accept-Encoding, Accept, X-Requested-With
+      X-Github-Request-Id:
+      - DDEF:2DEE:227B59:2D87B9:5EAD98E4
+    body:
+      encoding: ASCII-8BIT
+      string: '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/issues/#get-a-single-issue"}'
+    http_version: null
+  recorded_at: Sat, 02 May 2020 15:59:33 GMT
+recorded_with: VCR 5.1.0

@@ -1,0 +1,78 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/7643
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      Accept:
+      - application/vnd.github.v3+json
+      Content-Type:
+      - application/json
+      X-Honeycomb-Trace:
+      - 1;dataset=,trace_id=5f954f03-1303-4a2a-984e-035f5e9397ad,parent_id=0baa2f50-e61e-46ac-9bc0-5a6aeb802312,context=e30=
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 02 May 2020 15:58:26 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '3815'
+      Server:
+      - GitHub.com
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4986'
+      X-Ratelimit-Reset:
+      - '1588435892'
+      Cache-Control:
+      - public, max-age=60, s-maxage=60
+      Vary:
+      - Accept
+      - Accept-Encoding, Accept, X-Requested-With
+      Etag:
+      - '"1011b67b5df0182c8d1320f31940f79a"'
+      Last-Modified:
+      - Fri, 01 May 2020 04:11:48 GMT
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
+        X-GitHub-Media-Type, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      X-Github-Request-Id:
+      - DDC8:2DEE:2271D1:2D7ADA:5EAD98A2
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJ1cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL3RoZXByYWN0aWNhbGRldi9kZXYudG8vaXNzdWVzLzc2NDMiLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vcmVwb3MvdGhlcHJhY3RpY2FsZGV2L2Rldi50byIsImxhYmVsc191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL3RoZXByYWN0aWNhbGRldi9kZXYudG8vaXNzdWVzLzc2NDMvbGFiZWxzey9uYW1lfSIsImNvbW1lbnRzX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vcmVwb3MvdGhlcHJhY3RpY2FsZGV2L2Rldi50by9pc3N1ZXMvNzY0My9jb21tZW50cyIsImV2ZW50c191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL3RoZXByYWN0aWNhbGRldi9kZXYudG8vaXNzdWVzLzc2NDMvZXZlbnRzIiwiaHRtbF91cmwiOiJodHRwczovL2dpdGh1Yi5jb20vdGhlcHJhY3RpY2FsZGV2L2Rldi50by9pc3N1ZXMvNzY0MyIsImlkIjo2MTA1NDgxNjQsIm5vZGVfaWQiOiJNRFU2U1hOemRXVTJNVEExTkRneE5qUT0iLCJudW1iZXIiOjc2NDMsInRpdGxlIjoiRG9uJ3QgaGFyZGNvZGUgc29jaWFsIHByZXZpZXdzIGZvciBsaXN0aW5ncyIsInVzZXIiOnsibG9naW4iOiJjaXRpemVuNDI4IiwiaWQiOjQ3OTg1LCJub2RlX2lkIjoiTURRNlZYTmxjalEzT1RnMSIsImF2YXRhcl91cmwiOiJodHRwczovL2F2YXRhcnMxLmdpdGh1YnVzZXJjb250ZW50LmNvbS91LzQ3OTg1P3Y9NCIsImdyYXZhdGFyX2lkIjoiIiwidXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9jaXRpemVuNDI4IiwiaHRtbF91cmwiOiJodHRwczovL2dpdGh1Yi5jb20vY2l0aXplbjQyOCIsImZvbGxvd2Vyc191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL2NpdGl6ZW40MjgvZm9sbG93ZXJzIiwiZm9sbG93aW5nX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvY2l0aXplbjQyOC9mb2xsb3dpbmd7L290aGVyX3VzZXJ9IiwiZ2lzdHNfdXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9jaXRpemVuNDI4L2dpc3Rzey9naXN0X2lkfSIsInN0YXJyZWRfdXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9jaXRpemVuNDI4L3N0YXJyZWR7L293bmVyfXsvcmVwb30iLCJzdWJzY3JpcHRpb25zX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvY2l0aXplbjQyOC9zdWJzY3JpcHRpb25zIiwib3JnYW5pemF0aW9uc191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL2NpdGl6ZW40Mjgvb3JncyIsInJlcG9zX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvY2l0aXplbjQyOC9yZXBvcyIsImV2ZW50c191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL2NpdGl6ZW40MjgvZXZlbnRzey9wcml2YWN5fSIsInJlY2VpdmVkX2V2ZW50c191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL2NpdGl6ZW40MjgvcmVjZWl2ZWRfZXZlbnRzIiwidHlwZSI6IlVzZXIiLCJzaXRlX2FkbWluIjpmYWxzZX0sImxhYmVscyI6W3siaWQiOjE5MDE2NzYxNDAsIm5vZGVfaWQiOiJNRFU2VEdGaVpXd3hPVEF4TmpjMk1UUXciLCJ1cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL3RoZXByYWN0aWNhbGRldi9kZXYudG8vbGFiZWxzL0RFViUyMHRlYW0iLCJuYW1lIjoiREVWIHRlYW0iLCJjb2xvciI6ImJjMzg1OSIsImRlZmF1bHQiOmZhbHNlLCJkZXNjcmlwdGlvbiI6ImludGVybmFsIHRhc2tzIG9ubHkgZm9yIERFViB0ZWFtIG1lbWJlcnMifSx7ImlkIjoxMzM3MzI5MDMxLCJub2RlX2lkIjoiTURVNlRHRmlaV3d4TXpNM016STVNRE14IiwidXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy90aGVwcmFjdGljYWxkZXYvZGV2LnRvL2xhYmVscy9hcmVhOiUyMGxpc3RpbmdzIiwibmFtZSI6ImFyZWE6IGxpc3RpbmdzIiwiY29sb3IiOiIyYTc1YjIiLCJkZWZhdWx0IjpmYWxzZSwiZGVzY3JpcHRpb24iOiJjbGFzc2lmaWVkIGxpc3RpbmdzIn0seyJpZCI6MTAxODU4ODYwOCwibm9kZV9pZCI6Ik1EVTZUR0ZpWld3eE1ERTROVGc0TmpBNCIsInVybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vcmVwb3MvdGhlcHJhY3RpY2FsZGV2L2Rldi50by9sYWJlbHMvdHlwZTolMjBkaXNjdXNzaW9uIiwibmFtZSI6InR5cGU6IGRpc2N1c3Npb24iLCJjb2xvciI6ImZlZjJjMCIsImRlZmF1bHQiOmZhbHNlLCJkZXNjcmlwdGlvbiI6InRvcGljcyBvcGVuIGZvciBkaXNjdXNzaW9uIn1dLCJzdGF0ZSI6Im9wZW4iLCJsb2NrZWQiOmZhbHNlLCJhc3NpZ25lZSI6bnVsbCwiYXNzaWduZWVzIjpbXSwibWlsZXN0b25lIjpudWxsLCJjb21tZW50cyI6MCwiY3JlYXRlZF9hdCI6IjIwMjAtMDUtMDFUMDQ6MDk6NTFaIiwidXBkYXRlZF9hdCI6IjIwMjAtMDUtMDFUMDQ6MTE6NDhaIiwiY2xvc2VkX2F0IjpudWxsLCJhdXRob3JfYXNzb2NpYXRpb24iOiJDT05UUklCVVRPUiIsImJvZHkiOiJUaGUgbWFpbiByZWZhY3RvcmluZyBvZiBjbGFzc2lmaWVkIGxpc3RpbmdzIGlzIG5vdyBkb25lLCBidXQgdGhlcmUncyBvbmUgb3V0c3RhbmRpbmcgaXNzdWUsIHRoZSBzb2NpYWwgcHJldmlld3MgaGFyZGNvZGVkIGluIGBhcHAvY29udHJvbGxlcnMvc29jaWFsX3ByZXZpZXdzX2NvbnRyb2xsZXIucmJgOlxyXG5cclxuYGBgcnVieVxyXG4gIGRlZiBkZWZpbmVfY2F0ZWdvcmllc1xyXG4gICAgY2F0X2luZm8gPSB7XHJcbiAgICAgIFwiY29sbGFic1wiOiBbXCJDb2xsYWJvcmF0b3JzIFdhbnRlZFwiLCBcIiM1QUU4RDlcIl0sXHJcbiAgICAgIFwiY2ZwXCI6IFtcIkNhbGwgRm9yIFByb3Bvc2FsXCIsIFwiI2Y1OGY4ZFwiXSxcclxuICAgICAgXCJmb3JoaXJlXCI6IFtcIkF2YWlsYWJsZSBGb3IgSGlyZVwiLCBcIiNiNzhjZjRcIl0sXHJcbiAgICAgIFwiZWR1Y2F0aW9uXCI6IFtcIkVkdWNhdGlvblwiLCBcIiM1QUFCRThcIl0sXHJcbiAgICAgIFwiam9ic1wiOiBbXCJOb3cgSGlyaW5nXCIsIFwiIzUzYzNhZFwiXSxcclxuICAgICAgXCJtZW50b3JzXCI6IFtcIk9mZmVyaW5nIE1lbnRvcnNoaXBcIiwgXCIjQTY5RUU4XCJdLFxyXG4gICAgICBcIm1lbnRlZXNcIjogW1wiTG9va2luZyBGb3IgTWVudG9yc2hpcFwiLCBcIiM4OGFlZGJcIl0sXHJcbiAgICAgIFwiZm9yc2FsZVwiOiBbXCJTdHVmZiBGb3IgU2FsZVwiLCBcIiNkMGFkZmJcIl0sXHJcbiAgICAgIFwiZXZlbnRzXCI6IFtcIlVwY29taW5nIEV2ZW50XCIsIFwiI2Y4YjNkMFwiXSxcclxuICAgICAgXCJtaXNjXCI6IFtcIk1pc2NlbGxhbmVvdXNcIiwgXCIjNjM5M0ZGXCJdLFxyXG4gICAgICBcInByb2R1Y3RzXCI6IFtcIlByb2R1Y3RzICYgVG9vbHNcIiwgXCIjNUFFOEQ5XCJdXHJcbiAgICB9XHJcbiAgICBAY2F0ZWdvcnkgPSBjYXRfaW5mb1tAbGlzdGluZy5jYXRlZ29yeS50b19zeW1dWzBdXHJcbiAgICBAY2F0X2NvbG9yID0gY2F0X2luZm9bQGxpc3RpbmcuY2F0ZWdvcnkudG9fc3ltXVsxXVxyXG4gIGVuZFxyXG5gYGBcclxuXHJcblNob3VsZCB3ZSBqdXN0IGFkZCB0d28gbW9yZSBjb2x1bW5zIHRvIHRoZSBuZXcgYENsYXNzaWZpZWRMaXN0aW5nQ2F0ZWdvcnlgIG1vZGVsIGFuZCBtYWtlIHRoZSBjb2xvciBhbmQgc2hvcnQgZGVzY3JpcHRpb24gY29uZmlndXJhYmxlIGJ5IGFkbWlucz8gL2NjIEBiZW5oYWxwZXJuIFxyXG5cclxu4pyoVG8gb3VyIGF3ZXNvbWUgY29udHJpYnV0b3JzLCBwbGVhc2Ugbm90ZSB0aGF0IHRoaXMgaXNzdWUgd2lsbCBiZSB3b3JrZWQgb24gYnkgYSBERVYgdGVhbSBtZW1iZXIgYW5kIGlzIG5vdCB1cCBmb3IgZ3JhYnMuIOKcqCIsImNsb3NlZF9ieSI6bnVsbH0=
+    http_version: null
+  recorded_at: Sat, 02 May 2020 15:58:27 GMT
+recorded_with: VCR 5.1.0
