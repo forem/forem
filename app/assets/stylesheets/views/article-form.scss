@@ -14,7 +14,7 @@
   display: grid;
   height: 100vh;
   grid-template-rows: min-content 1fr min-content;
-  background: var(--base-10);
+  background: var(--body-bg);
   font-size: $fs-base;
 
   @media (min-width: $breakpoint-s) {
@@ -75,6 +75,10 @@
             var(--article-form-actions-height)
         );
       }
+
+      @media (min-width: $breakpoint-m) {
+        border: 1px solid var(--base-10);
+      }
     }
 
     &__aside {
@@ -88,7 +92,7 @@
 
   &__footer {
     @extend %layout;
-    background: var(--base-10);
+    background: var(--body-bg);
     position: sticky;
     bottom: 0;
     padding: 0 var(--layout-padding);
