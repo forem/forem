@@ -310,7 +310,9 @@ $lh-base: 1.5; // 24px for 16px font-size
 ) {
   background: $bg;
   border: 2px solid $border;
-  box-shadow: #{pow(2, $level) + px} #{pow(2, $level) + px} 0 $border;
+  @if $level > 0 {
+    box-shadow: #{pow(2, $level) + px} #{pow(2, $level) + px} 0 $border;
+  }
   color: $color;
   border-radius: $br-default;
 }
