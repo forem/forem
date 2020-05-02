@@ -1,3 +1,8 @@
+# TODO: PRs https://github.com/thepracticaldev/dev.to/pull/1784 should be stored as
+# https://api.github.com/repos/thepracticaldev/dev.to/pulls/1784, instead currently
+# is stored as invalid URL like https://api.github.com/repos/ksch-workflows/ksch-workflows/pull/49
+# (missing `s`)
+#
 # GithubTag generates the following api links
 # getting an issue
 #   https://api.github.com/repos/facebook/react/issues/9218
