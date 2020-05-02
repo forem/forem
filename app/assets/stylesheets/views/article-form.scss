@@ -143,16 +143,22 @@
     &__field {
       flex: 1 auto;
     }
+
+    &:focus-within {
+      .crayons-article-form__toolbar {
+        opacity: 1;
+      }
+    }
   }
 
   &__toolbar {
     position: sticky;
+    opacity: 0;
     top: 0;
-    background: var(--base-0);
-    border: 1px solid var(--base-10);
-    border-width: 1px 0;
+    background: var(--card-bg);
+    transition: opacity $transition-props;
     padding: $su-2 var(--layout-article-content-padding-x);
-    margin: 0 calc(var(--layout-article-content-padding-x) * -1) $su-6
+    margin: 0 calc(var(--layout-article-content-padding-x) * -1) $su-4
       calc(var(--layout-article-content-padding-x) * -1);
 
     @media (min-width: $breakpoint-s) {
@@ -196,7 +202,7 @@
 
   &__tagsfield {
     position: relative;
-    margin-bottom: $su-7;
+    margin-bottom: $su-4;
   }
 }
 
