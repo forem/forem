@@ -13,7 +13,7 @@ export const Body = ({
       <Toolbar />
 
       <Textarea
-        className="crayons-textfield crayons-article-form__body__field crayons-textfield--ghost fs-l ff-accent whitespace-prewrap"
+        className="crayons-textfield crayons-article-form__body__field crayons-textfield--ghost fs-l ff-accent"
         id="article_body_markdown"
         placeholder="Write your post content here..."
         value={defaultValue}

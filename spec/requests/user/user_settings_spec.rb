@@ -181,6 +181,13 @@ RSpec.describe "UserSettings", type: :request do
       expect(response).to have_http_status(:bad_request)
     end
 
+    it "returns error if Profile image is not a file" do
+      profile_image = "A String"
+      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
+
+      expect(response).to have_http_status(:bad_request)
+    end
+
     context "when requesting an export of the articles" do
       def send_request(flag = true)
         put "/users/#{user.id}", params: {

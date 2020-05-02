@@ -483,13 +483,15 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "returns a 429 status code if the rate limit is reached" do
         rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::RETRY_AFTER[:published_article_creation]
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
         allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
-        allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
 
         post_article
 
         expect(response).to have_http_status(:too_many_requests)
-        expect(response.headers["retry-after"]).to eq(RateLimitChecker::RETRY_AFTER[:published_article_creation])
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
       end
 
       it "fails if no params are given" do
@@ -786,13 +788,15 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "returns a 429 status code if the rate limit is reached" do
         rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::RETRY_AFTER[:article_update]
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
         allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
-        allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
 
         put_article(title: Faker::Book.title, body_markdown: "foobar")
 
         expect(response).to have_http_status(:too_many_requests)
-        expect(response.headers["retry-after"]).to eq(RateLimitChecker::RETRY_AFTER[:article_update])
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
       end
 
       it "returns not found if the article does not belong to the user" do

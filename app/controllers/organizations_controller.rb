@@ -3,13 +3,13 @@ class OrganizationsController < ApplicationController
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   def create
-    rate_limit!
+    rate_limit!(:organization_creation)
 
     @tab = "organization"
     @user = current_user
     @tab_list = @user.settings_tab_list
 
-    unless valid_filename?
+    unless valid_image?
       render template: "users/edit"
       return
     end
@@ -32,7 +32,7 @@ class OrganizationsController < ApplicationController
     @tab_list = @user.settings_tab_list
     set_organization
 
-    unless valid_filename?
+    unless valid_image?
       render template: "users/edit"
       return
     end
@@ -100,29 +100,34 @@ class OrganizationsController < ApplicationController
     authorize @organization
   end
 
-  def valid_filename?
+  def valid_image?
     image = params.dig("organization", "profile_image")
-    return true unless long_filename?(image)
+
+    return true unless image
 
     if action_name == "create"
       @organization = Organization.new(organization_params.except(:profile_image))
       authorize @organization
     end
 
-    @organization.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
+    return true if valid_image_file?(image) && valid_filename?(image)
+
     false
   end
 
-  def rate_limit!
-    rate_limiter.tap do |rate_limiter|
-      if rate_limiter.limit_by_action(:organization_creation)
-        retry_after = RateLimitChecker::RETRY_AFTER[:organization_creation]
-        raise RateLimitChecker::LimitReached, retry_after
-      end
-    end
+  def valid_image_file?(image)
+    return true if file?(image)
+
+    @organization.errors.add(:profile_image, IS_NOT_FILE_MESSAGE)
+
+    false
   end
 
-  def rate_limiter
-    RateLimitChecker.new(current_user)
+  def valid_filename?(image)
+    return true unless long_filename?(image)
+
+    @organization.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
+
+    false
   end
 end
