@@ -1,10 +1,12 @@
 @import '../config/import';
 
 :root {
+  --layout-site-width: #{$site-width};
+  --layout-header-height: #{$header-height};
   --layout-sidebar-width: 200px;
   --layout-aside-width: 316px;
   --layout-gap: #{$su-6};
-  --layout-padding: #{$su-2};
+  --layout-padding: #{$su-6};
   --layout-article-content-padding-x: #{$su-3};
   --layout-article-content-padding-y: #{$su-3};
   --layout-narrow-sidebar-width: 66px;
@@ -21,7 +23,6 @@
 
   @media (min-width: $breakpoint-l) {
     --layout-article-content-padding-x: #{$su-8};
-    --layout-article-content-padding-y: #{$su-6};
   }
 }
 
@@ -42,34 +43,5 @@
     grid-gap: var(--layout-gap);
     grid-template-columns: var(--layout-sidebar-width) 1fr;
     padding: var(--layout-padding);
-  }
-}
-
-.crayons-layout--article-form {
-  display: flex;
-  flex: 1;
-
-  @media (min-width: $breakpoint-l) {
-    display: grid;
-    grid-template-rows: 100%;
-    grid-gap: var(--layout-gap);
-    grid-template-columns: calc(
-        100% - var(--layout-aside-width) - var(--layout-gap)
-      ) var(--layout-aside-width);
-    padding: 0 var(--layout-padding) 0
-      calc(var(--layout-narrow-sidebar-width) + var(--layout-padding));
-  }
-
-  .crayons-layout__content {
-    padding: var(--layout-article-content-padding-y)
-      var(--layout-article-content-padding-x);
-    flex: 1 auto;
-  }
-
-  .crayons-layout__aside {
-    display: none;
-    @media (min-width: $breakpoint-l) {
-      display: block;
-    }
   }
 }

@@ -53,70 +53,64 @@ export class Actions extends Component {
     );
 
     return (
-      <div className="crayons-layout crayons-article-form__actions">
-        {submitting ? (
-          <div className="crayons-article-form__actions__buttons">
-            <Button
-              className="mr-2 whitespace-nowrap"
-              onClick={onPublish}
-              disabled
-            >
-              {published && version === 'v2'
-                ? 'Publishing...'
-                : `Saving ${version === 'v2' ? 'draft' : ''}...`}
-            </Button>
-          </div>
-        ) : (
-          <div className="crayons-article-form__actions__buttons">
-            <Button className="mr-2 whitespace-nowrap" onClick={onPublish}>
-              {published || version === 'v1' ? 'Save changes' : 'Publish'}
-            </Button>
+      submitting ? (
+        <div className="crayons-article-form__footer">
+          <Button
+            className="mr-2 whitespace-nowrap"
+            onClick={onPublish}
+            disabled
+          >
+            {published && version === 'v2'
+              ? 'Publishing...'
+              : `Saving ${version === 'v2' ? 'draft' : ''}...`}
+          </Button>
+        </div>
+      ) : (
+        <div className="crayons-article-form__footer">
+          <Button className="mr-2 whitespace-nowrap" onClick={onPublish}>
+            {published || version === 'v1' ? 'Save changes' : 'Publish'}
+          </Button>
 
-            {published || version === 'v1' ? (
-              ''
-            ) : (
-              <Button
-                variant="secondary"
-                className="mr-2 whitespace-nowrap"
-                onClick={onSaveDraft}
-              >
-                Save
-                {' '}
-                <span className="hidden s:inline">draft</span>
-              </Button>
-            )}
-            <div className="s:relative">
-              <Button
-                variant="ghost"
-                contentType="icon"
-                icon={Icon}
-                onClick={this.toggleMoreConfig}
+          {published || version === 'v1' ? (
+            ''
+          ) : (
+            <Button
+              variant="secondary"
+              className="mr-2 whitespace-nowrap"
+              onClick={onSaveDraft}
+            >
+              Save <span className="hidden s:inline">draft</span>
+            </Button>
+          )}
+          <div className="s:relative">
+            <Button
+              variant="ghost"
+              contentType="icon"
+              icon={Icon}
+              onClick={this.toggleMoreConfig}
+            />
+            {moreConfigShowing && (
+              <Options
+                passedData={passedData}
+                onConfigChange={onConfigChange}
+                onSaveDraft={onSaveDraft}
+                moreConfigShowing={moreConfigShowing}
+                toggleMoreConfig={this.toggleMoreConfig}
               />
-              {moreConfigShowing && (
-                <Options
-                  passedData={passedData}
-                  onConfigChange={onConfigChange}
-                  onSaveDraft={onSaveDraft}
-                  moreConfigShowing={moreConfigShowing}
-                  toggleMoreConfig={this.toggleMoreConfig}
-                />
-              )}
-            </div>
-            {edited && (
-              <Button
-                variant="ghost"
-                onClick={onClearChanges}
-                className="whitespace-nowrap fw-normal"
-                size="s"
-              >
-                Revert 
-                {' '}
-                <span className="hidden s:inline">new changes</span>
-              </Button>
             )}
           </div>
-        )}
-      </div>
+          {edited && (
+            <Button
+              variant="ghost"
+              onClick={onClearChanges}
+              className="whitespace-nowrap fw-normal"
+              size="s"
+            >
+              Revert <span className="hidden s:inline">new changes</span>
+            </Button>
+          )}
+        </div>
+      )
     );
   }
 }

@@ -69,10 +69,10 @@ export class Help extends Component {
     } = this.state;
 
     return (
-      <div className="crayons-layout__aside">
+      <div className="crayons-article-form__main__aside">
         {!previewShowing && (
           <div
-            className="crayons-article-form__tips"
+            className="sticky"
             style={{ top: version === 'v1' ? '56px' : helpPosition }}
           >
             {helpFor === 'article-form-title' && (

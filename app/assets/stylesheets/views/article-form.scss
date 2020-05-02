@@ -1,16 +1,34 @@
 @import '../config/import';
 @import '../base/boxes';
 
+%layout {
+  max-width: var(--layout-site-width);
+  width: 100%;
+  margin: 0 auto;
+}
+
+
 .crayons-article-form {
-  display: flex;
-  min-height: 100vh;
-  flex-direction: column;
-  background: var(--base-10); // todo: replace with proper variable (?)
+  --article-form-actions-height: 72px;
+  --layout-padding: #{$su-2};
+
+  @media (min-width: $breakpoint-l) {
+    --article-form-actions-height: 88px;
+  }
+
+  display: grid;
+  height: 100vh;
+  grid-template-rows: min-content 1fr min-content;
+  background: var(--base-10);
+  font-size: $fs-base;
 
   &__header {
+    @extend %layout;
+
     display: flex;
-    padding: $su-2 var(--layout-padding);
     align-items: center;
+    padding: 0 var(--layout-padding);
+    height: var(--layout-header-height);
 
     @media (min-width: $breakpoint-l) {
       padding-right: calc(
@@ -19,6 +37,66 @@
     }
   }
 
+  &__main {
+    @extend %layout;
+
+    @media (min-width: $breakpoint-m) {
+      padding: 0 var(--layout-padding);
+    }
+
+    @media (min-width: $breakpoint-l) {
+      display: grid;
+      grid-gap: var(--layout-gap);
+      grid-template-columns: 
+        calc(100% - var(--layout-aside-width) - var(--layout-gap)) 
+        var(--layout-aside-width);
+    }
+
+    @media (min-width: $breakpoint-xl) {
+      padding-left: calc(var(--layout-narrow-sidebar-width) + var(--layout-padding));
+    }
+    
+    &__content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: var(--layout-article-content-padding-y) var(--layout-article-content-padding-x);
+      
+      @media (min-width: $breakpoint-s) {
+        overflow: auto;
+        height: calc(100vh - var(--layout-header-height) - var(--article-form-actions-height));
+      }
+    }
+
+    &__aside {
+      display: none;
+
+      @media (min-width: $breakpoint-l) {
+        display: block;
+      }
+    }
+  }
+
+  &__footer {
+    @extend %layout;
+
+    background: var(--base-10);
+    position: sticky;
+    bottom: 0;
+    padding: 0 var(--layout-padding);
+    height: var(--article-form-actions-height);
+    display: flex;
+    align-items: center;
+
+    @media (min-width: $breakpoint-xl) {
+      padding-left: calc(
+        var(--layout-narrow-sidebar-width) + var(--layout-padding)
+      );
+    }
+  }
+}
+
+.crayons-article-form {
   &__logo {
     display: flex;
     margin-right: var(--layout-gap);
@@ -39,23 +117,20 @@
       position: absolute;
       right: $su-2;
       top: $su-2;
+      margin-left: 0;
     }
-  }
-
-  &__tips {
-    position: sticky;
-    top: $su-9;
-  }
-
-  &__fields {
-    display: flex;
-    flex-direction: column;
   }
 
   &__body {
     flex: 1 auto;
     position: relative;
     outline: none;
+    display: flex;
+    flex-direction: column;
+
+    &__field {
+      flex: 1 auto;
+    }
   }
 
   &__toolbar {
@@ -70,6 +145,10 @@
       calc(var(--layout-article-content-padding-x) * -1)
       $su-6
       calc(var(--layout-article-content-padding-x) * -1);
+    
+    @media (min-width: $breakpoint-s) {
+      top: calc(var(--layout-article-content-padding-y) * -1);
+    }
 
     > :first-child {
       margin-left: -$su-2;
@@ -109,25 +188,6 @@
   &__tagsfield {
     position: relative;
     margin-bottom: $su-7;
-  }
-
-  &__actions {
-    background: var(--base-10);
-    position: sticky;
-    bottom: 0;
-    padding: $su-4 $su-2;
-
-    @media (min-width: $breakpoint-l) {
-      padding: $su-6 $su-2;
-      padding-left: calc(
-        var(--layout-narrow-sidebar-width) + var(--layout-gap)
-      );
-    }
-
-    &__buttons {
-      display: flex;
-      align-items: center;
-    }
   }
 }
 

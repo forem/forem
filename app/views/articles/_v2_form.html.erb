@@ -6,7 +6,7 @@
   data-version="<%= version %>">
   <form class="crayons-article-form">
 
-    <div class="crayons-article-form__header crayons-layout">
+    <div class="crayons-article-form__header">
       <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
 
       <div class="crayons-field__label">
@@ -33,8 +33,8 @@
       </div>
     </div>
 
-    <div class="crayons-layout crayons-layout--article-form">
-      <div class="crayons-card crayons-layout__content crayons-article-form__fields">
+    <div class="crayons-article-form__main">
+      <div class="crayons-card crayons-article-form__main__content">
         <% if version == "v2" %>
           <div>
             <div class="crayons-article-form__cover" role="presentation">
@@ -46,7 +46,7 @@
               </button>
             </div>
             <div class="crayons-article-form__title">
-              <textarea class="crayons-textfield crayons-textfield--ghost fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px;"><%= article.title %></textarea>
+              <textarea class="crayons-textfield crayons-textfield--ghost fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px; "><%= article.title %></textarea>
             </div>
             <div class="crayons-article-form__tagsfield">
               <input type="text" class="crayons-textfield crayons-textfield--ghost fs-s s:fs-base ff-accent" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
@@ -60,21 +60,19 @@
               <input type="file" id="image-upload-field" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" multiple accept="image/*" data-max-file-size-mb="25" />
             </button>
           </div>
-          <textarea class="crayons-textfield crayons-textfield--ghost fs-l ff-accent min-h-100" id="article_body_markdown" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
+          <textarea class="crayons-article-form__body__field crayons-textfield crayons-textfield--ghost fs-l ff-accent" id="article_body_markdown" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
           </div>
       </div>
-      <div class="crayons-layout__aside"></div>
+      <div class="crayons-article-form__main_aside"></div>
     </div>
 
-    <div class="crayons-layout crayons-article-form__actions">
-      <div class="crayons-layout crayons-article-form__actions__buttons">
-        <button class="crayons-btn mr-2" type="button">Publish</button>
-        <button class="crayons-btn crayons-btn--secondary mr-2" type="button">Save draft</button>
-        <div class="relative">
-          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon" type="button">
-            <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Options") %>
-          </button>
-        </div>
+    <div class="crayons-article-form__footer">
+      <button class="crayons-btn mr-2" type="button">Publish</button>
+      <button class="crayons-btn crayons-btn--secondary mr-2" type="button">Save draft</button>
+      <div class="relative">
+        <button class="crayons-btn crayons-btn--ghost crayons-btn--icon" type="button">
+          <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Options") %>
+        </button>
       </div>
     </div>
   </form>
@@ -89,10 +87,6 @@
 <style>
   body {
     padding-top: 0;
-  }
-
-  .crayons-layout--article-form {
-    flex: 1;
   }
 
   body > footer,

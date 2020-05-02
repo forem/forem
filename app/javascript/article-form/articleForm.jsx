@@ -305,7 +305,7 @@ export default class ArticleForm extends Component {
           onToggle={this.handleOrgIdChange}
         />
 
-        <div className="crayons-layout crayons-layout--article-form">
+        <div className="crayons-article-form__main">
           {!previewShowing && (
             <Form
               titleDefaultValue={title}

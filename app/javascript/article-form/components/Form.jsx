@@ -19,7 +19,7 @@ export const Form = ({
   errors
 }) => {
   return (
-    <div className="crayons-card crayons-layout__content crayons-article-form__fields">
+    <div className="crayons-article-form__main__content crayons-card">
       {errors && <Errors errorsList={errors} />}
 
       {version === 'v2' && (
@@ -41,7 +41,7 @@ export const Form = ({
         switchHelpContext={switchHelpContext}
       />
     </div>
-  )
+  );
 }
 
 Form.propTypes = {
