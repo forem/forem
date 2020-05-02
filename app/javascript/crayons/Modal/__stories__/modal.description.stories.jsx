@@ -11,7 +11,7 @@ export const Description = () => (
     <h2>Modals</h2>
     <p>
       Modals should be positioned centered in relation to entire viewport. So
-      relation to its tirgger doesn’t really matter.
+      relation to its trigger doesn’t really matter.
     </p>
     <p>There are 3 sizes of modals:</p>
     <ul>
