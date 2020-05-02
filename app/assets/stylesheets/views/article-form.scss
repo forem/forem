@@ -7,20 +7,23 @@
   margin: 0 auto;
 }
 
-
 .crayons-article-form {
-  --article-form-actions-height: 72px;
+  --article-form-actions-height: 56px;
   --layout-padding: #{$su-2};
-
-  @media (min-width: $breakpoint-l) {
-    --article-form-actions-height: 88px;
-  }
 
   display: grid;
   height: 100vh;
   grid-template-rows: min-content 1fr min-content;
   background: var(--base-10);
   font-size: $fs-base;
+
+  @media (min-width: $breakpoint-s) {
+    --article-form-actions-height: 72px;
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --article-form-actions-height: 88px;
+  }
 
   &__header {
     @extend %layout;
@@ -47,24 +50,30 @@
     @media (min-width: $breakpoint-l) {
       display: grid;
       grid-gap: var(--layout-gap);
-      grid-template-columns: 
-        calc(100% - var(--layout-aside-width) - var(--layout-gap)) 
+      grid-template-columns:
+        calc(100% - var(--layout-aside-width) - var(--layout-gap))
         var(--layout-aside-width);
     }
 
     @media (min-width: $breakpoint-xl) {
-      padding-left: calc(var(--layout-narrow-sidebar-width) + var(--layout-padding));
+      padding-left: calc(
+        var(--layout-narrow-sidebar-width) + var(--layout-padding)
+      );
     }
-    
+
     &__content {
       display: flex;
       flex-direction: column;
       height: 100%;
-      padding: var(--layout-article-content-padding-y) var(--layout-article-content-padding-x);
-      
+      padding: var(--layout-article-content-padding-y)
+        var(--layout-article-content-padding-x);
+
       @media (min-width: $breakpoint-s) {
         overflow: auto;
-        height: calc(100vh - var(--layout-header-height) - var(--article-form-actions-height));
+        height: calc(
+          100vh - var(--layout-header-height) -
+            var(--article-form-actions-height)
+        );
       }
     }
 
@@ -79,7 +88,6 @@
 
   &__footer {
     @extend %layout;
-
     background: var(--base-10);
     position: sticky;
     bottom: 0;
@@ -140,12 +148,9 @@
     border: 1px solid var(--base-10);
     border-width: 1px 0;
     padding: $su-2 var(--layout-article-content-padding-x);
-    margin: 
-      0 
-      calc(var(--layout-article-content-padding-x) * -1)
-      $su-6
+    margin: 0 calc(var(--layout-article-content-padding-x) * -1) $su-6
       calc(var(--layout-article-content-padding-x) * -1);
-    
+
     @media (min-width: $breakpoint-s) {
       top: calc(var(--layout-article-content-padding-y) * -1);
     }
