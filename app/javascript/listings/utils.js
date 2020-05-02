@@ -76,27 +76,19 @@ export function resizeAllMasonryItems() {
 }
 
 export function getLocation({ query = '', tags = [], category = '', slug }) {
-  const urlBase = '/listings';
-
+  let newLocation = '';
   if (slug) {
-    return `${urlBase}/${category}/${slug}`;
+    newLocation = `/listings/${category}/${slug}`;
+  } else if (query.length > 0 && tags.length > 0) {
+    newLocation = `/listings/${category}?q=${query}&t=${tags}`;
+  } else if (query.length > 0) {
+    newLocation = `/listings/${category}?q=${query}`;
+  } else if (tags.length > 0) {
+    newLocation = `/listings/${category}?t=${tags}`;
+  } else if (category.length > 0) {
+    newLocation = `/listings/${category}`;
+  } else {
+    newLocation = '/listings';
   }
-
-  if (query.length > 0 && tags.length > 0) {
-    return `${urlBase}/${category}?q=${query}&t=${tags}`;
-  }
-
-  if (query.length > 0) {
-    return `${urlBase}/${category}?q=${query}`;
-  }
-
-  if (tags.length > 0) {
-    return `${urlBase}/${category}?t=${tags}`;
-  }
-
-  if (category.length > 0) {
-    return `${urlBase}/${category}`;
-  }
-
-  return urlBase;
+  return newLocation;
 }
