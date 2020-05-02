@@ -1,6 +1,11 @@
 class GithubIssue < ApplicationRecord
+  CATEGORIES = %w[issue issue_comment].freeze
+  GITHUB_API_URL_REGEXP = /\Ahttps:\/\/api.github.com\/repos\/.*\z/.freeze
+
   serialize :issue_serialized, Hash
-  validates :category, inclusion: { in: %w[issue issue_comment] }
+
+  validates :category, inclusion: { in: CATEGORIES }
+  validates :url, presence: true, length: { maximum: 400 }, format: GITHUB_API_URL_REGEXP
 
   def self.find_or_fetch(url)
     find_by(url: url) || fetch(url)
