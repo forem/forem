@@ -6,7 +6,7 @@ const MainImage = ({ mainImage, onEdit }) => (
     className="articleform__mainimage"
     role="presentation"
     onClick={onEdit}
-    onKeyUp={e => {
+    onKeyUp={(e) => {
       if (e.key === 'Enter') {
         onEdit(e);
       }

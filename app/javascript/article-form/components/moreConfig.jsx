@@ -18,7 +18,7 @@ TextField.propTypes = {
 };
 
 export default class MoreConfig extends Component {
-  handleSeriesButtonClick = e => {
+  handleSeriesButtonClick = (e) => {
     e.preventDefault();
     const { onConfigChange } = this.props;
     onConfigChange(e);
@@ -44,7 +44,7 @@ export default class MoreConfig extends Component {
       </small>
     );
     if (allSeries.length > 0) {
-      const seriesNames = allSeries.map(name => {
+      const seriesNames = allSeries.map((name) => {
         return (
           <button
             type="button"
@@ -91,7 +91,7 @@ export default class MoreConfig extends Component {
           onKeyUp: onConfigChange,
         })}
         <small>
-          Change meta tag
+          Change meta tag 
           {' '}
           <code>canonical_url</code>
           {' '}

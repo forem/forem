@@ -10,7 +10,7 @@ const Errors = ({ errorsList }) => (
       &nbsp; Heads up:
     </h2>
     <ul>
-      {Object.keys(errorsList).map(key => {
+      {Object.keys(errorsList).map((key) => {
         return (
           <li>
             {key}

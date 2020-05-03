@@ -11,7 +11,7 @@ class KeyboardShortcutsHandler extends Component {
   }
 
   handleKeyDown = () => {
-    this.globalKeysListener = event => {
+    this.globalKeysListener = (event) => {
       const controlOrCommandKey = event.ctrlKey || event.metaKey;
       if (
         controlOrCommandKey &&

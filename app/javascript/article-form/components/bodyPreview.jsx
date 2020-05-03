@@ -22,7 +22,7 @@ function titleArea(previewResponse, version, articleState) {
   const tagArray = previewResponse.tags || articleState.tagList.split(', ');
   let tags = '';
   if (tagArray.length > 0 && tagArray[0].length > 0) {
-    tags = tagArray.map(tag => {
+    tags = tagArray.map((tag) => {
       return (
         <span>{tag.length > 0 ? <div className="tag">{tag}</div> : ''}</span>
       );

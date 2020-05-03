@@ -7,7 +7,9 @@ const Notice = ({ published, version }) => (
       published ? 'publishing' : 'draft'
     }`}
   >
-    {(published && version === 'v2') ? 'Publishing...' : `Saving ${ version === 'v2' ? 'Draft' : ''}...`}
+    {published && version === 'v2'
+      ? 'Publishing...'
+      : `Saving ${version === 'v2' ? 'Draft' : ''}...`}
   </div>
 );
 

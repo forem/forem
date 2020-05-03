@@ -8,16 +8,16 @@ import ImageUploadIcon from 'images/image-upload.svg';
 // eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
-import BodyMarkdown from './elements/bodyMarkdown';
-import BodyPreview from './elements/bodyPreview';
-import PublishToggle from './elements/publishToggle';
-import Notice from './elements/notice';
-import Title from './elements/title';
-import MainImage from './elements/mainImage';
-import ImageManagement from './elements/imageManagement';
-import MoreConfig from './elements/moreConfig';
-import Errors from './elements/errors';
-import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
+import BodyMarkdown from './components/bodyMarkdown';
+import BodyPreview from './components/bodyPreview';
+import PublishToggle from './components/publishToggle';
+import Notice from './components/notice';
+import Title from './components/title';
+import MainImage from './components/mainImage';
+import ImageManagement from './components/imageManagement';
+import MoreConfig from './components/moreConfig';
+import Errors from './components/errors';
+import KeyboardShortcutsHandler from './components/keyboardShortcutsHandler';
 import Tags from '../shared/components/tags';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
 
@@ -173,7 +173,7 @@ export default class ArticleForm extends Component {
     };
   };
 
-  toggleHelp = e => {
+  toggleHelp = (e) => {
     const { helpShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
@@ -182,7 +182,7 @@ export default class ArticleForm extends Component {
     });
   };
 
-  fetchPreview = e => {
+  fetchPreview = (e) => {
     const { previewShowing, bodyMarkdown } = this.state;
     e.preventDefault();
     if (previewShowing) {
@@ -194,7 +194,7 @@ export default class ArticleForm extends Component {
     }
   };
 
-  toggleImageManagement = e => {
+  toggleImageManagement = (e) => {
     const { imageManagementShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
@@ -205,7 +205,7 @@ export default class ArticleForm extends Component {
     });
   };
 
-  toggleMoreConfig = e => {
+  toggleMoreConfig = (e) => {
     const { moreConfigShowing } = this.state;
     e.preventDefault();
     this.setState({
@@ -213,7 +213,7 @@ export default class ArticleForm extends Component {
     });
   };
 
-  showPreview = response => {
+  showPreview = (response) => {
     if (response.processed_html) {
       this.setState({
         ...this.setCommonProps({ previewShowing: true }),
@@ -228,25 +228,25 @@ export default class ArticleForm extends Component {
     }
   };
 
-  handleOrgIdChange = e => {
+  handleOrgIdChange = (e) => {
     const organizationId = e.target.selectedOptions[0].value;
     this.setState({ organizationId });
   };
 
-  failedPreview = response => {
+  failedPreview = (response) => {
     // TODO: console.log should not be part of production code. Remove it!
     // eslint-disable-next-line no-console
     console.log(response);
   };
 
-  handleConfigChange = e => {
+  handleConfigChange = (e) => {
     e.preventDefault();
     const newState = {};
     newState[e.target.name] = e.target.value;
     this.setState(newState);
   };
 
-  handleMainImageUrlChange = payload => {
+  handleMainImageUrlChange = (payload) => {
     this.setState({
       mainImage: payload.links[0],
       imageManagementShowing: false,
@@ -259,7 +259,7 @@ export default class ArticleForm extends Component {
     window.removeEventListener('beforeunload', this.localStoreContent);
   };
 
-  onPublish = e => {
+  onPublish = (e) => {
     e.preventDefault();
     this.setState({ submitting: true, published: true });
     const { state } = this;
@@ -267,7 +267,7 @@ export default class ArticleForm extends Component {
     submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
-  onSaveDraft = e => {
+  onSaveDraft = (e) => {
     e.preventDefault();
     this.setState({ submitting: true, published: false });
     const { state } = this;
@@ -275,15 +275,15 @@ export default class ArticleForm extends Component {
     submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
-  handleTitleKeyDown = e => {
+  handleTitleKeyDown = (e) => {
     if (e.keyCode === 13) {
       e.preventDefault();
     }
   };
 
-  handleBodyKeyDown = _e => {};
+  handleBodyKeyDown = (_e) => {};
 
-  onClearChanges = e => {
+  onClearChanges = (e) => {
     e.preventDefault();
     // eslint-disable-next-line no-alert
     const revert = window.confirm(
@@ -314,7 +314,7 @@ export default class ArticleForm extends Component {
     });
   };
 
-  handleArticleError = response => {
+  handleArticleError = (response) => {
     window.scrollTo(0, 0);
     this.setState({
       errors: response,

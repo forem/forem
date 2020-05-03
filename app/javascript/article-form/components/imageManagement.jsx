@@ -14,7 +14,7 @@ export default class ImageManagement extends Component {
     };
   }
 
-  handleMainImageUpload = e => {
+  handleMainImageUpload = (e) => {
     e.preventDefault();
 
     this.clearUploadError();
@@ -28,7 +28,7 @@ export default class ImageManagement extends Component {
     }
   };
 
-  handleInsertionImageUpload = e => {
+  handleInsertionImageUpload = (e) => {
     this.clearUploadError();
 
     const validFileInputs = validateFileInputs();
@@ -43,13 +43,13 @@ export default class ImageManagement extends Component {
     }
   };
 
-  handleInsertImageUploadSuccess = response => {
+  handleInsertImageUploadSuccess = (response) => {
     this.setState({
       insertionImageUrls: response.links,
     });
   };
 
-  triggerMainImageRemoval = e => {
+  triggerMainImageRemoval = (e) => {
     e.preventDefault();
 
     const { onMainImageUrlChange } = this.props;
@@ -66,7 +66,7 @@ export default class ImageManagement extends Component {
     });
   };
 
-  onUploadError = error => {
+  onUploadError = (error) => {
     this.setState({
       insertionImageUrls: [],
       uploadError: true,
@@ -81,7 +81,7 @@ export default class ImageManagement extends Component {
     );
     document.execCommand('copy');
     this.imageMarkdownAnnouncer.hidden = false;
-  }
+  };
 
   copyText = () => {
     this.imageMarkdownAnnouncer = document.getElementById(
@@ -93,22 +93,23 @@ export default class ImageManagement extends Component {
 
     const isNativeAndroid =
       navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== "undefined" &&
+      typeof AndroidBridge !== 'undefined' &&
       AndroidBridge !== null;
 
     const isClipboardSupported =
-      typeof navigator.clipboard !== "undefined" &&
+      typeof navigator.clipboard !== 'undefined' &&
       navigator.clipboard !== null;
 
     if (isNativeAndroid) {
       AndroidBridge.copyToClipboard(this.imageMarkdownInput.value);
       this.imageMarkdownAnnouncer.hidden = false;
     } else if (isClipboardSupported) {
-      navigator.clipboard.writeText(this.imageMarkdownInput.value)
+      navigator.clipboard
+        .writeText(this.imageMarkdownInput.value)
         .then(() => {
           this.imageMarkdownAnnouncer.hidden = false;
         })
-        .catch((err) => {
+        .catch(() => {
           this.execCopyText();
         });
     } else {
@@ -116,11 +117,13 @@ export default class ImageManagement extends Component {
     }
   };
 
-  linksToMarkdownForm = imageLinks => {
-    return imageLinks.map(imageLink => `![Alt Text](${imageLink})`).join('\n');
+  linksToMarkdownForm = (imageLinks) => {
+    return imageLinks
+      .map((imageLink) => `![Alt Text](${imageLink})`)
+      .join('\n');
   };
 
-  linksToDirectForm = imageLinks => {
+  linksToDirectForm = (imageLinks) => {
     return imageLinks.join('\n');
   };
 
