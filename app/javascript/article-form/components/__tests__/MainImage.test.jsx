@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
 import { shallow } from 'preact-render-spy';
-import MainImage from '../mainImage';
+import MainImage from '../MainImage';
 
 describe('<MainImage />', () => {
   const editHandler = jest.fn();
