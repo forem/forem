@@ -14,7 +14,7 @@ http_interactions:
       Content-Type:
       - application/json
       X-Honeycomb-Trace:
-      - 1;dataset=,trace_id=366d25f6-8fb6-475b-bc51-c9d89dfe4993,parent_id=e8e0ff80-b705-4ff6-b87f-7f73f1ffa4ee,context=e30=
+      - 1;dataset=,trace_id=7b55123d-9904-435d-b5d3-7db505fe3bce,parent_id=73128408-7991-4aac-8a85-f6569b0e9d3b,context=e30=
       Expect:
       - ''
   response:
@@ -23,7 +23,7 @@ http_interactions:
       message: Not Found
     headers:
       Date:
-      - Sat, 02 May 2020 15:59:33 GMT
+      - Sat, 02 May 2020 23:54:41 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
@@ -35,9 +35,9 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '4985'
+      - '4981'
       X-Ratelimit-Reset:
-      - '1588435893'
+      - '1588465848'
       X-Github-Media-Type:
       - github.v3; format=json
       Access-Control-Expose-Headers:
@@ -61,10 +61,10 @@ http_interactions:
       Vary:
       - Accept-Encoding, Accept, X-Requested-With
       X-Github-Request-Id:
-      - DDEF:2DEE:227B59:2D87B9:5EAD98E4
+      - F3A9:29D1:2523C7:33C61F:5EAE0841
     body:
       encoding: ASCII-8BIT
       string: '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/issues/#get-a-single-issue"}'
     http_version: null
-  recorded_at: Sat, 02 May 2020 15:59:33 GMT
+  recorded_at: Sat, 02 May 2020 23:54:41 GMT
 recorded_with: VCR 5.1.0

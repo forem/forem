@@ -1,4 +1,4 @@
-# NOTE: we are using `GithubIssue` to store issues, comments and pull requests
+# NOTE: we are using `GithubIssue` to store issues, pull requests and comments
 class GithubIssue < ApplicationRecord
   CATEGORIES = %w[issue issue_comment].freeze
   API_URL_REGEXP = /\Ahttps:\/\/api.github.com\/repos\/.*\z/.freeze

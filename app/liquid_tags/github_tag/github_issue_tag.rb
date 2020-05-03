@@ -3,12 +3,12 @@
 # is stored as invalid URL like https://api.github.com/repos/ksch-workflows/ksch-workflows/pull/49
 # (missing `s`)
 #
-# GithubTag generates the following api links
+# GithubTag generates the following API links:
 # getting an issue
 #   https://api.github.com/repos/facebook/react/issues/9218
-# getting comments of an issue
-#   https://api.github.com/repos/facebook/react/issues/9218/comments
-# getting exat comment of an issue
+# getting a pull request
+#   https://api.github.com/repos/facebook/react/pulls/14105
+# getting a comment belonging to an issue
 #   https://api.github.com/repos/facebook/react/issues/comments/287635042
 class GithubTag
   class GithubIssueTag

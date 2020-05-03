@@ -26,10 +26,6 @@ VCR.configure do |config|
 end
 
 VCR_OPTIONS = {
-  github_issue_api: {
-    cassette_name: "github_issue_api",
-    allow_playback_repeats: true
-  },
   twitter_fetch_status: {
     cassette_name: "twitter_fetch_status",
     allow_playback_repeats: true

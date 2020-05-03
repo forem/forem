@@ -2,7 +2,7 @@
 http_interactions:
 - request:
     method: get
-    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/7643
+    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/7434
     body:
       encoding: US-ASCII
       string: ''
@@ -14,7 +14,7 @@ http_interactions:
       Content-Type:
       - application/json
       X-Honeycomb-Trace:
-      - 1;dataset=,trace_id=5f954f03-1303-4a2a-984e-035f5e9397ad,parent_id=0baa2f50-e61e-46ac-9bc0-5a6aeb802312,context=e30=
+      - 1;dataset=,trace_id=4085b91d-4649-4fc3-bf1c-96c5a2bc8d57,parent_id=9367c158-33bc-4172-bbbe-b5ac5e8926de,context=e30=
       Expect:
       - ''
   response:
@@ -23,11 +23,11 @@ http_interactions:
       message: OK
     headers:
       Date:
-      - Sat, 02 May 2020 15:58:26 GMT
+      - Sat, 02 May 2020 23:54:39 GMT
       Content-Type:
       - application/json; charset=utf-8
       Content-Length:
-      - '3815'
+      - '3552'
       Server:
       - GitHub.com
       Status:
@@ -35,18 +35,18 @@ http_interactions:
       X-Ratelimit-Limit:
       - '5000'
       X-Ratelimit-Remaining:
-      - '4986'
+      - '4983'
       X-Ratelimit-Reset:
-      - '1588435892'
+      - '1588465848'
       Cache-Control:
       - public, max-age=60, s-maxage=60
       Vary:
       - Accept
       - Accept-Encoding, Accept, X-Requested-With
       Etag:
-      - '"1011b67b5df0182c8d1320f31940f79a"'
+      - '"54e1b0dd3fed55dc41e2d4affd48d3d7"'
       Last-Modified:
-      - Fri, 01 May 2020 04:11:48 GMT
+      - Sat, 02 May 2020 10:56:49 GMT
       X-Github-Media-Type:
       - github.v3; format=json
       Access-Control-Expose-Headers:
@@ -68,11 +68,115 @@ http_interactions:
       Content-Security-Policy:
       - default-src 'none'
       X-Github-Request-Id:
-      - DDC8:2DEE:2271D1:2D7ADA:5EAD98A2
+      - F3A7:29D1:25238A:33C5C5:5EAE083E
     body:
       encoding: ASCII-8BIT
-      string: !binary |-
-        eyJ1cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL3RoZXByYWN0aWNhbGRldi9kZXYudG8vaXNzdWVzLzc2NDMiLCJyZXBvc2l0b3J5X3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vcmVwb3MvdGhlcHJhY3RpY2FsZGV2L2Rldi50byIsImxhYmVsc191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL3RoZXByYWN0aWNhbGRldi9kZXYudG8vaXNzdWVzLzc2NDMvbGFiZWxzey9uYW1lfSIsImNvbW1lbnRzX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vcmVwb3MvdGhlcHJhY3RpY2FsZGV2L2Rldi50by9pc3N1ZXMvNzY0My9jb21tZW50cyIsImV2ZW50c191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL3RoZXByYWN0aWNhbGRldi9kZXYudG8vaXNzdWVzLzc2NDMvZXZlbnRzIiwiaHRtbF91cmwiOiJodHRwczovL2dpdGh1Yi5jb20vdGhlcHJhY3RpY2FsZGV2L2Rldi50by9pc3N1ZXMvNzY0MyIsImlkIjo2MTA1NDgxNjQsIm5vZGVfaWQiOiJNRFU2U1hOemRXVTJNVEExTkRneE5qUT0iLCJudW1iZXIiOjc2NDMsInRpdGxlIjoiRG9uJ3QgaGFyZGNvZGUgc29jaWFsIHByZXZpZXdzIGZvciBsaXN0aW5ncyIsInVzZXIiOnsibG9naW4iOiJjaXRpemVuNDI4IiwiaWQiOjQ3OTg1LCJub2RlX2lkIjoiTURRNlZYTmxjalEzT1RnMSIsImF2YXRhcl91cmwiOiJodHRwczovL2F2YXRhcnMxLmdpdGh1YnVzZXJjb250ZW50LmNvbS91LzQ3OTg1P3Y9NCIsImdyYXZhdGFyX2lkIjoiIiwidXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9jaXRpemVuNDI4IiwiaHRtbF91cmwiOiJodHRwczovL2dpdGh1Yi5jb20vY2l0aXplbjQyOCIsImZvbGxvd2Vyc191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL2NpdGl6ZW40MjgvZm9sbG93ZXJzIiwiZm9sbG93aW5nX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvY2l0aXplbjQyOC9mb2xsb3dpbmd7L290aGVyX3VzZXJ9IiwiZ2lzdHNfdXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9jaXRpemVuNDI4L2dpc3Rzey9naXN0X2lkfSIsInN0YXJyZWRfdXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS91c2Vycy9jaXRpemVuNDI4L3N0YXJyZWR7L293bmVyfXsvcmVwb30iLCJzdWJzY3JpcHRpb25zX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvY2l0aXplbjQyOC9zdWJzY3JpcHRpb25zIiwib3JnYW5pemF0aW9uc191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL2NpdGl6ZW40Mjgvb3JncyIsInJlcG9zX3VybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vdXNlcnMvY2l0aXplbjQyOC9yZXBvcyIsImV2ZW50c191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL2NpdGl6ZW40MjgvZXZlbnRzey9wcml2YWN5fSIsInJlY2VpdmVkX2V2ZW50c191cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3VzZXJzL2NpdGl6ZW40MjgvcmVjZWl2ZWRfZXZlbnRzIiwidHlwZSI6IlVzZXIiLCJzaXRlX2FkbWluIjpmYWxzZX0sImxhYmVscyI6W3siaWQiOjE5MDE2NzYxNDAsIm5vZGVfaWQiOiJNRFU2VEdGaVpXd3hPVEF4TmpjMk1UUXciLCJ1cmwiOiJodHRwczovL2FwaS5naXRodWIuY29tL3JlcG9zL3RoZXByYWN0aWNhbGRldi9kZXYudG8vbGFiZWxzL0RFViUyMHRlYW0iLCJuYW1lIjoiREVWIHRlYW0iLCJjb2xvciI6ImJjMzg1OSIsImRlZmF1bHQiOmZhbHNlLCJkZXNjcmlwdGlvbiI6ImludGVybmFsIHRhc2tzIG9ubHkgZm9yIERFViB0ZWFtIG1lbWJlcnMifSx7ImlkIjoxMzM3MzI5MDMxLCJub2RlX2lkIjoiTURVNlRHRmlaV3d4TXpNM016STVNRE14IiwidXJsIjoiaHR0cHM6Ly9hcGkuZ2l0aHViLmNvbS9yZXBvcy90aGVwcmFjdGljYWxkZXYvZGV2LnRvL2xhYmVscy9hcmVhOiUyMGxpc3RpbmdzIiwibmFtZSI6ImFyZWE6IGxpc3RpbmdzIiwiY29sb3IiOiIyYTc1YjIiLCJkZWZhdWx0IjpmYWxzZSwiZGVzY3JpcHRpb24iOiJjbGFzc2lmaWVkIGxpc3RpbmdzIn0seyJpZCI6MTAxODU4ODYwOCwibm9kZV9pZCI6Ik1EVTZUR0ZpWld3eE1ERTROVGc0TmpBNCIsInVybCI6Imh0dHBzOi8vYXBpLmdpdGh1Yi5jb20vcmVwb3MvdGhlcHJhY3RpY2FsZGV2L2Rldi50by9sYWJlbHMvdHlwZTolMjBkaXNjdXNzaW9uIiwibmFtZSI6InR5cGU6IGRpc2N1c3Npb24iLCJjb2xvciI6ImZlZjJjMCIsImRlZmF1bHQiOmZhbHNlLCJkZXNjcmlwdGlvbiI6InRvcGljcyBvcGVuIGZvciBkaXNjdXNzaW9uIn1dLCJzdGF0ZSI6Im9wZW4iLCJsb2NrZWQiOmZhbHNlLCJhc3NpZ25lZSI6bnVsbCwiYXNzaWduZWVzIjpbXSwibWlsZXN0b25lIjpudWxsLCJjb21tZW50cyI6MCwiY3JlYXRlZF9hdCI6IjIwMjAtMDUtMDFUMDQ6MDk6NTFaIiwidXBkYXRlZF9hdCI6IjIwMjAtMDUtMDFUMDQ6MTE6NDhaIiwiY2xvc2VkX2F0IjpudWxsLCJhdXRob3JfYXNzb2NpYXRpb24iOiJDT05UUklCVVRPUiIsImJvZHkiOiJUaGUgbWFpbiByZWZhY3RvcmluZyBvZiBjbGFzc2lmaWVkIGxpc3RpbmdzIGlzIG5vdyBkb25lLCBidXQgdGhlcmUncyBvbmUgb3V0c3RhbmRpbmcgaXNzdWUsIHRoZSBzb2NpYWwgcHJldmlld3MgaGFyZGNvZGVkIGluIGBhcHAvY29udHJvbGxlcnMvc29jaWFsX3ByZXZpZXdzX2NvbnRyb2xsZXIucmJgOlxyXG5cclxuYGBgcnVieVxyXG4gIGRlZiBkZWZpbmVfY2F0ZWdvcmllc1xyXG4gICAgY2F0X2luZm8gPSB7XHJcbiAgICAgIFwiY29sbGFic1wiOiBbXCJDb2xsYWJvcmF0b3JzIFdhbnRlZFwiLCBcIiM1QUU4RDlcIl0sXHJcbiAgICAgIFwiY2ZwXCI6IFtcIkNhbGwgRm9yIFByb3Bvc2FsXCIsIFwiI2Y1OGY4ZFwiXSxcclxuICAgICAgXCJmb3JoaXJlXCI6IFtcIkF2YWlsYWJsZSBGb3IgSGlyZVwiLCBcIiNiNzhjZjRcIl0sXHJcbiAgICAgIFwiZWR1Y2F0aW9uXCI6IFtcIkVkdWNhdGlvblwiLCBcIiM1QUFCRThcIl0sXHJcbiAgICAgIFwiam9ic1wiOiBbXCJOb3cgSGlyaW5nXCIsIFwiIzUzYzNhZFwiXSxcclxuICAgICAgXCJtZW50b3JzXCI6IFtcIk9mZmVyaW5nIE1lbnRvcnNoaXBcIiwgXCIjQTY5RUU4XCJdLFxyXG4gICAgICBcIm1lbnRlZXNcIjogW1wiTG9va2luZyBGb3IgTWVudG9yc2hpcFwiLCBcIiM4OGFlZGJcIl0sXHJcbiAgICAgIFwiZm9yc2FsZVwiOiBbXCJTdHVmZiBGb3IgU2FsZVwiLCBcIiNkMGFkZmJcIl0sXHJcbiAgICAgIFwiZXZlbnRzXCI6IFtcIlVwY29taW5nIEV2ZW50XCIsIFwiI2Y4YjNkMFwiXSxcclxuICAgICAgXCJtaXNjXCI6IFtcIk1pc2NlbGxhbmVvdXNcIiwgXCIjNjM5M0ZGXCJdLFxyXG4gICAgICBcInByb2R1Y3RzXCI6IFtcIlByb2R1Y3RzICYgVG9vbHNcIiwgXCIjNUFFOEQ5XCJdXHJcbiAgICB9XHJcbiAgICBAY2F0ZWdvcnkgPSBjYXRfaW5mb1tAbGlzdGluZy5jYXRlZ29yeS50b19zeW1dWzBdXHJcbiAgICBAY2F0X2NvbG9yID0gY2F0X2luZm9bQGxpc3RpbmcuY2F0ZWdvcnkudG9fc3ltXVsxXVxyXG4gIGVuZFxyXG5gYGBcclxuXHJcblNob3VsZCB3ZSBqdXN0IGFkZCB0d28gbW9yZSBjb2x1bW5zIHRvIHRoZSBuZXcgYENsYXNzaWZpZWRMaXN0aW5nQ2F0ZWdvcnlgIG1vZGVsIGFuZCBtYWtlIHRoZSBjb2xvciBhbmQgc2hvcnQgZGVzY3JpcHRpb24gY29uZmlndXJhYmxlIGJ5IGFkbWlucz8gL2NjIEBiZW5oYWxwZXJuIFxyXG5cclxu4pyoVG8gb3VyIGF3ZXNvbWUgY29udHJpYnV0b3JzLCBwbGVhc2Ugbm90ZSB0aGF0IHRoaXMgaXNzdWUgd2lsbCBiZSB3b3JrZWQgb24gYnkgYSBERVYgdGVhbSBtZW1iZXIgYW5kIGlzIG5vdCB1cCBmb3IgZ3JhYnMuIOKcqCIsImNsb3NlZF9ieSI6bnVsbH0=
+      string: '{"url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7434","repository_url":"https://api.github.com/repos/thepracticaldev/dev.to","labels_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7434/labels{/name}","comments_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7434/comments","events_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7434/events","html_url":"https://github.com/thepracticaldev/dev.to/issues/7434","id":604653303,"node_id":"MDU6SXNzdWU2MDQ2NTMzMDM=","number":7434,"title":"Profile
+        page not displaying the name due to theming and custom colors","user":{"login":"catalinpit","id":25515812,"node_id":"MDQ6VXNlcjI1NTE1ODEy","avatar_url":"https://avatars0.githubusercontent.com/u/25515812?v=4","gravatar_id":"","url":"https://api.github.com/users/catalinpit","html_url":"https://github.com/catalinpit","followers_url":"https://api.github.com/users/catalinpit/followers","following_url":"https://api.github.com/users/catalinpit/following{/other_user}","gists_url":"https://api.github.com/users/catalinpit/gists{/gist_id}","starred_url":"https://api.github.com/users/catalinpit/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/catalinpit/subscriptions","organizations_url":"https://api.github.com/users/catalinpit/orgs","repos_url":"https://api.github.com/users/catalinpit/repos","events_url":"https://api.github.com/users/catalinpit/events{/privacy}","received_events_url":"https://api.github.com/users/catalinpit/received_events","type":"User","site_admin":false},"labels":[{"id":1031106689,"node_id":"MDU6TGFiZWwxMDMxMTA2Njg5","url":"https://api.github.com/repos/thepracticaldev/dev.to/labels/accessibility","name":"accessibility","color":"c5aef2","default":false,"description":""},{"id":1290917705,"node_id":"MDU6TGFiZWwxMjkwOTE3NzA1","url":"https://api.github.com/repos/thepracticaldev/dev.to/labels/area:%20profile","name":"area:
+        profile","color":"2a75b2","default":false,"description":"user''s profile"},{"id":1290878626,"node_id":"MDU6TGFiZWwxMjkwODc4NjI2","url":"https://api.github.com/repos/thepracticaldev/dev.to/labels/area:%20themes","name":"area:
+        themes","color":"2a75b2","default":false,"description":"UX theming"},{"id":480869965,"node_id":"MDU6TGFiZWw0ODA4Njk5NjU=","url":"https://api.github.com/repos/thepracticaldev/dev.to/labels/type:%20bug","name":"type:
+        bug","color":"C61C32","default":false,"description":"always open for contribution"}],"state":"open","locked":false,"assignee":null,"assignees":[],"milestone":null,"comments":6,"created_at":"2020-04-22T10:43:38Z","updated_at":"2020-05-02T10:56:49Z","closed_at":null,"author_association":"CONTRIBUTOR","body":"**Describe
+        the bug**\r\n\r\nYou are allowed to change the colour for some of the information
+        from your profile page. There are cases when the profile page doesn''t work
+        properly when the colours are related.\r\n\r\nSee the pictures below or visit
+        my profile [dev.to/catalinmpit](https://dev.to/catalinmpit).\r\n\r\n**To Reproduce**\r\n\r\n1.
+        Go to [dev.to/catalinmpit](https://dev.to/catalinmpit)\r\n\r\n**Expected behavior**\r\n\r\nMy
+        name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Aditional
+        information**\r\n\r\nPlayed around with the settings and I''ve done this:\r\n\r\n![profile-page-ok](https://i.imgur.com/DLiPXFT.png)\r\n\r\n**Question**\r\n\r\nWhat
+        do you recommend to fix the issue? If you have any recommendations, I''m happy
+        to pick the issue.\r\n","closed_by":null}'
     http_version: null
-  recorded_at: Sat, 02 May 2020 15:58:27 GMT
+  recorded_at: Sat, 02 May 2020 23:54:39 GMT
+- request:
+    method: post
+    uri: https://api.github.com/markdown
+    body:
+      encoding: UTF-8
+      string: '{"text":"**Describe the bug**\r\n\r\nYou are allowed to change the
+        colour for some of the information from your profile page. There are cases
+        when the profile page doesn''t work properly when the colours are related.\r\n\r\nSee
+        the pictures below or visit my profile [dev.to/catalinmpit](https://dev.to/catalinmpit).\r\n\r\n**To
+        Reproduce**\r\n\r\n1. Go to [dev.to/catalinmpit](https://dev.to/catalinmpit)\r\n\r\n**Expected
+        behavior**\r\n\r\nMy name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Aditional
+        information**\r\n\r\nPlayed around with the settings and I''ve done this:\r\n\r\n![profile-page-ok](https://i.imgur.com/DLiPXFT.png)\r\n\r\n**Question**\r\n\r\nWhat
+        do you recommend to fix the issue? If you have any recommendations, I''m happy
+        to pick the issue.\r\n"}'
+    headers:
+      User-Agent:
+      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      Accept:
+      - application/vnd.github.raw
+      Content-Type:
+      - application/json
+      X-Honeycomb-Trace:
+      - 1;dataset=,trace_id=63ab979a-3896-4e70-b54d-bf2bf6d375b8,parent_id=b0559d07-130e-4438-ae4a-4852728336a1,context=e30=
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 02 May 2020 23:54:40 GMT
+      Content-Type:
+      - text/html;charset=utf-8
+      Content-Length:
+      - '1759'
+      Server:
+      - GitHub.com
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4982'
+      X-Ratelimit-Reset:
+      - '1588465848'
+      X-Commonmarker-Version:
+      - 0.21.0
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
+        X-GitHub-Media-Type, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      Vary:
+      - Accept-Encoding, Accept, X-Requested-With
+      X-Github-Request-Id:
+      - F3A8:29D1:2523AC:33C5F9:5EAE0840
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <p><strong>Describe the bug</strong></p>
+        <p>You are allowed to change the colour for some of the information from your profile page. There are cases when the profile page doesn't work properly when the colours are related.</p>
+        <p>See the pictures below or visit my profile <a href="https://dev.to/catalinmpit" rel="nofollow">dev.to/catalinmpit</a>.</p>
+        <p><strong>To Reproduce</strong></p>
+        <ol>
+        <li>Go to <a href="https://dev.to/catalinmpit" rel="nofollow">dev.to/catalinmpit</a>
+        </li>
+        </ol>
+        <p><strong>Expected behavior</strong></p>
+        <p>My name and other information should be visible.</p>
+        <p><strong>Screenshots</strong></p>
+        <p><a href="https://camo.githubusercontent.com/92af1284df38dd307a8b30ccafbea9f832a82d61/68747470733a2f2f692e696d6775722e636f6d2f414a794d3774482e706e67" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/92af1284df38dd307a8b30ccafbea9f832a82d61/68747470733a2f2f692e696d6775722e636f6d2f414a794d3774482e706e67" alt="broken-profile-page" data-canonical-src="https://i.imgur.com/AJyM7tH.png" style="max-width:100%;"></a></p>
+        <p><strong>Aditional information</strong></p>
+        <p>Played around with the settings and I've done this:</p>
+        <p><a href="https://camo.githubusercontent.com/b2d23465b39fd003c0121c1b87177673d4d96336/68747470733a2f2f692e696d6775722e636f6d2f444c69505846542e706e67" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/b2d23465b39fd003c0121c1b87177673d4d96336/68747470733a2f2f692e696d6775722e636f6d2f444c69505846542e706e67" alt="profile-page-ok" data-canonical-src="https://i.imgur.com/DLiPXFT.png" style="max-width:100%;"></a></p>
+        <p><strong>Question</strong></p>
+        <p>What do you recommend to fix the issue? If you have any recommendations, I'm happy to pick the issue.</p>
+    http_version: null
+  recorded_at: Sat, 02 May 2020 23:54:40 GMT
 recorded_with: VCR 5.1.0
