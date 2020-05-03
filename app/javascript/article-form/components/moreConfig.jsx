@@ -1,21 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-
-const TextField = ({ label, id, value, onKeyUp }) => {
-  return (
-    <div>
-      <label htmlFor={id}>{label}</label>
-      <input type="text" value={value} name={id} onKeyUp={onKeyUp} id={id} />
-    </div>
-  );
-};
-
-TextField.propTypes = {
-  label: PropTypes.string.isRequired,
-  id: PropTypes.string.isRequired,
-  value: PropTypes.string.isRequired,
-  onKeyUp: PropTypes.func.isRequired,
-};
+import TextField from './TextField';
 
 export default class MoreConfig extends Component {
   handleSeriesButtonClick = (e) => {
@@ -84,12 +69,12 @@ export default class MoreConfig extends Component {
         >
           ×
         </button>
-        {TextField({
-          label: 'Canonical URL',
-          id: 'canonicalUrl',
-          value: canonicalUrl,
-          onKeyUp: onConfigChange,
-        })}
+        <TextField
+          label="Canonical URL"
+          id="canonicalUrl"
+          value={canonicalUrl}
+          onKeyUp={onConfigChange}
+        />
         <small>
           Change meta tag 
           {' '}
@@ -98,12 +83,12 @@ export default class MoreConfig extends Component {
           if this post was first
           published elsewhere (like your own blog)
         </small>
-        {TextField({
-          label: 'Series Name',
-          id: 'series',
-          value: series,
-          onKeyUp: onConfigChange,
-        })}
+        <TextField
+          label="Series Name"
+          id="series"
+          value={series}
+          onKeyUp={onConfigChange}
+        />
         {seriesTip}
         <div>
           <button
