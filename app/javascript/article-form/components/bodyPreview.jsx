@@ -1,17 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-
-const CoverImage = ({ className, imageSrc, imageAlt }) => (
-  <div className={className}>
-    <img src={imageSrc} alt={imageAlt} />
-  </div>
-);
-
-CoverImage.propTypes = {
-  className: PropTypes.string.isRequired,
-  imageSrc: PropTypes.string.isRequired,
-  imageAlt: PropTypes.string.isRequired,
-};
+import CoverImage from './CoverImage';
 
 function titleArea(previewResponse, version, articleState) {
   if (version === 'help') {
