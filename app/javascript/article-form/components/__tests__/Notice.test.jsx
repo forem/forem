@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import Notice from '../notice';
+import Notice from '../Notice';
 
 describe('<notice />', () => {
   it('renders properly when published with a first version', () => {

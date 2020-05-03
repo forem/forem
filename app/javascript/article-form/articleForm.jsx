@@ -11,7 +11,7 @@ import { submitArticle, previewArticle } from './actions';
 import BodyMarkdown from './components/bodyMarkdown';
 import BodyPreview from './components/bodyPreview';
 import PublishToggle from './components/publishToggle';
-import Notice from './components/notice';
+import Notice from './components/Notice';
 import Title from './components/Title';
 import MainImage from './components/MainImage';
 import ImageManagement from './components/imageManagement';
