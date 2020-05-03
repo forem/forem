@@ -57,8 +57,8 @@ plugins:
       count_threshold: 3
       languages:
         javascript:
-        filters:
-          - "(property (Identifier propTypes))"
+          filters:
+            - "(object (Identifier PropTypes))"
 exclude_patterns:
   - "config/"
   - "db/"
