@@ -1,6 +1,4 @@
 class ClassifiedListing < ApplicationRecord
-  self.ignored_columns = ["category"]
-
   include Searchable
 
   SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
