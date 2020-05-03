@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
-import PropTypes from 'prop-types';
 import linkCopyIcon from '../../../assets/images/content-copy.svg';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
+import { imageManagementPropTypes } from '../../src/components/common-prop-types';
 
 export default class ImageManagement extends Component {
   constructor(props) {
@@ -253,9 +253,4 @@ export default class ImageManagement extends Component {
   }
 }
 
-ImageManagement.propTypes = {
-  onExit: PropTypes.func.isRequired,
-  onMainImageUrlChange: PropTypes.func.isRequired,
-  mainImage: PropTypes.string.isRequired,
-  version: PropTypes.string.isRequired,
-};
+ImageManagement.propTypes = imageManagementPropTypes;
