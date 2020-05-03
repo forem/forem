@@ -58,7 +58,7 @@ plugins:
       languages:
         javascript:
         filters:
-          - "(property (Identifier propTypes))""
+          - "(property (Identifier propTypes))"
 exclude_patterns:
   - "config/"
   - "db/"
