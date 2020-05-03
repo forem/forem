@@ -81,7 +81,7 @@ module Github
           builder.use Octokit::Response::FeedParser
 
           # customizations
-          builder.response :logger if Rails.env.development?
+          # builder.response :logger if Rails.env.development?
           builder.adapter :patron
         end
       end

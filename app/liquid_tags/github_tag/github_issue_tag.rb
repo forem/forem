@@ -50,10 +50,10 @@ class GithubTag
       path = input.gsub(/\?.*/, "")
       path = path.gsub(/.*github\.com\//, "")
 
-      # issue fragments can be ignored in the API call
+      # issue fragments are ignored in the API call
       path = path.gsub(/#issue-\d{1,}/, "") if path.include?("#issue-")
 
-      # GitHub's public PR URLs are "/pull/{id}" but the API requires "/pulls/{id}"
+      # GitHub's public PRs URLs are "/pull/{id}" but the API requires "/pulls/{id}"
       path = path.gsub(/\/pull\//, "/pulls/") if path.include?("/pull/")
 
       # generated comment path if the user is trying to display a single comment
