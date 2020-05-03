@@ -8,7 +8,7 @@ import ImageUploadIcon from 'images/image-upload.svg';
 // eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/three-dots.svg';
 import { submitArticle, previewArticle } from './actions';
-import BodyMarkdown from './components/bodyMarkdown';
+import BodyMarkdown from './components/BodyMarkdown';
 import BodyPreview from './components/bodyPreview';
 import PublishToggle from './components/publishToggle';
 import Notice from './components/Notice';
