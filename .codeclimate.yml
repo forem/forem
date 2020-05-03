@@ -55,6 +55,10 @@ plugins:
     enabled: true
     config:
       count_threshold: 3
+      languages:
+        javascript:
+        filters:
+         - "(object (Identifier PropTypes))"
 exclude_patterns:
   - "config/"
   - "db/"
