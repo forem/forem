@@ -13,7 +13,7 @@ import BodyPreview from './components/bodyPreview';
 import PublishToggle from './components/publishToggle';
 import Notice from './components/notice';
 import Title from './components/Title';
-import MainImage from './components/mainImage';
+import MainImage from './components/MainImage';
 import ImageManagement from './components/imageManagement';
 import MoreConfig from './components/moreConfig';
 import Errors from './components/errors';
