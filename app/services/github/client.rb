@@ -71,17 +71,16 @@ module Github
 
       def faraday_middleware_stack
         # Extending the default functionality
-        # see <https://github.com/octokit/octokit.rb#advanced-usage>
+        # see <https://github.com/octokit/octokit.rb#advanced-usage>,
+        # <https://github.com/octokit/octokit.rb#caching>
         # and <https://github.com/octokit/octokit.rb/blob/master/lib/octokit/default.rb>
         Faraday::RackBuilder.new do |builder|
-          # parts of the default
+          builder.use Faraday::HttpCache, store: Rails.cache, serializer: Marshal, shared_cache: false
           builder.use Faraday::Request::Retry, exceptions: [Octokit::ServerError]
           builder.use Octokit::Middleware::FollowRedirects
           builder.use Octokit::Response::RaiseError
           builder.use Octokit::Response::FeedParser
 
-          # customizations
-          # builder.response :logger if Rails.env.development?
           builder.adapter :patron
         end
       end
