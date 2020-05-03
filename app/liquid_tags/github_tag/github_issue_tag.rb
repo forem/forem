@@ -15,6 +15,8 @@ class GithubTag
       @link = parse_link(link)
       @content = GithubIssue.find_or_fetch(@link)
       @content_json = @content.issue_serialized
+      @is_issue = @content_json[:title].present?
+      @created_at = @content_json[:created_at]
       @body = @content.processed_html.html_safe
     end
 
@@ -22,19 +24,23 @@ class GithubTag
       ActionController::Base.new.render_to_string(
         partial: PARTIAL,
         locals: {
-          title: @content_json[:title],
-          issue_number: @content_json[:number],
-          user_html_url: @content_json[:user][:html_url],
+          body: @body,
+          created_at: @created_at.rfc3339,
+          date: @created_at.utc.strftime("%b %d, %Y"),
+          html_url: @content_json[:html_url],
+          issue_number: issue_number,
+          tagline: tagline,
+          title: title,
           user_avatar_url: @content_json[:user][:avatar_url],
+          user_html_url: @content_json[:user][:html_url],
           username: @content_json[:user][:login],
-          date_link: @content_json[:html_url],
-          date: Time.zone.parse(@content_json[:created_at].to_s).utc.strftime("%b %d, %Y"),
-          body: @body
         },
       )
     end
 
     private
+
+    attr_reader :content_json
 
     def parse_link(link)
       link = ActionController::Base.helpers.strip_tags(link)
@@ -80,6 +86,18 @@ class GithubTag
 
     def raise_error
       raise StandardError, "Invalid GitHub issue, pull request or comment link"
+    end
+
+    def title
+      content_json[:title] || "Comment for"
+    end
+
+    def issue_number
+      @issue_number ||= content_json[:number] || content_json[:issue_url].split("/").last
+    end
+
+    def tagline
+      @is_issue ? "posted on" : "commented on"
     end
   end
 end
