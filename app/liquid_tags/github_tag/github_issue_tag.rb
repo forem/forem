@@ -1,8 +1,3 @@
-# TODO: PRs https://github.com/thepracticaldev/dev.to/pull/1784 should be stored as
-# https://api.github.com/repos/thepracticaldev/dev.to/pulls/1784, instead currently
-# is stored as invalid URL like https://api.github.com/repos/ksch-workflows/ksch-workflows/pull/49
-# (missing `s`)
-#
 # GithubTag generates the following API links:
 # getting an issue
 #   https://api.github.com/repos/facebook/react/issues/9218
@@ -53,6 +48,8 @@ class GithubTag
     def generate_api_link(input)
       input = input.gsub(/\?.*/, "")
       input = input.gsub(/\d{1,}#issuecomment-/, "comments/") if input.include?("#issuecomment-")
+      # GitHub's public PR URLs are "/pull/{id}" but the API requires "/pulls/{id}"
+      input = input.gsub(/\/pull\//, "/pulls/")
       "https://api.github.com/repos/#{input.gsub(/.*github\.com\//, '')}"
     end
 
@@ -73,7 +70,7 @@ class GithubTag
     end
 
     def raise_error
-      raise StandardError, "Invalid Github issue link"
+      raise StandardError, "Invalid GitHub issue, pull request or comment link"
     end
   end
 end
