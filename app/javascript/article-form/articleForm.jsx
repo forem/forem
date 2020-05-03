@@ -12,7 +12,7 @@ import BodyMarkdown from './components/bodyMarkdown';
 import BodyPreview from './components/bodyPreview';
 import PublishToggle from './components/publishToggle';
 import Notice from './components/notice';
-import Title from './components/title';
+import Title from './components/Title';
 import MainImage from './components/mainImage';
 import ImageManagement from './components/imageManagement';
 import MoreConfig from './components/moreConfig';
