@@ -8,6 +8,7 @@
 class GithubTag
   class GithubIssueTag
     PARTIAL = "liquids/github_issue".freeze
+    API_BASE_ENDPOINT = "https://api.github.com/repos/".freeze
 
     def initialize(link)
       @orig_link = link
@@ -46,11 +47,19 @@ class GithubTag
     end
 
     def generate_api_link(input)
-      input = input.gsub(/\?.*/, "")
-      input = input.gsub(/\d{1,}#issuecomment-/, "comments/") if input.include?("#issuecomment-")
+      path = input.gsub(/\?.*/, "")
+      path = path.gsub(/.*github\.com\//, "")
+
+      # issue fragments can be ignored in the API call
+      path = path.gsub(/#issue-\d{1,}/, "") if path.include?("#issue-")
+
       # GitHub's public PR URLs are "/pull/{id}" but the API requires "/pulls/{id}"
-      input = input.gsub(/\/pull\//, "/pulls/")
-      "https://api.github.com/repos/#{input.gsub(/.*github\.com\//, '')}"
+      path = path.gsub(/\/pull\//, "/pulls/") if path.include?("/pull/")
+
+      # generated comment path if the user is trying to display a single comment
+      path = path.gsub(/\d{1,}#issuecomment-/, "comments/") if path.include?("#issuecomment-")
+
+      URI.parse(API_BASE_ENDPOINT).merge(path).to_s
     end
 
     def finalize_html(input)
