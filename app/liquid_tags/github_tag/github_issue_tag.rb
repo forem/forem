@@ -33,7 +33,7 @@ class GithubTag
           title: title,
           user_avatar_url: @content_json[:user][:avatar_url],
           user_html_url: @content_json[:user][:html_url],
-          username: @content_json[:user][:login],
+          username: @content_json[:user][:login]
         },
       )
     end
