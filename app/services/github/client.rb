@@ -31,32 +31,37 @@ module Github
         Honeycomb.add_field("app.name", "github.client")
         yield
       rescue Octokit::Error => e
-        class_name = e.class.name.demodulize
+        record_error(e)
+        handle_error(e)
+      end
 
-        record_error(e.message, class_name)
+      def record_error(exception)
+        class_name = exception.class.name.demodulize
+
+        Honeycomb.add_field("github.result", "error")
+        Honeycomb.add_field("github.error", class_name)
+        DatadogStatsClient.increment(
+          "github.errors",
+          tags: ["error:#{class_name}", "message:#{exception.message}"],
+        )
+      end
+
+      def handle_error(exception)
+        class_name = exception.class.name.demodulize
 
         # raise specific error if known, generic one if unknown
         error_class = "::Github::Errors::#{class_name}".safe_constantize
-        raise error_class, e.message if error_class
+        raise error_class, exception.message if error_class
 
-        error_class = if e.class < Octokit::ClientError
+        error_class = if exception.class < Octokit::ClientError
                         Github::Errors::ClientError
-                      elsif e.class < Octokit::ServerError
+                      elsif exception.class < Octokit::ServerError
                         Github::Errors::ServerError
                       else
                         Github::Errors::Error
                       end
 
-        raise error_class, e.message
-      end
-
-      def record_error(error_message, class_name)
-        Honeycomb.add_field("github.result", "error")
-        Honeycomb.add_field("github.error", class_name)
-        DatadogStatsClient.increment(
-          "github.errors",
-          tags: ["error:#{class_name}", "message:#{error_message}"],
-        )
+        raise error_class, exception.message
       end
 
       def target

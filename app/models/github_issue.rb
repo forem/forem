@@ -1,11 +1,11 @@
 # NOTE: we are using `GithubIssue` to store issues, pull requests and comments
 class GithubIssue < ApplicationRecord
   CATEGORIES = %w[issue issue_comment].freeze
-  API_URL_REGEXP = /\Ahttps:\/\/api.github.com\/repos\/.*\z/.freeze
-  PATH_COMMENT_REGEXP = /\/issues\/comments\//.freeze
-  PATH_ISSUE_REGEXP = /\/issues\//.freeze
-  PATH_PULL_REQUEST_REGEXP = /\/pulls\//.freeze
-  PATH_REPO_REGEXP = /.*github\.com\/repos\//.freeze
+  API_URL_REGEXP = %r{\Ahttps://api.github.com/repos/.*\z}.freeze
+  PATH_COMMENT_REGEXP = %r{/issues/comments/}.freeze
+  PATH_ISSUE_REGEXP = %r{/issues/}.freeze
+  PATH_PULL_REQUEST_REGEXP = %r{/pulls/}.freeze
+  PATH_REPO_REGEXP = %r{.*github.com/repos/}.freeze
 
   serialize :issue_serialized, Hash
 

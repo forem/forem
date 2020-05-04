@@ -53,17 +53,27 @@ class GithubTag
     end
 
     def generate_api_link(input)
-      path = input.gsub(/\?.*/, "")
-      path = path.gsub(/.*github\.com\//, "")
+      uri = URI.parse(input).normalize
+      uri.host = nil if uri.host == "github.com"
 
-      # issue fragments are ignored in the API call
-      path = path.gsub(/#issue-\d{1,}/, "") if path.include?("#issue-")
+      # public PRs URLs are "/pull/{id}" but the API requires "/pulls/{id}"
+      uri.path = uri.path.gsub(%r{/pull/}, "/pulls/")
 
-      # GitHub's public PRs URLs are "/pull/{id}" but the API requires "/pulls/{id}"
-      path = path.gsub(/\/pull\//, "/pulls/") if path.include?("/pull/")
+      # public comments URLs are "/issues/{id}#issuecomment-{comment_id}"
+      # or "/pull/{id}#issuecomment-{comment_id}"
+      # but the API requires "/issues/comments/{comment_id}"
+      if uri.fragment&.start_with?("issuecomment-")
+        uri.path = uri.path.gsub(%r{(issues|pulls)/\d+}, "issues/comments/")
+        comment_id = uri.fragment.split("-").last
+        uri.merge!(comment_id)
+      end
 
-      # generated comment path if the user is trying to display a single comment
-      path = path.gsub(/\d{1,}#issuecomment-/, "comments/") if path.include?("#issuecomment-")
+      # fragments and query params are not needed in the API call
+      uri.fragment = nil
+      uri.query = nil
+
+      # remove leading forward slash in the path
+      path = uri.path.sub(%r{\A/}, "")
 
       URI.parse(API_BASE_ENDPOINT).merge(path).to_s
     end
