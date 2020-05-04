@@ -1,3 +1,7 @@
+// Consistent timezone for testing.
+// This does not work on windows, see https://github.com/nodejs/node/issues/4230
+process.env.TZ = 'UTC';
+
 module.exports = {
   collectCoverageFrom: [
     'app/javascript/**/*.{js,jsx}',
