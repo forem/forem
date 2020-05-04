@@ -32,15 +32,15 @@
     data-allcategories="<%= categories_for_display.to_json %>"
     <% if @displayed_classified_listing %>
       data-displayedlisting="<%= @displayed_listing_json %> "
-    <% end %>
-  >
+    <% end %>>
+
     <div class="classified-filters">
     <div class="classified-filters-categories">
-      <a href="/listings" class="<%= "selected" if params[:category].blank? %> data-no-instant="true">all</a>
+      <a href="<%= classified_listings_path %>" class="<%= "selected" if params[:category].blank? %> data-no-instant="true">all</a>
       <% categories_for_display.each do |cat| %>
-        <a href="/listings/<%= cat[:slug] %>" class="<%= "selected" if params[:category] == cat[:slug] %> data-no-instant="true"><%= cat[:name] %></a>
+        <a href="<%= classified_listing_category_path(category: cat[:slug]) %>" class="<%= "selected" if params[:category] == cat[:slug] %> data-no-instant="true"><%= cat[:name] %></a>
       <% end %>
-      <a href='/listings/new' class='classified-create-link'>Create a Listing</a>
+      <a href="<%= new_classified_listing_path %>" class='classified-create-link'>Create a Listing</a>
       <% if @displayed_classified_listing %>
         <div class="classified-listings-modal-background" role='presentation'></div>
       <% end %>

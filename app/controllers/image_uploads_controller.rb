@@ -1,5 +1,6 @@
 class ImageUploadsController < ApplicationController
   before_action :authenticate_user!
+  before_action :limit_uploads, only: [:create]
   after_action :verify_authorized
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
@@ -7,8 +8,6 @@ class ImageUploadsController < ApplicationController
     authorize :image_upload
 
     begin
-      rate_limiter = rate_limit!
-
       raise CarrierWave::IntegrityError if params[:image].blank?
 
       invalid_image_error_message = validate_image
@@ -19,16 +18,7 @@ class ImageUploadsController < ApplicationController
         return
       end
 
-      uploaders = upload_images(params[:image], rate_limiter)
-    rescue RateLimitChecker::UploadRateLimitReached => e
-      respond_to do |format|
-        message = "Upload limit reached! Retry after #{e.retry_after} seconds."
-        format.json do
-          response.headers["Retry-After"] = e.retry_after
-          render json: { error: message }, status: :too_many_requests
-        end
-      end
-      return
+      uploaders = upload_images(params[:image])
     rescue CarrierWave::IntegrityError => e # client error
       respond_to do |format|
         format.json do
@@ -61,13 +51,8 @@ class ImageUploadsController < ApplicationController
 
   private
 
-  def rate_limit!
-    RateLimitChecker.new(current_user).tap do |rate_limiter|
-      if rate_limiter.limit_by_action(:image_upload)
-        retry_after = RateLimitChecker::RETRY_AFTER[:image_upload]
-        raise RateLimitChecker::UploadRateLimitReached, retry_after
-      end
-    end
+  def limit_uploads
+    rate_limit!(:image_upload)
   end
 
   def validate_image
@@ -87,7 +72,7 @@ class ImageUploadsController < ApplicationController
     images.none? { |image| long_filename?(image) }
   end
 
-  def upload_images(images, rate_limiter)
+  def upload_images(images)
     Array.wrap(images).map do |image|
       ArticleImageUploader.new.tap do |uploader|
         uploader.store!(image)

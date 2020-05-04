@@ -62,6 +62,7 @@ class SiteConfig < RailsSettings::Base
   # Onboarding
   field :onboarding_taskcard_image, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/staggered-dev.svg"
   field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
+  field :suggested_users, type: :array, default: %w[ben jess peter maestromac andy liana]
 
   # Images
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
