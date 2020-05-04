@@ -228,36 +228,6 @@
 <div id="mod-actions-menu-btn-area"></div>
 <div class="flag-user-modal-container"></div>
 
-<script>
-  document.getElementById('confirm-flag-user-action').addEventListener('click', (e) => {
-    e.preventDefault();
-    const vomitAllOption = document.getElementById('vomit-all');
-    const abuseReportOption = document.getElementById('abuse-report-option');
-    const vomitAllSnackbar = document.getElementById('vomit-all-snackbar');
-    const abuseReportSnackbar = document.getElementById('abuse-report-snackbar');
-
-    const flagUserApiCall = (body, snackbar) => {
-      debugger;
-      getCsrfToken()
-        .then(sendFetch('reaction-creation', body))
-        .then(function (response) {
-          if (response.status === 200) {
-            response.json().then(snackbar.classList.add('flex'));
-          }
-        });
-    }
-
-    if (vomitAllOption.checked) {
-      let formData = new FormData();
-      formData.append('reactable_type', vomitAllOption.dataset.reactableType);
-      formData.append('category', vomitAllOption.dataset.category);
-      formData.append('reactable_id', vomitAllOption.dataset.reactableId);
-
-      flagUserApiCall(formData, vomitAllSnackbar);
-    } else if (abuseReportOption.checked){};
-  });
-</script>
-
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
     <%# we consider these scripts safe for embedding as they come from our code %>
