@@ -224,6 +224,7 @@ module ApplicationHelper
   end
 
   def sanitize_and_decode(str)
+    # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)
   end
 end
