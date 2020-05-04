@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "UserShow", type: :request do
-  let_it_be(:user) { create(:user, email_public: true, education: "DEV University") }
+  let_it_be(:user) { create(:user, :with_all_info, email_public: true) }
   let(:doc) { Nokogiri::HTML(response.body) }
   let(:text) { doc.at('script[type="application/ld+json"]').text }
   let(:response_json) { JSON.parse(text) }
@@ -37,26 +37,6 @@ RSpec.describe "UserShow", type: :request do
 
   describe "GET /:slug (user)" do
     before do
-      user.update_columns(
-        employment_title: "SEO",
-        employer_name: "DEV",
-        employer_url: "www.dev.to",
-        currently_learning: "Preact",
-        mostly_work_with: "Ruby",
-        currently_hacking_on: "JSON-LD",
-        mastodon_url: "www.example.com",
-        facebook_url: "www.facebook.com/example",
-        linkedin_url: "www.linkedin.com/company/example/",
-        youtube_url: "www.youtube.com/example",
-        behance_url: "www.behance.com/example",
-        stackoverflow_url: "www.stackoverflow.com/example",
-        dribbble_url: "www.dribbble.com/example",
-        medium_url: "www.medium.com/example",
-        gitlab_url: "www.gitlab.com/example",
-        instagram_url: "www.instagram.com/example",
-        twitch_username: "Example007",
-        website_url: "www.example.com/example",
-      )
       get user.path
     end
 
