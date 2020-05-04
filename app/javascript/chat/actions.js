@@ -238,7 +238,6 @@ export function sendChannelRequest(id, successCb, failureCb) {
     body: JSON.stringify({
       chat_channel_membership: {
         chat_channel_id: id,
-        user_id: window.currentUser.id,
       },
     }),
     credentials: 'same-origin',

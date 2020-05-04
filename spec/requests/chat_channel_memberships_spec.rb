@@ -363,19 +363,18 @@ RSpec.describe "ChatChannelMemberships", type: :request do
   describe "POST /join_chat_channel" do
     let(:chat_channel_membership) do
       {
-        chat_channel_id: chat_channel.id,
-        user_id: second_user.id
+        chat_channel_id: chat_channel.id
       }
     end
 
     before do
       allow(Pusher).to receive(:trigger).and_return(true)
+      sign_in second_user
       post "/join_chat_channel", params: { chat_channel_membership: chat_channel_membership }
     end
 
     context "when user was not member of closed channel" do
       it "requested to join closed channel" do
-        allow(Pusher).to receive(:trigger).and_return(true)
         expect(ChatChannelMembership.last.status).to eq("joining_request")
         expect(response.status).to eq(200)
       end
@@ -388,7 +387,6 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     context "when user was a member of channel, and than left channel" do
       it "requested to join closed channel" do
         ChatChannelMembership.create(chat_channel_id: chat_channel.id, user_id: second_user.id, status: "left_channel")
-        allow(Pusher).to receive(:trigger).and_return(true)
         expect(ChatChannelMembership.last.status).to eq("joining_request")
         expect(response.status).to eq(200)
       end
