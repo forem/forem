@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,8 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_26_124118) do
-
+ActiveRecord::Schema.define(version: 2020_05_01_032629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -326,22 +327,14 @@ ActiveRecord::Schema.define(version: 2020_04_26_124118) do
     t.datetime "bumped_at"
     t.string "cached_tag_list"
     t.string "category"
-    t.bigint "classified_listing_category_id"
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
-    t.datetime "expires_at"
-    t.datetime "last_buffered"
-    t.string "location"
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
-    t.string "slug"
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
-    t.index ["classified_listing_category_id"], name: "index_classified_listings_on_classified_listing_category_id"
-    t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
-    t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
 
   create_table "collections", id: :serial, force: :cascade do |t|
@@ -436,13 +429,13 @@ ActiveRecord::Schema.define(version: 2020_04_26_124118) do
   end
 
   create_table "email_authorizations", force: :cascade do |t|
+    t.string "confirmation_token"
     t.datetime "created_at", null: false
     t.jsonb "json_data", default: {}, null: false
     t.string "type_of", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
-    t.index ["user_id", "type_of"], name: "index_email_authorizations_on_user_id_and_type_of", unique: true
   end
 
   create_table "events", force: :cascade do |t|
@@ -1086,6 +1079,16 @@ ActiveRecord::Schema.define(version: 2020_04_26_124118) do
     t.index ["user_id"], name: "index_user_counters_on_user_id", unique: true
   end
 
+  create_table "user_optional_fields", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "label", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.string "value", null: false
+    t.index ["label", "user_id"], name: "index_user_optional_fields_on_label_and_user_id", unique: true
+    t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
+  end
+
   create_table "users", id: :serial, force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
@@ -1206,9 +1209,9 @@ ActiveRecord::Schema.define(version: 2020_04_26_124118) do
     t.datetime "updated_at", null: false
     t.string "username"
     t.string "website_url"
-    t.string "youtube_url"
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
+    t.string "youtube_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -1246,8 +1249,6 @@ ActiveRecord::Schema.define(version: 2020_04_26_124118) do
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
-  add_foreign_key "classified_listings", "classified_listing_categories"
-  add_foreign_key "classified_listings", "users", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
@@ -1268,6 +1269,7 @@ ActiveRecord::Schema.define(version: 2020_04_26_124118) do
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_counters", "users", on_delete: :cascade
+  add_foreign_key "user_optional_fields", "users"
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"
