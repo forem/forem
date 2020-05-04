@@ -56,7 +56,7 @@
     <header class="other-things">
       <h1>Other things you can do</h1>
     </header>
-    <% unless @moderatable.tag_list.size == 4 && @moderatable_tags.length.zero? && !current_user.any_admin? %>
+    <% unless @moderatable.tag_list.size == 4 && @moderatable_tags&.length.zero? && !current_user.any_admin? %>
       <button class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
@@ -87,7 +87,7 @@
             </button>
           <% end %>
         <% end %>
-        <% if @moderatable_tags.length.positive? %>
+        <% if @moderatable_tags&.length.positive? %>
           <% @moderatable_tags.each do |tag| %>
             <button class="adjustable-tag" type="button" data-adjustment-type="removal" data-tag-id="<%= tag.id %>">
               <span class="num-sign">#</span><%= tag.name %>
