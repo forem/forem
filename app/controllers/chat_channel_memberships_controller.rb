@@ -42,15 +42,14 @@ class ChatChannelMembershipsController < ApplicationController
   def join_channel
     membership_params = params[:chat_channel_membership]
     chat_channel = ChatChannel.find(membership_params[:chat_channel_id])
-    user = User.find_by(id: membership_params[:user_id])
-    existing_membership = ChatChannelMembership.find_by(user_id: user.id, chat_channel_id: chat_channel.id)
+    existing_membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: chat_channel.id)
     if existing_membership.present? && %w[active joining_request].exclude?(existing_membership.status)
-      success = existing_membership.update(status: "joining_request", role: "member") ? true : false
+      status = existing_membership.update(status: "joining_request", role: "member")
     else
-      membership = ChatChannelMembership.new(user_id: user.id, chat_channel_id: chat_channel.id, role: "member", status: "joining_request")
-      success = membership.save ? true : false
+      membership = ChatChannelMembership.new(user_id: current_user.id, chat_channel_id: chat_channel.id, role: "member", status: "joining_request")
+      status = membership.save
     end
-    if success
+    if status
       render json: { status: "success", message: "Request Sent" }
     else
       render json: { status: 400, message: "Unable to join channel" }, status: :bad_request

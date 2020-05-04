@@ -116,10 +116,9 @@ export function getChannels(
   dataHash.page = paginationNumber;
   dataHash.channel_text = query;
   if (searchType === 'discoverable') {
-    responsePromise = fetchSearch('chat_channels_discoverable', dataHash);
-  } else {
-    responsePromise = fetchSearch('chat_channels', dataHash);
+    dataHash["discoverable"] = true;
   }
+  responsePromise = fetchSearch('chat_channels', dataHash);
 
   return responsePromise.then((response) => {
     const channels = response.result;

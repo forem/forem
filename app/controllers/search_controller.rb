@@ -56,22 +56,22 @@ class SearchController < ApplicationController
   end
 
   def chat_channels
-    ccm_docs = Search::ChatChannelMembership.search_documents(
-      params: chat_channel_params.merge(user_id: current_user.id).to_h,
-    )
+    if chat_channel_params["discoverable"].present?
+      ccm_docs_discoverable = Search::ChatChannelMembership.search_documents(
+        params: chat_channel_params.merge(user_id: "all").to_h,
+      )
+      ccm_docs_viewable = ccm_docs_discoverable.select { |membership| membership["viewable_by"] == current_user.id }
+      viewable_channels_ids = ccm_docs_viewable.pluck("chat_channel_id")
+      ccm_docs_discoverable.reject! { |membership| viewable_channels_ids.include?(membership["chat_channel_id"]) && membership["viewable_by"] != current_user.id }
 
-    render json: { result: ccm_docs }
-  end
+      render json: { result: ccm_docs_discoverable }
+    else
+      ccm_docs = Search::ChatChannelMembership.search_documents(
+        params: chat_channel_params.merge(user_id: current_user.id).to_h,
+      )
 
-  def chat_channels_discoverable
-    ccm_docs_discoverable = Search::ChatChannelMembership.search_documents(
-      params: chat_channel_params.merge(user_id: "all").to_h,
-    )
-    ccm_docs_viewable = ccm_docs_discoverable.select { |membership| membership["viewable_by"] == current_user.id }
-    viewable_channels_ids = ccm_docs_viewable.pluck("chat_channel_id")
-    ccm_docs_discoverable.reject! { |membership| viewable_channels_ids.include?(membership["chat_channel_id"]) && membership["viewable_by"] != current_user.id }
-
-    render json: { result: ccm_docs_discoverable }
+      render json: { result: ccm_docs }
+    end
   end
 
   def classified_listings
@@ -128,6 +128,7 @@ class SearchController < ApplicationController
       channel_type
       channel_status
       status
+      discoverable
     ]
 
     params.permit(accessible)
