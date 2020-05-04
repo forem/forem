@@ -1,3 +1,3 @@
-import { addCloseListener } from '../actionsPanel/actionsPanel';
+import { initializeActionsPanel } from '../actionsPanel/actionsPanel';
 
-addCloseListener();
+initializeActionsPanel();
