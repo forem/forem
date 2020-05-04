@@ -2,13 +2,12 @@ class GitlabTag
   class GitlabReadmeTag
     PARTIAL = "liquids/gitlab_readme".freeze
 
-    attr_reader :client, :content, :options, :readme_html
+    attr_reader :content, :options, :readme_html
 
     def initialize(link)
       parsed_link = parse_link(link)
       @options = parse_options(link)
-      @client = GitlabApi.new(parsed_link)
-      @content = @client.project
+      @content = Gitlab.project(parsed_link)
       @readme_html = fetch_readme if readme_url
     end
 
@@ -57,9 +56,8 @@ class GitlabTag
 
     def fetch_readme
       ref, file = readme_url.split("/")[-2..-1]
-      readme_json = client.repository_file(file, ref)
-      markdown_body = Base64.decode64(readme_json.content)
-      client.markdown(markdown_body).html
+      markdown_body = Gitlab.file_contents(content.id, file, ref)
+      Gitlab.markdown(markdown_body).html
     end
 
     def sanitize_link(link)

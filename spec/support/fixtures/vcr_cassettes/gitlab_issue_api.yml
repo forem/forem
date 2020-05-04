@@ -7,19 +7,23 @@ http_interactions:
       encoding: US-ASCII
       string: ''
     headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - Gitlab Ruby Gem 4.14.1
+      Private-Token:
+      - ''
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
   response:
     status:
       code: 200
       message: OK
     headers:
       Date:
-      - Wed, 08 Apr 2020 11:56:24 GMT
+      - Wed, 15 Apr 2020 15:04:34 GMT
       Content-Type:
       - application/json
       Transfer-Encoding:
@@ -29,7 +33,7 @@ http_interactions:
       Cache-Control:
       - max-age=0, private, must-revalidate
       Etag:
-      - W/"9759ec7601b802efcbde56113ac4cfda"
+      - W/"791854ca298baee06239bc8751eb667c"
       Vary:
       - Origin
       X-Content-Type-Options:
@@ -37,9 +41,9 @@ http_interactions:
       X-Frame-Options:
       - SAMEORIGIN
       X-Request-Id:
-      - mEBfgCrjkM5
+      - ATHaiHODaI1
       X-Runtime:
-      - '0.115064'
+      - '0.067431'
       Strict-Transport-Security:
       - max-age=31536000
       Referrer-Policy:
@@ -51,11 +55,11 @@ http_interactions:
       Ratelimit-Remaining:
       - '599'
       Ratelimit-Reset:
-      - '1586347044'
+      - '1586963134'
       Ratelimit-Resettime:
-      - Wed, 08 Apr 2020 11:57:24 GMT
+      - Wed, 15 Apr 2020 15:05:34 GMT
       Gitlab-Lb:
-      - fe-16-lb-gprd
+      - fe-24-lb-gprd
       Gitlab-Sv:
       - localhost
       Cf-Cache-Status:
@@ -65,7 +69,9 @@ http_interactions:
       Server:
       - cloudflare
       Cf-Ray:
-      - 580bce077a21b845-WAW
+      - 58468f4f6e75cc93-WAW
+      Cf-Request-Id:
+      - 021ff7e5a50000cc93bc990200000001
     body:
       encoding: ASCII-8BIT
       string: '{"id":382515,"iid":1,"project_id":278964,"title":"500 error on MR approvers
@@ -83,31 +89,35 @@ http_interactions:
         icon(\"sign-out\")\r\nworker2 production.log:   app/views/projects/_merge_request_settings.html.haml:57:in
         `block in _app_views_projects__merge_request_settings_html_haml___545752523034962009_57962180''\r\n```\r\n\r\nI
         checked the Rails console, this project has a number of approvers but the
-        user ID of the last one is 0.\r\n\r\ncc @sytses @vsizov ","state":"closed","created_at":"2015-07-30T14:27:48.903Z","updated_at":"2020-04-07T14:47:54.371Z","closed_at":"2018-02-15T17:37:22.828Z","closed_by":null,"labels":["Enterprise
+        user ID of the last one is 0.\r\n\r\ncc @sytses @vsizov ","state":"closed","created_at":"2015-07-30T14:27:48.903Z","updated_at":"2020-04-13T19:54:50.527Z","closed_at":"2018-02-15T17:37:22.828Z","closed_by":null,"labels":["Enterprise
         Edition"],"milestone":null,"assignees":[],"author":{"id":5302,"name":"Jacob
         Vosmaer","username":"jacobvosmaer","state":"active","avatar_url":"https://secure.gravatar.com/avatar/e66d11c0eedf8c07b3b18fca46599807?s=80\u0026d=identicon","web_url":"https://gitlab.com/jacobvosmaer"},"assignee":null,"user_notes_count":28,"merge_requests_count":1,"upvotes":0,"downvotes":0,"due_date":null,"confidential":false,"discussion_locked":null,"web_url":"https://gitlab.com/gitlab-org/gitlab/-/issues/1","time_stats":{"time_estimate":0,"total_time_spent":0,"human_time_estimate":null,"human_total_time_spent":null},"task_completion_status":{"count":0,"completed_count":0},"weight":null,"has_tasks":false,"_links":{"self":"https://gitlab.com/api/v4/projects/278964/issues/1","notes":"https://gitlab.com/api/v4/projects/278964/issues/1/notes","award_emoji":"https://gitlab.com/api/v4/projects/278964/issues/1/award_emoji","project":"https://gitlab.com/api/v4/projects/278964"},"references":{"short":"#1","relative":"#1","full":"gitlab-org/gitlab#1"},"subscribed":false,"moved_to_id":null,"epic_iid":null,"epic":null}'
     http_version: null
-  recorded_at: Wed, 08 Apr 2020 11:56:24 GMT
+  recorded_at: Wed, 15 Apr 2020 15:04:34 GMT
 - request:
     method: post
     uri: https://gitlab.com/api/v4/markdown
     body:
       encoding: UTF-8
-      string: text=Observed%20on%20gitlab.com.%0D%0A%0D%0A%60%60%60%0D%0Aworker2%20production.log%3A%20Completed%20500%20Internal%20Server%20Error%20in%20287ms%20%28ActiveRecord%3A%2011.7ms%29%0D%0Aworker2%20production.log%3A%20%0D%0Aworker2%20production.log%3A%20ActionView%3A%3ATemplate%3A%3AError%20%28undefined%20method%20%60name%27%20for%20nil%3ANilClass%29%3A%0D%0Aworker2%20production.log%3A%20%20%20%20%2054%3A%20%20%20%20%20%20%20%20%20%25ul.well-list%0D%0Aworker2%20production.log%3A%20%20%20%20%2055%3A%20%20%20%20%20%20%20%20%20%20%20-%20%40project.approvers.each%20do%20%7Capprover%7C%0D%0Aworker2%20production.log%3A%20%20%20%20%2056%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%25li%0D%0Aworker2%20production.log%3A%20%20%20%20%2057%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3D%20link_to%20approver.user.name%2C%20approver.user%0D%0Aworker2%20production.log%3A%20%20%20%20%2058%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.pull-right%0D%0Aworker2%20production.log%3A%20%20%20%20%2059%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3D%20link_to%20namespace_project_approver_path%28%40project.namespace%2C%20%40project%2C%20approver%29%2C%20data%3A%20%7B%20confirm%3A%20%22Are%20you%20sure%20you%20want%20to%20remove%20approver%20%23%7Bapprover.user.name%7D%22%7D%2C%20method%3A%20%3Adelete%2C%20class%3A%20%22btn-xs%20btn%20btn-remove%22%2C%20title%3A%20%27Remove%20approver%27%20do%0D%0Aworker2%20production.log%3A%20%20%20%20%2060%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3D%20icon%28%22sign-out%22%29%0D%0Aworker2%20production.log%3A%20%20%20app%2Fviews%2Fprojects%2F_merge_request_settings.html.haml%3A57%3Ain%20%60block%20in%20_app_views_projects__merge_request_settings_html_haml___545752523034962009_57962180%27%0D%0A%60%60%60%0D%0A%0D%0AI%20checked%20the%20Rails%20console%2C%20this%20project%20has%20a%20number%20of%20approvers%20but%20the%20user%20ID%20of%20the%20last%20one%20is%200.%0D%0A%0D%0Acc%20%40sytses%20%40vsizov%20&project=gitlab-org%2Fgitlab
+      string: text=Observed%20on%20gitlab.com.%0D%0A%0D%0A%60%60%60%0D%0Aworker2%20production.log%3A%20Completed%20500%20Internal%20Server%20Error%20in%20287ms%20%28ActiveRecord%3A%2011.7ms%29%0D%0Aworker2%20production.log%3A%20%0D%0Aworker2%20production.log%3A%20ActionView%3A%3ATemplate%3A%3AError%20%28undefined%20method%20%60name%27%20for%20nil%3ANilClass%29%3A%0D%0Aworker2%20production.log%3A%20%20%20%20%2054%3A%20%20%20%20%20%20%20%20%20%25ul.well-list%0D%0Aworker2%20production.log%3A%20%20%20%20%2055%3A%20%20%20%20%20%20%20%20%20%20%20-%20%40project.approvers.each%20do%20%7Capprover%7C%0D%0Aworker2%20production.log%3A%20%20%20%20%2056%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%25li%0D%0Aworker2%20production.log%3A%20%20%20%20%2057%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3D%20link_to%20approver.user.name%2C%20approver.user%0D%0Aworker2%20production.log%3A%20%20%20%20%2058%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20.pull-right%0D%0Aworker2%20production.log%3A%20%20%20%20%2059%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3D%20link_to%20namespace_project_approver_path%28%40project.namespace%2C%20%40project%2C%20approver%29%2C%20data%3A%20%7B%20confirm%3A%20%22Are%20you%20sure%20you%20want%20to%20remove%20approver%20%23%7Bapprover.user.name%7D%22%7D%2C%20method%3A%20%3Adelete%2C%20class%3A%20%22btn-xs%20btn%20btn-remove%22%2C%20title%3A%20%27Remove%20approver%27%20do%0D%0Aworker2%20production.log%3A%20%20%20%20%2060%3A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%3D%20icon%28%22sign-out%22%29%0D%0Aworker2%20production.log%3A%20%20%20app%2Fviews%2Fprojects%2F_merge_request_settings.html.haml%3A57%3Ain%20%60block%20in%20_app_views_projects__merge_request_settings_html_haml___545752523034962009_57962180%27%0D%0A%60%60%60%0D%0A%0D%0AI%20checked%20the%20Rails%20console%2C%20this%20project%20has%20a%20number%20of%20approvers%20but%20the%20user%20ID%20of%20the%20last%20one%20is%200.%0D%0A%0D%0Acc%20%40sytses%20%40vsizov%20
     headers:
+      Accept:
+      - application/json
+      Content-Type:
+      - application/x-www-form-urlencoded
+      User-Agent:
+      - Gitlab Ruby Gem 4.14.1
+      Private-Token:
+      - ''
       Accept-Encoding:
       - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
   response:
     status:
       code: 201
       message: Created
     headers:
       Date:
-      - Wed, 08 Apr 2020 11:56:24 GMT
+      - Wed, 15 Apr 2020 15:04:35 GMT
       Content-Type:
       - application/json
       Content-Length:
@@ -125,9 +135,9 @@ http_interactions:
       X-Frame-Options:
       - SAMEORIGIN
       X-Request-Id:
-      - PzYQgGOjQ7
+      - BKLVEd1H8K5
       X-Runtime:
-      - '0.026024'
+      - '0.010840'
       Strict-Transport-Security:
       - max-age=31536000
       Referrer-Policy:
@@ -135,15 +145,15 @@ http_interactions:
       Ratelimit-Limit:
       - '600'
       Ratelimit-Observed:
-      - '1'
+      - '2'
       Ratelimit-Remaining:
-      - '599'
+      - '598'
       Ratelimit-Reset:
-      - '1586347044'
+      - '1586963134'
       Ratelimit-Resettime:
-      - Wed, 08 Apr 2020 11:57:24 GMT
+      - Wed, 15 Apr 2020 15:05:34 GMT
       Gitlab-Lb:
-      - fe-06-lb-gprd
+      - fe-12-lb-gprd
       Gitlab-Sv:
       - localhost
       Cf-Cache-Status:
@@ -153,7 +163,9 @@ http_interactions:
       Server:
       - cloudflare
       Cf-Ray:
-      - 580bce0b6eb2f2a4-WAW
+      - 58468f51bd13cc83-WAW
+      Cf-Request-Id:
+      - 021ff7e7110000cc83c2a46200000001
     body:
       encoding: UTF-8
       string: '{"html":"\u003cp data-sourcepos=\"1:1-1:23\"\u003eObserved on gitlab.com.\u003c/p\u003e\n\u003cpre
@@ -174,70 +186,5 @@ http_interactions:
         has a number of approvers but the user ID of the last one is 0.\u003c/p\u003e\n\u003cp
         data-sourcepos=\"19:1-19:19\"\u003ecc @sytses @vsizov\u003c/p\u003e"}'
     http_version: null
-  recorded_at: Wed, 08 Apr 2020 11:56:24 GMT
-- request:
-    method: get
-    uri: https://gitlab.com/api/v4/projects/not-exist%2Fnot-exist/issues/0
-    body:
-      encoding: US-ASCII
-      string: ''
-    headers:
-      Accept-Encoding:
-      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
-      Accept:
-      - "*/*"
-      User-Agent:
-      - Ruby
-  response:
-    status:
-      code: 404
-      message: Not Found
-    headers:
-      Date:
-      - Wed, 15 Apr 2020 08:41:58 GMT
-      Content-Type:
-      - application/json
-      Content-Length:
-      - '35'
-      Connection:
-      - keep-alive
-      Cache-Control:
-      - no-cache
-      Vary:
-      - Origin
-      X-Content-Type-Options:
-      - nosniff
-      X-Frame-Options:
-      - SAMEORIGIN
-      X-Request-Id:
-      - 8ErpK33fYN6
-      X-Runtime:
-      - '0.018321'
-      Ratelimit-Limit:
-      - '600'
-      Ratelimit-Observed:
-      - '1'
-      Ratelimit-Remaining:
-      - '599'
-      Ratelimit-Reset:
-      - '1586940178'
-      Ratelimit-Resettime:
-      - Wed, 15 Apr 2020 08:42:58 GMT
-      Gitlab-Lb:
-      - fe-20-lb-gprd
-      Gitlab-Sv:
-      - localhost
-      Cf-Cache-Status:
-      - DYNAMIC
-      Expect-Ct:
-      - max-age=604800, report-uri="https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct"
-      Server:
-      - cloudflare
-      Cf-Ray:
-      - 58445edccf5bf29c-WAW
-    body:
-      encoding: UTF-8
-      string: '{"message":"404 Project Not Found"}'
-    http_version: null
-  recorded_at: Wed, 15 Apr 2020 08:41:58 GMT
+  recorded_at: Wed, 15 Apr 2020 15:04:35 GMT
 recorded_with: VCR 5.1.0

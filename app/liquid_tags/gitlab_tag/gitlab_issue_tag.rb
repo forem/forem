@@ -1,10 +1,8 @@
 # GitlabTag generates the following api links
 # getting an issue
-#   https://api.gitlab.com/repos/facebook/react/issues/9218
-# getting comments of an issue
-#   https://api.gitlab.com/repos/facebook/react/issues/9218/comments
-# getting exat comment of an issue
-#   https://api.gitlab.com/repos/facebook/react/issues/comments/287635042
+#   https://gitlab.com/api/v4/projects/gitlab-org/gitlab/issues/1
+# getting an merge request
+#   https://gitlab.com/api/v4/projects/gitlab-org/gitlab/merge_requests/1
 class GitlabTag
   class GitlabIssueTag
     PARTIAL = "liquids/gitlab_issue".freeze
@@ -21,13 +19,13 @@ class GitlabTag
       ActionController::Base.new.render_to_string(
         partial: PARTIAL,
         locals: {
-          title: @content_json[:title],
-          issue_number: @content_json[:id],
-          user_url: @content_json[:author][:web_url],
-          user_avatar_url: @content_json[:author][:avatar_url],
-          username: @content_json[:author][:username],
-          date_link: @content_json[:web_url],
-          date: Time.zone.parse(@content_json[:created_at].to_s).utc.strftime("%b %d, %Y"),
+          title: @content_json['title'],
+          issue_number: @content_json['id'],
+          user_url: @content_json['author']['web_url'],
+          user_avatar_url: @content_json['author']['avatar_url'],
+          username: @content_json['author']['username'],
+          date_link: @content_json['web_url'],
+          date: Time.zone.parse(@content_json['created_at'].to_s).utc.strftime("%b %d, %Y"),
           body: @body
         },
       )

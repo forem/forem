@@ -71,7 +71,7 @@ RSpec.configure do |config|
   config.include ElasticsearchHelpers, elasticsearch: true
 
   config.before(:suite) do
-    Search::Cluster.recreate_indexes
+    # Search::Cluster.recreate_indexes
   end
 
   config.before do
