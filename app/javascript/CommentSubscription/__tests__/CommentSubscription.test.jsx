@@ -130,10 +130,11 @@ describe('<CommentSubscription />', () => {
 
     wrapper.find('ButtonGroup').find('Button').last().simulate('click'); // Cog icon button
 
-    const dropdown = wrapper.find('Dropdown');
-
     // Select the author comments only.
-    const authorCommentsOnlyRadioButton = dropdown.find('RadioButton').last();
+    const authorCommentsOnlyRadioButton = wrapper
+      .find('Dropdown')
+      .find('RadioButton')
+      .last();
     expect(authorCommentsOnlyRadioButton.attr('value')).toEqual(
       COMMENT_SUBSCRIPTION_TYPE.AUTHOR,
     );
@@ -141,7 +142,7 @@ describe('<CommentSubscription />', () => {
       target: { value: COMMENT_SUBSCRIPTION_TYPE.AUTHOR },
     });
 
-    const done = dropdown.find('Button');
+    const done = wrapper.find('Dropdown').find('Button');
     done.simulate('click');
 
     expect(wrapper.state('subscriptionType')).toEqual(
