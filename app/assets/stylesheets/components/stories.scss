@@ -127,11 +127,11 @@
     font-family: $ff-accent;
     font-size: 0.6em;
     padding: 0.3em;
-    padding-bottom: 0.2em;
+    // padding-bottom: 0.2em;
     vertical-align: middle;
     position: relative;
     top: -2px;
-    line-height: 1;
+    line-height: 1em;
     display: inline-block;
     border-radius: $br-default;
     letter-spacing: -0.05em;
