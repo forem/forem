@@ -61,11 +61,8 @@ export const Article = ({
               </div>
             )}
 
-            <div className="crayons-fields crayons-fields--horizontal">
-              <ReadingTime
-                articlePath={article.path}
-                readingTime={article.reading_time}
-              />
+            <div className="crayons-story__save">
+              <ReadingTime readingTime={article.reading_time} />
 
               <SaveButton
                 article={article}
