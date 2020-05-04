@@ -73,11 +73,9 @@
           <% end %>
         </div>
         <div class="crayons-fields crayons-fields--horizontal">
-          <a
-            href="<%= story.path %>"
-            class="crayons-story__details__item">
+          <small class="crayons-story__tertiary fs-xs mr-2">
             <%= story.reading_time < 1 ? 1 : story.reading_time %> min read
-          </a>
+          </small>
           <button
             type="button"
             class="crayons-btn crayons-btn--secondary crayons-btn--s"
