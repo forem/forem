@@ -238,7 +238,7 @@ Rails.application.routes.draw do
   get "/search/reactions" => "search#reactions"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
-  get "/listings/:category" => "classified_listings#index"
+  get "/listings/:category" => "classified_listings#index", :as => :classified_listing_category
   get "/listings/:category/:slug" => "classified_listings#index", :as => :classified_listing_slug
   get "/listings/:category/:slug/:view" => "classified_listings#index",
       :constraints => { view: /moderate/ }

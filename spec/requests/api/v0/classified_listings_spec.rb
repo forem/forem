@@ -117,7 +117,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
 
     it "does not return unpublished listings" do
       category = "cfp"
-      listing = user1.classified_listings.where(category: category)
+      listing = user1.classified_listings.in_category(category).last
       listing.update(published: false)
 
       get api_classified_listings_category_path(category)
