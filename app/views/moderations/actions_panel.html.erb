@@ -52,175 +52,93 @@
     </button>
     <span class="how-this-works-section">How does this work?</span>
   </div>
-  <%# Rating buttons and options go here, to be added by Arit %>
   <div class="other-things-container">
     <header class="other-things">
       <h1>Other things you can do</h1>
     </header>
-    <button class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags">
-      <div class="label-wrapper">
-        <div class="icon circle centered-icon">
-          <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
-        </div>
-        <header>
-          <h2>Adjust tags</h2>
-          <h3>Add or remove tags</h3>
-        </header>
-      </div>
-      <div class="toggle-chevron-container">
-        <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
-      </div>
-    </button>
-    <% if @moderatable.class.name == "Article" %>
-      <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
-      <button class="other-things-btn set-experience" type="button" data-other-things-type="set-experience">
+    <% unless @moderatable.tag_list.size == 4 && @moderatable_tags.length.zero? && !current_user.any_admin? %>
+      <button class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
-            <%= inline_svg_tag("book.svg", aria: false) %>
+            <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
           </div>
           <header>
-            <h2>Set experience level</h2>
-            <h3>Curate the most appropriate audience for this post</h3>
+            <h2>Adjust tags</h2>
+            <h3>Add or remove tags</h3>
           </header>
         </div>
         <div class="toggle-chevron-container">
           <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
         </div>
       </button>
-      <div class="set-experience-options hidden">
-        <% rating_hash = { "Expert" => 5, "Advanced" => 4, "Mid-level" => 3, "Beginner" => 2, "Novice" => 1 } %>
-        <% rating_hash.each do |rating_name, rating_level| %>
-          <button
-            value="<%= rating_level %>"
-            name="rating_vote_<%= rating_level %>"
-            id="js__rating__vote__<%= rating_level %>"
-            class="level-rating-button<%= " selected" if @rating_vote&.rating == rating_level.to_f %>"
-            data-user-id="<%= current_user.id %>"
-            data-article-id="<%= @moderatable.id %>"
-            data-group="experience_level">
-            <div class="level-rating-content">
-              <span class="level-rating-number"><%= rating_level %></span>
-              <span class="level-rating-text"><%= rating_name %></span>
-            </div>
-            <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
-          </button>
+
+      <div class="adjust-tags-options dropdown-options hidden">
+        <% if current_user.any_admin? %>
+        <div class="add-tag-container" data-allowed-to-adjust="<%= @allowed_to_adjust %>">
+          <input class="crayons-textfield" type="text" placeholder="Add a tag">
+        </div>
+        <% elsif @moderatable.tag_list.size < 4 %>
+          <% @tag_moderator_tags.each do |tag| %>
+            <button class="adjustable-tag" type="button" data-adjustment-type="addition" data-tag-id="<%= tag.id %>" data-article-id="<%= @moderatable.id %>">
+              <span class="num-sign">#</span><%= tag.name %>
+              <div class="circle centered-icon adjustment-icon">
+                <%= inline_svg_tag("plus.svg", aria: false) %>
+              </div>
+            </button>
+          <% end %>
+        <% end %>
+        <% if @moderatable_tags.length.positive? %>
+          <% @moderatable_tags.each do |tag| %>
+            <button class="adjustable-tag" type="button" data-adjustment-type="removal" data-tag-id="<%= tag.id %>">
+              <span class="num-sign">#</span><%= tag.name %>
+              <div class="circle centered-icon adjustment-icon selected">
+                <%= inline_svg_tag("subtract.svg", aria: false) %>
+              </div>
+            </button>
+          <% end %>
+        <% elsif current_user.any_admin? %>
+          <% @moderatable.tags.each do |tag| %>
+            <button class="adjustable-tag" type="button" data-adjustment-type="removal" data-tag-id="<%= tag.id %>">
+              <span class="num-sign">#</span><%= tag.name %>
+              <div class="circle centered-icon adjustment-icon selected">
+                <%= inline_svg_tag("subtract.svg", aria: false) %>
+              </div>
+            </button>
+          <% end %>
         <% end %>
         <span class="how-this-works-section">How does this work?</span>
       </div>
     <% end %>
+    <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
+    <button class="other-things-btn set-experience" type="button" data-other-things-type="set-experience">
+      <div class="label-wrapper">
+        <div class="icon circle centered-icon">
+          <%= inline_svg_tag("book.svg", aria: false) %>
+        </div>
+        <header>
+          <h2>Set experience level</h2>
+          <h3>Curate the most appropriate audience for this post</h3>
+        </header>
+      </div>
+      <div class="toggle-chevron-container">
+        <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
+      </div>
+    </button>
+    <div class="set-experience-options dropdown-options hidden">
+      <% rating_hash = { "Expert" => 5, "Advanced" => 4, "Mid-level" => 3, "Beginner" => 2, "Novice" => 1 } %>
+      <% rating_hash.each do |rating_name, rating_level| %>
+      <button value="<%= rating_level %>" name="rating_vote_<%= rating_level %>" id="js__rating__vote__<%= rating_level %>" class="level-rating-button<%= " selected" if @rating_vote&.rating == rating_level.to_f %>" data-user-id="<%= current_user.id %>" data-article-id="<%= @moderatable.id %>" data-group="experience_level">
+        <div class="level-rating-content">
+          <span class="level-rating-number"><%= rating_level %></span>
+          <span class="level-rating-text"><%= rating_name %></span>
+        </div>
+        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+      </button>
+      <% end %>
+      <span class="how-this-works-section">How does this work?</span>
+    </div>
   </div>
   <div class="bottom-actions">
     <button type="button">Flag user</button>
   </div>
 </div>
-
-<script defer>
-  setTimeout(function() {
-    var butts = document.querySelectorAll('.reaction-button, .reaction-vomit-button');
-    for (var i = 0; i < butts.length; i++) {
-      var butt = butts[i];
-      butt.onclick = function(event) {
-        event.preventDefault();
-        var thisButt = this;
-        thisButt.classList.add('reacted');
-
-        function successCb(response) {
-          if (response.result === 'create') {
-            thisButt.classList.add('reacted');
-          } else {
-            thisButt.classList.remove('reacted');
-          }
-        }
-
-        var formData = new FormData();
-        formData.append('reactable_type', thisButt.dataset.reactableType);
-        formData.append('category', thisButt.dataset.category);
-        formData.append('reactable_id', thisButt.dataset.reactableId);
-
-        getCsrfToken()
-          .then(sendFetch('reaction-creation', formData))
-          .then(function(response) {
-            if (response.status === 200) {
-              response.json().then(successCb);
-            }
-          });
-      };
-    }
-
-    // set actions panel heights
-    document.documentElement.style.height = "100%";
-    document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0;';
-    document.getElementById('page-content').style.cssText = 'margin-top: 0 !important; margin-bottom: 0;';
-
-    // toggle "Other Things" DropDowns
-    function toggleOtherThings(type) {
-      if (type === 'set-experience') {
-        document.querySelector('.set-experience-options').classList.toggle('hidden');
-      } else if (type === 'adjust-tags') {
-        document.querySelector('.adjust-tags-options').classList.toggle('hidden');
-      }
-    }
-
-    //  rotate chevrons & toggle dropdowns
-    document.querySelectorAll('button.other-things-btn').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        let clickedBtn = e.currentTarget;
-        clickedBtn.querySelector('.label-wrapper > .icon').classList.toggle('hidden');
-        clickedBtn.querySelector('.toggle-chevron-container').classList.toggle('rotated');
-
-        let btnType = clickedBtn.dataset.otherThingsType;
-        toggleOtherThings(btnType);
-      })
-    });
-
-    function clearExpLevels() {
-      Array.from(
-        document.getElementsByClassName('level-rating-button selected')
-      ).forEach((el) => {
-        el.classList.remove('selected');
-      });
-    }
-
-    function updateExperienceLevel(currentUserId, articleId, rating, group){
-      fetch('/rating_votes', {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: currentUserId,
-          article_id: articleId,
-          rating: rating,
-          group: group,
-        }),
-        credentials: 'same-origin'
-      })
-        .then(response => response.json()
-          .then(json => {
-            if (json.result === 'Success') {
-              clearExpLevels();
-              document.getElementById(`js__rating__vote__${rating}`).classList.add('selected');
-            } else {
-              alert(json.error)
-            }
-          })
-          .catch(error => {
-            alert(error);
-          }))
-    }
-
-    document.querySelectorAll('.level-rating-button').forEach(btn => {
-      btn.addEventListener('click', function () {
-        updateExperienceLevel(
-          btn.dataset.userId,
-          btn.dataset.articleId,
-          btn.value,
-          btn.dataset.group
-        );
-      });
-    });
-  }, 200)
-</script>
