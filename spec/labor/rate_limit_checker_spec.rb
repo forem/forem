@@ -137,25 +137,15 @@ RSpec.describe RateLimitChecker, type: :labor do
     end
   end
 
-  describe ".track_image_uploads" do
-    it "calls the cache object correctly" do
+  describe "#track_limit_by_action" do
+    it "increments cache for action with retry as expiration" do
       allow(Rails.cache).to receive(:increment)
+      action = :image_upload
+      rate_limit_checker.track_limit_by_action(action)
 
-      rate_limit_checker.track_image_uploads
-
-      key = "#{user.id}_image_upload"
-      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: 30.seconds)
-    end
-  end
-
-  describe ".track_article_updates" do
-    it "calls the cache object correctly" do
-      allow(Rails.cache).to receive(:increment)
-
-      rate_limit_checker.track_article_updates
-
-      key = "#{user.id}_article_update"
-      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: 30.seconds)
+      key = "#{user.id}_#{action}"
+      expires_in = described_class::RETRY_AFTER[action]
+      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: expires_in)
     end
   end
 
