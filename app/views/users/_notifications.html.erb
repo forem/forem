@@ -56,6 +56,30 @@
   </div>
 
   <div class="crayons-card mb-6 grid gap-6 p-6">
+    <h3>Discussion Subscription Settings</h3>
+    <div class="crayons-field">
+      <label for="default-subscription" class="crayons-field__label">Default subscription option</label>
+      <p class="crayons-field__description">This option will be selected when you hit "Subscribe" button</p>
+      <select class="crayons-select s:w-50" id="default-subscription">
+        <option>All comments</option>
+        <option>Top-level comments</option>
+        <option>Post author comments</option>
+      </select>
+    </div>
+
+    <div class="crayons-field">
+      <label for="auto-subscribe" class="crayons-field__label">Subscribe me when I comment</label>
+      <p class="crayons-field__description">This option will be selected when you join a discussion</p>
+      <select class="crayons-select s:w-50" id="auto-subscribe">
+        <option>All comments</option>
+        <option>Top-level comments</option>
+        <option>Post author comments</option>
+        <option>None</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="crayons-card mb-6 grid gap-6 p-6">
     <header>
       <h3 class="mb-2">Mobile Notification Settings (Beta)</h3>
       <p>Additional settings will be rolled out as new notification features are made available.</p>
