@@ -1,11 +1,9 @@
 const flagUserModalHTML = `
-    <div class="flag-user-modal-subcont">
+    <div class="flag-user-modal-subcont hidden">
         <div class="crayons-modal flag-user-modal">
           <div class="flag-user-modal-header">
             <span class="modal-header-text">Flag User</span>
-            <span class="modal-header-close-icon">
-              <%= inline_svg_tag("cancel.svg", aria: true, class: "crayons-icon", title: "Cancel") %>
-            </span>
+            <span class="modal-header-close-icon"></span>
 
           </div>
           <div class="flag-user-modal-body">
@@ -52,6 +50,12 @@ const flagUserModalHTML = `
     </div>
 `;
 
+const toggleFlagUserModal = () => {
+  document
+    .getElementsByClassName('flag-user-modal-subcont')[0]
+    .classList.toggle('hidden');
+};
+
 function toggleModActionsMenu() {
   document.querySelector('.mod-actions-menu').classList.toggle('showing');
   document.querySelector('.mod-actions-menu-btn').classList.toggle('hidden');
@@ -82,5 +86,8 @@ export function initializeActionsPanel() {
     document
       .querySelector('.mod-actions-menu-btn')
       .addEventListener('click', toggleModActionsMenu);
+    document
+      .getElementById('open-flag-user-modal')
+      .addEventListener('click', toggleFlagUserModal);
   }
 }
