@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe RateLimitChecker, type: :labor do
+RSpec.describe RateLimitChecker, type: :service do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:rate_limit_checker) { described_class.new(user) }
@@ -133,7 +133,7 @@ RSpec.describe RateLimitChecker, type: :labor do
 
     it "raises an error if limit_by_action is true" do
       allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
-      expect { rate_limit_checker.check_limit!(:image_upload) }.to raise_error(RateLimitChecker::LimitReached)
+      expect { rate_limit_checker.check_limit!(:image_upload) }.to raise_error(described_class::LimitReached)
     end
   end
 
@@ -144,7 +144,7 @@ RSpec.describe RateLimitChecker, type: :labor do
       rate_limit_checker.track_limit_by_action(action)
 
       key = "#{user.id}_#{action}"
-      expires_in = described_class::RETRY_AFTER[action]
+      expires_in = described_class::ACTION_LIMITERS.dig(action, :retry_after)
       expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: expires_in)
     end
   end
