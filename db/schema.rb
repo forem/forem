@@ -12,7 +12,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_27_233631) do
+ActiveRecord::Schema.define(version: 2020_05_01_032629) do
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -326,7 +327,6 @@ ActiveRecord::Schema.define(version: 2020_04_27_233631) do
     t.text "body_markdown"
     t.datetime "bumped_at"
     t.string "cached_tag_list"
-    t.string "category"
     t.bigint "classified_listing_category_id"
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
@@ -1087,6 +1087,16 @@ ActiveRecord::Schema.define(version: 2020_04_27_233631) do
     t.index ["user_id"], name: "index_user_counters_on_user_id", unique: true
   end
 
+  create_table "user_optional_fields", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "label", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.string "value", null: false
+    t.index ["label", "user_id"], name: "index_user_optional_fields_on_label_and_user_id", unique: true
+    t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
+  end
+
   create_table "users", id: :serial, force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
@@ -1269,6 +1279,7 @@ ActiveRecord::Schema.define(version: 2020_04_27_233631) do
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_counters", "users", on_delete: :cascade
+  add_foreign_key "user_optional_fields", "users"
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"

@@ -28,14 +28,19 @@ RSpec.describe "UserOrganization", type: :request do
   end
 
   context "when creating a new org" do
+    let(:org_params) { build(:organization).attributes }
+    let(:rate_limiter) { RateLimitChecker.new(user) }
+    let(:create_org) { post "/organizations", params: { organization: org_params } }
+
     before do
       sign_in user
-      org_params = build(:organization).attributes
       org_params["profile_image"] = Rack::Test::UploadedFile.new(Rails.root.join("app/assets/images/android-icon-36x36.png"), "image/jpeg")
-      post "/organizations", params: { organization: org_params }
+      allow(RateLimitChecker).to receive(:new).and_return(rate_limiter)
+      allow(rate_limiter).to receive(:limit_by_action).and_return(false)
     end
 
     it "creates the correct organization_membership association" do
+      create_org
       org_membership = OrganizationMembership.first
       expect(org_membership.persisted?).to eq true
       expect(org_membership.user).to eq user
@@ -44,8 +49,19 @@ RSpec.describe "UserOrganization", type: :request do
     end
 
     it "redirects to the proper org settings page" do
+      create_org
       expect(response.status).to eq 302
       expect(response.redirect_url).to include "/settings/organization/#{Organization.last.id}"
+    end
+
+    it "returns a too_many_requests response if the rate limit is reached" do
+      allow(rate_limiter).to receive(:limit_by_action).and_return(true)
+
+      create_org
+
+      expect(response).to have_http_status(:too_many_requests)
+      expected_retry_after = RateLimitChecker::RETRY_AFTER[:organization_creation]
+      expect(response.headers["Retry-After"]).to eq(expected_retry_after)
     end
   end
 
@@ -76,6 +92,17 @@ RSpec.describe "UserOrganization", type: :request do
 
     post "/organizations", params: { organization: org_params }
     expect(response.body).to include("filename too long")
+  end
+
+  it "returns error if profile image is not a file" do
+    sign_in user
+    org_params = build(:organization).attributes
+    image = "A String"
+    org_params["profile_image"] = image
+    allow(Organization).to receive(:new).and_return(organization)
+
+    post "/organizations", params: { organization: org_params }
+    expect(response.body).to include("invalid file type")
   end
 
   context "when leaving an org" do

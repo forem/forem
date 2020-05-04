@@ -10,6 +10,11 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
+  devise_scope :user do
+    get "/enter", to: "registrations#new", as: :sign_up
+    delete "/sign_out", to: "devise/sessions#destroy"
+  end
+
   require "sidekiq/web"
   require "sidekiq_unique_jobs/web"
 
@@ -21,11 +26,6 @@ Rails.application.routes.draw do
     end
     mount Sidekiq::Web => "/sidekiq"
     mount FieldTest::Engine, at: "abtests"
-  end
-
-  devise_scope :user do
-    delete "/sign_out" => "devise/sessions#destroy"
-    get "/enter" => "registrations#new", :as => :sign_up
   end
 
   namespace :admin do
@@ -238,7 +238,7 @@ Rails.application.routes.draw do
   get "/search/reactions" => "search#reactions"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
-  get "/listings/:category" => "classified_listings#index"
+  get "/listings/:category" => "classified_listings#index", :as => :classified_listing_category
   get "/listings/:category/:slug" => "classified_listings#index", :as => :classified_listing_slug
   get "/listings/:category/:slug/:view" => "classified_listings#index",
       :constraints => { view: /moderate/ }
@@ -285,7 +285,7 @@ Rails.application.routes.draw do
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
-  delete "users/remove_association", to: "users#remove_association"
+  delete "users/remove_identity", to: "users#remove_identity"
   post "users/request_destroy", to: "users#request_destroy", as: :user_request_destroy
   get "users/confirm_destroy/:token", to: "users#confirm_destroy", as: :user_confirm_destroy
   delete "users/full_delete", to: "users#full_delete", as: :user_full_delete

@@ -7,7 +7,7 @@ RSpec.describe Search::Reaction, type: :service do
     expect(described_class::MAPPINGS).not_to be_nil
   end
 
-  describe "::search_documents", elasticsearch: true do
+  describe "::search_documents", elasticsearch: "Reaction" do
     let(:article1) { create(:article) }
     let(:article2) { create(:article) }
     let(:reaction1) { create(:reaction, category: "readinglist", reactable: article1) }

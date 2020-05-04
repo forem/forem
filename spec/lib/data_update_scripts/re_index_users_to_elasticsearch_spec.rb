@@ -1,7 +1,7 @@
 require "rails_helper"
 require Rails.root.join("lib/data_update_scripts/20200406213152_re_index_users_to_elasticsearch.rb")
 
-describe DataUpdateScripts::ReIndexUsersToElasticsearch, elasticsearch: true do
+describe DataUpdateScripts::ReIndexUsersToElasticsearch, elasticsearch: "User" do
   it "indexes users to Elasticsearch" do
     user = create(:user)
     expect { user.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
