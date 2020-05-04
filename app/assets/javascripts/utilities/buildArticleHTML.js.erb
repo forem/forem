@@ -8,7 +8,7 @@ function buildArticleHTML(article) {
        </div>\
        <a href="'+article.path+'" class="small-pic-link-wrapper index-article-link" id="article-link-'+article.id+'">\
         <div class="content">\
-         <h3><span class="crayons-indicator">podcast</span>'+article.title+'</h3>\
+         <h3><span class="crayons-story__flare-tag">podcast</span>'+article.title+'</h3>\
         </div>\
        </a>\
        <h4><a href="/'+article.podcast.slug+'">'+article.podcast.title+'</a></h4>\
@@ -39,16 +39,16 @@ function buildArticleHTML(article) {
       var currentTag = JSON.parse(container.dataset.params).tag
     }
     if (article.flare_tag && currentTag != article.flare_tag.name) {
-      flareTag = "<span class='crayons-indicator' style='background:"+article.flare_tag.bg_color_hex+";color:"+article.flare_tag.text_color_hex+"'>#"+article.flare_tag.name+"</span>"
+      flareTag = "<span class='crayons-story__flare-tag' style='background:"+article.flare_tag.bg_color_hex+";color:"+article.flare_tag.text_color_hex+"'>#"+article.flare_tag.name+"</span>"
     }
     if (article.class_name == "PodcastEpisode"){
-      flareTag = "<span class='crayons-indicator'>podcast</span>"
+      flareTag = "<span class='crayons-story__flare-tag'>podcast</span>"
     }
     if (article.class_name == "Comment"){
-      flareTag = "<span class='crayons-indicator'>comment</span>"
+      flareTag = "<span class='crayons-story__flare-tag'>comment</span>"
     }
     if (article.class_name == "User"){
-      flareTag = "<span class='crayons-indicator' style='background:#5874d9;color:white;'>person</span>"
+      flareTag = "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>"
     }
     var rc = article.positive_reactions_count
     var reactionsDisplay = ''
