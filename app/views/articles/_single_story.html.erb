@@ -2,7 +2,7 @@
   <% if featured == true %>
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
     <a href="<%= story.path %>" class="crayons-story__cover" data-featured-article="articles-<%= story.id %>">
-      <div style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);" class="crayons-story__cover__image" />
+      <div style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);" class="crayons-story__cover__image"></div>
     </a>
   <% end %>
 
