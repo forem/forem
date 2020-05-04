@@ -292,26 +292,27 @@ $lh-base: 1.5; // 24px for 16px font-size
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-// box() - generating classes for different style
+// generate-box() - generating classes for different style
 //
-// This mixin automates process of generating classes for different
-// types of boxes: filled & outlined, each  with variations
-// for several levels of elevation (box-shadow).
+// This mixin automates process of generating styles for different
+// types of boxes used across Crayons.
 //
-// @param {object} $this      Caching current parent
-// @param {color} $color-1    Background color for filled variation
-// @param {color} $color-2    Accent color for border & shadow
+// @param {integer} $level    Visual elevation level: 0-4
+// @param {color} $bg         Background color
+// @param {color} $border     Border and shadow colors
+// @param {color} $color      Contnet color
 
-@mixin box($this: $this, $color-1: var(--box), $color-2: var(--box-darker)) {
-  border-color: $color-2;
-
-  &#{$this}--filled {
-    background-color: $color-1;
+@mixin generate-box(
+  $level: 1,
+  $bg: var(--card-bg),
+  $border: var(--base-100),
+  $color: var(--card-color)
+) {
+  background: $bg;
+  border: 2px solid $border;
+  @if $level > 0 {
+    box-shadow: #{pow(2, $level) + px} #{pow(2, $level) + px} 0 $border;
   }
-
-  @for $i from 1 through 3 {
-    &#{$this + '--level-' + $i} {
-      box-shadow: #{pow(2, $i) + px} #{pow(2, $i) + px} 0 $color-2;
-    }
-  }
+  color: $color;
+  border-radius: $br-default;
 }
