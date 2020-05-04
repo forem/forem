@@ -27,7 +27,8 @@ export const Article = ({
   }
 
   return (
-    <button
+    <article
+      tabIndex="0"
       className={`crayons-story w-100 align-left border-0 ${
         isFeatured && 'crayons-story--featured'
       }`}
@@ -81,11 +82,8 @@ export const Article = ({
               </div>
             )}
 
-            <div className="crayons-fields crayons-fields--horizontal">
-              <ReadingTime
-                articlePath={article.path}
-                readingTime={article.reading_time}
-              />
+            <div className="crayons-story__save">
+              <ReadingTime readingTime={article.reading_time} />
 
               <SaveButton
                 article={article}
@@ -102,7 +100,7 @@ export const Article = ({
         articlePath={article.path}
         totalCount={article.comments_count}
       />
-    </button>
+    </article>
   );
 };
 
