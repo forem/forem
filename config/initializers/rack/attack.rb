@@ -16,4 +16,16 @@ class Rack::Attack
       request.env["HTTP_API_KEY"]
     end
   end
+
+  throttle("site_hits", limit: 100, period: 2) do |request|
+    if request.env["HTTP_FASTLY_CLIENT_IP"].present?
+      request.env["HTTP_FASTLY_CLIENT_IP"].to_s
+    end
+  end
+
+  throttle("message_throttle", limit: 2, period: 1) do |request|
+    if request.path.starts_with?("/messages") && request.post? && request.env["HTTP_FASTLY_CLIENT_IP"].present?
+      request.env["HTTP_FASTLY_CLIENT_IP"].to_s
+    end
+  end
 end

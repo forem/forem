@@ -11,7 +11,7 @@ RSpec.describe PodcastEpisode, type: :model do
   describe "validations" do
     # Couldn't use shoulda matchers for these tests because:
     # Shoulda uses `save(validate: false)` which skips validations, but runs callbacks
-    # So an invalid record is saved and the algolia callback fails to run because there's no associated podcast
+    # So an invalid record is saved and the elasticsearch callback fails because there's no associated podcast
     # https://git.io/fjg2g
 
     it "validates guid uniqueness" do
@@ -32,14 +32,14 @@ RSpec.describe PodcastEpisode, type: :model do
   describe "#after_commit" do
     it "on update enqueues job to index podcast_episode to elasticsearch" do
       podcast_episode.save
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, podcast_episode.search_id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, podcast_episode.id]) do
         podcast_episode.save
       end
     end
 
     it "on destroy enqueues job to delete podcast_episode from elasticsearch" do
       podcast_episode.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, podcast_episode.search_id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, podcast_episode.search_id]) do
         podcast_episode.destroy
       end
     end
@@ -57,23 +57,6 @@ RSpec.describe PodcastEpisode, type: :model do
 
       ep2.body = "<h1>Body with HTML tags</h1>"
       expect(ep2.description).to eq("Body with HTML tags")
-    end
-  end
-
-  describe "#index_id" do
-    it "is equal to articles-ID" do
-      # NOTE: we shouldn't test private things but cheating a bit for Algolia here
-      expect(podcast_episode.send(:index_id)).to eq("podcast_episodes-#{podcast_episode.id}")
-    end
-  end
-
-  describe "#mobile_player_metadata" do
-    it "responds with a hash with metadata used in native mobile players" do
-      metadata = podcast_episode.mobile_player_metadata
-      expect(metadata).to be_instance_of(Hash)
-      expect(metadata[:podcastName]).to eq(podcast_episode.podcast.title)
-      expect(metadata[:episodeName]).to eq(podcast_episode.title)
-      expect(metadata[:podcastImageUrl]).to include(podcast_episode.podcast.image_url)
     end
   end
 

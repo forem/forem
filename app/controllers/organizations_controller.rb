@@ -1,13 +1,23 @@
 class OrganizationsController < ApplicationController
   after_action :verify_authorized
+  rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   def create
+    rate_limit!(:organization_creation)
+
     @tab = "organization"
     @user = current_user
     @tab_list = @user.settings_tab_list
+
+    unless valid_image?
+      render template: "users/edit"
+      return
+    end
+
     @organization = Organization.new(organization_params)
     authorize @organization
     if @organization.save
+      rate_limiter.track_limit_by_action(:organization_creation)
       @organization_membership = OrganizationMembership.create!(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
       flash[:settings_notice] = "Your organization was successfully created and you are an admin."
       redirect_to "/settings/organization/#{@organization.id}"
@@ -21,6 +31,11 @@ class OrganizationsController < ApplicationController
     @tab = "organization"
     @tab_list = @user.settings_tab_list
     set_organization
+
+    unless valid_image?
+      render template: "users/edit"
+      return
+    end
 
     if @organization.update(organization_params.merge(profile_updated_at: Time.current))
       flash[:settings_notice] = "Your organization was successfully updated."
@@ -83,5 +98,36 @@ class OrganizationsController < ApplicationController
     @organization = Organization.find_by(id: organization_params[:id])
     not_found unless @organization
     authorize @organization
+  end
+
+  def valid_image?
+    image = params.dig("organization", "profile_image")
+
+    return true unless image
+
+    if action_name == "create"
+      @organization = Organization.new(organization_params.except(:profile_image))
+      authorize @organization
+    end
+
+    return true if valid_image_file?(image) && valid_filename?(image)
+
+    false
+  end
+
+  def valid_image_file?(image)
+    return true if file?(image)
+
+    @organization.errors.add(:profile_image, IS_NOT_FILE_MESSAGE)
+
+    false
+  end
+
+  def valid_filename?(image)
+    return true unless long_filename?(image)
+
+    @organization.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
+
+    false
   end
 end

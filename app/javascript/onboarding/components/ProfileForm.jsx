@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Navigation from './Navigation';
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
 
+/* eslint-disable camelcase */
 class ProfileForm extends Component {
   constructor(props) {
     super(props);
@@ -13,50 +14,69 @@ class ProfileForm extends Component {
     this.user = userData();
 
     this.state = {
-      summary: '',
-      location: '',
-      employment_title: '',
-      employer_name: '',
+      formValues: {
+        summary: '',
+        location: '',
+        employment_title: '',
+        employer_name: '',
+      },
       last_onboarding_page: 'v2: personal info form',
+      canSkip: true,
     };
   }
 
   componentDidMount() {
-    updateOnboarding('bio form');
+    updateOnboarding('v2: personal info form');
   }
 
   onSubmit() {
     const csrfToken = getContentOfToken('csrf-token');
+    const { formValues, last_onboarding_page } = this.state;
     fetch('/onboarding_update', {
       method: 'PATCH',
       headers: {
         'X-CSRF-Token': csrfToken,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ user: { ...this.state } }),
+      body: JSON.stringify({ user: { ...formValues, last_onboarding_page } }),
       credentials: 'same-origin',
     }).then((response) => {
       if (response.ok) {
         const { next } = this.props;
         next();
       }
-    })
-  }
-
-  handleChange(e) {
-    const { name, value } = e.target;
-
-    this.setState({
-      [name]: value,
     });
   }
 
+  handleChange(e) {
+    const { formValues } = { ...this.state };
+    const currentFormState = formValues;
+    const { name, value } = e.target;
+
+    currentFormState[name] = value;
+
+    // Once we've derived the new form values, check if the form is empty
+    // and use that value to set the `canSkip` property on the state.
+    const formIsEmpty =
+      Object.values(currentFormState).filter((v) => v.length > 0).length === 0;
+
+    this.setState({ formValues: currentFormState, canSkip: formIsEmpty });
+  }
+
   render() {
-    const { prev } = this.props;
+    const { prev, slidesCount, currentSlideIndex } = this.props;
     const { profile_image_90, username, name } = this.user;
+    const { canSkip } = this.state;
+
     return (
       <div className="onboarding-main">
-        <Navigation prev={prev} next={this.onSubmit} />
+        <Navigation
+          prev={prev}
+          next={this.onSubmit}
+          canSkip={canSkip}
+          slidesCount={slidesCount}
+          currentSlideIndex={currentSlideIndex}
+        />
         <div className="onboarding-content about">
           <header className="onboarding-content-header">
             <h1 className="title">Build your profile</h1>
@@ -68,7 +88,11 @@ class ProfileForm extends Component {
           </header>
           <div className="current-user-info">
             <figure className="current-user-avatar-container">
-              <img className="current-user-avatar" alt="profile" src={profile_image_90} />
+              <img
+                className="current-user-avatar"
+                alt="profile"
+                src={profile_image_90}
+              />
             </figure>
             <h3>{name}</h3>
             <p>{username}</p>
@@ -127,7 +151,11 @@ class ProfileForm extends Component {
 
 ProfileForm.propTypes = {
   prev: PropTypes.func.isRequired,
-  next: PropTypes.string.isRequired,
+  next: PropTypes.func.isRequired,
+  slidesCount: PropTypes.number.isRequired,
+  currentSlideIndex: PropTypes.func.isRequired,
 };
 
 export default ProfileForm;
+
+/* eslint-enable camelcase */

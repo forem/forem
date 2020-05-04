@@ -3,7 +3,7 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/privacy") %>" />
   <meta name="description" content="Privacy Policy for <%= community_name %>">
-  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/privacy") %>" />
@@ -104,11 +104,20 @@
     <p><strong>Payment processing</strong>
       <br>
       <%= community_name %> does not process payments directly — we rely on third-party services such as Stripe, Shopify, and Paypal to receive payments and store any payment information.
-      <a href="https://shop.dev.to">The <%= community_name %> Shop</a> is run through Shopify, a third-party e-commerce platform with their own Privacy Policy.
+      <% if SiteConfig.shop_url.present? %>
+        <a href="<%= SiteConfig.shop_url %>">The <%= community_name %> Shop</a> is run through Shopify, a third-party e-commerce platform with their own Privacy Policy.
+      <% end %>
     </p>
     <p><strong>Third-Party Embeds</strong>
       <br>
-      Some of the content that you see displayed on <%= community_name %> is not hosted by <%= community_name %>. These “embeds” are hosted by a third-party and embedded in <%= community_name %>. For example: YouTube videos, Codepens, Twitter tweets, or GitHub code that appear within a <%= community_name %> post. These files send data to the hosted site just as if you were visiting that site directly (for example, when you load a <%= community_name %> post page with a YouTube video embedded in it, YouTube receives data about your activity). <%= community_name %> does not control what data third parties collect in cases like this, or what they will do with it. Third-party embeds on <%= community_name %> are not covered by this privacy policy; they are covered by the privacy policy of the third-party service. Be mindful when interacting with these services.
+      Some of the content that you see displayed on <%= community_name %> is not hosted by <%= community_name %>. These
+      “embeds” are hosted by a third-party and embedded in <%= community_name %>. For example: YouTube videos, Codepens,
+      Twitter tweets, or GitHub code that appear within a <%= community_name %> post. These files send data to the hosted
+      site just as if you were visiting that site directly (for example, when you load a <%= community_name %> post page with
+      a YouTube video embedded in it, YouTube receives data about your activity). <%= community_name %> does not control what
+      data third parties collect in cases like this, or what they will do with it. Third-party embeds on <%= community_name %>
+       are not covered by this privacy policy; they are covered by the privacy policy of the third-party service. Be mindful
+       when interacting with these services.
     </p>
     <p><strong>Facebook (visitor action pixel)</strong>
       <br>
@@ -123,7 +132,14 @@
       We use browser cookies and similar technologies to recognize you when you return to our Services. Third-party vendors may also use cookies for various reasons.
       <br>
       <br>
-      <%= community_name %> uses a specific cookie in order to facilitate the use of Google Universal Analytics for users logged-in to the Applications or the Platforms (“Logged-In User). If you are a Logged-In User, <%= community_name %> may use your <%= community_name %> user ID in combination with Google Universal Analytics and Google Analytics to track and analyze the pages of the Services you visit. We do this only to better understand how you use the Website and the other Services, with a view to offering improvements for all <%= community_name %> users; and to tailor our business and marketing activities accordingly, both generally and specifically to you. Google Analytics cookies do not provide <%= community_name %> with any Personal Information.You can prevent Google Analytics from recognizing you on return visits to this site by disabling cookies on your browser.
+      <%= community_name %> uses a specific cookie in order to facilitate the use of Google Universal Analytics for users
+      logged-in to the Applications or the Platforms (“Logged-In User). If you are a Logged-In User, <%= community_name %>
+      may use your <%= community_name %> user ID in combination with Google Universal Analytics and Google Analytics to track
+      and analyze the pages of the Services you visit. We do this only to better understand how you use the Website and the
+      other Services, with a view to offering improvements for all <%= community_name %> users; and to tailor our business
+      and marketing activities accordingly, both generally and specifically to you. Google Analytics cookies do not provide
+      <%= community_name %> with any Personal Information.You can prevent Google Analytics from recognizing you on return
+      visits to this site by disabling cookies on your browser.
       <br>
       <br>
       You may opt-out of this feature by installing the Google Analytics Opt-out Browser Add-on, by setting your web browser to refuse cookies, or by setting your browser to alert you when cookies are being sent. If you do so, note that some parts of the Site may not function properly.
@@ -148,14 +164,14 @@
     </p>
     <p><strong>Deleting Your Personal Information</strong>
       <br>
-      You may request deletion of your personal information and account by emailing privacy@dev.to.
+      You may request deletion of your personal information and account by emailing <%= email_link(:privacy) %>.
       <br>
       <br>
       To protect information from accidental or malicious destruction, we may maintain residual copies for a brief time period. But, if you delete your account, your information and content will be unrecoverable after that time.
     </p>
     <p><strong>Data Portability</strong>
       <br>
-      If you would like to request a copy of your user data, please email privacy@dev.to.</p>
+      If you would like to request a copy of your user data, please email <%= email_link(:privacy) %>.</p>
     <p><strong>Business Transfers</strong>
       <br>
       If we are involved in a merger, acquisition, bankruptcy, reorganization or sale of assets such that your information would be transferred or become subject to a different privacy policy, we’ll notify you in advance of any such change.
@@ -166,6 +182,6 @@
     </p>
     <p><strong>Questions</strong>
       <br>
-      We welcome feedback about this policy at privacy@dev.to.</p>
+      We welcome feedback about this policy at <%= email_link(:privacy) %>.</p>
   </div>
 </div>

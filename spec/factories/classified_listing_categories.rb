@@ -7,6 +7,14 @@ FactoryBot.define do
 
     trait :cfp do
       name { "Conference CFP" }
+      slug { "cfp" }
+      cost { 5 }
+    end
+
+    trait :jobs do
+      name { "Job Listings" }
+      slug { "jobs" }
+      cost { 1 }
     end
   end
 end

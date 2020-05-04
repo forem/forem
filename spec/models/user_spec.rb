@@ -2,47 +2,60 @@ require "rails_helper"
 
 def user_from_authorization_service(service_name, signed_in_resource, cta_variant)
   auth = OmniAuth.config.mock_auth[service_name]
-  service = AuthorizationService.new(auth, signed_in_resource, cta_variant)
-  service.get_user
+  Authentication::Authenticator.call(
+    auth,
+    current_user: signed_in_resource,
+    cta_variant: cta_variant,
+  )
 end
 
 RSpec.describe User, type: :model do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
+  let(:user_with_user_optional_fields) { create(:user, :with_user_optional_fields) }
   let(:org) { create(:organization) }
 
-  before { mock_auth_hash }
+  before { omniauth_mock_providers_payload }
 
   describe "validations" do
     describe "builtin validations" do
-      it { is_expected.to have_many(:api_secrets) }
-      it { is_expected.to have_many(:articles) }
+      subject { user }
+
+      it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
+      it { is_expected.to have_many(:articles).dependent(:destroy) }
+      it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
       it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
       it { is_expected.to have_many(:badges).through(:badge_achievements) }
-      it { is_expected.to have_many(:collections).dependent(:destroy) }
-      it { is_expected.to have_many(:comments) }
-      it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message") }
-      it { is_expected.to have_many(:identities).dependent(:destroy) }
-      it { is_expected.to have_many(:mentions).dependent(:destroy) }
-      it { is_expected.to have_many(:notes) }
-      it { is_expected.to have_many(:notifications).dependent(:destroy) }
-      it { is_expected.to have_many(:reactions).dependent(:destroy) }
-      it { is_expected.to have_many(:tweets).dependent(:destroy) }
-      it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
+      it { is_expected.to have_many(:classified_listings).dependent(:destroy) }
+      it { is_expected.to have_many(:collections).dependent(:destroy) }
+      it { is_expected.to have_many(:comments).dependent(:destroy) }
+      it { is_expected.to have_many(:credits).dependent(:destroy) }
+      it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
+      it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
+      it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
+      it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
+      it { is_expected.to have_many(:github_repos).dependent(:destroy) }
+      it { is_expected.to have_many(:html_variants).dependent(:destroy) }
+      it { is_expected.to have_many(:identities).dependent(:destroy) }
+      it { is_expected.to have_many(:mentions).dependent(:destroy) }
+      it { is_expected.to have_many(:messages).dependent(:destroy) }
+      it { is_expected.to have_many(:notes) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
-      it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
-      it { is_expected.to have_one(:counters).dependent(:destroy) }
+      it { is_expected.to have_many(:notifications).dependent(:destroy) }
+      it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
+      it { is_expected.to have_many(:organizations).through(:organization_memberships) }
+      it { is_expected.to have_many(:page_views).dependent(:destroy) }
+      it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
+      it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
+      it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:reactions).dependent(:destroy) }
+      it { is_expected.to have_many(:response_templates).dependent(:destroy) }
+      it { is_expected.to have_many(:tweets).dependent(:destroy) }
 
       # rubocop:disable RSpec/NamedSubject
-      it "has created_podcasts" do
-        expect(subject).to have_many(:created_podcasts).
-          class_name("Podcast").
-          with_foreign_key(:creator_id).
-          dependent(:nullify)
-      end
-
       it do
         expect(subject).to have_many(:access_grants).
           class_name("Doorkeeper::AccessGrant").
@@ -56,17 +69,109 @@ RSpec.describe User, type: :model do
           with_foreign_key("resource_owner_id").
           dependent(:delete_all)
       end
+
+      it do
+        expect(subject).to have_many(:affected_feedback_messages).
+          class_name("FeedbackMessage").
+          with_foreign_key("affected_id").
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:authored_notes).
+          class_name("Note").
+          with_foreign_key("author_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:backup_data).
+          class_name("BackupData").
+          with_foreign_key("instance_user_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:blocked_blocks).
+          class_name("UserBlock").
+          with_foreign_key("blocked_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:blocker_blocks).
+          class_name("UserBlock").
+          with_foreign_key("blocker_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:created_podcasts).
+          class_name("Podcast").
+          with_foreign_key(:creator_id).
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:offender_feedback_messages).
+          class_name("FeedbackMessage").
+          with_foreign_key(:offender_id).
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:reporter_feedback_messages).
+          class_name("FeedbackMessage").
+          with_foreign_key(:reporter_id).
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:webhook_endpoints).
+          class_name("Webhook::Endpoint").
+          with_foreign_key(:user_id).
+          dependent(:delete_all)
+      end
       # rubocop:enable RSpec/NamedSubject
 
-      it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
+      it "has at most three optional fields" do
+        expect(user_with_user_optional_fields).to have_many(:user_optional_fields).dependent(:destroy)
+        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field", value: "some value")
+        expect(fourth_field).not_to be_valid
+      end
 
-      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+      it { is_expected.to have_one(:counters).class_name("UserCounter").dependent(:destroy) }
+      it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
+      it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
+      it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
+      it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
+      it { is_expected.to allow_value("#aabbcc").for(:bg_color_hex) }
+      it { is_expected.to allow_value("#aabbcc").for(:text_color_hex) }
+      it { is_expected.to allow_value("#abc").for(:bg_color_hex) }
+      it { is_expected.to allow_value("#abc").for(:text_color_hex) }
+      it { is_expected.to allow_value("AcMe_1").for(:username) }
+
+      it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+      it { is_expected.to validate_length_of(:available_for).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:behance_url).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:currently_hacking_on).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:currently_learning).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:education).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
+      it { is_expected.to validate_length_of(:employer_name).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:employer_url).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:employment_title).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
+      it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
+      it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
+      it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
       it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
       it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
-      it { is_expected.to validate_presence_of(:username) }
-      it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
-      it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
-      it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+      it { is_expected.to validate_url_of(:employer_url) }
+      it { is_expected.to validate_url_of(:website_url) }
     end
 
     it "validates username against reserved words" do
@@ -100,7 +205,7 @@ RSpec.describe User, type: :model do
   describe "#after_commit" do
     it "on update enqueues job to index user to elasticsearch" do
       user.save
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, user.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, user.id]) do
         user.save
       end
     end
@@ -113,7 +218,7 @@ RSpec.describe User, type: :model do
 
     it "on destroy enqueues job to delete user from elasticsearch" do
       user.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
         user.destroy
       end
     end
@@ -226,6 +331,20 @@ RSpec.describe User, type: :model do
 
       it "does not accept invalid facebook url" do
         user.facebook_url = "ben.com"
+        expect(user).not_to be_valid
+      end
+    end
+
+    describe "#youtube_url" do
+      it "accepts valid https youtube url", :aggregate_failures do
+        %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
+          user.youtube_url = "https://youtube.com/#{username}"
+          expect(user).to be_valid
+        end
+      end
+
+      it "does not accept invalid youtube url" do
+        user.youtube_url = "ben.com"
         expect(user).not_to be_valid
       end
     end
@@ -691,26 +810,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  context "when indexing and deindexing" do
-    it "triggers background auto-indexing when user is saved" do
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["User", user.id]) do
-        user.save
-      end
-    end
-
-    it "doesn't enqueue a job on destroy" do
-      user = build(:user)
-
-      sidekiq_perform_enqueued_jobs do
-        user.save
-      end
-
-      sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
-        user.destroy
-      end
-    end
-  end
-
   describe "user registration" do
     let(:user) { create(:user) }
 
@@ -743,7 +842,7 @@ RSpec.describe User, type: :model do
     end
 
     it "does not assign signup_cta_variant to non-new users" do
-      returning_user = build(:user, signup_cta_variant: nil)
+      returning_user = create(:user, signup_cta_variant: nil)
       new_user = user_from_authorization_service(:twitter, returning_user, "hey-hey-hey")
       expect(new_user.signup_cta_variant).to eq(nil)
     end
@@ -755,9 +854,9 @@ RSpec.describe User, type: :model do
     end
 
     it "assigns modified username if invalid" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = "invalid.username"
+      OmniAuth.config.mock_auth[:twitter].info.nickname = "invalid.user"
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.username).to eq("invalidusername")
+      expect(new_user.username).to eq("invaliduser")
     end
 
     it "assigns an identity to user" do

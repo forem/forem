@@ -48,8 +48,8 @@ variable :FORCE_SSL_IN_RAILS, :String, default: "not applicable in dev"
 
 # Github for github related access
 # (https://developer.github.com/v3/guides/basics-of-authentication/)
-variable :GITHUB_KEY, :String, default: "Optional"
-variable :GITHUB_SECRET, :String, default: "Optional"
+variable :GITHUB_KEY, :String, default: ""
+variable :GITHUB_SECRET, :String, default: ""
 
 # Twitter for normal twitter access
 # (https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens)
@@ -64,13 +64,6 @@ variable :TWITTER_SECRET, :String, default: "Optional"
 # (https://docs.honeybadger.io/lib/ruby/getting-started/introduction.html)
 variable :HONEYBADGER_API_KEY, :String, default: "Optional"
 variable :HONEYBADGER_JS_API_KEY, :String, default: "Optional"
-
-# Algolia for search (not optional)
-# (https://www.algolia.com/doc/)
-only_in_test = proc { ENV["RACK_ENV"] == "test" ? "test-test" : nil }
-variable :ALGOLIASEARCH_API_KEY, :String, default: only_in_test
-variable :ALGOLIASEARCH_APPLICATION_ID, :String, default: only_in_test
-variable :ALGOLIASEARCH_SEARCH_ONLY_KEY, :String, default: only_in_test
 
 # AWS for images storages
 variable :AWS_ID, :String, default: "Optional"
@@ -112,8 +105,8 @@ variable :HCTI_API_KEY, :String, default: "Optional"
 
 # Fastly for edge caching
 # (https://docs.fastly.com/api/)
-variable :FASTLY_API_KEY, :String, default: "Optional"
-variable :FASTLY_SERVICE_ID, :String, default: "Optional"
+variable :FASTLY_API_KEY, :String, default: ""
+variable :FASTLY_SERVICE_ID, :String, default: ""
 
 # Honeycomb for monitoring and observability
 # (https://www.honeycomb.io/)

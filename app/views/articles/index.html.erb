@@ -7,7 +7,7 @@
 
   <link rel="canonical" href="<%= app_url(request.path) %>" />
   <meta name="description" content="<%= SiteConfig.community_description %>">
-  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
 
   <meta property="og:type" content="website" />
   <meta property="og:url" content="<%= app_url(request.path) %>" />
@@ -27,15 +27,17 @@
 
 <% cache(cache_key_heroku_slug("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>
   <div class="home" id="index-container"
-      data-params="<%= params.to_json(only: %i[tag username q]) %>" data-which="<%= @list_of %>"
+      data-params="<%= params.merge(sort_by: "hotness_score", sort_direction: "desc").to_json(only: %i[tag username q sort_by sort_direction]) %>" data-which="<%= @list_of %>"
       data-tag=""
       data-feed="<%= params[:timeframe] || "base-feed" %>"
-      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime.to_i %>">
+      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
 
     <%= render "articles/sidebar" %>
 
     <%# BEGIN Feed menu bar %>
     <div class="articles-list" id="articles-list">
+      <%= render(partial: "onboardings/task_card") if user_signed_in? %>
+
       <div class="on-page-nav-controls" id="on-page-nav-controls">
         <div class="on-page-nav-label">
           <div class="wide-nav-links">

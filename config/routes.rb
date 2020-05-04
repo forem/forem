@@ -10,6 +10,11 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
+  devise_scope :user do
+    get "/enter", to: "registrations#new", as: :sign_up
+    delete "/sign_out", to: "devise/sessions#destroy"
+  end
+
   require "sidekiq/web"
   require "sidekiq_unique_jobs/web"
 
@@ -21,11 +26,6 @@ Rails.application.routes.draw do
     end
     mount Sidekiq::Web => "/sidekiq"
     mount FieldTest::Engine, at: "abtests"
-  end
-
-  devise_scope :user do
-    delete "/sign_out" => "devise/sessions#destroy"
-    get "/enter" => "registrations#new", :as => :sign_up
   end
 
   namespace :admin do
@@ -47,11 +47,12 @@ Rails.application.routes.draw do
     resources :articles, only: %i[index show update]
     resources :broadcasts, only: %i[index new create edit update]
     resources :buffer_updates, only: %i[create update]
+    # TODO: [mkohl] Change this to a single resource definition
     resources :classified_listings, only: %i[index edit update destroy]
+    resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :comments, only: [:index]
     resources :events, only: %i[index create update]
     resources :feedback_messages, only: %i[index show]
-    resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
     resources :pages, only: %i[index new create edit update destroy]
     resources :mods, only: %i[index update]
     resources :moderator_actions, only: %i[index]
@@ -159,6 +160,9 @@ Rails.application.routes.draw do
   resources :comments, only: %i[create update destroy] do
     patch "/hide", to: "comments#hide"
     patch "/unhide", to: "comments#unhide"
+    collection do
+      post "/moderator_create", to: "comments#moderator_create"
+    end
   end
   resources :comment_mutes, only: %i[update]
   resources :users, only: %i[index], defaults: { format: :json } # internal API
@@ -167,7 +171,7 @@ Rails.application.routes.draw do
   end
   resources :twitch_live_streams, only: :show, param: :username
   resources :reactions, only: %i[index create]
-  resources :response_templates, only: %i[create edit update destroy]
+  resources :response_templates, only: %i[index create edit update destroy]
   resources :feedback_messages, only: %i[index create]
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
@@ -231,9 +235,10 @@ Rails.application.routes.draw do
   get "/search/classified_listings" => "search#classified_listings"
   get "/search/users" => "search#users"
   get "/search/feed_content" => "search#feed_content"
+  get "/search/reactions" => "search#reactions"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
-  get "/listings/:category" => "classified_listings#index"
+  get "/listings/:category" => "classified_listings#index", :as => :classified_listing_category
   get "/listings/:category/:slug" => "classified_listings#index", :as => :classified_listing_slug
   get "/listings/:category/:slug/:view" => "classified_listings#index",
       :constraints => { view: /moderate/ }
@@ -280,7 +285,7 @@ Rails.application.routes.draw do
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
-  delete "users/remove_association", to: "users#remove_association"
+  delete "users/remove_identity", to: "users#remove_identity"
   post "users/request_destroy", to: "users#request_destroy", as: :user_request_destroy
   get "users/confirm_destroy/:token", to: "users#confirm_destroy", as: :user_confirm_destroy
   delete "users/full_delete", to: "users#full_delete", as: :user_full_delete
@@ -292,7 +297,6 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root
-  get "/about" => "pages#about"
   get "/robots.:format" => "pages#robots"
   get "/api", to: redirect("https://docs.dev.to/api")
   get "/privacy" => "pages#privacy"
@@ -305,13 +309,11 @@ Rails.application.routes.draw do
   get "/rly" => "pages#rlyweb"
   get "/code-of-conduct" => "pages#code_of_conduct"
   get "/report-abuse" => "pages#report_abuse"
-  get "/faq" => "pages#faq"
   get "/welcome" => "pages#welcome"
   get "/challenge" => "pages#challenge"
   get "/checkin" => "pages#checkin"
   get "/badge" => "pages#badge"
   get "/💸", to: redirect("t/hiring")
-  get "/security", to: "pages#bounty"
   get "/survey", to: redirect("https://dev.to/ben/final-thoughts-on-the-state-of-the-web-survey-44nn")
   get "/events" => "events#index"
   get "/workshops", to: redirect("events")
@@ -320,7 +322,20 @@ Rails.application.routes.draw do
   post "articles/preview" => "articles#preview"
   post "comments/preview" => "comments#preview"
   get "/stories/warm_comments/:username/:slug" => "stories#warm_comments"
-  get "/shop", to: redirect("https://shop.dev.to/")
+
+  # These routes are required by links in the sites and will most likely to be replaced by a db page
+  get "/about" => "pages#about"
+  get "/about-listings" => "pages#about_listings"
+  get "/security", to: "pages#bounty"
+  get "/community-moderation" => "pages#community_moderation"
+  get "/faq" => "pages#faq"
+  get "/page/post-a-job" => "pages#post_a_job"
+  get "/tag-moderation" => "pages#tag_moderation"
+
+  # NOTE: can't remove the hardcoded URL here as SiteConfig is not available here, we should eventually
+  # setup dynamic redirects, see <https://github.com/thepracticaldev/dev.to/issues/7267>
+  get "/shop", to: redirect("https://shop.dev.to")
+
   get "/mod" => "moderations#index", :as => :mod
   get "/mod/:tag" => "moderations#index"
   get "/page/crayons" => "pages#crayons"

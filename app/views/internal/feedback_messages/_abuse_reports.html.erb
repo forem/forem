@@ -27,13 +27,13 @@
       <div class="card-body" style="overflow: scroll; max-height: 500px;">
         <% @vomits.each do |reaction| %>
           <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
-          <div class="d-flex justify-content-between" id="js__reaction__div__<%= reaction.id %>">
+          <div class="d-flex justify-content-between" data-controller="reaction" data-reaction-id="<%= reaction.id %>">
             <span>
               🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a>
             </span>
             <span>
               <strong><%= reaction.reactable_type %>:</strong>
-              <a href="<%= reaction.reactable.path %>"><%= reaction.reactable.title %></a>
+              <a href="<%= reaction.reactable.path %>"><%= reaction.reactable_type == "User" ? reaction.reactable.username : reaction.reactable.title %></a>
               <% if reaction.reactable_type == "User" && reaction.reactable.banned %>
                 <span class="badge badge-danger">Suspended</span>
               <% end %>
@@ -45,28 +45,31 @@
               <% if params[:status] == "Open" || params[:status].blank? %>
                 <% if reaction.reactable_type == "User" %>
                   <button
-                    class="btn btn-success btn-sm js-reaction-confirm"
+                    class="btn btn-success btn-sm"
                     type="button"
                     data-reactable="user"
-                    data-id="<%= reaction.id %>"
-                    data-status="confirmed">
+                    data-status="confirmed"
+                    data-target="reaction.confirmed"
+                    data-action="reaction#reactableUserCheck">
                     CONFIRM
                   </button>
                 <% else %>
                   <button
-                    class="btn btn-success btn-sm js-reaction-confirm"
+                    class="btn btn-success btn-sm"
                     type="button"
-                    data-reactable="not-user"
-                    data-id="<%= reaction.id %>"
-                    data-status="confirmed">
+                    data-reactable="non-user"
+                    data-status="confirmed"
+                    data-target="reaction.confirmed"
+                    data-action="reaction#reactableUserCheck">
                     CONFIRM
                   </button>
                 <% end %>
                 <button
-                  class="btn btn-danger btn-sm js-reaction-confirm"
+                  class="btn btn-danger btn-sm"
                   type="button"
-                  data-id="<%= reaction.id %>"
-                  data-status="invalid">
+                  data-altstatus="invalid"
+                  data-target="reaction.invalid"
+                  data-action="reaction#updateReactionInvalid">
                   INVALID
                 </button>
               <% end %>
@@ -78,49 +81,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  function removeReactionDiv(id){
-    document.getElementById(`js__reaction__div__${id}`).remove();
-    document.getElementById(`js__reaction__div__hr__${id}`).remove();
-  }
-
-  function updateReactionStatus(id, status){
-    fetch(`/internal/reactions/${id}`, {
-     method: 'PATCH',
-     headers: {
-      Accept: 'application/json',
-       'X-CSRF-Token': document.querySelector("meta[name='csrf-token']").content,
-       'Content-Type': 'application/json',
-     },
-     body: JSON.stringify({
-       id: id,
-       status: status,
-      }),
-     credentials: 'same-origin'
-   })
-    .then(response => response.json()
-    .then(json => {
-      if (json.outcome === 'Success') {
-      removeReactionDiv(id)
-      } else {
-        alert(json.error)
-      }
-    })
-    .catch(error => {
-      alert(error);
-    }))
-  }
-
-  document.querySelectorAll('.js-reaction-confirm').forEach(item => {
-    item.addEventListener('click', function () {
-      if (item.dataset.reactable === 'user') {
-        if (confirm("You are confirming a reaction for a User; are you sure?")){
-          updateReactionStatus(item.dataset.id, item.dataset.status);
-        }
-      } else {
-        updateReactionStatus(item.dataset.id, item.dataset.status);
-      }
-    });
-  });
-</script>

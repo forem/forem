@@ -481,6 +481,19 @@ RSpec.describe "Api::V0::Articles", type: :request do
         post api_articles_path, params: { article: params }.to_json, headers: headers
       end
 
+      it "returns a 429 status code if the rate limit is reached" do
+        rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::RETRY_AFTER[:published_article_creation]
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
+
+        post_article
+
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
+      end
+
       it "fails if no params are given" do
         post_article
         expect(response).to have_http_status(:unprocessable_entity)
@@ -732,7 +745,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     let!(:api_secret)   { create(:api_secret) }
     let!(:user)         { api_secret.user }
     let(:article)       { create(:article, user: user, published: false) }
-    let(:path)          { "/api/articles/#{article.id}" }
+    let(:path)          { api_article_path(article.id) }
     let!(:organization) { create(:organization) }
 
     describe "when unauthorized" do
@@ -771,6 +784,19 @@ RSpec.describe "Api::V0::Articles", type: :request do
       def put_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         put path, params: { article: params }.to_json, headers: headers
+      end
+
+      it "returns a 429 status code if the rate limit is reached" do
+        rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::RETRY_AFTER[:article_update]
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
+
+        put_article(title: Faker::Book.title, body_markdown: "foobar")
+
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
       end
 
       it "returns not found if the article does not belong to the user" do

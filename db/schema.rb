@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_09_050122) do
+ActiveRecord::Schema.define(version: 2020_05_01_032629) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -172,6 +172,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.string "slug", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_badges_on_slug", unique: true
     t.index ["title"], name: "index_badges_on_title", unique: true
   end
 
@@ -324,7 +325,6 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.text "body_markdown"
     t.datetime "bumped_at"
     t.string "cached_tag_list"
-    t.string "category"
     t.bigint "classified_listing_category_id"
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
@@ -939,6 +939,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["type_of"], name: "index_response_templates_on_type_of"
+    t.index ["user_id", "type_of"], name: "index_response_templates_on_user_id_and_type_of"
     t.index ["user_id"], name: "index_response_templates_on_user_id"
   end
 
@@ -1093,6 +1094,16 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.index ["user_id"], name: "index_user_counters_on_user_id", unique: true
   end
 
+  create_table "user_optional_fields", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "label", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.string "value", null: false
+    t.index ["label", "user_id"], name: "index_user_optional_fields_on_label_and_user_id", unique: true
+    t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
+  end
+
   create_table "users", id: :serial, force: :cascade do |t|
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
@@ -1215,6 +1226,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
     t.string "website_url"
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
+    t.string "youtube_url"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -1274,6 +1286,7 @@ ActiveRecord::Schema.define(version: 2020_04_09_050122) do
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_counters", "users", on_delete: :cascade
+  add_foreign_key "user_optional_fields", "users"
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"

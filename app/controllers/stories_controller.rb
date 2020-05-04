@@ -4,6 +4,7 @@ class StoriesController < ApplicationController
       title path id user_id comments_count positive_reactions_count organization_id
       reading_time video_thumbnail_url video video_duration_in_minutes language
       experience_level_rating experience_level_rating_distribution cached_user cached_organization
+      classified_listing_category_id
     ],
     methods: %i[
       readable_publish_date cached_tag_list_array flare_tag class_name
@@ -15,6 +16,7 @@ class StoriesController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
+  before_action :redirect_to_lowercase_username, only: %i[index]
 
   rescue_from ArgumentError, with: :bad_request
 
@@ -75,11 +77,11 @@ class StoriesController < ApplicationController
   end
 
   def redirect_to_changed_username_profile
-    potential_username = params[:username].tr("@", "").downcase
+    potential_username = params[:username].tr("@", "")
     user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
       Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
-      redirect_to user_or_org.path
+      redirect_to user_or_org.path, status: :moved_permanently
     else
       not_found
     end
@@ -89,19 +91,19 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
-      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path
+      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path, status: :moved_permanently
       return
     elsif (@organization = @article.organization)
-      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path
+      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path, status: :moved_permanently
       return
     end
     not_found
   end
 
   def handle_user_or_organization_or_podcast_or_page_index
-    @podcast = Podcast.available.find_by(slug: params[:username].downcase)
-    @organization = Organization.find_by(slug: params[:username].downcase)
-    @page = Page.find_by(slug: params[:username].downcase, is_top_level_path: true)
+    @podcast = Podcast.available.find_by(slug: params[:username])
+    @organization = Organization.find_by(slug: params[:username])
+    @page = Page.find_by(slug: params[:username], is_top_level_path: true)
     if @podcast
       handle_podcast_index
     elsif @organization
@@ -119,7 +121,7 @@ class StoriesController < ApplicationController
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
-      redirect_to "/t/#{@tag_model.alias_for}"
+      redirect_to "/t/#{@tag_model.alias_for}", status: :moved_permanently
       return
     end
 
@@ -187,12 +189,13 @@ class StoriesController < ApplicationController
       limited_column_select.
       order("published_at DESC").page(@page).per(8))
     @organization_article_index = true
+    set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
   end
 
   def handle_user_index
-    @user = User.find_by(username: params[:username].tr("@", "").downcase)
+    @user = User.find_by(username: params[:username].tr("@", ""))
     unless @user
       redirect_to_changed_username_profile
       return
@@ -205,6 +208,7 @@ class StoriesController < ApplicationController
     return if performed?
 
     set_surrogate_key_header "articles-user-#{@user.id}"
+    set_user_json_ld
     render template: "users/show"
   end
 
@@ -271,6 +275,7 @@ class StoriesController < ApplicationController
 
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     assign_second_and_third_user
+    set_article_json_ld
     @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
@@ -328,6 +333,125 @@ class StoriesController < ApplicationController
   end
 
   def assign_classified_listings
-    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
+    @classified_listings = ClassifiedListing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at)
+  end
+
+  def redirect_to_lowercase_username
+    return unless params[:username] && params[:username]&.match?(/[[:upper:]]/)
+
+    redirect_to "/#{params[:username].downcase}", status: :moved_permanently
+  end
+
+  def set_user_json_ld
+    @user_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.user(@user)
+      },
+      "url": URL.user(@user),
+      "sameAs": [],
+      "image": ProfileImage.new(@user).get(width: 320),
+      "name": @user.name,
+      "email": "",
+      "jobTitle": "",
+      "description": @user.summary.presence || "404 bio not found",
+      "disambiguatingDescription": [],
+      "worksFor": [
+        {
+          "@type": "Organization"
+        },
+      ],
+      "alumniOf": ""
+    }
+    set_user_profile_json_ld
+    set_user_same_as_json_ld
+  end
+
+  def set_article_json_ld
+    @article_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.article(@article)
+      },
+      "url": URL.article(@article),
+      "image": seo_optimized_images,
+      "publisher": {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "name": "#{ApplicationConfig['COMMUNITY_NAME']} Community",
+        "logo": {
+          "@context": "http://schema.org",
+          "@type": "ImageObject",
+          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, "png"),
+          "width": "192",
+          "height": "192"
+        }
+      },
+      "headline": @article.title,
+      "author": {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        "url": URL.user(@user),
+        "name": @user.name
+      },
+      "datePublished": @article.published_timestamp,
+      "dateModified": @article.edited_at&.iso8601 || @article.published_timestamp
+    }
+  end
+
+  def seo_optimized_images
+    # This array of images exists for SEO optimization purposes.
+    # For more info on this structure, please refer to this documentation:
+    # https://developers.google.com/search/docs/data-types/article
+    [ApplicationController.helpers.article_social_image_url(@article, width: 1080, height: 1080),
+     ApplicationController.helpers.article_social_image_url(@article, width: 1280, height: 720),
+     ApplicationController.helpers.article_social_image_url(@article, width: 1600, height: 900)]
+  end
+
+  def set_organization_json_ld
+    @organization_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.organization(@organization)
+      },
+      "url": URL.organization(@organization),
+      "image": ProfileImage.new(@organization).get(width: 320),
+      "name": @organization.name,
+      "description": @user.summary.presence || "404 bio not found"
+    }
+  end
+
+  def set_user_profile_json_ld
+    @user_json_ld[:disambiguatingDescription].append(@user.mostly_work_with) if @user.mostly_work_with.present?
+    @user_json_ld[:disambiguatingDescription].append(@user.currently_hacking_on) if @user.currently_hacking_on.present?
+    @user_json_ld[:disambiguatingDescription].append(@user.currently_learning) if @user.currently_learning.present?
+    @user_json_ld[:worksFor][0][:name] = @user.employer_name if @user.employer_name.present?
+    @user_json_ld[:worksFor][0][:url] = @user.employer_url if @user.employer_url.present?
+    @user_json_ld[:alumniOf] = @user.education if @user.education.present?
+    @user_json_ld[:email] = @user.email if @user.email_public
+    @user_json_ld[:jobTitle] = @user.employment_title if @user.employment_title.present?
+    @user_json_ld[:sameAs].append("https://twitter.com/#{@user.twitter_username}") if @user.twitter_username.present?
+    @user_json_ld[:sameAs].append("https://github.com/#{@user.github_username}") if @user.github_username.present?
+  end
+
+  def set_user_same_as_json_ld
+    @user_json_ld[:sameAs].append(@user.mastodon_url) if @user.mastodon_url.present?
+    @user_json_ld[:sameAs].append(@user.facebook_url) if @user.facebook_url.present?
+    @user_json_ld[:sameAs].append(@user.youtube_url) if @user.youtube_url.present?
+    @user_json_ld[:sameAs].append(@user.linkedin_url) if @user.linkedin_url.present?
+    @user_json_ld[:sameAs].append(@user.behance_url) if @user.behance_url.present?
+    @user_json_ld[:sameAs].append(@user.stackoverflow_url) if @user.stackoverflow_url.present?
+    @user_json_ld[:sameAs].append(@user.dribbble_url) if @user.dribbble_url.present?
+    @user_json_ld[:sameAs].append(@user.medium_url) if @user.medium_url.present?
+    @user_json_ld[:sameAs].append(@user.gitlab_url) if @user.gitlab_url.present?
+    @user_json_ld[:sameAs].append(@user.instagram_url) if @user.instagram_url.present?
+    @user_json_ld[:sameAs].append(@user.twitch_username) if @user.twitch_username.present?
+    @user_json_ld[:sameAs].append(@user.website_url) if @user.website_url.present?
   end
 end

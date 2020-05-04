@@ -58,10 +58,12 @@ article {
     width: 100%;
     margin: auto;
     max-width: 1024px;
-    background: transparent no-repeat center center;
-    background-size: cover;
     z-index: 2;
-    padding-top: 42%;
+    height: 42vw;
+
+    @media screen and (min-width: 880px) {
+      height: 370px;
+    }
 
     @media screen and (min-width: 950px) {
       border-top-left-radius: 2px;

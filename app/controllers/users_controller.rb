@@ -1,34 +1,27 @@
 class UsersController < ApplicationController
   before_action :set_no_cache_header
   before_action :raise_suspended, only: %i[update]
-  before_action :set_user, only: %i[update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_association]
+  before_action :set_user, only: %i[
+    update update_twitch_username update_language_settings confirm_destroy request_destroy full_delete remove_identity
+  ]
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
+  before_action :set_suggested_users, only: %i[index]
   rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
-  DEFAULT_FOLLOW_SUGGESTIONS = %w[ben jess peter maestromac andy liana].freeze
+  INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
+  private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
   def index
-    if !user_signed_in? || less_than_one_day_old?(current_user)
-      @users = User.where(username: DEFAULT_FOLLOW_SUGGESTIONS)
-      return
-    end
-
     @users =
       if params[:state] == "follow_suggestions"
-        Suggester::Users::Recent.new(
-          current_user,
-          attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
-        ).suggest
+        determine_follow_suggestions(current_user)
       elsif params[:state] == "sidebar_suggestions"
         Suggester::Users::Sidebar.new(current_user, params[:tag]).suggest.sample(3)
       else
         User.none
       end
   end
-
-  INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
-  private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
 
   # GET /settings/@tab
   def edit
@@ -44,6 +37,12 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/:id.:format
   def update
     set_tabs(params["user"]["tab"])
+
+    unless valid_image?
+      render :edit, status: :bad_request
+      return
+    end
+
     if @user.update(permitted_attributes(@user))
       RssReaderFetchUserWorker.perform_async(@user.id) if @user.feed_url.present?
       notice = "Your profile was successfully updated."
@@ -124,22 +123,34 @@ class UsersController < ApplicationController
     end
   end
 
-  def remove_association
-    provider = params[:provider]
-    identity = @user.identities.find_by(provider: provider)
+  def remove_identity
     set_tabs("account")
 
-    if @user.identities.size == 2 && identity
+    error_message = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+    unless Authentication::Providers.enabled?(params[:provider])
+      flash[:error] = error_message
+      redirect_to user_settings_path(@tab)
+      return
+    end
+
+    provider = Authentication::Providers.get!(params[:provider])
+
+    identity = @user.identities.find_by(provider: provider.provider_name)
+
+    if identity && @user.identities.size > 1
       identity.destroy
 
-      identity_username = "#{provider}_username".to_sym
-      @user.update(identity_username => nil, :profile_updated_at => Time.current)
+      @user.update(
+        provider.user_username_field => nil,
+        :profile_updated_at => Time.current,
+      )
 
-      flash[:settings_notice] = "Your #{provider.capitalize} account was successfully removed."
+      flash[:settings_notice] = "Your #{provider.official_name} account was successfully removed."
     else
-      flash[:error] = "An error occurred. Please try again or send an email to: #{SiteConfig.default_site_email}"
+      flash[:error] = error_message
     end
-    redirect_to "/settings/#{@tab}"
+
+    redirect_to user_settings_path(@tab)
   end
 
   def onboarding_update
@@ -257,6 +268,23 @@ class UsersController < ApplicationController
     params[:user].delete_if { |_k, v| v.blank? }
   end
 
+  def set_suggested_users
+    @suggested_users = SiteConfig.suggested_users
+  end
+
+  def default_suggested_users
+    @default_suggested_users ||= User.where(username: @suggested_users)
+  end
+
+  def determine_follow_suggestions(current_user)
+    recent_suggestions = Suggester::Users::Recent.new(
+      current_user,
+      attributes_to_select: INDEX_ATTRIBUTES_FOR_SERIALIZATION,
+    ).suggest
+
+    recent_suggestions.presence || default_suggested_users
+  end
+
   def render_update_response
     if current_user.save
       respond_to do |format|
@@ -301,18 +329,13 @@ class UsersController < ApplicationController
   end
 
   def handle_account_tab
+    community_name = ApplicationConfig["COMMUNITY_NAME"]
     @email_body = <<~HEREDOC
-      Hello #{ApplicationConfig['COMMUNITY_NAME']} Team,
-      %0A
-      %0A
-      I would like to delete my account.
-      %0A%0A
-      You can keep any comments and discussion posts under the Ghost account.
-      %0A
-      %0A
+      Hello #{community_name} Team,\n
+      I would like to delete my account.\n
+      You can keep any comments and discussion posts under the Ghost account.\n
       Regards,
-      %0A
-      YOUR-DEV-USERNAME-HERE
+      YOUR-#{community_name}-USERNAME-HERE
     HEREDOC
   end
 
@@ -337,9 +360,44 @@ class UsersController < ApplicationController
   end
 
   def less_than_one_day_old?(user)
+    # we check all the `_created_at` fields for all available providers
+    # we use `.available` and not `.enabled` to avoid a situation in which
+    # an admin disables an authentication method after users have already
+    # registered, risking that they would be flagged as new
+    # the last one is a fallback in case all created_at fields are nil
+    user_identity_age = Authentication::Providers.available.map do |provider|
+      user.public_send("#{provider}_created_at")
+    end.detect(&:present?)
+
+    user_identity_age = user_identity_age.presence || 8.days.ago
+
     range = 1.day.ago.beginning_of_day..Time.current
-    user_identity_age = user.github_created_at || user.twitter_created_at || 8.days.ago
-    # last one is a fallback in case both are nil
-    range.cover? user_identity_age
+    range.cover?(user_identity_age)
+  end
+
+  def valid_image?
+    image = params.dig("user", "profile_image")
+    return true unless image
+
+    return true if valid_image_file?(image) && valid_filename?(image)
+
+    Honeycomb.add_field("error", @user.errors.messages)
+    Honeycomb.add_field("errored", true)
+
+    false
+  end
+
+  def valid_image_file?(image)
+    return true if file?(image)
+
+    @user.errors.add(:profile_image, IS_NOT_FILE_MESSAGE)
+    false
+  end
+
+  def valid_filename?(image)
+    return true unless long_filename?(image)
+
+    @user.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
+    false
   end
 end

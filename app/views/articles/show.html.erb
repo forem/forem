@@ -3,7 +3,7 @@
 <%= render "shared/webcomponents_loader_script" %>
 <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", defer: true %>
 
-<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}", expires_in: 30.hours) do %>
+<% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/postscribe/2.0.8/postscribe.min.js"
             integrity="sha256-xOIPU/XvDtRLeDQ3qj9GOKmlbMSqKa6D7ZIS6ygHBSo="
@@ -30,6 +30,11 @@
       }, 500)
     </script>
   <% end %>
+  <% unless internal_navigation? || user_signed_in? %>
+    <script type="application/ld+json">
+      <%= @article_json_ld.to_json.html_safe %>
+    </script>
+  <% end %>
 
   <% if @article.processed_html.include? "runkit-element" %>
     <%= javascript_include_tag "https://embed.runkit.com" %>
@@ -37,14 +42,14 @@
 <% end %>
 
 <% if internal_navigation? %>
-    <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
-    <meta name="description" content="<%= @article.description_and_tags %>">
-    <meta name="keywords" content="<%= @article.cached_tag_list %>, software, coding, development, engineering, inclusive, community">
+  <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
+  <meta name="description" content="<%= @article.description_and_tags %>">
+  <meta name="keywords" content="<%= @article.cached_tag_list %>, <%= SiteConfig.meta_keywords[:article] %>">
 <% else %>
   <%= content_for :page_meta do %>
     <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
     <meta name="description" content="<%= @article.description_and_tags %>">
-    <meta name="keywords" content="<%= @article.cached_tag_list %>, software, coding, development, engineering, inclusive, community">
+    <meta name="keywords" content="<%= @article.cached_tag_list %>, <%= SiteConfig.meta_keywords[:article] %>">
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= article_url(@article) %>" />
@@ -85,17 +90,7 @@
     <% if @article.video_state == "PROGRESSING" %>
       <h1 style="text-align:center;">⏳ Video Transcoding In Progress ⏳</h1>
     <% end %>
-    <article itemscope itemtype="http://schema.org/Article" itemprop="mainEntity">
-      <meta itemprop="url" content="<%= article_url(@article) %>">
-      <meta itemprop="image" content="<%= article_social_image_url(@article) %>">
-      <div itemprop="publisher" itemscope itemtype="https://schema.org/Organization">
-        <div itemprop="logo" itemscope itemtype="https://schema.org/ImageObject">
-          <meta itemprop="url" content="<%= cloudinary(SiteConfig.logo_png, 192, "png") %>">
-          <meta itemprop="width" content="192">
-          <meta itemprop="height" content="192">
-        </div>
-        <meta itemprop="name" content="<%= community_qualified_name %>">
-      </div>
+    <article>
       <section>
         <% if !@article.published %>
           <a href="<%= @article.path %>/edit" class="unpublished">
@@ -106,8 +101,7 @@
         <% if @article.video.present? %>
           <%= render "articles/video_player", meta_tags: true, article: @article %>
         <% elsif @article.main_image.present? %>
-          <div class="image image-final" style="background-color:<%= @article.main_image_background_hex_color %>;background-image:url(<%= cloud_cover_url(@article.main_image) %>)">
-          </div>
+          <img src="<%= cloud_cover_url(@article.main_image) %>" class="image image-final" style="background-color:<%= @article.main_image_background_hex_color %>;" alt="Cover image for <%= @article.title %>" />
         <% else %>
           <div class="blank-space"></div>
         <% end %>
@@ -120,15 +114,14 @@
             </div>
           </a>
         <% end %>
-        <h1 class="<%= @article.title_length_classification %>" itemprop="name headline">
+        <h1 class="<%= @article.title_length_classification %>">
           <%= @article.title %>
         </h1>
         <h3>
-          <span itemprop="author" itemscope itemtype="http://schema.org/Person">
-            <meta itemprop="url" content="<%= user_url(@user) %>">
+          <span>
             <a href="/<%= @user.username %>" class="author">
               <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" />
-              <span itemprop="name"><%= @user.name %></span>
+              <span><%= @user.name %></span>
             </a>
           </span>
           <% if @user.twitter_username.present? %>
@@ -138,7 +131,7 @@
             <a href="http://github.com/<%= @user.github_username %>"><%= image_tag_or_inline_svg_tag "github", width: 18, height: 18 %></a>
           <% end %>
           <% if @article.published_timestamp.present? %>
-            <time itemprop="datePublished" datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
+            <time datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
           <% end %>
           <% if @second_user.present? %>
             <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
@@ -147,7 +140,7 @@
             <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
           <% end %>
           <% if should_show_updated_on?(@article) %>
-            <span><em>Updated on <time itemprop="dateModified" datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em></span>
+            <span><em>Updated on <time datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em></span>
           <% elsif should_show_crossposted_on?(@article) %>
             <span>
               <em>
@@ -179,7 +172,7 @@
                    articles: @collection_articles,
                    position: :top %>
       <% end %>
-      <div class="body" data-article-id="<%= @article.id %>" id="article-body" itemprop="articleBody">
+      <div class="body" data-article-id="<%= @article.id %>" id="article-body">
         <%= @article.processed_html.html_safe %>
       </div>
       <% if @article.body_markdown && @article.body_markdown.size > 900 && @collection %>

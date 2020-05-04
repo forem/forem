@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::Base, type: :service, elasticsearch: true do
+RSpec.describe Search::Base, type: :service do
   let(:document_id) { 123 }
 
   before do
@@ -8,6 +8,8 @@ RSpec.describe Search::Base, type: :service, elasticsearch: true do
     stub_const("#{described_class}::INDEX_NAME", "tags_#{Rails.env}")
     stub_const("#{described_class}::INDEX_ALIAS", "tags_#{Rails.env}_alias")
     stub_const("#{described_class}::MAPPINGS", Search::Tag::MAPPINGS)
+    Search::Tag.refresh_index
+    clear_elasticsearch_data(Search::Tag)
     allow(described_class).to receive(:index_settings).and_return({})
   end
 
@@ -21,6 +23,30 @@ RSpec.describe Search::Base, type: :service, elasticsearch: true do
     it "sets last_indexed_at field" do
       Timecop.freeze(Time.current) do
         described_class.index(document_id, id: document_id)
+        last_indexed_at = described_class.find_document(document_id).dig("_source", "last_indexed_at")
+        expect(Time.zone.parse(last_indexed_at).to_i).to eq(Time.current.to_i)
+      end
+    end
+  end
+
+  describe "::bulk_index" do
+    it "indexes a set of data hashes to Elasticsearch" do
+      id_list = [123, 456, 789]
+      id_list.each do |document_id|
+        expect { described_class.find_document(document_id) }.to raise_error(Search::Errors::Transport::NotFound)
+      end
+      data_hashes = id_list.map { |id| { id: id, name: "i_am_a_tag" } }
+      described_class.bulk_index(data_hashes)
+
+      id_list.each do |document_id|
+        doc = described_class.find_document(document_id)
+        expect(doc.dig("_source", "id")).to eql(document_id)
+      end
+    end
+
+    it "sets last_indexed_at field" do
+      Timecop.freeze(Time.current) do
+        described_class.bulk_index([{ id: document_id, name: "i_am_a_tag" }])
         last_indexed_at = described_class.find_document(document_id).dig("_source", "last_indexed_at")
         expect(Time.zone.parse(last_indexed_at).to_i).to eq(Time.current.to_i)
       end
@@ -43,7 +69,7 @@ RSpec.describe Search::Base, type: :service, elasticsearch: true do
     end
   end
 
-  describe "::create_index" do
+  describe "::create_index", elasticsearch_reset: true do
     it "creates an elasticsearch index with INDEX_NAME" do
       described_class.delete_index
       expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
@@ -62,7 +88,7 @@ RSpec.describe Search::Base, type: :service, elasticsearch: true do
     end
   end
 
-  describe "::delete_index" do
+  describe "::delete_index", elasticsearch_reset: true do
     it "deletes an elasticsearch index with INDEX_NAME" do
       expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
       described_class.delete_index

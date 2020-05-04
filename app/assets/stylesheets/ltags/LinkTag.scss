@@ -85,6 +85,9 @@
         color: var(--card-color-tertiary);
       }
     }
+    .missing {
+      padding: 0 10px !important;
+    }
     .ltag__link__taglist {
       margin: 0;
       padding: 0;

@@ -13,6 +13,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let_it_be_readonly(:customize_ux_broadcast)    { create(:customize_ux_broadcast) }
 
   before do
+    omniauth_mock_providers_payload
     allow(Notification).to receive(:send_welcome_notification).and_call_original
     allow(User).to receive(:mascot_account).and_return(mascot_account)
     SiteConfig.staff_user_id = mascot_account.id
@@ -141,10 +142,13 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   end
 
   describe "#send_feed_customization_notification" do
-    let!(:user) { create(:user, :with_identity, identities: %w[twitter github], created_at: 3.days.ago) }
+    let!(:user) do
+      omniauth_mock_providers_payload
+      create(:user, :with_identity, identities: %w[twitter github], created_at: 3.days.ago)
+    end
 
     it "does not send a notification to a newly-created user" do
-      user.update!(created_at: Time.zone.now)
+      user.update!(created_at: Time.current)
       sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_feed_customization_notification) }
       expect(Notification).not_to have_received(:send_welcome_notification)
     end

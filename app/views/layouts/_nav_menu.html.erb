@@ -3,27 +3,29 @@
     <div id="user-profile-link-placeholder" class="border-0 border-b-1 border-solid border-base-20 p-1">...</div>
 
     <div class="border-0 border-b-1 border-solid border-base-20 p-1">
-      <a href="/dashboard" class="crayons-link crayons-link--block">Dashboard</a>
-      <a href="/new" class="crayons-link crayons-link--block">Write a Post</a>
-      <a href="/readinglist" class="crayons-link crayons-link--block">Reading List</a>
-      <a href="/settings" class="crayons-link crayons-link--block">Settings</a>
-      <a href="/p/information" class="crayons-link crayons-link--block" id="second-last-nav-link">Key Links</a>
+      <a href="<%= dashboard_path %>" class="crayons-link crayons-link--block">Dashboard</a>
+      <a href="<%= new_path %>" class="crayons-link crayons-link--block">Write a Post</a>
+      <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">Reading List</a>
+      <a href="<%= user_settings_path %>" class="crayons-link crayons-link--block">Settings</a>
+      <a href="<%= information_path %>" class="crayons-link crayons-link--block" id="second-last-nav-link">Key Links</a>
     </div>
     <div class="p-1">
-      <a href="/signout_confirm" class="crayons-link crayons-link--block" id="last-nav-link">Sign Out</a>
+      <a href="<%= signout_confirm_path %>" class="crayons-link crayons-link--block" id="last-nav-link">Sign Out</a>
     </div>
   <% else %>
     <div class="border-0 border-b-1 border-solid border-base-20 p-1">
-      <a href="/enter" data-no-instant id="first-nav-link" class="crayons-link crayons-link--block fw-medium">Sign In/Up</a>
-      <% if SiteConfig.auth_allowed?("twitter") %>
-        <a href="/users/auth/twitter?callback_url=<%= app_url("/users/auth/twitter/callback") %>" class="crayons-link crayons-link--block pl-5" data-no-instant>Via Twitter</a>
-      <% end %>
-      <% if SiteConfig.auth_allowed?("github") %>
-        <a href="/users/auth/github?state=navbar_basic" class="crayons-link crayons-link--block pl-5" data-no-instant id="second-last-nav-link">Via GitHub</a>
-      <% end %>
+      <a
+        href="<%= sign_up_path %>"
+        id="first-nav-link"
+        class="crayons-link crayons-link--block fw-medium"
+        data-no-instant>
+        Sign In/Up
+      </a>
+
+      <%= render partial: "shared/authentication/providers_nav_menu" %>
     </div>
     <div class="p-1">
-      <a href="/p/information" class="crayons-link crayons-link--block" id="last-nav-link">All about <%= community_name %></a>
+      <a href="<%= information_path %>" class="crayons-link crayons-link--block" id="last-nav-link">All about <%= community_name %></a>
     </div>
   <% end %>
 </div>

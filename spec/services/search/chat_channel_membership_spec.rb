@@ -1,7 +1,7 @@
 require "rails_helper"
 
-RSpec.describe Search::ChatChannelMembership, type: :service, elasticsearch: true do
-  describe "::search_documents" do
+RSpec.describe Search::ChatChannelMembership, type: :service do
+  describe "::search_documents", elasticsearch: "ChatChannelMembership" do
     let(:user) { create(:user) }
     let(:chat_channel_membership1) { create(:chat_channel_membership, user_id: user.id) }
     let(:chat_channel_membership2) { create(:chat_channel_membership, user_id: user.id) }

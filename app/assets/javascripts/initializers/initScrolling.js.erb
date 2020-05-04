@@ -1,6 +1,6 @@
 'use strict';
 
-/* global algoliasearch, insertAfter, insertArticles, buildArticleHTML, nextPage:writable, fetching:writable, done:writable */
+/* global insertAfter, insertArticles, buildArticleHTML, nextPage:writable, fetching:writable, done:writable */
 
 var client;
 
@@ -179,40 +179,57 @@ function fetchNextPodcastPage(el) {
   fetchNext(el, "/api/podcast_episodes", insertArticles)
 }
 
-function paginate(tag, requiresApproval) {
-  var tagFilters = [];
-  if (tag && tag.length > 0) {
-    tagFilters.push(tag);
-  }
+function paginate(tag, params, requiresApproval) {
+  const searchHash = { ...{ per_page: 15, page: nextPage }, ...JSON.parse(params) };
 
-  var searchObj = {
-      hitsPerPage: 15,
-      page: nextPage,
-      attributesToHighlight: [],
-      tagFilters,
-      filters: (requiresApproval === 'true') ? 'approved:true' : ''
+  if (tag && tag.length > 0) {
+    searchHash.tag_names = searchHash.tag_names || [];
+    searchHash.tag_names.push(tag);
   }
+  searchHash.approved = (requiresApproval === 'true') ? 'true' : '';
 
   var homeEl = document.getElementById("index-container");
-  var paginationArticlesIndex;
   if (homeEl.dataset.feed === "base-feed") {
-    paginationArticlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
+    searchHash.class_name = "Article";
   } else if (homeEl.dataset.feed === "latest") {
-    paginationArticlesIndex = client.initIndex('ordered_articles_by_published_at_<%= Rails.env %>');
+    searchHash.class_name = "Article";
+    searchHash.sort_by = "published_at";
   } else {
-    var preamble = (requiresApproval === 'true') ? ' AND ' : ''
-    searchObj.filters += ( preamble +'published_at_int > ' + homeEl.dataset.articlesSince);
-    paginationArticlesIndex = client.initIndex('ordered_articles_by_positive_reactions_count_<%= Rails.env %>');
+    searchHash.class_name = "Article";
+    searchHash["published_at[gte]"] = homeEl.dataset.articlesSince;
+    searchHash.sort_by = "positive_reactions_count";
   }
 
-  paginationArticlesIndex.search("*", searchObj)
-  .then(function searchDone(content) {
+  // Brute force copying code from a utlity for quick fix
+  const searchParams = new URLSearchParams();
+  Object.keys(searchHash).forEach((key) => {
+    const value = searchHash[key];
+    if (Array.isArray(value)) {
+      value.forEach((arrayValue) => {
+        searchParams.append(`${key}[]`, arrayValue);
+      });
+    } else {
+      searchParams.append(key, value);
+    }
+  });
+
+  fetch(`/search/feed_content?${searchParams.toString()}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then((content) => {
     nextPage += 1;
-    insertArticles(content.hits);
+    insertArticles(content.result);
     const checkBlockedContentEvent = new CustomEvent('checkBlockedContent')
     window.dispatchEvent(checkBlockedContentEvent);
     initializeReadingListIcons();
-    if (content.hits.length === 0) {
+    if (content.result.length === 0) {
       document.getElementById("loading-articles").style.display = "none"
       done = true;
     }
@@ -253,7 +270,11 @@ function fetchNextPageIfNearBottom() {
   } else {
     scrollableElemId = "articles-list";
     fetchCallback = function fetch() {
-      paginate(indexContainer.dataset.tag, indexContainer.dataset.requiresApproval);
+      paginate(
+        indexContainer.dataset.tag,
+        indexContainer.dataset.params,
+        indexContainer.dataset.requiresApproval
+      );
     };
   }
 
@@ -266,9 +287,6 @@ function fetchNextPageIfNearBottom() {
 }
 
 function checkIfNearBottomOfPage() {
-  var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>';
-  client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
-
   if (document.getElementsByClassName("single-article").length < 2 || window.location.search.indexOf("q=") > -1 ) {
     document.getElementById("loading-articles").style.display = "none";
     done = true;

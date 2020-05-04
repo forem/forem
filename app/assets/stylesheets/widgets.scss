@@ -1,5 +1,5 @@
 // Sidebar widgets
-
+@import 'config/import';
 @import 'variables';
 @import '_mixins';
 
@@ -7,6 +7,7 @@
 .sidebar-profile {
   @include sidebar-link;
   margin: 0;
+  margin-bottom: $su-2;
   display: flex;
   align-items: center;
 
@@ -93,9 +94,6 @@
         font-size: 1.1em;
       }
     }
-  }
-  &.widget-sponsorship {
-    display: none;
   }
   &.showing {
     display: block;
@@ -420,24 +418,20 @@
   }
 }
 
+.query-filter-button {
+  box-sizing: border-box;
+  display: inline-block;
+  padding: $su-2 0;
+  width: 100%;
+}
+
 // Sidebar sponsors
 .sidebar-sponsor {
-  margin-bottom: 24px;
   color: var(--card-color-tertiary);
   img {
     width: 100%;
-    max-width: 180px;
-  }
-}
-.sidebar-sponsor--footer {
-  font-size: 0.75em;
-  color: var(--card-color-tertiary);
-  a {
-    background: lighten($purple, 3%);
-    color: $black;
-    display: inline-block;
-    padding: 2px 6px;
-    font-weight: 500;
+    max-width: 140px;
+    margin-bottom: $su-2;
   }
 }
 
@@ -447,7 +441,7 @@
   color: $black;
   display: block;
   position: relative;
-  @media screen and (min-width: 950px) {
+  @media screen and (min-width: $breakpoint-m) {
     .sidebar-nav-link-follow {
       display: none;
     }

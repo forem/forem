@@ -1,5 +1,4 @@
 class Reaction < ApplicationRecord
-  include AlgoliaSearch
   include Searchable
 
   SEARCH_SERIALIZER = Search::ReactionSerializer
@@ -20,6 +19,8 @@ class Reaction < ApplicationRecord
 
   scope :positive, -> { where("points > ?", 0) }
   scope :readinglist, -> { where(category: "readinglist") }
+  scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
+  scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :reactable_type, inclusion: { in: REACTABLE_TYPES }
@@ -30,30 +31,14 @@ class Reaction < ApplicationRecord
   after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_save :assign_points
   after_create_commit :record_field_test_event
-  after_commit :async_bust, :bust_reactable_cache, :update_reactable
+  after_commit :async_bust
+  after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
   after_commit :index_to_elasticsearch, if: :indexable?, on: %i[create update]
   after_commit :remove_from_elasticsearch, if: :indexable?, on: [:destroy]
-  after_save :index_to_algolia
   after_save :touch_user
+
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
-  before_destroy :remove_algolia
-
-  algoliasearch index_name: "SecuredReactions_#{Rails.env}", auto_index: false, auto_remove: false do
-    attribute :id, :reactable_user, :searchable_reactable_title, :searchable_reactable_path, :status, :reading_time,
-              :searchable_reactable_text, :searchable_reactable_tags, :viewable_by, :reactable_tags, :reactable_published_date
-    searchableAttributes %i[searchable_reactable_title searchable_reactable_text
-                            searchable_reactable_tags reactable_user]
-    tags do
-      reactable_tags
-    end
-    attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)"]
-    customRanking ["desc(id)"]
-  end
-
-  def index_to_algolia
-    index! if category == "readinglist" && reactable && reactable.published
-  end
 
   class << self
     def count_for_article(id)
@@ -140,10 +125,6 @@ class Reaction < ApplicationRecord
     reactable.reading_time if category == "readinglist"
   end
 
-  def remove_from_index
-    remove_from_index!
-  end
-
   def reactable_user
     return unless category == "readinglist"
 
@@ -205,10 +186,6 @@ class Reaction < ApplicationRecord
     return if user&.any_admin?
 
     negative? && !user.trusted
-  end
-
-  def remove_algolia
-    remove_from_index!
   end
 
   def record_field_test_event

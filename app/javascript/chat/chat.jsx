@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return,no-unused-vars,react/destructuring-assignment,react/no-access-state-in-setstate,react/button-has-type */
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import ConfigImage from '../../assets/images/three-dots.svg';
@@ -79,16 +80,13 @@ export default class Chat extends Component {
       channelUsers: [],
       showMemberlist: false,
       memberFilterQuery: null,
-      rerenderIfUnchangedCheck: null
+      rerenderIfUnchangedCheck: null,
     };
-    getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    if(this.state.rerenderIfUnchangedCheck !== nextState.rerenderIfUnchangedCheck) {
-      return false;
+    if (chatOptions.activeChannelId) {
+      getAllMessages(chatOptions.activeChannelId, 0, this.receiveAllMessages);
     }
   }
+
   componentDidMount() {
     const {
       chatChannels,
@@ -142,6 +140,14 @@ export default class Chat extends Component {
         .addEventListener('scroll', this.handleChannelScroll);
     }
     getChannelInvites(this.handleChannelInvites, null);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (
+      this.state.rerenderIfUnchangedCheck !== nextState.rerenderIfUnchangedCheck
+    ) {
+      return false;
+    }
   }
 
   componentDidUpdate() {
@@ -265,7 +271,7 @@ export default class Chat extends Component {
   };
 
   loadPaginatedChannels = (channels) => {
-    const { state } = this.state;
+    const state = this.state;
     const currentChannels = state.chatChannels;
     const currentChannelIds = currentChannels.map((channel) => channel.id);
     const newChannels = currentChannels;
@@ -344,7 +350,10 @@ export default class Chat extends Component {
       if (entry.isIntersecting && this.state.scrolled === true) {
         this.setState({ scrolled: false, showAlert: false });
       } else if (this.state.scrolled === false) {
-        this.setState({ scrolled: true, rerenderIfUnchangedCheck: Math.random() });
+        this.setState({
+          scrolled: true,
+          rerenderIfUnchangedCheck: Math.random(),
+        });
       }
     });
   };
@@ -399,6 +408,11 @@ export default class Chat extends Component {
       unopenedChannelIds,
     } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
+    const messageList = document.getElementById('messagelist')
+    const nearBottom =  (messageList.scrollTop + messageList.offsetHeight + 400 > messageList.scrollHeight)
+    if (nearBottom) {
+      scrollToBottom();
+    }
     let newMessages = [];
     if (
       message.temp_id &&
@@ -417,7 +431,7 @@ export default class Chat extends Component {
       }
     }
     const newShowAlert =
-      activeChannelId === receivedChatChannelId ? { showAlert: scrolled } : {};
+      activeChannelId === receivedChatChannelId ? { showAlert: !nearBottom } : {};
     let newMessageChannelIndex = 0;
     let newMessageChannel = null;
     const newChannelsObj = chatChannels.map((channel, index) => {
@@ -556,7 +570,7 @@ export default class Chat extends Component {
     }
     if (escPressed && activeContent[activeChannelId]) {
       this.setActiveContentState(activeChannelId, null);
-      this.setState({fullscreenContent: null});
+      this.setState({fullscreenContent: null, expanded: window.innerWidth > 600});
     }
 
   };
@@ -590,7 +604,7 @@ export default class Chat extends Component {
   };
 
   handleMessageSubmit = (message) => {
-    const { activeChannelId, activeContent } = this.state;
+    const { activeChannelId } = this.state;
     scrollToBottom();
     // should check if user has the privilege
     if (message.startsWith('/code')) {
@@ -601,7 +615,14 @@ export default class Chat extends Component {
         message: '/call',
         mentionedUsersId: this.getMentionedUsers(message),
       };
-      this.setState({ videoPath: `/video_chats/${  activeChannelId}` });
+      this.setState({ videoPath: `/video_chats/${activeChannelId}` });
+      sendMessage(messageObject, this.handleSuccess, this.handleFailure);
+    } else if (message.startsWith('/play ')) {
+      const messageObject = {
+        activeChannelId,
+        message: message,
+        mentionedUsersId: this.getMentionedUsers(message),
+      };
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     } else if (message.startsWith('/new')) {
       this.setActiveContentState(activeChannelId, {
@@ -651,6 +672,7 @@ export default class Chat extends Component {
         message,
         mentionedUsersId: this.getMentionedUsers(message),
       };
+      this.setState({scrolled: false, showAlert: false})
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     }
   };
@@ -800,6 +822,15 @@ export default class Chat extends Component {
           path: `/chat_channel_memberships/${activeChannel.id}/edit`,
           type_of: 'article',
         });
+      } else if (content.startsWith('sidecar-content-plus-video')) {
+        this.setActiveContentState(activeChannelId, {
+          type_of: 'loading-post',
+        });
+        this.setActiveContent({
+          path: target.href || target.parentElement.href,
+          type_of: 'article',
+        });
+        this.setState({ videoPath: `/video_chats/${activeChannelId}` });
       } else if (content.startsWith('sidecar-video')) {
         this.setState({ videoPath: target.href || target.parentElement.href });
       } else if (
@@ -816,10 +847,11 @@ export default class Chat extends Component {
         });
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
-        this.setState({fullscreenContent: null});
+        this.setState({ fullscreenContent: null, expanded: window.innerWidth > 600 });
       } else if (target.dataset.content === 'fullscreen') {
-        const mode = this.state.fullscreenContent === 'sidecar' ? null : 'sidecar'
-        this.setState({fullscreenContent: mode})
+        const mode =
+          this.state.fullscreenContent === 'sidecar' ? null : 'sidecar';
+        this.setState({ fullscreenContent: mode, expanded: (mode === null || window.innerWidth > 1600) });
       }
     }
     document.getElementById('messageform').focus();
@@ -1018,12 +1050,12 @@ export default class Chat extends Component {
 
   toggleSearchShowing = () => {
     if (!this.state.searchShowing) {
-      setTimeout(function(){
-        document.getElementById("chatchannelsearchbar").focus()
-      },100)
+      setTimeout(function () {
+        document.getElementById('chatchannelsearchbar').focus();
+      }, 100);
     }
-    this.setState({searchShowing: !this.state.searchShowing})
-  }
+    this.setState({ searchShowing: !this.state.searchShowing });
+  };
 
   renderChatChannels = () => {
     const { state } = this;
@@ -1074,10 +1106,32 @@ export default class Chat extends Component {
             >
               {'<'}
             </button>
-            {state.searchShowing ? <input placeholder="Search Channels" onKeyUp={this.debouncedChannelFilter} id="chatchannelsearchbar" className="crayons-textfield" /> : ''}
+            {state.searchShowing ? (
+              <input
+                placeholder="Search Channels"
+                onKeyUp={this.debouncedChannelFilter}
+                id="chatchannelsearchbar"
+                className="crayons-textfield"
+              />
+            ) : (
+              ''
+            )}
             {invitesButton}
             <div className="chat__channeltypefilter">
-              <button className="chat__channelssearchtoggle" onClick={this.toggleSearchShowing}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="17" height="17"><path fill="none" d="M0 0h24v24H0z"/><path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z"/></svg></button>
+              <button
+                className="chat__channelssearchtoggle"
+                onClick={this.toggleSearchShowing}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  width="17"
+                  height="17"
+                >
+                  <path fill="none" d="M0 0h24v24H0z" />
+                  <path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
+                </svg>
+              </button>
               {this.renderChannelFilterButton(
                 'all',
                 'all',
@@ -1108,25 +1162,25 @@ export default class Chat extends Component {
         );
       }
       return (
-        <div className="chat__channels">
-          {notificationsButton}
-          <button
-            className="chat__channelstogglebutt"
-            onClick={this.toggleExpand}
-            style={{ width: '100%' }}
-            type="button"
-          >
-            {'>'}
-          </button>
-          <Channels
-            activeChannelId={state.activeChannelId}
-            chatChannels={state.chatChannels}
-            unopenedChannelIds={state.unopenedChannelIds}
-            handleSwitchChannel={this.handleSwitchChannel}
-            expanded={state.expanded}
-          />
-          {notificationsState}
-        </div>
+          <div className="chat__channels">
+            {notificationsButton}
+            <button
+              className="chat__channelstogglebutt"
+              onClick={this.toggleExpand}
+              style={{ width: '100%' }}
+              type="button"
+            >
+              {'>'}
+            </button>
+            <Channels
+              activeChannelId={state.activeChannelId}
+              chatChannels={state.chatChannels}
+              unopenedChannelIds={state.unopenedChannelIds}
+              handleSwitchChannel={this.handleSwitchChannel}
+              expanded={state.expanded}
+            />
+            {notificationsState}
+          </div>
       );
     }
     return '';
@@ -1145,15 +1199,15 @@ export default class Chat extends Component {
     }
 
     const jumpbackButton = document.getElementById('jumpback_button');
-    
+
     if (this.scroller) {
       const scrolledRatio =
         (this.scroller.scrollTop + this.scroller.clientHeight) /
         this.scroller.scrollHeight;
 
-      if (scrolledRatio < 0.7) {
+      if (scrolledRatio < 0.5) {
         jumpbackButton.classList.remove('chatchanneljumpback__hide');
-      } else if (scrolledRatio > 0.8) {
+      } else if (scrolledRatio > 0.6) {
         jumpbackButton.classList.add('chatchanneljumpback__hide');
       }
 
@@ -1264,13 +1318,13 @@ export default class Chat extends Component {
     );
   };
 
-  onTriggerVideoContent = e => {
+  onTriggerVideoContent = (e) => {
     if (e.target.dataset.content === 'exit') {
-      this.setState({ videoPath: null, fullscreenContent: null });
+      this.setState({ videoPath: null, fullscreenContent: null, expanded: window.innerWidth > 600 });
     } else if (this.state.fullscreenContent === 'video') {
       this.setState({ fullscreenContent: null });
     } else {
-      this.setState({ fullscreenContent: 'video' });
+      this.setState({ fullscreenContent: 'video', expanded: window.innerWidth > 1600 });
     }
   };
 
@@ -1578,9 +1632,9 @@ export default class Chat extends Component {
     }
     let fullscreenMode = '';
     if (state.fullscreenContent === 'sidecar') {
-      fullscreenMode = 'chat--content-visible-full'
+      fullscreenMode = 'chat--content-visible-full';
     } else if (state.fullscreenContent === 'video') {
-      fullscreenMode = 'chat--video-visible-full'
+      fullscreenMode = 'chat--video-visible-full';
     }
     return (
       <div

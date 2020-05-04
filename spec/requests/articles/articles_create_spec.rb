@@ -93,4 +93,18 @@ RSpec.describe "ArticlesCreate", type: :request do
       end
     end
   end
+
+  context "when creation limit is reached" do
+    it "returns a too_many_requests response if rate limit is reached" do
+      rate_limit_checker = RateLimitChecker.new(user)
+      allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+      allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
+
+      post articles_path, params: { article: { body_markdown: "123" } }
+
+      expect(response).to have_http_status(:too_many_requests)
+      expected_retry_after = RateLimitChecker::RETRY_AFTER[:published_article_creation]
+      expect(response.headers["Retry-After"]).to eq(expected_retry_after)
+    end
+  end
 end

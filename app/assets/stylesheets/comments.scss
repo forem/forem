@@ -1,6 +1,7 @@
 @import 'variables';
 @import 'mixins';
 @import 'functions';
+@import 'config/import';
 
 %kbd {
   display: inline-block;
@@ -102,7 +103,7 @@ a.header-link {
       margin: auto;
       margin-bottom: -35px;
       .read-more {
-        color: var(--link-branded-color);
+        color: var(--link-brand-color);
         display: inline-block;
         &:hover {
           opacity: 0.96;
@@ -150,7 +151,7 @@ a.header-link {
     align-items: center;
     font-size: 0.8em;
     position: absolute;
-    left: calc(0.2vw + 43px);
+    left: calc(0.2vw + 70px);
     bottom: 0px;
     width: initial;
     text-align: left;
@@ -197,6 +198,20 @@ a.header-link {
       @media screen and (max-width: 900px) {
         padding: 5px 6px 1px;
       }
+    }
+  }
+  .editor-response-templates {
+    position: absolute;
+    left: 52px;
+    bottom: 4px;
+    button {
+      background: none;
+      border: none;
+      padding: 0;
+    }
+    &.in-reply {
+      z-index: 6;
+      bottom: 3px;
     }
   }
 
@@ -271,6 +286,138 @@ a.header-link {
     .field {
       margin-bottom: 0px;
     }
+    .response-templates-container {
+      &.hidden {
+        display: none;
+      }
+      display: flex;
+      width: calc(100% - 52px);
+      max-height: calc(40vh + 80px);
+      margin: 15px auto 2px;
+      flex-direction: column;
+      overflow-y: auto;
+      font-size: 16px;
+      font-family: $helvetica;
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        $light-gray
+      );
+      @include themeable(color, theme-color, $black);
+
+      .loading-img {
+        display: inline-block;
+        margin: 0 auto;
+        width: 75px;
+        &.hidden {
+          display: none;
+        }
+      }
+
+      header > button {
+        font-family: $helvetica-condensed;
+        font-stretch: condensed;
+        color: $bold-blue;
+        border: 1px solid $bold-blue;
+        font-size: 13px;
+        font-weight: 500;
+        padding: 5px 0px;
+        border-radius: 3px;
+        background: none;
+        width: 125px;
+        margin: 5px;
+        float: left;
+        &.active {
+          background: $bold-blue;
+          color: white;
+        }
+        &.hidden {
+          display: none;
+        }
+      }
+
+      .mod-response-wrapper {
+        text-align: left;
+        padding: 10px;
+        position: relative;
+        @include themeable(background, theme-container-background, white);
+        margin: 5px auto;
+        border-radius: 8px;
+        width: calc(100% - 20px);
+        box-sizing: border-box;
+        span {
+          font-weight: bold;
+          display: block;
+          width: calc(100% - 140px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        p {
+          font-weight: normal;
+          display: block;
+          width: calc(100% - 140px);
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          margin: 0.5em 0;
+          @include themeable(color, theme-secondary-color, $medium-gray);
+        }
+        &.mod-response-wrapper-empty {
+          text-align: center;
+          p {
+            width: 100%;
+            font-size: 1.05em;
+            font-weight: bold;
+            margin: 1.5em 0;
+            @include themeable(color, theme-color, $black);
+          }
+        }
+
+        button {
+          font-family: $helvetica-condensed;
+          font-stretch: condensed;
+          color: white;
+          border: 0px;
+          font-size: 13px;
+          font-weight: 500;
+          margin-top: 3px;
+          padding: 5px 0px;
+          border-radius: 3px;
+          cursor: pointer;
+          margin-right: 10px;
+          background: $bold-blue;
+          position: absolute;
+          top: 5px;
+          right: 0px;
+          width: 125px;
+        }
+        .moderator-submit-button {
+          background: $green;
+          color: $black;
+          top: 36px;
+        }
+      }
+
+      a {
+        text-align: left;
+        padding: $su-3;
+        font-weight: bold;
+        svg {
+          width: 20px;
+          height: 20px;
+          position: relative;
+          top: 4px;
+          left: 3px;
+          @include themeable(fill, link-branded-color, #3b49df);
+        }
+      }
+      p {
+        align-self: flex-start;
+        padding: 0 $su-3;
+      }
+    }
     .article-comment-form-preamble {
       font-size: 0.7em;
       margin-left: 20px;
@@ -342,12 +489,28 @@ a.header-link {
 
       code {
         word-wrap: break-word;
+        background-color: rgba(0, 0, 0, 0.1);
+        padding: 0.1em 0.3em 0;
       }
 
       .article-body-image-wrapper img {
         max-width: 100%;
       }
     }
+
+    // this css is added to ignore the code under highlight class and use default bg-color and color.
+
+    #preview-div div.highlight pre code {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    // this css is added to differentiate the code within a pre tag since pre tag already has black bg.
+
+    #preview-div pre code {
+      background-color: white;
+      color: black;
+    }
+
     .actions {
       text-align: right;
 
@@ -386,7 +549,7 @@ a.header-link {
       text-align: right;
       font-size: 0.9em;
       font-weight: 500;
-      color: var(--link-branded-color);
+      color: var(--link-brand-color);
       &.sub-comment-code-of-conduct {
         font-size: 1em;
       }
@@ -396,7 +559,7 @@ a.header-link {
         margin: 5px 0px;
       }
       a {
-        color: var(--link-branded-color);
+        color: var(--link-brand-color);
       }
     }
     input[type='submit'] {
@@ -700,6 +863,8 @@ a.header-link {
       vertical-align: 0.1em;
       max-width: 100%;
       line-height: 1.4em;
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 0.1em 0.3em 0;
     }
     pre {
       width: 88%;
@@ -713,9 +878,13 @@ a.header-link {
       overflow-x: auto;
       code {
         background: #29292e;
-        color: #eff0f9;
+        color: black;
         white-space: pre;
         font-size: 1em;
+        background-color: white;
+        padding-top: 0;
+        padding-bottom: 2%;
+        overflow-x: auto;
       }
     }
     img {
@@ -758,7 +927,7 @@ a.header-link {
   .details {
     padding: 0px;
     border-top-left-radius: 3px;
-    color: var(--link-branded-color);
+    color: var(--link-brand-color);
     position: relative;
     .comment-date {
       border: none;
@@ -1118,4 +1287,7 @@ a.header-link {
   p {
     font-style: italic;
   }
+}
+#response-templates-data {
+  display: none;
 }

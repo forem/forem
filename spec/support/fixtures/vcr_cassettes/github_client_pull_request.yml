@@ -1,0 +1,189 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/7653
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      Accept:
+      - application/vnd.github.v3+json
+      Content-Type:
+      - application/json
+      X-Honeycomb-Trace:
+      - 1;dataset=,trace_id=3f8011ec-0d23-49d3-9d19-3acdb553274a,parent_id=e31110e6-dc1e-4884-b01b-ee15846d4236,context=e30=
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 02 May 2020 23:54:43 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '4233'
+      Server:
+      - GitHub.com
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4980'
+      X-Ratelimit-Reset:
+      - '1588465849'
+      Cache-Control:
+      - public, max-age=60, s-maxage=60
+      Vary:
+      - Accept
+      - Accept-Encoding, Accept, X-Requested-With
+      Etag:
+      - '"0494d7edd146d9a6161dabf46f66cf6e"'
+      Last-Modified:
+      - Fri, 01 May 2020 21:47:35 GMT
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
+        X-GitHub-Media-Type, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      X-Github-Request-Id:
+      - F3AA:4B32:24AC63:32E837:5EAE0842
+    body:
+      encoding: ASCII-8BIT
+      string: '{"url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7653","repository_url":"https://api.github.com/repos/thepracticaldev/dev.to","labels_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7653/labels{/name}","comments_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7653/comments","events_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7653/events","html_url":"https://github.com/thepracticaldev/dev.to/pull/7653","id":610931120,"node_id":"MDExOlB1bGxSZXF1ZXN0NDEyMjcxMzIy","number":7653,"title":"Log
+        RateLimit hits to Datadog for Better Reporting","user":{"login":"mstruve","id":1813380,"node_id":"MDQ6VXNlcjE4MTMzODA=","avatar_url":"https://avatars3.githubusercontent.com/u/1813380?v=4","gravatar_id":"","url":"https://api.github.com/users/mstruve","html_url":"https://github.com/mstruve","followers_url":"https://api.github.com/users/mstruve/followers","following_url":"https://api.github.com/users/mstruve/following{/other_user}","gists_url":"https://api.github.com/users/mstruve/gists{/gist_id}","starred_url":"https://api.github.com/users/mstruve/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mstruve/subscriptions","organizations_url":"https://api.github.com/users/mstruve/orgs","repos_url":"https://api.github.com/users/mstruve/repos","events_url":"https://api.github.com/users/mstruve/events{/privacy}","received_events_url":"https://api.github.com/users/mstruve/received_events","type":"User","site_admin":false},"labels":[{"id":1123882148,"node_id":"MDU6TGFiZWwxMTIzODgyMTQ4","url":"https://api.github.com/repos/thepracticaldev/dev.to/labels/PR:%20merged","name":"PR:
+        merged","color":"786DBE","default":false,"description":"bot applied label
+        for PR''s that are merged"}],"state":"closed","locked":false,"assignee":null,"assignees":[],"milestone":null,"comments":2,"created_at":"2020-05-01T19:40:23Z","updated_at":"2020-05-01T21:47:35Z","closed_at":"2020-05-01T21:47:32Z","author_association":"COLLABORATOR","pull_request":{"url":"https://api.github.com/repos/thepracticaldev/dev.to/pulls/7653","html_url":"https://github.com/thepracticaldev/dev.to/pull/7653","diff_url":"https://github.com/thepracticaldev/dev.to/pull/7653.diff","patch_url":"https://github.com/thepracticaldev/dev.to/pull/7653.patch"},"body":"\r\n##
+        What type of PR is this? (check all applicable)\r\n- [x] Feature\r\n- [x]
+        Optimization\r\n\r\n## Description\r\nRather than sending (almost) every single
+        rate limit hit to Slack, lets send a metric to Datadog that we can track and
+        alert on. The goal here is to send this data to Datadog. Once the data is
+        there @michael-tharrington can then decide what thresholds he wants to set
+        for what actions to determine when he gets alerted. Datadog then will be responsible
+        for sending that information to Slack rather than our app. \r\n\r\nThis will
+        allow us to set thresholds and alert only when users are excessively hitting
+        rate limits rather than every single time which sometimes is not concerning
+        if they only hit it once, like a pentester trying to see if a rate limiter
+        exists. \r\n\r\n## Related Tickets & Documents\r\nhttps://github.com/thepracticaldev/dev.to/projects/9#card-37397577\r\n\r\n##
+        Added tests?\r\n- [x] yes\r\n\r\n![alt_text](https://media1.giphy.com/media/l2YWsOymHDRFYqyAM/giphy.gif)\r\n","closed_by":{"login":"mstruve","id":1813380,"node_id":"MDQ6VXNlcjE4MTMzODA=","avatar_url":"https://avatars3.githubusercontent.com/u/1813380?v=4","gravatar_id":"","url":"https://api.github.com/users/mstruve","html_url":"https://github.com/mstruve","followers_url":"https://api.github.com/users/mstruve/followers","following_url":"https://api.github.com/users/mstruve/following{/other_user}","gists_url":"https://api.github.com/users/mstruve/gists{/gist_id}","starred_url":"https://api.github.com/users/mstruve/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/mstruve/subscriptions","organizations_url":"https://api.github.com/users/mstruve/orgs","repos_url":"https://api.github.com/users/mstruve/repos","events_url":"https://api.github.com/users/mstruve/events{/privacy}","received_events_url":"https://api.github.com/users/mstruve/received_events","type":"User","site_admin":false}}'
+    http_version: null
+  recorded_at: Sat, 02 May 2020 23:54:43 GMT
+- request:
+    method: post
+    uri: https://api.github.com/markdown
+    body:
+      encoding: UTF-8
+      string: '{"text":"\r\n## What type of PR is this? (check all applicable)\r\n-
+        [x] Feature\r\n- [x] Optimization\r\n\r\n## Description\r\nRather than sending
+        (almost) every single rate limit hit to Slack, lets send a metric to Datadog
+        that we can track and alert on. The goal here is to send this data to Datadog.
+        Once the data is there @michael-tharrington can then decide what thresholds
+        he wants to set for what actions to determine when he gets alerted. Datadog
+        then will be responsible for sending that information to Slack rather than
+        our app. \r\n\r\nThis will allow us to set thresholds and alert only when
+        users are excessively hitting rate limits rather than every single time which
+        sometimes is not concerning if they only hit it once, like a pentester trying
+        to see if a rate limiter exists. \r\n\r\n## Related Tickets & Documents\r\nhttps://github.com/thepracticaldev/dev.to/projects/9#card-37397577\r\n\r\n##
+        Added tests?\r\n- [x] yes\r\n\r\n![alt_text](https://media1.giphy.com/media/l2YWsOymHDRFYqyAM/giphy.gif)\r\n"}'
+    headers:
+      User-Agent:
+      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      Accept:
+      - application/vnd.github.raw
+      Content-Type:
+      - application/json
+      X-Honeycomb-Trace:
+      - 1;dataset=,trace_id=40a6d376-ddbd-4054-8f13-16983a5f5d45,parent_id=8229768b-93f5-4952-8408-fec5650f68a9,context=e30=
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 02 May 2020 23:54:44 GMT
+      Content-Type:
+      - text/html;charset=utf-8
+      Content-Length:
+      - '2331'
+      Server:
+      - GitHub.com
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4979'
+      X-Ratelimit-Reset:
+      - '1588465848'
+      X-Commonmarker-Version:
+      - 0.21.0
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
+        X-GitHub-Media-Type, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      Vary:
+      - Accept-Encoding, Accept, X-Requested-With
+      X-Github-Request-Id:
+      - F3AB:29D2:192531:22748D:5EAE0843
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <h2>
+        <a id="user-content-what-type-of-pr-is-this-check-all-applicable" class="anchor" href="#what-type-of-pr-is-this-check-all-applicable" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>What type of PR is this? (check all applicable)</h2>
+        <ul>
+        <li>[x] Feature</li>
+        <li>[x] Optimization</li>
+        </ul>
+        <h2>
+        <a id="user-content-description" class="anchor" href="#description" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Description</h2>
+        <p>Rather than sending (almost) every single rate limit hit to Slack, lets send a metric to Datadog that we can track and alert on. The goal here is to send this data to Datadog. Once the data is there @michael-tharrington can then decide what thresholds he wants to set for what actions to determine when he gets alerted. Datadog then will be responsible for sending that information to Slack rather than our app.</p>
+        <p>This will allow us to set thresholds and alert only when users are excessively hitting rate limits rather than every single time which sometimes is not concerning if they only hit it once, like a pentester trying to see if a rate limiter exists.</p>
+        <h2>
+        <a id="user-content-related-tickets--documents" class="anchor" href="#related-tickets--documents" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Related Tickets &amp; Documents</h2>
+        <p><a href="https://github.com/thepracticaldev/dev.to/projects/9#card-37397577">https://github.com/thepracticaldev/dev.to/projects/9#card-37397577</a></p>
+        <h2>
+        <a id="user-content-added-tests" class="anchor" href="#added-tests" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Added tests?</h2>
+        <ul>
+        <li>[x] yes</li>
+        </ul>
+        <p><a href="https://camo.githubusercontent.com/3972d99d348007c519ae82451b8c52332933b5f4/68747470733a2f2f6d65646961312e67697068792e636f6d2f6d656469612f6c325957734f796d48445246597179414d2f67697068792e676966" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/3972d99d348007c519ae82451b8c52332933b5f4/68747470733a2f2f6d65646961312e67697068792e636f6d2f6d656469612f6c325957734f796d48445246597179414d2f67697068792e676966" alt="alt_text" data-canonical-src="https://media1.giphy.com/media/l2YWsOymHDRFYqyAM/giphy.gif" style="max-width:100%;"></a></p>
+    http_version: null
+  recorded_at: Sat, 02 May 2020 23:54:44 GMT
+recorded_with: VCR 5.1.0

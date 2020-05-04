@@ -4,7 +4,7 @@ SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
 counter = 0
 Rails.logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
 
-##############################################################################
+##############################################################################/
 
 counter += 1
 Rails.logger.info "#{counter}. Creating Organizations"
@@ -30,8 +30,6 @@ num_users = 10 * SEEDS_MULTIPLIER
 
 counter += 1
 Rails.logger.info "#{counter}. Creating #{num_users} Users"
-
-User.clear_index!
 
 roles = %i[trusted chatroom_beta_tester workshop_pass]
 
@@ -118,8 +116,6 @@ num_articles = 25 * SEEDS_MULTIPLIER
 
 counter += 1
 Rails.logger.info "#{counter}. Creating #{num_articles} Articles"
-
-Article.clear_index!
 
 num_articles.times do |i|
   tags = []
@@ -376,15 +372,61 @@ end
 ##############################################################################
 
 counter += 1
+Rails.logger.info "#{counter}. Creating Classified Listing Categories"
+
+CATEGORIES = [
+  {
+    slug: "cfp",
+    cost: 1,
+    name: "Conference CFP",
+    rules: "Currently open for proposals, with link to form."
+  },
+  {
+    slug: "education",
+    cost: 1,
+    name: "Education/Courses",
+    rules: "Educational material and/or schools/bootcamps."
+  },
+  {
+    slug: "jobs",
+    cost: 25,
+    name: "Job Listings",
+    rules: "Companies offering employment right now."
+  },
+  {
+    slug: "forsale",
+    cost: 1,
+    name: "Stuff for Sale",
+    rules: "Personally owned physical items for sale."
+  },
+  {
+    slug: "events",
+    cost: 1,
+    name: "Upcoming Events",
+    rules: "In-person or online events with date included."
+  },
+  {
+    slug: "misc",
+    cost: 1,
+    name: "Miscellaneous",
+    rules: "Must not fit in any other category."
+  }
+].freeze
+
+CATEGORIES.each { |attributes| ClassifiedListingCategory.create(attributes) }
+
+##############################################################################
+
+counter += 1
 Rails.logger.info "#{counter}. Creating Classified Listings"
 
 users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
 users = users_in_random_order.to_a
 
-listings_categories = ClassifiedListing.categories_available.keys
-listings_categories.each_with_index do |category, index|
+listings_categories = ClassifiedListingCategory.pluck(:id)
+listings_categories.each.with_index(1) do |category_id, index|
   # rotate users if they are less than the categories
-  user = users.at((index + 1) % users.length)
+  user = users.at(index % users.length)
   2.times do
     ClassifiedListing.create!(
       user: user,
@@ -392,7 +434,7 @@ listings_categories.each_with_index do |category, index|
       body_markdown: Faker::Markdown.random,
       location: Faker::Address.city,
       organization_id: user.organizations.first&.id,
-      category: category,
+      classified_listing_category_id: category_id,
       contact_via_connect: true,
       published: true,
       bumped_at: Time.current,
@@ -418,7 +460,8 @@ end
 
 ##############################################################################
 
-puts <<-ASCII # rubocop:disable Rails/Output
+# rubocop:disable Rails/Output
+puts <<-ASCII
 
 
 
@@ -447,3 +490,4 @@ puts <<-ASCII # rubocop:disable Rails/Output
 
   All done!
 ASCII
+# rubocop:enable Rails/Output
