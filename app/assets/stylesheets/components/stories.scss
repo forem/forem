@@ -46,9 +46,9 @@
       border-radius: $br-default $br-default 0 0;
       width: 100%;
       height: auto;
-      max-height: 300px;
-      object-fit: cover;
-      display: block;
+      padding-bottom: 42%;
+      background-size: cover;
+      background-position: center center;
     }
   }
 
