@@ -11,11 +11,11 @@
     margin-bottom: $su-2; // This is basically spacing between each feed card.
   }
 
-  --story-padding: #{$su-4};
+  --story-padding: #{$su-3} #{$su-2} #{$su-2};
   --title-font-size: #{$fs-xl};
 
   @media (min-width: $breakpoint-s) {
-    --story-padding: #{$su-4}; // Replace with $su-6 when ready.
+    --story-padding: #{$su-4};
     --title-font-size: #{$fs-2xl};
 
     &--featured {
@@ -127,6 +127,7 @@
     font-family: $ff-accent;
     font-size: 0.6em;
     padding: 0.3em;
+    padding-bottom: 0.2em;
     vertical-align: middle;
     position: relative;
     top: -2px;
@@ -146,7 +147,7 @@
 
   &__details {
     display: flex;
-    margin-left: -$su-1;
+    margin-left: -$su-2;
   }
 
   &__comments {
@@ -192,6 +193,11 @@
         color: var(--link-color-hover);
       }
     }
+  }
+
+  &__save {
+    display: flex;
+    align-items: center;
   }
 
   &__video {
