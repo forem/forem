@@ -44,35 +44,33 @@ export class Modal extends Component {
       </svg>
     );
 
-    return (
-      visible && (
-        <div
-          className={`crayons-modal${getAdditionalClassNames({
-            size,
-            className,
-          })}`}
-        >
-          <div className="crayons-modal__box">
-            {title.length > 0 && title && (
-              <div className="crayons-modal__box__header">
-                <h2>{title}</h2>
-                <Button
-                  icon={Icon}
-                  variant="ghost"
-                  contentType="icon"
-                  title="Close"
-                  onClick={(_event) => {
-                    this.setState({ visible: !visible });
-                  }}
-                />
-              </div>
-            )}
-            <div className="crayons-modal__box__body">{children}</div>
-          </div>
-          {overlay && <div className="crayons-modal__overlay" />}
+    return visible ? (
+      <div
+        className={`crayons-modal${getAdditionalClassNames({
+          size,
+          className,
+        })}`}
+      >
+        <div className="crayons-modal__box">
+          {title.length > 0 && title && (
+            <div className="crayons-modal__box__header">
+              <h2>{title}</h2>
+              <Button
+                icon={Icon}
+                variant="ghost"
+                contentType="icon"
+                title="Close"
+                onClick={(_event) => {
+                  this.setState({ visible: !visible });
+                }}
+              />
+            </div>
+          )}
+          <div className="crayons-modal__box__body">{children}</div>
         </div>
-      )
-    );
+        {overlay && <div className="crayons-modal__overlay" />}
+      </div>
+    ) : null;
   }
 }
 
