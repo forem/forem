@@ -25,7 +25,7 @@ export class SaveButton extends Component {
       return (
         <button
           type="button"
-          className={`crayons-btn fs-s ${
+          className={`crayons-btn crayons-btn--s ${
             isBookmarked ? 'crayons-btn--ghost' : 'crayons-btn--secondary'
           }`}
           data-initial-feed

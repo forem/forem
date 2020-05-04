@@ -3,11 +3,14 @@ import { articlePropTypes } from '../../src/components/common-prop-types';
 
 export const ArticleCoverImage = ({ article }) => {
   return (
-    <a href={article.path} className="crayons-story__cover">
-      <img
-        src={article.main_image}
+    <a
+      href={article.path}
+      className="crayons-story__cover"
+      title={article.title}
+    >
+      <div
+        style={{backgroundImage: `url(${article.main_image})`}}
         className="crayons-story__cover__image"
-        alt={article.title}
         loading="lazy"
       />
     </a>

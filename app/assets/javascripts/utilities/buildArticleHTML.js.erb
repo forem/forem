@@ -8,7 +8,7 @@ function buildArticleHTML(article) {
        </div>\
        <a href="'+article.path+'" class="small-pic-link-wrapper index-article-link" id="article-link-'+article.id+'">\
         <div class="content">\
-         <h3><span class="crayons-indicator">podcast</span>'+article.title+'</h3>\
+         <h3><span class="crayons-story__flare-tag">podcast</span>'+article.title+'</h3>\
         </div>\
        </a>\
        <h4><a href="/'+article.podcast.slug+'">'+article.podcast.title+'</a></h4>\
@@ -31,7 +31,7 @@ function buildArticleHTML(article) {
       var commentsCount = (article.comments_count || '0')
     }
     if (article.class_name != "User") {
-      var commentsDisplay = '<a href="'+article.path+'#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left"><svg class="crayons-icon mr-1" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>'+commentsCount+'<span class="hidden s:inline">&nbsp;comments</span></a>'
+      var commentsDisplay = '<a href="'+article.path+'#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left"><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"/></svg>'+commentsCount+'<span class="hidden s:inline">&nbsp;comments</span></a>'
     }
 
     var flareTag = ""
@@ -39,16 +39,16 @@ function buildArticleHTML(article) {
       var currentTag = JSON.parse(container.dataset.params).tag
     }
     if (article.flare_tag && currentTag != article.flare_tag.name) {
-      flareTag = "<span class='crayons-indicator' style='background:"+article.flare_tag.bg_color_hex+";color:"+article.flare_tag.text_color_hex+"'>#"+article.flare_tag.name+"</span>"
+      flareTag = "<span class='crayons-story__flare-tag' style='background:"+article.flare_tag.bg_color_hex+";color:"+article.flare_tag.text_color_hex+"'>#"+article.flare_tag.name+"</span>"
     }
     if (article.class_name == "PodcastEpisode"){
-      flareTag = "<span class='crayons-indicator'>podcast</span>"
+      flareTag = "<span class='crayons-story__flare-tag'>podcast</span>"
     }
     if (article.class_name == "Comment"){
-      flareTag = "<span class='crayons-indicator'>comment</span>"
+      flareTag = "<span class='crayons-story__flare-tag'>comment</span>"
     }
     if (article.class_name == "User"){
-      flareTag = "<span class='crayons-indicator' style='background:#5874d9;color:white;'>person</span>"
+      flareTag = "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>"
     }
     var rc = article.positive_reactions_count
     var reactionsDisplay = ''
@@ -120,12 +120,12 @@ function buildArticleHTML(article) {
     }
     var saveButton = '';
     if (article.class_name === "Article") {
-      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary fs-s" data-reactable-id="'+article.id+'">\
+      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--s" data-reactable-id="'+article.id+'">\
                       <span class="bm-initial">Save</span>\
                       <span class="bm-success">Saved</span>\
                     </button>'
     } else if (article.class_name === "User") {
-      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary fs-s"\
+      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--s"\
                        data-info=\'{"id":'+article.id+',"className":"User"}\' data-follow-action-button>\
                        &nbsp;\
                     </button>'

@@ -2,12 +2,17 @@
 
 .crayons-tag {
   font-family: $ff-accent;
-  font-size: $fs-s;
+  font-size: $fs-xs;
   color: var(--tag-color);
   line-height: $lh-tight;
   border-radius: $br-default;
   padding: $su-1;
-  letter-spacing: -0.065em;
+  display: inline-block;
+  letter-spacing: -0.05em;
+
+  @media (min-width: $breakpoint-s) {
+    font-size: $fs-s;
+  }
 
   &__prefix {
     opacity: 0.5;

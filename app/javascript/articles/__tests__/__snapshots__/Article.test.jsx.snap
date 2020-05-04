@@ -46,12 +46,13 @@ exports[`<Article /> component should render a podcast article 1`] = `
 `;
 
 exports[`<Article /> component should render a podcast episode 1`] = `
-<button
+<article
   class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={27683}
   data-featured-article="articles-49020"
   id={false}
   onClick={[Function]}
+  tabIndex="0"
   type="button"
 >
   <div
@@ -111,7 +112,7 @@ exports[`<Article /> component should render a podcast episode 1`] = `
           id="article-link-49020"
         >
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
             style={
               Object {
                 "background": "#000000",
@@ -122,7 +123,7 @@ exports[`<Article /> component should render a podcast episode 1`] = `
             #javascript
           </span>
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
           >
             podcast
           </span>
@@ -195,29 +196,29 @@ exports[`<Article /> component should render a podcast episode 1`] = `
           </a>
         </div>
         <div
-          class="crayons-fields crayons-fields--horizontal"
+          class="crayons-story__save"
         >
-          <a
-            class="crayons-story__details__item"
-            href="/some-post/path"
+          <small
+            class="crayons-story__tertiary mr-2"
           >
             undefined min read
-          </a>
+          </small>
         </div>
       </div>
     </div>
   </div>
   <div />
-</button>
+</article>
 `;
 
 exports[`<Article /> component should render a standard article 1`] = `
-<button
+<article
   class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
   onClick={[Function]}
+  tabIndex="0"
   type="button"
 >
   <div
@@ -277,7 +278,7 @@ exports[`<Article /> component should render a standard article 1`] = `
           id="article-link-62407"
         >
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
             style={
               Object {
                 "background": "#000000",
@@ -356,16 +357,15 @@ exports[`<Article /> component should render a standard article 1`] = `
           </a>
         </div>
         <div
-          class="crayons-fields crayons-fields--horizontal"
+          class="crayons-story__save"
         >
-          <a
-            class="crayons-story__details__item"
-            href="/some-post/path"
+          <small
+            class="crayons-story__tertiary mr-2"
           >
             undefined min read
-          </a>
+          </small>
           <button
-            class="crayons-btn fs-s crayons-btn--secondary"
+            class="crayons-btn crayons-btn--s crayons-btn--secondary"
             data-initial-feed={true}
             data-reactable-id={62407}
             onBlur={[Function]}
@@ -379,16 +379,17 @@ exports[`<Article /> component should render a standard article 1`] = `
     </div>
   </div>
   <div />
-</button>
+</article>
 `;
 
 exports[`<Article /> component should render a user article 1`] = `
-<button
+<article
   class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={7955}
   data-featured-article="articles-24692"
   id={false}
   onClick={[Function]}
+  tabIndex="0"
   type="button"
 >
   <div
@@ -446,7 +447,7 @@ exports[`<Article /> component should render a user article 1`] = `
           id="article-link-24692"
         >
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
             style={
               Object {
                 "background": "#5874d9",
@@ -466,13 +467,13 @@ exports[`<Article /> component should render a user article 1`] = `
         class="crayons-story__bottom"
       >
         <div
-          class="crayons-fields crayons-fields--horizontal"
+          class="crayons-story__save"
         >
-          <a
-            class="crayons-story__details__item"
+          <small
+            class="crayons-story__tertiary mr-2"
           >
             undefined min read
-          </a>
+          </small>
           <button
             class="crayons-btn crayons-btn--secondary fs-s"
             data-follow-action-button={true}
@@ -486,16 +487,17 @@ exports[`<Article /> component should render a user article 1`] = `
     </div>
   </div>
   <div />
-</button>
+</article>
 `;
 
 exports[`<Article /> component should render a video article 1`] = `
-<button
+<article
   class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={27683}
   data-featured-article="articles-49020"
   id={false}
   onClick={[Function]}
+  tabIndex="0"
   type="button"
 >
   <a
@@ -566,7 +568,7 @@ exports[`<Article /> component should render a video article 1`] = `
           id="article-link-49020"
         >
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
             style={
               Object {
                 "background": "#000000",
@@ -645,16 +647,15 @@ exports[`<Article /> component should render a video article 1`] = `
           </a>
         </div>
         <div
-          class="crayons-fields crayons-fields--horizontal"
+          class="crayons-story__save"
         >
-          <a
-            class="crayons-story__details__item"
-            href="/some-post/path"
+          <small
+            class="crayons-story__tertiary mr-2"
           >
             undefined min read
-          </a>
+          </small>
           <button
-            class="crayons-btn fs-s crayons-btn--secondary"
+            class="crayons-btn crayons-btn--s crayons-btn--secondary"
             data-initial-feed={true}
             data-reactable-id={49020}
             onBlur={[Function]}
@@ -668,16 +669,17 @@ exports[`<Article /> component should render a video article 1`] = `
     </div>
   </div>
   <div />
-</button>
+</article>
 `;
 
 exports[`<Article /> component should render a video article with a flare tag 1`] = `
-<button
+<article
   class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={27683}
   data-featured-article="articles-49020"
   id={false}
   onClick={[Function]}
+  tabIndex="0"
   type="button"
 >
   <a
@@ -748,7 +750,7 @@ exports[`<Article /> component should render a video article with a flare tag 1`
           id="article-link-49020"
         >
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
             style={
               Object {
                 "background": "#000000",
@@ -827,16 +829,15 @@ exports[`<Article /> component should render a video article with a flare tag 1`
           </a>
         </div>
         <div
-          class="crayons-fields crayons-fields--horizontal"
+          class="crayons-story__save"
         >
-          <a
-            class="crayons-story__details__item"
-            href="/some-post/path"
+          <small
+            class="crayons-story__tertiary mr-2"
           >
             undefined min read
-          </a>
+          </small>
           <button
-            class="crayons-btn fs-s crayons-btn--secondary"
+            class="crayons-btn crayons-btn--s crayons-btn--secondary"
             data-initial-feed={true}
             data-reactable-id={49020}
             onBlur={[Function]}
@@ -850,16 +851,17 @@ exports[`<Article /> component should render a video article with a flare tag 1`
     </div>
   </div>
   <div />
-</button>
+</article>
 `;
 
 exports[`<Article /> component should render as saved on reading list 1`] = `
-<button
+<article
   class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
   onClick={[Function]}
+  tabIndex="0"
   type="button"
 >
   <div
@@ -919,7 +921,7 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
           id="article-link-62407"
         >
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
             style={
               Object {
                 "background": "#000000",
@@ -1019,16 +1021,15 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
           </a>
         </div>
         <div
-          class="crayons-fields crayons-fields--horizontal"
+          class="crayons-story__save"
         >
-          <a
-            class="crayons-story__details__item"
-            href="/some-post/path"
+          <small
+            class="crayons-story__tertiary mr-2"
           >
             undefined min read
-          </a>
+          </small>
           <button
-            class="crayons-btn fs-s crayons-btn--ghost"
+            class="crayons-btn crayons-btn--s crayons-btn--ghost"
             data-initial-feed={true}
             data-reactable-id={62407}
             onBlur={[Function]}
@@ -1087,23 +1088,24 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
       class="crayons-story__comments__actions"
     >
       <a
-        class="crayons-btn crayons-btn--secondary fs-s mr-2"
+        class="crayons-btn crayons-btn--secondary crayons-btn--s mr-2"
         href="/some-post/path#comments-container"
       >
         See all 213 comments
       </a>
     </div>
   </div>
-</button>
+</article>
 `;
 
 exports[`<Article /> component should render with a flare tag 1`] = `
-<button
+<article
   class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
   onClick={[Function]}
+  tabIndex="0"
   type="button"
 >
   <div
@@ -1163,7 +1165,7 @@ exports[`<Article /> component should render with a flare tag 1`] = `
           id="article-link-62407"
         >
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
             style={
               Object {
                 "background": "#000000",
@@ -1242,16 +1244,15 @@ exports[`<Article /> component should render with a flare tag 1`] = `
           </a>
         </div>
         <div
-          class="crayons-fields crayons-fields--horizontal"
+          class="crayons-story__save"
         >
-          <a
-            class="crayons-story__details__item"
-            href="/some-post/path"
+          <small
+            class="crayons-story__tertiary mr-2"
           >
             undefined min read
-          </a>
+          </small>
           <button
-            class="crayons-btn fs-s crayons-btn--secondary"
+            class="crayons-btn crayons-btn--s crayons-btn--secondary"
             data-initial-feed={true}
             data-reactable-id={62407}
             onBlur={[Function]}
@@ -1265,16 +1266,17 @@ exports[`<Article /> component should render with a flare tag 1`] = `
     </div>
   </div>
   <div />
-</button>
+</article>
 `;
 
 exports[`<Article /> component should render with a snippet result 1`] = `
-<button
+<article
   class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
   onClick={[Function]}
+  tabIndex="0"
   type="button"
 >
   <div
@@ -1334,7 +1336,7 @@ exports[`<Article /> component should render with a snippet result 1`] = `
           id="article-link-62407"
         >
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
             style={
               Object {
                 "background": "#000000",
@@ -1420,16 +1422,15 @@ exports[`<Article /> component should render with a snippet result 1`] = `
           </a>
         </div>
         <div
-          class="crayons-fields crayons-fields--horizontal"
+          class="crayons-story__save"
         >
-          <a
-            class="crayons-story__details__item"
-            href="/some-post/path"
+          <small
+            class="crayons-story__tertiary mr-2"
           >
             undefined min read
-          </a>
+          </small>
           <button
-            class="crayons-btn fs-s crayons-btn--secondary"
+            class="crayons-btn crayons-btn--s crayons-btn--secondary"
             data-initial-feed={true}
             data-reactable-id={62407}
             onBlur={[Function]}
@@ -1443,16 +1444,17 @@ exports[`<Article /> component should render with a snippet result 1`] = `
     </div>
   </div>
   <div />
-</button>
+</article>
 `;
 
 exports[`<Article /> component should render with an organization 1`] = `
-<button
+<article
   class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
   onClick={[Function]}
+  tabIndex="0"
   type="button"
 >
   <div
@@ -1536,7 +1538,7 @@ exports[`<Article /> component should render with an organization 1`] = `
           id="article-link-62407"
         >
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
             style={
               Object {
                 "background": "#000000",
@@ -1615,16 +1617,15 @@ exports[`<Article /> component should render with an organization 1`] = `
           </a>
         </div>
         <div
-          class="crayons-fields crayons-fields--horizontal"
+          class="crayons-story__save"
         >
-          <a
-            class="crayons-story__details__item"
-            href="/some-post/path"
+          <small
+            class="crayons-story__tertiary mr-2"
           >
             undefined min read
-          </a>
+          </small>
           <button
-            class="crayons-btn fs-s crayons-btn--secondary"
+            class="crayons-btn crayons-btn--s crayons-btn--secondary"
             data-initial-feed={true}
             data-reactable-id={62407}
             onBlur={[Function]}
@@ -1638,16 +1639,17 @@ exports[`<Article /> component should render with an organization 1`] = `
     </div>
   </div>
   <div />
-</button>
+</article>
 `;
 
 exports[`<Article /> component should render with comments 1`] = `
-<button
+<article
   class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
   onClick={[Function]}
+  tabIndex="0"
   type="button"
 >
   <div
@@ -1707,7 +1709,7 @@ exports[`<Article /> component should render with comments 1`] = `
           id="article-link-62407"
         >
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
             style={
               Object {
                 "background": "#000000",
@@ -1807,16 +1809,15 @@ exports[`<Article /> component should render with comments 1`] = `
           </a>
         </div>
         <div
-          class="crayons-fields crayons-fields--horizontal"
+          class="crayons-story__save"
         >
-          <a
-            class="crayons-story__details__item"
-            href="/some-post/path"
+          <small
+            class="crayons-story__tertiary mr-2"
           >
             undefined min read
-          </a>
+          </small>
           <button
-            class="crayons-btn fs-s crayons-btn--secondary"
+            class="crayons-btn crayons-btn--s crayons-btn--secondary"
             data-initial-feed={true}
             data-reactable-id={62407}
             onBlur={[Function]}
@@ -1875,23 +1876,24 @@ exports[`<Article /> component should render with comments 1`] = `
       class="crayons-story__comments__actions"
     >
       <a
-        class="crayons-btn crayons-btn--secondary fs-s mr-2"
+        class="crayons-btn crayons-btn--secondary crayons-btn--s mr-2"
         href="/some-post/path#comments-container"
       >
         See all 213 comments
       </a>
     </div>
   </div>
-</button>
+</article>
 `;
 
 exports[`<Article /> component should render with reactions 1`] = `
-<button
+<article
   class="crayons-story w-100 align-left border-0 false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
   onClick={[Function]}
+  tabIndex="0"
   type="button"
 >
   <div
@@ -1951,7 +1953,7 @@ exports[`<Article /> component should render with reactions 1`] = `
           id="article-link-62407"
         >
           <span
-            class="crayons-indicator"
+            class="crayons-story__flare-tag"
             style={
               Object {
                 "background": "#000000",
@@ -2030,16 +2032,15 @@ exports[`<Article /> component should render with reactions 1`] = `
           </a>
         </div>
         <div
-          class="crayons-fields crayons-fields--horizontal"
+          class="crayons-story__save"
         >
-          <a
-            class="crayons-story__details__item"
-            href="/some-post/path"
+          <small
+            class="crayons-story__tertiary mr-2"
           >
             undefined min read
-          </a>
+          </small>
           <button
-            class="crayons-btn fs-s crayons-btn--secondary"
+            class="crayons-btn crayons-btn--s crayons-btn--secondary"
             data-initial-feed={true}
             data-reactable-id={62407}
             onBlur={[Function]}
@@ -2053,5 +2054,5 @@ exports[`<Article /> component should render with reactions 1`] = `
     </div>
   </div>
   <div />
-</button>
+</article>
 `;
