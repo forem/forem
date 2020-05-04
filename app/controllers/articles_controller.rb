@@ -105,6 +105,17 @@ class ArticlesController < ApplicationController
                  end
   end
 
+  def show
+    @article = Article.find_by(path: "/#{params[:username].downcase}/#{params[:slug]}")&.decorate
+
+    assign_article_show_variables
+    set_surrogate_key_header @article.record_key
+    redirect_if_show_view_param
+    return if performed?
+
+    render template: "articles/show"
+  end
+
   def update
     authorize @article
     @user = @article.user || current_user
@@ -169,6 +180,78 @@ class ArticlesController < ApplicationController
   end
 
   private
+
+  def redirect_if_show_view_param
+    redirect_to "/internal/articles/#{@article.id}" if params[:view] == "moderate"
+  end
+
+  def assign_article_show_variables
+    not_found if permission_denied?
+    not_found unless @article.user
+
+    @article_show = true
+    @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
+
+    @user = @article.user
+    @organization = @article.organization
+
+    if @article.collection
+      @collection = @article.collection
+
+      # we need to make sure that articles that were cross posted after their
+      # original publication date appear in the correct order in the collection,
+      # considering non cross posted articles with a more recent publication date
+      @collection_articles = @article.collection.articles.
+        published.
+        order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
+    end
+
+    @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
+    assign_second_and_third_user
+    set_article_json_ld
+    @comment = Comment.new(body_markdown: @article&.comment_template)
+  end
+
+  def assign_second_and_third_user
+    return if @article.second_user_id.blank?
+
+    @second_user = User.find(@article.second_user_id)
+    @third_user = User.find(@article.third_user_id) if @article.third_user_id.present?
+  end
+
+  def set_article_json_ld
+    @article_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.article(@article)
+      },
+      "url": URL.article(@article),
+      "image": seo_optimized_images,
+      "publisher": {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "name": "#{ApplicationConfig['COMMUNITY_NAME']} Community",
+        "logo": {
+          "@context": "http://schema.org",
+          "@type": "ImageObject",
+          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, "png"),
+          "width": "192",
+          "height": "192"
+        }
+      },
+      "headline": @article.title,
+      "author": {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        "url": URL.user(@user),
+        "name": @user.name
+      },
+      "datePublished": @article.published_timestamp,
+      "dateModified": @article.edited_at&.iso8601 || @article.published_timestamp
+    }
+  end
 
   def base_editor_assigments
     @user = current_user
