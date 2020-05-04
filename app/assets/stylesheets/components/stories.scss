@@ -3,16 +3,19 @@
 
 .crayons-story {
   background: var(--card-bg);
-  border-radius: $br-default;
   font-size: $fs-base; // Todo: remove when ready.
-  margin-bottom: $su-2; // This is basically spacing between each feed card.
   box-shadow: $bold-shadow; // we will kill it at some point, don't worry. just not yet.
 
-  --story-padding: #{$su-4};
+  @media (min-width: $breakpoint-m) {
+    border-radius: $br-default;
+    margin-bottom: $su-2; // This is basically spacing between each feed card.
+  }
+
+  --story-padding: #{$su-3} #{$su-2} #{$su-2};
   --title-font-size: #{$fs-xl};
 
   @media (min-width: $breakpoint-s) {
-    --story-padding: #{$su-4}; // Replace with $su-6 when ready.
+    --story-padding: #{$su-4};
     --title-font-size: #{$fs-2xl};
 
     &--featured {
@@ -43,12 +46,15 @@
     display: block;
 
     &__image {
-      border-radius: $br-default $br-default 0 0;
       width: 100%;
       height: auto;
-      max-height: 300px;
-      object-fit: cover;
-      display: block;
+      padding-bottom: 42%;
+      background-size: cover;
+      background-position: center center;
+
+      @media (min-width: $breakpoint-m) {
+        border-radius: $br-default $br-default 0 0;
+      }
     }
   }
 
@@ -116,6 +122,23 @@
     }
   }
 
+  &__flare-tag {
+    font-weight: normal;
+    font-family: $ff-accent;
+    font-size: 0.6em;
+    padding: 0.3em;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+    line-height: 1em;
+    display: inline-block;
+    border-radius: $br-default;
+    letter-spacing: -0.05em;
+    background: var(--base-60);
+    margin-right: $su-1;
+    color: var(--base-inverted);
+  }
+
   &__bottom {
     display: flex;
     justify-content: space-between;
@@ -126,7 +149,7 @@
 
   &__details {
     display: flex;
-    margin-left: -$su-1;
+    margin-left: -$su-2;
   }
 
   &__comments {
@@ -172,6 +195,11 @@
         color: var(--link-color-hover);
       }
     }
+  }
+
+  &__save {
+    display: flex;
+    align-items: center;
   }
 
   &__video {
