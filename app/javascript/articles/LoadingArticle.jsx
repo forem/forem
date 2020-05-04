@@ -3,9 +3,14 @@ import PropTypes from 'prop-types';
 
 export const LoadingArticle = ({ version }) => {
   const cover =
-    version === 'featured' ? (
-      <div className="crayons-scaffold py-9" />
-    ) : ('');
+    version === 'featured' && (
+      <div className="crayons-story__cover">
+        <div
+          className="crayons-scaffold crayons-story__cover__image"
+          loading="lazy"
+        />
+      </div>
+    );
   return (
     <div className="crayons-story">
       {cover}
