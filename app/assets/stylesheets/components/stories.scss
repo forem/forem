@@ -3,10 +3,13 @@
 
 .crayons-story {
   background: var(--card-bg);
-  border-radius: $br-default;
   font-size: $fs-base; // Todo: remove when ready.
-  margin-bottom: $su-2; // This is basically spacing between each feed card.
   box-shadow: $bold-shadow; // we will kill it at some point, don't worry. just not yet.
+
+  @media (min-width: $breakpoint-m) {
+    border-radius: $br-default;
+    margin-bottom: $su-2; // This is basically spacing between each feed card.
+  }
 
   --story-padding: #{$su-4};
   --title-font-size: #{$fs-xl};
@@ -43,12 +46,15 @@
     display: block;
 
     &__image {
-      border-radius: $br-default $br-default 0 0;
       width: 100%;
       height: auto;
       padding-bottom: 42%;
       background-size: cover;
       background-position: center center;
+
+      @media (min-width: $breakpoint-m) {
+        border-radius: $br-default $br-default 0 0;
+      }
     }
   }
 
