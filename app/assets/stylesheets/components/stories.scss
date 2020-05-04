@@ -127,7 +127,6 @@
     font-family: $ff-accent;
     font-size: 0.6em;
     padding: 0.3em;
-    // padding-bottom: 0.2em;
     vertical-align: middle;
     position: relative;
     top: -2px;
@@ -135,6 +134,9 @@
     display: inline-block;
     border-radius: $br-default;
     letter-spacing: -0.05em;
+    background: var(--base-60);
+    margin-right: $su-1;
+    color: var(--base-inverted);
   }
 
   &__bottom {
