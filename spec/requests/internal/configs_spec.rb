@@ -145,6 +145,16 @@ RSpec.describe "/internal/config", type: :request do
           post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
           expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
         end
+
+        it "removes space suggested_users" do
+          post "/internal/config", params: { site_config: { suggested_users: "piglet, tigger,eeyore, Christopher Robin, kanga,roo" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
+        end
+
+        it "downcases suggested_users" do
+          post "/internal/config", params: { site_config: { suggested_users: "piglet, tigger,EEYORE, Christopher Robin, KANGA,RoO" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
+        end
       end
 
       describe "images" do
