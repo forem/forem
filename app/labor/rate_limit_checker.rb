@@ -52,25 +52,16 @@ class RateLimitChecker
     result
   end
 
-  def track_image_uploads
-    expires_in = RETRY_AFTER[:image_upload].seconds
-    Rails.cache.increment("#{@user.id}_image_upload", 1, expires_in: expires_in)
-  end
-
-  def track_article_updates
-    expires_in = RETRY_AFTER[:article_update].seconds
-    Rails.cache.increment("#{@user.id}_article_update", 1, expires_in: expires_in)
+  def track_limit_by_action(action)
+    cache_key = "#{@user.id}_#{action}"
+    expires_in = RETRY_AFTER[action].seconds
+    Rails.cache.increment(cache_key, 1, expires_in: expires_in)
   end
 
   def limit_by_email_recipient_address(address)
     # This is related to the recipient, not the "user" initiator, like in action.
     EmailMessage.where(to: address).where("sent_at > ?", 2.minutes.ago).size >
       SiteConfig.rate_limit_email_recipient
-  end
-
-  def track_organization_creation
-    expires_in = RETRY_AFTER[:organization_creation].seconds
-    Rails.cache.increment("#{@user.id}_organization_creation", 1, expires_in: expires_in)
   end
 
   private
