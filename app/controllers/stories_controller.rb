@@ -16,6 +16,7 @@ class StoriesController < ApplicationController
 
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
+  before_action :redirect_to_lowercase_username, only: %i[index]
 
   rescue_from ArgumentError, with: :bad_request
 
@@ -76,11 +77,11 @@ class StoriesController < ApplicationController
   end
 
   def redirect_to_changed_username_profile
-    potential_username = params[:username].tr("@", "").downcase
+    potential_username = params[:username].tr("@", "")
     user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
       Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
-      redirect_to user_or_org.path
+      redirect_to user_or_org.path, status: :moved_permanently
     else
       not_found
     end
@@ -90,19 +91,19 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
-      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path
+      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path, status: :moved_permanently
       return
     elsif (@organization = @article.organization)
-      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path
+      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path, status: :moved_permanently
       return
     end
     not_found
   end
 
   def handle_user_or_organization_or_podcast_or_page_index
-    @podcast = Podcast.available.find_by(slug: params[:username].downcase)
-    @organization = Organization.find_by(slug: params[:username].downcase)
-    @page = Page.find_by(slug: params[:username].downcase, is_top_level_path: true)
+    @podcast = Podcast.available.find_by(slug: params[:username])
+    @organization = Organization.find_by(slug: params[:username])
+    @page = Page.find_by(slug: params[:username], is_top_level_path: true)
     if @podcast
       handle_podcast_index
     elsif @organization
@@ -120,7 +121,7 @@ class StoriesController < ApplicationController
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
-      redirect_to "/t/#{@tag_model.alias_for}"
+      redirect_to "/t/#{@tag_model.alias_for}", status: :moved_permanently
       return
     end
 
@@ -194,7 +195,7 @@ class StoriesController < ApplicationController
   end
 
   def handle_user_index
-    @user = User.find_by(username: params[:username].tr("@", "").downcase)
+    @user = User.find_by(username: params[:username].tr("@", ""))
     unless @user
       redirect_to_changed_username_profile
       return
@@ -332,7 +333,13 @@ class StoriesController < ApplicationController
   end
 
   def assign_classified_listings
-    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :classified_listing_category_id, :slug, :bumped_at)
+    @classified_listings = ClassifiedListing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at)
+  end
+
+  def redirect_to_lowercase_username
+    return unless params[:username] && params[:username]&.match?(/[[:upper:]]/)
+
+    redirect_to "/#{params[:username].downcase}", status: :moved_permanently
   end
 
   def set_user_json_ld

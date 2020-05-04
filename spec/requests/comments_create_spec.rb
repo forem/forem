@@ -5,7 +5,7 @@ RSpec.describe "CommentsCreate", type: :request do
   let(:blocker) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:new_body) { -> { "NEW BODY #{rand(100)}" } }
-  let(:rate_limit_checker) { instance_double(RateLimitChecker) }
+  let(:rate_limit_checker) { RateLimitChecker.new(user) }
 
   before do
     sign_in user
@@ -23,12 +23,12 @@ RSpec.describe "CommentsCreate", type: :request do
 
   it "creates a comment with proper params" do
     expect do
-      post "/comments", params: comment_params
+      post comments_path, params: comment_params
     end.to change(user.comments, :count).by(1)
   end
 
   it "creates NotificationSubscription for comment" do
-    post "/comments", params: comment_params
+    post comments_path, params: comment_params
 
     expect(NotificationSubscription.last.notifiable).to eq(Comment.last)
   end
@@ -36,10 +36,10 @@ RSpec.describe "CommentsCreate", type: :request do
   it "returns 429 Too Many Requests when a user reaches their rate limit" do
     allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
     allow(rate_limit_checker).to receive(:limit_by_action).
-      with("comment_creation").
+      with(:comment_creation).
       and_return(true)
 
-    post "/comments", params: comment_params
+    post comments_path, params: comment_params
 
     expect(response).to have_http_status(:too_many_requests)
   end
@@ -51,7 +51,7 @@ RSpec.describe "CommentsCreate", type: :request do
       blocker_article = create(:article, user: blocker)
 
       expect do
-        post "/comments", params: comment_params(commentable_id: blocker_article.id)
+        post comments_path, params: comment_params(commentable_id: blocker_article.id)
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
@@ -61,7 +61,7 @@ RSpec.describe "CommentsCreate", type: :request do
       user.update(blocked_by_count: 1)
       blocker_article = create(:article, user: blocker)
 
-      post "/comments", params: comment_params(
+      post comments_path, params: comment_params(
         body_markdown: "something allowed",
         commentable_id: blocker_article.id,
       )
@@ -75,11 +75,11 @@ RSpec.describe "CommentsCreate", type: :request do
   context "when an error is raised before authorization is performed" do
     before do
       allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
-      allow(rate_limit_checker).to receive(:limit_by_action).and_raise(StandardError)
+      allow(rate_limit_checker).to receive(:check_limit!).and_raise(StandardError)
     end
 
     it "returns an unprocessable_entity response code" do
-      post "/comments", params: comment_params
+      post comments_path, params: comment_params
 
       expect(response).to have_http_status(:unprocessable_entity)
     end
@@ -87,7 +87,7 @@ RSpec.describe "CommentsCreate", type: :request do
 
   context "when a comment is invalid" do
     it "returns the proper JSON response" do
-      post "/comments", params: comment_params(body_markdown: "a" * 25_001)
+      post comments_path, params: comment_params(body_markdown: "a" * 25_001)
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error"]).to be_present

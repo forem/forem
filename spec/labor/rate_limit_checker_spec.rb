@@ -98,27 +98,54 @@ RSpec.describe RateLimitChecker, type: :labor do
 
       expect(rate_limit_checker.limit_by_action("article_update")).to be(false)
     end
-  end
 
-  describe ".track_image_uploads" do
-    it "calls the cache object correctly" do
-      allow(Rails.cache).to receive(:increment)
+    it "returns true if user has created too many organizations" do
+      allow(Rails.cache).
+        to receive(:read).with("#{user.id}_organization_creation").
+        and_return(SiteConfig.rate_limit_organization_creation + 1)
 
-      rate_limit_checker.track_image_uploads
+      expect(rate_limit_checker.limit_by_action("organization_creation")).to be(true)
+    end
 
-      key = "#{user.id}_image_upload"
-      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: 30.seconds)
+    it "returns false if organization_creation limit has not been reached" do
+      expect(described_class.new(user).limit_by_action("organization_creation")).to be(false)
+    end
+
+    it "logs a rate limit hit to datadog" do
+      allow(Rails.cache).
+        to receive(:read).with("#{user.id}_organization_creation").
+        and_return(SiteConfig.rate_limit_organization_creation + 1)
+      allow(DatadogStatsClient).to receive(:increment)
+      described_class.new(user).limit_by_action("organization_creation")
+
+      expect(DatadogStatsClient).to have_received(:increment).with(
+        "rate_limit.limit_reached",
+        tags: ["user:#{user.id}", "action:organization_creation"],
+      )
     end
   end
 
-  describe ".track_article_updates" do
-    it "calls the cache object correctly" do
+  describe "#check_limit!" do
+    it "returns nil if limit_by_action is false" do
+      allow(rate_limit_checker).to receive(:limit_by_action).and_return(false)
+      expect(rate_limit_checker.check_limit!(:image_upload)).to be_nil
+    end
+
+    it "raises an error if limit_by_action is true" do
+      allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
+      expect { rate_limit_checker.check_limit!(:image_upload) }.to raise_error(RateLimitChecker::LimitReached)
+    end
+  end
+
+  describe "#track_limit_by_action" do
+    it "increments cache for action with retry as expiration" do
       allow(Rails.cache).to receive(:increment)
+      action = :image_upload
+      rate_limit_checker.track_limit_by_action(action)
 
-      rate_limit_checker.track_article_updates
-
-      key = "#{user.id}_article_update"
-      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: 30.seconds)
+      key = "#{user.id}_#{action}"
+      expires_in = described_class::RETRY_AFTER[action]
+      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: expires_in)
     end
   end
 

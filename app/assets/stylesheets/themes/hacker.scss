@@ -150,6 +150,11 @@
   --box: var(--base-90);
   --box-darker: var(--base-100);
 
+  // Snackbars
+  --snackbar-bg: var(--base-10);
+  --snackbar-border: var(--accent-brand);
+  --snackbar-color: var(--accent-brand);
+
   // Indicators
   --indicator-accent-bg: var(--accent-brand);
   --indicator-accent-color: var(--body-color-inverted);

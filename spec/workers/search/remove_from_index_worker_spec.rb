@@ -2,31 +2,27 @@ require "rails_helper"
 
 RSpec.describe Search::RemoveFromIndexWorker, type: :worker do
   let(:worker) { subject }
+  let(:search_class) { Search::Tag }
 
-  include_examples "#enqueues_on_correct_queue", "medium_priority", ["searchables_#{Rails.env}", "users-456"]
+  include_examples "#enqueues_on_correct_queue", "medium_priority", ["SearchClass", 1]
 
-  describe "#perform" do
-    let(:algolia_index) { instance_double(Algolia::Index) }
+  it "deletes document for given search class" do
+    allow(search_class).to receive(:delete_document)
+    described_class.new.perform(search_class.to_s, 1)
+    expect(search_class).to have_received(:delete_document).with(1)
+  end
 
-    before do
-      allow(Algolia::Index).to receive(:new).and_return(algolia_index)
-      allow(algolia_index).to receive(:delete_object)
+  context "when document is not found" do
+    it "raises error" do
+      expect { described_class.new.perform(search_class.to_s, 1) }.to raise_error(
+        Search::Errors::Transport::NotFound,
+      )
     end
 
-    it "calls the service" do
-      worker.perform("searchables_#{Rails.env}", "users-456")
-
-      expect(algolia_index).to have_received(:delete_object).with("users-456").once
-    end
-
-    it "doesn't raise an error if key is missing" do
-      # key is nil
-      expect { worker.perform("searchables_#{Rails.env}", nil) }.not_to raise_error
-    end
-
-    it "doesn't raise an error if index is missing" do
-      # index is nil
-      expect { worker.perform(nil, "users-456") }.not_to raise_error
+    it "does not raise error if removing a Reaction" do
+      expect { described_class.new.perform("Search::Reaction", 1) }.not_to raise_error(
+        Search::Errors::Transport::NotFound,
+      )
     end
   end
 end

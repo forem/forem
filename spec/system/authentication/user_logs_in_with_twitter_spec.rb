@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Authenticating with Twitter" do
   let(:sign_in_link) { "Sign In With Twitter" }
 
-  before { mock_twitter }
+  before { omniauth_mock_twitter_payload }
 
   context "when a user is new" do
     context "when using valid credentials" do
@@ -50,13 +50,13 @@ RSpec.describe "Authenticating with Twitter" do
 
     context "when using invalid credentials" do
       before do
-        mock_auth_with_invalid_credentials(:twitter)
+        omniauth_setup_invalid_credentials(:twitter)
 
         allow(DatadogStatsClient).to receive(:increment)
       end
 
       after do
-        OmniAuth.config.on_failure = OmniauthMacros.const_get("OMNIAUTH_DEFAULT_FAILURE_HANDLER")
+        OmniAuth.config.on_failure = OmniauthHelpers.const_get("OMNIAUTH_DEFAULT_FAILURE_HANDLER")
       end
 
       it "does not create a new user" do
@@ -81,7 +81,7 @@ RSpec.describe "Authenticating with Twitter" do
           "Callback error", "Error reason", "https://example.com/error"
         )
 
-        setup_omniauth_error(error)
+        omniauth_setup_authentication_error(error)
 
         visit root_path
         click_link sign_in_link
@@ -97,7 +97,7 @@ RSpec.describe "Authenticating with Twitter" do
         allow(request).to receive(:code).and_return(401)
         allow(request).to receive(:message).and_return("unauthorized")
         error = OAuth::Unauthorized.new(request)
-        setup_omniauth_error(error)
+        omniauth_setup_authentication_error(error)
 
         visit root_path
         click_link sign_in_link
@@ -110,7 +110,7 @@ RSpec.describe "Authenticating with Twitter" do
 
       it "notifies Datadog even with no OmniAuth error present" do
         error = nil
-        setup_omniauth_error(error)
+        omniauth_setup_authentication_error(error)
 
         visit root_path
         click_link sign_in_link

@@ -31,7 +31,7 @@ class Comment < ApplicationRecord
   after_create :notify_slack_channel_about_warned_users
   after_create :after_create_checks
   after_create_commit :record_field_test_event
-  after_commit :calculate_score
+  after_commit :calculate_score, on: %i[create update]
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
   after_save     :bust_cache
   after_save     :synchronous_bust

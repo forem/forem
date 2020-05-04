@@ -68,4 +68,14 @@ RSpec.describe "OrganizationsUpdate", type: :request do
 
     expect(response.body).to include("filename too long")
   end
+
+  it "returns error if profile image is not a file" do
+    organization = user.organizations.first
+    allow(Organization).to receive(:find_by).and_return(organization)
+    image = "A String"
+
+    put "/organizations/#{org_id}", params: { organization: { id: org_id, profile_image: image } }
+
+    expect(response.body).to include("invalid file type")
+  end
 end

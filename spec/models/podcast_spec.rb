@@ -132,17 +132,20 @@ RSpec.describe Podcast, type: :model do
 
   describe "#existing_episode" do
     let(:guid) { "<guid isPermaLink=\"false\">http://podcast.example/file.mp3</guid>" }
-
+    let(:item_attributes) do
+      {
+        pubDate: "2019-06-19",
+        enclosure_url: "https://audio.simplecast.com/2330f132.mp3",
+        description: "yet another podcast",
+        title: "lightalloy's podcast",
+        guid: guid,
+        itunes_subtitle: "hello",
+        content_encoded: nil,
+        itunes_summary: "world"
+      }
+    end
     let(:item) do
-      build(:podcast_episode_rss_item, pubDate: "2019-06-19",
-                                       enclosure_url: "https://audio.simplecast.com/2330f132.mp3",
-                                       description: "yet another podcast",
-                                       title: "lightalloy's podcast",
-                                       guid: guid,
-                                       itunes_subtitle: "hello",
-                                       content_encoded: nil,
-                                       itunes_summary: "world",
-                                       link: "https://litealloy.ru")
+      build(:podcast_episode_rss_item, item_attributes.merge(link: "https://litealloy.ru"))
     end
 
     it "determines existing episode by media_url" do
@@ -163,6 +166,12 @@ RSpec.describe Podcast, type: :model do
     it "determines existing episode by website_url" do
       episode = create(:podcast_episode, podcast: podcast, website_url: "https://litealloy.ru")
       expect(podcast.existing_episode(item)).to eq(episode)
+    end
+
+    it "doesn't determine existing episode if episode link is empty" do
+      create(:podcast_episode, podcast: podcast, website_url: "")
+      no_link_item = build(:podcast_episode_rss_item, item_attributes.merge(link: ""))
+      expect(podcast.existing_episode(no_link_item)).to eq(nil)
     end
 
     it "doesn't determine existing episode by non-unique website_url" do
