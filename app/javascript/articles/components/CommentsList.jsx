@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 import { CommentListItem } from './CommentListItem';
 
 const numberOfCommentsToShow = 2;
@@ -14,16 +15,19 @@ function moreCommentsButton(comments, articlePath, totalCount) {
   if (totalCount > numberOfCommentsToShow) {
     button = (
       <div className="crayons-story__comments__actions">
-        <a
-          href={linkToCommentsSection(articlePath)}
-          className="crayons-btn crayons-btn--secondary fs-s mr-2"
+        <Button
+          variant="secondary"
+          className="mr-2"
+          size="s"
+          tagName="a"
+          url={linkToCommentsSection(articlePath)}
         >
           See all 
           {' '}
           {totalCount}
           {' '}
           comments
-        </a>
+        </Button>
       </div>
     );
   }
