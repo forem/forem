@@ -379,7 +379,7 @@ CATEGORIES = [
     slug: "cfp",
     cost: 1,
     name: "Conference CFP",
-    rules: "Currently open for proposals,with link to form."
+    rules: "Currently open for proposals, with link to form."
   },
   {
     slug: "education",
