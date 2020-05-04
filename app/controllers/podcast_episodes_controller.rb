@@ -22,6 +22,20 @@ class PodcastEpisodesController < ApplicationController
     render template: "podcast_episodes/index"
   end
 
+  def show
+    @podcast = Podcast.available.find_by!(slug: params[:username])
+    @episode = PodcastEpisode.available.find_by!(slug: params[:slug])
+
+    set_surrogate_key_header @episode.record_key
+
+    @episode = @episode.decorate
+    @podcast_episode_show = true
+    @comments_to_show_count = 25
+    @comment = Comment.new
+
+    render template: "podcast_episodes/show"
+  end
+
   private
 
   def podcast_episode_params
