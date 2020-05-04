@@ -107,7 +107,6 @@ export function getChannels(
   _failureCb,
 ) {
   const dataHash = {};
-  let responsePromise;
   if (additionalFilters.filters) {
     const [key, value] = additionalFilters.filters.split(':');
     dataHash[key] = value;
@@ -116,9 +115,9 @@ export function getChannels(
   dataHash.page = paginationNumber;
   dataHash.channel_text = query;
   if (searchType === 'discoverable') {
-    dataHash["discoverable"] = true;
+    dataHash.discoverable = true;
   }
-  responsePromise = fetchSearch('chat_channels', dataHash);
+  const responsePromise = fetchSearch('chat_channels', dataHash);
 
   return responsePromise.then((response) => {
     const channels = response.result;
