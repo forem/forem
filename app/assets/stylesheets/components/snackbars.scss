@@ -1,5 +1,4 @@
 @import '../config/import';
-@import '../base/boxes';
 
 .crayons-snackbar {
   position: fixed;
@@ -20,10 +19,12 @@
   }
 
   &__item {
-    @extend .crayons-box;
-    @extend .crayons-box--filled;
-    @extend .crayons-box--level-1;
-    color: var(--body-color-inverted);
+    @include generate-box(
+      $level: 1,
+      $bg: var(--snackbar-bg),
+      $border: var(--snackbar-border),
+      $color: var(--snackbar-color)
+    );
     display: none;
     align-items: center;
     justify-content: space-between;
