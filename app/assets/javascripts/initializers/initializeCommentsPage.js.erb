@@ -252,7 +252,7 @@ function handleCommentSubmit(event) {
           initializeCommentsPage();
           initializeCommentDate();
           initializeCommentDropdown();
-          waitForRunkitAndActivateTags();
+          activateRunkitTags();
         })
       } else {
         response.json().then(function parseError(errorReponse) {

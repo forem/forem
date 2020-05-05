@@ -1,5 +1,3 @@
-<%= javascript_include_tag "https://embed.runkit.com", defer: true %>
-
 <div class="articleformcontainer">
   <div class="articleform"
        id="article-form"
@@ -50,6 +48,12 @@
     </div>
   </div>
 </div>
+
+<% cache("article-edit-scripts", expires_in: 8.hours) do %>
+  <script async>
+    <%= RunkitTag.script.html_safe %>
+  </script>
+<% end %>
 
 <style>
   #footer-container {
