@@ -57,10 +57,16 @@ class SearchController < ApplicationController
 
   def chat_channels
     ccm_docs = Search::ChatChannelMembership.search_documents(
-      params: chat_channel_params.merge(user_id: chat_channel_params[:user_id]).to_h,
+      params: chat_channel_params.merge(user_id: chat_channel_params[:user_id] || current_user.id).to_h,
     )
 
-    render json: { result: ccm_docs.uniq { |membership| membership["chat_channel_id"] } }
+    filtered_by_viewable = ccm_docs.filter { |ccm_doc| ccm_doc if ccm_doc["viewable_by"] == current_user.id }
+    filtered_by_viewable_channel_id = filtered_by_viewable.map { |ccm_doc| ccm_doc["chat_channel_id"] }
+    ccm_doc_global = ccm_docs.uniq { |ccm_doc| ccm_doc["chat_channel_id"] }.filter do |unq_ccm_doc|
+      unq_ccm_doc unless filtered_by_viewable_channel_id.include?(unq_ccm_doc["chat_channel_id"])
+    end
+
+    render json: { result: ccm_doc_global + filtered_by_viewable }
   end
 
   def classified_listings

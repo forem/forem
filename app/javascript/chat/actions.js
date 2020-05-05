@@ -116,8 +116,6 @@ export function getChannels(
   dataHash.channel_text = query;
   if (searchType === 'discoverable') {
     dataHash.user_id = 'all';
-  } else {
-    dataHash.user_id = window.currentUser.id;
   }
   const responsePromise = fetchSearch('chat_channels', dataHash);
 
