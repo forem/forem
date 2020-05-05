@@ -358,22 +358,23 @@ class StoriesController < ApplicationController
         "@id": URL.user(@user)
       },
       "url": URL.user(@user),
-      "sameAs": [],
+      "sameAs": user_same_as,
       "image": ProfileImage.new(@user).get(width: 320),
       "name": @user.name,
       "email": "",
       "jobTitle": "",
       "description": @user.summary.presence || "404 bio not found",
-      "disambiguatingDescription": [],
+      "disambiguatingDescription": user_disambiguating_description,
       "worksFor": [
         {
-          "@type": "Organization"
+          "@type": "Organization",
+          user_works_for
         },
       ],
       "alumniOf": ""
     }
-    set_user_profile_json_ld
-    set_user_same_as_json_ld
+    # set_user_profile_json_ld
+    # set_user_same_as_json_ld
   end
 
   def set_article_json_ld
@@ -435,30 +436,45 @@ class StoriesController < ApplicationController
   end
 
   def set_user_profile_json_ld
-    @user_json_ld[:disambiguatingDescription].append(@user.mostly_work_with) if @user.mostly_work_with.present?
-    @user_json_ld[:disambiguatingDescription].append(@user.currently_hacking_on) if @user.currently_hacking_on.present?
-    @user_json_ld[:disambiguatingDescription].append(@user.currently_learning) if @user.currently_learning.present?
-    @user_json_ld[:worksFor][0][:name] = @user.employer_name if @user.employer_name.present?
-    @user_json_ld[:worksFor][0][:url] = @user.employer_url if @user.employer_url.present?
+    # @user_json_ld[:disambiguatingDescription].append(@user.mostly_work_with) if @user.mostly_work_with.present?
+    # @user_json_ld[:disambiguatingDescription].append(@user.currently_hacking_on) if @user.currently_hacking_on.present?
+    # @user_json_ld[:disambiguatingDescription].append(@user.currently_learning) if @user.currently_learning.present?
+    # @user_json_ld[:worksFor][0][:name] = @user.employer_name if @user.employer_name.present?
+    # @user_json_ld[:worksFor][0][:url] = @user.employer_url if @user.employer_url.present?
     @user_json_ld[:alumniOf] = @user.education if @user.education.present?
     @user_json_ld[:email] = @user.email if @user.email_public
     @user_json_ld[:jobTitle] = @user.employment_title if @user.employment_title.present?
-    @user_json_ld[:sameAs].append("https://twitter.com/#{@user.twitter_username}") if @user.twitter_username.present?
-    @user_json_ld[:sameAs].append("https://github.com/#{@user.github_username}") if @user.github_username.present?
   end
 
-  def set_user_same_as_json_ld
-    @user_json_ld[:sameAs].append(@user.mastodon_url) if @user.mastodon_url.present?
-    @user_json_ld[:sameAs].append(@user.facebook_url) if @user.facebook_url.present?
-    @user_json_ld[:sameAs].append(@user.youtube_url) if @user.youtube_url.present?
-    @user_json_ld[:sameAs].append(@user.linkedin_url) if @user.linkedin_url.present?
-    @user_json_ld[:sameAs].append(@user.behance_url) if @user.behance_url.present?
-    @user_json_ld[:sameAs].append(@user.stackoverflow_url) if @user.stackoverflow_url.present?
-    @user_json_ld[:sameAs].append(@user.dribbble_url) if @user.dribbble_url.present?
-    @user_json_ld[:sameAs].append(@user.medium_url) if @user.medium_url.present?
-    @user_json_ld[:sameAs].append(@user.gitlab_url) if @user.gitlab_url.present?
-    @user_json_ld[:sameAs].append(@user.instagram_url) if @user.instagram_url.present?
-    @user_json_ld[:sameAs].append(@user.twitch_username) if @user.twitch_username.present?
-    @user_json_ld[:sameAs].append(@user.website_url) if @user.website_url.present?
+  def user_works_for
+    @user_json_ld[:worksFor][0][:name] = @user.employer_name if @user.employer_name.present?
+    @user_json_ld[:worksFor][0][:url] = @user.employer_url if @user.employer_url.present?
   end
+
+  def user_disambiguating_description
+    [@user.mostly_work_with.presence ? @user.mostly_work_with : nil,
+     @user.currently_hacking_on.presence ? @user.currently_hacking_on : nil,
+     @user.currently_learning.presence ? @user.currently_learning : nil]
+  end
+
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/PerceivedComplexity
+  def user_same_as
+    [@user.twitter_username.presence ? "https://twitter.com/#{@user.twitter_username}" : nil,
+     @user.github_username.presence ? "https://github.com/#{@user.github_username}" : nil,
+     @user.mastodon_url.presence ? @user.mastodon_url : nil,
+     @user.facebook_url.presence ? @user.facebook_url : nil,
+     @user.youtube_url.presence ? @user.youtube_url : nil,
+     @user.linkedin_url.presence ? @user.linkedin_url : nil,
+     @user.behance_url.presence ? @user.behance_url : nil,
+     @user.stackoverflow_url.presence ? @user.stackoverflow_url : nil,
+     @user.dribbble_url.presence ? @user.dribbble_url : nil,
+     @user.medium_url.presence ? @user.medium_url : nil,
+     @user.gitlab_url.presence ? @user.gitlab_url : nil,
+     @user.instagram_url.presence ? @user.instagram_url : nil,
+     @user.twitch_username.presence ? @user.twitch_username : nil,
+     @user.website_url.presence ? @user.website_url : nil]
+  end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/PerceivedComplexity
 end
