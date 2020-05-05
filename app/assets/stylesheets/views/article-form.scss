@@ -1,5 +1,4 @@
 @import '../config/import';
-@import '../base/boxes';
 
 %layout {
   max-width: var(--layout-site-width);
@@ -202,8 +201,12 @@
 
 .crayons-article-form {
   &__tagsoptions {
-    @extend .crayons-box;
-    @extend .crayons-box--level-2;
+    @include generate-box(
+      $level: 2,
+      $bg: var(--card-bg),
+      $border: var(--card-color),
+      $color: var(--card-color)
+    );
 
     position: absolute;
     left: 0;
