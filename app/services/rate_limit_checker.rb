@@ -76,7 +76,7 @@ class RateLimitChecker
   end
 
   def action_rate_limit(action)
-    SiteConfig.send("rate_limit_#{action}")
+    SiteConfig.public_send("rate_limit_#{action}")
   end
 
   def check_comment_creation_limit
