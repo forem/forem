@@ -78,7 +78,7 @@ export class Snackbar extends Component {
           if (snack.addCloseButton) {
             // Adds an optional close button if addDefaultACtion is true.
             snack.actions.push({
-              text: 'CLOSE',
+              text: 'Dismiss',
               handler: () => {
                 this.setState((prevState) => {
                   return {
