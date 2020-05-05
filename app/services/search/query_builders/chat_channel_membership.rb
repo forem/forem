@@ -40,7 +40,6 @@ module Search
           # TODO: Optimize it more to fetch uniq results
         else
           @body[:query][:bool] = { filter: filter_conditions }
-          @body[:query][:bool][:must] = query_conditions if query_keys_present?
         end
       end
 
