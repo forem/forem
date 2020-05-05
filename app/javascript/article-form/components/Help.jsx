@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { Modal } from './Modal';
+import { Modal } from '@crayons';
 
 export class Help extends Component {
   constructor(props) {
@@ -117,13 +117,10 @@ export class Help extends Component {
                     <a href="#frontmatter" onClick={this.toggleFrontmatter}>
                       Jekyll front matter
                     </a>
-                    . You can also use 
-                    {' '}
+                    . You can also use
                     <em>rich+markdown</em>
                     {' '}
-                    editor you can
-                    find in 
-                    {' '}
+                    editor you can find in
                     <a href="/settings/ux">UX settings</a>
                     .
                   </div>
@@ -160,23 +157,29 @@ export class Help extends Component {
         )}
 
         {liquidShowing && (
-          <Modal onToggleHelp={this.toggleLiquid} title="🌊 Liquid Tags">
-            {liquidHelpHTML}
+          <Modal onClose={this.toggleLiquid} title="🌊 Liquid Tags">
+            <div
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: liquidHelpHTML }}
+            />
           </Modal>
         )}
 
         {markdownShowing && (
-          <Modal onToggleHelp={this.toggleMarkdown} title="✍️ Markdown">
-            {markdownHelpHTML}
+          <Modal onClose={this.toggleMarkdown} title="✍️ Markdown">
+            <div
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: markdownHelpHTML }}
+            />
           </Modal>
         )}
 
         {frontmatterShowing && (
-          <Modal
-            onToggleHelp={this.toggleFrontmatter}
-            title="Jekyll Front Matter"
-          >
-            {frontmatterHelpHTML}
+          <Modal onClose={this.toggleFrontmatter} title="Jekyll Front Matter">
+            <div
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{ __html: frontmatterHelpHTML }}
+            />
           </Modal>
         )}
       </div>
