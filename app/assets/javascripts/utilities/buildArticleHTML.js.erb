@@ -1,18 +1,22 @@
 function buildArticleHTML(article) {
   if (article && article.class_name == "PodcastEpisode") {
-    return '<div class="single-article single-article-small-pic single-article-single-podcast">\
-      <div class="small-pic">\
-       <a href="/'+article.podcast.slug+'" class="small-pic-link-wrapper">\
-         <img src="'+article.podcast.image_url+'" alt="'+article.podcast.title+' image">\
-       </a>\
-       </div>\
-       <a href="'+article.path+'" class="small-pic-link-wrapper index-article-link" id="article-link-'+article.id+'">\
-        <div class="content">\
-         <h3><span class="crayons-story__flare-tag">podcast</span>'+article.title+'</h3>\
+    return '<div class="crayons-story">\
+      <div class="crayons-story__body">\
+        <div class="crayons-podcast-episode">\
+          <a href="/'+article.podcast.slug+'" class="crayons-podcast-episode__cover">\
+            <img src="'+article.podcast.image_url+'" alt="'+article.podcast.title+' image">\
+          </a>\
+          <div>\
+            <p class="crayons-podcast-episode__author">'+article.podcast.title+'</p>\
+            <h2 class="crayons-story__title">\
+              <a href="'+article.path+'" id="article-link-'+article.id+'">\
+                article.title\
+              </a>\
+            </h2>\
+          </div>\
         </div>\
-       </a>\
-       <h4><a href="/'+article.podcast.slug+'">'+article.podcast.title+'</a></h4>\
-       </div>';
+      </div>\
+    </div>';
   }
   else if (article) {
     var container = document.getElementById("index-container");
@@ -50,11 +54,15 @@ function buildArticleHTML(article) {
     if (article.class_name == "User"){
       flareTag = "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>"
     }
+
     var rc = article.positive_reactions_count
+    var reactionsCount = (rc || '0')
     var reactionsDisplay = ''
-    if ((rc || '0') > 0 && article.class_name != "User") {
+
+    if (article.class_name != "User") {
       var reactionsDisplay = '<a href="'+article.path+'" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left"><svg class="crayons-icon" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"/></svg>'+reactionsCount+'<span class="hidden s:inline">&nbsp;reactions</span></a>'
     }
+
     var picUrl;
     var profileUsername;
     var userName;
@@ -79,13 +87,18 @@ function buildArticleHTML(article) {
       var organizationClasses = "crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted";
     }
 
+    var timeAgoInWords = '';
+    if (article.published_at_int) {
+      timeAgoInWords = timeAgo({ oldTimeInSeconds: article.published_at_int });
+    }
+
     var publishDate = '';
     if (article.readable_publish_date) {
-      var displayDate = article.readable_publish_date;
-      if ( article.published_at_int ) {
-        var displayDate = timeAgo({ oldTimeInSeconds: article.published_at_int })
+      if (article.published_timestamp) {
+        publishDate = '<time datetime="'+article.published_timestamp+'">'+article.readable_publish_date+' '+timeAgoInWords+'</time>';
+      } else {
+        publishDate = '<time>'+article.readable_publish_date+' '+timeAgoInWords+'</time>';
       }
-      publishDate = '<time datetime="'+article.published_timestamp+'">'+displayDate+'</time>';
     }
 
     var meta = '<div class="crayons-story__meta">\
@@ -114,10 +127,12 @@ function buildArticleHTML(article) {
       if (firstSnippetChar.toLowerCase() != firstSnippetChar.toUpperCase()){
         startingEllipsis = "…"
       }
-      if ((bodyTextSnippet.length > 0 || commentsBlobSnippet.length > 0) && article.class_name == "Article"){
-        searchSnippetHTML = '<div class="crayons-story__snippet mb-1">'+bodyTextSnippet+commentsBlobSnippet+'</div>'
+      bodyTextSnippet = startingEllipsis + article.highlight.body_text.join("...") + "…";
+      if (bodyTextSnippet.length > 0){
+        searchSnippetHTML = '<div class="crayons-story__snippet mb-1">' + bodyTextSnippet + '</div>'
       }
     }
+
     var saveButton = '';
     if (article.class_name === "Article") {
       saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--s" data-reactable-id="'+article.id+'">\
