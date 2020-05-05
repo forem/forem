@@ -1,12 +1,4 @@
 @import '../config/import';
-@import '../base/boxes';
-
-%modal-style {
-  @extend .crayons-box;
-  @extend .crayons-box--level-3;
-  display: inline-block;
-  width: 100%;
-}
 
 .crayons-modal {
   position: fixed;
@@ -18,6 +10,12 @@
   align-items: center;
   justify-content: center;
   z-index: 500;
+  @include generate-box(
+    $level: 3,
+    $bg: var(--card-bg),
+    $border: var(--card-color),
+    $color: var(--card-color)
+  );
 
   &__overlay {
     background: var(--base-100);
@@ -31,7 +29,6 @@
   }
 
   &__box {
-    @extend %modal-style;
     display: flex;
     flex-direction: column;
     max-width: 800px;

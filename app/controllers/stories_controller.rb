@@ -333,7 +333,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_classified_listings
-    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :classified_listing_category_id, :slug, :bumped_at)
+    @classified_listings = ClassifiedListing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at)
   end
 
   def redirect_to_lowercase_username

@@ -36,7 +36,7 @@ module Articles
       article_params[:edited_at] = Time.current if update_edited_at
 
       article.update!(article_params)
-      rate_limiter.track_article_updates
+      rate_limiter.track_limit_by_action(:article_update)
 
       # send notification only the first time an article is published
       send_notification = article.published && article.saved_change_to_published_at.present?
