@@ -1,28 +1,30 @@
 <% cache("whole-comment-area-#{@article.id}-#{@article.last_comment_at}-#{@article.show_comments}", expires_in: 2.hours) do %>
   <div id="comments" data-updated-at="<%= Time.current %>">
     <% if @article.show_comments %>
-      <div class="comments-container-container">
-        <div
-          class="comments-container"
-          id="comments-container"
-          data-commentable-id="<%= @article.id %>"
-          data-commentable-type="Article">
-          <%= render "/comments/form",
-                     commentable: @article,
-                     commentable_type: "Article" %>
-          <div class="comment-trees" id="comment-trees-container">
-            <% if @article.comments_count > 0 %>
-              <% Comment.tree_for(@article, @comments_to_show_count).each do |comment, sub_comments| %>
-                <% cache ["comment_root_cached_tree", comment] do %>
-                  <%= tree_for(comment, sub_comments, @article) %>
-                <% end %>
+      <div class="relative flex justify-between items-center mx-2 s:mx-7 mb-2">
+        <span class="fs-2xl fw-bold">Discussion</span>
+        <div id="comment-subscription"></div>
+      </div>
+      <div
+        class="comments-container mx-2 s:mx-7"
+        id="comments-container"
+        data-commentable-id="<%= @article.id %>"
+        data-commentable-type="Article">
+        <%= render "/comments/form",
+                   commentable: @article,
+                   commentable_type: "Article" %>
+        <div class="comment-trees" id="comment-trees-container">
+          <% if @article.comments_count > 0 %>
+            <% Comment.tree_for(@article, @comments_to_show_count).each do |comment, sub_comments| %>
+              <% cache ["comment_root_cached_tree", comment] do %>
+                <%= tree_for(comment, sub_comments, @article) %>
               <% end %>
             <% end %>
-          </div>
+          <% end %>
         </div>
-        <div class="show-comments-footer">
-          <%= render "articles/comments_actions" %>
-        </div>
+      </div>
+      <div class="show-comments-footer">
+        <%= render "articles/comments_actions" %>
       </div>
     <% end %>
   </div>

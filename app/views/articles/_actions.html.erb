@@ -41,26 +41,6 @@
     </button>
     <div class="dropdown-content">
       <div>
-        <% if user_signed_in? %>
-          <div class="dropdown-link-row notification-subscriptions-area-row"
-            id="notification-subscriptions-area" data-notifiable-id="<%= @article.id %>" data-notifiable-type="Article">
-            <div class="notification-subscriptions-area-header">🔔 Notification Subscriptions
-              <button for="subscribe_notifications" id="notification-subscription-label_not_subscribed" class="notification-subscription-label notification-subscription-label-unsubscribe" data-payload="not_subscribed" name="unsubscribe">
-                Unsubscribe
-              </button>
-            </div>
-            <button for="subscribe_notifications" id="notification-subscription-label_all_comments" class="notification-subscription-label" data-payload="all_comments">
-              All Comments <span class="selected-emoji">✅</span>
-            </button>
-            <button for="subscribe_notifications" id="notification-subscription-label_top_level_comments" class="notification-subscription-label" data-payload="top_level_comments">
-              Top Level Comments <span class="selected-emoji">✅</span>
-            </button>
-            <button for="subscribe_notifications" id="notification-subscription-label_only_author_comments" class="notification-subscription-label" data-payload="only_author_comments">
-              Post Author Comments <span class="selected-emoji">✅</span>
-            </button>
-            <%= javascript_packs_with_chunks_tag "notificationSubscriptionHandler", defer: true %>
-          </div>
-        <% end %>
         <div class="dropdown-link-row">
           <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer">
             <input type="text" id="article-copy-link-input" value="<%= article_url(@article) %>" readonly />
