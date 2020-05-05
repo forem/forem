@@ -1,8 +1,63 @@
 function initializeAllFollowButts() {
   var followButts = document.getElementsByClassName('follow-action-button');
   for (var i = 0; i < followButts.length; i++) {
-    initializeFollowButt(followButts[i]);
+    if (!followButts[i].className.includes("follow-user")) {
+      initializeFollowButt(followButts[i]);
+    };
   }
+}
+
+function fetchUserButtons(idButtonHash) {
+  var dataRequester;
+  if (window.XMLHttpRequest) {
+    dataRequester = new XMLHttpRequest();
+  } else {
+    dataRequester = new ActiveXObject('Microsoft.XMLHTTP');
+  }
+  var idString = "";
+  Object.keys(idButtonHash).forEach(function(id) {
+    idString += ("ids[]=" + id + "&");
+  });
+
+  dataRequester.onreadystatechange = function() {
+    if (
+      dataRequester.readyState === XMLHttpRequest.DONE &&
+      dataRequester.status === 200
+    ) {
+      var idStatuses = JSON.parse(dataRequester.response);
+      Object.keys(idStatuses).forEach(function(id) {
+        addButtClickHandle(idStatuses[id], idButtonHash[id]);
+      })
+    }
+  };
+
+  dataRequester.open(
+    'GET',
+    '/follows/bulk_show?' + idString + 'followable_type=User',
+    true,
+  );
+  dataRequester.send();
+}
+
+
+function initializeUserFollowButtons(buttons) {
+  var userIds = {};
+  for (var i = 0; i < buttons.length; i++) {
+    var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+    if (userStatus === 'logged-out') {
+      addModalEventListener(buttons[i]);
+    } else {
+      var userId = JSON.parse(buttons[i].dataset.info).id
+      userIds[userId] = buttons[i];
+    }
+  }
+
+  if (Object.keys(userIds).length > 0) { fetchUserButtons(userIds); }
+}
+
+function initializeUserFollowButts() {
+  var buttons = document.getElementsByClassName('follow-action-button follow-user');
+  initializeUserFollowButtons(buttons);
 }
 
 //private

@@ -8,6 +8,7 @@ function initializeLocalStorageRender() {
       initializeBaseUserData();
       initializeReadingListIcons();
       initializeAllFollowButts();
+      initializeUserFollowButts();
       initializeSponsorshipVisibility();
     }
   } catch (err) {

@@ -32,6 +32,7 @@ function initializeAdditionalContentBoxes() {
             el.innerHTML = html;
             initializeReadingListIcons();
             initializeAllFollowButts();
+            initializeUserFollowButts();
             initializeSponsorshipVisibility();
           });
         } else {
