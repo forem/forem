@@ -408,7 +408,7 @@ class Article < ApplicationRecord
   end
 
   def liquid_tags_used
-    MarkdownParser.new(body_markdown.to_s + comments_blob.to_s).tags_used
+    MarkdownParser.new("#{body_markdown}#{comments_blob}").tags_used
   rescue StandardError
     []
   end

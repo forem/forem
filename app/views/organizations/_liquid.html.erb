@@ -1,4 +1,4 @@
-<div class="<%= "ltag__user ltag__user__id__" + organization.id.to_s %>" style="<%= "border-color:" + organization.decorate.darker_color + ";box-shadow: 3px 3px 0px " + organization.decorate.darker_color + ";" %>">
+<div class="<%= "ltag__user ltag__user__id__#{organization.id}" %>" style="<%= "border-color:#{organization.darker_color};box-shadow: 3px 3px 0px #{organization.darker_color};" %>">
   <style>
     .ltag__user__id__<%= organization.id %> .follow-action-button {
       background-color: <%= organization_colors[:bg] %> !important;
