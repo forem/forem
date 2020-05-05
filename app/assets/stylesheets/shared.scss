@@ -7,7 +7,7 @@
   left: 0px;
   right: 0px;
   z-index: 15;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   display: block;
   #progressBar {
     color: #fff;
@@ -192,9 +192,9 @@
   top: 0;
   left: -20%;
   background: var(--accent-brand);
-  box-shadow: 0 -2px $su-1 var(--accent-brand);
+  box-shadow: 0 -2px var(--su-1) var(--accent-brand);
   z-index: 100;
-  height: $su-1;
+  height: var(--su-1);
   width: 0%;
   &.showing {
     display: block;
@@ -213,7 +213,7 @@
 }
 
 .global-notice {
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   background: $green;
   color: black;
   padding: 20px 0px 20px;

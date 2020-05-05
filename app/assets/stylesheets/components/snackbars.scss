@@ -3,18 +3,18 @@
 .crayons-snackbar {
   position: fixed;
   z-index: 9999; // todo: make z-index a variable..
-  left: $su-2;
-  right: $su-2;
-  bottom: $su-2;
+  left: var(--su-2);
+  right: var(--su-2);
+  bottom: var(--su-2);
   display: grid;
-  grid-gap: $su-2;
+  grid-gap: var(--su-2);
 
   @media (min-width: $breakpoint-s) {
     max-width: 480px;
     width: auto;
-    left: $su-6;
+    left: var(--su-6);
     right: auto;
-    bottom: $su-6;
+    bottom: var(--su-6);
     justify-items: flex-start;
   }
 
@@ -28,15 +28,15 @@
     display: none;
     align-items: center;
     justify-content: space-between;
-    padding: $su-2;
+    padding: var(--su-2);
   }
 
   &__body {
-    padding: 0 $su-2;
+    padding: 0 var(--su-2);
   }
 
   &__actions {
     flex-shrink: 0;
-    padding-left: $su-2;
+    padding-left: var(--su-2);
   }
 }

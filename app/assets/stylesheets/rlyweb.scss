@@ -1,7 +1,7 @@
 @import 'variables';
 #page-content.pages-rlyweb,
 #page-content.pages-rlytest {
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   .rlyweb-container {
     min-height: 800px;
     text-align: center;

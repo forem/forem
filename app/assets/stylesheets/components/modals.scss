@@ -13,17 +13,17 @@
     $border: var(--card-color),
     $color: var(--card-color)
   );
-  padding: $su-7;
+  padding: var(--su-7);
   max-width: 640px;
 
   &--s {
     max-width: 480px;
-    padding: $su-6;
+    padding: var(--su-6);
   }
 
   &--l {
     max-width: 800px;
-    padding: $su-8;
+    padding: var(--su-8);
   }
 
   &--padding-0 {

@@ -3,7 +3,7 @@
 .liquid-comment {
   padding: 0px;
   background: inherit;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   margin: 0.95em 0 1.2em;
   position: relative;
   border: 1px solid var(--card-color-tertiary);
@@ -72,7 +72,7 @@
   }
 
   .body {
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     color: $black;
     color: var(--body-color);
     font-size: 0.95em;
@@ -143,7 +143,7 @@
       }
 
       &.twitter-tweet {
-        font-family: $helvetica;
+        font-family: var(--ff-default);
         background: white;
         max-width: 480px;
         min-height: 135px;

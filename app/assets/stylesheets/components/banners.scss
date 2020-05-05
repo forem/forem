@@ -1,10 +1,10 @@
 @import '../config/import';
 
 .crayons-banner {
-  padding: $su-4;
+  padding: var(--su-4);
   border-bottom: 1px solid;
   text-align: center;
-  font-size: $fs-base;
+  font-size: var(--fs-base);
   background: var(--base-90);
   color: var(--base-0);
 

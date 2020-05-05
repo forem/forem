@@ -7,8 +7,8 @@
   color: var(--body-color);
   appearance: none;
   -webkit-appearance: none;
-  border-radius: $br-default;
-  transition: all $transition-props;
+  border-radius: var(--radius);
+  transition: all var(--transition-props);
 
   &-hover {
     border-color: var(--form-border-hover);
@@ -35,10 +35,10 @@
 
 // Text inputs and textareas.
 .crayons-textfield {
-  line-height: $lh-base;
+  line-height: var(--lh-base);
   padding: calc(0.5em - var(--border-width)) 0.5em;
   font-family: inherit;
-  font-size: $fs-base;
+  font-size: var(--fs-base);
   width: 100%;
   @extend %form-styling;
 
@@ -64,7 +64,7 @@
   }
 
   &--icon {
-    padding-left: $su-7;
+    padding-left: var(--su-7);
   }
 }
 
@@ -112,17 +112,17 @@
 
 // Selects
 .crayons-select {
-  line-height: $lh-base;
+  line-height: var(--lh-base);
   padding: 0.5em;
-  padding-right: $su-7;
+  padding-right: var(--su-7);
   font-family: inherit;
-  font-size: $fs-base;
+  font-size: var(--fs-base);
   width: 100%;
   position: relative;
   outline: none;
   @extend %form-styling;
   background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 16l-6-6h12l-6 6z' fill='%2308090A'/%3E%3C/svg%3E");
-  background-position: calc(100% - #{$su-2}) calc(50% - 1px);
+  background-position: calc(100% - var(--su-2)) calc(50% - 1px);
   background-repeat: no-repeat;
 
   &:hover {
@@ -149,13 +149,13 @@
 .crayons-field {
   display: flex;
   flex-flow: column;
-  font-size: $fs-base; // todo: do we need it?
+  font-size: var(--fs-base); // todo: do we need it?
 
   $this: &;
 
   &__label {
     color: var(--label-primary);
-    font-weight: $fw-medium;
+    font-weight: var(--fw-medium);
 
     + .crayons-field__description {
       margin-top: 0;
@@ -164,31 +164,33 @@
 
   &__description {
     color: var(--label-secondary);
-    font-size: $fs-s;
-    font-weight: $fw-normal; // for when it's inside --label
+    font-size: var(--fs-s);
+    font-weight: var(--fw-normal); // for when it's inside --label
     margin: 0; //todo remove
   }
 
   > * + * {
-    margin-top: $su-2;
+    margin-top: var(--su-2);
   }
 
   &--checkbox,
   &--radio {
     display: grid;
     grid-template-columns: 1.5em 1fr;
-    grid-gap: $su-2;
-    border-radius: $br-default;
-    transition: all $transition-props;
+    grid-gap: var(--su-2);
+    border-radius: var(--radius);
+    transition: all var(--transition-props);
 
     &:hover {
       background: var(--body-bg);
-      box-shadow: 0 0 0 $su-1 var(--body-bg);
+      box-shadow: 0 0 0 var(--su-1) var(--body-bg);
     }
 
     #{$this}__label {
       margin-top: 0;
-      padding-right: $su-2; // adding this to make hovers look slightly better.
+      padding-right: var(
+        --su-2
+      ); // adding this to make hovers look slightly better.
     }
   }
 
@@ -206,7 +208,7 @@
 
   &:not(#{$this}--horizontal) {
     > .crayons-field + .crayons-field {
-      margin-top: $su-4;
+      margin-top: var(--su-4);
     }
   }
 
@@ -215,7 +217,7 @@
     flex-wrap: wrap;
 
     > .crayons-field:not(:last-child) {
-      margin-right: $su-4;
+      margin-right: var(--su-4);
     }
   }
 }
@@ -243,8 +245,8 @@ textarea.crayons-textfield.crayons-textfield--ghost {
 
   &::-webkit-color-swatch-wrapper {
     padding: 0;
-    height: $su-6;
-    width: $su-6;
+    height: var(--su-6);
+    width: var(--su-6);
   }
 
   &::-webkit-color-swatch {

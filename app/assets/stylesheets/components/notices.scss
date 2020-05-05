@@ -1,7 +1,7 @@
 @import '../config/import';
 
 .crayons-notice {
-  padding: $su-4;
+  padding: var(--su-4);
   @include generate-box(
     $level: 1,
     $bg: var(--card-bg),

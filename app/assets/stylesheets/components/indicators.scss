@@ -26,15 +26,15 @@
 
 // Basic styling
 .crayons-indicator {
-  font-family: $ff-accent;
-  font-size: $fs-xs;
-  padding: $su-1;
+  font-family: var(--ff-accent);
+  font-size: var(--fs-xs);
+  padding: var(--su-1);
   background-color: var(--indicator-default-bg);
   border: 1px solid var(--indicator-default-bg);
   color: var(--indicator-default-color);
   text-align: center;
   line-height: 1;
-  border-radius: $br-default;
+  border-radius: var(--radius);
   display: inline-block;
 
   &--outlined {
@@ -58,8 +58,8 @@
 
   // Circle, no text
   &--bullet {
-    width: $su-3;
-    height: $su-3;
+    width: var(--su-3);
+    height: var(--su-3);
     padding: 0;
     border-radius: 100%;
   }

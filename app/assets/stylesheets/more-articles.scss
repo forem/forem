@@ -4,7 +4,7 @@
   padding: 20px 0px;
   vertical-align: top;
   text-align: center;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   margin: 0 auto 32px;
 
   a {
@@ -93,7 +93,7 @@
 
 .show-page-content-display {
   vertical-align: top;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   margin: 0 auto 32px;
   position: relative;
   overflow: hidden;

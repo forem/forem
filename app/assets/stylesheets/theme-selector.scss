@@ -3,9 +3,9 @@
 
 .rich-selector {
   background: var(--card-secondary-bg);
-  border-radius: $br-default;
+  border-radius: var(--radius);
   border: 1px solid var(--base-10); // todo replace with functional variable
-  padding: $su-4;
+  padding: var(--su-4);
 }
 
 // Font styles
@@ -15,11 +15,11 @@
 }
 
 .font-selector--sans-serif {
-  font-family: $ff-default;
+  font-family: var(--ff-default);
 }
 
 .font-selector--monospace {
-  font-family: $ff-accent;
+  font-family: var(--ff-accent);
 }
 
 .font-selector--comic-sans {
@@ -35,11 +35,11 @@
 // Theme selector
 .theme-preview {
   width: 100%;
-  border-radius: $br-default;
+  border-radius: var(--radius);
   background: var(--preview-body-bg);
   color: var(--preview-body-color);
   overflow: hidden;
-  font-size: $fs-s;
+  font-size: var(--fs-s);
   line-height: 1;
   box-shadow: 0 0 0 1px var(--header-shadow);
 
@@ -53,24 +53,24 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    height: $su-4;
+    height: var(--su-4);
     background: var(--preview-header);
     box-shadow: 0 1px 1px var(--preview-border);
   }
 
   &__search {
     width: 33%;
-    height: $su-2;
+    height: var(--su-2);
     background: var(--preview-form);
     border-radius: 1px;
   }
 
   &__main {
     display: grid;
-    grid-gap: $su-1;
+    grid-gap: var(--su-1);
     grid-template-columns: 20% 1fr 20%;
-    height: $su-9;
-    padding: $su-1;
+    height: var(--su-9);
+    padding: var(--su-1);
     text-align: center;
   }
 

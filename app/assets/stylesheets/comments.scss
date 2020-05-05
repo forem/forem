@@ -297,7 +297,7 @@ a.header-link {
       flex-direction: column;
       overflow-y: auto;
       font-size: 16px;
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       @include themeable(
         background,
         theme-container-accent-background,
@@ -402,7 +402,7 @@ a.header-link {
 
       a {
         text-align: left;
-        padding: $su-3;
+        padding: var(--su-3);
         font-weight: bold;
         svg {
           width: 20px;
@@ -415,7 +415,7 @@ a.header-link {
       }
       p {
         align-self: flex-start;
-        padding: 0 $su-3;
+        padding: 0 var(--su-3);
       }
     }
     .article-comment-form-preamble {
@@ -465,7 +465,7 @@ a.header-link {
       min-height: calc(13vw + 6px);
       text-align: left;
       font-size: 19px;
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       background: var(--card-bg);
       box-shadow: $shadow;
       width: calc(100% - 80px);
@@ -689,7 +689,7 @@ a.header-link {
   .alert-error {
     background: $red;
     max-width: 730px;
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     color: white;
     border-radius: 5px;
     margin: 20px auto;
@@ -793,7 +793,7 @@ a.header-link {
     overflow: hidden;
     margin-bottom: -28px;
     word-wrap: break-word;
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     position: relative;
     margin-left: 1px;
     h1,
@@ -1207,7 +1207,7 @@ a.header-link {
       position: relative;
       width: calc(100% + 60px);
       margin-left: -58px;
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       &.submitting {
         input[type='submit'] {
           background: $bold-blue;

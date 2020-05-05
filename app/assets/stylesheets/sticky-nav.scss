@@ -99,7 +99,7 @@
   .user-metadata-details {
     margin-top: 10px;
     margin-left: 2px;
-    font-family: $monospace;
+    font-family: var(--ff-accent);
     .row {
       padding: calc(3px + 0.1vw) 0px;
       display: inline-block;
@@ -137,7 +137,7 @@
     border-radius: 3px;
     padding: 3px 4px;
     color: #333842;
-    font-family: $monospace;
+    font-family: var(--ff-accent);
   }
   .primary-sticky-nav-org-cta-link-wrapper {
     text-align: center;
