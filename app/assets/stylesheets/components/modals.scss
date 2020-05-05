@@ -1,13 +1,28 @@
 @import '../config/import';
 
 .crayons-modal {
+  --modal-max-width: 768px;
+  --modal-body-padding: #{$su-2};
+  --modal-header-padding: #{$su-2};
+
+  @media (min-width: $breakpoint-s) {
+    --modal-body-padding: #{$su-4};
+    --modal-header-padding: #{$su-4};
+  }
+
+  @media (min-width: $breakpoint-m) {
+    --modal-body-padding: #{$su-7};
+    --modal-header-padding: #{$su-4} #{$su-4} #{$su-4} #{$su-7};
+  }
+
   position: fixed;
   left: 0;
   right: 0;
   top: 0;
   bottom: 0;
   display: flex;
-  place-items: center;
+  align-items: center;
+  justify-content: center;
   z-index: 500;
   pointer-events: none;
 
@@ -24,56 +39,54 @@
   }
 
   &__box {
-    @include generate-box(
-      $level: 3,
-      $bg: var(--card-bg),
-      $border: var(--card-color),
-      $color: var(--card-color)
-    );
     display: flex;
     flex-direction: column;
-    max-width: 800px;
-    width: 100%;
-    background: var(--card-bg); // TODO: ?
+    max-width: var(--modal-max-width);
+    background: var(--card-bg);
+    color: var(--card-color);
     z-index: 700;
     max-height: 100%;
+    width: 100%;
+    height: 100%;
     pointer-events: auto;
-    @media (max-width: $breakpoint-s) {
-      border: 0 !important; // TODO: this is dirty...
-    }
 
     @media (min-width: $breakpoint-s) {
+      @include generate-box(
+        $level: 3,
+        $bg: var(--card-bg),
+        $border: var(--card-color),
+        $color: var(--card-color)
+      );
       max-height: calc(100% - #{$su-6});
+      height: auto;
+      width: 90%;
     }
 
     &__header {
-      position: static;
-      top: 0;
-      width: 100%;
       border-bottom: 2px solid var(--card-color);
       display: flex;
       align-items: center;
-      padding: $su-4;
       justify-content: space-between;
+      padding: var(--modal-header-padding);
     }
 
     &__body {
       flex: 1 auto;
-      padding: $su-7;
+      padding: var(--modal-body-padding);
       max-height: 100%;
       overflow-y: auto;
     }
   }
 
   &--s {
-    .crayons-modal__box {
-      max-width: 480px;
+    @media (min-width: $breakpoint-s) {
+      --modal-max-width: 480px;
     }
   }
 
   &--m {
-    .crayons-modal__box {
-      max-width: 640px;
+    @media (min-width: $breakpoint-m) {
+      --modal-max-width: 640px;
     }
   }
 }

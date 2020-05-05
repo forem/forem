@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs/react';
 import { Modal, Button } from '@crayons';
 
-import '../../storybook-utiltiies/designSystem.scss';
+import '../../storybook-utilities/designSystem.scss';
 
 export default {
   title: 'Components/Modals',
