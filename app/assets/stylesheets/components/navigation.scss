@@ -60,7 +60,7 @@
   padding: $su-3;
   border-radius: $br-default;
 
-  &:hover {
+  &:hover:not(.crayons-link--current) {
     background: var(--link-bg-hover);
   }
 
