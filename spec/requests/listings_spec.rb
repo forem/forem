@@ -5,7 +5,7 @@ RSpec.describe "/listings", type: :request do
   let(:organization) { create(:organization) }
   let(:cl_category) { create(:classified_listing_category, cost: 1) }
 
- let(:params) do
+  let(:params) do
     {
       classified_listing: {
         title: "Hey",
@@ -14,7 +14,7 @@ RSpec.describe "/listings", type: :request do
         tag_list: "ruby, rails, go"
       }
     }
- end
+  end
 
   describe "GET /listings" do
     it "has page content" do
@@ -83,6 +83,29 @@ RSpec.describe "/listings", type: :request do
       expect do
         post "/listings", params: params
       end.to raise_error Pundit::NotAuthorizedError
+    end
+
+    context "when rate limiting" do
+      let(:rate_limiter) { RateLimitChecker.new(user) }
+
+      before do
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limiter)
+        sign_in user
+      end
+
+      it "increments rate limit for listing_creation" do
+        allow(rate_limiter).to receive(:track_limit_by_action)
+        post "/listings", params: params
+
+        expect(rate_limiter).to have_received(:track_limit_by_action).with(:listing_creation)
+      end
+
+      it "returns a 429 status when rate limit is reached" do
+        allow(rate_limiter).to receive(:limit_by_action).and_return(true)
+        post "/listings", params: params
+
+        expect(response.status).to eq(429)
+      end
     end
   end
 
