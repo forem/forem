@@ -8,14 +8,14 @@ RSpec.describe ClassifiedListingDecorator, type: :decorator do
 
   describe "#social_preview_category" do
     it "returns the category name if the social preview category is blank" do
-      allow(category).to receive(:social_preview_category).and_return(nil)
+      allow(category).to receive(:social_preview_description).and_return(nil)
 
       expect(decorated_listing.social_preview_category).to eq(category.name)
     end
 
     it "returns the category's social preview descripton if available" do
       expect(decorated_listing.social_preview_category).
-        to eq(category.social_preview_category)
+        to eq(category.social_preview_description)
     end
   end
 
