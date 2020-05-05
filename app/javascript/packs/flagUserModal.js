@@ -1,5 +1,6 @@
 const flagUserModalHTML = `
     <div class="flag-user-modal-subcont hidden">
+        <div class="modal-overlay"></div>
         <div class="crayons-modal flag-user-modal">
           <div class="flag-user-modal-header">
             <span class="modal-header-text">Flag User</span>
@@ -51,8 +52,17 @@ const flagUserModalHTML = `
 `;
 
 const toggleFlagUserModal = () => {
-  document.querySelector('flag-user-modal-subcont').classList.toggle('hidden');
+  document.querySelector('.flag-user-modal-subcont').classList.toggle('hidden');
 };
+
+// Event Listeners to close Modal
+document
+  .querySelectorAll(
+    '.modal-header-close-icon, #confirm-flag-user-action, #cancel-flag-user-action',
+  )
+  .forEach((item) => {
+    item.addEventListener('click', () => toggleFlagUserModal);
+  });
 
 export function initializeFlagUserModal() {
   // eslint-disable-next-line no-undef
