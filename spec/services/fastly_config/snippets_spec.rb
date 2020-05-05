@@ -20,7 +20,7 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
       allow(fastly).to receive(:create).and_return(fastly_snippet)
       allow(fastly_snippet).to receive(:name).and_return("test")
       snippets_config.update(fastly_version)
-      expect(fastly).to have_received(:create)
+      expect(fastly).to have_received(:create).at_least(:once)
     end
 
     it "updates a snippet if one is found" do
@@ -31,7 +31,7 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
       allow(fastly_snippet).to receive(:save!).and_return(fastly_snippet)
       allow(fastly_snippet).to receive(:name).and_return("test")
       snippets_config.update(fastly_version)
-      expect(fastly_snippet).to have_received(:save!)
+      expect(fastly_snippet).to have_received(:save!).at_least(:once)
     end
 
     it "logs success messages" do
@@ -47,7 +47,7 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
 
       tags = hash_including(tags: array_including("snippet_update_type:update", "snippet_name:test", "new_version:#{fastly_version.number}"))
 
-      expect(DatadogStatsClient).to have_received(:increment).with("fastly.snippets", tags)
+      expect(DatadogStatsClient).to have_received(:increment).with("fastly.snippets", tags).at_least(:once)
     end
   end
 end

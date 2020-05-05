@@ -72,7 +72,7 @@ class Organization < ApplicationRecord
 
     self.old_old_slug = old_slug
     self.old_slug = slug_was
-    articles.find_each { |article| article.update(path: article.path.gsub(slug_was, slug)) }
+    Organizations::UpdateOrganizationArticlesPathsWorker.perform_async(id, slug_was, slug)
   end
 
   def path
