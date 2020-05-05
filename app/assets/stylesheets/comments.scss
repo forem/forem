@@ -129,6 +129,8 @@ a.header-link {
   margin-bottom: 100px;
   text-align: left;
   &.comments-dedicated-page-container {
+    width: 800px;
+    max-width: 98%;
     min-height: calc(97vh - 200px);
     max-width: 920px;
   }
