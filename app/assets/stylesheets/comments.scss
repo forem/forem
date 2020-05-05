@@ -130,6 +130,7 @@ a.header-link {
   text-align: left;
   &.comments-dedicated-page-container {
     min-height: calc(97vh - 200px);
+    max-width: 920px;
   }
 
   img.icon-image {
