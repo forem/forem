@@ -1,7 +1,7 @@
 class ClassifiedListingDecorator < ApplicationDecorator
   DEFAULT_COLOR = "#000000".freeze
 
-  def social_preview_description
+  def social_preview_category
     category = object.classified_listing_category
     category.social_preview_description.presence || category.name
   end
