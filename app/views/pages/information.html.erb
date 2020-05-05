@@ -3,7 +3,7 @@
 <%= content_for :page_meta do %>
   <link rel="canonical" href="<%= app_url("/p/information") %>" />
   <meta name="description" content="All information about <%= community_qualified_name %>">
-  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
 
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/p/information") %>" />

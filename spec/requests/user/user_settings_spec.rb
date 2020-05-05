@@ -26,11 +26,6 @@ RSpec.describe "UserSettings", type: :request do
           to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "allows users to visit the account page" do
-        get "/settings/account"
-        expect(response.body).to include("Danger Zone")
-      end
-
       it "displays content on ux tab properly" do
         get "/settings/ux"
         expect(response.body).to include("Style Customization")
@@ -48,20 +43,6 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include error_message
       end
 
-      it "does not render the ghost account email option if the user has no content" do
-        ghost_account_message = "If you would like to keep your content under the"
-        get "/settings/account"
-        expect(response.body).not_to include ghost_account_message
-      end
-
-      it "does render the ghost account email option if the user has content" do
-        ghost_account_message = "If you would like to keep your content under the"
-        create(:article, user: user)
-        user.update(articles_count: 1)
-        get "/settings/account"
-        expect(response.body).to include ghost_account_message
-      end
-
       it "renders the proper organization page" do
         first_org, second_org = create_list(:organization, 2)
         create(:organization_membership, user: user, organization: first_org)
@@ -77,9 +58,65 @@ RSpec.describe "UserSettings", type: :request do
       end
     end
 
+    describe ":account" do
+      let(:ghost_account_message) { "If you would like to keep your content under the" }
+      let(:remove_oauth_section) { "Remove OAuth Associations" }
+      let(:user) { create(:user, :with_identity) }
+
+      before do
+        omniauth_mock_providers_payload
+        sign_in user
+      end
+
+      it "allows users to visit the account page" do
+        get user_settings_path(tab: "account")
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not render the ghost account email option if the user has no content" do
+        get user_settings_path(tab: "account")
+        expect(response.body).not_to include(ghost_account_message)
+      end
+
+      it "does render the ghost account email option if the user has content" do
+        create(:article, user: user)
+        user.update(articles_count: 1)
+
+        get user_settings_path(tab: "account")
+
+        expect(response.body).to include(ghost_account_message)
+      end
+
+      it "shows the 'Remove OAuth' section if a user has multiple enabled identities" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        providers = Authentication::Providers.available.first(2)
+        allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
+
+        get user_settings_path(tab: "account")
+        expect(response.body).to include(remove_oauth_section)
+      end
+
+      it "hides the 'Remove OAuth' section if a user has one enabled identity" do
+        provider = Authentication::Providers.available.first
+        allow(Authentication::Providers).to receive(:enabled).and_return([provider])
+        allow(user).to receive(:identities).and_return(user.identities.where(provider: provider))
+
+        get user_settings_path(tab: "account")
+        expect(response.body).not_to include(remove_oauth_section)
+      end
+
+      it "hides the 'Remove OAuth' section if a user has one enabled identity and one disabled" do
+        provider = Authentication::Providers.available.first
+        allow(Authentication::Providers).to receive(:enabled).and_return([provider])
+
+        get user_settings_path(tab: "account")
+        expect(response.body).not_to include(remove_oauth_section)
+      end
+    end
+
     describe "connect providers accounts" do
       before do
-        mock_auth_hash
+        omniauth_mock_providers_payload
       end
 
       it "does not render the text for the enabled provider the user has an identity for" do
@@ -176,6 +213,13 @@ RSpec.describe "UserSettings", type: :request do
       profile_image = fixture_file_upload("files/800x600.png", "image/png")
       allow(profile_image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
 
+      put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
+
+      expect(response).to have_http_status(:bad_request)
+    end
+
+    it "returns error if Profile image is not a file" do
+      profile_image = "A String"
       put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
 
       expect(response).to have_http_status(:bad_request)
@@ -291,71 +335,93 @@ RSpec.describe "UserSettings", type: :request do
     end
   end
 
-  describe "DELETE /users/remove_association" do
-    context "when user has two identities" do
-      let(:user) { create(:user, :with_identity, identities: %w[github twitter]) }
+  describe "DELETE /users/remove_identity" do
+    let(:provider) { Authentication::Providers.available.first }
+
+    context "when user has multiple identities" do
+      let(:user) { create(:user, :with_identity) }
 
       before do
-        mock_auth_hash
+        omniauth_mock_providers_payload
         sign_in user
       end
 
-      it "brings the identity count to 1" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(user.identities.count).to eq 1
-      end
-
       it "removes the correct identity" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(user.identities.first.provider).to eq "github"
+        expect do
+          delete "/users/remove_identity", params: { provider: provider }
+        end.to change(user.identities, :count).by(-1)
+
+        expect(user.identities.map(&:provider)).not_to include(provider)
       end
 
-      it "removes their associated username" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(user.twitter_username).to eq nil
+      it "empties their associated username" do
+        delete "/users/remove_identity", params: { provider: provider }
+
+        expect(user.public_send("#{provider}_username")).to be(nil)
       end
 
-      it "touches the profile_updated_at timestamp" do
+      it "updates the profile_updated_at timestamp" do
         original_profile_updated_at = user.profile_updated_at
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(user.profile_updated_at).to be > original_profile_updated_at
+        delete "/users/remove_identity", params: { provider: provider }
+        expect(user.profile_updated_at.to_i).to be > original_profile_updated_at.to_i
       end
 
       it "redirects successfully to /settings/account" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(response).to redirect_to "/settings/account"
+        delete "/users/remove_identity", params: { provider: provider }
+        expect(response).to redirect_to("/settings/account")
       end
 
       it "renders a successful response message" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(flash[:settings_notice]).to eq "Your Twitter account was successfully removed."
+        delete "/users/remove_identity", params: { provider: provider }
+        auth_provider = Authentication::Providers.get!(provider)
+
+        expected_notice = "Your #{auth_provider.official_name} account was successfully removed."
+        expect(flash[:settings_notice]).to eq(expected_notice)
       end
 
-      it "does not show the Remove OAuth section afterward" do
-        delete "/users/remove_association", params: { provider: "twitter" }
-        expect(response.body).not_to include "Remove OAuth Associations"
+      it "redirects the user with an error if the corresponding provider has been since disabled" do
+        providers = Authentication::Providers.available - [provider]
+        allow(Authentication::Providers).to receive(:enabled).and_return(providers)
+        delete "/users/remove_identity", params: { provider: provider }
+        expect(response).to redirect_to("/settings/account")
+
+        expected_error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        expect(flash[:error]).to eq(expected_error)
+      end
+
+      it "does not show the 'Remove OAuth' section afterwards if only one identity remains" do
+        providers = Authentication::Providers.available.first(2)
+        allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
+
+        delete "/users/remove_identity", params: { provider: providers.first }
+        expect(response.body).not_to include("Remove OAuth Associations")
       end
     end
 
     # Users won't be able to do this via the view, but in case they hit the route somehow...
     context "when user has only one identity" do
-      before { sign_in user }
+      let(:user) { create(:user, :with_identity, identities: [provider]) }
 
-      it "sets the proper error message" do
-        delete "/users/remove_association", params: { provider: "github" }
-        expect(flash[:error]).
-          to eq "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+      before do
+        sign_in user
+      end
+
+      it "sets the proper flash error message" do
+        delete "/users/remove_identity", params: { provider: provider }
+
+        expected_error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        expect(flash[:error]).to eq(expected_error)
       end
 
       it "does not delete any identities" do
-        original_identity_count = user.identities.count
-        delete "/users/remove_association", params: { provider: "github" }
-        expect(user.identities.count).to eq original_identity_count
+        expect do
+          delete "/users/remove_identity", params: { provider: provider }
+        end.not_to change(user.identities, :count)
       end
 
       it "redirects successfully to /settings/account" do
-        delete "/users/remove_association", params: { provider: "github" }
-        expect(response).to redirect_to "/settings/account"
+        delete "/users/remove_identity", params: { provider: provider }
+        expect(response).to redirect_to("/settings/account")
       end
     end
   end

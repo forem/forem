@@ -52,11 +52,7 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
-      skip_authorization
-      render json: { error: "too many requests" }, status: :too_many_requests
-      return
-    end
+    rate_limit!(:comment_creation)
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
@@ -113,7 +109,7 @@ class CommentsController < ApplicationController
     end
   # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
   # for details as to why this is necessary
-  rescue Pundit::NotAuthorizedError
+  rescue Pundit::NotAuthorizedError, RateLimitChecker::LimitReached
     raise
   rescue StandardError => e
     skip_authorization
@@ -124,7 +120,7 @@ class CommentsController < ApplicationController
   end
 
   def moderator_create
-    return if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
+    return if rate_limiter.limit_by_action(:comment_creation)
 
     response_template = ResponseTemplate.find(params[:response_template][:id])
     authorize response_template, :moderator_create?

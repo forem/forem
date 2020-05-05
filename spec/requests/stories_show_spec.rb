@@ -16,6 +16,7 @@ RSpec.describe "StoriesShow", type: :request do
       article.update(organization: org)
       get old_path
       expect(response.body).to redirect_to article.path
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "renders second and third users if present" do
@@ -90,6 +91,7 @@ RSpec.describe "StoriesShow", type: :request do
       user.update(username: "new_hotness_#{rand(10_000)}")
       get "/#{old_username}/#{article.slug}"
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "redirects to appropriate page if user changes username twice" do
@@ -98,6 +100,7 @@ RSpec.describe "StoriesShow", type: :request do
       user.update(username: "new_new_username_#{rand(10_000)}")
       get "/#{old_username}/#{article.slug}"
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "redirects to appropriate page if user changes username twice and go to middle username" do
@@ -106,6 +109,7 @@ RSpec.describe "StoriesShow", type: :request do
       user.update(username: "new_new_username_#{rand(10_000)}")
       get "/#{middle_username}/#{article.slug}"
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "renders canonical url when exists" do
@@ -167,6 +171,7 @@ RSpec.describe "StoriesShow", type: :request do
       org.update(slug: "somethingnew")
       get "/#{original_slug}"
       expect(response.body).to redirect_to org.path
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "redirects to the appropriate page if given an organization's old old slug" do
@@ -175,6 +180,7 @@ RSpec.describe "StoriesShow", type: :request do
       org.update(slug: "anothernewslug")
       get "/#{original_slug}"
       expect(response.body).to redirect_to org.path
+      expect(response).to have_http_status(:moved_permanently)
     end
   end
 end

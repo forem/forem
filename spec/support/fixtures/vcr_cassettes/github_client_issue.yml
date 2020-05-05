@@ -1,0 +1,182 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.github.com/repos/thepracticaldev/dev.to/issues/7434
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      Accept:
+      - application/vnd.github.v3+json
+      Content-Type:
+      - application/json
+      X-Honeycomb-Trace:
+      - 1;dataset=,trace_id=4085b91d-4649-4fc3-bf1c-96c5a2bc8d57,parent_id=9367c158-33bc-4172-bbbe-b5ac5e8926de,context=e30=
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 02 May 2020 23:54:39 GMT
+      Content-Type:
+      - application/json; charset=utf-8
+      Content-Length:
+      - '3552'
+      Server:
+      - GitHub.com
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4983'
+      X-Ratelimit-Reset:
+      - '1588465848'
+      Cache-Control:
+      - public, max-age=60, s-maxage=60
+      Vary:
+      - Accept
+      - Accept-Encoding, Accept, X-Requested-With
+      Etag:
+      - '"54e1b0dd3fed55dc41e2d4affd48d3d7"'
+      Last-Modified:
+      - Sat, 02 May 2020 10:56:49 GMT
+      X-Github-Media-Type:
+      - github.v3; format=json
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
+        X-GitHub-Media-Type, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      X-Github-Request-Id:
+      - F3A7:29D1:25238A:33C5C5:5EAE083E
+    body:
+      encoding: ASCII-8BIT
+      string: '{"url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7434","repository_url":"https://api.github.com/repos/thepracticaldev/dev.to","labels_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7434/labels{/name}","comments_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7434/comments","events_url":"https://api.github.com/repos/thepracticaldev/dev.to/issues/7434/events","html_url":"https://github.com/thepracticaldev/dev.to/issues/7434","id":604653303,"node_id":"MDU6SXNzdWU2MDQ2NTMzMDM=","number":7434,"title":"Profile
+        page not displaying the name due to theming and custom colors","user":{"login":"catalinpit","id":25515812,"node_id":"MDQ6VXNlcjI1NTE1ODEy","avatar_url":"https://avatars0.githubusercontent.com/u/25515812?v=4","gravatar_id":"","url":"https://api.github.com/users/catalinpit","html_url":"https://github.com/catalinpit","followers_url":"https://api.github.com/users/catalinpit/followers","following_url":"https://api.github.com/users/catalinpit/following{/other_user}","gists_url":"https://api.github.com/users/catalinpit/gists{/gist_id}","starred_url":"https://api.github.com/users/catalinpit/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/catalinpit/subscriptions","organizations_url":"https://api.github.com/users/catalinpit/orgs","repos_url":"https://api.github.com/users/catalinpit/repos","events_url":"https://api.github.com/users/catalinpit/events{/privacy}","received_events_url":"https://api.github.com/users/catalinpit/received_events","type":"User","site_admin":false},"labels":[{"id":1031106689,"node_id":"MDU6TGFiZWwxMDMxMTA2Njg5","url":"https://api.github.com/repos/thepracticaldev/dev.to/labels/accessibility","name":"accessibility","color":"c5aef2","default":false,"description":""},{"id":1290917705,"node_id":"MDU6TGFiZWwxMjkwOTE3NzA1","url":"https://api.github.com/repos/thepracticaldev/dev.to/labels/area:%20profile","name":"area:
+        profile","color":"2a75b2","default":false,"description":"user''s profile"},{"id":1290878626,"node_id":"MDU6TGFiZWwxMjkwODc4NjI2","url":"https://api.github.com/repos/thepracticaldev/dev.to/labels/area:%20themes","name":"area:
+        themes","color":"2a75b2","default":false,"description":"UX theming"},{"id":480869965,"node_id":"MDU6TGFiZWw0ODA4Njk5NjU=","url":"https://api.github.com/repos/thepracticaldev/dev.to/labels/type:%20bug","name":"type:
+        bug","color":"C61C32","default":false,"description":"always open for contribution"}],"state":"open","locked":false,"assignee":null,"assignees":[],"milestone":null,"comments":6,"created_at":"2020-04-22T10:43:38Z","updated_at":"2020-05-02T10:56:49Z","closed_at":null,"author_association":"CONTRIBUTOR","body":"**Describe
+        the bug**\r\n\r\nYou are allowed to change the colour for some of the information
+        from your profile page. There are cases when the profile page doesn''t work
+        properly when the colours are related.\r\n\r\nSee the pictures below or visit
+        my profile [dev.to/catalinmpit](https://dev.to/catalinmpit).\r\n\r\n**To Reproduce**\r\n\r\n1.
+        Go to [dev.to/catalinmpit](https://dev.to/catalinmpit)\r\n\r\n**Expected behavior**\r\n\r\nMy
+        name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Aditional
+        information**\r\n\r\nPlayed around with the settings and I''ve done this:\r\n\r\n![profile-page-ok](https://i.imgur.com/DLiPXFT.png)\r\n\r\n**Question**\r\n\r\nWhat
+        do you recommend to fix the issue? If you have any recommendations, I''m happy
+        to pick the issue.\r\n","closed_by":null}'
+    http_version: null
+  recorded_at: Sat, 02 May 2020 23:54:39 GMT
+- request:
+    method: post
+    uri: https://api.github.com/markdown
+    body:
+      encoding: UTF-8
+      string: '{"text":"**Describe the bug**\r\n\r\nYou are allowed to change the
+        colour for some of the information from your profile page. There are cases
+        when the profile page doesn''t work properly when the colours are related.\r\n\r\nSee
+        the pictures below or visit my profile [dev.to/catalinmpit](https://dev.to/catalinmpit).\r\n\r\n**To
+        Reproduce**\r\n\r\n1. Go to [dev.to/catalinmpit](https://dev.to/catalinmpit)\r\n\r\n**Expected
+        behavior**\r\n\r\nMy name and other information should be visible.\r\n\r\n**Screenshots**\r\n\r\n![broken-profile-page](https://i.imgur.com/AJyM7tH.png)\r\n\r\n**Aditional
+        information**\r\n\r\nPlayed around with the settings and I''ve done this:\r\n\r\n![profile-page-ok](https://i.imgur.com/DLiPXFT.png)\r\n\r\n**Question**\r\n\r\nWhat
+        do you recommend to fix the issue? If you have any recommendations, I''m happy
+        to pick the issue.\r\n"}'
+    headers:
+      User-Agent:
+      - Octokit Ruby Gem 4.18.0 (http://localhost:3000)
+      Accept:
+      - application/vnd.github.raw
+      Content-Type:
+      - application/json
+      X-Honeycomb-Trace:
+      - 1;dataset=,trace_id=63ab979a-3896-4e70-b54d-bf2bf6d375b8,parent_id=b0559d07-130e-4438-ae4a-4852728336a1,context=e30=
+      Expect:
+      - ''
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Date:
+      - Sat, 02 May 2020 23:54:40 GMT
+      Content-Type:
+      - text/html;charset=utf-8
+      Content-Length:
+      - '1759'
+      Server:
+      - GitHub.com
+      Status:
+      - 200 OK
+      X-Ratelimit-Limit:
+      - '5000'
+      X-Ratelimit-Remaining:
+      - '4982'
+      X-Ratelimit-Reset:
+      - '1588465848'
+      X-Commonmarker-Version:
+      - 0.21.0
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval,
+        X-GitHub-Media-Type, Deprecation, Sunset
+      Access-Control-Allow-Origin:
+      - "*"
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      X-Frame-Options:
+      - deny
+      X-Content-Type-Options:
+      - nosniff
+      X-Xss-Protection:
+      - 1; mode=block
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Content-Security-Policy:
+      - default-src 'none'
+      Vary:
+      - Accept-Encoding, Accept, X-Requested-With
+      X-Github-Request-Id:
+      - F3A8:29D1:2523AC:33C5F9:5EAE0840
+    body:
+      encoding: ASCII-8BIT
+      string: |
+        <p><strong>Describe the bug</strong></p>
+        <p>You are allowed to change the colour for some of the information from your profile page. There are cases when the profile page doesn't work properly when the colours are related.</p>
+        <p>See the pictures below or visit my profile <a href="https://dev.to/catalinmpit" rel="nofollow">dev.to/catalinmpit</a>.</p>
+        <p><strong>To Reproduce</strong></p>
+        <ol>
+        <li>Go to <a href="https://dev.to/catalinmpit" rel="nofollow">dev.to/catalinmpit</a>
+        </li>
+        </ol>
+        <p><strong>Expected behavior</strong></p>
+        <p>My name and other information should be visible.</p>
+        <p><strong>Screenshots</strong></p>
+        <p><a href="https://camo.githubusercontent.com/92af1284df38dd307a8b30ccafbea9f832a82d61/68747470733a2f2f692e696d6775722e636f6d2f414a794d3774482e706e67" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/92af1284df38dd307a8b30ccafbea9f832a82d61/68747470733a2f2f692e696d6775722e636f6d2f414a794d3774482e706e67" alt="broken-profile-page" data-canonical-src="https://i.imgur.com/AJyM7tH.png" style="max-width:100%;"></a></p>
+        <p><strong>Aditional information</strong></p>
+        <p>Played around with the settings and I've done this:</p>
+        <p><a href="https://camo.githubusercontent.com/b2d23465b39fd003c0121c1b87177673d4d96336/68747470733a2f2f692e696d6775722e636f6d2f444c69505846542e706e67" target="_blank" rel="nofollow"><img src="https://camo.githubusercontent.com/b2d23465b39fd003c0121c1b87177673d4d96336/68747470733a2f2f692e696d6775722e636f6d2f444c69505846542e706e67" alt="profile-page-ok" data-canonical-src="https://i.imgur.com/DLiPXFT.png" style="max-width:100%;"></a></p>
+        <p><strong>Question</strong></p>
+        <p>What do you recommend to fix the issue? If you have any recommendations, I'm happy to pick the issue.</p>
+    http_version: null
+  recorded_at: Sat, 02 May 2020 23:54:40 GMT
+recorded_with: VCR 5.1.0

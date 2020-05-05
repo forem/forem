@@ -1,7 +1,6 @@
 @import 'variables';
 @import 'mixins';
 @import 'components/buttons';
-@import 'components/modals';
 @import 'components/forms';
 @import 'config/import';
 
@@ -15,9 +14,6 @@
 
 // modal box card
 .onboarding-main {
-  @extend .crayons-modal;
-  @extend .crayons-modal--l;
-  @extend .crayons-modal--padding-0;
   border: none;
   z-index: 1;
 
@@ -46,7 +42,7 @@
 }
 
 .toggle-bottom {
-  padding-bottom: 0px;
+  padding-bottom: $su-4;
 }
 
 // terms and conditions view
@@ -251,8 +247,7 @@
 }
 // modal overflow scrolling
 .onboarding-modal-scroll-container {
-  height: auto;
-  max-height: calc(100vh - 289px);
+  height: calc(100vh - 289px);
   overflow-y: scroll;
   border-bottom: 1px solid var(--base-20);
 
@@ -319,7 +314,8 @@
       z-index: 2;
     }
 
-    &:hover {
+    &:hover,
+    &:focus-within {
       #{$item}__inner {
         background: transparent;
       }
@@ -327,7 +323,8 @@
       .onboarding-tags__button {
         transform: translateY(0);
 
-        &:hover {
+        &:hover,
+        &:focus-within {
           transform: translateY(-2px);
         }
       }
@@ -347,8 +344,6 @@
 
 // Onboarding Intro
 .onboarding-main.introduction {
-  width: 578px;
-
   .onboarding-content {
     background: var(--base-100);
     color: white;
@@ -367,6 +362,7 @@
 
     .sticker-logo {
       height: $su-8;
+      box-sizing: content-box;
       width: $su-8;
       transform: rotate(-30deg);
       padding: $su-3;
@@ -495,6 +491,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   .user-summary {
     margin: 0;
     line-height: $lh-tight;
+    overflow-wrap: anywhere;
   }
 
   .user-name {
@@ -635,7 +632,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   }
 
   textarea {
-    min-height: 80px;
+    min-height: 77px;
   }
 
   label {

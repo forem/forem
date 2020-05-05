@@ -1,5 +1,15 @@
 require "rails_helper"
 
+RSpec.shared_examples "redirects to the lowercase route" do
+  context "when a path contains uppercase characters" do
+    it "redirects to the lowercase route" do
+      get path
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to(path.downcase)
+    end
+  end
+end
+
 RSpec.describe "StoriesIndex", type: :request do
   describe "GET stories index" do
     it "renders page with article list" do
@@ -92,6 +102,12 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
     end
 
+    it "shows default meta keywords" do
+      SiteConfig.meta_keywords = { default: "cool developers, civil engineers" }
+      get "/"
+      expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
+    end
+
     context "with campaign hero" do
       let_it_be_readonly(:hero_html) do
         create(
@@ -165,6 +181,10 @@ RSpec.describe "StoriesIndex", type: :request do
   end
 
   describe "GET podcast index" do
+    include_examples "redirects to the lowercase route" do
+      let(:path) { "/#{build(:podcast).slug.upcase}" }
+    end
+
     it "renders page with proper header" do
       podcast = create(:podcast)
       create(:podcast_episode, podcast: podcast)
@@ -234,6 +254,7 @@ RSpec.describe "StoriesIndex", type: :request do
       tag2 = create(:tag, alias_for: tag.name)
       get "/t/#{tag2.name}"
       expect(response.body).to redirect_to "/t/#{tag.name}"
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "does not render sponsor if not live" do
@@ -251,6 +272,12 @@ RSpec.describe "StoriesIndex", type: :request do
       get "/t/#{tag.name}"
       expect(response.body).to include("is sponsored by")
       expect(response.body).to include(sponsorship.blurb_html)
+    end
+
+    it "shows meta keywords" do
+      SiteConfig.meta_keywords = { tag: "software engineering, ruby" }
+      get "/t/#{tag.name}"
+      expect(response.body).to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
     end
 
     context "with user signed in" do
@@ -315,6 +342,18 @@ RSpec.describe "StoriesIndex", type: :request do
         get "/t/#{tag.name}/page/2"
         expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />")
       end
+    end
+  end
+
+  describe "GET user_path" do
+    include_examples "redirects to the lowercase route" do
+      let(:path) { "/#{build(:user).username.upcase}" }
+    end
+  end
+
+  describe "GET organization_path" do
+    include_examples "redirects to the lowercase route" do
+      let(:path) { "/#{build(:organization).slug.upcase}" }
     end
   end
 end

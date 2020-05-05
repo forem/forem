@@ -15,7 +15,7 @@ RSpec.describe Search::ArticleSerializer do
     expect(data_hash.keys).to include(:id, :body_text, :hotness_score)
   end
 
-  it "creates valid json for Elasticsearch", elasticsearch: true do
+  it "creates valid json for Elasticsearch", elasticsearch: "FeedContent" do
     data_hash = described_class.new(article).serializable_hash.dig(:data, :attributes)
     result = Article::SEARCH_CLASS.index(article.id, data_hash)
     expect(result["result"]).to eq("created")

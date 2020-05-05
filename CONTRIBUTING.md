@@ -126,13 +126,13 @@ to submit code which is inclusive in nature.
 
 If you unintentionally include language deemed harmful, there is no shame. We will
 simply work together to settle on an alternative we are all comfortable with. This 
-extra care for naming tends to result in cleaner code as a biproduct.
+extra care for naming tends to result in cleaner code as a byproduct.
 
 ### Create a pull request
 
 - Try to keep the pull requests small. A pull request should try its very best
   to address only a single concern.
-- If you plan to do further work after the PR is submit, please use the
+- If you plan to do further work after the PR is submitted, please use the
   [Draft PR](https://github.blog/2019-02-14-introducing-draft-pull-requests/)
   feature.
 - Make sure all tests pass and add additional tests for the code you submit.
