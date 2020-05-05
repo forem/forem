@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "internal/users", type: :request do
   let!(:user) do
-    mock_github
+    omniauth_mock_github_payload
     create(:user, :with_identity, identities: ["github"])
   end
   let(:admin) { create(:user, :super_admin) }

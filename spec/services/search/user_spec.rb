@@ -7,7 +7,7 @@ RSpec.describe Search::User, type: :service do
     expect(described_class::MAPPINGS).not_to be_nil
   end
 
-  describe "::search_documents", elasticsearch: true do
+  describe "::search_documents", elasticsearch: "User" do
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }
 

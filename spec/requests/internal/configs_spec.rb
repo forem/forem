@@ -63,11 +63,25 @@ RSpec.describe "/internal/config", type: :request do
           post "/internal/config", params: { site_config: { tagline: description }, confirmation: confirmation_message }
           expect(SiteConfig.tagline).to eq(description)
         end
+      end
 
+      describe "mascot" do
         it "updates the mascot_user_id" do
           expected_mascot_user_id = 2
           post "/internal/config", params: { site_config: { mascot_user_id: expected_mascot_user_id }, confirmation: confirmation_message }
           expect(SiteConfig.mascot_user_id).to eq(expected_mascot_user_id)
+        end
+
+        it "updates mascot_image_url" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { mascot_image_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
+        end
+
+        it "updates mascot_image_description" do
+          description = "Hey hey #{rand(100)}"
+          post "/internal/config", params: { site_config: { mascot_image_description: description }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_image_description).to eq(description)
         end
       end
 
@@ -87,6 +101,17 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
+      describe "meta keywords" do
+        it "updates meta keywords" do
+          expected_keywords = { "default" => "software, people", "article" => "user, experience", "tag" => "bye" }
+          post "/internal/config", params: { site_config: { meta_keywords: expected_keywords },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.meta_keywords[:default]).to eq("software, people")
+          expect(SiteConfig.meta_keywords[:article]).to eq("user, experience")
+          expect(SiteConfig.meta_keywords[:tag]).to eq("bye")
+        end
+      end
+
       describe "emails" do
         it "updates email_addresses" do
           expected_email_addresses = {
@@ -101,6 +126,34 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.email_addresses[:privacy]).to eq("privacy@bar.to")
           expect(SiteConfig.email_addresses[:business]).to eq("partners@dev.to")
           expect(SiteConfig.email_addresses[:members]).to eq("members@bar.to")
+        end
+      end
+
+      describe "onboarding" do
+        it "updates onboarding_taskcard_image" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { onboarding_taskcard_image: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
+        end
+
+        it "removes space suggested_tags" do
+          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+
+        it "downcases suggested_tags" do
+          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+
+        it "removes space suggested_users" do
+          post "/internal/config", params: { site_config: { suggested_users: "piglet, tigger,eeyore, Christopher Robin, kanga,roo" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
+        end
+
+        it "downcases suggested_users" do
+          post "/internal/config", params: { site_config: { suggested_users: "piglet, tigger,EEYORE, Christopher Robin, KANGA,RoO" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
         end
       end
 
@@ -135,24 +188,6 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.primary_sticker_image_url).to eq(expected_image_url)
         end
 
-        it "updates onboarding_taskcard_image" do
-          expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { onboarding_taskcard_image: expected_image_url }, confirmation: confirmation_message }
-          expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
-        end
-
-        it "updates mascot_image_url" do
-          expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { mascot_image_url: expected_image_url }, confirmation: confirmation_message }
-          expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
-        end
-
-        it "updates mascot_image_description" do
-          description = "Hey hey #{rand(100)}"
-          post "/internal/config", params: { site_config: { mascot_image_description: description }, confirmation: confirmation_message }
-          expect(SiteConfig.mascot_image_description).to eq(description)
-        end
-
         it "rejects update without proper confirmation" do
           expected_image_url = "https://dummyimage.com/300x300"
           expect { post "/internal/config", params: { site_config: { logo_svg: expected_image_url }, confirmation: "Incorrect yo!" } }.to raise_error Pundit::NotAuthorizedError
@@ -176,6 +211,12 @@ RSpec.describe "/internal/config", type: :request do
           expect do
             post "/internal/config", params: { site_config: { rate_limit_published_article_creation: 3 }, confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_published_article_creation).from(9).to(3)
+        end
+
+        it "updates rate_limit_organization_creation" do
+          expect do
+            post "/internal/config", params: { site_config: { rate_limit_organization_creation: 3 }, confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_organization_creation).from(1).to(3)
         end
 
         it "updates rate_limit_image_upload" do
@@ -243,16 +284,6 @@ RSpec.describe "/internal/config", type: :request do
       end
 
       describe "Tags" do
-        it "removes space suggested_tags" do
-          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
-          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
-        end
-
-        it "downcases suggested_tags" do
-          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
-          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
-        end
-
         it "removes space sidebar_tags" do
           post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
@@ -296,14 +327,17 @@ RSpec.describe "/internal/config", type: :request do
       end
 
       describe "Authentication" do
-        it "removes space authentication_providers" do
-          post "/internal/config", params: { site_config: { authentication_providers: "github, twitter" }, confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
+        it "updates enabled authentication providers" do
+          enabled = Array.wrap(Authentication::Providers.available.first.to_s)
+          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq(enabled)
         end
 
-        it "downcases authentication_providers" do
-          post "/internal/config", params: { site_config: { authentication_providers: "GitHub, Twitter" }, confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to eq(%w[github twitter])
+        it "strips empty elements" do
+          provider = Authentication::Providers.available.first.to_s
+          enabled = [provider, "", nil]
+          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq([provider])
         end
       end
     end

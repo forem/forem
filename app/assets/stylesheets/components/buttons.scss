@@ -48,7 +48,8 @@
 
   &[href]:hover,
   &:hover:enabled,
-  &:active:enabled {
+  &:active:enabled,
+  &:focus:enabled {
     background-color: var(--bg-hover);
     border-color: var(--border-hover);
     box-shadow: var(--shadow-hover);

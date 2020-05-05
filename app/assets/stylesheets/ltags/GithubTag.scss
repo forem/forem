@@ -1,4 +1,5 @@
 @import 'variables';
+
 .ltag_github-liquid-tag {
   margin: 1.1em auto 1.3em;
   max-width: 580px;
@@ -95,19 +96,19 @@
       display: block;
     }
 
-    img.github-liquid-tag-img {
+    .github-liquid-tag-img {
       min-height: inherit;
-      width: 44px;
-      height: 44px;
+      width: 38px;
+      height: 38px;
       border-radius: 3px;
       float: none;
-      padding: 10px 0 10px 12px;
+      padding: 10px 12px 10px 0px;
       margin: inherit;
 
       @media screen and (min-width: 500px) {
         float: left;
         padding: 0;
-        margin-left: -75px;
+        margin-left: -9px;
       }
     }
   }

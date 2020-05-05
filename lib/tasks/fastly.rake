@@ -1,10 +1,9 @@
 namespace :fastly do
-  desc "Update VCL for safe params on Fastly"
-  task update_safe_params: :environment do
+  desc "Update Fastly configs"
+  task update_configs: :environment do
     fastly_credentials = %w[
       FASTLY_API_KEY
       FASTLY_SERVICE_ID
-      FASTLY_SAFE_PARAMS_SNIPPET_NAME
     ]
 
     if fastly_credentials.any? { |cred| ApplicationConfig[cred].blank? }
@@ -15,6 +14,6 @@ namespace :fastly do
       next
     end
 
-    FastlyVCL::SafeParams.update
+    FastlyConfig::Update.call
   end
 end

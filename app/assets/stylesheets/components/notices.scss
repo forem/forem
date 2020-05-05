@@ -1,28 +1,47 @@
 @import '../config/import';
-@import '../base/boxes';
-
-%notice-style {
-  @extend .crayons-box;
-  @extend .crayons-box--level-1;
-  padding: $su-4;
-}
 
 .crayons-notice {
-  @extend %notice-style;
+  padding: $su-4;
+  @include generate-box(
+    $level: 1,
+    $bg: var(--card-bg),
+    $border: var(--card-color),
+    $color: var(--card-color)
+  );
 
   &--danger {
-    @extend .crayons-box--danger;
+    @include generate-box(
+      $level: 1,
+      $bg: var(--card-bg),
+      $border: var(--accent-danger),
+      $color: var(--card-color)
+    );
   }
 
   &--warning {
-    @extend .crayons-box--warning;
+    @include generate-box(
+      $level: 1,
+      $bg: var(--card-bg),
+      $border: var(--accent-warning),
+      $color: var(--card-color)
+    );
   }
 
   &--success {
-    @extend .crayons-box--success;
+    @include generate-box(
+      $level: 1,
+      $bg: var(--card-bg),
+      $border: var(--accent-success),
+      $color: var(--card-color)
+    );
   }
 
   &--info {
-    @extend .crayons-box--info;
+    @include generate-box(
+      $level: 1,
+      $bg: var(--card-bg),
+      $border: var(--accent-brand),
+      $color: var(--card-color)
+    );
   }
 }

@@ -6,7 +6,7 @@ RSpec.describe CacheBuster, type: :labor do
   let(:article) { create(:article, user_id: user.id) }
   let(:comment) { create(:comment, user_id: user.id, commentable: article) }
   let(:organization) { create(:organization) }
-  let(:listing) { create(:classified_listing, user_id: user.id, category: "cfp") }
+  let(:listing) { create(:classified_listing, user_id: user.id) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:tag) { create(:tag) }

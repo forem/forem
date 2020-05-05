@@ -381,7 +381,6 @@ export class Listings extends Component {
           <span>{tag}</span>
           <span
             className="tag-close"
-            onClick={(e) => this.removeTag(e, tag)}
             data-no-instant
             role="button"
             onKeyPress={(e) => e.key === 'Enter' && this.removeTag(e, tag)}

@@ -19,7 +19,6 @@ then
 	echo "|"
 	echo "| Welcome to DEV.TO interactive docker demo setup guide."
 	echo "|"
-	echo "| For this container to work, we will need at minimum ALGOLIA API keys"
 	echo "| For logins to work, we will need either GITHUB or TWITTER API keys"
 	echo "|"
 	echo "| See ( https://docs.dev.to/getting-started/config-env/ ) "
@@ -28,30 +27,6 @@ then
 	echo "| Once you got your various API keys, please proceed to the next step"
 	echo "|"
 	echo "|---"
-
-	echo "|---"
-	echo "| Setting up ALGOLIASEARCH keys (required)"
-	echo "|---"
-	echo -n "| Please indicate your ALGOLIASEARCH_APPLICATION_ID : "
-	read INPUT_KEY
-	if [ ! -z "$INPUT_KEY" ]
-	then
-		export ALGOLIASEARCH_APPLICATION_ID="$INPUT_KEY"
-	fi
-
-	echo -n "| Please indicate your ALGOLIASEARCH_SEARCH_ONLY_KEY : "
-	read INPUT_KEY
-	if [ ! -z "$INPUT_KEY" ]
-	then
-		export ALGOLIASEARCH_SEARCH_ONLY_KEY="$INPUT_KEY"
-	fi
-
-	echo -n "| Please indicate your ALGOLIASEARCH_API_KEY (aka admin key) : "
-	read INPUT_KEY
-	if [ ! -z "$INPUT_KEY" ]
-	then
-		export ALGOLIASEARCH_API_KEY="$INPUT_KEY"
-	fi
 
 	echo "|---"
 	echo "| Setting up GITHUB keys"
@@ -115,16 +90,13 @@ echo "#"
 echo "# RUN_MODE can either be the following"
 echo "#"
 echo "# - 'DEV'  : Start up the container into bash, with a quick start guide"
-echo "# - 'DEMO' : Start up the container, and run dev.to (requires ALGOLIA environment variables)"
+echo "# - 'DEMO' : Start up the container, and run dev.to"
 echo "# - 'RESET-DEV'   : Resets postgresql and upload data directory for a clean deployment, before running as DEV mode"
 echo "# - 'RESET-DEMO'  : Resets postgresql and upload data directory for a clean deployment, before running as DEMO mode"
 echo "# - 'INTERACTIVE-DEMO' : Runs this script in 'interactive' mode to setup the 'DEMO'"
 echo "#"
 echo "# So for example to run a development container in bash it's simply"
 echo "# './docker-run.sh DEV'"
-echo "#"
-echo "# To run a simple demo, with some dummy data (replace <?> with the actual keys)"
-echo "# './docker-run.sh DEMO -e ALGOLIASEARCH_APPLICATION_ID=<?> -e ALGOLIASEARCH_SEARCH_ONLY_KEY=<?> -e ALGOLIASEARCH_API_KEY=<?>'"
 echo "#"
 echo "# Finally to run a working demo, you will need to provide either..."
 echo "# './docker-run.sh .... -e GITHUB_KEY=<?> -e GITHUB_SECRET=<?>"
@@ -233,10 +205,6 @@ echo "#---"
 # ENV variables to support forwarding, and the compulsory list from bash script to docker (if detected)
 #
 ENV_FORWARDING_LIST=(
-	# ALGOLIASEARCH (required for deployment)
-	"ALGOLIASEARCH_APPLICATION_ID"
-	"ALGOLIASEARCH_SEARCH_ONLY_KEY"
-	"ALGOLIASEARCH_API_KEY"
 	# login via GITHUB
 	"GITHUB_KEY"
 	"GITHUB_SECRET"
@@ -249,12 +217,6 @@ ENV_FORWARDING_LIST=(
 	"PUSHER_SECRET"
 	"PUSHER_CLUSTER"
 	# @TODO : anything else to pass forward? S3<?>
-)
-ENV_FORWARDING_DEMO_COMPULSORY_LIST=(
-	# ALGOLIASEARCH (required for deployment)
-	"ALGOLIASEARCH_APPLICATION_ID"
-	"ALGOLIASEARCH_SEARCH_ONLY_KEY"
-	"ALGOLIASEARCH_API_KEY"
 )
 
 #
@@ -286,25 +248,6 @@ do
 
 	echo "[skipped env variable]  - $i"
 done
-
-#
-# Check for DEMO compulsory list
-#
-if [[ "$RUN_MODE" == *"DEMO"* ]]
-then
-	# Iterate compulsory list
-	for i in "${ENV_FORWARDING_DEMO_COMPULSORY_LIST[@]}"
-	do
-		# Exit if not found
-		if [[ $DEVTO_DOCKER_FLAGS != *"$i"* ]]
-		then
-			echo "#---"
-			echo "# [FATAL ERROR] Missing required DEMO env setting / argument for $i (see example above)"
-			echo "#---"
-			exit 3
-		fi
-	done
-fi
 
 #
 # Stop and remove existing containers

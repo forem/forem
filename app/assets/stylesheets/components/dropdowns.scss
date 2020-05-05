@@ -1,9 +1,12 @@
 @import '../config/import';
-@import '../base/boxes';
 
 .crayons-dropdown {
-  @extend .crayons-box;
-  @extend .crayons-box--level-2;
+  @include generate-box(
+    $level: 2,
+    $bg: var(--card-bg),
+    $border: var(--card-color),
+    $color: var(--card-color)
+  );
   position: absolute;
   display: none; // initially hidden
   padding: $su-4;

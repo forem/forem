@@ -100,17 +100,20 @@ RSpec.describe "Stories::Feeds", type: :request do
       end
 
       it "sets a field test" do
-        get "/stories/feed"
-        expect(FieldTest::Membership.all.size).to be(1)
-        expect(FieldTest::Membership.last.participant_id).to eq(user.id.to_s)
-        expect(FieldTest::Membership.last.experiment).to eq("user_home_feed")
+        expect do
+          get "/stories/feed"
+        end.to change(user.field_test_memberships, :count).by(1)
+
+        ftm = user.field_test_memberships.last
+        expect(ftm.experiment).to eq("user_home_feed")
       end
     end
 
-    context "when there are no params passed (base feed) and user is signed not in" do
+    context "when there are no params passed (base feed) and user is not signed in" do
       it "sets a field test" do
-        get "/stories/feed"
-        expect(FieldTest::Membership.all.size).to be(0)
+        expect do
+          get "/stories/feed"
+        end.not_to change(FieldTest::Membership, :count)
       end
     end
 
@@ -133,8 +136,10 @@ RSpec.describe "Stories::Feeds", type: :request do
 
       it "does not sets a field test" do
         allow_any_instance_of(Stories::FeedsController).to receive(:field_test) # rubocop:disable RSpec/AnyInstance
-        get "/stories/feed"
-        expect(FieldTest::Membership.all.count).to be(0)
+
+        expect do
+          get "/stories/feed"
+        end.not_to change(user.field_test_memberships, :count)
       end
     end
   end

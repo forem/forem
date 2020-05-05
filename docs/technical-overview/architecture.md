@@ -68,9 +68,9 @@ Rails][fastly_rails] docs, but we bust specific URLs via `CacheBuster`.
 
 The home feed is based on a combination of recent collective posts that are
 cached and delivered the same to everyone in the HTML, and additional articles
-fetched from an Algolia index after page load. To determine which posts a user
-sees, they are ranked based on the user's followed tags, followed users, and
-relative weights for each tag. Additional fetched articles also follow this
+fetched from an Elasticsearch index after page load. To determine which posts a
+user sees, they are ranked based on the user's followed tags, followed users,
+and relative weights for each tag. Additional fetched articles also follow this
 general pattern.
 
 Currently, the top post on the home feed, which must have a cover image, is

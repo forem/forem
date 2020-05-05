@@ -1,8 +1,6 @@
-<% Authentication::Providers.enabled.each do |provider_name| %>
-  <% provider = Authentication::Providers.get!(provider_name) %>
-
+<% authentication_enabled_providers.each do |provider| %>
   <a
-    href="<%= Authentication::Providers.sign_in_path(provider_name, state: "navbar_basic") %>"
+    href="<%= provider.sign_in_path(state: "navbar_basic") %>"
     class="cta cta-button login-cta-button"
     data-no-instant>
     Sign In With <%= provider.official_name %>

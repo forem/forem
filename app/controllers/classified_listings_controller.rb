@@ -1,6 +1,15 @@
 class ClassifiedListingsController < ApplicationController
   include ClassifiedListingsToolkit
 
+  JSON_OPTIONS = {
+    only: %i[
+      title processed_html tag_list category id user_id slug contact_via_connect location
+    ],
+    include: {
+      author: { only: %i[username name], methods: %i[username profile_image_90] }
+    }
+  }.freeze
+
   before_action :set_classified_listing, only: %i[edit update destroy]
   before_action :set_cache_control_headers, only: %i[index]
   before_action :raise_suspended, only: %i[new create update]
@@ -13,18 +22,22 @@ class ClassifiedListingsController < ApplicationController
 
     if params[:view] == "moderate"
       not_found unless @displayed_classified_listing
-      return redirect_to "/internal/listings/#{@displayed_classified_listing.id}/edit"
+      return redirect_to edit_internal_listing_path(id: @displayed_classified_listing.id)
     end
 
     @classified_listings =
       if params[:category].blank?
         published_listings.
           order("bumped_at DESC").
-          includes(:user, :organization, :taggings, :classified_listing_category).
+          includes(:user, :organization, :taggings).
           limit(12)
       else
         ClassifiedListing.none
       end
+
+    @listings_json = @classified_listings.to_json(JSON_OPTIONS)
+    @displayed_listing_json = @displayed_classified_listing.to_json(JSON_OPTIONS)
+
     set_surrogate_key_header "classified-listings-#{params[:category]}"
   end
 

@@ -58,7 +58,7 @@
   --header-bg: var(--base-40);
   --header-bg-hover: var(--base-50);
   --header-bg-current: var(--base-50);
-  --header-shadow: rgba(0,0,0,0.1);
+  --header-shadow: rgba(0, 0, 0, 0.1);
   --header-icons-color: var(--base-10);
   --header-icons-color-hover: var(--base-0);
 
@@ -147,6 +147,11 @@
   // Default box
   --box: var(--card-bg);
   --box-darker: var(--base-100);
+
+  // Snackbars
+  --snackbar-bg: var(--base-90);
+  --snackbar-border: var(--base-100);
+  --snackbar-color: var(--body-color-inverted);
 
   // Indicators
   --indicator-accent-bg: var(--link-brand-color);
