@@ -135,12 +135,12 @@ function buildArticleHTML(article) {
 
     var saveButton = '';
     if (article.class_name === "Article") {
-      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--s" data-reactable-id="'+article.id+'">\
+      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--s bookmark-button" data-reactable-id="'+article.id+'">\
                       <span class="bm-initial">Save</span>\
                       <span class="bm-success">Saved</span>\
                     </button>'
     } else if (article.class_name === "User") {
-      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s article-engagement-count engage-button follow-action-button follow-user"\
+      saveButton = '<button type="button" class="crayons-btn crayons-btn--secondary crayons-btn--icon-left fs-s bookmark-button article-engagement-count engage-button follow-action-button follow-user"\
                        data-info=\'{"id":'+article.id+',"className":"User"}\' data-follow-action-button>\
                        &nbsp;\
                     </button>'
