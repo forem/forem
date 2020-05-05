@@ -1,7 +1,6 @@
 @import 'variables';
 @import 'mixins';
 @import 'components/buttons';
-@import 'components/modals';
 @import 'components/forms';
 @import 'config/import';
 
@@ -15,9 +14,6 @@
 
 // modal box card
 .onboarding-main {
-  @extend .crayons-modal;
-  @extend .crayons-modal--l;
-  @extend .crayons-modal--padding-0;
   border: none;
   z-index: 1;
 
@@ -348,8 +344,6 @@
 
 // Onboarding Intro
 .onboarding-main.introduction {
-  width: 578px;
-
   .onboarding-content {
     background: var(--base-100);
     color: white;
@@ -368,6 +362,7 @@
 
     .sticker-logo {
       height: $su-8;
+      box-sizing: content-box;
       width: $su-8;
       transform: rotate(-30deg);
       padding: $su-3;
