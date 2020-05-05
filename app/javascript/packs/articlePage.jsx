@@ -49,7 +49,7 @@ const userDataIntervalID = setInterval(async () => {
       );
     } catch (e) {
       document.querySelector('#comment-subscription').innerHTML =
-        '<p style="color: rgb(220, 24, 24);">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
+        '<p className="color-accent-danger">Unable to load Comment Subscription component.<br />Try refreshing the page.</p>';
     }
   }
 });
