@@ -10,12 +10,6 @@
   align-items: center;
   justify-content: center;
   z-index: 500;
-  @include generate-box(
-    $level: 3,
-    $bg: var(--card-bg),
-    $border: var(--card-color),
-    $color: var(--card-color)
-  );
 
   &__overlay {
     background: var(--base-100);
@@ -29,6 +23,12 @@
   }
 
   &__box {
+    @include generate-box(
+      $level: 3,
+      $bg: var(--card-bg),
+      $border: var(--card-color),
+      $color: var(--card-color)
+    );
     display: flex;
     flex-direction: column;
     max-width: 800px;
