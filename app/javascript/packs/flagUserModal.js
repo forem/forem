@@ -5,11 +5,6 @@ const modalSnackbarHTML = `
       <p>All posts by this author will be less visible.</p>
     </div>
   </div>
-  <div class="crayons-snackbar__item" id="abuse-report-snackbar">
-    <div class="crayons-snackbar__body">
-      <p>Thanks for the report. Our team will review this.</p>
-    </div>
-  </div>
 </div>
 `;
 
