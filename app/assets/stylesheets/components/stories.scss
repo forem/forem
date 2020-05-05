@@ -278,10 +278,19 @@
 .crayons-story {
   .crayons-btn {
     .bm-initial {
-      display: none;
+      display: inline-flex;
     }
     .bm-success {
-      display: inline-flex;
+      display: none;
+    }
+
+    &.selected {
+      .bm-initial {
+        display: none;
+      }
+      .bm-success {
+        display: inline-flex;
+      }
     }
   }
 }
