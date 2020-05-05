@@ -27,7 +27,8 @@ class ModerationsController < ApplicationController
 
   def actions_panel
     load_article
-    @moderatable_tags = Tag.where(id: (@moderatable.tags.pluck(:id) & @tag_moderator_tags.pluck(:id)))
+    tag_ids = (@moderatable.tags.pluck(:id) & @tag_moderator_tags.pluck(:id)) - @adjustments.pluck(:tag_id)
+    @moderatable_tags = Tag.where(id: tag_ids)
     render template: "moderations/actions_panel"
   end
 

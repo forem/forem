@@ -513,7 +513,18 @@
         &:hover {
           background: rgba(59, 73, 223, 0.05);
         }
+        &.active {
+          background: rgba(59, 73, 223, 0.05);
+        }
         // &.selected {}
+      }
+      .adjustment-reason-container {
+        display: flex;
+        flex-direction: column;
+        padding: $su-1;
+        textarea {
+          margin-bottom: $su-2;
+        }
       }
     }
     .set-experience-options {

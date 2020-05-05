@@ -109,7 +109,71 @@ function updateExperienceLevel(currentUserId, articleId, rating, group) {
   );
 }
 
+function toggleSubmitContainer() {
+  document
+    .getElementById('adjustment-reason-container')
+    .classList.toggle('hidden');
+}
+
+function adjustTag(tagBtn) {
+  const reasonForAdjustment = document.getElementById('tag-adjustment-reason')
+    .value;
+  const body = {
+    tag_adjustment: {
+      // TODO: change to tag ID
+      tag_name: tagBtn.dataset.tagName,
+      article_id: tagBtn.dataset.articleId,
+      adjustment_type: tagBtn.dataset.adjustmentType,
+      reason_for_adjustment: reasonForAdjustment,
+    },
+  };
+
+  request('/tag_adjustments', {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      if (json.result === 'Success') {
+        tagBtn.remove();
+        // eslint-disable-next-line no-alert
+        toggleSubmitContainer();
+        alert(`#${tagBtn.dataset.tagName} was removed!`);
+      } else {
+        // eslint-disable-next-line no-alert
+        alert(json.result);
+      }
+    });
+}
+
+function addAdjustTagListeners() {
+  Array.from(document.getElementsByClassName('adjustable-tag')).forEach(
+    (btn) => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+        toggleSubmitContainer();
+      });
+    },
+  );
+  Array.from(document.getElementsByClassName('tag-adjust-submit')).forEach(
+    (btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const textArea = document.getElementById('tag-adjustment-reason');
+
+        if (textArea.checkValidity()) {
+          const dataButton = document.querySelector(
+            'button.adjustable-tag.active',
+          );
+          adjustTag(dataButton);
+        }
+      });
+    },
+  );
+}
+
 function addBottomActionsListeners() {
+  addAdjustTagListeners();
   Array.from(document.getElementsByClassName('other-things-btn')).forEach(
     (btn) => {
       btn.addEventListener('click', () => {
