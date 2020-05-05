@@ -79,66 +79,51 @@
   color: white;
 }
 
-.flag-user-modal-subcont {
-  .modal-overlay {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: rgba(8, 9, 10, 0.5);
-    z-index: 300;
-    pointer-events: none;
+.flag-user-modal {
+  .flag-user-modal-header {
+    padding-left: $su-4;
+
+    h2 {
+      font-weight: $fw-bold;
+      font-size: $fs-l;
+      line-height: $lh-tight;
+    }
+
+    .modal-header-close-icon {
+      border-radius: 100%;
+      background: var(--base-10);
+    }
   }
 
-  .flag-user-modal {
-    z-index: 400;
+  .flag-user-modal-body {
+    padding: $su-6;
 
-    .flag-user-modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 4px;
-      margin-bottom: 16px;
-      border-bottom: 2px solid #08090a;
+    span {
+      font-size: $fs-base;
+      line-height: $lh-base;
+      color: var(--base-90);
+    }
 
-      .modal-header-text {
-        font-weight: bold;
-        font-size: 18px;
-        line-height: 125%;
-      }
+    .crayons-fields {
+      margin-top: $su-4;
 
-      .modal-header-close-icon {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 100%;
-        background: url('cancel.svg') center center no-repeat #eef0f1;
-        background-size: 13px 13px;
-
-        img {
-          width: 13px;
-          height: 13px;
-        }
+      .abuse-report-link {
+        margin: $su-4 0 0 $su-7;
       }
     }
 
-    .flag-user-modal-body {
-      font-size: 16px;
-      line-height: 150%;
+    .buttons-container {
+      margin-top: $su-8;
 
-      .crayons-fields {
-        margin-top: 16px;
-
-        .abuse-report-link {
-          margin: 16px 0 0 32px;
-        }
+      #confirm-flag-user-action {
+        background-color: var(--accent-danger-lighter);
+        color: var(--base-inverted);
+        opacity: 0.8;
       }
 
-      .buttons-container {
-        margin-top: 24px;
+      #cancel-flag-user-action {
+        background-color: var(--base-20);
+        color: var(--base-80);
       }
     }
   }

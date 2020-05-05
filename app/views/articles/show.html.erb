@@ -84,6 +84,7 @@
     class="container article"
     id="article-show-container"
     data-author-id="<%= @article.user_id %>"
+    data-author-class-name="<%= @article.user.class.name %>"
     data-live="<%= @article.live_now %>"
     data-path="<%= @article.path %>"
     data-published="<%= @article.published? %>">
@@ -226,7 +227,8 @@
 
 <div class="mod-actions-menu"></div>
 <div id="mod-actions-menu-btn-area"></div>
-<div class="flag-user-modal-container"></div>
+<div class="flag-user-modal-container hidden"></div>
+<div class="modal-snackbar-container"></div>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>

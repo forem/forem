@@ -40,12 +40,12 @@ function addReactionButtonListeners() {
   butts.forEach((butt) => {
     butt.addEventListener('click', (event) => {
       event.preventDefault();
-      this.classList.add('reacted');
+      butt.classList.add('reacted');
       const {
         reactableType: reactable_type,
         category,
         reactableId: reactable_id,
-      } = this.dataset;
+      } = butt.dataset;
 
       request('/reactions', {
         method: 'POST',
