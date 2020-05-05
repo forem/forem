@@ -132,7 +132,8 @@ class FollowTags extends Component {
                     }}
                   >
                     <div className="onboarding-tags__item__inner">
-                      #{tag.name}
+                      #
+                      {tag.name}
                       <button
                         type="button"
                         onClick={() => this.handleClick(tag)}
