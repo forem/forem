@@ -1,12 +1,12 @@
 class RateLimitChecker
   attr_reader :user, :action
 
-  # Values are seconds until a user can retry
-  RETRY_AFTER = {
-    article_update: 30,
-    image_upload: 30,
-    published_article_creation: 30,
-    organization_creation: 300
+  # retry_after values are the seconds until a user can retry an action
+  ACTION_LIMITERS = {
+    article_update: { retry_after: 30 },
+    image_upload: { retry_after: 30 },
+    published_article_creation: { retry_after: 30 },
+    organization_creation: { retry_after: 300 }
   }.with_indifferent_access.freeze
 
   CONFIGURABLE_RATES = {
@@ -37,8 +37,8 @@ class RateLimitChecker
   def check_limit!(action)
     return unless limit_by_action(action)
 
-    retry_after = RateLimitChecker::RETRY_AFTER[action]
-    raise RateLimitChecker::LimitReached, retry_after
+    retry_after = ACTION_LIMITERS.dig(action, :retry_after)
+    raise LimitReached, retry_after
   end
 
   def limit_by_action(action)
@@ -53,9 +53,8 @@ class RateLimitChecker
   end
 
   def track_limit_by_action(action)
-    cache_key = "#{@user.id}_#{action}"
-    expires_in = RETRY_AFTER[action].seconds
-    Rails.cache.increment(cache_key, 1, expires_in: expires_in)
+    expires_in = ACTION_LIMITERS.dig(action, :retry_after).seconds
+    Rails.cache.increment(limit_cache_key(action), 1, expires_in: expires_in)
   end
 
   def limit_by_email_recipient_address(address)
@@ -66,6 +65,20 @@ class RateLimitChecker
 
   private
 
+  ACTION_LIMITERS.each_key do |action|
+    define_method("check_#{action}_limit") do
+      Rails.cache.read(limit_cache_key(action)).to_i > action_rate_limit(action)
+    end
+  end
+
+  def limit_cache_key(action)
+    "#{@user.id}_#{action}"
+  end
+
+  def action_rate_limit(action)
+    SiteConfig.public_send("rate_limit_#{action}")
+  end
+
   def check_comment_creation_limit
     user.comments.where("created_at > ?", 30.seconds.ago).size >
       SiteConfig.rate_limit_comment_creation
@@ -74,21 +87,6 @@ class RateLimitChecker
   def check_published_article_creation_limit
     user.articles.published.where("created_at > ?", 30.seconds.ago).size >
       SiteConfig.rate_limit_published_article_creation
-  end
-
-  def check_organization_creation_limit
-    Rails.cache.read("#{user.id}_organization_creation").to_i >=
-      SiteConfig.rate_limit_organization_creation
-  end
-
-  def check_image_upload_limit
-    Rails.cache.read("#{user.id}_image_upload").to_i >
-      SiteConfig.rate_limit_image_upload
-  end
-
-  def check_article_update_limit
-    Rails.cache.read("#{user.id}_article_update").to_i >
-      SiteConfig.rate_limit_article_update
   end
 
   def check_follow_account_limit
