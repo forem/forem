@@ -38,6 +38,7 @@ gem "elasticsearch", "~> 7.6" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
+gem "faraday-http-cache", "~> 2.2" # Middleware to handle HTTP caching
 gem "fast_jsonapi", "~> 1.5" # Serializer for Ruby objects
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
