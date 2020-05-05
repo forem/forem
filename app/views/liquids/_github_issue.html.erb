@@ -1,6 +1,6 @@
 <div class="ltag_github-liquid-tag">
   <h1>
-    <a href="<%= date_link %>">
+    <a href="<%= html_url %>">
       <img class="github-logo" alt="GitHub logo" src="<%= ActionController::Base.helpers.asset_path('github-logo.svg') %>">
       <span class="issue-title">
         <%= title %>
@@ -18,12 +18,12 @@
       <div class="timeline-comment-header-text">
         <strong>
           <a href="<%= user_html_url %>"><%= username %></a>
-        </strong> commented on <a href="<%= date_link %>"><%= date %></a><span class="timestamp"></span>
+        </strong> <%= tagline %> <a href="<%= html_url %>"><time datetime="<%= created_at %>"><%= date %></time></a>
       </div>
     </div>
     <div class="ltag-github-body">
       <%= body %>
     </div>
-    <div class="gh-btn-container"><a class="gh-btn" href="<%= date_link %>">View on GitHub</a></div>
+    <div class="gh-btn-container"><a class="gh-btn" href="<%= html_url %>">View on GitHub</a></div>
   </div>
 </div>
