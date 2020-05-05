@@ -306,7 +306,13 @@ export default class ArticleForm extends Component {
         />
 
         <div className="crayons-article-form__main">
-          {!previewShowing && (
+          {previewShowing ? (
+            <Preview
+              previewResponse={previewResponse}
+              articleState={this.state}
+              errors={errors}
+            />
+          ) : (
             <Form
               titleDefaultValue={title}
               titleOnChange={linkState(this, 'title')}
@@ -322,13 +328,7 @@ export default class ArticleForm extends Component {
               switchHelpContext={this.switchHelpContext}
             />
           )}
-          {previewShowing && (
-            <Preview
-              previewResponse={previewResponse}
-              articleState={this.state}
-              errors={errors}
-            />
-          )}
+
           <Help
             previewShowing={previewShowing}
             helpFor={helpFor}
