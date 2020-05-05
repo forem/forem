@@ -60,7 +60,7 @@ RSpec.describe "UserOrganization", type: :request do
       create_org
 
       expect(response).to have_http_status(:too_many_requests)
-      expected_retry_after = RateLimitChecker::RETRY_AFTER[:organization_creation]
+      expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:organization_creation, :retry_after)
       expect(response.headers["Retry-After"]).to eq(expected_retry_after)
     end
   end
