@@ -1,9 +1,5 @@
 module Users
-  class BustCacheWorker
-    include Sidekiq::Worker
-
-    sidekiq_options queue: :high_priority, retry: 10
-
+  class BustCacheWorker < BustCacheBaseWorker
     def perform(user_id)
       user = User.find_by(id: user_id)
       return unless user
