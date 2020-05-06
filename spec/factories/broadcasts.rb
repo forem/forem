@@ -17,7 +17,7 @@ FactoryBot.define do
     factory :twitter_connect_broadcast do
       title          { "Welcome Notification: twitter_connect" }
       type_of        { "Welcome" }
-      processed_html { "You’re on a roll! 🎉 Do you have a Twitter account? Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>." }
+      processed_html { "You're on a roll! 🎉 Do you have a Twitter account? Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>." }
     end
 
     factory :github_connect_broadcast do
