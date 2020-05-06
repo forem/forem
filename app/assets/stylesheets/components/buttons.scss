@@ -5,26 +5,26 @@
   // Setup
   --border-width: 0px;
   --shadow-color: rgba(0, 0, 0, 0.05);
-  --vertical-padding: #{$su-2};
-  --horizontal-padding: #{$su-4};
-  --font-size: #{$fs-base};
-  --with-icon-padding: #{$su-3};
-  --icon-margin: #{$su-2};
+  --vertical-padding: var(--su-2);
+  --horizontal-padding: var(--su-4);
+  --font-size: var(--fs-base);
+  --with-icon-padding: var(--su-3);
+  --icon-margin: var(--su-2);
 
   position: relative;
   display: inline-block;
   padding: calc(var(--vertical-padding) - var(--border-width))
     calc(var(--horizontal-padding) - var(--border-width));
-  border-radius: $br-default;
+  border-radius: var(--radius);
   outline: none;
   font-family: inherit;
   font-size: var(--font-size);
-  line-height: $su-6; // intentionally not using $lh-* variable.
-  font-weight: $fw-medium;
+  line-height: var(--su-6); // intentionally not using $lh-* variable.
+  font-weight: var(--fw-medium);
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  transition: all $transition-props;
+  transition: all var(--transition-props);
   border: var(--border-width) solid;
 
   // Styles
@@ -72,26 +72,26 @@
   }
 
   &--s {
-    --vertical-padding: #{$su-1};
-    --horizontal-padding: #{$su-3};
-    --font-size: #{$fs-s};
-    --with-icon-padding: #{$su-2};
-    --icon-margin: #{$su-1};
+    --vertical-padding: var(--su-1);
+    --horizontal-padding: var(--su-3);
+    --font-size: var(--fs-s);
+    --with-icon-padding: var(--su-2);
+    --icon-margin: var(--su-1);
   }
 
   &--l {
-    --vertical-padding: #{$su-3};
-    --horizontal-padding: #{$su-5};
-    --with-icon-padding: #{$su-3};
-    --icon-margin: #{$su-2};
+    --vertical-padding: var(--su-3);
+    --horizontal-padding: var(--su-5);
+    --with-icon-padding: var(--su-3);
+    --icon-margin: var(--su-2);
   }
 
   &--xl {
-    --vertical-padding: #{$su-4};
-    --horizontal-padding: #{$su-6};
-    --font-size: #{$fs-l};
-    --with-icon-padding: #{$su-5};
-    --icon-margin: #{$su-3};
+    --vertical-padding: var(--su-4);
+    --horizontal-padding: var(--su-6);
+    --font-size: var(--fs-l);
+    --with-icon-padding: var(--su-5);
+    --icon-margin: var(--su-3);
   }
 }
 
@@ -202,19 +202,19 @@
 // Icon alone
 .crayons-btn--icon,
 .crayons-btn--icon-rounded {
-  --horizontal-padding: #{$su-2};
+  --horizontal-padding: var(--su-2);
   padding-left: calc(var(--horizontal-padding) - var(--border-width));
   padding-right: calc(var(--horizontal-padding) - var(--border-width));
   &.crayons-btn--s {
-    --horizontal-padding: #{$su-1};
+    --horizontal-padding: var(--su-1);
   }
 
   &.crayons-btn--l {
-    --horizontal-padding: #{$su-3};
+    --horizontal-padding: var(--su-3);
   }
 
   &.crayons-btn--xl {
-    --horizontal-padding: #{$su-4};
+    --horizontal-padding: var(--su-4);
   }
 }
 
@@ -261,13 +261,13 @@
     }
 
     &:first-child {
-      border-top-left-radius: $br-default;
-      border-bottom-left-radius: $br-default;
+      border-top-left-radius: var(--radius);
+      border-bottom-left-radius: var(--radius);
     }
 
     &:last-child {
-      border-top-right-radius: $br-default;
-      border-bottom-right-radius: $br-default;
+      border-top-right-radius: var(--radius);
+      border-bottom-right-radius: var(--radius);
     }
   }
 }

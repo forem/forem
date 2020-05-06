@@ -1,10 +1,10 @@
 @import '../config/import';
 
 :root {
-  --article-rythm: #{$su-2};
+  --article-rythm: var(--su-2);
 
   @media (min-width: $breakpoint-m) {
-    --article-rythm: #{$su-4};
+    --article-rythm: var(--su-4);
   }
 }
 
@@ -17,29 +17,29 @@
     width: calc(100% + (var(--layout-article-content-padding-x) * 2));
 
     &__image {
-      border-radius: $br-default $br-default 0 0;
+      border-radius: var(--radius) var(--radius) 0 0;
       background-size: cover;
       background-position: center center;
-      padding-top: percentage($cover-image-height / $cover-image-width);
+      padding-top: 42%;
     }
   }
 
   &__header {
-    margin-bottom: $su-6;
+    margin-bottom: var(--su-6);
   }
 
   &__tags {
     // TODO: replace with actual component one day...
-    font-family: $ff-accent;
-    font-size: $fs-s;
+    font-family: var(--ff-accent);
+    font-size: var(--fs-s);
     display: flex;
   }
 
   &__body {
-    font-size: $fs-l;
-    font-family: $ff-serif;
+    font-size: var(--fs-l);
+    font-family: var(--ff-serif);
     @media (min-width: $breakpoint-m) {
-      font-size: $fs-xl;
+      font-size: var(--fs-xl);
     }
 
     a {
@@ -99,7 +99,7 @@
 
     ul,
     ol {
-      padding-left: $su-6;
+      padding-left: var(--su-6);
       margin: var(--article-rythm) 0;
       br {
         line-height: 0;
@@ -127,7 +127,7 @@
     }
 
     li {
-      margin: $su-2 0;
+      margin: var(--su-2) 0;
     }
 
     figure {
@@ -150,15 +150,15 @@
 
     blockquote {
       border-left: 4px solid var(--base-50);
-      padding: 0 $su-4;
+      padding: 0 var(--su-4);
       margin: var(--article-rythm) 0;
 
       p:first-child {
-        margin: $su-2 0;
+        margin: var(--su-2) 0;
       }
 
       &.twitter-tweet {
-        font-family: $ff-default;
+        font-family: var(--ff-default);
         background: var(--body-color-inverted);
         max-width: 456px;
         border: 1px solid #e9eef2;
@@ -212,11 +212,11 @@
       background: var(--base-100);
       overflow-x: auto;
       color: #eff0f9;
-      padding: $su-6 $su-8;
+      padding: var(--su-6) var(--su-8);
       margin: var(--article-rythm) 0;
-      margin-left: -$su-8;
-      margin-right: -$su-8;
-      width: calc(100% + #{$su-8} + #{$su-8});
+      margin-left: calc(var(--su-8) * -1);
+      margin-right: calc(var(--su-8) * -1);
+      width: calc(100% + var(--su-8) + var(--su-8));
       overflow-wrap: normal;
       border-radius: 0;
 
@@ -306,9 +306,9 @@
 
 .crayons-article {
   .article-collection-wrapper {
-    font-family: $ff-default;
+    font-family: var(--ff-default);
     font-size: 16px;
-    border-radius: $br-default;
+    border-radius: var(--radius);
     border: 1px solid var(--base-30);
     width: 92%;
     max-width: 500px;

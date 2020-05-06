@@ -30,19 +30,19 @@
 .onboarding-content {
   box-sizing: border-box;
   flex: 1 0 auto;
-  padding: $su-4;
+  padding: var(--su-4);
   width: 100%;
   max-height: calc(100vh - 70px);
   overflow: auto;
 
   @media screen and (min-width: $breakpoint-s) {
     justify-content: center;
-    padding: $su-7 $su-8 $su-8;
+    padding: var(--su-7) var(--su-8) var(--su-8);
   }
 }
 
 .toggle-bottom {
-  padding-bottom: $su-4;
+  padding-bottom: var(--su-4);
 }
 
 // terms and conditions view
@@ -112,7 +112,7 @@
   .navigation-content {
     display: flex;
     justify-content: space-between;
-    padding: $su-4;
+    padding: var(--su-4);
 
     &.intro-slide {
       padding: 0;
@@ -126,7 +126,7 @@
     .next-button {
       // Explicitly set width to avoid next-button re-sizing with text,
       // and to ensure that back-button-container takes up the same amount of space.
-      width: $su-10;
+      width: var(--su-10);
     }
 
     .back-button {
@@ -166,7 +166,7 @@
       border-radius: 50%;
       width: $dot-size;
       height: $dot-size;
-      margin: $su-1;
+      margin: var(--su-1);
     }
 
     .active {
@@ -177,10 +177,10 @@
 
 // modal header
 .onboarding-content-header {
-  margin-bottom: $su-4;
+  margin-bottom: var(--su-4);
 
   @media screen and (min-width: $breakpoint-s) {
-    margin-bottom: $su-6;
+    margin-bottom: var(--su-6);
   }
 
   .title,
@@ -189,17 +189,17 @@
   }
 
   .title {
-    font-weight: $fw-heavy;
-    margin-bottom: $su-1;
+    font-weight: var(--fw-heavy);
+    margin-bottom: var(--su-1);
     text-align: left;
   }
 
   .subtitle {
     color: var(--card-color-secondary);
-    font-size: $fs-xl;
-    font-weight: $fw-medium;
+    font-size: var(--fs-xl);
+    font-weight: var(--fw-medium);
     letter-spacing: normal;
-    line-height: $lh-base;
+    line-height: var(--lh-base);
   }
 }
 
@@ -219,12 +219,12 @@
     text-align: center;
 
     .follow-count {
-      font-size: $su-4;
-      font-weight: $fw-medium;
-      line-height: $lh-base;
+      font-size: var(--su-4);
+      font-weight: var(--fw-medium);
+      line-height: var(--lh-base);
 
       &--active {
-        font-weight: $fw-bold;
+        font-weight: var(--fw-bold);
       }
     }
 
@@ -233,7 +233,7 @@
       border: none;
       padding: 0px;
       color: var(--accent-brand);
-      font-size: $fs-s;
+      font-size: var(--fs-s);
     }
   }
 }
@@ -242,7 +242,7 @@
 .onboarding-body {
   .crayons-notice {
     display: block;
-    margin-bottom: $su-2;
+    margin-bottom: var(--su-2);
   }
 }
 // modal overflow scrolling
@@ -260,7 +260,7 @@
 .onboarding-tags {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  grid-gap: $su-4;
+  grid-gap: var(--su-4);
   width: 100%;
 
   @media screen and (min-width: 800px) {
@@ -272,12 +272,12 @@
     border: 0;
     display: block;
     position: absolute;
-    left: $su-4;
-    right: $su-4;
-    bottom: $su-4;
+    left: var(--su-4);
+    right: var(--su-4);
+    bottom: var(--su-4);
     width: calc(100% - 32px);
     transform: translateY(0px);
-    font-family: $ff-default;
+    font-family: var(--ff-default);
     $button: &;
 
     @media screen and (min-width: 800px) {
@@ -294,7 +294,7 @@
   }
 
   &__item {
-    border-radius: $br-default;
+    border-radius: var(--radius);
     position: relative;
     overflow: hidden;
     height: 150px;
@@ -303,10 +303,10 @@
     &__inner {
       background: var(--base-10);
       bottom: 0;
-      font-family: $ff-accent;
+      font-family: var(--ff-accent);
       hyphens: auto;
       left: 0;
-      padding: $su-4;
+      padding: var(--su-4);
       position: absolute;
       right: 0;
       top: 0;
@@ -350,7 +350,7 @@
     display: flex;
     flex-direction: column;
     justify-content: start;
-    padding: $su-8;
+    padding: var(--su-8);
 
     @media screen and (min-width: $breakpoint-s) {
       justify-content: center;
@@ -358,14 +358,14 @@
   }
 
   figure {
-    margin: 0 0 $su-2 0;
+    margin: 0 0 var(--su-2) 0;
 
     .sticker-logo {
-      height: $su-8;
+      height: var(--su-8);
+      width: var(--su-8);
       box-sizing: content-box;
-      width: $su-8;
       transform: rotate(-30deg);
-      padding: $su-3;
+      padding: var(--su-3);
       vertical-align: middle;
     }
   }
@@ -376,19 +376,19 @@
   }
 
   .introduction-title {
-    font-size: $fs-5xl;
-    font-weight: $fw-heavy;
-    line-height: $lh-tight;
+    font-size: var(--fs-5xl);
+    font-weight: var(--fw-heavy);
+    line-height: var(--lh-tight);
   }
 
   .introduction-subtitle {
-    font-size: $fs-2xl;
-    font-weight: $fw-normal;
-    line-height: $lh-base;
+    font-size: var(--fs-2xl);
+    font-weight: var(--fw-normal);
+    line-height: var(--lh-base);
   }
 
   .navigation-content {
-    padding: $su-7;
+    padding: var(--su-7);
     justify-content: center;
 
     &.intro-slide {
@@ -413,7 +413,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     box-sizing: border-box;
     color: var(--body-color);
     display: flex;
-    padding: $su-2 $su-4;
+    padding: var(--su-2) var(--su-4);
     text-align: left;
     width: 100%;
 
@@ -445,7 +445,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
   .user-avatar-container {
     align-self: baseline;
-    margin: 0 $su-4 0 0;
+    margin: 0 var(--su-4) 0 0;
 
     @media screen and (min-width: $breakpoint-s) {
       align-self: center;
@@ -454,8 +454,8 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
   .user-avatar {
     border-radius: 100%;
-    height: $su-8;
-    width: $su-8;
+    height: var(--su-8);
+    width: var(--su-8);
     object-fit: cover;
     border: 1px solid var(--base-10);
   }
@@ -476,13 +476,13 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     }
 
     h3 {
-      margin-top: $su-2;
-      line-height: $lh-tight;
+      margin-top: var(--su-2);
+      line-height: var(--lh-tight);
     }
 
     p {
-      font-size: $fs-base;
-      line-height: $lh-tight;
+      font-size: var(--fs-base);
+      line-height: var(--lh-tight);
       color: var(--base-70);
     }
   }
@@ -490,12 +490,12 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   .user-name,
   .user-summary {
     margin: 0;
-    line-height: $lh-tight;
+    line-height: var(--lh-tight);
     overflow-wrap: anywhere;
   }
 
   .user-name {
-    font-size: $fs-base;
+    font-size: var(--fs-base);
   }
 
   .user-info {
@@ -503,11 +503,11 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   }
 
   .user-summary {
-    font-size: $fs-s;
+    font-size: var(--fs-s);
   }
 
   .user-following-status {
-    margin-left: $su-7;
+    margin-left: var(--su-7);
   }
 }
 
@@ -607,7 +607,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   fieldset {
     padding: 0;
     border: none;
-    margin-bottom: $su-6;
+    margin-bottom: var(--su-6);
 
     &:last-child {
       margin-bottom: 0;
@@ -622,7 +622,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
   legend {
     color: var(--body-color);
-    font-weight: $fw-medium;
+    font-weight: var(--fw-medium);
   }
 
   input[type='text'],
@@ -638,7 +638,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   label {
     @extend .crayons-field;
     @extend .crayons-field__label;
-    margin-bottom: $su-4;
+    margin-bottom: var(--su-4);
 
     &:last-child {
       margin-bottom: 0;
@@ -646,10 +646,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
   }
 
   .checkbox-form-wrapper {
-    padding: $su-7;
+    padding: var(--su-7);
 
     .checkbox-form {
-      padding-bottom: $su-6;
+      padding-bottom: var(--su-6);
     }
   }
 
@@ -658,10 +658,10 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
     label {
       @extend .crayons-field__label;
       align-items: baseline;
-      border-radius: $br-default;
+      border-radius: var(--radius);
       display: flex;
       flex-direction: row;
-      padding: 0 $su-1;
+      padding: 0 var(--su-1);
       width: 100%;
 
       @media screen and (min-width: $breakpoint-s) {
@@ -683,7 +683,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
       input[type='checkbox'] {
         @extend .crayons-checkbox;
-        margin-right: $su-2 !important;
+        margin-right: var(--su-2) !important;
       }
     }
   }

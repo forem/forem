@@ -8,13 +8,13 @@
 
 .crayons-article-form {
   --article-form-actions-height: 56px;
-  --layout-padding: #{$su-2};
+  --layout-padding: var(--su-2);
 
   display: grid;
   height: 100vh;
   grid-template-rows: min-content 1fr min-content;
   background: var(--body-bg);
-  font-size: $fs-base;
+  font-size: var(--fs-base);
 
   @media (min-width: $breakpoint-s) {
     --article-form-actions-height: 72px;
@@ -118,16 +118,16 @@
       padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
       background: var(--logo-bg);
       fill: var(--logo-color);
-      border-radius: $br-default;
+      border-radius: var(--radius);
     }
   }
 
   &__close {
-    margin-left: $su-4;
+    margin-left: var(--su-4);
     @media (min-width: $breakpoint-l) {
       position: absolute;
-      right: $su-2;
-      top: $su-2;
+      right: var(--su-2);
+      top: var(--su-2);
       margin-left: 0;
     }
   }
@@ -150,8 +150,8 @@
     background: var(--base-0);
     border: 1px solid var(--base-10);
     border-width: 1px 0;
-    padding: $su-2 var(--layout-article-content-padding-x);
-    margin: 0 calc(var(--layout-article-content-padding-x) * -1) $su-6
+    padding: var(--su-2) var(--layout-article-content-padding-x);
+    margin: 0 calc(var(--layout-article-content-padding-x) * -1) var(--su-6)
       calc(var(--layout-article-content-padding-x) * -1);
 
     @media (min-width: $breakpoint-s) {
@@ -159,12 +159,12 @@
     }
 
     > :first-child {
-      margin-left: -$su-2;
+      margin-left: calc(var(--su-2) * -1);
     }
   }
 
   &__cover {
-    margin-bottom: $su-6;
+    margin-bottom: var(--su-6);
     display: flex;
     align-items: flex-start;
     flex-direction: column;
@@ -177,25 +177,25 @@
     &__image {
       width: 250px;
       height: 105px;
-      border-radius: $br-default;
+      border-radius: var(--radius);
       object-fit: cover;
-      margin-bottom: $su-2;
+      margin-bottom: var(--su-2);
 
       @media (min-width: $breakpoint-s) {
         margin-bottom: 0;
-        margin-right: $su-4;
+        margin-right: var(--su-4);
       }
     }
   }
 
   &__title {
-    margin-bottom: $su-2;
+    margin-bottom: var(--su-2);
     position: relative;
   }
 
   &__tagsfield {
     position: relative;
-    margin-bottom: $su-7;
+    margin-bottom: var(--su-7);
   }
 }
 
@@ -211,23 +211,23 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: calc(100% + #{$su-4});
+    top: calc(100% + var(--su-4));
     z-index: 100;
-    padding: $su-1;
+    padding: var(--su-1);
 
     @media (min-width: $breakpoint-s) {
-      left: -$su-2;
-      right: -$su-2;
+      left: calc(var(--su-2) * -1);
+      right: calc(var(--su-2) * -1);
     }
 
     @media (min-width: $breakpoint-m) {
-      left: -$su-4;
-      right: -$su-4;
+      left: calc(var(--su-4) * -1);
+      right: calc(var(--su-4) * -1);
     }
   }
 
   &__tagname {
-    font-family: $ff-accent;
+    font-family: var(--ff-accent);
     color: var(--base-90);
     letter-spacing: -0.05em;
     font-weight: bold;
@@ -236,7 +236,7 @@
   &__tagoptionrow {
     cursor: pointer;
     color: var(--link-color);
-    padding: $su-3;
+    padding: var(--su-3);
 
     &:hover {
       background: var(--link-bg-hover);
@@ -258,7 +258,7 @@
   }
   &__tagrules,
   &__tagrules--inactive {
-    font-size: $fs-s;
+    font-size: var(--fs-s);
     color: var(--base-70);
   }
 

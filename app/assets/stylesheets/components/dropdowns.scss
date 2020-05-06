@@ -9,7 +9,7 @@
   );
   position: absolute;
   display: none; // initially hidden
-  padding: $su-4;
+  padding: var(--su-4);
   min-width: 200px;
 
   @media (min-width: $breakpoint-s) {

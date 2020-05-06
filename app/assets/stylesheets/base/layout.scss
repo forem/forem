@@ -1,35 +1,35 @@
 @import '../config/import';
 
 :root {
-  --layout-site-width: #{$site-width};
-  --layout-header-height: #{$header-height};
+  --layout-site-width: var(--site-width);
+  --layout-header-height: var(--header-height);
   --layout-sidebar-width: 200px;
   --layout-aside-width: 316px;
-  --layout-gap: #{$su-6};
-  --layout-padding: #{$su-6};
-  --layout-article-content-padding-x: #{$su-3};
-  --layout-article-content-padding-y: #{$su-3};
+  --layout-gap: var(--su-6);
+  --layout-padding: var(--su-6);
+  --layout-article-content-padding-x: var(--su-3);
+  --layout-article-content-padding-y: var(--su-3);
   --layout-narrow-sidebar-width: 66px;
 
   @media (min-width: $breakpoint-s) {
-    --layout-article-content-padding-x: #{$su-4};
-    --layout-article-content-padding-y: #{$su-4};
+    --layout-article-content-padding-x: var(--su-4);
+    --layout-article-content-padding-y: var(--su-4);
   }
 
   @media (min-width: $breakpoint-m) {
-    --layout-article-content-padding-x: #{$su-6};
-    --layout-article-content-padding-y: #{$su-6};
+    --layout-article-content-padding-x: var(--su-6);
+    --layout-article-content-padding-y: var(--su-6);
   }
 
   @media (min-width: $breakpoint-l) {
-    --layout-article-content-padding-x: #{$su-8};
+    --layout-article-content-padding-x: var(--su-8);
   }
 }
 
 .crayons-layout {
-  font-size: $fs-base; // todo: drop it when ready
+  font-size: var(--fs-base); // todo: drop it when ready
   width: 100%;
-  max-width: $site-width;
+  max-width: var(--site-width);
   margin: 0 auto;
 
   &--max-l {
