@@ -114,17 +114,6 @@
 
     .buttons-container {
       margin-top: $su-8;
-
-      #confirm-flag-user-action {
-        background-color: var(--accent-danger-lighter);
-        color: var(--base-inverted);
-        opacity: 0.8;
-      }
-
-      #cancel-flag-user-action {
-        background-color: var(--base-20);
-        color: var(--base-80);
-      }
     }
   }
 }

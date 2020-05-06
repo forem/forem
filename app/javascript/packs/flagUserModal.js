@@ -9,9 +9,17 @@ const modalSnackbarHTML = `
 `;
 
 const toggleFlagUserModal = () => {
-  document
-    .querySelector('.flag-user-modal-container')
-    .classList.toggle('hidden');
+  const modalContainer = document.querySelector('.flag-user-modal-container');
+  modalContainer.classList.toggle('hidden');
+
+  if (!modalContainer.classList.contains('hidden')) {
+    window.scrollTo(0, 0);
+    document.querySelector('body').style.height = '100vh';
+    document.querySelector('body').style.overflowY = 'hidden';
+  } else {
+    document.querySelector('body').style.height = 'inherit';
+    document.querySelector('body').style.overflowY = 'inherit';
+  }
 };
 
 const flashSnackbar = (snackbar) => {
@@ -64,8 +72,8 @@ export function initializeFlagUserModal() {
         <a href="/report-abuse?url=${document.location}" class="fs-base abuse-report-link">Report other inappropriate conduct</a>
       </div>
       <div class="buttons-container">
-        <a href="#" class="crayons-btn" id="confirm-flag-user-action">Confirm action</a>
-        <a href="#" class="crayons-btn" id="cancel-flag-user-action">Cancel</a>
+        <a href="#" class="crayons-btn crayons-btn--danger" id="confirm-flag-user-action">Confirm action</a>
+        <a href="#" class="crayons-btn crayons-btn--secondary" id="cancel-flag-user-action">Cancel</a>
       </div>
     </div>
   </div>
@@ -90,13 +98,15 @@ export function initializeFlagUserModal() {
   }
 
   // Event listeners to Close the Modal
-  document
-    .querySelector('.crayons-modal__overlay')
-    .addEventListener('click', toggleFlagUserModal);
+  const closeModalElements = Array.from(
+    document.querySelectorAll(
+      '.crayons-modal__overlay, .modal-header-close-icon, #cancel-flag-user-action',
+    ),
+  );
 
-  document
-    .querySelector('.modal-header-close-icon')
-    .addEventListener('click', toggleFlagUserModal);
+  closeModalElements.forEach((element) => {
+    element.addEventListener('click', toggleFlagUserModal);
+  });
 
   document
     .getElementById('confirm-flag-user-action')
@@ -107,10 +117,6 @@ export function initializeFlagUserModal() {
         toggleFlagUserModal();
       }
     });
-
-  document
-    .getElementById('cancel-flag-user-action')
-    .addEventListener('click', toggleFlagUserModal);
 
   document
     .getElementById('confirm-flag-user-action')
