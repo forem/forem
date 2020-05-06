@@ -8,12 +8,6 @@ function initializeAllFollowButts() {
 }
 
 function fetchUserFollowStatuses(idButtonHash) {
-  var dataRequester;
-  if (window.XMLHttpRequest) {
-    dataRequester = new XMLHttpRequest();
-  } else {
-    dataRequester = new ActiveXObject('Microsoft.XMLHTTP');
-  }
   var idString = "";
   Object.keys(idButtonHash).forEach(function(id) {
     idString += ("ids[]=" + id + "&");
