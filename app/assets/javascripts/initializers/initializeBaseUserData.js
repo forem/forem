@@ -1,5 +1,3 @@
-
-
 /* global filterXSS */
 
 function initializeUserProfileContent(user) {
@@ -105,7 +103,6 @@ function initializeBaseUserData() {
   userNavLink.href = `/${user.username}`;
   userNavLink.querySelector('span').textContent = user.name;
   userNavLink.querySelector('small').textContent = `@${user.username}`;
-
   document.getElementById('nav-profile-image').src = user.profile_image_90;
 
   initializeUserSidebar(user);
