@@ -115,13 +115,13 @@ RSpec.describe "StoriesShow", type: :request do
     it "renders canonical url when exists" do
       article = create(:article, with_canonical_url: true)
       get article.path
-      expect(response.body).to include('"canonical" href="' + article.canonical_url.to_s + '"')
+      expect(response.body).to include(%("canonical" href="#{article.canonical_url}"))
     end
 
     it "does not render canonical url when not on article model" do
       article = create(:article, with_canonical_url: false)
       get article.path
-      expect(response.body).not_to include('"canonical" href="' + article.canonical_url.to_s + '"')
+      expect(response.body).not_to include(%("canonical" href="#{article.canonical_url}"))
     end
 
     it "handles invalid slug characters" do
