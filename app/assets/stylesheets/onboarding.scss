@@ -4,28 +4,28 @@
 
 .onboarding-task-card {
   background: var(--accent-brand);
-  border-radius: $br-default;
-  padding: $su-7 $su-8 $su-8 $su-8;
+  border-radius: var(--radius);
+  padding: var(--su-7) var(--su-8) var(--su-8) var(--su-8);
   display: none;
 
   .task-card-title {
-    font-weight: $fw-heavy;
-    font-size: $fs-4xl;
-    line-height: $lh-tight;
+    font-weight: var(--fw-heavy);
+    font-size: var(--fs-4xl);
+    line-height: var(--lh-tight);
     color: var(--base-inverted);
   }
 
   .task-card-subtitle {
     color: var(--base-inverted);
     opacity: 0.7;
-    font-weight: $fw-medium;
-    font-size: $fs-s;
-    line-height: $lh-tight;
+    font-weight: var(--fw-medium);
+    font-size: var(--fs-s);
+    line-height: var(--lh-tight);
     letter-spacing: -0.02em;
   }
 
   .task-card-action {
-    border-radius: $br-default;
+    border-radius: var(--radius);
     // Can't use hex + opacity because it will affect text.
     background-color: rgba(255, 255, 255, 0.2);
 
@@ -36,12 +36,12 @@
 
   a.task-card-link {
     display: block;
-    border-radius: $br-default;
-    padding: $su-5 $su-5;
-    margin-top: $su-4;
-    font-weight: $fw-bold;
-    font-size: $fs-base;
-    line-height: $lh-base;
+    border-radius: var(--radius);
+    padding: var(--su-5) var(--su-5);
+    margin-top: var(--su-4);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
     letter-spacing: -0.02em;
     color: var(--base-inverted);
     display: flex;
@@ -53,7 +53,7 @@
     }
 
     .emoji {
-      margin-right: $su-2;
+      margin-right: var(--su-2);
     }
   }
 
@@ -68,7 +68,7 @@
     border: none;
 
     position: absolute;
-    top: $su-6;
-    right: $su-6;
+    top: var(--su-6);
+    right: var(--su-6);
   }
 }

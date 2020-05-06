@@ -7,7 +7,7 @@
 .sidebar-profile {
   @include sidebar-link;
   margin: 0;
-  margin-bottom: $su-2;
+  margin-bottom: var(--su-2);
   display: flex;
   align-items: center;
 
@@ -286,7 +286,7 @@
       color: $medium-gray;
     }
     .widget-listing-title {
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       font-weight: 500;
       margin-bottom: 8px;
     }
@@ -421,7 +421,7 @@
 .query-filter-button {
   box-sizing: border-box;
   display: inline-block;
-  padding: $su-2 0;
+  padding: var(--su-2) 0;
   width: 100%;
 }
 
@@ -431,7 +431,7 @@
   img {
     width: 100%;
     max-width: 140px;
-    margin-bottom: $su-2;
+    margin-bottom: var(--su-2);
   }
 }
 
