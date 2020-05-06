@@ -56,6 +56,90 @@ export class Help extends Component {
     });
   };
 
+  renderArticleFormTitleHelp = () => {
+    return (
+      <div>
+        <h4 className="mb-2 fs-l">How to write a good post title?</h4>
+        <ul className="list-disc pl-6 color-base-70">
+          <li>
+            Think of post title as super short description. Like an overview of
+            the actual post in one short sentence...
+          </li>
+          <li>Be specific :)</li>
+        </ul>
+      </div>
+    );
+  };
+
+  renderTagInputHelp = () => {
+    return (
+      <div>
+        <h4 className="mb-2 fs-l">Use appropriate tags</h4>
+        <ul className="list-disc pl-6 color-base-70">
+          <li>Tags will help the right people find your post.</li>
+          <li>
+            Think of tags as topics or categories that you could identify your
+            post with.
+          </li>
+          <li>
+            Limit number of tags to maximum 4 and try to use existing tags.
+          </li>
+          <li>Remember that some tags have special posting guidelines.</li>
+        </ul>
+      </div>
+    );
+  };
+
+  renderBasicEditorHelp = () => {
+    return (
+      <div className="crayons-card crayons-card--secondary p-4 mb-6">
+        You are currently using the basic markdown editor that uses
+        {' '}
+        <a href="#frontmatter" onClick={this.toggleFrontmatter}>
+          Jekyll front matter
+        </a>
+        . You can also use
+        <em>rich+markdown</em>
+        {' '}
+        editor you can find in
+        <a href="/settings/ux">UX settings</a>
+        .
+      </div>
+    );
+  };
+
+  renderEditorHelp = () => {
+    return (
+      <div>
+        <h4 className="mb-2 fs-l">How to use editor?</h4>
+        <ul className="list-disc pl-6 color-base-70">
+          <li>
+            Use
+            {' '}
+            <a href="#markdown" onClick={this.toggleMarkdown}>
+              Markdown
+            </a>
+            {' '}
+            to write and format posts.
+          </li>
+          <li>
+            Most of the time, you can write inline HTML directly into your
+            posts.
+          </li>
+          <li>
+            You can use
+            {' '}
+            <a href="#liquid" onClick={this.toggleLiquid}>
+              Liquid tags
+            </a>
+            {' '}
+            to add rich content such as tweets and videos.
+          </li>
+        </ul>
+      </div>
+    );
+  };
+
   render() {
     const { previewShowing, helpFor, helpPosition, version } = this.props;
 
@@ -75,84 +159,12 @@ export class Help extends Component {
             className="sticky"
             style={{ top: version === 'v1' ? '56px' : helpPosition }}
           >
-            {helpFor === 'article-form-title' && (
-              <div>
-                <h4 className="mb-2 fs-l">How to write a good post title?</h4>
-                <ul className="list-disc pl-6 color-base-70">
-                  <li>
-                    Think of post title as super short description. Like an
-                    overview of the actual post in one short sentence...
-                  </li>
-                  <li>Be specific :)</li>
-                </ul>
-              </div>
-            )}
-
-            {helpFor === 'tag-input' && (
-              <div>
-                <h4 className="mb-2 fs-l">Use appropriate tags</h4>
-                <ul className="list-disc pl-6 color-base-70">
-                  <li>Tags will help the right people find your post.</li>
-                  <li>
-                    Think of tags as topics or categories that you could
-                    identify your post with.
-                  </li>
-                  <li>
-                    Limit number of tags to maximum 4 and try to use existing
-                    tags.
-                  </li>
-                  <li>
-                    Remember that some tags have special posting guidelines.
-                  </li>
-                </ul>
-              </div>
-            )}
-
-            {(helpFor === 'article_body_markdown' || version === 'v1') && (
-              <div>
-                {version === 'v1' && (
-                  <div className="crayons-card crayons-card--secondary p-4 mb-6">
-                    You are currently using basic markdown editor that uses
-                    {' '}
-                    <a href="#frontmatter" onClick={this.toggleFrontmatter}>
-                      Jekyll front matter
-                    </a>
-                    . You can also use
-                    <em>rich+markdown</em>
-                    {' '}
-                    editor you can find in
-                    <a href="/settings/ux">UX settings</a>
-                    .
-                  </div>
-                )}
-
-                <h4 className="mb-2 fs-l">How to use editor?</h4>
-                <ul className="list-disc pl-6 color-base-70">
-                  <li>
-                    Use
-                    {' '}
-                    <a href="#markdown" onClick={this.toggleMarkdown}>
-                      Markdown
-                    </a>
-                    {' '}
-                    to write and format posts.
-                  </li>
-                  <li>
-                    Most of the time, you can write inline HTML directly into
-                    your posts.
-                  </li>
-                  <li>
-                    You can use
-                    {' '}
-                    <a href="#liquid" onClick={this.toggleLiquid}>
-                      Liquid tags
-                    </a>
-                    {' '}
-                    to add rich content such as tweets and videos.
-                  </li>
-                </ul>
-              </div>
-            )}
+            {helpFor === 'article-form-title' &&
+              this.renderArticleFormTitleHelp()}
+            {helpFor === 'tag-input' && this.renderTagInputHelp()}
+            {version === 'v1' && this.renderBasicEditorHelp()}
+            {(helpFor === 'article_body_markdown' || version === 'v1') &&
+              this.renderEditorHelp()}
           </div>
         )}
 
