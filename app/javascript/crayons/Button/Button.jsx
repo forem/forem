@@ -56,7 +56,7 @@ export const Button = ({
   onMouseOut,
   onFocus,
   onBlur,
-  tabIndex
+  tabIndex,
 }) => {
   const ComponentName = tagName;
   const Icon = icon;
@@ -113,7 +113,7 @@ Button.defaultProps = {
   onMouseOut: undefined,
   onFocus: undefined,
   onBlur: undefined,
-  tabIndex: undefined
+  tabIndex: undefined,
 };
 
 Button.propTypes = {
@@ -149,5 +149,5 @@ Button.propTypes = {
   onMouseOut: PropTypes.func,
   onFocus: PropTypes.func,
   onBlur: PropTypes.func,
-  tabIndex: PropTypes.number
+  tabIndex: PropTypes.number,
 };

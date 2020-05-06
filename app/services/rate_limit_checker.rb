@@ -7,7 +7,8 @@ class RateLimitChecker
     image_upload: { retry_after: 30 },
     listing_creation: { retry_after: 60 },
     published_article_creation: { retry_after: 30 },
-    organization_creation: { retry_after: 300 }
+    organization_creation: { retry_after: 300 },
+    reaction_creation: { retry_after: 30 }
   }.with_indifferent_access.freeze
 
   CONFIGURABLE_RATES = {
@@ -17,7 +18,8 @@ class RateLimitChecker
     rate_limit_published_article_creation: { min: 0, placeholder: 9, description: "The number of articles a user can create within 30 seconds" },
     rate_limit_image_upload: { min: 0, placeholder: 9, description: "The number of images a user can upload within 30 seconds" },
     rate_limit_email_recipient: { min: 0, placeholder: 5, description: "The number of emails we send to a user within 2 minutes" },
-    rate_limit_organization_creation: { min: 1, placeholder: 1, description: "The number of organizations a user can create within a 5 minute period" }
+    rate_limit_organization_creation: { min: 1, placeholder: 1, description: "The number of organizations a user can create within a 5 minute period" },
+    rate_limit_reaction_creation: { min: 1, placeholder: 10, description: "The number of times a user can react in a 30 second period" }
   }.freeze
 
   def initialize(user = nil)
