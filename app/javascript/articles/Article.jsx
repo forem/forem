@@ -28,9 +28,7 @@ export const Article = ({
 
   return (
     <article
-      className={`crayons-story w-100 align-left border-0 ${
-        isFeatured && 'crayons-story--featured'
-      }`}
+      className={`crayons-story ${isFeatured && 'crayons-story--featured'}`}
       id={isFeatured && 'featured-story-marker'}
       data-featured-article={`articles-${article.id}`}
       data-content-user-id={article.user_id}
