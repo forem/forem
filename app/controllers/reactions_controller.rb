@@ -49,10 +49,12 @@ class ReactionsController < ApplicationController
 
   def create
     authorize Reaction
-
     Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
 
+    clear_article_reactions(params[:reactable_id], params[:reactable_type], current_user, params[:category]) if params[:reactable_type] == "Article"
+
     category = params[:category] || "like"
+
     reaction = Reaction.where(
       user_id: current_user.id,
       reactable_id: params[:reactable_id],
@@ -129,5 +131,14 @@ class ReactionsController < ApplicationController
                       user_id: current_user.id,
                       context: "readinglist_reaction",
                       rating: current_user.experience_level)
+  end
+
+  def clear_article_reactions(id, type, mod, category)
+    reactions = if category == "thumbsup"
+                  Reaction.where(reactable_id: id, reactable_type: type, user: mod).where.not(category: category)
+                elsif category == "thumbsdown" || "vomit"
+                  Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: category)
+                end
+    reactions.each(&:destroy)
   end
 end
