@@ -1,6 +1,6 @@
 @import 'variables';
 #page-content.pages-generator {
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   .generator-container {
     padding-top: 50px;
     min-height: 800px;
