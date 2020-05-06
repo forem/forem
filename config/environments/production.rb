@@ -130,6 +130,9 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
+  # This middleware is designed to be installed first in the chain.
+  config.middleware.insert_before(0, Rack::HeadersFilter)
+
   if ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
     config.middleware.use Rack::HostRedirect,
                           ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
