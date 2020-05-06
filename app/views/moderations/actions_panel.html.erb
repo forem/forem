@@ -16,8 +16,6 @@
       <%= inline_svg_tag("chevron-right.svg", aria: false) %>
     </button>
   </header>
-  <% reaction = Reaction.where(reactable_id: @moderatable.id, reactable_type: @moderatable.class.name, user: current_user) %>
-  <%= reaction.inspect %>
   <div class="reactions-container">
     <div class="thumb-reactions-container">
       <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
