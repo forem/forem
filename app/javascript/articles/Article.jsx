@@ -51,7 +51,8 @@ export const Article = ({
             classList.contains('crayons-story__tags') ||
             classList.contains('crayons-story__bottom')
           ) {
-            window.location = article.path;
+            InstantClick.preload(article.path);
+            InstantClick.display(article.path);
           }
         }}
       >
