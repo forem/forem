@@ -9,6 +9,11 @@ describe('<Button /> component', () => {
     expect(tree).toMatchSnapshot();
   });
 
+  it('should render with a tabIndex', () => {
+    const tree = render(<Button tabIndex="0">Hello world!</Button>);
+    expect(tree).toMatchSnapshot();
+  });
+
   it('should render a secondary button when using the variant "secondary"', () => {
     const tree = render(<Button variant="secondary">Hello world!</Button>);
     expect(tree).toMatchSnapshot();
