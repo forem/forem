@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import he from 'he';
 
 import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
@@ -169,7 +170,9 @@ class FollowUsers extends Component {
                   </figure>
                   <div className="user-info">
                     <h4 className="user-name">{user.name}</h4>
-                    <p className="user-summary">{user.summary}</p>
+                    <p className="user-summary">
+                      {he.unescape(user.summary || '')}
+                    </p>
                   </div>
                   <button type="button" className="user-following-status">
                     {selectedUsers.includes(user) ? 'Following' : 'Follow'}
