@@ -13,7 +13,7 @@ class OrganizationTag < LiquidTagBase
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        organization: @organization,
+        organization: @organization.decorate,
         follow_button: @follow_button,
         organization_colors: @organization_colors
       },
