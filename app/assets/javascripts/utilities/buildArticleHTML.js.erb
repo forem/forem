@@ -30,7 +30,7 @@ function buildArticleHTML(article) {
 
     var commentsDisplay = ''
     var commentsCount = '0'
-    
+
     if ((article.comments_count || '0') > 0) {
       var commentsCount = (article.comments_count || '0')
     }
@@ -151,22 +151,24 @@ function buildArticleHTML(article) {
       videoHTML = '<a href="'+article.path+'" class="crayons-story__video" style="background-image:url('+article.cloudinary_video_url+')"><div class="crayons-story__video__time"><img src="<%= asset_path("video-camera.svg") %>" alt="video camera">'+(article.video_duration_string || article.video_duration_in_minutes)+'</div></a>'
     }
 
-    return '<div class="crayons-story" data-content-user-id="'+article.user_id+'">\
-      '+videoHTML+'\
-      <div class="crayons-story__body">\
-        <div class="crayons-story__top">\
-          '+meta+'\
-        </div>\
-        <div class="crayons-story__indention">\
-          <h2 class="crayons-story__title"><a href="'+article.path+'" id="article-link-'+article.id+'">'+flareTag+filterXSS(article.title)+'</a></h2>\
-          <div class="crayons-story__tags">'+tagString+'</div>\
-          '+searchSnippetHTML+'\
-          <div class="crayons-story__bottom">\
-            <div class="crayons-story__details">'+reactionsDisplay+commentsDisplay+'</div>\
-            '+saveButton+'\
+    return '<article class="crayons-story" data-article-path="' + article.path + '" data-content-user-id="'+article.user_id+'">\
+      <div role="presentation">\
+        '+videoHTML+'\
+        <div class="crayons-story__body">\
+          <div class="crayons-story__top">\
+            '+meta+'\
+          </div>\
+          <div class="crayons-story__indention">\
+            <h2 class="crayons-story__title"><a href="'+article.path+'" id="article-link-'+article.id+'">'+flareTag+filterXSS(article.title)+'</a></h2>\
+            <div class="crayons-story__tags">'+tagString+'</div>\
+            '+searchSnippetHTML+'\
+            <div class="crayons-story__bottom">\
+              <div class="crayons-story__details">'+reactionsDisplay+commentsDisplay+'</div>\
+              '+saveButton+'\
+            </div>\
           </div>\
         </div>\
       </div>\
-    </div>';
+    </article>';
   }
 }
