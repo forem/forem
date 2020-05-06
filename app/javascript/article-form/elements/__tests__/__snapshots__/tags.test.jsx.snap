@@ -17,14 +17,13 @@ exports[`<Tags /> renders properly 1`] = `
 >
   <input
     autoComplete="off"
-    class="articleform__tags"
+    class="undefined articleform__tags"
     id="tag-input"
     name="classified_listing[tag_list]"
     onBlur={[Function]}
-    onFocus={[Function]}
     onInput={[Function]}
     onKeyDown={[Function]}
-    placeholder="4 tags max, comma separated, no spaces or special characters"
+    placeholder="Add up to 4 tags..."
     ref={[Function]}
     type="text"
     value=""
