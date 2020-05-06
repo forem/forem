@@ -123,6 +123,7 @@ export class ImageUploader extends Component {
           variant="ghost"
           contentType="icon-left"
           icon={IconImage}
+          tabIndex="-1"
         >
           Upload image
           <input
@@ -133,6 +134,7 @@ export class ImageUploader extends Component {
             multiple
             accept="image/*"
             data-max-file-size-mb="25"
+            tabIndex="-1"
           />
         </Button>
 
@@ -152,7 +154,11 @@ export class ImageUploader extends Component {
               value={this.linksToMarkdownForm(insertionImageUrls)}
             />
             <Button variant="ghost" contentType="icon" icon={IconCopy} />
-            <span id="image-markdown-copy-link-announcer" role="alert" className="fs-s opacity-0">
+            <span
+              id="image-markdown-copy-link-announcer"
+              role="alert"
+              className="fs-s opacity-0"
+            >
               Copied!
             </span>
           </clipboard-copy>
