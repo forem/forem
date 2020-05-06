@@ -7,7 +7,20 @@
   --theme-container-border: 1px solid #e3e3e5;
 
   // Base
-  --base-100: #0a0a0a;
+  --base: #0a0a0a;
+
+  --base-a90: #{rgba(#0a0a0a, 0.9)};
+  --base-a80: #{rgba(#0a0a0a, 0.8)};
+  --base-a70: #{rgba(#0a0a0a, 0.7)};
+  --base-a60: #{rgba(#0a0a0a, 0.6)};
+  --base-a50: #{rgba(#0a0a0a, 0.5)};
+  --base-a40: #{rgba(#0a0a0a, 0.4)};
+  --base-a30: #{rgba(#0a0a0a, 0.3)};
+  --base-a20: #{rgba(#0a0a0a, 0.2)};
+  --base-a10: #{rgba(#0a0a0a, 0.1)};
+  --base-a5: #{rgba(#0a0a0a, 0.05)};
+
+  --base-100: var(--base);
   --base-90: #202020;
   --base-80: #353535;
   --base-70: #4b4b4b;
@@ -24,21 +37,25 @@
   --accent-brand: #3b49df;
   --accent-brand-darker: #1827ce;
   --accent-brand-lighter: #8d95f2;
+  --accent-brand-a10: #{rgba(#3b49df, 0.1)};
 
   // Success
   --accent-success: #26d9ca;
   --accent-success-darker: #1ab3a6;
   --accent-success-lighter: #79ece2;
+  --accent-success-a10: #{rgba(#26d9ca, 0.1)};
 
   // Warning
   --accent-warning: #ffcf4c;
   --accent-warning-darker: #f5b400;
   --accent-warning-lighter: #ffe499;
+  --accent-warning-a10: #{rgba(#ffcf4c, 0.1)};
 
   // Danger
   --accent-danger: #dc1818;
   --accent-danger-darker: #c20a0a;
   --accent-danger-lighter: #ec5050;
+  --accent-danger-a10: #{rgba(#dc1818, 0.1)};
 
   // Main colors
   --body-bg: #fcfcfc;
@@ -80,7 +97,7 @@
   --link-color-secondary: var(--base-70);
   --link-color-secondary-hover: var(--base-80);
   --link-brand-color: var(--accent-brand);
-  --link-bg-hover: var(--base-0);
+  --link-bg-hover: var(--base-a5);
   --link-bg-hover-alt: var(--base-10);
   --link-bg-current: var(--base-inverted);
 

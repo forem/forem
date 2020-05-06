@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import 'config/import';
 
 .unpublished {
   background: $red;
@@ -1308,6 +1309,7 @@ article {
   max-width: 98%;
   margin: auto;
   margin-top: -80px;
+  padding-bottom: $su-6;
   text-align: center;
 
   .full-discussion-button {
