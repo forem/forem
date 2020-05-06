@@ -9,7 +9,7 @@
   position: relative;
   padding: calc(10px + 1.3vw) 10px;
   color: white;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
 
   @media screen and (min-width: 380px) {
     font-size: 1.2em;
@@ -105,7 +105,7 @@ article {
     z-index: 6;
     position: relative;
     width: 81%;
-    font-family: $helvetica;
+    font-family: var(--ff-default);
 
     @media screen and (max-width: 750px) {
       width: 90%;
@@ -285,7 +285,7 @@ article {
   }
 
   .article-collection-wrapper {
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     font-size: 16px;
     border-radius: 5px;
     border: 1px solid $light-medium-gray;
@@ -380,7 +380,7 @@ article {
     h4,
     h5,
     h6 {
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       margin: 0.3em auto;
       padding-left: 4px;
       padding-right: 4px;
@@ -515,7 +515,7 @@ article {
       }
 
       &.twitter-tweet {
-        font-family: $helvetica;
+        font-family: var(--ff-default);
         background: white;
         max-width: 456px;
         border: 1px solid #e9eef2;
@@ -643,7 +643,7 @@ article {
     }
 
     table {
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       border-collapse: collapse;
       font-size: 0.78em;
       margin: 0.8em auto 1.2em;
@@ -679,7 +679,7 @@ article {
     overflow: hidden;
     padding: 0px 0px 5px;
     background: var(--card-bg);
-    font-family: $helvetica;
+    font-family: var(--ff-default);
 
     a {
       color: var(--body-color);
@@ -1301,7 +1301,7 @@ article {
   margin: auto;
   margin-bottom: -50px;
   text-align: center;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
 }
 
 .show-comments-footer {
@@ -1309,7 +1309,7 @@ article {
   max-width: 98%;
   margin: auto;
   margin-top: -80px;
-  padding-bottom: $su-6;
+  padding-bottom: var(--su-6);
   text-align: center;
 
   .full-discussion-button {
@@ -1335,7 +1335,7 @@ article {
 }
 
 .org-branding {
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   text-align: center;
   margin-top: 20px;
   margin-bottom: 0;
