@@ -154,6 +154,7 @@
   }
 
   &__comments {
+    cursor: default;
     background: var(--card-secondary-bg);
     padding: var(--story-padding);
     padding-top: $su-4;
