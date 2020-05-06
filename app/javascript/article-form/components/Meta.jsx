@@ -12,7 +12,7 @@ export const Meta = ({
   tagsOnInput,
   mainImage,
   onMainImageUrlChange,
-  switchHelpContext
+  switchHelpContext,
 }) => {
   return (
     <div>
@@ -26,7 +26,6 @@ export const Meta = ({
         onChange={titleOnChange}
         switchHelpContext={switchHelpContext}
       />
-
       <TagsField
         defaultValue={tagsDefaultValue}
         onInput={tagsOnInput}
@@ -35,8 +34,6 @@ export const Meta = ({
     </div>
   );
 };
-
-
 
 Meta.propTypes = {
   titleDefaultValue: PropTypes.string.isRequired,
