@@ -1,4 +1,4 @@
-'use strict';
+/* global initializeUserFollowButts */
 
 function initializeAdditionalContentBoxes() {
   var el = document.getElementById('additional-content-area');

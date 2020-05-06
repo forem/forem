@@ -1,4 +1,4 @@
-'use strict';
+/* global initializeUserFollowButts */
 
 function initializeLocalStorageRender() {
   try {

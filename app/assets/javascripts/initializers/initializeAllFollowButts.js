@@ -7,7 +7,7 @@ function initializeAllFollowButts() {
   }
 }
 
-function fetchUserButtons(idButtonHash) {
+function fetchUserFollowStatuses(idButtonHash) {
   var dataRequester;
   if (window.XMLHttpRequest) {
     dataRequester = new XMLHttpRequest();
@@ -19,26 +19,21 @@ function fetchUserButtons(idButtonHash) {
     idString += ("ids[]=" + id + "&");
   });
 
-  dataRequester.onreadystatechange = function() {
-    if (
-      dataRequester.readyState === XMLHttpRequest.DONE &&
-      dataRequester.status === 200
-    ) {
-      var idStatuses = JSON.parse(dataRequester.response);
+  fetch(`/follows/bulk_show?${idString}followable_type=User`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  }).then((response) => response.json())
+    .then((idStatuses) => {
       Object.keys(idStatuses).forEach(function(id) {
         addButtClickHandle(idStatuses[id], idButtonHash[id]);
       })
-    }
-  };
-
-  dataRequester.open(
-    'GET',
-    '/follows/bulk_show?' + idString + 'followable_type=User',
-    true,
-  );
-  dataRequester.send();
+    });
 }
-
 
 function initializeUserFollowButtons(buttons) {
   var userIds = {};
@@ -52,7 +47,7 @@ function initializeUserFollowButtons(buttons) {
     }
   }
 
-  if (Object.keys(userIds).length > 0) { fetchUserButtons(userIds); }
+  if (Object.keys(userIds).length > 0) { fetchUserFollowStatuses(userIds); }
 }
 
 function initializeUserFollowButts() {
