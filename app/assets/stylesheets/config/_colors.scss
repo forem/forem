@@ -13,7 +13,20 @@
   ////////////////////////////////////////////////////////////////////////////////////
 
   // Base
-  --base-100: #08090a;
+  --base: #08090a;
+
+  --base-a90: #{rgba(#08090a, 0.9)};
+  --base-a80: #{rgba(#08090a, 0.8)};
+  --base-a70: #{rgba(#08090a, 0.7)};
+  --base-a60: #{rgba(#08090a, 0.6)};
+  --base-a50: #{rgba(#08090a, 0.5)};
+  --base-a40: #{rgba(#08090a, 0.4)};
+  --base-a30: #{rgba(#08090a, 0.3)};
+  --base-a20: #{rgba(#08090a, 0.2)};
+  --base-a10: #{rgba(#08090a, 0.1)};
+  --base-a5: #{rgba(#08090a, 0.05)};
+
+  --base-100: var(--base);
   --base-90: #202428;
   --base-80: #363d44;
   --base-70: #4d5760;
@@ -30,21 +43,25 @@
   --accent-brand: #3b49df;
   --accent-brand-darker: #1827ce;
   --accent-brand-lighter: #8d95f2;
+  --accent-brand-a10: #{rgba(#3b49df, 0.1)};
 
   // Success
   --accent-success: #26d9ca;
   --accent-success-darker: #1ab3a6;
   --accent-success-lighter: #79ece2;
+  --accent-success-a10: #{rgba(#26d9ca, 0.1)};
 
   // Warning
   --accent-warning: #ffcf4c;
   --accent-warning-darker: #f5b400;
   --accent-warning-lighter: #ffe499;
+  --accent-warning-a10: #{rgba(#ffcf4c, 0.1)};
 
   // Danger
   --accent-danger: #dc1818;
   --accent-danger-darker: #c20a0a;
   --accent-danger-lighter: #ec5050;
+  --accent-danger-a10: #{rgba(#dc1818, 0.1)};
 
   ////////////////////////////////////////////////////////////////////////////////////
   // Functional color variables. /////////////////////////////////////////////////////
@@ -52,9 +69,7 @@
 
   // Main colors
   --body-bg: #f9fafa; // todo: replace with `var(--base-10);` when ready.
-  --body-color: var(
-    --base-100
-  ); // todo: replace with `var(--base-100);` when ready.
+  --body-color: var(--base-100);
   --body-color-inverted: var(--base-inverted);
 
   // Main content containers
@@ -88,7 +103,7 @@
   // Links
   --link-color: var(--base-90);
   --link-color-hover: var(--accent-brand-darker);
-  --link-bg-hover: var(--base-0);
+  --link-bg-hover: var(--base-a5);
   --link-bg-hover-alt: var(--base-inverted);
   --link-brand-color: var(--accent-brand);
   --link-color-current: var(--base-100);

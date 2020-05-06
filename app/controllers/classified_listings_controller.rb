@@ -1,5 +1,6 @@
 class ClassifiedListingsController < ApplicationController
   include ClassifiedListingsToolkit
+  before_action :check_limit, only: [:create]
 
   JSON_OPTIONS = {
     only: %i[
@@ -117,5 +118,9 @@ class ClassifiedListingsController < ApplicationController
 
   def process_after_unpublish
     redirect_to "/listings/dashboard"
+  end
+
+  def check_limit
+    rate_limit!(:listing_creation)
   end
 end

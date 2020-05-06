@@ -113,6 +113,7 @@ module ClassifiedListingsToolkit
     end
 
     if successful_transaction
+      rate_limiter.track_limit_by_action(:listing_creation)
       clear_listings_cache
       process_successful_creation
     else

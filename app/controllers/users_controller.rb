@@ -93,7 +93,11 @@ class UsersController < ApplicationController
 
   def request_destroy
     set_tabs("account")
-    if @user.email?
+
+    if destroy_request_in_progress
+      flash[:settings_notice] = "You have already requested account deletion. Please, check your email for further instructions."
+      redirect_to "/settings/#{@tab}"
+    elsif @user.email?
       Users::RequestDestroy.call(@user)
       flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
       redirect_to "/settings/#{@tab}"
@@ -399,5 +403,9 @@ class UsersController < ApplicationController
 
     @user.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
     false
+  end
+
+  def destroy_request_in_progress
+    Rails.cache.exist?("user-destroy-token-#{@user.id}")
   end
 end
