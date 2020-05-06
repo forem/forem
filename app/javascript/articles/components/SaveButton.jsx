@@ -21,6 +21,11 @@ export class SaveButton extends Component {
       this.setState({ buttonText: isBookmarked ? 'Saved' : 'Save' });
     };
 
+    const handleClick = (_e) => {
+      onClick(_e);
+      this.setState({ buttonText: isBookmarked ? 'Unsave' : 'Saved' });
+    };
+
     if (article.class_name === 'Article') {
       return (
         <button
@@ -30,7 +35,7 @@ export class SaveButton extends Component {
           }`}
           data-initial-feed
           data-reactable-id={article.id}
-          onClick={onClick}
+          onClick={handleClick}
           onMouseOver={mouseOver}
           onFocus={mouseOver}
           onMouseout={mouseOut}
