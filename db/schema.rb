@@ -435,13 +435,13 @@ ActiveRecord::Schema.define(version: 2020_05_01_032629) do
   end
 
   create_table "email_authorizations", force: :cascade do |t|
+    t.string "confirmation_token"
     t.datetime "created_at", null: false
     t.jsonb "json_data", default: {}, null: false
     t.string "type_of", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
-    t.index ["user_id", "type_of"], name: "index_email_authorizations_on_user_id_and_type_of", unique: true
   end
 
   create_table "events", force: :cascade do |t|
