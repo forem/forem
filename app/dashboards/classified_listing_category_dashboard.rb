@@ -15,6 +15,8 @@ class ClassifiedListingCategoryDashboard < Administrate::BaseDashboard
     name: Field::String,
     rules: Field::String,
     slug: Field::String,
+    social_preview_description: Field::String,
+    social_preview_color: Field::String,
     updated_at: Field::DateTime
   }.freeze
 
