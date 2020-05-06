@@ -2,7 +2,11 @@ require "rails_helper"
 
 RSpec.describe "ArticlesShow", type: :request do
   let_it_be(:user) { create(:user) }
-  let_it_be(:article, reload: true) { create(:article, user: user, published: true) }
+  let_it_be(:article, reload: true) { create(:article, user: user, published: true, organization: organization) }
+  let_it_be(:organization) { create(:organization) }
+  let(:doc) { Nokogiri::HTML(response.body) }
+  let(:text) { doc.at('script[type="application/ld+json"]').text }
+  let(:response_json) { JSON.parse(text) }
 
   describe "GET /:slug (articles)" do
     before do
@@ -15,9 +19,6 @@ RSpec.describe "ArticlesShow", type: :request do
 
     # rubocop:disable Rspec/ExampleLength
     it "renders the proper JSON-LD for an article" do
-      doc = Nokogiri::HTML(response.body)
-      text = doc.at('script[type="application/ld+json"]').text
-      response_json = JSON.parse(text)
       expect(response_json).to include(
         "@context" => "http://schema.org",
         "@type" => "Article",
@@ -54,15 +55,26 @@ RSpec.describe "ArticlesShow", type: :request do
         "dateModified" => article.edited_at&.iso8601 || article.published_timestamp,
       )
     end
-    # rubocop:enable Rspec/ExampleLength
-
-    it "renders the proper organization for an article when one is present" do
-      org = create(:organization)
-      org_article = create(:article, organization_id: org.id)
-      get org.path
-      expect(response.body).to include(org_article.title)
-    end
   end
+
+  it "renders the proper organization for an article when one is present" do
+    get organization.path
+    expect(response_json).to include(
+      {
+        "@context" => "http://schema.org",
+        "@type" => "Organization",
+        "mainEntityOfPage" => {
+          "@type" => "WebPage",
+          "@id" => URL.organization(organization)
+        },
+        "url" => URL.organization(organization),
+        "image" => ProfileImage.new(organization).get(width: 320),
+        "name" => organization.name,
+        "description" => organization.summary
+      },
+    )
+  end
+  # rubocop:enable Rspec/ExampleLength
 
   context "when keywords are set up" do
     it "shows keywords" do
