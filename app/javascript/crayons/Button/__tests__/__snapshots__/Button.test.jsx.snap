@@ -127,3 +127,14 @@ exports[`<Button /> component should render an outlined button when using the va
   Hello world!
 </button>
 `;
+
+exports[`<Button /> component should render with a tabIndex 1`] = `
+<button
+  class="crayons-btn"
+  disabled={false}
+  tabIndex="0"
+  type="button"
+>
+  Hello world!
+</button>
+`;
