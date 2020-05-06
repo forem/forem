@@ -1,10 +1,10 @@
 require "rails_helper"
 
 RSpec.describe "User searches users", type: :system do
-  let!(:current_user) { create(:user) }
-  let!(:followed_user) { create(:user) }
-  let!(:not_followed_user) { create(:user) }
-  let!(:follow_back_user) { create(:user) }
+  let(:current_user) { create(:user) }
+  let(:followed_user) { create(:user) }
+  let(:not_followed_user) { create(:user) }
+  let(:follow_back_user) { create(:user) }
 
   before do
     sign_in current_user
