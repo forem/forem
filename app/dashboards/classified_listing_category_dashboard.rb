@@ -30,6 +30,8 @@ class ClassifiedListingCategoryDashboard < Administrate::BaseDashboard
     slug
     rules
     cost
+    social_preview_description
+    social_preview_color
   ].freeze
 
   # SHOW_PAGE_ATTRIBUTES
@@ -40,6 +42,8 @@ class ClassifiedListingCategoryDashboard < Administrate::BaseDashboard
     slug
     rules
     cost
+    social_preview_description
+    social_preview_color
     created_at
     updated_at
   ].freeze
@@ -52,6 +56,8 @@ class ClassifiedListingCategoryDashboard < Administrate::BaseDashboard
     slug
     rules
     cost
+    social_preview_description
+    social_preview_color
   ].freeze
 
   # COLLECTION_FILTERS
