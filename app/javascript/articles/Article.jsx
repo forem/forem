@@ -28,7 +28,9 @@ export const Article = ({
 
   return (
     <article
-      className={`crayons-story ${isFeatured && 'crayons-story--featured'}`}
+      className={`crayons-story cursor-pointer ${
+        isFeatured && 'crayons-story--featured'
+      }`}
       id={isFeatured && 'featured-story-marker'}
       data-featured-article={`articles-${article.id}`}
       data-content-user-id={article.user_id}
