@@ -1,21 +1,25 @@
 class RateLimitChecker
   attr_reader :user, :action
 
-  # Values are seconds until a user can retry
-  RETRY_AFTER = {
-    article_update: 30,
-    image_upload: 30,
-    published_article_creation: 30,
-    organization_creation: 300
+  # retry_after values are the seconds until a user can retry an action
+  ACTION_LIMITERS = {
+    article_update: { retry_after: 30 },
+    image_upload: { retry_after: 30 },
+    listing_creation: { retry_after: 60 },
+    published_article_creation: { retry_after: 30 },
+    organization_creation: { retry_after: 300 },
+    reaction_creation: { retry_after: 30 }
   }.with_indifferent_access.freeze
 
   CONFIGURABLE_RATES = {
     rate_limit_follow_count_daily: { min: 0, placeholder: 500, description: "The number of users a person can follow daily" },
     rate_limit_comment_creation: { min: 0, placeholder: 9, description: "The number of comments a user can create within 30 seconds" },
+    rate_limit_listing_creation: { min: 1, placeholder: 1, description: "The number of listings a user can create in 1 minute" },
     rate_limit_published_article_creation: { min: 0, placeholder: 9, description: "The number of articles a user can create within 30 seconds" },
     rate_limit_image_upload: { min: 0, placeholder: 9, description: "The number of images a user can upload within 30 seconds" },
     rate_limit_email_recipient: { min: 0, placeholder: 5, description: "The number of emails we send to a user within 2 minutes" },
-    rate_limit_organization_creation: { min: 1, placeholder: 1, description: "The number of organizations a user can create within a 5 minute period" }
+    rate_limit_organization_creation: { min: 1, placeholder: 1, description: "The number of organizations a user can create within a 5 minute period" },
+    rate_limit_reaction_creation: { min: 1, placeholder: 10, description: "The number of times a user can react in a 30 second period" }
   }.freeze
 
   def initialize(user = nil)
@@ -37,8 +41,8 @@ class RateLimitChecker
   def check_limit!(action)
     return unless limit_by_action(action)
 
-    retry_after = RateLimitChecker::RETRY_AFTER[action]
-    raise RateLimitChecker::LimitReached, retry_after
+    retry_after = ACTION_LIMITERS.dig(action, :retry_after)
+    raise LimitReached, retry_after
   end
 
   def limit_by_action(action)
@@ -53,9 +57,8 @@ class RateLimitChecker
   end
 
   def track_limit_by_action(action)
-    cache_key = "#{@user.id}_#{action}"
-    expires_in = RETRY_AFTER[action].seconds
-    Rails.cache.increment(cache_key, 1, expires_in: expires_in)
+    expires_in = ACTION_LIMITERS.dig(action, :retry_after).seconds
+    Rails.cache.increment(limit_cache_key(action), 1, expires_in: expires_in)
   end
 
   def limit_by_email_recipient_address(address)
@@ -66,6 +69,20 @@ class RateLimitChecker
 
   private
 
+  ACTION_LIMITERS.each_key do |action|
+    define_method("check_#{action}_limit") do
+      Rails.cache.read(limit_cache_key(action)).to_i > action_rate_limit(action)
+    end
+  end
+
+  def limit_cache_key(action)
+    "#{@user.id}_#{action}"
+  end
+
+  def action_rate_limit(action)
+    SiteConfig.public_send("rate_limit_#{action}")
+  end
+
   def check_comment_creation_limit
     user.comments.where("created_at > ?", 30.seconds.ago).size >
       SiteConfig.rate_limit_comment_creation
@@ -74,21 +91,6 @@ class RateLimitChecker
   def check_published_article_creation_limit
     user.articles.published.where("created_at > ?", 30.seconds.ago).size >
       SiteConfig.rate_limit_published_article_creation
-  end
-
-  def check_organization_creation_limit
-    Rails.cache.read("#{user.id}_organization_creation").to_i >=
-      SiteConfig.rate_limit_organization_creation
-  end
-
-  def check_image_upload_limit
-    Rails.cache.read("#{user.id}_image_upload").to_i >
-      SiteConfig.rate_limit_image_upload
-  end
-
-  def check_article_update_limit
-    Rails.cache.read("#{user.id}_article_update").to_i >
-      SiteConfig.rate_limit_article_update
   end
 
   def check_follow_account_limit

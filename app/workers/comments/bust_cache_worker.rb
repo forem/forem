@@ -1,9 +1,5 @@
 module Comments
-  class BustCacheWorker
-    include Sidekiq::Worker
-
-    sidekiq_options queue: :high_priority
-
+  class BustCacheWorker < BustCacheBaseWorker
     def perform(comment_id)
       comment = Comment.find_by(id: comment_id)
       return unless comment&.commentable

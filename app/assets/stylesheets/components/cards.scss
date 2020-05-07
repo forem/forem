@@ -3,7 +3,7 @@
 $card-divider: 1px solid var(--body-bg);
 
 .crayons-card {
-  border-radius: $br-default;
+  border-radius: var(--radius);
   background: var(--card-bg);
   color: var(--card-color);
 
@@ -13,7 +13,7 @@ $card-divider: 1px solid var(--body-bg);
   }
 
   &__header {
-    padding: $su-4 $su-4;
+    padding: var(--su-4) var(--su-4);
     border-bottom: $card-divider;
     display: flex;
     justify-content: space-between;
@@ -21,28 +21,28 @@ $card-divider: 1px solid var(--body-bg);
   }
 
   &__subheader {
-    padding: $su-2 0;
+    padding: var(--su-2) 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
 
     &__title {
       color: var(--base-80);
-      font-weight: $fw-bold;
+      font-weight: var(--fw-bold);
     }
   }
 
   &__title {
     color: var(--card-headline);
-    font-weight: $fw-bold;
+    font-weight: var(--fw-bold);
   }
 
   &__body {
-    padding: $su-4;
+    padding: var(--su-4);
   }
 
   &__inner-section {
-    margin-bottom: $su-4;
+    margin-bottom: var(--su-4);
 
     &:last-child {
       margin-bottom: 0;

@@ -28,21 +28,10 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def config_params
     allowed_params = %i[
-      campaign_featured_tags
-      campaign_hero_html_variant_name
-      campaign_sidebar_enabled
-      campaign_sidebar_image
-      community_description
-      community_member_description
-      community_member_label
       favicon_url
       ga_view_id ga_fetch_rate
       logo_png
       logo_svg
-      mailchimp_community_moderators_id
-      mailchimp_newsletter_id
-      mailchimp_sustaining_members_id
-      mailchimp_tag_moderators_id
       main_social_image
       mascot_image_description
       mascot_image_url
@@ -51,18 +40,18 @@ class Internal::ConfigsController < Internal::ApplicationController
       periodic_email_digest_max
       periodic_email_digest_min
       primary_sticker_image_url
-      rate_limit_comment_creation
-      rate_limit_email_recipient
-      rate_limit_follow_count_daily
-      rate_limit_image_upload
-      rate_limit_published_article_creation
-      rate_limit_organization_creation
       shop_url
       sidebar_tags
       suggested_tags
       suggested_users
       tagline
     ]
+
+    allowed_params = allowed_params |
+      campaign_params |
+      community_params |
+      mailchimp_params |
+      rate_limit_params
 
     params.require(:site_config).permit(
       allowed_params,
@@ -88,5 +77,42 @@ class Internal::ConfigsController < Internal::ApplicationController
   def bust_relevant_caches
     # Needs to change when suggested_tags is edited.
     CacheBuster.bust("/tags/onboarding")
+  end
+
+  def campaign_params
+    %i[
+      campaign_featured_tags
+      campaign_hero_html_variant_name
+      campaign_sidebar_enabled
+      campaign_sidebar_image
+    ]
+  end
+
+  def community_params
+    %i[
+      community_description
+      community_member_description
+      community_member_label
+    ]
+  end
+
+  def mailchimp_params
+    %i[
+      mailchimp_community_moderators_id
+      mailchimp_newsletter_id
+      mailchimp_sustaining_members_id
+      mailchimp_tag_moderators_id
+    ]
+  end
+
+  def rate_limit_params
+    %i[
+      rate_limit_comment_creation
+      rate_limit_email_recipient
+      rate_limit_follow_count_daily
+      rate_limit_image_upload
+      rate_limit_published_article_creation
+      rate_limit_organization_creation
+    ]
   end
 end

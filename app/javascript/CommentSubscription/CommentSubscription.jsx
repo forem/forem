@@ -8,28 +8,42 @@ import {
   RadioButton,
 } from '@crayons';
 
-const COMMENT_SUBSCRIPTION_TYPE = {
+export const COMMENT_SUBSCRIPTION_TYPE = Object.freeze({
   ALL: 'all_comments',
   TOP: 'top_level_comments',
   AUTHOR: 'only_author_comments',
-};
+  NOT_SUBSCRIBED: 'not_subscribed',
+});
 
 export class CommentSubscription extends Component {
-  state = {
-    showOptions: false,
-    commentSubscriptionType: COMMENT_SUBSCRIPTION_TYPE.ALL,
-    subscribed: false,
-  };
+  constructor(props) {
+    const { subscriptionType } = props;
+    super(props);
 
-  componentDidMount() {
-    window.addEventListener('scroll', this.dropdownPlacementHandler);
+    const subscribed =
+      subscriptionType &&
+      (subscriptionType.length > 0 && subscriptionType) !==
+        COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED;
+
+    const initialState = {
+      subscriptionType: subscribed
+        ? subscriptionType
+        : COMMENT_SUBSCRIPTION_TYPE.ALL,
+      subscribed,
+      showOptions: false,
+    };
+
+    this.state = initialState;
   }
 
   componentDidUpdate() {
     const { showOptions } = this.state;
 
     if (showOptions) {
+      window.addEventListener('scroll', this.dropdownPlacementHandler);
       this.dropdownPlacementHandler();
+    } else {
+      window.removeEventListener('scroll', this.dropdownPlacementHandler);
     }
   }
 
@@ -57,13 +71,17 @@ export class CommentSubscription extends Component {
 
   commentSubscriptionClick = (event) => {
     this.setState({
-      commentSubscriptionType: event.target.value,
+      subscriptionType: event.target.value,
     });
   };
 
   render() {
-    const { showOptions, commentSubscriptionType, subscribed } = this.state;
-    const { onSubscribe, onUnsubscribe } = this.props;
+    const { showOptions, subscriptionType, subscribed } = this.state;
+    const {
+      onSubscribe,
+      onUnsubscribe,
+      positionType = 'relative',
+    } = this.props;
 
     const CogIcon = () => (
       <svg
@@ -80,7 +98,7 @@ export class CommentSubscription extends Component {
     );
 
     return (
-      <div className="relative">
+      <div className={positionType}>
         <ButtonGroup
           ref={(element) => {
             this.buttonGroupElement = element;
@@ -90,9 +108,12 @@ export class CommentSubscription extends Component {
             variant="outlined"
             onClick={(_event) => {
               if (subscribed) {
-                onUnsubscribe();
+                onUnsubscribe(COMMENT_SUBSCRIPTION_TYPE.NOT_SUBSCRIBED);
+                this.setState({
+                  subscriptionType: COMMENT_SUBSCRIPTION_TYPE.ALL,
+                });
               } else {
-                onSubscribe(commentSubscriptionType);
+                onSubscribe(subscriptionType);
               }
 
               this.setState({ subscribed: !subscribed });
@@ -113,7 +134,13 @@ export class CommentSubscription extends Component {
         </ButtonGroup>
         {subscribed && (
           <Dropdown
-            className={showOptions ? 'inline-block w-full' : null}
+            className={
+              showOptions
+                ? `inline-block z-30 right-4 left-4 s:right-0 s:left-auto${
+                    positionType === 'relative' ? ' w-full' : ''
+                  }`
+                : null
+            }
             ref={(element) => {
               this.dropdownElement = element;
             }}
@@ -123,10 +150,8 @@ export class CommentSubscription extends Component {
                 <RadioButton
                   id="subscribe-all"
                   name="subscribe_comments"
-                  value="all_comments"
-                  checked={
-                    commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.ALL
-                  }
+                  value={COMMENT_SUBSCRIPTION_TYPE.ALL}
+                  checked={subscriptionType === COMMENT_SUBSCRIPTION_TYPE.ALL}
                   onClick={this.commentSubscriptionClick}
                 />
                 <label htmlFor="subscribe-all" className="crayons-field__label">
@@ -141,11 +166,9 @@ export class CommentSubscription extends Component {
                 <RadioButton
                   id="subscribe-toplevel"
                   name="subscribe_comments"
-                  value="top_level_comments"
+                  value={COMMENT_SUBSCRIPTION_TYPE.TOP}
                   onClick={this.commentSubscriptionClick}
-                  checked={
-                    commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.TOP
-                  }
+                  checked={subscriptionType === COMMENT_SUBSCRIPTION_TYPE.TOP}
                 />
                 <label
                   htmlFor="subscribe-toplevel"
@@ -163,10 +186,10 @@ export class CommentSubscription extends Component {
                 <RadioButton
                   id="subscribe-author"
                   name="subscribe_comments"
-                  value="only_author_comments"
+                  value={COMMENT_SUBSCRIPTION_TYPE.AUTHOR}
                   onClick={this.commentSubscriptionClick}
                   checked={
-                    commentSubscriptionType === COMMENT_SUBSCRIPTION_TYPE.AUTHOR
+                    subscriptionType === COMMENT_SUBSCRIPTION_TYPE.AUTHOR
                   }
                 />
                 <label
@@ -186,7 +209,7 @@ export class CommentSubscription extends Component {
               className="w-100"
               onClick={(_event) => {
                 this.setState((prevState) => {
-                  onSubscribe(prevState.commentSubscriptionType);
+                  onSubscribe(prevState.subscriptionType);
 
                   return { ...prevState, showOptions: false };
                 });
@@ -204,6 +227,10 @@ export class CommentSubscription extends Component {
 CommentSubscription.displayName = 'CommentSubscription';
 
 CommentSubscription.propTypes = {
+  positionType: PropTypes.oneOf(['absolute', 'relative', 'static']).isRequired,
   onSubscribe: PropTypes.func.isRequired,
   onUnsubscribe: PropTypes.func.isRequired,
+  subscriptionType: PropTypes.oneOf(
+    Object.entries(COMMENT_SUBSCRIPTION_TYPE).map(([, value]) => value),
+  ).isRequired,
 };
