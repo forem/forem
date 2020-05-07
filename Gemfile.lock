@@ -344,7 +344,7 @@ GEM
     gemoji (4.0.0.rc2)
     get_process_mem (0.2.5)
       ffi (~> 1.0)
-    gibbon (3.3.3)
+    gibbon (3.3.4)
       faraday (>= 0.16.0)
       multi_json (>= 1.11.0)
     globalid (0.4.2)
