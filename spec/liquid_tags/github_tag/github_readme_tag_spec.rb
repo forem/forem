@@ -7,8 +7,6 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
     let(:path_repository) { "rust-lang/rust" }
     let(:repo_owner) { "rust-lang" }
 
-    # let(:my_ocktokit_client) { instance_double(Octokit::Client) }
-
     def generate_tag(path, options = "")
       Liquid::Template.register_tag("github", GithubTag)
       Liquid::Template.parse("{% github #{path} #{options} %}")
