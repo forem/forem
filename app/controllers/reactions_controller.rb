@@ -2,6 +2,8 @@ class ReactionsController < ApplicationController
   before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
   after_action :verify_authorized
 
+  NEG_ARTICLE_REACTIONS = %w[thumbsdown vomit].freeze
+
   def index
     skip_authorization
 
@@ -72,13 +74,7 @@ class ReactionsController < ApplicationController
 
     # if the reaction already exists, destroy it
     if reaction
-      result = destroy_reaction(reaction)
-
-      if reaction.negative? && current_user.auditable?
-        updated_params = params.dup
-        updated_params[:action] = "destroy"
-        Audit::Logger.log(:moderator, current_user, updated_params)
-      end
+      handle_existing_reaction(reaction)
     else
       reaction = build_reaction(category)
 
@@ -144,9 +140,21 @@ class ReactionsController < ApplicationController
   def clear_article_reactions(id, type, mod, category)
     reactions = if category == "thumbsup"
                   Reaction.where(reactable_id: id, reactable_type: type, user: mod).where.not(category: category)
-                elsif %w[thumbsdown vomit].include?(category)
+                elsif category.in?(NEG_ARTICLE_REACTIONS)
                   Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
                 end
     reactions.each { |reaction| destroy_reaction(reaction) }
+  end
+
+  def handle_existing_reaction(reaction)
+    result = destroy_reaction(reaction)
+
+    if reaction.negative? && current_user.auditable?
+      updated_params = params.dup
+      updated_params[:action] = "destroy"
+      Audit::Logger.log(:moderator, current_user, updated_params)
+    end
+
+    result
   end
 end
