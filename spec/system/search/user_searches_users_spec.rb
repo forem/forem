@@ -14,7 +14,7 @@ RSpec.describe "User searches users", type: :system do
     Search::User.refresh_index
   end
 
-  it "shows the correct follow buttons", js: true do
+  it "shows the correct follow buttons", js: true, elasticsearch: "User" do
     stub_request(:post, "http://www.google-analytics.com/collect")
     visit "/search?q=&filters=class_name:User"
 

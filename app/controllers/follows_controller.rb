@@ -27,8 +27,9 @@ class FollowsController < ApplicationController
 
   def bulk_show
     skip_authorization
+    render(plain: "not-logged-in") && return unless current_user
 
-    response = params[:ids].map(&:to_i).each_with_object({}) do |id, hsh|
+    response = params.require(:ids).map(&:to_i).each_with_object({}) do |id, hsh|
       hsh[id] = if current_user.id == id
                   "self"
                 else

@@ -2,17 +2,41 @@ require "rails_helper"
 
 RSpec.describe "Follows #bulk_show", type: :request do
   let(:current_user) { create(:user) }
-  let(:user) { create(:user) }
-  let(:user_two) { create(:user) }
+  let(:followed_user) { create(:user) }
+  let(:not_followed_user) { create(:user) }
+  let(:follow_back_user) { create(:user) }
+  let(:mutal_follow_user) { create(:user) }
 
-  before { sign_in current_user }
+  context "when ids are present" do
+    before do
+      sign_in current_user
+      current_user.follow(followed_user)
+      current_user.follow(mutal_follow_user)
+      follow_back_user.follow(current_user)
+      mutal_follow_user.follow(current_user)
+    end
 
-  it "returns false when not following" do
-    current_user.follow(user)
-    get "/follows/bulk_show", params: { ids: [user.id, user_two.id, current_user.id] }
+    it "returns correct following values" do
+      ids = [followed_user.id, not_followed_user.id, current_user.id, follow_back_user.id, mutal_follow_user.id]
+      get bulk_show_follows_path, params: { ids: ids }
 
-    expect(response.parsed_body[current_user.id.to_s]).to eq("self")
-    expect(response.parsed_body[user.id.to_s]).to eq("true")
-    expect(response.parsed_body[user_two.id.to_s]).to eq("false")
+      expect(response.parsed_body[current_user.id.to_s]).to eq("self")
+      expect(response.parsed_body[followed_user.id.to_s]).to eq("true")
+      expect(response.parsed_body[not_followed_user.id.to_s]).to eq("false")
+      expect(response.parsed_body[follow_back_user.id.to_s]).to eq("follow-back")
+      expect(response.parsed_body[mutal_follow_user.id.to_s]).to eq("mutual")
+    end
+  end
+
+  it "without ids raises a missing param error" do
+    sign_in current_user
+    expect { get bulk_show_follows_path, params: {} }.to raise_error(ActionController::ParameterMissing)
+  end
+
+  it "rejects unless logged-in" do
+    sign_out(current_user)
+    get bulk_show_follows_path
+
+    expect(response.body).to eq("not-logged-in")
   end
 end

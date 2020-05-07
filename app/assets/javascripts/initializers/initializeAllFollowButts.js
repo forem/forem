@@ -8,12 +8,15 @@ function initializeAllFollowButts() {
 }
 
 function fetchUserFollowStatuses(idButtonHash) {
-  var idString = "";
-  Object.keys(idButtonHash).forEach(function(id) {
-    idString += ("ids[]=" + id + "&");
+  const url = new URL("/follows/bulk_show", document.location);
+  const searchParams = new URLSearchParams();
+  Object.keys(idButtonHash).forEach((id) => {
+    searchParams.append("ids[]", id);
   });
+  searchParams.append("followable_type", "User");
+  url.search = searchParams;
 
-  fetch(`/follows/bulk_show?${idString}followable_type=User`, {
+  fetch(url, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
@@ -30,18 +33,20 @@ function fetchUserFollowStatuses(idButtonHash) {
 }
 
 function initializeUserFollowButtons(buttons) {
-  var userIds = {};
-  for (var i = 0; i < buttons.length; i++) {
-    var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
-    if (userStatus === 'logged-out') {
-      addModalEventListener(buttons[i]);
-    } else {
-      var userId = JSON.parse(buttons[i].dataset.info).id
-      userIds[userId] = buttons[i];
+  if (buttons.length > 0) {
+    var userIds = {};
+    for (var i = 0; i < buttons.length; i++) {
+      var userStatus = document.body.getAttribute('data-user-status');
+      if (userStatus === 'logged-out') {
+        addModalEventListener(buttons[i]);
+      } else {
+        var userId = JSON.parse(buttons[i].dataset.info).id
+        userIds[userId] = buttons[i];
+      }
     }
-  }
 
-  if (Object.keys(userIds).length > 0) { fetchUserFollowStatuses(userIds); }
+    if (Object.keys(userIds).length > 0) { fetchUserFollowStatuses(userIds); }
+  }
 }
 
 function initializeUserFollowButts() {
