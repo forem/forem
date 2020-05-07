@@ -350,6 +350,8 @@ class StoriesController < ApplicationController
   end
 
   def set_user_json_ld
+    # For more info on structering data with JSON-LD,
+    # please refer to this link: https://moz.com/blog/json-ld-for-beginners
     @user_json_ld = {
       "@context": "http://schema.org",
       "@type": "Person",
@@ -429,6 +431,8 @@ class StoriesController < ApplicationController
   end
 
   def user_works_for
+    # For further examples of the worksFor and disambiguatingDescription properties,
+    # please refer to this link: https://jsonld.com/person/
     return unless @user.employer_name.presence || @user.employer_url.presence
 
     {
@@ -443,6 +447,8 @@ class StoriesController < ApplicationController
   end
 
   def user_same_as
+    # For further information on the sameAs property, please refer to this link:
+    # https://schema.org/sameAs
     [@user.twitter_username.presence ? "https://twitter.com/#{@user.twitter_username}" : nil,
      @user.github_username.presence ? "https://github.com/#{@user.github_username}" : nil,
      @user.mastodon_url,
