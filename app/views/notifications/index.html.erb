@@ -151,37 +151,27 @@
           </div>
         <% end %>
 
-        <div class="crayons-tabs notifications-filter__tabs <%= "showing" if params[:org_id].blank? %>">
-          <a class="crayons-tabs--item <%= "crayons-tabs--item--current" if params[:filter].blank? %>" href="/notifications">
-            <span class="crayons-tabs__label">
-              All
-            </span>
+        <nav class="crayons-tabs notifications-filter__tabs <%= "hidden" if params[:org_id].present? %>">
+          <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].blank? %>" href="/notifications">
+            All
           </a>
-          <a class="crayons-tabs--item <%= "crayons-tabs--item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">
-            <span class="crayons-tabs__label">
-              Comments
-            </span>
+          <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">
+            Comments
           </a>
-          <a class="crayons-tabs--item <%= "crayons-tabs--item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">
-            <span class="crayons-tabs__label">
-              Posts
-            </span>
+          <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">
+            Posts
           </a>
-        </div>
+        </nav>
         <% if @organizations.present? %>
           <% @organizations.each do |org| %>
-            <div class="crayons-tabs notifications-filter__tabs <%= "showing" if params[:org_id].to_i == org.id %>">
-              <a class="crayons-tabs--item <%= "crayons-tabs--item--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
-                <span class="crayons-tabs__label">
-                  All
-                </span>
+            <nav class="crayons-tabs notifications-filter__tabs <%= "hidden" unless params[:org_id].to_i == org.id %>">
+              <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
+                All
               </a>
-              <a class="crayons-tabs--item <%= "crayons-tabs--item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
-                <span class="crayons-tabs__label">
-                  Comments
-                </span>
+              <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
+                Comments
               </a>
-            </div>
+            </nav>
           <% end %>
         <% end %>
       </section>

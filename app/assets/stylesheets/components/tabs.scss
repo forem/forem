@@ -3,12 +3,15 @@
 .crayons-tabs {
   // Setup
   --border-width: 0px;
-  --tab-vertical-padding: var(--su-2);
+  --tab-vertical-padding: var(--su-3);
   --tab-horizontal-padding: var(--su-2);
   --font-size: var(--fs-base);
 
+  @media (min-width: $breakpoint-m) {
+    --tab-vertical-padding: var(--su-2);
+  }
+
   display: flex;
-  margin-bottom: var(--su-9);
 
   &--scrollable {
     overflow-y: auto;
@@ -18,7 +21,7 @@
 
   &__item {
     padding: var(--tab-vertical-padding) var(--tab-horizontal-padding);
-    margin: 0 var(--su-1);
+
     display: inline-block;
     text-align: center;
     outline: none;
@@ -34,19 +37,25 @@
 
     @media (min-width: $breakpoint-s) {
       width: auto;
+      margin: 0 var(--su-1);
     }
 
     &::after {
       display: none;
       position: absolute;
-      left: var(--tab-horizontal-padding);
-      right: var(--tab-horizontal-padding);
+      left: 0;
+      right: 0;
       bottom: 0;
-      height: 2px;
+      height: 3px;
       content: '';
       background: var(--tab-highlight);
       border-radius: var(--radius);
       transition: all var(--transition-props);
+
+      @media (min-width: $breakpoint-s) {
+        left: var(--tab-horizontal-padding);
+        right: var(--tab-horizontal-padding);
+      }
     }
 
     &:hover {
@@ -74,6 +83,10 @@
     .crayons-tabs__item--current {
       background: var(--tab-highlight);
       color: var(--tab-pill-color-current);
+
+      &::after {
+        display: none;
+      }
     }
   }
 
