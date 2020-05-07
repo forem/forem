@@ -27,7 +27,7 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
 end
 
 RSpec.describe "Moderations", type: :request do
-  let(:user) { create(:user, :trusted) }
+  let(:trusted_user) { create(:user, :trusted) }
   let(:article) { create(:article) }
   let(:comment) { create(:comment, commentable: article) }
   let(:dev_account) { create(:user) }
@@ -37,7 +37,7 @@ RSpec.describe "Moderations", type: :request do
 
   context "when user is trusted" do
     before do
-      sign_in user
+      sign_in trusted_user
       allow(User).to receive(:dev_account).and_return(dev_account)
     end
 
@@ -52,7 +52,7 @@ RSpec.describe "Moderations", type: :request do
     end
 
     it "grants access to /mod index" do
-      create(:rating_vote, article: article, user: user)
+      create(:rating_vote, article: article, user: trusted_user)
       get "/mod"
       expect(response).to have_http_status(:ok)
     end
@@ -69,12 +69,12 @@ RSpec.describe "Moderations", type: :request do
       expect(response.body).to include("#" + article.tags.first.name.titleize)
     end
 
-    it "returns not found for inapprpriate tags" do
+    it "returns not found for inappropriate tags" do
       expect { get "/mod/dsdsdsweweedsdseweww" }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "renders not_found when an article can't be found" do
-      expect { get "/#{user.username}/dsdsdsweweedsdseweww/mod/" }.to raise_exception(ActiveRecord::RecordNotFound)
+      expect { get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/" }.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end
 end
