@@ -13,7 +13,14 @@ function userProfilePage(username) {
 }
 
 export const CommentListItem = ({ comment }) => (
-  <div className="crayons-comment pl-2">
+  <div
+    className="crayons-comment pl-2 cursor-pointer"
+    role="presentation"
+    onClick={(_event) => {
+      InstantClick.preload(comment.path);
+      InstantClick.display(comment.path);
+    }}
+  >
     <div className="crayons-comment__meta">
       <a
         href={userProfilePage(comment.username)}
@@ -29,11 +36,13 @@ export const CommentListItem = ({ comment }) => (
         {comment.name}
       </a>
       <a href={comment.path} className="crayons-story__tertiary ml-1">
-        {timeAgo({
-          oldTimeInSeconds: comment.published_at_int,
-          formatter: (x) => x,
-          maxDisplayedAge: NaN,
-        })}
+        <time>
+          {timeAgo({
+            oldTimeInSeconds: comment.published_at_int,
+            formatter: (x) => x,
+            maxDisplayedAge: NaN,
+          })}
+        </time>
       </a>
     </div>
     <div

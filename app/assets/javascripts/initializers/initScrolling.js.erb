@@ -166,7 +166,36 @@ function insertArticles(articles) {
   });
   var distanceFromBottom = document.documentElement.scrollHeight - document.body.scrollTop;
   var newNode = document.createElement("div");
+  newNode.classList.add('paged-stories')
   newNode.innerHTML = newArticlesHTML;
+
+  newNode.addEventListener('click', (event) => {
+    const { classList } = event.target;
+
+    // This looks a little messy, but it's the only
+    // way to make the entire card clickable.
+    if (
+      classList.contains('crayons-story') ||
+      classList.contains('crayons-story__top') ||
+      classList.contains('crayons-story__body') ||
+      classList.contains('crayons-story__indention') ||
+      classList.contains('crayons-story__title') ||
+      classList.contains('crayons-story__tags') ||
+      classList.contains('crayons-story__bottom')
+    ) {
+      let element = event.target;
+      let { articlePath } = element.dataset;
+
+      while (!articlePath) {
+        articlePath = element.dataset.articlePath;
+        element = element.parentElement;
+      }
+
+      InstantClick.preload(articlePath);
+      InstantClick.display(articlePath);
+    }
+  })
+
   var singleArticles = document.querySelectorAll(".single-article, .crayons-story");
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);
@@ -287,7 +316,7 @@ function fetchNextPageIfNearBottom() {
 }
 
 function checkIfNearBottomOfPage() {
-  if ((document.getElementsByClassName("crayons-story").length < 2 && document.getElementsByClassName("single-article").length < 2) 
+  if ((document.getElementsByClassName("crayons-story").length < 2 && document.getElementsByClassName("single-article").length < 2)
       || window.location.search.indexOf("q=") > -1 ) {
     document.getElementById("loading-articles").style.display = "none";
     done = true;
