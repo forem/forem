@@ -8,15 +8,17 @@
   --font-size: var(--fs-base);
 
   display: flex;
-  margin-bottom: var(--su-6);
+  margin-bottom: var(--su-9);
 
   &--scrollable {
     overflow-y: auto;
     flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
   }
 
   &__item {
     padding: var(--tab-vertical-padding) var(--tab-horizontal-padding);
+    margin: 0 var(--su-1);
     display: inline-block;
     text-align: center;
     outline: none;
@@ -24,7 +26,7 @@
     line-height: var(--su-6);
     text-decoration: none;
     cursor: pointer;
-    color: var(--link-color);
+    color: var(--tab-color);
     position: relative;
     border-radius: var(--radius);
     transition: all var(--transition-props);
@@ -42,14 +44,14 @@
       bottom: 0;
       height: 2px;
       content: '';
-      background: var(--accent-brand);
+      background: var(--tab-highlight);
       border-radius: var(--radius);
       transition: all var(--transition-props);
     }
 
     &:hover {
-      background: var(--accent-brand-a10);
-      color: var(--link-color-hover);
+      background: var(--tab-bg-hover);
+      color: var(--tab-color-hover);
 
       &:after {
         left: 0;
@@ -60,6 +62,7 @@
 
     &--current {
       font-weight: var(--fw-medium);
+      color: var(--tab-color-current);
 
       &::after {
         display: block;
@@ -68,284 +71,53 @@
   }
 
   &--pills {
-    .crayons-tabs__item {
-      margin: 0 var(--su-1);
-    }
     .crayons-tabs__item--current {
-      background: var(--link-brand-color); // TODO:
-      color: var(--base-inverted); // TODO:
+      background: var(--tab-highlight);
+      color: var(--tab-pill-color-current);
     }
   }
-}
 
-// Basic styling
-.crayons-btn {
-  // Setup
-  --border-width: 0px;
-  --shadow-color: rgba(0, 0, 0, 0.05);
-  --vertical-padding: var(--su-2);
-  --horizontal-padding: var(--su-4);
-  --font-size: var(--fs-base);
-  --with-icon-padding: var(--su-3);
-  --icon-margin: var(--su-2);
+  &--stacked {
+    flex-direction: column;
+    @media (min-width: $breakpoint-s) {
+      flex-direction: row;
+    }
 
-  position: relative;
-  display: inline-block;
-  padding: calc(var(--vertical-padding) - var(--border-width))
-    calc(var(--horizontal-padding) - var(--border-width));
-  border-radius: var(--radius);
-  outline: none;
-  font-family: inherit;
-  font-size: var(--font-size);
-  line-height: var(--su-6); // intentionally not using $lh-* variable.
-  font-weight: var(--fw-medium);
-  text-align: center;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all var(--transition-props);
-  border: var(--border-width) solid;
+    .crayons-tabs__item {
+      margin: 0;
 
-  // Styles
-  --bg: var(--button-primary-bg);
-  --bg-hover: var(--button-primary-bg-hover);
-  --border: transparent;
-  --border-hover: transparent;
-  --color: var(--button-primary-color);
-  --color-hover: var(--button-primary-color-hover);
-  --shadow: 0 1px 3px var(--shadow-color);
-  --shadow-hover: 0 2px 5px var(--shadow-color);
-  --bg-inverted: var(--button-primary-inverted-bg);
-  --bg-inverted-hover: var(--button-primary-inverted-bg-hover);
-  --color-inverted: var(--button-primary-inverted-color);
-  --color-inverted-hover: var(--button-primary-inverted-color-hover);
-
-  background-color: var(--bg);
-  border-color: var(--border);
-  box-shadow: var(--shadow);
-  color: var(--color);
-
-  &[href]:hover,
-  &:hover:enabled,
-  &:active:enabled,
-  &:focus:enabled {
-    background-color: var(--bg-hover);
-    border-color: var(--border-hover);
-    box-shadow: var(--shadow-hover);
-    color: var(--color-hover);
-    z-index: 2;
+      @media (min-width: $breakpoint-s) {
+        margin: 0 var(--su-1);
+      }
+    }
   }
 
-  &.crayons-btn--inverted {
-    --bg: var(--bg-inverted);
-    --bg-hover: var(--bg-inverted-hover);
-    --border: var(--border-inverted);
-    --border-hover: var(--border-inverted-hover);
-    --color: var(--color-inverted);
-    --color-hover: var(--color-inverted-hover);
+  &--wrapped {
+    flex-wrap: wrap;
+
+    .crayons-tabs__item {
+      margin: var(--su-1);
+      width: auto;
+    }
   }
 
-  &[disabled] {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  &--s {
-    --vertical-padding: var(--su-1);
-    --horizontal-padding: var(--su-3);
-    --font-size: var(--fs-s);
-    --with-icon-padding: var(--su-2);
-    --icon-margin: var(--su-1);
-  }
-
-  &--l {
-    --vertical-padding: var(--su-3);
-    --horizontal-padding: var(--su-5);
-    --with-icon-padding: var(--su-3);
-    --icon-margin: var(--su-2);
-  }
-
-  &--xl {
-    --vertical-padding: var(--su-4);
-    --horizontal-padding: var(--su-6);
-    --font-size: var(--fs-l);
-    --with-icon-padding: var(--su-5);
-    --icon-margin: var(--su-3);
-  }
-}
-
-.crayons-btn--secondary {
-  --bg: var(--button-secondary-bg);
-  --bg-hover: var(--button-secondary-bg-hover);
-  --color: var(--button-secondary-color);
-  --color-hover: var(--button-secondary-color-hover);
-  --bg-inverted: var(--button-secondary-inverted-bg);
-  --bg-inverted-hover: var(--button-secondary-inverted-bg-hover);
-  --color-inverted: var(--button-secondary-inverted-color);
-  --color-inverted-hover: var(--button-secondary-inverted-color-hover);
-}
-
-.crayons-btn--outlined {
-  --bg: var(--button-outlined-bg);
-  --bg-hover: var(--button-outlined-bg-hover);
-  --border: var(--button-outlined-border);
-  --border-hover: var(--button-outlined-border-hover);
-  --color: var(--button-outlined-color);
-  --color-hover: var(--button-outlined-color-hover);
-  --bg-inverted: var(--button-outlined-inverted-bg);
-  --bg-inverted-hover: var(--button-outlined-inverted-bg-hover);
-  --border-inverted: var(--button-outlined-inverted-border);
-  --border-inverted-hover: var(--button-outlined-inverted-border-hover);
-  --color-inverted: var(--button-outlined-inverted-color);
-  --color-inverted-hover: var(--button-outlined-inverted-color-hover);
-
-  --border-width: 2px;
-}
-
-.crayons-btn--danger {
-  --bg: var(--accent-danger);
-  --bg-hover: var(--accent-danger-darker);
-  --color: var(--base-inverted);
-  --color-hover: var(--base-inverted);
-  --bg-inverted: var(--accent-danger);
-  --bg-inverted-hover: var(--accent-danger-darker);
-  --color-inverted: var(--base-inverted);
-  --color-inverted-hover: var(--base-inverted);
-}
-
-.crayons-btn--ghost {
-  --bg: var(--button-ghost-bg);
-  --bg-hover: var(--button-ghost-bg-hover);
-  --color: var(--button-ghost-color);
-  --color-hover: var(--button-ghost-color-hover);
-  --shadow: none;
-  --shadow-hover: none;
-  --bg-inverted: var(--button-ghost-inverted-bg);
-  --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-  --color-inverted: var(--button-ghost-inverted-color);
-  --color-inverted-hover: var(--button-ghost-inverted-color-hover);
-
-  &-brand {
-    --bg: var(--button-ghost-bg);
-    --bg-hover: var(--button-ghost-bg-hover);
-    --color: var(--accent-brand);
-    --color-hover: var(--accent-brand-darker);
-    --shadow: none;
-    --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-brand-lighter);
-    --color-inverted-hover: var(--accent-brand-lighter);
-  }
-
-  &-success {
-    --bg: var(--button-ghost-bg);
-    --bg-hover: var(--button-ghost-bg-hover);
-    --color: var(--accent-success);
-    --color-hover: var(--accent-success-darker);
-    --shadow: none;
-    --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-success);
-    --color-inverted-hover: var(--accent-success-darker);
-  }
-
-  &-warning {
-    --bg: var(--button-ghost-bg);
-    --bg-hover: var(--button-ghost-bg-hover);
-    --color: var(--accent-warning);
-    --color-hover: var(--accent-warning-darker);
-    --shadow: none;
-    --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-warning);
-    --color-inverted-hover: var(--accent-warning-darker);
-  }
-
-  &-danger {
-    --bg: var(--button-ghost-bg);
-    --bg-hover: var(--button-ghost-bg-hover);
-    --color: var(--accent-danger);
-    --color-hover: var(--accent-danger-darker);
-    --shadow: none;
-    --shadow-hover: none;
-    --bg-inverted: var(--button-ghost-inverted-bg);
-    --bg-inverted-hover: var(--button-ghost-inverted-bg-hover);
-    --color-inverted: var(--accent-danger);
-    --color-inverted-hover: var(--accent-danger-lighter);
-  }
-}
-
-// Icon alone
-.crayons-btn--icon,
-.crayons-btn--icon-rounded {
-  --horizontal-padding: var(--su-2);
-  padding-left: calc(var(--horizontal-padding) - var(--border-width));
-  padding-right: calc(var(--horizontal-padding) - var(--border-width));
-  &.crayons-btn--s {
-    --horizontal-padding: var(--su-1);
-  }
-
-  &.crayons-btn--l {
-    --horizontal-padding: var(--su-3);
-  }
-
-  &.crayons-btn--xl {
-    --horizontal-padding: var(--su-4);
-  }
-}
-
-.crayons-btn--icon-rounded {
-  border-radius: 1000px;
-}
-
-// Icon Left
-.crayons-btn--icon-left {
-  padding-left: calc(var(--with-icon-padding) - var(--border-width));
-
-  .crayons-icon {
-    margin-right: var(--icon-margin);
-  }
-}
-
-// Icon Right
-.crayons-btn--icon-right {
-  padding-right: calc(var(--with-icon-padding) - var(--border-width));
-
-  .crayons-icon {
-    margin-left: var(--icon-margin);
-  }
-}
-
-// Grouped buttons
-.crayons-btn-group {
-  display: flex;
-
-  .crayons-btn {
-    border-radius: 0;
-
-    + .crayons-btn:not(.crayons-btn--outlined) {
-      box-shadow: var(--shadow), inset 1px 0 0 rgba(0, 0, 0, 0.1);
-      margin-left: -1px;
+  &--muted {
+    .crayons-tabs__item {
+      color: var(--tab-muted-color-hover);
 
       &:hover {
-        box-shadow: var(--shadow-hover), inset 0 0 0 rgba(0, 0, 0, 0.1);
+        background: var(--tab-muted-bg-hover);
+      }
+
+      &:after {
+        background: var(--tab-muted-highlight);
       }
     }
 
-    + .crayons-btn--outlined {
-      margin-left: calc(-1 * var(--border-width));
-    }
-
-    &:first-child {
-      border-top-left-radius: var(--radius);
-      border-bottom-left-radius: var(--radius);
-    }
-
-    &:last-child {
-      border-top-right-radius: var(--radius);
-      border-bottom-right-radius: var(--radius);
+    &.crayons-tabs--pills {
+      .crayons-tabs__item--current {
+        background: var(--tab-muted-pill-color-current);
+      }
     }
   }
 }
