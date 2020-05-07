@@ -9,10 +9,11 @@ class GithubTag
 
     def initialize(input)
       @repository_path, @options = parse_input(input)
-      @content = Github::Client.repository(repository_path)
     end
 
     def render
+      content = Github::Client.repository(repository_path)
+
       if show_readme?
         readme_html = fetch_readme(repository_path)
       end
@@ -25,6 +26,8 @@ class GithubTag
           readme_html: readme_html
         },
       )
+    rescue Github::Errors::NotFound, Github::Errors::InvalidRepository
+      raise_error
     end
 
     private
@@ -61,7 +64,7 @@ class GithubTag
       readme_html = Github::Client.readme(repository_path, accept: "application/vnd.github.html")
       readme = Github::Client.readme(repository_path)
       clean_relative_path!(readme_html, readme.download_url)
-    rescue Octokit::NotFound
+    rescue Github::Errors::NotFound
       nil
     end
 

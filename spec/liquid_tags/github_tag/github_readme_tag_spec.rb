@@ -4,6 +4,7 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
   describe "#id" do
     let(:url_repository) { "https://github.com/rust-lang/rust" }
     let(:url_repository_fragment) { "https://github.com/rust-lang/rust#contributing" }
+    let(:url_repository_not_found) { "https://github.com/abra/cadabra" }
     let(:path_repository) { "rust-lang/rust" }
     let(:repo_owner) { "rust-lang" }
 
@@ -27,7 +28,7 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
     it "rejects a non existing GitHub repository URL" do
       VCR.use_cassette("github_client_repository_not_found") do
         expect do
-          generate_tag(url_not_found)
+          generate_tag(url_repository_not_found)
         end.to raise_error(StandardError)
       end
     end
@@ -71,7 +72,7 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
       allow(Github::Client).to receive(:readme).and_raise(Github::Errors::NotFound)
 
       VCR.use_cassette("github_client_repository") do
-        template = generate_tag(url_repository, "no-readme").render
+        template = generate_tag(url_repository).render
         readme_class = "ltag-github-body"
         expect(template).not_to include(readme_class)
       end
