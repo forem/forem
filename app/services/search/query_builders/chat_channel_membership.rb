@@ -6,7 +6,6 @@ module Search
         channel_type
         status
         viewable_by
-        channel_discoverable
       ].freeze
 
       QUERY_KEYS = %i[
@@ -21,11 +20,11 @@ module Search
 
       def initialize(params:)
         @params = params.deep_symbolize_keys
-        @params[:viewable_by] = @params[:user_id]
+        @params[:viewable_by] = [@params[:user_id], SiteConfig.mascot_user_id]
 
         # TODO: @mstruve: When we want to allow people like admins to
         # search ALL memberships this will need to change
-        @params[:status] = "active"
+        @params[:status] = %w[active joining_request]
 
         build_body
       end
@@ -34,21 +33,19 @@ module Search
 
       def build_queries
         @body[:query] = {}
-        if @params[:user_id] == "all"
-          @body[:query][:bool] = { filter: [{ terms: { status: %w[active joining_request] } }] }
-          @body[:query][:bool][:must] = query_conditions
-          # TODO: Optimize it more to fetch uniq results
-        else
-          @body[:query][:bool] = { filter: filter_conditions }
-          @body[:query][:bool][:must] = query_conditions if query_keys_present?
-        end
+        @body[:query][:bool] = { filter: filter_conditions }
+        @body[:query][:bool][:must] = query_conditions if query_keys_present?
       end
 
       def filter_conditions
         FILTER_KEYS.map do |filter_key|
           next if @params[filter_key].blank? || @params[filter_key] == "all"
 
-          { term: { filter_key => @params[filter_key] } }
+          if %i[viewable_by status].include? filter_key
+            { terms: { filter_key => @params[filter_key] } }
+          else
+            { term: { filter_key => @params[filter_key] } }
+          end
         end.compact
       end
     end

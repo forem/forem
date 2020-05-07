@@ -34,6 +34,11 @@ class ChatChannelsController < ApplicationController
 
   def update
     if ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
+      if !chat_channel_params[:discoverable].to_i.zero?
+        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: @chat_channel.id, role: "member", status: "active")
+      else
+        ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
+      end
       flash[:settings_notice] = "Channel settings updated."
     else
       default_error_message = "Channel settings updation failed. Try again later."
