@@ -8,11 +8,11 @@
       <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control mx-3" %>
 
       <%= f.select(
-        :category_eq,
-        options_for_select(["", "vomit", "thumbsdown"], @q.category_eq),
-        {},
-        class: "custom-select mx-3",
-      ) %>
+            :category_eq,
+            options_for_select(["", "vomit", "thumbsdown"], @q.category_eq),
+            {},
+            class: "custom-select mx-3",
+          ) %>
 
       <%= f.submit "Search", class: "btn btn-secondary" %>
     <% end %>
@@ -32,13 +32,19 @@
     </tr>
   </thead>
   <tbody>
-    <% @negative_reactions.each do |action| %>
+    <% @negative_reactions.each do |reaction| %>
       <tr>
-        <td><%= action.id %></td>
-        <td><%= link_to action.user.username, internal_user_path(action.user_id) %></td>
-        <td><%= action.category %></td>
-        <td><%= link_to action.reactable&.title || action.reactable&.username, action.reactable.path %></td>
-        <td><%= action.created_at %></td>
+        <td><%= reaction.id %></td>
+        <td><%= link_to reaction.user.username, internal_user_path(reaction.user_id) %></td>
+        <td><%= reaction.category %></td>
+        <td>
+          <% if reaction.reactable_type == "Article" %>
+            <%= link_to reaction.reactable.title, reaction.reactable.path %>
+          <% else %>
+            <%= link_to reaction.reactable.username, reaction.reactable.path %>
+          <% end %>
+        </td>
+        <td><%= reaction.created_at %></td>
       </tr>
     <% end %>
   </tbody>
