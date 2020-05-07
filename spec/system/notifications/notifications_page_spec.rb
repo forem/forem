@@ -14,7 +14,14 @@ RSpec.describe "Notifications page", type: :system, js: true do
     expect(page).to have_text(/thanks i guess/)
   end
 
-  it "allows user to interact with replies" do
+  it "shows 1 notification and disappear after clicking it" do
+    visit "/"
+    expect(page).to have_css("span#notifications-number", text: "1")
+    click_link("notifications-link")
+    expect(page).not_to have_css("span#notifications-number", text: "1")
+  end
+
+  it "allows user to interact with replies" do # potentially flaky
     article = create(:article, user: alex)
     comment = create(:comment, commentable: article, user: alex)
     reply = create(:comment, commentable: article, user: leslie, parent: comment)
