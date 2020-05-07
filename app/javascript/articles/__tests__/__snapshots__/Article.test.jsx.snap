@@ -47,7 +47,7 @@ exports[`<Article /> component should render a podcast article 1`] = `
 
 exports[`<Article /> component should render a podcast episode 1`] = `
 <article
-  class="crayons-story false"
+  class="crayons-story cursor-pointer false"
   data-content-user-id={27683}
   data-featured-article="articles-49020"
   id={false}
@@ -215,7 +215,7 @@ exports[`<Article /> component should render a podcast episode 1`] = `
 
 exports[`<Article /> component should render a standard article 1`] = `
 <article
-  class="crayons-story false"
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
@@ -389,7 +389,7 @@ exports[`<Article /> component should render a standard article 1`] = `
 
 exports[`<Article /> component should render a user article 1`] = `
 <article
-  class="crayons-story false"
+  class="crayons-story cursor-pointer false"
   data-content-user-id={7955}
   data-featured-article="articles-24692"
   id={false}
@@ -499,7 +499,7 @@ exports[`<Article /> component should render a user article 1`] = `
 
 exports[`<Article /> component should render a video article 1`] = `
 <article
-  class="crayons-story false"
+  class="crayons-story cursor-pointer false"
   data-content-user-id={27683}
   data-featured-article="articles-49020"
   id={false}
@@ -684,7 +684,7 @@ exports[`<Article /> component should render a video article 1`] = `
 
 exports[`<Article /> component should render a video article with a flare tag 1`] = `
 <article
-  class="crayons-story false"
+  class="crayons-story cursor-pointer false"
   data-content-user-id={27683}
   data-featured-article="articles-49020"
   id={false}
@@ -869,7 +869,7 @@ exports[`<Article /> component should render a video article with a flare tag 1`
 
 exports[`<Article /> component should render as saved on reading list 1`] = `
 <article
-  class="crayons-story false"
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
@@ -1120,7 +1120,7 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
 
 exports[`<Article /> component should render with a flare tag 1`] = `
 <article
-  class="crayons-story false"
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
@@ -1294,7 +1294,7 @@ exports[`<Article /> component should render with a flare tag 1`] = `
 
 exports[`<Article /> component should render with a snippet result 1`] = `
 <article
-  class="crayons-story false"
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
@@ -1475,7 +1475,7 @@ exports[`<Article /> component should render with a snippet result 1`] = `
 
 exports[`<Article /> component should render with an organization 1`] = `
 <article
-  class="crayons-story false"
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
@@ -1673,7 +1673,7 @@ exports[`<Article /> component should render with an organization 1`] = `
 
 exports[`<Article /> component should render with comments 1`] = `
 <article
-  class="crayons-story false"
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
@@ -1924,7 +1924,7 @@ exports[`<Article /> component should render with comments 1`] = `
 
 exports[`<Article /> component should render with reactions 1`] = `
 <article
-  class="crayons-story false"
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
   data-featured-article="articles-62407"
   id={false}
