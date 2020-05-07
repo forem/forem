@@ -5,13 +5,13 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     @q = FeedbackMessage.includes(:reporter, :offender, :affected).
       order(created_at: :desc).
       ransack(params[:q])
-    @feedback_messages = @q.result.page(params[:page] || 1).per(5)
+    @feedback_messages = @q.result.limit(5).page(params[:page] || 1).per(5)
 
     @feedback_type = params[:state] || "abuse-reports"
     @status = params[:status] || "Open"
 
     @email_messages = EmailMessage.find_for_reports(@feedback_messages)
-    @new_articles = Article.published.includes(:user).
+    @new_articles = Article.published.select(:title, :user_id, :path).includes(:user).
       order(created_at: :desc).
       where("score > ? AND score < ?", -10, 8).
       limit(120)
@@ -22,6 +22,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     ).
       where("created_at > ?", 48.hours.ago).
       order(created_at: :desc).
+      select(:username, :name, :id).
       where.not("username LIKE ?", "%spam_%").
       limit(150)
 
@@ -79,20 +80,15 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   private
 
   def get_vomits
+    q = Reaction.includes(:user, :reactable).
+      select(:id, :user_id, :reactable_type, :reactable_id).
+      order(updated_at: :desc)
     if params[:status] == "Open" || params[:status].blank?
-      Reaction.where(category: "vomit", status: "valid").
-        includes(:user, :reactable).
-        order(updated_at: :desc)
+      q.where(category: "vomit", status: "valid")
     elsif params[:status] == "Resolved"
-      Reaction.where(category: "vomit", status: "confirmed").
-        includes(:user, :reactable).
-        order(updated_at: :desc).
-        limit(10)
+      q.where(category: "vomit", status: "confirmed").limit(10)
     else
-      Reaction.where(category: "vomit", status: "invalid").
-        includes(:user, :reactable).
-        order(updated_at: :desc).
-        limit(10)
+      q.where(category: "vomit", status: "invalid").limit(10)
     end
   end
 
