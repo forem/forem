@@ -1,3 +1,4 @@
+# Taken from https://github.com/pusher/rack-headers_filter
 module Rack
   class HeadersFilter
     SENSITIVE_HEADERS = %w[
