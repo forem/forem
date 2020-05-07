@@ -50,7 +50,9 @@
       <span></span>
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: "Checkmark") %>
     </button>
-    <span class="how-this-works-section">How does this work?</span>
+    <a href="<%= URL.url %>/community-moderation" target="_blank" rel="noopener">
+      <span class="how-this-works-section">How does this work?</span>
+    </a>
   </div>
   <div class="other-things-container">
     <header class="other-things">
@@ -106,7 +108,9 @@
             </button>
           <% end %>
         <% end %>
-        <span class="how-this-works-section">How does this work?</span>
+        <a href="<%= URL.url %>/community-moderation" target="_blank" rel="noopener">
+          <span class="how-this-works-section">How does this work?</span>
+        </a>
       </div>
     <% end %>
     <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
@@ -135,10 +139,12 @@
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
       </button>
       <% end %>
-      <span class="how-this-works-section">How does this work?</span>
+      <a href="<%= URL.url %>/community-moderation" target="_blank" rel="noopener">
+        <span class="how-this-works-section">How does this work?</span>
+      </a>
     </div>
   </div>
   <div class="bottom-actions">
-    <button type="button">Flag user</button>
+    <button id="open-flag-user-modal" type="button">Flag user</button>
   </div>
 </div>

@@ -79,6 +79,45 @@
   color: white;
 }
 
+.flag-user-modal {
+  .flag-user-modal-header {
+    padding-left: $su-4;
+
+    h2 {
+      font-weight: $fw-bold;
+      font-size: $fs-l;
+      line-height: $lh-tight;
+    }
+
+    .modal-header-close-icon {
+      border-radius: 100%;
+      background: var(--base-10);
+    }
+  }
+
+  .flag-user-modal-body {
+    padding: $su-6;
+
+    span {
+      font-size: $fs-base;
+      line-height: $lh-base;
+      color: var(--base-90);
+    }
+
+    .crayons-fields {
+      margin-top: $su-4;
+
+      .abuse-report-link {
+        margin: $su-4 0 0 $su-7;
+      }
+    }
+
+    .buttons-container {
+      margin-top: $su-8;
+    }
+  }
+}
+
 .video-player-header {
   background: $black;
   margin-top: 0;
