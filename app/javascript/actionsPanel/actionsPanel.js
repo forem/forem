@@ -135,14 +135,15 @@ function adjustTag(tagBtn) {
   })
     .then((response) => response.json())
     .then((json) => {
-      if (json.result === 'Success') {
+      if (json.status === 'Success') {
+        const result = json.result === 'addition' ? 'added' : 'removed';
         tagBtn.remove();
-        // eslint-disable-next-line no-alert
         toggleSubmitContainer();
-        alert(`#${tagBtn.dataset.tagName} was removed!`);
+        // eslint-disable-next-line no-alert
+        alert(`#${tagBtn.dataset.tagName} was ${result}!`);
       } else {
         // eslint-disable-next-line no-alert
-        alert(json.result);
+        alert(json.error);
       }
     });
 }

@@ -18,7 +18,7 @@ class TagAdjustmentsController < ApplicationController
     if tag_adjustment.save
       service.update_tags_and_notify
       respond_to do |format|
-        format.json { render json: { result: "Success" } }
+        format.json { render json: { status: "Success", result: tag_adjustment.adjustment_type } }
         format.html { redirect_to "#{URI.parse(article.path).path}/mod" }
       end
     else
@@ -31,7 +31,7 @@ class TagAdjustmentsController < ApplicationController
       @already_adjusted_tags = @adjustments.map(&:tag_name).join(", ")
       @allowed_to_adjust = @moderatable.class.name == "Article" && (current_user.any_admin? || @tag_moderator_tags.any?)
       respond_to do |format|
-        format.json { render json: { result: "Failure: #{tag_adjustment.errors.full_messages.to_sentence}" } }
+        format.json { render json: { error: "Failure: #{tag_adjustment.errors.full_messages.to_sentence}" } }
         format.html { render template: "moderations/mod" }
       end
     end
