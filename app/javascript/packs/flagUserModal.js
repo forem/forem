@@ -1,3 +1,5 @@
+import { request } from '../utilities/http';
+
 const modalSnackbarHTML = `
 <div class="crayons-snackbar">
   <div class="crayons-snackbar__item" id="vomit-all-snackbar">
@@ -125,23 +127,32 @@ export function initializeFlagUserModal() {
       const vomitAllOption = document.getElementById('vomit-all');
       const vomitAllSnackbar = document.getElementById('vomit-all-snackbar');
 
-      const flagUserApiCall = (body, snackbar) => {
-        getCsrfToken()
-          .then(sendFetch('reaction-creation', body))
-          .then((response) => {
-            if (response.status === 200) {
-              response.json().then(flashSnackbar(snackbar));
-            }
-          });
-      };
-
       if (vomitAllOption.checked) {
-        const formData = new FormData();
-        formData.append('reactable_type', vomitAllOption.dataset.reactableType);
-        formData.append('category', vomitAllOption.dataset.category);
-        formData.append('reactable_id', vomitAllOption.dataset.reactableId);
+        const body = JSON.stringify({
+          reactable_type: vomitAllOption.dataset.reactableType,
+          category: vomitAllOption.dataset.category,
+          reactable_id: vomitAllOption.dataset.reactableId,
+        });
 
-        flagUserApiCall(formData, vomitAllSnackbar);
+        request('/reactions', {
+          method: 'POST',
+          body,
+        }).then((response) =>
+          response
+            .json()
+            .then((json) => {
+              if (json.result === 'create') {
+                flashSnackbar(vomitAllSnackbar);
+              } else {
+                // eslint-disable-next-line no-alert
+                alert(json.error);
+              }
+            })
+            .catch((error) => {
+              // eslint-disable-next-line no-alert
+              alert(error);
+            }),
+        );
       }
     });
 }
