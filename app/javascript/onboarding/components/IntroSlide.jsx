@@ -76,7 +76,7 @@ class IntroSlide extends Component {
     if (text) {
       return (
         <div className="onboarding-main crayons-modal crayons-modal--m">
-          <div className="crayons-modal__box">
+          <div className="crayons-modal__box overflow-auto">
             <div className="onboarding-content terms-and-conditions-wrapper">
               <button
                 type="button"
@@ -98,7 +98,7 @@ class IntroSlide extends Component {
 
     return (
       <div className="onboarding-main introduction crayons-modal crayons-modal--m">
-        <div className="crayons-modal__box">
+        <div className="crayons-modal__box overflow-auto">
           <div className="onboarding-content">
             <figure>
               <img
