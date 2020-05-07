@@ -123,7 +123,8 @@ function adjustTag(tagBtn) {
       // TODO: change to tag ID
       tag_name: tagBtn.dataset.tagName,
       article_id: tagBtn.dataset.articleId,
-      adjustment_type: tagBtn.dataset.adjustmentType,
+      adjustment_type:
+        tagBtn.dataset.adjustmentType === 'subtract' ? 'removal' : 'addition',
       reason_for_adjustment: reasonForAdjustment,
     },
   };

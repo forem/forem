@@ -58,7 +58,7 @@
     <header class="other-things">
       <h1>Other things you can do</h1>
     </header>
-    <% unless !current_user.any_admin? && @moderatable_tags.size.zero? %>
+    <% if current_user.any_admin? || @should_show_adjust_tags %>
       <button class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
@@ -75,36 +75,26 @@
       </button>
       <div class="adjust-tags-options dropdown-options hidden">
         <% if current_user.any_admin? %>
-          <div class="add-tag-container" data-allowed-to-adjust="<%= @allowed_to_adjust %>">
-            <input class="crayons-textfield" type="text" placeholder="Add a tag">
-          </div>
-        <% elsif @moderatable.tag_list.size < 4 %>
-          <% @tag_moderator_tags.each do |tag| %>
-            <% unless @already_adjusted_tags.include?(tag.name) %>
-              <button class="adjustable-tag" type="button" data-adjustment-type="addition" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
-                <span class="num-sign">#</span><%= tag.name %>
-                <div class="circle centered-icon adjustment-icon">
-                  <%= inline_svg_tag("plus.svg", aria: false) %>
-                </div>
-              </button>
-            <% end %>
+          <% if @moderatable.tag_list.size < 4 %>
+            <div class="add-tag-container">
+              <input class="crayons-textfield" type="text" placeholder="Add a tag">
+            </div>
           <% end %>
-        <% end %>
-        <% if current_user.any_admin? %>
-          <% @moderatable_tags.each do |tag| %>
-            <button class="adjustable-tag" type="button" data-adjustment-type="removal" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
+          <% @moderatable.tags.each do |tag| %>
+            <button class="adjustable-tag" type="button" data-adjustment-type="subtract" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
               <span class="num-sign">#</span><%= tag.name %>
-              <div class="circle centered-icon adjustment-icon selected">
+              <div class="circle centered-icon adjustment-icon subtract">
                 <%= inline_svg_tag("subtract.svg", aria: false) %>
               </div>
             </button>
           <% end %>
-        <% elsif @moderatable_tags.size.positive? %>
+        <% else %>
           <% @tag_moderator_tags.each do |tag| %>
-            <button class="adjustable-tag" type="button" data-adjustment-type="removal" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
+            <% subtract_or_plus = @moderatable.tag_list.include?(tag.name) ? "subtract" : "plus" %>
+            <button class="adjustable-tag" type="button" data-adjustment-type="<%= subtract_or_plus %>" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
               <span class="num-sign">#</span><%= tag.name %>
-              <div class="circle centered-icon adjustment-icon selected">
-                <%= inline_svg_tag("subtract.svg", aria: false) %>
+              <div class="circle centered-icon adjustment-icon <%= subtract_or_plus %>">
+                <%= inline_svg_tag("#{subtract_or_plus}.svg", aria: false) %>
               </div>
             </button>
           <% end %>

@@ -500,11 +500,12 @@
           width: 24px;
           height: 24px;
           float: right;
-          background: var(--accent-success-darker);
           margin-right: 2px;
-          // selected means show removal
-          &.selected {
+          &.subtract {
             background: var(--accent-danger);
+          }
+          &.plus {
+            background: var(--accent-success-darker);
           }
           svg > path {
             fill: var(--base-inverted);
