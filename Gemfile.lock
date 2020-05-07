@@ -513,7 +513,7 @@ GEM
     parallel (1.19.1)
     parallel_tests (2.32.0)
       parallel
-    parser (2.7.1.1)
+    parser (2.7.1.2)
       ast (~> 2.4.0)
     patron (0.13.3)
     pg (1.2.3)
@@ -668,7 +668,7 @@ GEM
       activesupport
       rack (>= 1.1)
       rubocop (>= 0.72.0)
-    rubocop-rspec (1.38.1)
+    rubocop-rspec (1.39.0)
       rubocop (>= 0.68.1)
     ruby-prof (1.3.2)
     ruby-progressbar (1.10.1)
@@ -948,7 +948,7 @@ DEPENDENCIES
   rubocop (~> 0.82)
   rubocop-performance (~> 1.5)
   rubocop-rails (~> 2.5)
-  rubocop-rspec (~> 1.38)
+  rubocop-rspec (~> 1.39)
   ruby-prof (~> 1.3)
   rubyzip (~> 2.3)
   s3_direct_upload (~> 0.1)
