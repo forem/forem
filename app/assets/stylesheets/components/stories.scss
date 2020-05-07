@@ -2,7 +2,6 @@
 @import '../config/import';
 
 .crayons-story {
-  cursor: pointer; // since the whole card is clickable now.
   background: var(--card-bg);
   font-size: $fs-base; // Todo: remove when ready.
   box-shadow: $bold-shadow; // we will kill it at some point, don't worry. just not yet.
