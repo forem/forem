@@ -144,8 +144,8 @@ export function initializeFlagUserModal() {
               if (json.result === 'create') {
                 flashSnackbar(vomitAllSnackbar);
               } else {
-                // eslint-disable-next-line no-alert
-                alert(json.error);
+                // eslint-disable-next-line no-console
+                console.log(`Response from server: ${JSON.stringify(json)}`);
               }
             })
             .catch((error) => {
