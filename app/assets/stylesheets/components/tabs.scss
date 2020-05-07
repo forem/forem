@@ -2,16 +2,15 @@
 
 .crayons-tabs {
   // Setup
-  --border-width: 0px;
+  --border-width: 3px;
   --tab-vertical-padding: var(--su-3);
   --tab-horizontal-padding: var(--su-2);
   --font-size: var(--fs-base);
+  display: flex;
 
   @media (min-width: $breakpoint-s) {
     --tab-vertical-padding: var(--su-2);
   }
-
-  display: flex;
 
   &--scrollable {
     overflow-y: auto;
@@ -21,7 +20,6 @@
 
   &__item {
     padding: var(--tab-vertical-padding) var(--tab-horizontal-padding);
-
     display: inline-block;
     text-align: center;
     outline: none;
@@ -46,9 +44,9 @@
       left: 0;
       right: 0;
       bottom: 0;
-      height: 3px;
+      height: var(--border-width);
       content: '';
-      background: var(--tab-highlight);
+      background: var(--tab-bg-current);
       border-radius: var(--radius);
       transition: all var(--transition-props);
 
@@ -81,7 +79,7 @@
 
   &--pills {
     .crayons-tabs__item--current {
-      background: var(--tab-highlight);
+      background: var(--tab-bg-current);
       color: var(--tab-pill-color-current);
 
       &::after {
@@ -116,20 +114,22 @@
 
   &--muted {
     .crayons-tabs__item {
-      color: var(--tab-muted-color-hover);
+      color: var(--tab-muted-color);
 
       &:hover {
+        color: var(--tab-muted-color-hover);
         background: var(--tab-muted-bg-hover);
       }
 
       &:after {
-        background: var(--tab-muted-highlight);
+        background: var(--tab-muted-bg-current);
       }
     }
 
     &.crayons-tabs--pills {
       .crayons-tabs__item--current {
-        background: var(--tab-muted-pill-color-current);
+        color: var(--tab-muted-color-current);
+        background: var(--tab-muted-bg-current);
       }
     }
   }
