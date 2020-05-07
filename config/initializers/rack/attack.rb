@@ -28,4 +28,10 @@ class Rack::Attack
       request.env["HTTP_FASTLY_CLIENT_IP"].to_s
     end
   end
+
+  track("request_tracking") do |request|
+    if request.env["HTTP_FASTLY_CLIENT_IP"].present?
+      Honeycomb.add_field("fastly_client_ip", request.env["HTTP_FASTLY_CLIENT_IP"])
+    end
+  end
 end
