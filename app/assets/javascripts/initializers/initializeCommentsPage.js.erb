@@ -173,6 +173,7 @@ function replaceActionButts(el) {
 }
 
 function warmNewCommentsArea() {
+  if (window.location.pathname === "/notifications") { return }
   var path = '/stories/warm_comments'+ window.location.pathname
   window.fetch(path)
 }
