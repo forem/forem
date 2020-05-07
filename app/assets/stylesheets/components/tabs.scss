@@ -7,7 +7,7 @@
   --tab-horizontal-padding: var(--su-2);
   --font-size: var(--fs-base);
 
-  @media (min-width: $breakpoint-m) {
+  @media (min-width: $breakpoint-s) {
     --tab-vertical-padding: var(--su-2);
   }
 
