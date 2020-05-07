@@ -32,6 +32,19 @@ function toggleDropdown(type) {
   }
 }
 
+function correctReactedClasses(category) {
+  const upVote = document.querySelector("[data-category='thumbsup']");
+  const downVote = document.querySelector("[data-category='thumbsdown']");
+  const vomitVote = document.querySelector("[data-category='vomit']");
+
+  if (category === 'thumbsup'){
+    downVote.classList.remove('reacted');
+    vomitVote.classList.remove('reacted');
+  } else {
+    upVote.classList.remove('reacted');
+  }
+}
+
 function addReactionButtonListeners() {
   const butts = Array.from(
     document.querySelectorAll('.reaction-button, .reaction-vomit-button'),
@@ -40,12 +53,14 @@ function addReactionButtonListeners() {
   butts.forEach((butt) => {
     butt.addEventListener('click', (event) => {
       event.preventDefault();
-      butt.classList.add('reacted');
       const {
         reactableType: reactable_type,
         category,
         reactableId: reactable_id,
       } = butt.dataset;
+
+      correctReactedClasses(category);
+      butt.classList.toggle('reacted');
 
       request('/reactions', {
         method: 'POST',
