@@ -103,7 +103,7 @@ RSpec.describe "ArticlesCreate", type: :request do
       post articles_path, params: { article: { body_markdown: "123" } }
 
       expect(response).to have_http_status(:too_many_requests)
-      expected_retry_after = RateLimitChecker::RETRY_AFTER[:published_article_creation]
+      expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)
       expect(response.headers["Retry-After"]).to eq(expected_retry_after)
     end
   end

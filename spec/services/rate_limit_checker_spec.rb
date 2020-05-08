@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe RateLimitChecker, type: :labor do
+RSpec.describe RateLimitChecker, type: :service do
   let(:user) { create(:user) }
   let(:article) { create(:article, user: user) }
   let(:rate_limit_checker) { described_class.new(user) }
@@ -133,29 +133,19 @@ RSpec.describe RateLimitChecker, type: :labor do
 
     it "raises an error if limit_by_action is true" do
       allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
-      expect { rate_limit_checker.check_limit!(:image_upload) }.to raise_error(RateLimitChecker::LimitReached)
+      expect { rate_limit_checker.check_limit!(:image_upload) }.to raise_error(described_class::LimitReached)
     end
   end
 
-  describe ".track_image_uploads" do
-    it "calls the cache object correctly" do
+  describe "#track_limit_by_action" do
+    it "increments cache for action with retry as expiration" do
       allow(Rails.cache).to receive(:increment)
+      action = :image_upload
+      rate_limit_checker.track_limit_by_action(action)
 
-      rate_limit_checker.track_image_uploads
-
-      key = "#{user.id}_image_upload"
-      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: 30.seconds)
-    end
-  end
-
-  describe ".track_article_updates" do
-    it "calls the cache object correctly" do
-      allow(Rails.cache).to receive(:increment)
-
-      rate_limit_checker.track_article_updates
-
-      key = "#{user.id}_article_update"
-      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: 30.seconds)
+      key = "#{user.id}_#{action}"
+      expires_in = described_class::ACTION_LIMITERS.dig(action, :retry_after)
+      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: expires_in)
     end
   end
 

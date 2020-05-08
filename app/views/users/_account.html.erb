@@ -45,7 +45,7 @@
 <div class="crayons-card p-6 grid gap-6">
   <h2 class="color-accent-danger">Danger Zone</h2>
 
-  <% if @user.identities.size > 1 %>
+  <% if @user.identities.enabled.size > 1 %>
     <div class="grid gap-2">
       <h3>Remove OAuth Associations</h3>
       <p>You can remove one of your authentication methods. We'll still need one to authenticate you.</p>

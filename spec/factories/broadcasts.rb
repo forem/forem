@@ -17,13 +17,13 @@ FactoryBot.define do
     factory :twitter_connect_broadcast do
       title          { "Welcome Notification: twitter_connect" }
       type_of        { "Welcome" }
-      processed_html { "You're on a roll! 🎉 Let's connect your <a href='/settings'> Twitter account</a> to complete your identity so that we don't think you're a robot. 🤖" }
+      processed_html { "You're on a roll! 🎉 Do you have a Twitter account? Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>." }
     end
 
     factory :github_connect_broadcast do
       title          { "Welcome Notification: github_connect" }
       type_of        { "Welcome" }
-      processed_html { "You're on a roll! 🎉 Let's connect your <a href='/settings'> GitHub account</a> to complete your identity so that we don't think you're a robot. 🤖" }
+      processed_html { "You're on a roll! 🎉  Do you have a GitHub account? Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile." }
     end
 
     factory :customize_ux_broadcast do

@@ -577,7 +577,7 @@ class User < ApplicationRecord
   end
 
   def tag_keywords_for_search
-    employer_name.to_s + mostly_work_with.to_s + available_for.to_s
+    "#{employer_name}#{mostly_work_with}#{available_for}"
   end
 
   def search_score

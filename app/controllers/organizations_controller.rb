@@ -17,7 +17,7 @@ class OrganizationsController < ApplicationController
     @organization = Organization.new(organization_params)
     authorize @organization
     if @organization.save
-      rate_limiter.track_organization_creation
+      rate_limiter.track_limit_by_action(:organization_creation)
       @organization_membership = OrganizationMembership.create!(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
       flash[:settings_notice] = "Your organization was successfully created and you are an admin."
       redirect_to "/settings/organization/#{@organization.id}"

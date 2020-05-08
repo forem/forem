@@ -76,7 +76,7 @@ class ImageUploadsController < ApplicationController
     Array.wrap(images).map do |image|
       ArticleImageUploader.new.tap do |uploader|
         uploader.store!(image)
-        rate_limiter.track_image_uploads
+        rate_limiter.track_limit_by_action(:image_upload)
       end
     end
   end

@@ -26,11 +26,6 @@ RSpec.describe "UserSettings", type: :request do
           to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "allows users to visit the account page" do
-        get "/settings/account"
-        expect(response.body).to include("Danger Zone")
-      end
-
       it "displays content on ux tab properly" do
         get "/settings/ux"
         expect(response.body).to include("Style Customization")
@@ -48,20 +43,6 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include error_message
       end
 
-      it "does not render the ghost account email option if the user has no content" do
-        ghost_account_message = "If you would like to keep your content under the"
-        get "/settings/account"
-        expect(response.body).not_to include ghost_account_message
-      end
-
-      it "does render the ghost account email option if the user has content" do
-        ghost_account_message = "If you would like to keep your content under the"
-        create(:article, user: user)
-        user.update(articles_count: 1)
-        get "/settings/account"
-        expect(response.body).to include ghost_account_message
-      end
-
       it "renders the proper organization page" do
         first_org, second_org = create_list(:organization, 2)
         create(:organization_membership, user: user, organization: first_org)
@@ -74,6 +55,62 @@ RSpec.describe "UserSettings", type: :request do
         response_template = create(:response_template, user: user)
         get user_settings_path(tab: "response-templates", id: response_template.id)
         expect(response.body).to include "Editing a response template"
+      end
+    end
+
+    describe ":account" do
+      let(:ghost_account_message) { "If you would like to keep your content under the" }
+      let(:remove_oauth_section) { "Remove OAuth Associations" }
+      let(:user) { create(:user, :with_identity) }
+
+      before do
+        omniauth_mock_providers_payload
+        sign_in user
+      end
+
+      it "allows users to visit the account page" do
+        get user_settings_path(tab: "account")
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not render the ghost account email option if the user has no content" do
+        get user_settings_path(tab: "account")
+        expect(response.body).not_to include(ghost_account_message)
+      end
+
+      it "does render the ghost account email option if the user has content" do
+        create(:article, user: user)
+        user.update(articles_count: 1)
+
+        get user_settings_path(tab: "account")
+
+        expect(response.body).to include(ghost_account_message)
+      end
+
+      it "shows the 'Remove OAuth' section if a user has multiple enabled identities" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        providers = Authentication::Providers.available.first(2)
+        allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
+
+        get user_settings_path(tab: "account")
+        expect(response.body).to include(remove_oauth_section)
+      end
+
+      it "hides the 'Remove OAuth' section if a user has one enabled identity" do
+        provider = Authentication::Providers.available.first
+        allow(Authentication::Providers).to receive(:enabled).and_return([provider])
+        allow(user).to receive(:identities).and_return(user.identities.where(provider: provider))
+
+        get user_settings_path(tab: "account")
+        expect(response.body).not_to include(remove_oauth_section)
+      end
+
+      it "hides the 'Remove OAuth' section if a user has one enabled identity and one disabled" do
+        provider = Authentication::Providers.available.first
+        allow(Authentication::Providers).to receive(:enabled).and_return([provider])
+
+        get user_settings_path(tab: "account")
+        expect(response.body).not_to include(remove_oauth_section)
       end
     end
 

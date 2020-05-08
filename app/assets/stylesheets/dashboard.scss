@@ -197,7 +197,7 @@
     padding: 18px 0px 7px;
     padding-left: 10px;
     text-align: left;
-    font-family: $monospace;
+    font-family: var(--ff-accent);
     border: 1px solid $light-gray;
     display: inline-block;
     width: 90%;
@@ -548,7 +548,7 @@
 
     .dashboard-pageviews-indicator {
       display: inline-block;
-      font-family: $monospace;
+      font-family: var(--ff-accent);
       color: $dark-gray;
       background: white;
       text-align: center;

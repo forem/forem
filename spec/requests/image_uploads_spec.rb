@@ -122,7 +122,7 @@ RSpec.describe "ImageUploads", type: :request do
 
         expect(response).to have_http_status(:too_many_requests)
 
-        expected_retry_after = RateLimitChecker::RETRY_AFTER[:image_upload]
+        expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:image_upload, :retry_after)
         expect(response.headers["Retry-After"]).to eq(expected_retry_after)
       end
     end

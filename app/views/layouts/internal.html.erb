@@ -28,7 +28,7 @@
   <div class="d-flex">
     <nav class="sidebar-nav">
       <a href="/internal">
-        <img class="d-block mx-auto mt-3" src="<%= asset_path("rainbowdev.svg") %>" width="40" height="40" alt="DEV Logo">
+        <img class="d-block mx-auto mt-3" src="<%= cloudinary(SiteConfig.primary_sticker_image_url, 190) %>" width="40" height="40" alt="DEV Logo">
       </a>
         <%= render "internal/shared/navbar" %>
     </nav>
