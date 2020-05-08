@@ -17,7 +17,7 @@ namespace :temporary do
       }
       info.each do |slug, (description, color)|
         ClassifiedListingCategory.
-          where(slug:slug).
+          where(slug: slug).
           update(social_preview_description: description, social_preview_color: color)
       end
     end

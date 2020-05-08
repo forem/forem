@@ -71,12 +71,13 @@
 // Checkboxes, Radios
 .crayons-checkbox,
 .crayons-radio {
+  @extend %form-styling;
   width: 1.125em;
   height: 1.125em;
   cursor: pointer;
   background-position: center center;
   vertical-align: middle;
-  @extend %form-styling;
+  flex-shrink: 0;
 
   &:hover {
     @extend %form-styling-hover;

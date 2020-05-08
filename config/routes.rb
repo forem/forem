@@ -176,7 +176,11 @@ Rails.application.routes.draw do
   resources :feedback_messages, only: %i[index create]
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
-  resources :follows, only: %i[show create update]
+  resources :follows, only: %i[show create update] do
+    collection do
+      get "/bulk_show", to: "follows#bulk_show"
+    end
+  end
   resources :image_uploads, only: [:create]
   resources :blocks
   resources :notifications, only: [:index]
