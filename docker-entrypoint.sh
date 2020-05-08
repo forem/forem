@@ -5,14 +5,14 @@
 # @TODO - add as scripts instead within /bin? - this will help auto fill?
 #
 echo "" > ~/.bashrc
-echo "alias devto-setup='cd /usr/src/app/ && gem install bundler && bundle install --jobs 20 --retry 5 && yarn install && bin/setup'" >> ~/.bashrc
-echo "alias devto-migrate='cd /usr/src/app/ && bin/rails db:migrate'" >> ~/.bashrc
-echo "alias devto-start='cd /usr/src/app/ && bundle exec rails server -b 0.0.0.0 -p 3000'" >> ~/.bashrc
+echo "alias devto-setup='cd /opt/apps/devto && gem install bundler && bundle install --jobs 20 --retry 5 && yarn install && bin/setup'" >> ~/.bashrc
+echo "alias devto-migrate='cd /opt/apps/devto && bin/rails db:migrate'" >> ~/.bashrc
+echo "alias devto-start='cd /opt/apps/devto && bundle exec rails server -b 0.0.0.0 -p 3000'" >> ~/.bashrc
 
 #
 # Lets ensure we are in the correct workspace
 #
-cd /usr/src/app/
+cd /opt/apps/devto
 
 #
 # Lets handle "DEV" RUN_MODE
@@ -23,7 +23,7 @@ then
 	echo "> [dev.to/docker-entrypoint.sh] DEV mode"
 	echo "> "
 	echo "> Welcome to the dev.to, DEVELOPMENT container, for convenience your repository"
-	echo "> should be mounted onto '/usr/src/app/', and port 3000 should be forwarded to your host machine"
+	echo "> should be mounted onto '/opt/apps/devto', and port 3000 should be forwarded to your host machine"
 	echo "> "
 	echo "> In addition the following alias commands has been preconfigured to get you up and running quickly"
 	echo "> "
