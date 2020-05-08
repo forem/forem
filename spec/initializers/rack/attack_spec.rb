@@ -96,4 +96,13 @@ describe Rack::Attack, type: :request, throttle: true do
       end
     end
   end
+
+  describe "request_tracking" do
+    it "adds fastly client IP to Honeycomb span" do
+      allow(Honeycomb).to receive(:add_field)
+      get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+
+      expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8")
+    end
+  end
 end

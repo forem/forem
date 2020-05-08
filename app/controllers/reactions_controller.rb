@@ -1,5 +1,6 @@
 class ReactionsController < ApplicationController
   before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
+  before_action :check_limit, only: [:create]
   after_action :verify_authorized
 
   NEG_ARTICLE_REACTIONS = %w[thumbsdown vomit].freeze
@@ -79,6 +80,7 @@ class ReactionsController < ApplicationController
       reaction = build_reaction(category)
 
       if reaction.save
+        rate_limiter.track_limit_by_action(:reaction_creation)
         Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
 
         Notification.send_reaction_notification(reaction, reaction.target_user)
@@ -156,5 +158,9 @@ class ReactionsController < ApplicationController
     end
 
     result
+  end
+
+  def check_limit
+    rate_limit!(:reaction_creation)
   end
 end

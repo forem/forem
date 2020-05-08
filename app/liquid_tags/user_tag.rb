@@ -13,7 +13,7 @@ class UserTag < LiquidTagBase
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        user: @user,
+        user: @user.decorate,
         follow_button: @follow_button,
         user_colors: @user_colors
       },

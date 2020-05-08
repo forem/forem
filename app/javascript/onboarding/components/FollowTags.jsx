@@ -101,7 +101,7 @@ class FollowTags extends Component {
 
     return (
       <div className="onboarding-main crayons-modal">
-        <div className="crayons-modal__box">
+        <div className="crayons-modal__box overflow-auto">
           <Navigation
             prev={prev}
             next={this.handleComplete}

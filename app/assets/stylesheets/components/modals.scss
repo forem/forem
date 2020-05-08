@@ -2,17 +2,17 @@
 
 .crayons-modal {
   --modal-max-width: 768px;
-  --modal-body-padding: #{$su-2};
-  --modal-header-padding: #{$su-2};
+  --modal-body-padding: var(--su-2);
+  --modal-header-padding: var(--su-2);
 
   @media (min-width: $breakpoint-s) {
-    --modal-body-padding: #{$su-4};
-    --modal-header-padding: #{$su-4};
+    --modal-body-padding: var(--su-4);
+    --modal-header-padding: var(--su-4);
   }
 
   @media (min-width: $breakpoint-m) {
-    --modal-body-padding: #{$su-7};
-    --modal-header-padding: #{$su-4} #{$su-4} #{$su-4} #{$su-7};
+    --modal-body-padding: var(--su-7);
+    --modal-header-padding: var(--su-4) var(--su-4) var(--su-4) var(--su-7);
   }
 
   position: fixed;
@@ -57,7 +57,7 @@
         $border: var(--card-color),
         $color: var(--card-color)
       );
-      max-height: calc(100% - #{$su-6});
+      max-height: calc(100% - var(--su-6));
       height: auto;
       width: 90%;
     }

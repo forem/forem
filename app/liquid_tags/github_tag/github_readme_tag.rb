@@ -3,71 +3,79 @@ require "nokogiri"
 class GithubTag
   class GithubReadmeTag
     PARTIAL = "liquids/github_readme".freeze
+    GITHUB_DOMAIN_REGEXP = %r{.*github.com/}.freeze
+    OPTION_NO_README = "no-readme".freeze
+    VALID_OPTIONS = [OPTION_NO_README].freeze
 
-    attr_reader :client, :content, :options, :readme_html
-
-    def initialize(link)
-      parsed_link = parse_link(link)
-      @options = parse_options(link)
-      @client = Octokit::Client.new(access_token: token)
-      @content = client.repository(parsed_link)
-      @readme_html = fetch_readme(parsed_link)
+    def initialize(input)
+      @repository_path, @options = parse_input(input)
     end
 
     def render
+      content = Github::Client.repository(repository_path)
+
+      if show_readme?
+        readme_html = fetch_readme(repository_path)
+      end
+
       ActionController::Base.new.render_to_string(
         partial: PARTIAL,
         locals: {
           content: content,
-          show_readme: show_readme? && readme_html.present?,
+          show_readme: readme_html.present?,
           readme_html: readme_html
         },
       )
+    rescue Github::Errors::NotFound, Github::Errors::InvalidRepository
+      raise_error
     end
 
     private
 
-    def parse_link(link)
-      link = sanitize_link(link)
-      parsed_link = link.split(" ").first.delete(" ")
-      raise_error if parsed_link.split("/").length > 2
+    attr_reader :repository_path, :options, :content
 
-      parsed_link
+    def parse_input(input)
+      sanitized_input = sanitize_input(input)
+
+      path, *options = sanitized_input.split(" ")
+
+      validate_options!(*options)
+
+      path.gsub!(%r{/\z}, "") # remove optional trailing forward slash
+      repository_path = URI.parse(path)
+      repository_path.query = repository_path.fragment = nil
+
+      [repository_path.normalize.to_s, options]
     end
 
-    def valid_option(option)
-      option.match(/no-readme/)
-    end
+    def validate_options!(*options)
+      return if options.empty?
+      return if options.all? { |o| VALID_OPTIONS.include?(o) }
 
-    def parse_options(link)
-      opts = sanitize_link(link)
-      _, *options = opts.split(" ")
-
-      validated_options = options.map { |option| valid_option(option) }.reject(&:nil?)
-      raise StandardError, "GitHub tag: `#{link}`: Invalid option - did you mean `no-readme`?" unless options.empty? || validated_options.any?
-
-      options
+      message = "GitHub tag: invalid options: #{options - VALID_OPTIONS} - supported options: #{VALID_OPTIONS}"
+      raise StandardError, message
     end
 
     def show_readme?
-      options.none? "no-readme"
+      options.none?(OPTION_NO_README)
     end
 
-    def fetch_readme(link)
-      readme_html = client.readme(link, accept: "application/vnd.github.html")
-      readme = client.readme(link)
+    def fetch_readme(repository_path)
+      readme_html = Github::Client.readme(repository_path, accept: "application/vnd.github.html")
+      readme = Github::Client.readme(repository_path)
       clean_relative_path!(readme_html, readme.download_url)
-    rescue Octokit::NotFound => _e
+    rescue Github::Errors::NotFound
       nil
     end
 
-    def sanitize_link(link)
-      link = ActionController::Base.helpers.strip_tags(link)
-      link.gsub(/.*github\.com\//, "")
+    def sanitize_input(input)
+      ActionController::Base.helpers.strip_tags(input).
+        gsub(GITHUB_DOMAIN_REGEXP, "").
+        strip
     end
 
     def raise_error
-      raise StandardError, "Invalid Github Repo link"
+      raise StandardError, "Invalid GitHub repository path or URL"
     end
 
     def clean_relative_path!(readme_html, url)
@@ -79,14 +87,6 @@ class GithubTag
         element.attributes[attribute].value = url.gsub(/\/README.md/, "") + "/" + path if path[0, 4] != "http"
       end
       readme.to_html
-    end
-
-    def token
-      if Rails.env.test?
-        "REPLACE WITH VALID FOR VCR"
-      else
-        Identity.where(provider: "github").last(250).sample.token
-      end
     end
   end
 end
