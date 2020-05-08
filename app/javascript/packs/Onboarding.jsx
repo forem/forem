@@ -2,7 +2,7 @@ import { h, render } from 'preact';
 import { getUserDataAndCsrfToken } from '../chat/util';
 import getUnopenedChannels from '../src/utils/getUnopenedChannels';
 
-HTMLDocument.prototype.ready = new Promise(resolve => {
+HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
     return resolve();
   }
@@ -11,11 +11,19 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
 });
 
 function renderPage() {
+  const dataElement = document.getElementById('onboarding-container');
+  const communityConfig = {
+    communityName: dataElement.dataset.communityName,
+    communityDescription: dataElement.dataset.communityDescription,
+  };
   import('../onboarding/Onboarding')
     .then(({ default: Onboarding }) => {
-      render(<Onboarding />, document.getElementById('onboarding-container'));
+      render(
+        <Onboarding communityConfig={communityConfig} />,
+        document.getElementById('onboarding-container'),
+      );
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line no-console
       console.error('Unable to load onboarding', error);
     });
@@ -30,7 +38,7 @@ document.ready.then(
       getUnopenedChannels();
       renderPage();
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line no-console
       console.error('Error getting user and CSRF Token', error);
     }),
