@@ -4,13 +4,14 @@ import Textarea from 'preact-textarea-autosize';
 import { Toolbar } from './Toolbar';
 
 export const Body = ({
-  onChange, 
-  defaultValue, 
-  switchHelpContext
+  onChange,
+  defaultValue,
+  switchHelpContext,
+  version,
 }) => {
   return (
     <div className="crayons-article-form__body">
-      <Toolbar />
+      <Toolbar version={version} />
 
       <Textarea
         className="crayons-textfield crayons-article-form__body__field crayons-textfield--ghost fs-l ff-accent"
@@ -25,12 +26,13 @@ export const Body = ({
       />
     </div>
   );
-}
+};
 
 Body.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
   switchHelpContext: PropTypes.func.isRequired,
+  version: PropTypes.string.isRequired,
 };
 
 Body.displayName = 'Body';

@@ -98,11 +98,24 @@ export class Help extends Component {
         <a href="#frontmatter" onClick={this.toggleFrontmatter}>
           Jekyll front matter
         </a>
-        . You can also use
+        . You can also use 
+        {' '}
         <em>rich+markdown</em>
         {' '}
         editor you can find in
-        <a href="/settings/ux">UX settings</a>
+        {' '}
+        <a href="/settings/ux">
+          UX settings
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            className="crayons-icon"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M10.667 8v1.333H7.333v7.334h7.334v-3.334H16v4a.666.666 0 01-.667.667H6.667A.666.666 0 016 17.333V8.667A.667.667 0 016.667 8h4zM18 6v5.333h-1.333V8.275l-5.196 5.196-.942-.942 5.194-5.196h-3.056V6H18z" />
+          </svg>
+        </a>
         .
       </div>
     );

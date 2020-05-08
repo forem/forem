@@ -16,7 +16,7 @@ export const Form = ({
   mainImage,
   onMainImageUrlChange,
   switchHelpContext,
-  errors
+  errors,
 }) => {
   return (
     <div className="crayons-article-form__main__content crayons-card">
@@ -39,10 +39,11 @@ export const Form = ({
         onChange={bodyOnChange}
         hasFocus={bodyHasFocus}
         switchHelpContext={switchHelpContext}
+        version={version}
       />
     </div>
   );
-}
+};
 
 Form.propTypes = {
   titleDefaultValue: PropTypes.string.isRequired,

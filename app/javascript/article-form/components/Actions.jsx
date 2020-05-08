@@ -52,36 +52,34 @@ export class Actions extends Component {
       </svg>
     );
 
-    return (
-      submitting ? (
-        <div className="crayons-article-form__footer">
-          <Button
-            className="mr-2 whitespace-nowrap"
-            onClick={onPublish}
-            disabled
-          >
-            {published && version === 'v2'
-              ? 'Publishing...'
-              : `Saving ${version === 'v2' ? 'draft' : ''}...`}
-          </Button>
-        </div>
-      ) : (
-        <div className="crayons-article-form__footer">
-          <Button className="mr-2 whitespace-nowrap" onClick={onPublish}>
-            {published || version === 'v1' ? 'Save changes' : 'Publish'}
-          </Button>
+    return submitting ? (
+      <div className="crayons-article-form__footer">
+        <Button className="mr-2 whitespace-nowrap" onClick={onPublish} disabled>
+          {published && version === 'v2'
+            ? 'Publishing...'
+            : `Saving ${version === 'v2' ? 'draft' : ''}...`}
+        </Button>
+      </div>
+    ) : (
+      <div className="crayons-article-form__footer">
+        <Button className="mr-2 whitespace-nowrap" onClick={onPublish}>
+          {published || version === 'v1' ? 'Save changes' : 'Publish'}
+        </Button>
 
-          {published || version === 'v1' ? (
-            ''
-          ) : (
-            <Button
-              variant="secondary"
-              className="mr-2 whitespace-nowrap"
-              onClick={onSaveDraft}
-            >
-              Save <span className="hidden s:inline">draft</span>
-            </Button>
-          )}
+        {published || version === 'v1' ? (
+          ''
+        ) : (
+          <Button
+            variant="secondary"
+            className="mr-2 whitespace-nowrap"
+            onClick={onSaveDraft}
+          >
+            Save 
+            {' '}
+            <span className="hidden s:inline">draft</span>
+          </Button>
+        )}
+        {version === 'v2' && (
           <div className="s:relative">
             <Button
               variant="ghost"
@@ -99,18 +97,20 @@ export class Actions extends Component {
               />
             )}
           </div>
-          {edited && (
-            <Button
-              variant="ghost"
-              onClick={onClearChanges}
-              className="whitespace-nowrap fw-normal"
-              size="s"
-            >
-              Revert <span className="hidden s:inline">new changes</span>
-            </Button>
-          )}
-        </div>
-      )
+        )}
+        {edited && (
+          <Button
+            variant="ghost"
+            onClick={onClearChanges}
+            className="whitespace-nowrap fw-normal"
+            size="s"
+          >
+            Revert 
+            {' '}
+            <span className="hidden s:inline">new changes</span>
+          </Button>
+        )}
+      </div>
     );
   }
 }
