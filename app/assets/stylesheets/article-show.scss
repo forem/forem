@@ -38,7 +38,7 @@
   height: calc(100vh - 56px);
   z-index: 200;
   transform: translateX(360px);
-  transition: $transition-props;
+  transition: var(--transition-props);
   &.showing {
     transform: initial;
   }
