@@ -13,7 +13,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/week" }
 
       it "shows correct articles count" do
-        expect(page).to have_selector(".crayons-story", visible: true, count: 2)
+        expect(page).to have_selector(".crayons-story", visible: :visible, count: 2)
       end
 
       it "shows the main article" do
@@ -32,7 +32,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/month" }
 
       it "shows correct articles count" do
-        expect(page).to have_selector(".crayons-story", visible: true, count: 3)
+        expect(page).to have_selector(".crayons-story", visible: :visible, count: 3)
       end
 
       it "shows the main article" do
@@ -52,7 +52,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/year" }
 
       it "shows correct articles count" do
-        expect(page).to have_selector(".crayons-story", visible: true, count: 4)
+        expect(page).to have_selector(".crayons-story", visible: :visible, count: 4)
       end
 
       it "shows the main article" do
@@ -73,7 +73,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/infinity" }
 
       it "shows correct articles and cta count" do
-        expect(page).to have_selector(".crayons-story", visible: true, count: 5)
+        expect(page).to have_selector(".crayons-story", visible: :visible, count: 5)
         expect(page).to have_selector(".feed-cta", count: 1)
       end
 
@@ -96,7 +96,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/latest" }
 
       it "shows correct articles and cta count" do
-        expect(page).to have_selector(".crayons-story", visible: true, count: 5)
+        expect(page).to have_selector(".crayons-story", visible: :visible, count: 5)
         expect(page).to have_selector(".feed-cta", count: 1)
       end
 
@@ -125,7 +125,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     end
 
     it "shows correct articles count" do
-      expect(page).to have_xpath("//div[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 1)
+      expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 1)
     end
 
     it "shows the main article" do
@@ -143,7 +143,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/month" }
 
       it "shows correct articles count" do
-        expect(page).to have_xpath("//div[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 2)
+        expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 2)
       end
 
       it "shows the main article" do
@@ -163,7 +163,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/year" }
 
       it "shows correct articles count" do
-        expect(page).to have_xpath("//div[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 3)
+        expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 3)
       end
 
       it "shows the main article" do
@@ -184,7 +184,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/infinity" }
 
       it "shows correct articles count" do
-        expect(page).to have_xpath("//div[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 4)
+        expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 4)
       end
 
       it "shows the main article" do
@@ -206,7 +206,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/latest" }
 
       it "shows correct articles" do
-        expect(page).to have_xpath("//div[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 4)
+        expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 4)
       end
 
       it "shows the main article" do
