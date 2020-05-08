@@ -23,7 +23,6 @@ RSpec.describe "StoriesShow", type: :request do
     it "renders signed-in title tag for signed-in user" do
       sign_in user
       get article.path
-      p community_qualified_name
       expect(response.body).to include "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
     end
 
