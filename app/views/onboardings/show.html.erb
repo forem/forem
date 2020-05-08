@@ -12,7 +12,7 @@
   }
 </style>
 
-<div id="onboarding-container">
+<div id="onboarding-container" data-community-name="<%= community_name %>" data-community-description="<%= SiteConfig.community_description %>">
   <%= javascript_packs_with_chunks_tag "Onboarding", defer: true %>
 </div>
 
