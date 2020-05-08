@@ -60,6 +60,10 @@
   transition: 0.3s all ease;
   background-color: var(--base-90);
   border-radius: 50px;
+
+  @media (max-width: $breakpoint-m) {
+    bottom: 90px;
+  }
 }
 
 .actions-menu-svg {
