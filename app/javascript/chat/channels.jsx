@@ -28,12 +28,11 @@ const Channels = ({
     .filter(
       (channel) =>
         (channel.viewable_by === currentUserId &&
-          channel.status === 'joining_request') ||
+          channel.status === 'joining_request' &&
+          filterQuery) ||
         channel.viewable_by !== currentUserId,
     )
-    .filter((channel) =>
-      !activeChannelIds.includes(channel.chat_channel_id),
-    )
+    .filter((channel) => !activeChannelIds.includes(channel.chat_channel_id))
     .map((channel) => {
       return (
         <ChannelButton
