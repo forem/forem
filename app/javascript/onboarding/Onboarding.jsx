@@ -73,5 +73,8 @@ export default class Onboarding extends Component {
 }
 
 Onboarding.propTypes = {
-  communityConfig: PropTypes.shape.isRequired,
+  communityConfig: PropTypes.shape({
+    communityName: PropTypes.string.isRequired,
+    communityDescription: PropTypes.string.isRequired
+  })
 };
