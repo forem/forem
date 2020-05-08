@@ -15,11 +15,19 @@ FactoryBot.define do
     user
     association :reactable, factory: :article
     category { "thumbsdown" }
+
+    trait :user do
+      association :reactable, factory: :user
+    end
   end
 
   factory :vomit_reaction, class: "Reaction" do
     user
     association :reactable, factory: :article
     category { "vomit" }
+
+    trait :user do
+      association :reactable, factory: :user
+    end
   end
 end
