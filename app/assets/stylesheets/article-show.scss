@@ -61,7 +61,7 @@
   background-color: var(--base-90);
   border-radius: 50px;
 
-  @media (max-width: $breakpoint-s) {
+  @media (max-width: $breakpoint-m) {
     bottom: 90px;
   }
 }
