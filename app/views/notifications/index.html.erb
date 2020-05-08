@@ -29,7 +29,7 @@
             <% if @organizations.present? %>
               <header class="crayons-card__subheader">
                 <h4 class="crayons-card__subheader__title">
-                  @<%= @user.username %>
+                  <%= @user.name %>
                 </h4>
               </header>
             <% end %>
@@ -66,7 +66,7 @@
               <% @organizations.each do |org| %>
                 <header class="crayons-card__subheader">
                   <h4 class="crayons-card__subheader__title">
-                    @<%= org.slug %>
+                    <%= org.name %>
                   </h4>
                 </header>
                 <ul class="notifications-filter__list">
@@ -99,9 +99,9 @@
         <% if @organizations.present? %>
           <div class="p-2 s:inline-flex">
             <select onChange="window.location.href=this.value" class="crayons-select">
-              <option value="/notifications"><%= @user.username %></option>
+              <option value="/notifications"><%= @user.name %></option>
               <% @organizations.each do |org| %>
-                <option value="/notifications/org/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>>@<%= org.slug %></option>
+                <option value="/notifications/org/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %></option>
               <% end %>
             </select>
           </div>
