@@ -10,16 +10,7 @@
       <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
 
       <div class="crayons-field__label">
-        <span class="hidden s:inline-block">Write a new post</span>
-        <% if organizations && organizations.size > 0 %>
-          <span>
-            <span class="hidden s:inline-block">&nbsp;under:</span>
-            <span class="s:hidden">&nbsp;Organization:</span>
-            <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto ml-2 mt-0">
-              <%= options_for_select({ "None" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
-            </select>
-          </span>
-        <% end %>
+        <span class="hidden s:inline-block">Write a new post</span><% if organizations && organizations.size > 0 %><select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto ml-2 mt-0"><%= options_for_select({ "Personal" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %></select><% end %>
       </div>
 
       <div class="crayons-article-form__tabs ml-auto">

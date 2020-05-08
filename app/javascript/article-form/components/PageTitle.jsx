@@ -7,18 +7,15 @@ export const PageTitle = ({organizations, organizationId, onToggle}) => {
     <div className="crayons-field__label">
       <span className="hidden s:inline-block">Write a new post</span>
       {organizations && organizations.length > 0 && (
-        <span>
-          <span className="hidden s:inline-block">&nbsp;under:</span>
-          <span className="s:hidden">&nbsp;Organization:</span>
-          <OrganizationPicker
-            name="article[organization_id]"
-            id="article_publish_under_org"
-            className="crayons-select w-auto ml-2 mt-0"
-            organizations={organizations}
-            organizationId={organizationId}
-            onToggle={onToggle}
-          />
-        </span>
+        <OrganizationPicker
+          name="article[organization_id]"
+          id="article_publish_under_org"
+          className="crayons-select w-auto ml-2 mt-0"
+          organizations={organizations}
+          organizationId={organizationId}
+          onToggle={onToggle}
+          emptyLabel="Personal"
+        />
       )}
     </div>
   );

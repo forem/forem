@@ -110,7 +110,10 @@
 .crayons-article-form {
   &__logo {
     display: flex;
-    margin-right: var(--layout-gap);
+    margin-right: var(--su-1);
+    @media (min-width: $breakpoint-s) {
+      margin-right: var(--layout-gap);
+    }
 
     .logo {
       width: 50px;
@@ -123,7 +126,7 @@
   }
 
   &__close {
-    margin-left: var(--su-4);
+    margin-left: var(--su-1);
     @media (min-width: $breakpoint-l) {
       position: absolute;
       right: var(--su-2);
