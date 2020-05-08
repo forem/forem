@@ -423,7 +423,7 @@ class StoriesController < ApplicationController
       "url": URL.organization(@organization),
       "image": ProfileImage.new(@organization).get(width: 320),
       "name": @organization.name,
-      "description": @user.summary.presence || "404 bio not found"
+      "description": @organization.summary.presence || "404 bio not found"
     }
   end
 
