@@ -91,7 +91,7 @@ preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
   <div class="onboarding-main crayons-modal">
-    <div class="crayons-modal__box">
+    <div class="crayons-modal__box overflow-auto">
       <nav class="onboarding-navigation">
         <div class="navigation-content">
           <div class="back-button-container">
@@ -201,7 +201,7 @@ preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
   <div class="onboarding-main crayons-modal">
-    <div class="crayons-modal__box">
+    <div class="crayons-modal__box overflow-auto">
       <nav class="onboarding-navigation">
         <div class="navigation-content">
           <div class="back-button-container">
@@ -339,7 +339,7 @@ preact-render-spy (1 nodes)
 -------
 <main class="onboarding-body">
   <div class="onboarding-main introduction crayons-modal crayons-modal--m">
-    <div class="crayons-modal__box">
+    <div class="crayons-modal__box overflow-auto">
       <div class="onboarding-content">
         <figure>
           <img

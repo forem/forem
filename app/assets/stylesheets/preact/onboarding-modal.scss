@@ -376,9 +376,13 @@
   }
 
   .introduction-title {
-    font-size: var(--fs-5xl);
+    font-size: var(--fs-3xl);
     font-weight: var(--fw-heavy);
     line-height: var(--lh-tight);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-5xl);
+    }
   }
 
   .introduction-subtitle {
