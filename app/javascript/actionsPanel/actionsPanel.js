@@ -37,7 +37,7 @@ function correctReactedClasses(category) {
   const downVote = document.querySelector("[data-category='thumbsdown']");
   const vomitVote = document.querySelector("[data-category='vomit']");
 
-  if (category === 'thumbsup'){
+  if (category === 'thumbsup') {
     downVote.classList.remove('reacted');
     vomitVote.classList.remove('reacted');
   } else {
@@ -136,11 +136,35 @@ function adjustTag(tagBtn) {
     .then((response) => response.json())
     .then((json) => {
       if (json.status === 'Success') {
-        const result = json.result === 'addition' ? 'added' : 'removed';
+        const { tagName } = tagBtn.dataset;
         tagBtn.remove();
         toggleSubmitContainer();
+
+        if (json.result === 'addition') {
+          const articleTagsContainer = window.parent.document.getElementsByClassName(
+            'tags',
+          )[0];
+
+          const newTag = document.createElement('a');
+          newTag.innerText = `#${tagName}`;
+          newTag.setAttribute('class', 'tag');
+          newTag.setAttribute('href', `/t/${tagName}`);
+          newTag.style = `background-color: ${json.colors.bg}; color: ${json.colors.text};`;
+
+          articleTagsContainer.appendChild(newTag);
+        } else {
+          const tagOnArticle = window.parent.document.querySelector(
+            `.tag[href="/t/${tagName}"]`,
+          );
+          tagOnArticle.remove();
+        }
+
         // eslint-disable-next-line no-alert
-        alert(`#${tagBtn.dataset.tagName} was ${result}!`);
+        alert(
+          `#${tagName} was ${
+            json.result === 'addition' ? 'added' : 'removed'
+          }!`,
+        );
       } else {
         // eslint-disable-next-line no-alert
         alert(json.error);
