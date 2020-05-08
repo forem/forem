@@ -4,7 +4,7 @@ SEEDS_MULTIPLIER = [1, ENV["SEEDS_MULTIPLIER"].to_i].max
 counter = 0
 Rails.logger.info "Seeding with multiplication factor: #{SEEDS_MULTIPLIER}"
 
-##############################################################################/
+##############################################################################
 
 counter += 1
 Rails.logger.info "#{counter}. Creating Organizations"
@@ -410,7 +410,7 @@ CATEGORIES = [
     cost: 1,
     name: "Miscellaneous",
     rules: "Must not fit in any other category."
-  }
+  },
 ].freeze
 
 CATEGORIES.each { |attributes| ClassifiedListingCategory.create(attributes) }

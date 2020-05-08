@@ -10,7 +10,7 @@ RSpec.describe ClassifiedListingHelper, type: :helper do
         [
           ["#{cat1.name} (1 Credit)", cat1.id],
           ["#{cat2.name} (5 Credits)", cat2.id],
-        ]
+        ],
       )
     end
   end
@@ -21,7 +21,7 @@ RSpec.describe ClassifiedListingHelper, type: :helper do
         [
           { slug: cat1.slug, name: cat1.name },
           { slug: cat2.slug, name: cat2.name },
-        ]
+        ],
       )
     end
   end
@@ -38,4 +38,3 @@ RSpec.describe ClassifiedListingHelper, type: :helper do
     end
   end
 end
-

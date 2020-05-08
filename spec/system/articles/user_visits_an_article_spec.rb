@@ -20,7 +20,7 @@ RSpec.describe "Views an article", type: :system do
     create_list(:comment, 3, commentable: article)
 
     visit article.path
-    expect(page).to have_selector(".single-comment-node", visible: true, count: 3)
+    expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
   end
 
   it "stops a user from moderating an article" do

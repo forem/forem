@@ -56,7 +56,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     attach_file(
       "image-upload-main",
       Rails.root.join("app/assets/images/sloan.png"),
-      visible: false,
+      visible: :hidden,
     )
 
     expect(page).to have_no_css("div.file-upload-error")
@@ -67,12 +67,12 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     reduce_max_file_size = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-size-mb", "0")'
     page.execute_script(reduce_max_file_size)
-    expect(page).to have_selector('input[data-max-file-size-mb="0"]', visible: false)
+    expect(page).to have_selector('input[data-max-file-size-mb="0"]', visible: :hidden)
 
     attach_file(
       "image-upload-main",
       Rails.root.join("app/assets/images/sloan.png"),
-      visible: false,
+      visible: :hidden,
     )
 
     expect(page).to have_css("div.file-upload-error")
@@ -87,12 +87,12 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     allow_only_videos = 'document.querySelector("#image-upload-main").setAttribute("data-permitted-file-types", "[\"video\"]")'
     page.execute_script(allow_only_videos)
-    expect(page).to have_selector('input[data-permitted-file-types="[\"video\"]"]', visible: false)
+    expect(page).to have_selector('input[data-permitted-file-types="[\"video\"]"]', visible: :hidden)
 
     attach_file(
       "image-upload-main",
       Rails.root.join("app/assets/images/sloan.png"),
-      visible: false,
+      visible: :hidden,
     )
 
     expect(page).to have_css("div.file-upload-error")
@@ -107,12 +107,12 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     limit_file_name_length = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-name-length", "5")'
     page.execute_script(limit_file_name_length)
-    expect(page).to have_selector('input[data-max-file-name-length="5"]', visible: false)
+    expect(page).to have_selector('input[data-max-file-name-length="5"]', visible: :hidden)
 
     attach_file(
       "image-upload-main",
       Rails.root.join("app/assets/images/sloan.png"),
-      visible: false,
+      visible: :hidden,
     )
 
     expect(page).to have_css("div.file-upload-error")

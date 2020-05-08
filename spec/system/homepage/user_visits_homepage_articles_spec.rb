@@ -14,7 +14,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: true)
+        expect(page).to have_selector(".big-article", visible: :visible)
       end
 
       it "shows the main article readable date", js: true do
@@ -62,17 +62,17 @@ RSpec.describe "User visits a homepage", type: :system do
 
       it "contains the qualified community name in og:title" do
         selector = "meta[property='og:title'][content='#{community_qualified_name}']"
-        expect(page).to have_selector(selector, visible: false)
+        expect(page).to have_selector(selector, visible: :hidden)
       end
 
       it "contains the qualified community name in og:site_name" do
         selector = "meta[property='og:site_name'][content='#{community_qualified_name}']"
-        expect(page).to have_selector(selector, visible: false)
+        expect(page).to have_selector(selector, visible: :hidden)
       end
 
       it "contains the qualified community name in twitter:title" do
         selector = "meta[name='twitter:title'][content='#{community_qualified_name}']"
-        expect(page).to have_selector(selector, visible: false)
+        expect(page).to have_selector(selector, visible: :hidden)
       end
     end
   end
