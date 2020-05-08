@@ -185,24 +185,24 @@
   header {
     &.top-header {
       background-color: var(--base-inverted);
-      padding: $su-4 $su-4 0;
+      padding: var(--su-4) var(--su-4) 0;
       display: flex;
       flex-direction: column;
     }
     &.other-things {
-      padding: $su-4;
+      padding: var(--su-4);
       h1 {
         text-transform: uppercase;
-        font-size: $fs-s;
+        font-size: var(--fs-s);
       }
     }
     h1 {
-      font-size: $fs-l;
-      font-weight: $fw-bold;
+      font-size: var(--fs-l);
+      font-weight: var(--fw-bold);
     }
     h2 {
-      font-size: $fs-base;
-      font-weight: $fw-normal;
+      font-size: var(--fs-base);
+      font-weight: var(--fw-normal);
       color: var(--base-70);
     }
     button.close-actions-panel {
@@ -210,19 +210,19 @@
       width: 40px;
       height: 40px;
       position: absolute;
-      right: $su-4;
-      top: $su-4;
+      right: var(--su-4);
+      top: var(--su-4);
       background-color: var(--base-10);
     }
   }
   .reactions-container {
-    padding: $su-4;
+    padding: var(--su-4);
     background-color: var(--base-inverted);
   }
 
   .thumb-reactions-container {
     display: grid;
-    grid-gap: $su-4;
+    grid-gap: var(--su-4);
     grid-template-columns: 1fr 1fr;
   }
 
@@ -234,8 +234,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: $su-10;
-    padding: $su-4 $su-6;
+    height: var(--su-10);
+    padding: var(--su-4) var(--su-6);
     border-radius: $br-default;
 
     &:hover {
@@ -253,14 +253,14 @@
     align-items: center;
     justify-content: center;
     margin: 0 auto;
-    width: $su-9;
-    height: $su-9;
+    width: var(--su-9);
+    height: var(--su-9);
     border: solid 2px var(--base-20);
     border-radius: 100%;
     background: var(--base-inverted);
 
     img {
-      width: $su-7;
+      width: var(--su-7);
     }
 
     .reaction-checkmark {
@@ -268,8 +268,8 @@
       position: absolute;
       bottom: 0;
       right: 0;
-      width: $su-5;
-      height: $su-5;
+      width: var(--su-5);
+      height: var(--su-5);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -282,10 +282,10 @@
   }
 
   .vote-text {
-    font-weight: $fw-bold;
-    font-size: $fs-base;
-    line-height: $lh-base;
-    margin-top: $su-2;
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
+    margin-top: var(--su-2);
     color: var(--base-90);
   }
 
@@ -295,21 +295,21 @@
     align-items: center;
     border: none;
     background: var(--base-inverted);
-    height: $su-7;
-    padding: $su-1 $su-2;
-    margin: $su-4 auto;
+    height: var(--su-7);
+    padding: var(--su-1) var(--su-2);
+    margin: var(--su-4) auto;
     border-radius: $br-default;
 
     img {
-      margin-right: $su-2;
-      width: $su-6;
-      height: $su-6;
+      margin-right: var(--su-2);
+      width: var(--su-6);
+      height: var(--su-6);
     }
 
     span {
-      font-weight: $fw-medium;
-      font-size: $fs-s;
-      line-height: $lh-tight;
+      font-weight: var(--fw-medium);
+      font-size: var(--fs-s);
+      line-height: var(--lh-tight);
       color: var(--base-90);
       &:after {
         content: 'Mark as spam';
@@ -317,10 +317,10 @@
     }
 
     .vomit-checkmark {
-      width: $su-5;
+      width: var(--su-5);
       height: auto;
-      font-weight: $fw-heavy;
-      margin-left: $su-2;
+      font-weight: var(--fw-heavy);
+      margin-left: var(--su-2);
       color: var(--accent-brand);
       display: none;
     }
@@ -331,13 +331,13 @@
   }
 
   .how-this-works-section {
-    font-weight: $fw-medium;
-    font-size: $fs-xs;
-    line-height: $lh-base;
+    font-weight: var(--fw-medium);
+    font-size: var(--fs-xs);
+    line-height: var(--lh-base);
     letter-spacing: -0.02em;
     color: var(--base-70);
     cursor: pointer;
-    padding: $su-4 $su-3;
+    padding: var(--su-4) var(--su-3);
     display: flex;
     justify-content: center;
   }
@@ -394,7 +394,7 @@
     button.other-things-btn {
       background: inherit;
       border: none;
-      padding: $su-3 $su-4;
+      padding: var(--su-3) var(--su-4);
       width: 100%;
       display: flex;
       justify-content: space-between;
@@ -408,19 +408,19 @@
         }
         header {
           text-align: left;
-          margin-left: $su-3;
+          margin-left: var(--su-3);
           display: flex;
           flex-direction: column;
           width: 240px;
           h2 {
             color: var(--base-100);
-            font-size: $fs-base;
-            font-weight: $fw-medium;
+            font-size: var(--fs-base);
+            font-weight: var(--fw-medium);
           }
           h3 {
             color: var(--base-70);
-            font-size: $fs-s;
-            font-weight: $fw-normal;
+            font-size: var(--fs-s);
+            font-weight: var(--fw-normal);
           }
         }
       }
@@ -453,7 +453,7 @@
       }
       &.active {
         header h2 {
-          font-weight: $fw-bold;
+          font-weight: var(--fw-bold);
         }
       }
       &.inactive:not(.active) {
@@ -477,21 +477,21 @@
     .dropdown-options {
       display: flex;
       flex-direction: column;
-      padding: 0 $su-4;
+      padding: 0 var(--su-4);
       transition-duration: 1s;
     }
     .adjust-tags-options {
       .add-tag-container {
-        padding: $su-2 $su-1;
+        padding: var(--su-2) var(--su-1);
       }
       button.adjustable-tag {
         background: inherit;
         border: none;
-        padding: $su-2 2px;
-        font-size: $fs-base;
+        padding: var(--su-2) 2px;
+        font-size: var(--fs-base);
         text-align: left;
         color: var(--base-80);
-        font-family: $ff-accent;
+        font-family: var(--ff-accent);
         .num-sign {
           color: var(--base-40);
           padding-left: 2px;
@@ -520,7 +520,7 @@
       button.level-rating-button {
         background: inherit;
         border: none;
-        padding: $su-2 0.125rem;
+        padding: var(--su-2) 0.125rem;
         width: 100%;
         display: flex;
         justify-content: space-between;
@@ -536,26 +536,26 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-weight: $fw-heavy;
-            font-size: $fs-base;
-            line-height: $lh-base;
+            font-weight: var(--fw-heavy);
+            font-size: var(--fs-base);
+            line-height: var(--lh-base);
             color: var(--base-100);
-            width: $su-6;
+            width: var(--su-6);
           }
 
           .level-rating-text {
-            font-weight: $fw-normal;
-            font-size: $fs-base;
-            line-height: $lh-base;
+            font-weight: var(--fw-normal);
+            font-size: var(--fs-base);
+            line-height: var(--lh-base);
             color: var(--base-90);
           }
         }
 
         svg {
           color: var(--accent-brand);
-          width: $su-5;
+          width: var(--su-5);
           height: auto;
-          margin-right: $su-2;
+          margin-right: var(--su-2);
           align-self: center;
           display: none;
         }
@@ -572,11 +572,11 @@
   .bottom-actions {
     display: flex;
     justify-content: center;
-    padding-bottom: $su-4;
+    padding-bottom: var(--su-4);
     margin-top: auto;
     button {
       display: initial;
-      font-size: $fs-base;
+      font-size: var(--fs-base);
       color: var(--accent-brand);
       border: none;
       background: none;

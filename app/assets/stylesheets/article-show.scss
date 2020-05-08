@@ -81,12 +81,12 @@
 
 .flag-user-modal {
   .flag-user-modal-header {
-    padding-left: $su-4;
+    padding-left: var(--su-4);
 
     h2 {
-      font-weight: $fw-bold;
-      font-size: $fs-l;
-      line-height: $lh-tight;
+      font-weight: var(--fw-bold);
+      font-size: var(--fs-l);
+      line-height: var(--lh-tight);
     }
 
     .modal-header-close-icon {
@@ -96,24 +96,24 @@
   }
 
   .flag-user-modal-body {
-    padding: $su-6;
+    padding: var(--su-6);
 
     span {
-      font-size: $fs-base;
-      line-height: $lh-base;
+      font-size: var(--fs-base);
+      line-height: var(--lh-base);
       color: var(--base-90);
     }
 
     .crayons-fields {
-      margin-top: $su-4;
+      margin-top: var(--su-4);
 
       .abuse-report-link {
-        margin: $su-4 0 0 $su-7;
+        margin: var(--su-4) 0 0 var(--su-7);
       }
     }
 
     .buttons-container {
-      margin-top: $su-8;
+      margin-top: var(--su-8);
     }
   }
 }
