@@ -119,14 +119,15 @@ score.
 
 ### Please use inclusive language
 
-Inclusion and respect are core tenents of our [code of conduct](https://dev.to/code-of-conduct)
-and we encourage thoughtful language all the way down to the code. Some coding
-metaphors are alienating or triggering and we ask that contributors go the extra mile
-to submit code which is inclusive in nature.
+Inclusion and respect are core tenents of our
+[code of conduct](https://dev.to/code-of-conduct) and we encourage thoughtful
+language all the way down to the code. Some coding metaphors are alienating or
+triggering and we ask that contributors go the extra mile to submit code which
+is inclusive in nature.
 
-If you unintentionally include language deemed harmful, there is no shame. We will
-simply work together to settle on an alternative we are all comfortable with. This 
-extra care for naming tends to result in cleaner code as a byproduct.
+If you unintentionally include language deemed harmful, there is no shame. We
+will simply work together to settle on an alternative we are all comfortable
+with. This extra care for naming tends to result in cleaner code as a byproduct.
 
 ### Create a pull request
 

@@ -9,7 +9,7 @@
   position: relative;
   padding: calc(10px + 1.3vw) 10px;
   color: white;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
 
   @media screen and (min-width: 380px) {
     font-size: 1.2em;
@@ -81,12 +81,12 @@
 
 .flag-user-modal {
   .flag-user-modal-header {
-    padding-left: $su-4;
+    padding-left: var(--su-4);
 
     h2 {
-      font-weight: $fw-bold;
-      font-size: $fs-l;
-      line-height: $lh-tight;
+      font-weight: var(--fw-bold);
+      font-size: var(--fs-l);
+      line-height: var(--lh-tight);
     }
 
     .modal-header-close-icon {
@@ -96,24 +96,24 @@
   }
 
   .flag-user-modal-body {
-    padding: $su-6;
+    padding: var(--su-6);
 
     span {
-      font-size: $fs-base;
-      line-height: $lh-base;
+      font-size: var(--fs-base);
+      line-height: var(--lh-base);
       color: var(--base-90);
     }
 
     .crayons-fields {
-      margin-top: $su-4;
+      margin-top: var(--su-4);
 
       .abuse-report-link {
-        margin: $su-4 0 0 $su-7;
+        margin: var(--su-4) 0 0 var(--su-7);
       }
     }
 
     .buttons-container {
-      margin-top: $su-8;
+      margin-top: var(--su-8);
     }
   }
 }
@@ -192,7 +192,7 @@ article {
     z-index: 6;
     position: relative;
     width: 81%;
-    font-family: $helvetica;
+    font-family: var(--ff-default);
 
     @media screen and (max-width: 750px) {
       width: 90%;
@@ -372,7 +372,7 @@ article {
   }
 
   .article-collection-wrapper {
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     font-size: 16px;
     border-radius: 5px;
     border: 1px solid $light-medium-gray;
@@ -467,7 +467,7 @@ article {
     h4,
     h5,
     h6 {
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       margin: 0.3em auto;
       padding-left: 4px;
       padding-right: 4px;
@@ -602,7 +602,7 @@ article {
       }
 
       &.twitter-tweet {
-        font-family: $helvetica;
+        font-family: var(--ff-default);
         background: white;
         max-width: 456px;
         border: 1px solid #e9eef2;
@@ -730,7 +730,7 @@ article {
     }
 
     table {
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       border-collapse: collapse;
       font-size: 0.78em;
       margin: 0.8em auto 1.2em;
@@ -766,7 +766,7 @@ article {
     overflow: hidden;
     padding: 0px 0px 5px;
     background: var(--card-bg);
-    font-family: $helvetica;
+    font-family: var(--ff-default);
 
     a {
       color: var(--body-color);
@@ -1388,7 +1388,7 @@ article {
   margin: auto;
   margin-bottom: -50px;
   text-align: center;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
 }
 
 .show-comments-footer {
@@ -1396,6 +1396,7 @@ article {
   max-width: 98%;
   margin: auto;
   margin-top: -80px;
+  padding-bottom: var(--su-6);
   text-align: center;
 
   .full-discussion-button {
@@ -1421,7 +1422,7 @@ article {
 }
 
 .org-branding {
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   text-align: center;
   margin-top: 20px;
   margin-bottom: 0;

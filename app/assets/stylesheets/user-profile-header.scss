@@ -3,7 +3,7 @@
 
 .user-profile-header {
   padding: calc(1.4vw + 8px) 0px;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   position: relative;
   overflow: hidden;
   width: 1216px;

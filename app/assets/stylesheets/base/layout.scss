@@ -2,14 +2,14 @@
 
 :root {
   --layout-sidebar-width: 200px;
-  --layout-gap: #{$su-6};
-  --layout-padding: #{$su-6};
+  --layout-gap: var(--su-6);
+  --layout-padding: var(--su-6);
 }
 
 .crayons-layout {
-  font-size: $fs-base; // todo: drop it when ready
+  font-size: var(--fs-base); // todo: drop it when ready
   width: 100%;
-  max-width: $site-width;
+  max-width: var(--site-width);
   margin: 0 auto;
 
   &__sidebar {

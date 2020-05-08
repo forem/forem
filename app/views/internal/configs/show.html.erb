@@ -396,7 +396,7 @@
                        expanded: "false"
                      } %>
           <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
-            <% RateLimitChecker::CONFIGURABLE_RATES.each do |key, field_hash| %>
+            <% configurable_rate_limits.each do |key, field_hash| %>
               <div class="form-group">
                 <%= f.label key %>
                 <%= f.number_field key,

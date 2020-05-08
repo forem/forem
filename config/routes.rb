@@ -85,6 +85,7 @@ Rails.application.routes.draw do
         delete "remove_identity"
         post "recover_identity"
         post "send_email"
+        post "verify_email_ownership"
       end
     end
     resources :organization_memberships, only: %i[update destroy create]
@@ -230,6 +231,7 @@ Rails.application.routes.draw do
 
   resource :onboarding, only: :show
 
+  get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
   get "/search/tags" => "search#tags"
   get "/search/chat_channels" => "search#chat_channels"
   get "/search/classified_listings" => "search#classified_listings"
