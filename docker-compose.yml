@@ -12,7 +12,7 @@ services:
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
-      ELASTICSEARCH_URL: http://10.88.0.1:9200
+      ELASTICSEARCH_URL: http://elasticsearch:9200
       REDIS_URL: redis://redis:6379
       REDIS_SESSIONS_URL: redis://redis:6379
       RACK_TIMEOUT_WAIT_TIMEOUT: 10000
