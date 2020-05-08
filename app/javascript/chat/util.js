@@ -90,34 +90,20 @@ export const channelSorter = (channels, currentUserId, filterQuery) => {
     (channel) =>
       channel.viewable_by === currentUserId && channel.status === 'active',
   );
-
   const joiningChannels = channels.filter(
-    (channel) =>
-      channel.viewable_by === currentUserId &&
-      channel.status === 'joining_request',
+    (channel) => channel.status === 'joining_request',
   );
-
-  const activeChannelIds = [
-    ...new Set(activeChannels.map((x) => x.chat_channel_id)),
+  const ChannelIds = [
+    [...new Set(activeChannels.map((x) => x.chat_channel_id))],
+    [...new Set(joiningChannels.map((x) => x.chat_channel_id))],
   ];
-
-  const joiningChannelIds = [
-    ...new Set(joiningChannels.map((x) => x.chat_channel_id)),
-  ];
-
   const discoverableChannels = channels
     .filter(
       (channel) =>
-        (channel.viewable_by === currentUserId &&
-          channel.status === 'joining_request' &&
-          filterQuery) ||
-        channel.viewable_by !== currentUserId,
+        (channel.status === 'joining_request' && filterQuery) ||
+        (!ChannelIds[1].includes(channel.chat_channel_id) &&
+          channel.viewable_by !== currentUserId),
     )
-    .filter((channel) => !activeChannelIds.includes(channel.chat_channel_id))
-    .filter((channel) =>
-      !!(joiningChannelIds.includes(channel.chat_channel_id) &&
-      channel.viewable_by === currentUserId),
-    );
-
+    .filter((channel) => !ChannelIds[0].includes(channel.chat_channel_id));
   return { activeChannels, discoverableChannels };
 };
