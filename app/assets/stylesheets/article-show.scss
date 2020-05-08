@@ -33,7 +33,7 @@
 
 .mod-actions-menu {
   position: fixed;
-  top: $header-height;
+  top: var(--header-height);
   right: 0;
   height: calc(100vh - 56px);
   z-index: 200;
