@@ -35,6 +35,19 @@ describe('<Article /> component', () => {
     expect(tree).toMatchSnapshot();
   });
 
+  it('should render a featured article', () => {
+    const tree = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        isFeatured
+        article={article}
+        currentTag="javascript"
+      />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
   it('should render with an organization', () => {
     const tree = render(
       <Article
