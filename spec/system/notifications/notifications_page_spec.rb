@@ -21,17 +21,20 @@ RSpec.describe "Notifications page", type: :system, js: true do
     expect(page).not_to have_css("span#notifications-number", text: "1")
   end
 
-  it "allows user to interact with replies" do # potentially flaky
-    article = create(:article, user: alex)
-    comment = create(:comment, commentable: article, user: alex)
-    reply = create(:comment, commentable: article, user: leslie, parent: comment)
-    Notification.send_new_comment_notifications_without_delay(reply)
+  it "allows user to interact with replies" do
+    sidekiq_perform_enqueued_jobs do
+      article = create(:article, user: alex)
+      comment = create(:comment, commentable: article, user: alex)
+      reply = create(:comment, commentable: article, user: leslie, parent: comment)
+      Notification.send_new_comment_notifications_without_delay(reply)
+    end
+
     visit "/notifications"
     expect(page).to have_css("div.single-notification")
     click_button("heart")
     expect(page).to have_css("img.reacted-emoji")
     click_link("Reply")
-    validate_reply(reply.id)
+    validate_reply(leslie.comments.first.id)
   end
 
   it "allows user to follow other users back" do
