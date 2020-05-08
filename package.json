@@ -100,7 +100,7 @@
     "eslint-plugin-react": "^7.19.0",
     "faker": "^4.1.0",
     "husky": "^4.2.5",
-    "ibm-openapi-validator": "0.27.0",
+    "ibm-openapi-validator": "0.27.1",
     "jest": "26.0.1",
     "jest-axe": "^3.4.0",
     "jest-fetch-mock": "^3.0.3",
