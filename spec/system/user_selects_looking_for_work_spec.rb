@@ -11,6 +11,9 @@ RSpec.describe "Looking For Work", type: :system do
 
   it "user selects looking for work and autofollows hiring tag" do
     visit "/settings"
+
+    Percy.snapshot(page, name: "Logged in user: settings page")
+
     page.check "Looking for work"
     sidekiq_perform_enqueued_jobs do
       click_button("Save")
