@@ -17,7 +17,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: true, count: 1)
+        expect(page).to have_selector(".big-article", visible: :visible, count: 1)
       end
 
       it "shows the correct articles" do
@@ -36,7 +36,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: true, count: 1)
+        expect(page).to have_selector(".big-article", visible: :visible, count: 1)
       end
 
       it "shows the correct articles" do
@@ -56,7 +56,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: true, count: 1)
+        expect(page).to have_selector(".big-article", visible: :visible, count: 1)
       end
 
       it "shows the correct articles" do
@@ -78,7 +78,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: true, count: 1)
+        expect(page).to have_selector(".big-article", visible: :visible, count: 1)
       end
 
       it "shows the correct articles" do
@@ -101,7 +101,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: true, count: 1)
+        expect(page).to have_selector(".big-article", visible: :visible, count: 1)
       end
 
       it "shows the correct articles" do
@@ -129,7 +129,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     end
 
     it "shows the main article" do
-      expect(page).to have_selector(".big-article", visible: true, count: 1)
+      expect(page).to have_selector(".big-article", visible: :visible, count: 1)
     end
 
     it "shows the correct articles" do
@@ -147,7 +147,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: true, count: 1)
+        expect(page).to have_selector(".big-article", visible: :visible, count: 1)
       end
 
       it "shows the correct articles" do
@@ -167,7 +167,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: true, count: 1)
+        expect(page).to have_selector(".big-article", visible: :visible, count: 1)
       end
 
       it "shows the correct articles" do
@@ -188,7 +188,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: true, count: 1)
+        expect(page).to have_selector(".big-article", visible: :visible, count: 1)
       end
 
       it "shows the correct articles" do
@@ -210,7 +210,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: true, count: 1)
+        expect(page).to have_selector(".big-article", visible: :visible, count: 1)
       end
 
       it "shows the correct articles" do
