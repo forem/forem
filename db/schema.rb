@@ -13,6 +13,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 2020_05_04_075409) do
+  
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -329,6 +330,7 @@ ActiveRecord::Schema.define(version: 2020_05_04_075409) do
     t.datetime "bumped_at"
     t.string "cached_tag_list"
     t.string "category"
+    t.bigint "classified_listing_category_id"
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
     t.bigint "organization_id"
