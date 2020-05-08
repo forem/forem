@@ -52,7 +52,7 @@ RSpec.describe "ArticlesShow", type: :request do
           "name" => user.name
         },
         "datePublished" => article.published_timestamp,
-        "dateModified" => article.edited_at&.iso8601 || article.published_timestamp,
+        "dateModified" => article.published_timestamp,
       )
     end
   end
