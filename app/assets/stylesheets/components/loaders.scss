@@ -1,13 +1,13 @@
 @import '../config/import';
 
 .crayons-scaffold {
-  border-radius: $br-default;
+  border-radius: var(--radius);
   background: var(--body-color);
   opacity: 0.025;
 }
 
 .crayons-scaffold-loading {
-  border-radius: $br-default;
+  border-radius: var(--radius);
   animation-duration: 1.25s;
   animation-fill-mode: forwards;
   animation-iteration-count: infinite;

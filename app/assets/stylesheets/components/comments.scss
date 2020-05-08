@@ -1,8 +1,8 @@
 @import '../config/import';
 
 .crayons-comment {
-  margin-bottom: $su-4;
-  font-size: $fs-s;
+  margin-bottom: var(--su-4);
+  font-size: var(--fs-s);
 
   &__meta {
     display: flex;
@@ -15,7 +15,7 @@
   }
 
   &__body {
-    padding-left: $su-7;
+    padding-left: var(--su-7);
 
     a:hover {
       text-decoration: underline; //todo: default for all in-content links

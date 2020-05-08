@@ -3,23 +3,25 @@
 
 .crayons-story {
   background: var(--card-bg);
-  font-size: $fs-base; // Todo: remove when ready.
+  font-size: var(--fs-base); // Todo: remove when ready.
   box-shadow: $bold-shadow; // we will kill it at some point, don't worry. just not yet.
 
   @media (min-width: $breakpoint-m) {
-    border-radius: $br-default;
-    margin-bottom: $su-2; // This is basically spacing between each feed card.
+    border-radius: var(--radius);
+    margin-bottom: var(
+      --su-2
+    ); // This is basically spacing between each feed card.
   }
 
-  --story-padding: #{$su-3} #{$su-2} #{$su-2};
-  --title-font-size: #{$fs-xl};
+  --story-padding: var(--su-3) var(--su-2) var(--su-2);
+  --title-font-size: var(--fs-xl);
 
   @media (min-width: $breakpoint-s) {
-    --story-padding: #{$su-4};
-    --title-font-size: #{$fs-2xl};
+    --story-padding: var(--su-4);
+    --title-font-size: var(--fs-2xl);
 
     &--featured {
-      --title-font-size: #{$fs-3xl};
+      --title-font-size: var(--fs-3xl);
     }
   }
 
@@ -53,7 +55,7 @@
       background-position: center center;
 
       @media (min-width: $breakpoint-m) {
-        border-radius: $br-default $br-default 0 0;
+        border-radius: var(--radius) var(--radius) 0 0;
       }
     }
   }
@@ -63,14 +65,16 @@
   }
 
   &__indention {
-    padding-left: calc(#{$su-7} + #{$su-2}); // avatar_width + avatar_margin
+    padding-left: calc(
+      var(--su-7) + var(--su-2)
+    ); // avatar_width + avatar_margin
   }
 
   &__top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: $su-2;
+    margin-bottom: var(--su-2);
   }
 
   &__overflow {
@@ -92,24 +96,24 @@
   &__meta {
     display: flex;
     align-items: center;
-    line-height: $lh-tight;
-    font-size: $fs-s;
+    line-height: var(--lh-tight);
+    font-size: var(--fs-s);
   }
 
   &__author-pic {
     position: relative;
-    margin-right: $su-2;
+    margin-right: var(--su-2);
   }
 
   &__tags {
-    margin-bottom: $su-2;
-    margin-left: -$su-1;
+    margin-bottom: var(--su-2);
+    margin-left: calc(var(--su-1) * -1);
   }
 
   &__title {
     color: var(--card-color);
-    line-height: $lh-tight;
-    margin-bottom: $su-2;
+    line-height: var(--lh-tight);
+    margin-bottom: var(--su-2);
     font-size: var(--title-font-size);
 
     a {
@@ -124,7 +128,7 @@
 
   &__flare-tag {
     font-weight: normal;
-    font-family: $ff-accent;
+    font-family: var(--ff-accent);
     font-size: 0.6em;
     padding: 0.3em;
     vertical-align: middle;
@@ -132,10 +136,10 @@
     top: -2px;
     line-height: 1em;
     display: inline-block;
-    border-radius: $br-default;
+    border-radius: var(--radius);
     letter-spacing: -0.05em;
     background: var(--base-60);
-    margin-right: $su-1;
+    margin-right: var(--su-1);
     color: var(--base-inverted);
   }
 
@@ -143,32 +147,32 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: $fs-s;
-    line-height: $lh-tight;
+    font-size: var(--fs-s);
+    line-height: var(--lh-tight);
   }
 
   &__details {
     display: flex;
-    margin-left: -$su-2;
+    margin-left: calc(var(--su-2) * -1);
   }
 
   &__comments {
     cursor: default;
     background: var(--card-secondary-bg);
     padding: var(--story-padding);
-    padding-top: $su-4;
-    border-radius: 0 0 $br-default $br-default;
+    padding-top: var(--su-4);
+    border-radius: 0 0 var(--radius) var(--radius);
 
     &__headline {
-      font-weight: $fw-bold;
-      font-size: $fs-s;
+      font-weight: var(--fw-bold);
+      font-size: var(--fs-s);
       color: var(--card-color-secondary);
-      margin-bottom: $su-3;
-      padding-left: calc(#{$su-6} + #{$su-4});
+      margin-bottom: var(--su-3);
+      padding-left: calc(var(--su-6) + var(--su-4));
     }
 
     &__actions {
-      padding-left: calc(#{$su-6} + #{$su-4});
+      padding-left: calc(var(--su-6) + var(--su-4));
     }
   }
 
@@ -176,17 +180,17 @@
     color: var(--card-secondary-color);
     font-size: inherit;
     em {
-      font-weight: $fw-medium;
+      font-weight: var(--fw-medium);
       color: var(--card-color);
       background: var(--accent-warning-lighter);
     }
   }
 
   &__headline {
-    font-family: $ff-accent;
-    font-size: $fs-s;
+    font-family: var(--ff-accent);
+    font-size: var(--fs-s);
     color: var(--card-color-tertiary);
-    margin-bottom: $su-4;
+    margin-bottom: var(--su-4);
 
     a {
       color: inherit;
@@ -216,14 +220,14 @@
 
     &__time {
       position: absolute;
-      bottom: $su-4;
-      right: $su-4;
+      bottom: var(--su-4);
+      right: var(--su-4);
       background: rgba(0, 0, 0, 0.8);
       color: var(--base-inverted);
-      border-radius: $br-default;
-      padding: $su-1;
-      font-size: $fs-s;
-      font-family: $ff-accent;
+      border-radius: var(--radius);
+      padding: var(--su-1);
+      font-size: var(--fs-s);
+      font-family: var(--ff-accent);
     }
   }
 }
@@ -231,37 +235,37 @@
 .crayons-podcast-episode {
   display: flex;
   align-items: flex-start;
-  margin-bottom: $su-4;
+  margin-bottom: var(--su-4);
 
   &:last-child {
     margin-bottom: 0;
   }
 
   &__cover {
-    width: $su-7;
-    height: $su-7;
-    margin-right: $su-2;
+    width: var(--su-7);
+    height: var(--su-7);
+    margin-right: var(--su-2);
 
     img {
       width: 100%;
       height: 100%;
-      border-radius: $br-default;
+      border-radius: var(--radius);
     }
   }
 
   &__author {
-    font-size: $fs-s;
+    font-size: var(--fs-s);
     color: var(--card-color-secondary);
   }
 
   &__title {
     color: var(--card-color);
-    line-height: $lh-tight;
-    margin-bottom: $su-1;
-    font-size: $fs-xl;
+    line-height: var(--lh-tight);
+    margin-bottom: var(--su-1);
+    font-size: var(--fs-xl);
 
     @media (min-width: $breakpoint-s) {
-      font-size: $fs-2xl;
+      font-size: var(--fs-2xl);
     }
 
     a {
