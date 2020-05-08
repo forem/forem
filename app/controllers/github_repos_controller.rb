@@ -20,8 +20,11 @@ class GithubReposController < ApplicationController
 
   def create
     authorize GithubRepo
-    @repo = GithubRepo.find_or_create(fetched_repo_params(fetch_repo))
+
+    @repo = GithubRepo.upsert(current_user, fetched_repo_params(fetch_repo))
+
     current_user.touch(:github_repos_updated_at)
+
     if @repo.valid?
       redirect_to "/settings/integrations", notice: "GitHub repo added"
     else
@@ -52,7 +55,7 @@ class GithubReposController < ApplicationController
       return
     end
 
-    repo = GithubRepo.find_or_create(fetched_repo_params(fetched_repo))
+    repo = GithubRepo.upsert(current_user, fetched_repo_params(fetched_repo))
 
     current_user.touch(:github_repos_updated_at)
 
@@ -75,7 +78,6 @@ class GithubReposController < ApplicationController
   def fetched_repo_params(fetched_repo)
     {
       github_id_code: fetched_repo.id,
-      user_id: current_user.id,
       name: fetched_repo.name,
       description: fetched_repo.description,
       language: fetched_repo.language,

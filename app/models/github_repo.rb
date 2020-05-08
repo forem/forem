@@ -2,23 +2,36 @@ class GithubRepo < ApplicationRecord
   belongs_to :user
 
   serialize :info_hash, Hash
+
   validates :name, :url, :github_id_code, presence: true
-  validates :url, uniqueness: true
+  validates :url, url: true, uniqueness: true
   validates :github_id_code, uniqueness: true
 
   after_save :clear_caches
   before_destroy :clear_caches
 
-  def self.find_or_create(params)
-    repo = where(github_id_code: params[:github_id_code]).
+  # Update existing repository or create a new one with given params.
+  # Repository is searched by either GitHub ID or URL.
+  def self.upsert(user, **params)
+    repo = user.github_repos.
+      where(github_id_code: params[:github_id_code]).
       or(where(url: params[:url])).
-      first_or_initialize
+      first
+    repo ||= new(params.merge(user_id: user.id))
+
     repo.update(params)
+
     repo
   end
 
+  # select user_id, count(*) as count from github_repos group by user_id order by count desc;
   def self.update_to_latest
     where("updated_at < ?", 1.day.ago).find_each do |repo|
+      # NOTE: repos could change ownership in time, tying them to the user_id
+      # for the token it's an issue
+
+      # maybe keep the user token but use pagination and iterate through
+      # repos known grouped by user_id
       user_token = User.find_by(id: repo.user_id).identities.where(provider: "github").last.token
       client = Octokit::Client.new(access_token: user_token)
       begin

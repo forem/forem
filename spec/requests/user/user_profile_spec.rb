@@ -128,20 +128,30 @@ RSpec.describe "UserProfiles", type: :request do
       end
     end
 
-    context "when github repo" do
-      before do
-        repo = build(:github_repo, user: user)
-        params = { name: Faker::Book.title, user_id: user.id, github_id_code: repo.github_id_code,
-                   url: Faker::Internet.url, description: "A book bot :robot:", featured: true,
-                   stargazers_count: 1 }
-        updated_repo = GithubRepo.find_or_create(params)
-
-        user.github_repos = [updated_repo]
+    context "when displaying a GitHub repository on the profile" do
+      let(:params) do
+        {
+          description: "A book bot :robot:",
+          featured: true,
+          github_id_code: build(:github_repo).github_id_code,
+          name: Faker::Book.title,
+          stargazers_count: 1,
+          url: Faker::Internet.url
+        }
       end
 
-      it "renders emoji in description of pinned github repo" do
+      it "renders emoji in description of featured repository" do
+        GithubRepo.upsert(user, params)
+
         get "/#{user.username}"
-        expect(response.body).to include "A book bot 🤖"
+        expect(response.body).to include("A book bot 🤖")
+      end
+
+      it "does not show a non featured repository" do
+        GithubRepo.upsert(user, params.merge(featured: false))
+
+        get "/#{user.username}"
+        expect(response.body).not_to include("A book bot 🤖")
       end
     end
   end
