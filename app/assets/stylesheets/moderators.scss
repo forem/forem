@@ -522,9 +522,9 @@
       .adjustment-reason-container {
         display: flex;
         flex-direction: column;
-        padding: $su-1;
+        padding: var(--su-1);
         textarea {
-          margin-bottom: $su-2;
+          margin-bottom: var(--su-2);
         }
       }
     }
