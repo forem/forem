@@ -116,6 +116,7 @@
         document.getElementById("substories").innerHTML = resultDivs.join("");
         initializeReadingListIcons();
         initializeAllFollowButts();
+        initializeUserFollowButts();
         document.getElementById("substories").classList.add("search-results-loaded");
         if (content.result.length == 0) {
           document.getElementById("substories").innerHTML = '<div class="query-results-nothing">No results match that query</div>'
