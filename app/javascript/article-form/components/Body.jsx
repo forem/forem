@@ -14,7 +14,7 @@ export const Body = ({
       <Toolbar version={version} />
 
       <Textarea
-        className="crayons-textfield crayons-article-form__body__field crayons-textfield--ghost fs-l ff-accent"
+        className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field"
         id="article_body_markdown"
         placeholder="Write your post content here..."
         value={defaultValue}
