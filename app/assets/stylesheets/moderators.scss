@@ -236,7 +236,7 @@
     align-items: center;
     height: var(--su-10);
     padding: var(--su-4) var(--su-6);
-    border-radius: $br-default;
+    border-radius: var(--radius);
 
     &:hover {
       background: rgba(59, 73, 223, 0.05);
@@ -298,7 +298,7 @@
     height: var(--su-7);
     padding: var(--su-1) var(--su-2);
     margin: var(--su-4) auto;
-    border-radius: $br-default;
+    border-radius: var(--radius);
 
     img {
       margin-right: var(--su-2);
