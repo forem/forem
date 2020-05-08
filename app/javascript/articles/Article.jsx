@@ -26,6 +26,16 @@ export const Article = ({
     return <PodcastArticle article={article} />;
   }
 
+  const clickableClassList = [
+    'crayons-story',
+    'crayons-story__top',
+    'crayons-story__body',
+    'crayons-story__indention',
+    'crayons-story__title',
+    'crayons-story__tags',
+    'crayons-story__bottom',
+  ];
+
   return (
     <article
       className={`crayons-story cursor-pointer ${
@@ -40,17 +50,7 @@ export const Article = ({
         onClick={(event) => {
           const { classList } = event.target;
 
-          // This looks a little messy, but it's the only
-          // way to make the entire card clickable.
-          if (
-            classList.contains('crayons-story') ||
-            classList.contains('crayons-story__top') ||
-            classList.contains('crayons-story__body') ||
-            classList.contains('crayons-story__indention') ||
-            classList.contains('crayons-story__title') ||
-            classList.contains('crayons-story__tags') ||
-            classList.contains('crayons-story__bottom')
-          ) {
+          if (clickableClassList.includes(...classList)) {
             InstantClick.preload(article.path);
             InstantClick.display(article.path);
           }
