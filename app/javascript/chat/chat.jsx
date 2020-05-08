@@ -21,6 +21,7 @@ import {
   scrollToBottom,
   setupObserver,
   getCurrentUser,
+  channelSorter,
 } from './util';
 import Alert from './alert';
 import Channels from './channels';
@@ -171,9 +172,11 @@ export default class Chat extends Component {
     }
   }
 
-  filterForActiveChannel = (channels, id) =>
+  filterForActiveChannel = (channels, id, currentUserId) =>
     channels.filter(
-      (channel) => channel.chat_channel_id === parseInt(id, 10),
+      (channel) =>
+        channel.chat_channel_id === parseInt(id, 10) &&
+        channel.viewable_by === parseInt(currentUserId, 10),
     )[0];
 
   subscribePusher = (channelName) => {
@@ -277,7 +280,7 @@ export default class Chat extends Component {
   };
 
   loadPaginatedChannels = (channels) => {
-    const state = this.state;
+    const {state} = this;
     const currentChannels = state.chatChannels;
     const currentChannelIds = currentChannels.map((channel) => channel.id);
     const newChannels = currentChannels;
@@ -591,7 +594,10 @@ export default class Chat extends Component {
     }
     if (escPressed && activeContent[activeChannelId]) {
       this.setActiveContentState(activeChannelId, null);
-      this.setState({fullscreenContent: null, expanded: window.innerWidth > 600});
+      this.setState({
+        fullscreenContent: null,
+        expanded: window.innerWidth > 600,
+      });
     }
   };
 
@@ -640,7 +646,7 @@ export default class Chat extends Component {
     } else if (message.startsWith('/play ')) {
       const messageObject = {
         activeChannelId,
-        message: message,
+        message,
         mentionedUsersId: this.getMentionedUsers(message),
       };
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
@@ -715,6 +721,7 @@ export default class Chat extends Component {
       isMobileDevice,
       unopenedChannelIds,
       activeChannelId,
+      currentUserId,
     } = this.state;
     const newUnopenedChannelIds = unopenedChannelIds;
     const index = newUnopenedChannelIds.indexOf(id);
@@ -722,7 +729,11 @@ export default class Chat extends Component {
       newUnopenedChannelIds.splice(index, 1);
     }
     this.setState({
-      activeChannel: this.filterForActiveChannel(chatChannels, id),
+      activeChannel: this.filterForActiveChannel(
+        chatChannels,
+        id,
+        currentUserId,
+      ),
       activeChannelId: parseInt(id, 10),
       scrolled: false,
       showAlert: false,
@@ -876,11 +887,17 @@ export default class Chat extends Component {
         });
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
-        this.setState({ fullscreenContent: null, expanded: window.innerWidth > 600 });
+        this.setState({
+          fullscreenContent: null,
+          expanded: window.innerWidth > 600,
+        });
       } else if (target.dataset.content === 'fullscreen') {
         const mode =
           this.state.fullscreenContent === 'sidecar' ? null : 'sidecar';
-        this.setState({ fullscreenContent: mode, expanded: (mode === null || window.innerWidth > 1600) });
+        this.setState({
+          fullscreenContent: mode,
+          expanded: mode === null || window.innerWidth > 1600,
+        });
       }
     }
     document.getElementById('messageform').focus();
@@ -995,7 +1012,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the
+              abide by the 
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
@@ -1007,7 +1024,7 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined
+              You have joined 
               {' '}
               {activeChannel.channel_name}
               ! All interactions
@@ -1016,7 +1033,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the
+              abide by the 
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
@@ -1211,25 +1228,25 @@ export default class Chat extends Component {
         );
       }
       return (
-          <div className="chat__channels">
-            {notificationsButton}
-            <button
-              className="chat__channelstogglebutt"
-              onClick={this.toggleExpand}
-              style={{ width: '100%' }}
-              type="button"
-            >
-              {'>'}
-            </button>
-            <Channels
-              activeChannelId={state.activeChannelId}
-              chatChannels={state.chatChannels}
-              unopenedChannelIds={state.unopenedChannelIds}
-              handleSwitchChannel={this.handleSwitchChannel}
-              expanded={state.expanded}
-            />
-            {notificationsState}
-          </div>
+        <div className="chat__channels">
+          {notificationsButton}
+          <button
+            className="chat__channelstogglebutt"
+            onClick={this.toggleExpand}
+            style={{ width: '100%' }}
+            type="button"
+          >
+            {'>'}
+          </button>
+          <Channels
+            activeChannelId={state.activeChannelId}
+            chatChannels={state.chatChannels}
+            unopenedChannelIds={state.unopenedChannelIds}
+            handleSwitchChannel={this.handleSwitchChannel}
+            expanded={state.expanded}
+          />
+          {notificationsState}
+        </div>
       );
     }
     return '';
@@ -1369,11 +1386,18 @@ export default class Chat extends Component {
 
   onTriggerVideoContent = (e) => {
     if (e.target.dataset.content === 'exit') {
-      this.setState({ videoPath: null, fullscreenContent: null, expanded: window.innerWidth > 600 });
+      this.setState({
+        videoPath: null,
+        fullscreenContent: null,
+        expanded: window.innerWidth > 600,
+      });
     } else if (this.state.fullscreenContent === 'video') {
       this.setState({ fullscreenContent: null });
     } else {
-      this.setState({ fullscreenContent: 'video', expanded: window.innerWidth > 1600 });
+      this.setState({
+        fullscreenContent: 'video',
+        expanded: window.innerWidth > 1600,
+      });
     }
   };
 

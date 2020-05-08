@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ConfigImage from 'images/three-dots.svg';
 import ChannelButton from './components/channelButton';
+import { channelSorter } from './util';
 
 const Channels = ({
   activeChannelId,
@@ -15,25 +16,13 @@ const Channels = ({
   currentUserId,
   triggerActiveContent,
 }) => {
-  const activeChannels = chatChannels.filter(
-    (channel) =>
-      channel.viewable_by === currentUserId && channel.status === 'active',
+  const sortedChatChannels = channelSorter(
+    chatChannels,
+    currentUserId,
+    filterQuery,
   );
-
-  const activeChannelIds = [
-    ...new Set(activeChannels.map((x) => x.chat_channel_id)),
-  ];
-
-  const discoverableChannels = chatChannels
-    .filter(
-      (channel) =>
-        (channel.viewable_by === currentUserId &&
-          channel.status === 'joining_request' &&
-          filterQuery) ||
-        channel.viewable_by !== currentUserId,
-    )
-    .filter((channel) => !activeChannelIds.includes(channel.chat_channel_id))
-    .map((channel) => {
+  const discoverableChannels = sortedChatChannels.discoverableChannels.map(
+    (channel) => {
       return (
         <ChannelButton
           channel={channel}
@@ -41,9 +30,10 @@ const Channels = ({
           triggerActiveContent={triggerActiveContent}
         />
       );
-    });
+    },
+  );
 
-  const channels = activeChannels.map((channel) => {
+  const channels = sortedChatChannels.activeChannels.map((channel) => {
     const isActive = parseInt(activeChannelId, 10) === channel.chat_channel_id;
     const isUnopened =
       !isActive && unopenedChannelIds.includes(channel.chat_channel_id);
@@ -62,7 +52,7 @@ const Channels = ({
       />
     );
   });
-
+  console.log(channels);
   let topNotice = '';
   if (
     expanded &&
