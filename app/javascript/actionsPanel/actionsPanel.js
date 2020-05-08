@@ -115,16 +115,34 @@ function toggleSubmitContainer() {
     .classList.toggle('hidden');
 }
 
-function adjustTag(tagBtn) {
+function clearSubmitContainer() {
+  document.getElementById('adjustment-reason-container').value = '';
+}
+
+function renderTagOnArticle(tagName, colors) {
+  const articleTagsContainer = window.parent.document.getElementsByClassName(
+    'tags',
+  )[0];
+
+  const newTag = document.createElement('a');
+  newTag.innerText = `#${tagName}`;
+  newTag.setAttribute('class', 'tag');
+  newTag.setAttribute('href', `/t/${tagName}`);
+  newTag.style = `background-color: ${colors.bg}; color: ${colors.text};`;
+
+  articleTagsContainer.appendChild(newTag);
+}
+
+function adjustTag(el) {
   const reasonForAdjustment = document.getElementById('tag-adjustment-reason')
     .value;
   const body = {
     tag_adjustment: {
       // TODO: change to tag ID
-      tag_name: tagBtn.dataset.tagName,
-      article_id: tagBtn.dataset.articleId,
+      tag_name: el.dataset.tagName || el.value,
+      article_id: el.dataset.articleId,
       adjustment_type:
-        tagBtn.dataset.adjustmentType === 'subtract' ? 'removal' : 'addition',
+        el.dataset.adjustmentType === 'subtract' ? 'removal' : 'addition',
       reason_for_adjustment: reasonForAdjustment,
     },
   };
@@ -136,32 +154,31 @@ function adjustTag(tagBtn) {
     .then((response) => response.json())
     .then((json) => {
       if (json.status === 'Success') {
-        const { tagName } = tagBtn.dataset;
-        tagBtn.remove();
+        let adjustedTagName;
+        if (el.tagName === 'BUTTON') {
+          adjustedTagName = el.dataset;
+          el.remove();
+        } else {
+          adjustedTagName = el.value;
+          // eslint-disable-next-line no-param-reassign
+          el.value = '';
+        }
+
         toggleSubmitContainer();
+        clearSubmitContainer();
 
         if (json.result === 'addition') {
-          const articleTagsContainer = window.parent.document.getElementsByClassName(
-            'tags',
-          )[0];
-
-          const newTag = document.createElement('a');
-          newTag.innerText = `#${tagName}`;
-          newTag.setAttribute('class', 'tag');
-          newTag.setAttribute('href', `/t/${tagName}`);
-          newTag.style = `background-color: ${json.colors.bg}; color: ${json.colors.text};`;
-
-          articleTagsContainer.appendChild(newTag);
+          renderTagOnArticle(adjustedTagName, json.colors);
         } else {
           const tagOnArticle = window.parent.document.querySelector(
-            `.tag[href="/t/${tagName}"]`,
+            `.tag[href="/t/${adjustedTagName}"]`,
           );
           tagOnArticle.remove();
         }
 
         // eslint-disable-next-line no-alert
         alert(
-          `#${tagName} was ${
+          `#${adjustedTagName} was ${
             json.result === 'addition' ? 'added' : 'removed'
           }!`,
         );
@@ -172,30 +189,93 @@ function adjustTag(tagBtn) {
     });
 }
 
+function handleAdjustTagBtn(btn) {
+  const currentActiveTags = document.querySelectorAll(
+    'button.adjustable-tag.active',
+  );
+  const adminTagInput = document.getElementById('admin-add-tag');
+  /* eslint-disable no-restricted-globals */
+  /* eslint-disable no-alert */
+  if (
+    adminTagInput &&
+    adminTagInput.value === '' &&
+    confirm(
+      'This will clear your current "Add a tag" input. Do you want to continue?',
+    )
+  ) {
+    /* eslint-enable no-restricted-globals */
+    /* eslint-enable no-alert */
+    adminTagInput.value = '';
+  } else if (currentActiveTags.length > 0) {
+    currentActiveTags.forEach((tag) => {
+      if (tag !== btn) {
+        tag.classList.remove('active');
+      }
+      btn.classList.toggle('active');
+    });
+    if (btn.classList.contains('active')) {
+      document
+        .getElementById('adjustment-reason-container')
+        .classList.remove('hidden');
+    } else {
+      document
+        .getElementById('adjustment-reason-container')
+        .classList.add('hidden');
+    }
+  } else {
+    btn.classList.toggle('active');
+    toggleSubmitContainer();
+  }
+}
+
+function handleAdminInput() {
+  const addTagInput = document.getElementById('admin-add-tag');
+
+  if (addTagInput) {
+    addTagInput.addEventListener('focus', () => {
+      document
+        .getElementById('adjustment-reason-container')
+        .classList.remove('hidden');
+
+      const activeTagBtns = Array.from(
+        document.querySelectorAll('button.adjustable-tag.active'),
+      );
+      activeTagBtns.forEach((btn) => {
+        btn.classList.remove('active');
+      });
+    });
+    addTagInput.addEventListener('focusout', () => {
+      if (addTagInput.value === '') {
+        toggleSubmitContainer();
+      }
+    });
+  }
+}
+
 function addAdjustTagListeners() {
   Array.from(document.getElementsByClassName('adjustable-tag')).forEach(
     (btn) => {
       btn.addEventListener('click', () => {
-        btn.classList.toggle('active');
-        toggleSubmitContainer();
+        handleAdjustTagBtn(btn);
       });
     },
   );
-  Array.from(document.getElementsByClassName('tag-adjust-submit')).forEach(
-    (btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const textArea = document.getElementById('tag-adjustment-reason');
 
-        if (textArea.checkValidity()) {
-          const dataButton = document.querySelector(
-            'button.adjustable-tag.active',
-          );
-          adjustTag(dataButton);
-        }
-      });
-    },
-  );
+  document
+    .getElementById('tag-adjust-submit')
+    .addEventListener('click', (e) => {
+      e.preventDefault();
+      const textArea = document.getElementById('tag-adjustment-reason');
+      const dataSource =
+        document.querySelector('button.adjustable-tag.active') ||
+        document.getElementById('admin-add-tag');
+
+      if (textArea.checkValidity()) {
+        adjustTag(dataSource);
+      }
+    });
+
+  handleAdminInput();
 }
 
 function addBottomActionsListeners() {
