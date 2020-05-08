@@ -15,12 +15,24 @@ const Channels = ({
   currentUserId,
   triggerActiveContent,
 }) => {
+  const activeChannels = chatChannels.filter(
+    (channel) =>
+      channel.viewable_by === currentUserId && channel.status === 'active',
+  );
+
+  const activeChannelIds = [
+    ...new Set(activeChannels.map((x) => x.chat_channel_id)),
+  ];
+
   const discoverableChannels = chatChannels
     .filter(
       (channel) =>
         (channel.viewable_by === currentUserId &&
           channel.status === 'joining_request') ||
-        (channel.viewable_by !== currentUserId && channel.channel_discoverable),
+        channel.viewable_by !== currentUserId,
+    )
+    .filter((channel) =>
+      !activeChannelIds.includes(channel.chat_channel_id),
     )
     .map((channel) => {
       return (
@@ -31,32 +43,26 @@ const Channels = ({
         />
       );
     });
-  const channels = chatChannels
-    .filter(
-      (channel) =>
-        channel.viewable_by === currentUserId &&
-        channel.status !== 'joining_request',
-    )
-    .map((channel) => {
-      const isActive =
-        parseInt(activeChannelId, 10) === channel.chat_channel_id;
-      const isUnopened =
-        !isActive && unopenedChannelIds.includes(channel.chat_channel_id);
-      const newMessagesIndicator = isUnopened ? 'new' : 'old';
-      const otherClassname = isActive
-        ? 'chatchanneltab--active'
-        : 'chatchanneltab--inactive';
 
-      return (
-        <ChannelButton
-          channel={channel}
-          newMessagesIndicator={newMessagesIndicator}
-          otherClassname={otherClassname}
-          handleSwitchChannel={handleSwitchChannel}
-          isUnopened={isUnopened}
-        />
-      );
-    });
+  const channels = activeChannels.map((channel) => {
+    const isActive = parseInt(activeChannelId, 10) === channel.chat_channel_id;
+    const isUnopened =
+      !isActive && unopenedChannelIds.includes(channel.chat_channel_id);
+    const newMessagesIndicator = isUnopened ? 'new' : 'old';
+    const otherClassname = isActive
+      ? 'chatchanneltab--active'
+      : 'chatchanneltab--inactive';
+
+    return (
+      <ChannelButton
+        channel={channel}
+        newMessagesIndicator={newMessagesIndicator}
+        otherClassname={otherClassname}
+        handleSwitchChannel={handleSwitchChannel}
+        isUnopened={isUnopened}
+      />
+    );
+  });
 
   let topNotice = '';
   if (
