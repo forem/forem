@@ -3,10 +3,6 @@ import PropTypes from 'prop-types';
 
 /* global timeAgo */
 
-function createMarkup(comment) {
-  return { __html: comment.safe_processed_html };
-}
-
 function userProfilePage(username) {
   const str = `/${username}`;
   return str;
@@ -48,7 +44,7 @@ export const CommentListItem = ({ comment }) => (
     <div
       className="crayons-comment__body"
       // eslint-disable-next-line react/no-danger
-      dangerouslySetInnerHTML={createMarkup(comment)}
+      dangerouslySetInnerHTML={{ __html: comment.safe_processed_html }}
     />
   </div>
 );

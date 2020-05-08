@@ -30,7 +30,7 @@ function sendFeaturedArticleAnalytics(articleId) {
 
 const FeedLoading = () => (
   <div>
-    <LoadingArticle version='featured' />
+    <LoadingArticle version="featured" />
     <LoadingArticle />
     <LoadingArticle />
     <LoadingArticle />
@@ -42,7 +42,7 @@ const FeedLoading = () => (
 
 const PodcastEpisodes = ({ episodes }) => (
   <TodaysPodcasts>
-    {episodes.map(episode => (
+    {episodes.map((episode) => (
       <PodcastEpisode episode={episode} />
     ))}
   </TodaysPodcasts>
@@ -59,7 +59,7 @@ PodcastEpisodes.propTypes = {
 /**
  * Renders the main feed.
  */
-export const renderFeed = timeFrame => {
+export const renderFeed = (timeFrame) => {
   const feedContainer = document.getElementById('homepage-feed');
 
   render(
@@ -92,13 +92,13 @@ export const renderFeed = timeFrame => {
             <Article
               {...commonProps}
               article={featuredStory}
-              isFeatured={true}
+              isFeatured
               isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
             />
             {podcastEpisodes.length > 0 && (
               <PodcastEpisodes episodes={podcastEpisodes} />
             )}
-            {(subStories || []).map(story => (
+            {(subStories || []).map((story) => (
               <Article
                 {...commonProps}
                 article={story}

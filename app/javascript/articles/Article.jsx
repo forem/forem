@@ -42,7 +42,7 @@ export const Article = ({
         isFeatured && 'crayons-story--featured'
       }`}
       id={isFeatured && 'featured-story-marker'}
-      data-featured-article={`articles-${article.id}`}
+      data-featured-article={isFeatured && `articles-${article.id}`}
       data-content-user-id={article.user_id}
     >
       <div
