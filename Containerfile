@@ -3,9 +3,9 @@ FROM quay.io/devto/ruby:2.7.1
 USER root
 
 RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo && \
-    dnf install -y bash git nodejs postgresql ruby-devel less libxml2-devel libxslt-devel \
-    pcre-devel libffi-devel postgresql-devel tzdata ImageMagick libcurl \
-    libcurl-devel yarn
+    dnf install -y bash git ImageMagick iproute less libcurl libcurl-devel \
+                   libffi-devel libxml2-devel libxslt-devel nodejs pcre-devel \
+                   postgresql postgresql-devel ruby-devel tzdata yarn
 
 ENV BUNDLER_VERSION=2.1.4
 RUN gem install bundler:${BUNDLER_VERSION}
