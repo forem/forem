@@ -1123,4 +1123,28 @@ RSpec.describe User, type: :model do
       expect(described_class.mascot_account).to eq(user)
     end
   end
+
+  describe "#authenticated_through?" do
+    let(:provider) { Authentication::Providers.available.first }
+
+    it "returns false if provider is not known" do
+      expect(user.authenticated_through?(:unknown)).to be(false)
+    end
+
+    it "returns false if provider is not enabled" do
+      providers = Authentication::Providers.available - [provider]
+      allow(Authentication::Providers).to receive(:enabled).and_return(providers)
+
+      expect(user.authenticated_through?(provider)).to be(false)
+    end
+
+    it "returns false if the user has no related identity" do
+      expect(user.authenticated_through?(provider)).to be(false)
+    end
+
+    it "returns true if the user has related identity" do
+      user = create(:user, :with_identity, identities: [provider])
+      expect(user.authenticated_through?(provider)).to be(true)
+    end
+  end
 end
