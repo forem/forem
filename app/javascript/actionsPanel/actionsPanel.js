@@ -115,8 +115,8 @@ function toggleSubmitContainer() {
     .classList.toggle('hidden');
 }
 
-function clearSubmitContainer() {
-  document.getElementById('adjustment-reason-container').value = '';
+function clearAdjustmentReason() {
+  document.getElementById('tag-adjustment-reason').value = '';
 }
 
 function renderTagOnArticle(tagName, colors) {
@@ -156,7 +156,7 @@ function adjustTag(el) {
       if (json.status === 'Success') {
         let adjustedTagName;
         if (el.tagName === 'BUTTON') {
-          adjustedTagName = el.dataset;
+          adjustedTagName = el.dataset.tagName;
           el.remove();
         } else {
           adjustedTagName = el.value;
@@ -165,7 +165,7 @@ function adjustTag(el) {
         }
 
         toggleSubmitContainer();
-        clearSubmitContainer();
+        clearAdjustmentReason();
 
         if (json.result === 'addition') {
           renderTagOnArticle(adjustedTagName, json.colors);
@@ -198,7 +198,7 @@ function handleAdjustTagBtn(btn) {
   /* eslint-disable no-alert */
   if (
     adminTagInput &&
-    adminTagInput.value === '' &&
+    adminTagInput.value !== '' &&
     confirm(
       'This will clear your current "Add a tag" input. Do you want to continue?',
     )
