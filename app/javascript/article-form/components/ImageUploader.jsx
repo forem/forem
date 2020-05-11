@@ -14,12 +14,13 @@ export class ImageUploader extends Component {
   };
 
   handleInsertionImageUpload = e => {
-    this.clearUploadError();
+    const files = e.target.files;
 
+    this.clearUploadError();
     const validFileInputs = validateFileInputs();
 
-    if (validFileInputs) {
-      const payload = { image: e.target.files };
+    if (validFileInputs && files.length > 0) {
+      const payload = { image: files };
       generateMainImage(
         payload,
         this.handleInsertImageUploadSuccess,
@@ -34,7 +35,6 @@ export class ImageUploader extends Component {
     });
   };
 
-  
 
   clearUploadError = () => {
     this.setState({
