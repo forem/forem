@@ -7,6 +7,8 @@ class GithubRepo < ApplicationRecord
   validates :url, url: true, uniqueness: true
   validates :github_id_code, uniqueness: true
 
+  scope :featured, -> { where(featured: true) }
+
   after_save :clear_caches
   before_destroy :clear_caches
 

@@ -129,6 +129,7 @@ RSpec.describe "UserProfiles", type: :request do
     end
 
     context "when displaying a GitHub repository on the profile" do
+      let(:github_user) { create(:user, :with_identity, identities: %i[github]) }
       let(:params) do
         {
           description: "A book bot :robot:",
@@ -140,18 +141,27 @@ RSpec.describe "UserProfiles", type: :request do
         }
       end
 
-      it "renders emoji in description of featured repository" do
-        GithubRepo.upsert(user, params)
+      before do
+        omniauth_mock_github_payload
+      end
 
-        get "/#{user.username}"
+      it "renders emoji in description of featured repository" do
+        GithubRepo.upsert(github_user, params)
+
+        get "/#{github_user.username}"
         expect(response.body).to include("A book bot 🤖")
       end
 
       it "does not show a non featured repository" do
-        GithubRepo.upsert(user, params.merge(featured: false))
+        GithubRepo.upsert(github_user, params.merge(featured: false))
 
-        get "/#{user.username}"
+        get "/#{github_user.username}"
         expect(response.body).not_to include("A book bot 🤖")
+      end
+
+      it "does not render anything if the user has not authenticated through GitHub" do
+        get "/#{github_user.username}"
+        expect(response.body).not_to include("github-repos-container")
       end
     end
   end
