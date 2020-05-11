@@ -2,10 +2,9 @@ require "rails_helper"
 
 describe Rack::Attack, type: :request, throttle: true do
   before do
-    redis_url = "redis://localhost:6379"
-    cache_db = ActiveSupport::Cache::RedisStore.new(redis_url)
+    cache_db = ActiveSupport::Cache.lookup_store(:redis_cache_store)
     allow(Rails).to receive(:cache) { cache_db }
-    cache_db.data.flushdb
+    cache_db.redis.flushdb
     allow(Honeycomb).to receive(:add_field)
   end
 
