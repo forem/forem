@@ -8,7 +8,7 @@ RSpec.describe "Organization index", type: :system do
     create_list(:article, 2, organization: organization)
   end
 
-  context "when user is unauthorized" do
+  context "when user does not follow organization" do
     context "when 2 articles" do
       before { visit "/#{organization.slug}" }
 
@@ -39,6 +39,8 @@ RSpec.describe "Organization index", type: :system do
       it "visits ok" do
         create_list(:article, 3, organization: organization)
         visit "/#{organization.slug}"
+
+        Percy.snapshot(page, name: "Organization: /:organization_slug renders when user is not following org")
       end
     end
   end
@@ -53,6 +55,9 @@ RSpec.describe "Organization index", type: :system do
 
     it "shows the correct button", js: true do
       visit "/#{organization.slug}"
+
+      Percy.snapshot(page, name: "Organization: /:organization_slug renders when user follows org")
+
       within(".profile-details") do
         expect(page).to have_button("✓ FOLLOWING")
       end

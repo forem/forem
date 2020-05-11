@@ -37,6 +37,8 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
     fill_in_org_form
     click_button "Create Organization"
 
+    Percy.snapshot(page, name: "Settings: /settings/organization create organization")
+
     expect(page).to have_text("Your organization was successfully created and you are an admin.")
   end
 
@@ -47,6 +49,9 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
     visit "settings/organization"
     click_button("Make admin")
     page.driver.browser.switch_to.alert.accept
+
+    Percy.snapshot(page, name: "Settings: /settings/organization make admin")
+
     expect(page).to have_text("#{user2.name} is now an admin.")
   end
 
