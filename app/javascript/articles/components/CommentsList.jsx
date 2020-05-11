@@ -34,15 +34,18 @@ function moreCommentsButton(comments, articlePath, totalCount) {
 }
 
 export const CommentsList = ({ comments, articlePath, totalCount }) => {
-  return (
-    <div className="crayons-story__comments">
-      {comments.slice(0, numberOfCommentsToShow).map((comment) => {
-        return <CommentListItem comment={comment} />;
-      })}
+  if (comments && comments.length > 0) {
+    return (
+      <div className="crayons-story__comments">
+        {comments.slice(0, numberOfCommentsToShow).map((comment) => {
+          return <CommentListItem comment={comment} />;
+        })}
 
-      {moreCommentsButton(comments, articlePath, totalCount)}
-    </div>
-  );
+        {moreCommentsButton(comments, articlePath, totalCount)}
+      </div>
+    );
+  }
+  return '';
 };
 
 CommentsList.displayName = 'CommentsList';

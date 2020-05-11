@@ -184,7 +184,6 @@ exports[`<Article /> component should render a featured article 1`] = `
         </div>
       </div>
     </div>
-    <div />
   </div>
 </article>
 `;
@@ -397,7 +396,6 @@ exports[`<Article /> component should render a podcast episode 1`] = `
         </div>
       </div>
     </div>
-    <div />
   </div>
 </article>
 `;
@@ -571,7 +569,6 @@ exports[`<Article /> component should render a standard article 1`] = `
         </div>
       </div>
     </div>
-    <div />
   </div>
 </article>
 `;
@@ -681,7 +678,6 @@ exports[`<Article /> component should render a user article 1`] = `
         </div>
       </div>
     </div>
-    <div />
   </div>
 </article>
 `;
@@ -866,7 +862,6 @@ exports[`<Article /> component should render a video article 1`] = `
         </div>
       </div>
     </div>
-    <div />
   </div>
 </article>
 `;
@@ -1051,7 +1046,6 @@ exports[`<Article /> component should render a video article with a flare tag 1`
         </div>
       </div>
     </div>
-    <div />
   </div>
 </article>
 `;
@@ -1296,7 +1290,7 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
         class="crayons-story__comments__actions"
       >
         <a
-          class="crayons-btn crayons-btn--secondary crayons-btn--s mr-2"
+          class="crayons-btn crayons-btn--secondary crayons-btn--s"
           href="/some-post/path#comments-container"
         >
           See all 213 comments
@@ -1476,7 +1470,6 @@ exports[`<Article /> component should render with a flare tag 1`] = `
         </div>
       </div>
     </div>
-    <div />
   </div>
 </article>
 `;
@@ -1657,7 +1650,6 @@ exports[`<Article /> component should render with a snippet result 1`] = `
         </div>
       </div>
     </div>
-    <div />
   </div>
 </article>
 `;
@@ -1855,7 +1847,6 @@ exports[`<Article /> component should render with an organization 1`] = `
         </div>
       </div>
     </div>
-    <div />
   </div>
 </article>
 `;
@@ -2100,7 +2091,7 @@ exports[`<Article /> component should render with comments 1`] = `
         class="crayons-story__comments__actions"
       >
         <a
-          class="crayons-btn crayons-btn--secondary crayons-btn--s mr-2"
+          class="crayons-btn crayons-btn--secondary crayons-btn--s"
           href="/some-post/path#comments-container"
         >
           See all 213 comments
@@ -2280,7 +2271,6 @@ exports[`<Article /> component should render with reactions 1`] = `
         </div>
       </div>
     </div>
-    <div />
   </div>
 </article>
 `;

@@ -143,9 +143,9 @@ exports[`<CommentsList /> should not render "See all comments" button when there
 </div>
 `;
 
-exports[`<CommentsList /> should not render with empty comments array 1`] = `<div />`;
+exports[`<CommentsList /> should not render with empty comments array 1`] = `""`;
 
-exports[`<CommentsList /> should not render without comments 1`] = `<div />`;
+exports[`<CommentsList /> should not render without comments 1`] = `""`;
 
 exports[`<CommentsList /> should render "See all comments" button when there are two top comments and more than two total 1`] = `
 <div
@@ -241,7 +241,7 @@ exports[`<CommentsList /> should render "See all comments" button when there are
     class="crayons-story__comments__actions"
   >
     <a
-      class="crayons-btn crayons-btn--secondary crayons-btn--s mr-2"
+      class="crayons-btn crayons-btn--secondary crayons-btn--s"
       href="#comments-container"
     >
       See all 3 comments
@@ -344,7 +344,7 @@ exports[`<CommentsList /> should render comments 1`] = `
     class="crayons-story__comments__actions"
   >
     <a
-      class="crayons-btn crayons-btn--secondary crayons-btn--s mr-2"
+      class="crayons-btn crayons-btn--secondary crayons-btn--s"
       href="#comments-container"
     >
       See all 3 comments
