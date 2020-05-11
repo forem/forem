@@ -11,7 +11,7 @@ RSpec.describe "Creating an article with the editor", type: :system do
   it "creates a new article", js: true, retry: 3 do
     visit new_path
     fill_in "article_body_markdown", with: template
-    click_button "SAVE CHANGES"
+    click_button "Save changes"
     expect(page).to have_selector("header h1", text: "Sample Article")
   end
 end
