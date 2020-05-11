@@ -261,9 +261,9 @@ function addAdjustTagListeners() {
     },
   );
 
-  document
-    .getElementById('tag-adjust-submit')
-    .addEventListener('click', (e) => {
+  const adjustTagSubmitBtn = document.getElementById('tag-adjust-submit');
+  if (adjustTagSubmitBtn) {
+    adjustTagSubmitBtn.addEventListener('click', (e) => {
       e.preventDefault();
       const textArea = document.getElementById('tag-adjustment-reason');
       const dataSource =
@@ -276,6 +276,7 @@ function addAdjustTagListeners() {
     });
 
   handleAdminInput();
+  }
 }
 
 function addBottomActionsListeners() {
