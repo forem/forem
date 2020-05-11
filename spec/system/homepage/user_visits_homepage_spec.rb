@@ -22,6 +22,8 @@ RSpec.describe "User visits a homepage", type: :system do
         end
       end
 
+      Percy.snapshot(page, name: "Visits homepage: logged out user")
+
       expect(page).to have_text("Design Your Experience")
     end
 
