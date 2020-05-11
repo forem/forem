@@ -27,6 +27,10 @@ class Api::V0::ApiController < ApplicationController
     render json: { error: "unauthorized", status: 401 }, status: :unauthorized
   end
 
+  def error_forbidden
+    render json: { error: "forbidden", status: 403 }, status: :forbidden
+  end
+
   def error_not_found
     render json: { error: "not found", status: 404 }, status: :not_found
   end
@@ -34,10 +38,10 @@ class Api::V0::ApiController < ApplicationController
   def authenticate!
     if doorkeeper_token
       @user = User.find(doorkeeper_token.resource_owner_id)
-      return error_unauthorized unless @user
+      return error_forbidden unless @user
     elsif request.headers["api-key"]
       @user = authenticate_with_api_key
-      return error_unauthorized unless @user
+      return error_forbidden unless @user
     elsif current_user
       @user = current_user
     else
@@ -53,8 +57,14 @@ class Api::V0::ApiController < ApplicationController
   # Checks if the user is authenticated, if so sets the variable @user
   # Returns HTTP 401 Unauthorized otherwise
   def authenticate_with_api_key_or_current_user!
-    @user = authenticate_with_api_key || current_user
-    error_unauthorized unless @user
+    if request.headers["api-key"]
+      @user = authenticate_with_api_key
+      error_forbidden unless @user
+    elsif current_user
+      @user = current_user
+    else
+      error_unauthorized
+    end
   end
 
   private

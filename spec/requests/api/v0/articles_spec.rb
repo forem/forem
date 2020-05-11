@@ -453,14 +453,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "fails with the wrong api key" do
         post api_articles_path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:forbidden)
       end
 
       it "fails with a failing secure compare" do
         allow(ActiveSupport::SecurityUtils).
           to receive(:secure_compare).and_return(false)
         post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:forbidden)
       end
 
       it "fails when oauth's access_token" do
@@ -756,14 +756,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       it "fails with the wrong api key" do
         put path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:forbidden)
       end
 
       it "fails with a failing secure compare" do
         allow(ActiveSupport::SecurityUtils).
           to receive(:secure_compare).and_return(false)
         put path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:forbidden)
       end
 
       it "fails with oauth's access_token" do

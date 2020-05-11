@@ -240,7 +240,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
 
       it "fails with the wrong api key" do
         post api_classified_listings_path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
@@ -466,7 +466,7 @@ RSpec.describe "Api::V0::ClassifiedListings", type: :request do
 
       it "fails with the wrong api key" do
         put api_classified_listing_path(listing.id), headers: { "api-key" => "foobar", "content-type" => "application/json" }
-        expect(response).to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:forbidden)
       end
     end
 
