@@ -156,7 +156,7 @@ function adjustTag(el) {
       if (json.status === 'Success') {
         let adjustedTagName;
         if (el.tagName === 'BUTTON') {
-          adjustedTagName = el.dataset;
+          adjustedTagName = el.dataset.tagName;
           el.remove();
         } else {
           adjustedTagName = el.value;
