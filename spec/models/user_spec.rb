@@ -201,11 +201,12 @@ RSpec.describe User, type: :model do
       expect(user.errors[:username].to_s).to include("taken")
     end
 
-    it "validates can_send_confirmation_email" do
-      user = build(:user)
+    it "validates can_send_confirmation_email for existing user" do
+      user = create(:user)
       limiter = RateLimitChecker.new(user)
       allow(user).to receive(:rate_limiter).and_return(limiter)
       allow(limiter).to receive(:limit_by_action).and_return(true)
+      user.update(email: "new_email@yo.com")
       expect(user).not_to be_valid
       expect(user.errors[:email].to_s).to include("confirmation could not be sent. Rate limit reached")
     end

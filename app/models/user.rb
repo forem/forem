@@ -611,7 +611,7 @@ class User < ApplicationRecord
   end
 
   def can_send_confirmation_email
-    return if changes[:email].blank?
+    return if changes[:email].blank? || id.blank?
 
     rate_limiter.track_limit_by_action(:send_email_confirmation)
     rate_limiter.check_limit!(:send_email_confirmation)
