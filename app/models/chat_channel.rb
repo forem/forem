@@ -9,6 +9,7 @@ class ChatChannel < ApplicationRecord
   has_many :pending_memberships, -> { where status: "pending" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :rejected_memberships, -> { where status: "rejected" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :mod_memberships, -> { where role: "mod" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :requested_memberships, -> { where status: "joining_request" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :active_users, through: :active_memberships, class_name: "User", source: :user
   has_many :pending_users, through: :pending_memberships, class_name: "User", source: :user
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
