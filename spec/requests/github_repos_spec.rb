@@ -24,6 +24,7 @@ RSpec.describe "GithubRepos", type: :request do
 
     allow(Octokit::Client).to receive(:new).and_return(my_octokit_client)
     allow(my_octokit_client).to receive(:repositories) { stubbed_github_repos }
+    allow(my_octokit_client).to receive(:repository) { stubbed_github_repos.first }
   end
 
   describe "GET /github_repos" do
@@ -85,10 +86,10 @@ RSpec.describe "GithubRepos", type: :request do
       expect(response.content_type).to eq("application/json")
     end
 
-    it "returns 404 and json response on error" do
-      allow(my_octokit_client).to receive(:repositories).and_return([])
+    it "returns 404 if no repository is found" do
+      allow(my_octokit_client).to receive(:repository).and_raise(Octokit::NotFound)
 
-      params = { github_repo: "{}" }
+      params = { github_repo: github_repo.to_json }
       post update_or_create_github_repos_path(params), headers: headers
       expect(response).to have_http_status(:not_found)
     end
