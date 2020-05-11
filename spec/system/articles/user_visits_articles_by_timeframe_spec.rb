@@ -13,6 +13,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/week" }
 
       it "shows correct articles count" do
+        Percy.snapshot(page, name: "Articles: /top/week logged out user")
         expect(page).to have_selector(".crayons-story", visible: :visible, count: 2)
       end
 
@@ -32,6 +33,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/month" }
 
       it "shows correct articles count" do
+        Percy.snapshot(page, name: "Articles: /top/month logged out user")
         expect(page).to have_selector(".crayons-story", visible: :visible, count: 3)
       end
 
@@ -52,6 +54,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/year" }
 
       it "shows correct articles count" do
+        Percy.snapshot(page, name: "Articles: /top/year logged out user")
         expect(page).to have_selector(".crayons-story", visible: :visible, count: 4)
       end
 
@@ -73,6 +76,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/infinity" }
 
       it "shows correct articles and cta count" do
+        Percy.snapshot(page, name: "Articles: /top/infinity logged out user")
         expect(page).to have_selector(".crayons-story", visible: :visible, count: 5)
         expect(page).to have_selector(".feed-cta", count: 1)
       end
@@ -96,6 +100,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/latest" }
 
       it "shows correct articles and cta count" do
+        Percy.snapshot(page, name: "Articles: /latest logged out user")
         expect(page).to have_selector(".crayons-story", visible: :visible, count: 5)
         expect(page).to have_selector(".feed-cta", count: 1)
       end
@@ -125,6 +130,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     end
 
     it "shows correct articles count" do
+      Percy.snapshot(page, name: "Articles: /top/week logged in user")
       expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 1)
     end
 
@@ -143,6 +149,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/month" }
 
       it "shows correct articles count" do
+        Percy.snapshot(page, name: "Articles: /top/month logged in user")
         expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 2)
       end
 
@@ -163,6 +170,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/year" }
 
       it "shows correct articles count" do
+        Percy.snapshot(page, name: "Articles: /top/year logged in user")
         expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 3)
       end
 
@@ -184,6 +192,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/infinity" }
 
       it "shows correct articles count" do
+        Percy.snapshot(page, name: "Articles: /top/infinity logged in user")
         expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 4)
       end
 
@@ -206,6 +215,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/latest" }
 
       it "shows correct articles" do
+        Percy.snapshot(page, name: "Articles: /latest logged in user")
         expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 4)
       end
 

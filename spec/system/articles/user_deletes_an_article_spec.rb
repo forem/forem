@@ -8,6 +8,10 @@ RSpec.describe "Deleting Article", type: :system do
     visit "/dashboard"
     click_on "MANAGE"
     click_on "DELETE"
+
+    # Take snapshot before confirming deletion
+    Percy.snapshot(page, name: "Article: confirm deletion")
+
     click_on "DELETE" # This is for confirming deletion
     expect(page).to have_text("Write your first post now")
   end

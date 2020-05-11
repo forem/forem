@@ -13,6 +13,7 @@ RSpec.describe "Views an article", type: :system do
 
   it "shows an article" do
     visit article.path
+    Percy.snapshot(page, name: "Article: renders")
     expect(page).to have_content(article.title)
   end
 
@@ -20,6 +21,7 @@ RSpec.describe "Views an article", type: :system do
     create_list(:comment, 3, commentable: article)
 
     visit article.path
+    Percy.snapshot(page, name: "Article: shows comments")
     expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
   end
 
@@ -57,6 +59,8 @@ RSpec.describe "Views an article", type: :system do
 
         visit articles.first.path
 
+        Percy.snapshot(page, name: "Articles: renders a collection in order")
+
         elements = page.all(:xpath, articles_selector)
         paths = elements.map { |e| e[:href] }
         expect(paths).to eq([articles.first.path, articles.second.path])
@@ -87,6 +91,7 @@ RSpec.describe "Views an article", type: :system do
         article2.update_columns(collection_id: collection.id)
 
         visit article1.path
+        Percy.snapshot(page, name: "Articles: renders crossposted articles")
 
         expected_paths = [article1.path, crossposted_article.path, article2.path]
 

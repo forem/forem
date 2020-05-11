@@ -9,6 +9,9 @@ RSpec.describe "Viewing an article stats", type: :system, js: true do
     user.add_role(:pro)
     sign_in user
     visit path
+
+    Percy.snapshot(page, name: "Article: renders stats")
+
     expect(page).to have_current_path(path)
     expect(page).to have_selector(".summary-stats")
   end
