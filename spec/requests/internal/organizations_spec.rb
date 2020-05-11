@@ -33,7 +33,7 @@ RSpec.describe "internal/organizations", type: :request do
   end
 
   describe "PATCH /internal" do
-    let(:organization) { create(:organiztion) }
+    let(:organization) { create(:organization) }
 
     it "adds credits to an organization" do
       params = { credits: 1, credit_action: :add }
@@ -41,7 +41,7 @@ RSpec.describe "internal/organizations", type: :request do
       expect do
         patch update_org_credits_internal_organization_path(organization),
               params: params
-      end.to change(organization, :unspent_credits_count).by(1)
+      end.to change { organization.reload.unspent_credits_count }.by(1)
     end
 
     it "removes credits to an organization" do
@@ -51,7 +51,7 @@ RSpec.describe "internal/organizations", type: :request do
       expect do
         patch update_org_credits_internal_organization_path(organization),
               params: params
-      end.to change(organization, :unspent_credits_count).by(-1)
+      end.to change { organization.reload.unspent_credits_count }.by(-1)
     end
   end
 end
