@@ -7,6 +7,9 @@ RSpec.describe "User visits podcast show page", type: :system do
 
   it "they see the content of the hero", retry: 3 do
     visit podcast_episode.path.to_s
+
+    Percy.snapshot(page, name: "Podcast: /:podcast_slug/:episode_slug renders")
+
     expect(page).to have_text(podcast_episode.title)
     expect(page).to have_css ".record"
     expect(page).not_to have_css ".published-at"
@@ -41,6 +44,9 @@ RSpec.describe "User visits podcast show page", type: :system do
     it "displays status when episode is not reachable by https" do
       podcast_episode = create(:podcast_episode, https: false)
       visit podcast_episode.path.to_s
+
+      Percy.snapshot(page, name: "Podcast: /:podcast_slug/:episode_slug renders when not reachable by https")
+
       expect(page).to have_text(I18n.t("podcasts.statuses.unplayable"))
       expect(page).to have_text("Click here to download")
     end
@@ -67,13 +73,16 @@ RSpec.describe "User visits podcast show page", type: :system do
     end
   end
 
-  context "when there're existing comments" do
+  context "when there are existing comments" do
     let(:user) { create(:user) }
     let(:comment) { create(:comment, user_id: user.id, commentable: podcast_episode) }
     let!(:comment2) { create(:comment, user_id: user.id, commentable: podcast_episode, parent: comment) }
 
     it "sees the comments", js: true do
       visit podcast_episode.path.to_s
+
+      Percy.snapshot(page, name: "Podcast: /:podcast_slug/:episode_slug renders with comments")
+
       expect(page).to have_selector(".comment-deep-0#comment-node-#{comment.id}", visible: :visible, count: 1)
       expect(page).to have_selector(".comment-deep-1#comment-node-#{comment2.id}", visible: :visible, count: 1)
     end
