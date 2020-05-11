@@ -59,7 +59,7 @@ class ChatChannel < ApplicationRecord
 
   class << self
     def create_with_users(users:, channel_type: "direct", contrived_name: "New Channel", membership_role: "member")
-      raise "Invalid direct channel" if users.size != 2 && channel_type == "direct"
+      raise "Invalid direct channel" if invalid_direct_channel?(users, channel_type)
 
       usernames = users.map(&:username).sort
       slug = channel_type == "direct" ? usernames.join("/") : contrived_name.to_s.parameterize + "-" + rand(100_000).to_s(26)
@@ -90,6 +90,10 @@ class ChatChannel < ApplicationRecord
         )
       end
       channel
+    end
+
+    def invalid_direct_channel?(users, channel_type)
+      (users.size != 2 || users.map(&:id).uniq.count < 2) && channel_type == "direct"
     end
   end
 
