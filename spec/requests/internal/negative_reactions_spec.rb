@@ -44,9 +44,9 @@ RSpec.describe "/internal/negative_reactions", type: :request do
     describe "GETS /internal/negative_reactions" do
       it "renders to appropriate page" do
         get "/internal/negative_reactions"
-        expect(response.body).to include(moderator.username)
-        expect(response.body).to include(user_reaction.reactable.username)
-        expect(response.body).to include(article_reaction.reactable.title)
+        expect(response.body).to include(CGI.escapeHTML(moderator.username)).
+          and include(CGI.escapeHTML(user_reaction.reactable.username)).
+          and include(CGI.escapeHTML(article_reaction.reactable.title))
       end
     end
   end
