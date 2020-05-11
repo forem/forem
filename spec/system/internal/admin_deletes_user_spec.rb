@@ -14,6 +14,8 @@ RSpec.describe "Admin deletes user", type: :system do
       click_button "☠️ Fully Delete User & All Activity ☠️"
     end
 
+    Percy.snapshot(page, name: "Admin: /internal/users/:user_id/edit deleting a user")
+
     message = "@#{user.username} (email: #{user.email}, user_id: #{user.id}) has been fully deleted."
     expect(page).to have_content(message)
   end

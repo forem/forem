@@ -15,6 +15,8 @@ RSpec.describe "Admin manages reports", type: :system do
   end
 
   it "loads the view" do
+    Percy.snapshot(page, name: "Admin: /internal/feedback_messages")
+
     expect(page).to have_content("Feedback Messages")
     expect(page).to have_content("Suspicious Activity")
   end
@@ -33,6 +35,9 @@ RSpec.describe "Admin manages reports", type: :system do
     it "searches reports" do
       fill_in "q_reporter_username_cont", with: user.username.to_s
       click_on "Search"
+
+      Percy.snapshot(page, name: "Admin: /internal/feedback_messages search")
+
       expect(page).to have_css("#edit_feedback_message_#{feedback_message.id}")
       expect(page).not_to have_css("#edit_feedback_message_#{feedback_message3.id}")
 
@@ -46,6 +51,9 @@ RSpec.describe "Admin manages reports", type: :system do
     it "filters by reports by status" do
       select "Invalid", from: "q[status_eq]"
       click_on "Search"
+
+      Percy.snapshot(page, name: "Admin: /internal/feedback_messages filter")
+
       expect(page).not_to have_css("#edit_feedback_message_#{feedback_message.id}")
       expect(page).not_to have_css("#edit_feedback_message_#{feedback_message3.id}")
       expect(page).to have_css("#edit_feedback_message_#{feedback_message2.id}")

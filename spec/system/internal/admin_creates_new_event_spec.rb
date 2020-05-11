@@ -32,6 +32,9 @@ RSpec.describe "Admin creates new event", type: :system do
   it "loads published events on /events" do
     create_and_publish_event
     visit "/events"
+
+    Percy.snapshot(page, name: "Admin: /internal/events shows published events")
+
     expect(page).to have_content("Workshop Title")
   end
 end
