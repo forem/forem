@@ -166,7 +166,7 @@ function insertArticles(articles) {
   });
   var distanceFromBottom = document.documentElement.scrollHeight - document.body.scrollTop;
   var newNode = document.createElement("div");
-  newNode.classList.add('paged-stories')
+  newNode.classList.add('paged-stories');
   newNode.innerHTML = newArticlesHTML;
 
   newNode.addEventListener('click', (event) => {
