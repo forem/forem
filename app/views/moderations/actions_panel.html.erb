@@ -58,7 +58,7 @@
     <header class="other-things">
       <h1>Other things you can do</h1>
     </header>
-    <% unless @moderatable.tag_list.size == 4 && @moderatable_tags&.length.zero? && !current_user.any_admin? %>
+    <% if current_user.any_admin? || @should_show_adjust_tags %>
       <button class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags">
         <div class="label-wrapper">
           <div class="icon circle centered-icon">
@@ -73,41 +73,36 @@
           <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
         </div>
       </button>
-
       <div class="adjust-tags-options dropdown-options hidden">
         <% if current_user.any_admin? %>
-        <div class="add-tag-container" data-allowed-to-adjust="<%= @allowed_to_adjust %>">
-          <input class="crayons-textfield" type="text" placeholder="Add a tag">
-        </div>
-        <% elsif @moderatable.tag_list.size < 4 %>
-          <% @tag_moderator_tags.each do |tag| %>
-            <button class="adjustable-tag" type="button" data-adjustment-type="addition" data-tag-id="<%= tag.id %>" data-article-id="<%= @moderatable.id %>">
-              <span class="num-sign">#</span><%= tag.name %>
-              <div class="circle centered-icon adjustment-icon">
-                <%= inline_svg_tag("plus.svg", aria: false) %>
-              </div>
-            </button>
+          <% if @moderatable.tag_list.size < 4 %>
+            <div class="add-tag-container">
+              <input id="admin-add-tag" class="crayons-textfield" type="text" placeholder="Add a tag" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
+            </div>
           <% end %>
-        <% end %>
-        <% if @moderatable_tags&.length.positive? %>
-          <% @moderatable_tags.each do |tag| %>
-            <button class="adjustable-tag" type="button" data-adjustment-type="removal" data-tag-id="<%= tag.id %>">
-              <span class="num-sign">#</span><%= tag.name %>
-              <div class="circle centered-icon adjustment-icon selected">
-                <%= inline_svg_tag("subtract.svg", aria: false) %>
-              </div>
-            </button>
-          <% end %>
-        <% elsif current_user.any_admin? %>
           <% @moderatable.tags.each do |tag| %>
-            <button class="adjustable-tag" type="button" data-adjustment-type="removal" data-tag-id="<%= tag.id %>">
+            <button class="adjustable-tag" type="button" data-adjustment-type="subtract" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
               <span class="num-sign">#</span><%= tag.name %>
-              <div class="circle centered-icon adjustment-icon selected">
+              <div class="circle centered-icon adjustment-icon subtract">
                 <%= inline_svg_tag("subtract.svg", aria: false) %>
               </div>
             </button>
           <% end %>
+        <% else %>
+          <% @tag_moderator_tags.each do |tag| %>
+            <% subtract_or_plus = @moderatable.tag_list.include?(tag.name) ? "subtract" : "plus" %>
+            <button class="adjustable-tag" type="button" data-adjustment-type="<%= subtract_or_plus %>" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
+              <span class="num-sign">#</span><%= tag.name %>
+              <div class="circle centered-icon adjustment-icon <%= subtract_or_plus %>">
+                <%= inline_svg_tag("#{subtract_or_plus}.svg", aria: false) %>
+              </div>
+            </button>
+          <% end %>
         <% end %>
+        <form id="adjustment-reason-container" class="adjustment-reason-container hidden">
+          <textarea class="crayons-textfield" placeholder="Reason for tag adjustment" id="tag-adjustment-reason" required></textarea>
+          <button class="crayons-btn" id="tag-adjust-submit" type="submit">Submit</button>
+        </form>
         <a href="<%= URL.url %>/community-moderation" target="_blank" rel="noopener">
           <span class="how-this-works-section">How does this work?</span>
         </a>
