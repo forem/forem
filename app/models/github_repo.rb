@@ -26,14 +26,8 @@ class GithubRepo < ApplicationRecord
     repo
   end
 
-  # select user_id, count(*) as count from github_repos group by user_id order by count desc;
   def self.update_to_latest
     where("updated_at < ?", 1.day.ago).find_each do |repo|
-      # NOTE: repos could change ownership in time, tying them to the user_id
-      # for the token it's an issue
-
-      # maybe keep the user token but use pagination and iterate through
-      # repos known grouped by user_id
       user_token = User.find_by(id: repo.user_id).identities.where(provider: "github").last.token
       client = Octokit::Client.new(access_token: user_token)
       begin
