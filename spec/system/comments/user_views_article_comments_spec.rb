@@ -26,6 +26,8 @@ RSpec.describe "Visiting article comments", type: :system, js: true do
     end
 
     it "displays grandchild comments" do
+      Percy.snapshot(page, name: "Comment: /:article/comments nested comments")
+
       expect(page).to have_selector("#comment-node-#{grandchild_comment.id}.comment-deep-2", visible: :visible, count: 1)
     end
   end
@@ -42,6 +44,8 @@ RSpec.describe "Visiting article comments", type: :system, js: true do
     end
 
     it "displays grandchild comments" do
+      Percy.snapshot(page, name: "Comment: /:article/comments/:comment_id nested comments")
+
       expect(page).to have_selector("#comment-node-#{grandchild_comment.id}.comment-deep-2", visible: :visible, count: 1)
     end
   end

@@ -18,6 +18,8 @@ RSpec.describe "Viewing a comment", type: :system, js: true do
 
   context "when showing the date" do
     it "shows the readable publish date" do
+      Percy.snapshot(page, name: "Comment: can render")
+
       expect(page).to have_selector(".comment-date time", text: "Mar 4")
     end
 

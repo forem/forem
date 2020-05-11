@@ -20,6 +20,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     wait_for_javascript
 
+    Percy.snapshot(page, name: "Comment: fill out comment box")
+
     fill_in "text-area", with: raw_comment
     click_button("SUBMIT")
     expect(page).to have_text(raw_comment)
@@ -64,6 +66,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     wait_for_javascript
 
+    Percy.snapshot(page, name: "Comment: preview comment box")
+
     fill_in "text-area", with: raw_comment
     click_button("PREVIEW")
     expect(page).to have_text(raw_comment)
@@ -98,6 +102,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       visible: :hidden,
     )
 
+    Percy.snapshot(page, name: "Image: uploads to an article")
+
     expect(page).to have_no_css("div.file-upload-error")
   end
 
@@ -113,6 +119,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       Rails.root.join("app/assets/images/sloan.png"),
       visible: :hidden,
     )
+
+    Percy.snapshot(page, name: "Image: upload error")
 
     expect(page).to have_css("div.file-upload-error")
     expect(page).to have_css(
