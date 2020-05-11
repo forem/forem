@@ -115,8 +115,8 @@ function toggleSubmitContainer() {
     .classList.toggle('hidden');
 }
 
-function clearSubmitContainer() {
-  document.getElementById('adjustment-reason-container').value = '';
+function clearAdjustmentReason() {
+  document.getElementById('tag-adjustment-reason').value = '';
 }
 
 function renderTagOnArticle(tagName, colors) {
@@ -165,7 +165,7 @@ function adjustTag(el) {
         }
 
         toggleSubmitContainer();
-        clearSubmitContainer();
+        clearAdjustmentReason();
 
         if (json.result === 'addition') {
           renderTagOnArticle(adjustedTagName, json.colors);
