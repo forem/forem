@@ -198,7 +198,7 @@ function handleAdjustTagBtn(btn) {
   /* eslint-disable no-alert */
   if (
     adminTagInput &&
-    adminTagInput.value === '' &&
+    adminTagInput.value !== '' &&
     confirm(
       'This will clear your current "Add a tag" input. Do you want to continue?',
     )
