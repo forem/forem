@@ -97,11 +97,13 @@ export const Article = ({
           </div>
         </div>
 
-        <CommentsList
-          comments={article.top_comments}
-          articlePath={article.path}
-          totalCount={article.comments_count}
-        />
+        {article.top_comments && article.top_comments.length > 0 && (
+          <CommentsList
+            comments={article.top_comments}
+            articlePath={article.path}
+            totalCount={article.comments_count}
+          />
+        )}
       </div>
     </article>
   );

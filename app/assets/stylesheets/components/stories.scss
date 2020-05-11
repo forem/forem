@@ -162,6 +162,7 @@
     padding: var(--story-padding);
     padding-top: var(--su-4);
     border-radius: 0 0 var(--radius) var(--radius);
+    margin-top: calc(var(--su-1) * -1);
 
     &__headline {
       font-weight: var(--fw-bold);
@@ -173,6 +174,7 @@
 
     &__actions {
       padding-left: calc(var(--su-6) + var(--su-4));
+      padding-top: var(--su-4);
     }
   }
 

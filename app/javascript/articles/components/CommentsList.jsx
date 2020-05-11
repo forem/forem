@@ -17,7 +17,6 @@ function moreCommentsButton(comments, articlePath, totalCount) {
       <div className="crayons-story__comments__actions">
         <Button
           variant="secondary"
-          className="mr-2"
           size="s"
           tagName="a"
           url={linkToCommentsSection(articlePath)}
@@ -35,18 +34,15 @@ function moreCommentsButton(comments, articlePath, totalCount) {
 }
 
 export const CommentsList = ({ comments, articlePath, totalCount }) => {
-  if (comments && comments.length > 0) {
-    return (
-      <div className="crayons-story__comments">
-        {comments.slice(0, numberOfCommentsToShow).map((comment) => {
-          return <CommentListItem comment={comment} />;
-        })}
+  return (
+    <div className="crayons-story__comments">
+      {comments.slice(0, numberOfCommentsToShow).map((comment) => {
+        return <CommentListItem comment={comment} />;
+      })}
 
-        {moreCommentsButton(comments, articlePath, totalCount)}
-      </div>
-    );
-  }
-  return <div />;
+      {moreCommentsButton(comments, articlePath, totalCount)}
+    </div>
+  );
 };
 
 CommentsList.displayName = 'CommentsList';
