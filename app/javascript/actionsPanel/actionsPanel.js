@@ -4,6 +4,7 @@ function addCloseListener() {
   const button = document.querySelector('.close-actions-panel');
   button.addEventListener('click', () => {
     // getting the article show page document because this is called within an iframe
+    // eslint-disable-next-line no-restricted-globals
     const articleDocument = top.document;
 
     articleDocument
@@ -120,6 +121,7 @@ function clearAdjustmentReason() {
 }
 
 function renderTagOnArticle(tagName, colors) {
+  // eslint-disable-next-line no-restricted-globals
   const articleTagsContainer = top.document.getElementsByClassName(
     'tags',
   )[0];
@@ -170,6 +172,7 @@ function adjustTag(el) {
         if (json.result === 'addition') {
           renderTagOnArticle(adjustedTagName, json.colors);
         } else {
+          // eslint-disable-next-line no-restricted-globals
           const tagOnArticle = top.document.querySelector(
             `.tag[href="/t/${adjustedTagName}"]`,
           );
