@@ -15,7 +15,7 @@
   display: inline-block;
   padding: calc(var(--vertical-padding) - var(--border-width))
     calc(var(--horizontal-padding) - var(--border-width));
-  border-radius: $br-default;
+  border-radius: var(--radius);
   outline: none;
   font-family: inherit;
   font-size: var(--font-size);
