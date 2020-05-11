@@ -254,8 +254,7 @@
   .reaction-button-circle {
     position: relative;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    place-items: center;
     margin: 0 auto;
     width: var(--su-9);
     height: var(--su-9);
@@ -275,8 +274,7 @@
       width: var(--su-5);
       height: var(--su-5);
       display: flex;
-      justify-content: center;
-      align-items: center;
+    place-items: center;
       background-color: var(--accent-success);
       border-radius: 100%;
       border: 2px solid var(--base-inverted);
@@ -295,8 +293,7 @@
 
   .reaction-vomit-button {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    place-items: center;
     border: none;
     background: var(--base-inverted);
     height: var(--su-7);
@@ -432,8 +429,7 @@
         width: 16px;
         height: 16px;
         display: flex;
-        justify-content: center;
-        align-items: center;
+    place-items: center;
         align-self: center;
         transition-duration: 0.4s;
         svg {
@@ -550,8 +546,7 @@
 
           .level-rating-number {
             display: flex;
-            justify-content: center;
-            align-items: center;
+    place-items: center;
             font-weight: var(--fw-heavy);
             font-size: var(--fs-base);
             line-height: var(--lh-base);
