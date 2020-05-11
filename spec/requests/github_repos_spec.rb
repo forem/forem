@@ -126,7 +126,6 @@ RSpec.describe "GithubRepos", type: :request do
       params = { github_repo: "{}" }
       post update_or_create_github_repos_path(params), headers: headers
       expect(response).to have_http_status(:not_found)
-      expect(response.body).to include("Could not find Github repo")
     end
 
     it "updates the current user github_repos_updated_at" do
@@ -135,7 +134,7 @@ RSpec.describe "GithubRepos", type: :request do
       Timecop.travel(5.minutes.from_now) do
         params = { github_repo: github_repo.to_json }
         post update_or_create_github_repos_path(params), headers: headers
-        expect(user.reload.github_repos_updated_at > previous_date).to be(true)
+        expect(user.reload.github_repos_updated_at.to_i > previous_date.to_i).to be(true)
       end
     end
 
