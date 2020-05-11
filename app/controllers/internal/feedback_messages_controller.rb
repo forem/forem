@@ -5,7 +5,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
     @q = FeedbackMessage.includes(:reporter, :offender, :affected).
       order(created_at: :desc).
       ransack(params[:q])
-    @feedback_messages = @q.result.limit(5).page(params[:page] || 1).per(5)
+    @feedback_messages = @q.result.page(params[:page] || 1).per(5)
 
     @feedback_type = params[:state] || "abuse-reports"
     @status = params[:status] || "Open"
