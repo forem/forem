@@ -21,6 +21,7 @@ module Notifications
           comment: comment_data(comment)
         }
 
+        targets = []
         user_ids.delete(comment.user_id).each do |user_id|
           Notification.create(
             user_id: user_id,
@@ -30,11 +31,11 @@ module Notifications
             json_data: json_data,
           )
 
-          # Be careful with this basic first implementation of push notification. Has dependency of Pusher/iPhone sort of tough to test reliably.
-          if User.find_by(id: user_id)&.mobile_comment_notifications
-            send_push_notifications(user_id, "@#{comment.user.username}", "re: #{comment.parent_or_root_article.title.strip}", comment.title, "/notifications/comments")
-          end
+          targets << "user-notifications-#{user_id}" if User.find_by(id: user_id)&.mobile_comment_notifications
         end
+
+        # Sends the push notification to Pusher Beams channels. Batch is in place to respect Pusher 100 channel limit.
+        targets.each_slice(100) { |batch| send_push_notifications(batch) }
 
         return unless comment.commentable.organization_id
 
@@ -78,24 +79,38 @@ module Notifications
         user_ids_for("only_author_comments")
       end
 
-      def send_push_notifications(user_id, title, subtitle, body, path)
+      def send_push_notifications(channels)
         return unless ApplicationConfig["PUSHER_BEAMS_KEY"] && ApplicationConfig["PUSHER_BEAMS_KEY"].size == 64
 
-        payload = {
+        Pusher::PushNotifications.publish_to_interests(
+          interests: channels,
+          payload: push_notification_payload,
+        )
+      end
+
+      def push_notification_payload
+        title = "@#{comment.user.username}"
+        subtitle = "re: #{comment.parent_or_root_article.title.strip}"
+        data_payload = { url: URL.url("/notifications/comments") }
+        {
           apns: {
             aps: {
               alert: {
                 title: title,
                 subtitle: subtitle,
-                body: CGI.unescapeHTML(body.strip)
+                body: CGI.unescapeHTML(comment.title.strip)
               }
             },
-            data: {
-              url: "https://dev.to" + path
-            }
+            data: data_payload
+          },
+          fcm: {
+            notification: {
+              title: title,
+              body: subtitle
+            },
+            data: data_payload
           }
         }
-        Pusher::PushNotifications.publish(interests: ["user-notifications-#{user_id}"], payload: payload)
       end
     end
   end

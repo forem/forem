@@ -170,7 +170,7 @@ RSpec.describe "Partnerships", type: :request do
         end
 
         it "queues a slack message to be sent" do
-          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
             post partnerships_path, params: params
           end
         end
@@ -211,7 +211,7 @@ RSpec.describe "Partnerships", type: :request do
         end
 
         it "queues a slack message to be sent" do
-          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
             post partnerships_path, params: params
           end
         end
@@ -252,7 +252,7 @@ RSpec.describe "Partnerships", type: :request do
         end
 
         it "queues a slack message to be sent" do
-          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
             post partnerships_path, params: params
           end
         end
@@ -295,7 +295,7 @@ RSpec.describe "Partnerships", type: :request do
         end
 
         it "queues a slack message to be sent" do
-          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
             post partnerships_path, params: params
           end
         end
@@ -337,7 +337,7 @@ RSpec.describe "Partnerships", type: :request do
         end
 
         it "queues a slack message to be sent" do
-          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
             post partnerships_path, params: params
           end
         end

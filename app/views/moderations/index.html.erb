@@ -16,28 +16,6 @@
     <div class="mod-index-hero">
       <h1><%= "#" + @tag.name.titleize if @tag %> Moderators</h1>
       <h2>We build the <%= community_qualified_name %></h2>
-      <div class="mod-index-hero-data-pod">
-        <div class="mod-index-hero-data-pod-number">
-          <%= number_with_delimiter(@tag ? Article.cached_tagged_with(@tag).published.where("published_at > ?", 7.days.ago).size : Article.published.where("published_at > ?", 7.days.ago).size) %>
-        </div>
-        Posts This Week
-      </div>
-      <% plucked_article_ids = Article.cached_tagged_with(@tag).pluck(:id) if @tag %>
-      <div class="mod-index-hero-data-pod">
-        <div class="mod-index-hero-data-pod-number">
-          <%= number_with_delimiter(@tag ? Comment.where(commentable_id: plucked_article_ids).where("created_at > ?", 7.days.ago).size : Comment.where("created_at > ?", 7.days.ago).size) %>
-        </div>
-        Comments This Week
-      </div>
-      <div class="mod-index-hero-data-pod">
-        <div class="mod-index-hero-data-pod-number">
-          <%= number_with_delimiter(@tag ? Reaction.where(reactable_id: plucked_article_ids).where("created_at > ?", 7.days.ago).size : Reaction.where("created_at > ?", 7.days.ago).size) %>
-        </div>
-        Reactions This Week
-      </div>
-      <div class="mod-index-hero-sub">
-        <em>Data as of <%= Time.current %></em>
-      </div>
     </div>
   <% end %>
   <div class="mod-index-header">
@@ -77,7 +55,7 @@
   <div class="mod-index-footer">
     <a href="/community-moderation" class="mod-link">Community Moderation Guide</a>
     <% if current_user.moderator_for_tags.any? %>
-      ・ <a href="/tag-moderation" class="mod-link">Tag Moderation Guide</a>
+      ・ <a href="<%= tag_moderation_url %>" class="mod-link">Tag Moderation Guide</a>
     <% end %>
   </div>
 <% else %>
@@ -85,7 +63,7 @@
     <h1 style="text-align: center"><%= community_name %> Mods</h1>
     <div class="body">
       <p>We periodically award some <%= community_name %> members with heightened privileges to help moderate the community.</p>
-      <p>Email <a href="mailto:<%= SiteConfig.default_site_email %>"><%= SiteConfig.default_site_email %></a> if you'd like to be considered right away.</p>
+      <p>Email <%= email_link %> if you'd like to be considered right away.</p>
       <% unless user_signed_in? %>
         <p><em>P.S. You are not currently signed in.</em></p>
       <% end %>

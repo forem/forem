@@ -24,7 +24,7 @@ const Channels = ({
       <button
         type="button"
         key={channel.id}
-        className="chatchanneltabbutton"
+        className="chatchanneltabbutton crayons-link"
         onClick={handleSwitchChannel}
         data-channel-id={channel.chat_channel_id}
         data-channel-slug={channel.channel_modified_slug}
@@ -49,7 +49,7 @@ const Channels = ({
               className={
                 channel.channel_type === 'direct'
                   ? 'chatchanneltabindicatordirectimage'
-                  : 'chatchanneltabindicatordirectimage invert-channel-image'
+                  : 'chatchanneltabindicatorgroupimage invert-channel-image'
               }
             />
           </span>

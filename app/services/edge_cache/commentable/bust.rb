@@ -13,7 +13,6 @@ module EdgeCache
       def call
         cache_buster.bust_comment(commentable)
         cache_buster.bust("#{commentable.path}/comments")
-        commentable.index!
         commentable.index_to_elasticsearch_inline
       end
 

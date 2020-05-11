@@ -25,7 +25,7 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
     it "applies QUERY_KEYS from params" do
       params = { search_fields: "test" }
       filter = described_class.new(params: params)
-      exepcted_query = [{
+      expected_query = [{
         "simple_query_string" => {
           "query" => "test",
           "fields" => query_fields,
@@ -34,46 +34,46 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
           "minimum_should_match" => 2
         }
       }]
-      expect(search_bool_clause(filter)["must"]).to match_array(exepcted_query)
+      expect(search_bool_clause(filter)["must"]).to match_array(expected_query)
     end
 
     it "applies TERM_KEYS from params" do
       params = { tag_names: "beginner", user_id: 777, status: "valid" }
       filter = described_class.new(params: params)
-      exepcted_filters = [
+      expected_filters = [
         { "terms" => { "status" => ["valid"] } },
         { "terms" => { "reactable.tags.name" => ["beginner"] } },
         { "terms" => { "user_id" => [777] } },
         { "terms" => { "category" => ["readinglist"] } },
       ]
-      expect(search_bool_clause(filter)["filter"]).to match_array(exepcted_filters)
+      expect(search_bool_clause(filter)["filter"]).to match_array(expected_filters)
     end
 
     it "applies QUERY_KEYS and TERM_KEYS from params" do
       Timecop.freeze(Time.current) do
         params = { search_fields: "ruby", tag_names: "cfp" }
         filter = described_class.new(params: params)
-        exepcted_query = [{
+        expected_query = [{
           "simple_query_string" => { "query" => "ruby", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true, "minimum_should_match" => 2 }
         }]
-        exepcted_filters = [
+        expected_filters = [
           { "terms" => { "reactable.tags.name" => ["cfp"] } },
           { "terms" => { "category" => ["readinglist"] } },
         ]
-        expect(search_bool_clause(filter)["must"]).to match_array(exepcted_query)
-        expect(search_bool_clause(filter)["filter"]).to match_array(exepcted_filters)
+        expect(search_bool_clause(filter)["must"]).to match_array(expected_query)
+        expect(search_bool_clause(filter)["filter"]).to match_array(expected_filters)
       end
     end
 
     it "ignores params we don't support" do
       params = { not_supported: "trash", search_fields: "cfp" }
       filter = described_class.new(params: params)
-      exepcted_query = [{
+      expected_query = [{
         "simple_query_string" => {
           "query" => "cfp", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true, "minimum_should_match" => 2
         }
       }]
-      expect(search_bool_clause(filter)["must"]).to match_array(exepcted_query)
+      expect(search_bool_clause(filter)["must"]).to match_array(expected_query)
     end
 
     it "allows default params to be overriden" do

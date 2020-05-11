@@ -112,6 +112,17 @@ RSpec.describe "Search", type: :request, proper_status: true do
       expect(Search::User).not_to have_received(:search_documents)
       expect(Search::FeedContent).to have_received(:search_documents)
     end
+
+    it "queries for approved" do
+      allow(Search::FeedContent).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+
+      get "/search/feed_content?class_name=Article&approved=true"
+      expect(Search::FeedContent).to have_received(:search_documents).with(
+        params: { "approved" => "true", "class_name" => "Article" },
+      )
+    end
   end
 
   describe "GET /search/reactions" do

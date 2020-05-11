@@ -1,6 +1,6 @@
 <link rel="canonical" href="<%= user_url(@user) %>" />
 <meta name="description" content="<%= @user.summary %>">
-<meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+<meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
 
 <meta property="og:type" content="website" />
 <meta property="og:url" content="<%= user_url(@user) %>" />
@@ -16,7 +16,7 @@
 <meta name="twitter:description" content="<%= @user.summary %>">
 <meta name="twitter:image:src" content="<%= user_social_image_url(@user) %>">
 <% if @stories.any? %>
-  <%= auto_discovery_link_tag(:rss, app_url("/feed/#{@user.username}"), title: "The Practical Dev RSS Feed") %>
+  <%= auto_discovery_link_tag(:rss, app_url("/feed/#{@user.username}"), title: "#{community_qualified_name} RSS Feed") %>
 <% end %>
 
 <% if @user.banned %>

@@ -1,11 +1,13 @@
+@import 'config/variables';
 @import 'config/colors';
 @import 'config/generator';
 
 @import 'base/reset';
-@import 'base/boxes';
 @import 'base/icons';
+@import 'base/layout';
 
 @import 'components/avatars';
+@import 'components/banners';
 @import 'components/buttons';
 @import 'components/cards';
 @import 'components/dropdowns';

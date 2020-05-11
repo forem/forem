@@ -97,7 +97,7 @@ RSpec.describe RssReader, type: :service, vcr: VCR_OPTIONS[:rss_feeds] do
     it "queues as many slack messages as there are articles" do
       expect do
         rss_reader.get_all_articles
-      end.to change(SlackBotPingWorker.jobs, :count).by(12)
+      end.to change(Slack::Messengers::Worker.jobs, :count).by(12)
     end
   end
 
@@ -157,7 +157,7 @@ RSpec.describe RssReader, type: :service, vcr: VCR_OPTIONS[:rss_feeds] do
     it "queues as many slack messages as there are user articles" do
       expect do
         rss_reader.fetch_user(User.find_by(feed_url: link))
-      end.to change(SlackBotPingWorker.jobs, :count).by(1)
+      end.to change(Slack::Messengers::Worker.jobs, :count).by(1)
     end
   end
 

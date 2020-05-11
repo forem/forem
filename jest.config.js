@@ -1,3 +1,7 @@
+// Consistent timezone for testing.
+// This does not work on windows, see https://github.com/nodejs/node/issues/4230
+process.env.TZ = 'UTC';
+
 module.exports = {
   collectCoverageFrom: [
     'app/javascript/**/*.{js,jsx}',
@@ -10,6 +14,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(svg|png)$': '<rootDir>/empty-module.js',
     '^@crayons(.*)$': '<rootDir>/app/javascript/crayons$1',
+    '^@utilities(.*)$': '<rootDir>/app/javascript/utilities$1',
   },
   snapshotSerializers: ['preact-render-spy/snapshot'],
   // The webpack config folder for webpacker is excluded as it has a test.js file that gets

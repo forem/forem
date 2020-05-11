@@ -34,4 +34,8 @@ class PodcastEpisodeDecorator < ApplicationDecorator
       podcastImageUrl: image_url
     }
   end
+
+  def published_at_int
+    published_at.to_i
+  end
 end

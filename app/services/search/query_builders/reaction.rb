@@ -61,10 +61,16 @@ module Search
       end
 
       def terms_keys
-        TERM_KEYS.map do |term_key, search_key|
+        TERM_KEYS.flat_map do |term_key, search_key|
           next unless @params.key? term_key
 
-          { terms: { search_key => Array.wrap(@params[term_key]) } }
+          values = Array.wrap(@params[term_key])
+
+          if params[:tag_boolean_mode] == "all" && term_key == :tag_names
+            values.map { |val| { term: { search_key => val } } }
+          else
+            { terms: { search_key => values } }
+          end
         end.compact
       end
 

@@ -1,7 +1,7 @@
 <% title @article.title %>
 
 <%= render "shared/webcomponents_loader_script" %>
-<%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", defer: true %>
+<%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", defer: true %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
@@ -32,50 +32,20 @@
   <% end %>
   <% unless internal_navigation? || user_signed_in? %>
     <script type="application/ld+json">
-      {
-        "@context": "http://schema.org",
-        "@type": "Article",
-        "mainEntityOfPage": {
-          "@type": "WebPage",
-          "@id": "<%= article_url(@article) %>"
-        },
-        "url": "<%= article_url(@article) %>",
-        "image": "<%= article_social_image_url(@article) %>",
-        "publisher": {
-          "@context": "http://schema.org",
-          "@type": "Organization",
-          "name": "<%= community_qualified_name %>",
-          "logo": {
-            "@context": "http://schema.org",
-            "@type": "ImageObject",
-            "url": "<%= cloudinary(SiteConfig.logo_png, 192, "png") %>",
-            "width": "192",
-            "height": "192"
-          }
-        },
-        "headline": "<%= @article.title %>",
-        "author": {
-          "@context": "http://schema.org",
-          "@type": "Person",
-          "url": "<%= user_url(@user) %>",
-          "name": "<%= @user.name %>"
-        },
-        "datePublished": "<%= @article.published_timestamp %>",
-        "dateModified": "<%= @article.edited_at&.iso8601 || @article.published_timestamp %>"
-      }
+      <%= @article_json_ld.to_json.html_safe %>
     </script>
   <% end %>
 <% end %>
 
 <% if internal_navigation? %>
-    <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
-    <meta name="description" content="<%= @article.description_and_tags %>">
-    <meta name="keywords" content="<%= @article.cached_tag_list %>, software, coding, development, engineering, inclusive, community">
+  <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
+  <meta name="description" content="<%= @article.description_and_tags %>">
+  <meta name="keywords" content="<%= @article.cached_tag_list %>, <%= SiteConfig.meta_keywords[:article] %>">
 <% else %>
   <%= content_for :page_meta do %>
-    <link rel="canonical" href="<%= @article.canonical_url.presence || "https://#{ApplicationConfig['APP_DOMAIN']}#{@article.path}" %>" />
+    <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
     <meta name="description" content="<%= @article.description_and_tags %>">
-    <meta name="keywords" content="<%= @article.cached_tag_list %>, software, coding, development, engineering, inclusive, community">
+    <meta name="keywords" content="<%= @article.cached_tag_list %>, <%= SiteConfig.meta_keywords[:article] %>">
 
     <meta property="og:type" content="article" />
     <meta property="og:url" content="<%= article_url(@article) %>" />
@@ -127,8 +97,7 @@
         <% if @article.video.present? %>
           <%= render "articles/video_player", meta_tags: true, article: @article %>
         <% elsif @article.main_image.present? %>
-          <div class="image image-final" style="background-color:<%= @article.main_image_background_hex_color %>;background-image:url(<%= cloud_cover_url(@article.main_image) %>)">
-          </div>
+          <img src="<%= cloud_cover_url(@article.main_image) %>" class="image image-final" style="background-color:<%= @article.main_image_background_hex_color %>;" alt="Cover image for <%= @article.title %>" />
         <% else %>
           <div class="blank-space"></div>
         <% end %>

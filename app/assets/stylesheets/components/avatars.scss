@@ -17,8 +17,8 @@
     border-radius: $radius;
     position: relative;
     background-color: $background;
-    width: $su-6;
-    height: $su-6;
+    width: var(--su-6);
+    height: var(--su-6);
 
     &__image {
       border-radius: $radius;
@@ -41,26 +41,26 @@
     }
 
     &--l {
-      width: $su-7;
-      height: $su-7;
+      width: var(--su-7);
+      height: var(--su-7);
     }
 
     &--xl {
-      width: $su-8;
-      height: $su-8;
+      width: var(--su-8);
+      height: var(--su-8);
     }
 
     &--2xl {
-      width: $su-9;
-      height: $su-9;
+      width: var(--su-9);
+      height: var(--su-9);
     }
 
     &--3xl {
-      width: $su-10;
-      height: $su-10;
+      width: var(--su-10);
+      height: var(--su-10);
     }
   }
 }
 
 @include avatar-logo('avatar', 100%, var(--card-color-tertiary));
-@include avatar-logo('logo', $br-default, var(--body-color-inverted));
+@include avatar-logo('logo', var(--radius), var(--body-color-inverted));

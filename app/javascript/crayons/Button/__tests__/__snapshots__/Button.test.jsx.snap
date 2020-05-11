@@ -51,7 +51,7 @@ exports[`<Button /> component should render a button with with an icon when an i
 
 exports[`<Button /> component should render a button with with an icon when an icon is set and there is no button text 1`] = `
 <button
-  class="crayons-btn crayons-btn--icon-alone"
+  class="crayons-btn crayons-btn--icon"
   disabled={false}
   type="button"
 >
@@ -122,6 +122,17 @@ exports[`<Button /> component should render an outlined button when using the va
 <button
   class="crayons-btn crayons-btn--outlined"
   disabled={false}
+  type="button"
+>
+  Hello world!
+</button>
+`;
+
+exports[`<Button /> component should render with a tabIndex 1`] = `
+<button
+  class="crayons-btn"
+  disabled={false}
+  tabIndex="0"
   type="button"
 >
   Hello world!

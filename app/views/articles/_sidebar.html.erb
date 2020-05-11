@@ -1,7 +1,7 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
   <div class="sidebar-bg" id="sidebar-bg-left"></div>
   <div class="side-bar">
-    <% cache(cache_key_heroku_slug("main-sidebar-nav--#{user_signed_in?}"), expires_in: 5.days) do %>
+    <% cache(cache_key_heroku_slug("main-sidebar-nav--#{user_signed_in?}"), expires_in: 15.minutes) do %>
       <%= render "articles/sidebar_nav" %>
       <div class="<%= "hidden" if user_signed_in? %> px-2" id="sponsorship-widget">
         <h4 class="flex align-center fs-s ff-accent fw-bold tt-uppercase mb-4">

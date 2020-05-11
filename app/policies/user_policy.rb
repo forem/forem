@@ -28,6 +28,7 @@ class UserPolicy < ApplicationPolicy
     experience_level
     export_requested
     facebook_url
+    youtube_url
     feed_admin_publish_permission
     feed_mark_canonical
     feed_referential_link
@@ -108,7 +109,7 @@ class UserPolicy < ApplicationPolicy
     OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
   end
 
-  def remove_association?
+  def remove_identity?
     current_user?
   end
 

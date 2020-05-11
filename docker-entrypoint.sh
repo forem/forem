@@ -5,7 +5,7 @@
 # @TODO - add as scripts instead within /bin? - this will help auto fill?
 #
 echo "" > ~/.bashrc
-echo "alias devto-setup='cd /usr/src/app/ && gem install bundler && bundle install --jobs 20 --retry 5 && yarn install && yarn check --integrity && bin/setup'" >> ~/.bashrc
+echo "alias devto-setup='cd /usr/src/app/ && gem install bundler && bundle install --jobs 20 --retry 5 && yarn install && bin/setup'" >> ~/.bashrc
 echo "alias devto-migrate='cd /usr/src/app/ && bin/rails db:migrate'" >> ~/.bashrc
 echo "alias devto-start='cd /usr/src/app/ && bundle exec rails server -b 0.0.0.0 -p 3000'" >> ~/.bashrc
 

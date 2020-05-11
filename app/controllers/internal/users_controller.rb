@@ -6,19 +6,9 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def index
-    @users = case params[:state]
-             when /role\-/
-               User.with_role(params[:state].split("-")[1], :any).page(params[:page]).per(50)
-             else
-               User.order("created_at DESC").page(params[:page]).per(50)
-             end
-    return if params[:search].blank?
-
-    @users = @users.where("users.name ILIKE :search OR
-      users.username ILIKE :search OR
-      users.github_username ILIKE :search OR
-      users.email ILIKE :search OR
-      users.twitter_username ILIKE :search", search: "%#{params[:search].strip}%")
+    @users = Internal::UsersQuery.call(
+      options: params.permit(:role, :search),
+    ).page(params[:page]).per(50)
   end
 
   def edit
@@ -34,6 +24,7 @@ class Internal::UsersController < Internal::ApplicationController
       joins(:organization).
       order("organizations.name ASC").
       includes(:organization)
+    @last_email_verification_date = @user.email_authorizations.where.not(verified_at: nil).order("created_at DESC").first&.verified_at || "Never"
   end
 
   def update
@@ -111,6 +102,15 @@ class Internal::UsersController < Internal::ApplicationController
   def send_email
     if NotifyMailer.user_contact_email(params).deliver
       redirect_back(fallback_location: "/users")
+    else
+      flash[:danger] = "Email failed to send!"
+    end
+  end
+
+  def verify_email_ownership
+    if VerificationMailer.account_ownership_verification_email(params).deliver
+      flash[:success] = "Email Verification Mailer sent!"
+      redirect_back(fallback_location: internal_users_path)
     else
       flash[:danger] = "Email failed to send!"
     end

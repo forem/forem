@@ -1,7 +1,38 @@
+<style>
+  .article-body-html img {
+    max-width: 100%;
+  }
+</style>
+
 <div class="card my-3" data-controller="article" data-article-id="<%= article.id %>">
   <div class="card-header">
-    <a href="<%= article.path %>" target="_blank" rel="noopener"><%= article.title %></a>
-    <a class="ml-2" href="<%= article.path %>/edit" target="_blank" rel="noopener"><span class="badge badge-success">EDIT</span></a>
+    <h2>
+      <a href="<%= article.path %>" target="_blank" rel="noopener">
+        <%= article.title %>
+      </a>
+    </h2>
+    <div>
+      <a href="<%= article.path %>/edit" target="_blank" rel="noopener"><span class="btn btn-sm btn-primary">Edit</span></a>
+      <button class="btn btn-sm btn-success" data-action="article#increaseFeaturedNumber">Boost</button>
+      <a class="btn btn-sm btn-secondary" href="/internal/users/<%= article.user_id %>" target="_blank" rel="noopener">Manage User</a>
+      <a href="/internal/users/<%= article.user_id %>" class="badge badge-light">@<%= article.user&.username %></a>
+      <span class="badge badge-light">❤️ <%= article.positive_reactions_count %> 💬 <%= article.comments_count %></span>
+      <span class="badge badge-light">
+        <% if article.published_from_feed? && !article.published? %>
+          RSS Import <%= article.created_at.strftime("%b %d, %Y") %>
+          Originally Published <%= article.published_at&.strftime("%b %d, %Y") %>
+        <% elsif article.crossposted_at? %>
+          Crossposted <%= article.crossposted_at.strftime("%b %d, %Y") %> & Published
+          <%= article.published_at&.strftime("%b %d, %Y") %>
+        <% else %>
+          <%= article.published_at&.strftime("%b %d, %Y") %>
+        <% end %>
+      </span>
+      <% article.decorate.cached_tag_list_array.each do |tag| %>
+        <a  class="badge badge-secondary" href='/t/<%= tag %>'>#<%= tag %></a>
+      <% end %>
+
+    </div>
   </div>
 
   <% featured = article.featured ? "bg-featured" : "" %>
@@ -10,7 +41,6 @@
 
   <div
     class="card-body <%= background_color %> <%= "bg-danger" if !article.published? && article.published_from_feed? && !article.user&.feed_admin_publish_permission? %>">
-    <button class="btn btn-primary float-right" href="/internal/users/<%= article.user_id %>">Manage User</button>
 
     <% if article.video %>
     <h2>Contains Video</h2>
@@ -33,114 +63,53 @@
     <p><a href="/internal/users/<%= article.user_id %>">View All</a></p>
     <% end %>
     <% end %>
-
-    <% if article.published_from_feed? && !article.published? %>
-    <p>
-      RSS Import <%= article.created_at.strftime("%b %d, %Y") %>
-    </p>
-    <p>
-      Originally Published <%= article.published_at&.strftime("%b %d, %Y") %>
-    </p>
-    <% elsif article.crossposted_at? %>
-    <p>
-      Crossposted <%= article.crossposted_at.strftime("%b %d, %Y") %> & Published
-      <%= article.published_at&.strftime("%b %d, %Y") %>
-    </p>
-    <% else %>
-    <p>
-      Published <%= article.published_at&.strftime("%b %d, %Y") %>
-    </p>
-    <% end %>
     <% if article.main_image.present? %>
     <div style="max-height:450px;overflow:hidden;">
-      <img src="<%= cloud_cover_url(article.main_image) %>" style="width:100%;" alt="cover image" /><br />
+      <img src="<%= cloud_cover_url(article.main_image) %>" style="width:100%;max-width:380px;border-radius:8px;background:<%= article.main_image_background_hex_color %>;" alt="cover image" /><br />
     </div>
     <% end %>
-
-    <div class="d-flex justify-content-between">
-      <h3>
-        <a href="/internal/users/<%= article.user_id %>">@<%= article.user&.username %></a>
-      </h3>
-      <h3>
-        ❤️ <%= article.positive_reactions_count %> | 💬 <%= article.comments_count %>
-      </h3>
-    </div>
-
-    <ul class="nav">
-      <% article.decorate.cached_tag_list_array.each do |tag| %>
-      <li class="nav-item">
-        <a class="nav-link" href='/t/<%= tag %>'>#<%= tag %></a>
-      </li>
-      <% end %>
-    </ul>
-    <button class="btn btn-success" data-action="article#increaseFeaturedNumber">☝️ Boost!</button>
-    <button class="btn btn-danger" data-action="article#decreaseFeaturedNumber">👇 SPAM!</button>
-
     <%= form_with url: internal_article_path(article.id), html: { data: { action: "submit->article#highlightElement" } } do |f| %>
     <div class="form-group">
       <input name="utf8" type="hidden" value="✓">
       <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
       <input type="hidden" name="_method" value="patch" />
     </div>
-    <div class="form-group">
-      <label for="featured_number_<%= article.id %>">Featured Number:</label>
-      <input id="featured_number_<%= article.id %>" class="form-control" name="article[featured_number]"
-        value="<%= article.featured_number %>" data-target="article.featuredNumber">
+    <div class="row">
+      <div class="form-group col">
+        <label for="featured_number_<%= article.id %>">Featured Number:</label>
+        <input id="featured_number_<%= article.id %>" class="form-control" name="article[featured_number]"
+          value="<%= article.featured_number %>" data-target="article.featuredNumber">
+      </div>
+      <div class="form-group col">
+        <label for="author_id_<%= article.id %>">Author ID:</label>
+        <input id="author_id_<%= article.id %>" class="form-control" size="6" name="article[user_id]"
+          value="<%= article.user_id %>">
+      </div>
     </div>
-    <div class="form-group">
-      <label for="author_id_<%= article.id %>">Author ID:</label>
-      <input id="author_id_<%= article.id %>" class="form-control" size="6" name="article[user_id]"
-        value="<%= article.user_id %>">
+    <div class="row">
+      <div class="form-check col">
+        <input name="article[featured]" type="checkbox" <%= "checked" if article.featured %> id="featured-<%= article.id %>">
+        <label for="featured-<%= article.id %>">Featured</label>
+      </div>
+      <div class="form-check col">
+        <input name="article[approved]" type="checkbox" <%= "checked" if article.approved %> id="approved-<%= article.id %>">
+        <label for="approved-<%= article.id %>">Approved</label>
+      </div>
+      <div class="form-check col">
+        <input name="article[boosted_additional_articles]" type="checkbox"
+          <%= "checked" if article.boosted_additional_articles %> id="boosted_additional_articles-<%= article.id %>">
+        <label for="boosted_additional_articles-<%= article.id %>">Boosted</label>
+      </div>
+      <% unless article.last_buffered %>
+      <div class="form-check col">
+        <input name="article[last_buffered]" value="<%= Time.current %>" type="checkbox" id="last_buffered-<%= article.id %>">
+        <label for="last_buffered-<%= article.id %>">Mark as buffered</label>
+      </div>
+      <% end %>
+      <div class="col">
+          <button class="btn btn-primary float-right">Submit</button>
+      </div>
     </div>
-    <div class="form-group">
-      <label for="image_bg_color_<%= article.id %>">Image BG color:</label>
-      <input name="article[main_image_background_hex_color]" class="form-control"
-        value="<%= article.main_image_background_hex_color %>" id="image_bg_color_<%= article.id %>">
-    </div>
-    <div class="form-group">
-      <label for="social_image_<%= article.id %>">Social Image:</label>
-      <input name="article[social_image]" class="form-control" value="<%= article.social_image %>"
-        id="social_image_<%= article.id %>">
-    </div>
-    <div class="form-check">
-      <input name="article[featured]" type="checkbox" <%= "checked" if article.featured %>>
-      <label>Featured</label>
-    </div>
-    <div class="form-check">
-      <input name="article[approved]" type="checkbox" <%= "checked" if article.approved %>>
-      <label>Approved</label>
-    </div>
-    <div class="form-check">
-      <input name="article[live_now]" type="checkbox" <%= "checked" if article.live_now %>>
-      <label>Live Now</label>
-    </div>
-    <div class="form-check">
-      <input name="article[email_digest_eligible]" type="checkbox" <%= "checked" if article.email_digest_eligible %>>
-      <label>Email Digest Eligible</label>
-    </div>
-    <div class="form-check">
-      <input name="article[boosted_additional_articles]" type="checkbox"
-        <%= "checked" if article.boosted_additional_articles %>>
-      <label>Boosted (Additional articles)</label>
-    </div>
-    <div class="form-check">
-      <input name="article[boosted_dev_digest_email]" type="checkbox"
-        <%= "checked" if article.boosted_dev_digest_email %>>
-      <label>Boosted (<%= community_name %> Digest)</label>
-    </div>
-
-    <% unless article.last_buffered %>
-    <div class="form-check">
-      <input name="article[last_buffered]" value="<%= Time.current %>" type="checkbox">
-      <label>Buffered</label>
-    </div>
-    <% end %>
-
-    <% if params[:state]&.include?("classic") %>
-    <textarea cols="70" rows="6" wrap="hard" name="article[body_markdown]"><%= article.body_markdown %></textarea>
-    <% end %>
-
-    <button class="btn btn-primary float-right">Submit</button>
     <% end %>
 
     <% if article.last_buffered %>
@@ -179,68 +148,52 @@
       OPENED EMAILS IN THE PAST WEEK</b>
     <% end %>
 
-    <div>
-      <button class="btn btn-secondary" data-toggle="collapse" data-target="#article-<%= article.id %>-buffer-area"
+    <div class="d-flex justify-content-between" style="padding-top:15px;">
+      <button class="btn btn-dark btn-lg btn-block" data-toggle="collapse" data-target="#article-<%= article.id %>-buffer-area"
         area-expanded="false" area-controls="article-<%= article.id %>-buffer-area">
-        Share to Buffer
+        Social Distribution
       </button>
-      <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
-      (Satellites Available)
-      <% end %>
     </div>
 
-    <div id="article-<%= article.id %>-buffer-area" class="buffering-area-for-single-article collapse">
-      <% unless params[:state]&.include?("classic") %>
-      <div class="blockquote my-2">
-        <%= article.processed_html&.html_safe %>
-      </div>
-
-      <div>
-        <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
-        <input type="hidden" name="social_channel" value="main_twitter" />
-        <input type="hidden" name="article_id" value="<%= article.id %>" />
-        <h5>Twitter MAIN</h5>
-        <div class="form-group">
-          <textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="255">
-                <% concat article.title
-                   concat "\n\n"
-                   if article.user.twitter_username?
-                     concat "{ author: @#{article.user.twitter_username} } #DEVCommunity"
-                   end %>
-              </textarea>
+    <div id="article-<%= article.id %>-buffer-area" class="buffering-area-for-single-article collapse" style="padding-top:25px;">
+      <div class="row">
+        <div class="article-body-html col col-7" style="background:white;max-height: 800px;padding-top:8px;overflow:auto;border-radius: 3px;">
+          <%= article.processed_html&.html_safe %>
         </div>
-        <button class="btn btn-primary mb-2">🦅 Tweet to @<%= SiteConfig.social_media_handles["twitter"] %></button>
-        <% end %>
 
-        <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
-        <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
-        <input type="hidden" name="social_channel" value="satellite_twitter" />
-        <input type="hidden" name="article_id" value="<%= article.id %>" />
-        <h5>Twitter Satellite</h5>
-        <div class="form-group">
-          <textarea cols="37" rows="6" wrap="hard" name="tweet" maxlength="255">
-                  <% concat article.title
-                     concat "\n\n"
-                     if article.user.twitter_username?
-                       concat "{ author: @#{article.user.twitter_username} }"
-                     end %>
-                </textarea>
+        <div class="col col-5">
+          <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
+          <input type="hidden" name="social_channel" value="main_twitter" />
+          <input type="hidden" name="article_id" value="<%= article.id %>" />
+          <h5>Twitter MAIN</h5>
+          <div class="form-group">
+            <textarea rows="5" wrap="hard" name="tweet" maxlength="255" class="form-control"><%= BufferUpdate.twitter_default_text(article) %></textarea>
+          </div>
+          <button class="btn btn-primary mb-2">🦅 Tweet to @<%= SiteConfig.social_media_handles["twitter"] %></button>
+          <% end %>
+
+          <% if (article.decorate.cached_tag_list_array & Tag.bufferized_tags).any? %>
+          <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
+          <input type="hidden" name="social_channel" value="satellite_twitter" />
+          <input type="hidden" name="article_id" value="<%= article.id %>" />
+          <h5>Twitter Satellite</h5>
+          <div class="form-group">
+            <textarea rows="5" wrap="hard" name="tweet" maxlength="255" class="form-control"><%= BufferUpdate.twitter_default_text(article) %></textarea>
+          </div>
+          <button class="btn btn-primary mb-2">🐦 Tweet to satellites</button>
+          <% end %>
+          <% end %>
+          <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
+          <input type="hidden" name="social_channel" value="facebook" />
+          <input type="hidden" name="article_id" value="<%= article.id %>" />
+          <h5>Facebook & LinkedIn</h5>
+          <div class="form-group">
+            <textarea rows="5" wrap="hard" name="fb_post" class="form-control" required></textarea>
+          </div>
+          <button class="btn btn-primary mb-2">📘 Post to Facebook</button>
+          <% end %>
         </div>
-        <button class="btn btn-primary mb-2">🐦 Tweet to satellites</button>
-        <% end %>
-        <% end %>
       </div>
-
-      <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->article#highlightElement" } } do %>
-      <input type="hidden" name="social_channel" value="facebook" />
-      <input type="hidden" name="article_id" value="<%= article.id %>" />
-      <h5>Facebook & LinkedIn</h5>
-      <div class="form-group">
-        <textarea cols="37" rows="6" wrap="hard" name="fb_post" required></textarea>
-      </div>
-      <button class="btn btn-primary mb-2">📘 Post to Facebook</button>
-      <% end %>
-      <% end %>
     </div>
   </div>
 </div>

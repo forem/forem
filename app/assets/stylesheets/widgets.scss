@@ -7,7 +7,7 @@
 .sidebar-profile {
   @include sidebar-link;
   margin: 0;
-  margin-bottom: $su-2;
+  margin-bottom: var(--su-2);
   display: flex;
   align-items: center;
 
@@ -286,7 +286,7 @@
       color: $medium-gray;
     }
     .widget-listing-title {
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       font-weight: 500;
       margin-bottom: 8px;
     }
@@ -418,13 +418,20 @@
   }
 }
 
+.query-filter-button {
+  box-sizing: border-box;
+  display: inline-block;
+  padding: var(--su-2) 0;
+  width: 100%;
+}
+
 // Sidebar sponsors
 .sidebar-sponsor {
   color: var(--card-color-tertiary);
   img {
     width: 100%;
     max-width: 140px;
-    margin-bottom: $su-2;
+    margin-bottom: var(--su-2);
   }
 }
 
@@ -434,7 +441,7 @@
   color: $black;
   display: block;
   position: relative;
-  @media screen and (min-width: 950px) {
+  @media screen and (min-width: $breakpoint-m) {
     .sidebar-nav-link-follow {
       display: none;
     }

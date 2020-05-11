@@ -31,7 +31,7 @@
     }
   }
   .global-signup-modal--inner-a {
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     position: fixed;
     top: calc(15% - 33px);
     left: calc(15% - 33px);

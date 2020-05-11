@@ -96,7 +96,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
       it "notifies the admins about the error" do
         Timecop.travel(format_date(pro_membership.expires_at)) do
           allow(Credits::Buyer).to receive(:call).and_raise(StandardError)
-          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
             described_class.call
           end
         end
@@ -129,7 +129,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
 
     it "notifies the admins about the expiration" do
       Timecop.travel(format_date(pro_membership.expires_at)) do
-        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
           described_class.call
         end
       end
@@ -239,7 +239,7 @@ RSpec.describe ProMemberships::Biller, type: :service do
       it "notifies the admins about the problem" do
         allow(user).to receive(:stripe_id_code).and_return(nil)
         Timecop.travel(format_date(pro_membership.expires_at)) do
-          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
             described_class.call
           end
         end

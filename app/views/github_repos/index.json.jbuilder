@@ -1,6 +1,5 @@
 json.array! @repos.each do |repo|
-  json.github_id_code         repo.id
-  json.name                   repo.name
-  json.fork                   repo.fork
-  json.selected               repo.selected
+  json.github_id_code repo.id
+
+  json.extract!(repo, :name, :fork, :selected)
 end

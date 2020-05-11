@@ -1,6 +1,19 @@
 namespace :fastly do
-  desc "Update VCL for whitelisted params on Fastly"
-  task update_whitelisted_params: :environment do
-    FastlyVCL::WhitelistedParams.update
+  desc "Update Fastly configs"
+  task update_configs: :environment do
+    fastly_credentials = %w[
+      FASTLY_API_KEY
+      FASTLY_SERVICE_ID
+    ]
+
+    if fastly_credentials.any? { |cred| ApplicationConfig[cred].blank? }
+      Rails.logger.info(
+        "Fastly not configured. Please set #{fastly_credentials.join(', ')} in your environment.",
+      )
+
+      next
+    end
+
+    FastlyConfig::Update.call
   end
 end

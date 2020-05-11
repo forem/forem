@@ -74,6 +74,15 @@ export default class ImageManagement extends Component {
     });
   };
 
+  execCopyText = () => {
+    this.imageMarkdownInput.setSelectionRange(
+      0,
+      this.imageMarkdownInput.value.length,
+    );
+    document.execCommand('copy');
+    this.imageMarkdownAnnouncer.hidden = false;
+  }
+
   copyText = () => {
     this.imageMarkdownAnnouncer = document.getElementById(
       'image-markdown-copy-link-announcer',
@@ -82,25 +91,29 @@ export default class ImageManagement extends Component {
       'image-markdown-copy-link-input',
     );
 
-    const isIOSDevice =
-      navigator.userAgent.match(/iPhone|iPad/i) ||
-      navigator.userAgent.match('CriOS') ||
-      navigator.userAgent === 'DEV-Native-ios';
+    const isNativeAndroid =
+      navigator.userAgent === 'DEV-Native-android' &&
+      typeof AndroidBridge !== "undefined" &&
+      AndroidBridge !== null;
 
-    if (isIOSDevice) {
-      this.imageMarkdownInput.setSelectionRange(
-        0,
-        this.imageMarkdownInput.value.length,
-      );
-      document.execCommand('copy');
+    const isClipboardSupported =
+      typeof navigator.clipboard !== "undefined" &&
+      navigator.clipboard !== null;
+
+    if (isNativeAndroid) {
+      AndroidBridge.copyToClipboard(this.imageMarkdownInput.value);
+      this.imageMarkdownAnnouncer.hidden = false;
+    } else if (isClipboardSupported) {
+      navigator.clipboard.writeText(this.imageMarkdownInput.value)
+        .then(() => {
+          this.imageMarkdownAnnouncer.hidden = false;
+        })
+        .catch((err) => {
+          this.execCopyText();
+        });
     } else {
-      this.imageMarkdownInput.focus();
-      this.imageMarkdownInput.setSelectionRange(
-        0,
-        this.imageMarkdownInput.value.length,
-      );
+      this.execCopyText();
     }
-    this.imageMarkdownAnnouncer.hidden = false;
   };
 
   linksToMarkdownForm = imageLinks => {

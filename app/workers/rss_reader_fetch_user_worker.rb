@@ -1,7 +1,7 @@
 class RssReaderFetchUserWorker
   include Sidekiq::Worker
 
-  sidekiq_options queue: :medium_priority
+  sidekiq_options queue: :medium_priority, lock: :until_executed
 
   def perform(user_id)
     user = User.find_by(id: user_id)

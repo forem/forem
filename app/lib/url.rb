@@ -62,6 +62,10 @@ module URL
     url(user.username)
   end
 
+  def self.organization(organization)
+    url(organization.slug)
+  end
+
   # Ensures we don't consider serviceworker.js as referer
   #
   # @param referer [String] the unsanitized referer

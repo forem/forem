@@ -27,7 +27,7 @@ module Slack
           reactable_url: URL.reaction(reaction),
         )
 
-        SlackBotPingWorker.perform_async(
+        Slack::Messengers::Worker.perform_async(
           message: message,
           channel: "abuse-reports",
           username: "abuse_bot",

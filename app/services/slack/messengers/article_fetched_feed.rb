@@ -23,7 +23,7 @@ module Slack
           url: URL.article(article),
         )
 
-        SlackBotPingWorker.perform_async(
+        Slack::Messengers::Worker.perform_async(
           message: message,
           channel: "activity",
           username: "article_bot",

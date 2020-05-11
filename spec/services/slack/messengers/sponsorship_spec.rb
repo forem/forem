@@ -14,12 +14,12 @@ RSpec.describe Slack::Messengers::Sponsorship, type: :service do
   end
 
   def get_argument_from_last_job(argument_name)
-    job = sidekiq_enqueued_jobs(worker: SlackBotPingWorker).last
+    job = sidekiq_enqueued_jobs(worker: Slack::Messengers::Worker).last
     job["args"].first[argument_name]
   end
 
   it "contains the correct info for a regular sponsorship", :aggregate_failures do
-    sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+    sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params)
     end
 
@@ -31,7 +31,7 @@ RSpec.describe Slack::Messengers::Sponsorship, type: :service do
   end
 
   it "contains the correct info for a tag sponsorship", :aggregate_failures do
-    sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+    sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params.merge(level: "tag", tag: tag))
     end
 
@@ -44,11 +44,11 @@ RSpec.describe Slack::Messengers::Sponsorship, type: :service do
   end
 
   it "messages the proper channel with the proper username and emoji", :aggregate_failures do
-    sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+    sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params)
     end
 
-    job = sidekiq_enqueued_jobs(worker: SlackBotPingWorker).last
+    job = sidekiq_enqueued_jobs(worker: Slack::Messengers::Worker).last
     job_args = job["args"].first
 
     expect(job_args["channel"]).to eq("incoming-partners")

@@ -1,6 +1,7 @@
 @import 'variables';
 @import 'mixins';
 @import 'functions';
+@import 'config/import';
 
 %kbd {
   display: inline-block;
@@ -102,7 +103,7 @@ a.header-link {
       margin: auto;
       margin-bottom: -35px;
       .read-more {
-        color: var(--link-branded-color);
+        color: var(--link-brand-color);
         display: inline-block;
         &:hover {
           opacity: 0.96;
@@ -123,13 +124,13 @@ a.header-link {
 }
 
 .comments-container {
-  width: 800px;
-  max-width: 98%;
   padding-top: 10px;
   margin: auto;
   margin-bottom: 100px;
   text-align: left;
   &.comments-dedicated-page-container {
+    width: 800px;
+    max-width: 96%;
     min-height: calc(97vh - 200px);
   }
 
@@ -296,8 +297,12 @@ a.header-link {
       flex-direction: column;
       overflow-y: auto;
       font-size: 16px;
-      font-family: $helvetica;
-      @include themeable(background, theme-container-accent-background, $light-gray);
+      font-family: var(--ff-default);
+      @include themeable(
+        background,
+        theme-container-accent-background,
+        $light-gray
+      );
       @include themeable(color, theme-color, $black);
 
       .loading-img {
@@ -346,7 +351,7 @@ a.header-link {
           width: calc(100% - 140px);
           white-space: nowrap;
           overflow: hidden;
-          text-overflow: ellipsis;  
+          text-overflow: ellipsis;
         }
 
         p {
@@ -397,7 +402,7 @@ a.header-link {
 
       a {
         text-align: left;
-        padding: 12px;
+        padding: var(--su-3);
         font-weight: bold;
         svg {
           width: 20px;
@@ -405,8 +410,12 @@ a.header-link {
           position: relative;
           top: 4px;
           left: 3px;
-          @include themeable(fill, link-branded-color, #3b49df)
+          @include themeable(fill, link-branded-color, #3b49df);
         }
+      }
+      p {
+        align-self: flex-start;
+        padding: 0 var(--su-3);
       }
     }
     .article-comment-form-preamble {
@@ -456,7 +465,7 @@ a.header-link {
       min-height: calc(13vw + 6px);
       text-align: left;
       font-size: 19px;
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       background: var(--card-bg);
       box-shadow: $shadow;
       width: calc(100% - 80px);
@@ -480,12 +489,28 @@ a.header-link {
 
       code {
         word-wrap: break-word;
+        background-color: rgba(0, 0, 0, 0.1);
+        padding: 0.1em 0.3em 0;
       }
 
       .article-body-image-wrapper img {
         max-width: 100%;
       }
     }
+
+    // this css is added to ignore the code under highlight class and use default bg-color and color.
+
+    #preview-div div.highlight pre code {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    // this css is added to differentiate the code within a pre tag since pre tag already has black bg.
+
+    #preview-div pre code {
+      background-color: white;
+      color: black;
+    }
+
     .actions {
       text-align: right;
 
@@ -524,7 +549,7 @@ a.header-link {
       text-align: right;
       font-size: 0.9em;
       font-weight: 500;
-      color: var(--link-branded-color);
+      color: var(--link-brand-color);
       &.sub-comment-code-of-conduct {
         font-size: 1em;
       }
@@ -534,7 +559,7 @@ a.header-link {
         margin: 5px 0px;
       }
       a {
-        color: var(--link-branded-color);
+        color: var(--link-brand-color);
       }
     }
     input[type='submit'] {
@@ -664,7 +689,7 @@ a.header-link {
   .alert-error {
     background: $red;
     max-width: 730px;
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     color: white;
     border-radius: 5px;
     margin: 20px auto;
@@ -768,7 +793,7 @@ a.header-link {
     overflow: hidden;
     margin-bottom: -28px;
     word-wrap: break-word;
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     position: relative;
     margin-left: 1px;
     h1,
@@ -838,6 +863,8 @@ a.header-link {
       vertical-align: 0.1em;
       max-width: 100%;
       line-height: 1.4em;
+      background-color: rgba(0, 0, 0, 0.1);
+      padding: 0.1em 0.3em 0;
     }
     pre {
       width: 88%;
@@ -851,9 +878,13 @@ a.header-link {
       overflow-x: auto;
       code {
         background: #29292e;
-        color: #eff0f9;
+        color: black;
         white-space: pre;
         font-size: 1em;
+        background-color: white;
+        padding-top: 0;
+        padding-bottom: 2%;
+        overflow-x: auto;
       }
     }
     img {
@@ -896,7 +927,7 @@ a.header-link {
   .details {
     padding: 0px;
     border-top-left-radius: 3px;
-    color: var(--link-branded-color);
+    color: var(--link-brand-color);
     position: relative;
     .comment-date {
       border: none;
@@ -1176,7 +1207,7 @@ a.header-link {
       position: relative;
       width: calc(100% + 60px);
       margin-left: -58px;
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       &.submitting {
         input[type='submit'] {
           background: $bold-blue;

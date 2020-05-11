@@ -1,21 +1,20 @@
-<label
-  class="rich-selector theme-selector theme-selector--<%= theme.tr(" ", "-") %>"
-  title="<%= theme.titlecase %>">
-  <%= f.radio_button :config_theme,
-                     theme,
-                     checked: @user.config_theme.tr("_", " ") == theme,
-                     class: "rich-selector__radio" %>
-  <div class="rich-selector__indicator"></div>
-  <div class="rich-selector__outline"></div>
-  <div class="theme-selector__nav">
-    <div class="theme-selector__search"></div>
-  </div>
-  <div class="theme-selector__body">
-    <div class="theme-selector__col"></div>
-    <div class="theme-selector__col--center">
-      ~ ~ ~ ~ ~
-      <div class="theme-selector__posts"></div>
+<label class="rich-selector crayons-field crayons-field--radio p-4 theme-selector theme-selector--<%= theme.tr(" ", "-") %>" title="<%= theme.titlecase %>">
+  <%= f.radio_button :config_theme, theme, checked: @user.config_theme.tr("_", " ") == theme, class: "crayons-radio" %>
+  <div class="crayons-field__label">
+    <%= theme.titlecase %>
+
+    <div class="theme-preview mt-4">
+      <div class="theme-preview__nav">
+        <div class="theme-preview__search"></div>
+      </div>
+      <div class="theme-preview__main">
+        <div class="theme-preview__card"></div>
+        <div class="theme-preview__middle">
+          ~ ~ ~
+          <div class="theme-preview__card"></div>
+        </div>
+        <div class="theme-preview__card"></div>
+      </div>
     </div>
-    <div class="theme-selector__col"></div>
   </div>
 </label>

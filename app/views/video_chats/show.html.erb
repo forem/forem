@@ -9,20 +9,33 @@
     overflow: scroll;
   }
   .individual-video video {
-    max-width: 600px;
+    max-height: 100vh;
     background: #232324;
     width: 100%;
   }
 
+  #remote-media {
+    display:flex;
+    flex-wrap: wrap;
+    /* flex-direction:row; */
+  }
+
+
   .individual-video {
     overflow: hidden;
     position: relative;
-    display: inline-block;
-    line-height: 0;
+    margin-bottom: -6px;
+    flex: 1 0 21%;
+    text-align: center;
+    min-width:20%;
+    background: #232324;
   }
-  .individual-video:last-child {
+  .one-of-many-videos {
+    min-width:33%;
+  }
+  /* .individual-video:last-child {
     margin-bottom: 100px;
-  }
+  } */
 
   #local-media video {
     width: 150px;
@@ -30,16 +43,14 @@
     bottom: 10px;
     right: 10px;
     z-index: 5;
+    border-radius:3px;
+    border: 1px solid #232324;
   }
 
   #local-media.video-hidden {
     opacity: 0.1;
   }
 
-  .individual-video {
-    position: relative;
-    margin-bottom: -6px;
-  }
   .participant-info {
     padding: 3px 8px;
     border-radius: 3px;
@@ -107,6 +118,12 @@
     margin-top: 30px;
   }
 
+  @media screen and (max-width: 400px) {
+    .individual-video {
+      flex: 1 0 100%;
+      width: 100%;
+    }
+  }
   @media screen and (max-width: 280px) {
     .video-controls {
       width: 92%;

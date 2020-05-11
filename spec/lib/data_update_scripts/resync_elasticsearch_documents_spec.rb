@@ -1,7 +1,12 @@
 require "rails_helper"
 require Rails.root.join("lib/data_update_scripts/20200410152018_resync_elasticsearch_documents.rb")
 
-describe DataUpdateScripts::ResyncElasticsearchDocuments, elasticsearch: true do
+describe DataUpdateScripts::ResyncElasticsearchDocuments, elasticsearch: %w[FeedContent User Tag] do
+  after do
+    Article::SEARCH_CLASS.refresh_index
+    User::SEARCH_CLASS.refresh_index
+  end
+
   it "indexes podcast episodes and tags to Elasticsearch" do
     tag = create(:tag)
     podcast_episode = create(:podcast_episode)

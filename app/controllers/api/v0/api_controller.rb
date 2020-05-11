@@ -13,13 +13,9 @@ class Api::V0::ApiController < ApplicationController
     error_unprocessable_entity(exc.message)
   end
 
-  rescue_from ActiveRecord::RecordNotFound do |_exc|
-    error_not_found
-  end
+  rescue_from ActiveRecord::RecordNotFound, with: :error_not_found
 
-  rescue_from Pundit::NotAuthorizedError do |_exc|
-    error_unauthorized
-  end
+  rescue_from Pundit::NotAuthorizedError, with: :error_unauthorized
 
   protected
 

@@ -1,10 +1,10 @@
 class EmailSubscriptionsController < ApplicationController
   PREFERRED_EMAIL_NAME = {
-    email_digest_periodic: "DEV digest emails",
+    email_digest_periodic: "#{ApplicationConfig['COMMUNITY_NAME']} digest emails",
     email_comment_notifications: "comment notifications",
     email_follower_notifications: "follower notifications",
     email_mention_notifications: "mention notifications",
-    email_connect_messages: "DEV connect messages",
+    email_connect_messages: "#{ApplicationConfig['COMMUNITY_NAME']} connect messages",
     email_unread_notifications: "unread notifications",
     email_badge_notifications: "badge notifications"
   }.freeze

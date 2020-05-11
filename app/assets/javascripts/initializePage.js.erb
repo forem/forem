@@ -16,6 +16,7 @@ function callInitalizers(){
         initializeAllTagEditButtons();
       }
       initializeAllFollowButts();
+      initializeUserFollowButts();
       initializeReadingListIcons();
       initializeSponsorshipVisibility();
       if ( document.getElementById("sidebar-additional") ) {
@@ -46,6 +47,7 @@ function callInitalizers(){
   initializePodcastPlayback();
   initializeDrawerSliders();
   initializeHeroBannerClose();
+  initializeOnboardingTaskCard();
 
   function freezeScrolling(event){
     event.preventDefault();

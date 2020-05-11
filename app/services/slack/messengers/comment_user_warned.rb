@@ -32,7 +32,7 @@ module Slack
           internal_user_url: internal_user_url,
         )
 
-        SlackBotPingWorker.perform_async(
+        Slack::Messengers::Worker.perform_async(
           message: message,
           channel: "warned-user-comments",
           username: "sloan_watch_bot",

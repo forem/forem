@@ -46,7 +46,7 @@ before_install:
   - sudo systemctl start elasticsearch
 install:
   - bundle install --path vendor/bundle
-  - yarn install
+  - yarn install --frozen-lockfile
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
     > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
