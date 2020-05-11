@@ -89,7 +89,11 @@ Rails.application.routes.draw do
       end
     end
     resources :organization_memberships, only: %i[update destroy create]
-    resources :organizations, only: %i[index show]
+    resources :organizations, only: %i[index show] do
+      member do
+        patch "update_org_credits"
+      end
+    end
     resources :sponsorships, only: %i[index edit update destroy]
     resources :welcome, only: %i[index create]
     resources :growth, only: %i[index]
