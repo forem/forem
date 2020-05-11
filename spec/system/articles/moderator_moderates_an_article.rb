@@ -13,11 +13,17 @@ RSpec.describe "Views an article", type: :system do
 
   it "shows an article" do
     visit "/#{user.username}/#{article.slug}"
+
+    Percy.snapshot(page, name: "Moderators: renders an article")
+
     expect(page).to have_content(article.title)
   end
 
   it "lets moderators visit /mod" do
     visit "/#{user.username}/#{article.slug}/mod"
+
+    Percy.snapshot(page, name: "Moderators: renders /mod")
+
     expect(page).to have_content("Moderate: #{article.title}")
     expect(page).to have_selector('button[data-category="thumbsdown"][data-reactable-type="Article"]')
     expect(page).to have_selector('button[data-category="vomit"][data-reactable-type="Article"]')
