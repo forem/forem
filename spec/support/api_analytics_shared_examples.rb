@@ -1,11 +1,11 @@
 RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |endpoint, params|
   let(:user)              { create(:user) }
   let(:api_token)         { create(:api_secret, user: user) }
-  let(:org)               { create(:organization) }
   let(:pro_user)          { create(:user, :pro) }
   let(:pro_api_token)     { create(:api_secret, user: pro_user) }
   let(:pro_org_member)    { create(:user, :pro, :org_member) }
   let(:org_member_token)  { create(:api_secret, user: pro_org_member) }
+  let(:org)               { pro_org_member.organizations.first }
   let(:article)           { create(:article, user: user) }
   let(:pro_user_article)  { create(:article, user: pro_user) }
   let(:pro_org_article)   { create(:article, user: pro_user, organization: org) }
@@ -100,8 +100,11 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
 
   context "when viewing your own organizaiton's single article's analytics" do
     it "responds with status 200 OK" do
+      org_param = "&organization_id=#{pro_org_article.organization.id}"
+
       sign_in pro_org_member
-      get "/api/analytics/#{endpoint}?article_id=#{pro_org_article.id}#{params}"
+      get "/api/analytics/#{endpoint}?article_id=#{pro_org_article.id}#{params}#{org_param}"
+      expect(response).to have_http_status(:ok)
     end
   end
 end
