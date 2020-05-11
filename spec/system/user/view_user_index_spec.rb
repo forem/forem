@@ -19,7 +19,7 @@ RSpec.describe "User index", type: :system do
       end
 
       it "shows proper title tag" do
-        expect(page).to have_title("#{user.name} - #{ApplicationConfig['COMMUNITY_NAME']} Community 👩‍💻👨‍💻")
+        expect(page).to have_title("#{user.name} - #{ApplicationConfig['COMMUNITY_NAME']}")
       end
 
       it "shows user's articles" do
