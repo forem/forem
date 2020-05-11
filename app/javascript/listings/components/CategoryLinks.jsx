@@ -9,7 +9,9 @@ const CategoryLinks = ({ categories, onClick, selectedCategory }) => {
           href={`/listings/${category.slug}`}
           id={`category-link-${category.id}`}
           className={category.slug === selectedCategory ? 'selected' : ''}
-          onClick={onClick}
+          onClick={(e) => {
+            onClick(e, category.slug);
+          }}
           data-no-instant
           Key={category.id}
         >
