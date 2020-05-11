@@ -139,12 +139,16 @@
     }
     .mod-index-row-iframes {
       padding: 5px 0px;
+      display: flex;
       iframe {
         height: calc(100vh - 100px);
         max-height: 800px;
-        width: 49%;
+        width: 100%;
         border: 0px;
         display: inline-block;
+      }
+      .actions-panel {
+        width: 40%;
       }
     }
   }
