@@ -18,6 +18,8 @@ RSpec.describe "Deleting Comment", type: :system, js: true do
 
     wait_for_javascript
 
+    Percy.snapshot(page, name: "Comment: confirm delete")
+
     click_button("DELETE")
     expect(page).to have_current_path(article.path)
   end

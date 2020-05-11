@@ -28,6 +28,8 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
 
       wait_for_javascript
 
+      Percy.snapshot(page, name: "Edit comment: renders")
+
       click_link("EDIT")
       assert_updated
     end
