@@ -1,4 +1,4 @@
-import { request } from '../utilities/http/request';
+import { request } from '@utilities/http';
 
 function addCloseListener() {
   const button = document.querySelector('.close-actions-panel');
