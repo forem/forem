@@ -13,13 +13,22 @@ RSpec.describe "User uses response templates settings", type: :system do
     context "when user has a response template already" do
       it "can go to the edit page of the response template" do
         visit "/settings/response-templates"
+
+        Percy.snapshot(page, name: "Settings: /response-templates renders")
+
         click_link "Edit"
+
+        Percy.snapshot(page, name: "Settings: /response-templates can edit")
+
         expect(page).to have_current_path "/settings/response-templates/#{response_template.id}", ignore_query: true
       end
 
       it "shows the proper message when deleting a reponse template", js: true do
         visit "/settings/response-templates"
         accept_confirm { click_button "Remove" }
+
+        Percy.snapshot(page, name: "Settings: /response-templates can delete")
+
         expect(page).to have_text "was deleted."
       end
     end
