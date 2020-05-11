@@ -31,10 +31,11 @@ RSpec.describe "Display articles search spec", type: :system, js: true, elastics
 
     expect(page).to have_content(found_article_one.title)
     expect(find("#article-link-#{found_article_one.id}")["href"]).to include(found_article_one.path)
-    expect(find_button("SAVE")["data-reactable-id"].to_i).to eq(found_article_one.id)
-    expect(find_link("5 min read")).to be_present
+    expect(page).to have_selector("button[data-reactable-id=\"#{found_article_one.id}\"]")
+    expect(page).to have_content("5 min read")
     expect(find_link("#ruby")["href"]).to include("/t/ruby")
     expect(find_link(found_article_one.user.name)["href"]).to include(found_article_one.username)
-    expect(find(".engagement-count-number").text.to_i).to eq(2)
+    expect(page).to have_content("0 reactions")
+    expect(page).to have_content("2 comments")
   end
 end
