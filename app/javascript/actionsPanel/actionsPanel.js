@@ -4,7 +4,7 @@ function addCloseListener() {
   const button = document.querySelector('.close-actions-panel');
   button.addEventListener('click', () => {
     // getting the article show page document because this is called within an iframe
-    const articleDocument = window.parent.document;
+    const articleDocument = top.document;
 
     articleDocument
       .querySelector('.mod-actions-menu')
@@ -120,7 +120,7 @@ function clearAdjustmentReason() {
 }
 
 function renderTagOnArticle(tagName, colors) {
-  const articleTagsContainer = window.parent.document.getElementsByClassName(
+  const articleTagsContainer = top.document.getElementsByClassName(
     'tags',
   )[0];
 
@@ -170,7 +170,7 @@ function adjustTag(el) {
         if (json.result === 'addition') {
           renderTagOnArticle(adjustedTagName, json.colors);
         } else {
-          const tagOnArticle = window.parent.document.querySelector(
+          const tagOnArticle = top.document.querySelector(
             `.tag[href="/t/${adjustedTagName}"]`,
           );
           tagOnArticle.remove();
