@@ -3,14 +3,6 @@ class GithubRepoPolicy < ApplicationPolicy
     user.authenticated_through?(:github) && !user_is_banned?
   end
 
-  def create?
-    user.authenticated_through?(:github) && !user_is_banned?
-  end
-
-  def update?
-    user.authenticated_through?(:github) && !user_is_banned? && user_is_owner?
-  end
-
   def update_or_create?
     user.authenticated_through?(:github) && !user_is_banned?
   end

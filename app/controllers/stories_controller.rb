@@ -314,12 +314,7 @@ class StoriesController < ApplicationController
   end
 
   def assign_user_github_repositories
-    @github_repositories = if @user.authenticated_through?(:github)
-                             @user.github_repos.featured.
-                               order(stargazers_count: :desc, name: :asc)
-                           else
-                             GithubRepo.none
-                           end
+    @github_repositories = @user.github_repos.featured.order(stargazers_count: :desc, name: :asc)
   end
 
   def stories_by_timeframe
