@@ -72,41 +72,6 @@ RSpec.describe "GithubRepos", type: :request do
     end
   end
 
-  describe "POST /github_repos" do
-    before { sign_in user }
-
-    it "returns a 302" do
-      params = { github_repo: { github_id_code: repo.github_id_code } }
-      post github_repos_path, params: params
-
-      expect(response).to have_http_status(:found)
-    end
-
-    it "creates a new GithubRepo object" do
-      params = { github_repo: { github_id_code: repo.github_id_code } }
-      expect do
-        post github_repos_path, params: params
-      end.to change(GithubRepo, :count).by(1)
-    end
-  end
-
-  describe "PUT /github_repos/:id" do
-    before do
-      repo.save
-      sign_in user
-    end
-
-    it "returns a 302" do
-      put "/github_repos/#{repo.id}"
-      expect(response).to have_http_status(:found)
-    end
-
-    it "unfeatures the requested GithubRepo" do
-      put "/github_repos/#{repo.id}"
-      expect(GithubRepo.first.featured).to eq(false)
-    end
-  end
-
   describe "POST /github_repos/update_or_create" do
     before { sign_in user }
 
