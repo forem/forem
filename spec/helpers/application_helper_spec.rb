@@ -147,4 +147,14 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(email_link(text: "text", additional_info: additional_info)).to eq("<a href=\"mailto:hi@dev.to?body=This%20is%20a%20longer%20body%20with%20a%20question%20mark%20%3F%20%0A%20and%20a%20newline&amp;subject=This%20is%20a%20long%20subject\">text</a>")
     end
   end
+
+  describe "#community_members_label" do
+    before do
+      allow(SiteConfig).to receive(:community_member_label).and_return("hobbyist")
+    end
+
+    it "returns the pluralized community_member_label" do
+      expect(community_members_label).to eq("hobbyists")
+    end
+  end
 end

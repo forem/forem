@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Search::Base, type: :service, elasticsearch: true do
+RSpec.describe Search::Base, type: :service do
   let(:document_id) { 123 }
 
   before do
@@ -8,6 +8,8 @@ RSpec.describe Search::Base, type: :service, elasticsearch: true do
     stub_const("#{described_class}::INDEX_NAME", "tags_#{Rails.env}")
     stub_const("#{described_class}::INDEX_ALIAS", "tags_#{Rails.env}_alias")
     stub_const("#{described_class}::MAPPINGS", Search::Tag::MAPPINGS)
+    Search::Tag.refresh_index
+    clear_elasticsearch_data(Search::Tag)
     allow(described_class).to receive(:index_settings).and_return({})
   end
 
@@ -67,7 +69,7 @@ RSpec.describe Search::Base, type: :service, elasticsearch: true do
     end
   end
 
-  describe "::create_index" do
+  describe "::create_index", elasticsearch_reset: true do
     it "creates an elasticsearch index with INDEX_NAME" do
       described_class.delete_index
       expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
@@ -86,7 +88,7 @@ RSpec.describe Search::Base, type: :service, elasticsearch: true do
     end
   end
 
-  describe "::delete_index" do
+  describe "::delete_index", elasticsearch_reset: true do
     it "deletes an elasticsearch index with INDEX_NAME" do
       expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
       described_class.delete_index

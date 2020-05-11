@@ -1,7 +1,7 @@
 import { h } from 'preact';
-import { Fieldset } from '../../../storybook-utiltiies/Fieldset';
+import { Fieldset } from '../../../storybook-utilities/Fieldset';
 
-import '../../../storybook-utiltiies/designSystem.scss';
+import '../../../storybook-utilities/designSystem.scss';
 
 export default { title: 'Components/Form Components/Radio Button/HTML' };
 

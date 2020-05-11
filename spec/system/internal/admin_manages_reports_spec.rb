@@ -1,16 +1,17 @@
 require "rails_helper"
 
-RSpec.describe "Admin awards badges", type: :system do
+RSpec.describe "Admin manages reports", type: :system do
   let(:admin) { create(:user, :super_admin) }
 
   def clear_search_boxes
     fill_in "q_reporter_username_cont", with: ""
     fill_in "q_reported_url_cont", with: ""
+    select "", from: "q_status_eq"
   end
 
   before do
     sign_in admin
-    visit "/internal/reports"
+    visit internal_feedback_messages_path
   end
 
   it "loads the view" do

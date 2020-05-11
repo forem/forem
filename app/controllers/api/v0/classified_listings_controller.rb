@@ -55,7 +55,7 @@ module Api
 
       ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id title slug body_markdown cached_tag_list
-        category classified_listing_category_id category processed_html published
+        classified_listing_category_id processed_html published
       ].freeze
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 

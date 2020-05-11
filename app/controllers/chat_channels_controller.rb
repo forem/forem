@@ -80,6 +80,7 @@ class ChatChannelsController < ApplicationController
     chat_recipient = User.find(params[:user_id])
     valid_listing = ClassifiedListing.where(user_id: params[:user_id], contact_via_connect: true).limit(1)
     authorize ChatChannel
+
     if chat_recipient.inbox_type == "open" || valid_listing.length == 1
       chat = ChatChannel.create_with_users(users: [current_user, chat_recipient], channel_type: "direct")
       message_markdown = params[:message]
@@ -93,6 +94,8 @@ class ChatChannelsController < ApplicationController
     else
       render json: { status: "error", message: "not allowed!" }, status: :bad_request
     end
+  rescue StandardError => e
+    render json: { status: "error", message: e.message }, status: :bad_request
   end
 
   def block_chat

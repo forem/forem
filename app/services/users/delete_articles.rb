@@ -16,7 +16,6 @@ module Users
           comment.remove_from_elasticsearch
           comment.delete
         end
-        article.remove_algolia_index
         article.remove_from_elasticsearch
         article.delete
         article.purge
@@ -30,7 +29,7 @@ module Users
       readinglist_ids = article.reactions.readinglist.pluck(:id)
       article.reactions.delete_all
       readinglist_ids.each do |id|
-        Search::RemoveFromElasticsearchIndexWorker.perform_async("Search::Reaction", id)
+        Search::RemoveFromIndexWorker.perform_async("Search::Reaction", id)
       end
     end
   end

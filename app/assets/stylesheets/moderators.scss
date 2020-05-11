@@ -1,9 +1,10 @@
 @import 'variables';
 @import 'mixins';
+@import 'config/import';
 
 .mod-index-hero {
   margin: 0 auto;
-  padding: 90px 5px;
+  padding: var(--su-7) var(--su-1);
   text-align: center;
   background: var(--body-bg);
   h1 {

@@ -1,5 +1,3 @@
-# config/initializers/monkey_patches/persistent_csrf_token_cookie.rb
-#
 # Workaround for CSRF protection bug.
 #
 # https://github.com/rails/rails/issues/21948

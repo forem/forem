@@ -8,6 +8,7 @@ class SearchController < ApplicationController
     :classified_listing_search,
     :page,
     :per_page,
+    :tag_boolean_mode,
     {
       tags: []
     },

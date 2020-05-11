@@ -1,5 +1,6 @@
 json.array! @podcast_episodes do |episode|
-  json.type_of "podcast_episodes"
+  json.type_of      "podcast_episodes"
+  json.class_name   "PodcastEpisode"
 
   json.extract!(episode, :id, :path, :title)
 

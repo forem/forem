@@ -87,6 +87,12 @@ RSpec.describe "ImageUploads", type: :request do
         post "/image_uploads", headers: headers, params: { image: image }
         expect(response).to have_http_status(:unprocessable_entity)
       end
+
+      it "returns error if image file is not a file" do
+        allow(bad_image).to receive(:respond_to?).with(:original_filename).and_return(false)
+        post "/image_uploads", headers: headers, params: { image: bad_image }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
 
     context "when uploading rate limiting works" do
@@ -116,7 +122,7 @@ RSpec.describe "ImageUploads", type: :request do
 
         expect(response).to have_http_status(:too_many_requests)
 
-        expected_retry_after = RateLimitChecker::RETRY_AFTER[:image_upload]
+        expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:image_upload, :retry_after)
         expect(response.headers["Retry-After"]).to eq(expected_retry_after)
       end
     end

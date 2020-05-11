@@ -1,6 +1,8 @@
 class Identity < ApplicationRecord
   belongs_to :user
-  has_many  :backup_data, as: :instance, class_name: "BackupData", dependent: :destroy
+  has_many :backup_data, as: :instance, class_name: "BackupData", dependent: :destroy
+
+  scope :enabled, -> { where(provider: Authentication::Providers.enabled) }
 
   validates :uid, :provider, presence: true
   validates :uid, uniqueness: { scope: :provider }, if: proc { |identity| identity.uid_changed? || identity.provider_changed? }

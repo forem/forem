@@ -2,7 +2,7 @@
   <% title("#{community_name} EVENTS") %>
   <link rel="canonical" href="<%= app_url("/events") %>" />
   <meta name="description" content="<%= community_name %> Events">
-  <meta name="keywords" content="software development,engineering,rails,javascript,ruby">
+  <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
   <meta property="og:type" content="article" />
   <meta property="og:url" content="<%= app_url("/events") %>" />
   <meta property="og:title" content="<%= community_name %> Events" />

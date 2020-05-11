@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Authentication::Authenticator, type: :service do
-  before { mock_auth_hash }
+  before { omniauth_mock_providers_payload }
 
   context "when authenticating through an unknown provider" do
     it "raises ProviderNotFound" do

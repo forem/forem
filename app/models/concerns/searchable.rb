@@ -4,7 +4,7 @@ module Searchable
   end
 
   def index_to_elasticsearch
-    Search::IndexToElasticsearchWorker.perform_async(self.class.name, id)
+    Search::IndexWorker.perform_async(self.class.name, id)
   end
 
   def index_to_elasticsearch_inline
@@ -12,7 +12,7 @@ module Searchable
   end
 
   def remove_from_elasticsearch
-    Search::RemoveFromElasticsearchIndexWorker.perform_async(self.class::SEARCH_CLASS.to_s, search_id)
+    Search::RemoveFromIndexWorker.perform_async(self.class::SEARCH_CLASS.to_s, search_id)
   end
 
   def serialized_search_hash

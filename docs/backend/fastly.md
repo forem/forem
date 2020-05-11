@@ -13,7 +13,20 @@ If you want to learn more about we use Fastly, check out this
 [@benhalpern](https://dev.to/ben), gave at RailsConf 2018 talking about how we
 made our app so fast it went viral.
 
-## Adding query string parameters to a safe list
+Fastly offers many different configurations (conditions,
+[snippets](https://docs.fastly.com/vcl/vcl-snippets/about-vcl-snippets/), etc.).
+
+## Snippets
+
+Snippets, in general, are _"short blocks of VCL logic that can be included
+directly in your service configurations. They're ideal for adding small sections
+of code when you don't need more complex, specialized configurations that
+sometimes require custom VCL."_
+
+You can learn more about VCL snippets on
+[Fastly's website](https://docs.fastly.com/vcl/vcl-snippets/about-vcl-snippets/)
+
+### Adding query string parameters to a safe list
 
 In the context of contributing, here's what you need to know about Fastly. In
 order for our servers to receive any sort of query string parameters in a
@@ -28,27 +41,23 @@ to see examples of this.
 
 Previously this was a manual process done by an internal team member. Now we do
 it programmatically using the Fastly
-[gem](https://github.com/fastly/fastly-ruby) as of
-[this pr](https://github.com/thepracticaldev/dev.to/pull/7279).
+[gem](https://github.com/fastly/fastly-ruby).
 
-## How it works
+### How it works
 
-We created a new file, `config/fastly/safe_params.yml`, to house all of the safe
-params in Fastly.
+We created a new file, `config/fastly/safe_params_list.vcl`, to house all of the
+safe params in Fastly.
 
 If you need to update this list, simply update this file. It's as easy as that!
+This is a VCL file and you'll see a little Regex checking for a list of safe
+params.
 
 _Fastly is not setup for development._
 
-## In production
+### In production
 
-If you have Fastly configured in Production and have a similar custom VCL script
-to list safe query string params, make sure you've set the
-`FASTLY_SAFE_PARAMS_SNIPPET_NAME` ENV variable with the name of the VCL snippet
-you have configured in Fastly.
+If you have Fastly configured in Production, all Fastly configs are updated
+automatically when a production deploy goes out.
 
-Safe params on Fastly are updated automatically when a production deploy goes
-out unless this key is not set (i.e. you don't have a similar custom VCL setup).
-
-We do this by executing `bin/rails fastly:update_safe_params` in our
+We do this by executing `bin/rails fastly:update_configs` in our
 `release-tasks.sh` script.

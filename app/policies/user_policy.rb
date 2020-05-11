@@ -109,7 +109,7 @@ class UserPolicy < ApplicationPolicy
     OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
   end
 
-  def remove_association?
+  def remove_identity?
     current_user?
   end
 

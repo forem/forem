@@ -14,7 +14,7 @@ class PodcastsController < ApplicationController
   end
 
   def create
-    unless valid_filename?
+    unless valid_image?
       render :new
       return
     end
@@ -58,17 +58,30 @@ class PodcastsController < ApplicationController
     Bullet.enable = previous_value
   end
 
-  def valid_filename?
+  def valid_image?
     image = params.dig("podcast", "image")
-    return true unless long_filename?(image)
+    return true unless image
 
     @podcast = Podcast.new(podcast_params.except(:image))
     @podcast.creator = current_user
-    @podcast.errors.add(:image, FILENAME_TOO_LONG_MESSAGE)
+    return true if valid_image_file?(image) && valid_filename?(image)
 
     @podcasts = Podcast.available.order(title: :asc)
     @podcast_index = true
+    false
+  end
 
+  def valid_image_file?(image)
+    return true if file?(image)
+
+    @podcast.errors.add(:image, IS_NOT_FILE_MESSAGE)
+    false
+  end
+
+  def valid_filename?(image)
+    return true unless long_filename?(image)
+
+    @podcast.errors.add(:image, FILENAME_TOO_LONG_MESSAGE)
     false
   end
 end

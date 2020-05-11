@@ -1,5 +1,6 @@
 class ReactionsController < ApplicationController
   before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
+  before_action :check_limit, only: [:create]
   after_action :verify_authorized
 
   def index
@@ -73,6 +74,7 @@ class ReactionsController < ApplicationController
       reaction = build_reaction(category)
 
       if reaction.save
+        rate_limiter.track_limit_by_action(:reaction_creation)
         Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
 
         Notification.send_reaction_notification(reaction, reaction.target_user)
@@ -129,5 +131,9 @@ class ReactionsController < ApplicationController
                       user_id: current_user.id,
                       context: "readinglist_reaction",
                       rating: current_user.experience_level)
+  end
+
+  def check_limit
+    rate_limit!(:reaction_creation)
   end
 end

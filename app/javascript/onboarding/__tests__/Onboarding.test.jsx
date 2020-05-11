@@ -25,7 +25,14 @@ function flushPromises() {
 
 function initializeSlides(currentSlide, userData = null, mockData = null) {
   document.body.setAttribute('data-user', userData);
-  const onboardingSlides = deep(<Onboarding />);
+  const onboardingSlides = deep(
+    <Onboarding
+      communityConfig={{
+        communityName: 'Test',
+        communityDescription: "Wouldn't you like to knoww..",
+      }}
+    />,
+  );
 
   if (mockData) {
     fetch.once(mockData);

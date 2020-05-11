@@ -57,7 +57,7 @@ RSpec.describe Users::DeleteArticles, type: :service do
       sidekiq_perform_enqueued_jobs
       comments = article.comments
       comments.each { |comment| expect(comment.elasticsearch_doc).not_to be_nil }
-      sidekiq_perform_enqueued_jobs(only: Search::RemoveFromElasticsearchIndexWorker) do
+      sidekiq_perform_enqueued_jobs(only: Search::RemoveFromIndexWorker) do
         described_class.call(user)
       end
 
