@@ -39,7 +39,7 @@ const Modal = ({
             onSubmit={onSubmit}
             onChange={onChange}
             message={message}
-            listining={listing}
+            listing={listing}
           />
         )}
         <a

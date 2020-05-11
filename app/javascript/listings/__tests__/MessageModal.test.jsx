@@ -32,7 +32,7 @@ const getProps = () => ({
 });
 
 const renderMessageModal = (listing) =>
-  deep(<MessageModal {...getProps()} listining={listing} />);
+  deep(<MessageModal {...getProps()} listing={listing} />);
 
 describe('<MessageModal />', () => {
   it('Should render a text-area', () => {

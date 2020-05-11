@@ -4,11 +4,11 @@ import PropTypes from 'prop-types';
 const MessageModal = ({
   currentUserId,
   message,
-  listining,
+  listing,
   onSubmit,
   onChangeDraftingMessage,
 }) => {
-  const isCurrentUserOnListining = listining.user_id === currentUserId;
+  const isCurrentUserOnListing = listing.user_id === currentUserId;
 
   return (
     <form
@@ -16,7 +16,7 @@ const MessageModal = ({
       className="listings-contact-via-connect"
       onSubmit={onSubmit}
     >
-      {isCurrentUserOnListining ? (
+      {isCurrentUserOnListing ? (
         <p id="personal-contact-message">
           This is your active listing. Any member can contact you via this form.
         </p>
@@ -24,7 +24,7 @@ const MessageModal = ({
         <p>
           <b id="generic-contact-message">
             Contact
-            {` ${listining.author.name} `}
+            {` ${listing.author.name} `}
             via DEV Connect
           </b>
         </p>
@@ -41,7 +41,7 @@ const MessageModal = ({
         SEND
       </button>
       <p>
-        {isCurrentUserOnListining ? (
+        {isCurrentUserOnListing ? (
           <em id="personal-message-about-interactions">
             All private interactions 
             {' '}
@@ -71,7 +71,7 @@ const MessageModal = ({
 MessageModal.propTypes = {
   currentUserId: PropTypes.number.isRequired,
   message: PropTypes.string.isRequired,
-  listining: PropTypes.shape({
+  listing: PropTypes.shape({
     author: PropTypes.shape({
       name: PropTypes.string.isRequired,
     }).isRequired,
