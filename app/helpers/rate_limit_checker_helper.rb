@@ -39,6 +39,11 @@ module RateLimitCheckerHelper
       min: 1,
       placeholder: 10,
       description: "The number of times a user can react in a 30 second period"
+    },
+    rate_limit_send_email_confirmation: {
+      min: 1,
+      placeholder: 2,
+      description: "The number of times we will send a confirmation email to a user in a 2 minute period"
     }
   }.freeze
 

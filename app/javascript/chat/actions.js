@@ -6,7 +6,7 @@ export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
     'Content-Type': 'application/json',
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -29,7 +29,7 @@ export function sendMessage(messageObject, successCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -51,7 +51,7 @@ export function editMessage(editedMessage, successCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -67,7 +67,7 @@ export function sendOpen(activeChannelId, successCb, failureCb) {
     body: JSON.stringify({}),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -92,7 +92,7 @@ export function conductModeration(
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -100,7 +100,7 @@ export function conductModeration(
 export function getChannels(
   query,
   retrievalID,
-  props,
+  searchType,
   paginationNumber,
   additionalFilters,
   successCb,
@@ -114,14 +114,16 @@ export function getChannels(
   dataHash.per_page = 30;
   dataHash.page = paginationNumber;
   dataHash.channel_text = query;
-
+  if (searchType === 'discoverable') {
+    dataHash.user_id = 'all';
+  }
   const responsePromise = fetchSearch('chat_channels', dataHash);
 
-  return responsePromise.then(response => {
+  return responsePromise.then((response) => {
     const channels = response.result;
     if (
       retrievalID === null ||
-      channels.filter(e => e.chat_channel_id === retrievalID).length === 1
+      channels.filter((e) => e.chat_channel_id === retrievalID).length === 1
     ) {
       successCb(channels, query);
     } else {
@@ -133,8 +135,8 @@ export function getChannels(
           credentials: 'same-origin',
         },
       )
-        .then(individualResponse => individualResponse.json())
-        .then(json => {
+        .then((individualResponse) => individualResponse.json())
+        .then((json) => {
           channels.unshift(json);
           successCb(channels, query);
         });
@@ -146,8 +148,8 @@ export function getUnopenedChannelIds(successCb) {
   fetch('/chat_channels?state=unopened_ids', {
     credentials: 'same-origin',
   })
-    .then(response => response.json())
-    .then(json => {
+    .then((response) => response.json())
+    .then((json) => {
       successCb(json.unopened_ids);
     });
 }
@@ -158,7 +160,7 @@ export function getContent(url, successCb, failureCb) {
     'Content-Type': 'application/json',
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -169,7 +171,7 @@ export function getJSONContents(url, successCb, failureCb) {
     'Content-Type': 'application/json',
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -180,7 +182,7 @@ export function getChannelInvites(successCb, failureCb) {
     'Content-Type': 'application/json',
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -200,7 +202,7 @@ export function sendChannelInviteAction(id, action, successCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }
@@ -220,7 +222,27 @@ export function deleteMessage(messageId, successCb, failureCb) {
     }),
     credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
+
+export function sendChannelRequest(id, successCb, failureCb) {
+  fetch(`/join_chat_channel`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      chat_channel_membership: {
+        chat_channel_id: id,
+      },
+    }),
+    credentials: 'same-origin',
+  })
+    .then((response) => response.json())
     .then(successCb)
     .catch(failureCb);
 }

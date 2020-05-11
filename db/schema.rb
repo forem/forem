@@ -304,6 +304,7 @@ ActiveRecord::Schema.define(version: 2020_05_04_075409) do
     t.string "channel_type", null: false
     t.datetime "created_at", null: false
     t.string "description"
+    t.boolean "discoverable", default: false
     t.datetime "last_message_at", default: "2017-01-01 05:00:00"
     t.string "slug"
     t.string "status", default: "active"

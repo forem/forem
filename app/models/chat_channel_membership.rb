@@ -10,7 +10,7 @@ class ChatChannelMembership < ApplicationRecord
 
   validates :user_id, presence: true, uniqueness: { scope: :chat_channel_id }
   validates :chat_channel_id, presence: true, uniqueness: { scope: :user_id }
-  validates :status, inclusion: { in: %w[active inactive pending rejected left_channel removed_from_channel] }
+  validates :status, inclusion: { in: %w[active inactive pending rejected left_channel removed_from_channel joining_request] }
   validates :role, inclusion: { in: %w[member mod] }
   validate  :permission
 
@@ -68,6 +68,10 @@ class ChatChannelMembership < ApplicationRecord
 
   def viewable_by
     user_id
+  end
+
+  def channel_discoverable
+    chat_channel.discoverable
   end
 
   private
