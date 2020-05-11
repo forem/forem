@@ -18,6 +18,8 @@ RSpec.describe "Authenticating with Twitter" do
         visit root_path
         click_link sign_in_link
 
+        Percy.snapshot(page, name: "Onboarding: /onboarding")
+
         expect(page).to have_current_path("/onboarding?referrer=none")
         expect(page.html).to include("onboarding-container")
       end

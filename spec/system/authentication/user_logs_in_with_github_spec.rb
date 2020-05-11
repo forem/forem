@@ -18,6 +18,8 @@ RSpec.describe "Authenticating with GitHub" do
         visit root_path
         click_link sign_in_link
 
+        Percy.snapshot(page, name: "Onboarding: /onboarding")
+
         expect(page).to have_current_path("/onboarding", ignore_query: true)
         expect(page.html).to include("onboarding-container")
       end
@@ -142,6 +144,8 @@ RSpec.describe "Authenticating with GitHub" do
       it "redirects to the registration page" do
         visit root_path
         click_link sign_in_link
+
+        Percy.snapshot(page, name: "Registration: /users/sign_up")
 
         expect(page).to have_current_path("/users/sign_up")
       end
