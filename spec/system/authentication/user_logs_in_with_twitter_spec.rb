@@ -14,11 +14,13 @@ RSpec.describe "Authenticating with Twitter" do
         end.to change(User, :count).by(1)
       end
 
+      it "renders the page", js: true do
+        Percy.snapshot(page, name: "Onboarding: /onboarding")
+      end
+
       it "logs in and redirects to the onboarding" do
         visit root_path
         click_link sign_in_link
-
-        Percy.snapshot(page, name: "Onboarding: /onboarding")
 
         expect(page).to have_current_path("/onboarding?referrer=none")
         expect(page.html).to include("onboarding-container")

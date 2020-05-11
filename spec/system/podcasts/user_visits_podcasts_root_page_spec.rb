@@ -11,7 +11,7 @@ RSpec.describe "User visits /pod page", type: :system do
 
   before { visit "/pod" }
 
-  it "displays the podcasts" do
+  it "displays the podcasts", js: true do
     Percy.snapshot(page, name: "Podcast: /pod renders")
 
     within "#articles-list" do

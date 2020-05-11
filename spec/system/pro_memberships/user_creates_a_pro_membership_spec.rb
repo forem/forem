@@ -14,8 +14,6 @@ RSpec.describe "Creates a Pro Membership", type: :system do
       label = "Become a Pro member"
       click_on label
 
-      Percy.snapshot(page, name: "Settings: /settings/pro-membership renders")
-
       expect(page).to have_content("You are now a Pro!")
     end
   end

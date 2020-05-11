@@ -11,7 +11,7 @@ RSpec.describe "User uses response templates settings", type: :system do
     end
 
     context "when user has a response template already" do
-      it "can go to the edit page of the response template" do
+      it "can go to the edit page of the response template", js: true do
         visit "/settings/response-templates"
 
         Percy.snapshot(page, name: "Settings: /response-templates renders")

@@ -11,7 +11,7 @@ RSpec.describe "Views an article", type: :system do
     sign_in user
   end
 
-  it "shows an article" do
+  it "shows an article", js: true do
     visit article.path
     Percy.snapshot(page, name: "Article: renders")
     expect(page).to have_content(article.title)
@@ -59,8 +59,6 @@ RSpec.describe "Views an article", type: :system do
 
         visit articles.first.path
 
-        Percy.snapshot(page, name: "Articles: renders a collection in order")
-
         elements = page.all(:xpath, articles_selector)
         paths = elements.map { |e| e[:href] }
         expect(paths).to eq([articles.first.path, articles.second.path])
@@ -68,12 +66,17 @@ RSpec.describe "Views an article", type: :system do
     end
 
     context "when a crossposted article is between two regular articles" do
+      let(:article1) { create(:article) }
+      let(:crossposted_article) { create(:article) }
+      let(:article2) { create(:article) }
+
+      it "renders the articles in ascending order considering crossposted_at", js: true do
+        visit article1.path
+        Percy.snapshot(page, name: "Articles: renders crossposted articles")
+      end
+
       # rubocop:disable RSpec/ExampleLength
       it "lists the articles in ascending order considering crossposted_at" do
-        article1 = create(:article)
-        crossposted_article = create(:article)
-        article2 = create(:article)
-
         article1.update_columns(
           collection_id: collection.id,
           published_at: Time.zone.parse("2020-03-15T13:50:09Z"),
@@ -91,7 +94,6 @@ RSpec.describe "Views an article", type: :system do
         article2.update_columns(collection_id: collection.id)
 
         visit article1.path
-        Percy.snapshot(page, name: "Articles: renders crossposted articles")
 
         expected_paths = [article1.path, crossposted_article.path, article2.path]
 

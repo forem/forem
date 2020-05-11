@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "Deleting Article", type: :system do
   let(:article) { create(:article) }
 
-  it "author of article deletes own article" do
+  it "author of article deletes own article", js: true do
     sign_in article.user
     visit "/dashboard"
     click_on "MANAGE"

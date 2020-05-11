@@ -10,7 +10,7 @@ RSpec.describe "User leaves an organization", type: :system do
   end
 
   context "when user visits member organization settings" do
-    it "shows the leave oranization button" do
+    it "shows the leave oranization button", js: true do
       Percy.snapshot(page, name: "Settings: /settings/organization/:organization_id")
 
       expect(page).to have_button("Leave Organization")
@@ -20,8 +20,6 @@ RSpec.describe "User leaves an organization", type: :system do
   context "when user leaves member organization" do
     it "leaves organization and shows confirmation" do
       click_button("Leave Organization")
-
-      Percy.snapshot(page, name: "Settings: /settings/organization/:organization_id leaves organization")
 
       expect(page).to have_content("You have left your organization.")
     end

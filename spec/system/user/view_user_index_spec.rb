@@ -67,7 +67,7 @@ RSpec.describe "User index", type: :system do
       user.organization_memberships.create(organization: organization, type_of_user: "member")
     end
 
-    it "shows organizations" do
+    it "shows organizations", js: true do
       visit "/user3000"
 
       Percy.snapshot(page, name: "User: /:user_id renders with organization membership")

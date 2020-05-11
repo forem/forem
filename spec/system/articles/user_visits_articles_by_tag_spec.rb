@@ -44,7 +44,7 @@ RSpec.describe "User visits articles by tag", type: :system do
         end
       end
 
-      it "when user clicks 'week'" do
+      it "when user clicks 'week'", js: true do
         click_on "WEEK"
         Percy.snapshot(page, name: "Tags WEEK: logged out user")
 

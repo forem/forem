@@ -36,7 +36,7 @@ RSpec.describe "Organization index", type: :system do
     end
 
     context "when more articles" do
-      it "visits ok" do
+      it "visits ok", js: true do
         create_list(:article, 3, organization: organization)
         visit "/#{organization.slug}"
 
@@ -56,10 +56,9 @@ RSpec.describe "Organization index", type: :system do
     it "shows the correct button", js: true do
       visit "/#{organization.slug}"
 
-      Percy.snapshot(page, name: "Organization: /:organization_slug renders when user follows org")
-
       within(".profile-details") do
         expect(page).to have_button("✓ FOLLOWING")
+        Percy.snapshot(page, name: "Organization: /:organization_slug renders when user follows org")
       end
     end
   end

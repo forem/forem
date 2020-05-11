@@ -15,7 +15,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
     end
 
-    it "shows the tags block" do
+    it "shows the tags block", js: true do
       within("#sidebar-nav-default-tags") do
         Tag.where(supported: true).limit(30).each do |tag|
           expect(page).to have_link("##{tag.name}", href: "/t/#{tag.name}")
@@ -61,7 +61,6 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the followed tags", js: true do
-        Percy.snapshot(page, name: "Visits homepage: logged in user follows tags")
         expect(page).to have_text("My Tags")
 
         # Need to ensure the user data is loaded before doing any checks

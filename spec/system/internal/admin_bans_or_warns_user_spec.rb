@@ -38,7 +38,7 @@ RSpec.describe "Admin bans user", type: :system do
     expect(page).to have_content("User has been updated")
   end
 
-  it "checks that the user is warned, has a note, and privileges are removed" do
+  it "checks that the user is warned, has a note, and privileges are removed", js: true do
     user.add_role :trusted
     add_tag_moderator_role
     warn_user
@@ -57,7 +57,7 @@ RSpec.describe "Admin bans user", type: :system do
     expect(Note.last.reason).to eq "Ban"
   end
 
-  it "removes other roles if user is banned" do
+  it "removes other roles if user is banned", js: true do
     user.add_role :trusted
     user.add_role :video_permission
     add_tag_moderator_role
@@ -72,7 +72,7 @@ RSpec.describe "Admin bans user", type: :system do
     expect(user.has_role?(:tag_modertor)).to eq(false)
   end
 
-  it "unbans user" do
+  it "unbans user", js: true do
     user.add_role :banned
     unban_user
 

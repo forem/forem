@@ -9,7 +9,7 @@ RSpec.describe "Looking For Work", type: :system do
     tag
   end
 
-  it "user selects looking for work and autofollows hiring tag" do
+  it "user selects looking for work and autofollows hiring tag", js: true do
     visit "/settings"
 
     Percy.snapshot(page, name: "Logged in user: settings page")

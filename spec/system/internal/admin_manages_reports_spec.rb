@@ -14,7 +14,7 @@ RSpec.describe "Admin manages reports", type: :system do
     visit internal_feedback_messages_path
   end
 
-  it "loads the view" do
+  it "loads the view", js: true do
     Percy.snapshot(page, name: "Admin: /internal/feedback_messages")
 
     expect(page).to have_content("Feedback Messages")
@@ -32,7 +32,7 @@ RSpec.describe "Admin manages reports", type: :system do
       clear_search_boxes
     end
 
-    it "searches reports" do
+    it "searches reports", js: true do
       fill_in "q_reporter_username_cont", with: user.username.to_s
       click_on "Search"
 
@@ -48,7 +48,7 @@ RSpec.describe "Admin manages reports", type: :system do
       expect(page).to have_css("#edit_feedback_message_#{feedback_message3.id}")
     end
 
-    it "filters by reports by status" do
+    it "filters by reports by status", js: true do
       select "Invalid", from: "q[status_eq]"
       click_on "Search"
 

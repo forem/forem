@@ -12,7 +12,7 @@ RSpec.describe "Deleting Comment", type: :system, js: true do
     sign_in user
   end
 
-  it "works" do
+  it "works", js: true do
     visit "/"
     visit comment.path + "/delete_confirm"
 

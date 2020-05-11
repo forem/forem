@@ -14,7 +14,7 @@ RSpec.describe "Authenticating with GitHub" do
         end.to change(User, :count).by(1)
       end
 
-      it "logs in and redirects to the onboarding" do
+      it "logs in and redirects to the onboarding", js: true do
         visit root_path
         click_link sign_in_link
 
@@ -141,7 +141,7 @@ RSpec.describe "Authenticating with GitHub" do
         end.not_to change(User, :count)
       end
 
-      it "redirects to the registration page" do
+      it "redirects to the registration page", js: true do
         visit root_path
         click_link sign_in_link
 
