@@ -14,8 +14,15 @@ import {
   sendChannelInviteAction,
   deleteMessage,
   editMessage,
+  sendChannelRequest,
 } from './actions';
-import { hideMessages, scrollToBottom, setupObserver } from './util';
+import {
+  hideMessages,
+  scrollToBottom,
+  setupObserver,
+  getCurrentUser,
+  channelSorter,
+} from './util';
 import Alert from './alert';
 import Channels from './channels';
 import Compose from './compose';
@@ -124,7 +131,7 @@ export default class Chat extends Component {
       getChannels(
         '',
         activeChannelId,
-        this.props,
+        '',
         channelPaginationNum,
         filters,
         this.loadChannels,
@@ -165,9 +172,11 @@ export default class Chat extends Component {
     }
   }
 
-  filterForActiveChannel = (channels, id) =>
+  filterForActiveChannel = (channels, id, currentUserId) =>
     channels.filter(
-      (channel) => channel.chat_channel_id === parseInt(id, 10),
+      (channel) =>
+        channel.chat_channel_id === parseInt(id, 10) &&
+        channel.viewable_by === parseInt(currentUserId, 10),
     )[0];
 
   subscribePusher = (channelName) => {
@@ -271,7 +280,7 @@ export default class Chat extends Component {
   };
 
   loadPaginatedChannels = (channels) => {
-    const state = this.state;
+    const {state} = this;
     const currentChannels = state.chatChannels;
     const currentChannelIds = currentChannels.map((channel) => channel.id);
     const newChannels = currentChannels;
@@ -408,8 +417,10 @@ export default class Chat extends Component {
       unopenedChannelIds,
     } = this.state;
     const receivedChatChannelId = message.chat_channel_id;
-    const messageList = document.getElementById('messagelist')
-    const nearBottom =  (messageList.scrollTop + messageList.offsetHeight + 400 > messageList.scrollHeight)
+    const messageList = document.getElementById('messagelist');
+    const nearBottom =
+      messageList.scrollTop + messageList.offsetHeight + 400 >
+      messageList.scrollHeight;
     if (nearBottom) {
       scrollToBottom();
     }
@@ -431,7 +442,9 @@ export default class Chat extends Component {
       }
     }
     const newShowAlert =
-      activeChannelId === receivedChatChannelId ? { showAlert: !nearBottom } : {};
+      activeChannelId === receivedChatChannelId
+        ? { showAlert: !nearBottom }
+        : {};
     let newMessageChannelIndex = 0;
     let newMessageChannel = null;
     const newChannelsObj = chatChannels.map((channel, index) => {
@@ -506,7 +519,7 @@ export default class Chat extends Component {
       getChannels(
         filterQuery,
         activeChannelId,
-        this.props,
+        '',
         channelPaginationNum,
         filters,
         this.loadPaginatedChannels,
@@ -546,17 +559,28 @@ export default class Chat extends Component {
         e.preventDefault();
       }
     }
-    if (leftPressed && activeContent[activeChannelId] && e.target.value === '' && document.getElementById('activecontent-iframe')) {
+    if (
+      leftPressed &&
+      activeContent[activeChannelId] &&
+      e.target.value === '' &&
+      document.getElementById('activecontent-iframe')
+    ) {
       e.preventDefault();
       try {
-        e.target.value = document.getElementById('activecontent-iframe').contentWindow.location.href
-      } catch(err){
-        e.target.value = activeContent[activeChannelId].path
+        e.target.value = document.getElementById(
+          'activecontent-iframe',
+        ).contentWindow.location.href;
+      } catch (err) {
+        e.target.value = activeContent[activeChannelId].path;
       }
     }
-    if (rightPressed && !activeContent[activeChannelId] && e.target.value === '') {
+    if (
+      rightPressed &&
+      !activeContent[activeChannelId] &&
+      e.target.value === ''
+    ) {
       e.preventDefault();
-      const richLinks = document.querySelectorAll(".chatchannels__richlink");
+      const richLinks = document.querySelectorAll('.chatchannels__richlink');
       if (richLinks.length === 0) {
         return;
       }
@@ -570,9 +594,11 @@ export default class Chat extends Component {
     }
     if (escPressed && activeContent[activeChannelId]) {
       this.setActiveContentState(activeChannelId, null);
-      this.setState({fullscreenContent: null, expanded: window.innerWidth > 600});
+      this.setState({
+        fullscreenContent: null,
+        expanded: window.innerWidth > 600,
+      });
     }
-
   };
 
   handleKeyDownEdit = (e) => {
@@ -620,7 +646,7 @@ export default class Chat extends Component {
     } else if (message.startsWith('/play ')) {
       const messageObject = {
         activeChannelId,
-        message: message,
+        message,
         mentionedUsersId: this.getMentionedUsers(message),
       };
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
@@ -637,7 +663,7 @@ export default class Chat extends Component {
         type_of: 'loading-post',
       });
       this.setActiveContent({
-        path: '/search?q=' + message.replace('/search ', ''),
+        path: `/search?q=${message.replace('/search ', '')}`,
         type_of: 'article',
       });
     } else if (message.startsWith('/s ')) {
@@ -645,7 +671,7 @@ export default class Chat extends Component {
         type_of: 'loading-post',
       });
       this.setActiveContent({
-        path: '/search?q=' + message.replace('/s ', ''),
+        path: `/search?q=${message.replace('/s ', '')}`,
         type_of: 'article',
       });
     } else if (message.startsWith('/')) {
@@ -672,7 +698,7 @@ export default class Chat extends Component {
         message,
         mentionedUsersId: this.getMentionedUsers(message),
       };
-      this.setState({scrolled: false, showAlert: false})
+      this.setState({ scrolled: false, showAlert: false });
       sendMessage(messageObject, this.handleSuccess, this.handleFailure);
     }
   };
@@ -695,6 +721,7 @@ export default class Chat extends Component {
       isMobileDevice,
       unopenedChannelIds,
       activeChannelId,
+      currentUserId,
     } = this.state;
     const newUnopenedChannelIds = unopenedChannelIds;
     const index = newUnopenedChannelIds.indexOf(id);
@@ -702,7 +729,11 @@ export default class Chat extends Component {
       newUnopenedChannelIds.splice(index, 1);
     }
     this.setState({
-      activeChannel: this.filterForActiveChannel(chatChannels, id),
+      activeChannel: this.filterForActiveChannel(
+        chatChannels,
+        id,
+        currentUserId,
+      ),
       activeChannelId: parseInt(id, 10),
       scrolled: false,
       showAlert: false,
@@ -805,16 +836,25 @@ export default class Chat extends Component {
       e.stopPropagation();
 
       const { activeChannelId, activeChannel } = this.state;
-      if (target.dataset.content.startsWith('chat_channels/')) {
+      if (content.startsWith('chat_channels/')) {
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-user',
         });
-        getContent(
-          `/${target.dataset.content}/channel_info`,
-          this.setActiveContent,
-          null,
-        );
-      } else if (target.dataset.content === 'sidecar_all') {
+        getContent(`/${content}/channel_info`, this.setActiveContent, null);
+      } else if (content === 'sidecar-channel-request') {
+        this.setActiveContent({
+          data: {
+            user: getCurrentUser(),
+            channel: {
+              id: target.dataset.channelId,
+              name: target.dataset.channelName,
+              status: target.dataset.channelStatus,
+            },
+          },
+          handleJoiningRequest: this.handleJoiningRequest,
+          type_of: 'channel-request',
+        });
+      } else if (content === 'sidecar_all') {
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-post',
         });
@@ -847,11 +887,17 @@ export default class Chat extends Component {
         });
       } else if (target.dataset.content === 'exit') {
         this.setActiveContentState(activeChannelId, null);
-        this.setState({ fullscreenContent: null, expanded: window.innerWidth > 600 });
+        this.setState({
+          fullscreenContent: null,
+          expanded: window.innerWidth > 600,
+        });
       } else if (target.dataset.content === 'fullscreen') {
         const mode =
           this.state.fullscreenContent === 'sidecar' ? null : 'sidecar';
-        this.setState({ fullscreenContent: mode, expanded: (mode === null || window.innerWidth > 1600) });
+        this.setState({
+          fullscreenContent: mode,
+          expanded: mode === null || window.innerWidth > 1600,
+        });
       }
     }
     document.getElementById('messageform').focus();
@@ -919,7 +965,18 @@ export default class Chat extends Component {
       fetchingPaginatedChannels: false,
     });
     const filters = type === 'all' ? {} : { filters: `channel_type:${type}` };
-    getChannels(filterQuery, null, this.props, 0, filters, this.loadChannels);
+    if (filterQuery && type !== 'direct') {
+      getChannels(
+        filterQuery,
+        null,
+        'discoverable',
+        0,
+        filters,
+        this.loadChannels,
+      );
+    } else {
+      getChannels(filterQuery, null, '', 0, filters, this.loadChannels);
+    }
   };
 
   handleFailure = (err) => {
@@ -1021,14 +1078,18 @@ export default class Chat extends Component {
       channelTypeFilter === 'all'
         ? {}
         : { filters: `channel_type:${channelTypeFilter}` };
-    getChannels(
-      e.target.value,
-      null,
-      this.props,
-      0,
-      filters,
-      this.loadChannels,
-    );
+    if (e.target.value) {
+      getChannels(
+        e.target.value,
+        null,
+        'discoverable',
+        0,
+        filters,
+        this.loadChannels,
+      );
+    } else {
+      getChannels(e.target.value, null, '', 0, filters, this.loadChannels);
+    }
   };
 
   toggleExpand = () => {
@@ -1053,6 +1114,9 @@ export default class Chat extends Component {
       setTimeout(function () {
         document.getElementById('chatchannelsearchbar').focus();
       }, 100);
+    } else {
+      getChannels('', null, '', 0, '', this.loadChannels);
+      this.setState({ filterQuery: '' });
     }
     this.setState({ searchShowing: !this.state.searchShowing });
   };
@@ -1156,31 +1220,33 @@ export default class Chat extends Component {
               channelsLoaded={state.channelsLoaded}
               filterQuery={state.filterQuery}
               expanded={state.expanded}
+              currentUserId={state.currentUserId}
+              triggerActiveContent={this.triggerActiveContent}
             />
             {notificationsState}
           </div>
         );
       }
       return (
-          <div className="chat__channels">
-            {notificationsButton}
-            <button
-              className="chat__channelstogglebutt"
-              onClick={this.toggleExpand}
-              style={{ width: '100%' }}
-              type="button"
-            >
-              {'>'}
-            </button>
-            <Channels
-              activeChannelId={state.activeChannelId}
-              chatChannels={state.chatChannels}
-              unopenedChannelIds={state.unopenedChannelIds}
-              handleSwitchChannel={this.handleSwitchChannel}
-              expanded={state.expanded}
-            />
-            {notificationsState}
-          </div>
+        <div className="chat__channels">
+          {notificationsButton}
+          <button
+            className="chat__channelstogglebutt"
+            onClick={this.toggleExpand}
+            style={{ width: '100%' }}
+            type="button"
+          >
+            {'>'}
+          </button>
+          <Channels
+            activeChannelId={state.activeChannelId}
+            chatChannels={state.chatChannels}
+            unopenedChannelIds={state.unopenedChannelIds}
+            handleSwitchChannel={this.handleSwitchChannel}
+            expanded={state.expanded}
+          />
+          {notificationsState}
+        </div>
       );
     }
     return '';
@@ -1320,11 +1386,18 @@ export default class Chat extends Component {
 
   onTriggerVideoContent = (e) => {
     if (e.target.dataset.content === 'exit') {
-      this.setState({ videoPath: null, fullscreenContent: null, expanded: window.innerWidth > 600 });
+      this.setState({
+        videoPath: null,
+        fullscreenContent: null,
+        expanded: window.innerWidth > 600,
+      });
     } else if (this.state.fullscreenContent === 'video') {
       this.setState({ fullscreenContent: null });
     } else {
-      this.setState({ fullscreenContent: 'video', expanded: window.innerWidth > 1600 });
+      this.setState({
+        fullscreenContent: 'video',
+        expanded: window.innerWidth > 1600,
+      });
     }
   };
 
@@ -1549,6 +1622,21 @@ export default class Chat extends Component {
     const { messageDeleteId } = this.state;
     deleteMessage(messageDeleteId);
     this.setState({ showDeleteModal: false });
+  };
+
+  handleJoiningRequest = (e) => {
+    sendChannelRequest(
+      e.target.dataset.channelId,
+      this.handleJoiningRequestSuccess,
+      null,
+    );
+  };
+
+  handleJoiningRequestSuccess = () => {
+    const { activeChannelId } = this.state;
+    this.setActiveContentState(activeChannelId, null);
+    this.setState({ fullscreenContent: null });
+    this.toggleSearchShowing();
   };
 
   renderChannelHeaderInner = () => {
