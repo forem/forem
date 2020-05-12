@@ -177,4 +177,12 @@
   --indicator-critical-color: var(--body-color-inverted);
   --indicator-default-bg: var(--button-secondary-bg);
   --indicator-default-color: var(--button-secondary-color);
+
+  // Tags
+  --tag-color: var(--base-70);
+  --tag-color-hover: var(--base-100);
+
+  // Story
+  --story-comments-bg: rgba(0, 0, 0, 0.02);
+  --story-border: transparent;
 }

@@ -4,7 +4,7 @@
 .crayons-story {
   background: var(--card-bg);
   font-size: var(--fs-base); // Todo: remove when ready.
-  box-shadow: $bold-shadow; // we will kill it at some point, don't worry. just not yet.
+  box-shadow: $bold-shadow, 0 0 0 1px var(--story-border); // we will kill it at some point, don't worry. just not yet.
 
   @media (min-width: $breakpoint-m) {
     border-radius: var(--radius);
@@ -158,7 +158,7 @@
 
   &__comments {
     cursor: default;
-    background: var(--card-secondary-bg);
+    background: var(--story-comments-bg);
     padding: var(--story-padding);
     padding-top: var(--su-4);
     border-radius: 0 0 var(--radius) var(--radius);
