@@ -1271,7 +1271,7 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
             href="/naoma_dr_rice/comment/n"
           >
             <time>
-              2 weeks ago
+              3 weeks ago
             </time>
           </a>
         </div>
@@ -2075,7 +2075,7 @@ exports[`<Article /> component should render with comments 1`] = `
             href="/naoma_dr_rice/comment/n"
           >
             <time>
-              2 weeks ago
+              3 weeks ago
             </time>
           </a>
         </div>
