@@ -1,6 +1,8 @@
 // TODO: We should really be using the xss package by installing it in package.json
 // but for now filterXSS is global because of legacy JS
 
+import { request } from '../../utilities/http';
+
 function getParameterByName(name, url = window.location.href) {
   const sanitizedName = name.replace(/[[\]]/g, '\\$&');
   const regex = new RegExp(`[?&]${sanitizedName}(=([^&#]*)|&|#|$)`);
@@ -106,13 +108,7 @@ export function createSearchUrl(dataHash) {
 export function fetchSearch(endpoint, dataHash) {
   const searchUrl = createSearchUrl(dataHash);
 
-  return fetch(`/search/${endpoint}?${searchUrl}`, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    credentials: 'same-origin',
-  }).then((response) => response.json());
+  return request(`/search/${endpoint}?${searchUrl}`).then((response) =>
+    response.json(),
+  );
 }

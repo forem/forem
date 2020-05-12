@@ -9,9 +9,20 @@ import {
 } from '../search';
 import '../../../../assets/javascripts/lib/xss';
 
-global.fetch = fetch;
+/* global globalThis */
 
 describe('Search utilities', () => {
+  beforeAll(() => {
+    const csrfToken = 'this-is-a-csrf-token';
+
+    globalThis.fetch = fetch;
+    globalThis.getCsrfToken = async () => csrfToken;
+  });
+  afterAll(() => {
+    delete globalThis.fetch;
+    delete globalThis.getCsrfToken;
+  });
+
   describe('getInitialSearchTerm', () => {
     describe(`When the querystring key 'q' has a value`, () => {
       test(`should return the querystring key q's value`, () => {
