@@ -3,6 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 @import 'variables';
 @import '_mixins';
+@import 'config/import';
 
 .home {
   position: relative;
@@ -530,11 +531,12 @@
       padding: 16px 16px 100px 16px; // TODO: my, oh my...
       h3 {
         margin: 0px;
-        font-size: 20px;
+        font-size: var(--fs-xl);
         font-weight: 700;
         line-height: 28px;
         padding: 0px;
         word-break: break-word;
+        color: var(--card-color);
         .tag-identifier {
           font-size: 14px;
           background: $blue;
@@ -550,11 +552,18 @@
             background: $black;
           }
         }
+        a {
+          color: inherit;
+
+          &:hover {
+            color: var(--link-color-hover);
+          }
+        }
       }
-      @media screen and (min-width: 450px) {
+      @media (min-width: $breakpoint-s) {
         h3 {
-          font-size: 27px;
           line-height: 32px;
+          font-size: var(--fs-2xl);
           .tag-identifier {
             font-size: 15px;
             padding: 2px 6px 3px;
