@@ -159,7 +159,7 @@ export const articleWithComments = {
       comment_id: 23,
       user_id: 6,
       published_timestamp: '2020-04-21T19:41:40Z',
-      published_at_int: 1587498100,
+      published_at_int: new Date(),
       safe_processed_html: '<p>Kitsch hoodie artisan.</p>\n\n',
       path: '/naoma_dr_rice/comment/n',
       username: 'naoma_dr_rice',
