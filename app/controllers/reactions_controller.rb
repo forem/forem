@@ -145,7 +145,7 @@ class ReactionsController < ApplicationController
                 elsif category.in?(NEG_ARTICLE_REACTIONS)
                   Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
                 end
-    reactions.each { |reaction| destroy_reaction(reaction) }
+    reactions.find_each { |reaction| destroy_reaction(reaction) }
   end
 
   def handle_existing_reaction(reaction)

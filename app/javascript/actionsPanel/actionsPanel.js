@@ -33,7 +33,7 @@ function toggleDropdown(type) {
   }
 }
 
-function correctReactedClasses(category) {
+function applyReactedClass(category) {
   const upVote = document.querySelector("[data-category='thumbsup']");
   const downVote = document.querySelector("[data-category='thumbsdown']");
   const vomitVote = document.querySelector("[data-category='vomit']");
@@ -60,13 +60,26 @@ function addReactionButtonListeners() {
         reactableId: reactable_id,
       } = butt.dataset;
 
-      correctReactedClasses(category);
+      applyReactedClass(category);
       butt.classList.toggle('reacted');
 
       request('/reactions', {
         method: 'POST',
         body: { reactable_type, category, reactable_id },
-      });
+      }).then((response) =>
+        response
+          .json()
+          .then((json) => {
+            if (json.error) {
+              // eslint-disable-next-line no-alert
+              alert(json.error);
+            }
+          })
+          .catch((error) => {
+            // eslint-disable-next-line no-alert
+            alert(error);
+          }),
+      );
     });
   });
   /* eslint-enable camelcase */
@@ -122,9 +135,7 @@ function clearAdjustmentReason() {
 
 function renderTagOnArticle(tagName, colors) {
   // eslint-disable-next-line no-restricted-globals
-  const articleTagsContainer = top.document.getElementsByClassName(
-    'tags',
-  )[0];
+  const articleTagsContainer = top.document.getElementsByClassName('tags')[0];
 
   const newTag = document.createElement('a');
   newTag.innerText = `#${tagName}`;
@@ -278,7 +289,7 @@ function addAdjustTagListeners() {
       }
     });
 
-  handleAdminInput();
+    handleAdminInput();
   }
 }
 
