@@ -240,17 +240,17 @@
   margin-bottom: var(--su-4);
 
   &:last-child {
-    margin-bottom: 0;
+    margin-bottom: 4px;
   }
 
   &__cover {
-    width: var(--su-7);
-    height: var(--su-7);
+    width: var(--su-8);
+    height: var(--su-8);
     margin-right: var(--su-2);
 
     img {
-      width: 100%;
-      height: 100%;
+      width: var(--su-8);
+      min-width:var(--su-8);
       border-radius: var(--radius);
     }
   }
@@ -258,16 +258,17 @@
   &__author {
     font-size: var(--fs-s);
     color: var(--card-color-secondary);
+    margin-top: -5px;
   }
 
   &__title {
     color: var(--card-color);
     line-height: var(--lh-tight);
     margin-bottom: var(--su-1);
-    font-size: var(--fs-xl);
+    font-size: var(--fs-l);
 
     @media (min-width: $breakpoint-s) {
-      font-size: var(--fs-2xl);
+      font-size: var(--fs-xl);
     }
 
     a {

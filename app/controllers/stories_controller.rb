@@ -331,7 +331,7 @@ class StoriesController < ApplicationController
   def assign_podcasts
     return unless user_signed_in?
 
-    num_hours = Rails.env.production? ? 24 : 800
+    num_hours = Rails.env.production? ? 24 : 2400
     @podcast_episodes = PodcastEpisode.
       includes(:podcast).
       order("published_at desc").

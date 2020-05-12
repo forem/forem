@@ -35,7 +35,7 @@ exports[`<TodaysPodcasts /> component should render a today's podcasts 1`] = `
           Rubber local
         </p>
         <h2
-          class="crayons-story__title mb-0"
+          class="crayons-podcast-episode__title crayons-story__title mb-0"
         >
           <a
             href="/monitor-recontextualize/undefined"
@@ -64,7 +64,7 @@ exports[`<TodaysPodcasts /> component should render a today's podcasts 1`] = `
           Rubber local
         </p>
         <h2
-          class="crayons-story__title mb-0"
+          class="crayons-podcast-episode__title crayons-story__title mb-0"
         >
           <a
             href="/monitor-recontextualize/undefined"
@@ -93,7 +93,7 @@ exports[`<TodaysPodcasts /> component should render a today's podcasts 1`] = `
           Rubber local
         </p>
         <h2
-          class="crayons-story__title mb-0"
+          class="crayons-podcast-episode__title crayons-story__title mb-0"
         >
           <a
             href="/monitor-recontextualize/undefined"
