@@ -14,11 +14,11 @@
       var clickedEl = event.target;
       if (hasClass(clickedEl, "bm-initial") || hasClass(clickedEl, "bm-success")) {
         //do nothing
-      } else if (hasClass(clickedEl.parentNode, "single-article")) {
+      } else if (hasClass(clickedEl.parentNode, "crayons-story")) {
         clickedEl.parentNode.classList.add('active');
-      } else if (hasClass(clickedEl.parentNode.parentNode, "single-article")) {
+      } else if (hasClass(clickedEl.parentNode.parentNode, "crayons-story")) {
         clickedEl.parentNode.parentNode.classList.add('active');
-      } else if (hasClass(clickedEl.parentNode.parentNode.parentNode, "single-article")) {
+      } else if (hasClass(clickedEl.parentNode.parentNode.parentNode, "crayons-story")) {
         clickedEl.parentNode.parentNode.parentNode.classList.add('active');
       }
     });

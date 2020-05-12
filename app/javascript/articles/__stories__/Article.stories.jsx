@@ -6,20 +6,13 @@ import {
   article,
   articleWithOrganization,
   articleWithSnippetResult,
-  articleWithReadingTimeGreaterThan1,
   articleWithReactions,
   articleWithComments,
-  assetPath,
+  featuredArticle,
 } from '../__tests__/utilities/articleUtilities';
 import { articleDecorator } from './articleDecorator';
 
 import '../../../assets/stylesheets/articles.scss';
-
-const ICONS = {
-  REACTIONS_ICON: assetPath('reactions-stack.png'),
-  COMMENTS_ICON: assetPath('comments-bubble.png'),
-  VIDEO_ICON: assetPath('video-camera.svg'),
-};
 
 const commonProps = {
   bookmarkClick: action('Saved/unsaved article'),
@@ -34,9 +27,6 @@ export default {
 export const DefaultArticle = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', article)}
     currentTag={text('currentTag', 'javascript')}
@@ -47,12 +37,23 @@ DefaultArticle.story = {
   name: 'default',
 };
 
+export const IsFeatured = () => (
+  <Article
+    {...commonProps}
+    isBookmarked={boolean('isBookmarked', false)}
+    isFeatured={boolean('isFeatured', true)}
+    article={object('article', featuredArticle)}
+    currentTag={text('currentTag', 'javascript')}
+  />
+);
+
+IsFeatured.story = {
+  name: 'is featured',
+};
+
 export const WithOrganization = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', articleWithOrganization)}
     currentTag={text('currentTag', 'javascript')}
@@ -66,9 +67,6 @@ WithOrganization.story = {
 export const WithFlareTag = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', article)}
     currentTag={text('currentTag')}
@@ -82,9 +80,6 @@ WithFlareTag.story = {
 export const WithSnippetResult = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', articleWithSnippetResult)}
     currentTag={text('currentTag')}
@@ -95,28 +90,9 @@ WithSnippetResult.story = {
   name: 'with snippet result',
 };
 
-export const WithReadingTime = () => (
-  <Article
-    {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-    isBookmarked={boolean('isBookmarked', false)}
-    article={object('article', articleWithReadingTimeGreaterThan1)}
-    currentTag={text('currentTag')}
-  />
-);
-
-WithReadingTime.story = {
-  name: 'with reading time',
-};
-
 export const WithReactions = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', articleWithReactions)}
     currentTag={text('currentTag')}
@@ -130,9 +106,6 @@ WithReactions.story = {
 export const WithComments = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', false)}
     article={object('article', articleWithComments)}
     currentTag={text('currentTag')}
@@ -146,9 +119,6 @@ WithComments.story = {
 export const OnReadingList = () => (
   <Article
     {...commonProps}
-    reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-    commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-    videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
     isBookmarked={boolean('isBookmarked', true)}
     article={object('article', articleWithComments)}
     currentTag={text('currentTag')}

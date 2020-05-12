@@ -1,0 +1,35 @@
+@import '../config/import';
+
+.crayons-comment {
+  font-size: var(--fs-s);
+
+  &__meta {
+    display: flex;
+    align-items: flex-start;
+
+    a {
+      display: flex;
+      align-items: flex-start;
+    }
+  }
+
+  &__body {
+    margin-top: calc(var(--su-1) * -1);
+    padding-left: var(--su-7);
+
+    a:hover {
+      text-decoration: underline; //todo: default for all in-content links
+    }
+
+    p {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  & + & {
+    margin-top: var(--su-4);
+  }
+}

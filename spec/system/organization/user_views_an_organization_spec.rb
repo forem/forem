@@ -20,7 +20,7 @@ RSpec.describe "Organization index", type: :system do
       end
 
       it "shows articles" do
-        expect(page).to have_selector("div.single-article", count: 2)
+        expect(page).to have_selector("div.crayons-story", count: 2)
       end
 
       it "shows the sidebar" do

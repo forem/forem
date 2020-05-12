@@ -1,5 +1,193 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<Article /> component should render a featured article 1`] = `
+<article
+  class="crayons-story cursor-pointer crayons-story--featured"
+  data-content-user-id={23289}
+  data-featured-article="articles-62407"
+  id="featured-story-marker"
+>
+  <div
+    onClick={[Function]}
+    role="presentation"
+  >
+    <a
+      class="crayons-story__cover"
+      href="/some-post/path"
+      title="Unbranded Home Loan Account"
+    >
+      <div
+        class="crayons-story__cover__image"
+        loading="lazy"
+        style={
+          Object {
+            "backgroundImage": "url(undefined)",
+          }
+        }
+      />
+    </a>
+    <div
+      class="crayons-story__body"
+    >
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
+        >
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Emil99"
+            >
+              <img
+                alt="Emil99 profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Emil99"
+              >
+                Stella Macejkovic
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-62407"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            Unbranded Home Loan Account
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              0
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={62407}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+`;
+
 exports[`<Article /> component should render a podcast article 1`] = `
 <div
   class="single-article single-article-small-pic single-article-single-podcast"
@@ -46,1573 +234,2043 @@ exports[`<Article /> component should render a podcast article 1`] = `
 `;
 
 exports[`<Article /> component should render a podcast episode 1`] = `
-<div
-  class="single-article single-article-small-pic"
+<article
+  class="crayons-story cursor-pointer false"
   data-content-user-id={27683}
+  data-featured-article={false}
+  id={false}
 >
   <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Nova_Luettgen"
-    >
-      <img
-        alt="Nova_Luettgen profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-49020"
+    onClick={[Function]}
+    role="presentation"
   >
     <div
-      class="content"
+      class="crayons-story__body"
     >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
-            Object {
-              "background": "#000000",
-              "color": "#ffffff",
-            }
-          }
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
         >
-          #javascript
-        </span>
-        <span
-          class="tag-identifier"
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Nova_Luettgen"
+            >
+              <img
+                alt="Nova_Luettgen profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Nova_Luettgen"
+              >
+                Henri Gibson
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
         >
-          podcast
-        </span>
-        monitor recontextualize
-      </h3>
+          <a
+            href="/some-post/path"
+            id="article-link-49020"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            <span
+              class="crayons-story__flare-tag"
+            >
+              podcast
+            </span>
+            monitor recontextualize
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              0
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+          </div>
+        </div>
+      </div>
     </div>
-  </a>
-  <h4>
-    <a
-      href="/Nova_Luettgen"
-    >
-      Henri Gibson・
-      <time
-        dateTime="Tue, 18 Feb 2020 15:11:02 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
   </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-49020"
-      >
-        0
-      </span>
-    </a>
-  </div>
-</div>
+</article>
 `;
 
 exports[`<Article /> component should render a standard article 1`] = `
-<div
-  class="single-article single-article-small-pic"
+<article
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
+  data-featured-article={false}
+  id={false}
 >
   <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Emil99"
-    >
-      <img
-        alt="Emil99 profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-62407"
+    onClick={[Function]}
+    role="presentation"
   >
     <div
-      class="content"
+      class="crayons-story__body"
     >
-      <h3>
-        Unbranded Home Loan Account
-      </h3>
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
+        >
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Emil99"
+            >
+              <img
+                alt="Emil99 profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Emil99"
+              >
+                Stella Macejkovic
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-62407"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            Unbranded Home Loan Account
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              0
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={62407}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
     </div>
-  </a>
-  <h4>
-    <a
-      href="/Emil99"
-    >
-      Stella Macejkovic・
-      <time
-        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
   </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-62407"
-      >
-        0
-      </span>
-    </a>
-  </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    undefined min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button "
-    data-initial-feed={true}
-    data-reactable-id={62407}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
-    <span
-      class="bm-initial"
-    />
-  </button>
-</div>
+</article>
 `;
 
 exports[`<Article /> component should render a user article 1`] = `
-<div
-  class="single-article single-article-small-pic"
+<article
+  class="crayons-story cursor-pointer false"
   data-content-user-id={7955}
+  data-featured-article={false}
+  id={false}
 >
   <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/phyllis.armstrong"
-    >
-      <img
-        alt="phyllis.armstrong profile"
-        loading="lazy"
-        src="/images/3.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    id="article-link-24692"
+    onClick={[Function]}
+    role="presentation"
   >
     <div
-      class="content"
+      class="crayons-story__body"
     >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
-            Object {
-              "background": "#5874d9",
-              "color": "white",
-            }
-          }
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
         >
-          person
-        </span>
-        Phyllis Armstrong
-      </h3>
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/phyllis.armstrong"
+            >
+              <img
+                alt="phyllis.armstrong profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/3.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/phyllis.armstrong"
+              >
+                phyllis.armstrong
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+            >
+              <time
+                dateTime={null}
+              >
+                 (NaN seconds ago)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            id="article-link-24692"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#5874d9",
+                  "color": "white",
+                }
+              }
+            >
+              person
+            </span>
+            Phyllis Armstrong
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        />
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--secondary fs-s"
+              data-follow-action-button={true}
+              data-info="{\\"id\\":24692,\\"className\\":\\"User\\"}"
+              type="button"
+            >
+               
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-  </a>
-  <h4>
-    <a
-      href="/phyllis.armstrong"
-    >
-      phyllis.armstrong
-    </a>
-  </h4>
-  <div
-    class="tags"
-  />
-  <button
-    class="article-engagement-count engage-button follow-action-button"
-    data-follow-action-button={true}
-    data-info="{\\"id\\":24692,\\"className\\":\\"User\\"}"
-    style={
-      Object {
-        "width": "122px",
-      }
-    }
-    type="button"
-  >
-     
-  </button>
-</div>
+  </div>
+</article>
 `;
 
 exports[`<Article /> component should render a video article 1`] = `
-<div
-  class="single-article single-article-small-pic"
+<article
+  class="crayons-story cursor-pointer false"
   data-content-user-id={27683}
+  data-featured-article={false}
+  id={false}
 >
-  <a
-    class="single-article-video-preview"
-    href="/some-post/path"
-    style="background-image:url(/images/onboarding-background.png)"
-  >
-    <div
-      class="single-article-video-duration"
-    >
-      <img
-        alt="video camera"
-        loading="lazy"
-        src="/images/video-camera.svg"
-      />
-      10
-    </div>
-  </a>
   <div
-    class="small-pic"
+    onClick={[Function]}
+    role="presentation"
   >
     <a
-      class="small-pic-link-wrapper"
-      href="/Nova_Luettgen"
-    >
-      <img
-        alt="Nova_Luettgen profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-49020"
-  >
-    <div
-      class="content"
-    >
-      <h3>
-        monitor recontextualize
-      </h3>
-    </div>
-  </a>
-  <h4>
-    <a
-      href="/Nova_Luettgen"
-    >
-      Henri Gibson・
-      <time
-        dateTime="Tue, 18 Feb 2020 15:11:02 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
-  </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
+      class="crayons-story__video"
       href="/some-post/path"
+      style="background-image:url(/images/onboarding-background.png)"
     >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
       <span
-        class="engagement-count-number"
-        id="engagement-count-number-49020"
+        class="crayons-story__video__time"
       >
-        0
+        10
       </span>
     </a>
+    <div
+      class="crayons-story__body"
+    >
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
+        >
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Nova_Luettgen"
+            >
+              <img
+                alt="Nova_Luettgen profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Nova_Luettgen"
+              >
+                Henri Gibson
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-49020"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            monitor recontextualize
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              0
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={49020}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    undefined min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button "
-    data-initial-feed={true}
-    data-reactable-id={49020}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
-    <span
-      class="bm-initial"
-    />
-  </button>
-</div>
+</article>
 `;
 
 exports[`<Article /> component should render a video article with a flare tag 1`] = `
-<div
-  class="single-article single-article-small-pic"
+<article
+  class="crayons-story cursor-pointer false"
   data-content-user-id={27683}
+  data-featured-article={false}
+  id={false}
 >
-  <a
-    class="single-article-video-preview"
-    href="/some-post/path"
-    style="background-image:url(/images/onboarding-background.png)"
-  >
-    <div
-      class="single-article-video-duration"
-    >
-      <img
-        alt="video camera"
-        loading="lazy"
-        src="/images/video-camera.svg"
-      />
-      10
-    </div>
-  </a>
   <div
-    class="small-pic"
+    onClick={[Function]}
+    role="presentation"
   >
     <a
-      class="small-pic-link-wrapper"
-      href="/Nova_Luettgen"
-    >
-      <img
-        alt="Nova_Luettgen profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-49020"
-  >
-    <div
-      class="content"
-    >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
-            Object {
-              "background": "#000000",
-              "color": "#ffffff",
-            }
-          }
-        >
-          #javascript
-        </span>
-        monitor recontextualize
-      </h3>
-    </div>
-  </a>
-  <h4>
-    <a
-      href="/Nova_Luettgen"
-    >
-      Henri Gibson・
-      <time
-        dateTime="Tue, 18 Feb 2020 15:11:02 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
-  </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
+      class="crayons-story__video"
       href="/some-post/path"
+      style="background-image:url(/images/onboarding-background.png)"
     >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
       <span
-        class="engagement-count-number"
-        id="engagement-count-number-49020"
+        class="crayons-story__video__time"
       >
-        0
+        10
       </span>
     </a>
+    <div
+      class="crayons-story__body"
+    >
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
+        >
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Nova_Luettgen"
+            >
+              <img
+                alt="Nova_Luettgen profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Nova_Luettgen"
+              >
+                Henri Gibson
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-49020"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            monitor recontextualize
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              0
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={49020}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    undefined min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button "
-    data-initial-feed={true}
-    data-reactable-id={49020}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
-    <span
-      class="bm-initial"
-    />
-  </button>
-</div>
+</article>
 `;
 
 exports[`<Article /> component should render as saved on reading list 1`] = `
-<div
-  class="single-article single-article-small-pic"
+<article
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
+  data-featured-article={false}
+  id={false}
 >
   <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Emil99"
-    >
-      <img
-        alt="Emil99 profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-62407"
+    onClick={[Function]}
+    role="presentation"
   >
     <div
-      class="content"
+      class="crayons-story__body"
     >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
+        >
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Emil99"
+            >
+              <img
+                alt="Emil99 profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Emil99"
+              >
+                Stella Macejkovic
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-62407"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            Unbranded Home Loan Account
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              428
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path#comments"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"
+                />
+              </svg>
+              213
+              <span
+                class="hidden s:inline"
+              >
+                 comments
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--ghost"
+              data-initial-feed={true}
+              data-reactable-id={62407}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="crayons-story__comments"
+    >
+      <div
+        class="crayons-comment pl-2 cursor-pointer"
+        onClick={[Function]}
+        role="presentation"
+      >
+        <div
+          class="crayons-comment__meta"
+        >
+          <a
+            class="crayons-story__secondary fw-medium"
+            href="/naoma_dr_rice"
+          >
+            <span
+              class="crayons-avatar mr-2"
+            >
+              <img
+                alt="{comment.username} avatar"
+                class="crayons-avatar__image"
+                src="/uploads/user/profile_image/6/79732fcf-5655-426a-a7f0-18c737c3f8e8.png"
+              />
+            </span>
+            Dr. Naoma Rice
+          </a>
+          <a
+            class="crayons-story__tertiary ml-1"
+            href="/naoma_dr_rice/comment/n"
+          >
+            <time>
+              2 weeks ago
+            </time>
+          </a>
+        </div>
+        <div
+          class="crayons-comment__body"
+          dangerouslySetInnerHTML={
             Object {
-              "background": "#000000",
-              "color": "#ffffff",
+              "__html": "<p>Kitsch hoodie artisan.</p>
+
+",
             }
           }
+        />
+      </div>
+      <div
+        class="crayons-story__comments__actions"
+      >
+        <a
+          class="crayons-btn crayons-btn--secondary crayons-btn--s"
+          href="/some-post/path#comments-container"
         >
-          #javascript
-        </span>
-        Unbranded Home Loan Account
-      </h3>
+          See all 213 comments
+        </a>
+      </div>
     </div>
-  </a>
-  <h4>
-    <a
-      href="/Emil99"
-    >
-      Stella Macejkovic・
-      <time
-        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
   </div>
-  <div
-    class="article-engagement-count comments-count"
-  >
-    <a
-      href="/some-post/path#comments"
-    >
-      <img
-        alt="chat"
-        loading="lazy"
-        src="/images/comments-bubble.png"
-      />
-      <span
-        class="engagement-count-number"
-      >
-        213
-      </span>
-    </a>
-  </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-62407"
-      >
-        428
-      </span>
-    </a>
-  </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    undefined min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button selected"
-    data-initial-feed={true}
-    data-reactable-id={62407}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
-    <span
-      class="bm-success"
-    />
-  </button>
-</div>
+</article>
 `;
 
 exports[`<Article /> component should render with a flare tag 1`] = `
-<div
-  class="single-article single-article-small-pic"
+<article
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
+  data-featured-article={false}
+  id={false}
 >
   <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Emil99"
-    >
-      <img
-        alt="Emil99 profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-62407"
+    onClick={[Function]}
+    role="presentation"
   >
     <div
-      class="content"
+      class="crayons-story__body"
     >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
-            Object {
-              "background": "#000000",
-              "color": "#ffffff",
-            }
-          }
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
         >
-          #javascript
-        </span>
-        Unbranded Home Loan Account
-      </h3>
-    </div>
-  </a>
-  <h4>
-    <a
-      href="/Emil99"
-    >
-      Stella Macejkovic・
-      <time
-        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Emil99"
+            >
+              <img
+                alt="Emil99 profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Emil99"
+              >
+                Stella Macejkovic
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
       >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
-  </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-62407"
-      >
-        0
-      </span>
-    </a>
-  </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    undefined min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button "
-    data-initial-feed={true}
-    data-reactable-id={62407}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
-    <span
-      class="bm-initial"
-    />
-  </button>
-</div>
-`;
-
-exports[`<Article /> component should render with a reading time 1`] = `
-<div
-  class="single-article single-article-small-pic"
-  data-content-user-id={23289}
->
-  <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Emil99"
-    >
-      <img
-        alt="Emil99 profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-62407"
-  >
-    <div
-      class="content"
-    >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
-            Object {
-              "background": "#000000",
-              "color": "#ffffff",
-            }
-          }
+        <h2
+          class="crayons-story__title"
         >
-          #javascript
-        </span>
-        Unbranded Home Loan Account
-      </h3>
+          <a
+            href="/some-post/path"
+            id="article-link-62407"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            Unbranded Home Loan Account
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              0
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={62407}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
     </div>
-  </a>
-  <h4>
-    <a
-      href="/Emil99"
-    >
-      Stella Macejkovic・
-      <time
-        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
   </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-62407"
-      >
-        0
-      </span>
-    </a>
-  </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    8 min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button "
-    data-initial-feed={true}
-    data-reactable-id={62407}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
-    <span
-      class="bm-initial"
-    />
-  </button>
-</div>
+</article>
 `;
 
 exports[`<Article /> component should render with a snippet result 1`] = `
-<div
-  class="single-article single-article-small-pic"
+<article
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
+  data-featured-article={false}
+  id={false}
 >
   <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Emil99"
-    >
-      <img
-        alt="Emil99 profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-62407"
+    onClick={[Function]}
+    role="presentation"
   >
     <div
-      class="content"
+      class="crayons-story__body"
     >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
-            Object {
-              "background": "#000000",
-              "color": "#ffffff",
-            }
-          }
-        >
-          #javascript
-        </span>
-        Unbranded Home Loan Account
-      </h3>
       <div
-        class="search-snippet"
+        class="crayons-story__top"
       >
-        <span>
-          …copying Rest withdrawal Handcrafted multi-state Pre-emptive e-markets feed...overriding RSS Fantastic Plastic Gloves invoice productize systemic Monaco…
-        </span>
+        <div
+          class="crayons-story__meta"
+        >
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Emil99"
+            >
+              <img
+                alt="Emil99 profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Emil99"
+              >
+                Stella Macejkovic
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-62407"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            Unbranded Home Loan Account
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__snippet"
+        >
+          <span>
+            …copying Rest withdrawal Handcrafted multi-state Pre-emptive e-markets feed...overriding RSS Fantastic Plastic Gloves invoice productize systemic Monaco…
+          </span>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              0
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={62407}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
       </div>
     </div>
-  </a>
-  <h4>
-    <a
-      href="/Emil99"
-    >
-      Stella Macejkovic・
-      <time
-        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
   </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-62407"
-      >
-        0
-      </span>
-    </a>
-  </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    undefined min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button "
-    data-initial-feed={true}
-    data-reactable-id={62407}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
-    <span
-      class="bm-initial"
-    />
-  </button>
-</div>
+</article>
 `;
 
 exports[`<Article /> component should render with an organization 1`] = `
-<div
-  class="single-article single-article-small-pic"
+<article
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
+  data-featured-article={false}
+  id={false}
 >
   <div
-    class="article-organization-headline"
-  >
-    <a
-      class="org-headline-filler"
-      href="/bluetooth-Gorgeous-Wooden-Pants"
-    >
-      <img
-        alt="Web info-mediaries logo"
-        loading="lazy"
-        src="/images/30.png"
-      />
-      Web info-mediaries
-    </a>
-  </div>
-  <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Emil99"
-    >
-      <img
-        alt="Emil99 profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-62407"
+    onClick={[Function]}
+    role="presentation"
   >
     <div
-      class="content"
+      class="crayons-story__body"
     >
-      <h3>
-        Unbranded Home Loan Account
-      </h3>
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
+        >
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-logo crayons-logo--l"
+              href="/bluetooth-Gorgeous-Wooden-Pants"
+            >
+              <img
+                alt="Web info-mediaries logo"
+                class="crayons-logo__image"
+                loading="lazy"
+                src="/images/30.png"
+              />
+            </a>
+            <a
+              class="crayons-avatar crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted"
+              href="/Emil99"
+            >
+              <img
+                alt="Emil99 profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Emil99"
+              >
+                Stella Macejkovic
+              </a>
+              <span>
+                <span
+                  class="crayons-story__tertiary fw-normal"
+                >
+                   for 
+                </span>
+                <a
+                  class="crayons-story__secondary fw-medium"
+                  href="/bluetooth-Gorgeous-Wooden-Pants"
+                >
+                  Web info-mediaries
+                </a>
+              </span>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-62407"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            Unbranded Home Loan Account
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              0
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={62407}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
     </div>
-  </a>
-  <h4>
-    <a
-      href="/Emil99"
-    >
-      Stella Macejkovic・
-      <time
-        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
   </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-62407"
-      >
-        0
-      </span>
-    </a>
-  </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    undefined min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button "
-    data-initial-feed={true}
-    data-reactable-id={62407}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
-    <span
-      class="bm-initial"
-    />
-  </button>
-</div>
+</article>
 `;
 
 exports[`<Article /> component should render with comments 1`] = `
-<div
-  class="single-article single-article-small-pic"
+<article
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
+  data-featured-article={false}
+  id={false}
 >
   <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Emil99"
-    >
-      <img
-        alt="Emil99 profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-62407"
+    onClick={[Function]}
+    role="presentation"
   >
     <div
-      class="content"
+      class="crayons-story__body"
     >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
+        >
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Emil99"
+            >
+              <img
+                alt="Emil99 profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Emil99"
+              >
+                Stella Macejkovic
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-62407"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            Unbranded Home Loan Account
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              428
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path#comments"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"
+                />
+              </svg>
+              213
+              <span
+                class="hidden s:inline"
+              >
+                 comments
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={62407}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="crayons-story__comments"
+    >
+      <div
+        class="crayons-comment pl-2 cursor-pointer"
+        onClick={[Function]}
+        role="presentation"
+      >
+        <div
+          class="crayons-comment__meta"
+        >
+          <a
+            class="crayons-story__secondary fw-medium"
+            href="/naoma_dr_rice"
+          >
+            <span
+              class="crayons-avatar mr-2"
+            >
+              <img
+                alt="{comment.username} avatar"
+                class="crayons-avatar__image"
+                src="/uploads/user/profile_image/6/79732fcf-5655-426a-a7f0-18c737c3f8e8.png"
+              />
+            </span>
+            Dr. Naoma Rice
+          </a>
+          <a
+            class="crayons-story__tertiary ml-1"
+            href="/naoma_dr_rice/comment/n"
+          >
+            <time>
+              2 weeks ago
+            </time>
+          </a>
+        </div>
+        <div
+          class="crayons-comment__body"
+          dangerouslySetInnerHTML={
             Object {
-              "background": "#000000",
-              "color": "#ffffff",
+              "__html": "<p>Kitsch hoodie artisan.</p>
+
+",
             }
           }
+        />
+      </div>
+      <div
+        class="crayons-story__comments__actions"
+      >
+        <a
+          class="crayons-btn crayons-btn--secondary crayons-btn--s"
+          href="/some-post/path#comments-container"
         >
-          #javascript
-        </span>
-        Unbranded Home Loan Account
-      </h3>
+          See all 213 comments
+        </a>
+      </div>
     </div>
-  </a>
-  <h4>
-    <a
-      href="/Emil99"
-    >
-      Stella Macejkovic・
-      <time
-        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
   </div>
-  <div
-    class="article-engagement-count comments-count"
-  >
-    <a
-      href="/some-post/path#comments"
-    >
-      <img
-        alt="chat"
-        loading="lazy"
-        src="/images/comments-bubble.png"
-      />
-      <span
-        class="engagement-count-number"
-      >
-        213
-      </span>
-    </a>
-  </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-62407"
-      >
-        428
-      </span>
-    </a>
-  </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    undefined min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button "
-    data-initial-feed={true}
-    data-reactable-id={62407}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
-    <span
-      class="bm-initial"
-    />
-  </button>
-</div>
+</article>
 `;
 
 exports[`<Article /> component should render with reactions 1`] = `
-<div
-  class="single-article single-article-small-pic"
+<article
+  class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
+  data-featured-article={false}
+  id={false}
 >
   <div
-    class="small-pic"
-  >
-    <a
-      class="small-pic-link-wrapper"
-      href="/Emil99"
-    >
-      <img
-        alt="Emil99 profile"
-        loading="lazy"
-        src="/images/10.png"
-      />
-    </a>
-  </div>
-  <a
-    class="small-pic-link-wrapper index-article-link"
-    href="/some-post/path"
-    id="article-link-62407"
+    onClick={[Function]}
+    role="presentation"
   >
     <div
-      class="content"
+      class="crayons-story__body"
     >
-      <h3>
-        <span
-          class="tag-identifier"
-          style={
-            Object {
-              "background": "#000000",
-              "color": "#ffffff",
-            }
-          }
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
         >
-          #javascript
-        </span>
-        Unbranded Home Loan Account
-      </h3>
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Emil99"
+            >
+              <img
+                alt="Emil99 profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Emil99"
+              >
+                Stella Macejkovic
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-62407"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            Unbranded Home Loan Account
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              232
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={62407}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
     </div>
-  </a>
-  <h4>
-    <a
-      href="/Emil99"
-    >
-      Stella Macejkovic・
-      <time
-        dateTime="Tue, 18 Feb 2020 14:59:24 GMT"
-      >
-        February 18
-      </time>
-      <span
-        class="time-ago-indicator"
-      >
-        (just now)
-      </span>
-    </a>
-  </h4>
-  <div
-    class="tags"
-  >
-    <a
-      href="/t/javascript"
-    >
-      <span
-        class="tag"
-      >
-        #javascript
-      </span>
-    </a>
-    <a
-      href="/t/ruby"
-    >
-      <span
-        class="tag"
-      >
-        #ruby
-      </span>
-    </a>
-    <a
-      href="/t/go"
-    >
-      <span
-        class="tag"
-      >
-        #go
-      </span>
-    </a>
   </div>
-  <div
-    class="article-engagement-count reactions-count"
-  >
-    <a
-      href="/some-post/path"
-    >
-      <img
-        alt="heart"
-        loading="lazy"
-        src="/images/reactions-stack.png"
-      />
-      <span
-        class="engagement-count-number"
-        id="engagement-count-number-62407"
-      >
-        232
-      </span>
-    </a>
-  </div>
-  <a
-    class="article-reading-time"
-    href="/some-post/path"
-  >
-    undefined min read
-  </a>
-  <button
-    class="article-engagement-count engage-button bookmark-button "
-    data-initial-feed={true}
-    data-reactable-id={62407}
-    onBlur={[Function]}
-    onFocus={[Function]}
-    onMouseOver={[Function]}
-    onMouseout={[Function]}
-    type="button"
-  >
-    <span
-      class="bm-initial"
-    />
-  </button>
-</div>
+</article>
 `;

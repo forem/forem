@@ -69,7 +69,7 @@
   --card-color: var(--base-100);
   --card-color-secondary: var(--base-70);
   --card-color-tertiary: var(--base-50);
-  --card-secondary-bg: var(--base-10);
+  --card-secondary-bg: var(--base-a5);
   --card-secondary-color: var(--base-90);
   --card-headline-color: var(--base-100);
 
@@ -179,4 +179,12 @@
   --indicator-critical-color: var(--body-color);
   --indicator-default-bg: var(--button-secondary-bg);
   --indicator-default-color: var(--button-secondary-color);
+
+  // Tags
+  --tag-color: var(--base-70);
+  --tag-color-hover: var(--base-100);
+
+  // Story
+  --story-comments-bg: rgba(0, 0, 0, 0.2);
+  --story-border: rgba(255, 255, 255, 0.15);
 }

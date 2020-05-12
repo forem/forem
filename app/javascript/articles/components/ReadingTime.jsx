@@ -1,12 +1,12 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-export const ReadingTime = ({ articlePath, readingTime }) => {
+export const ReadingTime = ({ readingTime }) => {
   // we have ` ... || null` for the case article.reading_time is undefined
   return (
-    <a href={articlePath} className="article-reading-time">
+    <small className="crayons-story__tertiary mr-2">
       {`${readingTime < 1 ? 1 : readingTime} min read`}
-    </a>
+    </small>
   );
 };
 
@@ -15,7 +15,6 @@ ReadingTime.defaultProps = {
 };
 
 ReadingTime.propTypes = {
-  articlePath: PropTypes.string.isRequired,
   readingTime: PropTypes.number,
 };
 

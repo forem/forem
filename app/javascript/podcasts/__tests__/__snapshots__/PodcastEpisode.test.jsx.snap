@@ -1,21 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<PodcastEpisode /> component should render a podcast episode 1`] = `
-<a
-  class="individual-podcast-link"
-  href="/monitor-recontextualize/undefined"
+<div
+  class="crayons-podcast-episode"
 >
-  <img
-    alt="monitor recontextualize"
-    src="/images/16.png"
-  />
-  <div
-    class="individual-podcast-link-details"
+  <a
+    class="crayons-podcast-episode__cover"
+    href="/monitor-recontextualize/undefined"
   >
-    <strong>
-      monitor recontextualize
-    </strong>
-     Rubber local
+    <img
+      alt="monitor recontextualize"
+      src="/images/16.png"
+    />
+  </a>
+  <div>
+    <p
+      class="crayons-podcast-episode__author"
+    >
+      Rubber local
+    </p>
+    <h2
+      class="crayons-story__title mb-0"
+    >
+      <a
+        href="/monitor-recontextualize/undefined"
+      >
+        monitor recontextualize
+      </a>
+    </h2>
   </div>
-</a>
+</div>
 `;
