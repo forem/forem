@@ -35,6 +35,7 @@
   position: fixed;
   top: var(--header-height);
   right: 0;
+  height: calc(100vh - var(--header-height));
   z-index: 200;
   transform: translateX(360px);
   transition: var(--transition-props);
