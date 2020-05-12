@@ -12,6 +12,9 @@ module Searchable
   end
 
   def remove_from_elasticsearch
+    # Callbacks can cause index and removal jobs to be enqueued at the same time
+    # to avoid indexing a document after removing it we delay the removal job by 5 seconds to 
+    # ensure it is run last
     Search::RemoveFromIndexWorker.perform_in(5.seconds, self.class::SEARCH_CLASS.to_s, search_id)
   end
 
