@@ -4,7 +4,7 @@ title: Tracking Metrics
 
 ## Time series data
 
-We track point-int-time data by sending data points to DataDog using
+We track point-in-time data by sending data points to Datadog using
 [Statdsd](https://github.com/DataDog/dogstatsd-ruby).
 
 Currently we run a daily metric fetching job in `fetch.rake` which is called via
@@ -22,12 +22,12 @@ If you want to create a new periodic data send, follow this pattern to do so.
 
 ## Vendor-Agnostic
 
-While we currently are not vendor-agnostic in how we do this (Herok/DataDog), it
+While we currently are not vendor-agnostic in how we do this (Heroku/Datadog), it
 is set up in a way that could become so in the future. The main pattern is
 `Every x minutes/hours/etc. send aggregate data to warehouse where it can be examined on a timeseries basis`.
 This could, in the future, be bundled right into the platform using an open
 source timeseries database and data visualization.
 
-Once in DataDog, dashboards can created using
+Once in Datadog, dashboards can created using
 
 ![Datadog metrics](https://dev-to-uploads.s3.amazonaws.com/i/98rju6kzxeosf6m0jfhy.png)
