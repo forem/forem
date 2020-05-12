@@ -35,7 +35,6 @@
   position: fixed;
   top: var(--header-height);
   right: 0;
-  height: calc(100vh - 56px);
   z-index: 200;
   transform: translateX(360px);
   transition: var(--transition-props);
@@ -53,8 +52,8 @@
 
 .mod-actions-menu-btn {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
+  bottom: var(--su-7);
+  right: var(--su-7);
   z-index: 201;
   cursor: pointer;
   transition: 0.3s all ease;
