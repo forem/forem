@@ -693,11 +693,6 @@ exports[`<Article /> component should render a video article 1`] = `
     onClick={[Function]}
     role="presentation"
   >
-    <a
-      class="crayons-story__video"
-      href="/some-post/path"
-      style="background-image:url(/images/onboarding-background.png)"
-    >
       <span
         class="crayons-story__video__time"
       >
