@@ -15,7 +15,7 @@ export const PodcastEpisode = ({ episode }) => {
         <p className="crayons-podcast-episode__author">
           {episode.podcast.title}
         </p>
-        <h2 className="crayons-story__title mb-0">
+        <h2 className="crayons-podcast-episode__title crayons-story__title mb-0">
           <a href={`/${episode.podcast.slug}/${episode.slug}`}>
             {episode.title}
           </a>
