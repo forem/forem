@@ -1,8 +1,7 @@
-<div class="notice"><%= flash[:notice] %></div>
 <%= csrf_meta_tags %>
 
 <div class="row justify-content-end">
-  <%= link_to "New Page", "/internal/pages/new", class: "btn btn-primary" %>
+  <%= link_to "New Page", new_internal_page_path, class: "btn btn-primary" %>
 </div>
 
 <hr>
@@ -10,9 +9,10 @@
 <div class="row">
   <div class="list-group-flush w-100">
     <% @pages.each do |page| %>
-      <a class="list-group-item list-group-item-action" href="/internal/pages/<%= page.id %>/edit">
-        <%= page.title %>
-      </a>
+      <div class="list-group-item d-flex justify-content-between">
+        <%= link_to page.title, edit_internal_page_path(page.id) %>
+        <%= link_to "View", page.path %>
+      </div>
     <% end %>
   </div>
 </div>

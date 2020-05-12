@@ -50,12 +50,33 @@ RSpec.describe Message, type: :model do
         expect(message.message_html).to include("sidecar-article")
       end
 
+      it "creates target blank link" do
+        message.message_markdown = "hello http://#{ApplicationConfig['APP_DOMAIN']}#{user.path}"
+        message.validate!
+
+        expect(message.message_html).to include("<a target=\"_blank\"")
+      end
+
       it "creates rich link with proper link for user" do
         message.message_markdown = "hello http://#{ApplicationConfig['APP_DOMAIN']}#{user.path}"
         message.validate!
 
         expect(message.message_html).to include(user.name)
         expect(message.message_html).to include("sidecar-user")
+      end
+
+      it "creates rich call link" do
+        message.message_markdown = "/call"
+        message.validate!
+
+        expect(message.message_html).to include("sidecar-video")
+      end
+
+      it "creates rich embeddable link" do
+        message.message_markdown = "https://docs.google.com/ https://www.figma.com/file/"
+        message.validate!
+
+        expect(message.message_html).to include("chatchannels__richlink--base")
       end
 
       it "creates rich link with proper link for tag" do

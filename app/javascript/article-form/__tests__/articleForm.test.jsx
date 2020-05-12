@@ -3,14 +3,12 @@ import render from 'preact-render-to-json';
 import { shallow, deep } from 'preact-render-spy';
 import { JSDOM } from 'jsdom';
 import ArticleForm from '../articleForm';
-import algoliasearch from '../elements/__mocks__/algoliasearch';
 
+const dummyArticleUpdatedAt = new Date();
 const getArticleForm = () => (
   <ArticleForm
     version="v2"
-    article={
-      '{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null }'
-    }
+    article={`{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null, "updated_at": "${dummyArticleUpdatedAt}"}`}
   />
 );
 
@@ -39,8 +37,6 @@ describe('<ArticleForm />', () => {
 
     global.document.body.innerHTML = "<div id='editor-help-guide'></div>";
 
-    global.window.algoliasearch = algoliasearch;
-
     localStorage.clear();
     /* eslint-disable-next-line no-underscore-dangle */
     localStorage.__STORE__ = {};
@@ -59,10 +55,23 @@ describe('<ArticleForm />', () => {
   it('loads text from sessionstorage when available', () => {
     localStorage.setItem(
       'editor-v2-http://localhost/',
-      JSON.stringify({ bodyMarkdown: 'hello, world' }),
+      JSON.stringify({ bodyMarkdown: 'hello, world', updatedAt: new Date() }),
     );
     const form = shallow(getArticleForm());
     expect(form.state().bodyMarkdown).toBe('hello, world');
+  });
+
+  it('do not loads text from sessionstorage if article.updated_at is newer', () => {
+    const localStorageDate = new Date(dummyArticleUpdatedAt.getDate() - 1);
+    localStorage.setItem(
+      'editor-v2-http://localhost/',
+      JSON.stringify({
+        bodyMarkdown: 'hello, world',
+        updatedAt: localStorageDate,
+      }),
+    );
+    const form = shallow(getArticleForm());
+    expect(form.state().bodyMarkdown).toBe('');
   });
 
   it('resets the post on reset press', () => {

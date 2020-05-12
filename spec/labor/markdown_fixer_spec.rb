@@ -130,7 +130,7 @@ RSpec.describe MarkdownFixer, type: :labor do
       test_string1 = "@_xy_"
       expected_result1 = "@\\_xy\\_"
       test_string2 = "@_x_y_"
-      expected_result2 = "@\\_x_y\\_"
+      expected_result2 = "@\\_x\\_y\\_"
 
       expect(described_class.underscores_in_usernames(test_string1)).to eq(expected_result1)
       expect(described_class.underscores_in_usernames(test_string2)).to eq(expected_result2)
@@ -140,6 +140,23 @@ RSpec.describe MarkdownFixer, type: :labor do
       test_string = "_make this cursive_"
       expected_result = "_make this cursive_"
       expect(described_class.underscores_in_usernames(test_string)).to eq(expected_result)
+    end
+
+    it "escapes correctly and ignores underscored username in code and code block" do
+      input = <<~INPUT
+        @_dev_
+
+        ```ruby
+        @_no_escape_codeblock
+        ```
+
+        `@_no_escape_code`
+      INPUT
+
+      result = described_class.underscores_in_usernames(input)
+
+      expect(result).to include("@\\_dev\\_")
+      expect(result).to include("@_no_escape_codeblock", "@_no_escape_code")
     end
   end
 end

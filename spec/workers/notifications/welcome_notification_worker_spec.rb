@@ -1,7 +1,8 @@
 require "rails_helper"
 RSpec.describe Notifications::WelcomeNotificationWorker, type: :worker do
   describe "#perform" do
-    let!(:broadcast) { create(:broadcast, :onboarding) }
+    let(:broadcast) { create(:set_up_profile_broadcast) }
+    let(:inactive_broadcast) { create(:set_up_profile_broadcast, active: false) }
     let(:user) { create(:user) }
     let(:service) { Notifications::WelcomeNotification::Send }
     let(:worker) { subject }
@@ -10,9 +11,18 @@ RSpec.describe Notifications::WelcomeNotificationWorker, type: :worker do
       allow(service).to receive(:call)
     end
 
-    it "calls a service" do
-      worker.perform(user.id)
-      expect(service).to have_received(:call).with(user.id, broadcast).once
+    context "with an active broadcast" do
+      it "calls a service" do
+        worker.perform(user.id, broadcast.id)
+        expect(service).to have_received(:call).with(user.id, broadcast).once
+      end
+    end
+
+    context "with an inactive broadcast" do
+      it "does not call a service" do
+        worker.perform(user.id, inactive_broadcast.id)
+        expect(service).not_to have_received(:call)
+      end
     end
 
     context "when there is a non-existent broadcast" do
@@ -21,7 +31,7 @@ RSpec.describe Notifications::WelcomeNotificationWorker, type: :worker do
       end
 
       it "does nothing" do
-        worker.perform(user.id)
+        worker.perform(user.id, broadcast.id)
         expect(service).not_to have_received(:call)
       end
     end

@@ -1,11 +1,12 @@
 <div class="row justify-content-end">
-  <%= link_to "Make A New Broadcast", "/internal/broadcasts/new", class: "btn btn-primary" %>
+  <%= link_to "Make A New Broadcast", new_internal_broadcast_path, class: "btn btn-primary" %>
 </div>
 
 <h2>Current Broadcasts</h2>
 <hr>
 
 <div class="row">
+  <div class="alert alert-warning"><strong>Note: You must ensure that your Broadcast is active in order for it to be sent to users!<strong></div>
   <div class="list-group-flush w-100">
     <% @broadcasts.each do |broadcast| %>
       <a class="list-group-item list-group-item-action flex-column align-items-start" href="/internal/broadcasts/<%= broadcast.id %>/edit">
@@ -17,8 +18,8 @@
         </p>
         <h3>Status:</h3>
         <h3>
-          <span class="badge badge-<%= broadcast.sent ? "success" : "warning" %>">
-            <%= broadcast.sent ? "Sent" : "Not Sent" %>
+          <span class="badge badge-<%= broadcast.active? ? "success" : "warning" %>">
+            <%= broadcast.active? ? "Active" : "Inactive" %>
           </span>
           <span class="sr-only">Broadcast Status</span>
         </h3>

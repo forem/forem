@@ -1,7 +1,7 @@
 <div class="ltag-github-readme-tag">
   <div class="readme-overview">
     <h2>
-      <img src="<%= ActionController::Base.helpers.asset_path('github-logo.svg') %>" alt="GitHub logo">
+      <img src="<%= ActionController::Base.helpers.asset_path("github-logo.svg") %>" alt="GitHub logo">
       <a href="https://github.com/<%= content.owner.login %>">
         <%= content.owner.login %>
       </a> / <a style="font-weight: 600;" href="<%= content.html_url %>">
@@ -14,7 +14,7 @@
   </div>
   <% if show_readme %>
   <div class="ltag-github-body">
-    <p><%= (HTML_Truncator.truncate updated_html, 150).html_safe %></p>
+    <p><%= (HTML_Truncator.truncate readme_html, 150).html_safe %></p>
   </div>
   <div class="gh-btn-container"><a class="gh-btn" href="<%= content.html_url %>">View on GitHub</a></div>
   <% end %>

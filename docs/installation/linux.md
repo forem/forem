@@ -15,7 +15,7 @@ but they have only been tested on Ubuntu 18.04._
    [rbenv](https://github.com/rbenv/rbenv). Please follow their
    [installation guide](https://github.com/rbenv/rbenv#installation).
 1. With the Ruby version manager, install the Ruby version listed on our badge.
-   (ie with rbenv: `rbenv install 2.6.5`)
+   (ie with rbenv: `rbenv install $(cat .ruby-version)`)
 
 For very detailed rbenv installation directions on several distros, please visit
 [DigitalOcean's guide](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04).
@@ -35,6 +35,8 @@ There are two ways to install Yarn.
   you can run `npm install -g yarn` to install Yarn.
 
 ### PostgreSQL
+
+DEV requires PostgreSQL version 9.5 or higher.
 
 1. Run
    `sudo apt update && sudo apt install postgresql postgresql-contrib libpq-dev`.
@@ -65,11 +67,18 @@ We recommend following Digital Ocean's extensive
 
 ### Elasticsearch
 
-DEV requires Elasticsearch version 7 or higher.
+DEV requires a version of Elasticsearch between 7.1 and 7.5. Version 7.6 is not
+supported. We recommend version 7.5.2.
 
 We recommend following
 [Elasticsearch's guide for installing on Linux](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/targz.html#install-linux).
-NOTE: Make sure to download the OSS version, `elasticsearch-oss`.
+
+Elasticsearch is also available as as
+[Debian package](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/deb.html)
+or a
+[RPM package](https://www.elastic.co/guide/en/elasticsearch/reference/7.5/rpm.html).
+
+NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
 ## Installing DEV
 
@@ -80,9 +89,7 @@ NOTE: Make sure to download the OSS version, `elasticsearch-oss`.
 1. Set up your environment variables/secrets
 
    - Take a look at `Envfile`. This file lists all the `ENV` variables we use
-     and provides a fake default for any missing keys. You'll need to get your
-     own free [Algolia credentials](/backend/algolia) to get your development
-     environment running.
+     and provides a fake default for any missing keys.
    - The [backend guide](/backend) will show you how to get free API keys for
      additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:

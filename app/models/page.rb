@@ -1,8 +1,10 @@
 class Page < ApplicationRecord
+  TEMPLATE_OPTIONS = %w[contained full_within_layout].freeze
+
   validates :title, presence: true
   validates :description, presence: true
   validates :slug, presence: true, format: /\A[0-9a-z\-_]*\z/
-  validates :template, inclusion: { in: %w[contained full_within_layout full_page] }
+  validates :template, inclusion: { in: TEMPLATE_OPTIONS }
   validate :body_present
   validate :unique_slug_including_users_and_orgs, if: :slug_changed?
 
@@ -36,7 +38,7 @@ class Page < ApplicationRecord
   end
 
   def unique_slug_including_users_and_orgs
-    slug_exists = User.exists?(username: slug) || Organization.exists?(slug: slug) || Podcast.exists?(slug: slug)
+    slug_exists = User.exists?(username: slug) || Organization.exists?(slug: slug) || Podcast.exists?(slug: slug) || slug.include?("sitemap-")
     errors.add(:slug, "is taken.") if slug_exists
   end
 

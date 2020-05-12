@@ -2,7 +2,7 @@ import { h, render } from 'preact';
 import { getUserDataAndCsrfToken } from '../chat/util';
 import ArticleForm from '../article-form/articleForm';
 
-HTMLDocument.prototype.ready = new Promise(resolve => {
+HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
     return resolve();
   }
@@ -38,5 +38,3 @@ document.ready.then(() => {
     }
   });
 });
-
-

@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { fetchSearch } from '../../src/utils/search';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -28,6 +29,7 @@ const LETTERS_NUMBERS = /[a-z0-9]/i;
 class Tags extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       selectedIndex: -1,
       searchResults: [],
@@ -36,14 +38,6 @@ class Tags extends Component {
       prevLen: 0,
       showingRulesForTag: null,
     };
-
-    const algoliaId = document.querySelector("meta[name='algolia-public-id']")
-      .content;
-    const algoliaKey = document.querySelector("meta[name='algolia-public-key']")
-      .content;
-    const env = document.querySelector("meta[name='environment']").content;
-    const client = algoliasearch(algoliaId, algoliaKey);
-    this.index = client.initIndex(`Tag_${env}`);
   }
 
   componentDidMount() {
@@ -321,32 +315,30 @@ class Tags extends Component {
       });
     }
     const { listing } = this.props;
-    return this.index
-      .search(query, {
-        hitsPerPage: 8,
-        attributesToHighlight: [],
-        filters: 'supported:true',
-      })
-      .then(content => {
-        if (listing === true) {
-          const { additionalTags } = this.state;
-          const { category } = this.props;
-          const additionalItems = (additionalTags[category] || []).filter(t =>
-            t.includes(query),
-          );
-          const resultsArray = content.hits;
-          additionalItems.forEach(t => {
-            if (!resultsArray.includes(t)) {
-              resultsArray.push({ name: t });
-            }
-          });
-        }
-        // updates searchResults array according to what is being typed by user
-        // allows user to choose a tag when they've typed the partial or whole word
-        this.setState({
-          searchResults: content.hits,
+
+    const dataHash = { name: query };
+    const responsePromise = fetchSearch('tags', dataHash);
+
+    return responsePromise.then(response => {
+      if (listing === true) {
+        const { additionalTags } = this.state;
+        const { category } = this.props;
+        const additionalItems = (additionalTags[category] || []).filter(t =>
+          t.includes(query),
+        );
+        const resultsArray = response.result;
+        additionalItems.forEach(t => {
+          if (!resultsArray.includes(t)) {
+            resultsArray.push({ name: t });
+          }
         });
+      }
+      // updates searchResults array according to what is being typed by user
+      // allows user to choose a tag when they've typed the partial or whole word
+      this.setState({
+        searchResults: response.result,
       });
+    });
   }
 
   resetSearchResults() {
@@ -440,6 +432,7 @@ class Tags extends Component {
             return this.textArea;
           }}
           className={`${classPrefix}__tags`}
+          name="classified_listing[tag_list]"
           placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
           autoComplete="off"
           value={defaultValue}

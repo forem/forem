@@ -18,10 +18,10 @@
         <div style="font-size:0.78em">
           <% if @unsubscribe %>
             <%= link_to "Unsubscribe", email_subscriptions_unsubscribe_url(ut: @unsubscribe), style: "color:#7d7d7d" %> |
-            <a href="https://dev.to/settings/notifications" style="color:#7d7d7d">Adjust your email settings</a>
+            <a href="<%= app_url(user_settings_path(:notifications)) %>" style="color:#7d7d7d">Adjust your email settings</a>
           <% else %>
             Don't want to get emails like this? Adjust your email settings at
-            <a href="https://dev.to/settings/notifications">dev.to/settings/notifications</a>
+            <a href="<%= app_url(user_settings_path(:notifications)) %>"><%= app_url(user_settings_path(:notifications)) %></a>
           <% end %>
         </div>
       </td>

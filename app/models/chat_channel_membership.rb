@@ -1,24 +1,25 @@
 class ChatChannelMembership < ApplicationRecord
-  include AlgoliaSearch
+  attr_accessor :invitation_usernames
+
+  include Searchable
+  SEARCH_SERIALIZER = Search::ChatChannelMembershipSerializer
+  SEARCH_CLASS = Search::ChatChannelMembership
+
   belongs_to :chat_channel
   belongs_to :user
 
   validates :user_id, presence: true, uniqueness: { scope: :chat_channel_id }
   validates :chat_channel_id, presence: true, uniqueness: { scope: :user_id }
-  validates :status, inclusion: { in: %w[active inactive pending rejected left_channel] }
+  validates :status, inclusion: { in: %w[active inactive pending rejected left_channel removed_from_channel joining_request] }
   validates :role, inclusion: { in: %w[member mod] }
   validate  :permission
 
-  algoliasearch index_name: "SecuredChatChannelMembership_#{Rails.env}", auto_index: false do
-    attribute :id, :status, :viewable_by, :chat_channel_id, :last_opened_at,
-              :channel_text, :channel_last_message_at, :channel_status, :channel_type, :channel_username,
-              :channel_text, :channel_name, :channel_image, :channel_modified_slug, :channel_messages_count
-    searchableAttributes %i[channel_text]
-    attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)", "filterOnly(channel_status)", "filterOnly(channel_type)"]
-    ranking ["desc(channel_last_message_at)"]
-  end
+  after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :remove_from_elasticsearch, on: [:destroy]
 
-  private
+  delegate :channel_type, to: :chat_channel
+
+  scope :eager_load_serialized_data, -> { includes(:user, :channel) }
 
   def channel_last_message_at
     chat_channel.last_message_at
@@ -28,12 +29,9 @@ class ChatChannelMembership < ApplicationRecord
     chat_channel.status
   end
 
-  def channel_type
-    chat_channel.channel_type
-  end
-
   def channel_text
-    "#{chat_channel.channel_name} #{chat_channel.slug} #{chat_channel.channel_human_names}"
+    parsed_channel_name = chat_channel.channel_name&.gsub("chat between", "")&.gsub("and", "")
+    "#{parsed_channel_name} #{chat_channel.slug} #{chat_channel.channel_human_names.join(' ')}"
   end
 
   def channel_name
@@ -60,14 +58,6 @@ class ChatChannelMembership < ApplicationRecord
     other_user&.username if chat_channel.channel_type == "direct"
   end
 
-  def channel_color
-    if chat_channel.channel_type == "direct"
-      other_user&.decorate&.darker_color
-    else
-      "#111111"
-    end
-  end
-
   def channel_modified_slug
     if chat_channel.channel_type == "direct"
       "@" + other_user&.username
@@ -78,6 +68,20 @@ class ChatChannelMembership < ApplicationRecord
 
   def viewable_by
     user_id
+  end
+
+  def channel_discoverable
+    chat_channel.discoverable
+  end
+
+  private
+
+  def channel_color
+    if chat_channel.channel_type == "direct"
+      other_user&.decorate&.darker_color
+    else
+      "#111111"
+    end
   end
 
   def other_user

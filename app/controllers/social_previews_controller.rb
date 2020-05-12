@@ -2,16 +2,21 @@ class SocialPreviewsController < ApplicationController
   # No authorization required for entirely public controller
 
   PNG_CSS = "body { transform: scale(0.3); } .preview-div-wrapper { overflow: unset; margin: 5vw; }".freeze
-  SHE_CODED_TAGS = %w[shecoded theycoded shecodedally].freeze
 
   def article
     @article = Article.find(params[:id])
     @tag_badges = Badge.where(id: Tag.where(name: @article.decorate.cached_tag_list_array).pluck(:badge_id))
     not_found unless @article.published
 
-    template = (@article.decorate.cached_tag_list_array & SHE_CODED_TAGS).any? ? "shecoded" : "article"
+    template = @article.tags.
+      where.not(social_preview_template: nil).
+      where.not(social_preview_template: "article").
+      select(:social_preview_template).first&.social_preview_template
 
-    set_respond template
+    # make sure that the template exists
+    template = "article" unless Tag.social_preview_templates.include?(template)
+
+    set_respond "social_previews/articles/#{template}"
   end
 
   def user
@@ -21,8 +26,7 @@ class SocialPreviewsController < ApplicationController
   end
 
   def listing
-    @listing = ClassifiedListing.find(params[:id])
-    define_categories
+    @listing = ClassifiedListing.find(params[:id]).decorate
     set_respond
   end
 
@@ -46,24 +50,6 @@ class SocialPreviewsController < ApplicationController
   end
 
   private
-
-  def define_categories
-    cat_info = {
-      "collabs": ["Collaborators Wanted", "#5AE8D9"],
-      "cfp": ["Call For Proposal", "#f58f8d"],
-      "forhire": ["Available For Hire", "#b78cf4"],
-      "education": ["Education", "#5AABE8"],
-      "jobs": ["Now Hiring", "#53c3ad"],
-      "mentors": ["Offering Mentorship", "#A69EE8"],
-      "mentees": ["Looking For Mentorship", "#88aedb"],
-      "forsale": ["Stuff For Sale", "#d0adfb"],
-      "events": ["Upcoming Event", "#f8b3d0"],
-      "misc": ["Miscellaneous", "#6393FF"],
-      "products": ["Products & Tools", "#5AE8D9"]
-    }
-    @category = cat_info[@listing.category.to_sym][0]
-    @cat_color = cat_info[@listing.category.to_sym][1]
-  end
 
   def set_respond(template = nil)
     respond_to do |format|

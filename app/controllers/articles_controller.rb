@@ -3,7 +3,7 @@ class ArticlesController < ApplicationController
 
   before_action :authenticate_user!, except: %i[feed new]
   before_action :set_article, only: %i[edit manage update destroy stats]
-  before_action :raise_banned, only: %i[new create update]
+  before_action :raise_suspended, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
 
@@ -19,83 +19,43 @@ class ArticlesController < ApplicationController
                   @articles.where(featured: true).includes(:user)
                 end
 
-    unless @articles
-      render body: nil
-      return
+    unless @articles&.any?
+      not_found
     end
 
     set_surrogate_key_header "feed"
-    response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
+
+    set_cache_control_headers(600,
+                              stale_while_revalidate: 30,
+                              stale_if_error: 86_400)
 
     render layout: false
   end
 
   def new
     base_editor_assigments
-    @article = if @tag.present? && @user&.editor_version == "v2"
-                 authorize Article
-                 submission_template = @tag.submission_template_customized(@user.name).to_s
-                 Article.new(
-                   body_markdown: submission_template.split("---").last.to_s.strip,
-                   cached_tag_list: @tag.name,
-                   processed_html: "",
-                   user_id: current_user&.id,
-                   title: submission_template.split("title:")[1].to_s.split("\n")[0].to_s.strip,
-                 )
-               elsif @tag&.submission_template.present? && @user
-                 authorize Article
-                 Article.new(
-                   body_markdown: @tag.submission_template_customized(@user.name),
-                   processed_html: "",
-                   user_id: current_user&.id,
-                 )
-               elsif @prefill.present? && @user&.editor_version == "v2"
-                 authorize Article
-                 Article.new(
-                   body_markdown: @prefill.split("---").last.to_s.strip,
-                   cached_tag_list: @prefill.split("tags:")[1].to_s.split("\n")[0].to_s.strip,
-                   processed_html: "",
-                   user_id: current_user&.id,
-                   title: @prefill.split("title:")[1].to_s.split("\n")[0].to_s.strip,
-                 )
-               elsif @prefill.present? && @user
-                 authorize Article
-                 Article.new(
-                   body_markdown: @prefill,
-                   processed_html: "",
-                   user_id: current_user&.id,
-                 )
-               elsif @tag.present?
-                 skip_authorization
-                 Article.new(
-                   body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: #{@tag.name}\n---\n\n",
-                   processed_html: "",
-                   user_id: current_user&.id,
-                 )
-               else
-                 skip_authorization
-                 if @user&.editor_version == "v2"
-                   Article.new(user_id: current_user&.id)
-                 else
-                   Article.new(
-                     body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n---\n\n",
-                     processed_html: "",
-                     user_id: current_user&.id,
-                   )
-                 end
-               end
+
+    @article, needs_authorization = Articles::Builder.new(@user, @tag, @prefill).build
+
+    if needs_authorization
+      authorize Article
+    else
+      skip_authorization
+    end
   end
 
   def edit
     authorize @article
+
     @version = @article.has_frontmatter? ? "v1" : "v2"
     @user = @article.user
     @organizations = @user&.organizations
   end
 
   def manage
-    @article = @article.decorate
     authorize @article
+
+    @article = @article.decorate
     @user = @article.user
     @rating_vote = RatingVote.where(article_id: @article.id, user_id: @user.id).first
     @buffer_updates = BufferUpdate.where(composer_user_id: @user.id, article_id: @article.id)
@@ -136,13 +96,12 @@ class ArticlesController < ApplicationController
   def create
     authorize Article
 
-    @user = current_user
-    @article = Articles::Creator.call(@user, article_params_json)
+    article = Articles::Creator.call(current_user, article_params_json)
 
-    render json: if @article.persisted?
-                   @article.to_json(only: [:id], methods: [:current_state_path])
+    render json: if article.persisted?
+                   { id: article.id, current_state_path: article.decorate.current_state_path }.to_json
                  else
-                   @article.errors.to_json
+                   article.errors.to_json
                  end
   end
 

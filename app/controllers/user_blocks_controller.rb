@@ -35,7 +35,7 @@ class UserBlocksController < ApplicationController
       return
     end
 
-    @user_block = UserBlock.find_by(blocked_id: permitted_attributes(UserBlock)[:blocked_id], blocker: current_user)
+    @user_block = UserBlock.find_by!(blocked_id: permitted_attributes(UserBlock)[:blocked_id], blocker: current_user)
     authorize @user_block
 
     if @user_block.destroy

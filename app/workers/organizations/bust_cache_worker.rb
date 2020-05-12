@@ -1,9 +1,5 @@
 module Organizations
-  class BustCacheWorker
-    include Sidekiq::Worker
-
-    sidekiq_options queue: :high_priority, retry: 10
-
+  class BustCacheWorker < BustCacheBaseWorker
     def perform(organization_id, slug)
       organization = Organization.find_by(id: organization_id)
 

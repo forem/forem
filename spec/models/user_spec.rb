@@ -2,47 +2,60 @@ require "rails_helper"
 
 def user_from_authorization_service(service_name, signed_in_resource, cta_variant)
   auth = OmniAuth.config.mock_auth[service_name]
-  service = AuthorizationService.new(auth, signed_in_resource, cta_variant)
-  service.get_user
+  Authentication::Authenticator.call(
+    auth,
+    current_user: signed_in_resource,
+    cta_variant: cta_variant,
+  )
 end
 
 RSpec.describe User, type: :model do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
+  let(:user_with_user_optional_fields) { create(:user, :with_user_optional_fields) }
   let(:org) { create(:organization) }
 
-  before { mock_auth_hash }
+  before { omniauth_mock_providers_payload }
 
   describe "validations" do
     describe "builtin validations" do
-      it { is_expected.to have_many(:api_secrets) }
-      it { is_expected.to have_many(:articles) }
+      subject { user }
+
+      it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
+      it { is_expected.to have_many(:articles).dependent(:destroy) }
+      it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
       it { is_expected.to have_many(:badge_achievements).dependent(:destroy) }
       it { is_expected.to have_many(:badges).through(:badge_achievements) }
-      it { is_expected.to have_many(:collections).dependent(:destroy) }
-      it { is_expected.to have_many(:comments) }
-      it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message") }
-      it { is_expected.to have_many(:identities).dependent(:destroy) }
-      it { is_expected.to have_many(:mentions).dependent(:destroy) }
-      it { is_expected.to have_many(:notes) }
-      it { is_expected.to have_many(:notifications).dependent(:destroy) }
-      it { is_expected.to have_many(:reactions).dependent(:destroy) }
-      it { is_expected.to have_many(:tweets).dependent(:destroy) }
-      it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
+      it { is_expected.to have_many(:classified_listings).dependent(:destroy) }
+      it { is_expected.to have_many(:collections).dependent(:destroy) }
+      it { is_expected.to have_many(:comments).dependent(:destroy) }
+      it { is_expected.to have_many(:credits).dependent(:destroy) }
+      it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
+      it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
+      it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
+      it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
+      it { is_expected.to have_many(:github_repos).dependent(:destroy) }
+      it { is_expected.to have_many(:html_variants).dependent(:destroy) }
+      it { is_expected.to have_many(:identities).dependent(:destroy) }
+      it { is_expected.to have_many(:mentions).dependent(:destroy) }
+      it { is_expected.to have_many(:messages).dependent(:destroy) }
+      it { is_expected.to have_many(:notes) }
       it { is_expected.to have_many(:notification_subscriptions).dependent(:destroy) }
-      it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
-      it { is_expected.to have_one(:counters).dependent(:destroy) }
+      it { is_expected.to have_many(:notifications).dependent(:destroy) }
+      it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
+      it { is_expected.to have_many(:organizations).through(:organization_memberships) }
+      it { is_expected.to have_many(:page_views).dependent(:destroy) }
+      it { is_expected.to have_many(:poll_skips).dependent(:destroy) }
+      it { is_expected.to have_many(:poll_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:profile_pins).dependent(:delete_all) }
+      it { is_expected.to have_many(:rating_votes).dependent(:destroy) }
+      it { is_expected.to have_many(:reactions).dependent(:destroy) }
+      it { is_expected.to have_many(:response_templates).dependent(:destroy) }
+      it { is_expected.to have_many(:tweets).dependent(:destroy) }
 
       # rubocop:disable RSpec/NamedSubject
-      it "has created_podcasts" do
-        expect(subject).to have_many(:created_podcasts).
-          class_name("Podcast").
-          with_foreign_key(:creator_id).
-          dependent(:nullify)
-      end
-
       it do
         expect(subject).to have_many(:access_grants).
           class_name("Doorkeeper::AccessGrant").
@@ -56,44 +69,168 @@ RSpec.describe User, type: :model do
           with_foreign_key("resource_owner_id").
           dependent(:delete_all)
       end
+
+      it do
+        expect(subject).to have_many(:affected_feedback_messages).
+          class_name("FeedbackMessage").
+          with_foreign_key("affected_id").
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:authored_notes).
+          class_name("Note").
+          with_foreign_key("author_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:backup_data).
+          class_name("BackupData").
+          with_foreign_key("instance_user_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:blocked_blocks).
+          class_name("UserBlock").
+          with_foreign_key("blocked_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:blocker_blocks).
+          class_name("UserBlock").
+          with_foreign_key("blocker_id").
+          dependent(:delete_all)
+      end
+
+      it do
+        expect(subject).to have_many(:created_podcasts).
+          class_name("Podcast").
+          with_foreign_key(:creator_id).
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:offender_feedback_messages).
+          class_name("FeedbackMessage").
+          with_foreign_key(:offender_id).
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:reporter_feedback_messages).
+          class_name("FeedbackMessage").
+          with_foreign_key(:reporter_id).
+          dependent(:nullify)
+      end
+
+      it do
+        expect(subject).to have_many(:webhook_endpoints).
+          class_name("Webhook::Endpoint").
+          with_foreign_key(:user_id).
+          dependent(:delete_all)
+      end
       # rubocop:enable RSpec/NamedSubject
 
-      it { is_expected.to have_many(:organization_memberships).dependent(:destroy) }
+      it "has at most three optional fields" do
+        expect(user_with_user_optional_fields).to have_many(:user_optional_fields).dependent(:destroy)
+        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field", value: "some value")
+        expect(fourth_field).not_to be_valid
+      end
 
-      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+      it { is_expected.to have_one(:counters).class_name("UserCounter").dependent(:destroy) }
+      it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
+      it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
+      it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
+      it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
+      it { is_expected.to allow_value("#aabbcc").for(:bg_color_hex) }
+      it { is_expected.to allow_value("#aabbcc").for(:text_color_hex) }
+      it { is_expected.to allow_value("#abc").for(:bg_color_hex) }
+      it { is_expected.to allow_value("#abc").for(:text_color_hex) }
+      it { is_expected.to allow_value("AcMe_1").for(:username) }
+
+      it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+      it { is_expected.to validate_length_of(:available_for).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:behance_url).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:currently_hacking_on).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:currently_learning).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:education).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
+      it { is_expected.to validate_length_of(:employer_name).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:employer_url).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:employment_title).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
+      it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
+      it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
+      it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
       it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
       it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
-      it { is_expected.to validate_presence_of(:username) }
-      it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
-      it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
-      it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+      it { is_expected.to validate_url_of(:employer_url) }
+      it { is_expected.to validate_url_of(:website_url) }
     end
 
     it "validates username against reserved words" do
       user = build(:user, username: "readinglist")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("reserved")).to be true
+      expect(user.errors[:username].to_s).to include("reserved")
     end
 
     it "takes organization slug into account" do
       create(:organization, slug: "lightalloy")
       user = build(:user, username: "lightalloy")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("taken")).to be true
+      expect(user.errors[:username].to_s).to include("taken")
     end
 
     it "takes podcast slug into account" do
       create(:podcast, slug: "lightpodcast")
       user = build(:user, username: "lightpodcast")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("taken")).to be true
+      expect(user.errors[:username].to_s).to include("taken")
     end
 
     it "takes page slug into account" do
       create(:page, slug: "page_yo")
       user = build(:user, username: "page_yo")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("taken")).to be true
+      expect(user.errors[:username].to_s).to include("taken")
+    end
+
+    it "validates can_send_confirmation_email for existing user" do
+      user = create(:user)
+      limiter = RateLimitChecker.new(user)
+      allow(user).to receive(:rate_limiter).and_return(limiter)
+      allow(limiter).to receive(:limit_by_action).and_return(true)
+      user.update(email: "new_email@yo.com")
+      expect(user).not_to be_valid
+      expect(user.errors[:email].to_s).to include("confirmation could not be sent. Rate limit reached")
+    end
+  end
+
+  describe "#after_commit" do
+    it "on update enqueues job to index user to elasticsearch" do
+      user.save
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, user.id]) do
+        user.save
+      end
+    end
+
+    it "on update syncs elasticsearch data" do
+      allow(user).to receive(:sync_related_elasticsearch_docs)
+      user.save
+      expect(user).to have_received(:sync_related_elasticsearch_docs)
+    end
+
+    it "on destroy enqueues job to delete user from elasticsearch" do
+      user.save
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
+        user.destroy
+      end
     end
   end
 
@@ -187,6 +324,11 @@ RSpec.describe User, type: :model do
         user.mastodon_url = "mastodon.social/@test"
         expect(user).not_to be_valid
       end
+
+      it "does not accept an invalid url" do
+        user.mastodon_url = "ben .com"
+        expect(user).not_to be_valid
+      end
     end
 
     describe "#facebook_url" do
@@ -199,6 +341,20 @@ RSpec.describe User, type: :model do
 
       it "does not accept invalid facebook url" do
         user.facebook_url = "ben.com"
+        expect(user).not_to be_valid
+      end
+    end
+
+    describe "#youtube_url" do
+      it "accepts valid https youtube url", :aggregate_failures do
+        %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
+          user.youtube_url = "https://youtube.com/#{username}"
+          expect(user).to be_valid
+        end
+      end
+
+      it "does not accept invalid youtube url" do
+        user.youtube_url = "ben.com"
         expect(user).not_to be_valid
       end
     end
@@ -434,7 +590,7 @@ RSpec.describe User, type: :model do
       end
 
       it "sets correct language_settings by default after the jobs are processed" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect(user.language_settings).to eq("preferred_languages" => %w[en])
         end
       end
@@ -442,32 +598,68 @@ RSpec.describe User, type: :model do
 
     describe "#estimated_default_language" do
       it "estimates default language to be nil" do
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           expect(user.estimated_default_language).to be(nil)
         end
       end
 
       it "estimates default language to be japanese with .jp email" do
-        perform_enqueued_jobs do
+        user = nil
+
+        sidekiq_perform_enqueued_jobs do
           user = create(:user, email: "ben@hello.jp")
-          expect(user.reload.estimated_default_language).to eq("ja")
         end
+
+        expect(user.reload.estimated_default_language).to eq("ja")
       end
 
       it "estimates default language based on ID dump" do
-        perform_enqueued_jobs do
+        new_user = nil
+
+        sidekiq_perform_enqueued_jobs do
           new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-          expect(new_user.estimated_default_language).to eq(nil)
         end
+
+        expect(new_user.estimated_default_language).to eq(nil)
+      end
+    end
+
+    describe "#send_welcome_notification" do
+      let(:mascot_account) { create(:user) }
+      let!(:set_up_profile_broadcast) { create(:set_up_profile_broadcast) }
+
+      before do
+        allow(described_class).to receive(:mascot_account).and_return(mascot_account)
+      end
+
+      it "sends a setup welcome notification when an active broadcast exists" do
+        new_user = nil
+        sidekiq_perform_enqueued_jobs do
+          new_user = create(:user)
+        end
+        expect(new_user.reload.notifications.count).to eq(1)
+        expect(new_user.reload.notifications.first.notifiable).to eq(set_up_profile_broadcast)
+      end
+
+      it "does not send a setup welcome notification without an active broadcast" do
+        set_up_profile_broadcast.update!(active: false)
+        new_user = nil
+        sidekiq_perform_enqueued_jobs do
+          new_user = create(:user)
+        end
+        expect(new_user.reload.notifications.count).to eq(0)
       end
     end
 
     describe "#preferred_languages_array" do
       it "returns proper preferred_languages_array" do
-        perform_enqueued_jobs do
+        user = nil
+
+        sidekiq_perform_enqueued_jobs do
           user = create(:user, email: "ben@hello.jp")
-          expect(user.reload.preferred_languages_array).to eq(%w[en ja])
         end
+
+        expect(user.reload.preferred_languages_array).to eq(%w[en ja])
       end
 
       it "returns a correct array when language settings are in a new format" do
@@ -514,6 +706,15 @@ RSpec.describe User, type: :model do
       it "does not enqueue with an unconfirmed email" do
         sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
           user.update(unconfirmed_email: "bob@bob.com", confirmation_sent_at: Time.current)
+        end
+      end
+
+      it "does not enqueue when the email address or subscription status has not changed" do
+        # The trait replaces the method with a dummy, but we need the actual method for this test.
+        user = described_class.find(create(:user, :ignore_mailchimp_subscribe_callback).id)
+
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(website_url: "http://example.com")
         end
       end
     end
@@ -619,26 +820,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  context "when indexing and deindexing" do
-    it "triggers background auto-indexing when user is saved" do
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["User", user.id]) do
-        user.save
-      end
-    end
-
-    it "doesn't enqueue a job on destroy" do
-      user = build(:user)
-
-      sidekiq_perform_enqueued_jobs do
-        user.save
-      end
-
-      sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
-        user.destroy
-      end
-    end
-  end
-
   describe "user registration" do
     let(:user) { create(:user) }
 
@@ -671,7 +852,7 @@ RSpec.describe User, type: :model do
     end
 
     it "does not assign signup_cta_variant to non-new users" do
-      returning_user = build(:user, signup_cta_variant: nil)
+      returning_user = create(:user, signup_cta_variant: nil)
       new_user = user_from_authorization_service(:twitter, returning_user, "hey-hey-hey")
       expect(new_user.signup_cta_variant).to eq(nil)
     end
@@ -683,9 +864,9 @@ RSpec.describe User, type: :model do
     end
 
     it "assigns modified username if invalid" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = "invalid.username"
+      OmniAuth.config.mock_auth[:twitter].info.nickname = "invalid.user"
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.username).to eq("invalidusername")
+      expect(new_user.username).to eq("invaliduser")
     end
 
     it "assigns an identity to user" do
@@ -916,6 +1097,54 @@ RSpec.describe User, type: :model do
     it "returns true if user opted in from follower notifications and has an email" do
       user.assign_attributes(email_follower_notifications: true)
       expect(user.receives_follower_email_notifications?).to be(true)
+    end
+  end
+
+  describe ".dev_account" do
+    it "returns nil if the account does not exist" do
+      expect(described_class.dev_account).to be_nil
+    end
+
+    it "returns the user if the account exists" do
+      allow(SiteConfig).to receive(:staff_user_id).and_return(user.id)
+
+      expect(described_class.dev_account).to eq(user)
+    end
+  end
+
+  describe ".mascot_account" do
+    it "returns nil if the account does not exist" do
+      expect(described_class.mascot_account).to be_nil
+    end
+
+    it "returns the user if the account exists" do
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
+
+      expect(described_class.mascot_account).to eq(user)
+    end
+  end
+
+  describe "#authenticated_through?" do
+    let(:provider) { Authentication::Providers.available.first }
+
+    it "returns false if provider is not known" do
+      expect(user.authenticated_through?(:unknown)).to be(false)
+    end
+
+    it "returns false if provider is not enabled" do
+      providers = Authentication::Providers.available - [provider]
+      allow(Authentication::Providers).to receive(:enabled).and_return(providers)
+
+      expect(user.authenticated_through?(provider)).to be(false)
+    end
+
+    it "returns false if the user has no related identity" do
+      expect(user.authenticated_through?(provider)).to be(false)
+    end
+
+    it "returns true if the user has related identity" do
+      user = create(:user, :with_identity, identities: [provider])
+      expect(user.authenticated_through?(provider)).to be(true)
     end
   end
 end

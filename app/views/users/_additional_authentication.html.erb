@@ -1,0 +1,16 @@
+<% authentication_enabled_providers.each do |provider| %>
+  <% unless @user.identities.exists?(provider: provider.provider_name) %>
+    <a
+      href="<%= provider.sign_in_path(state: "profile") %>"
+      class="crayons-btn crayons-btn--outlined mr-2"
+      data-no-instant>
+      <%= inline_svg_tag(
+            "#{provider.provider_name}.svg",
+            aria: true,
+            class: "crayons-icon",
+            title: provider.official_name,
+          ) %>
+      Connect <%= provider.official_name %> Account
+    </a>
+  <% end %>
+<% end %>

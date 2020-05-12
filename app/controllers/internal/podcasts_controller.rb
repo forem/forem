@@ -1,12 +1,12 @@
 class Internal::PodcastsController < Internal::ApplicationController
   layout "internal"
 
-  before_action :find_podcast, only: %i[edit update remove_admin add_admin]
+  before_action :find_podcast, only: %i[edit update fetch remove_admin add_admin]
   before_action :find_user, only: %i[remove_admin add_admin]
 
   def index
-    @podcasts = Podcast.joins(:podcast_episodes).
-      select("podcasts.*, count(podcast_episodes) as count").
+    @podcasts = Podcast.left_outer_joins(:podcast_episodes).
+      select("podcasts.*, count(podcast_episodes) as episodes_count").
       group("podcasts.id").order("podcasts.created_at DESC").
       page(params[:page]).per(50)
     @podcasts = @podcasts.where("podcasts.title ILIKE :search", search: "%#{params[:search]}%") if params[:search].present?
@@ -20,6 +20,14 @@ class Internal::PodcastsController < Internal::ApplicationController
     else
       render :edit
     end
+  end
+
+  def fetch
+    limit = params[:limit].to_i.zero? ? nil : params[:limit].to_i
+    force = params[:force].to_i == 1
+    Podcasts::GetEpisodesWorker.perform_async(podcast_id: @podcast.id, limit: limit, force: force)
+    flash[:notice] = "Podcast's episodes fetching was scheduled (#{@podcast.title}, ##{@podcast.id})"
+    redirect_to internal_podcasts_path
   end
 
   def remove_admin

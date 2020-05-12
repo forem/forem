@@ -6,7 +6,11 @@ RSpec.describe LinkTag, type: :liquid_tag do
     create(:article, user_id: user.id, title: "test this please", tags: "tag1 tag2 tag3")
   end
   let(:org) { create(:organization) }
-  let(:org_user) { create(:user, organization_id: org.id) }
+  let(:org_user) do
+    user = create(:user)
+    create(:organization_membership, user: user, organization: org)
+    user
+  end
   let(:org_article) do
     create(:article, user_id: org_user.id, title: "test this please", tags: "tag1 tag2 tag3",
                      organization_id: org.id)
@@ -31,7 +35,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
       <div class='ltag__link'>
         <a href='#{article.user.path}' class='ltag__link__link'>
           <div class='ltag__link__pic'>
-            <img src='#{ProfileImage.new(article.user).get(width: 150)}' alt='#{article.user.username} image'/>
+            <img src='#{ProfileImage.new(article.user).get(width: 150)}' alt='#{article.user.username} image'>
           </div>
         </a>
         <a href='#{article.path}' class='ltag__link__link'>
@@ -47,14 +51,26 @@ RSpec.describe LinkTag, type: :liquid_tag do
     HTML
   end
 
+  def missing_article_html
+    <<~HTML
+      <div class='ltag__link'>
+        <div class='ltag__link__content'>
+          <div class='missing'>
+            <h2>Article No Longer Available</h2>
+          </div>
+        </div>
+      </div>
+    HTML
+  end
+
   it 'can use "post" as an alias' do
     liquid = generate_new_liquid_alias("/#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
-  it "raises an error when invalid" do
+  it "does not raise an error when invalid" do
     expect { generate_new_liquid("fake_username/fake_article_slug") }.
-      to raise_error("Invalid link URL or link URL does not exist")
+      not_to raise_error("Invalid link URL or link URL does not exist")
   end
 
   it "renders a proper link tag" do
@@ -102,6 +118,12 @@ RSpec.describe LinkTag, type: :liquid_tag do
   it "renders with a full link with a trailing slash" do
     liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(correct_link_html(article))
+  end
+
+  it "renders with missing article" do
+    article.delete
+    liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}/")
+    expect(liquid.render).to eq(missing_article_html)
   end
 
   it "escapes title" do

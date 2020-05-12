@@ -106,4 +106,52 @@ RSpec.describe "Tags", type: :request, proper_status: true do
       end
     end
   end
+
+  describe "GET /tags/onboarding" do
+    let(:headers) do
+      {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    end
+
+    it "returns tags" do
+      create(:tag, name: SiteConfig.suggested_tags.first)
+
+      get onboarding_tags_path, headers: headers
+
+      expect(response.parsed_body.size).to eq(1)
+    end
+
+    it "returns tags with the correct json representation" do
+      tag = create(:tag, name: SiteConfig.suggested_tags.first)
+
+      get onboarding_tags_path, headers: headers
+
+      response_tag = response.parsed_body.first
+      expect(response_tag.keys).to match_array(%w[id name bg_color_hex text_color_hex following])
+      expect(response_tag["id"]).to eq(tag.id)
+      expect(response_tag["name"]).to eq(tag.name)
+      expect(response_tag["bg_color_hex"]).to eq(tag.bg_color_hex)
+      expect(response_tag["text_color_hex"]).to eq(tag.text_color_hex)
+      expect(response_tag["following"]).to be_nil
+    end
+
+    it "returns only suggested tags" do
+      not_suggested_tag = create(:tag, name: "definitelynotasuggestedtag")
+
+      get onboarding_tags_path, headers: headers
+
+      expect(response.parsed_body.filter { |t| t["name"] == not_suggested_tag.name }).to be_empty
+    end
+
+    it "sets the correct edge caching surrogate key for all tags" do
+      tag = create(:tag, name: SiteConfig.suggested_tags.first)
+
+      get onboarding_tags_path, headers: headers
+
+      expected_key = ["tags", tag.record_key].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+    end
+  end
 end

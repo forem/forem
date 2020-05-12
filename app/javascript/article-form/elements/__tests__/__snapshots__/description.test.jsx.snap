@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Description /> should render the description 1`] = `
+<textarea
+  class="articleform__description"
+  name="description"
+  onChange={[Function]}
+  placeholder="description"
+  type="text"
+  value="Some description"
+/>
+`;

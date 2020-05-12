@@ -12,7 +12,12 @@ module Notifications
       notifiable = Comment.find_by(id: notifiable_id)
       return unless notifiable
 
+      # return if it's a comment whose commentable has been deleted
+      return unless notifiable.commentable
+
       random_moderators.each do |mod|
+        next if mod == notifiable.user
+
         Notifications::Moderation::Send.call(mod, notifiable)
       end
     end

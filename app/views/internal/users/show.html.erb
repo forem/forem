@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-12">
     <h2 class="d-inline">
-      <%= @user.name %><a href="/<%= @user.username %>" target="_blank"> (@<%= @user.username %>)</a>
+      <%= @user.name %><%= link_to "@#{@user.username}", @user.path, class: "ml-2", target: "_blank", rel: "noopener" %>
     </h2>
     <a href="<%= edit_internal_user_path(@user) %>" class="btn btn-primary float-right">Manage User</a>
     <p class="font-italic">Member since <%= @user.created_at.strftime("%b %e '%y") %></p>
@@ -48,17 +48,4 @@
 <%= render "credits" %>
 <%= render "notes" %>
 <%= render "user_organizations" %>
-
-<div class="row mb-3">
-  <div class="col-12">
-    <h2>Recent Emails</h2>
-    <div class="list-group-flush">
-      <% @user.email_messages.order("sent_at DESC").limit(50).each do |email| %>
-        <a href="/admin/email_messages/<%= email.id %>" class="list-group-item list-group-item-action">
-          <%= email.subject %>
-          <em> - <%= email.sent_at&.strftime("%b %e '%y") %></em>
-        </a>
-      <% end %>
-    </div>
-  </div>
-</div>
+<%= render "email_tools" %>

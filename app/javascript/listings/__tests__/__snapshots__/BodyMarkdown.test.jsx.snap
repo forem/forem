@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<BodyMarkdown /> Should match the snapshot 1`] = `
+<div
+  class="field"
+>
+  <label
+    class="listingform__label"
+    htmlFor="body_markdown"
+  >
+    Body Markdown
+    <textarea
+      class="listingform__input listingform__bodymarkdown"
+      id="body_markdown"
+      maxLength="400"
+      name="classified_listing[body_markdown]"
+      onInput={[Function]}
+      placeholder="400 characters max, 12 line break max, no images allowed, *markdown is encouraged*"
+    />
+  </label>
+</div>
+`;

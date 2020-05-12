@@ -33,7 +33,7 @@ function fixedEncodeURIComponent(str) {
   // from https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
   return encodeURIComponent(str).replace(
     /[!'()*]/g,
-    c => `%${c.charCodeAt(0).toString(16)}`,
+    (c) => `%${c.charCodeAt(0).toString(16)}`,
   );
 }
 
@@ -77,4 +77,42 @@ export function preloadSearchResults({
       location.href,
     )}`,
   );
+}
+
+export function createSearchUrl(dataHash) {
+  const searchParams = new URLSearchParams();
+  Object.keys(dataHash).forEach((key) => {
+    const value = dataHash[key];
+    if (Array.isArray(value)) {
+      value.forEach((arrayValue) => {
+        searchParams.append(`${key}[]`, arrayValue);
+      });
+    } else {
+      searchParams.append(key, value);
+    }
+  });
+
+  return searchParams.toString();
+}
+
+/**
+ * A helper method to call /search endpoints.
+ *
+ * @param {string} endpoint - The search endpoint you want to request (i.e. tags).
+ * @param {object} dataHash - A hash with the search params that need to be included in the request.
+ *
+ * @returns {Promise} A promise object with response formatted as JSON.
+ */
+export function fetchSearch(endpoint, dataHash) {
+  const searchUrl = createSearchUrl(dataHash);
+
+  return fetch(`/search/${endpoint}?${searchUrl}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  }).then((response) => response.json());
 }

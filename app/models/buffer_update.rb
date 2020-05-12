@@ -5,12 +5,13 @@ class BufferUpdate < ApplicationRecord
   validate :validate_body_text_recent_uniqueness
   validates :status, inclusion: { in: %w[pending sent_direct confirmed dismissed] }
 
-  def self.buff!(article_id, text, buffer_profile_id_code, social_service_name = "twitter", tag_id = nil)
+  def self.buff!(article_id, text, buffer_profile_id_code, social_service_name = "twitter", tag_id = nil, admin_id = nil)
     buffer_response = send_to_buffer(text, buffer_profile_id_code)
     create(
       article_id: article_id,
       tag_id: tag_id,
       body_text: text,
+      approver_user_id: admin_id,
       buffer_profile_id_code: buffer_profile_id_code,
       social_service_name: social_service_name,
       buffer_response: buffer_response,
@@ -39,6 +40,10 @@ class BufferUpdate < ApplicationRecord
         ]
       },
     )
+  end
+
+  def self.twitter_default_text(article)
+    "#{article.title}\n\n#{"{ author: @#{article.user.twitter_username} } #DEVCommunity" if article.user.twitter_username?}".strip
   end
 
   private

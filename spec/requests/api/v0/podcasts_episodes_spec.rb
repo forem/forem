@@ -32,9 +32,10 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
       get api_podcast_episodes_path
 
       response_episode = response.parsed_body.first
-      expect(response_episode.keys).to match_array(%w[type_of id path image_url title podcast])
+      expect(response_episode.keys).to match_array(%w[class_name type_of id path image_url title podcast])
 
       expect(response_episode["type_of"]).to eq("podcast_episodes")
+      expect(response_episode["class_name"]).to eq("PodcastEpisode")
       %w[id path title].each do |attr|
         expect(response_episode[attr]).to eq(podcast_episode.public_send(attr))
       end
@@ -88,7 +89,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
         expect(response.parsed_body.map { |pe| pe["id"] }).to eq([pe1.id])
       end
 
-      it "returns not found if the podcast is unavailable" do
+      it "returns not found if the episode belongs to an unpublished podcast" do
         unavailable_podcast = create(:podcast, published: false)
         create(:podcast_episode, podcast: unavailable_podcast)
 
@@ -97,7 +98,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
         expect(response).to have_http_status(:not_found)
       end
 
-      it "returns not found if any of the podcast episodes are unreachable" do
+      it "returns not found if the podcast episode is unreachable" do
         create(:podcast_episode, reachable: false, podcast: podcast)
 
         get api_podcast_episodes_path(username: podcast.slug)

@@ -71,4 +71,21 @@ RSpec.describe ClassifiedListing, type: :model do
       expect(credit.reload.purchase).to be_nil
     end
   end
+
+  describe "#after_commit" do
+    it "on update enqueues worker to index tag to elasticsearch" do
+      classified_listing.save
+
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, classified_listing.id]) do
+        classified_listing.save
+      end
+    end
+
+    it "on destroy enqueues job to delete classified_listing from elasticsearch" do
+      classified_listing.save
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, classified_listing.id]) do
+        classified_listing.destroy
+      end
+    end
+  end
 end

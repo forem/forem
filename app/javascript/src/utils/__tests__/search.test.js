@@ -1,10 +1,15 @@
+import fetch from 'jest-fetch-mock';
 import {
   getInitialSearchTerm,
   preloadSearchResults,
   hasInstantClick,
   displaySearchResults,
+  fetchSearch,
+  createSearchUrl,
 } from '../search';
 import '../../../../assets/javascripts/lib/xss';
+
+global.fetch = fetch;
 
 describe('Search utilities', () => {
   describe('getInitialSearchTerm', () => {
@@ -57,7 +62,7 @@ describe('Search utilities', () => {
   describe('preloadSearchResults', () => {
     beforeEach(() => {
       global.InstantClick = {
-        preload: url => url,
+        preload: (url) => url,
       };
       jest.spyOn(InstantClick, 'preload');
     });
@@ -141,7 +146,7 @@ describe('Search utilities', () => {
   describe('displaySearchResults', () => {
     beforeEach(() => {
       global.InstantClick = {
-        display: url => url,
+        display: (url) => url,
       };
       jest.spyOn(InstantClick, 'display');
     });
@@ -202,9 +207,7 @@ describe('Search utilities', () => {
       displaySearchResults({ searchTerm, location });
 
       expect(InstantClick.display).toBeCalledWith(
-        `${
-          location.origin
-        }/search?q=${sanitizedSearchTerm}&filters=${filterParameters}`,
+        `${location.origin}/search?q=${sanitizedSearchTerm}&filters=${filterParameters}`,
       );
     });
 
@@ -221,6 +224,37 @@ describe('Search utilities', () => {
       expect(InstantClick.display).toBeCalledWith(
         `${location.origin}/search?q=${sanitizedSearchTerm}`,
       );
+    });
+  });
+
+  describe('fetchSearch', () => {
+    let responsePromise;
+    let dataHash;
+
+    beforeEach(() => {
+      fetch.resetMocks();
+      fetch.once({});
+      dataHash = { name: 'jav' };
+      responsePromise = fetchSearch('tags', dataHash);
+    });
+
+    test('should return a Promise', () => {
+      expect(responsePromise).toBeInstanceOf(Promise);
+    });
+
+    test('should return response formatted as JSON', () => {
+      responsePromise.then((response) => {
+        expect(response).toBeInstanceOf(Object);
+        expect(response).toMatchObject({ results: expect.any(Array) });
+      });
+    });
+  });
+
+  describe('createSearchUrl', () => {
+    test('should return a url string', () => {
+      const dataHash = { name: 'jav', tags: ['one', 'two'] };
+      const responseString = createSearchUrl(dataHash);
+      expect(responseString).toEqual('name=jav&tags%5B%5D=one&tags%5B%5D=two');
     });
   });
 });

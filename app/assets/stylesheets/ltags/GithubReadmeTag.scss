@@ -3,23 +3,23 @@
   border: 1px solid $light-medium-gray;
   border-radius: 3px;
   box-shadow: $shadow;
-  margin:1.1em auto 1.30em;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
-  overflow:hidden;
+  margin: 1.1em auto 1.3em;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial,
+    sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
+  overflow: hidden;
   max-width: 620px;
   a {
-    color: #0366d6 !important;
-    color: var(--theme-anchor-color, #0366d6) !important;
+    color: var(--link-brand-color) !important;
   }
   .readme-overview {
     padding: 0.8em 0.5em;
     border-bottom: 1px solid $light-medium-gray;
     h2 {
       font-weight: 400 !important;
-      font-size:1.2em !important;;
-      line-height:1.3em !important;
+      font-size: 1.2em !important;
+      line-height: 1.3em !important;
       margin: 0em 0px 0.5em !important;
-      img{
+      img {
         width: 1.15em !important;
         max-width: 1.1em !important;
         display: inline-block;
@@ -27,15 +27,15 @@
         margin-right: 0.3em;
         vertical-align: -0.18em;
         filter: invert(0);
-        filter: var(--theme-social-icon-invert, invert(0));  
+        filter: var(--theme-social-icon-invert, invert(0));
       }
     }
     h3 {
       font-weight: 400 !important;
       margin: 0;
       margin-left: 0.15em;
-      font-size:0.75em !important;;
-      line-height:1.05em !important;;
+      font-size: 0.75em !important;
+      line-height: 1.05em !important;
     }
   }
 
@@ -52,7 +52,7 @@
 
   .gh-btn {
     padding: 0.28em 1.2em;
-    font-size:0.75em;
+    font-size: 0.75em;
   }
 
   .markdown-body {

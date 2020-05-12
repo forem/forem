@@ -1,0 +1,179 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<TagsFollowed /> should render the empty view when no tags are passed in 1`] = `
+<div
+  id="followed-tags-wrapper"
+/>
+`;
+
+exports[`<TagsFollowed /> should render the tags followed when tags are passed in 1`] = `
+<div
+  id="followed-tags-wrapper"
+>
+  <div
+    class="sidebar-nav-element"
+    id="sidebar-element-javascript"
+  >
+    <a
+      class="sidebar-nav-link sidebar-nav-link-tag"
+      href="/t/javascript"
+    >
+      <span
+        class="sidebar-nav-tag-text"
+      >
+        #javascript
+      </span>
+    </a>
+  </div>
+  <div
+    class="sidebar-nav-element"
+    id="sidebar-element-webdev"
+  >
+    <a
+      class="sidebar-nav-link sidebar-nav-link-tag"
+      href="/t/webdev"
+    >
+      <span
+        class="sidebar-nav-tag-text"
+      >
+        #webdev
+      </span>
+    </a>
+  </div>
+  <div
+    class="sidebar-nav-element"
+    id="sidebar-element-react"
+  >
+    <a
+      class="sidebar-nav-link sidebar-nav-link-tag"
+      href="/t/react"
+    >
+      <span
+        class="sidebar-nav-tag-text"
+      >
+        #react
+      </span>
+    </a>
+  </div>
+  <div
+    class="sidebar-nav-element"
+    id="sidebar-element-discuss"
+  >
+    <a
+      class="sidebar-nav-link sidebar-nav-link-tag"
+      href="/t/discuss"
+    >
+      <span
+        class="sidebar-nav-tag-text"
+      >
+        #discuss
+      </span>
+    </a>
+  </div>
+  <div
+    class="sidebar-nav-element"
+    id="sidebar-element-productivity"
+  >
+    <a
+      class="sidebar-nav-link sidebar-nav-link-tag"
+      href="/t/productivity"
+    >
+      <span
+        class="sidebar-nav-tag-text"
+      >
+        #productivity
+      </span>
+    </a>
+  </div>
+  <div
+    class="sidebar-nav-element"
+    id="sidebar-element-career"
+  >
+    <a
+      class="sidebar-nav-link sidebar-nav-link-tag"
+      href="/t/career"
+    >
+      <span
+        class="sidebar-nav-tag-text"
+      >
+        #career
+      </span>
+    </a>
+  </div>
+  <div
+    class="sidebar-nav-element"
+    id="sidebar-element-node"
+  >
+    <a
+      class="sidebar-nav-link sidebar-nav-link-tag"
+      href="/t/node"
+    >
+      <span
+        class="sidebar-nav-tag-text"
+      >
+        #node
+      </span>
+    </a>
+  </div>
+  <div
+    class="sidebar-nav-element"
+    id="sidebar-element-css"
+  >
+    <a
+      class="sidebar-nav-link sidebar-nav-link-tag"
+      href="/t/css"
+    >
+      <span
+        class="sidebar-nav-tag-text"
+      >
+        #css
+      </span>
+    </a>
+  </div>
+  <div
+    class="sidebar-nav-element"
+    id="sidebar-element-html"
+  >
+    <a
+      class="sidebar-nav-link sidebar-nav-link-tag"
+      href="/t/html"
+    >
+      <span
+        class="sidebar-nav-tag-text"
+      >
+        #html
+      </span>
+    </a>
+  </div>
+  <div
+    class="sidebar-nav-element"
+    id="sidebar-element-typescript"
+  >
+    <a
+      class="sidebar-nav-link sidebar-nav-link-tag"
+      href="/t/typescript"
+    >
+      <span
+        class="sidebar-nav-tag-text"
+      >
+        #typescript
+      </span>
+    </a>
+  </div>
+  <div
+    class="sidebar-nav-element"
+    id="sidebar-element-opensource"
+  >
+    <a
+      class="sidebar-nav-link sidebar-nav-link-tag"
+      href="/t/opensource"
+    >
+      <span
+        class="sidebar-nav-tag-text"
+      >
+        #opensource
+      </span>
+    </a>
+  </div>
+</div>
+`;

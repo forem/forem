@@ -5,6 +5,17 @@ RSpec.describe "Api::V0::Articles", type: :request do
   let_it_be_changeable(:article) { create(:article, featured: true, tags: "discuss") }
 
   describe "GET /api/articles" do
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get api_articles_path, headers: { "origin": origin }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
     it "has correct keys in the response" do
       article.update_columns(organization_id: organization.id)
       get api_articles_path
@@ -252,6 +263,17 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "GET /api/articles/:id" do
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get api_article_path(article.id), headers: { "origin": origin }
+
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
     it "has correct keys in the response" do
       article.update_columns(organization_id: organization.id)
       get api_article_path(article.id)
@@ -451,9 +473,25 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
 
     describe "when authorized" do
+      let(:default_params) { { body_markdown: "" } }
+
       def post_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        params = default_params.merge params
         post api_articles_path, params: { article: params }.to_json, headers: headers
+      end
+
+      it "returns a 429 status code if the rate limit is reached" do
+        rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
+
+        post_article
+
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
       end
 
       it "fails if no params are given" do
@@ -472,6 +510,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
         tags = %w[#discuss .help]
         post_article(title: "Test Article Title", tags: tags)
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if params are not a Hash" do
+        # Not using the nifty post_article helper method because it expects a Hash
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        string_params = "this_string_is_definitely_not_a_hash"
+        post api_articles_path, params: { article: string_params }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
 
       it "creates an article belonging to the user" do
@@ -684,6 +732,12 @@ RSpec.describe "Api::V0::Articles", type: :request do
         end.not_to raise_error
         expect(response.status).to eq(422)
       end
+
+      it "fails with a nil body markdown" do
+        post_article(title: Faker::Book.title, body_markdown: nil)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
+      end
     end
   end
 
@@ -691,7 +745,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     let!(:api_secret)   { create(:api_secret) }
     let!(:user)         { api_secret.user }
     let(:article)       { create(:article, user: user, published: false) }
-    let(:path)          { "/api/articles/#{article.id}" }
+    let(:path)          { api_article_path(article.id) }
     let!(:organization) { create(:organization) }
 
     describe "when unauthorized" do
@@ -732,6 +786,19 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put path, params: { article: params }.to_json, headers: headers
       end
 
+      it "returns a 429 status code if the rate limit is reached" do
+        rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:article_update, :retry_after)
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
+
+        put_article(title: Faker::Book.title, body_markdown: "foobar")
+
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
+      end
+
       it "returns not found if the article does not belong to the user" do
         article = create(:article, user: create(:user))
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
@@ -763,6 +830,34 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
         expect(article.reload.title).to eq(title)
         expect(article.body_markdown).to eq(body_markdown)
+      end
+
+      it "updates the main_image to be empty if given an empty cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_empty_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to eq(nil)
+      end
+
+      it "updates the main_image to be empty if given a different cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to eq("https://dummyimage.com/100x100")
       end
 
       it "updates the tags" do
@@ -940,6 +1035,16 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put_article(organization_id: organization.id)
         expect(response).to have_http_status(:ok)
         expect(article.reload.organization).to eq(organization)
+      end
+
+      it "fails if params are not a Hash" do
+        # Not using the nifty put_article helper method because it expects a Hash
+        headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
+        string_params = "this_string_is_definitely_not_a_hash"
+        put path, params: { article: string_params }.to_json, headers: headers
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body["error"]).to be_present
       end
     end
   end

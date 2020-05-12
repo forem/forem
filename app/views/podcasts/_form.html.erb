@@ -1,3 +1,5 @@
+<%= javascript_packs_with_chunks_tag "validateFileInputs", defer: true %>
+
 <%= form_with(model: podcast, local: true) do |form| %>
   <div>
     <header>
@@ -48,11 +50,11 @@
       </div>
       <div class="field">
         <%= form.label :image %>
-        <%= form.file_field :image %>
+        <%= form.file_field :image, accept: "image/*" %>
       </div>
       <div class="field">
         <%= form.label :pattern_image %>
-        <%= form.file_field :pattern_image %>
+        <%= form.file_field :pattern_image, accept: "image/*" %>
       </div>
       <div class="field">
         <%= form.label :android_url %>

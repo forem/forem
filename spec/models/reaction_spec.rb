@@ -68,6 +68,61 @@ RSpec.describe Reaction, type: :model do
     end
   end
 
+  describe "#after_commit" do
+    context "when category is readingList and reactable is published" do
+      it "on update enqueues job to index reaction to elasticsearch" do
+        reaction.save
+        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, reaction.id]) do
+          reaction.update(category: "readinglist")
+        end
+      end
+
+      it "on create enqueues job to index reaction to elasticsearch" do
+        reaction.category = "readinglist"
+        sidekiq_assert_enqueued_with(job: Search::IndexWorker) do
+          reaction.save
+        end
+      end
+
+      it "on destroy enqueues job to delete reaction from elasticsearch" do
+        reaction.category = "readinglist"
+        reaction.save
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, reaction.id]) do
+          reaction.destroy
+        end
+      end
+    end
+
+    context "when category is not readinglist" do
+      before do
+        reaction.category = "like"
+        allow(reaction.user).to receive(:index_to_elasticsearch)
+        allow(reaction.reactable).to receive(:index_to_elasticsearch)
+        sidekiq_perform_enqueued_jobs
+      end
+
+      it "on update does not enqueue job to index reaction to elasticsearch" do
+        reaction.save
+        sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
+          reaction.update(category: "unicorn")
+        end
+      end
+
+      it "on create does not enqueue job to index reaction to elasticsearch" do
+        sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
+          reaction.save
+        end
+      end
+
+      it "on destroy does not enqueue job to delete reaction from elasticsearch" do
+        reaction.save
+        sidekiq_assert_no_enqueued_jobs(only: Search::RemoveFromIndexWorker) do
+          reaction.destroy
+        end
+      end
+    end
+  end
+
   describe "#skip_notification_for?" do
     let_it_be(:receiver) { build(:user) }
     let_it_be(:reaction) { build(:reaction, reactable: build(:article), user: nil) }
@@ -111,26 +166,69 @@ RSpec.describe Reaction, type: :model do
     end
   end
 
+  describe ".count_for_article" do
+    it "counts the reactions an article has grouped by category" do
+      create(:reaction, reactable: article, user: user, category: "like")
+      create(:reaction, reactable: article, user: user, category: "unicorn")
+
+      expected_result = [
+        { category: "like", count: 1 },
+        { category: "readinglist", count: 0 },
+        { category: "unicorn", count: 1 },
+      ]
+      expect(described_class.count_for_article(article.id)).to eq(expected_result)
+    end
+  end
+
+  context "when callbacks are called after create" do
+    describe "slack messages" do
+      let_it_be_changeable(:user) { create(:user, :trusted) }
+      let_it_be_readonly(:article) { create(:article, user: user) }
+
+      before do
+        # making sure there are no other enqueued jobs from other tests
+        sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
+      end
+
+      it "queues a slack message to be sent for a vomit reaction" do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
+          create(:reaction, reactable: article, user: user, category: "vomit")
+        end
+      end
+
+      it "does not queue a message for a like reaction" do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
+          create(:reaction, reactable: article, user: user, category: "like")
+        end
+      end
+
+      it "does not queue a message for a thumbsdown reaction" do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
+          create(:reaction, reactable: article, user: user, category: "thumbsdown")
+        end
+      end
+    end
+  end
+
   context "when callbacks are called after save" do
     let!(:reaction) { build(:reaction, category: "like", reactable: article, user: user) }
 
-    it "enqueues the correct jobs" do
-      expect do
-        reaction.save
-      end.to(
-        have_enqueued_job(Reactions::UpdateReactableJob).exactly(:once).
-        and(have_enqueued_job(Reactions::BustReactableCacheJob).exactly(:once)),
-      )
-    end
+    describe "enqueues the correct worker" do
+      it "BustReactableCacheWorker" do
+        sidekiq_assert_enqueued_with(job: Reactions::BustReactableCacheWorker) do
+          reaction.save
+        end
+      end
 
-    it "enqueues the correct workers" do
-      sidekiq_assert_enqueued_with(job: Reactions::BustHomepageCacheWorker) do
-        reaction.save
+      it "BustHomepageCacheWorker" do
+        sidekiq_assert_enqueued_with(job: Reactions::BustHomepageCacheWorker) do
+          reaction.save
+        end
       end
     end
 
     it "updates updated_at if the reactable is a comment" do
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         updated_at = 1.day.ago
         comment = create(:comment, commentable: article, updated_at: updated_at)
         reaction.update(reactable: comment)
@@ -139,7 +237,7 @@ RSpec.describe Reaction, type: :model do
     end
 
     it "updates updated_at for the user" do
-      perform_enqueued_jobs do
+      sidekiq_perform_enqueued_jobs do
         updated_at = user.updated_at
         Timecop.travel(1.day.from_now) do
           reaction.save
@@ -150,11 +248,24 @@ RSpec.describe Reaction, type: :model do
   end
 
   context "when callbacks are called before destroy" do
+    let(:reaction) { create(:reaction, reactable: article, user: user) }
+
     it "enqueues a ScoreCalcWorker on article reaction destroy" do
-      reaction = create(:reaction, reactable: article, user: user)
       sidekiq_assert_enqueued_with(job: Articles::ScoreCalcWorker, args: [article.id]) do
         reaction.destroy
       end
+    end
+
+    it "updates reactable without delay" do
+      allow(reaction).to receive(:update_reactable_without_delay)
+      reaction.destroy
+      expect(reaction).to have_received(:update_reactable_without_delay)
+    end
+
+    it "busts reactable cache without delay" do
+      allow(reaction).to receive(:bust_reactable_cache_without_delay)
+      reaction.destroy
+      expect(reaction).to have_received(:bust_reactable_cache_without_delay)
     end
   end
 end

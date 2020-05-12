@@ -22,12 +22,18 @@ FactoryBot.define do
     signup_cta_variant           { "navbar_basic" }
     email_digest_periodic        { false }
 
-    after(:create) do |user|
-      create(:identity, user_id: user.id)
-    end
+    trait :with_identity do
+      transient { identities { Authentication::Providers.available } }
 
-    trait :two_identities do
-      after(:create) { |user| create(:identity, user_id: user.id, provider: "twitter") }
+      after(:create) do |user, options|
+        options.identities.each do |provider|
+          auth = OmniAuth.config.mock_auth.fetch(provider.to_sym)
+          create(
+            :identity,
+            user: user, provider: provider, uid: auth.uid, auth_data_dump: auth,
+          )
+        end
+      end
     end
 
     trait :super_admin do
@@ -46,6 +52,17 @@ FactoryBot.define do
       after(:build) { |user, options| user.add_role(:single_resource_admin, options.resource) }
     end
 
+    trait :super_plus_single_resource_admin do
+      transient do
+        resource { nil }
+      end
+
+      after(:build) do |user, options|
+        user.add_role(:super_admin)
+        user.add_role(:single_resource_admin, options.resource)
+      end
+    end
+
     trait :trusted do
       after(:build) { |user| user.add_role(:trusted) }
     end
@@ -58,7 +75,7 @@ FactoryBot.define do
       after(:build) { |user| user.created_at = 3.weeks.ago }
     end
 
-    trait :ignore_after_callback do
+    trait :ignore_mailchimp_subscribe_callback do
       after(:build) do |user|
         user.define_singleton_method(:subscribe_to_mailchimp_newsletter) {}
         # user.class.skip_callback(:validates, :after_create)
@@ -111,6 +128,42 @@ FactoryBot.define do
       after(:create) do |user|
         create(:pro_membership, user: user)
       end
+    end
+
+    trait :tag_moderator do
+      after(:create) do |user|
+        tag = create(:tag)
+        user.add_role :tag_moderator, tag
+      end
+    end
+
+    trait :with_user_optional_fields do
+      after(:create) do |user|
+        create(:user_optional_field, user: user)
+        create(:user_optional_field, user: user, label: "another field1", value: "another value1")
+        create(:user_optional_field, user: user, label: "another field2", value: "another value2")
+      end
+    end
+
+    trait :with_all_info do
+      education { "DEV University" }
+      employment_title { "Software Engineer" }
+      employer_name { "DEV" }
+      employer_url { "http://dev.to" }
+      currently_learning { "Preact" }
+      mostly_work_with { "Ruby" }
+      currently_hacking_on { "JSON-LD" }
+      mastodon_url { "https://mastodon.social/@test" }
+      facebook_url { "www.facebook.com/example" }
+      linkedin_url { "www.linkedin.com/company/example/" }
+      youtube_url { "https://youtube.com/example" }
+      behance_url { "www.behance.net/#{username}" }
+      stackoverflow_url { "www.stackoverflow.com/example" }
+      dribbble_url { "www.dribbble.com/example" }
+      medium_url { "www.medium.com/example" }
+      gitlab_url { "www.gitlab.com/example" }
+      instagram_url { "www.instagram.com/example" }
+      twitch_username { "Example007" }
     end
   end
 end

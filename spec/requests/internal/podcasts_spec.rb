@@ -10,14 +10,22 @@ RSpec.describe "/internal/podcasts", type: :request do
   end
 
   describe "GET /internal/podcasts" do
+    let!(:no_eps_podcast) { create(:podcast, title: Faker::Book.title) }
+
     before do
-      create_list(:podcast, 3)
+      create(:podcast_episode, podcast: podcast)
       user.add_role(:podcast_admin, Podcast.order(Arel.sql("RANDOM()")).first)
     end
 
     it "renders success" do
       get internal_podcasts_path
       expect(response).to be_successful
+    end
+
+    it "displays podcasts with and without episodes" do
+      get internal_podcasts_path
+      expect(response.body).to include(CGI.escapeHTML(no_eps_podcast.title))
+      expect(response.body).to include(CGI.escapeHTML(podcast.title))
     end
   end
 
@@ -62,6 +70,26 @@ RSpec.describe "/internal/podcasts", type: :request do
     it "redirects after update" do
       put internal_podcast_path(podcast), params: { podcast: { title: "hello", feed_url: "https://pod.example.com/rss.rss" } }
       expect(response).to redirect_to(internal_podcasts_path)
+    end
+  end
+
+  describe "POST /internal/podcasts/:id/fetch_podcasts" do
+    it "redirects back to index with a notice" do
+      post fetch_internal_podcast_path(podcast.id)
+      expect(response).to redirect_to(internal_podcasts_path)
+      expect(flash[:notice]).to include("Podcast's episodes fetching was scheduled (#{podcast.title}, ##{podcast.id})")
+    end
+
+    it "schedules a worker to fetch episodes" do
+      sidekiq_assert_enqueued_with(job: Podcasts::GetEpisodesWorker, args: [{ podcast_id: podcast.id, limit: 5, force: false }]) do
+        post fetch_internal_podcast_path(podcast.id), params: { limit: "5", force: nil }
+      end
+    end
+
+    it "schedules a worker without limit and with force" do
+      sidekiq_assert_enqueued_with(job: Podcasts::GetEpisodesWorker, args: [{ podcast_id: podcast.id, force: true, limit: nil }]) do
+        post fetch_internal_podcast_path(podcast.id), params: { force: "1", limit: "" }
+      end
     end
   end
 end

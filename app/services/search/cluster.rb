@@ -1,6 +1,13 @@
 module Search
   class Cluster
-    SEARCH_CLASSES = [Search::Tag].freeze
+    SEARCH_CLASSES = [
+      Search::ChatChannelMembership,
+      Search::ClassifiedListing,
+      Search::FeedContent,
+      Search::Reaction,
+      Search::Tag,
+      Search::User,
+    ].freeze
 
     class << self
       def recreate_indexes
@@ -9,14 +16,19 @@ module Search
       end
 
       def setup_indexes
+        update_settings
         create_indexes
         add_aliases
         update_mappings
       end
 
+      def update_settings
+        Search::Client.cluster.put_settings(body: default_settings)
+      end
+
       def create_indexes
         SEARCH_CLASSES.each do |search_class|
-          next if SearchClient.indices.exists(index: search_class::INDEX_NAME)
+          next if Search::Client.indices.exists(index: search_class::INDEX_NAME)
 
           search_class.create_index
         end
@@ -34,10 +46,22 @@ module Search
         return if Rails.env.production?
 
         SEARCH_CLASSES.each do |search_class|
-          next unless SearchClient.indices.exists(index: search_class::INDEX_NAME)
+          next unless Search::Client.indices.exists(index: search_class::INDEX_NAME)
 
           search_class.delete_index
         end
+      end
+
+      private
+
+      def default_settings
+        {
+          persistent: {
+            action: {
+              auto_create_index: false
+            }
+          }
+        }
       end
     end
   end

@@ -12,7 +12,8 @@ HTMLDocument.prototype.ready = new Promise(resolve => {
 function redirectableLocation() {
   return (
     window.location.pathname !== '/onboarding' &&
-    window.location.pathname !== '/signout_confirm'
+    window.location.pathname !== '/signout_confirm' &&
+    window.location.pathname !== '/privacy'
   );
 }
 

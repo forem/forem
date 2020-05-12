@@ -16,6 +16,19 @@ RSpec.describe "StoriesShow", type: :request do
       article.update(organization: org)
       get old_path
       expect(response.body).to redirect_to article.path
+      expect(response).to have_http_status(:moved_permanently)
+    end
+
+    ## Title tag
+    it "renders signed-in title tag for signed-in user" do
+      sign_in user
+      get article.path
+      expect(response.body).to include "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
+    end
+
+    it "renders signed-out title tag for signed-out user" do
+      get article.path
+      expect(response.body).to include "<title>#{CGI.escapeHTML(article.title)} - #{community_name}</title>"
     end
 
     it "renders second and third users if present" do
@@ -33,7 +46,7 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).to include html_variant.html
     end
 
-    it "Does not render variant when no variants published" do
+    it "does not render variant when no variants published" do
       html_variant = create(:html_variant, published: false, approved: true)
       get article.path + "?variant_version=1"
       expect(response.body).not_to include html_variant.html
@@ -54,14 +67,14 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).to include html_variant.html
     end
 
-    it "Does not render below article html variant for short article" do
+    it "does not render below article html variant for short article" do
       html_variant = create(:html_variant, published: true, approved: true, group: "article_show_below_article_cta")
       article.update_column(:body_markdown, rand(36**100).to_s(36).to_s) # ensure too short
       get article.path + "?variant_version=0"
       expect(response.body).not_to include html_variant.html
     end
 
-    it "Does not render below article variant when no variants published" do
+    it "does not render below article variant when no variants published" do
       html_variant = create(:html_variant, published: false, approved: true, group: "article_show_below_article_cta")
       get article.path + "?variant_version=0"
       expect(response.body).not_to include html_variant.html
@@ -85,39 +98,82 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).to include "title"
     end
 
-    it "redirect to appropriate page if user changes username" do
+    it "redirects to appropriate page if user changes username" do
       old_username = user.username
       user.update(username: "new_hotness_#{rand(10_000)}")
       get "/#{old_username}/#{article.slug}"
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
+      expect(response).to have_http_status(:moved_permanently)
     end
 
-    it "redirect to appropriate page if user changes username twice" do
+    it "redirects to appropriate page if user changes username twice" do
       old_username = user.username
       user.update(username: "new_hotness_#{rand(10_000)}")
       user.update(username: "new_new_username_#{rand(10_000)}")
       get "/#{old_username}/#{article.slug}"
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
+      expect(response).to have_http_status(:moved_permanently)
     end
 
-    it "redirect to appropriate page if user changes username twice and go to middle username" do
+    it "redirects to appropriate page if user changes username twice and go to middle username" do
       user.update(username: "new_hotness_#{rand(10_000)}")
       middle_username = user.username
       user.update(username: "new_new_username_#{rand(10_000)}")
       get "/#{middle_username}/#{article.slug}"
       expect(response.body).to redirect_to("/#{user.username}/#{article.slug}")
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "renders canonical url when exists" do
       article = create(:article, with_canonical_url: true)
       get article.path
-      expect(response.body).to include('"canonical" href="' + article.canonical_url.to_s + '"')
+      expect(response.body).to include(%("canonical" href="#{article.canonical_url}"))
     end
 
-    it "shodoes not render canonical url when not on article model" do
+    it "does not render canonical url when not on article model" do
       article = create(:article, with_canonical_url: false)
       get article.path
-      expect(response.body).not_to include('"canonical" href="' + article.canonical_url.to_s + '"')
+      expect(response.body).not_to include(%("canonical" href="#{article.canonical_url}"))
+    end
+
+    it "handles invalid slug characters" do
+      allow(Article).to receive(:find_by).and_raise(ArgumentError)
+      get article.path
+
+      expect(response.status).to be(400)
+    end
+
+    it "has noindex if article has low score" do
+      article = create(:article, score: -5)
+      get article.path
+      expect(response.body).to include("noindex")
+    end
+
+    it "has noindex if article has low score even with <code>" do
+      article = create(:article, score: -5)
+      article.update_column(:processed_html, "<code>hello</code>")
+      get article.path
+      expect(response.body).to include("noindex")
+    end
+
+    it "does not have noindex if article has high score" do
+      article = create(:article, score: 6)
+      get article.path
+      expect(response.body).not_to include("noindex")
+    end
+
+    it "does not have noindex if article intermediate score and <code>" do
+      article = create(:article, score: 3)
+      article.update_column(:processed_html, "<code>hello</code>")
+      get article.path
+      expect(response.body).not_to include("noindex")
+    end
+
+    it "does not have noindex if article w/ intermediate score w/ 1 comment " do
+      article = create(:article, score: 3)
+      article.user.update_column(:comments_count, 1)
+      get article.path
+      expect(response.body).not_to include("noindex")
     end
   end
 
@@ -127,6 +183,7 @@ RSpec.describe "StoriesShow", type: :request do
       org.update(slug: "somethingnew")
       get "/#{original_slug}"
       expect(response.body).to redirect_to org.path
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "redirects to the appropriate page if given an organization's old old slug" do
@@ -135,6 +192,7 @@ RSpec.describe "StoriesShow", type: :request do
       org.update(slug: "anothernewslug")
       get "/#{original_slug}"
       expect(response.body).to redirect_to org.path
+      expect(response).to have_http_status(:moved_permanently)
     end
   end
 end

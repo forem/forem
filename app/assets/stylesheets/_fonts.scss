@@ -1,19 +1,21 @@
+@import './mixins';
+
 @font-face {
-	font-family: OpenDyslexic;
-	src: font-url('OpenDyslexic-Regular.otf');
+  font-family: OpenDyslexic;
+  @include font-src('OpenDyslexic-Regular.otf');
 }
 
 @font-face {
-	font-family: OpenDyslexic-Bold;
-	src: font-url('OpenDyslexic-Bold.otf');
+  font-family: OpenDyslexic-Bold;
+  @include font-src('OpenDyslexic-Bold.otf');
 }
 
 @font-face {
-	font-family: OpenDyslexic-Bolditalic;
-	src: font-url('OpenDyslexic-BoldItalic.otf');
+  font-family: OpenDyslexic-Bolditalic;
+  @include font-src('OpenDyslexic-BoldItalic.otf');
 }
 
 @font-face {
-	font-family: OpenDyslexic-Italic;
-	src: font-url('OpenDyslexic-Italic.otf');
+  font-family: OpenDyslexic-Italic;
+  @include font-src('OpenDyslexic-Italic.otf');
 }

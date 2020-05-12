@@ -6,16 +6,16 @@ namespace :search do
 
   desc "update Elasticsearch index mappings"
   task update_mappings: :environment do
-     Search::Cluster.update_mappings
+    Search::Cluster.update_mappings
   end
 
   desc "tear down Elasticsearch indexes"
   task destroy: :environment do
     if Rails.env.production?
       puts "Will NOT destroy indexes in production"
-      exit
+      next
     end
 
-    Search::Cluster.destroy_indexes
+    Search::Cluster.delete_indexes
   end
 end

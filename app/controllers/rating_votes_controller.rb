@@ -1,5 +1,8 @@
 class RatingVotesController < ApplicationController
   after_action :verify_authorized
+  after_action only: [:create] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
 
   def create
     authorize RatingVote
@@ -9,7 +12,6 @@ class RatingVotesController < ApplicationController
     rating_vote.rating = rating_vote_params[:rating].to_f
     rating_vote.group = rating_vote_params[:group]
     if rating_vote.save
-      rating_vote.assign_article_rating
       redirect_back(fallback_location: "/mod")
     else
       render json: { result: "Not Upserted Successfully" }

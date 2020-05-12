@@ -29,7 +29,7 @@ class SidebarWidget extends Component {
 
   getSuggestedUsers() {
     const { tagInfo } = this.state;
-    fetch(`/api/users?state=sidebar_suggestions&tag=${tagInfo.name}`, {
+    fetch(`/users?state=sidebar_suggestions&tag=${tagInfo.name}`, {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
@@ -41,7 +41,8 @@ class SidebarWidget extends Component {
         this.setState({ suggestedUsers: json });
       })
       .catch(error => {
-        console.log(error);
+        this.setState({ suggestedUsers: [] });
+        Honeybadger.notify(error);
       });
   }
 

@@ -25,10 +25,12 @@ const fakeChannels = [
     slug: '0',
     channel_modified_slug: '@0',
     id: 12345,
+    status: 'active',
     messages_count: 124,
   },
   {
     channel_name: 'group channel 2',
+    status: 'active',
     last_opened_at: 'September 12, 2018',
     channel_users: [
       {
@@ -66,6 +68,7 @@ const fakeChannels = [
     ],
     last_message_at: 'September 29, 2018',
     channel_type: 'group',
+    status: 'active',
     slug: '2',
     channel_modified_slug: '@2',
     id: 67890,
@@ -103,28 +106,16 @@ describe('<Channels />', () => {
           true,
         );
         expect(
-          context
-            .find('.chatchannels__configmenu')
-            .childAt(0)
-            .text(),
+          context.find('.chatchannels__configmenu').childAt(0).text(),
         ).toEqual('DEV Settings');
         expect(
-          context
-            .find('.chatchannels__configmenu')
-            .childAt(0)
-            .attr('href'),
+          context.find('.chatchannels__configmenu').childAt(0).attr('href'),
         ).toEqual('/settings');
         expect(
-          context
-            .find('.chatchannels__configmenu')
-            .childAt(1)
-            .text(),
+          context.find('.chatchannels__configmenu').childAt(1).text(),
         ).toEqual('Report Abuse');
         expect(
-          context
-            .find('.chatchannels__configmenu')
-            .childAt(1)
-            .attr('href'),
+          context.find('.chatchannels__configmenu').childAt(1).attr('href'),
         ).toEqual('/report-abuse');
 
         // welcome message should not exist because there are channels
@@ -158,28 +149,16 @@ describe('<Channels />', () => {
           true,
         );
         expect(
-          context
-            .find('.chatchannels__configmenu')
-            .childAt(0)
-            .text(),
+          context.find('.chatchannels__configmenu').childAt(0).text(),
         ).toEqual('DEV Settings');
         expect(
-          context
-            .find('.chatchannels__configmenu')
-            .childAt(0)
-            .attr('href'),
+          context.find('.chatchannels__configmenu').childAt(0).attr('href'),
         ).toEqual('/settings');
         expect(
-          context
-            .find('.chatchannels__configmenu')
-            .childAt(1)
-            .text(),
+          context.find('.chatchannels__configmenu').childAt(1).text(),
         ).toEqual('Report Abuse');
         expect(
-          context
-            .find('.chatchannels__configmenu')
-            .childAt(1)
-            .attr('href'),
+          context.find('.chatchannels__configmenu').childAt(1).attr('href'),
         ).toEqual('/report-abuse');
       });
     });
@@ -199,30 +178,6 @@ describe('<Channels />', () => {
         expect(context.find('.chatchannels__channelslist').exists()).toEqual(
           true,
         );
-        expect(
-          context
-            .find('.chatchannels__channelslist')
-            .childAt(2)
-            .attr('data-channel-slug'),
-        ).toEqual('@1'); // check user
-        expect(
-          context
-            .find('.chatchannels__channelslist')
-            .childAt(2)
-            .text(),
-        ).toEqual('group channel 2'); // ensure user has no text
-        expect(
-          context
-            .find('.chatchannels__channelslist')
-            .childAt(1)
-            .text(),
-        ).toEqual(fakeChannels[0].channel_name);
-        expect(
-          context
-            .find('.chatchannels__channelslist')
-            .childAt(3)
-            .text(),
-        ).toEqual(fakeChannels[2].channel_name);
       });
     });
 

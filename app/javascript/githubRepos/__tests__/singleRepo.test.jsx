@@ -7,13 +7,13 @@ import { SingleRepo } from '../singleRepo';
 global.fetch = fetch;
 
 describe('<SingleRepo />', () => {
-  describe('when it is not already selected', () => {
+  describe('when it is not already featured', () => {
     const subject = (
       <SingleRepo
         githubIdCode={123}
         name="dev.to"
         fork={false}
-        selected={false}
+        featured={false}
       />
     );
 
@@ -22,30 +22,30 @@ describe('<SingleRepo />', () => {
       expect(tree).toMatchSnapshot();
     });
 
-    it('should have a state of { selected: false }', () => {
+    it('should have a state of { featured: false }', () => {
       const context = shallow(subject);
-      expect(context.state()).toEqual({ selected: false });
+      expect(context.state()).toEqual({ featured: false });
     });
   });
 
-  describe('when it is selected', () => {
+  describe('when it is featured', () => {
     const subject = (
-      <SingleRepo githubIdCode={123} name="dev.to" fork={false} selected />
+      <SingleRepo githubIdCode={123} name="dev.to" fork={false} featured />
     );
     it('should render and match the snapshot', () => {
       const tree = render(subject);
       expect(tree).toMatchSnapshot();
     });
 
-    it('should have a state of { selected: true }', () => {
+    it('should have a state of { featured: true }', () => {
       const context = shallow(subject);
-      expect(context.state()).toEqual({ selected: true });
+      expect(context.state()).toEqual({ featured: true });
     });
   });
 
   describe('when it is a fork', () => {
     const subject = (
-      <SingleRepo githubIdCode={123} name="dev.to" fork selected={false} />
+      <SingleRepo githubIdCode={123} name="dev.to" fork featured={false} />
     );
 
     it('should render and match the snapshot', () => {

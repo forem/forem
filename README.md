@@ -7,7 +7,7 @@
 <br>
 <p align="center">
   <a href="https://www.ruby-lang.org/en/">
-    <img src="https://img.shields.io/badge/Ruby-v2.6.5-green.svg" alt="ruby version">
+    <img src="https://img.shields.io/badge/Ruby-v2.7.1-green.svg" alt="ruby version">
   </a>
   <a href="http://rubyonrails.org/">
     <img src="https://img.shields.io/badge/Rails-v5.2.3-brightgreen.svg" alt="rails version">
@@ -92,21 +92,21 @@ A more complete overview of our stack is available in
 - [Ruby](https://www.ruby-lang.org/en/): we recommend using
   [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on
   the badge.
-- [Yarn](https://yarnpkg.com/): please refer to their
-  [installation guide](https://yarnpkg.com/en/docs/install).
-- [PostgreSQL](https://www.postgresql.org/) 9.4 or higher.
+- [Yarn](https://yarnpkg.com/) 1.x: please refer to their
+  [installation guide](https://classic.yarnpkg.com/en/docs/install).
+- [PostgreSQL](https://www.postgresql.org/) 9.5 or higher.
 - [ImageMagick](https://imagemagick.org/): please refer to ImageMagick's
-  [installation instructions](https://imagemagick.org/script/download.php)
-  (macOS users can install ImageMagick with `brew install imagemagick`.).
-- [Redis](https://redis.io/)
+  [installation instructions](https://imagemagick.org/script/download.php).
+- [Redis](https://redis.io/) 4 or higher.
+- [Elasticsearch](https://www.elastic.co) 7 or higher.
 
 ### Installation Documentation
 
-[View Full Installation Documentation](https://docs.dev.to/installation/)
+[View Full Installation Documentation](https://docs.dev.to/installation/).
 
 ## Developer Documentation
 
-[Check out our dedicated docs page for more technical documentation.](https://docs.dev.to)
+[Check out our dedicated docs page for more technical documentation](https://docs.dev.to).
 
 ## Core team
 
@@ -127,6 +127,7 @@ A more complete overview of our stack is available in
 - [@juliannatetreault](https://dev.to/juliannatetreault)
 - [@ridhwana](https://dev.to/ridhwana)
 - [@fdoxyz](https://dev.to/fdoxyz)
+- [@msarit](https://dev.to/msarit)
 
 ## Vulnerability disclosure
 
@@ -150,7 +151,7 @@ Agreement, which they generously made available to the public domain under
 Creative Commons CC0 1.0 Universal.
 
 Any questions, please refer to our [license FAQ](https://docs.dev.to/licensing/)
-doc or email yo@dev.to
+doc or email yo@dev.to.
 
 <br>
 

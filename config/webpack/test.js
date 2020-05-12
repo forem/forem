@@ -1,3 +1,7 @@
 const environment = require('./environment');
 
-module.exports = environment.toWebpackConfig();
+const config = environment.toWebpackConfig();
+
+config.stats = 'errors-only';
+
+module.exports = config;

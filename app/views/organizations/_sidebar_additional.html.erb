@@ -2,7 +2,7 @@
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
   <div class="side-bar sidebar-additional showing" id="sidebar-additional">
     <% @organization.sponsorships.live.find_each do |sponsorship| %>
-      <div class="sidebar-sponsorship-level" style="background:<%= sponsorship.decorate.level_color_hex %>">
+      <div class="sidebar-sponsorship-level">
         <%= sponsorship.level.capitalize %> Community Sponsor ❤️
       </div>
     <% end %>

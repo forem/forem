@@ -33,7 +33,7 @@ class UnopenedChannelNotice extends Component {
 
     document.getElementById('connect-link').onclick = () => {
       // Hack, should probably be its own component in future
-      document.getElementById('connect-number').classList.remove('showing');
+      document.getElementById('connect-number').classList.add('hidden');
       this.setState({ visible: false });
     };
   }
@@ -42,10 +42,18 @@ class UnopenedChannelNotice extends Component {
     const number = document.getElementById('connect-number');
     this.setState({ unopenedChannels });
     if (unopenedChannels.length > 0) {
-      number.classList.add('showing');
+      if (unopenedChannels[0].adjusted_slug === "@"+userData().username) {
+        return;
+      }
+      number.classList.remove('hidden');
       number.innerHTML = unopenedChannels.length;
+      document.getElementById('connect-link').href = '/connect/' + unopenedChannels[0].adjusted_slug;
+      InstantClick.preload(
+        document.getElementById('connect-link').href,
+        'force',
+      );
     } else {
-      number.classList.remove('showing');
+      number.classList.add('hidden');
     }
   };
 

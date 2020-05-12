@@ -7,14 +7,26 @@ module CacheBuster
   ].freeze
 
   def self.bust(path)
+    # TODO: (Alex Smith) - It would be "nice to have" the ability to use the
+    # Fastly gem here instead of custom API calls. We'd want to keep thread
+    # safety in mind. We'll also want to consider making this modular for those
+    # who don't want to use Fastly at all.
+    #
+    # Instead of HTTP calls, we could do:
+    # fastly  = Fastly.new(api_key: ApplicationConfig["FASTLY_API_KEY"])
+    # service = Fastly::Service.new({ id: ApplicationConfig["FASTLY_SERVICE_ID"] }, fastly)
+    # fastly.purge(path)
+    #
+    # https://github.com/fastly/fastly-ruby#efficient-purging
     return unless Rails.env.production?
 
-    HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}",
+    HTTParty.post("https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}",
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
-    HTTParty.post("https://api.fastly.com/purge/https://dev.to#{path}?i=i",
+    HTTParty.post("https://api.fastly.com/purge/https://#{ApplicationConfig['APP_DOMAIN']}#{path}?i=i",
                   headers: { "Fastly-Key" => ApplicationConfig["FASTLY_API_KEY"] })
   rescue URI::InvalidURIError => e
     Rails.logger.error("Trying to bust cache of an invalid uri: #{e}")
+    DatadogStatsClient.increment("cache_buster.invalid_uri", tags: ["path:#{path}"])
   end
 
   def self.bust_comment(commentable)
@@ -159,6 +171,9 @@ module CacheBuster
   end
 
   def self.bust_classified_listings(classified_listing)
+    # we purge all listings as it's the wanted behavior with the following URL purging
+    classified_listing.purge_all
+
     bust("/listings")
     bust("/listings?i=i")
     bust("/listings/#{classified_listing.category}/#{classified_listing.slug}")

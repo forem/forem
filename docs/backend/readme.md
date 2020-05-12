@@ -6,8 +6,10 @@ items:
   - auth-github.md
   - authorization.md
   - configuration.md
+  - data-update-scripts.md
+  - elasticsearch.md
+  - fastly.md
   - roles.md
-  - algolia.md
   - pusher.md
   - admin.md
   - previewing-emails.md

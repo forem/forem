@@ -1,22 +1,16 @@
-'use strict';
-
-/* global userData, filterXSS */
+/* global filterXSS */
 
 function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile-pic').innerHTML =
-    '<img alt="' +
-    user.username +
-    '" class="sidebar-profile-pic-img" src="' +
-    user.profile_image_90 +
-    '" />';
+  document.getElementById('sidebar-profile--avatar').src =
+    user.profile_image_90;
+  document.getElementById('sidebar-profile--avatar').alt = user.username;
 
-  document.getElementById('sidebar-profile-name').innerHTML = filterXSS(
+  document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
     user.name,
   );
-  document.getElementById('sidebar-profile-username').innerHTML =
+  document.getElementById('sidebar-profile--username').innerHTML =
     '@' + user.username;
-  document.getElementById('sidebar-profile-snapshot-inner').href =
-    '/' + user.username;
+  document.getElementById('sidebar-profile').href = '/' + user.username;
 }
 
 function initializeUserSidebar(user) {
@@ -28,39 +22,18 @@ function initializeUserSidebar(user) {
     followedTags.length === 0
       ? 'Follow tags to improve your feed'
       : 'Other Popular Tags';
-  document.getElementById('tag-separator').innerHTML = tagSeparatorLabel;
 
-  // sort tags by descending weigth, descending popularity and name
-  followedTags.sort((tagA, tagB) => {
-    return (
-      tagB.points - tagA.points ||
-      tagB.hotness_score - tagA.hotness_score ||
-      tagA.name.localeCompare(tagB.name)
-    );
-  });
-
-  let tagHTML = '';
-  followedTags.forEach(tag => {
-    var element = document.getElementById(
+  followedTags.forEach((tag) => {
+    const element = document.getElementById(
       'default-sidebar-element-' + tag.name,
     );
-    tagHTML +=
-      tag.points > 0.0
-        ? '<div class="sidebar-nav-element" id="sidebar-element-' +
-          tag.name +
-          '">' +
-          '<a class="sidebar-nav-link" href="/t/' +
-          tag.name +
-          '">' +
-          '<span class="sidebar-nav-tag-text">#' +
-          tag.name +
-          '</span>' +
-          '</a>' +
-          '</div>'
-        : '';
-    if (element) element.remove();
+
+    if (element) {
+      element.remove();
+    }
   });
-  document.getElementById('sidebar-nav-followed-tags').innerHTML = tagHTML;
+
+  document.getElementById('tag-separator').innerHTML = tagSeparatorLabel;
   document.getElementById('sidebar-nav-default-tags').classList.add('showing');
 }
 
@@ -98,15 +71,18 @@ function addRelevantButtonsToComments(user) {
 
     for (let i = 0; i < settingsButts.length; i += 1) {
       let butt = settingsButts[i];
-      const { action, commentableUserId, userId } = butt.dataset
+      const { action, commentableUserId, userId } = butt.dataset;
 
       if (parseInt(userId, 10) === user.id) {
         butt.style.display = 'inline-block';
       }
-      if (action === 'hide-button' && parseInt(commentableUserId, 10) === user.id) {
+
+      if (
+        action === 'hide-button' &&
+        parseInt(commentableUserId, 10) === user.id
+      ) {
         butt.style.display = 'inline-block';
-      } else if (action === 'hide-button' && parseInt(commentableUserId, 10) !== user.id) {
-        butt.style.display = 'none'
+        butt.classList.remove('hidden');
       }
     }
 
@@ -123,16 +99,12 @@ function addRelevantButtonsToComments(user) {
 
 function initializeBaseUserData() {
   const user = userData();
-  const userProfileLinkHTML =
-    '<a href="/' +
-    user.username +
-    '" id="first-nav-link"><div class="option prime-option">@' +
-    user.username +
-    '</div></a>';
-  document.getElementById(
-    'user-profile-link-placeholder',
-  ).innerHTML = userProfileLinkHTML;
+  const userNavLink = document.getElementById('first-nav-link');
+  userNavLink.href = `/${user.username}`;
+  userNavLink.querySelector('span').textContent = user.name;
+  userNavLink.querySelector('small').textContent = `@${user.username}`;
   document.getElementById('nav-profile-image').src = user.profile_image_90;
+
   initializeUserSidebar(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);

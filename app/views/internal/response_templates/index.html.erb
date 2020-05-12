@@ -1,0 +1,30 @@
+<%= paginate @response_templates %>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Type Of</th>
+      <th scope="col">User ID</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @response_templates.each do |response_template| %>
+      <tr>
+        <td>
+          <a href="<%= edit_internal_response_template_path(response_template.id) %>"><%= response_template.title %>
+        </td>
+        <td>
+          <%= response_template.type_of %>
+        </td>
+        <td>
+          <% if response_template.user_id.present? %>
+            <a href="<%= internal_user_path(response_template.user_id) %>"><%= response_template.user_id %></a>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= paginate @response_templates %>
+
+<a href="<%= new_internal_response_template_path %>" class="btn btn-primary" role="button">Create a New Response Template</a>

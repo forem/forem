@@ -1,10 +1,10 @@
 'use strict';
 
-/* global algoliasearch, insertAfter, insertArticles, buildArticleHTML, nextPage:writable, fetching:writable, done:writable */
+/* global insertAfter, insertArticles, buildArticleHTML, nextPage:writable, fetching:writable, done:writable */
 
 var client;
 
-function fetchNext(el, endpoint, insertCallback){
+function fetchNext(el, endpoint, insertCallback) {
   var indexParams = JSON.parse(el.dataset.params);
   var urlParams = Object.keys(indexParams).map(function handleMap(k) {
     return encodeURIComponent(k) + "=" + encodeURIComponent(indexParams[k])
@@ -33,7 +33,7 @@ function insertNext(params, buildCallback) {
   return function insertEntries(entries) {
     var list = document.getElementById(params.listId || "sublist");
     var newFollowersHTML = "";
-    entries.forEach(function insertAnEntry(entry){
+    entries.forEach(function insertAnEntry(entry) {
       let existingEl = document.getElementById((params.elId || "element") + "-" + entry.id);
       if(!existingEl) {
         var newHTML = buildCallback(entry)
@@ -44,7 +44,7 @@ function insertNext(params, buildCallback) {
     var distanceFromBottom = document.documentElement.scrollHeight - document.body.scrollTop;
     var newNode = document.createElement("div");
     newNode.innerHTML = newFollowersHTML;
-    var singleArticles = document.getElementsByClassName("single-article");
+    var singleArticles = document.querySelectorAll(".single-article, .crayons-story");
     var lastElement = singleArticles[singleArticles.length - 1];
     insertAfter(newNode, lastElement);
     if (nextPage > 0) {
@@ -68,12 +68,12 @@ function buildFollowsHTML(follows) {
 var negativeFollow = -1;
 function buildTagsHTML(tag) {
   var tagHTML = '';
-  if (tag.points < 0 && negativeFollow === -1){
+  if (tag.points < 0 && negativeFollow === -1) {
     tagHTML += '<h2>Negative Tags (anti-follows)</h2>';
     negativeFollow = 0;
   }
   return tagHTML +
-        '<div id="follows-' + tag.id + '" class="single-article" style="border-color:' + tag.color + ';box-shadow: 3px 3px 0px ' + tag.color + '">\n' +
+        '<div id="follows-' + tag.id + '" class="single-article" style="border: 1px solid ' + tag.color + ';box-shadow: 3px 3px 0px ' + tag.color + '">\n' +
         '   <h2>\n' +
         '     <a href="/t/' + tag.name + '">\n' +
         '       ' + tag.name + '\n' +
@@ -90,28 +90,22 @@ function buildTagsHTML(tag) {
         '</div>';
 }
 
-function fetchNextFollowingPage(el){
+function fetchNextFollowingPage(el) {
   var indexParams = JSON.parse(el.dataset.params);
   var action = indexParams.action;
-  if (action.includes("users")){
-    fetchNext(el, "/api/followings/users", insertNext({ elId: "follows" }, buildFollowsHTML));
-  } else if (action.includes("podcasts")){
-    fetchNext(el, "/api/followings/podcasts", insertNext({ elId: "follows" }, buildFollowsHTML));
-  } else if (action.includes("organizations")){
-    fetchNext(el, "/api/followings/organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
+  if (action.includes("users")) {
+    fetchNext(el, "/followings/users", insertNext({ elId: "follows" }, buildFollowsHTML));
+  } else if (action.includes("podcasts")) {
+    fetchNext(el, "/followings/podcasts", insertNext({ elId: "follows" }, buildFollowsHTML));
+  } else if (action.includes("organizations")) {
+    fetchNext(el, "/followings/organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
   } else {
-    fetchNext(el, "/api/followings/tags", insertNext({ elId: "follows" }, buildTagsHTML));
+    fetchNext(el, "/followings/tags", insertNext({ elId: "follows" }, buildTagsHTML));
   }
 }
 
-function fetchNextFollowersPage(el){
-  var indexParams = JSON.parse(el.dataset.params);
-  var whichEndpoint = indexParams.which;
-  if (whichEndpoint.includes("organization")){
-    fetchNext(el, "/api/followers/organizations", insertNext({ elId: "follows" }, buildFollowsHTML));
-  } else {
-    fetchNext(el, "/api/followers/users", insertNext({ elId: "follows" }, buildFollowsHTML));
-  }
+function fetchNextFollowersPage(el) {
+  fetchNext(el, "/api/followers/users", insertNext({ elId: "follows" }, buildFollowsHTML));
 }
 
 function buildVideoArticleHTML(videoArticle) {
@@ -127,7 +121,7 @@ function buildVideoArticleHTML(videoArticle) {
 function insertVideos(videoArticles) {
   var list = document.getElementById("subvideos");
   var newVideosHTML = "";
-  videoArticles.forEach(function insertAVideo(videoArticle){
+  videoArticles.forEach(function insertAVideo(videoArticle) {
     var existingEl = document.getElementById("video-article-"+videoArticle.id);
     if(!existingEl) {
       var newHTML = buildVideoArticleHTML(videoArticle)
@@ -139,7 +133,7 @@ function insertVideos(videoArticles) {
   var newNode = document.createElement("div");
   newNode.innerHTML = newVideosHTML;
   newNode.className += "video-collection"
-  var singleArticles = document.getElementsByClassName("single-article");
+  var singleArticles = document.querySelectorAll(".single-article, .crayons-story");
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);
   if (nextPage > 0) {
@@ -147,7 +141,7 @@ function insertVideos(videoArticles) {
   }
 }
 
-function fetchNextVideoPage(el){
+function fetchNextVideoPage(el) {
   fetchNext(el, "/api/videos", insertVideos)
 }
 
@@ -156,11 +150,12 @@ function insertArticles(articles) {
   var newArticlesHTML = "";
   var el = document.getElementById("home-articles-object")
   if (el) {el.outerHTML = "";}
-  articles.forEach(function insertAnArticle(article){
+  articles.forEach(function insertAnArticle(article) {
     var existingEl = document.getElementById("article-link-"+article.id);
-    if ( existingEl &&
+    if ( !['/', '/top/week', '/top/month', '/top/year', '/top/infinity', '/latest'].includes(window.location.pathname) &&
+      existingEl &&
       existingEl.parentElement &&
-      existingEl.parentElement.classList.contains('single-article-small-pic') &&
+      existingEl.parentElement.classList.contains('crayons-story') &&
       !document.getElementById("video-player-"+article.id)) {
       existingEl.parentElement.outerHTML = buildArticleHTML(article);
     } else if(!existingEl) {
@@ -171,8 +166,37 @@ function insertArticles(articles) {
   });
   var distanceFromBottom = document.documentElement.scrollHeight - document.body.scrollTop;
   var newNode = document.createElement("div");
+  newNode.classList.add('paged-stories');
   newNode.innerHTML = newArticlesHTML;
-  var singleArticles = document.getElementsByClassName("single-article");
+
+  newNode.addEventListener('click', (event) => {
+    const { classList } = event.target;
+
+    // This looks a little messy, but it's the only
+    // way to make the entire card clickable.
+    if (
+      classList.contains('crayons-story') ||
+      classList.contains('crayons-story__top') ||
+      classList.contains('crayons-story__body') ||
+      classList.contains('crayons-story__indention') ||
+      classList.contains('crayons-story__title') ||
+      classList.contains('crayons-story__tags') ||
+      classList.contains('crayons-story__bottom')
+    ) {
+      let element = event.target;
+      let { articlePath } = element.dataset;
+
+      while (!articlePath) {
+        articlePath = element.dataset.articlePath;
+        element = element.parentElement;
+      }
+
+      InstantClick.preload(articlePath);
+      InstantClick.display(articlePath);
+    }
+  })
+
+  var singleArticles = document.querySelectorAll(".single-article, .crayons-story");
   var lastElement = singleArticles[singleArticles.length - 1];
   insertAfter(newNode, lastElement);
   if (nextPage > 0) {
@@ -180,41 +204,61 @@ function insertArticles(articles) {
   }
 }
 
-function fetchNextPodcastPage(el){
+function fetchNextPodcastPage(el) {
   fetchNext(el, "/api/podcast_episodes", insertArticles)
 }
 
-function algoliaPaginate(tag){
-  var filters = [];
-  if (tag && tag.length > 0) {
-    filters.push(tag);
-  }
+function paginate(tag, params, requiresApproval) {
+  const searchHash = { ...{ per_page: 15, page: nextPage }, ...JSON.parse(params) };
 
-  var searchObj = {
-      hitsPerPage: 15,
-      page: nextPage,
-      attributesToHighlight: [],
-      tagFilters: filters,
+  if (tag && tag.length > 0) {
+    searchHash.tag_names = searchHash.tag_names || [];
+    searchHash.tag_names.push(tag);
   }
+  searchHash.approved = (requiresApproval === 'true') ? 'true' : '';
 
   var homeEl = document.getElementById("index-container");
-  var paginationArticlesIndex;
   if (homeEl.dataset.feed === "base-feed") {
-    paginationArticlesIndex = client.initIndex('ordered_articles_<%= Rails.env %>');
+    searchHash.class_name = "Article";
   } else if (homeEl.dataset.feed === "latest") {
-    paginationArticlesIndex = client.initIndex('ordered_articles_by_published_at_<%= Rails.env %>');
+    searchHash.class_name = "Article";
+    searchHash.sort_by = "published_at";
   } else {
-    searchObj.filters = ('published_at_int > ' + homeEl.dataset.articlesSince);
-    paginationArticlesIndex = client.initIndex('ordered_articles_by_positive_reactions_count_<%= Rails.env %>');
+    searchHash.class_name = "Article";
+    searchHash["published_at[gte]"] = homeEl.dataset.articlesSince;
+    searchHash.sort_by = "positive_reactions_count";
   }
 
-  paginationArticlesIndex.search("*", searchObj)
-  .then(function searchDone(content) {
+  // Brute force copying code from a utlity for quick fix
+  const searchParams = new URLSearchParams();
+  Object.keys(searchHash).forEach((key) => {
+    const value = searchHash[key];
+    if (Array.isArray(value)) {
+      value.forEach((arrayValue) => {
+        searchParams.append(`${key}[]`, arrayValue);
+      });
+    } else {
+      searchParams.append(key, value);
+    }
+  });
+
+  fetch(`/search/feed_content?${searchParams.toString()}`, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  })
+    .then(response => response.json())
+    .then((content) => {
     nextPage += 1;
-    insertArticles(content.hits);
+    insertArticles(content.result);
     const checkBlockedContentEvent = new CustomEvent('checkBlockedContent')
-    window.dispatchEvent(checkBlockedContentEvent)
-    if (content.hits.length === 0) {
+    window.dispatchEvent(checkBlockedContentEvent);
+    initializeReadingListIcons();
+    if (content.result.length === 0) {
       document.getElementById("loading-articles").style.display = "none"
       done = true;
     }
@@ -255,7 +299,11 @@ function fetchNextPageIfNearBottom() {
   } else {
     scrollableElemId = "articles-list";
     fetchCallback = function fetch() {
-      algoliaPaginate(indexContainer.dataset.algoliaTag);
+      paginate(
+        indexContainer.dataset.tag,
+        indexContainer.dataset.params,
+        indexContainer.dataset.requiresApproval
+      );
     };
   }
 
@@ -268,17 +316,15 @@ function fetchNextPageIfNearBottom() {
 }
 
 function checkIfNearBottomOfPage() {
-  var publicSearchKey = '<%= ALGOLIASEARCH_PUBLIC_SEARCH_ONLY_KEY %>';
-  client = algoliasearch('<%= ApplicationConfig["ALGOLIASEARCH_APPLICATION_ID"] %>', publicSearchKey);
-
-  if (document.getElementsByClassName("single-article").length < 2 || window.location.search.indexOf("q=") > -1 ) {
+  if ((document.getElementsByClassName("crayons-story").length < 2 && document.getElementsByClassName("single-article").length < 2)
+      || window.location.search.indexOf("q=") > -1 ) {
     document.getElementById("loading-articles").style.display = "none";
     done = true;
   } else {
     document.getElementById("loading-articles").style.display = "block";
   }
   fetchNextPageIfNearBottom();
-  setInterval(function handleInterval(){
+  setInterval(function handleInterval() {
     fetchNextPageIfNearBottom();
   }, 210)
 }

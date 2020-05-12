@@ -3,15 +3,19 @@ require "rails_helper"
 RSpec.describe "NotificationsIndex", type: :request do
   include ActionView::Helpers::DateHelper
 
-  let(:dev_account) { create(:user) }
-  let(:user) { create(:user) }
+  let_it_be_readonly(:dev_account) { create(:user) }
+  let_it_be_readonly(:mascot_account) { create(:user) }
+  let_it_be_changeable(:user) { create(:user) }
+  let_it_be_changeable(:organization) { create(:organization) }
 
   before do
     allow(User).to receive(:dev_account).and_return(dev_account)
+    allow(User).to receive(:mascot_account).and_return(mascot_account)
   end
 
   def has_both_names(response_body)
-    response_body.include?(CGI.escapeHTML(User.last.name)) && response_body.include?(CGI.escapeHTML(User.second_to_last.name))
+    response_body.include?(CGI.escapeHTML(User.last.name)) &&
+      response_body.include?(CGI.escapeHTML(User.second_to_last.name))
   end
 
   describe "GET /notifications" do
@@ -69,6 +73,84 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
         notifications = controller.instance_variable_get(:@notifications)
         expect(notifications.count).to eq 1
+      end
+    end
+
+    context "when a user's organization has new follow notifications" do
+      let(:other_org) { create(:organization) }
+
+      before do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+        sign_in user
+      end
+
+      def mock_follow_notifications(followers_amount, organization)
+        users = create_list(:user, followers_amount)
+        follow_instances = users.map { |follower| follower.follow(organization) }
+        follow_instances.each { |follow| Notification.send_new_follower_notification_without_delay(follow) }
+        users
+      end
+
+      it "renders the proper message for a single notification" do
+        users = mock_follow_notifications(1, organization)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).to include(CGI.escapeHTML(users.last.name))
+      end
+
+      it "renders the proper message for two notifications in the same day" do
+        mock_follow_notifications(2, organization)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(has_both_names(response.body)).to be(true)
+      end
+
+      it "renders the proper message for three or more notifications in the same day" do
+        mock_follow_notifications(rand(3..5), organization)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        follow_message = "others followed you!"
+        expect(response.body).to include(follow_message)
+      end
+
+      it "does group notifications that occur on different days" do
+        mock_follow_notifications(2, organization)
+        Notification.last.update(created_at: Notification.last.created_at - 1.day)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        notifications = controller.instance_variable_get(:@notifications)
+        expect(notifications.count).to eq(1)
+      end
+
+      it "does not render the proper message for a single notification if missing :org_id" do
+        users = mock_follow_notifications(1, organization)
+
+        get notifications_path(filter: :org)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
+      end
+
+      it "does not render notifications belonging to other orgs" do
+        users = mock_follow_notifications(1, other_org)
+
+        get notifications_path(filter: :org, org_id: other_org.id)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
+      end
+
+      it "does render notifications belonging to other orgs if admin" do
+        user.add_role(:super_admin)
+        sign_in user
+
+        users = mock_follow_notifications(1, other_org)
+
+        get notifications_path(filter: :org, org_id: other_org.id)
+        expect(response.body).to include(CGI.escapeHTML(users.last.name))
+      end
+
+      it "does not render the proper message for a single notification if :filter is comments" do
+        users = mock_follow_notifications(1, organization)
+
+        get notifications_path(filter: :comments, org_id: organization.id)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
       end
     end
 
@@ -142,6 +224,118 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
     end
 
+    context "when a user's organization has new reaction notifications" do
+      let(:article1) { create(:article, user: user, organization: organization) }
+      let(:article2) { create(:article, user: user, organization: organization) }
+      let(:special_characters_article) do
+        create(:article, user: user, organization: organization, title: "What's Become of Waring")
+      end
+      let(:other_org) { create(:organization) }
+      let(:other_org_article) { create(:article, user: user, organization: other_org) }
+
+      before do
+        create(:organization_membership, user: user, organization: organization, type_of_user: "member")
+        sign_in user
+      end
+
+      def mock_heart_reaction_notifications(followers_amount, categories, reactable = article1)
+        users = create_list(:user, followers_amount)
+
+        reactions = users.map do |user|
+          create(:reaction, user: user, reactable: reactable, category: categories.sample)
+        end
+        reactions.each { |reaction| Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) }
+
+        users
+      end
+
+      it "renders the correct user for a single reaction" do
+        users = mock_heart_reaction_notifications(1, %w[like unicorn])
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).to include CGI.escapeHTML(users.last.name)
+      end
+
+      it "renders the correct usernames for two or more reactions" do
+        mock_heart_reaction_notifications(2, %w[like unicorn])
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(has_both_names(response.body)).to be(true)
+      end
+
+      it "renders the proper message for multiple reactions" do
+        random_amount = rand(3..10)
+        mock_heart_reaction_notifications(random_amount, %w[unicorn like])
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).to include(CGI.escapeHTML("and #{random_amount - 1} others"))
+      end
+
+      it "does group notifications that are on different days but have the same reactable" do
+        mock_heart_reaction_notifications(2, %w[unicorn like readinglist])
+        Notification.last.update(created_at: Notification.last.created_at - 1.day)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        notifications = controller.instance_variable_get(:@notifications)
+        expect(notifications.count).to eq(1)
+      end
+
+      it "does not group notifications that are on the same day but have different reactables" do
+        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article1)
+        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], article2)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        notifications = controller.instance_variable_get(:@notifications)
+        expect(notifications.count).to eq(2)
+      end
+
+      it "properly renders reactable titles" do
+        mock_heart_reaction_notifications(1, %w[unicorn like readinglist], special_characters_article)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).to include(ERB::Util.html_escape(special_characters_article.title))
+      end
+
+      it "properly renders reactable titles for multiple reactions" do
+        amount = rand(3..10)
+        mock_heart_reaction_notifications(amount, %w[unicorn like readinglist], special_characters_article)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).to include(ERB::Util.html_escape(special_characters_article.title))
+      end
+
+      it "does not render the proper message for a single notification if missing :org_id" do
+        users = mock_heart_reaction_notifications(1, %w[like unicorn])
+
+        get notifications_path(filter: :org)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
+      end
+
+      it "does not render notifications belonging to other orgs" do
+        users = mock_heart_reaction_notifications(1, %w[like unicorn], other_org_article)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
+      end
+
+      it "does render notifications belonging to other orgs if admin" do
+        user.add_role(:super_admin)
+        sign_in user
+
+        users = mock_heart_reaction_notifications(1, %w[like unicorn], other_org_article)
+
+        get notifications_path(filter: :org, org_id: other_org_article.organization_id)
+        expect(response.body).to include(CGI.escapeHTML(users.last.name))
+      end
+
+      it "does not render the proper message for a single notification if :filter is comments" do
+        users = mock_heart_reaction_notifications(1, %w[like unicorn])
+
+        get notifications_path(filter: :comments, org_id: organization.id)
+        expect(response.body).not_to include(CGI.escapeHTML(users.last.name))
+      end
+    end
+
     context "when a user has a new comment notification" do
       let(:user2)    { create(:user) }
       let(:article)  { create(:article, :with_notification_subscription, user_id: user.id) }
@@ -181,6 +375,102 @@ RSpec.describe "NotificationsIndex", type: :request do
 
       it "does not render the reaction as reacted if it was not reacted on" do
         expect(response.body).not_to include "reaction-button reacted"
+      end
+    end
+
+    context "when a user's organization has a new comment notification" do
+      let(:user2)    { create(:user) }
+      let(:article)  { create(:article, :with_notification_subscription, user: user, organization: organization) }
+      let(:comment)  { create(:comment, user: user2, commentable: article) }
+      let(:other_org) { create(:organization) }
+      let(:other_org_article) { create(:article, :with_notification_subscription, user: user, organization: other_org) }
+      let(:other_org_comment) { create(:comment, user: user2, commentable: other_org_article) }
+
+      before do
+        sign_in user
+      end
+
+      it "renders the correct message" do
+        Notification.send_new_comment_notifications_without_delay(comment)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).to include("commented on")
+      end
+
+      it "does not render incorrect message" do
+        Notification.send_new_comment_notifications_without_delay(comment)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).not_to include("replied to a thread in")
+      end
+
+      it "does not render the moderation message" do
+        Notification.send_new_comment_notifications_without_delay(comment)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).not_to include("As a trusted member")
+      end
+
+      it "renders the article's path" do
+        Notification.send_new_comment_notifications_without_delay(comment)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).to include(article.path)
+      end
+
+      it "renders the comment's processed HTML" do
+        Notification.send_new_comment_notifications_without_delay(comment)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).to include(comment.processed_html)
+      end
+
+      it "renders the reaction as previously reacted if it was reacted on" do
+        Notification.send_new_comment_notifications_without_delay(comment)
+        Reaction.create(user: user, reactable: comment, category: "like")
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).to include("reaction-button reacted")
+      end
+
+      it "does not render the reaction as reacted if it was not reacted on" do
+        Notification.send_new_comment_notifications_without_delay(comment)
+
+        get notifications_path(filter: :org, org_id: organization.id)
+        expect(response.body).not_to include("reaction-button reacted")
+      end
+
+      it "does not render notifications if missing :org_id" do
+        Notification.send_new_comment_notifications_without_delay(comment)
+
+        get notifications_path(filter: :org)
+        notifications = controller.instance_variable_get(:@notifications)
+        expect(notifications.map(&:organization_id).compact.size).to eq(0)
+      end
+
+      it "does not render notifications belonging to other orgs" do
+        Notification.send_new_comment_notifications_without_delay(other_org_comment)
+
+        get notifications_path(filter: :org, org_id: other_org.id)
+        notifications = controller.instance_variable_get(:@notifications)
+        expect(notifications.map(&:organization_id).compact.size).to eq(0)
+      end
+
+      it "does render notifications belonging to other orgs if admin" do
+        user.add_role(:super_admin)
+        sign_in user
+
+        Notification.send_new_comment_notifications_without_delay(other_org_comment)
+
+        get notifications_path(filter: :org, org_id: other_org.id)
+        expect(response.body).to include("commented on")
+      end
+
+      it "does render the proper message for a single notification if :filter is comments" do
+        Notification.send_new_comment_notifications_without_delay(comment)
+
+        get notifications_path(filter: :comments, org_id: organization.id)
+        expect(response.body).to include("commented on")
       end
     end
 
@@ -248,15 +538,15 @@ RSpec.describe "NotificationsIndex", type: :request do
         get "/notifications"
       end
 
-      it "renders the proper message" do
+      it "does not render the notification message" do
         expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
       end
 
-      it "renders the article's path" do
+      it "does not render the article's path" do
         expect(response.body).not_to include article.path
       end
 
-      it "renders the comment's processed HTML" do
+      it "does not render the comment's processed HTML" do
         expect(response.body).not_to include comment.processed_html
       end
     end
@@ -270,37 +560,57 @@ RSpec.describe "NotificationsIndex", type: :request do
         user.add_role :trusted
         user.update(mod_roundrobin_notifications: false)
         sign_in user
-        perform_enqueued_jobs do
+        sidekiq_perform_enqueued_jobs do
           Notification.send_moderation_notification(comment)
         end
         get "/notifications"
       end
 
-      it "renders the proper message" do
+      it "does not render the proper message" do
         expect(response.body).not_to include "Since they are new to the community, could you leave a nice reply"
       end
 
-      it "renders the article's path" do
+      it "does not render the article's path" do
         expect(response.body).not_to include article.path
       end
 
-      it "renders the comment's processed HTML" do
+      it "does not render the comment's processed HTML" do
         expect(response.body).not_to include comment.processed_html
       end
     end
 
-    context "when a user has a new welcome notification" do
-      before do
-        sign_in user
-      end
+    context "when user is trusted" do
+      let(:user) { create(:user, :trusted) }
+      let(:reaction) { create(:thumbsdown_reaction, user: user) }
 
-      it "renders the welcome notification" do
-        broadcast = create(:broadcast, :onboarding)
+      it "allow sees thumbsdown category" do
+        sign_in user
+        Notification.send_reaction_notification_without_delay(reaction, user)
+        get "/notifications"
+        expect(response.body).to include("Notifications")
+      end
+    end
+
+    context "when a user has a new welcome notification" do
+      let(:active_broadcast) { create(:set_up_profile_broadcast) }
+      let(:inactive_broadcast) { create(:set_up_profile_broadcast, active: false) }
+
+      before { sign_in user }
+
+      it "renders a welcome notification if the broadcast is active" do
         sidekiq_perform_enqueued_jobs do
-          Notification.send_welcome_notification(user.id)
+          Notification.send_welcome_notification(user.id, active_broadcast.id)
         end
         get "/notifications"
-        expect(response.body).to include broadcast.processed_html
+        expect(response.body).to include active_broadcast.processed_html
+      end
+
+      it "does not render a welcome notification if the broadcast is inactive" do
+        sidekiq_perform_enqueued_jobs do
+          Notification.send_welcome_notification(user.id, inactive_broadcast.id)
+        end
+        get "/notifications"
+        expect(response.body).not_to include inactive_broadcast.processed_html
       end
     end
 

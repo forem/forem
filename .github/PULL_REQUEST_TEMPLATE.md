@@ -1,15 +1,17 @@
 <!--
-     For Work In Progress Pull Requests, please use the Draft PR feature
-     and/or include [WIP] in the PR title.
+     For Work In Progress Pull Requests, please use the Draft PR feature,
+     see https://github.blog/2019-02-14-introducing-draft-pull-requests/ for further details.
 
      For a timely review/response, please avoid force-pushing additional
      commits if your PR already received reviews or comments.
 
      Before submitting a Pull Request, please ensure you've done the following:
-     - Read the DEV Contributing Guide and the Code of Conduct
-     - Provided tests for your changes
-     - Used descriptive commit messages
-     - Updated any relevant documentation and added any necessary screenshots
+     - 📖 Read the DEV Contributing Guide: https://github.com/thepracticaldev/dev.to/blob/master/CONTRIBUTING.md#create-a-pull-request.
+     - 📖 Read the DEV Code of Conduct: https://github.com/thepracticaldev/dev.to/blob/master/CODE_OF_CONDUCT.md.
+     - 👷‍♀️ Create small PRs. In most cases this will be possible.
+     - ✅ Provide tests for your changes.
+     - 📝 Use descriptive commit messages.
+     - 📗 Update any related documentation and include any relevant screenshots.
 -->
 
 ## What type of PR is this? (check all applicable)
@@ -26,11 +28,19 @@
 
 ## Mobile & Desktop Screenshots/Recordings (if there are UI changes)
 
+## Added tests?
+
+- [ ] yes
+- [ ] no, because they aren't needed
+- [ ] no, because I need help
+
 ## Added to documentation?
 
 - [ ] docs.dev.to
 - [ ] readme
 - [ ] no documentation needed
+
+## [optional] Are there any post deployment tasks we need to perform?
 
 ## [optional] What gif best describes this PR or how it makes you feel?
 

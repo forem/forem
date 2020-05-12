@@ -7,7 +7,7 @@ footer {
   .container {
     width: 100%;
     margin: auto;
-    max-width: 1200px;
+    max-width: $max-width;
     box-shadow: none;
     border: none;
     font-weight: 500;
@@ -27,7 +27,7 @@ footer {
       }
     }
     a {
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
       display: inline-block;
       margin-right: 12px;
       &:hover {
@@ -35,23 +35,27 @@ footer {
       }
     }
     .inner-footer-container {
-      max-width: 820px;
-      @include themeable(background, theme-container-background, $tan);
-      @include themeable(
-        border,
-        theme-container-border,
-        1px solid darken($light-medium-gray, 2%)
-      );
-      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-      padding: 50px 30px;
+      max-width: 880px;
+      padding: 48px 32px;
+      box-sizing: border-box;
       line-height: 3em;
       margin: auto;
+      @include themeable(background, theme-container-background, $tan);
+      @include themeable(border, theme-container-border, none);
+      @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
+
+      @media screen and (min-width: 950px) {
+        border-radius: 3px 3px 0 0;
+      }
     }
   }
 }
 
-@media screen and (min-width: 1250px) {
+@media screen and (min-width: $max-width) {
   .stories-show + footer .inner-footer-container {
-    margin-left: 0;
+    margin-left: 16px;
+  }
+  .podcast_episodes-show + footer .inner-footer-container {
+    margin-left: auto;
   }
 }
