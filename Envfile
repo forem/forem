@@ -42,20 +42,24 @@ variable :ELASTICSEARCH_URL, :String, default: "http://localhost:9200"
 # SSL config
 variable :FORCE_SSL_IN_RAILS, :String, default: "not applicable in dev"
 
-################################################
-############## 3rd Party Services ##############
-################################################
+###############################################################
+############## 3rd Party Authentication Services ##############
+###############################################################
 
-# It's best if you have the following configured
-# for more development experience
+# Apple for authentication
+# https://developer.apple.com/sign-in-with-apple/
+variable :APPLE_CLIENT_ID, :String, default: ""
+variable :APPLE_TEAM_ID, :String, default: ""
+variable :APPLE_KEY_ID, :String, default: ""
+variable :APPLE_PEM, :String, default: ""
 
-# GitHub
+# GitHub for authentication and GitHub related features
 # (https://developer.github.com/v3/guides/basics-of-authentication/)
 variable :GITHUB_KEY, :String, default: ""
 variable :GITHUB_SECRET, :String, default: ""
 
-# Twitter
-# (https://developer.twitter.com/en/docs/basics/authentication/oauth-2-0/application-only)
+# Twitter for authentication and Twitter related features
+# (https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens)
 variable :TWITTER_KEY, :String, default: ""
 variable :TWITTER_SECRET, :String, default: ""
 

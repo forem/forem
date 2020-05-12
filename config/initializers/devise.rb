@@ -234,7 +234,11 @@ Devise.setup do |config|
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
-  # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
+  config.omniauth :apple, ApplicationConfig["APPLE_CLIENT_ID"], "",
+                  scope: "email name",
+                  team_id: ApplicationConfig["APPLE_TEAM_ID"],
+                  key_id: ApplicationConfig["APPLE_KEY_ID"],
+                  pem: ApplicationConfig["APPLE_PEM"]
   config.omniauth :github, ApplicationConfig["GITHUB_KEY"], ApplicationConfig["GITHUB_SECRET"], scope: "user:email"
   config.omniauth :twitter, ApplicationConfig["TWITTER_KEY"], ApplicationConfig["TWITTER_SECRET"]
 
