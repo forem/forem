@@ -19,8 +19,8 @@ export class GithubRepos extends Component {
       },
       credentials: 'same-origin',
     })
-      .then(response => response.json())
-      .then(json => {
+      .then((response) => response.json())
+      .then((json) => {
         this.setState({ repos: json });
       })
       .catch(() => {
@@ -30,12 +30,12 @@ export class GithubRepos extends Component {
 
   render() {
     const { repos, erroredOut } = this.state;
-    const allRepos = repos.map(repo => (
+    const allRepos = repos.map((repo) => (
       <SingleRepo
         githubIdCode={repo.github_id_code}
         name={repo.name}
         fork={repo.fork}
-        selected={repo.selected}
+        featured={repo.featured}
       />
     ));
 
@@ -55,4 +55,4 @@ export class GithubRepos extends Component {
   }
 }
 
-GithubRepos.displayName = 'GitHub Repos Wrapper';
+GithubRepos.displayName = 'GitHub Repositories Wrapper';

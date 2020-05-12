@@ -207,8 +207,11 @@ class StoriesController < ApplicationController
     redirect_if_view_param
     return if performed?
 
+    assign_user_github_repositories
+
     set_surrogate_key_header "articles-user-#{@user.id}"
     set_user_json_ld
+
     render template: "users/show"
   end
 
@@ -308,6 +311,10 @@ class StoriesController < ApplicationController
       limited_column_select.
       where.not(id: @pinned_stories.pluck(:id)).
       order("published_at DESC").page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
+  end
+
+  def assign_user_github_repositories
+    @github_repositories = @user.github_repos.featured.order(stargazers_count: :desc, name: :asc)
   end
 
   def stories_by_timeframe
