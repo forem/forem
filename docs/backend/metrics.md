@@ -7,14 +7,14 @@ title: Tracking Metrics
 We track point-in-time data by sending data points to Datadog using
 [Statdsd](https://github.com/DataDog/dogstatsd-ruby).
 
-Currently we run a daily metric fetching job in `fetch.rake` which is called via
+Currently, we run a daily metric fetching job in `fetch.rake` which is called via
 the Heroku scheduler. If we wanted to do other frequencies like hourly, etc. we
 could add similar tasks.
 
 The rake task calls `Metrics::RecordDailyUsageWorker.perform_async`, which
 performs algorithms to come up with data points to send, for example:
 
-```
+```ruby
 DataDogStatsClient.count("users.active_days_past_week", one_day_users, tags: { resource: "users", group: "new_users, day_count: 1 })
 ```
 
