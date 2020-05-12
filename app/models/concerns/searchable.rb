@@ -12,7 +12,7 @@ module Searchable
   end
 
   def remove_from_elasticsearch
-    Search::RemoveFromIndexWorker.perform_async(self.class::SEARCH_CLASS.to_s, search_id)
+    Search::RemoveFromIndexWorker.perform_in(5.seconds, self.class::SEARCH_CLASS.to_s, search_id)
   end
 
   def serialized_search_hash
