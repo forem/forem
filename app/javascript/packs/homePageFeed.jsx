@@ -1,6 +1,6 @@
 import { h, render } from 'preact';
 import PropTypes from 'prop-types';
-import { Article, FeaturedArticle, LoadingArticle } from '../articles';
+import { Article, LoadingArticle } from '../articles';
 import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
 import { articlePropTypes } from '../src/components/common-prop-types';
@@ -30,7 +30,7 @@ function sendFeaturedArticleAnalytics(articleId) {
 
 const FeedLoading = () => (
   <div>
-    <LoadingArticle version='featured' />
+    <LoadingArticle version="featured" />
     <LoadingArticle />
     <LoadingArticle />
     <LoadingArticle />
@@ -42,7 +42,7 @@ const FeedLoading = () => (
 
 const PodcastEpisodes = ({ episodes }) => (
   <TodaysPodcasts>
-    {episodes.map(episode => (
+    {episodes.map((episode) => (
       <PodcastEpisode episode={episode} />
     ))}
   </TodaysPodcasts>
@@ -59,7 +59,7 @@ PodcastEpisodes.propTypes = {
 /**
  * Renders the main feed.
  */
-export const renderFeed = timeFrame => {
+export const renderFeed = (timeFrame) => {
   const feedContainer = document.getElementById('homepage-feed');
 
   render(
@@ -67,7 +67,6 @@ export const renderFeed = timeFrame => {
       timeFrame={timeFrame}
       renderFeed={({
         feedItems,
-        feedIcons,
         podcastEpisodes,
         bookmarkedFeedItems,
         bookmarkClick,
@@ -78,8 +77,6 @@ export const renderFeed = timeFrame => {
         }
 
         const commonProps = {
-          reactionsIcon: feedIcons.REACTIONS_ICON,
-          commentsIcon: feedIcons.COMMENTS_ICON,
           bookmarkClick,
         };
 
@@ -92,15 +89,16 @@ export const renderFeed = timeFrame => {
         // 3. Rest of the stories for the feed
         return (
           <div>
-            <FeaturedArticle
+            <Article
               {...commonProps}
               article={featuredStory}
+              isFeatured
               isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
             />
             {podcastEpisodes.length > 0 && (
               <PodcastEpisodes episodes={podcastEpisodes} />
             )}
-            {(subStories || []).map(story => (
+            {(subStories || []).map((story) => (
               <Article
                 {...commonProps}
                 article={story}
