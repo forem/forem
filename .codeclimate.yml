@@ -55,6 +55,9 @@ plugins:
     enabled: true
     config:
       count_threshold: 3
+      languages:
+        filters:
+          - "s(:property, s(:Identifier, :propTypes))"
 exclude_patterns:
   - "config/"
   - "db/"
