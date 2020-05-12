@@ -5,9 +5,32 @@ RSpec.describe RateLimitChecker, type: :service do
   let(:article) { create(:article, user: user) }
   let(:rate_limit_checker) { described_class.new(user) }
 
+  def cache_key(action)
+    rate_limit_checker.send("limit_cache_key", action)
+  end
+
   describe "#limit_by_action" do
     it "returns false for invalid action" do
       expect(rate_limit_checker.limit_by_action("random-nothing")).to be(false)
+    end
+
+    # published_article_creation limit we check against the database rather than our cache
+    RateLimitChecker::ACTION_LIMITERS.except(:published_article_creation).each do |action, _options|
+      it "returns true if #{action} limit has been reached" do
+        allow(Rails.cache).to receive(:read).with(
+          cache_key(action),
+        ).and_return(SiteConfig.public_send("rate_limit_#{action}") + 1)
+
+        expect(rate_limit_checker.limit_by_action(action)).to be(true)
+      end
+
+      it "returns false if #{action} limit has NOT been reached" do
+        allow(Rails.cache).to receive(:read).with(
+          cache_key(action),
+        ).and_return(SiteConfig.public_send("rate_limit_#{action}"))
+
+        expect(rate_limit_checker.limit_by_action(action)).to be(false)
+      end
     end
 
     context "when creating comments" do
@@ -18,14 +41,6 @@ RSpec.describe RateLimitChecker, type: :service do
       it "returns true if too many comments at once" do
         create_list(:comment, 2, user_id: user.id, commentable: article)
         expect(rate_limit_checker.limit_by_action("comment_creation")).to be(true)
-      end
-
-      it "sends a slack message if a user leaves too any messages" do
-        create_list(:comment, 2, user_id: user.id, commentable: article)
-
-        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
-          rate_limit_checker.limit_by_action("comment_creation")
-        end
       end
 
       it "returns false if allowed comment" do
@@ -65,50 +80,6 @@ RSpec.describe RateLimitChecker, type: :service do
 
     it "returns false if published articles limit has not been reached" do
       expect(described_class.new(user).limit_by_action("published_article_creation")).to be(false)
-    end
-
-    it "returns true if a user has uploaded too many images" do
-      allow(Rails.cache).
-        to receive(:read).with("#{user.id}_image_upload").
-        and_return(SiteConfig.rate_limit_image_upload + 1)
-
-      expect(rate_limit_checker.limit_by_action("image_upload")).to be(true)
-    end
-
-    it "returns false if a user hasn't uploaded too many images" do
-      allow(Rails.cache).
-        to receive(:read).with("#{user.id}_image_upload").
-        and_return(SiteConfig.rate_limit_image_upload)
-
-      expect(rate_limit_checker.limit_by_action("image_upload")).to be(false)
-    end
-
-    it "returns true if a user has updated too many articles" do
-      allow(Rails.cache).
-        to receive(:read).with("#{user.id}_article_update").
-        and_return(SiteConfig.rate_limit_article_update + 1)
-
-      expect(rate_limit_checker.limit_by_action("article_update")).to be(true)
-    end
-
-    it "returns false if a user hasn't updated too many articles" do
-      allow(Rails.cache).
-        to receive(:read).with("#{user.id}_article_update").
-        and_return(SiteConfig.rate_limit_article_update)
-
-      expect(rate_limit_checker.limit_by_action("article_update")).to be(false)
-    end
-
-    it "returns true if user has created too many organizations" do
-      allow(Rails.cache).
-        to receive(:read).with("#{user.id}_organization_creation").
-        and_return(SiteConfig.rate_limit_organization_creation + 1)
-
-      expect(rate_limit_checker.limit_by_action("organization_creation")).to be(true)
-    end
-
-    it "returns false if organization_creation limit has not been reached" do
-      expect(described_class.new(user).limit_by_action("organization_creation")).to be(false)
     end
 
     it "logs a rate limit hit to datadog" do

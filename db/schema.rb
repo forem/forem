@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_01_032629) do
+ActiveRecord::Schema.define(version: 2020_05_04_075409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -304,6 +304,7 @@ ActiveRecord::Schema.define(version: 2020_05_01_032629) do
     t.string "channel_type", null: false
     t.datetime "created_at", null: false
     t.string "description"
+    t.boolean "discoverable", default: false
     t.datetime "last_message_at", default: "2017-01-01 05:00:00"
     t.string "slug"
     t.string "status", default: "active"
@@ -316,6 +317,8 @@ ActiveRecord::Schema.define(version: 2020_05_01_032629) do
     t.string "name", null: false
     t.string "rules", null: false
     t.string "slug", null: false
+    t.string "social_preview_color"
+    t.string "social_preview_description"
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_classified_listing_categories_on_name", unique: true
     t.index ["slug"], name: "index_classified_listing_categories_on_slug", unique: true
@@ -435,13 +438,13 @@ ActiveRecord::Schema.define(version: 2020_05_01_032629) do
   end
 
   create_table "email_authorizations", force: :cascade do |t|
+    t.string "confirmation_token"
     t.datetime "created_at", null: false
     t.jsonb "json_data", default: {}, null: false
     t.string "type_of", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
-    t.index ["user_id", "type_of"], name: "index_email_authorizations_on_user_id_and_type_of", unique: true
   end
 
   create_table "events", force: :cascade do |t|

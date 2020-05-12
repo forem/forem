@@ -2,10 +2,10 @@ require "rails_helper"
 
 describe Rack::Attack, type: :request, throttle: true do
   before do
-    redis_url = "redis://localhost:6379"
-    cache_db = ActiveSupport::Cache::RedisStore.new(redis_url)
+    cache_db = ActiveSupport::Cache.lookup_store(:redis_cache_store)
     allow(Rails).to receive(:cache) { cache_db }
-    cache_db.data.flushdb
+    cache_db.redis.flushdb
+    allow(Honeycomb).to receive(:add_field)
   end
 
   describe "search_throttle" do
@@ -21,6 +21,8 @@ describe Rack::Attack, type: :request, throttle: true do
         valid_responses.each { |r| expect(r).not_to eq(429) }
         expect(throttled_response).to eq(429)
         expect(new_ip_response).not_to eq(429)
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(11).times
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").exactly(2).times
       end
     end
   end
@@ -37,6 +39,8 @@ describe Rack::Attack, type: :request, throttle: true do
         valid_responses.each { |r| expect(r).not_to eq(429) }
         expect(throttled_response).to eq(429)
         expect(new_ip_response).not_to eq(429)
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(7).times
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").exactly(2).times
       end
     end
   end
@@ -58,6 +62,8 @@ describe Rack::Attack, type: :request, throttle: true do
         expect(valid_response).not_to eq(429)
         expect(throttled_response).to eq(429)
         expect(new_api_response).not_to eq(429)
+        expect(Honeycomb).to have_received(:add_field).with("user_api_key", api_secret.secret).exactly(2).times
+        expect(Honeycomb).to have_received(:add_field).with("user_api_key", another_api_secret.secret)
       end
     end
   end
@@ -93,6 +99,8 @@ describe Rack::Attack, type: :request, throttle: true do
         valid_responses.each { |r| expect(r).not_to eq(429) }
         expect(throttled_response).to eq(429)
         expect(new_api_response).not_to eq(429)
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(6).times
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").exactly(2).times
       end
     end
   end

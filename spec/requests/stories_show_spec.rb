@@ -19,6 +19,18 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response).to have_http_status(:moved_permanently)
     end
 
+    ## Title tag
+    it "renders signed-in title tag for signed-in user" do
+      sign_in user
+      get article.path
+      expect(response.body).to include "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
+    end
+
+    it "renders signed-out title tag for signed-out user" do
+      get article.path
+      expect(response.body).to include "<title>#{CGI.escapeHTML(article.title)} - #{community_name}</title>"
+    end
+
     it "renders second and third users if present" do
       # 3rd user doesn't seem to get rendered for some reason
       user2 = create(:user)
@@ -115,13 +127,13 @@ RSpec.describe "StoriesShow", type: :request do
     it "renders canonical url when exists" do
       article = create(:article, with_canonical_url: true)
       get article.path
-      expect(response.body).to include('"canonical" href="' + article.canonical_url.to_s + '"')
+      expect(response.body).to include(%("canonical" href="#{article.canonical_url}"))
     end
 
     it "does not render canonical url when not on article model" do
       article = create(:article, with_canonical_url: false)
       get article.path
-      expect(response.body).not_to include('"canonical" href="' + article.canonical_url.to_s + '"')
+      expect(response.body).not_to include(%("canonical" href="#{article.canonical_url}"))
     end
 
     it "handles invalid slug characters" do

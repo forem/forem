@@ -18,7 +18,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
         allow(chat_channel_membership1).to receive(:channel_text).and_return("a name")
         allow(chat_channel_membership2).to receive(:channel_text).and_return("another name and slug")
         index_documents([chat_channel_membership1, chat_channel_membership2])
-        name_params = { size: 5, channel_text: "name", user_id: user.id }
+        name_params = { size: 5, channel_text: "name", user_id: [user.id] }
 
         chat_channel_membership_docs = described_class.search_documents(params: name_params)
         expect(chat_channel_membership_docs.count).to eq(2)
@@ -32,7 +32,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
         new_user = create(:user)
         chat_channel_membership3 = create(:chat_channel_membership, user_id: new_user.id)
         index_documents([chat_channel_membership1, chat_channel_membership2, chat_channel_membership3])
-        params = { size: 5, user_id: new_user.id }
+        params = { size: 5, user_id: [new_user.id] }
 
         chat_channel_membership_docs = described_class.search_documents(params: params)
         expect(chat_channel_membership_docs.count).to eq(1)
@@ -42,7 +42,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
       it "searches by channel_status" do
         allow(chat_channel_membership1).to receive(:channel_status).and_return("popping")
         index_documents([chat_channel_membership1, chat_channel_membership2])
-        params = { size: 5, channel_status: "popping", user_id: user.id }
+        params = { size: 5, channel_status: "popping", user_id: [user.id] }
 
         chat_channel_membership_docs = described_class.search_documents(params: params)
         expect(chat_channel_membership_docs.count).to eq(1)
@@ -52,7 +52,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
       it "searches by channel_type" do
         allow(chat_channel_membership2).to receive(:channel_type).and_return("invite_only")
         index_documents([chat_channel_membership1, chat_channel_membership2])
-        params = { size: 5, channel_type: "invite_only", user_id: user.id }
+        params = { size: 5, channel_type: "invite_only", user_id: [user.id] }
 
         chat_channel_membership_docs = described_class.search_documents(params: params)
         expect(chat_channel_membership_docs.count).to eq(1)
@@ -63,7 +63,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
         chat_channel_membership1.update(status: "inactive")
         chat_channel_membership2.update(status: "active")
         index_documents([chat_channel_membership1, chat_channel_membership2])
-        params = { size: 5, user_id: user.id }
+        params = { size: 5, user_id: [user.id] }
 
         chat_channel_membership_docs = described_class.search_documents(params: params)
         expect(chat_channel_membership_docs.count).to eq(1)
@@ -78,7 +78,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
         chat_channel_membership1.update(status: "active")
         chat_channel_membership2.update(status: "inactive")
         index_documents([chat_channel_membership1, chat_channel_membership2])
-        name_params = { size: 5, channel_text: "name", status: "active", user_id: user.id }
+        name_params = { size: 5, channel_text: "name", status: "active", user_id: [user.id] }
 
         chat_channel_membership_docs = described_class.search_documents(params: name_params)
         expect(chat_channel_membership_docs.count).to eq(1)
@@ -91,7 +91,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
       allow(chat_channel_membership1).to receive(:channel_type).and_return("not_direct")
       allow(chat_channel_membership2).to receive(:channel_type).and_return("direct")
       index_documents([chat_channel_membership1, chat_channel_membership2])
-      params = { size: 5, sort_by: "channel_type", sort_direction: "asc", user_id: user.id }
+      params = { size: 5, sort_by: "channel_type", sort_direction: "asc", user_id: [user.id] }
 
       chat_channel_membership_docs = described_class.search_documents(params: params)
       expect(chat_channel_membership_docs.count).to eq(2)
@@ -103,7 +103,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
       allow(chat_channel_membership1).to receive(:channel_last_message_at).and_return(Time.current)
       allow(chat_channel_membership2).to receive(:channel_last_message_at).and_return(1.year.ago)
       index_documents([chat_channel_membership1, chat_channel_membership2])
-      params = { size: 5, user_id: user.id }
+      params = { size: 5, user_id: [user.id] }
 
       chat_channel_membership_docs = described_class.search_documents(params: params)
       expect(chat_channel_membership_docs.count).to eq(2)
@@ -113,7 +113,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
 
     it "will return a set number of docs based on pagination params" do
       index_documents([chat_channel_membership1, chat_channel_membership2])
-      params = { page: 0, per_page: 1, user_id: user.id }
+      params = { page: 0, per_page: 1, user_id: [user.id] }
 
       chat_channel_membership_docs = described_class.search_documents(params: params)
       expect(chat_channel_membership_docs.count).to eq(1)
@@ -123,12 +123,12 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
       allow(chat_channel_membership1).to receive(:channel_last_message_at).and_return(Time.current)
       allow(chat_channel_membership2).to receive(:channel_last_message_at).and_return(1.year.ago)
       index_documents([chat_channel_membership1, chat_channel_membership2])
-      first_page_params = { page: 0, per_page: 1, sort_by: "channel_last_message_at", order: "dsc", user_id: user.id }
+      first_page_params = { page: 0, per_page: 1, sort_by: "channel_last_message_at", order: "dsc", user_id: [user.id] }
 
       chat_channel_membership_docs = described_class.search_documents(params: first_page_params)
       expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership1.id)
 
-      second_page_params = { page: 1, per_page: 1, sort_by: "channel_last_message_at", order: "dsc", user_id: user.id }
+      second_page_params = { page: 1, per_page: 1, sort_by: "channel_last_message_at", order: "dsc", user_id: [user.id] }
 
       chat_channel_membership_docs = described_class.search_documents(params: second_page_params)
       expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership2.id)
@@ -138,7 +138,7 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
       allow(chat_channel_membership1).to receive(:channel_last_message_at).and_return(Time.current)
       allow(chat_channel_membership2).to receive(:channel_last_message_at).and_return(1.year.ago)
       index_documents([chat_channel_membership1, chat_channel_membership2])
-      params = { page: 3, per_page: 1, user_id: user.id }
+      params = { page: 3, per_page: 1, user_id: [user.id] }
 
       chat_channel_membership_docs = described_class.search_documents(params: params)
       expect(chat_channel_membership_docs).to eq([])

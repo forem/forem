@@ -31,4 +31,27 @@ RSpec.describe "internal/organizations", type: :request do
       expect(response.body).to include(CGI.escapeHTML(organization.name))
     end
   end
+
+  describe "PATCH /internal" do
+    let(:organization) { create(:organization) }
+
+    it "adds credits to an organization" do
+      params = { credits: 1, credit_action: :add }
+
+      expect do
+        patch update_org_credits_internal_organization_path(organization),
+              params: params
+      end.to change { organization.reload.unspent_credits_count }.by(1)
+    end
+
+    it "removes credits to an organization" do
+      Credit.add_to_org(organization, 1)
+      params = { credits: 1, credit_action: :remove }
+
+      expect do
+        patch update_org_credits_internal_organization_path(organization),
+              params: params
+      end.to change { organization.reload.unspent_credits_count }.by(-1)
+    end
+  end
 end

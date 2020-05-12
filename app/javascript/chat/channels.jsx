@@ -2,6 +2,8 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
 import ConfigImage from 'images/three-dots.svg';
+import ChannelButton from './components/channelButton';
+import { channelSorter } from './util';
 
 const Channels = ({
   activeChannelId,
@@ -11,53 +13,46 @@ const Channels = ({
   expanded,
   filterQuery,
   channelsLoaded,
+  currentUserId,
+  triggerActiveContent,
 }) => {
-  const channels = chatChannels.map(channel => {
+  const sortedChatChannels = channelSorter(
+    chatChannels,
+    currentUserId,
+    filterQuery,
+  );
+  const discoverableChannels = sortedChatChannels.discoverableChannels.map(
+    (channel) => {
+      return (
+        <ChannelButton
+          channel={channel}
+          discoverableChannel
+          triggerActiveContent={triggerActiveContent}
+        />
+      );
+    },
+  );
+
+  const channels = sortedChatChannels.activeChannels.map((channel) => {
     const isActive = parseInt(activeChannelId, 10) === channel.chat_channel_id;
     const isUnopened =
       !isActive && unopenedChannelIds.includes(channel.chat_channel_id);
-    let newMessagesIndicator = isUnopened ? 'new' : 'old';
+    const newMessagesIndicator = isUnopened ? 'new' : 'old';
     const otherClassname = isActive
       ? 'chatchanneltab--active'
       : 'chatchanneltab--inactive';
+
     return (
-      <button
-        type="button"
-        key={channel.id}
-        className="chatchanneltabbutton crayons-link"
-        onClick={handleSwitchChannel}
-        data-channel-id={channel.chat_channel_id}
-        data-channel-slug={channel.channel_modified_slug}
-      >
-        <span
-          className={`chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator}`}
-          data-channel-id={channel.chat_channel_id}
-          data-channel-slug={channel.channel_modified_slug}
-          style={{
-            border: `1px solid ${channel.channel_color}`,
-            boxShadow: `3px 3px 0px ${channel.channel_color}`,
-          }}
-        >
-          <span
-            data-channel-slug={channel.channel_modified_slug}
-            className={`chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicator}`}
-            data-channel-id={channel.chat_channel_id}
-          >
-            <img
-              src={channel.channel_image}
-              alt="pic"
-              className={
-                channel.channel_type === 'direct'
-                  ? 'chatchanneltabindicatordirectimage'
-                  : 'chatchanneltabindicatorgroupimage invert-channel-image'
-              }
-            />
-          </span>
-          {isUnopened ? <span class="crayons-indicator crayons-indicator--accent crayons-indicator--bullet"></span> : ''}{channel.channel_name}
-        </span>
-      </button>
+      <ChannelButton
+        channel={channel}
+        newMessagesIndicator={newMessagesIndicator}
+        otherClassname={otherClassname}
+        handleSwitchChannel={handleSwitchChannel}
+        isUnopened={isUnopened}
+      />
     );
   });
+  console.log(channels);
   let topNotice = '';
   if (
     expanded &&
@@ -103,6 +98,16 @@ const Channels = ({
       >
         {topNotice}
         {channels}
+        {discoverableChannels.length > 0 ? (
+          <div>
+            <span className="crayons-indicator crayons-indicator--">
+              Global Channel Search
+            </span>
+            {discoverableChannels}
+          </div>
+        ) : (
+          ''
+        )}
         {channelsListFooter}
       </div>
       {configFooter}
@@ -115,9 +120,11 @@ Channels.propTypes = {
   chatChannels: PropTypes.arrayOf(PropTypes.objectOf()).isRequired,
   unopenedChannelIds: PropTypes.arrayOf().isRequired,
   handleSwitchChannel: PropTypes.func.isRequired,
+  triggerActiveContent: PropTypes.func.isRequired,
   expanded: PropTypes.bool.isRequired,
   filterQuery: PropTypes.string.isRequired,
   channelsLoaded: PropTypes.bool.isRequired,
+  currentUserId: PropTypes.string.isRequired,
 };
 
 export default Channels;

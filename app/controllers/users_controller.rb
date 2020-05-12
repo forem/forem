@@ -94,16 +94,16 @@ class UsersController < ApplicationController
   def request_destroy
     set_tabs("account")
 
-    if destroy_request_in_progress
+    if destroy_request_in_progress?
       flash[:settings_notice] = "You have already requested account deletion. Please, check your email for further instructions."
-      redirect_to "/settings/#{@tab}"
+      redirect_to user_settings_path(@tab)
     elsif @user.email?
       Users::RequestDestroy.call(@user)
       flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
-      redirect_to "/settings/#{@tab}"
+      redirect_to user_settings_path(@tab)
     else
       flash[:settings_notice] = "Please, provide an email to delete your account."
-      redirect_to "/settings/account"
+      redirect_to user_settings_path("account")
     end
   end
 
@@ -123,7 +123,7 @@ class UsersController < ApplicationController
       redirect_to root_path
     else
       flash[:settings_notice] = "Please, provide an email to delete your account"
-      redirect_to "/settings/account"
+      redirect_to user_settings_path("account")
     end
   end
 
@@ -405,7 +405,7 @@ class UsersController < ApplicationController
     false
   end
 
-  def destroy_request_in_progress
+  def destroy_request_in_progress?
     Rails.cache.exist?("user-destroy-token-#{@user.id}")
   end
 end
