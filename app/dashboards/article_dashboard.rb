@@ -15,6 +15,8 @@ class ArticleDashboard < Administrate::BaseDashboard
     organization: Field::BelongsTo,
     id: Field::Number,
     title: Field::String,
+    query_friendly_title_preamble: Field::String,
+    query_friendly_description_alternative: Field::String,
     body_html: Field::Text,
     body_markdown: Field::Text,
     slug: Field::String,
@@ -67,6 +69,8 @@ class ArticleDashboard < Administrate::BaseDashboard
     third_user_id
     organization
     title
+    query_friendly_title_preamble
+    query_friendly_description_alternative
     body_markdown
     slug
     social_image

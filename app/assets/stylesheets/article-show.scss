@@ -153,6 +153,17 @@ article {
         font-size: 57px;
       }
 
+      .article-title-preamble {
+        display: block;
+        color: var(--base-60);
+        font-size: 16px;
+        margin-bottom: -1.25vw;
+        @media screen and (min-width: 1600px) {
+          font-size: 17px;
+          margin-bottom: -18px;
+        }
+      }
+
       .title-block {
         display: inline-block;
       }
