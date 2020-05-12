@@ -45,7 +45,7 @@ class TagAdjustmentsController < ApplicationController
     @article = Article.find(tag_adjustment.article_id)
     @article.update!(tag_list: @article.tag_list.add(tag_adjustment.tag_name)) if tag_adjustment.adjustment_type == "removal"
     @article.update!(tag_list: @article.tag_list.remove(tag_adjustment.tag_name)) if tag_adjustment.adjustment_type == "addition"
-    response_to do |format|
+    respond_to do |format|
       # TODO: add tag adjustment removal async route in actions panel
       format.json { render json: { result: "Tag adjustment destroyed" } }
       format.html { redirect_to "#{URI.parse(@article.path).path}/mod" }
