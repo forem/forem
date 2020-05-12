@@ -191,35 +191,18 @@ describe('<ListingDashboard />', () => {
     context.setState(listingState);
 
     it('for user and org buttons', () => {
-      expect(
-        context
-          .find('.rounded-btn')
-          .at(0)
-          .text(),
-      ).toEqual('Personal');
-      expect(
-        context
-          .find('.rounded-btn')
-          .at(1)
-          .text(),
-      ).toEqual(listingState.orgs[0].name);
-      expect(
-        context
-          .find('.rounded-btn')
-          .at(2)
-          .text(),
-      ).toEqual(listingState.orgs[1].name);
+      expect(context.find('.rounded-btn').at(0).text()).toEqual('Personal');
+      expect(context.find('.rounded-btn').at(1).text()).toEqual(
+        listingState.orgs[0].name,
+      );
+      expect(context.find('.rounded-btn').at(2).text()).toEqual(
+        listingState.orgs[1].name,
+      );
 
-      context
-        .find('.rounded-btn')
-        .at(1)
-        .simulate('click');
-      expect(
-        context
-          .find('.rounded-btn')
-          .at(1)
-          .attr('className'),
-      ).toEqual('rounded-btn active');
+      context.find('.rounded-btn').at(1).simulate('click');
+      expect(context.find('.rounded-btn').at(1).attr('className')).toEqual(
+        'rounded-btn active',
+      );
       expect(context.state('selectedListings')).toEqual(
         listingState.orgs[0].id,
       );
@@ -232,43 +215,24 @@ describe('<ListingDashboard />', () => {
       expect(context.find('.dashboard-listings-header').exists()).toEqual(true);
 
       expect(
-        context
-          .find('.dashboard-listings-header')
-          .at(0)
-          .childAt(0)
-          .text(),
+        context.find('.dashboard-listings-header').at(0).childAt(0).text(),
       ).toEqual('Listings');
       expect(
-        context
-          .find('.dashboard-listings-header')
-          .at(0)
-          .childAt(2)
-          .text(),
+        context.find('.dashboard-listings-header').at(0).childAt(2).text(),
       ).toEqual('Create a Listing');
 
       expect(
-        context
-          .find('.dashboard-listings-header')
-          .at(1)
-          .childAt(0)
-          .text(),
+        context.find('.dashboard-listings-header').at(1).childAt(0).text(),
       ).toEqual('Credits');
       expect(
-        context
-          .find('.dashboard-listings-header')
-          .at(1)
-          .childAt(2)
-          .text(),
+        context.find('.dashboard-listings-header').at(1).childAt(2).text(),
       ).toEqual('Buy Credits');
     });
 
     it('for listingRow view', () => {
       expect(context.find('.dashboard-listings-view').exists()).toEqual(true);
       expect(
-        context
-          .find('.dashboard-listings-view')
-          .children()
-          .text(),
+        context.find('.dashboard-listings-view').children().text(),
       ).toEqual(context.find('ListingRow').text());
     });
   });

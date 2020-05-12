@@ -2,65 +2,107 @@
 
 exports[`<TodaysPodcasts /> component should render a today's podcasts 1`] = `
 <div
-  class="single-article single-article-podcast-div"
+  class="crayons-story"
 >
-  <h3>
-    <a
-      href="/pod"
-    >
-      Today's Podcasts
-    </a>
-  </h3>
-  <a
-    class="individual-podcast-link"
-    href="/monitor-recontextualize/undefined"
+  <div
+    class="crayons-story__body"
   >
-    <img
-      alt="monitor recontextualize"
-      src="/images/16.png"
-    />
-    <div
-      class="individual-podcast-link-details"
+    <h3
+      class="crayons-story__headline"
     >
-      <strong>
-        monitor recontextualize
-      </strong>
-       Rubber local
-    </div>
-  </a>
-  <a
-    class="individual-podcast-link"
-    href="/monitor-recontextualize/undefined"
-  >
-    <img
-      alt="monitor recontextualize"
-      src="/images/16.png"
-    />
+      <a
+        href="/pod"
+      >
+        Today's Podcasts
+      </a>
+    </h3>
     <div
-      class="individual-podcast-link-details"
+      class="crayons-podcast-episode"
     >
-      <strong>
-        monitor recontextualize
-      </strong>
-       Rubber local
+      <a
+        class="crayons-podcast-episode__cover"
+        href="/monitor-recontextualize/undefined"
+      >
+        <img
+          alt="monitor recontextualize"
+          src="/images/16.png"
+        />
+      </a>
+      <div>
+        <p
+          class="crayons-podcast-episode__author"
+        >
+          Rubber local
+        </p>
+        <h2
+          class="crayons-story__title mb-0"
+        >
+          <a
+            href="/monitor-recontextualize/undefined"
+          >
+            monitor recontextualize
+          </a>
+        </h2>
+      </div>
     </div>
-  </a>
-  <a
-    class="individual-podcast-link"
-    href="/monitor-recontextualize/undefined"
-  >
-    <img
-      alt="monitor recontextualize"
-      src="/images/16.png"
-    />
     <div
-      class="individual-podcast-link-details"
+      class="crayons-podcast-episode"
     >
-      <strong>
-        monitor recontextualize
-      </strong>
-       Rubber local
+      <a
+        class="crayons-podcast-episode__cover"
+        href="/monitor-recontextualize/undefined"
+      >
+        <img
+          alt="monitor recontextualize"
+          src="/images/16.png"
+        />
+      </a>
+      <div>
+        <p
+          class="crayons-podcast-episode__author"
+        >
+          Rubber local
+        </p>
+        <h2
+          class="crayons-story__title mb-0"
+        >
+          <a
+            href="/monitor-recontextualize/undefined"
+          >
+            monitor recontextualize
+          </a>
+        </h2>
+      </div>
     </div>
-  </a>
+    <div
+      class="crayons-podcast-episode"
+    >
+      <a
+        class="crayons-podcast-episode__cover"
+        href="/monitor-recontextualize/undefined"
+      >
+        <img
+          alt="monitor recontextualize"
+          src="/images/16.png"
+        />
+      </a>
+      <div>
+        <p
+          class="crayons-podcast-episode__author"
+        >
+          Rubber local
+        </p>
+        <h2
+          class="crayons-story__title mb-0"
+        >
+          <a
+            href="/monitor-recontextualize/undefined"
+          >
+            monitor recontextualize
+          </a>
+        </h2>
+      </div>
+    </div>
+  </div>
 </div>
 `;

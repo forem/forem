@@ -14,15 +14,15 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the main article" do
-        expect(page).to have_selector(".big-article", visible: :visible)
+        expect(page).to have_selector(".crayons-story--featured", visible: :visible)
       end
 
       it "shows the main article readable date", js: true do
-        expect(page).to have_selector(".big-article time", text: "Mar 4")
+        expect(page).to have_selector(".crayons-story--featured time", text: "Mar 4")
       end
 
       it "embeds the main article published timestamp" do
-        selector = ".big-article time[datetime='#{timestamp}']"
+        selector = ".crayons-story--featured time[datetime='#{timestamp}']"
         expect(page).to have_selector(selector)
       end
     end
@@ -35,17 +35,17 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows correct articles " do
-        expect(page).to have_selector(".single-article", count: 2)
+        expect(page).to have_selector(".crayons-story", count: 2)
         expect(page).to have_text(article.title)
         expect(page).to have_text(article2.title)
       end
 
       it "shows all articles dates", js: true do
-        expect(page).to have_selector(".single-article time", text: "Mar 4", count: 2)
+        expect(page).to have_selector(".crayons-story time", text: "Mar 4", count: 2)
       end
 
       it "embeds all articles published timestamps" do
-        selector = ".single-article time[datetime='#{timestamp}']"
+        selector = ".crayons-story time[datetime='#{timestamp}']"
         expect(page).to have_selector(selector, count: 2)
       end
     end

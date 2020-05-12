@@ -315,10 +315,7 @@ class UsersController < ApplicationController
   end
 
   def handle_integrations_tab
-    return unless current_user.identities.where(provider: "github").any?
-
-    @client = Octokit::Client.
-      new(access_token: current_user.identities.where(provider: "github").last.token)
+    @github_repositories_show = current_user.authenticated_through?(:github)
   end
 
   def handle_billing_tab

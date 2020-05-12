@@ -321,4 +321,79 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       end
     end
   end
+
+  describe "POST /chat_channel_memberships/add_membership" do
+    context "when user is moderator of channel" do
+      it "adds requested member to join closed channel" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+        channel = ChatChannel.first
+        membership = ChatChannelMembership.last
+        membership.update(status: "joining_request")
+        membership.update(role: "mod")
+        post "/chat_channel_memberships/add_membership", params: {
+          membership_id: membership.id,
+          chat_channel_id: channel.id,
+          chat_channel_membership: {
+            user_action: "accept"
+          }
+        }
+        expect(ChatChannelMembership.find(membership.id).status).to eq("active")
+        expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
+      end
+    end
+
+    context "when user is member of channel" do
+      it "raise Pundit::NotAuthorizedError" do
+        expect do
+          channel = ChatChannel.first
+          membership = ChatChannelMembership.last
+          membership.update(status: "joining_request")
+          post "/chat_channel_memberships/add_membership", params: {
+            membership_id: membership.id,
+            chat_channel_id: channel.id,
+            chat_channel_membership: {
+              user_action: "accept"
+            }
+          }
+        end.to(raise_error(Pundit::NotAuthorizedError))
+      end
+    end
+  end
+
+  describe "POST /join_chat_channel" do
+    let(:chat_channel_membership) do
+      {
+        chat_channel_id: chat_channel.id
+      }
+    end
+
+    before do
+      allow(Pusher).to receive(:trigger).and_return(true)
+      sign_in second_user
+      post "/join_chat_channel", params: { chat_channel_membership: chat_channel_membership }
+    end
+
+    context "when user was not member of closed channel" do
+      it "requested to join closed channel" do
+        expect(ChatChannelMembership.last.status).to eq("joining_request")
+        expect(response.status).to eq(200)
+      end
+
+      it "returns in json" do
+        expect(response.content_type).to eq("application/json")
+      end
+    end
+
+    context "when user was a member of channel, and than left channel" do
+      it "requested to join closed channel" do
+        ChatChannelMembership.create(chat_channel_id: chat_channel.id, user_id: second_user.id, status: "left_channel")
+        expect(ChatChannelMembership.last.status).to eq("joining_request")
+        expect(response.status).to eq(200)
+      end
+
+      it "returns in json" do
+        expect(response.content_type).to eq("application/json")
+      end
+    end
+  end
 end

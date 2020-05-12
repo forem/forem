@@ -1,0 +1,303 @@
+@import '../variables';
+@import '../config/import';
+
+.crayons-story {
+  background: var(--card-bg);
+  font-size: var(--fs-base); // Todo: remove when ready.
+  box-shadow: $bold-shadow, 0 0 0 1px var(--story-border); // we will kill it at some point, don't worry. just not yet.
+
+  @media (min-width: $breakpoint-m) {
+    border-radius: var(--radius);
+    margin-bottom: var(
+      --su-2
+    ); // This is basically spacing between each feed card.
+  }
+
+  --story-padding: var(--su-3) var(--su-2) var(--su-2);
+  --title-font-size: var(--fs-xl);
+
+  @media (min-width: $breakpoint-s) {
+    --story-padding: var(--su-4);
+    --title-font-size: var(--fs-2xl);
+
+    &--featured {
+      --title-font-size: var(--fs-3xl);
+    }
+  }
+
+  // Defining additional colors.
+  &__secondary {
+    color: var(--card-color-secondary);
+
+    &[href]:hover,
+    [enabled]:hover {
+      color: var(--card-color);
+    }
+  }
+
+  &__tertiary {
+    color: var(--card-color-tertiary);
+
+    &[href]:hover {
+      color: var(--card-color);
+    }
+  }
+
+  // Cover section for promoted (first) card.
+  &__cover {
+    display: block;
+
+    &__image {
+      width: 100%;
+      height: auto;
+      padding-bottom: 42%;
+      background-size: cover;
+      background-position: center center;
+
+      @media (min-width: $breakpoint-m) {
+        border-radius: var(--radius) var(--radius) 0 0;
+      }
+    }
+  }
+
+  &__body {
+    padding: var(--story-padding);
+  }
+
+  &__indention {
+    padding-left: calc(
+      var(--su-7) + var(--su-2)
+    ); // avatar_width + avatar_margin
+  }
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--su-2);
+  }
+
+  &__overflow {
+    color: var(--card-color-tertiary);
+    @media (min-width: $breakpoint-s) {
+      display: none;
+    }
+    &:hover {
+      color: var(--card-color);
+    }
+  }
+
+  &:hover {
+    .crayons-story__overflow {
+      display: inline-flex;
+    }
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    line-height: var(--lh-tight);
+    font-size: var(--fs-s);
+  }
+
+  &__author-pic {
+    position: relative;
+    margin-right: var(--su-2);
+  }
+
+  &__tags {
+    margin-bottom: var(--su-2);
+    margin-left: calc(var(--su-1) * -1);
+  }
+
+  &__title {
+    color: var(--card-color);
+    line-height: var(--lh-tight);
+    margin-bottom: var(--su-2);
+    font-size: var(--title-font-size);
+
+    a {
+      color: inherit;
+      display: block;
+
+      &:hover {
+        color: var(--link-color-hover);
+      }
+    }
+  }
+
+  &__flare-tag {
+    font-weight: normal;
+    font-family: var(--ff-accent);
+    font-size: 0.6em;
+    padding: 0.3em;
+    vertical-align: middle;
+    position: relative;
+    top: -2px;
+    line-height: 1em;
+    display: inline-block;
+    border-radius: var(--radius);
+    letter-spacing: -0.05em;
+    background: var(--base-60);
+    margin-right: var(--su-1);
+    color: var(--base-inverted);
+  }
+
+  &__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: var(--fs-s);
+    line-height: var(--lh-tight);
+  }
+
+  &__details {
+    display: flex;
+    margin-left: calc(var(--su-2) * -1);
+  }
+
+  &__comments {
+    cursor: default;
+    background: var(--story-comments-bg);
+    padding: var(--story-padding);
+    padding-top: var(--su-4);
+    border-radius: 0 0 var(--radius) var(--radius);
+    margin-top: calc(var(--su-1) * -1);
+
+    &__headline {
+      font-weight: var(--fw-bold);
+      font-size: var(--fs-s);
+      color: var(--card-color-secondary);
+      margin-bottom: var(--su-3);
+      padding-left: calc(var(--su-6) + var(--su-4));
+    }
+
+    &__actions {
+      padding-left: calc(var(--su-6) + var(--su-4));
+      padding-top: var(--su-4);
+    }
+  }
+
+  &__snippet {
+    color: var(--card-secondary-color);
+    font-size: inherit;
+    em {
+      font-weight: var(--fw-medium);
+      color: var(--card-color);
+      background: var(--accent-warning-lighter);
+    }
+  }
+
+  &__headline {
+    font-family: var(--ff-accent);
+    font-size: var(--fs-s);
+    color: var(--card-color-tertiary);
+    margin-bottom: var(--su-4);
+
+    a {
+      color: inherit;
+      display: block;
+
+      &:hover {
+        color: var(--link-color-hover);
+      }
+    }
+  }
+
+  &__save {
+    display: flex;
+    align-items: center;
+  }
+
+  &__video {
+    position: relative;
+    padding-top: 56%;
+    display: block;
+    background-color: var(--base-100);
+    background-size: cover;
+
+    img {
+      width: 100%;
+    }
+
+    &__time {
+      position: absolute;
+      bottom: var(--su-4);
+      right: var(--su-4);
+      background: rgba(0, 0, 0, 0.8);
+      color: var(--base-inverted);
+      border-radius: var(--radius);
+      padding: var(--su-1);
+      font-size: var(--fs-s);
+      font-family: var(--ff-accent);
+    }
+  }
+}
+
+.crayons-podcast-episode {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: var(--su-4);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &__cover {
+    width: var(--su-7);
+    height: var(--su-7);
+    margin-right: var(--su-2);
+
+    img {
+      width: 100%;
+      height: 100%;
+      border-radius: var(--radius);
+    }
+  }
+
+  &__author {
+    font-size: var(--fs-s);
+    color: var(--card-color-secondary);
+  }
+
+  &__title {
+    color: var(--card-color);
+    line-height: var(--lh-tight);
+    margin-bottom: var(--su-1);
+    font-size: var(--fs-xl);
+
+    @media (min-width: $breakpoint-s) {
+      font-size: var(--fs-2xl);
+    }
+
+    a {
+      color: inherit;
+      display: block;
+
+      &:hover {
+        color: var(--link-color-hover);
+      }
+    }
+  }
+}
+
+// Legacy
+.crayons-story {
+  .crayons-btn {
+    .bm-initial {
+      display: inline-flex;
+    }
+    .bm-success {
+      display: none;
+    }
+
+    &.selected {
+      .bm-initial {
+        display: none;
+      }
+      .bm-success {
+        display: inline-flex;
+      }
+    }
+  }
+}

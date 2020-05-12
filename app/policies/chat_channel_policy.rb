@@ -24,7 +24,7 @@ class ChatChannelPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    %i[channel_name slug command description]
+    %i[channel_name slug command description discoverable]
   end
 
   def create_chat?

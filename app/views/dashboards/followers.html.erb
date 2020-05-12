@@ -29,6 +29,12 @@
               <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(width: 60) %>" />
               <%= user.name %>
               <span class="dashboard-username">@<%= user.username %></span>
+              <a href="#"
+                id="dashboard-follow"
+                class="cta follow-action-button dashboard-follow"
+                data-info='{"id":<%= user.id %>,"className":"<%= user.class.name %>","style":"follow-back"}'>
+                &nbsp;
+              </a>
             </h2>
           </a>
         </div>

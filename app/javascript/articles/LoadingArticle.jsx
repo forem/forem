@@ -2,29 +2,30 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 export const LoadingArticle = ({ version }) => {
-  const bigPicArea = version === 'featured' ? <div className="picture" /> : '';
-  const smallPic =
-    version === 'featured' ? (
-      ''
-    ) : (
-      <div className="small-pic">
-        <div className="color single-article-loading" />
+  const cover =
+    version === 'featured' && (
+      <div className="crayons-story__cover">
+        <div
+          className="crayons-scaffold crayons-story__cover__image"
+          loading="lazy"
+        />
       </div>
     );
   return (
-    <div
-      className="single-article single-article-small-pic big-article"
-      style={{ paddingBottom: version === 'featured' ? '46px' : '0' }}
-    >
-      {bigPicArea}
-      {smallPic}
-      <div className="content">
-        <h3 className="single-article-loading">&nbsp;</h3>
+    <div className="crayons-story">
+      {cover}
+      <div className="crayons-story__body">
+        <div className="crayons-story__top mb-3">
+          <div className="crayons-story__meta w-100">
+            <div className="crayons-scaffold-loading mr-2 w-0 h-0 p-4 radius-full" />
+            <div className="crayons-scaffold-loading w-25 h-0 py-2" />
+          </div>
+        </div>
+        <div className="crayons-story__indention">
+          <div className="crayons-scaffold-loading w-75 h-0 py-3 mb-2" />
+          <div className="crayons-scaffold-loading w-50 h-0 py-2 mb-8" />
+        </div>
       </div>
-      <h4 className="single-article-loading" style={{ width: '46%' }}>
-        &nbsp;
-      </h4>
-      <div className="tags single-article-loading" />
     </div>
   );
 };
