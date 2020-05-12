@@ -52,7 +52,7 @@ function addReactionButtonListeners() {
   );
   /* eslint-disable camelcase */
   butts.forEach((butt) => {
-    butt.addEventListener('click', (event) => {
+    butt.addEventListener('click', async (event) => {
       event.preventDefault();
       const {
         reactableType: reactable_type,
@@ -63,23 +63,22 @@ function addReactionButtonListeners() {
       applyReactedClass(category);
       butt.classList.toggle('reacted');
 
-      request('/reactions', {
-        method: 'POST',
-        body: { reactable_type, category, reactable_id },
-      }).then((response) =>
-        response
-          .json()
-          .then((json) => {
-            if (json.error) {
-              // eslint-disable-next-line no-alert
-              alert(json.error);
-            }
-          })
-          .catch((error) => {
-            // eslint-disable-next-line no-alert
-            alert(error);
-          }),
-      );
+      try {
+        const response = await request('/reactions', {
+          method: 'POST',
+          body: { reactable_type, category, reactable_id },
+        });
+
+        const outcome = await response.json();
+
+        if (outcome.error) {
+          // eslint-disable-next-line no-alert
+          alert(outcome.error);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-alert
+        alert(error);
+      }
     });
   });
   /* eslint-enable camelcase */
@@ -93,34 +92,33 @@ function clearExpLevels() {
   });
 }
 
-function updateExperienceLevel(currentUserId, articleId, rating, group) {
-  request('/rating_votes', {
-    method: 'POST',
-    body: JSON.stringify({
-      user_id: currentUserId,
-      article_id: articleId,
-      rating,
-      group,
-    }),
-  }).then((response) =>
-    response
-      .json()
-      .then((json) => {
-        if (json.result === 'Success') {
-          clearExpLevels();
-          document
-            .getElementById(`js__rating__vote__${rating}`)
-            .classList.add('selected');
-        } else {
-          // eslint-disable-next-line no-alert
-          alert(json.error);
-        }
-      })
-      .catch((error) => {
-        // eslint-disable-next-line no-alert
-        alert(error);
+async function updateExperienceLevel(currentUserId, articleId, rating, group) {
+  try {
+    const response = await request('/rating_votes', {
+      method: 'POST',
+      body: JSON.stringify({
+        user_id: currentUserId,
+        article_id: articleId,
+        rating,
+        group,
       }),
-  );
+    });
+
+    const outcome = await response.json();
+
+    if (outcome.result === 'Success') {
+      clearExpLevels();
+      document
+        .getElementById(`js__rating__vote__${rating}`)
+        .classList.add('selected');
+    } else {
+      // eslint-disable-next-line no-alert
+      alert(outcome.error);
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-alert
+    alert(error);
+  }
 }
 
 function toggleSubmitContainer() {
@@ -146,7 +144,7 @@ function renderTagOnArticle(tagName, colors) {
   articleTagsContainer.appendChild(newTag);
 }
 
-function adjustTag(el) {
+async function adjustTag(el) {
   const reasonForAdjustment = document.getElementById('tag-adjustment-reason')
     .value;
   const body = {
@@ -160,47 +158,52 @@ function adjustTag(el) {
     },
   };
 
-  request('/tag_adjustments', {
-    method: 'POST',
-    body: JSON.stringify(body),
-  })
-    .then((response) => response.json())
-    .then((json) => {
-      if (json.status === 'Success') {
-        let adjustedTagName;
-        if (el.tagName === 'BUTTON') {
-          adjustedTagName = el.dataset.tagName;
-          el.remove();
-        } else {
-          adjustedTagName = el.value;
-          // eslint-disable-next-line no-param-reassign
-          el.value = '';
-        }
-
-        toggleSubmitContainer();
-        clearAdjustmentReason();
-
-        if (json.result === 'addition') {
-          renderTagOnArticle(adjustedTagName, json.colors);
-        } else {
-          // eslint-disable-next-line no-restricted-globals
-          const tagOnArticle = top.document.querySelector(
-            `.tag[href="/t/${adjustedTagName}"]`,
-          );
-          tagOnArticle.remove();
-        }
-
-        // eslint-disable-next-line no-alert
-        alert(
-          `#${adjustedTagName} was ${
-            json.result === 'addition' ? 'added' : 'removed'
-          }!`,
-        );
-      } else {
-        // eslint-disable-next-line no-alert
-        alert(json.error);
-      }
+  try {
+    const response = await request('/tag_adjustments', {
+      method: 'POST',
+      body: JSON.stringify(body),
     });
+
+    const outcome = await response.json();
+
+    if (outcome.status === 'Success') {
+      let adjustedTagName;
+      if (el.tagName === 'BUTTON') {
+        adjustedTagName = el.dataset.tagName;
+        el.remove();
+      } else {
+        adjustedTagName = el.value;
+        // eslint-disable-next-line no-param-reassign
+        el.value = '';
+      }
+
+      toggleSubmitContainer();
+      clearAdjustmentReason();
+
+      if (outcome.result === 'addition') {
+        renderTagOnArticle(adjustedTagName, outcome.colors);
+      } else {
+        // eslint-disable-next-line no-restricted-globals
+        const tagOnArticle = top.document.querySelector(
+          `.tag[href="/t/${adjustedTagName}"]`,
+        );
+        tagOnArticle.remove();
+      }
+
+      // eslint-disable-next-line no-alert
+      alert(
+        `#${adjustedTagName} was ${
+          outcome.result === 'addition' ? 'added' : 'removed'
+        }!`,
+      );
+    } else {
+      // eslint-disable-next-line no-alert
+      alert(outcome.error);
+    }
+  } catch (error) {
+    // eslint-disable-next-line no-alert
+    alert(error);
+  }
 }
 
 function handleAdjustTagBtn(btn) {
