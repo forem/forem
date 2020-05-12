@@ -16,16 +16,26 @@
   &__body {
     margin-top: calc(var(--su-1) * -1);
     padding-left: var(--su-7);
+    max-height: 42px; // TODO: hotifx: https://github.com/thepracticaldev/dev.to/issues/7790
+    overflow: hidden; // TODO: hotifx: https://github.com/thepracticaldev/dev.to/issues/7790
 
     a:hover {
       text-decoration: underline; //todo: default for all in-content links
     }
 
-    p {
+    // TODO: hotifx: https://github.com/thepracticaldev/dev.to/issues/7790
+    * {
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
+      max-height: 42px;
+      max-width: 100%;
+      width: auto;
+      object-fit: contain;
+      &:nth-child(n + 2) {
+        display: none;
+      }
     }
   }
 
