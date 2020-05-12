@@ -29,5 +29,9 @@ FactoryBot.define do
     trait :user do
       association :reactable, factory: :user
     end
+
+    trait :comment do
+      association :reactable, factory: :comment
+    end
   end
 end
