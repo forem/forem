@@ -1285,6 +1285,9 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
             }
           }
         />
+        <div
+          class="crayons-comment__footer"
+        />
       </div>
       <div
         class="crayons-story__comments__actions"
@@ -2085,6 +2088,9 @@ exports[`<Article /> component should render with comments 1`] = `
 ",
             }
           }
+        />
+        <div
+          class="crayons-comment__footer"
         />
       </div>
       <div

@@ -46,6 +46,7 @@ export const CommentListItem = ({ comment }) => (
       // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: comment.safe_processed_html }}
     />
+    <div className="crayons-comment__footer" />
   </div>
 );
 
