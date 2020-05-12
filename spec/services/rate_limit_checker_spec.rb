@@ -14,8 +14,14 @@ RSpec.describe RateLimitChecker, type: :service do
       expect(rate_limit_checker.limit_by_action("random-nothing")).to be(false)
     end
 
+    it "raises an error if user does not have an ID" do
+      action = described_class::ACTION_LIMITERS.keys.first
+      limiter = described_class.new(build(:user))
+      expect { limiter.limit_by_action(action) }.to raise_error("Invalid Cache Key: user ID can't be blank")
+    end
+
     # published_article_creation limit we check against the database rather than our cache
-    RateLimitChecker::ACTION_LIMITERS.except(:published_article_creation).each do |action, _options|
+    described_class::ACTION_LIMITERS.except(:published_article_creation).each do |action, _options|
       it "returns true if #{action} limit has been reached" do
         allow(Rails.cache).to receive(:read).with(
           cache_key(action),
