@@ -46,6 +46,9 @@ exports[`<CommentsList /> should not render "See all comments" button when there
         }
       }
     />
+    <div
+      class="crayons-comment__footer"
+    />
   </div>
   <div
     class="crayons-comment pl-2 cursor-pointer"
@@ -88,6 +91,9 @@ exports[`<CommentsList /> should not render "See all comments" button when there
 ",
         }
       }
+    />
+    <div
+      class="crayons-comment__footer"
     />
   </div>
 </div>
@@ -138,6 +144,9 @@ exports[`<CommentsList /> should not render "See all comments" button when there
 ",
         }
       }
+    />
+    <div
+      class="crayons-comment__footer"
     />
   </div>
 </div>
@@ -193,6 +202,9 @@ exports[`<CommentsList /> should render "See all comments" button when there are
         }
       }
     />
+    <div
+      class="crayons-comment__footer"
+    />
   </div>
   <div
     class="crayons-comment pl-2 cursor-pointer"
@@ -235,6 +247,9 @@ exports[`<CommentsList /> should render "See all comments" button when there are
 ",
         }
       }
+    />
+    <div
+      class="crayons-comment__footer"
     />
   </div>
   <div
@@ -296,6 +311,9 @@ exports[`<CommentsList /> should render comments 1`] = `
         }
       }
     />
+    <div
+      class="crayons-comment__footer"
+    />
   </div>
   <div
     class="crayons-comment pl-2 cursor-pointer"
@@ -338,6 +356,9 @@ exports[`<CommentsList /> should render comments 1`] = `
 ",
         }
       }
+    />
+    <div
+      class="crayons-comment__footer"
     />
   </div>
   <div
