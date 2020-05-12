@@ -17,7 +17,7 @@
     margin-top: calc(var(--su-1) * -1);
     padding-left: var(--su-7);
     padding-bottom: var(--su-2);
-    max-height:330px;
+    max-height:310px;
     overflow: hidden;
 
     a:hover {
@@ -29,6 +29,10 @@
     }
 
     * {
+      overflow: hidden;
+      max-width: 100%;
+    }
+    div {
       display: -webkit-box;
       -webkit-box-orient: vertical;
       overflow: hidden;
