@@ -3,7 +3,8 @@ class ReactionsController < ApplicationController
   before_action :authorize_for_reaction, :check_limit, only: [:create]
   after_action :verify_authorized
 
-  NEG_ARTICLE_REACTIONS = %w[thumbsdown vomit].freeze
+  NEGATIVE_CATEGORIES = %w[thumbsdown vomit].freeze
+  MODERATION_CATEGORIES = %w[thumbsup thumbsdown vomit].freeze
 
   def index
     skip_authorization
@@ -53,8 +54,8 @@ class ReactionsController < ApplicationController
   def create
     Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
 
-    if params[:reactable_type] == "Article"
-      clear_article_reactions(
+    if params[:reactable_type] == "Article" && params[:category].in?(MODERATION_CATEGORIES)
+      clear_moderator_reactions(
         params[:reactable_id],
         params[:reactable_type],
         current_user,
@@ -137,10 +138,10 @@ class ReactionsController < ApplicationController
                       rating: current_user.experience_level)
   end
 
-  def clear_article_reactions(id, type, mod, category)
+  def clear_moderator_reactions(id, type, mod, category)
     reactions = if category == "thumbsup"
                   Reaction.where(reactable_id: id, reactable_type: type, user: mod).where.not(category: category)
-                elsif category.in?(NEG_ARTICLE_REACTIONS)
+                elsif category.in?(NEGATIVE_CATEGORIES)
                   Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
                 end
 
