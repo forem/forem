@@ -38,13 +38,11 @@ class Internal::ArticlesController < Internal::ApplicationController
     article = Article.find(params[:id])
     article.featured = article_params[:featured].to_s == "true"
     article.approved = article_params[:approved].to_s == "true"
-    article.live_now = article_params[:live_now].to_s == "true"
     article.email_digest_eligible = article_params[:email_digest_eligible].to_s == "true"
     article.boosted_additional_articles = article_params[:boosted_additional_articles].to_s == "true"
     article.boosted_dev_digest_email = article_params[:boosted_dev_digest_email].to_s == "true"
     article.user_id = article_params[:user_id].to_i
     article.update!(article_params)
-    Article.where.not(id: article.id).where(live_now: true).update_all(live_now: false) if article.live_now
     render body: nil
   end
 
@@ -122,7 +120,6 @@ class Internal::ArticlesController < Internal::ApplicationController
                         social_image
                         body_markdown
                         approved
-                        live_now
                         email_digest_eligible
                         boosted_additional_articles
                         boosted_dev_digest_email
