@@ -14,11 +14,9 @@ RSpec.describe "Authenticating with GitHub" do
         end.to change(User, :count).by(1)
       end
 
-      it "logs in and redirects to the onboarding", js: true do
+      it "logs in and redirects to the onboarding" do
         visit root_path
         click_link sign_in_link
-
-        Percy.snapshot(page, name: "Onboarding: /onboarding")
 
         expect(page).to have_current_path("/onboarding", ignore_query: true)
         expect(page.html).to include("onboarding-container")
@@ -141,11 +139,9 @@ RSpec.describe "Authenticating with GitHub" do
         end.not_to change(User, :count)
       end
 
-      it "redirects to the registration page", js: true do
+      it "redirects to the registration page" do
         visit root_path
         click_link sign_in_link
-
-        Percy.snapshot(page, name: "Registration: /users/sign_up")
 
         expect(page).to have_current_path("/users/sign_up")
       end

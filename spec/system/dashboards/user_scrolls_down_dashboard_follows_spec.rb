@@ -37,8 +37,6 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       end
       visit dashboard_following_tags_path(per_page: default_per_page)
 
-      Percy.snapshot(page, name: "Homepage: /dashboard/following_tags infinite scroll")
-
       page.execute_script("window.scrollTo(0, 100000)")
     end
 
@@ -99,8 +97,6 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
         create(:follow, follower: user, followable: podcast)
       end
       visit dashboard_following_podcasts_path(per_page: default_per_page)
-
-      Percy.snapshot(page, name: "Homepage: /dashboard/following_podcasts infinite scroll")
 
       page.execute_script("window.scrollTo(0, 100000)")
     end
