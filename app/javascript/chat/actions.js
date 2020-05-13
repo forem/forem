@@ -187,6 +187,17 @@ export function getChannelInvites(successCb, failureCb) {
     .catch(failureCb);
 }
 
+export function getJoiningRequest(successCb, failureCb) {
+  fetch('/chat_channels?state=joining_request', {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    credentials: 'same-origin',
+  })
+    .then((response) => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
+
 export function sendChannelInviteAction(id, action, successCb, failureCb) {
   fetch(`/chat_channel_memberships/${id}`, {
     method: 'PUT',

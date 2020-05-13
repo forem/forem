@@ -531,7 +531,8 @@
   }
 }
 
-.chat__channelinvitationsindicator a {
+.chat__channelinvitationsindicator a,
+.chat__channelinvitationsindicator button {
   background: linear-gradient(10deg, darken($green, 25%), darken($green, 15%));
   text-align: center;
   padding: 30px 0px;
