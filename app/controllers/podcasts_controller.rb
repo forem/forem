@@ -59,7 +59,7 @@ class PodcastsController < ApplicationController
   end
 
   def valid_images?
-    images = podcast_params.select { |k, _v| IMAGE_KEYS.include?(k) }
+    images = podcast_params.slice(*IMAGE_KEYS)
     return true if images.blank?
 
     # Create the podcast object to add errors to for the view
