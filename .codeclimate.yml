@@ -57,7 +57,7 @@ plugins:
       languages:
           javascript:
             filters:
-              - "s(:property, s(:Identifier, :propTypes))"
+              - "(object (Identifier PropTypes))"
       count_threshold: 3
 exclude_patterns:
   - "config/"
