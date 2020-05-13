@@ -5,6 +5,8 @@ class PodcastsController < ApplicationController
   # method "current_user.add_role()" we have no control of
   around_action :skip_bullet, only: %i[create], if: -> { defined?(Bullet) }
 
+  IMAGE_KEYS = %w[image pattern_image].freeze
+
   def new
     @podcast = Podcast.new
     @podcasts = Podcast.available.order("title asc")
@@ -57,12 +59,11 @@ class PodcastsController < ApplicationController
   end
 
   def valid_images?
-    image_keys = %w[image pattern_image]
-    images = podcast_params.select { |k, _v| image_keys.include?(k) }
+    images = podcast_params.select { |k, _v| IMAGE_KEYS.include?(k) }
     return true if images.blank?
 
     # Create the podcast object to add errors to for the view
-    @podcast = Podcast.new(podcast_params.except(*image_keys))
+    @podcast = Podcast.new(podcast_params.except(*IMAGE_KEYS))
     @podcast.creator = current_user
     return true if valid_image_files_and_names?(images)
 
