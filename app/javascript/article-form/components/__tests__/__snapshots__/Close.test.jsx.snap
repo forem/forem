@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Close /> renders properly 1`] = `
+<div
+  class="crayons-article-form__close"
+>
+  <a
+    class="crayons-btn crayons-btn--ghost crayons-btn--icon"
+    href="/"
+  >
+    <svg
+      class="crayons-icon"
+      height="24"
+      viewBox="0 0 24 24"
+      width="24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z"
+      />
+    </svg>
+  </a>
+</div>
+`;
