@@ -89,5 +89,20 @@ RSpec.describe "Podcast Create", type: :request do
       post podcasts_path, params: { podcast: valid_attributes }
       expect(response.body).to include("Suggest a Podcast")
     end
+
+    it "returns error if pattern_image file name is too long" do
+      image = fixture_file_upload("files/podcast.png", "image/png")
+      allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
+      valid_attributes[:pattern_image] = image
+      post podcasts_path, params: { podcast: valid_attributes }
+      expect(response.body).to include("Suggest a Podcast")
+    end
+
+    it "returns error if pattern_image is not a file" do
+      image = "A String"
+      valid_attributes[:pattern_image] = image
+      post podcasts_path, params: { podcast: valid_attributes }
+      expect(response.body).to include("Suggest a Podcast")
+    end
   end
 end

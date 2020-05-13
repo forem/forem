@@ -12,7 +12,7 @@ class PodcastsController < ApplicationController
   end
 
   def create
-    unless valid_image?
+    unless valid_images?
       render :new
       return
     end
@@ -56,30 +56,29 @@ class PodcastsController < ApplicationController
     Bullet.enable = previous_value
   end
 
-  def valid_image?
-    image = params.dig("podcast", "image")
-    return true unless image
+  def valid_images?
+    image_keys = %w[image pattern_image]
+    images = podcast_params.select { |k, _v| image_keys.include?(k) }
+    return true if images.blank?
 
-    @podcast = Podcast.new(podcast_params.except(:image))
+    # Create the podcast object to add errors to for the view
+    @podcast = Podcast.new(podcast_params.except(*image_keys))
     @podcast.creator = current_user
-    return true if valid_image_file?(image) && valid_filename?(image)
+    return true if valid_image_files_and_names?(images)
 
     @podcasts = Podcast.available.order(title: :asc)
     @podcast_index = true
     false
   end
 
-  def valid_image_file?(image)
-    return true if file?(image)
+  def valid_image_files_and_names?(images)
+    images.each do |field, image|
+      @podcast.errors.add(field, IS_NOT_FILE_MESSAGE) unless file?(image)
+      break if @podcast.errors.any?
 
-    @podcast.errors.add(:image, IS_NOT_FILE_MESSAGE)
-    false
-  end
+      @podcast.errors.add(field, FILENAME_TOO_LONG_MESSAGE) if long_filename?(image)
+    end
 
-  def valid_filename?(image)
-    return true unless long_filename?(image)
-
-    @podcast.errors.add(:image, FILENAME_TOO_LONG_MESSAGE)
-    false
+    @podcast.errors.blank?
   end
 end
