@@ -1,3 +1,31 @@
+class CustomSampler
+  extend Honeycomb::DeterministicSampler
+
+  def self.sample(fields)
+    noisy = Set[
+      'GET rails-settings-cached/v1',
+      'TIME',
+      'BEGIN',
+      'COMMIT',
+    ]
+    if noisy === fields["redis.command"] or noisy === fields["sql.active_record.sql"]
+      rate = 100
+      [should_sample(rate, fields["trace.trace_id"]), rate]
+    elsif fields["redis.command"].start_with?("BRPOP")
+      rate = 1000
+      [should_sample(rate, fields["trace.trace_id"]), rate]
+    elsif fields["redis.command"].start_with?("INCRBY")
+      rate = 100
+      [should_sample(rate, fields["trace.trace_id"]), rate]
+    elsif fields["redis.command"].start_with?("TTL")
+      rate = 100
+      [should_sample(rate, fields["trace.trace_id"]), rate]
+    else
+      [true, 1]
+    end
+  end
+end
+
 if Rails.env.test? || ApplicationConfig["HONEYCOMB_API_KEY"].blank?
   Honeycomb.configure do |config|
     config.client = Libhoney::TestClient.new
@@ -31,6 +59,10 @@ else
           fields.delete("sql.active_record.binds")
           fields.delete("sql.active_record.datadog_span")
         end
+      end
+      # Sample away highly redundant events
+      config.sample_hook do |fields|
+        CustomSampler.sample(fields)
       end
     end
   end
