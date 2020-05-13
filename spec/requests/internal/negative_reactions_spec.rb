@@ -29,6 +29,7 @@ RSpec.describe "/internal/negative_reactions", type: :request do
     let(:admin)              { create(:user, :admin) }
     let(:moderator)          { create(:user, :trusted) }
     let!(:user_reaction)     { create(:vomit_reaction, :user, user: moderator) }
+    let!(:comment_reaction)  { create(:vomit_reaction, :comment, user: moderator) }
     let!(:article_reaction)  { create(:vomit_reaction, user: moderator) }
 
     before do
@@ -46,6 +47,7 @@ RSpec.describe "/internal/negative_reactions", type: :request do
         get "/internal/negative_reactions"
         expect(response.body).to include(moderator.username)
         expect(response.body).to include(user_reaction.reactable.username)
+        expect(response.body).to include(comment_reaction.reactable.user.username)
         expect(response.body).to include(CGI.escapeHTML(article_reaction.reactable.title))
       end
     end
