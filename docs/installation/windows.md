@@ -164,6 +164,8 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
    - Take a look at `Envfile`. This file lists all the `ENV` variables we use
      and provides a fake default for any missing keys.
+   - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
+     variable to the remote computer's domain name.
    - The [backend guide](/backend) will show you how to get free API keys for
      additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
