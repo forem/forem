@@ -1,0 +1,169 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ClassifiedFilters /> Should match the snapshot 1`] = `
+<div
+  class="classified-filters"
+  id="classified-filters"
+>
+  <div
+    class="classified-filters-categories"
+  >
+    <a
+      data-no-instant={true}
+      href="/listings"
+      id="listings-link"
+      onClick={[Function]}
+    >
+      all
+    </a>
+    <section>
+      <a
+        Key={20}
+        class="selected"
+        data-no-instant={true}
+        href="/listings/clojure"
+        id="category-link-20"
+        onClick={[Function]}
+      >
+        Clojure
+      </a>
+      <a
+        Key={21}
+        data-no-instant={true}
+        href="/listings/illa-iara-ques-htyashsayas-6kj8"
+        id="category-link-21"
+        onClick={[Function]}
+      >
+        Go
+      </a>
+      <a
+        Key={22}
+        data-no-instant={true}
+        href="/listings/alle-bece-tzehj-htyashsayas-7jh9"
+        id="category-link-22"
+        onClick={[Function]}
+      >
+        csharp
+      </a>
+    </section>
+    <a
+      class="classified-create-link"
+      href="/listings/new"
+      id="listings-new-link"
+    >
+      Create a Listing
+    </a>
+    <a
+      class="classified-create-link"
+      href="/listings/dashboard"
+      id="listings-dashboard-link"
+    >
+      Manage Listings
+    </a>
+  </div>
+  <div
+    class="classified-filters-tags"
+    id="classified-filters-tags"
+  >
+    <input
+      autoComplete="off"
+      defaultValue="some message"
+      id="listings-search"
+      onKeyUp={[Function]}
+      placeholder="search"
+      type="text"
+    />
+    <button
+      class="classified-search-clear"
+      id="clear-query-button"
+      onClick={[Function]}
+      type="button"
+    >
+      ×
+    </button>
+    <section>
+      <span
+        class="classified-tag"
+        id="selected-tag-1"
+      >
+        <a
+          class="tag-name"
+          data-no-instant={true}
+          href="/listings?tags="
+          onClick={[Function]}
+        >
+          <span>
+            Object {
+              "id": 1,
+              "tag": "clojure",
+            }
+          </span>
+          <button
+            class="tag-close"
+            data-no-instant={true}
+            onKeyPress={[Function]}
+            t={true}
+            type="button"
+          >
+            ×
+          </button>
+        </a>
+      </span>
+      <span
+        class="classified-tag"
+        id="selected-tag-2"
+      >
+        <a
+          class="tag-name"
+          data-no-instant={true}
+          href="/listings?tags="
+          onClick={[Function]}
+        >
+          <span>
+            Object {
+              "id": 2,
+              "tag": "java",
+            }
+          </span>
+          <button
+            class="tag-close"
+            data-no-instant={true}
+            onKeyPress={[Function]}
+            t={true}
+            type="button"
+          >
+            ×
+          </button>
+        </a>
+      </span>
+      <span
+        class="classified-tag"
+        id="selected-tag-3"
+      >
+        <a
+          class="tag-name"
+          data-no-instant={true}
+          href="/listings?tags="
+          onClick={[Function]}
+        >
+          <span>
+            Object {
+              "id": 3,
+              "tag": "dotnet",
+            }
+          </span>
+          <button
+            class="tag-close"
+            data-no-instant={true}
+            onKeyPress={[Function]}
+            t={true}
+            type="button"
+          >
+            ×
+          </button>
+        </a>
+      </span>
+    </section>
+  </div>
+</div>
+`;

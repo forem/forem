@@ -1,5 +1,6 @@
 import 'preact/devtools';
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 
 import IntroSlide from './components/IntroSlide';
 import EmailPreferencesForm from './components/EmailPreferencesForm';
@@ -36,6 +37,7 @@ export default class Onboarding extends Component {
         prev={this.prevSlide}
         slidesCount={this.slidesCount}
         currentSlideIndex={index}
+        communityConfig={props.communityConfig}
         previousLocation={previousLocation}
       />
     ));
@@ -69,3 +71,10 @@ export default class Onboarding extends Component {
     return <main className="onboarding-body">{this.slides[currentSlide]}</main>;
   }
 }
+
+Onboarding.propTypes = {
+  communityConfig: PropTypes.shape({
+    communityName: PropTypes.string.isRequired,
+    communityDescription: PropTypes.string.isRequired
+  })
+};

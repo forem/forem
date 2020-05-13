@@ -2,141 +2,121 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { articlePropTypes } from '../src/components/common-prop-types/article-prop-types';
 import {
+  ArticleCoverImage,
   CommentsCount,
+  CommentsList,
   ContentTitle,
-  OrganizationHeadline,
-  PublishDate,
-  ReadingTime,
+  Meta,
   SaveButton,
   SearchSnippet,
   TagList,
   ReactionsCount,
+  ReadingTime,
+  Video,
 } from './components';
 import { PodcastArticle } from './PodcastArticle';
 
-/* global timeAgo */
-
 export const Article = ({
   article,
-  currentTag,
+  isFeatured,
   isBookmarked,
-  reactionsIcon,
-  commentsIcon,
-  videoIcon,
   bookmarkClick,
 }) => {
   if (article && article.type_of === 'podcast_episodes') {
     return <PodcastArticle article={article} />;
   }
 
-  const timeAgoIndicator = timeAgo({
-    oldTimeInSeconds: article.published_at_int,
-    formatter: (x) => x,
-  });
+  const clickableClassList = [
+    'crayons-story',
+    'crayons-story__top',
+    'crayons-story__body',
+    'crayons-story__indention',
+    'crayons-story__title',
+    'crayons-story__tags',
+    'crayons-story__bottom',
+  ];
 
   return (
-    <div
-      className="single-article single-article-small-pic"
+    <article
+      className={`crayons-story cursor-pointer ${
+        isFeatured && 'crayons-story--featured'
+      }`}
+      id={isFeatured && 'featured-story-marker'}
+      data-featured-article={isFeatured && `articles-${article.id}`}
       data-content-user-id={article.user_id}
     >
-      {article.cloudinary_video_url && (
-        <a
-          href={article.path}
-          className="single-article-video-preview"
-          style={`background-image:url(${article.cloudinary_video_url})`}
-        >
-          <div className="single-article-video-duration">
-            <img src={videoIcon} alt="video camera" loading="lazy" />
-            {article.video_duration_in_minutes}
-          </div>
-        </a>
-      )}
+      <div
+        role="presentation"
+        onClick={(event) => {
+          const { classList } = event.target;
 
-      <OrganizationHeadline organization={article.organization} />
-      <div className="small-pic">
-        <a
-          href={`/${article.user.username}`}
-          className="small-pic-link-wrapper"
-        >
-          <img
-            src={article.user.profile_image_90}
-            alt={`${article.user.username} profile`}
-            loading="lazy"
-          />
-        </a>
-      </div>
-      <a
-        href={article.path}
-        className="small-pic-link-wrapper index-article-link"
-        id={`article-link-${article.id}`}
+          if (clickableClassList.includes(...classList)) {
+            InstantClick.preload(article.path);
+            InstantClick.display(article.path);
+          }
+        }}
       >
-        <div className="content">
-          <ContentTitle article={article} currentTag={currentTag} />
-          {article.class_name === 'Article' && (
-            // eslint-disable-next-line no-underscore-dangle
-            <SearchSnippet highlightText={article.highlight} />
-          )}
-        </div>
-      </a>
-      <h4>
-        <a href={`/${article.user.username}`}>
-          {filterXSS(
-            article.class_name === 'User'
-              ? article.user.username
-              : article.user.name,
-          )}
-          {article.readable_publish_date ? '・' : ''}
-          {article.readable_publish_date && (
-            <PublishDate
-              readablePublishDate={article.readable_publish_date}
-              publishedTimestamp={article.published_timestamp}
-            />
-          )}
-          {article.published_at_int ? (
-            <span className="time-ago-indicator">
-              {timeAgoIndicator.length > 0 ? `(${timeAgoIndicator})` : ''}
-            </span>
-          ) : null}
-        </a>
-      </h4>
+        {article.cloudinary_video_url && <Video article={article} />}
 
-      <TagList tags={article.tag_list} />
-      {article.class_name !== 'User' && (
-        <CommentsCount
-          count={article.comments_count}
-          articlePath={article.path}
-          icon={commentsIcon}
-        />
-      )}
-      {article.class_name !== 'User' && (
-        <ReactionsCount article={article} icon={reactionsIcon} />
-      )}
-      {article.class_name === 'Article' && (
-        <ReadingTime
-          articlePath={article.path}
-          readingTime={article.reading_time}
-        />
-      )}
-      <SaveButton
-        article={article}
-        isBookmarked={isBookmarked}
-        onClick={bookmarkClick}
-      />
-    </div>
+        {isFeatured && <ArticleCoverImage article={article} />}
+        <div className="crayons-story__body">
+          <div className="crayons-story__top">
+            <Meta article={article} organization={article.organization} />
+          </div>
+
+          <div className="crayons-story__indention">
+            <ContentTitle article={article} />
+            <TagList tags={article.tag_list} />
+
+            {article.class_name === 'Article' && (
+              // eslint-disable-next-line no-underscore-dangle
+              <SearchSnippet highlightText={article.highlight} />
+            )}
+
+            <div className="crayons-story__bottom">
+              {article.class_name !== 'User' && (
+                <div className="crayons-story__details">
+                  <ReactionsCount article={article} />
+                  <CommentsCount
+                    count={article.comments_count}
+                    articlePath={article.path}
+                  />
+                </div>
+              )}
+
+              <div className="crayons-story__save">
+                <ReadingTime readingTime={article.reading_time} />
+
+                <SaveButton
+                  article={article}
+                  isBookmarked={isBookmarked}
+                  onClick={bookmarkClick}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {article.top_comments && article.top_comments.length > 0 && (
+          <CommentsList
+            comments={article.top_comments}
+            articlePath={article.path}
+            totalCount={article.comments_count}
+          />
+        )}
+      </div>
+    </article>
   );
 };
 
 Article.defaultProps = {
-  currentTag: null,
   isBookmarked: false,
+  isFeatured: false,
 };
 
 Article.propTypes = {
   article: articlePropTypes.isRequired,
-  currentTag: PropTypes.string,
   isBookmarked: PropTypes.bool,
-  reactionsIcon: PropTypes.string.isRequired,
-  commentsIcon: PropTypes.string.isRequired,
-  videoIcon: PropTypes.string.isRequired,
+  isFeatured: PropTypes.bool,
   bookmarkClick: PropTypes.func.isRequired,
 };

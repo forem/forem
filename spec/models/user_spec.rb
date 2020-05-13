@@ -177,28 +177,38 @@ RSpec.describe User, type: :model do
     it "validates username against reserved words" do
       user = build(:user, username: "readinglist")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("reserved")).to be true
+      expect(user.errors[:username].to_s).to include("reserved")
     end
 
     it "takes organization slug into account" do
       create(:organization, slug: "lightalloy")
       user = build(:user, username: "lightalloy")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("taken")).to be true
+      expect(user.errors[:username].to_s).to include("taken")
     end
 
     it "takes podcast slug into account" do
       create(:podcast, slug: "lightpodcast")
       user = build(:user, username: "lightpodcast")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("taken")).to be true
+      expect(user.errors[:username].to_s).to include("taken")
     end
 
     it "takes page slug into account" do
       create(:page, slug: "page_yo")
       user = build(:user, username: "page_yo")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("taken")).to be true
+      expect(user.errors[:username].to_s).to include("taken")
+    end
+
+    it "validates can_send_confirmation_email for existing user" do
+      user = create(:user)
+      limiter = RateLimitChecker.new(user)
+      allow(user).to receive(:rate_limiter).and_return(limiter)
+      allow(limiter).to receive(:limit_by_action).and_return(true)
+      user.update(email: "new_email@yo.com")
+      expect(user).not_to be_valid
+      expect(user.errors[:email].to_s).to include("confirmation could not be sent. Rate limit reached")
     end
   end
 
@@ -1111,6 +1121,30 @@ RSpec.describe User, type: :model do
       allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
 
       expect(described_class.mascot_account).to eq(user)
+    end
+  end
+
+  describe "#authenticated_through?" do
+    let(:provider) { Authentication::Providers.available.first }
+
+    it "returns false if provider is not known" do
+      expect(user.authenticated_through?(:unknown)).to be(false)
+    end
+
+    it "returns false if provider is not enabled" do
+      providers = Authentication::Providers.available - [provider]
+      allow(Authentication::Providers).to receive(:enabled).and_return(providers)
+
+      expect(user.authenticated_through?(provider)).to be(false)
+    end
+
+    it "returns false if the user has no related identity" do
+      expect(user.authenticated_through?(provider)).to be(false)
+    end
+
+    it "returns true if the user has related identity" do
+      user = create(:user, :with_identity, identities: [provider])
+      expect(user.authenticated_through?(provider)).to be(true)
     end
   end
 end

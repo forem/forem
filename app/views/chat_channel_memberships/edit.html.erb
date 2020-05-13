@@ -37,7 +37,6 @@
       </div>
     <% end %>
   </div>
-
   <% if @membership.role == "mod" %>
     <div class="crayons-card p-4 grid gap-2 mb-4">
       <h3>Pending Invitations</h3>
@@ -57,30 +56,66 @@
           <% end %>
         </div>
       <% end %>
+    </div>
+
+    <div class="crayons-card p-4 grid gap-2 mb-4">
+        <h3>Joining Request</h3>
+        <% @channel.requested_memberships.includes(:user).each do |requested_membership| %>
+          <div class="flex items-center">
+            <a href="<%= requested_membership.user.path %>">
+              <span class="crayons-avatar crayons-avatar--l mr-2">
+                <img src="<%= ProfileImage.new(requested_membership.user).get(width: 90) %>" class="crayons-avatar__image" />
+              </span>
+              <%= requested_membership.user.name %>
+            </a>
+            <%= form_tag "/chat_channel_memberships/add_membership", class: "inline-button-form" do %>
+              <%= hidden_field_tag(:chat_channel_id, @channel.id) %>
+              <%= hidden_field_tag(:membership_id, requested_membership.id) %>
+              <%= hidden_field(:chat_channel_membership, :user_action, value: "accept") %>
+              <button class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost" type="submit">+</button>
+            <% end %>
+            <%= form_tag "/chat_channel_memberships/remove_membership", class: "inline-button-form" do %>
+              <%= hidden_field_tag(:status, "pending") %>
+              <%= hidden_field_tag(:chat_channel_id, @channel.id) %>
+              <%= hidden_field_tag(:membership_id, requested_membership.id) %>
+              <button class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost" type="submit">x</button>
+            <% end %>
+          </div>
+        <% end %>
+    </div>
+
+    <div class="crayons-card p-4 grid gap-2 mb-4">
       <% if @channel.private_org_channel? %>
         <p><em>Invite new members by <a href="/settings/organization">inviting them to this organization.</a></em></p>
       <% else %>
-        <%= form_for ChatChannelMembership.new, html: { class: "grid gap-4" } do |f| %>
-          <div class="crayons-field">
-            <%= f.hidden_field :chat_channel_id, value: @channel.id %>
-            <%= f.label "Usernames to Invite", class: "crayons-field__label" %>
-            <%= f.text_field :invitation_usernames, placeholder: "Comma separated", class: "crayons-textfield" %>
-          </div>
-          <div><button type="submit" class="crayons-btn">Submit</button></div>
-        <% end %>
+      <%= form_for ChatChannelMembership.new, html: { class: "grid gap-4" } do |f| %>
+        <div class="crayons-field">
+          <%= f.hidden_field :chat_channel_id, value: @channel.id %>
+          <%= f.label "Usernames to Invite", class: "crayons-field__label" %>
+          <%= f.text_field :invitation_usernames, placeholder: "Comma separated", class: "crayons-textfield" %>
+        </div>
+        <div><button type="submit" class="crayons-btn">Submit</button></div>
+      <% end %>
+    </div>
 
-        <h3>Channel Settings</h3>
+    <div class="crayons-card p-4 grid gap-2 mb-4">
+      <h3>Channel Settings</h3>
         <%= form_for(@channel) do |f| %>
-          <div class="crayons-field">
-            <%= f.label :description, class: "crayons-field__label" %>
-            <%= f.text_area :description, class: "crayons-textfield" %>
+        <div class="crayons-field">
+          <%= f.label :description, class: "crayons-field__label" %>
+          <%= f.text_area :description, class: "crayons-textfield" %>
+        </div>
+        <div class="crayons-card p-4 grid gap-2 mb-4">
+          <div class="crayons-field crayons-field--checkbox">
+            <%= f.check_box :discoverable, class: "crayons-checkbox" %>
+            <%= f.label :discoverable, "Channel Discoverable", class: "crayons-field__label" %>
           </div>
-          <div>
-            <button type="submit" class="crayons-btn">Submit</button>
-          </div>
+        </div>
+        <div>
+          <button type="submit" class="crayons-btn">Submit</button>
+        </div>
         <% end %>
       <% end %>
-
     </div>
   <% end %>
 

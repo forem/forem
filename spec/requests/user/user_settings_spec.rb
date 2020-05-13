@@ -150,6 +150,23 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include("Connect GitHub Account")
       end
     end
+
+    describe ":integrations" do
+      it "renders the repositories container if the user has authenticated through GitHub" do
+        user = create(:user, :with_identity, identities: [:github])
+        sign_in user
+
+        get user_settings_path(tab: :integrations)
+        expect(response.body).to include("github-repos-container")
+      end
+
+      it "does not render anything if the user has not authenticated through GitHub" do
+        sign_in user
+
+        get user_settings_path(tab: :integrations)
+        expect(response.body).not_to include("github-repos-container")
+      end
+    end
   end
 
   describe "PUT /update/:id" do

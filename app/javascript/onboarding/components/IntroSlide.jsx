@@ -66,7 +66,12 @@ class IntroSlide extends Component {
   }
 
   render() {
-    const { slidesCount, currentSlideIndex, prev } = this.props;
+    const {
+      slidesCount,
+      currentSlideIndex,
+      prev,
+      communityConfig,
+    } = this.props;
     const {
       checked_code_of_conduct,
       checked_terms_and_conditions,
@@ -109,10 +114,13 @@ class IntroSlide extends Component {
             </figure>
             <h1 className="introduction-title">
               {this.user.name}
-              &mdash; welcome to DEV!
+              &mdash; welcome to 
+              {' '}
+              {communityConfig.communityName}
+              !
             </h1>
             <h2 className="introduction-subtitle">
-              DEV is where programmers share ideas and help each other grow.
+              {communityConfig.communityDescription}
             </h2>
           </div>
 
@@ -187,6 +195,10 @@ IntroSlide.propTypes = {
   next: PropTypes.func.isRequired,
   slidesCount: PropTypes.number.isRequired,
   currentSlideIndex: PropTypes.func.isRequired,
+  communityConfig: PropTypes.shape({
+    communityName: PropTypes.string.isRequired,
+    communityDescription: PropTypes.string.isRequired
+  }),
 };
 
 export default IntroSlide;

@@ -59,8 +59,7 @@ class UsersController < ApplicationController
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}"
     else
-      Honeycomb.add_field("error",
-                          @user.errors.messages.reject { |_, v| v.empty? })
+      Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
       Honeycomb.add_field("errored", true)
       render :edit, status: :bad_request
     end
@@ -315,10 +314,7 @@ class UsersController < ApplicationController
   end
 
   def handle_integrations_tab
-    return unless current_user.identities.where(provider: "github").any?
-
-    @client = Octokit::Client.
-      new(access_token: current_user.identities.where(provider: "github").last.token)
+    @github_repositories_show = current_user.authenticated_through?(:github)
   end
 
   def handle_billing_tab

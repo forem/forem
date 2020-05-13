@@ -1,0 +1,12 @@
+<% if show_integration %>
+  <div class="crayons-card grid gap-6 p-6 mb-6">
+    <h3>Pin a few of your GitHub repositories to your profile</h3>
+
+    <div id="github-repos-container">
+      <div class="github-repos loading-repos">
+      </div>
+    </div>
+
+    <%= javascript_packs_with_chunks_tag "githubRepos", defer: true %>
+  </div>
+<% end %>

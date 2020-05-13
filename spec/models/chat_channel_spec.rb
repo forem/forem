@@ -35,6 +35,18 @@ RSpec.describe ChatChannel, type: :model do
       expect(chat_channel.active_users.size).to eq(users.size)
       expect(chat_channel.channel_users.size).to eq(users.size)
     end
+
+    context "when direct channel is invalid" do
+      it "raises an error if users are the same" do
+        user = users.first
+        expect { described_class.create_with_users(users: [user, user]) }.to raise_error("Invalid direct channel")
+      end
+
+      it "raises an error if more than 2 users" do
+        more_users = users + [create(:user)]
+        expect { described_class.create_with_users(users: more_users) }.to raise_error("Invalid direct channel")
+      end
+    end
   end
 
   describe "#active_users" do

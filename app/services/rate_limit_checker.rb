@@ -4,6 +4,7 @@ class RateLimitChecker
   # retry_after values are the seconds until a user can retry an action
   ACTION_LIMITERS = {
     article_update: { retry_after: 30 },
+    send_email_confirmation: { retry_after: 120 },
     image_upload: { retry_after: 30 },
     listing_creation: { retry_after: 60 },
     published_article_creation: { retry_after: 30 },
@@ -65,6 +66,8 @@ class RateLimitChecker
   end
 
   def limit_cache_key(action)
+    raise "Invalid Cache Key: user ID can't be blank" unless @user.id
+
     "#{@user.id}_#{action}"
   end
 
