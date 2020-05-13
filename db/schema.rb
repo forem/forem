@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_04_075409) do
+ActiveRecord::Schema.define(version: 2020_05_11_224704) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -98,6 +98,8 @@ ActiveRecord::Schema.define(version: 2020_05_04_075409) do
     t.boolean "published", default: false
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
+    t.string "search_optimized_description_replacement"
+    t.string "search_optimized_title_preamble"
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.integer "reading_time", default: 0

@@ -1,4 +1,4 @@
-<% title @article.title %>
+<% title @article.title_with_query_preamble(user_signed_in?) %>
 
 <%= render "shared/webcomponents_loader_script" %>
 <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", defer: true %>
@@ -115,6 +115,9 @@
           </a>
         <% end %>
         <h1 class="<%= @article.title_length_classification %>">
+          <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
+            <span class="article-title-preamble"><%= @article.search_optimized_title_preamble %></span>
+          <% end %>
           <%= @article.title %>
         </h1>
         <h3>
