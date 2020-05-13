@@ -58,7 +58,9 @@ export const Article = ({
       >
         {article.cloudinary_video_url && <Video article={article} />}
 
-        {isFeatured && <ArticleCoverImage article={article} />}
+        {isFeatured && !article.cloudinary_video_url && (
+          <ArticleCoverImage article={article} />
+        )}
         <div className="crayons-story__body">
           <div className="crayons-story__top">
             <Meta article={article} organization={article.organization} />
