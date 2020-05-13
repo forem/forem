@@ -67,7 +67,6 @@ gem "omniauth", "~> 1.9" # A generalized Rack framework for multiple-provider au
 gem "omniauth-github", "~> 1.3" # OmniAuth strategy for GitHub
 gem "omniauth-twitter", "~> 1.4" # OmniAuth strategy for Twitter
 gem "patron", "~> 0.13.3" # HTTP client library based on libcurl, used with Elasticsearch to support http keep-alive connections
-gem "percy-capybara", "~> 4.0.0"
 gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "puma", "~> 4.3" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
@@ -148,6 +147,7 @@ group :test do
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
   gem "factory_bot_rails", "~> 5.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
+  gem "percy-capybara", "~> 4.0.0" # A tool for visual testing
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
   gem "ruby-prof", "~> 1.3", require: false # ruby-prof is a fast code profiler for Ruby
