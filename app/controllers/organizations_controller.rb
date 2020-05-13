@@ -1,6 +1,5 @@
 class OrganizationsController < ApplicationController
   after_action :verify_authorized
-  rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   def create
     rate_limit!(:organization_creation)
