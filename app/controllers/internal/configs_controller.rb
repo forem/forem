@@ -11,7 +11,9 @@ class Internal::ConfigsController < Internal::ApplicationController
     clean_up_params
 
     config_params.each do |key, value|
-      if value.respond_to?(:to_h)
+      if value.is_a?(Array)
+        SiteConfig.public_send("#{key}=", value.reject(&:blank?)) unless value.empty?
+      elsif value.respond_to?(:to_h)
         SiteConfig.public_send("#{key}=", value.to_h) unless value.empty?
       else
         SiteConfig.public_send("#{key}=", value.strip) unless value.nil?
@@ -26,23 +28,10 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def config_params
     allowed_params = %i[
-      authentication_providers
-      campaign_featured_tags
-      campaign_hero_html_variant_name
-      campaign_sidebar_enabled
-      campaign_sidebar_image
-      community_description
-      community_member_description
-      community_member_label
-      tagline
       favicon_url
       ga_view_id ga_fetch_rate
       logo_png
       logo_svg
-      mailchimp_community_moderators_id
-      mailchimp_newsletter_id
-      mailchimp_sustaining_members_id
-      mailchimp_tag_moderators_id
       main_social_image
       mascot_image_description
       mascot_image_url
@@ -51,17 +40,27 @@ class Internal::ConfigsController < Internal::ApplicationController
       periodic_email_digest_max
       periodic_email_digest_min
       primary_sticker_image_url
-      rate_limit_comment_creation
-      rate_limit_email_recipient
-      rate_limit_follow_count_daily
-      rate_limit_image_upload
-      rate_limit_published_article_creation
       shop_url
       sidebar_tags
       suggested_tags
       twitter_hashtag
+      suggested_users
+      tagline
     ]
-    params.require(:site_config).permit(allowed_params, social_media_handles: SiteConfig.social_media_handles.keys, email_addresses: SiteConfig.email_addresses.keys)
+
+    allowed_params = allowed_params |
+      campaign_params |
+      community_params |
+      mailchimp_params |
+      rate_limit_params
+
+    params.require(:site_config).permit(
+      allowed_params,
+      authentication_providers: [],
+      social_media_handles: SiteConfig.social_media_handles.keys,
+      email_addresses: SiteConfig.email_addresses.keys,
+      meta_keywords: SiteConfig.meta_keywords.keys,
+    )
   end
 
   def extra_authorization_and_confirmation
@@ -71,12 +70,50 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def clean_up_params
     config = params[:site_config]
-    config[:suggested_tags] = config[:suggested_tags].downcase.delete(" ") if config[:suggested_tags]
-    config[:authentication_providers] = config[:authentication_providers].downcase.delete(" ") if config[:authentication_providers]
-    config[:sidebar_tags] = config[:sidebar_tags].downcase.delete(" ") if config[:sidebar_tags]
+    %i[sidebar_tags suggested_tags suggested_users].each do |param|
+      config[param] = config[param].downcase.delete(" ") if config[param]
+    end
   end
 
   def bust_relevant_caches
-    CacheBuster.bust("/tags/onboarding") # Needs to change when suggested_tags is edited
+    # Needs to change when suggested_tags is edited.
+    CacheBuster.bust("/tags/onboarding")
+  end
+
+  def campaign_params
+    %i[
+      campaign_featured_tags
+      campaign_hero_html_variant_name
+      campaign_sidebar_enabled
+      campaign_sidebar_image
+    ]
+  end
+
+  def community_params
+    %i[
+      community_description
+      community_member_description
+      community_member_label
+    ]
+  end
+
+  def mailchimp_params
+    %i[
+      mailchimp_community_moderators_id
+      mailchimp_newsletter_id
+      mailchimp_sustaining_members_id
+      mailchimp_tag_moderators_id
+    ]
+  end
+
+  def rate_limit_params
+    %i[
+      rate_limit_comment_creation
+      rate_limit_email_recipient
+      rate_limit_follow_count_daily
+      rate_limit_image_upload
+      rate_limit_published_article_creation
+      rate_limit_organization_creation
+    ]
   end
 end

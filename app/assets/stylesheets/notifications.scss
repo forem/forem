@@ -432,7 +432,6 @@
   }
 }
 
-
 // Notifications filtering on mobile.
 .notifications-filter__tabs {
   display: none;
@@ -444,12 +443,12 @@
   &.showing {
     display: flex;
   }
-  background:  var(--base-inverted);
+  background: var(--base-inverted);
 }
 
 .notifications-filter__list {
   li {
-    margin-bottom: $su-1;
+    margin-bottom: var(--su-1);
 
     &:last-child {
       margin-bottom: 0;
@@ -458,13 +457,13 @@
 
   &--item {
     align-items: center;
-    border-radius: $br-default;
+    border-radius: var(--radius);
     box-sizing: border-box;
     color: var(--card-color);
     display: inline-flex;
-    font-weight: $fw-medium;
+    font-weight: var(--fw-medium);
     justify-content: space-between;
-    padding: $su-2;
+    padding: var(--su-2);
     width: 100%;
 
     &:hover {
@@ -496,7 +495,7 @@
     }
 
     &:before {
-      content: "";
+      content: '';
       position: fixed;
       left: 0;
       right: 0;
@@ -504,17 +503,17 @@
       right: 0;
       height: 100%;
       width: 100%;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       z-index: 499;
     }
   }
 
   &__header {
-    padding: $su-3 $su-4;
+    padding: var(--su-3) var(--su-4);
   }
 
   &__title {
-    font-weight: $fw-bold;
+    font-weight: var(--fw-bold);
   }
 
   &__menu {
@@ -533,15 +532,13 @@
     border: none;
     display: flex;
     align-items: center;
-    padding: $su-4;
+    padding: var(--su-4);
     justify-content: center;
-    font-weight: $fw-bold;
+    font-weight: var(--fw-bold);
     width: 100%;
-    font-family: $ff-default;
+    font-family: var(--ff-default);
 
-    &:hover
-    &:active,
-    {
+    &:hover &:active {
       background-color: var(--base-10);
     }
   }
@@ -554,7 +551,7 @@
     align-items: center;
     display: flex;
     justify-content: space-between;
-    padding: $su-3 $su-4;
+    padding: var(--su-3) var(--su-4);
 
     &:hover,
     &:active,
@@ -573,13 +570,13 @@
   }
 
   &__label--title {
-    font-weight: $fw-medium;
-    font-size: $fs-base;
+    font-weight: var(--fw-medium);
+    font-size: var(--fs-base);
   }
 
   &__label--subtitle {
     color: var(--base-60);
-    font-size: $fs-s;
+    font-size: var(--fs-s);
   }
 }
 

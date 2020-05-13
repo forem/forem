@@ -117,8 +117,6 @@ num_articles = 25 * SEEDS_MULTIPLIER
 counter += 1
 Rails.logger.info "#{counter}. Creating #{num_articles} Articles"
 
-Article.clear_index!
-
 num_articles.times do |i|
   tags = []
   tags << "discuss" if (i % 3).zero?
@@ -240,8 +238,8 @@ Rails.logger.info "#{counter}. Creating Broadcasts and Welcome Thread"
 broadcast_messages = {
   set_up_profile: "Welcome to DEV! 👋 I'm Sloan, the community mascot and I'm here to help get you started. Let's begin by <a href='/settings'>setting up your profile</a>!",
   welcome_thread: "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!",
-  twitter_connect: "You're on a roll! 🎉 Let's connect your <a href='/settings'> Twitter account</a> to complete your identity so that we don't think you're a robot. 🤖",
-  github_connect: "You're on a roll! 🎉 Let's connect your <a href='/settings'> GitHub account</a> to complete your identity so that we don't think you're a robot. 🤖",
+  twitter_connect: "You're on a roll! 🎉 Do you have a Twitter account? Consider <a href='/settings'>connecting it</a> so we can @mention you if we share your post via our Twitter account <a href='https://twitter.com/thePracticalDev'>@thePracticalDev</a>.",
+  github_connect: "You're on a roll! 🎉  Do you have a GitHub account? Consider <a href='/settings'>connecting it</a> so you can pin any of your repos to your profile.",
   customize_feed: "Hi, it's me again! 👋 Now that you're a part of the DEV community, let's focus on personalizing your content. You can start by <a href='/tags'>following some tags</a> to help customize your feed! 🎉",
   customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!",
   start_discussion: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; just click on 'Write a Post' in the sidebar of the tag page to get started!",
@@ -381,7 +379,7 @@ CATEGORIES = [
     slug: "cfp",
     cost: 1,
     name: "Conference CFP",
-    rules: "Currently open for proposals,with link to form."
+    rules: "Currently open for proposals, with link to form."
   },
   {
     slug: "education",
@@ -412,7 +410,7 @@ CATEGORIES = [
     cost: 1,
     name: "Miscellaneous",
     rules: "Must not fit in any other category."
-  }
+  },
 ].freeze
 
 CATEGORIES.each { |attributes| ClassifiedListingCategory.create(attributes) }
@@ -425,10 +423,10 @@ Rails.logger.info "#{counter}. Creating Classified Listings"
 users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
 users = users_in_random_order.to_a
 
-listings_categories = ClassifiedListing.categories_available.keys
-listings_categories.each_with_index do |category, index|
+listings_categories = ClassifiedListingCategory.pluck(:id)
+listings_categories.each.with_index(1) do |category_id, index|
   # rotate users if they are less than the categories
-  user = users.at((index + 1) % users.length)
+  user = users.at(index % users.length)
   2.times do
     ClassifiedListing.create!(
       user: user,
@@ -436,7 +434,7 @@ listings_categories.each_with_index do |category, index|
       body_markdown: Faker::Markdown.random,
       location: Faker::Address.city,
       organization_id: user.organizations.first&.id,
-      category: category,
+      classified_listing_category_id: category_id,
       contact_via_connect: true,
       published: true,
       bumped_at: Time.current,

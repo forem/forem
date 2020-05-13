@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 export class SingleRepo extends Component {
   constructor(props) {
     super(props);
-    const { selected } = this.props;
-    this.state = { selected };
+    const { featured } = this.props;
+    this.state = { featured };
   }
 
   forkLabel = () => {
@@ -17,7 +17,7 @@ export class SingleRepo extends Component {
   };
 
   submitRepo = () => {
-    const { selected } = this.state;
+    const { featured } = this.state;
     const { githubIdCode } = this.props;
 
     const submitButton = document.getElementById(
@@ -30,7 +30,7 @@ export class SingleRepo extends Component {
     const formData = new FormData();
     const formAttributes = {
       github_id_code: githubIdCode,
-      featured: !selected,
+      featured: !featured,
     };
     formData.append('github_repo', JSON.stringify(formAttributes));
 
@@ -42,23 +42,23 @@ export class SingleRepo extends Component {
       body: formData,
       credentials: 'same-origin',
     })
-      .then(response => response.json())
-      .then(json => {
+      .then((response) => response.json())
+      .then((json) => {
         submitButton.disabled = false;
-        this.setState({ selected: json.featured });
+        this.setState({ featured: json.featured });
       });
   };
 
   githubRepoClassName = () => {
-    const { selected } = this.state;
-    if (selected) {
-      return 'github-repo-row github-repo-row-selected';
+    const { featured } = this.state;
+    if (featured) {
+      return 'github-repo-row github-repo-row-featured';
     }
     return 'github-repo-row';
   };
 
   render() {
-    const { selected } = this.state;
+    const { featured } = this.state;
     const { name, githubIdCode } = this.props;
     return (
       <div className={this.githubRepoClassName()}>
@@ -69,7 +69,7 @@ export class SingleRepo extends Component {
             id={`github-repo-button-${githubIdCode}`}
             onClick={this.submitRepo}
           >
-            {selected ? 'REMOVE' : 'SELECT'}
+            {featured ? 'REMOVE' : 'SELECT'}
           </button>
           {name}
           {this.forkLabel()}
@@ -85,5 +85,5 @@ SingleRepo.propTypes = {
   name: PropTypes.string.isRequired,
   githubIdCode: PropTypes.number.isRequired,
   fork: PropTypes.bool.isRequired,
-  selected: PropTypes.bool.isRequired,
+  featured: PropTypes.bool.isRequired,
 };

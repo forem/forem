@@ -30,6 +30,7 @@ class DashboardManifest
     html_variant_successes
     sponsorships
     pro_memberships
+    classified_listing_categories
   ].freeze
   # DASHBOARDS = [
   #   :users,

@@ -27,7 +27,7 @@ RSpec.describe Identity, type: :model do
     let(:user) { create(:user) }
 
     before do
-      mock_auth_hash
+      omniauth_mock_providers_payload
     end
 
     context "with Github payload" do

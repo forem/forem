@@ -12,7 +12,7 @@ module Articles
     end
 
     def call
-      rate_limiter = rate_limit!
+      user.rate_limiter.check_limit!(:article_update)
 
       article = load_article
       was_published = article.published
@@ -36,7 +36,7 @@ module Articles
       article_params[:edited_at] = Time.current if update_edited_at
 
       article.update!(article_params)
-      rate_limiter.track_article_updates
+      user.rate_limiter.track_limit_by_action(:article_update)
 
       # send notification only the first time an article is published
       send_notification = article.published && article.saved_change_to_published_at.present?
@@ -56,15 +56,6 @@ module Articles
     private
 
     attr_reader :user, :article_id, :article_params, :event_dispatcher
-
-    def rate_limit!
-      RateLimitChecker.new(user).tap do |rate_limiter|
-        if rate_limiter.limit_by_action(:article_update)
-          retry_after = RateLimitChecker::RETRY_AFTER[:article_update]
-          raise RateLimitChecker::LimitReached, retry_after
-        end
-      end
-    end
 
     def dispatch_event(article)
       event_dispatcher.call("article_updated", article)

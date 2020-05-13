@@ -25,7 +25,27 @@ exports[`<SingleRepo /> when it is a fork should render and match the snapshot 1
 </div>
 `;
 
-exports[`<SingleRepo /> when it is not already selected should render and match the snapshot 1`] = `
+exports[`<SingleRepo /> when it is featured should render and match the snapshot 1`] = `
+<div
+  class="github-repo-row github-repo-row-featured"
+>
+  <div
+    class="github-repo-row-name"
+  >
+    <button
+      class="cta"
+      id="github-repo-button-123"
+      onClick={[Function]}
+      type="button"
+    >
+      REMOVE
+    </button>
+    dev.to
+  </div>
+</div>
+`;
+
+exports[`<SingleRepo /> when it is not already featured should render and match the snapshot 1`] = `
 <div
   class="github-repo-row"
 >
@@ -39,26 +59,6 @@ exports[`<SingleRepo /> when it is not already selected should render and match 
       type="button"
     >
       SELECT
-    </button>
-    dev.to
-  </div>
-</div>
-`;
-
-exports[`<SingleRepo /> when it is selected should render and match the snapshot 1`] = `
-<div
-  class="github-repo-row github-repo-row-selected"
->
-  <div
-    class="github-repo-row-name"
-  >
-    <button
-      class="cta"
-      id="github-repo-button-123"
-      onClick={[Function]}
-      type="button"
-    >
-      REMOVE
     </button>
     dev.to
   </div>

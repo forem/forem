@@ -9,7 +9,7 @@ import {
 import { action } from '@storybook/addon-actions';
 import { Button } from '@crayons';
 
-import '../../storybook-utiltiies/designSystem.scss';
+import '../../storybook-utilities/designSystem.scss';
 
 const commonProps = {
   onClick: action('onclick fired'),

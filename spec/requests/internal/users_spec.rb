@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "internal/users", type: :request do
   let!(:user) do
-    mock_github
+    omniauth_mock_github_payload
     create(:user, :with_identity, identities: ["github"])
   end
   let(:admin) { create(:user, :super_admin) }
@@ -48,6 +48,22 @@ RSpec.describe "internal/users", type: :request do
       post "/internal/users/#{user.id}/banish"
       expect(Moderator::BanishUserWorker).to have_received(:perform_async).with(admin.id, user.id)
       expect(request.flash[:success]).to include("This user is being banished in the background")
+    end
+  end
+
+  describe "POST internal/users/:id/verify_email_ownership" do
+    it "allows a user to verify email ownership" do
+      post "/internal/users/#{user.id}/verify_email_ownership", params: { user_id: user.id }
+      verification_link = app_url(verify_email_authorizations_path(confirmation_token: user.email_authorizations.first.confirmation_token, username: user.username))
+      expect(ActionMailer::Base.deliveries.count).to eq(1)
+      expect(ActionMailer::Base.deliveries.first.subject).to eq("Verify Your #{ApplicationConfig['COMMUNITY_NAME']} Account Ownership")
+      expect(ActionMailer::Base.deliveries.first.text_part.body).to include(verification_link)
+
+      sign_in(user)
+      get verification_link
+      expect(user.email_authorizations.last.verified_at).to be_within(1.minute).of Time.now.utc
+
+      ActionMailer::Base.deliveries.clear
     end
   end
 

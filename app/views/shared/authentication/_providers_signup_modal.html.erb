@@ -1,13 +1,11 @@
-<% Authentication::Providers.enabled.each do |provider_name| %>
-  <% provider = Authentication::Providers.get!(provider_name) %>
-
+<% authentication_enabled_providers.each do |provider| %>
   <a
-    href="<%= Authentication::Providers.sign_in_path(provider_name, state: "signup-modal") %>"
+    href="<%= provider.sign_in_path(state: "signup-modal") %>"
     class="sign-up-link cta"
     data-no-instant>
     <img
-      src="<%= asset_path("#{provider_name}-logo.svg") %>"
+      src="<%= asset_path("#{provider.provider_name}-logo.svg") %>"
       class="icon-img"
-      alt="<%= provider.official_name %> logo" /> Auth With <%= provider.official_name %>
+      alt="<%= provider.official_name %> logo" /> Sign In With <%= provider.official_name %>
   </a>
 <% end %>

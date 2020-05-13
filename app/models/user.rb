@@ -66,6 +66,7 @@ class User < ApplicationRecord
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
+  has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
   has_many :identities, dependent: :destroy
@@ -73,6 +74,7 @@ class User < ApplicationRecord
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
   has_many :notification_subscriptions, dependent: :destroy
+  has_many :user_optional_fields, dependent: :destroy
   has_many :notifications, dependent: :destroy
   has_many :offender_feedback_messages, class_name: "FeedbackMessage", inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
   has_many :organization_memberships, dependent: :destroy
@@ -138,6 +140,7 @@ class User < ApplicationRecord
   validate :unique_including_orgs_and_podcasts, if: :username_changed?
   validate :validate_feed_url, if: :feed_url_changed?
   validate :validate_mastodon_url
+  validate :can_send_confirmation_email
 
   alias_attribute :positive_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
@@ -329,11 +332,11 @@ class User < ApplicationRecord
   end
 
   def org_member?(organization)
-    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: %w[admin member])
+    OrganizationMembership.exists?(user: self, organization: organization, type_of_user: %w[admin member])
   end
 
   def org_admin?(organization)
-    OrganizationMembership.exists?(user: user, organization: organization, type_of_user: "admin")
+    OrganizationMembership.exists?(user: self, organization: organization, type_of_user: "admin")
   end
 
   def block; end
@@ -446,6 +449,17 @@ class User < ApplicationRecord
 
   def hotness_score
     search_score
+  end
+
+  def authenticated_through?(provider_name)
+    return false unless Authentication::Providers.available?(provider_name)
+    return false unless Authentication::Providers.enabled?(provider_name)
+
+    identities.exists?(provider: provider_name)
+  end
+
+  def rate_limiter
+    RateLimitChecker.new(self)
   end
 
   private
@@ -574,13 +588,8 @@ class User < ApplicationRecord
     errors.add(:mastodon_url, "is not a valid URL")
   end
 
-  # TODO: @practicaldev/sre: Remove this redundant method
-  def user
-    self
-  end
-
   def tag_keywords_for_search
-    employer_name.to_s + mostly_work_with.to_s + available_for.to_s
+    "#{employer_name}#{mostly_work_with}#{available_for}"
   end
 
   def search_score
@@ -606,5 +615,14 @@ class User < ApplicationRecord
 
   def index_roles(_role)
     index_to_elasticsearch_inline
+  end
+
+  def can_send_confirmation_email
+    return if changes[:email].blank? || id.blank?
+
+    rate_limiter.track_limit_by_action(:send_email_confirmation)
+    rate_limiter.check_limit!(:send_email_confirmation)
+  rescue RateLimitChecker::LimitReached => e
+    errors.add(:email, "confirmation could not be sent. #{e.message}")
   end
 end

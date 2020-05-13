@@ -153,7 +153,7 @@ class Message < ApplicationRecord
                       Let's video chat 😄
                     </h1>
                     </a>".html_safe
-               elsif html.to_s.strip == "<p>/play codenames</p>" #proof of concept
+               elsif html.to_s.strip == "<p>/play codenames</p>" # proof of concept
                  "<a href='https://www.horsepaste.com/connect-channel-#{rand(1_000_000_000)}'
                     class='chatchannels__richlink chatchannels__richlink--base'
                     target='_blank' rel='noopener' data-content='sidecar-content-plus-video'>
@@ -161,7 +161,7 @@ class Message < ApplicationRecord
                       Let's play codenames 🤐
                     </h1>
                     </a>".html_safe
-                end
+               end
     html = response if response
     html
   end

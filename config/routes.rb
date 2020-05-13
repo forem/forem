@@ -10,6 +10,11 @@ Rails.application.routes.draw do
     registrations: "registrations"
   }
 
+  devise_scope :user do
+    get "/enter", to: "registrations#new", as: :sign_up
+    delete "/sign_out", to: "devise/sessions#destroy"
+  end
+
   require "sidekiq/web"
   require "sidekiq_unique_jobs/web"
 
@@ -21,11 +26,6 @@ Rails.application.routes.draw do
     end
     mount Sidekiq::Web => "/sidekiq"
     mount FieldTest::Engine, at: "abtests"
-  end
-
-  devise_scope :user do
-    delete "/sign_out" => "devise/sessions#destroy"
-    get "/enter" => "registrations#new", :as => :sign_up
   end
 
   namespace :admin do
@@ -85,10 +85,15 @@ Rails.application.routes.draw do
         delete "remove_identity"
         post "recover_identity"
         post "send_email"
+        post "verify_email_ownership"
       end
     end
     resources :organization_memberships, only: %i[update destroy create]
-    resources :organizations, only: %i[index show]
+    resources :organizations, only: %i[index show] do
+      member do
+        patch "update_org_credits"
+      end
+    end
     resources :sponsorships, only: %i[index edit update destroy]
     resources :welcome, only: %i[index create]
     resources :growth, only: %i[index]
@@ -175,7 +180,11 @@ Rails.application.routes.draw do
   resources :feedback_messages, only: %i[index create]
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
-  resources :follows, only: %i[show create update]
+  resources :follows, only: %i[show create update] do
+    collection do
+      get "/bulk_show", to: "follows#bulk_show"
+    end
+  end
   resources :image_uploads, only: [:create]
   resources :blocks
   resources :notifications, only: [:index]
@@ -185,8 +194,7 @@ Rails.application.routes.draw do
     end
   end
   resources :stripe_active_cards, only: %i[create update destroy]
-  resources :live_articles, only: [:index]
-  resources :github_repos, only: %i[index create update] do
+  resources :github_repos, only: %i[index] do
     collection do
       post "/update_or_create", to: "github_repos#update_or_create"
     end
@@ -230,6 +238,7 @@ Rails.application.routes.draw do
 
   resource :onboarding, only: :show
 
+  get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
   get "/search/tags" => "search#tags"
   get "/search/chat_channels" => "search#chat_channels"
   get "/search/classified_listings" => "search#classified_listings"
@@ -238,7 +247,7 @@ Rails.application.routes.draw do
   get "/search/reactions" => "search#reactions"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
   get "/listings/dashboard" => "classified_listings#dashboard"
-  get "/listings/:category" => "classified_listings#index"
+  get "/listings/:category" => "classified_listings#index", :as => :classified_listing_category
   get "/listings/:category/:slug" => "classified_listings#index", :as => :classified_listing_slug
   get "/listings/:category/:slug/:view" => "classified_listings#index",
       :constraints => { view: /moderate/ }
@@ -259,6 +268,8 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   post "/chat_channel_memberships/remove_membership" => "chat_channel_memberships#remove_membership"
+  post "/chat_channel_memberships/add_membership" => "chat_channel_memberships#add_membership"
+  post "/join_chat_channel" => "chat_channel_memberships#join_channel"
   delete "/messages/:id" => "messages#destroy"
   patch "/messages/:id" => "messages#update"
   get "/live/:username" => "twitch_live_streams#show"
@@ -285,7 +296,7 @@ Rails.application.routes.draw do
   post "users/add_org_admin" => "users#add_org_admin"
   post "users/remove_org_admin" => "users#remove_org_admin"
   post "users/remove_from_org" => "users#remove_from_org"
-  delete "users/remove_association", to: "users#remove_association"
+  delete "users/remove_identity", to: "users#remove_identity"
   post "users/request_destroy", to: "users#request_destroy", as: :user_request_destroy
   get "users/confirm_destroy/:token", to: "users#confirm_destroy", as: :user_confirm_destroy
   delete "users/full_delete", to: "users#full_delete", as: :user_full_delete

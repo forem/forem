@@ -4,10 +4,10 @@
 // Alternate base fonts
 body.sans-serif-article-body {
   .body {
-    font-family: $helvetica;
+    font-family: var(--ff-default);
   }
   .body p {
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     font-size: 0.98em;
   }
 }
@@ -56,10 +56,10 @@ body.open-dyslexic-article-body {
 
 body.monospace-article-body {
   .body {
-    font-family: $monospace;
+    font-family: var(--ff-accent);
   }
   .body p {
-    font-family: $monospace;
+    font-family: var(--ff-accent);
     font-size: 0.9em;
   }
 }

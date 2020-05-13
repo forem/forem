@@ -58,36 +58,4 @@ RSpec.describe Authentication::Providers, type: :service do
       expect(described_class.enabled?(:github)).to be(false)
     end
   end
-
-  describe ".authentication_path" do
-    it "returns the correct authentication path for given provider" do
-      expected_path = Rails.application.routes.url_helpers.user_github_omniauth_authorize_path
-      expect(described_class.authentication_path(:github)).to eq(expected_path)
-    end
-
-    it "supports additional parameters" do
-      path = described_class.authentication_path(:github, state: "state")
-      expect(path).to include("state=state")
-    end
-  end
-
-  describe ".sign_in_path" do
-    let(:expected_path) do
-      "/users/auth/github?callback_url=http%3A%2F%2Flocalhost%3A3000%2Fusers%2Fauth%2Fgithub%2Fcallback"
-    end
-
-    it "returns the correct sign in URL for given provider" do
-      expect(described_class.sign_in_path(:github)).to eq(expected_path)
-    end
-
-    it "supports additional parameters" do
-      path = described_class.sign_in_path(:github, state: "state")
-      expect(path).to include("state=state")
-    end
-
-    it "does not override the callback_url parameter" do
-      path = described_class.sign_in_path(:github, callback_url: "https://example.com/callback")
-      expect(path).to eq(expected_path)
-    end
-  end
 end

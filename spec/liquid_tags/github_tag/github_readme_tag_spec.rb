@@ -1,56 +1,97 @@
-# Sigh, this is tough to test.
-
 require "rails_helper"
 
-vcr_option = {
-  cassette_name: "github_api_readme",
-  allow_playback_repeats: "true"
-}
-
-RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: vcr_option do
+RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
   describe "#id" do
-    let(:path) { "facebook/react" }
-    let(:my_ocktokit_client) { instance_double(Octokit::Client) }
-    let(:user) { create(:user) }
-    let(:identity) do
-      create(:identity, user_id: user.id, token: "ebd80ff5515c4d14dd1af2e0c33ff570114d1f99")
-    end
+    let(:url_repository) { "https://github.com/rust-lang/rust" }
+    let(:url_repository_fragment) { "https://github.com/rust-lang/rust#contributing" }
+    let(:url_repository_not_found) { "https://github.com/abra/cadabra" }
+    let(:path_repository) { "rust-lang/rust" }
+    let(:repo_owner) { "rust-lang" }
 
-    setup { Liquid::Template.register_tag("github", GithubTag) }
-
-    def generate_github_readme(path, options = "")
+    def generate_tag(path, options = "")
+      Liquid::Template.register_tag("github", GithubTag)
       Liquid::Template.parse("{% github #{path} #{options} %}")
     end
 
-    it "accepts proper github link" do
-      expect(generate_github_readme(path).render).to include(path)
-    end
-
-    it "rejects github link without domain" do
+    it "rejects GitHub URL without domain" do
       expect do
-        generate_github_readme("dsdsdsdsdssd3")
+        generate_tag("dsdsdsdsdssd3")
       end.to raise_error(StandardError)
     end
 
-    it "rejects invalid github issue link" do
+    it "rejects invalid GitHub repository URL" do
       expect do
-        generate_github_readme("/hello/hey/hey/hey")
+        generate_tag("https://github.com/repository")
       end.to raise_error(StandardError)
     end
 
-    it "handles 'no-readme' option" do
-      template = generate_github_readme(path, "no-readme").render
-      readme_class = "ltag-github-body"
-      expect(template).not_to include(readme_class)
+    it "rejects a non existing GitHub repository URL" do
+      VCR.use_cassette("github_client_repository_not_found") do
+        expect do
+          generate_tag(url_repository_not_found)
+        end.to raise_error(StandardError)
+      end
     end
 
-    it "handles respositories with a missing README" do
-      allow(my_ocktokit_client).to receive(:readme).and_raise(Octokit::NotFound)
+    it "renders a repository URL" do
+      VCR.use_cassette("github_client_repository") do
+        html = generate_tag(url_repository).render
+        expect(html).to include(repo_owner)
+      end
+    end
 
-      template = generate_github_readme(path, "no-readme").render
-      readme_class = "ltag-github-body"
+    it "renders a repository path" do
+      VCR.use_cassette("github_client_repository") do
+        html = generate_tag(path_repository).render
+        expect(html).to include(repo_owner)
+      end
+    end
 
-      expect(template).not_to include(readme_class)
+    it "renders a repository URL with a trailing slash" do
+      VCR.use_cassette("github_client_repository") do
+        html = generate_tag("#{url_repository}/").render
+        expect(html).to include(repo_owner)
+      end
+    end
+
+    it "renders a repository path with a trailing slash" do
+      VCR.use_cassette("github_client_repository") do
+        html = generate_tag("#{path_repository}/").render
+        expect(html).to include(repo_owner)
+      end
+    end
+
+    it "renders a repository URL with a fragment" do
+      VCR.use_cassette("github_client_repository") do
+        html = generate_tag(url_repository_fragment).render
+        expect(html).to include(repo_owner)
+      end
+    end
+
+    it "renders a repository with a missing README" do
+      allow(Github::Client).to receive(:readme).and_raise(Github::Errors::NotFound)
+
+      VCR.use_cassette("github_client_repository") do
+        template = generate_tag(url_repository).render
+        readme_class = "ltag-github-body"
+        expect(template).not_to include(readme_class)
+      end
+    end
+
+    describe "options" do
+      it "rejects invalid options" do
+        expect do
+          generate_tag(url_repository, "acme").render
+        end.to raise_error(StandardError)
+      end
+
+      it "accepts 'no-readme' as an option" do
+        VCR.use_cassette("github_client_repository_no_readme") do
+          template = generate_tag(url_repository, "no-readme").render
+          readme_css_class = "ltag-github-body"
+          expect(template).not_to include(readme_css_class)
+        end
+      end
     end
   end
 end

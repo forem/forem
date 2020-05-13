@@ -51,6 +51,17 @@ RSpec.describe "ChatChannels", type: :request do
     end
   end
 
+  describe "get /chat_channels?state=joining_request" do
+    it "returns joining request channels" do
+      membership = ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "joining_request", role: "mod")
+      membership.chat_channel.update(discoverable: true)
+      sign_in user
+      get "/chat_channels?state=joining_request"
+      expect(response.body).to include("\"status\":\"joining_request\"")
+      expect(response.body).to include("joining_requests")
+    end
+  end
+
   describe "get /chat_channels?state=unopened_ids" do
     it "returns unopened chat channel ids" do
       direct_channel.add_users [user]
@@ -236,6 +247,13 @@ RSpec.describe "ChatChannels", type: :request do
       post "/chat_channels/create_chat",
            params: { user_id: user_open_inbox.id }
       expect(user_open_inbox.chat_channel_memberships.size).to eq(1)
+    end
+
+    it "returns error message if create_with_users fails" do
+      allow(ChatChannel).to receive(:create_with_users).and_raise(StandardError.new("Blocked"))
+      post "/chat_channels/create_chat",
+           params: { user_id: user_open_inbox.id }
+      expect(response.parsed_body["message"]).to eq("Blocked")
     end
   end
 

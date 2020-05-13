@@ -16,28 +16,6 @@
     <div class="mod-index-hero">
       <h1><%= "#" + @tag.name.titleize if @tag %> Moderators</h1>
       <h2>We build the <%= community_qualified_name %></h2>
-      <div class="mod-index-hero-data-pod">
-        <div class="mod-index-hero-data-pod-number">
-          <%= number_with_delimiter(@tag ? Article.cached_tagged_with(@tag).published.where("published_at > ?", 7.days.ago).size : Article.published.where("published_at > ?", 7.days.ago).size) %>
-        </div>
-        Posts This Week
-      </div>
-      <% plucked_article_ids = Article.cached_tagged_with(@tag).pluck(:id) if @tag %>
-      <div class="mod-index-hero-data-pod">
-        <div class="mod-index-hero-data-pod-number">
-          <%= number_with_delimiter(@tag ? Comment.where(commentable_id: plucked_article_ids).where("created_at > ?", 7.days.ago).size : Comment.where("created_at > ?", 7.days.ago).size) %>
-        </div>
-        Comments This Week
-      </div>
-      <div class="mod-index-hero-data-pod">
-        <div class="mod-index-hero-data-pod-number">
-          <%= number_with_delimiter(@tag ? Reaction.where(reactable_id: plucked_article_ids).where("created_at > ?", 7.days.ago).size : Reaction.where("created_at > ?", 7.days.ago).size) %>
-        </div>
-        Reactions This Week
-      </div>
-      <div class="mod-index-hero-sub">
-        <em>Data as of <%= Time.current %></em>
-      </div>
     </div>
   <% end %>
   <div class="mod-index-header">

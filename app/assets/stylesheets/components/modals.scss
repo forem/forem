@@ -1,29 +1,92 @@
 @import '../config/import';
-@import '../base/boxes';
-
-%modal-style {
-  @extend .crayons-box;
-  @extend .crayons-box--level-3;
-  display: inline-block;
-  width: 100%;
-}
 
 .crayons-modal {
-  @extend %modal-style;
-  padding: $su-7;
-  max-width: 640px;
+  --modal-max-width: 768px;
+  --modal-body-padding: var(--su-2);
+  --modal-header-padding: var(--su-2);
+
+  @media (min-width: $breakpoint-s) {
+    --modal-body-padding: var(--su-4);
+    --modal-header-padding: var(--su-4);
+  }
+
+  @media (min-width: $breakpoint-m) {
+    --modal-body-padding: var(--su-7);
+    --modal-header-padding: var(--su-4) var(--su-4) var(--su-4) var(--su-7);
+  }
+
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 500;
+  pointer-events: none;
+
+  &__overlay {
+    background: var(--base-100);
+    opacity: 0.5;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 600;
+    pointer-events: auto;
+  }
+
+  &__box {
+    display: flex;
+    flex-direction: column;
+    max-width: var(--modal-max-width);
+    background: var(--card-bg);
+    color: var(--card-color);
+    z-index: 700;
+    max-height: 100%;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+
+    @media (min-width: $breakpoint-s) {
+      @include generate-box(
+        $level: 3,
+        $bg: var(--card-bg),
+        $border: var(--card-color),
+        $color: var(--card-color)
+      );
+      max-height: calc(100% - var(--su-6));
+      height: auto;
+      width: 90%;
+    }
+
+    &__header {
+      border-bottom: 2px solid var(--card-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--modal-header-padding);
+    }
+
+    &__body {
+      flex: 1 auto;
+      padding: var(--modal-body-padding);
+      max-height: 100%;
+      overflow-y: auto;
+    }
+  }
 
   &--s {
-    max-width: 480px;
-    padding: $su-6;
+    @media (min-width: $breakpoint-s) {
+      --modal-max-width: 480px;
+    }
   }
 
-  &--l {
-    max-width: 800px;
-    padding: $su-8;
-  }
-
-  &--padding-0 {
-    padding: 0;
+  &--m {
+    @media (min-width: $breakpoint-m) {
+      --modal-max-width: 640px;
+    }
   }
 }
