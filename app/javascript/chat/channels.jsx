@@ -52,7 +52,6 @@ const Channels = ({
       />
     );
   });
-  console.log(channels);
   let topNotice = '';
   if (
     expanded &&
