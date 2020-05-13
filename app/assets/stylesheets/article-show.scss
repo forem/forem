@@ -156,10 +156,10 @@ article {
       .article-title-preamble {
         display: block;
         color: var(--base-60);
-        font-size: 16px;
+        font-size: calc(16px + 0.2vw);
         margin-bottom: -1.25vw;
         @media screen and (min-width: 1600px) {
-          font-size: 17px;
+          font-size: 18px;
           margin-bottom: -18px;
         }
       }
