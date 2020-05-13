@@ -473,7 +473,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         post api_articles_path, params: { article: params }.to_json, headers: headers
       end
 
-      it "returns 200 when missing the proper scope (oauth)" do
+      it "returns a 403 if :write_articles scope is missing (oauth)" do
         access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "public")
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
 
@@ -481,7 +481,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:forbidden)
       end
 
-      it "returns 201 with the right scope (oauth)" do
+      it "returns a 201 if :write_articles scope is provided (oauth)" do
         access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "write_articles")
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
 
@@ -783,7 +783,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put path, params: { article: params }.to_json, headers: headers
       end
 
-      it "returns 403 if user does not have the proper scope (oauth)" do
+      it "returns a 403 if :write_articles scope is missing (oauth)" do
         access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
 
@@ -794,7 +794,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:forbidden)
       end
 
-      it "returns 200 if user does not have the proper scope (oauth)" do
+      it "returns a 200 if :write_articles scope is provided (oauth)" do
         access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "write_articles")
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
 
