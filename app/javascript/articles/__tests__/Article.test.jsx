@@ -48,6 +48,32 @@ describe('<Article /> component', () => {
     expect(tree).toMatchSnapshot();
   });
 
+  it('should render a featured article for an organization', () => {
+    const tree = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        isFeatured
+        article={articleWithOrganization}
+        currentTag="javascript"
+      />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render a featured article for a video post', () => {
+    const tree = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        isFeatured
+        article={videoArticle}
+        currentTag="javascript"
+      />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
   it('should render with an organization', () => {
     const tree = render(
       <Article
