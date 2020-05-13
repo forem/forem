@@ -11,6 +11,7 @@ import {
   getUnopenedChannelIds,
   getContent,
   getChannelInvites,
+  getJoiningRequest,
   sendChannelInviteAction,
   deleteMessage,
   editMessage,
@@ -75,6 +76,7 @@ export default class Chat extends Component {
       isMobileDevice: typeof window.orientation !== 'undefined',
       subscribedPusherChannels: [],
       inviteChannels: [],
+      joiningRequests: [],
       messageOffset: 0,
       showDeleteModal: false,
       messageDeleteId: null,
@@ -147,6 +149,7 @@ export default class Chat extends Component {
         .addEventListener('scroll', this.handleChannelScroll);
     }
     getChannelInvites(this.handleChannelInvites, null);
+    getJoiningRequest(this.handleChannelJoiningRequest, null);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -536,6 +539,10 @@ export default class Chat extends Component {
     this.setState({ inviteChannels: response });
   };
 
+  handleChannelJoiningRequest = (res) => {
+    this.setState({ joiningRequests: res.joining_requests });
+  };
+
   handleKeyDown = (e) => {
     const { showMemberlist, activeContent, activeChannelId } = this.state;
     const enterPressed = e.keyCode === 13;
@@ -859,6 +866,11 @@ export default class Chat extends Component {
           handleJoiningRequest: this.handleJoiningRequest,
           type_of: 'channel-request',
         });
+      } else if (content === 'sidecar-joining-request-manager') {
+        this.setActiveContent({
+          data: this.state.joiningRequests,
+          type_of: 'channel-request-manager',
+        });
       } else if (content === 'sidecar_all') {
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-post',
@@ -1005,22 +1017,15 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You and
-              {' '}
+              You and{' '}
               <a href={`/${activeChannel.channel_modified_slug}`}>
                 {activeChannel.channel_modified_slug}
-              </a>
-              {' '}
-              are connected because you both follow each other. All interactions
-              {' '}
+              </a>{' '}
+              are connected because you both follow each other. All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-              .
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -1029,19 +1034,11 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
-              {' '}
-              {activeChannel.channel_name}
-              ! All interactions
-              {' '}
+              You have joined {activeChannel.channel_name}! All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-              .
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -1133,6 +1130,7 @@ export default class Chat extends Component {
       const notificationsButton = '';
       let notificationsState = '';
       let invitesButton = '';
+      let joiningRequestButton = '';
       if (notificationsPermission === 'granted') {
         notificationsState = (
           <div className="chat_chatconfig chat_chatconfig--on">
@@ -1157,10 +1155,25 @@ export default class Chat extends Component {
             >
               <span role="img" aria-label="emoji">
                 👋
-              </span>
-              {' '}
+              </span>{' '}
               New Invitations!
             </a>
+          </div>
+        );
+      }
+      if (state.joiningRequests.length > 0) {
+        joiningRequestButton = (
+          <div className="chat__channelinvitationsindicator">
+            <button
+              onClick={this.triggerActiveContent}
+              data-content="sidecar-joining-request-manager"
+              type="button"
+            >
+              <span role="img" aria-label="emoji">
+                👋
+              </span>{' '}
+              New Requests
+            </button>
           </div>
         );
       }
@@ -1186,6 +1199,7 @@ export default class Chat extends Component {
               ''
             )}
             {invitesButton}
+            {joiningRequestButton}
             <div className="chat__channeltypefilter">
               <button
                 className="chat__channelssearchtoggle"
