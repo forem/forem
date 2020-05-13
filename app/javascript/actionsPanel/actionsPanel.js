@@ -190,15 +190,19 @@ async function adjustTag(el) {
         tagOnArticle.remove();
       }
 
-      // eslint-disable-next-line no-alert
-      alert(
-        `#${adjustedTagName} was ${
+      // eslint-disable-next-line no-restricted-globals
+      top.addSnackbarItem({
+        message: `#${adjustedTagName} was ${
           outcome.result === 'addition' ? 'added' : 'removed'
         }!`,
-      );
+        addCloseButton: true,
+      });
     } else {
-      // eslint-disable-next-line no-alert
-      alert(outcome.error);
+      // eslint-disable-next-line no-restricted-globals
+      top.addSnackbarItem({
+        message: `An error occurred: ${outcome.error}`,
+        addCloseButton: true,
+      });
     }
   } catch (error) {
     // eslint-disable-next-line no-alert

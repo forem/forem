@@ -1,15 +1,5 @@
 import { request } from '../utilities/http';
 
-const modalSnackbarHTML = `
-<div class="crayons-snackbar">
-  <div class="crayons-snackbar__item" id="vomit-all-snackbar">
-    <div class="crayons-snackbar__body">
-      <p>All posts by this author will be less visible.</p>
-    </div>
-  </div>
-</div>
-`;
-
 const toggleFlagUserModal = () => {
   const modalContainer = document.querySelector('.flag-user-modal-container');
   modalContainer.classList.toggle('hidden');
@@ -22,13 +12,6 @@ const toggleFlagUserModal = () => {
     document.querySelector('body').style.height = 'inherit';
     document.querySelector('body').style.overflowY = 'inherit';
   }
-};
-
-const flashSnackbar = (snackbar) => {
-  setTimeout(() => {
-    snackbar.classList.remove('flex');
-  }, 3000);
-  snackbar.classList.add('flex');
 };
 
 export function initializeFlagUserModal() {
@@ -87,9 +70,6 @@ export function initializeFlagUserModal() {
     const modContainer = document.getElementById('mod-container');
 
     document.querySelector(
-      '.modal-snackbar-container',
-    ).innerHTML = modalSnackbarHTML;
-    document.querySelector(
       '.flag-user-modal-container',
     ).innerHTML = flagUserModalHTML;
     modContainer.addEventListener('load', () => {
@@ -114,7 +94,11 @@ export function initializeFlagUserModal() {
     .getElementById('confirm-flag-user-action')
     .addEventListener('click', () => {
       if (!document.getElementById('vomit-all').checked) {
-        alert('No Selection Made!');
+        // eslint-disable-next-line no-restricted-globals
+        top.addSnackbarItem({
+          message: 'No selection made!',
+          addCloseButton: true,
+        });
       } else {
         toggleFlagUserModal();
       }
@@ -125,7 +109,6 @@ export function initializeFlagUserModal() {
     .addEventListener('click', (e) => {
       e.preventDefault();
       const vomitAllOption = document.getElementById('vomit-all');
-      const vomitAllSnackbar = document.getElementById('vomit-all-snackbar');
 
       if (vomitAllOption.checked) {
         const body = JSON.stringify({
@@ -142,15 +125,22 @@ export function initializeFlagUserModal() {
             .json()
             .then((json) => {
               if (json.result === 'create') {
-                flashSnackbar(vomitAllSnackbar);
+                // eslint-disable-next-line no-restricted-globals
+                top.addSnackbarItem({
+                  message: 'All posts by this author will be less visible.',
+                  addCloseButton: true,
+                });
               } else {
-                // eslint-disable-next-line no-console
-                console.log(`Response from server: ${JSON.stringify(json)}`);
+                // eslint-disable-next-line no-restricted-globals
+                top.addSnackbarItem({
+                  message: `Response from server: ${JSON.stringify(json)}`,
+                  addCloseButton: true,
+                });
               }
             })
             .catch((error) => {
-              // eslint-disable-next-line no-alert
-              alert(error);
+              // eslint-disable-next-line no-restricted-globals
+              top.addSnackbarItem({ message: error, addCloseButton: true });
             }),
         );
       }
