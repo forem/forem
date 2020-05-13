@@ -212,20 +212,6 @@ RSpec.describe "UserSettings", type: :request do
       expect(response.body).to include("Profile image File size should be less than 2 MB")
     end
 
-    it "catches error if Profile image file name is too long" do
-      allow(user).to receive(:update).and_raise(Errno::ENAMETOOLONG)
-      allow(DatadogStatsClient).to receive(:increment)
-      profile_image = fixture_file_upload("files/800x600.png", "image/png")
-
-      expect do
-        put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
-      end.to raise_error(Errno::ENAMETOOLONG)
-
-      tags = hash_including(tags: instance_of(Array))
-
-      expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
-    end
-
     it "returns error if Profile image file name is too long" do
       profile_image = fixture_file_upload("files/800x600.png", "image/png")
       allow(profile_image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
