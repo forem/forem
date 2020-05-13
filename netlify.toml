@@ -6,9 +6,9 @@
 #    that is where we will look for package.json/.nvmrc/etc not repo root!
 
 [build]
+  ignore = "git diff --quiet master docs/"
   base = "docs/"
   command = "node deploy-script.js"
-  ignore = "git diff --quiet master docs/"
 
 [[redirects]]
   force = true
