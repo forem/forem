@@ -50,7 +50,7 @@ Rails.application.configure do
   # config.active_storage.service = :local
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  # config.force_ssl = true
+  config.force_ssl = ENV["FORCE_SSL_IN_RAILS"] == "true"
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
@@ -130,8 +130,10 @@ Rails.application.configure do
     enable_starttls_auto: true
   }
 
-  config.middleware.use Rack::HostRedirect,
-                        ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
+  if ENV["HEROKU_APP_URL"] != ENV["APP_DOMAIN"]
+    config.middleware.use Rack::HostRedirect,
+                          ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
+  end
 end
 
 Rails.application.routes.default_url_options = {

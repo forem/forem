@@ -107,7 +107,7 @@ module ProMemberships
     end
 
     def notify_admins(user, message)
-      SlackBotPingWorker.perform_async(
+      Slack::Messengers::Worker.perform_async(
         message: "ProMemberships::Biller: #{user.username}: #{message}",
         channel: "pro-memberships",
         username: "pro-memberships",

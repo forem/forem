@@ -12,7 +12,7 @@
   max-width: 880px;
   .article-form-video-image-url {
     padding-top: 15px;
-    font-family: $monospace;
+    font-family: var(--ff-accent);
     input {
       padding: 3px;
       font-size: 1em;
@@ -152,7 +152,7 @@
   color: var(--body-color);
   resize: none;
   background: transparent;
-  font-family: $monospace;
+  font-family: var(--ff-accent);
   @media screen and (min-width: 600px) {
     font-size: 29px;
     height: 50px;
@@ -218,7 +218,7 @@
   resize: none;
   border: 0;
   font-size: 16px;
-  font-family: $monospace;
+  font-family: var(--ff-accent);
   font-weight: bold;
   background: var(--form-bg);
   color: var(--body-color);
@@ -234,9 +234,9 @@
     left: 8px;
     right: 155px;
   }
-  background: var(--container-bg);
+  background: var(--card-bg);
   border: 1px solid var(--body-color);
-  font-family: $monospace;
+  font-family: var(--ff-accent);
   z-index: 20;
 }
 .articleform__tagoptionrow {
@@ -294,7 +294,7 @@
 }
 
 .articleform__tagoptionsummary {
-  color: var(--container-color-secondary);
+  color: var(--card-color-secondary);
   font-weight: 400;
 }
 
@@ -367,10 +367,10 @@
   font-size: 15px;
   resize: none;
   padding: 20px 6px;
-  font-family: $monospace;
+  font-family: var(--ff-accent);
+  background: var(--card-bg);
+  color: var(--card-color);
   overflow-y: auto;
-  background: var(--container-bg);
-  color: var(--container-color);
   @media screen and (min-width: 600px) {
     font-size: 18px;
     height: calc(85vh - 200px);
@@ -400,7 +400,7 @@
   bottom: 0px;
   left: 0;
   right: 0;
-  background: var(--container-bg);
+  background: var(--card-bg);
   z-index: 20;
   &::after {
     position: absolute;
@@ -433,7 +433,7 @@
       display: inline-block;
       margin-bottom: 2px;
       font-size: 11px;
-      color: var(--container-color-secondary);
+      color: var(--card-color-secondary);
       font-style: italic;
       margin-left: -2px;
     }
@@ -454,7 +454,7 @@
       border: none;
       box-shadow: none;
       color: $medium-gray;
-      color: var(--container-color-secondary);
+      color: var(--card-color-secondary);
       font-family: sans-serif;
       font-size: 1rem;
       cursor: pointer;
@@ -553,6 +553,7 @@
       max-width: 24px;
       margin: -10px 5px;
       position: relative;
+      filter: invert(100%);
     }
     input {
       cursor: pointer;

@@ -32,8 +32,14 @@ class NotifyMailerPreview < ActionMailer::Preview
     NotifyMailer.new_badge_email(badge_achievement)
   end
 
+  def channel_invite_email
+    user = User.first
+    membership = ChatChannelMembership.last
+    NotifyMailer.channel_invite_email(membership, user)
+  end
+
   def tag_moderator_confirmation_email
-    NotifyMailer.tag_moderator_confirmation_email(User.first, "discuss")
+    NotifyMailer.tag_moderator_confirmation_email(User.first, Tag.find(1))
   end
 
   def trusted_role_email
@@ -56,7 +62,7 @@ class NotifyMailerPreview < ActionMailer::Preview
     HEREDOC
     params = {
       email_to: @user.email,
-      email_subject: "Courtesy notice from dev.to",
+      email_subject: "Courtesy notice from #{ApplicationConfig['COMMUNITY_NAME']}",
       email_body: email_body,
       email_type: "Reporter",
       feedback_message_id: rand(100)

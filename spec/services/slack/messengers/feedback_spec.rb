@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Slack::Messengers::Feedback, type: :service do
-  let_it_be_readonly(:user) { create(:user) }
+  let(:user) { build(:user) }
   let(:default_params) do
     {
       type: "abuse-reports",
@@ -12,35 +12,35 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
   end
 
   def get_argument_from_last_job(argument_name)
-    job = sidekiq_enqueued_jobs(worker: SlackBotPingWorker).last
+    job = sidekiq_enqueued_jobs(worker: Slack::Messengers::Worker).last
     job["args"].first[argument_name]
   end
 
   it "supports an anonymous report" do
-    sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+    sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params)
     end
   end
 
   it "contains user's details", :aggregate_failures do
-    sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+    sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params.merge(user: user))
     end
 
     message = get_argument_from_last_job("message")
 
     expect(message).to include(user.username)
-    expect(message).to include(App.url("/#{user.username}"))
+    expect(message).to include(URL.user(user))
     expect(message).to include(user.email)
   end
 
   it "contains report information", :aggregate_failures do
-    sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+    sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params.merge(user: user))
     end
 
     message = get_argument_from_last_job("message")
-    url = App.url(
+    url = URL.url(
       Rails.application.routes.url_helpers.internal_reports_path,
     )
 
@@ -52,7 +52,7 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
   end
 
   it "messages the proper channel with the proper username" do
-    sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+    sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params)
     end
 
@@ -64,7 +64,7 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
   end
 
   it "uses the cry emoji for abuse reports" do
-    sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+    sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params.merge(type: "abuse-reports"))
     end
 
@@ -73,7 +73,7 @@ RSpec.describe Slack::Messengers::Feedback, type: :service do
   end
 
   it "uses the robot face emoji for other reports" do
-    sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+    sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params.merge(type: "other"))
     end
 

@@ -15,10 +15,22 @@ RSpec.describe "/internal/negative_reactions", type: :request do
     end
   end
 
+  context "when the user is a single resource admin" do
+    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: ModeratorAction) }
+
+    it "renders with status 200" do
+      sign_in single_resource_admin
+      get internal_moderator_actions_path
+      expect(response.status).to eq 200
+    end
+  end
+
   context "when the user is an admin" do
-    let(:admin)      { create(:user, :admin) }
-    let(:moderator)  { create(:user, :trusted) }
-    let!(:reaction)  { create(:vomit_reaction, user: moderator) }
+    let(:admin)              { create(:user, :admin) }
+    let(:moderator)          { create(:user, :trusted) }
+    let!(:user_reaction)     { create(:vomit_reaction, :user, user: moderator) }
+    let!(:comment_reaction)  { create(:vomit_reaction, :comment, user: moderator) }
+    let!(:article_reaction)  { create(:vomit_reaction, user: moderator) }
 
     before do
       sign_in admin
@@ -34,7 +46,9 @@ RSpec.describe "/internal/negative_reactions", type: :request do
       it "renders to appropriate page" do
         get "/internal/negative_reactions"
         expect(response.body).to include(moderator.username)
-        expect(response.body).to include(reaction.category)
+        expect(response.body).to include(user_reaction.reactable.username)
+        expect(response.body).to include(comment_reaction.reactable.user.username)
+        expect(response.body).to include(CGI.escapeHTML(article_reaction.reactable.title))
       end
     end
   end

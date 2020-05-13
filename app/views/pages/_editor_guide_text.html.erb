@@ -9,7 +9,7 @@
       <p><em><b>We have two editor versions</b>. If you prefer Jekyll-style "frontmatter", switch to "basic markdown" in <a href="/settings/ux">/settings/ux</a>.</em></p>
       <h2 style="font-size:2.8em"><strong>Things to Know</strong></h2>
       <ul>
-        <li>Use <a href="#markdown"><strong>markdown</strong></a> to write and format <a href="/">dev.to</a> posts.</li>
+        <li>Use <a href="#markdown"><strong>markdown</strong></a> to write and format <a href="/"><%= community_name %></a> posts.</li>
         <li>Most of the time, you can write inline HTML directly into your posts.</li>
         <li>You can use <strong><a href="#liquidtags">Liquid tags</a></strong> to make add rich content such as tweets and videos.</li>
         <li>Links to unpublished posts are shareable for feedback/review.</li>
@@ -24,7 +24,7 @@
     <p><em>Italics</em>: <code>*asterisks* or _underscores_</code></p>
     <p><strong>Bold</strong>: <code>**double asterisks** or __double underscores__</code></p>
     <h3><strong>Links</strong></h3>
-    <p><a href="https://dev.to">I'm an inline link</a>: <code>[I'm an inline link](put-link-here)</code></p>
+    <p><a href="<%= app_url %>">I'm an inline link</a>: <code>[I'm an inline link](put-link-here)</code></p>
     <p><a name="anchored">Anchored links</a> (For things like a Table of Contents)</p>
     <pre>
       ## Table Of Contents
@@ -53,7 +53,7 @@
     <p>We support native
       <a href="https://shopify.github.io/liquid/" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:
     </p>
-    <h3><strong>dev.to Article/Post Embed</strong></h3>
+    <h3><strong><%= community_name %> Article/Post Embed</strong></h3>
     <p>All you need is the full link of the article:</p>
     <code>{% link https://dev.to/kazz/boost-your-productivity-using-markdown-1be %}</code>
     <p>You can also use the slug like this:</p>
@@ -62,21 +62,21 @@
     <code>{% post https://dev.to/kazz/boost-your-productivity-using-markdown-1be %}</code>
     <p>or this:</p>
     <code>{% post kazz/boost-your-productivity-using-markdown-1be %}</code>
-    <h3><strong>dev.to User Embed</strong></h3>
-    <p>All you need is the DEV username:</p>
+    <h3><strong><%= community_name %> User Embed</strong></h3>
+    <p>All you need is the <%= community_name %> username:</p>
     <code>{% user jess %}</code>
-    <h3><strong>dev.to Tag Embed</strong></h3>
+    <h3><strong><%= community_name %> Tag Embed</strong></h3>
     <p>All you need is the tag name:</p>
     <code>{% tag git %}</code>
-    <h3><strong>dev.to Comment Embed</strong></h3>
+    <h3><strong><%= community_name %> Comment Embed</strong></h3>
     <p>All you need is the
       <code>ID</code> at the end of a comment URL. To get the comment link, click either the timestamp or the menu button in the top right corner on a comment and then click "Permalink". Here's an example:
     </p>
     <code>{% devcomment 2d1a %}</code>
-    <h3><strong>dev.to Podcast Episode Embed</strong></h3>
+    <h3><strong><%= community_name %> Podcast Episode Embed</strong></h3>
     <p>All you need is the full link of the podcast episode:</p>
     <code>{% podcast https://dev.to/basecspodcast/s2e2--queues-irl %}</code>
-    <h3><strong>dev.to Listing Embed</strong></h3>
+    <h3><strong><%= community_name %> Listing Embed</strong></h3>
     <p>All you need is the full link of the listing:</p>
     <code>{% listing https://dev.to/listings/collabs/dev-is-open-source-823 %}</code>
     <p>You can also use the category and slug like this:</p>
@@ -331,6 +331,13 @@
           <li>The site is <code style="color: orange; background-color: black;">diy</code></li>
         </ul>
         <pre>{% stackexchange <span style="color: aquamarine;">170185</span> <span style="color: orange;">diy</span> %}</pre>
+        </p>
+        <h3><strong>Wikipedia Embed</strong></h3>
+        <p>Enter the full URL of the Wikipedia article you want to embed, with or without the anchor.</p>
+        <p>
+          <code>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia %}</code>
+          <br/>
+          <code>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia#Diversity %}</code>
         </p>
         <h3><strong>Asciinema Embed</strong></h3>
         <p>All you need is the Asciinema id:</p>

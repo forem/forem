@@ -19,6 +19,12 @@ RSpec.describe ResponseTemplate, type: :model do
         expect(response_template.valid?).to eq false
         expect(response_template.errors.messages[:content_type].to_sentence).to eq ResponseTemplate::COMMENT_VALIDATION_MSG
       end
+
+      it "validates that there is no user ID associated" do
+        response_template = build(:response_template, type_of: "mod_comment", content_type: "body_markdown", user_id: 1)
+        expect(response_template.valid?).to eq false
+        expect(response_template.errors.messages[:type_of].to_sentence).to eq ResponseTemplate::USER_NIL_TYPE_OF_MSG
+      end
     end
   end
 end

@@ -1,5 +1,8 @@
 class Internal::ResponseTemplatesController < Internal::ApplicationController
   layout "internal"
+  after_action only: %i[create update destroy] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
 
   def index
     @response_templates = if params[:filter]

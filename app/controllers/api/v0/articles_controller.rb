@@ -41,6 +41,7 @@ module Api
 
       def update
         @article = Articles::Updater.call(@user, params[:id], article_params)
+
         render "show", status: :ok
       end
 

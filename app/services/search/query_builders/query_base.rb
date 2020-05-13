@@ -15,9 +15,12 @@ module Search
         add_sort
         set_size
         add_highlight_fields
+        filter_source
       end
 
       def add_highlight_fields; end
+
+      def filter_source; end
 
       def add_sort
         sort_key = @params[:sort_by] || self.class::DEFAULT_PARAMS[:sort_by]
@@ -42,15 +45,19 @@ module Search
 
           fields = query_fields.presence || [query_key]
 
-          {
-            simple_query_string: {
-              query: "#{@params[query_key]}*",
-              fields: fields,
-              lenient: true,
-              analyze_wildcard: true
-            }
-          }
+          query_hash(@params[query_key], fields)
         end.compact
+      end
+
+      def query_hash(key, fields)
+        {
+          simple_query_string: {
+            query: "#{key}*",
+            fields: fields,
+            lenient: true,
+            analyze_wildcard: true
+          }
+        }
       end
     end
   end

@@ -1,9 +1,12 @@
 <% title "New Post" %>
+<%= content_for :page_meta do %>
+    <link rel="canonical" href="<%= app_url("/new") %>" />
+<% end %>
 
 <% if user_signed_in? %>
   <%= render "shared/webcomponents_loader_script" %>
-  <%= javascript_packs_with_chunks_tag "clipboardCopy", "articleForm", defer: true %>
   <%= render "articles/v2_form", article: @article, organizations: @organizations, version: @version %>
+  <%= javascript_packs_with_chunks_tag "clipboardCopy", "articleForm", defer: true %>
 <% else %>
   <% @new_article_not_logged_in = true %>
   <%= render "devise/registrations/registration_form" %>

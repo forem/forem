@@ -1,8 +1,13 @@
 class Internal::ArticlesController < Internal::ApplicationController
   layout "internal"
 
+  after_action only: [:update] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
+
   def index
     @pending_buffer_updates = BufferUpdate.where(status: "pending").includes(:article)
+    @user_buffer_updates = BufferUpdate.where(status: "sent_direct", approver_user_id: current_user.id).where("created_at > ?", 24.hours.ago)
 
     case params[:state]
     when /not\-buffered/
@@ -13,6 +18,8 @@ class Internal::ArticlesController < Internal::ApplicationController
       @articles = articles_top(months_ago)
     when "satellite"
       @articles = articles_satellite
+    when "satellite-not-bufffered"
+      @articles = articles_satellite.where(last_buffered: nil)
     when "boosted-additional-articles"
       @articles = articles_boosted_additional
     when "chronological"
@@ -38,7 +45,6 @@ class Internal::ArticlesController < Internal::ApplicationController
     article.user_id = article_params[:user_id].to_i
     article.update!(article_params)
     Article.where.not(id: article.id).where(live_now: true).update_all(live_now: false) if article.live_now
-    CacheBuster.bust("/live_articles")
     render body: nil
   end
 

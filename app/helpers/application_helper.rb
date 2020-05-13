@@ -18,10 +18,12 @@ module ApplicationHelper
   end
 
   def title(page_title)
-    derived_title = if page_title.include?(ApplicationConfig["COMMUNITY_NAME"])
+    derived_title = if page_title.include?(community_name)
                       page_title
+                    elsif user_signed_in?
+                      "#{page_title} - #{community_qualified_name} 👩‍💻👨‍💻"
                     else
-                      page_title + " - #{ApplicationConfig['COMMUNITY_NAME']} Community 👩‍💻👨‍💻"
+                      "#{page_title} - #{community_name}"
                     end
     content_for(:title) { derived_title }
     derived_title
@@ -146,8 +148,12 @@ module ApplicationHelper
     end
   end
 
+  def community_name
+    @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
+  end
+
   def community_qualified_name
-    "The #{ApplicationConfig['COMMUNITY_NAME']} Community"
+    "#{community_name} Community"
   end
 
   def cache_key_heroku_slug(path)
@@ -155,6 +161,26 @@ module ApplicationHelper
     return path if heroku_slug_commit.blank?
 
     "#{path}-#{heroku_slug_commit}"
+  end
+
+  def copyright_notice
+    start_year = ApplicationConfig["COMMUNITY_COPYRIGHT_START_YEAR"]
+    current_year = Time.current.year.to_s
+    return start_year if current_year == start_year
+    return current_year if start_year.strip.length.zero?
+
+    "#{start_year} - #{current_year}"
+  end
+
+  def email_link(type = :default, text: nil, additional_info: nil)
+    # The allowed types for type is :default, :business, :privacy, and members.
+    # These options can be found in field :email_addresses of models/site_config.rb
+    email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:default]
+    mail_to email, text || email, additional_info
+  end
+
+  def community_members_label
+    SiteConfig.community_member_label.pluralize
   end
 
   # Creates an app internal URL
@@ -166,6 +192,34 @@ module ApplicationHelper
   # @example Add a path
   #  app_url("internal") #=> "https://dev.to/internal"
   def app_url(uri = nil)
-    App.url(uri)
+    URL.url(uri)
+  end
+
+  def article_url(article)
+    URL.article(article)
+  end
+
+  def comment_url(comment)
+    URL.comment(comment)
+  end
+
+  def reaction_url(reaction)
+    URL.reaction(reaction)
+  end
+
+  def tag_url(tag, page = 1)
+    URL.tag(tag, page)
+  end
+
+  def user_url(user)
+    URL.user(user)
+  end
+
+  def organization_url(organization)
+    URL.organization(organization)
+  end
+
+  def sanitized_referer(referer)
+    URL.sanitized_referer(referer)
   end
 end

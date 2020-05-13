@@ -3,8 +3,75 @@ require "rails_helper"
 RSpec.describe Organization, type: :model do
   let(:organization) { create(:organization) }
 
-  it { is_expected.to have_many(:sponsorships) }
-  it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
+  describe "validations" do
+    describe "builtin validations" do
+      subject { organization }
+
+      it { is_expected.to have_many(:api_secrets).through(:users) }
+      it { is_expected.to have_many(:articles) }
+      it { is_expected.to have_many(:classified_listings) }
+      it { is_expected.to have_many(:collections) }
+      it { is_expected.to have_many(:credits) }
+      it { is_expected.to have_many(:display_ads) }
+      it { is_expected.to have_many(:notifications) }
+      it { is_expected.to have_many(:organization_memberships).dependent(:delete_all) }
+      it { is_expected.to have_many(:profile_pins) }
+      it { is_expected.to have_many(:sponsorships) }
+      it { is_expected.to have_many(:unspent_credits).class_name("Credit") }
+      it { is_expected.to have_many(:users).through(:organization_memberships) }
+
+      it { is_expected.to validate_presence_of(:name) }
+      it { is_expected.to validate_presence_of(:summary) }
+      it { is_expected.to validate_presence_of(:url) }
+      it { is_expected.to validate_presence_of(:profile_image) }
+      it { is_expected.to validate_presence_of(:slug) }
+      it { is_expected.to validate_length_of(:cta_body_markdown).is_at_most(256) }
+      it { is_expected.to validate_length_of(:cta_button_text).is_at_most(20) }
+      it { is_expected.to validate_length_of(:secret).is_equal_to(100) }
+      it { is_expected.to validate_length_of(:name).is_at_most(50) }
+      it { is_expected.to validate_length_of(:slug).is_at_least(2).is_at_most(18) }
+      it { is_expected.to validate_length_of(:twitter_username).is_at_most(15) }
+      it { is_expected.to validate_length_of(:github_username).is_at_most(50) }
+      it { is_expected.to validate_length_of(:url).is_at_most(200) }
+      it { is_expected.to validate_length_of(:tag_line).is_at_most(60) }
+      it { is_expected.to validate_length_of(:proof).is_at_most(1500) }
+      it { is_expected.to validate_length_of(:location).is_at_most(64) }
+      it { is_expected.to validate_length_of(:email).is_at_most(64) }
+      it { is_expected.to validate_length_of(:company_size).is_at_most(7) }
+      it { is_expected.to validate_length_of(:story).is_at_most(640) }
+      it { is_expected.to validate_length_of(:tech_stack).is_at_most(640) }
+      it { is_expected.to validate_uniqueness_of(:slug).case_insensitive }
+
+      it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
+      it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
+      it { is_expected.to allow_value("#aabbcc").for(:bg_color_hex) }
+      it { is_expected.to allow_value("#aabbcc").for(:text_color_hex) }
+      it { is_expected.to allow_value("#abc").for(:bg_color_hex) }
+      it { is_expected.to allow_value("#abc").for(:text_color_hex) }
+      it { is_expected.not_to allow_value("3.0").for(:company_size) }
+      it { is_expected.to allow_value("3").for(:company_size) }
+    end
+  end
+
+  describe "#after_commit" do
+    it "on update syncs elasticsearch data" do
+      article = create(:article, organization: organization)
+      sidekiq_perform_enqueued_jobs
+      new_org_name = "#{organization.name}+NEW"
+      organization.update(name: new_org_name)
+      sidekiq_perform_enqueued_jobs
+      expect(article.elasticsearch_doc.dig("_source", "organization", "name")).to eq(new_org_name)
+    end
+
+    it "on destroy removes data from elasticsearch" do
+      article = create(:article, organization: organization)
+      sidekiq_perform_enqueued_jobs
+      expect(article.elasticsearch_doc.dig("_source", "organization", "id")).to eq(organization.id)
+      organization.destroy
+      sidekiq_perform_enqueued_jobs
+      expect(article.elasticsearch_doc.dig("_source", "organization")).to be_nil
+    end
+  end
 
   describe "#name" do
     it "rejects names with over 50 characters" do

@@ -16,11 +16,11 @@ export const SearchForm = ({
   >
     <input name="utf8" type="hidden" value="✓" />
     <input
-      className="top-bar--search-input"
+      className="top-bar--search-input crayons-textfield"
       type="text"
       name="q"
       id={searchBoxId}
-      placeholder="Search"
+      placeholder="Search..."
       autoComplete="off"
       aria-label="search"
       onKeyDown={onSearch}

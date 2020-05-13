@@ -3,7 +3,6 @@ import { h, render } from 'preact';
 /* global userData */
 
 // This logic is similar to that in initScrolling.js.erb
-// that prevents the classic Algolia scrolling for the front page.
 const frontPageFeedPathNames = new Map([
   ['/', ''],
   ['/top/week', 'week'],
@@ -12,6 +11,15 @@ const frontPageFeedPathNames = new Map([
   ['/top/infinity', 'infinity'],
   ['/latest', 'latest'],
 ]);
+
+const mainNavMoreTrigger = document.getElementById('main-nav-more-trigger');
+function toggleMainNavMore() {
+  document.getElementById('main-nav-more').classList.remove('hidden');
+  mainNavMoreTrigger.classList.add('hidden');
+}
+if (mainNavMoreTrigger) {
+  mainNavMoreTrigger.addEventListener('click', toggleMainNavMore);
+}
 
 function toggleListingsMinimization() {
   if (document.body.classList.contains('config_minimize_newest_listings')) {

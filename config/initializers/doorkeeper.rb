@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Doorkeeper.configure do
   # Change the ORM that doorkeeper will use (requires ORM extensions installed).
   # Check the list of supported ORMs here: https://github.com/doorkeeper-gem/doorkeeper#orms
@@ -259,7 +257,7 @@ Doorkeeper.configure do
   # force_ssl_in_redirect_uri { |uri| uri.host != 'localhost' }
 
   # Specify what redirect URI's you want to block during Application creation.
-  # Any redirect URI is whitelisted by default.
+  # Any redirect URI is enabled by default.
   #
   # You can use this option in order to forbid URI's with 'javascript' scheme
   # for example.

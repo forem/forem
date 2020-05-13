@@ -62,7 +62,7 @@
       <%= render "articles/user_metadata", context: "sidebar" %>
     <% elsif @actor.class.name == "Organization" && @actor.approved_and_filled_out_cta? %>
       <div class="primary-sticky-nav-org-summary">
-        <%= @actor.cta_processed_html.html_safe %>
+        <%= sanitize_rendered_markdown(@actor.cta_processed_html) %>
         <div class="primary-sticky-nav-org-cta-link-wrapper">
           <% if @actor.cta_button_text.present? && @actor.cta_button_url.present? %>
             <a href="<%= @actor.cta_button_url || "LEARN MORE" %>" class="primary-sticky-nav-org-cta-link">
@@ -116,7 +116,7 @@
           <div class="primary-sticky-nav-element-wrapper">
             <% if index == 0 %>
               <div class="primary-sticky-nav-title">
-                <img src="<%= asset_path "emoji/apple-fire.png" %>" alt="Fire emoji" loading="lazy"> Trending on <a href="<%= ApplicationConfig["APP_PROTOCOL"] %><%= ApplicationConfig["APP_DOMAIN"] %>"><%= ApplicationConfig["COMMUNITY_NAME"] %></a>
+                <img src="<%= asset_path "emoji/apple-fire.png" %>" alt="Fire emoji" loading="lazy"> Trending on <a href="<%= app_url %>"><%= community_name %></a>
               </div>
             <% end %>
             <a class="primary-sticky-nav-element" href="<%= article.path %>">

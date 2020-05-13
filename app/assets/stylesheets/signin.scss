@@ -6,7 +6,7 @@
     h1 {
       font-weight: 300;
       text-align: center;
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       font-size: 30px;
       @media screen and (min-width: 520px) {
         font-size: 50px;
@@ -20,7 +20,7 @@
       text-align: center;
       padding: 20px 0px;
       border: 1px solid rgb(245, 245, 245);
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       color: rgb(86, 98, 103);
       border-radius: 3px;
       font-size: 22px;

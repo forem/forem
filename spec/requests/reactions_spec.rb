@@ -5,8 +5,8 @@ RSpec.describe "Reactions", type: :request do
   let(:article) { create(:article, user: user) }
   let(:comment) { create(:comment, commentable: article) }
 
-  let_it_be(:max_age) { FastlyRails.configuration.max_age }
-  let_it_be(:stale_if_error) { FastlyRails.configuration.stale_if_error }
+  let_it_be(:max_age) { 1.day.to_i }
+  let_it_be(:stale_if_error) { 26_400 }
 
   describe "GET /reactions?article_id=:article_id" do
     before do
@@ -148,6 +148,29 @@ RSpec.describe "Reactions", type: :request do
       }
     end
 
+    context "when rate limiting" do
+      let(:rate_limiter) { RateLimitChecker.new(user) }
+
+      before do
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limiter)
+        sign_in user
+      end
+
+      it "increments rate limit for reaction_creation" do
+        allow(rate_limiter).to receive(:track_limit_by_action)
+        post "/reactions", params: article_params
+
+        expect(rate_limiter).to have_received(:track_limit_by_action).with(:reaction_creation)
+      end
+
+      it "returns a 429 status when rate limit is reached" do
+        allow(rate_limiter).to receive(:limit_by_action).and_return(true)
+        post "/reactions", params: article_params
+
+        expect(response.status).to eq(429)
+      end
+    end
+
     context "when reacting to an article" do
       before do
         sign_in user
@@ -236,6 +259,12 @@ RSpec.describe "Reactions", type: :request do
       it "converts field test" do
         post "/reactions", params: article_params
         expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_creates_reaction")
+      end
+    end
+
+    context "when signed out" do
+      it "returns an unauthorized error" do
+        expect { post "/reactions", params: article_params }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end

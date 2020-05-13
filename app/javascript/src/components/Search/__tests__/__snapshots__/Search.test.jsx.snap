@@ -15,11 +15,11 @@ exports[`<Search /> renders properly 1`] = `
   <input
     aria-label="search"
     autoComplete="off"
-    class="top-bar--search-input"
+    class="top-bar--search-input crayons-textfield"
     id="nav-search"
     name="q"
     onKeyDown={[Function]}
-    placeholder="Search"
+    placeholder="Search..."
     type="text"
     value=""
   />

@@ -30,5 +30,5 @@
 /spec/system/internal/                              @thepracticaldev/snackcase
 Gemfile                                             @thepracticaldev/sre    @thepracticaldev/oss
 Gemfile.lock                                        @thepracticaldev/sre    @thepracticaldev/oss
-package.json                                        @thepracticaldev/oss
-yarn.lock                                           @thepracticaldev/oss
+package.json                                        @thepracticaldev/oss    @nickytonline
+yarn.lock                                           @thepracticaldev/oss    @nickytonline

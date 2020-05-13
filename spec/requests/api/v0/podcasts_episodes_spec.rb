@@ -32,9 +32,10 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
       get api_podcast_episodes_path
 
       response_episode = response.parsed_body.first
-      expect(response_episode.keys).to match_array(%w[type_of id path image_url title podcast])
+      expect(response_episode.keys).to match_array(%w[class_name type_of id path image_url title podcast])
 
       expect(response_episode["type_of"]).to eq("podcast_episodes")
+      expect(response_episode["class_name"]).to eq("PodcastEpisode")
       %w[id path title].each do |attr|
         expect(response_episode[attr]).to eq(podcast_episode.public_send(attr))
       end

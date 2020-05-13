@@ -3,6 +3,9 @@ class CommentsController < ApplicationController
   before_action :set_cache_control_headers, only: [:index]
   before_action :authenticate_user!, only: %i[preview create hide unhide]
   after_action :verify_authorized
+  after_action only: [:moderator_create] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
 
   # GET /comments
   # GET /comments.json
@@ -49,11 +52,7 @@ class CommentsController < ApplicationController
   # POST /comments
   # POST /comments.json
   def create
-    if RateLimitChecker.new(current_user).limit_by_action("comment_creation")
-      skip_authorization
-      render json: {}, status: :too_many_requests
-      return
-    end
+    rate_limit!(:comment_creation)
 
     @comment = Comment.new(permitted_attributes(Comment))
     @comment.user_id = current_user.id
@@ -72,9 +71,10 @@ class CommentsController < ApplicationController
 
       if @comment.invalid?
         @comment.destroy
-        render json: { status: "comment already exists" }
+        render json: { error: "comment already exists" }, status: :unprocessable_entity
         return
       end
+
       render json: {
         status: "created",
         css: @comment.custom_css,
@@ -95,17 +95,21 @@ class CommentsController < ApplicationController
           github_username: current_user.github_username
         }
       }
-    elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
-                                    commentable_id: @comment.commentable.id,
-                                    ancestry: @comment.ancestry)[1])
-      @comment.destroy
-      render json: { status: "comment already exists" }
+    elsif (comment = Comment.where(
+      body_markdown: @comment.body_markdown,
+      commentable_id: @comment.commentable.id,
+      ancestry: @comment.ancestry,
+    )[1])
+
+      comment.destroy
+      render json: { error: "comment already exists" }, status: :unprocessable_entity
     else
-      render json: { status: "errors" }
+      message = @comment.errors.full_messages.to_sentence
+      render json: { error: message }, status: :unprocessable_entity
     end
   # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
   # for details as to why this is necessary
-  rescue Pundit::NotAuthorizedError
+  rescue Pundit::NotAuthorizedError, RateLimitChecker::LimitReached
     raise
   rescue StandardError => e
     skip_authorization
@@ -113,6 +117,38 @@ class CommentsController < ApplicationController
     Rails.logger.error(e)
     message = "There was an error in your markdown: #{e}"
     render json: { error: message }, status: :unprocessable_entity
+  end
+
+  def moderator_create
+    return if rate_limiter.limit_by_action(:comment_creation)
+
+    response_template = ResponseTemplate.find(params[:response_template][:id])
+    authorize response_template, :moderator_create?
+
+    moderator = User.find(SiteConfig.mascot_user_id)
+    @comment = Comment.new(permitted_attributes(Comment))
+    @comment.user_id = moderator.id
+    @comment.body_markdown = response_template.content
+    authorize @comment
+
+    if @comment.save
+      Mention.create_all(@comment)
+      Notification.send_new_comment_notifications_without_delay(@comment)
+
+      render json: { status: "created", path: @comment.path }
+    elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
+                                    commentable_id: @comment.commentable.id,
+                                    ancestry: @comment.ancestry)[0])
+      render json: { status: "comment already exists" }, status: :conflict
+    else
+      render json: { status: @comment&.errors&.full_messages&.to_sentence }, status: :unprocessable_entity
+    end
+  rescue StandardError => e
+    skip_authorization
+
+    Rails.logger.error(e)
+    message = "There was an error in your markdown: #{e}"
+    render json: { error: "error", status: message }, status: :unprocessable_entity
   end
 
   # PATCH/PUT /comments/1

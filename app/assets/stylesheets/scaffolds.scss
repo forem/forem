@@ -7,11 +7,11 @@
 body {
   background: var(--body-bg);
   color: var(--body-color);
-  font-family: $ff-default;
+  font-family: var(--ff-default);
   padding: 0;
   margin: 0;
   overflow-y: scroll;
-  padding-top: $header-height;
+  padding-top: var(--header-height);
 }
 
 #audiocontent {
@@ -68,9 +68,6 @@ body {
 a {
   color: var(--link-brand-color);
   text-decoration: none;
-  &:hover {
-    opacity: 0.9;
-  }
 }
 
 div {
@@ -101,6 +98,18 @@ pre {
     background: #29292e;
     color: #eff0f9;
     white-space: pre;
+  }
+}
+
+.cta {
+  color: $black;
+  background: $green;
+  font-family: $helvetica-condensed;
+  -webkit-appearance: none;
+  font-stretch: condensed;
+  font-weight: bold;
+  &.cta-danger {
+    background: $red;
   }
 }
 
@@ -162,13 +171,12 @@ body.static-navbar-config {
   }
 }
 
-.pro-visible-block,
 .trusted-visible-block {
   display: none !important;
 }
 
 body.trusted-status-true .trusted-visible-block {
-  display: block !important;
+  display: flex !important;
 }
 
 body.hidden-shell {
@@ -180,7 +188,7 @@ body.hidden-shell {
     margin-top: 0px;
   }
   .universal-page-content-wrapper {
-    margin-top: -$header-height !important;
+    margin-top: calc(var(--header-height) * -1) !important;
     margin-bottom: 30px;
   }
 }

@@ -34,6 +34,13 @@ RSpec.describe "/internal/buffer_updates", type: :request do
       expect(article.reload.last_buffered).not_to eq(nil)
     end
 
+    it "marks article as featured" do
+      post "/internal/buffer_updates",
+           params:
+           { social_channel: "main_twitter", article_id: article.id, tweet: "Hello this is a test" }
+      expect(article.reload.featured).to be true
+    end
+
     it "updates last buffered at with satellite buffer" do
       post "/internal/buffer_updates",
            params:

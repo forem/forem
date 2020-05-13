@@ -1,33 +1,29 @@
-<div class="row m-3">
+<div class="row my-3">
   <div class="col">
     <ul class="nav nav-pills">
       <li class="nav-item">
-        <a href="/internal/mods" class="nav-link <%= "active" if params[:state].blank? %>">General Community</a>
+        <%= link_to "General Community", internal_mods_path, class: "nav-link #{'active' if params[:state].blank?}" %>
       </li>
       <li class="nav-item">
-        <a href="/internal/mods?state=tag" class="nav-link <%= "active" if params[:state] == "tag" %>">Tag Mods</a>
+        <%= link_to "Tag Mods", internal_mods_path(state: :tag_moderator), class: "nav-link #{'active' if params[:state] == 'tag_moderator'}" %>
       </li>
       <li class="nav-item">
-        <a href="/internal/mods?state=potential" class="nav-link <%= "active" if params[:state] == "potential" %>">Potential Mods</a>
+        <%= link_to "Potential Mods", internal_mods_path(state: :potential), class: "nav-link #{'active' if params[:state] == 'potential'}" %>
       </li>
     </ul>
   </div>
   <div class="col">
-    <%= form_tag(internal_mods_path, method: "get") do %>
-      <div class="form-row justify-content-end">
-        <div class="form-group">
-          <%= text_field_tag(:search, params[:search]) %>
-          <% if params[:state].present? %>
-            <%= hidden_field_tag(:state, params[:state]) %>
-          <% end %>
-          <%= submit_tag("Search") %>
-        </div>
+    <%= form_with url: internal_mods_path, method: :get, local: true, class: "form-inline justify-content-end" do |f| %>
+      <div class="form-group mx-sm-3">
+        <%= f.text_field :search, value: params[:search], class: "form-control" %>
+        <%= f.hidden_field :state, value: params[:state] if params[:state].present? %>
       </div>
+      <%= f.submit "Search", class: "btn btn-light" %>
     <% end %>
   </div>
 </div>
 
-<%= paginate @mods %>
+<%= paginate @mods, theme: "internal" %>
 
 <table class="table">
   <thead>
@@ -52,8 +48,8 @@
       <td><%= time_ago_in_words mod.last_comment_at %> ago</td>
       <% if params[:state] == "potential" %>
         <td>
-          <%= form_for([:internal, mod], url: internal_mod_path(mod.id), method: :patch) do |f| %>
-            <%= f.submit "Make Trusted Mod" %>
+          <%= form_with model: [:internal, mod], url: internal_mod_path(mod.id), method: :patch, local: true do |f| %>
+            <%= f.submit "Make Trusted Mod", class: "btn btn-light" %>
           <% end %>
         </td>
       <% end %>
@@ -62,4 +58,4 @@
   </tbody>
 </table>
 
-<%= paginate @mods %>
+<%= paginate @mods, theme: "internal" %>

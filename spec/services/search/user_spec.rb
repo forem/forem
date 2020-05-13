@@ -7,7 +7,7 @@ RSpec.describe Search::User, type: :service do
     expect(described_class::MAPPINGS).not_to be_nil
   end
 
-  describe "::search_documents", elasticsearch: true do
+  describe "::search_documents", elasticsearch: "User" do
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }
 
@@ -29,6 +29,20 @@ RSpec.describe Search::User, type: :service do
         expect(user_docs.count).to eq(2)
         doc_ids = user_docs.map { |t| t.dig("id") }
         expect(doc_ids).to include(user1.id, user2.id)
+      end
+    end
+
+    context "with a filter" do
+      it "searches by excluding roles" do
+        user1.add_role(:admin)
+        user2.add_role(:banned)
+        index_documents([user1, user2])
+        query_params = { size: 5, exclude_roles: ["banned"] }
+
+        user_docs = described_class.search_documents(params: query_params)
+        expect(user_docs.count).to eq(1)
+        doc_ids = user_docs.map { |t| t.dig("id") }
+        expect(doc_ids).to match_array([user1.id])
       end
     end
   end

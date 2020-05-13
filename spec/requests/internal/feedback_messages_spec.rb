@@ -3,7 +3,30 @@ require "rails_helper"
 RSpec.describe "/internal/reports", type: :request do
   let(:feedback_message)  { create(:feedback_message, :abuse_report) }
   let(:user)              { create(:user) }
+  let(:trusted_user)      { create(:user, :trusted) }
   let(:admin)             { create(:user, :super_admin) }
+
+  describe "GET /internal/reports" do
+    let(:single_resource_admin) { create(:user, :single_resource_admin, resource: FeedbackMessage) }
+
+    context "when the user is a single resource admin" do
+      it "renders with status 200" do
+        sign_in single_resource_admin
+        get internal_reports_path
+        expect(response.status).to eq 200
+      end
+    end
+
+    context "when there is a vomit reaction on a user" do
+      it "renders with status 200" do
+        trusted_user
+        create(:reaction, category: "vomit", reactable: user, user: trusted_user)
+        sign_in admin
+        get internal_reports_path
+        expect(response.status).to eq 200
+      end
+    end
+  end
 
   describe "POST /save_status" do
     context "when a valid request is made" do
@@ -105,7 +128,7 @@ RSpec.describe "/internal/reports", type: :request do
       end
 
       it "queues a slack message to be sent" do
-        sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
           post create_note_internal_reports_path, params: note_params
         end
       end

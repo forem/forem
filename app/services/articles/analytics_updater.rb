@@ -21,16 +21,11 @@ module Articles
     attr_reader :user
 
     def fetch_and_update_page_views_and_reaction_counts(qualified_articles)
-      qualified_articles.each_slice(15).to_a.each do |chunk|
-        pageviews = GoogleAnalytics.new(chunk.pluck(:id), user.id).get_pageviews
-        page_views_obj = pageviews.to_h
+      qualified_articles.each_slice(15) do |chunk|
         chunk.each do |article|
           article.update_columns(previous_positive_reactions_count: article.positive_reactions_count)
-          Notification.send_milestone_notification(type: "Reaction", article_id: article.id)
-          next if article.page_views_count > page_views_obj[article.id].to_i
-
-          article.update_columns(page_views_count: page_views_obj[article.id].to_i)
-          Notification.send_milestone_notification(type: "View", article_id: article.id)
+          # Notification.send_milestone_notification(type: "Reaction", article_id: article.id)
+          # Notification.send_milestone_notification(type: "View", article_id: article.id)
         end
       end
     end

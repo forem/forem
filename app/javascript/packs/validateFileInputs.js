@@ -29,6 +29,14 @@ const MAX_FILE_SIZE_MB = Object.freeze({
 const PERMITTED_FILE_TYPES = ['image'];
 
 /**
+ * The maximum length of the file name to prevent errors on the backend when a
+ * file name is too long.
+ *
+ * @constant {number}
+ */
+const MAX_FILE_NAME_LENGTH = 250;
+
+/**
  * Removes any pre-existing error messages from the DOM related to file
  * validation.
  *
@@ -122,6 +130,29 @@ function handleFileTypeError(
 }
 
 /**
+ * Handles errors for files with names that are too long.
+ *
+ * @param {object} fileNameLengthErrorHandler - A custom function to be ran after the default error handling
+ * @param {HTMLElement} fileInput - An input form field with type of file
+ * @param {number} maxFileNameLength - The max number of characters permitted for a file name
+ */
+function handleFileNameLengthError(
+  fileNameLengthErrorHandler,
+  fileInput,
+  maxFileNameLength,
+) {
+  const fileInputField = fileInput;
+  fileInputField.value = null;
+
+  if (fileNameLengthErrorHandler) {
+    fileNameLengthErrorHandler();
+  } else {
+    const errorMessage = `File name is too long. It can't be longer than ${maxFileNameLength} characters.`;
+    addErrorMessage(fileInput, errorMessage);
+  }
+}
+
+/**
  * Validates the file size and handles the error if it's invalid.
  *
  * @external File
@@ -193,9 +224,41 @@ function validateFileType(file, fileType, fileInput) {
 }
 
 /**
+ * Validates the length of the file name and handles the error if it's invalid.
+ *
+ * @external File
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/File File}
+ *
+ * @param {File} file - The file attached by the user
+ * @param {HTMLElement} fileInput - An input form field with type of file
+ *
+ * @returns {Boolean} Returns false if the file name is too long. Otherwise, returns true.
+ */
+function validateFileNameLength(file, fileInput) {
+  let { maxFileNameLength } = fileInput.dataset;
+
+  maxFileNameLength = Number(maxFileNameLength || MAX_FILE_NAME_LENGTH);
+
+  const { fileNameLengthErrorHandler } = fileInput.dataset;
+
+  const isValidFileNameLength = file.name.length <= maxFileNameLength;
+
+  if (!isValidFileNameLength) {
+    handleFileNameLengthError(
+      fileNameLengthErrorHandler,
+      fileInput,
+      maxFileNameLength,
+    );
+  }
+
+  return isValidFileNameLength;
+}
+
+/**
  * This is the core function to handle validations of uploaded files. It loops
  * through all the uploaded files for the given fileInput and checks the file
- * size and file format. If a file fails a validation, the error is handled.
+ * size, file format, and file name length. If a file fails a validation, the
+ * error is handled.
  *
  * @param {HTMLElement} fileInput - An input form field with type of file
  *
@@ -221,6 +284,13 @@ function validateFileInput(fileInput) {
     const isValidFileType = validateFileType(file, fileType, fileInput);
 
     if (!isValidFileType) {
+      isValidFileInput = false;
+      break;
+    }
+
+    const isValidFileNameLength = validateFileNameLength(file, fileInput);
+
+    if (!isValidFileNameLength) {
       isValidFileInput = false;
       break;
     }
@@ -258,7 +328,7 @@ export function validateFileInputs() {
 // in a view.
 const fileInputs = document.querySelectorAll('input[type="file"]');
 
-fileInputs.forEach(fileInput => {
+fileInputs.forEach((fileInput) => {
   fileInput.addEventListener('change', () => {
     validateFileInput(fileInput);
   });

@@ -1,5 +1,6 @@
 @import 'variables';
 @import 'mixins';
+@import 'config/import';
 
 .unpublished {
   background: $red;
@@ -8,7 +9,7 @@
   position: relative;
   padding: calc(10px + 1.3vw) 10px;
   color: white;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
 
   @media screen and (min-width: 380px) {
     font-size: 1.2em;
@@ -58,10 +59,12 @@ article {
     width: 100%;
     margin: auto;
     max-width: 1024px;
-    background: transparent no-repeat center center;
-    background-size: cover;
     z-index: 2;
-    padding-top: 42%;
+    height: 42vw;
+
+    @media screen and (min-width: 880px) {
+      height: 370px;
+    }
 
     @media screen and (min-width: 950px) {
       border-top-left-radius: 2px;
@@ -102,7 +105,7 @@ article {
     z-index: 6;
     position: relative;
     width: 81%;
-    font-family: $helvetica;
+    font-family: var(--ff-default);
 
     @media screen and (max-width: 750px) {
       width: 90%;
@@ -116,7 +119,7 @@ article {
     margin: auto;
 
     .org-branded-title-link {
-      color: var(--container-color-secondary);
+      color: var(--card-color-secondary);
       .org-branded-title {
         font-size: calc(0.9em + 0.3vw);
         padding: 8px 0 6px;
@@ -191,7 +194,7 @@ article {
       padding: 0;
       padding: 0 3px 16px;
       font-weight: 500;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       font-size: 13.5px;
       line-height: 1.8em;
 
@@ -210,7 +213,7 @@ article {
       }
 
       a {
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
         text-decoration: none;
       }
 
@@ -282,7 +285,7 @@ article {
   }
 
   .article-collection-wrapper {
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     font-size: 16px;
     border-radius: 5px;
     border: 1px solid $light-medium-gray;
@@ -350,7 +353,7 @@ article {
       'Book Antiqua', Georgia, serif;
     font-size: 21px;
     line-height: 32px;
-    background: var(--container-bg);
+    background: var(--card-bg);
     position: relative;
     z-index: 5;
     padding: 5px 0px;
@@ -377,7 +380,7 @@ article {
     h4,
     h5,
     h6 {
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       margin: 0.3em auto;
       padding-left: 4px;
       padding-right: 4px;
@@ -512,7 +515,7 @@ article {
       }
 
       &.twitter-tweet {
-        font-family: $helvetica;
+        font-family: var(--ff-default);
         background: white;
         max-width: 456px;
         border: 1px solid #e9eef2;
@@ -640,7 +643,7 @@ article {
     }
 
     table {
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       border-collapse: collapse;
       font-size: 0.78em;
       margin: 0.8em auto 1.2em;
@@ -675,8 +678,8 @@ article {
     position: relative;
     overflow: hidden;
     padding: 0px 0px 5px;
-    background: var(--container-bg);
-    font-family: $helvetica;
+    background: var(--card-bg);
+    font-family: var(--ff-default);
 
     a {
       color: var(--body-color);
@@ -745,7 +748,7 @@ article {
         font-size: 0.85em;
 
         a {
-          color: var(--container-color-tertiary);
+          color: var(--card-color-tertiary);
           margin-right: 6px;
           display: inline-block;
         }
@@ -918,7 +921,7 @@ article {
         padding: 4px;
         border-radius: 100px;
         transition: box-shadow 0.18s;
-        background: var(--container-bg);
+        background: var(--card-bg);
         @media screen and (min-width: 500px) {
           height: 26px;
           width: 26px;
@@ -948,7 +951,7 @@ article {
         vertical-align: 6px;
         margin-left: 5px;
         vertical-align: 10px;
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
         font-size: 13px;
         width: 27px;
 
@@ -1175,7 +1178,7 @@ article {
     .article-actions-comments-count {
       display: none;
       position: relative;
-      color: var(--container-color-tertiary);
+      color: var(--card-color-tertiary);
       font-weight: bold;
       font-size: calc(0.8em + 0.1vw);
       vertical-align: calc(7px - 0.07vw);
@@ -1298,7 +1301,7 @@ article {
   margin: auto;
   margin-bottom: -50px;
   text-align: center;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
 }
 
 .show-comments-footer {
@@ -1306,6 +1309,7 @@ article {
   max-width: 98%;
   margin: auto;
   margin-top: -80px;
+  padding-bottom: var(--su-6);
   text-align: center;
 
   .full-discussion-button {
@@ -1331,7 +1335,7 @@ article {
 }
 
 .org-branding {
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   text-align: center;
   margin-top: 20px;
   margin-bottom: 0;

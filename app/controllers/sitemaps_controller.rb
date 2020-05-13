@@ -13,7 +13,9 @@ class SitemapsController < ApplicationController
     end
     @articles = Article.published.where("published_at > ? AND published_at < ? AND score > ?", date, date.end_of_month, 3).pluck(:path, :last_comment_at)
     set_surrogate_controls(date)
-    response.headers["Surrogate-Control"] = "max-age=#{@max_age}, stale-while-revalidate=#{@stale_while_revalidate}, stale-if-error=#{@stale_if_error}"
+    set_cache_control_headers(@max_age,
+                              stale_while_revalidate: @stale_while_revalidate,
+                              stale_if_error: @stale_if_error)
     render layout: false
   end
 

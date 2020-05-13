@@ -12,7 +12,7 @@ title: macOS
    [rbenv](https://github.com/rbenv/rbenv). Please follow their
    [installation guide](https://github.com/rbenv/rbenv#installation).
 2. With the Ruby version manager, install the Ruby version listed on our badge.
-   (i.e. with rbenv: `rbenv install 2.6.5`)
+   (i.e. with rbenv: `rbenv install $(cat .ruby-version)`)
 
 ### Yarn
 
@@ -205,12 +205,11 @@ your local Elasticsearch installation, for example:
 
    - Take a look at `Envfile` to see all the `ENV` variables we use and the fake
      default provided for any missing keys.
+   - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
+     variable to the remote computer's domain name.
    - The [backend guide](/backend) will show you how to get free API keys for
      additional services that may be required to run certain parts of the app.
-   - For any key that you wish to enter/replace, follow the steps below. At a
-     minimum, you'll need to get your own free
-     [Algolia credentials](/backend/algolia) to get your development environment
-     running.
+   - For any key that you wish to enter/replace, follow the steps below.
 
      1. Create `config/application.yml` by copying from the provided template
         (i.e. with bash:

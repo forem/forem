@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Message /> should render and test snapshot 1`] = `
+<button
+  class="chatchanneltabbutton"
+  data-channel-id={23}
+  data-channel-name="test"
+  data-channel-slug="@test34"
+  data-channel-status="active"
+  data-content="sidecar-channel-request"
+  onClick={null}
+  type="button"
+>
+  <span
+    class="chatchanneltab  chatchanneltab--"
+    data-channel-id={23}
+    data-channel-name="test"
+    data-channel-slug="@test34"
+    data-channel-status="active"
+    data-content="sidecar-channel-request"
+    style={
+      Object {
+        "border": "1px solid #00FFFF",
+        "boxShadow": "3px 3px 0px #00FFFF",
+      }
+    }
+  >
+    <span
+      class="chatchanneltabindicator chatchanneltabindicator--"
+      data-channel-id={23}
+      data-channel-slug="@test34"
+    >
+      <img
+        alt="pic"
+        class="chatchanneltabindicatordirectimage invert-channel-image"
+      />
+    </span>
+    test
+  </span>
+</button>
+`;

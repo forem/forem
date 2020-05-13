@@ -7,7 +7,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
-require "algolia/webmock"
 require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
@@ -15,6 +14,7 @@ require "test_prof/recipes/rspec/before_all"
 require "test_prof/recipes/rspec/let_it_be"
 require "test_prof/recipes/rspec/sample"
 require "sidekiq/testing"
+# require "validate_url/rspec_matcher"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -53,6 +53,14 @@ WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
 RSpec::Matchers.define_negated_matcher :not_change, :change
 
+Rack::Attack.enabled = false
+
+# `browser`, a dependency of `field_test`, starting from version 3.0
+# considers the empty user agent a bot, which will fail tests as we
+# explicitly configure field tests to exclude bots
+# see https://github.com/fnando/browser/blob/master/CHANGELOG.md#300
+Browser::Bot.matchers.delete(Browser::Bot::EmptyUserAgentMatcher)
+
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -64,17 +72,36 @@ RSpec.configure do |config|
   config.include Devise::Test::IntegrationHelpers, type: :system
   config.include Devise::Test::IntegrationHelpers, type: :request
   config.include FactoryBot::Syntax::Methods
-  config.include OmniauthMacros
+  config.include OmniauthHelpers
   config.include SidekiqTestHelpers
-  config.include ElasticsearchHelpers, elasticsearch: true
+  config.include ElasticsearchHelpers
+
+  config.before(:suite) do
+    Search::Cluster.recreate_indexes
+  end
 
   config.before do
     Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
   end
 
-  config.around(:each, elasticsearch: true) do |example|
+  config.around(:each, elasticsearch_reset: true) do |example|
     Search::Cluster.recreate_indexes
     example.run
+    Search::Cluster.recreate_indexes
+  end
+
+  config.around(:each, :elasticsearch) do |ex|
+    klasses = Array.wrap(ex.metadata[:elasticsearch]).map do |search_class|
+      Search.const_get(search_class)
+    end
+    klasses.each { |klass| clear_elasticsearch_data(klass) }
+    ex.run
+  end
+
+  config.around(:each, throttle: true) do |example|
+    Rack::Attack.enabled = true
+    example.run
+    Rack::Attack.enabled = false
   end
 
   config.after do
@@ -101,7 +128,7 @@ RSpec.configure do |config|
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
 
     stub_request(:post, /api.fastly.com/).
-      to_return(status: 200, body: "", headers: {})
+      to_return(status: 200, body: "".to_json, headers: {})
 
     stub_request(:post, /api.bufferapp.com/).
       to_return(status: 200, body: { fake_text: "so fake" }.to_json, headers: {})
@@ -111,6 +138,9 @@ RSpec.configure do |config|
       to_return(status: 200, body: "", headers: {})
 
     stub_request(:any, /api.mailchimp.com/).
+      to_return(status: 200, body: "", headers: {})
+
+    stub_request(:any, /dummyimage.com/).
       to_return(status: 200, body: "", headers: {})
   end
 

@@ -1,4 +1,4 @@
-<div class="<%= "ltag__user ltag__user__id__" + user.id.to_s %>" style="<%= "border-color:" + user.decorate.darker_color + ";box-shadow: 3px 3px 0px " + user.decorate.darker_color + ";" %>">
+<div class="<%= "ltag__user ltag__user__id__#{user.id}" %>" style="<%= "border-color:#{user.darker_color};box-shadow: 3px 3px 0px #{user.darker_color};" %>">
   <style>
     .ltag__user__id__<%= user.id %> .follow-action-button {
       background-color: <%= user_colors[:bg] %> !important;
@@ -8,7 +8,7 @@
   </style>
   <a href="<%= user.path %>" class="ltag__user__link profile-image-link">
     <div class="ltag__user__pic">
-      <img src="<%= ProfileImage.new(user).get(width: 150) %>" alt="<%= user.username + " image" %>" />
+      <img src="<%= ProfileImage.new(user).get(width: 150) %>" alt="<%= "#{user.username} image" %>" />
     </div>
   </a>
   <div class="ltag__user__content">

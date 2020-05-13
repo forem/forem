@@ -1,14 +1,29 @@
 class SearchController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: %i[tags chat_channels reactions]
   before_action :format_integer_params
-  before_action :sanitize_params, only: %i[classified_listings]
+  before_action :sanitize_params, only: %i[classified_listings reactions feed_content]
 
-  CLASSIFIED_LISTINGS_PARAMS = %i[
-    category
-    classified_listing_search
-    page
-    per_page
-    tags
+  CLASSIFIED_LISTINGS_PARAMS = [
+    :category,
+    :classified_listing_search,
+    :page,
+    :per_page,
+    :tag_boolean_mode,
+    {
+      tags: []
+    },
+  ].freeze
+
+  REACTION_PARAMS = [
+    :page,
+    :per_page,
+    :category,
+    :search_fields,
+    :tag_boolean_mode,
+    {
+      tag_names: [],
+      status: []
+    },
   ].freeze
 
   USER_PARAMS = %i[
@@ -17,15 +32,20 @@ class SearchController < ApplicationController
     per_page
   ].freeze
 
-  FEED_PARAMS = %i[
-    page
-    per_page
-    published_at
-    search_fields
-    sort_by
-    tag_names
-    user_id
-    class_name
+  FEED_PARAMS = [
+    :approved,
+    :class_name,
+    :organization_id,
+    :page,
+    :per_page,
+    :search_fields,
+    :sort_by,
+    :sort_direction,
+    :user_id,
+    {
+      tag_names: [],
+      published_at: [:gte]
+    },
   ].freeze
 
   def tags
@@ -37,8 +57,9 @@ class SearchController < ApplicationController
   end
 
   def chat_channels
+    search_user_id = chat_channel_params[:user_id].present? ? [current_user.id, SiteConfig.mascot_user_id] : [current_user.id]
     ccm_docs = Search::ChatChannelMembership.search_documents(
-      params: chat_channel_params.to_h, user_id: current_user.id,
+      params: chat_channel_params.merge(user_id: search_user_id).to_h,
     )
 
     render json: { result: ccm_docs }
@@ -65,11 +86,19 @@ class SearchController < ApplicationController
                   # No need to check for articles or podcast episodes if we know we only want users
                   user_search
                 else
-                  # if params[:class_name] == PodcastEpisode or Article then skip user lookup
+                  # if params[:class_name] == PodcastEpisode, Article, or Comment then skip user lookup
                   feed_content_search
                 end
 
     render json: { result: feed_docs }
+  end
+
+  def reactions
+    result = Search::Reaction.search_documents(
+      params: reaction_params.merge(user_id: current_user.id).to_h,
+    )
+
+    render json: { result: result["reactions"], total: result["total"] }
   end
 
   private
@@ -90,6 +119,7 @@ class SearchController < ApplicationController
       channel_type
       channel_status
       status
+      user_id
     ]
 
     params.permit(accessible)
@@ -105,6 +135,10 @@ class SearchController < ApplicationController
 
   def feed_params
     params.permit(FEED_PARAMS)
+  end
+
+  def reaction_params
+    params.permit(REACTION_PARAMS)
   end
 
   def format_integer_params

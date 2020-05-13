@@ -8,11 +8,11 @@ RSpec.describe RatingVotes::AssignRatingWorker, type: :worker do
 
   before do
     allow(CacheBuster).to receive(:bust_podcast)
+    user.add_role(:trusted)
   end
 
   describe "#perform" do
     it "assigns explicit score" do
-      user.add_role(:trusted)
       second_user.add_role(:trusted)
       create(:rating_vote, article_id: article.id, user_id: user.id, rating: 3.0)
       create(:rating_vote, article_id: article.id, user_id: second_user.id, rating: 2.0)
@@ -22,7 +22,6 @@ RSpec.describe RatingVotes::AssignRatingWorker, type: :worker do
     end
 
     it "assigns implicit readinglist_reaction score" do
-      user.add_role(:trusted)
       create(:rating_vote, article_id: article.id, user_id: user.id, rating: 4.0)
       create(:rating_vote, article_id: article.id, user_id: second_user.id, rating: 2.0, context: "readinglist_reaction")
       worker.perform(article.id)
@@ -31,12 +30,18 @@ RSpec.describe RatingVotes::AssignRatingWorker, type: :worker do
     end
 
     it "assigns implicit comment score" do
-      user.add_role(:trusted)
       create(:rating_vote, article_id: article.id, user_id: user.id, rating: 4.0)
       create(:rating_vote, article_id: article.id, user_id: second_user.id, rating: 1.0, context: "comment")
       worker.perform(article.id)
       expect(article.reload.experience_level_rating).to eq(2.5)
       expect(article.reload.experience_level_rating_distribution).to eq(3.0)
+    end
+
+    it "updates article in Elasticsearch" do
+      create(:rating_vote, article_id: article.id, user_id: user.id, rating: 4.0)
+      create(:rating_vote, article_id: article.id, user_id: second_user.id, rating: 1.0, context: "comment")
+      worker.perform(article.id)
+      expect(article.elasticsearch_doc.dig("_source", "experience_level_rating")).to eq(2.5)
     end
   end
 end

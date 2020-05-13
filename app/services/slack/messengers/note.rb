@@ -22,7 +22,7 @@ module Slack
       end
 
       def call
-        report_url = App.url(
+        report_url = URL.url(
           Rails.application.routes.url_helpers.internal_report_path(report_id),
         )
 
@@ -34,7 +34,7 @@ module Slack
           message: message,
         )
 
-        SlackBotPingWorker.perform_async(
+        Slack::Messengers::Worker.perform_async(
           message: final_message,
           channel: type,
           username: "new_note_bot",

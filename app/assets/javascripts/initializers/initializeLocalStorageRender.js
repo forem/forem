@@ -1,4 +1,4 @@
-'use strict';
+/* global initializeUserFollowButts */
 
 function initializeLocalStorageRender() {
   try {
@@ -8,6 +8,7 @@ function initializeLocalStorageRender() {
       initializeBaseUserData();
       initializeReadingListIcons();
       initializeAllFollowButts();
+      initializeUserFollowButts();
       initializeSponsorshipVisibility();
     }
   } catch (err) {

@@ -1,6 +1,5 @@
 import { Application } from 'stimulus';
 import ArticleController from '../../controllers/article_controller';
-import '../../__mocks__/mutationObserver';
 
 describe('ArticleController', () => {
   beforeEach(() => {

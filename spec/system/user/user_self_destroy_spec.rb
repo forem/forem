@@ -10,7 +10,7 @@ RSpec.describe "User destroys their profile", type: :system, js: true do
   it "requests self-destroy" do
     visit "/settings/account"
     allow(Users::RequestDestroy).to receive(:call).and_call_original
-    click_button "DELETE ACCOUNT"
+    click_button "Delete Account"
     expect(Users::RequestDestroy).to have_received(:call).with(user)
   end
 

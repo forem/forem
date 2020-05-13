@@ -7,15 +7,6 @@ module Search
     DEFAULT_PER_PAGE = 75
 
     class << self
-      def search_documents(params:)
-        set_query_size(params)
-        query_hash = Search::QueryBuilders::ClassifiedListing.new(params).as_hash
-
-        results = search(body: query_hash)
-        hits = results.dig("hits", "hits").map { |cl_doc| cl_doc.dig("_source") }
-        paginate_hits(hits, params)
-      end
-
       private
 
       def index_settings

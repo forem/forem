@@ -37,14 +37,12 @@
       <%= Rails.application.assets["widgets.css"].to_s.html_safe %>
       <%= Rails.application.assets["top-bar.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
+      <%= Rails.application.assets["preact/sidebar-widget.css"].to_s.html_safe %>
       <% unless @home_page %>
       <%= Rails.application.assets["user-profile-header.css"].to_s.html_safe %>
       <%= Rails.application.assets["sidebar-data.css"].to_s.html_safe %>
       <%= Rails.application.assets["index-comments.css"].to_s.html_safe %>
       <%= Rails.application.assets["footer.css"].to_s.html_safe %>
-      <% end %>
-      <% if @tag_model %>
-      <%= Rails.application.assets["preact/sidebar-widget.css"].to_s.html_safe %>
       <% end %>
     </style>
   <% elsif @notifications_index || @reading_list_items_index || @history_index %>

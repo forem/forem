@@ -77,4 +77,15 @@ RSpec.describe PodcastEpisodeDecorator, type: :decorator do
       expect(pe.decorate.published_timestamp).to eq(published_at.utc.iso8601)
     end
   end
+
+  describe "#mobile_player_metadata" do
+    it "responds with a hash with metadata used in native mobile players" do
+      pe = build(:podcast_episode)
+      metadata = pe.decorate.mobile_player_metadata
+      expect(metadata).to be_instance_of(Hash)
+      expect(metadata[:podcastName]).to eq(pe.podcast.title)
+      expect(metadata[:episodeName]).to eq(pe.title)
+      expect(metadata[:podcastImageUrl]).to include(pe.podcast.image_url)
+    end
+  end
 end

@@ -1,9 +1,11 @@
 <div class="single-article single-article-small-pic feed-cta" id="in-feed-cta">
   <div class="cta-container" id="cta-content">
-    <img class="rainbowdevimage" src="<%= SiteConfig.primary_sticker_image_url %>" alt="rainbow DEV logo" />
+    <img class="primary-sticker-image" src="<%= cloudinary(SiteConfig.primary_sticker_image_url, 190) %>" 
+         alt="Primary <%= community_qualified_name %> logo" />
 
     <h2>
-      <a href="/">DEV</a> is a community of <br /><%= number_with_delimiter User.estimated_count %> amazing humans who code.
+      <a href="/"><%= community_name %></a> is a community of <br />
+      <%= number_with_delimiter User.estimated_count %> <%= SiteConfig.community_member_description %>
     </h2>
 
     <h3>

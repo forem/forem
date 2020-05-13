@@ -19,7 +19,8 @@ module Notifications
           user: user_data(mascot_account),
           broadcast: {
             title: welcome_broadcast.title,
-            processed_html: welcome_broadcast.processed_html
+            processed_html: welcome_broadcast.processed_html,
+            type_of: welcome_broadcast.type_of
           }
         }
         Notification.create!(

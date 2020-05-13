@@ -1,65 +1,92 @@
-<div class="single-article single-article-small-pic" data-content-user-id="<%= story.user_id %>">
+<div class="crayons-story <% if featured == true %>crayons-story--featured<% end %>" data-content-user-id="<%= story.user_id %>">
+  <% if featured == true %>
+    <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
+    <a href="<%= story.path %>" class="crayons-story__cover" data-featured-article="articles-<%= story.id %>">
+      <div style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);" class="crayons-story__cover__image"></div>
+    </a>
+  <% end %>
+
   <% if story.video.present? && story.video_thumbnail_url.present? %>
-    <a class="single-article-video-preview" style="background-image:url(<%= story.cloudinary_video_url %>)" href="<%= story.path %>">
-      <div class="single-article-video-duration">
-        <img src="<%= asset_path("video-camera.svg") %>" alt="video camera"><%= story.video_duration_in_minutes %></div>
+    <a href="<%= story.path %>" class="crayons-story__video" style="background-image:url(<%= story.cloudinary_video_url %>)">
+      <span class="crayons-story__video__time">
+        <%= story.video_duration_in_minutes %>
+      </span>
     </a>
   <% end %>
-  <% if story.cached_organization && !@organization_article_index %>
-    <div class="article-organization-headline">
-      <a class="org-headline-filler" href="/<%= story.cached_organization.slug %>">
-        <img alt="<%= story.cached_organization.name %> logo" src="<%= story.cached_organization.profile_image_90 %>"><%= story.cached_organization.name %>
-      </a>
+
+  <div class="crayons-story__body">
+    <div class="crayons-story__top">
+      <div class="crayons-story__meta">
+        <div class="crayons-story__author-pic">
+          <% if story.cached_organization && !@organization_article_index %>
+            <a class="crayons-logo crayons-logo--l" href="/<%= story.cached_organization.slug %>">
+              <img alt="<%= story.cached_organization.name %> logo" src="<%= story.cached_organization.profile_image_90 %>" class="crayons-logo__image">
+            </a>
+          <% end %>
+
+          <a href="/<%= story.cached_user.username %>" class="crayons-avatar <% if story.cached_organization && !@organization_article_index %> crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted <% else %> crayons-avatar--l <% end %> ">
+            <img src="<%= ProfileImage.new(story.cached_user).get(width: 90) %>" alt="<%= story.cached_user.username %> profile" class="crayons-avatar__image" />
+          </a>
+        </div>
+        <div>
+          <p>
+            <a href="/<%= story.cached_user.username %>" class="crayons-story__secondary fw-medium">
+              <%= story.cached_user.name %>
+              <%= render "shared/pro_checkmark" if story.cached_user.pro %>
+            </a>
+            <% if story.cached_organization && !@organization_article_index %>
+              <span>
+                <span class="crayons-story__tertiary fw-normal"> for </span>
+                <a href="/<%= story.cached_organization.slug %>" class="crayons-story__secondary fw-medium"><%= story.cached_organization.name %></a>
+              </span>
+            <% end %>
+          </p>
+          <a href="<%= story.path %>" class="crayons-story__tertiary fs-xs"><time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span></a>
+        </div>
+      </div>
     </div>
-  <% end %>
-  <a href="/<%= story.cached_user.username %>" class="small-pic-link-wrapper">
-    <div class="small-pic">
-      <img src="<%= ProfileImage.new(story.cached_user).get(width: 90) %>" alt="<%= story.cached_user.username %> profile" width="40" height="40" />
+
+    <div class="crayons-story__indention">
+      <h2 class="crayons-story__title">
+        <a href="<%= story.path %>" data-preload-image="<%= cloud_cover_url(story.main_image) %>" id="article-link-<%= story.id %>">
+          <%= render "articles/tag_identifier", story: story, tag: @tag %>
+        </a>
+      </h2>
+      <div class="crayons-story__tags">
+        <% story.cached_tag_list_array.each do |tag| %>
+          <a href="/t/<%= tag %>" class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></a>
+        <% end %>
+      </div>
+      <div class="crayons-story__bottom">
+        <div class="crayons-story__details">
+          <a href="<%= story.path %>" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left" data-reaction-count data-reactable-id="<%= story.id %>">
+            <%= inline_svg_tag("small-heart.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Reactions") %>
+            <%= story.positive_reactions_count %>
+            <span class="hidden s:inline">&nbsp;reactions</span>
+          </a>
+          <% if story.comments_count > 0 %>
+            <a href="<%= story.path %>#comments" class="crayons-btn crayons-btn--s crayons-btn--ghost crayons-btn--icon-left">
+              <%= inline_svg_tag("small-comment.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Comments") %>
+              <%= story.comments_count %>
+              <span class="hidden s:inline">&nbsp;comments</span>
+            </a>
+          <% end %>
+        </div>
+        <div class="crayons-story__save">
+          <small class="crayons-story__tertiary fs-xs mr-2">
+            <%= story.reading_time < 1 ? 1 : story.reading_time %> min read
+          </small>
+          <button
+            type="button"
+            class="crayons-btn crayons-btn--secondary crayons-btn--s bookmark-button"
+            data-reactable-id="<%= story.id %>"
+            aria-label="Save to reading list"
+            title="Save to reading list">
+            <span class="bm-initial">Save</span>
+            <span class="bm-success">Saved</span>
+          </button>
+        </div>
+      </div>
     </div>
-  </a>
-  <a href="<%= story.path %>" class="small-pic-link-wrapper index-article-link" data-preload-image="<%= cloud_cover_url(story.main_image) %>" id="article-link-<%= story.id %>">
-    <div class="content">
-      <h3>
-        <%= render "articles/tag_identifier", story: story, tag: @tag %>
-      </h3>
-    </div>
-  </a>
-  <h4>
-    <a href="/<%= story.cached_user.username %>">
-      <%= story.cached_user.name %><%= render "shared/pro_checkmark" if story.cached_user.pro %>・<time datetime="<%= story.published_timestamp %>"><%= story.readable_publish_date %></time><span class="time-ago-indicator-initial-placeholder" data-seconds="<%= story.published_at_int %>"></span>
-    </a>
-  </h4>
-  <div class="tags">
-    <% story.cached_tag_list_array.each do |tag| %>
-      <a href="/t/<%= tag %>"><span class="tag">#<%= tag %></span></a>
-    <% end %>
   </div>
-  <div class="article-engagement-count reactions-count" data-reaction-count data-reactable-id="<%= story.id %>">
-    <a href="<%= story.path %>">
-      <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /><span id="engagement-count-number-<%= story.id %>" class="engagement-count-number">
-          <%= story.positive_reactions_count %>
-        </span>
-    </a>
-  </div>
-  <% if story.comments_count > 0 %>
-    <div class="article-engagement-count comments-count">
-      <a href="<%= story.path %>#comments">
-        <img src="<%= asset_path("comments-bubble.png") %>" alt="chat" /><span class="engagement-count-number"><%= story.comments_count %></span>
-      </a>
-    </div>
-  <% end %>
-  <a
-    href="<%= story.path %>"
-    class="article-reading-time">
-    <%= story.reading_time < 1 ? 1 : story.reading_time %> min read
-  </a>
-  <button
-    type="button"
-    class="article-engagement-count engage-button bookmark-button"
-    data-reactable-id="<%= story.id %>"
-    aria-label="Save to reading list"
-    title="Save to reading list">
-    <span class="bm-initial">SAVE</span>
-    <span class="bm-success">SAVED</span>
-  </button>
 </div>

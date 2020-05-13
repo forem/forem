@@ -1,6 +1,6 @@
 <h1>DevRel Consultation</h1>
 
-The DEV team sees over 1000 new posts published every week to the platform.  We track popular articles as part of our job.  We will provide expert consultation with your editorial goals, and provide tactical advice on how to best leverage the DEV platform, helping your company to build a valuable and engaging rapport with the community.
+The <%= community_name %> team sees over 1000 new posts published every week to the platform.  We track popular articles as part of our job.  We will provide expert consultation with your editorial goals, and provide tactical advice on how to best leverage the <%= community_name %> platform, helping your company to build a valuable and engaging rapport with the community.
 </p>
 <h3>🤓 Weekly Notes</h3>
 <p>
@@ -11,5 +11,5 @@ The DEV team sees over 1000 new posts published every week to the platform.  We 
 You will be invited to a shared Slack channel to aid communication and provide a line of communication for deep collaboration.  It is an open line to our devrel experts available during extended US East business hours.
 </p>
 <% unless user_signed_in? %>
-  <h2>Email <a href="mailto:partners@dev.to">partners@dev.to</a> for pricing information</h2>
+  <h2>Email <%= email_link(:business) %> for pricing information</h2>
 <% end %>

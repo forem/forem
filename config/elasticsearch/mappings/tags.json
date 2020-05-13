@@ -4,6 +4,9 @@
     "id": {
       "type": "keyword"
     },
+    "last_indexed_at": {
+      "type": "date"
+    },
     "name": {
       "type": "text",
       "fields": {

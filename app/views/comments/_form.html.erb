@@ -1,4 +1,5 @@
-<%= javascript_packs_with_chunks_tag "validateFileInputs", defer: true %>
+<div id="response-templates-data"></div>
+<%= javascript_packs_with_chunks_tag "validateFileInputs", "responseTemplates", defer: true %>
 
 <% if @comment.errors.any? %>
   <div id="error_explanation">
@@ -28,6 +29,24 @@
     <%= f.hidden_field :parent_id, value: @parent_comment.id if @parent_comment %>
   <% end %>
   <div class="field" id="textarea-wrapper">
+    <div class="response-templates-container hidden">
+        <header>
+          <button type="button" class="personal-template-button active" data-target-type="personal" data-form-id="new_comment">PERSONAL</button>
+          <button type="button" class="moderator-template-button hidden" data-target-type="moderator" data-form-id="new_comment">MODERATOR</button>
+        </header>
+        <img class="loading-img hidden" src="<%= asset_path("loading-ellipsis.svg") %>" alt="loading">
+        <div class="personal-responses-container">
+          <%# filled by JS %>
+        </div>
+        <div class="moderator-responses-container hidden">
+          <%# filled by JS %>
+        </div>
+        <a target="_blank" rel="noopener nofollow" href="<%= user_settings_path(tab: "response-templates") %>" class="mod-response-create-new">
+          Create new template
+          <%= inline_svg_tag("external-link-logo.svg", aria: true) %>
+        </a>
+        <p>Create templates to quickly answer FAQs or store snippets for re-use.</p>
+    </div>
     <%= f.text_area :body_markdown,
                     placeholder: "Add to the discussion",
                     onfocus: "handleFocus(event)",
@@ -42,9 +61,14 @@
   </div>
   <div class="code-of-conduct" id="toggle-code-of-conduct-checkbox">
   </div>
-  <a href="/p/editor_guide" class="markdown-guide" target="_blank" title="Markdown Guide">
+  <a href="/p/editor_guide" class="markdown-guide" target="_blank" rel="noopener" title="Markdown Guide">
     <img alt="markdown guide" class="icon-image" src="<%= asset_path("info.svg") %>" />
   </a>
+  <div class="editor-response-templates">
+    <button class="response-templates-button" title="Use a response template" type="button" data-has-listener="false">
+      <img src="<%= asset_path("response-template.svg") %>" alt="" class="icon-image" data-form-id="new_comment">
+    </button>
+  </div>
   <div class="editor-image-upload">
     <input type="file" id="image-upload-main" name="file" accept="image/*" style="display:none">
     <button class="image-upload-button" id="image-upload-button-main" onclick="handleImageUpload(event,'main')" title="Upload Image">
@@ -55,7 +79,8 @@
     <input class="uploaded-image" id="uploaded-image-main" />
   </div>
   <div class="actions" id="submit-wrapper">
-    <%= link_to((:back if request.referer.present?) || (commentable.path if commentable) || @comment.path, "aria-label": "Cancel action") do %>
+    <%# See https://github.com/thepracticaldev/dev.to/issues/7081 %>
+    <%= link_to((:back if sanitized_referer(request.referer)) || commentable&.path || @comment.path, "aria-label": "Cancel action") do %>
       <button id="cancel-button" class="comment-action-button comment-action-cancel">CANCEL</button>
     <% end %>
     <button id="preview-button" class="comment-action-button comment-action-preview">PREVIEW</button>

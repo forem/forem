@@ -3,13 +3,13 @@
 
 .user-profile-header {
   padding: calc(1.4vw + 8px) 0px;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   position: relative;
   overflow: hidden;
   width: 1216px;
   max-width: 92%;
   margin: 24px auto;
-  background: var(--container-bg);
+  background: var(--card-bg);
   border-radius: 3px;
   @media screen and (min-width: 950px) {
     max-width: 98%;
@@ -52,11 +52,17 @@
         width: 100%;
         padding: 15px 0px;
         @media screen and (min-width: 950px) {
-          vertical-align: 3px;
+          vertical-align: 5px;
           display: inline-block;
-          font-size: calc(1.9vw + 8px);
+          font-size: calc(1.5vw + 8px);
           width: 280px;
           padding: 3px 0px;
+        }
+      }
+      @media screen and (min-width: 1600px) {
+        font-size: 55px;
+        .follow-action-button {
+          font-size: 32px;
         }
       }
     }
@@ -74,37 +80,6 @@
         width: calc(2.4vw + 50px);
         display: inline-block;
         vertical-align: calc(-1vw - 15px);
-      }
-    }
-    .subscribe-buttons {
-      text-align: center;
-      margin-top: 35px;
-      z-index: 10;
-      position: relative;
-      a {
-        padding: 5px;
-        background-color: rgb(47, 61, 73);
-        color: white;
-        border-radius: 3px;
-        margin: 6px;
-        font-size: 14px;
-        display: inline-block;
-        width: 40%;
-        border: 1px solid rgb(60, 81, 99);
-        box-shadow: inset 1px 1px 0 rgb(72, 95, 116);
-        transition: background-color 250ms ease;
-        @media screen and (min-width: 590px) {
-          width: 112px;
-        }
-        &:hover {
-          background-color: rgb(41, 46, 52);
-        }
-        img {
-          width: 20px;
-          height: 20px;
-          vertical-align: -4px;
-          margin-right: 4px;
-        }
       }
     }
   }
@@ -185,7 +160,7 @@
         padding: 0px 0px;
         margin: 0;
         font-style: italic;
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
         width: 94%;
         font-size: 0.9em;
         margin-top: 12px;
@@ -276,7 +251,7 @@
         font-size: 0.7em;
         font-weight: 800;
         margin-bottom: 2px;
-        color: var(--container-color-tertiary);
+        color: var(--card-color-tertiary);
       }
       .value {
         display: inline-block;
@@ -510,7 +485,7 @@
       right: 3px;
       border: 1px solid $light-medium-gray;
       border-radius: 3px;
-      background: var(--container-bg);
+      background: var(--card-bg);
       z-index: 20;
       width: 200px;
       box-shadow: $shadow;

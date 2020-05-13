@@ -11,7 +11,12 @@
         </div>
         <div class="form-group">
           <%= label_tag(:filter, "Category") %>
-          <%= select_tag(:filter, options_for_select([""] + ClassifiedListing.categories_available.keys, params[:filter])) %>
+          <%= select_tag(:filter, options_for_select(categories_available.keys, params[:filter]), include_blank: true) %>
+        </div>
+        <div class="form-group">
+          <%= label_tag(:include_unpublished, "Include unpublished listings") %>
+          <%= hidden_field_tag(:include_unpublished, 0) %>
+          <%= check_box_tag(:include_unpublished, 1, params[:include_unpublished] == "1") %>
         </div>
         <div class="form-group">
           <%= submit_tag("Filter") %>
@@ -38,7 +43,7 @@
   <tbody>
     <% @classified_listings.each do |listing| %>
       <tr>
-        <td><%= link_to listing.title, edit_internal_listing_path(listing.id), target: "_blank" %></td>
+        <td><%= link_to listing.title, edit_internal_listing_path(listing.id), target: "_blank", rel: "noopener" %></td>
         <td><%= link_to listing.user.username, edit_internal_user_path(listing.user.id) %></td>
         <td><%= link_to listing.organization.name, internal_organization_path(listing.organization_id) if listing.organization_id.present? %></td>
         <td><%= listing.category %></td>
@@ -63,7 +68,7 @@
             <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->buffer#highlightElement" } } do %>
               <input type="hidden" name="social_channel" value="listings_twitter" />
               <input type="hidden" name="listing_id" value="<%= listing.id %>" />
-              <textarea class="form-control" wrap="hard" name="tweet" maxlength="255" data-target="buffer.bodyText">📋 New DEV Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013<% if listing.user.twitter_username? %>Posted by @<%= listing.user.twitter_username %><% end %></textarea>
+              <textarea class="form-control" wrap="hard" name="tweet" maxlength="255" data-target="buffer.bodyText">📋 New <%= community_name %> Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013<% if listing.user.twitter_username? %>Posted by @<%= listing.user.twitter_username %><% end %></textarea>
               <button class="btn btn-primary mt-2" data-action=>🐦 Tweet 🐦</button>
             <% end %>
           </div>

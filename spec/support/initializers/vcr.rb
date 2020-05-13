@@ -29,5 +29,9 @@ VCR_OPTIONS = {
   twitter_fetch_status: {
     cassette_name: "twitter_fetch_status",
     allow_playback_repeats: true
+  },
+  rss_feeds: {
+    cassette_name: "rss_feeds",
+    allow_playback_repeats: true
   }
 }.freeze

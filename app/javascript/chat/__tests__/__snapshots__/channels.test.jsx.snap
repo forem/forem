@@ -10,13 +10,19 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
   >
     <button
       class="chatchanneltabbutton"
+      data-channel-name="channel name 1"
       data-channel-slug="@0"
+      data-channel-status="active"
+      data-content="sidecar-channel-request"
       onClick={[Function]}
       type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+        data-channel-name="channel name 1"
         data-channel-slug="@0"
+        data-channel-status="active"
+        data-content="sidecar-channel-request"
         style={
           Object {
             "border": "1px solid undefined",
@@ -38,13 +44,19 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
     </button>
     <button
       class="chatchanneltabbutton"
+      data-channel-name="group channel 2"
       data-channel-slug="@1"
+      data-channel-status="active"
+      data-content="sidecar-channel-request"
       onClick={[Function]}
       type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+        data-channel-name="group channel 2"
         data-channel-slug="@1"
+        data-channel-status="active"
+        data-content="sidecar-channel-request"
         style={
           Object {
             "border": "1px solid undefined",
@@ -66,13 +78,19 @@ exports[`<Channels /> expanded with chat channels should render and test snapsho
     </button>
     <button
       class="chatchanneltabbutton"
+      data-channel-name="group channel 3"
       data-channel-slug="@2"
+      data-channel-status="active"
+      data-content="sidecar-channel-request"
       onClick={[Function]}
       type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+        data-channel-name="group channel 3"
         data-channel-slug="@2"
+        data-channel-status="active"
+        data-content="sidecar-channel-request"
         style={
           Object {
             "border": "1px solid undefined",
@@ -187,13 +205,19 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
   >
     <button
       class="chatchanneltabbutton"
+      data-channel-name="channel name 1"
       data-channel-slug="@0"
+      data-channel-status="active"
+      data-content="sidecar-channel-request"
       onClick={[Function]}
       type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+        data-channel-name="channel name 1"
         data-channel-slug="@0"
+        data-channel-status="active"
+        data-content="sidecar-channel-request"
         style={
           Object {
             "border": "1px solid undefined",
@@ -215,13 +239,19 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
     </button>
     <button
       class="chatchanneltabbutton"
+      data-channel-name="group channel 2"
       data-channel-slug="@1"
+      data-channel-status="active"
+      data-content="sidecar-channel-request"
       onClick={[Function]}
       type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+        data-channel-name="group channel 2"
         data-channel-slug="@1"
+        data-channel-status="active"
+        data-content="sidecar-channel-request"
         style={
           Object {
             "border": "1px solid undefined",
@@ -243,13 +273,19 @@ exports[`<Channels /> not expanded with chat channels should render and test sna
     </button>
     <button
       class="chatchanneltabbutton"
+      data-channel-name="group channel 3"
       data-channel-slug="@2"
+      data-channel-status="active"
+      data-content="sidecar-channel-request"
       onClick={[Function]}
       type="button"
     >
       <span
         class="chatchanneltab chatchanneltab--inactive chatchanneltab--old"
+        data-channel-name="group channel 3"
         data-channel-slug="@2"
+        data-channel-status="active"
+        data-content="sidecar-channel-request"
         style={
           Object {
             "border": "1px solid undefined",

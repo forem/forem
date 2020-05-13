@@ -1,20 +1,23 @@
 <div class="row">
   <div class="col-12">
-    <h2>Notes</h2>
+    <h2>Recent Notes (last 10)</h2>
 
-    <%# notes are going to be iterated upon in the following line,
-        thus we can preload them, to avoid a second SELECT COUNT(*)
-        that would instead happen when ActiveRecord calls .each on a collection #%>
-    <% if @user.notes.load.size > 0 %>
-      <% @user.notes.each do |note| %>
-        <p><em><%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username if note.author_id.present? %></em> -
-          <% if !note.reason.blank? %><strong><%= note.reason %>:</strong>
-          <% end %><%= note.content %></p>
+    <% unless @notes.load.empty? %>
+      <% @notes.each do |note| %>
+        <p>
+          <em>
+            <%= note.created_at.strftime("%d %B %Y %H:%M UTC") %> by <%= User.find(note.author_id).username if note.author_id.present? %>
+          </em> - 
+          <% unless note.reason.blank? %>
+            <strong><%= note.reason %>:</strong>
+          <% end %>
+          <%= note.content %>
+        </p>
       <% end %>
     <% else %>
       <p><em>No notes yet!</em></p>
     <% end %>
-    <%= form_for [:internal, @user], html: { class: "mb-2" }  do |f| %>
+    <%= form_with model: @user, url: internal_user_path(@user), method: :patch, html: { class: "mb-2" }, local: true  do |f| %>
       <div class="form-group">
         <%= f.label "Add new note: ", class: "d-block" %>
         <%= f.text_area :new_note, class: "form-control" %>
