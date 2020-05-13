@@ -27,6 +27,7 @@ export const article = {
   published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
   top_comments: [],
+  main_image: '/images/10.png',
 };
 
 export const articleWithOrganization = {
@@ -61,6 +62,7 @@ export const articleWithOrganization = {
     slug: 'bluetooth-Gorgeous-Wooden-Pants',
     profile_image_90: '/images/30.png',
   },
+  main_image: '/images/10.png',
 };
 
 export const articleWithSnippetResult = {
@@ -229,6 +231,7 @@ export const videoArticle = {
   published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
   cloudinary_video_url: '/images/onboarding-background.png',
+  main_image: '/images/10.png',
   video_duration_in_minutes: 10,
 };
 
