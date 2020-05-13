@@ -45,7 +45,6 @@ class Internal::ArticlesController < Internal::ApplicationController
     article.user_id = article_params[:user_id].to_i
     article.update!(article_params)
     Article.where.not(id: article.id).where(live_now: true).update_all(live_now: false) if article.live_now
-    CacheBuster.bust("/live_articles")
     render body: nil
   end
 
