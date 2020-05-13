@@ -92,5 +92,11 @@ class ApplicationController < ActionController::Base
     rate_limiter.check_limit!(action)
   end
 
-  delegate :rate_limiter, to: :current_user
+  def rate_limiter
+    (current_user || anonymous_user).rate_limiter
+  end
+
+  def anonymous_user
+    User.new(ip_address: request.env["HTTP_FASTLY_CLIENT_IP"])
+  end
 end
