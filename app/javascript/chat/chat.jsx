@@ -280,7 +280,7 @@ export default class Chat extends Component {
   };
 
   loadPaginatedChannels = (channels) => {
-    const {state} = this;
+    const { state } = this;
     const currentChannels = state.chatChannels;
     const currentChannelIds = currentChannels.map((channel) => channel.id);
     const newChannels = currentChannels;
@@ -532,7 +532,13 @@ export default class Chat extends Component {
   };
 
   handleKeyDown = (e) => {
-    const { showMemberlist, activeContent, activeChannelId } = this.state;
+    const {
+      showMemberlist,
+      activeContent,
+      activeChannelId,
+      messages,
+      currentUserId,
+    } = this.state;
     const enterPressed = e.keyCode === 13;
     const leftPressed = e.keyCode === 37;
     const rightPressed = e.keyCode === 39;
@@ -540,6 +546,7 @@ export default class Chat extends Component {
     const targetValue = e.target.value;
     const messageIsEmpty = targetValue.length === 0;
     const shiftPressed = e.shiftKey;
+    const upArrowPressed = e.keyCode === 38;
 
     if (enterPressed) {
       if (showMemberlist) {
@@ -598,6 +605,18 @@ export default class Chat extends Component {
         fullscreenContent: null,
         expanded: window.innerWidth > 600,
       });
+    }
+    if (upArrowPressed && messageIsEmpty) {
+      e.preventDefault();
+
+      const messagesByCurrentUser = messages[activeChannelId].filter(
+        (message) => message.user_id === currentUserId,
+      );
+      const lastMessage =
+        messagesByCurrentUser[messagesByCurrentUser.length - 1];
+
+      this.setState({ messageDeleteId: lastMessage.id });
+      this.setState({ showDeleteModal: true });
     }
   };
 

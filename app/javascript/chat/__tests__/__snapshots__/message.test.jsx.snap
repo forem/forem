@@ -56,19 +56,31 @@ exports[`<Message /> should render and test snapshot 1`] = `
         class="message__actions"
       >
         <span
-          onKeyUp={[Function]}
-          role="button"
-          tabIndex="0"
+          class="ellipsis__menubutton"
         >
-          Delete
+          <img
+            alt="dropdown menu icon"
+            src=""
+          />
         </span>
-        <span
-          onKeyUp={[Function]}
-          role="button"
-          tabIndex="0"
+        <div
+          class="messagebody__dropdownmenu"
         >
-          Edit
-        </span>
+          <span
+            onKeyUp={[Function]}
+            role="button"
+            tabIndex="0"
+          >
+            Edit
+          </span>
+          <span
+            onKeyUp={[Function]}
+            role="button"
+            tabIndex="0"
+          >
+            Delete
+          </span>
+        </div>
       </div>
     </div>
     <div
