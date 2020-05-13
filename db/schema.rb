@@ -98,8 +98,8 @@ ActiveRecord::Schema.define(version: 2020_05_11_224704) do
     t.boolean "published", default: false
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
-    t.string "query_friendly_description_alternative"
-    t.string "query_friendly_title_preamble"
+    t.string "search_optimized_description_replacement"
+    t.string "search_optimized_title_preamble"
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.integer "reading_time", default: 0

@@ -175,11 +175,11 @@ RSpec.describe ArticleDecorator, type: :decorator do
       expect(created_article.description_and_tags).to eq("#{parsed_post_by_string} Tagged with heytag.")
     end
 
-    it "returns query_friendly_description_alternative if it is present" do
+    it "returns search_optimized_description_replacement if it is present" do
       body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\nHey this is the article"
-      query_friendly_description_alternative = "Hey this is the expected result"
-      expect(create_article(body_markdown: body_markdown, query_friendly_description_alternative: query_friendly_description_alternative).
-        description_and_tags).to eq(query_friendly_description_alternative)
+      search_optimized_description_replacement = "Hey this is the expected result"
+      expect(create_article(body_markdown: body_markdown, search_optimized_description_replacement: search_optimized_description_replacement).
+        description_and_tags).to eq(search_optimized_description_replacement)
     end
   end
 end

@@ -115,8 +115,8 @@
           </a>
         <% end %>
         <h1 class="<%= @article.title_length_classification %>">
-          <% if @article.query_friendly_title_preamble.present? && !user_signed_in? %>
-            <span class="article-title-preamble"><%= @article.query_friendly_title_preamble %></span>
+          <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
+            <span class="article-title-preamble"><%= @article.search_optimized_title_preamble %></span>
           <% end %>
           <%= @article.title %>
         </h1>

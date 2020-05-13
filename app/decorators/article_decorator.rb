@@ -54,15 +54,15 @@ class ArticleDecorator < ApplicationDecorator
   end
 
   def title_with_query_preamble(user_signed_in)
-    if query_friendly_title_preamble.present? && !user_signed_in
-      "#{query_friendly_title_preamble}: #{title}"
+    if search_optimized_title_preamble.present? && !user_signed_in
+      "#{search_optimized_title_preamble}: #{title}"
     else
       title
     end
   end
 
   def description_and_tags
-    return query_friendly_description_alternative if query_friendly_description_alternative.present?
+    return search_optimized_description_replacement if search_optimized_description_replacement.present?
 
     modified_description = description.strip
     modified_description += "." unless description.end_with?(".")

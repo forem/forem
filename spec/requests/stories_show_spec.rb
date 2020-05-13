@@ -31,40 +31,40 @@ RSpec.describe "StoriesShow", type: :request do
       expect(response.body).to include "<title>#{CGI.escapeHTML(article.title)} - #{community_name}</title>"
     end
 
-    # query_friendly_title_preamble
+    # search_optimized_title_preamble
 
-    it "renders title tag with query_friendly_title_preamble if set and not signed in" do
-      article.update_column(:query_friendly_title_preamble, "Hey this is a test")
+    it "renders title tag with search_optimized_title_preamble if set and not signed in" do
+      article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.reload.path
       expect(response.body).to include "<title>Hey this is a test: #{CGI.escapeHTML(article.title)} - #{community_name}</title>"
     end
 
-    it "does not render title tag with query_friendly_title_preamble if set and not signed in" do
+    it "does not render title tag with search_optimized_title_preamble if set and not signed in" do
       sign_in user
-      article.update_column(:query_friendly_title_preamble, "Hey this is a test")
+      article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.path
       expect(response.body).to include "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
     end
 
-    it "does not render preamble with query_friendly_title_preamble not signed in but query_friendly_title_preamble not set" do
+    it "does not render preamble with search_optimized_title_preamble not signed in but search_optimized_title_preamble not set" do
       get article.path
       expect(response.body).to include "#{CGI.escapeHTML(article.title)} - #{community_name}</title>"
     end
 
-    it "renders title preamble with query_friendly_title_preamble if set and not signed in" do
-      article.update_column(:query_friendly_title_preamble, "Hey this is a test")
+    it "renders title preamble with search_optimized_title_preamble if set and not signed in" do
+      article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.reload.path
       expect(response.body).to include "<span class=\"article-title-preamble\">Hey this is a test</span>"
     end
 
-    it "does not render preamble with query_friendly_title_preamble if set and signed in" do
+    it "does not render preamble with search_optimized_title_preamble if set and signed in" do
       sign_in user
-      article.update_column(:query_friendly_title_preamble, "Hey this is a test")
+      article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.path
       expect(response.body).not_to include "<span class=\"article-title-preamble\">Hey this is a test</span>"
     end
 
-    it "does not render title tag with query_friendly_title_preamble not signed in but query_friendly_title_preamble not set" do
+    it "does not render title tag with search_optimized_title_preamble not signed in but search_optimized_title_preamble not set" do
       get article.path
       expect(response.body).not_to include "<span class=\"article-title-preamble\">Hey this is a test</span>"
     end
