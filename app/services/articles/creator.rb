@@ -30,7 +30,7 @@ module Articles
     attr_reader :user, :article_params, :event_dispatcher
 
     def rate_limit!
-      RateLimitChecker.new(user).check_limit!(:published_article_creation)
+      user.rate_limiter.check_limit!(:published_article_creation)
     end
 
     def dispatch_event(article)
