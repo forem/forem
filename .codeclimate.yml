@@ -54,10 +54,11 @@ plugins:
   duplication:
     enabled: true
     config:
-      count_threshold: 3
       languages:
-        filters:
-          - "s(:property, s(:Identifier, :propTypes))"
+          javascript:
+            filters:
+              - "s(:property, s(:Identifier, :propTypes))"
+      count_threshold: 3
 exclude_patterns:
   - "config/"
   - "db/"
