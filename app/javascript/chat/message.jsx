@@ -1,5 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+// eslint-disable-next-line import/no-unresolved
+import ThreeDotsIcon from 'images/three-dots.svg';
 import { adjustTimestamp } from './util';
 import ErrorMessage from './messages/errorMessage';
 
@@ -32,6 +34,40 @@ const Message = ({
     />
   );
 
+  const ENTER_KEY_CODE = 13;
+  const dropdown = (
+    <div className="message__actions">
+      <span className="ellipsis__menubutton">
+        <img src={ThreeDotsIcon} alt="dropdown menu icon" />
+      </span>
+
+      <div className="messagebody__dropdownmenu">
+        <span
+          role="button"
+          data-content={id}
+          onClick={onEditMessageTrigger}
+          tabIndex="0"
+          onKeyUp={(e) => {
+            if (e.keyCode === ENTER_KEY_CODE) onEditMessageTrigger();
+          }}
+        >
+          Edit
+        </span>
+        <span
+          role="button"
+          data-content={id}
+          onClick={onDeleteMessageTrigger}
+          tabIndex="0"
+          onKeyUp={(e) => {
+            if (e.keyCode === ENTER_KEY_CODE) onDeleteMessageTrigger();
+          }}
+        >
+          Delete
+        </span>
+      </div>
+    </div>
+  );
+
   return (
     <div className="chatmessage">
       <div className="chatmessage__profilepic">
@@ -39,7 +75,7 @@ const Message = ({
           href={`/${user}`}
           target="_blank"
           rel="noopener noreferrer"
-          data-content='sidecar-user'
+          data-content="sidecar-user"
           onClick={onContentTrigger}
         >
           <img
@@ -47,7 +83,7 @@ const Message = ({
             className="chatmessagebody__profileimage"
             src={profileImageUrl}
             alt={`${user} profile`}
-            data-content='sidecar-user'
+            data-content="sidecar-user"
             onClick={onContentTrigger}
           />
         </a>
@@ -59,13 +95,16 @@ const Message = ({
       >
         <div className="message__info__actions">
           <div className="message__info">
-            <span className="chatmessagebody__username not-dark-theme-text-compatible" style={spanStyle}>
+            <span
+              className="chatmessagebody__username not-dark-theme-text-compatible"
+              style={spanStyle}
+            >
               <a
                 className="chatmessagebody__username--link"
                 href={`/${user}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                data-content='sidecar-user'
+                data-content="sidecar-user"
                 onClick={onContentTrigger}
               >
                 {user}
@@ -88,34 +127,7 @@ const Message = ({
               ' '
             )}
           </div>
-          {userID === currentUserId ? (
-            <div className="message__actions">
-              <span
-                role="button"
-                data-content={id}
-                onClick={onDeleteMessageTrigger}
-                tabIndex="0"
-                onKeyUp={e => {
-                  if (e.keyCode === 13) onDeleteMessageTrigger();
-                }}
-              >
-                Delete
-              </span>
-              <span
-                role="button"
-                data-content={id}
-                onClick={onEditMessageTrigger}
-                tabIndex="0"
-                onKeyUp={e => {
-                  if (e.keyCode === 13) onEditMessageTrigger();
-                }}
-              >
-                Edit
-              </span>
-            </div>
-          ) : (
-            ' '
-          )}
+          {userID === currentUserId ? dropdown : ' '}
         </div>
         <div className="chatmessage__bodytext">{messageArea}</div>
       </div>
