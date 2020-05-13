@@ -541,7 +541,11 @@ export default class Chat extends Component {
   };
 
   handleChannelJoiningRequest = (res) => {
+<<<<<<< HEAD
     this.setState({ joiningRequests: res });
+=======
+    this.setState({ joiningRequests: res.joining_requests });
+>>>>>>> 🐞 Channel List bug in mobile view
   };
 
   handleKeyDown = (e) => {
@@ -886,8 +890,11 @@ export default class Chat extends Component {
         this.setActiveContent({
           data: this.state.joiningRequests,
           type_of: 'channel-request-manager',
+<<<<<<< HEAD
           handleRequestRejection: this.handleRequestRejection,
           handleRequestApproval: this.handleRequestApproval,
+=======
+>>>>>>> 🐞 Channel List bug in mobile view
         });
       } else if (content === 'sidecar_all') {
         this.setActiveContentState(activeChannelId, {
@@ -1285,7 +1292,10 @@ export default class Chat extends Component {
             chatChannels={state.chatChannels}
             unopenedChannelIds={state.unopenedChannelIds}
             handleSwitchChannel={this.handleSwitchChannel}
+<<<<<<< HEAD
             channelsLoaded={state.channelsLoaded}
+=======
+>>>>>>> 🐞 Channel List bug in mobile view
             filterQuery={state.filterQuery}
             expanded={state.expanded}
             currentUserId={state.currentUserId}
