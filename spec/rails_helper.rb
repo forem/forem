@@ -154,4 +154,12 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # Explicitly set a seed to ensure deterministic Percy snapshots.
+  config.around(:each, js: true) do |example|
+    prev_random_seed = Faker::Config.random
+    Faker::Config.random = Random.new(42)
+    example.run
+    Faker::Config.random = prev_random_seed
+  end
 end
