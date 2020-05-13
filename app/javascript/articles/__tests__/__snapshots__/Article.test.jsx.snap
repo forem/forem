@@ -21,7 +21,7 @@ exports[`<Article /> component should render a featured article 1`] = `
         loading="lazy"
         style={
           Object {
-            "backgroundImage": "url(undefined)",
+            "backgroundImage": "url(/images/10.png)",
           }
         }
       />
@@ -58,6 +58,402 @@ exports[`<Article /> component should render a featured article 1`] = `
               >
                 Stella Macejkovic
               </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-62407"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            Unbranded Home Loan Account
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              0
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={62407}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+`;
+
+exports[`<Article /> component should render a featured article for a video post 1`] = `
+<article
+  class="crayons-story cursor-pointer crayons-story--featured"
+  data-content-user-id={27683}
+  data-featured-article="articles-49020"
+  id="featured-story-marker"
+>
+  <div
+    onClick={[Function]}
+    role="presentation"
+  >
+    <a
+      class="crayons-story__video"
+      href="/some-post/path"
+      style="background-image:url(/images/onboarding-background.png)"
+    >
+      <span
+        class="crayons-story__video__time"
+      >
+        10
+      </span>
+    </a>
+    <div
+      class="crayons-story__body"
+    >
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
+        >
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Nova_Luettgen"
+            >
+              <img
+                alt="Nova_Luettgen profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Nova_Luettgen"
+              >
+                Henri Gibson
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-49020"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            monitor recontextualize
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              0
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={49020}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+`;
+
+exports[`<Article /> component should render a featured article for an organization 1`] = `
+<article
+  class="crayons-story cursor-pointer crayons-story--featured"
+  data-content-user-id={23289}
+  data-featured-article="articles-62407"
+  id="featured-story-marker"
+>
+  <div
+    onClick={[Function]}
+    role="presentation"
+  >
+    <a
+      class="crayons-story__cover"
+      href="/some-post/path"
+      title="Unbranded Home Loan Account"
+    >
+      <div
+        class="crayons-story__cover__image"
+        loading="lazy"
+        style={
+          Object {
+            "backgroundImage": "url(/images/10.png)",
+          }
+        }
+      />
+    </a>
+    <div
+      class="crayons-story__body"
+    >
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
+        >
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-logo crayons-logo--l"
+              href="/bluetooth-Gorgeous-Wooden-Pants"
+            >
+              <img
+                alt="Web info-mediaries logo"
+                class="crayons-logo__image"
+                loading="lazy"
+                src="/images/30.png"
+              />
+            </a>
+            <a
+              class="crayons-avatar crayons-avatar--s absolute -right-2 -bottom-2 border-solid border-2 border-base-inverted"
+              href="/Emil99"
+            >
+              <img
+                alt="Emil99 profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Emil99"
+              >
+                Stella Macejkovic
+              </a>
+              <span>
+                <span
+                  class="crayons-story__tertiary fw-normal"
+                >
+                   for 
+                </span>
+                <a
+                  class="crayons-story__secondary fw-medium"
+                  href="/bluetooth-Gorgeous-Wooden-Pants"
+                >
+                  Web info-mediaries
+                </a>
+              </span>
             </p>
             <a
               class="crayons-story__tertiary fs-xs"
