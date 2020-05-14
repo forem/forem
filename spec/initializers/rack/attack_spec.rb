@@ -49,21 +49,21 @@ describe Rack::Attack, type: :request, throttle: true do
     let(:api_secret) { create(:api_secret) }
     let(:another_api_secret) { create(:api_secret) }
 
-    it "throttles api write endpoints based on api-key" do
-      headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
-      dif_headers = { "api-key" => another_api_secret.secret, "content-type" => "application/json" }
-      params = { body_markdown: "", title: Faker::Book.title }
+    it "throttles api write endpoints based on IP" do
+      headers = { "api-key" => api_secret.secret, "content-type" => "application/json", "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+      dif_headers = { "api-key" => another_api_secret.secret, "content-type" => "application/json", "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
+      params = { article: { body_markdown: "", title: Faker::Book.title } }.to_json
 
       Timecop.freeze do
-        valid_response = post api_articles_path, params: { article: params }.to_json, headers: headers
-        throttled_response = post api_articles_path, params: { article: params }.to_json, headers: headers
-        new_api_response = post api_articles_path, params: { article: params }.to_json, headers: dif_headers
+        valid_response = post api_articles_path, params: params, headers: headers
+        throttled_response = post api_articles_path, params: params, headers: headers
+        new_api_response = post api_articles_path, params: params, headers: dif_headers
 
         expect(valid_response).not_to eq(429)
         expect(throttled_response).to eq(429)
         expect(new_api_response).not_to eq(429)
-        expect(Honeycomb).to have_received(:add_field).with("user_api_key", api_secret.secret).exactly(2).times
-        expect(Honeycomb).to have_received(:add_field).with("user_api_key", another_api_secret.secret)
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(3).times
+        expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").exactly(2).times
       end
     end
   end
