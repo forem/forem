@@ -98,13 +98,13 @@ ActiveRecord::Schema.define(version: 2020_05_11_224704) do
     t.boolean "published", default: false
     t.datetime "published_at"
     t.boolean "published_from_feed", default: false
-    t.string "search_optimized_description_replacement"
-    t.string "search_optimized_title_preamble"
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
     t.integer "score", default: 0
+    t.string "search_optimized_description_replacement"
+    t.string "search_optimized_title_preamble"
     t.integer "second_user_id"
     t.boolean "show_comments", default: true
     t.text "slug"
