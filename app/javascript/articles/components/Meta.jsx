@@ -2,7 +2,7 @@ import { h } from 'preact';
 import {
   articlePropTypes,
   organizationPropType,
-} from '../../src/components/common-prop-types';
+} from '../../common-prop-types';
 import { PublishDate } from './PublishDate';
 
 export const Meta = ({ article, organization }) => {

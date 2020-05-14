@@ -1,4 +1,6 @@
 class Article < ApplicationRecord
+  self.ignored_columns = %w[live_now]
+
   include CloudinaryHelper
   include ActionView::Helpers
   include Storext.model
@@ -135,7 +137,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
-           :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
+           :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
            :email_digest_eligible, :processed_html)
   }
 

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { articleSnippetResultPropTypes } from '../../src/components/common-prop-types';
+import { articleSnippetResultPropTypes } from '../../common-prop-types';
 
 export const SearchSnippet = ({ highlightText }) => {
   if (highlightText && highlightText.body_text.length > 0) {

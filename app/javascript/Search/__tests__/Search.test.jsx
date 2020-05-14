@@ -4,7 +4,7 @@ import { Search } from '../Search';
 
 describe('<Search />', () => {
   beforeEach(() => {
-    global.filterXSS = x => x;
+    global.filterXSS = (x) => x;
   });
 
   afterEach(() => {

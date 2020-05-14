@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { articlePropTypes } from '../../src/components/common-prop-types';
+import { articlePropTypes } from '../../common-prop-types';
 
 export const ContentTitle = ({ article }) => (
   <h2 className="crayons-story__title">

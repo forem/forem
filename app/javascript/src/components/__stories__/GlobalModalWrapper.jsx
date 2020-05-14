@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { defaultChildrenPropTypes } from '../common-prop-types';
+import { defaultChildrenPropTypes } from '../../../common-prop-types';
 
 const GlobalModalWrapper = ({ children }) => (
   <div className="global-modal">

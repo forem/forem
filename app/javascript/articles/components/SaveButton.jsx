@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { articlePropTypes } from '../../src/components/common-prop-types';
+import { articlePropTypes } from '../../common-prop-types';
 
 export class SaveButton extends Component {
   componentDidMount() {
