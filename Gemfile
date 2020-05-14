@@ -43,7 +43,7 @@ gem "fast_jsonapi", "~> 1.5" # Serializer for Ruby objects
 gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.3" # A/B testing
-gem "figaro", "~> 1.1" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
+gem "figaro", "~> 1.2" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
 gem "fog-aws", "~> 3.6" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
