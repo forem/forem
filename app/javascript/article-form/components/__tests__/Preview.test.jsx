@@ -15,7 +15,9 @@ global.window.currentUser = {
     '/uploads/user/profile_image/41/0841dbe2-208c-4daa-b498-b2f01f3d37b2.png',
 };
 
-let previewResponse; let articleState; let errors;
+let previewResponse;
+let articleState;
+let errors;
 
 describe('<Preview />', () => {
   beforeEach(() => {
@@ -81,7 +83,7 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(container.find('.crayons-article__title').text()).toEqual(
+    expect(container.find('.spec-article__title').text()).toEqual(
       previewResponse.title,
     );
   });
