@@ -6,7 +6,7 @@ import { SearchForm } from '..';
 const commonProps = {
   searchBoxId: 'nav-search',
   onSearch: action('on preloading search'),
-  onSubmitSearch: e => {
+  onSubmitSearch: (e) => {
     e.preventDefault();
     action('on submit')(e);
   },
