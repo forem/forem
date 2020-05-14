@@ -205,7 +205,9 @@ export default class Chat extends Component {
   messageOpened = () => {};
 
   loadChannels = (channels, query) => {
-    const { activeChannelId, activeChannel } = this.state;
+    const { activeChannelId } = this.state;
+    const activeChannel = this.state.activeChannel ||
+      channels.filter((channel) => channel.chat_channel_id === activeChannelId)[0];
     if (activeChannelId && query.length === 0) {
       this.setState({
         chatChannels: channels,
@@ -1243,7 +1245,11 @@ export default class Chat extends Component {
             chatChannels={state.chatChannels}
             unopenedChannelIds={state.unopenedChannelIds}
             handleSwitchChannel={this.handleSwitchChannel}
+            channelsLoaded={state.channelsLoaded}
+            filterQuery={state.filterQuery}
             expanded={state.expanded}
+            currentUserId={state.currentUserId}
+            triggerActiveContent={this.triggerActiveContent}
           />
           {notificationsState}
         </div>

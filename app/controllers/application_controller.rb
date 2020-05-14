@@ -92,7 +92,5 @@ class ApplicationController < ActionController::Base
     rate_limiter.check_limit!(action)
   end
 
-  def rate_limiter
-    RateLimitChecker.new(current_user)
-  end
+  delegate :rate_limiter, to: :current_user
 end
