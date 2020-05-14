@@ -20,7 +20,7 @@ describe('updateListings', () => {
     },
   };
 
-  const secondtListing = {
+  const secondListing = {
     id: 21,
     category: 'misc',
     location: 'West Refugio',
@@ -57,10 +57,10 @@ describe('updateListings', () => {
     },
   };
 
-  const classifiedListings = [firstListing, secondtListing, thirdListing];
+  const classifiedListings = [firstListing, secondListing, thirdListing];
   test('Should update the listings', () => {
     const result = updateListings(classifiedListings);
-    const expectedResult = [firstListing, secondtListing];
+    const expectedResult = [firstListing, secondListing];
 
     expect(result).toEqual(expectedResult);
   });
