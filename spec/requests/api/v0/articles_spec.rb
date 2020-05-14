@@ -462,14 +462,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
         post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
-
-      it "fails when oauth's access_token" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        post api_articles_path, params: { article: { title: Faker::Book.title } }.to_json, headers: headers
-        expect(response).to have_http_status(:unauthorized)
-      end
     end
 
     describe "when authorized" do
@@ -479,6 +471,22 @@ RSpec.describe "Api::V0::Articles", type: :request do
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         params = default_params.merge params
         post api_articles_path, params: { article: params }.to_json, headers: headers
+      end
+
+      it "returns a 403 if :write_articles scope is missing (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "public")
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        post api_articles_path, params: { article: { title: Faker::Book.title } }.to_json, headers: headers
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "returns a 201 if :write_articles scope is provided (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "write_articles")
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        post api_articles_path, params: { article: { title: Faker::Book.title, body_markdown: "" } }.to_json, headers: headers
+        expect(response).to have_http_status(:created)
       end
 
       it "returns a 429 status code if the rate limit is reached" do
@@ -765,17 +773,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
-
-      it "fails with oauth's access_token" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        title = Faker::Book.title
-        body_markdown = "foobar"
-        params = { title: title, body_markdown: body_markdown }
-        put path, params: { article: params }.to_json, headers: headers
-        expect(response).to have_http_status(:unauthorized)
-      end
     end
 
     describe "when authorized" do
@@ -784,6 +781,28 @@ RSpec.describe "Api::V0::Articles", type: :request do
       def put_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         put path, params: { article: params }.to_json, headers: headers
+      end
+
+      it "returns a 403 if :write_articles scope is missing (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        title = Faker::Book.title
+        body_markdown = "foobar"
+        params = { title: title, body_markdown: body_markdown }
+        put path, params: { article: params }.to_json, headers: headers
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "returns a 200 if :write_articles scope is provided (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "write_articles")
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        title = Faker::Book.title
+        body_markdown = "foobar"
+        params = { title: title, body_markdown: body_markdown }
+        put path, params: { article: params }.to_json, headers: headers
+        expect(response).to have_http_status(:ok)
       end
 
       it "returns a 429 status code if the rate limit is reached" do
