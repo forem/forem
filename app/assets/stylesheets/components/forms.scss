@@ -114,7 +114,7 @@
 // Selects
 .crayons-select {
   line-height: var(--lh-base);
-  padding: 0.5em;
+  padding: calc(0.5em - var(--border-width)) 0.5em;
   padding-right: var(--su-7);
   font-family: inherit;
   font-size: var(--fs-base);

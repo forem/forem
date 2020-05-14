@@ -36,10 +36,10 @@
   --base-inverted: #000;
 
   // Accent colors
-  --accent-brand: #3b49df;
-  --accent-brand-darker: #1827ce;
-  --accent-brand-lighter: #8d95f2;
-  --accent-brand-a10: #{rgba(#3b49df, 0.1)};
+  --accent-brand: #7b78ff;
+  --accent-brand-darker: #5855f3;
+  --accent-brand-lighter: #9896ff;
+  --accent-brand-a10: #{rgba(#7b78ff, 0.1)};
 
   // Success
   --accent-success: #26d9ca;
@@ -104,13 +104,13 @@
   --link-bg-current: var(--base-inverted);
 
   // Primary buttons
-  --button-primary-bg: var(--accent-success);
-  --button-primary-bg-hover: var(--accent-success-darker);
-  --button-primary-color: var(--base-0);
+  --button-primary-bg: var(--accent-brand);
+  --button-primary-bg-hover: var(--accent-brand-darker);
+  --button-primary-color: var(--base-inverted);
   --button-primary-color-hover: var(--base-inverted);
   //-- Inverted
-  --button-primary-inverted-bg: var(--accent-success);
-  --button-primary-inverted-bg-hover: var(--accent-success-darker);
+  --button-primary-inverted-bg: var(--accent-brand);
+  --button-primary-inverted-bg-hover: var(--accent-brand-darker);
   --button-primary-inverted-color: var(--base-0);
   --button-primary-inverted-color-hover: var(--base-0);
 
@@ -180,6 +180,19 @@
   --indicator-default-bg: var(--button-secondary-bg);
   --indicator-default-color: var(--button-secondary-color);
 
+  // Tabs
+  --tab-color: var(--base-80);
+  --tab-color-hover: var(--accent-brand-lighter);
+  --tab-color-current: var(--base-100);
+  --tab-bg-hover: var(--accent-brand-a10);
+  --tab-bg-current: var(--accent-brand);
+  --tab-muted-color: var(--base-80);
+  --tab-muted-color-hover: var(--base-90);
+  --tab-muted-color-current: var(--base-100);
+  --tab-muted-bg-hover: var(--base-a10);
+  --tab-muted-bg-current: var(--base-20);
+  --tab-pill-color-current: var(--base-inverted);
+  
   // Tags
   --tag-color: var(--base-70);
   --tag-color-hover: var(--base-100);

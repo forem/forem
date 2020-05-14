@@ -178,6 +178,19 @@
   --indicator-default-bg: var(--button-secondary-bg);
   --indicator-default-color: var(--button-secondary-color);
 
+  // Tabs
+  --tab-color: var(--base-80);
+  --tab-color-hover: var(--accent-brand);
+  --tab-color-current: var(--base-100);
+  --tab-bg-hover: var(--accent-brand-a10);
+  --tab-bg-current: var(--accent-brand);
+  --tab-muted-color: var(--base-80);
+  --tab-muted-color-hover: var(--base-90);
+  --tab-muted-color-current: var(--base-100);
+  --tab-muted-bg-hover: var(--base-a10);
+  --tab-muted-bg-current: var(--base-20);
+  --tab-pill-color-current: var(--base-inverted);
+  
   // Tags
   --tag-color: var(--base-70);
   --tag-color-hover: var(--base-100);
