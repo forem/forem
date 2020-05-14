@@ -1266,3 +1266,11 @@
   border-radius: '500px';
   background-color: '#f5f6f7';
 }
+.request-card {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+}
+
+.action button:nth-child(2n) {
+  margin-left: 10px;
+}
