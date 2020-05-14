@@ -31,7 +31,7 @@ class Rack::Attack
   end
 
   def self.track_and_return_ip(ip_address)
-    return unless ip_address
+    return if ip_address.blank?
 
     Honeycomb.add_field("fastly_client_ip", ip_address)
     ip_address.to_s
