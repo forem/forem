@@ -8,7 +8,7 @@
 [build]
   base = "docs/"
   command = "node deploy-script.js"
-  ignore = "git diff --quiet master docs/"
+  ignore = "[ \"git symbolic-ref HEAD\" = \"refs/heads/master\" ] && git diff --quiet master~1 docs/ || git diff --quiet master docs/"
   publish = "docs/.gitdocs_build"
 
 [[redirects]]
