@@ -373,7 +373,7 @@
   overflow-y: auto;
   @media screen and (min-width: 600px) {
     font-size: 18px;
-    height: calc(85vh - 200px);
+    height: calc(82vh - 200px);
   }
   &::placeholder {
     color: var(--form-placeholder-color);
