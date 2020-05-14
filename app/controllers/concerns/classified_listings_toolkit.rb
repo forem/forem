@@ -44,9 +44,6 @@ module ClassifiedListingsToolkit
       return
     end
 
-    available_org_credits = org.credits.unspent if org
-    available_user_credits = current_user.credits.unspent
-
     unless @classified_listing.valid?
       @credits = current_user.credits.unspent
       process_unsuccessful_creation
@@ -55,9 +52,9 @@ module ClassifiedListingsToolkit
 
     cost = @classified_listing.cost
     # we use the org's credits if available, otherwise we default to the user's
-    if org && available_org_credits.size >= cost
+    if org&.enough_credits?(cost)
       create_listing(org, cost)
-    elsif available_user_credits.size >= cost
+    elsif current_user.enough_credits?(cost)
       create_listing(current_user, cost)
     else
       process_no_credit_left
@@ -155,12 +152,9 @@ module ClassifiedListingsToolkit
   def bump_listing(cost)
     org = Organization.find_by(id: @classified_listing.organization_id)
 
-    available_org_credits = org.credits.unspent if org
-    available_user_credits = current_user.credits.unspent
-
-    if org && available_org_credits.size >= cost
+    if org&.enough_credits?(cost)
       charge_credits_before_bump(org, cost)
-    elsif available_user_credits.size >= cost
+    elsif current_user.enough_credits?(cost)
       charge_credits_before_bump(current_user, cost)
     else
       process_no_credit_left && return
