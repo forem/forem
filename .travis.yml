@@ -30,6 +30,8 @@ env:
     - SENDGRID_PASSWORD_ACCEL=dummy
     - HEROKU_APP_URL=practicaldev.herokuapp.com
     - SECRET_KEY_BASE=dummydummydummy
+    - GITHUB_KEY=dummy
+    - GITHUB_SECRET=dummy
 branches:
   only:
     - master
