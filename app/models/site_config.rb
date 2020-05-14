@@ -83,6 +83,7 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_email_recipient, type: :integer, default: 5
   field :rate_limit_article_update, type: :integer, default: 150
   field :rate_limit_send_email_confirmation, type: :integer, default: 2
+  field :rate_limit_feedback_message_creation, type: :integer, default: 5
 
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>
