@@ -1,9 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { organizationPropType } from '../src/components/common-prop-types';
+import { organizationPropType } from '../common-prop-types';
 
 const orgOptions = (organizations, organizationId) => {
-  const orgs = organizations.map(organization => {
+  const orgs = organizations.map((organization) => {
     if (organizationId === organization.id) {
       return (
         <option value={organization.id} selected>

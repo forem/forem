@@ -1,7 +1,7 @@
 import { h } from 'preact';
-import { articlePropTypes } from '../../src/components/common-prop-types';
+import { articlePropTypes } from '../../common-prop-types';
 
-export const Video = ({article}) => {
+export const Video = ({ article }) => {
   return (
     <a
       href={article.path}

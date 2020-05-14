@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import ClassifiedFiltersCategories from "./ClassifiedFiltersCategories";
-import ClassifiedFiltersTags from "./ClassifiedFiltersTags";
-import { tagPropTypes } from '../../src/components/common-prop-types';
+import ClassifiedFiltersCategories from './ClassifiedFiltersCategories';
+import ClassifiedFiltersTags from './ClassifiedFiltersTags';
+import { tagPropTypes } from '../../common-prop-types';
 
 const ClassifiedFilters = ({
   categories,
