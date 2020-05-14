@@ -8,6 +8,20 @@ module Github
       @credentials = check_credentials!(credentials)
     end
 
+    def self.for_user(user)
+      access_token = user.identities.github.select(:token).take!.token
+      new(access_token: access_token)
+    end
+
+    # Hides private credentials when printed
+    def inspect
+      "#<#{self.class.name}:#{object_id}>"
+    end
+
+    private
+
+    attr_reader :credentials
+
     # adapted from https://api.rubyonrails.org/classes/Module.html#method-i-delegate_missing_to
     def method_missing(method, *args, &block)
       return super unless target.respond_to?(method, false)
@@ -30,10 +44,6 @@ module Github
     def respond_to_missing?(method, _include_all = false)
       target.respond_to?(method, false) || super
     end
-
-    private
-
-    attr_reader :credentials
 
     def check_credentials!(credentials)
       if credentials.present?
