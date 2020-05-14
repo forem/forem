@@ -14,10 +14,16 @@ RSpec.describe RateLimitChecker, type: :service do
       expect(rate_limit_checker.limit_by_action("random-nothing")).to be(false)
     end
 
-    it "raises an error if user does not have an ID" do
+    it "will limit action by ip_address if present" do
+      action = described_class::ACTION_LIMITERS.keys.first
+      limiter = described_class.new(build(:user, ip_address: "1.1.1.1"))
+      expect { limiter.limit_by_action(action) }.not_to raise_error
+    end
+
+    it "raises an error if no unique component is present for a cache key" do
       action = described_class::ACTION_LIMITERS.keys.first
       limiter = described_class.new(build(:user))
-      expect { limiter.limit_by_action(action) }.to raise_error("Invalid Cache Key: user ID can't be blank")
+      expect { limiter.limit_by_action(action) }.to raise_error("Invalid Cache Key: no unique component present")
     end
 
     # published_article_creation limit we check against the database rather than our cache

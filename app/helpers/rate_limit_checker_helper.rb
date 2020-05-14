@@ -5,6 +5,11 @@ module RateLimitCheckerHelper
       placeholder: 150,
       description: "The number of article updates a user can make in 30 seconds"
     },
+    rate_limit_feedback_message_creation: {
+      min: 1,
+      placeholder: 5,
+      description: "The number of times a user can submit feedback in a 5 minute period"
+    },
     rate_limit_follow_count_daily: {
       min: 0,
       placeholder: 500,
