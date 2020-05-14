@@ -153,6 +153,17 @@ export class Help extends Component {
     );
   };
 
+  renderModal = (onClose, title, helpHtml) => {
+    return (
+      <Modal onClose={onClose} title={title}>
+        <div
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: helpHtml }}
+        />
+      </Modal>
+    );
+  };
+
   render() {
     const { previewShowing, helpFor, helpPosition, version } = this.props;
 
@@ -181,32 +192,22 @@ export class Help extends Component {
           </div>
         )}
 
-        {liquidShowing && (
-          <Modal onClose={this.toggleLiquid} title="🌊 Liquid Tags">
-            <div
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: liquidHelpHTML }}
-            />
-          </Modal>
-        )}
+        {liquidShowing &&
+          this.renderModal(this.toggleLiquid, '🌊 Liquid Tags', liquidHelpHTML)}
 
-        {markdownShowing && (
-          <Modal onClose={this.toggleMarkdown} title="✍️ Markdown">
-            <div
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: markdownHelpHTML }}
-            />
-          </Modal>
-        )}
+        {markdownShowing &&
+          this.renderModal(
+            this.toggleMarkdown,
+            '✍️ Markdown',
+            markdownHelpHTML,
+          )}
 
-        {frontmatterShowing && (
-          <Modal onClose={this.toggleFrontmatter} title="Jekyll Front Matter">
-            <div
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: frontmatterHelpHTML }}
-            />
-          </Modal>
-        )}
+        {frontmatterShowing &&
+          this.renderModal(
+            this.toggleFrontmatter,
+            'Jekyll Front Matter',
+            frontmatterHelpHTML,
+          )}
       </div>
     );
   }
