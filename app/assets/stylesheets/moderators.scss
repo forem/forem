@@ -630,6 +630,10 @@
   .tag-mod-form {
     border-top: 1px solid #dddddd;
     margin: 42px auto;
+
+    .level-rating-button.article-mod-page.selected {
+      background: #9bebff;
+    }
   }
 
   .tag-mod-form ul {
