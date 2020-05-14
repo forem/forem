@@ -4,18 +4,22 @@ import { OrganizationPicker } from '../../organization/OrganizationPicker';
 
 export const PageTitle = ({organizations, organizationId, onToggle}) => {
   return (
-    <div className="crayons-field__label">
-      <span className="hidden s:inline-block">Write a new post</span>
+    <div className="crayons-field__label flex items-center flex-1">
+      <span className="hidden s:inline-block whitespace-nowrap">
+        Write a new post
+      </span>
       {organizations && organizations.length > 0 && (
-        <OrganizationPicker
-          name="article[organization_id]"
-          id="article_publish_under_org"
-          className="crayons-select w-auto ml-2 mt-0"
-          organizations={organizations}
-          organizationId={organizationId}
-          onToggle={onToggle}
-          emptyLabel="Personal"
-        />
+        <div className="mx-2">
+          <OrganizationPicker
+            name="article[organization_id]"
+            id="article_publish_under_org"
+            className="crayons-select mt-0"
+            organizations={organizations}
+            organizationId={organizationId}
+            onToggle={onToggle}
+            emptyLabel="Personal"
+          />
+        </div>
       )}
     </div>
   );

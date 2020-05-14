@@ -1,24 +1,27 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Button } from '@crayons';
 
 export const Tabs = ({ onPreview, previewShowing }) => {
   return (
-    <div className="crayons-article-form__tabs ml-auto">
-      <Button
-        variant="ghost"
-        className={!previewShowing && 'current'}
+    <div className="crayons-article-form__tabs crayons-tabs ml-auto">
+      <button
+        className={`crayons-tabs__item ${
+          !previewShowing && 'crayons-tabs__item--current'
+        }`}
         onClick={previewShowing && onPreview}
+        type="button"
       >
         Edit
-      </Button>
-      <Button
-        variant="ghost"
-        className={previewShowing && 'current'}
+      </button>
+      <button
+        className={`crayons-tabs__item ${
+          previewShowing && 'crayons-tabs__item--current'
+        }`}
         onClick={!previewShowing && onPreview}
+        type="button"
       >
         Preview
-      </Button>
+      </button>
     </div>
   );
 };
