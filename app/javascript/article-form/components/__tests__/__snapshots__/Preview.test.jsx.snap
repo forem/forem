@@ -23,7 +23,7 @@ exports[`<Preview /> renders properly 1`] = `
         />
       </div>
       <h1
-        class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 crayons-article__title"
+        class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title"
       >
         My Awesome Post
       </h1>
