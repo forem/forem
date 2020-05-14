@@ -52,9 +52,9 @@
   <div class="crayons-card crayons-card--secondary p-4">
     <ol class="list-decimal pl-6 mb-2">
       <li>Sign up at
-        <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>">https://<%= ApplicationConfig["APP_DOMAIN"] %></a></li>
+        <a href="<%= app_url %>"><%= app_url %></a></li>
       <li>Navigate to
-        <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization">https://<%= ApplicationConfig["APP_DOMAIN"] %>/settings/organization</a>
+        <a href="<%= app_url(user_settings_path(:organization)) %>"><%= app_url(user_settings_path(:organization)) %></a>
       </li>
       <li>Paste the secret code below and click <b>Join Organization</b></li>
     </ol>
@@ -177,7 +177,7 @@
       <h3 class="mb-2">Call-to-action box</h3>
       <p>
         Customizable text that appears to the right of every post for your organization.
-        See an example from the <a href="https://<%= ApplicationConfig["APP_DOMAIN"] %>/devteam/the-dev-badge-is-available-on-font-awesome-2ihe" target="_blank" rel="noopener">DEV Team</a>.
+        See an example from the <a href="<%= app_url("/devteam/the-dev-badge-is-available-on-font-awesome-2ihe") %>" target="_blank" rel="noopener">DEV Team</a>.
       </p>
     </header>
     <div class="crayons-field">

@@ -4,5 +4,5 @@
     <img src="<%= cloudinary(organization.nav_image_url) %>" alt="<%= organization.name %> logo" loading="lazy" class="partner-image-light-mode" />
     <img src="<%= cloudinary(organization.dark_nav_image_url || organization.nav_image_url) %>" alt="<%= organization.name %> logo" loading="lazy" class="partner-image-dark-mode" />
   </a>
-  <p class="fs-s"><%= sponsorship.sponsorable_type == "ActsAsTaggableOn::Tag" ? sponsorship.blurb_html.html_safe : sponsorship.tagline %></p>
+  <p class="fs-s"><%= sponsorship.sponsorable_type == "ActsAsTaggableOn::Tag" ? sanitize(sponsorship.blurb_html) : sponsorship.tagline %></p>
 </div>

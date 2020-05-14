@@ -5,39 +5,43 @@ import { articlePropTypes } from '../../src/components/common-prop-types';
 export class SaveButton extends Component {
   componentDidMount() {
     const { isBookmarked } = this.props;
-    this.setState({ buttonText: isBookmarked ? 'SAVED' : 'SAVE' });
+    this.setState({ buttonText: isBookmarked ? 'Saved' : 'Save' });
   }
 
   render() {
     const { buttonText } = this.state;
+
     const { article, isBookmarked, onClick } = this.props;
-    const mouseOut = _e => {
-      this.setState({ buttonText: isBookmarked ? 'SAVED' : 'SAVE' });
+
+    const mouseOver = (_e) => {
+      this.setState({ buttonText: isBookmarked ? 'Unsave' : 'Save' });
     };
-    const mouseOver = _e => {
-      if (isBookmarked) {
-        this.setState({ buttonText: 'UNSAVE' });
-      }
+
+    const mouseOut = (_e) => {
+      this.setState({ buttonText: isBookmarked ? 'Saved' : 'Save' });
+    };
+
+    const handleClick = (_e) => {
+      onClick(_e);
+      this.setState({ buttonText: isBookmarked ? 'Unsave' : 'Saved' });
     };
 
     if (article.class_name === 'Article') {
       return (
         <button
           type="button"
-          className={`article-engagement-count engage-button bookmark-button ${
-            isBookmarked ? 'selected' : ''
+          className={`crayons-btn crayons-btn--s ${
+            isBookmarked ? 'crayons-btn--ghost' : 'crayons-btn--secondary'
           }`}
           data-initial-feed
           data-reactable-id={article.id}
-          onClick={onClick}
+          onClick={handleClick}
           onMouseOver={mouseOver}
           onFocus={mouseOver}
           onMouseout={mouseOut}
           onBlur={mouseOut}
         >
-          <span className={isBookmarked ? 'bm-success' : 'bm-initial'}>
-            {buttonText}
-          </span>
+          {buttonText}
         </button>
       );
     }
@@ -45,8 +49,7 @@ export class SaveButton extends Component {
       return (
         <button
           type="button"
-          style={{ width: '122px' }}
-          className="article-engagement-count engage-button follow-action-button"
+          className="crayons-btn crayons-btn--secondary fs-s"
           data-info={`{"id":${article.id},"className":"User"}`}
           data-follow-action-button
         >

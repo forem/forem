@@ -1,6 +1,5 @@
 class OrganizationsController < ApplicationController
   after_action :verify_authorized
-  rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   def create
     rate_limit!(:organization_creation)
@@ -41,6 +40,9 @@ class OrganizationsController < ApplicationController
       flash[:settings_notice] = "Your organization was successfully updated."
       redirect_to "/settings/organization"
     else
+      @org_organization_memberships = @organization.organization_memberships.includes(:user)
+      @organization_membership = OrganizationMembership.find_by(user_id: current_user.id, organization_id: @organization.id)
+
       render template: "users/edit"
     end
   end

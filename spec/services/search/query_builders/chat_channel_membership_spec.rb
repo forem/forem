@@ -21,8 +21,8 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       expected_filters = [
         { "term" => { "channel_status" => "active" } },
         { "term" => { "channel_type" => "direct" } },
-        { "term" => { "status" => "active" } },
-        { "term" => { "viewable_by" => 1 } },
+        { "terms" => { "status" => %w[active joining_request] } },
+        { "terms" => { "viewable_by" => 1 } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
@@ -46,7 +46,7 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
           "query" => "a_name*", "fields" => [:channel_text], "lenient" => true, "analyze_wildcard" => true
         }
       }]
-      expected_filters = [{ "term" => { "channel_status" => "active" } }, { "term" => { "viewable_by" => 1 } }, { "term" => { "status" => "active" } }]
+      expected_filters = [{ "term" => { "channel_status" => "active" } }, { "terms" => { "status" => %w[active joining_request] } }, { "terms" => { "viewable_by" => 1 } }]
       expect(query.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
       expect(query.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
@@ -55,8 +55,18 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       params = { user_id: 1 }
       filter = described_class.new(params: params)
       expected_filters = [
-        { "term" => { "status" => "active" } },
-        { "term" => { "viewable_by" => 1 } },
+        { "terms" => { "status" => %w[active joining_request] } },
+        { "terms" => { "viewable_by" => 1 } },
+      ]
+      expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
+    end
+
+    it "always applies channel discoverable and status params" do
+      params = { user_id: SiteConfig.mascot_user_id }
+      filter = described_class.new(params: params)
+      expected_filters = [
+        { "terms" => { "status" => %w[active joining_request] } },
+        { "terms" => { "viewable_by" => 1 } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
@@ -65,8 +75,8 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       params = { not_supported: "direct", user_id: 1 }
       filter = described_class.new(params: params)
       expected_filters = [
-        { "term" => { "status" => "active" } },
-        { "term" => { "viewable_by" => 1 } },
+        { "terms" => { "status" => %w[active joining_request] } },
+        { "terms" => { "viewable_by" => 1 } },
       ]
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end

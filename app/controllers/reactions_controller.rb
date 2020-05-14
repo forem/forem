@@ -1,6 +1,6 @@
 class ReactionsController < ApplicationController
   before_action :set_cache_control_headers, only: [:index], unless: -> { current_user }
-  before_action :check_limit, only: [:create]
+  before_action :authorize_for_reaction, :check_limit, only: [:create]
   after_action :verify_authorized
 
   def index
@@ -49,8 +49,6 @@ class ReactionsController < ApplicationController
   end
 
   def create
-    authorize Reaction
-
     Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
 
     category = params[:category] || "like"
@@ -135,5 +133,9 @@ class ReactionsController < ApplicationController
 
   def check_limit
     rate_limit!(:reaction_creation)
+  end
+
+  def authorize_for_reaction
+    authorize Reaction
   end
 end

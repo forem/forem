@@ -53,7 +53,17 @@ class ArticleDecorator < ApplicationDecorator
     published_at.to_i
   end
 
+  def title_with_query_preamble(user_signed_in)
+    if search_optimized_title_preamble.present? && !user_signed_in
+      "#{search_optimized_title_preamble}: #{title}"
+    else
+      title
+    end
+  end
+
   def description_and_tags
+    return search_optimized_description_replacement if search_optimized_description_replacement.present?
+
     modified_description = description.strip
     modified_description += "." unless description.end_with?(".")
     return modified_description if cached_tag_list.blank?

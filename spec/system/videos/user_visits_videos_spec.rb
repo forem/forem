@@ -7,7 +7,7 @@ RSpec.describe "User visits the videos page", type: :system do
     describe "meta tags" do
       it "contains the qualified community name in og:site_name" do
         selector = "meta[property='og:site_name'][content='#{community_qualified_name}']"
-        expect(page).to have_selector(selector, visible: false)
+        expect(page).to have_selector(selector, visible: :hidden)
       end
     end
   end

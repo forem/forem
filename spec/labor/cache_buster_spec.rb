@@ -96,9 +96,9 @@ RSpec.describe CacheBuster, type: :labor do
     it "busts a user" do
       allow(cache_buster).to receive(:bust)
       cache_buster.bust_user(user)
-      expect(cache_buster).to have_received(:bust).with("/" + user.username.to_s)
-      expect(cache_buster).to have_received(:bust).with("/" + user.username.to_s + "/comments?i=i")
-      expect(cache_buster).to have_received(:bust).with("/feed/" + user.username.to_s)
+      expect(cache_buster).to have_received(:bust).with("/#{user.username}")
+      expect(cache_buster).to have_received(:bust).with("/#{user.username}/comments?i=i")
+      expect(cache_buster).to have_received(:bust).with("/feed/#{user.username}")
     end
   end
 end

@@ -106,6 +106,8 @@
       padding-bottom: 10px;
     }
     .podcast-pic {
+      display: flex;
+      align-items: center;
       position: relative;
       padding: 5px 0px;
       border-top-left-radius: 100px;
@@ -128,6 +130,7 @@
           font-size: 14px;
           line-height: 15px;
           display: block;
+          padding-left: 2px;
         }
       }
       &:hover {

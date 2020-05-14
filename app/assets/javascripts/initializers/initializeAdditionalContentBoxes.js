@@ -1,4 +1,4 @@
-'use strict';
+/* global initializeUserFollowButts */
 
 function initializeAdditionalContentBoxes() {
   var el = document.getElementById('additional-content-area');
@@ -32,6 +32,7 @@ function initializeAdditionalContentBoxes() {
             el.innerHTML = html;
             initializeReadingListIcons();
             initializeAllFollowButts();
+            initializeUserFollowButts();
             initializeSponsorshipVisibility();
           });
         } else {

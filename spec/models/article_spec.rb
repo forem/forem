@@ -174,7 +174,7 @@ RSpec.describe Article, type: :model do
         body = "{% github /thepracticaldev/dev.to %}"
         article = build(:article, body_markdown: body)
         expect(article).not_to be_valid
-        expect(article.errors[:base]).to eq(["Invalid Github Repo link"])
+        expect(article.errors[:base].first).to match(/Invalid GitHub/)
       end
 
       it "is valid with valid liquid tags", :vcr do

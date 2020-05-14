@@ -5,7 +5,7 @@ import { JSDOM } from 'jsdom';
 import fetch from 'jest-fetch-mock';
 import Tags from '../../../shared/components/tags';
 
-global.fetch = fetch;
+/* global globalThis */
 
 const sampleResponse = JSON.stringify({
   result: [
@@ -19,6 +19,18 @@ const sampleResponse = JSON.stringify({
 });
 
 describe('<Tags />', () => {
+  beforeAll(() => {
+    const csrfToken = 'this-is-a-csrf-token';
+
+    globalThis.fetch = fetch;
+    globalThis.getCsrfToken = async () => csrfToken;
+  });
+
+  afterAll(() => {
+    delete globalThis.fetch;
+    delete globalThis.getCsrfToken;
+  });
+
   beforeEach(() => {
     const doc = new JSDOM('<!doctype html><html><body></body></html>');
     global.document = doc;

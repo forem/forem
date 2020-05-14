@@ -28,7 +28,6 @@ module Internal
       @event = Event.find(params[:id])
       @events = Event.order("starts_at DESC")
       if @event.update(event_params)
-        CacheBuster.bust("/live_articles")
         flash[:success] = "#{@event.title} was successfully updated"
         redirect_to "/internal/events"
       else

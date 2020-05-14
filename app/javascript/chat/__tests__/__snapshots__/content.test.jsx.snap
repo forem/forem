@@ -37,6 +37,7 @@ exports[`<Content /> as loading-user should render and test snapshot 1`] = `
       }
     }
   >
+     
     <svg
       data-content="fullscreen"
       height="24"
@@ -56,16 +57,7 @@ exports[`<Content /> as loading-user should render and test snapshot 1`] = `
     </svg>
   </button>
   <div
-    style={
-      Object {
-        "backgroundColor": "#f5f6f7",
-        "borderRadius": "500px",
-        "display": "block",
-        "height": "210px",
-        "margin": " 15px auto",
-        "width": "210px",
-      }
-    }
+    class="loading-user"
   />
 </div>
 `;
