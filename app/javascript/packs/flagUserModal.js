@@ -1,27 +1,6 @@
 import { request } from '../utilities/http';
 
-const toggleFlagUserModal = () => {
-  const modalContainer = document.querySelector('.flag-user-modal-container');
-  modalContainer.classList.toggle('hidden');
-
-  if (!modalContainer.classList.contains('hidden')) {
-    window.scrollTo(0, 0);
-    document.querySelector('body').style.height = '100vh';
-    document.querySelector('body').style.overflowY = 'hidden';
-  } else {
-    document.querySelector('body').style.height = 'inherit';
-    document.querySelector('body').style.overflowY = 'inherit';
-  }
-};
-
-export function initializeFlagUserModal() {
-  // eslint-disable-next-line no-undef
-  const user = userData();
-  const {
-    authorId: articleAuthorId,
-    authorClassName: articleAuthorClassName,
-  } = document.getElementById('article-show-container').dataset;
-
+export default function initializeFlagUserModal(articleAuthorId) {
   const flagUserModalHTML = `
 <div class="crayons-modal crayons-modal--s absolute flag-user-modal">
   <div class="crayons-modal__box">
@@ -46,7 +25,7 @@ export function initializeFlagUserModal() {
             class="crayons-radio"
             data-reactable-id="${articleAuthorId}"
             data-category="vomit"
-            data-reactable-type="${articleAuthorClassName}">
+            data-reactable-type="User">
           <label for="vomit-all" class="crayons-field__label">
             Make all posts by this author less visible
             <p class="crayons-field__description">
@@ -66,18 +45,29 @@ export function initializeFlagUserModal() {
 </div>
 `;
 
-  if (user.id !== articleAuthorId && user.trusted) {
-    const modContainer = document.getElementById('mod-container');
+  const toggleFlagUserModal = () => {
+    const modalContainer = document.querySelector('.flag-user-modal-container');
+    modalContainer.classList.toggle('hidden');
 
-    document.querySelector(
-      '.flag-user-modal-container',
-    ).innerHTML = flagUserModalHTML;
-    modContainer.addEventListener('load', () => {
-      modContainer.contentWindow.document
-        .getElementById('open-flag-user-modal')
-        .addEventListener('click', toggleFlagUserModal);
-    });
-  }
+    if (!modalContainer.classList.contains('hidden')) {
+      window.scrollTo(0, 0);
+      document.querySelector('body').style.height = '100vh';
+      document.querySelector('body').style.overflowY = 'hidden';
+    } else {
+      document.querySelector('body').style.height = 'inherit';
+      document.querySelector('body').style.overflowY = 'inherit';
+    }
+  };
+
+  const modContainer = document.getElementById('mod-container');
+  document.querySelector(
+    '.flag-user-modal-container',
+  ).innerHTML = flagUserModalHTML;
+  modContainer.addEventListener('load', () => {
+    modContainer.contentWindow.document
+      .getElementById('open-flag-user-modal')
+      .addEventListener('click', toggleFlagUserModal);
+  });
 
   // Event listeners to Close the Modal
   const closeModalElements = Array.from(
@@ -89,20 +79,6 @@ export function initializeFlagUserModal() {
   closeModalElements.forEach((element) => {
     element.addEventListener('click', toggleFlagUserModal);
   });
-
-  document
-    .getElementById('confirm-flag-user-action')
-    .addEventListener('click', () => {
-      if (!document.getElementById('vomit-all').checked) {
-        // eslint-disable-next-line no-restricted-globals
-        top.addSnackbarItem({
-          message: 'No selection made!',
-          addCloseButton: true,
-        });
-      } else {
-        toggleFlagUserModal();
-      }
-    });
 
   document
     .getElementById('confirm-flag-user-action')
@@ -143,6 +119,12 @@ export function initializeFlagUserModal() {
               top.addSnackbarItem({ message: error, addCloseButton: true });
             }),
         );
+      } else {
+        // eslint-disable-next-line no-restricted-globals
+        top.addSnackbarItem({
+          message: 'No selection made!',
+          addCloseButton: true,
+        });
       }
     });
 }
