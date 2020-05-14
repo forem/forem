@@ -61,4 +61,35 @@ RSpec.describe Credit, type: :model do
       expect(credit).to be_valid
     end
   end
+
+  describe "#add_to" do
+    it "adds the credits to the user" do
+      expect do
+        described_class.add_to(user, 1)
+      end.to change { user.reload.unspent_credits_count }.by(1)
+    end
+
+    it "adds the credits to the organization" do
+      expect do
+        described_class.add_to(organization, 1)
+      end.to change { organization.reload.unspent_credits_count }.by(1)
+    end
+  end
+
+  describe "#remove_from" do
+    let_it_be(:user_credits) { create_list(:credit, 2, user: user) }
+    let_it_be(:org_credits) { create_list(:credit, 1, organization: organization) }
+
+    it "adds the credits to the user" do
+      expect do
+        described_class.remove_from(user, 1)
+      end.to change { user.reload.unspent_credits_count }.by(-1)
+    end
+
+    it "adds the credits to the organization" do
+      expect do
+        described_class.remove_from(organization, 1)
+      end.to change { organization.reload.unspent_credits_count }.by(-1)
+    end
+  end
 end
