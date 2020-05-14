@@ -26,34 +26,13 @@ export class Help extends Component {
     };
   };
 
-  toggleLiquid = (e) => {
-    const { liquidShowing } = this.state;
+  toggleModal = (varShowing) => (e) => {
     e.preventDefault();
-    this.setState({
+    this.setState((prevState) => ({
       ...this.setCommonProps({
-        liquidShowing: !liquidShowing,
+        [varShowing]: !prevState[varShowing],
       }),
-    });
-  };
-
-  toggleMarkdown = (e) => {
-    const { markdownShowing } = this.state;
-    e.preventDefault();
-    this.setState({
-      ...this.setCommonProps({
-        markdownShowing: !markdownShowing,
-      }),
-    });
-  };
-
-  toggleFrontmatter = (e) => {
-    const { frontmatterShowing } = this.state;
-    e.preventDefault();
-    this.setState({
-      ...this.setCommonProps({
-        frontmatterShowing: !frontmatterShowing,
-      }),
-    });
+    }));
   };
 
   renderArticleFormTitleHelp = () => {
@@ -95,7 +74,7 @@ export class Help extends Component {
       <div className="crayons-card crayons-card--secondary p-4 mb-6">
         You are currently using the basic markdown editor that uses
         {' '}
-        <a href="#frontmatter" onClick={this.toggleFrontmatter}>
+        <a href="#frontmatter" onClick={this.toggleModal('frontmatterShowing')}>
           Jekyll front matter
         </a>
         . You can also use 
@@ -129,7 +108,7 @@ export class Help extends Component {
           <li>
             Use
             {' '}
-            <a href="#markdown" onClick={this.toggleMarkdown}>
+            <a href="#markdown" onClick={this.toggleModal('markdownShowing')}>
               Markdown
             </a>
             {' '}
@@ -142,7 +121,7 @@ export class Help extends Component {
           <li>
             You can use
             {' '}
-            <a href="#liquid" onClick={this.toggleLiquid}>
+            <a href="#liquid" onClick={this.toggleModal('liquidShowing')}>
               Liquid tags
             </a>
             {' '}
@@ -193,18 +172,22 @@ export class Help extends Component {
         )}
 
         {liquidShowing &&
-          this.renderModal(this.toggleLiquid, '🌊 Liquid Tags', liquidHelpHTML)}
+          this.renderModal(
+            this.toggleModal('liquidShowing'),
+            '🌊 Liquid Tags',
+            liquidHelpHTML,
+          )}
 
         {markdownShowing &&
           this.renderModal(
-            this.toggleMarkdown,
+            this.toggleModal('markdownShowing'),
             '✍️ Markdown',
             markdownHelpHTML,
           )}
 
         {frontmatterShowing &&
           this.renderModal(
-            this.toggleFrontmatter,
+            this.toggleModal('frontmatterShowing'),
             'Jekyll Front Matter',
             frontmatterHelpHTML,
           )}
