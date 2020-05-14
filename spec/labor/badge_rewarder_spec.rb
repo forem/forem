@@ -128,8 +128,11 @@ RSpec.describe BadgeRewarder, type: :labor do
     it "award contributor badge" do
       create(:badge, title: "DEV Contributor")
 
-      described_class.award_contributor_badges_from_github
-      expect(user.badge_achievements.size).to eq(1)
+      expect do
+        Timecop.freeze("2020-05-14T15:30:20Z") do
+          described_class.award_contributor_badges_from_github
+        end
+      end.to change(user.badge_achievements, :count).by(1)
     end
   end
 
