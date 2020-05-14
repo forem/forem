@@ -9,6 +9,7 @@
   base = "docs/"
   command = "node deploy-script.js"
   ignore = "git diff --quiet master docs/"
+  publish = "docs/.gitdocs_build"
 
 [[redirects]]
   force = true
