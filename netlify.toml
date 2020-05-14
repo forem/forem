@@ -8,7 +8,7 @@
 [build]
   base = "docs/"
   command = "node deploy-script.js"
-  ignore = "git diff --quiet master docs/"
+  ignore = "git diff --quiet master docs/" 
 
 [[redirects]]
   force = true
