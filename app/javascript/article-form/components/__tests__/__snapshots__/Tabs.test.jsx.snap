@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Tabs /> renders properly 1`] = `
+<div
+  class="crayons-article-form__tabs ml-auto"
+>
+  <button
+    class="crayons-btn crayons-btn--ghost current"
+    disabled={false}
+    onClick={false}
+    type="button"
+  >
+    Edit
+  </button>
+  <button
+    class="crayons-btn crayons-btn--ghost"
+    disabled={false}
+    onClick={null}
+    type="button"
+  >
+    Preview
+  </button>
+</div>
+`;
