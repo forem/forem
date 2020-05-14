@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { articlePropTypes } from '../../src/components/common-prop-types';
+import { articlePropTypes } from '../../common-prop-types';
 
 export const ArticleCoverImage = ({ article }) => {
   return (
@@ -9,7 +9,7 @@ export const ArticleCoverImage = ({ article }) => {
       title={article.title}
     >
       <div
-        style={{backgroundImage: `url(${article.main_image})`}}
+        style={{ backgroundImage: `url(${article.main_image})` }}
         className="crayons-story__cover__image"
         loading="lazy"
       />

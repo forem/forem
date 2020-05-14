@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { articlePropTypes } from '../src/components/common-prop-types/article-prop-types';
+import { articlePropTypes } from '../common-prop-types/article-prop-types';
 import {
   ArticleCoverImage,
   CommentsCount,

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { articlePropTypes } from '../../src/components/common-prop-types';
+import { articlePropTypes } from '../../common-prop-types';
 import { Button } from '../../crayons/Button';
 
 export const ReactionsCount = ({ article }) => {
