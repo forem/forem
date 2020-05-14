@@ -89,24 +89,30 @@ function addModalEventListener(butt) {
 function fetchButt(butt, buttInfo) {
   butt.dataset.fetched = 'fetched';
   var dataRequester;
+  var params = {
+    method: 'GET',
+    url: '/follows/' + buttInfo.id + '?followable_type=' + buttInfo.className,
+    async: true
+  };
   if (window.XMLHttpRequest) {
     dataRequester = new XMLHttpRequest();
   } else {
     dataRequester = new ActiveXObject('Microsoft.XMLHTTP');
   }
-  dataRequester.onreadystatechange = function() {
-    if (
-      dataRequester.readyState === XMLHttpRequest.DONE &&
-      dataRequester.status === 200
-    ) {
-      addButtClickHandle(dataRequester.response, butt);
+  function handleRetry(event) {
+    event.target.open(params.method, params.url, params.async);
+    event.target.send();
+  }
+  dataRequester.onreadystatechange = function(event) {
+    if (dataRequester.readyState === XMLHttpRequest.DONE) {
+      if (dataRequester.status === 200) {
+        addButtClickHandle(dataRequester.response, butt);
+      } else if (dataRequester.status === 429) { // too many requests
+        handleRetry(event);
+      }
     }
   };
-  dataRequester.open(
-    'GET',
-    '/follows/' + buttInfo.id + '?followable_type=' + buttInfo.className,
-    true,
-  );
+  dataRequester.open(params.method, params.url, params.async);
   dataRequester.send();
 }
 
