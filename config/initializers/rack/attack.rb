@@ -21,6 +21,7 @@ class Rack::Attack
     return if request.env["HTTP_FASTLY_CLIENT_IP"].blank?
 
     if request.path.starts_with?("/api/") && (request.put? || request.post? || request.delete?)
+      Honeycomb.add_field("user_api_key", request.env["HTTP_API_KEY"])
       track_and_return_ip(request.env["HTTP_FASTLY_CLIENT_IP"])
     end
   end
