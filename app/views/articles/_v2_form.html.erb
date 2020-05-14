@@ -49,11 +49,9 @@
   </div>
 </div>
 
-<% cache("article-edit-scripts", expires_in: 8.hours) do %>
-  <script async>
-    <%= RunkitTag.script.html_safe %>
-  </script>
-<% end %>
+<script async>
+  <%= RunkitTag.script.html_safe %>
+</script>
 
 <style>
   #footer-container {
