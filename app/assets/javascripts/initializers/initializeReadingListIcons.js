@@ -131,11 +131,11 @@ function addHoverEffectToReadingListButtons() {
     // `this` local variable
     container.addEventListener(
       'mouseover',
-      readingListButtonMouseHandler.bind('UNSAVE'),
+      readingListButtonMouseHandler.bind('Unsave'),
     );
     container.addEventListener(
       'mouseout',
-      readingListButtonMouseHandler.bind('SAVED'),
+      readingListButtonMouseHandler.bind('Saved'),
     );
   });
 }

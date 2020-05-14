@@ -207,8 +207,11 @@ class StoriesController < ApplicationController
     redirect_if_view_param
     return if performed?
 
+    assign_user_github_repositories
+
     set_surrogate_key_header "articles-user-#{@user.id}"
     set_user_json_ld
+
     render template: "users/show"
   end
 
@@ -310,6 +313,10 @@ class StoriesController < ApplicationController
       order("published_at DESC").page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
   end
 
+  def assign_user_github_repositories
+    @github_repositories = @user.github_repos.featured.order(stargazers_count: :desc, name: :asc)
+  end
+
   def stories_by_timeframe
     if %w[week month year infinity].include?(params[:timeframe])
       @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
@@ -324,7 +331,7 @@ class StoriesController < ApplicationController
   def assign_podcasts
     return unless user_signed_in?
 
-    num_hours = Rails.env.production? ? 24 : 800
+    num_hours = Rails.env.production? ? 24 : 2400
     @podcast_episodes = PodcastEpisode.
       includes(:podcast).
       order("published_at desc").

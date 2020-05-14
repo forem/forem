@@ -69,7 +69,9 @@
 
   // Main colors
   --body-bg: #f9fafa; // todo: replace with `var(--base-10);` when ready.
-  --body-color: var(--base-100);
+  --body-color: var(
+    --base-100
+  ); // todo: replace with `var(--base-100);` when ready.
   --body-color-inverted: var(--base-inverted);
 
   // Main content containers
@@ -200,4 +202,12 @@
   --tab-muted-bg-hover: var(--base-a10);
   --tab-muted-bg-current: var(--base-20);
   --tab-pill-color-current: var(--base-inverted);
+  
+  // Tags
+  --tag-color: var(--base-70);
+  --tag-color-hover: var(--base-100);
+
+  // Story
+  --story-comments-bg: var(--base-0);
+  --story-border: transparent;
 }

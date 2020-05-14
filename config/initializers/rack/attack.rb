@@ -22,7 +22,7 @@ class Rack::Attack
     end
   end
 
-  throttle("site_hits", limit: 100, period: 2) do |request|
+  throttle("site_hits", limit: 40, period: 2) do |request|
     if request.env["HTTP_FASTLY_CLIENT_IP"].present?
       Honeycomb.add_field("fastly_client_ip", request.env["HTTP_FASTLY_CLIENT_IP"])
       request.env["HTTP_FASTLY_CLIENT_IP"].to_s

@@ -23,6 +23,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <%= auto_discovery_link_tag(:rss, app_url("feed"), title: "#{community_name} RSS Feed") %>
 <% end %>
+
 <%= javascript_packs_with_chunks_tag "homePage", defer: true %>
 
 <% cache(cache_key_heroku_slug("main-stories-index-#{params}-#{user_signed_in?}"), expires_in: 90.seconds) do %>

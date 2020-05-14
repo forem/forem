@@ -194,8 +194,7 @@ Rails.application.routes.draw do
     end
   end
   resources :stripe_active_cards, only: %i[create update destroy]
-  resources :live_articles, only: [:index]
-  resources :github_repos, only: %i[index create update] do
+  resources :github_repos, only: %i[index] do
     collection do
       post "/update_or_create", to: "github_repos#update_or_create"
     end

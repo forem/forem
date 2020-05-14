@@ -66,6 +66,8 @@ class RateLimitChecker
   end
 
   def limit_cache_key(action)
+    raise "Invalid Cache Key: user ID can't be blank" unless @user.id
+
     "#{@user.id}_#{action}"
   end
 

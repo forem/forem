@@ -205,6 +205,8 @@ your local Elasticsearch installation, for example:
 
    - Take a look at `Envfile` to see all the `ENV` variables we use and the fake
      default provided for any missing keys.
+   - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
+     variable to the remote computer's domain name.
    - The [backend guide](/backend) will show you how to get free API keys for
      additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace, follow the steps below.

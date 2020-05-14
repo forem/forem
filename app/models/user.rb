@@ -451,6 +451,13 @@ class User < ApplicationRecord
     search_score
   end
 
+  def authenticated_through?(provider_name)
+    return false unless Authentication::Providers.available?(provider_name)
+    return false unless Authentication::Providers.enabled?(provider_name)
+
+    identities.exists?(provider: provider_name)
+  end
+
   def rate_limiter
     RateLimitChecker.new(self)
   end
