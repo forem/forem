@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { defaultChildrenPropTypes } from '../../src/components/common-prop-types';
+import { defaultChildrenPropTypes } from '../../common-prop-types';
 
 const ArticleWrapper = ({ children }) => (
   <div className="articles-list">{children}</div>
@@ -9,6 +9,6 @@ ArticleWrapper.propTypes = {
 };
 ArticleWrapper.displayName = 'ArticleWrapper';
 
-export const articleDecorator = getStory => (
+export const articleDecorator = (getStory) => (
   <ArticleWrapper>{getStory()}</ArticleWrapper>
 );
