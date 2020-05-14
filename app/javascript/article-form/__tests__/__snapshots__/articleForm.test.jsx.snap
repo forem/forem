@@ -71,15 +71,8 @@ exports[`<ArticleForm /> renders properly 1`] = `
       class="articleform__body"
       id="article_body_markdown"
       name="body_markdown"
-      onChange={[Function]}
       onInput={[Function]}
       placeholder="Body Markdown"
-      ref={[Function]}
-      style={
-        Object {
-          "height": 0,
-        }
-      }
       value=""
     />
     <button

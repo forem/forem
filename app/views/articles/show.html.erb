@@ -1,4 +1,4 @@
-<% title @article.title %>
+<% title @article.title_with_query_preamble(user_signed_in?) %>
 
 <%= render "shared/webcomponents_loader_script" %>
 <% if user_signed_in? %>
@@ -120,6 +120,9 @@
           </a>
         <% end %>
         <h1 class="<%= @article.title_length_classification %>">
+          <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
+            <span class="article-title-preamble"><%= @article.search_optimized_title_preamble %></span>
+          <% end %>
           <%= @article.title %>
         </h1>
         <h3>
@@ -236,9 +239,9 @@
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
     <%# we consider these scripts safe for embedding as they come from our code %>
-    <%= PodcastTag.script.html_safe %>
-    <%= PollTag.script.html_safe %>
-    <%= RunkitTag.script.html_safe %>
-    <%= TweetTag.script.html_safe %>
+    <%== PodcastTag.script %>
+    <%== PollTag.script %>
+    <%== RunkitTag.script %>
+    <%== TweetTag.script %>
   </script>
 <% end %>

@@ -2,6 +2,7 @@
   "name": "DEV Docs",
   "root": "./",
   "logo": "devblacksquarelogo.svg",
+  "host": "0.0.0.0",
   "header_links": [
     {
       "title": "Repo",

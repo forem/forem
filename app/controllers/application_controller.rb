@@ -93,6 +93,10 @@ class ApplicationController < ActionController::Base
   end
 
   def rate_limiter
-    RateLimitChecker.new(current_user)
+    (current_user || anonymous_user).rate_limiter
+  end
+
+  def anonymous_user
+    User.new(ip_address: request.env["HTTP_FASTLY_CLIENT_IP"])
   end
 end

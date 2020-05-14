@@ -282,7 +282,8 @@ export class Listings extends Component {
       message,
     } = this.state;
 
-    const shouldRenderModal = openedListing != null && undefined;
+    const shouldRenderModal =
+      openedListing !== null && openedListing !== undefined;
 
     if (initialFetch) {
       this.triggerMasonry();

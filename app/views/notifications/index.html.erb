@@ -29,7 +29,7 @@
             <% if @organizations.present? %>
               <header class="crayons-card__subheader">
                 <h4 class="crayons-card__subheader__title">
-                  @<%= @user.username %>
+                  <%= @user.name %>
                 </h4>
               </header>
             <% end %>
@@ -66,7 +66,7 @@
               <% @organizations.each do |org| %>
                 <header class="crayons-card__subheader">
                   <h4 class="crayons-card__subheader__title">
-                    @<%= org.slug %>
+                    <%= org.name %>
                   </h4>
                 </header>
                 <ul class="notifications-filter__list">
@@ -95,95 +95,43 @@
     </div>
     <div class="articles-list" id="articles-list">
 
-      <section class="notifications-filter__dropdown">
+      <section class="notifications-filter__dropdown s:flex-col">
         <% if @organizations.present? %>
-          <% if @selected_organization %>
-            <div aria-label="notifications-filter-menu">
-              <button type="button" id="notifications-filter__select" class="notifications-filter__dropdown__select">
-                  @<%= @selected_organization.slug %>
-                <%= inline_svg_tag("arrow-down-fill.svg", aria: true, class: "crayons-icon", title: "Arrow Down") %>
-              </button>
-            </div>
-          <% else %>
-            <div aria-label="notifications-filter-menu">
-              <button type="button" id="notifications-filter__select" class="notifications-filter__dropdown__select">
-                  @<%= current_user.username %>
-                <%= inline_svg_tag("arrow-down-fill.svg", aria: true, class: "crayons-icon", title: "Arrow Down") %>
-              </button>
-            </div>
-          <% end %>
-          <div class="notifications-filter__dropdown__menu-overlay" id="notifications-filter__menu-overlay">
-            <nav class="notifications-filter__dropdown__menu" aria-label="notifications-filter-menu">
-              <header class="notifications-filter__dropdown__header">
-                <h3 class="notifications-filter__dropdown__title">
-                  Filter
-                </h3>
-              </header>
-              <a href="/notifications" class="notifications-filter__dropdown__option <%= "selected" if params[:org_id].blank? %>">
-                <div class="notifications-filter__dropdown__label">
-                  <span class="notifications-filter__dropdown__label--title">
-                    <%= @user.name %>
-                  </span>
-                  <span class="notifications-filter__dropdown__label--subtitle">
-                    @<%= @user.username %> · Personal
-                  </span>
-                </div>
-                <div class="notifications-filter__icon">
-                  <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
-                </div>
-              </a>
+          <div class="p-2 s:inline-flex">
+            <select id="notifications-filter__select" class="crayons-select">
+              <option value="/notifications"><%= @user.name %></option>
               <% @organizations.each do |org| %>
-                <a href="/notifications/org/<%= org.id %>" class="notifications-filter__dropdown__option <%= "selected" if params[:org_id].to_i == org.id %>">
-                  <div class="notifications-filter__dropdown__label">
-                    <span class="notifications-filter__dropdown__label--title">
-                      <%= org.name %>
-                    </span>
-                    <span class="notifications-filter__dropdown__label--subtitle">
-                      @<%= org.slug %> · Organization
-                    </span>
-                  </div>
-                  <div class="notifications-filter__icon">
-                    <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
-                  </div>
-                </a>
+                <option value="/notifications/org/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %></option>
               <% end %>
-            </nav>
+            </select>
           </div>
         <% end %>
 
-        <div class="crayons-tabs notifications-filter__tabs <%= "showing" if params[:org_id].blank? %>">
-          <a class="crayons-tabs--item <%= "crayons-tabs--item--current" if params[:filter].blank? %>" href="/notifications">
-            <span class="crayons-tabs__label">
+        <div class="s:inline-flex">
+          <nav class="crayons-tabs notifications-filter__tabs <%= "hidden" if params[:org_id].present? %>">
+            <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].blank? %>" href="/notifications">
               All
-            </span>
-          </a>
-          <a class="crayons-tabs--item <%= "crayons-tabs--item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">
-            <span class="crayons-tabs__label">
+            </a>
+            <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].blank? %>" href="/notifications/comments">
               Comments
-            </span>
-          </a>
-          <a class="crayons-tabs--item <%= "crayons-tabs--item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">
-            <span class="crayons-tabs__label">
+            </a>
+            <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("posts").zero? && params[:org_id].blank? %>" href="/notifications/posts">
               Posts
-            </span>
-          </a>
-        </div>
-        <% if @organizations.present? %>
-          <% @organizations.each do |org| %>
-            <div class="crayons-tabs notifications-filter__tabs <%= "showing" if params[:org_id].to_i == org.id %>">
-              <a class="crayons-tabs--item <%= "crayons-tabs--item--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
-                <span class="crayons-tabs__label">
+            </a>
+          </nav>
+          <% if @organizations.present? %>
+            <% @organizations.each do |org| %>
+              <nav class="crayons-tabs notifications-filter__tabs <%= "hidden" unless params[:org_id].to_i == org.id %>">
+                <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("org").zero? && params[:org_id].to_i == org.id %>" href="/notifications/org/<%= org.id %>">
                   All
-                </span>
-              </a>
-              <a class="crayons-tabs--item <%= "crayons-tabs--item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
-                <span class="crayons-tabs__label">
+                </a>
+                <a class="crayons-tabs__item <%= "crayons-tabs__item--current" if params[:filter].to_s.casecmp("comments").zero? && params[:org_id].to_i == org.id %>" href="/notifications/comments/<%= org.id %>">
                   Comments
-                </span>
-              </a>
-            </div>
+                </a>
+              </nav>
+            <% end %>
           <% end %>
-        <% end %>
+        </div>
       </section>
       <%= render "notifications_list", params: params %>
     </div>

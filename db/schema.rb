@@ -12,7 +12,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 2020_05_04_075409) do
+=======
+ActiveRecord::Schema.define(version: 2020_05_11_224704) do
+
+>>>>>>> 22cdbcbd38e2ca652a5bbc15dedd666a50bc5358
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -104,6 +109,8 @@ ActiveRecord::Schema.define(version: 2020_05_04_075409) do
     t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
     t.integer "score", default: 0
+    t.string "search_optimized_description_replacement"
+    t.string "search_optimized_title_preamble"
     t.integer "second_user_id"
     t.boolean "show_comments", default: true
     t.text "slug"
