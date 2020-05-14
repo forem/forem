@@ -541,11 +541,7 @@ export default class Chat extends Component {
   };
 
   handleChannelJoiningRequest = (res) => {
-<<<<<<< HEAD
     this.setState({ joiningRequests: res });
-=======
-    this.setState({ joiningRequests: res.joining_requests });
->>>>>>> 🐞 Channel List bug in mobile view
   };
 
   handleKeyDown = (e) => {
@@ -890,11 +886,8 @@ export default class Chat extends Component {
         this.setActiveContent({
           data: this.state.joiningRequests,
           type_of: 'channel-request-manager',
-<<<<<<< HEAD
           handleRequestRejection: this.handleRequestRejection,
           handleRequestApproval: this.handleRequestApproval,
-=======
->>>>>>> 🐞 Channel List bug in mobile view
         });
       } else if (content === 'sidecar_all') {
         this.setActiveContentState(activeChannelId, {
@@ -1041,15 +1034,22 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You and{' '}
+              You and
+              {' '}
               <a href={`/${activeChannel.channel_modified_slug}`}>
                 {activeChannel.channel_modified_slug}
-              </a>{' '}
-              are connected because you both follow each other. All interactions{' '}
+              </a>
+              {' '}
+              are connected because you both follow each other. All interactions
+              {' '}
               <em>
                 <b>must</b>
-              </em>{' '}
-              abide by the <a href="/code-of-conduct">code of conduct</a>.
+              </em>
+              {' '}
+              abide by the 
+              {' '}
+              <a href="/code-of-conduct">code of conduct</a>
+              .
             </div>
           </div>
         );
@@ -1058,11 +1058,19 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined {activeChannel.channel_name}! All interactions{' '}
+              You have joined 
+              {' '}
+              {activeChannel.channel_name}
+              ! All interactions
+              {' '}
               <em>
                 <b>must</b>
-              </em>{' '}
-              abide by the <a href="/code-of-conduct">code of conduct</a>.
+              </em>
+              {' '}
+              abide by the 
+              {' '}
+              <a href="/code-of-conduct">code of conduct</a>
+              .
             </div>
           </div>
         );
@@ -1185,7 +1193,8 @@ export default class Chat extends Component {
             >
               <span role="img" aria-label="emoji">
                 👋
-              </span>{' '}
+              </span>
+              {' '}
               New Invitations!
             </a>
           </div>
@@ -1201,7 +1210,8 @@ export default class Chat extends Component {
             >
               <span role="img" aria-label="emoji">
                 👋
-              </span>{' '}
+              </span>
+              {' '}
               New Requests
             </button>
           </div>
@@ -1292,10 +1302,7 @@ export default class Chat extends Component {
             chatChannels={state.chatChannels}
             unopenedChannelIds={state.unopenedChannelIds}
             handleSwitchChannel={this.handleSwitchChannel}
-<<<<<<< HEAD
             channelsLoaded={state.channelsLoaded}
-=======
->>>>>>> 🐞 Channel List bug in mobile view
             filterQuery={state.filterQuery}
             expanded={state.expanded}
             currentUserId={state.currentUserId}

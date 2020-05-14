@@ -84,7 +84,6 @@ function display(props) {
     );
   }
   if (resource.type_of === 'channel-request-manager') {
-<<<<<<< HEAD
     return (
       <RequestManager
         resource={resource.data}
@@ -92,8 +91,5 @@ function display(props) {
         handleRequestApproval={resource.handleRequestApproval}
       />
     );
-=======
-    return <RequestManager resource={resource.data} />;
->>>>>>> 🐞 Channel List bug in mobile view
   }
 }
