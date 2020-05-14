@@ -8,14 +8,22 @@ module Authentication
       SETTINGS_URL = "https://appleid.apple.com/account/manage".freeze
 
       def new_user_data
-        {
+        # NOTE: Apple sends `first_name` and `last_name` as separate fields
+        name = "#{info.first_name} #{info.last_name}"
 
+        # NOTE: Apple has no concept of username, so we use the first name
+        username = info.first_name.downcase
+
+        {
+          email: info.email,
+          apple_created_at: Time.zone.at(raw_info.auth_time),
+          apple_username: username,
+          name: name
         }
       end
 
       def existing_user_data
-        {
-        }
+        {}
       end
 
       def self.user_created_at_field

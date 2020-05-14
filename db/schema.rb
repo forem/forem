@@ -1179,6 +1179,8 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
+    t.datetime "apple_created_at"
+    t.string "apple_username"
     t.integer "articles_count", default: 0, null: false
     t.string "available_for"
     t.integer "badge_achievements_count", default: 0, null: false
@@ -1304,6 +1306,7 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.boolean "welcome_notifications", default: true, null: false
     t.datetime "workshop_expiration"
     t.string "youtube_url"
+    t.index ["apple_username"], name: "index_users_on_apple_username"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
