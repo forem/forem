@@ -8,13 +8,6 @@
 [build]
   base = "docs/"
   command = "node deploy-script.js"
-  # ignore is a ternary where:
-  # if on master branch
-  #   compare last commit on master to latest commit on master for changes to docs.
-  # else
-  #   compare current branch to master for changes to docs
-  # end
-  ignore = "[ \"git symbolic-ref HEAD\" = \"refs/heads/master\" ] && git diff --quiet master~1 docs/ || git diff --quiet master docs/"
   publish = "docs/.gitdocs_build"
 
 [[redirects]]
