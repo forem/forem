@@ -64,6 +64,8 @@ describe Rack::Attack, type: :request, throttle: true do
         expect(new_api_response).not_to eq(429)
         expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "5.6.7.8").exactly(3).times
         expect(Honeycomb).to have_received(:add_field).with("fastly_client_ip", "1.1.1.1").exactly(2).times
+        expect(Honeycomb).to have_received(:add_field).with("user_api_key", api_secret.secret).exactly(2).times
+        expect(Honeycomb).to have_received(:add_field).with("user_api_key", another_api_secret.secret)
       end
     end
   end
