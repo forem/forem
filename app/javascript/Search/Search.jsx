@@ -6,7 +6,7 @@ import {
   hasInstantClick,
   preloadSearchResults,
   displaySearchResults,
-} from '../../utils/search';
+} from '../src/utils/search';
 import { SearchForm } from './SearchForm';
 
 const GLOBAL_MINIMIZE_KEY = '0';
@@ -57,11 +57,11 @@ export class Search extends Component {
     this.enableSearchPageChecker = true;
   };
 
-  hasKeyModifiers = event => {
+  hasKeyModifiers = (event) => {
     return event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
   };
 
-  search = event => {
+  search = (event) => {
     const {
       key,
       target: { value },
@@ -77,7 +77,7 @@ export class Search extends Component {
     }
   };
 
-  submit = event => {
+  submit = (event) => {
     if (hasInstantClick) {
       event.preventDefault();
 
@@ -95,7 +95,7 @@ export class Search extends Component {
     const { searchBoxId } = this.props;
     const searchBox = document.getElementById(searchBoxId);
 
-    this.globalKeysListener = event => {
+    this.globalKeysListener = (event) => {
       const { tagName, classList } = document.activeElement;
 
       if (
