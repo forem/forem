@@ -1,14 +1,21 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Devise::Controllers::Rememberable
 
-  # Called upon successful redirect from Twitter
-  def twitter
-    callback_for(:twitter)
+  skip_before_action :verify_authenticity_token
+
+  # Called upon successful redirect from Apple
+  def apple
+    callback_for(:apple)
   end
 
   # Called upon successful redirect from GitHub
   def github
     callback_for(:github)
+  end
+
+  # Called upon successful redirect from Twitter
+  def twitter
+    callback_for(:twitter)
   end
 
   # Callback for third party failures (shared by all providers)
@@ -38,6 +45,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def callback_for(provider)
     auth_payload = request.env["omniauth.auth"]
     cta_variant = request.env["omniauth.params"]["state"].to_s
+
+    binding.pry
 
     @user = Authentication::Authenticator.call(
       auth_payload,
