@@ -612,6 +612,7 @@ article {
       margin: auto;
       left: -4%;
       max-width: 108%;
+      max-height: calc(50vh + 180px);
 
       @media screen and (min-width: 430px) {
         left: -6px;
