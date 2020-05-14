@@ -98,7 +98,7 @@
       <section class="notifications-filter__dropdown s:flex-col">
         <% if @organizations.present? %>
           <div class="p-2 s:inline-flex">
-            <select onChange="window.location.href=this.value" class="crayons-select">
+            <select id="notifications-filter__select" class="crayons-select">
               <option value="/notifications"><%= @user.name %></option>
               <% @organizations.each do |org| %>
                 <option value="/notifications/org/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %></option>
