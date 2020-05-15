@@ -35,10 +35,6 @@
       <%= @article_json_ld.to_json.html_safe %>
     </script>
   <% end %>
-
-  <% if @article.processed_html.include? "runkit-element" %>
-    <%= javascript_include_tag "https://embed.runkit.com" %>
-  <% end %>
 <% end %>
 
 <% if internal_navigation? %>
