@@ -117,7 +117,7 @@
           <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
             <span class="article-title-preamble"><%= @article.search_optimized_title_preamble %></span>
           <% end %>
-          <%= @article.title %>
+          <%= sanitize_and_decode @article.title %>
         </h1>
         <h3>
           <span>
