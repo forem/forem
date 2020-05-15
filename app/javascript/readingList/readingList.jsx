@@ -11,10 +11,10 @@ import {
   toggleTag,
   clearSelectedTags,
 } from '../searchableItemList/searchableItemList';
-import { ItemListItem } from '../src/components/ItemList/ItemListItem';
-import { ItemListItemArchiveButton } from '../src/components/ItemList/ItemListItemArchiveButton';
-import { ItemListLoadMoreButton } from '../src/components/ItemList/ItemListLoadMoreButton';
-import { ItemListTags } from '../src/components/ItemList/ItemListTags';
+import { ItemListItem } from './components/ItemListItem';
+import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
+import { ItemListLoadMoreButton } from './components/ItemListLoadMoreButton';
+import { ItemListTags } from './components/ItemListTags';
 
 const STATUS_VIEW_VALID = 'valid,confirmed';
 const STATUS_VIEW_ARCHIVED = 'archived';

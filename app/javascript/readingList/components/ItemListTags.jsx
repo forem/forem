@@ -3,12 +3,12 @@ import { h } from 'preact';
 import { PropTypes } from 'preact-compat';
 
 export const ItemListTags = ({ availableTags, selectedTags, onClick }) => {
-  const tagsHTML = availableTags.map(tag => (
+  const tagsHTML = availableTags.map((tag) => (
     <a
       className={`tag ${selectedTags.indexOf(tag) > -1 ? 'selected' : ''}`}
       href={`/t/${tag}`}
       data-no-instant
-      onClick={e => onClick(e, tag)}
+      onClick={(e) => onClick(e, tag)}
     >
       {`#${tag}`}
     </a>
