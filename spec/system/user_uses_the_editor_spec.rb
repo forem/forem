@@ -49,7 +49,7 @@ RSpec.describe "Using the editor", type: :system do
     it "user write and publish an article" do
       fill_markdown_with(template.gsub("false", "true"))
       find("button", text: /\ASAVE CHANGES\z/).click
-      ["Sample Article", template[-200..-1], "test"].each do |text|
+      ["Sample Article", template[-200..], "test"].each do |text|
         expect(page).to have_text(text)
       end
     end
