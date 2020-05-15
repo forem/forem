@@ -1,11 +1,11 @@
 RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |endpoint, params|
   let(:user)              { create(:user) }
   let(:api_token)         { create(:api_secret, user: user) }
-  let(:org)               { create(:organization) }
   let(:pro_user)          { create(:user, :pro) }
   let(:pro_api_token)     { create(:api_secret, user: pro_user) }
   let(:pro_org_member)    { create(:user, :pro, :org_member) }
   let(:org_member_token)  { create(:api_secret, user: pro_org_member) }
+  let(:org)               { pro_org_member.organizations.first }
   let(:article)           { create(:article, user: user) }
   let(:pro_user_article)  { create(:article, user: pro_user) }
   let(:pro_org_article)   { create(:article, user: pro_user, organization: org) }
@@ -14,11 +14,11 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
     before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => "abadskajdlsak" } }
 
     it "renders an error message: 'unauthorized' in JSON" do
-      expect(JSON.parse(response.body)["error"]).to eq "unauthorized"
+      expect(response.parsed_body).to include("error" => "unauthorized")
     end
 
     it "has a status 401" do
-      expect(response.status).to eq 401
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
@@ -26,11 +26,11 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
     before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => api_token.secret } }
 
     it "renders an error message: 'unauthorized' in JSON" do
-      expect(JSON.parse(response.body)["error"]).to eq "unauthorized"
+      expect(response.parsed_body).to include("error" => "unauthorized")
     end
 
     it "has a status 401" do
-      expect(response.status).to eq 401
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
@@ -48,11 +48,11 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
     end
 
     it "renders an error message: 'unauthorized' in JSON" do
-      expect(JSON.parse(response.body)["error"]).to eq "unauthorized"
+      expect(response.parsed_body).to include("error" => "unauthorized")
     end
 
     it "has a status 401" do
-      expect(response.status).to eq 401
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
@@ -71,14 +71,14 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
     it "responds with status 401 unauthorized" do
       org = create(:organization)
       get "/api/analytics/#{endpoint}?organization_id=#{org.id}#{params}", headers: { "api-key" => org_member_token.secret }
-      expect(response.status).to eq 401
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
   context "when attempting to view someone else's article analytics" do
     it "responds with status 401 unauthorized" do
       get "/api/analytics/#{endpoint}?article_id=#{article.id}#{params}"
-      expect(response.status).to eq 401
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 
@@ -86,7 +86,7 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
     it "responds with status 200 OK" do
       sign_in pro_user
       get "/api/analytics/#{endpoint}?#{params}"
-      expect(response.status).to eq 200
+      expect(response).to have_http_status(:ok)
     end
   end
 
@@ -94,14 +94,17 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
     it "responds with status 200 OK" do
       sign_in pro_user
       get "/api/analytics/#{endpoint}?article_id=#{pro_user_article.id}#{params}"
-      expect(response.status).to eq 200
+      expect(response).to have_http_status(:ok)
     end
   end
 
   context "when viewing your own organizaiton's single article's analytics" do
     it "responds with status 200 OK" do
+      org_param = "&organization_id=#{pro_org_article.organization.id}"
+
       sign_in pro_org_member
-      get "/api/analytics/#{endpoint}?article_id=#{pro_org_article.id}#{params}"
+      get "/api/analytics/#{endpoint}?article_id=#{pro_org_article.id}#{params}#{org_param}"
+      expect(response).to have_http_status(:ok)
     end
   end
 end
