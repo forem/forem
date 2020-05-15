@@ -31,7 +31,7 @@ RSpec.describe ResponseTemplate, type: :model do
   describe "user validation" do
     it "validates the number of templates for a normal user" do
       user = create(:user)
-      create_list(:response_template, 29, user_id: user.id)
+      create_list(:response_template, 30, user_id: user.id)
       invalid_template = create(:response_template, user_id: user.id)
 
       expect(invalid_template).not_to be_valid
