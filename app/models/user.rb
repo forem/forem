@@ -30,10 +30,9 @@ class User < ApplicationRecord
     reserved_username: "username is reserved"
   }.freeze
 
-  attr_accessor(
-    :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
-    :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify
-  )
+  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
+                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify,
+                :ip_address
 
   rolify after_add: :index_roles, after_remove: :index_roles
 
@@ -140,6 +139,7 @@ class User < ApplicationRecord
   validate :unique_including_orgs_and_podcasts, if: :username_changed?
   validate :validate_feed_url, if: :feed_url_changed?
   validate :validate_mastodon_url
+  validate :can_send_confirmation_email
 
   alias_attribute :positive_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
@@ -450,6 +450,17 @@ class User < ApplicationRecord
     search_score
   end
 
+  def authenticated_through?(provider_name)
+    return false unless Authentication::Providers.available?(provider_name)
+    return false unless Authentication::Providers.enabled?(provider_name)
+
+    identities.exists?(provider: provider_name)
+  end
+
+  def rate_limiter
+    RateLimitChecker.new(self)
+  end
+
   private
 
   def estimate_default_language
@@ -603,5 +614,14 @@ class User < ApplicationRecord
 
   def index_roles(_role)
     index_to_elasticsearch_inline
+  end
+
+  def can_send_confirmation_email
+    return if changes[:email].blank? || id.blank?
+
+    rate_limiter.track_limit_by_action(:send_email_confirmation)
+    rate_limiter.check_limit!(:send_email_confirmation)
+  rescue RateLimitChecker::LimitReached => e
+    errors.add(:email, "confirmation could not be sent. #{e.message}")
   end
 end

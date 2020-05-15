@@ -89,7 +89,11 @@ Rails.application.routes.draw do
       end
     end
     resources :organization_memberships, only: %i[update destroy create]
-    resources :organizations, only: %i[index show]
+    resources :organizations, only: %i[index show] do
+      member do
+        patch "update_org_credits"
+      end
+    end
     resources :sponsorships, only: %i[index edit update destroy]
     resources :welcome, only: %i[index create]
     resources :growth, only: %i[index]
@@ -176,7 +180,11 @@ Rails.application.routes.draw do
   resources :feedback_messages, only: %i[index create]
   resources :organizations, only: %i[update create]
   resources :followed_articles, only: [:index]
-  resources :follows, only: %i[show create update]
+  resources :follows, only: %i[show create update] do
+    collection do
+      get "/bulk_show", to: "follows#bulk_show"
+    end
+  end
   resources :image_uploads, only: [:create]
   resources :blocks
   resources :notifications, only: [:index]
@@ -186,8 +194,7 @@ Rails.application.routes.draw do
     end
   end
   resources :stripe_active_cards, only: %i[create update destroy]
-  resources :live_articles, only: [:index]
-  resources :github_repos, only: %i[index create update] do
+  resources :github_repos, only: %i[index] do
     collection do
       post "/update_or_create", to: "github_repos#update_or_create"
     end
@@ -261,6 +268,8 @@ Rails.application.routes.draw do
   post "/chat_channels/create_chat" => "chat_channels#create_chat"
   post "/chat_channels/block_chat" => "chat_channels#block_chat"
   post "/chat_channel_memberships/remove_membership" => "chat_channel_memberships#remove_membership"
+  post "/chat_channel_memberships/add_membership" => "chat_channel_memberships#add_membership"
+  post "/join_chat_channel" => "chat_channel_memberships#join_channel"
   delete "/messages/:id" => "messages#destroy"
   patch "/messages/:id" => "messages#update"
   get "/live/:username" => "twitch_live_streams#show"

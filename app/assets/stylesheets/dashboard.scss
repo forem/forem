@@ -426,12 +426,17 @@
       margin-bottom: 10px;
       margin-top: 8px;
       font-size: 22px;
+      overflow: auto;
 
       @media screen and (min-width: 800px) {
         font-size: 34px;
       }
 
       width: 100%;
+
+      .block-link {
+        display: inline;
+      }
 
       img {
         height: 40px;
@@ -444,6 +449,28 @@
         color: $medium-gray;
         font-size: 0.6em;
         vertical-align: 0.16em;
+      }
+
+      .dashboard-follow {
+        @include themeable(
+          background,
+          theme-dashboard-followers-follow-background,
+          $green
+        );
+        border: 0;
+        border-radius: 5px;
+        @include themeable(
+          color,
+          theme-dashboard-followers-follow-color,
+          $black
+        );
+        float: right;
+        font-size: 15.9px;
+        padding: 2px 10px;
+        margin: 10px 5px;
+        @media screen and (min-width: 520px) {
+          font-size: 20px;
+        }
       }
 
       form {

@@ -8,7 +8,7 @@
     <div class="github-repos-container -mt-4">
       <div class="github-repos">
       <% @response_templates.each do |response_template| %>
-        <div class="github-repo-row <%= "github-repo-row-selected" if response_template.id == params[:id].to_i %>">
+        <div class="github-repo-row <%= "github-repo-row-featured" if response_template.id == params[:id].to_i %>">
           <div class="github-repo-row-name flex items-center crayons-card crayons-card--secondary p-2 pl-4 mt-2">
             <div class="flex-1">
               <%= response_template.title %>

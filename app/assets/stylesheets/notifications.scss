@@ -432,20 +432,6 @@
   }
 }
 
-// Notifications filtering on mobile.
-.notifications-filter__tabs {
-  display: none;
-
-  // @media screen and (min-width: 950px) {
-  //   display: none;
-  // }
-
-  &.showing {
-    display: flex;
-  }
-  background: var(--base-inverted);
-}
-
 .notifications-filter__list {
   li {
     margin-bottom: var(--su-1);

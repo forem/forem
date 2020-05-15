@@ -261,5 +261,11 @@ RSpec.describe "Reactions", type: :request do
         expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_creates_reaction")
       end
     end
+
+    context "when signed out" do
+      it "returns an unauthorized error" do
+        expect { post "/reactions", params: article_params }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
   end
 end

@@ -36,7 +36,7 @@
 
     <div class="classified-filters">
     <div class="classified-filters-categories">
-      <a href="<%= classified_listings_path %>" class="<%= "selected" if params[:category].blank? %> data-no-instant="true">all</a>
+      <a href="<%= classified_listings_path %>" class="<%= "selected" if params[:category].blank? %> data-no-instant=" true ">all</a>
       <% categories_for_display.each do |cat| %>
         <a href="<%= classified_listing_category_path(category: cat[:slug]) %>" class="<%= "selected" if params[:category] == cat[:slug] %> data-no-instant="true"><%= cat[:name] %></a>
       <% end %>

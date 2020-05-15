@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import { PropTypes } from 'preact-compat';
-import debounceAction from '../src/utils/debounceAction';
+import debounceAction from '../utilities/debounceAction';
 
 import {
   defaultState,

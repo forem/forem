@@ -26,9 +26,11 @@ RSpec.describe "/internal/negative_reactions", type: :request do
   end
 
   context "when the user is an admin" do
-    let(:admin)      { create(:user, :admin) }
-    let(:moderator)  { create(:user, :trusted) }
-    let!(:reaction)  { create(:vomit_reaction, user: moderator) }
+    let(:admin)              { create(:user, :admin) }
+    let(:moderator)          { create(:user, :trusted) }
+    let!(:user_reaction)     { create(:vomit_reaction, :user, user: moderator) }
+    let!(:comment_reaction)  { create(:vomit_reaction, :comment, user: moderator) }
+    let!(:article_reaction)  { create(:vomit_reaction, user: moderator) }
 
     before do
       sign_in admin
@@ -43,8 +45,10 @@ RSpec.describe "/internal/negative_reactions", type: :request do
     describe "GETS /internal/negative_reactions" do
       it "renders to appropriate page" do
         get "/internal/negative_reactions"
-        expect(response.body).to include(moderator.username)
-        expect(response.body).to include(reaction.category)
+        expect(response.body).to include(CGI.escapeHTML(moderator.username)).
+          and include(CGI.escapeHTML(user_reaction.reactable.username)).
+          and include(CGI.escapeHTML(comment_reaction.reactable.user.username)).
+          and include(CGI.escapeHTML(article_reaction.reactable.title))
       end
     end
   end

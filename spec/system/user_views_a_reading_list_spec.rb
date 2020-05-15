@@ -13,7 +13,7 @@ RSpec.describe "Reading list", type: :system do
 
       it "shows the large reading list" do
         visit "/readinglist"
-        expect(page).to have_selector("#reading-list", visible: true)
+        expect(page).to have_selector("#reading-list", visible: :visible)
       end
     end
   end

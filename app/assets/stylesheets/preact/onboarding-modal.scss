@@ -412,6 +412,7 @@ $onboarding-user-selected-hover: rgba(71, 85, 235, 0.2);
 
 .onboarding-body {
   .content-row {
+    background-color: var(--base-inverted); // Specify background for Safari.
     align-items: center;
     border: none;
     box-sizing: border-box;

@@ -4,6 +4,8 @@ class RateLimitChecker
   # retry_after values are the seconds until a user can retry an action
   ACTION_LIMITERS = {
     article_update: { retry_after: 30 },
+    send_email_confirmation: { retry_after: 120 },
+    feedback_message_creation: { retry_after: 300 },
     image_upload: { retry_after: 30 },
     listing_creation: { retry_after: 60 },
     published_article_creation: { retry_after: 30 },
@@ -65,7 +67,10 @@ class RateLimitChecker
   end
 
   def limit_cache_key(action)
-    "#{@user.id}_#{action}"
+    unique_key_component = @user&.id || @user&.ip_address
+    raise "Invalid Cache Key: no unique component present" if unique_key_component.blank?
+
+    "#{unique_key_component}_#{action}"
   end
 
   def action_rate_limit(action)

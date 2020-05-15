@@ -51,6 +51,9 @@
     "channel_messages_count": {
       "type": "integer"
     },
+    "channel_discoverable": {
+      "type": "boolean"
+    },
     "last_indexed_at": {
       "type": "date"
     }

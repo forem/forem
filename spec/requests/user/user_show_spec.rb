@@ -15,7 +15,7 @@ RSpec.describe "UserShow", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    # rubocop:disable Rspec/ExampleLength
+    # rubocop:disable RSpec/ExampleLength
     it "renders the proper JSON-LD for a user" do
       expect(response_json).to include(
         "@context" => "http://schema.org",
@@ -61,7 +61,7 @@ RSpec.describe "UserShow", type: :request do
         "alumniOf" => user.education,
       )
     end
-    # rubocop:enable Rspec/ExampleLength
+    # rubocop:enable RSpec/ExampleLength
   end
 
   context "when user signed in" do

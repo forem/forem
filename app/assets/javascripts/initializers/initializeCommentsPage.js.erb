@@ -173,6 +173,8 @@ function replaceActionButts(el) {
 }
 
 function warmNewCommentsArea() {
+  // Ignore when comment is created on /notifications.
+  if (window.location.pathname === "/notifications") { return }
   var path = '/stories/warm_comments'+ window.location.pathname
   window.fetch(path)
 }
@@ -245,6 +247,7 @@ function handleCommentSubmit(event) {
           initializeCommentsPage();
           initializeCommentDate();
           initializeCommentDropdown();
+          activateRunkitTags();
         })
       } else {
         response.json().then(function parseError(errorReponse) {

@@ -1,5 +1,15 @@
 module RateLimitCheckerHelper
   CONFIGURABLE_RATES = {
+    rate_limit_article_update: {
+      min: 1,
+      placeholder: 150,
+      description: "The number of article updates a user can make in 30 seconds"
+    },
+    rate_limit_feedback_message_creation: {
+      min: 1,
+      placeholder: 5,
+      description: "The number of times a user can submit feedback in a 5 minute period"
+    },
     rate_limit_follow_count_daily: {
       min: 0,
       placeholder: 500,
@@ -39,6 +49,11 @@ module RateLimitCheckerHelper
       min: 1,
       placeholder: 10,
       description: "The number of times a user can react in a 30 second period"
+    },
+    rate_limit_send_email_confirmation: {
+      min: 1,
+      placeholder: 2,
+      description: "The number of times we will send a confirmation email to a user in a 2 minute period"
     }
   }.freeze
 

@@ -1,13 +1,4 @@
-<div class="crayons-card grid gap-6 p-6 mb-6">
-  <h3>Pin a few of your GitHub repos to your profile</h3>
-  <% if @client %>
-    <div id="github-repos-container">
-      <div class="github-repos loading-repos">
-      </div>
-    </div>
-    <%= javascript_packs_with_chunks_tag "githubRepos", defer: true %>
-  <% end %>
-</div>
+<%= render partial: "users/integrations_github_repositories", locals: { show_integration: @github_repositories_show } %>
 
 <div class="crayons-card grid gap-6 p-6 mb-6">
   <h3>Generate a personal blog from your <%= community_name %> posts</h3>

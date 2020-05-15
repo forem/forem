@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import sendFollowUser from '../src/utils/sendFollowUser';
+import sendFollowUser from '../utilities/sendFollowUser';
 import SidebarUser from './sidebarUser';
 
 class SidebarWidget extends Component {
@@ -36,11 +36,11 @@ class SidebarWidget extends Component {
       },
       credentials: 'same-origin',
     })
-      .then(response => response.json())
-      .then(json => {
+      .then((response) => response.json())
+      .then((json) => {
         this.setState({ suggestedUsers: json });
       })
-      .catch(error => {
+      .catch((error) => {
         this.setState({ suggestedUsers: [] });
         Honeybadger.notify(error);
       });
@@ -57,7 +57,7 @@ class SidebarWidget extends Component {
     );
     followBtn.innerText = updatedUser.following ? '+ FOLLOW' : '✓ FOLLOWING';
 
-    const toggleFollowState = newFollowState => {
+    const toggleFollowState = (newFollowState) => {
       updatedUser.following = newFollowState === 'followed';
       updatedSuggestedUsers[userIndex] = updatedUser;
       this.setState({ suggestedUsers: updatedSuggestedUsers });

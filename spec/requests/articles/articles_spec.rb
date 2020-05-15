@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Articles", type: :request do
   let(:user) { create(:user) }
-  let(:tag)  { create(:tag) }
+  let(:tag)  { build_stubbed(:tag) }
 
   describe "GET /feed" do
     it "returns rss+xml content" do
