@@ -65,7 +65,7 @@ module BadgeRewarder
     badge = Badge.find_by!(slug: "dev-contributor")
 
     ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].each do |repo|
-      commits = Github::Client.commits(repo, since: since.iso8601)
+      commits = Github::Client.commits(repo, since: since.utc.iso8601)
 
       authors_uids = commits.map { |commit| commit.author.id }
       Identity.github.where(uid: authors_uids).find_each do |i|

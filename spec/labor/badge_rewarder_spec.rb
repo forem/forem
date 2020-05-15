@@ -124,7 +124,7 @@ RSpec.describe BadgeRewarder, type: :labor do
 
       allow(Github::OauthClient).to receive(:new).and_return(github_client)
 
-      stub_request(:get, "https://api.github.com/repos/thepracticaldev/dev.to/commits?per_page=100&since=2020-05-13T17:30:20%2B02:00").
+      stub_request(:get, "https://api.github.com/repos/thepracticaldev/dev.to/commits?per_page=100&since=2020-05-14T13:49:20Z").
         to_return(status: 200, body: JSON.dump(stubbed_github_commits), headers: {})
     end
 
