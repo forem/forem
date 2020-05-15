@@ -1,5 +1,5 @@
 // Shared behavior between the reading list and history pages
-import { fetchSearch } from '../src/utils/search';
+import { fetchSearch } from '../utilities/search';
 
 // Provides the initial state for the component
 export function defaultState(options) {

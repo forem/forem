@@ -7,7 +7,7 @@ import {
   fetchSearch,
   createSearchUrl,
 } from '../search';
-import '../../../../assets/javascripts/lib/xss';
+import '../../../assets/javascripts/lib/xss';
 
 /* global globalThis */
 
