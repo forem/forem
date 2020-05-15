@@ -9,7 +9,7 @@ import { h } from 'preact';
 import { PropTypes } from 'preact-compat';
 
 export const ItemListItemArchiveButton = ({ text, onClick }) => {
-  const onKeyUp = e => {
+  const onKeyUp = (e) => {
     if (e.key === 'Enter') {
       onClick(e);
     }
