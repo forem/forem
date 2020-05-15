@@ -1,4 +1,4 @@
-import { fetchSearch } from '../src/utils/search';
+import { fetchSearch } from '../utilities/search';
 
 export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
   fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {

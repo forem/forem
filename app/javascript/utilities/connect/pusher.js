@@ -1,7 +1,7 @@
 // import Pusher from 'pusher-js';
 
-export default function setupPusher(key, callbackObjects) {
-  return import('pusher-js').then(_ => {
+export function setupPusher(key, callbackObjects) {
+  return import('pusher-js').then((_) => {
     const {
       pusher = new Pusher(key, {
         authEndpoint: '/pusher/auth',
