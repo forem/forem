@@ -123,13 +123,16 @@ RSpec.describe BadgeRewarder, type: :labor do
       omniauth_mock_github_payload
 
       allow(Github::OauthClient).to receive(:new).and_return(github_client)
+
+      stub_request(:get, "https://api.github.com/repos/thepracticaldev/dev.to/commits?per_page=100&since=2020-05-13T17:30:20%2B02:00").
+        to_return(status: 200, body: JSON.dump(stubbed_github_commits), headers: {})
     end
 
     it "award contributor badge" do
       create(:badge, title: "DEV Contributor")
 
       expect do
-        Timecop.freeze("2020-05-14T15:30:20Z") do
+        Timecop.freeze("2020-05-15T13:49:20Z") do
           described_class.award_contributor_badges_from_github
         end
       end.to change(user.badge_achievements, :count).by(1)
