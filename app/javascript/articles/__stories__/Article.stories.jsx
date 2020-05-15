@@ -10,7 +10,6 @@ import {
   articleWithComments,
   featuredArticle,
 } from '../__tests__/utilities/articleUtilities';
-import { articleDecorator } from './articleDecorator';
 
 import '../../../assets/stylesheets/articles.scss';
 
@@ -21,7 +20,7 @@ const commonProps = {
 export default {
   title: 'App Components/Article/Standard',
   component: Article,
-  decorators: [withKnobs, articleDecorator],
+  decorators: [withKnobs],
 };
 
 export const DefaultArticle = () => (
@@ -120,7 +119,7 @@ export const OnReadingList = () => (
   <Article
     {...commonProps}
     isBookmarked={boolean('isBookmarked', true)}
-    article={object('article', articleWithComments)}
+    article={object('article', article)}
     currentTag={text('currentTag')}
   />
 );

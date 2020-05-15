@@ -13,10 +13,11 @@ export const CommentListItem = ({ comment }) => (
     className="crayons-comment pl-2 cursor-pointer"
     role="presentation"
     onClick={(_event) => {
-      if (_event.which > 1 || _event.metaKey || _event.ctrlKey) { // Indicates should open in _blank
+      if (_event.which > 1 || _event.metaKey || _event.ctrlKey) {
+        // Indicates should open in _blank
         window.open(comment.path, '_blank');
       } else {
-        const fullUrl = window.location.origin + comment.path // InstantClick deals with full urls
+        const fullUrl = window.location.origin + comment.path; // InstantClick deals with full urls
         InstantClick.preload(fullUrl);
         InstantClick.display(fullUrl);
       }
