@@ -1,6 +1,8 @@
 import { h, render, Component } from 'preact';
 import PropTypes from 'prop-types';
-import setupPusher from './pusher';
+import { setupPusher } from './pusher';
+
+/* global userData */
 
 class UnopenedChannelNotice extends Component {
   propTypes = {
@@ -38,16 +40,18 @@ class UnopenedChannelNotice extends Component {
     };
   }
 
-  updateMessageNotification = unopenedChannels => {
+  updateMessageNotification = (unopenedChannels) => {
     const number = document.getElementById('connect-number');
     this.setState({ unopenedChannels });
     if (unopenedChannels.length > 0) {
-      if (unopenedChannels[0].adjusted_slug === "@"+userData().username) {
+      if (unopenedChannels[0].adjusted_slug === `@${userData().username}`) {
         return;
       }
       number.classList.remove('hidden');
       number.innerHTML = unopenedChannels.length;
-      document.getElementById('connect-link').href = '/connect/' + unopenedChannels[0].adjusted_slug;
+      document.getElementById(
+        'connect-link',
+      ).href = `/connect/${unopenedChannels[0].adjusted_slug}`;
       InstantClick.preload(
         document.getElementById('connect-link').href,
         'force',
@@ -61,13 +65,13 @@ class UnopenedChannelNotice extends Component {
 
   updateMessage = () => {};
 
-  mentionedMessage = e => {
+  mentionedMessage = (e) => {
     if (window.location.pathname.startsWith('/connect')) {
       return;
     }
 
-    this.setState(prevState => ({
-      unopenedChannels: prevState.unopenedChannels.map(unopenedChannel =>
+    this.setState((prevState) => ({
+      unopenedChannels: prevState.unopenedChannels.map((unopenedChannel) =>
         unopenedChannel.adjusted_slug === e.chat_channel_adjusted_slug
           ? { ...unopenedChannel, request_type: 'mentioned' }
           : unopenedChannel,
@@ -78,7 +82,7 @@ class UnopenedChannelNotice extends Component {
     this.hideNotice();
   };
 
-  messageOpened = e => {
+  messageOpened = (e) => {
     const { unopenedChannels } = this.state;
     if (
       !window.location.pathname.startsWith('/connect') ||
@@ -87,12 +91,12 @@ class UnopenedChannelNotice extends Component {
       return;
     this.updateMessageNotification(
       unopenedChannels.filter(
-        unopenedChannel => unopenedChannel.adjusted_slug !== e.adjusted_slug,
+        (unopenedChannel) => unopenedChannel.adjusted_slug !== e.adjusted_slug,
       ),
     );
   };
 
-  receiveNewMessage = e => {
+  receiveNewMessage = (e) => {
     if (
       (window.location.pathname.startsWith('/connect') &&
         e.user_id === window.currentUser.id &&
@@ -105,7 +109,7 @@ class UnopenedChannelNotice extends Component {
     const newObj = { adjusted_slug: e.chat_channel_adjusted_slug };
 
     const ifMessageExist = unopenedChannels.some(
-      channel => channel.adjusted_slug === newObj.adjusted_slug,
+      (channel) => channel.adjusted_slug === newObj.adjusted_slug,
     );
 
     if (
@@ -116,7 +120,7 @@ class UnopenedChannelNotice extends Component {
     }
     if (ifMessageExist) {
       const index = unopenedChannels.findIndex(
-        channel => channel.adjusted_slug === newObj.adjusted_slug,
+        (channel) => channel.adjusted_slug === newObj.adjusted_slug,
       );
       unopenedChannels[index].notified = false;
     }
@@ -139,8 +143,8 @@ class UnopenedChannelNotice extends Component {
 
   hideNotice = () => {
     setTimeout(() => {
-      this.setState(prevState => ({
-        unopenedChannels: prevState.unopenedChannels.map(unopenedChannel =>
+      this.setState((prevState) => ({
+        unopenedChannels: prevState.unopenedChannels.map((unopenedChannel) =>
           !unopenedChannel.notified
             ? { ...unopenedChannel, notified: true }
             : unopenedChannel,
@@ -150,20 +154,20 @@ class UnopenedChannelNotice extends Component {
     }, 7500);
   };
 
-  fetchUnopenedChannel = successCb => {
+  fetchUnopenedChannel = (successCb) => {
     fetch('/chat_channels?state=unopened', {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       credentials: 'same-origin',
     })
-      .then(response => response.json())
+      .then((response) => response.json())
       .then(successCb);
   };
 
   render() {
     const { visible, unopenedChannels } = this.state;
-    if (visible && unopenedChannels.some(channel => !channel.notified)) {
-      const message = unopenedChannels.map(channel => {
+    if (visible && unopenedChannels.some((channel) => !channel.notified)) {
+      const message = unopenedChannels.map((channel) => {
         if (channel.notified) return null;
         return (
           <div>
@@ -218,7 +222,7 @@ class UnopenedChannelNotice extends Component {
   }
 }
 
-export default function getUnopenedChannels() {
+export function getUnopenedChannels() {
   if (window.frameElement) {
     return;
   }
