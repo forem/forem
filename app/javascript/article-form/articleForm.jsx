@@ -21,6 +21,8 @@ import KeyboardShortcutsHandler from './elements/keyboardShortcutsHandler';
 import Tags from '../shared/components/tags';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
 
+/* global activateRunkitTags */
+
 const SetupImageButton = ({
   className,
   imgSrc,
@@ -53,19 +55,7 @@ export default class ArticleForm extends Component {
   }
 
   static handleRunkitPreview() {
-    const targets = document.getElementsByClassName('runkit-element');
-    for (let i = 0; i < targets.length; i += 1) {
-      if (targets[i].children.length > 0) {
-        const preamble = targets[i].children[0].textContent;
-        const content = targets[i].children[1].textContent;
-        targets[i].innerHTML = '';
-        window.RunKit.createNotebook({
-          element: targets[i],
-          source: content,
-          preamble,
-        });
-      }
-    }
+    activateRunkitTags();
   }
 
   static propTypes = {
@@ -173,7 +163,7 @@ export default class ArticleForm extends Component {
     };
   };
 
-  toggleHelp = e => {
+  toggleHelp = (e) => {
     const { helpShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
@@ -182,7 +172,7 @@ export default class ArticleForm extends Component {
     });
   };
 
-  fetchPreview = e => {
+  fetchPreview = (e) => {
     const { previewShowing, bodyMarkdown } = this.state;
     e.preventDefault();
     if (previewShowing) {
@@ -194,7 +184,7 @@ export default class ArticleForm extends Component {
     }
   };
 
-  toggleImageManagement = e => {
+  toggleImageManagement = (e) => {
     const { imageManagementShowing } = this.state;
     e.preventDefault();
     window.scrollTo(0, 0);
@@ -205,7 +195,7 @@ export default class ArticleForm extends Component {
     });
   };
 
-  toggleMoreConfig = e => {
+  toggleMoreConfig = (e) => {
     const { moreConfigShowing } = this.state;
     e.preventDefault();
     this.setState({
@@ -213,7 +203,7 @@ export default class ArticleForm extends Component {
     });
   };
 
-  showPreview = response => {
+  showPreview = (response) => {
     if (response.processed_html) {
       this.setState({
         ...this.setCommonProps({ previewShowing: true }),
@@ -228,25 +218,25 @@ export default class ArticleForm extends Component {
     }
   };
 
-  handleOrgIdChange = e => {
+  handleOrgIdChange = (e) => {
     const organizationId = e.target.selectedOptions[0].value;
     this.setState({ organizationId });
   };
 
-  failedPreview = response => {
+  failedPreview = (response) => {
     // TODO: console.log should not be part of production code. Remove it!
     // eslint-disable-next-line no-console
     console.log(response);
   };
 
-  handleConfigChange = e => {
+  handleConfigChange = (e) => {
     e.preventDefault();
     const newState = {};
     newState[e.target.name] = e.target.value;
     this.setState(newState);
   };
 
-  handleMainImageUrlChange = payload => {
+  handleMainImageUrlChange = (payload) => {
     this.setState({
       mainImage: payload.links[0],
       imageManagementShowing: false,
@@ -259,7 +249,7 @@ export default class ArticleForm extends Component {
     window.removeEventListener('beforeunload', this.localStoreContent);
   };
 
-  onPublish = e => {
+  onPublish = (e) => {
     e.preventDefault();
     this.setState({ submitting: true, published: true });
     const { state } = this;
@@ -267,7 +257,7 @@ export default class ArticleForm extends Component {
     submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
-  onSaveDraft = e => {
+  onSaveDraft = (e) => {
     e.preventDefault();
     this.setState({ submitting: true, published: false });
     const { state } = this;
@@ -275,15 +265,15 @@ export default class ArticleForm extends Component {
     submitArticle(state, this.removeLocalStorage, this.handleArticleError);
   };
 
-  handleTitleKeyDown = e => {
+  handleTitleKeyDown = (e) => {
     if (e.keyCode === 13) {
       e.preventDefault();
     }
   };
 
-  handleBodyKeyDown = _e => {};
+  handleBodyKeyDown = (_e) => {};
 
-  onClearChanges = e => {
+  onClearChanges = (e) => {
     e.preventDefault();
     // eslint-disable-next-line no-alert
     const revert = window.confirm(
@@ -314,7 +304,7 @@ export default class ArticleForm extends Component {
     });
   };
 
-  handleArticleError = response => {
+  handleArticleError = (response) => {
     window.scrollTo(0, 0);
     this.setState({
       errors: response,
