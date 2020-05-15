@@ -21,111 +21,111 @@
       "maxSize": "23 kB"
     },
     {
-      "path": "public/packs*/analyticsArticle-*.js",
+      "path": "public/packs*/js/analyticsArticle-*.js",
       "maxSize": "1.7 kB"
     },
     {
-      "path": "public/packs*/analyticsDashboard-*.js",
+      "path": "public/packs*/js/analyticsDashboard-*.js",
       "maxSize": "1.8 kB"
     },
     {
-      "path": "public/packs*/articleForm-*.js",
+      "path": "public/packs*/js/articleForm-*.js",
       "maxSize": "10.5 kB"
     },
     {
-      "path": "public/packs*/Chat-*.js",
+      "path": "public/packs*/js/Chat-*.js",
       "maxSize": "17 kB"
     },
     {
-      "path": "public/packs*/clipboardCopy-*.js",
+      "path": "public/packs*/js/clipboardCopy-*.js",
       "maxSize": "0.5 kB"
     },
     {
-      "path": "public/packs*/colorPicker-*.js",
+      "path": "public/packs*/js/colorPicker-*.js",
       "maxSize": "1.2 kB"
     },
     {
-      "path": "public/packs*/colorPreview-*.js",
+      "path": "public/packs*/js/colorPreview-*.js",
       "maxSize": "0.5 kB"
     },
     {
-      "path": "public/packs*/contentDisplayPolicy-*.js",
+      "path": "public/packs*/js/contentDisplayPolicy-*.js",
       "maxSize": "1.1 kB"
     },
     {
-      "path": "public/packs*/feedIcons-*.js",
+      "path": "public/packs*/js/feedIcons-*.js",
       "maxSize": "0.5 kB"
     },
     {
-      "path": "public/packs*/githubRepos-*.js",
+      "path": "public/packs*/js/githubRepos-*.js",
       "maxSize": "1.8 kB"
     },
     {
-      "path": "public/packs*/homePage-*.js",
+      "path": "public/packs*/js/homePage-*.js",
       "maxSize": "6 kB"
     },
     {
-      "path": "public/packs*/homePageFeed-*.js",
+      "path": "public/packs*/js/homePageFeed-*.js",
       "maxSize": "5.3 kB"
     },
     {
-      "path": "public/packs*/internal-*.js",
+      "path": "public/packs*/js/internal-*.js",
       "maxSize": "1.2 kB"
     },
     {
-      "path": "public/packs*/listingDashboard-*.js",
+      "path": "public/packs*/js/listingDashboard-*.js",
       "maxSize": "2.5 kB"
     },
     {
-      "path": "public/packs*/listingForm-*.js",
+      "path": "public/packs*/js/listingForm-*.js",
       "maxSize": "5.5 kB"
     },
     {
-      "path": "public/packs*/listings-*.js",
+      "path": "public/packs*/js/listings-*.js",
       "maxSize": "5 kB"
     },
     {
-      "path": "public/packs*/manifest-*.js",
+      "path": "public/packs*/manifest*.json",
       "maxSize": "1.1 kB"
     },
     {
-      "path": "public/packs*/notificationSubscriptionHandler-*.js",
+      "path": "public/packs*/js/notificationSubscriptionHandler-*.js",
       "maxSize": "0.9 kB"
     },
     {
-      "path": "public/packs*/Onboarding-*.js",
+      "path": "public/packs*/js/Onboarding-*.js",
       "maxSize": "3 kB"
     },
     {
-      "path": "public/packs*/onboardingRedirectCheck-*.js",
+      "path": "public/packs*/js/onboardingRedirectCheck-*.js",
       "maxSize": "3.2 kB"
     },
     {
-      "path": "public/packs*/orgCreditsSelector-*.js",
+      "path": "public/packs*/js/orgCreditsSelector-*.js",
       "maxSize": "0.5 kB"
     },
     {
-      "path": "public/packs*/profileDropdown-*.js",
+      "path": "public/packs*/js/profileDropdown-*.js",
       "maxSize": "0.9 kB"
     },
     {
-      "path": "public/packs*/readingList-*.js",
+      "path": "public/packs*/js/readingList-*.js",
       "maxSize": "4.1 kB"
     },
     {
-      "path": "public/packs*/Search-*.js",
+      "path": "public/packs*/js/Search-*.js",
       "maxSize": "2.1 kB"
     },
     {
-      "path": "public/packs*/sidebarWidget-*.js",
+      "path": "public/packs*/js/sidebarWidget-*.js",
       "maxSize": "2.5 kB"
     },
     {
-      "path": "public/packs*/vendor-*.js",
+      "path": "public/packs*/js/vendor-*.js",
       "maxSize": "34 kB"
     },
     {
-      "path": "public/packs*/webShare-*.js",
+      "path": "public/packs*/js/webShare-*.js",
       "maxSize": "0.3 kB"
     }
   ]
