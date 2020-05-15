@@ -53,10 +53,6 @@
       "maxSize": "1.1 kB"
     },
     {
-      "path": "public/packs*/js/feedIcons-*.js",
-      "maxSize": "0.5 kB"
-    },
-    {
       "path": "public/packs*/js/githubRepos-*.js",
       "maxSize": "1.8 kB"
     },
