@@ -10,9 +10,12 @@ exports[`<ItemListItem /> renders properly with a readinglist item 1`] = `
   >
     <div
       class="item-title"
-    >
-      Title
-    </div>
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "Title",
+        }
+      }
+    />
     <div
       class="item-details"
     >
