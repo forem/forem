@@ -132,5 +132,6 @@ export default function initializeFlagUserModal(articleAuthorId) {
           addCloseButton: true,
         });
       }
+      toggleFlagUserModal();
     });
 }
