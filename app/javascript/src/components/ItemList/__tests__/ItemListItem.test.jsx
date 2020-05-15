@@ -2,6 +2,7 @@ import { h } from 'preact';
 import render from 'preact-render-to-json';
 import { shallow } from 'preact-render-spy';
 import { ItemListItem } from '../ItemListItem';
+import '../../../../../assets/javascripts/lib/xss';
 
 const item = {
   reactable: {

@@ -1,7 +1,7 @@
 // TODO: We should really be using the xss package by installing it in package.json
 // but for now filterXSS is global because of legacy JS
 
-import { request } from '../../utilities/http';
+import { request } from '../http';
 
 function getParameterByName(name, url = window.location.href) {
   const sanitizedName = name.replace(/[[\]]/g, '\\$&');

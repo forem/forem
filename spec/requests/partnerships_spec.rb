@@ -54,7 +54,7 @@ RSpec.describe "Partnerships", type: :request do
       it "includes sponsorship form if organization has credits" do
         organization = create(:organization)
         OrganizationMembership.create(user_id: user.id, organization_id: organization.id, type_of_user: "admin")
-        Credit.add_to_org(organization, 100)
+        Credit.add_to(organization, 100)
         get "/partnerships/bronze-sponsor"
         expect(response.body).to include("Subscribe for #{Sponsorship::CREDITS[:bronze]} credits")
       end
@@ -64,7 +64,7 @@ RSpec.describe "Partnerships", type: :request do
 
         before do
           create(:organization_membership, user: user, organization: org, type_of_user: "admin")
-          Credit.add_to_org(org, 1000)
+          Credit.add_to(org, 1000)
           sign_in user
         end
 
@@ -139,7 +139,7 @@ RSpec.describe "Partnerships", type: :request do
         let(:params) { { level: :silver, organization_id: org.id } }
 
         before do
-          Credit.add_to_org(org, Sponsorship::CREDITS[:silver])
+          Credit.add_to(org, Sponsorship::CREDITS[:silver])
         end
 
         it "creates a new sponsorship" do
@@ -180,7 +180,7 @@ RSpec.describe "Partnerships", type: :request do
         let(:params) { { level: :bronze, organization_id: org.id } }
 
         before do
-          Credit.add_to_org(org, Sponsorship::CREDITS[:bronze])
+          Credit.add_to(org, Sponsorship::CREDITS[:bronze])
         end
 
         it "creates a new sponsorship" do
@@ -221,7 +221,7 @@ RSpec.describe "Partnerships", type: :request do
         let(:params) { { level: :devrel, organization_id: org.id } }
 
         before do
-          Credit.add_to_org(org, Sponsorship::CREDITS[:devrel])
+          Credit.add_to(org, Sponsorship::CREDITS[:devrel])
         end
 
         it "creates a new sponsorship" do
@@ -264,7 +264,7 @@ RSpec.describe "Partnerships", type: :request do
         end
 
         before do
-          Credit.add_to_org(org, params[:amount])
+          Credit.add_to(org, params[:amount])
         end
 
         it "creates a new sponsorship" do
@@ -306,7 +306,7 @@ RSpec.describe "Partnerships", type: :request do
         let(:params) { { level: :tag, organization_id: org.id, tag_name: tag.name } }
 
         before do
-          Credit.add_to_org(org, Sponsorship::CREDITS[:tag])
+          Credit.add_to(org, Sponsorship::CREDITS[:tag])
         end
 
         it "creates a new sponsorship" do
@@ -344,7 +344,7 @@ RSpec.describe "Partnerships", type: :request do
       end
 
       it "updates sponsorship instructions if present" do
-        Credit.add_to_org(org, Sponsorship::CREDITS[:bronze])
+        Credit.add_to(org, Sponsorship::CREDITS[:bronze])
 
         post partnerships_path, params: {
           level: :bronze,
@@ -360,7 +360,7 @@ RSpec.describe "Partnerships", type: :request do
     context "when user is logged in as a non organization admin but has enough credits" do
       before do
         create(:organization_membership, user: user, organization: org, type_of_user: "member")
-        Credit.add_to_org(org, Sponsorship::CREDITS[:bronze])
+        Credit.add_to(org, Sponsorship::CREDITS[:bronze])
         sign_in user
       end
 

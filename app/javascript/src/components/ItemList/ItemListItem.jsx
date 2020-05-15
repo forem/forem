@@ -17,7 +17,10 @@ export const ItemListItem = ({ item, children }) => {
   return (
     <div className="item-wrapper">
       <a className="item" href={adaptedItem.path}>
-        <div className="item-title">{adaptedItem.title}</div>
+        <div
+          className="item-title"
+          dangerouslySetInnerHTML={{ __html: filterXSS(adaptedItem.title) }}
+        />
 
         <div className="item-details">
           <a className="item-user" href={`/${adaptedItem.user.username}`}>

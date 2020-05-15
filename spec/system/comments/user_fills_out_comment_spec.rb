@@ -1,8 +1,13 @@
 require "rails_helper"
 
 RSpec.describe "Creating Comment", type: :system, js: true do
+  include_context "with runkit_tag"
+
   let(:user) { create(:user) }
   let(:raw_comment) { Faker::Lorem.paragraph }
+  let(:runkit_comment) { compose_runkit_comment "comment 1" }
+  let(:runkit_comment2) { compose_runkit_comment "comment 2" }
+
   # the article should be created before signing in
   let!(:article) { create(:article, user_id: user.id, show_comments: true) }
 
@@ -18,6 +23,40 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     fill_in "text-area", with: raw_comment
     click_button("SUBMIT")
     expect(page).to have_text(raw_comment)
+  end
+
+  context "with Runkit tags" do
+    before do
+      visit article.path.to_s
+
+      wait_for_javascript
+    end
+
+    it "Users fills out comment box with a Runkit tag" do
+      fill_in "text-area", with: runkit_comment
+      click_button("SUBMIT")
+
+      expect_runkit_tag_to_be_active
+    end
+
+    it "Users fills out comment box 2 Runkit tags" do
+      fill_in "text-area", with: runkit_comment
+      click_button("SUBMIT")
+
+      expect_runkit_tag_to_be_active
+
+      fill_in "text-area", with: runkit_comment2
+      click_button("SUBMIT")
+
+      expect_runkit_tag_to_be_active(count: 2)
+    end
+
+    it "User fill out comment box with a Runkit tag, then clicks preview" do
+      fill_in "text-area", with: runkit_comment
+      click_button("PREVIEW")
+
+      expect_runkit_tag_to_be_active
+    end
   end
 
   it "User fill out comment box then click previews and submit" do

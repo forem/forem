@@ -45,7 +45,7 @@ RSpec.describe "internal/organizations", type: :request do
     end
 
     it "removes credits to an organization" do
-      Credit.add_to_org(organization, 1)
+      Credit.add_to(organization, 1)
       params = { credits: 1, credit_action: :remove }
 
       expect do

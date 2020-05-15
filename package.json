@@ -97,7 +97,7 @@
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.19.0",
+    "eslint-plugin-react": "^7.20.0",
     "faker": "^4.1.0",
     "husky": "^4.2.5",
     "ibm-openapi-validator": "0.27.1",
@@ -114,7 +114,7 @@
     "sass-loader": "^8.0.2",
     "style-loader": "^1.2.1",
     "svgo": "1.3.2",
-    "webpack-dev-server": "^3.10.3"
+    "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
     "@babel/core": "^7.9.6",
