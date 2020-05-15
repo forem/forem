@@ -106,13 +106,14 @@ RSpec.describe BadgeRewarder, type: :labor do
 
   describe "::award_contributor_badges_from_github" do
     let(:my_ocktokit_client) { instance_double(Octokit::Client) }
-    let(:user) { create(:user) }
+    let(:user) { create(:user, :with_identity, identities: ["github"]) }
 
     let(:stubbed_github_commit) do
       [OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))]
     end
 
     before do
+      omniauth_mock_github_payload
       allow(Octokit::Client).to receive(:new).and_return(my_ocktokit_client)
       allow(my_ocktokit_client).to receive(:commits).and_return(stubbed_github_commit)
       create(:badge, title: "DEV Contributor")

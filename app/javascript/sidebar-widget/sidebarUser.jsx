@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { userPropTypes } from '../src/components/common-prop-types';
+import { userPropTypes } from '../common-prop-types';
 
 class SidebarUser extends Component {
   constructor(props) {

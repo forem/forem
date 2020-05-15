@@ -6,9 +6,9 @@ RSpec.describe "User visits articles by tag", type: :system do
   let!(:func_tag) { create(:tag, name: "functional") }
 
   let(:author) { create(:user) }
-  let!(:article) { create(:article, tags: "javascript, IoT", user: author, published_at: 2.days.ago) }
-  let!(:article2) { create(:article, tags: "functional", user: author, published_at: Time.current) }
-  let!(:article3) { create(:article, tags: "functional, javascript", user: author, published_at: 2.weeks.ago) }
+  let!(:article) { create(:article, tags: "javascript, IoT", user: author, published_at: 2.days.ago, score: 5) }
+  let!(:article2) { create(:article, tags: "functional", user: author, published_at: Time.current, score: 5) }
+  let!(:article3) { create(:article, tags: "functional, javascript", user: author, published_at: 2.weeks.ago, score: 5) }
 
   context "when user hasn't logged in" do
     context "when 2 articles" do
@@ -31,7 +31,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       end
 
       it "shows correct articles count" do
-        expect(page).to have_selector(".single-article", count: 2)
+        expect(page).to have_selector(".crayons-story", count: 2)
       end
 
       it "shows the correct articles" do

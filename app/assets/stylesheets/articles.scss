@@ -3,6 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 @import 'variables';
 @import '_mixins';
+@import 'config/import';
 
 .home {
   position: relative;
@@ -36,7 +37,7 @@
         display: block;
         .side-bar {
           display: block;
-          @include themeable(background, theme-container-background, white);
+          background: var(--card-bg);
           height: 100%;
           overflow-y: auto;
         }
@@ -70,7 +71,7 @@
     z-index: 5;
     padding: 16px 0;
     box-sizing: border-box;
-    @include themeable(color, theme-color, rgba($black, 0.8));
+    color: var(--card-secondary-color);
     &.sidebar-additional {
       display: none;
       &.showing {
@@ -176,7 +177,7 @@
     margin-right: 9px;
     padding-right: 9px;
   }
-  img.rainbowdevimage {
+  img.primary-sticker-image {
     width: 190px;
     height: 190px;
     margin: 18px auto 35px;
@@ -220,14 +221,14 @@
   padding: 5px 0px 15px;
   display: none;
   font-size: 1.1em;
-  @include themeable(background, theme-container-background, #fff);
+  background: var(--card-bg);
   a {
     display: block;
     text-align: center;
-    @include themeable(color, theme-container-color, $black);
+    color: var(--card-color);
     padding: 20px 0px;
     &.selected {
-      @include themeable(background, theme-container-background-hover, $purple);
+      background: var(--accent-brand-lighter);
     }
   }
   &.showing {
@@ -355,33 +356,6 @@
   display: none;
 }
 
-//  More loading  // TODO
-.single-article-loading {
-  border-radius: 3px;
-  animation-duration: 1.25s;
-  animation-fill-mode: forwards;
-  animation-iteration-count: infinite;
-  animation-name: placeHolderShimmer;
-  animation-timing-function: linear;
-  background: #f6f6f6;
-  @include themeable(
-    background,
-    theme-gradient-background,
-    linear-gradient(to right, #f6f6f6 8%, #f0f0f0 18%, #f6f6f6 33%)
-  );
-  background-size: 800px 104px;
-  position: relative;
-}
-
-@keyframes placeHolderShimmer {
-  0% {
-    background-position: -468px 0;
-  }
-  100% {
-    background-position: 468px 0;
-  }
-}
-
 // Generally Feed...
 .articles-list {
   margin: auto;
@@ -412,10 +386,6 @@
       display: flex;
       align-items: center;
     }
-  }
-
-  a {
-    @include themeable(color, theme-container-color, $black);
   }
 
   .placeholder-div {
@@ -509,7 +479,7 @@
         theme-container-accent-background,
         darken($light-gray, 6%)
       );
-      @include themeable(color, theme-color, $black);
+      color: var(--card-color);
       padding: 8px;
       border-radius: 3px 0 3px 0;
       font-weight: 600;
@@ -561,11 +531,12 @@
       padding: 16px 16px 100px 16px; // TODO: my, oh my...
       h3 {
         margin: 0px;
-        font-size: 20px;
+        font-size: var(--fs-xl);
         font-weight: 700;
         line-height: 28px;
         padding: 0px;
         word-break: break-word;
+        color: var(--card-color);
         .tag-identifier {
           font-size: 14px;
           background: $blue;
@@ -581,11 +552,18 @@
             background: $black;
           }
         }
+        a {
+          color: inherit;
+
+          &:hover {
+            color: var(--link-color-hover);
+          }
+        }
       }
-      @media screen and (min-width: 450px) {
+      @media (min-width: $breakpoint-s) {
         h3 {
-          font-size: 27px;
           line-height: 32px;
+          font-size: var(--fs-2xl);
           .tag-identifier {
             font-size: 15px;
             padding: 2px 6px 3px;
@@ -598,7 +576,7 @@
       }
     }
     .time-ago-indicator {
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--card-color-tertiary);
       display: inline-block;
       margin-left: 4px;
       font-weight: 400;
@@ -621,7 +599,7 @@
       text-overflow: ellipsis;
       font-size: 0.8em;
       a {
-        @include themeable(color, theme-secondary-color, #666666);
+        color: var(--card-color-tertiary);
       }
 
       &:hover {
@@ -654,21 +632,7 @@
         }
       }
     }
-    .search-snippet {
-      font-size: 15px;
-      padding: 6px 0px 2px;
-      color: lighten($dark-gray, 8%);
-      line-height: 21px;
-      span {
-        background: darken($light-gray, 2%);
-        padding: 1px;
-      }
-      em {
-        font-weight: 600;
-        color: darken($dark-gray, 6%);
-        font-style: normal;
-      }
-    }
+
     p {
       margin: 6px auto;
       line-height: 20px;
@@ -691,7 +655,7 @@
           padding: 16px;
           margin: 0;
           word-break: break-word;
-
+          line-height: 1.28em;
           @media screen and (min-width: 450px) {
             font-size: 40px;
           }
@@ -731,7 +695,7 @@
     bottom: 65px;
     font-size: 0.8em;
     a {
-      @include themeable(color, theme-secondary-color, #666666);
+      color: var(--card-color-tertiary);
     }
     @media screen and (min-width: 450px) {
       font-size: 1em;
@@ -758,7 +722,7 @@
     font-size: 0.7em;
     padding: 6px 0px;
     z-index: 8;
-    @include themeable(color, theme-secondary-color, $medium-gray);
+    color: var(--card-color-tertiary);
   }
   .article-engagement-count {
     font-size: 13px;
@@ -771,12 +735,12 @@
     border: 0;
     -webkit-appearance: none;
     font-family: $helvetica-condensed;
-    @include themeable(color, theme-secondary-color, $medium-gray);
+    color: var(--card-color-tertiary);
     a {
       &:hover {
         opacity: 1;
       }
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--card-color-tertiary);
     }
     img {
       height: 18px;
@@ -874,7 +838,7 @@
   display: flex;
   padding: 8px 16px;
   font-size: 0.8em;
-  @include themeable(color, theme-secondary-color, $medium-gray);
+  color: var(--card-color-tertiary);
 
   img {
     height: 50px;
@@ -896,7 +860,7 @@
     }
     padding-top: 0.2em;
     font-weight: 500;
-    @include themeable(color, theme-color, $black);
+    color: var(--card-color);
   }
   &:hover {
     @include themeable(
@@ -916,52 +880,4 @@
   @include dev-card;
   padding: 48px 24px;
   text-align: center;
-}
-
-// Notifications filtering on mobile.
-.notifications-mobile-filters {
-  @media screen and (min-width: 950px) {
-    display: none;
-  }
-  .organization-name {
-    font-size: 15px;
-    font-weight: bold;
-    border: 0px;
-    display: inline-block;
-    width: 27%;
-    padding: 9px 0px;
-    text-align: center;
-    @include themeable(color, theme-secondary-color, $medium-gray);
-    margin: 1%;
-  }
-  .query-filter-button {
-    font-size: 12px;
-    font-weight: bold;
-    background: transparent;
-    border: 0px;
-    display: inline-block;
-    width: 27%;
-    padding: 9px 0px;
-    text-align: left;
-    border-radius: 100px;
-    @include themeable(color, theme-color, $black);
-    text-align: center;
-    margin: 1%;
-
-    &:hover {
-      @include themeable(
-        background,
-        theme-container-background-hover,
-        lighten($bold-blue, 38%)
-      );
-    }
-    &.selected {
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        lighten($bold-blue, 8%)
-      );
-      @include themeable(color, theme-color, white);
-    }
-  }
 }

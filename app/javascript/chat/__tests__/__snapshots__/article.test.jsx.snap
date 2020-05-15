@@ -5,6 +5,7 @@ exports[`<Article /> should load article 1`] = `
   class="activechatchannel__activeArticle"
 >
   <iframe
+    id="activecontent-iframe"
     src="/princesscarolyn/your-approval-means-nothing-to-me-42640"
   />
 </div>

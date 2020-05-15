@@ -2,26 +2,31 @@
   "name": "DEV Docs",
   "root": "./",
   "logo": "devblacksquarelogo.svg",
+  "host": "0.0.0.0",
   "header_links": [
     {
       "title": "Repo",
       "href": "https://github.com/thepracticaldev/dev.to",
-      "target": "_blank"
+      "target": "_blank",
+      "rel": "noopener noreferrer nofollow"
     },
     {
       "title": "DEV",
       "href": "https://dev.to",
-      "target": "_blank"
+      "target": "_blank",
+      "rel": "noopener noreferrer nofollow"
     },
     {
       "title": "Ruby doc",
       "href": "http://docs.dev.to/ruby-doc",
-      "target": "_blank"
+      "target": "_blank",
+      "rel": "noopener noreferrer nofollow"
     },
     {
       "title": "API doc",
       "href": "http://docs.dev.to/api",
-      "target": "_blank"
+      "target": "_blank",
+      "rel": "noopener noreferrer nofollow"
     }
   ]
 }

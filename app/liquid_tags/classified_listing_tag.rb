@@ -2,8 +2,8 @@ class ClassifiedListingTag < LiquidTagBase
   PARTIAL = "classified_listings/liquid".freeze
 
   def initialize(_tag_name, slug_path_url, _tokens)
-    striped_path = ActionController::Base.helpers.strip_tags(slug_path_url).strip
-    @listing = get_listing(striped_path)
+    stripped_path = ActionController::Base.helpers.strip_tags(slug_path_url).strip
+    @listing = get_listing(stripped_path)
   end
 
   def render(_context)
@@ -24,7 +24,7 @@ class ClassifiedListingTag < LiquidTagBase
     hash = get_hash(url)
     raise StandardError, "Invalid URL or slug. Listing not found." if hash.nil?
 
-    listing = ClassifiedListing.find_by(hash)
+    listing = ClassifiedListing.in_category(hash[:category]).find_by(slug: hash[:slug])
     raise StandardError, "Invalid URL or slug. Listing not found." unless listing
 
     listing

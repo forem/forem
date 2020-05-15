@@ -7,13 +7,15 @@ items:
   - authorization.md
   - configuration.md
   - data-update-scripts.md
+  - elasticsearch.md
+  - fastly.md
   - roles.md
-  - algolia.md
   - pusher.md
   - admin.md
   - previewing-emails.md
   - notification.md
   - scheduled-jobs.md
+  - metrics.md
 ---
 
 # Backend Guide

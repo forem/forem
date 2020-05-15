@@ -3,7 +3,7 @@
     <h4>What next?</h4>
     <h3>Create an Organization</h3>
     <p>
-      <em>Organizations act as a publication and a way for your team to interact with DEV on behalf of the company</em>
+      <em>Organizations act as a publication and a way for your team to interact with <%= community_name %> on behalf of the company</em>
     </p>
     <p>
       Come back to this page once you have created an organization. Only organization <em>admins</em> may purchase sponsorships.
@@ -22,7 +22,7 @@
           </div>
         <% end %>
         <p>
-          <em>Credits are your wallet for flexibly managing all your DEV partnerships.</em>
+          <em>Credits are your wallet for flexibly managing all your <%= community_name %> partnerships.</em>
         </p>
         <p>
           Credits can be purchased via company credit card, and once in your account you can use them for different promotions.
@@ -50,7 +50,7 @@
             <div class="partner-explainer-notice">
               <%# this should never happen but better safe than sorry %>
               <% sponsorships.each do |sponsorship| %>
-              🛑 You are already subscribed as a <%= sponsorship.level %> sponsor. Contact partnerships@dev.to to change plans.
+              🛑 You are already subscribed as a <%= sponsorship.level %> sponsor. Contact <%= email_link(:business) %>to change plans.
               <% end %>
             </div>
           <% else %>
@@ -59,7 +59,7 @@
               <%= hidden_field_tag(:organization_id, org.id) %>
               <%= hidden_field_tag(:level, level) %>
               <h4>Sponsorship message/brand instructions:</h4>
-              <%= text_area_tag(:instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across. DEV editors will use these guidelines contextually depending on sponsorship.") %>
+              <%= text_area_tag(:instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across. #{community_name} editors will use these guidelines contextually depending on sponsorship.") %>
               <button>Subscribe for <%= Sponsorship::CREDITS[level] %> credits</button>
             <% end %>
           <% end %>
@@ -71,7 +71,7 @@
             <%= hidden_field_tag(:organization_id, org.id) %>
             <%= hidden_field_tag(:level, level) %>
             <h4>Sponsorship message/brand instructions:</h4>
-            <%= text_area_tag(:instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across. DEV editors will use these guidelines contextually depending on sponsorship.") %>
+            <%= text_area_tag(:instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across.  #{community_name} editors will use these guidelines contextually depending on sponsorship.") %>
             <% tag_sponsorships = org.sponsorships.unexpired.where(level: :tag) %>
             <% tag_sponsorships.find_each do |sponsorship| %>
               <div class="partner-explainer-notice">
@@ -98,7 +98,7 @@
             <button>Add spend to your media sponsorship</button>
             <p style="font-size: 0.88em;">
               <em>
-                Credits will be allotted flexibly use in DEV-produced podcasts, videos and other media content. You will be notified as it is being distributed.
+                Credits will be allotted flexibly use in <%= community_name %>-produced podcasts, videos and other media content. You will be notified as it is being distributed.
               </em>
             </p>
           <% end %>
@@ -112,7 +112,7 @@
             <%= hidden_field_tag(:level, level) %>
             <button>Sign Up for DevRel Consulting</button>
             <p style="font-size: 1.1em;">
-              You will be contacted by the DEV team within one day of signing up for this service.
+              You will be contacted by the <%= community_name %> team within one day of signing up for this service.
             </p>
           <% end %>
         <% end %>
@@ -120,5 +120,5 @@
     <% end %>
   <% end %>
 <% else %>
-<h2>Contact <a href="mailto:partners@dev.to">partners@dev.to</a> to sign up</h1>
+<h2>Contact <%= email_link(:business) %> to sign up</h1>
 <% end %>

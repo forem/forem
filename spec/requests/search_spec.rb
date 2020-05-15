@@ -41,18 +41,114 @@ RSpec.describe "Search", type: :request, proper_status: true do
   end
 
   describe "GET /search/classified_listings" do
-    let(:authorized_user) { create(:user) }
     let(:mock_documents) do
       [{ "title" => "classified_listing1" }]
     end
 
     it "returns json" do
-      sign_in authorized_user
       allow(Search::ClassifiedListing).to receive(:search_documents).and_return(
         mock_documents,
       )
       get "/search/classified_listings"
       expect(response.parsed_body).to eq("result" => mock_documents)
+    end
+  end
+
+  describe "GET /search/users" do
+    let(:mock_documents) { [{ "username" => "firstlast" }] }
+
+    it "returns json" do
+      allow(Search::User).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+      get "/search/users"
+      expect(response.parsed_body).to eq("result" => mock_documents)
+    end
+  end
+
+  describe "GET /search/feed_content" do
+    let(:mock_documents) { [{ "title" => "article1" }] }
+
+    it "returns json" do
+      allow(Search::FeedContent).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+
+      get "/search/feed_content"
+      expect(response.parsed_body).to eq("result" => mock_documents)
+    end
+
+    it "queries only the user index if class_name=User" do
+      allow(Search::FeedContent).to receive(:search_documents)
+      allow(Search::User).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+
+      get "/search/feed_content?class_name=User"
+      expect(Search::User).to have_received(:search_documents)
+      expect(Search::FeedContent).not_to have_received(:search_documents)
+    end
+
+    it "queries for Articles, Podcast Episodes and Users if no class_name filter is present" do
+      allow(Search::FeedContent).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+      allow(Search::User).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+
+      get "/search/feed_content"
+      expect(Search::User).to have_received(:search_documents)
+      expect(Search::FeedContent).to have_received(:search_documents)
+    end
+
+    it "queries for only Articles and Podcast Episodes if class_name!=User" do
+      allow(Search::FeedContent).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+      allow(Search::User).to receive(:search_documents)
+
+      get "/search/feed_content?class_name=Article"
+      expect(Search::User).not_to have_received(:search_documents)
+      expect(Search::FeedContent).to have_received(:search_documents)
+    end
+
+    it "queries for approved" do
+      allow(Search::FeedContent).to receive(:search_documents).and_return(
+        mock_documents,
+      )
+
+      get "/search/feed_content?class_name=Article&approved=true"
+      expect(Search::FeedContent).to have_received(:search_documents).with(
+        params: { "approved" => "true", "class_name" => "Article" },
+      )
+    end
+  end
+
+  describe "GET /search/reactions" do
+    let(:authorized_user) { create(:user) }
+    let(:mock_response) do
+      { "reactions" => [{ id: 123 }], "total" => 100 }
+    end
+
+    it "returns json with reactions and total" do
+      sign_in authorized_user
+      allow(Search::Reaction).to receive(:search_documents).and_return(
+        mock_response,
+      )
+      get "/search/reactions"
+      expect(response.parsed_body).to eq("result" => [{ "id" => 123 }], "total" => 100)
+    end
+
+    it "accepts array of tag names" do
+      sign_in authorized_user
+      allow(Search::Reaction).to receive(:search_documents).and_return(
+        mock_response,
+      )
+      get "/search/reactions?tag_names[]=1&tag_names[]=2"
+      expect(Search::Reaction).to have_received(
+        :search_documents,
+      ).with(params: { "tag_names" => %w[1 2], "user_id" => authorized_user.id })
     end
   end
 end

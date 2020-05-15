@@ -37,40 +37,45 @@
   function createPageStream(request) {
     const stream = new ReadableStream({
       start(controller) {
-        if (!caches.match('/shell_top') || !caches.match('/shell_bottom')) { //return if shell isn't cached.
-          return
-        }
+        Promise.all([caches.match('/shell_top'), caches.match('/shell_bottom')])
+          .then((cachedShellMatches) => {
+            const cachedShellTop = cachedShellMatches[0];
+            const cachedShellBottom = cachedShellMatches[1];
+            if (!cachedShellTop || !cachedShellBottom) { // return if shell isn't cached.
+              return
+            }
+            // the body url is the request url plus 'include'
+            const url = new URL(request.url);
+            url.searchParams.set('i', 'i'); // Adds ?i=i or &i=i, which is our indicator for "internal" partial page
+            const startFetch = Promise.resolve(cachedShellTop);
+            const endFetch = Promise.resolve(cachedShellBottom);
+            const middleFetch = fetch(url).then(response => {
+              if (!response.ok && response.status === 404) {
+                return caches.match('/404.html');
+              }
+              if (!response.ok && response.status != 404) {
+                return caches.match('/500.html');
+              }
+              return response;
+            }).catch(err => caches.match('/offline.html'));
 
-        // the body url is the request url plus 'include'
-        const url = new URL(request.url);
-        url.searchParams.set('i', 'i'); // Adds ?i=i or &i=i, which is our indicator for "internal" partial page
-        const startFetch = caches.match('/shell_top');
-        const endFetch = caches.match('/shell_bottom');
-        const middleFetch = fetch(url).then(response => {
-          if (!response.ok && response.status === 404) {
-            return caches.match('/404.html');
-          }
-          if (!response.ok && response.status != 404) {
-            return caches.match('/500.html');
-          }
-          return response;
-        }).catch(err => caches.match('/offline.html'));
+            function pushStream(stream) {
+              const reader = stream.getReader();
+              return reader.read().then(function process(result) {
+                if (result.done) return;
+                controller.enqueue(result.value);
+                return reader.read().then(process);
+              });
+            }
+            startFetch
+              .then(response => pushStream(response.body))
+              .then(() => middleFetch)
+              .then(response => pushStream(response.body))
+              .then(() => endFetch)
+              .then(response => pushStream(response.body))
+              .then(() => controller.close());
+          })
 
-        function pushStream(stream) {
-          const reader = stream.getReader();
-          return reader.read().then(function process(result) {
-            if (result.done) return;
-            controller.enqueue(result.value);
-            return reader.read().then(process);
-          });
-        }
-        startFetch
-          .then(response => pushStream(response.body))
-          .then(() => middleFetch)
-          .then(response => pushStream(response.body))
-          .then(() => endFetch)
-          .then(response => pushStream(response.body))
-          .then(() => controller.close());
       }
     });
 
@@ -108,10 +113,32 @@
         !url.href.includes('/robots.txt') && // Skip robots for web crawlers
         !url.href.includes('/shell_') && // Don't fetch for shell.
         !url.href.includes('/sidekiq') && // Skip for Sidekiq dashboard
+        !url.href.includes('/ahoy/') && // Skip for ahoy message redirects
         !url.href.includes('/abtests') && // Skip for field_test dashboard
         !url.href.includes('/social_previews') && // Skip for social previews
         !url.href.includes('/users/auth') && // Don't run on authentication.
         !url.href.includes('/enter') && // Don't run on registration.
+        !url.href.includes('/sitemap-') && // Don't run on registration.
+        !url.href.includes('/welcome') && // Don't run on welcome reroutes.
+        !url.href.includes('/checkin') && // Don't run on checkin reroutes.
+
+        // Don't run on search endpoints
+        !url.href.includes('/search/tags') &&
+        !url.href.includes('/search/chat_channels') &&
+        !url.href.includes('/search/classified_listings') &&
+        !url.href.includes('/search/reactions') &&
+        !url.href.includes('/search/feed_content') &&
+        !url.href.includes('/search/users') &&
+
+        // Don't run on harcoded redirects (see config/routes.rb for the list)
+        !url.href.includes('/%F0%9F%92%B8') && // 💸 (hiring)
+        !url.href.includes('/api') &&
+        !url.href.includes('/future') &&
+        !url.href.includes('/p/rlyweb') &&
+        !url.href.includes('/podcasts') &&
+        !url.href.includes('/shop') &&
+        !url.href.includes('/survey') &&
+        !url.href.includes('/workshops') &&
 
         caches.match('/shell_top') && // Ensure shell_top is in the cache.
         caches.match('/shell_bottom')) { // Ensure shell_bottom is in the cache.

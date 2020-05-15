@@ -1,49 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 720 720">
-  <metadata><?xpacket begin="﻿" id="W5M0MpCehiHzreSzNTczkc9d"?>
-<x:xmpmeta xmlns:x="adobe:ns:meta/" x:xmptk="Adobe XMP Core 5.6-c138 79.159824, 2016/09/14-01:09:01        ">
-   <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-      <rdf:Description rdf:about=""/>
-   </rdf:RDF>
-</x:xmpmeta>
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                                                                                                    
-                           
-<?xpacket end="w"?></metadata>
-<defs>
-    <style>
-      .cls-1 {
-        fill: #0c6;
-        stroke: #0c6;
-        stroke-width: 30.71px;
-      }
-
-      .cls-2 {
-        fill: #fff;
-        stroke: #fff;
-        stroke-width: 1px;
-        fill-rule: evenodd;
-      }
-    </style>
-  </defs>
-  <circle class="cls-1" cx="360" cy="360" r="322.469"/>
-  <path id="Rounded_Rectangle_4" data-name="Rounded Rectangle 4" class="cls-2" d="M312.1,512.7L501.5,180.79a10.029,10.029,0,0,1,13.661-3.744l27.848,15.825a9.985,9.985,0,0,1,3.744,13.634l-189.4,331.91a10.029,10.029,0,0,1-13.661,3.744l-27.848-15.825A9.986,9.986,0,0,1,312.1,512.7Z"/>
-  <path id="Rounded_Rectangle_5" data-name="Rounded Rectangle 5" class="cls-2" d="M152.919,375.428L367.127,502.516a9.986,9.986,0,0,1,3.491,13.7l-14.824,24.921a10.015,10.015,0,0,1-13.715,3.489L127.871,417.535a9.987,9.987,0,0,1-3.491-13.7l14.825-24.921A10.014,10.014,0,0,1,152.919,375.428Z"/>
+    <defs>
+        <style>
+            .cls-2{fill:#fff;stroke:#fff;stroke-width:1px;fill-rule:evenodd}
+        </style>
+    </defs>
+    <circle cx="360" cy="360" r="322.469" fill="#0c6" stroke="#0c6" stroke-width="30.71"/>
+    <path id="Rounded_Rectangle_4" data-name="Rounded Rectangle 4" class="cls-2" d="M312.1 512.7l189.4-331.91a10.029 10.029 0 0113.661-3.744l27.848 15.825a9.985 9.985 0 013.744 13.634l-189.4 331.91a10.029 10.029 0 01-13.661 3.744l-27.848-15.825A9.986 9.986 0 01312.1 512.7z"/>
+    <path id="Rounded_Rectangle_5" data-name="Rounded Rectangle 5" class="cls-2" d="M152.919 375.428l214.208 127.088a9.986 9.986 0 013.491 13.7l-14.824 24.921a10.015 10.015 0 01-13.715 3.489L127.871 417.535a9.987 9.987 0 01-3.491-13.7l14.825-24.921a10.014 10.014 0 0113.714-3.486z"/>
 </svg>

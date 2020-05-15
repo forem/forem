@@ -7,7 +7,7 @@ RSpec.describe "Videos", type: :request do
   describe "GET /videos" do
     it "shows video page" do
       get "/videos"
-      expect(response.body).to include "DEV on Video"
+      expect(response.body).to include "#{community_name} on Video"
     end
 
     it "shows articles with video" do

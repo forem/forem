@@ -1,5 +1,3 @@
-<%= javascript_include_tag "https://embed.runkit.com", defer: true %>
-
 <div class="articleformcontainer">
   <div class="articleform"
        id="article-form"
@@ -21,7 +19,7 @@
         <input class="articleform__title articleform__titlepreview" type="text" value="<%= article.title %>" placeholder="Title" name="title" />
         <div class="articleform__detailfields">
           <div class="articleform__tagswrapper">
-            <textarea type="text" class="articleform__tags" placeholder="4 tags max, comma separated, no spaces or special characters" name="tags"><%= article.cached_tag_list %></textarea>
+            <input type="text" class="articleform__tags" placeholder="4 tags max, comma separated, no spaces or special characters" name="tags" value="<%= article.cached_tag_list %>" />
           </div>
           <button class="articleform__detailsButton articleform__detailsButton--image"></button>
           <button class="articleform__detailsButton articleform__detailsButton--moreconfig"></button>
@@ -50,6 +48,10 @@
     </div>
   </div>
 </div>
+
+<script async>
+  <%== RunkitTag.script %>
+</script>
 
 <style>
   #footer-container {

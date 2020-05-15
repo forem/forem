@@ -15,7 +15,7 @@ but they have only been tested on Ubuntu 18.04._
    [rbenv](https://github.com/rbenv/rbenv). Please follow their
    [installation guide](https://github.com/rbenv/rbenv#installation).
 1. With the Ruby version manager, install the Ruby version listed on our badge.
-   (ie with rbenv: `rbenv install 2.6.5`)
+   (ie with rbenv: `rbenv install $(cat .ruby-version)`)
 
 For very detailed rbenv installation directions on several distros, please visit
 [DigitalOcean's guide](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-18-04).
@@ -36,6 +36,8 @@ There are two ways to install Yarn.
 
 ### PostgreSQL
 
+DEV requires PostgreSQL version 9.5 or higher.
+
 1. Run
    `sudo apt update && sudo apt install postgresql postgresql-contrib libpq-dev`.
 1. To test the installation you can run `sudo -u postgres psql` which should
@@ -45,8 +47,7 @@ There are two ways to install Yarn.
 
 There are more than one ways to setup PostgreSQL. For additional configuration,
 check out our [PostgreSQL setup guide](/installation/postgresql) or the official
-[PostgreSQL](https://www.postgresql.org/) site for further information. DEV
-requires PostgreSQL version 9.4 or higher.
+[PostgreSQL](https://www.postgresql.org/) site for further information.
 
 ### ImageMagick
 
@@ -88,9 +89,9 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 1. Set up your environment variables/secrets
 
    - Take a look at `Envfile`. This file lists all the `ENV` variables we use
-     and provides a fake default for any missing keys. You'll need to get your
-     own free [Algolia credentials](/backend/algolia) to get your development
-     environment running.
+     and provides a fake default for any missing keys.
+   - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
+     variable to the remote computer's domain name.
    - The [backend guide](/backend) will show you how to get free API keys for
      additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:

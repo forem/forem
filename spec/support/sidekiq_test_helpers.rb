@@ -73,6 +73,11 @@ module SidekiqTestHelpers
     end
   end
 
+  # Perform all Sidekiq jobs until there are no longer any in the queues
+  def drain_all_sidekiq_jobs
+    sidekiq_perform_enqueued_jobs while Sidekiq::Worker.jobs.any?
+  end
+
   class Utils
     class << self
       def drain_jobs(jobs, only: nil, except: nil)

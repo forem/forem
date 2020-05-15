@@ -7,7 +7,7 @@
   <p class="badge-description milestone-emojis">🎉🎉🎉🎉🎉🎉🎉🎉</p>
 
   <a href="https://giphy.com/gifs/<%= json_data["gif_id"] %>" rel="noopener noreferrer" target="_blank">
-    <img style="height: <%= RandomGif.new.get_aspect_ratio(json_data["gif_id"]) * 300 %>px;" class="milestone-gif" src="https://media.giphy.com/media/<%= json_data["gif_id"] %>/giphy-downsized.gif" alt="A random celebratory gif!">
+    <img style="height: <%= RandomGif.get_aspect_ratio(json_data["gif_id"]) * 300 %>px;" class="milestone-gif" src="https://media.giphy.com/media/<%= json_data["gif_id"] %>/giphy-downsized.gif" alt="A random celebratory gif!">
   </a>
   <br>
   <a href="/dashboard">

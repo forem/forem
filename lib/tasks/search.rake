@@ -13,7 +13,7 @@ namespace :search do
   task destroy: :environment do
     if Rails.env.production?
       puts "Will NOT destroy indexes in production"
-      exit
+      next
     end
 
     Search::Cluster.delete_indexes

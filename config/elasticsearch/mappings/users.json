@@ -4,9 +4,12 @@
     "id": {
       "type": "keyword"
     },
-    "availabe_for": {
+    "available_for": {
       "type": "keyword",
       "copy_to": "search_fields"
+    },
+    "badge_achievements_count": {
+      "type": "integer"
     },
     "comments_count": {
       "type": "integer"
@@ -17,6 +20,12 @@
     },
     "hotness_score": {
       "type": "integer"
+    },
+    "last_comment_at": {
+      "type": "date"
+    },
+    "last_indexed_at": {
+      "type": "date"
     },
     "mostly_work_with": {
       "type": "keyword",
@@ -32,8 +41,17 @@
     "positive_reactions_count": {
       "type": "integer"
     },
+    "profile_image_90": {
+      "type": "keyword"
+    },
     "reactions_count": {
       "type": "integer"
+    },
+    "roles": {
+      "type": "keyword"
+    },
+    "search_fields": {
+      "type": "text"
     },
     "username": {
       "type": "keyword"

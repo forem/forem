@@ -462,14 +462,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
         post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
-
-      it "fails when oauth's access_token" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        post api_articles_path, params: { article: { title: Faker::Book.title } }.to_json, headers: headers
-        expect(response).to have_http_status(:unauthorized)
-      end
     end
 
     describe "when authorized" do
@@ -479,6 +471,35 @@ RSpec.describe "Api::V0::Articles", type: :request do
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         params = default_params.merge params
         post api_articles_path, params: { article: params }.to_json, headers: headers
+      end
+
+      it "returns a 403 if :write_articles scope is missing (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "public")
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        post api_articles_path, params: { article: { title: Faker::Book.title } }.to_json, headers: headers
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "returns a 201 if :write_articles scope is provided (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "write_articles")
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        post api_articles_path, params: { article: { title: Faker::Book.title, body_markdown: "" } }.to_json, headers: headers
+        expect(response).to have_http_status(:created)
+      end
+
+      it "returns a 429 status code if the rate limit is reached" do
+        rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
+
+        post_article
+
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
       end
 
       it "fails if no params are given" do
@@ -732,7 +753,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     let!(:api_secret)   { create(:api_secret) }
     let!(:user)         { api_secret.user }
     let(:article)       { create(:article, user: user, published: false) }
-    let(:path)          { "/api/articles/#{article.id}" }
+    let(:path)          { api_article_path(article.id) }
     let!(:organization) { create(:organization) }
 
     describe "when unauthorized" do
@@ -752,17 +773,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
-
-      it "fails with oauth's access_token" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        title = Faker::Book.title
-        body_markdown = "foobar"
-        params = { title: title, body_markdown: body_markdown }
-        put path, params: { article: params }.to_json, headers: headers
-        expect(response).to have_http_status(:unauthorized)
-      end
     end
 
     describe "when authorized" do
@@ -771,6 +781,41 @@ RSpec.describe "Api::V0::Articles", type: :request do
       def put_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         put path, params: { article: params }.to_json, headers: headers
+      end
+
+      it "returns a 403 if :write_articles scope is missing (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        title = Faker::Book.title
+        body_markdown = "foobar"
+        params = { title: title, body_markdown: body_markdown }
+        put path, params: { article: params }.to_json, headers: headers
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "returns a 200 if :write_articles scope is provided (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "write_articles")
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        title = Faker::Book.title
+        body_markdown = "foobar"
+        params = { title: title, body_markdown: body_markdown }
+        put path, params: { article: params }.to_json, headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns a 429 status code if the rate limit is reached" do
+        rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:article_update, :retry_after)
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
+
+        put_article(title: Faker::Book.title, body_markdown: "foobar")
+
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
       end
 
       it "returns not found if the article does not belong to the user" do
@@ -804,6 +849,34 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response).to have_http_status(:ok)
         expect(article.reload.title).to eq(title)
         expect(article.body_markdown).to eq(body_markdown)
+      end
+
+      it "updates the main_image to be empty if given an empty cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_empty_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to eq(nil)
+      end
+
+      it "updates the main_image to be empty if given a different cover_image" do
+        image = Faker::Avatar.image
+        article.update(main_image: image)
+        expect(article.main_image).to eq(image)
+
+        body_markdown = file_fixture("article_published_cover_image.txt").read
+        put_article(
+          title: Faker::Book.title,
+          body_markdown: body_markdown,
+        )
+        expect(response).to have_http_status(:ok)
+        expect(article.reload.main_image).to eq("https://dummyimage.com/100x100")
       end
 
       it "updates the tags" do

@@ -1,0 +1,22 @@
+<div class="row my-3" id="possibleSpamUsers">
+  <div class="card w-100">
+    <div class="card-header" id="possibleSpamUsersHeader">
+      <h2 class="d-inline">Possible Spam/Abuse Users</h2>
+      <button class="btn btn-secondary float-right" type="button" data-toggle="collapse" data-target="#possibleSpamUsersBodyContainer" aria-expanded="false" aria-controls="possibleSpamUsersBodyContainer">
+        Toggle
+      </button>
+    </div>
+    <div id="possibleSpamUsersBodyContainer" class="collapse hide" aria-labelledby="possibleSpamUsersHeader" data-parent="#possibleSpamUsers">
+      <div class="card-body" style="overflow: scroll; max-height: 500px;">
+        <% @possible_spam_users.each do |user| %>
+          <a href="<%= user.path %>">@<%= user.username %></a> - <%= user.name %>
+          <span class="float-right">
+            <a href="/internal/users/<%= user.id %>" class="btn btn-secondary btn-sm">Internal User</a>
+            <a href="/internal/users/<%= user.id %>/edit" class="btn btn-danger btn-sm">Destructive Actions</a>
+          </span>
+          <hr>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

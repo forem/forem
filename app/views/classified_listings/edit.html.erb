@@ -31,7 +31,7 @@
           <%= f.date_field "expires_at", min: Date.tomorrow, max: @classified_listing.natural_expiration_date %>
         </div>
         <div class="field">
-          <%= f.label "contact_via_connect", "Allow Users to Message Me Via In-App Chat (DEV Connect)" %>
+          <%= f.label "contact_via_connect", "Allow Users to Message Me Via In-App Chat (#{community_name} Connect)" %>
           <%= f.check_box "contact_via_connect" %>
         </div>
         <% if @classified_listing.published %>

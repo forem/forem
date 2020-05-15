@@ -1,10 +1,8 @@
 import { h, render } from 'preact';
-import { renderFeed } from './homePageFeed';
 
 /* global userData */
 
 // This logic is similar to that in initScrolling.js.erb
-// that prevents the classic Algolia scrolling for the front page.
 const frontPageFeedPathNames = new Map([
   ['/', ''],
   ['/top/week', 'week'],
@@ -13,6 +11,15 @@ const frontPageFeedPathNames = new Map([
   ['/top/infinity', 'infinity'],
   ['/latest', 'latest'],
 ]);
+
+const mainNavMoreTrigger = document.getElementById('main-nav-more-trigger');
+function toggleMainNavMore() {
+  document.getElementById('main-nav-more').classList.remove('hidden');
+  mainNavMoreTrigger.classList.add('hidden');
+}
+if (mainNavMoreTrigger) {
+  mainNavMoreTrigger.addEventListener('click', toggleMainNavMore);
+}
 
 function toggleListingsMinimization() {
   if (document.body.classList.contains('config_minimize_newest_listings')) {
@@ -42,8 +49,9 @@ if (sidebarListingsMinimizeButton) {
  * @param {HTMLElement} tagsFollowedContainer DOM element to render tags followed.
  * @param {object} user The currently logged on user, null if not logged on.
  */
+
 function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
-  if (user === null) {
+  if (user === null || document.getElementById('followed-tags-wrapper')) {
     return;
   }
 
@@ -62,51 +70,51 @@ function renderTagsFollowed(tagsFollowedContainer, user = userData()) {
       );
     });
 
-    render(<TagsFollowed tags={followedTags} />, tagsFollowedContainer);
+    render(
+      <TagsFollowed tags={followedTags} />,
+      tagsFollowedContainer,
+      tagsFollowedContainer.firstElementChild,
+    );
   });
 }
 
 const feedTimeFrame = frontPageFeedPathNames.get(window.location.pathname);
 
-let waitingForDataLoad = setTimeout(function dataLoadedCheck() {
-  const { user = null, userStatus } = document.body.dataset;
+if (!document.getElementById('featured-story-marker')) {
+  const waitingForDataLoad = setInterval(function dataLoadedCheck() {
+    const { user = null, userStatus } = document.body.dataset;
+    if (userStatus === 'logged-out') {
+      return;
+    }
 
-  if (userStatus === 'logged-out') {
-    return;
-  }
+    if (userStatus === 'logged-in' && user !== null) {
+      clearInterval(waitingForDataLoad);
 
-  if (userStatus === 'logged-in' && user !== null) {
-    clearTimeout(waitingForDataLoad);
+      import('./homePageFeed').then(({ renderFeed }) => {
+        // We have user data, render followed tags.
+        renderFeed(feedTimeFrame);
 
-    import('./homePageFeed').then(({ renderFeed }) => {
-      // We have user data, render followed tags.
-      renderFeed(feedTimeFrame);
+        InstantClick.on('change', () => {
+          const { userStatus: currentUserStatus } = document.body.dataset;
 
-      InstantClick.on('change', () => {
-        const { userStatus: currentUserStatus } = document.body.dataset;
+          if (currentUserStatus === 'logged-out') {
+            return;
+          }
 
-        if (currentUserStatus === 'logged-out') {
-          return;
-        }
+          const url = new URL(window.location);
+          const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
 
-        const url = new URL(window.location);
-        const changedFeedTimeFrame = frontPageFeedPathNames.get(url.pathname);
+          if (!frontPageFeedPathNames.has(url.pathname)) {
+            return;
+          }
 
-        if (!frontPageFeedPathNames.has(url.pathname)) {
-          return;
-        }
-
-        renderFeed(changedFeedTimeFrame);
+          renderFeed(changedFeedTimeFrame);
+        });
       });
-    });
-
-    renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
-    return;
-  }
-
-  // No user data yet for the logged on user, poll once more.
-  waitingForDataLoad = setTimeout(dataLoadedCheck, 40);
-}, 40);
+      renderTagsFollowed(document.getElementById('sidebar-nav-followed-tags'));
+    }
+  }, 2);
+}
 
 InstantClick.on('receive', (address, body, title) => {
   if (document.body.dataset.userStatus !== 'logged-in') {

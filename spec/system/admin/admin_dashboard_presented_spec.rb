@@ -1,10 +1,11 @@
 require "rails_helper"
 
 RSpec.describe "Admin dashboard is presented", type: :system do
-  let(:admin) { create(:user, :super_admin) }
-  let(:user) { create(:user) }
+  let(:admin) { build(:user, :super_admin) }
+  let(:user) { build_stubbed(:user) }
 
   before { Bullet.raise = false }
+
   after { Bullet.raise = true }
 
   it "loads the admin dashboard view" do

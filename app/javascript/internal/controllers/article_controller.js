@@ -6,7 +6,7 @@ export default class ArticleController extends Controller {
   increaseFeaturedNumber() {
     // Increases the article's chances of being seen
     const seconds = new Date().getTime() / 1000;
-    this.featuredNumberTarget.value = Math.round(seconds);
+    this.featuredNumberTarget.value = (Math.round(seconds) + 300);
   }
 
   decreaseFeaturedNumber() {
@@ -16,9 +16,10 @@ export default class ArticleController extends Controller {
   }
 
   highlightElement() {
-    this.element.classList.add('highlighted-bg', 'highlighted-border');
+    const card = this.element.querySelector('.card-body');
+    card.classList.add('bg-highlighted', 'border-highlighted');
     setTimeout(() => {
-      this.element.classList.remove('highlighted-bg');
+      card.classList.remove('bg-highlighted');
     }, 350);
   }
 

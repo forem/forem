@@ -7,29 +7,7 @@ module Search
     DEFAULT_PER_PAGE = 30
 
     class << self
-      def search_documents(params:, user_id:)
-        set_query_size(params)
-        query_hash = Search::QueryBuilders::ChatChannelMembership.new(params, user_id).as_hash
-
-        results = search(body: query_hash)
-        hits = results.dig("hits", "hits").map { |ccm_doc| ccm_doc.dig("_source") }
-        paginate_hits(hits, params)
-      end
-
       private
-
-      def set_query_size(params)
-        params[:page] ||= DEFAULT_PAGE
-        params[:per_page] ||= DEFAULT_PER_PAGE
-
-        # pages start at 0
-        params[:size] = params[:per_page].to_i * (params[:page].to_i + 1)
-      end
-
-      def paginate_hits(hits, params)
-        start = params[:per_page] * params[:page]
-        hits[start, params[:per_page]] || []
-      end
 
       def index_settings
         if Rails.env.production?

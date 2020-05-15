@@ -34,7 +34,7 @@
     display: inline-block;
     width: fit-content;
     margin-bottom: 10px;
-    @include themeable(color, theme-color, $black);
+    color: var(--body-color);
     @include themeable(
       background,
       theme-container-background,
@@ -86,7 +86,7 @@
       flex-grow: 1;
       flex-shrink: 0;
       width: 100%;
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
       padding: 10px 0px;
       border-radius: 3px;
       min-width: 115px;
@@ -102,7 +102,7 @@
           theme-container-accent-background,
           $purple
         );
-        @include themeable(color, theme-container-color, $black);
+        color: var(--card-color);
       }
 
       &:not(.active):hover {
@@ -112,7 +112,7 @@
           theme-container-background-hover,
           $light-medium-purple
         );
-        @include themeable(color, theme-container-color, $black);
+        color: var(--card-color);
       }
 
       &:not(:last-child) {
@@ -197,7 +197,7 @@
     padding: 18px 0px 7px;
     padding-left: 10px;
     text-align: left;
-    font-family: $monospace;
+    font-family: var(--ff-accent);
     border: 1px solid $light-gray;
     display: inline-block;
     width: 90%;
@@ -398,7 +398,7 @@
           theme-container-accent-background,
           darken($light-gray, 6%)
         );
-        @include themeable(color, theme-color, $black);
+        color: var(--body-color);
         margin-right: 5px;
         padding: 3px 10px;
         border-radius: 100px;
@@ -411,11 +411,11 @@
     .dashboard-meta-details {
       font-size: 0.85em;
       padding: 3px 0px 6px;
-      @include themeable(color, theme-secondary-color, $medium-gray);
+      color: var(--card-color-tertiary);
     }
 
     a {
-      @include themeable(color, theme-container-color, $black);
+      color: var(--card-color);
       &.block-link {
         display: block;
       }
@@ -426,12 +426,17 @@
       margin-bottom: 10px;
       margin-top: 8px;
       font-size: 22px;
+      overflow: auto;
 
       @media screen and (min-width: 800px) {
         font-size: 34px;
       }
 
       width: 100%;
+
+      .block-link {
+        display: inline;
+      }
 
       img {
         height: 40px;
@@ -444,6 +449,28 @@
         color: $medium-gray;
         font-size: 0.6em;
         vertical-align: 0.16em;
+      }
+
+      .dashboard-follow {
+        @include themeable(
+          background,
+          theme-dashboard-followers-follow-background,
+          $green
+        );
+        border: 0;
+        border-radius: 5px;
+        @include themeable(
+          color,
+          theme-dashboard-followers-follow-color,
+          $black
+        );
+        float: right;
+        font-size: 15.9px;
+        padding: 2px 10px;
+        margin: 10px 5px;
+        @media screen and (min-width: 520px) {
+          font-size: 20px;
+        }
       }
 
       form {
@@ -548,7 +575,7 @@
 
     .dashboard-pageviews-indicator {
       display: inline-block;
-      font-family: $monospace;
+      font-family: var(--ff-accent);
       color: $dark-gray;
       background: white;
       text-align: center;
@@ -745,9 +772,9 @@
 .dashboard-manage-header {
   background: darken($bold-blue, 25%);
   color: white;
-  padding: 50px 0px 120px;
-  margin-bottom: -160px;
+  padding: 32px 0;
   line-height: 1.3em;
+  box-shadow: 0 100px 0 darken($bold-blue, 25%);
   .manage-page-error {
     background: $red;
     color: white;

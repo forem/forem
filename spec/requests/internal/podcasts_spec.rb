@@ -72,4 +72,24 @@ RSpec.describe "/internal/podcasts", type: :request do
       expect(response).to redirect_to(internal_podcasts_path)
     end
   end
+
+  describe "POST /internal/podcasts/:id/fetch_podcasts" do
+    it "redirects back to index with a notice" do
+      post fetch_internal_podcast_path(podcast.id)
+      expect(response).to redirect_to(internal_podcasts_path)
+      expect(flash[:notice]).to include("Podcast's episodes fetching was scheduled (#{podcast.title}, ##{podcast.id})")
+    end
+
+    it "schedules a worker to fetch episodes" do
+      sidekiq_assert_enqueued_with(job: Podcasts::GetEpisodesWorker, args: [{ podcast_id: podcast.id, limit: 5, force: false }]) do
+        post fetch_internal_podcast_path(podcast.id), params: { limit: "5", force: nil }
+      end
+    end
+
+    it "schedules a worker without limit and with force" do
+      sidekiq_assert_enqueued_with(job: Podcasts::GetEpisodesWorker, args: [{ podcast_id: podcast.id, force: true, limit: nil }]) do
+        post fetch_internal_podcast_path(podcast.id), params: { force: "1", limit: "" }
+      end
+    end
+  end
 end

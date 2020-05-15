@@ -1,13 +1,16 @@
 require "rails_helper"
 
 RSpec.describe "ClassifiedListings", type: :request do
+  let_it_be_readonly(:edu_category) do
+    create(:classified_listing_category, cost: 1)
+  end
   let(:user) { create(:user) }
   let(:listing_params) do
     {
       classified_listing: {
         title: "something",
         body_markdown: "something else",
-        category: "cfp",
+        classified_listing_category_id: edu_category.id,
         tag_list: "",
         contact_via_connect: true
       }
@@ -18,7 +21,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       classified_listing: {
         title: "this a draft",
         body_markdown: "something draft",
-        category: "cfp",
+        classified_listing_category_id: edu_category.id,
         tag_list: "",
         contact_via_connect: true,
         action: "draft"
@@ -61,6 +64,19 @@ RSpec.describe "ClassifiedListings", type: :request do
         expired_listing.save
         get "/listings", params: { category: expired_listing.category, slug: expired_listing.slug }
         expect(response.body).not_to include(CGI.escapeHTML(expired_listing.title))
+      end
+    end
+
+    context "when view is moderate" do
+      it "redirects to internal/listings/:id/edit" do
+        get "/listings", params: { view: "moderate", slug: listing.slug }
+        expect(response.redirect_url).to include("/internal/listings/#{listing.id}/edit")
+      end
+
+      it "without a slug raises an ActiveRecord::RecordNotFound error" do
+        expect do
+          get "/listings", params: { view: "moderate" }
+        end.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
@@ -131,13 +147,15 @@ RSpec.describe "ClassifiedListings", type: :request do
       create_list(:credit, 25, user: user)
     end
 
+    let_it_be_readonly(:cfp_category) { create(:classified_listing_category, :cfp) }
+
     context "when the listing is invalid" do
       let(:invalid_params) do
         {
           classified_listing: {
             title: "nothing",
             body_markdown: "",
-            category: "cfp",
+            classified_listing_category_id: cfp_category.id,
             tag_list: ""
           }
         }
@@ -182,9 +200,9 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
 
       it "properly deducts the amount of credits" do
-        post "/listings", params: listing_params
-        listing_cost = ClassifiedListing.categories_available[:cfp][:cost]
-        expect(user.credits.spent.size).to eq(listing_cost)
+        expect do
+          post "/listings", params: listing_params
+        end.to change { user.credits.spent.size }.by(edu_category.cost)
       end
 
       it "creates a listing draft under the org" do
@@ -292,7 +310,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
 
       it "bumps the listing and subtract credits" do
-        cost = ClassifiedListing.cost_by_category(listing.category)
+        cost = listing.cost
         create_list(:credit, cost, user: user)
         previous_bumped_at = listing.bumped_at
         expect do
@@ -302,7 +320,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
 
       it "bumps the org listing using org credits before user credits" do
-        cost = ClassifiedListing.cost_by_category(org_listing.category)
+        cost = org_listing.cost
         create_list(:credit, cost, organization: organization)
         create_list(:credit, cost, user: user)
         previous_bumped_at = org_listing.bumped_at
@@ -313,7 +331,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
 
       it "bumps the org listing using user credits if org credits insufficient and user credits are" do
-        cost = ClassifiedListing.cost_by_category(org_listing.category)
+        cost = org_listing.cost
         create_list(:credit, cost, user: user)
         previous_bumped_at = org_listing.bumped_at
         expect do
@@ -327,7 +345,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       let(:params) { { classified_listing: { action: "publish" } } }
 
       it "publishes a draft and charges user credits if first publish" do
-        cost = ClassifiedListing.cost_by_category(listing_draft.category)
+        cost = listing_draft.cost
         create_list(:credit, cost, user: user)
         expect do
           put "/listings/#{listing_draft.id}", params: params
@@ -335,14 +353,14 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
 
       it "publishes a draft and ensures published column is true" do
-        cost = ClassifiedListing.cost_by_category(listing_draft.category)
+        cost = listing_draft.cost
         create_list(:credit, cost, user: user)
         put "/listings/#{listing_draft.id}", params: params
         expect(listing_draft.reload.published).to eq(true)
       end
 
       it "publishes an org draft and charges org credits if first publish" do
-        cost = ClassifiedListing.cost_by_category(org_listing_draft.category)
+        cost = org_listing_draft.cost
         create_list(:credit, cost, organization: organization)
         expect do
           put "/listings/#{org_listing_draft.id}", params: params
@@ -350,7 +368,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       end
 
       it "publishes an org draft and ensures published column is true" do
-        cost = ClassifiedListing.cost_by_category(org_listing_draft.category)
+        cost = org_listing_draft.cost
         create_list(:credit, cost, organization: organization)
         put "/listings/#{org_listing_draft.id}", params: params
         expect(org_listing_draft.reload.published).to eq(true)

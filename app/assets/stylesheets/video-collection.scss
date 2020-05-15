@@ -8,7 +8,7 @@
   }
 }
 .video-collection {
-  @include themeable(background, theme-container-background, $lightest-gray);
+  background: var(--body-bg);
   display: flex;
   max-width: 100%;
   flex-direction: row;
@@ -64,10 +64,10 @@
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
-      @include themeable(color, theme-color, $black);
+      color: var(--body-color);
       font-size: 0.95em;
       &.video-username {
-        @include themeable(color, theme-secondary-color, $medium-gray);
+        color: var(--card-color-tertiary);
         font-size: 0.88em;
       }
     }

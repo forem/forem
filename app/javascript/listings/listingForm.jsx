@@ -1,11 +1,11 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
-import Title from './elements/title';
-import BodyMarkdown from './elements/bodyMarkdown';
-import Categories from './elements/categories';
-import ContactViaConnect from './elements/contactViaConnect';
-import ExpireDate from './elements/expireDate';
+import Title from './components/Title';
+import BodyMarkdown from './components/BodyMarkdown';
+import Categories from './components/Categories';
+import ContactViaConnect from './components/ContactViaConnect';
+import ExpireDate from './components/ExpireDate';
 import Tags from '../shared/components/tags';
 import { OrganizationPicker } from '../organization/OrganizationPicker';
 
@@ -41,7 +41,7 @@ export default class ListingForm extends Component {
     };
   }
 
-  handleOrgIdChange = e => {
+  handleOrgIdChange = (e) => {
     const organizationId = e.target.selectedOptions[0].value;
     this.setState({ organizationId });
   };

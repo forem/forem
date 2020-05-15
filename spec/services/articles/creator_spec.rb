@@ -71,9 +71,9 @@ RSpec.describe Articles::Creator, type: :service do
     end
 
     it "doesn't schedule a job" do
-      expect do
+      sidekiq_assert_no_enqueued_jobs only: Notifications::NotifiableActionWorker do
         described_class.call(user, invalid_body_attributes)
-      end.not_to have_enqueued_job(1).on_queue(:send_notifiable_action_notification)
+      end
     end
 
     it "doesn't create a notification subscription" do

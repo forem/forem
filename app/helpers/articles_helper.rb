@@ -54,4 +54,8 @@ module ArticlesHelper
     host.gsub!("medium.com", "Medium")
     host.delete_prefix("www.")
   end
+
+  def utc_iso_timestamp(timestamp)
+    timestamp&.utc&.iso8601
+  end
 end

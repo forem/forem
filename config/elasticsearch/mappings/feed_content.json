@@ -32,14 +32,28 @@
     "featured_number": {
       "type": "integer"
     },
-    "flare_tag": {
-      "type": "keyword"
+    "flare_tag_hash": {
+      "dynamic": "strict",
+      "properties": {
+        "name": {
+          "type": "keyword"
+        },
+        "bg_color_hex": {
+          "type": "keyword"
+        },
+        "text_color_hex": {
+          "type": "keyword"
+        }
+      }
     },
     "hotness_score": {
       "type": "integer"
     },
     "language": {
       "type": "keyword"
+    },
+    "last_indexed_at": {
+      "type": "date"
     },
     "main_image": {
       "type": "keyword"
@@ -88,6 +102,9 @@
     "readable_publish_date": {
       "type": "date"
     },
+    "readable_publish_date_string": {
+      "type": "keyword"
+    },
     "reading_time": {
       "type": "integer"
     },
@@ -99,6 +116,9 @@
     },
     "search_score": {
       "type": "integer"
+    },
+    "slug": {
+      "type": "keyword"
     },
     "subtitle": {
       "type": "text"
@@ -157,6 +177,9 @@
     },
     "video_duration_in_minutes": {
       "type": "integer"
+    },
+    "video_duration_string": {
+      "type": "keyword"
     },
     "website_url": {
       "type": "keyword"

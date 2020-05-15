@@ -9,7 +9,9 @@ module Users
       return unless user
 
       Users::Delete.call(user)
-      NotifyMailer.account_deleted_email(user).deliver unless admin_delete
+      return if admin_delete || user.email.blank?
+
+      NotifyMailer.account_deleted_email(user).deliver
     rescue StandardError => e
       DatadogStatsClient.count("users.delete", 1, tags: ["action:failed", "user_id:#{user.id}"])
       Rails.logger.error("Error while deleting user: #{e}")

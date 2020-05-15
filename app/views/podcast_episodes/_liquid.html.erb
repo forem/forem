@@ -2,7 +2,7 @@
                              type: "fetch", quality: "auto", sign_url: true,
                              flags: "progressive", fetch_format: "jpg") %>
 
-<div class="podcastliquidtag" style="background: #<%= podcast.main_color_hex %> url(<%= image_url %>)">
+<div class="podcastliquidtag" style="background: #<%= podcast.main_color_hex %> url(<%= image_url %>)" data-meta="<%= episode.decorate.mobile_player_metadata.to_json %>">
   <div class="podcastliquidtag__info">
     <a href="/<%= podcast.slug %>/<%= episode.slug %>">
       <h1 class="podcastliquidtag__info__episodetitle"><%= episode.title %></h1>
