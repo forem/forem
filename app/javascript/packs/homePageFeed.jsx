@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Article, LoadingArticle } from '../articles';
 import { Feed } from '../articles/Feed';
 import { TodaysPodcasts, PodcastEpisode } from '../podcasts';
-import { articlePropTypes } from '../src/components/common-prop-types';
+import { articlePropTypes } from '../common-prop-types';
 
 /**
  * Sends analytics about the featured article.

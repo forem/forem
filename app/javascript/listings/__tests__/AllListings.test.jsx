@@ -20,7 +20,7 @@ const firstListing = {
   },
 };
 
-const secondtListing = {
+const secondListing = {
   id: 21,
   category: 'misc',
   location: 'West Refugio',
@@ -56,7 +56,7 @@ const thirdListing = {
   },
 };
 
-const listings = [firstListing, secondtListing, thirdListing];
+const listings = [firstListing, secondListing, thirdListing];
 
 const getProps = () => ({
   listings,

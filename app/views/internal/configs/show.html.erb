@@ -143,6 +143,27 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
+                       header: "Twitter Hashtag",
+                       state: "collapse",
+                       target: "twitterHashtagBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="twitterHashtagBodyContainer" class="card-body collapse hide"
+                aria-labelledby="twitterHashtagBodyContainer">
+            <div class="form-group">
+              <%= f.label :twitter_hashtag %>
+              <%= f.text_field :twitter_hashtag,
+                               class: "form-control",
+                               value: SiteConfig.twitter_hashtag,
+                               placeholder: "#DEVCommunity" %>
+              <div class="alert alert-info">Used as the twitter hashtag of the community</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
                        header: "Meta Keywords",
                        state: "collapse",
                        target: "metaKeywordsBodyContainer",

@@ -216,7 +216,7 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "removes the proper amount of credits for organizations" do
-      Credit.add_to_org(organization, 10)
+      Credit.add_to(organization, 10)
       put "/internal/users/#{super_admin.id}", params: {
         user: {
           remove_org_credits: 5,
