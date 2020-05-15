@@ -2,11 +2,10 @@ require "csv"
 
 class CSVFormatter < RSpec::Core::Formatters::JsonFormatter
   RSpec::Core::Formatters.register self
+  HEADERS = ["Spec", "File", "Status", "Run Time", "Exception", "Travis Branch", "Travis URL"].freeze
 
   def close(_notification)
-    headers = ["Spec", "File", "Status", "Run Time", "Exception"]
-    headers += ["Travis Branch", "Travis URL"]
-    with_headers = { write_headers: true, headers: headers }
+    with_headers = { write_headers: true, headers: HEADERS }
 
     CSV.open(output.path, "w", with_headers) do |csv|
       @output_hash[:examples].map do |ex|
@@ -21,14 +20,11 @@ end
 
 if ENV["TRAVIS"]
   RSpec.configure do |config|
-    tmp_dir = File.join(Dir.pwd, "tmp")
-    FileUtils.mkdir(tmp_dir) unless File.directory?(tmp_dir)
+    csvs_dir = File.join(Dir.pwd, "tmp", "csvs")
+    FileUtils.mkdir_p(csvs_dir)
 
-    csvs_dir = File.join(tmp_dir, "csvs")
-    FileUtils.mkdir(csvs_dir) unless File.directory?(csvs_dir)
-
-    timestamp = DateTime.now.utc.strftime("D%Y-%m-%dT%H-%M-%S")
-    csv_filename = File.join(csvs_dir, "#{ENV['TRAVIS_BUILD_NUMBER']}-#{timestamp}.csv")
+    timestamp = Time.current.utc.iso8601
+    csv_filename = File.join(csvs_dir, "#{timestamp}.csv")
 
     config.add_formatter(CSVFormatter, csv_filename)
   end
