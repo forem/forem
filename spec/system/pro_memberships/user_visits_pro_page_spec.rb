@@ -9,10 +9,8 @@ RSpec.describe "Visits Pro Memberships page", type: :system do
       expect(page).not_to have_content("View your Pro Membership")
     end
 
-    it "does not ask to become a pro member", js: true do
+    it "does not ask to become a pro member" do
       visit "/pro"
-
-      Percy.snapshot(page, name: "Pro: /pro logged out user")
 
       expect(page).not_to have_content("Become a Pro member")
     end
@@ -28,10 +26,8 @@ RSpec.describe "Visits Pro Memberships page", type: :system do
       expect(page).not_to have_content("View your Pro Membership")
     end
 
-    it "asks to become a pro member", js: true do
+    it "asks to become a pro member" do
       visit "/pro"
-
-      Percy.snapshot(page, name: "Pro: /pro logged in user")
 
       expect(page).to have_content("Become a Pro member")
     end

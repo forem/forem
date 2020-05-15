@@ -38,12 +38,14 @@ RSpec.describe "Admin bans user", type: :system do
     expect(page).to have_content("User has been updated")
   end
 
-  it "checks that the user is warned, has a note, and privileges are removed", js: true do
+  it "renders the page", js: true, percy: true do
+    Percy.snapshot(page, name: "Admin: /internal/users/:user_id/edit")
+  end
+
+  it "checks that the user is warned, has a note, and privileges are removed" do
     user.add_role :trusted
     add_tag_moderator_role
     warn_user
-
-    Percy.snapshot(page, name: "Admin: /internal/users/:user_id/edit warn user")
 
     expect(user.warned).to eq(true)
     expect(Note.last.reason).to eq "Warn"
@@ -57,13 +59,11 @@ RSpec.describe "Admin bans user", type: :system do
     expect(Note.last.reason).to eq "Ban"
   end
 
-  it "removes other roles if user is banned", js: true do
+  it "removes other roles if user is banned" do
     user.add_role :trusted
     user.add_role :video_permission
     add_tag_moderator_role
     ban_user
-
-    Percy.snapshot(page, name: "Admin: /internal/users/:user_id/edit ban user")
 
     expect(user.banned).to eq(true)
     expect(user.trusted).to eq(false)
@@ -72,11 +72,9 @@ RSpec.describe "Admin bans user", type: :system do
     expect(user.has_role?(:tag_modertor)).to eq(false)
   end
 
-  it "unbans user", js: true do
+  it "unbans user" do
     user.add_role :banned
     unban_user
-
-    Percy.snapshot(page, name: "Admin: /internal/users/:user_id/edit unban user")
 
     expect(user.has_role?(:banned)).to eq(false)
   end

@@ -14,9 +14,11 @@ RSpec.describe "Admin manages reports", type: :system do
     visit internal_feedback_messages_path
   end
 
-  it "loads the view", js: true do
+  it "renders the page", js: true, percy: true do
     Percy.snapshot(page, name: "Admin: /internal/feedback_messages")
+  end
 
+  it "loads the view" do
     expect(page).to have_content("Feedback Messages")
     expect(page).to have_content("Suspicious Activity")
   end
@@ -32,11 +34,16 @@ RSpec.describe "Admin manages reports", type: :system do
       clear_search_boxes
     end
 
-    it "searches reports", js: true do
+    it "renders the page when searching reports", js: true, percy: true do
       fill_in "q_reporter_username_cont", with: user.username.to_s
       click_on "Search"
 
       Percy.snapshot(page, name: "Admin: /internal/feedback_messages search")
+    end
+
+    it "searches reports" do
+      fill_in "q_reporter_username_cont", with: user.username.to_s
+      click_on "Search"
 
       expect(page).to have_css("#edit_feedback_message_#{feedback_message.id}")
       expect(page).not_to have_css("#edit_feedback_message_#{feedback_message3.id}")
@@ -48,11 +55,16 @@ RSpec.describe "Admin manages reports", type: :system do
       expect(page).to have_css("#edit_feedback_message_#{feedback_message3.id}")
     end
 
-    it "filters by reports by status", js: true do
+    it "renders the page when filtering", js: true, percy: true do
       select "Invalid", from: "q[status_eq]"
       click_on "Search"
 
       Percy.snapshot(page, name: "Admin: /internal/feedback_messages filter")
+    end
+
+    it "filters by reports by status" do
+      select "Invalid", from: "q[status_eq]"
+      click_on "Search"
 
       expect(page).not_to have_css("#edit_feedback_message_#{feedback_message.id}")
       expect(page).not_to have_css("#edit_feedback_message_#{feedback_message3.id}")

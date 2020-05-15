@@ -15,12 +15,21 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     sign_in user
   end
 
+  # it "renders the page", percy: true do
+  #   visit article.path.to_s
+  #   wait_for_javascript
+
+  #   Percy.snapshot(page, name: "Comment: preview comment box")
+
+  #   fill_in "text-area", with: raw_comment
+  #   click_button("SUBMIT")
+  #   Percy.snapshot(page, name: "Comment: fill out comment box")
+  # end
+
   it "User fills out comment box normally" do
+    # TODO: Add Percy snapshot?
     visit article.path.to_s
-
     wait_for_javascript
-
-    Percy.snapshot(page, name: "Comment: fill out comment box")
 
     fill_in "text-area", with: raw_comment
     click_button("SUBMIT")
@@ -63,10 +72,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
   it "User fill out comment box then click previews and submit" do
     visit article.path.to_s
-
     wait_for_javascript
-
-    Percy.snapshot(page, name: "Comment: preview comment box")
 
     fill_in "text-area", with: raw_comment
     click_button("PREVIEW")
@@ -102,12 +108,10 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       visible: :hidden,
     )
 
-    Percy.snapshot(page, name: "Image: uploads to an article")
-
     expect(page).to have_no_css("div.file-upload-error")
   end
 
-  it "User attaches a large image" do
+  it "User attaches a large image", percy: true do
     visit article.path.to_s
 
     reduce_max_file_size = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-size-mb", "0")'

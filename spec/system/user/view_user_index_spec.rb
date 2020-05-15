@@ -65,13 +65,14 @@ RSpec.describe "User index", type: :system do
   context "when user has an organization membership" do
     before do
       user.organization_memberships.create(organization: organization, type_of_user: "member")
+      visit "/user3000"
+    end
+
+    it "renders the page", js: true, percy: true do
+      Percy.snapshot(page, name: "User: /:user_id renders with organization membership")
     end
 
     it "shows organizations", js: true do
-      visit "/user3000"
-
-      Percy.snapshot(page, name: "User: /:user_id renders with organization membership")
-
       expect(page).to have_css("#sidebar-wrapper-right h4", text: "organizations")
     end
   end
@@ -82,9 +83,11 @@ RSpec.describe "User index", type: :system do
       visit "/user3000"
     end
 
-    it "shows the header", js: true do
+    it "renders the page", js: true, percy: true do
       Percy.snapshot(page, name: "User: /:user_id for logged in user's own profile")
+    end
 
+    it "shows the header", js: true do
       within("h1") { expect(page).to have_content(user.name) }
       within(".profile-details") do
         expect(page).to have_button("EDIT PROFILE")
