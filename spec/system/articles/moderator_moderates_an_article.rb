@@ -11,7 +11,7 @@ RSpec.describe "Views an article", type: :system do
     visit "/#{user.username}/#{article.slug}/mod"
   end
 
-  it "shows an article", js: true do
+  it "shows an article", js: true, percy: true do
     visit "/#{user.username}/#{article.slug}"
 
     Percy.snapshot(page, name: "Moderators: renders an article")
@@ -19,7 +19,7 @@ RSpec.describe "Views an article", type: :system do
     expect(page).to have_content(article.title)
   end
 
-  it "lets moderators visit /mod", js: true do
+  it "lets moderators visit /mod", js: true, percy: true do
     visit "/#{user.username}/#{article.slug}/mod"
 
     Percy.snapshot(page, name: "Moderators: renders /mod")

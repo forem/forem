@@ -5,7 +5,7 @@ RSpec.describe "User visits podcast show page", type: :system do
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:single_quote_episode) { create(:podcast_episode, title: "What's up doc?!") }
 
-  it "they see the content of the hero", js: true, retry: 3 do
+  it "they see the content of the hero", js: true, percy: true, retry: 3 do
     visit podcast_episode.path.to_s
 
     Percy.snapshot(page, name: "Podcast: /:podcast_slug/:episode_slug renders")
@@ -41,7 +41,7 @@ RSpec.describe "User visits podcast show page", type: :system do
   end
 
   context "when episode may not be playable" do
-    it "displays status when episode is not reachable by https", js: true do
+    it "displays status when episode is not reachable by https", js: true, percy: true do
       podcast_episode = create(:podcast_episode, https: false)
       visit podcast_episode.path.to_s
 
@@ -78,7 +78,7 @@ RSpec.describe "User visits podcast show page", type: :system do
     let(:comment) { create(:comment, user_id: user.id, commentable: podcast_episode) }
     let!(:comment2) { create(:comment, user_id: user.id, commentable: podcast_episode, parent: comment) }
 
-    it "sees the comments", js: true do
+    it "sees the comments", js: true, percy: true do
       visit podcast_episode.path.to_s
 
       Percy.snapshot(page, name: "Podcast: /:podcast_slug/:episode_slug renders with comments")

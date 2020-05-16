@@ -11,13 +11,13 @@ RSpec.describe "Views an article", type: :system do
     sign_in user
   end
 
-  it "shows an article", js: true do
+  it "shows an article", js: true, percy: true do
     visit article.path
     Percy.snapshot(page, name: "Article: renders")
     expect(page).to have_content(article.title)
   end
 
-  it "shows comments", js: true do
+  it "shows comments", js: true, percy: true do
     create_list(:comment, 3, commentable: article)
 
     visit article.path
@@ -70,7 +70,7 @@ RSpec.describe "Views an article", type: :system do
       let(:crossposted_article) { create(:article) }
       let(:article2) { create(:article) }
 
-      it "renders the articles in ascending order considering crossposted_at", js: true do
+      it "renders the articles in ascending order considering crossposted_at", js: true, percy: true do
         visit article1.path
         Percy.snapshot(page, name: "Articles: renders crossposted articles")
       end

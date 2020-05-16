@@ -29,7 +29,7 @@ RSpec.describe "Admin creates new event", type: :system do
     expect(page).to have_content("Create New Event")
   end
 
-  it "renders the page", js: true do
+  it "renders the page", js: true, percy: true do
     Percy.snapshot(page, name: "Admin: /internal/events shows published events")
   end
 

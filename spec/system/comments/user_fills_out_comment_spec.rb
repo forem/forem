@@ -15,17 +15,6 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     sign_in user
   end
 
-  # it "renders the page", percy: true do
-  #   visit article.path.to_s
-  #   wait_for_javascript
-
-  #   Percy.snapshot(page, name: "Comment: preview comment box")
-
-  #   fill_in "text-area", with: raw_comment
-  #   click_button("SUBMIT")
-  #   Percy.snapshot(page, name: "Comment: fill out comment box")
-  # end
-
   it "User fills out comment box normally" do
     # TODO: Add Percy snapshot?
     visit article.path.to_s

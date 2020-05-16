@@ -13,7 +13,7 @@ RSpec.describe "Link on tags for post in notifications", type: :system do
       visit "/dashboard"
     end
 
-    it "shows the sign-with page", js: true do
+    it "shows the sign-with page", js: true, percy: true do
       Percy.snapshot(page, name: "Logged out user: sign-in page")
       expect(page).to have_content(/Sign In With/i, count: 2)
     end
@@ -24,7 +24,7 @@ RSpec.describe "Link on tags for post in notifications", type: :system do
       sign_in article.user
     end
 
-    it "shows articles with tags", js: true do
+    it "shows articles with tags", js: true, percy: true do
       visit "/dashboard"
 
       Percy.snapshot(page, name: "Logged in user: dashboard")

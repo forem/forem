@@ -11,7 +11,7 @@ RSpec.describe "User index", type: :system do
     context "when 1 article" do
       before { visit "/user3000" }
 
-      it "shows the header", js: true do
+      it "shows the header", js: true, percy: true do
         Percy.snapshot(page, name: "User: /:user_id renders")
 
         within("h1") { expect(page).to have_content(user.name) }
