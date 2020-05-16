@@ -18,7 +18,8 @@ module Authentication
           email: info.email,
           apple_created_at: Time.zone.at(raw_info.auth_time),
           apple_username: username,
-          name: name
+          name: name,
+          remote_profile_image_url: SiteConfig.mascot_image_url
         }
       end
 
