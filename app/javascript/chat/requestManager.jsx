@@ -1,7 +1,11 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-const RequestManager = ({ resource: data }) => {
+const RequestManager = ({
+  resource: data,
+  handleRequestRejection,
+  handleRequestApproval,
+}) => {
   return (
     <div className="activechatchannel__activeArticle activesendrequest">
       <div className="request_manager_header crayons-card mb-6 grid grid-flow-row gap-6 p-6">
@@ -16,11 +20,20 @@ const RequestManager = ({ resource: data }) => {
                 <button
                   type="button"
                   className="crayons-btn  crayons-btn--s crayons-btn--danger"
+                  onClick={handleRequestRejection}
+                  data-channel-id={request.id}
+                  data-membership-id={request.membership_id}
                 >
                   {' '}
                   Reject
                 </button>
-                <button type="button" className="crayons-btn crayons-btn--s">
+                <button
+                  type="button"
+                  className="crayons-btn crayons-btn--s"
+                  onClick={handleRequestApproval}
+                  data-channel-id={request.id}
+                  data-membership-id={request.membership_id}
+                >
                   {' '}
                   Accept
                 </button>
@@ -37,5 +50,7 @@ RequestManager.propTypes = {
   resource: PropTypes.shape({
     data: PropTypes.object,
   }).isRequired,
+  handleRequestRejection: PropTypes.func.isRequired,
+  handleRequestApproval: PropTypes.func.isRequired,
 };
 export default RequestManager;

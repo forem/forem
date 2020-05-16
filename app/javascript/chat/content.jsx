@@ -84,6 +84,12 @@ function display(props) {
     );
   }
   if (resource.type_of === 'channel-request-manager') {
-    return <RequestManager resource={resource.data} />;
+    return (
+      <RequestManager
+        resource={resource.data}
+        handleRequestRejection={resource.handleRequestRejection}
+        handleRequestApproval={resource.handleRequestApproval}
+      />
+    );
   }
 }
