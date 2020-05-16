@@ -130,7 +130,6 @@ class User < ApplicationRecord
   validates :facebook_url, length: { maximum: 1000 }, format: FACEBOOK_URL_REGEXP, allow_blank: true
   validates :feed_referential_link, inclusion: { in: [true, false] }
   validates :feed_url, length: { maximum: 500 }, allow_nil: true
-  validates :github_username, uniqueness: { allow_nil: true }, if: :github_username_changed?
   validates :gitlab_url, length: { maximum: 100 }, allow_blank: true, format: GITLAB_URL_REGEXP
   validates :inbox_guidelines, length: { maximum: 250 }, allow_nil: true
   validates :inbox_type, inclusion: { in: INBOXES }
@@ -144,13 +143,20 @@ class User < ApplicationRecord
   validates :summary, length: { maximum: 1300 }, allow_nil: true
   validates :text_color_hex, format: COLOR_HEX_REGEXP, allow_blank: true
   validates :twitch_url, length: { maximum: 100 }, allow_blank: true, format: TWITCH_URL_REGEXP
-  validates :twitter_username, uniqueness: { allow_nil: true }, if: :twitter_username_changed?
   validates :username, presence: true, exclusion: { in: ReservedWords.all, message: MESSAGES[:invalid_username] }
   validates :username, length: { in: 2..USERNAME_MAX_LENGTH }, format: USERNAME_REGEXP
   validates :username, uniqueness: { case_sensitive: false }, if: :username_changed?
   validates :website_url, :employer_url, url: { allow_blank: true, no_local: true }
   validates :website_url, length: { maximum: 100 }, allow_nil: true
   validates :youtube_url, length: { maximum: 1000 }, format: YOUTUBE_URL_REGEXP, allow_blank: true
+
+  # add validators for provider related usernames
+  Authentication::Providers.username_fields.each do |username_field|
+    # make sure usernames are not empty, to be able to use the database unique index
+    before_validation(proc { |record| record.assign_attributes(username_field => nil) if record.attributes[username_field.to_s] == "" })
+
+    validates username_field, uniqueness: { allow_nil: true }, if: :"#{username_field}_changed?"
+  end
 
   validate :conditionally_validate_summary
   validate :non_banished_username, :username_changed?
@@ -171,8 +177,8 @@ class User < ApplicationRecord
 
   before_create :set_default_language
   before_validation :set_username
-  # make sure usernames are not empty, to be able to use the database unique index
-  before_validation :verify_twitter_username, :verify_github_username, :verify_email, :verify_twitch_username
+
+  before_validation :verify_email, :verify_twitch_username
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
@@ -495,14 +501,6 @@ class User < ApplicationRecord
     Notification.send_welcome_notification(id, set_up_profile_broadcast.id)
   end
 
-  def verify_twitter_username
-    self.twitter_username = nil if twitter_username == ""
-  end
-
-  def verify_github_username
-    self.github_username = nil if github_username == ""
-  end
-
   def verify_email
     self.email = nil if email == ""
   end
@@ -529,10 +527,11 @@ class User < ApplicationRecord
   end
 
   def temp_username
-    if twitter_username
-      twitter_username.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ")
-    elsif github_username
-      github_username.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ")
+    Authentication::Providers.username_fields.each do |username_field|
+      value = public_send(username_field)
+      if value.present?
+        return value.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ")
+      end
     end
   end
 
@@ -576,8 +575,7 @@ class User < ApplicationRecord
       saved_change_to_bg_color_hex? ||
       saved_change_to_text_color_hex? ||
       saved_change_to_profile_image? ||
-      saved_change_to_github_username? ||
-      saved_change_to_twitter_username?
+      Authentication::Providers.username_fields.any? { |f| public_send("saved_change_to_#{f}?") }
   end
 
   def conditionally_validate_summary

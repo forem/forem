@@ -1,21 +1,15 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Devise::Controllers::Rememberable
 
+  # TODO: remove before deployment
   skip_before_action :verify_authenticity_token
 
-  # Called upon successful redirect from Apple
-  def apple
-    callback_for(:apple)
-  end
-
-  # Called upon successful redirect from GitHub
-  def github
-    callback_for(:github)
-  end
-
-  # Called upon successful redirect from Twitter
-  def twitter
-    callback_for(:twitter)
+  # Each available authentication method needs a related action that will be called
+  # as a callback on successful redirect from the upstream OAuth provider
+  Authentication::Providers.available.each do |provider_name|
+    define_method(provider_name) do
+      callback_for(provider_name)
+    end
   end
 
   # Callback for third party failures (shared by all providers)
@@ -45,8 +39,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def callback_for(provider)
     auth_payload = request.env["omniauth.auth"]
     cta_variant = request.env["omniauth.params"]["state"].to_s
-
-    binding.pry
 
     @user = Authentication::Authenticator.call(
       auth_payload,

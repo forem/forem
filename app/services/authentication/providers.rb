@@ -41,5 +41,11 @@ module Authentication
     def self.enabled?(provider_name)
       enabled.include?(provider_name.to_sym)
     end
+
+    def self.username_fields
+      Authentication::Providers::Provider.subclasses.map do |subclass|
+        subclass.const_get("USERNAME_FIELD").to_sym
+      end.sort
+    end
   end
 end

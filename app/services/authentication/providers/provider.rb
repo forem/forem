@@ -2,7 +2,7 @@ module Authentication
   module Providers
     # Authentication provider
     class Provider
-      delegate :email, :nickname, to: :info, prefix: :user
+      delegate :email, to: :info, prefix: :user
       delegate :user_created_at_field, :user_username_field, to: :class
 
       def initialize(auth_payload)
@@ -19,6 +19,11 @@ module Authentication
       # Extract data for an existing user
       def existing_user_data
         raise SubclassResponsibility
+      end
+
+      def user_nickname
+        # Apple doesn't have the `nickname` field in the `info` payload
+        (info.first_name&.downcase || info.nickname).to_s
       end
 
       def name

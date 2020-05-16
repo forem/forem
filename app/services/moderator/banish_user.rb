@@ -40,7 +40,7 @@ module Moderator
 
     def remove_profile_info
       user.update_columns(
-        twitter_username: nil, github_username: nil, website_url: "", summary: "",
+        twitter_username: nil, github_username: nil, apple_username: nil, website_url: "", summary: "",
         location: "", education: "", employer_name: "", employer_url: "", employment_title: "",
         mostly_work_with: "", currently_learning: "", currently_hacking_on: "", available_for: "",
         email_public: false, facebook_url: nil, youtube_url: nil, dribbble_url: nil,

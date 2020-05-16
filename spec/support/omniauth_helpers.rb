@@ -42,6 +42,44 @@ module OmniauthHelpers
     }
   }.freeze
 
+  OMNIAUTH_PAYLOAD_APPLE = OmniAuth::AuthHash::InfoHash.new(
+    {
+      provider: "apple",
+      uid: SecureRandom.hex,
+      info: {
+        sub: "001551.6fb185533f63469196d61e2ae126febf.1523",
+        email: "hynnu385xiabcdef@privaterelay.appleid.com",
+        first_name: "fname",
+        last_name: "lname"
+      },
+      credentials: {
+        token: SecureRandom.hex,
+        refresh_token: SecureRandom.hex,
+        expires_at: 1_589_475_606,
+        expires: true
+      },
+      extra: {
+        raw_info: {
+          iss: "https://appleid.apple.com",
+          aud: "test",
+          exp: 1_589_472_606,
+          iat: 1_589_472_606,
+          sub: "001551.6fb185533f63469196d61e2ae126febf.1523",
+          at_hash: SecureRandom.hex,
+          email: "hynnu385xiabcdef@privaterelay.appleid.com",
+          email_verified: true,
+          is_private_email: true,
+          auth_time: 1_589_472_002,
+          nonce_supported: true,
+          name: {
+            first_name: "fname",
+            last_name: "lname"
+          }
+        }
+      }
+    },
+  ).freeze
+
   def omniauth_setup_invalid_credentials(provider)
     OmniAuth.config.mock_auth[provider] = :invalid_credentials
   end
@@ -90,6 +128,10 @@ module OmniauthHelpers
     Authentication::Providers.available.each do |provider_name|
       OmniAuth.config.mock_auth[provider_name] = nil
     end
+  end
+
+  def omniauth_mock_apple_payload
+    OmniAuth.config.mock_auth[:apple] = OMNIAUTH_PAYLOAD_APPLE.dup
   end
 
   def omniauth_mock_github_payload

@@ -3,8 +3,8 @@ module Authentication
     # Twitter authentication provider, uses omniauth-twitter as backend
     class Twitter < Provider
       OFFICIAL_NAME = "Twitter".freeze
-      CREATED_AT_FIELD = "twitter_created_at".freeze
-      USERNAME_FIELD = "twitter_username".freeze
+      CREATED_AT_FIELD = :twitter_created_at
+      USERNAME_FIELD = :twitter_username
       SETTINGS_URL = "https://twitter.com/settings/applications".freeze
 
       def new_user_data
