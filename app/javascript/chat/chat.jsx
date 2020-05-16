@@ -1034,22 +1034,15 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You and
-              {' '}
+              You and{' '}
               <a href={`/${activeChannel.channel_modified_slug}`}>
                 {activeChannel.channel_modified_slug}
-              </a>
-              {' '}
-              are connected because you both follow each other. All interactions
-              {' '}
+              </a>{' '}
+              are connected because you both follow each other. All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-              .
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -1058,19 +1051,11 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
-              {' '}
-              {activeChannel.channel_name}
-              ! All interactions
-              {' '}
+              You have joined {activeChannel.channel_name}! All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-              .
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -1193,8 +1178,7 @@ export default class Chat extends Component {
             >
               <span role="img" aria-label="emoji">
                 👋
-              </span>
-              {' '}
+              </span>{' '}
               New Invitations!
             </a>
           </div>
@@ -1210,8 +1194,7 @@ export default class Chat extends Component {
             >
               <span role="img" aria-label="emoji">
                 👋
-              </span>
-              {' '}
+              </span>{' '}
               New Requests
             </button>
           </div>
