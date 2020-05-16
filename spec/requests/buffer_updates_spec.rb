@@ -33,7 +33,7 @@ RSpec.describe "BufferUpdates", type: :request do
       post "/buffer_updates",
            params:
            { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
-      expect(BufferUpdate.first.body_text).to include("##{SiteConfig.twitter_hashtag}")
+      expect(BufferUpdate.first.body_text).to include(SiteConfig.twitter_hashtag.to_s)
     end
 
     it "creates satellite and Facebook buffer" do

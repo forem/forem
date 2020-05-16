@@ -352,7 +352,7 @@ RSpec.describe "/internal/config", type: :request do
         it "updates the twitter hashtag" do
           params["confirmation"] = confirmation_message
           post "/internal/config", params: params
-          expect("##{SiteConfig.twitter_hashtag}").to eq twitter_hashtag
+          expect(SiteConfig.twitter_hashtag.to_s).to eq twitter_hashtag
         end
       end
     end
