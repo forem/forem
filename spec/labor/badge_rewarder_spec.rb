@@ -116,6 +116,15 @@ RSpec.describe BadgeRewarder, type: :labor do
     let(:stubbed_github_commits) do
       [OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))]
     end
+    let(:stubbed_github_commits_body) do
+      [
+        {
+          author: {
+            id: user.identities.first.uid
+          }
+        },
+      ]
+    end
 
     let(:github_client) { instance_double(fake_github_client, commits: stubbed_github_commits) }
 
@@ -125,7 +134,7 @@ RSpec.describe BadgeRewarder, type: :labor do
       allow(Github::OauthClient).to receive(:new).and_return(github_client)
 
       stub_request(:get, "https://api.github.com/repos/thepracticaldev/dev.to/commits?per_page=100&since=2020-05-14T13:49:20Z").
-        to_return(status: 200, body: stubbed_github_commits, headers: {})
+        to_return(status: 200, body: stubbed_github_commits_body.to_json, headers: {})
     end
 
     it "award contributor badge" do
