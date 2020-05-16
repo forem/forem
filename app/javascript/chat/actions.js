@@ -257,3 +257,54 @@ export function sendChannelRequest(id, successCb, failureCb) {
     .then(successCb)
     .catch(failureCb);
 }
+
+export function rejectJoiningRequest(
+  channel_id,
+  membership_id,
+  successCb,
+  failureCb,
+) {
+  fetch(`/chat_channel_memberships/remove_membership`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      chat_channel_id: channel_id,
+      membership_id: membership_id,
+    }),
+    credentials: 'same-origin',
+  })
+    .then((response) => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
+
+export function acceptJoiningRequest(
+  channel_id,
+  membership_id,
+  successCb,
+  failureCb,
+) {
+  fetch(`/chat_channel_memberships/add_membership`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-Token': window.csrfToken,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      chat_channel_id: channel_id,
+      membership_id: membership_id,
+      chat_channel_membership: {
+        user_action: 'accept',
+      },
+    }),
+    credentials: 'same-origin',
+  })
+    .then((response) => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}

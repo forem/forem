@@ -16,6 +16,8 @@ import {
   deleteMessage,
   editMessage,
   sendChannelRequest,
+  rejectJoiningRequest,
+  acceptJoiningRequest,
 } from './actions';
 import {
   hideMessages,
@@ -823,7 +825,22 @@ export default class Chat extends Component {
       this.receiveNewMessage(response.message);
     }
   };
-
+  handleRequestRejection = (e) => {
+    rejectJoiningRequest(
+      e.target.dataset.channelId,
+      e.target.dataset.membershipId,
+      this.handleJoiningManagerSuccess(e.target.dataset.membershipId),
+      null,
+    );
+  };
+  handleRequestApproval = (e) => {
+    acceptJoiningRequest(
+      e.target.dataset.channelId,
+      e.target.dataset.membershipId,
+      this.handleJoiningManagerSuccess(e.target.dataset.membershipId),
+      null,
+    );
+  };
   triggerActiveContent = (e) => {
     if (
       // Trying to open in new tab
@@ -864,6 +881,8 @@ export default class Chat extends Component {
         this.setActiveContent({
           data: this.state.joiningRequests,
           type_of: 'channel-request-manager',
+          handleRequestRejection: this.handleRequestRejection,
+          handleRequestApproval: this.handleRequestApproval,
         });
       } else if (content === 'sidecar_all') {
         this.setActiveContentState(activeChannelId, {
@@ -923,7 +942,6 @@ export default class Chat extends Component {
       },
     }));
   };
-
   setActiveContent = (response) => {
     const { activeChannelId } = this.state;
     this.setActiveContentState(activeChannelId, response);
@@ -1011,22 +1029,15 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You and
-              {' '}
+              You and{' '}
               <a href={`/${activeChannel.channel_modified_slug}`}>
                 {activeChannel.channel_modified_slug}
-              </a>
-              {' '}
-              are connected because you both follow each other. All interactions
-              {' '}
+              </a>{' '}
+              are connected because you both follow each other. All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-              .
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -1035,19 +1046,11 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
-              {' '}
-              {activeChannel.channel_name}
-              ! All interactions
-              {' '}
+              You have joined {activeChannel.channel_name}! All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-              .
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -1164,8 +1167,7 @@ export default class Chat extends Component {
             >
               <span role="img" aria-label="emoji">
                 👋
-              </span>
-              {' '}
+              </span>{' '}
               New Invitations!
             </a>
           </div>
@@ -1181,8 +1183,7 @@ export default class Chat extends Component {
             >
               <span role="img" aria-label="emoji">
                 👋
-              </span>
-              {' '}
+              </span>{' '}
               New Requests
             </button>
           </div>
@@ -1664,7 +1665,16 @@ export default class Chat extends Component {
       null,
     );
   };
-
+  handleJoiningManagerSuccess = (membershipId) => {
+    const { activeChannelId } = this.state;
+    this.setState({
+      joiningRequests: this.state.joiningRequests.filter(
+        (req) => req.membership_id !== parseInt(membershipId, 10),
+      ),
+    });
+    this.setActiveContentState(activeChannelId, null);
+    this.setState({ fullscreenContent: null });
+  };
   handleJoiningRequestSuccess = () => {
     const { activeChannelId } = this.state;
     this.setActiveContentState(activeChannelId, null);
