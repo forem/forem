@@ -35,7 +35,6 @@ export class ImageUploader extends Component {
     });
   };
 
-
   clearUploadError = () => {
     this.setState({
       uploadError: false,

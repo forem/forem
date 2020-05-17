@@ -74,7 +74,7 @@ export class Actions extends Component {
             className="mr-2 whitespace-nowrap"
             onClick={onSaveDraft}
           >
-            Save 
+            Save
             {' '}
             <span className="hidden s:inline">draft</span>
           </Button>
@@ -105,7 +105,7 @@ export class Actions extends Component {
             className="whitespace-nowrap fw-normal"
             size="s"
           >
-            Revert 
+            Revert
             {' '}
             <span className="hidden s:inline">new changes</span>
           </Button>
