@@ -1,5 +1,5 @@
 <% @stories.each_with_index do |story, i| %>
-  <%= render "articles/single_story", story: story %>
+  <%= render "articles/single_story", story: story, featured: false %>
 <% end %>
 <% if @stories.size > 1 %>
   <div class="placeholder-div"></div>

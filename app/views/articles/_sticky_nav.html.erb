@@ -62,7 +62,7 @@
       <%= render "articles/user_metadata", context: "sidebar" %>
     <% elsif @actor.class.name == "Organization" && @actor.approved_and_filled_out_cta? %>
       <div class="primary-sticky-nav-org-summary">
-        <%= @actor.cta_processed_html.html_safe %>
+        <%= sanitize_rendered_markdown(@actor.cta_processed_html) %>
         <div class="primary-sticky-nav-org-cta-link-wrapper">
           <% if @actor.cta_button_text.present? && @actor.cta_button_url.present? %>
             <a href="<%= @actor.cta_button_url || "LEARN MORE" %>" class="primary-sticky-nav-org-cta-link">

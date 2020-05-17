@@ -9,6 +9,7 @@ class ChatChannel < ApplicationRecord
   has_many :pending_memberships, -> { where status: "pending" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :rejected_memberships, -> { where status: "rejected" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :mod_memberships, -> { where role: "mod" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :requested_memberships, -> { where status: "joining_request" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :active_users, through: :active_memberships, class_name: "User", source: :user
   has_many :pending_users, through: :pending_memberships, class_name: "User", source: :user
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
@@ -58,7 +59,7 @@ class ChatChannel < ApplicationRecord
 
   class << self
     def create_with_users(users:, channel_type: "direct", contrived_name: "New Channel", membership_role: "member")
-      raise "Invalid direct channel" if users.size != 2 && channel_type == "direct"
+      raise "Invalid direct channel" if invalid_direct_channel?(users, channel_type)
 
       usernames = users.map(&:username).sort
       slug = channel_type == "direct" ? usernames.join("/") : contrived_name.to_s.parameterize + "-" + rand(100_000).to_s(26)
@@ -89,6 +90,10 @@ class ChatChannel < ApplicationRecord
         )
       end
       channel
+    end
+
+    def invalid_direct_channel?(users, channel_type)
+      (users.size != 2 || users.map(&:id).uniq.count < 2) && channel_type == "direct"
     end
   end
 

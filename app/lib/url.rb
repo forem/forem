@@ -60,6 +60,8 @@ module URL
   # @param user [User] the user to create the URL for
   def self.user(user)
     url(user.username)
+  rescue URI::InvalidURIError # invalid username containing spaces will result in an error
+    nil
   end
 
   def self.organization(organization)

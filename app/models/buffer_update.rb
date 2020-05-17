@@ -2,7 +2,7 @@ class BufferUpdate < ApplicationRecord
   resourcify
 
   belongs_to :article
-  validate :validate_body_text_recent_uniqueness
+  validate :validate_body_text_recent_uniqueness, :validate_suggestion_limit
   validates :status, inclusion: { in: %w[pending sent_direct confirmed dismissed] }
 
   def self.buff!(article_id, text, buffer_profile_id_code, social_service_name = "twitter", tag_id = nil, admin_id = nil)
@@ -55,5 +55,11 @@ class BufferUpdate < ApplicationRecord
         where("created_at > ?", 2.minutes.ago).any?
       errors.add(:body_text, "\"#{body_text}\" has already been submitted very recently")
     end
+  end
+
+  def validate_suggestion_limit
+    return unless BufferUpdate.where(article_id: article_id, tag_id: tag_id, social_service_name: social_service_name).count > 2
+
+    errors.add(:article_id, "already has multiple suggestions for #{social_service_name}")
   end
 end

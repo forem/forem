@@ -18,7 +18,7 @@ export const SearchSnippet = ({ highlightText }) => {
 
     if (bodyTextSnippet.length > 0) {
       return (
-        <div className="search-snippet">
+        <div className="crayons-story__snippet">
           <span>{bodyTextSnippet}</span>
         </div>
       );

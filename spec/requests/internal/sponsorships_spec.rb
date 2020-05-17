@@ -23,7 +23,7 @@ RSpec.describe "/internal/sponsorships", type: :request do
   end
 
   describe "GET /internal/sponsorships/:id/edit" do
-    let(:ruby) { create(:tag, name: "ruby") }
+    let(:ruby) { build_stubbed(:tag, name: "ruby") }
     let!(:sponsorship) { create(:sponsorship, organization: org, level: :tag, sponsorable: ruby, status: "pending", expires_at: Time.current) }
 
     before do
@@ -37,7 +37,7 @@ RSpec.describe "/internal/sponsorships", type: :request do
   end
 
   describe "PUT /internal/sponsorships/:id" do
-    let(:ruby) { create(:tag, name: "ruby") }
+    let(:ruby) { build_stubbed(:tag, name: "ruby") }
     let!(:sponsorship) { create(:sponsorship, organization: org, level: :tag, sponsorable: ruby, status: "pending", expires_at: Time.current) }
     let(:valid_attributes) { { status: "live", expires_at: 1.month.from_now, blurb_html: Faker::Book.title } }
     let(:invalid_attributes) { { status: "super-live", expires_at: 1.month.from_now } }

@@ -129,23 +129,14 @@ function listenForNotificationsBellClick() {
 }
 
 function initFilter() {
-  var navFilterMenu = document.getElementsByClassName("notifications-filter__dropdown__menu");
-  var navFilterSelect = document.getElementById("notifications-filter__select");
-
-  for (var i = 0; i < navFilterMenu.length; i++) {
-    document.getElementById("notifications-filter__menu-overlay").classList.remove("showing");
-  }
-
-  if (navFilterSelect) {
-    navFilterSelect.onclick = function(){
-      document.getElementById("notifications-filter__menu-overlay").classList.add("showing");
-    }
-  }
-
-  for (var i = 0; i < navFilterMenu.length; i++) {
-    navFilterMenu[i].onclick = function(event){
-      document.getElementById("notifications-filter__menu-overlay").classList.remove("showing");
-    }
+  const notificationsFilterSelect = document.getElementById(
+    'notifications-filter__select',
+  );
+  const changeNotifications = (event) => {
+    window.location.href = event.target.value;
+  };
+  if (notificationsFilterSelect) {
+    notificationsFilterSelect.addEventListener('change', changeNotifications);
   }
 }
 

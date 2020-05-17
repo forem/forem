@@ -1214,3 +1214,54 @@
     }
   }
 }
+.joining-message {
+  display: grid;
+  margin-top: 30px;
+  justify-content: center;
+  h3,
+  h2 {
+    width: 90%;
+    margin-top: 10px;
+    text-align: center;
+    justify-self: center;
+  }
+}
+.user-picture,
+.send-request {
+  display: flex;
+  justify-content: center;
+  margin-top: 10vh;
+}
+.user-picture {
+  .chatmessage__profilepic {
+    .chatmessagebody__profileimage {
+      width: 50px;
+      height: 50px;
+      border: 1px solid var(--base-30);
+    }
+  }
+}
+.send-request {
+  .cta {
+    margin: 4px 6px 4px 0;
+    border-radius: 3px;
+    font-weight: 600px;
+    font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
+      'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
+      'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
+      'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
+      'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
+    font-size: 18px;
+    border: 0px;
+    height: 50px;
+    padding: 0 30px;
+  }
+}
+.loading-user {
+  height: '210px';
+  width: '210px';
+  margin: ' 15px auto';
+  display: 'block';
+  border-radius: '500px';
+  background-color: '#f5f6f7';
+}

@@ -30,6 +30,28 @@
       <% end %>
     </dl>
   </div>
+  <div class="col-12">
+    <% current_credits = @organization.unspent_credits_count %>
+    <h2>Credits (currrent: <%= current_credits %>)</h2>
+    <%= form_tag update_org_credits_internal_organization_path(@organization), method: :patch, class: "form-inline justify-content-between mb-2" do %>
+      <div class="form-group">
+        <%= hidden_field_tag :credit_action, :add %>
+        <%= number_field_tag :credits, nil, in: 1...100000, required: true, class: "form-control mr-3", size: 5 %>
+        <%= text_field_tag :note, "", placeholder: "Why are you adding these credits?", size: 50, required: true, class: "form-control mr-3" %>
+      </div>
+      <%= submit_tag "Add Org Credits", class: "btn btn-primary" %>
+    <% end %>
+    <% if current_credits.positive? %>
+      <%= form_tag update_org_credits_internal_organization_path(@organization), method: :patch, class: "form-inline justify-content-between mb-2" do %>
+        <div class="form-group">
+          <%= hidden_field_tag :credit_action, :remove %>
+          <%= number_field_tag :credits, nil, in: 1..current_credits, required: true, class: "form-control mr-3", size: 5 %>
+          <%= text_field_tag :note, "", placeholder: "Why are you removing these credits?", size: 50, required: true, class: "form-control mr-3" %>
+        </div>
+        <%= submit_tag "Remove Org Credits", class: "btn btn-danger" %>
+      <% end %>
+    <% end %>
+  </div>
 </div>
 
 <%= render "activity" %>
