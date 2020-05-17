@@ -1,5 +1,6 @@
 module BadgeRewarder
   YEARS = { 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five", 6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten" }.freeze
+  REPOSITORIES = ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].freeze
 
   def self.award_yearly_club_badges
     (1..3).each do |i|
@@ -64,7 +65,7 @@ module BadgeRewarder
   def self.award_contributor_badges_from_github(since = 1.day.ago, message_markdown = "Thank you so much for your contributions!")
     badge = Badge.find_by!(slug: "dev-contributor")
 
-    ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].each do |repo|
+    REPOSITORIES.each do |repo|
       commits = Github::Client.commits(repo, since: since.utc.iso8601)
 
       authors_uids = commits.map { |commit| commit.author.id }
