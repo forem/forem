@@ -272,6 +272,7 @@ export function rejectJoiningRequest(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
+      status: "pending",
       chat_channel_id: channel_id,
       membership_id: membership_id,
     }),
