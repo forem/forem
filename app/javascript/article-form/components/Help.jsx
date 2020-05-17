@@ -6,11 +6,15 @@ export class Help extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      liquidHelpHTML: document.getElementById('editor-liquid-help').innerHTML,
-      markdownHelpHTML: document.getElementById('editor-markdown-help')
-        .innerHTML,
-      frontmatterHelpHTML: document.getElementById('editor-frontmatter-help')
-        .innerHTML,
+      liquidHelpHTML:
+        document.getElementById('editor-liquid-help') &&
+        document.getElementById('editor-liquid-help').innerHTML,
+      markdownHelpHTML:
+        document.getElementById('editor-markdown-help') &&
+        document.getElementById('editor-markdown-help').innerHTML,
+      frontmatterHelpHTML:
+        document.getElementById('editor-frontmatter-help') &&
+        document.getElementById('editor-frontmatter-help').innerHTML,
     };
   }
 
@@ -37,7 +41,7 @@ export class Help extends Component {
 
   renderArticleFormTitleHelp = () => {
     return (
-      <div>
+      <div className="spec__title-help">
         <h4 className="mb-2 fs-l">How to write a good post title?</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
@@ -52,7 +56,7 @@ export class Help extends Component {
 
   renderTagInputHelp = () => {
     return (
-      <div>
+      <div className="spec__basic-tag-input-help">
         <h4 className="mb-2 fs-l">Use appropriate tags</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>Tags will help the right people find your post.</li>
@@ -71,13 +75,13 @@ export class Help extends Component {
 
   renderBasicEditorHelp = () => {
     return (
-      <div className="crayons-card crayons-card--secondary p-4 mb-6">
+      <div className="spec__basic-editor-help crayons-card crayons-card--secondary p-4 mb-6">
         You are currently using the basic markdown editor that uses
         {' '}
         <a href="#frontmatter" onClick={this.toggleModal('frontmatterShowing')}>
           Jekyll front matter
         </a>
-        . You can also use 
+        . You can also use the 
         {' '}
         <em>rich+markdown</em>
         {' '}
@@ -100,9 +104,9 @@ export class Help extends Component {
     );
   };
 
-  renderEditorHelp = () => {
+  renderFormatHelp = () => {
     return (
-      <div>
+      <div className="spec__format-help">
         <h4 className="mb-2 fs-l">How to use editor?</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
@@ -167,7 +171,7 @@ export class Help extends Component {
             {helpFor === 'tag-input' && this.renderTagInputHelp()}
             {version === 'v1' && this.renderBasicEditorHelp()}
             {(helpFor === 'article_body_markdown' || version === 'v1') &&
-              this.renderEditorHelp()}
+              this.renderFormatHelp()}
           </div>
         )}
 
