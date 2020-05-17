@@ -64,8 +64,6 @@ class ChatChannelMembershipsController < ApplicationController
     if params[:status] == "pending"
       @chat_channel_membership.destroy
       flash[:settings_notice] = "Invitation removed."
-      membership = ChatChannelMembership.find_by!(chat_channel_id: params[:chat_channel_id], user: current_user)
-      redirect_to edit_chat_channel_membership_path(membership)
     else
       send_chat_action_message("@#{current_user.username} removed @#{@chat_channel_membership.user.username} from #{@chat_channel_membership.channel_name}", current_user, @chat_channel_membership.chat_channel_id, "removed_from_channel")
       @chat_channel_membership.update(status: "removed_from_channel")
@@ -121,7 +119,6 @@ class ChatChannelMembershipsController < ApplicationController
       if previous_status == "pending"
         send_chat_action_message("@#{current_user.username} joined #{@chat_channel_membership.channel_name}", current_user, @chat_channel_membership.chat_channel_id, "joined")
         flash[:settings_notice] = "Invitation to  #{channel_name} accepted. It may take a moment to show up in your list."
-        redirect_to chat_channel_memberships_path
       else
         send_chat_action_message("@#{current_user.username} added @#{@chat_channel_membership.user.username}", current_user, @chat_channel_membership.chat_channel_id, "joined")
         NotifyMailer.channel_invite_email(@chat_channel_membership, @chat_channel_membership.user).deliver_later
@@ -135,8 +132,8 @@ class ChatChannelMembershipsController < ApplicationController
     else
       @chat_channel_membership.update(status: "rejected")
       flash[:settings_notice] = "Invitation rejected."
-      redirect_to chat_channel_memberships_path
     end
+    redirect_to chat_channel_memberships_path
   end
 
   def send_chat_action_message(message, user, channel_id, action)
