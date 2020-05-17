@@ -6,7 +6,6 @@ import { Title } from './Title';
 
 export const Meta = ({
   titleDefaultValue,
-  titleOnKeyDown,
   titleOnChange,
   tagsDefaultValue,
   tagsOnInput,
@@ -22,7 +21,6 @@ export const Meta = ({
       />
       <Title
         defaultValue={titleDefaultValue}
-        onKeyDown={titleOnKeyDown}
         onChange={titleOnChange}
         switchHelpContext={switchHelpContext}
       />
@@ -37,7 +35,6 @@ export const Meta = ({
 
 Meta.propTypes = {
   titleDefaultValue: PropTypes.string.isRequired,
-  titleOnKeyDown: PropTypes.func.isRequired,
   titleOnChange: PropTypes.func.isRequired,
   tagsDefaultValue: PropTypes.string.isRequired,
   tagsOnInput: PropTypes.func.isRequired,
