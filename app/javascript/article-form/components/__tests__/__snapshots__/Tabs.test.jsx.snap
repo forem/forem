@@ -2,19 +2,17 @@
 
 exports[`<Tabs /> renders properly 1`] = `
 <div
-  class="crayons-article-form__tabs ml-auto"
+  class="crayons-article-form__tabs crayons-tabs ml-auto"
 >
   <button
-    class="crayons-btn crayons-btn--ghost current"
-    disabled={false}
+    class="crayons-tabs__item crayons-tabs__item--current"
     onClick={false}
     type="button"
   >
     Edit
   </button>
   <button
-    class="crayons-btn crayons-btn--ghost"
-    disabled={false}
+    class="crayons-tabs__item false"
     onClick={null}
     type="button"
   >
