@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { articlePropTypes } from '../src/components/common-prop-types';
+import { articlePropTypes } from '../common-prop-types';
 
 export const PodcastEpisode = ({ episode }) => {
   return (
@@ -15,7 +15,7 @@ export const PodcastEpisode = ({ episode }) => {
         <p className="crayons-podcast-episode__author">
           {episode.podcast.title}
         </p>
-        <h2 className="crayons-story__title mb-0">
+        <h2 className="crayons-podcast-episode__title crayons-story__title mb-0">
           <a href={`/${episode.podcast.slug}/${episode.slug}`}>
             {episode.title}
           </a>

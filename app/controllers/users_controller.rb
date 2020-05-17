@@ -7,7 +7,6 @@ class UsersController < ApplicationController
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   before_action :set_suggested_users, only: %i[index]
-  rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
@@ -59,8 +58,7 @@ class UsersController < ApplicationController
       @user.touch(:profile_updated_at)
       redirect_to "/settings/#{@tab}"
     else
-      Honeycomb.add_field("error",
-                          @user.errors.messages.reject { |_, v| v.empty? })
+      Honeycomb.add_field("error", @user.errors.messages.reject { |_, v| v.empty? })
       Honeycomb.add_field("errored", true)
       render :edit, status: :bad_request
     end

@@ -1,4 +1,4 @@
-<% title @article.title %>
+<% title @article.title_with_query_preamble(user_signed_in?) %>
 
 <%= render "shared/webcomponents_loader_script" %>
 <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", defer: true %>
@@ -34,10 +34,6 @@
     <script type="application/ld+json">
       <%= @article_json_ld.to_json.html_safe %>
     </script>
-  <% end %>
-
-  <% if @article.processed_html.include? "runkit-element" %>
-    <%= javascript_include_tag "https://embed.runkit.com" %>
   <% end %>
 <% end %>
 
@@ -84,7 +80,6 @@
     class="container article"
     id="article-show-container"
     data-author-id="<%= @article.user_id %>"
-    data-live="<%= @article.live_now %>"
     data-path="<%= @article.path %>"
     data-published="<%= @article.published? %>">
     <% if @article.video_state == "PROGRESSING" %>
@@ -115,7 +110,10 @@
           </a>
         <% end %>
         <h1 class="<%= @article.title_length_classification %>">
-          <%= @article.title %>
+          <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
+            <span class="article-title-preamble"><%= @article.search_optimized_title_preamble %></span>
+          <% end %>
+          <%= sanitize_and_decode @article.title %>
         </h1>
         <h3>
           <span>
@@ -227,9 +225,9 @@
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>
     <%# we consider these scripts safe for embedding as they come from our code %>
-    <%= PodcastTag.script.html_safe %>
-    <%= PollTag.script.html_safe %>
-    <%= RunkitTag.script.html_safe %>
-    <%= TweetTag.script.html_safe %>
+    <%== PodcastTag.script %>
+    <%== PollTag.script %>
+    <%== RunkitTag.script %>
+    <%== TweetTag.script %>
   </script>
 <% end %>

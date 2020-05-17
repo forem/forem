@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { defaultChildrenPropTypes } from '../../src/components/common-prop-types';
+import { defaultChildrenPropTypes } from '../../common-prop-types';
 
 function getAdditionalClassNames({
   variant,

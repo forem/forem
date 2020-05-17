@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_04_075409) do
+ActiveRecord::Schema.define(version: 2020_05_15_085746) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -80,7 +80,6 @@ ActiveRecord::Schema.define(version: 2020_05_04_075409) do
     t.datetime "last_buffered"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
     t.datetime "last_experience_level_rating_at"
-    t.boolean "live_now", default: false
     t.string "main_image"
     t.string "main_image_background_hex_color", default: "#dddddd"
     t.integer "nth_published_by_author", default: 0
@@ -103,6 +102,8 @@ ActiveRecord::Schema.define(version: 2020_05_04_075409) do
     t.integer "reading_time", default: 0
     t.boolean "receive_notifications", default: true
     t.integer "score", default: 0
+    t.string "search_optimized_description_replacement"
+    t.string "search_optimized_title_preamble"
     t.integer "second_user_id"
     t.boolean "show_comments", default: true
     t.text "slug"

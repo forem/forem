@@ -20,7 +20,7 @@ exports[`<PodcastEpisode /> component should render a podcast episode 1`] = `
       Rubber local
     </p>
     <h2
-      class="crayons-story__title mb-0"
+      class="crayons-podcast-episode__title crayons-story__title mb-0"
     >
       <a
         href="/monitor-recontextualize/undefined"

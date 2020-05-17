@@ -14,8 +14,20 @@ RSpec.describe RateLimitChecker, type: :service do
       expect(rate_limit_checker.limit_by_action("random-nothing")).to be(false)
     end
 
+    it "will limit action by ip_address if present" do
+      action = described_class::ACTION_LIMITERS.keys.first
+      limiter = described_class.new(build(:user, ip_address: "1.1.1.1"))
+      expect { limiter.limit_by_action(action) }.not_to raise_error
+    end
+
+    it "raises an error if no unique component is present for a cache key" do
+      action = described_class::ACTION_LIMITERS.keys.first
+      limiter = described_class.new(build(:user))
+      expect { limiter.limit_by_action(action) }.to raise_error("Invalid Cache Key: no unique component present")
+    end
+
     # published_article_creation limit we check against the database rather than our cache
-    RateLimitChecker::ACTION_LIMITERS.except(:published_article_creation).each do |action, _options|
+    described_class::ACTION_LIMITERS.except(:published_article_creation).each do |action, _options|
       it "returns true if #{action} limit has been reached" do
         allow(Rails.cache).to receive(:read).with(
           cache_key(action),

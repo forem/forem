@@ -27,6 +27,7 @@ export const article = {
   published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
   top_comments: [],
+  main_image: '/images/10.png',
 };
 
 export const articleWithOrganization = {
@@ -61,6 +62,7 @@ export const articleWithOrganization = {
     slug: 'bluetooth-Gorgeous-Wooden-Pants',
     profile_image_90: '/images/30.png',
   },
+  main_image: '/images/10.png',
 };
 
 export const articleWithSnippetResult = {
@@ -159,13 +161,12 @@ export const articleWithComments = {
       comment_id: 23,
       user_id: 6,
       published_timestamp: '2020-04-21T19:41:40Z',
-      published_at_int: 1587498100,
+      published_at_int: new Date(),
       safe_processed_html: '<p>Kitsch hoodie artisan.</p>\n\n',
       path: '/naoma_dr_rice/comment/n',
       username: 'naoma_dr_rice',
       name: 'Dr. Naoma Rice',
-      profile_image_90:
-        '/uploads/user/profile_image/6/79732fcf-5655-426a-a7f0-18c737c3f8e8.png',
+      profile_image_90: '/images/7.png',
     },
   ],
   positive_reactions_count: 428,
@@ -229,6 +230,7 @@ export const videoArticle = {
   published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
   cloudinary_video_url: '/images/onboarding-background.png',
+  main_image: '/images/10.png',
   video_duration_in_minutes: 10,
 };
 

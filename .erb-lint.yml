@@ -33,7 +33,6 @@ linters:
       Rails/OutputSafety:
         Enabled: false
         Exclude:
-          - '**/app/views/articles/_block.html.erb'
           - '**/app/views/feedback_messages/index.html.erb'
           - '**/app/views/layouts/_styles.html.erb'
           - '**/app/views/liquid_embeds/show.html.erb'
