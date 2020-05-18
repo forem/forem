@@ -331,15 +331,19 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.text "body_markdown"
     t.datetime "bumped_at"
     t.string "cached_tag_list"
-    t.string "category"
+    t.bigint "classified_listing_category_id"
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
+    t.string "slug"
     t.string "title"
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["classified_listing_category_id"], name: "index_classified_listings_on_classified_listing_category_id"
+    t.index ["organization_id"], name: "index_classified_listings_on_organization_id"
+    t.index ["user_id"], name: "index_classified_listings_on_user_id"
   end
 
   create_table "collections", id: :serial, force: :cascade do |t|
@@ -1254,6 +1258,8 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
   add_foreign_key "badge_achievements", "users"
   add_foreign_key "chat_channel_memberships", "chat_channels"
   add_foreign_key "chat_channel_memberships", "users"
+  add_foreign_key "classified_listings", "classified_listing_categories"
+  add_foreign_key "classified_listings", "users", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
