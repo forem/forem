@@ -7,6 +7,9 @@ module Honeycomb
       "TIME",
       "BEGIN",
       "COMMIT",
+      "GET rack:",
+      "SET rack:",
+      "GET views/shell",
     ].freeze
 
     def self.sample(fields)
