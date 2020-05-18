@@ -1,4 +1,4 @@
-json.type_of "classified_listing"
+json.type_of "listing"
 
 json.extract!(
   listing,

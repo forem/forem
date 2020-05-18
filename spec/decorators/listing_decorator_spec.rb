@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe ClassifiedListingDecorator, type: :decorator do
-  let_it_be_readonly(:category) { create(:classified_listing_category) }
+RSpec.describe ListingDecorator, type: :decorator do
+  let_it_be_readonly(:category) { create(:listing_category) }
   let(:decorated_listing) do
-    build(:classified_listing, classified_listing_category: category).decorate
+    build(:listing, listing_category: category).decorate
   end
 
   describe "#social_preview_category" do
@@ -24,7 +24,7 @@ RSpec.describe ClassifiedListingDecorator, type: :decorator do
       allow(category).to receive(:social_preview_color).and_return(nil)
 
       expect(decorated_listing.social_preview_color).
-        to eq(ClassifiedListingDecorator::DEFAULT_COLOR)
+        to eq(ListingDecorator::DEFAULT_COLOR)
     end
 
     it "returns the category's social preview color if available" do

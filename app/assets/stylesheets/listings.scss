@@ -1,12 +1,12 @@
 @import 'variables';
 @import 'mixins';
 
-.classifieds-container {
+.listings-container {
   margin: 24px 0;
   text-align: left;
   max-width: 100%;
   min-height: 100vh;
-  .classified-filters {
+  .listings-filters {
     padding: 0 16px;
     a {
       padding: 3px 16px;
@@ -23,11 +23,11 @@
         margin: 0px 4px;
       }
     }
-    .classified-filters-categories {
+    .listings-filters-categories {
       a {
         display: block;
         padding: 7px 16px;
-        &.classified-create-link {
+        &.listing-create-link {
           border: 2px solid darken($green, 14%);
           color: darken($green, 19%);
           padding: 6px 16px;
@@ -42,13 +42,13 @@
           min-width: 50px;
           text-align: center;
           padding: 3px 16px;
-          &.classified-create-link {
+          &.listing-create-link {
             padding: 2px 16px;
           }
         }
       }
     }
-    .classified-filters-tags {
+    .listings-filters-tags {
       padding: 20px 0px;
       position: relative;
       input {
@@ -69,7 +69,7 @@
           margin-right: 8px;
         }
       }
-      .classified-search-clear {
+      .listing-search-clear {
         background: $light-gray;
         border: 1px solid $light-medium-gray;
         position: absolute;
@@ -80,7 +80,7 @@
           left: 282px;
         }
       }
-      .classified-tag {
+      .listing-tag {
         font-size: 0.7em;
         color: $black;
         border-radius: 100px;
@@ -107,7 +107,7 @@
       }
     }
   }
-  .classifieds-columns {
+  .listings-columns {
     display: grid;
     grid-gap: 24px;
     padding: 0 16px;
@@ -133,7 +133,7 @@
       border-top-left-radius: 8px;
       border-top-right-radius: 8px;
     }
-    .classified-form-inner {
+    .listings-form-inner {
       padding: 0px 15px 40px;
       @media screen and (min-width: 580px) {
         padding: 0px 15px 18px;
@@ -149,7 +149,7 @@
       color: var(--accent-brand);
       margin: 0px;
     }
-    .classified-errors {
+    .listings-errors {
       background: $red;
       color: $black;
       padding: 20px;
@@ -261,7 +261,7 @@
         font-size: 1.1em;
       }
     }
-    .classified-listings-unpublish {
+    .listings-listings-unpublish {
       background: $red;
     }
     p {
@@ -269,7 +269,7 @@
       color: var(--card-color-tertiary);
     }
   }
-  .classifieds-load-more-button {
+  .listings-load-more-button {
     text-align: center;
     button {
       color: var(--body-color);
@@ -340,7 +340,7 @@
   font-weight: bold;
 }
 
-.single-classified-listing-container {
+.single-listing-container {
   width: 100%;
   z-index: 20;
   position: fixed;
@@ -350,7 +350,7 @@
   bottom: 0px;
   margin: 12px auto 0px;
   overflow: hidden;
-  .single-classified-listing-container__inner {
+  .single-listing-container__inner {
     position: absolute;
     height: 100%;
     width: 100%;
@@ -365,17 +365,17 @@
       right: 0;
       box-sizing: border-box;
     }
-    .single-classified-listing-container__spacer {
+    .single-listing-container__spacer {
       height: 150px;
       margin-bottom: 150px;
     }
   }
-  .single-classified-listing-container__inner::-webkit-scrollbar {
+  .single-listing-container__inner::-webkit-scrollbar {
     display: none;
   }
 }
 
-.single-classified-listing {
+.single-listing {
   width: 100%;
   display: inline-block;
   border: 1px solid $light-medium-gray;
@@ -450,10 +450,10 @@
       background-color: #f1f1f1;
     }
   }
-  .single-classified-listing-body {
+  .single-listing-body {
     padding: 10px 12px;
     font-size: 15px;
-    .classified-listing-contact-cta {
+    .listing-contact-cta {
       border: 2px solid $black;
       color: $black;
       padding: 8px 10px;
@@ -464,7 +464,7 @@
       width: 80%;
     }
   }
-  .single-classified-listing-tags {
+  .single-listing-tags {
     padding: 10px 15px;
     a {
       color: var(--card-color-tertiary);
@@ -481,19 +481,19 @@
       font-weight: bold;
     }
   }
-  .single-classified-listing-author-info {
+  .single-listing-author-info {
     font-size: 0.69em;
     color: var(--card-color-tertiary);
     padding: 0px 15px 4px;
     a {
       color: var(--card-color-tertiary);
       display: inline-block;
-      &.classified-listing-edit-button {
+      &.listing-edit-button {
         margin-left: 4px;
       }
     }
   }
-  &.single-classified-listing--opened {
+  &.single-listing--opened {
     z-index: 20;
     display: block;
     position: relative;
@@ -506,13 +506,13 @@
       h3 {
         font-size: calc(20px + 0.05vw);
       }
-      .single-classified-listing-body {
+      .single-listing-body {
         font-size: calc(18px + 0.05vw);
       }
     }
   }
 }
-.single-classified-listing-info-link {
+.single-listing-info-link {
   display: block;
   width: 320px;
   max-width: 92%;
@@ -564,7 +564,7 @@ form.listings-contact-via-connect {
   }
 }
 
-.classified-listings-modal-background {
+.listings-modal-background {
   z-index: 15;
   position: fixed;
   left: 0;

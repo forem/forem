@@ -1,4 +1,4 @@
-json.array! @classified_listings do |listing|
+json.array! @listings do |listing|
   json.partial! "listing", listing: listing
   json.partial! "api/v0/shared/user", user: listing.user
 

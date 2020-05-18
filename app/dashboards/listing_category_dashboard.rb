@@ -1,6 +1,6 @@
 require "administrate/base_dashboard"
 
-class ClassifiedListingCategoryDashboard < Administrate::BaseDashboard
+class ListingCategoryDashboard < Administrate::BaseDashboard
   # ATTRIBUTE_TYPES
   # a hash that describes the type of each of the model's fields.
   #
@@ -8,7 +8,7 @@ class ClassifiedListingCategoryDashboard < Administrate::BaseDashboard
   # which determines how the attribute is displayed
   # on pages throughout the dashboard.
   ATTRIBUTE_TYPES = {
-    classified_listings: Field::HasMany,
+    listings: Field::HasMany,
     id: Field::Number,
     cost: Field::Number,
     created_at: Field::DateTime,
@@ -72,10 +72,10 @@ class ClassifiedListingCategoryDashboard < Administrate::BaseDashboard
   #   }.freeze
   COLLECTION_FILTERS = {}.freeze
 
-  # Overwrite this method to customize how classified listing categories are displayed
+  # Overwrite this method to customize how listing categories are displayed
   # across all pages of the admin dashboard.
   #
-  # def display_resource(classified_listing_category)
-  #   "ClassifiedListingCategory ##{classified_listing_category.id}"
+  # def display_resource(listing_category)
+  #   "ListingCategory ##{listing_category.id}"
   # end
 end

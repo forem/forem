@@ -26,7 +26,7 @@
   </div>
 </div>
 
-<%= paginate @classified_listings %>
+<%= paginate @listings %>
 
 <table class="table">
   <thead>
@@ -41,7 +41,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @classified_listings.each do |listing| %>
+    <% @listings.each do |listing| %>
       <tr>
         <td><%= link_to listing.title, edit_internal_listing_path(listing.id), target: "_blank", rel: "noopener" %></td>
         <td><%= link_to listing.user.username, edit_internal_user_path(listing.user.id) %></td>
@@ -78,4 +78,4 @@
   </tbody>
 </table>
 
-<%= paginate @classified_listings %>
+<%= paginate @listings %>

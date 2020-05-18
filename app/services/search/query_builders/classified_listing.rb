@@ -1,6 +1,6 @@
 module Search
   module QueryBuilders
-    class ClassifiedListing < QueryBase
+    class Listing < QueryBase
       TERM_KEYS = %i[
         category
         contact_via_connect
@@ -31,7 +31,7 @@ module Search
       def initialize(params:)
         @params = params.deep_symbolize_keys
 
-        # For now, we're not allowing searches for ClassifiedListings that are
+        # For now, we're not allowing searches for Listings that are
         # not published. If we want to change this in the future we can do:
         # @params[:published] = DEFAULT_PARAMS[:published] unless @params.key?(:published)
         @params[:published] = DEFAULT_PARAMS[:published]
