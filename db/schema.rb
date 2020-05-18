@@ -334,6 +334,9 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.bigint "classified_listing_category_id"
     t.boolean "contact_via_connect", default: false
     t.datetime "created_at", null: false
+    t.datetime "expires_at"
+    t.datetime "last_buffered"
+    t.string "location"
     t.bigint "organization_id"
     t.text "processed_html"
     t.boolean "published"
