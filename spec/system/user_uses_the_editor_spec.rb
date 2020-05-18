@@ -23,26 +23,41 @@ RSpec.describe "Using the editor", type: :system do
   end
 
   describe "Previewing an article", js: true do
+    before do
+      fill_markdown_with(read_from_file(raw_text))
+      page.execute_script("window.scrollTo(0, -100000)")
+      find("button", text: /\APREVIEW\z/).click
+    end
+
     after do
       page.evaluate_script("window.onbeforeunload = function(){}")
     end
 
-    it "fill out form with rich content and click preview" do
-      fill_markdown_with(read_from_file(raw_text))
-      page.execute_script("window.scrollTo(0, -100000)")
-      find("button", text: /\APREVIEW\z/).click
+    it "renders the page", percy: true do
+      Percy.snapshot(page, name: "Using the editor: preview an article")
+    end
+
+    it "fills out form with rich content and click preview" do
       article_body = find("div.body")["innerHTML"]
       article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
+
       Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
     end
   end
 
   describe "Submitting an article", js: true do
+    it "renders the page", percy: true do
+      fill_markdown_with(read_from_file(raw_text))
+      find("button", text: /\ASAVE CHANGES\z/).click
+      Percy.snapshot(page, name: "Using the editor: submit an article")
+    end
+
     it "fill out form and submit" do
       fill_markdown_with(read_from_file(raw_text))
       find("button", text: /\ASAVE CHANGES\z/).click
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
       article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
+
       Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
     end
 
@@ -54,10 +69,19 @@ RSpec.describe "Using the editor", type: :system do
       end
     end
 
-    it "user write and publish an article without a title" do
-      fill_markdown_with(template.gsub("Sample Article", ""))
-      find("button", text: /\ASAVE CHANGES\z/).click
-      expect(page).to have_text(/title:  can't be blank/)
+    context "without a title", js: true do
+      before do
+        fill_markdown_with(template.gsub("Sample Article", ""))
+        find("button", text: /\ASAVE CHANGES\z/).click
+      end
+
+      it "renders the page", percy: true do
+        Percy.snapshot(page, name: "Using the editor: publishing an article without a title")
+      end
+
+      it "shows a message that the title cannot be blank" do
+        expect(page).to have_text(/title:  can't be blank/)
+      end
     end
   end
 end
