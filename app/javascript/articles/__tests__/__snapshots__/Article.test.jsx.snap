@@ -1657,7 +1657,7 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
               <img
                 alt="{comment.username} avatar"
                 class="crayons-avatar__image"
-                src="/uploads/user/profile_image/6/79732fcf-5655-426a-a7f0-18c737c3f8e8.png"
+                src="/images/7.png"
               />
             </span>
             Dr. Naoma Rice
@@ -2461,7 +2461,7 @@ exports[`<Article /> component should render with comments 1`] = `
               <img
                 alt="{comment.username} avatar"
                 class="crayons-avatar__image"
-                src="/uploads/user/profile_image/6/79732fcf-5655-426a-a7f0-18c737c3f8e8.png"
+                src="/images/7.png"
               />
             </span>
             Dr. Naoma Rice

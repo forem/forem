@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
-import debounceAction from '../src/utils/debounceAction';
-import { fetchSearch } from '../src/utils/search';
+import debounceAction from '../utilities/debounceAction';
+import { fetchSearch } from '../utilities/search';
 import ModalBackground from './components/ModalBackground';
 import Modal from './components/Modal';
 import AllListings from './components/AllListings';

@@ -6,7 +6,7 @@ import {
   hasInstantClick,
   preloadSearchResults,
   displaySearchResults,
-} from '../src/utils/search';
+} from '../utilities/search';
 import { SearchForm } from './SearchForm';
 
 const GLOBAL_MINIMIZE_KEY = '0';

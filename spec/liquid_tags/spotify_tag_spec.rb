@@ -13,7 +13,7 @@ RSpec.describe SpotifyTag, type: :liquid_tag do
     end
 
     def generate_iframe(uri, height)
-      parsed_uri = uri.split(":")[1..-1].unshift("https://open.spotify.com/embed").join("/")
+      parsed_uri = uri.split(":")[1..].unshift("https://open.spotify.com/embed").join("/")
       <<~HTML
         <iframe
           width="100%"

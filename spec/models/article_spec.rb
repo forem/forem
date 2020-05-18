@@ -127,10 +127,10 @@ RSpec.describe Article, type: :model do
       it "is not valid with spaces" do
         invalid_url = "https://www.positronx.io/angular radio-buttons-example/"
         article.canonical_url = invalid_url
-        messages = ["must not have spaces"]
+        message = "must not have spaces"
 
         expect(article).not_to be_valid
-        expect(article.errors.messages[:canonical_url]).to eq messages
+        expect(article.errors.messages[:canonical_url]).to include(message)
       end
     end
 
