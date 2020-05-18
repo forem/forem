@@ -58,15 +58,14 @@ class PartnershipsController < ApplicationController
 
   # NOTE: this should probably end up in a service object at some point
   def purchase_sponsorship(organization:, level:, cost:, sponsorable: nil)
-    expires_at = Sponsorship::LEVELS_WITH_EXPIRATION.include?(level) ? 1.month.from_now : nil
     create_params = {
       user: current_user,
       level: level,
       status: :pending,
       expires_at: expires_at
     }
-    if sponsorable
-      create_params[:sponsorable] = sponsorable
+    # set expires_at for gold-silver-bronze and tag sponsorships
+    if Sponsorship::METAL_LEVELS.include?(level) || sponsorable
       create_params[:expires_at] = 1.month.from_now
     end
 
