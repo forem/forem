@@ -83,7 +83,12 @@ RSpec.describe Tweet, type: :model, vcr: true do
         expect(tweet.last_fetched_at).to be_present
       end
 
-      it "is assigned to the existing user if the screen name corresponds"
+      it "is assignes to the existing user if the screen name corresponds" do
+        user = create(:user, twitter_username: "ThePracticalDev")
+
+        tweet = described_class.find_or_fetch(tweet_id)
+        expect(tweet.user_id).to eq(user.id)
+      end
     end
 
     context "when retrieving a non existent tweet", vcr: { cassette_name: "twitter_client_status_not_found_extended" } do
