@@ -2,7 +2,7 @@ module Github
   # Github OAuth2 client (uses ocktokit.rb as a backend)
   class OauthClient
     APP_AUTH_CREDENTIALS = %i[client_id client_secret].freeze
-    ALL_AUTH_CREDENTIALS = proc { |key, value| APP_AUTH_CREDENTIALS.include?(key) && value.present? }.freeze
+    APP_AUTH_CREDENTIALS_PRESENT = proc { |key, value| APP_AUTH_CREDENTIALS.include?(key) && value.present? }.freeze
 
     # @param credentials [Hash] the OAuth credentials, {client_id:, client_secret:} or {access_token:}
     def initialize(credentials)
@@ -48,8 +48,8 @@ module Github
 
     def check_credentials!(credentials)
       if credentials.present?
-        result = credentials[:access_token].presence || (credentials if credentials.all?(ALL_AUTH_CREDENTIALS))
-        return result if result
+        return { access_token: credentials[:access_token] } if credentials[:access_token].present?
+        return credentials if credentials.all?(APP_AUTH_CREDENTIALS_PRESENT)
       end
 
       message = "The client either needs a valid 'client_id'/'client_secret' pair or an 'access_token'!"
