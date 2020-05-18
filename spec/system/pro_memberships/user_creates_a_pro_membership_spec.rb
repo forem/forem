@@ -13,6 +13,7 @@ RSpec.describe "Creates a Pro Membership", type: :system do
       visit "/settings/pro-membership"
       label = "Become a Pro member"
       click_on label
+
       expect(page).to have_content("You are now a Pro!")
     end
   end
