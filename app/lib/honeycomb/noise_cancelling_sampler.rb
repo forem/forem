@@ -18,7 +18,7 @@ module Honeycomb
     ].freeze
 
     def self.sample(fields)
-      if NOISY_COMMANDS.include?(fields["redis.command"], fields["sql.active_record.sql"])
+      if (NOISY_COMMANDS & [fields["redis.command"], fields["sql.active_record.sql"]]).any?
         rate = 100
         [should_sample(rate, fields["trace.trace_id"]), rate]
       elsif fields["redis.command"]&.start_with?("BRPOP")
