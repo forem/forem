@@ -2,6 +2,7 @@ require "uri"
 
 class GlitchTag < LiquidTagBase
   attr_accessor :uri
+
   PARTIAL = "liquids/glitch".freeze
   ID_REGEXP = /\A[a-zA-Z0-9\-]{1,110}\z/.freeze
   OPTION_REGEXP = /(app|code|no-files|preview-first|no-attribution|file\=\w(\.\w)?)/.freeze
