@@ -1,9 +1,9 @@
 require "rails_helper"
 
-# TODO: test retweet
 RSpec.describe Tweet, type: :model, vcr: true do
   let(:tweet_id) { "1018911886862057472" }
   let(:tweet_reply_id) { "1242938461784608770" }
+  let(:retweet_id) { "1262395854469677058" }
 
   it { is_expected.to validate_presence_of(:twitter_id_code) }
   it { is_expected.to validate_presence_of(:full_fetched_object_serialized) }
@@ -116,6 +116,20 @@ RSpec.describe Tweet, type: :model, vcr: true do
         expect(tweet.in_reply_to_status_id_code).to eq(status[:in_reply_to_status_id_str])
         expect(tweet.in_reply_to_user_id_code).to eq(status[:in_reply_to_user_id_str])
         expect(tweet.in_reply_to_username).to eq(status[:in_reply_to_screen_name])
+      end
+    end
+
+    context "when retrieving a reply tweet", vcr: { cassette_name: "twitter_client_status_retweet_extended" } do
+      it "saves a new tweet" do
+        expect do
+          described_class.find_or_fetch(retweet_id)
+        end.to change(described_class, :count).by(1)
+      end
+
+      it "saves the proper status ID" do
+        tweet = described_class.find_or_fetch(retweet_id)
+
+        expect(tweet.twitter_id_code).not_to eq(retweet_id) # we fetch the original tweet
       end
     end
   end

@@ -56,8 +56,8 @@ class Tweet < ApplicationRecord
     end
 
     def create_tweet_from_api_status(status)
-      status = if status.attrs[:retweeted_status]
-                 TwitterClient::Client.status(status.attrs[:retweeted_status][:id_str])
+      status = if status.retweeted_status.present?
+                 TwitterClient::Client.status(status.retweeted_status.id.to_s)
                else
                  status
                end
