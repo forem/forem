@@ -58,7 +58,6 @@
   z-index: 201;
   cursor: pointer;
   transition: 0.3s all ease;
-  background-color: var(--base-90);
   border-radius: 50px;
 
   @media (max-width: $breakpoint-m) {
@@ -73,10 +72,6 @@
 .mod-actions-menu-btn,
 .actions-menu-svg {
   transition: 0.3s all ease;
-}
-
-.mod-actions-menu-btn:hover {
-  background-color: var(--accent-brand);
 }
 
 .actions-menu-svg:hover {
