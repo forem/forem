@@ -1,48 +1,48 @@
 module Api
   module V0
-    class ClassifiedListingsController < ApiController
+    class ListingsController < ApiController
       include Pundit
-      include ClassifiedListingsToolkit
+      include ListingsToolkit
 
       before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
       before_action :authenticate_with_api_key_or_current_user, only: %i[show]
 
-      before_action :set_classified_listing, only: %i[update]
+      before_action :set_listing, only: %i[update]
 
       before_action :set_cache_control_headers, only: %i[index show]
 
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
       def index
-        @classified_listings = ClassifiedListing.published.
+        @listings = Listing.published.
           select(ATTRIBUTES_FOR_SERIALIZATION).
-          includes(:user, :organization, :taggings, :classified_listing_category)
+          includes(:user, :organization, :taggings, :listing_category)
 
         if params[:category].present?
-          category = ClassifiedListingCategory.find_by(slug: params[:category])
-          @classified_listings =
-            @classified_listings.where(classified_listing_category: category)
+          category ListingCategory.find_by(slug: params[:category])
+          @listings =
+            @listings.where(listing_category: category)
         end
-        @classified_listings = @classified_listings.order(bumped_at: :desc)
+        @listings = @listings.order(bumped_at: :desc)
 
         per_page = (params[:per_page] || 30).to_i
         num = [per_page, 100].min
         page = params[:page] || 1
-        @classified_listings = @classified_listings.page(page).per(num)
+        @listings = @listings.page(page).per(num)
 
-        set_surrogate_key_header ClassifiedListing.table_key, @classified_listings.map(&:record_key)
+        set_surrogate_key_header Listing.table_key, @listings.map(&:record_key)
       end
 
       def show
-        relation = ClassifiedListing.published
+        relation = Listing.published
 
         # if the user is authenticated we allow them to access
         # their own unpublished listings as well
-        relation = relation.union(@user.classified_listings) if @user
+        relation = relation.union(@user.listings) if @user
 
-        @classified_listing = relation.select(ATTRIBUTES_FOR_SERIALIZATION).find(params[:id])
+        @listing = relation.select(ATTRIBUTES_FOR_SERIALIZATION).find(params[:id])
 
-        set_surrogate_key_header @classified_listing.record_key
+        set_surrogate_key_header @listing.record_key
       end
 
       def create
@@ -53,6 +53,8 @@ module Api
         super
       end
 
+      # Note: while the model is now called ListingCategory, the foreign key has
+      # not changed and is still classified_listing_category_id.
       ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id title slug body_markdown cached_tag_list
         classified_listing_category_id processed_html published
@@ -75,7 +77,7 @@ module Api
       end
 
       def process_unsuccessful_draft
-        render json: { errors: @classified_listing.errors }, status: :unprocessable_entity
+        render json: { errors: @listing.errors }, status: :unprocessable_entity
       end
 
       def process_successful_creation
@@ -83,7 +85,7 @@ module Api
       end
 
       def process_unsuccessful_creation
-        render json: { errors: @classified_listing.errors }, status: :unprocessable_entity
+        render json: { errors: @listing.errors }, status: :unprocessable_entity
       end
 
       alias process_unsuccessful_update process_unsuccessful_creation

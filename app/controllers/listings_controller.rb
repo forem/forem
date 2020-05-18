@@ -1,5 +1,5 @@
-class ClassifiedListingsController < ApplicationController
-  include ClassifiedListingsToolkit
+class ListingsController < ApplicationController
+  include ListingsToolkit
   before_action :check_limit, only: [:create]
 
   JSON_OPTIONS = {
@@ -11,34 +11,35 @@ class ClassifiedListingsController < ApplicationController
     }
   }.freeze
 
-  before_action :set_classified_listing, only: %i[edit update destroy]
+  before_action :set_listing, only: %i[edit update destroy]
   before_action :set_cache_control_headers, only: %i[index]
   before_action :raise_suspended, only: %i[new create update]
-  after_action :verify_authorized, only: %i[edit update]
   before_action :authenticate_user!, only: %i[edit update new dashboard]
+  after_action :verify_authorized, only: %i[edit update]
 
   def index
-    published_listings = ClassifiedListing.where(published: true)
-    @displayed_classified_listing = published_listings.find_by(slug: params[:slug]) if params[:slug]
+    published_listings = Listing.where(published: true)
+    @displayed_listing = published_listings.find_by(slug: params[:slug]) if params[:slug]
 
     if params[:view] == "moderate"
-      not_found unless @displayed_classified_listing
-      return redirect_to edit_internal_listing_path(id: @displayed_classified_listing.id)
+      not_found unless @displayed_listing
+      return redirect_to edit_internal_listing_path(id: @displayed_listing.id)
     end
 
-    @classified_listings =
+    @listings =
       if params[:category].blank?
         published_listings.
           order("bumped_at DESC").
           includes(:user, :organization, :taggings).
           limit(12)
       else
-        ClassifiedListing.none
+        Listing.none
       end
 
-    @listings_json = @classified_listings.to_json(JSON_OPTIONS)
-    @displayed_listing_json = @displayed_classified_listing.to_json(JSON_OPTIONS)
+    @listings_json = @listings.to_json(JSON_OPTIONS)
+    @displayed_listing_json = @displayed_listing.to_json(JSON_OPTIONS)
 
+    # TODO: [mkohl] Can we change this to listings-#{params[:category]}?
     set_surrogate_key_header "classified-listings-#{params[:category]}"
   end
 

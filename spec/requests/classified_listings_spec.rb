@@ -1,16 +1,16 @@
 require "rails_helper"
 
-RSpec.describe "ClassifiedListings", type: :request do
+RSpec.describe "Listings", type: :request do
   let_it_be_readonly(:edu_category) do
-    create(:classified_listing_category, cost: 1)
+    create(:listing_category, cost: 1)
   end
   let(:user) { create(:user) }
   let(:listing_params) do
     {
-      classified_listing: {
+      listing: {
         title: "something",
         body_markdown: "something else",
-        classified_listing_category_id: edu_category.id,
+        listing_category_id: edu_category.id,
         tag_list: "",
         contact_via_connect: true
       }
@@ -18,10 +18,10 @@ RSpec.describe "ClassifiedListings", type: :request do
   end
   let(:draft_params) do
     {
-      classified_listing: {
+      listing: {
         title: "this a draft",
         body_markdown: "something draft",
-        classified_listing_category_id: edu_category.id,
+        listing_category_id: edu_category.id,
         tag_list: "",
         contact_via_connect: true,
         action: "draft"
@@ -30,8 +30,8 @@ RSpec.describe "ClassifiedListings", type: :request do
   end
 
   describe "GET /listings" do
-    let(:listing) { create(:classified_listing, user: user) }
-    let(:expired_listing) { create(:classified_listing, user: user) }
+    let(:listing) { create(:listing, user: user) }
+    let(:expired_listing) { create(:listing, user: user) }
 
     before do
       sign_in user
@@ -47,7 +47,7 @@ RSpec.describe "ClassifiedListings", type: :request do
     context "when the user has no params" do
       it "shows all active listings" do
         get "/listings"
-        expect(response.body).to include("classifieds-container")
+        expect(response.body).to include("listings-container")
       end
     end
 
@@ -147,15 +147,15 @@ RSpec.describe "ClassifiedListings", type: :request do
       create_list(:credit, 25, user: user)
     end
 
-    let_it_be_readonly(:cfp_category) { create(:classified_listing_category, :cfp) }
+    let_it_be_readonly(:cfp_category) { create(:listing_category, :cfp) }
 
     context "when the listing is invalid" do
       let(:invalid_params) do
         {
-          classified_listing: {
+          listing: {
             title: "nothing",
             body_markdown: "",
-            classified_listing_category_id: cfp_category.id,
+            listing_category: cfp_category,
             tag_list: ""
           }
         }
@@ -169,7 +169,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       it "does not subtract credits or create a listing if the listing is not valid" do
         expect do
           post "/listings", params: invalid_params
-        end.to change(ClassifiedListing, :count).by(0).
+        end.to change(Listing, :count).by(0).
           and change(user.credits.spent, :size).by(0)
       end
     end
@@ -183,7 +183,7 @@ RSpec.describe "ClassifiedListings", type: :request do
 
       it "redirects if the org does not have enough credits" do
         org_admin = create(:user, :org_admin)
-        listing_params[:classified_listing][:post_as_organization] = "1"
+        listing_params[:listing][:post_as_organization] = "1"
         sign_in org_admin
         post "/listings", params: listing_params
         expect(response.body).to redirect_to("/credits")
@@ -209,38 +209,38 @@ RSpec.describe "ClassifiedListings", type: :request do
         org_admin = create(:user, :org_admin)
         org_id = org_admin.organizations.first.id
         Credit.create(organization_id: org_id)
-        draft_params[:classified_listing][:organization_id] = org_id
+        draft_params[:listing][:organization_id] = org_id
         sign_in org_admin
         post "/listings", params: draft_params
-        expect(ClassifiedListing.first.organization_id).to eq org_id
+        expect(Listing.first.organization_id).to eq org_id
       end
 
       it "creates a listing under the org" do
         org_admin = create(:user, :org_admin)
         org_id = org_admin.organizations.first.id
         Credit.create(organization_id: org_id)
-        listing_params[:classified_listing][:organization_id] = org_id
+        listing_params[:listing][:organization_id] = org_id
         sign_in org_admin
         post "/listings", params: listing_params
-        expect(ClassifiedListing.first.organization_id).to eq org_id
+        expect(Listing.first.organization_id).to eq org_id
       end
 
       it "does not create a listing draft for an org not belonging to the user" do
         org = create(:organization)
-        draft_params[:classified_listing][:organization_id] = org.id
+        draft_params[:listing][:organization_id] = org.id
         expect { post "/listings", params: draft_params }.to raise_error(Pundit::NotAuthorizedError)
       end
 
       it "does not create a listing for an org not belonging to the user" do
         org = create(:organization)
-        listing_params[:classified_listing][:organization_id] = org.id
+        listing_params[:listing][:organization_id] = org.id
         expect { post "/listings", params: listing_params }.to raise_error(Pundit::NotAuthorizedError)
       end
 
       it "assigns the spent credits to the listing" do
         post "/listings", params: listing_params
         spent_credit = user.credits.spent.last
-        expect(spent_credit.purchase_type).to eq("ClassifiedListing")
+        expect(spent_credit.purchase_type).to eq("Listing")
         expect(spent_credit.spent_at).not_to be_nil
       end
 
@@ -248,7 +248,7 @@ RSpec.describe "ClassifiedListings", type: :request do
         allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           post "/listings", params: draft_params
-        end.to change(ClassifiedListing, :count).by(1).
+        end.to change(Listing, :count).by(1).
           and change(user.credits.spent, :size).by(0)
       end
 
@@ -256,7 +256,7 @@ RSpec.describe "ClassifiedListings", type: :request do
         allow(Credits::Buyer).to receive(:call).and_raise(ActiveRecord::Rollback)
         expect do
           post "/listings", params: listing_params
-        end.to change(ClassifiedListing, :count).by(0).
+        end.to change(Listing, :count).by(0).
           and change(user.credits.spent, :size).by(0)
       end
     end
@@ -272,11 +272,11 @@ RSpec.describe "ClassifiedListings", type: :request do
   end
 
   describe "PUT /listings/:id" do
-    let(:listing) { create(:classified_listing, user: user) }
-    let(:listing_draft) { create(:classified_listing, user: user) }
+    let(:listing) { create(:listing, user: user) }
+    let(:listing_draft) { create(:listing, user: user) }
     let(:organization) { create(:organization) }
-    let(:org_listing) { create(:classified_listing, user: user, organization: organization) }
-    let(:org_listing_draft) { create(:classified_listing, user: user, organization: organization) }
+    let(:org_listing) { create(:listing, user: user, organization: organization) }
+    let(:org_listing_draft) { create(:listing, user: user, organization: organization) }
 
     before do
       sign_in user
@@ -285,7 +285,7 @@ RSpec.describe "ClassifiedListings", type: :request do
     end
 
     context "when the bump action is called" do
-      let(:params) { { classified_listing: { action: "bump" } } }
+      let(:params) { { listing: { action: "bump" } } }
 
       it "does not bump the user listing and redirects to credits if the user has not enough credits" do
         previous_bumped_at = listing.bumped_at
@@ -342,7 +342,7 @@ RSpec.describe "ClassifiedListings", type: :request do
     end
 
     context "when the publish action is called" do
-      let(:params) { { classified_listing: { action: "publish" } } }
+      let(:params) { { listing: { action: "publish" } } }
 
       it "publishes a draft and charges user credits if first publish" do
         cost = listing_draft.cost
@@ -400,7 +400,7 @@ RSpec.describe "ClassifiedListings", type: :request do
     end
 
     context "when the unpublish action is called" do
-      let(:params) { { classified_listing: { action: "unpublish" } } }
+      let(:params) { { listing: { action: "unpublish" } } }
 
       it "unpublishes a published listing" do
         put "/listings/#{listing.id}", params: params
@@ -410,7 +410,7 @@ RSpec.describe "ClassifiedListings", type: :request do
 
     context "when an update is attempted" do
       it "does not update with an empty body markdown" do
-        put "/listings/#{listing.id}", params: { classified_listing: { body_markdown: "" } }
+        put "/listings/#{listing.id}", params: { listing: { body_markdown: "" } }
         expect(response.body).to include(CGI.escapeHTML("can't be blank"))
         expect(listing.reload.body_markdown).not_to be_empty
       end
@@ -418,12 +418,12 @@ RSpec.describe "ClassifiedListings", type: :request do
   end
 
   describe "DEL /listings/:id" do
-    let!(:listing) { create(:classified_listing, user: user) }
-    let!(:listing_draft) { create(:classified_listing, user: user, bumped_at: nil, published: false) }
+    let!(:listing) { create(:listing, user: user) }
+    let!(:listing_draft) { create(:listing, user: user, bumped_at: nil, published: false) }
     let(:organization) { create(:organization) }
-    let!(:org_listing) { create(:classified_listing, user: user, organization: organization) }
+    let!(:org_listing) { create(:listing, user: user, organization: organization) }
     let!(:org_listing_draft) do
-      create(:classified_listing, user: user, organization: organization, bumped_at: nil, published: false)
+      create(:listing, user: user, organization: organization, bumped_at: nil, published: false)
     end
 
     before do
@@ -444,7 +444,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       it "decrease total listings count by 1" do
         expect do
           delete "/listings/#{listing_draft.id}"
-        end.to change(ClassifiedListing, :count).by(-1)
+        end.to change(Listing, :count).by(-1)
       end
     end
 
@@ -462,7 +462,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       it "decrease total listings count by 1" do
         expect do
           delete "/listings/#{listing.id}"
-        end.to change(ClassifiedListing, :count).by(-1)
+        end.to change(Listing, :count).by(-1)
       end
     end
 
@@ -480,7 +480,7 @@ RSpec.describe "ClassifiedListings", type: :request do
       it "decrease total listings count by 1" do
         expect do
           delete "/listings/#{org_listing_draft.id}"
-        end.to change(ClassifiedListing, :count).by(-1)
+        end.to change(Listing, :count).by(-1)
       end
     end
 
@@ -498,13 +498,13 @@ RSpec.describe "ClassifiedListings", type: :request do
       it "decrease total listings count by 1" do
         expect do
           delete "/listings/#{org_listing.id}"
-        end.to change(ClassifiedListing, :count).by(-1)
+        end.to change(Listing, :count).by(-1)
       end
     end
   end
 
   describe "GET /delete_confirm" do
-    let!(:listing) { create(:classified_listing, user: user) }
+    let!(:listing) { create(:listing, user: user) }
 
     before { sign_in user }
 

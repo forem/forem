@@ -1,56 +1,56 @@
-module ClassifiedListingsToolkit
+module ListingsToolkit
   extend ActiveSupport::Concern
 
   MANDATORY_FIELDS_FOR_UPDATE = %i[body_markdown title tag_list].freeze
 
   def unpublish_listing
-    @classified_listing.update(published: false)
+    @listing.update(published: false)
   end
 
   def publish_listing
-    @classified_listing.update(published: true)
+    @listing.update(published: true)
   end
 
   def update_listing_details
     # [thepracticaldev/oss] Not entirely sure what the intention behind the
     # original code was, but at least this is more compact.
     filtered_params = listing_params.reject { |_k, v| v.nil? }
-    @classified_listing.update(filtered_params)
+    @listing.update(filtered_params)
   end
 
   def bump_listing_success
-    @classified_listing.update(bumped_at: Time.current)
+    @listing.update(bumped_at: Time.current)
   end
 
   def clear_listings_cache
-    ClassifiedListings::BustCacheWorker.perform_async(@classified_listing.id)
+    Listings::BustCacheWorker.perform_async(@listing.id)
   end
 
-  def set_classified_listing
-    @classified_listing = ClassifiedListing.find(params[:id])
+  def set_listing
+    @listing = Listing.find(params[:id])
   end
 
   def create
-    @classified_listing = ClassifiedListing.new(listing_params)
+    @listing = Listing.new(listing_params)
 
     # this will 401 for now if they don't belong in the org
-    authorize @classified_listing, :authorized_organization_poster? if @classified_listing.organization_id.present?
+    authorize @listing, :authorized_organization_poster? if @listing.organization_id.present?
 
-    @classified_listing.user_id = current_user.id
-    org = Organization.find_by(id: @classified_listing.organization_id)
+    @listing.user_id = current_user.id
+    org = Organization.find_by(id: @listing.organization_id)
 
     if listing_params[:action] == "draft"
       create_draft
       return
     end
 
-    unless @classified_listing.valid?
+    unless @listing.valid?
       @credits = current_user.credits.unspent
       process_unsuccessful_creation
       return
     end
 
-    cost = @classified_listing.cost
+    cost = @listing.cost
     # we use the org's credits if available, otherwise we default to the user's
     if org&.enough_credits?(cost)
       create_listing(org, cost)
@@ -61,6 +61,8 @@ module ClassifiedListingsToolkit
     end
   end
 
+  # Note: while the model is now called ListingCategory, the foreign key has
+  # not changed and is still classified_listing_category_id.
   ALLOWED_PARAMS = %i[
     title body_markdown classified_listing_category_id tag_list
     expires_at contact_via_connect location organization_id action
@@ -68,20 +70,20 @@ module ClassifiedListingsToolkit
 
   # Filter for a set of known safe params
   def listing_params
-    tags = params["classified_listing"].delete("tags")
+    tags = params["listing"].delete("tags")
     if tags.present?
-      params["classified_listing"]["tag_list"] = tags.join(", ")
+      params["listing"]["tag_list"] = tags.join(", ")
     end
-    params.require(:classified_listing).permit(ALLOWED_PARAMS)
+    params.require(:listing).permit(ALLOWED_PARAMS)
   end
 
   def create_draft
-    @classified_listing.published = false
-    if @classified_listing.save
+    @listing.published = false
+    if @listing.save
       process_successful_draft
     else
       @credits = current_user.credits.unspent
-      @classified_listing.cached_tag_list = listing_params[:tag_list]
+      @listing.cached_tag_list = listing_params[:tag_list]
       @organizations = current_user.organizations
       process_unsuccessful_draft
     end
@@ -93,18 +95,18 @@ module ClassifiedListingsToolkit
       # subtract credits
       Credits::Buyer.call(
         purchaser: purchaser,
-        purchase: @classified_listing,
+        purchase: @listing,
         cost: cost,
       )
 
       # save the listing
-      @classified_listing.bumped_at = Time.current
-      @classified_listing.published = true
+      @listing.bumped_at = Time.current
+      @listing.published = true
 
       # since we can't raise active record errors in this transaction
       # due to the fact that we need to display them in the :new view,
       # we manually rollback the transaction if there are validation errors
-      raise ActiveRecord::Rollback unless @classified_listing.save
+      raise ActiveRecord::Rollback unless @listing.save
 
       successful_transaction = true
     end
@@ -115,16 +117,16 @@ module ClassifiedListingsToolkit
       process_successful_creation
     else
       @credits = current_user.credits.unspent
-      @classified_listing.cached_tag_list = listing_params[:tag_list]
+      @listing.cached_tag_list = listing_params[:tag_list]
       @organizations = current_user.organizations
       process_unsuccessful_creation
     end
   end
 
   def update
-    authorize @classified_listing
+    authorize @listing
 
-    cost = @classified_listing.cost
+    cost = @listing.cost
 
     # NOTE: this should probably be split in three different actions: bump, unpublish, publish
     return bump_listing(cost) if listing_params[:action] == "bump"
@@ -134,7 +136,7 @@ module ClassifiedListingsToolkit
       process_after_unpublish
       return
     elsif listing_params[:action] == "publish"
-      unless @classified_listing.bumped_at?
+      unless @listing.bumped_at?
         first_publish(cost)
         return
       end
@@ -150,7 +152,7 @@ module ClassifiedListingsToolkit
   end
 
   def bump_listing(cost)
-    org = Organization.find_by(id: @classified_listing.organization_id)
+    org = Organization.find_by(id: @listing.organization_id)
 
     if org&.enough_credits?(cost)
       charge_credits_before_bump(org, cost)
@@ -165,7 +167,7 @@ module ClassifiedListingsToolkit
     ActiveRecord::Base.transaction do
       Credits::Buyer.call(
         purchaser: purchaser,
-        purchase: @classified_listing,
+        purchase: @listing,
         cost: cost,
       )
 
@@ -174,14 +176,14 @@ module ClassifiedListingsToolkit
   end
 
   def first_publish(cost)
-    available_author_credits = @classified_listing.author.credits.unspent
+    available_author_credits = @listing.author.credits.unspent
     available_user_credits = []
-    if @classified_listing.author.is_a?(Organization)
+    if @listing.author.is_a?(Organization)
       available_user_credits = current_user.credits.unspent
     end
 
     if available_author_credits.size >= cost
-      create_listing(@classified_listing.author, cost)
+      create_listing(@listing.author, cost)
     elsif available_user_credits.size >= cost
       create_listing(current_user, cost)
     else
@@ -190,7 +192,7 @@ module ClassifiedListingsToolkit
   end
 
   def listing_updatable?
-    at_least_one_param_present? && (bumped_in_last_24_hrs? || !@classified_listing.published)
+    at_least_one_param_present? && (bumped_in_last_24_hrs? || !@listing.published)
   end
 
   def at_least_one_param_present?
@@ -198,6 +200,6 @@ module ClassifiedListingsToolkit
   end
 
   def bumped_in_last_24_hrs?
-    @classified_listing.bumped_at && @classified_listing.bumped_at > 24.hours.ago
+    @listing.bumped_at && @listing.bumped_at > 24.hours.ago
   end
 end
