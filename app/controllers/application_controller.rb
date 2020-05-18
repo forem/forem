@@ -36,7 +36,10 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user!
-    return if current_user
+    if current_user
+      Honeycomb.add_field("current_user_id", current_user.id)
+      return
+    end
 
     respond_to do |format|
       format.html { redirect_to "/enter" }
