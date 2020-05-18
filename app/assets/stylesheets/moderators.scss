@@ -316,7 +316,7 @@
       line-height: var(--lh-tight);
       color: var(--base-90);
       &:after {
-        content: 'Mark as spam';
+        content: 'Mark as abuse/spam';
       }
     }
 
@@ -373,7 +373,7 @@
       color: var(--accent-brand);
 
       &:after {
-        content: 'Marked as spam';
+        content: 'Marked as abuse/spam';
       }
     }
   }
