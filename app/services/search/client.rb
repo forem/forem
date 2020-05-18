@@ -33,7 +33,6 @@ module Search
       ].freeze
 
       def request
-        Honeycomb.add_field("name", "elasticsearch")
         yield
       rescue *TRANSPORT_EXCEPTIONS => e
         class_name = e.class.name.demodulize
