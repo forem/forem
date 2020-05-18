@@ -57,7 +57,7 @@ module Github
     end
 
     def request
-      Honeycomb.add_field("app.name", "github.client")
+      Honeycomb.add_field("name", "github.client")
       yield
     rescue Octokit::Error, Octokit::InvalidRepository => e
       record_error(e)
