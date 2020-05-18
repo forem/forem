@@ -10,7 +10,7 @@ json.extract!(
   :path,
   :url,
   :comments_count,
-  :positive_reactions_count,
+  :public_reactions_count,
   :collection_id,
   :published_timestamp,
 )

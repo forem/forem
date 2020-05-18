@@ -24,10 +24,10 @@ class ReactionsController < ApplicationController
     else
       comments = Comment.
         where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type]).
-        select(%i[id positive_reactions_count])
+        select(%i[id public_reactions_count])
 
       reaction_counts = comments.map do |comment|
-        { id: comment.id, count: comment.positive_reactions_count }
+        { id: comment.id, count: comment.public_reactions_count }
       end
 
       reactions = if session_current_user_id

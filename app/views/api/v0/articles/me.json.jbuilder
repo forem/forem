@@ -12,7 +12,7 @@ json.array!    @articles do |article|
     :path,
     :url,
     :comments_count,
-    :positive_reactions_count,
+    :public_reactions_count,
     :page_views_count,
     :published_timestamp,
     :body_markdown,

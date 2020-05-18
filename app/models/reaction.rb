@@ -5,6 +5,7 @@ class Reaction < ApplicationRecord
   SEARCH_CLASS = Search::Reaction
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
+  PUBLIC_CATEGORIES = %w[like readinglist unicorn thinking hands].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
@@ -13,7 +14,7 @@ class Reaction < ApplicationRecord
 
   counter_culture :reactable,
                   column_name: proc { |model|
-                    model.points.positive? ? "positive_reactions_count" : "reactions_count"
+                    PUBLIC_CATEGORIES.include?(model.category) ? "public_reactions_count" : "reactions_count"
                   }
   counter_culture :user
 

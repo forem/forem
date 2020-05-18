@@ -63,7 +63,7 @@ class ArticleApiIndexService
                  articles.where(approved: true).order("featured_number DESC")
                elsif top.present?
                  articles.where("published_at > ?", top.to_i.days.ago).
-                   order("positive_reactions_count DESC")
+                   order("public_reactions_count DESC")
                else
                  articles.order("hotness_score DESC")
                end
@@ -74,7 +74,7 @@ class ArticleApiIndexService
   def top_articles
     Article.published.includes(:user, :organization).
       where("published_at > ?", top.to_i.days.ago).
-      order("positive_reactions_count DESC").
+      order("public_reactions_count DESC").
       page(page).per(per_page || DEFAULT_PER_PAGE)
   end
 
@@ -83,11 +83,11 @@ class ArticleApiIndexService
 
     articles = if state == "fresh"
                  articles.where(
-                   "positive_reactions_count < ? AND featured_number > ? AND score > ?", 2, 7.hours.ago.to_i, -2
+                   "public_reactions_count < ? AND featured_number > ? AND score > ?", 2, 7.hours.ago.to_i, -2
                  )
                elsif state == "rising"
                  articles.where(
-                   "positive_reactions_count > ? AND positive_reactions_count < ? AND featured_number > ?",
+                   "public_reactions_count > ? AND public_reactions_count < ? AND featured_number > ?",
                    19, 33, 3.days.ago.to_i
                  )
                else
