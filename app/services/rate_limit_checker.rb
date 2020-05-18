@@ -4,13 +4,14 @@ class RateLimitChecker
   # retry_after values are the seconds until a user can retry an action
   ACTION_LIMITERS = {
     article_update: { retry_after: 30 },
-    send_email_confirmation: { retry_after: 120 },
     feedback_message_creation: { retry_after: 300 },
     image_upload: { retry_after: 30 },
     listing_creation: { retry_after: 60 },
-    published_article_creation: { retry_after: 30 },
     organization_creation: { retry_after: 300 },
-    reaction_creation: { retry_after: 30 }
+    published_article_creation: { retry_after: 30 },
+    reaction_creation: { retry_after: 30 },
+    send_email_confirmation: { retry_after: 120 },
+    user_update: { retry_after: 30 }
   }.with_indifferent_access.freeze
 
   def initialize(user = nil)
