@@ -15,16 +15,24 @@ class UserTag < LiquidTagBase
       locals: {
         user: @user.decorate,
         follow_button: @follow_button,
-        user_colors: @user_colors
+        user_colors: @user_colors,
+        user_path: path_to_profile(@user)
       },
     )
   end
 
   def parse_username_to_user(user)
-    user = User.find_by(username: user)
-    raise StandardError, "Invalid username" if user.nil?
+    User.find_by(username: user) || deleted_user
+  end
 
-    user
+  private
+
+  def deleted_user
+    User.new(username: "[deleted user]", name: "[Deleted User]")
+  end
+
+  def path_to_profile(user)
+    user.username == "[deleted user]" ? nil : user.path
   end
 end
 

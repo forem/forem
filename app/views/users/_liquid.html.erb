@@ -6,18 +6,34 @@
       border-color: <%= user_colors[:bg].casecmp("#ffffff").zero? ? user_colors[:text] : user_colors[:bg] %> !important;
     }
   </style>
-  <a href="<%= user.path %>" class="ltag__user__link profile-image-link">
+  <% if user_path.present? %>
+    <a href="<%= user_path %>" class="ltag__user__link profile-image-link">
+      <div class="ltag__user__pic">
+        <img src="<%= ProfileImage.new(user).get(width: 150) %>" alt="<%= "#{user.username} image" %>" />
+      </div>
+    </a>
+  <% else %>
     <div class="ltag__user__pic">
       <img src="<%= ProfileImage.new(user).get(width: 150) %>" alt="<%= "#{user.username} image" %>" />
     </div>
-  </a>
+  <% end %>
   <div class="ltag__user__content">
-    <h2><a href="<%= user.path %>" class="ltag__user__link"><%= user.name %></a><%= follow_button %></h2>
+    <h2>
+      <% if user_path.present? %>
+        <a href="<%= user_path %>" class="ltag__user__link"><%= user.name %></a><%= follow_button %>
+      <% else %>
+        <%= user.name %>
+      <% end %>
+    </h2>
     <div class="ltag__user__summary">
-      <a href="<%= user.path %>" class="ltag__user__link">
+      <% if user_path.present? %>
+        <a href="<%= user_path %>" class="ltag__user__link">
+          <%= user.summary %>
+        </a>
+      <% else %>
         <%= user.summary %>
-      </a>
-    </div>
+      <% end %>
+      </div>
     <p class="ltag__user__social">
       <% if !user.twitter_username.blank? %>
         <a href="https://twitter.com/<%= user.twitter_username %>" target="_blank" rel="noopener">
