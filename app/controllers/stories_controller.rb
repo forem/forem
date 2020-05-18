@@ -369,7 +369,7 @@ class StoriesController < ApplicationController
       "disambiguatingDescription": user_disambiguating_description,
       "worksFor": [user_works_for],
       "alumniOf": @user.education.presence
-    }
+    }.reject { |_, v| v.blank? }
   end
 
   def set_article_json_ld
