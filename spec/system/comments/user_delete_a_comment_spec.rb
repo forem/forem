@@ -13,6 +13,7 @@ RSpec.describe "Deleting Comment", type: :system, js: true do
   end
 
   it "works" do
+    # TODO: Add Percy snapshot?
     visit "/"
     visit comment.path + "/delete_confirm"
 
