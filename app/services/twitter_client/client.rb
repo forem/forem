@@ -2,20 +2,10 @@ module TwitterClient
   # Twitter client (users twitter gem as a backend)
   class Client
     class << self
-      # TODO: put this stuff in a concern module and include it in search::client, oauth_client and here
       # adapted from https://api.rubyonrails.org/classes/Module.html#method-i-delegate_missing_to
       def method_missing(method, *args, &block)
         return super unless target.respond_to?(method, false)
 
-        # define for re-use
-        self.class.define_method(method) do |*new_args, &new_block|
-          request do
-            target.public_send(method, *new_args, &new_block)
-          end
-        end
-
-        # call the original method, this will only be called the first time
-        # as in subsequent calls, the newly defined method will prevail
         request do
           target.public_send(method, *args, &block)
         end
@@ -66,7 +56,7 @@ module TwitterClient
       end
 
       def target
-        @target ||= Twitter::REST::Client.new(
+        Twitter::REST::Client.new(
           consumer_key: ApplicationConfig["TWITTER_KEY"],
           consumer_secret: ApplicationConfig["TWITTER_SECRET"],
           user_agent: "TwitterRubyGem/#{Twitter::Version} (#{URL.url})",
