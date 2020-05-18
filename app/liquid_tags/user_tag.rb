@@ -21,18 +21,14 @@ class UserTag < LiquidTagBase
     )
   end
 
-  def parse_username_to_user(user)
-    User.find_by(username: user) || deleted_user
-  end
-
   private
 
-  def deleted_user
-    User.new(username: "[deleted user]", name: "[Deleted User]")
+  def parse_username_to_user(user)
+    User.find_by(username: user) || User::DELETED_USER
   end
 
   def path_to_profile(user)
-    user.username == "[deleted user]" ? nil : user.path
+    user == User::DELETED_USER ? nil : user.path
   end
 end
 

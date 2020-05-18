@@ -18,22 +18,10 @@
     </div>
   <% end %>
   <div class="ltag__user__content">
-    <h2>
-      <% if user_path.present? %>
-        <a href="<%= user_path %>" class="ltag__user__link"><%= user.name %></a><%= follow_button %>
-      <% else %>
-        <%= user.name %>
-      <% end %>
-    </h2>
+    <h2><%= link_to_if user_path.present?, user.name, user_path, class: "ltag__user__link" %><%= follow_button %></h2>
     <div class="ltag__user__summary">
-      <% if user_path.present? %>
-        <a href="<%= user_path %>" class="ltag__user__link">
-          <%= user.summary %>
-        </a>
-      <% else %>
-        <%= user.summary %>
-      <% end %>
-      </div>
+      <%= link_to_if user_path.present?, user.summary, user_path, class: "ltag__user__link" %>
+    </div>
     <p class="ltag__user__social">
       <% if !user.twitter_username.blank? %>
         <a href="https://twitter.com/<%= user.twitter_username %>" target="_blank" rel="noopener">

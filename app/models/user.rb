@@ -40,6 +40,8 @@ class User < ApplicationRecord
   SEARCH_CLASS = Search::User
   DATA_SYNC_CLASS = DataSync::Elasticsearch::User
 
+  DELETED_USER = User.new(username: "[deleted user]", name: "[Deleted User]")
+
   acts_as_followable
   acts_as_follower
 
