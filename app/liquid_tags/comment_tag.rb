@@ -20,4 +20,5 @@ class CommentTag < LiquidTagBase
 end
 
 Liquid::Template.register_tag("comment", CommentTag)
+# kept for compatibility with existing comments embeds on DEV
 Liquid::Template.register_tag("devcomment", CommentTag)
