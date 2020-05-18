@@ -54,7 +54,7 @@ class Internal::ArticlesController < Internal::ApplicationController
       where("published_at > ? OR crossposted_at > ?", days_ago.days.ago, days_ago.days.ago).
       includes(:user).
       limited_columns_internal_select.
-      order("positive_reactions_count DESC").
+      order("public_reactions_count DESC").
       page(params[:page]).
       per(50)
   end
@@ -64,7 +64,7 @@ class Internal::ArticlesController < Internal::ApplicationController
       where("published_at > ?", months_ago).
       includes(user: [:notes]).
       limited_columns_internal_select.
-      order("positive_reactions_count DESC").
+      order("public_reactions_count DESC").
       page(params[:page]).
       per(50)
   end
