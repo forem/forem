@@ -1,4 +1,4 @@
-class DevCommentTag < LiquidTagBase
+class CommentTag < LiquidTagBase
   PARTIAL = "comments/liquid".freeze
 
   def initialize(_tag_name, id_code, _tokens)
@@ -19,4 +19,5 @@ class DevCommentTag < LiquidTagBase
   end
 end
 
-Liquid::Template.register_tag("devcomment", DevCommentTag)
+Liquid::Template.register_tag("comment", CommentTag)
+Liquid::Template.register_tag("devcomment", CommentTag)
