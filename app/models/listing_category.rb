@@ -1,5 +1,9 @@
-class ClassifiedListingCategory < ApplicationRecord
-  has_many :classified_listings
+class ListingCategory < ApplicationRecord
+  # We used to use both "classified listing" and "listing" throughout the app.
+  # We standardized on the latter, but keeping the table name was easier.
+  self.table_name = "classified_listing_categories"
+
+  has_many :listings, inverse_of: :listing_category
 
   before_validation :normalize_social_preview_color
 

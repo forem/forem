@@ -1,15 +1,18 @@
-class ClassifiedListing < ApplicationRecord
+class Listing < ApplicationRecord
+  # We used to use both "classified listing" and "listing" throughout the app.
+  # We standardized on the latter, but keeping the table name was easier.
+  self.table_name = "classified_listings"
+
   include Searchable
 
-  SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
-  SEARCH_CLASS = Search::ClassifiedListing
+  SEARCH_SERIALIZER = Search::ListingSerializer
+  SEARCH_CLASS = Search::Listing
 
   attr_accessor :action
 
-  # Note: categories were hardcoded at first and this model was only added later,
-  # so the association name is a bit verbose since the original "category" attribute
-  # was kept to minimize code changes.
-  belongs_to :classified_listing_category
+  # Note: categories were hardcoded at first and the model was only added later.
+  # The foreign_key and inverse_of options are used because of legacy table names.
+  belongs_to :listing_category, inverse_of: :listings, foreign_key: :classified_listing_category_id
   belongs_to :user
   belongs_to :organization, optional: true
   before_save :evaluate_markdown
@@ -31,14 +34,13 @@ class ClassifiedListing < ApplicationRecord
 
   scope :published, -> { where(published: true) }
   scope :in_category, lambda { |slug|
-    joins(:classified_listing_category).
-      where("classified_listing_categories.slug" => slug)
+    joins(:listing_category).where("listing_categories.slug" => slug)
   }
 
-  delegate :cost, to: :classified_listing_category
+  delegate :cost, to: :listing_category
 
   def category
-    classified_listing_category&.slug
+    listing_category&.slug
   end
 
   def author
@@ -60,7 +62,7 @@ class ClassifiedListing < ApplicationRecord
   end
 
   def modify_inputs
-    ActsAsTaggableOn::Taggable::Cache.included(ClassifiedListing)
+    ActsAsTaggableOn::Taggable::Cache.included(Listing)
     ActsAsTaggableOn.default_parser = ActsAsTaggableOn::TagParser
     self.body_markdown = body_markdown.to_s.gsub(/\r\n/, "\n")
   end

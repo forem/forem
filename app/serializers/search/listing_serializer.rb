@@ -1,5 +1,5 @@
 module Search
-  class ClassifiedListingSerializer
+  class ListingSerializer
     include FastJsonapi::ObjectSerializer
 
     attributes :id,
@@ -18,7 +18,7 @@ module Search
     attribute :tags, &:tag_list
 
     attribute :author do |cl|
-      ClassifiedListingAuthorSerializer.new(cl.author).
+      ListingAuthorSerializer.new(cl.author).
         serializable_hash.
         dig(:data, :attributes)
     end

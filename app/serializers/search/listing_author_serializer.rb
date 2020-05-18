@@ -1,5 +1,5 @@
 module Search
-  class ClassifiedListingAuthorSerializer
+  class ListingAuthorSerializer
     include FastJsonapi::ObjectSerializer
 
     attributes :username, :name, :profile_image_90

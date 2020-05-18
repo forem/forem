@@ -9,7 +9,7 @@ RSpec.describe Organization, type: :model do
 
       it { is_expected.to have_many(:api_secrets).through(:users) }
       it { is_expected.to have_many(:articles) }
-      it { is_expected.to have_many(:classified_listings) }
+      it { is_expected.to have_many(:listings) }
       it { is_expected.to have_many(:collections) }
       it { is_expected.to have_many(:credits) }
       it { is_expected.to have_many(:display_ads) }
