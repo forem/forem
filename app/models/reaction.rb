@@ -35,7 +35,6 @@ class Reaction < ApplicationRecord
   after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
   after_commit :index_to_elasticsearch, if: :indexable?, on: %i[create update]
   after_commit :remove_from_elasticsearch, if: :indexable?, on: [:destroy]
-  after_save :touch_user
 
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
@@ -54,7 +53,7 @@ class Reaction < ApplicationRecord
 
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
-      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.updated_at&.rfc3339}-#{category}"
+      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.reactions_count}-#{user.positive_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
@@ -95,10 +94,6 @@ class Reaction < ApplicationRecord
 
   def indexable?
     category == "readinglist" && reactable && reactable.published
-  end
-
-  def touch_user
-    user.touch
   end
 
   def update_reactable
