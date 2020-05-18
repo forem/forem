@@ -104,24 +104,38 @@ RSpec.describe BadgeRewarder, type: :labor do
     end
   end
 
-  describe "::award_contributor_badges_from_github" do
-    let(:my_ocktokit_client) { instance_double(Octokit::Client) }
+  describe "::award_contributor_badges_from_github", vcr: true do
     let(:user) { create(:user, :with_identity, identities: ["github"]) }
 
-    let(:stubbed_github_commit) do
-      [OpenStruct.new(author: OpenStruct.new(id: user.identities.first.uid))]
-    end
+    let_it_be_readonly(:badge) { create(:badge, title: "DEV Contributor") }
 
     before do
       omniauth_mock_github_payload
-      allow(Octokit::Client).to receive(:new).and_return(my_ocktokit_client)
-      allow(my_ocktokit_client).to receive(:commits).and_return(stubbed_github_commit)
-      create(:badge, title: "DEV Contributor")
+
+      stub_const("BadgeRewarder::REPOSITORIES", ["rust-lang/rust"])
+
+      user.identities.github.update_all(uid: "3372342")
     end
 
-    it "award contributor badge" do
-      described_class.award_contributor_badges_from_github
-      expect(user.badge_achievements.size).to eq(1)
+    it "awards contributor badge" do
+      expect do
+        Timecop.freeze("2020-05-15T13:49:20Z") do
+          VCR.use_cassette("github_client_commits_contributor_badge") do
+            described_class.award_contributor_badges_from_github
+          end
+        end
+      end.to change(user.badge_achievements, :count).by(1)
+    end
+
+    it "awards contributor badge once" do
+      expect do
+        Timecop.freeze("2020-05-15T13:49:20Z") do
+          VCR.use_cassette("github_client_commits_contributor_badge_twice") do
+            described_class.award_contributor_badges_from_github
+            described_class.award_contributor_badges_from_github
+          end
+        end
+      end.to change(user.badge_achievements, :count).by(1)
     end
   end
 

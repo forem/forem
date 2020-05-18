@@ -10,7 +10,7 @@ class GithubReposController < ApplicationController
     # NOTE: this will invoke autopaging, by issuing multiple calls to GitHub
     # to fetch all of the user's repositories. This could eventually become slow
     @repos = fetch_repositories_from_github(known_repositories_ids)
-  rescue Octokit::Unauthorized => e
+  rescue Github::Errors::Unauthorized => e
     render json: { error: "GitHub Unauthorized: #{e.message}", status: 401 }, status: :unauthorized
   end
 
@@ -38,14 +38,8 @@ class GithubReposController < ApplicationController
 
   private
 
-  # TODO: use Github::UserClient or something
-  def create_octokit_client
-    current_user_token = current_user.identities.where(provider: "github").last.token
-    Octokit::Client.new(access_token: current_user_token)
-  end
-
   def fetch_repositories_from_github(known_repositories_ids)
-    client = create_octokit_client
+    client = Github::OauthClient.for_user(current_user)
 
     client.repositories(visibility: :public).map do |repo|
       repo.featured = known_repositories_ids.include?(repo.id)
@@ -54,10 +48,10 @@ class GithubReposController < ApplicationController
   end
 
   def fetch_repository_from_github(repository_id)
-    client = create_octokit_client
+    client = Github::OauthClient.for_user(current_user)
 
     client.repository(repository_id)
-  rescue Octokit::NotFound
+  rescue Github::Errors::NotFound
     nil
   end
 

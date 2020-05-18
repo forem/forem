@@ -1,9 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "GithubRepos", type: :request do
+  let(:fake_github_client) do
+    Class.new(Github::OauthClient) do
+      def repositories(*_args); end
+
+      def repository(name); end
+    end
+  end
   let(:user) { create(:user, :with_identity, identities: ["github"]) }
   let(:repo) { build(:github_repo, user: user) }
-  let(:my_octokit_client) { instance_double(Octokit::Client) }
   let(:stubbed_github_repos) do
     repo_params = repo.attributes.merge(
       id: repo.github_id_code,
@@ -11,6 +17,13 @@ RSpec.describe "GithubRepos", type: :request do
     )
 
     [OpenStruct.new(repo_params)]
+  end
+  let(:github_client) do
+    instance_double(
+      fake_github_client,
+      repositories: stubbed_github_repos,
+      repository: stubbed_github_repos.first,
+    )
   end
   let(:headers) do
     {
@@ -22,9 +35,7 @@ RSpec.describe "GithubRepos", type: :request do
   before do
     omniauth_mock_github_payload
 
-    allow(Octokit::Client).to receive(:new).and_return(my_octokit_client)
-    allow(my_octokit_client).to receive(:repositories) { stubbed_github_repos }
-    allow(my_octokit_client).to receive(:repository) { stubbed_github_repos.first }
+    allow(Github::OauthClient).to receive(:new).and_return(github_client)
   end
 
   describe "GET /github_repos" do
@@ -49,7 +60,7 @@ RSpec.describe "GithubRepos", type: :request do
       before { sign_in user }
 
       it "returns unauthorized if the user is not authorized to perform the GitHub API call" do
-        allow(Octokit::Client).to receive(:new).and_raise(Octokit::Unauthorized)
+        allow(Github::OauthClient).to receive(:new).and_raise(Github::Errors::Unauthorized)
 
         get github_repos_path, headers: headers
         expect(response).to have_http_status(:unauthorized)
@@ -87,7 +98,7 @@ RSpec.describe "GithubRepos", type: :request do
     end
 
     it "returns 404 if no repository is found" do
-      allow(my_octokit_client).to receive(:repository).and_raise(Octokit::NotFound)
+      allow(github_client).to receive(:repository).and_raise(Github::Errors::NotFound)
 
       params = { github_repo: github_repo.to_json }
       post update_or_create_github_repos_path(params), headers: headers
