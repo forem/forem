@@ -49,7 +49,7 @@ class ReactionsController < ApplicationController
   end
 
   def create
-    Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
+    remove_count_cache_key
 
     category = params[:category] || "like"
     reaction = Reaction.where(
@@ -136,5 +136,11 @@ class ReactionsController < ApplicationController
 
   def authorize_for_reaction
     authorize Reaction
+  end
+
+  def remove_count_cache_key
+    return unless params[:reactable_type] == "Article"
+
+    Rails.cache.delete "count_for_reactable-Article-#{params[:reactable_id]}"
   end
 end
