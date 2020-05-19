@@ -259,8 +259,8 @@ export function sendChannelRequest(id, successCb, failureCb) {
 }
 
 export function rejectJoiningRequest(
-  channel_id,
-  membership_id,
+  channelId,
+  membershipId,
   successCb,
   failureCb,
 ) {
@@ -272,9 +272,9 @@ export function rejectJoiningRequest(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      status: "pending",
-      chat_channel_id: channel_id,
-      membership_id: membership_id,
+      status: 'pending',
+      chat_channel_id: channelId,
+      membership_id: membershipId,
     }),
     credentials: 'same-origin',
   })
@@ -284,8 +284,8 @@ export function rejectJoiningRequest(
 }
 
 export function acceptJoiningRequest(
-  channel_id,
-  membership_id,
+  channelId,
+  membershipId,
   successCb,
   failureCb,
 ) {
@@ -297,8 +297,8 @@ export function acceptJoiningRequest(
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      chat_channel_id: channel_id,
-      membership_id: membership_id,
+      chat_channel_id: channelId,
+      membership_id: membershipId,
       chat_channel_membership: {
         user_action: 'accept',
       },
