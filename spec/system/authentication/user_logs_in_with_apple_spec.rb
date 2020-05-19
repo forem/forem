@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Authenticating with Apple" do
+RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan" } do
   let(:sign_in_link) { "Sign In With Apple" }
 
   before { omniauth_mock_apple_payload }
