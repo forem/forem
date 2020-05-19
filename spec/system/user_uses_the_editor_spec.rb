@@ -26,7 +26,7 @@ RSpec.describe "Using the editor", type: :system do
     before do
       fill_markdown_with(read_from_file(raw_text))
       page.execute_script("window.scrollTo(0, -100000)")
-      find("button", text: /\APREVIEW\z/).click
+      find("button", text: /\APreview\z/).click
     end
 
     after do
@@ -48,7 +48,7 @@ RSpec.describe "Using the editor", type: :system do
   describe "Submitting an article", js: true do
     it "renders the page", percy: true do
       fill_markdown_with(read_from_file(raw_text))
-      find("button", text: /\ASAVE CHANGES\z/).click
+      find("button", text: /\ASave changes\z/).click
       Percy.snapshot(page, name: "Using the editor: submit an article")
     end
 
@@ -80,7 +80,7 @@ RSpec.describe "Using the editor", type: :system do
       end
 
       it "shows a message that the title cannot be blank" do
-        expect(page).to have_text(/title:  can't be blank/)
+        expect(page).to have_text(/title: can't be blank/)
       end
     end
   end
