@@ -50,7 +50,7 @@ class RateLimitChecker
 
   def track_limit_by_action(action)
     expires_in = ACTION_LIMITERS.dig(action, :retry_after).seconds
-    Rails.cache.increment(limit_cache_key(action), 1, expires_in: expires_in)
+    Rails.cache.increment(limit_cache_key(action), 1, expires_in: expires_in, raw: true)
   end
 
   def limit_by_email_recipient_address(address)
@@ -63,7 +63,7 @@ class RateLimitChecker
 
   ACTION_LIMITERS.each_key do |action|
     define_method("check_#{action}_limit") do
-      Rails.cache.read(limit_cache_key(action)).to_i > action_rate_limit(action)
+      Rails.cache.read(limit_cache_key(action), raw: true).to_i > action_rate_limit(action)
     end
   end
 
