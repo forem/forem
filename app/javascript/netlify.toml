@@ -7,5 +7,5 @@
 
 [build]
   # base set in Netlify settings UI
-  command = "yarn && yarn build-storybook"
+  command = "npm install && npm run build-storybook"
   publish = "storybook-static/"
