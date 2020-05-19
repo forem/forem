@@ -23,7 +23,7 @@ module Mentions
 
       collect_existing_users(mentioned_usernames).
         then do |existing_mentioned_users|
-          reject_notifiable_owner existing_mentioned_users
+          reject_notifiable_owner(existing_mentioned_users)
         end
     end
 
