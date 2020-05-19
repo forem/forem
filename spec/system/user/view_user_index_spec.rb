@@ -11,7 +11,9 @@ RSpec.describe "User index", type: :system do
     context "when 1 article" do
       before { visit "/user3000" }
 
-      it "shows the header", js: true do
+      it "shows the header", js: true, percy: true do
+        Percy.snapshot(page, name: "User: /:user_id renders")
+
         within("h1") { expect(page).to have_content(user.name) }
         within(".profile-details") do
           expect(page).to have_button("+ FOLLOW")
@@ -63,10 +65,14 @@ RSpec.describe "User index", type: :system do
   context "when user has an organization membership" do
     before do
       user.organization_memberships.create(organization: organization, type_of_user: "member")
+      visit "/user3000"
     end
 
-    it "shows organizations" do
-      visit "/user3000"
+    it "renders the page", js: true, percy: true do
+      Percy.snapshot(page, name: "User: /:user_id renders with organization membership")
+    end
+
+    it "shows organizations", js: true do
       expect(page).to have_css("#sidebar-wrapper-right h4", text: "organizations")
     end
   end
@@ -75,6 +81,10 @@ RSpec.describe "User index", type: :system do
     before do
       sign_in user
       visit "/user3000"
+    end
+
+    it "renders the page", js: true, percy: true do
+      Percy.snapshot(page, name: "User: /:user_id for logged in user's own profile")
     end
 
     it "shows the header", js: true do

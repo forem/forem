@@ -15,7 +15,9 @@ RSpec.describe "User visits a podcast page", type: :system do
     end
   end
 
-  it "displays podcast episodes" do
+  it "displays podcast episodes", js: true, percy: true do
+    Percy.snapshot(page, name: "Podcast: /:podcast_slug renders")
+
     expect(page).to have_selector("div.single-article", visible: :visible, count: 2)
   end
 
