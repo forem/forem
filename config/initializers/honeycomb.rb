@@ -32,6 +32,10 @@ else
           fields.delete("sql.active_record.datadog_span")
         end
       end
+      # Sample away highly redundant events
+      config.sample_hook do |fields|
+        Honeycomb::NoiseCancellingSampler.sample(fields)
+      end
     end
   end
 end

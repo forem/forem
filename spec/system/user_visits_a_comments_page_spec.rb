@@ -7,14 +7,20 @@ RSpec.describe "Views an article", type: :system, js: true do
   let!(:comment) { create(:comment, commentable: article) }
   let!(:child_comment) { create(:comment, parent: comment, commentable: article) }
 
-  it "shows all comments" do
+  it "shows all comments", percy: true do
     create(:comment, commentable: article)
     visit "#{article.path}/comments"
+
+    Percy.snapshot(page, name: "Viewing an article: shows all comments")
+
     expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
   end
 
-  it "shows a thread" do
+  it "shows a thread", percy: true do
     visit "#{article.path}/comments/#{comment.id_code_generated}"
+
+    Percy.snapshot(page, name: "Viewing an article: shows a thread")
+
     expect(page).to have_selector(".single-comment-node", visible: :visible, count: 2)
     expect(page).to have_selector(".comment-deep-0#comment-node-#{comment.id}", visible: :visible, count: 1)
     expect(page).to have_selector(".comment-deep-1#comment-node-#{child_comment.id}", visible: :visible, count: 1)

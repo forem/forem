@@ -8,7 +8,7 @@ class Internal::ListingsController < Internal::ApplicationController
         page(params[:page]).order("bumped_at DESC").per(50)
 
     @listings = @listings.published unless include_unpublished?
-    @listings = @listings.where(category: params[:filter]) if params[:filter].present?
+    @listings = @classified_listings.in_category(params[:filter]) if params[:filter].present?
   end
 
   def edit
