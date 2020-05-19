@@ -41,6 +41,9 @@
     "positive_reactions_count": {
       "type": "integer"
     },
+    "public_reactions_count": {
+      "type": "integer"
+    },
     "profile_image_90": {
       "type": "keyword"
     },
