@@ -31,7 +31,7 @@ class SiteConfig < RailsSettings::Base
     instagram: nil,
     twitch: nil
   }
-  field :twitter_hashtag, type: :string
+  field :twitter_hashtag, type: :string, default: "#DEVCommunity"
 
   # Emails
   field :email_addresses, type: :hash, default: {
