@@ -49,7 +49,7 @@ class ReactionsController < ApplicationController
   end
 
   def create
-    Rails.cache.delete "count_for_reactable-#{params[:reactable_type]}-#{params[:reactable_id]}"
+    remove_count_cache_key
 
     category = params[:category] || "like"
     reaction = Reaction.where(
@@ -96,7 +96,7 @@ class ReactionsController < ApplicationController
   end
 
   def cached_user_positive_reactions(user)
-    Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.updated_at}", expires_in: 24.hours) do
+    Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.positive_reactions_count}", expires_in: 24.hours) do
       user.reactions.positive
     end
   end
@@ -115,7 +115,6 @@ class ReactionsController < ApplicationController
   end
 
   def destroy_reaction(reaction)
-    current_user.touch
     reaction.destroy
     Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
     Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
@@ -137,5 +136,11 @@ class ReactionsController < ApplicationController
 
   def authorize_for_reaction
     authorize Reaction
+  end
+
+  def remove_count_cache_key
+    return unless params[:reactable_type] == "Article"
+
+    Rails.cache.delete "count_for_reactable-Article-#{params[:reactable_id]}"
   end
 end

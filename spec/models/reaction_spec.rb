@@ -13,6 +13,25 @@ RSpec.describe Reaction, type: :model do
     it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(%i[reactable_id reactable_type category]) }
   end
 
+  describe "counter_culture" do
+    context "when a reaction is created" do
+      it "increments reaction count on user" do
+        expect do
+          create(:reaction, user: user)
+        end.to change { user.reload.reactions_count }.by(1)
+      end
+    end
+
+    context "when a reaction is destroyed" do
+      it "decrements reaction count on user" do
+        reaction = create(:reaction, user: user)
+        expect do
+          reaction.destroy
+        end.to change { user.reload.reactions_count }.by(-1)
+      end
+    end
+  end
+
   describe "validations" do
     it "allows like reaction for users without trusted role" do
       reaction.category = "like"
@@ -233,16 +252,6 @@ RSpec.describe Reaction, type: :model do
         comment = create(:comment, commentable: article, updated_at: updated_at)
         reaction.update(reactable: comment)
         expect(comment.reload.updated_at).to be > updated_at
-      end
-    end
-
-    it "updates updated_at for the user" do
-      sidekiq_perform_enqueued_jobs do
-        updated_at = user.updated_at
-        Timecop.travel(1.day.from_now) do
-          reaction.save
-          expect(user.reload.updated_at).to be > updated_at
-        end
       end
     end
   end
