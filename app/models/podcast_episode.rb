@@ -42,6 +42,7 @@ class PodcastEpisode < ApplicationRecord
   scope :for_user, lambda { |user|
     joins(:podcast).where(podcasts: { creator_id: user.id })
   }
+  scope :eager_load_serialized_data, -> {}
 
   def search_id
     "podcast_episode_#{id}"
