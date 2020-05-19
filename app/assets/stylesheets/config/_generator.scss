@@ -632,7 +632,13 @@
   (
     'align',
     'text-align',
-    ('left': left, 'center': center, 'right': right, 'justify': justify),
+    (
+      'left': left,
+      'center': center,
+      'right': right,
+      'justify': justify,
+      'unset': unset
+    ),
     (),
     true
   ),
@@ -653,7 +659,13 @@
   (
     'whitespace',
     'white-space',
-    ('normal': normal, 'nowrap': nowrap, 'pre': pre),
+    (
+      'normal': normal,
+      'nowrap': nowrap,
+      'pre': pre,
+      'prewrap': pre-wrap,
+      'unset': unset
+    ),
     (),
     true
   ),
