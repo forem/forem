@@ -10,7 +10,6 @@ class PartnershipsController < ApplicationController
 
   def show
     skip_authorization
-
     @organizations = current_user&.admin_organizations
   end
 
@@ -22,9 +21,9 @@ class PartnershipsController < ApplicationController
     number_of_credits_needed = Sponsorship::CREDITS[level].to_i
 
     if %w[devrel media].include?(level)
-      flash[:notice] = "#{level.capitalize} sponsorship is not a self-serving one"
+      flash[:error] = "#{level.capitalize} sponsorship is not a self-serving one"
     elsif organization.credits.unspent.size < number_of_credits_needed
-      flash[:notice] = "Not enough credits"
+      flash[:error] = "Not enough credits"
     else
       sponsorable = Tag.find_by!(name: sponsorship_params[:tag_name]) if level == "tag"
 
@@ -41,6 +40,8 @@ class PartnershipsController < ApplicationController
         level: level,
         tag: sponsorable,
       )
+
+      flash[:notice] = "You purchased a sponsorship"
     end
 
     redirect_back(fallback_location: partnerships_path)

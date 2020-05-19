@@ -191,6 +191,11 @@ RSpec.describe "Partnerships", type: :request do
             end.to change(org.sponsorships, :count).by(1)
           end
 
+          it "creates a flash notice" do
+            post partnerships_path, params: params
+            expect(flash[:notice]).to eq("You purchased a sponsorship")
+          end
+
           it "subscribes with the correct info" do
             Timecop.freeze(Time.current) do
               post partnerships_path, params: params
@@ -228,7 +233,7 @@ RSpec.describe "Partnerships", type: :request do
           it "redirects with a flash notice" do
             post partnerships_path, params: params
             expect(response).to redirect_to(partnerships_path)
-            expect(flash[:notice]).to eq("Not enough credits")
+            expect(flash[:error]).to eq("Not enough credits")
           end
         end
       end
@@ -250,7 +255,7 @@ RSpec.describe "Partnerships", type: :request do
           it "redirects with a notice" do
             post partnerships_path, params: params
             expect(response).to redirect_to(partnerships_path)
-            expect(flash[:notice]).to eq("#{level.capitalize} sponsorship is not a self-serving one")
+            expect(flash[:error]).to eq("#{level.capitalize} sponsorship is not a self-serving one")
           end
         end
       end

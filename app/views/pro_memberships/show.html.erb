@@ -7,14 +7,9 @@
 </style>
 
 <div class="partnerships-container">
-  <% if flash[:notice].present? %>
-    <div class="notice" id="notice">
-      <%= flash[:notice] %>
-    </div>
-  <% elsif flash[:error].present? %>
-    <div class="notice error-notice" id="notice" style="text-align:center;color:red">
-      ERROR
-      <%= flash[:error] %>
+  <% if flash[:error].present? %>
+    <div class="crayons-card crayons-card--secondary crayons-notice crayons-notice--danger">
+      <p><%= flash[:error] %></p>
     </div>
   <% end %>
 
