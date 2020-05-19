@@ -367,7 +367,7 @@ class StoriesController < ApplicationController
       "jobTitle": @user.employment_title.presence,
       "description": @user.summary.presence || "404 bio not found",
       "disambiguatingDescription": user_disambiguating_description,
-      "worksFor": [user_works_for],
+      "worksFor": [user_works_for].compact,
       "alumniOf": @user.education.presence
     }.reject { |_, v| v.blank? }
   end
@@ -410,9 +410,11 @@ class StoriesController < ApplicationController
     # This array of images exists for SEO optimization purposes.
     # For more info on this structure, please refer to this documentation:
     # https://developers.google.com/search/docs/data-types/article
-    [ApplicationController.helpers.article_social_image_url(@article, width: 1080, height: 1080),
-     ApplicationController.helpers.article_social_image_url(@article, width: 1280, height: 720),
-     ApplicationController.helpers.article_social_image_url(@article, width: 1600, height: 900)]
+    [
+      ApplicationController.helpers.article_social_image_url(@article, width: 1080, height: 1080),
+      ApplicationController.helpers.article_social_image_url(@article, width: 1280, height: 720),
+      ApplicationController.helpers.article_social_image_url(@article, width: 1600, height: 900),
+    ]
   end
 
   def set_organization_json_ld
@@ -439,7 +441,7 @@ class StoriesController < ApplicationController
       "@type": "Organization",
       "name": @user.employer_name,
       "url": @user.employer_url
-    }
+    }.reject { |_, v| v.blank? }
   end
 
   def user_disambiguating_description
@@ -449,19 +451,21 @@ class StoriesController < ApplicationController
   def user_same_as
     # For further information on the sameAs property, please refer to this link:
     # https://schema.org/sameAs
-    [@user.twitter_username.presence ? "https://twitter.com/#{@user.twitter_username}" : nil,
-     @user.github_username.presence ? "https://github.com/#{@user.github_username}" : nil,
-     @user.mastodon_url,
-     @user.facebook_url,
-     @user.youtube_url,
-     @user.linkedin_url,
-     @user.behance_url,
-     @user.stackoverflow_url,
-     @user.dribbble_url,
-     @user.medium_url,
-     @user.gitlab_url,
-     @user.instagram_url,
-     @user.twitch_username,
-     @user.website_url].compact
+    [
+      @user.twitter_username.presence ? "https://twitter.com/#{@user.twitter_username}" : nil,
+      @user.github_username.presence ? "https://github.com/#{@user.github_username}" : nil,
+      @user.mastodon_url,
+      @user.facebook_url,
+      @user.youtube_url,
+      @user.linkedin_url,
+      @user.behance_url,
+      @user.stackoverflow_url,
+      @user.dribbble_url,
+      @user.medium_url,
+      @user.gitlab_url,
+      @user.instagram_url,
+      @user.twitch_username,
+      @user.website_url,
+    ].compact
   end
 end
