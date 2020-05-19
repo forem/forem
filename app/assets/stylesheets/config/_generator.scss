@@ -563,7 +563,11 @@
   (
     'ff',
     'font-family',
-    ('default': var(--ff-default), 'accent': var(--ff-accent)),
+    (
+      'default': var(--ff-default),
+      'accent': var(--ff-accent),
+      'serif': var(--ff-serif)
+    ),
     (),
     false
   ),
