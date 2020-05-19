@@ -84,7 +84,7 @@ making full-page requests. This approach is similar to the one used by the Rails
 gem `Turbolinks`, but our approach is more lightweight. The library is modified
 to work specifically with this Rails app and does not swap out reused elements
 like the navigation bar or the footer. The code for this functionality is
-viewable in `app/assets/javascripb/base.js.erb`.
+viewable in `app/assets/javascripts/base.js.erb`.
 
 There are a few caveats regarding this approach. Using our approach means a
 non-trivial amount of functionality is reloaded on page change. A similar amount

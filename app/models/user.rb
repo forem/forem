@@ -167,7 +167,6 @@ class User < ApplicationRecord
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
-  before_destroy :destroy_empty_dm_channels, prepend: true
   before_destroy :destroy_follows, prepend: true
   before_destroy :unsubscribe_from_newsletters, prepend: true
 
@@ -596,15 +595,6 @@ class User < ApplicationRecord
     counts_score = (articles_count + comments_count + reactions_count + badge_achievements_count) * 10
     score = (counts_score + tag_keywords_for_search.size) * reputation_modifier
     score.to_i
-  end
-
-  def destroy_empty_dm_channels
-    return if chat_channels.empty? ||
-      chat_channels.where(channel_type: "direct").empty?
-
-    empty_dm_channels = chat_channels.where(channel_type: "direct").
-      select { |chat_channel| chat_channel.messages.empty? }
-    empty_dm_channels.destroy_all
   end
 
   def destroy_follows

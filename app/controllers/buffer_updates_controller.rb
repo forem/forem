@@ -55,10 +55,10 @@ class BufferUpdatesController < ApplicationController
     @user = @article.user
     if @user.twitter_username.present?
       params[:buffer_update][:body_text] +
-        "\n\n{ author: @#{@user.twitter_username} } #DEVCommunity\n#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{@article.path}"
+        "\n\n{ author: @#{@user.twitter_username} } #{SiteConfig.twitter_hashtag}\n#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{@article.path}"
     else
       params[:buffer_update][:body_text] +
-        " #DEVCommunity\n#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{@article.path}"
+        " #{SiteConfig.twitter_hashtag}\n#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{@article.path}"
     end
   end
 end
