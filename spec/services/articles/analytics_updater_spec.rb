@@ -12,8 +12,6 @@ RSpec.describe Articles::AnalyticsUpdater, type: :service do
   describe "#call" do
     context "when positive_reactions_count is LOWER than previous_positive_reactions_count" do
       it "does nothing " do
-        var = 1 / 0
-        puts var
         build_stubbed(:article, positive_reactions_count: 2, previous_positive_reactions_count: 3, user: user)
         described_class.call(user)
         expect(Notification).not_to have_received(:send_milestone_notification)

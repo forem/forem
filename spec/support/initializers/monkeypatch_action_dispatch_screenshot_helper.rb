@@ -8,6 +8,6 @@ require "action_dispatch/system_testing/test_helpers/screenshot_helper"
   private
 
   def image_name
-    "#{method_name}_#{Time.current.utc.strftime('%Y-%m-%dT%H-%M-%S%3NZ')}"
+    "#{method_name}_#{Time.current.utc.strftime('%Y-%m-%dT%H:-%M-%S-%3NZ')}"
   end
 end
