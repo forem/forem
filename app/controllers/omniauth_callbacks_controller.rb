@@ -1,9 +1,6 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   include Devise::Controllers::Rememberable
 
-  # TODO: remove before deployment
-  skip_before_action :verify_authenticity_token
-
   # Each available authentication method needs a related action that will be called
   # as a callback on successful redirect from the upstream OAuth provider
   Authentication::Providers.available.each do |provider_name|
