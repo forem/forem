@@ -1,6 +1,4 @@
 class Article < ApplicationRecord
-  self.ignored_columns = %w[live_now]
-
   include CloudinaryHelper
   include ActionView::Helpers
   include Storext.model
