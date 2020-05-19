@@ -357,7 +357,7 @@
 }
 
 // Generally Feed...
-.articles-list {
+.articles-list:not(.crayons-layout__content) {
   margin: auto;
   max-width: 100%;
   position: relative;

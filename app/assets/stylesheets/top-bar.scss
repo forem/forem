@@ -25,7 +25,9 @@
   }
 
   &__container {
-    max-width: $max-width;
+    max-width: var(--site-width);
+    padding-left: var(--layout-padding);
+    padding-right: var(--layout-padding);
     margin: auto;
     display: flex;
     align-items: center;
@@ -43,10 +45,6 @@
 // Logo
 .top-bar--logo {
   display: flex;
-  margin-left: var(--su-2);
-  @media (min-width: $breakpoint-m) {
-    margin-left: var(--su-4);
-  }
 
   .logo {
     width: 50px;

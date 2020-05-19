@@ -1,9 +1,20 @@
 @import '../config/import';
 
 :root {
-  --layout-sidebar-width: 200px;
-  --layout-gap: var(--su-6);
-  --layout-padding: var(--su-6);
+  --layout-sidebar-left-width: 220px;
+  --layout-sidebar-right-width: 280px;
+  --layout-gap: var(--su-4);
+  --layout-padding: var(--su-2);
+
+  @media (min-width: $breakpoint-m) {
+    --layout-sidebar-left-width: 240px;
+    --layout-gap: var(--su-6);
+    --layout-padding: var(--su-4);
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --layout-sidebar-right-width: 320px;
+  }
 }
 
 .crayons-layout {
@@ -12,14 +23,8 @@
   max-width: var(--site-width);
   margin: 0 auto;
 
-  &__sidebar {
-  }
-
-  &__content {
-  }
-
   &--max-l {
-    max-width: $breakpoint-l;
+    max-width: var(--breakpoint-l);
   }
 }
 
@@ -27,7 +32,18 @@
   @media (min-width: $breakpoint-s) {
     display: grid;
     grid-gap: var(--layout-gap);
-    grid-template-columns: var(--layout-sidebar-width) 1fr;
+    grid-template-columns: var(--layout-sidebar-left-width) 1fr;
+    padding: var(--layout-padding);
+  }
+}
+
+.crayons-layout--3-asymetric {
+  @media (min-width: $breakpoint-s) {
+    display: grid;
+    grid-gap: var(--layout-gap);
+    grid-template-columns: var(--layout-sidebar-left-width) 1fr var(
+        --layout-sidebar-right-width
+      );
     padding: var(--layout-padding);
   }
 }
