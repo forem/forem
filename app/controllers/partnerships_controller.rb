@@ -15,36 +15,33 @@ class PartnershipsController < ApplicationController
   end
 
   def create
-    @organization = Organization.find(sponsorship_params[:organization_id])
-    authorize @organization, :admin_of_org?
+    organization = Organization.find(sponsorship_params[:organization_id])
+    authorize organization, :admin_of_org?
 
-    @level = sponsorship_params[:level]
-    @number_of_credits_needed = Sponsorship::CREDITS[@level]
-    if @level == "media" && @number_of_credits_needed.nil?
-      @number_of_credits_needed = sponsorship_params[:amount].to_i
+    level = sponsorship_params[:level]
+    number_of_credits_needed = Sponsorship::CREDITS[level].to_i
+
+    if %w[devrel media].include?(level)
+      flash[:notice] = "#{level.capitalize} sponsorship is not a self-serving one"
+    elsif organization.credits.unspent.size < number_of_credits_needed
+      flash[:notice] = "Not enough credits"
+    else
+      sponsorable = Tag.find_by!(name: sponsorship_params[:tag_name]) if level == "tag"
+
+      purchase_sponsorship(
+        organization: organization,
+        level: level,
+        cost: number_of_credits_needed,
+        sponsorable: sponsorable,
+      )
+
+      Slack::Messengers::Sponsorship.call(
+        user: current_user,
+        organization: organization,
+        level: level,
+        tag: sponsorable,
+      )
     end
-    @available_org_credits = @organization.credits.unspent
-
-    # NOTE: this should probably be a redirect with a notice
-    raise "Not enough credits" unless @available_org_credits.size >= @number_of_credits_needed
-
-    tag_sponsorship = @level == "tag"
-    @tag = Tag.find_by!(name: sponsorship_params[:tag_name]) if tag_sponsorship
-
-    sponsorable = tag_sponsorship ? @tag : nil
-    purchase_sponsorship(
-      organization: @organization,
-      level: @level,
-      cost: @number_of_credits_needed,
-      sponsorable: sponsorable,
-    )
-
-    Slack::Messengers::Sponsorship.call(
-      user: current_user,
-      organization: @organization,
-      level: @level,
-      tag: @tag,
-    )
 
     redirect_back(fallback_location: partnerships_path)
   end
