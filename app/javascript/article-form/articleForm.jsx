@@ -4,6 +4,8 @@ import linkState from 'linkstate';
 import postscribe from 'postscribe';
 import { submitArticle, previewArticle } from './actions';
 
+/* global activateRunkitTags */
+
 import {
   Actions,
   Form,
@@ -27,19 +29,7 @@ export default class ArticleForm extends Component {
   }
 
   static handleRunkitPreview() {
-    const targets = document.getElementsByClassName('runkit-element');
-    for (let i = 0; i < targets.length; i += 1) {
-      if (targets[i].children.length > 0) {
-        const preamble = targets[i].children[0].textContent;
-        const content = targets[i].children[1].textContent;
-        targets[i].innerHTML = '';
-        window.RunKit.createNotebook({
-          element: targets[i],
-          source: content,
-          preamble,
-        });
-      }
-    }
+    activateRunkitTags();
   }
 
   static propTypes = {

@@ -31,6 +31,7 @@ class SiteConfig < RailsSettings::Base
     instagram: nil,
     twitch: nil
   }
+  field :twitter_hashtag, type: :string
 
   # Emails
   field :email_addresses, type: :hash, default: {
@@ -80,8 +81,10 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_reaction_creation, type: :integer, default: 10
   field :rate_limit_image_upload, type: :integer, default: 9
   field :rate_limit_email_recipient, type: :integer, default: 5
-  field :rate_limit_article_update, type: :integer, default: 150
+  field :rate_limit_article_update, type: :integer, default: 30
   field :rate_limit_send_email_confirmation, type: :integer, default: 2
+  field :rate_limit_feedback_message_creation, type: :integer, default: 5
+  field :rate_limit_user_update, type: :integer, default: 5
 
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>

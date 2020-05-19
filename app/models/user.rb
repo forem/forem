@@ -30,10 +30,9 @@ class User < ApplicationRecord
     reserved_username: "username is reserved"
   }.freeze
 
-  attr_accessor(
-    :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
-    :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify
-  )
+  attr_accessor :scholar_email, :new_note, :note_for_current_role, :user_status, :pro, :merge_user_id,
+                :add_credits, :remove_credits, :add_org_credits, :remove_org_credits, :ghostify,
+                :ip_address
 
   rolify after_add: :index_roles, after_remove: :index_roles
 
@@ -141,6 +140,7 @@ class User < ApplicationRecord
   validate :validate_feed_url, if: :feed_url_changed?
   validate :validate_mastodon_url
   validate :can_send_confirmation_email
+  validate :update_rate_limit
 
   alias_attribute :positive_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
@@ -624,5 +624,14 @@ class User < ApplicationRecord
     rate_limiter.check_limit!(:send_email_confirmation)
   rescue RateLimitChecker::LimitReached => e
     errors.add(:email, "confirmation could not be sent. #{e.message}")
+  end
+
+  def update_rate_limit
+    return unless persisted?
+
+    rate_limiter.track_limit_by_action(:user_update)
+    rate_limiter.check_limit!(:user_update)
+  rescue RateLimitChecker::LimitReached => e
+    errors.add(:base, "User could not be saved. #{e.message}")
   end
 end

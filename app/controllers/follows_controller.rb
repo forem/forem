@@ -73,7 +73,6 @@ class FollowsController < ApplicationController
                 follow(followable, need_notification: need_notification)
               end
 
-    current_user.touch
     render json: { outcome: @result }
   end
 

@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { defaultChildrenPropTypes } from '../../src/components/common-prop-types/default-children-prop-types';
+import { defaultChildrenPropTypes } from '../../common-prop-types/default-children-prop-types';
 
 export const Dropdown = ({ children, className }) => {
   return (

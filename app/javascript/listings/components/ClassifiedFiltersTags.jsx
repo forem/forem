@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { tagPropTypes } from '../../src/components/common-prop-types';
+import { tagPropTypes } from '../../common-prop-types';
 import ClearQueryButton from './ClearQueryButton';
 import SelectedTags from './SelectedTags';
 

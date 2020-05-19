@@ -361,21 +361,19 @@
 }
 
 .articleform__body {
-  min-height: calc(80vh - 370px);
+  height: calc(80vh - 265px);
   width: 98%;
   border: 0;
   font-size: 15px;
   resize: none;
   padding: 20px 6px;
   font-family: var(--ff-accent);
-  // scrollbars not needed because the preact-textarea-autosize package
-  // automatically resizes the article form
-  overflow: hidden;
   background: var(--card-bg);
   color: var(--card-color);
+  overflow-y: auto;
   @media screen and (min-width: 600px) {
     font-size: 18px;
-    min-height: calc(85vh - 280px);
+    height: calc(82vh - 200px);
   }
   &::placeholder {
     color: var(--form-placeholder-color);
@@ -386,7 +384,7 @@
     min-height: calc(90vh - 370px);
     @media screen and (min-width: 600px) {
       font-size: 18px;
-      min-height: calc(95vh - 280px);
+      height: calc(95vh - 280px);
     }
   }
 }

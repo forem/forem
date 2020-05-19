@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { fetchSearch } from '../../src/utils/search';
+import { fetchSearch } from '../../utilities/search';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -405,6 +405,7 @@ class Tags extends Component {
           className={`${classPrefix}__tagrules--${
             showingRulesForTag === tag.name ? 'active' : 'inactive'
           }`}
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: tag.rules_html }}
         />
       </div>

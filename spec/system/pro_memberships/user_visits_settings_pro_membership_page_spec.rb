@@ -48,8 +48,10 @@ RSpec.describe "Visits Pro Membership settings page", type: :system do
       sign_in user
     end
 
-    it "shows the status of the membership" do
+    it "shows the status of the membership", js: true, percy: true do
       visit "/settings/pro-membership"
+
+      Percy.snapshot(page, name: "Settings: /settings/pro-membership renders for pro role")
 
       expect(page).to have_content("Status")
       expect(page).to have_content("Expiration date")
@@ -64,8 +66,10 @@ RSpec.describe "Visits Pro Membership settings page", type: :system do
       sign_in user
     end
 
-    it "shows the status of the membership" do
+    it "shows the status of the membership", js: true, percy: true do
       visit "/settings/pro-membership"
+
+      Percy.snapshot(page, name: "Settings: /settings/pro-membership renders for pro membership")
 
       expect(page).to have_content("Status")
       expect(page).to have_content("Expiration date")

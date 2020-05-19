@@ -1,5 +1,3 @@
-<%= javascript_include_tag "https://embed.runkit.com", defer: true %>
-
 <div id="article-form"
   data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
@@ -74,6 +72,10 @@
   <%= render "pages/editor_liquid_help" %>
   <%= render "pages/editor_frontmatter_help" %>
 </div>
+
+<script async>
+  <%== RunkitTag.script %>
+</script>
 
 <style>
   body {

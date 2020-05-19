@@ -1,5 +1,6 @@
 class StickyArticleCollection
   attr_accessor :article, :author, :reaction_count_num, :comment_count_num
+
   def initialize(article, author)
     @article = article
     @author = author

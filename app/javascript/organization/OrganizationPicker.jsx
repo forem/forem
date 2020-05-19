@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { organizationPropType } from '../src/components/common-prop-types';
+import { organizationPropType } from '../common-prop-types';
 
 const orgOptions = (organizations, organizationId, emptyLabel) => {
   const orgs = organizations.map((organization) => {

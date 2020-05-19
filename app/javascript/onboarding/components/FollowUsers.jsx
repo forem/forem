@@ -115,15 +115,21 @@ class FollowUsers extends Component {
 
   renderFollowToggle() {
     const { users, selectedUsers } = this.state;
-    if (users.length === 0) {
-      return '';
+    let followText = '';
+
+    if (selectedUsers.length !== users.length) {
+      if (users.length === 1) {
+        followText = `Select ${users.length} person`;
+      } else {
+        followText = `Select all ${users.length} people`;
+      }
+    } else {
+      followText = 'Deselect all';
     }
 
     return (
       <button type="button" onClick={() => this.handleSelectAll()}>
-        {selectedUsers.length !== users.length
-          ? `Select all ${users.length} people`
-          : 'Deselect all'}
+        {followText}
       </button>
     );
   }

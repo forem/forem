@@ -3,6 +3,7 @@ class PodcastTag < LiquidTagBase
   include CloudinaryHelper
 
   attr_reader :episode, :podcast
+
   PARTIAL = "podcast_episodes/liquid".freeze
 
   SCRIPT = <<~JAVASCRIPT.freeze

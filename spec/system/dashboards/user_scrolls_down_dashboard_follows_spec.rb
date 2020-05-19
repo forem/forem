@@ -18,10 +18,15 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       users.each do |u|
         create(:follow, follower: u, followable: user)
       end
+
+      visit "/dashboard/user_followers?per_page=#{default_per_page}"
+    end
+
+    it "renders the page", percy: true do
+      Percy.snapshot(page, name: "Homepage: /dashboard/user_followers?per_page= infinite scroll")
     end
 
     it "scrolls through all users" do
-      visit "/dashboard/user_followers?per_page=#{default_per_page}"
       page.execute_script("window.scrollTo(0, 100000)")
       page.assert_selector('div[id^="follows"]', count: total_records)
     end
@@ -33,6 +38,7 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
         create(:follow, follower: user, followable: tag)
       end
       visit dashboard_following_tags_path(per_page: default_per_page)
+
       page.execute_script("window.scrollTo(0, 100000)")
     end
 
@@ -58,10 +64,15 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       users.each do |u|
         create(:follow, follower: user, followable: u)
       end
+
+      visit dashboard_following_users_path(per_page: default_per_page)
+    end
+
+    it "renders the page", percy: true do
+      Percy.snapshot(page, name: "Homepage: /dashboard/following_users infinite scroll")
     end
 
     it "scrolls through all users" do
-      visit dashboard_following_users_path(per_page: default_per_page)
       page.execute_script("window.scrollTo(0, 100000)")
       page.assert_selector('div[id^="follows"]', count: total_records)
     end
@@ -72,10 +83,15 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       organizations.each do |organization|
         create(:follow, follower: user, followable: organization)
       end
+
+      visit dashboard_following_organizations_path(per_page: default_per_page)
+    end
+
+    it "renders the page", percy: true do
+      Percy.snapshot(page, name: "Homepage: /dashboard/following_organizations infinite scroll")
     end
 
     it "scrolls through all users" do
-      visit dashboard_following_organizations_path(per_page: default_per_page)
       page.execute_script("window.scrollTo(0, 100000)")
       page.assert_selector('div[id^="follows"]', count: total_records)
     end
@@ -87,6 +103,7 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
         create(:follow, follower: user, followable: podcast)
       end
       visit dashboard_following_podcasts_path(per_page: default_per_page)
+
       page.execute_script("window.scrollTo(0, 100000)")
     end
 

@@ -43,6 +43,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       shop_url
       sidebar_tags
       suggested_tags
+      twitter_hashtag
       suggested_users
       tagline
     ]
