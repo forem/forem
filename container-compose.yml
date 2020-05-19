@@ -21,8 +21,6 @@ services:
     volumes:
       - .:/opt/apps/devto:Z
       - gem_cache:/usr/local/bundle/gems:Z
-      - node_modules:/opt/apps/devto/node_modules:Z
-    entrypoint: ./scripts/entrypoint-rails.sh
 
   webpacker:
     image: devto-web:latest
@@ -42,7 +40,10 @@ services:
       REDIS_SIDEKIQ_URL: redis://redis:6379
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
-    entrypoint: ./scripts/entrypoint-sidekiq.sh
+    volumes:
+      - .:/opt/apps/devto:Z
+      - gem_cache:/usr/local/bundle/gems:Z
+    command: bundle exec sidekiq -c 2
 
   db:
     image: postgres:${POSTGRES_VERSION:-9.6.15-alpine}
