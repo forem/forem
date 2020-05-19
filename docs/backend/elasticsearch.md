@@ -31,7 +31,7 @@ The above models are organized in Elasticsearch in different
 searching more accurate and performant. The index breakdown is:
 
 - Tags index -> Tags
-- Classified Listings index -> Classified Listings
+- Listings index -> Listings
 - Chat Channel Membership index -> Chat Channels
 - User's index -> Users
 - Feed Content index -> Podcast Episodes, Comments, and Articles

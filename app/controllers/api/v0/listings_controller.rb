@@ -53,11 +53,9 @@ module Api
         super
       end
 
-      # Note: while the model is now called ListingCategory, the foreign key has
-      # not changed and is still classified_listing_category_id.
       ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id title slug body_markdown cached_tag_list
-        classified_listing_category_id processed_html published
+        listing_category_id processed_html published
       ].freeze
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 

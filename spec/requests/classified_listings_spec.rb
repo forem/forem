@@ -508,7 +508,7 @@ RSpec.describe "Listings", type: :request do
 
     before { sign_in user }
 
-    context "without classified listing" do
+    context "without listing" do
       it "renders not_found" do
         expect do
           get "/listings/#{listing.category}/#{listing.slug}_1/delete_confirm"

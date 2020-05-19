@@ -34,10 +34,8 @@ class Internal::ListingsController < Internal::ApplicationController
 
   private
 
-  # Note: while the model is now called ListingCategory, the foreign key has
-  # not changed and is still classified_listing_category_id.
   ALLOWED_PARAMS = %i[
-    published body_markdown title category classified_listing_category_id tag_list action
+    published body_markdown title category listing_category_id tag_list action
   ].freeze
   private_constant :ALLOWED_PARAMS
 

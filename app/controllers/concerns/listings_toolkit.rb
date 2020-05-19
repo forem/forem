@@ -61,10 +61,8 @@ module ListingsToolkit
     end
   end
 
-  # Note: while the model is now called ListingCategory, the foreign key has
-  # not changed and is still classified_listing_category_id.
   ALLOWED_PARAMS = %i[
-    title body_markdown classified_listing_category_id tag_list
+    title body_markdown listing_category_id tag_list
     expires_at contact_via_connect location organization_id action
   ].freeze
 

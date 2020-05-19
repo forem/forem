@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Search::Listing, type: :service do
-  describe "::search_documents", elasticsearch: "ClassifiedListing" do
+  describe "::search_documents", elasticsearch: "Listing" do
     let(:listing) { create(:listing) }
 
     it "parses listing document hits from search response" do
@@ -167,7 +167,7 @@ RSpec.describe Search::Listing, type: :service do
 
       cfp_category = create(:listing_category, :cfp)
       listing2 = create(:listing,
-                                   listing_category: cfp_category)
+                        listing_category: cfp_category)
       index_documents([listing, listing2])
       params = { page: 3, per_page: 1 }
 

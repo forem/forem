@@ -37,6 +37,10 @@ class Listing < ApplicationRecord
     joins(:listing_category).where("listing_categories.slug" => slug)
   }
 
+  # Alias the column accessor names for consistency
+  alias listing_category_id classified_listing_category_id
+  alias listing_category_id= classified_listing_category_id=
+
   delegate :cost, to: :listing_category
 
   def category

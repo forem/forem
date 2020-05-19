@@ -7,7 +7,7 @@ json.extract!(
   :slug,
   :body_markdown,
   :category,
-  :classified_listing_category_id,
+  :listing_category_id,
   :processed_html,
   :published,
 )

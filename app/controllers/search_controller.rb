@@ -5,7 +5,7 @@ class SearchController < ApplicationController
 
   LISTINGS_PARAMS = [
     :category,
-    :classified_listing_search,
+    :listing_search,
     :page,
     :per_page,
     :tag_boolean_mode,
