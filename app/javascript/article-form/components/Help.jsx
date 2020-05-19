@@ -6,11 +6,15 @@ export class Help extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      liquidHelpHTML: document.getElementById('editor-liquid-help').innerHTML,
-      markdownHelpHTML: document.getElementById('editor-markdown-help')
-        .innerHTML,
-      frontmatterHelpHTML: document.getElementById('editor-frontmatter-help')
-        .innerHTML,
+      liquidHelpHTML:
+        document.getElementById('editor-liquid-help') &&
+        document.getElementById('editor-liquid-help').innerHTML,
+      markdownHelpHTML:
+        document.getElementById('editor-markdown-help') &&
+        document.getElementById('editor-markdown-help').innerHTML,
+      frontmatterHelpHTML:
+        document.getElementById('editor-frontmatter-help') &&
+        document.getElementById('editor-frontmatter-help').innerHTML,
     };
   }
 
@@ -26,39 +30,18 @@ export class Help extends Component {
     };
   };
 
-  toggleLiquid = (e) => {
-    const { liquidShowing } = this.state;
+  toggleModal = (varShowing) => (e) => {
     e.preventDefault();
-    this.setState({
+    this.setState((prevState) => ({
       ...this.setCommonProps({
-        liquidShowing: !liquidShowing,
+        [varShowing]: !prevState[varShowing],
       }),
-    });
-  };
-
-  toggleMarkdown = (e) => {
-    const { markdownShowing } = this.state;
-    e.preventDefault();
-    this.setState({
-      ...this.setCommonProps({
-        markdownShowing: !markdownShowing,
-      }),
-    });
-  };
-
-  toggleFrontmatter = (e) => {
-    const { frontmatterShowing } = this.state;
-    e.preventDefault();
-    this.setState({
-      ...this.setCommonProps({
-        frontmatterShowing: !frontmatterShowing,
-      }),
-    });
+    }));
   };
 
   renderArticleFormTitleHelp = () => {
     return (
-      <div>
+      <div className="spec__title-help">
         <h4 className="mb-2 fs-l">How to write a good post title?</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
@@ -73,7 +56,7 @@ export class Help extends Component {
 
   renderTagInputHelp = () => {
     return (
-      <div>
+      <div className="spec__basic-tag-input-help">
         <h4 className="mb-2 fs-l">Use appropriate tags</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>Tags will help the right people find your post.</li>
@@ -92,13 +75,13 @@ export class Help extends Component {
 
   renderBasicEditorHelp = () => {
     return (
-      <div className="crayons-card crayons-card--secondary p-4 mb-6">
+      <div className="spec__basic-editor-help crayons-card crayons-card--secondary p-4 mb-6">
         You are currently using the basic markdown editor that uses
         {' '}
-        <a href="#frontmatter" onClick={this.toggleFrontmatter}>
+        <a href="#frontmatter" onClick={this.toggleModal('frontmatterShowing')}>
           Jekyll front matter
         </a>
-        . You can also use 
+        . You can also use the 
         {' '}
         <em>rich+markdown</em>
         {' '}
@@ -121,15 +104,15 @@ export class Help extends Component {
     );
   };
 
-  renderEditorHelp = () => {
+  renderFormatHelp = () => {
     return (
-      <div>
+      <div className="spec__format-help">
         <h4 className="mb-2 fs-l">How to use editor?</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
             Use
             {' '}
-            <a href="#markdown" onClick={this.toggleMarkdown}>
+            <a href="#markdown" onClick={this.toggleModal('markdownShowing')}>
               Markdown
             </a>
             {' '}
@@ -142,7 +125,7 @@ export class Help extends Component {
           <li>
             You can use
             {' '}
-            <a href="#liquid" onClick={this.toggleLiquid}>
+            <a href="#liquid" onClick={this.toggleModal('liquidShowing')}>
               Liquid tags
             </a>
             {' '}
@@ -150,6 +133,17 @@ export class Help extends Component {
           </li>
         </ul>
       </div>
+    );
+  };
+
+  renderModal = (onClose, title, helpHtml) => {
+    return (
+      <Modal onClose={onClose} title={title}>
+        <div
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: helpHtml }}
+        />
+      </Modal>
     );
   };
 
@@ -177,36 +171,30 @@ export class Help extends Component {
             {helpFor === 'tag-input' && this.renderTagInputHelp()}
             {version === 'v1' && this.renderBasicEditorHelp()}
             {(helpFor === 'article_body_markdown' || version === 'v1') &&
-              this.renderEditorHelp()}
+              this.renderFormatHelp()}
           </div>
         )}
 
-        {liquidShowing && (
-          <Modal onClose={this.toggleLiquid} title="🌊 Liquid Tags">
-            <div
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: liquidHelpHTML }}
-            />
-          </Modal>
-        )}
+        {liquidShowing &&
+          this.renderModal(
+            this.toggleModal('liquidShowing'),
+            '🌊 Liquid Tags',
+            liquidHelpHTML,
+          )}
 
-        {markdownShowing && (
-          <Modal onClose={this.toggleMarkdown} title="✍️ Markdown">
-            <div
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: markdownHelpHTML }}
-            />
-          </Modal>
-        )}
+        {markdownShowing &&
+          this.renderModal(
+            this.toggleModal('markdownShowing'),
+            '✍️ Markdown',
+            markdownHelpHTML,
+          )}
 
-        {frontmatterShowing && (
-          <Modal onClose={this.toggleFrontmatter} title="Jekyll Front Matter">
-            <div
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: frontmatterHelpHTML }}
-            />
-          </Modal>
-        )}
+        {frontmatterShowing &&
+          this.renderModal(
+            this.toggleModal('frontmatterShowing'),
+            'Jekyll Front Matter',
+            frontmatterHelpHTML,
+          )}
       </div>
     );
   }
