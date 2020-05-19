@@ -96,7 +96,7 @@ class ReactionsController < ApplicationController
   end
 
   def cached_user_positive_reactions(user)
-    Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.updated_at}", expires_in: 24.hours) do
+    Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.positive_reactions_count}", expires_in: 24.hours) do
       user.reactions.positive
     end
   end
@@ -115,7 +115,6 @@ class ReactionsController < ApplicationController
   end
 
   def destroy_reaction(reaction)
-    current_user.touch
     reaction.destroy
     Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
     Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
