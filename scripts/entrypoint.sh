@@ -5,5 +5,7 @@ set -e
 if [ -f tmp/pids/server.pid ]; then
   rm -f tmp/pids/server.pid
 fi
-bin/setup
-bundle exec rails server -b 0.0.0.0 -p 3000
+
+bundle exec rake db:migrate 2>/dev/null || bundle exec rake db:setup
+
+exec "$@"

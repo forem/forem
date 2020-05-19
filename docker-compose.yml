@@ -21,14 +21,21 @@ services:
     volumes:
       - .:/opt/apps/devto:Z
       - gem_cache:/usr/local/bundle/gems:Z
-      - node_modules:/opt/apps/devto/node_modules:Z
-    entrypoint: ./scripts/entrypoint-rails.sh
 
   webpacker:
     image: devto-web:latest
-    command: ./bin/webpack-dev-server
     depends_on:
       - web
+    environment:
+      RAILS_ENV: development
+      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      REDIS_URL: redis://redis:6379
+      REDIS_SESSIONS_URL: redis://redis:6379
+      RACK_TIMEOUT_WAIT_TIMEOUT: 10000
+      RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
+      STATEMENT_TIMEOUT: 10000
+    command: ./bin/webpack-dev-server
 
   sidekiq:
     image: devto-web:latest
@@ -42,7 +49,11 @@ services:
       REDIS_SIDEKIQ_URL: redis://redis:6379
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
-    entrypoint: ./scripts/entrypoint-sidekiq.sh
+    entrypoint: ./scripts/entrypoint.sh
+    volumes:
+      - .:/opt/apps/devto:Z
+      - gem_cache:/usr/local/bundle/gems:Z
+    command: bundle exec sidekiq -c 2
 
   db:
     image: postgres:${POSTGRES_VERSION:-9.6.15-alpine}
@@ -85,4 +96,3 @@ volumes:
   db_data:
   es_data:
   gem_cache:
-  node_modules:

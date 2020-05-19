@@ -22,9 +22,11 @@ COPY ./.yarn ./.yarn
 
 RUN yarn install
 
-RUN mkdir -p ./public/uploads
-VOLUME ./public/uploads
+RUN mkdir -p ./public/{uploads,images,podcasts}
+VOLUME /opt/apps/devto/public/
 
 COPY . .
 
-ENTRYPOINT ["./scripts/entrypoint-rails.sh"]
+ENTRYPOINT ["./scripts/entrypoint.sh"]
+
+CMD ["rails","server","-b","0.0.0.0","-p","3000"]
