@@ -28,6 +28,16 @@ RSpec.describe Honeycomb::NoiseCancellingSampler do
       described_class.sample({ "redis.command" => "TTL this and that", "trace.trace_id" => trace_id })
       expect(described_class).to have_received(:should_sample).with(100, trace_id)
     end
+
+    it "samples if the command starts with GET rack:" do
+      described_class.sample({ "redis.command" => "GET rack::something", "trace.trace_id" => trace_id })
+      expect(described_class).to have_received(:should_sample).with(100, trace_id)
+    end
+
+    it "samples if the command starts with SET rack:" do
+      described_class.sample({ "redis.command" => "SET rack::something", "trace.trace_id" => trace_id })
+      expect(described_class).to have_received(:should_sample).with(100, trace_id)
+    end
   end
 
   context "with a active_record SQL command" do
