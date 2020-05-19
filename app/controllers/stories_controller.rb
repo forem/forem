@@ -363,7 +363,7 @@ class StoriesController < ApplicationController
       "sameAs": user_same_as,
       "image": ProfileImage.new(@user).get(width: 320),
       "name": @user.name,
-      "email": @user.email.presence,
+      "email": @user.email_public && @user.email.presence,
       "jobTitle": @user.employment_title.presence,
       "description": @user.summary.presence || "404 bio not found",
       "disambiguatingDescription": user_disambiguating_description,
@@ -466,6 +466,6 @@ class StoriesController < ApplicationController
       @user.instagram_url,
       @user.twitch_username,
       @user.website_url,
-    ].compact
+    ].reject(&:blank?)
   end
 end
