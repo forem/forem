@@ -29,7 +29,6 @@ export class Cover extends Component {
 
   handleInsertionImageUpload = (e) => {
     this.clearUploadError();
-
     const validFileInputs = validateFileInputs();
 
     if (validFileInputs) {
@@ -58,9 +57,7 @@ export class Cover extends Component {
 
   triggerMainImageRemoval = (e) => {
     e.preventDefault();
-
     const { onMainImageUrlChange } = this.props;
-
     onMainImageUrlChange({
       links: [],
     });

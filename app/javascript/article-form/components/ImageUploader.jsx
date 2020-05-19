@@ -11,9 +11,9 @@ export class ImageUploader extends Component {
       uploadError: false,
       uploadErrorMessage: null,
     };
-  };
+  }
 
-  handleInsertionImageUpload = e => {
+  handleInsertionImageUpload = (e) => {
     const files = e.target.files;
 
     this.clearUploadError();
@@ -29,12 +29,11 @@ export class ImageUploader extends Component {
     }
   };
 
-  handleInsertImageUploadSuccess = response => {
+  handleInsertImageUploadSuccess = (response) => {
     this.setState({
       insertionImageUrls: response.links,
     });
   };
-
 
   clearUploadError = () => {
     this.setState({
@@ -43,7 +42,7 @@ export class ImageUploader extends Component {
     });
   };
 
-  onUploadError = error => {
+  onUploadError = (error) => {
     this.setState({
       insertionImageUrls: [],
       uploadError: true,
@@ -57,8 +56,8 @@ export class ImageUploader extends Component {
       this.imageMarkdownInput.value.length,
     );
     document.execCommand('copy');
-    this.imageMarkdownAnnouncer.classList.remove("opacity-0");
-  }
+    this.imageMarkdownAnnouncer.classList.remove('opacity-0');
+  };
 
   copyText = () => {
     this.imageMarkdownAnnouncer = document.getElementById(
@@ -70,18 +69,19 @@ export class ImageUploader extends Component {
 
     const isNativeAndroid =
       navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== "undefined" &&
+      typeof AndroidBridge !== 'undefined' &&
       AndroidBridge !== null;
 
     const isClipboardSupported =
-      typeof navigator.clipboard !== "undefined" &&
+      typeof navigator.clipboard !== 'undefined' &&
       navigator.clipboard !== null;
 
     if (isNativeAndroid) {
       AndroidBridge.copyToClipboard(this.imageMarkdownInput.value);
       this.imageMarkdownAnnouncer.classList.remove('opacity-0');
     } else if (isClipboardSupported) {
-      navigator.clipboard.writeText(this.imageMarkdownInput.value)
+      navigator.clipboard
+        .writeText(this.imageMarkdownInput.value)
         .then(() => {
           this.imageMarkdownAnnouncer.classList.remove('opacity-0');
         })
@@ -93,15 +93,23 @@ export class ImageUploader extends Component {
     }
   };
 
-  linksToMarkdownForm = imageLinks => {
-    return imageLinks.map(imageLink => `![Alt Text](${imageLink})`).join('\n');
+  linksToMarkdownForm = (imageLinks) => {
+    return imageLinks
+      .map((imageLink) => `![Alt Text](${imageLink})`)
+      .join('\n');
   };
 
   render() {
     const { insertionImageUrls, uploadError, uploadErrorMessage } = this.state;
     const IconCopy = () => (
-      <svg width="24" height="24" viewBox="0 0 24 24" className="crayons-icon" xmlns="http://www.w3.org/2000/svg">
-        <path d="M7 6V3a1 1 0 011-1h12a1 1 0 011 1v14a1 1 0 01-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1 1 0 013 21l.003-14c0-.552.45-1 1.007-1H7zm2 0h8v10h2V4H9v2zm-2 5v2h6v-2H7zm0 4v2h6v-2H7z"/>
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        className="crayons-icon"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M7 6V3a1 1 0 011-1h12a1 1 0 011 1v14a1 1 0 01-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1 1 0 013 21l.003-14c0-.552.45-1 1.007-1H7zm2 0h8v10h2V4H9v2zm-2 5v2h6v-2H7zm0 4v2h6v-2H7z" />
       </svg>
     );
     const IconImage = () => (

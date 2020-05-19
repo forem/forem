@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PageTitle/> renders 1`] = `
+<div
+  class="crayons-field__label"
+>
+  <span
+    class="hidden s:inline-block"
+  >
+    Write a new post
+  </span>
+  <select
+    class="crayons-select w-auto ml-2 mt-0"
+    id="article_publish_under_org"
+    name="article[organization_id]"
+    onBlur={null}
+  >
+    <option
+      selected={true}
+      value=""
+    >
+      Personal
+    </option>
+    <option
+      value={4}
+    >
+      DEV
+    </option>
+  </select>
+</div>
+`;
