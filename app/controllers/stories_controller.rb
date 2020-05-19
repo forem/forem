@@ -69,7 +69,7 @@ class StoriesController < ApplicationController
 
   def get_latest_campaign_articles
     campaign_articles_scope = Article.tagged_with(SiteConfig.campaign_featured_tags, any: true).
-      where("published_at > ?", 2.weeks.ago).where(approved: true).
+      where("published_at > ?", 4.weeks.ago).where(approved: true).
       order("hotness_score DESC")
 
     @campaign_articles_count = campaign_articles_scope.count
