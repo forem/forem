@@ -1,12 +1,12 @@
 import { h } from 'preact';
 import { LoadingArticle } from '..';
 import '../../../assets/stylesheets/articles.scss';
-import { articleDecorator } from './articleDecorator';
 
 export default {
   title: 'App Components/Article Loading',
   component: LoadingArticle,
-  decorators: [articleDecorator],
+  // Using an arbitrary width here. This is roughly the size of articles in Storybook
+  decorators: [(story) => <div style={{ minWidth: '509px' }}>{story()}</div>],
 };
 
 export const DefaultArticle = () => <LoadingArticle />;
@@ -15,9 +15,7 @@ DefaultArticle.story = {
   name: 'default',
 };
 
-export const FeaturedLoading = () => (
-  <LoadingArticle version="featured" />
-);
+export const FeaturedLoading = () => <LoadingArticle version="featured" />;
 
 FeaturedLoading.story = {
   name: 'featured',

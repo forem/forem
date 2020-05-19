@@ -1,5 +1,6 @@
 module BadgeRewarder
   YEARS = { 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five", 6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten" }.freeze
+  REPOSITORIES = ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].freeze
 
   def self.award_yearly_club_badges
     (1..3).each do |i|
@@ -62,12 +63,13 @@ module BadgeRewarder
   end
 
   def self.award_contributor_badges_from_github(since = 1.day.ago, message_markdown = "Thank you so much for your contributions!")
-    client = Octokit::Client.new
     badge = Badge.find_by!(slug: "dev-contributor")
-    ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].each do |repo|
-      commits = client.commits repo, since: since.iso8601
+
+    REPOSITORIES.each do |repo|
+      commits = Github::Client.commits(repo, since: since.utc.iso8601)
+
       authors_uids = commits.map { |commit| commit.author.id }
-      Identity.where(provider: "github", uid: authors_uids).find_each do |i|
+      Identity.github.where(uid: authors_uids).find_each do |i|
         BadgeAchievement.where(user_id: i.user_id, badge_id: badge.id).first_or_create(
           rewarding_context_message_markdown: message_markdown,
         )

@@ -31,6 +31,12 @@ Layout/DotPosition:
   # TODO: [@thepracticaldev/oss] enable leading?
   EnforcedStyle: trailing
 
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Description: "Keep blank lines around attribute accessors."
+  StyleGuide: '#empty-lines-around-attribute-accessor'
+  Enabled: true
+
 # Layout/FirstArrayElementLineBreak:
 #   Description: >-
 #                  Checks for a line break before the first element in a
@@ -319,6 +325,10 @@ Style/ReturnNil:
 
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
+  Enabled: true
+
+Style/SlicingWithRange:
+  Description: 'Checks array slicing is done with endless ranges when suitable.'
   Enabled: true
 
 Style/StringLiterals:

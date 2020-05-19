@@ -140,6 +140,7 @@ class User < ApplicationRecord
   validate :validate_feed_url, if: :feed_url_changed?
   validate :validate_mastodon_url
   validate :can_send_confirmation_email
+  validate :update_rate_limit
 
   alias_attribute :positive_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
@@ -166,7 +167,6 @@ class User < ApplicationRecord
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
-  before_destroy :destroy_empty_dm_channels, prepend: true
   before_destroy :destroy_follows, prepend: true
   before_destroy :unsubscribe_from_newsletters, prepend: true
 
@@ -597,15 +597,6 @@ class User < ApplicationRecord
     score.to_i
   end
 
-  def destroy_empty_dm_channels
-    return if chat_channels.empty? ||
-      chat_channels.where(channel_type: "direct").empty?
-
-    empty_dm_channels = chat_channels.where(channel_type: "direct").
-      select { |chat_channel| chat_channel.messages.empty? }
-    empty_dm_channels.destroy_all
-  end
-
   def destroy_follows
     follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
@@ -623,5 +614,14 @@ class User < ApplicationRecord
     rate_limiter.check_limit!(:send_email_confirmation)
   rescue RateLimitChecker::LimitReached => e
     errors.add(:email, "confirmation could not be sent. #{e.message}")
+  end
+
+  def update_rate_limit
+    return unless persisted?
+
+    rate_limiter.track_limit_by_action(:user_update)
+    rate_limiter.check_limit!(:user_update)
+  rescue RateLimitChecker::LimitReached => e
+    errors.add(:base, "User could not be saved. #{e.message}")
   end
 end
