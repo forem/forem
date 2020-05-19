@@ -1,0 +1,20 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Install
+        run: yarn
+      - name: Setup Ruby
+        uses: actions/setup-ruby@v1
+      - name: Install
+        run: bundle install
+      - name: Percy
+        uses: percy/exec-action@v0.3.0
+        with:
+          command: "bundle exec rspec"
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
