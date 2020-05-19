@@ -1,26 +1,25 @@
 module DataUpdateScripts
   class ReIndexFeedContentToElasticsearch
     def run
-      clear_existing_feed_documents
+      Article.select(:id).in_batches(of: 100) do |batch|
+        Search::BulkIndexWorker.set(queue: :default).perform_async(
+          "Article", batch.pluck(:id)
+        )
+      end
+      Comment.select(:id).in_batches(of: 100) do |batch|
+        Search::BulkIndexWorker.set(queue: :default).perform_async(
+          "Comment", batch.pluck(:id)
+        )
+      end
+      PodcastEpisode.select(:id).in_batches(of: 100) do |batch|
+        Search::BulkIndexWorker.set(queue: :default).perform_async(
+          "PodcastEpisode", batch.pluck(:id)
+        )
+      end
 
-      index_docs(Article.pluck(:id), "Article")
-      index_docs(PodcastEpisode.pluck(:id), "PodcastEpisode")
-      index_docs(Comment.pluck(:id), "Comment")
-    end
-
-    private
-
-    def clear_existing_feed_documents
-      # Clear out documents with incorrect IDs before reindex
-      Search::Client.delete_by_query(
-        index: Search::FeedContent::INDEX_ALIAS, body: { query: { match_all: {} } },
-      )
-    end
-
-    def index_docs(ids, doc_type)
-      ids.each do |id|
-        Search::IndexWorker.set(queue: :low_priority).perform_async(
-          doc_type, id
+      User.select(:id).in_batches(of: 200) do |batch|
+        Search::BulkIndexWorker.set(queue: :default).perform_async(
+          "User", batch.pluck(:id)
         )
       end
     end
