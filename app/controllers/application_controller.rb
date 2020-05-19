@@ -87,10 +87,6 @@ class ApplicationController < ActionController::Base
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
   end
 
-  def touch_current_user
-    current_user.touch
-  end
-
   def rate_limit!(action)
     rate_limiter.check_limit!(action)
   end
