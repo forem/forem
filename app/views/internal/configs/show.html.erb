@@ -257,6 +257,12 @@
             </div>
 
             <div class="form-group">
+              <%= f.label :campaign_articles_require_approval %>
+              <%= f.check_box :campaign_articles_require_approval, checked: SiteConfig.campaign_articles_require_approval %>
+              <div class="alert alert-info">Campaign stories show up on sidebar with approval?</div>
+            </div>
+
+            <div class="form-group">
               <%= f.label :campaign_sidebar_enabled %>
               <%= f.check_box :campaign_sidebar_enabled, checked: SiteConfig.campaign_sidebar_enabled %>
               <div class="alert alert-info">Campaign sidebar enabled or not</div>

@@ -148,9 +148,9 @@ RSpec.describe "StoriesIndex", type: :request do
         SiteConfig.campaign_featured_tags = "shecoded,theycoded"
 
         a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
-        create(:article, approved: true, body_markdown: a_body)
+        create(:article, approved: true, body_markdown: a_body, score: 1)
         u_body = "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
-        create(:article, approved: false, body_markdown: u_body)
+        create(:article, approved: false, body_markdown: u_body, score: 1)
       end
 
       it "doesn't display posts with the campaign tags when sidebar is disabled" do
@@ -159,10 +159,25 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.body).not_to include(CGI.escapeHTML("Super-sheep"))
       end
 
-      it "displays posts with the campaign tags when sidebar is enabled" do
+      it "doesn't display low-score posts" do
         SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_articles_require_approval = true
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
+      end
+
+      it "doesn't display unapproved posts" do
+        SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_articles_require_approval = true
+        Article.last.update_column(:score, -2)
+        get "/"
+        expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
+      end
+
+      it "displays unapproved post if approval is not required" do
+        SiteConfig.campaign_sidebar_enabled = true
+        get "/"
+        expect(response.body).to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "displays only approved posts with the campaign tags" do

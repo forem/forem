@@ -87,6 +87,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       campaign_sidebar_enabled
       campaign_sidebar_image
       campaign_url
+      campaign_articles_require_approval
     ]
   end
 
