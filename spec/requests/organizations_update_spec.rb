@@ -45,13 +45,12 @@ RSpec.describe "OrganizationsUpdate", type: :request do
 
   it "catches error if profile image file name is too long" do
     organization = user.organizations.first
-    allow(Organization).to receive(:find_by).and_return(organization)
-    allow(organization).to receive(:update).and_raise(Errno::ENAMETOOLONG)
+    form = OrganizationForm.new(organization_attributes: organization.attributes.merge(profile_updated_at: Time.current), current_user: user)
+    allow(OrganizationForm).to receive(:new).and_return(form)
+    allow(form).to receive(:save).and_raise(Errno::ENAMETOOLONG)
     allow(DatadogStatsClient).to receive(:increment)
 
-    expect do
-      put "/organizations/#{org_id}", params: { organization: { id: org_id, profile_image: fixture_file_upload("files/800x600.png", "image/png") } }
-    end.to raise_error(Errno::ENAMETOOLONG)
+    put "/organizations/#{org_id}", params: { organization: { id: org_id, profile_image: fixture_file_upload("files/800x600.png", "image/png") } }
 
     tags = hash_including(tags: instance_of(Array))
 
@@ -60,7 +59,9 @@ RSpec.describe "OrganizationsUpdate", type: :request do
 
   it "returns error if profile image file name is too long" do
     organization = user.organizations.first
-    allow(Organization).to receive(:find_by).and_return(organization)
+    form = OrganizationForm.new(organization_attributes: organization.attributes.merge(profile_updated_at: Time.current), current_user: user)
+    allow(OrganizationForm).to receive(:new).and_return(form)
+    allow(form).to receive(:save).and_raise(Errno::ENAMETOOLONG)
     image = fixture_file_upload("files/800x600.png", "image/png")
     allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
 
