@@ -12,21 +12,27 @@ module Authentication
         name = "#{info.first_name} #{info.last_name}"
 
         # Apple has no concept of username, so we use the first name
-        username = info.first_name.downcase
+        apple_username = info.first_name.downcase
 
         {
           email: info.email,
           apple_created_at: Time.zone.at(raw_info.auth_time),
-          apple_username: username,
+          apple_username: apple_username,
           name: name,
           remote_profile_image_url: SiteConfig.mascot_image_url
         }
       end
 
       def existing_user_data
-        {
-          apple_created_at: Time.zone.at(raw_info.auth_time)
-        }
+        # Apple by default will send nil `first_name` and `last_name` after
+        # the first login. To cover the case where a user disconnects their
+        # Apple authorization, signs in again and then changes their name,
+        # we update the username only if the name is not nil
+        apple_username = info.first_name.present? ? info.first_name.downcase : nil
+
+        data = { apple_created_at: Time.zone.at(raw_info.auth_time) }
+        data[:apple_username] = apple_username if apple_username
+        data
       end
 
       def self.user_created_at_field

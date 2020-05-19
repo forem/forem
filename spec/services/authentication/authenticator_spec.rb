@@ -12,7 +12,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
     end
   end
 
-  context "when authenticating through Apple" do
+  context "when authenticating through Apple", vcr: { cassette_name: "fastly_sloan" } do
     let!(:auth_payload) { OmniAuth.config.mock_auth[:apple] }
     let!(:service) { described_class.new(auth_payload) }
 
@@ -37,7 +37,7 @@ RSpec.describe Authentication::Authenticator, type: :service do
 
         expect(user.email).to eq(info.email)
         expect(user.name).to eq("#{info.first_name} #{info.last_name}")
-        expect(user.remote_profile_image_url).to be_nil
+        expect(user.remote_profile_image_url).to eq(SiteConfig.mascot_image_url)
         expect(user.apple_created_at.to_i).to eq(raw_info.auth_time)
         expect(user.apple_username).to eq(info.first_name.downcase)
       end
@@ -167,6 +167,15 @@ RSpec.describe Authentication::Authenticator, type: :service do
         user = described_class.call(auth_payload)
 
         expect(user.apple_username).to eq(new_username)
+      end
+
+      it "does not update the username when the first_name is nil" do
+        previos_username = user.apple_username
+        auth_payload.info.first_name = nil
+
+        user = described_class.call(auth_payload)
+
+        expect(user.apple_username).to eq(previos_username)
       end
 
       it "updates profile_updated_at when the username is changed" do
