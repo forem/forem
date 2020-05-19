@@ -1,4 +1,4 @@
-class ClassifiedListingPolicy < ApplicationPolicy
+class ListingPolicy < ApplicationPolicy
   def edit?
     user_is_author? || authorized_organization_admin_editor?
   end

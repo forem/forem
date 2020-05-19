@@ -2,8 +2,8 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import CategoryLinks from './CategoryLinks';
 
-const ClassifiedFiltersCategories = ({ categories, category, onClick }) => (
-  <div className="classified-filters-categories">
+const ListingFiltersCategories = ({ categories, category, onClick }) => (
+  <div className="listing-filters-categories">
     <a
       id="listings-link"
       href="/listings"
@@ -21,24 +21,24 @@ const ClassifiedFiltersCategories = ({ categories, category, onClick }) => (
     <a
       id="listings-new-link"
       href="/listings/new"
-      className="classified-create-link"
+      className="listing-create-link"
     >
       Create a Listing
     </a>
     <a
       id="listings-dashboard-link"
       href="/listings/dashboard"
-      className="classified-create-link"
+      className="listing-create-link"
     >
       Manage Listings
     </a>
   </div>
 );
 
-ClassifiedFiltersCategories.propTypes = {
+ListingFiltersCategories.propTypes = {
   categories: PropTypes.isRequired,
   onClick: PropTypes.func.isRequired,
   category: PropTypes.isRequired,
 };
 
-export default ClassifiedFiltersCategories;
+export default ListingFiltersCategories;

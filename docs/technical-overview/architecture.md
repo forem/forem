@@ -135,11 +135,11 @@ Some tags behave as "flare," highlighting certain articles when viewed from the
 index page. Tags that act as "flare" are defined in the `FlareTag` object. In
 cases of multiple flare tags, the tag displayed is determined by its hierarchy.
 
-## ClassifiedListings (or listings)
+## Listings
 
-Classified listings are similar to posts in some ways, but with more
-limitations. They are designed to be categorized into market areas. They also
-make use of tags.
+Listings are classified ads. They are similar to posts in some ways, but with
+ore limitations. They are designed to be categorized into market areas. They
+also make use of tags.
 
 ## Credits
 

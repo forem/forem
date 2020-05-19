@@ -17,7 +17,7 @@ At DEV we use Elasticsearch for all of our user-facing searching needs. Models
 that are searched using Elasticsearch are:
 
 - Tags
-- Classified Listings
+- Listings
 - Chat Channels
 - Users
 - Podcast Episodes

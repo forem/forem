@@ -44,7 +44,7 @@ class ListingsController < ApplicationController
   end
 
   def new
-    @classified_listing = ClassifiedListing.new
+    @listing = Listing.new
     @organizations = current_user.organizations
     @credits = current_user.credits.unspent
   end
@@ -58,32 +58,32 @@ class ListingsController < ApplicationController
   end
 
   def edit
-    authorize @classified_listing
+    authorize @listing
     @organizations = current_user.organizations
     @credits = current_user.credits.unspent
   end
 
   def dashboard
-    @classified_listings = current_user.classified_listings.
+    @listings = current_user.listings.
       includes(:organization, :taggings)
 
     organizations_ids = current_user.organization_memberships.
       where(type_of_user: "admin").
       pluck(:organization_id)
     @orgs = Organization.where(id: organizations_ids)
-    @org_listings = ClassifiedListing.where(organization_id: organizations_ids)
+    @org_listings = Listing.where(organization_id: organizations_ids)
     @user_credits = current_user.unspent_credits_count
   end
 
   def delete_confirm
-    @classified_listing = ClassifiedListing.find_by(slug: params[:slug])
-    not_found unless @classified_listing
-    authorize @classified_listing
+    @listing = Listing.find_by(slug: params[:slug])
+    not_found unless @listing
+    authorize @listing
   end
 
   def destroy
-    authorize @classified_listing
-    @classified_listing.destroy!
+    authorize @listing
+    @listing.destroy!
     redirect_to "/listings/dashboard", notice: "Listing was successfully deleted."
   end
 
@@ -102,7 +102,7 @@ class ListingsController < ApplicationController
   end
 
   def process_successful_creation
-    redirect_to classified_listings_path
+    redirect_to listings_path
   end
 
   def process_unsuccessful_creation

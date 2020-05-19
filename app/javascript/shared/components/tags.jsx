@@ -433,7 +433,7 @@ class Tags extends Component {
             return this.textArea;
           }}
           className={`${classPrefix}__tags`}
-          name="classified_listing[tag_list]"
+          name="listing[tag_list]"
           placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
           autoComplete="off"
           value={defaultValue}

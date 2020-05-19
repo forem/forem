@@ -157,7 +157,7 @@ class StoriesController < ApplicationController
     assign_feed_stories
     assign_hero_html
     assign_podcasts
-    assign_classified_listings
+    assign_listings
     get_latest_campaign_articles if SiteConfig.campaign_sidebar_enabled?
     @article_index = true
     @featured_story = (featured_story || Article.new)&.decorate
@@ -339,8 +339,8 @@ class StoriesController < ApplicationController
       select(:slug, :title, :podcast_id, :image)
   end
 
-  def assign_classified_listings
-    @classified_listings = ClassifiedListing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at)
+  def assign_listings
+    @listings = Listing.where(published: true).select(:title, :listing_category_id, :slug, :bumped_at)
   end
 
   def redirect_to_lowercase_username

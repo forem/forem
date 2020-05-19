@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import ClassifiedFiltersCategories from './ClassifiedFiltersCategories';
-import ClassifiedFiltersTags from './ClassifiedFiltersTags';
+import ListingFiltersCategories from './ListingFiltersCategories';
+import ListingFiltersTags from './ListingFiltersTags';
 import { tagPropTypes } from '../../common-prop-types';
 
-const ClassifiedFilters = ({
+const ListingFilters = ({
   categories,
   category,
   onSelectCategory,
@@ -17,13 +17,13 @@ const ClassifiedFilters = ({
   query,
 }) => {
   return (
-    <div className="classified-filters" id="classified-filters">
-      <ClassifiedFiltersCategories
+    <div className="listings-filters" id="listings-filters">
+      <ListingFiltersCategories
         categories={categories}
         category={category}
         onClick={onSelectCategory}
       />
-      <ClassifiedFiltersTags
+      <ListingFiltersTags
         message={message}
         onKeyUp={onKeyUp}
         onClearQuery={onClearQuery}
@@ -36,7 +36,7 @@ const ClassifiedFilters = ({
   );
 };
 
-ClassifiedFilters.propTypes = {
+ListingFilters.propTypes = {
   categories: PropTypes.isRequired,
   category: PropTypes.isRequired,
   onSelectCategory: PropTypes.func.isRequired,
@@ -49,4 +49,4 @@ ClassifiedFilters.propTypes = {
   query: PropTypes.string.isRequired,
 };
 
-export default ClassifiedFilters;
+export default ListingFilters;

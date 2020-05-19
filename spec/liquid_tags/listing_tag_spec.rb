@@ -1,10 +1,10 @@
 require "rails_helper"
 
-RSpec.describe ClassifiedListingTag, type: :liquid_tag do
+RSpec.describe ListingTag, type: :liquid_tag do
   let(:user) { create(:user, username: "dariamorgendorffer", name: "Daria Morgendorffer") }
   let(:user_listing) do
     create(
-      :classified_listing,
+      :listing,
       user_id: user.id,
       title: "save me pls",
       body_markdown: "sigh sigh sigh",
@@ -16,7 +16,7 @@ RSpec.describe ClassifiedListingTag, type: :liquid_tag do
   let(:expired_listing) do
     datetime = 40.days.ago
     create(
-      :classified_listing,
+      :listing,
       user_id: user.id,
       title: "this old af",
       body_markdown: "exxpired",
@@ -36,7 +36,7 @@ RSpec.describe ClassifiedListingTag, type: :liquid_tag do
   end
   let(:org_listing) do
     create(
-      :classified_listing,
+      :listing,
       user_id: org_user.id,
       title: "this is a job posting",
       body_markdown: "wow code lots get not only money but satisfaction from work",
@@ -47,7 +47,7 @@ RSpec.describe ClassifiedListingTag, type: :liquid_tag do
   end
 
   def generate_new_liquid(slug)
-    Liquid::Template.register_tag("listing", ClassifiedListingTag)
+    Liquid::Template.register_tag("listing", ListingTag)
     Liquid::Template.parse("{% listing #{slug} %}")
   end
 

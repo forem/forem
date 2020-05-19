@@ -6,7 +6,7 @@ const SelectedTags = ({ tags, onClick, onKeyPress }) => {
     <section>
       {tags.map((tag) => (
         <span
-          className="classified-tag"
+          className="listing-tag"
           key={tag.id}
           id={`selected-tag-${tag.id}`}
         >

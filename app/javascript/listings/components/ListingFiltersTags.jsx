@@ -4,7 +4,7 @@ import { tagPropTypes } from '../../common-prop-types';
 import ClearQueryButton from './ClearQueryButton';
 import SelectedTags from './SelectedTags';
 
-const ClassifiedFiltersTags = ({
+const ListingFiltersTags = ({
   message,
   onKeyUp,
   onClearQuery,
@@ -16,7 +16,7 @@ const ClassifiedFiltersTags = ({
   const shouldRenderClearQueryButton = query.length > 0;
 
   return (
-    <div className="classified-filters-tags" id="classified-filters-tags">
+    <div className="listing-filters-tags" id="listing-filters-tags">
       <input
         type="text"
         placeholder="search"
@@ -33,7 +33,7 @@ const ClassifiedFiltersTags = ({
   );
 };
 
-ClassifiedFiltersTags.propTypes = {
+ListingFiltersTags.propTypes = {
   message: PropTypes.string.isRequired,
   onKeyUp: PropTypes.func.isRequired,
   onClearQuery: PropTypes.func.isRequired,
@@ -43,4 +43,4 @@ ClassifiedFiltersTags.propTypes = {
   query: PropTypes.string.isRequired,
 };
 
-export default ClassifiedFiltersTags;
+export default ListingFiltersTags;

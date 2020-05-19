@@ -19,19 +19,19 @@ RSpec.describe "/listings", type: :request do
   describe "GET /listings" do
     it "has page content" do
       get "/listings"
-      expect(response.body).to include("filters")
+      expect(response.body).to include("listings-filters")
     end
 
     it "has page content for category page" do
       get "/listings/saas"
-      expect(response.body).to include("filters")
+      expect(response.body).to include("listings-filters")
     end
   end
 
   describe "GETS /listings/new" do
     it "has page content" do
       get "/listings"
-      expect(response.body).to include("filters")
+      expect(response.body).to include("listings-filters")
     end
   end
 

@@ -24,7 +24,7 @@ module Users
       user.pro_membership.delete if user.pro_membership.present?
       user.rating_votes.delete_all
       user.response_templates.delete_all
-      user.classified_listings.destroy_all
+      user.listings.destroy_all
       delete_feedback_messages(user)
     end
 
