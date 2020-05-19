@@ -70,13 +70,6 @@ class CSVFormatter
         csv << row
       end
     end
-
-    puts "======================SCREENSHOT FILES"
-    puts Dir[File.join(Dir.pwd, "tmp", "screenshots", "*")]
-
-    puts "======================CSV OUTPUT"
-    puts File.read(csv_filename)
-    puts "======================DONE WITH CSV OUTPUT"
   end
 end
 
