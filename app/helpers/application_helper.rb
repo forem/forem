@@ -1,4 +1,6 @@
 module ApplicationHelper
+  DELETED_USER = User.new(username: "[deleted user]", name: "[Deleted User]")
+
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
   end
