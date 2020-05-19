@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  resourcify
+
   include CloudinaryHelper
   include Searchable
   include Storext.model
