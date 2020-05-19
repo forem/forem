@@ -1,9 +1,11 @@
 require "rails_helper"
 
 RSpec.describe CommentTag, type: :liquid_tag do
-  let(:user) { create(:user) }
+  let(:user) { create(:user, name: "TheUser") }
   let(:article) { create(:article) }
-  let(:comment) { create(:comment, commentable: article, user: user) }
+  let(:comment) do
+    create(:comment, commentable: article, user: user, body_markdown: "TheComment")
+  end
 
   setup { Liquid::Template.register_tag("comment", described_class) }
 
@@ -15,8 +17,8 @@ RSpec.describe CommentTag, type: :liquid_tag do
     it "fetches the target comment and render properly" do
       liquid = generate_comment_tag(comment.id_code_generated)
 
-      expect(liquid.render).to include(CGI.escapeHTML(comment.body_markdown))
-      expect(liquid.render).to include(CGI.escapeHTML(user.name))
+      expect(liquid.render).to include(comment.body_markdown)
+      expect(liquid.render).to include(user.name)
     end
 
     it "raise error if comment ID does not exist" do
@@ -47,8 +49,8 @@ RSpec.describe CommentTag, type: :liquid_tag do
     it "renders properly" do
       liquid = Liquid::Template.parse("{% devcomment #{comment.id_code_generated} %}")
 
-      expect(liquid.render).to include(CGI.escapeHTML(comment.body_markdown))
-      expect(liquid.render).to include(CGI.escapeHTML(user.name))
+      expect(liquid.render).to include(comment.body_markdown)
+      expect(liquid.render).to include(user.name)
     end
   end
 end
