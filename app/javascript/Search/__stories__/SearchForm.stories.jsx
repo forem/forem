@@ -18,6 +18,7 @@ export default {
 };
 
 export const NoSearchTerm = () => <SearchForm {...commonProps} searchTerm="" />;
+
 NoSearchTerm.story = {
   name: 'no search term',
 };
@@ -25,6 +26,7 @@ NoSearchTerm.story = {
 export const WithSearchTerm = () => (
   <SearchForm {...commonProps} searchTerm="Hello" />
 );
-NoSearchTerm.story = {
+
+WithSearchTerm.story = {
   name: 'with search term',
 };
