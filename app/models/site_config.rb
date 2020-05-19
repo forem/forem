@@ -59,6 +59,7 @@ class SiteConfig < RailsSettings::Base
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
   field :campaign_sidebar_image, type: :string, default: nil
+  field :campaign_url, type: :string, default: nil
 
   # Onboarding
   field :onboarding_taskcard_image, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/staggered-dev.svg"

@@ -170,6 +170,13 @@ RSpec.describe "StoriesIndex", type: :request do
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
       end
+
+      it "displays sidebar url if campaign_url is set" do
+        SiteConfig.campaign_url = "https://example.com"
+        SiteConfig.campaign_sidebar_image = "https://example.com/image.png"
+        get "/"
+        expect(response.body).to include('<a href="https://example.com">')
+      end
     end
   end
 

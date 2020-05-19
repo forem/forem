@@ -279,6 +279,16 @@
             </div>
 
             <div class="form-group">
+              <%= f.label :campaign_url %>
+              <%= f.text_field :campaign_url,
+                               class: "form-control",
+                               value: SiteConfig.campaign_url,
+                               placeholder: "https://url.com/lander" %>
+              <div class="alert alert-info">URL campaign sidebar image will link to</div>
+            </div>
+
+
+            <div class="form-group">
               <%= f.label :campaign_featured_tags %>
               <%= f.text_field :campaign_featured_tags,
                                class: "form-control",
