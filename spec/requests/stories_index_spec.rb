@@ -172,11 +172,20 @@ RSpec.describe "StoriesIndex", type: :request do
       end
 
       it "displays sidebar url if campaign_url is set" do
-        SiteConfig.campaign_url = "https://example.com"
+        SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_url = "https://campaign-lander.com"
         SiteConfig.campaign_sidebar_image = "https://example.com/image.png"
         get "/"
-        expect(response.body).to include('<a href="https://example.com">')
+        expect(response.body).to include('<a href="https://campaign-lander.com"')
       end
+
+      it "does not display sidebar url if image is not present is set" do
+        SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_url = "https://campaign-lander.com"
+        get "/"
+        expect(response.body).not_to include('<a href="https://campaign-lander.com"')
+      end
+
     end
   end
 
