@@ -8,4 +8,3 @@
 [build]
   # base set in Netlify settings UI
   command = "npm install && npm run build-storybook"
-  publish = "../../storybook-static"
