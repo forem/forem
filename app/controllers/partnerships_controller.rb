@@ -62,7 +62,7 @@ class PartnershipsController < ApplicationController
       user: current_user,
       level: level,
       status: :pending,
-      expires_at: expires_at
+      sponsorable: sponsorable
     }
     # set expires_at for gold-silver-bronze and tag sponsorships
     if Sponsorship::METAL_LEVELS.include?(level) || sponsorable

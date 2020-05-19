@@ -34,10 +34,10 @@
       </div>
     <% else %>
       <div class="partner-credits-explainer">
-        <% if Sponsorship::LEVELS_WITH_EXPIRATION.include?(level) %>
+        <% if Sponsorship::METAL_LEVELS.include?(level) %>
           <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" />@<%= org.slug %></h3>
           <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
-          <% sponsorships = org.sponsorships.unexpired.where(level: Sponsorship::LEVELS_WITH_EXPIRATION) %>
+          <% sponsorships = org.sponsorships.unexpired.where(level: Sponsorship::METAL_LEVELS) %>
           <% level_sponsorship = sponsorships.where(level: level).take %>
           <% if level_sponsorship %>
             <div class="partner-explainer-notice">
