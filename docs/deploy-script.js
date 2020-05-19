@@ -7,7 +7,7 @@ switch (subdomain) {
     buildCommand = 'make';
     break;
   case 'storybook':
-    buildCommand = 'cd .. && npm install && npm run build-storybook';
+    buildCommand = 'yarn build-storybook';
     break;
   default:
     throw `Subdomain ${subdomain} is invalid`;
