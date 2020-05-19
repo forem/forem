@@ -1,5 +1,5 @@
 require "rails_helper"
-require Rails.root.join("lib/data_update_scripts/20200326145114_re_index_feed_content_to_elasticsearch.rb")
+require Rails.root.join("lib/data_update_scripts/20200519142908_re_index_feed_content_to_elasticsearch.rb")
 
 describe DataUpdateScripts::ReIndexFeedContentToElasticsearch, elasticsearch: "FeedContent" do
   after { Search::FeedContent.refresh_index }
@@ -16,5 +16,9 @@ describe DataUpdateScripts::ReIndexFeedContentToElasticsearch, elasticsearch: "F
     expect(article.elasticsearch_doc).not_to be_nil
     expect(podcast_episode.elasticsearch_doc).not_to be_nil
     expect(comment.elasticsearch_doc).not_to be_nil
+
+    expect(article.elasticsearch_doc["_source"].keys).to include "public_reactions_count"
+    expect(podcast_episode.elasticsearch_doc["_source"].keys).to include "public_reactions_count"
+    expect(comment.elasticsearch_doc["_source"].keys).to include "public_reactions_count"
   end
 end
