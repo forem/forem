@@ -1,4 +1,4 @@
-import { fetchSearch } from '../../utilities/search';
+import { createDataHash } from '../util';
 
 export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
   fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
@@ -106,26 +106,18 @@ export function getChannels(
   successCb,
   _failureCb,
 ) {
-  const dataHash = {};
-  if (additionalFilters.filters) {
-    const [key, value] = additionalFilters.filters.split(':');
-    dataHash[key] = value;
-  }
-  dataHash.per_page = 30;
-  dataHash.page = paginationNumber;
-  dataHash.channel_text = query;
-  if (searchType === 'discoverable') {
-    dataHash.user_id = 'all';
-  }
-  const responsePromise = fetchSearch('chat_channels', dataHash);
-
-  return responsePromise.then((response) => {
-    const channels = response.result;
+  return createDataHash(
+    additionalFilters,
+    paginationNumber,
+    query,
+    searchType,
+  ).then((response) => {
     if (
       retrievalID === null ||
-      channels.filter((e) => e.chat_channel_id === retrievalID).length === 1
+      response.result.filter((e) => e.chat_channel_id === retrievalID)
+        .length === 1
     ) {
-      successCb(channels, query);
+      successCb(response.result, query);
     } else {
       fetch(
         `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`,
@@ -137,8 +129,8 @@ export function getChannels(
       )
         .then((individualResponse) => individualResponse.json())
         .then((json) => {
-          channels.unshift(json);
-          successCb(channels, query);
+          response.result.unshift(json);
+          successCb(response.result, query);
         });
     }
   });

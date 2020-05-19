@@ -1,3 +1,5 @@
+import { fetchSearch } from '../utilities/search';
+
 import 'intersection-observer';
 
 export function getCsrfToken() {
@@ -106,4 +108,24 @@ export const channelSorter = (channels, currentUserId, filterQuery) => {
     )
     .filter((channel) => !ChannelIds[0].includes(channel.chat_channel_id));
   return { activeChannels, discoverableChannels };
+};
+
+export const createDataHash = (
+  additionalFilters,
+  paginationNumber,
+  query,
+  searchType,
+) => {
+  const dataHash = {};
+  if (additionalFilters.filters) {
+    const [key, value] = additionalFilters.filters.split(':');
+    dataHash[key] = value;
+  }
+  dataHash.per_page = 30;
+  dataHash.page = paginationNumber;
+  dataHash.channel_text = query;
+  if (searchType === 'discoverable') {
+    dataHash.user_id = 'all';
+  }
+  return fetchSearch('chat_channels', dataHash);
 };
