@@ -28,7 +28,6 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     $force_fail2 += 1
     1 / 0 if $force_fail2 == 1
     visit "/#{user.username}/#{article.slug}/edit"
-    1 / 0 if $force_fail2 == 2
     # rubocop:enable Style/GlobalVars
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("SAVE CHANGES")
