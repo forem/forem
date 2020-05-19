@@ -28,6 +28,7 @@ gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.14" # Client library for easily using the Cloudinary service
+gem "concurrent-ruby", "~> 1.1.6" # Depedency, required on Gitpod
 gem "counter_culture", "~> 2.3" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "ddtrace", "~> 0.35.2" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
@@ -44,6 +45,8 @@ gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.3" # A/B testing
 gem "figaro", "~> 1.2" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
+gem "flipper", "~> 0.17.2" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 0.17.2" # Store Flipper flags in ActiveRecord
 gem "fog-aws", "~> 3.6" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
