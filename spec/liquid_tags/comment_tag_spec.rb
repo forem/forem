@@ -39,7 +39,7 @@ RSpec.describe CommentTag, type: :liquid_tag do
     end
   end
 
-  context "with the legacy 'devcomment'" do
+  xcontext "with the legacy 'devcomment'" do
     before do
       Liquid::Template.register_tag("devcomment", described_class)
     end
