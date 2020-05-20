@@ -6,6 +6,21 @@
   margin: 0 auto;
 }
 
+@mixin animationSlide($name) {
+  animation-name: $name;
+
+  @keyframes #{$name} {
+    from {
+      opacity: 0;
+      top: calc(var(--su-4) * -1);
+    }
+    to {
+      opacity: 1;
+      top: 0;
+    }
+  }
+}
+
 .crayons-article-form {
   --article-form-actions-height: 56px;
   --layout-padding: var(--su-2);
@@ -204,20 +219,20 @@
 
   &__help {
     position: relative;
-    animation-name: slideIn;
     animation-duration: 0.25s;
     animation-iteration-count: 1;
     animation-timing-function: var(--transition-func);
 
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        top: calc(var(--su-4) * -1);
-      }
-      to {
-        opacity: 1;
-        top: 0;
-      }
+    &--title {
+      @include animationSlide(slideInTitle);
+    }
+
+    &--tags {
+      @include animationSlide(slideInTags);
+    }
+
+    &--body {
+      @include animationSlide(slideInBody);
     }
   }
 }
