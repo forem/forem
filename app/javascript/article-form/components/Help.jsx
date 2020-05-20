@@ -42,13 +42,17 @@ export class Help extends Component {
   renderArticleFormTitleHelp = () => {
     return (
       <div className="spec__title-help crayons-article-form__help crayons-article-form__help--title">
-        <h4 className="mb-2 fs-l">How to write a good post title?</h4>
+        <h4 className="mb-2 fs-l">Writing a Great Post Title</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
-            Think of post title as super short description. Like an overview of
-            the actual post in one short sentence...
+            Think of your post title as a super short (but compelling!)
+            description — like an overview of the actual post in one short
+            sentence.
           </li>
-          <li>Be specific :)</li>
+          <li>
+            Use keywords where appropriate to help ensure people can find your
+            post by search.
+          </li>
         </ul>
       </div>
     );
@@ -57,17 +61,22 @@ export class Help extends Component {
   renderTagInputHelp = () => {
     return (
       <div className="spec__basic-tag-input-help crayons-article-form__help crayons-article-form__help--tags">
-        <h4 className="mb-2 fs-l">Use appropriate tags</h4>
+        <h4 className="mb-2 fs-l">Tagging Guidelines</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>Tags will help the right people find your post.</li>
           <li>
-            Think of tags as topics or categories that you could identify your
-            post with.
+            Think of tags as the topics or categories that best describe your
+            post.
           </li>
           <li>
-            Limit number of tags to maximum 4 and try to use existing tags.
+            Add up to four tags per post. Combine tags to reach the appropriate
+            subcommunities.
           </li>
-          <li>Remember that some tags have special posting guidelines.</li>
+          <li>Try to use existing tags whenever possible.</li>
+          <li>
+            Some tags, such as “help” or “healthydebate”, have special posting
+            guidelines.
+          </li>
         </ul>
       </div>
     );
@@ -112,7 +121,7 @@ export class Help extends Component {
   renderFormatHelp = () => {
     return (
       <div className="spec__format-help crayons-article-form__help crayons-article-form__help--body">
-        <h4 className="mb-2 fs-l">How to use editor?</h4>
+        <h4 className="mb-2 fs-l">Editor Basics</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
             Use
@@ -124,17 +133,13 @@ export class Help extends Component {
             to write and format posts.
           </li>
           <li>
-            Most of the time, you can write inline HTML directly into your
-            posts.
-          </li>
-          <li>
             You can use
             {' '}
             <a href="#liquid" onClick={this.toggleModal('liquidShowing')}>
               Liquid tags
             </a>
             {' '}
-            to add rich content such as tweets and videos.
+            to add rich content such as Tweets, YouTube videos, etc.
           </li>
         </ul>
       </div>

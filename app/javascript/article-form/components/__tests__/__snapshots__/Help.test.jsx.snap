@@ -58,7 +58,7 @@ exports[`<Help /> renders properly 1`] = `
       <h4
         class="mb-2 fs-l"
       >
-        How to use editor?
+        Editor Basics
       </h4>
       <ul
         class="list-disc pl-6 color-base-70"
@@ -74,9 +74,6 @@ exports[`<Help /> renders properly 1`] = `
            to write and format posts.
         </li>
         <li>
-          Most of the time, you can write inline HTML directly into your posts.
-        </li>
-        <li>
           You can use 
           <a
             href="#liquid"
@@ -84,7 +81,7 @@ exports[`<Help /> renders properly 1`] = `
           >
             Liquid tags
           </a>
-           to add rich content such as tweets and videos.
+           to add rich content such as Tweets, YouTube videos, etc.
         </li>
       </ul>
     </div>
