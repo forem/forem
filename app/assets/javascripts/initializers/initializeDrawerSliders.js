@@ -1,3 +1,13 @@
+function mobileListenForFilterSelect(event) {
+  const feedFilterSelect = document.getElementById('feed-filter-select');
+  const changeFilter = (event) => {
+    window.location.href = event.target.value;
+  };
+  if (feedFilterSelect) {
+    feedFilterSelect.addEventListener('change', changeFilter);
+  }
+}
+
 function initializeDrawerSliders() {
   if(!initializeSwipeGestures.called) {
     swipeState = "middle";
@@ -35,6 +45,10 @@ function initializeDrawerSliders() {
       slideSidebar("left","outOfView");
     });
     listenForNarrowMenuClick();
+  }
+
+  if ( document.getElementById("feed-filter-select")) {
+    mobileListenForFilterSelect();
   }
 }
 
