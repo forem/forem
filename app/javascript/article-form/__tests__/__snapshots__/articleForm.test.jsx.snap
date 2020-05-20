@@ -143,7 +143,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
           >
             <input
               autoComplete="off"
-              class="crayons-textfield crayons-textfield--ghost ff-accent fs-s s:fs-base crayons-article-form__tags"
+              class="crayons-textfield crayons-textfield--ghost ff-accent crayons-article-form__tags"
               id="tag-input"
               name="classified_listing[tag_list]"
               onBlur={[Function]}

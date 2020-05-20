@@ -11,7 +11,7 @@ export const TagsField = ({ defaultValue, onInput, switchHelpContext }) => {
         onInput={onInput}
         onFocus={switchHelpContext}
         classPrefix="crayons-article-form"
-        fieldClassName="crayons-textfield crayons-textfield--ghost ff-accent fs-s s:fs-base"
+        fieldClassName="crayons-textfield crayons-textfield--ghost ff-accent"
       />
     </div>
   );

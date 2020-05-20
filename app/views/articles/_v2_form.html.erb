@@ -1,3 +1,18 @@
+<style>
+  body {
+    padding-top: 0;
+  }
+
+  body > footer,
+  #top-bar {
+    display: none
+  }
+
+  .universal-page-content-wrapper {
+    overflow: unset;
+  }
+</style>
+
 <div id="article-form"
   data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
@@ -35,10 +50,10 @@
               </button>
             </div>
             <div class="crayons-article-form__title">
-              <textarea class="crayons-textfield crayons-textfield--ghost fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px; "><%= article.title %></textarea>
+              <textarea class="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px; "><%= article.title %></textarea>
             </div>
             <div class="crayons-article-form__tagsfield">
-              <input type="text" class="crayons-textfield crayons-textfield--ghost fs-s s:fs-base ff-accent" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
+              <input type="text" class="crayons-textfield crayons-textfield--ghost ff-accent" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
             </div>
           </div>
         <% end %>
@@ -76,18 +91,3 @@
 <script async>
   <%== RunkitTag.script %>
 </script>
-
-<style>
-  body {
-    padding-top: 0;
-  }
-
-  body > footer,
-  #top-bar {
-    display: none
-  }
-
-  .universal-page-content-wrapper {
-    overflow: unset;
-  }
-</style>
