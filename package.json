@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "Where programmers share ideas and help each other grow",
   "engines": {
-    "yarn": ">=1.21.x"
+    "yarn": ">=1.21.x",
+    "node": "12.16.x"
   },
   "main": "index.js",
   "directories": {
@@ -79,6 +80,7 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
+    "@percy/agent": "^0.26.3",
     "@stoplight/spectral": "5.3.0",
     "@storybook/addon-actions": "^5.3.18",
     "@storybook/addon-knobs": "^5.3.18",

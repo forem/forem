@@ -206,9 +206,25 @@ RSpec.describe User, type: :model do
       limiter = RateLimitChecker.new(user)
       allow(user).to receive(:rate_limiter).and_return(limiter)
       allow(limiter).to receive(:limit_by_action).and_return(true)
+      allow(limiter).to receive(:track_limit_by_action)
       user.update(email: "new_email@yo.com")
+
       expect(user).not_to be_valid
       expect(user.errors[:email].to_s).to include("confirmation could not be sent. Rate limit reached")
+      expect(limiter).to have_received(:track_limit_by_action).with(:send_email_confirmation).twice
+    end
+
+    it "validates update_rate_limit for existing user" do
+      user = create(:user)
+      limiter = RateLimitChecker.new(user)
+      allow(user).to receive(:rate_limiter).and_return(limiter)
+      allow(limiter).to receive(:limit_by_action).and_return(true)
+      allow(limiter).to receive(:track_limit_by_action)
+      user.update(articles_count: 5)
+
+      expect(user).not_to be_valid
+      expect(user.errors[:base].to_s).to include("could not be saved. Rate limit reached")
+      expect(limiter).to have_received(:track_limit_by_action).with(:user_update).twice
     end
   end
 

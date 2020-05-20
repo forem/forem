@@ -30,10 +30,11 @@ RSpec.describe "BufferUpdates", type: :request do
     end
 
     it "creates buffer hashtag" do
+      SiteConfig.twitter_hashtag = "#DEVCommunity"
       post "/buffer_updates",
            params:
            { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
-      expect(BufferUpdate.first.body_text).to include("#DEVCommunity")
+      expect(BufferUpdate.first.body_text).to include(SiteConfig.twitter_hashtag.to_s)
     end
 
     it "creates satellite and Facebook buffer" do

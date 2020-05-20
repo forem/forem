@@ -34,10 +34,10 @@
       </div>
     <% else %>
       <div class="partner-credits-explainer">
-        <% if Sponsorship::LEVELS_WITH_EXPIRATION.include?(level) %>
+        <% if Sponsorship::METAL_LEVELS.include?(level) %>
           <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" />@<%= org.slug %></h3>
           <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
-          <% sponsorships = org.sponsorships.unexpired.where(level: Sponsorship::LEVELS_WITH_EXPIRATION) %>
+          <% sponsorships = org.sponsorships.unexpired.where(level: Sponsorship::METAL_LEVELS) %>
           <% level_sponsorship = sponsorships.where(level: level).take %>
           <% if level_sponsorship %>
             <div class="partner-explainer-notice">
@@ -86,39 +86,10 @@
             <%= select_tag "tag_name", options_for_select(tag_names) %>
             <button>Sponsor Tag for <%= Sponsorship::CREDITS[:tag] %> credits</button>
           <% end %>
-        <%# NOTE: this currently can't be reached %>
-        <% elsif level == "media" %>
-          <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" />@<%= org.slug %></h3>
-          <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
-          <br />
-          <%= form_tag "/partnerships" do %>
-            <%= hidden_field_tag(:organization_id, org.id) %>
-            <%= hidden_field_tag(:level, level) %>
-            <%= number_field_tag(:amount, nil, placeholder: "Number of credits") %>
-            <button>Add spend to your media sponsorship</button>
-            <p style="font-size: 0.88em;">
-              <em>
-                Credits will be allotted flexibly use in <%= community_name %>-produced podcasts, videos and other media content. You will be notified as it is being distributed.
-              </em>
-            </p>
-          <% end %>
-        <%# NOTE: this currently can't be reached %>
-        <% elsif level == "devrel" %>
-          <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" />@<%= org.slug %></h3>
-          <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
-          <br />
-          <%= form_tag "/partnerships" do %>
-            <%= hidden_field_tag(:organization_id, org.id) %>
-            <%= hidden_field_tag(:level, level) %>
-            <button>Sign Up for DevRel Consulting</button>
-            <p style="font-size: 1.1em;">
-              You will be contacted by the <%= community_name %> team within one day of signing up for this service.
-            </p>
-          <% end %>
         <% end %>
       </div>
     <% end %>
   <% end %>
 <% else %>
-<h2>Contact <%= email_link(:business) %> to sign up</h1>
+  <h2>Contact <%= email_link(:business) %> to sign up</h1>
 <% end %>

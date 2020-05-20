@@ -1,24 +1,27 @@
 require "rails_helper"
 
-RSpec.describe DevCommentTag, type: :liquid_tag do
-  let(:user)        { create(:user, username: "DevCommentTagTest", name: "DevCommentTag Test") }
-  let(:article)     { create(:article) }
-  let(:comment)     { create(:comment, commentable: article, body_markdown: "DevCommentTagTest", user: user) }
+RSpec.describe CommentTag, type: :liquid_tag do
+  let(:user) { create(:user, name: "TheUser") }
+  let(:article) { create(:article) }
+  let(:comment) do
+    create(:comment, commentable: article, user: user, body_markdown: "TheComment")
+  end
 
-  setup             { Liquid::Template.register_tag("devcomment", described_class) }
+  setup { Liquid::Template.register_tag("comment", described_class) }
 
   def generate_comment_tag(id_code)
-    Liquid::Template.parse("{% devcomment #{id_code} %}")
+    Liquid::Template.parse("{% comment #{id_code} %}")
   end
 
   context "when given valid id_code" do
     it "fetches the target comment and render properly" do
       liquid = generate_comment_tag(comment.id_code_generated)
+
       expect(liquid.render).to include(comment.body_markdown)
       expect(liquid.render).to include(user.name)
     end
 
-    it "raise error if comment does not exist" do
+    it "raise error if comment ID does not exist" do
       expect do
         liquid = generate_comment_tag("this will fail")
         liquid.render
@@ -35,6 +38,19 @@ RSpec.describe DevCommentTag, type: :liquid_tag do
 
     it "embeds the comment published timestamp" do
       expect(rendered_tag).to include(comment.decorate.published_timestamp)
+    end
+  end
+
+  context "with the legacy 'devcomment'" do
+    before do
+      Liquid::Template.register_tag("devcomment", described_class)
+    end
+
+    it "renders properly" do
+      liquid = Liquid::Template.parse("{% devcomment #{comment.id_code_generated} %}")
+
+      expect(liquid.render).to include(comment.body_markdown)
+      expect(liquid.render).to include(user.name)
     end
   end
 end

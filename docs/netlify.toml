@@ -6,8 +6,7 @@
 #    that is where we will look for package.json/.nvmrc/etc not repo root!
 
 [build]
-  base = "docs/"
-  command = "node deploy-script.js"
+  command = "make"
 
 [[redirects]]
   force = true
