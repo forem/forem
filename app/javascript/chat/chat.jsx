@@ -206,8 +206,11 @@ export default class Chat extends Component {
 
   loadChannels = (channels, query) => {
     const { activeChannelId } = this.state;
-    const activeChannel = this.state.activeChannel ||
-      channels.filter((channel) => channel.chat_channel_id === activeChannelId)[0];
+    const activeChannel =
+      this.state.activeChannel ||
+      channels.filter(
+        (channel) => channel.chat_channel_id === activeChannelId,
+      )[0];
     if (activeChannelId && query.length === 0) {
       this.setState({
         chatChannels: channels,
@@ -617,8 +620,8 @@ export default class Chat extends Component {
       const lastMessage =
         messagesByCurrentUser[messagesByCurrentUser.length - 1];
 
-      this.setState({ messageDeleteId: lastMessage.id });
-      this.setState({ showDeleteModal: true });
+      this.setState({ activeEditMessage: lastMessage });
+      this.setState({ startEditing: true });
     }
   };
 
