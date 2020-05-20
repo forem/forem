@@ -7,7 +7,7 @@ import { submitArticle, previewArticle } from './actions';
 /* global activateRunkitTags */
 
 import {
-  Actions,
+  EditorActions,
   Form,
   Header,
   Help,
@@ -327,7 +327,7 @@ export default class ArticleForm extends Component {
           />
         </div>
 
-        <Actions
+        <EditorActions
           published={published}
           version={version}
           onPublish={this.onPublish}

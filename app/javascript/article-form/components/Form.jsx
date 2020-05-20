@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Body } from './Body';
+import { EditorBody } from './EditorBody';
 import { Meta } from './Meta';
 import { Errors } from './Errors';
 
@@ -34,7 +34,7 @@ export const Form = ({
         />
       )}
 
-      <Body
+      <EditorBody
         defaultValue={bodyDefaultValue}
         onChange={bodyOnChange}
         hasFocus={bodyHasFocus}

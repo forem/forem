@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Textarea from 'preact-textarea-autosize';
 import { Toolbar } from './Toolbar';
 
-export const Body = ({
+export const EditorBody = ({
   onChange,
   defaultValue,
   switchHelpContext,
@@ -28,11 +28,11 @@ export const Body = ({
   );
 };
 
-Body.propTypes = {
+EditorBody.propTypes = {
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string.isRequired,
   switchHelpContext: PropTypes.func.isRequired,
   version: PropTypes.string.isRequired,
 };
 
-Body.displayName = 'Body';
+EditorBody.displayName = 'EditorBody';

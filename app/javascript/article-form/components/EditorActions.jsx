@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Button } from '@crayons';
 import { Options } from './Options';
 
-export class Actions extends Component {
+export class EditorActions extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -119,7 +119,7 @@ export class Actions extends Component {
   }
 }
 
-Actions.propTypes = {
+EditorActions.propTypes = {
   onSaveDraft: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
   published: PropTypes.bool.isRequired,
@@ -131,4 +131,4 @@ Actions.propTypes = {
   submitting: PropTypes.bool.isRequired,
 };
 
-Actions.displayName = 'Actions';
+EditorActions.displayName = 'EditorActions';
