@@ -108,8 +108,6 @@ RSpec.describe Users::Delete, type: :service do
       associations = []
 
       names.each do |association|
-        next if association.name == :pro_membership
-
         if user.public_send(association.name).present?
           associations.push(*user.public_send(association.name))
         else
