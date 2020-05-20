@@ -55,7 +55,7 @@ export const Options = ({
     <Dropdown
       className={
         moreConfigShowing &&
-        'inline-block bottom-100 left-2 s:left-100 right-2 s:left-auto'
+        'inline-block bottom-100 left-2 s:left-0 right-2 s:left-auto'
       }
     >
       <h3 className="mb-6">Post options</h3>
