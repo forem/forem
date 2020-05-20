@@ -1,8 +1,0 @@
-<% credits_url = app_url(credits_path) %>
-<% pro_membership_url = app_url(user_settings_path("pro-membership")) %>
-
-Hi <%= @user.name %>, your Pro Membership will expire in <%= @days %> days on <%= @date.to_s(:long) %>!
-
-Make sure you have enough credits for its renewal: <%= credits_url %>
-
-You can also review your Pro Membership status: <%= pro_membership_url %>

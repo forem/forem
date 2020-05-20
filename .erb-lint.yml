@@ -40,4 +40,3 @@ linters:
           - '**/app/views/pages/onboarding.html.erb'
           - '**/app/views/partnerships/show.html.erb'
           - '**/app/views/partnerships/index.html.erb'
-          - '**/app/views/pro_memberships/show.html.erb'
