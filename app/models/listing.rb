@@ -45,7 +45,7 @@ class Listing < ApplicationRecord
   end
 
   def listing_category_id=(id)
-    self.listing_category_id = id
+    self.classified_listing_category_id = id
   end
 
   def category
