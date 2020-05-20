@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_15_085746) do
+ActiveRecord::Schema.define(version: 2020_05_20_092951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -857,6 +857,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.bigint "poll_option_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["poll_id", "user_id"], name: "index_poll_votes_on_poll_id_and_user_id", unique: true
     t.index ["poll_option_id", "user_id"], name: "index_poll_votes_on_poll_option_and_user", unique: true
   end
 
@@ -893,6 +894,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.bigint "profile_id"
     t.string "profile_type"
     t.datetime "updated_at", null: false
+    t.index ["pinnable_id", "profile_id", "profile_type", "pinnable_type"], name: "idx_pins_on_pinnable_id_profile_id_profile_type_pinnable_type", unique: true
     t.index ["pinnable_id"], name: "index_profile_pins_on_pinnable_id"
     t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
   end
@@ -936,6 +938,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.string "type_of", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["content", "user_id", "type_of", "content_type"], name: "idx_response_templates_on_content_user_id_type_of_content_type", unique: true
     t.index ["type_of"], name: "index_response_templates_on_type_of"
     t.index ["user_id", "type_of"], name: "index_response_templates_on_user_id_and_type_of"
     t.index ["user_id"], name: "index_response_templates_on_user_id"
@@ -992,6 +995,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.string "tag_name"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["tag_name", "article_id"], name: "index_tag_adjustments_on_tag_name_and_article_id", unique: true
   end
 
   create_table "taggings", id: :serial, force: :cascade do |t|
@@ -1253,6 +1257,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.bigint "user_id", null: false
     t.index ["events"], name: "index_webhook_endpoints_on_events"
     t.index ["oauth_application_id"], name: "index_webhook_endpoints_on_oauth_application_id"
+    t.index ["target_url"], name: "index_webhook_endpoints_on_target_url", unique: true
     t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
   end
 
