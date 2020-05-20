@@ -36,7 +36,7 @@
       </div>
       <div class="profile-details">
         <h1>
-          <span><%= @user.name %><%= render "shared/pro_checkmark", style: nil, width: nil %></span>
+          <span><%= @user.name %></span>
           <span class="user-profile-follow-button-wrapper">
             <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
           </span>

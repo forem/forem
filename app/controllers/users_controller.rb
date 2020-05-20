@@ -253,8 +253,6 @@ class UsersController < ApplicationController
       handle_integrations_tab
     when "billing"
       handle_billing_tab
-    when "pro-membership"
-      handle_pro_membership_tab
     when "account"
       handle_account_tab
     when "response-templates"
@@ -321,10 +319,6 @@ class UsersController < ApplicationController
     return if stripe_code == "special"
 
     @customer = Payments::Customer.get(stripe_code) if stripe_code.present?
-  end
-
-  def handle_pro_membership_tab
-    @pro_membership = current_user.pro_membership
   end
 
   def handle_account_tab

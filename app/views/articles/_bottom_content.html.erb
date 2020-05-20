@@ -19,7 +19,7 @@
         <div class="content">
           <h3><%= article.title %></h3>
           <h4>
-            <%= article.user.name %><%= render "shared/pro_checkmark", width: "12px" if article.user.pro? %> - <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
+            <%= article.user.name %> - <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
           </h4>
         </div>
       </div>
