@@ -152,8 +152,12 @@ class User < ApplicationRecord
 
   # add validators for provider related usernames
   Authentication::Providers.username_fields.each do |username_field|
-    # make sure usernames are not empty, to be able to use the database unique index
-    before_validation(proc { |record| record.assign_attributes(username_field => nil) if record.attributes[username_field.to_s] == "" })
+    # make sure usernames are not empty string, to be able to use the database unique index
+    clean_provider_username = proc do |record|
+      cleaned_username = record.attributes[username_field.to_s].presence
+      record.assign_attributes(username_field => cleaned_username)
+    end
+    before_validation clean_provider_username
 
     validates username_field, uniqueness: { allow_nil: true }, if: :"#{username_field}_changed?"
   end
@@ -529,9 +533,9 @@ class User < ApplicationRecord
   def temp_username
     Authentication::Providers.username_fields.each do |username_field|
       value = public_send(username_field)
-      if value.present?
-        return value.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ")
-      end
+      next if value.blank?
+
+      return value.downcase.gsub(/[^0-9a-z_]/i, "").delete(" ")
     end
   end
 
