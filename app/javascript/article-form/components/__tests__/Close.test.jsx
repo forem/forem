@@ -15,12 +15,4 @@ describe('<Close />', () => {
       true,
     );
   });
-
-  // TODO: how to test a closed modal
-  // it('closes the modal', () => {
-  //   const container = shallow(<Close />);
-  //   const closeBtn = container.find('.crayons-article-form__close a');
-  //   closeBtn.simulate('click');
-  //   expect(container.find('.crayons-article-form__close').exists()).toEqual(false);
-  // });
 });
