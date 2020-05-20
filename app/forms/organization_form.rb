@@ -31,20 +31,22 @@ class OrganizationForm < YAAF::Form
   private
 
   def validate_image
-    return if valid_image_file?
+    return true if organization_attributes["profile_image"].blank?
 
-    valid_filename?
+    valid_image_file? && valid_filename?
   end
 
   def valid_image_file?
     return true if file?(organization_attributes["profile_image"])
 
     organization.errors.add(:profile_image, IS_NOT_FILE_MESSAGE)
+    false
   end
 
   def valid_filename?
     return true unless long_filename?(organization_attributes["profile_image"])
 
     organization.errors.add(:profile_image, FILENAME_TOO_LONG_MESSAGE)
+    false
   end
 end

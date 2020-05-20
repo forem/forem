@@ -25,6 +25,7 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to validate_presence_of(:url) }
       it { is_expected.to validate_presence_of(:profile_image) }
       it { is_expected.to validate_presence_of(:slug) }
+      it { is_expected.to validate_presence_of(:proof) }
       it { is_expected.to validate_length_of(:cta_body_markdown).is_at_most(256) }
       it { is_expected.to validate_length_of(:cta_button_text).is_at_most(20) }
       it { is_expected.to validate_length_of(:secret).is_equal_to(100) }
