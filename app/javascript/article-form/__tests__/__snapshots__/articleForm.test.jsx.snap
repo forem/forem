@@ -112,7 +112,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
               <label
                 htmlFor="cover-image-input"
               >
-                Add a cover
+                Add a cover image
               </label>
               <input
                 accept="image/*"

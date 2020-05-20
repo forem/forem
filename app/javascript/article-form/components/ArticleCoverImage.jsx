@@ -52,7 +52,7 @@ export class ArticleCoverImage extends Component {
   render() {
     const { mainImage } = this.props;
     const { uploadError, uploadErrorMessage } = this.state;
-    const uploadLabel = mainImage ? 'Change' : 'Add a cover';
+    const uploadLabel = mainImage ? 'Change' : 'Add a cover image';
     return (
       <div className="crayons-article-form__cover" role="presentation">
         {mainImage && (
