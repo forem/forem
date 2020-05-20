@@ -161,7 +161,7 @@ export class ImageUploader extends Component {
               readOnly="true"
               value={this.linksToMarkdownForm(insertionImageUrls)}
             />
-            <Button variant="ghost" contentType="icon" icon={IconCopy} />
+            <Button className="spec__image-markdown-copy" variant="ghost" contentType="icon" icon={IconCopy} />
             <span
               id="image-markdown-copy-link-announcer"
               role="alert"
