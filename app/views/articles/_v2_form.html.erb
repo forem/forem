@@ -13,7 +13,7 @@
   }
 </style>
 
-<div id="article-form"
+<div id="js-article-form"
   data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
   data-version="<%= version %>">
@@ -23,7 +23,12 @@
       <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
 
       <div class="crayons-field__label">
-        <span class="hidden s:inline-block">Write a new post</span><% if organizations && organizations.size > 0 %><select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto ml-2 mt-0"><%= options_for_select({ "Personal" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %></select><% end %>
+        <span class="hidden s:inline-block">Write a new post</span>
+        <% if organizations && organizations.size > 0 %>
+          <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto ml-2 mt-0">
+            <%= options_for_select({ "Personal" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
+          </select>
+        <% end %>
       </div>
 
       <div class="crayons-article-form__tabs crayons-tabs ml-auto">
@@ -46,7 +51,10 @@
                 <img src="<%= article.main_image %>" width="250" height="105" alt="Post cover" class="crayons-article-form__cover__image">
               <% end %>
               <button class="crayons-btn crayons-btn--outlined mr-2">
-                <% if article.main_image.present? %>Change the cover<% else %>Add a cover<% end %><input type="file" accept="image/*" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" data-max-file-size-mb="25">
+                <label for="cover-image-input">
+                  <% if article.main_image.present? %>Change the cover<% else %>Add a cover<% end %>
+                </label>
+                <input id="cover-image-input" type="file" accept="image/*" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" data-max-file-size-mb="25">
               </button>
             </div>
             <div class="crayons-article-form__title">

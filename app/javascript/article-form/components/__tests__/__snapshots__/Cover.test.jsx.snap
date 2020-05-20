@@ -20,11 +20,16 @@ exports[`<Cover /> renders properly 1`] = `
       disabled={false}
       type="button"
     >
-      Change
+      <label
+        htmlFor="cover-image-input"
+      >
+        Change
+      </label>
       <input
         accept="image/*"
         class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
         data-max-file-size-mb="25"
+        id="cover-image-input"
         onChange={[Function]}
         type="file"
       />

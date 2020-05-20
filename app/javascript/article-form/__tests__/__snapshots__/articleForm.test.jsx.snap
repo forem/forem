@@ -70,12 +70,19 @@ exports[`<ArticleForm /> renders properly 1`] = `
         title="Close the editor"
       >
         <svg
+          aria-labelledby="as1mn15llu5e032u2pgzlc6yhvss2myk"
           class="crayons-icon"
           height="24"
+          role="img"
           viewBox="0 0 24 24"
           width="24"
           xmlns="http://www.w3.org/2000/svg"
         >
+          <title
+            id="as1mn15llu5e032u2pgzlc6yhvss2myk"
+          >
+            Close the editor
+          </title>
           <path
             d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z"
           />
@@ -102,11 +109,16 @@ exports[`<ArticleForm /> renders properly 1`] = `
               disabled={false}
               type="button"
             >
-              Add a cover
+              <label
+                htmlFor="cover-image-input"
+              >
+                Add a cover
+              </label>
               <input
                 accept="image/*"
                 class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
                 data-max-file-size-mb="25"
+                id="cover-image-input"
                 onChange={[Function]}
                 type="file"
               />
@@ -175,12 +187,19 @@ exports[`<ArticleForm /> renders properly 1`] = `
               type="button"
             >
               <svg
+                aria-labelledby="a17qec5pfhrwzk9w4kg0tp62v27qqu9t"
                 class="crayons-icon"
                 height="24"
+                role="img"
                 viewBox="0 0 24 24"
                 width="24"
                 xmlns="http://www.w3.org/2000/svg"
               >
+                <title
+                  id="a17qec5pfhrwzk9w4kg0tp62v27qqu9t"
+                >
+                  Upload image
+                </title>
                 <path
                   d="M20 5H4v14l9.292-9.294a1 1 0 011.414 0L20 15.01V5zM2 3.993A1 1 0 012.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 01-.992.993H2.992A.993.993 0 012 20.007V3.993zM8 11a2 2 0 110-4 2 2 0 010 4z"
                 />
@@ -265,12 +284,19 @@ exports[`<ArticleForm /> renders properly 1`] = `
         type="button"
       >
         <svg
+          aria-labelledby="75abcb76478519ca4eb9"
           class="crayons-icon"
           height="24"
+          role="img"
           viewBox="0 0 24 24"
           width="24"
           xmlns="http://www.w3.org/2000/svg"
         >
+          <title
+            id="75abcb76478519ca4eb9"
+          >
+            Post options
+          </title>
           <path
             d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342 7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"
           />

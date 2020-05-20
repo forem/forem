@@ -80,8 +80,9 @@ export class Cover extends Component {
         )}
         <div className="flex items-center">
           <Button variant="outlined" className="mr-2 whitespace-nowrap">
-            {uploadLabel}
+            <label htmlFor="cover-image-input">{uploadLabel}</label>
             <input
+              id="cover-image-input"
               type="file"
               onChange={this.handleMainImageUpload}
               accept="image/*"
