@@ -2,21 +2,18 @@ require "rails_helper"
 
 RSpec.describe "UserShow", type: :request do
   let_it_be(:user) { create(:user, :with_all_info, email_public: true) }
-  let(:doc) { Nokogiri::HTML(response.body) }
-  let(:text) { doc.at('script[type="application/ld+json"]').text }
-  let(:response_json) { JSON.parse(text) }
 
   describe "GET /:slug (user)" do
-    before do
-      get user.path
-    end
-
     it "returns a 200 status when navigating to the user's page" do
+      get user.path
       expect(response).to have_http_status(:ok)
     end
 
     # rubocop:disable RSpec/ExampleLength
     it "renders the proper JSON-LD for a user" do
+      get user.path
+      text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
+      response_json = JSON.parse(text)
       expect(response_json).to include(
         "@context" => "http://schema.org",
         "@type" => "Person",
@@ -62,6 +59,16 @@ RSpec.describe "UserShow", type: :request do
       )
     end
     # rubocop:enable RSpec/ExampleLength
+
+    it "does not render a key if no value is given" do
+      incomplete_user = create(:user)
+      get incomplete_user.path
+      text = Nokogiri::HTML(response.body).at('script[type="application/ld+json"]').text
+      response_json = JSON.parse(text)
+      expect(response_json).not_to include("worksFor")
+      expect(response_json.value?(nil)).to be(false)
+      expect(response_json.value?("")).to be(false)
+    end
   end
 
   context "when user signed in" do
