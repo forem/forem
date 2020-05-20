@@ -42,6 +42,9 @@
   <a href="https://app.honeybadger.io/project/Pl5JzZB5ax">
     <img src="https://img.shields.io/badge/honeybadger-active-informational" alt="Honeybadger badge">
   </a>
+  <a href="https://percy.io/thepracticaldev/dev.to">
+    <img src="https://percy.io/static/images/percy-badge.svg" alt="Percy badge">
+  </a>
 </p>
 
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
