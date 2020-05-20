@@ -17,7 +17,7 @@ const ListingFilters = ({
   query,
 }) => {
   return (
-    <div className="listings-filters" id="listings-filters">
+    <div className="listing-filters" id="listing-filters">
       <ListingFiltersCategories
         categories={categories}
         category={category}

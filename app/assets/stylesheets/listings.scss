@@ -6,7 +6,7 @@
   text-align: left;
   max-width: 100%;
   min-height: 100vh;
-  .listings-filters {
+  .listing-filters {
     padding: 0 16px;
     a {
       padding: 3px 16px;
@@ -23,7 +23,7 @@
         margin: 0px 4px;
       }
     }
-    .listings-filters-categories {
+    .listing-filters-categories {
       a {
         display: block;
         padding: 7px 16px;
@@ -48,7 +48,7 @@
         }
       }
     }
-    .listings-filters-tags {
+    .listing-filters-tags {
       padding: 20px 0px;
       position: relative;
       input {
@@ -133,13 +133,13 @@
       border-top-left-radius: 8px;
       border-top-right-radius: 8px;
     }
-    .listings-form-inner {
+    .listing-form-inner {
       padding: 0px 15px 40px;
       @media screen and (min-width: 580px) {
         padding: 0px 15px 18px;
       }
     }
-    .listings-back-button {
+    .listing-back-button {
       font-size: 0.8em;
       margin: 2px 0px 8px;
       display: block;
@@ -149,7 +149,7 @@
       color: var(--accent-brand);
       margin: 0px;
     }
-    .listings-errors {
+    .listing-errors {
       background: $red;
       color: $black;
       padding: 20px;
@@ -261,7 +261,7 @@
         font-size: 1.1em;
       }
     }
-    .listings-listings-unpublish {
+    .listings-unpublish {
       background: $red;
     }
     p {

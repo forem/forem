@@ -33,8 +33,10 @@ class Listing < ApplicationRecord
   validate :validate_tags
 
   scope :published, -> { where(published: true) }
+
+  # Note: we still need to use the old column name for the join query
   scope :in_category, lambda { |slug|
-    joins(:listing_category).where("listing_categories.slug" => slug)
+    joins(:listing_category).where("classified_listing_categories.slug" => slug)
   }
 
   delegate :cost, to: :listing_category

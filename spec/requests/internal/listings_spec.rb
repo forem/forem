@@ -19,7 +19,7 @@ RSpec.describe "/internal/listings", type: :request do
     end
 
     describe "GET /internal/listings" do
-      let!(:unpublished_listing) { create(:Listing, published: false) }
+      let!(:unpublished_listing) { create(:listing, published: false) }
 
       it "shows published listings" do
         get internal_listings_path
