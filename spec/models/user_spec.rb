@@ -818,7 +818,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "user registration" do
+  describe "user registration", vcr: { cassette_name: "fastly_sloan" } do
     let(:user) { create(:user) }
 
     before do
@@ -889,7 +889,7 @@ RSpec.describe User, type: :model do
       end
     end
 
-    it "assigns multiple identities to the same user", :aggregate_failures do
+    it "assigns multiple identities to the same user", :aggregate_failures, vcr: { cassette_name: "fastly_sloan" } do
       providers = Authentication::Providers.available
 
       users = []
