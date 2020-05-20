@@ -1,19 +1,32 @@
 @import '../config/import';
 
 :root {
-  --layout-sidebar-left-width: 220px;
-  --layout-sidebar-right-width: 280px;
-  --layout-gap: var(--su-4);
+  --layout-sidebar-left-width: 240px;
+  --layout-sidebar-right-width: 240px;
+  --layout-content-width: 100%;
+  --layout-gap: var(--su-3);
   --layout-padding: var(--su-2);
 
+  @media (min-width: $breakpoint-s) {
+    --layout-gap: var(--su-4);
+  }
+
   @media (min-width: $breakpoint-m) {
-    --layout-sidebar-left-width: 240px;
-    --layout-gap: var(--su-6);
+    --layout-sidebar-left-width: 2fr;
+    --layout-content-width: 5fr;
     --layout-padding: var(--su-4);
   }
 
   @media (min-width: $breakpoint-l) {
-    --layout-sidebar-right-width: 320px;
+    --layout-sidebar-left-width: 240px;
+    --layout-sidebar-right-width: 1fr;
+    --layout-content-width: 2fr;
+  }
+
+  @media (min-width: $breakpoint-xl) {
+    --layout-sidebar-right-width: 1fr;
+    --layout-content-width: 2fr;
+    --layout-gap: var(--su-6);
   }
 }
 
@@ -24,7 +37,7 @@
   margin: 0 auto;
 
   &--max-l {
-    max-width: var(--breakpoint-l);
+    max-width: $breakpoint-l;
   }
 }
 
@@ -32,18 +45,43 @@
   @media (min-width: $breakpoint-s) {
     display: grid;
     grid-gap: var(--layout-gap);
-    grid-template-columns: var(--layout-sidebar-left-width) 1fr;
+    grid-template-columns:
+      var(--layout-sidebar-left-width)
+      var(--layout-content-width);
     padding: var(--layout-padding);
   }
 }
 
 .crayons-layout--3-asymetric {
-  @media (min-width: $breakpoint-s) {
+  @media (min-width: $breakpoint-m) {
     display: grid;
     grid-gap: var(--layout-gap);
-    grid-template-columns: var(--layout-sidebar-left-width) 1fr var(
-        --layout-sidebar-right-width
-      );
+    grid-template-columns:
+      var(--layout-sidebar-left-width)
+      var(--layout-content-width);
     padding: var(--layout-padding);
+  }
+
+  @media (min-width: $breakpoint-l) {
+    grid-template-columns:
+      var(--layout-sidebar-left-width)
+      var(--layout-content-width)
+      var(--layout-sidebar-right-width);
+  }
+
+  .crayons-layout__sidebar-left {
+    display: none;
+
+    @media (min-width: $breakpoint-m) {
+      display: block;
+    }
+  }
+
+  .crayons-layout__sidebar-right {
+    display: none;
+
+    @media (min-width: $breakpoint-l) {
+      display: block;
+    }
   }
 }

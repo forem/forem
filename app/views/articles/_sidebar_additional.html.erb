@@ -1,10 +1,10 @@
-<div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
+<div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right crayons-layout__sidebar-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
-  <div class="side-bar sidebar-additional showing" id="sidebar-additional">
+  <div class="side-bar sidebar-additional showing grid gap-3 s:gap-4 xl:gap-6" id="sidebar-additional">
     <% unless user_signed_in? %>
       <div class="crayons-card crayons-card--secondary signin-cta-widget">
         <header class="crayons-card__header">
-          <h3 class="crayons-card__headline">Join <%= community_name %></h3>
+          <h3 class="crayons-card__header__headline">Join <%= community_name %></h3>
         </header>
         <div>
           <%= render partial: "shared/authentication/providers_sidebar" %>
@@ -24,9 +24,9 @@
       <%= render "articles/sidebar_campaign" if SiteConfig.campaign_sidebar_enabled? %>
 
       <% if params[:timeframe].blank? && @classified_listings.any? %>
-        <div class="crayons-card crayons-card--secondary mb-6">
+        <div class="crayons-card crayons-card--secondary">
           <header class="crayons-card__header">
-            <h3 class="crayons-card__headline">Listings</h3>
+            <h3 class="crayons-card__header__headline">Listings</h3>
             <div class="crayons-card__actions">
               <a href="/listings" class="crayons-link--branded fw-medium fs-s">See all</a>
             </div>
@@ -45,9 +45,9 @@
       <% end %>
 
       <% SiteConfig.sidebar_tags.each do |tag| %>
-        <div class="crayons-card crayons-card--secondary mb-6">
+        <div class="crayons-card crayons-card--secondary">
           <header class="crayons-card__header">
-            <h3 class="crayons-card__headline"><a href="/t/<%= tag %>">#<%= tag %></a></h3>
+            <h3 class="crayons-card__header__headline"><a href="/t/<%= tag %>">#<%= tag %></a></h3>
           </header>
 
           <div>

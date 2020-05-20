@@ -1,22 +1,6 @@
 /* global filterXSS */
 
-function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile--avatar').src =
-    user.profile_image_90;
-  document.getElementById('sidebar-profile--avatar').alt = user.username;
-
-  document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
-    user.name,
-  );
-  document.getElementById('sidebar-profile--username').innerHTML =
-    '@' + user.username;
-  document.getElementById('sidebar-profile').href = '/' + user.username;
-}
-
 function initializeUserSidebar(user) {
-  if (!document.getElementById('sidebar-nav')) return;
-  initializeUserProfileContent(user);
-
   let followedTags = JSON.parse(user.followed_tags);
   const tagSeparatorLabel =
     followedTags.length === 0

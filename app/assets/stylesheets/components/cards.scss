@@ -13,11 +13,24 @@ $card-divider: 1px solid var(--body-bg);
   }
 
   &__header {
-    padding: var(--su-4) var(--su-4);
+    padding: var(--su-3) var(--su-4);
     border-bottom: $card-divider;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    &__headline {
+      font-size: var(--fs-l);
+      font-weight: var(--fw-bold);
+      color: var(--base-100);
+
+      a {
+        color: inherit;
+        &:hover {
+          color: var(--link-color-hover);
+        }
+      }
+    }
   }
 
   &__subheader {
