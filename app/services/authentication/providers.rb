@@ -43,9 +43,7 @@ module Authentication
     end
 
     def self.username_fields
-      Authentication::Providers::Provider.subclasses.map do |subclass|
-        subclass.const_get("USERNAME_FIELD").to_sym
-      end.sort
+      Authentication::Providers::Provider.subclasses.map(&:user_username_field).sort
     end
   end
 end

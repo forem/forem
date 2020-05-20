@@ -2,9 +2,6 @@ module Authentication
   module Providers
     # Apple authentication provider, uses omniauth-apple as backend
     class Apple < Provider
-      OFFICIAL_NAME = "Apple".freeze
-      CREATED_AT_FIELD = :apple_created_at
-      USERNAME_FIELD = :apple_username
       SETTINGS_URL = "https://appleid.apple.com/account/manage".freeze
 
       def new_user_data
@@ -33,18 +30,6 @@ module Authentication
         data = { apple_created_at: Time.zone.at(raw_info.auth_time) }
         data[:apple_username] = apple_username if apple_username
         data
-      end
-
-      def self.user_created_at_field
-        CREATED_AT_FIELD
-      end
-
-      def self.user_username_field
-        USERNAME_FIELD
-      end
-
-      def self.official_name
-        OFFICIAL_NAME
       end
 
       def self.settings_url

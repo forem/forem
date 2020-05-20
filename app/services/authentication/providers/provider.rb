@@ -39,15 +39,15 @@ module Authentication
       end
 
       def self.user_created_at_field
-        raise SubclassResponsibility
+        "#{provider_name}_created_at".to_sym
       end
 
       def self.user_username_field
-        raise SubclassResponsibility
+        "#{provider_name}_username".to_sym
       end
 
       def self.official_name
-        raise SubclassResponsibility
+        name.demodulize
       end
 
       def self.settings_url
