@@ -115,6 +115,24 @@ describe('<Help />', () => {
     expect(container2.find('.spec__basic-tag-input-help').exists()).toEqual(
       false,
     );
+
+    const container3 = shallow(
+      <Help
+        previewShowing={false}
+        helpFor="tag-input"
+        helpPosition={null}
+        version="v2"
+      />,
+    );
+    expect(
+      container3.find('.crayons-article-form__main__aside').text().length,
+    ).toBeGreaterThan(0);
+    expect(container3.find('.spec__basic-tag-input-help').exists()).toEqual(
+      true,
+    );
+    expect(container3.find('.spec__format-help').exists()).toEqual(false);
+    expect(container3.find('.spec__basic-editor-help').exists()).toEqual(false);
+    expect(container3.find('.spec__title-help').exists()).toEqual(false);
   });
 
   // TODO: test the modals
