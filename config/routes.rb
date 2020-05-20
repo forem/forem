@@ -389,7 +389,7 @@ Rails.application.routes.draw do
     get "/rails/mailers/*path" => "rails/mailers#preview"
   end
 
-  get "/embed/:embeddable" => "liquid_embeds#show"
+  get "/embed/:embeddable", to: "liquid_embeds#show", as: "liquid_embed"
 
   # serviceworkers
   get "/serviceworker" => "service_worker#index"
