@@ -1,12 +1,12 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
 import { deep, shallow } from 'preact-render-spy';
-import { Cover } from '../Cover';
+import { ArticleCoverImage } from '../ArticleCoverImage';
 
-describe('<Cover />', () => {
+describe('<ArticleCoverImage />', () => {
   it('renders properly', () => {
     const tree = render(
-      <Cover
+      <ArticleCoverImage
         mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
         onMainImageUrlChange={null}
       />,
@@ -16,7 +16,7 @@ describe('<Cover />', () => {
 
   it('shows the correct view when there is an image uploaded', () => {
     const container = shallow(
-      <Cover
+      <ArticleCoverImage
         mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
         onMainImageUrlChange={null}
       />,
@@ -32,21 +32,21 @@ describe('<Cover />', () => {
 
   it('shows the correct view when there is no image uploaded', () => {
     const container = shallow(
-      <Cover mainImage={null} onMainImageUrlChange={null} />,
+      <ArticleCoverImage mainImage={null} onMainImageUrlChange={null} />,
     );
     expect(
       container.find('.crayons-article-form__cover__image').exists(),
     ).toEqual(false);
     expect(container.find('.crayons-article-form__cover').text()).toEqual(
-      'Add a cover',
+      'Add a cover image',
     );
   });
 
   it('displays an upload error when necessary', () => {
     const context = shallow(
-      <Cover mainImage={null} onMainImageUrlChange={null} />,
+      <ArticleCoverImage mainImage={null} onMainImageUrlChange={null} />,
     );
-    expect(context.component()).toBeInstanceOf(Cover);
+    expect(context.component()).toBeInstanceOf(ArticleCoverImage);
     context.setState({
       uploadError: true,
       uploadErrorMessage: 'Some error message',
@@ -58,19 +58,19 @@ describe('<Cover />', () => {
     );
   });
 
-  it('should trigger onMainImageUrlChange when the Remove button is pressed', ()=> {
+  it('should trigger onMainImageUrlChange when the Remove button is pressed', () => {
     const onMainImageUrlChange = jest.fn();
 
-    const context = deep(<Cover
-      mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
-      onMainImageUrlChange={onMainImageUrlChange}
-    />);
+    const context = deep(
+      <ArticleCoverImage
+        mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
+        onMainImageUrlChange={onMainImageUrlChange}
+      />,
+    );
 
     context.find('.crayons-btn--ghost-danger').simulate('click', {
-      preventDefault: () => {}
+      preventDefault: () => {},
     });
     expect(onMainImageUrlChange).toHaveBeenCalled();
   });
-
-
 });

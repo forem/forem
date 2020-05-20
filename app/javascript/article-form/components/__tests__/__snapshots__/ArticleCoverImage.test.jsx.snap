@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Cover /> renders properly 1`] = `
+exports[`<ArticleCoverImage /> renders properly 1`] = `
 <div
   class="crayons-article-form__cover"
   role="presentation"
