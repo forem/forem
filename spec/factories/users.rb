@@ -124,12 +124,6 @@ FactoryBot.define do
       end
     end
 
-    trait :with_pro_membership do
-      after(:create) do |user|
-        create(:pro_membership, user: user)
-      end
-    end
-
     trait :tag_moderator do
       after(:create) do |user|
         tag = create(:tag)

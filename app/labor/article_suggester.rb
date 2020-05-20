@@ -31,7 +31,7 @@ class ArticleSuggester
     Article.published.where(featured: true).
       where.not(id: ids_to_ignore).
       order("hotness_score DESC").
-      includes(user: [:pro_membership]).
+      includes(:user).
       offset(rand(0..offsets[1])).
       first(max)
   end
@@ -40,7 +40,7 @@ class ArticleSuggester
     Article.published.tagged_with(article.tag_list, any: true).
       where.not(id: article.id).
       order("hotness_score DESC").
-      includes(user: [:pro_membership]).
+      includes(:user).
       offset(rand(0..offsets[0])).
       first(max)
   end

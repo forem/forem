@@ -1,12 +1,10 @@
-'use strict';
-
 /* global timestampToLocalDateTime */
 
 function initializeSettings() {
   // highlights organization secret on click
   const settingsOrgSecret = document.getElementById('settings-org-secret');
   if (settingsOrgSecret) {
-    settingsOrgSecret.addEventListener('click', event => {
+    settingsOrgSecret.addEventListener('click', (event) => {
       event.target.select();
     });
   }
@@ -28,21 +26,5 @@ function initializeSettings() {
       navigator.language,
       timeOptions,
     );
-  }
-
-  // asks for confirmation on activating pro membership
-  const createProForm = document.getElementById('new_pro_membership');
-  if (createProForm) {
-    createProForm.addEventListener('submit', event => {
-      event.preventDefault();
-
-      // eslint-disable-next-line no-alert
-      if (window.confirm('Are you sure?')) {
-        event.target.submit();
-        return true;
-      }
-
-      return false;
-    });
   }
 }

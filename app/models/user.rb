@@ -92,7 +92,6 @@ class User < ApplicationRecord
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
 
   has_one :counters, class_name: "UserCounter", dependent: :destroy
-  has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -292,8 +291,8 @@ class User < ApplicationRecord
   end
 
   def pro?
-    Rails.cache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
-      pro_membership&.active? || has_role?(:pro)
+    Rails.cache.fetch("user-#{id}/has_pro_role", expires_in: 200.hours) do
+      has_role?(:pro)
     end
   end
 
