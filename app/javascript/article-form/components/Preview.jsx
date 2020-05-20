@@ -3,6 +3,12 @@ import PropTypes from 'prop-types';
 import { Errors } from './Errors';
 
 function titleArea(previewResponse, articleState, errors) {
+  const titlePlaceholder = () => (
+    <div className="crayons-notice crayons-notice--danger mb-6">
+      Title is required...
+    </div>
+  );
+
   const tagArray = previewResponse.tags || articleState.tagList.split(', ');
   let tags = '';
   if (tagArray.length > 0 && tagArray[0].length > 0) {
@@ -30,7 +36,7 @@ function titleArea(previewResponse, articleState, errors) {
     }
   }
 
-  const previewTitle = previewResponse.title || articleState.title || '👀';
+  const previewTitle = previewResponse.title || articleState.title;
 
   return (
     <header className="crayons-article__header">
@@ -43,9 +49,14 @@ function titleArea(previewResponse, articleState, errors) {
         </div>
       )}
       {errors && <Errors errorsList={errors} />}
-      <h1 className="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title">
-        {previewTitle}
-      </h1>
+      {previewTitle ? (
+        <h1 className="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title">
+          {previewTitle}
+        </h1>
+      ) : (
+        titlePlaceholder()
+      )}
+
       <div className="crayons-article__tags">{tags}</div>
     </header>
   );

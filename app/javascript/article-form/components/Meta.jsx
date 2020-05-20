@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Cover } from './Cover';
+import { ArticleCoverImage } from './ArticleCoverImage';
 import { TagsField } from './TagsField';
 import { Title } from './Title';
 
@@ -15,7 +15,7 @@ export const Meta = ({
 }) => {
   return (
     <div>
-      <Cover
+      <ArticleCoverImage
         mainImage={mainImage}
         onMainImageUrlChange={onMainImageUrlChange}
       />

@@ -4,7 +4,7 @@ import { Button } from '@crayons';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 
-export class Cover extends Component {
+export class ArticleCoverImage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -93,9 +93,9 @@ export class Cover extends Component {
   }
 }
 
-Cover.propTypes = {
+ArticleCoverImage.propTypes = {
   mainImage: PropTypes.string.isRequired,
   onMainImageUrlChange: PropTypes.func.isRequired,
 };
 
-Cover.displayName = 'Cover';
+ArticleCoverImage.displayName = 'ArticleCoverImage';
