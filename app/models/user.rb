@@ -144,6 +144,7 @@ class User < ApplicationRecord
   validate :update_rate_limit
 
   alias_attribute :positive_reactions_count, :reactions_count
+  alias_attribute :public_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
 
   scope :with_this_week_comments, lambda { |number|
