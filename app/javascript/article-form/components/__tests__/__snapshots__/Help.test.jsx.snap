@@ -46,7 +46,7 @@ exports[`<Help /> renders properly 1`] = `
       .
     </div>
     <div
-      class="spec__format-help crayons-article-form__help"
+      class="spec__format-help crayons-article-form__help crayons-article-form__help--body"
     >
       <h4
         class="mb-2 fs-l"

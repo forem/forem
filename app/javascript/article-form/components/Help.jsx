@@ -41,7 +41,7 @@ export class Help extends Component {
 
   renderArticleFormTitleHelp = () => {
     return (
-      <div className="spec__title-help crayons-article-form__help">
+      <div className="spec__title-help crayons-article-form__help crayons-article-form__help--title">
         <h4 className="mb-2 fs-l">How to write a good post title?</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
@@ -56,7 +56,7 @@ export class Help extends Component {
 
   renderTagInputHelp = () => {
     return (
-      <div className="spec__basic-tag-input-help crayons-article-form__help">
+      <div className="spec__basic-tag-input-help crayons-article-form__help crayons-article-form__help--tags">
         <h4 className="mb-2 fs-l">Use appropriate tags</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>Tags will help the right people find your post.</li>
@@ -106,7 +106,7 @@ export class Help extends Component {
 
   renderFormatHelp = () => {
     return (
-      <div className="spec__format-help crayons-article-form__help">
+      <div className="spec__format-help crayons-article-form__help crayons-article-form__help--body">
         <h4 className="mb-2 fs-l">How to use editor?</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
