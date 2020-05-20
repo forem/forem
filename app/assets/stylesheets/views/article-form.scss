@@ -201,6 +201,25 @@
     position: relative;
     margin-bottom: calc(var(--su-7) + var(--layout-article-content-padding-y));
   }
+
+  &__help {
+    position: relative;
+    animation-name: slideIn;
+    animation-duration: 0.25s;
+    animation-iteration-count: 1;
+    animation-timing-function: var(--transition-func);
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        top: calc(var(--su-4) * -1);
+      }
+      to {
+        opacity: 1;
+        top: 0;
+      }
+    }
+  }
 }
 
 .crayons-article-form {
