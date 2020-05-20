@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
+      mount Flipper::UI.app(Flipper), at: "flipper"
     end
 
     resources :articles, only: %i[index show update]
