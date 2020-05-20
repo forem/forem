@@ -98,29 +98,22 @@ export function conductModeration(
 }
 
 export function getChannels(
-  query,
-  retrievalID,
-  searchType,
-  paginationNumber,
+  searchParams,
   additionalFilters,
   successCb,
   _failureCb,
 ) {
-  return createDataHash(
-    additionalFilters,
-    paginationNumber,
-    query,
-    searchType,
-  ).then((response) => {
+  return createDataHash(additionalFilters, searchParams).then((response) => {
     if (
-      retrievalID === null ||
-      response.result.filter((e) => e.chat_channel_id === retrievalID)
-        .length === 1
+      searchParams.retrievalID === null ||
+      response.result.filter(
+        (e) => e.chat_channel_id === searchParams.retrievalID,
+      ).length === 1
     ) {
-      successCb(response.result, query);
+      successCb(response.result, searchParams.query);
     } else {
       fetch(
-        `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`,
+        `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${searchParams.retrievalID}`,
         {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -130,7 +123,7 @@ export function getChannels(
         .then((individualResponse) => individualResponse.json())
         .then((json) => {
           response.result.unshift(json);
-          successCb(response.result, query);
+          successCb(response.result, searchParams.query);
         });
     }
   });

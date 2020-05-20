@@ -133,14 +133,13 @@ export default class Chat extends Component {
         channelTypeFilter === 'all'
           ? {}
           : { filters: `channel_type:${channelTypeFilter}` };
-      getChannels(
-        '',
-        activeChannelId,
-        '',
-        channelPaginationNum,
-        filters,
-        this.loadChannels,
-      );
+      const searchParams = {
+        query: '',
+        retrievalID: activeChannelId,
+        searchType: '',
+        paginationNumber: channelPaginationNum,
+      };
+      getChannels(searchParams, filters, this.loadChannels);
       getUnopenedChannelIds(this.markUnopenedChannelIds);
     }
     if (!isMobileDevice) {
@@ -527,14 +526,13 @@ export default class Chat extends Component {
         channelTypeFilter === 'all'
           ? {}
           : { filters: `channel_type:${channelTypeFilter}` };
-      getChannels(
-        filterQuery,
-        activeChannelId,
-        '',
-        channelPaginationNum,
-        filters,
-        this.loadPaginatedChannels,
-      );
+      const searchParams = {
+        query: filterQuery,
+        retrievalID: activeChannelId,
+        searchType: '',
+        paginationNumber: channelPaginationNum,
+      };
+      getChannels(searchParams, filters, this.loadPaginatedChannels);
     }
   };
 
@@ -1005,17 +1003,17 @@ export default class Chat extends Component {
       fetchingPaginatedChannels: false,
     });
     const filters = type === 'all' ? {} : { filters: `channel_type:${type}` };
+    const searchParams = {
+      query: filterQuery,
+      retrievalID: null,
+      searchType: '',
+      paginationNumber: 0,
+    };
     if (filterQuery && type !== 'direct') {
-      getChannels(
-        filterQuery,
-        null,
-        'discoverable',
-        0,
-        filters,
-        this.loadChannels,
-      );
+      searchParams.searchType = 'discoverable';
+      getChannels(searchParams, filters, this.loadChannels);
     } else {
-      getChannels(filterQuery, null, '', 0, filters, this.loadChannels);
+      getChannels(searchParams, filters, this.loadChannels);
     }
   };
 
@@ -1118,17 +1116,17 @@ export default class Chat extends Component {
       channelTypeFilter === 'all'
         ? {}
         : { filters: `channel_type:${channelTypeFilter}` };
+    const searchParams = {
+      query: e.target.value,
+      retrievalID: null,
+      searchType: '',
+      paginationNumber: 0,
+    };
     if (e.target.value) {
-      getChannels(
-        e.target.value,
-        null,
-        'discoverable',
-        0,
-        filters,
-        this.loadChannels,
-      );
+      searchParams.searchType = 'discoverable';
+      getChannels(searchParams, filters, this.loadChannels);
     } else {
-      getChannels(e.target.value, null, '', 0, filters, this.loadChannels);
+      getChannels(searchParams, filters, this.loadChannels);
     }
   };
 
@@ -1155,7 +1153,13 @@ export default class Chat extends Component {
         document.getElementById('chatchannelsearchbar').focus();
       }, 100);
     } else {
-      getChannels('', null, '', 0, '', this.loadChannels);
+      const searchParams = {
+        query: '',
+        retrievalID: null,
+        searchType: '',
+        paginationNumber: 0,
+      };
+      getChannels(searchParams, this.loadChannels);
       this.setState({ filterQuery: '' });
     }
     this.setState({ searchShowing: !this.state.searchShowing });

@@ -110,21 +110,16 @@ export const channelSorter = (channels, currentUserId, filterQuery) => {
   return { activeChannels, discoverableChannels };
 };
 
-export const createDataHash = (
-  additionalFilters,
-  paginationNumber,
-  query,
-  searchType,
-) => {
+export const createDataHash = (additionalFilters, searchParams) => {
   const dataHash = {};
   if (additionalFilters.filters) {
     const [key, value] = additionalFilters.filters.split(':');
     dataHash[key] = value;
   }
   dataHash.per_page = 30;
-  dataHash.page = paginationNumber;
-  dataHash.channel_text = query;
-  if (searchType === 'discoverable') {
+  dataHash.page = searchParams.paginationNumber;
+  dataHash.channel_text = searchParams.query;
+  if (searchParams.searchType === 'discoverable') {
     dataHash.user_id = 'all';
   }
   return fetchSearch('chat_channels', dataHash);
