@@ -452,6 +452,7 @@
       '0': 0,
       '25': 25%,
       '50': 50%,
+      '75': 75%,
       '100': 100%,
       'auto': auto,
       'full': 100vw,
@@ -460,20 +461,41 @@
     (),
     true
   ),
-  ('min-w', 'min-width', ('0': 0, '100': 100%), (), true),
+  ('min-w', 'min-width', ('0': 0, '100': 100%, 'unset': unset), (), true),
   (
     'h',
     'height',
-    ('0': 0, '25': 25%, '50': 50%, '100': 100%, 'auto': auto, 'full': 100vh),
+    (
+      '0': 0,
+      '25': 25%,
+      '50': 50%,
+      '75': 75%,
+      '100': 100%,
+      'auto': auto,
+      'full': 100vh,
+      'unset': unset
+    ),
     (),
     true
   ),
-  ('min-h', 'min-height', ('0': 0, '100': 100%, 'full': 100vh), (), true),
-  ('max-h', 'max-height', ('0': 0, '100': 100%, 'full': 100vh), (), true),
+  (
+    'min-h',
+    'min-height',
+    ('0': 0, '100': 100%, 'full': 100vh, 'unset': unset),
+    (),
+    true
+  ),
+  (
+    'max-h',
+    'max-height',
+    ('0': 0, '100': 100%, 'full': 100vh, 'unset': unset),
+    (),
+    true
+  ),
   (
     'max-w',
     'max-width',
-    ('0': 0, '25': 25%, '50': 50%, '75': 75%, '100': 100%),
+    ('0': 0, '25': 25%, '50': 50%, '75': 75%, '100': 100%, 'unset': unset),
     (),
     true
   ),
@@ -622,7 +644,13 @@
   (
     'align',
     'text-align',
-    ('left': left, 'center': center, 'right': right, 'justify': justify),
+    (
+      'left': left,
+      'center': center,
+      'right': right,
+      'justify': justify,
+      'unset': unset
+    ),
     (),
     true
   ),
@@ -643,9 +671,22 @@
   (
     'whitespace',
     'white-space',
-    ('normal': normal, 'nowrap': nowrap, 'pre': pre, 'prewrap': pre-wrap),
+    (
+      'normal': normal,
+      'nowrap': nowrap,
+      'pre': pre,
+      'prewrap': pre-wrap,
+      'unset': unset
+    ),
     (),
     true
+  ),
+  (
+    'scrolling',
+    '-webkit-overflow-scrolling',
+    ('touch': touch, 'auto': auto),
+    (),
+    false
   ),
   ('shadow', 'box-shadow', ('none': none), (), true),
   ('outline', 'outline', ('none': none), (), false),
