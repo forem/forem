@@ -870,7 +870,6 @@ DEPENDENCIES
   carrierwave-bombshelter (~> 0.2)
   cld (~> 0.8)
   cloudinary (~> 1.14)
-  concurrent-ruby (~> 1.1.6)
   counter_culture (~> 2.3)
   ddtrace (~> 0.35.2)
   derailed_benchmarks (~> 1.7)
