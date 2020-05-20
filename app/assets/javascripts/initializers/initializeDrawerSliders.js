@@ -1,7 +1,9 @@
 function mobileListenForFilterSelect(event) {
   const feedFilterSelect = document.getElementById('feed-filter-select');
   const changeFilter = (event) => {
-    window.location.href = event.target.value;
+    const url = event.target.value;
+    InstantClick.preload(url);
+    InstantClick.display(url);
   };
   if (feedFilterSelect) {
     feedFilterSelect.addEventListener('change', changeFilter);
