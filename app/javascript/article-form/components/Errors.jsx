@@ -1,17 +1,17 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-export const Errors = ({ errorsList }) => {
+export const ErrorList = ({ errors }) => {
   return (
     <div className="crayons-notice crayons-notice--danger mb-6">
       <h3 className="fs-l mb-2 fw-bold">Whoops, something went wrong:</h3>
       <ul className="list-disc pl-6">
-        {Object.keys(errorsList).map((key) => {
+        {Object.keys(errors).map((key) => {
           return (
             <li>
               {key}
               {`: `}
-              {errorsList[key]}
+              {errors[key]}
             </li>
           );
         })}
@@ -20,8 +20,8 @@ export const Errors = ({ errorsList }) => {
   );
 };
 
-Errors.propTypes = {
-  errorsList: PropTypes.objectOf(PropTypes.string).isRequired,
+ErrorList.propTypes = {
+  errors: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
-Errors.displayName = 'Errors';
+ErrorList.displayName = 'Errors';
