@@ -552,6 +552,7 @@ export default class Chat extends Component {
     const messageIsEmpty = targetValue.length === 0;
     const shiftPressed = e.shiftKey;
     const upArrowPressed = e.keyCode === 38;
+    const deletePressed = e.keyCode === 46;
 
     if (enterPressed) {
       if (showMemberlist) {
@@ -611,7 +612,7 @@ export default class Chat extends Component {
         expanded: window.innerWidth > 600,
       });
     }
-    if (upArrowPressed && messageIsEmpty) {
+    if (messageIsEmpty) {
       e.preventDefault();
 
       const messagesByCurrentUser = messages[activeChannelId].filter(
@@ -620,8 +621,13 @@ export default class Chat extends Component {
       const lastMessage =
         messagesByCurrentUser[messagesByCurrentUser.length - 1];
 
-      this.setState({ activeEditMessage: lastMessage });
-      this.setState({ startEditing: true });
+      if (upArrowPressed) {
+        this.setState({ activeEditMessage: lastMessage });
+        this.setState({ startEditing: true });
+      } else if (deletePressed) {
+        this.setState({ messageDeleteId: lastMessage.id });
+        this.setState({ showDeleteModal: true });
+      }
     }
   };
 
