@@ -21,5 +21,11 @@ Github gist here
 code block
 
 ```
-testsetsetsetsetsetset
+testsetsetsetsetsetset lets introduce some {{ chaos }}
+
+Here's more {{ what }}
 ```
+
+some more code and `{{ VARIABLE }}` and **_`{{ HTML }}`_**
+
+### `{{ how about this }}`

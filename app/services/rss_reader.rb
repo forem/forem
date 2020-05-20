@@ -4,12 +4,17 @@ class RssReader
   end
 
   def get_all_articles(force = true)
+    articles = []
+
     User.where.not(feed_url: [nil, ""]).find_each do |user|
       # unless forced, fetch sparingly
       next if force == false && (rand(2) == 1 || user.feed_fetched_at > 15.minutes.ago)
 
-      create_articles_for_user(user)
+      user_articles = create_articles_for_user(user)
+      articles.concat(user_articles) if user_articles
     end
+
+    articles
   end
 
   def fetch_user(user)
@@ -28,8 +33,11 @@ class RssReader
     user.update_column(:feed_fetched_at, Time.current)
     feed = fetch_rss(user.feed_url.strip)
 
+    articles = []
+
     feed.entries.reverse_each do |item|
-      make_from_rss_item(item, user, feed)
+      article = make_from_rss_item(item, user, feed)
+      articles.append(article)
     rescue StandardError => e
       log_error(
         "RssReaderError: occurred while creating article",
@@ -41,6 +49,8 @@ class RssReader
         },
       )
     end
+
+    articles
   rescue StandardError => e
     log_error(
       "RssReaderError: occurred while fetching feed",
@@ -80,6 +90,8 @@ class RssReader
     )
 
     Slack::Messengers::ArticleFetchedFeed.call(article: article)
+
+    article
   end
 
   def get_host_without_www(url)
