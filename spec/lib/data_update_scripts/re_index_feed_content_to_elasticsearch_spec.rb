@@ -1,7 +1,7 @@
 require "rails_helper"
-require Rails.root.join("lib/data_update_scripts/20200519142908_re_index_feed_content_to_elasticsearch.rb")
+require Rails.root.join("lib/data_update_scripts/20200519142908_re_index_feed_content_and_users_to_elasticsearch.rb")
 
-describe DataUpdateScripts::ReIndexFeedContentToElasticsearch, elasticsearch: "FeedContent" do
+describe DataUpdateScripts::ReIndexFeedContentAndUsersToElasticsearch, elasticsearch: "FeedContent" do
   after { Search::FeedContent.refresh_index }
 
   it "indexes feed content(articles, comments, podcast episodes) to Elasticsearch" do

@@ -1,5 +1,5 @@
 module DataUpdateScripts
-  class ReIndexFeedContentToElasticsearch
+  class ReIndexFeedContentAndUsersToElasticsearch
     def run
       Article.select(:id).in_batches(of: 100) do |batch|
         Search::BulkIndexWorker.set(queue: :default).perform_async(
