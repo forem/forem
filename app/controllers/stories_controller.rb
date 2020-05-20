@@ -363,7 +363,7 @@ class StoriesController < ApplicationController
       "sameAs": user_same_as,
       "image": ProfileImage.new(@user).get(width: 320),
       "name": @user.name,
-      "email": @user.email_public && @user.email.presence,
+      "email": @user.email_public ? @user.email : nil,
       "jobTitle": @user.employment_title.presence,
       "description": @user.summary.presence || "404 bio not found",
       "disambiguatingDescription": user_disambiguating_description,
