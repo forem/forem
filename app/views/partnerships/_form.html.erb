@@ -10,86 +10,14 @@
     </p>
     <a href="/settings/organization">Create Organization</a>
   </div>
-<% elsif %w[silver bronze tag].include?(level) %>
-  <% organizations.find_each do |org| %>
-    <% if !org.enough_credits?(Sponsorship::CREDITS[level]) %>
-      <div class="partner-credits-explainer">
-        <h4>What next?</h4>
-        <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" /> Purchase Credits for @<%= org.slug %></h3>
-        <% if org.credits.unspent.size > 0 %>
-          <div style="font-size: 0.88em;">
-            <em>This organization account has <%= org.credits.unspent.size %> credits available</em>
-          </div>
-        <% end %>
-        <p>
-          <em>Credits are your wallet for flexibly managing all your <%= community_name %> partnerships.</em>
-        </p>
-        <p>
-          Credits can be purchased via company credit card, and once in your account you can use them for different promotions.
-        </p>
-        <p>
-          Credits can be purchased in bulk for discounts on all future sponsorships and partnerships, or in small batches to test the waters.
-        </p>
-        <a href="/credits/purchase?organization_id=<%= org.id %>" data-no-instant>Get Credits</a>
-      </div>
-    <% else %>
-      <div class="partner-credits-explainer">
-        <% if Sponsorship::METAL_LEVELS.include?(level) %>
-          <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" />@<%= org.slug %></h3>
-          <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
-          <% sponsorships = org.sponsorships.unexpired.where(level: Sponsorship::METAL_LEVELS) %>
-          <% level_sponsorship = sponsorships.where(level: level).take %>
-          <% if level_sponsorship %>
-            <div class="partner-explainer-notice">
-              🎉 You are Subscribed as a <%= level.capitalize %> Sponsor.
-              <% if level_sponsorship.status == "pending" %>
-                <br /><br />Your placement is <em>pending</em>.
-              <% end %>
-            </div>
-          <% elsif sponsorships.present? %>
-            <div class="partner-explainer-notice">
-              <%# this should never happen but better safe than sorry %>
-              <% sponsorships.each do |sponsorship| %>
-              🛑 You are already subscribed as a <%= sponsorship.level %> sponsor. Contact <%= email_link(:business) %>to change plans.
-              <% end %>
-            </div>
-          <% else %>
-            <h2><%= level.capitalize %> Sponsor Subscription</h2>
-            <%= form_tag "/partnerships" do %>
-              <%= hidden_field_tag(:organization_id, org.id) %>
-              <%= hidden_field_tag(:level, level) %>
-              <h4>Sponsorship message/brand instructions:</h4>
-              <%= text_area_tag(:instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across. #{community_name} editors will use these guidelines contextually depending on sponsorship.") %>
-              <button>Subscribe for <%= Sponsorship::CREDITS[level] %> credits</button>
-            <% end %>
-          <% end %>
-        <% elsif level == "tag" %>
-          <h3><img src="<%= ProfileImage.new(org).get(width: 90) %>" />@<%= org.slug %></h3>
-          <div style="font-size: 0.88em;"><em>This organization account has <%= org.credits.unspent.size %> credits available</em></div>
-          <br />
-          <%= form_tag "/partnerships" do %>
-            <%= hidden_field_tag(:organization_id, org.id) %>
-            <%= hidden_field_tag(:level, level) %>
-            <h4>Sponsorship message/brand instructions:</h4>
-            <%= text_area_tag(:instructions, nil, placeholder: "Include brand guideline links and detailed instructions about the message you are trying to get across.  #{community_name} editors will use these guidelines contextually depending on sponsorship.") %>
-            <% tag_sponsorships = org.sponsorships.unexpired.where(level: :tag) %>
-            <% tag_sponsorships.find_each do |sponsorship| %>
-              <div class="partner-explainer-notice">
-                🎉 You are Subscribed as the sponsor of #<%= sponsorship.sponsorable.name %>.
-              </div>
-            <% end %>
-            <% if tag_sponsorships.any? %>
-              <h4>Sponsor another tag:</h4>
-            <% end %>
-            <% sponsored_tags = org.sponsorships.unexpired.includes(:sponsorable).where(level: :tag).map { |sp| sp.sponsorable.name } %>
-            <% tag_names = Tag.where(supported: true).where.not(name: sponsored_tags).pluck(:name) %>
-            <%= select_tag "tag_name", options_for_select(tag_names) %>
-            <button>Sponsor Tag for <%= Sponsorship::CREDITS[:tag] %> credits</button>
-          <% end %>
-        <% end %>
-      </div>
-    <% end %>
-  <% end %>
-<% else %>
+<% elsif %w[devrel media gold].include?(level) %>
   <h2>Contact <%= email_link(:business) %> to sign up</h1>
+<% elsif level == "tag" %>
+  <% organizations.find_each do |org| %>
+    <%= render partial: "tag_form", locals: { org: org, level: level } %>
+  <% end %>
+<% elsif %w[silver bronze].include?(level) %>
+  <% organizations.find_each do |org| %>
+    <%= render partial: "metal_level_form", locals: { org: org, level: level } %>
+  <% end %>
 <% end %>
