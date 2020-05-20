@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { deep, shallow } from 'preact-render-spy';
 import { Cover } from '../Cover';
 
 describe('<Cover />', () => {
@@ -57,4 +57,20 @@ describe('<Cover />', () => {
       'Some error message',
     );
   });
+
+  it('should trigger onMainImageUrlChange when the Remove button is pressed', ()=> {
+    const onMainImageUrlChange = jest.fn();
+
+    const context = deep(<Cover
+      mainImage="/i/r5tvutqpl7th0qhzcw7f.png"
+      onMainImageUrlChange={onMainImageUrlChange}
+    />);
+
+    context.find('.crayons-btn--ghost-danger').simulate('click', {
+      preventDefault: () => {}
+    });
+    expect(onMainImageUrlChange).toHaveBeenCalled();
+  });
+
+
 });

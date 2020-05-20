@@ -27,20 +27,6 @@ export class Cover extends Component {
     }
   };
 
-  handleInsertionImageUpload = (e) => {
-    this.clearUploadError();
-    const validFileInputs = validateFileInputs();
-
-    if (validFileInputs) {
-      const payload = { image: e.target.files };
-      generateMainImage(
-        payload,
-        this.handleInsertImageUploadSuccess,
-        this.onUploadError,
-      );
-    }
-  };
-
   clearUploadError = () => {
     this.setState({
       uploadError: false,
