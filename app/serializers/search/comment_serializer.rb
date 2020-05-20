@@ -4,7 +4,7 @@ module Search
 
     attribute :id, &:search_id
 
-    attributes :path, :positive_reactions_count
+    attributes :path, :positive_reactions_count, :public_reactions_count
 
     attribute :body_text, &:body_markdown
     attribute :class_name do |comment|

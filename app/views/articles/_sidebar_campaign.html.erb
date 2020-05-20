@@ -1,5 +1,9 @@
 <div class="widget">
-  <% if SiteConfig.campaign_sidebar_image %>
+  <% if SiteConfig.campaign_sidebar_image && SiteConfig.campaign_url %>
+    <a href="<%= SiteConfig.campaign_url %>">
+      <img src="<%= SiteConfig.campaign_sidebar_image %>" class="widget-image" style="height:116px;" />
+    </a>
+  <% elsif SiteConfig.campaign_sidebar_image %>
     <img src="<%= SiteConfig.campaign_sidebar_image %>" class="widget-image" style="height:116px;" />
   <% end %>
   <header>

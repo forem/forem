@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, Component } from 'preact';
 
 import { action } from '@storybook/addon-actions';
 import { SearchForm } from '..';
@@ -12,12 +12,26 @@ const commonProps = {
   },
 };
 
+class FocusedForm extends Component {
+  componentDidMount() {
+    document.getElementById('nav-search').focus();
+  }
+
+  render() {
+    // Disabling prop types checks here because this is simply a wrapper
+    // class for a Storybook story.
+    // eslint-disable-next-line react/destructuring-assignment, react/prop-types
+    return this.props.children[0];
+  }
+}
+
 export default {
   component: SearchForm,
   title: 'App Components/Search/Search Form',
 };
 
 export const NoSearchTerm = () => <SearchForm {...commonProps} searchTerm="" />;
+
 NoSearchTerm.story = {
   name: 'no search term',
 };
@@ -25,6 +39,17 @@ NoSearchTerm.story = {
 export const WithSearchTerm = () => (
   <SearchForm {...commonProps} searchTerm="Hello" />
 );
-NoSearchTerm.story = {
+
+WithSearchTerm.story = {
   name: 'with search term',
+};
+
+export const WithFocus = () => (
+  <FocusedForm>
+    <SearchForm {...commonProps} searchTerm="Hello" />
+  </FocusedForm>
+);
+
+WithFocus.story = {
+  name: 'with focus',
 };

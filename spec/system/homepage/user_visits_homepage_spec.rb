@@ -8,6 +8,10 @@ RSpec.describe "User visits a homepage", type: :system do
   context "when user hasn't logged in" do
     before { visit "/" }
 
+    it "renders the page", js: true, percy: true do
+      Percy.snapshot(page, name: "Visits homepage: logged out user")
+    end
+
     it "shows the sign-in block" do
       within ".signin-cta-widget" do
         expect(page).to have_text("Sign In With Twitter")
@@ -40,8 +44,13 @@ RSpec.describe "User visits a homepage", type: :system do
       sign_in(user)
     end
 
+    it "renders the page", js: true, percy: true do
+      Percy.snapshot(page, name: "Visits homepage: logged in user")
+    end
+
     it "offers to follow tags", js: true do
       visit "/"
+
       within("#sidebar-nav-default-tags") do
         expect(page).to have_text("Follow tags to improve your feed")
       end

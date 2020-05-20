@@ -13,6 +13,7 @@ addons:
   artifacts:
     paths:
       - $(ls tmp/screenshots/*.png | tr "\n" ":")
+      - $(ls tmp/csvs/*.csv | tr "\n" ":")
     debug: true
 services:
   - redis-server
@@ -58,7 +59,7 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'bundle exec rspec spec --color --tty'
+  - 'bundle exec rspec spec --color --tty --format progress'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
   - 'yarn test --colors'
