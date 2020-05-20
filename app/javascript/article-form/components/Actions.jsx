@@ -85,6 +85,7 @@ export class Actions extends Component {
               variant="ghost"
               contentType="icon"
               icon={Icon}
+              title="Post options"
               onClick={this.toggleMoreConfig}
             />
             {moreConfigShowing && (

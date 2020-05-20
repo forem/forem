@@ -16,7 +16,7 @@ export const Close = () => {
 
   return (
     <div className="crayons-article-form__close">
-      <Button variant="ghost" contentType="icon" url="/" tagName="a" icon={Icon} />
+      <Button variant="ghost" contentType="icon" url="/" tagName="a" icon={Icon} title="Close the editor" />
     </div>
   );
 };

@@ -67,6 +67,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
       <a
         class="crayons-btn crayons-btn--ghost crayons-btn--icon"
         href="/"
+        title="Close the editor"
       >
         <svg
           class="crayons-icon"
@@ -260,6 +261,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
         class="crayons-btn crayons-btn--ghost crayons-btn--icon"
         disabled={false}
         onClick={[Function]}
+        title="Post options"
         type="button"
       >
         <svg

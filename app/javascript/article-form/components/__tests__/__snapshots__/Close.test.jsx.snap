@@ -7,6 +7,7 @@ exports[`<Close /> renders properly 1`] = `
   <a
     class="crayons-btn crayons-btn--ghost crayons-btn--icon"
     href="/"
+    title="Close the editor"
   >
     <svg
       class="crayons-icon"
