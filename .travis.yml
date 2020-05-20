@@ -13,6 +13,7 @@ addons:
   artifacts:
     paths:
       - $(ls tmp/screenshots/*.png | tr "\n" ":")
+      - $(ls tmp/csvs/*.csv | tr "\n" ":")
     debug: true
 services:
   - redis-server
@@ -30,6 +31,8 @@ env:
     - SENDGRID_PASSWORD_ACCEL=dummy
     - HEROKU_APP_URL=practicaldev.herokuapp.com
     - SECRET_KEY_BASE=dummydummydummy
+    - GITHUB_KEY=dummy
+    - GITHUB_SECRET=dummy
 branches:
   only:
     - master
@@ -56,7 +59,7 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'bundle exec rspec spec --color --tty'
+  - 'npx percy exec -- bundle exec rspec spec --color --tty --format progress'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
   - 'yarn test --colors'

@@ -8,47 +8,33 @@ class Credit < ApplicationRecord
   scope :spent, -> { where(spent: true) }
   scope :unspent, -> { where(spent: false) }
 
-  counter_culture :user,
-                  column_name: proc { |model| "#{model.spent ? 'spent' : 'unspent'}_credits_count" },
-                  column_names: {
-                    ["credits.spent = ?", true] => "spent_credits_count",
-                    ["credits.spent = ?", false] => "unspent_credits_count",
-                    ["credits.id > ?", 0] => "credits_count"
-                  }
-  counter_culture :organization,
-                  column_name: proc { |model| "#{model.spent ? 'spent' : 'unspent'}_credits_count" },
-                  column_names: {
-                    ["credits.spent = ?", true] => "spent_credits_count",
-                    ["credits.spent = ?", false] => "unspent_credits_count",
-                    ["credits.id > ?", 0] => "credits_count"
-                  }
-
-  def self.add_to(user, amount)
-    credit_objects = Array.new(amount) { Credit.new(user_id: user.id) }
-    Credit.import credit_objects
-    Credit.update_cache_columns(user)
+  %i[user organization].each do |type|
+    counter_culture type,
+                    column_name: ->(model) { "#{model.spent ? 'spent' : 'unspent'}_credits_count" },
+                    column_names: {
+                      ["credits.spent = ?", true] => "spent_credits_count",
+                      ["credits.spent = ?", false] => "unspent_credits_count",
+                      ["credits.id > ?", 0] => "credits_count"
+                    }
   end
 
-  def self.remove_from(user, amount)
-    user.credits.where(spent: false).limit(amount).delete_all
-    Credit.update_cache_columns(user)
+  def self.add_to(user_or_org, amount)
+    association_id = "#{user_or_org.class.name.underscore}_id"
+    credits = Array.new(amount) { new(association_id => user_or_org.id) }
+    import(credits)
+    update_cache_columns(user_or_org)
   end
 
-  def self.add_to_org(org, amount)
-    credit_objects = Array.new(amount) { Credit.new(organization_id: org.id) }
-    Credit.import credit_objects
-    Credit.update_cache_columns(org)
-  end
-
-  def self.remove_from_org(org, amount)
-    org.credits.where(spent: false).limit(amount).delete_all
-    Credit.update_cache_columns(org)
+  def self.remove_from(user_or_org, amount)
+    user_or_org.credits.where(spent: false).limit(amount).delete_all
+    update_cache_columns(user_or_org)
   end
 
   def self.update_cache_columns(user_or_org)
-    user_or_org.credits_count = user_or_org.credits.size
-    user_or_org.spent_credits_count = user_or_org.credits.where(spent: true).size
-    user_or_org.unspent_credits_count = user_or_org.credits.where(spent: false).size
-    user_or_org.save
+    user_or_org.update(
+      credits_count: user_or_org.credits.size,
+      spent_credits_count: user_or_org.credits.where(spent: true).size,
+      unspent_credits_count: user_or_org.credits.where(spent: false).size,
+    )
   end
 end

@@ -79,23 +79,25 @@ RSpec.describe GithubRepo, type: :model do
   end
 
   describe "::update_to_latest" do
-    let(:my_ocktokit_client) { instance_double(Octokit::Client) }
-    let(:url_of_repos_without_github_id) { Faker::Internet.url }
-    let(:repo_without_github_id) do
-      create(:github_repo, user_id: user.id, url: url_of_repos_without_github_id)
+    let(:fake_github_client) do
+      Class.new(Github::OauthClient) do
+        def repository(name); end
+      end
     end
+
     let(:stubbed_github_repo) do
       OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: repo.url))
     end
+    let(:github_client) { instance_double(fake_github_client, repository: stubbed_github_repo) }
 
     before do
-      repo.save
-      allow(Octokit::Client).to receive(:new).and_return(my_ocktokit_client)
-      allow(my_ocktokit_client).to receive(:repo) { stubbed_github_repo }
+      allow(Github::OauthClient).to receive(:new).and_return(github_client)
     end
 
-    it "updates all repo" do
+    it "updates all repositories" do
+      repo.save
       old_updated_at = repo.updated_at
+
       Timecop.freeze(3.days.from_now) do
         described_class.update_to_latest
         expect(old_updated_at).not_to eq(described_class.find(repo.id).updated_at)

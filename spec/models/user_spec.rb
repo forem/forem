@@ -141,7 +141,6 @@ RSpec.describe User, type: :model do
       end
 
       it { is_expected.to have_one(:counters).class_name("UserCounter").dependent(:destroy) }
-      it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
       it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
       it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
@@ -206,9 +205,25 @@ RSpec.describe User, type: :model do
       limiter = RateLimitChecker.new(user)
       allow(user).to receive(:rate_limiter).and_return(limiter)
       allow(limiter).to receive(:limit_by_action).and_return(true)
+      allow(limiter).to receive(:track_limit_by_action)
       user.update(email: "new_email@yo.com")
+
       expect(user).not_to be_valid
       expect(user.errors[:email].to_s).to include("confirmation could not be sent. Rate limit reached")
+      expect(limiter).to have_received(:track_limit_by_action).with(:send_email_confirmation).twice
+    end
+
+    it "validates update_rate_limit for existing user" do
+      user = create(:user)
+      limiter = RateLimitChecker.new(user)
+      allow(user).to receive(:rate_limiter).and_return(limiter)
+      allow(limiter).to receive(:limit_by_action).and_return(true)
+      allow(limiter).to receive(:track_limit_by_action)
+      user.update(articles_count: 5)
+
+      expect(user).not_to be_valid
+      expect(user.errors[:base].to_s).to include("could not be saved. Rate limit reached")
+      expect(limiter).to have_received(:track_limit_by_action).with(:user_update).twice
     end
   end
 
@@ -959,7 +974,7 @@ RSpec.describe User, type: :model do
 
   describe "theming properties" do
     it "creates proper body class with defaults" do
-      expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+      expect(user.decorate.config_body_class).to eq("default default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
     end
 
     it "determines dark theme if night theme" do
@@ -979,22 +994,22 @@ RSpec.describe User, type: :model do
 
     it "creates proper body class with sans serif config" do
       user.config_font = "sans_serif"
-      expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+      expect(user.decorate.config_body_class).to eq("default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
     end
 
     it "creates proper body class with open dyslexic config" do
       user.config_font = "open_dyslexic"
-      expect(user.decorate.config_body_class).to eq("default open-dyslexic-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+      expect(user.decorate.config_body_class).to eq("default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
     end
 
     it "creates proper body class with night theme" do
       user.config_theme = "night_theme"
-      expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+      expect(user.decorate.config_body_class).to eq("night-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
     end
 
     it "creates proper body class with pink theme" do
       user.config_theme = "pink_theme"
-      expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+      expect(user.decorate.config_body_class).to eq("pink-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
     end
   end
 
@@ -1051,19 +1066,6 @@ RSpec.describe User, type: :model do
     it "returns true if the user has the pro role" do
       user.add_role(:pro)
       expect(user.pro?).to be(true)
-    end
-
-    it "returns true if the user has an active pro membership" do
-      user.pro_membership = build(:pro_membership, status: "active")
-      expect(user.pro?).to be(true)
-    end
-
-    it "returns false if the user has an expired pro membership" do
-      Timecop.freeze(Time.current) do
-        membership = create(:pro_membership, user: user)
-        membership.expire!
-        expect(user.pro?).to be(false)
-      end
     end
   end
 

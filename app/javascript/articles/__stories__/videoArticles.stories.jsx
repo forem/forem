@@ -6,7 +6,6 @@ import {
   videoArticle,
   assetPath,
 } from '../__tests__/utilities/articleUtilities';
-import { articleDecorator } from './articleDecorator';
 
 import '../../../assets/stylesheets/articles.scss';
 
@@ -22,7 +21,7 @@ const commonProps = {
 
 export default {
   title: 'App Components/Article/Video',
-  decorators: [withKnobs, articleDecorator],
+  decorators: [withKnobs],
 };
 
 export const Default = () => (

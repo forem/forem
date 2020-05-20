@@ -31,8 +31,8 @@ import ActionMessage from './actionMessage';
 import Content from './content';
 import VideoContent from './videoContent';
 
-import setupPusher from '../src/utils/pusher';
-import debounceAction from '../src/utils/debounceAction';
+import { setupPusher } from '../utilities/connect';
+import debounceAction from '../utilities/debounceAction';
 
 export default class Chat extends Component {
   static propTypes = {
@@ -1141,7 +1141,7 @@ export default class Chat extends Component {
 
   toggleSearchShowing = () => {
     if (!this.state.searchShowing) {
-      setTimeout(function () {
+      setTimeout(() => {
         document.getElementById('chatchannelsearchbar').focus();
       }, 100);
     } else {

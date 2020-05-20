@@ -1,0 +1,298 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: https://api.twitter.com/oauth2/token
+    body:
+      encoding: UTF-8
+      string: grant_type=client_credentials
+    headers:
+      User-Agent:
+      - TwitterRubyGem/7.0.0 (http://localhost:3000)
+      Accept:
+      - "*/*"
+      Connection:
+      - close
+      Content-Type:
+      - application/x-www-form-urlencoded
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      Connection:
+      - close
+      Content-Disposition:
+      - attachment; filename=json.json
+      Content-Length:
+      - '153'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Mon, 18 May 2020 14:59:16 GMT
+      Expires:
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      Last-Modified:
+      - Mon, 18 May 2020 14:59:16 GMT
+      Ml:
+      - A
+      Pragma:
+      - no-cache
+      Server:
+      - tsa_o
+      Status:
+      - 200 OK
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Connection-Hash:
+      - 0ed066348bd2a09f1a4ab67364222291
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Response-Time:
+      - '124'
+      X-Transaction:
+      - 00bc6963002453ac
+      X-Tsa-Request-Body-Time:
+      - '0'
+      X-Twitter-Response-Tags:
+      - BouncerCompliant
+      X-Ua-Compatible:
+      - IE=edge,chrome=1
+      X-Xss-Protection:
+      - '0'
+    body:
+      encoding: UTF-8
+      string: '{"token_type":"bearer","access_token":"ACCESS_TOKEN"}'
+    http_version: null
+  recorded_at: Mon, 18 May 2020 14:59:16 GMT
+- request:
+    method: get
+    uri: https://api.twitter.com/1.1/statuses/show/1262395854469677058.json?tweet_mode=extended
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - TwitterRubyGem/7.0.0 (http://localhost:3000)
+      Connection:
+      - close
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      Connection:
+      - close
+      Content-Disposition:
+      - attachment; filename=json.json
+      Content-Length:
+      - '5843'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Mon, 18 May 2020 14:59:16 GMT
+      Expires:
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      Last-Modified:
+      - Mon, 18 May 2020 14:59:16 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - tsa_o
+      Status:
+      - 200 OK
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Access-Level:
+      - read
+      X-Connection-Hash:
+      - f049dc981bb59177959f2e672d20ab06
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Rate-Limit-Limit:
+      - '900'
+      X-Rate-Limit-Remaining:
+      - '896'
+      X-Rate-Limit-Reset:
+      - '1589814001'
+      X-Response-Time:
+      - '142'
+      X-Transaction:
+      - '009e83bf00c3d0db'
+      X-Twitter-Response-Tags:
+      - BouncerCompliant
+      X-Xss-Protection:
+      - '0'
+    body:
+      encoding: UTF-8
+      string: '{"created_at":"Mon May 18 14:53:20 +0000 2020","id":1262395854469677058,"id_str":"1262395854469677058","full_text":"RT
+        @ThePracticalDev: \"The goal of this guide is to provide enough knowledge
+        to be conversational, as well as to give a strong jumping off p\u2026","truncated":false,"display_text_range":[0,140],"entities":{"hashtags":[],"symbols":[],"user_mentions":[{"screen_name":"ThePracticalDev","name":"DEV
+        Community \ud83d\udc69\u200d\ud83d\udcbb\ud83d\udc68\u200d\ud83d\udcbb","id":2735246778,"id_str":"2735246778","indices":[3,19]}],"urls":[]},"source":"\u003ca
+        href=\"http:\/\/twitter.com\/download\/iphone\" rel=\"nofollow\"\u003eTwitter
+        for iPhone\u003c\/a\u003e","in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":815325836,"id_str":"815325836","name":"Great","screen_name":"01Blows","location":"","description":"","url":null,"entities":{"description":{"urls":[]}},"protected":false,"followers_count":28,"friends_count":106,"listed_count":14,"created_at":"Mon
+        Sep 10 14:20:14 +0000 2012","favourites_count":62,"utc_offset":null,"time_zone":null,"geo_enabled":false,"verified":false,"statuses_count":2686,"lang":null,"contributors_enabled":false,"is_translator":false,"is_translation_enabled":false,"profile_background_color":"C0DEED","profile_background_image_url":"http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_image_url_https":"https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_tile":false,"profile_image_url":"http:\/\/pbs.twimg.com\/profile_images\/2970316093\/4b4015e8e6fe419e375d1e22d3349889_normal.jpeg","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/2970316093\/4b4015e8e6fe419e375d1e22d3349889_normal.jpeg","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/815325836\/1355402666","profile_link_color":"1DA1F2","profile_sidebar_border_color":"C0DEED","profile_sidebar_fill_color":"DDEEF6","profile_text_color":"333333","profile_use_background_image":true,"has_extended_profile":false,"default_profile":true,"default_profile_image":false,"following":null,"follow_request_sent":null,"notifications":null,"translator_type":"none"},"geo":null,"coordinates":null,"place":null,"contributors":null,"retweeted_status":{"created_at":"Mon
+        May 18 14:32:00 +0000 2020","id":1262390485399805953,"id_str":"1262390485399805953","full_text":"\"The
+        goal of this guide is to provide enough knowledge to be conversational, as
+        well as to give a strong jumping off point if you were to start learning TypeScript
+        on the job.\"\n\n\u007b author: @shane__lonergan \u007d #DEVCommunity https:\/\/t.co\/K5V4s91cJy","truncated":false,"display_text_range":[0,244],"entities":{"hashtags":[{"text":"DEVCommunity","indices":[207,220]}],"symbols":[],"user_mentions":[{"screen_name":"shane__lonergan","name":"Shane
+        Lonergan \ud83c\udfa4\u2328\ufe0f","id":1164944561304690688,"id_str":"1164944561304690688","indices":[188,204]}],"urls":[{"url":"https:\/\/t.co\/K5V4s91cJy","expanded_url":"https:\/\/dev.to\/shane__lonergan\/typescript-in-a-weekend-a-crash-course-2171","display_url":"dev.to\/shane__lonerga\u2026","indices":[221,244]}]},"source":"\u003ca
+        href=\"https:\/\/buffer.com\" rel=\"nofollow\"\u003eBuffer\u003c\/a\u003e","in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":2735246778,"id_str":"2735246778","name":"DEV
+        Community \ud83d\udc69\u200d\ud83d\udcbb\ud83d\udc68\u200d\ud83d\udcbb","screen_name":"ThePracticalDev","location":"","description":"Great
+        posts from the amazing https:\/\/t.co\/xHvFQQ9jeO community, with some opinion
+        and humor mixed in. Created by @bendhalpern. Join https:\/\/t.co\/xHvFQQ9jeO!","url":"https:\/\/t.co\/lhcCPP1ReQ","entities":{"url":{"urls":[{"url":"https:\/\/t.co\/lhcCPP1ReQ","expanded_url":"http:\/\/dev.to","display_url":"dev.to","indices":[0,23]}]},"description":{"urls":[{"url":"https:\/\/t.co\/xHvFQQ9jeO","expanded_url":"https:\/\/dev.to","display_url":"dev.to","indices":[29,52]},{"url":"https:\/\/t.co\/xHvFQQ9jeO","expanded_url":"https:\/\/dev.to","display_url":"dev.to","indices":[132,155]}]}},"protected":false,"followers_count":191666,"friends_count":2311,"listed_count":3793,"created_at":"Fri
+        Aug 15 19:11:17 +0000 2014","favourites_count":48516,"utc_offset":null,"time_zone":null,"geo_enabled":false,"verified":true,"statuses_count":38690,"lang":null,"contributors_enabled":false,"is_translator":false,"is_translation_enabled":false,"profile_background_color":"131516","profile_background_image_url":"http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_image_url_https":"https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_tile":true,"profile_image_url":"http:\/\/pbs.twimg.com\/profile_images\/1253165670935773185\/SkSoEQL3_normal.jpg","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1253165670935773185\/SkSoEQL3_normal.jpg","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/2735246778\/1557714134","profile_link_color":"14BD7B","profile_sidebar_border_color":"000000","profile_sidebar_fill_color":"000000","profile_text_color":"000000","profile_use_background_image":true,"has_extended_profile":false,"default_profile":false,"default_profile_image":false,"following":null,"follow_request_sent":null,"notifications":null,"translator_type":"none"},"geo":null,"coordinates":null,"place":null,"contributors":null,"is_quote_status":false,"retweet_count":9,"favorite_count":19,"favorited":false,"retweeted":false,"possibly_sensitive":false,"possibly_sensitive_appealable":false,"lang":"en"},"is_quote_status":false,"retweet_count":9,"favorite_count":0,"favorited":false,"retweeted":false,"lang":"en"}'
+    http_version: null
+  recorded_at: Mon, 18 May 2020 14:59:16 GMT
+- request:
+    method: post
+    uri: https://api.twitter.com/oauth2/token
+    body:
+      encoding: UTF-8
+      string: grant_type=client_credentials
+    headers:
+      User-Agent:
+      - TwitterRubyGem/7.0.0 (http://localhost:3000)
+      Accept:
+      - "*/*"
+      Connection:
+      - close
+      Content-Type:
+      - application/x-www-form-urlencoded
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      Connection:
+      - close
+      Content-Disposition:
+      - attachment; filename=json.json
+      Content-Length:
+      - '153'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Mon, 18 May 2020 14:59:17 GMT
+      Expires:
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      Last-Modified:
+      - Mon, 18 May 2020 14:59:17 GMT
+      Ml:
+      - A
+      Pragma:
+      - no-cache
+      Server:
+      - tsa_o
+      Status:
+      - 200 OK
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Connection-Hash:
+      - eeef3e85c1fa03a5d4e20d85d95cc05e
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - DENY
+      X-Response-Time:
+      - '115'
+      X-Transaction:
+      - 00d5cdaa005fc247
+      X-Tsa-Request-Body-Time:
+      - '1'
+      X-Twitter-Response-Tags:
+      - BouncerCompliant
+      X-Ua-Compatible:
+      - IE=edge,chrome=1
+      X-Xss-Protection:
+      - '0'
+    body:
+      encoding: UTF-8
+      string: '{"token_type":"bearer","access_token":"ACCESS_TOKEN"}'
+    http_version: null
+  recorded_at: Mon, 18 May 2020 14:59:17 GMT
+- request:
+    method: get
+    uri: https://api.twitter.com/1.1/statuses/show/1262390485399805953.json
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - TwitterRubyGem/7.0.0 (http://localhost:3000)
+      Connection:
+      - close
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Cache-Control:
+      - no-cache, no-store, must-revalidate, pre-check=0, post-check=0
+      Connection:
+      - close
+      Content-Disposition:
+      - attachment; filename=json.json
+      Content-Length:
+      - '3038'
+      Content-Type:
+      - application/json;charset=utf-8
+      Date:
+      - Mon, 18 May 2020 14:59:17 GMT
+      Expires:
+      - Tue, 31 Mar 1981 05:00:00 GMT
+      Last-Modified:
+      - Mon, 18 May 2020 14:59:17 GMT
+      Pragma:
+      - no-cache
+      Server:
+      - tsa_o
+      Status:
+      - 200 OK
+      Strict-Transport-Security:
+      - max-age=631138519
+      X-Access-Level:
+      - read
+      X-Connection-Hash:
+      - fd489dd89ded9e04dc9df080d7cbc52d
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Rate-Limit-Limit:
+      - '900'
+      X-Rate-Limit-Remaining:
+      - '895'
+      X-Rate-Limit-Reset:
+      - '1589814001'
+      X-Response-Time:
+      - '130'
+      X-Transaction:
+      - 00dc05fb002b905b
+      X-Twitter-Response-Tags:
+      - BouncerCompliant
+      X-Xss-Protection:
+      - '0'
+    body:
+      encoding: UTF-8
+      string: '{"created_at":"Mon May 18 14:32:00 +0000 2020","id":1262390485399805953,"id_str":"1262390485399805953","text":"\"The
+        goal of this guide is to provide enough knowledge to be conversational, as
+        well as to give a strong jumping of\u2026 https:\/\/t.co\/firzrhsCY8","truncated":true,"entities":{"hashtags":[],"symbols":[],"user_mentions":[],"urls":[{"url":"https:\/\/t.co\/firzrhsCY8","expanded_url":"https:\/\/twitter.com\/i\/web\/status\/1262390485399805953","display_url":"twitter.com\/i\/web\/status\/1\u2026","indices":[117,140]}]},"source":"\u003ca
+        href=\"https:\/\/buffer.com\" rel=\"nofollow\"\u003eBuffer\u003c\/a\u003e","in_reply_to_status_id":null,"in_reply_to_status_id_str":null,"in_reply_to_user_id":null,"in_reply_to_user_id_str":null,"in_reply_to_screen_name":null,"user":{"id":2735246778,"id_str":"2735246778","name":"DEV
+        Community \ud83d\udc69\u200d\ud83d\udcbb\ud83d\udc68\u200d\ud83d\udcbb","screen_name":"ThePracticalDev","location":"","description":"Great
+        posts from the amazing https:\/\/t.co\/xHvFQQ9jeO community, with some opinion
+        and humor mixed in. Created by @bendhalpern. Join https:\/\/t.co\/xHvFQQ9jeO!","url":"https:\/\/t.co\/lhcCPP1ReQ","entities":{"url":{"urls":[{"url":"https:\/\/t.co\/lhcCPP1ReQ","expanded_url":"http:\/\/dev.to","display_url":"dev.to","indices":[0,23]}]},"description":{"urls":[{"url":"https:\/\/t.co\/xHvFQQ9jeO","expanded_url":"https:\/\/dev.to","display_url":"dev.to","indices":[29,52]},{"url":"https:\/\/t.co\/xHvFQQ9jeO","expanded_url":"https:\/\/dev.to","display_url":"dev.to","indices":[132,155]}]}},"protected":false,"followers_count":191666,"friends_count":2311,"listed_count":3793,"created_at":"Fri
+        Aug 15 19:11:17 +0000 2014","favourites_count":48516,"utc_offset":null,"time_zone":null,"geo_enabled":false,"verified":true,"statuses_count":38690,"lang":null,"contributors_enabled":false,"is_translator":false,"is_translation_enabled":false,"profile_background_color":"131516","profile_background_image_url":"http:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_image_url_https":"https:\/\/abs.twimg.com\/images\/themes\/theme1\/bg.png","profile_background_tile":true,"profile_image_url":"http:\/\/pbs.twimg.com\/profile_images\/1253165670935773185\/SkSoEQL3_normal.jpg","profile_image_url_https":"https:\/\/pbs.twimg.com\/profile_images\/1253165670935773185\/SkSoEQL3_normal.jpg","profile_banner_url":"https:\/\/pbs.twimg.com\/profile_banners\/2735246778\/1557714134","profile_link_color":"14BD7B","profile_sidebar_border_color":"000000","profile_sidebar_fill_color":"000000","profile_text_color":"000000","profile_use_background_image":true,"has_extended_profile":false,"default_profile":false,"default_profile_image":false,"following":null,"follow_request_sent":null,"notifications":null,"translator_type":"none"},"geo":null,"coordinates":null,"place":null,"contributors":null,"is_quote_status":false,"retweet_count":9,"favorite_count":19,"favorited":false,"retweeted":false,"possibly_sensitive":false,"possibly_sensitive_appealable":false,"lang":"en"}'
+    http_version: null
+  recorded_at: Mon, 18 May 2020 14:59:17 GMT
+recorded_with: VCR 5.1.0

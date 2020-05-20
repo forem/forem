@@ -143,6 +143,27 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
+                       header: "Twitter Hashtag",
+                       state: "collapse",
+                       target: "twitterHashtagBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="twitterHashtagBodyContainer" class="card-body collapse hide"
+                aria-labelledby="twitterHashtagBodyContainer">
+            <div class="form-group">
+              <%= f.label :twitter_hashtag %>
+              <%= f.text_field :twitter_hashtag,
+                               class: "form-control",
+                               value: SiteConfig.twitter_hashtag.to_s,
+                               placeholder: "#DEVCommunity" %>
+              <div class="alert alert-info">Used as the twitter hashtag of the community</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
                        header: "Meta Keywords",
                        state: "collapse",
                        target: "metaKeywordsBodyContainer",
@@ -256,6 +277,16 @@
                                placeholder: "https://image.url" %>
               <div class="alert alert-info">Used at the top of the campaign sidebar</div>
             </div>
+
+            <div class="form-group">
+              <%= f.label :campaign_url %>
+              <%= f.text_field :campaign_url,
+                               class: "form-control",
+                               value: SiteConfig.campaign_url,
+                               placeholder: "https://url.com/lander" %>
+              <div class="alert alert-info">URL campaign sidebar image will link to</div>
+            </div>
+
 
             <div class="form-group">
               <%= f.label :campaign_featured_tags %>

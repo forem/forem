@@ -135,7 +135,7 @@ class Article < ApplicationRecord
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
            :published_from_feed, :crossposted_at, :published_at, :featured_number,
-           :live_now, :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
+           :last_buffered, :facebook_last_buffered, :created_at, :body_markdown,
            :email_digest_eligible, :processed_html)
   }
 
@@ -551,8 +551,7 @@ class Article < ApplicationRecord
       username: object.username,
       slug: object == organization ? object.slug : object.username,
       profile_image_90: object.profile_image_90,
-      profile_image_url: object.profile_image_url,
-      pro: object == user ? user.pro? : false # organizations can't be pro users
+      profile_image_url: object.profile_image_url
     }
   end
 

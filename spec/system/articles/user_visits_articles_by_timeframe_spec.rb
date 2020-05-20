@@ -142,6 +142,10 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     context "when viewing articles for month" do
       before { visit "/top/month" }
 
+      it "renders the page", percy: true do
+        Percy.snapshot(page, name: "Articles: /top/month")
+      end
+
       it "shows correct articles count" do
         expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 2)
       end
@@ -204,6 +208,10 @@ RSpec.describe "User visits articles by timeframe", type: :system do
 
     context "when viewing articles for latest" do
       before { visit "/latest" }
+
+      it "renders the page", percy: true do
+        Percy.snapshot(page, name: "Articles: /latest")
+      end
 
       it "shows correct articles" do
         expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 4)

@@ -52,6 +52,7 @@ module Search
         main_image
         path
         positive_reactions_count
+        public_reactions_count
         published_at
         readable_publish_date_string
         reading_time

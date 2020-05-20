@@ -2,8 +2,8 @@ class Internal::OrganizationsController < Internal::ApplicationController
   layout "internal"
 
   CREDIT_ACTIONS = {
-    add: :add_to_org,
-    remove: :remove_from_org
+    add: :add_to,
+    remove: :remove_from
   }.with_indifferent_access.freeze
 
   def index

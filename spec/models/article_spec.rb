@@ -127,10 +127,10 @@ RSpec.describe Article, type: :model do
       it "is not valid with spaces" do
         invalid_url = "https://www.positronx.io/angular radio-buttons-example/"
         article.canonical_url = invalid_url
-        messages = ["must not have spaces"]
+        message = "must not have spaces"
 
         expect(article).not_to be_valid
-        expect(article.errors.messages[:canonical_url]).to eq messages
+        expect(article.errors.messages[:canonical_url]).to include(message)
       end
     end
 
@@ -178,7 +178,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "is valid with valid liquid tags", :vcr do
-        VCR.use_cassette("twitter_fetch_status") do
+        VCR.use_cassette("twitter_client_status_extended") do
           article = build_and_validate_article(with_tweet_tag: true)
           expect(article).to be_valid
         end
@@ -663,7 +663,6 @@ RSpec.describe Article, type: :model do
       expect(article.cached_user.slug).to eq(article.user.username)
       expect(article.cached_user.profile_image_90).to eq(article.user.profile_image_90)
       expect(article.cached_user.profile_image_url).to eq(article.user.profile_image_url)
-      expect(article.cached_user.pro).to eq(article.user.pro?)
     end
 
     it "assigns cached_organization on save" do
@@ -673,7 +672,6 @@ RSpec.describe Article, type: :model do
       expect(article.cached_organization.slug).to eq(article.organization.slug)
       expect(article.cached_organization.profile_image_90).to eq(article.organization.profile_image_90)
       expect(article.cached_organization.profile_image_url).to eq(article.organization.profile_image_url)
-      expect(article.cached_organization.pro).to be(false)
     end
   end
 

@@ -5,7 +5,7 @@ module Search
     attribute :id, &:search_id
 
     attributes :body_text, :class_name, :comments_count, :hotness_score, :path,
-               :positive_reactions_count, :published, :published_at, :quote,
+               :positive_reactions_count, :public_reactions_count, :published, :published_at, :quote,
                :reactions_count, :search_score, :subtitle, :summary, :title,
                :website_url
 

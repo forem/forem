@@ -11,37 +11,69 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
       create(:webhook_endpoint, user: user, target_url: "https://api.example.com/webhook")
     end
 
-    before do
-      sign_in user
-      create(:webhook_endpoint)
+    context "when accessing with oauth" do
+      it "returns a 401 if unauthorized" do
+        get api_webhooks_path
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "returns a 403 if public scope is missing (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        get api_webhooks_path, headers: headers
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "returns a 200 if authorized" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "public")
+        webhook = create(:webhook_endpoint, user: user, target_url: "https://api.example.com/go2", oauth_application_id: access_token.application_id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+        get api_webhooks_path, headers: headers
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body.first).to eq(
+          "created_at" => webhook.created_at.rfc3339,
+          "events" => webhook.events,
+          "id" => webhook.id,
+          "source" => webhook.source,
+          "target_url" => webhook.target_url,
+          "type_of" => "webhook_endpoint",
+        )
+      end
     end
 
-    it "returns 200 on success" do
-      get api_webhooks_path
-      expect(response).to have_http_status(:ok)
-    end
+    context "when accessing via cookie" do
+      before do
+        sign_in user
+        create(:webhook_endpoint)
+      end
 
-    it "returns json on success" do
-      get api_webhooks_path
+      it "returns 200 on success" do
+        get api_webhooks_path
+        expect(response).to have_http_status(:ok)
+      end
 
-      json = response.parsed_body
-      ids = json.map { |item| item["id"] }
-      urls = json.map { |item| item["target_url"] }
-      expect(ids).to eq([webhook.id, webhook2.id])
-      expect(urls).to eq(%w[https://api.example.com/go https://api.example.com/webhook])
-    end
+      it "returns json on success" do
+        get api_webhooks_path
 
-    it "returns the correct json representation" do
-      get api_webhooks_path
+        expect(response.parsed_body).to include(
+          hash_including("id" => webhook.id, "target_url" => webhook.target_url),
+          hash_including("id" => webhook2.id, "target_url" => webhook2.target_url),
+        )
+      end
 
-      response_webhook = response.parsed_body.first
+      it "returns the correct json representation" do
+        get api_webhooks_path
 
-      expect(response_webhook["type_of"]).to eq("webhook_endpoint")
-      expect(response_webhook["id"]).to eq(webhook.id)
-      expect(response_webhook["source"]).to eq(webhook.source)
-      expect(response_webhook["target_url"]).to eq(webhook.target_url)
-      expect(response_webhook["events"]).to eq(webhook.events)
-      expect(response_webhook["created_at"]).to eq(webhook.created_at.rfc3339)
+        expect(response.parsed_body.first).to eq(
+          "created_at" => webhook.created_at.rfc3339,
+          "events" => webhook.events,
+          "id" => webhook.id,
+          "source" => webhook.source,
+          "target_url" => webhook.target_url,
+          "type_of" => "webhook_endpoint",
+        )
+      end
     end
   end
 
@@ -73,14 +105,14 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
     it "returns the correct json representation" do
       get api_webhook_path(webhook.id)
 
-      response_webhook = response.parsed_body
-
-      expect(response_webhook["type_of"]).to eq("webhook_endpoint")
-      expect(response_webhook["id"]).to eq(webhook.id)
-      expect(response_webhook["source"]).to eq(webhook.source)
-      expect(response_webhook["target_url"]).to eq(webhook.target_url)
-      expect(response_webhook["events"]).to eq(webhook.events)
-      expect(response_webhook["created_at"]).to eq(webhook.created_at.rfc3339)
+      expect(response.parsed_body).to include(
+        "created_at" => webhook.created_at.rfc3339,
+        "events" => webhook.events,
+        "id" => webhook.id,
+        "source" => webhook.source,
+        "target_url" => webhook.target_url,
+        "type_of" => "webhook_endpoint",
+      )
     end
 
     it "returns the correct json representation for the webhook user" do

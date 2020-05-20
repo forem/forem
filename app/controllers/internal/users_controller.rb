@@ -148,13 +148,13 @@ class Internal::UsersController < Internal::ApplicationController
   def add_org_credits
     org = Organization.find(user_params[:organization_id])
     amount = user_params[:add_org_credits].to_i
-    Credit.add_to_org(org, amount)
+    Credit.add_to(org, amount)
   end
 
   def remove_org_credits
     org = Organization.find(user_params[:organization_id])
     amount = user_params[:remove_org_credits].to_i
-    Credit.remove_from_org(org, amount)
+    Credit.remove_from(org, amount)
   end
 
   def user_params

@@ -31,6 +31,7 @@ class SiteConfig < RailsSettings::Base
     instagram: nil,
     twitch: nil
   }
+  field :twitter_hashtag, type: :string, default: "#DEVCommunity"
 
   # Emails
   field :email_addresses, type: :hash, default: {
@@ -58,6 +59,7 @@ class SiteConfig < RailsSettings::Base
   field :campaign_featured_tags, type: :array, default: %w[]
   field :campaign_sidebar_enabled, type: :boolean, default: 0
   field :campaign_sidebar_image, type: :string, default: nil
+  field :campaign_url, type: :string, default: nil
 
   # Onboarding
   field :onboarding_taskcard_image, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/staggered-dev.svg"
@@ -80,8 +82,10 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_reaction_creation, type: :integer, default: 10
   field :rate_limit_image_upload, type: :integer, default: 9
   field :rate_limit_email_recipient, type: :integer, default: 5
-  field :rate_limit_article_update, type: :integer, default: 150
+  field :rate_limit_article_update, type: :integer, default: 30
   field :rate_limit_send_email_confirmation, type: :integer, default: 2
+  field :rate_limit_feedback_message_creation, type: :integer, default: 5
+  field :rate_limit_user_update, type: :integer, default: 5
 
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>

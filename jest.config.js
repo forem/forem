@@ -11,6 +11,14 @@ module.exports = {
     '!**/__tests__/**',
     '!**/__stories__/**',
   ],
+  coverageThreshold: {
+    global: {
+      statements: 39,
+      branches: 35,
+      functions: 34,
+      lines: 39,
+    },
+  },
   moduleNameMapper: {
     '\\.(svg|png)$': '<rootDir>/empty-module.js',
     '^@crayons(.*)$': '<rootDir>/app/javascript/crayons$1',

@@ -1,11 +1,12 @@
 module Constants
   ALLOWED_MASTODON_INSTANCES = [
     "101010.pl",
+    "4estate.media",
     "acg.mn",
+    "anarchism.space",
     "bitcoinhackers.org",
     "bsd.network",
     "chaos.social",
-    "anarchism.space",
     "cmx.im",
     "cybre.space",
     "fosstodon.org",
@@ -36,6 +37,7 @@ module Constants
     "mastodon.technology",
     "mastodon.xyz",
     "mathtod.online",
+    "merveilles.town",
     "mimumedon.com",
     "misskey.xyz",
     "moe.cat",
@@ -65,6 +67,5 @@ module Constants
     "toot.cafe",
     "wikitetas.club",
     "xoxo.zone",
-    "4estate.media",
   ].freeze
 end

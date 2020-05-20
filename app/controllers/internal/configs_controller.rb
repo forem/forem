@@ -43,6 +43,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       shop_url
       sidebar_tags
       suggested_tags
+      twitter_hashtag
       suggested_users
       tagline
     ]
@@ -85,6 +86,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       campaign_hero_html_variant_name
       campaign_sidebar_enabled
       campaign_sidebar_image
+      campaign_url
     ]
   end
 

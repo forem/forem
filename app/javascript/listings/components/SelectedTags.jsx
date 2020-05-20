@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { selectedTagsPropTypes } from '../../src/components/common-prop-types';
+import { selectedTagsPropTypes } from '../../common-prop-types';
 
 const SelectedTags = ({ tags, onClick, onKeyPress }) => {
   return (

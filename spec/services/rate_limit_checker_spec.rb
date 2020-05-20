@@ -14,17 +14,23 @@ RSpec.describe RateLimitChecker, type: :service do
       expect(rate_limit_checker.limit_by_action("random-nothing")).to be(false)
     end
 
-    it "raises an error if user does not have an ID" do
+    it "will limit action by ip_address if present" do
+      action = described_class::ACTION_LIMITERS.keys.first
+      limiter = described_class.new(build(:user, ip_address: "1.1.1.1"))
+      expect { limiter.limit_by_action(action) }.not_to raise_error
+    end
+
+    it "raises an error if no unique component is present for a cache key" do
       action = described_class::ACTION_LIMITERS.keys.first
       limiter = described_class.new(build(:user))
-      expect { limiter.limit_by_action(action) }.to raise_error("Invalid Cache Key: user ID can't be blank")
+      expect { limiter.limit_by_action(action) }.to raise_error("Invalid Cache Key: no unique component present")
     end
 
     # published_article_creation limit we check against the database rather than our cache
     described_class::ACTION_LIMITERS.except(:published_article_creation).each do |action, _options|
       it "returns true if #{action} limit has been reached" do
         allow(Rails.cache).to receive(:read).with(
-          cache_key(action),
+          cache_key(action), raw: true
         ).and_return(SiteConfig.public_send("rate_limit_#{action}") + 1)
 
         expect(rate_limit_checker.limit_by_action(action)).to be(true)
@@ -32,7 +38,7 @@ RSpec.describe RateLimitChecker, type: :service do
 
       it "returns false if #{action} limit has NOT been reached" do
         allow(Rails.cache).to receive(:read).with(
-          cache_key(action),
+          cache_key(action), raw: true
         ).and_return(SiteConfig.public_send("rate_limit_#{action}"))
 
         expect(rate_limit_checker.limit_by_action(action)).to be(false)
@@ -90,7 +96,7 @@ RSpec.describe RateLimitChecker, type: :service do
 
     it "logs a rate limit hit to datadog" do
       allow(Rails.cache).
-        to receive(:read).with("#{user.id}_organization_creation").
+        to receive(:read).with("#{user.id}_organization_creation", raw: true).
         and_return(SiteConfig.rate_limit_organization_creation + 1)
       allow(DatadogStatsClient).to receive(:increment)
       described_class.new(user).limit_by_action("organization_creation")
@@ -122,7 +128,7 @@ RSpec.describe RateLimitChecker, type: :service do
 
       key = "#{user.id}_#{action}"
       expires_in = described_class::ACTION_LIMITERS.dig(action, :retry_after)
-      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: expires_in)
+      expect(Rails.cache).to have_received(:increment).with(key, 1, expires_in: expires_in, raw: true)
     end
   end
 

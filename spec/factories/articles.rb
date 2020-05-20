@@ -34,7 +34,7 @@ FactoryBot.define do
         ---
 
         #{Faker::Hipster.paragraph(sentence_count: 2)}
-        #{'{% tweet 1018911886862057472%}' if with_tweet_tag}
+        #{'{% tweet 1018911886862057472 %}' if with_tweet_tag}
         #{Faker::Hipster.paragraph(sentence_count: 1)}
         #{"\n\n---\n\n something \n\n---\n funky in the code? \n---\n That's nice" if with_hr_issue}
       HEREDOC

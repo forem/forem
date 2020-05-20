@@ -7,7 +7,6 @@ class UsersController < ApplicationController
   after_action :verify_authorized, except: %i[index signout_confirm add_org_admin remove_org_admin remove_from_org]
   before_action :authenticate_user!, only: %i[onboarding_update onboarding_checkbox_update]
   before_action :set_suggested_users, only: %i[index]
-  rescue_from Errno::ENAMETOOLONG, with: :log_image_data_to_datadog
 
   INDEX_ATTRIBUTES_FOR_SERIALIZATION = %i[id name username summary profile_image].freeze
   private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
@@ -254,8 +253,6 @@ class UsersController < ApplicationController
       handle_integrations_tab
     when "billing"
       handle_billing_tab
-    when "pro-membership"
-      handle_pro_membership_tab
     when "account"
       handle_account_tab
     when "response-templates"
@@ -322,10 +319,6 @@ class UsersController < ApplicationController
     return if stripe_code == "special"
 
     @customer = Payments::Customer.get(stripe_code) if stripe_code.present?
-  end
-
-  def handle_pro_membership_tab
-    @pro_membership = current_user.pro_membership
   end
 
   def handle_account_tab

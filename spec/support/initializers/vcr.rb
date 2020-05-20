@@ -17,6 +17,13 @@ VCR.configure do |config|
 
   # Removes all private data (Basic Auth, Set-Cookie headers...)
   config.before_record do |i|
+    # Twitter embeds the Bearer access token in the JSON HTTP response
+    if i.request.uri.include?("api.twitter.com/oauth2/token")
+      data = JSON.parse(i.response.body)
+      data["access_token"] = "ACCESS_TOKEN"
+      i.response.body = data.to_json
+    end
+
     i.response.headers.delete("Set-Cookie")
     i.request.headers.delete("Authorization")
 
@@ -24,14 +31,3 @@ VCR.configure do |config|
     i.request.uri.sub!(/:\/\/.*#{Regexp.escape(u.host)}/, "://#{u.host}")
   end
 end
-
-VCR_OPTIONS = {
-  twitter_fetch_status: {
-    cassette_name: "twitter_fetch_status",
-    allow_playback_repeats: true
-  },
-  rss_feeds: {
-    cassette_name: "rss_feeds",
-    allow_playback_repeats: true
-  }
-}.freeze

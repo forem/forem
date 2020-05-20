@@ -1026,6 +1026,10 @@ components:
       value:
         error: not enough available credits
         status: 402
+    ErrorForbidden:
+      value:
+        error: forbidden
+        status: 403
     ErrorUnprocessableEntity:
       value:
         error: "param is missing or the value is empty: article"
@@ -1739,6 +1743,15 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-forbidden:
+                  $ref: "#/components/examples/ErrorForbidden"
         "422":
           description: Unprocessable Entity
           content:
@@ -1891,6 +1904,15 @@ paths:
               examples:
                 error-unauthorized:
                   $ref: "#/components/examples/ErrorUnauthorized"
+        "403":
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                error-forbidden:
+                  $ref: "#/components/examples/ErrorForbidden"
         "422":
           description: Unprocessable Entity
           content:

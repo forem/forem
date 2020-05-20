@@ -30,7 +30,6 @@
     <a href="<%= followable.path + article.decorate.internal_utm_params %>"
        class="<%= "partner-link" if classification == "boosted" %>"
        data-details="<%= followable&.slug if classification == "boosted" %>__PROFILE"><%= followable.name %></a>
-    <%= render "shared/pro_checkmark" if followable.pro? %>
   </div>
 <% end %>
 <button class="cta follow-action-button user-profile-follow-button <%= "partner-link" if classification == "boosted" %>"
