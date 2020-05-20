@@ -1,5 +1,18 @@
 module ApplicationHelper
-  DELETED_USER = User.new(username: "[deleted user]", name: "[Deleted User]")
+  # rubocop:disable Performance/OpenStruct
+  DELETED_USER = OpenStruct.new(
+    id: nil,
+    darker_color: HexComparer.new({
+                                    bg: "#19063A",
+                                    text: "#dce9f3"
+                                  }).brightness,
+    username: "[deleted user]",
+    name: "[Deleted User]",
+    summary: nil,
+    twitter_username: nil,
+    github_username: nil,
+  )
+  # rubocop:enable Performance/OpenStruct
 
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
@@ -115,6 +128,8 @@ module ApplicationHelper
   end
 
   def follow_button(followable, style = "full")
+    return if followable == DELETED_USER
+
     tag :button, # Yikes
         class: "cta follow-action-button",
         data: {
@@ -129,6 +144,8 @@ module ApplicationHelper
   end
 
   def user_colors(user)
+    return { bg: "#19063A", text: "#dce9f3" } if user == DELETED_USER
+
     user.decorate.enriched_colors
   end
 

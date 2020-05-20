@@ -13,7 +13,7 @@ class UserTag < LiquidTagBase
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        user: @user.decorate,
+        user: user_object_for_partial(@user),
         follow_button: @follow_button,
         user_colors: @user_colors,
         user_path: path_to_profile(@user)
@@ -29,6 +29,10 @@ class UserTag < LiquidTagBase
 
   def path_to_profile(user)
     user == DELETED_USER ? nil : user.path
+  end
+
+  def user_object_for_partial(user)
+    user == DELETED_USER ? user : user.decorate
   end
 end
 
