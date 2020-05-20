@@ -13,7 +13,8 @@ function buildArticleHTML(article) {
        </a>\
        <h4><a href="/'+article.podcast.slug+'">'+article.podcast.title+'</a></h4>\
        </div>';
-  } else if (article) {
+  }
+  else if (article) {
     var container = document.getElementById("index-container");
     var tagString = ""
     var tagList = article.tag_list || article.cached_tag_list_array
@@ -124,7 +125,7 @@ function buildArticleHTML(article) {
       }
       bodyTextSnippet = startingEllipsis + article.highlight.body_text.join("...") + "…";
       if (bodyTextSnippet.length > 0){
-        searchSnippetHTML = '<div class="crayons-story__snippet mb-1 search-snippet"></div>'
+        searchSnippetHTML = '<div class="crayons-story__snippet mb-1">' + bodyTextSnippet + '</div>'
       }
     }
 
@@ -152,7 +153,7 @@ function buildArticleHTML(article) {
       videoHTML = '<a href="'+article.path+'" class="crayons-story__video" style="background-image:url('+article.cloudinary_video_url+')"><div class="crayons-story__video__time">'+(article.video_duration_string || article.video_duration_in_minutes)+'</div></a>'
     }
 
-    var articleDom = '<article class="crayons-story" data-article-path="' + article.path + '" data-content-user-id="'+article.user_id+'">\
+    return '<article class="crayons-story" data-article-path="' + article.path + '" data-content-user-id="'+article.user_id+'">\
       <div role="presentation">\
         '+videoHTML+'\
         <div class="crayons-story__body">\
@@ -174,12 +175,5 @@ function buildArticleHTML(article) {
         </div>\
       </div>\
     </article>';
-
-    var parser = new DOMParser();
-    articleDom = parser.parseFromString(articleDom, 'text/html');
-    var searchSnippet = articleDom.body.querySelector("div.search-snippet");
-    if (searchSnippet !== null) { searchSnippet.textContent = bodyTextSnippet }
-
-    return articleDom.body.innerHTML;
   }
 }
