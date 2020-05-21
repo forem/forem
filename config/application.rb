@@ -50,6 +50,10 @@ module PracticalDeveloper
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
 
+    # NOTE: [Rails 6]
+    # To improve security, Rails embeds the purpose and expiry metadata inside encrypted or signed cookies value.
+    config.action_dispatch.use_cookies_with_metadata = false
+
     # Enable CORS for API v0
     # (logging is only activated when debug is enabled)
     debug_cors = ENV["DEBUG_CORS"].present? ? true : false
