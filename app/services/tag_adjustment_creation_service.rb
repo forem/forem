@@ -22,6 +22,8 @@ class TagAdjustmentCreationService
   def update_article
     if @tag_adjustment.adjustment_type == "removal"
       removed_tags = article.tag_list.select { |tag| tag.casecmp(@tag_adjustmen.tag_name).zero? }
+      return if removed_tags.empty?
+
       article.update!(tag_list: article.tag_list.remove(removed_tags))
     end
 
