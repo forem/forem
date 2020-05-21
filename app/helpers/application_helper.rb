@@ -2,10 +2,7 @@ module ApplicationHelper
   # rubocop:disable Performance/OpenStruct
   DELETED_USER = OpenStruct.new(
     id: nil,
-    darker_color: HexComparer.new({
-                                    bg: "#19063A",
-                                    text: "#dce9f3"
-                                  }).brightness,
+    darker_color: HexComparer.new(bg: "#19063A", text: "#dce9f3").brightness,
     username: "[deleted user]",
     name: "[Deleted User]",
     summary: nil,
