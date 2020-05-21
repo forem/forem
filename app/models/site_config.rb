@@ -73,7 +73,10 @@ class SiteConfig < RailsSettings::Base
   field :logo_svg, type: :string, default: ""
   field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
 
-  # Rate Limits
+  # Monetization
+  field :payment_pointer, type: :string, default: "$ilp.uphold.com/24HhrUGG7ekn" # Experimental
+
+  # Rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_listing_creation, type: :integer, default: 1
