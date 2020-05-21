@@ -1,15 +1,15 @@
-'use strict';
-
-/* global userData, filterXSS */
+/* global filterXSS */
 
 function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile--avatar').src = user.profile_image_90;
+  document.getElementById('sidebar-profile--avatar').src =
+    user.profile_image_90;
   document.getElementById('sidebar-profile--avatar').alt = user.username;
 
   document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
     user.name,
   );
-  document.getElementById('sidebar-profile--username').innerHTML = '@' + user.username;
+  document.getElementById('sidebar-profile--username').innerHTML =
+    '@' + user.username;
   document.getElementById('sidebar-profile').href = '/' + user.username;
 }
 
@@ -23,7 +23,7 @@ function initializeUserSidebar(user) {
       ? 'Follow tags to improve your feed'
       : 'Other Popular Tags';
 
-  followedTags.forEach(tag => {
+  followedTags.forEach((tag) => {
     const element = document.getElementById(
       'default-sidebar-element-' + tag.name,
     );
@@ -76,16 +76,13 @@ function addRelevantButtonsToComments(user) {
       if (parseInt(userId, 10) === user.id) {
         butt.style.display = 'inline-block';
       }
+
       if (
         action === 'hide-button' &&
         parseInt(commentableUserId, 10) === user.id
       ) {
         butt.style.display = 'inline-block';
-      } else if (
-        action === 'hide-button' &&
-        parseInt(commentableUserId, 10) !== user.id
-      ) {
-        butt.style.display = 'none';
+        butt.classList.remove('hidden');
       }
     }
 
@@ -102,16 +99,12 @@ function addRelevantButtonsToComments(user) {
 
 function initializeBaseUserData() {
   const user = userData();
-  const userProfileLinkHTML =
-    '<a href="/' +
-    user.username +
-    '" id="first-nav-link"><div class="option prime-option">@' +
-    user.username +
-    '</div></a>';
-  document.getElementById(
-    'user-profile-link-placeholder',
-  ).innerHTML = userProfileLinkHTML;
+  const userNavLink = document.getElementById('first-nav-link');
+  userNavLink.href = `/${user.username}`;
+  userNavLink.querySelector('span').textContent = user.name;
+  userNavLink.querySelector('small').textContent = `@${user.username}`;
   document.getElementById('nav-profile-image').src = user.profile_image_90;
+
   initializeUserSidebar(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);

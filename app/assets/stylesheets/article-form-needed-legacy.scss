@@ -1,17 +1,13 @@
 @import 'variables';
 @import 'mixins';
 
-.hidden {
-  display: none;
-}
-
 .job-listing-header {
   color: #007777;
   background: #bafff1;
   text-align: center;
   padding: 80px 5px 60px;
   margin-bottom: -20px;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   font-size: 1.5em;
   font-weight: 800;
 }
@@ -21,7 +17,7 @@
   padding-bottom: 4px !important;
   position: relative;
   z-index: 11;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
 
   .top-buttons {
     padding: 20px 0px 5px;
@@ -103,7 +99,7 @@
   }
 
   .editor-image-upload {
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     padding: 4px 5px;
     font-size: 0.8em;
     width: inherit;
@@ -206,25 +202,6 @@
       font-weight: 800;
       color: $red;
       text-decoration: underline;
-    }
-  }
-
-  .org-publish-check-wrapper {
-    font-family: $helvetica;
-    @include themeable(background, theme-background, $lightest-gray);
-    padding: 20px 14px;
-    text-align: center;
-    font-size: 24px;
-    line-height: 33px;
-    margin-top: 8px;
-
-    label {
-      padding: 1px 10px 3px;
-    }
-
-    input {
-      vertical-align: 2px;
-      max-width: 30px;
     }
   }
 
@@ -338,8 +315,8 @@
     padding: 12px 15px 18px;
     font-family: 'Lucida Console', Monaco, monospace, sans-serif;
     font-size: 17px;
-    @include themeable(background, theme-container-background, white);
-    @include themeable(color, theme-color, $black);
+    background: var(--card-bg);
+    color: var(--body-color);
 
     &::placeholder {
       color: #8f949c;
@@ -471,7 +448,7 @@
 #error_explanation {
   background: $red;
   max-width: 750px;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   color: white;
   border-radius: 5px;
   margin: 80px auto -50px;
@@ -558,7 +535,7 @@
   p {
     font-size: 16px;
     line-height: 25px;
-    font-family: $monospace;
+    font-family: var(--ff-accent);
   }
 
   img.gif {

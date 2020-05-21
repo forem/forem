@@ -1,9 +1,0 @@
-<% host = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}" %>
-<% credits_url = url_for(host: host, controller: :credits, action: :index) %>
-<% pro_membership_url = url_for(host: host, controller: :users, action: :edit, tab: "pro-membership") %>
-
-<p>Hi <%= @user.name %>, your Pro Membership will expire in <%= @days %> days on <%= @date.to_s(:long) %>!</p>
-
-<p>Make sure you have enough credits for its renewal: <a href="<%= credits_url %>"><%= credits_url %></a>.</p>
-
-<p>You can also <a href="<%= pro_membership_url %>">review your Pro Membership status</a>.</p>

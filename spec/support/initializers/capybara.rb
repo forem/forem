@@ -16,16 +16,21 @@ Capybara.register_driver :headless_chrome do |app|
 end
 
 RSpec.configure do |config|
-  config.before(:all, type: :system) do
-    Capybara.server = :puma, { Silent: true }
-  end
-
   config.before(:each, type: :system) do
     driven_by :rack_test
   end
 
   config.before(:each, type: :system, js: true) do
-    driven_by :headless_chrome
+    if ENV["SELENIUM_URL"].present?
+      # Support use of remote chrome testing.
+      Capybara.server_host = ENV.fetch("CAPYBARA_SERVER_HOST") { "0.0.0.0" }
+      ip = Socket.ip_address_list.detect(&:ipv4_private?).ip_address
+      host! URI::HTTP.build(host: ip, port: Capybara.server_port).to_s
+
+      driven_by :selenium, using: :chrome, screen_size: [1400, 2000], options: { url: ENV["SELENIUM_URL"] }
+    else
+      driven_by :headless_chrome
+    end
   end
 end
 

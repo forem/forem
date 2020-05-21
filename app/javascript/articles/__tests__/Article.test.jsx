@@ -5,7 +5,6 @@ import {
   article,
   articleWithOrganization,
   articleWithSnippetResult,
-  articleWithReadingTimeGreaterThan1,
   articleWithReactions,
   videoArticle,
   articleWithComments,
@@ -30,6 +29,45 @@ describe('<Article /> component', () => {
         {...commonProps}
         isBookmarked={false}
         article={article}
+        currentTag="javascript"
+      />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render a featured article', () => {
+    const tree = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        isFeatured
+        article={article}
+        currentTag="javascript"
+      />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render a featured article for an organization', () => {
+    const tree = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        isFeatured
+        article={articleWithOrganization}
+        currentTag="javascript"
+      />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
+  it('should render a featured article for a video post', () => {
+    const tree = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        isFeatured
+        article={videoArticle}
         currentTag="javascript"
       />,
     );
@@ -61,17 +99,6 @@ describe('<Article /> component', () => {
         {...commonProps}
         isBookmarked={false}
         article={articleWithSnippetResult}
-      />,
-    );
-    expect(tree).toMatchSnapshot();
-  });
-
-  it('should render with a reading time', () => {
-    const tree = render(
-      <Article
-        {...commonProps}
-        isBookmarked={false}
-        article={articleWithReadingTimeGreaterThan1}
       />,
     );
     expect(tree).toMatchSnapshot();

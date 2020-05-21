@@ -1,42 +1,19 @@
 import { h, Component } from 'preact';
-import SingleListing from './singleListing';
-
-function resizeMasonryItem(item) {
-  /* Get the grid object, its row-gap, and the size of its implicit rows */
-  const grid = document.getElementsByClassName('classifieds-columns')[0];
-  const rowGap = parseInt(
-    window.getComputedStyle(grid).getPropertyValue('grid-row-gap'),
-    10,
-  );
-  const rowHeight = parseInt(
-    window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'),
-    10,
-  );
-
-  const rowSpan = Math.ceil(
-    (item.querySelector('.listing-content').getBoundingClientRect().height +
-      rowGap) /
-      (rowHeight + rowGap),
-  );
-
-  /* Set the spanning as calculated above (S) */
-  // eslint-disable-next-line no-param-reassign
-  item.style.gridRowEnd = `span ${rowSpan}`;
-}
-
-function resizeAllMasonryItems() {
-  // Get all item class objects in one list
-  const allItems = document.getElementsByClassName('single-classified-listing');
-
-  /*
-   * Loop through the above list and execute the spanning function to
-   * each list-item (i.e. each masonry item)
-   */
-  // eslint-disable-next-line vars-on-top
-  for (let i = 0; i < allItems.length; i += 1) {
-    resizeMasonryItem(allItems[i]);
-  }
-}
+import debounceAction from '../utilities/debounceAction';
+import { fetchSearch } from '../utilities/search';
+import ModalBackground from './components/ModalBackground';
+import Modal from './components/Modal';
+import AllListings from './components/AllListings';
+import NextPageButton from './components/NextPageButton';
+import ClassifiedFilters from './components/ClassifiedFilters';
+import {
+  LISTING_PAGE_SIZE,
+  MATCH_LISTING,
+  updateListings,
+  getQueryParams,
+  resizeAllMasonryItems,
+  getLocation,
+} from './utils';
 
 export class Listings extends Component {
   state = {
@@ -51,52 +28,53 @@ export class Listings extends Component {
     message: '',
     slug: null,
     page: 0,
-    showNextPageButt: false,
+    showNextPageButton: false,
   };
 
   componentWillMount() {
-    const params = this.getQueryParams();
-    const t = this;
-    const algoliaId = document.querySelector("meta[name='algolia-public-id']")
-      .content;
-    const algoliaKey = document.querySelector("meta[name='algolia-public-key']")
-      .content;
-    const env = document.querySelector("meta[name='environment']").content;
-    const client = algoliasearch(algoliaId, algoliaKey);
-    const index = client.initIndex(`ClassifiedListing_${env}`);
+    const params = getQueryParams();
     const container = document.getElementById('classifieds-index-container');
     const category = container.dataset.category || '';
     const allCategories = JSON.parse(container.dataset.allcategories || []);
     let tags = [];
+    let openedListing = null;
+    let slug = null;
+    let listings = [];
+
     if (params.t) {
       tags = params.t.split(',');
     }
+
     const query = params.q || '';
-    let listings = [];
+
     if (tags.length === 0 && query === '') {
       listings = JSON.parse(container.dataset.listings);
     }
-    let openedListing = null;
-    let slug = null;
+
     if (container.dataset.displayedlisting) {
       openedListing = JSON.parse(container.dataset.displayedlisting);
       ({ slug } = openedListing);
       document.body.classList.add('modal-open');
     }
-    t.setState({
+
+    this.debouncedClassifiedListingSearch = debounceAction(
+      this.handleQuery.bind(this),
+      { time: 150, config: { leading: true } },
+    );
+
+    this.setState({
       query,
       tags,
-      index,
       category,
       allCategories,
       listings,
       openedListing,
       slug,
     });
-    t.listingSearch(query, tags, category, slug);
-    t.setUser();
+    this.listingSearch(query, tags, category, slug);
+    this.setUser();
 
-    document.body.addEventListener('keydown', t.handleKeyDown);
+    document.body.addEventListener('keydown', this.handleKeyDown);
 
     /*
       The width of the columns also changes when the browser is resized
@@ -116,12 +94,15 @@ export class Listings extends Component {
 
   addTag = (e, tag) => {
     e.preventDefault();
+    if (document.body.classList.contains('modal-open')) {
+      this.handleCloseModal('close-modal');
+    }
     const { query, tags, category } = this.state;
     const newTags = tags;
     if (newTags.indexOf(tag) === -1) {
       newTags.push(tag);
     }
-    this.setState({ tags: newTags, page: 0, listings: [] });
+    this.setState({ tags: newTags, page: 0 });
     this.listingSearch(query, newTags, category, null);
     window.scroll(0, 0);
   };
@@ -134,29 +115,34 @@ export class Listings extends Component {
     if (newTags.indexOf(tag) > -1) {
       newTags.splice(index, 1);
     }
-    this.setState({ tags: newTags, page: 0, listings: [] });
+    this.setState({ tags: newTags, page: 0 });
     this.listingSearch(query, newTags, category, null);
   };
 
-  selectCategory = (e, cat) => {
+  handleKeyPressedOnSelectedTags = (e, tag) => {
+    if (e.key === 'Enter') {
+      this.removeTag(e, tag);
+    }
+  };
+
+  selectCategory = (e, cat = '') => {
     e.preventDefault();
     const { query, tags } = this.state;
-    this.setState({ category: cat, page: 0, listings: [] });
+    this.setState({ category: cat, page: 0 });
     this.listingSearch(query, tags, cat, null);
   };
 
-  handleKeyDown = e => {
+  handleKeyDown = (e) => {
     // Enable Escape key to close an open listing.
     this.handleCloseModal(e);
   };
 
-  handleCloseModal = e => {
+  handleCloseModal = (e) => {
     const { openedListing } = this.state;
     if (
+      e === 'close-modal' ||
       (openedListing !== null && e.key === 'Escape') ||
-      e.target.id === 'single-classified-listing-container__inner' ||
-      e.target.id === 'classified-filters' ||
-      e.target.id === 'classified-listings-modal-background'
+      MATCH_LISTING.includes(e.target.id)
     ) {
       const { query, tags, category } = this.state;
       this.setState({ openedListing: null, page: 0 });
@@ -177,12 +163,12 @@ export class Listings extends Component {
     document.body.classList.add('modal-open');
   };
 
-  handleDraftingMessage = e => {
+  handleDraftingMessage = (e) => {
     e.preventDefault();
     this.setState({ message: e.target.value });
   };
 
-  handleSubmitMessage = e => {
+  handleSubmitMessage = (e) => {
     e.preventDefault();
     const { message, openedListing } = this.state;
     if (message.replace(/\s/g, '').length === 0) {
@@ -209,33 +195,17 @@ export class Listings extends Component {
       });
   };
 
-  handleQuery = e => {
+  handleQuery = (e) => {
     const { tags, category } = this.state;
-    this.setState({ query: e.target.value, page: 0, listings: [] });
+    this.setState({ query: e.target.value, page: 0 });
     this.listingSearch(e.target.value, tags, category, null);
   };
 
   clearQuery = () => {
     const { tags, category } = this.state;
     document.getElementById('listings-search').value = '';
-    this.setState({ query: '', page: 0, listings: [] });
+    this.setState({ query: '', page: 0 });
     this.listingSearch('', tags, category, null);
-  };
-
-  getQueryParams = () => {
-    let qs = document.location.search;
-    qs = qs.split('+').join(' ');
-
-    const params = {};
-    let tokens;
-    const re = /[?&]?([^=]+)=([^&]*)/g;
-
-    // eslint-disable-next-line no-cond-assign
-    while ((tokens = re.exec(qs))) {
-      params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
-    }
-
-    return params;
   };
 
   loadNextPage = () => {
@@ -245,15 +215,10 @@ export class Listings extends Component {
   };
 
   setUser = () => {
-    const t = this;
+    const { currentUserId } = this.state;
     setTimeout(() => {
-      if (window.currentUser && t.state.currentUserId === null) {
-        t.setState({ currentUserId: window.currentUser.id });
-      }
-    }, 300);
-    setTimeout(() => {
-      if (window.currentUser && t.state.currentUserId === null) {
-        t.setState({ currentUserId: window.currentUser.id });
+      if (window.currentUser && currentUserId === null) {
+        this.setState({ currentUserId: window.currentUser.id });
       }
     }, 1000);
   };
@@ -265,46 +230,42 @@ export class Listings extends Component {
   };
 
   setLocation = (query, tags, category, slug) => {
-    let newLocation = '';
-    if (slug) {
-      newLocation = `/listings/${category}/${slug}`;
-    } else if (query.length > 0 && tags.length > 0) {
-      newLocation = `/listings/${category}?q=${query}&t=${tags}`;
-    } else if (query.length > 0) {
-      newLocation = `/listings/${category}?q=${query}`;
-    } else if (tags.length > 0) {
-      newLocation = `/listings/${category}?t=${tags}`;
-    } else if (category.length > 0) {
-      newLocation = `/listings/${category}`;
-    } else {
-      newLocation = '/listings';
-    }
+    const newLocation = getLocation({ query, tags, category, slug });
     window.history.replaceState(null, null, newLocation);
   };
 
+  /**
+   * Call search API for ClassifiedListings
+   *
+   * @param {string} query - The search term
+   * @param {string} tags - The tags selected by the user
+   * @param {string} category - The category selected by the user
+   * @param {string} slug - The listing's slug
+   *
+   * @returns {Promise} A promise object with response formatted as JSON.
+   */
   listingSearch(query, tags, category, slug) {
-    const t = this;
-    const { index, page, listings } = t.state;
-    const filterObject = { tagFilters: tags, hitsPerPage: 75, page };
-    if (category.length > 0) {
-      filterObject.filters = `category:${category}`;
-    }
-    index.search(query, filterObject).then(function searchDone(content) {
-      const fullListings = listings;
-      content.hits.forEach(listing => {
-        if (listing.bumped_at) {
-          if (!listings.map(l => l.id).includes(listing.id)) {
-            fullListings.push(listing);
-          }
-        }
-      });
-      t.setState({
+    const { page } = this.state;
+    const dataHash = {
+      category,
+      classified_listing_search: query,
+      page,
+      per_page: LISTING_PAGE_SIZE,
+      tags,
+      tag_boolean_mode: 'all',
+    };
+
+    const responsePromise = fetchSearch('classified_listings', dataHash);
+    return responsePromise.then((response) => {
+      const classifiedListings = response.result;
+      const fullListings = updateListings(classifiedListings);
+      this.setState({
         listings: fullListings,
         initialFetch: false,
-        showNextPageButt: content.hits.length === 75,
+        showNextPageButton: classifiedListings.length === LISTING_PAGE_SIZE,
       });
+      this.setLocation(query, tags, category, slug);
     });
-    this.setLocation(query, tags, category, slug);
   }
 
   render() {
@@ -316,220 +277,55 @@ export class Listings extends Component {
       allCategories,
       currentUserId,
       openedListing,
-      showNextPageButt,
+      showNextPageButton,
       initialFetch,
       message,
     } = this.state;
-    const allListings = listings.map(listing => (
-      <SingleListing
-        onAddTag={this.addTag}
-        onChangeCategory={this.selectCategory}
-        listing={listing}
-        currentUserId={currentUserId}
-        onOpenModal={this.handleOpenModal}
-        isOpen={false}
-      />
-    ));
-    const selectedTags = tags.map(tag => (
-      <span className="classified-tag">
-        <a
-          href="/listings?tags="
-          className="tag-name"
-          onClick={e => this.removeTag(e, tag)}
-          data-no-instant
-        >
-          <span>{tag}</span>
-          <span
-            className="tag-close"
-            onClick={e => this.removeTag(e, tag)}
-            data-no-instant
-            role="button"
-            onKeyPress={e => e.key === 'Enter' && this.removeTag(e, tag)}
-            tabIndex="0"
-          >
-            ×
-          </span>
-        </a>
-      </span>
-    ));
-    const categoryLinks = allCategories.map(cat => (
-      <a
-        href={`/listings/${cat.slug}`}
-        className={cat.slug === category ? 'selected' : ''}
-        onClick={e => this.selectCategory(e, cat.slug)}
-        data-no-instant
-      >
-        {cat.name}
-      </a>
-    ));
-    let nextPageButt = '';
-    if (showNextPageButt) {
-      nextPageButt = (
-        <div className="classifieds-load-more-button">
-          <button onClick={e => this.loadNextPage(e)} type="button">
-            Load More Listings
-          </button>
-        </div>
-      );
-    }
-    const clearQueryButton =
-      query.length > 0 ? (
-        <button
-          type="button"
-          className="classified-search-clear"
-          onClick={this.clearQuery}
-        >
-          ×
-        </button>
-      ) : (
-        ''
-      );
-    let modal = '';
-    let modalBg = '';
-    let messageModal = '';
-    if (openedListing) {
-      modalBg = (
-        <div
-          className="classified-listings-modal-background"
-          onClick={this.handleCloseModal}
-          role="presentation"
-          id="classified-listings-modal-background"
-        />
-      );
-      if (openedListing.contact_via_connect) {
-        messageModal = (
-          <form
-            id="listings-message-form"
-            className="listings-contact-via-connect"
-            onSubmit={this.handleSubmitMessage}
-          >
-            {openedListing.contact_via_connect &&
-            openedListing.user_id !== currentUserId ? (
-              <p>
-                <b>
-                  Contact
-                  {` ${openedListing.author.name} `}
-                  via DEV Connect
-                </b>
-              </p>
-            ) : (
-              <p>
-                This is your active listing. Any member can contact you via this
-                form.
-              </p>
-            )}
-            <textarea
-              value={message}
-              onChange={this.handleDraftingMessage}
-              id="new-message"
-              rows="4"
-              cols="70"
-              placeholder="Enter your message here..."
-            />
-            <button type="submit" value="Submit" className="submit-button cta">
-              SEND
-            </button>
-            <p>
-              {openedListing.contact_via_connect &&
-              openedListing.user_id !== currentUserId ? (
-                <em>
-                  Message must be relevant and on-topic with the listing. All
-                  {' '}
-                  private interactions 
-                  {' '}
-                  <b>must</b>
-                  {' '}
-                  abide by the
-                  {' '}
-                  <a href="/code-of-conduct">code of conduct</a>
-                </em>
-              ) : (
-                <em>
-                  All private interactions 
-                  {' '}
-                  <b>must</b>
-                  {' '}
-                  abide by the
-                  {' '}
-                  <a href="/code-of-conduct">code of conduct</a>
-                </em>
-              )}
-            </p>
-          </form>
-        );
-      }
-      modal = (
-        <div className="single-classified-listing-container">
-          <div
-            id="single-classified-listing-container__inner"
-            className="single-classified-listing-container__inner"
-            onClick={this.handleCloseModal}
-            role="button"
-            onKeyPress={this.handleCloseModal}
-            tabIndex="0"
-          >
-            <SingleListing
-              onAddTag={this.addTag}
-              onChangeCategory={this.selectCategory}
-              listing={openedListing}
-              currentUserId={currentUserId}
-              onOpenModal={this.handleOpenModal}
-              isOpen
-            />
-            {messageModal}
-            <a
-              href="/about-listings"
-              className="single-classified-listing-info-link"
-            >
-              About DEV Listings
-            </a>
-            <div className="single-classified-listing-container__spacer" />
-          </div>
-        </div>
-      );
-    }
+
+    const shouldRenderModal =
+      openedListing !== null && openedListing !== undefined;
+
     if (initialFetch) {
       this.triggerMasonry();
     }
     return (
       <div className="listings__container">
-        {modalBg}
-        <div className="classified-filters" id="classified-filters">
-          <div className="classified-filters-categories">
-            <a
-              href="/listings"
-              className={category === '' ? 'selected' : ''}
-              onClick={e => this.selectCategory(e, '')}
-              data-no-instant
-            >
-              all
-            </a>
-            {categoryLinks}
-            <a href="/listings/new" className="classified-create-link">
-              Create a Listing
-            </a>
-            <a href="/listings/dashboard" className="classified-create-link">
-              Manage Listings
-            </a>
-          </div>
-          <div className="classified-filters-tags" id="classified-filters-tags">
-            <input
-              type="text"
-              placeholder="search"
-              id="listings-search"
-              autoComplete="off"
-              defaultValue={query}
-              onKeyUp={e => this.handleQuery(e)}
-            />
-            {clearQueryButton}
-            {selectedTags}
-          </div>
-        </div>
-        <div className="classifieds-columns" id="classified-listings-results">
-          {allListings}
-        </div>
-        {nextPageButt}
-        {modal}
+        {shouldRenderModal && (
+          <ModalBackground onClick={this.handleCloseModal} />
+        )}
+        <ClassifiedFilters
+          categories={allCategories}
+          category={category}
+          onSelectCategory={this.selectCategory}
+          message={message}
+          onKeyUp={this.debouncedClassifiedListingSearch}
+          onClearQuery={this.clearQuery}
+          onRemoveTag={this.removeTag}
+          tags={tags}
+          onKeyPress={this.handleKeyPressedOnSelectedTags}
+          query={query}
+        />
+        <AllListings
+          listings={listings}
+          onAddTag={this.addTag}
+          onChangeCategory={this.selectCategory}
+          currentUserId={currentUserId}
+          onOpenModal={this.handleOpenModal}
+        />
+        {showNextPageButton && <NextPageButton onClick={this.loadNextPage} />}
+        {shouldRenderModal && (
+          <Modal
+            currentUserId={currentUserId}
+            onAddTag={this.addTag}
+            onChange={this.handleDraftingMessage}
+            onClick={this.handleCloseModal}
+            onChangeCategory={this.selectCategory}
+            onOpenModal={this.handleOpenModal}
+            onSubmit={this.handleSubmitMessage}
+            listing={openedListing}
+            message={message}
+          />
+        )}
       </div>
     );
   }

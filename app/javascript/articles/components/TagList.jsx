@@ -1,11 +1,12 @@
 import { h } from 'preact';
-import { tagPropTypes } from '../../src/components/common-prop-types';
+import { tagPropTypes } from '../../common-prop-types';
 
 export const TagList = ({ tags = [] }) => (
-  <div className="tags">
-    {tags.map(tag => (
-      <a href={`/t/${tag}`}>
-        <span className="tag">{`#${tag}`}</span>
+  <div className="crayons-story__tags">
+    {tags.map((tag) => (
+      <a className="crayons-tag" href={`/t/${tag}`}>
+        <span className="crayons-tag__prefix">#</span>
+        {tag}
       </a>
     ))}
   </div>

@@ -1,6 +1,6 @@
 class NotifyMailer < ApplicationMailer
   SUBJECTS = {
-    new_follower_email: "just followed you on dev.to".freeze
+    new_follower_email: "just followed you on #{ApplicationConfig['COMMUNITY_NAME']}".freeze
   }.freeze
 
   def new_reply_email(comment)
@@ -40,7 +40,7 @@ class NotifyMailer < ApplicationMailer
 
     @unread_notifications_count = NotificationCounter.new(@user).unread_notification_count
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_unread_notifications)
-    subject = "🔥 You have #{@unread_notifications_count} unread notifications on dev.to"
+    subject = "🔥 You have #{@unread_notifications_count} unread notifications on #{ApplicationConfig['COMMUNITY_NAME']}"
     mail(to: @user.email, subject: subject)
   end
 
@@ -66,6 +66,13 @@ class NotifyMailer < ApplicationMailer
     mail(to: params[:email_to], subject: params[:email_subject])
   end
 
+  def user_contact_email(params)
+    @user = User.find(params[:user_id])
+    @email_body = params[:email_body]
+    track utm_campaign: "user_contact"
+    mail(to: @user.email, subject: params[:email_subject])
+  end
+
   def new_message_email(direct_message)
     @message = direct_message
     @user = @message.direct_receiver
@@ -74,16 +81,27 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: subject)
   end
 
+  def channel_invite_email(membership, inviter)
+    @membership = membership
+    @inviter = inviter
+    subject = if @membership.role == "mod"
+                "You are invited to the #{@membership.chat_channel.channel_name} channel as moderator."
+              else
+                "You are invited to the #{@membership.chat_channel.channel_name} channel."
+              end
+    mail(to: @membership.user.email, subject: subject)
+  end
+
   def account_deleted_email(user)
     @name = user.name
-    subject = "dev.to - Account Deletion Confirmation"
+    subject = "#{ApplicationConfig['COMMUNITY_NAME']} - Account Deletion Confirmation"
     mail(to: user.email, subject: subject)
   end
 
   def account_deletion_requested_email(user, token)
     @name = user.name
     @token = token
-    subject = "dev.to - Account Deletion Requested"
+    subject = "#{ApplicationConfig['COMMUNITY_NAME']} - Account Deletion Requested"
     mail(to: user.email, subject: subject)
   end
 
@@ -94,10 +112,10 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: "The export of your content is ready")
   end
 
-  def tag_moderator_confirmation_email(user, tag_name)
-    @tag_name = tag_name
+  def tag_moderator_confirmation_email(user, tag)
+    @tag = tag
     @user = user
-    subject = "Congrats! You're the moderator for ##{tag_name}"
+    subject = "Congrats! You're the moderator for ##{@tag.name}"
     mail(to: @user.email, subject: subject)
   end
 

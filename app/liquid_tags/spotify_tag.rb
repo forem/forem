@@ -37,7 +37,7 @@ class SpotifyTag < LiquidTagBase
   end
 
   def generate_embed_link(parsed_uri)
-    parsed_uri.string.split(":")[1..-1].unshift("https://open.spotify.com/embed").join("/")
+    parsed_uri.string.split(":")[1..].unshift("https://open.spotify.com/embed").join("/")
   end
 
   def raise_error

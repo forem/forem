@@ -1,0 +1,26 @@
+<div class="row my-3" id="latestArticles">
+  <div class="card w-100">
+    <div class="card-header" id="articlesHeader">
+      <h2 class="d-inline">Latest Articles</h2>
+      <button class="btn btn-secondary float-right" type="button" data-toggle="collapse" data-target="#articlesBodyContainer" aria-expanded="false" aria-controls="articlesBodyContainer">
+        Toggle
+      </button>
+    </div>
+    <div id="articlesBodyContainer" class="collapse hide" aria-labelledby="articleHeader" data-parent="#latestArticles">
+      <div class="card-body" style="overflow: scroll; max-height: 500px;">
+        <% @new_articles.each do |article| %>
+          <% next if article.user.badge_achievements_count > 2 %>
+          <a href="<%= article.path %>"><%= article.title %></a>
+          <span class="float-right">
+            <a href="<%= article.path %>/mod" class="btn btn-secondary btn-sm">Mod</a>
+            <a href="<%= article.path %>/moderate" class="btn btn-secondary btn-sm">Internal</a>
+            <a href="<%= article.user.path %>" class="btn btn-secondary btn-sm">Profile</a>
+            <a href="/internal/users/<%= article.user_id %>" class="btn btn-secondary btn-sm">Internal User</a>
+            <a href="/internal/users/<%= article.user_id %>/edit" class="btn btn-danger btn-sm">Destructive Actions</a>
+          </span>
+          <hr>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,3 +1,5 @@
+require_relative "../lib/acts_as_taggable_on/tag.rb"
+
 class Tag < ActsAsTaggableOn::Tag
   attr_accessor :points
 
@@ -20,19 +22,34 @@ class Tag < ActsAsTaggableOn::Tag
             format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, allow_nil: true
   validates :category, inclusion: { in: ALLOWED_CATEGORIES }
 
-  validate :validate_alias
-  validate :validate_name
+  validate :validate_alias_for, if: :alias_for?
+  validate :validate_name, if: :name?
+
   before_validation :evaluate_markdown
   before_validation :pound_it
+
   before_save :calculate_hotness_score
+  before_save :mark_as_updated
+
   after_commit :bust_cache
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :sync_related_elasticsearch_docs, on: [:update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
-  before_save :mark_as_updated
+
+  scope :eager_load_serialized_data, -> {}
 
   include Searchable
   SEARCH_SERIALIZER = Search::TagSerializer
   SEARCH_CLASS = Search::Tag
+  DATA_SYNC_CLASS = DataSync::Elasticsearch::Tag
+
+  # This model doesn't inherit from ApplicationRecord so this has to be included
+  include Purgeable
+
+  # possible social previews templates for articles with a particular tag
+  def self.social_preview_templates
+    Rails.root.join("app/views/social_previews/articles").children.map { |ch| File.basename(ch, ".html.erb") }
+  end
 
   def submission_template_customized(param_0 = nil)
     submission_template&.gsub("PARAM_0", param_0)
@@ -79,7 +96,7 @@ class Tag < ActsAsTaggableOn::Tag
     self.hotness_score = Article.tagged_with(name).
       where("articles.featured_number > ?", 7.days.ago.to_i).
       map do |article|
-        (article.comments_count * 14) + (article.reactions_count * 4) + rand(6) + ((taggings_count + 1) / 2)
+        (article.comments_count * 14) + article.score + rand(6) + ((taggings_count + 1) / 2)
       end.
       sum
   end
@@ -88,8 +105,10 @@ class Tag < ActsAsTaggableOn::Tag
     Tags::BustCacheWorker.perform_async(name)
   end
 
-  def validate_alias
-    errors.add(:tag, "alias_for must refer to existing tag") if alias_for.present? && !Tag.find_by(name: alias_for)
+  def validate_alias_for
+    return if Tag.exists?(name: alias_for)
+
+    errors.add(:tag, "alias_for must refer to an existing tag")
   end
 
   def pound_it

@@ -31,7 +31,7 @@ RSpec.describe Sidekiq::HoneycombMiddleware do
       TestSidekiqWorker.perform_async("dont fail")
     end
 
-    collected_data = Honeycomb.client.send("client").events.map(&:data).detect { |h| h["sidekiq.args"] == expected_hash["sidekiq.args"] }
+    collected_data = Honeycomb.libhoney.events.map(&:data).detect { |h| h["sidekiq.args"] == expected_hash["sidekiq.args"] }
     expect(collected_data).to include(expected_hash)
   end
 
@@ -51,7 +51,7 @@ RSpec.describe Sidekiq::HoneycombMiddleware do
         TestSidekiqWorker.perform_async
       end
 
-      collected_data = Honeycomb.client.send("client").events.map(&:data).detect { |h| h["sidekiq.args"] == expected_hash["sidekiq.args"] }
+      collected_data = Honeycomb.libhoney.events.map(&:data).detect { |h| h["sidekiq.args"] == expected_hash["sidekiq.args"] }
       expect(collected_data).to include(expected_hash)
     end
   end
@@ -73,7 +73,7 @@ RSpec.describe Sidekiq::HoneycombMiddleware do
         expect { TestSidekiqWorker.perform_async("fail") }.to raise_error(StandardError)
       end
 
-      collected_data = Honeycomb.client.send("client").events.map(&:data).detect { |h| h["sidekiq.args"] == error_hash["sidekiq.args"] }
+      collected_data = Honeycomb.libhoney.events.map(&:data).detect { |h| h["sidekiq.args"] == error_hash["sidekiq.args"] }
       expect(collected_data).to include(error_hash)
     end
   end

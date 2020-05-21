@@ -10,9 +10,9 @@ version 5.2.3, due for an upgrade to 6.x.x.
 
 To decrease loading time, we use edge-caching extensively. Taking advantage of
 edge-caching means that we do not go all the way to the server to render every
-page. Therefore, on pages that are cached we don't have access to helper methods
-like `current_user`. A page is edge-cached through our CDN ([Fastly][fastly]) if
-the controller contains this line for the relevant action:
+page. However this means that, on cached pages, we don't have access to helper
+methods like `current_user`. A page is edge-cached through our CDN
+([Fastly][fastly]) if the controller contains this line for the relevant action:
 
 ```
 before_action :set_cache_control_headers
@@ -68,9 +68,9 @@ Rails][fastly_rails] docs, but we bust specific URLs via `CacheBuster`.
 
 The home feed is based on a combination of recent collective posts that are
 cached and delivered the same to everyone in the HTML, and additional articles
-fetched from an Algolia index after page load. To determine which posts a user
-sees, they are ranked based on the user's followed tags, followed users, and
-relative weights for each tag. Additional fetched articles also follow this
+fetched from an Elasticsearch index after page load. To determine which posts a
+user sees, they are ranked based on the user's followed tags, followed users,
+and relative weights for each tag. Additional fetched articles also follow this
 general pattern.
 
 Currently, the top post on the home feed, which must have a cover image, is
@@ -84,7 +84,7 @@ making full-page requests. This approach is similar to the one used by the Rails
 gem `Turbolinks`, but our approach is more lightweight. The library is modified
 to work specifically with this Rails app and does not swap out reused elements
 like the navigation bar or the footer. The code for this functionality is
-viewable in `app/assets/javascripb/base.js.erb`.
+viewable in `app/assets/javascripts/base.js.erb`.
 
 There are a few caveats regarding this approach. Using our approach means a
 non-trivial amount of functionality is reloaded on page change. A similar amount

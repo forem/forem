@@ -32,12 +32,27 @@ class MailchimpBot
             ARTICLES: user.articles.size,
             COMMENTS: user.comments.size,
             ONBOARD_PK: user.onboarding_package_requested.to_s,
-            EXPERIENCE: user.experience_level || 666,
-            COUNTRY: user.shipping_country.to_s,
-            STATE: user.shipping_state.to_s,
-            POSTAL_ZIP: user.shipping_postal_code.to_s
+            EXPERIENCE: user.experience_level || 666
           }
         },
+      )
+
+      success = true
+    rescue Gibbon::MailChimpError => e
+      # If user was previously subscribed, set their status to "pending"
+      return resubscribe_to_newsletter if previously_subcribed?(e)
+
+      report_error(e)
+    end
+    success
+  end
+
+  def resubscribe_to_newsletter
+    success = false
+
+    begin
+      gibbon.lists(SiteConfig.mailchimp_newsletter_id).members(target_md5_email).upsert(
+        body: { status: "pending" },
       )
       success = true
     rescue Gibbon::MailChimpError => e
@@ -167,11 +182,15 @@ class MailchimpBot
 
   def report_error(exception)
     Rails.logger.error(exception)
-    DatadogStatsClient.increment("mailchimp.errors", tags: [action: "failed", user_id: user.id, source: "gibbon-gem"])
+    DatadogStatsClient.increment("mailchimp.errors", tags: ["action:failed", "user_id:#{user.id}", "source:gibbon-gem"])
   end
 
   def target_md5_email
     email = saved_changes["unconfirmed_email"] ? saved_changes["email"][0] : user.email
     md5_email(email)
+  end
+
+  def previously_subcribed?(error)
+    error.title.match?(/Member In Compliance State/)
   end
 end

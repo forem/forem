@@ -1,7 +1,5 @@
-# frozen_string_literal: true
-
 class ArticleWithVideoCreationService
-  VIDEO_SERVICE_URL = "https://dw71fyauz7yz9.cloudfront.net"
+  VIDEO_SERVICE_URL = "https://dw71fyauz7yz9.cloudfront.net".freeze
 
   def initialize(article_params, current_user)
     @article_params = article_params

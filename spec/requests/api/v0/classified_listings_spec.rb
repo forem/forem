@@ -1,6 +1,13 @@
 require "rails_helper"
 
-RSpec.describe "Api::V0::Listings" do
+RSpec.describe "Api::V0::ClassifiedListings", type: :request do
+  let_it_be_readonly(:cfp_category) do
+    create(:classified_listing_category, :cfp)
+  end
+  let_it_be_readonly(:edu_category) do
+    create(:classified_listing_category)
+  end
+
   shared_context "when user is authorized" do
     let(:api_secret) { create(:api_secret) }
     let(:user) { api_secret.user }
@@ -12,18 +19,14 @@ RSpec.describe "Api::V0::Listings" do
       {
         title: "Title",
         body_markdown: "Markdown text",
-        category: "cfp",
-        tags: [],
-        contact_via_connect: true
+        classified_listing_category_id: cfp_category.id
       }
     end
     let(:draft_params) do
       {
         title: "Title draft",
         body_markdown: "Markdown draft text",
-        category: "cfp",
-        tags: [],
-        contact_via_connect: true,
+        classified_listing_category_id: cfp_category.id,
         action: "draft"
       }
     end
@@ -40,9 +43,15 @@ RSpec.describe "Api::V0::Listings" do
     let(:user2) { create(:user) }
 
     before do
-      create_list(:classified_listing, 3, user: user1, category: "cfp")
-      create_list(:classified_listing, 4, user: user2)
+      create_list(:classified_listing, 3, user: user1, classified_listing_category_id: cfp_category.id)
+      create_list(:classified_listing, 4, user: user2, classified_listing_category_id: edu_category.id)
     end
+  end
+
+  def user_admin_organization(user)
+    org = create(:organization)
+    create(:organization_membership, user_id: user.id, organization_id: org.id, type_of_user: "admin")
+    org
   end
 
   describe "GET /api/listings" do
@@ -87,6 +96,14 @@ RSpec.describe "Api::V0::Listings" do
       ).to_set
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
+
+    it "does not return unpublished listings" do
+      listing = user1.classified_listings.last
+      listing.update(published: false)
+
+      get api_classified_listings_path
+      expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
+    end
   end
 
   describe "GET /api/listings/category/:category" do
@@ -97,13 +114,91 @@ RSpec.describe "Api::V0::Listings" do
       expect(response).to have_http_status(:ok)
       expect(response.parsed_body.size).to eq(3)
     end
+
+    it "does not return unpublished listings" do
+      category = "cfp"
+      listing = user1.classified_listings.in_category(category).last
+      listing.update(published: false)
+
+      get api_classified_listings_category_path(category)
+      expect(response.parsed_body.detect { |l| l["published"] == false }).to be_nil
+    end
   end
 
   describe "GET /api/listings/:id" do
     include_context "with 7 listings and 2 user"
-    let(:listing) { ClassifiedListing.where(category: "cfp").last }
+    let(:listing) { ClassifiedListing.in_category("cfp").last }
 
-    it "displays a unique listing" do
+    context "when unauthenticated" do
+      it "returns a published listing" do
+        listing.update(published: true)
+
+        get api_classified_listing_path(listing.id)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns a published listing on behalf of an organization" do
+        org = user_admin_organization(listing.user)
+        listing.update(published: true, organization: org)
+
+        get api_classified_listing_path(listing.id)
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not return an unpublished listing" do
+        listing.update(published: false)
+
+        get api_classified_listing_path(listing.id)
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when unauthorized" do
+      let_it_be_readonly(:headers) { { "api-key" => "invalid api key" } }
+
+      it "returns a published listing" do
+        listing.update(published: true)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not return an unpublished listing" do
+        listing.update(published: false)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context "when authorized" do
+      include_context "when user is authorized"
+
+      let(:headers) { { "api-key" => api_secret.secret } }
+
+      it "returns a published listing" do
+        listing.update(published: true)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "does not return an unpublished listing belonging to another user" do
+        listing.update(published: false, user: user1)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it "returns an unpublished listing belonging to the authenticated user" do
+        listing.update(published: false, user: api_secret.user)
+
+        get api_classified_listing_path(listing.id), headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    it "returns the correct listing format" do
       get api_classified_listing_path(listing.id)
 
       expect(response).to have_http_status(:ok)
@@ -135,43 +230,47 @@ RSpec.describe "Api::V0::Listings" do
       post api_classified_listings_path, params: { classified_listing: params }.to_json, headers: headers
     end
 
-    def user_admin_organization(user)
-      org = create(:organization)
-      create(:organization_membership, user_id: user.id, organization_id: org.id, type_of_user: "admin")
-      org
-    end
-
-    describe "user cannot proceed if not properly unauthorizedœ" do
+    describe "user cannot proceed if not properly unauthorized" do
       let(:api_secret) { create(:api_secret) }
 
       it "fails with no api key" do
         post api_classified_listings_path, headers: { "content-type" => "application/json" }
-        expect(response). to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:unauthorized)
       end
 
       it "fails with the wrong api key" do
         post api_classified_listings_path, headers: { "api-key" => "foobar", "content-type" => "application/json" }
-        expect(response). to have_http_status(:unauthorized)
+        expect(response).to have_http_status(:unauthorized)
       end
     end
 
     describe "user must have enough credit to create a classified listing" do
       include_context "when user is authorized"
+      include_context "when param list is valid"
 
       it "fails to create a classified listing if user does not have enough credit" do
-        post_classified_listing(category: "cfp")
+        post_classified_listing(listing_params)
         expect(response).to have_http_status(:payment_required)
       end
 
       it "fails to create a classifiedlisting if the org does not have enough credit" do
         org = user_admin_organization(user)
-        post_classified_listing(category: "cfp", organization_id: org.id)
+        post_classified_listing(
+          **listing_params,
+          organization_id: org.id,
+        )
         expect(response).to have_http_status(:payment_required)
       end
     end
 
     describe "user cannot create a classified with a request lacking mandatory parameters" do
-      let(:invalid_params) { { title: "Title", category: "cfp" } }
+      let(:invalid_params) do
+        {
+          title: "Title",
+          category: "cfp",
+          classified_listing_category_id: cfp_category.id
+        }
+      end
 
       include_context "when user is authorized"
       include_context "when user has enough credit"
@@ -181,9 +280,21 @@ RSpec.describe "Api::V0::Listings" do
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
-      it "fails if a mandatory param is missing" do
+      it "fails if body_markdown is missing" do
         post_classified_listing(invalid_params)
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if category is missing" do
+        post_classified_listing(title: "Title", body_markdown: "body")
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if category is invalid" do
+        post_classified_listing(title: "Title", body_markdown: "body", category: "unknown")
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body.dig("errors", "classified_listing_category").first).
+          to match(/must exist/)
       end
 
       it "does not subtract credits or create a listing if the listing is not valid" do
@@ -200,8 +311,9 @@ RSpec.describe "Api::V0::Listings" do
 
       it "properly deducts the amount of credits" do
         post_classified_listing(listing_params)
-        listing_cost = ClassifiedListing.categories_available[:cfp][:cost]
-        expect(user.credits.spent.size).to eq(listing_cost)
+        expect(response).to have_http_status(:created)
+
+        expect(user.credits.spent.size).to eq(cfp_category.cost)
       end
 
       it "creates a listing draft under the org" do
@@ -221,12 +333,18 @@ RSpec.describe "Api::V0::Listings" do
 
       it "does not create a listing draft for an org not belonging to the user" do
         org = create(:organization)
-        expect { post_classified_listing(draft_params.merge(organization_id: org.id)) }.to raise_error(Pundit::NotAuthorizedError)
+        expect do
+          post_classified_listing(draft_params.merge(organization_id: org.id))
+          expect(response).to have_http_status(:unauthorized)
+        end.to change(ClassifiedListing, :count).by(0)
       end
 
       it "does not create a listing for an org not belonging to the user" do
         org = create(:organization)
-        expect { post_classified_listing(listing_params.merge(organization_id: org.id)) }.to raise_error(Pundit::NotAuthorizedError)
+        expect do
+          post_classified_listing(listing_params.merge(organization_id: org.id))
+          expect(response).to have_http_status(:unauthorized)
+        end.to change(ClassifiedListing, :count).by(0)
       end
 
       it "assigns the spent credits to the listing" do
@@ -237,15 +355,10 @@ RSpec.describe "Api::V0::Listings" do
       end
 
       it "cannot create a draft due to internal error" do
-        listing = create(:classified_listing, user_id: user.id)
-        allow(ClassifiedListing).to receive_messages(cost_by_category: nil, new: listing)
         allow(Organization).to receive(:find_by)
-        allow(listing).to receive(:save) do
-          listing.errors.add(:base)
-          false
-        end
-        post_classified_listing(draft_params)
-        expect(response.parsed_body["errors"]["base"]).to eq(["is invalid"])
+        post_classified_listing(draft_params.except(:classified_listing_category_id))
+        expect(response.parsed_body.dig("errors", "classified_listing_category").first).
+          to match(/must exist/)
         expect(response).to have_http_status(:unprocessable_entity)
       end
 
@@ -278,9 +391,12 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(listing_params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(response.parsed_body["id"]).title).to eq("Title")
-        expect(ClassifiedListing.find(response.parsed_body["id"]).body_markdown).to eq("Markdown text")
-        expect(ClassifiedListing.find(response.parsed_body["id"]).category).to eq("cfp")
+
+        listing = ClassifiedListing.find(response.parsed_body["id"])
+
+        expect(listing.title).to eq(listing_params[:title])
+        expect(listing.body_markdown).to eq(listing_params[:body_markdown])
+        expect(listing.category).to eq(cfp_category.slug)
       end
 
       it "creates a classified listing with a location" do
@@ -298,8 +414,11 @@ RSpec.describe "Api::V0::Listings" do
           post_classified_listing(params)
           expect(response).to have_http_status(:created)
         end.to change(ClassifiedListing, :count).by(1)
-        expect(ClassifiedListing.find(response.parsed_body["id"]).cached_tag_list).to eq("discuss, javascript")
-        expect(ClassifiedListing.find(response.parsed_body["id"]).contact_via_connect).to eq(true)
+
+        listing = ClassifiedListing.find(response.parsed_body["id"])
+
+        expect(listing.cached_tag_list).to eq("discuss, javascript")
+        expect(listing.contact_via_connect).to be(true)
       end
     end
 
@@ -325,7 +444,7 @@ RSpec.describe "Api::V0::Listings" do
 
     let(:user) { create(:user) }
     let(:another_user) { create(:user) }
-    let(:listing) { create(:classified_listing, user_id: user.id) }
+    let!(:listing) { create(:classified_listing, user: user) }
     let(:another_user_listing) { create(:classified_listing, user_id: another_user.id) }
     let(:listing_draft) { create(:classified_listing, user: user) }
     let(:organization) { create(:organization) }
@@ -337,7 +456,7 @@ RSpec.describe "Api::V0::Listings" do
       org_listing_draft.update_columns(bumped_at: nil, published: false)
     end
 
-    describe "user cannot proceed if not properly unauthorizedœ" do
+    describe "user cannot proceed if not properly unauthorized" do
       let(:api_secret) { create(:api_secret) }
 
       it "fails with no api key" do
@@ -384,7 +503,7 @@ RSpec.describe "Api::V0::Listings" do
       end
 
       it "bumps the listing and subtract credits" do
-        cost = ClassifiedListing.cost_by_category(listing.category)
+        cost = listing.cost
         create_list(:credit, cost, user: user)
         previous_bumped_at = listing.bumped_at
         expect do
@@ -394,7 +513,7 @@ RSpec.describe "Api::V0::Listings" do
       end
 
       it "bumps the org listing using org credits before user credits" do
-        cost = ClassifiedListing.cost_by_category(org_listing.category)
+        cost = org_listing.cost
         create_list(:credit, cost, organization: organization)
         create_list(:credit, cost, user: user)
         previous_bumped_at = org_listing.bumped_at
@@ -405,7 +524,7 @@ RSpec.describe "Api::V0::Listings" do
       end
 
       it "bumps the org listing using user credits if org credits insufficient and user credits are" do
-        cost = ClassifiedListing.cost_by_category(org_listing.category)
+        cost = org_listing.cost
         create_list(:credit, cost, user: user)
         previous_bumped_at = org_listing.bumped_at
         expect do
@@ -419,7 +538,7 @@ RSpec.describe "Api::V0::Listings" do
       include_context "when user is authorized"
 
       it "publishes a draft and charges user credits if first publish" do
-        cost = ClassifiedListing.cost_by_category(listing_draft.category)
+        cost = listing_draft.cost
         create_list(:credit, cost, user: user)
         expect do
           put_classified_listing(listing_draft.id, action: "publish")
@@ -427,14 +546,14 @@ RSpec.describe "Api::V0::Listings" do
       end
 
       it "publishes a draft and ensures published column is true" do
-        cost = ClassifiedListing.cost_by_category(listing_draft.category)
+        cost = listing_draft.cost
         create_list(:credit, cost, user: user)
         put_classified_listing(listing_draft.id, action: "publish")
         expect(listing_draft.reload.published).to eq(true)
       end
 
       it "publishes an org draft and charges org credits if first publish" do
-        cost = ClassifiedListing.cost_by_category(org_listing_draft.category)
+        cost = org_listing_draft.cost
         create_list(:credit, cost, organization: organization)
         expect do
           put_classified_listing(org_listing_draft.id, action: "publish")
@@ -442,7 +561,7 @@ RSpec.describe "Api::V0::Listings" do
       end
 
       it "publishes an org draft and ensures published column is true" do
-        cost = ClassifiedListing.cost_by_category(org_listing_draft.category)
+        cost = org_listing_draft.cost
         create_list(:credit, cost, organization: organization)
         put_classified_listing(org_listing_draft.id, action: "publish")
         expect(org_listing_draft.reload.published).to eq(true)
@@ -481,9 +600,17 @@ RSpec.describe "Api::V0::Listings" do
       include_context "when user is authorized"
       include_context "when user has enough credit"
 
-      it "returns HTTP 422 if no params given" do
+      it "fails if no params have been given" do
         put_classified_listing(listing.id)
         expect(response).to have_http_status(:unprocessable_entity)
+      end
+
+      it "fails if category is invalid" do
+        max_id = ClassifiedListingCategory.maximum(:id)
+        put_classified_listing(listing.id, title: "New title", classified_listing_category_id: max_id + 1)
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response.parsed_body.dig("errors", "classified_listing_category").first).
+          to match(/must exist/)
       end
 
       it "updates the title of his listing" do
@@ -507,9 +634,36 @@ RSpec.describe "Api::V0::Listings" do
       end
 
       it "cannot update another user listing" do
-        expect do
-          put_classified_listing(another_user_listing.id, title: "Test for a new title")
-        end.to raise_error(Pundit::NotAuthorizedError)
+        put_classified_listing(another_user_listing.id, title: "Test for a new title")
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "updates details if the listing has been bumped in the last 24 hours" do
+        listing.update!(bumped_at: 3.minutes.ago)
+
+        new_title = Faker::Book.title
+
+        put_classified_listing(listing.id, title: new_title)
+        expect(listing.reload.title).to eq(new_title)
+      end
+
+      it "does not update details if the listing hasn't been bumped in the last 24 hours" do
+        listing.update!(bumped_at: 24.hours.ago)
+
+        new_title = Faker::Book.title
+
+        put_classified_listing(listing.id, title: new_title)
+        expect(listing.reload.title).to eq(listing.title)
+      end
+
+      it "does not update a published listing" do
+        listing.update!(bumped_at: nil, published: true)
+
+        old_title = listing.title
+        new_title = Faker::Book.title
+
+        put_classified_listing(listing.id, title: new_title)
+        expect(listing.reload.title).to eq(old_title)
       end
     end
   end

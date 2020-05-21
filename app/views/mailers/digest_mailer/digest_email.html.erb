@@ -1,21 +1,20 @@
 <h1 style="text-align: center;">
-  DEV Digest
+  <%= community_name %> Digest
 </h1>
 <h4 style="text-align: center;">Recent posts you might find valuable based on your interests ❤️</h4>
 <ul>
   <% @articles.each do |article| %>
     <li style="margin:18px auto">
-      <a href="https://dev.to<%= article.path %>" style="font-weight: bold;color:#0045ff;font-size:calc(0.93em + 0.2vw);"><%= article.title.strip %></a> <%= truncate(article.description, length: 120) %>
+      <a href="<%= article_url(article) %>" style="font-weight: bold;color:#0045ff;font-size:calc(0.93em + 0.2vw);"><%= article.title.strip %></a> <%= truncate(article.description, length: 120) %>
     </li>
   <% end %>
      <hr />
 </ul>
 
-
 <div>
-  👋 <b>Looking for work?</b> <a href="https://dev.to/listings/jobs">Browse job openings</a> or create an <a href="https://dev.to/listings/forhire">available for hire</a> listing.
+  👋 <b>Looking for work?</b> <a href="<%= app_url("/listings/jobs") %>">Browse job openings</a> or create an <a href="<%= app_url("/listings/forhire") %>">available for hire</a> listing.
   <br />
-  🔍 <b>Hiring developers?</b> Post your position(s) on <a href="https://dev.to/page/post-a-job">DEV Listings</a>.
+  🔍 <b>Hiring <%= community_members_label %>?</b> Post your position(s) on <a href="<%= app_url(page_post_a_job_url) %>"><%= community_name %> Listings</a>.
 </div>
 
 <center style="margin-top:50px;">
@@ -25,16 +24,16 @@
         You can now add your coding experience level to your account in order to receive more relevant content.
       </b>
       <br /><br />
-      Visit <b><a href="https://dev.to/settings/misc" style="text-decoration: none;">your settings</a></b> to enter your experience level on a scale of 1-10.
+      Visit <b><a href="<%= app_url(user_settings_path(:misc)) %>" style="text-decoration: none;">your settings</a></b> to enter your experience level on a scale of 1-10.
       <br /><br />
       You can change it any time in the future. Happy coding!
     <% elsif @user.follows.size == 0 %>
       <b>
-        DEV Digest is a new periodic email featuring the best posts from our community of developers.
+        <%= community_name %> Digest is a new periodic email featuring the best posts from our community of <%= community_members_label %>.
       </b>
       <br /><br />
       Your digest is not yet customized. Follow the people and technologies on
-      <a href="https://dev.to" style="text-decoration: none;">dev.to</a> that interest you in order to receive the most relevant posts in your inbox.
+      <a href="<%= app_url %>" style="text-decoration: none;"><%= community_name %></a> that interest you in order to receive the most relevant posts in your inbox.
     <% else %>
       <% tip_rand = rand(5) %>
       <% if tip_rand == 0 %>
@@ -47,9 +46,9 @@
         You're a better dev today than you were yesterday.
       <% elsif tip_rand == 4 %>
         <% if @user.articles.published.any? %>
-          Can't wait to see <b>your</b> next DEV post!
+          Can't wait to see <b>your</b> next <%= community_name %> post!
         <% else %>
-          Can't wait to see <b>your</b> first DEV post!
+          Can't wait to see <b>your</b> first <%= community_name %> post!
         <% end %>
       <% end %>
     <% end %>

@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 Doorkeeper.configure do
   # Change the ORM that doorkeeper will use (requires ORM extensions installed).
   # Check the list of supported ORMs here: https://github.com/doorkeeper-gem/doorkeeper#orms
@@ -213,7 +211,7 @@ Doorkeeper.configure do
   # https://doorkeeper.gitbook.io/guides/ruby-on-rails/scopes
   #
   default_scopes :public, :read_articles
-  # optional_scopes :write, :update
+  optional_scopes :write_articles
 
   # Allows to restrict only certain scopes for grant_type.
   # By default, all the scopes will be available for all the grant types.
@@ -228,7 +226,7 @@ Doorkeeper.configure do
   # not in configuration, i.e. +default_scopes+ or +optional_scopes+.
   # (disabled by default)
   #
-  # enforce_configured_scopes
+  enforce_configured_scopes
 
   # Change the way client credentials are retrieved from the request object.
   # By default it retrieves first from the `HTTP_AUTHORIZATION` header, then
@@ -259,7 +257,7 @@ Doorkeeper.configure do
   # force_ssl_in_redirect_uri { |uri| uri.host != 'localhost' }
 
   # Specify what redirect URI's you want to block during Application creation.
-  # Any redirect URI is whitelisted by default.
+  # Any redirect URI is enabled by default.
   #
   # You can use this option in order to forbid URI's with 'javascript' scheme
   # for example.

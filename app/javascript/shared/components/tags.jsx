@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import { fetchSearch } from '../../utilities/search';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -28,6 +29,7 @@ const LETTERS_NUMBERS = /[a-z0-9]/i;
 class Tags extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       selectedIndex: -1,
       searchResults: [],
@@ -93,8 +95,8 @@ class Tags extends Component {
     const { defaultValue } = this.props;
     return defaultValue
       .split(',')
-      .map(item => item !== undefined && item.trim())
-      .filter(item => item.length > 0);
+      .map((item) => item !== undefined && item.trim())
+      .filter((item) => item.length > 0);
   }
 
   get isTopOfSearchResults() {
@@ -157,7 +159,7 @@ class Tags extends Component {
     return [start, end];
   };
 
-  handleKeyDown = e => {
+  handleKeyDown = (e) => {
     const component = this;
     const { maxTags } = this.props;
     if (component.selected.length === maxTags && e.key === KEYS.COMMA) {
@@ -203,7 +205,7 @@ class Tags extends Component {
     }
   };
 
-  handleRulesClick = e => {
+  handleRulesClick = (e) => {
     e.preventDefault();
     const { showingRulesForTag } = this.state;
     if (showingRulesForTag === e.target.dataset.content) {
@@ -213,7 +215,7 @@ class Tags extends Component {
     }
   };
 
-  handleTagClick = e => {
+  handleTagClick = (e) => {
     if (e.target.className === 'articleform__tagsoptionrulesbutton') {
       return;
     }
@@ -227,7 +229,7 @@ class Tags extends Component {
     this.insertTag(e.currentTarget.dataset.content);
   };
 
-  handleInput = e => {
+  handleInput = (e) => {
     let { value } = e.target;
     // If we start typing immediately after a comma, add a space
     // before what we typed.
@@ -275,7 +277,7 @@ class Tags extends Component {
     return `${value.slice(0, position)} ${value.slice(position, value.length)}`;
   };
 
-  handleTagEnter = e => {
+  handleTagEnter = (e) => {
     if (e.key === KEYS.RETURN) {
       this.handleTagClick();
     }
@@ -305,7 +307,7 @@ class Tags extends Component {
 
   search(query) {
     if (query === '') {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           this.resetSearchResults();
           resolve();
@@ -313,36 +315,30 @@ class Tags extends Component {
       });
     }
     const { listing } = this.props;
-    return fetch(`/search/tags?name=${query}`, {
-      method: 'GET',
-      headers: {
-        Accept: 'application/json',
-        'X-CSRF-Token': window.csrfToken,
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-    })
-      .then(response => response.json())
-      .then(response => {
-        if (listing === true) {
-          const { additionalTags } = this.state;
-          const { category } = this.props;
-          const additionalItems = (additionalTags[category] || []).filter(t =>
-            t.includes(query),
-          );
-          const resultsArray = response.result;
-          additionalItems.forEach(t => {
-            if (!resultsArray.includes(t)) {
-              resultsArray.push({ name: t });
-            }
-          });
-        }
-        // updates searchResults array according to what is being typed by user
-        // allows user to choose a tag when they've typed the partial or whole word
-        this.setState({
-          searchResults: response.result,
+
+    const dataHash = { name: query };
+    const responsePromise = fetchSearch('tags', dataHash);
+
+    return responsePromise.then((response) => {
+      if (listing === true) {
+        const { additionalTags } = this.state;
+        const { category } = this.props;
+        const additionalItems = (additionalTags[category] || []).filter((t) =>
+          t.includes(query),
+        );
+        const resultsArray = response.result;
+        additionalItems.forEach((t) => {
+          if (!resultsArray.includes(t)) {
+            resultsArray.push({ name: t });
+          }
         });
+      }
+      // updates searchResults array according to what is being typed by user
+      // allows user to choose a tag when they've typed the partial or whole word
+      this.setState({
+        searchResults: response.result,
       });
+    });
   }
 
   resetSearchResults() {
@@ -352,13 +348,13 @@ class Tags extends Component {
   }
 
   moveUpInSearchResults() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       selectedIndex: prevState.selectedIndex - 1,
     }));
   }
 
   moveDownInSearchResults() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       selectedIndex: prevState.selectedIndex + 1,
     }));
   }
@@ -402,6 +398,7 @@ class Tags extends Component {
           className={`${classPrefix}__tagrules--${
             showingRulesForTag === tag.name ? 'active' : 'inactive'
           }`}
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: tag.rules_html }}
         />
       </div>
@@ -431,11 +428,12 @@ class Tags extends Component {
         <input
           id="tag-input"
           type="text"
-          ref={t => {
+          ref={(t) => {
             this.textArea = t;
             return this.textArea;
           }}
           className={`${classPrefix}__tags`}
+          name="classified_listing[tag_list]"
           placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
           autoComplete="off"
           value={defaultValue}

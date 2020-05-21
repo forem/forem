@@ -13,9 +13,13 @@ namespace :search do
   task destroy: :environment do
     if Rails.env.production?
       puts "Will NOT destroy indexes in production"
-      exit
+      next
     end
 
-    SearchClient.indices.delete(index: "*")
+    Search::Cluster.delete_indexes
+  end
+
+  if %(development).include?(Rails.env)
+    Rake::Task["db:drop"].enhance(["search:destroy"])
   end
 end

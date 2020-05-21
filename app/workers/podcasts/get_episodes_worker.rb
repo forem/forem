@@ -4,8 +4,11 @@ module Podcasts
 
     sidekiq_options queue: :high_priority, retry: 10
 
-    # podcast_data should be a Hash with keys :podcast_id, :limit, and :force_update
-    # :limit and :force_update are both optional - there are default values
+    # @param podcast_data [Hash]
+    #   * :podcast_id [Integer]
+    #   * :limit [Integer] (1_000) - number of episodes that will be fetched for this podcast
+    #   * :force_update [Integer] (false) - if set to true, existing episodes' urls will be re-checked
+    #                                       the episodes' `https` and `reachable` fields will be updated accordingly if needed
     def perform(podcast_data = {})
       # Sidekiq turns arguments into Strings so the Ruby keyword argument sorcery doesn't work here
       # prevent any mismatch between String keys and Symbol keys

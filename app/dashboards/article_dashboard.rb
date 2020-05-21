@@ -15,6 +15,8 @@ class ArticleDashboard < Administrate::BaseDashboard
     organization: Field::BelongsTo,
     id: Field::Number,
     title: Field::String,
+    search_optimized_title_preamble: Field::String,
+    search_optimized_description_replacement: Field::String,
     body_html: Field::Text,
     body_markdown: Field::Text,
     slug: Field::String,
@@ -26,25 +28,19 @@ class ArticleDashboard < Administrate::BaseDashboard
     published: Field::Boolean,
     featured: Field::Boolean,
     approved: Field::Boolean,
-    allow_small_edits: Field::Boolean,
-    allow_big_edits: Field::Boolean,
     featured_number: Field::Number,
     password: Field::String,
     published_at: Field::DateTime,
     social_image: Field::String,
     collection: Field::BelongsTo,
-    collection_position: Field::Number,
-    name_within_collection: Field::String,
     show_comments: Field::Boolean,
     main_image_background_hex_color: Field::String,
-    ids_for_suggested_articles: Field::String,
     comments: Field::HasMany,
     video: Field::String,
     video_code: Field::String,
     video_source_url: Field::String,
     video_thumbnail_url: Field::String,
-    video_closed_caption_track_url: Field::String,
-    main_tag_name_for_social: Field::String
+    video_closed_caption_track_url: Field::String
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -73,6 +69,8 @@ class ArticleDashboard < Administrate::BaseDashboard
     third_user_id
     organization
     title
+    search_optimized_title_preamble
+    search_optimized_description_replacement
     body_markdown
     slug
     social_image
@@ -83,17 +81,13 @@ class ArticleDashboard < Administrate::BaseDashboard
     password
     published_at
     collection
-    collection_position
-    name_within_collection
     show_comments
     main_image_background_hex_color
-    ids_for_suggested_articles
     video
     video_code
     video_source_url
     video_thumbnail_url
     video_closed_caption_track_url
-    main_tag_name_for_social
   ].freeze
 
   # Overwrite this method to customize how articles are displayed

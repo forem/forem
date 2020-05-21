@@ -1,6 +1,71 @@
 class RunkitTag < Liquid::Block
   PARTIAL = "liquids/runkit".freeze
 
+  SCRIPT = <<~JAVASCRIPT.freeze
+    function activateRunkitTags() {
+      if (!areAnyRunkitTagsPresent())
+        return
+
+      var checkRunkit = setInterval(function() {
+        try {
+          dynamicallyLoadRunkitLibrary()
+
+          if (typeof(RunKit) === 'undefined') {
+            return
+          }
+
+          replaceTagContentsWithRunkitWidget()
+          clearInterval(checkRunkit);
+        } catch(e) {
+          console.error(e);
+          clearInterval(checkRunkit);
+        }
+      }, 200);
+    }
+
+    function isRunkitTagAlreadyActive(runkitTag) {
+      return runkitTag.querySelector("iframe") !== null;
+    };
+
+    function areAnyRunkitTagsPresent() {
+      var presentRunkitTags = document.getElementsByClassName("runkit-element");
+
+      return presentRunkitTags.length > 0
+    }
+
+    function replaceTagContentsWithRunkitWidget() {
+      var targets = document.getElementsByClassName("runkit-element");
+      for (var i = 0; i < targets.length; i++) {
+        if (isRunkitTagAlreadyActive(targets[i])) {
+          continue;
+        }
+
+        var wrapperContent = targets[i].textContent;
+        if (/^(\<iframe src)/.test(wrapperContent) === false) {
+          if (targets[i].children.length > 0) {
+            var preamble = targets[i].children[0].textContent;
+            var content = targets[i].children[1].textContent;
+            targets[i].innerHTML = "";
+            var notebook = RunKit.createNotebook({
+              element: targets[i],
+              source: content,
+              preamble: preamble
+            });
+          }
+        }
+      }
+    };
+
+    function dynamicallyLoadRunkitLibrary() {
+      if (typeof(dynamicallyLoadScript) === "undefined")
+        return
+
+      dynamicallyLoadScript("//embed.runkit.com")
+    }
+
+    activateRunkitTags();
+  JAVASCRIPT
+
   def initialize(tag_name, markup, tokens)
     super
     @preamble = sanitized_preamble(markup)
@@ -19,34 +84,7 @@ class RunkitTag < Liquid::Block
   end
 
   def self.script
-    <<~JAVASCRIPT
-      var checkRunkit = setInterval(function() {
-        try {
-          if(typeof(RunKit) !== 'undefined') {
-            var targets = document.getElementsByClassName("runkit-element");
-            for (var i = 0; i < targets.length; i++) {
-              var wrapperContent = targets[i].textContent;
-              if(/^(\<iframe src)/.test(wrapperContent) === false) {
-                if (targets[i].children.length > 0) {
-                  var preamble = targets[i].children[0].textContent;
-                  var content = targets[i].children[1].textContent;
-                  targets[i].innerHTML = "";
-                  var notebook = RunKit.createNotebook({
-                    element: targets[i],
-                    source: content,
-                    preamble: preamble
-                  });
-                }
-              }
-            }
-            clearInterval(checkRunkit);
-          }
-        } catch(e) {
-          console.error(e);
-          clearInterval(checkRunkit);
-        }
-      }, 200);
-    JAVASCRIPT
+    SCRIPT
   end
 
   def sanitized_preamble(markup)

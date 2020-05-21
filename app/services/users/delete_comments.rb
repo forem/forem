@@ -9,6 +9,7 @@ module Users
         comment.reactions.delete_all
         cache_buster.bust_comment(comment.commentable)
         comment.remove_notifications
+        comment.remove_from_elasticsearch
         comment.delete
       end
       cache_buster.bust_user(user)

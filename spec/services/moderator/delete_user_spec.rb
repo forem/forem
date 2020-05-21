@@ -31,4 +31,25 @@ RSpec.describe Moderator::DeleteUser, type: :service do
       expect(Article.find_by(id: article.id)).to be_nil
     end
   end
+
+  describe "#ghostify" do
+    let(:deleter) { described_class.new(user: user, admin: admin, user_params: { ghostify: true }) }
+
+    before do
+      user.update(username: "ghost")
+      create(:article, user: user)
+    end
+
+    it "reassigns articles" do
+      allow(deleter).to receive(:reassign_articles)
+      deleter.ghostify
+      expect(deleter).to have_received(:reassign_articles)
+    end
+
+    it "reassigns comments" do
+      allow(deleter).to receive(:reassign_comments)
+      deleter.ghostify
+      expect(deleter).to have_received(:reassign_comments)
+    end
+  end
 end

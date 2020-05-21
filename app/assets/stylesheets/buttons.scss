@@ -1,0 +1,22 @@
+@import 'variables';
+@import '_mixins';
+
+.cta {
+  color: $black;
+  background: $green;
+  font-family: $helvetica-condensed;
+  -webkit-appearance: none;
+  font-stretch: condensed;
+  font-weight: bold;
+}
+
+.cta-button {
+  background: transparent;
+  padding: 8px 0;
+  color: var(--accent-brand);
+  display: inline-block;
+  &:hover {
+    text-decoration: underline;
+    opacity: 1;
+  }
+}

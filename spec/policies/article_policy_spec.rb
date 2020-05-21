@@ -8,7 +8,7 @@ RSpec.describe ArticlePolicy do
   let(:article) { build_stubbed(:article) }
   let(:valid_attributes) do
     %i[title body_html body_markdown main_image published
-       description allow_small_edits allow_big_edits tag_list publish_under_org
+       description tag_list publish_under_org
        video video_code video_source_url video_thumbnail_url receive_notifications]
   end
 

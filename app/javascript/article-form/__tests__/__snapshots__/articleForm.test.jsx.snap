@@ -34,6 +34,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
             autoComplete="off"
             class="articleform__tags"
             id="tag-input"
+            name="classified_listing[tag_list]"
             onBlur={[Function]}
             onFocus={[Function]}
             onInput={[Function]}
@@ -70,15 +71,8 @@ exports[`<ArticleForm /> renders properly 1`] = `
       class="articleform__body"
       id="article_body_markdown"
       name="body_markdown"
-      onChange={[Function]}
       onInput={[Function]}
       placeholder="Body Markdown"
-      ref={[Function]}
-      style={
-        Object {
-          "height": 0,
-        }
-      }
       value=""
     />
     <button

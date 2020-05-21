@@ -5,8 +5,8 @@ RSpec.describe "Reactions", type: :request do
   let(:article) { create(:article, user: user) }
   let(:comment) { create(:comment, commentable: article) }
 
-  let_it_be(:max_age) { FastlyRails.configuration.max_age }
-  let_it_be(:stale_if_error) { FastlyRails.configuration.stale_if_error }
+  let_it_be(:max_age) { 1.day.to_i }
+  let_it_be(:stale_if_error) { 26_400 }
 
   describe "GET /reactions?article_id=:article_id" do
     before do
@@ -148,6 +148,29 @@ RSpec.describe "Reactions", type: :request do
       }
     end
 
+    context "when rate limiting" do
+      let(:rate_limiter) { RateLimitChecker.new(user) }
+
+      before do
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limiter)
+        sign_in user
+      end
+
+      it "increments rate limit for reaction_creation" do
+        allow(rate_limiter).to receive(:track_limit_by_action)
+        post "/reactions", params: article_params
+
+        expect(rate_limiter).to have_received(:track_limit_by_action).with(:reaction_creation)
+      end
+
+      it "returns a 429 status when rate limit is reached" do
+        allow(rate_limiter).to receive(:limit_by_action).and_return(true)
+        post "/reactions", params: article_params
+
+        expect(response.status).to eq(429)
+      end
+    end
+
     context "when reacting to an article" do
       before do
         sign_in user
@@ -165,6 +188,27 @@ RSpec.describe "Reactions", type: :request do
       end
     end
 
+    context "when creating readinglist" do
+      before do
+        user.update_column(:experience_level, 8)
+        sign_in user
+        post "/reactions", params: {
+          reactable_id: article.id,
+          reactable_type: "Article",
+          category: "readinglist"
+        }
+      end
+
+      it "creates reaction" do
+        expect(Reaction.last.reactable_id).to eq(article.id)
+      end
+
+      it "creates rating vote" do
+        expect(RatingVote.last.context).to eq("readinglist_reaction")
+        expect(RatingVote.last.rating).to be(8.0)
+      end
+    end
+
     context "when vomiting on a user" do
       before do
         sign_in trusted_user
@@ -179,6 +223,48 @@ RSpec.describe "Reactions", type: :request do
         # same route to destroy, so sending POST request again
         post "/reactions", params: user_params
         expect(Reaction.all.size).to eq(0)
+      end
+    end
+
+    context "when signed in as admin" do
+      let_it_be(:admin) { create(:user, :admin) }
+
+      before do
+        sign_in admin
+      end
+
+      it "automatically approves vomits on users" do
+        post "/reactions", params: user_params
+
+        reaction = Reaction.find_by(reactable_id: user.id)
+        expect(reaction.category).to eq("vomit")
+        expect(reaction.status).to eq("confirmed")
+      end
+
+      it "automatically approves vomits on articles" do
+        post "/reactions", params: article_params.merge(category: "vomit")
+
+        reaction = Reaction.find_by(reactable_id: article.id)
+        expect(reaction.category).to eq("vomit")
+        expect(reaction.status).to eq("confirmed")
+      end
+    end
+
+    context "when part of field test" do
+      before do
+        sign_in user
+        allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
+      end
+
+      it "converts field test" do
+        post "/reactions", params: article_params
+        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_creates_reaction")
+      end
+    end
+
+    context "when signed out" do
+      it "returns an unauthorized error" do
+        expect { post "/reactions", params: article_params }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
   end

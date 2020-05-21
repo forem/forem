@@ -6,12 +6,16 @@ describe ProfileImageUploader, type: :uploader do
   include CarrierWave::Test::Matchers
 
   let_it_be(:mounted_as) { :profile_image }
-  let_it_be(:user) { create(:user) }
-  let_it_be(:uploader) { described_class.new(user, mounted_as) }
   let_it_be(:image_jpg) { fixture_file_upload("files/800x600.jpg", "image/jpeg") }
   let_it_be(:image_png) { fixture_file_upload("files/800x600.png", "image/png") }
   let_it_be(:image_webp) { fixture_file_upload("files/800x600.webp", "image/webp") }
   let_it_be(:image_with_gps) { fixture_file_upload("files/image_gps_data.jpg", "image/jpeg") }
+
+  let_it_be_changeable(:user) { create(:user) }
+
+  # we need a new uploader before each test, and since the uploader is not a model
+  # we can recreate it quickly in memory with `let!`
+  let!(:uploader) { described_class.new(user, mounted_as) }
 
   before do
     described_class.include CarrierWave::MiniMagick # needed for processing

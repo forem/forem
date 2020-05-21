@@ -1,0 +1,136 @@
+<script defer>
+
+  function getQueryParams(qs) {
+    qs = qs.split('+').join(' ');
+
+    var params = {},
+      tokens,
+      re = /[?&]?([^=]+)=([^&]*)/g;
+
+    while (tokens = re.exec(qs)) {
+      params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
+    }
+
+    return params;
+  }
+
+  var params = getQueryParams(document.location.search);
+
+  function searchMain() {
+    var query = filterXSS(params.q);
+    var filters = filterXSS(params.filters || "");
+    document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
+    if (document.getElementById("query-wrapper")) {
+      search(query, filters);
+      initializeFilters(query, filters);
+    }
+  }
+
+  function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function initializeFilters(query, filters) {
+    var filterButts = document.getElementsByClassName("query-filter-button");
+    for (var i = 0; i < filterButts.length; i++) {
+      if (filters == filterButts[i].dataset.filter) {
+        filterButts[i].classList.add("selected");
+      }
+      filterButts[i].onclick = function (e) {
+        if (e.target.classList.contains("my-posts-query-button") && !checkUserLoggedIn()) {
+          showModal("search-my-posts");
+          return;
+        }
+        var filters = e.target.dataset.filter;
+        window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
+        var className = e.target.className;
+        for (var i = 0; i < filterButts.length; i++) {
+          filterButts[i].classList.remove("selected");
+        }
+        if (className.indexOf("selected") == -1) {
+          e.target.classList.add("selected");
+          window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
+          search(query, filters);
+        } else {
+          window.history.replaceState(null, null, "/search?q=" + query);
+          search(query, "");
+        }
+      }
+    }
+  }
+
+  function search(query, filters) {
+    var hashtags = query.match(/#\w+/g);
+    var searchTerm = query.replace(/#/g, '').trim();
+    var searchHash = { per_page: 60, page: 0 };
+
+    if (filters === "MY_POSTS" && userData()) {
+      searchHash.user_id = userData()['id'];
+      searchHash.class_name = "Article";
+    }
+
+    if (hashtags && hashtags.length > 0) {
+      for(var i = 0; i < hashtags.length; i++){
+        hashtags[i] = hashtags[i].replace(/#/,'');
+      }
+      searchHash.tag_names = hashtags;
+    }
+
+    if (filters) {
+      filters.split('&').forEach((filter) => {
+        const [key, value] = filter.split(':');
+        searchHash[key] = value;
+      });
+    }
+
+    if (searchTerm) { searchHash.search_fields = searchTerm; }
+
+    // Brute force copying code from a utlity for quick fix
+    const searchParams = new URLSearchParams();
+    Object.keys(searchHash).forEach((key) => {
+      const value = searchHash[key];
+      if (Array.isArray(value)) {
+        value.forEach((arrayValue) => {
+          searchParams.append(`${key}[]`, arrayValue);
+        });
+      } else {
+        searchParams.append(key, value);
+      }
+    });
+
+    fetch(`/search/feed_content?${searchParams.toString()}`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'X-CSRF-Token': window.csrfToken,
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+    })
+      .then(response => response.json())
+    .then((content) => {
+        var resultDivs = []
+        content.result.forEach(function (story, i) {
+          resultDivs.push(buildArticleHTML(story));
+        })
+        document.getElementById("substories").innerHTML = resultDivs.join("");
+        initializeReadingListIcons();
+        initializeAllFollowButts();
+        initializeUserFollowButts();
+        document.getElementById("substories").classList.add("search-results-loaded");
+        if (content.result.length == 0) {
+          document.getElementById("substories").innerHTML = '<div class="query-results-nothing">No results match that query</div>'
+        }
+      });
+  }
+
+  var waitingOnSearch = setInterval(function () {
+    if (typeof search == 'function' && typeof filterXSS == 'function' && typeof buildArticleHTML == 'function') {
+      clearInterval(waitingOnSearch);
+      if (document.querySelectorAll('.search-results-loaded').length == 0) {
+        searchMain();
+      }
+    }
+  }, 1);
+
+</script>

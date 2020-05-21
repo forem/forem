@@ -1,170 +1,129 @@
 import { h } from 'preact';
-import { storiesOf } from '@storybook/react';
 import { withKnobs, object, text, boolean } from '@storybook/addon-knobs/react';
+import { action } from '@storybook/addon-actions';
 import { Article } from '..';
 import {
   article,
   articleWithOrganization,
   articleWithSnippetResult,
-  articleWithReadingTimeGreaterThan1,
   articleWithReactions,
-  videoArticle,
   articleWithComments,
-  podcastArticle,
-  podcastEpisodeArticle,
-  userArticle,
-  assetPath,
+  featuredArticle,
 } from '../__tests__/utilities/articleUtilities';
-import { articleDecorator } from './articleDecorator';
 
 import '../../../assets/stylesheets/articles.scss';
 
-const ICONS = {
-  REACTIONS_ICON: assetPath('reactions-stack.png'),
-  COMMENTS_ICON: assetPath('comments-bubble.png'),
-  VIDEO_ICON: assetPath('video-camera.svg'),
+const commonProps = {
+  bookmarkClick: action('Saved/unsaved article'),
 };
 
-storiesOf('Components/Article/Standard', module)
-  .addDecorator(withKnobs)
-  .addDecorator(articleDecorator)
-  .add('Default', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', article)}
-      currentTag={text('currentTag', 'javascript')}
-    />
-  ))
-  .add('With Organization', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', articleWithOrganization)}
-      currentTag={text('currentTag', 'javascript')}
-    />
-  ))
-  .add('Wth Flare Tag', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', article)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('Wth Snippet Result', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', articleWithSnippetResult)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('Wth Reading Time', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', articleWithReadingTimeGreaterThan1)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('Wth Reactions', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', articleWithReactions)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('With Comments', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', articleWithComments)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('Is on Reading List', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', true)}
-      article={object('article', articleWithComments)}
-      currentTag={text('currentTag')}
-    />
-  ));
+export default {
+  title: 'App Components/Article/Standard',
+  component: Article,
+  decorators: [withKnobs],
+};
 
-storiesOf('Components/Article/Video', module)
-  .addDecorator(withKnobs)
-  .addDecorator(articleDecorator)
-  .add('Default', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', videoArticle)}
-      currentTag={text('currentTag', 'javascript')}
-    />
-  ))
-  .add('Video Article and Flare Tag', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', videoArticle)}
-      currentTag={text('currentTag')}
-    />
-  ));
+export const DefaultArticle = () => (
+  <Article
+    {...commonProps}
+    isBookmarked={boolean('isBookmarked', false)}
+    article={object('article', article)}
+    currentTag={text('currentTag', 'javascript')}
+  />
+);
 
-storiesOf('Components/Article/Podcast', module)
-  .addDecorator(withKnobs)
-  .addDecorator(articleDecorator)
-  .add('Default', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', podcastArticle)}
-      currentTag={text('currentTag')}
-    />
-  ))
-  .add('Podcast Episode', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      isBookmarked={boolean('isBookmarked', false)}
-      article={object('article', podcastEpisodeArticle)}
-      currentTag={text('currentTag')}
-    />
-  ));
+DefaultArticle.story = {
+  name: 'default',
+};
 
-storiesOf('Components/Article/User', module)
-  .addDecorator(withKnobs)
-  .addDecorator(articleDecorator)
-  .add('Default', () => (
-    <Article
-      reactionsIcon={text('reactionsIcon', ICONS.REACTIONS_ICON)}
-      commentsIcon={text('commentsIcon', ICONS.COMMENTS_ICON)}
-      videoIcon={text('videoIcon', ICONS.VIDEO_ICON)}
-      article={object('article', userArticle)}
-    />
-  ));
+export const IsFeatured = () => (
+  <Article
+    {...commonProps}
+    isBookmarked={boolean('isBookmarked', false)}
+    isFeatured={boolean('isFeatured', true)}
+    article={object('article', featuredArticle)}
+    currentTag={text('currentTag', 'javascript')}
+  />
+);
+
+IsFeatured.story = {
+  name: 'is featured',
+};
+
+export const WithOrganization = () => (
+  <Article
+    {...commonProps}
+    isBookmarked={boolean('isBookmarked', false)}
+    article={object('article', articleWithOrganization)}
+    currentTag={text('currentTag', 'javascript')}
+  />
+);
+
+WithOrganization.story = {
+  name: 'with organization',
+};
+
+export const WithFlareTag = () => (
+  <Article
+    {...commonProps}
+    isBookmarked={boolean('isBookmarked', false)}
+    article={object('article', article)}
+    currentTag={text('currentTag')}
+  />
+);
+
+WithFlareTag.story = {
+  name: 'with flare tag',
+};
+
+export const WithSnippetResult = () => (
+  <Article
+    {...commonProps}
+    isBookmarked={boolean('isBookmarked', false)}
+    article={object('article', articleWithSnippetResult)}
+    currentTag={text('currentTag')}
+  />
+);
+
+WithSnippetResult.story = {
+  name: 'with snippet result',
+};
+
+export const WithReactions = () => (
+  <Article
+    {...commonProps}
+    isBookmarked={boolean('isBookmarked', false)}
+    article={object('article', articleWithReactions)}
+    currentTag={text('currentTag')}
+  />
+);
+
+WithReactions.story = {
+  name: 'with reactions',
+};
+
+export const WithComments = () => (
+  <Article
+    {...commonProps}
+    isBookmarked={boolean('isBookmarked', false)}
+    article={object('article', articleWithComments)}
+    currentTag={text('currentTag')}
+  />
+);
+
+WithComments.story = {
+  name: 'with comments',
+};
+
+export const OnReadingList = () => (
+  <Article
+    {...commonProps}
+    isBookmarked={boolean('isBookmarked', true)}
+    article={object('article', article)}
+    currentTag={text('currentTag')}
+  />
+);
+
+OnReadingList.story = {
+  name: 'on reading list',
+};

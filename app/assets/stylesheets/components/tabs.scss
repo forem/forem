@@ -1,0 +1,136 @@
+@import '../config/import';
+
+.crayons-tabs {
+  // Setup
+  --border-width: 3px;
+  --tab-vertical-padding: var(--su-3);
+  --tab-horizontal-padding: var(--su-2);
+  --font-size: var(--fs-base);
+  display: flex;
+
+  @media (min-width: $breakpoint-s) {
+    --tab-vertical-padding: var(--su-2);
+  }
+
+  &--scrollable {
+    overflow-y: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  &__item {
+    padding: var(--tab-vertical-padding) var(--tab-horizontal-padding);
+    display: inline-block;
+    text-align: center;
+    outline: none;
+    font-size: var(--font-size);
+    line-height: var(--su-6);
+    text-decoration: none;
+    cursor: pointer;
+    color: var(--tab-color);
+    position: relative;
+    border-radius: var(--radius);
+    transition: all var(--transition-props);
+    width: 100%;
+
+    @media (min-width: $breakpoint-s) {
+      width: auto;
+      margin: 0 var(--su-1);
+    }
+
+    &::after {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--border-width);
+      content: '';
+      background: var(--tab-bg-current);
+      border-radius: var(--radius);
+      transition: all var(--transition-props);
+
+      @media (min-width: $breakpoint-s) {
+        left: var(--tab-horizontal-padding);
+        right: var(--tab-horizontal-padding);
+      }
+    }
+
+    &:hover {
+      background: var(--tab-bg-hover);
+      color: var(--tab-color-hover);
+
+      &:after {
+        left: 0;
+        right: 0;
+        border-radius: 0 0 var(--radius) var(--radius);
+      }
+    }
+
+    &--current {
+      font-weight: var(--fw-medium);
+      color: var(--tab-color-current);
+
+      &::after {
+        display: block;
+      }
+    }
+  }
+
+  &--pills {
+    .crayons-tabs__item--current {
+      background: var(--tab-bg-current);
+      color: var(--tab-pill-color-current);
+
+      &::after {
+        display: none;
+      }
+    }
+  }
+
+  &--stacked {
+    flex-direction: column;
+    @media (min-width: $breakpoint-s) {
+      flex-direction: row;
+    }
+
+    .crayons-tabs__item {
+      margin: 0;
+
+      @media (min-width: $breakpoint-s) {
+        margin: 0 var(--su-1);
+      }
+    }
+  }
+
+  &--wrapped {
+    flex-wrap: wrap;
+
+    .crayons-tabs__item {
+      margin: var(--su-1);
+      width: auto;
+    }
+  }
+
+  &--muted {
+    .crayons-tabs__item {
+      color: var(--tab-muted-color);
+
+      &:hover {
+        color: var(--tab-muted-color-hover);
+        background: var(--tab-muted-bg-hover);
+      }
+
+      &:after {
+        background: var(--tab-muted-bg-current);
+      }
+    }
+
+    &.crayons-tabs--pills {
+      .crayons-tabs__item--current {
+        color: var(--tab-muted-color-current);
+        background: var(--tab-muted-bg-current);
+      }
+    }
+  }
+}

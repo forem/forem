@@ -1,13 +1,13 @@
 @import 'variables';
 .ltag__link__link {
   color: $black !important;
-  color: var(--theme-color, $black) !important;
+  color: var(--body-color) !important;
   &:active {
     opacity: 0.7;
   }
 }
 .ltag__link {
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   border: 1px solid $light-medium-gray;
   box-shadow: $shadow;
   border-radius: 3px;
@@ -80,11 +80,13 @@
       margin-bottom: 0;
       font-weight: bold;
       color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
+      color: var(--card-color-tertiary);
       a {
-        color: $medium-gray;
-        color: var(--theme-secondary-color, $black);
+        color: var(--card-color-tertiary);
       }
+    }
+    .missing {
+      padding: 0 10px !important;
     }
     .ltag__link__taglist {
       margin: 0;
@@ -99,8 +101,7 @@
       margin-left: 1px;
     }
     .ltag__link__servicename {
-      color: $medium-gray;
-      color: var(--theme-secondary-color, $medium-gray);
+      color: var(--card-color-tertiary);
       font-size: 0.7em;
       img {
         vertical-align: -5px;

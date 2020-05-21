@@ -1,26 +1,15 @@
 class ClassifiedListing < ApplicationRecord
-  include AlgoliaSearch
   include Searchable
 
   SEARCH_SERIALIZER = Search::ClassifiedListingSerializer
   SEARCH_CLASS = Search::ClassifiedListing
 
-  CATEGORIES_AVAILABLE = {
-    cfp: { cost: 1, name: "Conference CFP", rules: "Currently open for proposals, with link to form." },
-    forhire: { cost: 1, name: "Available for Hire", rules: "You are available for hire." },
-    collabs: { cost: 1, name: "Contributors/Collaborators Wanted", rules: "Projects looking for volunteers. Not job listings." },
-    education: { cost: 1, name: "Education/Courses", rules: "Educational material and/or schools/bootcamps." },
-    jobs: { cost: 25, name: "Job Listings", rules: "Companies offering employment right now." },
-    mentors: { cost: 1, name: "Offering Mentorship", rules: "You are available to mentor someone." },
-    products: { cost: 5, name: "Products/Tools", rules: "Must be available right now." },
-    mentees: { cost: 1, name: "Seeking a Mentor", rules: "You are looking for a mentor." },
-    forsale: { cost: 1, name: "Stuff for Sale", rules: "Personally owned physical items for sale." },
-    events: { cost: 1, name: "Upcoming Events", rules: "In-person or online events with date included." },
-    misc: { cost: 1, name: "Miscellaneous", rules: "Must not fit in any other category." }
-  }.with_indifferent_access.freeze
-
   attr_accessor :action
 
+  # Note: categories were hardcoded at first and this model was only added later,
+  # so the association name is a bit verbose since the original "category" attribute
+  # was kept to minimize code changes.
+  belongs_to :classified_listing_category
   belongs_to :user
   belongs_to :organization, optional: true
   before_save :evaluate_markdown
@@ -34,58 +23,26 @@ class ClassifiedListing < ApplicationRecord
   validates :user_id, presence: true
   validates :organization_id, presence: true, unless: :user_id?
 
-  validates :title, presence: true,
-                    length: { maximum: 128 }
-  validates :body_markdown, presence: true,
-                            length: { maximum: 400 }
+  validates :title, presence: true, length: { maximum: 128 }
+  validates :body_markdown, presence: true, length: { maximum: 400 }
   validates :location, length: { maximum: 32 }
   validate :restrict_markdown_input
   validate :validate_tags
-  validate :validate_category
-
-  algoliasearch per_environment: true do
-    attribute :title, :processed_html, :bumped_at, :tag_list, :category, :id, :user_id, :slug, :contact_via_connect, :location, :expires_at
-    attribute :author do
-      { username: author.username,
-        name: author.name,
-        profile_image_90: ProfileImage.new(author).get(width: 90) }
-    end
-    tags do
-      [tag_list,
-       "user_#{user_id}",
-       "organization_#{organization_id}"]
-    end
-    attributesForFaceting [:category]
-    customRanking ["desc(bumped_at)"]
-    searchableAttributes %w[title processed_html tag_list slug location]
-  end
 
   scope :published, -> { where(published: true) }
+  scope :in_category, lambda { |slug|
+    joins(:classified_listing_category).
+      where("classified_listing_categories.slug" => slug)
+  }
 
-  def self.cost_by_category(category = "education")
-    categories_available[category][:cost]
+  delegate :cost, to: :classified_listing_category
+
+  def category
+    classified_listing_category&.slug
   end
 
   def author
     organization || user
-  end
-
-  def self.select_options_for_categories
-    categories_available.keys.map do |key|
-      category = categories_available[key]
-      cost = category[:cost]
-      ["#{category[:name]} (#{cost} #{'Credit'.pluralize(cost)})", key]
-    end
-  end
-
-  def self.categories_for_display
-    categories_available.keys.map do |key|
-      { slug: key, name: categories_available[key][:name] }
-    end
-  end
-
-  def self.categories_available
-    CATEGORIES_AVAILABLE
   end
 
   def path
@@ -105,7 +62,6 @@ class ClassifiedListing < ApplicationRecord
   def modify_inputs
     ActsAsTaggableOn::Taggable::Cache.included(ClassifiedListing)
     ActsAsTaggableOn.default_parser = ActsAsTaggableOn::TagParser
-    self.category = category.to_s.downcase
     self.body_markdown = body_markdown.to_s.gsub(/\r\n/, "\n")
   end
 
@@ -120,11 +76,7 @@ class ClassifiedListing < ApplicationRecord
     errors.add(:tag_list, "exceed the maximum of 8 tags") if tag_list.length > 8
   end
 
-  def validate_category
-    errors.add(:category, "not a valid category") unless CATEGORIES_AVAILABLE[category]
-  end
-
   def create_slug
-    self.slug = title.to_s.downcase.parameterize.tr("_", "") + "-" + rand(100_000).to_s(26)
+    self.slug = "#{title.downcase.parameterize.delete('_')}-#{rand(100_000).to_s(26)}"
   end
 end

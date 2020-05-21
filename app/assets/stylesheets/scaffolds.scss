@@ -1,16 +1,17 @@
+@import 'config/import';
+
 @import 'variables';
 @import 'mixins';
 @import 'fonts';
 
 body {
-  @include themeable(background, theme-background, $lightest-gray);
-  @include themeable(color, theme-color, $black);
-  font-family: $helvetica;
-  font-size: 18px;
+  background: var(--body-bg);
+  color: var(--body-color);
+  font-family: var(--ff-default);
   padding: 0;
   margin: 0;
   overflow-y: scroll;
-  padding-top: 46px; // height of header
+  padding-top: var(--header-height);
 }
 
 #audiocontent {
@@ -25,11 +26,6 @@ body {
 
 *:focus:not(.focus-visible) {
   outline: none;
-}
-
-.ptr--ptr {
-  margin-top: 10px;
-  margin-bottom: -10px;
 }
 
 .modal-open {
@@ -66,20 +62,12 @@ body {
   overflow: hidden;
   min-height: 88vh;
   visibility: visible;
-}
-
-pre {
-  background-color: #2b2b32;
-  padding: 10px;
-  font-size: 15px;
+  font-size: 18px;
 }
 
 a {
-  @include themeable(color, theme-anchor-color, $sky-blue);
+  color: var(--link-brand-color);
   text-decoration: none;
-  &:hover {
-    opacity: 0.9;
-  }
 }
 
 div {
@@ -98,6 +86,7 @@ pre {
   border-radius: 2px;
   overflow-x: scroll;
   font-size: 11px;
+  padding: 10px;
   color: #eff0f9;
   line-height: 1.42em;
   font-size: 13px;
@@ -119,6 +108,9 @@ pre {
   -webkit-appearance: none;
   font-stretch: condensed;
   font-weight: bold;
+  &.cta-danger {
+    background: $red;
+  }
 }
 
 button {
@@ -136,45 +128,6 @@ input[type='email'] {
   outline: 0;
 }
 
-.snackbar {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
-  @include themeable(
-    background,
-    theme-container-accent-background,
-    $light-purple
-  );
-  @include themeable(border, container-border, 2px solid $purple);
-  padding: 12px 30px;
-  z-index: 20;
-  border-radius: 3px;
-  font-weight: bold;
-  @media screen and (min-width: 430px) {
-    right: auto;
-    display: inline-block;
-    -webkit-animation: ease-out;
-    -webkit-animation-name: slide-in-from-left;
-    -webkit-animation-duration: 0.25s;
-  }
-}
-
-@-webkit-keyframes slide-in-from-left {
-  0% {
-    left: -300px;
-  }
-  50% {
-    left: 0px;
-  }
-  90% {
-    left: 24px;
-  }
-  100% {
-    left: 20px;
-  }
-}
-
 .partner-image-dark-mode {
   display: none !important;
 }
@@ -190,7 +143,8 @@ body.ten-x-hacker-theme {
   .dev-badge,
   .chatchannels__config img,
   .external-link-img,
-  .group-img {
+  .group-img,
+  .user-profile-header .social a {
     -webkit-filter: invert(95%);
     filter: invert(95%);
   }
@@ -210,70 +164,6 @@ body.ten-x-hacker-theme {
   }
 }
 
-// Alternate base fonts
-
-body.sans-serif-article-body {
-  .body {
-    font-family: $helvetica;
-  }
-  .body p {
-    font-family: $helvetica;
-    font-size: 0.98em;
-  }
-}
-
-body.comic-sans-article-body {
-  .body {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-  }
-  .body p {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    font-size: 0.98em;
-  }
-}
-
-body.open-dyslexic-article-body {
-  .body {
-    font-display: swap;
-    font-family: OpenDyslexic, sans-serif;
-  }
-  .body p {
-    font-display: swap;
-    font-family: OpenDyslexic, sans-serif;
-    font-size: 0.9em;
-  }
-  .body b,
-  .body strong {
-    font-family: OpenDyslexic-Bold, sans-serif;
-  }
-
-  .body i,
-  .body em {
-    font-family: OpenDyslexic-Italic, sans-serif;
-  }
-
-  .body b > i,
-  .body b > em,
-  .body strong > i,
-  .body strong > em,
-  .body i > b,
-  .body em > b,
-  .body i > strong,
-  .body em > strong {
-    font-family: OpenDyslexic-Bolditalic;
-  }
-}
-
-body.monospace-article-body {
-  .body {
-    font-family: $monospace;
-  }
-  .body p {
-    font-family: $monospace;
-    font-size: 0.9em;
-  }
-}
-
 body.static-navbar-config {
   padding-top: 0;
   .top-bar {
@@ -281,14 +171,12 @@ body.static-navbar-config {
   }
 }
 
-.pro-visible-block,
 .trusted-visible-block {
   display: none !important;
 }
 
-body.pro-status-true .pro-visible-block,
 body.trusted-status-true .trusted-visible-block {
-  display: block !important;
+  display: flex !important;
 }
 
 body.hidden-shell {
@@ -300,11 +188,12 @@ body.hidden-shell {
     margin-top: 0px;
   }
   .universal-page-content-wrapper {
-    margin-top: -46px !important;
+    margin-top: calc(var(--header-height) * -1) !important;
     margin-bottom: 30px;
   }
 }
 
+// Remove post confirmaiton
 .delete-confirm.container {
   padding: 150px 10px;
   min-height: 300px;
@@ -312,7 +201,7 @@ body.hidden-shell {
   h4 {
     background: $black;
     padding: 5px 8px;
-    color: white;
+    color: $white;
     display: inline-block;
     margin-bottom: 0px;
     border-radius: 3px;
@@ -351,10 +240,6 @@ body.hidden-shell {
   animation-delay: 0.6s;
   font-size: 1.2em;
   z-index: -1;
-}
-
-.base-background-color {
-  @include themeable(background, theme-background, $lightest-gray);
 }
 
 @keyframes loading-fadein {

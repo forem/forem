@@ -4,6 +4,7 @@ class StoriesController < ApplicationController
       title path id user_id comments_count positive_reactions_count organization_id
       reading_time video_thumbnail_url video video_duration_in_minutes language
       experience_level_rating experience_level_rating_distribution cached_user cached_organization
+      classified_listing_category_id
     ],
     methods: %i[
       readable_publish_date cached_tag_list_array flare_tag class_name
@@ -11,8 +12,11 @@ class StoriesController < ApplicationController
     ]
   }.freeze
 
+  SIGNED_OUT_RECORD_COUNT = (Rails.env.production? ? 60 : 10).freeze
+
   before_action :authenticate_user!, except: %i[index search show]
   before_action :set_cache_control_headers, only: %i[index search show]
+  before_action :redirect_to_lowercase_username, only: %i[index]
 
   rescue_from ArgumentError, with: :bad_request
 
@@ -56,27 +60,28 @@ class StoriesController < ApplicationController
   private
 
   def assign_hero_html
-    return if SiteConfig.campaign_hero_html_variant_name.blank? || cookies[:heroBanner] == "false"
+    return if SiteConfig.campaign_hero_html_variant_name.blank?
 
-    @hero_html = HtmlVariant.relevant.select(:html).
-      find_by(group: "campaign", name: SiteConfig.campaign_hero_html_variant_name)&.html
+    @hero_area = HtmlVariant.relevant.select(:name, :html).
+      find_by(group: "campaign", name: SiteConfig.campaign_hero_html_variant_name)
+    @hero_html = @hero_area&.html
   end
 
   def get_latest_campaign_articles
     campaign_articles_scope = Article.tagged_with(SiteConfig.campaign_featured_tags, any: true).
-      where("published_at > ?", 2.weeks.ago).where(approved: true).
+      where("published_at > ?", 4.weeks.ago).where(approved: true).
       order("hotness_score DESC")
 
     @campaign_articles_count = campaign_articles_scope.count
-    @latest_campaign_articles = campaign_articles_scope.limit(3).pluck(:path, :title, :comments_count, :created_at)
+    @latest_campaign_articles = campaign_articles_scope.limit(5).pluck(:path, :title, :comments_count, :created_at)
   end
 
   def redirect_to_changed_username_profile
-    potential_username = params[:username].tr("@", "").downcase
+    potential_username = params[:username].tr("@", "")
     user_or_org = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username) ||
       Organization.find_by("old_slug = ? OR old_old_slug = ?", potential_username, potential_username)
     if user_or_org.present? && !user_or_org.decorate.fully_banished?
-      redirect_to user_or_org.path
+      redirect_to user_or_org.path, status: :moved_permanently
     else
       not_found
     end
@@ -86,19 +91,19 @@ class StoriesController < ApplicationController
     potential_username = params[:username].tr("@", "").downcase
     @user = User.find_by("old_username = ? OR old_old_username = ?", potential_username, potential_username)
     if @user&.articles&.find_by(slug: params[:slug])
-      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path
+      redirect_to URI.parse("/#{@user.username}/#{params[:slug]}").path, status: :moved_permanently
       return
     elsif (@organization = @article.organization)
-      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path
+      redirect_to URI.parse("/#{@organization.slug}/#{params[:slug]}").path, status: :moved_permanently
       return
     end
     not_found
   end
 
   def handle_user_or_organization_or_podcast_or_page_index
-    @podcast = Podcast.available.find_by(slug: params[:username].downcase)
-    @organization = Organization.find_by(slug: params[:username].downcase)
-    @page = Page.find_by(slug: params[:username].downcase, is_top_level_path: true)
+    @podcast = Podcast.available.find_by(slug: params[:username])
+    @organization = Organization.find_by(slug: params[:username])
+    @page = Page.find_by(slug: params[:username], is_top_level_path: true)
     if @podcast
       handle_podcast_index
     elsif @organization
@@ -112,20 +117,22 @@ class StoriesController < ApplicationController
 
   def handle_tag_index
     @tag = params[:tag].downcase
+    @page = (params[:page] || 1).to_i
     @tag_model = Tag.find_by(name: @tag) || not_found
     @moderators = User.with_role(:tag_moderator, @tag_model).select(:username, :profile_image, :id)
     if @tag_model.alias_for.present?
-      redirect_to "/t/#{@tag_model.alias_for}"
+      redirect_to "/t/#{@tag_model.alias_for}", status: :moved_permanently
       return
     end
 
     @num_published_articles = if @tag_model.requires_approval?
                                 Article.published.cached_tagged_by_approval_with(@tag).size
                               else
-                                Article.published.cached_tagged_with(@tag).size
+                                Article.published.cached_tagged_with(@tag).where("score > 2").size
                               end
-    number_of_articles = user_signed_in? ? 5 : 45
-    @stories = Articles::Feed.new(number_of_articles: number_of_articles, tag: @tag).published_articles_by_tag
+    @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
+    @stories = Articles::Feed.new(number_of_articles: @number_of_articles, tag: @tag, page: @page).
+      published_articles_by_tag
 
     @stories = @stories.where(approved: true) if @tag_model&.requires_approval
 
@@ -133,7 +140,9 @@ class StoriesController < ApplicationController
     @stories = @stories.decorate
 
     set_surrogate_key_header "articles-#{@tag}"
-    response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
+    set_cache_control_headers(600,
+                              stale_while_revalidate: 30,
+                              stale_if_error: 86_400)
     render template: "articles/tag_index"
   end
 
@@ -151,12 +160,18 @@ class StoriesController < ApplicationController
     assign_classified_listings
     get_latest_campaign_articles if SiteConfig.campaign_sidebar_enabled?
     @article_index = true
-    @featured_story = (@featured_story || Article.new)&.decorate
+    @featured_story = (featured_story || Article.new)&.decorate
     @stories = ArticleDecorator.decorate_collection(@stories)
     set_surrogate_key_header "main_app_home_page"
-    response.headers["Surrogate-Control"] = "max-age=600, stale-while-revalidate=30, stale-if-error=86400"
+    set_cache_control_headers(600,
+                              stale_while_revalidate: 30,
+                              stale_if_error: 86_400)
 
     render template: "articles/index"
+  end
+
+  def featured_story
+    @featured_story ||= Articles::Feed.find_featured_story(@stories)
   end
 
   def handle_podcast_index
@@ -174,12 +189,13 @@ class StoriesController < ApplicationController
       limited_column_select.
       order("published_at DESC").page(@page).per(8))
     @organization_article_index = true
+    set_organization_json_ld
     set_surrogate_key_header "articles-org-#{@organization.id}"
     render template: "organizations/show"
   end
 
   def handle_user_index
-    @user = User.find_by(username: params[:username].tr("@", "").downcase)
+    @user = User.find_by(username: params[:username].tr("@", ""))
     unless @user
       redirect_to_changed_username_profile
       return
@@ -191,7 +207,11 @@ class StoriesController < ApplicationController
     redirect_if_view_param
     return if performed?
 
+    assign_user_github_repositories
+
     set_surrogate_key_header "articles-user-#{@user.id}"
+    set_user_json_ld
+
     render template: "users/show"
   end
 
@@ -236,22 +256,34 @@ class StoriesController < ApplicationController
   end
 
   def assign_article_show_variables
+    not_found if permission_denied?
+    not_found unless @article.user
+
     @article_show = true
     @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
-    assign_user_and_org
+
+    @user = @article.user
+    @organization = @article.organization
+
+    if @article.collection
+      @collection = @article.collection
+
+      # we need to make sure that articles that were cross posted after their
+      # original publication date appear in the correct order in the collection,
+      # considering non cross posted articles with a more recent publication date
+      @collection_articles = @article.collection.articles.
+        published.
+        order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
+    end
+
     @comments_to_show_count = @article.cached_tag_list_array.include?("discuss") ? 50 : 30
     assign_second_and_third_user
-    not_found if permission_denied?
+    set_article_json_ld
     @comment = Comment.new(body_markdown: @article&.comment_template)
   end
 
   def permission_denied?
     !@article.published && params[:preview] != @article.password
-  end
-
-  def assign_user_and_org
-    @user = @article.user || not_found
-    @organization = @article.organization if @article.organization_id.present?
   end
 
   def assign_second_and_third_user
@@ -278,7 +310,11 @@ class StoriesController < ApplicationController
     @stories = ArticleDecorator.decorate_collection(@user.articles.published.
       limited_column_select.
       where.not(id: @pinned_stories.pluck(:id)).
-      order("published_at DESC").page(@page).per(user_signed_in? ? 2 : 20))
+      order("published_at DESC").page(@page).per(user_signed_in? ? 2 : SIGNED_OUT_RECORD_COUNT))
+  end
+
+  def assign_user_github_repositories
+    @github_repositories = @user.github_repos.featured.order(stargazers_count: :desc, name: :asc)
   end
 
   def stories_by_timeframe
@@ -286,16 +322,16 @@ class StoriesController < ApplicationController
       @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
         order("positive_reactions_count DESC")
     elsif params[:timeframe] == "latest"
-      @stories.where("score > ?", -40).order("published_at DESC")
+      @stories.where("score > ?", -20).order("published_at DESC")
     else
-      @stories.order("hotness_score DESC")
+      @stories.order("hotness_score DESC").where("score > 2")
     end
   end
 
   def assign_podcasts
     return unless user_signed_in?
 
-    num_hours = Rails.env.production? ? 24 : 800
+    num_hours = Rails.env.production? ? 24 : 2400
     @podcast_episodes = PodcastEpisode.
       includes(:podcast).
       order("published_at desc").
@@ -304,6 +340,132 @@ class StoriesController < ApplicationController
   end
 
   def assign_classified_listings
-    @classified_listings = ClassifiedListing.where(published: true).select(:title, :category, :slug, :bumped_at)
+    @classified_listings = ClassifiedListing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at)
+  end
+
+  def redirect_to_lowercase_username
+    return unless params[:username] && params[:username]&.match?(/[[:upper:]]/)
+
+    redirect_to "/#{params[:username].downcase}", status: :moved_permanently
+  end
+
+  def set_user_json_ld
+    # For more info on structuring data with JSON-LD,
+    # please refer to this link: https://moz.com/blog/json-ld-for-beginners
+    @user_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.user(@user)
+      },
+      "url": URL.user(@user),
+      "sameAs": user_same_as,
+      "image": ProfileImage.new(@user).get(width: 320),
+      "name": @user.name,
+      "email": @user.email_public ? @user.email : nil,
+      "jobTitle": @user.employment_title.presence,
+      "description": @user.summary.presence || "404 bio not found",
+      "disambiguatingDescription": user_disambiguating_description,
+      "worksFor": [user_works_for].compact,
+      "alumniOf": @user.education.presence
+    }.reject { |_, v| v.blank? }
+  end
+
+  def set_article_json_ld
+    @article_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Article",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.article(@article)
+      },
+      "url": URL.article(@article),
+      "image": seo_optimized_images,
+      "publisher": {
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "name": "#{ApplicationConfig['COMMUNITY_NAME']} Community",
+        "logo": {
+          "@context": "http://schema.org",
+          "@type": "ImageObject",
+          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, "png"),
+          "width": "192",
+          "height": "192"
+        }
+      },
+      "headline": @article.title,
+      "author": {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        "url": URL.user(@user),
+        "name": @user.name
+      },
+      "datePublished": @article.published_timestamp,
+      "dateModified": @article.edited_at&.iso8601 || @article.published_timestamp
+    }
+  end
+
+  def seo_optimized_images
+    # This array of images exists for SEO optimization purposes.
+    # For more info on this structure, please refer to this documentation:
+    # https://developers.google.com/search/docs/data-types/article
+    [
+      ApplicationController.helpers.article_social_image_url(@article, width: 1080, height: 1080),
+      ApplicationController.helpers.article_social_image_url(@article, width: 1280, height: 720),
+      ApplicationController.helpers.article_social_image_url(@article, width: 1600, height: 900),
+    ]
+  end
+
+  def set_organization_json_ld
+    @organization_json_ld = {
+      "@context": "http://schema.org",
+      "@type": "Organization",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": URL.organization(@organization)
+      },
+      "url": URL.organization(@organization),
+      "image": ProfileImage.new(@organization).get(width: 320),
+      "name": @organization.name,
+      "description": @organization.summary.presence || "404 bio not found"
+    }
+  end
+
+  def user_works_for
+    # For further examples of the worksFor and disambiguatingDescription properties,
+    # please refer to this link: https://jsonld.com/person/
+    return unless @user.employer_name.presence || @user.employer_url.presence
+
+    {
+      "@type": "Organization",
+      "name": @user.employer_name,
+      "url": @user.employer_url
+    }.reject { |_, v| v.blank? }
+  end
+
+  def user_disambiguating_description
+    [@user.mostly_work_with, @user.currently_hacking_on, @user.currently_learning].compact
+  end
+
+  def user_same_as
+    # For further information on the sameAs property, please refer to this link:
+    # https://schema.org/sameAs
+    [
+      @user.twitter_username.presence ? "https://twitter.com/#{@user.twitter_username}" : nil,
+      @user.github_username.presence ? "https://github.com/#{@user.github_username}" : nil,
+      @user.mastodon_url,
+      @user.facebook_url,
+      @user.youtube_url,
+      @user.linkedin_url,
+      @user.behance_url,
+      @user.stackoverflow_url,
+      @user.dribbble_url,
+      @user.medium_url,
+      @user.gitlab_url,
+      @user.instagram_url,
+      @user.twitch_username,
+      @user.website_url,
+    ].reject(&:blank?)
   end
 end

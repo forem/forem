@@ -61,7 +61,7 @@ export default class Chat extends Component {
         <textarea
           className="messagecomposer__input"
           id="messageform"
-          placeholder="Message goes here"
+          placeholder="Let's connect"
           onKeyDown={handleKeyDownEdit}
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
@@ -69,7 +69,7 @@ export default class Chat extends Component {
         />
         <button
           type="button"
-          className="messagecomposer__submit"
+          className="messagecomposer__submit cta"
           onClick={handleSubmitOnClickEdit}
         >
           Save
@@ -90,7 +90,7 @@ export default class Chat extends Component {
         <textarea
           className="messagecomposer__input"
           id="messageform"
-          placeholder="Message goes here"
+          placeholder="Let's connect"
           onKeyDown={handleKeyDown}
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
@@ -98,7 +98,7 @@ export default class Chat extends Component {
         />
         <button
           type="button"
-          className="messagecomposer__submit"
+          className="messagecomposer__submit cta"
           onClick={handleSubmitOnClick}
         >
           SEND
