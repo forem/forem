@@ -350,6 +350,8 @@ class StoriesController < ApplicationController
   end
 
   def set_user_json_ld
+    # For more info on structuring data with JSON-LD,
+    # please refer to this link: https://moz.com/blog/json-ld-for-beginners
     @user_json_ld = {
       "@context": "http://schema.org",
       "@type": "Person",
@@ -358,22 +360,16 @@ class StoriesController < ApplicationController
         "@id": URL.user(@user)
       },
       "url": URL.user(@user),
-      "sameAs": [],
+      "sameAs": user_same_as,
       "image": ProfileImage.new(@user).get(width: 320),
       "name": @user.name,
-      "email": "",
-      "jobTitle": "",
+      "email": @user.email_public ? @user.email : nil,
+      "jobTitle": @user.employment_title.presence,
       "description": @user.summary.presence || "404 bio not found",
-      "disambiguatingDescription": [],
-      "worksFor": [
-        {
-          "@type": "Organization"
-        },
-      ],
-      "alumniOf": ""
-    }
-    set_user_profile_json_ld
-    set_user_same_as_json_ld
+      "disambiguatingDescription": user_disambiguating_description,
+      "worksFor": [user_works_for].compact,
+      "alumniOf": @user.education.presence
+    }.reject { |_, v| v.blank? }
   end
 
   def set_article_json_ld
@@ -414,9 +410,11 @@ class StoriesController < ApplicationController
     # This array of images exists for SEO optimization purposes.
     # For more info on this structure, please refer to this documentation:
     # https://developers.google.com/search/docs/data-types/article
-    [ApplicationController.helpers.article_social_image_url(@article, width: 1080, height: 1080),
-     ApplicationController.helpers.article_social_image_url(@article, width: 1280, height: 720),
-     ApplicationController.helpers.article_social_image_url(@article, width: 1600, height: 900)]
+    [
+      ApplicationController.helpers.article_social_image_url(@article, width: 1080, height: 1080),
+      ApplicationController.helpers.article_social_image_url(@article, width: 1280, height: 720),
+      ApplicationController.helpers.article_social_image_url(@article, width: 1600, height: 900),
+    ]
   end
 
   def set_organization_json_ld
@@ -434,31 +432,40 @@ class StoriesController < ApplicationController
     }
   end
 
-  def set_user_profile_json_ld
-    @user_json_ld[:disambiguatingDescription].append(@user.mostly_work_with) if @user.mostly_work_with.present?
-    @user_json_ld[:disambiguatingDescription].append(@user.currently_hacking_on) if @user.currently_hacking_on.present?
-    @user_json_ld[:disambiguatingDescription].append(@user.currently_learning) if @user.currently_learning.present?
-    @user_json_ld[:worksFor][0][:name] = @user.employer_name if @user.employer_name.present?
-    @user_json_ld[:worksFor][0][:url] = @user.employer_url if @user.employer_url.present?
-    @user_json_ld[:alumniOf] = @user.education if @user.education.present?
-    @user_json_ld[:email] = @user.email if @user.email_public
-    @user_json_ld[:jobTitle] = @user.employment_title if @user.employment_title.present?
-    @user_json_ld[:sameAs].append("https://twitter.com/#{@user.twitter_username}") if @user.twitter_username.present?
-    @user_json_ld[:sameAs].append("https://github.com/#{@user.github_username}") if @user.github_username.present?
+  def user_works_for
+    # For further examples of the worksFor and disambiguatingDescription properties,
+    # please refer to this link: https://jsonld.com/person/
+    return unless @user.employer_name.presence || @user.employer_url.presence
+
+    {
+      "@type": "Organization",
+      "name": @user.employer_name,
+      "url": @user.employer_url
+    }.reject { |_, v| v.blank? }
   end
 
-  def set_user_same_as_json_ld
-    @user_json_ld[:sameAs].append(@user.mastodon_url) if @user.mastodon_url.present?
-    @user_json_ld[:sameAs].append(@user.facebook_url) if @user.facebook_url.present?
-    @user_json_ld[:sameAs].append(@user.youtube_url) if @user.youtube_url.present?
-    @user_json_ld[:sameAs].append(@user.linkedin_url) if @user.linkedin_url.present?
-    @user_json_ld[:sameAs].append(@user.behance_url) if @user.behance_url.present?
-    @user_json_ld[:sameAs].append(@user.stackoverflow_url) if @user.stackoverflow_url.present?
-    @user_json_ld[:sameAs].append(@user.dribbble_url) if @user.dribbble_url.present?
-    @user_json_ld[:sameAs].append(@user.medium_url) if @user.medium_url.present?
-    @user_json_ld[:sameAs].append(@user.gitlab_url) if @user.gitlab_url.present?
-    @user_json_ld[:sameAs].append(@user.instagram_url) if @user.instagram_url.present?
-    @user_json_ld[:sameAs].append(@user.twitch_username) if @user.twitch_username.present?
-    @user_json_ld[:sameAs].append(@user.website_url) if @user.website_url.present?
+  def user_disambiguating_description
+    [@user.mostly_work_with, @user.currently_hacking_on, @user.currently_learning].compact
+  end
+
+  def user_same_as
+    # For further information on the sameAs property, please refer to this link:
+    # https://schema.org/sameAs
+    [
+      @user.twitter_username.presence ? "https://twitter.com/#{@user.twitter_username}" : nil,
+      @user.github_username.presence ? "https://github.com/#{@user.github_username}" : nil,
+      @user.mastodon_url,
+      @user.facebook_url,
+      @user.youtube_url,
+      @user.linkedin_url,
+      @user.behance_url,
+      @user.stackoverflow_url,
+      @user.dribbble_url,
+      @user.medium_url,
+      @user.gitlab_url,
+      @user.instagram_url,
+      @user.twitch_username,
+      @user.website_url,
+    ].reject(&:blank?)
   end
 end
