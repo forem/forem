@@ -25,6 +25,29 @@ class FollowsController < ApplicationController
     end
   end
 
+  def bulk_show
+    skip_authorization
+    render(plain: "not-logged-in") && return unless current_user
+
+    response = params.require(:ids).map(&:to_i).each_with_object({}) do |id, hsh|
+      hsh[id] = if current_user.id == id
+                  "self"
+                else
+                  following_them_check = FollowChecker.new(current_user, params[:followable_type], id).cached_follow_check
+                  following_you_check = FollowChecker.new(User.find_by(id: id), params[:followable_type], current_user.id).cached_follow_check
+                  if following_them_check && following_you_check
+                    "mutual"
+                  elsif following_you_check
+                    "follow-back"
+                  else
+                    following_them_check.to_s
+                  end
+                end
+    end
+
+    render json: response
+  end
+
   def create
     authorize Follow
 
@@ -43,7 +66,6 @@ class FollowsController < ApplicationController
     @result = if params[:verb] == "unfollow"
                 unfollow(followable, need_notification: need_notification)
               else
-                rate_limiter = RateLimitChecker.new(current_user)
                 if rate_limiter.limit_by_action("follow_account")
                   render json: { error: "Daily account follow limit reached!" }, status: :too_many_requests
                   return
@@ -51,7 +73,6 @@ class FollowsController < ApplicationController
                 follow(followable, need_notification: need_notification)
               end
 
-    current_user.touch
     render json: { outcome: @result }
   end
 

@@ -1,9 +1,10 @@
 module BadgeRewarder
   YEARS = { 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five", 6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten" }.freeze
+  REPOSITORIES = ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].freeze
 
   def self.award_yearly_club_badges
     (1..3).each do |i|
-      message = "Happy DEV birthday! Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
+      message = "Happy #{ApplicationConfig['COMMUNITY_NAME']} birthday! Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
       badge = Badge.find_by!(slug: "#{YEARS[i]}-year-club")
       User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
         achievement = BadgeAchievement.create(
@@ -62,12 +63,13 @@ module BadgeRewarder
   end
 
   def self.award_contributor_badges_from_github(since = 1.day.ago, message_markdown = "Thank you so much for your contributions!")
-    client = Octokit::Client.new
     badge = Badge.find_by!(slug: "dev-contributor")
-    ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].each do |repo|
-      commits = client.commits repo, since: since.iso8601
+
+    REPOSITORIES.each do |repo|
+      commits = Github::Client.commits(repo, since: since.utc.iso8601)
+
       authors_uids = commits.map { |commit| commit.author.id }
-      Identity.where(provider: "github", uid: authors_uids).find_each do |i|
+      Identity.github.where(uid: authors_uids).find_each do |i|
         BadgeAchievement.where(user_id: i.user_id, badge_id: badge.id).first_or_create(
           rewarding_context_message_markdown: message_markdown,
         )
@@ -78,7 +80,7 @@ module BadgeRewarder
   def self.award_streak_badge(num_weeks)
     article_user_ids = Article.published.where("published_at > ? AND score > ?", 1.week.ago, -25).pluck(:user_id) # No cred for super low quality
     message = if num_weeks == 16
-                "16 weeks! You've achieved the longest DEV writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!"
+                "16 weeks! You've achieved the longest #{ApplicationConfig['COMMUNITY_NAME']} writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!"
               else
                 "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
               end

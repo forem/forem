@@ -46,4 +46,13 @@ RSpec.describe CommentDecorator, type: :decorator do
       expect(comment.published_timestamp).to eq(comment.created_at.utc.iso8601)
     end
   end
+
+  describe "#published_at_int" do
+    let(:comment) { create(:comment) }
+
+    it "returns the creation date as an integer" do
+      expect(comment.created_at).not_to be_nil
+      expect(comment.decorate.published_at_int).to eq(comment.created_at.to_i)
+    end
+  end
 end

@@ -1,0 +1,5 @@
+<h2>Editing <%= @response_template.title %></h2>
+<%= render "form", response_template: @response_template %>
+<%= form_with(model: [:internal, @response_template], local: true, method: :delete, html: { onsubmit: "return confirm('Are you sure you want to delete this response template?')" }) do |f| %>
+  <%= f.submit "Delete Response Template", class: "btn btn-danger" %>
+<% end %>

@@ -3,7 +3,6 @@ import render from 'preact-render-to-json';
 import { shallow, deep } from 'preact-render-spy';
 import { JSDOM } from 'jsdom';
 import ArticleForm from '../articleForm';
-import algoliasearch from '../elements/__mocks__/algoliasearch';
 
 const dummyArticleUpdatedAt = new Date();
 const getArticleForm = () => (
@@ -37,8 +36,6 @@ describe('<ArticleForm />', () => {
     };
 
     global.document.body.innerHTML = "<div id='editor-help-guide'></div>";
-
-    global.window.algoliasearch = algoliasearch;
 
     localStorage.clear();
     /* eslint-disable-next-line no-underscore-dangle */

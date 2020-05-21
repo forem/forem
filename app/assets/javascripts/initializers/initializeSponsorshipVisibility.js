@@ -52,12 +52,12 @@ function initializeSponsorshipVisibility() {
     }, 400);
   }
   if (el && user && user.display_sponsors) {
-    el.classList.add('showing');
+    el.classList.remove('hidden');
     listenForSponsorClick();
   } else if (el && user) {
-    el.classList.remove('showing');
+    el.classList.add('hidden');
   } else if (el) {
-    el.classList.add('showing');
+    el.classList.remove('hidden');
     listenForSponsorClick();
   }
 }

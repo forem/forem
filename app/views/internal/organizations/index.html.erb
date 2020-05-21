@@ -1,6 +1,6 @@
 <div class="row m-3">
   <div class="col justify-content-end">
-    <%= form_tag("/internal/organizations", method: "get") do %>
+    <%= form_tag(internal_organizations_path, method: "get") do %>
       <div class="form-row justify-content-end">
         <div class="form-group">
           <%= text_field_tag(:search, params[:search]) %>
@@ -26,7 +26,7 @@
   <tbody>
     <% @organizations.each do |organization| %>
       <tr>
-        <td><a href="/internal/organizations/<%= organization.id %>" target="_blank">@<%= organization.name %></td>
+        <td><%= link_to "@#{organization.name}", internal_organization_path(organization.id) %></td>
         <td><%= organization.id %></td>
         <% if organization.twitter_username %>
           <td><%= link_to organization.twitter_username, "https://twitter.com/#{organization.twitter_username}" %></td>

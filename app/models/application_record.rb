@@ -1,6 +1,8 @@
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
+  include Purgeable
+
   QUERY_ESTIMATED_COUNT = <<~SQL.squish.freeze
     SELECT (
       (reltuples / GREATEST(relpages, 1)) *

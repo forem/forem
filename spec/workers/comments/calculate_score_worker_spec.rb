@@ -30,6 +30,7 @@ RSpec.describe Comments::CalculateScoreWorker, type: :worker do
         allow(root_comment).to receive(:save!)
         allow(child_comment).to receive(:update_columns)
         allow(child_comment).to receive(:is_root?).and_return(false)
+        allow(child_comment).to receive(:root_exists?).and_return(true)
         allow(child_comment).to receive(:root).and_return(root_comment)
         allow(Comment).to receive(:find_by).with(id: 1).and_return(child_comment)
 

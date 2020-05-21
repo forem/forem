@@ -19,6 +19,7 @@ document.ready.then(() => {
   }
 });
 
-window.WebComponents.waitFor(() => {
-  import('@github/clipboard-copy-element');
-});
+
+
+// import('@github/clipboard-copy-element');
+// Temporarily removed due to problems

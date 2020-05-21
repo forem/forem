@@ -37,6 +37,9 @@
     "expires_at": {
       "type": "date"
     },
+    "last_indexed_at": {
+      "type": "date"
+    },
     "location": {
       "type": "text",
       "copy_to": "classified_listing_search",

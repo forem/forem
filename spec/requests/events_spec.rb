@@ -6,7 +6,7 @@ RSpec.describe "Events", type: :request do
   describe "GET events" do
     it "returns index page" do
       get "/events"
-      expect(response.body).to include("DEV EVENTS")
+      expect(response.body).to include("#{community_name} EVENTS")
       expect(response.body).to include(event.title)
     end
 

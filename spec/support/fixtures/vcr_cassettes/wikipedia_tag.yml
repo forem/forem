@@ -1,0 +1,86 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://en.wikipedia.org/api/rest_v1/page/summary/Wikipedia
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      Accept:
+      - "*/*"
+      User-Agent:
+      - Ruby
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Content-Type:
+      - application/json; charset=utf-8; profile="https://www.mediawiki.org/wiki/Specs/Summary/1.4.2"
+      Cache-Control:
+      - s-maxage=1209600, max-age=300
+      Content-Language:
+      - en
+      Vary:
+      - Accept-Encoding
+      Content-Location:
+      - https://en.wikipedia.org/api/rest_v1/page/summary/Wikipedia
+      Access-Control-Allow-Origin:
+      - "*"
+      Access-Control-Allow-Methods:
+      - GET,HEAD
+      Access-Control-Allow-Headers:
+      - accept, content-type, content-length, cache-control, accept-language, api-user-agent,
+        if-match, if-modified-since, if-none-match, dnt, accept-encoding
+      Access-Control-Expose-Headers:
+      - etag
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - SAMEORIGIN
+      Referrer-Policy:
+      - origin-when-cross-origin
+      X-Xss-Protection:
+      - 1; mode=block
+      Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'
+      X-Content-Security-Policy:
+      - default-src 'none'; frame-ancestors 'none'
+      X-Webkit-Csp:
+      - default-src 'none'; frame-ancestors 'none'
+      X-Request-Id:
+      - 7bc92964-a2bd-4f08-b9b6-7f718282848d
+      Server:
+      - restbase1016
+      Date:
+      - Mon, 13 Apr 2020 17:02:54 GMT
+      Etag:
+      - W/"949289700/5ae95970-7cf7-11ea-86c0-dbb91750f4b9"
+      Age:
+      - '58602'
+      X-Cache:
+      - cp3062 hit, cp3060 hit/430
+      X-Cache-Status:
+      - hit-front
+      Server-Timing:
+      - cache;desc="hit-front"
+      Strict-Transport-Security:
+      - max-age=106384710; includeSubDomains; preload
+      X-Client-Ip:
+      - 77.13.172.109
+      Accept-Ranges:
+      - bytes
+      Content-Length:
+      - '893'
+      Connection:
+      - keep-alive
+    body:
+      encoding: ASCII-8BIT
+      string: !binary |-
+        eyJ0eXBlIjoic3RhbmRhcmQiLCJ0aXRsZSI6Ildpa2lwZWRpYSIsImRpc3BsYXl0aXRsZSI6Ildpa2lwZWRpYSIsIm5hbWVzcGFjZSI6eyJpZCI6MCwidGV4dCI6IiJ9LCJ3aWtpYmFzZV9pdGVtIjoiUTUyIiwidGl0bGVzIjp7ImNhbm9uaWNhbCI6Ildpa2lwZWRpYSIsIm5vcm1hbGl6ZWQiOiJXaWtpcGVkaWEiLCJkaXNwbGF5IjoiV2lraXBlZGlhIn0sInBhZ2VpZCI6NTA0MzczNCwidGh1bWJuYWlsIjp7InNvdXJjZSI6Imh0dHBzOi8vdXBsb2FkLndpa2ltZWRpYS5vcmcvd2lraXBlZGlhL2VuL3RodW1iLzgvODAvV2lraXBlZGlhLWxvZ28tdjIuc3ZnLzMyMHB4LVdpa2lwZWRpYS1sb2dvLXYyLnN2Zy5wbmciLCJ3aWR0aCI6MzIwLCJoZWlnaHQiOjI5Mn0sIm9yaWdpbmFsaW1hZ2UiOnsic291cmNlIjoiaHR0cHM6Ly91cGxvYWQud2lraW1lZGlhLm9yZy93aWtpcGVkaWEvZW4vOC84MC9XaWtpcGVkaWEtbG9nby12Mi5zdmciLCJ3aWR0aCI6MTAzLCJoZWlnaHQiOjk0fSwibGFuZyI6ImVuIiwiZGlyIjoibHRyIiwicmV2aXNpb24iOiI5NDkyODk3MDAiLCJ0aWQiOiI1YWU5NTk3MC03Y2Y3LTExZWEtODZjMC1kYmI5MTc1MGY0YjkiLCJ0aW1lc3RhbXAiOiIyMDIwLTA0LTA1VDE3OjAzOjU4WiIsImRlc2NyaXB0aW9uIjoiRnJlZSBvbmxpbmUgZW5jeWNsb3BlZGlhIHRoYXQgYW55b25lIGNhbiBlZGl0IiwiZGVzY3JpcHRpb25fc291cmNlIjoibG9jYWwiLCJjb250ZW50X3VybHMiOnsiZGVza3RvcCI6eyJwYWdlIjoiaHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvV2lraXBlZGlhIiwicmV2aXNpb25zIjoiaHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvV2lraXBlZGlhP2FjdGlvbj1oaXN0b3J5IiwiZWRpdCI6Imh0dHBzOi8vZW4ud2lraXBlZGlhLm9yZy93aWtpL1dpa2lwZWRpYT9hY3Rpb249ZWRpdCIsInRhbGsiOiJodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9UYWxrOldpa2lwZWRpYSJ9LCJtb2JpbGUiOnsicGFnZSI6Imh0dHBzOi8vZW4ubS53aWtpcGVkaWEub3JnL3dpa2kvV2lraXBlZGlhIiwicmV2aXNpb25zIjoiaHR0cHM6Ly9lbi5tLndpa2lwZWRpYS5vcmcvd2lraS9TcGVjaWFsOkhpc3RvcnkvV2lraXBlZGlhIiwiZWRpdCI6Imh0dHBzOi8vZW4ubS53aWtpcGVkaWEub3JnL3dpa2kvV2lraXBlZGlhP2FjdGlvbj1lZGl0IiwidGFsayI6Imh0dHBzOi8vZW4ubS53aWtpcGVkaWEub3JnL3dpa2kvVGFsazpXaWtpcGVkaWEifX0sImFwaV91cmxzIjp7InN1bW1hcnkiOiJodHRwczovL2VuLndpa2lwZWRpYS5vcmcvYXBpL3Jlc3RfdjEvcGFnZS9zdW1tYXJ5L1dpa2lwZWRpYSIsIm1ldGFkYXRhIjoiaHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL2FwaS9yZXN0X3YxL3BhZ2UvbWV0YWRhdGEvV2lraXBlZGlhIiwicmVmZXJlbmNlcyI6Imh0dHBzOi8vZW4ud2lraXBlZGlhLm9yZy9hcGkvcmVzdF92MS9wYWdlL3JlZmVyZW5jZXMvV2lraXBlZGlhIiwibWVkaWEiOiJodHRwczovL2VuLndpa2lwZWRpYS5vcmcvYXBpL3Jlc3RfdjEvcGFnZS9tZWRpYS9XaWtpcGVkaWEiLCJlZGl0X2h0bWwiOiJodHRwczovL2VuLndpa2lwZWRpYS5vcmcvYXBpL3Jlc3RfdjEvcGFnZS9odG1sL1dpa2lwZWRpYSIsInRhbGtfcGFnZV9odG1sIjoiaHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL2FwaS9yZXN0X3YxL3BhZ2UvaHRtbC9UYWxrOldpa2lwZWRpYSJ9LCJleHRyYWN0IjoiV2lraXBlZGlhIGlzIGEgbXVsdGlsaW5ndWFsIG9ubGluZSBlbmN5Y2xvcGVkaWEgY3JlYXRlZCBhbmQgbWFpbnRhaW5lZCBhcyBhbiBvcGVuIGNvbGxhYm9yYXRpb24gcHJvamVjdCBieSBhIGNvbW11bml0eSBvZiB2b2x1bnRlZXIgZWRpdG9ycyB1c2luZyBhIHdpa2ktYmFzZWQgZWRpdGluZyBzeXN0ZW0uIEl0IGlzIHRoZSBsYXJnZXN0IGFuZCBtb3N0IHBvcHVsYXIgZ2VuZXJhbCByZWZlcmVuY2Ugd29yayBvbiB0aGUgV29ybGQgV2lkZSBXZWIsIGFuZCBpcyBvbmUgb2YgdGhlIDIwIG1vc3QgcG9wdWxhciB3ZWJzaXRlcyByYW5rZWQgYnkgQWxleGEsIGFzIG9mIE1hcmNowqAyMDIwLiBJdCBmZWF0dXJlcyBleGNsdXNpdmVseSBmcmVlIGNvbnRlbnQgYW5kIG5vIGNvbW1lcmNpYWwgYWRzLCBhbmQgaXMgb3duZWQgYW5kIHN1cHBvcnRlZCBieSB0aGUgV2lraW1lZGlhIEZvdW5kYXRpb24sIGEgbm9uLXByb2ZpdCBvcmdhbml6YXRpb24gZnVuZGVkIHByaW1hcmlseSB0aHJvdWdoIGRvbmF0aW9ucy4iLCJleHRyYWN0X2h0bWwiOiI8cD48Yj5XaWtpcGVkaWE8L2I+IGlzIGEgbXVsdGlsaW5ndWFsIG9ubGluZSBlbmN5Y2xvcGVkaWEgY3JlYXRlZCBhbmQgbWFpbnRhaW5lZCBhcyBhbiBvcGVuIGNvbGxhYm9yYXRpb24gcHJvamVjdCBieSBhIGNvbW11bml0eSBvZiB2b2x1bnRlZXIgZWRpdG9ycyB1c2luZyBhIHdpa2ktYmFzZWQgZWRpdGluZyBzeXN0ZW0uIEl0IGlzIHRoZSBsYXJnZXN0IGFuZCBtb3N0IHBvcHVsYXIgZ2VuZXJhbCByZWZlcmVuY2Ugd29yayBvbiB0aGUgV29ybGQgV2lkZSBXZWIsIGFuZCBpcyBvbmUgb2YgdGhlIDIwIG1vc3QgcG9wdWxhciB3ZWJzaXRlcyByYW5rZWQgYnkgQWxleGEsIGFzIG9mIE1hcmNowqAyMDIwLiBJdCBmZWF0dXJlcyBleGNsdXNpdmVseSBmcmVlIGNvbnRlbnQgYW5kIG5vIGNvbW1lcmNpYWwgYWRzLCBhbmQgaXMgb3duZWQgYW5kIHN1cHBvcnRlZCBieSB0aGUgV2lraW1lZGlhIEZvdW5kYXRpb24sIGEgbm9uLXByb2ZpdCBvcmdhbml6YXRpb24gZnVuZGVkIHByaW1hcmlseSB0aHJvdWdoIGRvbmF0aW9ucy48L3A+In0=
+    http_version: null
+  recorded_at: Tue, 14 Apr 2020 09:19:35 GMT
+recorded_with: VCR 5.1.0

@@ -51,6 +51,6 @@ RSpec.describe MediumTag, type: :liquid_tag do
   end
 
   it "raises an error when invalid" do
-    expect { generate_medium_tag("invalid link") }. to raise_error("Invalid link URL or link URL does not exist")
+    expect { generate_medium_tag("invalid link") }.to raise_error("Invalid link URL or link URL does not exist")
   end
 end

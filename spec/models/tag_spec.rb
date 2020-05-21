@@ -92,16 +92,38 @@ RSpec.describe Tag, type: :model do
   describe "#after_commit" do
     it "on update enqueues job to index tag to elasticsearch" do
       tag.save
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, tag.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, tag.id]) do
         tag.save
       end
     end
 
     it "on destroy enqueues job to delete tag from elasticsearch" do
       tag.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, tag.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, tag.id]) do
         tag.destroy
       end
     end
+
+    it "syncs related elasticsearch documents" do
+      article = create(:article)
+      podcast_episode = create(:podcast_episode)
+      tag = described_class.find(article.tags.first.id)
+      podcast_episode.tags << tag
+      reaction = create(:reaction, reactable: article, category: "readinglist")
+      new_keywords = "keyword1, keyword2, keyword3"
+      sidekiq_perform_enqueued_jobs
+
+      tag.update(keywords_for_search: new_keywords)
+      sidekiq_perform_enqueued_jobs
+      expect(collect_keywords(article)).to include(new_keywords)
+      expect(
+        reaction.elasticsearch_doc.dig("_source", "reactable", "tags").flat_map { |t| t["keywords_for_search"] },
+      ).to include(new_keywords)
+      expect(collect_keywords(podcast_episode)).to include(new_keywords)
+    end
+  end
+
+  def collect_keywords(record)
+    record.elasticsearch_doc.dig("_source", "tags").flat_map { |t| t["keywords_for_search"] }
   end
 end

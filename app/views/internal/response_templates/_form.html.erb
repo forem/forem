@@ -1,0 +1,25 @@
+<%= form_with(model: [:internal, response_template], local: true, html: { class: "mb-5" }) do |f| %>
+  <div class="form-group">
+    <%= f.label :type_of, "Type of Response Template" %>
+    <% type_of_options = [["Mod Comment", "mod_comment"], ["Personal Comment", "personal_comment"], ["Email", "email_reply"], ["Abuse Report Email", "abuse_report_email_reply"]] %>
+    <%= f.select :type_of, options_for_select(type_of_options, response_template.type_of), html: { required: true }, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :title %>
+    <%= f.text_field :title, value: response_template.title, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :content, "Response template body" %>
+    <%= f.text_area :content, class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :content_type, "Content Type (for ex. Markdown)", value: response_template.content %>
+    <% content_type_options = [["Markdown", "body_markdown"], ["Plain Text", "plain_text"], ["HTML", "html"]] %>
+    <%= f.select :content_type, options_for_select(content_type_options, response_template.content_type || "plain_text"), class: "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :user_id, "User ID - Add ID to restrict usage for a single user" %>
+    <%= f.text_field :user_id, value: response_template.user_id, class: "form-control" %>
+  </div>
+  <%= f.submit class: "btn btn-primary" %>
+<% end %>

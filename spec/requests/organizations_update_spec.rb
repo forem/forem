@@ -42,4 +42,25 @@ RSpec.describe "OrganizationsUpdate", type: :request do
       put "/organizations/#{invalid_id}", params: { organization: { id: invalid_id, text_color_hex: "#111111" } }
     end.to raise_error(ActiveRecord::RecordNotFound)
   end
+
+  it "returns error if profile image file name is too long" do
+    organization = user.organizations.first
+    allow(Organization).to receive(:find_by).and_return(organization)
+    image = fixture_file_upload("files/800x600.png", "image/png")
+    allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
+
+    put "/organizations/#{org_id}", params: { organization: { id: org_id, profile_image: image } }
+
+    expect(response.body).to include("filename too long")
+  end
+
+  it "returns error if profile image is not a file" do
+    organization = user.organizations.first
+    allow(Organization).to receive(:find_by).and_return(organization)
+    image = "A String"
+
+    put "/organizations/#{org_id}", params: { organization: { id: org_id, profile_image: image } }
+
+    expect(response.body).to include("invalid file type")
+  end
 end

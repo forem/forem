@@ -7,23 +7,29 @@
   .user-profile-follow-button {
     border: 1px solid <%= user_colors(@user)[:text] %> !important;
   }
-
   <% end %>
 </style>
-<div class="user-profile-header" style="<%= user_colors_style(@user) %>" itemscope itemtype="http://schema.org/Person" itemprop="mainEntity">
-  <meta itemprop="url" content="https://dev.to/<%= @user.username %>">
+
+<% unless internal_navigation? || user_signed_in? %>
+  <script type="application/ld+json">
+    <%= @organization_json_ld.to_json.html_safe %>
+  </script>
+<% end %>
+
+<div class="user-profile-header" style="<%= user_colors_style(@user) %>">
+  <a href="<%= user_url(@user) %>"></a>
   <div class="user-profile-header-container">
     <div class="profile-pic-wrapper">
-      <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" itemprop="image" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
+      <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 320) %>" alt="<%= @user.username %> profile" style="border-color:<%= user_colors(@user)[:bg] %>;background:<%= user_colors(@user)[:bg] %>" />
     </div>
     <div class="profile-details">
       <h1 style="color:<%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %>">
-        <span itemprop="name"><%= sanitize @user.name %></span>
+        <span><%= sanitize @user.name %></span>
         <span class="user-profile-follow-button-wrapper">
           <button id="user-follow-butt" class="cta follow-action-button user-profile-follow-button" style="color:<%= user_colors(@user)[:text] %>;background-color:<%= user_colors(@user)[:bg] %>" data-info='{"id":<%= @user.id %>,"className":"<%= @user.class.name %>"}'>&nbsp;</button>
         </span>
       </h1>
-      <p class="profile-description" itemprop="description">
+      <p class="profile-description">
         <%= sanitize(@user.summary.presence || "404 bio not found") %>
       </p>
       <style>
@@ -51,6 +57,11 @@
           <% if @user.facebook_url.present? %>
             <a href="<%= @user.facebook_url %>" target="_blank" rel="noopener me">
               <%= inline_svg_tag("facebook-logo.svg", class: "icon-img", aria: true, title: "Facebook logo") %>
+            </a>
+          <% end %>
+          <% if @user.youtube_url.present? %>
+            <a href="<%= @user.youtube_url %>" target="_blank" rel="noopener me">
+              <%= inline_svg_tag("youtube-logo.svg", class: "icon-img", aria: true, title: "Youtube logo") %>
             </a>
           <% end %>
           <% if @user.linkedin_url.present? %>

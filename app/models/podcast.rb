@@ -22,6 +22,7 @@ class Podcast < ApplicationRecord
   scope :reachable, -> { where(id: PodcastEpisode.reachable.select(:podcast_id)) }
   scope :published, -> { where(published: true) }
   scope :available, -> { reachable.published }
+  scope :eager_load_serialized_data, -> { includes(:user, :podcast, :tags) }
 
   alias_attribute :path, :slug
   alias_attribute :profile_image_url, :image_url
@@ -31,7 +32,9 @@ class Podcast < ApplicationRecord
     episode = PodcastEpisode.where(media_url: item.enclosure_url).
       or(PodcastEpisode.where(title: item.title)).
       or(PodcastEpisode.where(guid: item.guid.to_s)).presence
-    episode ||= PodcastEpisode.where(website_url: item.link).presence if unique_website_url?
+    # if unique_website_url? is set to true (the default value), we try to find an episode by website_url as well
+    # if unique_website_url? is set to false it usually means that website_url is the same for different episodes
+    episode ||= PodcastEpisode.where(website_url: item.link).presence if item.link.present? && unique_website_url?
     episode.to_a.first
   end
 

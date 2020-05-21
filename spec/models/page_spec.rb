@@ -29,6 +29,12 @@ RSpec.describe Page, type: :model do
       expect(page).not_to be_valid
       expect(page.errors[:slug].to_s.include?("taken")).to be true
     end
+
+    it "takes sitemap into account" do
+      page = build(:page, slug: "sitemap-hey")
+      expect(page).not_to be_valid
+      expect(page.errors[:slug].to_s.include?("taken")).to be true
+    end
   end
 
   context "when callbacks are triggered before save" do

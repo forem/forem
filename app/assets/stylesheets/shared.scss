@@ -1,11 +1,13 @@
+@import 'config/import';
 @import 'variables';
+
 #audiocontent {
   position: fixed;
   bottom: 0px;
   left: 0px;
   right: 0px;
   z-index: 15;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   display: block;
   #progressBar {
     color: #fff;
@@ -189,9 +191,10 @@
   position: fixed;
   top: 0;
   left: -20%;
-  background: $green;
+  background: var(--accent-brand);
+  box-shadow: 0 -2px var(--su-1) var(--accent-brand);
   z-index: 100;
-  height: 43px;
+  height: var(--su-1);
   width: 0%;
   &.showing {
     display: block;
@@ -210,7 +213,7 @@
 }
 
 .global-notice {
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   background: $green;
   color: black;
   padding: 20px 0px 20px;

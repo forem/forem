@@ -28,7 +28,7 @@
   <tbody>
     <% @group_chat_channels.each do |channel| %>
       <tr>
-        <td><a href="/connect/<%= channel.slug %>" target="_blank"><%= channel.channel_name %></td>
+        <td><a href="/connect/<%= channel.slug %>" target="_blank" rel="noopener"><%= channel.channel_name %></td>
           <td><%= channel.users.pluck(:username).join(", ") %></td>
         <td>
           <%= form_for [:internal, channel] do |f| %>

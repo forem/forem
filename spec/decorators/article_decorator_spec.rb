@@ -41,7 +41,7 @@ RSpec.describe ArticleDecorator, type: :decorator do
   describe "#processed_canonical_url" do
     it "strips canonical_url" do
       article.canonical_url = " http://google.com "
-      expect(article.decorate.processed_canonical_url). to eq("http://google.com")
+      expect(article.decorate.processed_canonical_url).to eq("http://google.com")
     end
 
     it "returns the article url without a canonical_url" do
@@ -173,6 +173,13 @@ RSpec.describe ArticleDecorator, type: :decorator do
       parsed_post_by_string = "A post by #{created_article.user.name}"
       parsed_post_by_string += "." unless created_article.user.name.end_with?(".")
       expect(created_article.description_and_tags).to eq("#{parsed_post_by_string} Tagged with heytag.")
+    end
+
+    it "returns search_optimized_description_replacement if it is present" do
+      body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\nHey this is the article"
+      search_optimized_description_replacement = "Hey this is the expected result"
+      expect(create_article(body_markdown: body_markdown, search_optimized_description_replacement: search_optimized_description_replacement).
+        description_and_tags).to eq(search_optimized_description_replacement)
     end
   end
 end

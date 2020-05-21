@@ -1,6 +1,6 @@
 @import 'variables';
 blockquote.ltag__twitter-tweet {
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   background: white;
   max-width: 500px;
   font-size: 0.75em;

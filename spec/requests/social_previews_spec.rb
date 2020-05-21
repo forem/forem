@@ -7,7 +7,6 @@ RSpec.describe "SocialPreviews", type: :request do
   let(:article) { create(:article, user_id: user.id, tags: tag.name) }
   let(:comment) { create(:comment, user_id: user.id, commentable: article) }
   let(:image_url) { "https://hcti.io/v1/image/6c52de9d-4d37-4008-80f8-67155589e1a1" }
-  let(:listing) { create(:classified_listing, user_id: user.id, category: "cfp") }
 
   before do
     stub_request(:post, /hcti.io/).
@@ -136,9 +135,11 @@ RSpec.describe "SocialPreviews", type: :request do
   end
 
   describe "GET /social_previews/listing/:id" do
+    let(:listing) { create(:classified_listing, user_id: user.id) }
+
     it "renders pretty category name" do
       get "/social_previews/listing/#{listing.id}"
-      expect(response.body).to include CGI.escapeHTML("Call For Proposal")
+      expect(response.body).to include CGI.escapeHTML("Education")
     end
 
     it "renders consistent HTML between requests" do

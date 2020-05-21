@@ -49,6 +49,7 @@ module Admin
     def url_params
       %i[
         facebook_url
+        youtube_url
         behance_url
         dribbble_url
         medium_url

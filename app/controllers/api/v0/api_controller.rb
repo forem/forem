@@ -13,13 +13,9 @@ class Api::V0::ApiController < ApplicationController
     error_unprocessable_entity(exc.message)
   end
 
-  rescue_from ActiveRecord::RecordNotFound do |_exc|
-    error_not_found
-  end
+  rescue_from ActiveRecord::RecordNotFound, with: :error_not_found
 
-  rescue_from Pundit::NotAuthorizedError do |_exc|
-    error_unauthorized
-  end
+  rescue_from Pundit::NotAuthorizedError, with: :error_unauthorized
 
   protected
 
@@ -65,10 +61,10 @@ class Api::V0::ApiController < ApplicationController
 
   def authenticate_with_api_key
     api_key = request.headers["api-key"]
-    return nil unless api_key
+    return unless api_key
 
     api_secret = ApiSecret.includes(:user).find_by(secret: api_key)
-    return nil unless api_secret
+    return unless api_secret
 
     # guard against timing attacks
     # see <https://www.slideshare.net/NickMalcolm/timing-attacks-and-ruby-on-rails>

@@ -27,13 +27,13 @@
       <div class="card-body" style="overflow: scroll; max-height: 500px;">
         <% @vomits.each do |reaction| %>
           <% next if (reaction.reactable_type == "Article" && !reaction.reactable.published) || (reaction.reactable_type == "User" && reaction.reactable&.banished?) %>
-          <div class="d-flex justify-content-between">
+          <div class="d-flex justify-content-between" data-controller="reaction" data-reaction-id="<%= reaction.id %>">
             <span>
               🤢 <a href="<%= reaction.user.path %>">@<%= reaction.user.username %></a>
             </span>
             <span>
               <strong><%= reaction.reactable_type %>:</strong>
-              <a href="<%= reaction.reactable.path %>"><%= reaction.reactable.title %></a>
+              <a href="<%= reaction.reactable.path %>"><%= reaction.reactable_type == "User" ? reaction.reactable.username : reaction.reactable.title %></a>
               <% if reaction.reactable_type == "User" && reaction.reactable.banned %>
                 <span class="badge badge-danger">Suspended</span>
               <% end %>
@@ -44,24 +44,38 @@
             <span>
               <% if params[:status] == "Open" || params[:status].blank? %>
                 <% if reaction.reactable_type == "User" %>
-                  <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
-                    <%= f.hidden_field :status, value: "confirmed" %>
-                    <%= f.submit "CONFIRMED", class: "btn btn-success btn-sm", data: { confirm: "Are you sure?" } %>
-                  <% end %>
+                  <button
+                    class="btn btn-success btn-sm"
+                    type="button"
+                    data-reactable="user"
+                    data-status="confirmed"
+                    data-target="reaction.confirmed"
+                    data-action="reaction#reactableUserCheck">
+                    CONFIRM
+                  </button>
                 <% else %>
-                  <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
-                    <%= f.hidden_field :status, value: "confirmed" %>
-                    <%= f.submit "CONFIRMED", class: "btn btn-success btn-sm" %>
-                  <% end %>
+                  <button
+                    class="btn btn-success btn-sm"
+                    type="button"
+                    data-reactable="non-user"
+                    data-status="confirmed"
+                    data-target="reaction.confirmed"
+                    data-action="reaction#reactableUserCheck">
+                    CONFIRM
+                  </button>
                 <% end %>
-                <%= form_for [:internal, reaction], html: { class: "d-inline" } do |f| %>
-                  <%= f.hidden_field :status, value: "invalid" %>
-                  <%= f.submit "INVALID", class: "btn btn-danger btn-sm" %>
-                <% end %>
+                <button
+                  class="btn btn-danger btn-sm"
+                  type="button"
+                  data-altstatus="invalid"
+                  data-target="reaction.invalid"
+                  data-action="reaction#updateReactionInvalid">
+                  INVALID
+                </button>
               <% end %>
             </span>
           </div>
-          <hr>
+          <hr id="js__reaction__div__hr__<%= reaction.id %>">
         <% end %>
       </div>
     </div>

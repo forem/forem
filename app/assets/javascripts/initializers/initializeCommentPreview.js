@@ -1,4 +1,4 @@
-'use strict';
+/* global activateRunkitTags */
 
 function getAndShowPreview(markdownPreviewPane, markdownEditor) {
   function successCb(body) {
@@ -6,6 +6,7 @@ function getAndShowPreview(markdownPreviewPane, markdownEditor) {
     markdownEditor.classList.toggle('preview-loading');
     markdownEditor.classList.toggle('preview-toggle');
     markdownPreviewPane.innerHTML = body.processed_html; // eslint-disable-line no-param-reassign
+    activateRunkitTags();
   }
 
   const payload = JSON.stringify({
@@ -15,11 +16,11 @@ function getAndShowPreview(markdownPreviewPane, markdownEditor) {
   });
   getCsrfToken()
     .then(sendFetch('comment-preview', payload))
-    .then(response => {
+    .then((response) => {
       return response.json();
     })
     .then(successCb)
-    .catch(err => {
+    .catch((err) => {
       console.log('error!'); // eslint-disable-line
       console.log(err); // eslint-disable-line no-console
     });

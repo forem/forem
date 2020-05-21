@@ -1,7 +1,7 @@
 require "rails_helper"
 
-RSpec.describe Search::Tag, type: :service, elasticsearch: true do
-  describe "::search_documents" do
+RSpec.describe Search::Tag, type: :service do
+  describe "::search_documents", elasticsearch: "Tag" do
     let(:tag_doc_1) { { "name" => "tag1" } }
     let(:tag_doc_2) { { "name" => "tag2" } }
     let(:mock_search_response) do

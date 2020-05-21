@@ -1,7 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import debounceAction from '../../src/utils/debounceAction';
-import { fetchSearch } from '../../src/utils/search';
+import { fetchSearch } from '../../utilities/search';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -30,13 +29,6 @@ const LETTERS_NUMBERS = /[a-z0-9]/i;
 class Tags extends Component {
   constructor(props) {
     super(props);
-
-    // 250ms without invoking the function at the leading edge of the timeout
-    // NOTE: this seems the best combination of wait time and options to avoid
-    // flickering and text replacement during autocomplete
-    this.debouncedTagSearch = debounceAction(this.handleInput.bind(this), {
-      time: 250,
-    });
 
     this.state = {
       selectedIndex: -1,
@@ -103,8 +95,8 @@ class Tags extends Component {
     const { defaultValue } = this.props;
     return defaultValue
       .split(',')
-      .map(item => item !== undefined && item.trim())
-      .filter(item => item.length > 0);
+      .map((item) => item !== undefined && item.trim())
+      .filter((item) => item.length > 0);
   }
 
   get isTopOfSearchResults() {
@@ -167,7 +159,7 @@ class Tags extends Component {
     return [start, end];
   };
 
-  handleKeyDown = e => {
+  handleKeyDown = (e) => {
     const component = this;
     const { maxTags } = this.props;
     if (component.selected.length === maxTags && e.key === KEYS.COMMA) {
@@ -213,7 +205,7 @@ class Tags extends Component {
     }
   };
 
-  handleRulesClick = e => {
+  handleRulesClick = (e) => {
     e.preventDefault();
     const { showingRulesForTag } = this.state;
     if (showingRulesForTag === e.target.dataset.content) {
@@ -223,7 +215,7 @@ class Tags extends Component {
     }
   };
 
-  handleTagClick = e => {
+  handleTagClick = (e) => {
     if (e.target.className === 'articleform__tagsoptionrulesbutton') {
       return;
     }
@@ -237,7 +229,7 @@ class Tags extends Component {
     this.insertTag(e.currentTarget.dataset.content);
   };
 
-  handleInput = e => {
+  handleInput = (e) => {
     let { value } = e.target;
     // If we start typing immediately after a comma, add a space
     // before what we typed.
@@ -285,7 +277,7 @@ class Tags extends Component {
     return `${value.slice(0, position)} ${value.slice(position, value.length)}`;
   };
 
-  handleTagEnter = e => {
+  handleTagEnter = (e) => {
     if (e.key === KEYS.RETURN) {
       this.handleTagClick();
     }
@@ -315,7 +307,7 @@ class Tags extends Component {
 
   search(query) {
     if (query === '') {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           this.resetSearchResults();
           resolve();
@@ -327,15 +319,15 @@ class Tags extends Component {
     const dataHash = { name: query };
     const responsePromise = fetchSearch('tags', dataHash);
 
-    return responsePromise.then(response => {
+    return responsePromise.then((response) => {
       if (listing === true) {
         const { additionalTags } = this.state;
         const { category } = this.props;
-        const additionalItems = (additionalTags[category] || []).filter(t =>
+        const additionalItems = (additionalTags[category] || []).filter((t) =>
           t.includes(query),
         );
         const resultsArray = response.result;
-        additionalItems.forEach(t => {
+        additionalItems.forEach((t) => {
           if (!resultsArray.includes(t)) {
             resultsArray.push({ name: t });
           }
@@ -356,13 +348,13 @@ class Tags extends Component {
   }
 
   moveUpInSearchResults() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       selectedIndex: prevState.selectedIndex - 1,
     }));
   }
 
   moveDownInSearchResults() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       selectedIndex: prevState.selectedIndex + 1,
     }));
   }
@@ -406,6 +398,7 @@ class Tags extends Component {
           className={`${classPrefix}__tagrules--${
             showingRulesForTag === tag.name ? 'active' : 'inactive'
           }`}
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: tag.rules_html }}
         />
       </div>
@@ -435,15 +428,16 @@ class Tags extends Component {
         <input
           id="tag-input"
           type="text"
-          ref={t => {
+          ref={(t) => {
             this.textArea = t;
             return this.textArea;
           }}
           className={`${classPrefix}__tags`}
+          name="classified_listing[tag_list]"
           placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
           autoComplete="off"
           value={defaultValue}
-          onInput={this.debouncedTagSearch}
+          onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
           onFocus={this.handleFocusChange}

@@ -3,6 +3,7 @@ function initNotifications() {
   markNotificationsAsRead();
   initReactions();
   listenForNotificationsBellClick();
+  initFilter();
   initPagination();
   initLoadMoreButton();
 }
@@ -122,9 +123,21 @@ function listenForNotificationsBellClick() {
     document.getElementById('notifications-link').onclick = function() {
       document
         .getElementById('notifications-number')
-        .classList.remove('showing');
+        .classList.add('hidden');
     };
   }, 180);
+}
+
+function initFilter() {
+  const notificationsFilterSelect = document.getElementById(
+    'notifications-filter__select',
+  );
+  const changeNotifications = (event) => {
+    window.location.href = event.target.value;
+  };
+  if (notificationsFilterSelect) {
+    notificationsFilterSelect.addEventListener('change', changeNotifications);
+  }
 }
 
 function initPagination() {

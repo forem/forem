@@ -14,6 +14,7 @@ RSpec.describe "ChatChannels", type: :request do
   before do
     sign_in user
     chat_channel.add_users([user])
+    chat_channel.chat_channel_memberships.update(status: "active")
   end
 
   describe "GET /connect" do
@@ -47,6 +48,17 @@ RSpec.describe "ChatChannels", type: :request do
       sign_in user
       get "/chat_channels?state=unopened"
       expect(response.body).to include(direct_channel.slug)
+    end
+  end
+
+  describe "get /chat_channels?state=joining_request" do
+    it "returns joining request channels" do
+      membership = ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "joining_request", role: "mod")
+      membership.chat_channel.update(discoverable: true)
+      sign_in user
+      get "/chat_channels?state=joining_request"
+      expect(response.body).to include("\"status\":\"joining_request\"")
+      expect(response.body).to include("joining_requests")
     end
   end
 
@@ -136,10 +148,13 @@ RSpec.describe "ChatChannels", type: :request do
   describe "PUT /chat_channels/:id" do
     it "updates channel for valid user" do
       user.add_role(:super_admin)
+      membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
+      membership.update(role: "mod")
       put "/chat_channels/#{chat_channel.id}",
           params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channelly" } },
           headers: { HTTP_ACCEPT: "application/json" }
       expect(ChatChannel.last.slug).to eq("hello-channelly")
+      expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
     end
 
     it "dissallows invalid users" do
@@ -153,10 +168,12 @@ RSpec.describe "ChatChannels", type: :request do
     it "returns errors if channel is invalid" do
       # slug should be taken
       user.add_role(:super_admin)
+      membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
+      membership.update(role: "mod")
       put "/chat_channels/#{chat_channel.id}",
           params: { chat_channel: { channel_name: "HEy hey hoho", slug: invite_channel.slug } },
           headers: { HTTP_ACCEPT: "application/json" }
-      expect(response.body).to include("Slug has already been taken")
+      expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
     end
   end
 
@@ -230,6 +247,13 @@ RSpec.describe "ChatChannels", type: :request do
       post "/chat_channels/create_chat",
            params: { user_id: user_open_inbox.id }
       expect(user_open_inbox.chat_channel_memberships.size).to eq(1)
+    end
+
+    it "returns error message if create_with_users fails" do
+      allow(ChatChannel).to receive(:create_with_users).and_raise(StandardError.new("Blocked"))
+      post "/chat_channels/create_chat",
+           params: { user_id: user_open_inbox.id }
+      expect(response.parsed_body["message"]).to eq("Blocked")
     end
   end
 

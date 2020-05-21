@@ -2,6 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkCopyIcon from '../../../assets/images/content-copy.svg';
 import { generateMainImage } from '../actions';
+import { validateFileInputs } from '../../packs/validateFileInputs';
 
 export default class ImageManagement extends Component {
   constructor(props) {
@@ -17,22 +18,29 @@ export default class ImageManagement extends Component {
     e.preventDefault();
 
     this.clearUploadError();
+    const validFileInputs = validateFileInputs();
 
-    const payload = { image: e.target.files, wrap_cloudinary: true };
-    const { onMainImageUrlChange } = this.props;
+    if (validFileInputs) {
+      const payload = { image: e.target.files, wrap_cloudinary: true };
+      const { onMainImageUrlChange } = this.props;
 
-    generateMainImage(payload, onMainImageUrlChange, this.onUploadError);
+      generateMainImage(payload, onMainImageUrlChange, this.onUploadError);
+    }
   };
 
   handleInsertionImageUpload = e => {
     this.clearUploadError();
 
-    const payload = { image: e.target.files };
-    generateMainImage(
-      payload,
-      this.handleInsertImageUploadSuccess,
-      this.onUploadError,
-    );
+    const validFileInputs = validateFileInputs();
+
+    if (validFileInputs) {
+      const payload = { image: e.target.files };
+      generateMainImage(
+        payload,
+        this.handleInsertImageUploadSuccess,
+        this.onUploadError,
+      );
+    }
   };
 
   handleInsertImageUploadSuccess = response => {
@@ -66,6 +74,15 @@ export default class ImageManagement extends Component {
     });
   };
 
+  execCopyText = () => {
+    this.imageMarkdownInput.setSelectionRange(
+      0,
+      this.imageMarkdownInput.value.length,
+    );
+    document.execCommand('copy');
+    this.imageMarkdownAnnouncer.hidden = false;
+  }
+
   copyText = () => {
     this.imageMarkdownAnnouncer = document.getElementById(
       'image-markdown-copy-link-announcer',
@@ -74,25 +91,29 @@ export default class ImageManagement extends Component {
       'image-markdown-copy-link-input',
     );
 
-    const isIOSDevice =
-      navigator.userAgent.match(/iPhone|iPad/i) ||
-      navigator.userAgent.match('CriOS') ||
-      navigator.userAgent === 'DEV-Native-ios';
+    const isNativeAndroid =
+      navigator.userAgent === 'DEV-Native-android' &&
+      typeof AndroidBridge !== "undefined" &&
+      AndroidBridge !== null;
 
-    if (isIOSDevice) {
-      this.imageMarkdownInput.setSelectionRange(
-        0,
-        this.imageMarkdownInput.value.length,
-      );
-      document.execCommand('copy');
+    const isClipboardSupported =
+      typeof navigator.clipboard !== "undefined" &&
+      navigator.clipboard !== null;
+
+    if (isNativeAndroid) {
+      AndroidBridge.copyToClipboard(this.imageMarkdownInput.value);
+      this.imageMarkdownAnnouncer.hidden = false;
+    } else if (isClipboardSupported) {
+      navigator.clipboard.writeText(this.imageMarkdownInput.value)
+        .then(() => {
+          this.imageMarkdownAnnouncer.hidden = false;
+        })
+        .catch((err) => {
+          this.execCopyText();
+        });
     } else {
-      this.imageMarkdownInput.focus();
-      this.imageMarkdownInput.setSelectionRange(
-        0,
-        this.imageMarkdownInput.value.length,
-      );
+      this.execCopyText();
     }
-    this.imageMarkdownAnnouncer.hidden = false;
   };
 
   linksToMarkdownForm = imageLinks => {
@@ -120,7 +141,12 @@ export default class ImageManagement extends Component {
     } else {
       mainImageArea = (
         <div>
-          <input type="file" onChange={this.handleMainImageUpload} />
+          <input
+            type="file"
+            onChange={this.handleMainImageUpload}
+            accept="image/*"
+            data-max-file-size-mb="25"
+          />
         </div>
       );
     }
@@ -163,6 +189,8 @@ export default class ImageManagement extends Component {
             type="file"
             onChange={this.handleInsertionImageUpload}
             multiple
+            accept="image/*"
+            data-max-file-size-mb="25"
           />
         </div>
       );
@@ -178,8 +206,7 @@ export default class ImageManagement extends Component {
               <em>
                 To add a cover image for the post, add &nbsp;
                 <code>cover_image: direct_url_to_image.jpg</code>
-&nbsp; to the
-                frontmatter
+                &nbsp; to the frontmatter
               </em>
             </p>
           </div>

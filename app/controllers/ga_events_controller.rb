@@ -1,4 +1,5 @@
 class GaEventsController < ApplicationController
+  include ApplicationHelper
   # No authorization required for entirely public controller
 
   # This controller is for tracking activity when GA script fails
@@ -13,7 +14,7 @@ class GaEventsController < ApplicationController
       path: json["path"],
       user_id: user_id,
       user_language: json["user_language"],
-      referrer: (json["referrer"] if json["referrer"] && !json["referrer"].start_with?("https://dev.to")),
+      referrer: (json["referrer"] if json["referrer"] && !json["referrer"].start_with?(app_url)),
       user_agent: json["user_agent"],
       viewport_size: json["viewport_size"],
       screen_resolution: json["screen_resolution"],
