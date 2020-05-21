@@ -20,7 +20,11 @@ class TagAdjustmentCreationService
   private
 
   def update_article
-    article.update!(tag_list: article.tag_list.remove(article.tag_list.select { |tag| tag.casecmp(tag_name).zero? })) if @tag_adjustment.adjustment_type == "removal"
+    if @tag_adjustment.adjustment_type == "removal"
+      removed_tags = article.tag_list.select { |tag| tag.casecmp(@tag_adjustmen.tag_name).zero? }
+      article.update!(tag_list: article.tag_list.remove(removed_tags))
+    end
+
     article.update!(tag_list: article.tag_list.add(@tag_adjustment.tag_name)) if @tag_adjustment.adjustment_type == "addition"
   end
 
