@@ -1,14 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Errors } from './Errors';
+import { ErrorList } from './ErrorList';
 
 function titleArea(previewResponse, articleState, errors) {
-  const titlePlaceholder = () => (
-    <div className="crayons-notice crayons-notice--danger mb-6">
-      Title is required...
-    </div>
-  );
-
   const tagArray = previewResponse.tags || articleState.tagList.split(', ');
   let tags = '';
   if (tagArray.length > 0 && tagArray[0].length > 0) {
@@ -48,14 +42,10 @@ function titleArea(previewResponse, articleState, errors) {
           />
         </div>
       )}
-      {errors && <Errors errorsList={errors} />}
-      {previewTitle ? (
-        <h1 className="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title">
-          {previewTitle}
-        </h1>
-      ) : (
-        titlePlaceholder()
-      )}
+      {errors && <ErrorList errors={errors} />}
+      <h1 className="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title">
+        {previewTitle}
+      </h1>
 
       <div className="crayons-article__tags">{tags}</div>
     </header>

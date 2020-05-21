@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { EditorBody } from './EditorBody';
 import { Meta } from './Meta';
-import { Errors } from './Errors';
+import { ErrorList } from './ErrorList';
 
 export const Form = ({
   titleDefaultValue,
@@ -20,7 +20,7 @@ export const Form = ({
 }) => {
   return (
     <div className="crayons-article-form__main__content crayons-card">
-      {errors && <Errors errorsList={errors} />}
+      {errors && <ErrorList errors={errors} />}
 
       {version === 'v2' && (
         <Meta

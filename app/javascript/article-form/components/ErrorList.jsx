@@ -24,4 +24,4 @@ ErrorList.propTypes = {
   errors: PropTypes.objectOf(PropTypes.string).isRequired,
 };
 
-ErrorList.displayName = 'Errors';
+ErrorList.displayName = 'ErrorList';
