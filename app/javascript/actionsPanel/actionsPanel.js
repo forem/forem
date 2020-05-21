@@ -71,10 +71,30 @@ function addReactionButtonListeners() {
 
         const outcome = await response.json();
 
-        if (outcome.error) {
-          // eslint-disable-next-line no-alert
-          alert(outcome.error);
+        let message;
+        /* eslint-disable no-restricted-globals */
+        if (outcome.result === 'create' && outcome.category === 'thumbsup') {
+          message = 'This post will be more visible.';
+        } else if (
+          outcome.result === 'create' &&
+          outcome.category === 'thumbsdown'
+        ) {
+          message = 'This post will be less visible.';
+        } else if (
+          outcome.result === 'create' &&
+          outcome.category === 'vomit'
+        ) {
+          message = "You've flagged this post as abusive or spam.";
+        } else if (outcome.result === 'destroy') {
+          message = 'Your quality rating was removed.';
+        } else if (outcome.error) {
+          message = `Error: ${outcome.error}`;
         }
+        top.addSnackbarItem({
+          message,
+          addCloseButton: true,
+        });
+        /* eslint-enable no-restricted-globals */
       } catch (error) {
         // eslint-disable-next-line no-alert
         alert(error);

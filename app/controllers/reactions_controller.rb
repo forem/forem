@@ -74,7 +74,7 @@ class ReactionsController < ApplicationController
 
     # if the reaction already exists, destroy it
     if reaction
-      handle_existing_reaction(reaction)
+      result = handle_existing_reaction(reaction)
     else
       reaction = build_reaction(category)
 
