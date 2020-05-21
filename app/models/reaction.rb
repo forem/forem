@@ -18,7 +18,8 @@ class Reaction < ApplicationRecord
                   }
   counter_culture :user
 
-  scope :positive, -> { where("points > ?", 0) }
+  scope :positive, -> { where(category: PUBLIC_CATEGORIES) }
+  scope :public_category, -> { where(category: PUBLIC_CATEGORIES) }
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
@@ -54,7 +55,7 @@ class Reaction < ApplicationRecord
 
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
-      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.reactions_count}-#{user.positive_reactions_count}-#{category}"
+      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
