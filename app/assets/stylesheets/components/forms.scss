@@ -122,10 +122,10 @@
   position: relative;
   outline: none;
   @extend %form-styling;
-  background-image: var(
+  background-image: url(var(
     --select-icon,
-    url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMTZsLTYtNmgxMmwtNiA2eiIgZmlsbD0iIzA4MDkwQSIvPjwvc3ZnPg==')
-  );
+    'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMTZsLTYtNmgxMmwtNiA2eiIgZmlsbD0iIzA4MDkwQSIvPjwvc3ZnPg=='
+  ));
   background-position: calc(100% - var(--su-2)) calc(50% - 1px);
   background-repeat: no-repeat;
 
