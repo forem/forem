@@ -11,7 +11,7 @@ RSpec.shared_examples "#sync_reactions_count" do |reactable_type|
       expect(reactable.public_reactions_count).to eq(0)
       reactable.sync_reactions_count
       reactable.reload
-      expected_count = reactable.reactions.positive.size
+      expected_count = reactable.reactions.public_category.size
       expect(reactable.public_reactions_count).to eq(expected_count)
     end
   end
