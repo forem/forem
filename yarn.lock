@@ -1328,10 +1328,10 @@
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-1.0.4.tgz#b740f68609dfae8aa71c3a6cab15d816407ba493"
   integrity sha512-60CHpq+eqnTxLZQ4PGHYNwUX572hgpMHGPtTWMjdTMsAvlm69lZV/4ly6O3sAYkomo4NggGcomrDpBe34rxUqw==
 
-"@percy/agent@^0.26.3":
-  version "0.26.3"
-  resolved "https://registry.yarnpkg.com/@percy/agent/-/agent-0.26.3.tgz#4e29806de0ed35d3636f1ac5f33e422fbb9bf87a"
-  integrity sha512-36Xo1tQ3oFHta/mHx/ISGXL7iApjTcbFMCBPRhj6wXwggRo4pJ0M7Qw7DanPObrQGNtQTT7TBsTGZ+N45vFECg==
+"@percy/agent@^0.26.6":
+  version "0.26.6"
+  resolved "https://registry.yarnpkg.com/@percy/agent/-/agent-0.26.6.tgz#ad61befee9f3a59c3ad6ef6378526af68a33fa31"
+  integrity sha512-weGb72ox+mQEVsx62NLvurXmeAYNqNRAkpQG40+T1hk4diUy0DmTPhQAx7ee7cwK8kQbbp1nVRWzE6yOuOluYw==
   dependencies:
     "@oclif/command" "1.5.19"
     "@oclif/config" "^1"
@@ -4461,16 +4461,7 @@ cross-spawn@^5.0.1:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
-cross-spawn@^7.0.0:
-  version "7.0.1"
-  resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.1.tgz#0ab56286e0f7c24e153d04cc2aa027e43a9a5d14"
-  integrity sha512-u7v4o84SwFpD32Z8IIcPZ6z1/ie24O6RU3RbtL5Y316l3KuHVPx9ItBgWQ6VlfAFnRnTtMUrsQ9MUUTuEZjogg==
-  dependencies:
-    path-key "^3.1.0"
-    shebang-command "^2.0.0"
-    which "^2.0.1"
-
-cross-spawn@^7.0.2:
+cross-spawn@^7.0.0, cross-spawn@^7.0.2:
   version "7.0.2"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-7.0.2.tgz#d0d7dcfa74e89115c7619f4f721a94e1fdb716d6"
   integrity sha512-PD6G8QG3S4FK/XCGFbEQrDqO2AnMMsy0meR7lerlIOHAAbkuavGU/pOqprrlvfTNjvowivTeBsjebAL0NSoMxw==

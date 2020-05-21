@@ -80,7 +80,7 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
-    "@percy/agent": "^0.26.3",
+    "@percy/agent": "^0.26.6",
     "@stoplight/spectral": "5.3.0",
     "@storybook/addon-actions": "^5.3.18",
     "@storybook/addon-knobs": "^5.3.18",
