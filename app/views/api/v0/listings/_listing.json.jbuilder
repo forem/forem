@@ -7,10 +7,10 @@ json.extract!(
   :slug,
   :body_markdown,
   :category,
-  :listing_category_id,
   :processed_html,
   :published,
 )
 
-json.tag_list listing.cached_tag_list
-json.tags     listing.tag_list
+json.listing_category_id listing.classified_listing_category_id
+json.tag_list            listing.cached_tag_list
+json.tags                listing.tag_list
