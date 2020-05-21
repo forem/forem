@@ -84,7 +84,8 @@
     "path": {
       "type": "keyword"
     },
-    "public_reactions_count": {
+    // deprecated in favor of public_reactions_count, to be removed
+    "positive_reactions_count": {
       "type": "integer"
     },
     "public_reactions_count": {
