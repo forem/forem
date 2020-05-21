@@ -74,7 +74,7 @@ class SiteConfig < RailsSettings::Base
   field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
 
   # Monetization
-  field :payment_pointer, type: :string, default: "" # Future monetization fields can include stripe credentials
+  field :payment_pointer, type: :string, default: "$ilp.uphold.com/24HhrUGG7ekn" # Experimental
 
   # Rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
