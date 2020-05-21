@@ -22,7 +22,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       index_keys = %w[
         type_of id title description cover_image readable_publish_date social_image
-        tag_list tags slug path url canonical_url comments_count public_reactions_count
+        tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp user organization flare_tag
       ]
@@ -280,7 +280,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       show_keys = %w[
         type_of id title description cover_image readable_publish_date social_image
-        tag_list tags slug path url canonical_url comments_count public_reactions_count
+        tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp body_html body_markdown user organization flare_tag
       ]
