@@ -463,6 +463,10 @@ class User < ApplicationRecord
     RateLimitChecker.new(self)
   end
 
+  def flipper_id
+    "User:#{id}"
+  end
+
   private
 
   def estimate_default_language

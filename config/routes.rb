@@ -238,6 +238,7 @@ Rails.application.routes.draw do
   end
 
   resource :onboarding, only: :show
+  resource :codeland, only: :show
 
   get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
   get "/search/tags" => "search#tags"
