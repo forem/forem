@@ -18,6 +18,7 @@ json.array!    @articles do |article|
     :body_markdown,
   )
 
+  json.positive_reactions_count article.public_reactions_count
   json.cover_image              cloud_cover_url(article.main_image)
   json.tag_list                 article.cached_tag_list_array
   json.canonical_url            article.processed_canonical_url
