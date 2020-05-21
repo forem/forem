@@ -30,7 +30,7 @@ function titleArea(previewResponse, articleState, errors) {
     }
   }
 
-  const previewTitle = previewResponse.title || articleState.title;
+  const previewTitle = previewResponse.title || articleState.title || '';
 
   return (
     <header className="crayons-article__header">
