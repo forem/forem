@@ -27,13 +27,14 @@
   --base-80: #c8c8c8;
   --base-70: #adadad;
   --base-60: #939393;
-  --base-50: #7a7a7a;
+  --base-50: #fff;// unreadable in Ten X hacker theme to light to view and in case of mail 
+  ///and usernames CSS properties are overriding please and that text is getting black out there Ex:-Hidden 
   --base-40: #626262;
   --base-30: #4b4b4b;
   --base-20: #353535;
   --base-10: #1c1c1c;
   --base-0: #0a0a0a;
-  --base-inverted: #000;
+  --base-inverted: #000;///
 
   // Accent colors
   --accent-brand: #2eff7b;
