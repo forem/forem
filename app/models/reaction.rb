@@ -18,6 +18,7 @@ class Reaction < ApplicationRecord
                   }
   counter_culture :user
 
+  scope :positive, -> { where(category: PUBLIC_CATEGORIES) }
   scope :public_category, -> { where(category: PUBLIC_CATEGORIES) }
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
