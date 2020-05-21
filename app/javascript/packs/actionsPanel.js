@@ -1,3 +1,9 @@
-import { initializeActionsPanel } from '../actionsPanel/actionsPanel';
+const loadActionsPanel = async () => {
+  const { initializeActionsPanel } = await import(
+    '../actionsPanel/actionsPanel'
+  );
 
-initializeActionsPanel();
+  initializeActionsPanel();
+};
+
+loadActionsPanel();

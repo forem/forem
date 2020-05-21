@@ -132,8 +132,16 @@ function clearAdjustmentReason() {
 }
 
 function renderTagOnArticle(tagName, colors) {
-  // eslint-disable-next-line no-restricted-globals
-  const articleTagsContainer = top.document.getElementsByClassName('tags')[0];
+  /* eslint-disable no-restricted-globals */
+  let articleTagsContainer;
+  if (top.document.location.pathname.endsWith('/mod')) {
+    [articleTagsContainer] = top.document
+      .getElementById('quick-mod-article')
+      .contentDocument.getElementsByClassName('tags');
+  } else {
+    [articleTagsContainer] = top.document.getElementsByClassName('tags');
+  }
+  /* eslint-enable no-restricted-globals */
 
   const newTag = document.createElement('a');
   newTag.innerText = `#${tagName}`;
@@ -192,9 +200,9 @@ async function adjustTag(el) {
 
       // eslint-disable-next-line no-restricted-globals
       top.addSnackbarItem({
-        message: `#${adjustedTagName} was ${
+        message: `The #${adjustedTagName} tag was ${
           outcome.result === 'addition' ? 'added' : 'removed'
-        }!`,
+        }.`,
         addCloseButton: true,
       });
     } else {

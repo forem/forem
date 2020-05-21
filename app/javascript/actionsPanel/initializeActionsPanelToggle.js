@@ -12,10 +12,13 @@ export default function initializeActionsPanel(user, path) {
   }
 
   document.querySelector('.mod-actions-menu').innerHTML = modActionsMenuHTML;
-  document.getElementById(
-    'mod-actions-menu-btn-area',
-  ).innerHTML = modActionsMenuIconHTML;
-  document
-    .querySelector('.mod-actions-menu-btn')
-    .addEventListener('click', toggleModActionsMenu);
+  // eslint-disable-next-line no-restricted-globals
+  if (!top.document.location.pathname.endsWith('/mod')) {
+    document.getElementById(
+      'mod-actions-menu-btn-area',
+    ).innerHTML = modActionsMenuIconHTML;
+    document
+      .querySelector('.mod-actions-menu-btn')
+      .addEventListener('click', toggleModActionsMenu);
+  }
 }
