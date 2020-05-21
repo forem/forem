@@ -18,8 +18,8 @@ namespace :search do
 
     Search::Cluster.delete_indexes
   end
+end
 
-  if %(development).include?(Rails.env)
-    Rake::Task["db:drop"].enhance(["search:destroy"])
-  end
+if %(development).include?(Rails.env)
+  Rake::Task["db:drop"].enhance(["search:destroy", "search:setup"])
 end
