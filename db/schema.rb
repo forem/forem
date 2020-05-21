@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_20_092951) do
+ActiveRecord::Schema.define(version: 2020_05_21_103952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -574,6 +574,7 @@ ActiveRecord::Schema.define(version: 2020_05_20_092951) do
     t.string "target_tag"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["name"], name: "index_html_variants_on_name", unique: true
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
@@ -595,6 +596,7 @@ ActiveRecord::Schema.define(version: 2020_05_20_092951) do
     t.string "mentionable_type"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["user_id", "mentionable_id", "mentionable_type"], name: "index_mentions_on_user_id_and_mentionable_id_mentionable_type", unique: true
   end
 
   create_table "messages", force: :cascade do |t|
@@ -628,6 +630,7 @@ ActiveRecord::Schema.define(version: 2020_05_20_092951) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["notifiable_id", "notifiable_type", "config"], name: "index_notification_subscriptions_on_notifiable_and_config"
+    t.index ["user_id", "notifiable_type", "notifiable_id"], name: "idx_notification_subs_on_user_id_notifiable_type_notifiable_id", unique: true
   end
 
   create_table "notifications", id: :serial, force: :cascade do |t|
@@ -927,6 +930,7 @@ ActiveRecord::Schema.define(version: 2020_05_20_092951) do
     t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
     t.index ["reactable_id"], name: "index_reactions_on_reactable_id"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
+    t.index ["user_id", "reactable_id", "reactable_type", "category"], name: "index_reactions_on_user_id_reactable_id_reactable_type_category", unique: true
     t.index ["user_id"], name: "index_reactions_on_user_id"
   end
 
