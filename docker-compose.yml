@@ -3,6 +3,7 @@ services:
   web:
     build: .
     image: devto-web:latest
+    container_name: dev_web
     ports:
       - "3000:3000"
     depends_on:
@@ -28,6 +29,7 @@ services:
 
   bundle:
     image: devto-web:latest
+    container_name: dev_bundle
     environment:
       RAILS_ENV: development
       REDIS_SIDEKIQ_URL: redis://redis:6379
@@ -41,6 +43,7 @@ services:
 
   yarn:
     image: devto-web:latest
+    container_name: dev_yarn
     environment:
       RAILS_ENV: development
       REDIS_SIDEKIQ_URL: redis://redis:6379
@@ -53,6 +56,7 @@ services:
 
   webpacker:
     image: devto-web:latest
+    container_name: dev_webpacker
     depends_on:
       - web
       - yarn
@@ -69,6 +73,7 @@ services:
 
   seed:
     image: devto-web:latest
+    container_name: dev_seed
     depends_on:
       - web
       - redis
@@ -87,6 +92,7 @@ services:
 
   sidekiq:
     image: devto-web:latest
+    container_name: dev_sidekiq
     depends_on:
       - web
       - redis
@@ -105,6 +111,7 @@ services:
 
   db:
     image: postgres:9.6.15-alpine
+    container_name: dev_postgresql
     environment:
       POSTGRES_USER: devto
       POSTGRES_PASSWORD: devto
@@ -116,6 +123,7 @@ services:
 
   redis:
     image: "redis"
+    container_name: dev_redis
     ports:
       - "6379:6379"
 
