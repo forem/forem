@@ -235,11 +235,13 @@ export default class ArticleForm extends Component {
     });
   };
 
-  handleArticleError = (response) => {
+  handleArticleError = (response, publishFailed = false) => {
     window.scrollTo(0, 0);
     this.setState({
       errors: response,
       submitting: false,
+      // Even if it's an update that failed, published will still be set to true
+      published: !publishFailed,
     });
   };
 
