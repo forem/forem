@@ -9,7 +9,7 @@ class TagAdjustmentCreationService
   end
 
   def article
-    @article ||= Article.find(creation_args[:article_id])
+    @article ||= Article.find(@tag_adjustment_params[:article_id])
   end
 
   def update_tags_and_notify
@@ -21,7 +21,7 @@ class TagAdjustmentCreationService
 
   def update_article
     if @tag_adjustment.adjustment_type == "removal"
-      removed_tags = article.tag_list.select { |tag| tag.casecmp(@tag_adjustmen.tag_name).zero? }
+      removed_tags = article.tag_list.select { |tag| tag.casecmp(@tag_adjustment.tag_name).zero? }
       return if removed_tags.empty?
 
       article.update!(tag_list: article.tag_list.remove(removed_tags))
@@ -32,8 +32,18 @@ class TagAdjustmentCreationService
 
   def creation_args
     args = @tag_adjustment_params
+
+    tag =
+      case args[:adjustment_type]
+      when "removal"
+        article.tags.detect { |article_tag| article_tag.name.casecmp(args[:tag_name]).zero? }
+      when "addition"
+        Tag.find_by(name: args[:tag_name])
+      end
+
     args[:user_id] = @user.id
-    args[:tag_id] = Tag.find_by(name: args[:tag_name])&.id
+    args[:tag_id] = tag&.id
+    args[:tag_name] = tag&.name || args[:tag_name]
     args
   end
 end
