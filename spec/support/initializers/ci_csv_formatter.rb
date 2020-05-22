@@ -58,7 +58,7 @@ class CSVFormatter
     csvs_dir = File.join(Dir.pwd, "tmp", "csvs")
     FileUtils.mkdir_p(csvs_dir)
 
-    timestamp = Time.current.utc.iso8601
+    timestamp = Time.current.utc.iso8601.tr(":", "-")
     csv_filename = File.join(csvs_dir, "#{timestamp}.csv")
 
     suite_runtime = (Time.zone.now - @suite_start_time).round(3)
