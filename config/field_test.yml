@@ -16,14 +16,14 @@ experiments:
       - 5
       - 5
       - 5
+      - 10
+      - 5
+      - 5
+      - 5
+      - 10
+      - 10
+      - 5
       - 35
-      - 5
-      - 5
-      - 5
-      - 20
-      - 5
-      - 5
-      - 5
     goals:
       - user_creates_comment
       - user_creates_reaction
