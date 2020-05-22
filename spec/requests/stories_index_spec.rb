@@ -200,7 +200,6 @@ RSpec.describe "StoriesIndex", type: :request do
         get "/"
         expect(response.body).not_to include('<a href="https://campaign-lander.com"')
       end
-
     end
   end
 
