@@ -53,7 +53,6 @@ class UserDecorator < ApplicationDecorator
     body_class = [
       config_theme.tr("_", "-"),
       "#{config_font.tr('_', '-')}-article-body",
-      "pro-status-#{pro?}",
       "trusted-status-#{trusted}",
       "#{config_navbar.tr('_', '-')}-navbar-config",
     ]
@@ -92,7 +91,7 @@ class UserDecorator < ApplicationDecorator
       },
     ]
     colors |= WHITE_TEXT_COLORS
-    colors[id % 10]
+    colors[(id || rand(100)) % 10]
   end
 
   # returns true if the user has been suspended and has no content
