@@ -166,8 +166,7 @@ export const articleWithComments = {
       path: '/naoma_dr_rice/comment/n',
       username: 'naoma_dr_rice',
       name: 'Dr. Naoma Rice',
-      profile_image_90:
-        '/uploads/user/profile_image/6/79732fcf-5655-426a-a7f0-18c737c3f8e8.png',
+      profile_image_90: '/images/7.png',
     },
   ],
   positive_reactions_count: 428,

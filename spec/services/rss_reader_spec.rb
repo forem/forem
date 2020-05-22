@@ -3,7 +3,7 @@ require "rss"
 
 default_logger = Rails.logger
 
-RSpec.describe RssReader, type: :service, vcr: VCR_OPTIONS[:rss_feeds] do
+RSpec.describe RssReader, type: :service, vcr: true do
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
@@ -25,21 +25,21 @@ RSpec.describe RssReader, type: :service, vcr: VCR_OPTIONS[:rss_feeds] do
       end
     end
 
-    it "fetch only articles from an feed_url" do
-      rss_reader.get_all_articles
+    it "fetch only articles from a feed_url", vcr: { cassette_name: "rss_reader_fetch_articles" } do
+      articles = rss_reader.get_all_articles
 
       # the result within the approval file depends on the feed
       # not fetching comments is baked into this
-      verify(format: :txt) { Article.count }
+      verify(format: :txt) { articles.length }
     end
 
-    it "does not re-create article if it already exist" do
+    it "does not recreate articles if they already exist", vcr: { cassette_name: "rss_reader_fetch_articles_twice" } do
       rss_reader.get_all_articles
 
       expect { rss_reader.get_all_articles }.not_to change(Article, :count)
     end
 
-    it "parses correctly" do
+    it "parses correctly", vcr: { cassette_name: "rss_reader_fetch_articles" } do
       rss_reader.get_all_articles
 
       verify format: :txt do
@@ -47,7 +47,7 @@ RSpec.describe RssReader, type: :service, vcr: VCR_OPTIONS[:rss_feeds] do
       end
     end
 
-    it "sets feed_fetched_at to the current time" do
+    it "sets feed_fetched_at to the current time", vcr: { cassette_name: "rss_reader_fetch_articles" } do
       Timecop.freeze(Time.current) do
         rss_reader.get_all_articles
 
@@ -57,7 +57,7 @@ RSpec.describe RssReader, type: :service, vcr: VCR_OPTIONS[:rss_feeds] do
       end
     end
 
-    it "does refetch same user over and over by default" do
+    it "does refetch same user over and over by default", vcr: { cassette_name: "rss_reader_fetch_multiple_times" } do
       user = User.find_by(feed_url: nonpermanent_link)
 
       Timecop.freeze(Time.current) do
@@ -94,10 +94,10 @@ RSpec.describe RssReader, type: :service, vcr: VCR_OPTIONS[:rss_feeds] do
       expect(Rails.logger).to have_received(:error).at_least(:once)
     end
 
-    it "queues as many slack messages as there are articles" do
-      expect do
-        rss_reader.get_all_articles
-      end.to change(Slack::Messengers::Worker.jobs, :count).by(12)
+    it "queues as many slack messages as there are articles", vcr: { cassette_name: "rss_reader_fetch_articles" } do
+      old_count = Slack::Messengers::Worker.jobs.count
+      articles = rss_reader.get_all_articles
+      expect(Slack::Messengers::Worker.jobs.count).to eq(old_count + articles.length)
     end
   end
 
@@ -115,7 +115,7 @@ RSpec.describe RssReader, type: :service, vcr: VCR_OPTIONS[:rss_feeds] do
     end
   end
 
-  describe "#fetch_user" do
+  describe "#fetch_user", vcr: { cassette_name: "rss_reader_fetch_medium_feed" } do
     before do
       [link, nonmedium_link, nonpermanent_link].each do |feed_url|
         create(:user, feed_url: feed_url)
@@ -123,10 +123,10 @@ RSpec.describe RssReader, type: :service, vcr: VCR_OPTIONS[:rss_feeds] do
     end
 
     it "gets articles for user" do
-      rss_reader.fetch_user(User.find_by(feed_url: link))
+      articles = rss_reader.fetch_user(User.find_by(feed_url: link))
 
       # the result within the approval file depends on the feed
-      verify(format: :txt) { Article.count }
+      verify(format: :txt) { articles.length }
     end
 
     it "does not set featured_number" do
@@ -155,9 +155,9 @@ RSpec.describe RssReader, type: :service, vcr: VCR_OPTIONS[:rss_feeds] do
     end
 
     it "queues as many slack messages as there are user articles" do
-      expect do
-        rss_reader.fetch_user(User.find_by(feed_url: link))
-      end.to change(Slack::Messengers::Worker.jobs, :count).by(1)
+      old_count = Slack::Messengers::Worker.jobs.count
+      articles = rss_reader.fetch_user(User.find_by(feed_url: link))
+      expect(Slack::Messengers::Worker.jobs.count).to eq(old_count + articles.length)
     end
   end
 

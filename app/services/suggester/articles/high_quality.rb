@@ -9,7 +9,7 @@ module Suggester
 
       def suggest(num)
         Article.published.where(featured: true).
-          includes(user: [:pro_membership]).
+          includes(:user).
           limited_column_select.
           where("positive_reactions_count > ?", MIN_HQ_REACTION_COUNT).
           where.not(id: @not_ids).

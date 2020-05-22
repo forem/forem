@@ -21,6 +21,8 @@ FactoryBot.define do
     checked_terms_and_conditions { true }
     signup_cta_variant           { "navbar_basic" }
     email_digest_periodic        { false }
+    bg_color_hex                 { Faker::Color.hex_color }
+    text_color_hex               { Faker::Color.hex_color }
 
     trait :with_identity do
       transient { identities { Authentication::Providers.available } }
@@ -121,12 +123,6 @@ FactoryBot.define do
         article = create(:article, user_id: user.id)
         create(:comment, user_id: user.id, commentable: article)
         user.update(articles_count: 1, comments_count: 1)
-      end
-    end
-
-    trait :with_pro_membership do
-      after(:create) do |user|
-        create(:pro_membership, user: user)
       end
     end
 

@@ -34,6 +34,7 @@ export const Article = ({
     'crayons-story__title',
     'crayons-story__tags',
     'crayons-story__bottom',
+    'crayons-story__tertiary',
   ];
 
   return (
@@ -49,10 +50,14 @@ export const Article = ({
         role="presentation"
         onClick={(event) => {
           const { classList } = event.target;
-
           if (clickableClassList.includes(...classList)) {
-            InstantClick.preload(article.path);
-            InstantClick.display(article.path);
+            if (event.which > 1 || event.metaKey || event.ctrlKey) { // Indicates should open in _blank
+              window.open(article.path, '_blank');
+            } else {
+              const fullUrl = window.location.origin + article.path // InstantClick deals with full urls
+              InstantClick.preload(fullUrl);
+              InstantClick.display(fullUrl);
+            }
           }
         }}
       >

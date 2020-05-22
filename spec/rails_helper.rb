@@ -7,6 +7,7 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
+require "percy"
 require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
@@ -14,7 +15,7 @@ require "test_prof/recipes/rspec/before_all"
 require "test_prof/recipes/rspec/let_it_be"
 require "test_prof/recipes/rspec/sample"
 require "sidekiq/testing"
-# require "validate_url/rspec_matcher"
+require "validate_url/rspec_matcher"
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
@@ -153,4 +154,16 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
+
+  # Explicitly set a seed and time to ensure deterministic Percy snapshots.
+  config.around(:each, percy: true) do |example|
+    Timecop.freeze("2020-05-13T10:00:00Z")
+    prev_random_seed = Faker::Config.random
+    Faker::Config.random = Random.new(42)
+
+    example.run
+
+    Faker::Config.random = prev_random_seed
+    Timecop.return
+  end
 end

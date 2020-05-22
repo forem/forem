@@ -95,6 +95,8 @@
         event.request.method == "GET" && // Don't fetch on POST, DELETE, etc.
         !event.request.referrer.includes('/signout_confirm') && // If this is the referrer, we instead want to flush.
 
+        url.pathname !== '/new' && // We have no shell for /new
+
         !url.href.includes('i=i') && // Parameter representing "internal" navigation.
         !url.href.includes('.css') && // Don't run on CSS.
         !url.href.includes('.js') && // Don't run on JS.

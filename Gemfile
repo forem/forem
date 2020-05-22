@@ -28,11 +28,11 @@ gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.14" # Client library for easily using the Cloudinary service
-gem "counter_culture", "~> 2.3" # counter_culture provides turbo-charged counter caches that are kept up-to-date
+gem "counter_culture", "~> 2.5" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "ddtrace", "~> 0.35.2" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
-gem "doorkeeper", "~> 5.3" # Oauth 2 provider
+gem "doorkeeper", "~> 5.4" # Oauth 2 provider
 gem "dry-struct", "~> 1.2" # Typed structs and value objects
 gem "elasticsearch", "~> 7.7" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
@@ -55,7 +55,7 @@ gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X
 gem "httparty", "~> 0.18" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.10" # Create JSON structures via a Builder-style DSL
-gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
+gem "jquery-rails", "~> 4.4" #  A gem to automate using jQuery with Rails
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.6.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
@@ -72,7 +72,7 @@ gem "puma", "~> 4.3" # Puma is a simple, fast, threaded, and highly concurrent H
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
 gem "pusher-push-notifications", "~> 1.1" # Pusher Push Notifications Ruby server SDK
-gem "rack-attack", "~> 6.3.0" # Used to throttle requests to prevent brute force attacks
+gem "rack-attack", "~> 6.3.1" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
 gem "rails", "~> 5.2" # Ruby on Rails
@@ -89,17 +89,17 @@ gem "rubyzip", "~> 2.3" # Rubyzip is a ruby library for reading and writing zip 
 gem "s3_direct_upload", "~> 0.1" # Direct Upload to Amazon S3
 gem "sassc-rails", "~> 2.1.2" # Integrate SassC-Ruby into Rails
 gem "sidekiq", "~> 6.0.7" # Sidekiq is used to process background jobs with the help of Redis
-gem "sidekiq-unique-jobs", "~> 6.0.21" # Ensures that Sidekiq jobs are unique when enqueued
+gem "sidekiq-unique-jobs", "~> 6.0.22" # Ensures that Sidekiq jobs are unique when enqueued
 gem "sitemap_generator", "~> 6.1" # SitemapGenerator is a framework-agnostic XML Sitemap generator
 gem "slack-notifier", "~> 2.3" # A slim ruby wrapper for posting to slack webhooks
 gem "sprockets", "~> 4.0" # Sprockets is a Rack-based asset packaging system
 gem "staccato", "~> 0.5" # Ruby Google Analytics Measurement
 gem "storext", "~> 3.1" # Add type-casting and other features on top of ActiveRecord::Store.store_accessor
-gem "stripe", "~> 5.21" # Ruby library for the Stripe API
+gem "stripe", "~> 5.22" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.6" # Catch unsafe migrations
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", "~> 1.0" #  Timber integration for Rails
-gem "twilio-ruby", "~> 5.34" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.35" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.2" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
@@ -134,7 +134,7 @@ group :development, :test do
   gem "parallel_tests", "~> 2.32" # Run Test::Unit / RSpec / Cucumber / Spinach in parallel
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.82", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.84", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.5", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.5", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.39", require: false # Code style checking for RSpec files
@@ -147,9 +147,10 @@ group :test do
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
   gem "factory_bot_rails", "~> 5.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
+  gem "percy-capybara", "~> 4.2.0" # A tool for visual testing
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
-  gem "ruby-prof", "~> 1.3", require: false # ruby-prof is a fast code profiler for Ruby
+  gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "~> 4.3.0", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "0.17.1", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers

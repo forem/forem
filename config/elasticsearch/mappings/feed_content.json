@@ -87,6 +87,9 @@
     "positive_reactions_count": {
       "type": "integer"
     },
+    "public_reactions_count": {
+      "type": "integer"
+    },
     "published": {
       "type": "boolean"
     },

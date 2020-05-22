@@ -24,7 +24,7 @@
       class="article-actions-tweet-button"
       rel="noopener"
       target="_blank"
-      href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= display_name %> %23DEVcommunity <%= article_url(@article) %>'>
+      href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= display_name %> <%= u SiteConfig.twitter_hashtag %> <%= article_url(@article) %>'>
       <img src="<%= asset_path("twitter.svg") %>" alt="twitter logo">
     </a>
   <% end %>
@@ -53,7 +53,7 @@
             <a
               target="_blank"
               rel="noopener"
-              href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> %23DEVcommunity <%= article_url(@article) %>'>
+              href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> <%= u SiteConfig.twitter_hashtag %> <%= article_url(@article) %>'>
               Share to Twitter
             </a>
           </div>

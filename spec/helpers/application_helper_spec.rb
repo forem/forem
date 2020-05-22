@@ -157,4 +157,11 @@ RSpec.describe ApplicationHelper, type: :helper do
       expect(community_members_label).to eq("hobbyists")
     end
   end
+
+  describe "#sanitize_and_decode" do
+    it "Sanitize and decode string" do
+      expect(helper.sanitize_and_decode("<script>alert('alert')</script>")).to eq("alert('alert')")
+      expect(helper.sanitize_and_decode("&lt; hello")).to eq("< hello")
+    end
+  end
 end

@@ -27,4 +27,22 @@ RSpec.describe ResponseTemplate, type: :model do
       end
     end
   end
+
+  describe "user validation" do
+    it "validates the number of templates for a normal user" do
+      user = create(:user)
+      create_list(:response_template, 30, user_id: user.id)
+      invalid_template = create(:response_template, user_id: user.id)
+
+      expect(invalid_template).not_to be_valid
+      expect(invalid_template.errors.full_messages.join).to include("limit of 30 per user has been reached")
+    end
+
+    it "allows trusted users to have unlimited templates" do
+      user = create(:user, :trusted)
+      create_list(:response_template, 31, user_id: user.id)
+
+      expect(user.response_templates.all?(&:valid?)).to be(true)
+    end
+  end
 end

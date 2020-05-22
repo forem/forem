@@ -31,8 +31,8 @@ import ActionMessage from './actionMessage';
 import Content from './content';
 import VideoContent from './videoContent';
 
-import setupPusher from '../src/utils/pusher';
-import debounceAction from '../src/utils/debounceAction';
+import { setupPusher } from '../utilities/connect';
+import debounceAction from '../utilities/debounceAction';
 
 export default class Chat extends Component {
   static propTypes = {
@@ -206,8 +206,11 @@ export default class Chat extends Component {
 
   loadChannels = (channels, query) => {
     const { activeChannelId } = this.state;
-    const activeChannel = this.state.activeChannel ||
-      channels.filter((channel) => channel.chat_channel_id === activeChannelId)[0];
+    const activeChannel =
+      this.state.activeChannel ||
+      channels.filter(
+        (channel) => channel.chat_channel_id === activeChannelId,
+      )[0];
     if (activeChannelId && query.length === 0) {
       this.setState({
         chatChannels: channels,
@@ -282,7 +285,7 @@ export default class Chat extends Component {
   };
 
   loadPaginatedChannels = (channels) => {
-    const {state} = this;
+    const { state } = this;
     const currentChannels = state.chatChannels;
     const currentChannelIds = currentChannels.map((channel) => channel.id);
     const newChannels = currentChannels;
@@ -1113,7 +1116,7 @@ export default class Chat extends Component {
 
   toggleSearchShowing = () => {
     if (!this.state.searchShowing) {
-      setTimeout(function () {
+      setTimeout(() => {
         document.getElementById('chatchannelsearchbar').focus();
       }, 100);
     } else {
