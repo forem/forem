@@ -13,9 +13,7 @@ RSpec.describe "Display articles search spec", type: :system, js: true, elastics
     url_encoded_query = CGI.escape(query)
     visit "/search?q=#{url_encoded_query}&filters=class_name:Comment"
 
-    verify(format: :html) do
-      # Not shown here: search snippet is properly escaped
-      Nokogiri::HTML(page.body).css(".crayons-story__snippet").first.to_s
-    end
+    expect(page.find(".crayons-story__snippet")["innerHTML"]).
+      to eq("…&lt;<em>marquee</em>='<em>alert</em>(<em>document.cookie</em>)'&gt;<em>XSS</em>…")
   end
 end
