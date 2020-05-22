@@ -1328,10 +1328,10 @@
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-1.0.4.tgz#b740f68609dfae8aa71c3a6cab15d816407ba493"
   integrity sha512-60CHpq+eqnTxLZQ4PGHYNwUX572hgpMHGPtTWMjdTMsAvlm69lZV/4ly6O3sAYkomo4NggGcomrDpBe34rxUqw==
 
-"@percy/agent@^0.26.6":
-  version "0.26.6"
-  resolved "https://registry.yarnpkg.com/@percy/agent/-/agent-0.26.6.tgz#ad61befee9f3a59c3ad6ef6378526af68a33fa31"
-  integrity sha512-weGb72ox+mQEVsx62NLvurXmeAYNqNRAkpQG40+T1hk4diUy0DmTPhQAx7ee7cwK8kQbbp1nVRWzE6yOuOluYw==
+"@percy/agent@^0.26.7":
+  version "0.26.7"
+  resolved "https://registry.yarnpkg.com/@percy/agent/-/agent-0.26.7.tgz#963c51fb705c7f73eac75512ce26bed0314f2c75"
+  integrity sha512-nV/tDaSkLLqIVM44h/wUVPCS1utI9waYxxf3GSk7DkGUe3usoCpenNjlZhjlXvFdR7HooBhayaXn2FElIPlFYg==
   dependencies:
     "@oclif/command" "1.5.19"
     "@oclif/config" "^1"
