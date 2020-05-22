@@ -157,13 +157,15 @@ RSpec.configure do |config|
 
   # Explicitly set a seed and time to ensure deterministic Percy snapshots.
   config.around(:each, percy: true) do |example|
-    Timecop.freeze("2020-05-13T10:00:00Z")
+    # NOTE: [Rails 6] freezing time breaks all sort of specs
+    # Freezing with a more recent timestamp breaks as well
+    Timecop.freeze("2020-05-13T10:00:00Z") unless Rails.version.match?(/\A6.\d.\w+/)
     prev_random_seed = Faker::Config.random
     Faker::Config.random = Random.new(42)
 
     example.run
 
     Faker::Config.random = prev_random_seed
-    Timecop.return
+    Timecop.return unless Rails.version.match?(/\A6.\d.\w+/)
   end
 end
