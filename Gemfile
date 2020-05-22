@@ -150,7 +150,7 @@ group :test do
   gem "percy-capybara", "~> 4.2.0" # A tool for visual testing
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
-  gem "ruby-prof", "~> 1.3", require: false # ruby-prof is a fast code profiler for Ruby
+  gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "~> 4.3.0", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "0.17.1", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers
