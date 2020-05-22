@@ -194,6 +194,13 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
+      describe "monetization" do
+        it "updates payment pointer" do
+          post "/internal/config", params: { site_config: { payment_pointer: "$pay.yo" }, confirmation: confirmation_message }
+          expect(SiteConfig.payment_pointer).to eq("$pay.yo")
+        end
+      end
+
       describe "rate limits" do
         it "updates rate_limit_follow_count_daily" do
           expect do
