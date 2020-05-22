@@ -3,43 +3,15 @@ import { Button } from '@crayons';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 
+function linksToMarkdownForm(imageLinks) {
+  return imageLinks.map((imageLink) => `![Alt Text](${imageLink})`).join('\n');
+}
+
 export class ImageUploader extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      insertionImageUrls: [],
-      uploadError: false,
-      uploadErrorMessage: null,
-    };
-  }
-
-  handleInsertionImageUpload = (e) => {
-    const {files} = e.target;
-
-    this.clearUploadError();
-    const validFileInputs = validateFileInputs();
-
-    if (validFileInputs && files.length > 0) {
-      const payload = { image: files };
-      generateMainImage(
-        payload,
-        this.handleInsertImageUploadSuccess,
-        this.onUploadError,
-      );
-    }
-  };
-
-  handleInsertImageUploadSuccess = (response) => {
-    this.setState({
-      insertionImageUrls: response.links,
-    });
-  };
-
-  clearUploadError = () => {
-    this.setState({
-      uploadError: false,
-      uploadErrorMessage: null,
-    });
+  state = {
+    insertionImageUrls: [],
+    uploadError: false,
+    uploadErrorMessage: null,
   };
 
   onUploadError = (error) => {
@@ -48,15 +20,6 @@ export class ImageUploader extends Component {
       uploadError: true,
       uploadErrorMessage: error.message,
     });
-  };
-
-  execCopyText = () => {
-    this.imageMarkdownInput.setSelectionRange(
-      0,
-      this.imageMarkdownInput.value.length,
-    );
-    document.execCommand('copy');
-    this.imageMarkdownAnnouncer.classList.remove('opacity-0');
   };
 
   copyText = () => {
@@ -93,11 +56,43 @@ export class ImageUploader extends Component {
     }
   };
 
-  linksToMarkdownForm = (imageLinks) => {
-    return imageLinks
-      .map((imageLink) => `![Alt Text](${imageLink})`)
-      .join('\n');
+  handleInsertionImageUpload = (e) => {
+    const { files } = e.target;
+
+    this.clearUploadError();
+    const validFileInputs = validateFileInputs();
+
+    if (validFileInputs && files.length > 0) {
+      const payload = { image: files };
+      generateMainImage(
+        payload,
+        this.handleInsertImageUploadSuccess,
+        this.onUploadError,
+      );
+    }
   };
+
+  handleInsertImageUploadSuccess = (response) => {
+    this.setState({
+      insertionImageUrls: response.links,
+    });
+  };
+
+  execCopyText() {
+    this.imageMarkdownInput.setSelectionRange(
+      0,
+      this.imageMarkdownInput.value.length,
+    );
+    document.execCommand('copy');
+    this.imageMarkdownAnnouncer.classList.remove('opacity-0');
+  }
+
+  clearUploadError() {
+    this.setState({
+      uploadError: false,
+      uploadErrorMessage: null,
+    });
+  }
 
   render() {
     const { insertionImageUrls, uploadError, uploadErrorMessage } = this.state;
@@ -165,7 +160,7 @@ export class ImageUploader extends Component {
               className="crayons-textfield mr-2"
               id="image-markdown-copy-link-input"
               readOnly="true"
-              value={this.linksToMarkdownForm(insertionImageUrls)}
+              value={linksToMarkdownForm(insertionImageUrls)}
             />
             <Button
               className="spec__image-markdown-copy"
