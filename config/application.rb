@@ -20,7 +20,7 @@ Bundler.require(*Rails.groups)
 module PracticalDeveloper
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.1
+    config.load_defaults 5.1 # NOTE: [Rails 6] we should at least work towards updating this to 5.2
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers

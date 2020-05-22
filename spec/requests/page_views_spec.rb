@@ -108,11 +108,8 @@ RSpec.describe "PageViews", type: :request do
       it "updates a new page view time on page by 15" do
         post "/page_views", params: { article_id: article.id }
 
-        # NOTE: [Rails 6] not sure why we need to re-sign
-        # looks like it resets the session after the initial post...
-        sign_in user
-
         put "/page_views/#{article.id}"
+
         expect(PageView.last.time_tracked_in_seconds).to eq(30)
       end
 
