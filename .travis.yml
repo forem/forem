@@ -17,7 +17,6 @@ addons:
     debug: true
 gemfile:
 - Gemfile
-# - Gemfile.next
 services:
   - redis-server
 env:
