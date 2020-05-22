@@ -7,6 +7,36 @@ function linksToMarkdownForm(imageLinks) {
   return imageLinks.map((imageLink) => `![Alt Text](${imageLink})`).join('\n');
 }
 
+const CopyIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    className="crayons-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-labelledby="fc5f15add1e114844f5e"
+  >
+    <title id="fc5f15add1e114844f5e">Copy Markdown for image</title>
+    <path d="M7 6V3a1 1 0 011-1h12a1 1 0 011 1v14a1 1 0 01-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1 1 0 013 21l.003-14c0-.552.45-1 1.007-1H7zm2 0h8v10h2V4H9v2zm-2 5v2h6v-2H7zm0 4v2h6v-2H7z" />
+  </svg>
+);
+
+const ImageIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    className="crayons-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    role="img"
+    aria-labelledby="a17qec5pfhrwzk9w4kg0tp62v27qqu9t"
+  >
+    <title id="a17qec5pfhrwzk9w4kg0tp62v27qqu9t">Upload image</title>
+    <path d="M20 5H4v14l9.292-9.294a1 1 0 011.414 0L20 15.01V5zM2 3.993A1 1 0 012.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 01-.992.993H2.992A.993.993 0 012 20.007V3.993zM8 11a2 2 0 110-4 2 2 0 010 4z" />
+  </svg>
+);
+
 export class ImageUploader extends Component {
   state = {
     insertionImageUrls: [],
@@ -96,34 +126,6 @@ export class ImageUploader extends Component {
 
   render() {
     const { insertionImageUrls, uploadError, uploadErrorMessage } = this.state;
-    const IconCopy = () => (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        className="crayons-icon"
-        xmlns="http://www.w3.org/2000/svg"
-        role="img"
-        aria-labelledby="fc5f15add1e114844f5e"
-      >
-        <title id="fc5f15add1e114844f5e">Copy Markdown for image</title>
-        <path d="M7 6V3a1 1 0 011-1h12a1 1 0 011 1v14a1 1 0 01-1 1h-3v3c0 .552-.45 1-1.007 1H4.007A1 1 0 013 21l.003-14c0-.552.45-1 1.007-1H7zm2 0h8v10h2V4H9v2zm-2 5v2h6v-2H7zm0 4v2h6v-2H7z" />
-      </svg>
-    );
-    const IconImage = () => (
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        className="crayons-icon"
-        xmlns="http://www.w3.org/2000/svg"
-        role="img"
-        aria-labelledby="a17qec5pfhrwzk9w4kg0tp62v27qqu9t"
-      >
-        <title id="a17qec5pfhrwzk9w4kg0tp62v27qqu9t">Upload image</title>
-        <path d="M20 5H4v14l9.292-9.294a1 1 0 011.414 0L20 15.01V5zM2 3.993A1 1 0 012.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 01-.992.993H2.992A.993.993 0 012 20.007V3.993zM8 11a2 2 0 110-4 2 2 0 010 4z" />
-      </svg>
-    );
 
     return (
       <div className="flex items-center">
@@ -131,7 +133,7 @@ export class ImageUploader extends Component {
           className="mr-2 fw-normal"
           variant="ghost"
           contentType="icon-left"
-          icon={IconImage}
+          icon={ImageIcon}
           tabIndex="-1"
         >
           Upload image
@@ -166,7 +168,7 @@ export class ImageUploader extends Component {
               className="spec__image-markdown-copy"
               variant="ghost"
               contentType="icon"
-              icon={IconCopy}
+              icon={CopyIcon}
             />
             <span
               id="image-markdown-copy-link-announcer"
