@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Article from './article';
 import ChannelRequest from './channelRequest';
 import RequestManager from './requestManager';
+import ChannelSetting from './channelSettings';
 
 export default class Content extends Component {
   static propTypes = {
@@ -91,5 +92,8 @@ function display(props) {
         handleRequestApproval={resource.handleRequestApproval}
       />
     );
+  }
+  if (resource.type_of === 'chat-channel-setting') {
+    return <ChannelSetting resource={resource.data} />;
   }
 }
