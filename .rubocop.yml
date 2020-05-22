@@ -121,6 +121,10 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - "spec/**/*"
 
+Lint/DeprecatedOpenSSLConstant:
+  Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
+  Enabled: true
+
 # Lint/HeredocMethodCallPosition:
 #   Description: >-
 #                  Checks for the ordering of a method call where
