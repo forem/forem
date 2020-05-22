@@ -10,6 +10,11 @@ Rails.application.configure do
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = true
 
+  # NOTE: [Rails 6] this is the default store in testing,
+  # as we haven't enabled Rails 6.0 defaults in config/application.rb,
+  # we need to keep this explicit, for now
+  config.cache_store = :null_store
+
   # Do not eager load code on boot. This avoids loading your whole application
   # just for the purpose of running a single test. If you are using a tool that
   # preloads Rails for running tests, you may have to set it to true.
