@@ -38,7 +38,7 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
     before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => pro_api_token.secret } }
 
     it "renders JSON as the content type" do
-      expect(response.content_type).to eq "application/json"
+      expect(response.media_type).to eq "application/json"
     end
   end
 
@@ -63,7 +63,7 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
     end
 
     it "renders JSON as the content type" do
-      expect(response.content_type).to eq "application/json"
+      expect(response.media_type).to eq "application/json"
     end
   end
 
