@@ -7,6 +7,20 @@ function linksToMarkdownForm(imageLinks) {
   return imageLinks.map((imageLink) => `![Alt Text](${imageLink})`).join('\n');
 }
 
+function isNativeAndroid() {
+  return (
+    navigator.userAgent === 'DEV-Native-android' &&
+    typeof AndroidBridge !== 'undefined' &&
+    AndroidBridge !== null
+  );
+}
+
+function isClipboardSupported() {
+  return (
+    typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
+  );
+}
+
 const CopyIcon = () => (
   <svg
     width="24"
@@ -60,19 +74,10 @@ export class ImageUploader extends Component {
       'image-markdown-copy-link-input',
     );
 
-    const isNativeAndroid =
-      navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== 'undefined' &&
-      AndroidBridge !== null;
-
-    const isClipboardSupported =
-      typeof navigator.clipboard !== 'undefined' &&
-      navigator.clipboard !== null;
-
-    if (isNativeAndroid) {
+    if (isNativeAndroid()) {
       AndroidBridge.copyToClipboard(this.imageMarkdownInput.value);
       this.imageMarkdownAnnouncer.classList.remove('opacity-0');
-    } else if (isClipboardSupported) {
+    } else if (isClipboardSupported()) {
       navigator.clipboard
         .writeText(this.imageMarkdownInput.value)
         .then(() => {
