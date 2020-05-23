@@ -260,7 +260,6 @@ class StoriesController < ApplicationController
     not_found unless @article.user
 
     @article_show = true
-    @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
 
     @user = @article.user
     @organization = @article.organization
