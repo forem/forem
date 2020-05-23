@@ -1,7 +1,7 @@
 class HtmlVariant < ApplicationRecord
   include CloudinaryHelper
 
-  GROUP_NAMES = %w[article_show_sidebar_cta article_show_below_article_cta badge_landing_page campaign].freeze
+  GROUP_NAMES = %w[article_show_below_article_cta badge_landing_page campaign].freeze
 
   validates :html, presence: true
   validates :name, uniqueness: true
@@ -23,7 +23,7 @@ class HtmlVariant < ApplicationRecord
   end
 
   class << self
-    def find_for_test(tags = [], group = "article_show_sidebar_cta")
+    def find_for_test(tags = [], group = "article_show_below_article_cta")
       tags_array = tags + ["", nil]
       if rand(10) == 1 # 10% return completely random
         find_random_for_test(tags_array, group)
