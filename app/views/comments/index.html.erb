@@ -35,7 +35,9 @@
     <% end %>
   <% end %>
 <% end %>
-
+<% if @commentable.class.name == "Article" %>
+  <div id="comment-article-indicator" data-article-id="<%= @commentable.id %>">
+<% end %>
 <% if @root_comment %>
   <div class="single-comment-header"></div>
 <% else %>
