@@ -27,7 +27,7 @@ class HtmlVariant < ApplicationRecord
       tags_array = tags + ["", nil]
       if rand(10) == 1 # 10% return completely random
         find_random_for_test(tags_array, group)
-      else # 90% chance return one in top 10
+      else # 90% chance return one of the top posts
         find_top_for_test(tags_array, group)
       end
     end
@@ -36,7 +36,7 @@ class HtmlVariant < ApplicationRecord
 
     def find_top_for_test(tags_array, group)
       where(group: group, approved: true, published: true, target_tag: tags_array).
-        order("success_rate DESC").limit(rand(1..15)).sample
+        order("success_rate DESC").limit(rand(1..20)).sample
     end
 
     def find_random_for_test(tags_array, group)
