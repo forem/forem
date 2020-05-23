@@ -1,6 +1,3 @@
-def next?
-  File.basename(__FILE__) == "Gemfile.next"
-end
 # coding: utf-8
 
 git_source(:github) { |name| "https://github.com/#{name}.git" }
