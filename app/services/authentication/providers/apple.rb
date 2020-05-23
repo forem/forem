@@ -5,11 +5,8 @@ module Authentication
       SETTINGS_URL = "https://appleid.apple.com/account/manage".freeze
 
       def new_user_data
-        # NOTE: Apple sends `first_name` and `last_name` as separate fields
+        # Apple sends `first_name` and `last_name` as separate fields
         name = "#{info.first_name} #{info.last_name}"
-
-        # Apple has no concept of username, so we use the first name
-        apple_username = info.first_name.downcase
 
         {
           email: info.email,
@@ -21,15 +18,10 @@ module Authentication
       end
 
       def existing_user_data
-        # Apple by default will send nil `first_name` and `last_name` after
-        # the first login. To cover the case where a user disconnects their
-        # Apple authorization, signs in again and then changes their name,
-        # we update the username only if the name is not nil
-        apple_username = info.first_name.present? ? info.first_name.downcase : nil
-
-        data = { apple_created_at: Time.zone.at(raw_info.auth_time) }
-        data[:apple_username] = apple_username if apple_username
-        data
+        {
+          apple_created_at: Time.zone.at(raw_info.auth_time),
+          apple_username: apple_username
+        }
       end
 
       def self.settings_url
@@ -47,6 +39,16 @@ module Authentication
 
       def cleanup_payload(auth_payload)
         auth_payload
+      end
+
+      # Apple has no concept of username, so we use a hash of the email
+      # NOTE: we can't use the email itself, as Apple private relay emails
+      # exceed the limit of 30 chars we set for username and the username field
+      # is auto generated from the provider username on sign up
+      def apple_username
+        # we generate 25 characters from the username to make sure we never
+        # incur in a length validation error in User#set_temp_username
+        Digest::SHA512.hexdigest(info.email)[0...25]
       end
     end
   end
