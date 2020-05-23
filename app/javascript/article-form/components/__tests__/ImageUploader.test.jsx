@@ -23,26 +23,33 @@ describe('<ImageUploader />', () => {
     );
   });
 
-  // TODO: Fix this test
-  //
-  // it('displays Copied! when clicking on the icon', () => {
-  //   const context = deep(<ImageUploader />);
-  //   expect(context.component()).toBeInstanceOf(ImageUploader);
-  //   context.setState({
-  //     insertionImageUrls: ['/i/jxuopxlscfy6wkfbbkvb.png'],
-  //     uploadError: false,
-  //     uploadErrorMessage: null,
-  //   });
+  it('displays Copied! when clicking on the icon', () => {
+    const context = deep(<ImageUploader />);
+    expect(context.component()).toBeInstanceOf(ImageUploader);
+    context.setState({
+      insertionImageUrls: ['/i/jxuopxlscfy6wkfbbkvb.png'],
+      uploadError: false,
+      uploadErrorMessage: null,
+    });
 
-  //   context.find('clipboard-copy').simulate('click');
+    document.getElementById = jest.fn(() => {
+      return {
+        value: 'some copied text',
+        setSelectionRange: () => {},
+      };
+    });
 
-  //   expect(context.find('ClipboardButton').attrs().showCopyMessage).toEqual(
-  //     true,
-  //   );
-  //   expect(context.find('#image-markdown-copy-link-announcer').text()).toEqual(
-  //     'Copied!',
-  //   );
-  // });
+    document.execCommand = jest.fn();
+
+    context.find('clipboard-copy').simulate('click');
+
+    expect(context.find('ClipboardButton').attrs().showCopyMessage).toEqual(
+      true,
+    );
+    expect(context.find('#image-markdown-copy-link-announcer').text()).toEqual(
+      'Copied!',
+    );
+  });
 
   it('displays an error when one occurs', () => {
     const error = 'Some error message';
