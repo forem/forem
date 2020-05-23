@@ -9,9 +9,12 @@ RSpec.describe "Notifications page", type: :system, js: true do
   def validate_reply(id)
     fill_in "comment-textarea-for-#{id}", with: "thanks i guess"
     click_button("SUBMIT")
+
     expect(page).to have_css("div.reply-sent-notice")
+
     click_link("Check it out")
-    expect(page).to have_text(/thanks i guess/)
+
+    expect(page.body).to have_text("thanks i guess")
   end
 
   it "shows 1 notification and disappear after clicking it" do
@@ -50,7 +53,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
     before do
       dev_user = create(:user)
       allow(User).to receive(:dev_account).and_return(dev_user)
-      alex.add_role :trusted
+      alex.add_role(:trusted)
     end
 
     def interact_with_each_emojis
@@ -64,12 +67,16 @@ RSpec.describe "Notifications page", type: :system, js: true do
 
     it "allows trusted user to moderate content" do
       article = create(:article, user: alex)
-      comment = nil
-      sidekiq_perform_enqueued_jobs { comment = create(:comment, commentable: article, user: leslie) }
+      comment = create(:comment, commentable: article, user: leslie)
+
+      sidekiq_perform_enqueued_jobs
+
       visit "/notifications"
       expect(page).to have_css("div.single-notification")
+
       interact_with_each_emojis
       click_link("Reply")
+
       validate_reply(comment.id)
     end
   end
