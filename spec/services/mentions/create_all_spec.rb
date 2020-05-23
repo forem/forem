@@ -76,4 +76,12 @@ RSpec.describe Mentions::CreateAll, type: :service do
     described_class.call(comment)
     expect(Mention.all.size).to eq(0)
   end
+
+  it "doesn't create mention if user is notified already" do
+    Sidekiq::Testing.inline! do
+      described_class.call(comment2)
+      expect(Mention.all.size).to eq(1)
+      p Notification.count
+    end
+  end
 end

@@ -3,6 +3,7 @@ require "rails_helper"
 RSpec.describe "CommentsCreate", type: :request do
   let(:user) { create(:user) }
   let(:blocker) { create(:user) }
+  let(:commenter) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:new_body) { -> { "NEW BODY #{rand(100)}" } }
   let(:rate_limit_checker) { RateLimitChecker.new(user) }
@@ -91,6 +92,14 @@ RSpec.describe "CommentsCreate", type: :request do
 
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error"]).to be_present
+    end
+  end
+
+  it "creates comment notifications, but not mention" do
+    Sidekiq::Testing.inline! do
+      sign_in commenter
+      post comments_path, params: comment_params
+      p Notification.count
     end
   end
 end
