@@ -49,7 +49,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       allow(Search::Listing).to receive(:search_documents).and_return(
         mock_documents,
       )
-      get "/search/classified_listings"
+      get "/search/listings"
       expect(response.parsed_body).to eq("result" => mock_documents)
     end
   end

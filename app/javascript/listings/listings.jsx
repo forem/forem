@@ -255,10 +255,10 @@ export class Listings extends Component {
       tag_boolean_mode: 'all',
     };
 
-    const responsePromise = fetchSearch('classified_listings', dataHash);
+    const responsePromise = fetchSearch('listings', dataHash);
     return responsePromise.then((response) => {
       const listings = response.result;
-      const fullListings = updateListings(Listings);
+      const fullListings = updateListings(listings);
       this.setState({
         listings: fullListings,
         initialFetch: false,
