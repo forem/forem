@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_25_120642) do
+ActiveRecord::Schema.define(version: 2020_05_25_125611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -528,6 +528,7 @@ ActiveRecord::Schema.define(version: 2020_05_25_120642) do
     t.string "processed_html"
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["url"], name: "index_github_issues_on_url", unique: true
   end
 
   create_table "github_repos", force: :cascade do |t|
