@@ -53,9 +53,11 @@ module Api
         super
       end
 
+      # Note: since this is used for selecting from the DB, we need to use the
+      # actual column name for the listing category, prefixed with classified_.
       ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id title slug body_markdown cached_tag_list
-        listing_category_id processed_html published
+        classified_listing_category_id processed_html published
       ].freeze
       private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
@@ -94,6 +96,14 @@ module Api
 
       def process_after_unpublish
         render "show", status: :ok
+      end
+
+      # Note: when doing the big listings refactoring we decided not to break
+      # this API. Since other code assumes the params will be under listing,
+      # we're copying them over.
+      def listing_params
+        params["listing"] = params["classified_listing"]
+        super
       end
     end
   end

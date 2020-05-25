@@ -26,7 +26,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
       {
         title: "Title draft",
         body_markdown: "Markdown draft text",
-        listing_category: cfp_category,
+        listing_category_id: cfp_category.id,
         action: "draft"
       }
     end
@@ -227,7 +227,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
   describe "POST /api/listings" do
     def post_listing(key: api_secret.secret, **params)
       headers = { "api-key" => key, "content-type" => "application/json" }
-      post api_listings_path, params: { listing: params }.to_json, headers: headers
+      post api_listings_path, params: { classified_listing: params }.to_json, headers: headers
     end
 
     describe "user cannot proceed if not properly unauthorized" do
@@ -439,7 +439,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
   describe "PUT /api/listings/:id" do
     def put_listing(id, **params)
       headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
-      put api_listing_path(id), params: { listing: params }.to_json, headers: headers
+      put api_listing_path(id), params: { classified_listing: params }.to_json, headers: headers
     end
 
     let(:user) { create(:user) }
