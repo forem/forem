@@ -19,14 +19,14 @@ RSpec.describe "Api::V0::Listings", type: :request do
       {
         title: "Title",
         body_markdown: "Markdown text",
-        listing_category_id: cfp_category.id
+        category: cfp_category.slug
       }
     end
     let(:draft_params) do
       {
         title: "Title draft",
         body_markdown: "Markdown draft text",
-        listing_category_id: cfp_category.id,
+        category: cfp_category.slug,
         action: "draft"
       }
     end
