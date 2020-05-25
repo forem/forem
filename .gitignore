@@ -39,6 +39,8 @@ latest.dump
 /public/packs
 /public/packs-test
 /node_modules
+yarn-debug.log*
+.yarn-integrity
 
 # Ignore storybook static site generation
 storybook-static/
