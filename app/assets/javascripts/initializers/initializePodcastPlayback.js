@@ -521,13 +521,14 @@ function initializePodcastPlayback() {
     if (message.action === 'tick') {
       currentState.currentTime = message.currentTime;
       currentState.duration = message.duration;
-      saveMediaState(currentState);
       updateProgress(currentState.currentTime, currentState.duration, 100);
     } else if (message.action === 'init') {
       getById('time').innerHTML = 'initializing...';
+      currentState.currentTime = 0;
     } else {
       console.log('Unrecognized podcast message: ', message); // eslint-disable-line no-console
     }
+    saveMediaState(currentState);
   }
 
   function addMutationObserver() {
