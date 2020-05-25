@@ -19,9 +19,7 @@ module Api
           includes(:user, :organization, :taggings, :listing_category)
 
         if params[:category].present?
-          category ListingCategory.find_by(slug: params[:category])
-          @listings =
-            @listings.where(listing_category: category)
+          @listings = @listings.in_category(params[:category])
         end
         @listings = @listings.order(bumped_at: :desc)
 

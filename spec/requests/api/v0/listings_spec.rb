@@ -19,7 +19,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
       {
         title: "Title",
         body_markdown: "Markdown text",
-        listing_category: cfp_category
+        listing_category_id: cfp_category.id
       }
     end
     let(:draft_params) do
@@ -90,7 +90,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
       get api_listings_path
 
       expected_key = (
-        ["listings"] +
+        ["classified_listings"] +
         user1.listings.map(&:record_key) +
         user2.listings.map(&:record_key)
       ).to_set
