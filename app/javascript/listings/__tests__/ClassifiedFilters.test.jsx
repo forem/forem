@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import render from 'preact-render-to-json';
-import ClassifiedFilters from '../components/ClassifiedFilters';
+import ListingFilters from '../components/ListingFilters';
 
-describe('<ClassifiedFilters />', () => {
+describe('<ListingFilters />', () => {
   const firstTag = {
     id: 1,
     tag: 'clojure',
@@ -61,11 +61,11 @@ describe('<ClassifiedFilters />', () => {
     tags: getTags(),
   });
 
-  const renderClassifiedFilters = (props = getProps()) =>
-    render(<ClassifiedFilters {...props} />);
+  const renderListingFilters = (props = getProps()) =>
+    render(<ListingFilters {...props} />);
 
   it('Should match the snapshot', () => {
-    const context = renderClassifiedFilters();
+    const context = renderListingFilters();
     expect(context).toMatchSnapshot();
   });
 });
