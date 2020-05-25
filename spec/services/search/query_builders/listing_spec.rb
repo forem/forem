@@ -59,7 +59,10 @@ RSpec.describe Search::QueryBuilders::Listing, type: :service do
       filter = described_class.new(params: params)
       expected_query = [{
         "simple_query_string" => {
-          "query" => "test*", "fields" => [:listing_search], "lenient" => true, "analyze_wildcard" => true
+          "query" => "test*",
+          "fields" => [:listing_search],
+          "lenient" => true,
+          "analyze_wildcard" => true
         }
       }]
       expect(filter.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
