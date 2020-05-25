@@ -103,6 +103,15 @@ RSpec.describe "Articles", type: :request do
         expect { get "/feed.zip" }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
+
+    it "contains tags as categories" do
+      article = create(:article, featured: true)
+
+      get feed_path
+
+      rss_feed = Feedjira.parse(response.body)
+      expect(rss_feed.entries.first.categories).to match_array(article.tag_list)
+    end
   end
 
   describe "GET /feed/tag" do
@@ -112,10 +121,24 @@ RSpec.describe "Articles", type: :request do
 
     context "when :tag param is given and tag exists" do
       include_context "when tagged articles exist"
-      before { get "/feed/tag/#{tag.name}" }
 
       it "returns only articles for that tag" do
-        expect(response.body).to include(tag_article.title)
+        article = create(:article, tags: ["foobar"])
+
+        get tag_feed_path(tag.name)
+
+        rss_feed = Feedjira.parse(response.body)
+        titles = rss_feed.entries.map(&:title)
+
+        expect(titles).not_to include(article.title)
+        expect(titles).to include(tag_article.title)
+      end
+
+      it "contains the tag as a category" do
+        get tag_feed_path(tag.name)
+
+        rss_feed = Feedjira.parse(response.body)
+        expect(rss_feed.entries.first.categories).to include(tag.name)
       end
     end
 
