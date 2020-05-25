@@ -8,14 +8,14 @@ class ArticlesController < ApplicationController
   after_action :verify_authorized
 
   FEED_ALLOWED_TAGS = %w[
-    strong em a table tbody thead tfoot th tr td col colgroup del p h1 h2 h3 h4
-    h5 h6 blockquote iframe time div span i em u b ul ol li dd dl dt q code pre
-    img sup cite center br small
+    a b blockquote br center cite code col colgroup dd del div dl dt em em h1 h2
+    h3 h4 h5 h6 i iframe img li ol p pre q small span strong sup table tbody td
+    tfoot th thead time tr u ul
   ].freeze
 
   FEED_ALLOWED_ATTRIBUTES = %w[
-    href strong em class ref rel src title alt colspan height width size rowspan
-    span value start data-conversation data-lang id
+    alt class colspan data-conversation data-lang em height href id ref rel
+    rowspan size span src start strong title value width
   ].freeze
 
   def feed
