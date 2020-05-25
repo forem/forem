@@ -7,6 +7,5 @@
     }
   },
   "ruby.format": "rubocop",
-  "ruby.intellisense": "rubyLocate",
-  "eslint.enable": false
+  "ruby.intellisense": "rubyLocate"
 }
