@@ -96,19 +96,6 @@ RSpec.describe "Credits", type: :request do
         expect(response.body).to include("Purchase history")
         expect(response.body).to include("Miscellaneous items")
       end
-
-      it "shows a pro membership purchase" do
-        pro_membership = create(:pro_membership, user: user)
-        purchase_params = { user: user, purchase_type: pro_membership.class.name, purchase_id: pro_membership.id }
-        create(:credit, params.merge(purchase_params))
-
-        sign_in user
-        get credits_path
-
-        expect(response.body).to include("Purchase history")
-        expect(response.body).to include("Pro Membership")
-        expect(response.body).to include(pro_membership_path)
-      end
     end
   end
 

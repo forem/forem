@@ -21,9 +21,11 @@ RSpec.describe UserTag, type: :liquid_tag do
     end
   end
 
-  it "rejects invalid id_code" do
-    expect do
-      generate_user_tag("this should fail")
-    end.to raise_error(StandardError)
+  context "when given an invalid username" do
+    it "renders a missing username and name", aggregate_failures: true do
+      liquid = generate_user_tag("nonexistent user")
+      expect(liquid.render).to include("[deleted user]")
+      expect(liquid.render).to include("[Deleted User]")
+    end
   end
 end

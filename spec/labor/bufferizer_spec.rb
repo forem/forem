@@ -19,10 +19,11 @@ RSpec.describe Bufferizer, type: :labor do
   end
 
   it "sends to buffer sattelite twitter" do
-    tweet = "test tweet #DEVCommunity"
+    SiteConfig.twitter_hashtag = "#DEVCommunity"
+    tweet = "test tweet #{SiteConfig.twitter_hashtag}"
     described_class.new("article", article, tweet).satellite_tweet!
     expect(article.last_buffered.utc.to_i).to be > 2.minutes.ago.to_i
-    expect(BufferUpdate.last.body_text).to include(" #DEVCommunity ##{tag.name} http")
+    expect(BufferUpdate.last.body_text).to include(" #{SiteConfig.twitter_hashtag} ##{tag.name} http")
   end
 
   it "sends to buffer facebook" do

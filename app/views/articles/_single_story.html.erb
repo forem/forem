@@ -32,7 +32,6 @@
           <p>
             <a href="/<%= story.cached_user.username %>" class="crayons-story__secondary fw-medium">
               <%= story.cached_user.name %>
-              <%= render "shared/pro_checkmark" if story.cached_user.pro %>
             </a>
             <% if story.cached_organization && !@organization_article_index %>
               <span>

@@ -99,10 +99,6 @@ class Organization < ApplicationRecord
     credits.unspent.size >= num_credits_needed
   end
 
-  def pro?
-    false
-  end
-
   def banned
     false
   end
