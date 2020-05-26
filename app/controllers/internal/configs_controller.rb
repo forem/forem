@@ -46,6 +46,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       twitter_hashtag
       suggested_users
       tagline
+      payment_pointer
     ]
 
     allowed_params = allowed_params |
@@ -87,6 +88,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       campaign_sidebar_enabled
       campaign_sidebar_image
       campaign_url
+      campaign_articles_require_approval
     ]
   end
 

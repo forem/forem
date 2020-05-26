@@ -127,7 +127,11 @@ class RssReader
         path = (img_tag.attributes["src"] || img_tag.attributes["data-src"])&.value
         next unless path
 
-        img_tag.attributes["src"].value = URI.join(url, path).to_s if path.start_with? "/"
+        # Only update source if the path is not already an URL
+        unless path.match?(/\A#{URI::DEFAULT_PARSER.make_regexp}\z/)
+          resource = path.start_with?("/") ? url : @feed_source_url
+          img_tag.attributes["src"].value = URI.join(resource, path).to_s
+        end
       end
     end
 
