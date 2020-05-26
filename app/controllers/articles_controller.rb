@@ -7,6 +7,17 @@ class ArticlesController < ApplicationController
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
 
+  FEED_ALLOWED_TAGS = %w[
+    a b blockquote br center cite code col colgroup dd del div dl dt em em h1 h2
+    h3 h4 h5 h6 i iframe img li ol p pre q small span strong sup table tbody td
+    tfoot th thead time tr u ul
+  ].freeze
+
+  FEED_ALLOWED_ATTRIBUTES = %w[
+    alt class colspan data-conversation data-lang em height href id ref rel
+    rowspan size span src start strong title value width
+  ].freeze
+
   def feed
     skip_authorization
 
@@ -24,12 +35,18 @@ class ArticlesController < ApplicationController
     end
 
     set_surrogate_key_header "feed"
+    set_cache_control_headers(10.minutes.to_i, stale_while_revalidate: 30, stale_if_error: 1.day.to_i)
 
-    set_cache_control_headers(600,
-                              stale_while_revalidate: 30,
-                              stale_if_error: 86_400)
+    @allowed_tags = FEED_ALLOWED_TAGS
+    @allowed_attributes = FEED_ALLOWED_ATTRIBUTES
 
-    render layout: false
+    render layout: false, locals: {
+      articles: @articles,
+      user: @user,
+      tag: @tag,
+      allowed_tags: FEED_ALLOWED_TAGS,
+      allowed_attributes: FEED_ALLOWED_ATTRIBUTES
+    }
   end
 
   def new

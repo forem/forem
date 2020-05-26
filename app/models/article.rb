@@ -167,7 +167,7 @@ class Article < ApplicationRecord
     order(column => dir.to_sym)
   }
 
-  scope :feed, -> { published.select(:id, :published_at, :processed_html, :user_id, :organization_id, :title, :path) }
+  scope :feed, -> { published.includes(:taggings).select(:id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list) }
 
   scope :with_video, -> { published.where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).where("score > ?", -4) }
 
