@@ -344,6 +344,15 @@
     padding: var(--su-4) var(--su-3);
     display: flex;
     justify-content: center;
+    align-items: center;
+    svg {
+      width: var(--su-4);
+      height: var(--su-4);
+      padding: var(--su-1);
+      path {
+        fill: var(--base-70);
+      }
+    }
   }
 
   .reaction-button.reacted {

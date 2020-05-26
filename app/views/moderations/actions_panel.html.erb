@@ -51,7 +51,10 @@
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: "Checkmark") %>
     </button>
     <a href="<%= URL.url %>/community-moderation#mod-voting" target="_blank" rel="noopener">
-      <span class="how-this-works-section">How does this work?</span>
+      <span class="how-this-works-section">
+        How does this work?
+        <%= inline_svg_tag("external-link-logo.svg", aria: true) %>
+      </span>
     </a>
   </div>
   <div class="other-things-container">
@@ -104,7 +107,10 @@
           <button class="crayons-btn" id="tag-adjust-submit" type="submit">Submit</button>
         </form>
         <a href="<%= URL.url %>/tag-moderation#tag-adjustments" target="_blank" rel="noopener">
-          <span class="how-this-works-section">How does this work?</span>
+          <span class="how-this-works-section">
+            How does this work?
+            <%= inline_svg_tag("external-link-logo.svg", aria: true) %>
+          </span>
         </a>
       </div>
     <% end %>
@@ -135,7 +141,10 @@
       </button>
       <% end %>
       <a href="<%= URL.url %>/community-moderation#setting-experience-level" target="_blank" rel="noopener">
-        <span class="how-this-works-section">How does this work?</span>
+        <span class="how-this-works-section">
+          How does this work?
+          <%= inline_svg_tag("external-link-logo.svg", aria: true) %>
+        </span>
       </a>
     </div>
   </div>
