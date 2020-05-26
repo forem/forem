@@ -76,7 +76,7 @@
             </div>
           </div>
         <% end %>
-        <% recent_preamble_optimized_posts = Article.search_optimized_title_preamble(nil) %>
+        <% recent_preamble_optimized_posts = Article.search_optimized(nil) %>
         <% if params[:timeframe].blank? && recent_preamble_optimized_posts.present? %>
           <div class="widget">
             <header>
