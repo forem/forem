@@ -12,6 +12,14 @@ RSpec.describe "Articles", type: :request do
       expect(response.content_type).to eq("application/rss+xml")
     end
 
+    it "contains the full app URL" do
+      create(:article, featured: true)
+
+      get feed_path
+
+      expect(response.body).to include("<link>#{URL.url}</link>")
+    end
+
     it "returns not found if no articles" do
       expect { get "/feed" }.to raise_error(ActiveRecord::RecordNotFound)
       expect { get "/feed/#{user.username}" }.to raise_error(ActiveRecord::RecordNotFound)
@@ -58,37 +66,41 @@ RSpec.describe "Articles", type: :request do
     end
 
     shared_context "when user/organization articles exist" do
-      let_it_be_readonly(:user) { create(:user) }
-      let_it_be_readonly(:organization) { create(:organization) }
-      let_it_be_readonly(:user_article) do
-        create(:article, user: user, title: "user_article_title")
-      end
-      let_it_be_readonly(:organization_article) do
-        create(:article, organization: organization, title: "organization_article_title")
-      end
+      let(:user) { create(:user) }
+      let(:organization) { create(:organization) }
+      let!(:user_article) { create(:article, user: user) }
+      let!(:organization_article) { create(:article, organization: organization) }
     end
 
     context "when :username param is given and belongs to a user" do
       include_context "when user/organization articles exist"
-      before { get "/feed", params: { username: user.username } }
+      before { get user_feed_path(user.username) }
 
       it "returns only articles for that user" do
         expect(response.body).to include(user_article.title)
         expect(response.body).not_to include(organization_article.title)
       end
+
+      it "contains the full user URL" do
+        expect(response.body).to include("<link>#{URL.user(user)}</link>")
+      end
     end
 
     context "when :username param is given and belongs to an organization" do
       include_context "when user/organization articles exist"
-      before { get "/feed", params: { username: organization.slug } }
+      before { get user_feed_path(organization.slug) }
 
       it "returns only articles for that organization" do
         expect(response.body).not_to include(user_article.title)
         expect(response.body).to include(organization_article.title)
       end
+
+      it "contains the full organization URL" do
+        expect(response.body).to include("<link>#{URL.organization(organization)}</link>")
+      end
     end
 
-    context "when :username param is given but it belongs to nither user nor organization" do
+    context "when :username param is given but it belongs to neither user nor organization" do
       include_context "when user/organization articles exist"
 
       it "renders empty body" do
@@ -103,6 +115,15 @@ RSpec.describe "Articles", type: :request do
         expect { get "/feed.zip" }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
+
+    it "contains tags as categories" do
+      article = create(:article, featured: true)
+
+      get feed_path
+
+      rss_feed = Feedjira.parse(response.body)
+      expect(rss_feed.entries.first.categories).to match_array(article.tag_list)
+    end
   end
 
   describe "GET /feed/tag" do
@@ -112,10 +133,30 @@ RSpec.describe "Articles", type: :request do
 
     context "when :tag param is given and tag exists" do
       include_context "when tagged articles exist"
-      before { get "/feed/tag/#{tag.name}" }
 
       it "returns only articles for that tag" do
-        expect(response.body).to include(tag_article.title)
+        article = create(:article, tags: ["foobar"])
+
+        get tag_feed_path(tag.name)
+
+        rss_feed = Feedjira.parse(response.body)
+        titles = rss_feed.entries.map(&:title)
+
+        expect(titles).not_to include(article.title)
+        expect(titles).to include(tag_article.title)
+      end
+
+      it "contains the tag as a category" do
+        get tag_feed_path(tag.name)
+
+        rss_feed = Feedjira.parse(response.body)
+        expect(rss_feed.entries.first.categories).to include(tag.name)
+      end
+
+      it "contains the full app URL" do
+        get tag_feed_path(tag.name)
+
+        expect(response.body).to include("<link>#{URL.url}</link>")
       end
     end
 
