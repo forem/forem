@@ -3,6 +3,9 @@ class ReactionsController < ApplicationController
   before_action :authorize_for_reaction, :check_limit, only: [:create]
   after_action :verify_authorized
 
+  NEGATIVE_CATEGORIES = %w[thumbsdown vomit].freeze
+  MODERATION_CATEGORIES = %w[thumbsup thumbsdown vomit].freeze
+
   def index
     skip_authorization
 
@@ -51,7 +54,17 @@ class ReactionsController < ApplicationController
   def create
     remove_count_cache_key
 
+    if params[:reactable_type] == "Article" && params[:category].in?(MODERATION_CATEGORIES)
+      clear_moderator_reactions(
+        params[:reactable_id],
+        params[:reactable_type],
+        current_user,
+        params[:category],
+      )
+    end
+
     category = params[:category] || "like"
+
     reaction = Reaction.where(
       user_id: current_user.id,
       reactable_id: params[:reactable_id],
@@ -61,13 +74,7 @@ class ReactionsController < ApplicationController
 
     # if the reaction already exists, destroy it
     if reaction
-      result = destroy_reaction(reaction)
-
-      if reaction.negative? && current_user.auditable?
-        updated_params = params.dup
-        updated_params[:action] = "destroy"
-        Audit::Logger.log(:moderator, current_user, updated_params)
-      end
+      result = handle_existing_reaction(reaction)
     else
       reaction = build_reaction(category)
 
@@ -84,7 +91,7 @@ class ReactionsController < ApplicationController
           rate_article(reaction)
         end
 
-        if reaction.negative? && current_user.auditable?
+        if current_user.auditable?
           Audit::Logger.log(:moderator, current_user, params.dup)
         end
       else
@@ -128,6 +135,30 @@ class ReactionsController < ApplicationController
                       user_id: current_user.id,
                       context: "readinglist_reaction",
                       rating: current_user.experience_level)
+  end
+
+  def clear_moderator_reactions(id, type, mod, category)
+    reactions = if category == "thumbsup"
+                  Reaction.where(reactable_id: id, reactable_type: type, user: mod).where.not(category: category)
+                elsif category.in?(NEGATIVE_CATEGORIES)
+                  Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
+                end
+
+    return if reactions.blank?
+
+    reactions.find_each { |reaction| destroy_reaction(reaction) }
+  end
+
+  def handle_existing_reaction(reaction)
+    result = destroy_reaction(reaction)
+
+    if reaction.negative? && current_user.auditable?
+      updated_params = params.dup
+      updated_params[:action] = "destroy"
+      Audit::Logger.log(:moderator, current_user, updated_params)
+    end
+
+    result
   end
 
   def check_limit
