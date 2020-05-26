@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_26_145731) do
+ActiveRecord::Schema.define(version: 2020_05_26_151431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -313,6 +313,7 @@ ActiveRecord::Schema.define(version: 2020_05_26_145731) do
     t.string "slug"
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listing_categories", force: :cascade do |t|

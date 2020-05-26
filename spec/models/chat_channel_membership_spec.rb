@@ -11,7 +11,6 @@ RSpec.describe ChatChannelMembership, type: :model do
       it { is_expected.to belong_to(:chat_channel) }
       it { is_expected.to belong_to(:user) }
 
-      it { is_expected.to validate_uniqueness_of(:chat_channel_id).scoped_to(:user_id) }
       it { is_expected.to validate_inclusion_of(:role).in_array(%w[member mod]) }
 
       # rubocop:disable RSpec/NamedSubject
@@ -23,6 +22,7 @@ RSpec.describe ChatChannelMembership, type: :model do
 
       it { is_expected.to validate_presence_of(:chat_channel_id) }
       it { is_expected.to validate_presence_of(:user_id) }
+      it { is_expected.to validate_uniqueness_of(:chat_channel_id).scoped_to(:user_id) }
     end
   end
 
