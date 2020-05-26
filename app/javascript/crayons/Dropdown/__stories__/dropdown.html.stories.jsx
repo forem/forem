@@ -3,7 +3,7 @@ import { h } from 'preact';
 import '../../storybook-utilities/designSystem.scss';
 
 export default {
-  title: 'Components/Dropdowns/HTML',
+  title: '3_Components/Dropdowns/HTML',
 };
 
 export const Default = () => (

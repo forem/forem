@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 import '../../../storybook-utilities/designSystem.scss';
 
-export default { title: 'Components/Navigation/Tabs/HTML' };
+export default { title: '3_Components/Navigation/Tabs/HTML' };
 
 export const Default = () => (
   <div className="crayons-tabs">
