@@ -52,7 +52,7 @@ services:
     volumes:
       - .:/opt/apps/devto:z
     entrypoint: ["bash", "-c"]
-    command: ["./bin/yarn"]
+    command: ["yarn install --dev"]
 
   webpacker:
     image: devto-web:latest
