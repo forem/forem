@@ -40,7 +40,13 @@ class ArticlesController < ApplicationController
     @allowed_tags = FEED_ALLOWED_TAGS
     @allowed_attributes = FEED_ALLOWED_ATTRIBUTES
 
-    render layout: false
+    render layout: false, locals: {
+      articles: @articles,
+      user: @user,
+      tag: @tag,
+      allowed_tags: FEED_ALLOWED_TAGS,
+      allowed_attributes: FEED_ALLOWED_ATTRIBUTES
+    }
   end
 
   def new
