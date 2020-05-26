@@ -38,6 +38,21 @@
               </div>
             </div>
           <% end %>
+          <% recent_preamble_optimized_posts = Article.search_optimized_title_preamble(nil) %>
+          <% if recent_preamble_optimized_posts.present? %>
+            <div class="widget">
+              <header>
+                <h4>recently queried</h4>
+              </header>
+              <div class="widget-body">
+                <div class="widget-link-list">
+                  <% recent_preamble_optimized_posts.each do |plucked_article| %>
+                    <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
         <% end %>
       <% end %>
     </div>
