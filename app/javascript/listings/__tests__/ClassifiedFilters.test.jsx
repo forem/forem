@@ -4,19 +4,16 @@ import ClassifiedFilters from '../components/ClassifiedFilters';
 
 describe('<ClassifiedFilters />', () => {
   const firstCategory = {
-    id: 20,
     slug: 'clojure',
     name: 'Clojure',
   };
 
   const secondCategory = {
-    id: 21,
     slug: 'illa-iara-ques-htyashsayas-6kj8',
     name: 'Go',
   };
 
   const thirdCategory = {
-    id: 22,
     slug: 'alle-bece-tzehj-htyashsayas-7jh9',
     name: 'csharp',
   };

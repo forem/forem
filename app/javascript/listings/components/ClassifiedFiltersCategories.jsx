@@ -36,9 +36,14 @@ const ClassifiedFiltersCategories = ({ categories, category, onClick }) => (
 );
 
 ClassifiedFiltersCategories.propTypes = {
-  categories: PropTypes.isRequired,
+  categories: PropTypes.arrayOf(
+    PropTypes.shape({
+      slug: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
+  category: PropTypes.string.isRequired,
   onClick: PropTypes.func.isRequired,
-  category: PropTypes.isRequired,
 };
 
 export default ClassifiedFiltersCategories;

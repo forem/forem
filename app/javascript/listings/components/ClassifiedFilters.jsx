@@ -36,8 +36,11 @@ const ClassifiedFilters = ({
 };
 
 ClassifiedFilters.propTypes = {
-  categories: PropTypes.isRequired,
-  category: PropTypes.isRequired,
+  categories: PropTypes.shape({
+    slug: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+  category: PropTypes.string.isRequired,
   onSelectCategory: PropTypes.func.isRequired,
   message: PropTypes.isRequired,
   onKeyUp: PropTypes.func.isRequired,
