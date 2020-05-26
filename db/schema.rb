@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_25_125611) do
+ActiveRecord::Schema.define(version: 2020_05_26_144234) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -749,6 +749,7 @@ ActiveRecord::Schema.define(version: 2020_05_25_125611) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
 
