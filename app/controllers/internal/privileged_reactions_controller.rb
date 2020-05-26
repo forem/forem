@@ -1,15 +1,15 @@
 class Internal::PrivilegedReactionsController < Internal::ApplicationController
   layout "internal"
 
-  NEGATIVE_REACTION_CATEGORIES = %i[thumbsup thumbsdown vomit].freeze
+  PRIVILEGED_REACTION_CATEGORIES = %i[thumbsup thumbsdown vomit].freeze
 
   def index
     @q = Reaction.
       includes(:user,
                :reactable).
-      where("category IN (?)", NEGATIVE_REACTION_CATEGORIES).
+      where("category IN (?)", PRIVILEGED_REACTION_CATEGORIES).
       order("reactions.created_at DESC").
       ransack(params[:q])
-    @negative_reactions = @q.result.page(params[:page] || 1).per(25)
+    @privileged_reactions = @q.result.page(params[:page] || 1).per(25)
   end
 end
