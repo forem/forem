@@ -31,9 +31,11 @@
   <li>
      <a href="<%= app_url("/connect/tag-moderators") %>">Tag Moderators</a>
   </li>
-  <li>
-    Name of specific tag cahnnel
-  </li>
+  <% if @channel_slug %>
+    <li>
+      <a href="<%= app_url("/connect/#{@channel_slug}") %>">#<%= @tag.name %></a>
+    </li>
+  <% end %>
 </ul>
 
 
