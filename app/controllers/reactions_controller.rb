@@ -13,7 +13,7 @@ class ReactionsController < ApplicationController
       id = params[:article_id]
 
       reactions = if session_current_user_id
-                    Reaction.positive.
+                    Reaction.public_category.
                       where(
                         reactable_id: id,
                         reactable_type: "Article",
@@ -27,20 +27,20 @@ class ReactionsController < ApplicationController
     else
       comments = Comment.
         where(commentable_id: params[:commentable_id], commentable_type: params[:commentable_type]).
-        select(%i[id positive_reactions_count])
+        select(%i[id public_reactions_count])
 
       reaction_counts = comments.map do |comment|
-        { id: comment.id, count: comment.positive_reactions_count }
+        { id: comment.id, count: comment.public_reactions_count }
       end
 
       reactions = if session_current_user_id
                     comment_ids = reaction_counts.map { |rc| rc[:id] }
-                    cached_user_positive_reactions(current_user).where(reactable_id: comment_ids)
+                    cached_user_public_reactions(current_user).where(reactable_id: comment_ids)
                   else
                     Reaction.none
                   end
 
-      result = { positive_reaction_counts: reaction_counts }
+      result = { public_reaction_counts: reaction_counts }
     end
 
     render json: {
@@ -91,7 +91,7 @@ class ReactionsController < ApplicationController
           rate_article(reaction)
         end
 
-        if reaction.negative? && current_user.auditable?
+        if current_user.auditable?
           Audit::Logger.log(:moderator, current_user, params.dup)
         end
       else
@@ -102,9 +102,9 @@ class ReactionsController < ApplicationController
     render json: { result: result, category: category }
   end
 
-  def cached_user_positive_reactions(user)
-    Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.positive_reactions_count}", expires_in: 24.hours) do
-      user.reactions.positive
+  def cached_user_public_reactions(user)
+    Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.public_reactions_count}", expires_in: 24.hours) do
+      user.reactions.public_category
     end
   end
 
