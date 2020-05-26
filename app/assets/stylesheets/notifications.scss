@@ -246,6 +246,11 @@
             max-width: 100%;
             max-height: 400px;
           }
+          blockquote {
+            border-left: calc(0.2vw + 2px) solid $dark-gray;
+            padding: 0.1% 6% 0.1% 2%;
+            margin-left: 0.5rem;
+          }
         }
         .comment-actions {
           position: relative;
