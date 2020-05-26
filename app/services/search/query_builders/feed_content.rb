@@ -86,7 +86,7 @@ module Search
       end
 
       def add_highlight_fields
-        highlight_fields = { fields: {} }
+        highlight_fields = { encoder: "html", fields: {} }
         HIGHLIGHT_FIELDS.each do |field_name|
           # This hash can be filled with options to further customize our highlighting
           # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting

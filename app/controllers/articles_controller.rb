@@ -201,6 +201,7 @@ class ArticlesController < ApplicationController
                       Article.includes(:user).find(params[:id])
                     end
     @article = found_article || not_found
+    Honeycomb.add_field("article_id", @article.id)
   end
 
   def article_params
