@@ -3,19 +3,6 @@ import render from 'preact-render-to-json';
 import ClassifiedFilters from '../components/ClassifiedFilters';
 
 describe('<ClassifiedFilters />', () => {
-  const firstTag = {
-    id: 1,
-    tag: 'clojure',
-  };
-  const secondTag = {
-    id: 2,
-    tag: 'java',
-  };
-  const thirdTag = {
-    id: 3,
-    tag: 'dotnet',
-  };
-
   const firstCategory = {
     id: 20,
     slug: 'clojure',
@@ -35,7 +22,7 @@ describe('<ClassifiedFilters />', () => {
   };
 
   const getCategories = () => [firstCategory, secondCategory, thirdCategory];
-  const getTags = () => [firstTag, secondTag, thirdTag];
+  const getTags = () => ['clojure', 'java', 'dotnet'];
 
   const getProps = () => ({
     category: 'clojure',

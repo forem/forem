@@ -2,7 +2,6 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import ClassifiedFiltersCategories from './ClassifiedFiltersCategories';
 import ClassifiedFiltersTags from './ClassifiedFiltersTags';
-import { tagPropTypes } from '../../common-prop-types';
 
 const ClassifiedFilters = ({
   categories,
@@ -44,7 +43,7 @@ ClassifiedFilters.propTypes = {
   onKeyUp: PropTypes.func.isRequired,
   onClearQuery: PropTypes.func.isRequired,
   onRemoveTag: PropTypes.func.isRequired,
-  tags: PropTypes.arrayOf(tagPropTypes).isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string).isRequired,
   onKeyPress: PropTypes.func.isRequired,
   query: PropTypes.string.isRequired,
 };
