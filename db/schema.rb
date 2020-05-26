@@ -12,7 +12,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_15_085746) do
+ActiveRecord::Schema.define(version: 2020_05_25_125611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -363,6 +363,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["organization_id"], name: "index_collections_on_organization_id"
+    t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
@@ -416,6 +417,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.datetime "run_at"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["file_name"], name: "index_data_update_scripts_on_file_name", unique: true
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -528,6 +530,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.string "processed_html"
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["url"], name: "index_github_issues_on_url", unique: true
   end
 
   create_table "github_repos", force: :cascade do |t|
@@ -547,6 +550,8 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.string "url"
     t.integer "user_id"
     t.integer "watchers_count"
+    t.index ["github_id_code"], name: "index_github_repos_on_github_id_code", unique: true
+    t.index ["url"], name: "index_github_repos_on_url", unique: true
   end
 
   create_table "html_variant_successes", force: :cascade do |t|
@@ -576,6 +581,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.string "target_tag"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["name"], name: "index_html_variants_on_name", unique: true
   end
 
   create_table "identities", id: :serial, force: :cascade do |t|
@@ -597,6 +603,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.string "mentionable_type"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["user_id", "mentionable_id", "mentionable_type"], name: "index_mentions_on_user_id_and_mentionable_id_mentionable_type", unique: true
   end
 
   create_table "messages", force: :cascade do |t|
@@ -630,6 +637,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
     t.index ["notifiable_id", "notifiable_type", "config"], name: "index_notification_subscriptions_on_notifiable_and_config"
+    t.index ["user_id", "notifiable_type", "notifiable_id"], name: "idx_notification_subs_on_user_id_notifiable_type_notifiable_id", unique: true
   end
 
   create_table "notifications", id: :serial, force: :cascade do |t|
@@ -859,6 +867,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.bigint "poll_option_id", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["poll_id", "user_id"], name: "index_poll_votes_on_poll_id_and_user_id", unique: true
     t.index ["poll_option_id", "user_id"], name: "index_poll_votes_on_poll_option_and_user", unique: true
   end
 
@@ -873,21 +882,6 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "pro_memberships", force: :cascade do |t|
-    t.boolean "auto_recharge", default: false, null: false
-    t.datetime "created_at", null: false
-    t.datetime "expiration_notification_at"
-    t.integer "expiration_notifications_count", default: 0, null: false
-    t.datetime "expires_at", null: false
-    t.string "status", default: "active"
-    t.datetime "updated_at", null: false
-    t.bigint "user_id"
-    t.index ["auto_recharge"], name: "index_pro_memberships_on_auto_recharge"
-    t.index ["expires_at"], name: "index_pro_memberships_on_expires_at"
-    t.index ["status"], name: "index_pro_memberships_on_status"
-    t.index ["user_id"], name: "index_pro_memberships_on_user_id"
-  end
-
   create_table "profile_pins", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.bigint "pinnable_id"
@@ -895,6 +889,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.bigint "profile_id"
     t.string "profile_type"
     t.datetime "updated_at", null: false
+    t.index ["pinnable_id", "profile_id", "profile_type", "pinnable_type"], name: "idx_pins_on_pinnable_id_profile_id_profile_type_pinnable_type", unique: true
     t.index ["pinnable_id"], name: "index_profile_pins_on_pinnable_id"
     t.index ["profile_id"], name: "index_profile_pins_on_profile_id"
   end
@@ -927,6 +922,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.index ["reactable_id", "reactable_type"], name: "index_reactions_on_reactable_id_and_reactable_type"
     t.index ["reactable_id"], name: "index_reactions_on_reactable_id"
     t.index ["reactable_type"], name: "index_reactions_on_reactable_type"
+    t.index ["user_id", "reactable_id", "reactable_type", "category"], name: "index_reactions_on_user_id_reactable_id_reactable_type_category", unique: true
     t.index ["user_id"], name: "index_reactions_on_user_id"
   end
 
@@ -938,6 +934,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.string "type_of", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.index ["content", "user_id", "type_of", "content_type"], name: "idx_response_templates_on_content_user_id_type_of_content_type", unique: true
     t.index ["type_of"], name: "index_response_templates_on_type_of"
     t.index ["user_id", "type_of"], name: "index_response_templates_on_user_id_and_type_of"
     t.index ["user_id"], name: "index_response_templates_on_user_id"
@@ -994,6 +991,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.string "tag_name"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.index ["tag_name", "article_id"], name: "index_tag_adjustments_on_tag_name_and_article_id", unique: true
   end
 
   create_table "taggings", id: :serial, force: :cascade do |t|
@@ -1255,6 +1253,7 @@ ActiveRecord::Schema.define(version: 2020_05_15_085746) do
     t.bigint "user_id", null: false
     t.index ["events"], name: "index_webhook_endpoints_on_events"
     t.index ["oauth_application_id"], name: "index_webhook_endpoints_on_oauth_application_id"
+    t.index ["target_url"], name: "index_webhook_endpoints_on_target_url", unique: true
     t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
   end
 

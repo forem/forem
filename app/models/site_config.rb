@@ -60,6 +60,7 @@ class SiteConfig < RailsSettings::Base
   field :campaign_sidebar_enabled, type: :boolean, default: 0
   field :campaign_sidebar_image, type: :string, default: nil
   field :campaign_url, type: :string, default: nil
+  field :campaign_articles_require_approval, type: :boolean, default: 0
 
   # Onboarding
   field :onboarding_taskcard_image, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/staggered-dev.svg"
@@ -73,7 +74,10 @@ class SiteConfig < RailsSettings::Base
   field :logo_svg, type: :string, default: ""
   field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
 
-  # Rate Limits
+  # Monetization
+  field :payment_pointer, type: :string, default: "$ilp.uphold.com/24HhrUGG7ekn" # Experimental
+
+  # Rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
   field :rate_limit_comment_creation, type: :integer, default: 9
   field :rate_limit_listing_creation, type: :integer, default: 1

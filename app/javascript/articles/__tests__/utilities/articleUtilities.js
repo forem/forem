@@ -127,7 +127,7 @@ export const articleWithReactions = {
   published_at: '2020-03-19T10:04:15-05:00',
   readable_publish_date: 'February 18',
   top_comments: [],
-  positive_reactions_count: 232,
+  public_reactions_count: 232,
 };
 
 export const articleWithComments = {
@@ -169,7 +169,7 @@ export const articleWithComments = {
       profile_image_90: '/images/7.png',
     },
   ],
-  positive_reactions_count: 428,
+  public_reactions_count: 428,
   comments_count: 213,
 };
 
@@ -311,7 +311,7 @@ export const userArticle = {
 export const featuredArticle = {
   ...article,
   main_image: '/images/onboarding-background.png',
-  positive_reactions_count: 428,
+  public_reactions_count: 428,
   comments_count: 213,
 };
 

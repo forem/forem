@@ -271,7 +271,9 @@
   }
   .classifieds-load-more-button {
     text-align: center;
+
     button {
+      background: var(--theme-container-background);
       color: var(--body-color);
       border: 1px solid var(--card-color-tertiary);
       font-size: 17px;

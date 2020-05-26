@@ -33,6 +33,17 @@ or
 yarn test
 ```
 
+Should you want to view only a single jest test, you can run:
+```shell
+npx jest app/javascript/<path-to-file>
+```
+
+To troubleshoot any of your jest test files, add a debugger and run:
+```shell
+node --inspect node_modules/.bin/jest --watch --runInBand <path-to-file>
+```
+You can read more about troubleshooting [here](https://jestjs.io/docs/en/troubleshooting).
+
 At the end of the test's execution, you will see the code coverage for the
 Preact components in our codebase.
 

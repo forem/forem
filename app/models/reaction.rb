@@ -5,6 +5,7 @@ class Reaction < ApplicationRecord
   SEARCH_CLASS = Search::Reaction
 
   CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
+  PUBLIC_CATEGORIES = %w[like readinglist unicorn thinking hands].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
@@ -13,11 +14,11 @@ class Reaction < ApplicationRecord
 
   counter_culture :reactable,
                   column_name: proc { |model|
-                    model.points.positive? ? "positive_reactions_count" : "reactions_count"
+                    PUBLIC_CATEGORIES.include?(model.category) ? "public_reactions_count" : "reactions_count"
                   }
   counter_culture :user
 
-  scope :positive, -> { where("points > ?", 0) }
+  scope :public_category, -> { where(category: PUBLIC_CATEGORIES) }
   scope :readinglist, -> { where(category: "readinglist") }
   scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
@@ -53,7 +54,7 @@ class Reaction < ApplicationRecord
 
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
-      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.reactions_count}-#{user.positive_reactions_count}-#{category}"
+      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end

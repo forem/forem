@@ -13,6 +13,11 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
       expect(filter.body).not_to be_nil
     end
 
+    it "builds query body with html encoder" do
+      filter = described_class.new(params: {})
+      expect(filter.body).to include("highlight" => hash_including("encoder" => "html"))
+    end
+
     it "sets published to true" do
       filter = described_class.new(params: {})
       expect(filter.params).to include(published: true)
