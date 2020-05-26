@@ -1,7 +1,7 @@
-class Internal::NegativeReactionsController < Internal::ApplicationController
+class Internal::PrivilegedReactionsController < Internal::ApplicationController
   layout "internal"
 
-  NEGATIVE_REACTION_CATEGORIES = %i[vomit thumbsdown].freeze
+  NEGATIVE_REACTION_CATEGORIES = %i[thumbsup thumbsdown vomit].freeze
 
   def index
     @q = Reaction.
