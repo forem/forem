@@ -356,7 +356,7 @@ RSpec.describe "Api::V0::Listings", type: :request do
 
       it "cannot create a draft due to internal error" do
         allow(Organization).to receive(:find_by)
-        post_listing(draft_params.except(:listing_category_id))
+        post_listing(draft_params.except(:category))
         expect(response.parsed_body.dig("errors", "listing_category").first).
           to match(/must exist/)
         expect(response).to have_http_status(:unprocessable_entity)

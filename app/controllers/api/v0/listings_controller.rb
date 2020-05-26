@@ -101,7 +101,16 @@ module Api
       # we're copying them over.
       def listing_params
         params["listing"] = params["classified_listing"]
+        if (category_id = find_category_id(params.dig("listing", "category")))
+          params["listing"]["listing_category_id"] = category_id
+        end
         super
+      end
+
+      def find_category_id(slug)
+        return if slug.blank?
+
+        ListingCategory.select(:id).find_by(slug: slug)&.id
       end
     end
   end
