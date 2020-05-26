@@ -4,7 +4,7 @@ class Reaction < ApplicationRecord
   SEARCH_SERIALIZER = Search::ReactionSerializer
   SEARCH_CLASS = Search::Reaction
 
-  CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
+  CATEGORIES = %w[like readinglist unicorn thinking hands thumbsup thumbsdown vomit].freeze
   PUBLIC_CATEGORIES = %w[like readinglist unicorn thinking hands].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
