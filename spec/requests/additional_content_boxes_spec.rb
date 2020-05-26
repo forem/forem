@@ -8,7 +8,7 @@ RSpec.describe "AdditionalContentBoxes", type: :request do
   describe "GET /additional_content_boxes" do
     it "returns an article if there is a published/featured one" do
       suggestion = create(:article, published: true, published_at: 12.months.ago, featured: true, path: "blah")
-      suggestion.update(body_markdown: "foobar", title: "Title of the article", positive_reactions_count: 100)
+      suggestion.update(body_markdown: "foobar", title: "Title of the article", public_reactions_count: 100)
 
       get "/additional_content_boxes?article_id=#{regular_article.id}&state=include_sponsors"
       expect(response.body).to include(CGI.escapeHTML(suggestion.title))
