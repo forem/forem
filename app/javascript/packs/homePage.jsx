@@ -138,4 +138,4 @@ InstantClick.on('receive', (address, body, title) => {
     title,
   };
 });
-InstantClick.init('mousedown');
+InstantClick.init(50);
