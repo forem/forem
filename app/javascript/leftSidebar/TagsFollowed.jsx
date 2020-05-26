@@ -13,6 +13,7 @@ export const TagsFollowed = ({ tags = [] }) => {
           id={`sidebar-element-${tag.name}`}
         >
           <a
+            data-no-instant
             className="sidebar-nav-link sidebar-nav-link-tag"
             href={`/t/${tag.name}`}
           >

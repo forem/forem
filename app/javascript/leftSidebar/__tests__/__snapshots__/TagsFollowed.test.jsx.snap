@@ -16,6 +16,7 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
   >
     <a
       class="sidebar-nav-link sidebar-nav-link-tag"
+      data-no-instant={true}
       href="/t/javascript"
     >
       <span
@@ -31,6 +32,7 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
   >
     <a
       class="sidebar-nav-link sidebar-nav-link-tag"
+      data-no-instant={true}
       href="/t/webdev"
     >
       <span
@@ -46,6 +48,7 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
   >
     <a
       class="sidebar-nav-link sidebar-nav-link-tag"
+      data-no-instant={true}
       href="/t/react"
     >
       <span
@@ -61,6 +64,7 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
   >
     <a
       class="sidebar-nav-link sidebar-nav-link-tag"
+      data-no-instant={true}
       href="/t/discuss"
     >
       <span
@@ -76,6 +80,7 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
   >
     <a
       class="sidebar-nav-link sidebar-nav-link-tag"
+      data-no-instant={true}
       href="/t/productivity"
     >
       <span
@@ -91,6 +96,7 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
   >
     <a
       class="sidebar-nav-link sidebar-nav-link-tag"
+      data-no-instant={true}
       href="/t/career"
     >
       <span
@@ -106,6 +112,7 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
   >
     <a
       class="sidebar-nav-link sidebar-nav-link-tag"
+      data-no-instant={true}
       href="/t/node"
     >
       <span
@@ -121,6 +128,7 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
   >
     <a
       class="sidebar-nav-link sidebar-nav-link-tag"
+      data-no-instant={true}
       href="/t/css"
     >
       <span
@@ -136,6 +144,7 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
   >
     <a
       class="sidebar-nav-link sidebar-nav-link-tag"
+      data-no-instant={true}
       href="/t/html"
     >
       <span
@@ -151,6 +160,7 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
   >
     <a
       class="sidebar-nav-link sidebar-nav-link-tag"
+      data-no-instant={true}
       href="/t/typescript"
     >
       <span
@@ -166,6 +176,7 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
   >
     <a
       class="sidebar-nav-link sidebar-nav-link-tag"
+      data-no-instant={true}
       href="/t/opensource"
     >
       <span

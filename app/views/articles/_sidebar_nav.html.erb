@@ -104,7 +104,7 @@
         </header>
         <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
           <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-            <a class="sidebar-nav-link sidebar-nav-link-tag" href="<%= tag_path(tag_array.second) %>">
+            <a class="sidebar-nav-link sidebar-nav-link-tag" href="<%= tag_path(tag_array.second) %>" data-no-instant>
               <span class="sidebar-nav-tag-text">
                 #<%= tag_array.second %>
               </span>
