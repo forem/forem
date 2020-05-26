@@ -40,7 +40,7 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to validate_length_of(:company_size).is_at_most(7) }
       it { is_expected.to validate_length_of(:story).is_at_most(640) }
       it { is_expected.to validate_length_of(:tech_stack).is_at_most(640) }
-      it { is_expected.to validate_uniqueness_of(:secret) }
+      it { is_expected.to validate_uniqueness_of(:secret).allow_nil }
       it { is_expected.to validate_uniqueness_of(:slug).case_insensitive }
 
       it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
