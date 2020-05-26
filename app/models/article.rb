@@ -119,7 +119,7 @@ class Article < ApplicationRecord
 
   scope :limited_column_select, lambda {
     select(:path, :title, :id, :published,
-           :comments_count, :positive_reactions_count, :cached_tag_list,
+           :comments_count, :public_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :language,
@@ -130,7 +130,7 @@ class Article < ApplicationRecord
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
-           :comments_count, :positive_reactions_count, :cached_tag_list,
+           :comments_count, :public_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
@@ -157,7 +157,7 @@ class Article < ApplicationRecord
       case kind
       when "creation"  then :created_at
       when "views"     then :page_views_count
-      when "reactions" then :positive_reactions_count
+      when "reactions" then :public_reactions_count
       when "comments"  then :comments_count
       when "published" then :published_at
       else
@@ -339,7 +339,7 @@ class Article < ApplicationRecord
   private
 
   def search_score
-    calculated_score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
+    calculated_score = hotness_score.to_i + ((comments_count * 3).to_i + public_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
     calculated_score.to_i
   end
 

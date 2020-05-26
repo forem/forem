@@ -10,11 +10,12 @@ json.extract!(
   :path,
   :url,
   :comments_count,
-  :positive_reactions_count,
+  :public_reactions_count,
   :collection_id,
   :published_timestamp,
 )
 
+json.positive_reactions_count article.public_reactions_count
 json.cover_image     cloud_cover_url(article.main_image)
 json.social_image    article_social_image_url(article)
 json.canonical_url   article.processed_canonical_url
