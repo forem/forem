@@ -202,9 +202,23 @@ class Article < ApplicationRecord
       order(organic_page_views_past_month_count: :desc).
       where("score > ?", 8).
       where("published_at > ?", time_ago).
-      limit(25)
+      limit(20)
 
     fields = %i[path title comments_count created_at]
+    if tag
+      relation.cached_tagged_with(tag).pluck(*fields)
+    else
+      relation.pluck(*fields)
+    end
+  end
+
+  def self.search_optimized(tag = nil)
+    relation = Article.published.
+      order(updated_at: :desc).
+      where.not(search_optimized_title_preamble: nil).
+      limit(20)
+
+    fields = %i[path search_optimized_title_preamble comments_count created_at]
     if tag
       relation.cached_tagged_with(tag).pluck(*fields)
     else
