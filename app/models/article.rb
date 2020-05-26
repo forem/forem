@@ -551,8 +551,7 @@ class Article < ApplicationRecord
       username: object.username,
       slug: object == organization ? object.slug : object.username,
       profile_image_90: object.profile_image_90,
-      profile_image_url: object.profile_image_url,
-      pro: object == user ? user.pro? : false # organizations can't be pro users
+      profile_image_url: object.profile_image_url
     }
   end
 

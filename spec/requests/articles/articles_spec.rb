@@ -58,9 +58,14 @@ RSpec.describe "Articles", type: :request do
     end
 
     shared_context "when user/organization articles exist" do
-      let(:organization) { create(:organization) }
-      let!(:user_article) { create(:article, user_id: user.id) }
-      let!(:organization_article) { create(:article, organization_id: organization.id) }
+      let_it_be_readonly(:user) { create(:user) }
+      let_it_be_readonly(:organization) { create(:organization) }
+      let_it_be_readonly(:user_article) do
+        create(:article, user: user, title: "user_article_title")
+      end
+      let_it_be_readonly(:organization_article) do
+        create(:article, organization: organization, title: "organization_article_title")
+      end
     end
 
     context "when :username param is given and belongs to a user" do
@@ -85,7 +90,12 @@ RSpec.describe "Articles", type: :request do
 
     context "when :username param is given but it belongs to nither user nor organization" do
       include_context "when user/organization articles exist"
-      it("renders empty body") { expect { get "/feed", params: { username: "unknown" } }.to raise_error(ActiveRecord::RecordNotFound) }
+
+      it "renders empty body" do
+        expect do
+          get feed_path("unknown")
+        end.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
 
     context "when format is invalid" do

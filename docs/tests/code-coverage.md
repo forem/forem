@@ -58,4 +58,4 @@ yarn test
 ```
 
 Once the tests have completed, the test coverage metric will be visible in the
-terminal window.
+terminal window. Please note that jest will fail if test coverage thresholds are not met.

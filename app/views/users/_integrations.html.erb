@@ -4,7 +4,7 @@
   <h3>Generate a personal blog from your <%= community_name %> posts</h3>
   <div class="single-app-integration">
     <% if current_user.decorate.stackbit_integration? %>
-      <h3>Connected to Stackbit <sup>beta</sup><img src="<%= asset_path("checkmark-green.svg") %>" /></h3>
+      <h3>Connected to Stackbit <sup>beta</sup><img width="20px" style="margin-left:2px;" src="<%= asset_path("checkmark-green.svg") %>" /></h3>
       <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/dashboard">Go To Your Stackbit Dashboard</a></strong></p>
       <p style="font-size: 1.1em"><strong><a href="https://app.stackbit.com/create?ref=devto">Create New Stackbit Site</a></strong></p>
     <% else %>

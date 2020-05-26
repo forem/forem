@@ -84,5 +84,12 @@ RSpec.describe TagAdjustment, type: :model do
       tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article.id, adjustment_type: "removal")
       expect(tag_adjustment).to be_invalid
     end
+
+    it "ignores case when checking tag_list" do
+      news_tag = create(:tag, name: "news", pretty_name: "News")
+      article = create(:article, tags: news_tag.name)
+      tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article.id, adjustment_type: "removal", tag_id: news_tag.id, tag_name: news_tag.pretty_name)
+      expect(tag_adjustment).to be_valid
+    end
   end
 end

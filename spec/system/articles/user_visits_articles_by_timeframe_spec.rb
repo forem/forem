@@ -12,10 +12,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     context "when viewing articles for week" do
       before { visit "/top/week" }
 
-      it "renders the page", js: true, percy: true do
-        Percy.snapshot(page, name: "Articles: /top/week logged out user")
-      end
-
       it "shows correct articles count" do
         expect(page).to have_selector(".crayons-story", visible: :visible, count: 2)
       end
@@ -34,10 +30,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
 
     context "when viewing articles for month" do
       before { visit "/top/month" }
-
-      it "renders the page", js: true, percy: true do
-        Percy.snapshot(page, name: "Articles: /top/month logged out user")
-      end
 
       it "shows correct articles count" do
         expect(page).to have_selector(".crayons-story", visible: :visible, count: 3)
@@ -59,10 +51,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     context "when viewing articles for year" do
       before { visit "/top/year" }
 
-      it "renders the page", js: true, percy: true do
-        Percy.snapshot(page, name: "Articles: /top/year logged out user")
-      end
-
       it "shows correct articles count" do
         expect(page).to have_selector(".crayons-story", visible: :visible, count: 4)
       end
@@ -83,10 +71,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
 
     context "when viewing articles for infinity" do
       before { visit "/top/infinity" }
-
-      it "renders the page", js: true, percy: true do
-        Percy.snapshot(page, name: "Articles: /top/infinity logged out user")
-      end
 
       it "shows correct articles and cta count" do
         expect(page).to have_selector(".crayons-story", visible: :visible, count: 5)
@@ -110,10 +94,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
 
     context "when viewing articles for latest" do
       before { visit "/latest" }
-
-      it "renders the page", js: true, percy: true do
-        Percy.snapshot(page, name: "Articles: /latest logged out user")
-      end
 
       it "shows correct articles and cta count" do
         expect(page).to have_selector(".crayons-story", visible: :visible, count: 5)
@@ -144,10 +124,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       visit "/top/week"
     end
 
-    it "renders the page", percy: true do
-      Percy.snapshot(page, name: "Articles: /top/week logged in user")
-    end
-
     it "shows correct articles count" do
       expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 1)
     end
@@ -167,7 +143,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/top/month" }
 
       it "renders the page", percy: true do
-        Percy.snapshot(page, name: "Articles: /top/month logged in user")
+        Percy.snapshot(page, name: "Articles: /top/month")
       end
 
       it "shows correct articles count" do
@@ -190,10 +166,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     context "when viewing articles for year" do
       before { visit "/top/year" }
 
-      it "renders the page", percy: true do
-        Percy.snapshot(page, name: "Articles: /top/year logged in user")
-      end
-
       it "shows correct articles count" do
         expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 3)
       end
@@ -214,10 +186,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
 
     context "when viewing articles for infinity" do
       before { visit "/top/infinity" }
-
-      it "renders the page", percy: true do
-        Percy.snapshot(page, name: "Articles: /top/infinity logged in user")
-      end
 
       it "shows correct articles count" do
         expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: 4)
@@ -242,7 +210,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
       before { visit "/latest" }
 
       it "renders the page", percy: true do
-        Percy.snapshot(page, name: "Articles: /latest logged in user")
+        Percy.snapshot(page, name: "Articles: /latest")
       end
 
       it "shows correct articles" do
