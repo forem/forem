@@ -90,7 +90,7 @@ RSpec.describe "Reactions", type: :request do
         result = response.parsed_body
 
         expect(result["current_user"]).to eq("id" => user.id)
-        expect(result["positive_reaction_counts"]).to eq([{ "id" => article.comments.last.id, "count" => 1 }])
+        expect(result["public_reaction_counts"]).to eq([{ "id" => article.comments.last.id, "count" => 1 }])
         expect(result["reactions"].to_json).to eq(user.reactions.where(reactable: comment).to_json)
       end
 
@@ -113,7 +113,7 @@ RSpec.describe "Reactions", type: :request do
         result = response.parsed_body
 
         expect(result["current_user"]).to eq("id" => nil)
-        expect(result["positive_reaction_counts"]).to eq([{ "id" => article.comments.last.id, "count" => 1 }])
+        expect(result["public_reaction_counts"]).to eq([{ "id" => article.comments.last.id, "count" => 1 }])
         expect(result["reactions"]).to be_empty
       end
 

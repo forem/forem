@@ -12,12 +12,13 @@ json.array!    @articles do |article|
     :path,
     :url,
     :comments_count,
-    :positive_reactions_count,
+    :public_reactions_count,
     :page_views_count,
     :published_timestamp,
     :body_markdown,
   )
 
+  json.positive_reactions_count article.public_reactions_count
   json.cover_image              cloud_cover_url(article.main_image)
   json.tag_list                 article.cached_tag_list_array
   json.canonical_url            article.processed_canonical_url

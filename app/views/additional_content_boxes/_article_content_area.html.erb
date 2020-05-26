@@ -12,8 +12,8 @@
     <%= article.description %>
   </a>
 <div class="engagement-count">
-  <% if article.positive_reactions_count > 0 %>
-    <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /> <%= article.positive_reactions_count %>
+  <% if article.public_reactions_count > 0 %>
+    <img src="<%= asset_path("reactions-stack.png") %>" alt="Reactions" /> <%= article.public_reactions_count %>
   <% end %>
   <% if article.comments_count > 0 %>
     <img src="<%= asset_path("comments-bubble.png") %>" alt="Reactions" class="comments-bubble" /> <%= article.comments_count %>
