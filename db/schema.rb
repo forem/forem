@@ -506,6 +506,22 @@ ActiveRecord::Schema.define(version: 2020_05_25_125611) do
     t.index ["participant_type", "participant_id", "experiment"], name: "index_field_test_memberships_on_participant", unique: true
   end
 
+  create_table "flipper_features", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "key", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_flipper_features_on_key", unique: true
+  end
+
+  create_table "flipper_gates", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "feature_key", null: false
+    t.string "key", null: false
+    t.datetime "updated_at", null: false
+    t.string "value"
+    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+  end
+
   create_table "follows", id: :serial, force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"
