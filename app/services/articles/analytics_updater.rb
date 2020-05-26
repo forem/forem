@@ -23,7 +23,7 @@ module Articles
     def fetch_and_update_page_views_and_reaction_counts(qualified_articles)
       qualified_articles.each_slice(15) do |chunk|
         chunk.each do |article|
-          article.update_columns(previous_positive_reactions_count: article.positive_reactions_count)
+          article.update_columns(previous_public_reactions_count: article.public_reactions_count)
           # Notification.send_milestone_notification(type: "Reaction", article_id: article.id)
           # Notification.send_milestone_notification(type: "View", article_id: article.id)
         end
@@ -41,7 +41,7 @@ module Articles
     def should_fetch(article)
       return true if @context == "force"
 
-      article.positive_reactions_count > article.previous_positive_reactions_count || occasionally_force_fetch?
+      article.public_reactions_count > article.previous_public_reactions_count || occasionally_force_fetch?
     end
 
     def occasionally_force_fetch?
