@@ -91,7 +91,7 @@ class ReactionsController < ApplicationController
           rate_article(reaction)
         end
 
-        if reaction.negative? && current_user.auditable?
+        if current_user.auditable?
           Audit::Logger.log(:moderator, current_user, params.dup)
         end
       else
