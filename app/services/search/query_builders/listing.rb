@@ -18,7 +18,7 @@ module Search
       ].freeze
 
       QUERY_KEYS = %i[
-        listing_search
+        classified_listing_search
       ].freeze
 
       DEFAULT_PARAMS = {

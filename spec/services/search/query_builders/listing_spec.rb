@@ -55,12 +55,12 @@ RSpec.describe Search::QueryBuilders::Listing, type: :service do
     end
 
     it "applies QUERY_KEYS from params" do
-      params = { listing_search: "test" }
+      params = { classified_listing_search: "test" }
       filter = described_class.new(params: params)
       expected_query = [{
         "simple_query_string" => {
           "query" => "test*",
-          "fields" => [:listing_search],
+          "fields" => [:classified_listing_search],
           "lenient" => true,
           "analyze_wildcard" => true
         }
@@ -70,10 +70,10 @@ RSpec.describe Search::QueryBuilders::Listing, type: :service do
 
     it "applies QUERY_KEYS, TERM_KEYS, and RANGE_KEYS from params" do
       Timecop.freeze(Time.current) do
-        params = { listing_search: "test", bumped_at: Time.current, category: "cfp" }
+        params = { classified_listing_search: "test", bumped_at: Time.current, category: "cfp" }
         filter = described_class.new(params: params)
         expected_query = [{
-          "simple_query_string" => { "query" => "test*", "fields" => [:listing_search], "lenient" => true, "analyze_wildcard" => true }
+          "simple_query_string" => { "query" => "test*", "fields" => [:classified_listing_search], "lenient" => true, "analyze_wildcard" => true }
         }]
         expected_filters = [
           { "range" => { "bumped_at" => Time.current } },

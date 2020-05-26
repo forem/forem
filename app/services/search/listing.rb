@@ -1,7 +1,7 @@
 module Search
   class Listing < Base
     # We used to use both "classified listing" and "listing" throughout the app.
-    # We standardized on the latter, but keeping the index name was easier.
+    # We standardized on the latter in most places, but kept the index name here.
     INDEX_NAME = "classified_listings_#{Rails.env}".freeze
     INDEX_ALIAS = "classified_listings_#{Rails.env}_alias".freeze
     MAPPINGS = JSON.parse(File.read("config/elasticsearch/mappings/listings.json"), symbolize_names: true).freeze
