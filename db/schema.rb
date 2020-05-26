@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_21_153435) do
+ActiveRecord::Schema.define(version: 2020_05_25_125611) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -361,6 +361,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["organization_id"], name: "index_collections_on_organization_id"
+    t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
@@ -414,6 +415,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.datetime "run_at"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["file_name"], name: "index_data_update_scripts_on_file_name", unique: true
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -526,6 +528,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "processed_html"
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["url"], name: "index_github_issues_on_url", unique: true
   end
 
   create_table "github_repos", force: :cascade do |t|
@@ -545,6 +548,8 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "url"
     t.integer "user_id"
     t.integer "watchers_count"
+    t.index ["github_id_code"], name: "index_github_repos_on_github_id_code", unique: true
+    t.index ["url"], name: "index_github_repos_on_url", unique: true
   end
 
   create_table "html_variant_successes", force: :cascade do |t|
