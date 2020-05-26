@@ -59,16 +59,48 @@ RSpec.describe "Partnerships", type: :request do
         expect(response.body).to include("Subscribe for #{Sponsorship::CREDITS[:bronze]} credits")
       end
 
+      context "when rendering sponsorship page that requires contacting by email" do
+        let(:org) { create(:organization) }
+        let(:biz_email) { "community@example.com" }
+
+        before do
+          SiteConfig.email_addresses = { business: biz_email }
+          create(:organization_membership, user: user, organization: org, type_of_user: "admin")
+        end
+
+        %w[media devrel gold].each do |level|
+          it "says to contact" do
+            get "/partnerships/#{level}-sponsor"
+            expect(response.body).to include("Contact <a href=\"mailto:#{biz_email}\">#{biz_email}</a> to sign up")
+          end
+        end
+      end
+
       context "when sponsorship exists" do
         let(:org) { create(:organization) }
 
         before do
           create(:organization_membership, user: user, organization: org, type_of_user: "admin")
-          Credit.add_to(org, 1000)
-          sign_in user
         end
 
-        describe "level sponsorships" do
+        describe "level sponsorships + not enough credits" do
+          before do
+            sign_in user
+          end
+
+          it "displays info about an existing sponsorship" do
+            create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.from_now)
+            get "/partnerships/bronze-sponsor"
+            expect(response.body).to include("You are Subscribed as a Bronze Sponsor")
+          end
+        end
+
+        describe "level sponsorships + enough credits" do
+          before do
+            Credit.add_to(org, 1000)
+            sign_in user
+          end
+
           it "displays info about an existing sponsorship" do
             create(:sponsorship, level: :bronze, organization: org, user: user, expires_at: 3.days.from_now)
             get "/partnerships/bronze-sponsor"
@@ -98,16 +130,35 @@ RSpec.describe "Partnerships", type: :request do
         describe "tag sponsorships" do
           let(:ruby) { create(:tag, name: "ruby") }
 
-          it "displays info about an existing sponsorship" do
-            create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.from_now)
-            get "/partnerships/tag-sponsor"
-            expect(response.body).to include("You are Subscribed as the sponsor of #ruby")
+          context "when enough credits" do
+            before do
+              Credit.add_to(org, 1000)
+              sign_in user
+            end
+
+            it "displays info about an existing sponsorship" do
+              create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.from_now)
+              get "/partnerships/tag-sponsor"
+              expect(response.body).to include("You are Subscribed as the sponsor of #ruby")
+            end
+
+            it "doesn't display info about an expired sponsorship" do
+              create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.ago)
+              get "/partnerships/tag-sponsor"
+              expect(response.body).not_to include("You are Subscribed as the sponsor of #ruby")
+            end
           end
 
-          it "doesn't display info about an expired sponsorship" do
-            create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.ago)
-            get "/partnerships/tag-sponsor"
-            expect(response.body).not_to include("You are Subscribed as the sponsor of #ruby")
+          context "when not enough credits" do
+            before do
+              sign_in user
+            end
+
+            it "displays info about an existing sponsorship" do
+              create(:sponsorship, level: :tag, organization: org, user: user, sponsorable: ruby, expires_at: 3.days.from_now)
+              get "/partnerships/tag-sponsor"
+              expect(response.body).to include("You are Subscribed as the sponsor of #ruby")
+            end
           end
         end
       end

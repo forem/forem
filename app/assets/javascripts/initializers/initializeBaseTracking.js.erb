@@ -68,7 +68,7 @@ function eventListening(){
 
 function trackCustomImpressions() {
   setTimeout(function(){
-    var ArticleElement = document.getElementById('article-body');
+    var ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
     var tokenMeta = document.querySelector("meta[name='csrf-token']")
     var isBot = /bot|google|baidu|bing|msn|duckduckbot|teoma|slurp|yandex/i.test(navigator.userAgent) // is crawler
     var windowBigEnough =  window.innerWidth > 1250
@@ -122,7 +122,7 @@ function trackCustomImpressions() {
       var timeOnSiteCounter = 0;
       var timeOnSiteInterval = setInterval(function(){
         timeOnSiteCounter++
-        var ArticleElement = document.getElementById('article-body');
+        var ArticleElement = document.getElementById('article-body') || document.getElementById('comment-article-indicator');
         if (ArticleElement && checkUserLoggedIn()) {
           trackFifteenSecondsOnPage(ArticleElement.dataset.articleId, csrfToken);
         } else {

@@ -257,6 +257,12 @@
             </div>
 
             <div class="form-group">
+              <%= f.label :campaign_articles_require_approval %>
+              <%= f.check_box :campaign_articles_require_approval, checked: SiteConfig.campaign_articles_require_approval %>
+              <div class="alert alert-info">Campaign stories show up on sidebar with approval?</div>
+            </div>
+
+            <div class="form-group">
               <%= f.label :campaign_sidebar_enabled %>
               <%= f.check_box :campaign_sidebar_enabled, checked: SiteConfig.campaign_sidebar_enabled %>
               <div class="alert alert-info">Campaign sidebar enabled or not</div>
@@ -565,12 +571,12 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "Shop",
+                       header: "Monetization",
                        state: "collapse",
-                       target: "shopBodyContainer",
+                       target: "monetizationBodyContainer",
                        expanded: "false"
                      } %>
-          <div id="shopBodyContainer" class="card-body collapse hide" aria-labelledby="shopBodyContainer">
+          <div id="monetizationBodyContainer" class="card-body collapse hide" aria-labelledby="monetizationBodyContainer">
             <div class="form-group">
               <%= f.label :shop_url %>
               <%= f.text_field :shop_url,
@@ -579,9 +585,17 @@
                                placeholder: "Shop url" %>
               <div class="alert alert-info">Used as the shop url of the community</div>
             </div>
+
+            <div class="form-group">
+              <%= f.label :payment_pointer %>
+              <%= f.text_field :payment_pointer,
+                               class: "form-control",
+                               value: SiteConfig.payment_pointer,
+                               placeholder: "$pay.somethinglikethis.co/value" %>
+              <div class="alert alert-info">Used for site-wide web monetization (<a href="https://github.com/thepracticaldev/dev.to/pull/6345">experimental</a>)</div>
+             </div>
           </div>
         </div>
-
         <% if current_user.has_role?(:single_resource_admin, Config) %>
           <div class="card mt-3">
             <div class="card-header">Confirm and Submit</div>

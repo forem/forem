@@ -164,6 +164,7 @@
       box-shadow: 0px 0px 40px rgba(0, 0, 0, 0.5);
       height: 130px;
       background: $black;
+      margin: auto;
 
       @media screen and (min-width: 830px) {
         height: inherit;
@@ -178,6 +179,7 @@
       bottom: 0;
       left: 0;
       right: 0;
+      margin: auto;
 
       @media screen and (min-width: 830px) {
         height: 75px;

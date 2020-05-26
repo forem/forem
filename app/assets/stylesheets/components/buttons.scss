@@ -47,6 +47,7 @@
   color: var(--color);
 
   &[href]:hover,
+  &[href]:focus,
   &:hover:enabled,
   &:active:enabled,
   &:focus:enabled {

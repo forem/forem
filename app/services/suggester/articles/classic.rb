@@ -7,14 +7,16 @@ module Suggester
 
       def initialize(input = nil, options = {})
         @input = input
-        @not_ids = options[:not_ids]
+        @not_ids = options[:not_ids] || []
       end
 
       def get(num = 1)
         articles = if rand(8) == 1
                      random_high_quality_articles(num)
                    else
-                     qualifying_articles(random_supported_tag_names).where.not(id: not_ids).compact.sample(num)
+                     qualifying_ids = qualifying_articles(random_supported_tag_names)
+                     lookup_ids = qualifying_ids - not_ids
+                     Article.where(id: lookup_ids).limit(num)
                    end
         articles = random_high_quality_articles(num) if articles.empty?
         articles
@@ -22,14 +24,14 @@ module Suggester
 
       def qualifying_articles(tag_names)
         tag_name = tag_names.sample
-        Rails.cache.fetch("classic-article-for-tag-#{tag_name}}", expires_in: 90.minutes) do
+        Rails.cache.fetch("classic-article-ids-for-tag-#{tag_name}", expires_in: 90.minutes) do
           Article.published.cached_tagged_with(tag_name).
             includes(:user).
             limited_column_select.
             where(featured: true).
             where("positive_reactions_count > ?", MIN_REACTION_COUNT).
             where("published_at > ?", 10.months.ago).
-            order(Arel.sql("RANDOM()"))
+            order(Arel.sql("RANDOM()")).pluck(:id)
         end
       end
 
