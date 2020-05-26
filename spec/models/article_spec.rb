@@ -650,31 +650,31 @@ RSpec.describe Article, type: :model do
     end
 
     it "returns article with title preamble" do
-      articles = described_class.search_optimized_title_preamble
+      articles = described_class.search_optimized
       expect(articles.first[0]).to eq(top_article.path)
       expect(articles.first[1]).to eq(top_article.search_optimized_title_preamble)
     end
 
     it "does not return article without preamble" do
-      articles = described_class.search_optimized_title_preamble
+      articles = described_class.search_optimized
       new_article = create(:article)
       expect(articles.flatten).not_to include(new_article.path)
     end
 
     it "does return multiple articles with preamble ordered by updated_at" do
       new_article = create(:article, search_optimized_title_preamble: "Testerino")
-      articles = described_class.search_optimized_title_preamble
+      articles = described_class.search_optimized
       expect(articles.first[1]).to eq(new_article.search_optimized_title_preamble)
       expect(articles.second[1]).to eq(top_article.search_optimized_title_preamble)
     end
 
     it "returns articles ordered by organic_page_views_count by tag" do
-      articles = described_class.search_optimized_title_preamble("greatalicious")
+      articles = described_class.search_optimized("greatalicious")
       expect(articles.first[0]).to eq(top_article.path)
     end
 
     it "returns nothing if no tagged articles" do
-      articles = described_class.search_optimized_title_preamble("godsdsdsdsgoo")
+      articles = described_class.search_optimized("godsdsdsdsgoo")
       expect(articles).to be_empty
     end
   end

@@ -212,7 +212,7 @@ class Article < ApplicationRecord
     end
   end
 
-  def self.search_optimized_title_preamble(tag = nil)
+  def self.search_optimized(tag = nil)
     relation = Article.published.
       order(updated_at: :desc).
       where.not(search_optimized_title_preamble: nil).

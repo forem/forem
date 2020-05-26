@@ -60,7 +60,7 @@
       <% end %>
     <% end %>
     <% unless user_signed_in? %>
-      <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}-xoxo", expires_in: 18.hours) do %>
+      <% cache("seo-boostable-posts-homepage-#{params[:timeframe]}", expires_in: 18.hours) do %>
         <% boostable_posts = Article.seo_boostable(nil, Timeframer.new(params[:timeframe]).datetime) %>
         <% if boostable_posts.present? %>
           <div class="widget">
@@ -77,7 +77,7 @@
           </div>
         <% end %>
         <% recent_preamble_optimized_posts = Article.search_optimized_title_preamble(nil) %>
-        <% if recent_preamble_optimized_posts.present? %>
+        <% if params[:timeframe].blank? && recent_preamble_optimized_posts.present? %>
           <div class="widget">
             <header>
               <h4>recently queried</h4>
