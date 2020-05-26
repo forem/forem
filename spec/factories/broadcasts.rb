@@ -59,7 +59,7 @@ FactoryBot.define do
     factory :download_app_broadcast do
       title          { "Welcome Notification: download_app" }
       type_of        { "Welcome" }
-      processed_html { "Sloan here, with one last tip! 👋  Have you downloaded the DEV mobile app yet? Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all of your favorite DEV content on the go!" }
+      processed_html { "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile app yet? Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all of your favorite DEV content on the go!" }
     end
   end
 end
