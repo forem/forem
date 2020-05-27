@@ -45,6 +45,7 @@ module Broadcasts
         return if user_is_following_tags? || received_notification?(customize_feed_broadcast) || user.created_at > 3.days.ago
 
         Notification.send_welcome_notification(user.id, customize_feed_broadcast.id)
+        @notification_enqueued = true
       end
 
       def send_ux_customization_notification
