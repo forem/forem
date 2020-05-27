@@ -5,7 +5,7 @@ import ModalBackground from './components/ModalBackground';
 import Modal from './components/Modal';
 import AllListings from './components/AllListings';
 import NextPageButton from './components/NextPageButton';
-import ClassifiedFilters from './components/ClassifiedFilters';
+import ListingFilters from './components/ListingFilters';
 import {
   LISTING_PAGE_SIZE,
   MATCH_LISTING,
@@ -33,7 +33,7 @@ export class Listings extends Component {
 
   componentWillMount() {
     const params = getQueryParams();
-    const container = document.getElementById('classifieds-index-container');
+    const container = document.getElementById('listings-index-container');
     const category = container.dataset.category || '';
     const allCategories = JSON.parse(container.dataset.allcategories || []);
     let tags = [];
@@ -57,10 +57,10 @@ export class Listings extends Component {
       document.body.classList.add('modal-open');
     }
 
-    this.debouncedClassifiedListingSearch = debounceAction(
-      this.handleQuery.bind(this),
-      { time: 150, config: { leading: true } },
-    );
+    this.debouncedListingSearch = debounceAction(this.handleQuery.bind(this), {
+      time: 150,
+      config: { leading: true },
+    });
 
     this.setState({
       query,
@@ -235,7 +235,7 @@ export class Listings extends Component {
   };
 
   /**
-   * Call search API for ClassifiedListings
+   * Call search API for Listings
    *
    * @param {string} query - The search term
    * @param {string} tags - The tags selected by the user
@@ -248,21 +248,21 @@ export class Listings extends Component {
     const { page } = this.state;
     const dataHash = {
       category,
-      classified_listing_search: query,
+      listing_search: query,
       page,
       per_page: LISTING_PAGE_SIZE,
       tags,
       tag_boolean_mode: 'all',
     };
 
-    const responsePromise = fetchSearch('classified_listings', dataHash);
+    const responsePromise = fetchSearch('listings', dataHash);
     return responsePromise.then((response) => {
-      const classifiedListings = response.result;
-      const fullListings = updateListings(classifiedListings);
+      const listings = response.result;
+      const fullListings = updateListings(listings);
       this.setState({
         listings: fullListings,
         initialFetch: false,
-        showNextPageButton: classifiedListings.length === LISTING_PAGE_SIZE,
+        showNextPageButton: listings.length === LISTING_PAGE_SIZE,
       });
       this.setLocation(query, tags, category, slug);
     });
@@ -293,12 +293,12 @@ export class Listings extends Component {
         {shouldRenderModal && (
           <ModalBackground onClick={this.handleCloseModal} />
         )}
-        <ClassifiedFilters
+        <ListingFilters
           categories={allCategories}
           category={category}
           onSelectCategory={this.selectCategory}
           message={message}
-          onKeyUp={this.debouncedClassifiedListingSearch}
+          onKeyUp={this.debouncedListingSearch}
           onClearQuery={this.clearQuery}
           onRemoveTag={this.removeTag}
           tags={tags}
