@@ -16,7 +16,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
     click_link("Check it out")
 
     wait_for_javascript
-    expect(page.body).to have_text("thanks i guess")
+    expect(page).to have_text("thanks i guess")
   end
 
   it "shows 1 notification and disappear after clicking it" do
