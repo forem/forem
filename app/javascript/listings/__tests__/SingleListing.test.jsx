@@ -59,12 +59,12 @@ describe('<SingleListing />', () => {
         isOpen={false}
       />,
     );
-    expect(context.find('.single-classified-listing').exists()).toBeTruthy();
+    expect(context.find('.single-listing').exists()).toBeTruthy();
 
     it('for listing title', () => {
       expect(
         context
-          .find('.single-classified-listing-header')
+          .find('.single-listing-header')
           .at(0)
           .childAt(0)
           .childAt(0)
@@ -73,35 +73,26 @@ describe('<SingleListing />', () => {
     });
 
     it('for listing tags', () => {
-      expect(
-        context.find('.single-classified-listing-tags').childAt(0).text(),
-      ).toEqual(listing.tags[0]);
+      expect(context.find('.single-listing-tags').childAt(0).text()).toEqual(
+        listing.tags[0],
+      );
     });
 
     it('for listing category', () => {
       expect(
-        context
-          .find('.single-classified-listing-author-info')
-          .childAt(0)
-          .text(),
+        context.find('.single-listing-author-info').childAt(0).text(),
       ).toEqual(listing.category);
     });
 
     it('for listing location', () => {
       expect(
-        context
-          .find('.single-classified-listing-author-info')
-          .childAt(1)
-          .text(),
+        context.find('.single-listing-author-info').childAt(1).text(),
       ).toEqual(`・${listing.location}`);
     });
 
     it('for listing author', () => {
       expect(
-        context
-          .find('.single-classified-listing-author-info')
-          .childAt(3)
-          .text(),
+        context.find('.single-listing-author-info').childAt(3).text(),
       ).toEqual(listing.author.name);
     });
   });

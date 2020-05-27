@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ClassifiedFilters /> Should match the snapshot 1`] = `
+exports[`<ListingFilters /> Should match the snapshot 1`] = `
 <div
-  class="classified-filters"
-  id="classified-filters"
+  class="listing-filters"
+  id="listing-filters"
 >
   <div
-    class="classified-filters-categories"
+    class="listing-filters-categories"
   >
     <a
       data-no-instant={true}
@@ -47,14 +47,14 @@ exports[`<ClassifiedFilters /> Should match the snapshot 1`] = `
       </a>
     </section>
     <a
-      class="classified-create-link"
+      class="listing-create-link"
       href="/listings/new"
       id="listings-new-link"
     >
       Create a Listing
     </a>
     <a
-      class="classified-create-link"
+      class="listing-create-link"
       href="/listings/dashboard"
       id="listings-dashboard-link"
     >
@@ -62,8 +62,8 @@ exports[`<ClassifiedFilters /> Should match the snapshot 1`] = `
     </a>
   </div>
   <div
-    class="classified-filters-tags"
-    id="classified-filters-tags"
+    class="listing-filters-tags"
+    id="listing-filters-tags"
   >
     <input
       autoComplete="off"
@@ -74,7 +74,7 @@ exports[`<ClassifiedFilters /> Should match the snapshot 1`] = `
       type="text"
     />
     <button
-      class="classified-search-clear"
+      class="listing-search-clear"
       id="clear-query-button"
       onClick={[Function]}
       type="button"
@@ -83,7 +83,7 @@ exports[`<ClassifiedFilters /> Should match the snapshot 1`] = `
     </button>
     <section>
       <span
-        class="classified-tag"
+        class="listing-tag"
         id="selected-tag-1"
       >
         <a
@@ -110,7 +110,7 @@ exports[`<ClassifiedFilters /> Should match the snapshot 1`] = `
         </a>
       </span>
       <span
-        class="classified-tag"
+        class="listing-tag"
         id="selected-tag-2"
       >
         <a
@@ -137,7 +137,7 @@ exports[`<ClassifiedFilters /> Should match the snapshot 1`] = `
         </a>
       </span>
       <span
-        class="classified-tag"
+        class="listing-tag"
         id="selected-tag-3"
       >
         <a

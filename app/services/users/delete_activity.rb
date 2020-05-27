@@ -23,7 +23,7 @@ module Users
       user.poll_votes.delete_all
       user.rating_votes.delete_all
       user.response_templates.delete_all
-      user.classified_listings.destroy_all
+      user.listings.destroy_all
       delete_feedback_messages(user)
     end
 

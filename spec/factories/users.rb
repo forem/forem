@@ -21,6 +21,8 @@ FactoryBot.define do
     checked_terms_and_conditions { true }
     signup_cta_variant           { "navbar_basic" }
     email_digest_periodic        { false }
+    bg_color_hex                 { Faker::Color.hex_color }
+    text_color_hex               { Faker::Color.hex_color }
 
     trait :with_identity do
       transient { identities { Authentication::Providers.available } }

@@ -439,9 +439,9 @@ class Tags extends Component {
             this.textArea = t;
             return this.textArea;
           }}
-          className={`${`${fieldClassName  } ${  classPrefix}`}__tags`}
-          name="classified_listing[tag_list]"
-          placeholder={`Add up to ${maxTags} tags...`}
+          className={`${classPrefix}__tags`}
+          name="listing[tag_list]"
+          placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
           autoComplete="off"
           value={defaultValue}
           onInput={this.handleInput}

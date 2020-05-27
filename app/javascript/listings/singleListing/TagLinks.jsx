@@ -2,13 +2,13 @@ import PropTypes from 'prop-types';
 import { h } from 'preact';
 
 const TagLinks = ({ tags, onClick }) => (
-  <div className="single-classified-listing-tags">
+  <div className="single-listing-tags">
     {tags.length
-      ? tags.map(tag => {
+      ? tags.map((tag) => {
           return (
             <a
               href={`/listings?t=${tag}`}
-              onClick={e => onClick(e, tag)}
+              onClick={(e) => onClick(e, tag)}
               data-no-instant
             >
               {tag}

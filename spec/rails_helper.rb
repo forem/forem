@@ -156,14 +156,14 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   # Explicitly set a seed and time to ensure deterministic Percy snapshots.
-  config.around(:each, percy: true) do |example|
-    Timecop.freeze("2020-05-13T10:00:00Z")
-    prev_random_seed = Faker::Config.random
-    Faker::Config.random = Random.new(42)
+  # config.around(:each, percy: true) do |example|
+  #   Timecop.freeze("2020-05-13T10:00:00Z")
+  #   prev_random_seed = Faker::Config.random
+  #   Faker::Config.random = Random.new(42)
 
-    example.run
+  #   example.run
 
-    Faker::Config.random = prev_random_seed
-    Timecop.return
-  end
+  #   Faker::Config.random = prev_random_seed
+  #   Timecop.return
+  # end
 end

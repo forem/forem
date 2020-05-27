@@ -100,7 +100,10 @@
     --indicator-outline: var(--header-bg-current);
 
     color: var(--header-icons-color-hover);
-    background: var(--header-bg-current);
+    background: var(--header-bg-current) !important;
+    .crayons-indicator {
+      display: none;
+    }
   }
 }
 

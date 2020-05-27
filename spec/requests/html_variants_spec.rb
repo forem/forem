@@ -58,7 +58,7 @@ RSpec.describe "HtmlVariants", type: :request do
           name: "New post",
           html: "Yo ho ho", tag_list: "yoyo",
           published: true,
-          group: "article_show_sidebar_cta"
+          group: "article_show_below_article_cta"
         }
       }
       expect(HtmlVariant.all.size).to eq(1)

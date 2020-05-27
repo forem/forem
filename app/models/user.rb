@@ -59,7 +59,7 @@ class User < ApplicationRecord
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
-  has_many :classified_listings, dependent: :destroy
+  has_many :listings, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
@@ -143,7 +143,6 @@ class User < ApplicationRecord
   validate :can_send_confirmation_email
   validate :update_rate_limit
 
-  alias_attribute :positive_reactions_count, :reactions_count
   alias_attribute :public_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
 
@@ -461,6 +460,10 @@ class User < ApplicationRecord
 
   def rate_limiter
     RateLimitChecker.new(self)
+  end
+
+  def flipper_id
+    "User:#{id}"
   end
 
   private

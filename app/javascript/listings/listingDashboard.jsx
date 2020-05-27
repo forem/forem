@@ -14,7 +14,7 @@ export class ListingDashboard extends Component {
 
   componentDidMount() {
     const t = this;
-    const container = document.getElementById('classifieds-listings-dashboard');
+    const container = document.getElementById('listings-dashboard');
     let listings = [];
     let orgs = [];
     let orgListings = [];
@@ -38,24 +38,24 @@ export class ListingDashboard extends Component {
       sort,
     } = this.state;
 
-    const isExpired = listing =>
+    const isExpired = (listing) =>
       listing.bumped_at && !listing.published
         ? (Date.now() - new Date(listing.bumped_at.toString()).getTime()) /
             (1000 * 60 * 60 * 24) >
           30
         : false;
-    const isDraft = listing =>
+    const isDraft = (listing) =>
       listing.bumped_at ? !isExpired(listing) && !listing.published : true;
 
     const filterListings = (listingsToFilter, selectedFilter) => {
       if (selectedFilter === 'Draft') {
-        return listingsToFilter.filter(listing => isDraft(listing));
+        return listingsToFilter.filter((listing) => isDraft(listing));
       }
       if (selectedFilter === 'Expired') {
-        return listingsToFilter.filter(listing => isExpired(listing));
+        return listingsToFilter.filter((listing) => isExpired(listing));
       }
       if (selectedFilter === 'Active') {
-        return listingsToFilter.filter(listing => listing.published === true);
+        return listingsToFilter.filter((listing) => listing.published === true);
       }
       return listingsToFilter;
     };
@@ -84,7 +84,7 @@ export class ListingDashboard extends Component {
         displayedListings = filterListings(userListings, selectedFilter).sort(
           customSort,
         );
-        return displayedListings.map(listing => (
+        return displayedListings.map((listing) => (
           <ListingRow listing={listing} />
         ));
       }
@@ -92,7 +92,7 @@ export class ListingDashboard extends Component {
         organizationListings,
         selectedFilter,
       ).sort(customSort);
-      return displayedListings.map(listing =>
+      return displayedListings.map((listing) =>
         listing.organization_id === selected ? (
           <ListingRow listing={listing} />
         ) : (
@@ -101,17 +101,20 @@ export class ListingDashboard extends Component {
       );
     };
 
-    const setStateOnKeyPress = (event, state) => (event.key === 'Enter' || event.key === ' ') && this.setState(state)
+    const setStateOnKeyPress = (event, state) =>
+      (event.key === 'Enter' || event.key === ' ') && this.setState(state);
 
     const filters = ['All', 'Active', 'Draft', 'Expired'];
-    const filterButtons = filters.map(f => (
+    const filterButtons = filters.map((f) => (
       <span
-        onClick={event => {
+        onClick={(event) => {
           this.setState({ filter: event.target.textContent });
         }}
         className={`rounded-btn ${filter === f ? 'active' : ''}`}
         role="button"
-        onKeyPress={event => setStateOnKeyPress(event, { filter: event.target.textContent })}
+        onKeyPress={(event) =>
+          setStateOnKeyPress(event, { filter: event.target.textContent })
+        }
         tabIndex="0"
       >
         {f}
@@ -122,10 +125,10 @@ export class ListingDashboard extends Component {
       <div className="dashboard-listings-actions">
         <div className="listings-dashboard-filter-buttons">{filterButtons}</div>
         <select
-          onChange={event => {
+          onChange={(event) => {
             this.setState({ sort: event.target.value });
           }}
-          onBlur={event => {
+          onBlur={(event) => {
             this.setState({ sort: event.target.value });
           }}
         >
@@ -137,13 +140,15 @@ export class ListingDashboard extends Component {
       </div>
     );
 
-    const orgButtons = orgs.map(org => (
+    const orgButtons = orgs.map((org) => (
       <span
         onClick={() => this.setState({ selectedListings: org.id })}
         className={`rounded-btn ${selectedListings === org.id ? 'active' : ''}`}
         role="button"
         tabIndex="0"
-        onKeyPress={event => setStateOnKeyPress(event, { selectedListings: org.id })}
+        onKeyPress={(event) =>
+          setStateOnKeyPress(event, { selectedListings: org.id })
+        }
       >
         {org.name}
       </span>
@@ -151,18 +156,13 @@ export class ListingDashboard extends Component {
 
     const listingLength = (selected, userListings, organizationListings) => {
       return selected === 'user' ? (
-        <h4>
-          Listings Made:
-          {' '}
-          {userListings.length}
-        </h4>
+        <h4>Listings Made: {userListings.length}</h4>
       ) : (
         <h4>
-          Listings Made:
-          {' '}
+          Listings Made:{' '}
           {
             organizationListings.filter(
-              listing => listing.organization_id === selected,
+              (listing) => listing.organization_id === selected,
             ).length
           }
         </h4>
@@ -171,16 +171,14 @@ export class ListingDashboard extends Component {
 
     const creditCount = (selected, userCreds, organizations) => {
       return selected === 'user' ? (
-        <h4>
-          Credits Available:
-          {' '}
-          {userCreds}
-        </h4>
+        <h4>Credits Available: {userCreds}</h4>
       ) : (
         <h4>
-          Credits Available:
-          {' '}
-          {organizations.find(org => org.id === selected).unspent_credits_count}
+          Credits Available:{' '}
+          {
+            organizations.find((org) => org.id === selected)
+              .unspent_credits_count
+          }
         </h4>
       );
     };
@@ -194,7 +192,9 @@ export class ListingDashboard extends Component {
           }`}
           role="button"
           tabIndex="0"
-          onKeyPress={event =>setStateOnKeyPress(event, { selectedListings: 'user' })}
+          onKeyPress={(event) =>
+            setStateOnKeyPress(event, { selectedListings: 'user' })
+          }
         >
           Personal
         </span>

@@ -20,7 +20,7 @@ module BadgeRewarder
   def self.award_beloved_comment_badges
     # ID 3 is the proper ID in prod. We should change in future to ENV var.
     badge_id = Badge.find_by(slug: "beloved-comment")&.id || 3
-    Comment.where("positive_reactions_count > ?", 24).find_each do |comment|
+    Comment.where("public_reactions_count > ?", 24).find_each do |comment|
       message = "You're famous! [This is the comment](https://#{ApplicationConfig['APP_DOMAIN']}#{comment.path}) for which you are being recognized. 😄"
       achievement = BadgeAchievement.create(
         user_id: comment.user_id,

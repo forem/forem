@@ -108,6 +108,6 @@ function reactions(comment) {
     return '<button style="background:white" class="reaction-button '+ reactedClass +'" id="button-for-comment-'+comment.id+'" data-comment-id="'+comment.id+'">\
               <img src="<%= asset_path("favorite-heart-outline-button.svg") %>" alt="Favorite heart outline button">\
               <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button">\
-              <span class="reactions-count" id="reactions-count-'+comment.id+'">'+comment.positive_reactions_count+'</span></button>';
+              <span class="reactions-count" id="reactions-count-'+comment.id+'">'+comment.public_reactions_count+'</span></button>';
   }
 }

@@ -16,7 +16,7 @@
       <button class="btn btn-sm btn-success" data-action="article#increaseFeaturedNumber">Boost</button>
       <a class="btn btn-sm btn-secondary" href="/internal/users/<%= article.user_id %>" target="_blank" rel="noopener">Manage User</a>
       <a href="/internal/users/<%= article.user_id %>" class="badge badge-light">@<%= article.user&.username %></a>
-      <span class="badge badge-light">❤️ <%= article.positive_reactions_count %> 💬 <%= article.comments_count %></span>
+      <span class="badge badge-light">❤️ <%= article.public_reactions_count %> 💬 <%= article.comments_count %></span>
       <span class="badge badge-light">
         <% if article.published_from_feed? && !article.published? %>
           RSS Import <%= article.created_at.strftime("%b %d, %Y") %>
@@ -29,7 +29,7 @@
         <% end %>
       </span>
       <% article.decorate.cached_tag_list_array.each do |tag| %>
-        <a  class="badge badge-secondary" href='/t/<%= tag %>'>#<%= tag %></a>
+        <a class="badge badge-secondary" href='/t/<%= tag %>'>#<%= tag %></a>
       <% end %>
 
     </div>

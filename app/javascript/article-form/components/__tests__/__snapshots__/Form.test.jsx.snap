@@ -150,14 +150,14 @@ exports[`<Form /> v2 renders properly 1`] = `
       >
         <input
           autoComplete="off"
-          class="crayons-textfield crayons-textfield--ghost ff-accent crayons-article-form__tags"
+          class="crayons-article-form__tags"
           id="tag-input"
-          name="classified_listing[tag_list]"
+          name="listing[tag_list]"
           onBlur={[Function]}
           onFocus={null}
           onInput={[Function]}
           onKeyDown={[Function]}
-          placeholder="Add up to 4 tags..."
+          placeholder="4 tags max, comma separated, no spaces or special characters"
           ref={[Function]}
           type="text"
           value="javascript, career"

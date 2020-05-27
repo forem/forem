@@ -4,11 +4,11 @@ exports[`<SingleListing /> should load a single user listing 1`] = `
 preact-render-spy (1 nodes)
 -------
 <div
-  class="single-classified-listing"
-  id="single-classified-listing-22"
+  class="single-listing"
+  id="single-listing-22"
 >
   <div class="listing-content">
-    <h3 class="single-classified-listing-header">
+    <h3 class="single-listing-header">
       <a
         href="/listings/misc/illo-iure-quos-perspiciatis-5hk7"
         data-no-instant={true}
@@ -37,11 +37,11 @@ preact-render-spy (1 nodes)
         </div>
       </div>
     </h3>
-    <div class="single-classified-listing-body">
+    <div class="single-listing-body">
       <p>Eius et ullam. Dolores et qui. Quis <strong>qui</strong> omnis.</p>
       
     </div>
-    <div class="single-classified-listing-tags">
+    <div class="single-listing-tags">
       <a
         href="/listings?t=go"
         onClick={[Function onClick]}
@@ -57,7 +57,7 @@ preact-render-spy (1 nodes)
         git
       </a>
     </div>
-    <div class="single-classified-listing-author-info">
+    <div class="single-listing-author-info">
       <a
         href="/listings/misc"
         onClick={[Function onClick]}

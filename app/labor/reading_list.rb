@@ -14,7 +14,7 @@ class ReadingList
   end
 
   def cached_ids_of_articles
-    Rails.cache.fetch("reading_list_ids_of_articles_#{user.id}_#{user.positive_reactions_count}") do
+    Rails.cache.fetch("reading_list_ids_of_articles_#{user.id}_#{user.public_reactions_count}") do
       ids_of_articles
     end
   end

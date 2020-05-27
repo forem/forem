@@ -13,7 +13,7 @@ exports[`<BodyMarkdown /> Should match the snapshot 1`] = `
       class="listingform__input listingform__bodymarkdown"
       id="body_markdown"
       maxLength="400"
-      name="classified_listing[body_markdown]"
+      name="listing[body_markdown]"
       onInput={[Function]}
       placeholder="400 characters max, 12 line break max, no images allowed, *markdown is encouraged*"
     />

@@ -10,7 +10,7 @@ const commonProps = {
 };
 
 export default {
-  title: 'Components/Modals',
+  title: '3_Components/Modals',
   decorator: [withKnobs],
 };
 

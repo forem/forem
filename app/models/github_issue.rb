@@ -11,6 +11,7 @@ class GithubIssue < ApplicationRecord
 
   validates :category, inclusion: { in: CATEGORIES }
   validates :url, presence: true, length: { maximum: 400 }, format: API_URL_REGEXP
+  validates :url, uniqueness: true
 
   class << self
     def find_or_fetch(url)
