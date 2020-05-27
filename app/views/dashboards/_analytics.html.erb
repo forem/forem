@@ -2,7 +2,7 @@
 
 <div class="dashboard-analytics-header-wrapper">
   <div class="dashboard-analytics-header">
-    <span><%= number_with_delimiter(@articles.sum(&:positive_reactions_count), delimeter: ",") %></span>
+    <span><%= number_with_delimiter(@articles.sum(&:public_reactions_count), delimeter: ",") %></span>
     <div class="dashboard-analytics-sub-indicator">
       <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" /><img src="<%= asset_path "emoji/emoji-one-unicorn.png" %>" /><img src="<%= asset_path "emoji/emoji-one-bookmark.png" %>" />
       Total Post Reactions

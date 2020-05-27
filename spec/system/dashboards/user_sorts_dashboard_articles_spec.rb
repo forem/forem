@@ -2,9 +2,9 @@ require "rails_helper"
 
 RSpec.describe "Sorting Dashboard Articles", type: :system, js: true do
   let(:user) { create(:user) }
-  let(:article1) { create(:article, user_id: user.id, published_at: 10.minutes.ago, created_at: 1.day.ago, positive_reactions_count: 5, page_views_count: 0, comments_count: 100) }
-  let(:article2) { create(:article, user_id: user.id, published_at: 1.minute.ago, created_at: 2.days.ago, positive_reactions_count: 1, page_views_count: 10, comments_count: 0) }
-  let(:article3) { create(:article, user_id: user.id, published_at: 5.minutes.ago, created_at: 3.days.ago, positive_reactions_count: 0, page_views_count: 1000, comments_count: 50) }
+  let(:article1) { create(:article, user_id: user.id, published_at: 10.minutes.ago, created_at: 1.day.ago, public_reactions_count: 5, page_views_count: 0, comments_count: 100) }
+  let(:article2) { create(:article, user_id: user.id, published_at: 1.minute.ago, created_at: 2.days.ago, public_reactions_count: 1, page_views_count: 10, comments_count: 0) }
+  let(:article3) { create(:article, user_id: user.id, published_at: 5.minutes.ago, created_at: 3.days.ago, public_reactions_count: 0, page_views_count: 1000, comments_count: 50) }
   let(:articles) { [article1, article2, article3] }
 
   let(:article_with_comments_count_of) do
@@ -45,7 +45,7 @@ RSpec.describe "Sorting Dashboard Articles", type: :system, js: true do
     test_article_order.call("/dashboard?sort=views-asc", [article1, article2, article3])
   end
 
-  it "shows articles sorted by positive_reactions_count ASC" do
+  it "shows articles sorted by public_reactions_count ASC" do
     test_article_order.call("/dashboard?sort=reactions-asc", [article3, article2, article1])
   end
 

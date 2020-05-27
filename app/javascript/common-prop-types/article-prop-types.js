@@ -29,7 +29,7 @@ export const articlePropTypes = PropTypes.shape({
   }),
   organization: organizationPropType,
   highlight: articleSnippetResultPropTypes,
-  positive_reactions_count: PropTypes.number,
+  public_reactions_count: PropTypes.number,
   reactions_count: PropTypes.number,
   comments_count: PropTypes.number,
   reading_time: PropTypes.number,

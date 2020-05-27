@@ -496,6 +496,12 @@ a.header-link {
       .article-body-image-wrapper img {
         max-width: 100%;
       }
+
+      blockquote {
+        border-left: calc(0.2vw + 2px) solid $dark-gray;
+        padding: 0.1% 6% 0.1% 1%;
+        margin-left: 0.5rem;
+      }
     }
 
     // this css is added to ignore the code under highlight class and use default bg-color and color.

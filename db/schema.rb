@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_21_153435) do
+ActiveRecord::Schema.define(version: 2020_05_26_151807) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -163,6 +163,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["badge_id", "user_id"], name: "index_badge_achievements_on_badge_id_and_user_id", unique: true
     t.index ["badge_id"], name: "index_badge_achievements_on_badge_id"
     t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
     t.index ["user_id"], name: "index_badge_achievements_on_user_id"
@@ -297,6 +298,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["chat_channel_id", "user_id"], name: "index_chat_channel_memberships_on_chat_channel_id_and_user_id", unique: true
     t.index ["chat_channel_id"], name: "index_chat_channel_memberships_on_chat_channel_id"
     t.index ["user_id", "chat_channel_id"], name: "index_chat_channel_memberships_on_user_id_and_chat_channel_id"
     t.index ["user_id"], name: "index_chat_channel_memberships_on_user_id"
@@ -312,6 +314,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "slug"
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listing_categories", force: :cascade do |t|
@@ -361,6 +364,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["organization_id"], name: "index_collections_on_organization_id"
+    t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
@@ -414,6 +418,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.datetime "run_at"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["file_name"], name: "index_data_update_scripts_on_file_name", unique: true
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -504,6 +509,22 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.index ["participant_type", "participant_id", "experiment"], name: "index_field_test_memberships_on_participant", unique: true
   end
 
+  create_table "flipper_features", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "key", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_flipper_features_on_key", unique: true
+  end
+
+  create_table "flipper_gates", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "feature_key", null: false
+    t.string "key", null: false
+    t.datetime "updated_at", null: false
+    t.string "value"
+    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+  end
+
   create_table "follows", id: :serial, force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"
@@ -526,6 +547,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "processed_html"
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["url"], name: "index_github_issues_on_url", unique: true
   end
 
   create_table "github_repos", force: :cascade do |t|
@@ -545,6 +567,8 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "url"
     t.integer "user_id"
     t.integer "watchers_count"
+    t.index ["github_id_code"], name: "index_github_repos_on_github_id_code", unique: true
+    t.index ["url"], name: "index_github_repos_on_url", unique: true
   end
 
   create_table "html_variant_successes", force: :cascade do |t|
@@ -744,6 +768,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
 
