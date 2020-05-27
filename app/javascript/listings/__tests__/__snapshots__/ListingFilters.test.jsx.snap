@@ -18,29 +18,26 @@ exports[`<ListingFilters /> Should match the snapshot 1`] = `
     </a>
     <section>
       <a
-        Key={20}
         class="selected"
         data-no-instant={true}
         href="/listings/clojure"
-        id="category-link-20"
+        id="category-link-clojure"
         onClick={[Function]}
       >
         Clojure
       </a>
       <a
-        Key={21}
         data-no-instant={true}
         href="/listings/illa-iara-ques-htyashsayas-6kj8"
-        id="category-link-21"
+        id="category-link-illa-iara-ques-htyashsayas-6kj8"
         onClick={[Function]}
       >
         Go
       </a>
       <a
-        Key={22}
         data-no-instant={true}
         href="/listings/alle-bece-tzehj-htyashsayas-7jh9"
-        id="category-link-22"
+        id="category-link-alle-bece-tzehj-htyashsayas-7jh9"
         onClick={[Function]}
       >
         csharp
@@ -84,83 +81,77 @@ exports[`<ListingFilters /> Should match the snapshot 1`] = `
     <section>
       <span
         class="listing-tag"
-        id="selected-tag-1"
+        id="selected-tag-clojure"
       >
         <a
           class="tag-name"
           data-no-instant={true}
-          href="/listings?tags="
-          onClick={[Function]}
+          href="/listings?t=clojure"
         >
-          <span>
-            Object {
-              "id": 1,
-              "tag": "clojure",
-            }
+          <span
+            role="button"
+            tabIndex="0"
+          >
+            clojure
           </span>
-          <button
-            class="tag-close"
-            data-no-instant={true}
+          <span
+            onClick={[Function]}
             onKeyPress={[Function]}
-            t={true}
-            type="button"
+            role="button"
+            tabIndex="0"
           >
             ×
-          </button>
+          </span>
         </a>
       </span>
       <span
         class="listing-tag"
-        id="selected-tag-2"
+        id="selected-tag-java"
       >
         <a
           class="tag-name"
           data-no-instant={true}
-          href="/listings?tags="
-          onClick={[Function]}
+          href="/listings?t=java"
         >
-          <span>
-            Object {
-              "id": 2,
-              "tag": "java",
-            }
+          <span
+            role="button"
+            tabIndex="0"
+          >
+            java
           </span>
-          <button
-            class="tag-close"
-            data-no-instant={true}
+          <span
+            onClick={[Function]}
             onKeyPress={[Function]}
-            t={true}
-            type="button"
+            role="button"
+            tabIndex="0"
           >
             ×
-          </button>
+          </span>
         </a>
       </span>
       <span
         class="listing-tag"
-        id="selected-tag-3"
+        id="selected-tag-dotnet"
       >
         <a
           class="tag-name"
           data-no-instant={true}
-          href="/listings?tags="
-          onClick={[Function]}
+          href="/listings?t=dotnet"
         >
-          <span>
-            Object {
-              "id": 3,
-              "tag": "dotnet",
-            }
+          <span
+            role="button"
+            tabIndex="0"
+          >
+            dotnet
           </span>
-          <button
-            class="tag-close"
-            data-no-instant={true}
+          <span
+            onClick={[Function]}
             onKeyPress={[Function]}
-            t={true}
-            type="button"
+            role="button"
+            tabIndex="0"
           >
             ×
-          </button>
+          </span>
         </a>
       </span>
     </section>
