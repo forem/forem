@@ -86,9 +86,9 @@ RSpec.describe AnalyticsService, type: :service do
         expect(analytics_service.totals[:reactions][:total]).to eq(1)
       end
 
-      it "returns zero as total if there are no reactions with points" do
+      it "returns zero as total if there are no public category reactions" do
         reaction = create(:reaction, reactable: article)
-        reaction.update_columns(points: 0.0)
+        reaction.update_columns(category: "thumbsdown")
         expect(analytics_service.totals[:reactions][:total]).to eq(0)
       end
 
@@ -241,9 +241,9 @@ RSpec.describe AnalyticsService, type: :service do
         expect(analytics_service.grouped_by_day[date][:reactions][:total]).to eq(1)
       end
 
-      it "returns zero as total if there are no reactions with points" do
+      it "returns zero as total if there are no public category reactions" do
         reaction = create(:reaction, reactable: article)
-        reaction.update_columns(points: 0.0)
+        reaction.update_columns(category: "thumbsdown")
         date = format_date(reaction.created_at)
         analytics_service = described_class.new(user, start_date: date)
         expect(analytics_service.grouped_by_day[date][:reactions][:total]).to eq(0)

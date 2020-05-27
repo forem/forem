@@ -7,7 +7,7 @@ RSpec.describe Notification, type: :model do
   let_it_be_readonly(:user3)           { create(:user) }
   let_it_be_readonly(:organization)    { create(:organization) }
   let_it_be_changeable(:article) do
-    create(:article, :with_notification_subscription, user: user, page_views_count: 4000, positive_reactions_count: 70)
+    create(:article, :with_notification_subscription, user: user, page_views_count: 4000, public_reactions_count: 70)
   end
   let_it_be_readonly(:user_follows_user2) { user.follow(user2) }
   let_it_be_changeable(:comment) { create(:comment, user: user2, commentable: article) }

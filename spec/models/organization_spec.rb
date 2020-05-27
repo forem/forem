@@ -40,6 +40,7 @@ RSpec.describe Organization, type: :model do
       it { is_expected.to validate_length_of(:company_size).is_at_most(7) }
       it { is_expected.to validate_length_of(:story).is_at_most(640) }
       it { is_expected.to validate_length_of(:tech_stack).is_at_most(640) }
+      it { is_expected.to validate_uniqueness_of(:secret).allow_nil }
       it { is_expected.to validate_uniqueness_of(:slug).case_insensitive }
 
       it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
@@ -53,7 +54,21 @@ RSpec.describe Organization, type: :model do
     end
   end
 
-  describe "#after_commit" do
+  context "when callbacks are triggered before save" do
+    it "generates a secret if set to empty string" do
+      organization.secret = ""
+      organization.save
+      expect(organization.reload.secret).not_to eq("")
+    end
+
+    it "generates a secret if set to nil" do
+      organization.secret = nil
+      organization.save
+      expect(organization.reload.secret).not_to be(nil)
+    end
+  end
+
+  context "when callbacks are triggered after commit" do
     it "on update syncs elasticsearch data" do
       article = create(:article, organization: organization)
       sidekiq_perform_enqueued_jobs
@@ -267,12 +282,6 @@ RSpec.describe Organization, type: :model do
     it "returns true if the user has more unspent credits than needed" do
       create_list(:credit, 2, organization: organization, spent: false)
       expect(organization.enough_credits?(1)).to be(true)
-    end
-  end
-
-  describe "#decoarated" do
-    it "returns not fully banished" do
-      expect(organization.decorate.fully_banished?).to eq(false)
     end
   end
 end

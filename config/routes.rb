@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
+      mount Flipper::UI.app(Flipper), at: "feature_flags"
     end
 
     resources :articles, only: %i[index show update]
@@ -405,10 +406,8 @@ Rails.application.routes.draw do
   get "/readinglist/:view" => "reading_list_items#index", :constraints => { view: /archive/ }
 
   get "/feed" => "articles#feed", :as => "feed", :defaults => { format: "rss" }
-  get "/feed/tag/:tag" => "articles#feed",
-      :as => "tag_feed", :defaults => { format: "rss" }
-  get "/feed/:username" => "articles#feed",
-      :as => "user_feed", :defaults => { format: "rss" }
+  get "/feed/tag/:tag" => "articles#feed", :as => "tag_feed", :defaults => { format: "rss" }
+  get "/feed/:username" => "articles#feed", :as => "user_feed", :defaults => { format: "rss" }
   get "/rss" => "articles#feed", :defaults => { format: "rss" }
 
   get "/tag/:tag" => "stories#index"

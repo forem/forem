@@ -51,7 +51,7 @@ function buildArticleHTML(article) {
       flareTag = "<span class='crayons-story__flare-tag' style='background:#5874d9;color:white;'>person</span>"
     }
 
-    var rc = article.positive_reactions_count
+    var rc = article.public_reactions_count
     var reactionsCount = (rc || '0')
     var reactionsDisplay = '';
 
@@ -129,10 +129,10 @@ function buildArticleHTML(article) {
       }
     }
 
-    var readingTimeHTML = '';		
-    if (article.class_name === "Article") {		
-      // we have ` ... || null` for the case article.reading_time is undefined		
-      readingTimeHTML = '<small class="crayons-story__tertiary fs-xs mr-2">'+ ((article.reading_time || null) < 1 ? '1 min' : article.reading_time + ' min') +' read</small>'		
+    var readingTimeHTML = '';
+    if (article.class_name === "Article") {
+      // we have ` ... || null` for the case article.reading_time is undefined
+      readingTimeHTML = '<small class="crayons-story__tertiary fs-xs mr-2">'+ ((article.reading_time || null) < 1 ? '1 min' : article.reading_time + ' min') +' read</small>'
     }
 
     var saveButton = '';

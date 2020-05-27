@@ -77,7 +77,7 @@ module CacheBuster
     end
     TIMEFRAMES.each do |timestamp, interval|
       if Article.published.where("published_at > ?", timestamp).
-          order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
+          order("public_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
         bust("/top/#{interval}")
         bust("/top/#{interval}?i=i")
         bust("/top/#{interval}/?i=i")
@@ -100,7 +100,7 @@ module CacheBuster
       end
       TIMEFRAMES.each do |timestamp, interval|
         if Article.published.where("published_at > ?", timestamp).tagged_with(tag).
-            order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
+            order("public_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
           bust("/top/#{interval}")
           bust("/top/#{interval}?i=i")
           bust("/top/#{interval}/?i=i")

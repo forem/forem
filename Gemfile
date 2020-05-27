@@ -28,7 +28,7 @@ gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them t
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.14" # Client library for easily using the Cloudinary service
-gem "counter_culture", "~> 2.3" # counter_culture provides turbo-charged counter caches that are kept up-to-date
+gem "counter_culture", "~> 2.5" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "ddtrace", "~> 0.35.2" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
@@ -44,6 +44,9 @@ gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.3" # A/B testing
 gem "figaro", "~> 1.2" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
+gem "flipper", "~> 0.17.2" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 0.17.2" # Store Flipper flags in ActiveRecord
+gem "flipper-ui", "~> 0.17.2"
 gem "fog-aws", "~> 3.6" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
@@ -55,7 +58,7 @@ gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X
 gem "httparty", "~> 0.18" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.10" # Create JSON structures via a Builder-style DSL
-gem "jquery-rails", "~> 4.3" #  A gem to automate using jQuery with Rails
+gem "jquery-rails", "~> 4.4" #  A gem to automate using jQuery with Rails
 gem "kaminari", "~> 1.2" # A Scope & Engine based, clean, powerful, customizable and sophisticated paginator
 gem "katex", "~> 0.6.0" # This rubygem enables you to render TeX math to HTML using KaTeX. It uses ExecJS under the hood
 gem "liquid", "~> 4.0" # A secure, non-evaling end user template engine with aesthetic markup
@@ -147,10 +150,10 @@ group :test do
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
   gem "factory_bot_rails", "~> 5.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
-  gem "percy-capybara", "~> 4.0.0" # A tool for visual testing
+  gem "percy-capybara", "~> 4.2.0" # A tool for visual testing
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies
   gem "rspec-retry", "~> 0.6" # retry intermittently failing rspec examples
-  gem "ruby-prof", "~> 1.3", require: false # ruby-prof is a fast code profiler for Ruby
+  gem "ruby-prof", "~> 1.4", require: false # ruby-prof is a fast code profiler for Ruby
   gem "shoulda-matchers", "~> 4.3.0", require: false # Simple one-liner tests for common Rails functionality
   gem "simplecov", "0.17.1", require: false # Code coverage with a powerful configuration library and automatic merging of coverage across test suites
   gem "stackprof", "~> 0.2", require: false, platforms: :ruby # stackprof is a fast sampling profiler for ruby code, with cpu, wallclock and object allocation samplers

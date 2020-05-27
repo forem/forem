@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Notifications::Milestone::Send, type: :service do
   let(:user) { create(:user) }
-  let(:article) { create(:article, user_id: user.id, page_views_count: 4000, positive_reactions_count: 70) }
+  let(:article) { create(:article, user_id: user.id, page_views_count: 4000, public_reactions_count: 70) }
 
   context "when a user has never received a milestone notification" do
     it "sends the appropriate level view milestone notification" do
@@ -25,7 +25,7 @@ RSpec.describe Notifications::Milestone::Send, type: :service do
 
     def mock_previous_reaction_milestone_notification
       send_milestone_notification_reaction
-      article.update_column(:positive_reactions_count, 150)
+      article.update_column(:public_reactions_count, 150)
       send_milestone_notification_reaction
     end
 

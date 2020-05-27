@@ -98,7 +98,7 @@
     </div>
   </div>
 </div>
-<% if @variant_number.to_i == 0 && !user_signed_in? && @article.body_markdown.size > 900 %>
+<% if !user_signed_in? && @article.body_markdown.size > 900 %>
   <% cache("below-article-html-variant-#{rand(20)}", expires_in: 8.hours) do %>
     <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array, "article_show_below_article_cta") %>
     <% if @html_variant %>

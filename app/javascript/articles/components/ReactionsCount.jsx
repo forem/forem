@@ -3,7 +3,7 @@ import { articlePropTypes } from '../../common-prop-types';
 import { Button } from '../../crayons/Button';
 
 export const ReactionsCount = ({ article }) => {
-  const totalReactions = article.positive_reactions_count || 0;
+  const totalReactions = article.public_reactions_count || 0;
   const reactionsSVG = () => (
     <svg
       className="crayons-icon"

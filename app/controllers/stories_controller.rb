@@ -1,7 +1,7 @@
 class StoriesController < ApplicationController
   DEFAULT_HOME_FEED_ATTRIBUTES_FOR_SERIALIZATION = {
     only: %i[
-      title path id user_id comments_count positive_reactions_count organization_id
+      title path id user_id comments_count public_reactions_count organization_id
       reading_time video_thumbnail_url video video_duration_in_minutes language
       experience_level_rating experience_level_rating_distribution cached_user cached_organization
       classified_listing_category_id
@@ -260,7 +260,6 @@ class StoriesController < ApplicationController
     not_found unless @article.user
 
     @article_show = true
-    @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
 
     @user = @article.user
     @organization = @article.organization
@@ -320,7 +319,7 @@ class StoriesController < ApplicationController
   def stories_by_timeframe
     if %w[week month year infinity].include?(params[:timeframe])
       @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
-        order("positive_reactions_count DESC")
+        order("public_reactions_count DESC")
     elsif params[:timeframe] == "latest"
       @stories.where("score > ?", -20).order("published_at DESC")
     else
