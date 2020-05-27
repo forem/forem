@@ -8,7 +8,7 @@ const BodyMarkdown = ({ onChange, defaultValue }) => (
       <textarea
         className="listingform__input listingform__bodymarkdown"
         id="body_markdown"
-        name="classified_listing[body_markdown]"
+        name="listing[body_markdown]"
         maxLength="400"
         placeholder="400 characters max, 12 line break max, no images allowed, *markdown is encouraged*"
         value={defaultValue}

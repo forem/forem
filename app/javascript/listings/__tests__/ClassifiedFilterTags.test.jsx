@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
-import ClassifiedFiltersTags from '../components/ClassifiedFiltersTags';
+import ListingFiltersTags from '../components/ListingFiltersTags';
 
-describe('<ClassifiedFilterTags />', () => {
+describe('<ListingFilterTags />', () => {
   const firstTag = {
     id: 1,
     tag: 'clojure',
@@ -36,11 +36,11 @@ describe('<ClassifiedFilterTags />', () => {
     tags: getTags(),
   });
 
-  const renderClassifiedFilterTags = (props = getProps()) =>
-    deep(<ClassifiedFiltersTags {...props} />);
+  const renderListingFilterTags = (props = getProps()) =>
+    deep(<ListingFiltersTags {...props} />);
 
   describe('Should render a search field', () => {
-    const context = renderClassifiedFilterTags();
+    const context = renderListingFilterTags();
     const searchField = context.find('#listings-search');
 
     it('Should have "search" as placeholder', () => {
@@ -57,7 +57,7 @@ describe('<ClassifiedFilterTags />', () => {
   });
 
   describe('<ClearQueryButton />', () => {
-    const context = renderClassifiedFilterTags();
+    const context = renderListingFilterTags();
 
     it('Should render the clear query button', () => {
       expect(context.find('#clear-query-button').exists()).toBe(true);
@@ -65,7 +65,7 @@ describe('<ClassifiedFilterTags />', () => {
 
     it('Should not render the clear query button', () => {
       const propsWithoutQuery = { ...getProps(), query: '' };
-      const contextWithAnotherProps = renderClassifiedFilterTags(
+      const contextWithAnotherProps = renderListingFilterTags(
         propsWithoutQuery,
       );
 
@@ -76,7 +76,7 @@ describe('<ClassifiedFilterTags />', () => {
   });
 
   it('Should render the selected Tags', () => {
-    const context = renderClassifiedFilterTags();
+    const context = renderListingFilterTags();
     getTags().forEach((tag) => {
       const selectedTag = context.find(`#selected-tag-${tag.id}`);
 
