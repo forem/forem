@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
-import ClassifiedFiltersCategories from '../components/ClassifiedFiltersCategories';
+import ListingFiltersCategories from '../components/ListingFiltersCategories';
 
-describe('<ClassifiedFiltersCategories />', () => {
+describe('<ListingFiltersCategories />', () => {
   const firstCategory = {
     id: 20,
     slug: 'clojure',
@@ -31,11 +31,11 @@ describe('<ClassifiedFiltersCategories />', () => {
     },
   });
 
-  const renderClassifiedFilterCategories = (props = getProps()) =>
-    deep(<ClassifiedFiltersCategories {...props} />);
+  const renderListingFilterCategories = (props = getProps()) =>
+    deep(<ListingFiltersCategories {...props} />);
 
   describe('Should render the links to allow navigation', () => {
-    const context = renderClassifiedFilterCategories();
+    const context = renderListingFilterCategories();
 
     it('Should render a link and a message relative to listings', () => {
       const listingsLink = context.find('#listings-link');
@@ -47,7 +47,7 @@ describe('<ClassifiedFiltersCategories />', () => {
 
     it('When there\'s no category, the className of the listings link should be "selected"', () => {
       const propsWithoutCategory = { ...getProps(), category: '' };
-      const contextWithoutCategory = renderClassifiedFilterCategories(
+      const contextWithoutCategory = renderListingFilterCategories(
         propsWithoutCategory,
       );
 
@@ -59,7 +59,7 @@ describe('<ClassifiedFiltersCategories />', () => {
       const newListingLink = context.find('#listings-new-link');
 
       expect(newListingLink.attr('href')).toBe('/listings/new');
-      expect(newListingLink.attr('className')).toBe('classified-create-link');
+      expect(newListingLink.attr('className')).toBe('listing-create-link');
       expect(newListingLink.text()).toBe('Create a Listing');
     });
 
@@ -67,13 +67,13 @@ describe('<ClassifiedFiltersCategories />', () => {
       const dashboardLink = context.find('#listings-dashboard-link');
 
       expect(dashboardLink.attr('href')).toBe('/listings/dashboard');
-      expect(dashboardLink.attr('className')).toBe('classified-create-link');
+      expect(dashboardLink.attr('className')).toBe('listing-create-link');
       expect(dashboardLink.text()).toBe('Manage Listings');
     });
   });
 
   describe('Should render categories links', () => {
-    const context = renderClassifiedFilterCategories();
+    const context = renderListingFilterCategories();
     it('Should render the categories name and their respective links', () => {
       categories.forEach((category) => {
         const categoryLink = context.find(`#category-link-${category.id}`);

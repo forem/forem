@@ -372,7 +372,7 @@ end
 ##############################################################################
 
 counter += 1
-Rails.logger.info "#{counter}. Creating Classified Listing Categories"
+Rails.logger.info "#{counter}. Creating Listing Categories"
 
 CATEGORIES = [
   {
@@ -413,28 +413,28 @@ CATEGORIES = [
   },
 ].freeze
 
-CATEGORIES.each { |attributes| ClassifiedListingCategory.create(attributes) }
+CATEGORIES.each { |attributes| ListingCategory.create(attributes) }
 
 ##############################################################################
 
 counter += 1
-Rails.logger.info "#{counter}. Creating Classified Listings"
+Rails.logger.info "#{counter}. Creating Listings"
 
 users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
 users = users_in_random_order.to_a
 
-listings_categories = ClassifiedListingCategory.pluck(:id)
+listings_categories = ListingCategory.pluck(:id)
 listings_categories.each.with_index(1) do |category_id, index|
   # rotate users if they are less than the categories
   user = users.at(index % users.length)
   2.times do
-    ClassifiedListing.create!(
+    Listing.create!(
       user: user,
       title: Faker::Lorem.sentence,
       body_markdown: Faker::Markdown.random,
       location: Faker::Address.city,
       organization_id: user.organizations.first&.id,
-      classified_listing_category_id: category_id,
+      listing_category_id: category_id,
       contact_via_connect: true,
       published: true,
       bumped_at: Time.current,

@@ -52,7 +52,7 @@ RSpec.describe Credit, type: :model do
     let_it_be(:credit) { build(:credit) }
 
     it "is valid with a purchase" do
-      credit.purchase = build(:classified_listing)
+      credit.purchase = build(:listing)
       expect(credit).to be_valid
     end
 

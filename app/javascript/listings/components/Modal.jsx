@@ -17,10 +17,10 @@ const Modal = ({
   const shouldRenderMessageModal = listing && listing.contact_via_connect;
 
   return (
-    <div className="single-classified-listing-container">
+    <div className="single-listing-container">
       <div
-        id="single-classified-listing-container__inner"
-        className="single-classified-listing-container__inner"
+        id="single-listing-container__inner"
+        className="single-listing-container__inner"
         onClick={onClick}
         role="button"
         onKeyPress={onClick}
@@ -42,13 +42,10 @@ const Modal = ({
             listing={listing}
           />
         )}
-        <a
-          href="/about-listings"
-          className="single-classified-listing-info-link"
-        >
+        <a href="/about-listings" className="single-listing-info-link">
           About DEV Listings
         </a>
-        <div className="single-classified-listing-container__spacer" />
+        <div className="single-listing-container__spacer" />
       </div>
     </div>
   );

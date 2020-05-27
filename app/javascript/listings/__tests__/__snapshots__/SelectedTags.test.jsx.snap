@@ -3,7 +3,7 @@
 exports[`<SelectedTags /> Should render all the tags 1`] = `
 <section>
   <span
-    class="classified-tag"
+    class="listing-tag"
     id="selected-tag-1"
   >
     <a
@@ -30,7 +30,7 @@ exports[`<SelectedTags /> Should render all the tags 1`] = `
     </a>
   </span>
   <span
-    class="classified-tag"
+    class="listing-tag"
     id="selected-tag-2"
   >
     <a
@@ -57,7 +57,7 @@ exports[`<SelectedTags /> Should render all the tags 1`] = `
     </a>
   </span>
   <span
-    class="classified-tag"
+    class="listing-tag"
     id="selected-tag-3"
   >
     <a

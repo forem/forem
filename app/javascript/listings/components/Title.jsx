@@ -12,7 +12,7 @@ const Title = ({ onChange, defaultValue }) => (
       type="text"
       className="listingform__input"
       id={domId}
-      name="classified_listing[title]"
+      name="listing[title]"
       maxLength="128"
       size="128"
       placeholder="128 characters max, plain text"
