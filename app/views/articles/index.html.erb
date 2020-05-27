@@ -35,58 +35,40 @@
 
     <%= render "articles/sidebar" %>
 
-    <%# BEGIN Feed menu bar %>
     <div class="articles-list" id="articles-list">
       <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
-      <div class="on-page-nav-controls" id="on-page-nav-controls">
-        <div class="on-page-nav-label">
-          <div class="wide-nav-links">
-            <a class="nav-chronofiter-link <%= "selected" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>" href="<%= list_path %>/">
-              FEED
-            </a>
-            <span class="separator"></span>
-            <a class="nav-chronofiter-link <%= "selected" if timeframe_check("week") %>" href="<%= list_path %>/top/week">
-              WEEK
-            </a>
-            <a class="nav-chronofiter-link <%= "selected" if timeframe_check("month") %>" href="<%= list_path %>/top/month">
-              MONTH
-            </a>
-            <a class="nav-chronofiter-link <%= "selected" if timeframe_check("year") %>" href="<%= list_path %>/top/year">
-              YEAR
-            </a>
-            <a class="nav-chronofiter-link <%= "selected" if timeframe_check("infinity") %>" href="<%= list_path %>/top/infinity">
-              INFINITY
-            </a>
-            <span class="separator"></span>
-            <a class="nav-chronofiter-link <%= "selected" if timeframe_check("latest") %>" href="<%= list_path %>/latest">
-              LATEST
-            </a>
-          </div>
-          <div class="narrow-nav-select" aria-label="feed-filter-select">
-            <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %>
-              <button type="button" id="narrow-feed-butt">&lt;MY <%= community_name %> FEED&gt;</button>
-            <% elsif timeframe_check('week') %>
-              <button type="button" id="narrow-feed-butt">&lt;PAST WEEK&gt;</button>
-            <% elsif timeframe_check('month') %>
-              <button type="button" id="narrow-feed-butt">&lt;PAST MONTH&gt;</button>
-            <% elsif timeframe_check('year') %>
-              <button type="button" id="narrow-feed-butt">&lt;PAST YEAR&gt;</button>
-            <% elsif timeframe_check('infinity') %>
-              <button type="button" id="narrow-feed-butt">&lt;INFINITY&gt;</button>
-            <% elsif timeframe_check('latest') %>
-              <button type="button" id="narrow-feed-butt">&lt;LATEST&gt;</button>
-            <% end %>
-          </div>
+      <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
+        <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block l:hidden" id="on-page-nav-butt-left" aria-label="nav-button-left">
+          <%= inline_svg_tag("stack.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Left sidebar") %>
+        </button>
+        <div class="flex-1 flex items-center justify-between">
+          <h2 class="fs-l fw-heavy">Posts</h2>
+          <nav class="crayons-tabs hidden s:flex">
+            <a href="<%= list_path %>/" class="crayons-tabs__item <%= "crayons-tabs__item--current" if %w[week month year infinity latest].exclude?(params[:timeframe]) %>">Feed</a>
+
+            <a href="<%= list_path %>/top/week" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("week") %>">Week</a>
+            <a href="<%= list_path %>/top/month" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("month") %>">Month</a>
+            <a href="<%= list_path %>/top/year" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("year") %>">Year</a>
+            <a href="<%= list_path %>/top/infinity" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("infinity") %>">Infinity</a>
+
+            <a href="<%= list_path %>/latest" class="crayons-tabs__item <%= "crayons-tabs__item--current" if timeframe_check("latest") %>">Latest</a>
+          </nav>
+
+          <select class="crayons-select s:hidden ml-2 s:ml-auto w-auto" id="feed-filter-select" aria-label="feed-filter-select">
+            <option value="<%= list_path %>/" <% if ["week", "month", "year", "infinity", "latest"].exclude?(params[:timeframe]) %> selected<% end %>>Feed</option>
+            <option value="<%= list_path %>/top/week" <% if timeframe_check("week") %> selected<% end %>>Week</option>
+            <option value="<%= list_path %>/top/month" <% if timeframe_check("month") %> selected<% end %>>Month</option>
+            <option value="<%= list_path %>/top/year" <% if timeframe_check("year") %> selected<% end %>>Year</option>
+            <option value="<%= list_path %>/top/infinity" <% if timeframe_check("infinity") %> selected<% end %>>Infinity</option>
+            <option value="<%= list_path %>/latest" <% if timeframe_check("latest") %> selected<% end %>>Latest</option>
+          </select>
         </div>
-        <button type="button" class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
-          <img src="<%= asset_path "stack.svg" %>" alt="left-sidebar-nav">
+
+        <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon ml-2 inline-block l:hidden" id="on-page-nav-butt-right" aria-label="nav-button-right">
+          <%= inline_svg_tag("lightning.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Right sidebar") %>
         </button>
-        <button type="button" class="on-page-nav-butt on-page-nav-butt-right" id="on-page-nav-butt-right" aria-label="nav-button-right">
-          <img src="<%= asset_path "lightning.svg" %>" alt="right-sidebar-nav">
-        </button>
-      </div>
-      <%# END Feed menu bar %>
+      </header>
 
       <% if user_signed_in? %>
         <div id="homepage-feed"></div>

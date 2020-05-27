@@ -13,7 +13,7 @@ class Organization < ApplicationRecord
 
   has_many :api_secrets, through: :users
   has_many :articles
-  has_many :classified_listings
+  has_many :listings
   has_many :collections
   has_many :credits
   has_many :display_ads
@@ -35,7 +35,8 @@ class Organization < ApplicationRecord
   validates :name, :summary, :url, :profile_image, presence: true
   validates :name, length: { maximum: 50 }
   validates :proof, length: { maximum: 1500 }
-  validates :secret, length: { is: 100 }, uniqueness: { allow_blank: true }, allow_blank: true
+  validates :secret, length: { is: 100 }, allow_nil: true
+  validates :secret, uniqueness: true
   validates :slug, exclusion: { in: ReservedWords.all, message: MESSAGES[:reserved_word] }
   validates :slug, format: { with: SLUG_REGEXP }, length: { in: 2..18 }
   validates :slug, presence: true, uniqueness: { case_sensitive: false }

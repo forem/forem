@@ -122,7 +122,7 @@
   position: relative;
   outline: none;
   @extend %form-styling;
-  background-image: url("data:image/svg+xml,%3Csvg width='24' height='24' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 16l-6-6h12l-6 6z' fill='%2308090A'/%3E%3C/svg%3E");
+  background-image: var(--select-icon);
   background-position: calc(100% - var(--su-2)) calc(50% - 1px);
   background-repeat: no-repeat;
 

@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe Credits::Buyer, type: :service do
   let(:user) { create(:user) }
   let(:org) { create(:organization) }
-  let(:listing) { create(:classified_listing, user: user) }
+  let(:listing) { create(:listing, user: user) }
 
   context "when not enough credits are available" do
     it "does not spend credits for the user" do
