@@ -1,9 +1,21 @@
 require "rails_helper"
 
 RSpec.describe "HealthCheck", type: :request do
+  let(:token) { "secret" }
+  let(:headers) { { "health-check-token" => token } }
+
+  before { SiteConfig.health_check_token = token }
+
+  context "without a token" do
+    it "returns an authorized request" do
+      get app_api_health_checks_path
+      expect(response.status).to eq(401)
+    end
+  end
+
   describe "GET /health_check" do
     it "returns json success" do
-      get health_check_path
+      get app_api_health_checks_path, headers: headers
       expect(response.status).to eq(200)
       expect(response.parsed_body["message"]).to eq("App is up!")
     end
@@ -11,14 +23,14 @@ RSpec.describe "HealthCheck", type: :request do
 
   describe "GET /search_health_check" do
     it "returns json success if ping succeeds" do
-      get search_health_check_path
+      get search_api_health_checks_path, headers: headers
       expect(response.status).to eq(200)
       expect(response.parsed_body["message"]).to eq("Search ping succeeded!")
     end
 
     it "returns json failure if ping fails" do
       allow(Search::Client).to receive(:ping).and_return(false)
-      get search_health_check_path
+      get search_api_health_checks_path, headers: headers
       expect(response.status).to eq(500)
       expect(response.parsed_body["message"]).to eq("Search ping failed!")
     end
@@ -26,14 +38,14 @@ RSpec.describe "HealthCheck", type: :request do
 
   describe "GET /database_health_check" do
     it "returns json success if connection check succeeds" do
-      get database_health_check_path
+      get database_api_health_checks_path, headers: headers
       expect(response.status).to eq(200)
       expect(response.parsed_body["message"]).to eq("Database connected")
     end
 
     it "returns json failure if connection check fails" do
       allow(ActiveRecord::Base).to receive(:connected?).and_return(false)
-      get database_health_check_path
+      get database_api_health_checks_path, headers: headers
       expect(response.status).to eq(500)
       expect(response.parsed_body["message"]).to eq("Database NOT connected!")
     end

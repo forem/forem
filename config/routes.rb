@@ -1,11 +1,6 @@
 # rubocop:disable Metrics/BlockLength
 
 Rails.application.routes.draw do
-  # Health Check Endpoints
-  get "/health_check" => "health_check#ping"
-  get "/search_health_check" => "health_check#search_ping"
-  get "/database_health_check" => "health_check#database_ping"
-
   use_doorkeeper do
     controllers tokens: "oauth/tokens"
   end
@@ -150,6 +145,14 @@ Rails.application.routes.draw do
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"
       get "/analytics/referrers", to: "analytics#referrers"
+
+      resources :health_checks, only: [] do
+        collection do
+          get :app
+          get :search
+          get :database
+        end
+      end
     end
   end
 
