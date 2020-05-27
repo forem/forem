@@ -1,4 +1,4 @@
-namespace :app do
+namespace :app_initializer do
   desc "Prepare Application on Boot Up"
   task setup: :environment do
     puts "\n== Preparing Elasticsearch =="
@@ -9,9 +9,7 @@ namespace :app do
       Rake::Task["db:migrate"].execute
     rescue ActiveRecord::NoDatabaseError
       puts "\n== Creating and Seeding database =="
-      Rake::Task["db:create"].execute
-      Rake::Task["db:schema:load"].execute
-      Rake::Task["db:seed"].execute
+      system("bin/rails db:setup")
     end
 
     puts "\n== Updating Data =="
