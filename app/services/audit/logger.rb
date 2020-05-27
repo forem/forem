@@ -5,7 +5,9 @@ module Audit
     def self.log(listener, user, data = nil)
       Audit::Notification.notify(listener) do |payload|
         payload.user_id = user.id
-        payload.roles = user.roles.pluck(:name)
+        skip_bullet do
+          payload.roles = user.roles.pluck(:name)
+        end
         payload.data = if block_given?
                          yield
                        else
@@ -17,6 +19,14 @@ module Audit
 
     def self.filter_redacted_keys(data)
       data.except(*REDACTED_KEYS)
+    end
+
+    def self.skip_bullet
+      previous_value = Bullet.enable?
+      Bullet.enable = false
+      yield
+    ensure
+      Bullet.enable = previous_value
     end
   end
 end
