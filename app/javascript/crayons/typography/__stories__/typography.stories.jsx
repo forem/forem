@@ -4,7 +4,7 @@ import '../../storybook-utilities/designSystem.scss';
 import './typography.scss';
 
 export default {
-  title: 'Base/Typography/Main',
+  title: '2_Base/Typography/Main',
 };
 
 export const Description = () => (

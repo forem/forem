@@ -3,7 +3,7 @@ import { Fieldset } from '../../../storybook-utilities/Fieldset';
 
 import '../../../storybook-utilities/designSystem.scss';
 
-export default { title: 'Components/Form Components/Radio Button/HTML' };
+export default { title: '3_Components/Form Components/Radio Button/HTML' };
 
 export const Default = () => (
   <input type="radio" name="n1" className="crayons-radio" />
