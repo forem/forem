@@ -1,6 +1,9 @@
 class ChatChannel < ApplicationRecord
   attr_accessor :current_user, :usernames_string
 
+  CHANNEL_TYPES = %w[open invite_only direct].freeze
+  STATUSES = %w[active inactive blocked].freeze
+
   has_many :messages, dependent: :destroy
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :users, through: :chat_channel_memberships
@@ -15,8 +18,8 @@ class ChatChannel < ApplicationRecord
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
   has_many :mod_users, through: :mod_memberships, class_name: "User", source: :user
 
-  validates :channel_type, presence: true, inclusion: { in: %w[open invite_only direct] }
-  validates :status, presence: true, inclusion: { in: %w[active inactive blocked] }
+  validates :channel_type, presence: true, inclusion: { in: CHANNEL_TYPES }
+  validates :status, presence: true, inclusion: { in: STATUSES }
   validates :slug, uniqueness: true, presence: true
   validates :description, length: { maximum: 200 }, allow_blank: true
 
