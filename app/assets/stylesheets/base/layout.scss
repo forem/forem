@@ -64,5 +64,13 @@
   @media (min-width: $breakpoint-l) {
     --layout-sidebar-right-width: 3fr;
     --layout-content-width: 7fr;
+    --layout: var(--layout-sidebar-left-width) var(--layout-content-width)
+      var(--layout-sidebar-right-width);
+  }
+
+  .crayons-layout__sidebar-left {
+    @media (min-width: $breakpoint-m) {
+      grid-row-end: span 2;
+    }
   }
 }
