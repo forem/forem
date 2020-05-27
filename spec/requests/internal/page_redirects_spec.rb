@@ -1,3 +1,5 @@
+require "rails_helper"
+
 RSpec.describe "/internal/page_redirects", type: :request do
   context "when the user is not an admin" do
     let(:user) { create(:user) }
@@ -8,7 +10,7 @@ RSpec.describe "/internal/page_redirects", type: :request do
 
     it "blocks the request" do
       expect do
-        get internal_page_requests_path
+        get internal_page_redirects_path
       end.to raise_error(Pundit::NotAuthorizedError)
     end
   end
@@ -21,7 +23,7 @@ RSpec.describe "/internal/page_redirects", type: :request do
     it "renders the page" do
       sign_in single_resource_admin
 
-      get internal_page_requests_path
+      get internal_page_redirects_path
       expect(response).to have_http_status(:ok)
     end
   end
@@ -36,12 +38,12 @@ RSpec.describe "/internal/page_redirects", type: :request do
     end
 
     it "does not block the request" do
-      get internal_page_requests_path
+      get internal_page_redirects_path
       expect(response).to have_http_status(:ok)
     end
 
     it "renders the page with a page redirect" do
-      get internal_page_requests_path
+      get internal_page_redirects_path
 
       expect(response.body).to include(page_redirect.old_slug)
       expect(response.body).to include(page_redirect.new_slug)
@@ -49,29 +51,25 @@ RSpec.describe "/internal/page_redirects", type: :request do
     end
 
     it "searches by new_slug" do
-      new_slug_page_redirect = create(:page_redirect, new_slug: "/new")
+      new_slug_page_redirect = create(:page_redirect, new_slug: "/new-test")
 
-      get internal_page_requests_path(search: new_slug_page_redirect.new_slug)
+      get internal_page_redirects_path(search: new_slug_page_redirect.new_slug)
 
-      expect(response.body).not_to include(page_redirect.id.to_s)
       expect(response.body).not_to include(page_redirect.old_slug)
       expect(response.body).not_to include(page_redirect.new_slug)
 
-      expect(response.body).to include(new_slug_page_redirect.id.to_s)
       expect(response.body).to include(new_slug_page_redirect.old_slug)
       expect(response.body).to include(new_slug_page_redirect.new_slug)
     end
 
     it "searches by old_slug" do
-      old_slug_page_redirect = create(:page_redirect, old_slug: "/old")
+      old_slug_page_redirect = create(:page_redirect, old_slug: "/old-test")
 
-      get internal_page_requests_path(search: old_slug_page_redirect.old_slug)
+      get internal_page_redirects_path(search: old_slug_page_redirect.old_slug)
 
-      expect(response.body).not_to include(page_redirect.id.to_s)
       expect(response.body).not_to include(page_redirect.old_slug)
       expect(response.body).not_to include(page_redirect.new_slug)
 
-      expect(response.body).to include(old_slug_page_redirect.id.to_s)
       expect(response.body).to include(old_slug_page_redirect.old_slug)
       expect(response.body).to include(old_slug_page_redirect.new_slug)
     end

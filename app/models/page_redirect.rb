@@ -4,6 +4,8 @@ class PageRedirect < ApplicationRecord
 
   before_save :increment_version, if: :will_save_change_to_new_slug?
 
+  resourcify
+
   private
 
   def increment_version
