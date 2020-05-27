@@ -7,13 +7,13 @@ RSpec.describe "HealthCheck", type: :request do
   before { SiteConfig.health_check_token = token }
 
   context "without a token" do
-    it "returns an authorized request" do
+    it "returns an unauthorized request" do
       get app_api_health_checks_path
       expect(response.status).to eq(401)
     end
   end
 
-  describe "GET /health_check" do
+  describe "GET /api/health_checks/app" do
     it "returns json success" do
       get app_api_health_checks_path, headers: headers
       expect(response.status).to eq(200)
@@ -21,7 +21,7 @@ RSpec.describe "HealthCheck", type: :request do
     end
   end
 
-  describe "GET /search_health_check" do
+  describe "GET /api/health_checks/search" do
     it "returns json success if ping succeeds" do
       get search_api_health_checks_path, headers: headers
       expect(response.status).to eq(200)
@@ -36,7 +36,7 @@ RSpec.describe "HealthCheck", type: :request do
     end
   end
 
-  describe "GET /database_health_check" do
+  describe "GET /api/health_checks/database" do
     it "returns json success if connection check succeeds" do
       get database_api_health_checks_path, headers: headers
       expect(response.status).to eq(200)
