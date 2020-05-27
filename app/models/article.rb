@@ -49,30 +49,31 @@ class Article < ApplicationRecord
            inverse_of: :commentable,
            class_name: "Comment"
 
-  validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/,
-                   uniqueness: { scope: :user_id }
-  validates :title, presence: true,
-                    length: { maximum: 128 }
-  validates :user_id, presence: true
-  validates :feed_source_url, uniqueness: { allow_blank: true }
-  validates :canonical_url,
-            url: { allow_blank: true, no_local: true, schemes: %w[https http] },
-            uniqueness: { allow_blank: true }
-  validates :body_markdown, length: { minimum: 0, allow_nil: false }, uniqueness: { scope: %i[user_id title] }
-  validate :validate_tag
-  validate :validate_video
-  validate :validate_collection_permission
-  validate :past_or_present_date
-  validate :canonical_url_must_not_have_spaces
-  validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
+  validates :body_markdown, length: { minimum: 0, allow_nil: false }
+  validates :body_markdown, uniqueness: { scope: %i[user_id title] }
   validates :cached_tag_list, length: { maximum: 126 }
+  validates :canonical_url, uniqueness: { allow_nil: true }
+  validates :canonical_url, url: { allow_blank: true, no_local: true, schemes: %w[https http] }
+  validates :feed_source_url, uniqueness: { allow_nil: true }
   validates :main_image, url: { allow_blank: true, schemes: %w[https http] }
   validates :main_image_background_hex_color, format: /\A#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/
+  validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/
+  validates :slug, uniqueness: { scope: :user_id }
+  validates :title, presence: true, length: { maximum: 128 }
+  validates :user_id, presence: true
   validates :video, url: { allow_blank: true, schemes: %w[https http] }
-  validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
-  validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
   validates :video_closed_caption_track_url, url: { allow_blank: true, schemes: ["https"] }
   validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
+  validates :video_source_url, url: { allow_blank: true, schemes: ["https"] }
+  validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
+  validates :video_thumbnail_url, url: { allow_blank: true, schemes: %w[https http] }
+
+  validate :canonical_url_must_not_have_spaces
+  validate :past_or_present_date
+  validate :validate_collection_permission
+  validate :validate_liquid_tag_permissions
+  validate :validate_tag
+  validate :validate_video
 
   before_validation :evaluate_markdown, :create_slug
   before_save :update_cached_user
@@ -567,7 +568,15 @@ class Article < ApplicationRecord
   def canonical_url_must_not_have_spaces
     return unless canonical_url.to_s.match?(/[[:space:]]/)
 
+<<<<<<< HEAD
     errors.add(:canonical_url, "must not have spaces")
+=======
+  # Admin only beta tags etc.
+  def validate_liquid_tag_permissions
+    return unless liquid_tags_used.include?(PollTag) && !(user.has_role?(:super_admin) || user.has_role?(:admin))
+
+    errors.add(:body_markdown, "must only use permitted tags")
+>>>>>>> f431b8ee2... Add unique indexes to articles - part 5
   end
 
   def create_slug

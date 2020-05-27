@@ -152,15 +152,18 @@ ActiveRecord::Schema.define(version: 2020_08_28_032013) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
+    t.index ["body_markdown", "user_id", "title"], name: "index_articles_on_body_markdown_and_user_id_and_title", unique: true
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
+    t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["comment_score"], name: "index_articles_on_comment_score"
     t.index ["featured_number"], name: "index_articles_on_featured_number"
-    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url"
+    t.index ["feed_source_url"], name: "index_articles_on_feed_source_url", unique: true
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
     t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
+    t.index ["slug", "user_id"], name: "index_articles_on_slug_and_user_id", unique: true
     t.index ["slug"], name: "index_articles_on_slug"
     t.index ["user_id"], name: "index_articles_on_user_id"
   end
