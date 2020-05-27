@@ -7,6 +7,7 @@
      config
      events
      growth
+     listings
      moderator_actions
      mods
      negative_reactions
@@ -22,13 +23,12 @@
      tools
      users
      welcome
-   ].sort.each_with_object({}) { |v, h| h[v] = v } %>
+   ].each_with_object({}) { |v, h| h[v] = v } %>
 
-<% menu_items[:listings] = "listings" %>
-<% menu_items[:webhooks] = "webhook_endpoints" %>
+<% menu_items["webhooks"] = "webhook_endpoints" %>
 
 <div class="mt-4">
-  <% menu_items.each do |name, controller| %>
+  <% menu_items.sort_by { |name, _controller| name }.each do |name, controller| %>
     <a class="sidebar-nav-item px-2 <%= "active" if request.path.include?(controller) %>" href="/internal/<%= controller %>"><%= name.to_s.titleize %></a>
   <% end %>
 </div>
