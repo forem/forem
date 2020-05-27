@@ -66,7 +66,7 @@ export default class ListingForm extends Component {
         <div className="field">
           <label htmlFor="organizationId">Post under an organization:</label>
           <OrganizationPicker
-            name="classified_listing[organization_id]"
+            name="listing[organization_id]"
             id="listing_organization_id"
             organizations={organizations}
             organizationId={organizationId}
