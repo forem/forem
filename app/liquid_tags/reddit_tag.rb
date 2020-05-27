@@ -2,7 +2,7 @@ class RedditTag < LiquidTagBase
   PARTIAL = "liquids/reddit".freeze
 
   def initialize(_tag_name, url, _tokens)
-    @url = url
+    @url = url.strip
     @reddit_content = RedditJsonFromUrlService.new(@url).parse
   end
 
