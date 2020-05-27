@@ -5,16 +5,20 @@
  */
 
 function initializeOnboardingTaskCard() {
-  if (localStorage.getItem('task-card-closed') === 'yes') { return }
+  if (localStorage.getItem('task-card-closed') === 'yes') {
+    return;
+  }
 
-  var taskCard = document.getElementsByClassName("onboarding-task-card")[0];
-  if (taskCard == null) { return } // This guard against both null and undefined taskCard
+  var taskCard = document.getElementsByClassName('onboarding-task-card')[0];
+  if (taskCard == null) {
+    return;
+  } // This guard against both null and undefined taskCard
 
   var createdAt = new Date(userData().created_at);
   var now = new Date();
   var aWeekAgo = now.setDate(now.getDate() - 7);
 
   if (createdAt > aWeekAgo) {
-    taskCard.style.display = "block";
+    taskCard.style.display = 'block';
   }
 }
