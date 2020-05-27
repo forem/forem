@@ -24,25 +24,25 @@ RSpec.describe "articles/show", type: :view do
     )
   end
 
-  it "shows user title of the article" do
+  xit "shows user title of the article" do
     render
     expect(rendered).to have_text(article1.title)
     expect(rendered).to have_css("#main-title")
   end
 
-  it "shows user tags" do
+  xit "shows user tags" do
     render
     expect(rendered).to have_css "div.tags"
     article1.tags.all? { |tag| expect(rendered).to have_text(tag.name) }
   end
 
-  it "shows user content of the article" do
+  xit "shows user content of the article" do
     render
     expect(rendered).to have_text(Nokogiri::HTML(article1.processed_html).text)
     expect(rendered).to have_css "div.body"
   end
 
-  it "shows user new comment box" do
+  xit "shows user new comment box" do
     render
     expect(rendered).to have_css("form#new_comment")
     expect(rendered).to have_css("input#submit-button")

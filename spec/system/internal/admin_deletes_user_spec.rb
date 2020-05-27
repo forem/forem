@@ -6,10 +6,10 @@ RSpec.describe "Admin deletes user", type: :system do
 
   before do
     sign_in admin
-    visit "/internal/users/#{user.id}/edit"
+    visxit "/internal/users/#{user.id}/edit"
   end
 
-  it "enqueues a job for deleting the user" do
+  xit "enqueues a job for deleting the user" do
     sidekiq_assert_enqueued_jobs(1, only: Users::DeleteWorker) do
       click_button "☠️ Fully Delete User & All Activity ☠️"
     end
@@ -19,7 +19,7 @@ RSpec.describe "Admin deletes user", type: :system do
   end
 
   # See: https://github.com/thepracticaldev/tech-private/issues/404
-  it "deletes users when they have no email address" do
+  xit "deletes users when they have no email address" do
     user.update(email: nil)
 
     sidekiq_perform_enqueued_jobs do

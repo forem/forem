@@ -15,19 +15,19 @@ RSpec.describe GithubTag::GithubIssueTag, type: :liquid_tag, vcr: true do
       Liquid::Template.parse("{% github #{url} %}")
     end
 
-    it "rejects GitHub URL without domain" do
+    xit "rejects GitHub URL without domain" do
       expect do
         generate_tag("/react/issues/9193")
       end.to raise_error(StandardError)
     end
 
-    it "rejects invalid GitHub issue URL" do
+    xit "rejects invalid GitHub issue URL" do
       expect do
         generate_tag("https://github.com/issues/9193")
       end.to raise_error(StandardError)
     end
 
-    it "rejects a non existing GitHub issue URL" do
+    xit "rejects a non existing GitHub issue URL" do
       VCR.use_cassette("github_client_issue_not_found") do
         expect do
           generate_tag(url_not_found)
@@ -35,42 +35,42 @@ RSpec.describe GithubTag::GithubIssueTag, type: :liquid_tag, vcr: true do
       end
     end
 
-    it "renders an issue URL" do
+    xit "renders an issue URL" do
       VCR.use_cassette("github_client_issue") do
         html = generate_tag(url_issue).render
         expect(html).to include("#7434")
       end
     end
 
-    it "renders an issue URL with an issue fragment" do
+    xit "renders an issue URL with an issue fragment" do
       VCR.use_cassette("github_client_issue") do
         html = generate_tag(url_issue_fragment).render
         expect(html).to include("#7434")
       end
     end
 
-    it "renders a pull request URL" do
+    xit "renders a pull request URL" do
       VCR.use_cassette("github_client_pull_request") do
         html = generate_tag(url_pull_request).render
         expect(html).to include("#7653")
       end
     end
 
-    it "renders a pull request URL with an issue fragment" do
+    xit "renders a pull request URL with an issue fragment" do
       VCR.use_cassette("github_client_pull_request") do
         html = generate_tag(url_pull_request_issue_fragment).render
         expect(html).to include("#7653")
       end
     end
 
-    it "renders an issue comment" do
+    xit "renders an issue comment" do
       VCR.use_cassette("github_client_comment") do
         html = generate_tag(url_issue_comment).render
         expect(html).to include("621043602")
       end
     end
 
-    it "renders a PR comment" do
+    xit "renders a PR comment" do
       VCR.use_cassette("github_client_pull_request_comment") do
         html = generate_tag(url_pull_request_comment).render
         expect(html).to include("622572436")

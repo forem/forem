@@ -9,24 +9,24 @@ RSpec.describe "User visits a podcast page", type: :system do
 
   before { visit podcast.path }
 
-  it "displays the header" do
+  xit "displays the header" do
     within "div.podcast-header" do
       expect(page).to have_text(podcast.title)
     end
   end
 
-  it "displays podcast episodes", js: true, percy: true do
+  xit "displays podcast episodes", js: true, percy: true do
     Percy.snapshot(page, name: "Podcast: /:podcast_slug renders")
 
     expect(page).to have_selector("div.single-article", visible: :visible, count: 2)
   end
 
-  it "displays podcast publish_at" do
+  xit "displays podcast publish_at" do
     expect(page).to have_selector("time.published-at", count: 1)
     expect(page).to have_selector("span.time-ago-indicator-initial-placeholder", count: 1)
   end
 
-  it "displays correct episodes" do
+  xit "displays correct episodes" do
     expect(page).to have_link(nil, href: podcast_episode1.path)
     expect(page).to have_link(nil, href: podcast_episode2.path)
     expect(page).not_to have_link(nil, href: another_episode.path)

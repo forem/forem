@@ -11,17 +11,17 @@ RSpec.describe "AsyncInfo", type: :request do
     context "when not logged-in" do
       before { get "/async_info/base_data" }
 
-      it "returns token" do
+      xit "returns token" do
         expect(response.body).to include("token")
       end
 
-      it "does not return user" do
+      xit "does not return user" do
         expect(response.body).not_to include("user")
       end
     end
 
     context "when logged in" do
-      it "returns token and user" do
+      xit "returns token and user" do
         allow(controller_instance).to receive(:remember_user_token).and_return(nil)
         sign_in create(:user)
         get "/async_info/base_data"
@@ -31,7 +31,7 @@ RSpec.describe "AsyncInfo", type: :request do
   end
 
   describe "GET /async_info/shell_version" do
-    it "returns shell_version" do
+    xit "returns shell_version" do
       get "/async_info/shell_version"
       expect(response.body).to include("version")
     end
@@ -40,7 +40,7 @@ RSpec.describe "AsyncInfo", type: :request do
   describe "#remember_user_token" do
     # We require the remember_user_token key bc we also use it for caching in Fastly
     # If this key changes, Fastly needs to be updated
-    it "requires remember_user_token cookie to be present" do
+    xit "requires remember_user_token cookie to be present" do
       get "/async_info/base_data"
       token = "a_token"
       controller.send("cookies")[:remember_user_token] = "a_token"

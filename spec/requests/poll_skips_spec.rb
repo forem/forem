@@ -8,7 +8,7 @@ RSpec.describe "PollSkips", type: :request do
   before { sign_in user }
 
   describe "POST /poll_votes" do
-    it "votes on behalf of current user" do
+    xit "votes on behalf of current user" do
       post "/poll_skips", params: {
         poll_skip: { poll_id: poll.id }
       }
@@ -19,7 +19,7 @@ RSpec.describe "PollSkips", type: :request do
       expect(user.poll_skips.size).to eq(1)
     end
 
-    it "only allows one of vote or skip" do
+    xit "only allows one of vote or skip" do
       post "/poll_skips", params: {
         poll_skip: { poll_id: poll.id }
       }

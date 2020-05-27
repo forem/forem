@@ -8,19 +8,19 @@ RSpec.describe Follow, type: :model do
     it { is_expected.to validate_inclusion_of(:subscription_status).in_array(%w[all_articles none]) }
   end
 
-  it "follows user" do
+  xit "follows user" do
     user.follow(user_2)
     expect(user.following?(user_2)).to eq(true)
   end
 
   context "when enqueuing jobs" do
-    it "enqueues create channel job" do
+    xit "enqueues create channel job" do
       expect do
         described_class.create(follower: user, followable: user_2)
       end.to change(Follows::CreateChatChannelWorker.jobs, :size).by(1)
     end
 
-    it "enqueues send notification worker" do
+    xit "enqueues send notification worker" do
       expect do
         described_class.create(follower: user, followable: user_2)
       end.to change(Follows::SendEmailNotificationWorker.jobs, :size).by(1)
@@ -28,7 +28,7 @@ RSpec.describe Follow, type: :model do
   end
 
   context "when creating and inline" do
-    it "touches the follower user while creating" do
+    xit "touches the follower user while creating" do
       timestamp = 1.day.ago
       user.update_columns(updated_at: timestamp, last_followed_at: timestamp)
       described_class.create!(follower: user, followable: user_2)
@@ -38,7 +38,7 @@ RSpec.describe Follow, type: :model do
       expect(user.last_followed_at).to be > timestamp
     end
 
-    it "doesn't create a channel when a followable is an org" do
+    xit "doesn't create a channel when a followable is an org" do
       expect do
         sidekiq_perform_enqueued_jobs do
           described_class.create!(follower: user, followable: create(:organization))
@@ -46,7 +46,7 @@ RSpec.describe Follow, type: :model do
       end.not_to change(ChatChannel, :count)
     end
 
-    it "doesn't create a chat channel when users don't follow mutually" do
+    xit "doesn't create a chat channel when users don't follow mutually" do
       expect do
         sidekiq_perform_enqueued_jobs do
           described_class.create!(follower: user, followable: user_2)
@@ -54,7 +54,7 @@ RSpec.describe Follow, type: :model do
       end.not_to change(ChatChannel, :count)
     end
 
-    it "creates a chat channel when users follow mutually" do
+    xit "creates a chat channel when users follow mutually" do
       described_class.create!(follower: user_2, followable: user)
       expect do
         sidekiq_perform_enqueued_jobs do
@@ -63,7 +63,7 @@ RSpec.describe Follow, type: :model do
       end.to change(ChatChannel, :count).by(1)
     end
 
-    it "sends an email notification" do
+    xit "sends an email notification" do
       user_2.update_column(:email_follower_notifications, true)
       expect do
         Sidekiq::Testing.inline! do

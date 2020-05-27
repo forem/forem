@@ -13,12 +13,12 @@ RSpec.describe "internal/organizations", type: :request do
     let(:organizations) { Organization.pluck(:name).map { |n| CGI.escapeHTML(n) } }
     let(:another_organization) { create(:organization, name: "T-800") }
 
-    it "lists all organizations" do
+    xit "lists all organizations" do
       get "/internal/organizations"
       expect(response.body).to include(*organizations)
     end
 
-    it "allows searching" do
+    xit "allows searching" do
       get "/internal/organizations?search=#{organization.name}"
       expect(response.body).to include(CGI.escapeHTML(organization.name))
       expect(response.body).not_to include(CGI.escapeHTML(another_organization.name))
@@ -26,7 +26,7 @@ RSpec.describe "internal/organizations", type: :request do
   end
 
   describe "GET /internal/orgnaizations/:id" do
-    it "renders the correct organization" do
+    xit "renders the correct organization" do
       get "/internal/organizations/#{organization.id}"
       expect(response.body).to include(CGI.escapeHTML(organization.name))
     end
@@ -35,7 +35,7 @@ RSpec.describe "internal/organizations", type: :request do
   describe "PATCH /internal" do
     let(:organization) { create(:organization) }
 
-    it "adds credits to an organization" do
+    xit "adds credits to an organization" do
       params = { credits: 1, credit_action: :add }
 
       expect do
@@ -44,7 +44,7 @@ RSpec.describe "internal/organizations", type: :request do
       end.to change { organization.reload.unspent_credits_count }.by(1)
     end
 
-    it "removes credits to an organization" do
+    xit "removes credits to an organization" do
       Credit.add_to(organization, 1)
       params = { credits: 1, credit_action: :remove }
 

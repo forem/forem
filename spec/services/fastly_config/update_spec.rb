@@ -24,15 +24,15 @@ RSpec.describe FastlyConfig::Update, type: :service do
   end
 
   describe "::run" do
-    it "raises an error for incorrectly formatted configs" do
+    xit "raises an error for incorrectly formatted configs" do
       expect { fastly_updater.run(configs: "Not an Array") }.to raise_error(FastlyConfig::Errors::InvalidConfigsFormat)
     end
 
-    it "raises an error for invalid configs" do
+    xit "raises an error for invalid configs" do
       expect { fastly_updater.run(configs: ["Invalid config"]) }.to raise_error(FastlyConfig::Errors::InvalidConfig)
     end
 
-    it "doesn't update if the params haven't changed" do
+    xit "doesn't update if the params haven't changed" do
       stub_const("#{described_class}::FASTLY_CONFIGS", ["Snippets"])
       snippet_handler = instance_double FastlyConfig::Snippets
       allow(FastlyConfig::Snippets).to receive(:new).and_return(snippet_handler)
@@ -41,7 +41,7 @@ RSpec.describe FastlyConfig::Update, type: :service do
       expect(fastly_version).not_to have_received(:clone)
     end
 
-    it "updates Fastly if new updates are found" do
+    xit "updates Fastly if new updates are found" do
       stub_const("#{described_class}::FASTLY_CONFIGS", ["Snippets"])
       snippet_handler = instance_double FastlyConfig::Snippets
       allow(FastlyConfig::Snippets).to receive(:new).and_return(snippet_handler)
@@ -51,7 +51,7 @@ RSpec.describe FastlyConfig::Update, type: :service do
       expect(fastly_version).to have_received(:activate!)
     end
 
-    it "logs success messages" do
+    xit "logs success messages" do
       allow(Rails.logger).to receive(:info)
       allow(DatadogStatsClient).to receive(:increment)
 

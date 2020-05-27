@@ -28,23 +28,23 @@ RSpec.describe SpotifyTag, type: :liquid_tag do
       HTML
     end
 
-    it "generals the proper iframe if the uri is valid" do
+    xit "generals the proper iframe if the uri is valid" do
       expect(generate_tag(valid_uri).render).to eq(generate_iframe(valid_uri, 80))
     end
 
-    it "does not raise an error if the uri is valid" do
+    xit "does not raise an error if the uri is valid" do
       expect { generate_tag(valid_uri) }.not_to raise_error
     end
 
-    it "does not raise an error if the playlist uri is valid" do
+    xit "does not raise an error if the playlist uri is valid" do
       expect { generate_tag(valid_playlist_uri) }.not_to raise_error
     end
 
-    it "does not raise an error for a legacy playlist URI" do
+    xit "does not raise an error for a legacy playlist URI" do
       expect { generate_tag(legacy_playlist_uri) }.not_to raise_error
     end
 
-    it "raises an error if the uri is invalid" do
+    xit "raises an error if the uri is invalid" do
       expect { generate_tag(invalid_uri) }.to raise_error(StandardError, "Invalid Spotify Link - Be sure you're using the uri of a specific track, album, artist, playlist, or podcast episode.")
     end
   end

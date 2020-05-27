@@ -5,14 +5,14 @@ RSpec.describe Moderator::DeleteUser, type: :service do
   let(:admin) { create(:user, :super_admin) }
 
   describe "delete_user" do
-    it "deletes user" do
+    xit "deletes user" do
       sidekiq_perform_enqueued_jobs do
         described_class.call(user: user, admin: admin, user_params: {})
       end
       expect(User.find_by(id: user.id)).to be_nil
     end
 
-    it "deletes user's follows" do
+    xit "deletes user's follows" do
       create(:follow, follower: user)
       create(:follow, followable: user)
 
@@ -23,7 +23,7 @@ RSpec.describe Moderator::DeleteUser, type: :service do
       end.to change(Follow, :count).by(-2)
     end
 
-    it "deletes user's articles" do
+    xit "deletes user's articles" do
       article = create(:article, user: user)
       sidekiq_perform_enqueued_jobs do
         described_class.call(user: user, admin: admin, user_params: {})
@@ -40,13 +40,13 @@ RSpec.describe Moderator::DeleteUser, type: :service do
       create(:article, user: user)
     end
 
-    it "reassigns articles" do
+    xit "reassigns articles" do
       allow(deleter).to receive(:reassign_articles)
       deleter.ghostify
       expect(deleter).to have_received(:reassign_articles)
     end
 
-    it "reassigns comments" do
+    xit "reassigns comments" do
       allow(deleter).to receive(:reassign_comments)
       deleter.ghostify
       expect(deleter).to have_received(:reassign_comments)

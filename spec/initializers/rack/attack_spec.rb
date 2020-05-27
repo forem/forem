@@ -9,7 +9,7 @@ describe Rack::Attack, type: :request, throttle: true do
   end
 
   describe "search_throttle" do
-    it "throttles /search endpoints based on IP" do
+    xit "throttles /search endpoints based on IP" do
       Timecop.freeze do
         allow(Search::User).to receive(:search_documents).and_return({})
         valid_responses = Array.new(5).map do
@@ -28,7 +28,7 @@ describe Rack::Attack, type: :request, throttle: true do
   end
 
   describe "api_throttle" do
-    it "throttles api get endpoints based on IP" do
+    xit "throttles api get endpoints based on IP" do
       Timecop.freeze do
         valid_responses = Array.new(3).map do
           get api_articles_path, headers: { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
@@ -49,7 +49,7 @@ describe Rack::Attack, type: :request, throttle: true do
     let(:api_secret) { create(:api_secret) }
     let(:another_api_secret) { create(:api_secret) }
 
-    it "throttles api write endpoints based on IP" do
+    xit "throttles api write endpoints based on IP" do
       headers = { "api-key" => api_secret.secret, "content-type" => "application/json", "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
       dif_headers = { "api-key" => another_api_secret.secret, "content-type" => "application/json", "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
       params = { article: { body_markdown: "", title: Faker::Book.title } }.to_json
@@ -87,7 +87,7 @@ describe Rack::Attack, type: :request, throttle: true do
       sign_in user
     end
 
-    it "throttles creating messages" do
+    xit "throttles creating messages" do
       headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
       dif_headers = { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
 

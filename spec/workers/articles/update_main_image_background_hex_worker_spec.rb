@@ -7,7 +7,7 @@ RSpec.describe Articles::UpdateMainImageBackgroundHexWorker, type: :job do
     context "with article" do
       let_it_be(:article) { create(:article) }
 
-      it "updates articles main image background hex" do
+      xit "updates articles main image background hex" do
         color_from_image = double
         allow(color_from_image).to receive(:main).and_return("#eee")
         allow(ColorFromImage).to receive(:new).and_return(color_from_image)
@@ -19,7 +19,7 @@ RSpec.describe Articles::UpdateMainImageBackgroundHexWorker, type: :job do
     end
 
     context "without article" do
-      it "does not error" do
+      xit "does not error" do
         expect { worker.perform(nil) }.not_to raise_error
       end
     end

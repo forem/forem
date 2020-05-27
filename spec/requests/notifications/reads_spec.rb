@@ -11,13 +11,13 @@ RSpec.describe "Notifications::Reads", type: :request do
       allow(stubbed_service_object).to receive(:mark_as_read)
     end
 
-    it "marks notifications as read" do
+    xit "marks notifications as read" do
       post "/notifications/reads/"
       expect(response).to have_http_status(:ok)
       expect(stubbed_service_object).to have_received(:mark_as_read).once
     end
 
-    it "marks personal and org notifications as read" do
+    xit "marks personal and org notifications as read" do
       org_admin = create(:user, :org_admin)
       org_id = org_admin.organizations.first.id
       sign_in org_admin

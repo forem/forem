@@ -23,7 +23,7 @@ RSpec.describe Streams::TwitchAccessToken::Get, type: :service do
     end
 
     context "when there is an unexpired token in the cache" do
-      it "returns the cached token" do
+      xit "returns the cached token" do
         Rails.cache.write(described_class::ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, ["FAKE_UNEXPIRED_TWITCH_TOKEN", 15.days.from_now])
 
         expect(described_class.call).to eq "FAKE_UNEXPIRED_TWITCH_TOKEN"
@@ -32,7 +32,7 @@ RSpec.describe Streams::TwitchAccessToken::Get, type: :service do
     end
 
     context "when there is an expired token in the cache" do
-      it "requests a new token and caches it" do
+      xit "requests a new token and caches it" do
         Rails.cache.write(described_class::ACCESS_TOKEN_AND_EXPIRATION_CACHE_KEY, ["FAKE_EXPIRED_TWITCH_TOKEN", 15.days.ago])
 
         expect(described_class.call).to eq "FAKE_BRAND_NEW_TWITCH_TOKEN"
@@ -41,7 +41,7 @@ RSpec.describe Streams::TwitchAccessToken::Get, type: :service do
     end
 
     context "when the token is not in the cache" do
-      it "requests a new token and caches it" do
+      xit "requests a new token and caches it" do
         expect(described_class.call).to eq "FAKE_BRAND_NEW_TWITCH_TOKEN"
         expect(twitch_token_stubbed_route).to have_been_requested
       end

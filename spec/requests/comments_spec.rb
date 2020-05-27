@@ -9,35 +9,35 @@ RSpec.describe "Comments", type: :request do
   let!(:comment) { create(:comment, commentable: article, user: user) }
 
   describe "GET comment index" do
-    it "returns 200" do
+    xit "returns 200" do
       get comment.path
       expect(response).to have_http_status(:ok)
     end
 
-    it "displays a comment" do
+    xit "displays a comment" do
       get comment.path
       expect(response.body).to include(comment.processed_html)
     end
 
-    it "displays full discussion text" do
+    xit "displays full discussion text" do
       get comment.path
       expect(response.body).to include("FULL DISCUSSION")
     end
 
     context "when the comment is a root" do
-      it "does not display top of thread button" do
+      xit "does not display top of thread button" do
         get comment.path
         expect(response.body).not_to include("TOP OF THREAD")
       end
 
-      it "displays the comment hidden message if the comment is hidden" do
+      xit "displays the comment hidden message if the comment is hidden" do
         comment.update(hidden_by_commentable_user: true)
         get comment.path
         hidden_comment_message = "Comment hidden by post author - thread only visible in this permalink"
         expect(response.body).to include(hidden_comment_message)
       end
 
-      it "displays the comment anyway if it is hidden" do
+      xit "displays the comment anyway if it is hidden" do
         comment.update(hidden_by_commentable_user: true)
         get comment.path
         expect(response.body).to include(comment.processed_html)
@@ -47,14 +47,14 @@ RSpec.describe "Comments", type: :request do
     context "when the comment is a child comment" do
       let(:child) { create(:comment, parent: comment, commentable: article, user: user) }
 
-      it "displays proper button and text for child comment" do
+      xit "displays proper button and text for child comment" do
         get child.path
         expect(response.body).to include("TOP OF THREAD")
         expect(response.body).to include(CGI.escapeHTML(comment.title(150)))
         expect(response.body).to include(child.processed_html)
       end
 
-      it "does not display the comment if it is hidden" do
+      xit "does not display the comment if it is hidden" do
         child.update(hidden_by_commentable_user: true)
         get comment.path
         expect(response.body).not_to include child.processed_html
@@ -67,12 +67,12 @@ RSpec.describe "Comments", type: :request do
         create(:comment, parent_id: child.id, commentable: article, user: user, hidden_by_commentable_user: true)
       end
 
-      it "does not display the hidden comment in the child's permalink" do
+      xit "does not display the hidden comment in the child's permalink" do
         get child.path
         expect(response.body).not_to include(child_of_child.processed_html)
       end
 
-      it "does not display the hidden comment in the article's comments section" do
+      xit "does not display the hidden comment in the article's comments section" do
         get "#{article.path}/comments"
         expect(response.body).not_to include(child_of_child.processed_html)
       end
@@ -84,23 +84,23 @@ RSpec.describe "Comments", type: :request do
         create(:comment, parent: comment, commentable: article, user: user, hidden_by_commentable_user: true)
       end
 
-      it "does not display the hidden comment in the article's comments section" do
+      xit "does not display the hidden comment in the article's comments section" do
         get "#{article.path}/comments"
         expect(response.body).not_to include(sibling.processed_html)
       end
 
-      it "shows the hidden comments message in the comment's permalink" do
+      xit "shows the hidden comments message in the comment's permalink" do
         get sibling.path
         hidden_comment_message = "Comment hidden by post author - thread only visible in this permalink"
         expect(response.body).to include(hidden_comment_message)
       end
 
-      it "does not show the sibling comment in the child's comment permalink" do
+      xit "does not show the sibling comment in the child's comment permalink" do
         get child.path
         expect(response.body).not_to include(sibling.processed_html)
       end
 
-      it "shows the comment in the permalink" do
+      xit "shows the comment in the permalink" do
         get sibling.path
         expect(response.body).to include(sibling.processed_html)
       end
@@ -116,34 +116,34 @@ RSpec.describe "Comments", type: :request do
         create(:comment, parent_id: third_level_child.id, commentable: article, user: user)
       end
 
-      it "does not show the hidden comment in the article's comments section" do
+      xit "does not show the hidden comment in the article's comments section" do
         get "#{article.path}/comments"
         expect(response.body).not_to include(third_level_child.processed_html)
       end
 
-      it "does not show the hidden comment's children in the article's comments section" do
+      xit "does not show the hidden comment's children in the article's comments section" do
         fourth_level_child
         get "#{article.path}/comments"
         expect(response.body).not_to include(fourth_level_child.processed_html)
       end
 
-      it "does not show the hidden comment in its parent's permalink" do
+      xit "does not show the hidden comment in its parent's permalink" do
         get second_level_child.path
         expect(response.body).not_to include(third_level_child.processed_html)
       end
 
-      it "does not show the hidden comment's child in its parent's permalink" do
+      xit "does not show the hidden comment's child in its parent's permalink" do
         fourth_level_child
         get second_level_child.path
         expect(response.body).not_to include(fourth_level_child.processed_html)
       end
 
-      it "shows the comment in the permalink" do
+      xit "shows the comment in the permalink" do
         get third_level_child.path
         expect(response.body).to include(third_level_child.processed_html)
       end
 
-      it "shows the fourth level child in the hidden comment's permalink" do
+      xit "shows the fourth level child in the hidden comment's permalink" do
         fourth_level_child
         get third_level_child.path
         expect(response.body).to include(fourth_level_child.processed_html)
@@ -151,7 +151,7 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the comment is for a podcast's episode" do
-      it "works" do
+      xit "works" do
         podcast_comment = create(:comment, commentable: podcast_episode, user: user)
 
         get podcast_comment.path
@@ -166,13 +166,13 @@ RSpec.describe "Comments", type: :request do
         article.update(body_markdown: new_markdown)
       end
 
-      it "raises a Not Found error" do
+      xit "raises a Not Found error" do
         expect { get comment.path }.to raise_error("Not Found")
       end
     end
 
     context "when the article is deleted" do
-      it "index action renders deleted_commentable_comment view" do
+      xit "index action renders deleted_commentable_comment view" do
         article = create(:article)
         comment = create(:comment, commentable: article)
 
@@ -184,7 +184,7 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the podcast episode is deleted" do
-      it "renders deleted_commentable_comment view" do
+      xit "renders deleted_commentable_comment view" do
         podcast_comment = create(:comment, commentable: podcast_episode)
         podcast_episode.destroy
 
@@ -196,7 +196,7 @@ RSpec.describe "Comments", type: :request do
 
   describe "GET /:username/:slug/comments/:id_code/edit" do
     context "when not logged-in" do
-      it "returns unauthorized error" do
+      xit "returns unauthorized error" do
         expect do
           get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
         end.to raise_error(Pundit::NotAuthorizedError)
@@ -208,12 +208,12 @@ RSpec.describe "Comments", type: :request do
         sign_in user
       end
 
-      it "returns 200" do
+      xit "returns 200" do
         get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns the comment" do
+      xit "returns the comment" do
         get "/#{user.username}/#{article.slug}/comments/#{comment.id_code_generated}/edit"
         expect(response.body).to include CGI.escapeHTML(comment.body_markdown)
       end
@@ -224,7 +224,7 @@ RSpec.describe "Comments", type: :request do
         sign_in user
       end
 
-      it "edit action returns 200" do
+      xit "edit action returns 200" do
         article = create(:article, user: user)
         comment = create(:comment, commentable: article, user: user)
 
@@ -241,7 +241,7 @@ RSpec.describe "Comments", type: :request do
       sign_in user
     end
 
-    it "does not raise a StandardError for invalid liquid tags" do
+    xit "does not raise a StandardError for invalid liquid tags" do
       put "/comments/#{comment.id}",
           params: { comment: { body_markdown: "{% gist flsnjfklsd %}" } }
 
@@ -250,7 +250,7 @@ RSpec.describe "Comments", type: :request do
     end
 
     context "when the article is deleted" do
-      it "updates body markdown" do
+      xit "updates body markdown" do
         article = create(:article, user: user)
         comment = create(:comment, commentable: article, user: user)
 
@@ -266,7 +266,7 @@ RSpec.describe "Comments", type: :request do
   end
 
   describe "POST /comments/preview" do
-    it "returns 401 if user is not logged in" do
+    xit "returns 401 if user is not logged in" do
       post "/comments/preview",
            params: { comment: { body_markdown: "hi" } },
            headers: { HTTP_ACCEPT: "application/json" }
@@ -281,11 +281,11 @@ RSpec.describe "Comments", type: :request do
              headers: { HTTP_ACCEPT: "application/json" }
       end
 
-      it "returns 200 on good request" do
+      xit "returns 200 on good request" do
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns json" do
+      xit "returns json" do
         expect(response.content_type).to eq("application/json")
       end
     end
@@ -309,7 +309,7 @@ RSpec.describe "Comments", type: :request do
         allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
       end
 
-      it "converts field test" do
+      xit "converts field test" do
         post "/comments", params: base_comment_params
 
         expected_args = [user.id, :user_home_feed, "user_creates_comment"]
@@ -334,7 +334,7 @@ RSpec.describe "Comments", type: :request do
 
     before { sign_in user }
 
-    it "deletes a comment if the article is still present" do
+    xit "deletes a comment if the article is still present" do
       delete "/comments/#{comment.id}"
 
       expect(Comment.find_by(id: comment.id)).to be_nil
@@ -342,7 +342,7 @@ RSpec.describe "Comments", type: :request do
       expect(flash[:notice]).to eq("Comment was successfully deleted.")
     end
 
-    it "deletes a comment if the article has been deleted" do
+    xit "deletes a comment if the article has been deleted" do
       article.destroy!
 
       delete "/comments/#{comment.id}"

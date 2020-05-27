@@ -7,7 +7,7 @@ describe DataUpdateScripts::ResyncElasticsearchDocuments, elasticsearch: %w[Feed
     User::SEARCH_CLASS.refresh_index
   end
 
-  it "indexes podcast episodes and tags to Elasticsearch" do
+  xit "indexes podcast episodes and tags to Elasticsearch" do
     tag = create(:tag)
     podcast_episode = create(:podcast_episode)
     Sidekiq::Worker.clear_all
@@ -20,7 +20,7 @@ describe DataUpdateScripts::ResyncElasticsearchDocuments, elasticsearch: %w[Feed
     expect(podcast_episode.elasticsearch_doc).not_to be_nil
   end
 
-  it "syncs articles, comments, and users to Elasticsearch", :aggregate_failures do
+  xit "syncs articles, comments, and users to Elasticsearch", :aggregate_failures do
     article = create(:article)
     comment = create(:comment)
     user = create(:user)

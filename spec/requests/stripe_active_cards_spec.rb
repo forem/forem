@@ -24,7 +24,7 @@ RSpec.describe "StripeActiveCards", type: :request do
   end
 
   describe "POST /stripe_active_cards" do
-    it "successfully adds a card to the correct user" do
+    xit "successfully adds a card to the correct user" do
       post stripe_active_cards_path(stripe_token: stripe_helper.generate_card_token)
       expect(response).to redirect_to(user_settings_path(:billing))
       expect(flash[:settings_notice]).to eq("Your billing information has been updated")
@@ -33,7 +33,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(card.is_a?(Stripe::Card)).to eq(true)
     end
 
-    it "does not add a card if there is a card error" do
+    xit "does not add a card if there is a card error" do
       StripeMock.prepare_card_error(:incorrect_number, :create_source)
 
       post stripe_active_cards_path(stripe_token: stripe_helper.generate_card_token)
@@ -43,7 +43,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(Payments::Customer.get(user.stripe_id_code).sources.count).to eq(0)
     end
 
-    it "increments sidekiq.errors in Datadog on failure" do
+    xit "increments sidekiq.errors in Datadog on failure" do
       allow(DatadogStatsClient).to receive(:increment)
       invalid_error = Stripe::InvalidRequestError.new("message", "param")
       allow(Stripe::Customer).to receive(:create).and_raise(invalid_error)
@@ -56,7 +56,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
 
-    it "updates the user's updated_at" do
+    xit "updates the user's updated_at" do
       old_updated_at = user.updated_at
 
       Timecop.freeze(1.minute.from_now) do
@@ -66,7 +66,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(user.reload.updated_at.to_i > old_updated_at.to_i).to be(true)
     end
 
-    it "increments sidekiq.errors.new_subscription in Datadog on failure" do
+    xit "increments sidekiq.errors.new_subscription in Datadog on failure" do
       allow(DatadogStatsClient).to receive(:increment)
       invalid_error = Stripe::InvalidRequestError.new(nil, nil)
       allow(Stripe::Customer).to receive(:create).and_raise(invalid_error)
@@ -78,7 +78,7 @@ RSpec.describe "StripeActiveCards", type: :request do
   end
 
   describe "PUT /stripe_active_cards/:card_id" do
-    it "updates the customer default source" do
+    xit "updates the customer default source" do
       customer, source = create_user_with_card(user, card_token)
       expect(customer.default_source).to eq(source.id)
 
@@ -93,7 +93,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(Payments::Customer.get(customer.id).default_source).to eq(new_card.id)
     end
 
-    it "does not update the customer default souce if the source ID is unknown" do
+    xit "does not update the customer default souce if the source ID is unknown" do
       customer, source = create_user_with_card(user, card_token)
 
       put stripe_active_card_path(id: "unknown")
@@ -103,7 +103,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(Payments::Customer.get(customer.id).default_source).to eq(source.id)
     end
 
-    it "increments sidekiq.errors in Datadog on failure" do
+    xit "increments sidekiq.errors in Datadog on failure" do
       _, source = create_user_with_card(user, card_token)
       original_card_id = source.id
 
@@ -119,7 +119,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(DatadogStatsClient).to have_received(:increment).with("stripe.errors", tags)
     end
 
-    it "updates the user's updated_at" do
+    xit "updates the user's updated_at" do
       _, source = create_user_with_card(user, card_token)
       old_updated_at = user.updated_at
 
@@ -130,7 +130,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       expect(user.reload.updated_at.to_i > old_updated_at.to_i).to be(true)
     end
 
-    it "increments sidekiq.errors.update_subscription in Datadog on failure" do
+    xit "increments sidekiq.errors.update_subscription in Datadog on failure" do
       _, source = create_user_with_card(user, card_token)
       original_card_id = source.id
 
@@ -154,22 +154,22 @@ RSpec.describe "StripeActiveCards", type: :request do
         delete stripe_active_card_path(id: original_card_id)
       end
 
-      it "redirects to billing page" do
+      xit "redirects to billing page" do
         expect(response).to redirect_to(user_settings_path(:billing))
       end
 
-      it "provides the proper flash notice" do
+      xit "provides the proper flash notice" do
         expect(flash[:settings_notice]).to eq("Your card has been successfully removed.")
       end
 
-      it "successfully deletes the card from sources" do
+      xit "successfully deletes the card from sources" do
         customer = Payments::Customer.get(user.stripe_id_code)
         expect(Payments::Customer.get_sources(customer).count).to eq(0)
       end
     end
 
     context "when an invalid request is made" do
-      it "redirects with an error if the card ID is unknown" do
+      xit "redirects with an error if the card ID is unknown" do
         create_user_with_card(user, card_token)
 
         delete stripe_active_card_path(id: "unknown")
@@ -177,7 +177,7 @@ RSpec.describe "StripeActiveCards", type: :request do
         expect(flash[:error]).to eq("There is no source with ID unknown")
       end
 
-      it "redirects with an error if the customer has a subscription" do
+      xit "redirects with an error if the customer has a subscription" do
         customer, = create_user_with_card(user, card_token)
 
         product = stripe_helper.create_product
@@ -191,7 +191,7 @@ RSpec.describe "StripeActiveCards", type: :request do
       end
     end
 
-    it "updates the user's updated_at" do
+    xit "updates the user's updated_at" do
       _, source = create_user_with_card(user, card_token)
       original_card_id = source.id
 

@@ -50,12 +50,12 @@ RSpec.describe Exporter::Articles, type: :service do
   end
 
   describe "#initialize" do
-    it "accepts a user" do
+    xit "accepts a user" do
       exporter = valid_instance(user)
       expect(exporter.user).to be(user)
     end
 
-    it "names itself articles" do
+    xit "names itself articles" do
       exporter = valid_instance(user)
       expect(exporter.name).to eq(:articles)
     end
@@ -63,14 +63,14 @@ RSpec.describe Exporter::Articles, type: :service do
 
   describe "#export" do
     context "when slug is unknown" do
-      it "returns no articles if the slug is not found" do
+      xit "returns no articles if the slug is not found" do
         exporter = valid_instance(user)
         result = exporter.export(slug: "not found")
         articles = load_articles(result)
         expect(articles).to be_empty
       end
 
-      it "no articles if slug belongs to another user" do
+      xit "no articles if slug belongs to another user" do
         exporter = valid_instance(user)
         result = exporter.export(slug: other_user_article.slug)
         articles = load_articles(result)
@@ -79,14 +79,14 @@ RSpec.describe Exporter::Articles, type: :service do
     end
 
     context "when slug is known" do
-      it "returns the article" do
+      xit "returns the article" do
         exporter = valid_instance(user)
         result = exporter.export(slug: article.slug)
         articles = load_articles(result)
         expect(articles.length).to eq(1)
       end
 
-      it "returns only expected fields for the article" do
+      xit "returns only expected fields for the article" do
         exporter = valid_instance(user)
         result = exporter.export(slug: article.slug)
         articles = load_articles(result)
@@ -95,7 +95,7 @@ RSpec.describe Exporter::Articles, type: :service do
     end
 
     context "when all articles are requested" do
-      it "returns all the articles as json" do
+      xit "returns all the articles as json" do
         exporter = valid_instance(article.user)
         result = exporter.export
         articles = load_articles(result)
@@ -103,7 +103,7 @@ RSpec.describe Exporter::Articles, type: :service do
         expect(articles.length).to eq(user.articles.size)
       end
 
-      it "returns only expected fields for the article" do
+      xit "returns only expected fields for the article" do
         exporter = valid_instance(article.user)
         result = exporter.export
         articles = load_articles(result)

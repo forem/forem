@@ -11,7 +11,7 @@ RSpec.describe WikipediaTag, type: :liquid_tag, vcr: true do
       Liquid::Template.parse("{% wikipedia #{url} %}")
     end
 
-    it "renders wikipedia excerpt html" do
+    xit "renders wikipedia excerpt html" do
       VCR.use_cassette("wikipedia_tag") do
         liquid = generate_new_liquid(valid_url)
         expect(liquid.render).to include("ltag__wikipedia")
@@ -19,7 +19,7 @@ RSpec.describe WikipediaTag, type: :liquid_tag, vcr: true do
       end
     end
 
-    it "renders wikipedia article section html" do
+    xit "renders wikipedia article section html" do
       VCR.use_cassette("wikipedia_section_tag") do
         liquid = generate_new_liquid(valid_section_url)
         expect(liquid.render).to include("ltag__wikipedia")
@@ -27,7 +27,7 @@ RSpec.describe WikipediaTag, type: :liquid_tag, vcr: true do
       end
     end
 
-    it "rejects invalid url" do
+    xit "rejects invalid url" do
       expect do
         liquid = generate_new_liquid(invalid_url)
         liquid.render

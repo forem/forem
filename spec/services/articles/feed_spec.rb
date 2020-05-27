@@ -29,13 +29,13 @@ RSpec.describe Articles::Feed, type: :service do
     let(:tag) { "foo" }
     let(:tagged_article) { create(:article, tags: tag) }
 
-    it "returns published articles" do
+    xit "returns published articles" do
       expect(feed.published_articles_by_tag).to include article
       expect(feed.published_articles_by_tag).not_to include unpublished_article
     end
 
     context "with tag" do
-      it "returns articles with the specified tag" do
+      xit "returns articles with the specified tag" do
         expect(described_class.new(tag: tag).published_articles_by_tag).to include tagged_article
       end
     end
@@ -45,24 +45,24 @@ RSpec.describe Articles::Feed, type: :service do
     let!(:moderately_high_scoring_article) { create(:article, score: 20) }
     let(:result) { feed.top_articles_by_timeframe(timeframe: "week").to_a }
 
-    it "returns articles ordered by score" do
+    xit "returns articles ordered by score" do
       expect(result.slice(0, 2)).to eq [hot_story, moderately_high_scoring_article]
       expect(result.last).to eq low_scoring_article
     end
 
     context "with week article timeframe specified" do
-      it "only returns articles from this week" do
+      xit "only returns articles from this week" do
         expect(feed.top_articles_by_timeframe(timeframe: "week")).not_to include(month_old_story)
       end
     end
   end
 
   describe "#latest_feed" do
-    it "only returns articles with scores above -40" do
+    xit "only returns articles with scores above -40" do
       expect(feed.latest_feed).not_to include(low_scoring_article)
     end
 
-    it "returns articles ordered by publishing date descending" do
+    xit "returns articles ordered by publishing date descending" do
       expect(feed.latest_feed.last).to eq month_old_story
     end
   end
@@ -73,17 +73,17 @@ RSpec.describe Articles::Feed, type: :service do
 
     before { article.update(published_at: 1.week.ago) }
 
-    it "returns a featured article and array of other articles" do
+    xit "returns a featured article and array of other articles" do
       expect(featured_story).to be_a(Article)
       expect(stories).to be_a(Array)
       expect(stories.first).to be_a(Article)
     end
 
-    it "chooses a featured story with a main image" do
+    xit "chooses a featured story with a main image" do
       expect(featured_story).to eq hot_story
     end
 
-    it "doesn't include low scoring stories" do
+    xit "doesn't include low scoring stories" do
       expect(stories).not_to include(low_scoring_article)
     end
 
@@ -92,7 +92,7 @@ RSpec.describe Articles::Feed, type: :service do
       let(:featured_story) { result.first }
       let(:stories) { result.second }
 
-      it "only includes stories" do
+      xit "only includes stories" do
         expect(stories).to include(old_story)
         expect(stories).to include(article)
         expect(stories).to include(hot_story)
@@ -100,7 +100,7 @@ RSpec.describe Articles::Feed, type: :service do
     end
 
     context "when ranking is true" do
-      it "performs article ranking" do
+      xit "performs article ranking" do
         allow(feed).to receive(:rank_and_sort_articles).and_call_original
         feed.default_home_feed_and_featured_story(ranking: true)
         expect(feed).to have_received(:rank_and_sort_articles)
@@ -108,7 +108,7 @@ RSpec.describe Articles::Feed, type: :service do
     end
 
     context "when ranking is false" do
-      it "does not perform article ranking" do
+      xit "does not perform article ranking" do
         allow(feed).to receive(:rank_and_sort_articles).and_call_original
         feed.default_home_feed_and_featured_story(ranking: false)
         expect(feed).not_to have_received(:rank_and_sort_articles)
@@ -116,7 +116,7 @@ RSpec.describe Articles::Feed, type: :service do
     end
 
     context "when ranking not passed" do
-      it "performs article ranking" do
+      xit "performs article ranking" do
         allow(feed).to receive(:rank_and_sort_articles).and_call_original
         feed.default_home_feed_and_featured_story
         expect(feed).to have_received(:rank_and_sort_articles)
@@ -132,12 +132,12 @@ RSpec.describe Articles::Feed, type: :service do
 
       before { article.update(published_at: 1.week.ago) }
 
-      it "returns array of articles" do
+      xit "returns array of articles" do
         expect(stories).to be_a(Array)
         expect(stories.first).to be_a(Article)
       end
 
-      it "doesn't include low scoring stories" do
+      xit "doesn't include low scoring stories" do
         expect(stories).not_to include(low_scoring_article)
       end
     end
@@ -145,7 +145,7 @@ RSpec.describe Articles::Feed, type: :service do
     context "when user logged in" do
       let(:stories) { feed.default_home_feed(user_signed_in: true) }
 
-      it "includes stories " do
+      xit "includes stories " do
         expect(stories).to include(old_story)
         expect(stories).to include(new_story)
       end
@@ -153,7 +153,7 @@ RSpec.describe Articles::Feed, type: :service do
   end
 
   describe "all non-default experiments" do
-    it "returns articles for all experiments" do
+    xit "returns articles for all experiments" do
       new_story = create(:article, published_at: 10.minutes.ago, score: 10)
       NON_DEFAULT_EXPERIMENTS.each do |method|
         stories = feed.public_send(method)
@@ -177,7 +177,7 @@ RSpec.describe Articles::Feed, type: :service do
       article_with_five_comments.reload
     end
 
-    it "ranks articles with more comments higher" do
+    xit "ranks articles with more comments higher" do
       expect(stories[0]).to eq article_with_five_comments
     end
   end
@@ -186,13 +186,13 @@ RSpec.describe Articles::Feed, type: :service do
     context "when article is written by a followed user" do
       before { user.follow(article.user) }
 
-      it "returns a score of 1" do
+      xit "returns a score of 1" do
         expect(feed.score_followed_user(article)).to eq 1
       end
     end
 
     context "when article is not written by a followed user" do
-      it "returns a score of 0" do
+      xit "returns a score of 0" do
         expect(feed.score_followed_user(article)).to eq 0
       end
     end
@@ -205,13 +205,13 @@ RSpec.describe Articles::Feed, type: :service do
     context "when article is from a followed organization" do
       before { user.follow(organization) }
 
-      it "returns a score of 1" do
+      xit "returns a score of 1" do
         expect(feed.score_followed_organization(article)).to eq 1
       end
     end
 
     context "when article is not from a followed organization" do
-      it "returns a score of 0" do
+      xit "returns a score of 0" do
         expect(feed.score_followed_organization(article)).to eq 0
       end
     end
@@ -219,7 +219,7 @@ RSpec.describe Articles::Feed, type: :service do
     context "when article has no organization" do
       let(:article) { create(:article) }
 
-      it "returns a score of 0" do
+      xit "returns a score of 0" do
         expect(feed.score_followed_organization(article)).to eq 0
       end
     end
@@ -227,21 +227,21 @@ RSpec.describe Articles::Feed, type: :service do
 
   describe "#score_randomness" do
     context "when random number is less than 0.6 but greater than 0.3" do
-      it "returns 6" do
+      xit "returns 6" do
         allow(feed).to receive(:rand).and_return(2)
         expect(feed.score_randomness).to eq 6
       end
     end
 
     context "when random number is less than 0.3" do
-      it "returns 3" do
+      xit "returns 3" do
         allow(feed).to receive(:rand).and_return(1)
         expect(feed.score_randomness).to eq 3
       end
     end
 
     context "when random number is greater than 0.6" do
-      it "returns 0" do
+      xit "returns 0" do
         allow(feed).to receive(:rand).and_return(0)
         expect(feed.score_randomness).to eq 0
       end
@@ -250,7 +250,7 @@ RSpec.describe Articles::Feed, type: :service do
 
   describe "#score_language" do
     context "when article is in a user's preferred language" do
-      it "returns a score of 1" do
+      xit "returns a score of 1" do
         expect(feed.score_language(article)).to eq 1
       end
     end
@@ -258,7 +258,7 @@ RSpec.describe Articles::Feed, type: :service do
     context "when article is not in user's prferred language" do
       before { article.language = "de" }
 
-      it "returns a score of -10" do
+      xit "returns a score of -10" do
         expect(feed.score_language(article)).to eq(-15)
       end
     end
@@ -266,7 +266,7 @@ RSpec.describe Articles::Feed, type: :service do
     context "when article doesn't have a language, assume english" do
       before { article.language = nil }
 
-      it "returns a score of 1" do
+      xit "returns a score of 1" do
         expect(feed.score_language(article)).to eq 1
       end
     end
@@ -285,7 +285,7 @@ RSpec.describe Articles::Feed, type: :service do
         user.follows.last.update(points: 2)
       end
 
-      it "returns the followed tag point value" do
+      xit "returns the followed tag point value" do
         expect(feed.score_followed_tags(article)).to eq 2
       end
     end
@@ -301,7 +301,7 @@ RSpec.describe Articles::Feed, type: :service do
         user.follows.each { |follow| follow.update(points: 2) }
       end
 
-      it "returns the sum of followed tag point values" do
+      xit "returns the sum of followed tag point values" do
         expect(feed.score_followed_tags(article)).to eq 4
       end
     end
@@ -314,7 +314,7 @@ RSpec.describe Articles::Feed, type: :service do
         user.save
       end
 
-      it "doesn't score the unfollowed tag" do
+      xit "doesn't score the unfollowed tag" do
         expect(feed.score_followed_tags(article)).to eq 1
       end
     end
@@ -322,13 +322,13 @@ RSpec.describe Articles::Feed, type: :service do
     context "when article doesn't include any followed tags" do
       let(:article) { create(:article, tags: unfollowed_tag.name) }
 
-      it "returns 0" do
+      xit "returns 0" do
         expect(feed.score_followed_tags(article)).to eq 0
       end
     end
 
     context "when user doesn't follow any tags" do
-      it "returns 0" do
+      xit "returns 0" do
         expect(user.cached_followed_tag_names).to be_empty
         expect(feed.score_followed_tags(article)).to eq 0
       end
@@ -341,11 +341,11 @@ RSpec.describe Articles::Feed, type: :service do
     context "when user has a further experience level" do
       let(:user) { create(:user, experience_level: 1) }
 
-      it "returns negative of (absolute value of the difference between article and user experience) divided by 2" do
+      xit "returns negative of (absolute value of the difference between article and user experience) divided by 2" do
         expect(feed.score_experience_level(article)).to eq(-3)
       end
 
-      it "returns  proper negative when fractional" do
+      xit "returns  proper negative when fractional" do
         article.experience_level_rating = 8
         expect(feed.score_experience_level(article)).to eq(-3.5)
       end
@@ -354,7 +354,7 @@ RSpec.describe Articles::Feed, type: :service do
     context "when user has a closer experience level" do
       let(:user) { create(:user, experience_level: 9) }
 
-      it "returns negative of (absolute value of the difference between article and user experience) divided by 2" do
+      xit "returns negative of (absolute value of the difference between article and user experience) divided by 2" do
         expect(feed.score_experience_level(article)).to eq(-1)
       end
     end
@@ -362,7 +362,7 @@ RSpec.describe Articles::Feed, type: :service do
     context "when the user does not have an experience level set" do
       let(:user) { create(:user, experience_level: nil) }
 
-      it "uses a value of 5 for user experience level" do
+      xit "uses a value of 5 for user experience level" do
         expect(feed.score_experience_level(article)).to eq(-1)
       end
     end
@@ -382,11 +382,11 @@ RSpec.describe Articles::Feed, type: :service do
     end
 
     context "when comment_weight is default of 0" do
-      it "returns 0 for uncommented articles" do
+      xit "returns 0 for uncommented articles" do
         expect(feed.score_comments(article)).to eq(0)
       end
 
-      it "returns 0 for articles with comments" do
+      xit "returns 0 for articles with comments" do
         expect(article_with_five_comments.comments_count).to eq(5)
         expect(feed.score_comments(article_with_five_comments)).to eq(0)
       end
@@ -395,15 +395,15 @@ RSpec.describe Articles::Feed, type: :service do
     context "when comment_weight is higher than 0" do
       before { feed.instance_variable_set(:@comment_weight, 2) }
 
-      it "returns 0 for uncommented articles" do
+      xit "returns 0 for uncommented articles" do
         expect(feed.score_comments(article)).to eq(0)
       end
 
-      it "returns a non-zero score for commented upon articles" do
+      xit "returns a non-zero score for commented upon articles" do
         expect(feed.score_comments(article_with_one_comment)).to be > 0
       end
 
-      it "scores article with more comments high than others" do
+      xit "scores article with more comments high than others" do
         expect(feed.score_comments(article_with_five_comments)).to be > feed.score_comments(article_with_one_comment)
       end
     end
@@ -418,12 +418,12 @@ RSpec.describe Articles::Feed, type: :service do
     context "when number of articles specified" do
       let(:feed) { described_class.new(number_of_articles: 1) }
 
-      it "only returns the requested number of articles" do
+      xit "only returns the requested number of articles" do
         expect(feed.rank_and_sort_articles(articles).size).to eq 1
       end
     end
 
-    it "returns articles in scored order" do
+    xit "returns articles in scored order" do
       allow(feed).to receive(:score_single_article).with(article1).and_return(1)
       allow(feed).to receive(:score_single_article).with(article2).and_return(2)
       allow(feed).to receive(:score_single_article).with(article3).and_return(3)
@@ -436,11 +436,11 @@ RSpec.describe Articles::Feed, type: :service do
     let!(:recently_published_article) { create(:article, published_at: 3.hours.ago) }
     let(:globally_hot_articles) { feed.globally_hot_articles(true).second }
 
-    it "returns hot stories" do
+    xit "returns hot stories" do
       expect(globally_hot_articles).not_to be_empty
     end
 
-    it "returns recent stories" do
+    xit "returns recent stories" do
       expect(globally_hot_articles).to include(recently_published_article)
     end
 
@@ -454,7 +454,7 @@ RSpec.describe Articles::Feed, type: :service do
       # Previously the offest factor could result in zero stories being returned sometimes.
 
       # We manually called `feed.globally_hot_articles` here because `let` caches it!
-      it "still returns articles" do
+      xit "still returns articles" do
         empty_feed = false
         20.times do
           if feed.globally_hot_articles(true).second.empty?
@@ -472,7 +472,7 @@ RSpec.describe Articles::Feed, type: :service do
         create(:article, hotness_score: 0, score: 0, published_at: 3.days.ago)
       end
 
-      it "still returns articles" do
+      xit "still returns articles" do
         expect(globally_hot_articles).not_to be_empty
       end
     end
@@ -484,7 +484,7 @@ RSpec.describe Articles::Feed, type: :service do
     context "when passed an ActiveRecord collection" do
       let(:stories) { Article.all }
 
-      it "returns first article with a main image" do
+      xit "returns first article with a main image" do
         expect(featured_story.main_image).not_to be_nil
       end
     end
@@ -492,7 +492,7 @@ RSpec.describe Articles::Feed, type: :service do
     context "when passed an array" do
       let(:stories) { Article.all.to_a }
 
-      it "returns first article with a main image" do
+      xit "returns first article with a main image" do
         expect(featured_story.main_image).not_to be_nil
       end
     end
@@ -500,7 +500,7 @@ RSpec.describe Articles::Feed, type: :service do
     context "when passed collection without any articles" do
       let(:stories) { [] }
 
-      it "returns an new, empty Article object" do
+      xit "returns an new, empty Article object" do
         expect(featured_story.main_image).to be_nil
         expect(featured_story.id).to be_nil
       end
@@ -508,7 +508,7 @@ RSpec.describe Articles::Feed, type: :service do
   end
 
   describe "#find_featured_story" do
-    it "calls the class method" do
+    xit "calls the class method" do
       allow(described_class).to receive(:find_featured_story)
       feed.find_featured_story([])
       expect(described_class).to have_received(:find_featured_story)

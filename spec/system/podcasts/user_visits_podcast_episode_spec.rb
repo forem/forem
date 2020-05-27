@@ -5,7 +5,7 @@ RSpec.describe "User visits podcast show page", type: :system do
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:single_quote_episode) { create(:podcast_episode, title: "What's up doc?!") }
 
-  it "they see the content of the hero", js: true, percy: true, retry: 3 do
+  xit "they see the content of the hero", js: true, percy: true, retry: 3 do
     visit podcast_episode.path.to_s
 
     Percy.snapshot(page, name: "Podcast: /:podcast_slug/:episode_slug renders")
@@ -15,7 +15,7 @@ RSpec.describe "User visits podcast show page", type: :system do
     expect(page).not_to have_css ".published-at"
   end
 
-  it "see the new comment box on the page" do
+  xit "see the new comment box on the page" do
     visit podcast_episode.path.to_s
     expect(page).to have_css "form#new_comment"
     expect(find("#comment_commentable_type", visible: :hidden).value).to eq("PodcastEpisode")
@@ -23,7 +23,7 @@ RSpec.describe "User visits podcast show page", type: :system do
   end
 
   context "when mobile apps read the podcast episode metadata" do
-    it "renders the Episode & Podcast data" do
+    xit "renders the Episode & Podcast data" do
       visit podcast_episode.path.to_s
       metadata = JSON.parse(find(".podcast-episode-container")["data-meta"])
       expect(metadata["podcastName"]).to eq(podcast.title)
@@ -31,7 +31,7 @@ RSpec.describe "User visits podcast show page", type: :system do
       expect(metadata["podcastImageUrl"]).to include(podcast.image_url)
     end
 
-    it "doesn't break with single quotes inside the metadata" do
+    xit "doesn't break with single quotes inside the metadata" do
       visit single_quote_episode.path.to_s
       metadata = JSON.parse(find(".podcast-episode-container")["data-meta"])
       expect(metadata["podcastName"]).to eq(single_quote_episode.podcast.title)
@@ -41,7 +41,7 @@ RSpec.describe "User visits podcast show page", type: :system do
   end
 
   context "when episode may not be playable" do
-    it "displays status when episode is not reachable by https", js: true, percy: true do
+    xit "displays status when episode is not reachable by https", js: true, percy: true do
       podcast_episode = create(:podcast_episode, https: false)
       visit podcast_episode.path.to_s
 
@@ -56,7 +56,7 @@ RSpec.describe "User visits podcast show page", type: :system do
     let(:podcast) { create(:podcast, status_notice: "Random status notice") }
     let!(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
 
-    it "doesn't display status_notice" do
+    xit "doesn't display status_notice" do
       visit podcast_episode.path.to_s
       expect(page).not_to have_text("Random status notice")
       expect(page).not_to have_text(I18n.t("podcasts.statuses.unplayable"))
@@ -67,7 +67,7 @@ RSpec.describe "User visits podcast show page", type: :system do
   context "when podcast has publish_at field" do
     let!(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id, published_at: 7.hours.ago) }
 
-    it "sees published at" do
+    xit "sees published at" do
       visit podcast_episode.path.to_s
       expect(page).to have_css ".published-at"
     end
@@ -78,7 +78,7 @@ RSpec.describe "User visits podcast show page", type: :system do
     let(:comment) { create(:comment, user_id: user.id, commentable: podcast_episode) }
     let!(:comment2) { create(:comment, user_id: user.id, commentable: podcast_episode, parent: comment) }
 
-    it "sees the comments", js: true, percy: true do
+    xit "sees the comments", js: true, percy: true do
       visit podcast_episode.path.to_s
 
       Percy.snapshot(page, name: "Podcast: /:podcast_slug/:episode_slug renders with comments")

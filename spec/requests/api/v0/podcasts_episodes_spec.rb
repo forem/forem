@@ -4,13 +4,13 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
   let(:podcast) { create(:podcast) }
 
   describe "GET /api/podcast_episodes" do
-    it "returns json response" do
+    xit "returns json response" do
       get api_podcast_episodes_path
 
       expect(response.content_type).to eq("application/json")
     end
 
-    it "does not return unreachable podcasts" do
+    xit "does not return unreachable podcasts" do
       create(:podcast_episode, reachable: false, podcast: podcast)
 
       get api_podcast_episodes_path
@@ -18,7 +18,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
       expect(response.parsed_body.size).to eq(0)
     end
 
-    it "does not return reachable podcast episodes belonging to unpublished podcasts" do
+    xit "does not return reachable podcast episodes belonging to unpublished podcasts" do
       pe = create(:podcast_episode, reachable: true, podcast: create(:podcast, published: false))
 
       get api_podcast_episodes_path
@@ -26,7 +26,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
       expect(response.parsed_body.map { |e| e["id"] }).not_to include(pe.id.to_s)
     end
 
-    it "returns correct attributes for an episode", :aggregate_failures do
+    xit "returns correct attributes for an episode", :aggregate_failures do
       podcast_episode = create(:podcast_episode, podcast: podcast)
 
       get api_podcast_episodes_path
@@ -42,7 +42,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
       expect(response_episode["image_url"]).to eq(podcast_episode.podcast.image_url)
     end
 
-    it "returns the episode's podcast json representation" do
+    xit "returns the episode's podcast json representation" do
       podcast_episode = create(:podcast_episode, podcast: podcast)
 
       get api_podcast_episodes_path
@@ -53,7 +53,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
       expect(response_episode["podcast"]["image_url"]).to eq(podcast_episode.podcast.image_url)
     end
 
-    it "returns episodes in reverse publishing order" do
+    xit "returns episodes in reverse publishing order" do
       pe1 = create(:podcast_episode, published_at: 1.day.ago, podcast: podcast)
       pe2 = create(:podcast_episode, published_at: 1.day.from_now, podcast: podcast)
 
@@ -61,7 +61,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
       expect(response.parsed_body.map { |pe| pe["id"] }).to eq([pe2.id, pe1.id])
     end
 
-    it "supports pagination" do
+    xit "supports pagination" do
       create_list(:podcast_episode, 3, podcast: podcast)
 
       get api_podcast_episodes_path, params: { page: 1, per_page: 2 }
@@ -71,7 +71,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
       expect(response.parsed_body.length).to eq(1)
     end
 
-    it "sets the correct edge caching surrogate key for all tags" do
+    xit "sets the correct edge caching surrogate key for all tags" do
       podcast_episode = create(:podcast_episode, reachable: true, podcast: podcast)
 
       get api_podcast_episodes_path
@@ -81,7 +81,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
     end
 
     context "when given a username parameter" do
-      it "returns only podcasts for a given username" do
+      xit "returns only podcasts for a given username" do
         pe1 = create(:podcast_episode, podcast: podcast)
         create(:podcast_episode, podcast: create(:podcast))
 
@@ -89,7 +89,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
         expect(response.parsed_body.map { |pe| pe["id"] }).to eq([pe1.id])
       end
 
-      it "returns not found if the episode belongs to an unpublished podcast" do
+      xit "returns not found if the episode belongs to an unpublished podcast" do
         unavailable_podcast = create(:podcast, published: false)
         create(:podcast_episode, podcast: unavailable_podcast)
 
@@ -98,7 +98,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
         expect(response).to have_http_status(:not_found)
       end
 
-      it "returns not found if the podcast episode is unreachable" do
+      xit "returns not found if the podcast episode is unreachable" do
         create(:podcast_episode, reachable: false, podcast: podcast)
 
         get api_podcast_episodes_path(username: podcast.slug)
@@ -106,7 +106,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
         expect(response).to have_http_status(:not_found)
       end
 
-      it "returns not found if the username does not exist" do
+      xit "returns not found if the username does not exist" do
         get api_podcast_episodes_path(username: "foobar")
 
         expect(response).to have_http_status(:not_found)

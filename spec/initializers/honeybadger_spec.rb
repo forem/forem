@@ -6,7 +6,7 @@ describe Honeybadger do
   end
 
   context "when error is raised from an internal route" do
-    it "sets fingerprint to internal" do
+    xit "sets fingerprint to internal" do
       notice = Honeybadger::Notice.new(
         described_class.config, component: "internal/feedback_messages"
       )

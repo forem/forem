@@ -13,11 +13,11 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
   context "when an invalid token is given" do
     before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => "abadskajdlsak" } }
 
-    it "renders an error message: 'unauthorized' in JSON" do
+    xit "renders an error message: 'unauthorized' in JSON" do
       expect(response.parsed_body).to include("error" => "unauthorized")
     end
 
-    it "has a status 401" do
+    xit "has a status 401" do
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -25,11 +25,11 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
   context "when a valid token is given but the user is not a pro" do
     before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => api_token.secret } }
 
-    it "renders an error message: 'unauthorized' in JSON" do
+    xit "renders an error message: 'unauthorized' in JSON" do
       expect(response.parsed_body).to include("error" => "unauthorized")
     end
 
-    it "has a status 401" do
+    xit "has a status 401" do
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -37,7 +37,7 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
   context "when a valid token is given and the user is a pro" do
     before { get "/api/analytics/#{endpoint}?#{params}", headers: { "api-key" => pro_api_token.secret } }
 
-    it "renders JSON as the content type" do
+    xit "renders JSON as the content type" do
       expect(response.content_type).to eq "application/json"
     end
   end
@@ -47,11 +47,11 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
       get "/api/analytics/#{endpoint}?organization_id=#{org.id}#{params}", headers: { "api-key" => pro_api_token.secret }
     end
 
-    it "renders an error message: 'unauthorized' in JSON" do
+    xit "renders an error message: 'unauthorized' in JSON" do
       expect(response.parsed_body).to include("error" => "unauthorized")
     end
 
-    it "has a status 401" do
+    xit "has a status 401" do
       expect(response).to have_http_status(:unauthorized)
     end
   end
@@ -62,13 +62,13 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
       get path, headers: { "api-key" => org_member_token.secret }
     end
 
-    it "renders JSON as the content type" do
+    xit "renders JSON as the content type" do
       expect(response.content_type).to eq "application/json"
     end
   end
 
   context "when attempting to view another organization analytics and not belonging to that organization" do
-    it "responds with status 401 unauthorized" do
+    xit "responds with status 401 unauthorized" do
       org = create(:organization)
       get "/api/analytics/#{endpoint}?organization_id=#{org.id}#{params}", headers: { "api-key" => org_member_token.secret }
       expect(response).to have_http_status(:unauthorized)
@@ -76,14 +76,14 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
   end
 
   context "when attempting to view someone else's article analytics" do
-    it "responds with status 401 unauthorized" do
+    xit "responds with status 401 unauthorized" do
       get "/api/analytics/#{endpoint}?article_id=#{article.id}#{params}"
       expect(response).to have_http_status(:unauthorized)
     end
   end
 
   context "when viewing as current user" do
-    it "responds with status 200 OK" do
+    xit "responds with status 200 OK" do
       sign_in pro_user
       get "/api/analytics/#{endpoint}?#{params}"
       expect(response).to have_http_status(:ok)
@@ -91,7 +91,7 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
   end
 
   context "when viewing your own single article's analytics" do
-    it "responds with status 200 OK" do
+    xit "responds with status 200 OK" do
       sign_in pro_user
       get "/api/analytics/#{endpoint}?article_id=#{pro_user_article.id}#{params}"
       expect(response).to have_http_status(:ok)
@@ -99,7 +99,7 @@ RSpec.shared_examples "GET /api/analytics/:endpoint authorization examples" do |
   end
 
   context "when viewing your own organizaiton's single article's analytics" do
-    it "responds with status 200 OK" do
+    xit "responds with status 200 OK" do
       org_param = "&organization_id=#{pro_org_article.organization.id}"
 
       sign_in pro_org_member

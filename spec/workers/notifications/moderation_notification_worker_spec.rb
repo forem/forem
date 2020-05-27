@@ -31,7 +31,7 @@ RSpec.describe Notifications::ModerationNotificationWorker do
     end
 
     describe "When available moderator(s) + comment" do
-      it "calls the service" do
+      xit "calls the service" do
         mod
         comment
         check_received_call
@@ -39,27 +39,27 @@ RSpec.describe Notifications::ModerationNotificationWorker do
     end
 
     describe "When no available moderator" do
-      it "does not call the service" do
+      xit "does not call the service" do
         comment
         check_non_received_call
       end
     end
 
     describe "When no valid comment" do
-      it "does not call the service" do
+      xit "does not call the service" do
         mod
         check_non_received_call
       end
     end
 
     describe "When no valid comment + no moderator" do
-      it "does not call the service" do
+      xit "does not call the service" do
         check_non_received_call
       end
     end
 
     describe "when moderator is the comment author" do
-      it "does not call the service" do
+      xit "does not call the service" do
         comment = create(:comment, user: mod, commentable: create(:article))
         worker.perform(comment.id)
         expect(Notifications::Moderation::Send).not_to have_received(:call)
@@ -67,7 +67,7 @@ RSpec.describe Notifications::ModerationNotificationWorker do
     end
 
     describe "when the commentable does not exist" do
-      it "does not call the service" do
+      xit "does not call the service" do
         mod # prepare a moderator
 
         article = create(:article)

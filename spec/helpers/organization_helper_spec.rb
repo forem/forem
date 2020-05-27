@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe OrganizationHelper, type: :helper do
-  it "displays the correct options" do
+  xit "displays the correct options" do
     org1 = create(:organization, name: "ACME")
     org2 = create(:organization, name: "Pied Piper")
     allow(org1).to receive(:unspent_credits_count).and_return(1)

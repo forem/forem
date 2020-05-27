@@ -8,7 +8,7 @@ RSpec.describe Search::ReactionSerializer do
   let(:article_reaction) { create(:reaction, reactable: article, user: user) }
   let(:comment_reaction) { create(:reaction, reactable: comment, user: user) }
 
-  it "serializes an article reaction" do
+  xit "serializes an article reaction" do
     data_hash = described_class.new(article_reaction).serializable_hash.dig(:data, :attributes)
     user_data = Search::NestedUserSerializer.new(user).serializable_hash.dig(:data, :attributes)
     expect(data_hash.dig(:reactable, :user)).to eq(user_data)
@@ -16,7 +16,7 @@ RSpec.describe Search::ReactionSerializer do
     expect(data_hash.keys).to include(:id, :category, :status, :user_id)
   end
 
-  it "serializes a comment reaction" do
+  xit "serializes a comment reaction" do
     data_hash = described_class.new(comment_reaction).serializable_hash.dig(:data, :attributes)
     user_data = Search::NestedUserSerializer.new(user).serializable_hash.dig(:data, :attributes)
     expect(data_hash.dig(:reactable, :user)).to eq(user_data)
@@ -24,7 +24,7 @@ RSpec.describe Search::ReactionSerializer do
     expect(data_hash.keys).to include(:id, :category, :status, :user_id)
   end
 
-  it "creates valid json for Elasticsearch" do
+  xit "creates valid json for Elasticsearch" do
     data_hash = described_class.new(article_reaction).serializable_hash.dig(:data, :attributes)
     result = Reaction::SEARCH_CLASS.index(article.id, data_hash)
     expect(result["result"]).to eq("created")

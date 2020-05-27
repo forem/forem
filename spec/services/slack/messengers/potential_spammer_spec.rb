@@ -5,7 +5,7 @@ RSpec.describe Slack::Messengers::PotentialSpammer, type: :service do
 
   let(:default_params) { { user: user } }
 
-  it "contains the correct info", :aggregate_failures do
+  xit "contains the correct info", :aggregate_failures do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params)
     end
@@ -16,7 +16,7 @@ RSpec.describe Slack::Messengers::PotentialSpammer, type: :service do
     expect(message).to include(URL.user(user))
   end
 
-  it "messages the proper channel with the proper username and emoji", :aggregate_failures do
+  xit "messages the proper channel with the proper username and emoji", :aggregate_failures do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params)
     end

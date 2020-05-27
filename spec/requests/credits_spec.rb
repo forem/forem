@@ -6,13 +6,13 @@ RSpec.describe "Credits", type: :request do
     let(:org_member) { create(:user, :org_member) }
     let(:org_admin) { create(:user, :org_admin) }
 
-    it "shows credits page" do
+    xit "shows credits page" do
       sign_in user
       get "/credits"
       expect(response.body).to include("You have")
     end
 
-    it "shows credits page if user belongs to an org" do
+    xit "shows credits page if user belongs to an org" do
       org = org_member.organizations.first
       sign_in org_member
       get "/credits"
@@ -20,7 +20,7 @@ RSpec.describe "Credits", type: :request do
       expect(response.body).not_to include(CGI.escapeHTML(org.name))
     end
 
-    it "shows credits page if user belongs to an org and is org admin" do
+    xit "shows credits page if user belongs to an org and is org admin" do
       org = org_admin.organizations.first
       sign_in org_admin
       get "/credits"
@@ -30,7 +30,7 @@ RSpec.describe "Credits", type: :request do
     context "when the user has made purchases that will appear in the ledger" do
       let(:params) { { spent: true, spent_at: Time.current } }
 
-      it "shows listing purchases" do
+      xit "shows listing purchases" do
         listing = create(:classified_listing, user: user, title: "Awesome opportunity")
         purchase_params = { user: user, purchase_type: listing.class.name, purchase_id: listing.id }
         create(:credit, params.merge(purchase_params))
@@ -43,7 +43,7 @@ RSpec.describe "Credits", type: :request do
         expect(response.body).to include(listing.title)
       end
 
-      it "does not show sponsorship purchases to org members" do
+      xit "does not show sponsorship purchases to org members" do
         org = org_member.organizations.first
         sponsorship = create(:sponsorship, organization: org, user: org_admin)
         purchase_params = { organization: org, purchase_type: sponsorship.class.name, purchase_id: sponsorship.id }
@@ -57,7 +57,7 @@ RSpec.describe "Credits", type: :request do
         expect(response.body).not_to include(sponsorship.level)
       end
 
-      it "shows sponsorship purchases to org admins" do
+      xit "shows sponsorship purchases to org admins" do
         org = org_admin.organizations.first
         sponsorship = create(:sponsorship, organization: org, user: org_admin)
         purchase_params = { organization: org, purchase_type: sponsorship.class.name, purchase_id: sponsorship.id }
@@ -71,7 +71,7 @@ RSpec.describe "Credits", type: :request do
         expect(response.body).to include(sponsorship.level.titleize)
       end
 
-      it "shows tag sponsorship purchases to org admins" do
+      xit "shows tag sponsorship purchases to org admins" do
         org = org_admin.organizations.first
         tag = create(:tag)
         sponsorship = create(:sponsorship, organization: org, user: org_admin, level: :tag, sponsorable: tag)
@@ -86,7 +86,7 @@ RSpec.describe "Credits", type: :request do
         expect(response.body).to include(tag.name)
       end
 
-      it "shows unattributed purchases" do
+      xit "shows unattributed purchases" do
         purchase_params = { user: user }
         create(:credit, params.merge(purchase_params))
 
@@ -118,7 +118,7 @@ RSpec.describe "Credits", type: :request do
       StripeMock.stop
     end
 
-    it "creates unspent credits" do
+    xit "creates unspent credits" do
       post "/credits", params: {
         credit: {
           number_to_purchase: 25
@@ -128,7 +128,7 @@ RSpec.describe "Credits", type: :request do
       expect(user.credits.where(spent: false).size).to eq(25)
     end
 
-    it "makes a valid Stripe charge" do
+    xit "makes a valid Stripe charge" do
       post "/credits", params: {
         credit: {
           number_to_purchase: 20
@@ -146,7 +146,7 @@ RSpec.describe "Credits", type: :request do
         customer.sources.create(source: stripe_helper.generate_card_token)
       end
 
-      it "makes a valid Stripe charge" do
+      xit "makes a valid Stripe charge" do
         customer = Payments::Customer.get(user.stripe_id_code)
         post "/credits", params: {
           credit: {
@@ -157,7 +157,7 @@ RSpec.describe "Credits", type: :request do
         expect(charges(customer).first.amount).to eq 8000
       end
 
-      it "creates unspent credits" do
+      xit "creates unspent credits" do
         customer = Payments::Customer.get(user.stripe_id_code)
         post "/credits", params: {
           credit: {
@@ -168,7 +168,7 @@ RSpec.describe "Credits", type: :request do
         expect(user.credits.where(spent: false).size).to eq(20)
       end
 
-      it "charges a new card if given one" do
+      xit "charges a new card if given one" do
         post "/credits", params: {
           credit: {
             number_to_purchase: 20
@@ -184,7 +184,7 @@ RSpec.describe "Credits", type: :request do
     context "when purchasing as an organization" do
       before { sign_in org_admin }
 
-      it "creates unspent credits for the organization" do
+      xit "creates unspent credits for the organization" do
         post "/credits", params: {
           organization_id: admin_org_id,
           credit: {
@@ -195,7 +195,7 @@ RSpec.describe "Credits", type: :request do
         expect(Credit.where(organization_id: admin_org_id, spent: false).size).to eq 20
       end
 
-      it "makes a valid Stripe charge" do
+      xit "makes a valid Stripe charge" do
         post "/credits", params: {
           organization_id: admin_org_id,
           credit: {
@@ -207,7 +207,7 @@ RSpec.describe "Credits", type: :request do
         expect(charges(customer).first.amount).to eq 8000
       end
 
-      it "does not create unspent credits for the current_user" do
+      xit "does not create unspent credits for the current_user" do
         post "/credits", params: {
           organization_id: admin_org_id,
           credit: {
@@ -220,7 +220,7 @@ RSpec.describe "Credits", type: :request do
     end
 
     context "when payment fails" do
-      it "does not reward credits" do
+      xit "does not reward credits" do
         StripeMock.prepare_card_error(:card_declined, :new_charge)
 
         post "/credits", params: {
@@ -232,7 +232,7 @@ RSpec.describe "Credits", type: :request do
         expect(user.credits.where(spent: false).size).to eq(0)
       end
 
-      it "does not reward credits for orgs" do
+      xit "does not reward credits for orgs" do
         sign_in org_admin
 
         StripeMock.prepare_card_error(:card_declined, :new_charge)

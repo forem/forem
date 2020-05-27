@@ -21,7 +21,7 @@ RSpec.describe TagAdjustmentCreationService, type: :service do
   end
 
   describe "creates tag adjustment" do
-    it "with adjustment_type removal" do
+    xit "with adjustment_type removal" do
       tag_adjustment = create_service("removal").tag_adjustment
       tag_adjustment.save
       expect(tag_adjustment).to be_valid
@@ -29,7 +29,7 @@ RSpec.describe TagAdjustmentCreationService, type: :service do
       expect(tag_adjustment.status).to eq("committed")
     end
 
-    it "with adjustment_type addition" do
+    xit "with adjustment_type addition" do
       tag_adjustment = create_service("addition").tag_adjustment
       tag_adjustment.save
       expect(tag_adjustment).to be_valid
@@ -39,7 +39,7 @@ RSpec.describe TagAdjustmentCreationService, type: :service do
   end
 
   describe "creates notification" do
-    it "with adjustment_type removal" do
+    xit "with adjustment_type removal" do
       service = create_service("removal")
       tag_adjustment = service.tag_adjustment
       tag_adjustment.save
@@ -55,7 +55,7 @@ RSpec.describe TagAdjustmentCreationService, type: :service do
       expect(last_tag_adjustment.json_data["adjustment_type"]).to eq(tag_adjustment.adjustment_type)
     end
 
-    it "with adjustment_type addition" do
+    xit "with adjustment_type addition" do
       service = create_service("addition")
       tag_adjustment = service.tag_adjustment
       tag_adjustment.save

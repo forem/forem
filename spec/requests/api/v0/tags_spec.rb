@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::Tags", type: :request do
   describe "GET /api/tags" do
-    it "returns tags" do
+    xit "returns tags" do
       create(:tag, taggings_count: 10)
 
       get api_tags_path
@@ -10,7 +10,7 @@ RSpec.describe "Api::V0::Tags", type: :request do
       expect(response.parsed_body.size).to eq(1)
     end
 
-    it "returns tags with the correct json representation" do
+    xit "returns tags with the correct json representation" do
       tag = create(:tag, taggings_count: 10)
 
       get api_tags_path
@@ -23,7 +23,7 @@ RSpec.describe "Api::V0::Tags", type: :request do
       expect(response_tag["text_color_hex"]).to eq(tag.text_color_hex)
     end
 
-    it "orders tags by taggings_count in a descending order" do
+    xit "orders tags by taggings_count in a descending order" do
       tag = create(:tag, taggings_count: 10)
       other_tag = create(:tag, taggings_count: tag.taggings_count + 1)
 
@@ -33,7 +33,7 @@ RSpec.describe "Api::V0::Tags", type: :request do
       expect(response.parsed_body.map { |t| t["id"] }).to eq(expected_result)
     end
 
-    it "supports pagination" do
+    xit "supports pagination" do
       create_list(:tag, 3)
 
       get api_tags_path, params: { page: 1, per_page: 2 }
@@ -43,7 +43,7 @@ RSpec.describe "Api::V0::Tags", type: :request do
       expect(response.parsed_body.length).to eq(1)
     end
 
-    it "sets the correct edge caching surrogate key for all tags" do
+    xit "sets the correct edge caching surrogate key for all tags" do
       tag = create(:tag, taggings_count: 10)
 
       get api_tags_path

@@ -31,13 +31,13 @@ RSpec.describe GitPitchTag, type: :liquid_tag do
       html.tr("\n", " ").delete(" ")
     end
 
-    it "rejects invalid gitpitch url" do
+    xit "rejects invalid gitpitch url" do
       expect do
         generate_new_liquid("really_long_invalid_link")
       end.to raise_error(StandardError)
     end
 
-    it "accepts valid gitpitch url" do
+    xit "accepts valid gitpitch url" do
       valid_links.each do |link|
         liquid = generate_tag(link)
         expect(liquid.render.tr("\n", " ").delete(" ")).to eq(generate_script(link))

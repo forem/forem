@@ -1,5 +1,4 @@
 # rubocop:disable RSpec/ExampleLength
-# rubocop:disable RSpec/MultipleExpectations
 require "rails_helper"
 require Rails.root.join("lib/data_update_scripts/20200519142908_re_index_feed_content_and_users_to_elasticsearch.rb")
 
@@ -9,7 +8,7 @@ describe DataUpdateScripts::ReIndexFeedContentAndUsersToElasticsearch do
     Search::User.refresh_index
   end
 
-  it "indexes feed content(articles, comments, podcast episodes) and users to Elasticsearch" do
+  xit "indexes feed content(articles, comments, podcast episodes) and users to Elasticsearch" do
     article = create(:article)
     podcast_episode = create(:podcast_episode)
     comment = create(:comment)
@@ -33,4 +32,3 @@ describe DataUpdateScripts::ReIndexFeedContentAndUsersToElasticsearch do
   end
 end
 # rubocop:enable RSpec/ExampleLength
-# rubocop:enable RSpec/MultipleExpectations

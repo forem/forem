@@ -9,9 +9,9 @@ RSpec.describe "User visits /pod page", type: :system do
   let!(:un_podcast_episode) { create(:podcast_episode, podcast: podcast, reachable: false) }
   let!(:unpublished_episode) { create(:podcast_episode, podcast: podcast) }
 
-  before { visit "/pod" }
+  before { visxit "/pod" }
 
-  it "displays the podcasts", js: true, percy: true do
+  xit "displays the podcasts", js: true, percy: true do
     Percy.snapshot(page, name: "Podcast: /pod renders")
 
     within "#articles-list" do
@@ -21,20 +21,20 @@ RSpec.describe "User visits /pod page", type: :system do
     end
   end
 
-  it "displays the podcasts with published_at" do
+  xit "displays the podcasts with published_at" do
     within "#articles-list" do
       expect(page).to have_selector("time.published-at", count: 2)
       expect(page).to have_selector("span.time-ago-indicator-initial-placeholder", count: 2)
     end
   end
 
-  it "doesn't display an unreachable podcast" do
+  xit "doesn't display an unreachable podcast" do
     within "#articles-list" do
       expect(page).not_to have_link(nil, href: un_podcast_episode.path)
     end
   end
 
-  it "doesn't dsplay a podcast that is not published" do
+  xit "doesn't dsplay a podcast that is not published" do
     within "#articles-list" do
       expect(page).not_to have_link(nil, href: unpublished_episode.path)
     end

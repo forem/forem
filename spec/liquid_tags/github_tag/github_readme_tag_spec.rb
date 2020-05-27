@@ -13,19 +13,19 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
       Liquid::Template.parse("{% github #{path} #{options} %}")
     end
 
-    it "rejects GitHub URL without domain" do
+    xit "rejects GitHub URL without domain" do
       expect do
         generate_tag("dsdsdsdsdssd3")
       end.to raise_error(StandardError)
     end
 
-    it "rejects invalid GitHub repository URL" do
+    xit "rejects invalid GitHub repository URL" do
       expect do
         generate_tag("https://github.com/repository")
       end.to raise_error(StandardError)
     end
 
-    it "rejects a non existing GitHub repository URL" do
+    xit "rejects a non existing GitHub repository URL" do
       VCR.use_cassette("github_client_repository_not_found") do
         expect do
           generate_tag(url_repository_not_found)
@@ -33,42 +33,42 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
       end
     end
 
-    it "renders a repository URL" do
+    xit "renders a repository URL" do
       VCR.use_cassette("github_client_repository") do
         html = generate_tag(url_repository).render
         expect(html).to include(repo_owner)
       end
     end
 
-    it "renders a repository path" do
+    xit "renders a repository path" do
       VCR.use_cassette("github_client_repository") do
         html = generate_tag(path_repository).render
         expect(html).to include(repo_owner)
       end
     end
 
-    it "renders a repository URL with a trailing slash" do
+    xit "renders a repository URL with a trailing slash" do
       VCR.use_cassette("github_client_repository") do
         html = generate_tag("#{url_repository}/").render
         expect(html).to include(repo_owner)
       end
     end
 
-    it "renders a repository path with a trailing slash" do
+    xit "renders a repository path with a trailing slash" do
       VCR.use_cassette("github_client_repository") do
         html = generate_tag("#{path_repository}/").render
         expect(html).to include(repo_owner)
       end
     end
 
-    it "renders a repository URL with a fragment" do
+    xit "renders a repository URL with a fragment" do
       VCR.use_cassette("github_client_repository") do
         html = generate_tag(url_repository_fragment).render
         expect(html).to include(repo_owner)
       end
     end
 
-    it "renders a repository with a missing README" do
+    xit "renders a repository with a missing README" do
       allow(Github::Client).to receive(:readme).and_raise(Github::Errors::NotFound)
 
       VCR.use_cassette("github_client_repository") do
@@ -79,13 +79,13 @@ RSpec.describe GithubTag::GithubReadmeTag, type: :liquid_tag, vcr: true do
     end
 
     describe "options" do
-      it "rejects invalid options" do
+      xit "rejects invalid options" do
         expect do
           generate_tag(url_repository, "acme").render
         end.to raise_error(StandardError)
       end
 
-      it "accepts 'no-readme' as an option" do
+      xit "accepts 'no-readme' as an option" do
         VCR.use_cassette("github_client_repository_no_readme") do
           template = generate_tag(url_repository, "no-readme").render
           readme_css_class = "ltag-github-body"

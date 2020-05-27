@@ -15,7 +15,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     sign_in user
   end
 
-  it "User fills out comment box normally" do
+  xit "User fills out comment box normally" do
     # TODO: Add Percy snapshot?
     visit article.path.to_s
     wait_for_javascript
@@ -32,14 +32,14 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       wait_for_javascript
     end
 
-    it "Users fills out comment box with a Runkit tag" do
+    xit "Users fills out comment box with a Runkit tag" do
       fill_in "text-area", with: runkit_comment
       click_button("SUBMIT")
 
       expect_runkit_tag_to_be_active
     end
 
-    it "Users fills out comment box 2 Runkit tags" do
+    xit "Users fills out comment box 2 Runkit tags" do
       fill_in "text-area", with: runkit_comment
       click_button("SUBMIT")
 
@@ -51,7 +51,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
       expect_runkit_tag_to_be_active(count: 2)
     end
 
-    it "User fill out comment box with a Runkit tag, then clicks preview" do
+    xit "User fill out comment box with a Runkit tag, then clicks preview" do
       fill_in "text-area", with: runkit_comment
       click_button("PREVIEW")
 
@@ -59,7 +59,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     end
   end
 
-  it "User fill out comment box then click previews and submit" do
+  xit "User fill out comment box then click previews and submit" do
     visit article.path.to_s
     wait_for_javascript
 
@@ -73,7 +73,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     expect(page).to have_text(raw_comment)
   end
 
-  it "User replies to a comment" do
+  xit "User replies to a comment" do
     create(:comment, commentable: article, user_id: user.id)
     visit article.path.to_s
 
@@ -88,7 +88,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   # This is basically a black box test for
   # ./app/javascripts/packs/validateFileInputs.js
   # which is logic to validate file size and format when uploading via a form.
-  it "User attaches a valid image" do
+  xit "User attaches a valid image" do
     visit article.path.to_s
 
     attach_file(
@@ -100,7 +100,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     expect(page).to have_no_css("div.file-upload-error")
   end
 
-  it "User attaches a large image", percy: true do
+  xit "User attaches a large image", percy: true do
     visit article.path.to_s
 
     reduce_max_file_size = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-size-mb", "0")'
@@ -122,7 +122,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     )
   end
 
-  it "User attaches an invalid file type" do
+  xit "User attaches an invalid file type" do
     visit article.path.to_s
 
     allow_only_videos = 'document.querySelector("#image-upload-main").setAttribute("data-permitted-file-types", "[\"video\"]")'
@@ -142,7 +142,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     )
   end
 
-  it "User attaches a file with too long of a name" do
+  xit "User attaches a file with too long of a name" do
     visit article.path.to_s
 
     limit_file_name_length = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-name-length", "5")'

@@ -12,7 +12,7 @@ RSpec.describe Internal::UsersQuery, type: :query do
 
   describe ".call" do
     context "when no arguments are given" do
-      it "returns all users" do
+      xit "returns all users" do
         expect(described_class.call).to eq([user6, user5, user4, user3, user2, user])
       end
     end

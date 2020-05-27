@@ -15,7 +15,7 @@ RSpec.describe "Stories::Feeds", type: :request do
     let(:response_json) { JSON.parse(response.body) }
     let(:response_article) { response_json.first }
 
-    it "renders article list as json" do
+    xit "renders article list as json" do
       get "/stories/feed", headers: headers
 
       expect(response.content_type).to eq("application/json")
@@ -33,7 +33,7 @@ RSpec.describe "Stories::Feeds", type: :request do
     context "when rendering an article with an image" do
       let(:cloud_cover) { CloudCoverUrl.new(article.main_image) }
 
-      it "renders main_image as a cloud link" do
+      xit "renders main_image as a cloud link" do
         allow(CloudCoverUrl).to receive(:new).with(article.main_image).and_return(cloud_cover)
         allow(cloud_cover).to receive(:call).and_call_original
 
@@ -47,7 +47,7 @@ RSpec.describe "Stories::Feeds", type: :request do
     context "when main_image is null" do
       let(:article) { create(:article, main_image: nil) }
 
-      it "renders main_image as null" do
+      xit "renders main_image as null" do
         # Calling the standard feed endpoint only retrieves articles without images if you're logged in.
         # We'll call use the 'latest' param to get around this
         get "/stories/feed?timeframe=latest", headers: headers
@@ -58,7 +58,7 @@ RSpec.describe "Stories::Feeds", type: :request do
     context "when there isn't an organization attached to the article" do
       let(:organization) { nil }
 
-      it "omits organization keys from json" do
+      xit "omits organization keys from json" do
         get "/stories/feed", headers: headers
 
         expect(response_article["organization_id"]).to eq nil
@@ -69,7 +69,7 @@ RSpec.describe "Stories::Feeds", type: :request do
     context "when there aren't any tags on the article" do
       let(:tags) { nil }
 
-      it "renders an empty tag list" do
+      xit "renders an empty tag list" do
         get "/stories/feed", headers: headers
 
         expect(response_article["tag_list"]).to eq []
@@ -79,14 +79,14 @@ RSpec.describe "Stories::Feeds", type: :request do
     context "when timeframe parameter is present" do
       let(:feed_service) { Articles::Feed.new(number_of_articles: 1, page: 1, tag: []) }
 
-      it "calls the feed service for a timeframe" do
+      xit "calls the feed service for a timeframe" do
         allow(Articles::Feed).to receive(:new).and_return(feed_service)
         allow(feed_service).to receive(:top_articles_by_timeframe).with(timeframe: "week").and_call_original
         get "/stories/feed/week", headers: headers
         expect(feed_service).to have_received(:top_articles_by_timeframe).with(timeframe: "week")
       end
 
-      it "calls the feed service for latest" do
+      xit "calls the feed service for latest" do
         allow(Articles::Feed).to receive(:new).and_return(feed_service)
         allow(feed_service).to receive(:latest_feed).and_call_original
         get "/stories/feed/latest", headers: headers
@@ -99,7 +99,7 @@ RSpec.describe "Stories::Feeds", type: :request do
         sign_in user
       end
 
-      it "sets a field test" do
+      xit "sets a field test" do
         expect do
           get "/stories/feed"
         end.to change(user.field_test_memberships, :count).by(1)
@@ -110,7 +110,7 @@ RSpec.describe "Stories::Feeds", type: :request do
     end
 
     context "when there are no params passed (base feed) and user is not signed in" do
-      it "sets a field test" do
+      xit "sets a field test" do
         expect do
           get "/stories/feed"
         end.not_to change(FieldTest::Membership, :count)
@@ -121,7 +121,7 @@ RSpec.describe "Stories::Feeds", type: :request do
       let(:comment) { create(:comment, score: 20, user: user) }
       let(:article) { comment.commentable }
 
-      it "renders top comments for the article" do
+      xit "renders top comments for the article" do
         get "/stories/feed/infinity", headers: headers
 
         expect(response_article["top_comments"]).not_to be_nil
@@ -134,7 +134,7 @@ RSpec.describe "Stories::Feeds", type: :request do
         sign_in user
       end
 
-      it "does not sets a field test" do
+      xit "does not sets a field test" do
         allow_any_instance_of(Stories::FeedsController).to receive(:field_test) # rubocop:disable RSpec/AnyInstance
 
         expect do

@@ -12,7 +12,7 @@ RSpec.describe RatingVotes::AssignRatingWorker, type: :worker do
   end
 
   describe "#perform" do
-    it "assigns explicit score" do
+    xit "assigns explicit score" do
       second_user.add_role(:trusted)
       create(:rating_vote, article_id: article.id, user_id: user.id, rating: 3.0)
       create(:rating_vote, article_id: article.id, user_id: second_user.id, rating: 2.0)
@@ -21,7 +21,7 @@ RSpec.describe RatingVotes::AssignRatingWorker, type: :worker do
       expect(article.reload.experience_level_rating_distribution).to eq(1.0)
     end
 
-    it "assigns implicit readinglist_reaction score" do
+    xit "assigns implicit readinglist_reaction score" do
       create(:rating_vote, article_id: article.id, user_id: user.id, rating: 4.0)
       create(:rating_vote, article_id: article.id, user_id: second_user.id, rating: 2.0, context: "readinglist_reaction")
       worker.perform(article.id)
@@ -29,7 +29,7 @@ RSpec.describe RatingVotes::AssignRatingWorker, type: :worker do
       expect(article.reload.experience_level_rating_distribution).to eq(2.0)
     end
 
-    it "assigns implicit comment score" do
+    xit "assigns implicit comment score" do
       create(:rating_vote, article_id: article.id, user_id: user.id, rating: 4.0)
       create(:rating_vote, article_id: article.id, user_id: second_user.id, rating: 1.0, context: "comment")
       worker.perform(article.id)
@@ -37,7 +37,7 @@ RSpec.describe RatingVotes::AssignRatingWorker, type: :worker do
       expect(article.reload.experience_level_rating_distribution).to eq(3.0)
     end
 
-    it "updates article in Elasticsearch" do
+    xit "updates article in Elasticsearch" do
       create(:rating_vote, article_id: article.id, user_id: user.id, rating: 4.0)
       create(:rating_vote, article_id: article.id, user_id: second_user.id, rating: 1.0, context: "comment")
       worker.perform(article.id)

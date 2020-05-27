@@ -29,27 +29,27 @@ RSpec.describe "Sorting Dashboard Articles", type: :system, js: true do
     sign_in user
   end
 
-  it "shows articles sorted by default in created_at DESC" do
+  xit "shows articles sorted by default in created_at DESC" do
     test_article_order.call("/dashboard", [article1, article2, article3])
   end
 
-  it "shows articles sorted by created_at ASC" do
+  xit "shows articles sorted by created_at ASC" do
     test_article_order.call("/dashboard?sort=creation-asc", [article3, article2, article1])
   end
 
-  it "shows articles sorted by comments_count DESC" do
+  xit "shows articles sorted by comments_count DESC" do
     test_article_order.call("/dashboard?sort=comments-desc", [article1, article3, article2])
   end
 
-  it "shows articles sorted by page_views_count ASC" do
+  xit "shows articles sorted by page_views_count ASC" do
     test_article_order.call("/dashboard?sort=views-asc", [article1, article2, article3])
   end
 
-  it "shows articles sorted by public_reactions_count ASC" do
+  xit "shows articles sorted by public_reactions_count ASC" do
     test_article_order.call("/dashboard?sort=reactions-asc", [article3, article2, article1])
   end
 
-  it "shows articles sorted by published_at DESC" do
+  xit "shows articles sorted by published_at DESC" do
     test_article_order.call("/dashboard?sort=published-desc", [article2, article3, article1])
   end
 end

@@ -54,26 +54,26 @@ RSpec.describe MailchimpBot, type: :labor do
   end
 
   describe "#upsert" do
-    it "works" do
+    xit "works" do
       described_class.new(user).upsert
       expect(my_gibbon_client).to have_received(:upsert)
     end
   end
 
   describe "#upsert_to_newsletter" do
-    it "sends proper information" do
+    xit "sends proper information" do
       described_class.new(user).upsert_to_newsletter
       expect(my_gibbon_client).to have_received(:upsert).with(matcher)
     end
 
-    it "unsubscribes properly" do
+    xit "unsubscribes properly" do
       user.update(email_newsletter: false)
       described_class.new(user).upsert_to_newsletter
       expect(my_gibbon_client).to have_received(:upsert).
         with(hash_including(body: hash_including(status: "unsubscribed")))
     end
 
-    it "subscribes properly" do
+    xit "subscribes properly" do
       user.update(email_newsletter: false)
       user.update(email_newsletter: true)
       described_class.new(user).upsert_to_newsletter
@@ -81,7 +81,7 @@ RSpec.describe MailchimpBot, type: :labor do
         with(hash_including(body: hash_including(status: "subscribed")))
     end
 
-    it "updates email properly" do
+    xit "updates email properly" do
       user.update(email: Faker::Internet.email)
       user.confirm
       described_class.new(user).upsert_to_newsletter
@@ -89,7 +89,7 @@ RSpec.describe MailchimpBot, type: :labor do
         with(hash_including(body: hash_including(email_address: user.email)))
     end
 
-    it "tries to resubscribe the user if the user has previously been subscribed" do
+    xit "tries to resubscribe the user if the user has previously been subscribed" do
       user.update(email_newsletter: false)
       mailchimp_bot = described_class.new(user)
       mc_error =
@@ -104,11 +104,11 @@ RSpec.describe MailchimpBot, type: :labor do
   end
 
   describe "manage community moderator list" do
-    it "returns false if user isn't a community moderator" do
+    xit "returns false if user isn't a community moderator" do
       expect(described_class.new(user).manage_community_moderator_list).to be(false)
     end
 
-    it "sends proper information" do
+    xit "sends proper information" do
       user.update(email_community_mod_newsletter: true)
       user.add_role :trusted
       described_class.new(user).manage_community_moderator_list
@@ -122,11 +122,11 @@ RSpec.describe MailchimpBot, type: :labor do
   end
 
   describe "manage tag moderator list" do
-    it "returns false if user isn't a tag moderator" do
+    xit "returns false if user isn't a tag moderator" do
       expect(described_class.new(user).manage_community_moderator_list).to be(false)
     end
 
-    it "sends proper information" do
+    xit "sends proper information" do
       user.update(email_tag_mod_newsletter: true)
       user.add_role(:tag_moderator, tag)
       described_class.new(user).manage_tag_moderator_list
@@ -143,7 +143,7 @@ RSpec.describe MailchimpBot, type: :labor do
     context "when called" do
       before { allow(my_gibbon_client).to receive(:update).and_return(true) }
 
-      it "unsubscribes the user from the weekly newsletter" do
+      xit "unsubscribes the user from the weekly newsletter" do
         described_class.new(user).unsubscribe_all_newsletters
         expect(my_gibbon_client).to have_received(:update).
           with(hash_including(body: hash_including(status: "unsubscribed")))

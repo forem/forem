@@ -17,19 +17,19 @@ RSpec.describe "/listings", type: :request do
   end
 
   describe "GET /listings" do
-    it "has page content" do
+    xit "has page content" do
       get "/listings"
       expect(response.body).to include("classified-filters")
     end
 
-    it "has page content for category page" do
+    xit "has page content for category page" do
       get "/listings/saas"
       expect(response.body).to include("classified-filters")
     end
   end
 
   describe "GETS /listings/new" do
-    it "has page content" do
+    xit "has page content" do
       get "/listings"
       expect(response.body).to include("classified-filters")
     end
@@ -41,42 +41,42 @@ RSpec.describe "/listings", type: :request do
       sign_in user
     end
 
-    it "creates proper listing if credits are available" do
+    xit "creates proper listing if credits are available" do
       post "/listings", params: params
       expect(ClassifiedListing.last.processed_html).to include("hey my")
     end
 
-    it "spends credits" do
+    xit "spends credits" do
       num_credits = Credit.where(spent: true).size
       post "/listings", params: params
       expect(Credit.where(spent: true).size).to be > num_credits
     end
 
-    it "adds tags" do
+    xit "adds tags" do
       post "/listings", params: params
       expect(ClassifiedListing.last.cached_tag_list).to include("rails")
     end
 
-    it "creates the listing under the user" do
+    xit "creates the listing under the user" do
       post "/listings", params: params
       expect(ClassifiedListing.last.user_id).to eq user.id
     end
 
-    it "creates the listing for the user if no organization_id is selected" do
+    xit "creates the listing for the user if no organization_id is selected" do
       create(:organization_membership, user_id: user.id, organization_id: organization.id)
       post "/listings", params: params
       expect(ClassifiedListing.last.organization_id).to eq nil
       expect(ClassifiedListing.last.user_id).to eq user.id
     end
 
-    it "creates the listing for the organization" do
+    xit "creates the listing for the organization" do
       create(:organization_membership, user_id: user.id, organization_id: organization.id)
       params[:classified_listing][:organization_id] = organization.id
       post "/listings", params: params
       expect(ClassifiedListing.last.organization_id).to eq(organization.id)
     end
 
-    it "does not create an org listing if a different org member doesn't belong to the org" do
+    xit "does not create an org listing if a different org member doesn't belong to the org" do
       another_org = create(:organization)
       create(:organization_membership, user_id: user.id, organization_id: another_org.id)
       params[:classified_listing][:organization_id] = organization.id
@@ -93,14 +93,14 @@ RSpec.describe "/listings", type: :request do
         sign_in user
       end
 
-      it "increments rate limit for listing_creation" do
+      xit "increments rate limit for listing_creation" do
         allow(rate_limiter).to receive(:track_limit_by_action)
         post "/listings", params: params
 
         expect(rate_limiter).to have_received(:track_limit_by_action).with(:listing_creation)
       end
 
-      it "returns a 429 status when rate limit is reached" do
+      xit "returns a 429 status when rate limit is reached" do
         allow(rate_limiter).to receive(:limit_by_action).and_return(true)
         post "/listings", params: params
 
@@ -117,7 +117,7 @@ RSpec.describe "/listings", type: :request do
       sign_in user
     end
 
-    it "has page content" do
+    xit "has page content" do
       get "/listings/#{classified_listing.id}/edit"
       expect(response.body).to include("You can bump your listing")
     end
@@ -131,28 +131,28 @@ RSpec.describe "/listings", type: :request do
       sign_in user
     end
 
-    it "updates bumped_at if action is bump" do
+    xit "updates bumped_at if action is bump" do
       put "/listings/#{classified_listing.id}", params: {
         classified_listing: { action: "bump" }
       }
       expect(ClassifiedListing.last.bumped_at).to be > 10.seconds.ago
     end
 
-    it "updates publish if action is unpublish" do
+    xit "updates publish if action is unpublish" do
       put "/listings/#{classified_listing.id}", params: {
         classified_listing: { action: "unpublish" }
       }
       expect(ClassifiedListing.last.published).to eq(false)
     end
 
-    it "updates body_markdown" do
+    xit "updates body_markdown" do
       put "/listings/#{classified_listing.id}", params: {
         classified_listing: { body_markdown: "hello new markdown" }
       }
       expect(ClassifiedListing.last.body_markdown).to eq("hello new markdown")
     end
 
-    it "does not update body_markdown if not bumped/created recently" do
+    xit "does not update body_markdown if not bumped/created recently" do
       classified_listing.update_column(:bumped_at, 50.hours.ago)
       put "/listings/#{classified_listing.id}", params: {
         classified_listing: { body_markdown: "hello new markdown" }
@@ -160,7 +160,7 @@ RSpec.describe "/listings", type: :request do
       expect(ClassifiedListing.last.body_markdown).not_to eq("hello new markdown")
     end
 
-    it "updates other fields" do
+    xit "updates other fields" do
       put "/listings/#{classified_listing.id}", params: {
         classified_listing: { body_markdown: "hello new markdown", title: "New title!", tag_list: "new, tags, hey" }
       }
@@ -168,7 +168,7 @@ RSpec.describe "/listings", type: :request do
       expect(ClassifiedListing.last.cached_tag_list).to include("hey")
     end
 
-    it "does not update other fields" do
+    xit "does not update other fields" do
       classified_listing.update_column(:bumped_at, 50.hours.ago)
       put "/listings/#{classified_listing.id}", params: {
         classified_listing: { body_markdown: "hello new markdown", title: "New title!", tag_list: "new, tags, hey" }

@@ -17,13 +17,13 @@ RSpec.describe SoundcloudTag, type: :liquid_tag do
       CGI.parse(iframe_src[0].value)
     end
 
-    it "accepts soundcloud link" do
+    xit "accepts soundcloud link" do
       liquid = generate_new_liquid(soundcloud_link)
       rendered_soundcloud_iframe = liquid.render
       Approvals.verify(rendered_soundcloud_iframe, name: "soundcloud_liquid_tag", format: :html)
     end
 
-    it "rejects invalid soundcloud link" do
+    xit "rejects invalid soundcloud link" do
       expect do
         generate_new_liquid("invalid_soundcloud_link")
       end.to raise_error(StandardError)

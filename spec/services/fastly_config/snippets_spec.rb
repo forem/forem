@@ -6,7 +6,7 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
   let(:fastly_snippet) { instance_double Fastly::Snippet }
   let(:snippets_config) { described_class.new(fastly, fastly_version) }
 
-  it "determines if an update is needed" do
+  xit "determines if an update is needed" do
     allow(fastly_version).to receive(:number).and_return(1)
     allow(fastly).to receive(:get_snippet).and_return(fastly_snippet)
     allow(fastly_snippet).to receive(:content).and_return("some VCL")
@@ -14,7 +14,7 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
   end
 
   describe "upsert_config" do
-    it "creates a new snippet if one isn't found" do
+    xit "creates a new snippet if one isn't found" do
       allow(fastly_version).to receive(:number).and_return(1)
       allow(fastly).to receive(:get_snippet).and_return(nil)
       allow(fastly).to receive(:create).and_return(fastly_snippet)
@@ -23,7 +23,7 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
       expect(fastly).to have_received(:create).at_least(:once)
     end
 
-    it "updates a snippet if one is found" do
+    xit "updates a snippet if one is found" do
       allow(fastly_version).to receive(:number).and_return(1)
       allow(fastly).to receive(:get_snippet).and_return(fastly_snippet)
       allow(fastly_snippet).to receive(:content).and_return("test")
@@ -34,7 +34,7 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
       expect(fastly_snippet).to have_received(:save!).at_least(:once)
     end
 
-    it "logs success messages" do
+    xit "logs success messages" do
       allow(DatadogStatsClient).to receive(:increment)
       allow(fastly_version).to receive(:number).and_return(1)
       allow(fastly).to receive(:get_snippet).and_return(fastly_snippet)

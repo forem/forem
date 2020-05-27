@@ -14,13 +14,13 @@ RSpec.describe Users::DeleteComments, type: :service do
     allow(buster).to receive(:bust_user)
   end
 
-  it "destroys user comments" do
+  xit "destroys user comments" do
     comment
     described_class.call(user, buster)
     expect(Comment.where(user_id: user.id).any?).to be false
   end
 
-  it "removes comments from Elasticsearch" do
+  xit "removes comments from Elasticsearch" do
     comment
     sidekiq_perform_enqueued_jobs
     expect(comment.elasticsearch_doc).not_to be_nil
@@ -28,13 +28,13 @@ RSpec.describe Users::DeleteComments, type: :service do
     expect { comment.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
   end
 
-  it "busts cache" do
+  xit "busts cache" do
     described_class.call(user, buster)
     expect(buster).to have_received(:bust_comment).with(article).at_least(:once)
     expect(buster).to have_received(:bust_user).with(user)
   end
 
-  it "destroys moderation notifications properly" do
+  xit "destroys moderation notifications properly" do
     create(:notification, notifiable: comment, action: "Moderation", user: trusted_user)
     described_class.call(user, buster)
     expect(Notification.count).to eq 0

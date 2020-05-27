@@ -6,7 +6,7 @@ RSpec.describe Slack::Messengers::CommentUserWarned, type: :service do
 
   let(:default_params) { { comment: comment } }
 
-  it "does not message slack for a comment with a regular user" do
+  xit "does not message slack for a comment with a regular user" do
     sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
       described_class.call(comment: build(:comment, user: build(:user)))
     end
@@ -17,7 +17,7 @@ RSpec.describe Slack::Messengers::CommentUserWarned, type: :service do
       user.add_role(:warned)
     end
 
-    it "contains the correct info", :aggregate_failures do
+    xit "contains the correct info", :aggregate_failures do
       sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
         described_class.call(default_params)
       end
@@ -35,7 +35,7 @@ RSpec.describe Slack::Messengers::CommentUserWarned, type: :service do
       expect(message).to include(internal_user_url)
     end
 
-    it "messages the proper channel with the proper username and emoji", :aggregate_failures do
+    xit "messages the proper channel with the proper username and emoji", :aggregate_failures do
       sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
         described_class.call(default_params)
       end

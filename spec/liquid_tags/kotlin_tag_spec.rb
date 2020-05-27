@@ -9,7 +9,7 @@ RSpec.describe KotlinTag, type: :liquid_tag do
       Liquid::Template.parse("{% kotlin #{link} %}")
     end
 
-    it "accepts only Kotlin Playground links" do
+    xit "accepts only Kotlin Playground links" do
       badurl = "https://example.com"
       expect do
         generate_new_liquid(badurl)
@@ -25,19 +25,19 @@ RSpec.describe KotlinTag, type: :liquid_tag do
       expect(KotlinTag.parse_link(url)).to eq(expected)
     end
 
-    it "parses URL correctly" do
+    xit "parses URL correctly" do
       check("https://pl.kotl.in/owreUFFUG", from: nil, readOnly: nil, short: "owreUFFUG", theme: nil, to: nil)
       check("https://pl.kotl.in/owreUFFUG?theme=dracula&from=3&to=6&readOnly=true", from: "3", readOnly: "true", short: "owreUFFUG", theme: "dracula", to: "6")
       check("https://pl.kotl.in/owreUFFUG?theme=dracula&readOnly=true", from: nil, readOnly: "true", short: "owreUFFUG", theme: "dracula", to: nil)
       check("https://pl.kotl.in/owreUFFUG?from=3&to=6", from: "3", readOnly: nil, short: "owreUFFUG", theme: nil, to: "6")
     end
 
-    it "produces a correct final URL" do
+    xit "produces a correct final URL" do
       expected = "https://play.kotlinlang.org/embed?short=owreUFFUG&from=3&to=6&theme=darcula&readOnly=true"
       expect(described_class.embedded_url(valid_link)).to eq(expected)
     end
 
-    it "renders correctly a Kotlin Playground link" do
+    xit "renders correctly a Kotlin Playground link" do
       liquid = generate_new_liquid(valid_link)
       rendered_kotlin_iframe = liquid.render
       Approvals.verify(rendered_kotlin_iframe, name: "kotlin_liquid_tag", format: :html)

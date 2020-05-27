@@ -9,15 +9,15 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     sign_in user
   end
 
-  it "renders the page when user previews their changes", percy: true do
-    visit "/#{user.username}/#{article.slug}/edit"
+  xit "renders the page when user previews their changes", percy: true do
+    visxit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("PREVIEW")
     Percy.snapshot(page, name: "Editing an article: shows the title")
   end
 
-  it "user previews their changes" do
-    visit "/#{user.username}/#{article.slug}/edit"
+  xit "user previews their changes" do
+    visxit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("PREVIEW")
 
@@ -25,23 +25,23 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     expect(find(".active").text).to have_text("EDIT")
   end
 
-  it "user updates their post" do
-    visit "/#{user.username}/#{article.slug}/edit"
+  xit "user updates their post" do
+    visxit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("SAVE CHANGES")
     expect(page).to have_text("Yooo")
   end
 
-  it "user unpublishes their post" do
-    visit "/#{user.username}/#{article.slug}/edit"
+  xit "user unpublishes their post" do
+    visxit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("true", "false")
     click_button("SAVE CHANGES")
 
     expect(page).to have_text("Unpublished Post.")
   end
 
-  it "renders the page when user unpublishes their post", percy: true do
-    visit "/#{user.username}/#{article.slug}/edit"
+  xit "renders the page when user unpublishes their post", percy: true do
+    visxit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("true", "false")
     click_button("SAVE CHANGES")
     Percy.snapshot(page, name: "Editing an article: shows when unpublished")

@@ -15,7 +15,7 @@ RSpec.describe Moderator::MergeUser, type: :service do
 
     before { sidekiq_perform_enqueued_jobs }
 
-    it "deletes delete_user_id and keeps keep_user" do
+    xit "deletes delete_user_id and keeps keep_user" do
       sidekiq_perform_enqueued_jobs do
         described_class.call_merge(admin: admin, keep_user: keep_user, delete_user_id: delete_user.id)
       end
@@ -23,7 +23,7 @@ RSpec.describe Moderator::MergeUser, type: :service do
       expect(User.find_by(id: keep_user.id)).not_to be_nil
     end
 
-    it "updates documents in Elasticsearch" do
+    xit "updates documents in Elasticsearch" do
       related_records
       drain_all_sidekiq_jobs
       expect(article.elasticsearch_doc.dig("_source", "user", "id")).to eq(delete_user_id)

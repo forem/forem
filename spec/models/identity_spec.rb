@@ -34,7 +34,7 @@ RSpec.describe Identity, type: :model do
       let(:auth_payload) { OmniAuth.config.mock_auth[:github] }
       let(:provider) { Authentication::Providers::Github.new(auth_payload) }
 
-      it "initializes a new identity from the auth payload" do
+      xit "initializes a new identity from the auth payload" do
         identity = described_class.build_from_omniauth(provider)
 
         expect(identity.new_record?).to be(true)
@@ -45,7 +45,7 @@ RSpec.describe Identity, type: :model do
         expect(identity.auth_data_dump).to eq(provider.payload)
       end
 
-      it "finds an existing identity" do
+      xit "finds an existing identity" do
         payload = provider.payload
 
         existing_identity = described_class.create!(
@@ -66,7 +66,7 @@ RSpec.describe Identity, type: :model do
       let(:auth_payload) { OmniAuth.config.mock_auth[:twitter] }
       let(:provider) { Authentication::Providers::Twitter.new(auth_payload) }
 
-      it "initializes a new identity from the auth payload" do
+      xit "initializes a new identity from the auth payload" do
         identity = described_class.build_from_omniauth(provider)
 
         expect(identity.new_record?).to be(true)
@@ -77,7 +77,7 @@ RSpec.describe Identity, type: :model do
         expect(identity.auth_data_dump).to eq(provider.payload)
       end
 
-      it "finds an existing identity" do
+      xit "finds an existing identity" do
         payload = provider.payload
 
         existing_identity = described_class.create!(
@@ -93,7 +93,7 @@ RSpec.describe Identity, type: :model do
         expect(identity).to eq(existing_identity)
       end
 
-      it "does not store the access token in auth_data_dump" do
+      xit "does not store the access token in auth_data_dump" do
         expect(auth_payload.extra.access_token).not_to be_nil
 
         identity = described_class.build_from_omniauth(provider)

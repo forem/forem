@@ -11,7 +11,7 @@ RSpec.describe Follows::CreateChatChannelWorker, type: :worker do
       let_it_be(:user2) { create(:user) }
       let_it_be(:follow) { create(:follow, follower: user, followable: user2) }
 
-      it "creates a chat channel when mutual followers" do
+      xit "creates a chat channel when mutual followers" do
         follow2 = create(:follow, follower: user2, followable: user)
 
         # Follow has an after_create callback that creates a channel between the two users,
@@ -24,13 +24,13 @@ RSpec.describe Follows::CreateChatChannelWorker, type: :worker do
         end.to change(ChatChannel, :count).by(1)
       end
 
-      it "doesn't create a chat channel when the follow is not mutual" do
+      xit "doesn't create a chat channel when the follow is not mutual" do
         expect do
           worker.perform(follow.id)
         end.not_to change(ChatChannel, :count)
       end
 
-      it "doesn't do anything if follow is not from user to user" do
+      xit "doesn't do anything if follow is not from user to user" do
         org_follow = create(:follow, follower: user, followable: create(:organization))
         expect do
           worker.perform(org_follow.id)
@@ -39,7 +39,7 @@ RSpec.describe Follows::CreateChatChannelWorker, type: :worker do
     end
 
     context "without follow" do
-      it "does not break" do
+      xit "does not break" do
         expect { worker.perform(nil) }.not_to raise_error
       end
     end

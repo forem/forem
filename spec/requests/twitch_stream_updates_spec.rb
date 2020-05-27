@@ -16,7 +16,7 @@ RSpec.describe "TwitchStramUpdates", type: :request do
         }
       end
 
-      it "returns the challenge" do
+      xit "returns the challenge" do
         get "/users/#{user.id}/twitch_stream_updates", params: twitch_webhook_subscription_params
 
         expect(response.body).to eq challenge
@@ -32,7 +32,7 @@ RSpec.describe "TwitchStramUpdates", type: :request do
         }
       end
 
-      it "returns a 204 and logs" do
+      xit "returns a 204 and logs" do
         get "/users/#{user.id}/twitch_stream_updates", params: twitch_webhook_subscription_params
 
         expect(response.status).to eq 204
@@ -56,7 +56,7 @@ RSpec.describe "TwitchStramUpdates", type: :request do
         "sha256=96840ed4d83666551e43b384d94ac481367504564d6474b5dea710cedde5ce18"
       end
 
-      it "updates the Users twitch streaming status" do
+      xit "updates the Users twitch streaming status" do
         expect { post "/users/#{user.id}/twitch_stream_updates", params: twitch_webhook_params, headers: { "Content-Type" => "application/json", "X-Hub-Signature" => twitch_webhook_secret_sha } }.
           to change { user.reload.currently_streaming? }.from(false).to(true).
           and change { user.reload.currently_streaming_on_twitch? }.from(false).to(true)
@@ -69,7 +69,7 @@ RSpec.describe "TwitchStramUpdates", type: :request do
       end
       let(:twitch_webhook_secret_sha) { "sha256=BAD_HASH" }
 
-      it "noops" do
+      xit "noops" do
         expect { post "/users/#{user.id}/twitch_stream_updates", params: twitch_webhook_params, headers: { "Content-Type" => "application/json", "X-Hub-Signature" => twitch_webhook_secret_sha } }.
           to not_change { user.reload.currently_streaming? }.from(false).
           and not_change { user.reload.currently_streaming_on_twitch? }.from(false)
@@ -86,7 +86,7 @@ RSpec.describe "TwitchStramUpdates", type: :request do
         "sha256=3222cdd929339a296712edf3ec820266b1e29c0e4eeb715dd18d98c0c2294ca3"
       end
 
-      it "updates the Users twitch streaming status" do
+      xit "updates the Users twitch streaming status" do
         expect { post "/users/#{user.id}/twitch_stream_updates", params: twitch_webhook_params, headers: { "Content-Type" => "application/json", "X-Hub-Signature" => twitch_webhook_secret_sha } }.
           to change { user.reload.currently_streaming? }.from(true).to(false).
           and change { user.reload.currently_streaming_on_twitch? }.from(true).to(false)

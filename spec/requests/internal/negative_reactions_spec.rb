@@ -8,7 +8,7 @@ RSpec.describe "/internal/negative_reactions", type: :request do
       sign_in user
     end
 
-    it "blocks the request" do
+    xit "blocks the request" do
       expect do
         get "/internal/negative_reactions"
       end.to raise_error(Pundit::NotAuthorizedError)
@@ -18,7 +18,7 @@ RSpec.describe "/internal/negative_reactions", type: :request do
   context "when the user is a single resource admin" do
     let(:single_resource_admin) { create(:user, :single_resource_admin, resource: ModeratorAction) }
 
-    it "renders with status 200" do
+    xit "renders with status 200" do
       sign_in single_resource_admin
       get internal_moderator_actions_path
       expect(response.status).to eq 200
@@ -36,14 +36,14 @@ RSpec.describe "/internal/negative_reactions", type: :request do
       sign_in admin
     end
 
-    it "does not block the request" do
+    xit "does not block the request" do
       expect do
         get "/internal/negative_reactions"
       end.not_to raise_error
     end
 
     describe "GETS /internal/negative_reactions" do
-      it "renders to appropriate page" do
+      xit "renders to appropriate page" do
         get "/internal/negative_reactions"
         expect(response.body).to include(CGI.escapeHTML(moderator.username)).
           and include(CGI.escapeHTML(user_reaction.reactable.username)).

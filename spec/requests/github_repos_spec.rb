@@ -40,13 +40,13 @@ RSpec.describe "GithubRepos", type: :request do
 
   describe "GET /github_repos" do
     context "when user is unauthorized" do
-      it "returns unauthorized if the user is not signed in" do
+      xit "returns unauthorized if the user is not signed in" do
         get github_repos_path, headers: headers
 
         expect(response).to have_http_status(:unauthorized)
       end
 
-      it "returns unauthorized if the user not has authenticated through GitHub" do
+      xit "returns unauthorized if the user not has authenticated through GitHub" do
         user = create(:user)
         sign_in user
 
@@ -59,7 +59,7 @@ RSpec.describe "GithubRepos", type: :request do
     context "when user is authorized" do
       before { sign_in user }
 
-      it "returns unauthorized if the user is not authorized to perform the GitHub API call" do
+      xit "returns unauthorized if the user is not authorized to perform the GitHub API call" do
         allow(Github::OauthClient).to receive(:new).and_raise(Github::Errors::Unauthorized)
 
         get github_repos_path, headers: headers
@@ -67,13 +67,13 @@ RSpec.describe "GithubRepos", type: :request do
         expect(response.parsed_body["error"]).to include("GitHub Unauthorized")
       end
 
-      it "returns 200 on success" do
+      xit "returns 200 on success" do
         get github_repos_path, headers: headers
 
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns repositories with the correct JSON representation" do
+      xit "returns repositories with the correct JSON representation" do
         get github_repos_path, headers: headers
 
         response_repo = response.parsed_body.first
@@ -89,7 +89,7 @@ RSpec.describe "GithubRepos", type: :request do
 
     let(:github_repo) { stubbed_github_repos.first.to_h }
 
-    it "returns 200 and json response on success" do
+    xit "returns 200 and json response on success" do
       params = { github_repo: github_repo.to_json }
       post update_or_create_github_repos_path(params), headers: headers
 
@@ -97,7 +97,7 @@ RSpec.describe "GithubRepos", type: :request do
       expect(response.content_type).to eq("application/json")
     end
 
-    it "returns 404 if no repository is found" do
+    xit "returns 404 if no repository is found" do
       allow(github_client).to receive(:repository).and_raise(Github::Errors::NotFound)
 
       params = { github_repo: github_repo.to_json }
@@ -105,7 +105,7 @@ RSpec.describe "GithubRepos", type: :request do
       expect(response).to have_http_status(:not_found)
     end
 
-    it "updates the current user github_repos_updated_at" do
+    xit "updates the current user github_repos_updated_at" do
       previous_date = user.github_repos_updated_at
 
       Timecop.travel(5.minutes.from_now) do
@@ -115,7 +115,7 @@ RSpec.describe "GithubRepos", type: :request do
       end
     end
 
-    it "allows the repo to be featured" do
+    xit "allows the repo to be featured" do
       github_repo[:featured] = true
       params = { github_repo: github_repo.to_json }
       post update_or_create_github_repos_path(params), headers: headers
@@ -123,7 +123,7 @@ RSpec.describe "GithubRepos", type: :request do
       expect(response.parsed_body["featured"]).to be(true)
     end
 
-    it "allows the repo to be unfeatured" do
+    xit "allows the repo to be unfeatured" do
       github_repo[:featured] = false
       params = { github_repo: github_repo.to_json }
       post update_or_create_github_repos_path(params), headers: headers

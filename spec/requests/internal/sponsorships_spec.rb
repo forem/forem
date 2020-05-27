@@ -10,12 +10,12 @@ RSpec.describe "/internal/sponsorships", type: :request do
       create(:sponsorship, organization: org, level: :gold)
     end
 
-    it "renders successfully" do
+    xit "renders successfully" do
       get "/internal/sponsorships"
       expect(response).to be_successful
     end
 
-    it "shows sponsorship" do
+    xit "shows sponsorship" do
       get "/internal/sponsorships"
       expect(response.body).to include(org.username)
       expect(response.body).to include("gold")
@@ -30,7 +30,7 @@ RSpec.describe "/internal/sponsorships", type: :request do
       sign_in admin
     end
 
-    it "renders successfully" do
+    xit "renders successfully" do
       get edit_internal_sponsorship_path(sponsorship.id)
       expect(response).to be_successful
     end
@@ -46,12 +46,12 @@ RSpec.describe "/internal/sponsorships", type: :request do
       sign_in admin
     end
 
-    it "redirects to index" do
+    xit "redirects to index" do
       put "/internal/sponsorships/#{sponsorship.id}", params: { sponsorship: valid_attributes }
       expect(response).to redirect_to(internal_sponsorships_path)
     end
 
-    it "updates the sponsorship" do
+    xit "updates the sponsorship" do
       put "/internal/sponsorships/#{sponsorship.id}", params: { sponsorship: valid_attributes }
       sponsorship.reload
       expect(sponsorship.status).to eq("live")
@@ -59,13 +59,13 @@ RSpec.describe "/internal/sponsorships", type: :request do
       expect(sponsorship.blurb_html).to eq(valid_attributes[:blurb_html])
     end
 
-    it "doesn't update when attributes are invalid" do
+    xit "doesn't update when attributes are invalid" do
       put "/internal/sponsorships/#{sponsorship.id}", params: { sponsorship: invalid_attributes }
       sponsorship.reload
       expect(sponsorship.status).to eq("pending")
     end
 
-    it "shows errors when attributes are invalid" do
+    xit "shows errors when attributes are invalid" do
       put "/internal/sponsorships/#{sponsorship.id}", params: { sponsorship: invalid_attributes }
       expect(response.body).to include("Status is not included in the list")
     end
@@ -74,7 +74,7 @@ RSpec.describe "/internal/sponsorships", type: :request do
   describe "DELETE /internal/sponsorships/:id" do
     let!(:sponsorship) { create(:sponsorship, organization: org, level: :silver, status: "live", expires_at: Time.current) }
 
-    it "destroys a sponsorship" do
+    xit "destroys a sponsorship" do
       sign_in admin
       expect do
         delete internal_sponsorship_path(sponsorship.id)

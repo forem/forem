@@ -11,7 +11,7 @@ RSpec.describe "/internal/badges", type: :request do
       sign_in admin
     end
 
-    it "awards badges" do
+    xit "awards badges" do
       expect do
         post internal_badges_award_badges_path, params: {
           badge: badge.slug,
@@ -21,7 +21,7 @@ RSpec.describe "/internal/badges", type: :request do
       end.to change { user.badges.count }.by(1).and change { user2.badges.count }.by(1)
     end
 
-    it "awards badges without a message" do
+    xit "awards badges without a message" do
       expect do
         post internal_badges_award_badges_path, params: {
           badge: badge.slug,
@@ -31,7 +31,7 @@ RSpec.describe "/internal/badges", type: :request do
       end.to change { user.badges.count }.by(1).and change { user2.badges.count }.by(1)
     end
 
-    it "does not award a badge and raises an error if a badge is not specified" do
+    xit "does not award a badge and raises an error if a badge is not specified" do
       expect do
         post internal_badges_award_badges_path, params: {
           usernames: "#{user.username}, #{user2.username}",

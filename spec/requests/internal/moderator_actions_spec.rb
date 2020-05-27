@@ -8,7 +8,7 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
       sign_in user
     end
 
-    it "blocks the request" do
+    xit "blocks the request" do
       expect do
         get internal_moderator_actions_path
       end.to raise_error(Pundit::NotAuthorizedError)
@@ -20,7 +20,7 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
       create(:user, :single_resource_admin, resource: ModeratorAction)
     end
 
-    it "renders the page" do
+    xit "renders the page" do
       sign_in single_resource_admin
 
       get internal_moderator_actions_path
@@ -35,12 +35,12 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
       sign_in admin
     end
 
-    it "does not block the request" do
+    xit "does not block the request" do
       get internal_moderator_actions_path
       expect(response).to have_http_status(:ok)
     end
 
-    it "renders the page with a user's audit log" do
+    xit "renders the page with a user's audit log" do
       audit_log = create(
         :audit_log,
         category: "moderator.audit.log",
@@ -54,7 +54,7 @@ RSpec.describe "/internal/moderator_reactions", type: :request do
       expect(response.body).to include(audit_log.id.to_s)
     end
 
-    it "renders the page with an audit log not belonging to a specific user" do
+    xit "renders the page with an audit log not belonging to a specific user" do
       audit_log = create(
         :audit_log,
         category: "moderator.audit.log",

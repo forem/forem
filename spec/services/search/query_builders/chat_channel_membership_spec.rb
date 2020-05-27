@@ -2,20 +2,20 @@ require "rails_helper"
 
 RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
   describe "::initialize" do
-    it "sets params" do
+    xit "sets params" do
       filter_params = { foo: "bar" }
       filter = described_class.new(params: filter_params)
       expect(filter.params).to include(filter_params)
     end
 
-    it "builds query body" do
+    xit "builds query body" do
       filter = described_class.new(params: {})
       expect(filter.body).not_to be_nil
     end
   end
 
   describe "#as_hash" do
-    it "applies FILTER_KEYS from params" do
+    xit "applies FILTER_KEYS from params" do
       params = { channel_status: "active", channel_type: "direct", user_id: 1 }
       filter = described_class.new(params: params)
       expected_filters = [
@@ -27,7 +27,7 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
 
-    it "applies QUERY_KEYS from params" do
+    xit "applies QUERY_KEYS from params" do
       params = { channel_text: "a_name" }
       query = described_class.new(params: params)
       expected_query = [{
@@ -38,7 +38,7 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       expect(query.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
     end
 
-    it "applies QUERY_KEYS and FILTER_KEYS from params" do
+    xit "applies QUERY_KEYS and FILTER_KEYS from params" do
       params = { channel_text: "a_name", channel_status: "active", user_id: 1 }
       query = described_class.new(params: params)
       expected_query = [{
@@ -51,7 +51,7 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       expect(query.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
 
-    it "always applies viewable_by and status params" do
+    xit "always applies viewable_by and status params" do
       params = { user_id: 1 }
       filter = described_class.new(params: params)
       expected_filters = [
@@ -61,7 +61,7 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
 
-    it "always applies channel discoverable and status params" do
+    xit "always applies channel discoverable and status params" do
       params = { user_id: SiteConfig.mascot_user_id }
       filter = described_class.new(params: params)
       expected_filters = [
@@ -71,7 +71,7 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
 
-    it "ignores params we dont support" do
+    xit "ignores params we dont support" do
       params = { not_supported: "direct", user_id: 1 }
       filter = described_class.new(params: params)
       expected_filters = [
@@ -81,13 +81,13 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
       expect(filter.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
 
-    it "sets default params when not present" do
+    xit "sets default params when not present" do
       filter = described_class.new(params: {})
       expect(filter.as_hash.dig("sort")).to eq("channel_last_message_at" => "desc")
       expect(filter.as_hash.dig("size")).to eq(0)
     end
 
-    it "allows default params to be overriden" do
+    xit "allows default params to be overriden" do
       params = { sort_by: "status", sort_direction: "asc", size: 20 }
       filter = described_class.new(params: params)
       expect(filter.as_hash.dig("sort")).to eq("status" => "asc")

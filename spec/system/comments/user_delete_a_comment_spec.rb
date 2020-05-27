@@ -12,9 +12,9 @@ RSpec.describe "Deleting Comment", type: :system, js: true do
     sign_in user
   end
 
-  it "works" do
+  xit "works" do
     # TODO: Add Percy snapshot?
-    visit "/"
+    visxit "/"
     visit comment.path + "/delete_confirm"
 
     wait_for_javascript

@@ -11,8 +11,8 @@ RSpec.describe "User uses response templates settings", type: :system do
     end
 
     context "when user has a response template already" do
-      it "renders the page", js: true, percy: true do
-        visit "/settings/response-templates"
+      xit "renders the page", js: true, percy: true do
+        visxit "/settings/response-templates"
 
         Percy.snapshot(page, name: "Settings: /response-templates renders")
 
@@ -21,22 +21,22 @@ RSpec.describe "User uses response templates settings", type: :system do
         Percy.snapshot(page, name: "Settings: /response-templates can edit")
       end
 
-      it "can go to the edit page of the response template", js: true do
-        visit "/settings/response-templates"
+      xit "can go to the edit page of the response template", js: true do
+        visxit "/settings/response-templates"
         click_link "Edit"
 
         expect(page).to have_current_path "/settings/response-templates/#{response_template.id}", ignore_query: true
       end
 
-      it "renders the page when deleting a response template", js: true, percy: true do
-        visit "/settings/response-templates"
+      xit "renders the page when deleting a response template", js: true, percy: true do
+        visxit "/settings/response-templates"
         accept_confirm { click_button "Remove" }
 
         Percy.snapshot(page, name: "Settings: /response-templates can delete")
       end
 
-      it "shows the proper message when deleting a reponse template", js: true do
-        visit "/settings/response-templates"
+      xit "shows the proper message when deleting a reponse template", js: true do
+        visxit "/settings/response-templates"
         accept_confirm { click_button "Remove" }
 
         expect(page).to have_text "was deleted."

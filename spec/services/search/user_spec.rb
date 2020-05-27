@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Search::User, type: :service do
-  it "defines INDEX_NAME, INDEX_ALIAS, and MAPPINGS", :aggregate_failures do
+  xit "defines INDEX_NAME, INDEX_ALIAS, and MAPPINGS", :aggregate_failures do
     expect(described_class::INDEX_NAME).not_to be_nil
     expect(described_class::INDEX_ALIAS).not_to be_nil
     expect(described_class::MAPPINGS).not_to be_nil
@@ -11,7 +11,7 @@ RSpec.describe Search::User, type: :service do
     let(:user1) { create(:user) }
     let(:user2) { create(:user) }
 
-    it "parses user document hits from search response" do
+    xit "parses user document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }
       allow(described_class).to receive(:search) { mock_search_response }
       described_class.search_documents(params: {})
@@ -19,7 +19,7 @@ RSpec.describe Search::User, type: :service do
     end
 
     context "with a query" do
-      it "searches by search_fields" do
+      xit "searches by search_fields" do
         allow(user1).to receive(:available_for).and_return("ruby")
         allow(user2).to receive(:employer_name).and_return("Ruby Tuesday")
         index_documents([user1, user2])
@@ -33,7 +33,7 @@ RSpec.describe Search::User, type: :service do
     end
 
     context "with a filter" do
-      it "searches by excluding roles" do
+      xit "searches by excluding roles" do
         user1.add_role(:admin)
         user2.add_role(:banned)
         index_documents([user1, user2])

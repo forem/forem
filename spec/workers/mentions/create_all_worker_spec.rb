@@ -12,7 +12,7 @@ RSpec.describe Mentions::CreateAllWorker, type: :worker do
     end
 
     context "when comment is valid" do
-      it "calls on Mentions::CreateAll" do
+      xit "calls on Mentions::CreateAll" do
         worker.perform(comment.id, comment.class.name)
 
         expect(Mentions::CreateAll).to have_received(:call).with(comment)
@@ -20,7 +20,7 @@ RSpec.describe Mentions::CreateAllWorker, type: :worker do
     end
 
     context "when comment is not valid" do
-      it "does not error" do
+      xit "does not error" do
         expect { worker.perform(nil, "Comment") }.not_to raise_error
       end
     end

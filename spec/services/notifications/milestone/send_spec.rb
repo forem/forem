@@ -5,12 +5,12 @@ RSpec.describe Notifications::Milestone::Send, type: :service do
   let(:article) { create(:article, user_id: user.id, page_views_count: 4000, public_reactions_count: 70) }
 
   context "when a user has never received a milestone notification" do
-    it "sends the appropriate level view milestone notification" do
+    xit "sends the appropriate level view milestone notification" do
       send_milestone_notification_view
       expect(user.notifications.first.action).to include "2048"
     end
 
-    it "sends the appropriate level reaction milestone notification" do
+    xit "sends the appropriate level reaction milestone notification" do
       send_milestone_notification_reaction
       expect(user.notifications.first.action).to include "64"
     end
@@ -34,33 +34,33 @@ RSpec.describe Notifications::Milestone::Send, type: :service do
         mock_previous_view_milestone_notification
       end
 
-      it "sends the appropriate level view milestone notification" do
+      xit "sends the appropriate level view milestone notification" do
         expect(user.notifications.second.action).to include "8192"
       end
 
-      it "adds an additional view milestone notification" do
+      xit "adds an additional view milestone notification" do
         expect(user.notifications.count).to eq 2
       end
 
-      it "does not the same view milestone notification if called again" do
+      xit "does not the same view milestone notification if called again" do
         send_milestone_notification_view
         expect(user.notifications.count).to eq 2
       end
 
-      it "does not send a view milestone notification again if the latest number of views is not past the next milestone" do
+      xit "does not send a view milestone notification again if the latest number of views is not past the next milestone" do
         article.update_column(:page_views_count, rand(9002..16_383))
         send_milestone_notification_view
         expect(user.notifications.count).to eq 2
       end
 
-      it "checks notification json data", :aggregate_failures do
+      xit "checks notification json data", :aggregate_failures do
         expect(user.notifications.where(notifiable_type: "Article").first.json_data["article"]["class"]["name"]).to eq "Article"
         expect(user.notifications.where(notifiable_id: article.id).first.json_data["article"]["id"]).to eq article.id
         expect(user.notifications.where(notifiable_id: article.id).first.json_data["article"]["title"]).to eq article.title
       end
     end
 
-    it "sends the appropriate level reaction milestone notification" do
+    xit "sends the appropriate level reaction milestone notification" do
       mock_previous_reaction_milestone_notification
       expect(user.notifications.last.action).to include "128"
     end
@@ -70,7 +70,7 @@ RSpec.describe Notifications::Milestone::Send, type: :service do
 
       before { article.organization = organization }
 
-      it "creates another notification related to organization" do
+      xit "creates another notification related to organization" do
         coll = Notification.where(organization_id: article.organization_id)
         expect { send_milestone_notification_reaction }.to change { coll.count }.by(1)
       end

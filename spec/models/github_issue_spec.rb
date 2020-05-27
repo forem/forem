@@ -12,13 +12,13 @@ RSpec.describe GithubIssue, type: :model, vcr: true do
 
   describe ".find_or_fetch" do
     context "when retrieving an issue", vcr: { cassette_name: "github_client_issue" } do
-      it "saves a new issue" do
+      xit "saves a new issue" do
         expect do
           described_class.find_or_fetch(url_issue)
         end.to change(described_class, :count).by(1)
       end
 
-      it "retrieves an existing issue" do
+      xit "retrieves an existing issue" do
         created_issue = described_class.find_or_fetch(url_issue)
 
         expect do
@@ -27,7 +27,7 @@ RSpec.describe GithubIssue, type: :model, vcr: true do
         end.not_to change(described_class, :count)
       end
 
-      it "saves the proper fields" do
+      xit "saves the proper fields" do
         issue = described_class.find_or_fetch(url_issue)
 
         expect(issue.url).to eq(url_issue)
@@ -37,13 +37,13 @@ RSpec.describe GithubIssue, type: :model, vcr: true do
     end
 
     context "when retrieving a pull request", vcr: { cassette_name: "github_client_pull_request" } do
-      it "saves a new issue" do
+      xit "saves a new issue" do
         expect do
           described_class.find_or_fetch(url_pull_request)
         end.to change(described_class, :count).by(1)
       end
 
-      it "retrieves an existing issue" do
+      xit "retrieves an existing issue" do
         created_issue = described_class.find_or_fetch(url_pull_request)
 
         expect do
@@ -52,7 +52,7 @@ RSpec.describe GithubIssue, type: :model, vcr: true do
         end.not_to change(described_class, :count)
       end
 
-      it "saves the proper fields" do
+      xit "saves the proper fields" do
         issue = described_class.find_or_fetch(url_pull_request)
 
         expect(issue.url).to eq(url_pull_request)
@@ -62,13 +62,13 @@ RSpec.describe GithubIssue, type: :model, vcr: true do
     end
 
     context "when retrieving a comment", vcr: { cassette_name: "github_client_comment" } do
-      it "saves a new issue comment" do
+      xit "saves a new issue comment" do
         expect do
           described_class.find_or_fetch(url_comment)
         end.to change(described_class, :count).by(1)
       end
 
-      it "retrieves an existing issue comment" do
+      xit "retrieves an existing issue comment" do
         created_issue = described_class.find_or_fetch(url_comment)
 
         expect do
@@ -77,7 +77,7 @@ RSpec.describe GithubIssue, type: :model, vcr: true do
         end.not_to change(described_class, :count)
       end
 
-      it "saves the proper fields" do
+      xit "saves the proper fields" do
         issue = described_class.find_or_fetch(url_comment)
 
         expect(issue.url).to eq(url_comment)
@@ -95,7 +95,7 @@ RSpec.describe GithubIssue, type: :model, vcr: true do
     end
   end
 
-  it "raises Github::Errors::NotFound if the issue is not found" do
+  xit "raises Github::Errors::NotFound if the issue is not found" do
     VCR.use_cassette("github_client_issue_not_found") do
       expect do
         described_class.find_or_fetch(url_not_found)

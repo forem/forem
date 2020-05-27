@@ -7,7 +7,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       [{ "name" => "tag1" }, { "name" => "tag2" }, { "name" => "tag3" }]
     end
 
-    it "returns json" do
+    xit "returns json" do
       sign_in authorized_user
       allow(Search::Tag).to receive(:search_documents).and_return(
         mock_documents,
@@ -16,7 +16,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       expect(response.parsed_body).to eq("result" => mock_documents)
     end
 
-    it "returns an empty array when a Bad Request error is raised" do
+    xit "returns an empty array when a Bad Request error is raised" do
       sign_in authorized_user
       allow(Search::Client).to receive(:search).and_raise(Search::Errors::Transport::BadRequest)
       get "/search/tags"
@@ -30,7 +30,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       [{ "channel_name" => "channel1" }]
     end
 
-    it "returns json" do
+    xit "returns json" do
       sign_in authorized_user
       allow(Search::ChatChannelMembership).to receive(:search_documents).and_return(
         mock_documents,
@@ -45,7 +45,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       [{ "title" => "classified_listing1" }]
     end
 
-    it "returns json" do
+    xit "returns json" do
       allow(Search::ClassifiedListing).to receive(:search_documents).and_return(
         mock_documents,
       )
@@ -57,7 +57,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
   describe "GET /search/users" do
     let(:mock_documents) { [{ "username" => "firstlast" }] }
 
-    it "returns json" do
+    xit "returns json" do
       allow(Search::User).to receive(:search_documents).and_return(
         mock_documents,
       )
@@ -69,7 +69,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
   describe "GET /search/feed_content" do
     let(:mock_documents) { [{ "title" => "article1" }] }
 
-    it "returns json" do
+    xit "returns json" do
       allow(Search::FeedContent).to receive(:search_documents).and_return(
         mock_documents,
       )
@@ -78,7 +78,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       expect(response.parsed_body).to eq("result" => mock_documents)
     end
 
-    it "queries only the user index if class_name=User" do
+    xit "queries only the user index if class_name=User" do
       allow(Search::FeedContent).to receive(:search_documents)
       allow(Search::User).to receive(:search_documents).and_return(
         mock_documents,
@@ -89,7 +89,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       expect(Search::FeedContent).not_to have_received(:search_documents)
     end
 
-    it "queries for Articles, Podcast Episodes and Users if no class_name filter is present" do
+    xit "queries for Articles, Podcast Episodes and Users if no class_name filter is present" do
       allow(Search::FeedContent).to receive(:search_documents).and_return(
         mock_documents,
       )
@@ -102,7 +102,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       expect(Search::FeedContent).to have_received(:search_documents)
     end
 
-    it "queries for only Articles and Podcast Episodes if class_name!=User" do
+    xit "queries for only Articles and Podcast Episodes if class_name!=User" do
       allow(Search::FeedContent).to receive(:search_documents).and_return(
         mock_documents,
       )
@@ -113,7 +113,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       expect(Search::FeedContent).to have_received(:search_documents)
     end
 
-    it "queries for approved" do
+    xit "queries for approved" do
       allow(Search::FeedContent).to receive(:search_documents).and_return(
         mock_documents,
       )
@@ -131,7 +131,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       { "reactions" => [{ id: 123 }], "total" => 100 }
     end
 
-    it "returns json with reactions and total" do
+    xit "returns json with reactions and total" do
       sign_in authorized_user
       allow(Search::Reaction).to receive(:search_documents).and_return(
         mock_response,
@@ -140,7 +140,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       expect(response.parsed_body).to eq("result" => [{ "id" => 123 }], "total" => 100)
     end
 
-    it "accepts array of tag names" do
+    xit "accepts array of tag names" do
       sign_in authorized_user
       allow(Search::Reaction).to receive(:search_documents).and_return(
         mock_response,

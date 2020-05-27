@@ -10,7 +10,7 @@ RSpec.describe "/internal/listings", type: :request do
   end
 
   describe "PUT /internal/listings/:id" do
-    it "clears listing cache" do
+    xit "clears listing cache" do
       put internal_listing_path(id: classified_listing.id), params: {
         classified_listing: { title: "updated" }
       }
@@ -21,25 +21,25 @@ RSpec.describe "/internal/listings", type: :request do
     describe "GET /internal/listings" do
       let!(:unpublished_listing) { create(:classified_listing, published: false) }
 
-      it "shows published listings" do
+      xit "shows published listings" do
         get internal_listings_path
 
         expect(response.body).to include(CGI.escapeHTML(classified_listing.title))
       end
 
-      it "filters unpublished listings by default" do
+      xit "filters unpublished listings by default" do
         get internal_listings_path
 
         expect(response.body).not_to include(CGI.escapeHTML(unpublished_listing.title))
       end
 
-      it "includes unpublished listings when asked to" do
+      xit "includes unpublished listings when asked to" do
         get internal_listings_path, params: { include_unpublished: "1" }
 
         expect(response.body).to include(CGI.escapeHTML(unpublished_listing.title))
       end
 
-      it "filters by category" do
+      xit "filters by category" do
         get internal_listings_path(filter: "misc")
 
         expect(response.body).not_to include(CGI.escapeHTML(classified_listing.title))

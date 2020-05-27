@@ -4,23 +4,23 @@ RSpec.describe "LiquidEmbeds", type: :request, vcr: { cassette_name: "twitter_cl
   describe "get /embeds" do
     let(:path) { liquid_embed_path("tweet", args: 1_018_911_886_862_057_472) }
 
-    it "renders proper tweet" do
+    xit "renders proper tweet" do
       get path
       expect(response.body).to include("ltag__twitter-tweet")
     end
 
-    it "renders proper CSS" do
+    xit "renders proper CSS" do
       get path
       expect(response.body).to include("blockquote.ltag__twitter-tweet")
     end
 
-    it "renders 404 if improper tweet" do
+    xit "renders 404 if improper tweet" do
       expect do
         get liquid_embed_path("tweet", args: "improper")
       end.to raise_error(ActionView::Template::Error)
     end
 
-    it "contains base target parent" do
+    xit "contains base target parent" do
       get path
       expect(response.body).to include('<base target="_parent">')
     end

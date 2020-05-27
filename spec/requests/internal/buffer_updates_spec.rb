@@ -16,7 +16,7 @@ RSpec.describe "/internal/buffer_updates", type: :request do
       user.add_role(:super_admin)
     end
 
-    it "creates buffer update for tweet if tweet params are passed" do
+    xit "creates buffer update for tweet if tweet params are passed" do
       post "/internal/buffer_updates",
            params:
            { social_channel: "main_twitter", article_id: article.id, tweet: "Hello this is a test" }
@@ -27,28 +27,28 @@ RSpec.describe "/internal/buffer_updates", type: :request do
       expect(BufferUpdate.last.article_id).to eq(article.id)
     end
 
-    it "updates last buffered at" do
+    xit "updates last buffered at" do
       post "/internal/buffer_updates",
            params:
            { social_channel: "main_twitter", article_id: article.id, tweet: "Hello this is a test" }
       expect(article.reload.last_buffered).not_to eq(nil)
     end
 
-    it "marks article as featured" do
+    xit "marks article as featured" do
       post "/internal/buffer_updates",
            params:
            { social_channel: "main_twitter", article_id: article.id, tweet: "Hello this is a test" }
       expect(article.reload.featured).to be true
     end
 
-    it "updates last buffered at with satellite buffer" do
+    xit "updates last buffered at with satellite buffer" do
       post "/internal/buffer_updates",
            params:
            { social_channel: "satellite_twitter", article_id: article.id, tweet: "Hello this is a test" }
       expect(article.reload.last_buffered).not_to eq(nil)
     end
 
-    it "updates last facebook buffered at" do
+    xit "updates last facebook buffered at" do
       post "/internal/buffer_updates",
            params:
            { social_channel: "facebook", article_id: article.id, tweet: "Hello this is a test" }
@@ -71,7 +71,7 @@ RSpec.describe "/internal/buffer_updates", type: :request do
                           status: "pending")
     end
 
-    it "sends to buffer" do
+    xit "sends to buffer" do
       put "/internal/buffer_updates/#{buffer_update.id}", params: {
         status: "confirmed", body_text: "test"
       }

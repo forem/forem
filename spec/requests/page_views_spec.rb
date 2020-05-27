@@ -10,7 +10,7 @@ RSpec.describe "PageViews", type: :request do
         sign_in user
       end
 
-      it "creates a new page view" do
+      xit "creates a new page view" do
         post "/page_views", params: {
           article_id: article.id
         }
@@ -20,7 +20,7 @@ RSpec.describe "PageViews", type: :request do
         expect(PageView.last.counts_for_number_of_views).to eq(1)
       end
 
-      it "sends referrer" do
+      xit "sends referrer" do
         post "/page_views", params: {
           article_id: article.id,
           referrer: "test"
@@ -28,7 +28,7 @@ RSpec.describe "PageViews", type: :request do
         expect(PageView.last.referrer).to eq("test")
       end
 
-      it "sends user agent" do
+      xit "sends user agent" do
         post "/page_views", params: {
           article_id: article.id,
           user_agent: "test"
@@ -43,7 +43,7 @@ RSpec.describe "PageViews", type: :request do
         allow(Users::RecordFieldTestEventWorker).to receive(:perform_async)
       end
 
-      it "converts field test" do
+      xit "converts field test" do
         post "/page_views", params: {
           article_id: article.id,
           referrer: "test"
@@ -53,7 +53,7 @@ RSpec.describe "PageViews", type: :request do
     end
 
     context "when user not signed in" do
-      it "creates a new page view" do
+      xit "creates a new page view" do
         post "/page_views", params: {
           article_id: article.id
         }
@@ -63,13 +63,13 @@ RSpec.describe "PageViews", type: :request do
         expect(PageView.last.counts_for_number_of_views).to eq(10)
       end
 
-      it "stores aggregate page views" do
+      xit "stores aggregate page views" do
         post "/page_views", params: { article_id: article.id }
         post "/page_views", params: { article_id: article.id }
         expect(article.reload.page_views_count).to eq(20)
       end
 
-      it "stores aggregate organic page views" do
+      xit "stores aggregate organic page views" do
         post "/page_views", params: { article_id: article.id, referrer: "https://www.google.com/" }
         post "/page_views", params: { article_id: article.id }
         expect(article.reload.organic_page_views_count).to eq(10)
@@ -81,7 +81,7 @@ RSpec.describe "PageViews", type: :request do
         expect(article.reload.organic_page_views_count).to eq(20)
       end
 
-      it "sends referrer" do
+      xit "sends referrer" do
         post "/page_views", params: {
           article_id: article.id,
           referrer: "test"
@@ -89,7 +89,7 @@ RSpec.describe "PageViews", type: :request do
         expect(PageView.last.referrer).to eq("test")
       end
 
-      it "sends user agent" do
+      xit "sends user agent" do
         post "/page_views", params: {
           article_id: article.id,
           user_agent: "test"
@@ -105,20 +105,20 @@ RSpec.describe "PageViews", type: :request do
         sign_in user
       end
 
-      it "updates a new page view time on page by 15" do
+      xit "updates a new page view time on page by 15" do
         post "/page_views", params: { article_id: article.id }
         put "/page_views/#{article.id}"
         expect(PageView.last.time_tracked_in_seconds).to eq(30)
       end
 
-      it "does not update an invalid page view" do
+      xit "does not update an invalid page view" do
         invalid_id = article.id + 100
         expect { put "/page_views/#{invalid_id}" }.not_to raise_error
       end
     end
 
     context "when user is not signed in" do
-      it "updates a new page view time on page by 15" do
+      xit "updates a new page view time on page by 15" do
         post "/page_views", params: {
           article_id: article.id
         }

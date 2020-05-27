@@ -13,7 +13,7 @@ RSpec.describe Notifications::TagAdjustmentNotificationWorker, type: :worker do
     before { allow(tag_adjustment_service).to receive(:call) }
 
     describe "When a tag is found" do
-      it "calls the service" do
+      xit "calls the service" do
         allow(TagAdjustment).to receive(:find_by).and_return(tag_adjustment)
         allow(tag_adjustment).to receive(:id)
 
@@ -24,7 +24,7 @@ RSpec.describe Notifications::TagAdjustmentNotificationWorker, type: :worker do
     end
 
     describe "When no tag is found" do
-      it "does not call the service" do
+      xit "does not call the service" do
         allow(TagAdjustment).to receive(:find_by).and_return(nil)
 
         worker.perform(nil)

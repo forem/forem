@@ -10,7 +10,7 @@ RSpec.describe Slack::Messengers::ArticleFetchedFeed, type: :service do
 
   let(:default_params) { { article: article } }
 
-  it "does not message slack for a new article not coming from the feed" do
+  xit "does not message slack for a new article not coming from the feed" do
     sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
       article.published_from_feed = false
 
@@ -18,7 +18,7 @@ RSpec.describe Slack::Messengers::ArticleFetchedFeed, type: :service do
     end
   end
 
-  it "contains the correct info", :aggregate_failures do
+  xit "contains the correct info", :aggregate_failures do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params)
     end
@@ -30,7 +30,7 @@ RSpec.describe Slack::Messengers::ArticleFetchedFeed, type: :service do
     expect(message).to include(URL.article(article))
   end
 
-  it "messages the proper channel with the proper username and emoji", :aggregate_failures do
+  xit "messages the proper channel with the proper username and emoji", :aggregate_failures do
     sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
       described_class.call(default_params)
     end

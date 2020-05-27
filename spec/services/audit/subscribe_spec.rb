@@ -11,7 +11,7 @@ RSpec.describe Audit::Subscribe, type: :service do
     end
   end
 
-  it "can subscribe to custom listeners" do
+  xit "can subscribe to custom listeners" do
     described_class.listen(*listeners)
 
     listeners.each do |listener|

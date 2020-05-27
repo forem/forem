@@ -4,7 +4,7 @@ RSpec.describe Metrics::RecordBackgroundQueueStatsWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "low_priority", 1
 
   describe "#perform" do
-    it "logs estimated counts in Datadog" do
+    xit "logs estimated counts in Datadog" do
       allow(Loggers::LogWorkerQueueStats).to receive(:run)
       described_class.new.perform
 

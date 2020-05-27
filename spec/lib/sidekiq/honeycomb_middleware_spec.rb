@@ -26,7 +26,7 @@ RSpec.describe Sidekiq::HoneycombMiddleware do
     end
   end
 
-  it "sends an event with expected keys" do
+  xit "sends an event with expected keys" do
     Sidekiq::Testing.inline! do
       TestSidekiqWorker.perform_async("dont fail")
     end
@@ -46,7 +46,7 @@ RSpec.describe Sidekiq::HoneycombMiddleware do
       }
     end
 
-    it "sends an event with expected keys" do
+    xit "sends an event with expected keys" do
       Sidekiq::Testing.inline! do
         TestSidekiqWorker.perform_async
       end
@@ -68,7 +68,7 @@ RSpec.describe Sidekiq::HoneycombMiddleware do
       }
     end
 
-    it "sends an event with expected keys" do
+    xit "sends an event with expected keys" do
       Sidekiq::Testing.inline! do
         expect { TestSidekiqWorker.perform_async("fail") }.to raise_error(StandardError)
       end

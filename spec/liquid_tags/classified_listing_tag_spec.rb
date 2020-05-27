@@ -97,22 +97,22 @@ RSpec.describe ClassifiedListingTag, type: :liquid_tag do
     HTML
   end
 
-  it "raises an error when invalid" do
+  xit "raises an error when invalid" do
     expect { generate_new_liquid("/listings/fakecategory/fakeslug") }.
       to raise_error("Invalid URL or slug. Listing not found.")
   end
 
-  it "displays expired message when listing is expired" do
+  xit "displays expired message when listing is expired" do
     liquid = generate_new_liquid("#{expired_listing.category}/#{expired_listing.slug}")
     expect(liquid.render).to eq(render_expired_listing)
   end
 
-  it "renders a proper listing tag from user listing" do
+  xit "renders a proper listing tag from user listing" do
     liquid = generate_new_liquid("#{user_listing.category}/#{user_listing.slug}")
     expect(liquid.render).to eq(correct_link_html(user_listing))
   end
 
-  it "renders a proper listing tag from org listing" do
+  xit "renders a proper listing tag from org listing" do
     liquid = generate_new_liquid("#{org_listing.category}/#{org_listing.slug}")
     expect(CGI.unescapeHTML(liquid.render)).to eq(correct_link_html(org_listing))
   end

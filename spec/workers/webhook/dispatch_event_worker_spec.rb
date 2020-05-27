@@ -12,7 +12,7 @@ RSpec.describe Webhook::DispatchEventWorker, type: :worker do
     let(:url) { Faker::Internet.url }
     let(:client) { HTTParty }
 
-    it "posts an event" do
+    xit "posts an event" do
       allow(client).to receive(:post)
       worker.perform(url, json)
       expect(client).to have_received(:post).once.
@@ -21,7 +21,7 @@ RSpec.describe Webhook::DispatchEventWorker, type: :worker do
                                           timeout: 10)
     end
 
-    it "doesn't fail" do
+    xit "doesn't fail" do
       stub_request(:post, url).to_return(status: 200)
       worker.perform(url, json)
     end

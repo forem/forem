@@ -9,12 +9,12 @@ RSpec.describe ReplitTag, type: :liquid_tag do
       Liquid::Template.parse("{% replit #{id} %}")
     end
 
-    it "accepts replit id" do
+    xit "accepts replit id" do
       liquid = generate_new_liquid(replit_id)
       expect(liquid.render).to include('<div class="ltag__replit">')
     end
 
-    it "renders iframe" do
+    xit "renders iframe" do
       liquid = generate_new_liquid(replit_id)
       expect(liquid.render).to include("<iframe")
     end

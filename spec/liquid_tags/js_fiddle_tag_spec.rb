@@ -16,32 +16,32 @@ RSpec.describe JSFiddleTag, type: :liquid_tag do
       Liquid::Template.parse("{% jsfiddle #{link} %}")
     end
 
-    it "accepts jsfiddle link" do
+    xit "accepts jsfiddle link" do
       liquid = generate_new_liquid(jsfiddle_link)
       rendered_jsfiddle_iframe = liquid.render
       Approvals.verify(rendered_jsfiddle_iframe, name: "jsfiddle_liquid_tag", format: :html)
     end
 
-    it "accepts jsfiddle link with a / at the end" do
+    xit "accepts jsfiddle link with a / at the end" do
       jsfiddle_link = "http://jsfiddle.net/link2twenty/v2kx9jcd/"
       expect do
         generate_new_liquid(jsfiddle_link)
       end.not_to raise_error
     end
 
-    it "rejects invalid jsfiddle link" do
+    xit "rejects invalid jsfiddle link" do
       expect do
         generate_new_liquid("invalid_jsfiddle_link")
       end.to raise_error(StandardError)
     end
 
-    it "accepts jsfiddle link with a custom-tab parameter" do
+    xit "accepts jsfiddle link with a custom-tab parameter" do
       expect do
         generate_new_liquid(jsfiddle_link_with_custom_tabs)
       end.not_to raise_error
     end
 
-    it "rejects XSS attempts" do
+    xit "rejects XSS attempts" do
       xss_links.each do |link|
         expect { generate_new_liquid(link) }.to raise_error(StandardError)
       end

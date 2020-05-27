@@ -18,41 +18,41 @@ RSpec.describe StackblitzTag, type: :liquid_tag do
       Liquid::Template.parse("{% stackblitz #{id} %}")
     end
 
-    it "renders iframe" do
+    xit "renders iframe" do
       liquid = generate_new_liquid(stackblitz_id)
       expect(liquid.render).to include("<iframe")
     end
 
-    it "rejects invalid stackblitz id" do
+    xit "rejects invalid stackblitz id" do
       expect do
         generate_new_liquid("https://google.com")
       end.to raise_error(StandardError)
     end
 
-    it "accepts stackblitz id with a view parameter" do
+    xit "accepts stackblitz id with a view parameter" do
       expect do
         generate_new_liquid(stackblitz_id_with_view)
       end.not_to raise_error
     end
 
-    it "accepts stackblitz id with a file parameter" do
+    xit "accepts stackblitz id with a file parameter" do
       expect do
         generate_new_liquid(stackblitz_id_with_file)
       end.not_to raise_error
     end
 
-    it "accepts stackblitz id with a view and file parameter" do
+    xit "accepts stackblitz id with a view and file parameter" do
       expect do
         generate_new_liquid(stackblitz_id_with_view_and_file)
       end.not_to raise_error
     end
 
-    it "parses stackblitz if with a view and file parameter" do
+    xit "parses stackblitz if with a view and file parameter" do
       liquid = generate_new_liquid(stackblitz_id_with_view_and_file)
       expect(liquid.render).to include("https://stackblitz.com/edit/ball-demo?embed=1&view=preview&file=style.css")
     end
 
-    it "rejects XSS attempts" do
+    xit "rejects XSS attempts" do
       xss_links.each do |link|
         expect { generate_new_liquid(link) }.to raise_error(StandardError)
       end

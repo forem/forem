@@ -7,7 +7,7 @@ RSpec.shared_examples "#sync_reactions_count" do |reactable_type|
       create(:reaction, points: 0, reactable: reactable)
     end
 
-    it "syncs reactions count" do
+    xit "syncs reactions count" do
       expect(reactable.public_reactions_count).to eq(0)
       reactable.sync_reactions_count
       reactable.reload

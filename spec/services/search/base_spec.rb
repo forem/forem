@@ -14,13 +14,13 @@ RSpec.describe Search::Base, type: :service do
   end
 
   describe "::index" do
-    it "indexes a document to elasticsearch" do
+    xit "indexes a document to elasticsearch" do
       expect { described_class.find_document(document_id) }.to raise_error(Search::Errors::Transport::NotFound)
       described_class.index(document_id, id: document_id)
       expect(described_class.find_document(document_id)).not_to be_nil
     end
 
-    it "sets last_indexed_at field" do
+    xit "sets last_indexed_at field" do
       Timecop.freeze(Time.current) do
         described_class.index(document_id, id: document_id)
         last_indexed_at = described_class.find_document(document_id).dig("_source", "last_indexed_at")
@@ -30,7 +30,7 @@ RSpec.describe Search::Base, type: :service do
   end
 
   describe "::bulk_index" do
-    it "indexes a set of data hashes to Elasticsearch" do
+    xit "indexes a set of data hashes to Elasticsearch" do
       id_list = [123, 456, 789]
       id_list.each do |document_id|
         expect { described_class.find_document(document_id) }.to raise_error(Search::Errors::Transport::NotFound)
@@ -44,7 +44,7 @@ RSpec.describe Search::Base, type: :service do
       end
     end
 
-    it "sets last_indexed_at field" do
+    xit "sets last_indexed_at field" do
       Timecop.freeze(Time.current) do
         described_class.bulk_index([{ id: document_id, name: "i_am_a_tag" }])
         last_indexed_at = described_class.find_document(document_id).dig("_source", "last_indexed_at")
@@ -54,14 +54,14 @@ RSpec.describe Search::Base, type: :service do
   end
 
   describe "::find_document" do
-    it "fetches a document for a given ID from elasticsearch" do
+    xit "fetches a document for a given ID from elasticsearch" do
       described_class.index(document_id, id: document_id)
       expect { described_class.find_document(document_id) }.not_to raise_error
     end
   end
 
   describe "::delete_document" do
-    it "deletes a document for a given ID from elasticsearch" do
+    xit "deletes a document for a given ID from elasticsearch" do
       described_class.index(document_id, id: document_id)
       expect { described_class.find_document(document_id) }.not_to raise_error
       described_class.delete_document(document_id)
@@ -70,14 +70,14 @@ RSpec.describe Search::Base, type: :service do
   end
 
   describe "::create_index", elasticsearch_reset: true do
-    it "creates an elasticsearch index with INDEX_NAME" do
+    xit "creates an elasticsearch index with INDEX_NAME" do
       described_class.delete_index
       expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
       described_class.create_index
       expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
     end
 
-    it "creates an elasticsearch index with name argument" do
+    xit "creates an elasticsearch index with name argument" do
       other_name = "random"
       expect(Search::Client.indices.exists(index: other_name)).to eq(false)
       described_class.create_index(index_name: other_name)
@@ -89,13 +89,13 @@ RSpec.describe Search::Base, type: :service do
   end
 
   describe "::delete_index", elasticsearch_reset: true do
-    it "deletes an elasticsearch index with INDEX_NAME" do
+    xit "deletes an elasticsearch index with INDEX_NAME" do
       expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(true)
       described_class.delete_index
       expect(Search::Client.indices.exists(index: described_class::INDEX_NAME)).to eq(false)
     end
 
-    it "deletes an elasticsearch index with name argument" do
+    xit "deletes an elasticsearch index with name argument" do
       other_name = "random"
       described_class.create_index(index_name: other_name)
       expect(Search::Client.indices.exists(index: other_name)).to eq(true)
@@ -106,14 +106,14 @@ RSpec.describe Search::Base, type: :service do
   end
 
   describe "::add_alias" do
-    it "adds alias INDEX_ALIAS to elasticsearch index with INDEX_NAME" do
+    xit "adds alias INDEX_ALIAS to elasticsearch index with INDEX_NAME" do
       Search::Client.indices.delete_alias(index: described_class::INDEX_NAME, name: described_class::INDEX_ALIAS)
       expect(Search::Client.indices.exists(index: described_class::INDEX_ALIAS)).to eq(false)
       described_class.add_alias
       expect(Search::Client.indices.exists(index: described_class::INDEX_ALIAS)).to eq(true)
     end
 
-    it "adds custom alias to elasticsearch index with INDEX_NAME" do
+    xit "adds custom alias to elasticsearch index with INDEX_NAME" do
       other_alias = "random"
       expect(Search::Client.indices.exists(index: other_alias)).to eq(false)
       described_class.add_alias(index_name: described_class::INDEX_NAME, index_alias: other_alias)
@@ -122,7 +122,7 @@ RSpec.describe Search::Base, type: :service do
   end
 
   describe "::update_mappings" do
-    it "updates index mappings" do
+    xit "updates index mappings" do
       other_name = "index_name"
       allow(Search::Client.indices).to receive(:put_mapping)
 

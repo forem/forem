@@ -11,7 +11,7 @@ RSpec.describe "Users", type: :request do
     end
 
     context "when no state params are present" do
-      it "returns no users" do
+      xit "returns no users" do
         sign_in user
         get users_path
 
@@ -21,7 +21,7 @@ RSpec.describe "Users", type: :request do
     end
 
     context "when follow_suggestions params are present and no suggestions are found" do
-      it "returns the default suggested_users from SiteConfig if they are present" do
+      xit "returns the default suggested_users from SiteConfig if they are present" do
         sign_in user
 
         get users_path(state: "follow_suggestions")
@@ -39,7 +39,7 @@ RSpec.describe "Users", type: :request do
     end
 
     context "when follow_suggestions params are present" do
-      it "returns follow suggestions for an authenticated user" do
+      xit "returns follow suggestions for an authenticated user" do
         user = create(:user)
         tag = create(:tag)
         user.follow(tag)
@@ -55,7 +55,7 @@ RSpec.describe "Users", type: :request do
         expect(response_user["id"]).to eq(other_user.id)
       end
 
-      it "returns follow suggestions that have profile images" do
+      xit "returns follow suggestions that have profile images" do
         user = create(:user)
         tag = create(:tag)
         user.follow(tag)
@@ -73,7 +73,7 @@ RSpec.describe "Users", type: :request do
     end
 
     context "when sidebar_suggestions params are present" do
-      it "returns no sidebar suggestions for an authenticated user" do
+      xit "returns no sidebar suggestions for an authenticated user" do
         sign_in create(:user)
 
         get users_path(state: "sidebar_suggestions")

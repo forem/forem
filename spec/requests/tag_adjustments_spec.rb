@@ -27,11 +27,11 @@ RSpec.describe "TagAdjustments", type: :request do
     context "when an article doesn't use front matter" do
       let(:article) { Article.create(user: user, title: "something", body_markdown: "blah blah #{rand(100)}", tag_list: "#{tag.name}, yoyo, bobo", published: true) }
 
-      it "removes the tag" do
+      xit "removes the tag" do
         expect(article.reload.tag_list.include?(tag.name)).to be false
       end
 
-      it "keeps the other tags" do
+      xit "keeps the other tags" do
         expect(article.reload.tag_list.include?("yoyo")).to be true
       end
     end
@@ -39,11 +39,11 @@ RSpec.describe "TagAdjustments", type: :request do
     context "when an article uses front matter" do
       let(:article) { create(:article, user: user, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey,#{tag.name}\n---\n\nHello") }
 
-      it "removes the tag" do
+      xit "removes the tag" do
         expect(article.reload.tag_list.include?(tag.name)).to be false
       end
 
-      it "keeps the other tags" do
+      xit "keeps the other tags" do
         expect(article.reload.tag_list.include?("heyheyhey")).to be true
       end
     end
@@ -64,11 +64,11 @@ RSpec.describe "TagAdjustments", type: :request do
     context "when an article doesn't use front matter" do
       let(:article) { Article.create(user: user, title: "something", body_markdown: "blah blah #{rand(100)}", tag_list: "yoyo, bobo", published: true) }
 
-      it "adds the tag" do
+      xit "adds the tag" do
         expect(article.reload.tag_list.include?(tag.name)).to be true
       end
 
-      it "keeps the other tags" do
+      xit "keeps the other tags" do
         expect(article.reload.tag_list.include?("yoyo")).to be true
       end
     end
@@ -76,11 +76,11 @@ RSpec.describe "TagAdjustments", type: :request do
     context "when an article uses front matter" do
       let(:article) { create(:article, user: user, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey\n---\n\nHello") }
 
-      it "adds the tag" do
+      xit "adds the tag" do
         expect(article.reload.tag_list.include?(tag.name)).to be true
       end
 
-      it "keeps the other tags" do
+      xit "keeps the other tags" do
         expect(article.reload.tag_list.include?("heyheyhey")).to be true
       end
     end
@@ -99,7 +99,7 @@ RSpec.describe "TagAdjustments", type: :request do
     context "when an article doesn't use front matter" do
       let(:article) { Article.create(user: user, title: "something", body_markdown: "blah blah #{rand(100)}", tag_list: "#{tag.name}, yoyo, bobo", published: true) }
 
-      it "adds the tag back in" do
+      xit "adds the tag back in" do
         delete "/tag_adjustments/#{tag_adjustment.id}", params: {
           id: tag_adjustment.id
         }
@@ -110,7 +110,7 @@ RSpec.describe "TagAdjustments", type: :request do
     context "when an article uses front matter" do
       let(:article) { create(:article, user: user, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey,#{tag.name}\n---\n\nHello") }
 
-      it "adds the tag back in" do
+      xit "adds the tag back in" do
         delete "/tag_adjustments/#{tag_adjustment.id}", params: {
           id: tag_adjustment.id
         }
@@ -132,7 +132,7 @@ RSpec.describe "TagAdjustments", type: :request do
     context "when an article doesn't use front matter" do
       let(:article) { Article.create(user: user, title: "something", body_markdown: "blah blah #{rand(100)}", tag_list: "yoyo, bobo", published: true) }
 
-      it "removes the added tag" do
+      xit "removes the added tag" do
         delete "/tag_adjustments/#{tag_adjustment.id}", params: {
           id: tag_adjustment.id
         }
@@ -143,7 +143,7 @@ RSpec.describe "TagAdjustments", type: :request do
     context "when an article uses front matter" do
       let(:article) { create(:article, user: user, body_markdown: "---\ntitle: Hellohnnnn#{rand(1000)}\npublished: true\ntags: heyheyhey\n---\n\nHello") }
 
-      it "removes the added tag" do
+      xit "removes the added tag" do
         delete "/tag_adjustments/#{tag_adjustment.id}", params: {
           id: tag_adjustment.id
         }

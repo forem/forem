@@ -12,7 +12,7 @@ RSpec.describe "Api::V0::Videos", type: :request do
   end
 
   describe "GET /api/videos" do
-    it "returns articles with videos" do
+    xit "returns articles with videos" do
       create_article
 
       get api_videos_path
@@ -20,7 +20,7 @@ RSpec.describe "Api::V0::Videos", type: :request do
       expect(response.parsed_body.size).to eq(1)
     end
 
-    it "does not return unpublished video articles" do
+    xit "does not return unpublished video articles" do
       article = create_article
       article.update(published: false)
 
@@ -29,7 +29,7 @@ RSpec.describe "Api::V0::Videos", type: :request do
       expect(response.parsed_body.size).to eq(1)
     end
 
-    it "does not return regular articles without videos" do
+    xit "does not return regular articles without videos" do
       create(:article)
 
       get api_videos_path
@@ -37,7 +37,7 @@ RSpec.describe "Api::V0::Videos", type: :request do
       expect(response.parsed_body.size).to eq(0)
     end
 
-    it "does not return video articles with a score that is too low" do
+    xit "does not return video articles with a score that is too low" do
       create_article(score: -4)
 
       get api_videos_path
@@ -45,7 +45,7 @@ RSpec.describe "Api::V0::Videos", type: :request do
       expect(response.parsed_body.size).to eq(0)
     end
 
-    it "returns video articles with the correct json representation", :aggregate_failures do
+    xit "returns video articles with the correct json representation", :aggregate_failures do
       video_article = create_article
 
       get api_videos_path
@@ -61,7 +61,7 @@ RSpec.describe "Api::V0::Videos", type: :request do
       expect(response_video["user"]["name"]).to eq(video_article.user.name)
     end
 
-    it "orders video articles by descending hotness score" do
+    xit "orders video articles by descending hotness score" do
       video_article = create_article(hotness_score: 10)
       other_video_article = create_article(hotness_score: 9)
 
@@ -71,7 +71,7 @@ RSpec.describe "Api::V0::Videos", type: :request do
       expect(response.parsed_body.map { |a| a["id"] }).to eq(expected_result)
     end
 
-    it "supports pagination" do
+    xit "supports pagination" do
       create_list(
         :article, 3,
         user: user, video: "https://example.com", video_thumbnail_url: "https://example.com", title: "video"
@@ -84,7 +84,7 @@ RSpec.describe "Api::V0::Videos", type: :request do
       expect(response.parsed_body.length).to eq(1)
     end
 
-    it "sets the correct edge caching surrogate key for all video articles" do
+    xit "sets the correct edge caching surrogate key for all video articles" do
       video_article = create_article
 
       get api_videos_path

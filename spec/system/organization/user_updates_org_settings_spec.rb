@@ -32,57 +32,57 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
     )
   end
 
-  it "renders the page", js: true, percy: true do
-    visit "/settings/organization"
+  xit "renders the page", js: true, percy: true do
+    visxit "/settings/organization"
     fill_in_org_form
     click_button "Create Organization"
 
     Percy.snapshot(page, name: "Settings: /settings/organization create organization")
   end
 
-  it "user creates an organization" do
-    visit "/settings/organization"
+  xit "user creates an organization" do
+    visxit "/settings/organization"
     fill_in_org_form
     click_button "Create Organization"
 
     expect(page).to have_text("Your organization was successfully created and you are an admin.")
   end
 
-  it "promotes a member to an admin" do
+  xit "promotes a member to an admin" do
     join_org(user, organization, :admin)
     join_org(user2, organization, :member)
 
-    visit "settings/organization"
+    visxit "settings/organization"
     click_button("Make admin")
     page.driver.browser.switch_to.alert.accept
 
     expect(page).to have_text("#{user2.name} is now an admin.")
   end
 
-  it "revokes an admin's privileges" do
+  xit "revokes an admin's privileges" do
     join_org(user, organization, :admin)
     join_org(user2, organization, :admin)
 
-    visit "settings/organization"
+    visxit "settings/organization"
     click_button("Revoke admin status")
     page.driver.browser.switch_to.alert.accept
     expect(page).to have_text("#{user2.name} is no longer an admin.")
   end
 
-  it "remove user from organization" do
+  xit "remove user from organization" do
     join_org(user, organization, :admin)
     join_org(user2, organization, :member)
 
-    visit "settings/organization"
+    visxit "settings/organization"
     click_button("Remove from org")
     page.driver.browser.switch_to.alert.accept
     expect(page).to have_text("#{user2.name} is no longer part of your organization.")
   end
 
-  it "uses the update page when an update error occurs" do
+  xit "uses the update page when an update error occurs" do
     join_org(user, organization, :admin)
 
-    visit "/settings/organization"
+    visxit "/settings/organization"
     fill_in "organization[name]", with: user.name
     click_button("Save")
     expect(page).to have_text("Organization details")

@@ -14,7 +14,7 @@ RSpec.describe Notifications::RemoveAllByAction, type: :service do
     create(:notification, organization: organization, notifiable_id: comment.id, notifiable_type: "Comment", action: "Reaction")
   end
 
-  it "checks all notifications for an article are deleted and only for an article" do
+  xit "checks all notifications for an article are deleted and only for an article" do
     expect { described_class.call(article.id, "Article", "Published") }.to change(Notification, :count).by(-2)
   end
 end

@@ -18,7 +18,7 @@ RSpec.describe ActiveSupport::Cache::RedisCacheStore do
       cache_db.delete(key)
     end
 
-    it "increments value without expires_in" do
+    xit "increments value without expires_in" do
       cache_db.increment(key)
 
       expect(value).to eq(1)
@@ -30,7 +30,7 @@ RSpec.describe ActiveSupport::Cache::RedisCacheStore do
       expect(pttl).to eq(-1)
     end
 
-    it "increments value with expires_in" do
+    xit "increments value with expires_in" do
       cache_db.increment(key, 1, expires_in: 100.seconds)
       first_pttl = pttl
 

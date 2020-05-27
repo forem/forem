@@ -17,7 +17,7 @@ RSpec.describe StackexchangeTag, type: :liquid_tag, vcr: true do
       Liquid::Template.parse("{% stackexchange #{id} askubuntu %}")
     end
 
-    it "renders basic stackoverflow html" do
+    xit "renders basic stackoverflow html" do
       VCR.use_cassette("stackexchange_tag_stackoverflow") do
         liquid = generate_new_liquid(valid_id)
         expect(liquid.render).to include("ltag__stackexchange")
@@ -26,7 +26,7 @@ RSpec.describe StackexchangeTag, type: :liquid_tag, vcr: true do
       end
     end
 
-    it "renders basic stackexchange html" do
+    xit "renders basic stackexchange html" do
       VCR.use_cassette("stackexchange_tag_stackexchange") do
         liquid = generate_exchange_liquid(exchange_id)
         expect(liquid.render).to include("stackexchange-logo")
@@ -35,14 +35,14 @@ RSpec.describe StackexchangeTag, type: :liquid_tag, vcr: true do
       end
     end
 
-    it "rejects invalid id" do
+    xit "rejects invalid id" do
       expect do
         liquid = generate_exchange_liquid(invalid_id)
         liquid.render
       end.to raise_error(StandardError)
     end
 
-    it "does not break with volountarily removed questions" do
+    xit "does not break with volountarily removed questions" do
       VCR.use_cassette("stackexchange_tag_deleted_question") do
         expect do
           liquid = generate_exchange_liquid(valid_id_deleted_question)

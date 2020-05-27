@@ -5,7 +5,7 @@ RSpec.describe EmailLogic, type: :labor do
 
   describe "#analyze" do
     context "when user is brand new with no-follow" do
-      it "returns 0.5 for open_percentage" do
+      xit "returns 0.5 for open_percentage" do
         author = create(:user)
         user.follow(author)
         create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
@@ -13,19 +13,19 @@ RSpec.describe EmailLogic, type: :labor do
         expect(h.open_percentage).to eq(0.5)
       end
 
-      it "provides top 3 articles" do
+      xit "provides top 3 articles" do
         create_list(:article, 3, public_reactions_count: 40, featured: true, score: 40)
         h = described_class.new(user).analyze
         expect(h.articles_to_send.length).to eq(3)
       end
 
-      it "marks as not ready if there isn't atleast 3 articles" do
+      xit "marks as not ready if there isn't atleast 3 articles" do
         create_list(:article, 2, public_reactions_count: 40, score: 40)
         h = described_class.new(user).analyze
         expect(h.should_receive_email?).to eq(false)
       end
 
-      it "marks as not ready if there isn't at least 3 email-digest-eligible articles" do
+      xit "marks as not ready if there isn't at least 3 email-digest-eligible articles" do
         create_list(:article, 2, public_reactions_count: 40, score: 40)
         create_list(:article, 2, public_reactions_count: 40, email_digest_eligible: false)
         h = described_class.new(user).analyze
@@ -44,7 +44,7 @@ RSpec.describe EmailLogic, type: :labor do
         end
       end
 
-      it "will not send email when user shouldn't receive any" do
+      xit "will not send email when user shouldn't receive any" do
         h = described_class.new(user).analyze
         expect(h.should_receive_email?).to eq(false)
       end
@@ -61,7 +61,7 @@ RSpec.describe EmailLogic, type: :labor do
         end
       end
 
-      it "evaluates that user is ready to receive an email" do
+      xit "evaluates that user is ready to receive an email" do
         Timecop.freeze(3.days.from_now) do
           h = described_class.new(user).analyze
           expect(h.should_receive_email?).to eq(true)
@@ -71,7 +71,7 @@ RSpec.describe EmailLogic, type: :labor do
   end
 
   describe "#should_receive_email?" do
-    it "reflects @ready_to_receive_email" do
+    xit "reflects @ready_to_receive_email" do
       author = create(:user)
       user.follow(author)
       create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::FollowsController", type: :request do
   describe "POST /api/follows" do
-    it "returns unauthorized if user is not signed in" do
+    xit "returns unauthorized if user is not signed in" do
       post "/api/follows", params: { users: [] }
       expect(response).to have_http_status(:unauthorized)
     end
@@ -15,12 +15,12 @@ RSpec.describe "Api::V0::FollowsController", type: :request do
         sign_in user
       end
 
-      it "returns the number of followed users" do
+      xit "returns the number of followed users" do
         post "/api/follows", params: { users: users_hash }
         expect(response.parsed_body["outcome"]).to include("#{users_hash.size} users")
       end
 
-      it "creates follows" do
+      xit "creates follows" do
         sign_in user
         expect do
           sidekiq_perform_enqueued_jobs do

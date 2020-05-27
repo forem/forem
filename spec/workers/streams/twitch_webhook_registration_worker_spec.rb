@@ -15,20 +15,20 @@ RSpec.describe Streams::TwitchWebhookRegistrationWorker, type: :worker do
     context "when the user does NOT have a twitch username present" do
       let(:user) { create(:user) }
 
-      it "noops" do
+      xit "noops" do
         worker.perform(user.id)
 
         expect(service).not_to have_received(:call)
       end
     end
 
-    it "noops when the id passed does not belong to a user" do
+    xit "noops when the id passed does not belong to a user" do
       worker.perform(987_654_321)
 
       expect(service).not_to have_received(:call)
     end
 
-    it "registers for webhooks" do
+    xit "registers for webhooks" do
       worker.perform(user.id)
 
       expect(service).to have_received(:call).with(user)

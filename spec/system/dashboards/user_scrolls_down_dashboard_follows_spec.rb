@@ -19,14 +19,14 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
         create(:follow, follower: u, followable: user)
       end
 
-      visit "/dashboard/user_followers?per_page=#{default_per_page}"
+      visxit "/dashboard/user_followers?per_page=#{default_per_page}"
     end
 
-    it "renders the page", percy: true do
+    xit "renders the page", percy: true do
       Percy.snapshot(page, name: "Homepage: /dashboard/user_followers?per_page= infinite scroll")
     end
 
-    it "scrolls through all users" do
+    xit "scrolls through all users" do
       page.execute_script("window.scrollTo(0, 100000)")
       page.assert_selector('div[id^="follows"]', count: total_records)
     end
@@ -42,11 +42,11 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       page.execute_script("window.scrollTo(0, 100000)")
     end
 
-    it "scrolls through all tags" do
+    xit "scrolls through all tags" do
       page.assert_selector('div[id^="follows"]', count: total_records)
     end
 
-    it "updates a tag point value" do
+    xit "updates a tag point value" do
       last_div = page.all('div[id^="follows"]').last
       within last_div do
         fill_in "follow_points", with: 10.0
@@ -68,11 +68,11 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       visit dashboard_following_users_path(per_page: default_per_page)
     end
 
-    it "renders the page", percy: true do
+    xit "renders the page", percy: true do
       Percy.snapshot(page, name: "Homepage: /dashboard/following_users infinite scroll")
     end
 
-    it "scrolls through all users" do
+    xit "scrolls through all users" do
       page.execute_script("window.scrollTo(0, 100000)")
       page.assert_selector('div[id^="follows"]', count: total_records)
     end
@@ -87,11 +87,11 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       visit dashboard_following_organizations_path(per_page: default_per_page)
     end
 
-    it "renders the page", percy: true do
+    xit "renders the page", percy: true do
       Percy.snapshot(page, name: "Homepage: /dashboard/following_organizations infinite scroll")
     end
 
-    it "scrolls through all users" do
+    xit "scrolls through all users" do
       page.execute_script("window.scrollTo(0, 100000)")
       page.assert_selector('div[id^="follows"]', count: total_records)
     end
@@ -107,11 +107,11 @@ RSpec.describe "Infinite scroll on dashboard", type: :system, js: true do
       page.execute_script("window.scrollTo(0, 100000)")
     end
 
-    it "scrolls through all podcasts" do
+    xit "scrolls through all podcasts" do
       page.assert_selector('div[id^="follows"]', count: total_records)
     end
 
-    it "shows working links" do
+    xit "shows working links" do
       podcasts.each do |podcast|
         expect(page).to have_link(nil, href: "/" + podcast.path)
       end

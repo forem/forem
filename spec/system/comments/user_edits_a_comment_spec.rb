@@ -23,12 +23,12 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
   end
 
   context "when user edits comment on the bottom of the article" do
-    it "renders the page", percy: true do
+    xit "renders the page", percy: true do
       visit article.path.to_s
       Percy.snapshot(page, name: "Edit comment: renders")
     end
 
-    it "updates" do
+    xit "updates" do
       visit article.path.to_s
       wait_for_javascript
 
@@ -38,7 +38,7 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
   end
 
   context "when user edits via permalinks" do
-    it "updates" do
+    xit "updates" do
       user.reload
 
       visit user.comments.last.path.to_s
@@ -51,9 +51,9 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
   end
 
   context "when user edits via direct path (no referer)" do
-    it "cancels to the article page" do
+    xit "cancels to the article page" do
       user.reload
-      visit "#{comment.path}/edit"
+      visxit "#{comment.path}/edit"
       expect(page).to have_link("CANCEL", href: article.path.to_s)
     end
   end

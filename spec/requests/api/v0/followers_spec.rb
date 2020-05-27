@@ -15,7 +15,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
     end
 
     context "when user is unauthorized" do
-      it "returns unauthorized" do
+      xit "returns unauthorized" do
         get api_followers_users_path
 
         expect(response).to have_http_status(:unauthorized)
@@ -23,7 +23,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
     end
 
     context "when the user is authorized as current_user" do
-      it "returns ok" do
+      xit "returns ok" do
         sign_in user
 
         get api_followers_users_path
@@ -32,7 +32,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
     end
 
     context "when user is authorized with api key" do
-      it "returns user's followers list with the correct format" do
+      xit "returns user's followers list with the correct format" do
         get api_followers_users_path, headers: headers
         expect(response).to have_http_status(:ok)
 
@@ -45,7 +45,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
         expect(response_follower["profile_image"]).to eq(ProfileImage.new(follower).get(width: 60))
       end
 
-      it "supports pagination" do
+      xit "supports pagination" do
         follower2.follow(user)
 
         get api_followers_users_path, params: { page: 1, per_page: 1 }, headers: headers
@@ -58,7 +58,7 @@ RSpec.describe "Api::V0::FollowersController", type: :request do
         expect(response.parsed_body.length).to eq(0)
       end
 
-      it "order results for reverse following date" do
+      xit "order results for reverse following date" do
         follower2.follow(user)
 
         follows = user.followings.order(id: :desc).last(2).pluck(:id)

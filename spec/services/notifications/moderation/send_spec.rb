@@ -20,19 +20,19 @@ RSpec.describe Notifications::Moderation::Send, type: :service do
     Comment.set_callback(:commit, :after, :send_to_moderator)
   end
 
-  it "calls comment_data since parameter is a comment" do
+  xit "calls comment_data since parameter is a comment" do
     allow(Notifications).to receive(:comment_data)
     described_class.call(moderator, comment)
     expect(Notifications).to have_received(:comment_data)
   end
 
-  it "checks whether Notification is inserted on DB" do
+  xit "checks whether Notification is inserted on DB" do
     expect do
       described_class.call(moderator, comment)
     end.to change(Notification, :count).by(1)
   end
 
-  it "checks whether created Notification is valid", :aggregate_failures do
+  xit "checks whether created Notification is valid", :aggregate_failures do
     notification = described_class.call(moderator, comment)
     expect(notification).to be_a Notification
     expect(notification.action).to eq "Moderation"
@@ -41,13 +41,13 @@ RSpec.describe Notifications::Moderation::Send, type: :service do
     expect(notification.notifiable_id).to eq comment.id
   end
 
-  it "checks that moderator last notification time updates" do
+  xit "checks that moderator last notification time updates" do
     expect do
       described_class.call(moderator, comment)
     end.to change(moderator, :last_moderation_notification)
   end
 
-  it "does not create a notification if the moderator is the comment's author" do
+  xit "does not create a notification if the moderator is the comment's author" do
     comment = create(:comment, user: moderator, commentable: article)
 
     expect do

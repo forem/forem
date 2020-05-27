@@ -11,7 +11,7 @@ RSpec.describe Notifications::NewFollowerWorker, type: :worker do
 
     before { allow(new_follower_service).to receive(:call) }
 
-    it "calls the service" do
+    xit "calls the service" do
       worker.perform(follow_data)
       allow(new_follower_service).to receive(:call).with(follow_data, false).once
     end

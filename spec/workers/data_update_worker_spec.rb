@@ -10,20 +10,20 @@ RSpec.describe DataUpdateWorker, type: :worker do
     stub_const "DataUpdateScript::DIRECTORY", test_directory
   end
 
-  it "runs scripts that need running" do
+  xit "runs scripts that need running" do
     expect do
       worker.perform
     end.to change(DataUpdateScript, :count).by(1)
   end
 
-  it "will not run a script that has already been run" do
+  xit "will not run a script that has already been run" do
     worker.perform
     expect do
       worker.perform
     end.to change(DataUpdateScript, :count).by(0)
   end
 
-  it "updates DataUpdateScript model" do
+  xit "updates DataUpdateScript model" do
     expect do
       worker.perform
     end.to change(DataUpdateScript, :count).by(1)
@@ -34,7 +34,7 @@ RSpec.describe DataUpdateWorker, type: :worker do
     expect(dus.run_at).not_to be_nil
   end
 
-  it "logs data to stdout", :aggregate_failures do
+  xit "logs data to stdout", :aggregate_failures do
     allow(Rails.logger).to receive(:info)
     worker.perform
 
@@ -43,7 +43,7 @@ RSpec.describe DataUpdateWorker, type: :worker do
     end
   end
 
-  it "logs data to Datadog", :aggregate_failures do
+  xit "logs data to Datadog", :aggregate_failures do
     allow(DatadogStatsClient).to receive(:increment)
     worker.perform
 

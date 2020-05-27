@@ -16,7 +16,7 @@ RSpec.describe "/internal/tags", type: :request do
   end
 
   describe "PUT /internal/tag/:id" do
-    it "creates entry for #update action" do
+    xit "creates entry for #update action" do
       put internal_tag_path(tag.id), params: { id: tag.id, tag: { short_summary: Faker::Hipster.sentence } }
 
       log = AuditLog.where(user_id: super_admin.id, slug: :update)

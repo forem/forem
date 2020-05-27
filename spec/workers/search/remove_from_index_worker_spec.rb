@@ -6,20 +6,20 @@ RSpec.describe Search::RemoveFromIndexWorker, type: :worker do
 
   include_examples "#enqueues_on_correct_queue", "medium_priority", ["SearchClass", 1]
 
-  it "deletes document for given search class" do
+  xit "deletes document for given search class" do
     allow(search_class).to receive(:delete_document)
     described_class.new.perform(search_class.to_s, 1)
     expect(search_class).to have_received(:delete_document).with(1)
   end
 
   context "when document is not found" do
-    it "raises error" do
+    xit "raises error" do
       expect { described_class.new.perform(search_class.to_s, 1) }.to raise_error(
         Search::Errors::Transport::NotFound,
       )
     end
 
-    it "does not raise error if removing a Reaction" do
+    xit "does not raise error if removing a Reaction" do
       expect { described_class.new.perform("Search::Reaction", 1) }.not_to raise_error(
         Search::Errors::Transport::NotFound,
       )

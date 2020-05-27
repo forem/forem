@@ -33,7 +33,7 @@ RSpec.describe Streams::TwitchWebhook::Register, type: :service do
           and_return(body: { data: [{ id: 654_321 }] }.to_json, headers: { "Content-Type" => "application/json" })
       end
 
-      it "registers for webhooks" do
+      xit "registers for webhooks" do
         described_class.call(user, twitch_access_token_get)
 
         expect(twitch_webhook_registration_stubbed_route).to have_been_requested
@@ -48,12 +48,12 @@ RSpec.describe Streams::TwitchWebhook::Register, type: :service do
           and_return(body: {}.to_json, headers: { "Content-Type" => "application/json" })
       end
 
-      it "doesn't fail when twitch doesn't return data" do
+      xit "doesn't fail when twitch doesn't return data" do
         described_class.call(user, twitch_access_token_get)
         expect(twitch_user_stubbed_route).to have_been_requested
       end
 
-      it "doesn't register for webhooks" do
+      xit "doesn't register for webhooks" do
         described_class.call(user, twitch_access_token_get)
         expect(twitch_webhook_registration_stubbed_route).not_to have_been_requested
       end
@@ -66,12 +66,12 @@ RSpec.describe Streams::TwitchWebhook::Register, type: :service do
           and_return(body: { "data" => [] }.to_json, headers: { "Content-Type" => "application/json" })
       end
 
-      it "doesn't fail" do
+      xit "doesn't fail" do
         described_class.call(user, twitch_access_token_get)
         expect(twitch_user_stubbed_route).to have_been_requested
       end
 
-      it "doesn't register for webhooks" do
+      xit "doesn't register for webhooks" do
         described_class.call(user, twitch_access_token_get)
         expect(twitch_webhook_registration_stubbed_route).not_to have_been_requested
       end

@@ -22,7 +22,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         }
       end
 
-      it "shows chat_channel_memberships list pending invitation" do
+      xit "shows chat_channel_memberships list pending invitation" do
         sign_in second_user
         get "/chat_channel_memberships"
         expect(response.body).to include "Pending Invitations"
@@ -31,7 +31,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when no pending invitation" do
-      it "shows chat_channel_memberships list pending invitation" do
+      xit "shows chat_channel_memberships list pending invitation" do
         sign_in second_user
         get "/chat_channel_memberships"
         expect(response.body).to include "You have no pending invitations"
@@ -45,7 +45,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         chat_channel.add_users([second_user])
       end
 
-      it "returns chat channel membership details" do
+      xit "returns chat channel membership details" do
         sign_in second_user
         get "/chat_channel_memberships/find_by_chat_channel_id", params: { chat_channel_id: chat_channel.id }
         expected_keys = %w[id status chat_channel_id last_opened_at channel_text
@@ -57,7 +57,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is not logged in" do
-      it "renders not_found" do
+      xit "renders not_found" do
         expect do
           get "/chat_channel_memberships/find_by_chat_channel_id", params: {}
         end.to raise_error(ActiveRecord::RecordNotFound)
@@ -73,7 +73,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     let(:chat_channel_membership) { chat_channel.chat_channel_memberships.where(user_id: second_user.id).first }
 
     context "when user is not logged in" do
-      it "raise Pundit::NotAuthorizedError" do
+      xit "raise Pundit::NotAuthorizedError" do
         expect do
           get "/chat_channel_memberships/#{chat_channel_membership.id}/edit"
         end.to raise_error(Pundit::NotAuthorizedError)
@@ -81,7 +81,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is logged in and channel id is wrong" do
-      it "raise ActiveRecord::RecordNotFound" do
+      xit "raise ActiveRecord::RecordNotFound" do
         sign_in second_user
         expect do
           get "/chat_channel_memberships/ERW/edit"
@@ -90,7 +90,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is channel member" do
-      it "allows user to view channel members" do
+      xit "allows user to view channel members" do
         sign_in second_user
         get "/chat_channel_memberships/#{chat_channel_membership.id}/edit"
         expect(response.body).to include("Members")
@@ -101,7 +101,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is channel moderator" do
-      it "allows user to view channel members" do
+      xit "allows user to view channel members" do
         sign_in second_user
         chat_channel_membership.update(role: "mod")
         get "/chat_channel_memberships/#{chat_channel_membership.id}/edit"
@@ -116,7 +116,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
   describe "POST /chat_channel_memberships" do
     context "when user is super admin" do
-      it "creates chat channel invitation" do
+      xit "creates chat channel invitation" do
         user.add_role(:super_admin)
         expect do
           post "/chat_channel_memberships", params: {
@@ -131,7 +131,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is channel moderator, and invited user was a member of channel, and than left channel" do
-      it "creates chat channel invitation" do
+      xit "creates chat channel invitation" do
         chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
         ChatChannelMembership.create(chat_channel_id: chat_channel.id, user_id: second_user.id, status: "left_channel")
         post "/chat_channel_memberships", params: {
@@ -145,7 +145,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is channel moderator, invited user was not a member of channel" do
-      it "creates chat channel invitation" do
+      xit "creates chat channel invitation" do
         chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
         chat_channel_members_count = ChatChannelMembership.all.size
         post "/chat_channel_memberships", params: {
@@ -158,7 +158,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         expect(ChatChannelMembership.last.status).to eq("pending")
       end
 
-      it "disallows invitation creation when org private group" do
+      xit "disallows invitation creation when org private group" do
         chat_channel.update_column(:channel_name, "@org private group chat")
         chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
         expect do
@@ -173,7 +173,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is not authorized to add channel membership" do
-      it "raise Pundit::NotAuthorizedError" do
+      xit "raise Pundit::NotAuthorizedError" do
         expect do
           post "/chat_channel_memberships", params: {
             chat_channel_membership: {
@@ -198,7 +198,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when second user accept invitation" do
-      it "sets chat channl membership status to rejected" do
+      xit "sets chat channl membership status to rejected" do
         allow(Pusher).to receive(:trigger).and_return(true)
         membership = ChatChannelMembership.last
         sign_in second_user
@@ -213,7 +213,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when second user rejects invitation" do
-      it "sets chat channl membership status to rejected" do
+      xit "sets chat channl membership status to rejected" do
         allow(Pusher).to receive(:trigger).and_return(true)
         membership = ChatChannelMembership.last
         sign_in second_user
@@ -227,7 +227,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user not logged in" do
-      it "raise Pundit::NotAuthorizedError" do
+      xit "raise Pundit::NotAuthorizedError" do
         membership = ChatChannelMembership.last
         expect do
           put "/chat_channel_memberships/#{membership.id}", params: {
@@ -238,7 +238,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is unauthorized" do
-      it "raise Pundit::NotAuthorizedError" do
+      xit "raise Pundit::NotAuthorizedError" do
         membership = ChatChannelMembership.last
         sign_in user
         expect do
@@ -252,7 +252,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
   describe "DELETE /chat_channel_memberships/:id" do
     context "when user is logged in" do
-      it "leaves chat channel" do
+      xit "leaves chat channel" do
         allow(Pusher).to receive(:trigger).and_return(true)
         chat_channel.add_users([second_user])
         membership = ChatChannelMembership.last
@@ -264,7 +264,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is not logged in" do
-      it "raise Pundit::NotAuthorizedError" do
+      xit "raise Pundit::NotAuthorizedError" do
         chat_channel.add_users([second_user])
         membership = ChatChannelMembership.last
         expect do
@@ -280,7 +280,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is super admin" do
-      it "removes member from channel" do
+      xit "removes member from channel" do
         allow(Pusher).to receive(:trigger).and_return(true)
         user.add_role(:super_admin)
         membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
@@ -295,7 +295,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is moderator of channel" do
-      it "removes member from channel" do
+      xit "removes member from channel" do
         allow(Pusher).to receive(:trigger).and_return(true)
         membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
         membership.update(role: "mod")
@@ -310,7 +310,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is member of channel" do
-      it "raise Pundit::NotAuthorizedError" do
+      xit "raise Pundit::NotAuthorizedError" do
         membership = ChatChannelMembership.last
         expect do
           post "/chat_channel_memberships/remove_membership", params: {
@@ -324,7 +324,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
   describe "POST /chat_channel_memberships/add_membership" do
     context "when user is moderator of channel" do
-      it "adds requested member to join closed channel" do
+      xit "adds requested member to join closed channel" do
         allow(Pusher).to receive(:trigger).and_return(true)
         channel = ChatChannel.first
         membership = ChatChannelMembership.last
@@ -343,7 +343,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user is member of channel" do
-      it "raise Pundit::NotAuthorizedError" do
+      xit "raise Pundit::NotAuthorizedError" do
         expect do
           channel = ChatChannel.first
           membership = ChatChannelMembership.last
@@ -374,24 +374,24 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user was not member of closed channel" do
-      it "requested to join closed channel" do
+      xit "requested to join closed channel" do
         expect(ChatChannelMembership.last.status).to eq("joining_request")
         expect(response.status).to eq(200)
       end
 
-      it "returns in json" do
+      xit "returns in json" do
         expect(response.content_type).to eq("application/json")
       end
     end
 
     context "when user was a member of channel, and than left channel" do
-      it "requested to join closed channel" do
+      xit "requested to join closed channel" do
         ChatChannelMembership.create(chat_channel_id: chat_channel.id, user_id: second_user.id, status: "left_channel")
         expect(ChatChannelMembership.last.status).to eq("joining_request")
         expect(response.status).to eq(200)
       end
 
-      it "returns in json" do
+      xit "returns in json" do
         expect(response.content_type).to eq("application/json")
       end
     end

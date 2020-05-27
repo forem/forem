@@ -7,7 +7,7 @@ RSpec.describe Suggester::Articles::Boosted, type: :service do
   let(:article) { create(:article, tags: [tag.name], featured: true) }
   let(:reaction) { create(:reaction, user_id: user.id, reactable: article) }
 
-  it "returns an article" do
+  xit "returns an article" do
     user.follow(tag)
     article2 = create(:article, tags: [tag.name], featured: true, boosted_additional_articles: true, organization_id: organization.id)
     suggested_id = described_class.new(tag.name, area: "additional_articles").suggest.id

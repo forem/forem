@@ -18,7 +18,7 @@ RSpec.describe "Using the editor", type: :system do
   end
 
   def fill_markdown_with(content)
-    visit "/new"
+    visxit "/new"
     fill_in "article_body_markdown", with: content
   end
 
@@ -33,11 +33,11 @@ RSpec.describe "Using the editor", type: :system do
       page.evaluate_script("window.onbeforeunload = function(){}")
     end
 
-    it "renders the page", percy: true do
+    xit "renders the page", percy: true do
       Percy.snapshot(page, name: "Using the editor: preview an article")
     end
 
-    it "fills out form with rich content and click preview" do
+    xit "fills out form with rich content and click preview" do
       article_body = find("div.body")["innerHTML"]
       article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
 
@@ -46,13 +46,13 @@ RSpec.describe "Using the editor", type: :system do
   end
 
   describe "Submitting an article", js: true do
-    it "renders the page", percy: true do
+    xit "renders the page", percy: true do
       fill_markdown_with(read_from_file(raw_text))
       find("button", text: /\ASAVE CHANGES\z/).click
       Percy.snapshot(page, name: "Using the editor: submit an article")
     end
 
-    it "fill out form and submit" do
+    xit "fill out form and submit" do
       fill_markdown_with(read_from_file(raw_text))
       find("button", text: /\ASAVE CHANGES\z/).click
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
@@ -61,7 +61,7 @@ RSpec.describe "Using the editor", type: :system do
       Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
     end
 
-    it "user write and publish an article" do
+    xit "user write and publish an article" do
       fill_markdown_with(template.gsub("false", "true"))
       find("button", text: /\ASAVE CHANGES\z/).click
       ["Sample Article", template[-200..], "test"].each do |text|
@@ -75,11 +75,11 @@ RSpec.describe "Using the editor", type: :system do
         find("button", text: /\ASAVE CHANGES\z/).click
       end
 
-      it "renders the page", percy: true do
+      xit "renders the page", percy: true do
         Percy.snapshot(page, name: "Using the editor: publishing an article without a title")
       end
 
-      it "shows a message that the title cannot be blank" do
+      xit "shows a message that the title cannot be blank" do
         expect(page).to have_text(/title:  can't be blank/)
       end
     end

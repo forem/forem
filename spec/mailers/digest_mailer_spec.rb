@@ -9,7 +9,7 @@ RSpec.describe DigestMailer, type: :mailer do
       allow(article).to receive(:title).and_return("test title")
     end
 
-    it "works correctly" do
+    xit "works correctly" do
       email = described_class.digest_email(user, [article])
 
       expect(email.subject).not_to be_nil
@@ -18,12 +18,12 @@ RSpec.describe DigestMailer, type: :mailer do
       expect(email["from"].value).to eq("#{ApplicationConfig['COMMUNITY_NAME']} Digest <#{SiteConfig.email_addresses[:default]}>")
     end
 
-    it "includes the tracking pixel" do
+    xit "includes the tracking pixel" do
       email = described_class.digest_email(user, [article])
       expect(email.body).to include("open.gif")
     end
 
-    it "includes UTM params" do
+    xit "includes UTM params" do
       email = described_class.digest_email(user, [article])
       expect(email.body).to include(CGI.escape("utm_medium=email"))
       expect(email.body).to include(CGI.escape("utm_source=digest_mailer"))

@@ -10,10 +10,10 @@ RSpec.describe "Display users search spec", type: :system, js: true, elasticsear
     stub_request(:post, "http://www.google-analytics.com/collect")
   end
 
-  it "returns correct results for name search" do
+  xit "returns correct results for name search" do
     users = [current_user, found_user, found_two_user, not_found_user]
     index_documents_for_search_class(users, Search::User)
-    visit "/search?q=jane&filters=class_name:User"
+    visxit "/search?q=jane&filters=class_name:User"
 
     expect(page).to have_content(found_user.name)
     expect(page).to have_content(found_two_user.name)
@@ -21,10 +21,10 @@ RSpec.describe "Display users search spec", type: :system, js: true, elasticsear
     expect(page).not_to have_content(not_found_user.name)
   end
 
-  it "returns all expected user fields" do
+  xit "returns all expected user fields" do
     sign_in current_user
     index_documents_for_search_class([found_user], Search::User)
-    visit "/search?q=jane&filters=class_name:User"
+    visxit "/search?q=jane&filters=class_name:User"
 
     expect(page).to have_content(found_user.name)
     expect(find("span.crayons-story__flare-tag").text).to have_content("person")

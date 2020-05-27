@@ -9,7 +9,7 @@ RSpec.describe "/internal/chat_channels", type: :request do
   describe "POST /chat_channels" do
     around { |example| perform_enqueued_jobs(&example) }
 
-    it "creates chat_channel for with users as moderator" do
+    xit "creates chat_channel for with users as moderator" do
       user.add_role(:super_admin)
       sign_in user
       expect do

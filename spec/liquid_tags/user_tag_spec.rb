@@ -10,19 +10,19 @@ RSpec.describe UserTag, type: :liquid_tag do
   end
 
   context "when given valid id_code" do
-    it "renders the proper user name" do
+    xit "renders the proper user name" do
       liquid = generate_user_tag(user.username)
       expect(liquid.render).to include(CGI.escapeHTML(user.name))
     end
 
-    it "renders image html" do
+    xit "renders image html" do
       liquid = generate_user_tag(user.username)
       expect(liquid.render).to include("<img")
     end
   end
 
   context "when given an invalid username" do
-    it "renders a missing username and name", aggregate_failures: true do
+    xit "renders a missing username and name", aggregate_failures: true do
       liquid = generate_user_tag("nonexistent user")
       expect(liquid.render).to include("[deleted user]")
       expect(liquid.render).to include("[Deleted User]")

@@ -17,7 +17,7 @@ RSpec.describe Podcasts::EpisodeRssItem, type: :service do
   end
 
   describe "#new" do
-    it "create a nice object" do
+    xit "create a nice object" do
       data = described_class.new(title: "a", itunes_subtitle: "b", itunes_summary: "c",
                                  link: "https://example.com", guid: "guid", pubDate: "2019-01-01",
                                  body: "100", enclosure_url: "example.example")
@@ -26,7 +26,7 @@ RSpec.describe Podcasts::EpisodeRssItem, type: :service do
   end
 
   describe "#from_item" do
-    it "returns a hash" do
+    xit "returns a hash" do
       attributes = described_class.from_item(item).to_h
       expect(attributes).to be_kind_of(Hash)
       expect(attributes[:title]).to eq("lightalloy's podcast")
@@ -34,14 +34,14 @@ RSpec.describe Podcasts::EpisodeRssItem, type: :service do
       expect(attributes[:body]).to eq("world")
     end
 
-    it "has attr readers" do
+    xit "has attr readers" do
       data = described_class.from_item(item)
       expect(data.guid).to eq(guid)
       expect(data.enclosure_url).to eq("https://audio.simplecast.com/2330f132.mp3")
       expect(data.link).to eq(item.link)
     end
 
-    it "sets url to nil when no enclosure" do
+    xit "sets url to nil when no enclosure" do
       item = RSS::Parser.parse("spec/support/fixtures/podcasts/arresteddevops.xml", false).items.first
       data = described_class.from_item(item)
       expect(data.enclosure_url).to be nil

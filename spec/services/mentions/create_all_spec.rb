@@ -14,14 +14,14 @@ RSpec.describe Mentions::CreateAll, type: :service do
     )
   end
 
-  it "creates mention if there is a user mentioned and if the user doenst own the comment" do
+  xit "creates mention if there is a user mentioned and if the user doenst own the comment" do
     comment.body_markdown = "Hello @#{user.username}, you are cool."
     comment.save
     described_class.call(comment)
     expect(Mention.all.size).to eq(1)
   end
 
-  it "deletes mention if deleted from comment" do
+  xit "deletes mention if deleted from comment" do
     comment.body_markdown = "Hello @#{user.username}, you are cool."
     comment.save
     described_class.call(comment)
@@ -32,14 +32,14 @@ RSpec.describe Mentions::CreateAll, type: :service do
     expect(Mention.all.size).to eq(0)
   end
 
-  it "creates one mention even if multiple mentions of same user" do
+  xit "creates one mention even if multiple mentions of same user" do
     comment.body_markdown = "Hello @#{user.username} @#{user.username} @#{user.username}, you rock."
     comment.save
     described_class.call(comment)
     expect(Mention.all.size).to eq(1)
   end
 
-  it "creates multiple mentions for multiple users" do
+  xit "creates multiple mentions for multiple users" do
     user2 = create(:user)
     comment.body_markdown = "Hello @#{user.username} @#{user2.username}, you are cool."
     comment.save
@@ -47,7 +47,7 @@ RSpec.describe Mentions::CreateAll, type: :service do
     expect(Mention.all.size).to eq(2)
   end
 
-  it "deletes one of multiple mentions if one of multiple is deleted" do
+  xit "deletes one of multiple mentions if one of multiple is deleted" do
     user2 = create(:user)
     comment.body_markdown = "Hello @#{user.username} @#{user2.username}, you are cool."
     comment.save
@@ -59,18 +59,18 @@ RSpec.describe Mentions::CreateAll, type: :service do
     expect(Mention.all.size).to eq(1)
   end
 
-  it "creates mention on creation of comment (in addition to update)" do
+  xit "creates mention on creation of comment (in addition to update)" do
     described_class.call(comment2)
     expect(Mention.all.size).to eq(1)
   end
 
-  it "can only be created with valid mentionable" do
+  xit "can only be created with valid mentionable" do
     comment2.update_column(:body_markdown, "")
     described_class.call(comment2)
     expect(Mention.all.size).to eq(0)
   end
 
-  it "cant mention self" do
+  xit "cant mention self" do
     comment.body_markdown = "Me, Myself and I @#{user2.username}"
     comment.save
     described_class.call(comment)

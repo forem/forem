@@ -8,7 +8,7 @@ RSpec.describe ArticleWithVideoCreationService, type: :service do
   end
 
   describe "#create!" do
-    it "works" do
+    xit "works" do
       Timecop.travel(3.weeks.ago)
       user = create(:user)
       Timecop.return

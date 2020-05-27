@@ -15,7 +15,7 @@ RSpec.describe Search::Tag, type: :service do
       }
     end
 
-    it "searches with name:tag" do
+    xit "searches with name:tag" do
       tag = create(:tag, :search_indexed, name: "tag1")
 
       described_class.refresh_index
@@ -26,7 +26,7 @@ RSpec.describe Search::Tag, type: :service do
                                 ])
     end
 
-    it "analyzes wildcards" do
+    xit "analyzes wildcards" do
       tag1 = create(:tag, :search_indexed, name: "tag1")
       tag2 = create(:tag, :search_indexed, name: "tag2")
       tag3 = create(:tag, :search_indexed, name: "3tag")
@@ -41,14 +41,14 @@ RSpec.describe Search::Tag, type: :service do
       expect(tag_docs).not_to match(a_hash_including("name" => tag3.name))
     end
 
-    it "parses tag document hits from search response" do
+    xit "parses tag document hits from search response" do
       allow(Search::Client).to receive(:search) { mock_search_response }
       tag_docs = described_class.search_documents("query")
       expect(tag_docs.count).to eq(2)
       expect(tag_docs).to include(tag_doc_1, tag_doc_2)
     end
 
-    it "does not allow leading wildcards" do
+    xit "does not allow leading wildcards" do
       expect { described_class.search_documents("name:*tag") }.to raise_error(Search::Errors::Transport::BadRequest)
     end
   end

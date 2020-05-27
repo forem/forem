@@ -16,7 +16,7 @@ RSpec.describe "Follows #bulk_show", type: :request do
       mutal_follow_user.follow(current_user)
     end
 
-    it "returns correct following values" do
+    xit "returns correct following values" do
       ids = [followed_user.id, not_followed_user.id, current_user.id, follow_back_user.id, mutal_follow_user.id]
       get bulk_show_follows_path, params: { ids: ids }
 
@@ -28,12 +28,12 @@ RSpec.describe "Follows #bulk_show", type: :request do
     end
   end
 
-  it "without ids raises a missing param error" do
+  xit "without ids raises a missing param error" do
     sign_in current_user
     expect { get bulk_show_follows_path, params: {} }.to raise_error(ActionController::ParameterMissing)
   end
 
-  it "rejects unless logged-in" do
+  xit "rejects unless logged-in" do
     sign_out(current_user)
     get bulk_show_follows_path
 

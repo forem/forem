@@ -17,13 +17,13 @@ RSpec.describe "Viewing a comment", type: :system, js: true do
   end
 
   context "when showing the date" do
-    it "shows the readable publish date", percy: true do
+    xit "shows the readable publish date", percy: true do
       Percy.snapshot(page, name: "Comment: can render")
 
       expect(page).to have_selector(".comment-date time", text: "Mar 4")
     end
 
-    it "embeds the published timestamp" do
+    xit "embeds the published timestamp" do
       selector = ".comment-date time[datetime='#{timestamp}']"
       expect(page).to have_selector(selector)
     end

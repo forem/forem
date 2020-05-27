@@ -22,7 +22,7 @@ RSpec.describe RunkitTag, type: :liquid_tag do
       Liquid::Template.parse("{% runkit #{preamble_str}%}#{block}{% endrunkit %}")
     end
 
-    it "generates proper div with content" do
+    xit "generates proper div with content" do
       rendered = generate_runkit_liquid(preamble, content).render
       Approvals.verify(rendered, name: "runkit_liquid_tag_spec", format: :html)
     end

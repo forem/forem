@@ -14,14 +14,14 @@ RSpec.describe "Notifications page", type: :system, js: true do
     expect(page).to have_text(/thanks i guess/)
   end
 
-  it "shows 1 notification and disappear after clicking it" do
-    visit "/"
+  xit "shows 1 notification and disappear after clicking it" do
+    visxit "/"
     expect(page).to have_css("span#notifications-number", text: "1")
     click_link("notifications-link")
     expect(page).not_to have_css("span#notifications-number", text: "1")
   end
 
-  it "allows user to interact with replies" do
+  xit "allows user to interact with replies" do
     sidekiq_perform_enqueued_jobs do
       article = create(:article, user: alex)
       comment = create(:comment, commentable: article, user: alex)
@@ -29,7 +29,7 @@ RSpec.describe "Notifications page", type: :system, js: true do
       Notification.send_new_comment_notifications_without_delay(reply)
     end
 
-    visit "/notifications"
+    visxit "/notifications"
     expect(page).to have_css("div.single-notification")
     click_button("heart")
     expect(page).to have_css("img.reacted-emoji")
@@ -37,10 +37,10 @@ RSpec.describe "Notifications page", type: :system, js: true do
     validate_reply(leslie.comments.first.id)
   end
 
-  it "allows user to follow other users back" do
+  xit "allows user to follow other users back" do
     follow = leslie.follow(alex)
     Notification.send_new_follower_notification_without_delay(follow, "Published")
-    visit "/notifications"
+    visxit "/notifications"
     expect(page).to have_css("div.single-notification")
     click_button("+ FOLLOW BACK")
     expect(page).to have_text("FOLLOWING")
@@ -62,11 +62,11 @@ RSpec.describe "Notifications page", type: :system, js: true do
       end
     end
 
-    it "allows trusted user to moderate content" do
+    xit "allows trusted user to moderate content" do
       article = create(:article, user: alex)
       comment = nil
       sidekiq_perform_enqueued_jobs { comment = create(:comment, commentable: article, user: leslie) }
-      visit "/notifications"
+      visxit "/notifications"
       expect(page).to have_css("div.single-notification")
       interact_with_each_emojis
       click_link("Reply")

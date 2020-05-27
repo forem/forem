@@ -12,14 +12,14 @@ RSpec.describe Notifications::WelcomeNotificationWorker, type: :worker do
     end
 
     context "with an active broadcast" do
-      it "calls a service" do
+      xit "calls a service" do
         worker.perform(user.id, broadcast.id)
         expect(service).to have_received(:call).with(user.id, broadcast).once
       end
     end
 
     context "with an inactive broadcast" do
-      it "does not call a service" do
+      xit "does not call a service" do
         worker.perform(user.id, inactive_broadcast.id)
         expect(service).not_to have_received(:call)
       end
@@ -30,7 +30,7 @@ RSpec.describe Notifications::WelcomeNotificationWorker, type: :worker do
         broadcast.destroy
       end
 
-      it "does nothing" do
+      xit "does nothing" do
         worker.perform(user.id, broadcast.id)
         expect(service).not_to have_received(:call)
       end

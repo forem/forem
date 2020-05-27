@@ -10,14 +10,14 @@ RSpec.describe Organizations::BustCacheWorker, type: :worker do
     end
 
     describe "when no organization is found" do
-      it "doest not call the service" do
+      xit "doest not call the service" do
         allow(Organization).to receive(:find_by).and_return(nil)
         worker.perform(789, "SlUg")
         expect(CacheBuster).not_to have_received(:bust_organization)
       end
     end
 
-    it "busts cache" do
+    xit "busts cache" do
       worker.perform(organization.id, "SlUg")
       expect(CacheBuster).to have_received(:bust_organization).with(organization, "SlUg")
     end

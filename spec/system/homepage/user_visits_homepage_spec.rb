@@ -6,20 +6,20 @@ RSpec.describe "User visits a homepage", type: :system do
   before { create(:tag, name: "webdev") }
 
   context "when user hasn't logged in" do
-    before { visit "/" }
+    before { visxit "/" }
 
-    it "renders the page", js: true, percy: true do
+    xit "renders the page", js: true, percy: true do
       Percy.snapshot(page, name: "Visits homepage: logged out user")
     end
 
-    it "shows the sign-in block" do
+    xit "shows the sign-in block" do
       within ".signin-cta-widget" do
         expect(page).to have_text("Sign In With Twitter")
         expect(page).to have_text("Sign In With GitHub")
       end
     end
 
-    it "shows the tags block" do
+    xit "shows the tags block" do
       within("#sidebar-nav-default-tags") do
         Tag.where(supported: true).limit(30).each do |tag|
           expect(page).to have_link("##{tag.name}", href: "/t/#{tag.name}")
@@ -30,7 +30,7 @@ RSpec.describe "User visits a homepage", type: :system do
     end
 
     describe "link tags" do
-      it "contains the qualified community name in the search link" do
+      xit "contains the qualified community name in the search link" do
         selector = "link[rel='search'][title='#{community_qualified_name}']"
         expect(page).to have_selector(selector, visible: :hidden)
       end
@@ -44,12 +44,12 @@ RSpec.describe "User visits a homepage", type: :system do
       sign_in(user)
     end
 
-    it "renders the page", js: true, percy: true do
+    xit "renders the page", js: true, percy: true do
       Percy.snapshot(page, name: "Visits homepage: logged in user")
     end
 
-    it "offers to follow tags", js: true do
-      visit "/"
+    xit "offers to follow tags", js: true do
+      visxit "/"
 
       within("#sidebar-nav-default-tags") do
         expect(page).to have_text("Follow tags to improve your feed")
@@ -62,10 +62,10 @@ RSpec.describe "User visits a homepage", type: :system do
         user.follows.create!(followable: create(:tag, name: "go", hotness_score: 99))
         user.follows.create!(followable: create(:tag, name: "javascript"), points: 3)
 
-        visit "/"
+        visxit "/"
       end
 
-      it "shows the followed tags", js: true do
+      xit "shows the followed tags", js: true do
         expect(page).to have_text("My Tags")
 
         # Need to ensure the user data is loaded before doing any checks
@@ -76,7 +76,7 @@ RSpec.describe "User visits a homepage", type: :system do
         end
       end
 
-      it "shows followed tags ordered by weight and name", js: true do
+      xit "shows followed tags ordered by weight and name", js: true do
         # Need to ensure the user data is loaded before doing any checks
         find("body")["data-user"]
 
@@ -85,7 +85,7 @@ RSpec.describe "User visits a homepage", type: :system do
         end
       end
 
-      it "shows other tags", js: true do
+      xit "shows other tags", js: true do
         expect(page).to have_text("Other Popular Tags")
         within("#sidebar-nav-default-tags") do
           expect(page).to have_link("#webdev", href: "/t/webdev")
@@ -95,20 +95,20 @@ RSpec.describe "User visits a homepage", type: :system do
     end
 
     describe "shop url" do
-      it "shows the link to the shop if present" do
+      xit "shows the link to the shop if present" do
         SiteConfig.shop_url = "https://example.com"
 
-        visit "/"
+        visxit "/"
 
         within("#main-nav-more") do
           expect(page).to have_link(href: SiteConfig.shop_url)
         end
       end
 
-      it "does not show the shop if not present" do
+      xit "does not show the shop if not present" do
         SiteConfig.shop_url = ""
 
-        visit "/"
+        visxit "/"
 
         within("#main-nav-more") do
           expect(page).not_to have_text("Shop")

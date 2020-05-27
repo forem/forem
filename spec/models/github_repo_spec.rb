@@ -25,7 +25,7 @@ RSpec.describe GithubRepo, type: :model do
     let(:repo) { build(:github_repo, user: user) }
 
     describe "clearing caches" do
-      it "updates the user's updated_at" do
+      xit "updates the user's updated_at" do
         old_updated_at = user.updated_at
 
         Timecop.travel(1.minute.from_now) do
@@ -35,7 +35,7 @@ RSpec.describe GithubRepo, type: :model do
         expect(user.reload.updated_at.to_i > old_updated_at.to_i).to be(true)
       end
 
-      it "busts the correct caches" do
+      xit "busts the correct caches" do
         allow(CacheBuster).to receive(:bust)
 
         repo.save
@@ -56,19 +56,19 @@ RSpec.describe GithubRepo, type: :model do
       }
     end
 
-    it "creates a new repo" do
+    xit "creates a new repo" do
       expect do
         described_class.upsert(user, params)
       end.to change(described_class, :count).by(1)
     end
 
-    it "creates a repo for the given user" do
+    xit "creates a repo for the given user" do
       repo = described_class.upsert(user, params)
 
       expect(repo.user_id).to eq(user.id)
     end
 
-    it "returns an existing repo updated with new params" do
+    xit "returns an existing repo updated with new params" do
       new_name = Faker::Book.title
 
       new_repo = described_class.upsert(user, url: repo.url, name: new_name)
@@ -94,7 +94,7 @@ RSpec.describe GithubRepo, type: :model do
       allow(Github::OauthClient).to receive(:new).and_return(github_client)
     end
 
-    it "updates all repositories" do
+    xit "updates all repositories" do
       repo.save
       old_updated_at = repo.updated_at
 

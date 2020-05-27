@@ -7,7 +7,7 @@ RSpec.describe Users::SubscribeToMailchimpNewsletterWorker, type: :worker do
     let(:worker) { subject }
     let(:user) { FactoryBot.create(:user) }
 
-    it "subscribes user to mailchimp newsletter" do
+    xit "subscribes user to mailchimp newsletter" do
       mailchimp_bot = double
       allow(MailchimpBot).to receive(:new).and_return(mailchimp_bot)
       allow(mailchimp_bot).to receive(:upsert)

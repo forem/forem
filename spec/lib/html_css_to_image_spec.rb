@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe HtmlCssToImage, type: :lib do
   describe ".url" do
-    it "returns the url to the created image" do
+    xit "returns the url to the created image" do
       stub_request(:post, /hcti.io/).
         to_return(status: 200,
                   body: '{ "url": "https://hcti.io/v1/image/6c52de9d-4d37-4008-80f8-67155589e1a1" }',
@@ -11,7 +11,7 @@ RSpec.describe HtmlCssToImage, type: :lib do
       expect(described_class.url(html: "test")).to eq("https://hcti.io/v1/image/6c52de9d-4d37-4008-80f8-67155589e1a1")
     end
 
-    it "returns fallback image if the request fails" do
+    xit "returns fallback image if the request fails" do
       stub_request(:post, /hcti.io/).
         to_return(status: 429,
                   body: '{ "error": "Plan limit exceeded" }',
@@ -27,7 +27,7 @@ RSpec.describe HtmlCssToImage, type: :lib do
       allow(Rails.cache).to receive(:read)
     end
 
-    it "caches the image url when successful" do
+    xit "caches the image url when successful" do
       stub_request(:post, /hcti.io/).
         to_return(status: 200,
                   body: '{ "url": "https://hcti.io/v1/image/6c52de9d-4d37-4008-80f8-67155589e1a1" }',
@@ -37,7 +37,7 @@ RSpec.describe HtmlCssToImage, type: :lib do
       expect(Rails.cache).to have_received(:write).once
     end
 
-    it "cache has a long expiration" do
+    xit "cache has a long expiration" do
       # Images are expensive to generate, make sure we don't expire them too quickly.
       stub_request(:post, /hcti.io/).
         to_return(status: 200,
@@ -48,7 +48,7 @@ RSpec.describe HtmlCssToImage, type: :lib do
       expect(Rails.cache).to have_received(:write).with(anything, anything, expires_in: HtmlCssToImage::CACHE_EXPIRATION).once
     end
 
-    it "does not cache errors" do
+    xit "does not cache errors" do
       stub_request(:post, /hcti.io/).
         to_return(status: 429,
                   body: '{ "error": "Plan limit exceeded" }',

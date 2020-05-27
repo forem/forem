@@ -8,7 +8,7 @@ RSpec.describe "/internal/permissions", type: :request do
       sign_in user
     end
 
-    it "blocks the request" do
+    xit "blocks the request" do
       expect do
         get "/internal/permissions"
       end.to raise_error(Pundit::NotAuthorizedError)
@@ -23,7 +23,7 @@ RSpec.describe "/internal/permissions", type: :request do
       get "/internal/permissions"
     end
 
-    it "allows the request" do
+    xit "allows the request" do
       expect(response).to have_http_status(:ok)
     end
   end
@@ -36,7 +36,7 @@ RSpec.describe "/internal/permissions", type: :request do
       get "/internal/permissions"
     end
 
-    it "allows the request" do
+    xit "allows the request" do
       expect(response).to have_http_status(:ok)
     end
   end
@@ -48,7 +48,7 @@ RSpec.describe "/internal/permissions", type: :request do
       sign_in single_resource_admin
     end
 
-    it "blocks the request" do
+    xit "blocks the request" do
       expect do
         get "/internal/permissions"
       end.to raise_error(Pundit::NotAuthorizedError)

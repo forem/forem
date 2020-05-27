@@ -13,11 +13,11 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send, type: :service do
     mod_user.add_role(:tag_moderator, tag)
   end
 
-  it "returns a valid notification" do
+  xit "returns a valid notification" do
     expect(notification).to be_a(Notification)
   end
 
-  it "notifies the author of the article" do
+  xit "notifies the author of the article" do
     sidekiq_perform_enqueued_jobs do
       Notification.send_tag_adjustment_notification(tag_adjustment)
     end
@@ -30,13 +30,13 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send, type: :service do
     expect(notification.notifiable_type).to eq(tag_adjustment.class.name)
   end
 
-  it "tests JSON data" do
+  xit "tests JSON data" do
     json = notification.json_data
     expect(json["article"]["title"]).to start_with("Hello")
     expect(json["adjustment_type"]).to eq "addition"
   end
 
-  it "tests JSON data for removal" do
+  xit "tests JSON data for removal" do
     tag_adjustment.adjustment_type = "removal"
     json = notification.json_data
     expect(json["article"]["title"]).to start_with("Hello")

@@ -34,12 +34,12 @@ RSpec.describe Exporter::Comments, type: :service do
   end
 
   describe "#initialize" do
-    it "accepts a user" do
+    xit "accepts a user" do
       exporter = valid_instance(user)
       expect(exporter.user).to be(user)
     end
 
-    it "names itself comments" do
+    xit "names itself comments" do
       exporter = valid_instance(user)
       expect(exporter.name).to eq(:comments)
     end
@@ -47,14 +47,14 @@ RSpec.describe Exporter::Comments, type: :service do
 
   describe "#export" do
     context "when id code is unknown" do
-      it "returns no comments if the id code is not found" do
+      xit "returns no comments if the id code is not found" do
         exporter = valid_instance(user)
         result = exporter.export(id_code: "not found")
         comments = load_comments(result)
         expect(comments).to be_empty
       end
 
-      it "no comments if id code belongs to another user" do
+      xit "no comments if id code belongs to another user" do
         exporter = valid_instance(user)
         result = exporter.export(id_code: other_user_comment.id_code)
         comments = load_comments(result)
@@ -63,14 +63,14 @@ RSpec.describe Exporter::Comments, type: :service do
     end
 
     context "when id code is known" do
-      it "returns the comment" do
+      xit "returns the comment" do
         exporter = valid_instance(user)
         result = exporter.export(id_code: comment.id_code)
         comments = load_comments(result)
         expect(comments.length).to eq(1)
       end
 
-      it "returns only expected fields for the comment" do
+      xit "returns only expected fields for the comment" do
         exporter = valid_instance(user)
         result = exporter.export(id_code: comment.id_code)
         comments = load_comments(result)
@@ -79,7 +79,7 @@ RSpec.describe Exporter::Comments, type: :service do
     end
 
     context "when all comments are requested" do
-      it "returns all the comments as json" do
+      xit "returns all the comments as json" do
         exporter = valid_instance(comment.user)
         result = exporter.export
         comments = load_comments(result)
@@ -87,7 +87,7 @@ RSpec.describe Exporter::Comments, type: :service do
         expect(comments.length).to eq(user.comments.size)
       end
 
-      it "returns only expected fields for the comment" do
+      xit "returns only expected fields for the comment" do
         exporter = valid_instance(comment.user)
         result = exporter.export
         comments = load_comments(result)
@@ -96,14 +96,14 @@ RSpec.describe Exporter::Comments, type: :service do
     end
 
     describe "commentable path" do
-      it "contains the path of the article" do
+      xit "contains the path of the article" do
         exporter = valid_instance(user)
         result = exporter.export(id_code: comment.id_code)
         comments = load_comments(result)
         expect(comments.first["commentable_path"]).to eq(article.path)
       end
 
-      it "contains the path of the podcast episode" do
+      xit "contains the path of the podcast episode" do
         exporter = valid_instance(user)
         result = exporter.export(id_code: podcast_episode_comment.id_code)
         comments = load_comments(result)

@@ -17,7 +17,7 @@ RSpec.describe Notifications::MilestoneWorker, type: :worker do
     end
 
     describe "When it does not find article from id" do
-      it "does not call the service" do
+      xit "does not call the service" do
         allow(Article).to receive(:find_by)
         worker.perform("Reaction", 456)
         expect(Notifications::Milestone::Send).not_to have_received(:call)
@@ -25,7 +25,7 @@ RSpec.describe Notifications::MilestoneWorker, type: :worker do
     end
 
     describe "When finds article from id" do
-      it "calls the service" do
+      xit "calls the service" do
         allow(Article).to receive(:find_by).and_return(article)
         worker.perform("Reaction", 456)
         expect(Notifications::Milestone::Send).to have_received(:call).with("Reaction", article)

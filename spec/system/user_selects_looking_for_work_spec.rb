@@ -6,14 +6,14 @@ RSpec.describe "Looking For Work", type: :system do
   before do
     create(:tag, name: "hiring")
     sign_in(user)
-    visit "/settings"
+    visxit "/settings"
   end
 
-  it "renders the page", js: true, percy: true do
+  xit "renders the page", js: true, percy: true do
     Percy.snapshot(page, name: "Logged in user: settings page")
   end
 
-  it "user selects looking for work and autofollows hiring tag", js: true do
+  xit "user selects looking for work and autofollows hiring tag", js: true do
     page.check "Looking for work"
     sidekiq_perform_enqueued_jobs do
       click_button("Save")

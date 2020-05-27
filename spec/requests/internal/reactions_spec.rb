@@ -13,37 +13,37 @@ RSpec.describe "/internal/reactions", type: :request do
 
     let(:reaction) { create(:reaction, category: "vomit", user_id: user.id, reactable: article) }
 
-    it "updates reaction to be confirmed" do
+    xit "updates reaction to be confirmed" do
       put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmed" }
       expect(reaction.reload.status).to eq("confirmed")
     end
 
-    it "updates reaction to be invalid" do
+    xit "updates reaction to be invalid" do
       put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "invalid" }
       expect(reaction.reload.status).to eq("invalid")
     end
 
-    it "does not set a non-valid status" do
+    xit "does not set a non-valid status" do
       put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmedsssss" }
       expect(reaction.reload.status).not_to eq("confirmedsssss")
     end
 
-    it "returns HTTP Status 200 upon status update" do
+    xit "returns HTTP Status 200 upon status update" do
       put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmed" }
       expect(response).to have_http_status(:ok)
     end
 
-    it "returns HTTP Status 422 upon status update failure" do
+    xit "returns HTTP Status 422 upon status update failure" do
       put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmedsssss" }
       expect(response).to have_http_status(:unprocessable_entity)
     end
 
-    it "returns expected JSON upon status update" do
+    xit "returns expected JSON upon status update" do
       put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmed" }
       expect(JSON.parse(response.body)).to eq("outcome" => "Success")
     end
 
-    it "returns error upon status update failure" do
+    xit "returns error upon status update failure" do
       put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmedsssss" }
       expect(JSON.parse(response.body)).to include("error")
     end
@@ -57,7 +57,7 @@ RSpec.describe "/internal/reactions", type: :request do
 
     let(:reaction) { create(:reaction, category: "vomit", user_id: user.id, reactable: article) }
 
-    it "updates reaction to be confirmed" do
+    xit "updates reaction to be confirmed" do
       invalid_request = lambda do
         put "/internal/reactions/#{reaction.id}", params: { id: reaction.id, status: "confirmed" }
       end

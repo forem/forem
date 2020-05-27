@@ -5,14 +5,14 @@ RSpec.describe "Registrations", type: :request do
 
   describe "GET /enter" do
     context "when not logged in" do
-      it "shows the sign in page" do
+      xit "shows the sign in page" do
         get "/enter"
         expect(response.body).to include "Great to have you"
       end
     end
 
     context "when logged in" do
-      it "redirects to /dashboard" do
+      xit "redirects to /dashboard" do
         sign_in user
 
         get "/enter"

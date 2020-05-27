@@ -6,7 +6,7 @@ RSpec.describe "Admin creates new event", type: :system do
 
   before do
     sign_in admin
-    visit "/internal/events"
+    visxit "/internal/events"
   end
 
   def select_date_and_time(year, month, date, hour, min, field_name)
@@ -25,17 +25,17 @@ RSpec.describe "Admin creates new event", type: :system do
     click_button("Create Event")
   end
 
-  it "loads /internal/events" do
+  xit "loads /internal/events" do
     expect(page).to have_content("Create New Event")
   end
 
-  it "renders the page", js: true, percy: true do
+  xit "renders the page", js: true, percy: true do
     Percy.snapshot(page, name: "Admin: /internal/events shows published events")
   end
 
-  it "loads published events on /events" do
+  xit "loads published events on /events" do
     create_and_publish_event
-    visit "/events"
+    visxit "/events"
 
     expect(page).to have_content("Workshop Title")
   end

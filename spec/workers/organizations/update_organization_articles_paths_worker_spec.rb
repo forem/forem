@@ -7,7 +7,7 @@ RSpec.describe Organizations::UpdateOrganizationArticlesPathsWorker, type: :work
     let(:articles) { (1..3).map { |_a| create(:article, organization: organization) } }
 
     describe "update article paths" do
-      it "on organization slug change" do
+      xit "on organization slug change" do
         old_slug = organization.slug
         new_slug = "newSlug"
         organization.update(slug: new_slug)

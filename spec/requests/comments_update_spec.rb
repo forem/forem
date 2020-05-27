@@ -10,7 +10,7 @@ RSpec.describe "CommentsUpdate", type: :request do
     Notification.send_new_comment_notifications_without_delay(comment)
   end
 
-  it "updates ordinary article with proper params" do
+  xit "updates ordinary article with proper params" do
     new_body = "NEW TITLE #{rand(100)}"
     put "/comments/#{comment.id}", params: {
       comment: { body_markdown: new_body }

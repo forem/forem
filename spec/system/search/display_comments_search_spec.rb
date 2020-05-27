@@ -5,13 +5,13 @@ RSpec.describe "Display articles search spec", type: :system, js: true, elastics
     stub_request(:post, "http://www.google-analytics.com/collect")
   end
 
-  it "returns correct results for a search" do
+  xit "returns correct results for a search" do
     query = "<marquee='alert(document.cookie)'>XSS"
     found_comment = create(:comment, body_markdown: query)
     index_documents_for_search_class([found_comment], Search::FeedContent)
 
     url_encoded_query = CGI.escape(query)
-    visit "/search?q=#{url_encoded_query}&filters=class_name:Comment"
+    visxit "/search?q=#{url_encoded_query}&filters=class_name:Comment"
 
     expect(page.find(".crayons-story__snippet")["innerHTML"]).
       to eq("…&lt;<em>marquee</em>='<em>alert</em>(<em>document.cookie</em>)'&gt;<em>XSS</em>…")

@@ -14,19 +14,19 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         field_test(:user_home_feed, participant: user)
       end
 
-      it "records user_creates_reaction field test conversion" do
+      xit "records user_creates_reaction field test conversion" do
         worker.perform(user.id, "user_home_feed", "user_creates_reaction")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
         expect(FieldTest::Event.last.name).to eq("user_creates_reaction")
       end
 
-      it "records user_creates_comment field test conversion" do
+      xit "records user_creates_comment field test conversion" do
         worker.perform(user.id, "user_home_feed", "user_creates_comment")
         expect(FieldTest::Event.last.field_test_membership.participant_id).to eq(user.id.to_s)
         expect(FieldTest::Event.last.name).to eq("user_creates_comment")
       end
 
-      it "records user_views_article_four_days_in_week field test conversion if qualifies" do
+      xit "records user_views_article_four_days_in_week field test conversion if qualifies" do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
@@ -35,7 +35,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         expect(FieldTest::Event.last.name).to eq("user_views_article_four_days_in_week")
       end
 
-      it "does not record user_views_article_four_days_in_week field test conversion if not qualifying" do
+      xit "does not record user_views_article_four_days_in_week field test conversion if not qualifying" do
         2.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end
@@ -43,7 +43,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         expect(FieldTest::Event.all.size).to be(0)
       end
 
-      it "records user_views_article_four_hours_in_day field test conversion if qualifies" do
+      xit "records user_views_article_four_hours_in_day field test conversion if qualifies" do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
@@ -52,7 +52,7 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         expect(FieldTest::Event.last.name).to eq("user_views_article_four_hours_in_day")
       end
 
-      it "does not record user_views_article_four_hours_in_day field test conversion if not qualifying" do
+      xit "does not record user_views_article_four_hours_in_day field test conversion if not qualifying" do
         2.times do |n|
           create(:page_view, user_id: user.id, created_at: n.hours.ago)
         end
@@ -62,17 +62,17 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
     end
 
     context "with user who is not part of field test" do
-      it "records user_creates_reaction field test conversion" do
+      xit "records user_creates_reaction field test conversion" do
         worker.perform(user.id, "user_home_feed", "user_creates_reaction")
         expect(FieldTest::Event.all.size).to be(0)
       end
 
-      it "records user_creates_comment field test conversion" do
+      xit "records user_creates_comment field test conversion" do
         worker.perform(user.id, "user_home_feed", "user_creates_comment")
         expect(FieldTest::Event.all.size).to be(0)
       end
 
-      it "records user_views_article_four_days_in_week field test conversion if qualifies" do
+      xit "records user_views_article_four_days_in_week field test conversion if qualifies" do
         7.times do |n|
           create(:page_view, user_id: user.id, created_at: n.days.ago)
         end

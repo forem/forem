@@ -7,20 +7,20 @@ RSpec.describe "UsersOnboarding", type: :request do
     context "when signed in" do
       before { sign_in user }
 
-      it "updates saw_onboarding boolean" do
+      xit "updates saw_onboarding boolean" do
         sign_in user
         patch "/onboarding_update.json", params: {}
         expect(user.saw_onboarding).to eq(true)
       end
 
-      it "updates the attributes on the user" do
+      xit "updates the attributes on the user" do
         params = { user: { location: "Alpaca Town" } }
         expect do
           patch "/onboarding_update.json", params: params
         end.to change(user, :location)
       end
 
-      it "does not update attributes if params are empty" do
+      xit "does not update attributes if params are empty" do
         params = { user: { location: "" } }
         expect do
           patch "/onboarding_update.json", params: params
@@ -29,7 +29,7 @@ RSpec.describe "UsersOnboarding", type: :request do
     end
 
     context "when signed out" do
-      it "returns a not found error if user is not signed in" do
+      xit "returns a not found error if user is not signed in" do
         patch "/onboarding_update.json", params: {}
         expect(response.parsed_body["error"]).to include("Please sign in")
       end
@@ -40,14 +40,14 @@ RSpec.describe "UsersOnboarding", type: :request do
     context "when signed in" do
       before { sign_in user }
 
-      it "updates saw_onboarding boolean" do
+      xit "updates saw_onboarding boolean" do
         patch "/onboarding_checkbox_update.json", params: {}
         expect(user.saw_onboarding).to eq(true)
       end
     end
 
     context "when signed out" do
-      it "returns a not found error if user is not signed in" do
+      xit "returns a not found error if user is not signed in" do
         patch "/onboarding_checkbox_update.json", params: {}
         expect(response.parsed_body["error"]).to include("Please sign in")
       end

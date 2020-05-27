@@ -10,7 +10,7 @@ RSpec.describe "Dashboards", type: :request do
 
   describe "GET /dashboard" do
     context "when not logged in" do
-      it "redirects to /enter" do
+      xit "redirects to /enter" do
         get "/dashboard"
         expect(response).to redirect_to("/enter")
       end
@@ -22,17 +22,17 @@ RSpec.describe "Dashboards", type: :request do
         article
       end
 
-      it "renders user's articles" do
+      xit "renders user's articles" do
         get "/dashboard"
         expect(response.body).to include(CGI.escapeHTML(article.title))
       end
 
-      it 'does not show "STATS" for articles' do
+      xit 'does not show "STATS" for articles' do
         get "/dashboard"
         expect(response.body).not_to include("STATS")
       end
 
-      it "renders the delete button for drafts" do
+      xit "renders the delete button for drafts" do
         unpublished_article
         get "/dashboard"
         expect(response.body).to include "DELETE"
@@ -40,7 +40,7 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     context "when logged in as a super admin" do
-      it "renders the specified user's articles" do
+      xit "renders the specified user's articles" do
         article
         user
         sign_in super_admin
@@ -50,7 +50,7 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     context "when logged in as a pro user" do
-      it 'shows "STATS" for articles' do
+      xit 'shows "STATS" for articles' do
         article = create(:article, user: pro_user)
         sign_in pro_user
         get "/dashboard"
@@ -64,14 +64,14 @@ RSpec.describe "Dashboards", type: :request do
     let(:organization) { create(:organization) }
 
     context "when not logged in" do
-      it "redirects to /enter" do
+      xit "redirects to /enter" do
         get "/dashboard/organization"
         expect(response).to redirect_to("/enter")
       end
     end
 
     context "when logged in" do
-      it "renders user's organization articles" do
+      xit "renders user's organization articles" do
         create(:organization_membership, user: user, organization: organization, type_of_user: "admin")
         article.update(organization_id: organization.id)
         sign_in user
@@ -79,7 +79,7 @@ RSpec.describe "Dashboards", type: :request do
         expect(response.body).to include "dashboard-collection-org-details"
       end
 
-      it "does not render the delete button for other org member's drafts" do
+      xit "does not render the delete button for other org member's drafts" do
         create(:organization_membership, user: user, organization: organization, type_of_user: "member")
         create(:organization_membership, user: second_user, organization: organization, type_of_user: "admin")
         unpublished_article.update(organization_id: organization.id)
@@ -93,7 +93,7 @@ RSpec.describe "Dashboards", type: :request do
 
   describe "GET /dashboard/following" do
     context "when not logged in" do
-      it "redirects to /enter" do
+      xit "redirects to /enter" do
         get "/dashboard/following"
         expect(response).to redirect_to("/enter")
       end
@@ -107,11 +107,11 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard/following_users"
       end
 
-      it "renders followed users count" do
+      xit "renders followed users count" do
         expect(response.body).to include "users (1)"
       end
 
-      it "lists followed users" do
+      xit "lists followed users" do
         expect(response.body).to include CGI.escapeHTML(second_user.name)
       end
     end
@@ -126,11 +126,11 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard/following_tags"
       end
 
-      it "renders followed tags count" do
+      xit "renders followed tags count" do
         expect(response.body).to include "tags (1)"
       end
 
-      it "lists followed tags" do
+      xit "lists followed tags" do
         expect(response.body).to include tag.name
       end
     end
@@ -145,11 +145,11 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard/following_organizations"
       end
 
-      it "renders followed organizations count" do
+      xit "renders followed organizations count" do
         expect(response.body).to include "organizations (1)"
       end
 
-      it "lists followed organizations" do
+      xit "lists followed organizations" do
         expect(response.body).to include CGI.escapeHTML(organization.name)
       end
     end
@@ -164,11 +164,11 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard/following_podcasts"
       end
 
-      it "renders followed podcast count" do
+      xit "renders followed podcast count" do
         expect(response.body).to include "podcasts (1)"
       end
 
-      it "lists followed podcasts" do
+      xit "lists followed podcasts" do
         expect(response.body).to include podcast.name
       end
     end
@@ -176,14 +176,14 @@ RSpec.describe "Dashboards", type: :request do
 
   describe "GET /dashboard/user_followers" do
     context "when not logged in" do
-      it "redirects to /enter" do
+      xit "redirects to /enter" do
         get "/dashboard/user_followers"
         expect(response).to redirect_to("/enter")
       end
     end
 
     context "when logged in" do
-      it "renders the current user's followers" do
+      xit "renders the current user's followers" do
         second_user.follow user
         sign_in user
         get "/dashboard/user_followers"
@@ -194,21 +194,21 @@ RSpec.describe "Dashboards", type: :request do
 
   describe "GET /dashboard/pro" do
     context "when not logged in" do
-      it "raises unauthorized" do
+      xit "raises unauthorized" do
         get "/dashboard/pro"
         expect(response).to redirect_to("/enter")
       end
     end
 
     context "when user does not have permission" do
-      it "raises unauthorized" do
+      xit "raises unauthorized" do
         sign_in user
         expect { get "/dashboard/pro" }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
     context "when user has pro permission" do
-      it "shows page properly" do
+      xit "shows page properly" do
         user.add_role(:pro)
         sign_in user
         get "/dashboard/pro"
@@ -217,7 +217,7 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     context "when user has pro permission and is an org admin" do
-      it "shows page properly" do
+      xit "shows page properly" do
         org = create :organization
         create(:organization_membership, user: user, organization: org, type_of_user: "admin")
         user.add_role(:pro)
@@ -228,7 +228,7 @@ RSpec.describe "Dashboards", type: :request do
     end
 
     context "when user has pro permission and is an org member" do
-      it "shows page properly" do
+      xit "shows page properly" do
         org = create :organization
         create(:organization_membership, user: user, organization: org)
         user.add_role(:pro)

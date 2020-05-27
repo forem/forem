@@ -13,24 +13,24 @@ RSpec.describe UserCounter, type: :model do
     end
 
     describe "#comments_these_7_days" do
-      it "is valid if comments_these_7_days is an integer" do
+      xit "is valid if comments_these_7_days is an integer" do
         counters.comments_these_7_days = 1
         expect(counters).to be_valid
       end
 
-      it "is is not if comments_these_7_days is not an integer" do
+      xit "is is not if comments_these_7_days is not an integer" do
         counters.comments_these_7_days = 1.2
         expect(counters).not_to be_valid
       end
     end
 
     describe "#comments_prior_7_days" do
-      it "is valid if comments_prior_7_days is an integer" do
+      xit "is valid if comments_prior_7_days is an integer" do
         counters.comments_prior_7_days = 1
         expect(counters).to be_valid
       end
 
-      it "is is not if comments_prior_7_days is not an integer" do
+      xit "is is not if comments_prior_7_days is not an integer" do
         counters.comments_prior_7_days = 1.2
         expect(counters).not_to be_valid
       end

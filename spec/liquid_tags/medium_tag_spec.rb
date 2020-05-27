@@ -29,28 +29,28 @@ RSpec.describe MediumTag, type: :liquid_tag do
       allow(stubbed_scraper).to receive(:call).and_return(response)
     end
 
-    it "renders the proper author name" do
+    xit "renders the proper author name" do
       liquid = generate_medium_tag(medium_link)
       expect(liquid.render).to include(response[:author])
     end
 
-    it "renders user image html" do
+    xit "renders user image html" do
       liquid = generate_medium_tag(medium_link)
       expect(liquid.render).to include("<img")
     end
 
-    it "renders article reading time" do
+    xit "renders article reading time" do
       liquid = generate_medium_tag(medium_link)
       expect(liquid.render).to include(response[:reading_time])
     end
 
-    it "renders link to Medium profile" do
+    xit "renders link to Medium profile" do
       liquid = generate_medium_tag(medium_link)
       expect(liquid.render).to include("<a href='#{response[:url]}'")
     end
   end
 
-  it "raises an error when invalid" do
+  xit "raises an error when invalid" do
     expect { generate_medium_tag("invalid link") }.to raise_error("Invalid link URL or link URL does not exist")
   end
 end

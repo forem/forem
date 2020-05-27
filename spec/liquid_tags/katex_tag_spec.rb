@@ -7,13 +7,13 @@ RSpec.describe KatexTag, type: :liquid_tag do
       Liquid::Template.parse("{% katex %}#{content}{% endkatex %}")
     end
 
-    it "generates Katex output" do
+    xit "generates Katex output" do
       content = "c = \\pm\\sqrt{a^2 + b^2}"
       rendered = generate_katex_liquid(content).render
       verify(format: :html) { rendered }
     end
 
-    it "includes the css style tag only once when rendering multiple" do
+    xit "includes the css style tag only once when rendering multiple" do
       content = <<~CONTENT
         {% katex %}
           hello
@@ -27,13 +27,13 @@ RSpec.describe KatexTag, type: :liquid_tag do
       expect(Nokogiri::HTML(render).css("link").count).to eq(1)
     end
 
-    it "generates Katex errors" do
+    xit "generates Katex errors" do
       content = "\\c = \\pm\\sqrt{a^2 + b^2}"
       rendered = generate_katex_liquid(content).render
       expect(rendered).to include("ParseError: KaTeX parse error: ")
     end
 
-    it "can render Katex inline" do
+    xit "can render Katex inline" do
       Liquid::Template.register_tag("katex", described_class)
       content = "{% katex inline %}\\c = \\pm\\sqrt{a^2 + b^2}{% endkatex %}"
       render = Liquid::Template.parse(content).render

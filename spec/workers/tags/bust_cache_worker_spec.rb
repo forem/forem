@@ -9,7 +9,7 @@ RSpec.describe Tags::BustCacheWorker, type: :worker do
   include_examples "#enqueues_on_correct_queue", "high_priority", ["php"]
 
   describe "#perform_now" do
-    it "busts cache" do
+    xit "busts cache" do
       tag = create(:tag)
 
       worker.perform(tag.name)
@@ -17,7 +17,7 @@ RSpec.describe Tags::BustCacheWorker, type: :worker do
       expect(CacheBuster).to have_received(:bust_tag).with(tag)
     end
 
-    it "doesn't call the cache buster if the tag does not exist" do
+    xit "doesn't call the cache buster if the tag does not exist" do
       tag_name = "definitelyatagthatdoesnotexist"
 
       worker.perform(tag_name)

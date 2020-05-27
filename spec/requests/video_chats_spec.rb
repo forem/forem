@@ -11,20 +11,20 @@ RSpec.describe "VideoChats", type: :request do
         sign_in user
       end
 
-      it "displays basic html for working" do
+      xit "displays basic html for working" do
         channel = ChatChannel.create_with_users(users: [user, second_user])
         get "/video_chats/#{channel.id}"
         expect(response.body).to include("<div class=\"video-chat-wrapper")
       end
 
-      it "disallows unauthorized user" do
+      xit "disallows unauthorized user" do
         channel = ChatChannel.create_with_users(users: [second_user, third_user])
         expect { get "/video_chats/#{channel.id}" }.to raise_error(Pundit::NotAuthorizedError)
       end
     end
 
     context "without user signed in" do
-      it "asks to sign in" do
+      xit "asks to sign in" do
         get "/video_chats/1"
         expect(response).to redirect_to("/enter")
       end

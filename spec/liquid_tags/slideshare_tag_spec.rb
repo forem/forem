@@ -9,7 +9,7 @@ RSpec.describe SlideshareTag, type: :liquid_tag do
       Liquid::Template.parse("{% slideshare #{key} %}")
     end
 
-    it "accepts a valid key" do
+    xit "accepts a valid key" do
       expect { generate_tag(valid_key) }.not_to raise_error
     end
   end

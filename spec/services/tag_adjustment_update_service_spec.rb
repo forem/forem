@@ -20,7 +20,7 @@ RSpec.describe TagAdjustmentUpdateService, type: :service do
     user.add_role(:tag_moderator, tag)
   end
 
-  it "creates tag adjustment" do
+  xit "creates tag adjustment" do
     tag_adjustment = create_tag_adjustment.tag_adjustment
     tag_adjustment.save
     described_class.new(tag_adjustment, status: "resolved").update

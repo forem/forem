@@ -63,70 +63,70 @@ RSpec.describe LinkTag, type: :liquid_tag do
     HTML
   end
 
-  it 'can use "post" as an alias' do
+  xit 'can use "post" as an alias' do
     liquid = generate_new_liquid_alias("/#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
-  it "does not raise an error when invalid" do
+  xit "does not raise an error when invalid" do
     expect { generate_new_liquid("fake_username/fake_article_slug") }.
       not_to raise_error("Invalid link URL or link URL does not exist")
   end
 
-  it "renders a proper link tag" do
+  xit "renders a proper link tag" do
     liquid = generate_new_liquid("#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
-  it "also tries to look for article by organization if failed to find by username" do
+  xit "also tries to look for article by organization if failed to find by username" do
     liquid = generate_new_liquid("#{org_article.username}/#{org_article.slug}")
     expect(liquid.render).to eq(correct_link_html(org_article))
   end
 
-  it "renders with a leading slash" do
+  xit "renders with a leading slash" do
     liquid = generate_new_liquid("/#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
-  it "renders with a trailing slash" do
+  xit "renders with a trailing slash" do
     liquid = generate_new_liquid("#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
-  it "renders with both leading and trailing slashes" do
+  xit "renders with both leading and trailing slashes" do
     liquid = generate_new_liquid("/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
-  it "renders with a full link" do
+  xit "renders with a full link" do
     liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
-  it "renders default reading time of 1 minute for short articles" do
+  xit "renders default reading time of 1 minute for short articles" do
     liquid = generate_new_liquid("/#{user.username}/#{article.slug}/")
     expect(liquid.render).to include("1 min read")
   end
 
-  it "renders reading time of article lengthy articles" do
+  xit "renders reading time of article lengthy articles" do
     template = file_fixture("article_long_content.txt").read
     article = create(:article, user: user, body_markdown: template)
     liquid = generate_new_liquid("/#{user.username}/#{article.slug}/")
     expect(liquid.render).to include("3 min read")
   end
 
-  it "renders with a full link with a trailing slash" do
+  xit "renders with a full link with a trailing slash" do
     liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(correct_link_html(article))
   end
 
-  it "renders with missing article" do
+  xit "renders with missing article" do
     article.delete
     liquid = generate_new_liquid("https://dev.to/#{user.username}/#{article.slug}/")
     expect(liquid.render).to eq(missing_article_html)
   end
 
-  it "escapes title" do
+  xit "escapes title" do
     liquid = generate_new_liquid("/#{user.username}/#{escaped_article.slug}/")
     expect(liquid.render).to eq(correct_link_html(escaped_article))
   end

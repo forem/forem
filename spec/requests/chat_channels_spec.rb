@@ -23,7 +23,7 @@ RSpec.describe "ChatChannels", type: :request do
         get "/connect"
       end
 
-      it "has proper content" do
+      xit "has proper content" do
         expect(response.body).to include("chat-page-wrapper")
       end
     end
@@ -35,14 +35,14 @@ RSpec.describe "ChatChannels", type: :request do
         get "/connect/#{invite_channel.slug}"
       end
 
-      it "has proper content" do
+      xit "has proper content" do
         expect(response.body).to include("chat-page-wrapper")
       end
     end
   end
 
   describe "get /chat_channels?state=unopened" do
-    it "returns unopened channels" do
+    xit "returns unopened channels" do
       direct_channel.add_users [user]
       user.chat_channel_memberships.each { |m| m.update(has_unopened_messages: true) }
       sign_in user
@@ -52,7 +52,7 @@ RSpec.describe "ChatChannels", type: :request do
   end
 
   describe "get /chat_channels?state=joining_request" do
-    it "returns joining request channels" do
+    xit "returns joining request channels" do
       membership = ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "joining_request", role: "mod")
       membership.chat_channel.update(discoverable: true)
       sign_in user
@@ -63,7 +63,7 @@ RSpec.describe "ChatChannels", type: :request do
   end
 
   describe "get /chat_channels?state=unopened_ids" do
-    it "returns unopened chat channel ids" do
+    xit "returns unopened chat channel ids" do
       direct_channel.add_users [user]
       user.chat_channel_memberships.each { |m| m.update(has_unopened_messages: true) }
       sign_in user
@@ -72,7 +72,7 @@ RSpec.describe "ChatChannels", type: :request do
       expect(response.body).to include("unopened_ids")
     end
 
-    it "does not return chat channel ids if not signed in" do
+    xit "does not return chat channel ids if not signed in" do
       direct_channel.add_users [user]
       user.chat_channel_memberships.each { |m| m.update(has_unopened_messages: true) }
       sign_out user
@@ -83,20 +83,20 @@ RSpec.describe "ChatChannels", type: :request do
   end
 
   describe "get /chat_channels?state=pending" do
-    it "returns pending channels" do
+    xit "returns pending channels" do
       ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "pending")
       sign_in user
       get "/chat_channels?state=pending"
       expect(response.body).to include(invite_channel.slug)
     end
 
-    it "returns no pending channels if no invites" do
+    xit "returns no pending channels if no invites" do
       sign_in user
       get "/chat_channels?state=pending"
       expect(response.body).not_to include(invite_channel.slug)
     end
 
-    it "returns no pending channels if not pending" do
+    xit "returns no pending channels if not pending" do
       ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "rejected")
       sign_in user
       get "/chat_channels?state=pending"
@@ -110,25 +110,25 @@ RSpec.describe "ChatChannels", type: :request do
         get "/chat_channels/#{chat_channel.id}", headers: { HTTP_ACCEPT: "application/json" }
       end
 
-      it "returns 200" do
+      xit "returns 200" do
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns the channel" do
+      xit "returns the channel" do
         result = { messages: [], chatChannelId: chat_channel.id }.to_json
         expect(response.body).to eq(result)
       end
     end
 
     context "when request is invalid" do
-      it "returns proper error message" do
+      xit "returns proper error message" do
         expect { get "/chat_channels/1200" }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
 
   describe "POST /chat_channels" do
-    it "creates chat_channel for current user" do
+    xit "creates chat_channel for current user" do
       post "/chat_channels",
            params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channel" } },
            headers: { HTTP_ACCEPT: "application/json" }
@@ -136,7 +136,7 @@ RSpec.describe "ChatChannels", type: :request do
       expect(ChatChannel.last.active_users).to include(user)
     end
 
-    it "returns errors if channel is invalid" do
+    xit "returns errors if channel is invalid" do
       # slug should be taken
       post "/chat_channels",
            params: { chat_channel: { channel_name: "HEy hey hoho", slug: chat_channel.slug } },
@@ -146,7 +146,7 @@ RSpec.describe "ChatChannels", type: :request do
   end
 
   describe "PUT /chat_channels/:id" do
-    it "updates channel for valid user" do
+    xit "updates channel for valid user" do
       user.add_role(:super_admin)
       membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
       membership.update(role: "mod")
@@ -157,7 +157,7 @@ RSpec.describe "ChatChannels", type: :request do
       expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
     end
 
-    it "dissallows invalid users" do
+    xit "dissallows invalid users" do
       expect do
         put "/chat_channels/#{chat_channel.id}",
             params: { chat_channel: { channel_name: "Hello Channel", slug: "hello-channelly" } },
@@ -165,7 +165,7 @@ RSpec.describe "ChatChannels", type: :request do
       end.to raise_error(Pundit::NotAuthorizedError)
     end
 
-    it "returns errors if channel is invalid" do
+    xit "returns errors if channel is invalid" do
       # slug should be taken
       user.add_role(:super_admin)
       membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
@@ -178,7 +178,7 @@ RSpec.describe "ChatChannels", type: :request do
   end
 
   describe "POST /chat_channels/:id/moderate" do
-    it "raises NotAuthorizedError if user is not logged in" do
+    xit "raises NotAuthorizedError if user is not logged in" do
       expect do
         post "/chat_channels/#{chat_channel.id}/moderate",
              params: { chat_channel: { command: "/ban huh" } },
@@ -186,7 +186,7 @@ RSpec.describe "ChatChannels", type: :request do
       end.to raise_error(Pundit::NotAuthorizedError)
     end
 
-    it "raises NotAuthorizedError if user is logged in but not authorized" do
+    xit "raises NotAuthorizedError if user is logged in but not authorized" do
       sign_in user
       expect do
         post "/chat_channels/#{chat_channel.id}/moderate",
@@ -202,13 +202,13 @@ RSpec.describe "ChatChannels", type: :request do
         allow(Pusher).to receive(:trigger).and_return(true)
       end
 
-      it "enforces chat_channel_params on ban" do
+      xit "enforces chat_channel_params on ban" do
         post "/chat_channels/#{chat_channel.id}/moderate",
              params: { chat_channel: { command: "/ban #{test_subject.username}" } }
         expect(response.status).to eq(200)
       end
 
-      it "enforces chat_channel_params on unban" do
+      xit "enforces chat_channel_params on unban" do
         post "/chat_channels/#{chat_channel.id}/moderate",
              params: { chat_channel: { command: "/unban #{test_subject.username}" } }
         expect(response.status).to eq(200)
@@ -217,13 +217,13 @@ RSpec.describe "ChatChannels", type: :request do
   end
 
   describe "POST /chat_channels/:id/open" do
-    it "returns success" do
+    xit "returns success" do
       allow(Pusher).to receive(:trigger).and_return(true)
       post "/chat_channels/#{chat_channel.id}/open"
       expect(response.body).to include("success")
     end
 
-    it "marks chat_channel_membership as opened" do
+    xit "marks chat_channel_membership as opened" do
       allow(Pusher).to receive(:trigger).and_return(true)
       post "/chat_channels/#{chat_channel.id}/open"
       expect(user.chat_channel_memberships.last.has_unopened_messages).to eq(false)
@@ -231,25 +231,25 @@ RSpec.describe "ChatChannels", type: :request do
   end
 
   describe "POST /chat_channels/create_chat" do
-    it "creates open chat with user who has open inbox" do
+    xit "creates open chat with user who has open inbox" do
       post "/chat_channels/create_chat",
            params: { user_id: user_open_inbox.id }
       expect(response.status).to eq(200)
     end
 
-    it "does not create for non-open inbox user" do
+    xit "does not create for non-open inbox user" do
       post "/chat_channels/create_chat",
            params: { user_id: user_closed_inbox.id }
       expect(response.status).to eq(400)
     end
 
-    it "creates ensures new chat channel is created for targeted user" do
+    xit "creates ensures new chat channel is created for targeted user" do
       post "/chat_channels/create_chat",
            params: { user_id: user_open_inbox.id }
       expect(user_open_inbox.chat_channel_memberships.size).to eq(1)
     end
 
-    it "returns error message if create_with_users fails" do
+    xit "returns error message if create_with_users fails" do
       allow(ChatChannel).to receive(:create_with_users).and_raise(StandardError.new("Blocked"))
       post "/chat_channels/create_chat",
            params: { user_id: user_open_inbox.id }
@@ -258,26 +258,26 @@ RSpec.describe "ChatChannels", type: :request do
   end
 
   describe "POST /chat_channels/block_chat" do
-    it "blocks successfully when user has permissions" do
+    xit "blocks successfully when user has permissions" do
       direct_channel.add_users [user]
       post "/chat_channels/block_chat",
            params: { chat_id: direct_channel.id }
       expect(response.status).to eq(200)
     end
 
-    it "makes chat channel have status of blocked" do
+    xit "makes chat channel have status of blocked" do
       direct_channel.add_users [user]
       post "/chat_channels/block_chat",
            params: { chat_id: direct_channel.id }
       expect(direct_channel.reload.status).to eq("blocked")
     end
 
-    it "does not block when channel is open" do
+    xit "does not block when channel is open" do
       expect { post "/chat_channels/block_chat", params: { chat_id: chat_channel.id } }.
         to raise_error(Pundit::NotAuthorizedError)
     end
 
-    it "does not block when user does not have permissions" do
+    xit "does not block when user does not have permissions" do
       expect { post "/chat_channels/block_chat", params: { chat_id: direct_channel.id } }.
         to raise_error(Pundit::NotAuthorizedError)
     end
@@ -290,7 +290,7 @@ RSpec.describe "ChatChannels", type: :request do
     end
 
     context "when errors occur" do
-      it "returns not auhorized when the user is not user signed in" do
+      xit "returns not auhorized when the user is not user signed in" do
         sign_out user
 
         channel_info_request(chat_channel.id)
@@ -298,7 +298,7 @@ RSpec.describe "ChatChannels", type: :request do
         expect(response).to have_http_status(:not_found)
       end
 
-      it "returns not found if the user is not a member of the channel" do
+      xit "returns not found if the user is not a member of the channel" do
         chat_channel.remove_user(user)
 
         channel_info_request(chat_channel.id)
@@ -306,7 +306,7 @@ RSpec.describe "ChatChannels", type: :request do
         expect(response).to have_http_status(:not_found)
       end
 
-      it "returns not found if channel id does not exist" do
+      xit "returns not found if channel id does not exist" do
         channel_info_request("invalid")
 
         expect(response).to have_http_status(:not_found)
@@ -318,11 +318,11 @@ RSpec.describe "ChatChannels", type: :request do
         channel_info_request(chat_channel.id)
       end
 
-      it "returns ok if user is a member of the channel" do
+      xit "returns ok if user is a member of the channel" do
         expect(response).to have_http_status(:ok)
       end
 
-      it "returns chat channel with the correct json representation", :aggregate_failures do
+      xit "returns chat channel with the correct json representation", :aggregate_failures do
         response_channel = response.parsed_body
         expect(response_channel.keys).to match_array(
           %w[type_of id description channel_name username channel_users channel_mod_ids pending_users_select_fields],
@@ -336,7 +336,7 @@ RSpec.describe "ChatChannels", type: :request do
         expect(response_channel["pending_users_select_fields"]).to be_empty
       end
 
-      it "returns the correct channel users representation" do
+      xit "returns the correct channel users representation" do
         response_channel_users = response.parsed_body["channel_users"]
 
         expected_last_opened_at = Time.zone.parse(response_channel_users[user.username]["last_opened_at"]).to_i
@@ -350,7 +350,7 @@ RSpec.describe "ChatChannels", type: :request do
         expect(response_user["id"]).to eq(user.id)
       end
 
-      it "returns the correct pending users select fields representation" do
+      xit "returns the correct pending users select fields representation" do
         # add another user's pending membership
         pending_user = create(:user)
         chat_channel.add_users(pending_user)

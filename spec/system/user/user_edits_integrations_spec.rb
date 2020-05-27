@@ -20,22 +20,22 @@ RSpec.describe "User edits their integrations", type: :system, js: true do
 
   describe "via visiting /settings" do
     before do
-      visit "/settings"
+      visxit "/settings"
     end
 
-    it "renders the page", percy: true do
+    xit "renders the page", percy: true do
       click_link "Integrations"
 
       Percy.snapshot(page, name: "Settings: /settings renders integrations")
     end
 
-    it "has connect-to-stackbit prompt" do
+    xit "has connect-to-stackbit prompt" do
       click_link "Integrations"
 
       expect(page).to have_text("Connect to Stackbit")
     end
 
-    it "has connected-to-stackbit prompt if already integrated" do
+    xit "has connected-to-stackbit prompt if already integrated" do
       create(:doorkeeper_access_token, resource_owner: user)
 
       click_link "Integrations"

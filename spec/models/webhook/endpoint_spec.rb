@@ -19,11 +19,11 @@ RSpec.describe Webhook::Endpoint, type: :model do
     it { is_expected.not_to allow_value("http://foo.com").for(:target_url) }
   end
 
-  it "is valid" do
+  xit "is valid" do
     expect(endpoint).to be_valid
   end
 
-  it "sets events according to the list" do
+  xit "sets events according to the list" do
     webhook = create(
       :webhook_endpoint, events: %w[article_updated other_updated cool article_created]
     )
@@ -39,17 +39,17 @@ RSpec.describe Webhook::Endpoint, type: :model do
       create(:webhook_endpoint, events: %w[article_created])
     end
 
-    it "finds for events" do
+    xit "finds for events" do
       d_points = described_class.for_events("article_destroyed")
       expect(d_points.pluck(:id).sort).to eq([endpoint, epoint2, epoint3].map(&:id).sort)
     end
 
-    it "finds for_events array" do
+    xit "finds for_events array" do
       endpoints = described_class.for_events(%w[article_created article_destroyed])
       expect(endpoints.pluck(:id)).to eq([endpoint.id])
     end
 
-    it "belongs to user" do
+    xit "belongs to user" do
       expect(user.webhook_endpoints.pluck(:id).sort).to eq([endpoint, epoint2].map(&:id).sort)
     end
   end

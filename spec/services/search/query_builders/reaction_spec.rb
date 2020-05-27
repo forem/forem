@@ -2,18 +2,18 @@ require "rails_helper"
 
 RSpec.describe Search::QueryBuilders::Reaction, type: :service do
   describe "::initialize" do
-    it "sets params" do
+    xit "sets params" do
       filter_params = { foo: "bar" }
       filter = described_class.new(params: filter_params)
       expect(filter.params).to include(filter_params)
     end
 
-    it "builds query body" do
+    xit "builds query body" do
       filter = described_class.new(params: {})
       expect(filter.body).not_to be_nil
     end
 
-    it "sets category to readinglist" do
+    xit "sets category to readinglist" do
       filter = described_class.new(params: {})
       expect(filter.params).to include(category: "readinglist")
     end
@@ -22,7 +22,7 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
   describe "#as_hash" do
     let(:query_fields) { described_class::QUERY_KEYS[:search_fields] }
 
-    it "applies QUERY_KEYS from params" do
+    xit "applies QUERY_KEYS from params" do
       params = { search_fields: "test" }
       filter = described_class.new(params: params)
       expected_query = [{
@@ -37,7 +37,7 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
       expect(search_bool_clause(filter)["must"]).to match_array(expected_query)
     end
 
-    it "applies TERM_KEYS from params" do
+    xit "applies TERM_KEYS from params" do
       params = { tag_names: "beginner", user_id: 777, status: "valid" }
       filter = described_class.new(params: params)
       expected_filters = [
@@ -49,7 +49,7 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
       expect(search_bool_clause(filter)["filter"]).to match_array(expected_filters)
     end
 
-    it "applies QUERY_KEYS and TERM_KEYS from params" do
+    xit "applies QUERY_KEYS and TERM_KEYS from params" do
       Timecop.freeze(Time.current) do
         params = { search_fields: "ruby", tag_names: "cfp" }
         filter = described_class.new(params: params)
@@ -65,7 +65,7 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
       end
     end
 
-    it "ignores params we don't support" do
+    xit "ignores params we don't support" do
       params = { not_supported: "trash", search_fields: "cfp" }
       filter = described_class.new(params: params)
       expected_query = [{
@@ -76,7 +76,7 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
       expect(search_bool_clause(filter)["must"]).to match_array(expected_query)
     end
 
-    it "allows default params to be overriden" do
+    xit "allows default params to be overriden" do
       params = { sort_by: "status", sort_direction: "asc", size: 20 }
       filter = described_class.new(params: params).as_hash
       expect(filter.dig("sort")).to eq("status" => "asc")

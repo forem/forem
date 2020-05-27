@@ -5,7 +5,7 @@ RSpec.describe "UserSettings", type: :request do
 
   describe "GET /settings/:tab" do
     context "when not signed-in" do
-      it "redirects them to login" do
+      xit "redirects them to login" do
         get "/settings"
         expect(response).to redirect_to("/enter")
       end
@@ -14,36 +14,36 @@ RSpec.describe "UserSettings", type: :request do
     context "when signed-in" do
       before { sign_in user }
 
-      it "renders various settings tabs properly" do
+      xit "renders various settings tabs properly" do
         %w[organization misc account ux].each do |tab|
           get "/settings/#{tab}"
           expect(response.body).to include("Settings for")
         end
       end
 
-      it "handles unknown settings tab properly" do
+      xit "handles unknown settings tab properly" do
         expect { get "/settings/does-not-exist" }.
           to raise_error(ActiveRecord::RecordNotFound)
       end
 
-      it "displays content on ux tab properly" do
+      xit "displays content on ux tab properly" do
         get "/settings/ux"
         expect(response.body).to include("Style Customization")
       end
 
-      it "displays content on RSS tab properly" do
+      xit "displays content on RSS tab properly" do
         get "/settings/publishing-from-rss"
         title = "Publishing to #{ApplicationConfig['COMMUNITY_NAME']} from RSS"
         expect(response.body).to include(title)
       end
 
-      it "renders heads up dupe account message with proper param" do
+      xit "renders heads up dupe account message with proper param" do
         get "/settings?state=previous-registration"
         error_message = "There is an existing account authorized with that social account"
         expect(response.body).to include error_message
       end
 
-      it "renders the proper organization page" do
+      xit "renders the proper organization page" do
         first_org, second_org = create_list(:organization, 2)
         create(:organization_membership, user: user, organization: first_org)
         create(:organization_membership, user: user, organization: second_org, type_of_user: "admin")
@@ -51,7 +51,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include "Grow the team"
       end
 
-      it "renders the proper response template" do
+      xit "renders the proper response template" do
         response_template = create(:response_template, user: user)
         get user_settings_path(tab: "response-templates", id: response_template.id)
         expect(response.body).to include "Editing a response template"
@@ -68,17 +68,17 @@ RSpec.describe "UserSettings", type: :request do
         sign_in user
       end
 
-      it "allows users to visit the account page" do
+      xit "allows users to visit the account page" do
         get user_settings_path(tab: "account")
         expect(response).to have_http_status(:ok)
       end
 
-      it "does not render the ghost account email option if the user has no content" do
+      xit "does not render the ghost account email option if the user has no content" do
         get user_settings_path(tab: "account")
         expect(response.body).not_to include(ghost_account_message)
       end
 
-      it "does render the ghost account email option if the user has content" do
+      xit "does render the ghost account email option if the user has content" do
         create(:article, user: user)
         user.update(articles_count: 1)
 
@@ -87,7 +87,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include(ghost_account_message)
       end
 
-      it "shows the 'Remove OAuth' section if a user has multiple enabled identities" do
+      xit "shows the 'Remove OAuth' section if a user has multiple enabled identities" do
         allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
         providers = Authentication::Providers.available.first(2)
         allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
@@ -96,7 +96,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include(remove_oauth_section)
       end
 
-      it "hides the 'Remove OAuth' section if a user has one enabled identity" do
+      xit "hides the 'Remove OAuth' section if a user has one enabled identity" do
         provider = Authentication::Providers.available.first
         allow(Authentication::Providers).to receive(:enabled).and_return([provider])
         allow(user).to receive(:identities).and_return(user.identities.where(provider: provider))
@@ -105,7 +105,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).not_to include(remove_oauth_section)
       end
 
-      it "hides the 'Remove OAuth' section if a user has one enabled identity and one disabled" do
+      xit "hides the 'Remove OAuth' section if a user has one enabled identity and one disabled" do
         provider = Authentication::Providers.available.first
         allow(Authentication::Providers).to receive(:enabled).and_return([provider])
 
@@ -119,7 +119,7 @@ RSpec.describe "UserSettings", type: :request do
         omniauth_mock_providers_payload
       end
 
-      it "does not render the text for the enabled provider the user has an identity for" do
+      xit "does not render the text for the enabled provider the user has an identity for" do
         allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
         user = create(:user, :with_identity, identities: [:github])
 
@@ -129,7 +129,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).not_to include("Connect GitHub Account")
       end
 
-      it "does not render the text for the disabled provider the user has an identity for" do
+      xit "does not render the text for the disabled provider the user has an identity for" do
         providers = Authentication::Providers.available - %i[github]
         allow(Authentication::Providers).to receive(:enabled).and_return(providers)
         user = create(:user, :with_identity, identities: [:github])
@@ -140,7 +140,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).not_to include("Connect GitHub Account")
       end
 
-      it "renders the text for the enabled provider the user has no identity for" do
+      xit "renders the text for the enabled provider the user has no identity for" do
         allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
         user = create(:user, :with_identity, identities: [:twitter])
 
@@ -152,7 +152,7 @@ RSpec.describe "UserSettings", type: :request do
     end
 
     describe ":integrations" do
-      it "renders the repositories container if the user has authenticated through GitHub" do
+      xit "renders the repositories container if the user has authenticated through GitHub" do
         user = create(:user, :with_identity, identities: [:github])
         sign_in user
 
@@ -160,7 +160,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include("github-repos-container")
       end
 
-      it "does not render anything if the user has not authenticated through GitHub" do
+      xit "does not render anything if the user has not authenticated through GitHub" do
         sign_in user
 
         get user_settings_path(tab: :integrations)
@@ -172,28 +172,28 @@ RSpec.describe "UserSettings", type: :request do
   describe "PUT /update/:id" do
     before { sign_in user }
 
-    it "updates summary" do
+    xit "updates summary" do
       put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
       expect(user.summary).to eq("Hello new summary")
     end
 
-    it "updates profile_updated_at" do
+    xit "updates profile_updated_at" do
       user.update_column(:profile_updated_at, 2.weeks.ago)
       put "/users/#{user.id}", params: { user: { tab: "profile", summary: "Hello new summary" } }
       expect(user.reload.profile_updated_at).to be > 2.minutes.ago
     end
 
-    it "enables community-success notifications" do
+    xit "enables community-success notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 1 } }
       expect(user.reload.mod_roundrobin_notifications).to be(true)
     end
 
-    it "disables community-success notifications" do
+    xit "disables community-success notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 0 } }
       expect(user.reload.mod_roundrobin_notifications).to be(false)
     end
 
-    it "can toggle welcome notifications" do
+    xit "can toggle welcome notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", welcome_notifications: 0 } }
       expect(user.reload.subscribed_to_welcome_notifications?).to be(false)
 
@@ -201,18 +201,18 @@ RSpec.describe "UserSettings", type: :request do
       expect(user.reload.subscribed_to_welcome_notifications?).to be(true)
     end
 
-    it "updates username to too short username" do
+    xit "updates username to too short username" do
       put "/users/#{user.id}", params: { user: { tab: "profile", username: "h" } }
       expect(response.body).to include("Username is too short")
     end
 
-    it "returns error if Profile image is too large" do
+    xit "returns error if Profile image is too large" do
       profile_image = fixture_file_upload("files/large_profile_img.jpg", "image/jpeg")
       put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
       expect(response.body).to include("Profile image File size should be less than 2 MB")
     end
 
-    it "returns error if Profile image file name is too long" do
+    xit "returns error if Profile image file name is too long" do
       profile_image = fixture_file_upload("files/800x600.png", "image/png")
       allow(profile_image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
 
@@ -221,7 +221,7 @@ RSpec.describe "UserSettings", type: :request do
       expect(response).to have_http_status(:bad_request)
     end
 
-    it "returns error if Profile image is not a file" do
+    xit "returns error if Profile image is not a file" do
       profile_image = "A String"
       put "/users/#{user.id}", params: { user: { tab: "profile", profile_image: profile_image } }
 
@@ -235,29 +235,29 @@ RSpec.describe "UserSettings", type: :request do
         }
       end
 
-      it "updates export_requested flag" do
+      xit "updates export_requested flag" do
         send_request
         expect(user.reload.export_requested).to be(true)
       end
 
-      it "displays a flash with a reminder for the user to expect an email" do
+      xit "displays a flash with a reminder for the user to expect an email" do
         send_request
         expect(flash[:settings_notice]).to include("The export will be emailed to you shortly.")
       end
 
-      it "hides the checkbox" do
+      xit "hides the checkbox" do
         send_request
         follow_redirect!
         expect(response.body).not_to include("Request an export of your posts")
       end
 
-      it "tells the user they recently requested an export" do
+      xit "tells the user they recently requested an export" do
         send_request
         follow_redirect!
         expect(response.body).to include("You have recently requested an export")
       end
 
-      it "sends an email" do
+      xit "sends an email" do
         expect do
           sidekiq_perform_enqueued_jobs do
             send_request
@@ -265,7 +265,7 @@ RSpec.describe "UserSettings", type: :request do
         end.to change { ActionMailer::Base.deliveries.count }.by(1)
       end
 
-      it "does not send an email if there was no request" do
+      xit "does not send an email if there was no request" do
         sidekiq_perform_enqueued_jobs do
           expect { send_request(false) }.not_to(change { ActionMailer::Base.deliveries.count })
         end
@@ -276,37 +276,37 @@ RSpec.describe "UserSettings", type: :request do
   describe "POST /users/update_twitch_username" do
     before { login_as user }
 
-    it "updates twitch username" do
+    xit "updates twitch username" do
       post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
       user.reload
       expect(user.twitch_username).to eq("anna_lightalloy")
     end
 
-    it "redirects after updating" do
+    xit "redirects after updating" do
       post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
       expect(response).to redirect_to "/settings/integrations"
     end
 
-    it "schedules the job while updating" do
+    xit "schedules the job while updating" do
       sidekiq_assert_enqueued_with(job: Streams::TwitchWebhookRegistrationWorker, args: [user.id]) do
         post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
       end
     end
 
-    it "removes twitch_username" do
+    xit "removes twitch_username" do
       user.update_column(:twitch_username, "robot")
       post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
       user.reload
       expect(user.twitch_username).to be_nil
     end
 
-    it "doesn't schedule the job when removing" do
+    xit "doesn't schedule the job when removing" do
       sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
         post "/users/update_twitch_username", params: { user: { twitch_username: "" } }
       end
     end
 
-    it "doesn't schedule the job when saving the same twitch username" do
+    xit "doesn't schedule the job when saving the same twitch username" do
       user.update_column(:twitch_username, "robot")
       sidekiq_assert_no_enqueued_jobs(only: Streams::TwitchWebhookRegistrationWorker) do
         post "/users/update_twitch_username", params: { user: { twitch_username: "robot" } }
@@ -317,20 +317,20 @@ RSpec.describe "UserSettings", type: :request do
   describe "POST /users/update_language_settings" do
     before { sign_in user }
 
-    it "updates language settings" do
+    xit "updates language settings" do
       post "/users/update_language_settings", params: { user: { preferred_languages: %w[ja es] } }
       user.reload
       expect(user.language_settings["preferred_languages"]).to eq(%w[ja es])
     end
 
-    it "keeps the estimated_default_language" do
+    xit "keeps the estimated_default_language" do
       user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en es])
       post "/users/update_language_settings", params: { user: { preferred_languages: %w[it en] } }
       user.reload
       expect(user.language_settings["estimated_default_language"]).to eq("ru")
     end
 
-    it "doesn't set non-existent languages" do
+    xit "doesn't set non-existent languages" do
       user.update_column(:language_settings, estimated_default_language: "ru", preferred_languages: %w[en es])
       post "/users/update_language_settings", params: { user: { preferred_languages: %w[it en blah] } }
       user.reload
@@ -349,7 +349,7 @@ RSpec.describe "UserSettings", type: :request do
         sign_in user
       end
 
-      it "removes the correct identity" do
+      xit "removes the correct identity" do
         expect do
           delete "/users/remove_identity", params: { provider: provider }
         end.to change(user.identities, :count).by(-1)
@@ -357,24 +357,24 @@ RSpec.describe "UserSettings", type: :request do
         expect(user.identities.map(&:provider)).not_to include(provider)
       end
 
-      it "empties their associated username" do
+      xit "empties their associated username" do
         delete "/users/remove_identity", params: { provider: provider }
 
         expect(user.public_send("#{provider}_username")).to be(nil)
       end
 
-      it "updates the profile_updated_at timestamp" do
+      xit "updates the profile_updated_at timestamp" do
         original_profile_updated_at = user.profile_updated_at
         delete "/users/remove_identity", params: { provider: provider }
         expect(user.profile_updated_at.to_i).to be > original_profile_updated_at.to_i
       end
 
-      it "redirects successfully to /settings/account" do
+      xit "redirects successfully to /settings/account" do
         delete "/users/remove_identity", params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
       end
 
-      it "renders a successful response message" do
+      xit "renders a successful response message" do
         delete "/users/remove_identity", params: { provider: provider }
         auth_provider = Authentication::Providers.get!(provider)
 
@@ -382,7 +382,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(flash[:settings_notice]).to eq(expected_notice)
       end
 
-      it "redirects the user with an error if the corresponding provider has been since disabled" do
+      xit "redirects the user with an error if the corresponding provider has been since disabled" do
         providers = Authentication::Providers.available - [provider]
         allow(Authentication::Providers).to receive(:enabled).and_return(providers)
         delete "/users/remove_identity", params: { provider: provider }
@@ -392,7 +392,7 @@ RSpec.describe "UserSettings", type: :request do
         expect(flash[:error]).to eq(expected_error)
       end
 
-      it "does not show the 'Remove OAuth' section afterwards if only one identity remains" do
+      xit "does not show the 'Remove OAuth' section afterwards if only one identity remains" do
         providers = Authentication::Providers.available.first(2)
         allow(user).to receive(:identities).and_return(user.identities.where(provider: providers))
 
@@ -409,20 +409,20 @@ RSpec.describe "UserSettings", type: :request do
         sign_in user
       end
 
-      it "sets the proper flash error message" do
+      xit "sets the proper flash error message" do
         delete "/users/remove_identity", params: { provider: provider }
 
         expected_error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
         expect(flash[:error]).to eq(expected_error)
       end
 
-      it "does not delete any identities" do
+      xit "does not delete any identities" do
         expect do
           delete "/users/remove_identity", params: { provider: provider }
         end.not_to change(user.identities, :count)
       end
 
-      it "redirects successfully to /settings/account" do
+      xit "redirects successfully to /settings/account" do
         delete "/users/remove_identity", params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
       end

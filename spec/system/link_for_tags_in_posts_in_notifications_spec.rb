@@ -10,10 +10,10 @@ RSpec.describe "Link on tags for post in notifications", type: :system do
 
   context "when user hasn't logged in" do
     before do
-      visit "/dashboard"
+      visxit "/dashboard"
     end
 
-    it "shows the sign-with page", js: true, percy: true do
+    xit "shows the sign-with page", js: true, percy: true do
       Percy.snapshot(page, name: "Logged out user: sign-in page")
       expect(page).to have_content(/Sign In With/i, count: 2)
     end
@@ -24,8 +24,8 @@ RSpec.describe "Link on tags for post in notifications", type: :system do
       sign_in article.user
     end
 
-    it "shows articles with tags", js: true, percy: true do
-      visit "/dashboard"
+    xit "shows articles with tags", js: true, percy: true do
+      visxit "/dashboard"
 
       Percy.snapshot(page, name: "Logged in user: dashboard")
       expect(page).to have_selector("div.single-article", count: 1)

@@ -29,7 +29,7 @@ RSpec.describe "Follows #create", type: :request do
         and_return(rate_limit_checker)
     end
 
-    it "returns an error for too many follows in a day" do
+    xit "returns an error for too many follows in a day" do
       post "/follows", headers: headers, params: follow_payload
       json_response = JSON.parse(response.body)
 

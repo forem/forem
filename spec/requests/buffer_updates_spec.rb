@@ -13,7 +13,7 @@ RSpec.describe "BufferUpdates", type: :request do
       mod_user.add_role(:trusted)
     end
 
-    it "creates buffer update for tweet if tweet params are passed" do
+    xit "creates buffer update for tweet if tweet params are passed" do
       post "/buffer_updates",
            params:
            { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
@@ -22,14 +22,14 @@ RSpec.describe "BufferUpdates", type: :request do
       expect(BufferUpdate.last.status).to eq("pending")
     end
 
-    it "creates buffer update with link" do
+    xit "creates buffer update with link" do
       post "/buffer_updates",
            params:
            { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
       expect(BufferUpdate.first.body_text).to include(article.path)
     end
 
-    it "creates buffer hashtag" do
+    xit "creates buffer hashtag" do
       SiteConfig.twitter_hashtag = "#DEVCommunity"
       post "/buffer_updates",
            params:
@@ -37,7 +37,7 @@ RSpec.describe "BufferUpdates", type: :request do
       expect(BufferUpdate.first.body_text).to include(SiteConfig.twitter_hashtag.to_s)
     end
 
-    it "creates satellite and Facebook buffer" do
+    xit "creates satellite and Facebook buffer" do
       article.update_column(:cached_tag_list, "ruby, rails, meta")
       create(:tag, name: "rails")
       tag = create(:tag, buffer_profile_id_code: "placeholder", name: "ruby")
@@ -56,7 +56,7 @@ RSpec.describe "BufferUpdates", type: :request do
       mod_user.add_role(:trusted)
     end
 
-    it "rejects buffer update for non-trusted user" do
+    xit "rejects buffer update for non-trusted user" do
       expect do
         post "/buffer_updates",
              params:
@@ -64,7 +64,7 @@ RSpec.describe "BufferUpdates", type: :request do
       end.to raise_error(Pundit::NotAuthorizedError)
     end
 
-    it "accepts buffer update from author of article" do
+    xit "accepts buffer update from author of article" do
       post "/buffer_updates",
            params:
            { buffer_update: { body_text: "This is the text!!!!", tag_id: "javascript", article_id: article.id } }
@@ -72,21 +72,21 @@ RSpec.describe "BufferUpdates", type: :request do
     end
   end
 
-  # it "updates last buffered at" do
+  # xit "updates last buffered at" do
   #   post "/internal/buffer_updates",
   #     params:
   #     { social_channel: "main_twitter", article_id: article.id, tweet: "Hello this is a test" }
   #   expect(article.reload.last_buffered).not_to eq(nil)
   # end
 
-  # it "updates last buffered at with satellite buffer" do
+  # xit "updates last buffered at with satellite buffer" do
   #   post "/internal/buffer_updates",
   #     params:
   #     { social_channel: "satellite_twitter", article_id: article.id, tweet: "Hello this is a test" }
   #   expect(article.reload.last_buffered).not_to eq(nil)
   # end
 
-  # it "updates last facebook buffered at" do
+  # xit "updates last facebook buffered at" do
   #   post "/internal/buffer_updates",
   #     params:
   #     { social_channel: "facebook", article_id: article.id, tweet: "Hello this is a test" }

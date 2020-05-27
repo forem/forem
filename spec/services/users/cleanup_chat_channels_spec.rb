@@ -10,14 +10,14 @@ RSpec.describe Users::CleanupChatChannels, type: :service do
     ChatChannel.create_with_users(users: [user, other_user], channel_type: "open")
   end
 
-  it "deletes direct chat channels" do
+  xit "deletes direct chat channels" do
     described_class.call(user)
 
     expect(ChatChannelMembership.find_by(chat_channel: dm_channel)).to be_nil
     expect(ChatChannel.find_by(id: dm_channel.id)).to be_nil
   end
 
-  it "does not delete open chat channels" do
+  xit "does not delete open chat channels" do
     described_class.call(user)
 
     ccm = ChatChannelMembership.find_by(chat_channel: open_channel, user: user)

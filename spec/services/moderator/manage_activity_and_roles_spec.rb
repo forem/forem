@@ -4,7 +4,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
   let(:user) { create(:user) }
   let(:admin) { create(:user, :super_admin) }
 
-  it "updates user status" do
+  xit "updates user status" do
     user.add_role :banned
     user.reload
     described_class.handle_user_roles(
@@ -16,7 +16,7 @@ RSpec.describe Moderator::ManageActivityAndRoles, type: :service do
     expect(user.banned).to be false
   end
 
-  it "updates negative role to positive role" do
+  xit "updates negative role to positive role" do
     user.add_role :comment_banned
     described_class.handle_user_roles(
       admin: admin,

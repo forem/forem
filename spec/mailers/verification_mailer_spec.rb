@@ -4,7 +4,7 @@ RSpec.describe VerificationMailer, type: :mailer do
   let(:user) { create(:user) }
 
   describe "#account_ownership_verification_email" do
-    it "works correctly" do
+    xit "works correctly" do
       params = { user_id: user.id }
       email = described_class.account_ownership_verification_email(params)
 

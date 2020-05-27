@@ -19,31 +19,31 @@ RSpec.describe Notifications::NewBadgeAchievement::Send, type: :service do
     }.to_json
   end
 
-  it "creates a notification" do
+  xit "creates a notification" do
     expect do
       described_class.call(badge_achievement)
     end.to change(Notification, :count).by(1)
   end
 
-  it "creates a notification for the badge achievement user" do
+  xit "creates a notification for the badge achievement user" do
     notification = described_class.call(blank_badge_achievement)
     expect(notification.user).to eq(blank_badge_achievement.user)
     json_data = notification.json_data.to_json
     expect(JSON.parse(json_data)).to eq(JSON.parse(expected_json_data(blank_badge_achievement)))
   end
 
-  it "creates a notification for the badge achievement" do
+  xit "creates a notification for the badge achievement" do
     notification = described_class.call(badge_achievement)
     expect(notification.notifiable_id).to eq(badge_achievement.id)
     expect(notification.notifiable_type).to eq("BadgeAchievement")
   end
 
-  it "creates a notification with no action" do
+  xit "creates a notification with no action" do
     notification = described_class.call(badge_achievement)
     expect(notification.action).to be(nil)
   end
 
-  it "creates a notification with the proper json data" do
+  xit "creates a notification with the proper json data" do
     notification = described_class.call(badge_achievement)
     json_data = notification.json_data.to_json
     expect(JSON.parse(json_data)).to eq(JSON.parse(expected_json_data(badge_achievement)))

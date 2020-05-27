@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Search::FeedContent, type: :service do
-  it "defines INDEX_NAME, INDEX_ALIAS, and MAPPINGS", :aggregate_failures do
+  xit "defines INDEX_NAME, INDEX_ALIAS, and MAPPINGS", :aggregate_failures do
     expect(described_class::INDEX_NAME).not_to be_nil
     expect(described_class::INDEX_ALIAS).not_to be_nil
     expect(described_class::MAPPINGS).not_to be_nil
@@ -11,14 +11,14 @@ RSpec.describe Search::FeedContent, type: :service do
     let(:article1) { create(:article) }
     let(:article2) { create(:article) }
 
-    it "parses feed content document hits from search response" do
+    xit "parses feed content document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }
       allow(described_class).to receive(:search) { mock_search_response }
       described_class.search_documents(params: {})
       expect(described_class).to have_received(:search).with(body: a_kind_of(Hash))
     end
 
-    it "returns highlighted fields" do
+    xit "returns highlighted fields" do
       allow(article1).to receive(:body_text).and_return("I love ruby")
       allow(article2).to receive(:body_text).and_return("Ruby Tuesday is love")
       index_documents([article1, article2])
@@ -30,7 +30,7 @@ RSpec.describe Search::FeedContent, type: :service do
       expect(doc_highlights).to include("I <em>love</em> <em>ruby</em>", "<em>Ruby</em> Tuesday is <em>love</em>")
     end
 
-    it "returns fields necessary for the view" do
+    xit "returns fields necessary for the view" do
       allow(article1).to receive(:flare_tag).and_return(name: "help", bg_color_hex: nil, text_color_hex: nil)
       view_keys = %w[
         id title path class_name cloudinary_video_url comments_count flare_tag tag_list user_id user
@@ -49,7 +49,7 @@ RSpec.describe Search::FeedContent, type: :service do
     end
 
     context "with a query" do
-      it "searches by search_fields" do
+      xit "searches by search_fields" do
         allow(article1).to receive(:title).and_return("ruby")
         allow(article2).to receive(:body_text).and_return("Ruby Tuesday")
         index_documents([article1, article2])
@@ -63,7 +63,7 @@ RSpec.describe Search::FeedContent, type: :service do
     end
 
     context "with a filter term" do
-      it "filters by tag names" do
+      xit "filters by tag names" do
         article1.tags << create(:tag, name: "ruby")
         article2.tags << create(:tag, name: "python")
         index_documents([article1, article2])
@@ -75,7 +75,7 @@ RSpec.describe Search::FeedContent, type: :service do
         expect(doc_ids).to include(article1.id)
       end
 
-      it "filters by user_id" do
+      xit "filters by user_id" do
         index_documents([article1, article2])
         query_params = { size: 5, user_id: article1.user_id }
 
@@ -85,7 +85,7 @@ RSpec.describe Search::FeedContent, type: :service do
         expect(doc_ids).to include(article1.id)
       end
 
-      it "filters by approved" do
+      xit "filters by approved" do
         article1.update(approved: false)
         article2.update(approved: true)
         index_documents([article1, article2])
@@ -97,7 +97,7 @@ RSpec.describe Search::FeedContent, type: :service do
         expect(doc_ids).to include(article2.id)
       end
 
-      it "filters by class_name" do
+      xit "filters by class_name" do
         pde = create(:podcast_episode)
         index_documents([pde, article1, article2])
         query_params = { size: 5, class_name: "PodcastEpisode" }
@@ -110,7 +110,7 @@ RSpec.describe Search::FeedContent, type: :service do
     end
 
     context "with range keys" do
-      it "searches by published_at" do
+      xit "searches by published_at" do
         article1.update(published_at: 1.year.ago)
         article2.update(published_at: 1.month.ago)
         index_documents([article1, article2])
@@ -124,7 +124,7 @@ RSpec.describe Search::FeedContent, type: :service do
     end
 
     context "with default sorting" do
-      it "sorts by Elasticsearch _score which is weighted based on article score" do
+      xit "sorts by Elasticsearch _score which is weighted based on article score" do
         ruby_tag = create(:tag, name: "ruby")
         allow(article1).to receive(:score).and_return(200)
         article1.tags << ruby_tag
@@ -141,7 +141,7 @@ RSpec.describe Search::FeedContent, type: :service do
   end
 
   describe "document counts", elasticsearch: "FeedContent" do
-    it "returns counts for each document class" do
+    xit "returns counts for each document class" do
       article = create(:article)
       comment = create(:comment)
       pde = create(:podcast_episode)
