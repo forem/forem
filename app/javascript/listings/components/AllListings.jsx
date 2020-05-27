@@ -10,7 +10,7 @@ const AllListings = ({
   onOpenModal,
 }) => {
   return (
-    <div className="classifieds-columns" id="classified-listings-results">
+    <div className="listings-columns" id="listings-results">
       {listings.map((listing) => (
         <SingleListing
           onAddTag={onAddTag}

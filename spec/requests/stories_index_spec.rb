@@ -89,7 +89,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
     it "shows listings" do
       user = create(:user)
-      listing = create(:classified_listing, user_id: user.id)
+      listing = create(:listing, user_id: user.id)
       get "/"
       expect(response.body).to include(CGI.escapeHTML(listing.title))
     end

@@ -190,7 +190,7 @@ RSpec.describe NotifyMailer, type: :mailer do
       it "includes the listings URL" do
         expect(email.html_part.body).to include(
           CGI.escape(
-            Rails.application.routes.url_helpers.classified_listings_url,
+            Rails.application.routes.url_helpers.listings_url,
           ),
         )
       end
@@ -228,7 +228,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
       it "includes the listings URL" do
         expect(email.text_part.body).to include(
-          Rails.application.routes.url_helpers.classified_listings_url,
+          Rails.application.routes.url_helpers.listings_url,
         )
       end
 

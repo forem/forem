@@ -28,7 +28,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:badges).through(:badge_achievements) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
-      it { is_expected.to have_many(:classified_listings).dependent(:destroy) }
+      it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:collections).dependent(:destroy) }
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
