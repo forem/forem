@@ -3,7 +3,6 @@ class ResponseTemplate < ApplicationRecord
 
   belongs_to :user, optional: true
 
-  UNIQUENESS_SCOPE = %i[user_id type_of content_type].freeze
   TYPE_OF_TYPES = %w[personal_comment mod_comment abuse_report_email_reply email_reply tag_adjustment].freeze
   USER_NIL_TYPE_OF_TYPES = %w[mod_comment abuse_report_email_reply email_reply tag_adjustment].freeze
   CONTENT_TYPES = %w[plain_text html body_markdown].freeze
@@ -14,7 +13,7 @@ class ResponseTemplate < ApplicationRecord
   USER_NIL_TYPE_OF_MSG = "cannot have a user ID associated.".freeze
 
   validates :type_of, :content_type, :content, :title, presence: true
-  validates :content, uniqueness: { scope: UNIQUENESS_SCOPE }
+  validates :content, uniqueness: { scope: %i[user_id type_of content_type] }
   validates :type_of, inclusion: { in: TYPE_OF_TYPES }
   validates :content_type, inclusion: { in: CONTENT_TYPES }
   validates :content_type,
