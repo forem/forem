@@ -161,7 +161,7 @@ class Reaction < ApplicationRecord
 
   BASE_POINTS = {
     "vomit" => -50.0,
-    "thumbsup" => 10.0,
+    "thumbsup" => 5.0,
     "thumbsdown" => -10.0
   }.freeze
 
