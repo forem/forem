@@ -25,12 +25,21 @@
   </thead>
   <tbody>
     <% @page_redirects.each do |page_redirect| %>
+      <% bg_color_class =
+           if page_redirect.version <= 3
+             "success"
+           elsif page_redirect.version <= 5
+             "warning"
+           else
+             "danger"
+           end %>
+
       <tr>
         <td><%= link_to(page_redirect.id, internal_page_redirects_path(page_redirect.id)) %></td>
         <td><%= page_redirect.old_slug %></td>
         <td><%= page_redirect.new_slug %></td>
         <td><%= page_redirect.overridden %></td>
-        <td><%= page_redirect.version %></td>
+        <td class="bg-<%= bg_color_class %>"><%= page_redirect.version %></td>
       </tr>
     <% end %>
   </tbody>
