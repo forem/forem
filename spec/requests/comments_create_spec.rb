@@ -3,7 +3,6 @@ require "rails_helper"
 RSpec.describe "CommentsCreate", type: :request do
   let(:user) { create(:user) }
   let(:blocker) { create(:user) }
-  let(:commenter) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
   let(:new_body) { -> { "NEW BODY #{rand(100)}" } }
   let(:rate_limit_checker) { RateLimitChecker.new(user) }
@@ -95,11 +94,74 @@ RSpec.describe "CommentsCreate", type: :request do
     end
   end
 
-  it "creates comment notifications, but not mention" do
-    Sidekiq::Testing.inline! do
-      sign_in commenter
+  context "when there's a notification alredy for comment" do
+    around do |example|
+      Sidekiq::Testing.inline!(&example)
+    end
+
+    let(:comment_author) { create(:user) }
+    let(:user_replier) { create(:user) }
+    let(:moderator_replier) { create(:user, :admin) }
+    let(:mascot) { create(:user) }
+    let(:response_template) do
+      create(:response_template, type_of: "mod_comment", user_id: nil)
+    end
+    let(:comment) { Comment.first }
+
+    it "doesn't create mention, when replying as regular user" do
+      comment_on_article
+      reply_and_mention_comment_author
+
+      expect_no_duplicate_notifications_for_comment_author
+    end
+
+    it "doesn't create mention, when replying as moderator" do
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(mascot.id)
+
+      comment_on_article
+      reply_and_mention_comment_author_as_moderator
+
+      expect_no_duplicate_notifications_for_comment_author
+    end
+
+    private
+
+    def comment_on_article
+      sign_in comment_author
       post comments_path, params: comment_params
-      p Notification.count
+      expect_request_to_be_successful
+    end
+
+    def reply_and_mention_comment_author
+      sign_in user_replier
+      post comments_path, params: comment_params(
+        parent_id: comment.id,
+        body_markdown: "Hello, @#{comment_author.username}",
+      )
+      expect_request_to_be_successful
+    end
+
+    def reply_and_mention_comment_author_as_moderator
+      sign_in moderator_replier
+      post moderator_create_comments_path, params: comment_params(
+        parent_id: comment.id,
+        body_markdown: "Hello, @#{comment_author.username}",
+      ).merge(response_template: { id: response_template.id })
+      expect(response).to be_successful
+    end
+
+    def expect_no_duplicate_notifications_for_comment_author
+      expect(Mention.count).to eq 0
+      expect(Notification.where(user: comment_author).count).to eq 1
+    end
+
+    def json_response
+      JSON.parse(response.body)
+    end
+
+    def expect_request_to_be_successful
+      expect(json_response["error"]).to be_nil
+      expect(response).to be_successful
     end
   end
 end
