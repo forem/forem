@@ -11,6 +11,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let_it_be_readonly(:customize_feed_broadcast)  { create(:customize_feed_broadcast) }
   let_it_be_readonly(:discuss_and_ask_broadcast) { create(:discuss_and_ask_broadcast) }
   let_it_be_readonly(:customize_ux_broadcast)    { create(:customize_ux_broadcast) }
+  let_it_be_readonly(:download_app_broadcast)    { create(:download_app_broadcast) }
 
   before do
     omniauth_mock_providers_payload
@@ -67,6 +68,10 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       Timecop.travel(1.day.since)
       expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(discuss_and_ask_broadcast)
+
+      Timecop.travel(1.day.since)
+      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect(user.notifications.last.notifiable).to eq(download_app_broadcast)
       Timecop.return
     end
     # rubocop:enable RSpec/ExampleLength
@@ -251,6 +256,29 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
         sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_discuss_and_ask_notification) }
       end
       expect(user.notifications.count).to eq(1)
+    end
+
+    describe "#send_download_app_notification" do
+      let!(:user) { create(:user, :with_identity, identities: %w[twitter github], created_at: 7.days.ago) }
+
+      it "does not send a notification to a newly-created user" do
+        user.update!(created_at: Time.zone.now)
+        sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_download_app_notification) }
+        expect(Notification).not_to have_received(:send_welcome_notification)
+      end
+
+      it "generates the correct broadcast type and sends the notification to the user" do
+        sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_download_app_notification) }
+        expect(user.notifications.count).to eq(1)
+        expect(user.notifications.first.notifiable).to eq(download_app_broadcast)
+      end
+
+      it "does not send duplicate notifications" do
+        2.times do
+          sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_download_app_notification) }
+        end
+        expect(user.notifications.count).to eq(1)
+      end
     end
   end
 end
