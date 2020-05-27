@@ -9,13 +9,9 @@ RSpec.describe "Notifications page", type: :system, js: true do
   def validate_reply(id)
     fill_in "comment-textarea-for-#{id}", with: "thanks i guess"
     click_button("SUBMIT")
-
-    wait_for_javascript
     expect(page).to have_css("div.reply-sent-notice")
 
     click_link("Check it out")
-
-    wait_for_javascript
     expect(page).to have_text("thanks i guess")
   end
 
@@ -39,7 +35,6 @@ RSpec.describe "Notifications page", type: :system, js: true do
     expect(page).to have_css("div.single-notification")
     click_button("heart")
 
-    wait_for_javascript
     expect(page).to have_css("img.reacted-emoji")
 
     click_link("Reply")
