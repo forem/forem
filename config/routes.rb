@@ -105,6 +105,7 @@ Rails.application.routes.draw do
     resource :config
     resources :badges, only: :index
     post "badges/award_badges", to: "badges#award_badges"
+    resources :page_redirects
   end
 
   namespace :stories, defaults: { format: "json" } do
