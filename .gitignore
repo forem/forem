@@ -43,7 +43,7 @@ yarn-debug.log*
 .yarn-integrity
 
 # Ignore storybook static site generation
-storybook-static/
+app/javascript/storybook-static/
 yarn-error.log
 
 # Ignore package-lock.json because we use yarn
