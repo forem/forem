@@ -1,4 +1,29 @@
-<% menu_items = %w[comments articles users tags welcome broadcasts reports response_templates pages tools chat_channels permissions growth mods config events badges organizations sponsorships podcasts negative_reactions moderator_actions].sort.each_with_object({}) { |v, h| h[v] = v } %>
+<% menu_items = %w[
+     articles
+     badges
+     broadcasts
+     chat_channels
+     comments
+     config
+     events
+     growth
+     moderator_actions
+     mods
+     negative_reactions
+     organizations
+     page_redirects
+     pages
+     permissions
+     podcasts
+     reports
+     response_templates
+     sponsorships
+     tags
+     tools
+     users
+     welcome
+   ].sort.each_with_object({}) { |v, h| h[v] = v } %>
+
 <% menu_items[:listings] = "listings" %>
 <% menu_items[:webhooks] = "webhook_endpoints" %>
 
