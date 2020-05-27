@@ -49,9 +49,7 @@ module AssignTagModerator
     MailchimpBot.new(user).manage_tag_moderator_list
   end
 
-  private
-
-  def chat_channel_slug tag
-    tag.mod_chat_channel.slug if tag.mod_chat_channel
+  def self.chat_channel_slug(tag)
+    tag.mod_chat_channel&.slug
   end
 end
