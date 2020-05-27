@@ -23,7 +23,7 @@ RSpec.describe EmailDigest, type: :labor do
       before { user.follow(author) }
 
       it "send digest email when there's atleast 3 hot articles" do
-        create_list(:article, 3, user_id: author.id, positive_reactions_count: 20, score: 20)
+        create_list(:article, 3, user_id: author.id, public_reactions_count: 20, score: 20)
         described_class.send_periodic_digest_email
         expect(DigestMailer).to have_received(:digest_email).with(
           user, [instance_of(Article), instance_of(Article), instance_of(Article)]

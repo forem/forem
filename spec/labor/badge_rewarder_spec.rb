@@ -44,7 +44,7 @@ RSpec.describe BadgeRewarder, type: :labor do
     it "rewards beloved comment to folks who have a qualifying comment" do
       create(:badge, title: "Beloved comment", slug: "beloved-comment")
       comment = create(:comment, commentable: create(:article))
-      comment.update(positive_reactions_count: 30)
+      comment.update(public_reactions_count: 30)
       described_class.award_beloved_comment_badges
       expect(BadgeAchievement.count).to eq(1)
     end

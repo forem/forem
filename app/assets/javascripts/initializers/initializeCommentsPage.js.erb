@@ -18,21 +18,21 @@ function initializeCommentsPage() {
               var responseObj = JSON.parse(ajaxReq.response);
               var reactions = responseObj.reactions;
               var allNodes = document.getElementsByClassName('single-comment-node');
-              var positiveReactionCounts = responseObj.positive_reaction_counts;
+              var publicReactionCounts = responseObj.public_reaction_counts;
               for (var i = 0; i < reactions.length; i++) {
                 var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
                 if (buttForComment) {
                   buttForComment.classList.add('reacted');
                 }
               }
-              for (var i = 0; i < positiveReactionCounts.length; i++) {
-                var buttForComment = document.getElementById('button-for-comment-' + positiveReactionCounts[i].id);
+              for (var i = 0; i < publicReactionCounts.length; i++) {
+                var buttForComment = document.getElementById('button-for-comment-' + publicReactionCounts[i].id);
                 if (buttForComment) {
-                  if (positiveReactionCounts[i].count > 0) {
-                    if (!document.getElementById('reactions-count-' + positiveReactionCounts[i].id)) {
-                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + positiveReactionCounts[i].id + "'>" + positiveReactionCounts[i].count + '</span>';
+                  if (publicReactionCounts[i].count > 0) {
+                    if (!document.getElementById('reactions-count-' + publicReactionCounts[i].id)) {
+                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + publicReactionCounts[i].id + "'>" + publicReactionCounts[i].count + '</span>';
                     } else {
-                      document.getElementById('reactions-count-' + positiveReactionCounts[i].id).innerHTML = positiveReactionCounts[i].count;
+                      document.getElementById('reactions-count-' + publicReactionCounts[i].id).innerHTML = publicReactionCounts[i].count;
                     }
                   }
                 }

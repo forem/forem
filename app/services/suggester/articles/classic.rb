@@ -29,7 +29,7 @@ module Suggester
             includes(:user).
             limited_column_select.
             where(featured: true).
-            where("positive_reactions_count > ?", MIN_REACTION_COUNT).
+            where("public_reactions_count > ?", MIN_REACTION_COUNT).
             where("published_at > ?", 10.months.ago).
             order(Arel.sql("RANDOM()")).pluck(:id)
         end
