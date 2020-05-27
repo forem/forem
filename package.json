@@ -15,11 +15,11 @@
   "scripts": {
     "api-docs:lint": "spectral lint -F hint -v docs/api_v0.yml && lint-openapi -e docs/api_v0.yml",
     "api-docs:serve": "redoc-cli serve docs/api_v0.yml --options.pathInMiddlePanel --options.jsonSampleExpandLevel=all --options.menuToggle -t docs/api_template.hbs --watch",
-    "generate-themes-storybook": "node-sass app/assets/stylesheets/themes -o storybook-static/themes",
-    "build-storybook": "build-storybook -c app/javascript/.storybook -s app/assets --quiet",
+    "generate-themes-storybook": "node-sass app/assets/stylesheets/themes -o app/javascript/storybook-static/themes",
+    "build-storybook": "build-storybook -c app/javascript/.storybook -s app/assets -o app/javascript/storybook-static --quiet",
     "postbuild-storybook": "npm run generate-themes-storybook",
     "prestorybook": "npm run generate-themes-storybook",
-    "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/assets,storybook-static",
+    "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/assets,app/javascript/storybook-static",
     "test": "jest app/javascript/ --coverage",
     "test:watch": "jest app/javascript/ --watch"
   },
