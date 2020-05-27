@@ -105,12 +105,16 @@ class StoriesController < ApplicationController
     @organization = Organization.find_by(slug: params[:username])
     @page = Page.find_by(slug: params[:username], is_top_level_path: true)
     if @podcast
+      Honeycomb.add_field("stories_route.podcast", true)
       handle_podcast_index
     elsif @organization
+      Honeycomb.add_field("stories_route.org", true)
       handle_organization_index
     elsif @page
+      Honeycomb.add_field("stories_route.page", true)
       handle_page_display
     else
+      Honeycomb.add_field("stories_route.user", true)
       handle_user_index
     end
   end

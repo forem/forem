@@ -197,8 +197,10 @@ class ArticlesController < ApplicationController
 
   def handle_user_or_organization_feed
     if (@user = User.find_by(username: params[:username]))
+      Honeycomb.add_field("articles_route.user", true)
       @articles = @articles.where(user_id: @user.id)
     elsif (@user = Organization.find_by(slug: params[:username]))
+      Honeycomb.add_field("articles_route.org", true)
       @articles = @articles.where(organization_id: @user.id).includes(:user)
     end
   end
