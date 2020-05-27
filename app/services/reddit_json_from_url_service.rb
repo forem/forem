@@ -6,8 +6,11 @@ class RedditJsonFromUrlService
   end
 
   def parse
+    validate_url
+
     # Requests to Reddit require a custom `User-Agent` header to prevent 429 errors
     json = HTTParty.get("#{@url}.json", headers: { "User-Agent" => "ThePracticalDev" })
+
     # The JSON response is an array with two items.
     # The first one is the post itself, the second one are the comments
     data = json.first["data"]["children"][0]["data"]
@@ -33,5 +36,23 @@ class RedditJsonFromUrlService
 
     truncated = HTML_Truncator.truncate(text, 60)
     sanitize(truncated)
+  end
+
+  def validate_url
+    cleaned_url = @url.delete(" ")
+
+    return true if valid_url?(cleaned_url) && link_exists?
+
+    raise StandardError, "Invalid Reddit link: #{@url}"
+  end
+
+  def valid_url?(url)
+    url = URI.parse(url)
+    url.is_a?(URI::HTTP)
+  end
+
+  def link_exists?
+    response = HTTParty.get("#{@url}.json", headers: { "User-Agent" => "ThePracticalDev" })
+    response.code == 200
   end
 end
