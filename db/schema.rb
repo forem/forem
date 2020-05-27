@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_27_163633) do
+ActiveRecord::Schema.define(version: 2020_05_27_161505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -773,9 +773,11 @@ ActiveRecord::Schema.define(version: 2020_05_27_163633) do
   end
 
   create_table "page_redirects", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.string "new_slug", null: false
     t.string "old_slug", null: false
     t.boolean "overridden", default: false, null: false
+    t.datetime "updated_at", null: false
     t.integer "version", default: 1, null: false
     t.index ["new_slug"], name: "index_page_redirects_on_new_slug"
     t.index ["old_slug", "new_slug"], name: "index_page_redirects_on_old_slug_and_new_slug", unique: true
