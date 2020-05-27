@@ -1,4 +1,6 @@
 module ApplicationHelper
+  include CloudinaryHelper
+
   # rubocop:disable Performance/OpenStruct
   DELETED_USER = OpenStruct.new(
     id: nil,
@@ -74,20 +76,15 @@ module ApplicationHelper
     "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
-  def cloudinary(url, width = nil, _quality = 80, _format = "jpg")
-    return url if Rails.env.development? && (url.blank? || url.exclude?("http"))
-
-    service_path = "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/fetch"
-
-    if url&.size&.positive?
-      if width
-        "#{service_path}/c_scale,fl_progressive,q_auto,w_#{width}/f_auto/#{url}"
-      else
-        "#{service_path}/c_scale,fl_progressive,q_auto/f_auto/#{url}"
-      end
-    else
-      "#{service_path}/c_scale,fl_progressive,q_1/f_auto/https://pbs.twimg.com/profile_images/481625927911092224/iAVNQXjn_normal.jpeg"
-    end
+  def cloudinary(url, width = "500", quality = 80, format = "jpg")
+    cl_image_path(url || asset_path("#{rand(1..40)}.png"),
+                  type: "fetch",
+                  width: width,
+                  crop: "limit",
+                  quality: quality,
+                  flags: "progressive",
+                  fetch_format: format,
+                  sign_url: true)
   end
 
   def cloud_cover_url(url)

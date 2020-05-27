@@ -1,0 +1,24 @@
+Testing
+=======
+
+Tests are written with Shoulda on top of Test::Unit and Factory Girl is used instead of fixtures.  Tests are run using rake.
+
+1. Clone your fork git locally.
+2. Install the dependencies
+    $ bundle install
+3. Run the tests:
+    rake test
+
+
+Coverage
+=======
+
+Test coverage can be calculated using Rcov. Make sure you have the rcov gem installed.
+
+Again in the acts_as_follower directory:
+
+rake rcov:gen DB=sqlite3   # For sqlite
+
+The coverage will now be available in the test/coverage directory.
+
+rake rcov:clobber will delete the coverage directory.
