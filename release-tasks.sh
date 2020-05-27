@@ -16,8 +16,6 @@ set -Eex
 
 # runs migration for Postgres, setups/updates Elasticsearch
 # and boots the app to check there are no errors
-STATEMENT_TIMEOUT=180000 bundle exec rails db:migrate
+STATEMENT_TIMEOUT=180000 bundle exec rails app_initializer:setup
 bundle exec rake fastly:update_configs
-bundle exec rake search:setup
-bundle exec rake data_updates:enqueue_data_update_worker
 bundle exec rails runner "puts 'app load success'"

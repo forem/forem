@@ -28,17 +28,10 @@ FileUtils.chdir APP_ROOT do
     FileUtils.cp "config/database.yml.sample", "config/database.yml"
   end
 
-  puts "\n== Preparing Elasticsearch =="
-  system! "bin/rails search:setup"
+  puts "\n== Preparing Test Elasticsearch =="
   system! 'RAILS_ENV="test" bin/rails search:setup'
 
-  puts "\n== Preparing database =="
-  unless system("bin/rails db:migrate")
-    system! "bin/rails db:setup"
-  end
-
-  puts "\n== Updating Data =="
-  system! "bin/rails data_updates:run"
+  system! "bin/rails app_initializer:setup"
 
   puts "\n== Removing old logs and tempfiles =="
   system! "bin/rails log:clear tmp:clear"

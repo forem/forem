@@ -63,7 +63,7 @@ and start the container again_
 The script executes the following steps:
 
 1. `docker-compose build`
-2. `docker-compose run web rails db:setup db:migrate search:setup`
+2. `docker-compose run web rails app_initializer:setup`
 3. `docker-compose up`
 
 ## Running the Docker app (advanced)
