@@ -26,7 +26,7 @@ class SocialPreviewsController < ApplicationController
   end
 
   def listing
-    @listing = ClassifiedListing.find(params[:id]).decorate
+    @listing = Listing.find(params[:id]).decorate
     set_respond
   end
 

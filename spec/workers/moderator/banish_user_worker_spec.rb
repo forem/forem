@@ -11,7 +11,7 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
     before do
       create(:article, user_id: user.id)
       create(:article, user_id: user.id)
-      create(:classified_listing, user: user)
+      create(:listing, user: user)
       ChatChannel.create_with_users(users: [user, user2])
       user.follow(user2)
       described_class.new.perform(admin.id, user.id)
@@ -29,7 +29,7 @@ RSpec.describe Moderator::BanishUserWorker, type: :worker do
       expect(user.articles.count).to eq(0)
       expect(user.chat_channels.count).to eq(0)
       expect(user.follows.count).to eq(0)
-      expect(user.classified_listings.count).to eq(0)
+      expect(user.listings.count).to eq(0)
     end
 
     it "reassigns profile info" do

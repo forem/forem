@@ -244,7 +244,8 @@ broadcast_messages = {
   customize_experience: "Sloan here! 👋 Did you know that that you can customize your DEV experience? Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!",
   start_discussion: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/discuss'>started a discussion</a> yet. Starting a discussion is easy to do; just click on 'Write a Post' in the sidebar of the tag page to get started!",
   ask_question: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. Asking a question is easy to do; just click on 'Write a Post' in the sidebar of the tag page to get started!",
-  discuss_and_ask: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or <a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; just click on 'Write a Post' in the sidebar of the tag page to get started!"
+  discuss_and_ask: "Sloan here! 👋 I noticed that you haven't <a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or <a href='https://dev.to/t/discuss'>started a discussion</a> yet. It's easy to do both of these; just click on 'Write a Post' in the sidebar of the tag page to get started!",
+  download_app: "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile app yet? Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all of your favorite DEV content on the go!"
 }
 
 broadcast_messages.each do |type, message|
@@ -372,7 +373,7 @@ end
 ##############################################################################
 
 counter += 1
-Rails.logger.info "#{counter}. Creating Classified Listing Categories"
+Rails.logger.info "#{counter}. Creating Listing Categories"
 
 CATEGORIES = [
   {
@@ -413,28 +414,28 @@ CATEGORIES = [
   },
 ].freeze
 
-CATEGORIES.each { |attributes| ClassifiedListingCategory.create(attributes) }
+CATEGORIES.each { |attributes| ListingCategory.create(attributes) }
 
 ##############################################################################
 
 counter += 1
-Rails.logger.info "#{counter}. Creating Classified Listings"
+Rails.logger.info "#{counter}. Creating Listings"
 
 users_in_random_order.each { |user| Credit.add_to(user, rand(100)) }
 users = users_in_random_order.to_a
 
-listings_categories = ClassifiedListingCategory.pluck(:id)
+listings_categories = ListingCategory.pluck(:id)
 listings_categories.each.with_index(1) do |category_id, index|
   # rotate users if they are less than the categories
   user = users.at(index % users.length)
   2.times do
-    ClassifiedListing.create!(
+    Listing.create!(
       user: user,
       title: Faker::Lorem.sentence,
       body_markdown: Faker::Markdown.random,
       location: Faker::Address.city,
       organization_id: user.organizations.first&.id,
-      classified_listing_category_id: category_id,
+      listing_category_id: category_id,
       contact_via_connect: true,
       published: true,
       bumped_at: Time.current,

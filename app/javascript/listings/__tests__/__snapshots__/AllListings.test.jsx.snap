@@ -2,18 +2,18 @@
 
 exports[`<AllListings /> Should render all listings 1`] = `
 <div
-  class="classifieds-columns"
-  id="classified-listings-results"
+  class="listings-columns"
+  id="listings-results"
 >
   <div
-    class="single-classified-listing"
-    id="single-classified-listing-20"
+    class="single-listing"
+    id="single-listing-20"
   >
     <div
       class="listing-content"
     >
       <h3
-        class="single-classified-listing-header"
+        class="single-listing-header"
       >
         <a
           data-listing-id={20}
@@ -46,7 +46,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
               class="dropdown-content "
             >
               <a
-                class="classified-listing-edit-button"
+                class="listing-edit-button"
                 href="/listings/20/edit"
               >
                 Edit
@@ -56,7 +56,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
         </div>
       </h3>
       <div
-        class="single-classified-listing-body"
+        class="single-listing-body"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<p>Eius et ullam. Dolores et qui. Quis <strong>qui</strong> omnis.</p>
@@ -65,7 +65,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
         }
       />
       <div
-        class="single-classified-listing-tags"
+        class="single-listing-tags"
       >
         <a
           data-no-instant={true}
@@ -83,7 +83,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
         </a>
       </div>
       <div
-        class="single-classified-listing-author-info"
+        class="single-listing-author-info"
       >
         <a
           data-no-instant={true}
@@ -107,14 +107,14 @@ exports[`<AllListings /> Should render all listings 1`] = `
     </div>
   </div>
   <div
-    class="single-classified-listing"
-    id="single-classified-listing-21"
+    class="single-listing"
+    id="single-listing-21"
   >
     <div
       class="listing-content"
     >
       <h3
-        class="single-classified-listing-header"
+        class="single-listing-header"
       >
         <a
           data-listing-id={21}
@@ -147,7 +147,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
               class="dropdown-content "
             >
               <a
-                class="classified-listing-edit-button"
+                class="listing-edit-button"
                 href="/listings/21/edit"
               >
                 Edit
@@ -157,7 +157,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
         </div>
       </h3>
       <div
-        class="single-classified-listing-body"
+        class="single-listing-body"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<p>Eius et ullam. Dolores et qui. Quis <strong>qui</strong> omnis.</p>
@@ -166,7 +166,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
         }
       />
       <div
-        class="single-classified-listing-tags"
+        class="single-listing-tags"
       >
         <a
           data-no-instant={true}
@@ -184,7 +184,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
         </a>
       </div>
       <div
-        class="single-classified-listing-author-info"
+        class="single-listing-author-info"
       >
         <a
           data-no-instant={true}
@@ -208,14 +208,14 @@ exports[`<AllListings /> Should render all listings 1`] = `
     </div>
   </div>
   <div
-    class="single-classified-listing"
-    id="single-classified-listing-22"
+    class="single-listing"
+    id="single-listing-22"
   >
     <div
       class="listing-content"
     >
       <h3
-        class="single-classified-listing-header"
+        class="single-listing-header"
       >
         <a
           data-listing-id={22}
@@ -248,7 +248,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
               class="dropdown-content "
             >
               <a
-                class="classified-listing-edit-button"
+                class="listing-edit-button"
                 href="/listings/22/edit"
               >
                 Edit
@@ -258,7 +258,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
         </div>
       </h3>
       <div
-        class="single-classified-listing-body"
+        class="single-listing-body"
         dangerouslySetInnerHTML={
           Object {
             "__html": "<p>Eius et ullam. Dolores et qui. Quis <strong>qui</strong> omnis.</p>
@@ -267,7 +267,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
         }
       />
       <div
-        class="single-classified-listing-tags"
+        class="single-listing-tags"
       >
         <a
           data-no-instant={true}
@@ -285,7 +285,7 @@ exports[`<AllListings /> Should render all listings 1`] = `
         </a>
       </div>
       <div
-        class="single-classified-listing-author-info"
+        class="single-listing-author-info"
       >
         <a
           data-no-instant={true}

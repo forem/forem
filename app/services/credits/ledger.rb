@@ -29,7 +29,7 @@ module Credits
     attr_reader :user
 
     def purchaseable
-      %w[ClassifiedListing]
+      %w[Listing]
     end
 
     def load_credits_purchases(credits)

@@ -13,7 +13,7 @@ class Organization < ApplicationRecord
 
   has_many :api_secrets, through: :users
   has_many :articles
-  has_many :classified_listings
+  has_many :listings
   has_many :collections
   has_many :credits
   has_many :display_ads
