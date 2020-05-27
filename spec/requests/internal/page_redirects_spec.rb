@@ -47,31 +47,6 @@ RSpec.describe "/internal/page_redirects", type: :request do
 
       expect(response.body).to include(page_redirect.old_slug)
       expect(response.body).to include(page_redirect.new_slug)
-      expect(response.body).to include(page_redirect.id.to_s)
-    end
-
-    it "searches by new_slug" do
-      new_slug_page_redirect = create(:page_redirect, new_slug: "/new-test")
-
-      get internal_page_redirects_path(search: new_slug_page_redirect.new_slug)
-
-      expect(response.body).not_to include(page_redirect.old_slug)
-      expect(response.body).not_to include(page_redirect.new_slug)
-
-      expect(response.body).to include(new_slug_page_redirect.old_slug)
-      expect(response.body).to include(new_slug_page_redirect.new_slug)
-    end
-
-    it "searches by old_slug" do
-      old_slug_page_redirect = create(:page_redirect, old_slug: "/old-test")
-
-      get internal_page_redirects_path(search: old_slug_page_redirect.old_slug)
-
-      expect(response.body).not_to include(page_redirect.old_slug)
-      expect(response.body).not_to include(page_redirect.new_slug)
-
-      expect(response.body).to include(old_slug_page_redirect.old_slug)
-      expect(response.body).to include(old_slug_page_redirect.new_slug)
     end
   end
 end
