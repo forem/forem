@@ -42,7 +42,7 @@ RSpec.describe "/internal/page_redirects", type: :request do
       expect(response).to have_http_status(:ok)
     end
 
-    it "renders the page with a page redirect" do
+    it "renders the index page with a page redirect" do
       get internal_page_redirects_path
 
       expect(response.body).to include(page_redirect.old_slug)
