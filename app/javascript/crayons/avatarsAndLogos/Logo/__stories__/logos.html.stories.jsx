@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 import '../../../storybook-utilities/designSystem.scss';
 
-export default { title: 'Components/Avatars & Logos/Logos/HTML' };
+export default { title: '3_Components/Avatars & Logos/Logos/HTML' };
 
 export const Default = () => (
   <span className="crayons-logo">

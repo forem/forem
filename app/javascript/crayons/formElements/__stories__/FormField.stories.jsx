@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import { FormField, RadioButton } from '@crayons';
 
 export default {
-  title: 'Components/Form Components/Form Field',
+  title: '3_Components/Form Components/Form Field',
 };
 
 export const RadioVariant = () => (

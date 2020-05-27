@@ -3,7 +3,7 @@ import { Fieldset } from '../../../storybook-utilities/Fieldset';
 
 import '../../../storybook-utilities/designSystem.scss';
 
-export default { title: 'Components/Form Components/Checkbox/HTML' };
+export default { title: '3_Components/Form Components/Checkbox/HTML' };
 
 export const Default = () => (
   <input type="checkbox" className="crayons-checkbox" />
