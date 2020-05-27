@@ -42,7 +42,7 @@ class Categories extends Component {
         <select
           id="category"
           className="listingform__input"
-          name="classified_listing[classified_listing_category_id]"
+          name="listing[listing_category_id]"
           onChange={onChange}
           onBlur={onChange}
         >

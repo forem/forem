@@ -2,7 +2,7 @@
 
 exports[`<ClearQueryButton /> Should match the snapshot 1`] = `
 <button
-  class="classified-search-clear"
+  class="listing-search-clear"
   id="clear-query-button"
   onClick={[Function]}
   type="button"

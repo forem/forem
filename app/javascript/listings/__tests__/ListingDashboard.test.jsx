@@ -58,7 +58,7 @@ const l = [
     },
   },
 ];
-global.document.body.innerHTML = `<div id="classifieds-listings-dashboard" data-listings=${JSON.stringify(
+global.document.body.innerHTML = `<div id="listings-dashboard" data-listings=${JSON.stringify(
   l,
 )} data-usercredits="3" data-orglistings=${JSON.stringify([
   {
