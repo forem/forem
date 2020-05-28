@@ -4,7 +4,7 @@
 
 <%= form_with model: [:internal, @page_redirect], method: :patch, local: true do |form| %>
   <%= render partial: "form", locals: { page_redirect: @page_redirect } %>
-  <%= form.submit "Update Listing", class: "btn btn-primary" %>
+  <%= form.submit "Update Page Redirect", class: "btn btn-primary" %>
 <% end %>
 
 <hr class="mt-5">
