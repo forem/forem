@@ -23,7 +23,7 @@
       </div>
       <div class="form-group">
         <% if @page.social_image_url %>
-          <img src="<%= @page.social_image_url%>" style="max-width:500px;display:block" />
+          <img src="<%= @page.social_image_url %>" style="max-width:500px;display:block" />
         <% end %>
         <%= form.label :social_image %>
         <%= form.file_field :social_image, class: "form-control" %>
@@ -37,6 +37,11 @@
         <%= form.label :is_top_level_path %>
         <%= form.check_box :is_top_level_path %>
         <p>(Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code>) Be careful! ⚠️</p>
+      </div>
+      <div class="form-group">
+        <%= form.label :feature_flag %>
+        <%= form.text_field :feature_flag, class: "form-control" %>
+        <p>Set up at <%= link_to "Feature Flag control panel", "/internal/feature_flags" %></p>
       </div>
       <%= form.submit class: "btn btn-primary float-right" %>
     <% end %>
