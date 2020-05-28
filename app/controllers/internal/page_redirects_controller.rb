@@ -8,7 +8,7 @@ class Internal::PageRedirectsController < Internal::ApplicationController
   end
 
   def create
-    @page_redirect = PageRedirect.new(page_redirect_params)
+    @page_redirect = PageRedirect.new(page_redirect_params.merge({ overridden: true }))
 
     if @page_redirect.save
       flash[:success] = "Page Redirect created successfully!"
