@@ -89,6 +89,8 @@ A more complete overview of our stack is available in
 
 ### Prerequisites
 
+#### Local
+
 - [Ruby](https://www.ruby-lang.org/en/): we recommend using
   [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on
   the badge.
@@ -99,6 +101,18 @@ A more complete overview of our stack is available in
   [installation instructions](https://imagemagick.org/script/download.php).
 - [Redis](https://redis.io/) 4 or higher.
 - [Elasticsearch](https://www.elastic.co) 7 or higher.
+
+#### Containers
+
+**Linux**
+
+- [Podman](https://github.com/containers/libpod) 1.9.2 or higher
+- [Podman Compose](https://github.com/containers/podman-compose) 0.1.5 or higher
+
+**OS X**
+
+- [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/install/)
+
 
 ### Installation Documentation
 
@@ -128,6 +142,7 @@ A more complete overview of our stack is available in
 - [@ridhwana](https://dev.to/ridhwana)
 - [@fdoxyz](https://dev.to/fdoxyz)
 - [@msarit](https://dev.to/msarit)
+- [@jdoss](https://dev.to/jdoss)
 
 ## Vulnerability disclosure
 

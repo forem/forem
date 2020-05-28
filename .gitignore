@@ -75,5 +75,7 @@ docs/.static/api/
 # asdf
 .tool-versions
 
-# ES docker volume
-docker_data/
+# Container volumes
+db_data
+es_data
+gem_cache
