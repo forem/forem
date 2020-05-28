@@ -10,6 +10,7 @@ module.exports = {
     '!app/javascript/packs/**/*.js', // avoids running coverage on webpacker pack files
     '!**/__tests__/**',
     '!**/__stories__/**',
+    '!app/javascript/storybook-static/**/*.js',
   ],
   coverageThreshold: {
     global: {
@@ -32,6 +33,7 @@ module.exports = {
     './config/webpack',
     // Allows developers to add utility modules that jest won't run as test suites.
     '/__tests__/utilities/',
+    './app/javascript/storybook-static',
   ],
   watchPlugins: [
     'jest-watch-typeahead/filename',
