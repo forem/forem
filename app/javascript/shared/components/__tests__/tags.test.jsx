@@ -17,7 +17,7 @@ describe('<Tags />', () => {
 
   describe('handleKeyDown', () => {
     const preventDefaultMock = jest.fn();
-    const createKeyDown = key => ({
+    const createKeyDown = (key) => ({
       key,
       preventDefault: preventDefaultMock,
     });
@@ -26,13 +26,13 @@ describe('<Tags />', () => {
       preventDefaultMock.mockClear();
     });
 
-    test('calls preventDefault on unused keyCode', () => {
+    it('calls preventDefault on unused keyCode', () => {
       tags.find('#tag-input').simulate('keydown', createKeyDown('§'));
       tags.find('#tag-input').simulate('keydown', createKeyDown('\\'));
       expect(preventDefaultMock).toHaveBeenCalledTimes(2);
     });
 
-    test('does not call preventDefault on used keyCode', () => {
+    it('does not call preventDefault on used keyCode', () => {
       tags.find('#tag-input').simulate('keypress', createKeyDown('a'));
       tags.find('#tag-input').simulate('keydown', createKeyDown('1'));
       tags.find('#tag-input').simulate('keypress', createKeyDown(','));
