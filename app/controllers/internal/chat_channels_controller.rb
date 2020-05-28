@@ -18,7 +18,18 @@ class Internal::ChatChannelsController < Internal::ApplicationController
   def update
     @chat_channel = ChatChannel.find(params[:id])
     @chat_channel.invite_users(users: users_by_param, membership_role: "mod")
-    redirect_back(fallback_location: "/internal/chat_channels")
+
+    if @chat_channel.users.last.username == chat_channel_params[:usernames_string]
+      respond_to do |format|
+        format.json { render json: { result: "Success" } }
+        format.html { redirect_back(fallback_location: "/internal/chat_channels") }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: { result: "Error", message: "User '#{chat_channel_params[:usernames_string]}' not added to channel successfully" }, status: :unprocessable_entity }
+        format.html { render json: { result: "User '#{chat_channel_params[:usernames_string]}' not added to channel successfully" } }
+      end
+    end
   end
 
   private
