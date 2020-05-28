@@ -24,7 +24,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   end
 
   it "requires a valid user id" do
-    expect { described_class.call(User.last.id + 100) }.to raise_error(ActiveRecord::RecordNotFound)
+    expect { described_class.call(9999) }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   describe ".call" do
