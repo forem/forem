@@ -156,14 +156,14 @@ exports[`<ArticleForm /> renders properly 1`] = `
           >
             <input
               autoComplete="off"
-              class="crayons-article-form__tags"
+              class="crayons-textfield crayons-textfield--ghost ff-accent crayons-article-form__tags"
               id="tag-input"
               name="listing[tag_list]"
               onBlur={[Function]}
               onFocus={[Function]}
               onInput={[Function]}
               onKeyDown={[Function]}
-              placeholder="4 tags max, comma separated, no spaces or special characters"
+              placeholder="Add up to 4 tags..."
               ref={[Function]}
               type="text"
               value=""
