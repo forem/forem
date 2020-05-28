@@ -739,7 +739,7 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.2)
-    sitemap_generator (6.1.0)
+    sitemap_generator (6.1.1)
       builder (~> 3.0)
     slack-notifier (2.3.2)
     smart_properties (1.15.0)
