@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin awards badges", type: :system do
+RSpec.describe "Admin awards badges", type: :system, flaky: true do
   let(:admin) { create(:user, :super_admin) }
   let(:user) { create(:user) }
   let(:user2) { create(:user) }

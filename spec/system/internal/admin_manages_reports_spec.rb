@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin manages reports", type: :system do
+RSpec.describe "Admin manages reports", type: :system, flaky: true do
   let(:admin) { create(:user, :super_admin) }
 
   def clear_search_boxes

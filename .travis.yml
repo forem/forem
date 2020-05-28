@@ -55,7 +55,7 @@ install:
   - chmod +x ./cc-test-reporter
 before_script:
   - bundle exec rails db:create
-  - './scripts/copy_specs.sh'
+  - ruby scripts/copy_specs_as_groups.rb
 script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
