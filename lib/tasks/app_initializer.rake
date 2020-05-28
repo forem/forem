@@ -5,12 +5,7 @@ namespace :app_initializer do
     Rake::Task["search:setup"].execute
 
     puts "\n== Preparing database =="
-    begin
-      Rake::Task["db:migrate"].execute
-    rescue ActiveRecord::NoDatabaseError
-      puts "\n== Creating and Seeding database =="
-      system("bin/rails db:setup")
-    end
+    system!('bin/rails db:prepare')
 
     puts "\n== Updating Data =="
     Rake::Task["data_updates:enqueue_data_update_worker"].execute
