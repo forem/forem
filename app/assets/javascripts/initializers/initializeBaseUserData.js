@@ -16,7 +16,7 @@ function initializeUserProfileContent(user) {
 function initializeUserSidebar(user) {
   if (!document.getElementById('sidebar-nav')) return;
   initializeUserProfileContent(user);
-  
+
   let followedTags = JSON.parse(user.followed_tags);
   const tagSeparatorLabel =
     followedTags.length === 0
