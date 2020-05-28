@@ -3,13 +3,21 @@ class Internal::BroadcastsController < Internal::ApplicationController
 
   def create
     @broadcast = Broadcast.create!(broadcast_params)
+    flash[:success] = "Broadcast has been created!"
+    redirect_to "/internal/broadcasts"
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:danger] = e.message
     redirect_to "/internal/broadcasts"
   end
 
   def update
     @broadcast = Broadcast.find_by!(id: params[:id])
     @broadcast.update!(broadcast_params)
+    flash[:success] = "Broadcast has been updated!"
     redirect_to "/internal/broadcasts"
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:danger] = e.message
+    redirect_to "/internal/broadcasts/#{params[:id]}/edit"
   end
 
   def new
@@ -36,5 +44,9 @@ class Internal::BroadcastsController < Internal::ApplicationController
 
   def authorize_admin
     authorize Broadcast, :access?, policy_class: InternalPolicy
+  end
+
+  def active_announcement_params
+    params[:type_of].capitalize == "Announcement" && params[:active] == true
   end
 end
