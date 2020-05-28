@@ -34,5 +34,5 @@ jobs:
           git config --local user.name ${GITHUB_ACTOR}
           git remote add github "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
           git add .
-          git commit -m "`git log --oneline --format=%B -n 1 HEAD | head -n 1` (Update vendor/cache)" || true
+          git commit -m "`git log --oneline --format=%B -n 1 HEAD | head -n 1 | sed -e "s/\[skip travis\]\ //"` (Update vendor/cache)" || true
           git push github HEAD:${GITHUB_REF}
