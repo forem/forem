@@ -21,7 +21,11 @@ class Internal::BroadcastsController < Internal::ApplicationController
   end
 
   def index
-    @broadcasts = Broadcast.all
+    @broadcasts = if params[:type_of]
+                    Broadcast.where(type_of: params[:type_of].capitalize)
+                  else
+                    Broadcast.all
+                  end
   end
 
   private
