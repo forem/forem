@@ -1,6 +1,8 @@
 class RedditJsonFromUrlService
   include ActionView::Helpers::SanitizeHelper
 
+  URL_REGEXP = /\Ahttps\:\/\/(www.)?reddit.com/.freeze
+
   def initialize(url)
     @url = ActionController::Base.helpers.strip_tags(url).strip
   end
@@ -9,7 +11,7 @@ class RedditJsonFromUrlService
     validate_url
 
     # Requests to Reddit require a custom `User-Agent` header to prevent 429 errors
-    json = HTTParty.get("#{@url}.json", headers: { "User-Agent" => "ThePracticalDev" })
+    json = HTTParty.get("#{@url}.json", headers: { "User-Agent" => "#{ApplicationConfig['COMMUNITY_NAME']} (#{URL.url})" })
 
     # The JSON response is an array with two items.
     # The first one is the post itself, the second one are the comments
@@ -39,9 +41,7 @@ class RedditJsonFromUrlService
   end
 
   def validate_url
-    cleaned_url = @url.delete(" ")
-
-    return true if valid_url?(cleaned_url) && link_exists?
+    return true if valid_url?(@url.delete(" ")) && (@url =~ URL_REGEXP)&.zero?
 
     raise StandardError, "Invalid Reddit link: #{@url}"
   end
@@ -49,10 +49,5 @@ class RedditJsonFromUrlService
   def valid_url?(url)
     url = URI.parse(url)
     url.is_a?(URI::HTTP)
-  end
-
-  def link_exists?
-    response = HTTParty.get("#{@url}.json", headers: { "User-Agent" => "ThePracticalDev" })
-    response.code == 200
   end
 end
