@@ -39,7 +39,7 @@
            end %>
 
       <tr>
-        <td><%= link_to(page_redirect.id, internal_page_redirects_path(page_redirect.id)) %></td>
+        <td><%= link_to(page_redirect.id, edit_internal_page_redirect_path(page_redirect.id)) %></td>
         <td><%= page_redirect.old_slug %></td>
         <td><%= page_redirect.new_slug %></td>
         <td><%= page_redirect.overridden %></td>
