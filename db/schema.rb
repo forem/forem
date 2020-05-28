@@ -776,13 +776,13 @@ ActiveRecord::Schema.define(version: 2020_05_27_161505) do
     t.datetime "created_at", null: false
     t.string "new_slug", null: false
     t.string "old_slug", null: false
-    t.boolean "overridden", default: false, null: false
+    t.string "source", default: "service", null: false
     t.datetime "updated_at", null: false
-    t.integer "version", default: 1, null: false
+    t.integer "version", default: 0, null: false
     t.index ["new_slug"], name: "index_page_redirects_on_new_slug"
     t.index ["old_slug", "new_slug"], name: "index_page_redirects_on_old_slug_and_new_slug", unique: true
     t.index ["old_slug"], name: "index_page_redirects_on_old_slug", unique: true
-    t.index ["overridden"], name: "index_page_redirects_on_overridden"
+    t.index ["source"], name: "index_page_redirects_on_source"
     t.index ["version"], name: "index_page_redirects_on_version"
   end
 

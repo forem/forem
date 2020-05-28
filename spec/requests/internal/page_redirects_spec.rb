@@ -66,7 +66,7 @@ RSpec.describe "/internal/page_redirects", type: :request do
         expect(response.body).to include("Old slug has already been taken")
       end
 
-      it "sets overridden to true" do
+      it "sets source to admin" do
         old_slug = "/nice-old-slug"
         post internal_page_redirects_path, params: {
           page_redirect: {
@@ -76,7 +76,7 @@ RSpec.describe "/internal/page_redirects", type: :request do
         }
 
         page_redirect = PageRedirect.find_by(old_slug: old_slug)
-        expect(page_redirect.overridden).to be true
+        expect(page_redirect.source).to eq "admin"
       end
     end
 
@@ -123,7 +123,7 @@ RSpec.describe "/internal/page_redirects", type: :request do
         expect(response.body).to include("Old slug has already been taken")
       end
 
-      it "sets overridden to true" do
+      it "sets source to admin" do
         page_redirect = create(:page_redirect)
         patch internal_page_redirect_path(page_redirect.id), params: {
           page_redirect: {
@@ -132,7 +132,7 @@ RSpec.describe "/internal/page_redirects", type: :request do
           }
         }
 
-        expect(page_redirect.reload.overridden).to be true
+        expect(page_redirect.reload.source).to eq "admin"
       end
     end
 

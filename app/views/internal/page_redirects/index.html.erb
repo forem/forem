@@ -21,7 +21,7 @@
       <th scope="col">ID</th>
       <th scope="col">Old Slug</th>
       <th scope="col">New Slug</th>
-      <th scope="col">Overridden</th>
+      <th scope="col">Source</th>
       <th scope="col">Version</th>
       <th scope="col">
         <%= content_tag :span, sort_link(@q, :created_at, "Date"), class: "mx-2" %>
@@ -43,7 +43,7 @@
         <td><%= link_to(page_redirect.id, edit_internal_page_redirect_path(page_redirect.id)) %></td>
         <td><%= page_redirect.old_slug %></td>
         <td><%= page_redirect.new_slug %></td>
-        <td><%= page_redirect.overridden %></td>
+        <td><%= page_redirect.source %></td>
         <td class="bg-<%= bg_color_class %>"><%= page_redirect.version %></td>
         <td><%= page_redirect.created_at %></td>
       </tr>
