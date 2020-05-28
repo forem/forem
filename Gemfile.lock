@@ -332,7 +332,7 @@ GEM
       flipper (~> 0.17.2)
       rack (>= 1.4, < 3)
       rack-protection (>= 1.5.3, < 2.1.0)
-    fog-aws (3.6.4)
+    fog-aws (3.6.5)
       fog-core (~> 2.1)
       fog-json (~> 1.1)
       fog-xml (~> 0.1)
