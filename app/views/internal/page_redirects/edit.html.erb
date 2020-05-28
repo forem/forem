@@ -2,7 +2,7 @@
 
 <h2>Page Redirect - ID:  <%= @page_redirect.id %></h2>
 
-<%= form_with model: [:internal, @page_redirect], method: :patch do |form| %>
+<%= form_with model: [:internal, @page_redirect], method: :patch, local: true do |form| %>
   <%= render partial: "form", locals: { page_redirect: @page_redirect } %>
   <%= form.submit "Update Listing", class: "btn btn-primary" %>
 <% end %>
