@@ -9,7 +9,10 @@ specs=(
 num_copies=50
 
 for spec in ${specs[*]}; do
+  echo $spec
   for i in $(seq 1 $num_copies); do
-    cp "$spec.rb" "$spec-$i.rb"
+    copy="$spec-$i.rb"
+    echo $copy
+    cp "$spec.rb" $copy
   done
 done
