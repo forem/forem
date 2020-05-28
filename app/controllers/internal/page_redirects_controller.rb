@@ -14,7 +14,7 @@ class Internal::PageRedirectsController < Internal::ApplicationController
     if @page_redirect.update(page_redirect_params.merge({ overridden: true }))
       flash[:success] = "Page Redirect updated successfully"
     else
-      flash[:danger] = @page_redirect.errors.full_messages
+      flash[:danger] = @page_redirect.errors.full_messages.to_sentence
     end
 
     redirect_to edit_internal_page_redirect_path(@page_redirect)
@@ -25,7 +25,7 @@ class Internal::PageRedirectsController < Internal::ApplicationController
       flash[:success] = "Page Redirect destroyed successfully"
       redirect_to internal_page_redirects_path
     else
-      flash[:danger] = @page_redirect.errors.full_messages
+      flash[:danger] = @page_redirect.errors.full_messages.to_sentence
       redirect_to edit_internal_page_redirect_path(@page_redirect)
     end
   end
