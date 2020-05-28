@@ -84,4 +84,17 @@ RSpec.describe "Using the editor", type: :system do
       end
     end
   end
+
+  describe "using v2 editor", js: true do
+    before { user.update(editor_version: "v2") }
+
+    it "fill out form with rich content and click publish" do
+      visit "/new"
+      fill_in "article-form-title", with: "This is a test"
+      fill_in "tag-input", with: "What, Yo"
+      fill_in "article_body_markdown", with: "Hello"
+      find("button", text: /\APUBLISH\z/).click
+      expect(page).to have_text("Hello")
+    end
+  end
 end

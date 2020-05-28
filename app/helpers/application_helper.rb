@@ -1,5 +1,5 @@
 module ApplicationHelper
-  include CloudinaryHelper
+  extend CloudinaryHelper
 
   # rubocop:disable Performance/OpenStruct
   DELETED_USER = OpenStruct.new(
