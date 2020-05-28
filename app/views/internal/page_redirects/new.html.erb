@@ -1,0 +1,8 @@
+<%= link_to "Back to All Page Redirects", internal_page_redirects_path, class: "btn btn-primary float-right" %>
+
+<h2>Create a new Page Redirect</h2>
+
+<%= form_with model: [:internal, @page_redirect], method: :post, local: true do |form| %>
+  <%= render partial: "form", locals: { page_redirect: @page_redirect } %>
+  <%= form.submit "Create Page Redirect", class: "btn btn-primary" %>
+<% end %>
