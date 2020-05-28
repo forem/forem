@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Admin manages organizations", type: :system do
+RSpec.describe "Admin manages organizations", type: :system, flaky: true do
   let(:admin) { create(:user, :super_admin) }
   let(:organization) { create(:organization) }
 
