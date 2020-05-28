@@ -24,7 +24,7 @@ jobs:
           sudo apt-get install postgresql-client libpq-dev
       - name: Bundle install
         run: |
-          gem install bundler --no-rdoc --no-ri
+          gem install bundler
           bundle config set cache_all true
           bundle config cache_all_platforms true
           bundle install
