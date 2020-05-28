@@ -48,16 +48,9 @@
       <td><%= time_ago_in_words mod.last_comment_at %> ago</td>
       <% if params[:state] == "potential" %>
         <td>
-          <button
-            class="btn btn-light js-make-trusted-add-to-modchannel"
-            data-potential-mod-id="<%= mod.id %>"
-            data-potential-mod-username="<%= mod.username %>"
-            data-mod-channel-id="<%= ChatChannel.find_by(slug: "modconnect-22cd").id %>%">
-            Make Trusted Mod
-          </button>
-          <%#= form_with model: [:internal, mod], url: internal_mod_path(mod.id), method: :patch, local: true do |f| %>
-            <%#= f.submit "Make Trusted Mod", class: "btn btn-light" %>
-          <%# end %>
+          <%= form_with model: [:internal, mod], url: internal_mod_path(mod.id), method: :patch, local: true do |f| %>
+            <%= f.submit "Make Trusted Mod", class: "btn btn-light js-add-to-mod-channel" %>
+          <% end %>
         </td>
       <% end %>
     </tr>
@@ -66,49 +59,3 @@
 </table>
 
 <%= paginate @mods, theme: "internal" %>
-
-<script defer>
-  const trustAndConnectMod = async (id, username, channelId) => {
-    const trustModRequest = request(`/internal/mod/${id}`, {
-      method: 'PATCH',
-      body: JSON.stringify({id}),
-    });
-
-    const connectModRequest = request('/chat_channels', {
-      method: 'PATCH',
-      body: JSON.stringify({
-        id: channelId,
-        usernames_string: username,
-      }),
-    });
-
-    try {
-      const [trustModResponse, connectModResponse] = Promise.all([trustModRequest, connectModRequest]);
-
-      const trustModOutcome = await trustModResponse.json();
-      const connectModOutcome = await connectModResponse.json();
-
-      if (trustModOutcome.result === 'Success' && connectModOutcome.result === 'Success') {
-
-      } else {
-        // eslint-disable-next-line no-alert
-        alert(outcome.error);
-      }
-    } catch (error) {
-      // eslint-disable-next-line no-alert
-      alert(error);
-    }
-  };
-
-  const makeTrustedModBtns = document.querySelectorAll('.js-make-trusted-add-to-modchannel');
-
-  makeTrustedModBtns.forEach(btn =>{
-    btn.addEventListener('click', () => {
-      const {
-        potentialModId, potentialModUsername, modChannelId
-      } = btn.dataset;
-
-      trustAndConnectMod(potentialModId, potentialModUsername, modChannelId);
-    });
-  });
-</script>
