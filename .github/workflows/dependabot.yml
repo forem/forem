@@ -25,6 +25,8 @@ jobs:
       - name: Bundle install
         run: |
           gem install bundler --no-rdoc --no-ri
+          bundle config set cache_all true
+          bundle config cache_all_platforms true
           bundle install
       - name: Commit and push
         run: |
