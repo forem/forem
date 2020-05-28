@@ -1,11 +1,13 @@
 @import '../config/import';
 
 :root {
-  --layout-sidebar-left-width: 280px;
-  --layout-sidebar-left-display: none;
-  --layout-sidebar-right-width: 280px;
-  --layout-sidebar-right-display: none;
+  --layout-sidebar-left-display: block;
+  --layout-sidebar-right-display: block;
+  --layout-sidebar-left-width: 100%;
+  --layout-sidebar-right-width: 100%;
+  --layout-sidebar-left-row-end: initial;
   --layout-content-width: 100%;
+  --layout-drawer-width: 300px;
   --layout-gap: var(--su-2);
   --layout-padding: 0;
   --layout: 100%;
@@ -13,7 +15,6 @@
 
   @media (min-width: $breakpoint-m) {
     --layout-sidebar-left-width: 2fr;
-    --layout-sidebar-left-display: block;
     --layout-content-width: 5fr;
     --layout-padding: var(--su-2);
     --layout: var(--layout-sidebar-left-width) var(--layout-content-width);
@@ -22,13 +23,9 @@
 
   @media (min-width: $breakpoint-l) {
     --layout-sidebar-left-width: 240px;
-    --layout-sidebar-right-width: 1fr;
-    --layout-sidebar-right-display: block;
-    --layout-content-width: 2fr;
+    --layout-content-width: 1fr;
     --layout-gap: var(--su-4);
     --layout-padding: var(--su-4);
-    --layout: var(--layout-sidebar-left-width) var(--layout-content-width)
-      var(--layout-sidebar-right-width);
   }
 }
 
@@ -42,35 +39,139 @@
   grid-template-columns: var(--layout);
   padding: var(--layout-padding);
 
+  &--limited {
+    --site-width: #{$breakpoint-l};
+  }
+
   &__sidebar-left {
     display: var(--layout-sidebar-left-display);
+    grid-row-end: var(--layout-sidebar-left-row-end);
+    width: var(--layout-sidebar-left-width);
   }
 
   &__sidebar-right {
     display: var(--layout-sidebar-right-display);
+    width: var(--layout-sidebar-right-width);
+  }
+
+  &--limited-inner {
+    .crayons-layout__content__inner {
+      max-width: $breakpoint-m;
+      margin: 0 auto;
+      width: 100%;
+    }
+  }
+}
+
+.crayons-layout--1-col {
+  @media (min-width: $breakpoint-m) {
+    --layout-content-width: 1fr;
+    --layout: var(--layout-content-width);
+  }
+
+  &.crayons-layout--limited-inner {
+    .crayons-layout__content__inner {
+      max-width: $breakpoint-l;
+    }
+  }
+}
+
+.crayons-layout--3-cols {
+  @media (min-width: $breakpoint-m) {
+    --layout-sidebar-left-row-end: span 2;
+    --layout-sidebar-right-width: 5fr;
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --layout-sidebar-right-width: 1fr;
+    --layout-sidebar-left-row-end: initial;
+    --layout-content-width: 2fr;
+    --layout: var(--layout-sidebar-left-width) var(--layout-content-width) var(--layout-sidebar-right-width);
   }
 }
 
 .crayons-layout--article {
-  --layout-sidebar-left-width: var(--su-9);
-  --layout-sidebar-left-display: block;
-  --layout-sidebar-right-width: 100%;
-  --layout-sidebar-right-display: block;
-
   @media (min-width: $breakpoint-m) {
+    --layout-sidebar-left-width: var(--su-9);
     --layout: var(--layout-sidebar-left-width) 1fr;
+    --layout-sidebar-left-row-end: span 2;
   }
 
   @media (min-width: $breakpoint-l) {
     --layout-sidebar-right-width: 3fr;
+    --layout-sidebar-left-row-end: initial;
     --layout-content-width: 7fr;
     --layout: var(--layout-sidebar-left-width) var(--layout-content-width)
       var(--layout-sidebar-right-width);
   }
+}
 
-  .crayons-layout__sidebar-left {
-    @media (min-width: $breakpoint-m) {
-      grid-row-end: span 2;
+.crayons-layout--3-cols--alt {
+  --layout-sidebar-left-display: none;
+  --layout-sidebar-right-display: none;
+  --layout-sidebar-left-width: var(--layout-drawer-width);
+  --layout-sidebar-right-width: var(--layout-drawer-width);
+
+  @media (min-width: $breakpoint-m) {
+    --layout-sidebar-left-width: 2fr;
+    --layout-sidebar-left-row-end: initial;
+    --layout-sidebar-left-display: block;
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --layout-sidebar-right-display: block;
+    --layout-sidebar-right-width: 1fr;
+    --layout-sidebar-left-width: 240px;
+  }
+}
+
+
+// Temporary solution for sidebar on mobile
+.crayons-layout__sidebar-left,
+.crayons-layout__sidebar-right {
+  .sidebar-bg {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    position: fixed;
+    background: rgba(0, 0, 0, 0.5);
+    animation: fade-in var(--transition-props);
+    display: none;
+  }
+
+  &.swiped-in {
+    z-index: 100;
+    display: block;
+    position: fixed;
+    top: var(--header-height);
+    bottom: 0;
+    -webkit-overflow-scrolling: touch;
+
+    .sidebar-bg {
+      display: block;
     }
+
+    .side-bar {
+      position: relative;
+      background: var(--body-bg);
+      z-index: 2;
+      padding: 16px;
+      align-content: start;
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+}
+
+.crayons-layout__sidebar-left {
+  &.swiped-in {
+    left: 0;
+  }
+}
+.crayons-layout__sidebar-right {
+  &.swiped-in {
+    right: 0;
   }
 }
