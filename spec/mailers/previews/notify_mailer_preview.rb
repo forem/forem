@@ -39,7 +39,7 @@ class NotifyMailerPreview < ActionMailer::Preview
   end
 
   def tag_moderator_confirmation_email
-    NotifyMailer.tag_moderator_confirmation_email(User.first, Tag.find(1))
+    NotifyMailer.tag_moderator_confirmation_email(User.first, Tag.find(1), nil)
   end
 
   def trusted_role_email

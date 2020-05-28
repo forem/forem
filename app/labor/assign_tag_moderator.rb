@@ -17,7 +17,7 @@ module AssignTagModerator
       add_tag_mod_role(user, tag)
       add_trusted_role(user)
       add_to_chat_channels(user, tag)
-      NotifyMailer.tag_moderator_confirmation_email(user, tag).deliver unless tag.name == "go"
+      NotifyMailer.tag_moderator_confirmation_email(user, tag, chat_channel_slug(tag)).deliver
     end
   end
 
@@ -47,5 +47,9 @@ module AssignTagModerator
     user.update(email_tag_mod_newsletter: false) if user.email_tag_mod_newsletter == true
     Rails.cache.delete("user-#{user.id}/tag_moderators_list")
     MailchimpBot.new(user).manage_tag_moderator_list
+  end
+
+  def self.chat_channel_slug(tag)
+    tag.mod_chat_channel&.slug
   end
 end
