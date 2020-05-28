@@ -9,6 +9,14 @@ class PageRedirect < ApplicationRecord
 
   resourcify
 
+  def old_slug_url
+    URL.url(old_slug)
+  end
+
+  def new_slug_url
+    URL.url(new_slug)
+  end
+
   private
 
   def increment_version
