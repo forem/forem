@@ -115,7 +115,7 @@ group :development do
   gem "brakeman", "~> 4.8", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
   gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 1.7", require: false # A series of things you can use to benchmark a Rails or Ruby app
-  gem "erb_lint", "~> 0.0.32", require: false # ERB Linter tool
+  gem "erb_lint", "~> 0.0.33", require: false # ERB Linter tool
   gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
   gem "guard", "~> 2.16", require: false # Guard is a command line tool to easily handle events on file system modifications
   gem "guard-livereload", "~> 2.5", require: false # Guard::LiveReload automatically reloads your browser when 'view' files are modified
@@ -138,7 +138,7 @@ group :development, :test do
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.84", require: false # Automatic Ruby code style checking tool
-  gem "rubocop-performance", "~> 1.5", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
+  gem "rubocop-performance", "~> 1.6", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.5", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.39", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster

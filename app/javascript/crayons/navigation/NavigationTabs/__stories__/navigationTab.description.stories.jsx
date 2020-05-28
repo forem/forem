@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 import '../../../storybook-utilities/designSystem.scss';
 
-export default { title: 'Components/Navigation/Tabs' };
+export default { title: '3_Components/Navigation/Tabs' };
 
 export const Description = () => (
   <div className="container">

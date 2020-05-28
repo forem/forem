@@ -293,7 +293,6 @@
               <div class="alert alert-info">URL campaign sidebar image will link to</div>
             </div>
 
-
             <div class="form-group">
               <%= f.label :campaign_featured_tags %>
               <%= f.text_field :campaign_featured_tags,
@@ -596,6 +595,27 @@
              </div>
           </div>
         </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "API",
+                       state: "collapse",
+                       target: "apiBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="apiBodyContainer" class="card-body collapse hide" aria-labelledby="apiBodyContainer">
+            <div class="form-group">
+              <%= f.label :health_check_token, "Health Check Token" %>
+              <%= f.text_field :health_check_token,
+                               class: "form-control",
+                               value: SiteConfig.health_check_token,
+                               placeholder: "a secure token" %>
+              <div class="alert alert-info">Used to authenticate with your health check endpoints.</div>
+            </div>
+          </div>
+        </div>
+
         <% if current_user.has_role?(:single_resource_admin, Config) %>
           <div class="card mt-3">
             <div class="card-header">Confirm and Submit</div>

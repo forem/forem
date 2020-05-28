@@ -112,9 +112,10 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: "The export of your content is ready")
   end
 
-  def tag_moderator_confirmation_email(user, tag)
+  def tag_moderator_confirmation_email(user, tag, channel_slug)
     @tag = tag
     @user = user
+    @channel_slug = channel_slug
     subject = "Congrats! You're the moderator for ##{@tag.name}"
     mail(to: @user.email, subject: subject)
   end
