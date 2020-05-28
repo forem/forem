@@ -152,7 +152,7 @@ ActiveRecord::Schema.define(version: 2020_08_28_032013) do
     t.string "video_source_url"
     t.string "video_state"
     t.string "video_thumbnail_url"
-    t.index ["body_markdown", "user_id", "title"], name: "index_articles_on_body_markdown_and_user_id_and_title", unique: true
+    t.index "digest(body_markdown, 'sha512'::text), user_id, title", name: "index_articles_on_digest_body_markdown_and_user_id_and_title", unique: true
     t.index ["boost_states"], name: "index_articles_on_boost_states", using: :gin
     t.index ["canonical_url"], name: "index_articles_on_canonical_url", unique: true
     t.index ["comment_score"], name: "index_articles_on_comment_score"
