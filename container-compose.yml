@@ -22,9 +22,9 @@ services:
       RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
       STATEMENT_TIMEOUT: 10000
     volumes:
-      - .:/opt/apps/devto:delegated
-      - ./.gems:/opt/apps/bundle:delegated
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/bundle/bundle_finished", "-timeout", "2700s", "./scripts/entrypoint.sh"]
+      - .:/opt/apps/devto:z
+      - ./.gems:/opt/apps/bundle:z
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/bundle/bundle_finished", "-timeout", "300s", "./scripts/entrypoint.sh"]
     command: ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
 
   bundle:
@@ -36,8 +36,8 @@ services:
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
-      - .:/opt/apps/devto:delegated
-      - ./.gems:/opt/apps/bundle:delegated
+      - .:/opt/apps/devto:z
+      - ./.gems:/opt/apps/bundle:z
     entrypoint: ["bash"]
     command: ["./scripts/bundle.sh"]
 
@@ -50,7 +50,7 @@ services:
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
-      - .:/opt/apps/devto:delegated
+      - .:/opt/apps/devto:z
     entrypoint: ["bash", "-c"]
     command: ["yarn install --dev"]
 
@@ -66,9 +66,9 @@ services:
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
-      - .:/opt/apps/devto:delegated
-      - ./.gems:/opt/apps/bundle:delegated
-    entrypoint: ["dockerize", "-wait", "file:///opt/apps/devto/node_modules/.bin/webpack-dev-server", "-timeout", "2700s"]
+      - .:/opt/apps/devto:z
+      - ./.gems:/opt/apps/bundle:z
+    entrypoint: ["dockerize", "-wait", "file:///opt/apps/devto/node_modules/.bin/webpack-dev-server", "-timeout", "300s"]
     command: ["./bin/webpack-dev-server"]
 
   seed:
@@ -87,9 +87,9 @@ services:
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
-      - .:/opt/apps/devto:delegated
-      - ./.gems:/opt/apps/bundle:delegated
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://web:3000", "-timeout", "2700s"]
+      - .:/opt/apps/devto:z
+      - ./.gems:/opt/apps/bundle:z
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://web:3000", "-timeout", "300s"]
     command: ["bundle", "exec", "rake","db:seed"]
 
   sidekiq:
@@ -106,9 +106,9 @@ services:
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
     volumes:
-      - .:/opt/apps/devto:delegated
-      - ./.gems:/opt/apps/bundle:delegated
-    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://web:3000", "-timeout", "2700s"]
+      - .:/opt/apps/devto:z
+      - ./.gems:/opt/apps/bundle:z
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://web:3000", "-timeout", "300s"]
     command: ["bundle", "exec", "sidekiq","-c","2"]
 
   db:
@@ -121,7 +121,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - db_data:/var/lib/postgresql/data:delegated
+      - db_data:/var/lib/postgresql/data:Z
 
   redis:
     image: "redis"
@@ -141,16 +141,11 @@ services:
       - xpack.monitoring.enabled=false
       - xpack.graph.enabled=false
       - xpack.watcher.enabled=false
-    volumes:
-      - es_data:/usr/share/elasticsearch/data:delegated
     ports:
       - "9200:9200"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
+    # volumes:
+    #   - es_data:/usr/share/elasticsearch/data:Z
 
 volumes:
   db_data:
-  es_data:
-
+  # es_data:
