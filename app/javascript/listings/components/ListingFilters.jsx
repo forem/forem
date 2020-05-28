@@ -2,7 +2,6 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import ListingFiltersCategories from './ListingFiltersCategories';
 import ListingFiltersTags from './ListingFiltersTags';
-import { tagPropTypes } from '../../common-prop-types';
 
 const ListingFilters = ({
   categories,
@@ -37,14 +36,17 @@ const ListingFilters = ({
 };
 
 ListingFilters.propTypes = {
-  categories: PropTypes.isRequired,
-  category: PropTypes.isRequired,
+  categories: PropTypes.shape({
+    slug: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+  category: PropTypes.string.isRequired,
   onSelectCategory: PropTypes.func.isRequired,
   message: PropTypes.isRequired,
   onKeyUp: PropTypes.func.isRequired,
   onClearQuery: PropTypes.func.isRequired,
   onRemoveTag: PropTypes.func.isRequired,
-  tags: PropTypes.arrayOf(tagPropTypes).isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string).isRequired,
   onKeyPress: PropTypes.func.isRequired,
   query: PropTypes.string.isRequired,
 };

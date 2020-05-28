@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { tagPropTypes } from '../../common-prop-types';
 import ClearQueryButton from './ClearQueryButton';
 import SelectedTags from './SelectedTags';
 
@@ -28,7 +27,11 @@ const ListingFiltersTags = ({
       {shouldRenderClearQueryButton && (
         <ClearQueryButton onClick={onClearQuery} />
       )}
-      <SelectedTags tags={tags} onClick={onRemoveTag} onKeyPress={onKeyPress} />
+      <SelectedTags
+        tags={tags}
+        onRemoveTag={onRemoveTag}
+        onKeyPress={onKeyPress}
+      />
     </div>
   );
 };
@@ -39,7 +42,7 @@ ListingFiltersTags.propTypes = {
   onClearQuery: PropTypes.func.isRequired,
   onRemoveTag: PropTypes.func.isRequired,
   onKeyPress: PropTypes.func.isRequired,
-  tags: PropTypes.arrayOf(tagPropTypes).isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string).isRequired,
   query: PropTypes.string.isRequired,
 };
 
