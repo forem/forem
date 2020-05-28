@@ -33,4 +33,8 @@ module.exports = {
     // Allows developers to add utility modules that jest won't run as test suites.
     '/__tests__/utilities/',
   ],
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
+  ],
 };
