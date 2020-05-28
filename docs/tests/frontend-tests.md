@@ -43,7 +43,7 @@ npx jest app/javascript/<path-to-file>
 
 ## Running Tests in Watch Mode
 
-You can runthe frontend test suite in watch mode by running one of the following
+You can run frontend tests in watch mode by running one of the following
 commands:
 
 ```shell
@@ -61,7 +61,7 @@ filtering tests. These filtering options are enhanced via the
 [jest-watch-typeahead](https://github.com/jest-community/jest-watch-typeahead/blob/master/README.md)
 watch plugin. It allows you to filter by test filename or test name.
 
-![Screenshot of the jest watch menu](./jest-watch-mode-screenshot.png)
+![Screenshot of the jest watch menu](/jest-watch-mode-screenshot.png)
 
 ## Debugging a Test
 
@@ -82,4 +82,4 @@ If tests require utility modules, create them in a `utilities` folder under the
 test suite.
 
 You can also debug jest in your favorite editor. See the
-[Debugging](../frontend/debugging.md) section of the frontend documentation.
+[Debugging](/frontend/debugging/) section of the frontend documentation.
