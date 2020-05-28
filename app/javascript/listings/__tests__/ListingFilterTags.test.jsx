@@ -3,20 +3,7 @@ import { deep } from 'preact-render-spy';
 import ListingFiltersTags from '../components/ListingFiltersTags';
 
 describe('<ListingFilterTags />', () => {
-  const firstTag = {
-    id: 1,
-    tag: 'clojure',
-  };
-  const secondTag = {
-    id: 2,
-    tag: 'java',
-  };
-  const thirdTag = {
-    id: 3,
-    tag: 'dotnet',
-  };
-
-  const getTags = () => [firstTag, secondTag, thirdTag];
+  const getTags = () => ['clojure', 'java', 'dotnet'];
 
   const getProps = () => ({
     message: 'Some message',
@@ -78,9 +65,10 @@ describe('<ListingFilterTags />', () => {
   it('Should render the selected Tags', () => {
     const context = renderListingFilterTags();
     getTags().forEach((tag) => {
-      const selectedTag = context.find(`#selected-tag-${tag.id}`);
+      const selectedTag = context.find(`#selected-tag-${tag}`);
 
-      expect(selectedTag.text()).toBe('×');
+      expect(selectedTag.text()).toEqual(expect.stringContaining(tag));
+      expect(selectedTag.text()).toEqual(expect.stringContaining('×'));
     });
   });
 });

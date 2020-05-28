@@ -4,19 +4,16 @@ import ListingFiltersCategories from '../components/ListingFiltersCategories';
 
 describe('<ListingFiltersCategories />', () => {
   const firstCategory = {
-    id: 20,
     slug: 'clojure',
     name: 'Clojure',
   };
 
   const secondCategory = {
-    id: 21,
     slug: 'illa-iara-ques-htyashsayas-6kj8',
     name: 'Go',
   };
 
   const thirdCategory = {
-    id: 22,
     slug: 'alle-bece-tzehj-htyashsayas-7jh9',
     name: 'csharp',
   };
@@ -76,7 +73,7 @@ describe('<ListingFiltersCategories />', () => {
     const context = renderListingFilterCategories();
     it('Should render the categories name and their respective links', () => {
       categories.forEach((category) => {
-        const categoryLink = context.find(`#category-link-${category.id}`);
+        const categoryLink = context.find(`#category-link-${category.slug}`);
         expect(categoryLink.attr('href')).toBe(`/listings/${category.slug}`);
         expect(categoryLink.text()).toBe(category.name);
       });
@@ -85,7 +82,7 @@ describe('<ListingFiltersCategories />', () => {
     it('Should set the class of the category link as "selected" when category slug matches the selected category name', () => {
       const selectedCategoryLink = context.find(`.selected`);
       expect(selectedCategoryLink.attr('id')).toBe(
-        `category-link-${firstCategory.id}`,
+        `category-link-${firstCategory.slug}`,
       );
     });
 
@@ -95,7 +92,7 @@ describe('<ListingFiltersCategories />', () => {
       );
       unselectedCategories.forEach((unselectedCategory) => {
         const unselectedCategoryLink = context.find(
-          `#category-link-${unselectedCategory.id}`,
+          `#category-link-${unselectedCategory.slug}`,
         );
         expect(unselectedCategoryLink.attr('className')).toBe('');
       });

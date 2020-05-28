@@ -3,39 +3,23 @@ import render from 'preact-render-to-json';
 import ListingFilters from '../components/ListingFilters';
 
 describe('<ListingFilters />', () => {
-  const firstTag = {
-    id: 1,
-    tag: 'clojure',
-  };
-  const secondTag = {
-    id: 2,
-    tag: 'java',
-  };
-  const thirdTag = {
-    id: 3,
-    tag: 'dotnet',
-  };
-
   const firstCategory = {
-    id: 20,
     slug: 'clojure',
     name: 'Clojure',
   };
 
   const secondCategory = {
-    id: 21,
     slug: 'illa-iara-ques-htyashsayas-6kj8',
     name: 'Go',
   };
 
   const thirdCategory = {
-    id: 22,
     slug: 'alle-bece-tzehj-htyashsayas-7jh9',
     name: 'csharp',
   };
 
   const getCategories = () => [firstCategory, secondCategory, thirdCategory];
-  const getTags = () => [firstTag, secondTag, thirdTag];
+  const getTags = () => ['clojure', 'java', 'dotnet'];
 
   const getProps = () => ({
     category: 'clojure',
