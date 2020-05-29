@@ -387,7 +387,7 @@ class Article < ApplicationRecord
     if parsed.front_matter.any?
       evaluate_front_matter(parsed.front_matter)
     elsif tag_list.any?
-      parse_tag(tag_list)
+      set_tag_list(tag_list)
     end
 
     self.description = processed_description if description.blank?
@@ -395,7 +395,7 @@ class Article < ApplicationRecord
     errors[:base] << ErrorMessageCleaner.new(e.message).clean
   end
 
-  def parse_tag(tags)
+  def set_tag_list(tags)
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parser: ActsAsTaggableOn::TagParser)
   end
@@ -457,7 +457,7 @@ class Article < ApplicationRecord
 
   def evaluate_front_matter(front_matter)
     self.title = front_matter["title"] if front_matter["title"].present?
-    parse_tag(tag_list) if front_matter["tags"].present?
+    set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
     self.published_at = parse_date(front_matter["date"]) if published
     self.main_image = determine_image(front_matter)
