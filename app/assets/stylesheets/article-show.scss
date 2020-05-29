@@ -244,6 +244,9 @@ article {
       .published-at {
         margin-right: 0;
         display: inline-block;
+        @media screen and (max-width: 450px) {
+          display: none;
+        }
       }
 
       .posted-date-inline {
