@@ -4,7 +4,7 @@ class PagesController < ApplicationController
 
   def show
     @page = Page.find_by!(slug: params[:slug])
-    not_found unless FeatureFlag.accessible?(@page.feature_flag, current_user)
+    not_found unless FeatureFlag.accessible?(@page.feature_flag_name, current_user)
 
     set_surrogate_key_header "show-page-#{params[:slug]}"
   end

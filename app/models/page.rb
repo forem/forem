@@ -18,6 +18,10 @@ class Page < ApplicationRecord
     is_top_level_path ? "/#{slug}" : "/page/#{slug}"
   end
 
+  def feature_flag_name
+    "page_#{slug}"
+  end
+
   private
 
   def evaluate_markdown

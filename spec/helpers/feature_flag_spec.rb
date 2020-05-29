@@ -26,7 +26,7 @@ describe FeatureFlag, type: :helper do
   describe ".accessible?" do
     let(:user) { UserStruct.new(flipper_id: 1) }
 
-    it "returns true when flag doesn't exist" do
+    it "returns false when flag doesn't exist" do
       expect(described_class.accessible?("missing_flag")).to be_truthy # rubocop:disable Rspec/PredicateMatcher
     end
 
