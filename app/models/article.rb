@@ -378,20 +378,26 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
-    if tag_list
-      temp_tag_list = tag_list
-      self.tag_list = [] # overwrite any existing tag with those from the front matter
-      tag_list.add(temp_tag_list, parser: ActsAsTaggableOn::TagParser)
-    end
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
     parsed_markdown = MarkdownParser.new(parsed.content)
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
-    evaluate_front_matter(parsed.front_matter)
+
+    if parsed.front_matter.any?
+      evaluate_front_matter(parsed.front_matter)
+    elsif tag_list.any?
+      parse_tag(tag_list)
+    end
+
     self.description = processed_description if description.blank?
   rescue StandardError => e
     errors[:base] << ErrorMessageCleaner.new(e.message).clean
+  end
+
+  def parse_tag(tags)
+    self.tag_list = [] # overwrite any existing tag with those from the front matter
+    tag_list.add(tags, parser: ActsAsTaggableOn::TagParser)
   end
 
   def update_main_image_background_hex
@@ -451,12 +457,7 @@ class Article < ApplicationRecord
 
   def evaluate_front_matter(front_matter)
     self.title = front_matter["title"] if front_matter["title"].present?
-    if front_matter["tags"].present?
-      self.tag_list = [] # overwrite any existing tag with those from the front matter
-      tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
-      remove_tag_adjustments_from_tag_list
-      add_tag_adjustments_to_tag_list
-    end
+    parse_tag(tag_list) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
     self.published_at = parse_date(front_matter["date"]) if published
     self.main_image = determine_image(front_matter)
