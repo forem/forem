@@ -1,6 +1,18 @@
 <%= link_to "Back to All Page Redirects", internal_page_redirects_path, class: "btn btn-primary float-right" %>
 
 <h2>Page Redirect - ID:  <%= @page_redirect.id %></h2>
+<% badge_type =
+     if @page_redirect.version <= 3
+       "success"
+     elsif @page_redirect.version <= 5
+       "warning"
+     else
+       "danger"
+     end %>
+<h4 class="d-inline-block mb-5">
+  Version:
+  <span class="align-top badge badge-<%= badge_type %>"><%= @page_redirect.version %></span>
+</h4>
 
 <%= form_with model: [:internal, @page_redirect], method: :patch, local: true do |form| %>
   <div class="form-group">
