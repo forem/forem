@@ -24,6 +24,7 @@ class Page < ApplicationRecord
 
   def html
     return File.read(local_path) if local_html?
+
     processed_html
   end
 
