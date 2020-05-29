@@ -111,7 +111,7 @@ class StoriesController < ApplicationController
       Honeycomb.add_field("stories_route", "org")
       handle_organization_index
     elsif @page
-      if !@page.feature_flag || FeatureFlag.enabled?(@page.feature_flag, current_user)
+      if FeatureFlag.accessible?(@page.feature_flag, current_user)
         Honeycomb.add_field("stories_route", "page")
         handle_page_display
       else
