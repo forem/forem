@@ -41,7 +41,7 @@ class GithubTag
 
       validate_options!(*options)
 
-      path.gsub!(%r{/\z}, "") # remove optional trailing forward slash
+      path.delete_suffix!("/") # remove optional trailing forward slash
       repository_path = URI.parse(path)
       repository_path.query = repository_path.fragment = nil
 
