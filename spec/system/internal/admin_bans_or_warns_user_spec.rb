@@ -6,7 +6,13 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
 
   before do
     sign_in admin
-    visit "/internal/users/#{user.id}/edit"
+    begin
+      visit "/internal/users/#{user.id}/edit"
+    rescue => error
+      puts 'in error'
+      puts error.backtrace
+      raise error
+    end
   end
 
   def ban_user
