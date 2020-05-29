@@ -45,8 +45,4 @@ class Internal::BroadcastsController < Internal::ApplicationController
   def authorize_admin
     authorize Broadcast, :access?, policy_class: InternalPolicy
   end
-
-  def active_announcement_params
-    params[:type_of].capitalize == "Announcement" && params[:active] == true
-  end
 end
