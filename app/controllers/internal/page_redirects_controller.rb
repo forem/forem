@@ -39,11 +39,11 @@ class Internal::PageRedirectsController < Internal::ApplicationController
   def destroy
     if @page_redirect.destroy
       flash[:success] = "Page Redirect destroyed successfully!"
-    else
+      redirect_to internal_page_redirects_path
+    else # This should never be the case
       flash[:danger] = @page_redirect.errors.full_messages.to_sentence
+      render :edit
     end
-
-    redirect_back(fallback_location: internal_page_redirects_path)
   end
 
   private
