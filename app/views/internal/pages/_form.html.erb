@@ -17,6 +17,13 @@
         <%= form.label :body_html %> (Only if not using markdown. HTML is dangerous ⚠️)
         <%= form.text_area :body_html, class: "form-control" %>
       </div>
+      <% unless Rails.env.production? %>
+        <div class="form-group">
+          <%= form.label :local_path %> (Use for local development only: <strong>This will not be available in production</strong>. Be careful! ⚠️)
+          <%= form.text_field :local_path, class: "form-control" %>
+          <p>It will load a file's content as HTML from this path (use an absolute path). Be careful! ⚠️</p>
+        </div>
+      <% end %>
       <div class="form-group">
         <%= form.label :description %>
         <%= form.text_field :description, class: "form-control" %>

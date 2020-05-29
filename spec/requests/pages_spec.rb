@@ -178,4 +178,21 @@ RSpec.describe "Pages", type: :request do
       end
     end
   end
+
+  describe "working with local HTML files" do
+    let!(:page_content) { "About the Speaker" }
+    let!(:fixture_path) { File.join(Rails.root, "spec/fixtures/files/sample_page.html") }
+    let!(:valid_page) { create(:page, local_path: fixture_path) }
+
+    it "serves the sample page in local development" do
+      get "/page/#{valid_page.slug}"
+      expect(response.body).to include(page_content)
+    end
+
+    it "doesn't serve a local page when in production" do
+      allow(Rails.env).to receive(:production?).and_return(true)
+      get "/page/#{valid_page.slug}"
+      expect(response.body).not_to include(page_content)
+    end
+  end
 end
