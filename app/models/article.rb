@@ -378,6 +378,11 @@ class Article < ApplicationRecord
   end
 
   def evaluate_markdown
+    if tag_list
+      temp_tag_list = tag_list
+      self.tag_list = [] # overwrite any existing tag with those from the front matter
+      tag_list.add(temp_tag_list, parser: ActsAsTaggableOn::TagParser)
+    end
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
     parsed_markdown = MarkdownParser.new(parsed.content)

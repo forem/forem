@@ -16,6 +16,14 @@ RSpec.describe "ArticlesCreate", type: :request do
     expect(Article.last.user_id).to eq(user.id)
   end
 
+  it "properly downcase tags" do
+    new_title = "NEW TITLE #{rand(100)}"
+    post "/articles", params: {
+      article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "What" }
+    }
+    expect(Article.last.tags.map(&:name)).to eq(["what"])
+  end
+
   it "creates article with front matter params" do
     post "/articles", params: {
       article: {
