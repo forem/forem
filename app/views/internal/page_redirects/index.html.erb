@@ -5,8 +5,8 @@
   <div class="col">
     <%= search_form_for @q, url: internal_page_redirects_path, class: "form-inline justify-content-end" do |f| %>
 
-      <%= f.label :old_slug_or_new_slug_cont, "Old or new slug", class: "sr-only" %>
-      <%= f.search_field :old_slug_or_new_slug_cont, placeholder: "Old or new slug", class: "form-control mx-3" %>
+      <%= f.label :old_path_or_new_path_cont, "Old or new path", class: "sr-only" %>
+      <%= f.search_field :old_path_or_new_path_cont, placeholder: "Old or new path", class: "form-control mx-3" %>
 
       <%= f.submit "Search", class: "btn btn-secondary" %>
     <% end %>
@@ -19,8 +19,8 @@
   <thead>
     <tr>
       <th scope="col">ID</th>
-      <th scope="col">Old Slug</th>
-      <th scope="col">New Slug</th>
+      <th scope="col">Old Path</th>
+      <th scope="col">New Path</th>
       <th scope="col">Source</th>
       <th scope="col">Version</th>
       <th scope="col">
@@ -41,8 +41,8 @@
 
       <tr>
         <td><%= link_to(page_redirect.id, edit_internal_page_redirect_path(page_redirect.id)) %></td>
-        <td><%= link_to(page_redirect.old_slug, page_redirect.old_slug_url) %></td>
-        <td><%= link_to(page_redirect.new_slug, page_redirect.new_slug_url) %></td>
+        <td><%= link_to(page_redirect.old_path, page_redirect.old_path_url) %></td>
+        <td><%= link_to(page_redirect.new_path, page_redirect.new_path_url) %></td>
         <td><%= page_redirect.source %></td>
         <td class="justify-content-center">
           <div class="badge badge-<%= badge_type %>"><%= page_redirect.version %></div>
