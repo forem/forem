@@ -152,7 +152,9 @@
             </span>
           <% end %>
           <span class="published-at">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
-          <span class="action-space" id="action-space">&nbsp;</span>
+          <% if user_signed_in? %>
+            <span class="action-space" id="action-space">&nbsp;</span>
+          <% end %>
         </h3>
         <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
           <div class="tags">
