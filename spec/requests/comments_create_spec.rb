@@ -116,8 +116,6 @@ RSpec.describe "CommentsCreate", type: :request do
     end
 
     it "doesn't create mention, when replying as moderator" do
-      allow(SiteConfig).to receive(:mascot_user_id).and_return(mascot.id)
-
       comment_on_article
       reply_and_mention_comment_author_as_moderator
 
@@ -142,6 +140,8 @@ RSpec.describe "CommentsCreate", type: :request do
     end
 
     def reply_and_mention_comment_author_as_moderator
+      allow(SiteConfig).to receive(:mascot_user_id).and_return(mascot.id)
+
       sign_in moderator_replier
       post moderator_create_comments_path, params: comment_params(
         parent_id: comment.id,
