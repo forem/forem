@@ -19,9 +19,12 @@
   function searchMain() {
     var query = filterXSS(params.q);
     var filters = filterXSS(params.filters || "");
+    var sortBy = filterXSS(params.sort_by || "");
+    var sortDirection = filterXSS(params.sort_direction || "");
+
     document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
     if (document.getElementById("query-wrapper")) {
-      search(query, filters);
+      search(query, filters, sortBy, sortDirection);
       initializeFilters(query, filters);
     }
   }
@@ -67,10 +70,10 @@
     }
   }
 
-  function search(query, filters) {
+  function search(query, filters, sortBy, sortDirection) {
     var hashtags = query.match(/#\w+/g);
     var searchTerm = query.replace(/#/g, '').trim();
-    var searchHash = { per_page: 60, page: 0 };
+    var searchHash = { per_page: 60, page: 0, sort_by: sortBy, sort_direction: sortDirection };
 
     if (filters === "MY_POSTS" && userData()) {
       searchHash.user_id = userData()['id'];

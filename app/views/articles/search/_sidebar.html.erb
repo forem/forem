@@ -12,6 +12,9 @@
         <a class="query-filter-button" data-filter="class_name:Comment">COMMENTS</a>
         <hr>
         <a class="query-filter-button my-posts-query-button" data-filter="MY_POSTS">ONLY MY POSTS</a>
+        <hr>
+        <h4>sort by</h4>
+        <%= select_tag "order", @sort_options, include_blank: true, class: "query-filter-select" %>
       </div>
     </div>
   </div>

@@ -33,6 +33,7 @@ class StoriesController < ApplicationController
   def search
     @query = "...searching"
     @article_index = true
+    @sort_options = sort_options
     set_surrogate_key_header "articles-page-with-query"
     render template: "articles/search"
   end
@@ -474,5 +475,9 @@ class StoriesController < ApplicationController
       @user.twitch_username,
       @user.website_url,
     ].reject(&:blank?)
+  end
+
+  def sort_options
+    '<option value="relevant" selected>MOST RELEVANT</option><option value="newest">NEWEST</option><option value="oldest">OLDEST</option>'
   end
 end
