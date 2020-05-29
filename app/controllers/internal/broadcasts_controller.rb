@@ -33,7 +33,7 @@ class Internal::BroadcastsController < Internal::ApplicationController
                     Broadcast.where(type_of: params[:type_of].capitalize)
                   else
                     Broadcast.all
-                  end
+                  end.order(title: :asc)
   end
 
   private

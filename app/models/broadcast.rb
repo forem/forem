@@ -22,10 +22,10 @@ class Broadcast < ApplicationRecord
     # broadcast while another announcement broadcast is already
     # active to ensure that only one can be active at a time.
     active_broadcasts = Broadcast.announcement.active
-    return unless active_broadcasts.count.positive? &&
-      active &&
+    first_broadcast = active_broadcasts.order(id: :asc).limit(1)
+    return unless active &&
       type_of == "Announcement" &&
-      active_broadcasts.first.id != id
+      ![nil, id].include?(first_broadcast.pluck(:id).first)
 
     errors.add(:base, "You can only have one active announcement broadcast")
   end
