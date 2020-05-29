@@ -39,7 +39,30 @@ RSpec.describe "/internal/config", type: :request do
         sign_in(admin_plus_config)
       end
 
-      describe "community content" do
+      describe "API tokens" do
+        it "updates the health_check_token" do
+          token = "#{rand(20)}"
+          post "/internal/config", params: { site_config: { health_check_token: token }, confirmation: confirmation_message }
+          expect(SiteConfig.health_check_token).to eq token
+        end
+      end
+
+      describe "Authentication" do
+        it "updates enabled authentication providers" do
+          enabled = Array.wrap(Authentication::Providers.available.first.to_s)
+          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq(enabled)
+        end
+
+        it "strips empty elements" do
+          provider = Authentication::Providers.available.first.to_s
+          enabled = [provider, "", nil]
+          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
+          expect(SiteConfig.authentication_providers).to eq([provider])
+        end
+      end
+
+      describe "Community Content" do
         it "updates the community_description" do
           description = "Hey hey #{rand(100)}"
           post "/internal/config", params: { site_config: { community_description: description }, confirmation: confirmation_message }
@@ -65,54 +88,7 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
-      describe "mascot" do
-        it "updates the mascot_user_id" do
-          expected_mascot_user_id = 2
-          post "/internal/config", params: { site_config: { mascot_user_id: expected_mascot_user_id }, confirmation: confirmation_message }
-          expect(SiteConfig.mascot_user_id).to eq(expected_mascot_user_id)
-        end
-
-        it "updates mascot_image_url" do
-          expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { mascot_image_url: expected_image_url }, confirmation: confirmation_message }
-          expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
-        end
-
-        it "updates mascot_image_description" do
-          description = "Hey hey #{rand(100)}"
-          post "/internal/config", params: { site_config: { mascot_image_description: description }, confirmation: confirmation_message }
-          expect(SiteConfig.mascot_image_description).to eq(description)
-        end
-      end
-
-      describe "social media" do
-        it "does not allow the staff_user_id to be updated" do
-          expect(SiteConfig.staff_user_id).to eq(1)
-          post "/internal/config", params: { site_config: { staff_user_id: 2 }, confirmation: confirmation_message }
-          expect(SiteConfig.staff_user_id).to eq(1)
-        end
-
-        it "updates social_media_handles" do
-          expected_handle = { "facebook" => "tpd", "github" => "", "instagram" => "", "twitch" => "", "twitter" => "" }
-          post "/internal/config", params: { site_config: { social_media_handles: expected_handle },
-                                             confirmation: confirmation_message }
-          expect(SiteConfig.social_media_handles[:facebook]).to eq("tpd")
-          expect(SiteConfig.social_media_handles[:github]).to eq("")
-        end
-      end
-
-      describe "meta keywords" do
-        it "updates meta keywords" do
-          expected_keywords = { "default" => "software, people", "article" => "user, experience", "tag" => "bye" }
-          post "/internal/config", params: { site_config: { meta_keywords: expected_keywords },
-                                             confirmation: confirmation_message }
-          expect(SiteConfig.meta_keywords[:default]).to eq("software, people")
-          expect(SiteConfig.meta_keywords[:article]).to eq("user, experience")
-          expect(SiteConfig.meta_keywords[:tag]).to eq("bye")
-        end
-      end
-
-      describe "emails" do
+      describe "Emails" do
         it "updates email_addresses" do
           expected_email_addresses = {
             default: "foo@bar.to",
@@ -129,35 +105,36 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
-      describe "onboarding" do
-        it "updates onboarding_taskcard_image" do
-          expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { onboarding_taskcard_image: expected_image_url }, confirmation: confirmation_message }
-          expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
+      describe "Email digest frequency" do
+        it "updates periodic_email_digest_max" do
+          post "/internal/config", params: { site_config: { periodic_email_digest_max: 1 }, confirmation: confirmation_message }
+          expect(SiteConfig.periodic_email_digest_max).to eq(1)
         end
 
-        it "removes space suggested_tags" do
-          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
-          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
+        it "updates periodic_email_digest_min" do
+          post "/internal/config", params: { site_config: { periodic_email_digest_min: 3 }, confirmation: confirmation_message }
+          expect(SiteConfig.periodic_email_digest_min).to eq(3)
         end
 
-        it "downcases suggested_tags" do
-          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
-          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
-        end
-
-        it "removes space suggested_users" do
-          post "/internal/config", params: { site_config: { suggested_users: "piglet, tigger,eeyore, Christopher Robin, kanga,roo" }, confirmation: confirmation_message }
-          expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
-        end
-
-        it "downcases suggested_users" do
-          post "/internal/config", params: { site_config: { suggested_users: "piglet, tigger,EEYORE, Christopher Robin, KANGA,RoO" }, confirmation: confirmation_message }
-          expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
+        it "rejects update without proper confirmation" do
+          expect { post "/internal/config", params: { site_config: { periodic_email_digest_min: 6 }, confirmation: "Incorrect yo!" } }.to raise_error Pundit::NotAuthorizedError
+          expect(SiteConfig.periodic_email_digest_min).not_to eq(6)
         end
       end
 
-      describe "images" do
+      describe "Google Analytics Reporting API v4" do
+        it "updates ga_view_id" do
+          post "/internal/config", params: { site_config: { ga_view_id: "abc" }, confirmation: confirmation_message }
+          expect(SiteConfig.ga_view_id).to eq("abc")
+        end
+
+        it "updates ga_fetch_rate" do
+          post "/internal/config", params: { site_config: { ga_fetch_rate: 3 }, confirmation: confirmation_message }
+          expect(SiteConfig.ga_fetch_rate).to eq(3)
+        end
+      end
+
+      describe "Images" do
         it "updates main_social_image" do
           expected_image_url = "https://dummyimage.com/300x300"
           post "/internal/config", params: { site_config: { main_social_image: expected_image_url }, confirmation: confirmation_message }
@@ -194,14 +171,126 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
-      describe "monetization" do
+      describe "Mascot" do
+        it "updates the mascot_user_id" do
+          expected_mascot_user_id = 2
+          post "/internal/config", params: { site_config: { mascot_user_id: expected_mascot_user_id }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_user_id).to eq(expected_mascot_user_id)
+        end
+
+        it "updates mascot_image_url" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { mascot_image_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
+        end
+
+        it "updates mascot_image_description" do
+          description = "Hey hey #{rand(100)}"
+          post "/internal/config", params: { site_config: { mascot_image_description: description }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_image_description).to eq(description)
+        end
+      end
+
+      describe "Meta Keywords" do
+        it "updates meta keywords" do
+          expected_keywords = { "default" => "software, people", "article" => "user, experience", "tag" => "bye" }
+          post "/internal/config", params: { site_config: { meta_keywords: expected_keywords },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.meta_keywords[:default]).to eq("software, people")
+          expect(SiteConfig.meta_keywords[:article]).to eq("user, experience")
+          expect(SiteConfig.meta_keywords[:tag]).to eq("bye")
+        end
+      end
+
+      describe "Monetization" do
         it "updates payment pointer" do
           post "/internal/config", params: { site_config: { payment_pointer: "$pay.yo" }, confirmation: confirmation_message }
           expect(SiteConfig.payment_pointer).to eq("$pay.yo")
         end
+
+        describe "Shop" do
+          it "rejects update to shop_url without proper confirmation" do
+            expected_shop_url = "https://qshop.dev.to"
+
+            expect do
+              params = { site_config: { shop_url: expected_shop_url }, confirmation: "Incorrect confirmation" }
+              post "/internal/config", params: params
+            end.to raise_error(Pundit::NotAuthorizedError)
+
+            expect(SiteConfig.shop_url).not_to eq(expected_shop_url)
+          end
+
+          it "sets shop_url to nil" do
+            previous_shop_url = SiteConfig.shop_url
+            post "/internal/config", params: { site_config: { shop_url: "" }, confirmation: confirmation_message }
+            expect(SiteConfig.shop_url).to eq("")
+            get "/privacy"
+            expect(response.body).not_to include(previous_shop_url)
+            expect(response.body).not_to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
+          end
+
+          it "updates shop url" do
+            expected_shop_url = "https://qshop.dev.to"
+            post "/internal/config", params: { site_config: { shop_url: expected_shop_url }, confirmation: confirmation_message }
+            expect(SiteConfig.shop_url).to eq(expected_shop_url)
+            get "/privacy"
+            expect(response.body).to include(expected_shop_url)
+            expect(response.body).to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
+          end
+        end
       end
 
-      describe "rate limits" do
+      describe "Newsletter" do
+        it "updates mailchimp_newsletter_id" do
+          post "/internal/config", params: { site_config: { mailchimp_newsletter_id: "abc" }, confirmation: confirmation_message }
+          expect(SiteConfig.mailchimp_newsletter_id).to eq("abc")
+        end
+
+        it "updates mailchimp_sustaining_members_id" do
+          post "/internal/config", params: { site_config: { mailchimp_sustaining_members_id: "abc" }, confirmation: confirmation_message }
+          expect(SiteConfig.mailchimp_sustaining_members_id).to eq("abc")
+        end
+
+        it "updates mailchimp_tag_moderators_id" do
+          post "/internal/config", params: { site_config: { mailchimp_tag_moderators_id: "abc" }, confirmation: confirmation_message }
+          expect(SiteConfig.mailchimp_tag_moderators_id).to eq("abc")
+        end
+
+        it "updates mailchimp_community_moderators_id" do
+          post "/internal/config", params: { site_config: { mailchimp_community_moderators_id: "abc" }, confirmation: confirmation_message }
+          expect(SiteConfig.mailchimp_community_moderators_id).to eq("abc")
+        end
+      end
+
+      describe "Onboarding" do
+        it "updates onboarding_taskcard_image" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { onboarding_taskcard_image: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
+        end
+
+        it "removes space suggested_tags" do
+          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+
+        it "downcases suggested_tags" do
+          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+
+        it "removes space suggested_users" do
+          post "/internal/config", params: { site_config: { suggested_users: "piglet, tigger,eeyore, Christopher Robin, kanga,roo" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
+        end
+
+        it "downcases suggested_users" do
+          post "/internal/config", params: { site_config: { suggested_users: "piglet, tigger,EEYORE, Christopher Robin, KANGA,RoO" }, confirmation: confirmation_message }
+          expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
+        end
+      end
+
+      describe "Rate Limits" do
         it "updates rate_limit_follow_count_daily" do
           expect do
             post "/internal/config", params: { site_config: { rate_limit_follow_count_daily: 3 }, confirmation: confirmation_message }
@@ -239,54 +328,34 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
-      describe "Google Analytics Reporting API v4" do
-        it "updates ga_view_id" do
-          post "/internal/config", params: { site_config: { ga_view_id: "abc" }, confirmation: confirmation_message }
-          expect(SiteConfig.ga_view_id).to eq("abc")
+      describe "Social Media" do
+        it "does not allow the staff_user_id to be updated" do
+          expect(SiteConfig.staff_user_id).to eq(1)
+          post "/internal/config", params: { site_config: { staff_user_id: 2 }, confirmation: confirmation_message }
+          expect(SiteConfig.staff_user_id).to eq(1)
         end
 
-        it "updates ga_fetch_rate" do
-          post "/internal/config", params: { site_config: { ga_fetch_rate: 3 }, confirmation: confirmation_message }
-          expect(SiteConfig.ga_fetch_rate).to eq(3)
-        end
-      end
-
-      describe "Mailchimp lists IDs" do
-        it "updates mailchimp_newsletter_id" do
-          post "/internal/config", params: { site_config: { mailchimp_newsletter_id: "abc" }, confirmation: confirmation_message }
-          expect(SiteConfig.mailchimp_newsletter_id).to eq("abc")
+        it "updates social_media_handles" do
+          expected_handle = { "facebook" => "tpd", "github" => "", "instagram" => "", "twitch" => "", "twitter" => "" }
+          post "/internal/config", params: { site_config: { social_media_handles: expected_handle },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.social_media_handles[:facebook]).to eq("tpd")
+          expect(SiteConfig.social_media_handles[:github]).to eq("")
         end
 
-        it "updates mailchimp_sustaining_members_id" do
-          post "/internal/config", params: { site_config: { mailchimp_sustaining_members_id: "abc" }, confirmation: confirmation_message }
-          expect(SiteConfig.mailchimp_sustaining_members_id).to eq("abc")
-        end
+        describe "twitter_hashtag" do
+          twitter_hashtag = "#DEVCommunity"
+          params = { site_config: { twitter_hashtag: twitter_hashtag }, confirmation: "Incorrect confirmation" }
 
-        it "updates mailchimp_tag_moderators_id" do
-          post "/internal/config", params: { site_config: { mailchimp_tag_moderators_id: "abc" }, confirmation: confirmation_message }
-          expect(SiteConfig.mailchimp_tag_moderators_id).to eq("abc")
-        end
+          it "does not update the twitter hashtag" do
+            expect { post "/internal/config", params: params }.to raise_error Pundit::NotAuthorizedError
+          end
 
-        it "updates mailchimp_community_moderators_id" do
-          post "/internal/config", params: { site_config: { mailchimp_community_moderators_id: "abc" }, confirmation: confirmation_message }
-          expect(SiteConfig.mailchimp_community_moderators_id).to eq("abc")
-        end
-      end
-
-      describe "Email digest frequency" do
-        it "updates periodic_email_digest_max" do
-          post "/internal/config", params: { site_config: { periodic_email_digest_max: 1 }, confirmation: confirmation_message }
-          expect(SiteConfig.periodic_email_digest_max).to eq(1)
-        end
-
-        it "updates periodic_email_digest_min" do
-          post "/internal/config", params: { site_config: { periodic_email_digest_min: 3 }, confirmation: confirmation_message }
-          expect(SiteConfig.periodic_email_digest_min).to eq(3)
-        end
-
-        it "rejects update without proper confirmation" do
-          expect { post "/internal/config", params: { site_config: { periodic_email_digest_min: 6 }, confirmation: "Incorrect yo!" } }.to raise_error Pundit::NotAuthorizedError
-          expect(SiteConfig.periodic_email_digest_min).not_to eq(6)
+          it "updates the twitter hashtag" do
+            params["confirmation"] = confirmation_message
+            post "/internal/config", params: params
+            expect(SiteConfig.twitter_hashtag.to_s).to eq twitter_hashtag
+          end
         end
       end
 
@@ -302,66 +371,6 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
-      describe "Shop" do
-        it "rejects update to shop_url without proper confirmation" do
-          expected_shop_url = "https://qshop.dev.to"
-
-          expect do
-            params = { site_config: { shop_url: expected_shop_url }, confirmation: "Incorrect confirmation" }
-            post "/internal/config", params: params
-          end.to raise_error(Pundit::NotAuthorizedError)
-
-          expect(SiteConfig.shop_url).not_to eq(expected_shop_url)
-        end
-
-        it "sets shop_url to nil" do
-          previous_shop_url = SiteConfig.shop_url
-          post "/internal/config", params: { site_config: { shop_url: "" }, confirmation: confirmation_message }
-          expect(SiteConfig.shop_url).to eq("")
-          get "/privacy"
-          expect(response.body).not_to include(previous_shop_url)
-          expect(response.body).not_to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
-        end
-
-        it "updates shop url" do
-          expected_shop_url = "https://qshop.dev.to"
-          post "/internal/config", params: { site_config: { shop_url: expected_shop_url }, confirmation: confirmation_message }
-          expect(SiteConfig.shop_url).to eq(expected_shop_url)
-          get "/privacy"
-          expect(response.body).to include(expected_shop_url)
-          expect(response.body).to include("#{ApplicationConfig['COMMUNITY_NAME']} Shop")
-        end
-      end
-
-      describe "Authentication" do
-        it "updates enabled authentication providers" do
-          enabled = Array.wrap(Authentication::Providers.available.first.to_s)
-          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to eq(enabled)
-        end
-
-        it "strips empty elements" do
-          provider = Authentication::Providers.available.first.to_s
-          enabled = [provider, "", nil]
-          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
-          expect(SiteConfig.authentication_providers).to eq([provider])
-        end
-      end
-
-      describe "twitter_hashtag" do
-        twitter_hashtag = "#DEVCommunity"
-        params = { site_config: { twitter_hashtag: twitter_hashtag }, confirmation: "Incorrect confirmation" }
-
-        it "does not update the twitter hashtag" do
-          expect { post "/internal/config", params: params }.to raise_error Pundit::NotAuthorizedError
-        end
-
-        it "updates the twitter hashtag" do
-          params["confirmation"] = confirmation_message
-          post "/internal/config", params: params
-          expect(SiteConfig.twitter_hashtag.to_s).to eq twitter_hashtag
-        end
-      end
     end
   end
   # rubocop:enable RSpec/NestedGroups

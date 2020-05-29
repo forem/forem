@@ -11,6 +11,9 @@ class SiteConfig < RailsSettings::Base
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
 
+  # API Tokens
+  field :health_check_token, type: :string, default: "secret"
+
   # Authentication
   field :authentication_providers, type: :array, default: Authentication::Providers.available
 
@@ -107,9 +110,6 @@ class SiteConfig < RailsSettings::Base
     twitch: nil
   }
   field :twitter_hashtag, type: :string, default: "#DEVCommunity"
-
-  # Special API tokens
-  field :health_check_token, type: :string, default: "secret"
 
   # Tags
   field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
