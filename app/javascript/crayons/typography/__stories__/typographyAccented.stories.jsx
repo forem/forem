@@ -4,7 +4,7 @@ import '../../storybook-utilities/designSystem.scss';
 import './typography.scss';
 
 export default {
-  title: 'Base/Typography/Accent',
+  title: '2_Base/Typography/Accent',
 };
 
 export const Description = () => (

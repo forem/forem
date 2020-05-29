@@ -139,15 +139,15 @@ describe('<Onboarding />', () => {
       onboardingSlides = initializeSlides(slideIndex, getUserData());
     });
 
-    test('renders properly', () => {
+    it('renders properly', () => {
       expect(onboardingSlides).toMatchSnapshot();
     });
 
-    test('it does not render a stepper', () => {
+    it('it does not render a stepper', () => {
       expect(onboardingSlides.find('.stepper').length).toBe(0);
     });
 
-    test('should advance if required boxes are checked', async () => {
+    it('should advance if required boxes are checked', async () => {
       fetch.once({});
       expect(onboardingSlides.state().currentSlide).toBe(slideIndex);
 
@@ -162,7 +162,7 @@ describe('<Onboarding />', () => {
       expect(onboardingSlides.state().currentSlide).toBe(slideIndex + 1);
     });
 
-    test('should not have basic a11y violations', async () => {
+    it('should not have basic a11y violations', async () => {
       const results = await axe(onboardingSlides.toString());
 
       expect(results).toHaveNoViolations();
@@ -182,19 +182,19 @@ describe('<Onboarding />', () => {
       await flushPromises();
     });
 
-    test('renders properly', () => {
+    it('renders properly', () => {
       expect(onboardingSlides).toMatchSnapshot();
     });
 
-    test('renders a stepper', () => {
+    it('renders a stepper', () => {
       expectStepperToRender(onboardingSlides, slideIndex);
     });
 
-    test('should render three tags', async () => {
+    it('should render three tags', async () => {
       expect(onboardingSlides.find('.onboarding-tags__item').length).toBe(3);
     });
 
-    test('should allow a user to add a tag and advance', async () => {
+    it('should allow a user to add a tag and advance', async () => {
       fetch.once({});
       expect(onboardingSlides.find('.next-button').text()).toContain(
         'Skip for now',
@@ -236,15 +236,15 @@ describe('<Onboarding />', () => {
       onboardingSlides = initializeSlides(slideIndex, getUserData());
     });
 
-    test('renders properly', () => {
+    it('renders properly', () => {
       expect(onboardingSlides).toMatchSnapshot();
     });
 
-    test('renders a stepper', () => {
+    it('renders a stepper', () => {
       expectStepperToRender(onboardingSlides, slideIndex);
     });
 
-    test('should allow user to fill forms and advance', async () => {
+    it('should allow user to fill forms and advance', async () => {
       fetch.once({});
       const summaryEvent = { target: { value: 'my bio', name: 'summary' } };
       const locationEvent = {
@@ -310,19 +310,19 @@ describe('<Onboarding />', () => {
       await flushPromises();
     });
 
-    test('renders properly', () => {
+    it('renders properly', () => {
       expect(onboardingSlides).toMatchSnapshot();
     });
 
-    test('renders a stepper', () => {
+    it('renders a stepper', () => {
       expectStepperToRender(onboardingSlides, slideIndex);
     });
 
-    test('should render three users', async () => {
+    it('should render three users', async () => {
       expect(onboardingSlides.find('.user').length).toBe(3);
     });
 
-    test('should allow a user to select and advance', async () => {
+    it('should allow a user to select and advance', async () => {
       fetch.once({});
 
       expect(onboardingSlides.find('.next-button').text()).toContain(
@@ -349,7 +349,7 @@ describe('<Onboarding />', () => {
       expect(onboardingSlides.state().currentSlide).toBe(slideIndex + 1);
     });
 
-    test('should have a functioning select-all toggle', async () => {
+    it('should have a functioning select-all toggle', async () => {
       fetch.once({});
 
       expect(onboardingSlides.find('button').last().text()).toBe(
@@ -383,15 +383,15 @@ describe('<Onboarding />', () => {
       window.location = location;
     });
 
-    test('renders properly', () => {
+    it('renders properly', () => {
       expect(onboardingSlides).toMatchSnapshot();
     });
 
-    test('renders a stepper', () => {
+    it('renders a stepper', () => {
       expectStepperToRender(onboardingSlides, slideIndex);
     });
 
-    test('should redirect user when finished', async () => {
+    it('should redirect user when finished', async () => {
       fetch.once({});
 
       // Setup: Enable window.location to be writable.

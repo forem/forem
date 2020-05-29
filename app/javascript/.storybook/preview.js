@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { addDecorator } from '@storybook/preact';
+import { addDecorator, addParameters } from '@storybook/preact';
 
 import '../../assets/stylesheets/minimal.scss';
 import '../../assets/stylesheets/crayons.scss';
@@ -50,3 +50,12 @@ const themeSwitcherDecorator = (storyFn) => (
 );
 
 addDecorator(themeSwitcherDecorator);
+
+addParameters({
+  options: {
+    storySort: (a, b) =>
+      a[1].kind === b[1].kind
+        ? 0
+        : a[1].id.localeCompare(b[1].id, undefined, { numeric: true }),
+  },
+});
