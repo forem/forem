@@ -93,7 +93,7 @@ RSpec.describe "Using the editor", type: :system do
       fill_in "article-form-title", with: "This is a test"
       fill_in "tag-input", with: "What, Yo"
       fill_in "article_body_markdown", with: "Hello"
-      find("button", text: /\APUBLISH\z/).click
+      find("button", text: /\APublish\z/).click
       expect(page).to have_text("Hello")
     end
   end
