@@ -12,14 +12,14 @@ RSpec.describe PageRedirect, type: :model do
   end
 
   describe "before_save" do
-    it "increments version by 1 if new_slug is updated" do
+    it "increments the version by 1 if the new_slug is updated" do
       page_redirect = create(:page_redirect)
       expect(page_redirect.version).to eq 1
       page_redirect.update(new_slug: "/some-new-slug")
       expect(page_redirect.version).to eq 2
     end
 
-    it "does not increment version new_slug is not updated" do
+    it "does not increment the version if a field other than new_slug is updated" do
       page_redirect = create(:page_redirect)
       expect(page_redirect.version).to eq 1
       page_redirect.update(old_slug: "/some-old-slug")
