@@ -1,0 +1,306 @@
+@import '../config/import';
+
+%layout {
+  max-width: var(--layout-site-width);
+  width: 100%;
+  margin: 0 auto;
+}
+
+@mixin animationSlide($name) {
+  animation-name: $name;
+
+  @keyframes #{$name} {
+    from {
+      opacity: 0;
+      top: calc(var(--su-4) * -1);
+    }
+    to {
+      opacity: 1;
+      top: 0;
+    }
+  }
+}
+
+.crayons-article-form {
+  --article-form-actions-height: 56px;
+  --layout-padding: var(--su-2);
+
+  display: grid;
+  height: 100vh;
+  grid-template-rows: min-content 1fr min-content;
+  background: var(--body-bg);
+  font-size: var(--fs-base);
+
+  @media (min-width: $breakpoint-s) {
+    --article-form-actions-height: 72px;
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --article-form-actions-height: 88px;
+  }
+
+  &__header {
+    @extend %layout;
+
+    display: flex;
+    align-items: center;
+    padding: 0 var(--layout-padding);
+    height: var(--layout-header-height);
+
+    @media (min-width: $breakpoint-l) {
+      padding-right: calc(
+        var(--layout-aside-width) + var(--layout-padding) + var(--layout-gap)
+      );
+    }
+  }
+
+  &__main {
+    @extend %layout;
+
+    @media (min-width: $breakpoint-m) {
+      padding: 0 var(--layout-padding);
+    }
+
+    @media (min-width: $breakpoint-l) {
+      display: grid;
+      grid-gap: var(--layout-gap);
+      grid-template-columns:
+        calc(100% - var(--layout-aside-width) - var(--layout-gap))
+        var(--layout-aside-width);
+    }
+
+    @media (min-width: $breakpoint-xl) {
+      padding-left: calc(
+        var(--layout-narrow-sidebar-width) + var(--layout-padding)
+      );
+    }
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: var(--layout-article-content-padding-y)
+        var(--layout-article-content-padding-x);
+
+      @media (min-width: $breakpoint-s) {
+        overflow: auto;
+        height: calc(
+          100vh - var(--layout-header-height) -
+            var(--article-form-actions-height)
+        );
+      }
+
+      @media (min-width: $breakpoint-m) {
+        border: 1px solid var(--base-10);
+      }
+    }
+
+    &__aside {
+      display: none;
+
+      @media (min-width: $breakpoint-l) {
+        display: block;
+      }
+    }
+  }
+
+  &__footer {
+    @extend %layout;
+    background: var(--body-bg);
+    position: sticky;
+    bottom: 0;
+    padding: 0 var(--layout-padding);
+    height: var(--article-form-actions-height);
+    display: flex;
+    align-items: center;
+
+    @media (min-width: $breakpoint-xl) {
+      padding-left: calc(
+        var(--layout-narrow-sidebar-width) + var(--layout-padding)
+      );
+    }
+  }
+}
+
+.crayons-article-form {
+  &__logo {
+    display: flex;
+    margin-right: var(--su-1);
+    @media (min-width: $breakpoint-s) {
+      margin-right: var(--layout-gap);
+    }
+
+    .logo {
+      width: 50px;
+      height: 40px;
+      padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
+      background: var(--logo-bg);
+      fill: var(--logo-color);
+      border-radius: var(--radius);
+    }
+  }
+
+  &__close {
+    margin-left: var(--su-1);
+    @media (min-width: $breakpoint-l) {
+      position: absolute;
+      right: var(--su-2);
+      top: var(--su-2);
+      margin-left: 0;
+    }
+  }
+
+  &__body {
+    flex: 1 auto;
+    position: relative;
+    outline: none;
+    display: flex;
+    flex-direction: column;
+
+    &__field {
+      flex: 1 auto;
+      font-size: var(--fs-l);
+      font-family: var(--ff-accent);
+    }
+  }
+
+  &__toolbar {
+    position: sticky;
+    top: 0;
+    background: var(--base-0);
+    padding: var(--su-2) var(--layout-article-content-padding-x);
+    margin: calc(var(--layout-article-content-padding-y) * -1)
+      calc(var(--layout-article-content-padding-x) * -1) var(--su-6)
+      calc(var(--layout-article-content-padding-x) * -1);
+
+    @media (min-width: $breakpoint-s) {
+      top: calc(var(--layout-article-content-padding-y) * -1);
+    }
+
+    > :first-child {
+      margin-left: calc(var(--su-2) * -1);
+    }
+  }
+
+  &__cover {
+    margin-bottom: var(--su-6);
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+
+    @media (min-width: $breakpoint-s) {
+      flex-direction: row;
+      align-items: center;
+    }
+
+    &__image {
+      width: 250px;
+      height: 105px;
+      border-radius: var(--radius);
+      object-fit: cover;
+      margin-bottom: var(--su-2);
+
+      @media (min-width: $breakpoint-s) {
+        margin-bottom: 0;
+        margin-right: var(--su-4);
+      }
+    }
+  }
+
+  &__title {
+    margin-bottom: var(--su-2);
+    position: relative;
+  }
+
+  &__tagsfield {
+    position: relative;
+    margin-bottom: calc(var(--su-7) + var(--layout-article-content-padding-y));
+  }
+
+  &__help {
+    position: relative;
+    animation-duration: 0.25s;
+    animation-iteration-count: 1;
+    animation-timing-function: var(--transition-func);
+
+    &--title {
+      @include animationSlide(slideInTitle);
+    }
+
+    &--tags {
+      @include animationSlide(slideInTags);
+    }
+
+    &--body {
+      @include animationSlide(slideInBody);
+    }
+  }
+}
+
+.crayons-article-form {
+  &__tagsoptions {
+    @include generate-box(
+      $level: 2,
+      $bg: var(--card-bg),
+      $border: var(--card-color),
+      $color: var(--card-color)
+    );
+
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + var(--su-4));
+    z-index: 100;
+    padding: var(--su-1);
+
+    @media (min-width: $breakpoint-s) {
+      left: calc(var(--su-2) * -1);
+      right: calc(var(--su-2) * -1);
+    }
+
+    @media (min-width: $breakpoint-m) {
+      left: calc(var(--su-4) * -1);
+      right: calc(var(--su-4) * -1);
+    }
+  }
+
+  &__tagname {
+    font-family: var(--ff-accent);
+    color: var(--base-90);
+    letter-spacing: -0.05em;
+    font-weight: bold;
+  }
+
+  &__tagoptionrow {
+    cursor: pointer;
+    color: var(--link-color);
+    padding: var(--su-3);
+
+    &:hover {
+      background: var(--link-bg-hover);
+      .crayons-tag {
+        color: var(--link-color-hover);
+      }
+    }
+
+    &--active {
+      background: var(--link-bg-hover);
+      .crayons-article-form__tagname {
+        color: var(--link-color-hover);
+      }
+    }
+  }
+
+  &__tagsoptionrulesbutton {
+    display: none;
+  }
+  &__tagrules,
+  &__tagrules--inactive {
+    font-size: var(--fs-s);
+    color: var(--base-70);
+  }
+
+  &__tagsoptionsbottomrow {
+    display: none;
+  }
+}

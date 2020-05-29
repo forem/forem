@@ -2,150 +2,307 @@
 
 exports[`<ArticleForm /> renders properly 1`] = `
 <form
-  class="articleform__form articleform__form--v2"
+  class="crayons-article-form"
+  id="article-form"
   onInput={[Function]}
 >
-  <div>
-    <div>
-      <textarea
-        autoComplete="off"
-        class="articleform__title"
-        id="article-form-title"
-        onChange={[Function]}
-        onInput={[Function]}
-        onKeyDown={[Function]}
-        placeholder="Title"
-        ref={[Function]}
-        style={
-          Object {
-            "height": 0,
-          }
-        }
-        type="text"
-        value=""
-      />
-      <div
-        class="articleform__detailfields"
+  <div
+    class="crayons-article-form__header crayons-layout"
+  >
+    <a
+      aria-label="Home"
+      class="crayons-article-form__logo"
+      href="/"
+    >
+      <svg
+        aria-labelledby="aokj84btta17w7mvt93i94l82beye8ez"
+        class="logo"
+        height="20%"
+        role="img"
+        version="1"
+        viewBox="0 0 132.000000 65.000000"
+        width="20%"
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <div
-          class="articleform__tagswrapper"
+        <title
+          id="aokj84btta17w7mvt93i94l82beye8ez"
         >
-          <input
+          App logo
+        </title>
+        <path
+          d="M0 33v32h11.3c12.5 0 17.7-1.6 21.5-6.5 3.8-4.8 4.4-9 4-28-.3-16.8-.5-18.2-2.7-21.8C30.3 2.5 26.1 1 12 1H0v32zm23.1-19.1c2.3 1.9 2.4 2.3 2.4 18.5 0 15.7-.1 16.7-2.2 18.8-1.7 1.6-3.5 2.2-7 2.2l-4.8.1-.3-20.8L11 12h4.9c3.3 0 5.6.6 7.2 1.9zM46.1 3.6c-2 2.6-2.1 3.9-2.1 29.6v26.9l2.5 2.4c2.3 2.4 2.9 2.5 16 2.5H76V54.1l-10.2-.3-10.3-.3v-15l6.3-.3 6.2-.3V27H55V12h21V1H62.1c-13.9 0-14 0-16 2.6zM87 15.2c2.1 7.9 5.5 20.8 7.6 28.8 3.2 12.3 4.3 15 7 17.7 1.9 2 4.2 3.3 5.7 3.3 3.1 0 7.1-3.1 8.5-6.7 1-2.6 15.2-55.6 15.2-56.8 0-.3-2.8-.5-6.2-.3l-6.3.3-5.6 21.5c-3.5 13.6-5.8 20.8-6.2 19.5C105.9 40 96 1.9 96 1.4c0-.2-2.9-.4-6.4-.4h-6.4L87 15.2z"
+        />
+      </svg>
+    </a>
+    <div
+      class="crayons-field__label flex items-center flex-1"
+    >
+      <span
+        class="hidden s:inline-block whitespace-nowrap"
+      >
+        Write a new post
+      </span>
+    </div>
+    <div
+      class="crayons-article-form__tabs crayons-tabs ml-auto"
+    >
+      <button
+        class="crayons-tabs__item crayons-tabs__item--current"
+        onClick={false}
+        type="button"
+      >
+        Edit
+      </button>
+      <button
+        class="crayons-tabs__item false"
+        onClick={[Function]}
+        type="button"
+      >
+        Preview
+      </button>
+    </div>
+    <div
+      class="crayons-article-form__close"
+    >
+      <a
+        class="crayons-btn crayons-btn--ghost crayons-btn--icon"
+        href="/"
+        title="Close the editor"
+      >
+        <svg
+          aria-labelledby="as1mn15llu5e032u2pgzlc6yhvss2myk"
+          class="crayons-icon"
+          height="24"
+          role="img"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <title
+            id="as1mn15llu5e032u2pgzlc6yhvss2myk"
+          >
+            Close the editor
+          </title>
+          <path
+            d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636l4.95 4.95z"
+          />
+        </svg>
+      </a>
+    </div>
+  </div>
+  <div
+    class="crayons-article-form__main"
+  >
+    <div
+      class="crayons-article-form__main__content crayons-card"
+    >
+      <div>
+        <div
+          class="crayons-article-form__cover"
+          role="presentation"
+        >
+          <div
+            class="flex items-center"
+          >
+            <button
+              class="crayons-btn crayons-btn--outlined mr-2 whitespace-nowrap"
+              disabled={false}
+              type="button"
+            >
+              <label
+                htmlFor="cover-image-input"
+              >
+                Add a cover image
+              </label>
+              <input
+                accept="image/*"
+                class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
+                data-max-file-size-mb="25"
+                id="cover-image-input"
+                onChange={[Function]}
+                type="file"
+              />
+            </button>
+          </div>
+        </div>
+        <div
+          class="crayons-article-form__title"
+        >
+          <textarea
             autoComplete="off"
-            class="articleform__tags"
-            id="tag-input"
-            name="listing[tag_list]"
-            onBlur={[Function]}
+            autofocus="true"
+            class="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight"
+            id="article-form-title"
+            onChange={[Function]}
             onFocus={[Function]}
             onInput={[Function]}
             onKeyDown={[Function]}
-            placeholder="4 tags max, comma separated, no spaces or special characters"
+            placeholder="New post title here..."
             ref={[Function]}
+            style={
+              Object {
+                "height": 0,
+              }
+            }
             type="text"
             value=""
           />
         </div>
-        <button
-          class="articleform__detailsButton articleform__detailsButton--image"
-          onClick={[Function]}
-          type="button"
+        <div
+          class="crayons-article-form__tagsfield"
         >
-          <img
-            alt="Upload images"
-            src=""
-          />
-        </button>
-        <button
-          class="articleform__detailsButton articleform__detailsButton--moreconfig"
-          onClick={[Function]}
-          type="button"
+          <div
+            class="crayons-article-form__tagswrapper"
+          >
+            <input
+              autoComplete="off"
+              class="crayons-textfield crayons-textfield--ghost ff-accent crayons-article-form__tags"
+              id="tag-input"
+              name="listing[tag_list]"
+              onBlur={[Function]}
+              onFocus={[Function]}
+              onInput={[Function]}
+              onKeyDown={[Function]}
+              placeholder="Add up to 4 tags..."
+              ref={[Function]}
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-article-form__body"
+      >
+        <div
+          class="crayons-article-form__toolbar false"
         >
-          <img
-            alt="Menu"
-            src=""
-          />
-        </button>
+          <div
+            class="flex items-center"
+          >
+            <button
+              class="crayons-btn crayons-btn--ghost crayons-btn--icon-left mr-2 fw-normal"
+              disabled={false}
+              tabIndex="-1"
+              type="button"
+            >
+              <svg
+                aria-labelledby="a17qec5pfhrwzk9w4kg0tp62v27qqu9t"
+                class="crayons-icon"
+                height="24"
+                role="img"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <title
+                  id="a17qec5pfhrwzk9w4kg0tp62v27qqu9t"
+                >
+                  Upload image
+                </title>
+                <path
+                  d="M20 5H4v14l9.292-9.294a1 1 0 011.414 0L20 15.01V5zM2 3.993A1 1 0 012.992 3h18.016c.548 0 .992.445.992.993v16.014a1 1 0 01-.992.993H2.992A.993.993 0 012 20.007V3.993zM8 11a2 2 0 110-4 2 2 0 010 4z"
+                />
+              </svg>
+              Upload image
+              <input
+                accept="image/*"
+                class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
+                data-max-file-size-mb="25"
+                id="image-upload-field"
+                multiple={true}
+                onChange={[Function]}
+                tabIndex="-1"
+                type="file"
+              />
+            </button>
+          </div>
+        </div>
+        <textarea
+          class="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field"
+          id="article_body_markdown"
+          name="body_markdown"
+          onChange={[Function]}
+          onFocus={[Function]}
+          onInput={[Function]}
+          placeholder="Write your post content here..."
+          ref={[Function]}
+          style={
+            Object {
+              "height": 0,
+            }
+          }
+          value=""
+        />
       </div>
     </div>
-    <textarea
-      class="articleform__body"
-      id="article_body_markdown"
-      name="body_markdown"
-      onInput={[Function]}
-      placeholder="Body Markdown"
-      value=""
-    />
-    <button
-      class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"
-      onClick={[Function]}
-      type="button"
+    <div
+      class="crayons-article-form__main__aside"
     >
-      <img
-        alt="upload images"
-        src=""
-      />
-      IMAGES
-    </button>
-    <button
-      class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"
-      onClick={[Function]}
-      type="button"
-    >
-      <img
-        alt="menu dots"
-        src=""
-      />
-    </button>
-  </div>
-  <div
-    class="articleform__buttons"
-  >
-    <button
-      class="articleform__buttons--small inactive"
-      onClick={[Function]}
-      type="button"
-    >
-      ?
-    </button>
-    <button
-      class="inactive previewbutt"
-      onClick={[Function]}
-      type="button"
-    >
-      PREVIEW
-    </button>
-    <button
-      onClick={[Function]}
-      type="button"
-    >
-      SAVE DRAFT
-    </button>
-    <span>
-      <p
+      <div
+        class="sticky"
         style={
           Object {
-            "visibility": "hidden",
+            "top": null,
           }
         }
+      />
+    </div>
+  </div>
+  <div
+    class="crayons-article-form__footer"
+  >
+    <button
+      class="crayons-btn mr-2 whitespace-nowrap"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Publish
+    </button>
+    <button
+      class="crayons-btn crayons-btn--secondary mr-2 whitespace-nowrap"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Save 
+      <span
+        class="hidden s:inline"
       >
-        New Changes (
-        <button
-          class="clear-button"
-          onClick={[Function]}
-          type="button"
-        >
-          clear
-        </button>
-        )
-      </p>
+        draft
+      </span>
+    </button>
+    <div
+      class="s:relative"
+    >
       <button
-        class="articleform__buttons--publish"
+        class="crayons-btn crayons-btn--ghost crayons-btn--icon"
+        disabled={false}
         onClick={[Function]}
+        title="Post options"
         type="button"
       >
-        PUBLISH
+        <svg
+          aria-labelledby="75abcb76478519ca4eb9"
+          class="crayons-icon"
+          height="24"
+          role="img"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <title
+            id="75abcb76478519ca4eb9"
+          >
+            Post options
+          </title>
+          <path
+            d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342 7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"
+          />
+        </svg>
       </button>
-    </span>
+    </div>
   </div>
 </form>
 `;
