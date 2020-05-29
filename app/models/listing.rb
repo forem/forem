@@ -73,7 +73,6 @@ class Listing < ApplicationRecord
   end
 
   def modify_inputs
-    ActsAsTaggableOn::Taggable::Cache.included(Listing)
     ActsAsTaggableOn.default_parser = ActsAsTaggableOn::TagParser
     self.body_markdown = body_markdown.to_s.gsub(/\r\n/, "\n")
   end
