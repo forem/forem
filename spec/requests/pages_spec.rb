@@ -1,4 +1,4 @@
-gitrequire "rails_helper"
+require "rails_helper"
 
 RSpec.describe "Pages", type: :request do
   describe "GET /:slug" do
