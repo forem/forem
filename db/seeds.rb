@@ -475,7 +475,6 @@ end
 num_page_redirects = 2 * SEEDS_MULTIPLIER
 
 seeder.create_if_none(PageRedirect, num_page_redirects) do
-  users_in_random_order = User
   articles_for_old_paths = Article.where(published: true).order(Arel.sql("RANDOM()")).limit(num_page_redirects)
   articles_for_new_paths = Article.where.not(id: articles_for_old_paths.map(&:id), published: false).order(Arel.sql("RANDOM()")).limit(num_page_redirects)
 
