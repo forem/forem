@@ -1,4 +1,4 @@
-require "rails_helper"
+gitrequire "rails_helper"
 
 RSpec.describe "Pages", type: :request do
   describe "GET /:slug" do
@@ -179,20 +179,26 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
-  describe "working with local HTML files" do
+  describe "working with partial for local development" do
     let!(:page_content) { "About the Speaker" }
-    let!(:fixture_path) { File.join(Rails.root, "spec/fixtures/files/sample_page.html") }
-    let!(:valid_page) { create(:page, local_path: fixture_path) }
+    let!(:valid_page) { create(:page, use_partial: true) }
 
-    it "serves the sample page in local development" do
+    it "serves the partial contents in local development if enabled" do
       get "/page/#{valid_page.slug}"
       expect(response.body).to include(page_content)
     end
 
-    it "doesn't serve a local page when in production" do
+    it "doesn't serve a local page when in production even if enabled" do
       allow(Rails.env).to receive(:production?).and_return(true)
       get "/page/#{valid_page.slug}"
       expect(response.body).not_to include(page_content)
+    end
+
+    it "doesn't serve the partial contents in local development if disabled" do
+      page = create(:page)
+      get "/page/#{page.slug}"
+      expect(response.body).not_to include(page_content)
+      expect(response.body).to include(page.processed_html)
     end
   end
 end

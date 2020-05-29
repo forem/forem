@@ -17,20 +17,13 @@
         <%= form.label :body_html %> (Only if not using markdown. HTML is dangerous ⚠️)
         <%= form.text_area :body_html, class: "form-control" %>
       </div>
-      <% unless Rails.env.production? %>
-        <div class="form-group">
-          <%= form.label :local_path %> (Use for local development only: <strong>This will not be available in production</strong>. Be careful! ⚠️)
-          <%= form.text_field :local_path, class: "form-control" %>
-          <p>It will load a file's content as HTML from this path (use an absolute path). Be careful! ⚠️</p>
-        </div>
-      <% end %>
       <div class="form-group">
         <%= form.label :description %>
         <%= form.text_field :description, class: "form-control" %>
       </div>
       <div class="form-group">
         <% if @page.social_image_url %>
-          <img src="<%= @page.social_image_url%>" style="max-width:500px;display:block" />
+          <img src="<%= @page.social_image_url %>" style="max-width:500px;display:block" />
         <% end %>
         <%= form.label :social_image %>
         <%= form.file_field :social_image, class: "form-control" %>
@@ -45,6 +38,15 @@
         <%= form.check_box :is_top_level_path %>
         <p>(Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code>) Be careful! ⚠️</p>
       </div>
+      <% unless Rails.env.production? %>
+        <div class="form-group">
+          <%= form.label :use_partial %> (enable for local development)
+          <%= form.check_box :use_partial %>
+          <p>
+            Work on <code>app/views/pages/_wip_page.html.erb</code>. <strong>This will not be available in production</strong>. HTML is dangerous be careful! ⚠️
+          </p>
+        </div>
+      <% end %>
       <%= form.submit class: "btn btn-primary float-right" %>
     <% end %>
   </div>

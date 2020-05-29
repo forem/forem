@@ -54,32 +54,21 @@ RSpec.describe Page, type: :model do
     end
   end
 
-  context "local_path for development purposes" do
-    let!(:page_content) { "About the Speaker" }
-    let!(:fixture_path) { File.join(Rails.root, "spec/fixtures/files/sample_page.html") }
-    let!(:valid_page) { create(:page, local_path: fixture_path) }
+  context "when working on an HTML page locally" do
+    let!(:valid_page) { create(:page, use_partial: true) }
 
-    it "returns local html from file" do
-      expect(valid_page.local_html?).to be true
-      expect(valid_page.html).to include(page_content)
+    it "returns true for use_partial? when enabled" do
+      expect(valid_page.use_partial?).to be true
     end
 
-    it "returns nil for local_html? in Production" do
+    it "returns false for use_partial? when enabled but in Production" do
       allow(Rails.env).to receive(:production?).and_return(true)
-      expect(valid_page.local_html?).to be false
-      expect(valid_page.html).not_to include(page_content)
+      expect(valid_page.use_partial?).to be false
     end
 
-    it "returns nil for local_html? when file is not found" do
-      invalid_page = create(:page, local_path: "/non/existent/path")
-      expect(invalid_page.local_html?).to be false
-      expect(invalid_page.html).not_to include(page_content)
-    end
-
-    it "returns nil for local_html? when no local_path is defined" do
+    it "returns false for use_partial? when disabled" do
       page = create(:page)
-      expect(page.local_html?).to be false
-      expect(page.html).not_to include(page_content)
+      expect(page.use_partial?).to be false
     end
   end
 

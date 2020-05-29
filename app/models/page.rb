@@ -18,14 +18,8 @@ class Page < ApplicationRecord
     is_top_level_path ? "/#{slug}" : "/page/#{slug}"
   end
 
-  def local_html?
-    !Rails.env.production? && File.file?(local_path.to_s)
-  end
-
-  def html
-    return File.read(local_path) if local_html?
-
-    processed_html
+  def use_partial?
+    !Rails.env.production? && use_partial
   end
 
   private

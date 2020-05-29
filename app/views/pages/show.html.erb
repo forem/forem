@@ -27,10 +27,18 @@
       </h1>
     </div>
     <div class="body">
-      <%= @page.html.html_safe %>
+      <% if @page.use_partial? %>
+        <%= render partial: "wip_page" %>
+      <% else %>
+        <%= @page.processed_html.html_safe %>
+      <% end %>
     </div>
   </div>
 <% else %>
-  <%= @page.html.html_safe %>
+  <% if @page.use_partial? %>
+    <%= render partial: "wip_page" %>
+  <% else %>
+    <%= @page.processed_html.html_safe %>
+  <% end %>
 <% end %>
 <div id="IS_CENTERED_PAGE"></div>
