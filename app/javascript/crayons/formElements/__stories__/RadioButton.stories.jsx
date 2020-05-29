@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 import { RadioButton } from '@crayons';
 
 export default {
-  title: 'Components/Form Components/Radio Button',
+  title: '3_Components/Form Components/Radio Button',
   decorators: [withKnobs],
 };
 

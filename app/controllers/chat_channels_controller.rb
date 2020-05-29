@@ -86,7 +86,7 @@ class ChatChannelsController < ApplicationController
 
   def create_chat
     chat_recipient = User.find(params[:user_id])
-    valid_listing = ClassifiedListing.where(user_id: params[:user_id], contact_via_connect: true).limit(1)
+    valid_listing = Listing.where(user_id: params[:user_id], contact_via_connect: true).limit(1)
     authorize ChatChannel
 
     if chat_recipient.inbox_type == "open" || valid_listing.length == 1

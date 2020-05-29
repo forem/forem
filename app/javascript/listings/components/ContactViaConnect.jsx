@@ -14,7 +14,7 @@ const ContactViaConnect = ({ onChange, checked }) => (
       type="checkbox"
       className="listingform__input listingform__contact_via_connect"
       id="contact_via_connect"
-      name="classified_listing[contact_via_connect]"
+      name="listing[contact_via_connect]"
       onInput={onChange}
       checked={checked}
     />

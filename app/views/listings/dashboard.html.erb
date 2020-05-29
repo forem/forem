@@ -1,0 +1,18 @@
+<% title "Listings Dashboard" %>
+
+<div id="listings-dashboard" data-listings="<%= @listings.to_json(
+  only: %i[title tag_list created_at expires_at bumped_at updated_at category id user_id slug organization_id location published],
+  include: {
+    author: { only: %i[username name], methods: %i[username profile_image_90] },
+  },
+)%>" data-usercredits="<%= @user_credits %>"
+      data-orglistings="<%= @org_listings.to_json(
+        only: %i[title tag_list created_at expires_at bumped_at updated_at category id user_id slug organization_id location published],
+        include: {
+          author: { only: %i[username name], methods: %i[username profile_image_90] },
+        },
+      ) %>" data-orgs="<%= @orgs.to_json(
+        only: %i[id name slug unspent_credits_count]
+      ) %>" >
+</div>
+<%= javascript_packs_with_chunks_tag "listingDashboard", defer: true %>

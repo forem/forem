@@ -19,7 +19,7 @@ const ExpireDate = ({ onChange, defaultValue }) => {
         type="date"
         className="listingform__input"
         id="expires_at"
-        name="classified_listing[expires_at]"
+        name="listing[expires_at]"
         value={defaultValue}
         onInput={onChange}
         min={tomorrow}

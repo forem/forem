@@ -23,7 +23,7 @@
 
       <%= render "articles/sidebar_campaign" if SiteConfig.campaign_sidebar_enabled? %>
 
-      <% if params[:timeframe].blank? && @classified_listings.any? %>
+      <% if params[:timeframe].blank? && @listings.any? %>
         <div class="crayons-card crayons-card--secondary">
           <header class="crayons-card__header">
             <h3 class="crayons-card__header__headline">Listings</h3>
@@ -33,7 +33,7 @@
           </header>
 
           <div>
-            <% @classified_listings.order("bumped_at DESC").limit(5).each do |listing| %>
+            <% @listings.order("bumped_at DESC").limit(5).each do |listing| %>
               <a class="crayons-link crayons-link--contentful" href="<%= listing.path %>">
                 <div><%= listing.title %></div>
                 <div class="crayons-link__secondary"><%= listing.category %></div>
