@@ -15,7 +15,8 @@ FileUtils.chdir APP_ROOT do
 
   puts "== Installing dependencies =="
   system! "gem install bundler --conservative"
-  system! "bundle config set cache_all true"
+  system! "bundle config --local cache_all true"
+  system! "bundle config --local cache_all_platforms true"
   system("bundle check") || system!("bundle install")
 
   system! "gem install foreman"

@@ -143,6 +143,14 @@ Rails.application.routes.draw do
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"
       get "/analytics/referrers", to: "analytics#referrers"
+
+      resources :health_checks, only: [] do
+        collection do
+          get :app
+          get :search
+          get :database
+        end
+      end
     end
   end
 

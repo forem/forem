@@ -108,9 +108,9 @@ class SiteConfig < RailsSettings::Base
   }
   field :twitter_hashtag, type: :string, default: "#DEVCommunity"
 
+  # Special API tokens
+  field :health_check_token, type: :string, default: "secret"
+
   # Tags
   field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
-
-  # Other
-  field :welcome_notifications_live_at, type: :date
 end
