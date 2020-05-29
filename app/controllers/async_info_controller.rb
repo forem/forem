@@ -71,7 +71,6 @@ class AsyncInfoController < ApplicationController
     #{current_user&.last_followed_at}__
     #{current_user&.updated_at}__
     #{current_user&.reactions_count}__
-    #{current_user&.comments_count}__
     #{current_user&.saw_onboarding}__
     #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__
