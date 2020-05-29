@@ -41,8 +41,8 @@
 
       <tr>
         <td><%= link_to(page_redirect.id, edit_internal_page_redirect_path(page_redirect.id)) %></td>
-        <td><%= page_redirect.old_slug %></td>
-        <td><%= page_redirect.new_slug %></td>
+        <td><%= link_to(page_redirect.old_slug, page_redirect.old_slug_url) %></td>
+        <td><%= link_to(page_redirect.new_slug, page_redirect.new_slug_url) %></td>
         <td><%= page_redirect.source %></td>
         <td class="bg-<%= bg_color_class %>"><%= page_redirect.version %></td>
         <td><%= page_redirect.created_at %></td>
