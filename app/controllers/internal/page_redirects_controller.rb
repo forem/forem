@@ -8,7 +8,7 @@ class Internal::PageRedirectsController < Internal::ApplicationController
   end
 
   def create
-    @page_redirect = PageRedirect.new(page_redirect_params.merge(source: "admin"))
+    @page_redirect = PageRedirect.new(new_page_redirect_params)
 
     if @page_redirect.save
       flash[:success] = "Page Redirect created successfully!"
@@ -27,7 +27,7 @@ class Internal::PageRedirectsController < Internal::ApplicationController
   def edit; end
 
   def update
-    if @page_redirect.update(page_redirect_params.merge(source: "admin"))
+    if @page_redirect.update(edit_page_redirect_params)
       flash[:success] = "Page Redirect updated successfully!"
       redirect_to edit_internal_page_redirect_path(@page_redirect)
     else
@@ -52,7 +52,11 @@ class Internal::PageRedirectsController < Internal::ApplicationController
     @page_redirect = PageRedirect.find(params[:id])
   end
 
-  def page_redirect_params
-    params.require(:page_redirect).permit(:old_slug, :new_slug)
+  def new_page_redirect_params
+    params.require(:page_redirect).permit(:old_slug, :new_slug).merge(source: "admin")
+  end
+
+  def edit_page_redirect_params
+    params.require(:page_redirect).permit(:new_slug).merge(source: "admin")
   end
 end
