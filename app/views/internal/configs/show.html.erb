@@ -320,49 +320,6 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "Mailchimp Lists IDs",
-                       state: "collapse",
-                       target: "mailchimpListBodyContainer",
-                       expanded: "false"
-                     } %>
-          <div id="mailchimpListBodyContainer" class="card-body collapse hide" aria-labelledby="mailchimpListBodyContainer">
-            <div class="form-group">
-              <%= f.label :mailchimp_newsletter_id, "Main Newsletter" %>
-              <%= f.text_field :mailchimp_newsletter_id,
-                               class: "form-control",
-                               value: SiteConfig.mailchimp_newsletter_id %>
-              <div class="alert alert-info">Main Newsletter ID</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
-              <%= f.text_field :mailchimp_sustaining_members_id,
-                               class: "form-control",
-                               value: SiteConfig.mailchimp_sustaining_members_id %>
-              <div class="alert alert-info">Sustaining Members Newsletter ID</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
-              <%= f.text_field :mailchimp_tag_moderators_id,
-                               class: "form-control",
-                               value: SiteConfig.mailchimp_tag_moderators_id %>
-              <div class="alert alert-info">Tag Moderators Newsletter ID</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
-              <%= f.text_field :mailchimp_community_moderators_id,
-                               class: "form-control",
-                               value: SiteConfig.mailchimp_community_moderators_id %>
-              <div class="alert alert-info">Community Moderators Newsletter ID</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <%= render partial: "card_header",
-                     locals: {
                        header: "Mascot",
                        state: "collapse",
                        target: "mascotBodyContainer",
@@ -459,7 +416,48 @@
           </div>
         </div>
 
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "Newsletter",
+                       state: "collapse",
+                       target: "newsletterBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="newsletterBodyContainer" class="card-body collapse hide" aria-labelledby="newsletterBodyContainer">
+            <div class="form-group">
+              <%= f.label :mailchimp_newsletter_id, "Main Newsletter" %>
+              <%= f.text_field :mailchimp_newsletter_id,
+                               class: "form-control",
+                               value: SiteConfig.mailchimp_newsletter_id %>
+              <div class="alert alert-info">Main Newsletter ID</div>
+            </div>
 
+            <div class="form-group">
+              <%= f.label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
+              <%= f.text_field :mailchimp_sustaining_members_id,
+                               class: "form-control",
+                               value: SiteConfig.mailchimp_sustaining_members_id %>
+              <div class="alert alert-info">Sustaining Members Newsletter ID</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
+              <%= f.text_field :mailchimp_tag_moderators_id,
+                               class: "form-control",
+                               value: SiteConfig.mailchimp_tag_moderators_id %>
+              <div class="alert alert-info">Tag Moderators Newsletter ID</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
+              <%= f.text_field :mailchimp_community_moderators_id,
+                               class: "form-control",
+                               value: SiteConfig.mailchimp_community_moderators_id %>
+              <div class="alert alert-info">Community Moderators Newsletter ID</div>
+            </div>
+          </div>
+        </div>
 
         <div class="card mt-3">
           <%= render partial: "card_header",
@@ -541,6 +539,14 @@
                      } %>
           <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
             <div class="form-group">
+              <%= f.label :twitter_hashtag %>
+              <%= f.text_field :twitter_hashtag,
+                               class: "form-control",
+                               value: SiteConfig.twitter_hashtag.to_s,
+                               placeholder: "#DEVCommunity" %>
+              <div class="alert alert-info">Used as the twitter hashtag of the community</div>
+            </div>
+            <div class="form-group">
               <%= f.fields_for :social_media_handles do |social_media_field| %>
                 <% SiteConfig.social_media_handles.each do |platform, username| %>
                   <div>
@@ -573,27 +579,6 @@
                                value: SiteConfig.sidebar_tags.join(","),
                                placeholder: "List of valid tags: comma separated, letters only e.g. help,discuss,explainlikeimfive,meta" %>
               <div class="alert alert-info">Determines which tags are shown on the homepage righthand sidebar</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <%= render partial: "card_header",
-                     locals: {
-                       header: "Twitter Hashtag",
-                       state: "collapse",
-                       target: "twitterHashtagBodyContainer",
-                       expanded: "false"
-                     } %>
-          <div id="twitterHashtagBodyContainer" class="card-body collapse hide"
-                aria-labelledby="twitterHashtagBodyContainer">
-            <div class="form-group">
-              <%= f.label :twitter_hashtag %>
-              <%= f.text_field :twitter_hashtag,
-                               class: "form-control",
-                               value: SiteConfig.twitter_hashtag.to_s,
-                               placeholder: "#DEVCommunity" %>
-              <div class="alert alert-info">Used as the twitter hashtag of the community</div>
             </div>
           </div>
         </div>
