@@ -514,10 +514,11 @@ RSpec.describe "Api::V0::Articles", type: :request do
         expect(response.parsed_body["error"]).to be_present
       end
 
-      it "fails if article contains tags with non-alphanumeric characters" do
+      it "automatically correct tags with non-alphanumeric characters" do
         tags = %w[#discuss .help]
         post_article(title: "Test Article Title", tags: tags)
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:created)
+        expect(response.parsed_body["tags"]).to eq(%w[discuss help])
       end
 
       it "fails if params are not a Hash" do
