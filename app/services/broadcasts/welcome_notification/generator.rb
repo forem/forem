@@ -31,7 +31,7 @@ module Broadcasts
         return if received_notification?(welcome_broadcast) || commented_on_welcome_thread? || user.created_at > 3.hours.ago
 
         Notification.send_welcome_notification(user.id, welcome_broadcast.id)
-        # Please do not remove the @notification_enqueued = true here - it is necessary for the notifications to run in the proper order
+        # Setting @notification_enqueued here prevents us from sending a user two welcome notifications in one day.
         @notification_enqueued = true
       end
 
