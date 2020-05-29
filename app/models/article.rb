@@ -447,7 +447,6 @@ class Article < ApplicationRecord
   def evaluate_front_matter(front_matter)
     self.title = front_matter["title"] if front_matter["title"].present?
     if front_matter["tags"].present?
-      ActsAsTaggableOn::Taggable::Cache.included(Article)
       self.tag_list = [] # overwrite any existing tag with those from the front matter
       tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
       remove_tag_adjustments_from_tag_list
