@@ -113,4 +113,7 @@ class SiteConfig < RailsSettings::Base
 
   # Tags
   field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
+
+  # Broadcast
+  field :welcome_notifications_live_at, type: :date
 end
