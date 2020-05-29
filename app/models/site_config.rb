@@ -118,5 +118,5 @@ class SiteConfig < RailsSettings::Base
   field :shop_url, type: :string, default: "https://shop.dev.to"
 
   # Special API tokens
-  field :health_check_token, type: :string, default: "secret"
+  field :health_check_token, type: :string
 end
