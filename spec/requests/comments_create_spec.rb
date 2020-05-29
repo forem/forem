@@ -102,7 +102,6 @@ RSpec.describe "CommentsCreate", type: :request do
     let(:comment_author) { create(:user) }
     let(:user_replier) { create(:user) }
     let(:moderator_replier) { create(:user, :admin) }
-    let(:mascot) { create(:user) }
     let(:response_template) do
       create(:response_template, type_of: "mod_comment",
                                  content: text_mentioning_comment_author, user_id: nil)
@@ -145,7 +144,8 @@ RSpec.describe "CommentsCreate", type: :request do
     end
 
     def reply_and_mention_comment_author_as_moderator(comment)
-      allow(SiteConfig).to receive(:mascot_user_id).and_return(mascot.id)
+      allow(SiteConfig).to receive(:mascot_user_id).
+        and_return(moderator_replier.id)
 
       sign_in moderator_replier
       post moderator_create_comments_path, params: comment_params(
