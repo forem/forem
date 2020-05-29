@@ -16,12 +16,12 @@
 
 <%= form_with model: [:internal, @page_redirect], method: :patch, local: true do |form| %>
   <div class="form-group">
-    <%= form.label :old_slug %>
-    <%= form.text_field :old_slug, class: "form-control", disabled: true %>
+    <%= form.label :old_path %>
+    <%= form.text_field :old_path, class: "form-control", disabled: true %>
   </div>
   <div class="form-group">
-    <%= form.label :new_slug %>
-    <%= form.text_field :new_slug, class: "form-control" %>
+    <%= form.label :new_path %>
+    <%= form.text_field :new_path, class: "form-control" %>
   </div>
   <%= form.submit "Update Page Redirect", class: "btn btn-primary" %>
 <% end %>

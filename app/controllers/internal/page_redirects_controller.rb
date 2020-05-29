@@ -53,10 +53,10 @@ class Internal::PageRedirectsController < Internal::ApplicationController
   end
 
   def new_page_redirect_params
-    params.require(:page_redirect).permit(:old_slug, :new_slug).merge(source: "admin")
+    params.require(:page_redirect).permit(:old_path, :new_path).merge(source: "admin")
   end
 
   def edit_page_redirect_params
-    params.require(:page_redirect).permit(:new_slug).merge(source: "admin")
+    params.require(:page_redirect).permit(:new_path).merge(source: "admin")
   end
 end

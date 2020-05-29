@@ -773,15 +773,15 @@ ActiveRecord::Schema.define(version: 2020_05_27_161505) do
   end
 
   create_table "page_redirects", force: :cascade do |t|
-    t.string "old_slug", null: false
-    t.string "new_slug", null: false
-    t.string "source", default: "service", null: false
-    t.integer "version", default: 0, null: false
     t.datetime "created_at", null: false
+    t.string "new_path", null: false
+    t.string "old_path", null: false
+    t.string "source", default: "service", null: false
     t.datetime "updated_at", null: false
-    t.index ["new_slug"], name: "index_page_redirects_on_new_slug"
-    t.index ["old_slug", "new_slug"], name: "index_page_redirects_on_old_slug_and_new_slug", unique: true
-    t.index ["old_slug"], name: "index_page_redirects_on_old_slug", unique: true
+    t.integer "version", default: 0, null: false
+    t.index ["new_path"], name: "index_page_redirects_on_new_path"
+    t.index ["old_path", "new_path"], name: "index_page_redirects_on_old_path_and_new_path", unique: true
+    t.index ["old_path"], name: "index_page_redirects_on_old_path", unique: true
     t.index ["source"], name: "index_page_redirects_on_source"
     t.index ["version"], name: "index_page_redirects_on_version"
   end

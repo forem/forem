@@ -49,8 +49,8 @@ RSpec.describe "/internal/page_redirects", type: :request do
       it "successfully creates a page redirect" do
         post internal_page_redirects_path, params: {
           page_redirect: {
-            old_slug: "/nice-old-slug",
-            new_slug: "/nice-new-slug"
+            old_path: "/nice-old-path",
+            new_path: "/nice-new-path"
           }
         }
         expect(PageRedirect.count).to eq 1
@@ -59,23 +59,23 @@ RSpec.describe "/internal/page_redirects", type: :request do
       it "shows a proper error message if the request was invalid" do
         post internal_page_redirects_path, params: {
           page_redirect: {
-            old_slug: page_redirect.old_slug,
-            new_slug: "/nice-new-slug"
+            old_path: page_redirect.old_path,
+            new_path: "/nice-new-path"
           }
         }
-        expect(response.body).to include("Old slug has already been taken")
+        expect(response.body).to include("Old path has already been taken")
       end
 
       it "sets source to admin" do
-        old_slug = "/nice-old-slug"
+        old_path = "/nice-old-path"
         post internal_page_redirects_path, params: {
           page_redirect: {
-            old_slug: old_slug,
-            new_slug: "/nice-new-slug"
+            old_path: old_path,
+            new_path: "/nice-new-path"
           }
         }
 
-        page_redirect = PageRedirect.find_by(old_slug: old_slug)
+        page_redirect = PageRedirect.find_by(old_path: old_path)
         expect(page_redirect.source).to eq "admin"
       end
     end
@@ -92,8 +92,8 @@ RSpec.describe "/internal/page_redirects", type: :request do
         get edit_internal_page_redirect_path(page_redirect.id)
 
         expect(response.body).to include(
-          page_redirect.old_slug,
-          page_redirect.new_slug,
+          page_redirect.old_path,
+          page_redirect.new_path,
         )
       end
     end
@@ -101,42 +101,42 @@ RSpec.describe "/internal/page_redirects", type: :request do
     describe "PATCH /internal/page_redirects/:id" do
       it "successfully updates with a valid request" do
         page_redirect = create(:page_redirect)
-        new_slug = "/a-shiny-new-slug"
+        new_path = "/a-shiny-new-path"
         patch internal_page_redirect_path(page_redirect.id), params: {
           page_redirect: {
-            old_slug: page_redirect.old_slug,
-            new_slug: new_slug
+            old_path: page_redirect.old_path,
+            new_path: new_path
           }
         }
-        expect(page_redirect.reload.new_slug).to eq new_slug
+        expect(page_redirect.reload.new_path).to eq new_path
       end
 
       it "renders an error if the request was invalid" do
         patch internal_page_redirect_path(page_redirect.id), params: {
           page_redirect: {
-            new_slug: ""
+            new_path: ""
           }
         }
-        expect(response.body).to include(CGI.escapeHTML("New slug can't be blank"))
+        expect(response.body).to include(CGI.escapeHTML("New path can't be blank"))
       end
 
-      it "doesn't update old_slug" do
-        updated_old_slug = "/an-updated-old-slug"
+      it "doesn't update old_path" do
+        updated_old_path = "/an-updated-old-path"
         patch internal_page_redirect_path(page_redirect.id), params: {
           page_redirect: {
-            old_slug: updated_old_slug
+            old_path: updated_old_path
           }
         }
 
-        expect(page_redirect.old_slug).not_to eq updated_old_slug
+        expect(page_redirect.old_path).not_to eq updated_old_path
       end
 
       it "sets source to admin" do
         page_redirect = create(:page_redirect)
         patch internal_page_redirect_path(page_redirect.id), params: {
           page_redirect: {
-            old_slug: page_redirect.old_slug,
-            new_slug: "/nice-new-slug"
+            old_path: page_redirect.old_path,
+            new_path: "/nice-new-path"
           }
         }
 
