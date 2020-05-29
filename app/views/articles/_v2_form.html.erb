@@ -1,60 +1,101 @@
-<div class="articleformcontainer">
-  <div class="articleform"
-       id="article-form"
-       data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
-       data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
-       data-version="<%= version %>">
-    <form class="articleform__form articleform__form--<%= version %>">
-      <% if organizations && organizations.size > 0 %>
-        <div class="articleform__orgsettings">
-          Publish under an organization:<select name="article[organization_id]" id="article_publish_under_org">
-            <%= options_for_select({ "None" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
+<style>
+  body {
+    padding-top: 0;
+  }
+
+  body > footer,
+  #top-bar {
+    display: none
+  }
+
+  .universal-page-content-wrapper {
+    overflow: unset;
+  }
+</style>
+
+<div id="js-article-form"
+  data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
+  data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
+  data-version="<%= version %>">
+  <form class="crayons-article-form crayons-article-form--<%= version %>">
+
+    <div class="crayons-article-form__header">
+      <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
+
+      <div class="crayons-field__label">
+        <span class="hidden s:inline-block">Write a new post</span>
+        <% if organizations && organizations.size > 0 %>
+          <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto ml-2 mt-0">
+            <%= options_for_select({ "Personal" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
           </select>
-        </div>
-      <% end %>
-      <% if version == "v2" %>
-        <% if article.main_image.present? %>
-          <div class="articleform__mainimage"><img src="<%= article.main_image %>"></div>
-        <% end %>
-        <input class="articleform__title articleform__titlepreview" type="text" value="<%= article.title %>" placeholder="Title" name="title" />
-        <div class="articleform__detailfields">
-          <div class="articleform__tagswrapper">
-            <input type="text" class="articleform__tags" placeholder="4 tags max, comma separated, no spaces or special characters" name="tags" value="<%= article.cached_tag_list %>" />
-          </div>
-          <button class="articleform__detailsButton articleform__detailsButton--image"></button>
-          <button class="articleform__detailsButton articleform__detailsButton--moreconfig"></button>
-        </div>
-      <% end %>
-      <textarea class="articleform__body" placeholder="Body Markdown" name="body_markdown"><%= article.body_markdown %></textarea>
-      <div>
-        <button class="articleform__detailsButton articleform__detailsButton--image articleform__detailsButton--bottom"></button>
-        <% if version == "v2" %>
-          <button class="articleform__detailsButton articleform__detailsButton--moreconfig articleform__detailsButton--bottom"></button>
         <% end %>
       </div>
-      <div class="articleform__buttons">
-        <span style="visibility:hidden;">
-          <p>New Changes <button class="clear-button">clear</button></p>
-          <button class="articleform__buttons--publish">SAVE CHANGES</button>
-        </span>
+
+      <div class="crayons-article-form__tabs crayons-tabs ml-auto">
+        <button class="crayons-tabs__item crayons-tabs__item--current" type="button">Edit</button><button class="crayons-tabs__item " type="button">Preview</button>
       </div>
-    </form>
-    <div style="display:none">
-      <% if version == "v2" %>
-        <%= render "pages/editor_guide_text", version: "2" %>
-      <% else %>
-        <%= render "pages/editor_guide_text", version: "1" %>
-      <% end %>
+
+      <div class="crayons-article-form__close">
+        <a href="/" class="crayons-btn crayons-btn--ghost crayons-btn--icon" title="Close the editor">
+          <%= inline_svg_tag("x.svg", aria: true, class: "crayons-icon", title: "Close") %>
+        </a>
+      </div>
     </div>
-  </div>
+
+    <div class="crayons-article-form__main">
+      <div class="crayons-card crayons-article-form__main__content">
+        <% if version == "v2" %>
+          <div>
+            <div class="crayons-article-form__cover" role="presentation">
+              <% if article.main_image.present? %>
+                <img src="<%= article.main_image %>" width="250" height="105" alt="Post cover" class="crayons-article-form__cover__image">
+              <% end %>
+              <button class="crayons-btn crayons-btn--outlined mr-2">
+                <label for="cover-image-input">
+                  <% if article.main_image.present? %>Change<% else %>Add a cover image<% end %>
+                </label>
+                <input id="cover-image-input" type="file" accept="image/*" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" data-max-file-size-mb="25">
+              </button>
+            </div>
+            <div class="crayons-article-form__title">
+              <textarea class="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px; "><%= article.title %></textarea>
+            </div>
+            <div class="crayons-article-form__tagsfield">
+              <input type="text" class="crayons-textfield crayons-textfield--ghost ff-accent" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
+            </div>
+          </div>
+        <% end %>
+        <div class="crayons-article-form__body">
+          <div class="crayons-article-form__toolbar">
+            <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left fw-normal" type="button">
+              <%= (inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") + "Upload image").delete!("\n").html_safe %>
+              <input type="file" id="image-upload-field" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" multiple accept="image/*" data-max-file-size-mb="25" />
+            </button>
+          </div>
+          <textarea class="crayons-article-form__body__field crayons-textfield crayons-textfield--ghost fs-l ff-accent" id="article_body_markdown" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
+          </div>
+      </div>
+      <div class="crayons-article-form__main_aside"></div>
+    </div>
+
+    <div class="crayons-article-form__footer">
+      <button class="crayons-btn mr-2" type="button">Publish</button>
+      <button class="crayons-btn crayons-btn--secondary mr-2" type="button">Save draft</button>
+      <div class="relative">
+        <button class="crayons-btn crayons-btn--ghost crayons-btn--icon" type="button" title="Post options">
+          <%= inline_svg_tag("cog.svg", aria: true, class: "crayons-icon", title: "Options") %>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div class="hidden">
+  <%= render "pages/editor_markdown_help" %>
+  <%= render "pages/editor_liquid_help" %>
+  <%= render "pages/editor_frontmatter_help" %>
 </div>
 
 <script async>
   <%== RunkitTag.script %>
 </script>
-
-<style>
-  #footer-container {
-    display: none
-  }
-</style>

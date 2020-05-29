@@ -57,6 +57,7 @@ export const Button = ({
   onFocus,
   onBlur,
   tabIndex,
+  title,
 }) => {
   const ComponentName = tagName;
   const Icon = icon;
@@ -83,6 +84,7 @@ export const Button = ({
       onFocus={onFocus}
       onBlur={onBlur}
       tabIndex={tabIndex}
+      title={title}
       {...otherProps}
     >
       {contentType !== 'text' && contentType !== 'icon-right' && Icon && (
@@ -114,6 +116,7 @@ Button.defaultProps = {
   onFocus: undefined,
   onBlur: undefined,
   tabIndex: undefined,
+  title: undefined
 };
 
 Button.propTypes = {
@@ -150,4 +153,5 @@ Button.propTypes = {
   onFocus: PropTypes.func,
   onBlur: PropTypes.func,
   tabIndex: PropTypes.number,
+  title: PropTypes.string,
 };

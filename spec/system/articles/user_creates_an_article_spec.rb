@@ -16,14 +16,14 @@ RSpec.describe "Creating an article with the editor", type: :system do
   it "renders the page", js: true, percy: true do
     visit new_path
     fill_in "article_body_markdown", with: template
-    click_button "SAVE CHANGES"
+    click_button "Save changes"
     Percy.snapshot(page, name: "Creating an article: shows the title")
   end
 
   it "creates a new article", js: true, retry: 3 do
     visit new_path
     fill_in "article_body_markdown", with: template
-    click_button "SAVE CHANGES"
+    click_button "Save changes"
     expect(page).to have_selector("header h1", text: "Sample Article")
   end
 
@@ -31,7 +31,7 @@ RSpec.describe "Creating an article with the editor", type: :system do
     it "creates a new article with a Runkit tag" do
       visit new_path
       fill_in "article_body_markdown", with: template_with_runkit_tag
-      click_button "SAVE CHANGES"
+      click_button "Save changes"
 
       expect_runkit_tag_to_be_active
     end
@@ -39,15 +39,15 @@ RSpec.describe "Creating an article with the editor", type: :system do
     it "previews article with a Runkit tag and creates it" do
       visit new_path
       fill_in "article_body_markdown", with: template_with_runkit_tag
-      click_button "PREVIEW"
+      click_button "Preview"
 
       expect_runkit_tag_to_be_active
 
-      click_button "EDIT"
+      click_button "Edit"
 
       expect_no_runkit_tag_to_be_active
 
-      click_button "SAVE CHANGES"
+      click_button "Save changes"
 
       expect_runkit_tag_to_be_active
     end

@@ -26,7 +26,7 @@ RSpec.describe "Using the editor", type: :system do
     before do
       fill_markdown_with(read_from_file(raw_text))
       page.execute_script("window.scrollTo(0, -100000)")
-      find("button", text: /\APREVIEW\z/).click
+      find("button", text: /\APreview\z/).click
     end
 
     after do
@@ -38,7 +38,7 @@ RSpec.describe "Using the editor", type: :system do
     end
 
     it "fills out form with rich content and click preview" do
-      article_body = find("div.body")["innerHTML"]
+      article_body = find("div.crayons-article__body")["innerHTML"]
       article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
 
       Approvals.verify(article_body, name: "user_preview_article_body", format: :html)
@@ -48,13 +48,13 @@ RSpec.describe "Using the editor", type: :system do
   describe "Submitting an article", js: true do
     it "renders the page", percy: true do
       fill_markdown_with(read_from_file(raw_text))
-      find("button", text: /\ASAVE CHANGES\z/).click
+      find("button", text: /\ASave changes\z/).click
       Percy.snapshot(page, name: "Using the editor: submit an article")
     end
 
     it "fill out form and submit" do
       fill_markdown_with(read_from_file(raw_text))
-      find("button", text: /\ASAVE CHANGES\z/).click
+      find("button", text: /\ASave changes\z/).click
       article_body = find(:xpath, "//div[@id='article-body']")["innerHTML"]
       article_body.gsub!(/"https:\/\/res\.cloudinary\.com\/.{1,}"/, "cloudinary_link")
 
@@ -63,7 +63,7 @@ RSpec.describe "Using the editor", type: :system do
 
     it "user write and publish an article" do
       fill_markdown_with(template.gsub("false", "true"))
-      find("button", text: /\ASAVE CHANGES\z/).click
+      find("button", text: /\ASave changes\z/).click
       ["Sample Article", template[-200..], "test"].each do |text|
         expect(page).to have_text(text)
       end
@@ -72,7 +72,7 @@ RSpec.describe "Using the editor", type: :system do
     context "without a title", js: true do
       before do
         fill_markdown_with(template.gsub("Sample Article", ""))
-        find("button", text: /\ASAVE CHANGES\z/).click
+        find("button", text: /\ASave changes\z/).click
       end
 
       it "renders the page", percy: true do
@@ -80,7 +80,7 @@ RSpec.describe "Using the editor", type: :system do
       end
 
       it "shows a message that the title cannot be blank" do
-        expect(page).to have_text(/title:  can't be blank/)
+        expect(page).to have_text(/title: can't be blank/)
       end
     end
   end
