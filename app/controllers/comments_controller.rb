@@ -132,8 +132,8 @@ class CommentsController < ApplicationController
     authorize @comment
 
     if @comment.save
-      Mention.create_all(@comment)
       Notification.send_new_comment_notifications_without_delay(@comment)
+      Mention.create_all(@comment)
 
       render json: { status: "created", path: @comment.path }
     elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,

@@ -104,20 +104,23 @@ RSpec.describe "CommentsCreate", type: :request do
     let(:moderator_replier) { create(:user, :admin) }
     let(:mascot) { create(:user) }
     let(:response_template) do
-      create(:response_template, type_of: "mod_comment", user_id: nil)
+      create(:response_template, type_of: "mod_comment",
+                                 content: text_mentioning_comment_author, user_id: nil)
     end
-    let(:comment) { Comment.first }
+    let(:text_mentioning_comment_author) do
+      "Hello, @#{comment_author.username}"
+    end
 
     it "doesn't create mention, when replying as regular user" do
-      comment_on_article
-      reply_and_mention_comment_author
+      comment = comment_on_article
+      reply_and_mention_comment_author(comment)
 
       expect_no_duplicate_notifications_for_comment_author
     end
 
     it "doesn't create mention, when replying as moderator" do
-      comment_on_article
-      reply_and_mention_comment_author_as_moderator
+      comment = comment_on_article
+      reply_and_mention_comment_author_as_moderator(comment)
 
       expect_no_duplicate_notifications_for_comment_author
     end
@@ -128,18 +131,20 @@ RSpec.describe "CommentsCreate", type: :request do
       sign_in comment_author
       post comments_path, params: comment_params
       expect_request_to_be_successful
+
+      Comment.first
     end
 
-    def reply_and_mention_comment_author
+    def reply_and_mention_comment_author(comment)
       sign_in user_replier
       post comments_path, params: comment_params(
         parent_id: comment.id,
-        body_markdown: "Hello, @#{comment_author.username}",
+        body_markdown: text_mentioning_comment_author,
       )
       expect_request_to_be_successful
     end
 
-    def reply_and_mention_comment_author_as_moderator
+    def reply_and_mention_comment_author_as_moderator(comment)
       allow(SiteConfig).to receive(:mascot_user_id).and_return(mascot.id)
 
       sign_in moderator_replier
