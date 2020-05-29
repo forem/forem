@@ -3,6 +3,13 @@
 <h2>Create a new Page Redirect</h2>
 
 <%= form_with model: [:internal, @page_redirect], method: :post, local: true do |form| %>
-  <%= render partial: "form", locals: { page_redirect: @page_redirect } %>
+  <div class="form-group">
+    <%= form.label :old_slug %>
+    <%= form.text_field :old_slug, class: "form-control", placeholder: "The old slug (i.e. /username/old-slug)" %>
+  </div>
+  <div class="form-group">
+    <%= form.label :new_slug %>
+    <%= form.text_field :new_slug, class: "form-control", placeholder: "The new slug (i.e. /username/new-slug)" %>
+  </div>
   <%= form.submit "Create Page Redirect", class: "btn btn-primary" %>
 <% end %>

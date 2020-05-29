@@ -3,7 +3,14 @@
 <h2>Page Redirect - ID:  <%= @page_redirect.id %></h2>
 
 <%= form_with model: [:internal, @page_redirect], method: :patch, local: true do |form| %>
-  <%= render partial: "form", locals: { page_redirect: @page_redirect } %>
+  <div class="form-group">
+    <%= form.label :old_slug %>
+    <%= form.text_field :old_slug, class: "form-control", disabled: true %>
+  </div>
+  <div class="form-group">
+    <%= form.label :new_slug %>
+    <%= form.text_field :new_slug, class: "form-control" %>
+  </div>
   <%= form.submit "Update Page Redirect", class: "btn btn-primary" %>
 <% end %>
 

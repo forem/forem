@@ -112,15 +112,23 @@ RSpec.describe "/internal/page_redirects", type: :request do
       end
 
       it "renders an error if the request was invalid" do
-        page_redirect = create(:page_redirect)
-        another_page_redirect = create(:page_redirect)
         patch internal_page_redirect_path(page_redirect.id), params: {
           page_redirect: {
-            old_slug: another_page_redirect.old_slug,
-            new_slug: page_redirect.new_slug
+            new_slug: ""
           }
         }
-        expect(response.body).to include("Old slug has already been taken")
+        expect(response.body).to include(CGI.escapeHTML("New slug can't be blank"))
+      end
+
+      it "doesn't update old_slug" do
+        updated_old_slug = "/an-updated-old-slug"
+        patch internal_page_redirect_path(page_redirect.id), params: {
+          page_redirect: {
+            old_slug: updated_old_slug
+          }
+        }
+
+        expect(page_redirect.old_slug).not_to eq updated_old_slug
       end
 
       it "sets source to admin" do
