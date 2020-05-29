@@ -35,6 +35,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       twitter_hashtag
       shop_url
       payment_pointer
+      health_check_token
     ]
 
     allowed_params = allowed_params |
