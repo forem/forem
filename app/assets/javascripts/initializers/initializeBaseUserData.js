@@ -42,24 +42,24 @@ function addRelevantButtonsToArticle(user) {
   if (articleContainer) {
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
       let actions = [
-        `<a href="${articleContainer.dataset.path}/edit" rel="nofollow">EDIT</a>`,
+        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
       ];
       if (JSON.parse(articleContainer.dataset.published) === true) {
         actions.push(
-          `<a href="${articleContainer.dataset.path}/manage" rel="nofollow">MANAGE</a>`,
+          `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,
         );
       }
       if (user.pro) {
         actions.push(
-          `<a href="${articleContainer.dataset.path}/stats" rel="nofollow">STATS</a>`,
+          `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
         );
       }
       document.getElementById('action-space').innerHTML = actions.join('');
     } else if (user.trusted) {
       document.getElementById('action-space').innerHTML =
-        '<a href="' +
+        '<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="' +
         articleContainer.dataset.path +
-        '/mod" rel="nofollow">MODERATE <span class="post-word">POST</span></a>';
+        '/mod" rel="nofollow">Moderate</a>';
     }
   }
 }

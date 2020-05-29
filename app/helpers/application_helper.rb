@@ -128,7 +128,7 @@ module ApplicationHelper
     return if followable == DELETED_USER
 
     tag :button, # Yikes
-        class: "cta follow-action-button",
+        class: "crayons-btn follow-action-button",
         data: {
           :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
