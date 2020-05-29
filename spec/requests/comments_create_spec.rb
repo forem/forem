@@ -110,14 +110,14 @@ RSpec.describe "CommentsCreate", type: :request do
       "Hello, @#{comment_author.username}"
     end
 
-    it "doesn't create mention, when replying as regular user" do
+    it "doesn't create mention notification, when replying as regular user" do
       comment = comment_on_article
       reply_and_mention_comment_author(comment)
 
       expect_no_duplicate_notifications_for_comment_author
     end
 
-    it "doesn't create mention, when replying as moderator" do
+    it "doesn't create mention notification, when replying as moderator" do
       comment = comment_on_article
       reply_and_mention_comment_author_as_moderator(comment)
 
@@ -150,7 +150,6 @@ RSpec.describe "CommentsCreate", type: :request do
       sign_in moderator_replier
       post moderator_create_comments_path, params: comment_params(
         parent_id: comment.id,
-        body_markdown: "Hello, @#{comment_author.username}",
       ).merge(response_template: { id: response_template.id })
       expect(response).to be_successful
     end
