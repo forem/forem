@@ -470,6 +470,22 @@ end
 
 ##############################################################################
 
+num_page_redirects = 2 * SEEDS_MULTIPLIER
+
+counter += 1
+Rails.logger.info "#{counter}. Creating #{num_page_redirects} PageRedirects"
+
+articles_for_old_paths = Article.where(published: true).last(num_page_redirects)
+articles_for_new_paths = Article.where.not(id: articles_for_old_paths.map(&:id), published: false).first(num_page_redirects)
+
+articles_for_old_paths.each_with_index do |old_article, i|
+  new_article = articles_for_new_paths[i]
+  PageRedirect.create!(old_path: old_article.path, new_path: new_article.path)
+end
+
+##############################################################################
+
+# rubocop:disable Rails/Output
 puts <<-ASCII
 
   ```````````````````````````````````````````````````````````````````````````
