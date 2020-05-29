@@ -113,5 +113,4 @@ class SiteConfig < RailsSettings::Base
 
   # Other
   field :welcome_notifications_live_at, type: :date
-
 end
