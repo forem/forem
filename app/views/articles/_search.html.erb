@@ -25,8 +25,8 @@
     document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
     if (document.getElementById("query-wrapper")) {
       search(query, filters, sortBy, sortDirection);
-      initializeFilters(query, filters, sortBy, sortDirection);
-      initializeSortingSelect(query, filters, sortBy, sortDirection);
+      initializeFilters(query, filters);
+      initializeSortingSelect(query);
     }
   }
 
@@ -34,10 +34,13 @@
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  function initializeSortingSelect(query, filters, sortBy, sortDirection) {
+  function initializeSortingSelect(query) {
     var sortSelect = document.getElementById("sort");
 
     sortSelect.onchange = function (e) {
+      var currentParams = getQueryParams(document.location.search);
+      var filters = filterXSS(currentParams.filters);
+
       var { sortBy, sortDirection } = e.target.selectedOptions[0].dataset
       var sortString = buildSortString(sortBy, sortDirection);
 
@@ -51,18 +54,24 @@
     }
   }
 
-  function initializeFilters(query, filters, sortBy, sortDirection) {
-    var sortString = buildSortString(sortBy, sortDirection);
+  function initializeFilters(query, filters) {
     var filterButts = document.getElementsByClassName("query-filter-button");
     for (var i = 0; i < filterButts.length; i++) {
       if (filters == filterButts[i].dataset.filter) {
         filterButts[i].classList.add("selected");
       }
       filterButts[i].onclick = function (e) {
+        var currentParams = getQueryParams(document.location.search);
+        var sortBy = filterXSS(currentParams.sort_by);
+        var sortDirection = filterXSS(currentParams.sort_direction);
+        var sortString = buildSortString(sortBy, sortDirection);
+
         if (e.target.classList.contains("my-posts-query-button") && !checkUserLoggedIn()) {
           showModal("search-my-posts");
           return;
         }
+        console.log("Current params: ", currentParams);
+        console.log("Sort string: ", sortString);
         var filters = e.target.dataset.filter;
         window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
         var className = e.target.className;
