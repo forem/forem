@@ -1,7 +1,10 @@
 class ChatChannelsController < ApplicationController
   before_action :authenticate_user!, only: %i[moderate]
-  before_action :set_channel, only: %i[show update open moderate]
+  before_action :set_channel, only: %i[show update update_channel open moderate]
   after_action :verify_authorized
+
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   def index
     if params[:state] == "unopened"
@@ -33,19 +36,34 @@ class ChatChannelsController < ApplicationController
   end
 
   def update
-    if ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
-      if !chat_channel_params[:discoverable].to_i.zero?
-        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: @chat_channel.id, role: "member", status: "active")
+    chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_params)
+    if chat_channel.errors.any?
+      flash[:error] = chat_channel.errors.full_messages.to_sentence
+    else
+      if chat_channel_params[:discoverable].to_i.zero?
+        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id, role: "member", status: "active")
       else
         ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
       end
       flash[:settings_notice] = "Channel settings updated."
-    else
-      default_error_message = "Channel settings updation failed. Try again later."
-      flash[:error] = @chat_channel.errors.full_messages.to_sentence.presence || default_error_message
     end
     current_user_membership = @chat_channel.mod_memberships.find_by!(user: current_user)
+
     redirect_to edit_chat_channel_membership_path(current_user_membership)
+  end
+
+  def update_channel
+    chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_params)
+    if chat_channel.errors.any?
+      render json: { success: false, errors: chat_channel.errors.full_messages, message: "Channel settings updation failed. Try again later." }, success: :bad_request
+    else
+      if chat_channel_params[:discoverable].to_i.zero?
+        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id, role: "member", status: "active")
+      else
+        ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
+      end
+      render json: { success: true, message: "Channel settings updated.", data: {} }, success: :ok
+    end
   end
 
   def open
@@ -219,5 +237,13 @@ class ChatChannelsController < ApplicationController
                       @chat_channel.adjusted_slug(current_user)
                     end
     Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened", { channel_type: @chat_channel.channel_type, adjusted_slug: adjusted_slug }.to_json)
+  end
+
+  def user_not_authorized
+    render json: { success: false, message: "not authorized" }, status: :unauthorized
+  end
+
+  def record_not_found
+    render json: { success: false, message: "not found" }, status: :not_found
   end
 end
