@@ -138,9 +138,12 @@ class MarkdownParser
   end
 
   def catch_xss_attempts(markdown)
-    bad_xss = ['src="data', "src='data", "src='&", 'src="&', "data:text/html"]
-    bad_xss.each do |xss_attempt|
-      raise ArgumentError, "Invalid markdown detected" if markdown.include?(xss_attempt)
+    bad_xss_regex = [
+      Regexp.new("src=[\"'](data|&)", Regexp::IGNORECASE),
+      Regexp.new("data:text/html[,;][\sa-z0-9]*", Regexp::IGNORECASE),
+    ]
+    bad_xss_regex.each do |xss_attempt|
+      raise ArgumentError, "Invalid markdown detected" if xss_attempt.match(markdown)
     end
   end
 
