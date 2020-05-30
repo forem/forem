@@ -478,6 +478,11 @@ class StoriesController < ApplicationController
   end
 
   def sort_options
-    '<option value="relevant" selected>MOST RELEVANT</option><option value="newest">NEWEST</option><option value="oldest">OLDEST</option>'
+    # The current default behaviour is a search based on relevance. This sorting technique is more
+    # complex than a simple value of sort_by and sort_direction, so it doesn't make sense to set
+    # values for those parameters in the "Most Relevant" option tag.
+    "<option value=\"relevant\" selected>Most Relevant</option>\
+      <option value=\"newest\" data-sort-by=\"published_at\" data-sort-direction=\"desc\">Newest</option>\
+      <option value=\"oldest\" data-sort-by=\"published_at\" data-sort-direction=\"asc\">Oldest</option>"
   end
 end
