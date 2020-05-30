@@ -25,7 +25,8 @@
     document.getElementById("substories").innerHTML = '<div class="query-results-nothing"><div class="query-results-loader"></div><br/></div>'
     if (document.getElementById("query-wrapper")) {
       search(query, filters, sortBy, sortDirection);
-      initializeFilters(query, filters);
+      initializeFilters(query, filters, sortBy, sortDirection);
+      initializeSortingSelect(query, filters, sortBy, sortDirection);
     }
   }
 
@@ -33,7 +34,25 @@
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
-  function initializeFilters(query, filters) {
+  function initializeSortingSelect(query, filters, sortBy, sortDirection) {
+    var sortSelect = document.getElementById("sort");
+
+    sortSelect.onchange = function (e) {
+      var { sortBy, sortDirection } = e.target.selectedOptions[0].dataset
+      var sortString = buildSortString(sortBy, sortDirection);
+
+      if (filters) {
+        window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
+        search(query, filters, sortBy, sortDirection);
+      } else {
+        window.history.replaceState(null, null, "/search?q=" + query + sortString);
+        search(query, "", sortBy, sortDirection);
+      }
+    }
+  }
+
+  function initializeFilters(query, filters, sortBy, sortDirection) {
+    var sortString = buildSortString(sortBy, sortDirection);
     var filterButts = document.getElementsByClassName("query-filter-button");
     for (var i = 0; i < filterButts.length; i++) {
       if (filters == filterButts[i].dataset.filter) {
@@ -45,18 +64,18 @@
           return;
         }
         var filters = e.target.dataset.filter;
-        window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
+        window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
         var className = e.target.className;
         for (var i = 0; i < filterButts.length; i++) {
           filterButts[i].classList.remove("selected");
         }
         if (className.indexOf("selected") == -1) {
           e.target.classList.add("selected");
-          window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters);
-          search(query, filters);
+          window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
+          search(query, filters, sortBy, sortDirection);
         } else {
-          window.history.replaceState(null, null, "/search?q=" + query);
-          search(query, "");
+          window.history.replaceState(null, null, "/search?q=" + query + sortString);
+          search(query, "", sortBy, sortDirection);
         }
       }
     }
@@ -70,10 +89,19 @@
     }
   }
 
+  function buildSortString(sortBy, sortDirection) {
+    return sortBy && sortDirection ? "&sort_by=" + sortBy + "&sort_direction=" + sortDirection : "";
+  }
+
   function search(query, filters, sortBy, sortDirection) {
     var hashtags = query.match(/#\w+/g);
     var searchTerm = query.replace(/#/g, '').trim();
-    var searchHash = { per_page: 60, page: 0, sort_by: sortBy, sort_direction: sortDirection };
+    var searchHash = { per_page: 60, page: 0 };
+
+    if (sortBy && sortDirection) {
+      searchHash.sort_by = sortBy;
+      searchHash.sort_direction = sortDirection;
+    }
 
     if (filters === "MY_POSTS" && userData()) {
       searchHash.user_id = userData()['id'];
