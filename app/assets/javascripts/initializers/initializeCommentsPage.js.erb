@@ -252,7 +252,9 @@ function handleCommentSubmit(event) {
       } else {
         response.json().then(function parseError(errorReponse) {
           form.classList.remove('submitting');
-          window.alert(errorReponse.error); // eslint-disable-line no-alert
+          //window.alert(errorReponse.error); // eslint-disable-line no-alert
+          // Reload instead of alert, due to current issue.
+          window.location.href = window.location.href
           return false;
         });
       }
