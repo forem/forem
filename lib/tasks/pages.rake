@@ -1,5 +1,5 @@
 namespace :pages do
-  desc "binds a Page using it's slug to local HTML file (absolute path)"
+  desc "Automated sync of Page HTML body by listening to changes of local file"
   task :bind, [:slug, :filepath] => [:environment] do |task, args|
     listener = Listen.to(Pathname.new(args.filepath).dirname) do
       puts "Reloading page..."
