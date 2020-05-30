@@ -268,9 +268,11 @@ ActiveRecord::Schema.define(version: 2020_05_26_151807) do
   create_table "broadcasts", id: :serial, force: :cascade do |t|
     t.boolean "active", default: false
     t.text "body_markdown"
+    t.datetime "created_at"
     t.text "processed_html"
     t.string "title"
     t.string "type_of"
+    t.datetime "updated_at"
   end
 
   create_table "buffer_updates", force: :cascade do |t|
