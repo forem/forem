@@ -12,7 +12,7 @@ class SiteConfig < RailsSettings::Base
   cache_prefix { "v1" }
 
   # API Tokens
-  field :health_check_token, type: :string, default: "secret"
+  field :health_check_token, type: :string
 
   # Authentication
   field :authentication_providers, type: :array, default: Authentication::Providers.available
