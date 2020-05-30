@@ -167,7 +167,7 @@ RSpec.describe MarkdownParser, type: :labor do
     expect(generate_and_parse_markdown(inline_code)).to include(inline_code[1..-2])
   end
 
-  context "when checking XSS attempt in markdown conten" do
+  context "when checking XSS attempt in markdown content" do
     it "raises an error if XSS attempt detected" do
       expect {
         generate_and_parse_markdown("src='DatA:text/html;base64:xxxx'")
