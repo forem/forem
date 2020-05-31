@@ -109,9 +109,9 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
         type_of_user: "member",
       )
     end
-
-    User.order(Arel.sql("RANDOM()"))
   end
+
+  User.order(Arel.sql("RANDOM()"))
 end
 
 ##############################################################################
