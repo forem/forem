@@ -1,16 +1,3 @@
-module PunditExtension
-  def authorize(record, query = nil, policy_class: nil)
-    puts "record: #{record.inspect}"
-    puts "query: #{query}"
-    puts "policy class: #{policy_class}"
-    super(record, query, policy_class: policy_class)
-  end
-end
-
-module Pundit
-  prepend PunditExtension
-end
-
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
