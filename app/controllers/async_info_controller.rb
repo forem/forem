@@ -56,8 +56,6 @@ class AsyncInfoController < ApplicationController
         display_sponsors: @user.display_sponsors,
         trusted: @user.trusted,
         moderator_for_tags: @user.moderator_for_tags,
-        experience_level: @user.experience_level,
-        preferred_languages_array: @user.preferred_languages_array,
         config_body_class: @user.config_body_class,
         pro: @user.pro?,
         created_at: @user.created_at
