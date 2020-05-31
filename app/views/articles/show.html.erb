@@ -14,7 +14,7 @@
           clearInterval(waitingOnPostscribe);
           var els = document.getElementsByClassName("ltag_gist-liquid-tag");
           for (var i = 0; i < els.length; i++) {
-            var current = els[i];
+            let current = els[i];
             postscribe(current, current.firstElementChild.outerHTML, {
               beforeWrite: function (context) {
                 return function (text) {
