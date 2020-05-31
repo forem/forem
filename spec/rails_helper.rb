@@ -109,6 +109,14 @@ RSpec.configure do |config|
     SiteConfig.clear_cache
   end
 
+  config.after(:each, type: :system) do
+    Warden.test_reset!
+  end
+
+  config.after(:each, type: :request) do
+    Warden.test_reset!
+  end
+
   # Only turn on VCR if :vcr is included metadata keys
   config.around do |ex|
     if ex.metadata.key?(:vcr)
