@@ -1,63 +1,68 @@
+function updateAllCommentableButtonsAndReactionCountsAndStuff(commentableType, commentableIdList) {
+  commentableIdList.forEach((_, i) => {
+    updateButtonsAndReactionCountsAndStuff(commentableType, commentableIdList,
+      i);
+  })
+};
+
+function updateButtonsAndReactionCountsAndStuff(commentableType, commentableIdList, i) {
+  var ajaxReq;
+  if (window.XMLHttpRequest) {
+    ajaxReq = new XMLHttpRequest();
+  } else {
+    ajaxReq = new ActiveXObject('Microsoft.XMLHTTP');
+  }
+  ajaxReq.onreadystatechange = function () {
+    if (ajaxReq.readyState === XMLHttpRequest.DONE) {
+      var responseObj = JSON.parse(ajaxReq.response);
+      var reactions = responseObj.reactions;
+      var allNodes = document.getElementsByClassName('single-comment-node');
+      var publicReactionCounts = responseObj.public_reaction_counts;
+      for (var i = 0; i < reactions.length; i++) {
+        var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
+        if (buttForComment) {
+          buttForComment.classList.add('reacted');
+        }
+      }
+      for (var i = 0; i < publicReactionCounts.length; i++) {
+        var buttForComment = document.getElementById('button-for-comment-' + publicReactionCounts[i].id);
+        if (buttForComment) {
+          if (publicReactionCounts[i].count > 0) {
+            if (!document.getElementById('reactions-count-' + publicReactionCounts[i].id)) {
+              buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + publicReactionCounts[i].id + "'>" + publicReactionCounts[i].count + '</span>';
+            } else {
+              document.getElementById('reactions-count-' + publicReactionCounts[i].id).innerHTML = publicReactionCounts[i].count;
+            }
+          }
+        }
+      }
+
+      for (var i = 0; i < allNodes.length; i++) {
+        if (allNodes[i].dataset.commentAuthorId == responseObj.current_user.id) {
+          allNodes[i].dataset.currentUserComment = "true";
+          var userActionsEl = allNodes[i].children[0].children[2].children[0];
+          var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
+          if (userActionsEl && buttEl) {
+            userActionsEl.className = 'current-user-actions';
+            userActionsEl.style.display = 'inline-block';
+            document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
+          }
+        }
+      }
+    }
+  };
+
+  ajaxReq.open("GET", "/reactions?commentable_id=" + commentableIdList[i] + "&commentable_type=" + commentableType, true);
+  ajaxReq.send();
+}
+
 function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
     toggleCodeOfConduct();
     var commentableId = document.getElementById('comments-container').dataset.commentableId;
     var commentableType = document.getElementById('comments-container').dataset.commentableType;
     commentableIdList = commentableId.split(",");
-    var f = (function() {
-      for (var i = 0; i < commentableIdList.length; i++) {
-        (function(i){
-          var ajaxReq;
-          if (window.XMLHttpRequest) {
-            ajaxReq = new XMLHttpRequest();
-          } else {
-            ajaxReq = new ActiveXObject('Microsoft.XMLHTTP');
-          }
-          ajaxReq.onreadystatechange = function () {
-            if (ajaxReq.readyState === XMLHttpRequest.DONE) {
-              var responseObj = JSON.parse(ajaxReq.response);
-              var reactions = responseObj.reactions;
-              var allNodes = document.getElementsByClassName('single-comment-node');
-              var publicReactionCounts = responseObj.public_reaction_counts;
-              for (var i = 0; i < reactions.length; i++) {
-                var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
-                if (buttForComment) {
-                  buttForComment.classList.add('reacted');
-                }
-              }
-              for (var i = 0; i < publicReactionCounts.length; i++) {
-                var buttForComment = document.getElementById('button-for-comment-' + publicReactionCounts[i].id);
-                if (buttForComment) {
-                  if (publicReactionCounts[i].count > 0) {
-                    if (!document.getElementById('reactions-count-' + publicReactionCounts[i].id)) {
-                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + publicReactionCounts[i].id + "'>" + publicReactionCounts[i].count + '</span>';
-                    } else {
-                      document.getElementById('reactions-count-' + publicReactionCounts[i].id).innerHTML = publicReactionCounts[i].count;
-                    }
-                  }
-                }
-              }
-
-              for (var i = 0; i < allNodes.length; i++) {
-                if (allNodes[i].dataset.commentAuthorId == responseObj.current_user.id) {
-                  allNodes[i].dataset.currentUserComment = "true";
-                  var userActionsEl = allNodes[i].children[0].children[2].children[0];
-                  var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
-                  if (userActionsEl && buttEl) {
-                    userActionsEl.className = 'current-user-actions';
-                    userActionsEl.style.display = 'inline-block';
-                    document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
-                  }
-                }
-              }
-            }
-          };
-
-          ajaxReq.open("GET", "/reactions?commentable_id=" + commentableIdList[i] + "&commentable_type=" + commentableType, true);
-          ajaxReq.send();
-        })(i);
-      }
-    })();
+    updateAllCommentableButtonsAndReactionCountsAndStuff(commentableType, commentableIdList);
 
     var butts = document.getElementsByClassName('reaction-button');
     for (var i = 0; i < butts.length; i++) {
