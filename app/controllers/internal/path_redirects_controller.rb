@@ -3,6 +3,10 @@ class Internal::PathRedirectsController < Internal::ApplicationController
 
   before_action :set_path_redirect, only: %i[edit update destroy]
 
+  after_action only: %i[update destroy create] do
+    Audit::Logger.log(:moderator, current_user, params.dup)
+  end
+
   def new
     @path_redirect = PathRedirect.new
   end
