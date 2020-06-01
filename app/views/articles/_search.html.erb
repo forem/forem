@@ -26,7 +26,6 @@
     if (document.getElementById("query-wrapper")) {
       search(query, filters, sortBy, sortDirection);
       initializeFilters(query, filters);
-      initializeSortingSelect(query);
       initializeSortingTabs(query);
     }
   }
@@ -55,28 +54,16 @@
           window.history.replaceState(null, null, "/search?q=" + query + sortString);
           search(query, "", sortBy, sortDirection);
         }
+
+        for (var j=0; j < sortingTabs.length; j++) {
+          if (sortingTabs[j] !== e.target) {
+            sortingTabs[j].classList.remove("crayons-tabs__item--current");
+          }
+        }
+
+        e.target.classList.add("crayons-tabs__item--current");
       });
     }
-  }
-
-  function initializeSortingSelect(query) {
-    var sortSelect = document.getElementById("sort");
-
-    sortSelect.addEventListener("change", function (e) {
-      var currentParams = getQueryParams(document.location.search);
-      var filters = filterXSS(currentParams.filters);
-
-      var { sortBy, sortDirection } = e.target.selectedOptions[0].dataset;
-      var sortString = buildSortString(sortBy, sortDirection);
-
-      if (filters) {
-        window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
-        search(query, filters, sortBy, sortDirection);
-      } else {
-        window.history.replaceState(null, null, "/search?q=" + query + sortString);
-        search(query, "", sortBy, sortDirection);
-      }
-    });
   }
 
   function initializeFilters(query, filters) {
