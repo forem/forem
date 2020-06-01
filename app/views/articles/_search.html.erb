@@ -27,11 +27,36 @@
       search(query, filters, sortBy, sortDirection);
       initializeFilters(query, filters);
       initializeSortingSelect(query);
+      initializeSortingTabs(query);
     }
   }
 
   function htmlEntities(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function initializeSortingTabs(query) {
+    var sortingTabs = document.getElementById("sorting-option-tabs").children;
+
+    for (var i=0; i < sortingTabs.length; i++) {
+      var tab = sortingTabs[i];
+
+      tab.addEventListener("click", function(e) {
+        var currentParams = getQueryParams(document.location.search);
+        var filters = filterXSS(currentParams.filters);
+
+        var { sortBy, sortDirection } = e.target.dataset;
+        var sortString = buildSortString(sortBy, sortDirection);
+
+        if (filters) {
+          window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
+          search(query, filters, sortBy, sortDirection);
+        } else {
+          window.history.replaceState(null, null, "/search?q=" + query + sortString);
+          search(query, "", sortBy, sortDirection);
+        }
+      });
+    }
   }
 
   function initializeSortingSelect(query) {
