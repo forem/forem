@@ -14,13 +14,7 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
 
   def ban_user
     visit "/internal/users/#{user.id}/edit"
-    Rails.logger.error('before select')
-    begin
-      select("Ban", from: "user_user_status")
-    rescue
-      Rails.logger.error('in rescue')
-    end
-    Rails.logger.error('after select')
+    select("Ban", from: "user_user_status")
     fill_in("user_note_for_current_role", with: "something")
     click_button("Update User Status")
     expect(page).to have_content("User has been updated")
