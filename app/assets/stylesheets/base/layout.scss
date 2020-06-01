@@ -1,7 +1,6 @@
 @import '../config/import';
 
 :root {
-<<<<<<< HEAD
   --layout-sidebar-left-display: block;
   --layout-sidebar-right-display: block;
   --layout-sidebar-left-width: 100%;
@@ -27,13 +26,16 @@
     --layout-content-width: 1fr;
     --layout-gap: var(--su-4);
     --layout-padding: var(--su-4);
-=======
-  --layout-site-width: var(--site-width);
-  --layout-header-height: var(--header-height);
-  --layout-sidebar-width: 200px;
-  --layout-aside-width: 316px;
-  --layout-gap: var(--su-6);
-  --layout-padding: var(--su-6);
+  }
+
+
+
+
+
+
+
+
+
   --layout-article-content-padding-x: var(--su-3);
   --layout-article-content-padding-y: var(--su-3);
   --layout-narrow-sidebar-width: 66px;
@@ -50,8 +52,16 @@
 
   @media (min-width: $breakpoint-l) {
     --layout-article-content-padding-x: var(--su-8);
->>>>>>> master
   }
+
+
+
+
+
+
+
+
+
 }
 
 .crayons-layout {
@@ -68,7 +78,6 @@
     --site-width: #{$breakpoint-l};
   }
 
-<<<<<<< HEAD
   &__sidebar-left {
     display: var(--layout-sidebar-left-display);
     grid-row-end: var(--layout-sidebar-left-row-end);
@@ -86,10 +95,6 @@
       margin: 0 auto;
       width: 100%;
     }
-=======
-  &--max-l {
-    max-width: $breakpoint-l;
->>>>>>> master
   }
 }
 
