@@ -504,7 +504,7 @@ class Article < ApplicationRecord
 
   def remove_tag_adjustments_from_tag_list
     tags_to_remove = TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name)
-    tag_list.remove(tags_to_remove, parser: true) if tags_to_remove.present?
+    tag_list.remove(tags_to_remove, parse: true) if tags_to_remove.present?
   end
 
   def add_tag_adjustments_to_tag_list
