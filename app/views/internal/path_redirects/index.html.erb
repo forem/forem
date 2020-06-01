@@ -5,8 +5,8 @@
   <div class="col">
     <%= search_form_for @q, url: internal_path_redirects_path, class: "form-inline justify-content-end" do |f| %>
 
-      <%= f.label :old_path_or_new_path_cont, "Old or new path", class: "sr-only" %>
-      <%= f.search_field :old_path_or_new_path_cont, placeholder: "Old or new path", class: "form-control mx-3" %>
+      <%= f.label :old_path_or_new_path_cont, "Old or New Path", class: "sr-only" %>
+      <%= f.search_field :old_path_or_new_path_cont, placeholder: "Old or New Path", class: "form-control mx-3" %>
 
       <%= f.submit "Search", class: "btn btn-secondary" %>
     <% end %>
