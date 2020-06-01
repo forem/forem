@@ -4,7 +4,7 @@ import { Snackbar, addSnackbarItem } from '../Snackbar';
 // The Snackbar for the article page
 const snackZone = document.getElementById('snack-zone');
 
-render(<Snackbar lifespan="3" />, snackZone, snackZone.firstElementChild);
+render(<Snackbar lifespan="3" />, snackZone);
 
 const userDataIntervalID = setInterval(async () => {
   const { user = null, userStatus } = document.body.dataset;
