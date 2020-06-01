@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ArticleCoverImage /> renders properly 1`] = `
+<div
+  class="crayons-article-form__cover"
+  role="presentation"
+>
+  <img
+    alt="Post cover"
+    class="crayons-article-form__cover__image"
+    height="105"
+    src="/i/r5tvutqpl7th0qhzcw7f.png"
+    width="250"
+  />
+  <div
+    class="flex items-center"
+  >
+    <button
+      class="crayons-btn crayons-btn--outlined mr-2 whitespace-nowrap"
+      disabled={false}
+      type="button"
+    >
+      <label
+        htmlFor="cover-image-input"
+      >
+        Change
+      </label>
+      <input
+        accept="image/*"
+        class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
+        data-max-file-size-mb="25"
+        id="cover-image-input"
+        onChange={[Function]}
+        type="file"
+      />
+    </button>
+    <button
+      class="crayons-btn crayons-btn--ghost-danger"
+      disabled={false}
+      onClick={[Function]}
+      type="button"
+    >
+      Remove
+    </button>
+  </div>
+</div>
+`;

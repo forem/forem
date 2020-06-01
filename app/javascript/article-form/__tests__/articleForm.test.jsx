@@ -80,16 +80,4 @@ describe('<ArticleForm />', () => {
     expect(form.state().bodyMarkdown).toBe('');
   });
 
-  it('toggles help on help button press', () => {
-    const form = deep(getArticleForm());
-    global.scrollTo = jest.fn();
-    form
-      .find('.articleform__buttons--small')
-      .simulate('click', { preventDefault: () => {} });
-    expect(form.state().helpShowing).toBe(true);
-    form
-      .find('.articleform__buttons--small')
-      .simulate('click', { preventDefault: () => {} });
-    expect(form.state().helpShowing).toBe(false);
-  });
 });

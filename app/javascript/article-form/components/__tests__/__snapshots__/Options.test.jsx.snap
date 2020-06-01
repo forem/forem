@@ -1,0 +1,86 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Options /> renders properly 1`] = `
+<div
+  class="crayons-dropdown"
+>
+  <h3
+    class="mb-6"
+  >
+    Post options
+  </h3>
+  <div
+    class="crayons-field mb-6"
+  >
+    <label
+      class="crayons-field__label"
+      htmlFor="canonicalUrl"
+    >
+      Canonical URL
+    </label>
+    <p
+      class="crayons-field__description"
+    >
+      Change meta tag 
+      <code>
+        canonical_url
+      </code>
+       if this post was first published elsewhere (like your own blog).
+    </p>
+    <input
+      class="crayons-textfield"
+      id="canonicalUrl"
+      name="canonicalUrl"
+      onKeyUp={null}
+      placeholder="https://yoursite.com/post-title"
+      type="text"
+      value=""
+    />
+  </div>
+  <div
+    class="crayons-field mb-6"
+  >
+    <label
+      class="crayons-field__label"
+      htmlFor="series"
+    >
+      Series
+    </label>
+    <p
+      class="crayons-field__description"
+    >
+      Will this post be part of a series? Give the series a unique name. (Series visible once it has multiple posts)
+    </p>
+    <input
+      class="crayons-textfield"
+      id="series"
+      name="series"
+      onKeyUp={null}
+      placeholder="..."
+      type="text"
+      value=""
+    />
+    <p
+      class="crayons-field__description"
+    >
+      Existing series: 
+      <button
+        name="series"
+        onClick={null}
+        type="button"
+        value="Learn Something new a day"
+      >
+        Learn Something new a day
+      </button>
+    </p>
+  </div>
+  <button
+    class="crayons-btn w-100"
+    disabled={false}
+    onClick={null}
+    type="button"
+  >
+    Done
+  </button>
+</div>
+`;
