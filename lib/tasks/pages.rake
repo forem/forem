@@ -15,8 +15,7 @@ namespace :pages do
       page = Page.find_by(slug: args.slug)
 
       if page.nil?
-        # Silence the log because 'spec/tasks/pages_spec.rb' relies on threads
-        puts "Error: Page with slug '#{args.slug}' not found" unless Rails.env.test?
+        puts "Error: Page with slug '#{args.slug}' not found"
         next
       end
 
