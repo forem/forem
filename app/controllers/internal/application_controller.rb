@@ -2,6 +2,8 @@ class Internal::ApplicationController < ApplicationController
   before_action :authorize_admin
   after_action :verify_authorized
 
+  # This is to used in app/views/internal/shared/_navbar.html.erb to build the
+  # side navbar in alphabetical order.
   MENU_ITEMS = [
     { name: "articles",           controller: "articles" },
     { name: "broadcasts",         controller: "broadcasts" },
