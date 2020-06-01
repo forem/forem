@@ -85,7 +85,6 @@ describe('Chat utilities', () => {
         reading_list_ids: [48, 49, 34, 51, 64, 56],
         saw_onboarding: true,
         checked_code_of_conduct: false,
-        number_of_comments: 0,
         display_sponsors: true,
         trusted: false,
       };
