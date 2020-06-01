@@ -111,8 +111,12 @@ class StoriesController < ApplicationController
       Honeycomb.add_field("stories_route", "org")
       handle_organization_index
     elsif @page
-      Honeycomb.add_field("stories_route", "page")
-      handle_page_display
+      if FeatureFlag.accessible?(@page.feature_flag_name, current_user)
+        Honeycomb.add_field("stories_route", "page")
+        handle_page_display
+      else
+        not_found
+      end
     else
       Honeycomb.add_field("stories_route", "user")
       handle_user_index
