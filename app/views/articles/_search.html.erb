@@ -37,7 +37,7 @@
   function initializeSortingSelect(query) {
     var sortSelect = document.getElementById("sort");
 
-    sortSelect.onchange = function (e) {
+    sortSelect.addEventListener("change", function (e) {
       var currentParams = getQueryParams(document.location.search);
       var filters = filterXSS(currentParams.filters);
 
@@ -51,7 +51,7 @@
         window.history.replaceState(null, null, "/search?q=" + query + sortString);
         search(query, "", sortBy, sortDirection);
       }
-    }
+    });
   }
 
   function initializeFilters(query, filters) {
