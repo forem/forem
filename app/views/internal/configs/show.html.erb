@@ -171,6 +171,15 @@
             </div>
 
             <div class="form-group">
+              <%= f.label :community_action, "Community action" %>
+              <%= f.text_field :community_action,
+                               class: "form-control",
+                               value: SiteConfig.community_action,
+                               placeholder: "" %>
+              <div class="alert alert-info">Used to determine the action of community e.g coding, reading, training etc.</div>
+            </div>
+
+            <div class="form-group">
               <%= f.label :tagline, "Tagline" %>
               <%= f.text_field :tagline,
                                class: "form-control",
