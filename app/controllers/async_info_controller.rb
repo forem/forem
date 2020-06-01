@@ -46,7 +46,6 @@ class AsyncInfoController < ApplicationController
         profile_image_90: ProfileImage.new(@user).get(width: 90),
         followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score], methods: [:points]),
         followed_user_ids: @user.cached_following_users_ids,
-        followed_organization_ids: @user.cached_following_organizations_ids,
         followed_podcast_ids: @user.cached_following_podcasts_ids,
         reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
         blocked_user_ids: @user.all_blocking.pluck(:blocked_id),
@@ -57,8 +56,6 @@ class AsyncInfoController < ApplicationController
         display_sponsors: @user.display_sponsors,
         trusted: @user.trusted,
         moderator_for_tags: @user.moderator_for_tags,
-        experience_level: @user.experience_level,
-        preferred_languages_array: @user.preferred_languages_array,
         config_body_class: @user.config_body_class,
         pro: @user.pro?,
         created_at: @user.created_at

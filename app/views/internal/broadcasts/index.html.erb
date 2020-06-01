@@ -1,30 +1,46 @@
-<div class="row justify-content-end">
-  <%= link_to "Make A New Broadcast", new_internal_broadcast_path, class: "btn btn-primary" %>
+<div class="row my-3">
+  <div class="col">
+    <ul class="nav nav-pills">
+      <li class="nav-item">
+        <%= link_to "All", internal_broadcasts_path, class: "nav-link #{'active' if params[:type_of].blank?}" %>
+      </li>
+      <li class="nav-item">
+        <%= link_to "Announcement", internal_broadcasts_path(type_of: :announcement), class: "nav-link #{'active' if params[:type_of] == 'announcement'}" %>
+      </li>
+      <li class="nav-item">
+        <%= link_to "Welcome", internal_broadcasts_path(type_of: :welcome), class: "nav-link #{'active' if params[:type_of] == 'welcome'}" %>
+      </li>
+    </ul>
+  </div>
+  <div class="col">
+    <div class="row justify-content-end">
+      <%= link_to "Make A New Broadcast", new_internal_broadcast_path, class: "btn btn-primary" %>
+    </div>
+  </div>
 </div>
 
-<h2>Current Broadcasts</h2>
-<hr>
-
-<div class="row">
-  <div class="alert alert-warning"><strong>Note: You must ensure that your Broadcast is active in order for it to be sent to users!<strong></div>
-  <div class="list-group-flush w-100">
-    <% @broadcasts.each do |broadcast| %>
-      <a class="list-group-item list-group-item-action flex-column align-items-start" href="/internal/broadcasts/<%= broadcast.id %>/edit">
-        <h3 class="mb-2">Title: <%= broadcast.title %></h3>
-        <h3>Broadcast Type: <%= broadcast.type_of %></h3>
-        <h3>Content:</h3>
-        <p>
-          <%= broadcast.processed_html %>
-        </p>
-        <h3>Status:</h3>
-        <h3>
-          <span class="badge badge-<%= broadcast.active? ? "success" : "warning" %>">
-            <%= broadcast.active? ? "Active" : "Inactive" %>
-          </span>
-          <span class="sr-only">Broadcast Status</span>
-        </h3>
-      </a>
-    <% end %>
+<div class="row my-3">
+  <div class="col">
+    <div class="alert alert-warning"><strong>Note: You must ensure that your Broadcast is active in order for it to be sent to users!<strong></div>
+    <div class="list-group-flush w-100">
+      <% @broadcasts.each do |broadcast| %>
+        <a class="list-group-item list-group-item-action flex-column align-items-start" href="/internal/broadcasts/<%= broadcast.id %>/edit">
+          <h3 class="mb-2">Title: <%= broadcast.title %></h3>
+          <h3>Broadcast Type: <%= broadcast.type_of %></h3>
+          <h3>Content:</h3>
+          <p>
+            <%= broadcast.processed_html %>
+          </p>
+          <h3>Status:</h3>
+          <h3>
+            <span class="badge badge-<%= broadcast.active? ? "success" : "warning" %>">
+              <%= broadcast.active? ? "Active" : "Inactive" %>
+            </span>
+            <span class="sr-only">Broadcast Status</span>
+          </h3>
+        </a>
+      <% end %>
+    </div>
   </div>
 </div>
 

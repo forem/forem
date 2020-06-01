@@ -26,190 +26,20 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "Community Content",
+                       header: "API Tokens",
                        state: "collapse",
-                       target: "contentBodyContainer",
+                       target: "apiBodyContainer",
                        expanded: "false"
                      } %>
-          <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
+          <div id="apiBodyContainer" class="card-body collapse hide" aria-labelledby="apiBodyContainer">
             <div class="form-group">
-              <%= f.label :community_description, "Community description" %>
-              <%= f.text_field :community_description,
+              <%= f.label :health_check_token, "Health Check Token" %>
+              <%= f.text_field :health_check_token,
                                class: "form-control",
-                               value: SiteConfig.community_description,
-                               placeholder: "A fabulous community of kind and welcoming people." %>
-              <div class="alert alert-info">Used in meta description tags etc.</div>
+                               value: SiteConfig.health_check_token,
+                               placeholder: "a secure token" %>
+              <div class="alert alert-info">Used to authenticate with your health check endpoints.</div>
             </div>
-
-            <div class="form-group">
-              <%= f.label :community_member_description, "Community member description" %>
-              <%= f.text_field :community_member_description,
-                               class: "form-control",
-                               value: SiteConfig.community_member_description,
-                               placeholder: "amazing humans who code." %>
-              <div class="alert alert-info">Used in pre-login banners.</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :community_member_label, "Community member label" %>
-              <%= f.text_field :community_member_label,
-                               class: "form-control",
-                               value: SiteConfig.community_member_label,
-                               placeholder: "" %>
-              <div class="alert alert-info">Used to determine what a member will be called e.g developer, hobbyist etc.</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :tagline, "Tagline" %>
-              <%= f.text_field :tagline,
-                               class: "form-control",
-                               value: SiteConfig.tagline,
-                               placeholder: "We're a place where coders share, stay up-to-date and grow their careers." %>
-              <div class="alert alert-info">Used in signup modal.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <%= render partial: "card_header",
-                     locals: {
-                       header: "Mascot",
-                       state: "collapse",
-                       target: "mascotBodyContainer",
-                       expanded: "false"
-                     } %>
-          <div id="mascotBodyContainer" class="card-body collapse hide" aria-labelledby="mascotBodyContainer">
-            <div class="form-group">
-              <%= f.label :mascot_user_id, "Mascot user ID" %>
-              <%= f.text_field :mascot_user_id,
-                               class: "form-control",
-                               value: SiteConfig.mascot_user_id,
-                               min: 1,
-                               placeholder: "1" %>
-              <div class="alert alert-info">User ID of the Mascot account</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :mascot_image_url %>
-              <%= f.text_field :mascot_image_url,
-                               class: "form-control",
-                               value: SiteConfig.mascot_image_url,
-                               placeholder: "https://image.url" %>
-
-              <div class="col-12">
-                <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" />
-              </div>
-
-              <div class="alert alert-info"> Used as the mascot image. </div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :mascot_image_description %>
-              <%= f.text_field :mascot_image_description,
-                               class: "form-control",
-                               value: SiteConfig.mascot_image_description %>
-
-              <div class="alert alert-info">Used as the alt text for the mascot image </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <%= render partial: "card_header",
-                     locals: {
-                       header: "Social Media",
-                       state: "collapse",
-                       target: "socialMediaBodyContainer",
-                       expanded: "false"
-                     } %>
-          <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
-            <div class="form-group">
-              <%= f.fields_for :social_media_handles do |social_media_field| %>
-                <% SiteConfig.social_media_handles.each do |platform, username| %>
-                  <div>
-                    <%= social_media_field.label platform %>
-                    <%= social_media_field.text_field platform,
-                                                      class: "form-control",
-                                                      value: SiteConfig.social_media_handles[platform],
-                                                      placeholder: "" %>
-                    <div class="alert alert-info"><%= platform.capitalize %> Username</div>
-                  </div>
-                <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <%= render partial: "card_header",
-                     locals: {
-                       header: "Twitter Hashtag",
-                       state: "collapse",
-                       target: "twitterHashtagBodyContainer",
-                       expanded: "false"
-                     } %>
-          <div id="twitterHashtagBodyContainer" class="card-body collapse hide"
-                aria-labelledby="twitterHashtagBodyContainer">
-            <div class="form-group">
-              <%= f.label :twitter_hashtag %>
-              <%= f.text_field :twitter_hashtag,
-                               class: "form-control",
-                               value: SiteConfig.twitter_hashtag.to_s,
-                               placeholder: "#DEVCommunity" %>
-              <div class="alert alert-info">Used as the twitter hashtag of the community</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <%= render partial: "card_header",
-                     locals: {
-                       header: "Meta Keywords",
-                       state: "collapse",
-                       target: "metaKeywordsBodyContainer",
-                       expanded: "false"
-                     } %>
-          <div id="metaKeywordsBodyContainer" class="card-body collapse hide" aria-labelledby="metaKeywordsBodyContainer">
-            <div class="form-group">
-              <%= f.fields_for :meta_keywords do |meta_keywords_field| %>
-                <% SiteConfig.meta_keywords.each do |area, keywords| %>
-                  <div>
-                    <%= meta_keywords_field.label area %>
-                    <%= meta_keywords_field.text_field area,
-                                                       class: "form-control",
-                                                       value: SiteConfig.meta_keywords[area],
-                                                       placeholder: "" %>
-                    <div class="alert alert-info"><%= area.capitalize %><%= " page" unless area == "default" %> keywords</div>
-                  </div>
-                <% end %>
-              <% end %>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <%= render partial: "card_header",
-                     locals: {
-                       header: "Emails",
-                       state: "collapse",
-                       target: "emailBodyContainer",
-                       expanded: "false"
-                     } %>
-          <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
-           <div class="form-group">
-             <%= f.fields_for :email_addresses do |email_field| %>
-               <% SiteConfig.email_addresses.each do |type, address| %>
-                 <div>
-                   <%= email_field.label type %>
-                   <%= email_field.text_field type,
-                                              class: "form-control",
-                                              value: SiteConfig.email_addresses[type],
-                                              placeholder: "" %>
-                   <div class="alert alert-info"><%= type.capitalize %> Email</div>
-                 </div>
-               <% end %>
-             <% end %>
-           </div>
           </div>
         </div>
 
@@ -270,7 +100,7 @@
 
             <div class="form-group">
               <%= f.label :campaign_sidebar_image %>
-              <% if SiteConfig.campaign_sidebar_image %>
+              <% if SiteConfig.campaign_sidebar_image.present? %>
                 <div class="row mt-2">
                   <div class="col-12">
                     <img alt="Campaign sidebar image" class="img-fluid" src="<%= SiteConfig.campaign_sidebar_image %>" />
@@ -307,46 +137,130 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "Onboarding",
+                       header: "Community Content",
                        state: "collapse",
-                       target: "onboardingBodyContainer",
+                       target: "contentBodyContainer",
                        expanded: "false"
                      } %>
-          <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
+          <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
             <div class="form-group">
-              <%= f.label :onboarding_taskcard_image %>
-              <%= f.text_field :onboarding_taskcard_image,
+              <%= f.label :community_description, "Community description" %>
+              <%= f.text_field :community_description,
                                class: "form-control",
-                               value: SiteConfig.onboarding_taskcard_image,
-                               placeholder: "https://image.url" %>
-              <div class="row mt-2">
-                <div class="col-12">
-                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" />
-                </div>
-                <div class="col-12">
-                  <div class="alert alert-info"> Used as the onboarding task-card image </div>
-                </div>
-              </div>
+                               value: SiteConfig.community_description,
+                               placeholder: "A fabulous community of kind and welcoming people." %>
+              <div class="alert alert-info">Used in meta description tags etc.</div>
             </div>
 
             <div class="form-group">
-              <%= f.label :suggested_users %>
-              <%= f.text_field :suggested_users,
+              <%= f.label :community_member_description, "Community member description" %>
+              <%= f.text_field :community_member_description,
                                class: "form-control",
-                               value: SiteConfig.suggested_users.join(","),
-                               placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana" %>
-              <div class="alert alert-info">Determines which users are suggested to follow to new users during onboarding (comma
-                separated, letters only). Please note that these users will be shown as a fallback if no recently-active commenters or producers can be suggested.</div>
+                               value: SiteConfig.community_member_description,
+                               placeholder: "amazing humans who code." %>
+              <div class="alert alert-info">Used in pre-login banners.</div>
             </div>
 
             <div class="form-group">
-              <%= f.label :suggested_tags %>
-              <%= f.text_field :suggested_tags,
+              <%= f.label :community_member_label, "Community member label" %>
+              <%= f.text_field :community_member_label,
                                class: "form-control",
-                               value: SiteConfig.suggested_tags.join(","),
-                               placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin" %>
-              <div class="alert alert-info">Determines which tags are suggested to new users during onboarding (comma
-                separated, letters only)</div>
+                               value: SiteConfig.community_member_label,
+                               placeholder: "" %>
+              <div class="alert alert-info">Used to determine what a member will be called e.g developer, hobbyist etc.</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :tagline, "Tagline" %>
+              <%= f.text_field :tagline,
+                               class: "form-control",
+                               value: SiteConfig.tagline,
+                               placeholder: "We're a place where coders share, stay up-to-date and grow their careers." %>
+              <div class="alert alert-info">Used in signup modal.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "Emails",
+                       state: "collapse",
+                       target: "emailBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="emailBodyContainer" class="card-body collapse hide" aria-labelledby="emailBodyContainer">
+           <div class="form-group">
+             <%= f.fields_for :email_addresses do |email_field| %>
+               <% SiteConfig.email_addresses.each do |type, address| %>
+                 <div>
+                   <%= email_field.label type %>
+                   <%= email_field.text_field type,
+                                              class: "form-control",
+                                              value: SiteConfig.email_addresses[type],
+                                              placeholder: "" %>
+                   <div class="alert alert-info"><%= type.capitalize %> Email</div>
+                 </div>
+               <% end %>
+             <% end %>
+           </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "Email digest frequency",
+                       state: "collapse",
+                       target: "emailDigestBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="emailDigestBodyContainer" class="card-body collapse hide" aria-labelledby="emailDigestBodyContainer">
+            <div class="form-group">
+              <%= f.label :periodic_email_digest_max %>
+              <%= f.number_field :periodic_email_digest_max,
+                                 class: "form-control",
+                                 value: SiteConfig.periodic_email_digest_max,
+                                 placeholder: 0 %>
+              <div class="alert alert-info">Determines the maximum for the periodic email digest</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :periodic_email_digest_min %>
+              <%= f.number_field :periodic_email_digest_min,
+                                 class: "form-control",
+                                 value: SiteConfig.periodic_email_digest_min,
+                                 placeholder: 2 %>
+              <div class="alert alert-info">Determines the mininum for the periodic email digest</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "Google Analytics Reporting API v4",
+                       state: "collapse",
+                       target: "gaBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="gaBodyContainer" class="card-body collapse hide" aria-labelledby="gaBodyContainer">
+            <div class="form-group">
+              <%= f.label :ga_view_id, "View ID" %>
+              <%= f.text_field :ga_view_id,
+                               class: "form-control",
+                               value: SiteConfig.ga_view_id %>
+              <div class="alert alert-info">Google Analytics Reporting API v4 - View ID</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :ga_fetch_rate, "Fetch rate" %>
+              <%= f.number_field :ga_fetch_rate,
+                                 class: "form-control",
+                                 value: SiteConfig.ga_fetch_rate,
+                                 min: 1,
+                                 placeholder: 1 %>
+              <div class="alert alert-info">Determines how often the site updates its Google Analytics stats</div>
             </div>
           </div>
         </div>
@@ -426,51 +340,43 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "Rate limits",
+                       header: "Mascot",
                        state: "collapse",
-                       target: "rateLimitsBodyContainer",
+                       target: "mascotBodyContainer",
                        expanded: "false"
                      } %>
-          <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
-            <% configurable_rate_limits.each do |key, field_hash| %>
-              <div class="form-group">
-                <%= f.label key %>
-                <%= f.number_field key,
-                                   class: "form-control",
-                                   value: SiteConfig.send(key),
-                                   min: field_hash[:min],
-                                   placeholder: field_hash[:placeholder] %>
-                <div class="alert alert-info"><%= field_hash[:description] %></div>
-              </div>
-            <% end %>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <%= render partial: "card_header",
-                     locals: {
-                       header: "Google Analytics Reporting API v4",
-                       state: "collapse",
-                       target: "gaBodyContainer",
-                       expanded: "false"
-                     } %>
-          <div id="gaBodyContainer" class="card-body collapse hide" aria-labelledby="gaBodyContainer">
+          <div id="mascotBodyContainer" class="card-body collapse hide" aria-labelledby="mascotBodyContainer">
             <div class="form-group">
-              <%= f.label :ga_view_id, "View ID" %>
-              <%= f.text_field :ga_view_id,
+              <%= f.label :mascot_user_id, "Mascot user ID" %>
+              <%= f.text_field :mascot_user_id,
                                class: "form-control",
-                               value: SiteConfig.ga_view_id %>
-              <div class="alert alert-info">Google Analytics Reporting API v4 - View ID</div>
+                               value: SiteConfig.mascot_user_id,
+                               min: 1,
+                               placeholder: "1" %>
+              <div class="alert alert-info">User ID of the Mascot account</div>
             </div>
 
             <div class="form-group">
-              <%= f.label :ga_fetch_rate, "Fetch rate" %>
-              <%= f.number_field :ga_fetch_rate,
-                                 class: "form-control",
-                                 value: SiteConfig.ga_fetch_rate,
-                                 min: 1,
-                                 placeholder: 1 %>
-              <div class="alert alert-info">Determines how often the site updates its Google Analytics stats</div>
+              <%= f.label :mascot_image_url %>
+              <%= f.text_field :mascot_image_url,
+                               class: "form-control",
+                               value: SiteConfig.mascot_image_url,
+                               placeholder: "https://image.url" %>
+
+              <div class="col-12">
+                <img alt="<%= SiteConfig.mascot_image_description %>" class="img-fluid" src="<%= SiteConfig.mascot_image_url %>" />
+              </div>
+
+              <div class="alert alert-info"> Used as the mascot image. </div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :mascot_image_description %>
+              <%= f.text_field :mascot_image_description,
+                               class: "form-control",
+                               value: SiteConfig.mascot_image_description %>
+
+              <div class="alert alert-info">Used as the alt text for the mascot image </div>
             </div>
           </div>
         </div>
@@ -478,12 +384,67 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "Mailchimp Lists IDs",
+                       header: "Meta Keywords",
                        state: "collapse",
-                       target: "mailchimpListBodyContainer",
+                       target: "metaKeywordsBodyContainer",
                        expanded: "false"
                      } %>
-          <div id="mailchimpListBodyContainer" class="card-body collapse hide" aria-labelledby="mailchimpListBodyContainer">
+          <div id="metaKeywordsBodyContainer" class="card-body collapse hide" aria-labelledby="metaKeywordsBodyContainer">
+            <div class="form-group">
+              <%= f.fields_for :meta_keywords do |meta_keywords_field| %>
+                <% SiteConfig.meta_keywords.each do |area, keywords| %>
+                  <div>
+                    <%= meta_keywords_field.label area %>
+                    <%= meta_keywords_field.text_field area,
+                                                       class: "form-control",
+                                                       value: SiteConfig.meta_keywords[area],
+                                                       placeholder: "" %>
+                    <div class="alert alert-info"><%= area.capitalize %><%= " page" unless area == "default" %> keywords</div>
+                  </div>
+                <% end %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "Monetization",
+                       state: "collapse",
+                       target: "monetizationBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="monetizationBodyContainer" class="card-body collapse hide" aria-labelledby="monetizationBodyContainer">
+            <div class="form-group">
+              <%= f.label :shop_url %>
+              <%= f.text_field :shop_url,
+                               class: "form-control",
+                               value: SiteConfig.shop_url,
+                               placeholder: "Shop url" %>
+              <div class="alert alert-info">Used as the shop url of the community</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :payment_pointer %>
+              <%= f.text_field :payment_pointer,
+                               class: "form-control",
+                               value: SiteConfig.payment_pointer,
+                               placeholder: "$pay.somethinglikethis.co/value" %>
+              <div class="alert alert-info">Used for site-wide web monetization (<a href="https://github.com/thepracticaldev/dev.to/pull/6345">experimental</a>)</div>
+             </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "Newsletter",
+                       state: "collapse",
+                       target: "newsletterBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="newsletterBodyContainer" class="card-body collapse hide" aria-labelledby="newsletterBodyContainer">
             <div class="form-group">
               <%= f.label :mailchimp_newsletter_id, "Main Newsletter" %>
               <%= f.text_field :mailchimp_newsletter_id,
@@ -521,28 +482,103 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
-                       header: "Email digest frequency",
+                       header: "Onboarding",
                        state: "collapse",
-                       target: "emailDigestBodyContainer",
+                       target: "onboardingBodyContainer",
                        expanded: "false"
                      } %>
-          <div id="emailDigestBodyContainer" class="card-body collapse hide" aria-labelledby="emailDigestBodyContainer">
+          <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
             <div class="form-group">
-              <%= f.label :periodic_email_digest_max %>
-              <%= f.number_field :periodic_email_digest_max,
-                                 class: "form-control",
-                                 value: SiteConfig.periodic_email_digest_max,
-                                 placeholder: 0 %>
-              <div class="alert alert-info">Determines the maximum for the periodic email digest</div>
+              <%= f.label :onboarding_taskcard_image %>
+              <%= f.text_field :onboarding_taskcard_image,
+                               class: "form-control",
+                               value: SiteConfig.onboarding_taskcard_image,
+                               placeholder: "https://image.url" %>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_taskcard_image %>" />
+                </div>
+                <div class="col-12">
+                  <div class="alert alert-info"> Used as the onboarding task-card image </div>
+                </div>
+              </div>
             </div>
 
             <div class="form-group">
-              <%= f.label :periodic_email_digest_min %>
-              <%= f.number_field :periodic_email_digest_min,
-                                 class: "form-control",
-                                 value: SiteConfig.periodic_email_digest_min,
-                                 placeholder: 2 %>
-              <div class="alert alert-info">Determines the mininum for the periodic email digest</div>
+              <%= f.label :suggested_users %>
+              <%= f.text_field :suggested_users,
+                               class: "form-control",
+                               value: SiteConfig.suggested_users.join(","),
+                               placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana" %>
+              <div class="alert alert-info">Determines which users are suggested to follow to new users during onboarding (comma
+                separated, letters only). Please note that these users will be shown as a fallback if no recently-active commenters or producers can be suggested.</div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :suggested_tags %>
+              <%= f.text_field :suggested_tags,
+                               class: "form-control",
+                               value: SiteConfig.suggested_tags.join(","),
+                               placeholder: "List of valid tags: comma separated, letters only e.g. beginners,javascript,ruby,swift,kotlin" %>
+              <div class="alert alert-info">Determines which tags are suggested to new users during onboarding (comma
+                separated, letters only)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "Rate limits",
+                       state: "collapse",
+                       target: "rateLimitsBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
+            <% configurable_rate_limits.each do |key, field_hash| %>
+              <div class="form-group">
+                <%= f.label key %>
+                <%= f.number_field key,
+                                   class: "form-control",
+                                   value: SiteConfig.send(key),
+                                   min: field_hash[:min],
+                                   placeholder: field_hash[:placeholder] %>
+                <div class="alert alert-info"><%= field_hash[:description] %></div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "Social Media",
+                       state: "collapse",
+                       target: "socialMediaBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
+            <div class="form-group">
+              <%= f.label :twitter_hashtag %>
+              <%= f.text_field :twitter_hashtag,
+                               class: "form-control",
+                               value: SiteConfig.twitter_hashtag.to_s,
+                               placeholder: "#DEVCommunity" %>
+              <div class="alert alert-info">Used as the twitter hashtag of the community</div>
+            </div>
+            <div class="form-group">
+              <%= f.fields_for :social_media_handles do |social_media_field| %>
+                <% SiteConfig.social_media_handles.each do |platform, username| %>
+                  <div>
+                    <%= social_media_field.label platform %>
+                    <%= social_media_field.text_field platform,
+                                                      class: "form-control",
+                                                      value: SiteConfig.social_media_handles[platform],
+                                                      placeholder: "" %>
+                    <div class="alert alert-info"><%= platform.capitalize %> Username</div>
+                  </div>
+                <% end %>
+              <% end %>
             </div>
           </div>
         </div>
@@ -563,55 +599,6 @@
                                value: SiteConfig.sidebar_tags.join(","),
                                placeholder: "List of valid tags: comma separated, letters only e.g. help,discuss,explainlikeimfive,meta" %>
               <div class="alert alert-info">Determines which tags are shown on the homepage righthand sidebar</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <%= render partial: "card_header",
-                     locals: {
-                       header: "Monetization",
-                       state: "collapse",
-                       target: "monetizationBodyContainer",
-                       expanded: "false"
-                     } %>
-          <div id="monetizationBodyContainer" class="card-body collapse hide" aria-labelledby="monetizationBodyContainer">
-            <div class="form-group">
-              <%= f.label :shop_url %>
-              <%= f.text_field :shop_url,
-                               class: "form-control",
-                               value: SiteConfig.shop_url,
-                               placeholder: "Shop url" %>
-              <div class="alert alert-info">Used as the shop url of the community</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :payment_pointer %>
-              <%= f.text_field :payment_pointer,
-                               class: "form-control",
-                               value: SiteConfig.payment_pointer,
-                               placeholder: "$pay.somethinglikethis.co/value" %>
-              <div class="alert alert-info">Used for site-wide web monetization (<a href="https://github.com/thepracticaldev/dev.to/pull/6345">experimental</a>)</div>
-             </div>
-          </div>
-        </div>
-
-        <div class="card mt-3">
-          <%= render partial: "card_header",
-                     locals: {
-                       header: "API",
-                       state: "collapse",
-                       target: "apiBodyContainer",
-                       expanded: "false"
-                     } %>
-          <div id="apiBodyContainer" class="card-body collapse hide" aria-labelledby="apiBodyContainer">
-            <div class="form-group">
-              <%= f.label :health_check_token, "Health Check Token" %>
-              <%= f.text_field :health_check_token,
-                               class: "form-control",
-                               value: SiteConfig.health_check_token,
-                               placeholder: "a secure token" %>
-              <div class="alert alert-info">Used to authenticate with your health check endpoints.</div>
             </div>
           </div>
         </div>
