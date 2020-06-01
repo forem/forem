@@ -59,7 +59,7 @@ RSpec.describe "HealthCheck", type: :request do
     end
 
     it "returns json failure if connection check fails" do
-      ENV["REDIS_URL"] = "redis://redis:6379"
+      ENV["REDIS_SESSIONS_URL"] = "redis://redis:6379"
       redis_obj = Redis.new
       allow(Redis).to receive(:new).and_return(redis_obj)
       allow(redis_obj).to receive(:ping).and_return("fail")
