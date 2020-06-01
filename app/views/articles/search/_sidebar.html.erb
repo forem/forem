@@ -14,7 +14,8 @@
         <a class="query-filter-button my-posts-query-button" data-filter="MY_POSTS">ONLY MY POSTS</a>
         <hr>
         <h4>order by</h4>
-        <%= select_tag "sort", @sort_options, include_blank: true, class: "query-filter-select" %>
+        <% opts = options_for_select([["Most Relevant", "relevant"], ["Newest", "newest", { "data-sort-by": "published_at", "data-sort-direction": "desc" }], ["Oldest", "oldest", { "data-sort-by": "published_at", "data-sort-direction": "asc" }]]) %>
+        <%= select_tag "sort", opts, class: "query-filter-select" %>
       </div>
     </div>
   </div>

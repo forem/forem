@@ -33,7 +33,6 @@ class StoriesController < ApplicationController
   def search
     @query = "...searching"
     @article_index = true
-    @sort_options = sort_options
     set_surrogate_key_header "articles-page-with-query"
     render template: "articles/search"
   end
@@ -475,14 +474,5 @@ class StoriesController < ApplicationController
       @user.twitch_username,
       @user.website_url,
     ].reject(&:blank?)
-  end
-
-  def sort_options
-    # The current default behaviour is a search based on relevance. This sorting technique is more
-    # complex than a simple value of sort_by and sort_direction, so it doesn't make sense to set
-    # values for those parameters in the "Most Relevant" option tag.
-    "<option value=\"relevant\" selected>Most Relevant</option>\
-      <option value=\"newest\" data-sort-by=\"published_at\" data-sort-direction=\"desc\">Newest</option>\
-      <option value=\"oldest\" data-sort-by=\"published_at\" data-sort-direction=\"asc\">Oldest</option>"
   end
 end
