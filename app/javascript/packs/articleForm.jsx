@@ -18,15 +18,15 @@ function loadForm() {
     const root = document.getElementById('js-article-form');
     const { article, organizations, version } = root.dataset;
 
-    // render(
-    //   <ArticleForm
-    //     article={article}
-    //     organizations={organizations}
-    //     version={version}
-    //   />,
-    //   root,
-    //   root.firstElementChild,
-    // );
+    render(
+      <ArticleForm
+        article={article}
+        organizations={organizations}
+        version={version}
+      />,
+      root,
+      root.firstElementChild,
+    );
   });
 }
 
