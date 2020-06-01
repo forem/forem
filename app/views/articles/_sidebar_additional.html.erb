@@ -6,7 +6,7 @@
         <header class="crayons-card__header">
           <h3 class="crayons-card__header__headline">Join <%= community_name %></h3>
         </header>
-        <div>
+        <div class="p-4 grid gap-2">
           <%= render partial: "shared/authentication/providers_sidebar" %>
         </div>
       </div>
@@ -14,11 +14,8 @@
     <% cache(cache_key_heroku_slug("main-article-right-sidebar-discussions-#{params[:timeframe]}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
       <% @sidebar_ad = DisplayAd.for_display("sidebar_right") %>
       <% if @sidebar_ad %>
-        <div class="crayons-card crayons-card--secondary signin-cta-widget">
-          <header class="crayons-card__header">
-            <h3 class="crayons-card__header__headline">Join <%= community_name %></h3>
-          </header>
-          <div>
+        <div class="widget">
+          <div class="widget-body">
             <%= @sidebar_ad.processed_html.html_safe %>
           </div>
         </div>
