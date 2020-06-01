@@ -50,4 +50,22 @@ RSpec.describe "HealthCheck", type: :request do
       expect(response.parsed_body["message"]).to eq("Database NOT connected!")
     end
   end
+
+  describe "GET /api/health_checks/cache" do
+    it "returns json success if connection check succeeds" do
+      get cache_api_health_checks_path, headers: headers
+      expect(response.status).to eq(200)
+      expect(response.parsed_body["message"]).to eq("Redis connected")
+    end
+
+    it "returns json failure if connection check fails" do
+      ENV["REDIS_URL"] = "redis://redis:6379"
+      redis_obj = Redis.new
+      allow(Redis).to receive(:new).and_return(redis_obj)
+      allow(redis_obj).to receive(:ping).and_return("fail")
+      get cache_api_health_checks_path, headers: headers
+      expect(response.status).to eq(500)
+      expect(response.parsed_body["message"]).to eq("Redis NOT connected!")
+    end
+  end
 end
