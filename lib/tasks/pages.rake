@@ -3,6 +3,7 @@ require "listen"
 namespace :pages do
   desc "Automated sync of Page HTML body by listening to changes of local file"
   task :sync, [:slug, :filepath] => [:environment] do |task, args|
+    next if Rails.env.production?
     pathname = Pathname.new(args.filepath)
 
     if !File.file?(pathname) || Page.find_by(slug: args.slug).nil?
