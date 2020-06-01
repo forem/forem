@@ -13,14 +13,8 @@ RSpec.describe Search::RemoveFromIndexWorker, type: :worker do
   end
 
   context "when document is not found" do
-    it "raises error" do
-      expect { described_class.new.perform(search_class.to_s, 1) }.to raise_error(
-        Search::Errors::Transport::NotFound,
-      )
-    end
-
-    it "does not raise error if removing a Reaction" do
-      expect { described_class.new.perform("Search::Reaction", 1) }.not_to raise_error(
+    it "does not raise error" do
+      expect { described_class.new.perform(search_class.to_s, 1) }.not_to raise_error(
         Search::Errors::Transport::NotFound,
       )
     end
