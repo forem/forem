@@ -22,8 +22,8 @@ We use the following testing tools:
 - [**Jest**](https://jestjs.io/) for testing the frontend
 - [**jest-axe**](https://github.com/nickcolley/jest-axe) for detecting basic
   a11y regressions
-- [**preact-render-spy**](https://github.com/mzgoddard/preact-render-spy) for
-  testing Preact components
+- [**preact-testing-library**](https://github.com/testing-library/preact-testing-library)
+  for testing Preact components
 - [**SimpleCov**](https://github.com/colszowka/simplecov) for tracking overall
   test coverage on the backend
 
