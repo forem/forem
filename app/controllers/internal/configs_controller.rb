@@ -89,6 +89,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       community_description
       community_member_description
       community_member_label
+      community_action
       tagline
     ]
   end
