@@ -76,6 +76,20 @@ class Tag < ActsAsTaggableOn::Tag
     tag.alias_for.presence || tag.name
   end
 
+  def self.find_alias_for(candidate)
+    possible_alias = candidate.downcase
+    found_alias = candidate.downcase
+    i = 0
+
+    until possible_alias.nil? || i > 4
+      possible_alias = Tag.find_by(name: possible_alias)&.alias_for.presence
+      found_alias = possible_alias if possible_alias
+      i += 1
+    end
+
+    found_alias
+  end
+
   def validate_name
     errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
     errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/)

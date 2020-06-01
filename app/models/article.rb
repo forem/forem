@@ -397,7 +397,8 @@ class Article < ApplicationRecord
 
   def set_tag_list(tags)
     self.tag_list = [] # overwrite any existing tag with those from the front matter
-    tag_list.add(tags, parser: ActsAsTaggableOn::TagParser)
+    tag_list.add(tags, parse: true)
+    self.tag_list = tag_list.map { |tag| Tag.find_alias_for(tag) }
   end
 
   def update_main_image_background_hex
@@ -503,12 +504,15 @@ class Article < ApplicationRecord
 
   def remove_tag_adjustments_from_tag_list
     tags_to_remove = TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name)
-    tag_list.remove(tags_to_remove, parser: ActsAsTaggableOn::TagParser) if tags_to_remove.present?
+    tag_list.remove(tags_to_remove, parser: true) if tags_to_remove.present?
   end
 
   def add_tag_adjustments_to_tag_list
     tags_to_add = TagAdjustment.where(article_id: id, adjustment_type: "addition", status: "committed").pluck(:tag_name)
-    tag_list.add(tags_to_add, parser: ActsAsTaggableOn::TagParser) if tags_to_add.present?
+    return if tags_to_add.blank?
+
+    tag_list.add(tags_to_add, parse: true)
+    self.tag_list = tag_list.map { |tag| Tag.find_alias_for(tag) }
   end
 
   def validate_video
