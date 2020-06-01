@@ -1,34 +1,5 @@
-<% menu_items = %w[
-     articles
-     badges
-     broadcasts
-     chat_channels
-     comments
-     config
-     events
-     growth
-     listings
-     moderator_actions
-     mods
-     negative_reactions
-     organizations
-     page_redirects
-     pages
-     permissions
-     podcasts
-     reports
-     response_templates
-     sponsorships
-     tags
-     tools
-     users
-     welcome
-   ].each_with_object({}) { |v, h| h[v] = v } %>
-
-<% menu_items["webhooks"] = "webhook_endpoints" %>
-
 <div class="mt-4">
-  <% menu_items.sort_by { |name, _controller| name }.each do |name, controller| %>
-    <a class="sidebar-nav-item px-2 <%= "active" if request.path.include?(controller) %>" href="/internal/<%= controller %>"><%= name.to_s.titleize %></a>
+  <% Internal::ApplicationController::MENU_ITEMS.each do |menu_item| %>
+    <a class="sidebar-nav-item px-2 <%= "active" if request.path.include?(menu_item[:controller]) %>" href="/internal/<%= menu_item[:controller] %>"><%= menu_item[:name].to_s.titleize %></a>
   <% end %>
 </div>
