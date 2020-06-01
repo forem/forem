@@ -1,7 +1,7 @@
 @import '../config/import';
 
 %layout {
-  max-width: var(--layout-site-width);
+  max-width: 1280px;
   width: 100%;
   margin: 0 auto;
 }
@@ -23,7 +23,7 @@
 
 .crayons-article-form {
   --article-form-actions-height: 56px;
-  --layout-padding: var(--su-2);
+  // --layout-padding: var(--su-2);
 
   display: grid;
   height: 100vh;
@@ -40,40 +40,38 @@
   }
 
   &__header {
-    @extend %layout;
-
     display: flex;
     align-items: center;
+    height: var(--header-height);
     padding: 0 var(--layout-padding);
-    height: var(--layout-header-height);
 
     @media (min-width: $breakpoint-l) {
-      padding-right: calc(
-        var(--layout-aside-width) + var(--layout-padding) + var(--layout-gap)
-      );
+      // padding-right: calc(
+      //   var(--layout-aside-width) + var(--layout-padding) + var(--layout-gap)
+      // );
     }
   }
 
   &__main {
-    @extend %layout;
+    // @extend %layout;
 
-    @media (min-width: $breakpoint-m) {
-      padding: 0 var(--layout-padding);
-    }
+    // @media (min-width: $breakpoint-m) {
+    //   padding: 0 var(--layout-padding);
+    // }
 
-    @media (min-width: $breakpoint-l) {
-      display: grid;
-      grid-gap: var(--layout-gap);
-      grid-template-columns:
-        calc(100% - var(--layout-aside-width) - var(--layout-gap))
-        var(--layout-aside-width);
-    }
+    // @media (min-width: $breakpoint-l) {
+    //   display: grid;
+    //   grid-gap: var(--layout-gap);
+    //   grid-template-columns:
+    //     calc(100% - var(--layout-aside-width) - var(--layout-gap))
+    //     var(--layout-aside-width);
+    // }
 
-    @media (min-width: $breakpoint-xl) {
-      padding-left: calc(
-        var(--layout-narrow-sidebar-width) + var(--layout-padding)
-      );
-    }
+    // @media (min-width: $breakpoint-xl) {
+    //   padding-left: calc(
+    //     var(--layout-narrow-sidebar-width) + var(--layout-padding)
+    //   );
+    // }
 
     &__content {
       display: flex;
@@ -91,7 +89,7 @@
       }
 
       @media (min-width: $breakpoint-m) {
-        border: 1px solid var(--base-10);
+        // border: 1px solid var(--base-10);
       }
     }
 

@@ -19,7 +19,7 @@
   data-version="<%= version %>">
   <form class="crayons-article-form crayons-article-form--<%= version %>">
 
-    <div class="crayons-article-form__header">
+    <div class="crayons-article-form__header crayons-layout crayons-layout--1-col">
       <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
 
       <div class="crayons-field__label">
@@ -42,7 +42,8 @@
       </div>
     </div>
 
-    <div class="crayons-article-form__main">
+    <div class="crayons-layout crayons-layout--new-article crayons-article-form__main">
+      <%# <div></div> %>
       <div class="crayons-card crayons-article-form__main__content">
         <% if version == "v2" %>
           <div>
