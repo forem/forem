@@ -326,8 +326,6 @@ end
 ##############################################################################
 
 seeder.create_if_none(Badge) do
-  users_in_random_order = User.order(Arel.sql("RANDOM()"))
-
   5.times do
     Badge.create!(
       title: "#{Faker::Lorem.word} #{rand(100)}",
