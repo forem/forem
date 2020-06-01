@@ -6,7 +6,7 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
 
   before do
     Rails.logger.error('before signin')
-    login_as admin
+    sign_in admin
     Rails.logger.error('before visit')
     visit "/internal/users/#{user.id}/edit"
     Rails.logger.error('after visit')
