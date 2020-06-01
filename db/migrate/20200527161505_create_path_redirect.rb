@@ -10,7 +10,6 @@ class CreatePathRedirect < ActiveRecord::Migration[5.2]
 
     add_index :path_redirects, :old_path, unique: true
     add_index :path_redirects, :new_path
-    add_index :path_redirects, %i[old_path new_path], unique: true
     add_index :path_redirects, :version
     add_index :path_redirects, :source
   end
