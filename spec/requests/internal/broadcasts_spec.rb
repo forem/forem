@@ -3,7 +3,7 @@ require "requests/shared_examples/internal_policy_dependant_request"
 
 RSpec.describe "/internal/broadcasts", type: :request do
   let(:get_resource) { get "/internal/broadcasts" }
-  let(:params) { { title: "Hello!", processed_html: "<pHello!</p>", type_of: "Welcome", sent: true } }
+  let(:params) { { title: "Hello!", processed_html: "<p>Hello!</p>", type_of: "Welcome", active: true } }
   let(:post_resource) { post "/internal/broadcasts", params: params }
 
   it_behaves_like "an InternalPolicy dependant request", Broadcast do
@@ -84,6 +84,31 @@ RSpec.describe "/internal/broadcasts", type: :request do
     describe "POST /internal/broadcasts" do
       it "blocks the request" do
         expect { post_resource }.to raise_error(Pundit::NotAuthorizedError)
+      end
+    end
+  end
+
+  context "with type_of Announcement" do
+    let(:super_admin) { create(:user, :super_admin) }
+    let(:params) { { title: "Hello!", processed_html: "<p>Hello!</p>", type_of: "Announcement", active: true } }
+
+    before { sign_in super_admin }
+
+    context "when an announcement broadcast is already active" do
+      before { create(:announcement_broadcast) }
+
+      it "does not allow a second broadcast to be set to active" do
+        expect do
+          post_resource
+        end.to change { Broadcast.all.count }.by(0)
+      end
+    end
+
+    context "when no announcement broadcast is active" do
+      it "allows a broadcast to be set to active" do
+        expect do
+          post_resource
+        end.to change { Broadcast.all.count }.by(1)
       end
     end
   end

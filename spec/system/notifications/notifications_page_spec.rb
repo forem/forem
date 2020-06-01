@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "Notifications page", type: :system, js: true do
-  let_it_be(:alex) { create(:user) }
-  let_it_be(:leslie) { create(:user) }
+  let(:alex) { create(:user) }
+  let(:leslie) { create(:user) }
 
   before { sign_in alex }
 
@@ -15,6 +15,9 @@ RSpec.describe "Notifications page", type: :system, js: true do
   end
 
   it "shows 1 notification and disappear after clicking it" do
+    follow_instance = leslie.follow(alex)
+    Notification.send_new_follower_notification_without_delay(follow_instance)
+
     visit "/"
     expect(page).to have_css("span#notifications-number", text: "1")
     click_link("notifications-link")

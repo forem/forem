@@ -6,6 +6,7 @@
 process.env.TZ = 'UTC';
 
 module.exports = {
+  setupFilesAfterEnv: ['./testSetup.js'],
   collectCoverageFrom: [
     'app/javascript/**/*.{js,jsx}',
     // This exclusion avoids running coverage on Barrel files, https://twitter.com/housecor/status/981558704708472832

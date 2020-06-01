@@ -31,6 +31,7 @@ module Broadcasts
         return if received_notification?(welcome_broadcast) || commented_on_welcome_thread? || user.created_at > 3.hours.ago
 
         Notification.send_welcome_notification(user.id, welcome_broadcast.id)
+        # Setting @notification_enqueued here prevents us from sending a user two welcome notifications in one day.
         @notification_enqueued = true
       end
 
@@ -45,6 +46,7 @@ module Broadcasts
         return if user_is_following_tags? || received_notification?(customize_feed_broadcast) || user.created_at > 3.days.ago
 
         Notification.send_welcome_notification(user.id, customize_feed_broadcast.id)
+        @notification_enqueued = true
       end
 
       def send_ux_customization_notification
