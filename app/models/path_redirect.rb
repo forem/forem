@@ -3,7 +3,7 @@ class PathRedirect < ApplicationRecord
 
   validates :old_path, presence: true, uniqueness: true
   validates :new_path, presence: true
-  validates :source, presence: true, inclusion: { in: SOURCES }
+  validates :source, inclusion: { in: SOURCES }, allow_blank: true
 
   before_save :increment_version, if: :will_save_change_to_new_path?
 

@@ -7,7 +7,6 @@ RSpec.describe PathRedirect, type: :model do
     it { is_expected.to validate_uniqueness_of(:old_path) }
     it { is_expected.to validate_presence_of(:old_path) }
     it { is_expected.to validate_presence_of(:new_path) }
-    it { is_expected.to validate_presence_of(:source) }
     it { is_expected.to validate_inclusion_of(:source).in_array(%w[admin service]) }
   end
 

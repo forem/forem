@@ -3,7 +3,7 @@ class CreatePathRedirect < ActiveRecord::Migration[5.2]
     create_table :path_redirects do |t|
       t.string :old_path, null: false
       t.string :new_path, null: false
-      t.string :source, null: false, default: "service"
+      t.string :source, null: true
       t.integer :version, null: false, default: 0
       t.timestamps null: false
     end
