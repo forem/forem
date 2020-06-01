@@ -4,7 +4,7 @@ import { Listings } from '../listings/listings';
 function loadElement() {
   const root = document.getElementById('listings-index-container');
   if (root) {
-    render(<Listings />, root, root.firstElementChild);
+    render(<Listings />, root);
   }
 }
 
