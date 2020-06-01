@@ -4,14 +4,6 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
   let(:admin)  { create(:user, :super_admin) }
   let(:user)   { create(:user) }
 
-  before do
-    Rails.logger.error('before signin')
-    sign_in admin
-    Rails.logger.error('before visit')
-    visit "/internal/users/#{user.id}/edit"
-    Rails.logger.error('after visit')
-  end
-
   def ban_user
     visit "/internal/users/#{user.id}/edit"
     select("Ban", from: "user_user_status")
@@ -42,10 +34,14 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
   end
 
   it "renders the page", js: true, percy: true do
+    sign_in admin
+    visit "/internal/users/#{user.id}/edit"
     Percy.snapshot(page, name: "Admin: /internal/users/:user_id/edit")
   end
 
   it "checks that the user is warned, has a note, and privileges are removed" do
+    sign_in admin
+    visit "/internal/users/#{user.id}/edit"
     user.add_role :trusted
     add_tag_moderator_role
     warn_user
@@ -57,12 +53,16 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
 
   # to-do: add spec for invalid bans
   it "checks that the user is banned and has note" do
+    sign_in admin
+    visit "/internal/users/#{user.id}/edit"
     ban_user
     expect(user.banned).to eq(true)
     expect(Note.last.reason).to eq "Ban"
   end
 
   it "removes other roles if user is banned" do
+    sign_in admin
+    visit "/internal/users/#{user.id}/edit"
     user.add_role :trusted
     user.add_role :video_permission
     add_tag_moderator_role
@@ -76,6 +76,8 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
   end
 
   it "unbans user" do
+    sign_in admin
+    visit "/internal/users/#{user.id}/edit"
     user.add_role :banned
     unban_user
 
