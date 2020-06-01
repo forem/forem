@@ -87,6 +87,7 @@
     "@storybook/addon-links": "^5.3.19",
     "@storybook/addons": "^5.3.19",
     "@storybook/preact": "^5.3.19",
+    "@testing-library/preact": "^1.0.2",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^26.0.1",
