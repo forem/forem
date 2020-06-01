@@ -1,4 +1,4 @@
-import { h, Component } from 'preact';
+import { h, Component, toChildArray } from 'preact';
 
 import { action } from '@storybook/addon-actions';
 import { SearchForm } from '..';
@@ -21,7 +21,7 @@ class FocusedForm extends Component {
     // Disabling prop types checks here because this is simply a wrapper
     // class for a Storybook story.
     // eslint-disable-next-line react/destructuring-assignment, react/prop-types
-    return this.props.children[0];
+    return toChildArray(this.props.children)[0];
   }
 }
 

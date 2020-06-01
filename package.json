@@ -140,7 +140,7 @@
     "linkstate": "^1.1.1",
     "lodash.debounce": "4.0.8",
     "postscribe": "^2.0.8",
-    "preact": "^8.5.3",
+    "preact": "^10.4.4",
     "preact-compat": "^3.19.0",
     "preact-textarea-autosize": "^4.0.7",
     "prop-types": "^15.7.2",
