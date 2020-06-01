@@ -5,14 +5,11 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
   let(:user)   { create(:user) }
 
   before do
+    Rails.logger.error('before signin')
     sign_in admin
-    begin
-      visit "/internal/users/#{user.id}/edit"
-    rescue => error
-      puts 'in error'
-      puts error.backtrace
-      raise error
-    end
+    Rails.logger.error('before visit')
+    visit "/internal/users/#{user.id}/edit"
+    Rails.logger.error('after visit')
   end
 
   def ban_user

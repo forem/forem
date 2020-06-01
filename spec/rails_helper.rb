@@ -109,14 +109,6 @@ RSpec.configure do |config|
     SiteConfig.clear_cache
   end
 
-  config.after(:each, type: :system) do
-    Warden.test_reset!
-  end
-
-  config.after(:each, type: :request) do
-    Warden.test_reset!
-  end
-
   # Only turn on VCR if :vcr is included metadata keys
   config.around do |ex|
     if ex.metadata.key?(:vcr)
@@ -155,9 +147,7 @@ RSpec.configure do |config|
 
   OmniAuth.config.test_mode = true
   Rails.logger = Logger.new(STDOUT)
-  Rails.logger.level = 0
-
-  OmniAuth.config.logger = Rails.logger
+  Rails.logger.level = 3
 
   config.infer_spec_type_from_file_location!
 
