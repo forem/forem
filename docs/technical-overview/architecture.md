@@ -179,6 +179,20 @@ organization could be a company or perhaps just a publication on-site.
 Notes are an internal tool admins can use to leave information about things.
 Example: "This user was warned for spammy content".
 
+## Pages
+
+`Pages` in the [internal dashboard](/internal/) represent static pages to be
+served on the site. Admins are in full control to create and customize them to
+their needs using markdown or custom HTML. Pages are configured with a `slug`
+and they will be served on either the `/page/slug` or `/slug` path.
+
+In order to ease development of custom HTML Pages in local environments the rake
+task `pages:sync` is available. It will listen to changes made to a local HTML
+file and sync its contents to an existing Page in the database with the matching
+`slug`.
+
+Example: `rake pages:sync[slug,/absolute/path/to/file.html]`
+
 ---
 
 This is far from a complete view of the app, but it covers a few core concepts.
