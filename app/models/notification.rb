@@ -21,6 +21,7 @@ class Notification < ApplicationRecord
   scope :for_organization_mentions, lambda { |org_id|
     where(organization_id: org_id, notifiable_type: "Mention", user_id: nil)
   }
+  scope :unread, -> { where(read: false) }
 
   class << self
     def send_new_follower_notification(follow, is_read = false)
