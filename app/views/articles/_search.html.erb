@@ -41,7 +41,7 @@
       var currentParams = getQueryParams(document.location.search);
       var filters = filterXSS(currentParams.filters);
 
-      var { sortBy, sortDirection } = e.target.selectedOptions[0].dataset
+      var { sortBy, sortDirection } = e.target.selectedOptions[0].dataset;
       var sortString = buildSortString(sortBy, sortDirection);
 
       if (filters) {
@@ -70,8 +70,6 @@
           showModal("search-my-posts");
           return;
         }
-        console.log("Current params: ", currentParams);
-        console.log("Sort string: ", sortString);
         var filters = e.target.dataset.filter;
         window.history.replaceState(null, null, "/search?q=" + query + "&filters=" + filters + sortString);
         var className = e.target.className;

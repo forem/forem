@@ -8,9 +8,9 @@ RSpec.describe Search::FeedContent, type: :service do
   end
 
   describe "::search_documents", elasticsearch: "FeedContent" do
-    let(:article1) { create(:article, published_at: Time.now.utc - 1.day) }
-    let(:article2) { create(:article, published_at: Time.now.utc - 2.days) }
-    let(:article3) { create(:article, published_at: Time.now.utc) }
+    let(:article1) { create(:article, published_at: 1.day.ago) }
+    let(:article2) { create(:article, published_at: 2.days.ago) }
+    let(:article3) { create(:article, published_at: Time.current) }
 
     it "parses feed content document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }
