@@ -772,20 +772,6 @@ ActiveRecord::Schema.define(version: 2020_05_27_161505) do
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
 
-  create_table "page_redirects", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "new_path", null: false
-    t.string "old_path", null: false
-    t.string "source", default: "service", null: false
-    t.datetime "updated_at", null: false
-    t.integer "version", default: 0, null: false
-    t.index ["new_path"], name: "index_page_redirects_on_new_path"
-    t.index ["old_path", "new_path"], name: "index_page_redirects_on_old_path_and_new_path", unique: true
-    t.index ["old_path"], name: "index_page_redirects_on_old_path", unique: true
-    t.index ["source"], name: "index_page_redirects_on_source"
-    t.index ["version"], name: "index_page_redirects_on_version"
-  end
-
   create_table "page_views", force: :cascade do |t|
     t.bigint "article_id"
     t.integer "counts_for_number_of_views", default: 1
@@ -816,6 +802,20 @@ ActiveRecord::Schema.define(version: 2020_05_27_161505) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_pages_on_slug", unique: true
+  end
+
+  create_table "path_redirects", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "new_path", null: false
+    t.string "old_path", null: false
+    t.string "source", default: "service", null: false
+    t.datetime "updated_at", null: false
+    t.integer "version", default: 0, null: false
+    t.index ["new_path"], name: "index_path_redirects_on_new_path"
+    t.index ["old_path", "new_path"], name: "index_path_redirects_on_old_path_and_new_path", unique: true
+    t.index ["old_path"], name: "index_path_redirects_on_old_path", unique: true
+    t.index ["source"], name: "index_path_redirects_on_source"
+    t.index ["version"], name: "index_path_redirects_on_version"
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|

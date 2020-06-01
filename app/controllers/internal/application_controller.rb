@@ -16,7 +16,7 @@ class Internal::ApplicationController < ApplicationController
     { name: "mods",               controller: "mods" },
     { name: "negative_reactions", controller: "negative_reactions" },
     { name: "organizations",      controller: "organizations" },
-    { name: "page_redirects",     controller: "page_redirects" },
+    { name: "path_redirects",     controller: "path_redirects" },
     { name: "pages",              controller: "pages" },
     { name: "permissions",        controller: "permissions" },
     { name: "podcasts",           controller: "podcasts" },

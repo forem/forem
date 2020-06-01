@@ -470,15 +470,15 @@ end
 
 ##############################################################################
 
-num_page_redirects = 2 * SEEDS_MULTIPLIER
+num_path_redirects = 2 * SEEDS_MULTIPLIER
 
-seeder.create_if_none(PageRedirect, num_page_redirects) do
-  articles_for_old_paths = Article.where(published: true).order(Arel.sql("RANDOM()")).limit(num_page_redirects)
-  articles_for_new_paths = Article.where.not(id: articles_for_old_paths.map(&:id), published: false).order(Arel.sql("RANDOM()")).limit(num_page_redirects)
+seeder.create_if_none(PathRedirect, num_path_redirects) do
+  articles_for_old_paths = Article.where(published: true).order(Arel.sql("RANDOM()")).limit(num_path_redirects)
+  articles_for_new_paths = Article.where.not(id: articles_for_old_paths.map(&:id), published: false).order(Arel.sql("RANDOM()")).limit(num_path_redirects)
 
   articles_for_old_paths.each_with_index do |old_article, i|
     new_article = articles_for_new_paths[i]
-    PageRedirect.create!(old_path: old_article.path, new_path: new_article.path)
+    PathRedirect.create!(old_path: old_article.path, new_path: new_article.path)
   end
 end
 
