@@ -126,7 +126,9 @@ module Github
       Octokit.connection_options.merge(
         request: {
           open_timeout: 5,
-          timeout: 5
+          timeout: 5,
+          # NOTE: [rhymes] temporarily raise the read timeout to see if we can intercept the actual error
+          read_timeout: 30
         },
       )
     end

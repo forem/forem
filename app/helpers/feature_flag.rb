@@ -1,7 +1,9 @@
 module FeatureFlag
-  extend self # rubocop:disable Style/ModuleFunction
+  class << self
+    delegate :enabled?, :exist?, to: Flipper
 
-  def enabled?(feature_name, *args)
-    Flipper[feature_name].enabled?(*args)
+    def accessible?(feature_flag_name, *args)
+      feature_flag_name.blank? || !exist?(feature_flag_name) || enabled?(feature_flag_name, *args)
+    end
   end
 end
