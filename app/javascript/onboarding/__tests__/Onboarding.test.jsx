@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import { deep } from 'preact-render-spy';
 import fetch from 'jest-fetch-mock';
-import { axe, toHaveNoViolations } from 'jest-axe';
+import { axe } from 'jest-axe';
 
 import Onboarding from '../Onboarding';
 import ProfileForm from '../components/ProfileForm';
@@ -53,9 +53,6 @@ function expectStepperToRender(onboardingSlides, activeDotCount) {
 }
 
 describe('<Onboarding />', () => {
-  beforeAll(() => {
-    expect.extend(toHaveNoViolations);
-  });
   beforeEach(() => {
     fetch.resetMocks();
   });

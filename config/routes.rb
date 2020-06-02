@@ -149,6 +149,7 @@ Rails.application.routes.draw do
           get :app
           get :search
           get :database
+          get :cache
         end
       end
     end
