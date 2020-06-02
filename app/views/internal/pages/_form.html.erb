@@ -23,7 +23,7 @@
       </div>
       <div class="form-group">
         <% if @page.social_image_url %>
-          <img src="<%= @page.social_image_url%>" style="max-width:500px;display:block" />
+          <img src="<%= @page.social_image_url %>" style="max-width:500px;display:block" />
         <% end %>
         <%= form.label :social_image %>
         <%= form.file_field :social_image, class: "form-control" %>
@@ -37,6 +37,24 @@
         <%= form.label :is_top_level_path %>
         <%= form.check_box :is_top_level_path %>
         <p>(Determines if it is accessible by <code>/page-slug</code> vs <code>/page/page-slug</code>) Be careful! ⚠️</p>
+      </div>
+      <div class="form-group">
+        <p>
+          <b><%= link_to "Feature Flag", "/internal/feature_flags" %></b>
+          <span class="badge badge-<%= FeatureFlag.exist?(@page.feature_flag_name) ? "success" : "warning" %>">
+            <%= FeatureFlag.exist?(@page.feature_flag_name) ? "Present" : "Not Present" %>
+          </span>
+          </br>
+          <% if FeatureFlag.exist?(@page.feature_flag_name) %>
+            Access to this page is being guarded by the feature flag <code><%= @page.feature_flag_name %></code>.
+            <%= link_to "Modify flag here", "/internal/feature_flags/features/#{@page.feature_flag_name}" %>
+          <% else %>
+            Everyone has access. Optionally guard access to this page by creating feature <code><%= @page.feature_flag_name %></code>
+            <%= link_to "here", "/internal/feature_flags/features/" %>
+          <% end %>
+          </br>
+          
+        </p>
       </div>
       <%= form.submit class: "btn btn-primary float-right" %>
     <% end %>
