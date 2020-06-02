@@ -923,6 +923,7 @@ DEPENDENCIES
   katex (~> 0.6.0)
   launchy (~> 2.5)
   liquid (~> 4.0)
+  listen (~> 3.2)
   memory_profiler (~> 0.9)
   mini_racer (~> 0.2.14)
   nakayoshi_fork (~> 0.0.4)
