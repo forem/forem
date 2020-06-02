@@ -115,7 +115,7 @@ RSpec.describe "/internal/broadcasts", type: :request do
 
   context "with the same title and the same type_of" do
     let(:super_admin) { create(:user, :super_admin) }
-    let(:params) { { title: "Hello!", processed_html: "<p>Hello!</p>", type_of: "Announcement", active: true } }
+    let(:params) { { title: "Hello!", processed_html: "<p>Hello!</p>", type_of: "Announcement" } }
 
     before { sign_in super_admin }
 
