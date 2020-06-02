@@ -34,6 +34,8 @@ module Api
       private
 
       def authenticate_with_token
+        return if request.local?
+
         key = request.headers["health-check-token"]
 
         return if key == SiteConfig.health_check_token
