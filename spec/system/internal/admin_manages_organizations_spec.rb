@@ -4,9 +4,10 @@ RSpec.describe "Admin manages organizations", type: :system, flaky: true do
   let(:admin) { create(:user, :super_admin) }
   let(:organization) { create(:organization) }
 
+  before { sign_in admin }
+
   context "when searching for organizations" do
     it "searches for organizations" do
-      sign_in admin
       create_list :organization, 5
       visit internal_organizations_path
 
@@ -18,10 +19,9 @@ RSpec.describe "Admin manages organizations", type: :system, flaky: true do
   end
 
   context "when managing credits for a single organization" do
+    before { visit internal_organization_path(organization) }
 
     it "does not show the remove form when there are no credits" do
-      sign_in admin
-      visit internal_organization_path(organization)
       expect(page).to have_button("Add Org Credits")
       # expect(page).to have_no_button("Remove Org Credits")
     end

@@ -19,37 +19,27 @@ RSpec.describe "Admin awards badges", type: :system, flaky: true do
     click_on "Award Badges"
   end
 
-  it "renders the page", js: true, percy: true do
+  before do
     create_list :badge, 5
     sign_in admin
     visit "/internal/badges"
+  end
 
+  it "renders the page", js: true, percy: true do
     Percy.snapshot(page, name: "Admin: /internal/badges")
   end
 
   it "loads the view" do
-    create_list :badge, 5
-    sign_in admin
-    visit "/internal/badges"
-
     expect(page).to have_content("Badges")
   end
 
   it "lists the badges" do
-    create_list :badge, 5
-    sign_in admin
-    visit "/internal/badges"
-
     badges.each do |badge|
       expect(page).to have_content(badge)
     end
   end
 
   it "awards badges" do
-    create_list :badge, 5
-    sign_in admin
-    visit "/internal/badges"
-
     expect { award_two_badges }.to change { user.badges.count }.by(1).
       and change { user2.badges.count }.by(1)
     expect(page).to have_content("BadgeRewarder task ran!")
@@ -60,10 +50,6 @@ RSpec.describe "Admin awards badges", type: :system, flaky: true do
   end
 
   it "notifies users of new badges" do
-    create_list :badge, 5
-    sign_in admin
-    visit "/internal/badges"
-
     sidekiq_assert_enqueued_jobs(2, only: BadgeAchievements::SendEmailNotificationWorker) do
       sidekiq_assert_enqueued_jobs(2, only: Notifications::NewBadgeAchievementWorker) do
         award_two_badges
@@ -72,10 +58,6 @@ RSpec.describe "Admin awards badges", type: :system, flaky: true do
   end
 
   it "does not award badges if no badge is selected", js: true, percy: true do
-    create_list :badge, 5
-    sign_in admin
-    visit "/internal/badges"
-
     expect { award_no_badges }.to change { user.badges.count }.by(0)
 
     Percy.snapshot(page, name: "Admin: /internal/badges error")

@@ -1,12 +1,11 @@
 require "rails_helper"
 
-RSpec.describe "Admin bans user", type: :system do
+RSpec.describe "Admin bans user", type: :system, flaky: true do
   let(:admin)  { create(:user, :super_admin) }
   let(:user)   { create(:user) }
 
   before do
     sign_in admin
-    Rails.logger.error('before visit')
     visit "/internal/users/#{user.id}/edit"
   end
 
@@ -54,7 +53,7 @@ RSpec.describe "Admin bans user", type: :system do
   end
 
   # to-do: add spec for invalid bans
-  xit "checks that the user is banned and has note" do
+  it "checks that the user is banned and has note" do
     ban_user
     expect(user.banned).to eq(true)
     expect(Note.last.reason).to eq "Ban"
