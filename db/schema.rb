@@ -10,11 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 2020_06_01_121243) do
-=======
 ActiveRecord::Schema.define(version: 2020_06_02_174329) do
->>>>>>> Add unique index for title and type_of on Broadcasts
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
