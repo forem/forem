@@ -52,7 +52,6 @@ class AsyncInfoController < ApplicationController
         saw_onboarding: @user.saw_onboarding,
         checked_code_of_conduct: @user.checked_code_of_conduct,
         checked_terms_and_conditions: @user.checked_terms_and_conditions,
-        number_of_comments: @user.comments.count,
         display_sponsors: @user.display_sponsors,
         trusted: @user.trusted,
         moderator_for_tags: @user.moderator_for_tags,
@@ -69,7 +68,6 @@ class AsyncInfoController < ApplicationController
     #{current_user&.last_followed_at}__
     #{current_user&.updated_at}__
     #{current_user&.reactions_count}__
-    #{current_user&.comments_count}__
     #{current_user&.saw_onboarding}__
     #{current_user&.checked_code_of_conduct}__
     #{current_user&.articles_count}__

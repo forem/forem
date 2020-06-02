@@ -23,6 +23,14 @@ module Api
         end
       end
 
+      def cache
+        if all_cache_instances_connected?
+          render json: { message: "Redis connected" }, status: :ok
+        else
+          render json: { message: "Redis NOT connected!" }, status: :internal_server_error
+        end
+      end
+
       private
 
       def authenticate_with_token
@@ -31,6 +39,12 @@ module Api
         return if key == SiteConfig.health_check_token
 
         error_unauthorized
+      end
+
+      def all_cache_instances_connected?
+        [ENV["REDIS_URL"], ENV["REDIS_SESSIONS_URL"], ENV["REDIS_SIDEKIQ_URL"]].compact.all? do |url|
+          Redis.new(url: url).ping == "PONG"
+        end
       end
     end
   end
