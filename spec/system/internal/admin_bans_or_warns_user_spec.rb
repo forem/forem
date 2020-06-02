@@ -5,10 +5,8 @@ RSpec.describe "Admin bans user", type: :system do
   let(:user)   { create(:user) }
 
   before do
-    admin
-    user
-    sleep 0.5
     sign_in admin
+    Rails.logger.error('before visit')
     visit "/internal/users/#{user.id}/edit"
   end
 
