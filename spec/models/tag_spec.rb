@@ -123,6 +123,22 @@ RSpec.describe Tag, type: :model do
     end
   end
 
+  describe "::find_alias_for" do
+    it "returns the oldest preferred alias (head of linklist)" do
+      tag1 = create(:tag, name: "cpp")
+      create(:tag, name: "cpplus", alias_for: "cpp")
+      tag3 = create(:tag, name: "cplusplus", alias_for: "cpplus")
+      expect(described_class.find_alias_for(tag3.name)).to eq(tag1.name)
+    end
+
+    it "is infinite deadlock proof" do
+      tag1 = create(:tag, name: "one")
+      tag2 = create(:tag, name: "two", alias_for: "one")
+      tag1.update(alias_for: "two")
+      expect(described_class.find_alias_for(tag1.name)).to eq(tag2.name)
+    end
+  end
+
   def collect_keywords(record)
     record.elasticsearch_doc.dig("_source", "tags").flat_map { |t| t["keywords_for_search"] }
   end
