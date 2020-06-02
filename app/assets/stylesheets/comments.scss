@@ -126,7 +126,7 @@ a.header-link {
 .comments-container {
   padding-top: 10px;
   margin: auto;
-  margin-bottom: 100px;
+  margin-bottom: var(--su-4);
   text-align: left;
   &.comments-dedicated-page-container {
     width: 800px;
@@ -143,15 +143,15 @@ a.header-link {
   }
   .markdown-guide {
     position: absolute;
-    left: 22px;
-    bottom: 3px;
+    left: var(--su-1);
+    bottom: var(--su-1);
   }
   .editor-image-upload {
     display: flex;
     align-items: center;
     font-size: 0.8em;
     position: absolute;
-    left: calc(0.2vw + 70px);
+    left: calc(var(--su-8) + var(--su-2));
     bottom: 0px;
     width: initial;
     text-align: left;
@@ -202,7 +202,7 @@ a.header-link {
   }
   .editor-response-templates {
     position: absolute;
-    left: 52px;
+    left: var(--su-7);
     bottom: 4px;
     button {
       background: none;
@@ -257,31 +257,9 @@ a.header-link {
     }
   }
   form {
-    width: 104%;
-    @include themeable(
-      background,
-      theme-container-accent-background,
-      $light-gray
-    );
     overflow: auto;
     position: relative;
-    margin-bottom: 4px;
     z-index: 4;
-    margin-left: -2%;
-    @include themeable(
-      border-top,
-      theme-container-border,
-      1px solid $light-medium-gray
-    );
-    @media screen and (min-width: 820px) {
-      width: calc(100% - 2px);
-      margin-left: 0%;
-      @include themeable(
-        border,
-        theme-container-border,
-        1px solid $light-medium-gray
-      );
-    }
 
     .field {
       margin-bottom: 0px;
@@ -425,8 +403,7 @@ a.header-link {
       margin-bottom: -5px;
     }
     textarea {
-      width: calc(100% - 52px);
-      margin: 15px auto 2px;
+      width: 100%;
       display: block;
       resize: vertical;
       border-radius: 3px;
@@ -569,7 +546,6 @@ a.header-link {
       }
     }
     input[type='submit'] {
-      margin-right: 19px;
       background: $bold-blue;
     }
     &.submitting {

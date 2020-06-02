@@ -4,6 +4,7 @@
   --article-rythm: var(--su-2);
   --article-padding-x: var(--su-3);
   --article-padding-y: var(--su-3);
+  --article-font-size: var(--fs-l);
 
   @media (min-width: $breakpoint-s) {
     --article-padding-x: var(--su-4);
@@ -14,6 +15,7 @@
     --article-rythm: var(--su-4);
     --article-padding-x: var(--su-6);
     --article-padding-y: var(--su-6);
+    --article-font-size: var(--fs-xl);
   }
 
   @media (min-width: $breakpoint-l) {
@@ -23,10 +25,10 @@
 
 .crayons-article {
   &__cover {
-    margin: calc(var(--article-padding-y) * -1)
-      calc(var(--article-padding-x) * -1) var(--article-padding-x)
-      calc(var(--article-padding-x) * -1);
-    width: calc(100% + (var(--article-padding-x) * 2));
+    // margin: calc(var(--article-padding-y) * -1)
+    //   calc(var(--article-padding-x) * -1) var(--article-padding-x)
+    //   calc(var(--article-padding-x) * -1);
+    // width: calc(100% + (var(--article-padding-x) * 2));
 
     &__image {
       border-radius: var(--radius) var(--radius) 0 0;
@@ -37,7 +39,12 @@
   }
 
   &__header {
-    margin-bottom: var(--su-6);
+    margin-bottom: var(--article-padding-y);
+
+    &__meta {
+      padding: var(--article-padding-y) var(--article-padding-x) 0
+        var(--article-padding-x);
+    }
   }
 
   &__tags {
@@ -48,11 +55,9 @@
   }
 
   &__body {
-    font-size: var(--fs-l);
-    font-family: var(--ff-serif);
-    @media (min-width: $breakpoint-m) {
-      font-size: var(--fs-xl);
-    }
+    padding: 0 var(--article-padding-x) var(--article-padding-y)
+      var(--article-padding-x);
+    font-size: var(--article-font-size);
 
     a {
       code {
@@ -225,11 +230,11 @@
       background: #08090a;
       overflow-x: auto;
       color: #eff0f9;
-      padding: var(--su-6) var(--su-8);
+      padding: var(--article-padding-y) var(--article-padding-x);
       margin: var(--article-rythm) 0;
-      margin-left: calc(var(--su-8) * -1);
-      margin-right: calc(var(--su-8) * -1);
-      width: calc(100% + var(--su-8) + var(--su-8));
+      margin-left: calc(var(--article-padding-x) * -1);
+      margin-right: calc(var(--article-padding-x) * -1);
+      width: calc(100% + var(--article-padding-x) + var(--article-padding-x));
       overflow-wrap: normal;
       border-radius: 0;
 
@@ -243,9 +248,8 @@
     .highlight {
       display: grid;
       justify-content: stretch;
-      // width: calc(100% + var(--su-8) + var(--su-8));
-      margin-left: calc(var(--su-8) * -1);
-      margin-right: calc(var(--su-8) * -1);
+      margin-left: calc(var(--article-padding-x) * -1);
+      margin-right: calc(var(--article-padding-x) * -1);
 
       pre.highlight {
         display: block;
@@ -331,6 +335,10 @@
       margin: auto;
     }
   }
+}
+
+.text-padding {
+  padding: var(--article-padding-y) var(--article-padding-x);
 }
 
 .crayons-article {
