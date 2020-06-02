@@ -160,7 +160,7 @@
 
   &__toolbar {
     position: sticky;
-    top: calc(var(--article-padding-y) * -1);
+    top: 0;
     background: var(--base-0);
     padding: var(--su-2) var(--article-padding-x);
     margin: calc(var(--article-padding-y) * -1)

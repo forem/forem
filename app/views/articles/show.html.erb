@@ -209,7 +209,7 @@
                    classification_text: "Classic #{community_name} Post from #{@classic_article.readable_publish_date}",
                    follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
       <% end %>
-      <div id="additional-content-area" class="grid gap-4" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>
+      <div id="additional-content-area" class="gap-4" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></div>
       <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
       <%= render "articles/bottom_content", articles: suggested_articles %>
     <% end %>
