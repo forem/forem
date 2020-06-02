@@ -17,7 +17,7 @@ groups = [[
 groups_dir = File.join(Dir.pwd, 'spec/system/groups')
 FileUtils.mkdir_p(groups_dir)
 
-num_copies = 50
+num_copies = 10
 total = 0
 groups.each do |group|
   first_spec = File.join(Dir.pwd, group[0])
