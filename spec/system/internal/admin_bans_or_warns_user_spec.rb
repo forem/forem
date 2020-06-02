@@ -54,7 +54,7 @@ RSpec.describe "Admin bans user", type: :system do
   end
 
   # to-do: add spec for invalid bans
-  it "checks that the user is banned and has note" do
+  xit "checks that the user is banned and has note" do
     ban_user
     expect(user.banned).to eq(true)
     expect(Note.last.reason).to eq "Ban"
