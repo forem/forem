@@ -146,12 +146,13 @@ RSpec.configure do |config|
   end
 
   OmniAuth.config.test_mode = true
+  Rails.logger = Logger.new(STDOUT)
+  Rails.logger.level = 3
   OmniAuth.config.logger = Rails.logger
-
   config.infer_spec_type_from_file_location!
 
   # Filter lines from Rails gems in backtraces.
-  config.filter_rails_from_backtrace!
+  # config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
 

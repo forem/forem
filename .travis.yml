@@ -33,9 +33,9 @@ env:
     - SECRET_KEY_BASE=dummydummydummy
     - GITHUB_KEY=dummy
     - GITHUB_SECRET=dummy
-branches:
-  only:
-    - master
+# branches:
+#   only:
+#     - master
 before_install:
   - date --rfc-3339=seconds
   - nvm install
@@ -55,11 +55,13 @@ install:
   - chmod +x ./cc-test-reporter
 before_script:
   - bundle exec rails db:create
+  - ruby scripts/copy_specs_as_groups.rb
+  - './scripts/copy_specs.sh'
 script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'npx percy exec -- bundle exec rspec spec --color --tty --format progress'
+  - 'npx percy exec -- bundle exec rspec spec --color --tty --format documentation -t flaky --fail-fast=6'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
   - 'yarn test --colors'

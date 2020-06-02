@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Views an article", type: :system do
+RSpec.describe "Views an article", type: :system, flaky: true do
   let_it_be(:user) { create(:user) }
   let_it_be_changeable(:article) do
     create(:article, :with_notification_subscription, user: user)
