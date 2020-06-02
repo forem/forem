@@ -39,7 +39,7 @@
 
     @media (min-width: $breakpoint-m) {
       display: block;
-    } 
+    }
   }
 
   @media (min-width: $breakpoint-s) {
@@ -75,10 +75,12 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: var(--layout-article-content-padding-y)
-      var(--layout-article-content-padding-x);
+    padding: var(--article-padding-y) var(--article-padding-x);
     overflow: auto;
-    height: calc(100vh - var(--header-height) - var(--article-form-actions-height));
+    height: calc(
+      100vh - var(--header-height) - var(--article-form-actions-height)
+    );
+    box-shadow: 0 0 0 1px var(--story-border);
 
     @media (min-width: $breakpoint-m) {
       grid-column-end: span 2;
@@ -99,9 +101,6 @@
   }
 
   &__footer {
-    background: var(--body-bg);
-    position: sticky;
-    bottom: 0;
     height: var(--article-form-actions-height);
     display: flex;
     align-items: center;
@@ -162,12 +161,12 @@
 
   &__toolbar {
     position: sticky;
-    top: calc(var(--layout-article-content-padding-y) * -1);
+    top: calc(var(--article-padding-y) * -1);
     background: var(--base-0);
-    padding: var(--su-2) var(--layout-article-content-padding-x);
-    margin: calc(var(--layout-article-content-padding-y) * -1)
-      calc(var(--layout-article-content-padding-x) * -1) var(--su-6)
-      calc(var(--layout-article-content-padding-x) * -1);
+    padding: var(--su-2) var(--article-padding-x);
+    margin: calc(var(--article-padding-y) * -1)
+      calc(var(--article-padding-x) * -1) var(--su-6)
+      calc(var(--article-padding-x) * -1);
 
     > :first-child {
       margin-left: calc(var(--su-2) * -1);
@@ -206,7 +205,7 @@
 
   &__tagsfield {
     position: relative;
-    margin-bottom: calc(var(--su-7) + var(--layout-article-content-padding-y));
+    margin-bottom: calc(var(--su-7) + var(--article-padding-y));
   }
 
   &__help {

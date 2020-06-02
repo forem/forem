@@ -98,9 +98,9 @@
     --layout-sidebar-right-width: 1fr;
     --layout-sidebar-left-row-end: initial;
     --layout-content-width: 2fr;
-    --layout: var(--layout-sidebar-left-width) var(--layout-content-width) var(--layout-sidebar-right-width);
+    --layout: var(--layout-sidebar-left-width) var(--layout-content-width)
+      var(--layout-sidebar-right-width);
   }
-
 
   &--drop-right-left {
     --layout-sidebar-left-display: none;
@@ -185,34 +185,5 @@
 .crayons-layout__sidebar-right {
   &.swiped-in {
     right: 0;
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-:root {
-  --layout-article-content-padding-x: var(--su-3);
-  --layout-article-content-padding-y: var(--su-3);
-
-  @media (min-width: $breakpoint-s) {
-    --layout-article-content-padding-x: var(--su-4);
-    --layout-article-content-padding-y: var(--su-4);
-  }
-
-  @media (min-width: $breakpoint-m) {
-    --layout-article-content-padding-x: var(--su-6);
-    --layout-article-content-padding-y: var(--su-6);
-  }
-
-  @media (min-width: $breakpoint-l) {
-    --layout-article-content-padding-x: var(--su-8);
   }
 }
