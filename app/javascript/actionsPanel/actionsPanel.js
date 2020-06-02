@@ -1,6 +1,6 @@
 import { request } from '@utilities/http';
 
-function addCloseListener() {
+export function addCloseListener() {
   const button = document.querySelector('.close-actions-panel');
   button.addEventListener('click', () => {
     // getting the article show page document because this is called within an iframe
@@ -16,7 +16,7 @@ function addCloseListener() {
   });
 }
 
-function initializeHeight() {
+export function initializeHeight() {
   document.documentElement.style.height = '100%';
   document.body.style.cssText = 'height: 100%; margin: 0; padding-top: 0;';
   document.getElementById('page-content').style.cssText =
@@ -46,7 +46,7 @@ function applyReactedClass(category) {
   }
 }
 
-function addReactionButtonListeners() {
+export function addReactionButtonListeners() {
   const butts = Array.from(
     document.querySelectorAll('.reaction-button, .reaction-vomit-button'),
   );
@@ -238,7 +238,7 @@ async function adjustTag(el) {
   }
 }
 
-function handleAdjustTagBtn(btn) {
+export function handleAdjustTagBtn(btn) {
   const currentActiveTags = document.querySelectorAll(
     'button.adjustable-tag.active',
   );
@@ -301,7 +301,7 @@ function handleAdminInput() {
   }
 }
 
-function addAdjustTagListeners() {
+export function addAdjustTagListeners() {
   Array.from(document.getElementsByClassName('adjustable-tag')).forEach(
     (btn) => {
       btn.addEventListener('click', () => {
@@ -328,7 +328,7 @@ function addAdjustTagListeners() {
   }
 }
 
-function addBottomActionsListeners() {
+export function addBottomActionsListeners() {
   addAdjustTagListeners();
   Array.from(document.getElementsByClassName('other-things-btn')).forEach(
     (btn) => {
