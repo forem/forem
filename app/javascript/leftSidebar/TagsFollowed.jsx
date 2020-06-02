@@ -13,7 +13,7 @@ export const TagsFollowed = ({ tags = [] }) => {
           id={`sidebar-element-${tag.name}`}
         >
           <a
-            className="crayons-link crayons-link--block"
+            className="crayons-link crayons-link--block spec__tag-link"
             href={`/t/${tag.name}`}
           >
             {`#${tag.name}`}
