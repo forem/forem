@@ -14,6 +14,7 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
 
   def warn_user
     visit "/internal/users/#{user.id}/edit"
+    
     select("Warn", from: "user_user_status")
     fill_in("user_note_for_current_role", with: "something")
     click_button("Update User Status")
