@@ -1,6 +1,9 @@
 ENV["RAILS_ENV"] = "test"
 
 require "spec_helper"
+require "knapsack_pro"
+KnapsackPro::Adapters::RSpecAdapter.bind
+
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
@@ -49,6 +52,7 @@ allowed_sites = [
   "https://github.com/mozilla/geckodriver/releases",
   "https://selenium-release.storage.googleapis.com",
   "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
+  "api.knapsackpro.com",
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 

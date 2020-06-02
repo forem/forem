@@ -33,9 +33,14 @@ env:
     - SECRET_KEY_BASE=dummydummydummy
     - GITHUB_KEY=dummy
     - GITHUB_SECRET=dummy
-branches:
-  only:
-    - master
+    - KNAPSACK_PRO_FIXED_QUEUE_SPLIT=true
+    - KNAPSACK_PRO_CI_NODE_TOTAL=2
+  jobs:
+    - KNAPSACK_PRO_CI_NODE_INDEX=0
+    - KNAPSACK_PRO_CI_NODE_INDEX=1
+# branches:
+#   only:
+#     - master
 before_install:
   - date --rfc-3339=seconds
   - nvm install
@@ -60,7 +65,9 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'npx percy exec -- bundle exec rspec spec --color --tty --format progress'
+  # - 'npx percy exec -- bundle exec rspec spec --color --tty --format progress'
+  # Step for RSpec in Regular Mode
+  - 'bundle exec rake knapsack_pro:queue:rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
   - 'yarn test --colors'
