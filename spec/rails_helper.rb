@@ -82,6 +82,8 @@ RSpec.configure do |config|
   end
 
   config.before do
+    OmniAuth.config.add_mock(:twitter, {:uid => '12345'})
+
     Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
   end
 
