@@ -39,7 +39,7 @@ FactoryBot.define do
     end
 
     trait :super_admin do
-      after(:build) { |user| Rails.logger.error('before superadmin'); user.add_role(:super_admin); Rails.logger.error('after superadmin') }
+      after(:build) { |user| user.add_role(:super_admin) }
     end
 
     trait :admin do

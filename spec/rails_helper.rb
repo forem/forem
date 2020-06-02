@@ -1,5 +1,6 @@
 ENV["RAILS_ENV"] = "test"
 
+require_relative 'support/initializers/monkeypatch_rolify'
 require "spec_helper"
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
@@ -82,8 +83,6 @@ RSpec.configure do |config|
   end
 
   config.before do
-    OmniAuth.config.add_mock(:twitter, {:uid => '12345'})
-
     Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
   end
 
@@ -148,8 +147,6 @@ RSpec.configure do |config|
   end
 
   OmniAuth.config.test_mode = true
-  Rails.logger = Logger.new(STDOUT)
-  Rails.logger.level = 3
   OmniAuth.config.logger = Rails.logger
   config.infer_spec_type_from_file_location!
 
