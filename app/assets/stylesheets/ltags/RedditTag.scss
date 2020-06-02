@@ -1,0 +1,98 @@
+@import 'variables';
+
+.ltag__reddit--container {
+  max-width: 620px;
+  border: 1px solid $light-medium-gray;
+  border-radius: 3px;
+  box-shadow: $shadow;
+  margin:1.1em auto 1.30em;
+  padding: 10px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  overflow: hidden;
+
+  .ltag__reddit--title-container {
+    border-bottom: 1px solid #eaecef;
+    display: flex;
+    flex-direction: column;
+
+    header {
+      display: flex;
+      justify-content: space-between;
+
+      .ltag__reddit--title {
+        h1 {
+          margin-left: 5px;
+          margin-bottom: 0;
+          margin-top: 8px;
+          font-size: 1.4em;
+          padding-bottom: 0;
+
+          img {
+            height: 40px;
+            width: 40px;
+            display: inline-block;
+            vertical-align: -9px;
+          }
+        }
+      }
+
+      .ltag__reddit--post-metadata {
+        font-size: 0.6em;
+
+        span {
+          display: inline-block;
+          padding: 7px 6px;
+          margin-left: 6px;
+        }
+      }
+    }
+  }
+
+  .ltag__reddit--body {
+    padding: 1em 0.5em;
+    max-height: calc(21vw + 165px);
+    overflow: hidden;
+
+    @media screen and (min-width: 430px) {
+      max-height: calc(20vw + 153px);
+    }
+    @media screen and (min-width: 800px) {
+      max-height: 310px;
+    }
+
+    h1,h2,h3,h4,h5,h6 {
+      font-weight: 500 !important;
+    }
+
+    p {
+      margin-top: 0px;
+      padding: 0px;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+    }
+  }
+
+  .ltag__reddit--btn--container {
+    padding: 0.1em 0 1.15em;
+    z-index: 100;
+    text-align: center;
+    position: relative;
+    box-shadow: 0px 0px 60px 42px #fff;
+  }
+
+  .ltag__reddit--btn {
+    color: #0366d6;
+    background-color: #f1f8ff;
+    border-radius: 3px;
+    line-height: 20px;
+    padding: 0.25em 1.2em;
+    opacity: 0.9;
+    font-weight: bold;
+    border: 1px solid #0366d6;
+    font-size: 0.75em;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

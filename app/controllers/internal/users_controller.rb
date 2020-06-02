@@ -65,7 +65,7 @@ class Internal::UsersController < Internal::ApplicationController
   def merge
     @user = User.find(params[:id])
     begin
-      Moderator::MergeUser.call_merge(admin: current_user, keep_user: @user, delete_user_id: user_params["merge_user_id"])
+      Moderator::MergeUser.call(admin: current_user, keep_user: @user, delete_user_id: user_params["merge_user_id"])
     rescue StandardError => e
       flash[:danger] = e.message
     end
