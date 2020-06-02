@@ -37,7 +37,6 @@ WORKDIR "${APP_HOME}"
 
 COPY ./.ruby-version "${APP_HOME}"
 COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"
-RUN bundle config specific_platform x86_64-linux && bundle config --local build.sassc --disable-march-tune-native
 RUN bundle check || bundle install --jobs 20 --retry 5
 
 COPY ./package.json ./yarn.lock ./.yarnrc "${APP_HOME}"
