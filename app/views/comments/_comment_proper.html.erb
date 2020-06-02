@@ -56,13 +56,11 @@
         <button class="dropbtn" aria-label="Toggle dropdown menu">
           <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Dropdown menu") %>
         </button>
-        <div class="dropdown">
-          <div class="dropdown-content">
-            <a href="<%= comment.path %>">
-              Permalink
-            </a>
+        <div class="dropdown static">
+          <div class="crayons-dropdown p-1 z-30 right-1 left-1 s:right-0 s:left-auto fs-base">
+            <a href="<%= comment.path %>" class="crayons-link crayons-link--block">Permalink</a>
             <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" style="display: none;">
-              <a href="<%= comment.path %>/settings" rel="nofollow" style="color:#0a0a0a;" data-no-instant>Settings</a>
+              <a href="<%= comment.path %>/settings" rel="nofollow" class="crayons-link crayons-link--block" data-no-instant>Settings</a>
             </span>
             <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
             <span class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>" style="display: none; width: 100%;">
@@ -71,9 +69,9 @@
               </button>
             </span>
             <span class="mod-actions hidden" style="display: none;">
-              <a href="<%= comment.path %>/mod" rel="nofollow" style="color:#0a0a0a">Moderate</a>
+              <a href="<%= comment.path %>/mod" rel="nofollow" class="crayons-link crayons-link--block">Moderate</a>
             </span>
-            <a href="/report-abuse?url=<%= comment_url(comment) %>">Report Abuse</a>
+            <a href="/report-abuse?url=<%= comment_url(comment) %>" class="crayons-link crayons-link--block">Report Abuse</a>
           </div>
         </div>
       </div>
