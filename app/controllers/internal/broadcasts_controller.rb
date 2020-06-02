@@ -36,6 +36,16 @@ class Internal::BroadcastsController < Internal::ApplicationController
                   end.order(title: :asc)
   end
 
+  def destroy
+    @broadcast = Broadcast.find_by!(id: params[:id])
+    @broadcast.destroy
+    flash[:success] = "Broadcast has been deleted!"
+    redirect_to "/internal/broadcasts"
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:danger] = e.message
+    redirect_to "/internal/broadcasts/#{params[:id]}/delete"
+  end
+
   private
 
   def broadcast_params
