@@ -2,7 +2,7 @@ import { h } from 'preact';
 import { CogIcon } from '../CogIcon';
 
 export default {
-  title: 'Components/Icons',
+  title: '3_Components/Icons',
 };
 
 export const Default = () => <CogIcon />;

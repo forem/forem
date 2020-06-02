@@ -129,7 +129,23 @@
                   <% tag_hash = tag_colors(tag) %>
                   <a class="crayons-tag mr-1" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
                 <% end %>
+<<<<<<< HEAD
               </div>
+=======
+              </em>
+            </span>
+          <% end %>
+          <span class="published-at">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
+          <% if user_signed_in? %>
+            <span class="action-space" id="action-space">&nbsp;</span>
+          <% end %>
+        </h3>
+        <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
+          <div class="tags">
+            <% @article.cached_tag_list_array.each do |tag| %>
+              <% tag_hash = tag_colors(tag) %>
+              <a class="tag" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>">#<%= tag %></a>
+>>>>>>> layout
             <% end %>
 
             <div class="crayons-article__subheader flex items-center">

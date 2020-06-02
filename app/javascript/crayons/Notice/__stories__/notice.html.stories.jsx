@@ -3,7 +3,7 @@ import { h } from 'preact';
 import '../../storybook-utilities/designSystem.scss';
 
 export default {
-  title: 'Components/Notices/HTML',
+  title: '3_Components/Notices/HTML',
 };
 
 export const Default = () => (

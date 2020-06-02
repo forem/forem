@@ -2,19 +2,31 @@
 
 :root {
   --article-rythm: var(--su-2);
+  --article-padding-x: var(--su-3);
+  --article-padding-y: var(--su-3);
+
+  @media (min-width: $breakpoint-s) {
+    --article-padding-x: var(--su-4);
+    --article-padding-y: var(--su-4);
+  }
 
   @media (min-width: $breakpoint-m) {
     --article-rythm: var(--su-4);
+    --article-padding-x: var(--su-6);
+    --article-padding-y: var(--su-6);
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --article-padding-x: var(--su-8);
   }
 }
 
 .crayons-article {
   &__cover {
-    margin: calc(var(--layout-article-content-padding-y) * -1)
-      calc(var(--layout-article-content-padding-x) * -1)
-      var(--layout-article-content-padding-x)
-      calc(var(--layout-article-content-padding-x) * -1);
-    width: calc(100% + (var(--layout-article-content-padding-x) * 2));
+    margin: calc(var(--article-padding-y) * -1)
+      calc(var(--article-padding-x) * -1) var(--article-padding-x)
+      calc(var(--article-padding-x) * -1);
+    width: calc(100% + (var(--article-padding-x) * 2));
 
     &__image {
       border-radius: var(--radius) var(--radius) 0 0;

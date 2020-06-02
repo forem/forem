@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 
 const NextPageButton = ({ onClick }) => (
-  <div className="classifieds-load-more-button">
+  <div className="listings-load-more-button">
     <button onClick={onClick} type="button">
       Load More Listings
     </button>
