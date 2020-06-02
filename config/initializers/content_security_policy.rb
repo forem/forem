@@ -16,7 +16,11 @@ Rails.application.config.content_security_policy do |policy|
   #   # policy.report_uri "/csp-violation-report-endpoint"
 
   # allow webpack-dev-server host as allowed origin for connect-src
-  policy.connect_src :self, :https, "http://localhost:3035", "ws://localhost:3035" if Rails.env.development?
+  if Rails.env.development?
+    webpack_host = ENV.fetch("APP_DOMAIN") { "localhost" }
+    policy.connect_src :self, :https,
+                       "http://#{webpack_host}:3035", "ws://#{webpack_host}:3035"
+  end
 end
 
 # If you are using UJS then enable automatic nonce generation

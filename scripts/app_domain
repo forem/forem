@@ -1,0 +1,8 @@
+#!/usr/bin/env ruby
+
+require "yaml"
+
+app_domain = YAML.load_file("config/application.yml").fetch("APP_DOMAIN") do
+  "localhost"
+end
+puts app_domain
