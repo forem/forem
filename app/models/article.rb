@@ -398,7 +398,7 @@ class Article < ApplicationRecord
   def set_tag_list(tags)
     self.tag_list = [] # overwrite any existing tag with those from the front matter
     tag_list.add(tags, parse: true)
-    self.tag_list = tag_list.map { |tag| Tag.find_alias_for(tag) }
+    self.tag_list = tag_list.map { |tag| Tag.aliased_name(tag) }
   end
 
   def update_main_image_background_hex
@@ -512,7 +512,7 @@ class Article < ApplicationRecord
     return if tags_to_add.blank?
 
     tag_list.add(tags_to_add, parse: true)
-    self.tag_list = tag_list.map { |tag| Tag.find_alias_for(tag) }
+    self.tag_list = tag_list.map { |tag| Tag.aliased_name(tag) }
   end
 
   def validate_video

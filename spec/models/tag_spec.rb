@@ -123,19 +123,16 @@ RSpec.describe Tag, type: :model do
     end
   end
 
-  describe "::find_alias_for" do
-    it "returns the oldest preferred alias (head of linklist)" do
-      tag1 = create(:tag, name: "cpp")
-      create(:tag, name: "cpplus", alias_for: "cpp")
-      tag3 = create(:tag, name: "cplusplus", alias_for: "cpplus")
-      expect(described_class.find_alias_for(tag3.name)).to eq(tag1.name)
+  describe "::aliased_name" do
+    it "returns the preferred alias tag" do
+      preferred_tag = create(:tag, name: "rails")
+      bad_tag = create(:tag, name: "ror", alias_for: "rails")
+      expect(described_class.aliased_name(bad_tag.name)).to eq(preferred_tag.name)
     end
 
-    it "is infinite deadlock proof" do
-      tag1 = create(:tag, name: "one")
-      tag2 = create(:tag, name: "two", alias_for: "one")
-      tag1.update(alias_for: "two")
-      expect(described_class.find_alias_for(tag1.name)).to eq(tag2.name)
+    it "returns self if there's no preferred alias" do
+      tag = create(:tag, name: "ror")
+      expect(described_class.aliased_name(tag.name)).to eq(tag.name)
     end
   end
 
