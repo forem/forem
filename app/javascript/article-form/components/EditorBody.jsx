@@ -10,7 +10,7 @@ export const EditorBody = ({
   version,
 }) => {
   return (
-    <div className="crayons-article-form__body">
+    <div data-testid="article-form__body" className="crayons-article-form__body">
       <Toolbar version={version} />
 
       <Textarea
