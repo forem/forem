@@ -57,7 +57,7 @@ class ChatChannelsController < ApplicationController
     if chat_channel.errors.any?
       render json: { success: false, errors: chat_channel.errors.full_messages, message: "Channel settings updation failed. Try again later." }, success: :bad_request
     else
-      if chat_channel_params[:discoverable].to_i.zero?
+      if chat_channel_params[:discoverable]
         ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id, role: "member", status: "active")
       else
         ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
