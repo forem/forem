@@ -37,7 +37,7 @@ class Internal::BroadcastsController < Internal::ApplicationController
   end
 
   def destroy
-    broadcast = Broadcast.find_by(id: params[:id])
+    broadcast = Broadcast.find_by!(id: params[:id])
     if broadcast.destroy
       flash[:success] = "Broadcast has been deleted!"
       redirect_to "/internal/broadcasts"
