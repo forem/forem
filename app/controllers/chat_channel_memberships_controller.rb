@@ -20,34 +20,13 @@ class ChatChannelMembershipsController < ApplicationController
     )
   end
 
-  def edit
+  def chat_channel_info
     @membership = ChatChannelMembership.find(params[:id])
-    @channel = @membership.chat_channel
     authorize @membership
-  end
-
-  def edit_channel
-    @membership = ChatChannelMembership.find(params[:id])
     @channel = @membership.chat_channel
-    authorize @membership
+    data = ChatChannelDetailPresenter.new(@channel, @membership).as_json
 
-    render json: { success: true, data: { memberships: @channel.chat_channel_memberships, channel: @channel }, message: "" }, success: :ok
-  end
-
-  def create
-    membership_params = params[:chat_channel_membership]
-    @chat_channel = ChatChannel.find(membership_params[:chat_channel_id])
-    authorize @chat_channel, :update?
-    usernames = membership_params[:invitation_usernames].split(",").map { |username| username.strip.delete("@") }
-    users = User.where(username: usernames)
-    invitations_sent = @chat_channel.invite_users(users: users, membership_role: "member", inviter: current_user)
-    flash[:settings_notice] = if invitations_sent.zero?
-                                "No invitations sent. Check for username typos."
-                              else
-                                "#{invitations_sent} #{'invitation'.pluralize(invitations_sent)} sent."
-                              end
-    membership = @chat_channel.chat_channel_memberships.find_by!(user: current_user)
-    redirect_to edit_chat_channel_membership_path(membership)
+    render json: { success: true, result: data, message: "" }, success: :ok
   end
 
   def create_membership_request
@@ -98,7 +77,7 @@ class ChatChannelMembershipsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to edit_chat_channel_membership_path(membership) }
-      format.json { render json: { status: "success", message: flash[:settings_notice] } }
+      format.json { render json: { status: "success", message: flash[:settings_notice], success: true }, status: :ok }
     end
   end
 
@@ -115,7 +94,7 @@ class ChatChannelMembershipsController < ApplicationController
     if permitted_params[:user_action].present?
       respond_to_invitation(@chat_channel_membership.status)
     else
-      chat_channel_membership.update(permitted_params)
+      @chat_channel_membership.update(permitted_params)
       flash[:settings_notice] = "Personal settings updated."
       redirect_to edit_chat_channel_membership_path(@chat_channel_membership.id)
     end
@@ -128,7 +107,7 @@ class ChatChannelMembershipsController < ApplicationController
     if @chat_channel_membership.errors.any?
       render json: { success: false, errors: @chat_channel_membership.errors.full_messages, message: "Failed to update settings." }, status: :bad_request
     else
-      render json: { success: true, message: "User settings updated." }, status: :ok
+      render json: { success: true, message: "Personal settings updated." }, status: :ok
     end
   end
 
@@ -136,17 +115,6 @@ class ChatChannelMembershipsController < ApplicationController
     @chat_channel_membership = ChatChannelMembership.find(params[:id])
     authorize @chat_channel_membership
     respond_to_invitation(@chat_channel_membership.status)
-  end
-
-  def destroy
-    @chat_channel_membership = ChatChannelMembership.find(params[:id])
-    authorize @chat_channel_membership
-    channel_name = @chat_channel_membership.chat_channel.channel_name
-    send_chat_action_message("@#{current_user.username} left #{@chat_channel_membership.channel_name}", current_user, @chat_channel_membership.chat_channel_id, "left_channel")
-    @chat_channel_membership.update(status: "left_channel")
-    @chat_channels_memberships = []
-    flash[:settings_notice] = "You have left the channel #{channel_name}. It may take a moment to be removed from your list."
-    redirect_to chat_channel_memberships_path
   end
 
   def leave_membership
@@ -190,9 +158,11 @@ class ChatChannelMembershipsController < ApplicationController
       flash[:settings_notice] = "Invitation rejected."
     end
 
+    membership_user = MembershipUserPresenter.new(@chat_channel_membership).as_json
+
     respond_to do |format|
       format.html { redirect_to chat_channel_memberships_path }
-      format.json { render json: { status: "success", message: flash[:settings_notice] }, status: :ok }
+      format.json { render json: { status: "success", message: flash[:settings_notice], success: true, membership: membership_user }, status: :ok }
     end
   end
 

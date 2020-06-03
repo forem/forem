@@ -280,7 +280,7 @@ Rails.application.routes.draw do
   patch "/chat_channels/update_channel/:id" => "chat_channels#update_channel"
 
   # Chat Channel Membership json response
-  get "/chat_channel_memberships/edit_channel/:id" => "chat_channel_memberships#edit_channel"
+  get "/chat_channel_memberships/chat_channel_info/:id" => "chat_channel_memberships#chat_channel_info"
   post "/chat_channel_memberships/create_membership_request" => "chat_channel_memberships#create_membership_request"
   patch "/chat_channel_memberships/leave_membership/:id" => "chat_channel_memberships#leave_membership"
   patch "/chat_channel_memberships/update_membership/:id" => "chat_channel_memberships#update_membership"
