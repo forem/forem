@@ -38,7 +38,7 @@ class NotifyMailer < ApplicationMailer
     @user = user
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
 
-    @unread_notifications_count = NotificationCounter.new(@user).unread_notification_count
+    @unread_notifications_count = @user.notifications.unread.count
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_unread_notifications)
     subject = "🔥 You have #{@unread_notifications_count} unread notifications on #{ApplicationConfig['COMMUNITY_NAME']}"
     mail(to: @user.email, subject: subject)
