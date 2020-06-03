@@ -1,10 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<Content /> as loading-user should render and test snapshot 1`] = `
+exports[`<Content /> as channel-request should render and test snapshot 1`] = `
 <div
   class="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
   id="chat_activecontent"
-  onClick={false}
 >
   <button
     class="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
@@ -56,8 +55,63 @@ exports[`<Content /> as loading-user should render and test snapshot 1`] = `
       />
     </svg>
   </button>
-  <div
-    class="loading-user"
-  />
+</div>
+`;
+
+exports[`<Content /> as loading-user should render and test snapshot 1`] = `
+<div
+  class="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
+  id="chat_activecontent"
+>
+  <button
+    class="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
+    data-content="exit"
+  >
+    <svg
+      data-content="exit"
+      height="24"
+      viewBox="0 0 24 24"
+      width="24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M0 0h24v24H0z"
+        data-content="exit"
+        fill="none"
+      />
+      <path
+        d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z"
+        data-content="exit"
+      />
+    </svg>
+  </button>
+  <button
+    class="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
+    data-content="fullscreen"
+    style={
+      Object {
+        "left": "39px",
+      }
+    }
+  >
+     
+    <svg
+      data-content="fullscreen"
+      height="24"
+      viewBox="0 0 24 24"
+      width="24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M0 0h24v24H0z"
+        data-content="fullscreen"
+        fill="none"
+      />
+      <path
+        d="M20 3h2v6h-2V5h-4V3h4zM4 3h4v2H4v4H2V3h2zm16 16v-4h2v6h-6v-2h4zM4 19h4v2H2v-6h2v4z"
+        data-content="fullscreen"
+      />
+    </svg>
+  </button>
 </div>
 `;

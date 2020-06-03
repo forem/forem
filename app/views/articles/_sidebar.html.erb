@@ -23,10 +23,8 @@
     <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left") %>
       <% if @left_sidebar_ad %>
-        <div class="widget" id="sponsorship-arbitrary-display-widget" data-id="<%= @left_sidebar_ad.id %>">
-          <div class="widget-body widget-body--sponsorship-arbitrary">
-            <%= @left_sidebar_ad.processed_html.html_safe %>
-          </div>
+        <div class="crayons-sponsorship-widget" id="sponsorship-arbitrary-display-widget" data-id="<%= @left_sidebar_ad.id %>">
+          <%= @left_sidebar_ad.processed_html.html_safe %>
         </div>
       <% end %>
     <% end %>

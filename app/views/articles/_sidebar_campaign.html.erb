@@ -1,10 +1,10 @@
-<div class="crayons-card crayons-card--secondary signin-cta-widget">
+<div class="crayons-card crayons-card--secondary">
   <% if SiteConfig.campaign_sidebar_image && SiteConfig.campaign_url %>
-    <a href="<%= SiteConfig.campaign_url %>" class="block">
-      <img src="<%= SiteConfig.campaign_sidebar_image %>" class="block w-100 radius-default" />
+    <a href="<%= SiteConfig.campaign_url %>">
+      <img src="<%= SiteConfig.campaign_sidebar_image %>" class="block w-100 h-auto radius-default" width="1000" height="420" />
     </a>
   <% elsif SiteConfig.campaign_sidebar_image %>
-    <img src="<%= SiteConfig.campaign_sidebar_image %>" class="block w-100 radius-default" />
+    <img src="<%= SiteConfig.campaign_sidebar_image %>" class="block w-100 h-auto radius-default" width="1000" height="420" />
   <% end %>
   <header class="crayons-card__header">
     <h3 class="crayons-card__header__headline"><%= link_to "Stories (#{@campaign_articles_count})", "/t/#{SiteConfig.campaign_featured_tags.first}" %></h3>

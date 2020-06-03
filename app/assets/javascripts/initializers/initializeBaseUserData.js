@@ -20,8 +20,8 @@ function initializeUserSidebar(user) {
   let followedTags = JSON.parse(user.followed_tags);
   const tagSeparatorLabel =
     followedTags.length === 0
-      ? 'Follow tags to improve your feed'
-      : 'Other Popular Tags';
+      ? 'FOLLOW TAGS TO IMPROVE YOUR FEED'
+      : 'OTHER POPULAR TAGS';
 
   followedTags.forEach((tag) => {
     const element = document.getElementById(

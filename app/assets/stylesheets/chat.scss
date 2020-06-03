@@ -531,7 +531,8 @@
   }
 }
 
-.chat__channelinvitationsindicator a {
+.chat__channelinvitationsindicator a,
+.chat__channelinvitationsindicator button {
   background: linear-gradient(10deg, darken($green, 25%), darken($green, 15%));
   text-align: center;
   padding: 30px 0px;
@@ -1264,4 +1265,12 @@
   display: 'block';
   border-radius: '500px';
   background-color: '#f5f6f7';
+}
+.request-card {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+}
+
+.action button:nth-child(2n) {
+  margin-left: 10px;
 }
