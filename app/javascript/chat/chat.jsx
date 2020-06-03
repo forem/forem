@@ -621,12 +621,12 @@ export default class Chat extends Component {
       const lastMessage =
         messagesByCurrentUser[messagesByCurrentUser.length - 1];
 
-      if (upArrowPressed) {
-        this.setState({ activeEditMessage: lastMessage });
-        this.setState({ startEditing: true });
-      } else if (deletePressed) {
-        this.setState({ messageDeleteId: lastMessage.id });
-        this.setState({ showDeleteModal: true });
+      if (lastMessage) {
+        if (upArrowPressed) {
+          this.triggerEditMessage(lastMessage.id);
+        } else if (deletePressed) {
+          this.triggerDeleteMessage(lastMessage.id);
+        }
       }
     }
   };
@@ -812,16 +812,16 @@ export default class Chat extends Component {
     }
   };
 
-  triggerDeleteMessage = (e) => {
-    this.setState({ messageDeleteId: e.target.dataset.content });
+  triggerDeleteMessage = (messageId) => {
+    this.setState({ messageDeleteId: messageId });
     this.setState({ showDeleteModal: true });
   };
 
-  triggerEditMessage = (e) => {
+  triggerEditMessage = (messageId) => {
     const { messages, activeChannelId } = this.state;
     this.setState({
       activeEditMessage: messages[activeChannelId].filter(
-        (message) => message.id === parseInt(e.target.dataset.content, 10),
+        (message) => message.id === messageId,
       )[0],
     });
     this.setState({ startEditing: true });
@@ -1445,6 +1445,7 @@ export default class Chat extends Component {
 
   handleKeyUp = (e) => {
     const { startEditing, activeChannel, showMemberlist } = this.state;
+    console.log(activeChannel);
     const enterPressed = e.keyCode === 13;
     if (enterPressed && showMemberlist)
       this.setState({ showMemberlist: false });

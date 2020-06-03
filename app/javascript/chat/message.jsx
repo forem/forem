@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 // eslint-disable-next-line import/no-unresolved
 import ThreeDotsIcon from 'images/three-dots.svg';
 import { adjustTimestamp } from './util';
@@ -34,7 +35,6 @@ const Message = ({
     />
   );
 
-  const ENTER_KEY_CODE = 13;
   const dropdown = (
     <div className="message__actions">
       <span className="ellipsis__menubutton">
@@ -42,28 +42,15 @@ const Message = ({
       </span>
 
       <div className="messagebody__dropdownmenu">
-        <span
-          role="button"
-          data-content={id}
-          onClick={onEditMessageTrigger}
-          tabIndex="0"
-          onKeyUp={(e) => {
-            if (e.keyCode === ENTER_KEY_CODE) onEditMessageTrigger();
-          }}
-        >
+        <Button variant="ghost" onClick={(_) => onEditMessageTrigger(id)}>
           Edit
-        </span>
-        <span
-          role="button"
-          data-content={id}
-          onClick={onDeleteMessageTrigger}
-          tabIndex="0"
-          onKeyUp={(e) => {
-            if (e.keyCode === ENTER_KEY_CODE) onDeleteMessageTrigger();
-          }}
+        </Button>
+        <Button
+          variant="ghost-danger"
+          onClick={(_) => onDeleteMessageTrigger(id)}
         >
           Delete
-        </span>
+        </Button>
       </div>
     </div>
   );
