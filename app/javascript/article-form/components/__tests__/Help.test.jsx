@@ -14,7 +14,7 @@ describe('<Help />', () => {
   });
 
   it('shows some help in edit mode', () => {
-    const {getByTestId} = render(
+    const { getByTestId } = render(
       <Help
         previewShowing={false}
         helpFor={null}
@@ -26,7 +26,7 @@ describe('<Help />', () => {
   });
 
   it('shows the correct help for v1', () => {
-    const {queryByTestId} = render(
+    const { queryByTestId } = render(
       <Help
         previewShowing={false}
         helpFor={null}
@@ -45,7 +45,7 @@ describe('<Help />', () => {
   describe('with the appropriate v2 help sections', () => {
 
     it('shows the article-form-title', () => {
-      const {queryByTestId} = render(
+      const { queryByTestId } = render(
         <Help
           previewShowing={false}
           helpFor="article-form-title"
@@ -79,7 +79,7 @@ describe('<Help />', () => {
     });
 
     it('shows the tag-input', () => {
-      const {queryByTestId} = render(
+      const { queryByTestId } = render(
         <Help
           previewShowing={false}
           helpFor="tag-input"
