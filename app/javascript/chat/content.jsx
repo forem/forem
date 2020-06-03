@@ -2,6 +2,8 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import Article from './article';
 import ChannelRequest from './channelRequest';
+import RequestManager from './requestManager';
+
 export default class Content extends Component {
   static propTypes = {
     resource: PropTypes.object,
@@ -78,6 +80,15 @@ function display(props) {
       <ChannelRequest
         resource={resource.data}
         handleJoiningRequest={resource.handleJoiningRequest}
+      />
+    );
+  }
+  if (resource.type_of === 'channel-request-manager') {
+    return (
+      <RequestManager
+        resource={resource.data}
+        handleRequestRejection={resource.handleRequestRejection}
+        handleRequestApproval={resource.handleRequestApproval}
       />
     );
   }

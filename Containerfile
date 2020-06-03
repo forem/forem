@@ -5,7 +5,9 @@ USER root
 RUN curl -sL https://dl.yarnpkg.com/rpm/yarn.repo -o /etc/yum.repos.d/yarn.repo && \
     dnf install -y bash git ImageMagick iproute less libcurl libcurl-devel \
                    libffi-devel libxml2-devel libxslt-devel nodejs pcre-devel \
-                   postgresql postgresql-devel ruby-devel tzdata yarn
+                   postgresql postgresql-devel ruby-devel tzdata yarn \
+                   && dnf -y clean all \
+                   && rm -rf /var/cache/yum
 
 ENV APP_USER=devto
 ENV APP_UID=1000
@@ -37,6 +39,10 @@ WORKDIR "${APP_HOME}"
 
 COPY ./.ruby-version "${APP_HOME}"
 COPY ./Gemfile ./Gemfile.lock "${APP_HOME}"
+
+# Fixes https://github.com/sass/sassc-ruby/issues/146
+RUN bundle config build.sassc --disable-march-tune-native
+
 RUN bundle check || bundle install --jobs 20 --retry 5
 
 COPY ./package.json ./yarn.lock ./.yarnrc "${APP_HOME}"
