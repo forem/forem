@@ -6,10 +6,12 @@ $card-divider: 1px solid var(--body-bg);
   border-radius: var(--radius);
   background: var(--card-bg);
   color: var(--card-color);
+  box-shadow: 0 0 0 1px var(--card-border);
 
   &--secondary {
     background: var(--card-secondary-bg);
     color: var(--card-secondary-color);
+    box-shadow: 0 0 0 1px var(--card-secondary-border);
   }
 
   &__header {
