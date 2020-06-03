@@ -47,6 +47,17 @@ RSpec.describe "/internal/broadcasts", type: :request do
         end.to change { Broadcast.all.count }.by(1)
       end
     end
+
+    describe "DELETE /internal/broadcasts/:id" do
+      let!(:broadcast) { create(:welcome_broadcast) }
+
+      it "deletes the broadcast" do
+        expect do
+          delete "/internal/broadcasts/#{broadcast.id}"
+        end.to change { Broadcast.all.count }.by(-1)
+        expect(response.body).to redirect_to "/internal/broadcasts"
+      end
+    end
   end
 
   context "when the user is a single resource admin" do
@@ -66,6 +77,17 @@ RSpec.describe "/internal/broadcasts", type: :request do
         expect do
           post_resource
         end.to change { Broadcast.all.count }.by(1)
+      end
+    end
+
+    describe "DELETE /internal/broadcasts/:id" do
+      let!(:broadcast) { create(:welcome_broadcast) }
+
+      it "deletes the broadcast" do
+        expect do
+          delete "/internal/broadcasts/#{broadcast.id}"
+        end.to change { Broadcast.all.count }.by(-1)
+        expect(response.body).to redirect_to "/internal/broadcasts"
       end
     end
   end
