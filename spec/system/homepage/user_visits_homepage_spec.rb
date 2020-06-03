@@ -81,7 +81,7 @@ RSpec.describe "User visits a homepage", type: :system do
         find("body")["data-user"]
 
         within("#sidebar-nav-followed-tags") do
-          expect(all(".sidebar-nav-tag-text").map(&:text)).to eq(%w[#javascript #go #ruby])
+          expect(all(".spec__tag-link").map(&:text)).to eq(%w[#javascript #go #ruby])
         end
       end
 
