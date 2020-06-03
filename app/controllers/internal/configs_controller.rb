@@ -144,7 +144,7 @@ class Internal::ConfigsController < Internal::ApplicationController
   def job_params
     %i[
       jobs_url
-      display_jobs_before_search
+      display_jobs_banner
     ]
   end
 end

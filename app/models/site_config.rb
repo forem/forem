@@ -46,7 +46,7 @@ class SiteConfig < RailsSettings::Base
 
   # Jobs
   field :jobs_url, type: :string, default: "https://jobs.dev.to/"
-  field :display_jobs_before_search, type: :boolean, default: false
+  field :display_jobs_banner, type: :boolean, default: false
 
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>
