@@ -79,7 +79,7 @@
     height: calc(
       100vh - var(--header-height) - var(--article-form-actions-height)
     );
-    box-shadow: 0 0 0 1px var(--story-border);
+    box-shadow: 0 0 0 1px var(--card-border);
 
     @media (min-width: $breakpoint-m) {
       grid-column-end: span 2;
