@@ -1,8 +1,8 @@
 ENV["RAILS_ENV"] = "test"
-
-require "spec_helper"
 require "knapsack_pro"
 KnapsackPro::Adapters::RSpecAdapter.bind
+
+require "spec_helper"
 
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
@@ -151,6 +151,15 @@ RSpec.configure do |config|
 
   config.after(:all) do
     Timecop.return
+  end
+
+  config.after(:suite) do
+    WebMock.disable_net_connect!(
+      allow_localhost: true,
+      allow: [
+        "api.knapsackpro.com",
+      ],
+    )
   end
 
   OmniAuth.config.test_mode = true
