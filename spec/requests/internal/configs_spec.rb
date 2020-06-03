@@ -134,9 +134,9 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.jobs_url).to eq("www.jobs.com")
         end
 
-        it "updates display_jobs_before_search" do
-          post "/internal/config", params: { site_config: { display_jobs_before_search: true }, confirmation: confirmation_message }
-          expect(SiteConfig.display_jobs_before_search).to eq(true)
+        it "updates display_jobs_banner" do
+          post "/internal/config", params: { site_config: { display_jobs_banner: true }, confirmation: confirmation_message }
+          expect(SiteConfig.display_jobs_banner).to eq(true)
         end
       end
 
