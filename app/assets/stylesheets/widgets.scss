@@ -505,3 +505,13 @@
     color: var(--link-color-secondary);
   }
 }
+
+.crayons-sponsorship-widget {
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
