@@ -809,6 +809,11 @@ GEM
     validate_url (1.0.11)
       activemodel (>= 3.0.0)
       public_suffix
+    vault (0.14.0)
+      aws-sigv4
+    vault-rails (0.6.0)
+      rails (>= 4.1)
+      vault (~> 0.5)
     vcr (6.0.0)
     virtus (1.0.5)
       axiom-types (~> 0.1)
@@ -994,6 +999,7 @@ DEPENDENCIES
   uglifier (~> 4.2)
   ulid (~> 1.2)
   validate_url (~> 1.0)
+  vault-rails (~> 0.1)
   vcr (~> 6.0)
   web-console (~> 3.7)
   webdrivers (~> 4.3)
