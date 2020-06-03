@@ -75,6 +75,7 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    padding: var(--article-padding-y) var(--article-padding-x);
     overflow: auto;
     height: calc(
       100vh - var(--header-height) - var(--article-form-actions-height)
@@ -161,7 +162,7 @@
 
   &__toolbar {
     position: sticky;
-    top: 0;
+    top: calc(var(--article-padding-y) * -1);
     background: var(--base-0);
     padding: var(--su-2) var(--article-padding-x);
     margin: calc(var(--article-padding-y) * -1)
@@ -174,7 +175,7 @@
   }
 
   &__cover {
-    margin-bottom: var(--su-6);
+    margin-bottom: var(--su-4);
     display: flex;
     align-items: flex-start;
     flex-direction: column;
@@ -182,6 +183,7 @@
     @media (min-width: $breakpoint-s) {
       flex-direction: row;
       align-items: center;
+      margin-bottom: var(--su-5);
     }
 
     &__image {
@@ -205,6 +207,7 @@
 
   &__tagsfield {
     position: relative;
+    margin-bottom: calc(var(--article-padding-y) * 2);
   }
 
   &__help {
