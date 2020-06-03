@@ -112,4 +112,19 @@ RSpec.describe "/internal/broadcasts", type: :request do
       end
     end
   end
+
+  context "with the same title and the same type_of" do
+    let(:super_admin) { create(:user, :super_admin) }
+    let(:params) { { title: "Hello!", processed_html: "<p>Hello!</p>", type_of: "Announcement" } }
+
+    before { sign_in super_admin }
+
+    it "does not allow for a second broadcast to be created" do
+      expect do
+        2.times do
+          post_resource
+        end
+      end.to change { Broadcast.all.count }.by(1)
+    end
+  end
 end
