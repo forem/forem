@@ -25,7 +25,6 @@ export const Close = () => {
         url="/"
         tagName="a"
         icon={Icon}
-        title="Close the editor"
       />
     </div>
   );

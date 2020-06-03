@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, fireEvent } from '@testing-library/preact'
+import { render } from '@testing-library/preact';
 import { Help } from '../Help';
 
 describe('<Help />', () => {
