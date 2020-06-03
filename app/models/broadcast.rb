@@ -3,7 +3,8 @@ class Broadcast < ApplicationRecord
 
   has_many :notifications, as: :notifiable, inverse_of: :notifiable
 
-  validates :title, :type_of, :processed_html, presence: true
+  validates :title, uniqueness: { scope: :type_of }, presence: true
+  validates :type_of, :processed_html, presence: true
   validates :type_of, inclusion: { in: %w[Announcement Welcome] }
   validate  :single_active_announcement_broadcast
 

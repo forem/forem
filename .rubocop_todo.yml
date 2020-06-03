@@ -83,6 +83,7 @@ Rails/UniqueValidationWithoutIndex:
     - 'app/models/comment.rb'
     - 'app/models/follow.rb'
     - 'app/models/notification.rb'
+    - 'app/models/broadcast.rb'
 
 # Offense count: 33
 # Cop supports --auto-correct.

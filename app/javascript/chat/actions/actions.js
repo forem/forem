@@ -1,4 +1,4 @@
-import { fetchSearch } from '../utilities/search';
+import { createDataHash } from '../util';
 
 export function getAllMessages(channelId, messageOffset, successCb, failureCb) {
   fetch(`/chat_channels/${channelId}?message_offset=${messageOffset}`, {
@@ -98,37 +98,22 @@ export function conductModeration(
 }
 
 export function getChannels(
-  query,
-  retrievalID,
-  searchType,
-  paginationNumber,
+  searchParams,
   additionalFilters,
   successCb,
   _failureCb,
 ) {
-  const dataHash = {};
-  if (additionalFilters.filters) {
-    const [key, value] = additionalFilters.filters.split(':');
-    dataHash[key] = value;
-  }
-  dataHash.per_page = 30;
-  dataHash.page = paginationNumber;
-  dataHash.channel_text = query;
-  if (searchType === 'discoverable') {
-    dataHash.user_id = 'all';
-  }
-  const responsePromise = fetchSearch('chat_channels', dataHash);
-
-  return responsePromise.then((response) => {
-    const channels = response.result;
+  return createDataHash(additionalFilters, searchParams).then((response) => {
     if (
-      retrievalID === null ||
-      channels.filter((e) => e.chat_channel_id === retrievalID).length === 1
+      searchParams.retrievalID === null ||
+      response.result.filter(
+        (e) => e.chat_channel_id === searchParams.retrievalID,
+      ).length === 1
     ) {
-      successCb(channels, query);
+      successCb(response.result, searchParams.query);
     } else {
       fetch(
-        `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${retrievalID}`,
+        `/chat_channel_memberships/find_by_chat_channel_id?chat_channel_id=${searchParams.retrievalID}`,
         {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -137,8 +122,8 @@ export function getChannels(
       )
         .then((individualResponse) => individualResponse.json())
         .then((json) => {
-          channels.unshift(json);
-          successCb(channels, query);
+          response.result.unshift(json);
+          successCb(response.result, searchParams.query);
         });
     }
   });
@@ -187,6 +172,17 @@ export function getChannelInvites(successCb, failureCb) {
     .catch(failureCb);
 }
 
+export function getJoiningRequest(successCb, failureCb) {
+  fetch('/chat_channels?state=joining_request', {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    credentials: 'same-origin',
+  })
+    .then((response) => response.json())
+    .then(successCb)
+    .catch(failureCb);
+}
+
 export function sendChannelInviteAction(id, action, successCb, failureCb) {
   fetch(`/chat_channel_memberships/${id}`, {
     method: 'PUT',
@@ -218,26 +214,6 @@ export function deleteMessage(messageId, successCb, failureCb) {
     body: JSON.stringify({
       message: {
         user_id: window.currentUser.id,
-      },
-    }),
-    credentials: 'same-origin',
-  })
-    .then((response) => response.json())
-    .then(successCb)
-    .catch(failureCb);
-}
-
-export function sendChannelRequest(id, successCb, failureCb) {
-  fetch(`/join_chat_channel`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      chat_channel_membership: {
-        chat_channel_id: id,
       },
     }),
     credentials: 'same-origin',
