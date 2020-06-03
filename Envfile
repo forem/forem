@@ -15,6 +15,9 @@ variable :APP_PROTOCOL, :String, default: "http://"
 variable :COMMUNITY_COPYRIGHT_START_YEAR, :String, default: "2016"
 variable :COMMUNITY_NAME, :String, default: "DEV(local)"
 
+# Email related variables
+variable :DEFAULT_EMAIL, :String, default: "yo@dev.to"
+
 # Service timeout length
 variable :RACK_TIMEOUT_WAIT_TIMEOUT, :Integer, default: 100_000
 variable :RACK_TIMEOUT_SERVICE_TIMEOUT, :Integer, default: 100_000
