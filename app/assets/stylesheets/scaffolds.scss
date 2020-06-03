@@ -37,15 +37,15 @@ body {
 
 .zen-mode {
   .top-bar,
-  .primary-sticky-nav,
-  .article-actions {
+  .crayons-article-sticky,
+  .crayons-article-actions {
     display: none !important;
   }
 }
 
 @media print {
   .top-bar,
-  .article-actions {
+  .crayons-article-sticky {
     display: none;
   }
 }
