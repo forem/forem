@@ -153,6 +153,11 @@ RSpec.configure do |config|
     Timecop.return
   end
 
+  config.before(:each) do
+    # check if this will be printed to stdout
+    puts '+'
+  end
+
   config.after(:suite) do
     WebMock.disable_net_connect!(
       allow_localhost: true,
