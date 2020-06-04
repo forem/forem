@@ -42,7 +42,7 @@ class ChatChannelsController < ApplicationController
       flash[:settings_notice] = "Channel settings updated."
     else
       default_error_message = "Channel settings updation failed. Try again later."
-      flash[:error] = @chat_channel.errors.full_messages.to_sentence.presence || default_error_message
+      flash[:error] = @chat_channel.errors_as_sentence.presence || default_error_message
     end
     current_user_membership = @chat_channel.mod_memberships.find_by!(user: current_user)
     redirect_to edit_chat_channel_membership_path(current_user_membership)
