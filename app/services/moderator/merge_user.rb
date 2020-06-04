@@ -1,15 +1,15 @@
 module Moderator
   class MergeUser < ManageActivityAndRoles
+    def self.call(admin:, keep_user:, delete_user_id:)
+      new(keep_user: keep_user, admin: admin, delete_user_id: delete_user_id).merge
+    end
+
     attr_reader :keep_user, :admin, :delete_user_id
 
     def initialize(admin:, keep_user:, delete_user_id:)
       @keep_user = keep_user
       @admin = admin
       @delete_user = User.find(delete_user_id.to_i)
-    end
-
-    def self.call_merge(admin:, keep_user:, delete_user_id:)
-      new(keep_user: keep_user, admin: admin, delete_user_id: delete_user_id).merge
     end
 
     def merge
@@ -56,7 +56,7 @@ module Moderator
       end
       if @delete_user.badge_achievements.any?
         @delete_user.badge_achievements.update_all(user_id: @keep_user.id)
-        @keep_user.badge_achievements_count = @keep_user.badge_achievements.size
+        BadgeAchievement.counter_culture_fix_counts(where: { users: { id: @keep_user.id } })
       end
 
       @keep_user.update_columns(created_at: @delete_user.created_at) if @delete_user.created_at < @keep_user.created_at

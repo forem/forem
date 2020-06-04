@@ -97,8 +97,6 @@ class EmailLogic
   end
 
   def user_has_followings?
-    following_users = @user.cached_following_users_ids
-    following_tags = @user.cached_followed_tag_names
-    following_users.any? || following_tags.any?
+    @user.cached_following_users_ids.any? || @user.cached_followed_tag_names.any?
   end
 end

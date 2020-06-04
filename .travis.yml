@@ -13,7 +13,10 @@ addons:
   artifacts:
     paths:
       - $(ls tmp/screenshots/*.png | tr "\n" ":")
+      - $(ls tmp/csvs/*.csv | tr "\n" ":")
     debug: true
+gemfile:
+- Gemfile
 services:
   - redis-server
 env:
@@ -30,6 +33,8 @@ env:
     - SENDGRID_PASSWORD_ACCEL=dummy
     - HEROKU_APP_URL=practicaldev.herokuapp.com
     - SECRET_KEY_BASE=dummydummydummy
+    - GITHUB_KEY=dummy
+    - GITHUB_SECRET=dummy
 branches:
   only:
     - master
@@ -45,7 +50,8 @@ before_install:
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
 install:
-  - bundle install --path vendor/bundle
+  - bundle config set path 'vendor/bundle'
+  - bundle install --local --jobs 2
   - yarn install --frozen-lockfile
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
     > ./cc-test-reporter
@@ -56,7 +62,7 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'bundle exec rspec spec --color --tty'
+  - 'npx percy exec -- bundle exec rspec spec --color --tty --format progress'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
   - 'yarn test --colors'

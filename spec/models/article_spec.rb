@@ -178,7 +178,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "is valid with valid liquid tags", :vcr do
-        VCR.use_cassette("twitter_fetch_status") do
+        VCR.use_cassette("twitter_client_status_extended") do
           article = build_and_validate_article(with_tweet_tag: true)
           expect(article).to be_valid
         end
@@ -644,6 +644,41 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe ".search_optimized_title_preamble" do
+    let!(:top_article) do
+      create(:article, search_optimized_title_preamble: "Hello #{rand(1000)}", tags: "good, greatalicious")
+    end
+
+    it "returns article with title preamble" do
+      articles = described_class.search_optimized
+      expect(articles.first[0]).to eq(top_article.path)
+      expect(articles.first[1]).to eq(top_article.search_optimized_title_preamble)
+    end
+
+    it "does not return article without preamble" do
+      articles = described_class.search_optimized
+      new_article = create(:article)
+      expect(articles.flatten).not_to include(new_article.path)
+    end
+
+    it "does return multiple articles with preamble ordered by updated_at" do
+      new_article = create(:article, search_optimized_title_preamble: "Testerino")
+      articles = described_class.search_optimized
+      expect(articles.first[1]).to eq(new_article.search_optimized_title_preamble)
+      expect(articles.second[1]).to eq(top_article.search_optimized_title_preamble)
+    end
+
+    it "returns articles ordered by organic_page_views_count by tag" do
+      articles = described_class.search_optimized("greatalicious")
+      expect(articles.first[0]).to eq(top_article.path)
+    end
+
+    it "returns nothing if no tagged articles" do
+      articles = described_class.search_optimized("godsdsdsdsgoo")
+      expect(articles).to be_empty
+    end
+  end
+
   context "when callbacks are triggered before save" do
     it "assigns path on save" do
       expect(article.path).to eq("/#{article.username}/#{article.slug}")
@@ -663,7 +698,6 @@ RSpec.describe Article, type: :model do
       expect(article.cached_user.slug).to eq(article.user.username)
       expect(article.cached_user.profile_image_90).to eq(article.user.profile_image_90)
       expect(article.cached_user.profile_image_url).to eq(article.user.profile_image_url)
-      expect(article.cached_user.pro).to eq(article.user.pro?)
     end
 
     it "assigns cached_organization on save" do
@@ -673,7 +707,6 @@ RSpec.describe Article, type: :model do
       expect(article.cached_organization.slug).to eq(article.organization.slug)
       expect(article.cached_organization.profile_image_90).to eq(article.organization.profile_image_90)
       expect(article.cached_organization.profile_image_url).to eq(article.organization.profile_image_url)
-      expect(article.cached_organization.pro).to be(false)
     end
   end
 
@@ -779,7 +812,7 @@ RSpec.describe Article, type: :model do
     it "returns records with a subset of attributes" do
       feed_article = described_class.feed.first
 
-      fields = %w[id tag_list published_at processed_html user_id organization_id title path]
+      fields = %w[id tag_list published_at processed_html user_id organization_id title path cached_tag_list]
       expect(feed_article.attributes.keys).to match_array(fields)
     end
   end

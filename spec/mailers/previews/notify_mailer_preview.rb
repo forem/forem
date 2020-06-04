@@ -35,11 +35,11 @@ class NotifyMailerPreview < ActionMailer::Preview
   def channel_invite_email
     user = User.first
     membership = ChatChannelMembership.last
-    NotifyMailer.channel_invite_email(membership, user)
+    NotifyMailer.with(membership: membership, inviter: user).channel_invite_email
   end
 
   def tag_moderator_confirmation_email
-    NotifyMailer.tag_moderator_confirmation_email(User.first, Tag.find(1))
+    NotifyMailer.tag_moderator_confirmation_email(User.first, Tag.find(1), nil)
   end
 
   def trusted_role_email

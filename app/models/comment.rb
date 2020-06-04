@@ -9,7 +9,6 @@ class Comment < ApplicationRecord
   SEARCH_CLASS = Search::FeedContent
 
   BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
-  BODY_MARKDOWN_UNIQUENESS_SCOPES = %i[user_id ancestry commentable_id commentable_type].freeze
   COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
   TITLE_DELETED = "[deleted]".freeze
   TITLE_HIDDEN = "[hidden by post author]".freeze
@@ -25,7 +24,7 @@ class Comment < ApplicationRecord
   before_validation :evaluate_markdown, if: -> { body_markdown }
   validate :permissions, if: :commentable
   validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
-  validates :body_markdown, uniqueness: { scope: BODY_MARKDOWN_UNIQUENESS_SCOPES }
+  validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
   validates :commentable_id, presence: true
   validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }
   validates :user_id, presence: true

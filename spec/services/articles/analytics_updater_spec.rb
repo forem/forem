@@ -10,16 +10,16 @@ RSpec.describe Articles::AnalyticsUpdater, type: :service do
   end
 
   describe "#call" do
-    context "when positive_reactions_count is LOWER than previous_positive_reactions_count" do
+    context "when public_reactions_count is LOWER than previous_public_reactions_count" do
       it "does nothing " do
-        build_stubbed(:article, positive_reactions_count: 2, previous_positive_reactions_count: 3, user: user)
+        build_stubbed(:article, public_reactions_count: 2, previous_public_reactions_count: 3, user: user)
         described_class.call(user)
         expect(Notification).not_to have_received(:send_milestone_notification)
       end
     end
 
-    context "when positive_reactions_count is HIGHER than previous_positive_reactions_count" do
-      let(:article) { build_stubbed(:article, positive_reactions_count: 5, previous_positive_reactions_count: 3, user: user) }
+    context "when public_reactions_count is HIGHER than previous_public_reactions_count" do
+      let(:article) { build_stubbed(:article, public_reactions_count: 5, previous_public_reactions_count: 3, user: user) }
       let(:pageview) { {} }
       let(:counts) { 1000 }
       let(:user_articles) { double }
@@ -40,7 +40,7 @@ RSpec.describe Articles::AnalyticsUpdater, type: :service do
       end
 
       it "updates appropriate column" do
-        expect(article).to have_received(:update_columns).with(previous_positive_reactions_count: article.positive_reactions_count)
+        expect(article).to have_received(:update_columns).with(previous_public_reactions_count: article.public_reactions_count)
       end
     end
   end

@@ -14,6 +14,7 @@ AllCops:
     - db/migrate/*.rb
     - node_modules/**/*
     - tmp/**/*
+    - vendor/**/*
   DisplayStyleGuide: true
   ExtraDetails: true
   TargetRubyVersion: 2.7
@@ -30,6 +31,12 @@ Layout/DotPosition:
   StyleGuide: '#consistent-multi-line-chains'
   # TODO: [@thepracticaldev/oss] enable leading?
   EnforcedStyle: trailing
+
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Description: "Keep blank lines around attribute accessors."
+  StyleGuide: '#empty-lines-around-attribute-accessor'
+  Enabled: true
 
 # Layout/FirstArrayElementLineBreak:
 #   Description: >-
@@ -114,6 +121,10 @@ Lint/AmbiguousBlockAssociation:
   Enabled: true
   Exclude:
     - "spec/**/*"
+
+Lint/DeprecatedOpenSSLConstant:
+  Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
+  Enabled: true
 
 # Lint/HeredocMethodCallPosition:
 #   Description: >-
@@ -319,6 +330,10 @@ Style/ReturnNil:
 
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
+  Enabled: true
+
+Style/SlicingWithRange:
+  Description: 'Checks array slicing is done with endless ranges when suitable.'
   Enabled: true
 
 Style/StringLiterals:

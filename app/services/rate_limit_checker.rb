@@ -4,13 +4,14 @@ class RateLimitChecker
   # retry_after values are the seconds until a user can retry an action
   ACTION_LIMITERS = {
     article_update: { retry_after: 30 },
-    send_email_confirmation: { retry_after: 120 },
     feedback_message_creation: { retry_after: 300 },
     image_upload: { retry_after: 30 },
     listing_creation: { retry_after: 60 },
-    published_article_creation: { retry_after: 30 },
     organization_creation: { retry_after: 300 },
-    reaction_creation: { retry_after: 30 }
+    published_article_creation: { retry_after: 30 },
+    reaction_creation: { retry_after: 30 },
+    send_email_confirmation: { retry_after: 120 },
+    user_update: { retry_after: 30 }
   }.with_indifferent_access.freeze
 
   def initialize(user = nil)
@@ -49,7 +50,7 @@ class RateLimitChecker
 
   def track_limit_by_action(action)
     expires_in = ACTION_LIMITERS.dig(action, :retry_after).seconds
-    Rails.cache.increment(limit_cache_key(action), 1, expires_in: expires_in)
+    Rails.cache.increment(limit_cache_key(action), 1, expires_in: expires_in, raw: true)
   end
 
   def limit_by_email_recipient_address(address)
@@ -62,7 +63,7 @@ class RateLimitChecker
 
   ACTION_LIMITERS.each_key do |action|
     define_method("check_#{action}_limit") do
-      Rails.cache.read(limit_cache_key(action)).to_i > action_rate_limit(action)
+      Rails.cache.read(limit_cache_key(action), raw: true).to_i > action_rate_limit(action)
     end
   end
 

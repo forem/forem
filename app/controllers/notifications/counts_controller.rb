@@ -1,6 +1,6 @@
 class Notifications::CountsController < ApplicationController
   def index
-    count = GetUnseenNotificationsService.new(current_user).get
+    count = current_user ? current_user.notifications.unread.count : 0
     render plain: count.to_s
   end
 end

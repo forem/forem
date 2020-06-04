@@ -16,4 +16,5 @@ json.array!(memberships) do |membership|
 
   json.adjusted_slug membership.chat_channel.adjusted_slug(current_user)
   json.membership_id membership.id
+  json.member_name membership.user.username
 end

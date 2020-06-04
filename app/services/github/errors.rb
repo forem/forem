@@ -12,6 +12,9 @@ module Github
     class NotFound < ClientError
     end
 
+    class Unauthorized < ClientError
+    end
+
     class InvalidRepository < ArgumentError
     end
   end

@@ -1,0 +1,10 @@
+source 'https://rubygems.org'
+
+gem 'rack', git: 'https://github.com/rack/rack', branch: 'master'
+gem 'arel', git: 'https://github.com/rails/arel', branch: 'master'
+gem 'rails', git: 'https://github.com/rails/rails', branch: 'master'
+
+gem 'timber'
+gem 'timber-rack'
+
+gemspec :path => '../'

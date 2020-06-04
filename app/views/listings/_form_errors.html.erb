@@ -1,0 +1,10 @@
+<% if listing.errors.any? %>
+  <div class="listing-errors">
+    <h2><%= pluralize(listing.errors.count, "error") %> prohibited this listing from being saved:</h2>
+    <ul>
+    <% listing.errors.full_messages.each do |message| %>
+      <li><%= message %></li>
+    <% end %>
+    </ul>
+  </div>
+<% end %>

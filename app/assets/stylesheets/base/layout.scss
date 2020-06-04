@@ -1,9 +1,29 @@
 @import '../config/import';
 
 :root {
+  --layout-site-width: var(--site-width);
+  --layout-header-height: var(--header-height);
   --layout-sidebar-width: 200px;
+  --layout-aside-width: 316px;
   --layout-gap: var(--su-6);
   --layout-padding: var(--su-6);
+  --layout-article-content-padding-x: var(--su-3);
+  --layout-article-content-padding-y: var(--su-3);
+  --layout-narrow-sidebar-width: 66px;
+
+  @media (min-width: $breakpoint-s) {
+    --layout-article-content-padding-x: var(--su-4);
+    --layout-article-content-padding-y: var(--su-4);
+  }
+
+  @media (min-width: $breakpoint-m) {
+    --layout-article-content-padding-x: var(--su-6);
+    --layout-article-content-padding-y: var(--su-6);
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --layout-article-content-padding-x: var(--su-8);
+  }
 }
 
 .crayons-layout {
@@ -11,12 +31,6 @@
   width: 100%;
   max-width: var(--site-width);
   margin: 0 auto;
-
-  &__sidebar {
-  }
-
-  &__content {
-  }
 
   &--max-l {
     max-width: $breakpoint-l;

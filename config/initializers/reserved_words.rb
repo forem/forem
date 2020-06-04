@@ -12,6 +12,7 @@ class ReservedWords
     advertising
     amp
     anal
+    async_info
     analysis
     analytics
     answers

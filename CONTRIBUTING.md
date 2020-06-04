@@ -16,7 +16,7 @@
 We expect contributors to abide by our underlying
 [code of conduct](https://dev.to/code-of-conduct). All conversations and
 discussions on GitHub (issues, pull requests) and across
-[https://dev.to](dev.to) must be respectful and harassment-free.
+[dev.to](https://dev.to) must be respectful and harassment-free.
 
 Remember that communication is the lifeblood of any Open Source project. We are
 all working on this together, and we are all benefiting from this software. It's

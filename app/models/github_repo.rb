@@ -28,10 +28,13 @@ class GithubRepo < ApplicationRecord
 
   def self.update_to_latest
     where("updated_at < ?", 1.day.ago).find_each do |repo|
-      user_token = User.find_by(id: repo.user_id).identities.where(provider: "github").last.token
-      client = Octokit::Client.new(access_token: user_token)
+      user = User.find_by(id: repo.user_id)
+      next unless user
+
+      client = Github::OauthClient.for_user(user)
       begin
-        fetched_repo = client.repo(repo.info_hash[:full_name])
+        fetched_repo = client.repository(repo.info_hash[:full_name])
+
         repo.update!(
           github_id_code: fetched_repo.id,
           name: fetched_repo.name,
@@ -44,8 +47,10 @@ class GithubRepo < ApplicationRecord
           info_hash: fetched_repo.to_hash,
         )
         repo.user&.touch(:github_repos_updated_at)
-      rescue StandardError => e
-        repo.destroy if e.message.include?("404 - Not Found")
+      rescue Github::Errors::NotFound
+        repo.destroy
+      rescue StandardError
+        next
       end
     end
   end

@@ -1,6 +1,4 @@
 class Article < ApplicationRecord
-  self.ignored_columns = %w[live_now]
-
   include CloudinaryHelper
   include ActionView::Helpers
   include Storext.model
@@ -121,7 +119,7 @@ class Article < ApplicationRecord
 
   scope :limited_column_select, lambda {
     select(:path, :title, :id, :published,
-           :comments_count, :positive_reactions_count, :cached_tag_list,
+           :comments_count, :public_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :slug,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :language,
@@ -132,7 +130,7 @@ class Article < ApplicationRecord
 
   scope :limited_columns_internal_select, lambda {
     select(:path, :title, :id, :featured, :approved, :published,
-           :comments_count, :positive_reactions_count, :cached_tag_list,
+           :comments_count, :public_reactions_count, :cached_tag_list,
            :main_image, :main_image_background_hex_color, :updated_at, :boost_states,
            :video, :user_id, :organization_id, :video_source_url, :video_code,
            :video_thumbnail_url, :video_closed_caption_track_url, :social_image,
@@ -159,7 +157,7 @@ class Article < ApplicationRecord
       case kind
       when "creation"  then :created_at
       when "views"     then :page_views_count
-      when "reactions" then :positive_reactions_count
+      when "reactions" then :public_reactions_count
       when "comments"  then :comments_count
       when "published" then :published_at
       else
@@ -169,9 +167,9 @@ class Article < ApplicationRecord
     order(column => dir.to_sym)
   }
 
-  scope :feed, -> { published.select(:id, :published_at, :processed_html, :user_id, :organization_id, :title, :path) }
+  scope :feed, -> { published.includes(:taggings).select(:id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list) }
 
-  scope :with_video, -> { published.where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).where("score > ?", -4) }
+  scope :with_video, -> { published.where.not(video: [nil, ""]).where.not(video_thumbnail_url: [nil, ""]).where("score > ?", -4) }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 
@@ -204,9 +202,23 @@ class Article < ApplicationRecord
       order(organic_page_views_past_month_count: :desc).
       where("score > ?", 8).
       where("published_at > ?", time_ago).
-      limit(25)
+      limit(20)
 
     fields = %i[path title comments_count created_at]
+    if tag
+      relation.cached_tagged_with(tag).pluck(*fields)
+    else
+      relation.pluck(*fields)
+    end
+  end
+
+  def self.search_optimized(tag = nil)
+    relation = Article.published.
+      order(updated_at: :desc).
+      where.not(search_optimized_title_preamble: nil).
+      limit(20)
+
+    fields = %i[path search_optimized_title_preamble comments_count created_at]
     if tag
       relation.cached_tagged_with(tag).pluck(*fields)
     else
@@ -341,7 +353,7 @@ class Article < ApplicationRecord
   private
 
   def search_score
-    calculated_score = hotness_score.to_i + ((comments_count * 3).to_i + positive_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
+    calculated_score = hotness_score.to_i + ((comments_count * 3).to_i + public_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
     calculated_score.to_i
   end
 
@@ -435,7 +447,6 @@ class Article < ApplicationRecord
   def evaluate_front_matter(front_matter)
     self.title = front_matter["title"] if front_matter["title"].present?
     if front_matter["tags"].present?
-      ActsAsTaggableOn::Taggable::Cache.included(Article)
       self.tag_list = [] # overwrite any existing tag with those from the front matter
       tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
       remove_tag_adjustments_from_tag_list
@@ -553,8 +564,7 @@ class Article < ApplicationRecord
       username: object.username,
       slug: object == organization ? object.slug : object.username,
       profile_image_90: object.profile_image_90,
-      profile_image_url: object.profile_image_url,
-      pro: object == user ? user.pro? : false # organizations can't be pro users
+      profile_image_url: object.profile_image_url
     }
   end
 

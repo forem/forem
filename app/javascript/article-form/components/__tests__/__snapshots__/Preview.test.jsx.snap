@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Preview /> renders properly 1`] = `
+<div
+  class="crayons-article-form__main__content crayons-card"
+>
+  <article
+    class="crayons-article"
+  >
+    <header
+      class="crayons-article__header"
+    >
+      <div
+        class="crayons-article__cover"
+      >
+        <div
+          class="crayons-article__cover__image"
+          style={
+            Object {
+              "backgroundImage": "url(/i/9ca8kb1cu34mobypm5yx.png)",
+            }
+          }
+        />
+      </div>
+      <h1
+        class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title"
+      >
+        My Awesome Post
+      </h1>
+      <div
+        class="crayons-article__tags"
+      >
+        <span
+          class="crayons-tag mr-2"
+        >
+          <span
+            class="crayons-tag__prefix"
+          >
+            #
+          </span>
+          javascript
+        </span>
+        <span
+          class="crayons-tag mr-2"
+        >
+          <span
+            class="crayons-tag__prefix"
+          >
+            #
+          </span>
+          career
+        </span>
+      </div>
+    </header>
+    <div
+      class="crayons-article__body"
+      dangerouslySetInnerHTML={
+        Object {
+          "__html": "<p>My Awesome Post! Not very long, but still very awesome.</p>↵↵",
+        }
+      }
+    />
+  </article>
+</div>
+`;

@@ -1,6 +1,5 @@
 class StripeActiveCardsController < ApplicationController
   before_action :authenticate_user!
-  before_action :touch_current_user
 
   def create
     authorize :stripe_active_card

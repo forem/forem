@@ -57,8 +57,7 @@ RSpec.describe "ChatChannels", type: :request do
       membership.chat_channel.update(discoverable: true)
       sign_in user
       get "/chat_channels?state=joining_request"
-      expect(response.body).to include("\"status\":\"joining_request\"")
-      expect(response.body).to include("joining_requests")
+      expect(response.body).to include("\"member_name\":\"#{membership.user.username}\"")
     end
   end
 

@@ -18,21 +18,21 @@ function initializeCommentsPage() {
               var responseObj = JSON.parse(ajaxReq.response);
               var reactions = responseObj.reactions;
               var allNodes = document.getElementsByClassName('single-comment-node');
-              var positiveReactionCounts = responseObj.positive_reaction_counts;
+              var publicReactionCounts = responseObj.public_reaction_counts;
               for (var i = 0; i < reactions.length; i++) {
                 var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
                 if (buttForComment) {
                   buttForComment.classList.add('reacted');
                 }
               }
-              for (var i = 0; i < positiveReactionCounts.length; i++) {
-                var buttForComment = document.getElementById('button-for-comment-' + positiveReactionCounts[i].id);
+              for (var i = 0; i < publicReactionCounts.length; i++) {
+                var buttForComment = document.getElementById('button-for-comment-' + publicReactionCounts[i].id);
                 if (buttForComment) {
-                  if (positiveReactionCounts[i].count > 0) {
-                    if (!document.getElementById('reactions-count-' + positiveReactionCounts[i].id)) {
-                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + positiveReactionCounts[i].id + "'>" + positiveReactionCounts[i].count + '</span>';
+                  if (publicReactionCounts[i].count > 0) {
+                    if (!document.getElementById('reactions-count-' + publicReactionCounts[i].id)) {
+                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + publicReactionCounts[i].id + "'>" + publicReactionCounts[i].count + '</span>';
                     } else {
-                      document.getElementById('reactions-count-' + positiveReactionCounts[i].id).innerHTML = positiveReactionCounts[i].count;
+                      document.getElementById('reactions-count-' + publicReactionCounts[i].id).innerHTML = publicReactionCounts[i].count;
                     }
                   }
                 }
@@ -154,9 +154,8 @@ function toggleCodeOfConduct() {
     return;
   }
   var codeOfConduct = user.checked_code_of_conduct
-  var commentCount = user.number_of_comments
   var checkboxWrapper = document.getElementById('toggle-code-of-conduct-checkbox');
-  if (checkboxWrapper && !codeOfConduct && commentCount < 1) {
+  if (checkboxWrapper && !codeOfConduct) {
     checkboxWrapper.innerHTML = '<input type="checkbox" name="checked_code_of_conduct" class="checkbox" required/>\
                                   <label for="checked_code_of_conduct">I\'ve read the <a href="<%= URL.url('code-of-conduct') %>">code of conduct</a></label>'
   }
@@ -298,18 +297,8 @@ function handleSubmit(event) {
     return;
   }
 
-  var commentCount = user.number_of_comments;
-
-  // var codeOfConduct = user.checked_code_of_conduct;
-  // Code of conduct is false the first time even if the user has accepted it
-  // so we are not using it in the check below
-  // It also seems unnecessary if comment count >= 1 indicates that
-  // it was previously accepted
-
-  // Ensure that user has commented at least once
-  // and we have a non-empty comment to post
-  if (commentCount >= 1 &&
-    event.target.value.trim() !== '') {
+  var codeOfConduct = user.checked_code_of_conduct;
+  if (codeOfConduct && event.target.value.trim() !== '') {
     // get a reference to the submit button for the text area (first level comment vs. reply comment)
     var parentFormId = event.target.parentElement.parentElement.id || event.target.parentElement.id;
     var submitButton = document.querySelector('#' + parentFormId + ' input[type="submit"].comment-action-button');

@@ -1,11 +1,11 @@
 class SearchController < ApplicationController
   before_action :authenticate_user!, only: %i[tags chat_channels reactions]
   before_action :format_integer_params
-  before_action :sanitize_params, only: %i[classified_listings reactions feed_content]
+  before_action :sanitize_params, only: %i[listings reactions feed_content]
 
-  CLASSIFIED_LISTINGS_PARAMS = [
+  LISTINGS_PARAMS = [
     :category,
-    :classified_listing_search,
+    :listing_search,
     :page,
     :per_page,
     :tag_boolean_mode,
@@ -65,9 +65,9 @@ class SearchController < ApplicationController
     render json: { result: ccm_docs }
   end
 
-  def classified_listings
-    cl_docs = Search::ClassifiedListing.search_documents(
-      params: classified_listing_params.to_h,
+  def listings
+    cl_docs = Search::Listing.search_documents(
+      params: listing_params.to_h,
     )
 
     render json: { result: cl_docs }
@@ -125,8 +125,8 @@ class SearchController < ApplicationController
     params.permit(accessible)
   end
 
-  def classified_listing_params
-    params.permit(CLASSIFIED_LISTINGS_PARAMS)
+  def listing_params
+    params.permit(LISTINGS_PARAMS)
   end
 
   def user_params

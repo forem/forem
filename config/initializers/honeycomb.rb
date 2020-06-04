@@ -25,12 +25,18 @@ else
 
       # Scrub unused data to save space in Honeycomb
       config.presend_hook do |fields|
+        fields["global.build_id"] = ApplicationConfig["HEROKU_SLUG_COMMIT"]
+
         if fields.key?("redis.command")
           fields["redis.command"] = fields["redis.command"].slice(0, 300)
         elsif fields.key?("sql.active_record.binds")
           fields.delete("sql.active_record.binds")
           fields.delete("sql.active_record.datadog_span")
         end
+      end
+      # Sample away highly redundant events
+      config.sample_hook do |fields|
+        Honeycomb::NoiseCancellingSampler.sample(fields)
       end
     end
   end

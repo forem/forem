@@ -17,10 +17,10 @@ task resave_supported_tags: :environment do
 end
 
 task expire_old_listings: :environment do
-  ClassifiedListing.where("bumped_at < ?", 30.days.ago).each do |listing|
+  Listing.where("bumped_at < ?", 30.days.ago).each do |listing|
     listing.update(published: false)
   end
-  ClassifiedListing.where("expires_at = ?", Time.zone.today).each do |listing|
+  Listing.where("expires_at = ?", Time.zone.today).each do |listing|
     listing.update(published: false)
   end
 end
