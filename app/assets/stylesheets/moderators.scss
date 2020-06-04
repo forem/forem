@@ -315,9 +315,6 @@
       font-size: var(--fs-s);
       line-height: var(--lh-tight);
       color: var(--base-90);
-      &:after {
-        content: 'Mark as abuse/spam';
-      }
     }
 
     .vomit-checkmark {
