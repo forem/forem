@@ -143,6 +143,9 @@ RSpec.configure do |config|
 
     stub_request(:any, /dummyimage.com/).
       to_return(status: 200, body: "", headers: {})
+
+    stub_request(:post, "http://www.google-analytics.com/collect").
+      to_return(status: 200, body: "", headers: {})
   end
 
   OmniAuth.config.test_mode = true

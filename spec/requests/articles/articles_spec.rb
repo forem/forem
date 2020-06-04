@@ -9,7 +9,7 @@ RSpec.describe "Articles", type: :request do
       create(:article, featured: true)
       get "/feed"
       expect(response.status).to eq(200)
-      expect(response.content_type).to eq("application/rss+xml")
+      expect(response.media_type).to eq("application/rss+xml")
     end
 
     it "contains the full app URL" do

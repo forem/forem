@@ -162,7 +162,7 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
     it "returns :created and json response on success" do
       post api_webhooks_path, params: { webhook_endpoint: webhook_params }
       expect(response).to have_http_status(:created)
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       json = JSON.parse(response.body)
       expect(json["target_url"]).to eq(webhook_params[:target_url])
     end
@@ -205,7 +205,7 @@ RSpec.describe "Api::V0::Webhooks", type: :request do
 
     it "renders index successfully" do
       get api_webhooks_path, params: { access_token: access_token.token }
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
       expect(response).to have_http_status(:ok)
     end
 
