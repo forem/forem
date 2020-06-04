@@ -1,6 +1,4 @@
 ENV["RAILS_ENV"] = "test"
-require "knapsack_pro"
-KnapsackPro::Adapters::RSpecAdapter.bind
 
 require "spec_helper"
 
@@ -19,6 +17,8 @@ require "test_prof/recipes/rspec/let_it_be"
 require "test_prof/recipes/rspec/sample"
 require "sidekiq/testing"
 require "validate_url/rspec_matcher"
+require "knapsack_pro"
+KnapsackPro::Adapters::RSpecAdapter.bind
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
 # spec/support/ and its subdirectories. Files matching `spec/**/*_spec.rb` are
