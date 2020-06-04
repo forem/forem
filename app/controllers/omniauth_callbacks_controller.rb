@@ -94,6 +94,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def user_persisted_but_username_taken?
-    @user.persisted? && @user.errors.full_messages.join(", ").include?("username has already been taken")
+    @user.persisted? && @user.errors_as_sentence.include?("username has already been taken")
   end
 end

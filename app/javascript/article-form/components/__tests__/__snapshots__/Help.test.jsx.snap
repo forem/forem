@@ -2,7 +2,7 @@
 
 exports[`<Help /> renders properly 1`] = `
 <div
-  class="crayons-article-form__main__aside"
+  class="crayons-article-form__aside"
 >
   <div
     class="sticky"

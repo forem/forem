@@ -59,7 +59,8 @@ RSpec.describe "Api::V0::Listings", type: :request do
 
     it "returns json response and ok status" do
       get api_listings_path
-      expect(response.content_type).to eq("application/json")
+
+      expect(response.media_type).to eq("application/json")
       expect(response).to have_http_status(:ok)
     end
 

@@ -2,7 +2,7 @@
 
 exports[`<Preview /> renders properly 1`] = `
 <div
-  class="crayons-article-form__main__content crayons-card"
+  class="crayons-article-form__content crayons-card"
 >
   <article
     class="crayons-article"

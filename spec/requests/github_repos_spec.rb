@@ -94,7 +94,7 @@ RSpec.describe "GithubRepos", type: :request do
       post update_or_create_github_repos_path(params), headers: headers
 
       expect(response).to have_http_status(:ok)
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
     end
 
     it "returns 404 if no repository is found" do

@@ -1,7 +1,7 @@
 @import '../config/import';
 
 %layout {
-  max-width: var(--layout-site-width);
+  max-width: 1280px;
   width: 100%;
   margin: 0 auto;
 }
@@ -23,16 +23,31 @@
 
 .crayons-article-form {
   --article-form-actions-height: 56px;
-  --layout-padding: var(--su-2);
-
+  max-width: var(--site-width);
   display: grid;
+  padding: 0 var(--layout-padding);
   height: 100vh;
-  grid-template-rows: min-content 1fr min-content;
-  background: var(--body-bg);
+  gap: 0 var(--layout-gap);
+  margin: 0 auto;
   font-size: var(--fs-base);
+  grid-template-columns: 100%;
+  grid-template-rows: min-content 1fr min-content;
+
+  &__logo,
+  &__aside {
+    display: none;
+
+    @media (min-width: $breakpoint-m) {
+      display: block;
+    }
+  }
 
   @media (min-width: $breakpoint-s) {
     --article-form-actions-height: 72px;
+  }
+
+  @media (min-width: $breakpoint-m) {
+    grid-template-columns: 64px 7fr 3fr;
   }
 
   @media (min-width: $breakpoint-l) {
@@ -40,91 +55,70 @@
   }
 
   &__header {
-    @extend %layout;
-
     display: flex;
     align-items: center;
-    padding: 0 var(--layout-padding);
-    height: var(--layout-header-height);
+    height: var(--header-height);
+    padding: 0 var(--su-2);
+
+    @media (min-width: $breakpoint-m) {
+      grid-column-end: span 2;
+      padding: 0;
+    }
 
     @media (min-width: $breakpoint-l) {
-      padding-right: calc(
-        var(--layout-aside-width) + var(--layout-padding) + var(--layout-gap)
-      );
+      grid-column-start: 1;
+      grid-column-end: 3;
     }
   }
 
-  &__main {
-    @extend %layout;
+  &__content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: var(--article-padding-y) var(--article-padding-x);
+    overflow: auto;
+    height: calc(
+      100vh - var(--header-height) - var(--article-form-actions-height)
+    );
+    box-shadow: 0 0 0 1px var(--card-border);
 
     @media (min-width: $breakpoint-m) {
-      padding: 0 var(--layout-padding);
+      grid-column-end: span 2;
     }
 
     @media (min-width: $breakpoint-l) {
-      display: grid;
-      grid-gap: var(--layout-gap);
-      grid-template-columns:
-        calc(100% - var(--layout-aside-width) - var(--layout-gap))
-        var(--layout-aside-width);
+      grid-column-start: 2;
+      grid-column-end: 2;
     }
+  }
 
-    @media (min-width: $breakpoint-xl) {
-      padding-left: calc(
-        var(--layout-narrow-sidebar-width) + var(--layout-padding)
-      );
-    }
+  &__aside {
+    display: none;
 
-    &__content {
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding: var(--layout-article-content-padding-y)
-        var(--layout-article-content-padding-x);
-
-      @media (min-width: $breakpoint-s) {
-        overflow: auto;
-        height: calc(
-          100vh - var(--layout-header-height) -
-            var(--article-form-actions-height)
-        );
-      }
-
-      @media (min-width: $breakpoint-m) {
-        border: 1px solid var(--base-10);
-      }
-    }
-
-    &__aside {
-      display: none;
-
-      @media (min-width: $breakpoint-l) {
-        display: block;
-      }
+    @media (min-width: $breakpoint-m) {
+      display: block;
     }
   }
 
   &__footer {
-    @extend %layout;
-    background: var(--body-bg);
-    position: sticky;
-    bottom: 0;
-    padding: 0 var(--layout-padding);
     height: var(--article-form-actions-height);
     display: flex;
     align-items: center;
+    padding: 0 var(--su-2);
 
-    @media (min-width: $breakpoint-xl) {
-      padding-left: calc(
-        var(--layout-narrow-sidebar-width) + var(--layout-padding)
-      );
+    @media (min-width: $breakpoint-m) {
+      padding: 0;
+    }
+
+    @media (min-width: $breakpoint-l) {
+      grid-column-start: 2;
+      grid-column-end: span 2;
     }
   }
 }
 
 .crayons-article-form {
   &__logo {
-    display: flex;
     margin-right: var(--su-1);
     @media (min-width: $breakpoint-s) {
       margin-right: var(--layout-gap);
@@ -137,6 +131,7 @@
       background: var(--logo-bg);
       fill: var(--logo-color);
       border-radius: var(--radius);
+      display: block;
     }
   }
 
@@ -167,16 +162,12 @@
 
   &__toolbar {
     position: sticky;
-    top: 0;
+    top: calc(var(--article-padding-y) * -1);
     background: var(--base-0);
-    padding: var(--su-2) var(--layout-article-content-padding-x);
-    margin: calc(var(--layout-article-content-padding-y) * -1)
-      calc(var(--layout-article-content-padding-x) * -1) var(--su-6)
-      calc(var(--layout-article-content-padding-x) * -1);
-
-    @media (min-width: $breakpoint-s) {
-      top: calc(var(--layout-article-content-padding-y) * -1);
-    }
+    padding: var(--su-2) var(--article-padding-x);
+    margin: calc(var(--article-padding-y) * -1)
+      calc(var(--article-padding-x) * -1) var(--su-6)
+      calc(var(--article-padding-x) * -1);
 
     > :first-child {
       margin-left: calc(var(--su-2) * -1);
@@ -184,7 +175,7 @@
   }
 
   &__cover {
-    margin-bottom: var(--su-6);
+    margin-bottom: var(--su-4);
     display: flex;
     align-items: flex-start;
     flex-direction: column;
@@ -192,6 +183,7 @@
     @media (min-width: $breakpoint-s) {
       flex-direction: row;
       align-items: center;
+      margin-bottom: var(--su-5);
     }
 
     &__image {
@@ -215,7 +207,7 @@
 
   &__tagsfield {
     position: relative;
-    margin-bottom: calc(var(--su-7) + var(--layout-article-content-padding-y));
+    margin-bottom: calc(var(--article-padding-y) * 2);
   }
 
   &__help {

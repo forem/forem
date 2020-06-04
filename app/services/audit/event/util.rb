@@ -1,3 +1,4 @@
+# NOTE: [Rails 6] Util class is obsolete in Rails 6
 module Audit
   module Event
     class Util

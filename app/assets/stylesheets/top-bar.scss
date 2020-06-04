@@ -25,11 +25,17 @@
   }
 
   &__container {
-    max-width: $max-width;
+    max-width: var(--site-width);
+    padding-left: var(--su-2);
+    padding-right: var(--layout-padding);
     margin: auto;
     display: flex;
     align-items: center;
     position: relative;
+
+    @media (min-width: $breakpoint-m) {
+      padding-left: var(--layout-padding);
+    }
   }
 
   .crayons-indicator {
@@ -43,10 +49,6 @@
 // Logo
 .top-bar--logo {
   display: flex;
-  margin-left: var(--su-2);
-  @media (min-width: $breakpoint-m) {
-    margin-left: var(--su-4);
-  }
 
   .logo {
     width: 50px;

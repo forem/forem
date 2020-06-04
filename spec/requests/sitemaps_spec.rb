@@ -4,7 +4,7 @@ RSpec.describe "Sitemaps", type: :request do
   describe "GET /sitemap-*" do
     it "renders xml file" do
       get "/sitemap-Mar-2011.xml"
-      expect(response.content_type).to eq("application/xml")
+      expect(response.media_type).to eq("application/xml")
     end
 
     it "renders not found if incorrect input" do
@@ -33,7 +33,7 @@ RSpec.describe "Sitemaps", type: :request do
       expect(response.body).to include("<loc>#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}</loc>")
       expect(response.body).to include("<lastmod>#{article.last_comment_at.strftime('%F')}</lastmod>")
       expect(response.body).not_to include(Article.last.path)
-      expect(response.content_type).to eq("application/xml")
+      expect(response.media_type).to eq("application/xml")
     end
   end
 end

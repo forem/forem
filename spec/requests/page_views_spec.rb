@@ -107,7 +107,9 @@ RSpec.describe "PageViews", type: :request do
 
       it "updates a new page view time on page by 15" do
         post "/page_views", params: { article_id: article.id }
+
         put "/page_views/#{article.id}"
+
         expect(PageView.last.time_tracked_in_seconds).to eq(30)
       end
 

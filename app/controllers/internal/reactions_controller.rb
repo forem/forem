@@ -9,7 +9,7 @@ class Internal::ReactionsController < Internal::ApplicationController
       Moderator::SinkArticles.call(@reaction.reactable_id) if confirmed_vomit_reaction?
       render json: { outcome: "Success" }
     else
-      render json: { error: @reaction.errors.full_messages.to_sentence }, status: :unprocessable_entity
+      render json: { error: @reaction.errors_as_sentence }, status: :unprocessable_entity
     end
   end
 

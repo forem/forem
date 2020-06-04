@@ -380,7 +380,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       end
 
       it "returns in json" do
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
     end
 
@@ -392,7 +392,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       end
 
       it "returns in json" do
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
     end
   end
