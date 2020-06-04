@@ -34,7 +34,7 @@ class SiteConfig < RailsSettings::Base
 
   # Emails
   field :email_addresses, type: :hash, default: {
-    default: "yo@dev.to",
+    default: ApplicationConfig["DEFAULT_EMAIL"],
     business: "partners@dev.to",
     privacy: "privacy@dev.to",
     members: "members@dev.to"
