@@ -1,21 +1,23 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
 import { RadioButton } from '@crayons';
 
 describe('<RadioButton /> component', () => {
+  // No a11y test here as this is just a radio button component.
+  // The assumption is that it is used with a <label />
+
   it('should render a radio button unchecked by default', () => {
     const tree = render(<RadioButton />);
     expect(tree).toMatchSnapshot();
   });
 
   it('should render a radio button checked', () => {
-    const tree = render(<RadioButton checked />);
-    expect(tree).toMatchSnapshot();
+    const { container } = render(<RadioButton checked />);
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a radio button with given props', () => {
-    const tree = render(
+    const { container } = render(
       <RadioButton
         id="some-id"
         value="some-value"
@@ -24,23 +26,25 @@ describe('<RadioButton /> component', () => {
         onClick={jest.fn()}
       />,
     );
-    expect(tree).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('should support onClick', () => {
     const onClick = jest.fn();
 
-    const wrapper = shallow(
+    const { getByTestId } = render(
       <RadioButton
         id="some-id"
         value="some-value"
         name="some-name"
         className="additional-css-class-name"
         onClick={onClick}
+        data-testid="radio"
       />,
     );
 
-    wrapper.simulate('click');
+    const radioButton = getByTestId('radio');
+    radioButton.click();
 
     expect(onClick).toHaveBeenCalled();
   });

@@ -1,29 +1,93 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<RadioButton /> component should render a radio button checked 1`] = `
-<input
-  checked={true}
-  class="crayons-radio"
-  type="radio"
-/>
+<div>
+  <input
+    class="crayons-radio"
+    type="radio"
+  />
+</div>
 `;
 
 exports[`<RadioButton /> component should render a radio button unchecked by default 1`] = `
-<input
-  checked={false}
-  class="crayons-radio"
-  type="radio"
-/>
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <input
+        class="crayons-radio"
+        type="radio"
+      />
+    </div>
+  </body>,
+  "container": <div>
+    <input
+      class="crayons-radio"
+      type="radio"
+    />
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
 `;
 
 exports[`<RadioButton /> component should render a radio button with given props 1`] = `
-<input
-  checked={false}
-  class="crayons-radio additional-css-class-name"
-  id="some-id"
-  name="some-name"
-  onClick={[MockFunction]}
-  type="radio"
-  value="some-value"
-/>
+<div>
+  <input
+    class="crayons-radio additional-css-class-name"
+    id="some-id"
+    name="some-name"
+    type="radio"
+    value="some-value"
+  />
+</div>
 `;
