@@ -26,7 +26,6 @@ module Search
         source["tag_list"] = source["tags"]&.map { |t| t["name"] } || []
         source["flare_tag"] = source["flare_tag_hash"]
         source["user_id"] = source.dig("user", "id")
-        hit.dig("highlight", "body_text").map! { |p| p.gsub(/\&nbsp;/, " ") }
         source["highlight"] = hit["highlight"]
         source["readable_publish_date"] = source["readable_publish_date_string"]
         source["podcast"] = {
