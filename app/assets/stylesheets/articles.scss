@@ -347,7 +347,11 @@
 }
 
 // Generally Feed...
+.articles-list.crayons-layout__content {
+  max-width: 651px; // quick hack
+}
 .articles-list:not(.crayons-layout__content) {
+
   margin: auto;
   max-width: 100%;
   position: relative;
