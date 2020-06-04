@@ -2,7 +2,7 @@
 
 exports[`<Form /> v1 renders properly 1`] = `
 <div
-  class="crayons-article-form__main__content crayons-card"
+  class="crayons-article-form__content crayons-card"
 >
   <div
     class="crayons-article-form__body"
@@ -73,7 +73,7 @@ exports[`<Form /> v1 renders properly 1`] = `
 
 exports[`<Form /> v2 renders properly 1`] = `
 <div
-  class="crayons-article-form__main__content crayons-card"
+  class="crayons-article-form__content crayons-card"
 >
   <div>
     <div

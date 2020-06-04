@@ -88,7 +88,7 @@ class ReactionsController < ApplicationController
           Audit::Logger.log(:moderator, current_user, params.dup)
         end
       else
-        render json: { error: reaction.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+        render json: { error: reaction.errors_as_sentence, status: 422 }, status: :unprocessable_entity
         return
       end
     end

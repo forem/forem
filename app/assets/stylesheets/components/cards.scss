@@ -6,18 +6,33 @@ $card-divider: 1px solid var(--body-bg);
   border-radius: var(--radius);
   background: var(--card-bg);
   color: var(--card-color);
+  box-shadow: 0 0 0 1px var(--card-border);
 
   &--secondary {
     background: var(--card-secondary-bg);
     color: var(--card-secondary-color);
+    box-shadow: 0 0 0 1px var(--card-secondary-border);
   }
 
   &__header {
-    padding: var(--su-4) var(--su-4);
+    padding: var(--su-3) var(--su-4);
     border-bottom: $card-divider;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    &__headline {
+      font-size: var(--fs-l);
+      font-weight: var(--fw-bold);
+      color: var(--base-100);
+
+      a {
+        color: inherit;
+        &:hover {
+          color: var(--link-color-hover);
+        }
+      }
+    }
   }
 
   &__subheader {
