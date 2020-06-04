@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render } from '@testing-library/preact';
 import { Button, ButtonGroup } from '@crayons';
 
 describe('<ButtonGroup /> component', () => {
@@ -15,12 +15,12 @@ describe('<ButtonGroup /> component', () => {
       </svg>
     );
 
-    const tree = render(
+    const { container } = render(
       <ButtonGroup>
         <Button>Hello World!</Button>
         <Button icon={Icon} />
       </ButtonGroup>,
     );
-    expect(tree).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 });

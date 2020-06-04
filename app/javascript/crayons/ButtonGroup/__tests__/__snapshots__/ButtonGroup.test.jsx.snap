@@ -1,20 +1,20 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<ButtonGroup /> component should render 1`] = `
-<div
-  class="crayons-btn-group"
->
-  <button
-    class="crayons-btn"
-    disabled={false}
-    type="button"
+<div>
+  <div
+    class="crayons-btn-group"
   >
-    Hello World!
-  </button>
-  <button
-    class="crayons-btn"
-    disabled={false}
-    type="button"
-  />
+    <button
+      class="crayons-btn"
+      type="button"
+    >
+      Hello World!
+    </button>
+    <button
+      class="crayons-btn"
+      type="button"
+    />
+  </div>
 </div>
 `;
