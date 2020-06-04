@@ -14,3 +14,12 @@
   <%= select_tag :active, options_for_select([false, true]) %>
 </div>
 <br>
+
+<% if @broadcast.processed_html %>
+  <div>
+    </p><strong>Preview</strong></p>
+    <%= @broadcast.processed_html.html_safe %>
+    </p><em>Please note: Announcement Broadcasts will render directly below the nav bar.</em></p>
+  <div>
+<% end %>
+<br>
