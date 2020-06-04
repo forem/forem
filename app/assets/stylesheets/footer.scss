@@ -20,9 +20,11 @@
     display: flex;
     position: relative;
     flex-direction: column;
+    padding: 0 var(--su-2);
 
-    @media (min-width: $breakpoint-s) {
+    @media (min-width: $breakpoint-m) {
       flex-direction: row;
+      padding: 0 var(--layout-padding);
     }
   }
 
@@ -30,10 +32,10 @@
     display: grid;
     gap: var(--su-4);
     flex: 1 auto;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
 
     @media (min-width: $breakpoint-s) {
-      grid-template-columns: repeat(3, 150px);
+      grid-template-columns: repeat(3, 1fr);
     }
 
     @media (min-width: $breakpoint-l) {
@@ -48,12 +50,12 @@
     align-self: flex-start;
     font-size: var(--fs-s);
     order: 1;
-    padding: var(--su-6) var(--su-3) var(--su-3) var(--su-3);
+    padding: var(--su-6) 0 0 var(--su-3);
 
     @media (min-width: $breakpoint-m) {
       width: 25%;
       padding: 0;
-      padding-right: var(--su-6);
+      margin-right: var(--su-8);
       order: initial;
     }
   }
