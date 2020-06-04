@@ -51,10 +51,6 @@ const Channels = ({
       />
     );
   });
-<<<<<<< HEAD
-=======
-
->>>>>>> 🐞 Channel List bug in mobile view
   let topNotice = '';
   if (
     expanded &&
