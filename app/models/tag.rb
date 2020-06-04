@@ -77,7 +77,7 @@ class Tag < ActsAsTaggableOn::Tag
   end
 
   def self.find_preferred_alias_for(word)
-    find_by(name: word)&.alias_for.presence || word
+    find_by(name: word.downcase)&.alias_for.presence || word.downcase
   end
 
   def validate_name
