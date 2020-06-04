@@ -45,7 +45,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     context "without params" do
       it "returns json response" do
         get api_articles_path
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
 
       it "returns nothing if params state=all is not found" do
@@ -371,20 +371,20 @@ RSpec.describe "Api::V0::Articles", type: :request do
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
 
         get me_api_articles_path, headers: headers
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
       it "returns proper response specification" do
         get me_api_articles_path, params: { access_token: access_token.token }
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
       it "returns success when requesting publiched articles with public token" do
         public_token = create(:doorkeeper_access_token, resource_owner: user, scopes: "public")
         get me_api_articles_path(status: :published), params: { access_token: public_token.token }
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
