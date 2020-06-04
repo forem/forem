@@ -149,7 +149,7 @@ RSpec.configure do |config|
       to_return(status: 200, body: "", headers: {})
   end
 
-  config.after(:all) do
+  config.after do
     Timecop.return
   end
 

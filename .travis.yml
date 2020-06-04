@@ -34,7 +34,7 @@ env:
     - GITHUB_KEY=dummy
     - GITHUB_SECRET=dummy
     - KNAPSACK_PRO_FIXED_QUEUE_SPLIT=true
-    - KNAPSACK_PRO_LOG_LEVEL=info
+    # - KNAPSACK_PRO_LOG_LEVEL=info
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
   jobs:
     - KNAPSACK_PRO_CI_NODE_INDEX=0
@@ -67,7 +67,6 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'bundle exec rake knapsack_pro:rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
@@ -77,6 +76,7 @@ script:
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then yarn build-storybook; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bundle exec rails runner -e production 'puts "App booted successfully"'; fi
+  - 'bundle exec rake knapsack_pro:rspec'
 deploy:
   provider: heroku
   api_key: '$HEROKU_AUTH_TOKEN'
