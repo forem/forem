@@ -9,7 +9,7 @@
      data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
   <%= render "articles/search/sidebar" %>
   <div class="articles-list" id="articles-list">
-    <% if (params[:q].downcase == "job" || params[:q].downcase == "jobs") && SiteConfig.display_jobs_banner %>
+    <% if (params[:q]&.downcase == "job" || params[:q]&.downcase == "jobs") && SiteConfig.display_jobs_banner %>
       <div class="crayons-notice crayons-notice--info mb-3 fs-base">Interested in joining our team? Explore our <a href=<%= SiteConfig.jobs_url %>>open roles</a>.</div>
     <% end %>
     <div class="substories" id="substories">
