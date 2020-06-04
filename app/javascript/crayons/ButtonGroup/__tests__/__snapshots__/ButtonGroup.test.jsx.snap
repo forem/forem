@@ -4,6 +4,7 @@ exports[`<ButtonGroup /> component should render 1`] = `
 <div>
   <div
     class="crayons-btn-group"
+    role="presentation"
   >
     <button
       class="crayons-btn"
