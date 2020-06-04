@@ -5,11 +5,11 @@ import { OrganizationPicker } from '../../organization/OrganizationPicker';
 export const PageTitle = ({organizations, organizationId, onToggle}) => {
   return (
     <div className="crayons-field__label flex items-center flex-1">
-      <span className="hidden s:inline-block whitespace-nowrap">
+      <span className="hidden s:inline-block mr-2 whitespace-nowrap">
         Write a new post
       </span>
       {organizations && organizations.length > 0 && (
-        <div className="mx-2">
+        <div>
           <OrganizationPicker
             name="article[organization_id]"
             id="article_publish_under_org"

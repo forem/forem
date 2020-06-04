@@ -1,12 +1,12 @@
-<div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right">
+<div id="sidebar-wrapper-right" class="sidebar-wrapper sidebar-wrapper-right crayons-layout__sidebar-right">
   <div class="sidebar-bg" id="sidebar-bg-right"></div>
-  <div class="side-bar sidebar-additional showing" id="sidebar-additional">
+  <div class="side-bar sidebar-additional showing grid gap-4" id="sidebar-additional">
     <% unless user_signed_in? %>
-      <div class="widget signin-cta-widget">
-        <header class="signin-cta-widget-header">
-          Join <%= community_name %>
+      <div class="crayons-card crayons-card--secondary signin-cta-widget">
+        <header class="crayons-card__header">
+          <h3 class="crayons-card__header__headline">Join <%= community_name %></h3>
         </header>
-        <div class="widget-body">
+        <div class="p-4 grid gap-2">
           <%= render partial: "shared/authentication/providers_sidebar" %>
         </div>
       </div>
@@ -14,47 +14,50 @@
     <% cache(cache_key_heroku_slug("main-article-right-sidebar-discussions-#{params[:timeframe]}"), expires_in: (params[:timeframe].blank? ? 120 : 360).seconds) do %>
       <% @sidebar_ad = DisplayAd.for_display("sidebar_right") %>
       <% if @sidebar_ad %>
-        <div class="widget">
-          <div class="widget-body" style="margin-top:-6px">
-            <%= @sidebar_ad.processed_html.html_safe %>
-          </div>
+        <div class="crayons-card crayons-card--secondary p-4 crayons-sponsorship-widget">
+          <%= @sidebar_ad.processed_html.html_safe %>
         </div>
       <% end %>
+
       <%= render "articles/sidebar_campaign" if SiteConfig.campaign_sidebar_enabled? %>
+
       <% if params[:timeframe].blank? && @listings.any? %>
-        <div class="widget" id="sidebar-listings-widget">
-          <header class="widget-header-listings">
-            <a href="/listings"><h4>Listings <span class="widget-listing-live-count"><%= @listings.size %></span></h4></a>
-            <button type="button" class="widget-minimize-button" id="sidebar-listings-widget-minimize-button">-</button>
+        <div class="crayons-card crayons-card--secondary">
+          <header class="crayons-card__header">
+            <h3 class="crayons-card__header__headline">Listings</h3>
+            <div class="crayons-card__actions">
+              <a href="/listings" class="crayons-link--branded fw-medium fs-s">See all</a>
+            </div>
           </header>
-          <div class="widget-body widget-body-listings">
+
+          <div>
             <% @listings.order("bumped_at DESC").limit(5).each do |listing| %>
-              <a class="widget-listing-link" href="<%= listing.path %>">
-                <span class="widget-listing-link-title"><%= listing.title %></span>
-                <span class="widget-listing-link-category"><%= listing.category %></span>
+              <a class="crayons-link crayons-link--contentful" href="<%= listing.path %>">
+                <div><%= listing.title %></div>
+                <div class="crayons-link__secondary"><%= listing.category %></div>
               </a>
             <% end %>
-            <a class="cta cta-button" href="/listings/new">CREATE A LISTING</a>
+            <a class="crayons-link crayons-link--branded block align-center p-3 fw-medium fs-s w-100" href="/listings/new">Create a Listing</a>
           </div>
         </div>
       <% end %>
+
       <% SiteConfig.sidebar_tags.each do |tag| %>
-        <div class="widget">
-          <header>
-            <a href="/t/<%= tag %>"><h4>#<%= tag %></h4></a>
+        <div class="crayons-card crayons-card--secondary">
+          <header class="crayons-card__header">
+            <h3 class="crayons-card__header__headline"><a href="/t/<%= tag %>">#<%= tag %></a></h3>
           </header>
-          <div class="widget-body">
-            <div class="widget-link-list">
-              <% if tag == "help" %>
-                <% Article.active_help.limit(5).pluck(:path, :title, :comments_count, :created_at).each do |plucked_article| %>
-                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-                <% end %>
-              <% else %>
-                <% Article.active_threads([tag], Timeframer.new(params[:timeframe]).datetime, 5).each do |plucked_article| %>
-                  <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
-                <% end %>
+
+          <div>
+            <% if tag == "help" %>
+              <% Article.active_help.limit(5).pluck(:path, :title, :comments_count, :created_at).each do |plucked_article| %>
+                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
               <% end %>
-            </div>
+            <% else %>
+              <% Article.active_threads([tag], Timeframer.new(params[:timeframe]).datetime, 5).each do |plucked_article| %>
+                <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: true %>
+              <% end %>
+            <% end %>
           </div>
         </div>
       <% end %>

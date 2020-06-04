@@ -19,41 +19,50 @@
   </div>
 <% end %>
 
-<main class="crayons-layout crayons-layout--max-l crayons-layout--default">
-  <div class="crayons-layout__sidebar">
-    <nav>
+<header class="crayons-layout crayons-layout--limited crayons-layout--1-col p-4">
+  <% if @tab == "organization" && @organizations.present? %>
+    <h1 class="fs-2xl s:fs-3xl">Settings for
+      <span class="organization-dropdown">
+        <select id="organization-dropdown-select" onchange="window.location.href=this.value">
+          <% options = @organizations.pluck(:slug, :id).each do |arr| %>
+            <% arr[0] = "@#{arr[0]}" %>
+            <% arr[1] = "/settings/organization/#{arr[1]}" %>
+          <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
+          <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
+          <%# For example: %>
+          <%# <option value="/settings/organization/1>@devteam</option> %>
+          <%# <option value="/settings/organization/new" selected>New Organization</option> %>
+        </select>
+      </span>
+    </h1>
+  <% else %>
+    <h1 class="fs-2xl s:fs-3xl">
+      Settings for <a href="<%= user_url(@user) || '#' %>">@<%= @user.username.truncate(User::USERNAME_MAX_LENGTH) %></a>
+    </h1>
+  <% end %>
+</header>
+
+<main class="crayons-layout crayons-layout--2-cols crayons-layout--limited">
+  <div class="crayons-layout__left-sidebar">
+    <nav class="hidden m:block">
       <% @tab_list.each do |possible_tab| %>
         <a class="crayons-link crayons-link--block <% if @tab == possible_tab.downcase.tr(' ', '-') %>crayons-link--current<% end %>" href="/settings/<%= possible_tab.downcase.tr(" ", "-") %>">
           <%= possible_tab %>
         </a>
       <% end %>
     </nav>
+    <div class="m:hidden p-2 pt-0">
+      <select id="mobile-page-selector" class="crayons-select">
+        <% @tab_list.each do |possible_tab| %>
+          <option value="/settings/<%= possible_tab.downcase.tr(" ", "-") %>" <% if @tab == possible_tab.downcase.tr(' ', '-') %>selected<% end %>>
+            <%= possible_tab %>
+          </option>
+        <% end %>
+      </select>
+    </div>
   </div>
 
   <div class="crayons-layout__content">
-    <header class="crayons-layout__page-header px-3 s:px-0 mb-4">
-      <% if @tab == "organization" && @organizations.present? %>
-        <h1 class="fs-xl s:fs-3xl">Settings for
-          <span class="organization-dropdown">
-            <select id="organization-dropdown-select" onchange="window.location.href=this.value">
-              <% options = @organizations.pluck(:slug, :id).each do |arr| %>
-                <% arr[0] = "@#{arr[0]}" %>
-                <% arr[1] = "/settings/organization/#{arr[1]}" %>
-              <% end.to_h.merge("New Organization" => "/settings/organization/new") %>
-              <%= options_for_select(options, "/settings/organization/#{params[:org_id]}") %>
-              <%# For example: %>
-              <%# <option value="/settings/organization/1>@devteam</option> %>
-              <%# <option value="/settings/organization/new" selected>New Organization</option> %>
-            </select>
-          </span>
-        </h1>
-      <% else %>
-        <h1 class="fs-xl s:fs-3xl">
-          Settings for <a href="<%= user_url(@user) || '#' %>">@<%= @user.username.truncate(User::USERNAME_MAX_LENGTH) %></a>
-        </h1>
-      <% end %>
-    </header>
-
     <% if current_user.email.blank? %>
       <div class="crayons-notice crayons-notice--warning mb-6">
         <h3 class="mb-2">Confirm your email to complete your profile.</h3>

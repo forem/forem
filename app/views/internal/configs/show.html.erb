@@ -248,6 +248,31 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
+                       header: "Jobs",
+                       state: "collapse",
+                       target: "jobsBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="jobsBodyContainer" class="card-body collapse hide" aria-labelledby="jobsBodyContainer">
+            <div class="form-group">
+              <%= f.label :jobs_url %>
+              <%= f.text_field :jobs_url,
+                               class: "form-control",
+                               value: SiteConfig.jobs_url,
+                               placeholder: "Jobs URL" %>
+              <div class="alert alert-info">URL of the website where open positions are posted.</div>
+
+            <div class="form-group">
+              <%= f.label :display_jobs_banner %>
+              <%= f.check_box :display_jobs_banner, checked: SiteConfig.display_jobs_banner %>
+              <div class="alert alert-info">Display a jobs banner that points users to the <%= community_name %> jobs page when they type "job" or "jobs" in the search box</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
                        header: "Google Analytics Reporting API v4",
                        state: "collapse",
                        target: "gaBodyContainer",

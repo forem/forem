@@ -44,6 +44,10 @@ class SiteConfig < RailsSettings::Base
   field :periodic_email_digest_max, type: :integer, default: 0
   field :periodic_email_digest_min, type: :integer, default: 2
 
+  # Jobs
+  field :jobs_url, type: :string, default: "https://jobs.dev.to/"
+  field :display_jobs_banner, type: :boolean, default: false
+
   # Google Analytics Reporting API v4
   # <https://developers.google.com/analytics/devguides/reporting/core/v4>
   field :ga_view_id, type: :string, default: ""

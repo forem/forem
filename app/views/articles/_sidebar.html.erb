@@ -1,9 +1,9 @@
-<div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left">
+<div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left crayons-layout__sidebar-left">
   <div class="sidebar-bg" id="sidebar-bg-left"></div>
   <div class="side-bar">
     <% cache(cache_key_heroku_slug("main-sidebar-nav--#{user_signed_in?}"), expires_in: 15.minutes) do %>
       <%= render "articles/sidebar_nav" %>
-      <div class="<%= "hidden" if user_signed_in? %> px-2" id="sponsorship-widget">
+      <div class="<%= "hidden" if user_signed_in? %> px-1" id="sponsorship-widget">
         <h4 class="flex align-center fs-s ff-accent fw-bold tt-uppercase mb-4">
           Community Sponsors
           <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default ml-1", title: "Love") %>
@@ -23,10 +23,8 @@
     <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left") %>
       <% if @left_sidebar_ad %>
-        <div class="widget" id="sponsorship-arbitrary-display-widget" data-id="<%= @left_sidebar_ad.id %>">
-          <div class="widget-body widget-body--sponsorship-arbitrary">
-            <%= @left_sidebar_ad.processed_html.html_safe %>
-          </div>
+        <div class="crayons-sponsorship-widget" id="sponsorship-arbitrary-display-widget" data-id="<%= @left_sidebar_ad.id %>">
+          <%= @left_sidebar_ad.processed_html.html_safe %>
         </div>
       <% end %>
     <% end %>
