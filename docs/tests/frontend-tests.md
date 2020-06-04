@@ -68,7 +68,7 @@ watch plugin. It allows you to filter by test filename or test name.
 To troubleshoot any of your jest test files, add a debugger and run:
 
 ```shell
-node --inspect node_modules/.bin/jest --watch --runInBand <path-to-file>
+node --inspect-brk node_modules/.bin/jest --watch --runInBand <path-to-file>
 ```
 
 You can read more about troubleshooting
