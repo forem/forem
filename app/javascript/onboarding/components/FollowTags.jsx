@@ -160,7 +160,7 @@ class FollowTags extends Component {
                             </span>
                           </span>
                         ) : (
-                          '+ Follow'
+                          'Follow'
                         )}
                       </button>
                     </div>

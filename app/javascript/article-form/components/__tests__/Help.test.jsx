@@ -27,7 +27,7 @@ describe('<Help />', () => {
       />,
     );
     expect(
-      container.find('.crayons-article-form__main__aside').text().length,
+      container.find('.crayons-article-form__aside').text().length,
     ).toEqual(0);
   });
 
@@ -41,7 +41,7 @@ describe('<Help />', () => {
       />,
     );
     expect(
-      container.find('.crayons-article-form__main__aside').text().length,
+      container.find('.crayons-article-form__aside').text().length,
     ).toBeGreaterThan(0);
   });
 
@@ -55,7 +55,7 @@ describe('<Help />', () => {
       />,
     );
     expect(
-      container.find('.crayons-article-form__main__aside').text().length,
+      container.find('.crayons-article-form__aside').text().length,
     ).toBeGreaterThan(0);
   });
 
@@ -69,7 +69,7 @@ describe('<Help />', () => {
       />,
     );
     expect(
-      container.find('.crayons-article-form__main__aside').text().length,
+      container.find('.crayons-article-form__aside').text().length,
     ).toBeGreaterThan(0);
     expect(container.find('.spec__basic-editor-help').exists()).toEqual(true);
     expect(container.find('.spec__format-help').exists()).toEqual(true);
@@ -89,7 +89,7 @@ describe('<Help />', () => {
       />,
     );
     expect(
-      container.find('.crayons-article-form__main__aside').text().length,
+      container.find('.crayons-article-form__aside').text().length,
     ).toBeGreaterThan(0);
     expect(container.find('.spec__title-help').exists()).toEqual(true);
     expect(container.find('.spec__format-help').exists()).toEqual(false);
@@ -107,7 +107,7 @@ describe('<Help />', () => {
       />,
     );
     expect(
-      container2.find('.crayons-article-form__main__aside').text().length,
+      container2.find('.crayons-article-form__aside').text().length,
     ).toBeGreaterThan(0);
     expect(container2.find('.spec__format-help').exists()).toEqual(true);
     expect(container2.find('.spec__basic-editor-help').exists()).toEqual(false);
@@ -125,7 +125,7 @@ describe('<Help />', () => {
       />,
     );
     expect(
-      container3.find('.crayons-article-form__main__aside').text().length,
+      container3.find('.crayons-article-form__aside').text().length,
     ).toBeGreaterThan(0);
     expect(container3.find('.spec__basic-tag-input-help').exists()).toEqual(
       true,

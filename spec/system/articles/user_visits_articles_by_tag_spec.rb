@@ -21,7 +21,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       end
 
       it "shows the follow button", js: true do
-        within("h1") { expect(page).to have_button("+ FOLLOW") }
+        within("h1") { expect(page).to have_button("Follow") }
       end
 
       it "shows time buttons" do
@@ -76,7 +76,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       # TODO: Add Percy snapshot?
       wait_for_javascript
 
-      within("h1") { expect(page).to have_button("✓ FOLLOWING") }
+      within("h1") { expect(page).to have_button("Following") }
     end
   end
 end

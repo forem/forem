@@ -6,7 +6,7 @@ import { PageTitle } from './PageTitle';
 
 export const Header = ({onPreview, previewShowing, organizations, organizationId, onToggle}) => {
   return (
-    <div className="crayons-article-form__header crayons-layout">
+    <div className="crayons-article-form__header">
       <a href="/" className="crayons-article-form__logo" aria-label="Home">
         <svg
           xmlns="http://www.w3.org/2000/svg"

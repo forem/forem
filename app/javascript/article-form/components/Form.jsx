@@ -19,7 +19,7 @@ export const Form = ({
   errors,
 }) => {
   return (
-    <div className="crayons-article-form__main__content crayons-card">
+    <div className="crayons-article-form__content crayons-card">
       {errors && <ErrorList errors={errors} />}
 
       {version === 'v2' && (

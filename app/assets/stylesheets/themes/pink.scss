@@ -67,9 +67,11 @@
   --card-color: var(--base-100);
   --card-color-secondary: var(--base-70);
   --card-color-tertiary: var(--base-50);
-  --card-secondary-bg: var(--base-0);
+  --card-secondary-bg: rgba(255, 209, 223, 0.3);
   --card-secondary-color: var(--base-90);
   --card-headline-color: var(--base-100);
+  --card-border: var(--accent-brand);
+  --card-secondary-border: #{rgba(#ff6c9b, 0.2)};
 
   // Header
   --header-bg: var(--base-40);
@@ -197,7 +199,6 @@
 
   // Story
   --story-comments-bg: rgba(255, 255, 255, 0.05);
-  --story-border: var(--accent-brand);
 
   // Select icon
   --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjNTcxOTJkIi8+Cjwvc3ZnPg==);
