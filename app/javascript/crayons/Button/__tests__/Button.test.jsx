@@ -1,51 +1,64 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render, fireEvent } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { Button } from '@crayons';
 
 describe('<Button /> component', () => {
+  it('should have no a11y violations when rendered', async () => {
+    const { container } = render(<Button>Hello world!</Button>);
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
   it('should render a primary button when using default values', () => {
-    const tree = render(<Button>Hello world!</Button>);
-    expect(tree).toMatchSnapshot();
+    const { container } = render(<Button>Hello world!</Button>);
+    expect(container).toMatchSnapshot();
   });
 
   it('should render with a tabIndex', () => {
-    const tree = render(<Button tabIndex="0">Hello world!</Button>);
-    expect(tree).toMatchSnapshot();
+    const { container } = render(<Button tabIndex="0">Hello world!</Button>);
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a secondary button when using the variant "secondary"', () => {
-    const tree = render(<Button variant="secondary">Hello world!</Button>);
-    expect(tree).toMatchSnapshot();
+    const { container } = render(
+      <Button variant="secondary">Hello world!</Button>,
+    );
+    expect(container).toMatchSnapshot();
   });
 
   it('should render an outlined button when using the variant "outlined"', () => {
-    const tree = render(<Button variant="outlined">Hello world!</Button>);
-    expect(tree).toMatchSnapshot();
+    const { container } = render(
+      <Button variant="outlined">Hello world!</Button>,
+    );
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a danger button when using the variant "danger"', () => {
-    const tree = render(<Button variant="danger">Hello world!</Button>);
-    expect(tree).toMatchSnapshot();
+    const { container } = render(
+      <Button variant="danger">Hello world!</Button>,
+    );
+    expect(container).toMatchSnapshot();
   });
 
   it('should render an enabled button when using default values', () => {
-    const tree = render(<Button>Hello world!</Button>);
-    expect(tree).toMatchSnapshot();
+    const { container } = render(<Button>Hello world!</Button>);
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a disabled button when disabled is true', () => {
-    const tree = render(<Button disabled>Hello world!</Button>);
-    expect(tree).toMatchSnapshot();
+    const { container } = render(<Button disabled>Hello world!</Button>);
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a button with addtional CSS classes when className is set', () => {
-    const tree = render(
+    const { container } = render(
       <Button disabled className="some-additional-class-name">
         Hello world!
       </Button>,
     );
-    expect(tree).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a button with with an icon when an icon is set and there is button text', () => {
@@ -60,12 +73,12 @@ describe('<Button /> component', () => {
       </svg>
     );
 
-    const tree = render(
+    const { container } = render(
       <Button icon={Icon} contentType="icon-left">
         Hello world!
       </Button>,
     );
-    expect(tree).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a button with with an icon when an icon is set and there is no button text', () => {
@@ -80,79 +93,92 @@ describe('<Button /> component', () => {
       </svg>
     );
 
-    const tree = render(<Button icon={Icon} contentType="icon" />);
-    expect(tree).toMatchSnapshot();
+    const { container } = render(<Button icon={Icon} contentType="icon" />);
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a button as an anchor element if "tagName" is set to "a"', () => {
-    const tree = render(
+    const { container } = render(
       <Button tagName="a" url="https://dev.to">
         Hello world!
       </Button>,
     );
-    expect(tree).toMatchSnapshot();
+    expect(container).toMatchSnapshot();
   });
 
   it('should render a button as a specific button type (HTML type attribute) when buttonType is set.', () => {
-    const tree = render(<Button buttonType="submit">Hello world!</Button>);
-    expect(tree).toMatchSnapshot();
+    const { container } = render(
+      <Button buttonType="submit">Hello world!</Button>,
+    );
+    expect(container).toMatchSnapshot();
   });
 
   it('should fire the onClick event when the button is clicked.', () => {
     const someEvent = jest.fn();
 
-    shallow(<Button onClick={someEvent}>Hello world!</Button>)
-      .find('button')
-      .simulate('click');
+    const { getByText } = render(
+      <Button onClick={someEvent}>Hello world!</Button>,
+    );
 
-    expect(someEvent).toHaveBeenCalled();
+    const button = getByText('Hello world!');
+    button.click();
+
+    expect(someEvent).toHaveBeenCalledTimes(1);
   });
 
   it('should fire the onMouseOver event when the button is moused over.', () => {
     const someEvent = jest.fn();
 
-    shallow(
+    const { getByText } = render(
       <Button onMouseOver={someEvent} onfocus={jest.fn()}>
         Hello world!
       </Button>,
-    )
-      .find('button')
-      .simulate('mouseover');
+    );
 
-    expect(someEvent).toHaveBeenCalled();
+    const button = getByText('Hello world!');
+    fireEvent.mouseOver(button);
+
+    expect(someEvent).toHaveBeenCalledTimes(1);
   });
 
   it('should fire the onMouseOut event when the button is moused out.', () => {
     const someEvent = jest.fn();
 
-    shallow(
+    const { getByText } = render(
       <Button onMouseOut={someEvent} onBlur={jest.fn()}>
         Hello world!
       </Button>,
-    )
-      .find('button')
-      .simulate('mouseout');
+    );
+    const button = getByText('Hello world!');
+    fireEvent.mouseOut(button);
 
-    expect(someEvent).toHaveBeenCalled();
+    expect(someEvent).toHaveBeenCalledTimes(1);
   });
 
   it('should fire the onFocus event when the button is given focus.', () => {
     const someEvent = jest.fn();
 
-    shallow(<Button onFocus={someEvent}>Hello world!</Button>)
-      .find('button')
-      .simulate('focus');
+    const { getByText } = render(
+      <Button onFocus={someEvent}>Hello world!</Button>,
+    );
 
-    expect(someEvent).toHaveBeenCalled();
+    const button = getByText('Hello world!');
+    button.focus();
+
+    expect(someEvent).toHaveBeenCalledTimes(1);
   });
 
   it('should fire the onBlur event when the button loses focus.', () => {
     const someEvent = jest.fn();
 
-    shallow(<Button onBlur={someEvent}>Hello world!</Button>)
-      .find('button')
-      .simulate('blur');
+    const { getByText } = render(
+      <Button onBlur={someEvent}>Hello world!</Button>,
+    );
 
-    expect(someEvent).toHaveBeenCalled();
+    const button = getByText('Hello world!');
+    button.focus();
+    button.blur();
+
+    expect(someEvent).toHaveBeenCalledTimes(1);
   });
 });
