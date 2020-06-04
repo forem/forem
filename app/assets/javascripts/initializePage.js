@@ -10,7 +10,7 @@
   initializeUserProfilePage, initializePodcastPlayback, initializeDrawerSliders,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
-  initializeSpecialNavigationFunctionality
+  initializeSpecialNavigationFunctionality, initializeBroadcast
 */
 
 function callInitializers() {
@@ -25,6 +25,7 @@ function callInitializers() {
         initializeAllChatButtons();
         initializeAllTagEditButtons();
       }
+      initializeBroadcast();
       initializeAllFollowButts();
       initializeUserFollowButts();
       initializeReadingListIcons();
