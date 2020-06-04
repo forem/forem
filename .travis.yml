@@ -36,6 +36,10 @@ env:
     - KNAPSACK_PRO_FIXED_QUEUE_SPLIT=true
     - KNAPSACK_PRO_LOG_LEVEL=info
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
+    # just new API token for debug prupose so I can run parallel tests on
+    # Travis for my forked repo
+    # TODO I will get rid of it later
+    - KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC=a0068177eaad4fe396f32bf6ba6ccf35
   jobs:
     - KNAPSACK_PRO_CI_NODE_INDEX=0
     - KNAPSACK_PRO_CI_NODE_INDEX=1
