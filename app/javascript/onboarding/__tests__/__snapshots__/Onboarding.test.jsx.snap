@@ -146,7 +146,7 @@ preact-render-spy (1 nodes)
                   class="onboarding-tags__button false"
                   style="background-color: #000000; color: #ffffff;"
                 >
-                  + Follow
+                  Follow
                 </button>
               </div>
             </div>
@@ -162,7 +162,7 @@ preact-render-spy (1 nodes)
                   class="onboarding-tags__button false"
                   style="background-color: #f7df1e; color: #000000;"
                 >
-                  + Follow
+                  Follow
                 </button>
               </div>
             </div>
@@ -178,7 +178,7 @@ preact-render-spy (1 nodes)
                   class="onboarding-tags__button false"
                   style="background-color: #2a2566; color: #ffffff;"
                 >
-                  + Follow
+                  Follow
                 </button>
               </div>
             </div>

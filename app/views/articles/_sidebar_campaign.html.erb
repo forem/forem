@@ -1,23 +1,21 @@
-<div class="widget">
+<div class="crayons-card crayons-card--secondary">
   <% if SiteConfig.campaign_sidebar_image && SiteConfig.campaign_url %>
     <a href="<%= SiteConfig.campaign_url %>">
-      <img src="<%= SiteConfig.campaign_sidebar_image %>" class="widget-image" style="height:116px;" />
+      <img src="<%= SiteConfig.campaign_sidebar_image %>" class="block w-100 h-auto radius-default" width="1000" height="420" />
     </a>
   <% elsif SiteConfig.campaign_sidebar_image %>
-    <img src="<%= SiteConfig.campaign_sidebar_image %>" class="widget-image" style="height:116px;" />
+    <img src="<%= SiteConfig.campaign_sidebar_image %>" class="block w-100 h-auto radius-default" width="1000" height="420" />
   <% end %>
-  <header>
-    <h4>
-      <%= link_to "Stories (#{@campaign_articles_count})", "/t/#{SiteConfig.campaign_featured_tags.first}" %>
-    </h4>
+  <header class="crayons-card__header">
+    <h3 class="crayons-card__header__headline"><%= link_to "Stories (#{@campaign_articles_count})", "/t/#{SiteConfig.campaign_featured_tags.first}" %></h3>
   </header>
-  <div class="widget-body">
-    <div class="widget-link-list">
-      <% @latest_campaign_articles.each do |plucked_article| %>
-        <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
-      <% end %>
-    </div>
+  <div>
+    <% @latest_campaign_articles.each do |plucked_article| %>
+      <%= render "articles/widget_list_item", plucked_article: plucked_article, show_comment_count: false %>
+    <% end %>
   </div>
-  <%= link_to "Share your project", "/new/#{SiteConfig.campaign_featured_tags.first}", class: "widget-button write" %>
-  <%= link_to "See all posts", "/t/#{SiteConfig.campaign_featured_tags.first}", class: "widget-button all-stories" %>
+  <div class="grid gap-2 p-4">
+    <%= link_to "Share your project", "/new/#{SiteConfig.campaign_featured_tags.first}", class: "crayons-btn" %>
+    <%= link_to "See all posts", "/t/#{SiteConfig.campaign_featured_tags.first}", class: "crayons-btn crayons-btn--secondary" %>
+  </div>
 </div>

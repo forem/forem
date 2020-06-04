@@ -72,6 +72,8 @@
   --card-secondary-bg: var(--base-a5);
   --card-secondary-color: var(--base-90);
   --card-headline-color: var(--base-100);
+  --card-border: rgba(255, 255, 255, 0.15);
+  --card-secondary-border: rgba(255, 255, 255, 0.1);
 
   // Header
   --header-bg: var(--base-10);
@@ -199,7 +201,6 @@
 
   // Story
   --story-comments-bg: #151e2a; //hotfix
-  --story-border: rgba(255, 255, 255, 0.15);
 
   // Select icon
   --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjYzJjNmNhIi8+Cjwvc3ZnPg==);

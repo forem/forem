@@ -1,4 +1,4 @@
-/* global timestampToLocalDateTime */
+/* global timestampToLocalDateTime InstantClick */
 
 function initializeSettings() {
   // highlights organization secret on click
@@ -26,5 +26,16 @@ function initializeSettings() {
       navigator.language,
       timeOptions,
     );
+  }
+
+  const mobilePageSelector = document.getElementById('mobile-page-selector');
+
+  if (mobilePageSelector) {
+    mobilePageSelector.addEventListener('change', (event) => {
+      const url = event.target.value;
+
+      InstantClick.preload(url);
+      InstantClick.display(url);
+    });
   }
 }
