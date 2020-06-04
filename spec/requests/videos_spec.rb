@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe "Videos", type: :request do
   let(:unauthorized_user) { create(:user) }
-  let(:authorized_user)   { create(:user, :video_permission) }
+  let(:authorized_user)   { create(:user, :created_at_three_weeks_ago) }
 
   describe "GET /videos" do
     it "shows video page" do

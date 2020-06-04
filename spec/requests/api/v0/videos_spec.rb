@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe "Api::V0::Videos", type: :request do
-  let_it_be_readonly(:user) { create(:user, :video_permission) }
+  let_it_be_readonly(:user) { create(:user, :created_at_three_weeks_ago) }
 
   def create_article(article_params = {})
     default_params = {

@@ -73,7 +73,7 @@ FactoryBot.define do
       after(:build) { |user| user.add_role(:banned) }
     end
 
-    trait :video_permission do
+    trait :created_at_three_weeks_ago do
       after(:build) { |user| user.created_at = 3.weeks.ago }
     end
 

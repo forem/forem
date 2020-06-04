@@ -6,7 +6,7 @@ specs=(
   spec/system/internal/admin_manages_organizations
   spec/system/articles/user_visits_article_stats
 )
-num_copies=15
+num_copies=10
 
 for spec in ${specs[*]}; do
   for i in $(seq 1 $num_copies); do
