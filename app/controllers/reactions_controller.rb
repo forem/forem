@@ -96,7 +96,7 @@ class ReactionsController < ApplicationController
   end
 
   def cached_user_public_reactions(user)
-    Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.public_reactions_count}", expires_in: 24.hours) do
+    Rails.cache.fetch("cached-user-reactions-#{user.id}-#{user.public_reactions_count}", expires_in: 24.hours) do
       user.reactions.public_category
     end
   end
