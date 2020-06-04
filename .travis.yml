@@ -34,7 +34,7 @@ env:
     - GITHUB_KEY=dummy
     - GITHUB_SECRET=dummy
     - KNAPSACK_PRO_FIXED_QUEUE_SPLIT=true
-    - KNAPSACK_PRO_LOG_LEVEL=info
+    #- KNAPSACK_PRO_LOG_LEVEL=info
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     # just new API token for debug prupose so I can run parallel tests on
     # Travis for my forked repo
