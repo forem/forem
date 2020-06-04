@@ -169,7 +169,7 @@ class Article < ApplicationRecord
 
   scope :feed, -> { published.includes(:taggings).select(:id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list) }
 
-  scope :with_video, -> { published.where.not(video: [nil, ""], video_thumbnail_url: [nil, ""]).where("score > ?", -4) }
+  scope :with_video, -> { published.where.not(video: [nil, ""]).where.not(video_thumbnail_url: [nil, ""]).where("score > ?", -4) }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 

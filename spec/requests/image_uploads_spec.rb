@@ -31,7 +31,7 @@ RSpec.describe "ImageUploads", type: :request do
 
       it "returns json" do
         post "/image_uploads", headers: headers
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
 
       it "provides a link" do
