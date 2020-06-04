@@ -8,6 +8,7 @@ RSpec.describe "HealthCheck", type: :request do
 
   context "without a token" do
     it "returns an unauthorized request" do
+      allow_any_instance_of(ActionDispatch::Request).to receive(:remote_addr).and_return("0.0.0.0") # rubocop:disable RSpec/AnyInstance
       get app_api_health_checks_path
       expect(response.status).to eq(401)
     end
