@@ -104,7 +104,7 @@ class CommentsController < ApplicationController
       comment.destroy
       render json: { error: "comment already exists" }, status: :unprocessable_entity
     else
-      message = @comment.errors.full_messages.to_sentence
+      message = @comment.errors_as_sentence
       render json: { error: message }, status: :unprocessable_entity
     end
   # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
