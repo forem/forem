@@ -161,7 +161,7 @@ describe('addAdjustTagListeners()', () => {
         #${tagName}
       </button>
       <form id="adjustment-reason-container" class="adjustment-reason-container hidden">
-        <textarea class="crayons-textfield" placeholder="Reason for tag adjustment" id="tag-adjustment-reason" required></textarea>
+        <textarea class="crayons-textfield" placeholder="Reason for tag adjustment (required)" id="tag-adjustment-reason" required></textarea>
         <button class="crayons-btn" id="tag-adjust-submit" type="submit">Submit</button>
       </form>
     `;
