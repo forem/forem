@@ -224,7 +224,7 @@ class CommentsController < ApplicationController
     if @comment.save
       render json: { hidden: "true" }, status: :ok
     else
-      render json: { errors: @comment.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+      render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity
     end
   end
 
@@ -237,7 +237,7 @@ class CommentsController < ApplicationController
       @commentable&.update_column(:any_comments_hidden, @commentable.comments.pluck(:hidden_by_commentable_user).include?(true))
       render json: { hidden: "false" }, status: :ok
     else
-      render json: { errors: @comment.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+      render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity
     end
   end
 
