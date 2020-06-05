@@ -1,5 +1,10 @@
 import { request } from '../../utilities/http';
 
+/**
+ * This function will get all details of the chat channel accrding to the membership role.
+ *
+ * @param {number} chatChannelMembershipId Current User chat channel membership ID
+ */
 export async function getChannelDetails(chatChannelMembershipId) {
   const response = await request(
     `/chat_channel_memberships/chat_channel_info/${chatChannelMembershipId}`,
@@ -11,6 +16,12 @@ export async function getChannelDetails(chatChannelMembershipId) {
   return response.json();
 }
 
+/**
+ * This function is used to update the notification settings.
+ *
+ * @param {number} membershipId Current user Chat Channel membership Id.
+ * @param {boolean} notificationBadge Boolean value for the notification
+ */
 export async function updatePersonalChatChannelNotificationSettings(
   membershipId,
   notificationBadge,
@@ -31,6 +42,13 @@ export async function updatePersonalChatChannelNotificationSettings(
   return response.json();
 }
 
+/**
+ * This function is used to reject chat channel joining request & pending requests.
+ *
+ * @param { number } channelId Active Chat Channel ID
+ * @param { number } membershipId Requested user membership Id
+ * @param { string } membershipStatus Requested user membership status
+ */
 export async function rejectChatChannelJoiningRequest(
   channelId,
   membershipId,
@@ -52,6 +70,11 @@ export async function rejectChatChannelJoiningRequest(
   return response.json();
 }
 
+/**
+ *
+ * @param {number} channelId Active chat channel Id
+ * @param {number} membershipId Chat channel joining request membership id
+ */
 export async function acceptChatChannelJoiningRequest(channelId, membershipId) {
   const response = await request(`/chat_channel_memberships/add_membership`, {
     method: 'POST',
@@ -82,6 +105,12 @@ export async function updateChatChannelDescription(
   return response.json();
 }
 
+/**
+ * Send Active chat channel invitation
+ *
+ * @param {numner} channelId Active chat channel
+ * @param {string} invitationUsernames UserNames coma seprated
+ */
 export async function sendChatChannelInvitation(
   channelId,
   invitationUsernames,
@@ -103,6 +132,11 @@ export async function sendChatChannelInvitation(
   return response.json();
 }
 
+/**
+ * This function is used to leave the chat channel.
+ *
+ * @param {number} membershipId Current User Chat channel membership id
+ */
 export async function leaveChatChannelMembership(membershipId) {
   const response = await request(
     `/chat_channel_memberships/leave_membership/${membershipId}`,
