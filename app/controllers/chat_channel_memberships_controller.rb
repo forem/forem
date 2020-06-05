@@ -65,20 +65,16 @@ class ChatChannelMembershipsController < ApplicationController
     @chat_channel = ChatChannel.find(params[:chat_channel_id])
     authorize @chat_channel, :update?
     @chat_channel_membership = @chat_channel.chat_channel_memberships.find(params[:membership_id])
-    membership = ChatChannelMembership.find_by!(chat_channel_id: params[:chat_channel_id], user: current_user)
     if params[:status] == "pending"
       @chat_channel_membership.destroy
-      flash[:settings_notice] = "Invitation removed."
+      message = "Invitation removed."
     else
       send_chat_action_message("@#{current_user.username} removed @#{@chat_channel_membership.user.username} from #{@chat_channel_membership.channel_name}", current_user, @chat_channel_membership.chat_channel_id, "removed_from_channel")
       @chat_channel_membership.update(status: "removed_from_channel")
-      flash[:settings_notice] = "Removed #{@chat_channel_membership.user.name}"
+      message = "Removed #{@chat_channel_membership.user.name}"
     end
 
-    respond_to do |format|
-      format.html { redirect_to edit_chat_channel_membership_path(membership) }
-      format.json { render json: { status: "success", message: flash[:settings_notice], success: true }, status: :ok }
-    end
+    render json: { status: "success", message: message, success: true }, status: :ok
   end
 
   def add_membership
@@ -91,13 +87,7 @@ class ChatChannelMembershipsController < ApplicationController
   def update
     @chat_channel_membership = ChatChannelMembership.find(params[:id])
     authorize @chat_channel_membership
-    if permitted_params[:user_action].present?
-      respond_to_invitation(@chat_channel_membership.status)
-    else
-      @chat_channel_membership.update(permitted_params)
-      flash[:settings_notice] = "Personal settings updated."
-      redirect_to edit_chat_channel_membership_path(@chat_channel_membership.id)
-    end
+    respond_to_invitation(@chat_channel_membership.status)
   end
 
   def update_membership
@@ -109,12 +99,6 @@ class ChatChannelMembershipsController < ApplicationController
     else
       render json: { success: true, message: "Personal settings updated." }, status: :ok
     end
-  end
-
-  def invitation
-    @chat_channel_membership = ChatChannelMembership.find(params[:id])
-    authorize @chat_channel_membership
-    respond_to_invitation(@chat_channel_membership.status)
   end
 
   def leave_membership

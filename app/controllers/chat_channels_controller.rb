@@ -3,9 +3,6 @@ class ChatChannelsController < ApplicationController
   before_action :set_channel, only: %i[show update update_channel open moderate]
   after_action :verify_authorized
 
-  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
-  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
-
   def index
     if params[:state] == "unopened"
       authorize ChatChannel
@@ -237,13 +234,5 @@ class ChatChannelsController < ApplicationController
                       @chat_channel.adjusted_slug(current_user)
                     end
     Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened", { channel_type: @chat_channel.channel_type, adjusted_slug: adjusted_slug }.to_json)
-  end
-
-  def user_not_authorized
-    render json: { success: false, message: "not authorized" }, status: :unauthorized
-  end
-
-  def record_not_found
-    render json: { success: false, message: "not found" }, status: :not_found
   end
 end
