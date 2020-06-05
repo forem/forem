@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe "User index", type: :system do
   let!(:user) { create(:user, username: "user3000") }
   let!(:article) { create(:article, user: user) }
-  let!(:other_article) { create(:article, title: rand(10000000).to_s) }
+  let!(:other_article) { create(:article, title: rand(10_000_000).to_s) }
   let!(:comment) { create(:comment, user: user, commentable: other_article) }
   let(:organization) { create(:organization) }
 
@@ -16,7 +16,7 @@ RSpec.describe "User index", type: :system do
 
         within("h1") { expect(page).to have_content(user.name) }
         within(".profile-details") do
-          expect(page).to have_button("+ FOLLOW")
+          expect(page).to have_button("Follow")
         end
       end
 
@@ -90,7 +90,7 @@ RSpec.describe "User index", type: :system do
     it "shows the header", js: true do
       within("h1") { expect(page).to have_content(user.name) }
       within(".profile-details") do
-        expect(page).to have_button("EDIT PROFILE")
+        expect(page).to have_button("Edit profile")
       end
     end
 

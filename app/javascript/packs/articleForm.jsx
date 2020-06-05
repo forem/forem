@@ -15,7 +15,7 @@ function loadForm() {
     window.currentUser = currentUser;
     window.csrfToken = csrfToken;
 
-    const root = document.getElementById('article-form');
+    const root = document.getElementById('js-article-form');
     const { article, organizations, version } = root.dataset;
 
     render(

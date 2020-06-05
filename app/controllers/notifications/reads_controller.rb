@@ -1,12 +1,15 @@
 class Notifications::ReadsController < ApplicationController
   def create
-    result = ""
-    result = ReadNotificationsService.new(current_user).mark_as_read if current_user
+    render plain: "" && return unless current_user
+
+    current_user.notifications.unread.update_all(read: true)
+    current_user.touch(:last_notification_activity)
+
     if params[:org_id] && current_user.org_member?(params[:org_id])
       org = Organization.find_by(id: params[:org_id])
-      ReadNotificationsService.new(org).mark_as_read
+      org.notifications.unread.update_all(read: true)
     end
-    current_user&.touch(:last_notification_activity)
-    render plain: result
+
+    render plain: "read"
   end
 end

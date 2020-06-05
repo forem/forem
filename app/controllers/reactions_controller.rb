@@ -95,7 +95,7 @@ class ReactionsController < ApplicationController
           Audit::Logger.log(:moderator, current_user, params.dup)
         end
       else
-        render json: { error: reaction.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+        render json: { error: reaction.errors_as_sentence, status: 422 }, status: :unprocessable_entity
         return
       end
     end
@@ -103,7 +103,7 @@ class ReactionsController < ApplicationController
   end
 
   def cached_user_public_reactions(user)
-    Rails.cache.fetch("cached_user_reactions-#{user.id}-#{user.public_reactions_count}", expires_in: 24.hours) do
+    Rails.cache.fetch("cached-user-reactions-#{user.id}-#{user.public_reactions_count}", expires_in: 24.hours) do
       user.reactions.public_category
     end
   end

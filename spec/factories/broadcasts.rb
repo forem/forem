@@ -61,5 +61,11 @@ FactoryBot.define do
       type_of        { "Welcome" }
       processed_html { "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile app yet? Consider <a href='https://dev.to/downloads'>downloading</a> it so you can access all of your favorite DEV content on the go!" }
     end
+
+    factory :announcement_broadcast do
+      title          { "A Very Important Announcement" }
+      type_of        { "Announcement" }
+      processed_html { "Hello, World!" }
+    end
   end
 end

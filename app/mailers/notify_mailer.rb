@@ -38,7 +38,7 @@ class NotifyMailer < ApplicationMailer
     @user = user
     return if RateLimitChecker.new.limit_by_email_recipient_address(@user.email)
 
-    @unread_notifications_count = NotificationCounter.new(@user).unread_notification_count
+    @unread_notifications_count = @user.notifications.unread.count
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_unread_notifications)
     subject = "🔥 You have #{@unread_notifications_count} unread notifications on #{ApplicationConfig['COMMUNITY_NAME']}"
     mail(to: @user.email, subject: subject)
@@ -81,14 +81,16 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: subject)
   end
 
-  def channel_invite_email(membership, inviter)
-    @membership = membership
-    @inviter = inviter
+  def channel_invite_email
+    @membership = params[:membership]
+    @inviter = params[:inviter]
+
     subject = if @membership.role == "mod"
                 "You are invited to the #{@membership.chat_channel.channel_name} channel as moderator."
               else
                 "You are invited to the #{@membership.chat_channel.channel_name} channel."
               end
+
     mail(to: @membership.user.email, subject: subject)
   end
 
@@ -112,9 +114,10 @@ class NotifyMailer < ApplicationMailer
     mail(to: @user.email, subject: "The export of your content is ready")
   end
 
-  def tag_moderator_confirmation_email(user, tag)
+  def tag_moderator_confirmation_email(user, tag, channel_slug)
     @tag = tag
     @user = user
+    @channel_slug = channel_slug
     subject = "Congrats! You're the moderator for ##{@tag.name}"
     mail(to: @user.email, subject: subject)
   end

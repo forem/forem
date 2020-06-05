@@ -301,7 +301,7 @@ class User < ApplicationRecord
   end
 
   def trusted
-    Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
+    @trusted ||= Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role? :trusted
     end
   end

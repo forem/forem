@@ -3,13 +3,21 @@ class Internal::BroadcastsController < Internal::ApplicationController
 
   def create
     @broadcast = Broadcast.create!(broadcast_params)
+    flash[:success] = "Broadcast has been created!"
+    redirect_to "/internal/broadcasts"
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:danger] = e.message
     redirect_to "/internal/broadcasts"
   end
 
   def update
     @broadcast = Broadcast.find_by!(id: params[:id])
     @broadcast.update!(broadcast_params)
+    flash[:success] = "Broadcast has been updated!"
     redirect_to "/internal/broadcasts"
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:danger] = e.message
+    redirect_to "/internal/broadcasts/#{params[:id]}/edit"
   end
 
   def new
@@ -21,7 +29,22 @@ class Internal::BroadcastsController < Internal::ApplicationController
   end
 
   def index
-    @broadcasts = Broadcast.all
+    @broadcasts = if params[:type_of]
+                    Broadcast.where(type_of: params[:type_of].capitalize)
+                  else
+                    Broadcast.all
+                  end.order(title: :asc)
+  end
+
+  def destroy
+    broadcast = Broadcast.find_by!(id: params[:id])
+    if broadcast.destroy
+      flash[:success] = "Broadcast has been deleted!"
+      redirect_to "/internal/broadcasts"
+    else
+      flash[:danger] = "Something went wrong with deleting the broadcast."
+      redirect_to "/internal/broadcasts/#{params[:id]}/edit"
+    end
   end
 
   private

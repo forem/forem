@@ -1,7 +1,7 @@
 import { h } from 'preact';
 
 export default {
-  title: 'Components/Buttons',
+  title: '3_Components/Buttons',
 };
 
 export const Description = () => (

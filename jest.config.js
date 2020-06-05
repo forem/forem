@@ -1,8 +1,12 @@
 // Consistent timezone for testing.
 // This does not work on windows, see https://github.com/nodejs/node/issues/4230
+
+/* global process, module */
+
 process.env.TZ = 'UTC';
 
 module.exports = {
+  setupFilesAfterEnv: ['./testSetup.js'],
   collectCoverageFrom: [
     'app/javascript/**/*.{js,jsx}',
     // This exclusion avoids running coverage on Barrel files, https://twitter.com/housecor/status/981558704708472832
@@ -10,11 +14,12 @@ module.exports = {
     '!app/javascript/packs/**/*.js', // avoids running coverage on webpacker pack files
     '!**/__tests__/**',
     '!**/__stories__/**',
+    '!app/javascript/storybook-static/**/*.js',
   ],
   coverageThreshold: {
     global: {
-      statements: 39,
-      branches: 35,
+      statements: 38,
+      branches: 34,
       functions: 34,
       lines: 39,
     },
@@ -32,5 +37,10 @@ module.exports = {
     './config/webpack',
     // Allows developers to add utility modules that jest won't run as test suites.
     '/__tests__/utilities/',
+    './app/javascript/storybook-static',
+  ],
+  watchPlugins: [
+    'jest-watch-typeahead/filename',
+    'jest-watch-typeahead/testname',
   ],
 };

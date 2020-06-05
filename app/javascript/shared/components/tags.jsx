@@ -368,7 +368,14 @@ class Tags extends Component {
   render() {
     let searchResultsHTML = '';
     const { searchResults, selectedIndex, showingRulesForTag } = this.state;
-    const { classPrefix, defaultValue, maxTags, listing } = this.props;
+    const {
+      classPrefix,
+      defaultValue,
+      maxTags,
+      listing,
+      fieldClassName,
+      onFocus,
+    } = this.props;
     const { activeElement } = document;
     const searchResultsRows = searchResults.map((tag, index) => (
       <div
@@ -381,7 +388,7 @@ class Tags extends Component {
         onKeyDown={this.handleTagEnter}
         data-content={tag.name}
       >
-        {tag.name}
+        <span className={`${classPrefix}__tagname`}>{tag.name}</span>
         {tag.rules_html && tag.rules_html.length > 0 ? (
           <button
             type="button"
@@ -432,15 +439,15 @@ class Tags extends Component {
             this.textArea = t;
             return this.textArea;
           }}
-          className={`${classPrefix}__tags`}
+          className={`${`${fieldClassName} ${classPrefix}`}__tags`}
           name="listing[tag_list]"
-          placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
+          placeholder={`Add up to ${maxTags} tags...`}
           autoComplete="off"
           value={defaultValue}
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
-          onFocus={this.handleFocusChange}
+          onFocus={onFocus}
         />
         {searchResultsHTML}
       </div>
@@ -453,8 +460,10 @@ Tags.propTypes = {
   onInput: PropTypes.func.isRequired,
   maxTags: PropTypes.number.isRequired,
   classPrefix: PropTypes.string.isRequired,
+  fieldClassName: PropTypes.string.isRequired,
   listing: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
+  onFocus: PropTypes.func.isRequired,
 };
 
 export default Tags;

@@ -4,83 +4,77 @@ exports[`<SelectedTags /> Should render all the tags 1`] = `
 <section>
   <span
     class="listing-tag"
-    id="selected-tag-1"
+    id="selected-tag-clojure"
   >
     <a
       class="tag-name"
       data-no-instant={true}
-      href="/listings?tags="
-      onClick={[Function]}
+      href="/listings?t=clojure"
     >
-      <span>
-        Object {
-          "id": 1,
-          "tag": "clojure",
-        }
+      <span
+        role="button"
+        tabIndex="0"
+      >
+        clojure
       </span>
-      <button
-        class="tag-close"
-        data-no-instant={true}
+      <span
+        onClick={[Function]}
         onKeyPress={[Function]}
-        t={true}
-        type="button"
+        role="button"
+        tabIndex="0"
       >
         ×
-      </button>
+      </span>
     </a>
   </span>
   <span
     class="listing-tag"
-    id="selected-tag-2"
+    id="selected-tag-java"
   >
     <a
       class="tag-name"
       data-no-instant={true}
-      href="/listings?tags="
-      onClick={[Function]}
+      href="/listings?t=java"
     >
-      <span>
-        Object {
-          "id": 2,
-          "tag": "java",
-        }
+      <span
+        role="button"
+        tabIndex="0"
+      >
+        java
       </span>
-      <button
-        class="tag-close"
-        data-no-instant={true}
+      <span
+        onClick={[Function]}
         onKeyPress={[Function]}
-        t={true}
-        type="button"
+        role="button"
+        tabIndex="0"
       >
         ×
-      </button>
+      </span>
     </a>
   </span>
   <span
     class="listing-tag"
-    id="selected-tag-3"
+    id="selected-tag-dotnet"
   >
     <a
       class="tag-name"
       data-no-instant={true}
-      href="/listings?tags="
-      onClick={[Function]}
+      href="/listings?t=dotnet"
     >
-      <span>
-        Object {
-          "id": 3,
-          "tag": "dotnet",
-        }
+      <span
+        role="button"
+        tabIndex="0"
+      >
+        dotnet
       </span>
-      <button
-        class="tag-close"
-        data-no-instant={true}
+      <span
+        onClick={[Function]}
         onKeyPress={[Function]}
-        t={true}
-        type="button"
+        role="button"
+        tabIndex="0"
       >
         ×
-      </button>
+      </span>
     </a>
   </span>
 </section>

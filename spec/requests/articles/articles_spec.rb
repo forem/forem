@@ -9,7 +9,7 @@ RSpec.describe "Articles", type: :request do
       create(:article, featured: true)
       get "/feed"
       expect(response.status).to eq(200)
-      expect(response.content_type).to eq("application/rss+xml")
+      expect(response.media_type).to eq("application/rss+xml")
     end
 
     it "contains the full app URL" do
@@ -213,7 +213,7 @@ RSpec.describe "Articles", type: :request do
     it "shows v1 if article has frontmatter" do
       article = create(:article, user_id: user.id)
       get "#{article.path}/edit"
-      expect(response.body).to include("articleform__form--v1")
+      expect(response.body).to include("crayons-article-form--v1")
     end
   end
 

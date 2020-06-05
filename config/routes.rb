@@ -42,11 +42,11 @@ Rails.application.routes.draw do
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
-      mount Flipper::UI.app(Flipper), at: "feature_flags"
+      mount Flipper::UI.app(Flipper, { rack_protection: {} }), at: "feature_flags"
     end
 
     resources :articles, only: %i[index show update]
-    resources :broadcasts, only: %i[index new create edit update]
+    resources :broadcasts, only: %i[index new create edit update destroy]
     resources :buffer_updates, only: %i[create update]
     resources :listings, only: %i[index edit update destroy]
     resources :comments, only: [:index]
@@ -105,6 +105,7 @@ Rails.application.routes.draw do
     resource :config
     resources :badges, only: :index
     post "badges/award_badges", to: "badges#award_badges"
+    resources :path_redirects, only: %i[new create index edit update destroy]
   end
 
   namespace :stories, defaults: { format: "json" } do
@@ -143,6 +144,15 @@ Rails.application.routes.draw do
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"
       get "/analytics/referrers", to: "analytics#referrers"
+
+      resources :health_checks, only: [] do
+        collection do
+          get :app
+          get :search
+          get :database
+          get :cache
+        end
+      end
     end
   end
 

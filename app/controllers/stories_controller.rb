@@ -105,12 +105,20 @@ class StoriesController < ApplicationController
     @organization = Organization.find_by(slug: params[:username])
     @page = Page.find_by(slug: params[:username], is_top_level_path: true)
     if @podcast
+      Honeycomb.add_field("stories_route", "podcast")
       handle_podcast_index
     elsif @organization
+      Honeycomb.add_field("stories_route", "org")
       handle_organization_index
     elsif @page
-      handle_page_display
+      if FeatureFlag.accessible?(@page.feature_flag_name, current_user)
+        Honeycomb.add_field("stories_route", "page")
+        handle_page_display
+      else
+        not_found
+      end
     else
+      Honeycomb.add_field("stories_route", "user")
       handle_user_index
     end
   end
@@ -388,7 +396,7 @@ class StoriesController < ApplicationController
         "logo": {
           "@context": "http://schema.org",
           "@type": "ImageObject",
-          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, "png"),
+          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, 80, "png"),
           "width": "192",
           "height": "192"
         }

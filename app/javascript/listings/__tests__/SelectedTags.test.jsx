@@ -2,20 +2,7 @@ import { h } from 'preact';
 import render from 'preact-render-to-json';
 import SelectedTags from '../components/SelectedTags';
 
-const firstTag = {
-  id: 1,
-  tag: 'clojure',
-};
-const secondTag = {
-  id: 2,
-  tag: 'java',
-};
-const thirdTag = {
-  id: 3,
-  tag: 'dotnet',
-};
-
-const tags = [firstTag, secondTag, thirdTag];
+const tags = ['clojure', 'java', 'dotnet'];
 const getProps = () => ({
   tags,
   onClick: () => {

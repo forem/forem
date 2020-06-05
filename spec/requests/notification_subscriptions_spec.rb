@@ -23,7 +23,7 @@ RSpec.describe "NotificationSubscriptions", type: :request do
       it "returns a JSON response" do
         get "/notification_subscriptions/Article/#{article.id}",
             headers: headers
-        expect(response.content_type).to eq "application/json"
+        expect(response.media_type).to eq "application/json"
       end
 
       it "returns the correct subscription boolean as JSON" do
@@ -43,7 +43,7 @@ RSpec.describe "NotificationSubscriptions", type: :request do
     it "returns a JSON response 'null' if there is no logged in user" do
       get "/notification_subscriptions/Article/#{article.id}", headers: headers
       expect(response.body).to eq "null"
-      expect(response.content_type).to eq "application/json"
+      expect(response.media_type).to eq "application/json"
     end
   end
 
