@@ -82,7 +82,6 @@ Rails/UniqueValidationWithoutIndex:
     - 'app/models/article.rb'
     - 'app/models/comment.rb'
     - 'app/models/follow.rb'
-    - 'app/models/notification.rb'
     - 'app/models/broadcast.rb'
 
 # Offense count: 33
