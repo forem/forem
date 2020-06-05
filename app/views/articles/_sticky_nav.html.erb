@@ -68,7 +68,7 @@
       </div>
       <% if @actor.cta_button_text.present? && @actor.cta_button_url.present? %>
         <div>
-          <a href="<%= @actor.cta_button_url || "Learn more" %>" class="crayons-btn crayons-btn--outlined">
+          <a href="<%= @actor.cta_button_url || "Learn more" %>" class="crayons-btn crayons-btn--outlined w-100">
             <%= @actor.cta_button_text %>
           </a>
         </div>
