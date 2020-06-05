@@ -10,8 +10,9 @@ RSpec.describe "Notifications page", type: :system, js: true, flaky: true do
     fill_in "comment-textarea-for-#{id}", with: "thanks i guess"
     click_button("SUBMIT")
     expect(page).to have_css("div.reply-sent-notice")
+
     click_link("Check it out")
-    expect(page).to have_text(/thanks i guess/)
+    expect(page).to have_text("thanks i guess")
   end
 
   it "shows 1 notification and disappear after clicking it" do
@@ -33,10 +34,14 @@ RSpec.describe "Notifications page", type: :system, js: true, flaky: true do
     end
 
     visit "/notifications"
+
     expect(page).to have_css("div.single-notification")
     click_button("heart")
+
     expect(page).to have_css("img.reacted-emoji")
+
     click_link("Reply")
+
     validate_reply(leslie.comments.first.id)
   end
 
@@ -45,8 +50,8 @@ RSpec.describe "Notifications page", type: :system, js: true, flaky: true do
     Notification.send_new_follower_notification_without_delay(follow, "Published")
     visit "/notifications"
     expect(page).to have_css("div.single-notification")
-    click_button("+ FOLLOW BACK")
-    expect(page).to have_text("FOLLOWING")
+    click_button("Follow back")
+    expect(page).to have_text("Following")
   end
 
   context "when user is trusted" do
@@ -67,12 +72,16 @@ RSpec.describe "Notifications page", type: :system, js: true, flaky: true do
 
     it "allows trusted user to moderate content" do
       article = create(:article, user: alex)
-      comment = nil
-      sidekiq_perform_enqueued_jobs { comment = create(:comment, commentable: article, user: leslie) }
+      comment = create(:comment, commentable: article, user: leslie)
+
+      sidekiq_perform_enqueued_jobs
+
       visit "/notifications"
       expect(page).to have_css("div.single-notification")
+
       interact_with_each_emojis
       click_link("Reply")
+
       validate_reply(comment.id)
     end
   end

@@ -95,6 +95,7 @@ RSpec.describe "Using the editor", type: :system do
       fill_in "article_body_markdown", with: "Hello"
       find("button", text: /\APublish\z/).click
       expect(page).to have_text("Hello")
+      expect(page).to have_link("#what", href: "/t/what")
     end
   end
 end

@@ -16,7 +16,7 @@ RSpec.describe "User index", type: :system do
 
         within("h1") { expect(page).to have_content(user.name) }
         within(".profile-details") do
-          expect(page).to have_button("+ FOLLOW")
+          expect(page).to have_button("Follow")
         end
       end
 
@@ -90,7 +90,7 @@ RSpec.describe "User index", type: :system do
     it "shows the header", js: true do
       within("h1") { expect(page).to have_content(user.name) }
       within(".profile-details") do
-        expect(page).to have_button("EDIT PROFILE")
+        expect(page).to have_button("Edit profile")
       end
     end
 

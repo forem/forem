@@ -33,9 +33,31 @@ or
 bin/rspec spec/models/user_spec.rb
 ```
 
+To get the code coverage of a particular spec in a single file, append the
+line-number for that spec:
+
+```shell
+bundle exec rspec spec/models/user_spec.rb:24
+```
+
+or
+
+```shell
+bin/rspec spec/models/user_spec.rb:24
+```
+
 Once your tests have completed, the `coverage/index.html` will be regenerated
 with some stats concerning the overall health of our test suite including a code
 coverage metric.
+
+A few things to note:
+
+- "Coverage" indicates whether or not the test suite runs through the code in
+  question. It does not equate to actually testing for functionality, and
+  shouldn’t be thought of that way.
+- Running Rspec in general will overwrite the existing `coverage/index.html` so,
+  if you want to reference the results of a particular run, save a copy of the
+  file before re-running the test suite.
 
 To turn off coverage report generation please set environment variable
 `COVERAGE` value to `false`.
@@ -58,4 +80,5 @@ yarn test
 ```
 
 Once the tests have completed, the test coverage metric will be visible in the
-terminal window. Please note that jest will fail if test coverage thresholds are not met.
+terminal window. Please note that jest will fail if test coverage thresholds are
+not met.

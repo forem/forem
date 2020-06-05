@@ -18,8 +18,8 @@ RSpec.describe "Followers Dashboard", type: :system, js: true do
       user.follow(followed_user)
       visit "/dashboard/user_followers"
 
-      expect(JSON.parse(find_link("✓ FOLLOWING")["data-info"])["id"]).to eq(followed_user.id)
-      expect(JSON.parse(find_link("+ FOLLOW BACK")["data-info"])["id"]).to eq(following_user.id)
+      expect(JSON.parse(find_link("Following")["data-info"])["id"]).to eq(followed_user.id)
+      expect(JSON.parse(find_link("Follow back")["data-info"])["id"]).to eq(following_user.id)
     end
   end
 end

@@ -242,6 +242,16 @@ RSpec.describe Article, type: :model do
         expect(build(:article, tags: tags).valid?).to be(false)
       end
 
+      it "rejects tag with non-alphanumerics" do
+        expect { build(:article, tags: "c++").validate! }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "always downcase tags" do
+        tags = "UPPERCASE, CAPITALIZE"
+        article = create(:article, tags: tags)
+        expect(article.tag_list).to eq(tags.downcase.split(", "))
+      end
+
       it "parses tags when description is empty" do
         body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n"
         expect(build_and_validate_article(body_markdown: body_markdown).tag_list).to eq(["one"])
