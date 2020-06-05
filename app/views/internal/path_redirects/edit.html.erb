@@ -1,0 +1,38 @@
+<%= link_to "Back to All Path Redirects", internal_path_redirects_path, class: "btn btn-primary float-right" %>
+
+<h2>Path Redirect - ID:  <%= @path_redirect.id %></h2>
+<% badge_type =
+     if @path_redirect.version <= 3
+       "success"
+     elsif @path_redirect.version <= 5
+       "warning"
+     else
+       "danger"
+     end %>
+<h4 class="d-inline-block">
+  Version:
+  <span class="align-top badge badge-<%= badge_type %>"><%= @path_redirect.version %></span>
+</h4>
+<p class="text-muted">
+  Please be cautious of updating the same path redirect many times (i.e. high
+  version numbers). Too many updates will start to hurt SEO for the given
+  path.
+</p>
+
+<%= form_with model: [:internal, @path_redirect], method: :patch, local: true do |form| %>
+  <div class="form-group">
+    <%= form.label :old_path %>
+    <%= form.text_field :old_path, class: "form-control", disabled: true %>
+  </div>
+  <div class="form-group">
+    <%= form.label :new_path %>
+    <%= form.text_field :new_path, class: "form-control" %>
+  </div>
+  <%= form.submit "Update Path Redirect", class: "btn btn-primary" %>
+<% end %>
+
+<hr class="mt-5">
+
+<div class="d-flex justify-content-start">
+  <%= link_to "Destroy Path Redirect", url_for(action: :destroy, id: @path_redirect.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger ml-2 float-right" %>
+</div>
