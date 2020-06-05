@@ -613,8 +613,6 @@ export default class Chat extends Component {
       });
     }
     if (messageIsEmpty) {
-      e.preventDefault();
-
       const messagesByCurrentUser = messages[activeChannelId].filter(
         (message) => message.user_id === currentUserId,
       );
@@ -1445,7 +1443,6 @@ export default class Chat extends Component {
 
   handleKeyUp = (e) => {
     const { startEditing, activeChannel, showMemberlist } = this.state;
-    console.log(activeChannel);
     const enterPressed = e.keyCode === 13;
     if (enterPressed && showMemberlist)
       this.setState({ showMemberlist: false });
