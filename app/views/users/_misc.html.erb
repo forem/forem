@@ -46,6 +46,23 @@
   <% end %>
 </div>
 
+<div class="crayons-card grid gap-6 p-6 mb-6">
+  <header>
+    <h3 class="mb-2">Sponsors</h3>
+    <p>You have the option to dismiss announcements.</p>
+  </header>
+
+  <%= form_for(@user, html: { id: nil, class: "grid gap-4" }) do |f| %>
+  <div class="crayons-field crayons-field--checkbox">
+      <%= f.check_box :display_announcements, class: "crayons-checkbox" %>
+      <%= f.label :display_announcements, "Display Announcements (When browsing)", class: "crayons-field__label" %>
+    </div>
+
+    <%= f.hidden_field :tab, value: @tab, id: nil %>
+    <div><button type="submit" class="crayons-btn">Save Announcements Settings</button></div>
+  <% end %>
+</div>
+
 <div class="crayons-card grid gap-4 p-6 mb-6">
   <h3>Export content</h3>
 
