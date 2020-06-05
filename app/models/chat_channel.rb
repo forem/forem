@@ -58,7 +58,7 @@ class ChatChannel < ApplicationRecord
 
   def last_opened_at(user = nil)
     user ||= current_user
-    chat_channel_memberships.where(user_id: user.id).pluck(:last_opened_at).first
+    chat_channel_memberships.where(user_id: user.id).pick(:last_opened_at)
   end
 
   class << self
