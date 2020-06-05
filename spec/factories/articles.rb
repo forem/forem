@@ -6,7 +6,7 @@ FactoryBot.define do
       title { Faker::Food.dish }
       published { true }
       date { "01/01/2015" }
-      tags { Faker::Hipster.words(number: 4).join(", ") }
+      tags { "javascript, html, css" }
       canonical_url { Faker::Internet.url }
       with_canonical_url { false }
       with_main_image { true }

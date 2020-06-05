@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_02_174329) do
+ActiveRecord::Schema.define(version: 2020_06_04_133925) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -683,6 +683,7 @@ ActiveRecord::Schema.define(version: 2020_06_02_174329) do
     t.index ["organization_id"], name: "index_notifications_on_organization_id"
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
+    t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
@@ -806,6 +807,19 @@ ActiveRecord::Schema.define(version: 2020_06_02_174329) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_pages_on_slug", unique: true
+  end
+
+  create_table "path_redirects", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "new_path", null: false
+    t.string "old_path", null: false
+    t.string "source"
+    t.datetime "updated_at", null: false
+    t.integer "version", default: 0, null: false
+    t.index ["new_path"], name: "index_path_redirects_on_new_path"
+    t.index ["old_path"], name: "index_path_redirects_on_old_path", unique: true
+    t.index ["source"], name: "index_path_redirects_on_source"
+    t.index ["version"], name: "index_path_redirects_on_version"
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
