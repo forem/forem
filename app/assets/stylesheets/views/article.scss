@@ -408,6 +408,10 @@
     .crayons-reaction__icon--active {
       display: block;
     }
+
+    .crayons-reaction__count {
+      color: var(--reaction-color);
+    }
   }
 
   &--like {
