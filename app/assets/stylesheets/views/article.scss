@@ -338,6 +338,9 @@
   right: 0;
   bottom: 0;
   padding: var(--su-2);
+  // @supports (padding-button: constant(safe-area-inset-bottom)) {
+  padding-bottom: env(safe-area-inset-bottom);
+  // }
   display: flex;
   align-items: center;
   background: var(--body-bg);
@@ -347,6 +350,7 @@
 
   @media (min-width: $breakpoint-m) {
     padding: 0;
+    padding-bottom: 0;
     display: grid;
     gap: var(--su-4);
     position: sticky;
