@@ -242,6 +242,14 @@ body.hidden-shell {
   z-index: -1;
 }
 
+.broadcast-wrapper {
+  // TODO: [@thepracticaldev/delightful]: Remove these styles once
+  // https://github.com/thepracticaldev/dev.to/pull/8234 is merged.
+  z-index: 101; // Must be higher than the z-index of the sticky-nav.
+  position: fixed;
+  width: 100%;
+}
+
 @keyframes loading-fadein {
   from {
     opacity: 0;
