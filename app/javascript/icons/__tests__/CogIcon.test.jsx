@@ -1,11 +1,11 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render } from '@testing-library/preact';
 import { CogIcon } from '../CogIcon';
 
 describe('<CommentSubscription />', () => {
   it('should render', () => {
-    const tree = render(<CogIcon />);
+    const { container } = render(<CogIcon />);
 
-    expect(tree).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
   });
 });
