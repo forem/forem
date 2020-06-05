@@ -2,6 +2,14 @@
 
 <div id="moderation-page"></div>
 <% if current_user&.trusted %>
+  <div class="crayons-layout crayons-layout--3-cols crayons-layout--3-cols--drop-right-left" id="mod-center">
+    <%= render "moderations/mod_sidebar_left" %>
+
+    <div class="articles-list crayons-layout__content">
+    </div>
+    <%= render "moderations/mod_sidebar_right" %>
+  </div>
+
   <% if @tag %>
   <style>
     .mod-index-hero, .mod-index-header-link--active {
