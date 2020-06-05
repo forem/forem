@@ -3,8 +3,9 @@ if Rails.env.development?
 
   namespace :pages do
     desc "Automated sync of Page HTML body by listening to changes of local file"
-    task :sync, [:slug, :filepath] => [:environment] do |task, args|
+    task :sync, %i[slug filepath] => [:environment] do |_task, args|
       next if Rails.env.production?
+
       pathname = Pathname.new(args.filepath)
 
       if !File.file?(pathname) || Page.find_by(slug: args.slug).nil?
@@ -32,7 +33,7 @@ if Rails.env.development?
       puts "Watching file '#{pathname}' for changes... Happy Coding!"
       begin
         sleep
-      rescue Exception => e
+      rescue StandardError
         puts "\nBye :)"
       end
     end
