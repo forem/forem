@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import {
   getChannelDetails,
-  udatePersonalChatChannelNotificationSettings,
+  updatePersonalChatChannelNotificationSettings,
   rejectChatChannelJoiningRequest,
   acceptChatChannelJoiningRequest,
   updateChatChannelDescription,
@@ -108,7 +108,7 @@ export default class ChatChannelSettings extends Component {
     };
 
     this.updateCurrentMembershipNotificationSettings = async () => {
-      const response = await udatePersonalChatChannelNotificationSettings(
+      const response = await updatePersonalChatChannelNotificationSettings(
         currentMembership.id,
         showGlobalBadgeNotification,
       );

@@ -1,23 +1,15 @@
 import { request } from '../../utilities/http';
 
-const headers = {
-  Accept: 'application/json',
-  'X-CSRF-Token': window.csrfToken,
-  'Content-Type': 'application/json',
-};
-
 export function rejectJoiningRequest(
   channelId,
   membershipId,
-  membershipStatus,
   successCb,
   failureCb,
 ) {
   request(`/chat_channel_memberships/remove_membership`, {
-    headers,
     method: 'POST',
     body: {
-      status: membershipStatus || 'pending',
+      status: 'pending',
       chat_channel_id: channelId,
       membership_id: membershipId,
     },
@@ -36,7 +28,6 @@ export function acceptJoiningRequest(
 ) {
   request(`/chat_channel_memberships/add_membership`, {
     method: 'POST',
-    headers,
     body: {
       chat_channel_id: channelId,
       membership_id: membershipId,
@@ -53,7 +44,6 @@ export function acceptJoiningRequest(
 
 export function sendChannelRequest(id, successCb, failureCb) {
   request(`/join_chat_channel`, {
-    headers,
     method: 'POST',
     body: {
       chat_channel_membership: {
