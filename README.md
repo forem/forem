@@ -157,7 +157,7 @@ Software Foundation, either version 3 of the License, or (at your option) any
 later version. Please see the [LICENSE](./LICENSE.md) file in our repository for
 the full text.
 
-Like many open source projects, we require that contributors provide us with a
+Like many open-source projects, we require that contributors provide us with a
 Contributor License Agreement (CLA). By submitting code to the DEV project, you
 are granting us a right to use that code under the terms of the CLA.
 
