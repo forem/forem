@@ -439,6 +439,57 @@
   }
 }
 
+.user-animated {
+  .crayons-reaction__icon {
+    position: relative;
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      box-shadow: 0 0 0 4px currentColor;
+      opacity: 0;
+      transform: scale(2);
+      animation-name: ringPop;
+      animation-duration: 0.25s;
+    }
+
+    animation-name: iconPop;
+    animation-duration: 0.25s;
+  }
+
+  @keyframes iconPop {
+    0% {
+      transform: scale(0.75);
+    }
+
+    50% {
+      transform: scale(1.1);
+    }
+
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes ringPop {
+    0% {
+      transform: scale(2);
+      box-shadow: 0 0 0 4px currentColor;
+      opacity: 0;
+    }
+
+    100% {
+      box-shadow: 0 0 0 1px currentColor;
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+}
+
 .crayons-article-sticky {
   position: sticky;
   top: calc(var(--header-height) + var(--layout-padding));
