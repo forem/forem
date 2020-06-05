@@ -5,24 +5,27 @@
                locals: {
                  category: :like,
                  description: "heart",
-                 image_path: "heart.svg"
+                 image_path: "heart.svg",
+                 image_active_path: "heart-filled.svg"
                } %>
     <%= render partial: "articles/reaction_button",
                locals: {
                  category: :unicorn,
                  description: "unicorn",
-                 image_path: "unicorn.svg"
+                 image_path: "unicorn.svg",
+                 image_active_path: "unicorn-filled.svg"
                } %>
     <%= render partial: "articles/reaction_button",
                locals: {
                  category: :readinglist,
                  description: "reading list",
-                 image_path: "save.svg"
+                 image_path: "save.svg",
+                 image_active_path: "save-filled.svg"
                } %>
   <% end %>
 
-  <div class="article-share-action-block w-100">
-    <button id="article-show-more-button" class="dropbtn crayons-btn crayons-btn--ghost w-100" aria-label="Toggle dropdown menu">
+  <div class="article-share-action-block align-center">
+    <button id="article-show-more-button" class="dropbtn crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="Toggle dropdown menu">
       <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "dropdown-icon crayons-icon", title: "More...") %>
     </button>
     <div class="crayons-dropdown p-1 z-30 right-1 left-1 bottom-100 s:bottom-auto s:right-auto s:left-0 fs-base">

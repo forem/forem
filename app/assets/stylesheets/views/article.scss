@@ -338,9 +338,9 @@
   right: 0;
   bottom: 0;
   padding: var(--su-2);
-  // @supports (padding-button: constant(safe-area-inset-bottom)) {
-  padding-bottom: env(safe-area-inset-bottom);
-  // }
+  @supports (padding-button: constant(safe-area-inset-bottom)) {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
   display: flex;
   align-items: center;
   background: var(--body-bg);
@@ -352,11 +352,86 @@
     padding: 0;
     padding-bottom: 0;
     display: grid;
-    gap: var(--su-4);
+    gap: var(--su-6);
     position: sticky;
     box-shadow: none;
     justify-content: stretch;
     top: calc(var(--header-height) + var(--layout-padding));
+  }
+}
+
+.crayons-reaction {
+  --reaction-color: var(--button-ghost-color);
+  --reaction-border: inset 0 0 0 0 var(--reaction-color);
+  --reaction-bg: transparent;
+
+  border: none;
+  padding: 0;
+  background: transparent;
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+
+  @media (min-width: $breakpoint-m) {
+    flex-direction: column;
+  }
+
+  &__icon {
+    padding: var(--su-2);
+    box-shadow: var(--reaction-border);
+    background: var(--reaction-bg);
+    color: var(--reaction-color);
+    border-radius: 50%;
+    transition: all var(--transition-props);
+
+    &--active {
+      display: none;
+    }
+  }
+
+  &__count {
+    color: var(--base-70);
+    font-size: var(--fs-s);
+    display: block;
+    padding-left: var(--su-2);
+
+    @media (min-width: $breakpoint-m) {
+      padding-left: 0;
+    }
+  }
+
+  &.user-activated {
+    --reaction-border: inset 0 0 0 2px var(--reaction-color);
+    .crayons-reaction__icon--inactive {
+      display: none;
+    }
+    .crayons-reaction__icon--active {
+      display: block;
+    }
+  }
+
+  &--like {
+    &:hover,
+    &.user-activated {
+      --reaction-color: var(--accent-danger);
+      --reaction-bg: var(--accent-danger-a10);
+    }
+  }
+
+  &--unicorn {
+    &:hover,
+    &.user-activated {
+      --reaction-color: var(--accent-success-darker);
+      --reaction-bg: var(--accent-success-a10);
+    }
+  }
+
+  &--readinglist {
+    &:hover,
+    &.user-activated {
+      --reaction-color: var(--accent-brand);
+      --reaction-bg: var(--accent-brand-a10);
+    }
   }
 }
 
