@@ -1,22 +1,35 @@
-require "vault/rails"
+Vault.configure do |config|
+  config.address = ENV["VAULT_ADDRESS"]
 
-Vault::Rails.configure do |vault|
-  # Use Vault in transit mode for encrypting and decrypting data. If
-  # disabled, vault-rails will encrypt data in-memory using a similar
-  # algorithm to Vault. The in-memory store uses a predictable encryption
-  # which is great for development and test, but should _never_ be used in
-  # production. Default: ENV["VAULT_RAILS_ENABLED"].
-  vault.enabled = Rails.env.production?
+  config.token = ENV["VAULT_TOKEN"]
 
-  # The name of the application. All encrypted keys in Vault will be
-  # prefixed with this application name. If you change the name of the
-  # application, you will need to migrate the encrypted data to the new
-  # key namespace.
-  vault.application = ENV["VAULT_RAILS_APPLICATION"]
+  # Optional - if using the Namespace enterprise feature
+  # config.namespace   = "my-namespace" # Also reads from ENV["VAULT_NAMESPACE"]
 
-  # The address of the Vault server.
-  vault.address = ENV["VAULT_ADDR"]
+  # Proxy connection information, also read as ENV["VAULT_PROXY_(thing)"]
+  # config.proxy_address  = "..."
+  # config.proxy_port     = "..."
+  # config.proxy_username = "..."
+  # config.proxy_password = "..."
 
-  # The token to communicate with the Vault server.
-  vault.token = ENV["VAULT_TOKEN"]
+  # Custom SSL PEM, also read as ENV["VAULT_SSL_CERT"]
+  # config.ssl_pem_file = "/path/on/disk.pem"
+
+  # As an alternative to a pem file, you can provide the raw PEM string, also
+  # read in the following order of preference:
+  # ENV["VAULT_SSL_PEM_CONTENTS_BASE64"] then ENV["VAULT_SSL_PEM_CONTENTS"]
+  # config.ssl_pem_contents = "-----BEGIN ENCRYPTED..."
+
+  # Use SSL verification, also read as ENV["VAULT_SSL_VERIFY"]
+  # config.ssl_verify = false
+
+  # Timeout the connection after a certain amount of time (seconds), also read
+  # as ENV["VAULT_TIMEOUT"]
+  config.timeout = 30
+
+  # It is also possible to have finer-grained controls over the timeouts, these
+  # may also be read as environment variables
+  config.ssl_timeout  = 5
+  config.open_timeout = 5
+  config.read_timeout = 30
 end
