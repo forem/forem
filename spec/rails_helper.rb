@@ -82,7 +82,8 @@ RSpec.configure do |config|
   end
 
   config.before do
-    Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
+    # Worker jobs shouldn't linger around between tests
+    Sidekiq::Worker.clear_all
   end
 
   config.around(:each, elasticsearch_reset: true) do |example|
@@ -146,6 +147,9 @@ RSpec.configure do |config|
 
     stub_request(:post, "http://www.google-analytics.com/collect").
       to_return(status: 200, body: "", headers: {})
+
+    # Prevent Percy.snapshot from trying to hit the agent while not in use
+    allow(Percy).to receive(:snapshot)
   end
 
   OmniAuth.config.test_mode = true
