@@ -27,17 +27,18 @@ RSpec.shared_examples "an elevated privilege required request" do |path|
 end
 
 RSpec.describe "Moderations", type: :request do
-  let(:user) { create(:user, :trusted) }
+  let(:trusted_user) { create(:user, :trusted) }
   let(:article) { create(:article) }
   let(:comment) { create(:comment, commentable: article) }
   let(:dev_account) { create(:user) }
 
   it_behaves_like "an elevated privilege required request", "/username/random-article/mod"
   it_behaves_like "an elevated privilege required request", "/username/comment/1/mod"
+  it_behaves_like "an elevated privilege required request", "/username/random-article/actions_panel"
 
   context "when user is trusted" do
     before do
-      sign_in user
+      sign_in trusted_user
       allow(User).to receive(:dev_account).and_return(dev_account)
     end
 
@@ -52,7 +53,7 @@ RSpec.describe "Moderations", type: :request do
     end
 
     it "grants access to /mod index" do
-      create(:rating_vote, article: article, user: user)
+      create(:rating_vote, article: article, user: trusted_user)
       get "/mod"
       expect(response).to have_http_status(:ok)
     end
@@ -69,12 +70,37 @@ RSpec.describe "Moderations", type: :request do
       expect(response.body).to include("#" + article.tags.first.name.titleize)
     end
 
-    it "returns not found for inapprpriate tags" do
+    it "returns not found for inappropriate tags" do
       expect { get "/mod/dsdsdsweweedsdseweww" }.to raise_exception(ActiveRecord::RecordNotFound)
     end
 
     it "renders not_found when an article can't be found" do
-      expect { get "/#{user.username}/dsdsdsweweedsdseweww/mod/" }.to raise_exception(ActiveRecord::RecordNotFound)
+      expect { get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/" }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe "actions_panel" do
+    context "when the user is a tag moderator" do
+      it "shows the option to remove the tag when the article has the tag" do
+        tag_mod = create(:user, :tag_moderator)
+        tag_mod.add_role :trusted
+        tag = tag_mod.roles.find_by(name: "tag_moderator").resource
+        article = create(:article, tags: tag)
+        sign_in tag_mod
+
+        get "#{article.path}/actions_panel"
+        expect(response.body).to include "circle centered-icon adjustment-icon subtract"
+      end
+    end
+
+    it "shows the option to add the tag when the article has the tag" do
+      tag_mod = create(:user, :tag_moderator)
+      tag_mod.add_role :trusted
+      article = create(:article, tags: "javascript, cool, beans")
+      sign_in tag_mod
+
+      get "#{article.path}/actions_panel"
+      expect(response.body).to include "circle centered-icon adjustment-icon plus"
     end
   end
 end

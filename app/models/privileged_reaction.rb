@@ -1,4 +1,4 @@
-class NegativeReaction < ApplicationRecord
+class PrivilegedReaction < ApplicationRecord
   resourcify
   # This class exists to take advantage of Rolify for limiting authorization
   # on internal reports.
