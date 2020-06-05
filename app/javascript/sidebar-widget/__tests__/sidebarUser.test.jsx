@@ -41,10 +41,10 @@ describe('<SidebarUser />', () => {
 
   it('shows if the user is followed or not', () => {
     expect(
-      renderedSideBar({ user: { following: true } }).contains('✓ FOLLOWING'),
+      renderedSideBar({ user: { following: true } }).contains('Following'),
     ).toBe(true);
     expect(
-      renderedSideBar({ user: { following: false } }).contains('+ FOLLOW'),
+      renderedSideBar({ user: { following: false } }).contains('Follow'),
     ).toBe(true);
   });
 });

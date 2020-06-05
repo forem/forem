@@ -26,7 +26,7 @@ RSpec.describe "User visits a homepage", type: :system do
         end
       end
 
-      expect(page).to have_text("Design Your Experience")
+      expect(page).to have_text("DESIGN YOUR EXPERIENCE")
     end
 
     describe "link tags" do
@@ -52,7 +52,7 @@ RSpec.describe "User visits a homepage", type: :system do
       visit "/"
 
       within("#sidebar-nav-default-tags") do
-        expect(page).to have_text("Follow tags to improve your feed")
+        expect(page).to have_text("FOLLOW TAGS TO IMPROVE YOUR FEED")
       end
     end
 
@@ -66,7 +66,7 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       it "shows the followed tags", js: true do
-        expect(page).to have_text("My Tags")
+        expect(page).to have_text("MY TAGS")
 
         # Need to ensure the user data is loaded before doing any checks
         find("body")["data-user"]
@@ -81,12 +81,12 @@ RSpec.describe "User visits a homepage", type: :system do
         find("body")["data-user"]
 
         within("#sidebar-nav-followed-tags") do
-          expect(all(".sidebar-nav-tag-text").map(&:text)).to eq(%w[#javascript #go #ruby])
+          expect(all(".spec__tag-link").map(&:text)).to eq(%w[#javascript #go #ruby])
         end
       end
 
       it "shows other tags", js: true do
-        expect(page).to have_text("Other Popular Tags")
+        expect(page).to have_text("OTHER POPULAR TAGS")
         within("#sidebar-nav-default-tags") do
           expect(page).to have_link("#webdev", href: "/t/webdev")
           expect(page).not_to have_link("#ruby", href: "/t/ruby")
