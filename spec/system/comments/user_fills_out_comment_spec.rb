@@ -109,7 +109,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/background-image.png"),
+      Rails.root.join("app/assets/images/onboarding-background.png"),
       visible: :hidden,
     )
 
