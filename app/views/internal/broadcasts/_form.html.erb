@@ -18,7 +18,7 @@
 <% if @broadcast.processed_html %>
   <div>
     </p><strong>Preview</strong></p>
-    <%= @broadcast.processed_html.html_safe %>
+    <%= sanitize @broadcast.processed_html, attributes: %w[href style src] %>
     </p><em>Please note: Announcement Broadcasts will render directly below the nav bar.</em></p>
   <div>
 <% end %>
