@@ -84,7 +84,7 @@ describe('<Onboarding />', () => {
     {
       id: 1,
       name: 'Ben Halpern',
-      profile_image_url: 'ben.jpg',
+      profile_image_url: 'apple-icon.png',
     },
     {
       id: 2,

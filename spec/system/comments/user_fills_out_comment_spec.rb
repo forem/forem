@@ -93,7 +93,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/apple-icon.png"),
       visible: :hidden,
     )
 
@@ -109,7 +109,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/apple-icon.png"),
       visible: :hidden,
     )
 
@@ -131,7 +131,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/apple-icon.png"),
       visible: :hidden,
     )
 
@@ -151,7 +151,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/apple-icon.png"),
       visible: :hidden,
     )
 
