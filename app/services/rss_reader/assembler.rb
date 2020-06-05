@@ -32,7 +32,9 @@ class RssReader
     private
 
     def get_tags
-      @categories.first(4).map { |tag| tag.lstrip[0..19] }.join(",")
+      @categories.first(4).map do |tag|
+        tag.delete(" ").gsub(/[^[:alnum:]]/i, "")[0..19]
+      end.join(",")
     end
 
     def assemble_body_markdown
