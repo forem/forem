@@ -42,11 +42,11 @@
     }
   }
 
-  &__tags {
-    // TODO: replace with actual component one day...
-    font-family: var(--ff-accent);
-    font-size: var(--fs-s);
+  &__subheader {
+    font-size: var(--fs-base);
+    color: var(--base-60);
     display: flex;
+    align-items: center;
   }
 
   &__body {

@@ -31,7 +31,7 @@ exports[`<Preview /> renders properly 1`] = `
           My Awesome Post
         </h1>
         <div
-          class="crayons-article__tags"
+          class="spec-article__tags"
         >
           <span
             class="crayons-tag mr-2"

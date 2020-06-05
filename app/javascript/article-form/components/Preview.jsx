@@ -48,7 +48,7 @@ function titleArea(previewResponse, articleState, errors) {
           {previewTitle}
         </h1>
 
-        <div className="crayons-article__tags">{tags}</div>
+        <div className="spec-article__tags">{tags}</div>
       </div>
     </header>
   );

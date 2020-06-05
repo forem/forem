@@ -41,38 +41,38 @@
 </style>
 
 <div class="crayons-article-sticky grid gap-4" id="article-show-primary-sticky-nav">
-  <div class="crayons-card crayons-card--secondary crayons-card--branded p-4 pt-0">
-    <div class="-mt-4 mb-4">
+  <div class="crayons-card crayons-card--secondary crayons-card--branded p-4 pt-0 hidden l:grid gap-4">
+    <div class="-mt-4">
       <a href="<%= @actor.path %>" class="flex items-end">
-        <span class="crayons-avatar crayons-avatar--xl mr-2">
-          <img src="<%= ProfileImage.new(@actor).get(width: 90) %>" class="crayons-avatar__image" alt="<%= @actor.name %> profile image">
+        <span class="<% if @actor.class.name == "User" %>crayons-avatar crayons-avatar--xl<% elsif @actor.class.name == "Organization" %>crayons-logo crayons-logo--xl<% end %>  mr-2">
+          <img src="<%= ProfileImage.new(@actor).get(width: 90) %>" class="<% if @actor.class.name == "User" %>crayons-avatar__image<% elsif @actor.class.name == "Organization" %>crayons-logo__image<% end %>" alt="<%= @actor.name %> profile image">
         </span>
         <span class="crayons-link fs-l fw-bold"><%= @actor.name %></span>
       </a>
     </div>
     <% if @actor.tag_line.present? %>
-      <div class="color-base-70 mb-4">
+      <div class="color-base-70">
         <%= truncate (@actor.tag_line || @actor.summary || "Posts in this tag"), length: 200 %>
       </div>
     <% end %>
 
-    <div class="mb-4">
-      <%= follow_button(@actor) %>
+    <div>
+      <%= follow_button(@actor, style = "", classes = "w-100") %>
     </div>
 
     <% if @actor.class.name == "User" %>
       <%= render "articles/user_metadata", context: "sidebar" %>
     <% elsif @actor.class.name == "Organization" && @actor.approved_and_filled_out_cta? %>
-      <div class="primary-sticky-nav-org-summary">
+      <div>
         <%= sanitize_rendered_markdown(@actor.cta_processed_html) %>
-        <div class="primary-sticky-nav-org-cta-link-wrapper">
-          <% if @actor.cta_button_text.present? && @actor.cta_button_url.present? %>
-            <a href="<%= @actor.cta_button_url || "LEARN MORE" %>" class="primary-sticky-nav-org-cta-link">
-              <%= @actor.cta_button_text %>
-            </a>
-          <% end %>
-        </div>
       </div>
+      <% if @actor.cta_button_text.present? && @actor.cta_button_url.present? %>
+        <div>
+          <a href="<%= @actor.cta_button_url || "Learn more" %>" class="crayons-btn crayons-btn--outlined">
+            <%= @actor.cta_button_text %>
+          </a>
+        </div>
+      <% end %>
     <% end %>
   </div>
 
