@@ -2,6 +2,11 @@
 @import 'variables';
 @import 'mixins';
 
+:target {
+  padding-top: var(--header-height) !important;
+  margin-top: calc(-1 * var(--header-height)) !important;
+}
+
 .top-bar {
   --indicator-outline: var(--header-bg);
   --dropdown-display: none;
