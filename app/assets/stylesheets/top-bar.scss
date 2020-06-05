@@ -3,8 +3,8 @@
 @import 'mixins';
 
 :target {
-  padding-top: var(--header-height) !important;
-  margin-top: calc(-1 * var(--header-height)) !important;
+  padding-top: var(--header-height);
+  margin-top: calc(-1 * var(--header-height));
 }
 
 .top-bar {
