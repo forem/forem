@@ -1,34 +1,31 @@
 import { h } from 'preact';
-import { shallow } from 'preact-render-spy';
-import render from 'preact-render-to-json';
+import { render, waitForElement } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
+import { axe } from 'jest-axe';
 import { GithubRepos } from '../githubRepos';
 
 global.fetch = fetch;
 
-describe('<GithubRepos />', () => {
-  describe('when there are no repos loaded yet', () => {
-    it('should render and match the snapshot', () => {
-      const tree = render(<GithubRepos />);
-      expect(tree).toMatchSnapshot();
-    });
+// TODO: Add tests when GitHub repositories are retrieved
 
-    it('should have the loading div', () => {
-      const context = shallow(<GithubRepos />);
-      expect(context.find('.loading-repos')[0].attributes.className).toEqual(
-        'github-repos loading-repos',
-      );
-    });
+describe('<GithubRepos />', () => {
+  it('should not have any a11y violations', async () => {
+    const { container } = render(<GithubRepos />);
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
-  describe('when there was an error in the response', () => {
-    it('renders and matches the snapshot', () => {
-      fetch.mockReject('some error');
-      const context = shallow(<GithubRepos />);
-      context.setState({ erroredOut: true });
-      context.rerender();
-      const tree = render(context);
-      expect(tree).toMatchSnapshot();
-    });
+  it('should render with no repositories', () => {
+    const { getByTitle } = render(<GithubRepos />);
+
+    getByTitle('Loading GitHub repositories');
+  });
+
+  it('should render error message when repositories cannot be loaded', () => {
+    fetch.mockReject('some error');
+    const { getByRole } = render(<GithubRepos />);
+
+    waitForElement(() => getByRole('alert'));
   });
 });

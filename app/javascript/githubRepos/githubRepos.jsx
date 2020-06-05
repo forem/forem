@@ -41,7 +41,7 @@ export class GithubRepos extends Component {
 
     if (erroredOut) {
       return (
-        <div className="github-repos github-repos-errored">
+        <div role="alert" className="github-repos github-repos-errored">
           An error occurred. Please check your browser console and email
           <a href="mailto:yo@dev.to"> yo@dev.to </a>
           for more help.
@@ -51,7 +51,12 @@ export class GithubRepos extends Component {
     if (repos.length > 0) {
       return <div className="github-repos">{allRepos}</div>;
     }
-    return <div className="github-repos loading-repos" />;
+    return (
+      <div
+        title="Loading GitHub repositories"
+        className="github-repos loading-repos"
+      />
+    );
   }
 }
 
