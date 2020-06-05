@@ -170,7 +170,7 @@ export class Help extends Component {
     } = this.state;
 
     return (
-      <div className="crayons-article-form__main__aside">
+      <div className="crayons-article-form__aside">
         {!previewShowing && (
           <div
             className="sticky"

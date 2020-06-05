@@ -45,7 +45,8 @@ class Internal::ConfigsController < Internal::ApplicationController
       rate_limit_params |
       mascot_params |
       image_params |
-      onboarding_params
+      onboarding_params |
+      job_params
 
     params.require(:site_config).permit(
       allowed_params,
@@ -137,6 +138,13 @@ class Internal::ConfigsController < Internal::ApplicationController
       onboarding_taskcard_image
       suggested_tags
       suggested_users
+    ]
+  end
+
+  def job_params
+    %i[
+      jobs_url
+      display_jobs_banner
     ]
   end
 end

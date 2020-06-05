@@ -85,26 +85,12 @@
     }
 
     .sidebar-nav {
-      margin-bottom: 16px;
       .sidebar-nav-block {
-        @media screen and (min-width: 950px) {
-          .sidebar-nav-block-inner {
-            height: 420px;
-            overflow-y: scroll;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            padding: 0 16px;
-            margin: 0 -16px 8px -16px;
-          }
-        }
         .sidebar-nav-default-tags {
           display: none;
           &.showing {
             display: block;
           }
-        }
-        .sidebar-main-nav {
-          margin-bottom: 24px;
         }
       }
     }
@@ -123,6 +109,10 @@
       }
     }
   }
+}
+
+.sidebar-tags-browser {
+  max-height: 420px;
 }
 
 @keyframes fade-in {
@@ -357,7 +347,7 @@
 }
 
 // Generally Feed...
-.articles-list {
+.articles-list:not(.crayons-layout__content) {
   margin: auto;
   max-width: 100%;
   position: relative;

@@ -61,7 +61,7 @@ const previewResponsePropTypes = PropTypes.shape({
 
 export const Preview = ({ previewResponse, articleState, errors }) => {
   return (
-    <div className="crayons-article-form__main__content crayons-card">
+    <div className="crayons-article-form__content crayons-card">
       <article className="crayons-article">
         {titleArea(previewResponse, articleState, errors)}
         <div
