@@ -23,7 +23,7 @@ export const ItemListItem = ({ item, children }) => {
         />
 
         <div className="item-details">
-          <a className="item-user" href={`/${adaptedItem.user.username}`}>
+          <a datatestid="item-user" className="item-user" href={`/${adaptedItem.user.username}`}>
             <img src={adaptedItem.user.profile_image_90} alt="Profile Pic" />
             {`${adaptedItem.user.name}・`}
             {`${adaptedItem.publishedDate}・`}
@@ -31,9 +31,9 @@ export const ItemListItem = ({ item, children }) => {
           </a>
 
           {adaptedItem.tags.length > 0 ? (
-            <span className="item-tags">
+            <span datatestid="item-tags" className="item-tags">
               {adaptedItem.tags.map((tag) => (
-                <a className="item-tag" href={`/t/${tag.name}`}>
+                <a datatestid="item-tag" className="item-tag" href={`/t/${tag.name}`}>
                   {`#${tag.name}`}
                 </a>
               ))}
