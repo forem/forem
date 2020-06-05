@@ -4,21 +4,13 @@ class ColorFromImage
   end
 
   def main
-    return "#000000" unless Rails.env.production?
-
-    begin
-      get_palette["colors"][0]["hex"]
-    rescue StandardError
-      "#dddddd"
-    end
+    get_hex
+  rescue StandardError
+    "#dddddd"
   end
 
-  def get_palette
-    input = {
-      url: @url
-    }
-    client = Algorithmia.client(ApplicationConfig["ALGORITHMIA_KEY"])
-    algo = client.algo("vagrant/ColorSchemeExtraction/0.2.0")
-    algo.pipe(input).result
+  def get_hex
+    colors = Miro::DominantColors.new @url
+    HexComparer.new(colors.to_hex).biggest # Always take the biggest hex (aka lightest color)
   end
 end
