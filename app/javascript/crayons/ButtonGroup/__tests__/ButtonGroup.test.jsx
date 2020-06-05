@@ -34,6 +34,6 @@ describe('<ButtonGroup /> component', () => {
         <Button icon={Icon} />
       </ButtonGroup>,
     );
-    expect(container).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
   });
 });

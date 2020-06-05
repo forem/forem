@@ -26,7 +26,7 @@ describe('<Dropdown />', () => {
         consequuntur temporibus.
       </Dropdown>,
     );
-    expect(container).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('should render with additional CSS classes', () => {
@@ -37,6 +37,6 @@ describe('<Dropdown />', () => {
         consequuntur temporibus.
       </Dropdown>,
     );
-    expect(container).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
   });
 });

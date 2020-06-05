@@ -13,7 +13,7 @@ describe('<RadioButton /> component', () => {
 
   it('should render a radio button checked', () => {
     const { container } = render(<RadioButton checked />);
-    expect(container).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('should render a radio button with given props', () => {
@@ -26,7 +26,7 @@ describe('<RadioButton /> component', () => {
         onClick={jest.fn()}
       />,
     );
-    expect(container).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('should support onClick', () => {

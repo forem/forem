@@ -1,13 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<RadioButton /> component should render a radio button checked 1`] = `
-<div>
-  <input
-    class="crayons-radio"
-    type="radio"
-  />
-</div>
-`;
+exports[`<RadioButton /> component should render a radio button checked 1`] = `"<input class=\\"crayons-radio\\" type=\\"radio\\">"`;
 
 exports[`<RadioButton /> component should render a radio button unchecked by default 1`] = `
 Object {
@@ -80,14 +73,4 @@ Object {
 }
 `;
 
-exports[`<RadioButton /> component should render a radio button with given props 1`] = `
-<div>
-  <input
-    class="crayons-radio additional-css-class-name"
-    id="some-id"
-    name="some-name"
-    type="radio"
-    value="some-value"
-  />
-</div>
-`;
+exports[`<RadioButton /> component should render a radio button with given props 1`] = `"<input id=\\"some-id\\" name=\\"some-name\\" class=\\"crayons-radio additional-css-class-name\\" type=\\"radio\\" value=\\"some-value\\">"`;

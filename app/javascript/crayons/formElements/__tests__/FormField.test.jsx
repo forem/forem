@@ -28,7 +28,7 @@ describe('<FormField /> component', () => {
 
   it('should render', () => {
     const { container } = render(<FormField />);
-    expect(container).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('should render with content', () => {
@@ -38,6 +38,6 @@ describe('<FormField /> component', () => {
         <label htmlFor="some-id">Some Label</label>
       </FormField>,
     );
-    expect(container).toMatchSnapshot();
+    expect(container.innerHTML).toMatchSnapshot();
   });
 });
