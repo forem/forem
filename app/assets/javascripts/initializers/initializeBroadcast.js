@@ -5,6 +5,7 @@
  */
 function broadcastData() {
   const { broadcast = null } = document.body.dataset;
+
   return JSON.parse(broadcast);
 }
 
@@ -15,7 +16,11 @@ function broadcastData() {
  * @function initializeBroadcast
  */
 function initializeBroadcast() {
-  const { html } = broadcastData();
+  if (!broadcastData()) {
+    return;
+  }
+  const { html = null } = broadcastData();
+
   var el = document.getElementById('active-broadcast');
 
   if (el.firstElementChild) {
