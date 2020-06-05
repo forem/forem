@@ -7,13 +7,21 @@
       <p class="fw-medium fs-4xl lh-tight">54%</p>
       <p class="fs-s lh-tight" style="color: #4D5760;">Completion Rate</p>
       <progress id="mod-center-progress" value="54" max="100" style="width: 224px; margin: 16px 0px;"></progress>
-      <p class="fs-s lh-tight" style="color: #4D5760;">Out of 35 tasks this week, you have completed 23 of them.</p>
-      <a
-        href="#"
-        class="fw-bold crayons-btn crayons-btn--s crayons-btn--secondary crayons-btn--icon-right"
-        style="margin: 24px 0px;">
-        This week<span class="crayons-icon">*</span>
-      </a>
+      <p class="fs-s lh-tight" style="color: #4D5760;">Out of 35 tasks <span id="selected-duration">this week</span>, you have completed 23 of them.</p>
+      <select id="duration-dropdown" class="crayons-select" style="margin: 24px 0px; width: min-content;">
+        <option>This week</option>
+        <option>This month</option>
+        <option>This year</option>
+      </select>
     </div>
   </div>
 </div>
+
+<script>
+  const durationDropdown = document.querySelector('#duration-dropdown');
+
+  durationDropdown.addEventListener('change', () => {
+    const chosenDuration = durationDropdown.options[durationDropdown.selectedIndex].value.toLowerCase();
+    document.querySelector('#selected-duration').textContent = chosenDuration;
+  }, false);
+</script>
