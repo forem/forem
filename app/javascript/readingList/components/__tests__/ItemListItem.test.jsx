@@ -19,10 +19,25 @@ const item = {
 };
 
 describe('<ItemListItem />', () => {
-  // it('renders properly with a readinglist item', () => {
-  //   const tree = render(<ItemListItem item={item} />);
-  //   expect(tree).toMatchSnapshot();
-  // });
+  it('renders the title', () => {
+    const { getByText } = render(<ItemListItem item={item} />);
+    expect(getByText(/Title/i)).toBeTruthy();
+  });
+
+  it('renders the path', () => {
+    const { getByText } = render(<ItemListItem item={item} />);
+    expect(getByText(/Title/i).closest('a').getAttribute("href")).toBe("/article");
+  });
+
+  it('renders a published date', () => {
+    const { getByText } = render(<ItemListItem item={item} />);
+    expect(getByText(/Jun 29/i)).toBeTruthy();
+  });
+
+  it('renders a profile_image', () => {
+    const { getByAltText } = render(<ItemListItem item={item} />);
+    expect(getByAltText(/Profile Pic/i).getAttribute("src")).toBe("https://dummyimage.com/90x90");
+  });
 
   it('renders with readingtime of 1 min if reading time is less than 1 min.', () => {
     item.reactable.reading_time = 0.5;
