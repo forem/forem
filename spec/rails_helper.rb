@@ -1,6 +1,5 @@
 ENV["RAILS_ENV"] = "test"
 
-require_relative 'support/initializers/monkeypatch_rolify'
 require "spec_helper"
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"

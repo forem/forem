@@ -13,7 +13,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
   describe "GET /chat_channel_memberships" do
     context "when pending invitations exists" do
       before do
-        user.add_role(:super_admin)
+        user.add_role_synchronously(:super_admin)
         post "/chat_channel_memberships", params: {
           chat_channel_membership: {
             invitation_usernames: second_user.username.to_s,
@@ -117,7 +117,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
   describe "POST /chat_channel_memberships" do
     context "when user is super admin" do
       it "creates chat channel invitation" do
-        user.add_role(:super_admin)
+        user.add_role_synchronously(:super_admin)
         expect do
           post "/chat_channel_memberships", params: {
             chat_channel_membership: {
@@ -188,7 +188,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
   describe "PUT /chat_channel_memberships/:id" do
     before do
-      user.add_role(:super_admin)
+      user.add_role_synchronously(:super_admin)
       post "/chat_channel_memberships", params: {
         chat_channel_membership: {
           invitation_usernames: second_user.username.to_s,
@@ -282,7 +282,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     context "when user is super admin" do
       it "removes member from channel" do
         allow(Pusher).to receive(:trigger).and_return(true)
-        user.add_role(:super_admin)
+        user.add_role_synchronously(:super_admin)
         membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
         removed_channel_membership = ChatChannelMembership.last
         post "/chat_channel_memberships/remove_membership", params: {

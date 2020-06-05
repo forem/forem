@@ -5,7 +5,7 @@ RSpec.describe Block, type: :model do
   let_it_be(:block) { described_class.new(user: user, input_html: "hello") }
 
   it "creates processed_html after published!" do
-    user.add_role(:super_admin)
+    user.add_role_synchronously(:super_admin)
     block.publish!
     expect(block.processed_html).to eq("hello")
   end

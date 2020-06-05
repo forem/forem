@@ -27,7 +27,7 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
 
   def add_tag_moderator_role
     tag = FactoryBot.create(:tag)
-    user.add_role :tag_moderator, tag
+    user.add_role_synchronously_synchronously :tag_moderator, tag
   end
 
   def unban_user
@@ -43,7 +43,7 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
   end
 
   it "checks that the user is warned, has a note, and privileges are removed" do
-    user.add_role :trusted
+    user.add_role_synchronously_synchronously :trusted
     add_tag_moderator_role
     warn_user
 
@@ -60,7 +60,7 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
   end
 
   it "removes other roles if user is banned" do
-    user.add_role :trusted
+    user.add_role_synchronously_synchronously :trusted
     add_tag_moderator_role
     ban_user
 
@@ -71,7 +71,7 @@ RSpec.describe "Admin bans user", type: :system, flaky: true do
   end
 
   it "unbans user" do
-    user.add_role :banned
+    user.add_role_synchronously_synchronously :banned
     unban_user
 
     expect(user.has_role?(:banned)).to eq(false)

@@ -163,7 +163,7 @@ RSpec.describe UserDecorator, type: :decorator do
       let(:user) { create(:user) }
 
       it "creates proper body class with trusted user" do
-        user.add_role(:trusted)
+        user.add_role_synchronously(:trusted)
 
         expected_result = %w[
           default default-article-body

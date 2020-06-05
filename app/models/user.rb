@@ -466,6 +466,28 @@ class User < ApplicationRecord
     "User:#{id}"
   end
 
+  # This method is used for testing, waits for role to be assigned explicitly
+  # on the user before proceeding execution
+  def add_role_synchronously(role_name, resource = nil)
+    Rails.logger.error("role_name: #{role_name}, resource: #{resource}")
+    # instead of using a begin/rescue or Timeout.timeout loop, just check like 1000 times and error if
+    # role still not assigned
+    attempts = 0
+    max_attempts = 1000
+    success = false
+    result = add_role(role_name, resource)
+    start = Time.current
+    until success || attempts > max_attempts
+      attempts += 1
+      roles.each { |role| success = true if role.name == role_name.to_s }
+    end
+    Rails.logger.error("Looped #{attempts} times. took #{(Time.current - start).round(5)}s")
+    if attempts > max_attempts
+      Rails.logger.error("In RolifyExtension rescue. role_name: #{role_name}, resource: #{resource}")
+    end
+    result
+  end
+
   private
 
   def estimate_default_language

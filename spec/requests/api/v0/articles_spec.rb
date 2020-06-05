@@ -827,7 +827,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "lets a super admin update an article belonging to another user" do
-        user.add_role(:super_admin)
+        user.add_role_synchronously(:super_admin)
         article = create(:article, user: create(:user))
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         params = { article: { title: "foobar" } }.to_json
@@ -944,7 +944,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "assigns the article to a series belonging to the article's owner, not the admin" do
-        user.add_role(:super_admin)
+        user.add_role_synchronously(:super_admin)
         article = create(:article, user: create(:user))
         params = { article: { title: Faker::Book.title,
                               body_markdown: "Yo ho ho",
@@ -1008,7 +1008,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       it "does not update the editing time before publication if changed by an admin" do
         article.update_columns(edited_at: nil)
         expect(article.published).to be(false)
-        user.add_role(:super_admin)
+        user.add_role_synchronously(:super_admin)
         article = create(:article, user: create(:user))
         params = { article: { title: Faker::Book.title,
                               body_markdown: "Yo ho ho" } }.to_json
@@ -1018,7 +1018,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "does not update the editing time after publication if changed by an admin" do
-        user.add_role(:super_admin)
+        user.add_role_synchronously(:super_admin)
         new_article = create(:article, user: create(:user))
         params = { article: { title: Faker::Book.title } }.to_json
         expect do
@@ -1028,7 +1028,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "updates the editing time when updated after publication if the owner is an admin" do
-        user.add_role(:super_admin)
+        user.add_role_synchronously(:super_admin)
         article.update_columns(edited_at: nil, published: true)
         put_article(
           title: Faker::Book.title,

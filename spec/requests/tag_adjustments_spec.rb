@@ -15,8 +15,8 @@ RSpec.describe "TagAdjustments", type: :request do
 
   describe "POST /tag_adjustments" do
     before do
-      user.add_role(:tag_moderator, tag)
-      user.add_role(:trusted)
+      user.add_role_synchronously(:tag_moderator, tag)
+      user.add_role_synchronously(:trusted)
       sign_in user
       post "/tag_adjustments", params: {
         tag_adjustment: tag_adjustment_params,
@@ -52,8 +52,8 @@ RSpec.describe "TagAdjustments", type: :request do
   describe "POST /tag_adjustments with adjustment_type addition" do
     before do
       tag_adjustment_params[:adjustment_type] = "addition"
-      user.add_role(:tag_moderator, tag)
-      user.add_role(:trusted)
+      user.add_role_synchronously(:tag_moderator, tag)
+      user.add_role_synchronously(:trusted)
       sign_in user
       post "/tag_adjustments", params: {
         tag_adjustment: tag_adjustment_params,
@@ -90,8 +90,8 @@ RSpec.describe "TagAdjustments", type: :request do
     let(:tag_adjustment) { create(:tag_adjustment, article_id: article.id, user: user, tag: tag) }
 
     before do
-      user.add_role(:admin)
-      user.add_role(:trusted)
+      user.add_role_synchronously(:admin)
+      user.add_role_synchronously(:trusted)
       tag_adjustment
       sign_in user
     end
@@ -123,8 +123,8 @@ RSpec.describe "TagAdjustments", type: :request do
     let(:tag_adjustment) { create(:tag_adjustment, article_id: article.id, user: user, tag: tag, adjustment_type: "addition") }
 
     before do
-      user.add_role(:admin)
-      user.add_role(:trusted)
+      user.add_role_synchronously(:admin)
+      user.add_role_synchronously(:trusted)
       tag_adjustment
       sign_in user
     end
