@@ -37,6 +37,7 @@ function callInitializers() {
 
   initializeSpecialNavigationFunctionality();
   initializeBaseTracking();
+  initializePaymentPointers();
   initializeTouchDevice();
   initializeCommentsPage();
   initializeArticleDate();
