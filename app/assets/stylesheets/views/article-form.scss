@@ -155,6 +155,7 @@
       flex: 1 auto;
       font-size: var(--fs-l);
       font-family: var(--ff-accent);
+      overflow: hidden;
     }
   }
 
@@ -173,7 +174,7 @@
   }
 
   &__cover {
-    margin-bottom: var(--su-6);
+    margin-bottom: var(--su-4);
     display: flex;
     align-items: flex-start;
     flex-direction: column;
@@ -181,6 +182,7 @@
     @media (min-width: $breakpoint-s) {
       flex-direction: row;
       align-items: center;
+      margin-bottom: var(--su-5);
     }
 
     &__image {

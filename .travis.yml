@@ -15,6 +15,8 @@ addons:
       - $(ls tmp/screenshots/*.png | tr "\n" ":")
       - $(ls tmp/csvs/*.csv | tr "\n" ":")
     debug: true
+gemfile:
+- Gemfile
 services:
   - redis-server
 env:
@@ -48,7 +50,8 @@ before_install:
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
 install:
-  - bundle install --path vendor/bundle
+  - bundle config set path 'vendor/bundle'
+  - bundle install --local --jobs 2
   - yarn install --frozen-lockfile
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
     > ./cc-test-reporter

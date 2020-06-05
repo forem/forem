@@ -10,21 +10,21 @@ RSpec.describe "UserBlock", type: :request do
     it "rejects when not-logged-in" do
       sign_out(blocker)
       get "/user_blocks/#{blocked.id}"
-      expect(response.content_type).to eq "application/json"
+      expect(response.media_type).to eq "application/json"
       expect(response.status).to eq 401
       expect(response.parsed_body["result"]).to eq "not-logged-in"
     end
 
     it "returns 'not-blocking' when the user is not blocked" do
       get "/user_blocks/#{blocked.id}"
-      expect(response.content_type).to eq "application/json"
+      expect(response.media_type).to eq "application/json"
       expect(response.parsed_body["result"]).to eq "not-blocking"
     end
 
     it "returns 'blocking' when blocking" do
       create(:user_block, blocker: blocker, blocked: blocked)
       get "/user_blocks/#{blocked.id}"
-      expect(response.content_type).to eq "application/json"
+      expect(response.media_type).to eq "application/json"
       expect(response.parsed_body["result"]).to eq "blocking"
     end
   end
@@ -33,7 +33,7 @@ RSpec.describe "UserBlock", type: :request do
     it "renders 'not-logged-in' when not logged in" do
       sign_out blocker
       post "/user_blocks", params: { user_block: { blocked_id: blocked.id } }
-      expect(response.content_type).to eq "application/json"
+      expect(response.media_type).to eq "application/json"
       expect(response.status).to eq 401
       expect(response.parsed_body["result"]).to eq "not-logged-in"
     end
@@ -47,7 +47,7 @@ RSpec.describe "UserBlock", type: :request do
 
     it "returns a JSON response with blocked" do
       post "/user_blocks", params: { user_block: { blocked_id: blocked.id } }
-      expect(response.content_type).to eq "application/json"
+      expect(response.media_type).to eq "application/json"
       expect(response.parsed_body["result"]).to eq "blocked"
     end
 
@@ -69,7 +69,7 @@ RSpec.describe "UserBlock", type: :request do
     it "renders 'not-logged-in' when not logged in" do
       sign_out blocker
       delete "/user_blocks/#{blocked.id}", params: { user_block: { blocked_id: blocked.id } }
-      expect(response.content_type).to eq "application/json"
+      expect(response.media_type).to eq "application/json"
       expect(response.status).to eq 401
       expect(response.parsed_body["result"]).to eq "not-logged-in"
     end
@@ -78,7 +78,7 @@ RSpec.describe "UserBlock", type: :request do
       UserBlock.delete_all
       blocker.update(blocking_others_count: 0)
       delete "/user_blocks/#{blocked.id}", params: { user_block: { blocked_id: blocked.id } }
-      expect(response.content_type).to eq "application/json"
+      expect(response.media_type).to eq "application/json"
       expect(response.parsed_body["result"]).to eq "not-blocking-anyone"
     end
 
