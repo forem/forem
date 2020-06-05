@@ -1,3 +1,3 @@
 web: bin/rails s -p 3000 -b 0.0.0.0
-webpacker: app_domain=`./scripts/app_domain` && WEBPACKER_DEV_SERVER_HOST=$app_domain WEBPACKER_DEV_SERVER_PUBLIC=http://$app_domain:3035 ./bin/webpack-dev-server
+webpacker: ./bin/webpack-dev-server
 sidekiq: bundle exec sidekiq
