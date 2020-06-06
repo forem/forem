@@ -209,7 +209,7 @@ RSpec.describe "Dashboards", type: :request do
 
     context "when user has pro permission" do
       it "shows page properly" do
-        user.add_role_synchronously(:pro)
+        user.add_role(:pro)
         sign_in user
         get "/dashboard/pro"
         expect(response.body).to include("pro")
@@ -220,7 +220,7 @@ RSpec.describe "Dashboards", type: :request do
       it "shows page properly" do
         org = create :organization
         create(:organization_membership, user: user, organization: org, type_of_user: "admin")
-        user.add_role_synchronously(:pro)
+        user.add_role(:pro)
         login_as user
         get "/dashboard/pro/org/#{org.id}"
         expect(response.body).to include("pro")
@@ -231,7 +231,7 @@ RSpec.describe "Dashboards", type: :request do
       it "shows page properly" do
         org = create :organization
         create(:organization_membership, user: user, organization: org)
-        user.add_role_synchronously(:pro)
+        user.add_role(:pro)
         sign_in user
         get "/dashboard/pro/org/#{org.id}"
         expect(response.body).to include("pro")

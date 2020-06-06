@@ -7,7 +7,7 @@ RSpec.describe "/internal/reactions", type: :request do
 
   describe "PUT /internal/reactions as admin" do
     before do
-      user.add_role_synchronously(:trusted)
+      user.add_role(:trusted)
       sign_in admin
     end
 
@@ -51,7 +51,7 @@ RSpec.describe "/internal/reactions", type: :request do
 
   describe "PUT /internal/reactions as non-admin" do
     before do
-      user.add_role_synchronously(:trusted)
+      user.add_role(:trusted)
       sign_in user
     end
 

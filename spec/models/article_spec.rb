@@ -163,7 +163,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "allows admins" do
-        article.user.add_role_synchronously(:admin)
+        article.user.add_role(:admin)
         article.body_markdown = "hello hey hey hey {% poll #{poll.id} %}"
         expect(article.valid?).to eq(true)
       end

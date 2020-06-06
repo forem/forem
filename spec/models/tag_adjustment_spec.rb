@@ -2,8 +2,8 @@ require "rails_helper"
 
 RSpec.describe TagAdjustment, type: :model do
   before do
-    mod_user.add_role_synchronously(:tag_moderator, tag)
-    admin_user.add_role_synchronously(:admin)
+    mod_user.add_role(:tag_moderator, tag)
+    admin_user.add_role(:admin)
   end
 
   let(:article) { create(:article, tags: nil) }

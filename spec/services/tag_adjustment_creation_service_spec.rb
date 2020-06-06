@@ -17,7 +17,7 @@ RSpec.describe TagAdjustmentCreationService, type: :service do
   end
 
   before do
-    user.add_role_synchronously(:tag_moderator, tag)
+    user.add_role(:tag_moderator, tag)
   end
 
   describe "creates tag adjustment" do

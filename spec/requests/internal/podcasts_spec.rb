@@ -14,7 +14,7 @@ RSpec.describe "/internal/podcasts", type: :request do
 
     before do
       create(:podcast_episode, podcast: podcast)
-      user.add_role_synchronously(:podcast_admin, Podcast.order(Arel.sql("RANDOM()")).first)
+      user.add_role(:podcast_admin, Podcast.order(Arel.sql("RANDOM()")).first)
     end
 
     it "renders success" do
@@ -46,7 +46,7 @@ RSpec.describe "/internal/podcasts", type: :request do
 
   describe "Removing admin" do
     it "removes an admin" do
-      user.add_role_synchronously(:podcast_admin, podcast)
+      user.add_role(:podcast_admin, podcast)
       expect do
         delete remove_admin_internal_podcast_path(podcast.id), params: { podcast: { user_id: user.id } }
       end.to change(Role, :count).by(-1)

@@ -263,7 +263,7 @@ RSpec.describe "/listings", type: :request do
 
     context "when user is banned" do
       it "raises error" do
-        user.add_role_synchronously(:banned)
+        user.add_role(:banned)
         expect do
           post "/listings", params: listing_params
         end.to raise_error("SUSPENDED")

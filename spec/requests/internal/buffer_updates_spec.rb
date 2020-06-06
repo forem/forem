@@ -12,7 +12,7 @@ RSpec.describe "/internal/buffer_updates", type: :request do
 
   describe "POST /internal/buffer_updates" do
     before do
-      user.add_role_synchronously(:super_admin)
+      user.add_role(:super_admin)
       sign_in user
     end
 
@@ -59,7 +59,7 @@ RSpec.describe "/internal/buffer_updates", type: :request do
   describe "PUT /internal/buffer_updates" do
     before do
       sign_in user
-      user.add_role_synchronously(:super_admin)
+      user.add_role(:super_admin)
     end
 
     let(:buffer_update) do
