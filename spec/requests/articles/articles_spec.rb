@@ -249,7 +249,7 @@ RSpec.describe "Articles", type: :request do
     end
 
     it "works successfully" do
-      user.add_role_synchronously(:pro)
+      user.add_role(:pro)
       article = create(:article, user: user)
       get "#{article.path}/stats"
       expect(response).to have_http_status(:ok)

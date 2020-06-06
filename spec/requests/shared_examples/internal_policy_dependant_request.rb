@@ -3,7 +3,7 @@ RSpec.shared_examples "an InternalPolicy dependant request" do |resource|
 
   context "when user is a single_resource_admin" do
     before do
-      user.add_role_synchronously(:single_resource_admin, resource)
+      user.add_role(:single_resource_admin, resource)
       sign_in user
       allow(InternalPolicy).to receive(:new).and_call_original
     end

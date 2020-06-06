@@ -8,12 +8,12 @@ RSpec.describe RatingVotes::AssignRatingWorker, type: :worker do
 
   before do
     allow(CacheBuster).to receive(:bust_podcast)
-    user.add_role_synchronously(:trusted)
+    user.add_role(:trusted)
   end
 
   describe "#perform" do
     it "assigns explicit score" do
-      second_user.add_role_synchronously(:trusted)
+      second_user.add_role(:trusted)
       create(:rating_vote, article_id: article.id, user_id: user.id, rating: 3.0)
       create(:rating_vote, article_id: article.id, user_id: second_user.id, rating: 2.0)
       worker.perform(article.id)

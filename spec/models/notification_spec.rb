@@ -404,7 +404,7 @@ RSpec.describe Notification, type: :model do
       end
 
       it "does not create a notification for a negative reaction" do
-        user2.add_role_synchronously(:trusted)
+        user2.add_role(:trusted)
         reaction = create(:reaction, reactable: article, user: user2, category: "vomit")
 
         expect do

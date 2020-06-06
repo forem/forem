@@ -10,7 +10,7 @@ RSpec.describe "/internal/chat_channels", type: :request do
     around { |example| perform_enqueued_jobs(&example) }
 
     it "creates chat_channel for with users as moderator" do
-      user.add_role_synchronously(:super_admin)
+      user.add_role(:super_admin)
       sign_in user
       expect do
         post "/internal/chat_channels",

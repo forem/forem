@@ -14,7 +14,7 @@ RSpec.describe "HtmlVariants", type: :request do
     end
 
     it "accepts permissioned" do
-      user.add_role_synchronously(:super_admin)
+      user.add_role(:super_admin)
       get "/html_variants"
       expect(response.body).to include("HTML Variants")
     end
@@ -26,7 +26,7 @@ RSpec.describe "HtmlVariants", type: :request do
     end
 
     it "accepts permissioned" do
-      user.add_role_synchronously(:super_admin)
+      user.add_role(:super_admin)
       get "/html_variants/new"
       expect(response.body).to include("<form")
     end
@@ -39,7 +39,7 @@ RSpec.describe "HtmlVariants", type: :request do
     end
 
     it "accepts permissioned" do
-      user.add_role_synchronously(:super_admin)
+      user.add_role(:super_admin)
       html_variant = create(:html_variant)
       get "/html_variants/#{html_variant.id}/edit"
       expect(response.body).to include("<form")
@@ -52,7 +52,7 @@ RSpec.describe "HtmlVariants", type: :request do
     end
 
     it "creates" do
-      user.add_role_synchronously(:super_admin)
+      user.add_role(:super_admin)
       post "/html_variants", params: {
         html_variant: {
           name: "New post",
@@ -65,7 +65,7 @@ RSpec.describe "HtmlVariants", type: :request do
     end
 
     it "does not create with invalid params" do
-      user.add_role_synchronously(:super_admin)
+      user.add_role(:super_admin)
       post "/html_variants", params: {
         html_variant: {
           # name: NOTHING HERE
@@ -83,7 +83,7 @@ RSpec.describe "HtmlVariants", type: :request do
     end
 
     it "updates when appropriate" do
-      user.add_role_synchronously(:super_admin)
+      user.add_role(:super_admin)
       html_variant = create(:html_variant)
       new_html = "Yo ho ho"
       put "/html_variants/#{html_variant.id}", params: {
@@ -95,7 +95,7 @@ RSpec.describe "HtmlVariants", type: :request do
     end
 
     it "does not create with invalid params" do
-      user.add_role_synchronously(:super_admin)
+      user.add_role(:super_admin)
       html_variant = create(:html_variant, approved: true, published: true)
       new_html = "Yo ho ho"
       put "/html_variants/#{html_variant.id}", params: {
