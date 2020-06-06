@@ -41,7 +41,6 @@ function fetchNext(el, endpoint, insertCallback) {
 
 function insertNext(params, buildCallback) {
   return function insertEntries(entries) {
-    var list = document.getElementById(params.listId || 'sublist');
     var newFollowersHTML = '';
     entries.forEach(function insertAnEntry(entry) {
       let existingEl = document.getElementById(
@@ -204,7 +203,6 @@ function buildVideoArticleHTML(videoArticle) {
 }
 
 function insertVideos(videoArticles) {
-  var list = document.getElementById('subvideos');
   var newVideosHTML = '';
   videoArticles.forEach(function insertAVideo(videoArticle) {
     var existingEl = document.getElementById(
@@ -216,8 +214,6 @@ function insertVideos(videoArticles) {
     }
   });
 
-  var distanceFromBottom =
-    document.documentElement.scrollHeight - document.body.scrollTop;
   var newNode = document.createElement('div');
   newNode.innerHTML = newVideosHTML;
   newNode.className += 'video-collection';
@@ -236,7 +232,6 @@ function fetchNextVideoPage(el) {
 }
 
 function insertArticles(articles) {
-  var list = document.getElementById('substories');
   var newArticlesHTML = '';
   var el = document.getElementById('home-articles-object');
   if (el) {
@@ -265,8 +260,6 @@ function insertArticles(articles) {
       initializeReadingListIcons();
     }
   });
-  var distanceFromBottom =
-    document.documentElement.scrollHeight - document.body.scrollTop;
   var newNode = document.createElement('div');
   newNode.classList.add('paged-stories');
   newNode.innerHTML = newArticlesHTML;
