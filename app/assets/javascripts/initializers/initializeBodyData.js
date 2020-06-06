@@ -1,4 +1,4 @@
-'use strict';
+
 
 /* global checkUserLoggedIn */
 
@@ -27,14 +27,14 @@ function fetchBaseData() {
       var newCsrfParamMeta = document.createElement('meta');
       newCsrfParamMeta.name = 'csrf-param';
       newCsrfParamMeta.content = json.param;
-      document.getElementsByTagName('head')[0].appendChild(newCsrfParamMeta);
+      document.head.appendChild(newCsrfParamMeta);
       var newCsrfTokenMeta = document.createElement('meta');
       newCsrfTokenMeta.name = 'csrf-token';
       newCsrfTokenMeta.content = json.token;
-      document.getElementsByTagName('head')[0].appendChild(newCsrfTokenMeta);
-      document.getElementsByTagName('body')[0].dataset.loaded = 'true';
+      document.head.appendChild(newCsrfTokenMeta);
+      document.body.dataset.loaded = 'true';
       if (checkUserLoggedIn()) {
-        document.getElementsByTagName('body')[0].dataset.user = json.user;
+        document.body.dataset.user = json.user;
         browserStoreCache('set', json.user);
         setTimeout(() => {
           if (typeof ga === 'function') {

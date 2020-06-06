@@ -3,7 +3,7 @@
     const bodyClass = localStorage.getItem('config_body_class');
 
     if (bodyClass) {
-      document.getElementsByTagName("body")[0].className = bodyClass;
+      document.body.className = bodyClass;
 
       if (bodyClass.includes('night-theme')) {
         document.getElementById('body-styles').innerHTML = '<style><%= Rails.application.assets["themes/night.css"].to_s.squish.html_safe %></style>';
@@ -21,17 +21,17 @@
         link.rel = 'preload'
         crossorigin = 'anonymous'
         link.href = '<%= asset_path "OpenDyslexic-Regular.otf" %>';
-        document.getElementsByTagName('head')[0].appendChild(link);
+        document.head.appendChild(link);
       }
     }
     if (navigator.userAgent === 'DEV-Native-ios') {
-      document.getElementsByTagName("body")[0].classList.add("dev-ios-native-body");
+      document.body.classList.add("dev-ios-native-body");
     }
     if (localStorage.getItem('config_minimize_newest_listings') === 'yes') {
-      document.getElementsByTagName("body")[0].classList.add("config_minimize_newest_listings");
+      document.body.classList.add("config_minimize_newest_listings");
     }
     if (window.frameElement) { // Hide top bar and footer when loaded within iframe
-      document.getElementsByTagName("body")[0].classList.add("hidden-shell");
+      document.body.classList.add("hidden-shell");
     }
   } catch(e) {
       Honeybadger.notify(e);
