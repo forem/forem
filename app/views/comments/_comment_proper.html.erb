@@ -61,6 +61,9 @@
             <a href="<%= comment.path %>">
               Permalink
             </a>
+            <button class="permalink-copybtn" data-permalink="<%= comment.path %>" type="button">
+              Copy Permalink
+            </button>
             <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" style="display: none;">
               <a href="<%= comment.path %>/settings" rel="nofollow" style="color:#0a0a0a;" data-no-instant>Settings</a>
             </span>

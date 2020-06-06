@@ -44,26 +44,45 @@ function initializeCommentDropdown() {
   }
 
   function execCopyText() {
-    showAnnouncer();
     document.execCommand('copy');
   }
 
-  function copyText() {
-    const inputValue = document.getElementById('article-copy-link-input').value;
+  function copyText(text, callback, fallback) {
     if (isNativeAndroidDevice()) {
-      AndroidBridge.copyToClipboard(inputValue);
-      showAnnouncer();
+      AndroidBridge.copyToClipboard(text);
+      callback();
     } else if (isClipboardSupported()) {
-      navigator.clipboard.writeText(inputValue)
+      navigator.clipboard.writeText(text)
         .then(() => {
-          showAnnouncer();
+          callback();
         })
         .catch((err) => {
-          execCopyText();
+          fallback();
         });
     } else {
-      execCopyText();
+      fallback();
     }
+  }
+
+  function copyPermalink(event) {
+    var origin = window.location.origin;
+    var permalink = origin + event.target.getAttribute("data-permalink");
+
+    copyText(permalink, () => {}, () => {
+      event.clipboardData.setData("text/plain", permalink);
+      execCopyText();
+    });
+  }
+
+  function copyArticleLink() {
+    const inputValue = document.getElementById('article-copy-link-input').value;
+
+    copyText(inputValue, () => {
+      showAnnouncer();
+    }, () => {
+      showAnnouncer();
+      execCopyText();
+    });
   }
 
   function shouldCloseDropdown(event) {
@@ -89,7 +108,7 @@ function initializeCommentDropdown() {
       'clipboard-copy',
     )[0];
     if (clipboardCopyElement) {
-      clipboardCopyElement.removeEventListener('click', copyText);
+      clipboardCopyElement.removeEventListener('click', copyArticleLink);
     }
   }
 
@@ -124,7 +143,7 @@ function initializeCommentDropdown() {
 
       document.addEventListener('click', outsideClickListener);
       if (clipboardCopyElement) {
-        clipboardCopyElement.addEventListener('click', copyText);
+        clipboardCopyElement.addEventListener('click', copyArticleLink);
       }
     }
   }
@@ -133,7 +152,13 @@ function initializeCommentDropdown() {
     dropdown.addEventListener('click', dropdownFunction);
   }
 
+  function copyPermalinkButtonListener(copyPermalinkButton) {
+    copyPermalinkButton.addEventListener('click', copyPermalink);
+  }
+
   setTimeout(function addListeners() {
     getAllByClassName('dropbtn').forEach(addDropdownListener);
+
+    getAllByClassName('permalink-copybtn').forEach(copyPermalinkButtonListener);
   }, 100);
 }
