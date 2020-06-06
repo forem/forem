@@ -56,6 +56,52 @@ function updateButtonsAndReactionCountsAndStuff(commentableType, commentableIdLi
   ajaxReq.send();
 }
 
+function updateReactionCountsAndStuff() {
+  var butts = document.getElementsByClassName('reaction-button');
+  for (var i = 0; i < butts.length; i++) {
+    var butt = butts[i];
+    butt.onclick = function (event) {
+      var thisButt = this;
+      event.preventDefault();
+      sendHapticMessage('medium');
+      var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+      if (userStatus === 'logged-out') {
+        showModal('react-to-comment');
+        return;
+      }
+
+      thisButt.classList.add('reacted');
+      thisButt.disabled = true;
+
+      function successCb(response) {
+        var reactionCountSpan = thisButt.children[2];
+        if (response.result === 'create') {
+          thisButt.classList.add('reacted');
+          if (reactionCountSpan) {
+            reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) + 1;
+          }
+        } else {
+          thisButt.classList.remove('reacted');
+          if (reactionCountSpan) {
+            reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) - 1;
+          }
+        }
+      }
+      var formData = new FormData();
+      formData.append('reactable_type', 'Comment');
+      formData.append('reactable_id', thisButt.dataset.commentId);
+      getCsrfToken()
+        .then(sendFetch('reaction-creation', formData))
+        .then(function (response) {
+          thisButt.disabled = false;
+          if (response.status === 200) {
+            response.json().then(successCb);
+          }
+        });
+    };
+  }
+}
+
 function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
     toggleCodeOfConduct();
@@ -63,50 +109,8 @@ function initializeCommentsPage() {
     var commentableType = document.getElementById('comments-container').dataset.commentableType;
     commentableIdList = commentableId.split(",");
     updateAllCommentableButtonsAndReactionCountsAndStuff(commentableType, commentableIdList);
+    updateReactionCountsAndStuff();
 
-    var butts = document.getElementsByClassName('reaction-button');
-    for (var i = 0; i < butts.length; i++) {
-      var butt = butts[i];
-      butt.onclick = function (event) {
-        var thisButt = this;
-        event.preventDefault();
-        sendHapticMessage('medium');
-        var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
-        if (userStatus === 'logged-out') {
-          showModal('react-to-comment');
-          return;
-        }
-
-        thisButt.classList.add('reacted');
-        thisButt.disabled = true;
-
-        function successCb(response) {
-          var reactionCountSpan = thisButt.children[2];
-          if (response.result === 'create') {
-            thisButt.classList.add('reacted');
-            if (reactionCountSpan) {
-              reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) + 1;
-            }
-          } else {
-            thisButt.classList.remove('reacted');
-            if (reactionCountSpan) {
-              reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) - 1;
-            }
-          }
-        }
-        var formData = new FormData();
-        formData.append('reactable_type', 'Comment');
-        formData.append('reactable_id', thisButt.dataset.commentId);
-        getCsrfToken()
-          .then(sendFetch('reaction-creation', formData))
-          .then(function (response) {
-            thisButt.disabled = false;
-            if (response.status === 200) {
-              response.json().then(successCb);
-            }
-          });
-      };
-    }
     var replyButts = document.getElementsByClassName('toggle-reply-form');
     for (var i = 0; i < replyButts.length; i++) {
       var butt = replyButts[i];
