@@ -62,7 +62,7 @@ RSpec.describe "ArticlesUpdate", type: :request do
 
   it "does not modify the organization ID when updating someone else's article as an admin" do
     article.update_columns(organization_id: organization2.id, user_id: user2.id)
-    user.add_role(:super_admin)
+    user.add_role_synchronously(:super_admin)
     put "/articles/#{article.id}", params: {
       article: { post_under_org: true }
     }

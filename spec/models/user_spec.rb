@@ -944,7 +944,7 @@ RSpec.describe User, type: :model do
     let(:tags) { create_list(:tag, 2) }
 
     it "lists tags user moderates" do
-      user.add_role(:tag_moderator, tags.first)
+      user.add_role_synchronously(:tag_moderator, tags.first)
 
       expect(user.moderator_for_tags).to include(tags.first.name)
       expect(user.moderator_for_tags).not_to include(tags.last.name)
@@ -1064,7 +1064,7 @@ RSpec.describe User, type: :model do
     end
 
     it "returns true if the user has the pro role" do
-      user.add_role(:pro)
+      user.add_role_synchronously(:pro)
       expect(user.pro?).to be(true)
     end
   end

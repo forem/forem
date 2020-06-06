@@ -17,7 +17,7 @@ RSpec.describe ReactionPolicy do
     it { is_expected.to permit_actions(%i[index create]) }
 
     context "when user is banned" do
-      before { user.add_role(:banned) }
+      before { user.add_role_synchronously(:banned) }
 
       it { is_expected.to permit_actions(%i[index]) }
       it { is_expected.to forbid_actions(%i[create]) }

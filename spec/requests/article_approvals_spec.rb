@@ -18,8 +18,8 @@ RSpec.describe "ArticleApprovals", type: :request do
 
     context "when user is a tag mod" do
       before do
-        user.add_role(:tag_moderator, tag)
-        user.add_role(:trusted)
+        user.add_role_synchronously(:tag_moderator, tag)
+        user.add_role_synchronously(:trusted)
         sign_in user
       end
 
@@ -50,7 +50,7 @@ RSpec.describe "ArticleApprovals", type: :request do
 
     context "when user is admin" do
       before do
-        user.add_role(:admin)
+        user.add_role_synchronously(:admin)
         sign_in user
       end
 
