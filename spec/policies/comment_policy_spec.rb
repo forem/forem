@@ -33,13 +33,13 @@ RSpec.describe CommentPolicy, type: :policy do
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_create).for_action(:create) }
 
     context "with banned status" do
-      before { user.add_role(:banned) }
+      before { user.add_role_synchronously(:banned) }
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide]) }
     end
 
     context "with banned_comment status" do
-      before { user.add_role(:comment_banned) }
+      before { user.add_role_synchronously(:comment_banned) }
 
       it { is_expected.to forbid_actions(%i[create edit update destroy delete_confirm hide unhide]) }
     end
@@ -47,7 +47,7 @@ RSpec.describe CommentPolicy, type: :policy do
     context "when user is a tag moderator" do
       before do
         tag = create(:tag)
-        user.add_role(:tag_moderator, tag)
+        user.add_role_synchronously(:tag_moderator, tag)
       end
 
       it { is_expected.to permit_actions(%i[create moderator_create]) }
@@ -58,7 +58,7 @@ RSpec.describe CommentPolicy, type: :policy do
     end
 
     context "when user is an admin" do
-      before { user.add_role :admin }
+      before { user.add_role_synchronously :admin }
 
       it { is_expected.to permit_actions(%i[create moderator_create]) }
 
@@ -78,7 +78,7 @@ RSpec.describe CommentPolicy, type: :policy do
     it { is_expected.to permit_mass_assignment_of(valid_attributes_for_update).for_action(:update) }
 
     context "with banned status" do
-      before { user.add_role(:banned) }
+      before { user.add_role_synchronously(:banned) }
 
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
       it { is_expected.to forbid_actions(%i[create hide unhide moderator_create]) }
@@ -89,7 +89,7 @@ RSpec.describe CommentPolicy, type: :policy do
     end
 
     context "with banned_comment status" do
-      before { user.add_role(:comment_banned) }
+      before { user.add_role_synchronously(:comment_banned) }
 
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm]) }
       it { is_expected.to forbid_actions(%i[create hide unhide moderator_create]) }
@@ -102,7 +102,7 @@ RSpec.describe CommentPolicy, type: :policy do
     context "when user is a tag moderator" do
       before do
         tag = create(:tag)
-        user.add_role(:tag_moderator, tag)
+        user.add_role_synchronously(:tag_moderator, tag)
       end
 
       it { is_expected.to permit_actions(%i[edit update destroy delete_confirm moderator_create create]) }

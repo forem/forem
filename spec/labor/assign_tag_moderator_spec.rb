@@ -8,7 +8,7 @@ RSpec.describe AssignTagModerator, type: :labor do
   let(:tag_two) { create(:tag) }
 
   before do
-    mod_relator.add_role(:mod_relations_admin)
+    mod_relator.add_role_synchronously(:mod_relations_admin)
     user_ids = [user_one.id, user_two.id]
     tag_ids = [tag_one.id, tag_two.id]
     ChatChannel.create(slug: "tag-moderators", channel_name: "Tag Moderators", channel_type: "invite_only")

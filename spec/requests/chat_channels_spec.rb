@@ -146,7 +146,7 @@ RSpec.describe "ChatChannels", type: :request do
 
   describe "PUT /chat_channels/:id" do
     it "updates channel for valid user" do
-      user.add_role(:super_admin)
+      user.add_role_synchronously(:super_admin)
       membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
       membership.update(role: "mod")
       put "/chat_channels/#{chat_channel.id}",
@@ -166,7 +166,7 @@ RSpec.describe "ChatChannels", type: :request do
 
     it "returns errors if channel is invalid" do
       # slug should be taken
-      user.add_role(:super_admin)
+      user.add_role_synchronously(:super_admin)
       membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
       membership.update(role: "mod")
       put "/chat_channels/#{chat_channel.id}",
@@ -196,7 +196,7 @@ RSpec.describe "ChatChannels", type: :request do
 
     context "when user is logged-in and authorized" do
       before do
-        user.add_role :super_admin
+        user.add_role_synchronously :super_admin
         sign_in user
         allow(Pusher).to receive(:trigger).and_return(true)
       end

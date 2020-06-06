@@ -137,7 +137,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "does render notifications belonging to other orgs if admin" do
-        user.add_role(:super_admin)
+        user.add_role_synchronously(:super_admin)
         sign_in user
 
         users = mock_follow_notifications(1, other_org)
@@ -319,7 +319,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "does render notifications belonging to other orgs if admin" do
-        user.add_role(:super_admin)
+        user.add_role_synchronously(:super_admin)
         sign_in user
 
         users = mock_heart_reaction_notifications(1, %w[like unicorn], other_org_article)
@@ -457,7 +457,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       end
 
       it "does render notifications belonging to other orgs if admin" do
-        user.add_role(:super_admin)
+        user.add_role_synchronously(:super_admin)
         sign_in user
 
         Notification.send_new_comment_notifications_without_delay(other_org_comment)
@@ -504,7 +504,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
 
       before do
-        user.add_role :trusted
+        user.add_role_synchronously :trusted
         sign_in user
         sidekiq_perform_enqueued_jobs do
           Notification.send_moderation_notification(comment)
@@ -557,7 +557,7 @@ RSpec.describe "NotificationsIndex", type: :request do
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
 
       before do
-        user.add_role :trusted
+        user.add_role_synchronously :trusted
         user.update(mod_roundrobin_notifications: false)
         sign_in user
         sidekiq_perform_enqueued_jobs do

@@ -10,7 +10,7 @@ RSpec.describe Notifications::TagAdjustmentNotification::Send, type: :service do
   let(:notification) { described_class.call(tag_adjustment) }
 
   before do
-    mod_user.add_role(:tag_moderator, tag)
+    mod_user.add_role_synchronously(:tag_moderator, tag)
   end
 
   it "returns a valid notification" do
