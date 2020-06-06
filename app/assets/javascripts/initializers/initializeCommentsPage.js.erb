@@ -102,6 +102,43 @@ function updateReactionCountsAndStuff() {
   }
 }
 
+function setupCommentReplyButtonHandler(commentableId, commentableType) {
+  var replyButts = document.getElementsByClassName('toggle-reply-form');
+  for (var i = 0; i < replyButts.length; i++) {
+    var butt = replyButts[i];
+
+    function commentReplyButtonHandler(event) {
+      event.preventDefault();
+      if (event.target.classList.contains("thread-indication")) {
+        return false;
+      } else {
+        var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+        if (userStatus == 'logged-out') {
+          showModal('reply-to-comment');
+          return;
+        }
+        var actionNode = event.target.parentNode;
+        var parentId = actionNode.dataset.commentId;
+        document.getElementById("button-for-comment-" + actionNode.dataset.commentId).style.zIndex = "5";
+        var waitingOnCSRF = setInterval(function () {
+          var metaTag = document.querySelector("meta[name='csrf-token']");
+          if (metaTag) {
+            clearInterval(waitingOnCSRF);
+            actionNode.innerHTML = buildCommentFormHTML(commentableId, commentableType, parentId);
+            setTimeout(function () {
+              actionNode.getElementsByTagName('textarea')[0].focus();
+            }, 30);
+          }
+        }, 1);
+        // document.getElementById('textarea-for-'+parentId).focus();
+      };
+      return false;
+    }
+
+    butt.onclick = commentReplyButtonHandler
+  }
+}
+
 function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
     toggleCodeOfConduct();
@@ -110,38 +147,8 @@ function initializeCommentsPage() {
     commentableIdList = commentableId.split(",");
     updateAllCommentableButtonsAndReactionCountsAndStuff(commentableType, commentableIdList);
     updateReactionCountsAndStuff();
+    setupCommentReplyButtonHandler(commentableId, commentableType);
 
-    var replyButts = document.getElementsByClassName('toggle-reply-form');
-    for (var i = 0; i < replyButts.length; i++) {
-      var butt = replyButts[i];
-      butt.onclick = function (event) {
-        event.preventDefault();
-        if (event.target.classList.contains("thread-indication")) {
-          return false;
-        } else {
-          var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
-          if (userStatus == 'logged-out') {
-            showModal('reply-to-comment');
-            return;
-          }
-          var actionNode = event.target.parentNode;
-          var parentId = actionNode.dataset.commentId;
-          document.getElementById("button-for-comment-" + actionNode.dataset.commentId).style.zIndex = "5";
-          var waitingOnCSRF = setInterval(function () {
-            var metaTag = document.querySelector("meta[name='csrf-token']");
-            if (metaTag) {
-              clearInterval(waitingOnCSRF);
-              actionNode.innerHTML = buildCommentFormHTML(commentableId, commentableType, parentId);
-              setTimeout(function () {
-                actionNode.getElementsByTagName('textarea')[0].focus();
-              }, 30);
-            }
-          }, 1);
-          // document.getElementById('textarea-for-'+parentId).focus();
-        };
-        return false;
-      }
-    }
     var editButts = document.getElementsByClassName('edit-butt');
     for (var i = 0; i < editButts.length; i++) {
       var butt = editButts[i];
