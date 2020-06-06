@@ -124,7 +124,7 @@ RSpec.describe "Internal::Users", type: :request do
     end
 
     it "selects new role for user" do
-      user.add_role_synchronously :trusted
+      user.add_role :trusted
       user.reload
       patch "/internal/users/#{user.id}/user_status", params: { user: { user_status: "Comment Ban", note_for_current_role: "comment ban this user" } }
       expect(user.roles.count).to eq(1)

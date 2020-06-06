@@ -47,7 +47,7 @@ RSpec.describe "UserProfiles", type: :request do
     end
 
     it "renders noindex meta if banned" do
-      user.add_role_synchronously(:banned)
+      user.add_role(:banned)
       get "/#{user.username}"
       expect(response.body).to include("<meta name=\"googlebot\" content=\"noindex\">")
     end

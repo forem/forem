@@ -73,7 +73,7 @@ RSpec.describe Reaction, type: :model do
     end
 
     context "when user is trusted" do
-      before { reaction.user.add_role_synchronously(:trusted) }
+      before { reaction.user.add_role(:trusted) }
 
       it "allows vomit reactions for users with trusted role" do
         reaction.category = "vomit"

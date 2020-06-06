@@ -185,13 +185,13 @@ RSpec.describe Podcast, type: :model do
     let(:user) { create(:user) }
 
     it "returns podcast admins" do
-      user.add_role_synchronously(:podcast_admin, podcast)
+      user.add_role(:podcast_admin, podcast)
       expect(podcast.admins).to include(user)
     end
 
     it "does not return admins for other podcasts" do
       other_podcast = create(:podcast)
-      user.add_role_synchronously(:podcast_admin, other_podcast)
+      user.add_role(:podcast_admin, other_podcast)
       expect(podcast.admins).to be_empty
     end
   end

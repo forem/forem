@@ -34,7 +34,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
 
     context "when user is a tag moderator" do
       before do
-        tag_moderator.add_role_synchronously(:tag_moderator, tag)
+        tag_moderator.add_role(:tag_moderator, tag)
         sign_in tag_moderator
       end
 
@@ -77,7 +77,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
 
     context "when user is a tag moderator" do
       before do
-        tag_moderator.add_role_synchronously(:tag_moderator, tag)
+        tag_moderator.add_role(:tag_moderator, tag)
         sign_in tag_moderator
       end
 
