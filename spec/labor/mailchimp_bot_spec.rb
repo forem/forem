@@ -110,7 +110,7 @@ RSpec.describe MailchimpBot, type: :labor do
 
     it "sends proper information" do
       user.update(email_community_mod_newsletter: true)
-      user.add_role :trusted
+      user.add_role_synchronously :trusted
       described_class.new(user).manage_community_moderator_list
       expect(my_gibbon_client).to have_received(:upsert).
         with(hash_including(
@@ -128,7 +128,7 @@ RSpec.describe MailchimpBot, type: :labor do
 
     it "sends proper information" do
       user.update(email_tag_mod_newsletter: true)
-      user.add_role(:tag_moderator, tag)
+      user.add_role_synchronously(:tag_moderator, tag)
       described_class.new(user).manage_tag_moderator_list
       expect(my_gibbon_client).to have_received(:upsert).
         with(hash_including(

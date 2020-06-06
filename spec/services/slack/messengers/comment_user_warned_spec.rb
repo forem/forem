@@ -14,7 +14,7 @@ RSpec.describe Slack::Messengers::CommentUserWarned, type: :service do
 
   context "when the uesr has been warned" do
     before do
-      user.add_role(:warned)
+      user.add_role_synchronously(:warned)
     end
 
     it "contains the correct info", :aggregate_failures do
