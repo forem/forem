@@ -113,6 +113,7 @@
   display: flex;
   align-items: center;
   z-index: 20;
+  position: relative;
   &__trigger {
     all: unset;
     padding: var(--su-1);
@@ -125,6 +126,17 @@
   &__dropdown {
     display: var(--dropdown-display);
     top: var(--header-height);
+  }
+
+  &:before {
+    content: '';
+    position: absolute;
+    --menu-width: 150%;
+    --menu-height: 110%;
+    width: var(--menu-width);
+    height: var(--menu-height);
+    top: calc((100% - var(--menu-height)) / 2);
+    left: calc((100% - var(--menu-width)) / 2);
   }
 
   &.showing,
