@@ -27,8 +27,8 @@ RSpec.describe "Sitemaps", type: :request do
 
     it "sends a surrogate key (for Fastly's user)" do
       create_list(:article, 4)
-      Article.limit(3).update_all(published_at: 3.months.ago, score: 10)
-      get "/sitemap-#{3.months.ago.strftime('%b-%Y')}.xml"
+      Article.limit(3).update_all(published_at: "2020-03-07T00:27:30Z", score: 10)
+      get "/sitemap-Mar-2020.xml"
       article = Article.first
       expect(response.body).to include("<loc>#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}#{article.path}</loc>")
       expect(response.body).to include("<lastmod>#{article.last_comment_at.strftime('%F')}</lastmod>")
