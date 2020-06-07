@@ -421,7 +421,9 @@ function checkIfNearBottomOfPage() {
 
   var footer = document.getElementById('footer-container');
 
-  var infiniteScroll = new IntersectionObserver(fetchNextPageIfNearBottom);
+  var infiniteScroll = new IntersectionObserver(fetchNextPageIfNearBottom, {
+    rootMargin: '500px',
+  });
   infiniteScroll.observe(footer);
 }
 
