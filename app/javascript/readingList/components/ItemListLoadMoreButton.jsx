@@ -8,7 +8,7 @@ export const ItemListLoadMoreButton = ({ show, onClick }) => {
   }
 
   return (
-    <div className="load-more-wrapper">
+    <div data-testid="load-more-button" className="load-more-wrapper">
       <button onClick={onClick} type="button">
         Load More
       </button>

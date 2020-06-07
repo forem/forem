@@ -13,7 +13,7 @@ export const ItemListTags = ({ availableTags, selectedTags, onClick }) => {
       {`#${tag}`}
     </a>
   ));
-  return <div className="tags">{tagsHTML}</div>;
+  return <div data-testid="tags" className="tags">{tagsHTML}</div>;
 };
 
 ItemListTags.propTypes = {

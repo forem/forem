@@ -17,18 +17,19 @@ class SidebarUser extends Component {
     const { user } = this.props;
     return (
       <div className="widget-list-item__suggestions">
-        <a href={`/${user.username}`} className="widget-list-item__avatar">
+        <a data-testid="widget-avatar" href={`/${user.username}`} className="widget-list-item__avatar">
           <img
             src={user.profile_image_url}
             alt={user.name}
             className="widget-list-item__profile-pic"
           />
         </a>
-        <div className="widget-list-item__content">
+        <div data-testid="widget-content" className="widget-list-item__content">
           <h5>
             <a href={`/${user.username}`}>{user.name}</a>
           </h5>
           <button
+            data-testid="widget-follow-button"
             className="widget-list-item__follow-button"
             type="button"
             onClick={this.onClick}
