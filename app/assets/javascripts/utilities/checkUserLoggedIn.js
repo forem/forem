@@ -1,5 +1,3 @@
-
-
 function checkUserLoggedIn() {
   const body = document.body;
   if (!body) {

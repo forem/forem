@@ -1,5 +1,3 @@
-
-
 // SUBMITTING FORM //
 
 function getFormValues(form) {

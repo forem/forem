@@ -1,5 +1,3 @@
-
-
 function initSignupModal() {
   if (document.getElementById('global-signup-modal')) {
     document.getElementById('global-signup-modal-bg').onclick = () => {

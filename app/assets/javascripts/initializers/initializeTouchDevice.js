@@ -1,5 +1,3 @@
-
-
 function getById(className) {
   return document.getElementById(className);
 }
