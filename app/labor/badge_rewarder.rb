@@ -1,6 +1,13 @@
 module BadgeRewarder
-  YEARS = { 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five", 6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten" }.freeze
+  YEARS = { 1 => "one", 2 => "two", 3 => "three" }.freeze
   REPOSITORIES = ["thepracticaldev/dev.to", "thepracticaldev/DEV-ios", "thepracticaldev/DEV-Android"].freeze
+
+  LONGEST_STREAK_WEEKS = 16
+  LONGEST_STREAK_MESSAGE = "16 weeks! You've achieved the longest #{ApplicationConfig['COMMUNITY_NAME']} writing " \
+    "streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to" \
+    " our community!".freeze
+
+  MINIMUM_QUALITY = -25
 
   def self.award_yearly_club_badges
     (1..3).each do |i|
@@ -17,11 +24,10 @@ module BadgeRewarder
     end
   end
 
-  def self.award_beloved_comment_badges
-    # ID 3 is the proper ID in prod. We should change in future to ENV var.
-    badge_id = Badge.find_by(slug: "beloved-comment")&.id || 3
-    Comment.where("public_reactions_count > ?", 24).find_each do |comment|
-      message = "You're famous! [This is the comment](https://#{ApplicationConfig['APP_DOMAIN']}#{comment.path}) for which you are being recognized. 😄"
+  def self.award_beloved_comment_badges(comment_count = 24)
+    badge_id = Badge.find_by!(slug: "beloved-comment").id
+    Comment.where("public_reactions_count > ?", comment_count).find_each do |comment|
+      message = "You're famous! [This is the comment](#{URL.comment(comment)}) for which you are being recognized. 😄"
       achievement = BadgeAchievement.create(
         user_id: comment.user_id,
         badge_id: badge_id,
@@ -49,14 +55,14 @@ module BadgeRewarder
       winning_article = Article.where("score > 100").
         published.
         where.not(user_id: past_winner_user_ids).
-        order("score DESC").
+        order(score: :desc).
         where("published_at > ?", 7.5.days.ago). # More than seven days, to have some wiggle room.
         cached_tagged_with(tag).first
       if winning_article
         award_badges(
           [winning_article.user.username],
           tag.badge.slug,
-          "Congratulations on posting the most beloved [##{tag.name}](#{ApplicationConfig['APP_PROTOCOL'] + ApplicationConfig['APP_DOMAIN']}/t/#{tag.name}) post from the past seven days! Your winning post was [#{winning_article.title}](#{ApplicationConfig['APP_PROTOCOL'] + ApplicationConfig['APP_DOMAIN'] + winning_article.path}). (You can only win once per badge-eligible tag)",
+          "Congratulations on posting the most beloved [##{tag.name}](#{URL.tag(tag)}) post from the past seven days! Your winning post was [#{winning_article.title}](#{URL.article(winning_article)}). (You can only win once per badge-eligible tag)",
         )
       end
     end
@@ -78,9 +84,10 @@ module BadgeRewarder
   end
 
   def self.award_streak_badge(num_weeks)
-    article_user_ids = Article.published.where("published_at > ? AND score > ?", 1.week.ago, -25).pluck(:user_id) # No cred for super low quality
-    message = if num_weeks == 16
-                "16 weeks! You've achieved the longest #{ApplicationConfig['COMMUNITY_NAME']} writing streak possible. This makes you eligible for special quests in the future. Keep up the amazing contributions to our community!"
+    # No credit for super low quality
+    article_user_ids = Article.published.where("published_at > ? AND score > ?", 1.week.ago, MINIMUM_QUALITY).pluck(:user_id)
+    message = if num_weeks == LONGEST_STREAK_WEEKS
+                LONGEST_STREAK_MESSAGE
               else
                 "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
               end
