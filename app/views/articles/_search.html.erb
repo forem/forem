@@ -60,12 +60,10 @@
   }
 
   function addOptionalBanner(query, displayBanner, jobsUrl) {
-    if (query) {
-      var lowerCaseQuery = query.toLowerCase();
+    var lowerCaseQuery = query.toLowerCase();
 
-      if (displayBanner && lowerCaseQuery.includes("job")) {
-        document.getElementById("banner-section").innerHTML = '<div class="crayons-notice crayons-notice--info mb-3 fs-base">Interested in joining our team? Explore our <a href=' + jobsUrl + '>open roles</a>.</div>';
-      }
+    if (displayBanner && lowerCaseQuery.includes("job")) {
+      document.getElementById("banner-section").innerHTML = '<div class="crayons-notice crayons-notice--info mb-3 fs-base">Interested in joining our team? Explore our <a href=' + jobsUrl + '>open roles</a>.</div>';
     }
   }
 
@@ -119,7 +117,9 @@
     })
       .then(response => response.json())
     .then((content) => {
-        addOptionalBanner(searchHash["search_fields"], content.display_jobs_banner, content.jobs_url);
+        if (searchHash["search_fields"]) {
+          addOptionalBanner(searchHash["search_fields"], content.display_jobs_banner, content.jobs_url);
+        }
 
         var resultDivs = []
         content.result.forEach(function (story, i) {
