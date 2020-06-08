@@ -315,6 +315,10 @@
       font-size: var(--fs-s);
       line-height: var(--lh-tight);
       color: var(--base-90);
+
+      &:after {
+        content: 'Flag to Admins';
+      }
     }
 
     .vomit-checkmark {
@@ -379,7 +383,7 @@
       color: var(--accent-brand);
 
       &:after {
-        content: 'Marked as abuse/spam';
+        content: 'Flagged to Admins';
       }
     }
   }
