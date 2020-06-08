@@ -9,9 +9,15 @@ import {
   updateChatChannelDescription,
   sendChatChannelInvitation,
   leaveChatChannelMembership,
-} from './actions/chat_channel_setting_actions';
+} from '../actions/chat_channel_setting_actions';
 
-import { Snackbar, addSnackbarItem } from '../Snackbar';
+import { Snackbar, addSnackbarItem } from '../../Snackbar';
+import ModSection from './ModSection';
+import PersonalSettings from './PersonalSetting';
+import LeaveMembershipSection from './LeaveMembershipSection';
+import ModFaqSection from './ModFaqSection';
+import ChannelDescriptionSection from './ChannelDescriptionSection';
+import ChatChannelMembershipSection from './ChatChannelMembershipSection';
 
 const snackZone = document.getElementById('snack-zone');
 
@@ -374,239 +380,44 @@ export default class ChatChannelSettings extends Component {
     return (
       <div className="activechatchannel__activeArticle">
         <div className="p-4">
-          <div className="p-4 grid gap-2 crayons-card mb-4 channel_details">
-            <h1 className="mb-1">{chatChannel.name}</h1>
-            <p>{chatChannel.description}</p>
-            <p className="fw-bold">
-              You are a channel 
-              {' '}
-              {currentMembership.role}
-            </p>
+          <ChannelDescriptionSection
+            channelName={chatChannel.name}
+            channelDescription={chatChannel.description}
+            currentMembershipRole={currentMembership.role}
+          />
+          <ChatChannelMembershipSection
+            currentMembershipRole={currentMembership.role}
+            activeMemberships={activeMemberships}
+            removeActiveMembership={this.removeActiveMembership}
+            pendingMemberships={pendingMemberships}
+            requestedMemberships={requestedMemberships}
+            removePendingMembership={this.removePendingMembership}
+            removeRequestedMembership={this.removeRequestedMembership}
+            chatChannelAcceptMembership={this.chatChannelAcceptMembership}
+          />
+          <div>
+            <ModSection 
+              invitationUsernames={invitationUsernames}
+              handleInvitationUsernames={this.handleInvitationUsernames}
+              handleChatChannelInvitations={this.handleChatChannelInvitations}
+              channelDescription={channelDescription}
+              handleDescriptionChange={this.handleDescriptionChange}
+              channelDiscoverable={channelDiscoverable}
+              handleChannelDiscoverableStatus={this.handleChannelDiscoverableStatus}
+              handleChannelDescriptionChanges={this.handleChannelDescriptionChanges}
+              currentMembershipRole={currentMembership.role}
+            />
           </div>
-          <div className="p-4 grid gap-2 crayons-card mb-4">
-            <h3 className="mb-2">Members</h3>
-            {activeMemberships && activeMemberships.length > 0
-              ? activeMemberships.map((membership) => (
-                <div className="flex items-center">
-                  <a href={`/${membership.username}`}>
-                    <span className="crayons-avatar crayons-avatar--l mr-3">
-                      <img
-                        className="crayons-avatar__image align-middle"
-                        role="presentation"
-                        src={membership.image}
-                        alt={`${membership.name} profile`}
-                      />
-                    </span>
-                    <span className="mr-2">{membership.name}</span>
-                  </a>
-                  {membership.role === 'member' &&
-                    currentMembership.role === 'mod' ? (
-                      <button
-                        className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
-                        type="button"
-                        onClick={this.removeActiveMembership}
-                        data-membership-id={membership.membership_id}
-                        data-membership-status={membership.status}
-                      >
-                        x
-                      </button>
-                    ) : null}
-                </div>
-                ))
-              : null}
-          </div>
-          {currentMembership.role === 'mod' ? (
-            <div>
-              <div className="p-4 grid gap-2 crayons-card mb-4">
-                <h3 className="mb-2">Pending Invitations</h3>
-                {pendingMemberships && pendingMemberships.length > 0
-                  ? pendingMemberships.map((membership) => (
-                    <div className="flex items-center">
-                      <a href={`/${membership.username}`}>
-                        <span className="crayons-avatar crayons-avatar--l mr-3">
-                          <img
-                            className="crayons-avatar__image align-middle"
-                            role="presentation"
-                            src={membership.image}
-                            alt={`${membership.name} profile`}
-                          />
-                        </span>
-                        <span className="mr-2">{membership.name}</span>
-                      </a>
-                      <button
-                        className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
-                        type="button"
-                        onClick={this.removePendingMembership}
-                        data-membership-id={membership.membership_id}
-                        data-membership-status={membership.status}
-                      >
-                        x
-                      </button>
-                    </div>
-                    ))
-                  : null}
-              </div>
-              <div className="p-4 grid gap-2 crayons-card mb-4">
-                <h3 className="mb-2">Joining Request</h3>
-                {requestedMemberships && requestedMemberships.length > 0
-                  ? requestedMemberships.map((membership) => (
-                    <div className="flex items-center">
-                      <a href={`/${membership.username}`}>
-                        <span className="crayons-avatar crayons-avatar--l mr-3">
-                          <img
-                            className="crayons-avatar__image align-middle"
-                            role="presentation"
-                            src={membership.image}
-                            alt={`${membership.name} profile`}
-                          />
-                        </span>
-                        <span className="mr-2">{membership.name}</span>
-                      </a>
-                      <button
-                        className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
-                        type="button"
-                        onClick={this.chatChannelAcceptMembership}
-                        data-membership-id={membership.membership_id}
-                      >
-                        +
-                      </button>
-                      <button
-                        className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
-                        type="button"
-                        onClick={this.removeRequestedMembership}
-                        data-membership-id={membership.membership_id}
-                        data-membership-status={membership.status}
-                      >
-                        x
-                      </button>
-                    </div>
-                    ))
-                  : null}
-              </div>
-              <div className="crayons-card p-4 grid gap-2 mb-4">
-                <div className="crayons-field">
-                  <label
-                    className="crayons-field__label"
-                    htmlFor="chat_channel_membership_Usernames to Invite"
-                  >
-                    Usernames to invite
-                  </label>
-                  <input
-                    placeholder="Comma separated"
-                    className="crayons-textfield"
-                    type="text"
-                    value={invitationUsernames}
-                    name="chat_channel_membership[invitation_usernames]"
-                    id="chat_channel_membership_invitation_usernames"
-                    onChange={this.handleInvitationUsernames}
-                  />
-                </div>
-                <div>
-                  <button
-                    className="crayons-btn"
-                    type="submit"
-                    onClick={this.handleChatChannelInvitations}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
-              <div className="crayons-card p-4 grid gap-2 mb-4">
-                <h3>Channel Settings</h3>
-                <div className="crayons-field">
-                  <label
-                    className="crayons-field__label"
-                    htmlFor="chat_channel_description"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    className="crayons-textfield"
-                    name="description"
-                    id="chat_channel_description"
-                    value={channelDescription}
-                    ref={this.textarea}
-                    onChange={this.handleDescriptionChange}
-                  />
-                </div>
-                <div className="crayons-field crayons-field--checkbox">
-                  <input
-                    type="checkbox"
-                    id="c2"
-                    className="crayons-checkbox"
-                    checked={channelDiscoverable}
-                    onChange={this.handleChannelDiscoverableStatus}
-                  />
-                  <label htmlFor="c2" className="crayons-field__label">
-                    Channel Discoverable
-                  </label>
-                </div>
-                <div>
-                  <button
-                    className="crayons-btn"
-                    type="submit"
-                    onClick={this.handleChannelDescriptionChanges}
-                  >
-                    Submit
-                  </button>
-                </div>
-              </div>
-            </div>
-          ) : null}
-          <div className="crayons-card p-4 grid gap-2 mb-4">
-            <h3>Personal Settings</h3>
-            <h4>Notifications</h4>
-            <div className="crayons-field crayons-field--checkbox">
-              <input
-                type="checkbox"
-                id="c3"
-                className="crayons-checkbox"
-                checked={showGlobalBadgeNotification}
-                onChange={this.handlePersonChatChennelSetting}
-              />
-              <label htmlFor="c3" className="crayons-field__label">
-                Receive Notifications for New Messages
-              </label>
-            </div>
-            <div>
-              <button
-                className="crayons-btn"
-                type="submit"
-                onClick={this.updateCurrentMembershipNotificationSettings}
-              >
-                Submit
-              </button>
-            </div>
-          </div>
-          {currentMembership.role === 'member' ? (
-            <div className="crayons-card p-4 grid gap-2 mb-4">
-              <h3>Danger Zone</h3>
-              <div>
-                <button
-                  className="crayons-btn crayons-btn--danger"
-                  type="submit"
-                  onClick={this.handleleaveChatChannelMembership}
-                >
-                  Leave Channel
-                </button>
-              </div>
-            </div>
-          ) : null}
-          {currentMembership.role === 'mod' ? (
-            <div className="crayons-card grid gap-2 p-4">
-              <p>
-                Questions about Connect Channel moderation? Contact
-                <a
-                  href="mailto:yo@dev.to"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mx-2"
-                >
-                  yo@dev.to
-                </a>
-              </p>
-            </div>
-          ) : null}
+          <PersonalSettings 
+            updateCurrentMembershipNotificationSettings={this.updateCurrentMembershipNotificationSettings}
+            showGlobalBadgeNotification={showGlobalBadgeNotification}
+            handlePersonChatChennelSetting={this.handlePersonChatChennelSetting}
+          />
+          <LeaveMembershipSection
+            currentMembershipRole={currentMembership.role}
+            handleleaveChatChannelMembership={this.handleleaveChatChannelMembership}
+          />
+          <ModFaqSection currentMembershipRole={currentMembership.role} />
         </div>
       </div>
     );
