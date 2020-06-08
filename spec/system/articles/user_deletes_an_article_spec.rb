@@ -10,7 +10,8 @@ RSpec.describe "Deleting Article", type: :system do
     click_on "DELETE"
   end
 
-  it "renders the page", js: true, percy: true do
+  # TODO: Uncomment this spec when we decide to use percy again
+  xit "renders the page", js: true, percy: true do
     # Take snapshot before confirming deletion
     Percy.snapshot(page, name: "Article: confirm deletion")
   end
