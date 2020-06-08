@@ -1,3 +1,4 @@
+
 /* global checkUserLoggedIn */
 
 function removeExistingCSRF() {
@@ -18,6 +19,7 @@ function fetchBaseData() {
   }
   xmlhttp.onreadystatechange = () => {
     if (xmlhttp.readyState === XMLHttpRequest.DONE) {
+      // Assigning CSRF
       var json = JSON.parse(xmlhttp.responseText);
       if (json.token) {
         removeExistingCSRF();
@@ -31,6 +33,13 @@ function fetchBaseData() {
       newCsrfTokenMeta.content = json.token;
       document.head.appendChild(newCsrfTokenMeta);
       document.body.dataset.loaded = 'true';
+
+      // Assigning Broadcast
+      if (json.broadcast) {
+        document.body.dataset.broadcast = json.broadcast;
+      }
+
+      // Assigning User
       if (checkUserLoggedIn()) {
         document.body.dataset.user = json.user;
         browserStoreCache('set', json.user);

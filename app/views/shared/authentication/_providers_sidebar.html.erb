@@ -1,7 +1,7 @@
 <% authentication_enabled_providers.each do |provider| %>
   <a
     href="<%= provider.sign_in_path(state: "navbar_basic") %>"
-    class="cta cta-button login-cta-button"
+    class="crayons-btn crayons-btn--l"
     data-no-instant>
     Sign In With <%= provider.official_name %>
   </a>

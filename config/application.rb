@@ -20,7 +20,7 @@ Bundler.require(*Rails.groups)
 module PracticalDeveloper
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.1
+    config.load_defaults 5.1 # NOTE: [Rails 6] we should at least work towards updating this to 5.2
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
@@ -50,24 +50,9 @@ module PracticalDeveloper
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
 
-    # Enable CORS for API v0
-    # (logging is only activated when debug is enabled)
-    debug_cors = ENV["DEBUG_CORS"].present? ? true : false
-    config.middleware.insert_before 0, Rack::Cors, debug: debug_cors, logger: (-> { Rails.logger }) do
-      allow do
-        origins do |source, _env|
-          source # echo back the client's `Origin` header instead of using `*`
-        end
-
-        # allowed public APIs
-        %w[articles comments listings podcast_episodes tags users videos].each do |resource_name|
-          # allow read operations, disallow custom headers (eg. api-key) and enable preflight caching
-          # NOTE: Chrome caps preflight caching at 2 hours, Firefox at 24 hours
-          # see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age#Directives
-          resource "/api/#{resource_name}/*", methods: %i[head get options], headers: [], max_age: 2.hours.to_i
-        end
-      end
-    end
+    # NOTE: [Rails 6]
+    # To improve security, Rails embeds the purpose and expiry metadata inside encrypted or signed cookies value.
+    config.action_dispatch.use_cookies_with_metadata = false
 
     # After-initialize checker to add routes to reserved words
     config.after_initialize do

@@ -286,7 +286,7 @@ RSpec.describe "Comments", type: :request do
       end
 
       it "returns json" do
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
     end
   end

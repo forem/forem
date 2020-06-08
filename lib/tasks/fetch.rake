@@ -47,8 +47,8 @@ task prune_old_field_tests: :environment do
 end
 
 task remove_old_html_variant_data: :environment do
-  HtmlVariantTrial.where("created_at < ?", 2.weeks.ago).destroy_all
-  HtmlVariantSuccess.where("created_at < ?", 2.weeks.ago).destroy_all
+  HtmlVariantTrial.destroy_by("created_at < ?", 2.weeks.ago)
+  HtmlVariantSuccess.destroy_by("created_at < ?", 2.weeks.ago)
   HtmlVariant.find_each do |html_variant|
     html_variant.calculate_success_rate! if html_variant.html_variant_successes.any?
   end

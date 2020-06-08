@@ -1,4 +1,4 @@
-<nav class="sidebar-nav" id="sidebar-nav">
+<nav class="mb-6" id="sidebar-nav">
   <% if user_signed_in? %>
     <a class="sidebar-profile" id="sidebar-profile" href="#">
       <img src="" class="sidebar-profile--avatar" id="sidebar-profile--avatar" alt="" width="48" height="48">
@@ -8,115 +8,107 @@
       </div>
     </a>
   <% end %>
+  <% unless user_signed_in? %>
+    <a href="/enter" class="crayons-link crayons-link--block fw-bold">
+      <%= inline_svg_tag("twemoji/handshake.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sign In/Up") %>
+      Sign In/Up
+    </a>
+  <% end %>
+  <% if false # Let's bring it when ready %>
+    <a href="/" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/house.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Home") %>
+      Home
+    </a>
+  <% end %>
+  <% if user_signed_in? %>
+    <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
+      Reading list <span id="reading-list-count" class="crayons-indicator"></span>
+    </a>
+  <% end %>
+  <a href="<%= listings_path %>" class="crayons-link crayons-link--block">
+    <%= inline_svg_tag("twemoji/listing.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Listings") %>
+    Listings
+  </a>
+  <a href="<%= pod_path %>" class="crayons-link crayons-link--block">
+    <%= inline_svg_tag("twemoji/mic.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Podcasts") %>
+    Podcasts
+  </a>
+  <a href="<%= videos_path %>" class="crayons-link crayons-link--block">
+    <%= inline_svg_tag("twemoji/camera.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Videos") %>
+    Videos
+  </a>
+  <a href="<%= tags_path %>" class="crayons-link crayons-link--block">
+    <%= inline_svg_tag("twemoji/tag.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Tags") %>
+    Tags
+  </a>
 
-  <div class="px-1">
-    <% unless user_signed_in? %>
-      <a href="/enter" class="crayons-link crayons-link--block fw-bold">
-        <%= inline_svg_tag("twemoji/handshake.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sign In/Up") %>
-        Sign In/Up
-      </a>
-    <% end %>
-    <% if false # Let's bring it when ready %>
-      <a href="/" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/house.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Home") %>
-        Home
-      </a>
-    <% end %>
-    <% if user_signed_in? %>
-      <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/drawer.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Reading list") %>
-        Reading list <span id="reading-list-count" class="crayons-indicator"></span>
-      </a>
-    <% end %>
-    <a href="<%= listings_path %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/listing.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Listings") %>
-      Listings
-    </a>
-    <a href="<%= pod_path %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/mic.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Podcasts") %>
-      Podcasts
-    </a>
-    <a href="<%= videos_path %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/camera.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Videos") %>
-      Videos
-    </a>
-    <a href="<%= tags_path %>" class="crayons-link crayons-link--block">
-      <%= inline_svg_tag("twemoji/tag.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Tags") %>
-      Tags
-    </a>
+  <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
 
-    <a href="javascript:void(0)" class="crayons-link crayons-link--secondary crayons-link--block crayons-link--block--indented fs-s" id="main-nav-more-trigger">More...</a>
-
-    <div class="hidden" id="main-nav-more">
-      <a href="/code-of-conduct" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Code of Conduct") %>
-        Code of Conduct
-      </a>
-      <a href="/faq" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/bulb.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "FAQ") %>
-        FAQ
-      </a>
-      <% if SiteConfig.shop_url.present? %>
-      <a href="<%= SiteConfig.shop_url %>" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/shopping.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Shop") %>
-        <%= community_name %> Shop
-      </a>
-      <% end %>
-      <a href="/sponsors" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sponsors") %>
-        Sponsors
-      </a>
-      <a href="/about" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("rainbowdev.svg", aria: true, width: 24, height: 24, class: "crayons-icon crayons-icon--default p-1", title: "About") %>
-        About
-      </a>
-      <a href="/privacy" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/smart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Privacy policy") %>
-        Privacy policy
-      </a>
-      <a href="/terms" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/look.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Terms of use") %>
-        Terms of use
-      </a>
-      <a href="/contact" class="crayons-link crayons-link--block">
-        <%= inline_svg_tag("twemoji/contact.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Contact") %>
-        Contact
-      </a>
-      <div class="flex justify-around p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
-        <%= render partial: "layouts/social_media" %>
-      </div>
+  <div class="hidden" id="main-nav-more">
+    <a href="/code-of-conduct" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/thumb-up.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Code of Conduct") %>
+      Code of Conduct
+    </a>
+    <a href="/faq" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/bulb.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "FAQ") %>
+      FAQ
+    </a>
+    <% if SiteConfig.shop_url.present? %>
+    <a href="<%= SiteConfig.shop_url %>" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/shopping.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Shop") %>
+      <%= community_name %> Shop
+    </a>
+    <% end %>
+    <a href="/sponsors" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Sponsors") %>
+      Sponsors
+    </a>
+    <a href="/about" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("rainbowdev.svg", aria: true, width: 24, height: 24, class: "crayons-icon crayons-icon--default p-1", title: "About") %>
+      About
+    </a>
+    <a href="/privacy" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/smart.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Privacy policy") %>
+      Privacy policy
+    </a>
+    <a href="/terms" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/look.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Terms of use") %>
+      Terms of use
+    </a>
+    <a href="/contact" class="crayons-link crayons-link--block">
+      <%= inline_svg_tag("twemoji/contact.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Contact") %>
+      Contact
+    </a>
+    <div class="flex justify-around p-4 mt-4 border-solid border-0 border-t-1 border-base-10">
+      <%= render partial: "layouts/social_media" %>
     </div>
   </div>
+</nav>
 
-  <div class="widget sidebar-nav-block sidebar-tag-block">
-    <div class="sidebar-nav-block-inner">
+<nav class="sidebar-tags-browser mb-6 overflow-y-auto scrolling-touch">
+  <% if user_signed_in? %>
+    <header class="fs-xs color-base-50 ff-accent fw-bold p-2">MY TAGS</header>
+    <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
+  <% end %>
+  <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
+    <header id="tag-separator" class="fs-xs color-base-50 ff-accent fw-bold p-2">
       <% if user_signed_in? %>
-        <header>My Tags</header>
-        <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>
+        OTHER POPULAR TAGS
+      <% else %>
+        DESIGN YOUR EXPERIENCE
       <% end %>
-      <div id="sidebar-nav-default-tags" class="sidebar-nav-default-tags <%= "showing" unless user_signed_in? %>">
-        <header id="tag-separator">
-          <% if user_signed_in? %>
-            Other Popular Tags
-          <% else %>
-            Design Your Experience
-          <% end %>
-        </header>
-        <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
-          <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
-            <a class="sidebar-nav-link sidebar-nav-link-tag" href="<%= tag_path(tag_array.second) %>">
-              <span class="sidebar-nav-tag-text">
-                #<%= tag_array.second %>
-              </span>
-            </a>
-            <a class="follow-action-button sidebar-nav-link-follow cta"
-              href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
-              data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
-              + FOLLOW
-            </a>
-          </div>
-        <% end %>
+    </header>
+    <% Tag.where(supported: true).order("hotness_score DESC").limit(30).pluck(:id, :name).each do |tag_array| %>
+      <div class="sidebar-nav-element" id="default-sidebar-element-<%= tag_array.second %>">
+        <a class="crayons-link crayons-link--block" href="<%= tag_path(tag_array.second) %>">
+          #<%= tag_array.second %>
+        </a>
+        <a class="follow-action-button sidebar-nav-link-follow crayons-btn crayons-btn--s crayons-btn--secondary_"
+          href="#" id="sidebar-nav-link-follow-<%= tag_array.second %>"
+          data-info='{"id":<%= tag_array.first %>,"className":"Tag"}'>
+          Follow
+        </a>
       </div>
-    </div>
-  </div>
+    <% end %>
 </nav>

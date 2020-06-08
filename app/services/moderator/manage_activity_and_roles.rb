@@ -25,7 +25,6 @@ module Moderator
     end
 
     def remove_privileges
-      @user.remove_role :video_permission
       @user.remove_role :workshop_pass
       @user.remove_role :pro
       remove_mod_roles

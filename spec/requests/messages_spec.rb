@@ -32,7 +32,7 @@ RSpec.describe "Messages", type: :request do
       end
 
       it "returns in json" do
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
     end
 
@@ -68,7 +68,7 @@ RSpec.describe "Messages", type: :request do
       end
 
       it "returns in json" do
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
     end
   end
@@ -100,7 +100,7 @@ RSpec.describe "Messages", type: :request do
       end
 
       it "returns in json" do
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
     end
   end

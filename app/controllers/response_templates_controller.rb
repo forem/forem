@@ -35,7 +35,7 @@ class ResponseTemplatesController < ApplicationController
       flash[:settings_notice] = "Your response template \"#{response_template.title}\" was created."
       redirect_to user_settings_path(tab: "response-templates", id: response_template.id)
     else
-      flash[:error] = "Response template error: #{response_template.errors.full_messages.to_sentence}"
+      flash[:error] = "Response template error: #{response_template.errors_as_sentence}"
       attributes = permitted_attributes(ResponseTemplate)
       redirect_to user_settings_path(
         tab: "response-templates",
@@ -52,7 +52,7 @@ class ResponseTemplatesController < ApplicationController
     if response_template.destroy
       flash[:settings_notice] = "Your response template \"#{response_template.title}\" was deleted."
     else
-      flash[:error] = response_template.errors.full_messages.to_sentence # this will probably never fail
+      flash[:error] = response_template.errors_as_sentence # this will probably never fail
     end
 
     redirect_to user_settings_path(tab: "response-templates")
@@ -66,7 +66,7 @@ class ResponseTemplatesController < ApplicationController
       flash[:settings_notice] = "Your response template \"#{response_template.title}\" was updated."
       redirect_to user_settings_path(tab: "response-templates", id: response_template.id)
     else
-      flash[:error] = "Response template error: #{response_template.errors.full_messages.to_sentence}"
+      flash[:error] = "Response template error: #{response_template.errors_as_sentence}"
       redirect_to user_settings_path(
         tab: "response-templates",
         id: response_template.id,

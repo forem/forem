@@ -49,4 +49,8 @@ class ApplicationRecord < ActiveRecord::Base
 
     raise UninferrableDecoratorError, "Could not infer a decorator for #{called_on.class.name}."
   end
+
+  def errors_as_sentence
+    errors.full_messages.to_sentence
+  end
 end

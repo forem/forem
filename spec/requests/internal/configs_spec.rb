@@ -41,7 +41,7 @@ RSpec.describe "/internal/config", type: :request do
 
       describe "API tokens" do
         it "updates the health_check_token" do
-          token = "#{rand(20)}"
+          token = rand(20).to_s
           post "/internal/config", params: { site_config: { health_check_token: token }, confirmation: confirmation_message }
           expect(SiteConfig.health_check_token).to eq token
         end
@@ -97,17 +97,15 @@ RSpec.describe "/internal/config", type: :request do
       describe "Emails" do
         it "updates email_addresses" do
           expected_email_addresses = {
-            default: "foo@bar.to",
-            business: "partners@dev.to",
-            privacy: "privacy@bar.to",
-            members: "members@bar.to"
+            business: "partners@example.com",
+            privacy: "privacy@example.com",
+            members: "members@example.com"
           }
           post "/internal/config", params: { site_config: { email_addresses: expected_email_addresses },
                                              confirmation: confirmation_message }
-          expect(SiteConfig.email_addresses[:default]).to eq("foo@bar.to")
-          expect(SiteConfig.email_addresses[:privacy]).to eq("privacy@bar.to")
-          expect(SiteConfig.email_addresses[:business]).to eq("partners@dev.to")
-          expect(SiteConfig.email_addresses[:members]).to eq("members@bar.to")
+          expect(SiteConfig.email_addresses[:privacy]).to eq("privacy@example.com")
+          expect(SiteConfig.email_addresses[:business]).to eq("partners@example.com")
+          expect(SiteConfig.email_addresses[:members]).to eq("members@example.com")
         end
       end
 
@@ -125,6 +123,18 @@ RSpec.describe "/internal/config", type: :request do
         it "rejects update without proper confirmation" do
           expect { post "/internal/config", params: { site_config: { periodic_email_digest_min: 6 }, confirmation: "Incorrect yo!" } }.to raise_error Pundit::NotAuthorizedError
           expect(SiteConfig.periodic_email_digest_min).not_to eq(6)
+        end
+      end
+
+      describe "Jobs" do
+        it "updates jobs_url" do
+          post "/internal/config", params: { site_config: { jobs_url: "www.jobs.com" }, confirmation: confirmation_message }
+          expect(SiteConfig.jobs_url).to eq("www.jobs.com")
+        end
+
+        it "updates display_jobs_banner" do
+          post "/internal/config", params: { site_config: { display_jobs_banner: true }, confirmation: confirmation_message }
+          expect(SiteConfig.display_jobs_banner).to eq(true)
         end
       end
 
@@ -376,7 +386,6 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
         end
       end
-
     end
   end
   # rubocop:enable RSpec/NestedGroups

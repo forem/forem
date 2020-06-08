@@ -121,7 +121,9 @@ class ChatChannelMembershipsController < ApplicationController
         flash[:settings_notice] = "Invitation to  #{channel_name} accepted. It may take a moment to show up in your list."
       else
         send_chat_action_message("@#{current_user.username} added @#{@chat_channel_membership.user.username}", current_user, @chat_channel_membership.chat_channel_id, "joined")
-        NotifyMailer.channel_invite_email(@chat_channel_membership, @chat_channel_membership.user).deliver_later
+
+        NotifyMailer.with(membership: @chat_channel_membership, inviter: @chat_channel_membership.user).channel_invite_email.deliver_later
+
         flash[:settings_notice] = "Accepted request of #{@chat_channel_membership.user.username} to join  #{channel_name}."
         membership = ChatChannelMembership.find_by!(chat_channel_id: @chat_channel_membership.chat_channel.id, user: current_user)
         respond_to do |format|

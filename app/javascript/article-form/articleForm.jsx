@@ -297,37 +297,35 @@ export default class ArticleForm extends Component {
           onToggle={this.handleOrgIdChange}
         />
 
-        <div className="crayons-article-form__main">
-          {previewShowing ? (
-            <Preview
-              previewResponse={previewResponse}
-              articleState={this.state}
-              errors={errors}
-            />
-          ) : (
-            <Form
-              titleDefaultValue={title}
-              titleOnChange={linkState(this, 'title')}
-              tagsDefaultValue={tagList}
-              tagsOnInput={linkState(this, 'tagList')}
-              bodyDefaultValue={bodyMarkdown}
-              bodyOnChange={linkState(this, 'bodyMarkdown')}
-              bodyHasFocus={false}
-              version={version}
-              mainImage={mainImage}
-              onMainImageUrlChange={this.handleMainImageUrlChange}
-              errors={errors}
-              switchHelpContext={this.switchHelpContext}
-            />
-          )}
-
-          <Help
-            previewShowing={previewShowing}
-            helpFor={helpFor}
-            helpPosition={helpPosition}
-            version={version}
+        {previewShowing ? (
+          <Preview
+            previewResponse={previewResponse}
+            articleState={this.state}
+            errors={errors}
           />
-        </div>
+        ) : (
+          <Form
+            titleDefaultValue={title}
+            titleOnChange={linkState(this, 'title')}
+            tagsDefaultValue={tagList}
+            tagsOnInput={linkState(this, 'tagList')}
+            bodyDefaultValue={bodyMarkdown}
+            bodyOnChange={linkState(this, 'bodyMarkdown')}
+            bodyHasFocus={false}
+            version={version}
+            mainImage={mainImage}
+            onMainImageUrlChange={this.handleMainImageUrlChange}
+            errors={errors}
+            switchHelpContext={this.switchHelpContext}
+          />
+        )}
+
+        <Help
+          previewShowing={previewShowing}
+          helpFor={helpFor}
+          helpPosition={helpPosition}
+          version={version}
+        />
 
         <EditorActions
           published={published}

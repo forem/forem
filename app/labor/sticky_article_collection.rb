@@ -24,7 +24,7 @@ class StickyArticleCollection
     @tag_articles ||= Article.published.tagged_with(article_tags, any: true).
       includes(:user).
       where("public_reactions_count > ? OR comments_count > ?", reaction_count_num, comment_count_num).
-      where.not(id: article.id, user_id: article.user_id).
+      where.not(id: article.id).where.not(user_id: article.user_id).
       where("featured_number > ?", 5.days.ago.to_i).
       order(Arel.sql("RANDOM()")).
       limit(8)
@@ -36,7 +36,7 @@ class StickyArticleCollection
     Article.published.tagged_with(%w[career productivity discuss explainlikeimfive], any: true).
       includes(:user).
       where("comments_count > ?", comment_count_num).
-      where.not(id: article.id, user_id: article.user_id).
+      where.not(id: article.id).where.not(user_id: article.user_id).
       where("featured_number > ?", 5.days.ago.to_i).
       order(Arel.sql("RANDOM()")).
       limit(10 - tag_articles.size)

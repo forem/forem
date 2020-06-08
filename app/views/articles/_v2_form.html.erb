@@ -23,9 +23,9 @@
       <a href="/" class="crayons-article-form__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a>
 
       <div class="crayons-field__label">
-        <span class="hidden s:inline-block">Write a new post</span>
+        <span class="hidden s:inline-block mr-2">Write a new post</span>
         <% if organizations && organizations.size > 0 %>
-          <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto ml-2 mt-0">
+          <select name="article[organization_id]" id="article_publish_under_org" class="crayons-select w-auto mt-0">
             <%= options_for_select({ "Personal" => "" }.merge(organizations.pluck(:name, :id).to_h), article.organization_id || "") %>
           </select>
         <% end %>
@@ -42,41 +42,40 @@
       </div>
     </div>
 
-    <div class="crayons-article-form__main">
-      <div class="crayons-card crayons-article-form__main__content">
-        <% if version == "v2" %>
-          <div>
-            <div class="crayons-article-form__cover" role="presentation">
-              <% if article.main_image.present? %>
-                <img src="<%= article.main_image %>" width="250" height="105" alt="Post cover" class="crayons-article-form__cover__image">
-              <% end %>
-              <button class="crayons-btn crayons-btn--outlined mr-2">
-                <label for="cover-image-input">
-                  <% if article.main_image.present? %>Change<% else %>Add a cover image<% end %>
-                </label>
-                <input id="cover-image-input" type="file" accept="image/*" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" data-max-file-size-mb="25">
-              </button>
-            </div>
-            <div class="crayons-article-form__title">
-              <textarea class="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px; "><%= article.title %></textarea>
-            </div>
-            <div class="crayons-article-form__tagsfield">
-              <input type="text" class="crayons-textfield crayons-textfield--ghost ff-accent" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
-            </div>
-          </div>
-        <% end %>
-        <div class="crayons-article-form__body">
-          <div class="crayons-article-form__toolbar">
-            <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left fw-normal" type="button">
-              <%= (inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") + "Upload image").delete!("\n").html_safe %>
-              <input type="file" id="image-upload-field" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" multiple accept="image/*" data-max-file-size-mb="25" />
+    <div class="crayons-card crayons-article-form__content">
+      <% if version == "v2" %>
+        <div>
+          <div class="crayons-article-form__cover" role="presentation">
+            <% if article.main_image.present? %>
+              <img src="<%= article.main_image %>" width="250" height="105" alt="Post cover" class="crayons-article-form__cover__image">
+            <% end %>
+            <button class="crayons-btn crayons-btn--outlined mr-2">
+              <label for="cover-image-input">
+                <% if article.main_image.present? %>Change<% else %>Add a cover image<% end %>
+              </label>
+              <input id="cover-image-input" type="file" accept="image/*" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" data-max-file-size-mb="25">
             </button>
           </div>
-          <textarea class="crayons-article-form__body__field crayons-textfield crayons-textfield--ghost" id="article_body_markdown" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
+          <div class="crayons-article-form__title">
+            <textarea class="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight" type="text" id="article-form-title" placeholder="New post title here..." autocomplete="off" style="height: 60px; "><%= article.title %></textarea>
           </div>
+          <div class="crayons-article-form__tagsfield">
+            <input type="text" class="crayons-textfield crayons-textfield--ghost ff-accent" placeholder="Add up to 4 tags..." name="tags" value="<%= article.cached_tag_list %>" />
+          </div>
+        </div>
+      <% end %>
+      <div class="crayons-article-form__body">
+        <div class="crayons-article-form__toolbar">
+          <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left fw-normal" type="button">
+            <%= (inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") + "Upload image").delete!("\n").html_safe %>
+            <input type="file" id="image-upload-field" class="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer" multiple accept="image/*" data-max-file-size-mb="25" />
+          </button>
+        </div>
+        <textarea class="crayons-article-form__body__field crayons-textfield crayons-textfield--ghost" id="article_body_markdown" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
       </div>
-      <div class="crayons-article-form__main_aside"></div>
     </div>
+
+    <div class="crayons-article-form__aside"></div>
 
     <div class="crayons-article-form__footer">
       <button class="crayons-btn mr-2" type="button">Publish</button>
