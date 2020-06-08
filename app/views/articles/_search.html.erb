@@ -59,6 +59,14 @@
     }
   }
 
+  function addOptionalBanner(query, displayBanner, jobsUrl) {
+    var lowerCaseQuery = query.toLowerCase();
+
+    if (displayBanner && lowerCaseQuery.includes("job")) {
+      document.getElementById("banner-section").innerHTML = '<div class="crayons-notice crayons-notice--info mb-3 fs-base">Interested in joining our team? Explore our <a href=' + jobsUrl + '>open roles</a>.</div>';
+    }
+  }
+
   function search(query, filters) {
     var hashtags = query.match(/#\w+/g);
     var searchTerm = query.replace(/#/g, '').trim();
@@ -109,6 +117,10 @@
     })
       .then(response => response.json())
     .then((content) => {
+        if (searchHash["search_fields"]) {
+          addOptionalBanner(searchHash["search_fields"], content.display_jobs_banner, content.jobs_url);
+        }
+
         var resultDivs = []
         content.result.forEach(function (story, i) {
           resultDivs.push(buildArticleHTML(story));
