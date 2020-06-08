@@ -50,6 +50,12 @@
   }
 }
 
+body.default-navbar-config {
+  .article .body [id] {
+    scroll-margin-top: var(--header-height);
+  }
+}
+
 article {
   padding: 0 0;
   position: relative;

@@ -2,12 +2,6 @@
 @import 'variables';
 @import 'mixins';
 
-body.default-navbar-config {
-  .article .body [id] {
-    scroll-margin-top: var(--header-height);
-  }
-}
-
 .top-bar {
   --indicator-outline: var(--header-bg);
   --dropdown-display: none;
