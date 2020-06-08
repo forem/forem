@@ -17,7 +17,7 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).to have_selector(".crayons-story--featured", visible: :visible)
       end
 
-      it "shows the main article readable date", js: true do
+      it "shows the main article readable date", js: true, raise_server_errors: false do
         expect(page).to have_selector(".crayons-story--featured time", text: "Mar 4")
       end
 
@@ -40,7 +40,7 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).to have_text(article2.title)
       end
 
-      it "shows all articles dates", js: true do
+      it "shows all articles dates", js: true, raise_server_errors: false do
         expect(page).to have_selector(".crayons-story time", text: "Mar 4", count: 2)
       end
 

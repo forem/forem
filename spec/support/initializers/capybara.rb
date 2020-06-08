@@ -20,6 +20,12 @@ RSpec.configure do |config|
     driven_by :rack_test
   end
 
+  config.around(:each, raise_server_errors: false) do |example|
+    Capybara.raise_server_errors = false
+    example.run
+    Capybara.raise_server_errors = true
+  end
+
   config.before(:each, type: :system, js: true) do
     if ENV["SELENIUM_URL"].present?
       # Support use of remote chrome testing.
