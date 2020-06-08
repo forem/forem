@@ -122,7 +122,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def moderation_routes?
-    user.has_role?(:trusted) && !user.banned
+    (user.has_role?(:trusted) || minimal_admin?) && !user.banned
   end
 
   def permitted_attributes
