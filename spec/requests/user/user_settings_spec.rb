@@ -174,14 +174,6 @@ RSpec.describe "UserSettings", type: :request do
     end
   end
 
-  describe ":misc" do
-    before { sign_in user }
-
-    it "renders the announcements settings" do
-      get user_settings_path(tab: :misc)
-      expect(response.body).to include("Announcements")
-    end
-
     it "properly updates the announcements settings", js: true do
       get "/settings/misc"
       page.check "Display Announcements (When browsing)"
