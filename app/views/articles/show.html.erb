@@ -83,25 +83,26 @@
   </div>
 
   <div class="crayons-layout__content grid gap-4">
+    <% if !@article.published %>
+      <div class="crayons-notice crayons-notice--danger">
+        <strong>Unpublished Post.</strong> This URL is public but secret, so share at your own discretion.
+        <a href="<%= @article.path %>/edit" class="fw-bold">Click to edit</a>.
+      </div>
+    <% end %>
+
+    <% if @article.video_state == "PROGRESSING" %>
+      <div class="crayons-notice crayons-notice--warning">⏳ Video Transcoding In Progress ⏳</div>
+    <% end %>
+
     <div
       class="crayons-card"
       id="article-show-container"
       data-author-id="<%= @article.user_id %>"
       data-path="<%= @article.path %>"
       data-published="<%= @article.published? %>">
-      <% if @article.video_state == "PROGRESSING" %>
-        <div class="crayons-notice crayons-notice--warning mb-6">⏳ Video Transcoding In Progress ⏳</div>
-      <% end %>
 
       <article class="crayons-article">
         <header class="crayons-article__header" id="main-title">
-          <% if !@article.published %>
-            <a href="<%= @article.path %>/edit" class="unpublished">
-              Unpublished Post. This URL is public but secret, so share at your own discretion.
-              <em style="display: inline-block;">Click to edit.</em>
-            </a>
-          <% end %>
-
           <% if @article.video.present? %>
             <%= render "articles/video_player", meta_tags: true, article: @article %>
           <% elsif @article.main_image.present? %>
