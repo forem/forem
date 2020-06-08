@@ -1,5 +1,6 @@
 FROM gitpod/workspace-postgres
 
+ENV FAKEVAR=true
 # Install Ruby
 ENV RUBY_VERSION=2.7.1
 RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --default"
