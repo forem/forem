@@ -74,7 +74,9 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
-  config.hosts << ENV["APP_DOMAIN"] unless ENV["APP_DOMAIN"].nil?
+  if (host = ENV["GITPOD_WORKSPACE_URL"].presence || ENV["APP_DOMAIN"].presence)
+    config.hosts << host
+  end
   config.app_domain = "localhost:3000"
 
   config.action_mailer.default_url_options = { host: "localhost:3000" }

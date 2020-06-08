@@ -17,3 +17,4 @@ RUN wget "${ES_REPO}/${ES_ARCHIVE}" \
   && wget "${ES_REPO}/${ES_ARCHIVE}.sha512" \
   && shasum -a 512 -c ${ES_ARCHIVE}.sha512 \
   && tar -xzf ${ES_ARCHIVE}
+
