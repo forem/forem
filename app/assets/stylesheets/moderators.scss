@@ -291,12 +291,7 @@
     line-height: var(--lh-base);
     margin-top: var(--su-2);
     color: var(--base-90);
-  }
-
-  @media (min-width: $breakpoint-xl) {
-    .vote-text {
-      font-size: var(--fs-s);
-    }
+    white-space: nowrap;
   }
 
   .reaction-vomit-button {
