@@ -75,6 +75,8 @@
   <% end %>
 <% end %>
 
+<% has_long_markdown = @article.body_markdown && @article.body_markdown.size > 900 %>
+
 <div class="crayons-layout crayons-layout--3-cols crayons-layout--article">
   <div class="crayons-layout__sidebar-left">
     <%= render "articles/actions" %>
@@ -183,7 +185,7 @@
           <%= @article.processed_html.html_safe %>
         </div>
 
-        <% if @article.body_markdown && @article.body_markdown.size > 900 && @collection %>
+        <% if has_long_markdown && @collection %>
           <%= render "articles/collection",
                      rendered_article: @article,
                      collection: @collection,
@@ -193,12 +195,16 @@
       </article>
     </div>
 
-    <% if @article.body_markdown && @article.body_markdown.size > 900 %>
-        <% cache("article-about-author-#{@user.id}-#{@user.updated_at}", expires_in: 100.hours) do %>
-          <%= render "articles/about_author" %>
+    <% if has_long_markdown || @organization %>
+      <section class="crayons-card crayons-card--secondary text-padding">
+        <% if has_long_markdown %>
+          <% cache("article-about-author-#{@user.id}-#{@user.updated_at}", expires_in: 100.hours) do %>
+            <%= render "articles/about_author", published: @article.readable_publish_date %>
+          <% end %>
         <% end %>
-      <% end %>
-    <%= render "articles/org_branding", organization: @organization %>
+        <%= render "articles/org_branding", organization: @organization, author: has_long_markdown %>
+      </section>
+    <% end %>
 
     <div class="crayons-card text-padding">
       <%= render "articles/full_comment_area" %>
