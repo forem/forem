@@ -18,6 +18,16 @@ class Broadcast < ApplicationRecord
     Nokogiri::HTML(content).at("body").inner_html
   end
 
+  def banner_class
+    return if banner_style.blank?
+
+    if banner_style == "default"
+      "crayons-banner"
+    else
+      "crayons-banner crayons-banner--#{banner_style}"
+    end
+  end
+
   private
 
   def single_active_announcement_broadcast

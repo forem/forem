@@ -18,4 +18,14 @@ RSpec.describe Broadcast, type: :model do
     expect(inactive_broadcast).not_to be_valid
     expect(inactive_broadcast.errors.full_messages.join).to include("You can only have one active announcement broadcast")
   end
+
+  it "determines the correct banner_class for the Broadcast" do
+    no_style_broadcast = create(:announcement_broadcast, active: false)
+    default_style_broadcast = create(:announcement_broadcast, title: "Default", banner_style: "default", active: false)
+    warning_style_broadcast = create(:announcement_broadcast, title: "Warning", banner_style: "warning", active: false)
+
+    expect(no_style_broadcast.banner_class).to eq(nil)
+    expect(default_style_broadcast.banner_class).to eq("crayons-banner")
+    expect(warning_style_broadcast.banner_class).to eq("crayons-banner crayons-banner--warning")
+  end
 end

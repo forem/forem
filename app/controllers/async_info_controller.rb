@@ -48,7 +48,7 @@ class AsyncInfoController < ApplicationController
       html: broadcast&.processed_html,
       banner_class: helpers.banner_class(broadcast)
     }.to_json
-  end
+  endg
 
   def user_data
     Rails.cache.fetch(user_cache_key, expires_in: 15.minutes) do
