@@ -5,9 +5,7 @@ function initializePaymentPointers() {
   
   if (userPointer) {
     meta.content = userPointer.dataset.paymentPointer;
-    console.log(meta.content)
   } else {
     meta.content = basePointer.dataset.paymentPointer;;
-    console.log(meta.content)
   }
 }

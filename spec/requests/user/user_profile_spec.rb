@@ -69,6 +69,18 @@ RSpec.describe "UserProfiles", type: :request do
       expect(response.body).not_to include("/feed/#{user.username}")
     end
 
+    it "renders user payment pointer if set" do
+      user.update_column(:payment_pointer, "test-payment-pointer")
+      get "/#{user.username}"
+      expect(response.body).to include "author-payment-pointer"
+      expect(response.body).to include "test-payment-pointer"
+    end
+
+    it "does not render payment pointer if not set" do
+      get "/#{user.username}"
+      expect(response.body).not_to include "author-payment-pointer"
+    end
+
     context "when organization" do
       it "renders organization page if org" do
         get organization.path

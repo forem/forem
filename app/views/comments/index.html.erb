@@ -35,7 +35,9 @@
     <% end %>
   <% end %>
 <% end %>
+
 <% if @commentable.class.name == "Article" %>
+  <%= render "shared/payment_pointer", user: @commentable.user %>
   <div id="comment-article-indicator" data-article-id="<%= @commentable.id %>">
 <% end %>
 <% if @root_comment %>
