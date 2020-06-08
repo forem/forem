@@ -34,6 +34,14 @@
   }
 
   &__video {
+    background: black;
+
+    &__player {
+      &:empty {
+        width: 100%;
+        padding-top: 56.25%;
+      }
+    }
   }
 
   &__header {
