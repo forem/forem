@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_04_133925) do
+ActiveRecord::Schema.define(version: 2020_06_05_170430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1227,6 +1227,7 @@ ActiveRecord::Schema.define(version: 2020_06_04_133925) do
     t.string "old_username"
     t.boolean "onboarding_package_requested", default: false
     t.datetime "organization_info_updated_at"
+    t.string "payment_pointer"
     t.boolean "permit_adjacent_sponsors", default: true
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
