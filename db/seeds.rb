@@ -286,7 +286,7 @@ seeder.create_if_none(Broadcast) do
 
   Article.create!(
     body_markdown: welcome_thread_content,
-    user: User.dev_account,
+    user: User.dev_account || User.first,
   )
 end
 
