@@ -2,7 +2,7 @@ class RedditTag < LiquidTagBase
   include ActionView::Helpers::SanitizeHelper
 
   PARTIAL = "liquids/reddit".freeze
-  URL_REGEXP = /\Ahttps\:\/\/(www.)?reddit.com/.freeze
+  URL_REGEXP = /\Ahttps:\/\/(www.)?reddit.com/.freeze
 
   def initialize(_tag_name, url, _tokens)
     @url = ActionController::Base.helpers.strip_tags(url).strip

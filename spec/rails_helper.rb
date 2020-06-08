@@ -148,7 +148,15 @@ RSpec.configure do |config|
     stub_request(:post, "http://www.google-analytics.com/collect").
       to_return(status: 200, body: "", headers: {})
 
+    stub_request(:any, /robohash.org/).
+      with(headers:
+            {
+              "Accept" => "*/*",
+              "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+              "User-Agent" => "Ruby"
+            }).to_return(status: 200, body: "", headers: {})
     # Prevent Percy.snapshot from trying to hit the agent while not in use
+
     allow(Percy).to receive(:snapshot)
   end
 

@@ -7,7 +7,7 @@ describe BulkSqlDelete, type: :service do
       WHERE notifications.id IN (
         SELECT notifications.id
         FROM notifications
-        WHERE created_at < '#{Time.zone.now}'
+        WHERE created_at < '#{Time.current}'
         LIMIT 1
       )
     SQL
@@ -40,7 +40,10 @@ describe BulkSqlDelete, type: :service do
 
     it "deletes all records in batches" do
       create_list :notification, 5, created_at: 1.month.ago
-      expect { described_class.delete_in_batches(sql) }.to change(Notification, :count).from(5).to(0)
+      expect(Notification.count).to eq(5)
+      result = described_class.delete_in_batches(sql)
+      expect(Notification.count).to eq(0)
+      expect(result).to eq(5)
     end
   end
 end
