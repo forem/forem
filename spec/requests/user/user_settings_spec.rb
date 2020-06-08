@@ -174,16 +174,6 @@ RSpec.describe "UserSettings", type: :request do
     end
   end
 
-    it "properly updates the announcements settings", js: true do
-      get "/settings/misc"
-      page.check "Display Announcements (When browsing)"
-      sidekiq_perform_enqueued_jobs do
-        click_button("Save Announcements Settings")
-      end
-      expect(page).to have_text("Your profile was successfully updated.")
-    end
-  end
-
   describe "PUT /update/:id" do
     before { sign_in user }
 
