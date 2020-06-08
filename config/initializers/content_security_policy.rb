@@ -17,9 +17,9 @@ Rails.application.config.content_security_policy do |policy|
 
   # allow webpack-dev-server host as allowed origin for connect-src
   if Rails.env.development?
-    webpack_host = ENV.fetch("APP_DOMAIN") { "localhost" }
+    webpack_host = "#{ApplicationConfig.app_domain_no_port}:3035"
     policy.connect_src :self, :https,
-                       "http://#{webpack_host}:3035", "ws://#{webpack_host}:3035"
+                       "http://#{webpack_host}", "ws://#{webpack_host}"
   end
 end
 
