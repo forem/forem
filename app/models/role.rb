@@ -12,6 +12,7 @@ class Role < ApplicationRecord
     mod_relations_admin
     tech_admin
     trusted
+    video_permission
     warned
     workshop_pass
   ].freeze
