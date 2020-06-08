@@ -1,5 +1,6 @@
 class ChatChannel < ApplicationRecord
   attr_accessor :current_user, :usernames_string
+
   resourcify
 
   CHANNEL_TYPES = %w[open invite_only direct].freeze
@@ -128,7 +129,7 @@ class ChatChannel < ApplicationRecord
   end
 
   def remove_user(user)
-    chat_channel_memberships.where(user: user).destroy_all
+    chat_channel_memberships.destroy_by(user: user)
   end
 
   def pusher_channels
