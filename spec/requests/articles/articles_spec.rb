@@ -57,45 +57,46 @@ RSpec.describe "Articles", type: :request do
       let!(:featured_article) { create(:article, featured: true) }
       let!(:not_featured_article) { create(:article, featured: false) }
 
-      before { get "/feed" }
-
       it "returns only featured articles" do
+        get "/feed"
         expect(response.body).to include(featured_article.title)
         expect(response.body).not_to include(not_featured_article.title)
       end
     end
 
     shared_context "when user/organization articles exist" do
-      let(:user) { create(:user) }
-      let(:organization) { create(:organization) }
+      let!(:user) { create(:user) }
+      let!(:organization) { create(:organization) }
       let!(:user_article) { create(:article, user: user) }
       let!(:organization_article) { create(:article, organization: organization) }
     end
 
     context "when :username param is given and belongs to a user" do
       include_context "when user/organization articles exist"
-      before { get user_feed_path(user.username) }
 
       it "returns only articles for that user" do
+        get user_feed_path(user.username)
         expect(response.body).to include(user_article.title)
         expect(response.body).not_to include(organization_article.title)
       end
 
       it "contains the full user URL" do
+        get user_feed_path(user.username)
         expect(response.body).to include("<link>#{URL.user(user)}</link>")
       end
     end
 
     context "when :username param is given and belongs to an organization" do
       include_context "when user/organization articles exist"
-      before { get user_feed_path(organization.slug) }
 
       it "returns only articles for that organization" do
+        get user_feed_path(organization.slug)
         expect(response.body).not_to include(user_article.title)
         expect(response.body).to include(organization_article.title)
       end
 
       it "contains the full organization URL" do
+        get user_feed_path(organization.slug)
         expect(response.body).to include("<link>#{URL.organization(organization)}</link>")
       end
     end
