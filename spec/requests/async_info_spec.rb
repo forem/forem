@@ -11,6 +11,10 @@ RSpec.describe "AsyncInfo", type: :request do
     context "when not logged-in" do
       before { get "/async_info/base_data" }
 
+      it "returns broadcast" do
+        expect(response.body).to include("broadcast")
+      end
+
       it "returns token" do
         expect(response.body).to include("token")
       end
@@ -25,7 +29,7 @@ RSpec.describe "AsyncInfo", type: :request do
         allow(controller_instance).to receive(:remember_user_token).and_return(nil)
         sign_in create(:user)
         get "/async_info/base_data"
-        expect(response.body).to include("token", "user")
+        expect(response.body).to include("broadcast", "token", "user")
       end
     end
   end

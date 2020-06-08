@@ -1,4 +1,4 @@
-'use strict';
+
 
 /* global checkUserLoggedIn */
 
@@ -20,6 +20,7 @@ function fetchBaseData() {
   }
   xmlhttp.onreadystatechange = () => {
     if (xmlhttp.readyState === XMLHttpRequest.DONE) {
+      // Assigning CSRF
       var json = JSON.parse(xmlhttp.responseText);
       if (json.token) {
         removeExistingCSRF();
@@ -33,6 +34,13 @@ function fetchBaseData() {
       newCsrfTokenMeta.content = json.token;
       document.getElementsByTagName('head')[0].appendChild(newCsrfTokenMeta);
       document.getElementsByTagName('body')[0].dataset.loaded = 'true';
+
+      // Assigning Broadcast
+      if (json.broadcast) {
+        document.body.dataset.broadcast = json.broadcast;
+      }
+
+      // Assigning User
       if (checkUserLoggedIn()) {
         document.getElementsByTagName('body')[0].dataset.user = json.user;
         browserStoreCache('set', json.user);
