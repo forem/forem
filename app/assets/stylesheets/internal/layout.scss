@@ -1,4 +1,5 @@
 @import '../variables';
+@import '../crayons';
 
 #siteConfigBodyContainer {
   padding: 20px;
@@ -26,9 +27,9 @@
 }
 
 .buffer-cell {
-    /* Max-width derived from width of a Bootstrap container */
-    max-width: 1140px;
-    word-wrap: break-word;
+  /* Max-width derived from width of a Bootstrap container */
+  max-width: 1140px;
+  word-wrap: break-word;
 }
 
 .bg-featured {
