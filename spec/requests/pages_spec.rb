@@ -16,6 +16,31 @@ RSpec.describe "Pages", type: :request do
       expect(response.body).not_to include("/page/#{page.slug}")
       expect(response.body).to include("stories-show")
     end
+
+    context "when json template" do
+      let_it_be(:json_text) { "{\"foo\": \"bar\"}" }
+      let_it_be(:page) { create(:page, title: "sample_data", template: "json", body_html: json_text, body_markdown: nil) }
+
+      before do
+        page.save! # Trigger processing of page.body_html
+      end
+
+      it "returns json data " do
+        get "/page/#{page.slug}"
+
+        expect(response.content_type).to eq("application/json")
+        expect(response.body).to include(json_text)
+      end
+
+      it "returns json data for top level template" do
+        page.is_top_level_path = true
+        page.save!
+        get "/#{page.slug}"
+
+        expect(response.content_type).to eq("application/json")
+        expect(response.body).to include(json_text)
+      end
+    end
   end
 
   describe "GET /about" do
