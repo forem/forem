@@ -8,7 +8,8 @@ RSpec.describe "User visits a homepage", type: :system do
   context "when user hasn't logged in" do
     before { visit "/" }
 
-    it "renders the page", js: true, percy: true do
+    # TODO: Uncomment this spec when we decide to use percy again
+    xit "renders the page", js: true, percy: true do
       Percy.snapshot(page, name: "Visits homepage: logged out user")
     end
 
@@ -44,7 +45,8 @@ RSpec.describe "User visits a homepage", type: :system do
       sign_in(user)
     end
 
-    it "renders the page", js: true, percy: true do
+    # TODO: Uncomment this spec when we decide to use percy again
+    xit "renders the page", js: true, percy: true do
       Percy.snapshot(page, name: "Visits homepage: logged in user")
     end
 

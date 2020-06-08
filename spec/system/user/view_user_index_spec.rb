@@ -68,7 +68,8 @@ RSpec.describe "User index", type: :system do
       visit "/user3000"
     end
 
-    it "renders the page", js: true, percy: true do
+    # TODO: Uncomment this spec when we decide to use percy again
+    xit "renders the page", js: true, percy: true do
       Percy.snapshot(page, name: "User: /:user_id renders with organization membership")
     end
 
@@ -83,7 +84,8 @@ RSpec.describe "User index", type: :system do
       visit "/user3000"
     end
 
-    it "renders the page", js: true, percy: true do
+    # TODO: Uncomment this spec when we decide to use percy again
+    xit "renders the page", js: true, percy: true do
       Percy.snapshot(page, name: "User: /:user_id for logged in user's own profile")
     end
 
