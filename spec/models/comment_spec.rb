@@ -328,7 +328,7 @@ RSpec.describe Comment, type: :model do
       end
 
       it "queues a slack message when a warned user leaves a comment" do
-        user.add_role(:warned)
+        user.add_role_synchronously(:warned)
 
         sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           create(:comment, user: user, commentable: article)

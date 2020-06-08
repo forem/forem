@@ -39,11 +39,11 @@ FactoryBot.define do
     end
 
     trait :super_admin do
-      after(:build) { |user| user.add_role(:super_admin) }
+      after(:create) { |user| user.add_role_synchronously(:super_admin) }
     end
 
     trait :admin do
-      after(:build) { |user| user.add_role(:admin) }
+      after(:create) { |user| user.add_role_synchronously(:admin) }
     end
 
     trait :single_resource_admin do
@@ -51,7 +51,7 @@ FactoryBot.define do
         resource { nil }
       end
 
-      after(:build) { |user, options| user.add_role(:single_resource_admin, options.resource) }
+      after(:create) { |user, options| user.add_role_synchronously(:single_resource_admin, options.resource) }
     end
 
     trait :super_plus_single_resource_admin do
@@ -59,18 +59,18 @@ FactoryBot.define do
         resource { nil }
       end
 
-      after(:build) do |user, options|
-        user.add_role(:super_admin)
-        user.add_role(:single_resource_admin, options.resource)
+      after(:create) do |user, options|
+        user.add_role_synchronously(:super_admin)
+        user.add_role_synchronously(:single_resource_admin, options.resource)
       end
     end
 
     trait :trusted do
-      after(:build) { |user| user.add_role(:trusted) }
+      after(:create) { |user| user.add_role_synchronously(:trusted) }
     end
 
     trait :banned do
-      after(:build) { |user| user.add_role(:banned) }
+      after(:create) { |user| user.add_role_synchronously(:banned) }
     end
 
     trait :ignore_mailchimp_subscribe_callback do
@@ -81,7 +81,7 @@ FactoryBot.define do
     end
 
     trait :pro do
-      after(:build) { |user| user.add_role :pro }
+      after(:build) { |user| user.add_role_synchronously :pro }
     end
 
     trait :org_member do
@@ -125,7 +125,7 @@ FactoryBot.define do
     trait :tag_moderator do
       after(:create) do |user|
         tag = create(:tag)
-        user.add_role :tag_moderator, tag
+        user.add_role_synchronously :tag_moderator, tag
       end
     end
 

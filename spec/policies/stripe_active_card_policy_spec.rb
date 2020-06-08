@@ -15,7 +15,7 @@ RSpec.describe StripeActiveCardPolicy, type: :policy do
     it { is_expected.to permit_actions(%i[create update destroy]) }
 
     context "when user is banned" do
-      let(:user) { build(:user, :banned) }
+      let(:user) { create(:user, :banned) }
 
       it { is_expected.to forbid_actions(%i[create update]) }
     end

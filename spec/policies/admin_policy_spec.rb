@@ -13,7 +13,7 @@ RSpec.describe AdminPolicy, type: :policy do
     end
 
     context "when admin" do
-      let(:user) { build(:user, :super_admin) }
+      let(:user) { create(:user, :super_admin) }
 
       it "allow someone with admin privileges to continue" do
         expect(admin_policy).to permit(user)

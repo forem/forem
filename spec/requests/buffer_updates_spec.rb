@@ -10,7 +10,7 @@ RSpec.describe "BufferUpdates", type: :request do
   context "when trusted user is logged in" do
     before do
       sign_in mod_user
-      mod_user.add_role(:trusted)
+      mod_user.add_role_synchronously(:trusted)
     end
 
     it "creates buffer update for tweet if tweet params are passed" do
@@ -53,7 +53,7 @@ RSpec.describe "BufferUpdates", type: :request do
   context "when non-trusted user is logged in" do
     before do
       sign_in user
-      mod_user.add_role(:trusted)
+      mod_user.add_role_synchronously(:trusted)
     end
 
     it "rejects buffer update for non-trusted user" do

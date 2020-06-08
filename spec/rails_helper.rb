@@ -181,4 +181,22 @@ RSpec.configure do |config|
   #   Faker::Config.random = prev_random_seed
   #   Timecop.return
   # end
+
+  class User
+    # Adding roles in specs often does not complete before we check the role
+    # this ensures that roles are finished being added before we continue with our spec
+    def add_role_synchronously(role_name, resource = nil)
+      attempts = 0
+      max_attempts = 1000
+      result = add_role(role_name, resource)
+
+      attempts += 1 until roles.detect { |r| r.name == role_name.to_s } || attempts > max_attempts
+
+      if attempts > max_attempts
+        raise StandardError, "Adding role failed. role_name: #{role_name}, resource: #{resource}"
+      end
+
+      result
+    end
+  end
 end

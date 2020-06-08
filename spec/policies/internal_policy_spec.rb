@@ -9,23 +9,23 @@ RSpec.describe InternalPolicy, type: :policy do
     end
 
     it "allow someone with admin privileges to continue" do
-      expect(internal_policy).to permit(build(:user, :admin))
+      expect(internal_policy).to permit(create(:user, :admin))
     end
 
     it "allow someone with super_admin privileges to continue" do
-      expect(internal_policy).to permit(build(:user, :super_admin))
+      expect(internal_policy).to permit(create(:user, :super_admin))
     end
 
     context "when tied to a resource" do
       let(:user) { create(:user) }
 
       it "grant access based on permitted resource" do
-        user.add_role(:single_resource_admin, Article)
+        user.add_role_synchronously(:single_resource_admin, Article)
         expect(internal_policy).to permit(user, Article)
       end
 
       it "does not grant cross resource access" do
-        user.add_role(:single_resource_admin, Article)
+        user.add_role_synchronously(:single_resource_admin, Article)
         expect(internal_policy).not_to permit(user, Comment)
       end
     end

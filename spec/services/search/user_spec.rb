@@ -34,8 +34,8 @@ RSpec.describe Search::User, type: :service do
 
     context "with a filter" do
       it "searches by excluding roles" do
-        user1.add_role(:admin)
-        user2.add_role(:banned)
+        user1.add_role_synchronously(:admin)
+        user2.add_role_synchronously(:banned)
         index_documents([user1, user2])
         query_params = { size: 5, exclude_roles: ["banned"] }
 

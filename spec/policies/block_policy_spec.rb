@@ -22,7 +22,7 @@ RSpec.describe BlockPolicy, type: :policy do
   end
 
   context "when user is signed in as a super admin" do
-    let(:user) { build(:user, :super_admin) }
+    let(:user) { create(:user, :super_admin) }
 
     it { is_expected.to permit_actions(%i[index show new edit create update destroy]) }
     it { is_expected.to permit_mass_assignment_of(valid_attributes) }

@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Audit::Notification, type: :service do
   let!(:listener) { Faker::Alphanumeric.alpha(number: 10) }
-  let(:user) { build(:user, :admin) }
+  let(:user) { create(:user, :admin) }
 
   before do
     Audit::Subscribe.listen listener

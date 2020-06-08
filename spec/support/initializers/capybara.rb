@@ -5,6 +5,7 @@ require "webdrivers/chromedriver"
 Webdrivers.cache_time = 86_400
 
 Capybara.default_max_wait_time = 10
+Capybara.threadsafe = true
 
 Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new(

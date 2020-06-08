@@ -83,7 +83,7 @@ RSpec.describe "Moderations", type: :request do
     context "when the user is a tag moderator" do
       it "shows the option to remove the tag when the article has the tag" do
         tag_mod = create(:user, :tag_moderator)
-        tag_mod.add_role :trusted
+        tag_mod.add_role_synchronously :trusted
         tag = tag_mod.roles.find_by(name: "tag_moderator").resource
         article = create(:article, tags: tag)
         sign_in tag_mod
@@ -95,7 +95,7 @@ RSpec.describe "Moderations", type: :request do
 
     it "shows the option to add the tag when the article has the tag" do
       tag_mod = create(:user, :tag_moderator)
-      tag_mod.add_role :trusted
+      tag_mod.add_role_synchronously :trusted
       article = create(:article, tags: "javascript, cool, beans")
       sign_in tag_mod
 

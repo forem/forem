@@ -11,7 +11,7 @@ RSpec.describe HtmlVariantPolicy, type: :policy do
   end
 
   context "when user is an admin" do
-    let(:user)         { build(:user, :super_admin) }
+    let(:user)         { create(:user, :super_admin) }
     let(:html_variant) { build_stubbed(:html_variant) }
 
     it { is_expected.to permit_actions(%i[index show edit update create]) }
