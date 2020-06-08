@@ -7,19 +7,19 @@
   --article-font-size: var(--fs-l);
 
   @media (min-width: $breakpoint-s) {
-    --article-padding-x: var(--su-4);
-    --article-padding-y: var(--su-4);
+    --article-padding-x: var(--su-5);
+    --article-padding-y: var(--su-5);
   }
 
   @media (min-width: $breakpoint-m) {
     --article-rythm: var(--su-4);
-    --article-padding-x: var(--su-6);
-    --article-padding-y: var(--su-6);
+    --article-padding-x: var(--su-8);
+    --article-padding-y: var(--su-7);
     --article-font-size: var(--fs-xl);
   }
 
-  @media (min-width: $breakpoint-l) {
-    --article-padding-x: var(--su-8);
+  @media (min-width: $breakpoint-xl) {
+    --article-padding-x: var(--su-9);
   }
 }
 
