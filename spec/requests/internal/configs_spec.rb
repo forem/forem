@@ -97,17 +97,15 @@ RSpec.describe "/internal/config", type: :request do
       describe "Emails" do
         it "updates email_addresses" do
           expected_email_addresses = {
-            default: "foo@bar.to",
-            business: "partners@dev.to",
-            privacy: "privacy@bar.to",
-            members: "members@bar.to"
+            business: "partners@example.com",
+            privacy: "privacy@example.com",
+            members: "members@example.com"
           }
           post "/internal/config", params: { site_config: { email_addresses: expected_email_addresses },
                                              confirmation: confirmation_message }
-          expect(SiteConfig.email_addresses[:default]).to eq("foo@bar.to")
-          expect(SiteConfig.email_addresses[:privacy]).to eq("privacy@bar.to")
-          expect(SiteConfig.email_addresses[:business]).to eq("partners@dev.to")
-          expect(SiteConfig.email_addresses[:members]).to eq("members@bar.to")
+          expect(SiteConfig.email_addresses[:privacy]).to eq("privacy@example.com")
+          expect(SiteConfig.email_addresses[:business]).to eq("partners@example.com")
+          expect(SiteConfig.email_addresses[:members]).to eq("members@example.com")
         end
       end
 
