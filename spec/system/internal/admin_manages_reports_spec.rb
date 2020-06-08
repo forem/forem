@@ -14,7 +14,8 @@ RSpec.describe "Admin manages reports", type: :system do
     visit internal_feedback_messages_path
   end
 
-  it "renders the page", js: true, percy: true do
+  # TODO: Uncomment this spec when we decide to use percy again
+  xit "renders the page", js: true, percy: true do
     Percy.snapshot(page, name: "Admin: /internal/feedback_messages")
   end
 
@@ -34,7 +35,8 @@ RSpec.describe "Admin manages reports", type: :system do
       clear_search_boxes
     end
 
-    it "renders the page when searching reports", js: true, percy: true do
+    # TODO: Uncomment this spec when we decide to use percy again
+    xit "renders the page when searching reports", js: true, percy: true do
       fill_in "q_reporter_username_cont", with: user.username.to_s
       click_on "Search"
 
@@ -55,7 +57,8 @@ RSpec.describe "Admin manages reports", type: :system do
       expect(page).to have_css("#edit_feedback_message_#{feedback_message3.id}")
     end
 
-    it "renders the page when filtering", js: true, percy: true do
+    # TODO: Uncomment this spec when we decide to use percy again
+    xit "renders the page when filtering", js: true, percy: true do
       select "Invalid", from: "q[status_eq]"
       click_on "Search"
 
