@@ -31,6 +31,11 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include("Style Customization")
       end
 
+      it "displays content on misc tab properly" do
+        get "/settings/misc"
+        expect(response.body).to include("Display Announcements (When browsing)")
+      end
+
       it "displays content on RSS tab properly" do
         get "/settings/publishing-from-rss"
         title = "Publishing to #{ApplicationConfig['COMMUNITY_NAME']} from RSS"
@@ -166,6 +171,24 @@ RSpec.describe "UserSettings", type: :request do
         get user_settings_path(tab: :integrations)
         expect(response.body).not_to include("github-repos-container")
       end
+    end
+  end
+
+  describe ":misc" do
+    before { sign_in user }
+
+    it "renders the announcements settings" do
+      get user_settings_path(tab: :misc)
+      expect(response.body).to include("Announcements")
+    end
+
+    it "properly updates the announcements settings", js: true do
+      get "/settings/misc"
+      page.check "Display Announcements (When browsing)"
+      sidekiq_perform_enqueued_jobs do
+        click_button("Save Announcements Settings")
+      end
+      expect(page).to have_text("Your profile was successfully updated.")
     end
   end
 
