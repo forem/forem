@@ -191,13 +191,14 @@
                      position: :bottom %>
         <% end %>
       </article>
-      <% if @article.body_markdown && @article.body_markdown.size > 900 %>
+    </div>
+
+    <% if @article.body_markdown && @article.body_markdown.size > 900 %>
         <% cache("article-about-author-#{@user.id}-#{@user.updated_at}", expires_in: 100.hours) do %>
           <%= render "articles/about_author" %>
         <% end %>
       <% end %>
-      <%= render "articles/org_branding", organization: @organization %>
-    </div>
+    <%= render "articles/org_branding", organization: @organization %>
 
     <div class="crayons-card text-padding">
       <%= render "articles/full_comment_area" %>
