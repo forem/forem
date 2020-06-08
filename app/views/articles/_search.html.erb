@@ -63,8 +63,8 @@
     if (query) {
       var lowerCaseQuery = query.toLowerCase();
 
-      if (displayBanner && (lowerCaseQuery == "job" || lowerCaseQuery == "jobs")) {
-        document.getElementById("articles-list").innerHTML = '<div class="crayons-notice crayons-notice--info mb-3 fs-base">Interested in joining our team? Explore our <a href=' + jobsUrl + '>open roles</a>.</div>';
+      if (displayBanner && lowerCaseQuery.includes("job")) {
+        document.getElementById("banner-section").innerHTML = '<div class="crayons-notice crayons-notice--info mb-3 fs-base">Interested in joining our team? Explore our <a href=' + jobsUrl + '>open roles</a>.</div>';
       }
     }
   }
