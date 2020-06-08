@@ -23,7 +23,8 @@ class DataUpdateScript < ApplicationRecord
     end
 
     def scripts_to_run
-      DataUpdateScript.where(id: load_script_ids).select(&:enqueued?)
+      ids = load_script_ids
+      enqueued.where(id: ids)
     end
 
     # true if there are more files on disk or any scripts to run, false otherwise
