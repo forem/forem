@@ -30,8 +30,9 @@ RSpec.describe Articles::Feed, type: :service do
     let(:tagged_article) { create(:article, tags: tag) }
 
     it "returns published articles" do
-      expect(feed.published_articles_by_tag).to include article
-      expect(feed.published_articles_by_tag).not_to include unpublished_article
+      result = feed.published_articles_by_tag
+      expect(result).to include article
+      expect(result).not_to include unpublished_article
     end
 
     context "with tag" do
@@ -45,15 +46,10 @@ RSpec.describe Articles::Feed, type: :service do
     let!(:moderately_high_scoring_article) { create(:article, score: 20) }
     let(:result) { feed.top_articles_by_timeframe(timeframe: "week").to_a }
 
-    it "returns articles ordered by score" do
+    it "returns correct articles ordered by score" do
       expect(result.slice(0, 2)).to eq [hot_story, moderately_high_scoring_article]
       expect(result.last).to eq low_scoring_article
-    end
-
-    context "with week article timeframe specified" do
-      it "only returns articles from this week" do
-        expect(feed.top_articles_by_timeframe(timeframe: "week")).not_to include(month_old_story)
-      end
+      expect(result).not_to include(month_old_story)
     end
   end
 
@@ -68,8 +64,9 @@ RSpec.describe Articles::Feed, type: :service do
   end
 
   describe "#default_home_feed_and_featured_story" do
-    let(:featured_story) { feed.default_home_feed_and_featured_story.first }
-    let(:stories) { feed.default_home_feed_and_featured_story.second }
+    let(:default_feed) { feed.default_home_feed_and_featured_story }
+    let(:featured_story) { default_feed.first }
+    let(:stories) { default_feed.second }
 
     before { article.update(published_at: 1.week.ago) }
 
@@ -132,12 +129,9 @@ RSpec.describe Articles::Feed, type: :service do
 
       before { article.update(published_at: 1.week.ago) }
 
-      it "returns array of articles" do
+      it "returns array of high scoring articles" do
         expect(stories).to be_a(Array)
         expect(stories.first).to be_a(Article)
-      end
-
-      it "doesn't include low scoring stories" do
         expect(stories).not_to include(low_scoring_article)
       end
     end
@@ -436,11 +430,8 @@ RSpec.describe Articles::Feed, type: :service do
     let!(:recently_published_article) { create(:article, published_at: 3.hours.ago) }
     let(:globally_hot_articles) { feed.globally_hot_articles(true).second }
 
-    it "returns hot stories" do
+    it "returns hot recent stories" do
       expect(globally_hot_articles).not_to be_empty
-    end
-
-    it "returns recent stories" do
       expect(globally_hot_articles).to include(recently_published_article)
     end
 
@@ -456,7 +447,7 @@ RSpec.describe Articles::Feed, type: :service do
       # We manually called `feed.globally_hot_articles` here because `let` caches it!
       it "still returns articles" do
         empty_feed = false
-        20.times do
+        5.times do
           if feed.globally_hot_articles(true).second.empty?
             empty_feed = true
             break
@@ -466,7 +457,7 @@ RSpec.describe Articles::Feed, type: :service do
       end
     end
 
-    context "when now hot stories and no recently published articles" do
+    context "when no hot stories or recently published articles" do
       before do
         Article.delete_all
         create(:article, hotness_score: 0, score: 0, published_at: 3.days.ago)

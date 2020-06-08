@@ -5,7 +5,7 @@ namespace :app_initializer do
     Rake::Task["search:setup"].execute
 
     puts "\n== Preparing database =="
-    system('bin/rails db:prepare')
+    system("bin/rails db:prepare")
 
     puts "\n== Updating Data =="
     Rake::Task["data_updates:enqueue_data_update_worker"].execute

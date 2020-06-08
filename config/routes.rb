@@ -105,6 +105,7 @@ Rails.application.routes.draw do
     resource :config
     resources :badges, only: :index
     post "badges/award_badges", to: "badges#award_badges"
+    resources :path_redirects, only: %i[new create index edit update destroy]
   end
 
   namespace :stories, defaults: { format: "json" } do
@@ -457,7 +458,7 @@ Rails.application.routes.draw do
       :constraints => { view: /comments|moderate|admin/ }
   get "/:username/:slug" => "stories#show"
   get "/:sitemap" => "sitemaps#show",
-      :constraints => { format: /xml/, sitemap: /sitemap\-.+/ }
+      :constraints => { format: /xml/, sitemap: /sitemap-.+/ }
   get "/:username" => "stories#index"
 
   root "stories#index"

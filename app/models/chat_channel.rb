@@ -1,6 +1,8 @@
 class ChatChannel < ApplicationRecord
   attr_accessor :current_user, :usernames_string
 
+  resourcify
+
   CHANNEL_TYPES = %w[open invite_only direct].freeze
   STATUSES = %w[active inactive blocked].freeze
 
