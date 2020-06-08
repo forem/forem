@@ -103,4 +103,36 @@ RSpec.describe "Moderations", type: :request do
       expect(response.body).to include "circle centered-icon adjustment-icon plus"
     end
   end
+
+  context "when the user is trusted" do
+    before do
+      sign_in trusted_user
+      get "#{article.path}/actions_panel"
+    end
+
+    it "does not show the adjust tags options" do
+      expect(response.body).not_to include "other-things-btn adjust-tags"
+    end
+
+    it "shows the experience level option" do
+      expect(response.body).to include "other-things-btn set-experience"
+    end
+  end
+
+  context "when the user is an admin" do
+    before do
+      admin = create(:user, :admin)
+      sign_in admin
+      article = create(:article, tags: "javascript, cool, beans")
+      get "#{article.path}/actions_panel"
+    end
+
+    it "shows the admin add tag option if the article has room for a tag" do
+      expect(response.body).to include "admin-add-tag"
+    end
+
+    it "shows the option to remove tags" do
+      expect(response.body).to include "circle centered-icon adjustment-icon subtract"
+    end
+  end
 end

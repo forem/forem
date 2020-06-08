@@ -32,7 +32,7 @@ class ModerationsController < ApplicationController
     has_no_relevant_adjustments = @adjustments.pluck(:tag_id).intersection(tag_mod_tag_ids).size.zero?
     can_be_adjusted = @moderatable.tags.pluck(:id).intersection(tag_mod_tag_ids).size.positive?
 
-    @should_show_adjust_tags = (has_room_for_tags && has_no_relevant_adjustments) || (!has_room_for_tags && has_no_relevant_adjustments && can_be_adjusted)
+    @should_show_adjust_tags = tag_mod_tag_ids.size.positive? && ((has_room_for_tags && has_no_relevant_adjustments) || (!has_room_for_tags && has_no_relevant_adjustments && can_be_adjusted))
 
     render template: "moderations/actions_panel"
   end
