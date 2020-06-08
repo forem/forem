@@ -16,10 +16,11 @@ function broadcastData() {
  * @function initializeBroadcast
  */
 function initializeBroadcast() {
-  if (!broadcastData()) {
+  const data = broadcastData();
+  if (!data) {
     return;
   }
-  const { html = null } = broadcastData();
+  const { html } = data;
 
   var el = document.getElementById('active-broadcast');
 

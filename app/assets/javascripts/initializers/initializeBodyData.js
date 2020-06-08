@@ -1,4 +1,4 @@
-'use strict';
+
 
 /* global checkUserLoggedIn */
 
@@ -37,8 +37,7 @@ function fetchBaseData() {
 
       // Assigning Broadcast
       if (json.broadcast) {
-        document.getElementsByTagName('body')[0].dataset.broadcast =
-          json.broadcast;
+        document.body.dataset.broadcast = json.broadcast;
       }
 
       // Assigning User
