@@ -2,9 +2,10 @@
 @import 'variables';
 @import 'mixins';
 
-:target {
-  padding-top: var(--header-height);
-  margin-top: calc(-1 * var(--header-height));
+body.default-navbar-config {
+  .article .body [id] {
+    scroll-margin-top: var(--header-height);
+  }
 }
 
 .top-bar {
