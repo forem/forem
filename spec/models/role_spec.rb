@@ -11,7 +11,7 @@ RSpec.describe Role, type: :model do
         admin banned chatroom_beta_tester comment_banned
         podcast_admin pro single_resource_admin super_admin
         tag_moderator mod_relations_admin tech_admin
-        trusted video_permission warned workshop_pass
+        trusted warned workshop_pass
       ]
       expect(described_class::ROLES).to eq(expected_roles)
     end
