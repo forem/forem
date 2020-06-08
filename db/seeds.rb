@@ -483,8 +483,6 @@ seeder.create_if_none(PathRedirect, num_path_redirects) do
 end
 
 ##############################################################################
-
-# rubocop:disable Rails/Output
 puts <<-ASCII
 
   ```````````````````````````````````````````````````````````````````````````
