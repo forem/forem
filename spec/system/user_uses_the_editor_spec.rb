@@ -33,7 +33,8 @@ RSpec.describe "Using the editor", type: :system do
       page.evaluate_script("window.onbeforeunload = function(){}")
     end
 
-    it "renders the page", percy: true do
+    # TODO: Uncomment this spec when we decide to use percy again
+    xit "renders the page", percy: true do
       Percy.snapshot(page, name: "Using the editor: preview an article")
     end
 
