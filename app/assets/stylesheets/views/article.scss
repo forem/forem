@@ -33,6 +33,9 @@
     }
   }
 
+  &__video {
+  }
+
   &__header {
     margin-bottom: var(--article-padding-y);
 
@@ -366,7 +369,7 @@
 
 .crayons-reaction {
   --reaction-color: var(--button-ghost-color);
-  --reaction-border: inset 0 0 0 0 var(--reaction-color);
+  --reaction-border: inset 0 0 0 0 transparent;
   --reaction-bg: transparent;
 
   border: none;
@@ -449,6 +452,7 @@
     &:before {
       content: '';
       position: absolute;
+      pointer-events: none;
       left: 0;
       top: 0;
       right: 0;
@@ -461,13 +465,29 @@
       animation-duration: 0.25s;
     }
 
+    &:after {
+      content: '';
+      position: absolute;
+      pointer-events: none;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 transparent;
+      opacity: 0;
+      transform: scale(1);
+      animation-name: ringPop2;
+      animation-duration: 0.75s;
+    }
+
     animation-name: iconPop;
     animation-duration: 0.25s;
   }
 
   @keyframes iconPop {
     0% {
-      transform: scale(0.75);
+      transform: scale(0.65);
     }
 
     50% {
@@ -490,6 +510,20 @@
       box-shadow: 0 0 0 1px currentColor;
       transform: scale(1);
       opacity: 1;
+    }
+  }
+
+  @keyframes ringPop2 {
+    0% {
+      box-shadow: 0 0 0 currentColor;
+      transform: scale(1);
+      opacity: 0.6;
+    }
+
+    100% {
+      box-shadow: 0 0 1px 1px transparent;
+      transform: scale(4);
+      opacity: 0;
     }
   }
 }
