@@ -61,7 +61,13 @@
   border-radius: 50px;
 
   @media (max-width: $breakpoint-m) {
-    bottom: 90px;
+    bottom: 68px;
+    right: 8px;
+    padding: 0;
+    svg {
+      height: 42px;
+      width: 42px;
+    }
   }
 }
 
