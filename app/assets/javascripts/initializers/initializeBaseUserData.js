@@ -55,11 +55,6 @@ function addRelevantButtonsToArticle(user) {
         );
       }
       document.getElementById('action-space').innerHTML = actions.join('');
-    } else if (user.trusted) {
-      document.getElementById('action-space').innerHTML =
-        '<a href="' +
-        articleContainer.dataset.path +
-        '/mod" rel="nofollow">MODERATE <span class="post-word">POST</span></a>';
     }
   }
 }
@@ -99,6 +94,20 @@ function addRelevantButtonsToComments(user) {
 
 function initializeBaseUserData() {
   const user = userData();
+  const userProfileLinkHTML =
+    '<a href="/' +
+    user.username +
+    '" id="first-nav-link" class="crayons-link crayons-link--block"><div>' +
+    '<span class="fw-medium block">' +
+    user.name +
+    '</span>' +
+    '<small class="fs-s color-base-50">@' +
+    user.username +
+    '</small>' +
+    '</div></a>';
+  document.getElementById(
+    'user-profile-link-placeholder',
+  ).innerHTML = userProfileLinkHTML;
   const userNavLink = document.getElementById('first-nav-link');
   userNavLink.href = `/${user.username}`;
   userNavLink.querySelector('span').textContent = user.name;

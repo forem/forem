@@ -164,10 +164,24 @@ body.ten-x-hacker-theme {
   }
 }
 
+.broadcast-wrapper {
+  // TODO: [@thepracticaldev/delightful]: Remove these styles once
+  // https://github.com/thepracticaldev/dev.to/pull/8234 is merged.
+  z-index: 101; // Must be higher than the z-index of the sticky-nav.
+  position: fixed;
+  width: 100%;
+  font-size: 20px;
+  text-align: center;
+}
+
 body.static-navbar-config {
   padding-top: 0;
   .top-bar {
     position: relative !important;
+  }
+
+  .broadcast-wrapper {
+    position: relative; // Unset fixed position for static navbar config.
   }
 }
 
@@ -193,7 +207,7 @@ body.hidden-shell {
   }
 }
 
-// Remove post confirmaiton
+// Remove post confirmation
 .delete-confirm.container {
   padding: 150px 10px;
   min-height: 300px;
