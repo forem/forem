@@ -1,5 +1,7 @@
 <% title @article.title_with_query_preamble(user_signed_in?) %>
 
+<%= render "shared/payment_pointer", user: @article.user %>
+
 <%= render "shared/webcomponents_loader_script" %>
 <% if user_signed_in? %>
   <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", "articleModerationTools", defer: true %>

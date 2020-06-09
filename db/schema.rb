@@ -1229,6 +1229,7 @@ ActiveRecord::Schema.define(version: 2020_06_08_175130) do
     t.string "old_username"
     t.boolean "onboarding_package_requested", default: false
     t.datetime "organization_info_updated_at"
+    t.string "payment_pointer"
     t.boolean "permit_adjacent_sponsors", default: true
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
