@@ -110,7 +110,7 @@ export class Search extends Component {
 
       if (event.key === GLOBAL_SEARCH_KEY) {
         event.preventDefault();
-        document.getElementsByTagName('body')[0].classList.remove('zen-mode');
+        document.body.classList.remove('zen-mode');
         searchBox.focus();
         searchBox.select();
       } else if (
@@ -118,7 +118,7 @@ export class Search extends Component {
         !this.hasKeyModifiers(event)
       ) {
         event.preventDefault();
-        document.getElementsByTagName('body')[0].classList.toggle('zen-mode');
+        document.body.classList.toggle('zen-mode');
       }
     };
 
