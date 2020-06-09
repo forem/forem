@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_12_140153) do
+ActiveRecord::Schema.define(version: 2020_06_09_195523) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -270,6 +270,7 @@ ActiveRecord::Schema.define(version: 2020_06_12_140153) do
     t.string "banner_style"
     t.text "body_markdown"
     t.datetime "created_at"
+    t.datetime "last_active_at"
     t.text "processed_html"
     t.string "title"
     t.string "type_of"
