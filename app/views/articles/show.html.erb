@@ -1,7 +1,11 @@
 <% title @article.title_with_query_preamble(user_signed_in?) %>
 
 <%= render "shared/webcomponents_loader_script" %>
-<%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", defer: true %>
+<% if user_signed_in? %>
+  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", "articleModerationTools", defer: true %>
+<% else %>
+  <%= javascript_packs_with_chunks_tag "clipboardCopy", "webShare", "articlePage", defer: true %>
+<% end %>
 
 <% cache("content-related-optional-scripts-#{@article.id}-#{@article.updated_at}-#{internal_navigation?}-#{user_signed_in?}", expires_in: 30.hours) do %>
   <% if @article.processed_html.include? "ltag_gist-liquid-tag" %>
@@ -223,6 +227,10 @@
     <script async defer src="//platform.instagram.com/en_US/embeds.js"></script>
   <% end %>
 <% end %>
+
+<div class="mod-actions-menu"></div>
+<div id="mod-actions-menu-btn-area"></div>
+<div class="flag-user-modal-container hidden"></div>
 
 <% cache("article-show-scripts", expires_in: 8.hours) do %>
   <script async>

@@ -2,14 +2,14 @@
   <div class="col">
   </div>
   <div class="col">
-    <%= search_form_for @q, url: internal_negative_reactions_path, class: "form-inline justify-content-end" do |f| %>
+    <%= search_form_for @q, url: internal_privileged_reactions_path, class: "form-inline justify-content-end" do |f| %>
 
       <%= f.label :user_username_cont, "User", class: "sr-only" %>
       <%= f.search_field :user_username_cont, placeholder: "User", class: "form-control mx-3" %>
 
       <%= f.select(
             :category_eq,
-            options_for_select(["", "vomit", "thumbsdown"], @q.category_eq),
+            options_for_select(["", "thumbsup", "thumbsdown", "vomit"], @q.category_eq),
             {},
             class: "custom-select mx-3",
           ) %>
@@ -19,7 +19,7 @@
   </div>
 </div>
 
-<%= paginate @negative_reactions %>
+<%= paginate @privileged_reactions %>
 
 <table class="table">
   <thead>
@@ -33,7 +33,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @negative_reactions.each do |reaction| %>
+    <% @privileged_reactions.each do |reaction| %>
       <tr>
         <td><%= reaction.id %></td>
         <td><%= link_to reaction.user.username, internal_user_path(reaction.user_id) %></td>
@@ -54,4 +54,4 @@
   </tbody>
 </table>
 
-<%= paginate @negative_reactions %>
+<%= paginate @privileged_reactions %>

@@ -47,7 +47,8 @@ RSpec.describe "Using the editor", type: :system do
   end
 
   describe "Submitting an article", js: true do
-    it "renders the page", percy: true do
+    # TODO: Uncomment this spec when we decide to use percy again
+    xit "renders the page", percy: true do
       fill_markdown_with(read_from_file(raw_text))
       find("button", text: /\ASave changes\z/).click
       Percy.snapshot(page, name: "Using the editor: submit an article")
@@ -76,7 +77,8 @@ RSpec.describe "Using the editor", type: :system do
         find("button", text: /\ASave changes\z/).click
       end
 
-      it "renders the page", percy: true do
+      # TODO: Uncomment this spec when we decide to use percy again
+      xit "renders the page", percy: true do
         Percy.snapshot(page, name: "Using the editor: publishing an article without a title")
       end
 

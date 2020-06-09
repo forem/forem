@@ -1,0 +1,161 @@
+<% title "Moderating " + @moderatable.title %>
+
+<% cache(cache_key_heroku_slug("mod-styling")) do %>
+  <style>
+    <%= Rails.application.assets["moderators.css"].to_s.html_safe %>
+  </style>
+<% end %>
+
+<%= javascript_packs_with_chunks_tag "actionsPanel", defer: true %>
+
+<div class="container mod-container">
+  <header class="top-header">
+    <h1>Moderate Post</h1>
+    <h2>Rate the quality of this post</h2>
+    <button class="close-actions-panel circle centered-icon" type="button" title="Close moderator actions panel">
+      <%= inline_svg_tag("chevron-right.svg", aria: false) %>
+    </button>
+  </header>
+  <div class="reactions-container">
+    <div class="thumb-reactions-container">
+      <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
+              data-reactable-id="<%= @moderatable.id %>"
+              data-category="thumbsup"
+              data-reactable-type="<%= @moderatable.class.name %>">
+        <div class="reaction-button-circle">
+          <%= image_tag("emoji/emoji-one-thumbs-up-gray.png", alt: "Thumbs up emoji", class: "emoji-grey") %>
+          <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-up.png") %>" alt="Thumbs up emoji" />
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+        </div>
+        <span class="vote-text">High Quality</span>
+      </button>
+      <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
+              data-reactable-id="<%= @moderatable.id %>"
+              data-category="thumbsdown"
+              data-reactable-type="<%= @moderatable.class.name %>">
+        <div class="reaction-button-circle">
+          <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji", class: "emoji-grey") %>
+          <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
+          <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+        </div>
+        <span class="vote-text">Low Quality</span>
+      </button>
+    </div>
+    <button class="reaction-vomit-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.id %>"
+            data-category="vomit"
+            data-reactable-type="<%= @moderatable.class.name %>">
+      <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
+      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+      <span>Flag to Admins</span>
+      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: "Checkmark") %>
+    </button>
+    <a href="<%= URL.url %>/community-moderation#mod-voting" target="_blank" rel="noopener">
+      <span class="how-this-works-section">
+        How does this work?
+        <%= inline_svg_tag("external-link-logo.svg", aria: true) %>
+      </span>
+    </a>
+  </div>
+  <div class="other-things-container">
+    <header class="other-things">
+      <h1>Other things you can do</h1>
+    </header>
+    <% if current_user.any_admin? || @should_show_adjust_tags %>
+      <button class="other-things-btn adjust-tags" type="button" data-other-things-type="adjust-tags">
+        <div class="label-wrapper">
+          <div class="icon circle centered-icon">
+            <%= inline_svg_tag("mod-filled.svg", aria: true, title: "Adjust tags") %>
+          </div>
+          <header>
+            <h2>Adjust tags</h2>
+            <h3>Add or remove tags</h3>
+          </header>
+        </div>
+        <div class="toggle-chevron-container">
+          <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
+        </div>
+      </button>
+      <div class="adjust-tags-options dropdown-options hidden">
+        <% if current_user.any_admin? %>
+          <% if @moderatable.tag_list.size < 4 %>
+            <div class="add-tag-container">
+              <input id="admin-add-tag" class="crayons-textfield" type="text" placeholder="Add a tag" data-article-id="<%= @moderatable.id %>" data-adjustment-type="plus">
+            </div>
+          <% end %>
+          <% @moderatable.tags.each do |tag| %>
+            <button class="adjustable-tag" type="button" data-adjustment-type="subtract" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
+              <span class="num-sign">#</span><%= tag.name %>
+              <div class="circle centered-icon adjustment-icon subtract">
+                <%= inline_svg_tag("subtract.svg", aria: false) %>
+              </div>
+            </button>
+          <% end %>
+        <% else %>
+          <% @tag_moderator_tags.each do |tag| %>
+            <% subtract_or_plus = @moderatable.tag_list.include?(tag.name) ? "subtract" : "plus" %>
+            <button class="adjustable-tag" type="button" data-adjustment-type="<%= subtract_or_plus %>" data-tag-name="<%= tag.name %>" data-article-id="<%= @moderatable.id %>">
+              <span class="num-sign">#</span><%= tag.name %>
+              <div class="circle centered-icon adjustment-icon <%= subtract_or_plus %>">
+                <%= inline_svg_tag("#{subtract_or_plus}.svg", aria: false) %>
+              </div>
+            </button>
+          <% end %>
+        <% end %>
+        <form id="adjustment-reason-container" class="adjustment-reason-container hidden">
+          <textarea class="crayons-textfield" placeholder="Reason for tag adjustment" id="tag-adjustment-reason" required></textarea>
+          <button class="crayons-btn" id="tag-adjust-submit" type="submit">Submit</button>
+        </form>
+        <a href="<%= URL.url %>/tag-moderation#tag-adjustments" target="_blank" rel="noopener">
+          <span class="how-this-works-section">
+            How does this work?
+            <%= inline_svg_tag("external-link-logo.svg", aria: true) %>
+          </span>
+        </a>
+      </div>
+    <% end %>
+    <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
+    <button class="other-things-btn set-experience" type="button" data-other-things-type="set-experience">
+      <div class="label-wrapper">
+        <div class="icon circle centered-icon">
+          <%= inline_svg_tag("book.svg", aria: false) %>
+        </div>
+        <header>
+          <h2>Set experience level</h2>
+          <h3>Curate the most appropriate audience for this post</h3>
+        </header>
+      </div>
+      <div class="toggle-chevron-container">
+        <%= inline_svg_tag("chevron-toggle.svg", aria: false) %>
+      </div>
+    </button>
+    <div class="set-experience-options dropdown-options hidden">
+      <% rating_hash = { "Expert" => [10, 5], "Advanced" => [8, 4], "Mid-level" => [5, 3], "Beginner" => [3, 2], "Novice" => [1, 1] } %>
+      <% rating_hash.each do |rating_name, rating_level| %>
+      <button
+        value="<%= rating_level[0] %>"
+        name="rating_vote_<%= rating_level[0] %>"
+        id="js__rating__vote__<%= rating_level[0] %>"
+        class="level-rating-button <%= " selected" if @rating_vote&.rating == rating_level[0].to_f %>"
+        data-user-id="<%= current_user.id %>"
+        data-article-id="<%= @moderatable.id %>"
+        data-group="experience_level">
+        <div class="level-rating-content">
+          <span class="level-rating-number"><%= rating_level[1] %></span>
+          <span class="level-rating-text"><%= rating_name %></span>
+        </div>
+        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
+      </button>
+      <% end %>
+      <a href="<%= URL.url %>/community-moderation#setting-experience-level" target="_blank" rel="noopener">
+        <span class="how-this-works-section">
+          How does this work?
+          <%= inline_svg_tag("external-link-logo.svg", aria: true) %>
+        </span>
+      </a>
+    </div>
+  </div>
+  <div class="bottom-actions">
+    <button id="open-flag-user-modal" type="button">Flag user</button>
+  </div>
+</div>

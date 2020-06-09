@@ -6,14 +6,14 @@ RSpec.describe "User visits a homepage", type: :system do
   before { create(:tag, name: "webdev") }
 
   context "when user hasn't logged in" do
-    before { visit "/" }
-
     # TODO: Uncomment this spec when we decide to use percy again
     xit "renders the page", js: true, percy: true do
+      visit "/"
       Percy.snapshot(page, name: "Visits homepage: logged out user")
     end
 
     it "shows the sign-in block" do
+      visit "/"
       within ".signin-cta-widget" do
         expect(page).to have_text("Sign In With Twitter")
         expect(page).to have_text("Sign In With GitHub")
@@ -21,6 +21,7 @@ RSpec.describe "User visits a homepage", type: :system do
     end
 
     it "shows the tags block" do
+      visit "/"
       within("#sidebar-nav-default-tags") do
         Tag.where(supported: true).limit(30).each do |tag|
           expect(page).to have_link("##{tag.name}", href: "/t/#{tag.name}")
@@ -30,8 +31,28 @@ RSpec.describe "User visits a homepage", type: :system do
       expect(page).to have_text("DESIGN YOUR EXPERIENCE")
     end
 
+    context "when rendering broadcasts" do
+      let!(:broadcast) { create(:announcement_broadcast) }
+
+      it "renders the broadcast if active", js: true do
+        get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
+        visit "/"
+        within ".broadcast-wrapper" do
+          expect(page).to have_text("Hello, World!")
+        end
+      end
+
+      it "does not render a broadcast if inactive", js: true do
+        broadcast.update!(active: false)
+        get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
+        visit "/"
+        expect(page).not_to have_css(".broadcast-wrapper")
+      end
+    end
+
     describe "link tags" do
       it "contains the qualified community name in the search link" do
+        visit "/"
         selector = "link[rel='search'][title='#{community_qualified_name}']"
         expect(page).to have_selector(selector, visible: :hidden)
       end
@@ -47,6 +68,7 @@ RSpec.describe "User visits a homepage", type: :system do
 
     # TODO: Uncomment this spec when we decide to use percy again
     xit "renders the page", js: true, percy: true do
+      visit "/"
       Percy.snapshot(page, name: "Visits homepage: logged in user")
     end
 
@@ -55,6 +77,25 @@ RSpec.describe "User visits a homepage", type: :system do
 
       within("#sidebar-nav-default-tags") do
         expect(page).to have_text("FOLLOW TAGS TO IMPROVE YOUR FEED")
+      end
+    end
+
+    context "when rendering broadcasts" do
+      let!(:broadcast) { create(:announcement_broadcast) }
+
+      it "renders the broadcast if active", js: true do
+        get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
+        visit "/"
+        within ".broadcast-wrapper" do
+          expect(page).to have_text("Hello, World!")
+        end
+      end
+
+      it "does not render a broadcast if inactive", js: true do
+        broadcast.update!(active: false)
+        get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
+        visit "/"
+        expect(page).not_to have_css(".broadcast-wrapper")
       end
     end
 
