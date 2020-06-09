@@ -3,7 +3,7 @@ require "rails_helper"
 RSpec.describe LinkTag, type: :liquid_tag do
   let(:user) { create(:user, username: "username45", name: "Chase Danger", profile_image: nil) }
   let(:article) do
-    create(:article, user_id: user.id, title: "test this please", tags: "tag1 tag2 tag3")
+    create(:article, user_id: user.id, title: "test this please", tags: "html, rss, css")
   end
   let(:org) { build_stubbed(:organization) }
   let(:org_user) do
@@ -12,7 +12,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
     user
   end
   let(:org_article) do
-    create(:article, user_id: org_user.id, title: "test this please", tags: "tag1 tag2 tag3",
+    create(:article, user_id: org_user.id, title: "test this please", tags: "html, ruby, js",
                      organization_id: org.id)
   end
   let(:escaped_article) do
@@ -30,7 +30,7 @@ RSpec.describe LinkTag, type: :liquid_tag do
   end
 
   def correct_link_html(article)
-    tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.reverse.join
+    tags = article.tag_list.map { |t| "<span class='ltag__link__tag'>##{t}</span>" }.join("\n" + "\s" * 8)
     <<~HTML
       <div class='ltag__link'>
         <a href='#{article.user.path}' class='ltag__link__link'>

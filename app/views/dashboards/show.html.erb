@@ -40,7 +40,7 @@
       <a href="/new" class="cta big">
         Write your first post now
       </a>
-      <%= image_tag(cl_image_path(asset_path("/assets/sloan.png"),
+      <%= image_tag(cl_image_path(SiteConfig.mascot_image_url,
                                   type: "fetch",
                                   width: 300,
                                   crop: "imagga_scale",

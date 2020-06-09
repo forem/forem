@@ -383,10 +383,22 @@ class Article < ApplicationRecord
     parsed_markdown = MarkdownParser.new(parsed.content)
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
-    evaluate_front_matter(parsed.front_matter)
+
+    if parsed.front_matter.any?
+      evaluate_front_matter(parsed.front_matter)
+    elsif tag_list.any?
+      set_tag_list(tag_list)
+    end
+
     self.description = processed_description if description.blank?
   rescue StandardError => e
     errors[:base] << ErrorMessageCleaner.new(e.message).clean
+  end
+
+  def set_tag_list(tags)
+    self.tag_list = [] # overwrite any existing tag with those from the front matter
+    tag_list.add(tags, parse: true)
+    self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
   end
 
   def update_main_image_background_hex
@@ -446,12 +458,7 @@ class Article < ApplicationRecord
 
   def evaluate_front_matter(front_matter)
     self.title = front_matter["title"] if front_matter["title"].present?
-    if front_matter["tags"].present?
-      self.tag_list = [] # overwrite any existing tag with those from the front matter
-      tag_list.add(front_matter["tags"], parser: ActsAsTaggableOn::TagParser)
-      remove_tag_adjustments_from_tag_list
-      add_tag_adjustments_to_tag_list
-    end
+    set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
     self.published_at = parse_date(front_matter["date"]) if published
     self.main_image = determine_image(front_matter)
@@ -497,12 +504,15 @@ class Article < ApplicationRecord
 
   def remove_tag_adjustments_from_tag_list
     tags_to_remove = TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name)
-    tag_list.remove(tags_to_remove, parser: ActsAsTaggableOn::TagParser) if tags_to_remove.present?
+    tag_list.remove(tags_to_remove, parse: true) if tags_to_remove.present?
   end
 
   def add_tag_adjustments_to_tag_list
     tags_to_add = TagAdjustment.where(article_id: id, adjustment_type: "addition", status: "committed").pluck(:tag_name)
-    tag_list.add(tags_to_add, parser: ActsAsTaggableOn::TagParser) if tags_to_add.present?
+    return if tags_to_add.blank?
+
+    tag_list.add(tags_to_add, parse: true)
+    self.tag_list = tag_list.map { |tag| Tag.find_preferred_alias_for(tag) }
   end
 
   def validate_video
