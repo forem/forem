@@ -123,8 +123,7 @@ export default class ChatChannelSettings extends Component {
     addSnackbarItem({ message });
   };
 
-  chatChannelRemoveMembership = async (e) => {
-    const { membershipId, membershipStatus } = e.target.dataset;
+  chatChannelRemoveMembership = async (membershipId, membershipStatus) => {
     const { chatChannel } = this.state;
     const response = await rejectChatChannelJoiningRequest(
       chatChannel.id,
@@ -141,67 +140,33 @@ export default class ChatChannelSettings extends Component {
     return filteredMembership;
   };
 
-  removeActiveMembership = async (e) => {
-    const response = await this.chatChannelRemoveMembership(e);
+  removeMembership = async (e) => {
+    const { membershipId, membershipStatus } = e.target.dataset;
+    const response = await this.chatChannelRemoveMembership(membershipId, membershipStatus);
     const { message } = response;
-    const { membershipId } = e.target.dataset;
+    this.updateMemberships(membershipId, response, membershipStatus)
+    addSnackbarItem({ message });
+  };
+
+  updateMemberships = (membershipId, response, membershipStatus) => {
     if (response.success) {
       this.setState((prevState) => {
         return {
           errorMessages: null,
           successMessages: response.message,
-          activeMemberships: this.filterMemberships(
+          activeMemberships: membershipStatus === 'active' ? this.filterMemberships(
             prevState.activeMemberships,
             membershipId,
-          ),
-        };
-      });
-    } else {
-      this.setState({
-        successMessages: null,
-        errorMessages: response.message,
-      });
-    }
-    addSnackbarItem({ message });
-  };
-
-  removePendingMembership = async (e) => {
-    const response = await this.chatChannelRemoveMembership(e);
-    const { message } = response;
-    const { membershipId } = e.target.dataset;
-    if (response.success) {
-      this.setState((prevState) => {
-        return {
-          errorMessages: null,
-          successMessages: response.message,
-          pendingMemberships: this.filterMemberships(
+          ): prevState.activeMemberships,
+          pendingMemberships: membershipStatus === 'pending' ? 
+          this.filterMemberships(
             prevState.pendingMemberships,
             membershipId,
-          ),
-        };
-      });
-    } else {
-      this.setState({
-        successMessages: null,
-        errorMessages: response.message,
-      });
-    }
-    addSnackbarItem({ message });
-  };
-
-  removeRequestedMembership = async (e) => {
-    const response = await this.chatChannelRemoveMembership(e);
-    const { message } = response;
-    const { membershipId } = e.target.dataset;
-    if (response.success) {
-      this.setState((prevState) => {
-        return {
-          errorMessages: null,
-          successMessages: response.message,
-          requestedMemberships: this.filterMemberships(
+          ): prevState.pendingMemberships,
+          requestedMemberships: membershipStatus === 'joining_request' ? this.filterMemberships(
             prevState.requestedMemberships,
             membershipId,
-          ),
+          ) : prevState.requestedMembership,
         };
       });
     } else {
@@ -210,8 +175,7 @@ export default class ChatChannelSettings extends Component {
         errorMessages: response.message,
       });
     }
-    addSnackbarItem({ message });
-  };
+  }
 
   chatChannelAcceptMembership = async (e) => {
     const { chatChannel } = this.state;
@@ -362,11 +326,9 @@ export default class ChatChannelSettings extends Component {
           <ChatChannelMembershipSection
             currentMembershipRole={currentMembership.role}
             activeMemberships={activeMemberships}
-            removeActiveMembership={this.removeActiveMembership}
+            removeMembership={this.removeMembership}
             pendingMemberships={pendingMemberships}
             requestedMemberships={requestedMemberships}
-            removePendingMembership={this.removePendingMembership}
-            removeRequestedMembership={this.removeRequestedMembership}
             chatChannelAcceptMembership={this.chatChannelAcceptMembership}
           />
           <div>

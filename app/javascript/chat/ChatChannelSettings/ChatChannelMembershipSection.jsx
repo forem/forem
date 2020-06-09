@@ -8,28 +8,26 @@ import RequestedMembershipSection from './RequestedMembershipSection';
 const ChatChannelMembershipSection = ({
   pendingMemberships,
   requestedMemberships,
-  removePendingMembership,
-  removeRequestedMembership,
   chatChannelAcceptMembership,
   activeMemberships,
-  removeActiveMembership,
+  removeMembership,
   currentMembershipRole
 }) => {
   return (
     <div className="membership-list">
       <ActiveMembershipSection
         activeMemberships={activeMemberships}
-        removeActiveMembership={removeActiveMembership}
+        removeMembership={removeMembership}
         currentMembershipRole={currentMembershipRole}
       />
       <PendingMembershipSection
         pendingMemberships={pendingMemberships}
-        removePendingMembership={removePendingMembership}
+        removeMembership={removeMembership}
         currentMembershipRole={currentMembershipRole}
       />
       <RequestedMembershipSection
         requestedMemberships={requestedMemberships}
-        removeRequestedMembership={removeRequestedMembership}
+        removeMembership={removeMembership}
         chatChannelAcceptMembership={chatChannelAcceptMembership}
         currentMembershipRole={currentMembershipRole}
       />
@@ -63,9 +61,7 @@ ChatChannelMembershipSection.propTypes = {
     username: PropTypes.string.isRequired,
     status: PropTypes.string.isRequired,
   })).isRequired,
-  removeActiveMembership: PropTypes.func.isRequired,
-  removeRequestedMembership: PropTypes.func.isRequired,
-  removePendingMembership: PropTypes.func.isRequired,
+  removeMembership: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.string.isRequired
 }

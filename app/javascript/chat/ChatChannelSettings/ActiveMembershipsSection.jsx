@@ -4,7 +4,7 @@ import Membership from './Membership';
 
 const ActiveMembershipSection = ({
   activeMemberships,
-  removeActiveMembership,
+  removeMembership,
   currentMembershipRole,
 }) => {
   return (
@@ -14,7 +14,7 @@ const ActiveMembershipSection = ({
         ? activeMemberships.map((pendingMembership) => (
           <Membership
             membership={pendingMembership}
-            removeMembership={removeActiveMembership}
+            removeMembership={removeMembership}
             membershipType="active"
             currentMembershipRole={currentMembershipRole}
             className="active-member"
@@ -37,7 +37,7 @@ ActiveMembershipSection.propTypes = {
       status: PropTypes.string.isRequired,
     }),
   ).isRequired,
-  removeActiveMembership: PropTypes.func.isRequired,
+  removeMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.string.isRequired,
 };
 

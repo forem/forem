@@ -4,7 +4,7 @@ import Membership from './Membership';
 
 const RequestedMembershipSection = ({
   requestedMemberships,
-  removeRequestedMembership,
+  removeMembership,
   chatChannelAcceptMembership,
   currentMembershipRole,
 }) => {
@@ -19,7 +19,7 @@ const RequestedMembershipSection = ({
         ? requestedMemberships.map((pendingMembership) => (
           <Membership
             membership={pendingMembership}
-            removeMembership={removeRequestedMembership}
+            removeMembership={removeMembership}
             chatChannelAcceptMembership={chatChannelAcceptMembership}
             membershipType="requested"
             currentMembershipRole={currentMembershipRole}
@@ -43,7 +43,7 @@ RequestedMembershipSection.propTypes = {
       status: PropTypes.string.isRequired,
     }),
   ).isRequired,
-  removeRequestedMembership: PropTypes.func.isRequired,
+  removeMembership: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.func.isRequired,
 };

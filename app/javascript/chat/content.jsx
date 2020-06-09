@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Article from './article';
 import ChannelRequest from './channelRequest';
 import RequestManager from './requestManager';
-import ChatChannelSettings from './ChatChannelSettings';
+import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
 
 export default class Content extends Component {
   static propTypes = {
