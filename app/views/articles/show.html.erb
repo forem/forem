@@ -128,7 +128,7 @@
             </h1>
 
             <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
-              <div class="mb-4">
+              <div class="mb-4 spec__tags">
                 <% @article.cached_tag_list_array.each do |tag| %>
                   <% tag_hash = tag_colors(tag) %>
                   <a class="crayons-tag mr-1" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
@@ -182,7 +182,7 @@
                      position: :top %>
         <% end %>
 
-        <div class="crayons-article__body" data-article-id="<%= @article.id %>" id="article-body">
+        <div class="crayons-article__body spec__body" data-article-id="<%= @article.id %>" id="article-body">
           <%= @article.processed_html.html_safe %>
         </div>
 
