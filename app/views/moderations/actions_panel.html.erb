@@ -47,10 +47,10 @@
             data-reactable-type="<%= @moderatable.class.name %>">
       <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
       <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
-      <span>Flag to Admins</span>
+      <span></span>
       <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon vomit-checkmark", title: "Checkmark") %>
     </button>
-    <a href="<%= URL.url %>/community-moderation#mod-voting" target="_blank" rel="noopener">
+    <a href="<%= URL.url %>/community-moderation#using-the-quick-reactions-to-moderate-content" target="_blank" rel="noopener">
       <span class="how-this-works-section">
         How does this work?
         <%= inline_svg_tag("external-link-logo.svg", aria: true) %>
@@ -106,7 +106,7 @@
           <textarea class="crayons-textfield" placeholder="Reason for tag adjustment" id="tag-adjustment-reason" required></textarea>
           <button class="crayons-btn" id="tag-adjust-submit" type="submit">Submit</button>
         </form>
-        <a href="<%= URL.url %>/tag-moderation#tag-adjustments" target="_blank" rel="noopener">
+        <a href="<%= URL.url %>/tag-moderation#how-to-remove-or-add-tags" target="_blank" rel="noopener">
           <span class="how-this-works-section">
             How does this work?
             <%= inline_svg_tag("external-link-logo.svg", aria: true) %>
@@ -147,7 +147,7 @@
         <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon", title: "Checkmark") %>
       </button>
       <% end %>
-      <a href="<%= URL.url %>/community-moderation#setting-experience-level" target="_blank" rel="noopener">
+      <a href="<%= URL.url %>/community-moderation#how-to-rate-the-experience-level-of-a-post" target="_blank" rel="noopener">
         <span class="how-this-works-section">
           How does this work?
           <%= inline_svg_tag("external-link-logo.svg", aria: true) %>
