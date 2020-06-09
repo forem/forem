@@ -63,7 +63,7 @@ Rack::Attack.enabled = false
 Browser::Bot.matchers.delete(Browser::Bot::EmptyUserAgentMatcher)
 
 RSpec.configure do |config|
-  config.use_transactional_fixtures = true
+  config.use_transactional_fixtures = false
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
 
   config.include ApplicationHelper
