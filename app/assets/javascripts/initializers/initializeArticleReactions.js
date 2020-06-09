@@ -60,9 +60,7 @@ function reactToArticle(articleId, reaction) {
       setReactionCount(reaction, currentNum + 1);
     }
   }
-  var userStatus = document
-    .getElementsByTagName('body')[0]
-    .getAttribute('data-user-status');
+  var userStatus = document.body.getAttribute('data-user-status');
   sendHapticMessage('medium');
   if (userStatus === 'logged-out') {
     showModal('react-to-article');

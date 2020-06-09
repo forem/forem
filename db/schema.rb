@@ -267,6 +267,7 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
     t.boolean "active", default: false
+    t.string "banner_style"
     t.text "body_markdown"
     t.datetime "created_at"
     t.text "processed_html"
@@ -1164,6 +1165,7 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.string "currently_hacking_on"
     t.string "currently_learning"
     t.string "currently_streaming_on"
+    t.boolean "display_announcements", default: true
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
     t.string "editor_version", default: "v1"
@@ -1228,6 +1230,7 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.string "old_username"
     t.boolean "onboarding_package_requested", default: false
     t.datetime "organization_info_updated_at"
+    t.string "payment_pointer"
     t.boolean "permit_adjacent_sponsors", default: true
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"

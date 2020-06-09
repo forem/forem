@@ -66,7 +66,7 @@ function initializeCommentsPage() {
         var thisButt = this;
         event.preventDefault();
         sendHapticMessage('medium');
-        var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+        var userStatus = document.body.getAttribute('data-user-status');
         if (userStatus === 'logged-out') {
           showModal('react-to-comment');
           return;
@@ -110,7 +110,7 @@ function initializeCommentsPage() {
         if (event.target.classList.contains("thread-indication")) {
           return false;
         } else {
-          var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+          var userStatus = document.body.getAttribute('data-user-status');
           if (userStatus == 'logged-out') {
             showModal('reply-to-comment');
             return;
@@ -200,7 +200,7 @@ function handleCommentSubmit(event) {
         response.json().then(function (newComment) {
           var newNode = document.createElement('div');
           newNode.innerHTML = buildCommentHTML(newComment);
-          var docBody = document.getElementsByTagName('body')[0]
+          var docBody = document.body
 
           var userData = JSON.parse(docBody.getAttribute('data-user'))
           userData.checked_code_of_conduct = true;
@@ -261,7 +261,7 @@ function handleCommentSubmit(event) {
 }
 
 function handleFocus(event) {
-  var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+  var userStatus = document.body.getAttribute('data-user-status');
   var area = event.target;
   if (userStatus == 'logged-out') {
     event.preventDefault();

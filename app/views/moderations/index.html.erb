@@ -78,10 +78,11 @@
     els[i].onclick = function(e) {
       let path = e.target.dataset.path
       let el = document.getElementById('quick-mod-' + i)
+      // if iframe is opened/loaded, clear the innerHTML
       if (el.innerHTML.length > 10) {
         el.innerHTML = ''
       } else {
-        el.innerHTML = '<div class="mod-index-row-iframes"><iframe src="' + path + '"></iframe><iframe src="' + path + '/mod"></iframe></div>'
+        el.innerHTML = '<div class="mod-index-row-iframes"><iframe id="quick-mod-article" src="' + path + '"></iframe><iframe class="actions-panel" src="' + path + '/actions_panel"></iframe></div>'
       }
     }
   }
