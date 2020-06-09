@@ -66,6 +66,7 @@ class AsyncInfoController < ApplicationController
         checked_code_of_conduct: @user.checked_code_of_conduct,
         checked_terms_and_conditions: @user.checked_terms_and_conditions,
         display_sponsors: @user.display_sponsors,
+        display_announcements: @user.display_announcements,
         trusted: @user.trusted,
         moderator_for_tags: @user.moderator_for_tags,
         config_body_class: @user.config_body_class,
