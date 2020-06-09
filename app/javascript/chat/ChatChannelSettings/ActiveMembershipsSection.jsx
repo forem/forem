@@ -7,14 +7,11 @@ const ActiveMembershipSection = ({
   removeActiveMembership,
   currentMembershipRole
 }) => {
-    if (!activeMemberships && activeMemberships.lenght === 0 ) {
-      return null;
-    }
 
   return (
     <div className="p-4 grid gap-2 crayons-card mb-4">
-      <h3 className="mb-2">Members</h3>
-      {activeMemberships.map(pendingMembership => 
+      <h3 className="mb-2 active_members">Members</h3>
+      {activeMemberships && activeMemberships.length > 0 ? activeMemberships.map(pendingMembership => 
         (
           <Membership 
             membership={pendingMembership}
@@ -23,7 +20,7 @@ const ActiveMembershipSection = ({
             currentMembershipRole={currentMembershipRole}
           /> 
         ) 
-      )}
+      ) : null}
     </div>
   )
 }

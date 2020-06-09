@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Article from './article';
 import ChannelRequest from './channelRequest';
 import RequestManager from './requestManager';
-import ChannelSetting from './ChatChannelSettings/ChatChannelSettings';
+import ChatChannelSettings from './ChatChannelSettings';
 
 export default class Content extends Component {
   static propTypes = {
@@ -85,7 +85,7 @@ function display(props) {
       )
     case 'chat-channel-setting':
       return (
-        <ChannelSetting resource={resource.data} activeMembershipId={resource.activeMembershipId} />
+        <ChatChannelSettings resource={resource.data} activeMembershipId={resource.activeMembershipId} />
       );
     default:
       return null;

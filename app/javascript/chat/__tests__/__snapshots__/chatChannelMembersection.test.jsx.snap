@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ChatChannelMembershipSection /> should render and test snapshot 1`] = `
+<div
+  class="membership-list"
+>
+  <div
+    class="p-4 grid gap-2 crayons-card mb-4"
+  >
+    <h3
+      class="mb-2 active_members"
+    >
+      Members
+    </h3>
+  </div>
+</div>
+`;

@@ -16,7 +16,7 @@ const ChatChannelMembershipSection = ({
   currentMembershipRole
 }) => {
   return (
-    <div>
+    <div className="membership-list">
       <ActiveMembershipSection
         activeMemberships={activeMemberships}
         removeActiveMembership={removeActiveMembership}

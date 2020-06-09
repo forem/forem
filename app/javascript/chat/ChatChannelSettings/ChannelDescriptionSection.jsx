@@ -8,7 +8,7 @@ const ChannelDescriptionSection = ({
 }) => {
   return (
     <div className="p-4 grid gap-2 crayons-card mb-4 channel_details">
-      <h1 className="mb-1">{channelName}</h1>
+      <h1 className="mb-1 channel_title">{channelName}</h1>
       <p>{channelDescription}</p>
       <p className="fw-bold">
         You are a channel 
@@ -20,9 +20,9 @@ const ChannelDescriptionSection = ({
 }
 
 ChannelDescriptionSection.propTypes = {
-    channelName: PropTypes.func.isRequired,
-    currentMembershipRole: PropTypes.func.isRequired,
-    channelDescription: PropTypes.func.isRequired
+    channelName: PropTypes.string.isRequired,
+    currentMembershipRole: PropTypes.string.isRequired,
+    channelDescription: PropTypes.string.isRequired
 }
 
 export default ChannelDescriptionSection;

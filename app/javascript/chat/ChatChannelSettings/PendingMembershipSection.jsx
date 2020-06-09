@@ -7,16 +7,13 @@ const PendingMembershipSection = ({
   removePendingMembership,
   currentMembershipRole
 }) => {
-    if (!pendingMemberships && pendingMemberships.lenght === 0 ) {
-      return null;
-    }
 
     if (currentMembershipRole !== 'mod') {
       return null;
     }
 
   return (
-    <div className="p-4 grid gap-2 crayons-card mb-4">
+    <div className="p-4 grid gap-2 crayons-card mb-4 pending_memberships">
       <h3 className="mb-2">Pending Invitations</h3>
       {pendingMemberships.map(pendingMembership => 
         (

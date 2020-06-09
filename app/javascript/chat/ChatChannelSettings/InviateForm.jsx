@@ -10,7 +10,7 @@ const InviteForm = ({
     <div className="crayons-card p-4 grid gap-2 mb-4">
       <div className="crayons-field">
         <label
-          className="crayons-field__label"
+          className="crayons-field__label invitation_form_title"
           htmlFor="chat_channel_membership_Usernames to Invite"
         >
           Usernames to invite

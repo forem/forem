@@ -8,14 +8,9 @@ const RequestedMembershipSection = ({
   chatChannelAcceptMembership,
   currentMembershipRole
 }) => {
-    if (!requestedMemberships && requestedMemberships.lenght === 0 ) {
-      return null;
-    }
-
-
-    if (currentMembershipRole !== 'mod') {
-      return null;
-    }
+  if (currentMembershipRole !== 'mod') {
+    return null;
+  }
 
   return (
     <div className="p-4 grid gap-2 crayons-card mb-4">

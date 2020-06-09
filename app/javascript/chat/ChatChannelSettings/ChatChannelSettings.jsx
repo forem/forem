@@ -378,7 +378,7 @@ export default class ChatChannelSettings extends Component {
     };
 
     return (
-      <div className="activechatchannel__activeArticle">
+      <div className="activechatchannel__activeArticle channel_settings">
         <div className="p-4">
           <ChannelDescriptionSection
             channelName={chatChannel.name}
