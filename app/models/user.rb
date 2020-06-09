@@ -67,6 +67,7 @@ class User < ApplicationRecord
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
+  has_many :email_subscriptions # What the User is subscribed to
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy

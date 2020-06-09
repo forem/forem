@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_09_191943) do
+ActiveRecord::Schema.define(version: 2020_06_09_192545) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -459,6 +459,16 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
+  end
+
+  create_table "email_subscriptions", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.bigint "email_subscribable_id", null: false
+    t.string "email_subscribable_type", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id", null: false
+    t.index ["email_subscribable_type", "email_subscribable_id"], name: "email_subscribable_type_and_id"
+    t.index ["user_id"], name: "index_email_subscriptions_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -1306,6 +1316,7 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "users", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
+  add_foreign_key "email_subscriptions", "users"
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
