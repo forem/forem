@@ -142,9 +142,12 @@ export default class ChatChannelSettings extends Component {
 
   removeMembership = async (e) => {
     const { membershipId, membershipStatus } = e.target.dataset;
-    const response = await this.chatChannelRemoveMembership(membershipId, membershipStatus);
+    const response = await this.chatChannelRemoveMembership(
+      membershipId,
+      membershipStatus,
+    );
     const { message } = response;
-    this.updateMemberships(membershipId, response, membershipStatus)
+    this.updateMemberships(membershipId, response, membershipStatus);
     addSnackbarItem({ message });
   };
 
@@ -154,19 +157,27 @@ export default class ChatChannelSettings extends Component {
         return {
           errorMessages: null,
           successMessages: response.message,
-          activeMemberships: membershipStatus === 'active' ? this.filterMemberships(
-            prevState.activeMemberships,
-            membershipId,
-          ): prevState.activeMemberships,
-          pendingMemberships: membershipStatus === 'pending' ? 
-          this.filterMemberships(
-            prevState.pendingMemberships,
-            membershipId,
-          ): prevState.pendingMemberships,
-          requestedMemberships: membershipStatus === 'joining_request' ? this.filterMemberships(
-            prevState.requestedMemberships,
-            membershipId,
-          ) : prevState.requestedMembership,
+          activeMemberships:
+            membershipStatus === 'active'
+              ? this.filterMemberships(
+                  prevState.activeMemberships,
+                  membershipId,
+                )
+              : prevState.activeMemberships,
+          pendingMemberships:
+            membershipStatus === 'pending'
+              ? this.filterMemberships(
+                  prevState.pendingMemberships,
+                  membershipId,
+                )
+              : prevState.pendingMemberships,
+          requestedMemberships:
+            membershipStatus === 'joining_request'
+              ? this.filterMemberships(
+                  prevState.requestedMemberships,
+                  membershipId,
+                )
+              : prevState.requestedMembership,
         };
       });
     } else {
@@ -175,7 +186,7 @@ export default class ChatChannelSettings extends Component {
         errorMessages: response.message,
       });
     }
-  }
+  };
 
   chatChannelAcceptMembership = async (e) => {
     const { chatChannel } = this.state;
@@ -331,23 +342,21 @@ export default class ChatChannelSettings extends Component {
             requestedMemberships={requestedMemberships}
             chatChannelAcceptMembership={this.chatChannelAcceptMembership}
           />
-          <div>
-            <ModSection
-              invitationUsernames={invitationUsernames}
-              handleInvitationUsernames={this.handleInvitationUsernames}
-              handleChatChannelInvitations={this.handleChatChannelInvitations}
-              channelDescription={channelDescription}
-              handleDescriptionChange={this.handleDescriptionChange}
-              channelDiscoverable={channelDiscoverable}
-              handleChannelDiscoverableStatus={
-                this.handleChannelDiscoverableStatus
-              }
-              handleChannelDescriptionChanges={
-                this.handleChannelDescriptionChanges
-              }
-              currentMembershipRole={currentMembership.role}
-            />
-          </div>
+          <ModSection
+            invitationUsernames={invitationUsernames}
+            handleInvitationUsernames={this.handleInvitationUsernames}
+            handleChatChannelInvitations={this.handleChatChannelInvitations}
+            channelDescription={channelDescription}
+            handleDescriptionChange={this.handleDescriptionChange}
+            channelDiscoverable={channelDiscoverable}
+            handleChannelDiscoverableStatus={
+              this.handleChannelDiscoverableStatus
+            }
+            handleChannelDescriptionChanges={
+              this.handleChannelDescriptionChanges
+            }
+            currentMembershipRole={currentMembership.role}
+          />
           <PersonalSettings
             updateCurrentMembershipNotificationSettings={
               this.updateCurrentMembershipNotificationSettings
