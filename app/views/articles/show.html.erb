@@ -107,7 +107,7 @@
             <%= render "articles/video_player", meta_tags: true, article: @article %>
           <% elsif @article.main_image.present? %>
             <div class="crayons-article__cover">
-              <div style="background-image: url(<%= cloud_cover_url(@article.main_image) %>); background-color:<%= @article.main_image_background_hex_color %>;" class="crayons-article__cover__image"></div>
+              <img src="<%= cloud_cover_url(@article.main_image) %>" width="1000" height="420" style="background-color:<%= @article.main_image_background_hex_color %>;" class="crayons-article__cover__image" alt="Cover image for <%= sanitize_and_decode @article.title %>">
             </div>
           <% end %>
 

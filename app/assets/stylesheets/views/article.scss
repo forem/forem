@@ -25,11 +25,27 @@
 
 .crayons-article {
   &__cover {
+    position: relative;
+    width: 100%;
+    padding-top: 42%;
+
+    // &__image {
+    //   border-radius: var(--radius) var(--radius) 0 0;
+    //   background-size: cover;
+    //   background-position: center center;
+    //   padding-top: 42%;
+    // }
+
     &__image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       border-radius: var(--radius) var(--radius) 0 0;
-      background-size: cover;
-      background-position: center center;
-      padding-top: 42%;
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
     }
   }
 
@@ -272,13 +288,9 @@
       position: relative;
       display: block;
       margin: auto;
-      left: -4%;
-      max-width: 108%;
-
-      @media screen and (min-width: 430px) {
-        left: -6px;
-        max-width: calc(100% + 12px);
-      }
+      max-width: 100%;
+      max-height: calc(50vh + 180px);
+      border-radius: var(--radius);
     }
 
     a.article-body-image-wrapper {
@@ -303,16 +315,6 @@
       width: 100%;
       margin-left: 0%;
       overflow-x: auto;
-
-      @media screen and (min-width: 430px) {
-        width: 108%;
-        margin-left: -4%;
-      }
-
-      @media screen and (min-width: 800px) {
-        width: 110%;
-        margin-left: -5%;
-      }
     }
 
     table {
@@ -320,10 +322,6 @@
       font-size: 0.78em;
       margin: 0.8em auto 1.2em;
       table-layout: fixed;
-
-      @media screen and (min-width: 500px) {
-        font-size: 0.9em;
-      }
 
       th {
         border: 1px solid rgba(0, 0, 0, 0.1);
@@ -368,7 +366,7 @@
     position: sticky;
     box-shadow: none;
     justify-content: stretch;
-    top: calc(var(--header-height) + var(--layout-padding));
+    top: calc(var(--header-height) + var(--layout-padding) + 6vh);
     .static-navbar-config & {
       top: var(--layout-padding);
     }
@@ -408,10 +406,10 @@
     color: var(--base-70);
     font-size: var(--fs-s);
     display: block;
-    padding-left: var(--su-2);
+    min-width: var(--su-7);
 
     @media (min-width: $breakpoint-m) {
-      padding-left: 0;
+      min-width: auto;
     }
   }
 

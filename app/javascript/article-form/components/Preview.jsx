@@ -36,9 +36,12 @@ function titleArea(previewResponse, articleState, errors) {
     <header className="crayons-article__header">
       {coverImage.length > 0 && (
         <div className="crayons-article__cover">
-          <div
+          <img
             className="crayons-article__cover__image"
-            style={{ backgroundImage: `url(${coverImage})` }}
+            src={coverImage}
+            width="1000"
+            height="420"
+            alt=""
           />
         </div>
       )}

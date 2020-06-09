@@ -17,7 +17,7 @@
       <% end %>
 
       <div class="flex items-center">
-        <div><%= follow_button(@user) %></div>
+        <div><%= follow_button(@user) %>&nbsp;</div>
 
         <% if @user.twitter_username.present? || @user.github_username.present? || @user.website_url.present? %>
           <div class="flex items-center fs-s">
