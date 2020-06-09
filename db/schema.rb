@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -807,6 +809,19 @@ ActiveRecord::Schema.define(version: 2020_06_04_133925) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_pages_on_slug", unique: true
+  end
+
+  create_table "path_redirects", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "new_path", null: false
+    t.string "old_path", null: false
+    t.string "source"
+    t.datetime "updated_at", null: false
+    t.integer "version", default: 0, null: false
+    t.index ["new_path"], name: "index_path_redirects_on_new_path"
+    t.index ["old_path"], name: "index_path_redirects_on_old_path", unique: true
+    t.index ["source"], name: "index_path_redirects_on_source"
+    t.index ["version"], name: "index_path_redirects_on_version"
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|

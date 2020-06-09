@@ -12,7 +12,9 @@ class Collection < ApplicationRecord
     Collection.find_or_create_by(slug: slug, user: user)
   end
 
+  private
+
   def touch_articles
-    articles.update_all(updated_at: Time.zone.now)
+    articles.touch_all
   end
 end

@@ -55,7 +55,7 @@ Rails.application.routes.draw do
     resources :pages, only: %i[index new create edit update destroy]
     resources :mods, only: %i[index update]
     resources :moderator_actions, only: %i[index]
-    resources :negative_reactions, only: %i[index]
+    resources :privileged_reactions, only: %i[index]
     resources :permissions, only: %i[index]
     resources :podcasts, only: %i[index edit update destroy] do
       member do
@@ -105,6 +105,7 @@ Rails.application.routes.draw do
     resource :config
     resources :badges, only: :index
     post "badges/award_badges", to: "badges#award_badges"
+    resources :path_redirects, only: %i[new create index edit update destroy]
   end
 
   namespace :stories, defaults: { format: "json" } do
@@ -449,6 +450,7 @@ Rails.application.routes.draw do
   get "/:username/:slug/:view" => "stories#show",
       :constraints => { view: /moderate/ }
   get "/:username/:slug/mod" => "moderations#article"
+  get "/:username/:slug/actions_panel" => "moderations#actions_panel"
   get "/:username/:slug/manage" => "articles#manage"
   get "/:username/:slug/edit" => "articles#edit"
   get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
@@ -457,7 +459,7 @@ Rails.application.routes.draw do
       :constraints => { view: /comments|moderate|admin/ }
   get "/:username/:slug" => "stories#show"
   get "/:sitemap" => "sitemaps#show",
-      :constraints => { format: /xml/, sitemap: /sitemap\-.+/ }
+      :constraints => { format: /xml/, sitemap: /sitemap-.+/ }
   get "/:username" => "stories#index"
 
   root "stories#index"

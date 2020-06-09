@@ -252,7 +252,7 @@ preact-render-spy (1 nodes)
             <figure class="user-avatar-container">
               <img
                 class="user-avatar"
-                src="ben.jpg"
+                src="apple-icon.png"
                 alt="profile"
                />
             </figure>

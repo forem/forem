@@ -90,7 +90,11 @@ class SearchController < ApplicationController
                   feed_content_search
                 end
 
-    render json: { result: feed_docs }
+    render json: {
+      result: feed_docs,
+      display_jobs_banner: SiteConfig.display_jobs_banner,
+      jobs_url: SiteConfig.jobs_url
+    }
   end
 
   def reactions

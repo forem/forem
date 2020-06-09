@@ -12,7 +12,7 @@
 
       <% if decorated_comment.low_quality %>
         <div class="low-quality-comment-marker">
-          <%= image_tag(cl_image_path(asset_path("/assets/sloan.png"),
+          <%= image_tag(cl_image_path(SiteConfig.mascot_image_url,
                                       type: "fetch",
                                       width: 50,
                                       height: 50,
