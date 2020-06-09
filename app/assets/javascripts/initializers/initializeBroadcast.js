@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 /**
  * Parses the broadcast object on the document into JSON.
  *
@@ -20,12 +21,16 @@ function initializeBroadcast() {
   if (!data) {
     return;
   }
-  const { html } = data;
-
-  var el = document.getElementById('active-broadcast');
+  const { html, banner_class } = data;
+  const el = document.getElementById('active-broadcast');
 
   if (el.firstElementChild) {
-    return;
-  } // Only append HTML once, on first render.
-  el.insertAdjacentHTML('afterbegin', html);
+    return; // Only append HTML once, on first render.
+  }
+
+  const bannerDiv = `<div class='broadcast-data ${
+    banner_class || ''
+  }'>${html}</div>`;
+  el.insertAdjacentHTML('afterbegin', bannerDiv);
 }
+/* eslint-enable camelcase */
