@@ -483,8 +483,8 @@ a.header-link {
     // this css is added to differentiate the code within a pre tag since pre tag already has black bg.
 
     #preview-div pre code {
-      background-color: white;
-      color: black;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.9);
     }
 
     .actions {
@@ -841,24 +841,22 @@ a.header-link {
       background-color: rgba(0, 0, 0, 0.1);
       padding: 0.1em 0.3em 0;
     }
+    .highlight {
+      display: grid;
+      justify-content: stretch;
+
+      code {
+        width: 100%;
+      }
+    }
     pre {
-      width: 88%;
-      margin-left: -3%;
-      margin-left: 0px;
-      padding-left: 4%;
-      padding-right: 7%;
-      padding-top: 6%;
-      padding-bottom: 6%;
       overflow-wrap: normal;
       overflow-x: auto;
       code {
-        background: #29292e;
-        color: black;
+        color: inherit;
         white-space: pre;
         font-size: 1em;
-        background-color: white;
-        padding-top: 0;
-        padding-bottom: 2%;
+        padding: 0;
         overflow-x: auto;
       }
     }
