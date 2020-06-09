@@ -178,10 +178,8 @@ body.ten-x-hacker-theme {
 }
 
 .broadcast-data {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   flex-grow: 1;
+  padding: var(--su-2);
 }
 
 .close-announcement {
