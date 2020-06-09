@@ -80,7 +80,8 @@
     <% @sticky_collection = StickyArticleCollection.new(@article, @organization || @user) %>
     <% @sticky_articles = @sticky_collection.suggested_stickies %>
     <% @user_stickies = @sticky_collection.user_stickies %>
-    <% if @user_stickies.any? %>
+
+    <% if @user_stickies.present? %>
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-card__header__headline">
@@ -102,7 +103,7 @@
       </div>
     <% end %>
 
-    <% if @sticky_articles %>
+    <% if @sticky_articles.present? %>
       <div class="crayons-card crayons-card--secondary">
         <header class="crayons-card__header">
           <h3 class="crayons-card__header__headline">
