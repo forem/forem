@@ -23,6 +23,7 @@ const RequestedMembershipSection = ({
             chatChannelAcceptMembership={chatChannelAcceptMembership}
             membershipType="requested"
             currentMembershipRole={currentMembershipRole}
+            className="requested-member"
           />
           ))
         : null}

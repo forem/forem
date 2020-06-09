@@ -3,8 +3,12 @@ import render from 'preact-render-to-json';
 import { shallow } from 'preact-render-spy';
 import ModSection from '../ChatChannelSettings/ModSection';
 
-const data = {
+const modUser = {
   currentMembershipRole: 'mod',
+};
+
+const memberUser = {
+  currentMembershipRole: 'member',
 };
 
 const getModSection = (resource) => {
@@ -13,14 +17,20 @@ const getModSection = (resource) => {
 
 describe('<ModSection />', () => {
   it('should render and test snapshot', () => {
-    const tree = render(getModSection(data));
+    const tree = render(getModSection(modUser));
 
     expect(tree).toMatchSnapshot();
   });
 
   it('should render the the component', () => {
-    const context = shallow(getModSection(data));
+    const context = shallow(getModSection(modUser));
 
     expect(context.find('.mod-section').exists()).toEqual(true);
+  });
+
+  it('should not render the the component', () => {
+    const context = shallow(getModSection(memberUser));
+
+    expect(context.find('.mod-section').exists()).toEqual(false);
   });
 });

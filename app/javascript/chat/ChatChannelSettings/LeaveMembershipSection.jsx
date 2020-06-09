@@ -14,7 +14,7 @@ const LeaveMembershipSection = ({
       <h3>Danger Zone</h3>
       <div>
         <button
-          className="crayons-btn crayons-btn--danger"
+          className="crayons-btn crayons-btn--danger leave_button"
           type="submit"
           onClick={handleleaveChatChannelMembership}
         >

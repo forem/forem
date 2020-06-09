@@ -9,7 +9,7 @@ exports[`<LeaveMembershipSection /> should render and test snapshot 1`] = `
   </h3>
   <div>
     <button
-      class="crayons-btn crayons-btn--danger"
+      class="crayons-btn crayons-btn--danger leave_button"
       type="submit"
     >
       Leave Channel

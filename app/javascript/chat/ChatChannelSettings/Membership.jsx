@@ -23,7 +23,7 @@ const Membership = ({
       </a>
       {membershipType === 'requested' ? (
         <button
-          className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
+          className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost add-membership"
           type="button"
           onClick={chatChannelAcceptMembership}
           data-membership-id={membership.membership_id}
@@ -33,7 +33,7 @@ const Membership = ({
       ) : null}
       {membership.role !== 'mod' && currentMembershipRole === 'mod' ? (
         <button
-          className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
+          className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost remove-membership"
           type="button"
           onClick={removeMembership}
           data-membership-id={membership.membership_id}

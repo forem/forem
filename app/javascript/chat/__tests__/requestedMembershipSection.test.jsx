@@ -4,13 +4,29 @@ import { shallow } from 'preact-render-spy';
 import RequestedMembershipSection from '../ChatChannelSettings/RequestedMembershipSection';
 
 const data = {
-  requested_memberships: [],
+  requestedMemberships: [],
+  currentMembershipRole: 'mod',
+};
+
+const membership = {
+  requestedMemberships: [
+    {
+      name: 'test user',
+      username: 'testusername',
+      user_id: '1',
+      membership_id: '2',
+      role: 'member',
+      status: 'requested',
+      image: '',
+    },
+  ],
+  membershipType: 'requested',
   currentMembershipRole: 'mod',
 };
 
 const getRequestedMembershipSection = (membershipData) => (
   <RequestedMembershipSection
-    requested_memberships={membershipData.requested_memberships}
+    requestedMemberships={membershipData.requestedMemberships}
     currentMembershipRole={membershipData.currentMembershipRole}
   />
 );
@@ -25,5 +41,17 @@ describe('<RequestedMembershipSection />', () => {
     const context = shallow(getRequestedMembershipSection(data));
 
     expect(context.find('.requested_memberships').exists()).toEqual(true);
+  });
+
+  it('should not render the membership list', () => {
+    const context = shallow(getRequestedMembershipSection(data));
+
+    expect(context.find('.items-center').exists()).toEqual(false);
+  });
+
+  it('should render the membership list', () => {
+    const context = shallow(getRequestedMembershipSection(membership));
+
+    expect(context.find('.requested-member').exists()).toEqual(true);
   });
 });

@@ -8,7 +8,7 @@ const ModFaqSection = ({ currentMembershipRole }) => {
 
   return (
     <div className="crayons-card grid gap-2 p-4 faq-section">
-      <p>
+      <p className="contact-details">
         Questions about Connect Channel moderation? Contact
         <a
           href="mailto:yo@dev.to"

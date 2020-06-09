@@ -3,7 +3,7 @@ import render from 'preact-render-to-json';
 import { shallow } from 'preact-render-spy';
 import Membership from '../ChatChannelSettings/Membership';
 
-const data = {
+const modUser = {
   membership: {
     name: 'test user',
     username: 'testusername',
@@ -17,6 +17,20 @@ const data = {
   currentMembershipRole: 'mod',
 };
 
+const memberUser = {
+  membership: {
+    name: 'test user',
+    username: 'testusername',
+    user_id: '1',
+    membership_id: '2',
+    role: 'member',
+    status: 'active',
+    image: '',
+  },
+  membershipType: 'requested',
+  currentMembershipRole: 'mod',
+};
+
 const getMembership = (membershipData) => (
   <Membership
     membership={membershipData.membership}
@@ -27,13 +41,31 @@ const getMembership = (membershipData) => (
 
 describe('<Membership />', () => {
   it('should render and test snapshot', () => {
-    const tree = render(getMembership(data));
+    const tree = render(getMembership(modUser));
     expect(tree).toMatchSnapshot();
   });
 
-  it('should have the elements', () => {
-    const context = shallow(getMembership(data));
+  it('should have the element', () => {
+    const context = shallow(getMembership(modUser));
+    expect(context.find('.user_name').exists()).toEqual(true);
+  });
 
-    expect(context.find('.user_name').text()).toEqual(data.membership.name);
+  it('should have the the same ame', () => {
+    const context = shallow(getMembership(modUser));
+
+    expect(context.find('.user_name').text()).toEqual(modUser.membership.name);
+  });
+
+  it('should not visible remove and add membership button', () => {
+    const context = shallow(getMembership(modUser));
+
+    expect(context.find('.remove-membership').exists()).toEqual(false);
+    expect(context.find('.add-membership').exists()).toEqual(false);
+  });
+
+  it('should add button visible', () => {
+    const context = shallow(getMembership(memberUser));
+    expect(context.find('.add-membership').exists()).toEqual(true);
+    expect(context.find('.remove-membership').exists()).toEqual(true);
   });
 });

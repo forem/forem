@@ -4,7 +4,9 @@ exports[`<ChannelDescriptionSection /> should render and test snapshot 1`] = `
 <div
   class="crayons-card grid gap-2 p-4 faq-section"
 >
-  <p>
+  <p
+    class="contact-details"
+  >
     Questions about Connect Channel moderation? Contact
     <a
       class="mx-2 url-link"
