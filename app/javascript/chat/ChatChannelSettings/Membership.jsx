@@ -6,7 +6,7 @@ const Membership = ({
   removeMembership,
   membershipType,
   chatChannelAcceptMembership,
-  currentMembershipRole
+  currentMembershipRole,
 }) => {
   return (
     <div className="flex items-center">
@@ -19,57 +19,49 @@ const Membership = ({
             alt={`${membership.name} profile`}
           />
         </span>
-        <span className="mr-2">{membership.name}</span>
+        <span className="mr-2 user_name">{membership.name}</span>
       </a>
-      {
-        membershipType === 'requested' ? 
-          (
-            <button
-              className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
-              type="button"
-              onClick={chatChannelAcceptMembership}
-              data-membership-id={membership.membership_id}
-            >
-              +
-            </button>
-          ) 
-        : null
-      }
-      {
-        membership.role !== 'mod' && currentMembershipRole === 'mod'  ? 
-        (
-          <button
-            className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
-            type="button"
-            onClick={removeMembership}
-            data-membership-id={membership.membership_id}
-            data-membership-status={membership.status}
-          >
-            x
-          </button>
-) 
-          : null
-      }
+      {membershipType === 'requested' ? (
+        <button
+          className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
+          type="button"
+          onClick={chatChannelAcceptMembership}
+          data-membership-id={membership.membership_id}
+        >
+          +
+        </button>
+      ) : null}
+      {membership.role !== 'mod' && currentMembershipRole === 'mod' ? (
+        <button
+          className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
+          type="button"
+          onClick={removeMembership}
+          data-membership-id={membership.membership_id}
+          data-membership-status={membership.status}
+        >
+          x
+        </button>
+      ) : null}
     </div>
-  )
-}
-
+  );
+};
 
 Membership.propTypes = {
-  membership: PropTypes.objectOf(PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    membership_id: PropTypes.number.isRequired,
-    user_id: PropTypes.number.isRequired,
-    role: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    username: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired,
-  })).isRequired,
+  membership: PropTypes.objectOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      membership_id: PropTypes.number.isRequired,
+      user_id: PropTypes.number.isRequired,
+      role: PropTypes.string.isRequired,
+      image: PropTypes.string.isRequired,
+      username: PropTypes.string.isRequired,
+      status: PropTypes.string.isRequired,
+    }),
+  ).isRequired,
   removeMembership: PropTypes.func.isRequired,
   membershipType: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,
-  currentMembershipRole: PropTypes.string.isRequired
-}
+  currentMembershipRole: PropTypes.string.isRequired,
+};
 
 export default Membership;
-

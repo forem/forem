@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import InviteForm from './InviateForm';
 import SettingsFrom from './SettingsForm';
 
-
 const ModSection = ({
   handleChatChannelInvitations,
   invitationUsernames,
@@ -14,16 +13,19 @@ const ModSection = ({
   channelDiscoverable,
   handleChannelDiscoverableStatus,
   handleChannelDescriptionChanges,
-  currentMembershipRole
+  currentMembershipRole,
 }) => {
-
   if (currentMembershipRole !== 'mod') {
     return null;
   }
 
   return (
-    <div>
-      <InviteForm handleInvitationUsernames={handleInvitationUsernames} invitationUsernames={invitationUsernames} handleChatChannelInvitations={handleChatChannelInvitations} />
+    <div className="mod-section">
+      <InviteForm
+        handleInvitationUsernames={handleInvitationUsernames}
+        invitationUsernames={invitationUsernames}
+        handleChatChannelInvitations={handleChatChannelInvitations}
+      />
       <SettingsFrom
         channelDescription={channelDescription}
         handleDescriptionChange={handleDescriptionChange}
@@ -32,9 +34,8 @@ const ModSection = ({
         handleChannelDescriptionChanges={handleChannelDescriptionChanges}
       />
     </div>
-  )
-}
-
+  );
+};
 
 ModSection.propTypes = {
   handleInvitationUsernames: PropTypes.func.isRequired,
@@ -46,7 +47,6 @@ ModSection.propTypes = {
   handleChannelDescriptionChanges: PropTypes.func.isRequired,
   channelDiscoverable: PropTypes.bool.isRequired,
   currentMembershipRole: PropTypes.string.isRequired,
-}
+};
 
 export default ModSection;
-

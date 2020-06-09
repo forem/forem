@@ -6,10 +6,10 @@ const SettingsFrom = ({
   handleDescriptionChange,
   channelDiscoverable,
   handleChannelDiscoverableStatus,
-  handleChannelDescriptionChanges
+  handleChannelDescriptionChanges,
 }) => {
   return (
-    <div className="crayons-card p-4 grid gap-2 mb-4">
+    <div className="crayons-card p-4 grid gap-2 mb-4 settings-section">
       <h3>Channel Settings</h3>
       <div className="crayons-field">
         <label
@@ -48,15 +48,15 @@ const SettingsFrom = ({
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 SettingsFrom.propTypes = {
   channelDescription: PropTypes.string.isRequired,
   handleDescriptionChange: PropTypes.func.isRequired,
   handleChannelDiscoverableStatus: PropTypes.func.isRequired,
   handleChannelDescriptionChanges: PropTypes.func.isRequired,
-  channelDiscoverable: PropTypes.bool.isRequired
-}
+  channelDiscoverable: PropTypes.bool.isRequired,
+};
 
 export default SettingsFrom;

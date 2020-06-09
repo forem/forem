@@ -3,15 +3,14 @@ import PropsType from 'prop-types';
 
 const LeaveMembershipSection = ({
   currentMembershipRole,
-  handleleaveChatChannelMembership
+  handleleaveChatChannelMembership,
 }) => {
-
   if (currentMembershipRole !== 'member') {
     return null;
   }
 
   return (
-    <div className="crayons-card p-4 grid gap-2 mb-4">
+    <div className="crayons-card p-4 grid gap-2 mb-4 leave_membership_section">
       <h3>Danger Zone</h3>
       <div>
         <button
@@ -23,12 +22,12 @@ const LeaveMembershipSection = ({
         </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
 LeaveMembershipSection.propTypes = {
   currentMembershipRole: PropsType.string.isRequired,
   handleleaveChatChannelMembership: PropsType.func.isRequired,
-}
+};
 
 export default LeaveMembershipSection;
