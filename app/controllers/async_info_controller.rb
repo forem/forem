@@ -45,7 +45,8 @@ class AsyncInfoController < ApplicationController
 
     {
       title: broadcast&.title,
-      html: broadcast&.processed_html
+      html: broadcast&.processed_html,
+      banner_class: helpers.banner_class(broadcast)
     }.to_json
   end
 

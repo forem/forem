@@ -1,4 +1,5 @@
 class Broadcast < ApplicationRecord
+  VALID_BANNER_STYLES = %w[default brand success warning error].freeze
   resourcify
 
   has_many :notifications, as: :notifiable, inverse_of: :notifiable
@@ -6,6 +7,7 @@ class Broadcast < ApplicationRecord
   validates :title, uniqueness: { scope: :type_of }, presence: true
   validates :type_of, :processed_html, presence: true
   validates :type_of, inclusion: { in: %w[Announcement Welcome] }
+  validates :banner_style, inclusion: { in: VALID_BANNER_STYLES }, allow_blank: true
   validate  :single_active_announcement_broadcast
 
   scope :active, -> { where(active: true) }
