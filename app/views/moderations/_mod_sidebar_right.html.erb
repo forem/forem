@@ -16,12 +16,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  const durationDropdown = document.querySelector('#duration-dropdown');
-
-  durationDropdown.addEventListener('change', () => {
-    const chosenDuration = durationDropdown.options[durationDropdown.selectedIndex].value.toLowerCase();
-    document.querySelector('#selected-duration').textContent = chosenDuration;
-  }, false);
-</script>

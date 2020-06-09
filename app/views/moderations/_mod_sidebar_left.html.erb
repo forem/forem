@@ -1,16 +1,13 @@
 <div class="crayons-layout__sidebar-left">
   <p class="fw-heavy fs-3xl" style="margin-bottom: 29px;">Mod Center</p>
-  <div id="mod-center-inbox-toggle" style="display: flex; justify-content: space-between; padding: 8px;">
+  <div id="mod-center-inbox-toggle" class="mod-center-inbox-toggle">
     <span class="fw-medium">Inbox</span>
-    <span>*</span>
+    <%= inline_svg_tag("chevron-toggle.svg", aria: true, title: "Toggle Inbox") %>
   </div>
-  <div id="mod-center-inbox" class="hidden">
-    <% if current_user.moderator_for_tags.any? %>
-      <% current_user.moderator_for_tags.each do |tag| %>
-        <a
-          href="#"
-          class="crayons-link crayons-link--current crayons-link--block"
-          style="display: flex; justify-content: space-between; padding-left: 24px; padding-right: 12px;">
+  <div id="mod-center-inbox" class="mod-center-inbox">
+    <% if @current_user_tags.any? %>
+      <% @current_user_tags.each do |tag| %>
+        <a href="#" class="crayons-link crayons-link--current crayons-link--block inbox-tags">
           # <%= tag %>
           <span id="<%= tag %>-indicator" class="crayons-indicator">12</span>
         </a>
@@ -18,7 +15,7 @@
     <% end %>
     <a
       href="#"
-      class="crayons-link crayons-link--block"
+      class="crayons-link crayons-link--block inbox-nontags"
       style="padding-left: 24px;">
       All topics
     </a>
@@ -30,22 +27,11 @@
     <a href="#" class="crayons-link crayons-link--block">
       Settings
     </a>
-    <a href="#" class="crayons-link crayons-link--block">
+    <a href="<%= URL.url %>/community-moderation" class="crayons-link crayons-link--block">
       Moderator Guide
     </a>
-    <a href="#" class="crayons-link crayons-link--block">
+    <a href="<%= URL.url %>/terms" class="crayons-link crayons-link--block">
       Terms Of Conduct
     </a>
   </div>
 </div>
-
-<script>
-  document.querySelector('#mod-center-inbox-toggle').addEventListener('click', () => {
-    document.querySelector('#mod-center-inbox').classList.toggle('hidden');
-  });
-
-//  select all children of #mod-center-inbox and add click event listener to each
-//  on click, add the crayons-link--current class to clicked option, and remove it from all others
-//  select all children of #mod-center-other-options
-//  on click, add the crayons-link--current class to clicked option, and remove it from all others
-</script>
