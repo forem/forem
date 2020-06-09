@@ -32,7 +32,8 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
     )
   end
 
-  it "renders the page", js: true, percy: true do
+  # TODO: Uncomment this spec when we decide to use percy again
+  xit "renders the page", js: true, percy: true do
     visit "/settings/organization"
     fill_in_org_form
     click_button "Create Organization"

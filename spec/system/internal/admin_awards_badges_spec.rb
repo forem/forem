@@ -25,7 +25,8 @@ RSpec.describe "Admin awards badges", type: :system do
     visit "/internal/badges"
   end
 
-  it "renders the page", js: true, percy: true do
+  # TODO: Uncomment this spec when we decide to use percy again
+  xit "renders the page", js: true, percy: true do
     Percy.snapshot(page, name: "Admin: /internal/badges")
   end
 

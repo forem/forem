@@ -71,8 +71,11 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
     if i.zero?
       user.add_role(:trusted) # guarantee at least one moderator
+    elsif i == num_users - 1
+      next # guarantee at least one user with no role
     else
-      user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
+      role_index = rand(0..roles.length)
+      user.add_role(roles[role_index]) if role_index != roles.length # increases chance of more no-role users
     end
 
     Identity.create!(
@@ -286,7 +289,7 @@ seeder.create_if_none(Broadcast) do
 
   Article.create!(
     body_markdown: welcome_thread_content,
-    user: User.dev_account,
+    user: User.dev_account || User.first,
   )
 end
 

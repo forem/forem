@@ -5,7 +5,6 @@
       <%= render "form" %>
       <%= submit_tag "Update Broadcast", class: "btn btn-primary float-right" %>
     <% end %>
-    <hr class="mt-5">
-      <%= link_to "Destroy Broadcast", url_for(action: :destroy, id: @broadcast.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger float-right" %>
+    <%= link_to "Destroy Broadcast", url_for(action: :destroy, id: @broadcast.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
   </div>
 </div>
