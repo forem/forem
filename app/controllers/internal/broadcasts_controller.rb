@@ -1,5 +1,7 @@
 class Internal::BroadcastsController < Internal::ApplicationController
   layout "internal"
+  # before_action :last_active_at
+  # before_action :last_active_at, if: proc { Broadcast.active }
 
   def index
     @broadcasts = if params[:type_of]
@@ -56,10 +58,23 @@ class Internal::BroadcastsController < Internal::ApplicationController
   private
 
   def broadcast_params
-    params.permit(:title, :processed_html, :type_of, :banner_style, :active)
+    params.permit(:title, :processed_html, :type_of, :banner_style, :active, :last_active_at)
   end
 
   def authorize_admin
     authorize Broadcast, :access?, policy_class: InternalPolicy
   end
+
+  # def last_active_at
+  #   return unless Broadcast.last_active_at != created_at
+
+  #   Broadcast.update(last_active_at: Time.zone.now)
+  # end
+
+  # def last_active_at
+  #   # Displays a timestamp showing when the Broadcast was last set to "active"
+  #   # active_broadcast = Broadcast.active
+  #   # active_broadcasts.order("active DESC")
+  #   Broadcast.update(last_active_at: Time.current)
+  # end
 end

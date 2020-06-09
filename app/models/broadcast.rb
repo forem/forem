@@ -9,6 +9,7 @@ class Broadcast < ApplicationRecord
   validates :type_of, inclusion: { in: %w[Announcement Welcome] }
   validates :banner_style, inclusion: { in: VALID_BANNER_STYLES }, allow_blank: true
   validate  :single_active_announcement_broadcast
+  # validate :last_active
 
   scope :active, -> { where(active: true) }
   scope :announcement, -> { where(type_of: "Announcement") }
@@ -32,4 +33,17 @@ class Broadcast < ApplicationRecord
 
     errors.add(:base, "You can only have one active announcement broadcast")
   end
+
+  # def last_active
+  #   return unless @broadcast.last_active_at != updated_at
+
+  #   Broadcast.update(last_active_at: Time.zone.now)
+  # end
+
+  # def last_active
+  #   # Displays a timestamp showing when the Broadcast was last set to "active"
+  #   # active_broadcast = Broadcast.active
+  #   # active_broadcasts.order("active DESC")
+  #   Broadcast.update(last_active_at: Time.current)
+  # end
 end

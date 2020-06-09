@@ -34,9 +34,16 @@ RSpec.describe "/internal/broadcasts", type: :request do
     before { sign_in super_admin }
 
     describe "GET /internal/broadcasts" do
+      let!(:broadcast) { create(:welcome_broadcast) }
+
       it "allows the request" do
         get_resource
         expect(response).to have_http_status(:ok)
+      end
+
+      it "displays the time that the broadcast was last set to active" do
+        get_resource
+        expect(response.body).to include(broadcast.last_active_at)
       end
     end
 
