@@ -1,4 +1,5 @@
 class Broadcast < ApplicationRecord
+  VALID_BANNER_STYLES = %w[default brand success warning error].freeze
   resourcify
 
   has_many :notifications, as: :notifiable, inverse_of: :notifiable
@@ -6,7 +7,7 @@ class Broadcast < ApplicationRecord
   validates :title, uniqueness: { scope: :type_of }, presence: true
   validates :type_of, :processed_html, presence: true
   validates :type_of, inclusion: { in: %w[Announcement Welcome] }
-  validates :banner_style, inclusion: { in: %w[default brand success warning error] }, allow_blank: true
+  validates :banner_style, inclusion: { in: VALID_BANNER_STYLES }, allow_blank: true
   validate  :single_active_announcement_broadcast
 
   scope :active, -> { where(active: true) }
@@ -15,16 +16,6 @@ class Broadcast < ApplicationRecord
 
   def get_inner_body(content)
     Nokogiri::HTML(content).at("body").inner_html
-  end
-
-  def banner_class
-    return if banner_style.blank?
-
-    if banner_style == "default"
-      "crayons-banner"
-    else
-      "crayons-banner crayons-banner--#{banner_style}"
-    end
   end
 
   private
