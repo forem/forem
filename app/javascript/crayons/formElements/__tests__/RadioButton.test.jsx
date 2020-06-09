@@ -7,8 +7,8 @@ describe('<RadioButton /> component', () => {
   // The assumption is that it is used with a <label />
 
   it('should render a radio button unchecked by default', () => {
-    const tree = render(<RadioButton />);
-    expect(tree).toMatchSnapshot();
+    const { container } = render(<RadioButton />);
+    expect(container.innerHTML).toMatchSnapshot();
   });
 
   it('should render a radio button checked', () => {
