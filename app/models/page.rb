@@ -38,7 +38,7 @@ class Page < ApplicationRecord
   end
 
   def body_present
-    errors.add(:body_markdown, "must exist if body_html doesn't exist.") if body_markdown.blank? && body_html.blank?
+    errors.add(:body_markdown, "must exist if body_html or body_json doesn't exist.") if body_markdown.blank? && body_html.blank? && body_json.blank?
   end
 
   def unique_slug_including_users_and_orgs
