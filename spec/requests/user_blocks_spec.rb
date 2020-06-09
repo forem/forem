@@ -83,8 +83,10 @@ RSpec.describe "UserBlock", type: :request do
     end
 
     it "raises ActiveRecord::RecordNotFound error if UserBlock not found" do
+      missing_id = blocked.id
+      blocked.destroy
       expect do
-        delete "/user_blocks/#{blocked.id}", params: { user_block: { blocked_id: blocked.id + 10 } }
+        delete "/user_blocks/#{missing_id}", params: { user_block: { blocked_id: missing_id } }
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
 

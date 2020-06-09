@@ -132,6 +132,10 @@ Lint/DeprecatedOpenSSLConstant:
 #                  the receiver of the call is a HEREDOC.
 #   Enabled: false
 
+Lint/MixedRegexpCaptureTypes:
+  Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
+  Enabled: true
+
 # Lint/NumberConversion:
 #   Description: 'Checks unsafe usage of number conversion methods.'
 #   Enabled: false
@@ -318,6 +322,14 @@ Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
   StyleGuide: '#percent-r'
   Enabled: false
+
+Style/RedundantRegexpCharacterClass:
+  Description: 'Checks for unnecessary single-element Regexp character classes.'
+  Enabled: true
+
+Style/RedundantRegexpEscape:
+  Description: 'Checks for redundant escapes in Regexps.'
+  Enabled: true
 
 Style/ReturnNil:
   Description: 'Use return instead of return nil.'

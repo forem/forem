@@ -1,5 +1,3 @@
-'use strict';
-
 // SUBMITTING FORM //
 
 function getFormValues(form) {
@@ -149,7 +147,7 @@ function initializeEllipsisMenuToggle() {
   }
 
   // Hide ellipsis menus when you click outside of the ellipsis menu parent div
-  const body = document.getElementsByTagName('body')[0];
+  const body = document.body;
   if (body) {
     body.addEventListener('click', hideEllipsisMenus);
   }

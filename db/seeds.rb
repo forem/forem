@@ -71,8 +71,11 @@ users_in_random_order = seeder.create_if_none(User, num_users) do
 
     if i.zero?
       user.add_role(:trusted) # guarantee at least one moderator
+    elsif i == num_users - 1
+      next # guarantee at least one user with no role
     else
-      user.add_role(roles[rand(0..roles.length)]) # includes chance of having no role
+      role_index = rand(0..roles.length)
+      user.add_role(roles[role_index]) if role_index != roles.length # increases chance of more no-role users
     end
 
     Identity.create!(
@@ -118,7 +121,7 @@ end
 
 seeder.create_if_none(Tag) do
   tags = %w[beginners career computerscience git go
-          java javascript linux productivity python security webdev]
+            java javascript linux productivity python security webdev]
 
   tags.each do |tag_name|
     Tag.create!(
@@ -141,16 +144,16 @@ seeder.create_if_none(Article, num_articles) do
     tags.concat Tag.order(Arel.sql("RANDOM()")).limit(3).pluck(:name)
 
     markdown = <<~MARKDOWN
-    ---
-    title:  #{Faker::Book.title} #{Faker::Lorem.sentence(word_count: 2).chomp('.')}
-    published: true
-    cover_image: #{Faker::Company.logo}
-    tags: #{tags.join(', ')}
-    ---
+      ---
+      title:  #{Faker::Book.title} #{Faker::Lorem.sentence(word_count: 2).chomp('.')}
+      published: true
+      cover_image: #{Faker::Company.logo}
+      tags: #{tags.join(', ')}
+      ---
 
-    #{Faker::Hipster.paragraph(sentence_count: 2)}
-    #{Faker::Markdown.random}
-    #{Faker::Hipster.paragraph(sentence_count: 2)}
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
+      #{Faker::Markdown.random}
+      #{Faker::Hipster.paragraph(sentence_count: 2)}
     MARKDOWN
 
     Article.create!(
@@ -272,21 +275,21 @@ seeder.create_if_none(Broadcast) do
   end
 
   welcome_thread_content = <<~HEREDOC
-  ---
-  title: Welcome Thread - v0
-  published: true
-  description: Introduce yourself to the community!
-  tags: welcome
-  ---
+    ---
+    title: Welcome Thread - v0
+    published: true
+    description: Introduce yourself to the community!
+    tags: welcome
+    ---
 
-  Hey there! Welcome to #{ApplicationConfig['COMMUNITY_NAME']}!
+    Hey there! Welcome to #{ApplicationConfig['COMMUNITY_NAME']}!
 
-  Leave a comment below to introduce yourself to the community!✌️
+    Leave a comment below to introduce yourself to the community!✌️
   HEREDOC
 
   Article.create!(
     body_markdown: welcome_thread_content,
-    user: User.dev_account,
+    user: User.dev_account || User.first,
   )
 end
 
@@ -483,8 +486,6 @@ seeder.create_if_none(PathRedirect, num_path_redirects) do
 end
 
 ##############################################################################
-
-# rubocop:disable Rails/Output
 puts <<-ASCII
 
   ```````````````````````````````````````````````````````````````````````````

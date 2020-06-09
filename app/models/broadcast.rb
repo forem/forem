@@ -26,7 +26,7 @@ class Broadcast < ApplicationRecord
     first_broadcast = active_broadcasts.order(id: :asc).limit(1)
     return unless active &&
       type_of == "Announcement" &&
-      ![nil, id].include?(first_broadcast.pluck(:id).first)
+      ![nil, id].include?(first_broadcast.pick(:id))
 
     errors.add(:base, "You can only have one active announcement broadcast")
   end

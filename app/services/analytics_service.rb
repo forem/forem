@@ -115,7 +115,7 @@ class AnalyticsService
   def calculate_page_views_totals
     total_views = article_data.sum(:page_views_count)
     logged_in_page_view_data = page_view_data.where.not(user_id: nil)
-    average = logged_in_page_view_data.pluck(Arel.sql("AVG(time_tracked_in_seconds)")).first
+    average = logged_in_page_view_data.pick(Arel.sql("AVG(time_tracked_in_seconds)"))
     average_read_time_in_seconds = (average || 0).round # average is a BigDecimal
 
     {
