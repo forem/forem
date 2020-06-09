@@ -80,6 +80,260 @@ export default class ChatChannelSettings extends Component {
       });
   }
 
+  handleDescriptionChange = (e) => {
+    const description = e.target.value;
+    this.setState({
+      channelDescription: description,
+    });
+  };
+
+  handlePersonChatChennelSetting = (e) => {
+    const status = e.target.checked;
+    this.setState({
+      showGlobalBadgeNotification: status,
+    });
+  };
+
+  updateCurrentMembershipNotificationSettings = async () => {
+    const { currentMembership, showGlobalBadgeNotification } = this.state;
+    const response = await updatePersonalChatChannelNotificationSettings(
+      currentMembership.id,
+      showGlobalBadgeNotification,
+    );
+    const { message } = response;
+    if (response.success) {
+      this.setState((prevState) => {
+        return {
+          errorMessages: null,
+          successMessages: response.message,
+          currentMembership: {
+            ...prevState.currentMembership,
+            show_global_badge_notification: showGlobalBadgeNotification,
+          },
+        };
+      });
+    } else {
+      this.setState({
+        successMessages: null,
+        errorMessages: response.message,
+        showGlobalBadgeNotification:
+          currentMembership.show_global_badge_notification,
+      });
+    }
+    addSnackbarItem({ message });
+  };
+
+  chatChannelRemoveMembership = async (e) => {
+    const { membershipId, membershipStatus } = e.target.dataset;
+    const { chatChannel } = this.state;
+    const response = await rejectChatChannelJoiningRequest(
+      chatChannel.id,
+      membershipId,
+      membershipStatus,
+    );
+    return response;
+  };
+
+  filterMemberships = (memberships, membershipId) => {
+    const filteredMembership = memberships.filter(
+      (membership) => membership.membership_id !== Number(membershipId),
+    );
+    return filteredMembership;
+  };
+
+  removeActiveMembership = async (e) => {
+    const response = await this.chatChannelRemoveMembership(e);
+    const { message } = response;
+    const { membershipId } = e.target.dataset;
+    if (response.success) {
+      this.setState((prevState) => {
+        return {
+          errorMessages: null,
+          successMessages: response.message,
+          activeMemberships: this.filterMemberships(
+            prevState.activeMemberships,
+            membershipId,
+          ),
+        };
+      });
+    } else {
+      this.setState({
+        successMessages: null,
+        errorMessages: response.message,
+      });
+    }
+    addSnackbarItem({ message });
+  };
+
+  removePendingMembership = async (e) => {
+    const response = await this.chatChannelRemoveMembership(e);
+    const { message } = response;
+    const { membershipId } = e.target.dataset;
+    if (response.success) {
+      this.setState((prevState) => {
+        return {
+          errorMessages: null,
+          successMessages: response.message,
+          pendingMemberships: this.filterMemberships(
+            prevState.pendingMemberships,
+            membershipId,
+          ),
+        };
+      });
+    } else {
+      this.setState({
+        successMessages: null,
+        errorMessages: response.message,
+      });
+    }
+    addSnackbarItem({ message });
+  };
+
+  removeRequestedMembership = async (e) => {
+    const response = await this.chatChannelRemoveMembership(e);
+    const { message } = response;
+    const { membershipId } = e.target.dataset;
+    if (response.success) {
+      this.setState((prevState) => {
+        return {
+          errorMessages: null,
+          successMessages: response.message,
+          requestedMemberships: this.filterMemberships(
+            prevState.requestedMemberships,
+            membershipId,
+          ),
+        };
+      });
+    } else {
+      this.setState({
+        successMessages: null,
+        errorMessages: response.message,
+      });
+    }
+    addSnackbarItem({ message });
+  };
+
+  chatChannelAcceptMembership = async (e) => {
+    const { chatChannel } = this.state;
+    const { membershipId } = e.target.dataset;
+    const response = await acceptChatChannelJoiningRequest(
+      chatChannel.id,
+      membershipId,
+    );
+    const { message } = response;
+    if (response.success) {
+      this.setState((prevState) => {
+        const filteredRequestedMemberships = prevState.requestedMemberships.filter(
+          (requestedMembership) =>
+            requestedMembership.membership_id !== Number(membershipId),
+        );
+        const updatedActiveMembership = [
+          ...prevState.activeMemberships,
+          response.membership,
+        ];
+        return {
+          errorMessages: null,
+          successMessages: response.message,
+          requestedMemberships: filteredRequestedMemberships,
+          activeMemberships: updatedActiveMembership,
+        };
+      });
+    } else {
+      this.setState({
+        successMessages: null,
+        errorMessages: response.message,
+      });
+    }
+    addSnackbarItem({ message });
+  };
+
+  handleChannelDiscoverableStatus = (e) => {
+    const status = e.target.checked;
+    this.setState({
+      channelDiscoverable: status,
+    });
+  };
+
+  handleChannelDescriptionChanges = async () => {
+    const { chatChannel, channelDescription, channelDiscoverable } = this.state;
+    const { id } = chatChannel;
+    const response = await updateChatChannelDescription(
+      id,
+      channelDescription,
+      channelDiscoverable,
+    );
+    const { message } = response;
+
+    if (response.success) {
+      this.componentDidMount();
+      this.setState((prevState) => {
+        return {
+          errorMessages: null,
+          successMessages: response.message,
+          chatChannel: {
+            ...prevState,
+            description: channelDescription,
+            discoverable: channelDiscoverable,
+          },
+        };
+      });
+    } else {
+      this.setState({
+        successMessages: null,
+        errorMessages: response.message,
+        channelDiscoverable: chatChannel.discoverable,
+      });
+    }
+    addSnackbarItem({ message });
+  };
+
+  handleInvitationUsernames = (e) => {
+    const invitationUsernameValue = e.target.value;
+    this.setState({
+      invitationUsernames: invitationUsernameValue,
+    });
+  };
+
+  handleChatChannelInvitations = async () => {
+    const { invitationUsernames, chatChannel } = this.state;
+    const { id } = chatChannel;
+    const response = await sendChatChannelInvitation(id, invitationUsernames);
+    const { message } = response;
+    if (response.success) {
+      this.componentDidMount();
+      this.setState({
+        errorMessages: null,
+        successMessages: response.message,
+        invitationUsernames: null,
+      });
+    } else {
+      this.setState({
+        successMessages: null,
+        errorMessages: response.message,
+      });
+    }
+    addSnackbarItem({ message });
+  };
+
+  handleleaveChatChannelMembership = async () => {
+    // eslint-disable-next-line no-restricted-globals
+    const actionStatus = confirm(
+      'Are you absolutely sure you want to leave this channel? This action is permanent.',
+    );
+    const { currentMembership } = this.state;
+    if (actionStatus) {
+      const response = await leaveChatChannelMembership(currentMembership.id);
+      if (response.success) {
+        this.componentDidMount();
+      } else {
+        this.setState({
+          successMessages: null,
+          errorMessages: response.message,
+        });
+      }
+    }
+  };
+
   render() {
     const {
       chatChannel,
@@ -96,286 +350,6 @@ export default class ChatChannelSettings extends Component {
     if (!chatChannel) {
       return null;
     }
-
-    this.handleDescriptionChange = (e) => {
-      const description = e.target.value;
-
-      this.setState({
-        channelDescription: description,
-      });
-    };
-
-    this.handlePersonChatChennelSetting = (e) => {
-      const status = e.target.checked;
-
-      this.setState({
-        showGlobalBadgeNotification: status,
-      });
-    };
-
-    this.updateCurrentMembershipNotificationSettings = async () => {
-      const response = await updatePersonalChatChannelNotificationSettings(
-        currentMembership.id,
-        showGlobalBadgeNotification,
-      );
-      const { message } = response;
-
-      if (response.success) {
-        this.setState((prevState) => {
-          return {
-            errorMessages: null,
-            successMessages: response.message,
-            currentMembership: {
-              ...prevState.currentMembership,
-              show_global_badge_notification: showGlobalBadgeNotification,
-            },
-          };
-        });
-      } else {
-        this.setState({
-          successMessages: null,
-          errorMessages: response.message,
-          showGlobalBadgeNotification:
-            currentMembership.show_global_badge_notification,
-        });
-      }
-
-      addSnackbarItem({ message });
-    };
-
-    this.chatChannelRemoveMembership = async (
-      membershipId,
-      membershipStatus,
-    ) => {
-      const response = await rejectChatChannelJoiningRequest(
-        chatChannel.id,
-        membershipId,
-        membershipStatus,
-      );
-      return response;
-    };
-
-    this.removeActiveMembership = async (e) => {
-      const { membershipId, membershipStatus } = e.target.dataset;
-      const response = await this.chatChannelRemoveMembership(
-        membershipId,
-        membershipStatus,
-      );
-
-      const { message } = response;
-
-      if (response.success) {
-        this.setState((prevState) => {
-          const filterActiveMemberships = prevState.activeMemberships.filter(
-            (activeMembership) =>
-              activeMembership.membership_id !== Number(membershipId),
-          );
-
-          return {
-            errorMessages: null,
-            successMessages: response.message,
-            activeMemberships: filterActiveMemberships,
-          };
-        });
-      } else {
-        this.setState({
-          successMessages: null,
-          errorMessages: response.message,
-        });
-      }
-
-      addSnackbarItem({ message });
-    };
-
-    this.removePendingMembership = async (e) => {
-      const { membershipId, membershipStatus } = e.target.dataset;
-      const response = await this.chatChannelRemoveMembership(
-        membershipId,
-        membershipStatus,
-      );
-      const { message } = response;
-
-      if (response.success) {
-        this.setState((prevState) => {
-          const filterPendingMemberships = prevState.pendingMemberships.filter(
-            (pendingMembership) =>
-              pendingMembership.membership_id !== Number(membershipId),
-          );
-
-          return {
-            errorMessages: null,
-            successMessages: response.message,
-            pendingMemberships: filterPendingMemberships,
-          };
-        });
-      } else {
-        this.setState({
-          successMessages: null,
-          errorMessages: response.message,
-        });
-      }
-
-      addSnackbarItem({ message });
-    };
-
-    this.removeRequestedMembership = async (e) => {
-      const { membershipId, membershipStatus } = e.target.dataset;
-      const response = await this.chatChannelRemoveMembership(
-        membershipId,
-        membershipStatus,
-      );
-      const { message } = response;
-
-      if (response.success) {
-        this.setState((prevState) => {
-          const filterRequestedMemberships = prevState.requestedMemberships.filter(
-            (requestedMembership) =>
-              requestedMembership.membership_id !== Number(membershipId),
-          );
-
-          return {
-            errorMessages: null,
-            successMessages: response.message,
-            requestedMemberships: filterRequestedMemberships,
-          };
-        });
-      } else {
-        this.setState({
-          successMessages: null,
-          errorMessages: response.message,
-        });
-      }
-
-      addSnackbarItem({ message });
-    };
-
-    this.chatChannelAcceptMembership = async (e) => {
-      const { membershipId } = e.target.dataset;
-      const response = await acceptChatChannelJoiningRequest(
-        chatChannel.id,
-        membershipId,
-      );
-      const { message } = response;
-
-      if (response.success) {
-        this.setState((prevState) => {
-          const filteredRequestedMemberships = prevState.requestedMemberships.filter(
-            (requestedMembership) =>
-              requestedMembership.membership_id !== Number(membershipId),
-          );
-          const updatedActiveMembership = [
-            ...prevState.activeMemberships,
-            response.membership,
-          ];
-
-          return {
-            errorMessages: null,
-            successMessages: response.message,
-            requestedMemberships: filteredRequestedMemberships,
-            activeMemberships: updatedActiveMembership,
-          };
-        });
-      } else {
-        this.setState({
-          successMessages: null,
-          errorMessages: response.message,
-        });
-      }
-
-      addSnackbarItem({ message });
-    };
-
-    this.handleChannelDiscoverableStatus = (e) => {
-      const status = e.target.checked;
-
-      this.setState({
-        channelDiscoverable: status,
-      });
-    };
-
-    this.handleChannelDescriptionChanges = async () => {
-      const { id } = chatChannel;
-      const response = await updateChatChannelDescription(
-        id,
-        channelDescription,
-        channelDiscoverable,
-      );
-      const { message } = response;
-
-      if (response.success) {
-        this.componentDidMount();
-
-        this.setState((prevState) => {
-          return {
-            errorMessages: null,
-            successMessages: response.message,
-            chatChannel: {
-              ...prevState,
-              description: channelDescription,
-              discoverable: channelDiscoverable,
-            },
-          };
-        });
-      } else {
-        this.setState({
-          successMessages: null,
-          errorMessages: response.message,
-          channelDiscoverable: chatChannel.discoverable,
-        });
-      }
-
-      addSnackbarItem({ message });
-    };
-
-    this.handleInvitationUsernames = (e) => {
-      const invitationUsernameValue = e.target.value;
-
-      this.setState({
-        invitationUsernames: invitationUsernameValue,
-      });
-    };
-
-    this.handleChatChannelInvitations = async () => {
-      const { id } = chatChannel;
-      const response = await sendChatChannelInvitation(id, invitationUsernames);
-      const { message } = response;
-
-      if (response.success) {
-        this.componentDidMount();
-
-        this.setState({
-          errorMessages: null,
-          successMessages: response.message,
-          invitationUsernames: null,
-        });
-      } else {
-        this.setState({
-          successMessages: null,
-          errorMessages: response.message,
-        });
-      }
-
-      addSnackbarItem({ message });
-    };
-
-    this.handleleaveChatChannelMembership = async () => {
-      // eslint-disable-next-line no-restricted-globals
-      const actionStatus = confirm(
-        'Are you absolutely sure you want to leave this channel? This action is permanent.',
-      );
-
-      if (actionStatus) {
-        const response = await leaveChatChannelMembership(currentMembership.id);
-        if (response.success) {
-          this.componentDidMount();
-        } else {
-          this.setState({
-            successMessages: null,
-            errorMessages: response.message,
-          });
-        }
-      }
-    };
 
     return (
       <div className="activechatchannel__activeArticle channel_settings">
@@ -396,26 +370,34 @@ export default class ChatChannelSettings extends Component {
             chatChannelAcceptMembership={this.chatChannelAcceptMembership}
           />
           <div>
-            <ModSection 
+            <ModSection
               invitationUsernames={invitationUsernames}
               handleInvitationUsernames={this.handleInvitationUsernames}
               handleChatChannelInvitations={this.handleChatChannelInvitations}
               channelDescription={channelDescription}
               handleDescriptionChange={this.handleDescriptionChange}
               channelDiscoverable={channelDiscoverable}
-              handleChannelDiscoverableStatus={this.handleChannelDiscoverableStatus}
-              handleChannelDescriptionChanges={this.handleChannelDescriptionChanges}
+              handleChannelDiscoverableStatus={
+                this.handleChannelDiscoverableStatus
+              }
+              handleChannelDescriptionChanges={
+                this.handleChannelDescriptionChanges
+              }
               currentMembershipRole={currentMembership.role}
             />
           </div>
-          <PersonalSettings 
-            updateCurrentMembershipNotificationSettings={this.updateCurrentMembershipNotificationSettings}
+          <PersonalSettings
+            updateCurrentMembershipNotificationSettings={
+              this.updateCurrentMembershipNotificationSettings
+            }
             showGlobalBadgeNotification={showGlobalBadgeNotification}
             handlePersonChatChennelSetting={this.handlePersonChatChennelSetting}
           />
           <LeaveMembershipSection
             currentMembershipRole={currentMembership.role}
-            handleleaveChatChannelMembership={this.handleleaveChatChannelMembership}
+            handleleaveChatChannelMembership={
+              this.handleleaveChatChannelMembership
+            }
           />
           <ModFaqSection currentMembershipRole={currentMembership.role} />
         </div>
