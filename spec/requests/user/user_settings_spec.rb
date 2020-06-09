@@ -33,7 +33,7 @@ RSpec.describe "UserSettings", type: :request do
 
       it "displays content on misc tab properly" do
         get "/settings/misc"
-        expect(response.body).to include("Display Announcements (When browsing)")
+        expect(response.body).to include("Connect", "Languages", "Sponsors", "Announcements", "Export Content")
       end
 
       it "displays content on RSS tab properly" do
@@ -191,6 +191,12 @@ RSpec.describe "UserSettings", type: :request do
     it "enables community-success notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 1 } }
       expect(user.reload.mod_roundrobin_notifications).to be(true)
+    end
+
+    it "updates the users announcement display preferences" do
+      expect do
+        put "/users/#{user.id}", params: { user: { tab: "misc", display_announcements: 0 } }
+      end.to change { user.reload.display_announcements }.from(true).to(false)
     end
 
     it "disables community-success notifications" do
