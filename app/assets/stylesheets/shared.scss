@@ -191,6 +191,7 @@
   position: fixed;
   top: 0;
   // background: var(--accent-brand);
+  // box-shadow: 0 -2px var(--su-1) var(--accent-brand);
   background: linear-gradient(
     to right,
     orange,
@@ -200,7 +201,6 @@
     blue,
     violet
   );
-  box-shadow: 0 -2px var(--su-1) var(--accent-brand);
   z-index: 102;
   height: var(--su-1);
   width: 0%;
