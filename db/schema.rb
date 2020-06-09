@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_05_170430) do
+ActiveRecord::Schema.define(version: 2020_06_08_175130) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -267,6 +267,7 @@ ActiveRecord::Schema.define(version: 2020_06_05_170430) do
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
     t.boolean "active", default: false
+    t.string "banner_style"
     t.text "body_markdown"
     t.datetime "created_at"
     t.text "processed_html"
@@ -1163,6 +1164,7 @@ ActiveRecord::Schema.define(version: 2020_06_05_170430) do
     t.string "currently_hacking_on"
     t.string "currently_learning"
     t.string "currently_streaming_on"
+    t.boolean "display_announcements", default: true
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
     t.string "editor_version", default: "v1"
