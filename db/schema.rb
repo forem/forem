@@ -468,6 +468,7 @@ ActiveRecord::Schema.define(version: 2020_06_09_192545) do
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_id", null: false
     t.index ["email_subscribable_type", "email_subscribable_id"], name: "email_subscribable_type_and_id"
+    t.index ["user_id", "email_subscribable_id", "email_subscribable_type"], name: "user_id_email_subscribable_type_and_id", unique: true
     t.index ["user_id"], name: "index_email_subscriptions_on_user_id"
   end
 

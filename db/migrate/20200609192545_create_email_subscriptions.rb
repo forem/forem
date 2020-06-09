@@ -6,5 +6,12 @@ class CreateEmailSubscriptions < ActiveRecord::Migration[6.0]
 
       t.timestamps
     end
+
+    add_index(
+      :email_subscriptions,
+      %i[user_id email_subscribable_id email_subscribable_type],
+      unique: true,
+      name: :user_id_email_subscribable_type_and_id
+    )
   end
 end
