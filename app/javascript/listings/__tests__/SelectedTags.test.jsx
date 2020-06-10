@@ -6,12 +6,8 @@ import SelectedTags from '../components/SelectedTags';
 const tags = ['clojure', 'java', 'dotnet'];
 const getProps = () => ({
   tags,
-  onClick: () => {
-    return 'onClick';
-  },
-  onKeyPress: () => {
-    return 'onKeyPress';
-  },
+  onRemoveTag: jest.fn(),
+  onKeyPress: jest.fn(),
 });
 
 describe('<SelectedTags />', () => {
@@ -26,7 +22,7 @@ describe('<SelectedTags />', () => {
   it('should render all the selected tags', () => {
     const { getByText } = renderSelectedTags();
     tags.forEach(tag => {
-      getByText(tag);
+      getByText(tag); //will error out so works as an expectation
     });
   });
 
@@ -36,5 +32,14 @@ describe('<SelectedTags />', () => {
       expect(getByText(tag).closest('a').href).toContain(`/listings?t=${tag}`);
     });
   });
+
+  it('should remove a tag', async () => {
+    const onRemoveTag = jest.fn();
+    const onKeyPress = jest.fn();
+    const { getAllByText, queryByText, debug } = render(<SelectedTags tags={tags} onKeyPress={onKeyPress} onRemoveTag={onRemoveTag} />);
+
+    const firstTagX = getAllByText('×')[0];
+    firstTagX.click();
+    expect(onRemoveTag).toHaveBeenCalledTimes(1);
   });
 });

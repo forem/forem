@@ -12,6 +12,7 @@ const MessageModal = ({
 
   return (
     <form
+      data-testid="listings-message-modal"
       id="listings-message-form"
       className="listings-contact-via-connect"
       onSubmit={onSubmit}
@@ -43,7 +44,7 @@ const MessageModal = ({
       <p>
         {isCurrentUserOnListing ? (
           <em id="personal-message-about-interactions">
-            All private interactions 
+            All private interactions
             {' '}
             <b>must</b>
             {' '}
@@ -54,7 +55,7 @@ const MessageModal = ({
         ) : (
           <em id="generic-message-about-interactions">
             Message must be relevant and on-topic with the listing. All private
-            interactions 
+            interactions
             {' '}
             <b>must</b>
             {' '}

@@ -22,16 +22,12 @@ describe('<NextPageButton />', () => {
     getByText(/load more listings/i);
   });
 
-  xit('should call the onclick handler', () => {
+  it('should call the onclick handler', () => {
     const onClick = jest.fn();
-
-    const {getByText} = render(<NextPageButton {...defaultProps} />);
+    const {getByText} = render(<NextPageButton onClick={onClick} />);
     const button = getByText(/load more listings/i);
 
     button.click();
-
     expect(onClick).toHaveBeenCalledTimes(1);
-
   });
-
 });

@@ -1,4 +1,5 @@
 import { h } from 'preact';
+import { axe } from 'jest-axe';
 import { render } from '@testing-library/preact';
 
 import SingleListing from '../singleListing';
@@ -23,7 +24,6 @@ const listing = {
 };
 
 describe('<SingleListing />', () => {
-
   const renderSingleListing = () => render(
     <SingleListing
       onAddTag={() => {
@@ -40,6 +40,12 @@ describe('<SingleListing />', () => {
       isOpen={false}
     />
   );
+
+  it('should have no a11y violations', async () => {
+    const { container } = renderSingleListing();
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
 
   it('shows a listing title', () => {
     const { getByText } = renderSingleListing();
