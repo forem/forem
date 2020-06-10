@@ -77,6 +77,14 @@ RSpec.configure do |config|
   config.include SidekiqTestHelpers
   config.include ElasticsearchHelpers
 
+  config.after(:each, type: :system) do
+    Warden::Manager._on_request.clear
+  end
+
+  config.after(:each, type: :request) do
+    Warden::Manager._on_request.clear
+  end
+
   config.before(:suite) do
     Search::Cluster.recreate_indexes
   end
