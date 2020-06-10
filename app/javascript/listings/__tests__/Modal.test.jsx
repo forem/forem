@@ -1,7 +1,8 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
-import Modal from '../components/Modal';
 import { axe } from 'jest-axe';
+import Modal from '../components/Modal';
+
 
 describe('<Modal />', () => {
   const idFromMessageModal = 'listings-message-form';

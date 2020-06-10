@@ -33,6 +33,7 @@ const MessageModal = ({
       <textarea
         value={message}
         onChange={onChangeDraftingMessage}
+        data-testid="listing-new-message"
         id="new-message"
         rows="4"
         cols="70"
@@ -43,7 +44,7 @@ const MessageModal = ({
       </button>
       <p>
         {isCurrentUserOnListing ? (
-          <em id="personal-message-about-interactions">
+          <em data-testid="personal-message-about-interactions" id="personal-message-about-interactions">
             All private interactions
             {' '}
             <b>must</b>
@@ -53,7 +54,7 @@ const MessageModal = ({
             <a href="/code-of-conduct">code of conduct</a>
           </em>
         ) : (
-          <em id="generic-message-about-interactions">
+          <em data-testid="generic-message-about-interactions" id="generic-message-about-interactions">
             Message must be relevant and on-topic with the listing. All private
             interactions
             {' '}
