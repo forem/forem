@@ -1,5 +1,7 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { screen } from '@testing-library/dom';
+
 import SingleListing from '../singleListing';
 
 const listing = {
@@ -22,8 +24,8 @@ const listing = {
 };
 
 describe('<SingleListing />', () => {
-  it('should load a single user listing', () => {
-    const tree = deep(
+  xit('should load a single user listing', () => {
+    const tree = render(
       <SingleListing
         onAddTag={() => {
           return 'onAddTag';
@@ -43,57 +45,133 @@ describe('<SingleListing />', () => {
   });
 
   describe('should load the following elements', () => {
-    const context = deep(
-      <SingleListing
-        onAddTag={() => {
-          return 'onAddTag';
-        }}
-        onChangeCategory={() => {
-          return 'onChangeCategory';
-        }}
-        listing={listing}
-        currentUserId={1}
-        onOpenModal={() => {
-          return 'onOpenModal';
-        }}
-        isOpen={false}
-      />,
-    );
-    expect(context.find('.single-listing').exists()).toBeTruthy();
 
     it('for listing title', () => {
-      expect(
-        context
-          .find('.single-listing-header')
-          .at(0)
-          .childAt(0)
-          .childAt(0)
-          .text(),
-      ).toEqual('Illo iure quos perspiciatis.');
+      const { getByText } = render(
+        <SingleListing
+          onAddTag={() => {
+            return 'onAddTag';
+          }}
+          onChangeCategory={() => {
+            return 'onChangeCategory';
+          }}
+          listing={listing}
+          currentUserId={1}
+          onOpenModal={() => {
+            return 'onOpenModal';
+          }}
+          isOpen={false}
+        />,
+      );
+      getByText('Illo iure quos perspiciatis.');
+    });
+
+    it('for the dropdown', () => {
+      const { getByLabelText, getByText } = render(
+        <SingleListing
+          onAddTag={() => {
+            return 'onAddTag';
+          }}
+          onChangeCategory={() => {
+            return 'onChangeCategory';
+          }}
+          listing={listing}
+          currentUserId={1}
+          onOpenModal={() => {
+            return 'onOpenModal';
+          }}
+          isOpen={false}
+        />,
+      );
+      const dropdownButton = getByLabelText(/toggle dropdown menu/i);
+      getByText(/report abuse/i);
     });
 
     it('for listing tags', () => {
-      expect(context.find('.single-listing-tags').childAt(0).text()).toEqual(
-        listing.tags[0],
+      const { getByText } = render(
+        <SingleListing
+          onAddTag={() => {
+            return 'onAddTag';
+          }}
+          onChangeCategory={() => {
+            return 'onChangeCategory';
+          }}
+          listing={listing}
+          currentUserId={1}
+          onOpenModal={() => {
+            return 'onOpenModal';
+          }}
+          isOpen={false}
+        />,
       );
+
+      listing.tags.forEach((tag) => {
+        expect(getByText(tag).href).toContain(`/listings?t=${tag}`);
+      });
     });
 
     it('for listing category', () => {
-      expect(
-        context.find('.single-listing-author-info').childAt(0).text(),
-      ).toEqual(listing.category);
-    });
+      const { getByText } = render(
+        <SingleListing
+          onAddTag={() => {
+            return 'onAddTag';
+          }}
+          onChangeCategory={() => {
+            return 'onChangeCategory';
+          }}
+          listing={listing}
+          currentUserId={1}
+          onOpenModal={() => {
+            return 'onOpenModal';
+          }}
+          isOpen={false}
+        />,
+      );
 
-    it('for listing location', () => {
-      expect(
-        context.find('.single-listing-author-info').childAt(1).text(),
-      ).toEqual(`・${listing.location}`);
+      const { category } = listing;
+      expect(getByText(category).href).toContain(`/listings/${category}`);
     });
 
     it('for listing author', () => {
-      expect(
-        context.find('.single-listing-author-info').childAt(3).text(),
-      ).toEqual(listing.author.name);
+      const { getByText } = render(
+        <SingleListing
+          onAddTag={() => {
+            return 'onAddTag';
+          }}
+          onChangeCategory={() => {
+            return 'onChangeCategory';
+          }}
+          listing={listing}
+          currentUserId={1}
+          onOpenModal={() => {
+            return 'onOpenModal';
+          }}
+          isOpen={false}
+        />,
+      );
+
+      expect(getByText('Mrs. Yoko Christiansen').href).toContain(`/mrschristiansenyoko`);
+    });
+
+    it('for listing location', () => {
+      const { getByTestId } = render(
+        <SingleListing
+          onAddTag={() => {
+            return 'onAddTag';
+          }}
+          onChangeCategory={() => {
+            return 'onChangeCategory';
+          }}
+          listing={listing}
+          currentUserId={1}
+          onOpenModal={() => {
+            return 'onOpenModal';
+          }}
+          isOpen={false}
+        />,
+      );
+
+      expect(getByTestId('single-listing-location').href).toContain(`/listings/?q=West%20Refugio`);
     });
   });
 });
