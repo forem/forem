@@ -41,7 +41,11 @@
 
     <div class="crayons-field crayons-field--checkbox">
       <%= f.check_box :feed_referential_link, class: "crayons-checkbox" %>
-      <%= f.label :feed_referential_link, "Replace self-referential links with #{community_name}-specific links <p class='crayons-field__description'>If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on #{community_name} if available. This is primarily meant for folks migrating their entire blog onto #{community_name}.</p>".html_safe, class: "crayons-field__label" %>
+      <%= f.label :feed_referential_link,
+                  "Replace self-referential links with #{community_name}-specific links <p class='crayons-field__description'>\
+                  If you check this box, the post will automatically change any URLs included in the post to refer to the version of that article on #{community_name} if available. \
+                  This is primarily meant for folks migrating their entire blog onto #{community_name}.</p>".html_safe,
+                  class: "crayons-field__label" %>
     </div>
 
     <%= f.hidden_field :tab, value: @tab %>
