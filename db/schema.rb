@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_08_175130) do
+ActiveRecord::Schema.define(version: 2020_06_10_092218) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1271,6 +1271,7 @@ ActiveRecord::Schema.define(version: 2020_06_08_175130) do
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["old_username"], name: "index_users_on_old_username"
+    t.index ["payment_pointer"], name: "index_users_on_payment_pointer", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true

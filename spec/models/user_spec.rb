@@ -167,6 +167,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
       it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
       it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
+      it { is_expected.to validate_uniqueness_of(:payment_pointer).allow_nil }
       it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
       it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
       it { is_expected.to validate_url_of(:employer_url) }
