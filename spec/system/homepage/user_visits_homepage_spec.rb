@@ -31,25 +31,6 @@ RSpec.describe "User visits a homepage", type: :system do
       expect(page).to have_text("DESIGN YOUR EXPERIENCE")
     end
 
-    context "when rendering broadcasts" do
-      let!(:broadcast) { create(:announcement_broadcast) }
-
-      it "renders the broadcast if active", js: true do
-        get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
-        visit "/"
-        within ".broadcast-wrapper" do
-          expect(page).to have_text("Hello, World!")
-        end
-      end
-
-      it "does not render a broadcast if inactive", js: true do
-        broadcast.update!(active: false)
-        get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
-        visit "/"
-        expect(page).not_to have_css(".broadcast-wrapper")
-      end
-    end
-
     describe "link tags" do
       it "contains the qualified community name in the search link" do
         visit "/"
