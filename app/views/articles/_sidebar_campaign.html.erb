@@ -1,4 +1,4 @@
-<div class="crayons-card crayons-card--secondary">
+<section class="crayons-card crayons-card--secondary">
   <% if SiteConfig.campaign_sidebar_image && SiteConfig.campaign_url %>
     <a href="<%= SiteConfig.campaign_url %>">
       <img src="<%= SiteConfig.campaign_sidebar_image %>" class="block w-100 h-auto radius-default" width="1000" height="420" />
@@ -18,4 +18,4 @@
     <%= link_to "Share your project", "/new/#{SiteConfig.campaign_featured_tags.first}", class: "crayons-btn" %>
     <%= link_to "See all posts", "/t/#{SiteConfig.campaign_featured_tags.first}", class: "crayons-btn crayons-btn--secondary" %>
   </div>
-</div>
+</section>

@@ -36,7 +36,8 @@
     <%= render "articles/sidebar" %>
 
     <%# BEGIN Feed menu bar %>
-    <div class="articles-list crayons-layout__content" id="articles-list">
+    <main class="articles-list crayons-layout__content" id="articles-list" role="main">
+      <h1 style="position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden;">Articles</h1>
       <%= render(partial: "onboardings/task_card") if user_signed_in? %>
 
       <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
@@ -81,7 +82,7 @@
       <div class="loading-articles" id="loading-articles">
         loading...
       </div>
-    </div>
+    </main>
 
     <%= render "articles/sidebar_additional" %>
   </div>
