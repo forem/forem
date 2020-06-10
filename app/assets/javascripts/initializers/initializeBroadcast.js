@@ -3,6 +3,7 @@
  * Parses the broadcast object on the document into JSON.
  *
  * @function broadcastData
+ * @returns {Object} Returns an object of the parsed broadcast data.
  */
 function broadcastData() {
   const { broadcast = null } = document.body.dataset;
@@ -10,7 +11,13 @@ function broadcastData() {
   return JSON.parse(broadcast);
 }
 
-// FIXME: DOCUMENT ME
+/**
+ * Parses the broadcast object on the document into JSON.
+ *
+ * @function camelizedBroadcastKey
+ * @param {string} title The title of the broadcast.
+ * @returns {string} Returns the camelized title appended with "Seen".
+ */
 function camelizedBroadcastKey(title) {
   const camelizedTitle = title.replace(/\W+(.)/g, (match, string) => {
     return string.toUpperCase();
@@ -19,7 +26,12 @@ function camelizedBroadcastKey(title) {
   return `${camelizedTitle}Seen`;
 }
 
-// FIXME: DOCUMENT ME
+/**
+ * A function that finds the close button and adds a click handler to it.
+ *
+ * @function addCloseButtonClickHandle
+ * @param {string} title The title of the broadcast.
+ */
 function addCloseButtonClickHandle(title) {
   var closeButton = document.getElementsByClassName(
     'close-announcement-button',
@@ -31,35 +43,25 @@ function addCloseButtonClickHandle(title) {
 }
 
 /**
- * Inserts the broadcast's HTML into `active-broadcast` element
- * as the first child within the document's body, and only inserts the HTML once.
+ * A function to insert the broadcast's HTML into the `active-broadcast` element.
+ * Determines what classes to add to the broadcast element,
+ * and inserts a close button and adds a click handler to it.
+ *
+ * Adds a `.visible` class to the broadcastElement to make it render.
  *
  * @function initializeBroadcast
+ * @param {string} broadcastElement The HTML element for the broadcast, with a class of `.active-broadcast`.
+ * @param {Object} data An object representing the parsed broadcast data.
  */
-function initializeBroadcast() {
-  const data = broadcastData();
-  if (!data) {
-    return;
-  }
-
+function renderBroadcast(broadcastElement, data) {
   const { banner_class, html, title } = data;
 
-  if (JSON.parse(localStorage.getItem(camelizedBroadcastKey(title))) === true) {
-    return;
-  }
-
-  const el = document.getElementById('active-broadcast');
-
-  if (el.firstElementChild) {
-    return; // Only append HTML once, on first render.
-  }
-
   if (banner_class) {
-    const [defaultBannerClass, additionalBannerClass] = banner_class.split(' ');
-    if (additionalBannerClass) {
-      el.classList.add(defaultBannerClass, additionalBannerClass);
+    const [defaultClass, additionalClass] = banner_class.split(' ');
+    if (additionalClass) {
+      broadcastElement.classList.add(defaultClass, additionalClass);
     } else {
-      el.classList.add(defaultBannerClass);
+      broadcastElement.classList.add(defaultClass);
     }
   }
 
@@ -69,11 +71,37 @@ function initializeBroadcast() {
     </svg>
   </button>`;
 
-  const bannerDiv = `<div class='broadcast-data'>${html}</div>${closeButton}`;
-  el.insertAdjacentHTML('afterbegin', bannerDiv);
-  el.classList.add('visible'); // FIXME: document this
-
-  // FIXME: document me, split up this method
+  broadcastElement.insertAdjacentHTML(
+    'afterbegin',
+    `<div class='broadcast-data'>${html}</div>${closeButton}`,
+  );
   addCloseButtonClickHandle(title);
+  broadcastElement.classList.add('visible');
+}
+
+/**
+ * A function to determine if a broadcast should render
+ * Does not render broadcast it has already been inserted,
+ * or if the key for the broadcast's title exists in localStorage.
+ *
+ * @function initializeBroadcast
+ */
+function initializeBroadcast() {
+  const data = broadcastData();
+  if (!data) {
+    return;
+  }
+
+  const { title } = data;
+  if (JSON.parse(localStorage.getItem(camelizedBroadcastKey(title))) === true) {
+    return; // Do not render broadcast if previously dismissed by user.
+  }
+
+  const el = document.getElementById('active-broadcast');
+  if (el.firstElementChild) {
+    return; // Only append HTML once, on first render.
+  }
+
+  renderBroadcast(el, data);
 }
 /* eslint-enable camelcase */
