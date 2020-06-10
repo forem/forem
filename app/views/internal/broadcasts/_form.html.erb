@@ -22,7 +22,7 @@
 <% if @broadcast.processed_html %>
   <div>
     </p><strong>Preview</strong></p>
-    <div class="broadcast-wrapper <%= banner_class(@broadcast) %>">
+    <div class="broadcast-wrapper visible <%= banner_class(@broadcast) %>">
       <div class="broadcast-data">
         <%= sanitize @broadcast.processed_html, attributes: %w[href style src] %>
       </div>
