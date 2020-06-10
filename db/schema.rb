@@ -462,14 +462,16 @@ ActiveRecord::Schema.define(version: 2020_06_09_192545) do
   end
 
   create_table "email_subscriptions", force: :cascade do |t|
+    t.bigint "author_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.bigint "email_subscribable_id", null: false
     t.string "email_subscribable_type", null: false
+    t.bigint "subscriber_id", null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.bigint "user_id", null: false
+    t.index ["author_id"], name: "index_email_subscriptions_on_author_id"
     t.index ["email_subscribable_type", "email_subscribable_id"], name: "email_subscribable_type_and_id"
-    t.index ["user_id", "email_subscribable_id", "email_subscribable_type"], name: "user_id_email_subscribable_type_and_id", unique: true
-    t.index ["user_id"], name: "index_email_subscriptions_on_user_id"
+    t.index ["subscriber_id", "email_subscribable_id", "email_subscribable_type"], name: "index_on_subscriber_id_email_subscribable_type_and_id", unique: true
+    t.index ["subscriber_id"], name: "index_email_subscriptions_on_subscriber_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -1317,7 +1319,8 @@ ActiveRecord::Schema.define(version: 2020_06_09_192545) do
   add_foreign_key "classified_listings", "classified_listing_categories"
   add_foreign_key "classified_listings", "users", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
-  add_foreign_key "email_subscriptions", "users"
+  add_foreign_key "email_subscriptions", "users", column: "author_id"
+  add_foreign_key "email_subscriptions", "users", column: "subscriber_id"
   add_foreign_key "identities", "users", on_delete: :cascade
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
