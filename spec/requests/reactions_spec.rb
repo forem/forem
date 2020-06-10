@@ -87,11 +87,11 @@ RSpec.describe "Reactions", type: :request do
       end
 
       it "returns the correct json response" do
-        result = response.parsed_body
-
-        expect(result["current_user"]).to eq("id" => user.id)
-        expect(result["public_reaction_counts"]).to eq([{ "id" => article.comments.last.id, "count" => 1 }])
-        expect(result["reactions"].to_json).to eq(user.reactions.where(reactable: comment).to_json)
+        expect(response.parsed_body).to eq(
+          "current_user" => { "id" => user.id },
+          "public_reaction_counts" => [{ "id" => article.comments.last.id, "count" => 1 }],
+          "reactions" => JSON.parse(user.reactions.where(reactable: comment).to_json),
+        )
       end
 
       it "does not set surrogate key headers" do

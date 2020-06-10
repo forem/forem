@@ -102,13 +102,14 @@ class ReactionsController < ApplicationController
     render json: { result: result, category: category }
   end
 
-  def cached_user_public_reactions(user)
-    Rails.cache.fetch("cached-user-reactions-#{user.id}-#{user.public_reactions_count}", expires_in: 24.hours) do
-      user.reactions.public_category
-    end
-  end
-
   private
+
+  def cached_user_public_reactions(user)
+    ids = Rails.cache.fetch("cached-user-#{user.id}-reaction-ids-#{user.public_reactions_count}", expires_in: 24.hours) do
+      user.reactions.public_category.pluck(:id)
+    end
+    Reaction.where(id: ids)
+  end
 
   def build_reaction(category)
     create_params = {
