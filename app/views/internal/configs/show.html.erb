@@ -202,7 +202,7 @@
            <div class="form-group">
              <div>
               <label for="site_config_email_addresses_default">Default</label>
-              <input type="text" value="<%= ApplicationConfig['DEFAULT_EMAIL'] %>" class="form-control" readonly>
+              <input type="text" value="<%= ApplicationConfig["DEFAULT_EMAIL"] %>" class="form-control" readonly>
               <div class="alert alert-info">Default (set via DEFAULT_EMAIL environment variable)</div>
              </div>
              <%= f.fields_for :email_addresses do |email_field| %>
