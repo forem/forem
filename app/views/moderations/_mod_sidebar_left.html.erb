@@ -1,0 +1,37 @@
+<div class="crayons-layout__sidebar-left">
+  <p class="fw-heavy fs-3xl" style="margin-bottom: 29px;">Mod Center</p>
+  <div id="mod-center-inbox-toggle" class="mod-center-inbox-toggle">
+    <span class="fw-medium">Inbox</span>
+    <%= inline_svg_tag("chevron-toggle.svg", aria: true, title: "Toggle Inbox") %>
+  </div>
+  <div id="mod-center-inbox" class="mod-center-inbox">
+    <% if @current_user_tags.any? %>
+      <% @current_user_tags.each do |tag| %>
+        <a href="#" class="crayons-link crayons-link--current crayons-link--block inbox-tags">
+          # <%= tag %>
+          <span id="<%= tag %>-indicator" class="crayons-indicator">12</span>
+        </a>
+      <% end %>
+    <% end %>
+    <a
+      href="#"
+      class="crayons-link crayons-link--block inbox-nontags"
+      style="padding-left: 24px;">
+      All topics
+    </a>
+  </div>
+  <div id="mod-center-other-options">
+    <a href="#" class="crayons-link crayons-link--block">
+      Connect Chat
+    </a>
+    <a href="#" class="crayons-link crayons-link--block">
+      Settings
+    </a>
+    <a href="<%= URL.url %>/community-moderation" class="crayons-link crayons-link--block">
+      Moderator Guide
+    </a>
+    <a href="<%= URL.url %>/terms" class="crayons-link crayons-link--block">
+      Terms Of Conduct
+    </a>
+  </div>
+</div>
