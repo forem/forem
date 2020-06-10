@@ -18,6 +18,6 @@ class EmailSubscription < ApplicationRecord
     return if author_id
     return unless email_subscribable
 
-    self.author_id = email_subscribable.try(:user_id)
+    self.author_id = email_subscribable.try(:user_id) || email_subscribable.try(:user).try(:id)
   end
 end
