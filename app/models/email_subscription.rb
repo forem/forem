@@ -18,8 +18,8 @@ class EmailSubscription < ApplicationRecord
     return if author_id
     return unless email_subscribable
 
-    # This to account for email_subscribable types that use a different field
-    # name (i.e. admin_id instead of user_id), but the relationship is still
+    # This accounts for email_subscribable types that use a different field
+    # name (i.e. admin_id instead of user_id), but still have a relationship
     # named User.
     #
     # If neither (user_id or user.id) are found, the author_id is nil and the
