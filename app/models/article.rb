@@ -28,8 +28,8 @@ class Article < ApplicationRecord
   counter_culture :organization
 
   has_many :comments, as: :commentable, inverse_of: :commentable
-  has_many :email_subscriptions, as: :email_subscribable
-  has_many :subscribers, class_name: "User", through: :email_subscriptions, foreign_key: :user_id
+  has_many :subscription_sources, as: :subscription_sourceable
+  has_many :subscribers, class_name: "User", through: :subscription_sources, foreign_key: :user_id
   has_many :top_comments,
            -> { where("comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE", 10).order("comments.score DESC") },
            as: :commentable,
