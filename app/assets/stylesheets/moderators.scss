@@ -767,3 +767,22 @@
   padding: 3px 8px;
   border-radius: 3px;
 }
+
+.mod-center-inbox-toggle {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  padding: var(--su-2);
+}
+
+.mod-center-inbox {
+  .inbox-tags {
+    display: flex;
+    justify-content: space-between;
+    padding-left: var(--su-6);
+    padding-right: var(--su-3);
+  }
+
+  .inbox-nontags {
+    padding-left: var(--su-6);
+  }
+}
