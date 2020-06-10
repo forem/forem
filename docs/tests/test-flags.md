@@ -8,7 +8,7 @@ When creating tests using Rspec we have the ability to add flags to those tests
 that will signal to Rspec to run certain commands before, after, or around the
 test example.
 
-Some flags that we use at DEV are:
+Some flags that we use are:
 
 - `js: true`
 - `elasticsearch: reset`
@@ -18,14 +18,14 @@ Some flags that we use at DEV are:
 
 ### Elasticsearch Flags
 
-The two Elasticsearch flags are used when dealing with specs that will be
+Two Elasticsearch flags that can be used when dealing with specs that will be
 hitting Elasticsearch. When running a spec that is going to interact with
-Elasticsearch you want Elasticsearch to be clean like your database. Since we
-dont have a "database cleaner" for Elasticsearch we have to do it manually.
-There are two ways we do it.
+Elasticsearch, you want Elasticsearch to be clean like your database. Since we
+don't have a "database cleaner" for Elasticsearch, we have to do it manually.
+There are two ways to do this:
 
 1. `elasticsearch: reset` - This will trigger a complete tear down and rebuild
-   of Elasticsearch via this block. This takes time so it's not something you
+   of Elasticsearch via a block. This takes time so it's not something you
    want to be doing unless you absolutely have to.
 
 ```ruby
