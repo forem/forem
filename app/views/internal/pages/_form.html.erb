@@ -10,16 +10,25 @@
         <%= form.text_field :slug, class: "form-control" %>
       </div>
       <div class="form-group">
+        <%= form.label :description %>
+        <%= form.text_field :description, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= form.label :template %>
+        <%= form.select :template, Page::TEMPLATE_OPTIONS, class: "form-control" %>
+        <p>(Determines the way page's body will be embedded in the layout)</p>
+      </div>
+      <div class="form-group optional html">
         <%= form.label :body_markdown %>
         <%= form.text_area :body_markdown, class: "form-control" %>
       </div>
-      <div class="form-group">
+      <div class="form-group optional html">
         <%= form.label :body_html %> (Only if not using markdown. HTML is dangerous ⚠️)
         <%= form.text_area :body_html, class: "form-control" %>
       </div>
-      <div class="form-group">
-        <%= form.label :description %>
-        <%= form.text_field :description, class: "form-control" %>
+      <div class="form-group optional json">
+        <%= form.label :body_json %> (For use with template type <code>json</code>)
+        <%= form.text_area :body_json, class: "form-control" %>
       </div>
       <div class="form-group">
         <% if @page.social_image_url %>
@@ -27,11 +36,6 @@
         <% end %>
         <%= form.label :social_image %>
         <%= form.file_field :social_image, class: "form-control" %>
-      </div>
-      <div class="form-group">
-        <%= form.label :template %>
-        <%= form.select :template, Page::TEMPLATE_OPTIONS, class: "form-control" %>
-        <p>(Determines the way page's body will be embedded in the layout)</p>
       </div>
       <div class="form-group">
         <%= form.label :is_top_level_path %>
@@ -60,3 +64,29 @@
     <% end %>
   </div>
 </div>
+
+<script>
+
+function showBodyFields() {
+    // hide all optional elements
+    $('.optional').css('display','none');
+
+    $("select option:selected").each(function () {
+      if($(this).val() == "json") {
+        $('.json').css('display','block');
+      } else {
+        $('.html').css('display','block');
+      }
+    });
+  };
+
+
+
+window.addEventListener('load', function() {
+  document.getElementById("page_template").onchange = function() {
+    showBodyFields();
+  };
+
+  showBodyFields();
+});
+</script>
