@@ -18,6 +18,14 @@ class EmailSubscription < ApplicationRecord
     return if author_id
     return unless email_subscribable
 
+    # This to account for email_subscribable types that use a different field
+    # name (i.e. admin_id instead of user_id), but the relationship is still
+    # named User.
+    #
+    # If neither (user_id or user.id) are found, the author_id is nil and the
+    # validation of presence on author_id above takes care of the rest. We'd
+    # likely want to explicitly define the author when trying to create a
+    # EmailSubscription in those cases.
     self.author_id = email_subscribable.try(:user_id) || email_subscribable.try(:user).try(:id)
   end
 end
