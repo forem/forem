@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
-import { screen } from '@testing-library/dom';
 
 import SingleListing from '../singleListing';
 
@@ -24,154 +23,55 @@ const listing = {
 };
 
 describe('<SingleListing />', () => {
-  xit('should load a single user listing', () => {
-    const tree = render(
-      <SingleListing
-        onAddTag={() => {
-          return 'onAddTag';
-        }}
-        onChangeCategory={() => {
-          return 'onChangeCategory';
-        }}
-        listing={listing}
-        currentUserId={1}
-        onOpenModal={() => {
-          return 'onOpenModal';
-        }}
-        isOpen={false}
-      />,
-    );
-    expect(tree).toMatchSnapshot();
+
+  const renderSingleListing = () => render(
+    <SingleListing
+      onAddTag={() => {
+        return 'onAddTag';
+      }}
+      onChangeCategory={() => {
+        return 'onChangeCategory';
+      }}
+      listing={listing}
+      currentUserId={1}
+      onOpenModal={() => {
+        return 'onOpenModal';
+      }}
+      isOpen={false}
+    />
+  );
+
+  it('shows a listing title', () => {
+    const { getByText } = renderSingleListing();
+    getByText('Illo iure quos perspiciatis.');
   });
 
-  describe('should load the following elements', () => {
+  it('shows a dropdown', () => {
+    const { getByLabelText, getByText } = renderSingleListing();
+    const dropdownButton = getByLabelText(/toggle dropdown menu/i);
+    getByText(/report abuse/i);
+  });
 
-    it('for listing title', () => {
-      const { getByText } = render(
-        <SingleListing
-          onAddTag={() => {
-            return 'onAddTag';
-          }}
-          onChangeCategory={() => {
-            return 'onChangeCategory';
-          }}
-          listing={listing}
-          currentUserId={1}
-          onOpenModal={() => {
-            return 'onOpenModal';
-          }}
-          isOpen={false}
-        />,
-      );
-      getByText('Illo iure quos perspiciatis.');
+  it('shows a listing tags', () => {
+    const { getByText } = renderSingleListing();
+    listing.tags.forEach((tag) => {
+      expect(getByText(tag).href).toContain(`/listings?t=${tag}`);
     });
+  });
 
-    it('for the dropdown', () => {
-      const { getByLabelText, getByText } = render(
-        <SingleListing
-          onAddTag={() => {
-            return 'onAddTag';
-          }}
-          onChangeCategory={() => {
-            return 'onChangeCategory';
-          }}
-          listing={listing}
-          currentUserId={1}
-          onOpenModal={() => {
-            return 'onOpenModal';
-          }}
-          isOpen={false}
-        />,
-      );
-      const dropdownButton = getByLabelText(/toggle dropdown menu/i);
-      getByText(/report abuse/i);
-    });
+  it('shows a listing category', () => {
+    const { getByText } = renderSingleListing();
+    const { category } = listing;
+    expect(getByText(category).href).toContain(`/listings/${category}`);
+  });
 
-    it('for listing tags', () => {
-      const { getByText } = render(
-        <SingleListing
-          onAddTag={() => {
-            return 'onAddTag';
-          }}
-          onChangeCategory={() => {
-            return 'onChangeCategory';
-          }}
-          listing={listing}
-          currentUserId={1}
-          onOpenModal={() => {
-            return 'onOpenModal';
-          }}
-          isOpen={false}
-        />,
-      );
+  it('shows a listing author', () => {
+    const { getByText } = renderSingleListing();
+    expect(getByText('Mrs. Yoko Christiansen').href).toContain(`/mrschristiansenyoko`);
+  });
 
-      listing.tags.forEach((tag) => {
-        expect(getByText(tag).href).toContain(`/listings?t=${tag}`);
-      });
-    });
-
-    it('for listing category', () => {
-      const { getByText } = render(
-        <SingleListing
-          onAddTag={() => {
-            return 'onAddTag';
-          }}
-          onChangeCategory={() => {
-            return 'onChangeCategory';
-          }}
-          listing={listing}
-          currentUserId={1}
-          onOpenModal={() => {
-            return 'onOpenModal';
-          }}
-          isOpen={false}
-        />,
-      );
-
-      const { category } = listing;
-      expect(getByText(category).href).toContain(`/listings/${category}`);
-    });
-
-    it('for listing author', () => {
-      const { getByText } = render(
-        <SingleListing
-          onAddTag={() => {
-            return 'onAddTag';
-          }}
-          onChangeCategory={() => {
-            return 'onChangeCategory';
-          }}
-          listing={listing}
-          currentUserId={1}
-          onOpenModal={() => {
-            return 'onOpenModal';
-          }}
-          isOpen={false}
-        />,
-      );
-
-      expect(getByText('Mrs. Yoko Christiansen').href).toContain(`/mrschristiansenyoko`);
-    });
-
-    it('for listing location', () => {
-      const { getByTestId } = render(
-        <SingleListing
-          onAddTag={() => {
-            return 'onAddTag';
-          }}
-          onChangeCategory={() => {
-            return 'onChangeCategory';
-          }}
-          listing={listing}
-          currentUserId={1}
-          onOpenModal={() => {
-            return 'onOpenModal';
-          }}
-          isOpen={false}
-        />,
-      );
-
-      expect(getByTestId('single-listing-location').href).toContain(`/listings/?q=West%20Refugio`);
-    });
+  it('shows a listing location', () => {
+    const { getByTestId } = renderSingleListing();
+    expect(getByTestId('single-listing-location').href).toContain(`/listings/?q=West%20Refugio`);
   });
 });

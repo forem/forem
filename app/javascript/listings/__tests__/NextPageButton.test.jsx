@@ -1,5 +1,7 @@
 import { h } from 'preact';
-import { render } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
+
 import NextPageButton from '../components/NextPageButton';
 
 describe('<NextPageButton />', () => {
@@ -9,8 +11,27 @@ describe('<NextPageButton />', () => {
     },
   };
 
-  it('Should match the snapshot', () => {
-    const tree = render(<NextPageButton {...defaultProps} />);
-    expect(tree).toMatchSnapshot();
+  it('should have no a11y violations', async () => {
+    const { container } = render(<NextPageButton {...defaultProps} />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
+
+  it('should show a button', () => {
+    const {getByText} = render(<NextPageButton {...defaultProps} />);
+    getByText(/load more listings/i);
+  });
+
+  xit('should call the onclick handler', () => {
+    const onClick = jest.fn();
+
+    const {getByText} = render(<NextPageButton {...defaultProps} />);
+    const button = getByText(/load more listings/i);
+
+    button.click();
+
+    expect(onClick).toHaveBeenCalledTimes(1);
+
+  });
+
 });
