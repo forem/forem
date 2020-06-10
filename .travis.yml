@@ -37,6 +37,7 @@ env:
     - KNAPSACK_PRO_LOG_LEVEL=info
     - KNAPSACK_PRO_TEST_FILE_EXCLUDE_PATTERN="spec/services/rss_reader_spec.rb"
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
+    - COVERAGE_REPORTS_TOTAL=4
   jobs:
     - KNAPSACK_PRO_CI_NODE_INDEX=0
     - KNAPSACK_PRO_CI_NODE_INDEX=1
@@ -77,7 +78,7 @@ script:
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bundle exec rspec spec/services/rss_reader_spec.rb; fi
 after_script:
   - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
-  - ./cc-test-reporter sum-coverage --output - --parts $KNAPSACK_PRO_CI_NODE_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+  - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
 deploy:
   provider: heroku
   api_key: '$HEROKU_AUTH_TOKEN'
