@@ -127,13 +127,6 @@ RSpec.configure do |config|
     end
   end
 
-  # Allow testing with Stripe's test server. BE CAREFUL
-  if config.filter_manager.inclusions.rules.include?(:live)
-    WebMock.allow_net_connect!
-    StripeMock.toggle_live(true)
-    Rails.logger.info("Running **live** tests against Stripe...")
-  end
-
   config.before do
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
 
