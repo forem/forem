@@ -4,7 +4,7 @@ module Suggester
       def initialize(user, given_tag)
         @user = user
         @given_tag = given_tag
-        @minimum_reaction_count = Rails.env.production? ? 25 : -1 # -1 for when public_reactions_count is 0
+        @minimum_reaction_count = Rails.env.production? ? 25 : 0
       end
 
       def suggest
@@ -24,7 +24,7 @@ module Suggester
 
       def active_authors_for_given_tags
         @active_authors_for_given_tags ||= Article.published.tagged_with([given_tag], any: true).
-          where("public_reactions_count > ?", minimum_reaction_count).
+          where("public_reactions_count >= ?", minimum_reaction_count).
           where("published_at > ?", 4.months.ago).
           where("user_id != ?", user.id).
           where.not(user_id: user.following_by_type("User")).
