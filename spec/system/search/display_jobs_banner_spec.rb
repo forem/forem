@@ -2,7 +2,6 @@ require "rails_helper"
 
 RSpec.describe "Display Jobs Banner spec", type: :system, js: true do
   before do
-    stub_request(:post, "http://www.google-analytics.com/collect")
     allow(SiteConfig).to receive(:jobs_url).and_return("www.very_cool_jobs_website.com")
   end
 
