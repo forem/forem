@@ -1,5 +1,7 @@
 <% title @user.name %>
 
+<%= render "shared/payment_pointer", user: @user %>
+
 <%= content_for :page_meta do %>
   <%= render "users/meta" %>
 <% end %>
