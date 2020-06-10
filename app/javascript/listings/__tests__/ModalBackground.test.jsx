@@ -22,6 +22,12 @@ describe('<ModalBackground />', () => {
   });
 
   it('should call the onClick handler', () => {
+    const onClick = jest.fn();
+    const { getByTestId } = render(<ModalBackground {...defaultProps} onClick={onClick}/>);
 
+    const modalBackground = getByTestId('listings-modal-background')
+    modalBackground.click();
+
+    expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
