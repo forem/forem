@@ -15,7 +15,6 @@ RSpec.describe "User searches users", type: :system do
   end
 
   it "shows the correct follow buttons", js: true, elasticsearch: "User" do
-    stub_request(:post, "http://www.google-analytics.com/collect")
     visit "/search?q=&filters=class_name:User"
 
     expect(JSON.parse(find_button("Edit profile")["data-info"])["id"]).to eq(current_user.id)
