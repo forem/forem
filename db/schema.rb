@@ -1019,19 +1019,6 @@ ActiveRecord::Schema.define(version: 2020_06_09_192545) do
     t.index ["user_id"], name: "index_sponsorships_on_user_id"
   end
 
-  create_table "subscription_sources", force: :cascade do |t|
-    t.bigint "author_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.bigint "subscriber_id", null: false
-    t.bigint "subscription_sourceable_id", null: false
-    t.string "subscription_sourceable_type", null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["author_id"], name: "index_subscription_sources_on_author_id"
-    t.index ["subscriber_id", "subscription_sourceable_id", "subscription_sourceable_type"], name: "index_on_subscriber_id_subscription_sourceable_type_and_id", unique: true
-    t.index ["subscriber_id"], name: "index_subscription_sources_on_subscriber_id"
-    t.index ["subscription_sourceable_type", "subscription_sourceable_id"], name: "index_on_subscription_sourceable_type_and_id"
-  end
-
   create_table "tag_adjustments", force: :cascade do |t|
     t.string "adjustment_type"
     t.integer "article_id"
@@ -1151,6 +1138,19 @@ ActiveRecord::Schema.define(version: 2020_06_09_192545) do
     t.string "value", null: false
     t.index ["label", "user_id"], name: "index_user_optional_fields_on_label_and_user_id", unique: true
     t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
+  end
+
+  create_table "user_subscriptions", force: :cascade do |t|
+    t.bigint "author_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.bigint "subscriber_id", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_subscription_sourceable_id", null: false
+    t.string "user_subscription_sourceable_type", null: false
+    t.index ["author_id"], name: "index_user_subscriptions_on_author_id"
+    t.index ["subscriber_id", "user_subscription_sourceable_id", "user_subscription_sourceable_type"], name: "index_on_subscriber_id_user_subscription_sourceable_type_and_id", unique: true
+    t.index ["subscriber_id"], name: "index_user_subscriptions_on_subscriber_id"
+    t.index ["user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_on_user_subscription_sourcebable_type_and_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
@@ -1332,8 +1332,6 @@ ActiveRecord::Schema.define(version: 2020_06_09_192545) do
   add_foreign_key "response_templates", "users"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
-  add_foreign_key "subscription_sources", "users", column: "author_id"
-  add_foreign_key "subscription_sources", "users", column: "subscriber_id"
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade
   add_foreign_key "tag_adjustments", "tags", on_delete: :cascade
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
@@ -1341,6 +1339,8 @@ ActiveRecord::Schema.define(version: 2020_06_09_192545) do
   add_foreign_key "user_blocks", "users", column: "blocker_id"
   add_foreign_key "user_counters", "users", on_delete: :cascade
   add_foreign_key "user_optional_fields", "users"
+  add_foreign_key "user_subscriptions", "users", column: "author_id"
+  add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"
