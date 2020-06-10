@@ -221,7 +221,7 @@ RSpec.describe "Dashboards", type: :request do
         org = create :organization
         create(:organization_membership, user: user, organization: org, type_of_user: "admin")
         user.add_role(:pro)
-        login_as user
+        sign_in user
         get "/dashboard/pro/org/#{org.id}"
         expect(response.body).to include("pro")
       end
