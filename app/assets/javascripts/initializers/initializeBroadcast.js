@@ -11,18 +11,22 @@ function broadcastData() {
 }
 
 // FIXME: DOCUMENT ME
+function camelizedBroadcastKey(title) {
+  const camelizedTitle = title.replace(/\W+(.)/g, (match, string) => {
+    return string.toUpperCase();
+  });
+
+  return `${camelizedTitle}Seen`;
+}
+
+// FIXME: DOCUMENT ME
 function addCloseButtonClickHandle(title) {
   var closeButton = document.getElementsByClassName(
     'close-announcement-button',
   )[0];
   closeButton.onclick = (e) => {
-    var broadcast = document.getElementById('active-broadcast');
-    const camelizedTitle = title.replace(/\W+(.)/g, (match, string) => {
-      return string.toUpperCase();
-    });
-
-    broadcast.style.display = 'none';
-    localStorage.setItem(`${camelizedTitle}Seen`, true);
+    document.getElementById('active-broadcast').style.display = 'none';
+    localStorage.setItem(camelizedBroadcastKey(title), true);
   };
 }
 
@@ -37,7 +41,13 @@ function initializeBroadcast() {
   if (!data) {
     return;
   }
+
   const { banner_class, html, title } = data;
+
+  if (JSON.parse(localStorage.getItem(camelizedBroadcastKey(title))) === true) {
+    return;
+  }
+
   const el = document.getElementById('active-broadcast');
 
   if (el.firstElementChild) {
@@ -61,6 +71,7 @@ function initializeBroadcast() {
 
   const bannerDiv = `<div class='broadcast-data'>${html}</div>${closeButton}`;
   el.insertAdjacentHTML('afterbegin', bannerDiv);
+  el.classList.add('visible'); // FIXME: document this
 
   // FIXME: document me, split up this method
   addCloseButtonClickHandle(title);
