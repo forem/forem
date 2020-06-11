@@ -10,4 +10,20 @@ class ChatChannelMembershipPolicy < ApplicationPolicy
   def destroy?
     record.present? && user.id == record.user_id
   end
+
+  def leave_membership?
+    record.present? && user.id == record.user_id
+  end
+
+  def update_membership?
+    record.present? && user.id == record.user_id
+  end
+
+  def invitation?
+    record.present? && user.id == record.user_id
+  end
+
+  def chat_channel_info?
+    record.present? && user.id == record.user_id
+  end
 end

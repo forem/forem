@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
-  describe "::intialize" do
+  describe "::initialize" do
     it "sets params" do
       filter_params = { foo: "bar" }
       filter = described_class.new(params: filter_params)

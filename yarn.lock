@@ -1406,10 +1406,10 @@
   resolved "https://registry.yarnpkg.com/@oclif/screen/-/screen-1.0.4.tgz#b740f68609dfae8aa71c3a6cab15d816407ba493"
   integrity sha512-60CHpq+eqnTxLZQ4PGHYNwUX572hgpMHGPtTWMjdTMsAvlm69lZV/4ly6O3sAYkomo4NggGcomrDpBe34rxUqw==
 
-"@percy/agent@^0.26.8":
-  version "0.26.8"
-  resolved "https://registry.yarnpkg.com/@percy/agent/-/agent-0.26.8.tgz#6c07758d56920bf5c5735a25b0c5bd3bf9b750ce"
-  integrity sha512-12FZht5smeRKTzcYwbfUl527iw+OXhIrEYU2B0ui/VuQqqyVXuTD1sv76/4Prq0LrC8255JiOvgFMcB9OxDXkA==
+"@percy/agent@^0.26.9":
+  version "0.26.9"
+  resolved "https://registry.yarnpkg.com/@percy/agent/-/agent-0.26.9.tgz#4bf0cef39820957d0f2a04d98d2f061dc1fa5649"
+  integrity sha512-wsKFK/ZJBO+O95UEfiryzLm6zyNg9rOBGF2B8zuTrDGzTyWy6xp1S6CBYvqH32VayXz05b+s8GeooIiHFQdyPA==
   dependencies:
     "@oclif/command" "1.5.19"
     "@oclif/config" "^1"
@@ -1429,7 +1429,7 @@
     image-size "^0.8.2"
     js-yaml "^3.13.1"
     percy-client "^3.2.0"
-    puppeteer "~3.1.0"
+    puppeteer "^3.3.0"
     retry-axios "^1.0.1"
     which "^2.0.1"
     winston "^3.0.0"
@@ -11619,10 +11619,10 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
-puppeteer@~3.1.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-3.1.0.tgz#d44efdc5410809025f38bca2de106c3ae5c85a52"
-  integrity sha512-jLa9sqdVx0tPnr2FcwAq+8DSjGhSM4YpkwOf3JE22Ycyqm71SW7B5uGfTyMGFoLCmbCozbLZclCjasPb0flTRw==
+puppeteer@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/puppeteer/-/puppeteer-3.3.0.tgz#95839af9fdc0aa4de7e5ee073a4c0adeb9e2d3d7"
+  integrity sha512-23zNqRltZ1PPoK28uRefWJ/zKb5Jhnzbbwbpcna2o5+QMn17F0khq5s1bdH3vPlyj+J36pubccR8wiNA/VE0Vw==
   dependencies:
     debug "^4.1.0"
     extract-zip "^2.0.0"

@@ -1,10 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "Display articles search spec", type: :system, js: true, elasticsearch: "FeedContent" do
-  before do
-    stub_request(:post, "http://www.google-analytics.com/collect")
-  end
-
   it "returns correct results for a search" do
     query = "<marquee='alert(document.cookie)'>XSS"
     found_comment = create(:comment, body_markdown: query)

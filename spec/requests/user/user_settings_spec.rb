@@ -285,7 +285,7 @@ RSpec.describe "UserSettings", type: :request do
   end
 
   describe "POST /users/update_twitch_username" do
-    before { login_as user }
+    before { sign_in user }
 
     it "updates twitch username" do
       post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }
