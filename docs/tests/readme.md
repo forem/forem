@@ -67,7 +67,7 @@ it. In order to get your test suite to pass after a flaky spec has failed simply
 retry the individual job that failed rather than the entire suite in order to
 save some time. When you retry the individual job, make sure to also retry the
 Deploy job. Even though you may not be deploying that job must complete for the
-entire build to be pass.
+entire build to pass.
 
 Please note that you will need to have Elasticsearch installed and running for
 certain tests in our test suite. You can find instructions on how to install and
