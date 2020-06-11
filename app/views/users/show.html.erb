@@ -18,7 +18,7 @@
       color: #cedae2;
     }
     .user-profile-header .user-profile-header-container .profile-details h1{
-      color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %> !important;
+      color: var(--body-color);
     }
     .night-theme .user-profile-header .user-profile-header-container .profile-details h1{
       color: white !important;
