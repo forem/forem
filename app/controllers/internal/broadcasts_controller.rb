@@ -14,7 +14,7 @@ class Internal::BroadcastsController < Internal::ApplicationController
   end
 
   def edit
-    @broadcast = Broadcast.find_by!(id: params[:id])
+    @broadcast = Broadcast.find(params[:id])
   end
 
   def create
@@ -30,7 +30,7 @@ class Internal::BroadcastsController < Internal::ApplicationController
   end
 
   def update
-    @broadcast = Broadcast.find_by!(id: params[:id])
+    @broadcast = Broadcast.find(params[:id])
 
     if @broadcast.update(broadcast_params)
       flash[:success] = "Broadcast has been updated!"
@@ -42,7 +42,7 @@ class Internal::BroadcastsController < Internal::ApplicationController
   end
 
   def destroy
-    @broadcast = Broadcast.find_by!(id: params[:id])
+    @broadcast = Broadcast.find(params[:id])
 
     if @broadcast.destroy
       flash[:success] = "Broadcast has been deleted!"
