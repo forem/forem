@@ -85,7 +85,8 @@ module Notifications
           now = Time.current
           upsert_attributes["created_at"] = upsert_attributes["updated_at"] = now
 
-          # we also need to select the correct index to let PostgreSQL know which
+          # we also need to select the correct index to let PostgreSQL know
+          # how to determine conflict on rows
           upsert_index = choose_upsert_index(notification)
 
           upsert_result = Notification.upsert(
