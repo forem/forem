@@ -27,6 +27,8 @@ We use the following testing tools:
   testing Preact components
 - [**SimpleCov**](https://github.com/colszowka/simplecov) for tracking overall
   test coverage on the backend
+- [**Percy**](https://percy.io/) for visual regression testing. Currently
+  inactive.
 
 We strive to provide tests for each pull request that adds new features or fixes
 a bug. Ideally, we test the functionality of the frontend and the backed.
