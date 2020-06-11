@@ -80,14 +80,20 @@ function renderBroadcast(broadcastElement, data) {
 }
 
 /**
- * A function to determine if a broadcast should render
- * Does not render broadcast it has already been inserted,
- * or if the key for the broadcast's title exists in localStorage.
+ * A function to determine if a broadcast should render.
+ * Does not render a broadcast if the current user has opted-out.
+ * Does not render a broadcast it has already been inserted, or
+ * if the key for the broadcast's title exists in localStorage.
  *
  * @function initializeBroadcast
  */
 function initializeBroadcast() {
+  const user = userData();
   const data = broadcastData();
+
+  if (user && !user.display_announcements) {
+    return;
+  }
   if (!data) {
     return;
   }
