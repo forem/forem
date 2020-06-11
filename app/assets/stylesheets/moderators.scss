@@ -159,6 +159,78 @@
   padding: 30px 10px;
 }
 
+.mod-index-container {
+  width: 800px; // TODO: check with Lisa about this width
+  .mod-index-header-new {
+    background-color: var(--base-inverted);
+    border-radius: var(--radius) var(--radius) 0 0;
+    display: flex;
+    justify-content: space-between;
+    h1 {
+      justify-self: flex-start;
+      font-size: var(--fs-3xl);
+      padding: var(--su-6) var(--su-4);
+      color: var(--base-90);
+      line-height: var(--lh-base);
+    }
+  }
+  main.mod-index-list {
+    border: 1px solid var(--base-10);
+    margin: 0;
+    width: 100%;
+    .mod-index-list-header {
+      display: flex;
+      justify-content: space-between;
+      background-color: var(--base-0);
+      line-height: var(--lh-tight);
+      h2 {
+        padding: var(--su-2) var(--su-4);
+        color: var(--base-50);
+        font-size: var(--fs-xs);
+        font-weight: var(--fw-medium);
+      }
+    }
+    .moderation-articles-list {
+      .moderation-single-article {
+        padding: var(--su-4);
+        border: 1px solid var(--base-10);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .article-title {
+          header > h3 {
+            line-height: var(--lh-tight);
+            font-size: var(--fs-base);
+            font-weight: var(--fw-bold);
+          }
+        }
+        .mod-article-tag {
+          line-height: var(--lh-base);
+          font-size: var(--fs-s);
+          color: var(--base-80);
+          font-family: var(--ff-accent);
+          padding-right: var(--su-2);
+          .article-hash-tag {
+            color: var(--base-40);
+          }
+        }
+        .article-author {
+          line-height: var(--lh-tight);
+          font-size: var(--fs-s);
+          font-weight: var(--fw-medium);
+          color: var(--base-80);
+        }
+        .article-published-at {
+          line-height: var(--lh-tight);
+          font-size: var(--fs-s);
+          font-weight: var(--fw-bold);
+          color: var(--base-90);
+        }
+      }
+    }
+  }
+}
+
 // these styles are to correct height and margin issues in the iframe
 .moderations-actions_panel {
   min-height: initial;
