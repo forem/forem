@@ -176,10 +176,10 @@ body.ten-x-hacker-theme {
   // https://github.com/thepracticaldev/dev.to/pull/8234 is merged.
   z-index: 101; // Must be higher than the z-index of the sticky-nav.
   position: fixed;
+}
 
-  &.visible {
-    display: flex;
-  }
+.broadcast-visible {
+  display: flex;
 }
 
 .broadcast-data {
