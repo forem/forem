@@ -4,7 +4,6 @@ class GithubReposController < ApplicationController
 
   def index
     authorize GithubRepo
-
     known_repositories = current_user.github_repos.featured.distinct.to_a
 
     # NOTE: this will invoke autopaging, by issuing multiple calls to GitHub
@@ -40,12 +39,13 @@ class GithubReposController < ApplicationController
 
   def fetch_repositories_from_github(known_repositories)
     client = Github::OauthClient.for_user(current_user)
+
     repos = client.repositories(visibility: :public).map do |repo|
       repo.featured = known_repositories.delete_if { |known| known.github_id_code == repo.id }.present?
       repo
     end
 
-    # Remove pinned repositories that were removed from GH or are now private,
+    # Remove pinned repositorioes that were removed from GH or are now private,
     # since the user will not be able to remove them by themselves.
     known_repositories.each(&:destroy)
 
