@@ -51,7 +51,7 @@ export default class Chat extends Component {
             role="button"
             onClick={handleEditMessageClose}
             tabIndex="0"
-            onKeyUp={e => {
+            onKeyUp={(e) => {
               if (e.keyCode === 13) handleEditMessageClose();
             }}
           >
@@ -59,6 +59,8 @@ export default class Chat extends Component {
           </div>
         </div>
         <textarea
+          title="Compose a message"
+          aria-label="Compose a message"
           className="messagecomposer__input"
           id="messageform"
           placeholder="Let's connect"
@@ -88,6 +90,8 @@ export default class Chat extends Component {
     return (
       <div className="messagecomposer">
         <textarea
+          title="Compose a message"
+          aria-label="Compose a message"
           className="messagecomposer__input"
           id="messageform"
           placeholder="Let's connect"

@@ -264,7 +264,13 @@ export default class Chat extends Component {
       channels.filter(this.channelTypeFilterFn('invite_only')),
       (channel) => `presence-channel-${channel.chat_channel_id}`,
     );
-    document.getElementById('chatchannels__channelslist').scrollTop = 0;
+    const chatChannelsList = document.getElementById(
+      'chatchannels__channelslist',
+    );
+
+    if (chatChannelsList) {
+      chatChannelsList.scrollTop = 0;
+    }
   };
 
   markUnopenedChannelIds = (ids) => {
@@ -1229,6 +1235,7 @@ export default class Chat extends Component {
               className="chat__channelstogglebutt"
               onClick={this.toggleExpand}
               type="button"
+              title="Collapse channels"
             >
               {'<'}
             </button>
@@ -1248,6 +1255,7 @@ export default class Chat extends Component {
               <button
                 className="chat__channelssearchtoggle"
                 onClick={this.toggleSearchShowing}
+                aria-label="Toggle channel search"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1283,6 +1291,7 @@ export default class Chat extends Component {
               channelsLoaded={state.channelsLoaded}
               filterQuery={state.filterQuery}
               expanded={state.expanded}
+              aria-expanded={state.expanded}
               currentUserId={state.currentUserId}
               triggerActiveContent={this.triggerActiveContent}
             />
@@ -1298,6 +1307,7 @@ export default class Chat extends Component {
             onClick={this.toggleExpand}
             style={{ width: '100%' }}
             type="button"
+            title="Expand channels"
           >
             {'>'}
           </button>
@@ -1436,9 +1446,7 @@ export default class Chat extends Component {
         <Content
           onTriggerContent={this.triggerActiveContent}
           resource={state.activeContent[state.activeChannelId]}
-          activeChannelId={state.activeChannelId}
           activeChannel={state.activeChannel}
-          pusherKey={props.pusherKey}
           githubToken={props.githubToken}
           fullscreen={state.fullscreenContent === 'sidecar'}
         />
@@ -1646,9 +1654,11 @@ export default class Chat extends Component {
             ? 'message__delete__modal'
             : 'message__delete__modal message__delete__modal__hide'
         }
+        aria-hidden={showDeleteModal}
+        role="dialog"
       >
         <div className="modal__content">
-          <h3> Are you sure, you want to delete this message ?</h3>
+          <h3>Are you sure, you want to delete this message ?</h3>
 
           <div className="delete__action__buttons">
             <div
@@ -1804,6 +1814,7 @@ export default class Chat extends Component {
     }
     return (
       <div
+        data-testid="chat"
         className={`chat chat--${
           state.expanded ? 'expanded' : 'contracted'
         }${detectIOSSafariClass} chat--${
@@ -1814,9 +1825,10 @@ export default class Chat extends Component {
             : 'content-not-visible'
         } ${fullscreenMode}`}
         data-no-instant
+        aria-expanded={state.expanded}
       >
         {this.renderChatChannels()}
-        <div className="chat__activechat">
+        <div data-testid="active-chat" className="chat__activechat">
           {this.renderActiveChatChannel(channelHeader)}
         </div>
       </div>
