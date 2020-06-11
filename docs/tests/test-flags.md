@@ -54,10 +54,10 @@ There are two ways to do this:
 ### `js: true` Flag
 
 `js: true` indicates to our specs that we want the javascript on the page to be
-execute when the page is rendered. One side effect of running our javascript is
+executed when the page is rendered. One side effect of running our javascript in our specs is
 that a lot of pages will hit Elasticsearch. Since we don't clean out
-Elasticsearch between every single spec(because it is very costly) this can lead
-to unexpected data being loaded for a spec. To prevent this use the
+Elasticsearch between every single spec (because it is very costly) this can lead
+to unexpected data being loaded for a spec. To prevent this from happening, we can use the
 `:stub_elasticsearch` flag. The `:stub_elasticsearch` flag will stub all index
 and search requests made to Elasticsearch and return an empty response. This
-will ensure that no unwanted data shows up on your page.
+will ensure that no unwanted data shows up on your spec's page.
