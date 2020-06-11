@@ -19,7 +19,7 @@ module Suggester
       attr_reader :user, :given_tag, :minimum_reaction_count
 
       def generate_cache_name
-        "tag-#{given_tag}-user-#{user.id}-#{user.last_followed_at}/tag-follow-sugggestions"
+        "tag-#{given_tag}-user-#{user.id}-#{user.last_followed_at}/tag-follow-suggestions"
       end
 
       def active_authors_for_given_tags
@@ -32,11 +32,11 @@ module Suggester
       end
 
       def reputable_user_ids
-        User.where(id: active_authors_for_given_tags).order("reputation_modifier DESC").limit(20).pluck(:id).to_a
+        User.where(id: active_authors_for_given_tags).order("reputation_modifier DESC").limit(20).pluck(:id)
       end
 
       def random_user_ids
-        User.where(id: active_authors_for_given_tags).order(Arel.sql("RANDOM()")).limit(20).pluck(:id).to_a
+        User.where(id: active_authors_for_given_tags).order(Arel.sql("RANDOM()")).limit(20).pluck(:id)
       end
     end
   end
