@@ -20,12 +20,9 @@ function moreCommentsButton(comments, articlePath, totalCount) {
           size="s"
           tagName="a"
           url={linkToCommentsSection(articlePath)}
+          data-testid="see-all-comments"
         >
-          See all 
-          {' '}
-          {totalCount}
-          {' '}
-          comments
+          See all {totalCount} comments
         </Button>
       </div>
     );
@@ -33,7 +30,7 @@ function moreCommentsButton(comments, articlePath, totalCount) {
   return button;
 }
 
-export const CommentsList = ({ comments, articlePath, totalCount }) => {
+export const CommentsList = ({ comments = [], articlePath, totalCount }) => {
   if (comments && comments.length > 0) {
     return (
       <div className="crayons-story__comments">
