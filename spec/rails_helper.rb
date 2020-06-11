@@ -98,6 +98,12 @@ RSpec.configure do |config|
     Sidekiq::Worker.clear_all
   end
 
+  config.before(:each, stub_elasticsearch: true) do |_example|
+    stubbed_search_response = { "hits" => { "hits" => [] } }
+    allow(Search::Client).to receive(:search).and_return(stubbed_search_response)
+    allow(Search::Client).to receive(:index).and_return({ "_source" => {} })
+  end
+
   config.around(:each, elasticsearch_reset: true) do |example|
     Search::Cluster.recreate_indexes
     example.run

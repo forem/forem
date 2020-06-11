@@ -102,7 +102,7 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     end
   end
 
-  context "when user has logged in", js: true, elasticsearch: "FeedContent" do
+  context "when user has logged in", js: true, stub_elasticsearch: true do
     let(:user) { create(:user) }
 
     before do

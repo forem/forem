@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "User index", type: :system do
+RSpec.describe "User index", type: :system, stub_elasticsearch: true do
   let!(:user) { create(:user, username: "user3000") }
   let!(:article) { create(:article, user: user) }
   let!(:other_article) { create(:article, title: rand(10_000_000).to_s) }
