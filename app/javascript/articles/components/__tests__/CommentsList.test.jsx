@@ -1,8 +1,8 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { CommentsList } from '../CommentsList';
 import { singleComment, threeCommentList } from './utilities/commentUtilities';
-// import '../../../../assets/javascripts/utilities/timeAgo';
 
 // Show buttons
 
@@ -13,23 +13,10 @@ import { singleComment, threeCommentList } from './utilities/commentUtilities';
 // When more than 3 total comments: show button
 
 describe('<CommentsList />', () => {
-  it('should not render without comments', () => {
-    const tree = render(<CommentsList />);
-
-    expect(tree).toMatchSnapshot();
-  });
-
-  it('should not render with empty comments array', () => {
-    const tree = render(
-      <CommentsList comments={[]} articlePath="" totalCount={0} />,
-    );
-
-    expect(tree).toMatchSnapshot();
-  });
-
-  it('should render comments', () => {
+  it('should have no a11y violations', async () => {
     global.timeAgo = jest.fn(() => '4 days ago');
-    const tree = render(
+
+    const { container } = render(
       <CommentsList
         comments={threeCommentList}
         articlePath=""
@@ -37,19 +24,37 @@ describe('<CommentsList />', () => {
       />,
     );
 
-    expect(tree).toMatchSnapshot();
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
+  it('should not render without comments', () => {
+    const { container } = render(<CommentsList />);
+
+    expect(container.innerHTML).toEqual('');
+  });
+
+  it('should not render with empty comments array', () => {
+    const { container } = render(
+      <CommentsList comments={[]} articlePath="" totalCount={0} />,
+    );
+
+    expect(container.innerHTML).toEqual('');
   });
 
   it('should not render "See all comments" button when there is a single comment and it is the top comment', () => {
-    const tree = render(
+    const { queryByTestId } = render(
       <CommentsList comments={[singleComment]} articlePath="" totalCount={1} />,
     );
 
-    expect(tree).toMatchSnapshot();
+    const showMoreCommentsButton = queryByTestId('see-all-comments');
+
+    expect(showMoreCommentsButton).toBeNull();
   });
 
   it('should not render "See all comments" button when there are two comments and are both top comments', () => {
-    const tree = render(
+    const { queryByTestId } = render(
       <CommentsList
         comments={[singleComment, singleComment]}
         articlePath=""
@@ -57,11 +62,13 @@ describe('<CommentsList />', () => {
       />,
     );
 
-    expect(tree).toMatchSnapshot();
+    const showMoreCommentsButton = queryByTestId('see-all-comments');
+
+    expect(showMoreCommentsButton).toBeNull();
   });
 
   it('should render "See all comments" button when there are two top comments and more than two total', () => {
-    const tree = render(
+    const { getByTestId } = render(
       <CommentsList
         comments={[singleComment, singleComment]}
         articlePath=""
@@ -69,6 +76,6 @@ describe('<CommentsList />', () => {
       />,
     );
 
-    expect(tree).toMatchSnapshot();
+    getByTestId('see-all-comments');
   });
 });

@@ -1,6 +1,6 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render, fireEvent } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import Compose from '../compose';
 
 let submitNoMessage = false;
@@ -19,7 +19,7 @@ const handleSubmitFake = () => {
   textfieldIsEmpty = true;
 };
 
-const handleKeyDownFake = e => {
+const handleKeyDownFake = (e) => {
   const enterPressed = e.keyCode === 13;
   if (!enterPressed) {
     textfieldIsEmpty = false;
@@ -30,7 +30,7 @@ const handleKeyDownFake = e => {
   }
 };
 
-const getCompose = tf => {
+const getCompose = (tf) => {
   // true -> not empty, false -> empty
   if (tf) {
     return (
@@ -57,24 +57,29 @@ describe('<Compose />', () => {
     textfieldIsEmpty = true;
   });
 
+  it('should have no a11y violations', async () => {
+    const { container } = render(getCompose(false));
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
   describe('behavior with no message', () => {
     it('should click submit', () => {
-      const context = shallow(getCompose(false));
-      const btn = context.find('.messagecomposer__submit');
+      const { getByText } = render(getCompose(false));
+      const button = getByText('SEND');
 
-      expect(btn.simulate('click'));
-
+      button.click();
       expect(submitNoMessage).toEqual(true);
       expect(submitWithMessage).toEqual(false);
       expect(textfieldIsEmpty).toEqual(true);
     });
 
     it('should press enter', () => {
-      const context = shallow(getCompose(false));
-      const input = context.find('.messagecomposer__input');
+      const { getByLabelText } = render(getCompose(false));
+      const input = getByLabelText('Compose a message');
 
-      const enter = { keyCode: 13 };
-      expect(input.simulate('keyDown', enter));
+      fireEvent.keyDown(input, { keyCode: 13 });
 
       expect(submitNoMessage).toEqual(true);
       expect(submitWithMessage).toEqual(false);
@@ -83,37 +88,35 @@ describe('<Compose />', () => {
   });
 
   describe('behavior with message', () => {
-    it('should render and test snapshot', () => {
-      const tree = render(getCompose(true));
-      expect(tree).toMatchSnapshot();
+    it('should have no a11y violations', async () => {
+      const { container } = render(getCompose(true));
+      const results = await axe(container);
+
+      expect(results).toHaveNoViolations();
     });
 
     it('should have proper elements, attributes and values', () => {
-      const context = shallow(getCompose(true));
-      expect(context.find('.messagecomposer').exists()).toEqual(true);
+      const { getByLabelText, getByText } = render(getCompose(true));
 
-      const input = context.find('.messagecomposer__input');
-      expect(input.exists()).toEqual(true);
-      expect(input.text()).toEqual('');
-      expect(input.attr('maxLength')).toEqual('1000');
-      expect(input.attr('placeholder')).toEqual("Let's connect");
+      const input = getByLabelText('Compose a message');
 
-      const btn = context.find('.messagecomposer__submit');
-      expect(btn.exists()).toEqual(true);
-      expect(btn.text()).toEqual('SEND');
+      expect(input.textContent).toEqual('');
+      expect(input.getAttribute('maxLength')).toEqual('1000');
+      expect(input.getAttribute('placeholder')).toEqual("Let's connect");
+
+      // Ensure send button is pressent
+      getByText('SEND');
     });
 
     it('should click submit and check for empty textarea', () => {
-      const context = shallow(getCompose(true));
-      const input = context.find('.messagecomposer__input');
-      const btn = context.find('.messagecomposer__submit');
+      const { getByLabelText, getByText } = render(getCompose(true));
+      const input = getByLabelText('Compose a message');
+      const sendButton = getByText('SEND');
 
-      const someletter = { keyCode: 69 };
-
-      expect(input.simulate('keyDown', someletter));
+      fireEvent.keyDown(input, { keyCode: 69 });
       expect(textfieldIsEmpty).toEqual(false);
 
-      expect(btn.simulate('click'));
+      sendButton.click();
 
       expect(submitNoMessage).toEqual(false);
       expect(submitWithMessage).toEqual(true);
@@ -121,13 +124,11 @@ describe('<Compose />', () => {
     });
 
     it('should press enter and check for empty textarea', () => {
-      const context = shallow(getCompose(true));
-      const input = context.find('.messagecomposer__input');
+      const { getByLabelText } = render(getCompose(true));
+      const input = getByLabelText('Compose a message');
 
-      const someletter = { keyCode: 69 };
-      expect(input.simulate('keyDown', someletter));
-      const enter = { keyCode: 13 };
-      expect(input.simulate('keyDown', enter));
+      fireEvent.keyDown(input, { keyCode: 69 });
+      fireEvent.keyDown(input, { keyCode: 13 });
 
       expect(submitNoMessage).toEqual(false);
       expect(submitWithMessage).toEqual(true);

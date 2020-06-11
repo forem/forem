@@ -1,42 +1,27 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import Alert from '../alert';
 
 describe('<Alert />', () => {
-  describe('without hidden class', () => {
-    it('should render and test snapshot', () => {
-      const tree = render(<Alert showAlert />);
-      expect(tree).toMatchSnapshot();
-    });
+  it('should have no a11y violations', async () => {
+    const { container } = render(<Alert showAlert />);
+    const results = await axe(container);
 
-    it('should have proper elements, attributes and values', () => {
-      const context = shallow(<Alert showAlert />);
-      expect(context.find('.chatalert__default').exists()).toEqual(true);
-      expect(context.find('.chatalert__default').text()).toEqual(
-        'More new messages below',
-      );
-      expect(context.find('.chatalert__default--hidden').exists()).toEqual(
-        false,
-      );
-    });
+    expect(results).toHaveNoViolations();
   });
 
-  describe('with hidden class', () => {
-    it('should render and test snapshot', () => {
-      const tree = render(<Alert showAlert={false} />);
-      expect(tree).toMatchSnapshot();
-    });
+  it('should render an alert', () => {
+    const { getByRole } = render(<Alert showAlert />);
 
-    it('should have proper elements, attributes and values', () => {
-      const context = shallow(<Alert showAlert={false} />);
-      expect(context.find('.chatalert__default').exists()).toEqual(true);
-      expect(context.find('.chatalert__default').text()).toEqual(
-        'More new messages below',
-      );
-      expect(context.find('.chatalert__default--hidden').exists()).toEqual(
-        true,
-      );
-    });
+    getByRole('alert');
+  });
+
+  it('should not render an alert', () => {
+    const { queryByRole } = render(<Alert />);
+
+    const alert = queryByRole('alert');
+
+    expect(alert).toBeNull();
   });
 });
