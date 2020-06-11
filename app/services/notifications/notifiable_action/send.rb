@@ -28,16 +28,14 @@ module Notifications
         followers.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
           now = Time.current
           notifications_attributes.push(
-            {
-              user_id: follower.id,
-              notifiable_id: notifiable.id,
-              notifiable_type: notifiable.class.name,
-              action: action,
-              json_data: json_data,
-              created_at: now,
-              notified_at: now,
-              updated_at: now
-            },
+            user_id: follower.id,
+            notifiable_id: notifiable.id,
+            notifiable_type: notifiable.class.name,
+            action: action,
+            json_data: json_data,
+            created_at: now,
+            notified_at: now,
+            updated_at: now,
           )
         end
 

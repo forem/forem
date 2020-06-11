@@ -53,11 +53,11 @@ module Podcasts
 
       result = GetMediaUrl.call(item.enclosure_url)
 
-      attributes.merge({
-                         reachable: result.reachable,
-                         media_url: result.url,
-                         https: result.https
-                       })
+      attributes.merge(
+        reachable: result.reachable,
+        media_url: result.url,
+        https: result.https,
+      )
     end
 
     def add_published_at(attributes)
