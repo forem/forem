@@ -1,7 +1,7 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
+import { axe } from 'jest-axe';
 import Channels from '../channels';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
@@ -91,117 +91,77 @@ const getChannels = (mod, chatChannels) => (
 
 describe('<Channels />', () => {
   describe('expanded', () => {
-    describe('with chat channels', () => {
-      it('should render and test snapshot', () => {
-        const tree = render(getChannels(true, fakeChannels));
-        expect(tree).toMatchSnapshot();
-      });
+    it('should have no a11y violations', async () => {
+      const { container } = render(getChannels(true, fakeChannels));
+      const results = await axe(container);
 
-      it('should have the proper elements, attributes, and content', () => {
-        const context = shallow(getChannels(true, fakeChannels));
-
-        // configFooter should exist
-        expect(context.find('.chatchannels__config').exists()).toEqual(true);
-        expect(context.find('.chatchannels__configmenu').exists()).toEqual(
-          true,
-        );
-        expect(
-          context.find('.chatchannels__configmenu').childAt(0).text(),
-        ).toEqual('DEV Settings');
-        expect(
-          context.find('.chatchannels__configmenu').childAt(0).attr('href'),
-        ).toEqual('/settings');
-        expect(
-          context.find('.chatchannels__configmenu').childAt(1).text(),
-        ).toEqual('Report Abuse');
-        expect(
-          context.find('.chatchannels__configmenu').childAt(1).attr('href'),
-        ).toEqual('/report-abuse');
-
-        // welcome message should not exist because there are channels
-        expect(
-          context.find('.chatchannels__channelslistheader').exists(),
-        ).toEqual(false);
-      });
+      expect(results).toHaveNoViolations();
     });
 
-    describe('without chat channels', () => {
-      it('should render and test snapshot', () => {
-        const tree = render(getChannels(true, []));
-        expect(tree).toMatchSnapshot();
-      });
+    it('should render with chat channels', () => {
+      const { getByText, getByRole, queryByRole } = render(
+        getChannels(true, fakeChannels),
+      );
 
-      it('should have the proper elements, attributes, and content', () => {
-        const context = shallow(getChannels(true, []));
+      // welcome message should not exist because there are channels
+      expect(queryByRole('alert')).toBeNull();
 
-        // should show "Welcome to DEV Connect message....."
-        expect(
-          context.find('.chatchannels__channelslistheader').exists(),
-        ).toEqual(true);
-        expect(
-          context.find('.chatchannels__channelslistheader').text(),
-        ).toEqual(
-          '👋 Welcome to DEV Connect! You may message anyone you mutually follow.',
-        );
+      // configFooter should exist
+      getByRole('menu');
+      const devSettings = getByText('DEV Settings');
+      expect(devSettings.getAttribute('href')).toEqual('/settings');
 
-        expect(context.find('.chatchannels__config').exists()).toEqual(true);
-        expect(context.find('.chatchannels__configmenu').exists()).toEqual(
-          true,
-        );
-        expect(
-          context.find('.chatchannels__configmenu').childAt(0).text(),
-        ).toEqual('DEV Settings');
-        expect(
-          context.find('.chatchannels__configmenu').childAt(0).attr('href'),
-        ).toEqual('/settings');
-        expect(
-          context.find('.chatchannels__configmenu').childAt(1).text(),
-        ).toEqual('Report Abuse');
-        expect(
-          context.find('.chatchannels__configmenu').childAt(1).attr('href'),
-        ).toEqual('/report-abuse');
-      });
+      const reportAbuse = getByText('Report Abuse');
+      expect(reportAbuse.getAttribute('href')).toEqual('/report-abuse');
+    });
+
+    it('should render without chat channels', () => {
+      const { getByText, getByRole } = render(getChannels(true, []));
+
+      // should show "Welcome to DEV Connect message....."
+      getByRole('alert');
+
+      getByRole('menu');
+      const devSettings = getByText('DEV Settings');
+      expect(devSettings.getAttribute('href')).toEqual('/settings');
+
+      const reportAbuse = getByText('Report Abuse');
+      expect(reportAbuse.getAttribute('href')).toEqual('/report-abuse');
     });
   });
 
   describe('not expanded', () => {
-    describe('with chat channels', () => {
-      it('should render and test snapshot', () => {
-        const tree = render(getChannels(false, fakeChannels));
-        expect(tree).toMatchSnapshot();
-      });
+    it('should have no a11y violations', async () => {
+      const { container } = render(getChannels(false, fakeChannels));
+      const results = await axe(container);
 
-      it('should have the proper elements, attributes, and content', () => {
-        const context = shallow(getChannels(false, fakeChannels));
-
-        // should have group names but no user names
-        expect(context.find('.chatchannels__channelslist').exists()).toEqual(
-          true,
-        );
-      });
+      expect(results).toHaveNoViolations();
     });
 
-    describe('without chat channels', () => {
-      it('should render and test snapshot', () => {
-        const tree = render(getChannels(false, []));
-        expect(tree).toMatchSnapshot();
-      });
+    it('should have the proper elements, attributes, and content', () => {
+      const { getByTestId } = render(getChannels(false, fakeChannels));
 
-      it('should have the proper elements, attributes, and content', () => {
-        const context = shallow(getChannels(false, []));
+      // should have group names but no user names
+      // TODO: I don't understand the comment above. To revisit.
+      getByTestId('chat-channels-list');
+    });
+  });
 
-        // should have nothing but empty str
-        expect(context.find('.chatchannels__channelslist').exists()).toEqual(
-          true,
-        );
-        expect(context.find('.chatchannels__channelslist').text()).toEqual('');
-        expect(
-          context.find('.chatchannels__channelslist').children().length,
-        ).toEqual(1);
-        expect(
-          context.find('.chatchannels__channelslist').children()[0],
-        ).toEqual(''); // empty child
-      });
+  describe('without chat channels', () => {
+    it('should have no a11y violations', async () => {
+      const { container } = render(getChannels(false, []));
+      const results = await axe(container);
+
+      expect(results).toHaveNoViolations();
+    });
+
+    it('should render without chat channels', () => {
+      const { getByTestId } = render(getChannels(false, []));
+
+      // should have nothing but empty str
+      const chatChannelList = getByTestId('chat-channels-list');
+
+      expect(chatChannelList.textContent).toEqual('');
     });
   });
 });

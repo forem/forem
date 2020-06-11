@@ -1,50 +1,84 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import Content from '../content';
 
-const data = [
-  {
-    onTriggerContent: false,
-    resource: { type_of: 'channel-request' },
-    activeChannelId: 12345,
-    pusherKey: 'ASDFGHJKL',
-    githubToken: '',
+const getChannelRequestData = () => ({
+  onTriggerContent: jest.fn(),
+  type_of: 'channel-request',
+  activeChannelId: 12345,
+  pusherKey: 'ASDFGHJKL',
+  githubToken: '',
+  data: {
+    channel: {
+      name: 'bobby',
+    },
+    user: {
+      username: 'spongebob',
+    },
   },
-  {
-    onTriggerContent: false,
-    resource: { type_of: 'loading-user' },
-    activeChannelId: 1235,
-    pusherKey: 'ASDFGHJKL',
-    githubToken: '',
-  },
-];
+});
 
-const getContent = (resource) => <Content resource={resource} />;
+const getLoadingUserData = () => ({
+  onTriggerContent: jest.fn(),
+  type_of: 'loading-user',
+  activeChannelId: 1235,
+  pusherKey: 'ASDFGHJKL',
+  githubToken: '',
+  data: {
+    user: {
+      username: 'spongebob',
+    },
+  },
+});
 
 describe('<Content />', () => {
   describe('as loading-user', () => {
-    it('should render and test snapshot', () => {
-      const tree = render(getContent(data[0]));
-      expect(tree).toMatchSnapshot();
+    it('should have no a11y violations', async () => {
+      const channelRequestResource = getChannelRequestData();
+      const { container } = render(
+        <Content resource={channelRequestResource} />,
+      );
+      const results = await axe(container);
+
+      expect(results).toHaveNoViolations();
     });
-    it('should have proper elements, attributes and content', () => {
-      const context = shallow(getContent(data[0]));
-      expect(
-        context.find('.activechatchannel__activecontent').exists(),
-      ).toEqual(true);
+
+    it('should render', () => {
+      const channelRequestResource = getChannelRequestData();
+      const { getByText, getByTitle } = render(
+        <Content resource={channelRequestResource} />,
+      );
+
+      // Ensure the two buttons render
+      getByTitle('exit');
+      getByTitle('fullscreen');
+
+      // Simple check if the component to request joining a channel appears.
+      // The component itself is tested it in it's own test suite.
+      getByText(
+        'You are not a member of this group yet. Send a request to join.',
+      );
     });
   });
+
   describe('as channel-request', () => {
-    it('should render and test snapshot', () => {
-      const tree = render(getContent(data[1]));
-      expect(tree).toMatchSnapshot();
+    it('should have no a11y violations', async () => {
+      const loadinUserResource = getLoadingUserData();
+      const { container } = render(<Content resource={loadinUserResource} />);
+      const results = await axe(container);
+
+      expect(results).toHaveNoViolations();
     });
-    it('should have proper elements, attributes and content', () => {
-      const context = shallow(getContent(data[1]));
-      expect(
-        context.find('.activechatchannel__activecontent').exists(),
-      ).toEqual(true);
+
+    it('should render', () => {
+      const loadinUserResource = getLoadingUserData();
+      const { getByTitle } = render(<Content resource={loadinUserResource} />);
+
+      // Ensure the two buttons render
+      getByTitle('exit');
+      getByTitle('fullscreen');
+      getByTitle('Loading user');
     });
   });
   /*
