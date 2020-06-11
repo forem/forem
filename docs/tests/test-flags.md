@@ -11,8 +11,9 @@ test example.
 Some flags that we use are:
 
 - `js: true`
-- `elasticsearch: reset`
+- `elasticsearch_reset: true`
 - `elasticsearch: <search class name>`
+- `stub_elasticsearch: true`
 - `throttle: true`
 - `type: <test type>`
 
@@ -25,8 +26,8 @@ don't have a "database cleaner" for Elasticsearch, we have to do it manually.
 There are two ways to do this:
 
 1. `elasticsearch: reset` - This will trigger a complete tear down and rebuild
-   of Elasticsearch via a block. This takes time so it's not something you
-   want to be doing unless you absolutely have to.
+   of Elasticsearch via a block. This takes time so it's not something you want
+   to be doing unless you absolutely have to.
 
 ```ruby
   config.around(:each, elasticsearch_reset: true) do |example|
@@ -50,7 +51,13 @@ There are two ways to do this:
   end
 ```
 
-**NOTE** Any specs that use the `js: true` flag might be hitting Elasticsearch.
-You may want to consider clearing out Elasticsearch data for those specs even if
-you don't intend on working with Elasticsearch directly to ensure that you have
-a clean page load with no unexpected data.
+### `js: true` Flag
+
+`js: true` indicates to our specs that we want the javascript on the page to be
+executed when the page is rendered. One side effect of running our javascript in our specs is
+that a lot of pages will hit Elasticsearch. Since we don't clean out
+Elasticsearch between every single spec (because it is very costly) this can lead
+to unexpected data being loaded for a spec. To prevent this from happening, we can use the
+`:stub_elasticsearch` flag. The `:stub_elasticsearch` flag will stub all index
+and search requests made to Elasticsearch and return an empty response. This
+will ensure that no unwanted data shows up on your spec's page.

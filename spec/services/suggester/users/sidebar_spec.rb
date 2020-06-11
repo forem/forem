@@ -7,7 +7,7 @@ RSpec.describe Suggester::Users::Sidebar, type: :service do
     tags = "html"
     article1 = create(:article, tags: tags)
     article2 = create(:article, tags: tags)
-    expect(described_class.new(user, tags).suggest.to_a).to eq([article1.user, article2.user])
+    expect(described_class.new(user, tags).suggest.to_a).to match_array([article1.user, article2.user])
   end
 
   it "returns no user if there's not enough sample" do
