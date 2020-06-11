@@ -65,7 +65,7 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'bundle exec rake knapsack_pro:rspec'
+  - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json; fi
