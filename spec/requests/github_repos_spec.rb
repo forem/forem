@@ -81,6 +81,14 @@ RSpec.describe "GithubRepos", type: :request do
         expect(response_repo["fork"]).to eq(repo.fork)
         expect(response_repo["featured"]).to be(false)
       end
+
+      it "deletes repositories which are no longer publicly accessible" do
+        deleted_repo = create(:github_repo, user: user, featured: true)
+
+        expect do
+          get github_repos_path, headers: headers
+        end.to change { GithubRepo.find_by(id: deleted_repo.id) }.from(deleted_repo).to(nil)
+      end
     end
   end
 

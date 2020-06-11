@@ -3,7 +3,7 @@
     .ltag__tag__id__<%= tag.id %> .follow-action-button{
       background-color: <%= tag.bg_color_hex %> !important;
       color: <%= tag.text_color_hex %> !important;
-      border-color: <%= tag.bg_color_hex.to_s.casecmp('#ffffff').zero? ? tag.text_color_hex : tag.bg_color_hex %> !important;
+      border-color: <%= tag.bg_color_hex.to_s.casecmp("#ffffff").zero? ? tag.text_color_hex : tag.bg_color_hex %> !important;
     }
   </style>
     <div class="ltag__tag__content">

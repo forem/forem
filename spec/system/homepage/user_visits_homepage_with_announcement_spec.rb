@@ -86,5 +86,18 @@ RSpec.describe "User visits a homepage", type: :system do
         expect_no_broadcast_data(page)
       end
     end
+
+    context "when opting-out of announcements" do
+      before do
+        user.update!(display_announcements: false)
+        create(:announcement_broadcast, active: true)
+        get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
+        visit "/"
+      end
+
+      it "does not render the broadcast", js: true do
+        expect_no_broadcast_data(page)
+      end
+    end
   end
 end
