@@ -179,8 +179,8 @@
     margin: 0;
     width: 100%;
     .mod-index-list-header {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 4fr 2fr 1fr;
       background-color: var(--base-0);
       line-height: var(--lh-tight);
       h2 {
@@ -194,9 +194,8 @@
       .moderation-single-article {
         padding: var(--su-4);
         border: 1px solid var(--base-10);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+        display: grid;
+        grid-template-columns: 4fr 2fr 1fr;
         .article-title {
           header > h3 {
             line-height: var(--lh-tight);
@@ -219,12 +218,14 @@
           font-size: var(--fs-s);
           font-weight: var(--fw-medium);
           color: var(--base-80);
+          padding-left: var(--su-4);
         }
         .article-published-at {
           line-height: var(--lh-tight);
           font-size: var(--fs-s);
           font-weight: var(--fw-bold);
           color: var(--base-90);
+          padding-left: var(--su-6);
         }
       }
     }
