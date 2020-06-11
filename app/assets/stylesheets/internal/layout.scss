@@ -1,5 +1,6 @@
-@import '../variables';
 @import '../crayons';
+@import '../scaffolds';
+@import '../variables';
 
 #siteConfigBodyContainer {
   padding: 20px;
@@ -48,6 +49,11 @@
 
 .border-highlighted {
   border: 20px solid black;
+}
+
+.broadcast-wrapper {
+  position: relative;
+  z-index: auto;
 }
 
 .sidebar-nav {
