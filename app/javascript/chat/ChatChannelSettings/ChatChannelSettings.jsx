@@ -19,10 +19,6 @@ import ModFaqSection from './ModFaqSection';
 import ChannelDescriptionSection from './ChannelDescriptionSection';
 import ChatChannelMembershipSection from './ChatChannelMembershipSection';
 
-const snackZone = document.getElementById('snack-zone');
-
-render(<Snackbar lifespan="3" />, snackZone);
-
 export default class ChatChannelSettings extends Component {
   static propTypes = {
     activeMembershipId: PropTypes.number.isRequired,
@@ -49,6 +45,8 @@ export default class ChatChannelSettings extends Component {
 
   componentDidMount() {
     const { activeMembershipId } = this.state;
+
+    render(<Snackbar lifespan="3" />, document.getElementById('snack-zone'));
 
     getChannelDetails(activeMembershipId)
       .then((response) => {
