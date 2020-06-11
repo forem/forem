@@ -45,7 +45,7 @@ const SingleArticle = ({
     const dateToday = new Date();
     const origDatePublished = new Date(timestamp);
 
-    if (dateToday.toDateString === origDatePublished.toDateString) {
+    if (dateToday.toDateString() === origDatePublished.toDateString()) {
       return get12HourTime(origDatePublished);
     }
     return `${

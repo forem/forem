@@ -180,7 +180,7 @@
     width: 100%;
     .mod-index-list-header {
       display: grid;
-      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-columns: 4fr 2fr 1fr;
       background-color: var(--base-0);
       line-height: var(--lh-tight);
       h2 {
@@ -195,7 +195,7 @@
         padding: var(--su-4);
         border: 1px solid var(--base-10);
         display: grid;
-        grid-template-columns: 2fr 1fr 1fr;
+        grid-template-columns: 4fr 2fr 1fr;
         .article-title {
           header > h3 {
             line-height: var(--lh-tight);
