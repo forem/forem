@@ -6,34 +6,41 @@ import RequestManager from './requestManager';
 import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
 
 function display(resource) {
-  if (resource.type_of === 'loading-user') {
-    return <div className="loading-user" title="Loading user" />;
-  }
+  switch (resource.type_of) {
+    case 'loading-user':
+      return <div title="Loading user" className="loading-user" />;
 
-  if (resource.type_of === 'article') {
-    return <Article resource={resource} />;
-  }
+    case 'article':
+      return <Article resource={resource} />;
 
-  if (resource.type_of === 'channel-request') {
-    return (
-      <ChannelRequest
-        resource={resource.data}
-        handleJoiningRequest={resource.handleJoiningRequest}
-      />
-    );
-  }
+    case 'channel-request':
+      return (
+        <ChannelRequest
+          resource={resource.data}
+          handleJoiningRequest={resource.handleJoiningRequest}
+        />
+      );
 
-  if (resource.type_of === 'channel-request-manager') {
-    return (
-      <RequestManager
-        resource={resource.data}
-        handleRequestRejection={resource.handleRequestRejection}
-        handleRequestApproval={resource.handleRequestApproval}
-      />
-    );
-  }
+    case 'channel-request-manager':
+      return (
+        <RequestManager
+          resource={resource.data}
+          handleRequestRejection={resource.handleRequestRejection}
+          handleRequestApproval={resource.handleRequestApproval}
+        />
+      );
 
-  return null;
+    case 'chat-channel-setting':
+      return (
+        <ChatChannelSettings
+          resource={resource.data}
+          activeMembershipId={resource.activeMembershipId}
+        />
+      );
+
+    default:
+      return null;
+  }
 }
 
 function smartSvgIcon(content, d) {
