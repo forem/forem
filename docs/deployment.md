@@ -25,21 +25,18 @@ Our Travis CI process consists of 2 stages.
 
 ### Stage 1: Running Tests
 
-In stage 1 we use [KnapsackPro](https://knapsackpro.com/) to divide our Rspec
-tests evenly between 3 different jobs(virtual machines). This ensures that each
+In stage 1, we use [KnapsackPro](https://knapsackpro.com/) to divide our Rspec
+tests evenly between 3 different jobs (virtual machines). This ensures that each
 job takes relatively the same amount of time to run. After running our Rspec
 tests, we then run a series of other checks. These additional checks are split
 up between the different jobs. Here is a list of those additional checks that
 are run.
 
-- Javascript and Preact tests and coverage checks are run in job 0
-- `bundle-audit` checks for any known vulnerabilities in job 1
-- Travis builds Storybook to ensure its integrity in job 1
-- Travis fires up a Rails console to ensure the application loads properly in
-  job 2
-- Any specs that have issues with KnapsackPro are run in job 2
+- Job 0 is where we run Javascript tests, Preact tests, and coverage checks.
+- Job 1 is where Travis builds Storybook to ensure its integrity, and where we check for any known vulnerabilities using `bundle-audit`.
+- Job 2 is where Travis fires up a Rails console to ensure the application loads properly, and where specs with KnapsackPro are run.
 
-If all of the jobs pass then we move on to Stage 2.
+If all of the jobs pass then we move on to Stage 2 of the Travis CI process.
 
 ### Stage 2: Deploying
 
@@ -49,7 +46,7 @@ stage will do nothing. If the branch has been merged into master with the
 its own job deploying our application to Heroku.
 
 Prior to deploying the code, Heroku will run database migrations, Elasticsearch
-updates, and do some final checks(more information below) to make sure
+updates, and do some final checks (more information on that below) to make sure
 everything is working as expected. If these all succeed, then the deploy
 completes and our team is notified.
 
