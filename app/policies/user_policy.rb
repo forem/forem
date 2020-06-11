@@ -9,6 +9,7 @@ class UserPolicy < ApplicationPolicy
     contact_consent
     currently_hacking_on
     currently_learning
+    display_announcements
     display_sponsors dribbble_url
     editor_version education email
     email_badge_notifications
@@ -50,6 +51,7 @@ class UserPolicy < ApplicationPolicy
     name
     password
     password_confirmation
+    payment_pointer
     permit_adjacent_sponsors
     profile_image
     stackoverflow_url

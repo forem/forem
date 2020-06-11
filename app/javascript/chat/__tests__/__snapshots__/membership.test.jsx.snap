@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Membership /> should render and test snapshot 1`] = `
+<div
+  class="flex items-center"
+>
+  <a
+    href="/testusername"
+  >
+    <span
+      class="crayons-avatar crayons-avatar--l mr-3"
+    >
+      <img
+        alt="test user profile"
+        class="crayons-avatar__image align-middle"
+        role="presentation"
+        src=""
+      />
+    </span>
+    <span
+      class="mr-2 user_name"
+    >
+      test user
+    </span>
+  </a>
+</div>
+`;

@@ -1,4 +1,4 @@
-class ChatChannelUpdateService
+class ChatChannelUpdateService < ApplicationService
   attr_accessor :chat_channel, :params
 
   def initialize(chat_channel, params)
@@ -6,7 +6,8 @@ class ChatChannelUpdateService
     @params = params
   end
 
-  def update
+  def perform
     chat_channel.update(params)
+    chat_channel
   end
 end

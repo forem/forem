@@ -5,7 +5,8 @@ import { SingleRepo } from './singleRepo';
 export class GithubRepos extends Component {
   state = {
     repos: [],
-    erroredOut: false,
+    error: false,
+    errorMessage: '',
   };
 
   componentDidMount() {
@@ -15,11 +16,14 @@ export class GithubRepos extends Component {
   async getGithubRepos() {
     try {
       const response = await request('/github_repos');
-      const repositories = await response.json();
-
-      this.setState({ repos: repositories });
+      if (response.ok) {
+        const repositories = await response.json();
+        this.setState({ repos: repositories });
+      } else {
+        throw new Error(response.statusText);
+      }
     } catch (error) {
-      this.setState({ erroredOut: true });
+      this.setState({ error: true, errorMessage: error.toString() });
 
       Honeybadger.notify(error);
 
@@ -29,13 +33,13 @@ export class GithubRepos extends Component {
   }
 
   render() {
-    const { repos, erroredOut } = this.state;
-    if (erroredOut) {
+    const { repos, error, errorMessage } = this.state;
+    if (error) {
       return (
         <div className="github-repos github-repos-errored">
-          An error occurred. Please check your browser console and email
-          <a href="mailto:yo@dev.to"> yo@dev.to </a>
-          for more help.
+          An error occurred: 
+          {' '}
+          {errorMessage}
         </div>
       );
     }
@@ -49,7 +53,7 @@ export class GithubRepos extends Component {
       />
     ));
 
-    if (repos.length > 0) {
+    if (allRepos.length > 0) {
       return <div className="github-repos">{allRepos}</div>;
     }
     return <div className="github-repos loading-repos" />;

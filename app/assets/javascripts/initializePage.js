@@ -10,7 +10,7 @@
   initializeUserProfilePage, initializePodcastPlayback, initializeDrawerSliders,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
-  initializeSpecialNavigationFunctionality, initializeBroadcast
+  initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast
 */
 
 function callInitializers() {
@@ -38,6 +38,7 @@ function callInitializers() {
 
   initializeSpecialNavigationFunctionality();
   initializeBaseTracking();
+  initializePaymentPointers();
   initializeTouchDevice();
   initializeCommentsPage();
   initializeArticleDate();

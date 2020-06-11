@@ -10,6 +10,7 @@ items:
   - regression-tests.md
   - code-coverage.md
   - codeclimate.md
+  - test-flags.md
 ---
 
 We use the following testing tools:

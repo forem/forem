@@ -77,6 +77,14 @@ RSpec.configure do |config|
   config.include SidekiqTestHelpers
   config.include ElasticsearchHelpers
 
+  config.after(:each, type: :system) do
+    Warden::Manager._on_request.clear
+  end
+
+  config.after(:each, type: :request) do
+    Warden::Manager._on_request.clear
+  end
+
   config.before(:suite) do
     Search::Cluster.recreate_indexes
   end
@@ -117,13 +125,6 @@ RSpec.configure do |config|
     else
       VCR.turned_off { ex.run }
     end
-  end
-
-  # Allow testing with Stripe's test server. BE CAREFUL
-  if config.filter_manager.inclusions.rules.include?(:live)
-    WebMock.allow_net_connect!
-    StripeMock.toggle_live(true)
-    Rails.logger.info("Running **live** tests against Stripe...")
   end
 
   config.before do
