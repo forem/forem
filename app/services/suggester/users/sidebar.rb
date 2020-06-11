@@ -11,7 +11,7 @@ module Suggester
         suggested_user_ids = Rails.cache.fetch(generate_cache_name, expires_in: 120.hours) do
           (reputable_user_ids + random_user_ids).uniq
         end
-        User.select(:id, :name, :username, :profile_image, :summary).where(id: suggested_user_ids).to_a
+        User.select(:id, :name, :username, :profile_image, :summary).where(id: suggested_user_ids)
       end
 
       private
