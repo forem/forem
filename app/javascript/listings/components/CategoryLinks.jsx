@@ -8,6 +8,7 @@ const CategoryLinks = ({ categories, onClick, selectedCategory }) => {
         <a
           href={`/listings/${category.slug}`}
           id={`category-link-${category.slug}`}
+          data-testid={category.slug === selectedCategory ? 'selected-category' : ''}
           className={category.slug === selectedCategory ? 'selected' : ''}
           onClick={(e) => onClick(e, category.slug)}
           data-no-instant
