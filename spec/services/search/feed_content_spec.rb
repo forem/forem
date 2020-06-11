@@ -8,8 +8,9 @@ RSpec.describe Search::FeedContent, type: :service do
   end
 
   describe "::search_documents", elasticsearch: "FeedContent" do
-    let(:article1) { create(:article) }
-    let(:article2) { create(:article) }
+    let(:article1) { create(:article, published_at: 1.day.ago) }
+    let(:article2) { create(:article, published_at: 2.days.ago) }
+    let(:article3) { create(:article, published_at: Time.current) }
 
     it "parses feed content document hits from search response" do
       mock_search_response = { "hits" => { "hits" => {} } }
@@ -46,6 +47,32 @@ RSpec.describe Search::FeedContent, type: :service do
       expect(feed_doc["user"].keys).to include(*user_keys)
       expect(feed_doc["flare_tag"].keys).to include(*flare_tag_keys)
       expect(feed_doc["podcast"].keys).to include(*podcast_keys)
+    end
+
+    context "with chronological sorting specified" do
+      before do
+        allow(article1).to receive(:title).and_return("Ruby Slippers")
+        allow(article2).to receive(:title).and_return("Ruby Tuesday")
+        allow(article3).to receive(:title).and_return("Just Ruby")
+      end
+
+      it "sorts articles from newest to oldest" do
+        index_documents([article1, article2, article3])
+        query_params = { size: 5, search_fields: "ruby", sort_by: "published_at", sort_direction: "desc" }
+
+        titles_in_order = described_class.search_documents(params: query_params).map { |doc| doc["title"] }
+
+        expect(titles_in_order).to eq ["Just Ruby", "Ruby Slippers", "Ruby Tuesday"]
+      end
+
+      it "sorts articles from oldest to newest" do
+        index_documents([article1, article2, article3])
+        query_params = { size: 5, search_fields: "ruby", sort_by: "published_at", sort_direction: "asc" }
+
+        titles_in_order = described_class.search_documents(params: query_params).map { |doc| doc["title"] }
+
+        expect(titles_in_order).to eq ["Ruby Tuesday", "Ruby Slippers", "Just Ruby"]
+      end
     end
 
     context "with a query" do
