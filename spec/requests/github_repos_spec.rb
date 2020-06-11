@@ -85,9 +85,9 @@ RSpec.describe "GithubRepos", type: :request do
       it "deletes repositories which are no longer publicly accessible" do
         deleted_repo = create(:github_repo, user: user, featured: true)
 
-        get github_repos_path, headers: headers
-
-        expect(GithubRepo.find_by(id: deleted_repo.id)).to be_nil
+        expect do
+          get github_repos_path, headers: headers
+        end.to change { GithubRepo.find_by(id: deleted_repo.id) }.from(deleted_repo).to(nil)
       end
     end
   end
