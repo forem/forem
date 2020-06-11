@@ -28,6 +28,8 @@ function camelizedBroadcastKey(title) {
 
 /**
  * A function that finds the close button and adds a click handler to it.
+ * The click handler sets a key in local storage and removes the broadcast
+ * element entirely from the DOM.
  *
  * @function addCloseButtonClickHandle
  * @param {string} title The title of the broadcast.
@@ -37,8 +39,8 @@ function addCloseButtonClickHandle(title) {
     'close-announcement-button',
   )[0];
   closeButton.onclick = (e) => {
-    document.getElementById('active-broadcast').style.display = 'none';
     localStorage.setItem(camelizedBroadcastKey(title), true);
+    document.getElementById('active-broadcast').remove();
   };
 }
 
@@ -47,7 +49,7 @@ function addCloseButtonClickHandle(title) {
  * Determines what classes to add to the broadcast element,
  * and inserts a close button and adds a click handler to it.
  *
- * Adds a `.visible` class to the broadcastElement to make it render.
+ * Adds a `.broadcast-visible` class to the broadcastElement to make it display.
  *
  * @function initializeBroadcast
  * @param {string} broadcastElement The HTML element for the broadcast, with a class of `.active-broadcast`.
@@ -76,18 +78,25 @@ function renderBroadcast(broadcastElement, data) {
     `<div class='broadcast-data'>${html}</div>${closeButton}`,
   );
   addCloseButtonClickHandle(title);
-  broadcastElement.classList.add('visible');
+  broadcastElement.classList.add('broadcast-visible');
 }
 
 /**
  * A function to determine if a broadcast should render.
- * Does not render a broadcast if the current user has opted-out.
- * Does not render a broadcast it has already been inserted, or
+ * Does not render a broadcast on the `/new` route, if the current user
+ * has opted-out, if the broadcast has already been inserted, or
  * if the key for the broadcast's title exists in localStorage.
+ *
+ * If the broadcast exists in the DOM but was hidden by the articleForm,
+ * the function will re-display it again by adding a class.
  *
  * @function initializeBroadcast
  */
 function initializeBroadcast() {
+  if (window.location.pathname === '/new') {
+    return;
+  }
+
   const user = userData();
   const data = broadcastData();
 
@@ -105,6 +114,12 @@ function initializeBroadcast() {
 
   const el = document.getElementById('active-broadcast');
   if (el.firstElementChild) {
+    if (!el.classList.contains('broadcast-visible')) {
+      // The articleForm may have hidden the broadcast when
+      // it loaded, so we need to explicitly display it again.
+      el.classList.toggle('broadcast-visible');
+    }
+
     return; // Only append HTML once, on first render.
   }
 
