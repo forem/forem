@@ -27,27 +27,27 @@ describe FeatureFlag, type: :helper do
     let(:user) { UserStruct.new(flipper_id: 1) }
 
     it "returns false when flag doesn't exist" do
-      expect(described_class.accessible?("missing_flag")).to be_truthy # rubocop:disable Rspec/PredicateMatcher
+      expect(described_class.accessible?("missing_flag")).to be(true)
     end
 
     it "returns true when flag is empty" do
-      expect(described_class.accessible?("")).to be_truthy # rubocop:disable Rspec/PredicateMatcher
+      expect(described_class.accessible?("")).to be(true)
     end
 
     it "returns true when flag is nil" do
-      expect(described_class.accessible?(nil)).to be_truthy # rubocop:disable Rspec/PredicateMatcher
+      expect(described_class.accessible?(nil)).to be(true)
     end
 
     context "when flag exists and is set to off" do
       before { Flipper.disable("flag") }
 
       it "returns false" do
-        expect(described_class.accessible?("flag")).to be_falsy # rubocop:disable Rspec/PredicateMatcher
+        expect(described_class.accessible?("flag")).to be(false)
       end
 
       it "returns true when flag is on for user" do
         Flipper.enable_actor("flag", user)
-        expect(described_class.accessible?("flag", user)).to be_truthy # rubocop:disable Rspec/PredicateMatcher
+        expect(described_class.accessible?("flag", user)).to be(true)
       end
     end
 
@@ -55,11 +55,11 @@ describe FeatureFlag, type: :helper do
       before { Flipper.enable("flag") }
 
       it "returns true" do
-        expect(described_class.accessible?("flag")).to be_truthy # rubocop:disable Rspec/PredicateMatcher
+        expect(described_class.accessible?("flag")).to be(true)
       end
 
       it "returns true for a user" do
-        expect(described_class.accessible?("flag", user)).to be_truthy # rubocop:disable Rspec/PredicateMatcher
+        expect(described_class.accessible?("flag", user)).to be(true)
       end
     end
   end

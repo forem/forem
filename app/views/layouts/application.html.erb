@@ -1,4 +1,5 @@
 <%= render "shell/top" %>
+<div id="base-payment-pointer" data-payment-pointer="<%= SiteConfig.payment_pointer %>" ></div>
 <style>.app-shell-loader {display: none;}</style>
 <div id="page-content" class="universal-page-content-wrapper <%= view_class %>" data-current-page="<%= current_page %>">
   <% if flash[:global_notice] %>

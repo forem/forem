@@ -9,7 +9,8 @@ RSpec.describe "Looking For Work", type: :system do
     visit "/settings"
   end
 
-  it "renders the page", js: true, percy: true do
+  # TODO: Uncomment this spec when we decide to use percy again
+  xit "renders the page", js: true, percy: true do
     Percy.snapshot(page, name: "Logged in user: settings page")
   end
 

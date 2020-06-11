@@ -9,7 +9,8 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     sign_in user
   end
 
-  it "renders the page when user previews their changes", percy: true do
+  # TODO: Uncomment this spec when we decide to use percy again
+  xit "renders the page when user previews their changes", percy: true do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("Preview")
@@ -37,7 +38,8 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     expect(page).to have_text("Unpublished Post.")
   end
 
-  it "renders the page when user unpublishes their post", percy: true do
+  # TODO: Uncomment this spec when we decide to use percy again
+  xit "renders the page when user unpublishes their post", percy: true do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("true", "false")
     click_button("Save changes")

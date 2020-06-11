@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "User visits a homepage", type: :system do
-  let!(:article) { create(:article, reactions_count: 12, featured: true) }
-  let!(:article2) { create(:article, reactions_count: 20, featured: true) }
+  let!(:article) { create(:article, reactions_count: 12, featured: true, user: create(:user, profile_image: nil)) }
+  let!(:article2) { create(:article, reactions_count: 20, featured: true, user: create(:user, profile_image: nil)) }
   let!(:timestamp) { "2019-03-04T10:00:00Z" }
 
   context "when no options specified" do

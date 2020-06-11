@@ -255,14 +255,22 @@ RSpec.describe Organization, type: :model do
 
       it "updates the paths of the organization's articles" do
         new_slug = "slug_#{rand(10_000)}"
-        organization.update(slug: new_slug)
+
+        sidekiq_perform_enqueued_jobs(only: Organizations::UpdateOrganizationArticlesPathsWorker) do
+          organization.update(slug: new_slug)
+        end
+
         article = Article.find_by(organization_id: organization.id)
         expect(article.path).to include(new_slug)
       end
 
       it "updates article cached_organizations" do
         new_slug = "slug_#{rand(10_000)}"
-        organization.update(slug: new_slug)
+
+        sidekiq_perform_enqueued_jobs(only: Organizations::UpdateOrganizationArticlesPathsWorker) do
+          organization.update(slug: new_slug)
+        end
+
         article = Article.find_by(organization_id: organization.id)
         expect(article.cached_organization.slug).to eq(new_slug)
       end

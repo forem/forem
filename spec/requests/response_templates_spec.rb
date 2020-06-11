@@ -17,7 +17,7 @@ RSpec.describe "ResponseTemplate", type: :request do
       it "responds with JSON" do
         create(:response_template, user: user, type_of: "personal_comment")
         get response_templates_path, headers: { HTTP_ACCEPT: "application/json" }
-        expect(response.content_type).to eq "application/json"
+        expect(response.media_type).to eq "application/json"
       end
 
       it "raises RoutingError if the format is not JSON" do
@@ -61,7 +61,7 @@ RSpec.describe "ResponseTemplate", type: :request do
       it "responds with JSON" do
         create(:response_template, user: moderator, type_of: "personal_comment")
         get response_templates_path, params: { type_of: "mod_comment" }, headers: { HTTP_ACCEPT: "application/json" }
-        expect(response.content_type).to eq "application/json"
+        expect(response.media_type).to eq "application/json"
       end
 
       it "returns the correct amount of moderator response templates" do

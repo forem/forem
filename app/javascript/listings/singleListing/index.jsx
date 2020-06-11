@@ -19,7 +19,12 @@ const SingleListing = ({
     : 'single-listing';
 
   return (
-    <div data-testid="single-listing" className={definedClass} id={`single-listing-${listing.id}`}>
+    <div
+      data-testid="single-listing"
+      className={definedClass}
+      id={`single-listing-${listing.id}`}
+      data-testid={`single-listing-${listing.id}`}
+    >
       <div className="listing-content">
         <Header
           listing={listing}

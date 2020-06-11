@@ -5,7 +5,7 @@ RSpec.describe "User visits articles by tag", type: :system do
   let(:iot_tag) { create(:tag, name: "IoT") }
   let!(:func_tag) { create(:tag, name: "functional") }
 
-  let(:author) { create(:user) }
+  let(:author) { create(:user, profile_image: nil) }
   let!(:article) { create(:article, tags: "javascript, IoT", user: author, published_at: 2.days.ago, score: 5) }
   let!(:article2) { create(:article, tags: "functional", user: author, published_at: Time.current, score: 5) }
   let!(:article3) { create(:article, tags: "functional, javascript", user: author, published_at: 2.weeks.ago, score: 5) }
@@ -21,7 +21,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       end
 
       it "shows the follow button", js: true do
-        within("h1") { expect(page).to have_button("+ FOLLOW") }
+        within("h1") { expect(page).to have_button("Follow") }
       end
 
       it "shows time buttons" do
@@ -76,7 +76,7 @@ RSpec.describe "User visits articles by tag", type: :system do
       # TODO: Add Percy snapshot?
       wait_for_javascript
 
-      within("h1") { expect(page).to have_button("✓ FOLLOWING") }
+      within("h1") { expect(page).to have_button("Following") }
     end
   end
 end

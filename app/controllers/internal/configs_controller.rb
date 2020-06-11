@@ -45,13 +45,14 @@ class Internal::ConfigsController < Internal::ApplicationController
       rate_limit_params |
       mascot_params |
       image_params |
-      onboarding_params
+      onboarding_params |
+      job_params
 
     params.require(:site_config).permit(
       allowed_params,
       authentication_providers: [],
       social_media_handles: SiteConfig.social_media_handles.keys,
-      email_addresses: SiteConfig.email_addresses.keys,
+      email_addresses: SiteConfig.email_addresses.except(:default).keys,
       meta_keywords: SiteConfig.meta_keywords.keys,
     )
   end
@@ -137,6 +138,13 @@ class Internal::ConfigsController < Internal::ApplicationController
       onboarding_taskcard_image
       suggested_tags
       suggested_users
+    ]
+  end
+
+  def job_params
+    %i[
+      jobs_url
+      display_jobs_banner
     ]
   end
 end

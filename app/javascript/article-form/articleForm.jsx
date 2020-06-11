@@ -32,6 +32,17 @@ export default class ArticleForm extends Component {
     activateRunkitTags();
   }
 
+  // Scripts inserted via innerHTML won't execute, so we use this handler to
+  // make the Asciinema player work in previews.
+  static handleAsciinemaPreview() {
+    const els = document.getElementsByClassName('ltag_asciinema');
+    for (let i = 0; i < els.length; i += 1) {
+      const el = els[i];
+      const script = el.removeChild(el.firstElementChild);
+      postscribe(el, script.outerHTML);
+    }
+  }
+
   static propTypes = {
     version: PropTypes.string.isRequired,
     article: PropTypes.string.isRequired,
@@ -103,6 +114,7 @@ export default class ArticleForm extends Component {
     if (previewResponse) {
       this.constructor.handleGistPreview();
       this.constructor.handleRunkitPreview();
+      this.constructor.handleAsciinemaPreview();
     }
   }
 
@@ -297,37 +309,35 @@ export default class ArticleForm extends Component {
           onToggle={this.handleOrgIdChange}
         />
 
-        <div className="crayons-article-form__main">
-          {previewShowing ? (
-            <Preview
-              previewResponse={previewResponse}
-              articleState={this.state}
-              errors={errors}
-            />
-          ) : (
-            <Form
-              titleDefaultValue={title}
-              titleOnChange={linkState(this, 'title')}
-              tagsDefaultValue={tagList}
-              tagsOnInput={linkState(this, 'tagList')}
-              bodyDefaultValue={bodyMarkdown}
-              bodyOnChange={linkState(this, 'bodyMarkdown')}
-              bodyHasFocus={false}
-              version={version}
-              mainImage={mainImage}
-              onMainImageUrlChange={this.handleMainImageUrlChange}
-              errors={errors}
-              switchHelpContext={this.switchHelpContext}
-            />
-          )}
-
-          <Help
-            previewShowing={previewShowing}
-            helpFor={helpFor}
-            helpPosition={helpPosition}
-            version={version}
+        {previewShowing ? (
+          <Preview
+            previewResponse={previewResponse}
+            articleState={this.state}
+            errors={errors}
           />
-        </div>
+        ) : (
+          <Form
+            titleDefaultValue={title}
+            titleOnChange={linkState(this, 'title')}
+            tagsDefaultValue={tagList}
+            tagsOnInput={linkState(this, 'tagList')}
+            bodyDefaultValue={bodyMarkdown}
+            bodyOnChange={linkState(this, 'bodyMarkdown')}
+            bodyHasFocus={false}
+            version={version}
+            mainImage={mainImage}
+            onMainImageUrlChange={this.handleMainImageUrlChange}
+            errors={errors}
+            switchHelpContext={this.switchHelpContext}
+          />
+        )}
+
+        <Help
+          previewShowing={previewShowing}
+          helpFor={helpFor}
+          helpPosition={helpPosition}
+          version={version}
+        />
 
         <EditorActions
           published={published}

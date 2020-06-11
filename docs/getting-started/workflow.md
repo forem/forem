@@ -31,6 +31,11 @@ Use this:
 - to sync with latest changes from upsteam master before continuing with a new
   feature on your current branch
 
+After you've fetched new commits from upstream, run `./bin/setup`, and it will
+install new gems, npm packages, update database, and restart Rails server.
+
+Start the app by running `./bin/startup`, if it's not already running.
+
 ## Start over / discard all your changes
 
 Sometimes it is neccesarry to start over from the beginning or reset the current
@@ -43,3 +48,8 @@ Use this:
 - before working on a new feature
 - before creating a new branch to make sure to have all the latest changes in
   your fork also.
+
+After you've done that, run `./bin/setup`, and it will update gems, npm
+packages, update database, and restart Rails server.
+
+Start the app by running `./bin/startup`, if it's not already running.

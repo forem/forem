@@ -190,10 +190,18 @@
 .navigation-progress {
   position: fixed;
   top: 0;
-  left: -20%;
-  background: var(--accent-brand);
-  box-shadow: 0 -2px var(--su-1) var(--accent-brand);
-  z-index: 100;
+  // background: var(--accent-brand);
+  // box-shadow: 0 -2px var(--su-1) var(--accent-brand);
+  background: linear-gradient(
+    to right,
+    orange,
+    yellow,
+    green,
+    cyan,
+    blue,
+    violet
+  );
+  z-index: 102;
   height: var(--su-1);
   width: 0%;
   &.showing {

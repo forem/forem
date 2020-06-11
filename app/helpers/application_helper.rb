@@ -74,7 +74,7 @@ module ApplicationHelper
     "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
-  def cloudinary(url, width = "500", quality = 80, format = "jpg")
+  def cloudinary(url, width = "500", quality = 80, format = "auto")
     cl_image_path(url || asset_path("#{rand(1..40)}.png"),
                   type: "fetch",
                   width: width,
@@ -100,7 +100,7 @@ module ApplicationHelper
   end
 
   def beautified_url(url)
-    url.sub(/\A((http[s]?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
+    url.sub(/\A((https?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError
     url
   end

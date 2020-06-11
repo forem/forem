@@ -142,7 +142,8 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     context "when viewing articles for month" do
       before { visit "/top/month" }
 
-      it "renders the page", percy: true do
+      # TODO: Uncomment this spec when we decide to use percy again
+      xit "renders the page", percy: true do
         Percy.snapshot(page, name: "Articles: /top/month")
       end
 
@@ -209,7 +210,8 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     context "when viewing articles for latest" do
       before { visit "/latest" }
 
-      it "renders the page", percy: true do
+      # TODO: Uncomment this spec when we decide to use percy again
+      xit "renders the page", percy: true do
         Percy.snapshot(page, name: "Articles: /latest")
       end
 

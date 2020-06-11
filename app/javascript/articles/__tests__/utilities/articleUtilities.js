@@ -229,7 +229,7 @@ export const videoArticle = {
   published_timestamp: 'Tue, 18 Feb 2020 15:11:02 GMT',
   published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
-  cloudinary_video_url: '/images/onboarding-background.png',
+  cloudinary_video_url: '/images/apple-icon.png',
   main_image: '/images/10.png',
   video_duration_in_minutes: 10,
 };
