@@ -3,17 +3,16 @@ require "rails_helper"
 RSpec.describe Suggester::Users::Sidebar, type: :service do
   let(:user) { create(:user) }
 
-  it "does not include calling user" do
-    create_list(:user, 3)
-    tags = []
-    3.times { tags << create(:tag) }
-    expect(described_class.new(user, tags).suggest).not_to include(user)
+  it "returns user suggestions" do
+    tags = "html"
+    article1 = create(:article, tags: tags)
+    article2 = create(:article, tags: tags)
+    expect(described_class.new(user, tags).suggest.to_a).to eq([article1.user, article2.user])
   end
 
-  it "returns the same number created" do
+  it "returns no user if there's not enough sample" do
     create_list(:user, 3)
-    tags = []
-    3.times { tags << create(:tag) }
-    expect(described_class.new(user, tags).suggest.size).to eq(0)
+    tags = create_list(:tag, 3)
+    expect(described_class.new(user, tags).suggest).to be_empty
   end
 end
