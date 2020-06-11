@@ -64,7 +64,7 @@ class PagesController < ApplicationController
     @feedback_message = FeedbackMessage.new(
       reported_url: reported_url&.chomp("?i=i"),
     )
-    render "pages/report-abuse"
+    render "pages/report_abuse"
   end
 
   def robots
