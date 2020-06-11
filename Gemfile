@@ -135,6 +135,7 @@ group :development, :test do
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.32" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 2.12" # A library for generating fake data such as names, addresses, and phone numbers
+  gem "knapsack_pro", "~> 1.22.2" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.85.1", require: false # Automatic Ruby code style checking tool
@@ -162,7 +163,7 @@ group :test do
   gem "timecop", "~> 0.9" # A gem providing "time travel" and "time freezing" capabilities, making it dead simple to test time-dependent code
   gem "vcr", "~> 6.0" # Record your test suite's HTTP interactions and replay them during future test runs for fast, deterministic, accurate tests
   gem "webdrivers", "~> 4.4" # Run Selenium tests more easily with install and updates for all supported webdrivers
-  gem "webmock", "~> 3.8" # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
+  gem "webmock", "~> 3.8", require: false # WebMock allows stubbing HTTP requests and setting expectations on HTTP requests
   gem "zonebie", "~> 0.6.1" # Runs your tests in a random timezone
 end
 

@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ActiveMembershipsSection /> should render and test snapshot 1`] = `
+<div
+  class="p-4 grid gap-2 crayons-card mb-4"
+>
+  <h3
+    class="mb-2 active_members"
+  >
+    Members
+  </h3>
+</div>
+`;

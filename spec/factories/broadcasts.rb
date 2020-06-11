@@ -65,7 +65,7 @@ FactoryBot.define do
     factory :announcement_broadcast do
       title          { "A Very Important Announcement" }
       type_of        { "Announcement" }
-      processed_html { "<div style='background-color: salmon;'><p style='width: 100%;'>Hello, World!</p></div>" }
+      processed_html { "<p>Hello, World!</p>" }
     end
   end
 end

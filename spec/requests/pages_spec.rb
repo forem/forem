@@ -19,7 +19,7 @@ RSpec.describe "Pages", type: :request do
 
     context "when json template" do
       let_it_be(:json_text) { "{\"foo\": \"bar\"}" }
-      let_it_be(:page) { create(:page, title: "sample_data", template: "json", body_html: json_text, body_markdown: nil) }
+      let_it_be(:page) { create(:page, title: "sample_data", template: "json", body_json: json_text, body_html: nil, body_markdown: nil) }
 
       before do
         page.save! # Trigger processing of page.body_html
