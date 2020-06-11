@@ -19,6 +19,8 @@ class Credit < ApplicationRecord
   end
 
   def self.add_to(user_or_org, amount)
+    return unless amount.positive?
+
     now = Time.current
     association_id = "#{user_or_org.class.name.underscore}_id"
     attributes = Array.new(amount) do
