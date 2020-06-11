@@ -44,9 +44,9 @@ If all of the jobs pass then we move on to Stage 2.
 ### Stage 2: Deploying
 
 If the build was kicked off from a pull request being created or updated this
-stage will do nothing. If the branch has been merged with master, then this
-stage will kick off a deploy. The deploy will run in its own job deploying our
-application to Heroku.
+stage will do nothing. If the branch has been merged into master with the
+`[deploy]` flag, then this stage will kick off a deploy. The deploy will run in
+its own job deploying our application to Heroku.
 
 Prior to deploying the code, Heroku will run database migrations, Elasticsearch
 updates, and do some final checks(more information below) to make sure
