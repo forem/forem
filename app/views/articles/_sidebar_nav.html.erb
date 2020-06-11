@@ -1,4 +1,4 @@
-<nav class="mb-6" id="sidebar-nav">
+<nav class="mb-6" id="sidebar-nav" aria-label="Primary sidebar nav">
   <% if user_signed_in? %>
     <a class="sidebar-profile" id="sidebar-profile" href="#">
       <img src="" class="sidebar-profile--avatar" id="sidebar-profile--avatar" alt="" width="48" height="48">
@@ -86,7 +86,7 @@
   </div>
 </nav>
 
-<nav class="sidebar-tags-browser mb-6 overflow-y-auto scrolling-touch">
+<nav class="sidebar-tags-browser mb-6 overflow-y-auto scrolling-touch" aria-label="Secondary sidebar nav">
   <% if user_signed_in? %>
     <header class="fs-xs color-base-50 ff-accent fw-bold p-2">MY TAGS</header>
     <div id="sidebar-nav-followed-tags" class="sidebar-nav-followed-tags"></div>

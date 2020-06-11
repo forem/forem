@@ -867,6 +867,7 @@ export default class Chat extends Component {
       e.stopPropagation();
 
       const { activeChannelId, activeChannel } = this.state;
+
       if (content.startsWith('chat_channels/')) {
         this.setActiveContentState(activeChannelId, {
           type_of: 'loading-user',
@@ -936,9 +937,14 @@ export default class Chat extends Component {
           fullscreenContent: mode,
           expanded: mode === null || window.innerWidth > 1600,
         });
+      } else if (target.dataset.content === 'chat_channel_setting') {
+        this.setActiveContent({
+          data: {},
+          type_of: 'chat-channel-setting',
+          activeMembershipId: activeChannel.id
+        });
       }
     }
-    document.getElementById('messageform').focus();
     return false;
   };
 
@@ -1050,7 +1056,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the 
+              abide by the
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
@@ -1062,7 +1068,7 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
+              You have joined
               {' '}
               {activeChannel.channel_name}
               ! All interactions
@@ -1071,7 +1077,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the 
+              abide by the
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
@@ -1717,6 +1723,7 @@ export default class Chat extends Component {
     this.toggleSearchShowing();
   };
 
+
   renderChannelHeaderInner = () => {
     const { activeChannel } = this.state;
     if (activeChannel.channel_type === 'direct') {
@@ -1732,9 +1739,9 @@ export default class Chat extends Component {
     }
     return (
       <a
-        href={`/chat_channel_memberships/${activeChannel.id}/edit`}
+        href='#/'
         onClick={this.triggerActiveContent}
-        data-content="sidecar-chat_channel_membership"
+        data-content="chat_channel_setting"
       >
         {activeChannel.channel_name}
       </a>
@@ -1753,12 +1760,8 @@ export default class Chat extends Component {
     const dataContent =
       activeChannel.channel_type === 'direct'
         ? 'sidecar-user'
-        : `sidecar-chat_channel_membership`;
+        : `chat_channel_setting`;
 
-    const path =
-      activeChannel.channel_type === 'direct'
-        ? `/${activeChannel.channel_username}`
-        : `/chat_channel_memberships/${activeChannel.id}/edit`;
 
     return (
       <a
@@ -1768,7 +1771,7 @@ export default class Chat extends Component {
           if (e.keyCode === 13) this.triggerActiveContent(e);
         }}
         tabIndex="0"
-        href={path}
+        href='#/'
         data-content={dataContent}
       >
         <img
