@@ -21,7 +21,7 @@ import ChatChannelMembershipSection from './ChatChannelMembershipSection';
 
 const snackZone = document.getElementById('snack-zone');
 
-render(<Snackbar lifespan="3" />, snackZone, null);
+render(<Snackbar lifespan="3" />, snackZone);
 
 export default class ChatChannelSettings extends Component {
   static propTypes = {
