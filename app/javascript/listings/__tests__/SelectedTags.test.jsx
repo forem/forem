@@ -22,7 +22,7 @@ describe('<SelectedTags />', () => {
   it('should render all the selected tags', () => {
     const { getByText } = renderSelectedTags();
     tags.forEach(tag => {
-      getByText(tag); //will error out so works as an expectation
+      getByText(tag); 
     });
   });
 
