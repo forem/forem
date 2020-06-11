@@ -33,10 +33,19 @@ env:
     - SECRET_KEY_BASE=dummydummydummy
     - GITHUB_KEY=dummy
     - GITHUB_SECRET=dummy
+    - KNAPSACK_PRO_FIXED_QUEUE_SPLIT=true
+    - KNAPSACK_PRO_LOG_LEVEL=info
+    - KNAPSACK_PRO_TEST_FILE_EXCLUDE_PATTERN="spec/services/rss_reader_spec.rb"
+    - KNAPSACK_PRO_CI_NODE_TOTAL=3
+    - COVERAGE_REPORTS_TOTAL=4
+  jobs:
+    - KNAPSACK_PRO_CI_NODE_INDEX=0
+    - KNAPSACK_PRO_CI_NODE_INDEX=1
+    - KNAPSACK_PRO_CI_NODE_INDEX=2
 branches:
   only:
     - master
-before_install:
+script:
   - date --rfc-3339=seconds
   - nvm install
   - pkill -9 -f elasticsearch || true
@@ -47,41 +56,43 @@ before_install:
   - echo -e '-XX:+DisableExplicitGC\n-Djdk.io.permissionsUseCanonicalPath=true\n-Dlog4j.skipJansi=true\n-server\n' | sudo tee -a /etc/elasticsearch/jvm.options
   - sudo chown -R elasticsearch:elasticsearch /etc/default/elasticsearch
   - sudo systemctl start elasticsearch
-install:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
   - bundle config set path 'vendor/bundle'
   - bundle install --local --jobs=2
   - yarn install --frozen-lockfile
-  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-    > ./cc-test-reporter
-  - chmod +x ./cc-test-reporter
-before_script:
   - bundle exec rails db:create
-script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - 'npx percy exec -- bundle exec rspec spec --color --tty --format progress'
+  - 'bundle exec rake knapsack_pro:rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
-  - './cc-test-reporter format-coverage -t simplecov -o coverage/codeclimate.simplecov.json'
-  - 'yarn test --colors'
-  - './cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json'
-  - './cc-test-reporter sum-coverage coverage/codeclimate.*.json'
-  - './cc-test-reporter upload-coverage'
-  - 'bundle exec bundle-audit check --update --ignore CVE-2015-9284'
-  - yarn build-storybook
-  - bundle exec rails runner -e production 'puts "App booted successfully"'
-deploy:
-  provider: heroku
-  api_key: '$HEROKU_AUTH_TOKEN'
-  app:
-    master: practicaldev
-  on:
-    condition: $TRAVIS_COMMIT_MESSAGE =~ \[deploy\]
-notifications:
-  slack:
-    if: branch = master
-    on_pull_requests: false
-    on_success: change
-    on_failure: always
-    rooms:
-      secure: vzIee4jDgPSRY4szZPdD/jW7YW4GzGqo5NoLV9Exz9TBoWH9UqJnc0TOb2YN84Ys5baRK7LOqxpfp8kFveZkrKGi7/ypeEJlpc9E5UqVh/bwQhvOGrKEg1fvNXbARRnO/sJ49o1CMvroMWvt3GurzuuY9Qu2r+3NBjn9aVwLnLzXsBuF+m2lLoeSkHnW13OC73EeJMsse6JBoCe3gp/srDwISp9+MU+sEAPaY333WK9Vk1kdG7D5oUIuT7743airLRiyWiNUCD1450g864628CEOEZKJAAtqk6kTmvwB91DJMnhD/XhMm4H21kd54YHy0fhqzcG8hYd1lDZuUfrOBfpdEtfnpcRwMyMpY+FPPHXkHhck3OiLJnzkV4L+Lr5W/RvDJ63Ye2nxT4hOItLWaoZWax/LhoIrhZjgYBc4JhiGRQJ8m2HzoRyceeG9Y80vayGVN7y46sjYHP5NHRI36qmJipneDRAJklBTXLdYATvVM/6Mh9B7+H/nBGR6UVJLBC/txi2C8rZRjKBZ/i9e+q/MZs0UEvOuvbz9BXKU08rI+rarJqH3h5Ji9G/k3M0mQ8EfvadabA9lu+gNUAAnq+vwLETweKvfbRpDQjVBKnWsOJoUl9aarfkBn3lhQE8fxZJT/GchLGZPx/CWUE4o1OhliBA9avJ7WINyYStM4Mc=
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json; fi
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then yarn build-storybook; fi
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bundle exec rails runner -e production 'puts "App booted successfully"'; fi
+  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bundle exec rspec spec/services/rss_reader_spec.rb; fi
+after_script:
+  - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
+  - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
+jobs:
+  include:
+    - stage: Deploy
+      script: skip
+      after_script: skip
+      deploy:
+        provider: heroku
+        api_key: '$HEROKU_AUTH_TOKEN'
+        app:
+          master: practicaldev
+        on:
+          condition: $TRAVIS_COMMIT_MESSAGE =~ \[deploy\]
+      notifications:
+        slack:
+          if: branch = master
+          on_pull_requests: false
+          on_success: change
+          on_failure: always
+          rooms:
+            secure: vzIee4jDgPSRY4szZPdD/jW7YW4GzGqo5NoLV9Exz9TBoWH9UqJnc0TOb2YN84Ys5baRK7LOqxpfp8kFveZkrKGi7/ypeEJlpc9E5UqVh/bwQhvOGrKEg1fvNXbARRnO/sJ49o1CMvroMWvt3GurzuuY9Qu2r+3NBjn9aVwLnLzXsBuF+m2lLoeSkHnW13OC73EeJMsse6JBoCe3gp/srDwISp9+MU+sEAPaY333WK9Vk1kdG7D5oUIuT7743airLRiyWiNUCD1450g864628CEOEZKJAAtqk6kTmvwB91DJMnhD/XhMm4H21kd54YHy0fhqzcG8hYd1lDZuUfrOBfpdEtfnpcRwMyMpY+FPPHXkHhck3OiLJnzkV4L+Lr5W/RvDJ63Ye2nxT4hOItLWaoZWax/LhoIrhZjgYBc4JhiGRQJ8m2HzoRyceeG9Y80vayGVN7y46sjYHP5NHRI36qmJipneDRAJklBTXLdYATvVM/6Mh9B7+H/nBGR6UVJLBC/txi2C8rZRjKBZ/i9e+q/MZs0UEvOuvbz9BXKU08rI+rarJqH3h5Ji9G/k3M0mQ8EfvadabA9lu+gNUAAnq+vwLETweKvfbRpDQjVBKnWsOJoUl9aarfkBn3lhQE8fxZJT/GchLGZPx/CWUE4o1OhliBA9avJ7WINyYStM4Mc=

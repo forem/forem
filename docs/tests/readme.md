@@ -44,7 +44,11 @@ about
 ## Continuous Integration & Continuous Deployment
 
 We are using Travis for CI and CD. Travis will run a build (in an isolated
-environment for testing) for every push to this repository.
+environment for testing) for every push to this repository. We also recently
+added [KnapsackPro](https://knapsackpro.com/) to our Travis CI setup.
+KnapsackPro allows us to split up our tests evenly between 3 different virtual
+machines. These 3 virtual machines all run in parallel which helps decrease the
+time needed to run all of our specs.
 
 Keep in mind that a passing build does not necessarily mean the project won't
 run into any issues. Strive to write good tests for the code you wish to
