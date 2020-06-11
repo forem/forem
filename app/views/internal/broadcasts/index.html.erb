@@ -31,7 +31,7 @@
           <p>
             <%= broadcast.processed_html %>
           </p>
-          <h3>Last Active: <%= broadcast.changed? ? broadcast.update(last_active_at: Time.zone.now) : broadcast.last_active_at %></h3>
+          <h3>Last Active: <%= broadcast.last_active_at %></h3>
           <h3>Status:</h3>
           <h3>
             <span class="badge badge-<%= broadcast.active? ? "success" : "warning" %>">

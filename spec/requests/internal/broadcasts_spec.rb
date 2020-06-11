@@ -55,6 +55,27 @@ RSpec.describe "/internal/broadcasts", type: :request do
       end
     end
 
+    describe "PUT /internal/broadcasts" do
+      let!(:broadcast) { create(:welcome_broadcast, active: false) }
+
+      it "updates the Broadcasts last_active_at timestamp" do
+        # broadcast = Broadcast.create!(type_of: "Welcome", title: "Hello", processed_html: "<h1>Hello, world!</h1>", active: false)
+        expect do
+          patch "/internal/broadcasts/#{broadcast.id}", params: { broadcast: { active: true } }
+          broadcast.reload
+          # broadcast.update!(active: true)
+          # patch "/internal/broadcasts/#{broadcast.id}", params: broadcast.update!(active: true)
+          # byebug
+          # post_resource
+          # end.to change(broadcast, :active).from(false).to(true)
+        end.to change { broadcast.reload.active }.to(true)
+        # end.to change { broadcast.reload.active }.to(true)
+        # end.to change { broadcast.reload.last_active_at }.to(Time.zone.now)
+        expect(broadcast.active.reload).to eq(true)
+        expect(broadcast.last_active_at).not_to eq(2.days.ago)
+      end
+    end
+
     describe "DELETE /internal/broadcasts/:id" do
       let!(:broadcast) { create(:welcome_broadcast) }
 
