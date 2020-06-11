@@ -12,23 +12,46 @@ deployed to production once the build steps complete successfully. The process
 currently takes about 20 minutes to complete and will need a few additional
 minutes before the change goes live.
 
-## Travis steps
+## Travis Stages
 
-The following steps can be explored in our
+The following stages can be explored in our
 [.travis.yml](https://github.com/thepracticaldev/dev.to/blob/master/.travis.yml)
 and [Procfile](https://github.com/thepracticaldev/dev.to/blob/master/Procfile).
-Some of the steps will be parallelized in the future:
+Our Travis CI process consists of 2 stages.
 
-1. Travis runs the test portion of Rails code.
-1. Travis runs the test portion of Preact code.
-1. CodeClimate-test-reporter combines the test result and coverage from Ruby and
-   JavaScript code then uploads it to our CodeClimate dashboard.
-1. `bundle-audit` checks for any known vulnerability.
-1. Travis builds Storybook to ensure its integrity.
-1. Travis deploys code to Heroku.
-   - Heroku runs the database migrations and Elasticsearch updates before
-     deployment.
-1. Travis notifies the team that the process completed.
+1. Running our test suite in 3 parallel jobs.
+2. Deploying the application if we have merged with the master branch and the
+   `[deploy]` flag is present in the merge commit.
+
+### Stage 1: Running Tests
+
+In stage 1 we use [KnapsackPro](https://knapsackpro.com/) to divide our Rspec
+tests evenly between 3 different jobs(virtual machines). This ensures that each
+job takes relatively the same amount of time to run. After running our Rspec
+tests, we then run a series of other checks. These additional checks are split
+up between the different jobs. Here is a list of those additional checks that
+are run.
+
+- Javascript and Preact tests and coverage checks are run in job 0
+- `bundle-audit` checks for any known vulnerabilities in job 1
+- Travis builds Storybook to ensure its integrity in job 1
+- Travis fires up a Rails console to ensure the application loads properly in
+  job 2
+- Any specs that have issues with KnapsackPro are run in job 2
+
+If all of the jobs pass then we move on to Stage 2.
+
+### Stage 2: Deploying
+
+If the build was kicked off from a pull request being created or updated this
+stage will do nothing. If the branch has been merged with master, then this
+stage will kick off a deploy. The deploy will run in its own job deploying our
+application to Heroku.
+
+Prior to deploying the code, Heroku will run database migrations, Elasticsearch
+updates, and do some final checks(more information below) to make sure
+everything is working as expected. If these all succeed, then the deploy
+completes and our team is notified.
 
 ## Deploying to Heroku
 
