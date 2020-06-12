@@ -1,57 +1,92 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import RequestedMembershipSection from '../ChatChannelSettings/RequestedMembershipSection';
 
-const data = {
-  requestedMemberships: [],
-  currentMembershipRole: 'mod',
-};
+function getEmptyMembershipRequestsData() {
+  return {
+    requestedMemberships: [],
+    currentMembershipRole: 'mod',
+  };
+}
 
-const membership = {
-  requestedMemberships: [
-    {
-      name: 'test user',
-      username: 'testusername',
-      user_id: '1',
-      membership_id: '2',
-      role: 'member',
-      status: 'requested',
-      image: '',
-    },
-  ],
-  membershipType: 'requested',
-  currentMembershipRole: 'mod',
-};
-
-const getRequestedMembershipSection = (membershipData) => (
-  <RequestedMembershipSection
-    requestedMemberships={membershipData.requestedMemberships}
-    currentMembershipRole={membershipData.currentMembershipRole}
-  />
-);
+function getMembershipData() {
+  return {
+    requestedMemberships: [
+      {
+        name: 'test user',
+        username: 'testusername',
+        user_id: '1',
+        membership_id: '2',
+        role: 'member',
+        status: 'requested',
+        image: '',
+      },
+    ],
+    membershipType: 'requested',
+    currentMembershipRole: 'mod',
+  };
+}
 
 describe('<RequestedMembershipSection />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getRequestedMembershipSection(data));
-    expect(tree).toMatchSnapshot();
+  it('should have no a11y violations when there are no requested memberships', async () => {
+    const {
+      requestedMemberships,
+      currentMembershipRole,
+    } = getEmptyMembershipRequestsData();
+    const { container } = render(
+      <RequestedMembershipSection
+        requestedMemberships={requestedMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
-  it('should have the elements', () => {
-    const context = shallow(getRequestedMembershipSection(data));
+  it('should have no a11y violations when there are requested memberships', async () => {
+    const { requestedMemberships, currentMembershipRole } = getMembershipData();
+    const { container } = render(
+      <RequestedMembershipSection
+        requestedMemberships={requestedMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
+    const results = await axe(container);
 
-    expect(context.find('.requested_memberships').exists()).toEqual(true);
+    expect(results).toHaveNoViolations();
   });
 
   it('should not render the membership list', () => {
-    const context = shallow(getRequestedMembershipSection(data));
+    const {
+      requestedMemberships,
+      currentMembershipRole,
+    } = getEmptyMembershipRequestsData();
+    const { getByText, queryByText } = render(
+      <RequestedMembershipSection
+        requestedMemberships={requestedMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
 
-    expect(context.find('.items-center').exists()).toEqual(false);
+    getByText('Joining Request');
+
+    expect(
+      queryByText('+', { selector: 'button[data-membership-id]' }),
+    ).toBeNull();
   });
 
   it('should render the membership list', () => {
-    const context = shallow(getRequestedMembershipSection(membership));
+    const { requestedMemberships, currentMembershipRole } = getMembershipData();
+    const { getByText } = render(
+      <RequestedMembershipSection
+        requestedMemberships={requestedMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
 
-    expect(context.find('.requested-member').exists()).toEqual(true);
+    getByText('Joining Request');
+    getByText('+', { selector: 'button[data-membership-id]' });
   });
 });
