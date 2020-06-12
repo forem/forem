@@ -1,5 +1,6 @@
 import { h, render } from 'preact';
-import { ModerationArticles } from '../moderationArticles/moderationArticles';
+import { ModerationArticles } from '../modCenter/moderationArticles';
+import { initializeModCenterFunctions } from '../modCenter/modCenter';
 
 function loadElement() {
   const root = document.getElementById('mod-index-list');
@@ -13,3 +14,4 @@ window.InstantClick.on('change', () => {
 });
 
 loadElement();
+initializeModCenterFunctions();
