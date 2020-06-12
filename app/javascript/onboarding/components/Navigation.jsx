@@ -24,7 +24,7 @@ class Navigation extends Component {
 
       stepsList.push(<span className={`dot ${active ? 'active' : ''}`} />);
     }
-    return <div className="stepper">{stepsList}</div>;
+    return <div data-testid="stepper" className="stepper">{stepsList}</div>;
   }
 
   /**
