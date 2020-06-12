@@ -9,7 +9,10 @@ const SettingsFrom = ({
   handleChannelDescriptionChanges,
 }) => {
   return (
-    <div className="crayons-card p-4 grid gap-2 mb-4 settings-section">
+    <div
+      data-testid="settings-form"
+      className="crayons-card p-4 grid gap-2 mb-4 settings-section"
+    >
       <h3>Channel Settings</h3>
       <div className="crayons-field">
         <label
