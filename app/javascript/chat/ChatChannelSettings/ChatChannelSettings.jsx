@@ -364,12 +364,14 @@ export default class ChatChannelSettings extends Component {
             showGlobalBadgeNotification={showGlobalBadgeNotification}
             handlePersonChatChennelSetting={this.handlePersonChatChennelSetting}
           />
-          <LeaveMembershipSection
-            currentMembershipRole={currentMembership.role}
-            handleleaveChatChannelMembership={
-              this.handleleaveChatChannelMembership
-            }
-          />
+          {currentMembership.role === 'member' && (
+            <LeaveMembershipSection
+              currentMembershipRole={currentMembership.role}
+              handleleaveChatChannelMembership={
+                this.handleleaveChatChannelMembership
+              }
+            />
+          )}
           {currentMembership.role === 'mod' && (
             <ModFaqSection email="yo@dev.to" />
           )}
