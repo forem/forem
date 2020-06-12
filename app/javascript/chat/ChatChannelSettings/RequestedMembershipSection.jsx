@@ -17,14 +17,13 @@ const RequestedMembershipSection = ({
       <h3 className="mb-2 requested_memberships">Joining Request</h3>
       {requestedMemberships && requestedMemberships.length > 0
         ? requestedMemberships.map((pendingMembership) => (
-          <Membership
-            membership={pendingMembership}
-            removeMembership={removeMembership}
-            chatChannelAcceptMembership={chatChannelAcceptMembership}
-            membershipType="requested"
-            currentMembershipRole={currentMembershipRole}
-            className="requested-member"
-          />
+            <Membership
+              membership={pendingMembership}
+              removeMembership={removeMembership}
+              chatChannelAcceptMembership={chatChannelAcceptMembership}
+              membershipType="requested"
+              currentMembershipRole={currentMembershipRole}
+            />
           ))
         : null}
     </div>
