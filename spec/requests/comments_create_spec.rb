@@ -159,12 +159,8 @@ RSpec.describe "CommentsCreate", type: :request do
       expect(Notification.where(user: comment_author).count).to eq 1
     end
 
-    def json_response
-      JSON.parse(response.body)
-    end
-
     def expect_request_to_be_successful
-      expect(json_response["error"]).to be_nil
+      expect(response.parsed_body["error"]).to be_nil
       expect(response).to be_successful
     end
   end
