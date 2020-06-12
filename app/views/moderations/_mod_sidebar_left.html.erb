@@ -4,15 +4,15 @@
   <div id="mod-center-inbox" class="mod-center-inbox">
     <% if @current_user_tags.any? %>
       <% @current_user_tags.each do |tag| %>
-        <a href="#" class="crayons-link crayons-link--block inbox-tags" data-tag-name="<%= tag %>">
+        <a href="<%= "#{URL.url}/mod/#{tag}" %>" class="crayons-link crayons-link--block inbox-tags" data-tag-name="<%= tag %>">
           # <%= tag %>
           <span id="<%= tag %>-indicator" class="crayons-indicator"></span>
         </a>
       <% end %>
     <% end %>
     <a
-      href="#"
-      class="crayons-link crayons-link--block crayons-link--current inbox-tags"
+      href="<%= "#{URL.url}/mod" %>"
+      class="crayons-link crayons-link--block inbox-tags"
       data-tag-name="All topics">
       All topics
     </a>

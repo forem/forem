@@ -1,31 +1,24 @@
-export function toggleInboxTags() {
-  const currentViewHeading = document.querySelector('.current-view-heading');
+export function highlightCurrentTag() {
+  // Grab content of current-view-heading
+  // trim any # signs
+  // loop through inbox tags, checking if the tag === current heading
+  // if equal, apply crayon-link--current class to that tag
+
+  const tagView = document
+    .querySelector('.tag-view')
+    .textContent.replace('#', '')
+    .trim();
   const inboxTags = Array.from(document.querySelectorAll('.inbox-tags'));
-  const tagHash = document.querySelector('.tag-hash');
 
-  const removeTagHighlights = (tags) => {
-    tags.forEach((tag) => {
-      tag.classList.remove('crayons-link--current');
-    });
-  };
-  const toggleTagHash = (tagName) => {
-    if (tagName === 'All topics') {
-      tagHash.classList.add('hidden');
-    } else {
-      tagHash.classList.remove('hidden');
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < inboxTags.length; i++) {
+    if (inboxTags[i].dataset.tagName === tagView) {
+      inboxTags[i].classList.add('crayons-link--current');
+      return;
     }
-  };
-
-  inboxTags.forEach((tag) => {
-    tag.addEventListener('click', () => {
-      removeTagHighlights(inboxTags);
-      tag.classList.add('crayons-link--current');
-      toggleTagHash(tag.dataset.tagName);
-      currentViewHeading.textContent = tag.dataset.tagName;
-    });
-  });
+  }
 }
 
 export function initializeModCenterFunctions() {
-  toggleInboxTags();
+  highlightCurrentTag();
 }
