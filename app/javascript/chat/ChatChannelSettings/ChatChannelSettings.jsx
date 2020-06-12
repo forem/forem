@@ -1,4 +1,4 @@
-import { h, Component, render } from 'preact';
+import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import {
@@ -11,7 +11,7 @@ import {
   leaveChatChannelMembership,
 } from '../actions/chat_channel_setting_actions';
 
-import { Snackbar, addSnackbarItem } from '../../Snackbar';
+import { addSnackbarItem } from '../../Snackbar';
 import ModSection from './ModSection';
 import PersonalSettings from './PersonalSetting';
 import LeaveMembershipSection from './LeaveMembershipSection';
@@ -45,8 +45,6 @@ export default class ChatChannelSettings extends Component {
 
   componentDidMount() {
     const { activeMembershipId } = this.state;
-
-    render(<Snackbar lifespan="3" />, document.getElementById('snack-zone'));
 
     getChannelDetails(activeMembershipId)
       .then((response) => {
