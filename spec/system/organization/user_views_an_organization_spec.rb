@@ -8,14 +8,14 @@ RSpec.describe "Organization index", type: :system do
     create_list(:article, 2, organization: organization)
   end
 
-  context "when user is unauthorized" do
+  context "when user does not follow organization" do
     context "when 2 articles" do
       before { visit "/#{organization.slug}" }
 
       it "shows the header", js: true do
         within("h1") { expect(page).to have_content(organization.name) }
         within("div.profile-details") do
-          expect(page).to have_button("+ FOLLOW")
+          expect(page).to have_button("Follow")
         end
       end
 
@@ -36,9 +36,11 @@ RSpec.describe "Organization index", type: :system do
     end
 
     context "when more articles" do
-      it "visits ok" do
+      it "visits ok", js: true, percy: true do
         create_list(:article, 3, organization: organization)
         visit "/#{organization.slug}"
+
+        Percy.snapshot(page, name: "Organization: /:organization_slug renders when user is not following org")
       end
     end
   end
@@ -53,8 +55,9 @@ RSpec.describe "Organization index", type: :system do
 
     it "shows the correct button", js: true do
       visit "/#{organization.slug}"
+
       within(".profile-details") do
-        expect(page).to have_button("✓ FOLLOWING")
+        expect(page).to have_button("Following")
       end
     end
   end

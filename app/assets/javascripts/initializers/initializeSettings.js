@@ -1,12 +1,10 @@
-'use strict';
-
-/* global timestampToLocalDateTime */
+/* global timestampToLocalDateTime InstantClick */
 
 function initializeSettings() {
   // highlights organization secret on click
   const settingsOrgSecret = document.getElementById('settings-org-secret');
   if (settingsOrgSecret) {
-    settingsOrgSecret.addEventListener('click', event => {
+    settingsOrgSecret.addEventListener('click', (event) => {
       event.target.select();
     });
   }
@@ -30,19 +28,14 @@ function initializeSettings() {
     );
   }
 
-  // asks for confirmation on activating pro membership
-  const createProForm = document.getElementById('new_pro_membership');
-  if (createProForm) {
-    createProForm.addEventListener('submit', event => {
-      event.preventDefault();
+  const mobilePageSelector = document.getElementById('mobile-page-selector');
 
-      // eslint-disable-next-line no-alert
-      if (window.confirm('Are you sure?')) {
-        event.target.submit();
-        return true;
-      }
+  if (mobilePageSelector) {
+    mobilePageSelector.addEventListener('change', (event) => {
+      const url = event.target.value;
 
-      return false;
+      InstantClick.preload(url);
+      InstantClick.display(url);
     });
   }
 }

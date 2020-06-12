@@ -1,0 +1,5 @@
+Description:
+    rails generate acts_as_follower
+
+    no need to specify a name after acts_as_follower as you can not change the model name from Follow
+    the acts_as_follower_migration file will be created in db/migrate

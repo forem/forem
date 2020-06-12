@@ -3,10 +3,10 @@ FactoryBot.define do
 
   factory :article do
     transient do
-      title { generate :title }
+      title { Faker::Food.dish }
       published { true }
       date { "01/01/2015" }
-      tags { Faker::Hipster.words(number: 4).join(", ") }
+      tags { "javascript, html, css" }
       canonical_url { Faker::Internet.url }
       with_canonical_url { false }
       with_main_image { true }
@@ -34,7 +34,7 @@ FactoryBot.define do
         ---
 
         #{Faker::Hipster.paragraph(sentence_count: 2)}
-        #{'{% tweet 1018911886862057472%}' if with_tweet_tag}
+        #{'{% tweet 1018911886862057472 %}' if with_tweet_tag}
         #{Faker::Hipster.paragraph(sentence_count: 1)}
         #{"\n\n---\n\n something \n\n---\n funky in the code? \n---\n That's nice" if with_hr_issue}
       HEREDOC

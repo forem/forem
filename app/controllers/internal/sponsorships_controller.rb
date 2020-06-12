@@ -15,7 +15,7 @@ class Internal::SponsorshipsController < Internal::ApplicationController
       flash[:notice] = "Sponsorship was successfully updated"
       redirect_to internal_sponsorships_path
     else
-      flash[:danger] = @sponsorship.errors.full_messages.join(", ")
+      flash[:danger] = @sponsorship.errors_as_sentence
       render action: :edit
     end
   end

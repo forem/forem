@@ -1,6 +1,7 @@
 ---
 title: Backend Guide
 items:
+  - audit-log.md
   - authentication.md
   - auth-twitter.md
   - auth-github.md

@@ -22,7 +22,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       index_keys = %w[
         type_of id title description cover_image readable_publish_date social_image
-        tag_list tags slug path url canonical_url comments_count positive_reactions_count
+        tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp user organization flare_tag
       ]
@@ -45,7 +45,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     context "without params" do
       it "returns json response" do
         get api_articles_path
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
 
       it "returns nothing if params state=all is not found" do
@@ -215,14 +215,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
     context "with state param" do
       it "returns fresh articles" do
-        article.update_columns(positive_reactions_count: 1, score: 1)
+        article.update_columns(public_reactions_count: 1, score: 1)
 
         get api_articles_path(state: "fresh")
         expect(response.parsed_body.size).to eq(1)
       end
 
       it "returns rising articles" do
-        article.update_columns(positive_reactions_count: 32, score: 1, featured_number: 2.days.ago.to_i)
+        article.update_columns(public_reactions_count: 32, score: 1, featured_number: 2.days.ago.to_i)
 
         get api_articles_path(state: "rising")
         expect(response.parsed_body.size).to eq(1)
@@ -235,7 +235,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "supports pagination" do
-        create_list(:article, 2, tags: "discuss", positive_reactions_count: 1, score: 1)
+        create_list(:article, 2, tags: "discuss", public_reactions_count: 1, score: 1)
 
         get api_articles_path(state: "fresh"), params: { page: 1, per_page: 2 }
         expect(response.parsed_body.length).to eq(2)
@@ -244,7 +244,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "sets the correct edge caching surrogate key" do
-        article.update_columns(positive_reactions_count: 1, score: 1)
+        article.update_columns(public_reactions_count: 1, score: 1)
 
         get api_articles_path(state: "fresh")
         expected_key = ["articles", article.record_key].to_set
@@ -280,7 +280,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       show_keys = %w[
         type_of id title description cover_image readable_publish_date social_image
-        tag_list tags slug path url canonical_url comments_count positive_reactions_count
+        tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp body_html body_markdown user organization flare_tag
       ]
@@ -371,20 +371,20 @@ RSpec.describe "Api::V0::Articles", type: :request do
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
 
         get me_api_articles_path, headers: headers
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
       it "returns proper response specification" do
         get me_api_articles_path, params: { access_token: access_token.token }
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
       it "returns success when requesting publiched articles with public token" do
         public_token = create(:doorkeeper_access_token, resource_owner: user, scopes: "public")
         get me_api_articles_path(status: :published), params: { access_token: public_token.token }
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
@@ -442,8 +442,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "POST /api/articles" do
-    let_it_be(:api_secret) { create(:api_secret) }
-    let_it_be(:user) { api_secret.user }
+    let(:api_secret) { create(:api_secret) }
+    let(:user) { api_secret.user }
 
     context "when unauthorized" do
       it "fails with no api key" do

@@ -31,6 +31,11 @@ RSpec.describe "UserSettings", type: :request do
         expect(response.body).to include("Style Customization")
       end
 
+      it "displays content on misc tab properly" do
+        get "/settings/misc"
+        expect(response.body).to include("Connect", "Languages", "Sponsors", "Announcements", "Export Content")
+      end
+
       it "displays content on RSS tab properly" do
         get "/settings/publishing-from-rss"
         title = "Publishing to #{ApplicationConfig['COMMUNITY_NAME']} from RSS"
@@ -188,6 +193,12 @@ RSpec.describe "UserSettings", type: :request do
       expect(user.reload.mod_roundrobin_notifications).to be(true)
     end
 
+    it "updates the users announcement display preferences" do
+      expect do
+        put "/users/#{user.id}", params: { user: { tab: "misc", display_announcements: 0 } }
+      end.to change { user.reload.display_announcements }.from(true).to(false)
+    end
+
     it "disables community-success notifications" do
       put "/users/#{user.id}", params: { user: { tab: "notifications", mod_roundrobin_notifications: 0 } }
       expect(user.reload.mod_roundrobin_notifications).to be(false)
@@ -274,7 +285,7 @@ RSpec.describe "UserSettings", type: :request do
   end
 
   describe "POST /users/update_twitch_username" do
-    before { login_as user }
+    before { sign_in user }
 
     it "updates twitch username" do
       post "/users/update_twitch_username", params: { user: { twitch_username: "anna_lightalloy" } }

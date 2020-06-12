@@ -15,6 +15,9 @@ variable :APP_PROTOCOL, :String, default: "http://"
 variable :COMMUNITY_COPYRIGHT_START_YEAR, :String, default: "2016"
 variable :COMMUNITY_NAME, :String, default: "DEV(local)"
 
+# Email related variables
+variable :DEFAULT_EMAIL, :String, default: "yo@dev.to"
+
 # Service timeout length
 variable :RACK_TIMEOUT_WAIT_TIMEOUT, :Integer, default: 100_000
 variable :RACK_TIMEOUT_SERVICE_TIMEOUT, :Integer, default: 100_000
@@ -46,15 +49,15 @@ variable :FORCE_SSL_IN_RAILS, :String, default: "not applicable in dev"
 # It's best if you have the following configured
 # for more development experience
 
-# Github for github related access
+# GitHub
 # (https://developer.github.com/v3/guides/basics-of-authentication/)
 variable :GITHUB_KEY, :String, default: ""
 variable :GITHUB_SECRET, :String, default: ""
 
-# Twitter for normal twitter access
-# (https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens)
-variable :TWITTER_KEY, :String, default: "Optional"
-variable :TWITTER_SECRET, :String, default: "Optional"
+# Twitter
+# (https://developer.twitter.com/en/docs/basics/authentication/oauth-2-0/application-only)
+variable :TWITTER_KEY, :String, default: ""
+variable :TWITTER_SECRET, :String, default: ""
 
 ################################################
 ######### Optional 3rd Party Services ##########
@@ -160,9 +163,6 @@ variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
 # For calling the Stack Exchange API
 # (https://api.stackexchange.com/docs)
 variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
-
-# For setting the IDs of the staff and welcoming users
-variable :STAFF_USER_ID, :Integer, default: 1
 
 group :production do
   variable :SECRET_KEY_BASE, :String

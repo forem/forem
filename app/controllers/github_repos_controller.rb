@@ -4,13 +4,12 @@ class GithubReposController < ApplicationController
 
   def index
     authorize GithubRepo
-
-    known_repositories_ids = current_user.github_repos.featured.distinct.pluck(:github_id_code)
+    known_repositories = current_user.github_repos.featured.distinct.to_a
 
     # NOTE: this will invoke autopaging, by issuing multiple calls to GitHub
     # to fetch all of the user's repositories. This could eventually become slow
-    @repos = fetch_repositories_from_github(known_repositories_ids)
-  rescue Octokit::Unauthorized => e
+    @repos = fetch_repositories_from_github(known_repositories)
+  rescue Github::Errors::Unauthorized => e
     render json: { error: "GitHub Unauthorized: #{e.message}", status: 401 }, status: :unauthorized
   end
 
@@ -38,26 +37,26 @@ class GithubReposController < ApplicationController
 
   private
 
-  # TODO: use Github::UserClient or something
-  def create_octokit_client
-    current_user_token = current_user.identities.where(provider: "github").last.token
-    Octokit::Client.new(access_token: current_user_token)
-  end
+  def fetch_repositories_from_github(known_repositories)
+    client = Github::OauthClient.for_user(current_user)
 
-  def fetch_repositories_from_github(known_repositories_ids)
-    client = create_octokit_client
-
-    client.repositories(visibility: :public).map do |repo|
-      repo.featured = known_repositories_ids.include?(repo.id)
+    repos = client.repositories(visibility: :public).map do |repo|
+      repo.featured = known_repositories.delete_if { |known| known.github_id_code == repo.id }.present?
       repo
-    end.sort_by(&:name)
+    end
+
+    # Remove pinned repositorioes that were removed from GH or are now private,
+    # since the user will not be able to remove them by themselves.
+    known_repositories.each(&:destroy)
+
+    repos.sort_by(&:name)
   end
 
   def fetch_repository_from_github(repository_id)
-    client = create_octokit_client
+    client = Github::OauthClient.for_user(current_user)
 
     client.repository(repository_id)
-  rescue Octokit::NotFound
+  rescue Github::Errors::NotFound
     nil
   end
 

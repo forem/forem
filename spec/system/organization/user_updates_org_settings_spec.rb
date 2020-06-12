@@ -32,6 +32,15 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
     )
   end
 
+  # TODO: Uncomment this spec when we decide to use percy again
+  xit "renders the page", js: true, percy: true do
+    visit "/settings/organization"
+    fill_in_org_form
+    click_button "Create Organization"
+
+    Percy.snapshot(page, name: "Settings: /settings/organization create organization")
+  end
+
   it "user creates an organization" do
     visit "/settings/organization"
     fill_in_org_form
@@ -47,6 +56,7 @@ RSpec.describe "Organization setting page(/settings/organization)", type: :syste
     visit "settings/organization"
     click_button("Make admin")
     page.driver.browser.switch_to.alert.accept
+
     expect(page).to have_text("#{user2.name} is now an admin.")
   end
 

@@ -6,7 +6,7 @@ json.array! @articles do |article|
     :description,
     :published_at,
     :comments_count,
-    :positive_reactions_count,
+    :public_reactions_count,
   )
 
   json.tag_list article.cached_tag_list

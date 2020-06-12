@@ -216,21 +216,12 @@ RSpec.describe "Dashboards", type: :request do
       end
     end
 
-    context "when user has a pro membership" do
-      it "shows page properly" do
-        create(:pro_membership, user: user)
-        sign_in user
-        get "/dashboard/pro"
-        expect(response.body).to include("pro")
-      end
-    end
-
     context "when user has pro permission and is an org admin" do
       it "shows page properly" do
         org = create :organization
         create(:organization_membership, user: user, organization: org, type_of_user: "admin")
         user.add_role(:pro)
-        login_as user
+        sign_in user
         get "/dashboard/pro/org/#{org.id}"
         expect(response.body).to include("pro")
       end

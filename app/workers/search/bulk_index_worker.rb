@@ -10,7 +10,9 @@ module Search
         where(id: ids).
         find_each.map(&:serialized_search_hash)
 
-      "Search::#{object_class}".constantize.bulk_index(data_hashes)
+      search_class = object_class.constantize::SEARCH_CLASS
+
+      search_class.bulk_index(data_hashes)
     end
   end
 end

@@ -77,7 +77,7 @@ module CacheBuster
     end
     TIMEFRAMES.each do |timestamp, interval|
       if Article.published.where("published_at > ?", timestamp).
-          order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
+          order("public_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
         bust("/top/#{interval}")
         bust("/top/#{interval}?i=i")
         bust("/top/#{interval}/?i=i")
@@ -100,7 +100,7 @@ module CacheBuster
       end
       TIMEFRAMES.each do |timestamp, interval|
         if Article.published.where("published_at > ?", timestamp).tagged_with(tag).
-            order("positive_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
+            order("public_reactions_count DESC").limit(3).pluck(:id).include?(article.id)
           bust("/top/#{interval}")
           bust("/top/#{interval}?i=i")
           bust("/top/#{interval}/?i=i")
@@ -170,15 +170,15 @@ module CacheBuster
     podcast_episode.purge_all
   end
 
-  def self.bust_classified_listings(classified_listing)
+  def self.bust_listings(listing)
     # we purge all listings as it's the wanted behavior with the following URL purging
-    classified_listing.purge_all
+    listing.purge_all
 
     bust("/listings")
     bust("/listings?i=i")
-    bust("/listings/#{classified_listing.category}/#{classified_listing.slug}")
-    bust("/listings/#{classified_listing.category}/#{classified_listing.slug}?i=i")
-    bust("/listings/#{classified_listing.category}")
+    bust("/listings/#{listing.category}/#{listing.slug}")
+    bust("/listings/#{listing.category}/#{listing.slug}?i=i")
+    bust("/listings/#{listing.category}")
   end
 
   def self.bust_user(user)

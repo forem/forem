@@ -10,10 +10,10 @@ class Internal::ArticlesController < Internal::ApplicationController
     @user_buffer_updates = BufferUpdate.where(status: "sent_direct", approver_user_id: current_user.id).where("created_at > ?", 24.hours.ago)
 
     case params[:state]
-    when /not\-buffered/
+    when /not-buffered/
       days_ago = params[:state].split("-")[2].to_f
       @articles = articles_not_buffered(days_ago)
-    when /top\-/
+    when /top-/
       months_ago = params[:state].split("-")[1].to_i.months.ago
       @articles = articles_top(months_ago)
     when "satellite"
@@ -54,7 +54,7 @@ class Internal::ArticlesController < Internal::ApplicationController
       where("published_at > ? OR crossposted_at > ?", days_ago.days.ago, days_ago.days.ago).
       includes(:user).
       limited_columns_internal_select.
-      order("positive_reactions_count DESC").
+      order("public_reactions_count DESC").
       page(params[:page]).
       per(50)
   end
@@ -64,7 +64,7 @@ class Internal::ArticlesController < Internal::ApplicationController
       where("published_at > ?", months_ago).
       includes(user: [:notes]).
       limited_columns_internal_select.
-      order("positive_reactions_count DESC").
+      order("public_reactions_count DESC").
       page(params[:page]).
       per(50)
   end

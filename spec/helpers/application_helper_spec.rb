@@ -159,9 +159,15 @@ RSpec.describe ApplicationHelper, type: :helper do
   end
 
   describe "#sanitize_and_decode" do
-    it "Sanitize and decode string" do
+    it "sanitize and decode string" do
       expect(helper.sanitize_and_decode("<script>alert('alert')</script>")).to eq("alert('alert')")
       expect(helper.sanitize_and_decode("&lt; hello")).to eq("< hello")
+    end
+  end
+
+  describe "#cloudinary" do
+    it "returns cloudinary-manipulated link" do
+      expect(helper.cloudinary(Faker::Placeholdit.image)).to start_with("https://res.cloudinary.com")
     end
   end
 end

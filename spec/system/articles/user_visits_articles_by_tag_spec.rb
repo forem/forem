@@ -5,7 +5,7 @@ RSpec.describe "User visits articles by tag", type: :system do
   let(:iot_tag) { create(:tag, name: "IoT") }
   let!(:func_tag) { create(:tag, name: "functional") }
 
-  let(:author) { create(:user) }
+  let(:author) { create(:user, profile_image: nil) }
   let!(:article) { create(:article, tags: "javascript, IoT", user: author, published_at: 2.days.ago, score: 5) }
   let!(:article2) { create(:article, tags: "functional", user: author, published_at: Time.current, score: 5) }
   let!(:article3) { create(:article, tags: "functional, javascript", user: author, published_at: 2.weeks.ago, score: 5) }
@@ -14,12 +14,14 @@ RSpec.describe "User visits articles by tag", type: :system do
     context "when 2 articles" do
       before { visit "/t/javascript" }
 
-      it "shows the header", js: true do
+      it "shows the header", js: true, percy: true, stub_elasticsearch: true do
+        Percy.snapshot(page, name: "Tags: logged out user")
+
         within("h1") { expect(page).to have_text("javascript") }
       end
 
-      it "shows the follow button", js: true do
-        within("h1") { expect(page).to have_button("+ FOLLOW") }
+      it "shows the follow button", js: true, stub_elasticsearch: true do
+        within("h1") { expect(page).to have_button("Follow") }
       end
 
       it "shows time buttons" do
@@ -42,8 +44,9 @@ RSpec.describe "User visits articles by tag", type: :system do
         end
       end
 
-      it "when user clicks 'week'" do
+      it "when user clicks 'week'", js: true, stub_elasticsearch: true do
         click_on "WEEK"
+
         within("#articles-list") do
           expect(page).to have_text(article.title)
           expect(page).not_to have_text(article3.title)
@@ -69,10 +72,11 @@ RSpec.describe "User visits articles by tag", type: :system do
       visit "/t/functional"
     end
 
-    it "shows the following button", js: true do
+    it "shows the following button", js: true, stub_elasticsearch: true do
+      # TODO: Add Percy snapshot?
       wait_for_javascript
 
-      within("h1") { expect(page).to have_button("✓ FOLLOWING") }
+      within("h1") { expect(page).to have_button("Following") }
     end
   end
 end

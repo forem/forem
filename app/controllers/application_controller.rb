@@ -36,7 +36,10 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user!
-    return if current_user
+    if current_user
+      Honeycomb.add_field("current_user_id", current_user.id)
+      return
+    end
 
     respond_to do |format|
       format.html { redirect_to "/enter" }
@@ -82,10 +85,6 @@ class ApplicationController < ActionController::Base
     response.headers["Cache-Control"] = "no-cache, no-store"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
-  end
-
-  def touch_current_user
-    current_user.touch
   end
 
   def rate_limit!(action)

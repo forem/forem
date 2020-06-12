@@ -1,6 +1,6 @@
 <h2>General Purpose URL Purge</h2>
 <p>For a page that should 404. This will purge the page via Fastly.</p>
-<p>Use the full path (<%= app_url('xyz') %>) or the relative path: (/xyz)</p>
+<p>Use the full path (<%= app_url("xyz") %>) or the relative path: (/xyz)</p>
 <div class="row m-3">
   <%= form_tag bust_cache_internal_tools_path do %>
     <div class="form-row">

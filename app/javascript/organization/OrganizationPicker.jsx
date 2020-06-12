@@ -2,7 +2,7 @@ import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { organizationPropType } from '../common-prop-types';
 
-const orgOptions = (organizations, organizationId) => {
+const orgOptions = (organizations, organizationId, emptyLabel) => {
   const orgs = organizations.map((organization) => {
     if (organizationId === organization.id) {
       return (
@@ -16,10 +16,10 @@ const orgOptions = (organizations, organizationId) => {
   const nullOrgOption =
     organizationId === null ? (
       <option value="" selected>
-        None
+        {emptyLabel}
       </option>
     ) : (
-      <option value="">None</option>
+      <option value="">{emptyLabel}</option>
     );
 
   return [nullOrgOption, ...orgs];
@@ -28,18 +28,26 @@ const orgOptions = (organizations, organizationId) => {
 export const OrganizationPicker = ({
   name,
   id,
+  className,
   organizations,
   organizationId,
   onToggle,
+  emptyLabel
 }) => (
-  <select name={name} id={id} onBlur={onToggle}>
-    {orgOptions(organizations, organizationId)}
+  <select name={name} id={id} className={className} onBlur={onToggle}>
+    {orgOptions(organizations, organizationId, emptyLabel)}
   </select>
 );
+
+OrganizationPicker.defaultProps = {
+  emptyLabel: "None"
+}
 
 OrganizationPicker.propTypes = {
   name: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
+  className: PropTypes.string.isRequired,
+  emptyLabel: PropTypes.string,
   onToggle: PropTypes.func.isRequired,
   organizationId: PropTypes.number.isRequired,
   organizations: PropTypes.arrayOf(organizationPropType).isRequired,

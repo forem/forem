@@ -202,7 +202,7 @@ exports[`<Article /> component should render a featured article for a video post
     <a
       class="crayons-story__video"
       href="/some-post/path"
-      style="background-image:url(/images/onboarding-background.png)"
+      style="background-image:url(/images/apple-icon.png)"
     >
       <span
         class="crayons-story__video__time"
@@ -1092,7 +1092,7 @@ exports[`<Article /> component should render a video article 1`] = `
     <a
       class="crayons-story__video"
       href="/some-post/path"
-      style="background-image:url(/images/onboarding-background.png)"
+      style="background-image:url(/images/apple-icon.png)"
     >
       <span
         class="crayons-story__video__time"
@@ -1276,7 +1276,7 @@ exports[`<Article /> component should render a video article with a flare tag 1`
     <a
       class="crayons-story__video"
       href="/some-post/path"
-      style="background-image:url(/images/onboarding-background.png)"
+      style="background-image:url(/images/apple-icon.png)"
     >
       <span
         class="crayons-story__video__time"

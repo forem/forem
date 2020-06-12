@@ -31,7 +31,7 @@ RSpec.describe "ImageUploads", type: :request do
 
       it "returns json" do
         post "/image_uploads", headers: headers
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
 
       it "provides a link" do
@@ -92,7 +92,7 @@ RSpec.describe "ImageUploads", type: :request do
 
       it "counts number of uploads in cache" do
         post "/image_uploads", headers: headers, params: { image: [image] }
-        expect(cache.read(cache_key).to_i).to eq(1)
+        expect(cache.read(cache_key, raw: true).to_i).to eq(1)
       end
 
       it "responds with HTTP 429 with too many uploads" do

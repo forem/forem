@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  resourcify
+
   include CloudinaryHelper
   include Searchable
   include Storext.model
@@ -57,7 +59,7 @@ class User < ApplicationRecord
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
-  has_many :classified_listings, dependent: :destroy
+  has_many :listings, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
@@ -90,7 +92,6 @@ class User < ApplicationRecord
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
 
   has_one :counters, class_name: "UserCounter", dependent: :destroy
-  has_one :pro_membership, dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -140,8 +141,9 @@ class User < ApplicationRecord
   validate :validate_feed_url, if: :feed_url_changed?
   validate :validate_mastodon_url
   validate :can_send_confirmation_email
+  validate :update_rate_limit
 
-  alias_attribute :positive_reactions_count, :reactions_count
+  alias_attribute :public_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
 
   scope :with_this_week_comments, lambda { |number|
@@ -166,7 +168,6 @@ class User < ApplicationRecord
   before_validation :set_config_input
   before_validation :downcase_email
   before_validation :check_for_username_change
-  before_destroy :destroy_empty_dm_channels, prepend: true
   before_destroy :destroy_follows, prepend: true
   before_destroy :unsubscribe_from_newsletters, prepend: true
 
@@ -290,8 +291,8 @@ class User < ApplicationRecord
   end
 
   def pro?
-    Rails.cache.fetch("user-#{id}/has_pro_membership", expires_in: 200.hours) do
-      pro_membership&.active? || has_role?(:pro)
+    Rails.cache.fetch("user-#{id}/has_pro_role", expires_in: 200.hours) do
+      has_role?(:pro)
     end
   end
 
@@ -300,7 +301,7 @@ class User < ApplicationRecord
   end
 
   def trusted
-    Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
+    @trusted ||= Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role? :trusted
     end
   end
@@ -461,6 +462,10 @@ class User < ApplicationRecord
     RateLimitChecker.new(self)
   end
 
+  def flipper_id
+    "User:#{id}"
+  end
+
   private
 
   def estimate_default_language
@@ -597,15 +602,6 @@ class User < ApplicationRecord
     score.to_i
   end
 
-  def destroy_empty_dm_channels
-    return if chat_channels.empty? ||
-      chat_channels.where(channel_type: "direct").empty?
-
-    empty_dm_channels = chat_channels.where(channel_type: "direct").
-      select { |chat_channel| chat_channel.messages.empty? }
-    empty_dm_channels.destroy_all
-  end
-
   def destroy_follows
     follower_relationships = Follow.followable_user(id)
     follower_relationships.destroy_all
@@ -623,5 +619,14 @@ class User < ApplicationRecord
     rate_limiter.check_limit!(:send_email_confirmation)
   rescue RateLimitChecker::LimitReached => e
     errors.add(:email, "confirmation could not be sent. #{e.message}")
+  end
+
+  def update_rate_limit
+    return unless persisted?
+
+    rate_limiter.track_limit_by_action(:user_update)
+    rate_limiter.check_limit!(:user_update)
+  rescue RateLimitChecker::LimitReached => e
+    errors.add(:base, "User could not be saved. #{e.message}")
   end
 end

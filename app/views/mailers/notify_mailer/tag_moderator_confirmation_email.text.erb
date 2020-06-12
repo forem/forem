@@ -1,18 +1,25 @@
 Hey <%= @user.name %>!
 
-Thanks for volunteering to be a <%= community_name %> tag moderator.  We’ve added you as a moderator for <%= tag_url(@tag) %>. You’re currently the only non-core <%= community_name %> member that’s moderating this tag. Over time, we’ll add additional mods to join you because we view moderation as a collaborative endeavor that benefits from the support of multiple people.
+Thanks for volunteering to be a <%= community_name %> tag moderator. We’ve added you as a moderator for <%= tag_url(@tag) %>. Note that your profile picture is now visible on this page.
 
-As a tag moderator, you are now able to:
-- Remove the tag if it’s been added to an irrelevant post.
-- Update the the tag sidebar
+As a tag moderator, you are able to:
 
-For details on how to access these features, visit our tag moderation page: <%= app_url("tag_moderation_url") %>.
+- Remove #<%= @tag %> if it’s been added to an irrelevant post.
+- Add #<%= @tag %> to posts if applicable.
+- Update the #<%= @tag %> tag landing page, including submission guidelines and design visible in the sidebar.
 
-To aid in communication, we’ve added you to a tag moderator <%= community_name %> Connect channel: <%= app_url("/connect/tag-moderators") %>.  You can use this channel to meet other tag moderators across site, and to coordinate with the <%= community_name %> team. When in doubt about how to exercise your new privileges, please ask!
+For details on all available features and how to access them, visit our tag moderation page.
 
-Tag moderation is still very much in beta, so we’ll be making adjustments and expanding features over time as we receive feedback.
+To aid in communication, we’ve added you to the following <%= community_name %> Connect channels:
 
-Thanks for volunteering your time to benefit the <%= community_qualified_name %>.
+- Tag Moderators <%= app_url("/connect/tag-moderators") %>
+- #<%= @tag %>
 
-Happy Coding!
-- <%= community_name %> Team
+You can use these channels to meet other tag moderators across the site and co-moderators within your tag while coordinating with the <%= community_name %> team. When in doubt about how to exercise your new privileges, please ask! If these Connect channels become too distracting, you can mute or leave any channel as you wish.
+
+Tag moderation is something we're continuously iterating on, so you can expect adjustments and expanding features over time as we receive feedback. We regularly send out a biweekly Mod Newsletter to keep mods up to date on these changes, so look out for it! Of course, don't hesitate to reach out to us at any moment if you have any feedback — feel free to write to <%= SiteConfig.email_addresses[:default] %> and share your thoughts.
+
+Thanks so much for volunteering your time to benefit the <%= community_qualified_name %>. We sincerely appreciate your help!
+
+Happy Modding!
+<%= community_name %> Team
