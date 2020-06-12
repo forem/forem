@@ -13,7 +13,13 @@ const RequestedMembershipSection = ({
   }
 
   return (
-    <div className="p-4 grid gap-2 crayons-card mb-4">
+    <div
+      data-testid="requested-memberships"
+      className="p-4 grid gap-2 crayons-card mb-4"
+      data-requested-count={
+        requestedMemberships ? requestedMemberships.length : 0
+      }
+    >
       <h3 className="mb-2 requested_memberships">Joining Request</h3>
       {requestedMemberships && requestedMemberships.length > 0
         ? requestedMemberships.map((pendingMembership) => (
