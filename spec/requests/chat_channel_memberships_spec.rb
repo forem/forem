@@ -20,9 +20,8 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       end
 
       it "return all details of chat channel" do
-        expect(response.status).to eq(200)
-        puts response.body.inspect
-        expect(JSON.parse(response.body)["result"].keys).to eq(%w[chat_channel memberships current_membership])
+        expect(response).to have_http_status(:ok)
+        expect(response.parsed_body["result"].keys).to eq(%w[chat_channel memberships current_membership])
       end
     end
 
