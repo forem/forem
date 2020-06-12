@@ -78,19 +78,22 @@ describe('<ActiveMembershipsSection />', () => {
       activeMemberships,
       currentMembershipRole,
     } = getEmptyMembershipData();
-    const { queryByTitle } = render(
+    const { getByTestId } = render(
       <ActiveMembershipsSection
         activeMemberships={activeMemberships}
         currentMembershipRole={currentMembershipRole}
       />,
     );
 
-    expect(queryByTitle('test user profile')).toBeNull();
+    // no users to be found
+    const activeMembershipsWrapper = getByTestId('active-memberships');
+
+    expect(Number(activeMembershipsWrapper.dataset.activeCount)).toEqual(0);
   });
 
   it('should render the membership list', () => {
     const { activeMemberships, currentMembershipRole } = getMembershipData();
-    const { getByTitle } = render(
+    const { getByTestId } = render(
       <ActiveMembershipsSection
         activeMemberships={activeMemberships}
         currentMembershipRole={currentMembershipRole}
@@ -99,6 +102,10 @@ describe('<ActiveMembershipsSection />', () => {
 
     // the other fields aren't necessary to test as this is handled in the
     // <Membership /> tests.
-    getByTitle('test user profile');
+    const activeMembershipsWrapper = getByTestId('active-memberships');
+
+    expect(
+      Number(activeMembershipsWrapper.dataset.activeCount),
+    ).toBeGreaterThanOrEqual(1);
   });
 });
