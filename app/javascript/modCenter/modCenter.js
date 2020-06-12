@@ -1,9 +1,4 @@
 export function highlightCurrentTag() {
-  // Grab content of current-view-heading
-  // trim any # signs
-  // loop through inbox tags, checking if the tag === current heading
-  // if equal, apply crayon-link--current class to that tag
-
   const tagView = document
     .querySelector('.tag-view')
     .textContent.replace('#', '')
