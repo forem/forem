@@ -74,7 +74,7 @@ class SiteConfig < RailsSettings::Base
 
   # Monetization
   field :payment_pointer, type: :string, default: "$ilp.uphold.com/24HhrUGG7ekn" # Experimental
-  field :shop_url, type: :string, default: "https://shop.dev.to"
+  field :shop_url, type: :string
 
   # Newsletter
   # <https://mailchimp.com/developer/>
