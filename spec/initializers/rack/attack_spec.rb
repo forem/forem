@@ -104,6 +104,10 @@ describe Rack::Attack, type: :request, throttle: true do
       sign_in user
     end
 
+    after do
+      Warden::Manager._on_request.clear
+    end
+
     it "throttles creating messages" do
       headers = { "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
       dif_headers = { "HTTP_FASTLY_CLIENT_IP" => "1.1.1.1" }
