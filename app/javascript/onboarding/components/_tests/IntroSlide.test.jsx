@@ -54,7 +54,7 @@ describe('IntroSlide', () => {
     expect(getByText(/terms and conditions/i).getAttribute('href')).toContain('/terms');
   });
 
-  it('it does not render a stepper', () => {
+  it('should not render a stepper', () => {
     const { queryByTestId } = renderIntroSlide();
     expect(queryByTestId('stepper')).toBeNull();
   });
