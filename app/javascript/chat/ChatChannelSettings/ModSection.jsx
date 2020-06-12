@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-import InviteForm from './InviateForm';
+import InviteForm from './InviteForm';
 import SettingsForm from './SettingsForm';
 
 const ModSection = ({
