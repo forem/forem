@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "Display Jobs Banner spec", type: :system, js: true do
+RSpec.describe "Display Jobs Banner spec", type: :system, js: true, stub_elasticsearch: true do
   before do
     allow(SiteConfig).to receive(:jobs_url).and_return("www.very_cool_jobs_website.com")
   end
