@@ -18,4 +18,14 @@ RSpec.describe Broadcast, type: :model do
     expect(inactive_broadcast).not_to be_valid
     expect(inactive_broadcast.errors.full_messages.join).to include("You can only have one active announcement broadcast")
   end
+
+  it "updates the Broadcasts last_active_at timestamp" do
+    Timecop.freeze(Time.current) do
+      current_time = Time.zone.now
+      broadcast = create(:welcome_broadcast, active: false)
+      expect(broadcast.last_active_at).to eq(2.days.ago)
+      broadcast.update(active: true)
+      expect(broadcast.last_active_at).to eq current_time
+    end
+  end
 end
