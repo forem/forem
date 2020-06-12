@@ -340,21 +340,23 @@ export default class ChatChannelSettings extends Component {
             requestedMemberships={requestedMemberships}
             chatChannelAcceptMembership={this.chatChannelAcceptMembership}
           />
-          <ModSection
-            invitationUsernames={invitationUsernames}
-            handleInvitationUsernames={this.handleInvitationUsernames}
-            handleChatChannelInvitations={this.handleChatChannelInvitations}
-            channelDescription={channelDescription}
-            handleDescriptionChange={this.handleDescriptionChange}
-            channelDiscoverable={channelDiscoverable}
-            handleChannelDiscoverableStatus={
-              this.handleChannelDiscoverableStatus
-            }
-            handleChannelDescriptionChanges={
-              this.handleChannelDescriptionChanges
-            }
-            currentMembershipRole={currentMembership.role}
-          />
+          {currentMembership.role === 'mod' && (
+            <ModSection
+              invitationUsernames={invitationUsernames}
+              handleInvitationUsernames={this.handleInvitationUsernames}
+              handleChatChannelInvitations={this.handleChatChannelInvitations}
+              channelDescription={channelDescription}
+              handleDescriptionChange={this.handleDescriptionChange}
+              channelDiscoverable={channelDiscoverable}
+              handleChannelDiscoverableStatus={
+                this.handleChannelDiscoverableStatus
+              }
+              handleChannelDescriptionChanges={
+                this.handleChannelDescriptionChanges
+              }
+              currentMembershipRole={currentMembership.role}
+            />
+          )}
           <PersonalSettings
             updateCurrentMembershipNotificationSettings={
               this.updateCurrentMembershipNotificationSettings
