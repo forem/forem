@@ -94,7 +94,7 @@ RSpec.describe "CommentsCreate", type: :request do
     end
   end
 
-  context "when there's a notification alredy for comment" do
+  context "when there's already a notification for comment" do
     around do |example|
       Sidekiq::Testing.inline!(&example)
     end
