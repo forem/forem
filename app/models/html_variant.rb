@@ -1,7 +1,7 @@
 class HtmlVariant < ApplicationRecord
   include CloudinaryHelper
 
-  GROUP_NAMES = %w[article_show_below_article_cta badge_landing_page campaign].freeze
+  GROUP_NAMES = %w[article_show_below_article_cta badge_landing_page campaign logged_out_home_page_splash].freeze
 
   validates :html, presence: true
   validates :name, uniqueness: true
