@@ -135,6 +135,8 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def onboarding_params
     %i[
+      onboarding_logo_image
+      onboarding_background_image
       onboarding_taskcard_image
       suggested_tags
       suggested_users

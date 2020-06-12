@@ -14,6 +14,8 @@ function renderPage() {
   const dataElement = document.getElementById('onboarding-container');
   const communityConfig = {
     communityName: dataElement.dataset.communityName,
+    communityLogo: dataElement.dataset.communityLogo,
+    communityBackground: dataElement.dataset.communityBackground,
     communityDescription: dataElement.dataset.communityDescription,
   };
   import('../onboarding/Onboarding')

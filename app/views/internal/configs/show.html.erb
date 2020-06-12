@@ -528,6 +528,38 @@
                      } %>
           <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
             <div class="form-group">
+              <%= f.label :onboarding_logo_image %>
+              <%= f.text_field :onboarding_logo_image,
+                               class: "form-control",
+                               value: SiteConfig.onboarding_logo_image,
+                               placeholder: "https://image.url" %>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_logo_image %>" />
+                </div>
+                <div class="col-12">
+                  <div class="alert alert-info"> Main onboarding display logo image </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <%= f.label :onboarding_background_image %>
+              <%= f.text_field :onboarding_background_image,
+                               class: "form-control",
+                               value: SiteConfig.onboarding_background_image,
+                               placeholder: "https://image.url" %>
+              <div class="row mt-2">
+                <div class="col-12">
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.onboarding_background_image %>" />
+                </div>
+                <div class="col-12">
+                  <div class="alert alert-info"> Background for onboarding splash page </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
               <%= f.label :onboarding_taskcard_image %>
               <%= f.text_field :onboarding_taskcard_image,
                                class: "form-control",

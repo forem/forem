@@ -12,7 +12,12 @@
   }
 </style>
 
-<div id="onboarding-container" data-community-name="<%= community_name %>" data-community-description="<%= SiteConfig.community_description %>">
+<div id="onboarding-container"
+  data-community-name="<%= community_name %>"
+  data-community-description="<%= SiteConfig.community_description %>"
+  data-community-logo="<%= cloudinary SiteConfig.onboarding_logo_image %>"
+  data-community-background="<%= cloudinary SiteConfig.onboarding_background_image %>"
+>
   <%= javascript_packs_with_chunks_tag "Onboarding", defer: true %>
 </div>
 
