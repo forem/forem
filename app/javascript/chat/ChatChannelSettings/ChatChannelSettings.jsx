@@ -370,7 +370,9 @@ export default class ChatChannelSettings extends Component {
               this.handleleaveChatChannelMembership
             }
           />
-          <ModFaqSection currentMembershipRole={currentMembership.role} />
+          {currentMembership.role === 'mod' && (
+            <ModFaqSection email="yo@dev.to" />
+          )}
         </div>
       </div>
     );
