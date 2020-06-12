@@ -18,9 +18,9 @@ RSpec.describe "Onboardings", type: :request do
     it "contains proper data attribute keys" do
       sign_in user
       get onboarding_url
-      expect(response.body).to include("community-description")
-      expect(response.body).to include("community-logo")
-      expect(response.body).to include("community-background")
+      expect(response.body).to include("data-community-description")
+      expect(response.body).to include("data-community-logo")
+      expect(response.body).to include("data-community-background")
       expect(response.body).to include("data-community-name")
     end
 
