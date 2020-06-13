@@ -1,0 +1,108 @@
+import { h } from 'preact';
+import { render, fireEvent, waitForElement } from '@testing-library/preact';
+import { axe } from 'jest-axe';
+import fetch from 'jest-fetch-mock';
+import '@testing-library/jest-dom';
+
+import ProfileForm from '../ProfileForm';
+global.fetch = fetch;
+
+describe('ProfileForm', () => {
+  const renderProfileForm = () => render(
+    <ProfileForm
+      next={jest.fn()}
+      prev={jest.fn()}
+      currentSlideIndex={2}
+      communityConfig={{
+        communityName: 'Community Name',
+        communityDescription: 'Some community description',
+      }}
+      previousLocation={null}
+    />
+  );
+
+  const getUserData = () =>
+    JSON.stringify({
+      followed_tag_names: ['javascript'],
+      profile_image_90: 'mock_url_link',
+      name: 'firstname lastname',
+      username: 'username',
+    });
+
+  beforeEach(() => {
+    document.head.innerHTML = '<meta name="csrf-token" content="some-csrf-token" />';
+    document.body.setAttribute('data-user', getUserData());
+  });
+
+  it('should load the appropriate title and subtitle', () => {
+    const { getByTestId, getByText } = renderProfileForm();
+    expect(getByText(/Build your profile/i));
+    expect(getByTestId('onboarding-profile-subtitle')).toHaveTextContent(/Tell us a little bit about yourself — this is how others will see you on Community Name. You’ll always be able to edit this later in your Settings./i);
+  });
+
+  it('should show the correct name and username', () => {
+    const { getByText } = renderProfileForm();
+    getByText('username');
+    getByText('firstname lastname');
+  });
+
+  it('should show the correct profile picture', () => {
+    const { getByAltText } = renderProfileForm();
+    const img = getByAltText('profile');
+    expect(img).toHaveAttribute('src');
+    expect(img.getAttribute('src')).toEqual('mock_url_link');
+  });
+
+  it('shows the correct input with a label', () => {
+    const { getByLabelText } = renderProfileForm();
+
+    const bioInput = getByLabelText(/Bio/i);
+    expect(bioInput.getAttribute('placeholder')).toEqual('Tell us about yourself');
+
+    const locationInput = getByLabelText(/Where are you located/i);
+    expect(locationInput.getAttribute('type')).toEqual('text')
+    expect(locationInput.getAttribute('placeholder')).toEqual('e.g. New York, NY');
+    expect(locationInput.getAttribute('maxLength')).toEqual('60');
+
+    const employmentInput = getByLabelText(/What is your title/i);
+    expect(employmentInput.getAttribute('type')).toEqual('text')
+    expect(employmentInput.getAttribute('placeholder')).toEqual('e.g. Software Engineer');
+    expect(employmentInput.getAttribute('maxLength')).toEqual('60');
+
+    const employerName = getByLabelText(/Where do you work/i);
+    expect(employerName.getAttribute('type')).toEqual('text')
+    expect(employerName.getAttribute('placeholder')).toEqual('e.g. Company name, self-employed, etc.');
+    expect(employerName.getAttribute('maxLength')).toEqual('60');
+  });
+
+  it('should render a stepper', () => {
+    const { getByTestId } = renderProfileForm();
+    expect(getByTestId('stepper')).toBeTruthy();
+  });
+
+  it('should show the back button', () => {
+    const { getByTestId } = renderProfileForm();
+    expect(getByTestId('back-button')).toBeTruthy();
+  });
+
+  it('should update the text on the forward button', async () => {
+    const { getByLabelText, getByText, queryByText } = renderProfileForm();
+
+    let bioInput = getByLabelText(/Bio/i);
+
+    expect(bioInput.value).toEqual('');
+    getByText(/skip for now/i);
+    expect(queryByText(/continue/i)).toBeNull();
+
+    fireEvent.keyDown(bioInput, {
+      key: 'Enter',
+      keyCode: 13,
+      which: 13,
+      target: { value: 'Some biography' },
+    });
+
+    // FIX: the continue button should have been shown
+    bioInput = await waitForElement(() => getByLabelText(/Bio/i), getByText(/continue/i));
+    expect(bioInput.value).toEqual('Some biography');
+  });
+});
