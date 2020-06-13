@@ -47,42 +47,47 @@ function initializeCommentDropdown() {
     document.execCommand('copy');
   }
 
-  function copyText(text, callback, fallback) {
-    if (isNativeAndroidDevice()) {
-      AndroidBridge.copyToClipboard(text);
-      callback();
-    } else if (isClipboardSupported()) {
-      navigator.clipboard.writeText(text)
-        .then(() => {
-          callback();
-        })
-        .catch((err) => {
-          fallback();
-        });
-    } else {
-      fallback();
-    }
+  function copyText(text) {
+    return new Promise((resolve, reject) => {
+      if (isNativeAndroidDevice()) {
+        AndroidBridge.copyToClipboard(text);
+        resolve();
+      } else if (isClipboardSupported()) {
+        navigator.clipboard.writeText(text)
+          .then(() => {
+            resolve();
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      } else {
+        reject();
+      }
+    });
   }
 
   function copyPermalink(event) {
     var origin = window.location.origin;
     var permalink = origin + event.target.getAttribute("data-permalink");
 
-    copyText(permalink, () => {}, () => {
-      event.clipboardData.setData("text/plain", permalink);
-      execCopyText();
-    });
+    copyText(permalink)
+      .catch(err => {
+        event.clipboardData.setData("text/plain", permalink);
+        execCopyText();
+      });
   }
 
   function copyArticleLink() {
     const inputValue = document.getElementById('article-copy-link-input').value;
 
-    copyText(inputValue, () => {
-      showAnnouncer();
-    }, () => {
-      showAnnouncer();
-      execCopyText();
-    });
+    copyText(inputValue)
+      .then(() => {
+        showAnnouncer();
+      })
+      .catch(err => {
+        showAnnouncer();
+        execCopyText();
+      });
   }
 
   function shouldCloseDropdown(event) {
