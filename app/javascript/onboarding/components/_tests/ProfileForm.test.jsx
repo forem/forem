@@ -29,7 +29,7 @@ describe('ProfileForm', () => {
       username: 'username',
     });
 
-  beforeEach(() => {
+  beforeAll(() => {
     document.head.innerHTML = '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
   });
@@ -88,8 +88,8 @@ describe('ProfileForm', () => {
   it('should update the text on the forward button', async () => {
     const { getByLabelText, getByText, queryByText } = renderProfileForm();
 
-    let bioInput = getByLabelText(/Bio/i);
-
+    // input the bio
+    const bioInput = getByLabelText(/Bio/i);
     expect(bioInput.value).toEqual('');
     getByText(/skip for now/i);
     expect(queryByText(/continue/i)).toBeNull();
@@ -100,9 +100,24 @@ describe('ProfileForm', () => {
       which: 13,
       target: { value: 'Some biography' },
     });
-
-    // FIX: the continue button should have been shown
-    bioInput = await waitForElement(() => getByLabelText(/Bio/i), getByText(/continue/i));
     expect(bioInput.value).toEqual('Some biography');
+
+    // input the location too (since we're using firevent and it doesn't call the focus events
+    // that will trigger the continue )
+    let locationInput = getByLabelText(/Where are you located/i);
+    expect(locationInput.value).toEqual('');
+    fireEvent.keyDown(locationInput, {
+      key: 'Enter',
+      keyCode: 13,
+      which: 13,
+      target: { value: 'Some location' },
+    });
+
+    locationInput = await waitForElement(() => getByLabelText(/Where are you located/i),);
+
+    expect(locationInput.value).toEqual('Some location')
+
+    // TODO: test that the button changes to continue
+    // await waitForElement(() => getByText(/continue/i));
   });
 });

@@ -13,7 +13,8 @@ describe('FollowUsers', () => {
     <FollowUsers
       next={jest.fn()}
       prev={jest.fn()}
-      currentSlideIndex={4}
+      currentSlideIndex={3}
+      slidesCount={4}
       communityConfig={{
         communityName: 'Community Name',
         communityDescription: 'Some community description',

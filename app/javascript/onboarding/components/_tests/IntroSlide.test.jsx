@@ -14,6 +14,7 @@ describe('IntroSlide', () => {
       next={jest.fn()}
       prev={jest.fn()}
       currentSlideIndex={0}
+      slidesCount={4}
       communityConfig={{
         communityName: 'Community Name',
         communityDescription: 'Some community description',
@@ -38,8 +39,8 @@ describe('IntroSlide', () => {
   it('should load the appropriate welcome text', () => {
     const { getByTestId, getByText } = renderIntroSlide();
 
-    expect(getByTestId('onboarding-introduction-title')).toHaveTextContent(/firstname lastname— welcome to Community Name!/i)
-    getByText('Some community description')
+    expect(getByTestId('onboarding-introduction-title')).toHaveTextContent(/firstname lastname— welcome to Community Name!/i);
+    getByText('Some community description');
   });
 
   it('should link to the code of conduct', () => {
@@ -57,6 +58,11 @@ describe('IntroSlide', () => {
   it('should not render a stepper', () => {
     const { queryByTestId } = renderIntroSlide();
     expect(queryByTestId('stepper')).toBeNull();
+  });
+
+  it('should not render a back button', () => {
+    const { queryByTestId } = renderIntroSlide();
+    expect(queryByTestId('back-button')).toBeNull();
   });
 
   it('should enable the button if required boxes are checked', async () => {

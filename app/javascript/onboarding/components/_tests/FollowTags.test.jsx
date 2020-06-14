@@ -14,6 +14,7 @@ describe('FollowTags', () => {
       next={jest.fn()}
       prev={jest.fn()}
       currentSlideIndex={1}
+      slidesCount={4}
       communityConfig={{
         communityName: 'Community Name',
         communityDescription: 'Some community description',
