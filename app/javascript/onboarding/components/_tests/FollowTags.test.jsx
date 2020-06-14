@@ -1,6 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement, waitFor, fireEvent } from '@testing-library/preact';
-import { axe } from 'jest-axe';
+import { render, waitForElement } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
@@ -14,7 +13,7 @@ describe('FollowTags', () => {
       next={jest.fn()}
       prev={jest.fn()}
       currentSlideIndex={1}
-      slidesCount={4}
+      slidesCount={5}
       communityConfig={{
         communityName: 'Community Name',
         communityDescription: 'Some community description',
@@ -77,7 +76,7 @@ describe('FollowTags', () => {
 
   it('should update the navigation button text, follow status and count when you follow a tag', async () => {
     fetch.mockResponse(fakeTagsResponse);
-    const { getByText, findByText, getByTestId } = renderFollowTags();
+    const { getByText, findByText, findAllByText, getByTestId } = renderFollowTags();
 
     const followButtons = await waitForElement(() =>
       findAllByText('Follow'),

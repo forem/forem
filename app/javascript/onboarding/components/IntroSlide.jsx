@@ -102,7 +102,7 @@ class IntroSlide extends Component {
     }
 
     return (
-      <div data-test-id="onboarding-intro-slide" className="onboarding-main introduction crayons-modal crayons-modal--m">
+      <div data-testid="onboarding-intro-slide" className="onboarding-main introduction crayons-modal crayons-modal--m">
         <div className="crayons-modal__box overflow-auto">
           <div className="onboarding-content">
             <figure>

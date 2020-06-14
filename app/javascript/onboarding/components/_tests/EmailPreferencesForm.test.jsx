@@ -1,8 +1,6 @@
 import { h } from 'preact';
-import { render, waitForElement } from '@testing-library/preact';
-import { axe } from 'jest-axe';
+import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
-import '@testing-library/jest-dom';
 
 import EmailPreferencesForm from '../EmailPreferencesForm';
 

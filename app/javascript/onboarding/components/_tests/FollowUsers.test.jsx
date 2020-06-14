@@ -1,6 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement, waitFor, fireEvent } from '@testing-library/preact';
-import { axe } from 'jest-axe';
+import { render, waitForElement } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
@@ -14,7 +13,7 @@ describe('FollowUsers', () => {
       next={jest.fn()}
       prev={jest.fn()}
       currentSlideIndex={3}
-      slidesCount={4}
+      slidesCount={5}
       communityConfig={{
         communityName: 'Community Name',
         communityDescription: 'Some community description',
@@ -58,10 +57,6 @@ describe('FollowUsers', () => {
   it('should render the correct users', async () => {
     fetch.mockResponseOnce(fakeUsersResponse);
     const { findByText} = renderFollowUsers();
-
-    // const onboardingUsers = await findByTestId('onboarding-users');
-    // debug(onboardingUsers)
-    // QUESTION: why doesnt this show the inside divs with the users
 
     const user1 = await findByText(/Ben Halpern/i);
     const user2 = await findByText(/Krusty the Clown/i);

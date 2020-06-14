@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import { render, waitForElement } from '@testing-library/preact';
-import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
@@ -14,7 +13,7 @@ describe('IntroSlide', () => {
       next={jest.fn()}
       prev={jest.fn()}
       currentSlideIndex={0}
-      slidesCount={4}
+      slidesCount={5}
       communityConfig={{
         communityName: 'Community Name',
         communityDescription: 'Some community description',

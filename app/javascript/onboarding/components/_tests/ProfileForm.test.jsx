@@ -1,6 +1,5 @@
 import { h } from 'preact';
 import { render, fireEvent, waitForElement } from '@testing-library/preact';
-import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
@@ -13,6 +12,7 @@ describe('ProfileForm', () => {
       next={jest.fn()}
       prev={jest.fn()}
       currentSlideIndex={2}
+      slidesCount={5}
       communityConfig={{
         communityName: 'Community Name',
         communityDescription: 'Some community description',
