@@ -88,9 +88,9 @@ describe('FollowTags', () => {
     button.click();
     // fireEvent.click(button); //thought the alternate may work
 
-    // it should change to Followed
-    const FollowedButton = await waitForElement(() => {
-      findByText('Followed');
+    // it should change to Following
+    const followedButton = await waitForElement(() => {
+      findByText('Following'),
     });
 
     // FIX: this test should ahve showed the Follow button
