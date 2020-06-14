@@ -50,7 +50,7 @@ describe('<ImageUploader />', () => {
     getByDisplayValue(/fake-link.jpg/i);
   });
 
-  // 'Copied!' is always in the DOM, and so we cannot test that the visual implications of the copy when clicking on the copy icon
+  // TODO: 'Copied!' is always in the DOM, and so we cannot test that the visual implications of the copy when clicking on the copy icon
 
   it('displays an error when one occurs', async () => {
     const error = 'Some error message';
