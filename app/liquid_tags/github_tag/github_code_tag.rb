@@ -146,7 +146,7 @@ class GithubTag
     end
 
     def raise_error
-      raise StandardError, "Invalid Github link"
+      raise StandardError, "Invalid GitHub link"
     end
 
     def token
