@@ -10,7 +10,7 @@ module Redcarpet
         lexer =
           begin
             # add fix to handle language with upper case
-            Rouge::Lexer.find_fancy((language.to_s.downcase), code)
+            Rouge::Lexer.find_fancy language.to_s.downcase, code
           rescue Rouge::Guesser::Ambiguous => e
             e.alternatives.first
           end
