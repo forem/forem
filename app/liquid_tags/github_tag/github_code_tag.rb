@@ -21,6 +21,8 @@ class GithubTag
       )
     end
 
+    private
+
     def parse_link(link)
       link = sanitize_link(link)
       link.split(" ").first.delete(" ")
@@ -34,7 +36,7 @@ class GithubTag
       repo_name = repo_details[1]
       ref_name = repo_details[3]
 
-      file_link = repo_details[4..-1].join("/").split("#")
+      file_link = repo_details[4..].join("/").split("#")
 
       {
         user_name: user_name,
@@ -46,16 +48,16 @@ class GithubTag
 
     def get_file_info(file_link)
       file_path = file_link[0]
-      file_type = file_path[file_path.rindex(".") + 1..-1]
+      file_type = file_path[file_path.rindex(".") + 1..]
 
       line_info = file_link[1].split("-")
 
       raise_line_number_error unless line_info[0][0] == "L"
       raise_line_number_error unless line_info.length == 1 || line_info[1][0] == "L"
 
-      start_line = Integer(line_info[0][1..-1])
+      start_line = Integer(line_info[0][1..])
       end_line = if line_info.length > 1
-                   Integer(line_info[1][1..-1])
+                   Integer(line_info[1][1..])
                  end
 
       unless end_line.nil?
@@ -127,8 +129,6 @@ class GithubTag
         line_info: build_line_info(file_info)
       }
     end
-
-    private
 
     def get_original_link(link)
       link = ActionController::Base.helpers.strip_tags(link)
