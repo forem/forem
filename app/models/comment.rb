@@ -55,6 +55,7 @@ class Comment < ApplicationRecord
 
   after_commit :calculate_score, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
+  after_commit :send_web_mentions, on: %i[create update]
 
   after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
 
@@ -313,5 +314,9 @@ class Comment < ApplicationRecord
 
   def parent_exists?
     parent_id && Comment.exists?(id: parent_id)
+  end
+
+  def send_web_mentions
+    WebMentions::SendWebMention.perform_async(id)
   end
 end
