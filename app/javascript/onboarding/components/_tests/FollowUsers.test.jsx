@@ -91,7 +91,7 @@ describe('FollowUsers', () => {
     const firstUser = userButtons[0];
     firstUser.click();
 
-    let following = await waitForElement(() =>
+    await waitForElement(() =>
       findByText('Following'),
     );
 

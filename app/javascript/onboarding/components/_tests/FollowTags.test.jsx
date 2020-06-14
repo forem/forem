@@ -51,7 +51,7 @@ describe('FollowTags', () => {
     },
   ]);
 
-  beforeEach(async () => {
+  beforeAll(() => {
     document.head.innerHTML = '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
   });
@@ -74,37 +74,25 @@ describe('FollowTags', () => {
     getByText(/skip for now/i);
   });
 
-  it('should update the button text when you click on follow', async () => {
+  it('should update the navigation button text, follow status and count when you follow a tag', async () => {
     fetch.mockResponse(fakeTagsResponse);
-    const { getByText, findAllByText, findByText, getByTestId, debug } = renderFollowTags();
+    const { getByText, findByText, getByTestId } = renderFollowTags();
 
     const followButtons = await waitForElement(() =>
       findAllByText('Follow'),
     );
+    findByText(/skip for now/);
 
     // click on the first follow button
     const button = followButtons[0];
-    debug(button);
     button.click();
-    // fireEvent.click(button); //thought the alternate may work
 
-    // it should change to Following
-    const followedButton = await waitForElement(() => {
-      findByText('Following'),
-    });
-
-    // FIX: this test should ahve showed the Follow button
-  });
-
-  xit('should update the count of tags selected', async () => {
-  });
-
-  xit('should update the text on the forward button', async () => {
-    fetch.mockResponse(fakeTagsResponse);
-    const { getByText, findAllByText, findByText, getByTestId, debug } = renderFollowTags();
-    findByText(/skip for now/);
-
-    // TODO: after the first follow it should update the text to continue
+    // it should change to Following and update the count
+    await waitForElement(() =>
+      findByText(/Following/i),
+    );
+    getByText(/1 tag selected/i);
+    getByText(/continue/i);
   });
 
   it('should render a stepper', () => {
@@ -112,4 +100,8 @@ describe('FollowTags', () => {
     getByTestId('stepper');
   });
 
+  it('should render a back button', () => {
+    const { getByTestId } = renderFollowTags();
+    getByTestId('back-button');
+  });
 });
