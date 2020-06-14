@@ -133,6 +133,7 @@ export class ImageUploader extends Component {
         >
           Upload image
           <input
+            data-testid="upload-image"
             type="file"
             id="image-upload-field"
             onChange={this.handleInsertionImageUpload}
@@ -141,6 +142,7 @@ export class ImageUploader extends Component {
             accept="image/*"
             data-max-file-size-mb="25"
             tabIndex="-1"
+            aria-label="Upload an image"
           />
         </Button>
 
