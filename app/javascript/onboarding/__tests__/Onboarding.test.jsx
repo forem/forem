@@ -26,6 +26,7 @@ describe('<Onboarding />', () => {
       name: 'firstname lastname',
       username: 'username',
     });
+  const fakeEmptyResponse = JSON.stringify([]);
   const { location } = window;
 
   beforeAll(() => {
@@ -49,7 +50,7 @@ describe('<Onboarding />', () => {
     const { getByTestId, getByText } = renderOnboarding();
     getByTestId('onboarding-intro-slide');
 
-    fetch.once({});
+    fetch.mockResponseOnce({});
     const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
     codeOfConductCheckbox.click();
     const termsCheckbox = getByTestId('checked-terms-and-conditions');
@@ -59,6 +60,8 @@ describe('<Onboarding />', () => {
     const nextButton = await waitForElement(() =>
       getByText(/continue/i),
     );
+
+    fetch.mockResponse(fakeEmptyResponse);
     nextButton.click();
 
     // we should be on the Follow tags step
@@ -80,7 +83,7 @@ describe('<Onboarding />', () => {
     const { getByTestId, getByText } = renderOnboarding();
     getByTestId('onboarding-intro-slide');
 
-    fetch.once({});
+    fetch.mockResponseOnce({});
     const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
     codeOfConductCheckbox.click();
     const termsCheckbox = getByTestId('checked-terms-and-conditions');
@@ -90,6 +93,8 @@ describe('<Onboarding />', () => {
     const nextButton = await waitForElement(() =>
       getByText(/continue/i),
     );
+
+    fetch.mockResponse(fakeEmptyResponse);
     nextButton.click();
 
     // we should be on the Follow tags step
@@ -111,7 +116,7 @@ describe('<Onboarding />', () => {
     const { getByTestId, getByText, debug } = renderOnboarding();
     getByTestId('onboarding-intro-slide');
 
-    fetch.once({});
+    fetch.mockResponseOnce({});
     const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
     codeOfConductCheckbox.click();
     const termsCheckbox = getByTestId('checked-terms-and-conditions');
@@ -121,6 +126,8 @@ describe('<Onboarding />', () => {
     const nextButton = await waitForElement(() =>
       getByText(/continue/i),
     );
+
+    fetch.mockResponse(fakeEmptyResponse);
     nextButton.click();
 
     // we should be on the Follow tags step
@@ -139,6 +146,7 @@ describe('<Onboarding />', () => {
 
     // click on skip for now
     skipButton = getByText(/Skip for now/i);
+    fetch.mockResponse(fakeEmptyResponse);
     skipButton.click();
 
     // we should be on the Follow Users step

@@ -66,7 +66,7 @@ describe('IntroSlide', () => {
 
   it('should enable the button if required boxes are checked', async () => {
     const { getByTestId, getByText } = renderIntroSlide();
-    fetch.once({});
+    fetch.mockResponseOnce({});
     expect(getByText(/continue/i)).toBeDisabled();
 
     const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
