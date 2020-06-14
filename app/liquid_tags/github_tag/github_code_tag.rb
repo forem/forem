@@ -73,10 +73,9 @@ class GithubTag
     end
 
     def get_file_contents(repo_info, file_info)
-      client = Octokit::Client.new(access_token: token)
-      file = client.contents(repo_info[:repo_path],
-                             path: file_info[:file_path],
-                             query: { ref: repo_info[:ref_name] })
+      file = Github::Client.contents(repo_info[:repo_path],
+                                     path: file_info[:file_path],
+                                     query: { ref: repo_info[:ref_name] })
 
       Base64.decode64(file[:content]).split("\n")
     end
@@ -147,14 +146,6 @@ class GithubTag
 
     def raise_error
       raise StandardError, "Invalid GitHub link"
-    end
-
-    def token
-      if Rails.env.test?
-        "REPLACE WITH VALID FOR VCR"
-      else
-        Identity.where(provider: "github").last(250).sample.token
-      end
     end
   end
 end
