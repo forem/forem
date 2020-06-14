@@ -9,6 +9,14 @@ def user_from_authorization_service(service_name, signed_in_resource = nil, cta_
   )
 end
 
+def mock_username(provider_name, username)
+  if provider_name == :apple
+    OmniAuth.config.mock_auth[provider_name].info.first_name = username
+  else
+    OmniAuth.config.mock_auth[provider_name].info.nickname = username
+  end
+end
+
 RSpec.describe User, type: :model do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
@@ -855,29 +863,18 @@ RSpec.describe User, type: :model do
       end
 
       it "assigns proper social username based on authentication for #{provider_name}" do
-        unless provider_name == :apple
-          OmniAuth.config.mock_auth[provider_name].info.nickname = "valid_username"
-        end
+        mock_username(provider_name, "valid_username")
 
         new_user = user_from_authorization_service(provider_name)
 
-        if provider_name == :apple
-          email = OmniAuth.config.mock_auth[provider_name].info.email
-          expect(new_user.username).to eq(Digest::SHA512.hexdigest(email)[0...25])
-        else
-          expect(new_user.username).to eq("valid_username")
-        end
+        expect(new_user.username).to eq("valid_username")
       end
 
-      # For Apple we use a shortened SHA512 digest of the email,
-      # so there's no possibility that an invalid username is generated
-      unless provider_name == :apple
-        it "assigns modified username if the username is invalid for #{provider_name}" do
-          OmniAuth.config.mock_auth[provider_name].info.nickname = "invalid.username"
+      it "assigns modified username if the username is invalid for #{provider_name}" do
+        mock_username(provider_name, "invalid.username")
 
-          new_user = user_from_authorization_service(provider_name)
-          expect(new_user.username).to eq("invalidusername")
-        end
+        new_user = user_from_authorization_service(provider_name)
+        expect(new_user.username).to eq("invalidusername")
       end
 
       it "serializes the authentication payload for #{provider_name}" do
@@ -887,27 +884,15 @@ RSpec.describe User, type: :model do
         expect(identity.auth_data_dump.provider).to eq(identity.provider)
       end
 
-      if provider_name == :apple
-        it "does not allow previously banished users to sign up again for apple" do
-          email = OmniAuth.config.mock_auth[provider_name].info.email
-          banished_name = Digest::SHA512.hexdigest(email)[0...25]
-          create(:banished_user, username: banished_name)
+      it "does not allow previously banished users to sign up again for #{provider_name}" do
+        banished_name = "SpammyMcSpamface"
+        create(:banished_user, username: banished_name)
 
-          expect do
-            user_from_authorization_service(provider_name, nil, "navbar_basic")
-          end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
-        end
-      else
-        it "does not allow previously banished users to sign up again for #{provider_name}" do
-          banished_name = "SpammyMcSpamface"
-          create(:banished_user, username: banished_name)
+        mock_username(provider_name, banished_name)
 
-          OmniAuth.config.mock_auth[provider_name].info.nickname = banished_name
-
-          expect do
-            user_from_authorization_service(provider_name, nil, "navbar_basic")
-          end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
-        end
+        expect do
+          user_from_authorization_service(provider_name, nil, "navbar_basic")
+        end.to raise_error(ActiveRecord::RecordInvalid, /Username has been banished./)
       end
     end
 
