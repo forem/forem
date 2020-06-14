@@ -44,12 +44,12 @@ describe('<SidebarUser />', () => {
   describe('following', () => {
     it('shows if the user is followed', () => {
       const { getByText } = renderedSideBar({ user: { following: true } });
-      expect(getByText('✓ FOLLOWING')).toBeTruthy();
+      expect(getByText(/Following/i)).toBeTruthy();
     });
 
     it('shows if the user can be followed', () => {
       const { getByText } = renderedSideBar({ user: { following: false } });
-      expect(getByText('+ FOLLOW')).toBeTruthy();
+      expect(getByText(/follow/i)).toBeTruthy();
     });
 
   });
