@@ -36,7 +36,7 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
     context "when trying to register with an already existing username" do
       it "creates a new user with a temporary username" do
         # see Authentication::Providers::Apple#new_user_data
-        username = Digest::SHA512.hexdigest(OmniAuth.config.mock_auth[:apple].info.email)[0...25]
+        username = OmniAuth.config.mock_auth[:apple].info.first_name.downcase
         user = create(:user, username: username)
 
         expect do
