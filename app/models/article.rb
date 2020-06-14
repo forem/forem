@@ -90,6 +90,7 @@ class Article < ApplicationRecord
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
+  before_save :check_webmentions_support
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
 
@@ -710,5 +711,11 @@ class Article < ApplicationRecord
 
   def notify_slack_channel_about_publication
     Slack::Messengers::ArticlePublished.call(article: self)
+  end
+
+  def check_webmentions_support
+    return unless canonical_url.present? && canonical_url_changed?
+
+    WebMentions::CheckWebMentionSupport.perform_async(id)
   end
 end
