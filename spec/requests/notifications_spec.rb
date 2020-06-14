@@ -187,6 +187,12 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(has_both_names(response.body)).to be true
       end
 
+      it "does not include private reactions" do
+        mock_heart_reaction_notifications(50, %w[like unicorn thumbsdown])
+        get "/notifications"
+        expect(response.body).not_to include("Thumbsdown")
+      end
+
       it "renders the proper message for multiple reactions" do
         random_amount = rand(3..10)
         mock_heart_reaction_notifications(random_amount, %w[unicorn like])
