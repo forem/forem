@@ -48,14 +48,15 @@ describe('FollowUsers', () => {
     },
   ]);
 
-  beforeEach(async () => {
+  beforeAll(() => {
     document.head.innerHTML = '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
   });
 
+
   it('should render the correct users', async () => {
     fetch.mockResponseOnce(fakeUsersResponse);
-    const { findByText, findByTestId, debug } = renderFollowUsers();
+    const { findByText} = renderFollowUsers();
 
     // const onboardingUsers = await findByTestId('onboarding-users');
     // debug(onboardingUsers)
@@ -71,14 +72,13 @@ describe('FollowUsers', () => {
   });
 
   it('should render the correct navigation button on first load', () => {
-    fetch.mockResponseOnce(fakeUsersResponse);
     const { getByText } = renderFollowUsers();
     getByText(/skip for now/i);
   });
 
   it('should update the navigation button text and follow status when you follow users', async () => {
     fetch.mockResponse(fakeUsersResponse);
-    const { getByText, findAllByText, findByText, getByTestId, findAllByTestId, debug } = renderFollowUsers();
+    const { getByText, findByText, findAllByTestId } = renderFollowUsers();
 
     const userButtons = await waitForElement(() =>
       findAllByTestId('onboarding-user-button'),
@@ -102,17 +102,44 @@ describe('FollowUsers', () => {
     const secondUser = userButtons[1];
     secondUser.click();
 
-    following = await waitForElement(() =>
+    await waitForElement(() =>
       findByText('Following'),
     );
 
     getByText("You're following 2 people");
     getByText(/continue/i);
-
   });
 
   it('should have a functioning de/select all toggle', async () => {
+    fetch.mockResponse(fakeUsersResponse);
+    const { getByText, queryByText, queryAllByText } = renderFollowUsers();
 
+    // select all then test following count
+    const followAllSelector = await waitForElement(() =>
+      getByText(/Select all 3 people/i)
+    );
+
+    followAllSelector.click();
+
+    await waitForElement(() =>
+      queryAllByText('Following')
+    );
+
+    expect(queryByText('Follow')).toBeNull();
+    getByText("You're following 3 people (everyone)");
+
+    // deselect all then test following count
+    const deselecAllSelector = await waitForElement(() =>
+      getByText(/Deselect all/i)
+    );
+
+    deselecAllSelector.click();
+    const allFollow = await waitForElement(() =>
+      queryAllByText('Follow')
+    );
+
+    expect(queryByText('Following')).toBeNull();
+    getByText(/You're not following anyone/i);
   });
 
   it('should render a stepper', () => {
@@ -120,4 +147,8 @@ describe('FollowUsers', () => {
     getByTestId('stepper');
   });
 
+  it('should render a back button', () => {
+    const { getByTestId } = renderFollowUsers();
+    getByTestId('back-button');
+  });
 });
