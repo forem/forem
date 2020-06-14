@@ -22,7 +22,7 @@ module Notifications
       def call
         return unless receiver.is_a?(User) || receiver.is_a?(Organization)
 
-        reaction_siblings = Reaction.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
+        reaction_siblings = Reaction.public_category.where(reactable_id: reaction.reactable_id, reactable_type: reaction.reactable_type).
           where.not(reactions: { user_id: reaction.reactable_user_id }).
           preload(:reactable).includes(:user).where.not(users: { id: nil }).
           order("reactions.created_at DESC")
