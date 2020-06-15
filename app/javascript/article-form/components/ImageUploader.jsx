@@ -133,7 +133,6 @@ export class ImageUploader extends Component {
         >
           Upload image
           <input
-            data-testid="upload-image"
             type="file"
             id="image-upload-field"
             onChange={this.handleInsertionImageUpload}

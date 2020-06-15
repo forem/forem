@@ -25,14 +25,14 @@ describe('<ImageUploader />', () => {
   });
 
   it('displays an upload input', () => {
-    const { getByTestId } = render(<ImageUploader />);
-    const uploadInput = getByTestId('upload-image');
+    const { getByTestId, getByLabelText } = render(<ImageUploader />);
+    const uploadInput = getByLabelText(/Upload an image/i);
     expect(uploadInput.getAttribute('type')).toEqual('file');
   });
 
   it('displays text to copy after upload', async () => {
-    const { getByTitle, getByTestId, getByDisplayValue } = render(<ImageUploader />)
-    const inputEl = getByTestId('upload-image');
+    const { getByTitle, getByTestId, getByDisplayValue, getByLabelText } = render(<ImageUploader />)
+    const inputEl = getByLabelText(/Upload an image/i);
 
     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
       type: 'image/png',
@@ -53,8 +53,8 @@ describe('<ImageUploader />', () => {
 
   it('displays an error when one occurs', async () => {
     const error = 'Some error message';
-    const { getByTitle, getByTestId, getByDisplayValue, debug, getByText } = render(<ImageUploader />)
-    const inputEl = getByTestId('upload-image');
+    const { getByTitle, getByTestId, getByDisplayValue, getByText, getByLabelText } = render(<ImageUploader />)
+    const inputEl = getByLabelText(/Upload an image/i);
 
     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
       type: 'image/png',
