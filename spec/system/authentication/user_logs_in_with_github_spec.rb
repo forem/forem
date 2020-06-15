@@ -76,7 +76,7 @@ RSpec.describe "Authenticating with GitHub" do
 
         expect(page).to have_current_path("/users/sign_in")
         expect(page).to have_link("Sign In/Up")
-        expect(page).to have_link("Via GitHub")
+        expect(page).to have_link("Sign In with GitHub")
         expect(page).to have_link("All about #{ApplicationConfig['COMMUNITY_NAME']}")
       end
 
