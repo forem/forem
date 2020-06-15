@@ -82,7 +82,7 @@ gem "rails-settings-cached", ">= 2.1.1" # Settings plugin for Rails that makes m
 gem "ransack", "~> 2.3" # Searching and sorting
 gem "recaptcha", "~> 5.5", require: "recaptcha/rails" # Helpers for the reCAPTCHA API
 gem "redcarpet", "~> 3.5" # A fast, safe and extensible Markdown to (X)HTML parser
-gem "redis", "~> 4.1.4" # Redis ruby client
+gem "redis", "~> 4.2.1" # Redis ruby client
 gem "redis-rails", "~> 5.0.2" # Redis for Ruby on Rails
 gem "reverse_markdown", "~> 2.0" # Map simple html back into markdown
 gem "rolify", "~> 5.3" # Very simple Roles library
