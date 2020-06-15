@@ -10,11 +10,11 @@ const data = [
   },
 ];
 
-const getRequestManager = (resource) => render(<RequestManager resource={resource} handleRequestRejection={jest.fn()} handleRequestApproval={jest.fn()} />);
-
 describe('<RequestManager />', () => {
   it('should have no a11y violations', async () => {
-    const { container } = getRequestManager(data);
+    const { container } = render(
+      <RequestManager resource={data} handleRequestRejection={jest.fn()} handleRequestApproval={jest.fn()} />
+    );
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
@@ -23,27 +23,26 @@ describe('<RequestManager />', () => {
   it('should have the proper elements', () => {
     const { getByTestId, debug, getByText } = render(
       <RequestManager resource={data} handleRequestRejection={jest.fn()} handleRequestApproval={jest.fn()} />
-    )
+    );
 
     getByText(/Joining Request/i);
     getByText(/Manage request coming to all the channels/i);
     const request = getByTestId('request');
     expect(request.textContent).toContain('Reject');
     expect(request.textContent).toContain('Accept');
-
   });
 
   xit('should call the relavant handlers when the buttons are clicked', async ()=> {
     const handleRequestRejection = jest.fn();
     const handleRequestApproval = jest.fn();
 
-    const { getByText } = getRequestManager(data);
+    const { getByText } = render(
+      <RequestManager resource={data} handleRequestRejection={jest.fn()} handleRequestApproval={jest.fn()} />
+    );
     const rejectButton = getByText(/Reject/i);
     const acceptButton = getByText(/Accept/i);
 
-
     rejectButton.click();
-
     await waitForElement(() => expect(handleRequestRejection).toHaveBeenCalledTimes(1))
 
     acceptButton.click();
