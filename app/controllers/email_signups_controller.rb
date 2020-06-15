@@ -11,7 +11,7 @@ class EmailSignupsController < ApplicationController
     user_subscription_sourceable = source_type.safe_constantize.find_by(id: source_id)
     return user_subscription_sourceable_not_found unless user_subscription_sourceable
 
-    return user_subscription_sourceable_not_enabled unless email_signup_tag_enabled?(user_subscription_sourceable)
+    return email_signup_tag_not_enabled unless email_signup_tag_enabled?(user_subscription_sourceable)
 
     @user_subscription = UserSubscription.new(
       user_subscription_sourceable: user_subscription_sourceable,
@@ -44,7 +44,7 @@ class EmailSignupsController < ApplicationController
            status: :unprocessable_entity
   end
 
-  def user_subscription_sourceable_not_enabled
+  def email_signup_tag_not_enabled
     render json: {
       error: "email signups are not enabled for the requested source",
       status: 422
