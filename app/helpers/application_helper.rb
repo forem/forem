@@ -15,10 +15,6 @@ module ApplicationHelper
     user_signed_in? ? "logged-in" : "logged-out"
   end
 
-  def user_experience_labels
-    %w[Novice Beginner Mid-level Advanced Expert]
-  end
-
   def current_page
     "#{controller_name}-#{controller.action_name}"
   end
