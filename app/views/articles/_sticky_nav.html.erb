@@ -76,7 +76,7 @@
     <% end %>
   </div>
 
-  <% cache("article-sticky-nav-articles-#{@article.id}-#{@actor.last_article_at}", expires_in: 48.hours) do %>
+  <% cache("article-sticky-nav-articles-0-#{@article.id}-#{@actor.last_article_at}", expires_in: 48.hours) do %>
     <% @sticky_collection = StickyArticleCollection.new(@article, @organization || @user) %>
     <% @sticky_articles = @sticky_collection.suggested_stickies %>
     <% @user_stickies = @sticky_collection.user_stickies %>
