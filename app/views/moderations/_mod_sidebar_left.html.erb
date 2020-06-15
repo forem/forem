@@ -1,6 +1,8 @@
 <div class="crayons-layout__sidebar-left">
   <p class="fw-heavy fs-3xl mod-center-heading">Mod Center</p>
-  <div class="fw-bold fs-s mod-center-section-title">INBOX</div>
+  <div class="fw-bold fs-s mod-center-section-title">
+    INBOX
+  </div>
   <div id="mod-center-inbox" class="mod-center-inbox">
     <% if @current_user_tags.any? %>
       <% @current_user_tags.each do |tag| %>
@@ -20,10 +22,10 @@
   <div class="fw-bold fs-s mod-center-section-title resources">RESOURCES</div>
   <div id="mod-center-other-options">
     <a href="#" class="crayons-link crayons-link--block">
-      Connect Chat
-    </a>
-    <a href="#" class="crayons-link crayons-link--block">
-      Settings
+      Feedback?
+      <span class="crayons-icon">
+        <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
+      </span>
     </a>
     <a href="<%= URL.url %>/community-moderation" class="crayons-link crayons-link--block">
       Moderator Guide

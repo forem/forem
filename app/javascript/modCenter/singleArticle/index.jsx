@@ -53,6 +53,13 @@ const SingleArticle = ({
     } ${origDatePublished.getDate()}`;
   };
 
+  const newAuthorNotification = () => {
+    if (user.articles_count <= 3) {
+      return '👋 ';
+    }
+    return '';
+  };
+
   return (
     <div className="moderation-single-article">
       <span className="article-title">
@@ -61,7 +68,10 @@ const SingleArticle = ({
         </header>
         {tags}
       </span>
-      <span className="article-author">{user.name}</span>
+      <span className="article-author">
+        {newAuthorNotification()}
+        {user.name}
+      </span>
       <span className="article-published-at">{formatDate(publishedAt)}</span>
     </div>
   );
