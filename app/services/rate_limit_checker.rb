@@ -4,6 +4,7 @@ class RateLimitChecker
   # retry_after values are the seconds until a user can retry an action
   ACTION_LIMITERS = {
     article_update: { retry_after: 30 },
+    email_signup_creation: { retry_after: 30 },
     feedback_message_creation: { retry_after: 300 },
     image_upload: { retry_after: 30 },
     listing_creation: { retry_after: 60 },
@@ -81,6 +82,11 @@ class RateLimitChecker
   def check_comment_creation_limit
     user.comments.where("created_at > ?", 30.seconds.ago).size >
       SiteConfig.rate_limit_comment_creation
+  end
+
+  def check_email_signup_creation_limit
+    UserSubscription.where("subscriber_id = ? AND created_at > ?", user.id, 30.seconds.ago).size >
+      SiteConfig.rate_limit_email_signup_creation
   end
 
   def check_published_article_creation_limit
