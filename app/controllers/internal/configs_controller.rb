@@ -48,11 +48,12 @@ class Internal::ConfigsController < Internal::ApplicationController
       onboarding_params |
       job_params
 
+    params[:site_config][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if params[:site_config][:email_addresses].present?
     params.require(:site_config).permit(
       allowed_params,
       authentication_providers: [],
       social_media_handles: SiteConfig.social_media_handles.keys,
-      email_addresses: SiteConfig.email_addresses.except(:default).keys,
+      email_addresses: SiteConfig.email_addresses.keys,
       meta_keywords: SiteConfig.meta_keywords.keys,
     )
   end
