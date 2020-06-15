@@ -2,6 +2,8 @@ import { h, render } from 'preact';
 import { ModerationArticles } from '../modCenter/moderationArticles';
 import { initializeModCenterFunctions } from '../modCenter/modCenter';
 
+let elementLoaded = false;
+
 function loadElement() {
   const root = document.getElementById('mod-index-list');
   if (root) {
@@ -10,8 +12,14 @@ function loadElement() {
 }
 
 window.InstantClick.on('change', () => {
-  loadElement();
+  if (!elementLoaded) {
+    loadElement();
+    elementLoaded = true;
+  }
 });
 
-loadElement();
-initializeModCenterFunctions();
+if (!elementLoaded) {
+  loadElement();
+  initializeModCenterFunctions();
+  elementLoaded = true;
+}
