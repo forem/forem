@@ -3,7 +3,7 @@ FactoryBot.define do
 
   factory :article do
     transient do
-      title { Faker::Food.dish }
+      title { generate :title }
       published { true }
       date { "01/01/2015" }
       tags { "javascript, html, css" }
