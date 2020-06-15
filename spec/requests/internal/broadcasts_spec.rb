@@ -52,13 +52,10 @@ RSpec.describe "/internal/broadcasts", type: :request do
       let!(:broadcast) { create(:welcome_broadcast, active: false) }
 
       it "updates the Broadcasts last_active_at timestamp" do
-        Timecop.freeze do
-          current_time = Time.current
-          expect do
-            put "/internal/broadcasts/#{broadcast.id}", params: params
-          end.to change { broadcast.reload.active }.from(false).to(true)
-          expect(broadcast.last_active_at).to eq current_time
-        end
+        expect do
+          put "/internal/broadcasts/#{broadcast.id}", params: params
+        end.to change { broadcast.reload.active }.from(false).to(true)
+        expect(broadcast.last_active_at).not_to eq(2.days.ago)
       end
     end
 
