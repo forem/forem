@@ -168,12 +168,11 @@
   .mod-index-header-new {
     background-color: var(--base-inverted);
     border-radius: var(--radius) var(--radius) 0 0;
-    display: flex;
-    justify-content: space-between;
-    h1 {
-      justify-self: flex-start;
+    padding: var(--su-6) var(--su-4);
+
+    .tag-view {
       font-size: var(--fs-3xl);
-      padding: var(--su-6) var(--su-4);
+      font-weight: var(--fw-bold);
       color: var(--base-90);
       line-height: var(--lh-base);
     }
@@ -845,10 +844,12 @@
   border-radius: 3px;
 }
 
-.mod-center-inbox-toggle {
-  display: grid;
-  grid-template-columns: 4fr 1fr;
+.mod-center-section-title {
   padding: var(--su-2);
+
+  &.resources {
+    margin-top: var(--su-7);
+  }
 }
 
 .mod-center-inbox {
@@ -858,8 +859,8 @@
     padding-left: var(--su-6);
     padding-right: var(--su-3);
   }
+}
 
-  .inbox-nontags {
-    padding-left: var(--su-6);
-  }
+#mod-center-other-options svg {
+  width: 12px;
 }
