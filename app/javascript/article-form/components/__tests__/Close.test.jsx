@@ -5,6 +5,6 @@ import { Close } from '../Close';
 describe('<Close />', () => {
   it('shows the close button', () => {
     const { getByTitle } = render(<Close />);
-    expect(getByTitle(/Close editor/i, { selector: 'button' })).toBeTruthy();
+    expect(getByTitle(/Close the editor/i, { selector: 'button' })).toBeTruthy();
   });
 });
