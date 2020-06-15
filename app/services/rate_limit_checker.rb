@@ -84,11 +84,6 @@ class RateLimitChecker
       SiteConfig.rate_limit_comment_creation
   end
 
-  def check_email_signup_creation_limit
-    UserSubscription.where("subscriber_id = ? AND created_at > ?", user.id, 30.seconds.ago).size >
-      SiteConfig.rate_limit_email_signup_creation
-  end
-
   def check_published_article_creation_limit
     user.articles.published.where("created_at > ?", 30.seconds.ago).size >
       SiteConfig.rate_limit_published_article_creation
