@@ -26,11 +26,11 @@ class SiteConfig < RailsSettings::Base
   field :campaign_articles_require_approval, type: :boolean, default: 0
 
   # Community Content
-  field :community_description, type: :string, default: "A constructive and inclusive social network. Open source and radically transparent."
-  field :community_member_description, type: :string, default: "amazing humans who code."
+  field :community_description, type: :string
+  field :community_member_description, type: :string
   field :community_member_label, type: :string, default: "user"
-  field :community_action, type: :string, default: "coding"
-  field :tagline, type: :string, default: "We're a place where coders share, stay up-to-date and grow their careers."
+  field :community_action, type: :string
+  field :tagline, type: :string
 
   # Emails
   field :email_addresses, type: :hash, default: {
