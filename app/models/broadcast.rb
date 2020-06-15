@@ -10,7 +10,7 @@ class Broadcast < ApplicationRecord
   validates :banner_style, inclusion: { in: VALID_BANNER_STYLES }, allow_blank: true
   validate  :single_active_announcement_broadcast
 
-  before_save :update_last_active_at
+  before_save :update_last_active_at, if: :will_save_change_to_active?
 
   scope :active, -> { where(active: true) }
   scope :announcement, -> { where(type_of: "Announcement") }
@@ -36,10 +36,6 @@ class Broadcast < ApplicationRecord
   end
 
   def update_last_active_at
-    # Updates the last_active_at timestamp to show
-    # when the Broadcast was last set to "active"
-    return unless active
-
     self.last_active_at = Time.zone.now
   end
 end
