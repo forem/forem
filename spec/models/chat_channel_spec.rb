@@ -72,6 +72,21 @@ RSpec.describe ChatChannel, type: :model do
     end
   end
 
+  describe "#add_users" do
+    it "adds users" do
+      expect do
+        chat_channel.add_users(users)
+      end.to change(chat_channel.users, :count).by(users.size)
+    end
+
+    it "does not add users twice" do
+      expect do
+        chat_channel.add_users(users)
+        chat_channel.add_users(users)
+      end.to change(chat_channel.users, :count).by(users.size)
+    end
+  end
+
   describe "#remove_user" do
     it "removes a user from a channel" do
       chat_channel.add_users(users.first)
