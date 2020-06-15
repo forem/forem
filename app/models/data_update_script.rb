@@ -9,19 +9,6 @@ class DataUpdateScript < ApplicationRecord
   validates :file_name, uniqueness: true
 
   class << self
-    def filenames
-      Dir.glob("*.rb", base: DIRECTORY).map do |f|
-        Pathname.new(f).basename(".rb").to_s
-      end
-    end
-
-    def load_script_ids
-      filenames.
-        map { |file_name| find_or_create_by(file_name: file_name) }.
-        select(&:enqueued?).
-        map(&:id)
-    end
-
     def scripts_to_run
       ids = load_script_ids
       enqueued.where(id: ids)
@@ -35,6 +22,25 @@ class DataUpdateScript < ApplicationRecord
       return true if db_scripts.values.any? { |s| s.to_sym == :enqueued }
 
       false
+    end
+
+    private
+
+    def filenames
+      Dir.glob("*.rb", base: DIRECTORY).map do |f|
+        Pathname.new(f).basename(".rb").to_s
+      end
+    end
+
+    def load_script_ids
+      # insert new scripts in bulk
+      now = Time.current
+      scripts_params = filenames.map do |fn|
+        { file_name: fn, created_at: now, updated_at: now }
+      end
+      DataUpdateScript.insert_all(scripts_params)
+
+      DataUpdateScript.pluck(:id)
     end
   end
 
