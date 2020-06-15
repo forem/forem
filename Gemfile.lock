@@ -324,7 +324,7 @@ GEM
     fast_jsonapi (1.5)
       activesupport (>= 4.2)
     fastimage (2.1.1)
-    fastly (2.5.2)
+    fastly (2.5.3)
     feedjira (3.1.1)
       loofah (>= 2.3.1)
       sax-machine (>= 1.0)
