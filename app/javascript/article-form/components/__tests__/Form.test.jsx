@@ -34,7 +34,7 @@ describe('<Form />', () => {
       expect(queryByTestId('article-form__cover')).toBeNull();
       expect(queryByTestId('article-form__title')).toBeNull();
       expect(queryByTestId('article-form__tagsfield')).toBeNull();
-      expect(queryByTestId('article-form__body')).toBeTruthy();
+      queryByTestId('article-form__body');
     });
   });
 
@@ -64,10 +64,10 @@ describe('<Form />', () => {
         />,
       );
 
-      expect(queryByTestId('article-form__cover')).toBeTruthy();
-      expect(queryByTestId('article-form__title')).toBeTruthy();
-      expect(queryByTestId('article-form__tagsfield')).toBeTruthy();
-      expect(queryByTestId('article-form__body')).toBeTruthy();
+      queryByTestId('article-form__cover');
+      queryByTestId('article-form__title');
+      queryByTestId('article-form__tagsfield');
+      queryByTestId('article-form__body');
     });
   });
 
@@ -93,8 +93,8 @@ describe('<Form />', () => {
       />,
     );
 
-    expect(getByTestId('error-message')).toBeTruthy();
-    expect(getByTestId('error-message').textContent).toMatch('title');
-    expect(getByTestId('error-message').textContent).toMatch('main_image');
+    getByTestId('error-message');
+    expect(getByTestId('error-message').textContent).toContain('title');
+    expect(getByTestId('error-message').textContent).toContain('main_image');
   });
 });

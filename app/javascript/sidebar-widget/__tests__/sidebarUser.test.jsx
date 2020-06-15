@@ -26,12 +26,12 @@ describe('<SidebarUser />', () => {
   it('renders properly', () => {
     const { getByTestId, getByText, getByAltText } = renderedSideBar();
 
-    expect(getByTestId('widget-avatar').getAttribute('href')).toBe('/john_doe');
-    expect(getByAltText('Jon Doe')).toBeTruthy();
-    expect(getByAltText('Jon Doe').getAttribute('src')).toBe('www.profile.com');
+    expect(getByTestId('widget-avatar').getAttribute('href')).toEqual('/john_doe');
+    getByAltText('Jon Doe');
+    expect(getByAltText('Jon Doe').getAttribute('src')).toEqual('www.profile.com');
 
-    expect(getByText('Jon Doe')).toBeTruthy();
-    expect(getByText('Jon Doe').getAttribute('href')).toBe('/john_doe');
+    getByText('Jon Doe');
+    expect(getByText('Jon Doe').getAttribute('href')).toEqual('/john_doe');
   });
 
   it('triggers the onClick', () => {
@@ -44,12 +44,12 @@ describe('<SidebarUser />', () => {
   describe('following', () => {
     it('shows if the user is followed', () => {
       const { getByText } = renderedSideBar({ user: { following: true } });
-      expect(getByText(/Following/i)).toBeTruthy();
+      getByText(/Following/i);
     });
 
     it('shows if the user can be followed', () => {
       const { getByText } = renderedSideBar({ user: { following: false } });
-      expect(getByText(/follow/i)).toBeTruthy();
+      getByText(/follow/i);
     });
 
   });

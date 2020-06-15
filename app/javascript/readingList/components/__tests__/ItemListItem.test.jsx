@@ -21,7 +21,7 @@ const item = {
 describe('<ItemListItem />', () => {
   it('renders the title', () => {
     const { getByText } = render(<ItemListItem item={item} />);
-    expect(getByText(/Title/i)).toBeTruthy();
+    getByText(/Title/i);
   });
 
   it('renders the path', () => {
@@ -31,7 +31,7 @@ describe('<ItemListItem />', () => {
 
   it('renders a published date', () => {
     const { getByText } = render(<ItemListItem item={item} />);
-    expect(getByText(/Jun 29/i)).toBeTruthy();
+    getByText(/Jun 29/i);
   });
 
   it('renders a profile_image', () => {
@@ -42,19 +42,19 @@ describe('<ItemListItem />', () => {
   it('renders with readingtime of 1 min if reading time is less than 1 min.', () => {
     item.reactable.reading_time = 0.5;
     const { getByText } = render(<ItemListItem item={item} />);
-    expect(getByText(/1 min read/i)).toBeTruthy();
+    getByText(/1 min read/i);
   });
 
   it('renders with readingtime of 1 min if reading time is null.', () => {
     item.reactable.reading_time = null;
     const { getByText } = render(<ItemListItem item={item} />);
-    expect(getByText(/1 min read/i)).toBeTruthy();
+    getByText(/1 min read/i);
   });
 
   it('renders correct readingtime.', () => {
     item.reactable.reading_time = 10;
     const { getByText } = render(<ItemListItem item={item} />);
-    expect(getByText(/10 min read/i)).toBeTruthy();
+    getByText(/10 min read/i);
   });
 
   it('renders without any tags if the tags array is empty.', () => {
@@ -66,13 +66,13 @@ describe('<ItemListItem />', () => {
   it('renders tags with links if present.', () => {
     item.reactable.tags = [{ name: 'discuss' }];
     const { queryByTestId, getByText } = render(<ItemListItem item={item} />);
-    expect(getByText('#discuss')).toBeTruthy();
+    getByText('#discuss');
     expect(getByText('#discuss').closest('a').getAttribute("href")).toBe("/t/discuss");
   });
 
   it('renders user information', () => {
     const { getByText } = render(<ItemListItem item={item} />);
-    expect(getByText(/Bob/i)).toBeTruthy();
+    getByText(/Bob/i);
     expect(getByText(/Bob/i).closest('a').getAttribute("href")).toBe("/bob");
   });
 });

@@ -29,7 +29,7 @@ describe('<ArticleCoverImage />', () => {
   });
 
   it('displays an upload input when there is no main image', () => {
-    const { getByLabelText, debug } = render(
+    const { getByLabelText } = render(
       <ArticleCoverImage
         mainImage=""
         onMainImageUrlChange={jest.fn()}
@@ -78,7 +78,7 @@ describe('<ArticleCoverImage />', () => {
 
     xit('allows a user to change the image', async () => {
       const onMainImageUrlChange = jest.fn();
-      const { getByLabelText, debug } = render(
+      const { getByLabelText } = render(
         <ArticleCoverImage
           mainImage={'/some-fake-image.jpg'}
           onMainImageUrlChange={onMainImageUrlChange}

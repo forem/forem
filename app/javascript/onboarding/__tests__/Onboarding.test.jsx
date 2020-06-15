@@ -178,9 +178,9 @@ describe('<Onboarding />', () => {
     finishButton.click();
 
     const href = window.location.href
-    expect(href).toBe(url);
+    expect(href).toEqual(url);
 
     // TODO: we should be redirected to '/'
-    // await waitForElement(() => expect(href).toBe('/'));
+    // await waitForElement(() => expect(href).toEqual('/'));
   });
 });

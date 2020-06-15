@@ -40,8 +40,8 @@ describe('<ListingFiltersCategories />', () => {
       const { getByText } = renderListingFilterCategories();
 
       const allLink = getByText(/all/i);
-      expect(allLink.getAttribute('href')).toBe('/listings');
-      expect(allLink.textContent).toBe('all');
+      expect(allLink.getAttribute('href')).toEqual('/listings');
+      expect(allLink.textContent).toEqual('all');
     });
 
     it('should be "selected" when there is no category selected', () => {
@@ -70,8 +70,8 @@ describe('<ListingFiltersCategories />', () => {
       const { getByText } = renderListingFilterCategories();
       categories.forEach((category) => {
         const categoryLink = getByText(`${category.name}`);
-        expect(categoryLink.getAttribute('href')).toBe(`/listings/${category.slug}`);
-        expect(categoryLink.textContent).toBe(category.name);
+        expect(categoryLink.getAttribute('href')).toEqual(`/listings/${category.slug}`);
+        expect(categoryLink.textContent).toEqual(category.name);
       });
     });
 

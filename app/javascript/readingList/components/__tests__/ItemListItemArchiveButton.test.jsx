@@ -5,7 +5,7 @@ import { ItemListItemArchiveButton } from '../ItemListItemArchiveButton';
 describe('<ItemListItemArchiveButton />', () => {
   it('renders the Archive button', () => {
     const { getByText } = render(<ItemListItemArchiveButton text="archive" />);
-    expect(getByText(/archive/i)).toBeTruthy();
+    getByText(/archive/i);
   });
 
   it('triggers the onClick if the Enter key is pressed', () => {

@@ -23,8 +23,8 @@ describe('<OrganizationPicker />', () => {
       />,
     );
 
-    expect(getByText('Acme Org 1')).toBeTruthy();
-    expect(getByText('Acme Org 2')).toBeTruthy();
+    getByText('Acme Org 1');
+    getByText('Acme Org 2');
     expect(getByText('Acme Org 1').selected).toEqual(true);
   });
 
@@ -37,8 +37,8 @@ describe('<OrganizationPicker />', () => {
       />,
     );
 
-    expect(getByText('Acme Org 1')).toBeTruthy();
-    expect(getByText('Acme Org 2')).toBeTruthy();
+    getByText('Acme Org 1');
+    getByText('Acme Org 2');
     expect(getByText('Acme Org 1').selected).toEqual(false);
     expect(getByText('Acme Org 2').selected).toEqual(false);
   });
@@ -52,6 +52,6 @@ describe('<OrganizationPicker />', () => {
       />,
     );
 
-    expect(getByText('None')).toBeTruthy();
+    getByText('None');
   });
 });

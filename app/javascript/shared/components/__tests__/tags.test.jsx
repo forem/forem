@@ -15,7 +15,7 @@ describe('<Tags />', () => {
 
       // https://stackoverflow.com/questions/60455119/react-jest-test-preventdefault-action
       const isPrevented = fireEvent.keyDown(getAllByTestId('tag-input')[0], { key: '§', code: '192'});
-      expect(isPrevented).toBe(false);
+      expect(isPrevented).toEqual(false);
     });
 
     it('does not call preventDefault on used keyCode', () => {
@@ -31,7 +31,7 @@ describe('<Tags />', () => {
 
       tests.forEach((obj) => {
         const isPrevented = fireEvent.keyDown(getAllByTestId('tag-input')[0], obj);
-        expect(isPrevented).toBe(true);
+        expect(isPrevented).toEqual(true);
       });
     });
   });

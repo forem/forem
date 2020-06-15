@@ -79,12 +79,12 @@ describe('ProfileForm', () => {
 
   it('should render a stepper', () => {
     const { getByTestId } = renderProfileForm();
-    expect(getByTestId('stepper')).toBeTruthy();
+    getByTestId('stepper');
   });
 
   it('should show the back button', () => {
     const { getByTestId } = renderProfileForm();
-    expect(getByTestId('back-button')).toBeTruthy();
+    getByTestId('back-button');
   });
 
   it('should update the text on the forward button', async () => {

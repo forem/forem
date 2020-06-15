@@ -22,7 +22,7 @@ describe('<Help />', () => {
         version="v1"
       />,
     );
-    expect(getByTestId('article-form__help-section')).toBeTruthy();
+    getByTestId('article-form__help-section');
   });
 
   it('shows the correct help for v1', () => {
@@ -35,9 +35,9 @@ describe('<Help />', () => {
       />,
     );
 
-    expect(queryByTestId('article-form__help-section')).toBeTruthy();
-    expect(queryByTestId('basic-editor-help')).toBeTruthy();
-    expect(queryByTestId('format-help')).toBeTruthy();
+    queryByTestId('article-form__help-section');
+    queryByTestId('basic-editor-help');
+    queryByTestId('format-help');
     expect(queryByTestId('title-help')).toBeNull();
     expect(queryByTestId('basic-tag-input-help')).toBeNull();
   });
@@ -54,10 +54,10 @@ describe('<Help />', () => {
         />,
       );
 
-      expect(queryByTestId('article-form__help-section')).toBeTruthy();
+      queryByTestId('article-form__help-section');
       expect(queryByTestId('basic-editor-help')).toBeNull();
       expect(queryByTestId('format-help')).toBeNull();
-      expect(queryByTestId('title-help')).toBeTruthy();
+      queryByTestId('title-help');
       expect(queryByTestId('basic-tag-input-help')).toBeNull();
     });
 
@@ -71,9 +71,9 @@ describe('<Help />', () => {
         />,
       );
 
-      expect(queryByTestId('article-form__help-section')).toBeTruthy();
+      queryByTestId('article-form__help-section');
       expect(queryByTestId('basic-editor-help')).toBeNull();
-      expect(queryByTestId('format-help')).toBeTruthy();
+      queryByTestId('format-help');
       expect(queryByTestId('title-help')).toBeNull();
       expect(queryByTestId('basic-tag-input-help')).toBeNull();
     });
@@ -88,11 +88,11 @@ describe('<Help />', () => {
         />,
       );
 
-      expect(queryByTestId('article-form__help-section')).toBeTruthy();
+      queryByTestId('article-form__help-section');
       expect(queryByTestId('basic-editor-help')).toBeNull();
       expect(queryByTestId('format-help')).toBeNull();
       expect(queryByTestId('title-help')).toBeNull();
-      expect(queryByTestId('basic-tag-input-help')).toBeTruthy();
+      queryByTestId('basic-tag-input-help');
     });
 
   });

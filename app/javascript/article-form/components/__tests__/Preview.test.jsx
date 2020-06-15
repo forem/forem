@@ -71,7 +71,7 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(getByText(previewResponse.title)).toBeTruthy();
+    getByText(previewResponse.title);
   });
 
   it('shows the correct tags', () => {
@@ -83,8 +83,8 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(getByText(`javascript`)).toBeTruthy();
-    expect(getByText(`career`)).toBeTruthy();
+    getByText(`javascript`);
+    getByText(`career`);
   });
 
   it('shows a cover image in the preview if one exists', () => {
@@ -96,7 +96,7 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(getByTestId('article-form__cover')).toBeTruthy();
+    getByTestId('article-form__cover');
   });
 
   it('does not show a cover image in the preview if one does not exist', () => {

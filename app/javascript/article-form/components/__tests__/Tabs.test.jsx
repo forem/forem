@@ -7,8 +7,8 @@ describe('<Tabs />', () => {
     const { getByText } = render(
       <Tabs onPreview={null} previewShowing={false} />
     );
-    expect(getByText(/preview/i, { selector: 'button' })).toBeTruthy();
-    expect(getByText(/edit/i, { selector: 'button' })).toBeTruthy();
+    getByText(/preview/i, { selector: 'button' });
+    getByText(/edit/i, { selector: 'button' });
   });
 
   describe('highlights the current tab', () => {

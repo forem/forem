@@ -57,7 +57,6 @@ describe('<Options />', () => {
   it('shows the danger zone once an article is published', ()=> {
     passedData.published = true;
     const { getByTestId } = render(getOptions(passedData));
-    expect(getByTestId('options__danger-zone')).toBeTruthy();
-
+    getByTestId('options__danger-zone');
   });
 });

@@ -11,7 +11,7 @@ describe('<PodcastEpisode /> component', () => {
     expect(imgTag.getAttribute('src')).toEqual('/images/16.png');
     expect(imgTag.closest('a').getAttribute('href')).toEqual('/monitor-recontextualize/episode-slug');
 
-    expect(getByText('Rubber local')).toBeTruthy();
+    getByText('Rubber local');
     const episodeLink = getByText('monitor recontextualize');
     expect(episodeLink.getAttribute('href')).toEqual('/monitor-recontextualize/episode-slug');
   });

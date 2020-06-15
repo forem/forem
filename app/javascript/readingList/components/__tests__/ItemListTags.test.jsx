@@ -11,7 +11,7 @@ describe('<ItemListTags />', () => {
       />,
     );
 
-    expect(getByText('#discuss')).toBeTruthy();
+    getByText('#discuss');
     expect(queryByText('#javascript')).toBeNull();
   });
 
@@ -23,8 +23,8 @@ describe('<ItemListTags />', () => {
       />,
     );
 
-    expect(getByText('#discuss')).toBeTruthy();
-    expect(getByText('#javascript')).toBeTruthy();
+    getByText('#discuss');
+    getByText('#javascript');
   });
 
   it('triggers the onClick', () => {
