@@ -56,7 +56,7 @@ class Internal::BroadcastsController < Internal::ApplicationController
   private
 
   def broadcast_params
-    params.permit(:title, :processed_html, :type_of, :banner_style, :active, :last_active_at)
+    params.permit(:title, :processed_html, :type_of, :banner_style, :active)
   end
 
   def authorize_admin
