@@ -356,7 +356,7 @@ RSpec.describe "/internal/config", type: :request do
           end.to change(SiteConfig, :rate_limit_email_recipient).from(5).to(3)
         end
 
-        xit "updates rate_limit_email_signup_creation" do
+        it "updates rate_limit_email_signup_creation" do
           expect do
             post "/internal/config", params: { site_config: { rate_limit_email_signup_creation: 1 }, confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_email_signup_creation).from(3).to(1)

@@ -352,13 +352,23 @@ class Article < ApplicationRecord
                    spaminess_rating: BlackBox.calculate_spaminess(self))
   end
 
-  private
+  def liquid_tags_used(section = nil)
+    content =
+      case section
+      when :body
+        body_markdown
+      when :comments
+        comments_blob
+      else
+        "#{body_markdown}#{comments_blob}"
+      end
 
-  def liquid_tags_used
-    MarkdownParser.new("#{body_markdown}#{comments_blob}").tags_used
+    MarkdownParser.new(content).tags_used
   rescue StandardError
     []
   end
+
+  private
 
   def search_score
     calculated_score = hotness_score.to_i + ((comments_count * 3).to_i + public_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
