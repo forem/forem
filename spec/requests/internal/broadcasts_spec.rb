@@ -48,6 +48,19 @@ RSpec.describe "/internal/broadcasts", type: :request do
       end
     end
 
+    describe "PUT /internal/broadcasts" do
+      let!(:broadcast) { create(:welcome_broadcast, active: false) }
+
+      it "updates the Broadcasts last_active_at timestamp" do
+        Timecop.freeze(Time.current) do
+          expect do
+            put "/internal/broadcasts/#{broadcast.id}", params: params
+          end.to change { broadcast.reload.active }.from(false).to(true)
+          expect(broadcast.last_active_at).to eq(Time.current)
+        end
+      end
+    end
+
     describe "DELETE /internal/broadcasts/:id" do
       let!(:broadcast) { create(:welcome_broadcast) }
 
