@@ -203,7 +203,7 @@ exports[`<Chat /> should load chat 1`] = `
               class="messagecomposer"
             >
               <textarea
-                class="crayons-textfield"
+                class="crayons-textfield composer-textarea"
                 id="messageform"
                 maxLength="1000"
                 onKeyDown={[Function]}
@@ -212,7 +212,7 @@ exports[`<Chat /> should load chat 1`] = `
                 placeholder="Write message..."
               />
               <button
-                class="crayons-btn"
+                class="crayons-btn composer-submit"
                 onClick={[Function]}
                 type="button"
               >

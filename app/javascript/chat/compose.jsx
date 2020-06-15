@@ -35,7 +35,7 @@ export default class Chat extends Component {
     return (
       <div className="composer-container__edit">
         <textarea
-          className="crayons-textfield composer-textarea__edit"
+          className="crayons-textfield composer-textarea composer-textarea__edit"
           id="messageform"
           placeholder="Let's connect"
           onKeyDown={handleKeyDownEdit}
@@ -43,10 +43,10 @@ export default class Chat extends Component {
           onKeyUp={handleKeyUp}
           maxLength="1000"
         />
-        <div class="composer-btn-group">
+        <div className="composer-btn-group">
           <button
             type="button"
-            className="composer-submit__edit crayons-btn"
+            className="composer-submit composer-submit__edit crayons-btn"
             onClick={handleSubmitOnClickEdit}
           >
             Save
@@ -56,7 +56,7 @@ export default class Chat extends Component {
             className="composer-close__edit crayons-btn crayons-btn--secondary"
             onClick={handleEditMessageClose}
             tabIndex="0"
-            onKeyUp={e => {
+            onKeyUp={(e) => {
               if (e.keyCode === 13) handleEditMessageClose();
             }}
           >
@@ -77,7 +77,7 @@ export default class Chat extends Component {
     return (
       <div className="messagecomposer">
         <textarea
-          className="crayons-textfield"
+          className="crayons-textfield composer-textarea"
           id="messageform"
           placeholder="Write message..."
           onKeyDown={handleKeyDown}
@@ -87,7 +87,7 @@ export default class Chat extends Component {
         />
         <button
           type="button"
-          className="crayons-btn"
+          className="crayons-btn composer-submit"
           onClick={handleSubmitOnClick}
         >
           Send
