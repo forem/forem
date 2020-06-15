@@ -4,7 +4,7 @@ class ModerationsController < ApplicationController
   JSON_OPTIONS = {
     only: %i[title published_at cached_tag_list path],
     include: {
-      user: { only: %i[username name path] }
+      user: { only: %i[username name path articles_count] }
     }
   }.freeze
 
