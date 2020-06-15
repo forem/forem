@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_09_191943) do
+ActiveRecord::Schema.define(version: 2020_06_12_140153) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1121,15 +1121,6 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.index ["blocked_id", "blocker_id"], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
   end
 
-  create_table "user_counters", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.jsonb "data", default: {}, null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id"
-    t.index ["data"], name: "index_user_counters_on_data", using: :gin
-    t.index ["user_id"], name: "index_user_counters_on_user_id", unique: true
-  end
-
   create_table "user_optional_fields", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "label", null: false
@@ -1138,6 +1129,19 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.string "value", null: false
     t.index ["label", "user_id"], name: "index_user_optional_fields_on_label_and_user_id", unique: true
     t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
+  end
+
+  create_table "user_subscriptions", force: :cascade do |t|
+    t.bigint "author_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.bigint "subscriber_id", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_subscription_sourceable_id", null: false
+    t.string "user_subscription_sourceable_type", null: false
+    t.index ["author_id"], name: "index_user_subscriptions_on_author_id"
+    t.index ["subscriber_id", "user_subscription_sourceable_id", "user_subscription_sourceable_type"], name: "index_on_subscriber_id_user_subscription_sourceable_type_and_id", unique: true
+    t.index ["subscriber_id"], name: "index_user_subscriptions_on_subscriber_id"
+    t.index ["user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_on_user_subscription_sourcebable_type_and_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
@@ -1324,8 +1328,9 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
-  add_foreign_key "user_counters", "users", on_delete: :cascade
   add_foreign_key "user_optional_fields", "users"
+  add_foreign_key "user_subscriptions", "users", column: "author_id"
+  add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"

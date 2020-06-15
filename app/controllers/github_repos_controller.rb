@@ -41,7 +41,10 @@ class GithubReposController < ApplicationController
     client = Github::OauthClient.for_user(current_user)
 
     repos = client.repositories(visibility: :public).map do |repo|
-      repo.featured = known_repositories.delete_if { |known| known.github_id_code == repo.id }.present?
+      if (known_index = known_repositories.find_index { |known| known.github_id_code == repo.id })
+        repo.featured = true
+        known_repositories.delete_at(known_index)
+      end
       repo
     end
 

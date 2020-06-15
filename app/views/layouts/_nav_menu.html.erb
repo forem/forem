@@ -20,15 +20,7 @@
       <a href="<%= signout_confirm_path %>" class="crayons-link crayons-link--block" id="last-nav-link">Sign Out</a>
     </div>
   <% else %>
-    <div class="border-0 border-b-1 border-solid border-base-20 p-1">
-      <a
-        href="<%= sign_up_path %>"
-        id="first-nav-link"
-        class="crayons-link crayons-link--block fw-medium"
-        data-no-instant>
-        Sign In/Up
-      </a>
-
+    <div class="border-0 border-b-1 border-solid border-base-20 p-2 grid gap-2">
       <%= render partial: "shared/authentication/providers_nav_menu" %>
     </div>
     <div class="p-1">
