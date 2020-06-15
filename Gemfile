@@ -130,7 +130,7 @@ group :development do
 end
 
 group :development, :test do
-  gem "amazing_print", "~> 1.1" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
+  gem "amazing_print", "~> 1.2" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.32" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 2.12" # A library for generating fake data such as names, addresses, and phone numbers
