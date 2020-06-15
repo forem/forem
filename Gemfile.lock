@@ -417,7 +417,7 @@ GEM
     http-parser (1.2.1)
       ffi-compiler (>= 1.0, < 2.0)
     http_parser.rb (0.6.0)
-    httparty (0.18.0)
+    httparty (0.18.1)
       mime-types (~> 3.0)
       multi_xml (>= 0.5.2)
     httpclient (2.8.3)
