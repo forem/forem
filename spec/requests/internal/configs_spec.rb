@@ -201,6 +201,12 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
         end
 
+        it "updates mascot_footer_image_url" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { mascot_footer_image_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_footer_image_url).to eq(expected_image_url)
+        end
+
         it "updates mascot_image_description" do
           description = "Hey hey #{rand(100)}"
           post "/internal/config", params: { site_config: { mascot_image_description: description }, confirmation: confirmation_message }
