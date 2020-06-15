@@ -1,7 +1,12 @@
 module VerifySetupCompleted
   extend ActiveSupport::Concern
 
-  MANDATORY_CONFIGS = %i[community_description shop_url].freeze
+  MANDATORY_CONFIGS = %i[
+    community_description
+    community_member_description
+    community_action
+    tag_url
+  ].freeze
   private_constant :MANDATORY_CONFIGS
 
   included do
