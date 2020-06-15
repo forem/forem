@@ -190,7 +190,7 @@ RSpec.describe NotifyMailer, type: :mailer do
       it "includes the listings URL" do
         expect(email.html_part.body).to include(
           CGI.escape(
-            Rails.application.routes.url_helpers.classified_listings_url,
+            Rails.application.routes.url_helpers.listings_url,
           ),
         )
       end
@@ -228,7 +228,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
       it "includes the listings URL" do
         expect(email.text_part.body).to include(
-          Rails.application.routes.url_helpers.classified_listings_url,
+          Rails.application.routes.url_helpers.listings_url,
         )
       end
 
@@ -428,7 +428,7 @@ RSpec.describe NotifyMailer, type: :mailer do
 
   describe "#tag_moderator_confirmation_email" do
     let(:tag) { create(:tag) }
-    let(:email) { described_class.tag_moderator_confirmation_email(user, tag) }
+    let(:email) { described_class.tag_moderator_confirmation_email(user, tag, "javascript-4l67") }
 
     it "renders proper subject" do
       expect(email.subject).to eq("Congrats! You're the moderator for ##{tag.name}")
@@ -485,8 +485,8 @@ RSpec.describe NotifyMailer, type: :mailer do
   describe "#channel_invite_email" do
     let(:moderator_membership) { create(:chat_channel_membership, user_id: user2.id, role: "mod") }
     let(:regular_membership) { create(:chat_channel_membership, user_id: user2.id, role: "member") }
-    let(:moderator_email) { described_class.channel_invite_email(moderator_membership, nil) }
-    let(:member_email) { described_class.channel_invite_email(regular_membership, user) }
+    let(:moderator_email) { described_class.with(membership: moderator_membership, inviter: nil).channel_invite_email }
+    let(:member_email) { described_class.with(membership: regular_membership, inviter: user).channel_invite_email }
 
     it "renders proper subject" do
       expect(moderator_email.subject).to eq("You are invited to the #{moderator_membership.chat_channel.channel_name} channel as moderator.")

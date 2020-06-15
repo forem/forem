@@ -85,7 +85,7 @@ class AnalyticsService
       where("score > 0")
     @follow_data = Follow.
       where(followable_type: user_or_org.class.name, followable_id: user_or_org.id)
-    @reaction_data = Reaction.positive.
+    @reaction_data = Reaction.public_category.
       where(reactable_id: article_ids, reactable_type: "Article")
     @page_view_data = PageView.where(article_id: article_ids)
 
@@ -115,7 +115,7 @@ class AnalyticsService
   def calculate_page_views_totals
     total_views = article_data.sum(:page_views_count)
     logged_in_page_view_data = page_view_data.where.not(user_id: nil)
-    average = logged_in_page_view_data.pluck(Arel.sql("AVG(time_tracked_in_seconds)")).first
+    average = logged_in_page_view_data.pick(Arel.sql("AVG(time_tracked_in_seconds)"))
     average_read_time_in_seconds = (average || 0).round # average is a BigDecimal
 
     {

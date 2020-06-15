@@ -40,16 +40,16 @@ RSpec.describe "Search", type: :request, proper_status: true do
     end
   end
 
-  describe "GET /search/classified_listings" do
+  describe "GET /search/listings" do
     let(:mock_documents) do
-      [{ "title" => "classified_listing1" }]
+      [{ "title" => "listing1" }]
     end
 
     it "returns json" do
-      allow(Search::ClassifiedListing).to receive(:search_documents).and_return(
+      allow(Search::Listing).to receive(:search_documents).and_return(
         mock_documents,
       )
-      get "/search/classified_listings"
+      get "/search/listings"
       expect(response.parsed_body).to eq("result" => mock_documents)
     end
   end
@@ -75,7 +75,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       )
 
       get "/search/feed_content"
-      expect(response.parsed_body).to eq("result" => mock_documents)
+      expect(response.parsed_body["result"]).to eq(mock_documents)
     end
 
     it "queries only the user index if class_name=User" do

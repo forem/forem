@@ -1,10 +1,10 @@
 class StoriesController < ApplicationController
   DEFAULT_HOME_FEED_ATTRIBUTES_FOR_SERIALIZATION = {
     only: %i[
-      title path id user_id comments_count positive_reactions_count organization_id
+      title path id user_id comments_count public_reactions_count organization_id
       reading_time video_thumbnail_url video video_duration_in_minutes language
       experience_level_rating experience_level_rating_distribution cached_user cached_organization
-      classified_listing_category_id
+      listing_category_id
     ],
     methods: %i[
       readable_publish_date cached_tag_list_array flare_tag class_name
@@ -33,6 +33,7 @@ class StoriesController < ApplicationController
   def search
     @query = "...searching"
     @article_index = true
+    @current_ordering = current_search_results_ordering
     set_surrogate_key_header "articles-page-with-query"
     render template: "articles/search"
   end
@@ -105,12 +106,20 @@ class StoriesController < ApplicationController
     @organization = Organization.find_by(slug: params[:username])
     @page = Page.find_by(slug: params[:username], is_top_level_path: true)
     if @podcast
+      Honeycomb.add_field("stories_route", "podcast")
       handle_podcast_index
     elsif @organization
+      Honeycomb.add_field("stories_route", "org")
       handle_organization_index
     elsif @page
-      handle_page_display
+      if FeatureFlag.accessible?(@page.feature_flag_name, current_user)
+        Honeycomb.add_field("stories_route", "page")
+        handle_page_display
+      else
+        not_found
+      end
     else
+      Honeycomb.add_field("stories_route", "user")
       handle_user_index
     end
   end
@@ -149,7 +158,12 @@ class StoriesController < ApplicationController
   def handle_page_display
     @story_show = true
     set_surrogate_key_header "show-page-#{params[:username]}"
-    render template: "pages/show"
+
+    if @page.template == "json"
+      render json: @page.body_json
+    else
+      render template: "pages/show"
+    end
   end
 
   def handle_base_index
@@ -157,7 +171,7 @@ class StoriesController < ApplicationController
     assign_feed_stories
     assign_hero_html
     assign_podcasts
-    assign_classified_listings
+    assign_listings
     get_latest_campaign_articles if SiteConfig.campaign_sidebar_enabled?
     @article_index = true
     @featured_story = (featured_story || Article.new)&.decorate
@@ -260,7 +274,6 @@ class StoriesController < ApplicationController
     not_found unless @article.user
 
     @article_show = true
-    @variant_number = params[:variant_version] || (user_signed_in? ? 0 : rand(2))
 
     @user = @article.user
     @organization = @article.organization
@@ -320,7 +333,7 @@ class StoriesController < ApplicationController
   def stories_by_timeframe
     if %w[week month year infinity].include?(params[:timeframe])
       @stories.where("published_at > ?", Timeframer.new(params[:timeframe]).datetime).
-        order("positive_reactions_count DESC")
+        order("public_reactions_count DESC")
     elsif params[:timeframe] == "latest"
       @stories.where("score > ?", -20).order("published_at DESC")
     else
@@ -339,8 +352,8 @@ class StoriesController < ApplicationController
       select(:slug, :title, :podcast_id, :image)
   end
 
-  def assign_classified_listings
-    @classified_listings = ClassifiedListing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at)
+  def assign_listings
+    @listings = Listing.where(published: true).select(:title, :classified_listing_category_id, :slug, :bumped_at)
   end
 
   def redirect_to_lowercase_username
@@ -389,7 +402,7 @@ class StoriesController < ApplicationController
         "logo": {
           "@context": "http://schema.org",
           "@type": "ImageObject",
-          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, "png"),
+          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, 80, "png"),
           "width": "192",
           "height": "192"
         }
@@ -467,5 +480,11 @@ class StoriesController < ApplicationController
       @user.twitch_username,
       @user.website_url,
     ].reject(&:blank?)
+  end
+
+  def current_search_results_ordering
+    return :relevance unless params[:sort_by] == "published_at" && params[:sort_direction].present?
+
+    params[:sort_direction] == "desc" ? :newest : :oldest
   end
 end

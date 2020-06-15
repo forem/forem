@@ -242,6 +242,16 @@ RSpec.describe Article, type: :model do
         expect(build(:article, tags: tags).valid?).to be(false)
       end
 
+      it "rejects tag with non-alphanumerics" do
+        expect { build(:article, tags: "c++").validate! }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "always downcase tags" do
+        tags = "UPPERCASE, CAPITALIZE"
+        article = create(:article, tags: tags)
+        expect(article.tag_list).to eq(tags.downcase.split(", "))
+      end
+
       it "parses tags when description is empty" do
         body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n"
         expect(build_and_validate_article(body_markdown: body_markdown).tag_list).to eq(["one"])
@@ -644,6 +654,41 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe ".search_optimized_title_preamble" do
+    let!(:top_article) do
+      create(:article, search_optimized_title_preamble: "Hello #{rand(1000)}", tags: "good, greatalicious")
+    end
+
+    it "returns article with title preamble" do
+      articles = described_class.search_optimized
+      expect(articles.first[0]).to eq(top_article.path)
+      expect(articles.first[1]).to eq(top_article.search_optimized_title_preamble)
+    end
+
+    it "does not return article without preamble" do
+      articles = described_class.search_optimized
+      new_article = create(:article)
+      expect(articles.flatten).not_to include(new_article.path)
+    end
+
+    it "does return multiple articles with preamble ordered by updated_at" do
+      new_article = create(:article, search_optimized_title_preamble: "Testerino")
+      articles = described_class.search_optimized
+      expect(articles.first[1]).to eq(new_article.search_optimized_title_preamble)
+      expect(articles.second[1]).to eq(top_article.search_optimized_title_preamble)
+    end
+
+    it "returns articles ordered by organic_page_views_count by tag" do
+      articles = described_class.search_optimized("greatalicious")
+      expect(articles.first[0]).to eq(top_article.path)
+    end
+
+    it "returns nothing if no tagged articles" do
+      articles = described_class.search_optimized("godsdsdsdsgoo")
+      expect(articles).to be_empty
+    end
+  end
+
   context "when callbacks are triggered before save" do
     it "assigns path on save" do
       expect(article.path).to eq("/#{article.username}/#{article.slug}")
@@ -777,7 +822,7 @@ RSpec.describe Article, type: :model do
     it "returns records with a subset of attributes" do
       feed_article = described_class.feed.first
 
-      fields = %w[id tag_list published_at processed_html user_id organization_id title path]
+      fields = %w[id tag_list published_at processed_html user_id organization_id title path cached_tag_list]
       expect(feed_article.attributes.keys).to match_array(fields)
     end
   end

@@ -13,25 +13,40 @@ RSpec.describe "Creating an article with the editor", type: :system do
     sign_in user
   end
 
-  it "renders the page", js: true, percy: true do
+  # TODO: Uncomment this spec when we decide to use percy again
+  xit "renders the page", js: true, percy: true do
     visit new_path
     fill_in "article_body_markdown", with: template
-    click_button "SAVE CHANGES"
+    click_button "Save changes"
     Percy.snapshot(page, name: "Creating an article: shows the title")
   end
 
   it "creates a new article", js: true, retry: 3 do
     visit new_path
     fill_in "article_body_markdown", with: template
-    click_button "SAVE CHANGES"
+    click_button "Save changes"
     expect(page).to have_selector("header h1", text: "Sample Article")
+  end
+
+  context "with an active announcement" do
+    before do
+      create(:announcement_broadcast)
+      get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
+      visit new_path
+    end
+
+    it "does not render the announcement broadcast", js: true do
+      expect(page).not_to have_css(".broadcast-wrapper")
+      expect(page).not_to have_selector(".broadcast-data")
+      expect(page).not_to have_text("Hello, World!")
+    end
   end
 
   context "with Runkit tag", js: true do
     it "creates a new article with a Runkit tag" do
       visit new_path
       fill_in "article_body_markdown", with: template_with_runkit_tag
-      click_button "SAVE CHANGES"
+      click_button "Save changes"
 
       expect_runkit_tag_to_be_active
     end
@@ -39,15 +54,15 @@ RSpec.describe "Creating an article with the editor", type: :system do
     it "previews article with a Runkit tag and creates it" do
       visit new_path
       fill_in "article_body_markdown", with: template_with_runkit_tag
-      click_button "PREVIEW"
+      click_button "Preview"
 
       expect_runkit_tag_to_be_active
 
-      click_button "EDIT"
+      click_button "Edit"
 
       expect_no_runkit_tag_to_be_active
 
-      click_button "SAVE CHANGES"
+      click_button "Save changes"
 
       expect_runkit_tag_to_be_active
     end

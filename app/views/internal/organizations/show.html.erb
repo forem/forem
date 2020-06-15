@@ -36,7 +36,7 @@
     <%= form_tag update_org_credits_internal_organization_path(@organization), method: :patch, class: "form-inline justify-content-between mb-2" do %>
       <div class="form-group">
         <%= hidden_field_tag :credit_action, :add %>
-        <%= number_field_tag :credits, nil, in: 1...100000, required: true, class: "form-control mr-3", size: 5 %>
+        <%= number_field_tag :credits, nil, in: 1...100_000, required: true, class: "form-control mr-3", size: 5 %>
         <%= text_field_tag :note, "", placeholder: "Why are you adding these credits?", size: 50, required: true, class: "form-control mr-3" %>
       </div>
       <%= submit_tag "Add Org Credits", class: "btn btn-primary" %>

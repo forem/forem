@@ -53,7 +53,7 @@ module Exporter
         main_image
         main_image_background_hex_color
         path
-        positive_reactions_count
+        public_reactions_count
         processed_html
         published
         published_from_feed

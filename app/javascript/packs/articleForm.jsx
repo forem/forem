@@ -15,7 +15,7 @@ function loadForm() {
     window.currentUser = currentUser;
     window.csrfToken = csrfToken;
 
-    const root = document.getElementById('article-form');
+    const root = document.getElementById('js-article-form');
     const { article, organizations, version } = root.dataset;
 
     render(
@@ -30,7 +30,22 @@ function loadForm() {
   });
 }
 
+/**
+ * A function to hide an active broadcast if it exists
+ * by removing a `broadcast-visible` class from it.
+ *
+ * @function hideActiveBroadcast
+ */
+function hideActiveBroadcast() {
+  const broadcast = document.getElementById('active-broadcast');
+
+  if (broadcast) {
+    broadcast.classList.remove('broadcast-visible');
+  }
+}
+
 document.ready.then(() => {
+  hideActiveBroadcast();
   loadForm();
   window.InstantClick.on('change', () => {
     if (document.getElementById('article-form')) {

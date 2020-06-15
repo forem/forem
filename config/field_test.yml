@@ -12,6 +12,8 @@ experiments:
       - more_tag_weight_randomized_at_end_experiment
       - more_experience_level_weight_randomized_at_end_experiment
       - more_comments_randomized_at_end_experiment
+      - more_comments_medium_weight_randomized_at_end_experiment
+      - more_comments_minimal_weight_randomized_at_end_experiment
     weights:
       - 5
       - 5
@@ -23,7 +25,9 @@ experiments:
       - 10
       - 10
       - 5
-      - 35
+      - 25
+      - 5
+      - 5
     goals:
       - user_creates_comment
       - user_creates_reaction

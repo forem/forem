@@ -11,7 +11,7 @@ const Channels = ({
   unopenedChannelIds,
   handleSwitchChannel,
   expanded,
-  filterQuery,
+  filterQuery = '',
   channelsLoaded,
   currentUserId,
   triggerActiveContent,
@@ -32,7 +32,6 @@ const Channels = ({
       );
     },
   );
-
   const channels = sortedChatChannels.activeChannels.map((channel) => {
     const isActive = parseInt(activeChannelId, 10) === channel.chat_channel_id;
     const isUnopened =

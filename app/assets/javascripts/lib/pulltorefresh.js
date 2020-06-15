@@ -41,7 +41,7 @@
     onRefresh: () => {
       return window.location.reload();
     },
-    resistanceFunction: t => {
+    resistanceFunction: (t) => {
       return Math.min(1, t / 2.5);
     },
     shouldPullToRefresh: () => {
@@ -50,7 +50,7 @@
         (document.getElementById('articles-list') ||
           document.getElementById('user-dashboard') ||
           document.getElementById('article-body') ||
-          document.getElementById('classifieds-index-container')) &&
+          document.getElementById('listings-index-container')) &&
         !document.body.classList.contains('modal-open')
       );
     },
@@ -178,7 +178,7 @@
 
     function onTouchStart(e) {
       // here, we must pick a handler first, and then append their html/css on the DOM
-      var target = shared.handlers.filter(h => {
+      var target = shared.handlers.filter((h) => {
         return h.contains(e.target);
       })[0];
 
@@ -347,7 +347,7 @@
     var handler = {};
 
     // merge options with defaults
-    Object.keys(defaults).forEach(key => {
+    Object.keys(defaults).forEach((key) => {
       handler[key] = options[key] || defaults[key];
     });
 
@@ -358,7 +358,7 @@
         : defaults.refreshTimeout;
 
     // normalize elements
-    methods.forEach(method => {
+    methods.forEach((method) => {
       if (typeof handler[method] === 'string') {
         handler[method] = document.querySelector(handler[method]);
       }
@@ -369,7 +369,7 @@
       shared.events = setupEvents();
     }
 
-    handler.contains = target => {
+    handler.contains = (target) => {
       return handler.triggerElement.contains(target);
     };
 
@@ -395,7 +395,7 @@
         shared.events = null;
       }
 
-      shared.handlers.forEach(h => {
+      shared.handlers.forEach((h) => {
         h.destroy();
       });
     },

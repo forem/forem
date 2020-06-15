@@ -104,7 +104,7 @@ class CommentsController < ApplicationController
       comment.destroy
       render json: { error: "comment already exists" }, status: :unprocessable_entity
     else
-      message = @comment.errors.full_messages.to_sentence
+      message = @comment.errors_as_sentence
       render json: { error: message }, status: :unprocessable_entity
     end
   # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
@@ -224,7 +224,7 @@ class CommentsController < ApplicationController
     if @comment.save
       render json: { hidden: "true" }, status: :ok
     else
-      render json: { errors: @comment.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+      render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity
     end
   end
 
@@ -237,7 +237,7 @@ class CommentsController < ApplicationController
       @commentable&.update_column(:any_comments_hidden, @commentable.comments.pluck(:hidden_by_commentable_user).include?(true))
       render json: { hidden: "false" }, status: :ok
     else
-      render json: { errors: @comment.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+      render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity
     end
   end
 

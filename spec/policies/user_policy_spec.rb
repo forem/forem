@@ -38,4 +38,16 @@ RSpec.describe UserPolicy, type: :policy do
 
     it { is_expected.to forbid_actions(%i[moderation_routes]) }
   end
+
+  context "when the user is an admin" do
+    let(:user) { build(:user, :admin) }
+
+    it { is_expected.to permit_actions(%i[moderation_routes]) }
+  end
+
+  context "when the user is a super admin" do
+    let(:user) { build(:user, :super_admin) }
+
+    it { is_expected.to permit_actions(%i[moderation_routes]) }
+  end
 end

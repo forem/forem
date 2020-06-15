@@ -4,10 +4,14 @@ RSpec.describe BadgeAchievement, type: :model do
   let_it_be(:achievement) { create(:badge_achievement) }
 
   describe "validations" do
-    it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:badge) }
-    it { is_expected.to belong_to(:rewarder).class_name("User").optional }
-    it { is_expected.to validate_uniqueness_of(:badge_id).scoped_to(:user_id) }
+    describe "builtin validations" do
+      subject { achievement }
+
+      it { is_expected.to belong_to(:user) }
+      it { is_expected.to belong_to(:badge) }
+      it { is_expected.to belong_to(:rewarder).class_name("User").optional }
+      it { is_expected.to validate_uniqueness_of(:badge_id).scoped_to(:user_id) }
+    end
   end
 
   it "turns rewarding_context_message_markdown into rewarding_context_message HTML" do

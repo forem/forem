@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe Bufferizer, type: :labor do
   let(:user) { create(:user) }
-  let(:listing) { create(:classified_listing, user_id: user.id) }
+  let(:listing) { create(:listing, user_id: user.id) }
   let(:tag) { create(:tag, buffer_profile_id_code: "test") }
   let(:article) { create(:article, user_id: user.id, tags: tag.name) }
 

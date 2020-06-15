@@ -21,7 +21,7 @@ module Search
           "path" => source["path"],
           "id" => source["id"],
           "class_name" => "User",
-          "positive_reactions_count" => source["positive_reactions_count"],
+          "public_reactions_count" => source["public_reactions_count"],
           "comments_count" => source["comments_count"],
           "badge_achievements_count" => source["badge_achievements_count"],
           "last_comment_at" => source["last_comment_at"],

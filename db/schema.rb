@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `rails
+# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_21_153435) do
+ActiveRecord::Schema.define(version: 2020_06_09_191943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -163,6 +163,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.text "rewarding_context_message_markdown"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["badge_id", "user_id"], name: "index_badge_achievements_on_badge_id_and_user_id", unique: true
     t.index ["badge_id"], name: "index_badge_achievements_on_badge_id"
     t.index ["user_id", "badge_id"], name: "index_badge_achievements_on_user_id_and_badge_id"
     t.index ["user_id"], name: "index_badge_achievements_on_user_id"
@@ -266,10 +267,14 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
     t.boolean "active", default: false
+    t.string "banner_style"
     t.text "body_markdown"
+    t.datetime "created_at"
     t.text "processed_html"
     t.string "title"
     t.string "type_of"
+    t.datetime "updated_at"
+    t.index ["title", "type_of"], name: "index_broadcasts_on_title_and_type_of", unique: true
   end
 
   create_table "buffer_updates", force: :cascade do |t|
@@ -297,6 +302,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.index ["chat_channel_id", "user_id"], name: "index_chat_channel_memberships_on_chat_channel_id_and_user_id", unique: true
     t.index ["chat_channel_id"], name: "index_chat_channel_memberships_on_chat_channel_id"
     t.index ["user_id", "chat_channel_id"], name: "index_chat_channel_memberships_on_user_id_and_chat_channel_id"
     t.index ["user_id"], name: "index_chat_channel_memberships_on_user_id"
@@ -312,6 +318,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "slug"
     t.string "status", default: "active"
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_chat_channels_on_slug", unique: true
   end
 
   create_table "classified_listing_categories", force: :cascade do |t|
@@ -361,6 +368,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["organization_id"], name: "index_collections_on_organization_id"
+    t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
 
@@ -387,6 +395,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.datetime "updated_at", null: false
     t.integer "user_id"
     t.index ["ancestry"], name: "index_comments_on_ancestry"
+    t.index ["body_markdown", "user_id", "ancestry", "commentable_id", "commentable_type"], name: "index_comments_on_body_markdown_user_id_ancestry_commentable", unique: true
     t.index ["commentable_id", "commentable_type"], name: "index_comments_on_commentable_id_and_commentable_type"
     t.index ["created_at"], name: "index_comments_on_created_at"
     t.index ["score"], name: "index_comments_on_score"
@@ -414,6 +423,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.datetime "run_at"
     t.integer "status", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["file_name"], name: "index_data_update_scripts_on_file_name", unique: true
   end
 
   create_table "display_ad_events", force: :cascade do |t|
@@ -504,6 +514,22 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.index ["participant_type", "participant_id", "experiment"], name: "index_field_test_memberships_on_participant", unique: true
   end
 
+  create_table "flipper_features", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "key", null: false
+    t.datetime "updated_at", null: false
+    t.index ["key"], name: "index_flipper_features_on_key", unique: true
+  end
+
+  create_table "flipper_gates", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "feature_key", null: false
+    t.string "key", null: false
+    t.datetime "updated_at", null: false
+    t.string "value"
+    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+  end
+
   create_table "follows", id: :serial, force: :cascade do |t|
     t.boolean "blocked", default: false, null: false
     t.datetime "created_at"
@@ -526,6 +552,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "processed_html"
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["url"], name: "index_github_issues_on_url", unique: true
   end
 
   create_table "github_repos", force: :cascade do |t|
@@ -545,6 +572,8 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "url"
     t.integer "user_id"
     t.integer "watchers_count"
+    t.index ["github_id_code"], name: "index_github_repos_on_github_id_code", unique: true
+    t.index ["url"], name: "index_github_repos_on_url", unique: true
   end
 
   create_table "html_variant_successes", force: :cascade do |t|
@@ -655,6 +684,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.index ["organization_id"], name: "index_notifications_on_organization_id"
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
+    t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
@@ -744,6 +774,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.integer "unspent_credits_count", default: 0, null: false
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["secret"], name: "index_organizations_on_secret", unique: true
     t.index ["slug"], name: "index_organizations_on_slug", unique: true
   end
 
@@ -766,6 +797,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
 
   create_table "pages", force: :cascade do |t|
     t.text "body_html"
+    t.jsonb "body_json"
     t.text "body_markdown"
     t.datetime "created_at", null: false
     t.string "description"
@@ -777,6 +809,19 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_pages_on_slug", unique: true
+  end
+
+  create_table "path_redirects", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "new_path", null: false
+    t.string "old_path", null: false
+    t.string "source"
+    t.datetime "updated_at", null: false
+    t.integer "version", default: 0, null: false
+    t.index ["new_path"], name: "index_path_redirects_on_new_path"
+    t.index ["old_path"], name: "index_path_redirects_on_old_path", unique: true
+    t.index ["source"], name: "index_path_redirects_on_source"
+    t.index ["version"], name: "index_path_redirects_on_version"
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
@@ -1120,6 +1165,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "currently_hacking_on"
     t.string "currently_learning"
     t.string "currently_streaming_on"
+    t.boolean "display_announcements", default: true
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
     t.string "editor_version", default: "v1"
@@ -1184,6 +1230,7 @@ ActiveRecord::Schema.define(version: 2020_05_21_153435) do
     t.string "old_username"
     t.boolean "onboarding_package_requested", default: false
     t.datetime "organization_info_updated_at"
+    t.string "payment_pointer"
     t.boolean "permit_adjacent_sponsors", default: true
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"

@@ -25,7 +25,7 @@ describe('<GithubRepos />', () => {
     it('renders and matches the snapshot', () => {
       fetch.mockReject('some error');
       const context = shallow(<GithubRepos />);
-      context.setState({ erroredOut: true });
+      context.setState({ error: true, errorMessage: 'this is an error' });
       context.rerender();
       const tree = render(context);
       expect(tree).toMatchSnapshot();

@@ -3,7 +3,7 @@ import { action } from '@storybook/addon-actions';
 import { SnackbarItem } from '../SnackbarItem';
 
 export default {
-  title: 'App Components/Snackbar/SnackbarItem',
+  title: '4_App Components/Snackbar/SnackbarItem',
 };
 
 export const JustAMessage = () => (

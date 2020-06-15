@@ -35,7 +35,6 @@
       <li class="nav-item">
         <a href="/internal/articles?state=satellite-not-buffered" class="nav-link <%= "active" if params[:state] == "satellite-not-buffered" %>">Satellite</a>
       </li>
-      
     </ul>
     <% if params[:state] && params[:state].include?("top-") && params[:state] != "top-3" && params[:state] != "top-6" %>
       <h1 style="color:red">

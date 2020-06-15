@@ -1,0 +1,56 @@
+<div class="row m-3">
+  <div class="col">
+    <a href="<%= new_internal_path_redirect_path %>" class="btn btn-primary" role="button">Create a New Path Redirect</a>
+  </div>
+  <div class="col">
+    <%= search_form_for @q, url: internal_path_redirects_path, class: "form-inline justify-content-end" do |f| %>
+
+      <%= f.label :old_path_or_new_path_cont, "Old or New Path", class: "sr-only" %>
+      <%= f.search_field :old_path_or_new_path_cont, placeholder: "Old or New Path", class: "form-control mx-3" %>
+
+      <%= f.submit "Search", class: "btn btn-secondary" %>
+    <% end %>
+  </div>
+</div>
+
+<%= paginate @path_redirects %>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Old Path</th>
+      <th scope="col">New Path</th>
+      <th scope="col">Source</th>
+      <th scope="col">Version</th>
+      <th scope="col">
+        <%= content_tag :span, sort_link(@q, :created_at, "Date"), class: "mx-2" %>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @path_redirects.each do |path_redirect| %>
+      <% badge_type =
+           if path_redirect.version <= 3
+             "success"
+           elsif path_redirect.version <= 5
+             "warning"
+           else
+             "danger"
+           end %>
+
+      <tr>
+        <td><%= link_to(path_redirect.id, edit_internal_path_redirect_path(path_redirect.id)) %></td>
+        <td><%= link_to(path_redirect.old_path, path_redirect.old_path_url) %></td>
+        <td><%= link_to(path_redirect.new_path, path_redirect.new_path_url) %></td>
+        <td><%= path_redirect.source %></td>
+        <td class="justify-content-center">
+          <div class="badge badge-<%= badge_type %>"><%= path_redirect.version %></div>
+        </td>
+        <td><%= path_redirect.created_at %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= paginate @path_redirects %>
