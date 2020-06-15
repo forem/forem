@@ -36,6 +36,6 @@ class Broadcast < ApplicationRecord
   end
 
   def update_last_active_at
-    self.last_active_at = Time.zone.now
+    self.last_active_at = Time.current
   end
 end
