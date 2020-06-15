@@ -99,7 +99,7 @@ GEM
       addressable (>= 2.3.2)
       nokogiri
       safely_block (>= 0.1.1)
-    amazing_print (1.1.0)
+    amazing_print (1.2.0)
     ancestry (3.0.7)
       activerecord (>= 3.2.0)
     approvals (0.0.24)
@@ -876,7 +876,7 @@ DEPENDENCIES
   addressable (~> 2.7)
   administrate (~> 0.13)
   ahoy_email (~> 1.1)
-  amazing_print (~> 1.1)
+  amazing_print (~> 1.2)
   ancestry (~> 3.0)
   approvals (~> 0.0)
   autoprefixer-rails (~> 9.7)
