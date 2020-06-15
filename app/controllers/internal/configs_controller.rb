@@ -108,6 +108,7 @@ class Internal::ConfigsController < Internal::ApplicationController
     %i[
       rate_limit_comment_creation
       rate_limit_email_recipient
+      rate_limit_email_signup_creation
       rate_limit_follow_count_daily
       rate_limit_image_upload
       rate_limit_published_article_creation
