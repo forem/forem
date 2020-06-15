@@ -2,6 +2,8 @@ class EmailSignupsController < ApplicationController
   before_action :authenticate_user!
 
   def create
+    rate_limit!(:email_signup_creation)
+
     source_type = email_signup_params[:source_type]
     return invalid_type_error unless UserSubscription::ALLOWED_TYPES.include?(source_type)
 
@@ -18,6 +20,7 @@ class EmailSignupsController < ApplicationController
     )
 
     if @user_subscription.save
+      rate_limiter.track_limit_by_action(:email_signup_creation)
       render json: { message: "success", status: 200 }, status: :ok
     else
       render json: {
