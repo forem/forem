@@ -70,14 +70,13 @@ describe('<Membership />', () => {
 
   it('should render a moderator user', () => {
     const { membership, membershipType, currentMembershipRole } = getModUser();
-    const { debug, getByAltText, getByTitle } = render(
+    const { getByAltText, getByTitle } = render(
       <Membership
         membership={membership}
         membershipType={membershipType}
         currentMembershipRole={currentMembershipRole}
       />,
     );
-    debug();
     const userProfileLink = getByTitle('test user profile');
 
     expect(userProfileLink.getAttribute('href')).toEqual('/testusername');

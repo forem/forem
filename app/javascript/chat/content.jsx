@@ -58,52 +58,6 @@ function smartSvgIcon(content, d) {
   );
 }
 
-function display(resource) {
-  if (resource.type_of === 'loading-user') {
-    return <div className="loading-user" title="Loading user" />;
-  }
-
-  if (resource.type_of === 'article') {
-    return <Article resource={resource} />;
-  }
-
-  if (resource.type_of === 'channel-request') {
-    return (
-      <ChannelRequest
-        resource={resource.data}
-        handleJoiningRequest={resource.handleJoiningRequest}
-      />
-    );
-  }
-
-  if (resource.type_of === 'channel-request-manager') {
-    return (
-      <RequestManager
-        resource={resource.data}
-        handleRequestRejection={resource.handleRequestRejection}
-        handleRequestApproval={resource.handleRequestApproval}
-      />
-    );
-  }
-
-  return null;
-}
-
-function smartSvgIcon(content, d) {
-  return (
-    <svg
-      data-content={content}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      width="24"
-      height="24"
-    >
-      <path data-content={content} fill="none" d="M0 0h24v24H0z" />
-      <path data-content={content} d={d} />
-    </svg>
-  );
-}
-
 export default class Content extends Component {
   static defaultProps = {
     resource: undefined,
