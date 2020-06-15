@@ -1,3 +1,6 @@
+# This model handles a user (subscriber) subscribing to another user (author).
+# We also record the source of the subscription (Article, Comment, etc.) via a
+# polymorphic association (user_subscription_source/able).
 class UserSubscription < ApplicationRecord
   ALLOWED_TYPES = %w[Article].freeze
 
