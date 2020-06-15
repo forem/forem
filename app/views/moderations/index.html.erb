@@ -1,6 +1,6 @@
 <% title "Moderate" %>
 
-<%= javascript_packs_with_chunks_tag "moderationArticles", defer: true %>
+<%= javascript_packs_with_chunks_tag "modCenter", defer: true %>
 
 <div id="moderation-page"></div>
 <% if current_user&.trusted %>
@@ -8,9 +8,13 @@
     <%= render "moderations/mod_sidebar_left" %>
     <div class="mod-index-container articles-list crayons-layout__content">
       <header class="mod-index-header-new">
-        <h1>
-          #${tag_name}
-        </h1>
+        <span class="tag-view">
+          <% if @tag %>
+            #<%= @tag %>
+          <% else %>
+            All topics
+          <% end %>
+        </span>
       </header>
       <main class="mod-index-list" id="mod-index-list" data-articles="<%= @articles %>">
         <header class="mod-index-list-header">
