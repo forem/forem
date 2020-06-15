@@ -93,8 +93,6 @@ class User < ApplicationRecord
   has_many :tweets, dependent: :destroy
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
 
-  has_one :counters, class_name: "UserCounter", dependent: :destroy
-
   mount_uploader :profile_image, ProfileImageUploader
 
   devise :omniauthable, :registerable, :database_authenticatable, :confirmable, :rememberable
@@ -148,15 +146,6 @@ class User < ApplicationRecord
   alias_attribute :public_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
 
-  scope :with_this_week_comments, lambda { |number|
-    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
-  }
-  scope :with_previous_week_comments, lambda { |number|
-    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_prior_7_days')::int >= ?", number)
-  }
-  scope :top_commenters, lambda { |number = 10|
-    includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
-  }
   scope :eager_load_serialized_data, -> { includes(:roles) }
 
   after_save :bust_cache
