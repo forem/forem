@@ -56,6 +56,7 @@ class AsyncInfoController < ApplicationController
         id: @user.id,
         name: @user.name,
         username: @user.username,
+        email: @user.email,
         profile_image_90: ProfileImage.new(@user).get(width: 90),
         followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score], methods: [:points]),
         followed_user_ids: @user.cached_following_users_ids,
