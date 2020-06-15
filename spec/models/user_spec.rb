@@ -129,7 +129,6 @@ RSpec.describe User, type: :model do
       it do
         expect(subject).to have_many(:webhook_endpoints).
           class_name("Webhook::Endpoint").
-          with_foreign_key(:user_id).
           dependent(:delete_all)
       end
       # rubocop:enable RSpec/NamedSubject
