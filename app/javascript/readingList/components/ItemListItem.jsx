@@ -33,7 +33,7 @@ export const ItemListItem = ({ item, children }) => {
           {adaptedItem.tags.length > 0 ? (
             <span datatestid="item-tags" className="item-tags">
               {adaptedItem.tags.map((tag) => (
-                <a datatestid="item-tag" className="item-tag" href={`/t/${tag.name}`}>
+                <a className="item-tag" href={`/t/${tag.name}`}>
                   {`#${tag.name}`}
                 </a>
               ))}
