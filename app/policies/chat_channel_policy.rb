@@ -35,6 +35,10 @@ class ChatChannelPolicy < ApplicationPolicy
     user_part_of_channel && channel_is_direct
   end
 
+  def update_channel?
+    user_can_edit_channel
+  end
+
   private
 
   def user_can_edit_channel

@@ -1,21 +1,18 @@
+import { request } from '../../utilities/http';
+
 export function rejectJoiningRequest(
   channelId,
   membershipId,
   successCb,
   failureCb,
 ) {
-  fetch(`/chat_channel_memberships/remove_membership`, {
+  request(`/chat_channel_memberships/remove_membership`, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+    body: {
       status: 'pending',
       chat_channel_id: channelId,
       membership_id: membershipId,
-    }),
+    },
     credentials: 'same-origin',
   })
     .then((response) => response.json())
@@ -29,20 +26,15 @@ export function acceptJoiningRequest(
   successCb,
   failureCb,
 ) {
-  fetch(`/chat_channel_memberships/add_membership`, {
+  request(`/chat_channel_memberships/add_membership`, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+    body: {
       chat_channel_id: channelId,
       membership_id: membershipId,
       chat_channel_membership: {
         user_action: 'accept',
       },
-    }),
+    },
     credentials: 'same-origin',
   })
     .then((response) => response.json())
@@ -51,18 +43,13 @@ export function acceptJoiningRequest(
 }
 
 export function sendChannelRequest(id, successCb, failureCb) {
-  fetch(`/join_chat_channel`, {
+  request(`/join_chat_channel`, {
     method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-Token': window.csrfToken,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
+    body: {
       chat_channel_membership: {
         chat_channel_id: id,
       },
-    }),
+    },
     credentials: 'same-origin',
   })
     .then((response) => response.json())

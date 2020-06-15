@@ -14,7 +14,9 @@ describe('<Onboarding />', () => {
   const renderOnboarding = () => render(
     <Onboarding
       communityConfig={{
-        communityName: 'Test',
+        communityName: 'Community Name',
+        communityLogo: '/x.png',
+        communityBackground: '/y.jpg',
         communityDescription: "Some community description",
       }}
     />,

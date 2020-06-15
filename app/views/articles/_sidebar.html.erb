@@ -1,6 +1,6 @@
 <div id="sidebar-wrapper-left" class="sidebar-wrapper sidebar-wrapper-left crayons-layout__sidebar-left">
   <div class="sidebar-bg" id="sidebar-bg-left"></div>
-  <div class="side-bar">
+  <aside class="side-bar" aria-label="Primary sidebar">
     <% cache(cache_key_heroku_slug("main-sidebar-nav--#{user_signed_in?}"), expires_in: 15.minutes) do %>
       <%= render "articles/sidebar_nav" %>
       <div class="<%= "hidden" if user_signed_in? %> px-1" id="sponsorship-widget">
@@ -28,5 +28,5 @@
         </div>
       <% end %>
     <% end %>
-  </div>
+  </aside>
 </div>

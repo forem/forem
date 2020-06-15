@@ -37,7 +37,7 @@
     </h1>
   <% else %>
     <h1 class="fs-2xl s:fs-3xl">
-      Settings for <a href="<%= user_url(@user) || '#' %>">@<%= @user.username.truncate(User::USERNAME_MAX_LENGTH) %></a>
+      Settings for <a href="<%= user_url(@user) || "#" %>">@<%= @user.username.truncate(User::USERNAME_MAX_LENGTH) %></a>
     </h1>
   <% end %>
 </header>
@@ -54,7 +54,7 @@
     <div class="m:hidden p-2 pt-0">
       <select id="mobile-page-selector" class="crayons-select">
         <% @tab_list.each do |possible_tab| %>
-          <option value="/settings/<%= possible_tab.downcase.tr(" ", "-") %>" <% if @tab == possible_tab.downcase.tr(' ', '-') %>selected<% end %>>
+          <option value="/settings/<%= possible_tab.downcase.tr(" ", "-") %>" <% if @tab == possible_tab.downcase.tr(' ', '-') %> selected <% end %>>
             <%= possible_tab %>
           </option>
         <% end %>

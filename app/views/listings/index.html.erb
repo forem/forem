@@ -38,7 +38,7 @@
     <div class="listing-filters-categories">
       <a href="<%= listings_path %>" class="<%= "selected" if params[:category].blank? %> data-no-instant=" true ">all</a>
       <% categories_for_display.each do |cat| %>
-        <a href="<%= listing_category_path(category: cat[:slug]) %>" class="<%= "selected" if params[:category] == cat[:slug] %> data-no-instant="true"><%= cat[:name] %></a>
+        <a href="<%= listing_category_path(category: cat[:slug]) %> " class="<%= "selected" if params[:category] == cat[:slug] %> data-no-instant="true"><%= cat[:name] %></a>
       <% end %>
       <a href="<%= new_listing_path %>" class='listing-create-link'>Create a Listing</a>
       <% if @displayed_listing %>

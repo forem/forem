@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_08_175130) do
+ActiveRecord::Schema.define(version: 2020_06_09_191943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -797,6 +797,7 @@ ActiveRecord::Schema.define(version: 2020_06_08_175130) do
 
   create_table "pages", force: :cascade do |t|
     t.text "body_html"
+    t.jsonb "body_json"
     t.text "body_markdown"
     t.datetime "created_at", null: false
     t.string "description"

@@ -10,178 +10,121 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     chat_channel.add_users([user])
   end
 
-  describe "GET /chat_channel_memberships" do
-    context "when pending invitations exists" do
+  describe "GET /chat_channel_info" do
+    context "when chat channel membership role is mod" do
       before do
         user.add_role(:super_admin)
-        post "/chat_channel_memberships", params: {
-          chat_channel_membership: {
-            invitation_usernames: second_user.username.to_s,
-            chat_channel_id: chat_channel.id
-          }
-        }
+
+        membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: user.id)
+        get "/chat_channel_memberships/chat_channel_info/#{membership.id}"
       end
 
-      it "shows chat_channel_memberships list pending invitation" do
-        sign_in second_user
-        get "/chat_channel_memberships"
-        expect(response.body).to include "Pending Invitations"
-        expect(response.body).to include chat_channel.channel_name.to_s
+      it "return all details of chat channel" do
+        expect(response.status).to eq(200)
+        puts response.body.inspect
+        expect(JSON.parse(response.body)["result"].keys).to eq(%w[chat_channel memberships current_membership])
       end
     end
 
-    context "when no pending invitation" do
-      it "shows chat_channel_memberships list pending invitation" do
-        sign_in second_user
-        get "/chat_channel_memberships"
-        expect(response.body).to include "You have no pending invitations"
-      end
-    end
-  end
-
-  describe "GET /chat_channel_memberships/find_by_chat_channel_id" do
-    context "when user is logged in" do
+    context "when membership role is member" do
       before do
+        sign_in second_user
         chat_channel.add_users([second_user])
+
+        membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: second_user.id)
+        get "/chat_channel_memberships/chat_channel_info/#{membership.id}"
       end
 
-      it "returns chat channel membership details" do
-        sign_in second_user
-        get "/chat_channel_memberships/find_by_chat_channel_id", params: { chat_channel_id: chat_channel.id }
-        expected_keys = %w[id status chat_channel_id last_opened_at channel_text
-                           channel_last_message_at channel_status channel_username
-                           channel_type channel_name channel_image
-                           channel_modified_slug channel_messages_count]
-        expect(response.parsed_body.keys).to(match_array(expected_keys))
-      end
-    end
-
-    context "when user is not logged in" do
-      it "renders not_found" do
-        expect do
-          get "/chat_channel_memberships/find_by_chat_channel_id", params: {}
-        end.to raise_error(ActiveRecord::RecordNotFound)
+      it "return only channel info and current membership" do
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)["result"].keys).to eq(%w[chat_channel memberships current_membership])
+        expect(JSON.parse(response.body)["result"]["memberships"]["pending"].length).to eq(0)
+        expect(JSON.parse(response.body)["result"]["memberships"]["requested"].length).to eq(0)
       end
     end
   end
 
-  describe "GET /chat_channel_memberships/:id/edit" do
-    before do
-      chat_channel.add_users([second_user])
-    end
-
-    let(:chat_channel_membership) { chat_channel.chat_channel_memberships.where(user_id: second_user.id).first }
-
-    context "when user is not logged in" do
-      it "raise Pundit::NotAuthorizedError" do
-        expect do
-          get "/chat_channel_memberships/#{chat_channel_membership.id}/edit"
-        end.to raise_error(Pundit::NotAuthorizedError)
-      end
-    end
-
-    context "when user is logged in and channel id is wrong" do
-      it "raise ActiveRecord::RecordNotFound" do
-        sign_in second_user
-        expect do
-          get "/chat_channel_memberships/ERW/edit"
-        end.to raise_error(ActiveRecord::RecordNotFound)
-      end
-    end
-
-    context "when user is channel member" do
-      it "allows user to view channel members" do
-        sign_in second_user
-        get "/chat_channel_memberships/#{chat_channel_membership.id}/edit"
-        expect(response.body).to include("Members")
-        expect(response.body).to include(user.username.to_s)
-        expect(response.body).to include(second_user.username.to_s)
-        expect(response.body).not_to include("Pending Invitations")
-      end
-    end
-
-    context "when user is channel moderator" do
-      it "allows user to view channel members" do
-        sign_in second_user
-        chat_channel_membership.update(role: "mod")
-        get "/chat_channel_memberships/#{chat_channel_membership.id}/edit"
-        expect(response.body).to include("Members")
-        expect(response.body).to include(user.username.to_s)
-        expect(response.body).to include(second_user.username.to_s)
-        expect(response.body).to include("Pending Invitations")
-        expect(response.body).to include("You are a channel mod")
-      end
-    end
-  end
-
-  describe "POST /chat_channel_memberships" do
-    context "when user is super admin" do
-      it "creates chat channel invitation" do
+  describe "POST/ Send Invitation fot chat channel" do
+    context "when chat channel membership role is mod" do
+      before do
         user.add_role(:super_admin)
-        expect do
-          post "/chat_channel_memberships", params: {
-            chat_channel_membership: {
-              invitation_usernames: second_user.username.to_s,
-              chat_channel_id: chat_channel.id
-            }
-          }
-        end.to change { ChatChannelMembership.all.size }.by(1)
-        expect(ChatChannelMembership.last.status).to eq("pending")
-      end
-    end
 
-    context "when user is channel moderator, and invited user was a member of channel, and than left channel" do
-      it "creates chat channel invitation" do
-        chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
-        ChatChannelMembership.create(chat_channel_id: chat_channel.id, user_id: second_user.id, status: "left_channel")
-        post "/chat_channel_memberships", params: {
+        post "/chat_channel_memberships/create_membership_request", params: {
           chat_channel_membership: {
             invitation_usernames: second_user.username.to_s,
             chat_channel_id: chat_channel.id
           }
         }
-        expect(ChatChannelMembership.last.status).to eq("pending")
+      end
+
+      it "Send invitation to user" do
+        expect(response.status).to eq(200)
       end
     end
 
-    context "when user is channel moderator, invited user was not a member of channel" do
-      it "creates chat channel invitation" do
-        chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
-        chat_channel_members_count = ChatChannelMembership.all.size
-        post "/chat_channel_memberships", params: {
+    context "when chat channel membership role is member" do
+      before do
+        sign_in second_user
+        chat_channel.add_users([second_user])
+
+        post "/chat_channel_memberships/create_membership_request", params: {
           chat_channel_membership: {
-            invitation_usernames: second_user.username.to_s,
+            invitation_usernames: "test2031",
             chat_channel_id: chat_channel.id
           }
         }
-        expect(ChatChannelMembership.all.size).to eq(chat_channel_members_count + 1)
-        expect(ChatChannelMembership.last.status).to eq("pending")
       end
 
-      it "disallows invitation creation when org private group" do
-        chat_channel.update_column(:channel_name, "@org private group chat")
-        chat_channel.chat_channel_memberships.where(user_id: user.id).update(role: "mod")
-        expect do
-          post "/chat_channel_memberships", params: {
-            chat_channel_membership: {
-              invitation_usernames: second_user.username.to_s,
-              chat_channel_id: chat_channel.id
-            }
-          }
-        end.to raise_error(Pundit::NotAuthorizedError)
+      it "user not authorized" do
+        expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe "POST/ remove_membership" do
+    context "when the user is super admin" do
+      it "remove the user from chat channel" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+
+        user.add_role(:super_admin)
+        membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: user.id)
+
+        post "/chat_channel_memberships/remove_membership", params: {
+          chat_channel_id: chat_channel.id,
+          membership_id: membership.id
+        }
+
+        expect(response.status).to eq(200)
+        expect(membership.reload.status).to eq("removed_from_channel")
       end
     end
 
-    context "when user is not authorized to add channel membership" do
-      it "raise Pundit::NotAuthorizedError" do
-        expect do
-          post "/chat_channel_memberships", params: {
-            chat_channel_membership: {
-              invitation_usernames: second_user.username.to_s,
-              chat_channel_id: chat_channel.id
-            }
-          }
-        end.to raise_error(Pundit::NotAuthorizedError)
+    context "when user is chat channel membership role is mod" do
+      it "remove the user from chat channel" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+        membership = chat_channel.chat_channel_memberships.find_by(user_id: user.id)
+        membership.update(role: "mod")
+
+        post "/chat_channel_memberships/remove_membership", params: {
+          chat_channel_id: chat_channel.id,
+          membership_id: membership.id
+        }
+
+        expect(response.status).to eq(200)
+        expect(membership.reload.status).to eq("removed_from_channel")
+      end
+    end
+
+    context "when user chat channel membership role is member" do
+      it "user is not unauthorized" do
+        sign_in second_user
+        membership = ChatChannelMembership.last
+        post "/chat_channel_memberships/remove_membership", params: {
+          chat_channel_id: chat_channel.id,
+          membership_id: membership.id
+        }
+
+        expect(response.status).to eq(401)
       end
     end
   end
@@ -189,7 +132,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
   describe "PUT /chat_channel_memberships/:id" do
     before do
       user.add_role(:super_admin)
-      post "/chat_channel_memberships", params: {
+      post "/chat_channel_memberships/create_membership_request", params: {
         chat_channel_membership: {
           invitation_usernames: second_user.username.to_s,
           chat_channel_id: chat_channel.id
@@ -227,97 +170,96 @@ RSpec.describe "ChatChannelMemberships", type: :request do
     end
 
     context "when user not logged in" do
-      it "raise Pundit::NotAuthorizedError" do
+      it "unauthorized" do
         membership = ChatChannelMembership.last
-        expect do
-          put "/chat_channel_memberships/#{membership.id}", params: {
-            chat_channel_membership: { user_action: "accept" }
-          }
-        end.to raise_error(Pundit::NotAuthorizedError)
-      end
-    end
+        put "/chat_channel_memberships/#{membership.id}", params: {
+          chat_channel_membership: { user_action: "accept" }
+        }
 
-    context "when user is unauthorized" do
-      it "raise Pundit::NotAuthorizedError" do
-        membership = ChatChannelMembership.last
-        sign_in user
-        expect do
-          put "/chat_channel_memberships/#{membership.id}", params: {
-            chat_channel_membership: { user_action: "accept" }
-          }
-        end.to raise_error(Pundit::NotAuthorizedError)
+        expect(response.status).to eq(401)
       end
     end
   end
 
-  describe "DELETE /chat_channel_memberships/:id" do
+  describe "PATCH/ update_membership" do
+    context "when user is logged in" do
+      it "update the notification status" do
+        membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: user.id)
+        membership.update(show_global_badge_notification: false)
+        patch "/chat_channel_memberships/update_membership/#{membership.id}", params: {
+          chat_channel_membership: {
+            show_global_badge_notification: true
+          }
+        }
+
+        expect(response.status).to eq(200)
+        expect(membership.reload.show_global_badge_notification).to eq(true)
+      end
+    end
+
+    context "when user is not logged in" do
+      it "not found membership" do
+        patch "/chat_channel_memberships/update_membership/", params: {
+          chat_channel_membership: {
+            show_global_badge_notification: true
+          }
+        }
+
+        expect(response.status).to eq(404)
+      end
+    end
+  end
+
+  describe "POST/ /leave_membership/:id" do
     context "when user is logged in" do
       it "leaves chat channel" do
         allow(Pusher).to receive(:trigger).and_return(true)
         chat_channel.add_users([second_user])
         membership = ChatChannelMembership.last
+
         sign_in second_user
-        delete "/chat_channel_memberships/#{membership.id}", params: {}
-        expect(ChatChannelMembership.find(membership.id).status).to eq("left_channel")
-        expect(response).to(redirect_to(chat_channel_memberships_path))
+
+        patch "/chat_channel_memberships/leave_membership/#{membership.id}"
+
+        expect(response.status).to eq(200)
+        expect(membership.reload.status).to eq("left_channel")
       end
     end
 
     context "when user is not logged in" do
-      it "raise Pundit::NotAuthorizedError" do
+      it "unauthorized user" do
         chat_channel.add_users([second_user])
         membership = ChatChannelMembership.last
-        expect do
-          delete "/chat_channel_memberships/#{membership.id}", params: {}
-        end.to(raise_error(Pundit::NotAuthorizedError))
+        membership_status = membership.status
+        patch "/chat_channel_memberships/leave_membership/#{membership.id}"
+
+        expect(response.status).to eq(401)
+        expect(membership.reload.status).to eq(membership_status)
       end
     end
   end
 
-  describe "POST /chat_channel_memberships/remove_membership" do
-    before do
-      chat_channel.add_users([second_user])
-    end
+  describe "GET /chat_channel_memberships/find_by_chat_channel_id" do
+    context "when user is logged in" do
+      before do
+        chat_channel.add_users([second_user])
+      end
 
-    context "when user is super admin" do
-      it "removes member from channel" do
-        allow(Pusher).to receive(:trigger).and_return(true)
-        user.add_role(:super_admin)
-        membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
-        removed_channel_membership = ChatChannelMembership.last
-        post "/chat_channel_memberships/remove_membership", params: {
-          chat_channel_id: chat_channel.id,
-          membership_id: removed_channel_membership.id
-        }
-        expect(removed_channel_membership.reload.status).to eq("removed_from_channel")
-        expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
+      it "returns chat channel membership details" do
+        sign_in second_user
+        get "/chat_channel_memberships/find_by_chat_channel_id", params: { chat_channel_id: chat_channel.id }
+        expected_keys = %w[id status chat_channel_id last_opened_at channel_text
+                           channel_last_message_at channel_status channel_username
+                           channel_type channel_name channel_image
+                           channel_modified_slug channel_messages_count]
+        expect(response.parsed_body.keys).to(match_array(expected_keys))
       end
     end
 
-    context "when user is moderator of channel" do
-      it "removes member from channel" do
-        allow(Pusher).to receive(:trigger).and_return(true)
-        membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
-        membership.update(role: "mod")
-        removed_channel_membership = ChatChannelMembership.last
-        post "/chat_channel_memberships/remove_membership", params: {
-          chat_channel_id: chat_channel.id,
-          membership_id: removed_channel_membership.id
-        }
-        expect(removed_channel_membership.reload.status).to eq("removed_from_channel")
-        expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
-      end
-    end
-
-    context "when user is member of channel" do
-      it "raise Pundit::NotAuthorizedError" do
-        membership = ChatChannelMembership.last
-        expect do
-          post "/chat_channel_memberships/remove_membership", params: {
-            chat_channel_id: chat_channel.id,
-            membership_id: membership.id
-          }
-        end.to(raise_error(Pundit::NotAuthorizedError))
+    context "when user is not logged in" do
+      it "renders not_found" do
+        get "/chat_channel_memberships/find_by_chat_channel_id", params: {}
+        expect(response.status).to eq(404)
       end
     end
   end
@@ -338,24 +280,25 @@ RSpec.describe "ChatChannelMemberships", type: :request do
           }
         }
         expect(ChatChannelMembership.find(membership.id).status).to eq("active")
-        expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
+        expect(response).to(redirect_to(chat_channel_memberships_path))
       end
     end
 
     context "when user is member of channel" do
-      it "raise Pundit::NotAuthorizedError" do
-        expect do
-          channel = ChatChannel.first
-          membership = ChatChannelMembership.last
-          membership.update(status: "joining_request")
-          post "/chat_channel_memberships/add_membership", params: {
-            membership_id: membership.id,
-            chat_channel_id: channel.id,
-            chat_channel_membership: {
-              user_action: "accept"
-            }
+      it "User not authorize" do
+        channel = ChatChannel.first
+        membership = ChatChannelMembership.last
+        membership.update(status: "joining_request")
+        post "/chat_channel_memberships/add_membership", params: {
+          membership_id: membership.id,
+          chat_channel_id: channel.id,
+          chat_channel_membership: {
+            user_action: "accept"
           }
-        end.to(raise_error(Pundit::NotAuthorizedError))
+        }
+
+        expect(ChatChannelMembership.find(membership.id).status).to eq("joining_request")
+        expect(response.status).to eq(401)
       end
     end
   end

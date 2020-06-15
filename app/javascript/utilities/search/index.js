@@ -19,14 +19,25 @@ function getParameterByName(name, url = window.location.href) {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
-function getFilterParameters(url) {
-  const filters = getParameterByName('filters', url);
+function getParameters(name, url) {
+  const params = getParameterByName(name, url);
 
-  if (filters) {
-    return `&filters=${filters}`;
+  if (params) {
+    return `&${name}=${params}`;
   }
 
   return '';
+}
+
+function getFilterParameters(url) {
+  return getParameters('filters', url);
+}
+
+function getSortParameters(url) {
+  const sortBy = getParameters('sort_by', url);
+  const sortDirection = getParameters('sort_direction', url);
+
+  return sortBy + sortDirection;
 }
 
 export const hasInstantClick = () => typeof instantClick !== 'undefined';
@@ -46,9 +57,10 @@ export function displaySearchResults({
   const baseUrl = location.origin;
   const sanitizedQuery = fixedEncodeURIComponent(searchTerm);
   const filterParameters = getFilterParameters(location.href);
+  const sortParameters = getSortParameters(location.href);
 
   InstantClick.display(
-    `${baseUrl}/search?q=${sanitizedQuery}${filterParameters}`,
+    `${baseUrl}/search?q=${sanitizedQuery}${filterParameters}${sortParameters}`,
   );
 }
 
