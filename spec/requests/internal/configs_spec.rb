@@ -285,6 +285,18 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
         end
 
+        it "updates onboarding_logo_image" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { onboarding_logo_image: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.onboarding_logo_image).to eq(expected_image_url)
+        end
+
+        it "updates onboarding_background_image" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { onboarding_background_image: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.onboarding_background_image).to eq(expected_image_url)
+        end
+
         it "removes space suggested_tags" do
           post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
           expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
