@@ -89,7 +89,7 @@
           </h3>
         </header>
         <div>
-          <% @user_stickies.limit(5).each_with_index do |article, index| %>
+          <% @user_stickies.limit(3).each_with_index do |article, index| %>
             <a class="crayons-link crayons-link--contentful" href="<%= article.path %>">
               <%= article.title %>
               <div class="crayons-link__secondary -ml-1">
@@ -110,7 +110,7 @@
           </h3>
         </header>
         <div>
-          <% @sticky_articles.limit(5).each_with_index do |article, index| %>
+          <% @sticky_articles.limit(3).each_with_index do |article, index| %>
             <a class="crayons-link crayons-link--contentful flex" href="<%= article.path %>">
               <span class="crayons-avatar mr-2 shrink-0">
                 <img src="<%= ProfileImage.new(article.user).get(width: 90) %>" class="crayons-avatar__image" loading="lazy" alt="<%= article.user.name %> profile image">
