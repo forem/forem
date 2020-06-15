@@ -48,7 +48,13 @@ class GithubTag
 
     def get_file_info(file_link)
       file_path = file_link[0]
-      file_type = file_path[file_path.rindex(".") + 1..]
+      extension_index = file_path.rindex(".")
+      file_type = if extension_index.nil?
+                    # use file name as type for files without extensions
+                    file_path
+                  else
+                    file_path[extension_index + 1..]
+                  end
 
       line_info = file_link[1].split("-")
 
