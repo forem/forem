@@ -5,7 +5,6 @@ import { ImageUploader } from '../ImageUploader';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
-
 global.fetch = fetch;
 
 describe('<ImageUploader />', () => {
@@ -25,8 +24,8 @@ describe('<ImageUploader />', () => {
     expect(results).toHaveNoViolations();
   });
 
-  it('displays an upload button', () => {
-    const { getByTestId, getByText } = render(<ImageUploader />);
+  it('displays an upload input', () => {
+    const { getByTestId } = render(<ImageUploader />);
     const uploadInput = getByTestId('upload-image');
     expect(uploadInput.getAttribute('type')).toEqual('file');
   });

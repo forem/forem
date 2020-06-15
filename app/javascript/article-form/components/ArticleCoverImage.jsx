@@ -61,7 +61,7 @@ export class ArticleCoverImage extends Component {
             className="crayons-article-form__cover__image"
             width="250"
             height="105"
-            alt="Post cover"
+            alt="Post cover image"
           />
         )}
         <div className="flex items-center">

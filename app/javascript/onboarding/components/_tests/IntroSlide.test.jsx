@@ -30,7 +30,7 @@ describe('IntroSlide', () => {
       username: 'username',
     });
 
-  beforeEach(() => {
+  beforeAll(() => {
     document.head.innerHTML = '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
   });
