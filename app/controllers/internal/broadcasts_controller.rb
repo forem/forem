@@ -1,33 +1,6 @@
 class Internal::BroadcastsController < Internal::ApplicationController
   layout "internal"
 
-  def create
-    @broadcast = Broadcast.create!(broadcast_params)
-    flash[:success] = "Broadcast has been created!"
-    redirect_to "/internal/broadcasts"
-  rescue ActiveRecord::RecordInvalid => e
-    flash[:danger] = e.message
-    redirect_to "/internal/broadcasts"
-  end
-
-  def update
-    @broadcast = Broadcast.find_by!(id: params[:id])
-    @broadcast.update!(broadcast_params)
-    flash[:success] = "Broadcast has been updated!"
-    redirect_to "/internal/broadcasts"
-  rescue ActiveRecord::RecordInvalid => e
-    flash[:danger] = e.message
-    redirect_to "/internal/broadcasts/#{params[:id]}/edit"
-  end
-
-  def new
-    @broadcast = Broadcast.new
-  end
-
-  def edit
-    @broadcast = Broadcast.find_by!(id: params[:id])
-  end
-
   def index
     @broadcasts = if params[:type_of]
                     Broadcast.where(type_of: params[:type_of].capitalize)
@@ -36,14 +9,47 @@ class Internal::BroadcastsController < Internal::ApplicationController
                   end.order(title: :asc)
   end
 
+  def new
+    @broadcast = Broadcast.new
+  end
+
+  def edit
+    @broadcast = Broadcast.find(params[:id])
+  end
+
+  def create
+    @broadcast = Broadcast.new(broadcast_params)
+
+    if @broadcast.save
+      flash[:success] = "Broadcast has been created!"
+      redirect_to internal_broadcasts_path
+    else
+      flash[:danger] = @broadcast.errors.full_messages.to_sentence
+      render new_internal_broadcast_path
+    end
+  end
+
+  def update
+    @broadcast = Broadcast.find(params[:id])
+
+    if @broadcast.update(broadcast_params)
+      flash[:success] = "Broadcast has been updated!"
+      redirect_to internal_broadcasts_path
+    else
+      flash[:danger] = @broadcast.errors.full_messages.to_sentence
+      render :edit
+    end
+  end
+
   def destroy
-    broadcast = Broadcast.find_by!(id: params[:id])
-    if broadcast.destroy
+    @broadcast = Broadcast.find(params[:id])
+
+    if @broadcast.destroy
       flash[:success] = "Broadcast has been deleted!"
-      redirect_to "/internal/broadcasts"
+      redirect_to internal_broadcasts_path
     else
       flash[:danger] = "Something went wrong with deleting the broadcast."
-      redirect_to "/internal/broadcasts/#{params[:id]}/edit"
+      render :edit
     end
   end
 

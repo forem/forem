@@ -26,7 +26,10 @@
 
 ## Related Tickets & Documents
 
-## Mobile & Desktop Screenshots/Recordings (if there are UI changes)
+## QA Instructions, Screenshots, Recordings
+
+_Please replace this line with instructions on how to test your changes, as well
+as any relevant images for UI changes._
 
 ## Added tests?
 

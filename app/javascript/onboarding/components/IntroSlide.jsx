@@ -107,9 +107,9 @@ class IntroSlide extends Component {
           <div className="onboarding-content">
             <figure>
               <img
-                src="/assets/purple-dev-logo.png"
+                src={communityConfig.communityLogo}
                 className="sticker-logo"
-                alt="DEV"
+                alt={communityConfig.communityName}
               />
             </figure>
             <h1 className="introduction-title">
@@ -196,9 +196,10 @@ IntroSlide.propTypes = {
   slidesCount: PropTypes.number.isRequired,
   currentSlideIndex: PropTypes.func.isRequired,
   communityConfig: PropTypes.shape({
+    communityLogo: PropTypes.string.isRequired,
     communityName: PropTypes.string.isRequired,
     communityDescription: PropTypes.string.isRequired
-  }),
+  }).isRequired,
 };
 
 export default IntroSlide;

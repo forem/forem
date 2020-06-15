@@ -21,28 +21,32 @@ module Notifications
           article: article_data(notifiable)
         }
         json_data[:organization] = organization_data(notifiable.organization) if notifiable.organization_id
-        notifications = []
+
+        notifications_attributes = []
         # followers is an array and not an activerecord object
         # followers can occasionally be nil because orphaned follows can possibly exist in the db (for now)
         followers.sort_by(&:updated_at).reverse[0..10_000].each do |follower|
-          notifications.push Notification.new(
+          now = Time.current
+          notifications_attributes.push(
             user_id: follower.id,
             notifiable_id: notifiable.id,
             notifiable_type: notifiable.class.name,
             action: action,
             json_data: json_data,
-            notified_at: Time.current,
+            created_at: now,
+            notified_at: now,
+            updated_at: now,
           )
         end
-        conflict_target = %i[notifiable_id notifiable_type user_id]
-        conflict_target << :action if action.present?
-        index_predicate = "action IS#{action.present? ? ' NOT ' : ' '}NULL"
-        Notification.import! notifications,
-                             on_duplicate_key_update: {
-                               conflict_target: conflict_target,
-                               index_predicate: index_predicate,
-                               columns: %i[json_data notified_at read]
-                             }
+
+        return if notifications_attributes.blank?
+
+        upsert_index = choose_upsert_index(action)
+        Notification.upsert_all(
+          notifications_attributes,
+          unique_by: upsert_index,
+          returning: %i[id],
+        )
       end
 
       private
@@ -53,6 +57,12 @@ module Notifications
         followers = notifiable.user.followers_scoped.where(subscription_status: "all_articles").map(&:follower)
         followers += notifiable.organization.followers_scoped.where(subscription_status: "all_articles").map(&:follower) if notifiable.organization_id
         followers.uniq.compact
+      end
+
+      def choose_upsert_index(action)
+        return :index_notifications_on_user_notifiable_and_action_not_null if action.present?
+
+        :index_notifications_on_user_notifiable_action_is_null
       end
     end
   end

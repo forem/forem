@@ -10,6 +10,14 @@
   <%= render "articles/search/sidebar" %>
   <div class="articles-list" id="articles-list">
     <div id="banner-section"></div>
+    <div class="flex-1 flex items-center justify-between">
+      <h2 class="fs-l fw-heavy">Results</h2>
+      <nav id="sorting-option-tabs" class="crayons-tabs hidden s:flex">
+        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :relevance %>">Most Relevant</a>
+        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :newest %>" data-sort-by="published_at" data-sort-direction="desc">Newest</a>
+        <a href="javascript:;" class="crayons-tabs__item <%= "crayons-tabs__item--current" if @current_ordering == :oldest %>" data-sort-by="published_at" data-sort-direction="asc">Oldest</a>
+      </nav>
+    </div>
     <div class="substories" id="substories">
       <div class="query-results-nothing">
         <div class="query-results-loader"></div>

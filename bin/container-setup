@@ -28,19 +28,6 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 
     fi
 
-echo "Building the DEV container image!"
-
-if [ "${CONTAINER_RUNTIME}" = "docker" ]; then
-  echo "This will take a while if you are building the container for the first time."
-
-  docker-compose build
-
-elif [ "${CONTAINER_RUNTIME}" = "podman" ]; then
-
-  podman-compose build
-
-fi
-
 elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
 
     if hash podman 2>/dev/null; then
@@ -74,6 +61,19 @@ elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
 else
 
   echo "Oof! Sorry! This OS is unsupported! :("
+
+fi
+
+echo "Building the DEV container image!"
+
+if [ "${CONTAINER_RUNTIME}" = "docker" ]; then
+  echo "This will take a while if you are building the container for the first time."
+
+  docker-compose build
+
+elif [ "${CONTAINER_RUNTIME}" = "podman" ]; then
+
+  podman-compose build
 
 fi
 
