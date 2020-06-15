@@ -104,7 +104,7 @@ describe('<ArticleCoverImage />', () => {
 
   it('displays an upload error when necessary', async () => {
     const onMainImageUrlChange = jest.fn();
-    const { getByText } = render(
+    const { getByText, getByLabelText } = render(
       <ArticleCoverImage
         mainImage={'/some-fake-image.jpg'}
         onMainImageUrlChange={onMainImageUrlChange}

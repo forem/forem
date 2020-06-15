@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render } from '@testing-library/preact';
 import { ReadingList } from '../readingList';
 
 describe('<ReadingList />', () => {
