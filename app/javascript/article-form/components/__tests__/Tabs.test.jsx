@@ -22,7 +22,6 @@ describe('<Tabs />', () => {
       expect(getByText(/edit/i, { selector: 'button' }).classList.contains(`crayons-tabs__item--current`)).toBe(false);
     });
 
-
     it('when edit is selected', () => {
       const { getByText } = render(
         <Tabs onPreview={null} previewShowing={false} />
