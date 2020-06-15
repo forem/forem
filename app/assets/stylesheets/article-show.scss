@@ -905,7 +905,12 @@ article {
   text-align: center;
   font-family: var(--ff-default);
 }
-
+.primary-sticky-nav {
+  display: none;
+}
+.article-actions {
+  display: none;
+}
 .show-comments-footer {
   // width: 800px;
   // max-width: 98%;
