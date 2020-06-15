@@ -29,6 +29,8 @@ function initializeSlides(currentSlide, userData = null, mockData = null) {
     <Onboarding
       communityConfig={{
         communityName: 'Test',
+        communityLogo: '/x.png',
+        communityBackground: '/y.jpg',
         communityDescription: "Wouldn't you like to knoww..",
       }}
     />,
@@ -84,7 +86,7 @@ describe('<Onboarding />', () => {
     {
       id: 1,
       name: 'Ben Halpern',
-      profile_image_url: 'ben.jpg',
+      profile_image_url: 'apple-icon.png',
     },
     {
       id: 2,

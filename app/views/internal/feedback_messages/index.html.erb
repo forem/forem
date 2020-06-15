@@ -16,12 +16,7 @@
   <%= f.label :reporter_username_cont, "Reporter", class: "sr-only" %>
   <%= f.search_field :reporter_username_cont, placeholder: "Reporter", class: "form-control mx-3" %>
 
-  <%= f.select(
-    :status_eq,
-    options_for_select(["Open", "Invalid", "Resolved"], @q.status_eq),
-    { include_blank: true },
-    class: "custom-select mx-3",
-  ) %>
+  <%= f.select(:status_eq, options_for_select(%w[Open Invalid Resolved], @q.status_eq), { include_blank: true }, class: "custom-select mx-3") %>
 
   <%= f.submit "Search", class: "btn btn-secondary" %>
 <% end %>

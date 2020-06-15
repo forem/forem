@@ -23,7 +23,8 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
   end
 
   context "when user edits comment on the bottom of the article" do
-    it "renders the page", percy: true do
+    # TODO: Uncomment this spec when we decide to use percy again
+    xit "renders the page", percy: true do
       visit article.path.to_s
       Percy.snapshot(page, name: "Edit comment: renders")
     end

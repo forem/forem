@@ -2,15 +2,15 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your
-# database schema. If you need to create the application database on another
-# system, you should be using db:schema:load, not running all the migrations
-# from scratch. The latter is a flawed and unsustainable approach (the more migrations
-# you'll amass, the slower it'll run and the greater likelihood for issues).
+# This file is the source Rails uses to define your schema when running `rails
+# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_02_174329) do
+ActiveRecord::Schema.define(version: 2020_06_09_191943) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -267,6 +267,7 @@ ActiveRecord::Schema.define(version: 2020_06_02_174329) do
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
     t.boolean "active", default: false
+    t.string "banner_style"
     t.text "body_markdown"
     t.datetime "created_at"
     t.text "processed_html"
@@ -683,6 +684,7 @@ ActiveRecord::Schema.define(version: 2020_06_02_174329) do
     t.index ["organization_id"], name: "index_notifications_on_organization_id"
     t.index ["user_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_user_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
     t.index ["user_id", "notifiable_id", "notifiable_type"], name: "index_notifications_on_user_notifiable_action_is_null", unique: true, where: "(action IS NULL)"
+    t.index ["user_id", "organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_user_id_organization_id_notifiable_action", unique: true
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
@@ -795,6 +797,7 @@ ActiveRecord::Schema.define(version: 2020_06_02_174329) do
 
   create_table "pages", force: :cascade do |t|
     t.text "body_html"
+    t.jsonb "body_json"
     t.text "body_markdown"
     t.datetime "created_at", null: false
     t.string "description"
@@ -806,6 +809,19 @@ ActiveRecord::Schema.define(version: 2020_06_02_174329) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_pages_on_slug", unique: true
+  end
+
+  create_table "path_redirects", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "new_path", null: false
+    t.string "old_path", null: false
+    t.string "source"
+    t.datetime "updated_at", null: false
+    t.integer "version", default: 0, null: false
+    t.index ["new_path"], name: "index_path_redirects_on_new_path"
+    t.index ["old_path"], name: "index_path_redirects_on_old_path", unique: true
+    t.index ["source"], name: "index_path_redirects_on_source"
+    t.index ["version"], name: "index_path_redirects_on_version"
   end
 
   create_table "podcast_episodes", id: :serial, force: :cascade do |t|
@@ -1149,6 +1165,7 @@ ActiveRecord::Schema.define(version: 2020_06_02_174329) do
     t.string "currently_hacking_on"
     t.string "currently_learning"
     t.string "currently_streaming_on"
+    t.boolean "display_announcements", default: true
     t.boolean "display_sponsors", default: true
     t.string "dribbble_url"
     t.string "editor_version", default: "v1"
@@ -1213,6 +1230,7 @@ ActiveRecord::Schema.define(version: 2020_06_02_174329) do
     t.string "old_username"
     t.boolean "onboarding_package_requested", default: false
     t.datetime "organization_info_updated_at"
+    t.string "payment_pointer"
     t.boolean "permit_adjacent_sponsors", default: true
     t.string "profile_image"
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"

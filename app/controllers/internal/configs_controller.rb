@@ -52,7 +52,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       allowed_params,
       authentication_providers: [],
       social_media_handles: SiteConfig.social_media_handles.keys,
-      email_addresses: SiteConfig.email_addresses.keys,
+      email_addresses: SiteConfig.email_addresses.except(:default).keys,
       meta_keywords: SiteConfig.meta_keywords.keys,
     )
   end
@@ -135,6 +135,8 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def onboarding_params
     %i[
+      onboarding_logo_image
+      onboarding_background_image
       onboarding_taskcard_image
       suggested_tags
       suggested_users

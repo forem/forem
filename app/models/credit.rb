@@ -19,9 +19,20 @@ class Credit < ApplicationRecord
   end
 
   def self.add_to(user_or_org, amount)
+    return unless amount.positive?
+
+    now = Time.current
     association_id = "#{user_or_org.class.name.underscore}_id"
-    credits = Array.new(amount) { new(association_id => user_or_org.id) }
-    import(credits)
+    attributes = Array.new(amount) do
+      {
+        association_id => user_or_org.id,
+        :created_at => now,
+        :updated_at => now
+      }
+    end
+
+    insert_all(attributes)
+
     update_cache_columns(user_or_org)
   end
 

@@ -34,7 +34,7 @@ class SiteConfig < RailsSettings::Base
 
   # Emails
   field :email_addresses, type: :hash, default: {
-    default: "yo@dev.to",
+    default: ApplicationConfig["DEFAULT_EMAIL"],
     business: "partners@dev.to",
     privacy: "privacy@dev.to",
     members: "members@dev.to"
@@ -62,7 +62,7 @@ class SiteConfig < RailsSettings::Base
 
   # Mascot
   field :mascot_user_id, type: :integer, default: 1
-  field :mascot_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/sloan.png"
+  field :mascot_image_url, type: :string, default: "https://dev-to-uploads.s3.amazonaws.com/i/y5767q6brm62skiyywvc.png"
   field :mascot_image_description, type: :string, default: "Sloan, the sloth mascot"
 
   # Meta keywords
@@ -87,6 +87,8 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Onboarding
+  field :onboarding_logo_image, type: :string, default: "https://dev.to/assets/purple-dev-logo.png"
+  field :onboarding_background_image, type: :string, default: "https://dev.to/assets/onboarding-background-white.png"
   field :onboarding_taskcard_image, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/staggered-dev.svg"
   field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
   field :suggested_users, type: :array, default: %w[ben jess peter maestromac andy liana]

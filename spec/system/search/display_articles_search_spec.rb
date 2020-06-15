@@ -5,10 +5,6 @@ RSpec.describe "Display articles search spec", type: :system, js: true, elastics
   let(:found_article_two) { create(:article) }
   let(:not_found_article) { create(:article) }
 
-  before do
-    stub_request(:post, "http://www.google-analytics.com/collect")
-  end
-
   it "returns correct results for a search" do
     found_article_one.tags << create(:tag, name: "ruby")
     allow(found_article_two).to receive(:body_text).and_return("Ruby Tuesday")

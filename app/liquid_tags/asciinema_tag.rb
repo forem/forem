@@ -1,5 +1,6 @@
 class AsciinemaTag < LiquidTagBase
   PARTIAL = "liquids/asciinema".freeze
+  ASCIINEMA_URL_REGEX = %r{https://asciinema.org/a/(?<id>\d+)}.freeze
 
   def initialize(tag_name, id, tokens)
     super
@@ -18,14 +19,15 @@ class AsciinemaTag < LiquidTagBase
   private
 
   def parse_id(input)
-    input_no_space = input.delete(" ")
-    raise StandardError, "Invalid Asciinema ID: {% asciinema #{input_no_space} %}" unless valid_id?(input_no_space)
-
-    input_no_space
+    sanitized_input = input.strip
+    match_data = sanitized_input.match(ASCIINEMA_URL_REGEX)
+    match_data ? match_data["id"] : validate(sanitized_input)
   end
 
-  def valid_id?(id)
-    id.match?(/\A\d+\Z/)
+  def validate(id)
+    raise "Invalid Asciinema ID: #{id}" unless id.match?(/\A\d+\z/)
+
+    id
   end
 end
 

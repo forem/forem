@@ -1,8 +1,8 @@
 require "rails_helper"
 
 RSpec.describe "User visits a homepage", type: :system do
-  let!(:article) { create(:article, reactions_count: 12, featured: true) }
-  let!(:article2) { create(:article, reactions_count: 20, featured: true) }
+  let!(:article) { create(:article, reactions_count: 12, featured: true, user: create(:user, profile_image: nil)) }
+  let!(:article2) { create(:article, reactions_count: 20, featured: true, user: create(:user, profile_image: nil)) }
   let!(:timestamp) { "2019-03-04T10:00:00Z" }
 
   context "when no options specified" do
@@ -17,7 +17,7 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).to have_selector(".crayons-story--featured", visible: :visible)
       end
 
-      it "shows the main article readable date", js: true do
+      it "shows the main article readable date", js: true, stub_elasticsearch: true do
         expect(page).to have_selector(".crayons-story--featured time", text: "Mar 4")
       end
 
@@ -40,7 +40,7 @@ RSpec.describe "User visits a homepage", type: :system do
         expect(page).to have_text(article2.title)
       end
 
-      it "shows all articles dates", js: true do
+      it "shows all articles dates", js: true, stub_elasticsearch: true do
         expect(page).to have_selector(".crayons-story time", text: "Mar 4", count: 2)
       end
 

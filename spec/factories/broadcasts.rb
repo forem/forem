@@ -65,7 +65,7 @@ FactoryBot.define do
     factory :announcement_broadcast do
       title          { "A Very Important Announcement" }
       type_of        { "Announcement" }
-      processed_html { "Hello, World!" }
+      processed_html { "<p>Hello, World!</p>" }
     end
   end
 end

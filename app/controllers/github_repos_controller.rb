@@ -4,12 +4,11 @@ class GithubReposController < ApplicationController
 
   def index
     authorize GithubRepo
-
-    known_repositories_ids = current_user.github_repos.featured.distinct.pluck(:github_id_code)
+    known_repositories = current_user.github_repos.featured.distinct.to_a
 
     # NOTE: this will invoke autopaging, by issuing multiple calls to GitHub
     # to fetch all of the user's repositories. This could eventually become slow
-    @repos = fetch_repositories_from_github(known_repositories_ids)
+    @repos = fetch_repositories_from_github(known_repositories)
   rescue Github::Errors::Unauthorized => e
     render json: { error: "GitHub Unauthorized: #{e.message}", status: 401 }, status: :unauthorized
   end
@@ -38,13 +37,19 @@ class GithubReposController < ApplicationController
 
   private
 
-  def fetch_repositories_from_github(known_repositories_ids)
+  def fetch_repositories_from_github(known_repositories)
     client = Github::OauthClient.for_user(current_user)
 
-    client.repositories(visibility: :public).map do |repo|
-      repo.featured = known_repositories_ids.include?(repo.id)
+    repos = client.repositories(visibility: :public).map do |repo|
+      repo.featured = known_repositories.delete_if { |known| known.github_id_code == repo.id }.present?
       repo
-    end.sort_by(&:name)
+    end
+
+    # Remove pinned repositorioes that were removed from GH or are now private,
+    # since the user will not be able to remove them by themselves.
+    known_repositories.each(&:destroy)
+
+    repos.sort_by(&:name)
   end
 
   def fetch_repository_from_github(repository_id)

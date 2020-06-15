@@ -73,7 +73,9 @@ class Listing < ApplicationRecord
   end
 
   def modify_inputs
-    ActsAsTaggableOn.default_parser = ActsAsTaggableOn::TagParser
+    temp_tags = tag_list
+    self.tag_list = [] # overwrite any existing tag with those from the front matter
+    tag_list.add(temp_tags, parser: ActsAsTaggableOn::TagParser)
     self.body_markdown = body_markdown.to_s.gsub(/\r\n/, "\n")
   end
 

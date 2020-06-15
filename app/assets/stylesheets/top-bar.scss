@@ -10,7 +10,7 @@
   top: 0px;
   left: 0px;
   right: 0px;
-  z-index: 101;
+  z-index: 102; // Must be higher than the z-index of the broadcast-wrapper.
   height: var(--header-height);
   background: var(--header-bg);
   box-shadow: 0 1px 1px var(--header-shadow);
