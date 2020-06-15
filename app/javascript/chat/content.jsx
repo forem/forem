@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import Article from './article';
 import ChannelRequest from './channelRequest';
 import RequestManager from './requestManager';
+import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
 
 export default class Content extends Component {
   static propTypes = {
-    resource: PropTypes.object,
-    activeChannelId: PropTypes.number,
-    pusherKey: PropTypes.string,
-    fullscreen: PropTypes.bool,
+    resource        : PropTypes.object,
+    activeChannelId : PropTypes.number,
+    pusherKey       : PropTypes.string,
+    fullscreen      : PropTypes.bool
   };
 
   render() {
@@ -17,14 +18,9 @@ export default class Content extends Component {
     if (!this.props.resource) {
       return '';
     }
+
     const smartSvgIcon = (content, d) => (
-      <svg
-        data-content={content}
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="24"
-        height="24"
-      >
+      <svg data-content={content} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
         <path data-content={content} fill="none" d="M0 0h24v24H0z" />
         <path data-content={content} d={d} />
       </svg>
@@ -42,7 +38,7 @@ export default class Content extends Component {
         >
           {smartSvgIcon(
             'exit',
-            'M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z',
+            'M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z'
           )}
         </button>
         <button
@@ -50,16 +46,18 @@ export default class Content extends Component {
           data-content="fullscreen"
           style={{ left: '39px' }}
         >
-          {' '}
-          {fullscreen
-            ? smartSvgIcon(
-                'fullscreen',
-                'M18 7h4v2h-6V3h2v4zM8 9H2V7h4V3h2v6zm10 8v4h-2v-6h6v2h-4zM8 15v6H6v-4H2v-2h6z',
-              )
-            : smartSvgIcon(
-                'fullscreen',
-                'M20 3h2v6h-2V5h-4V3h4zM4 3h4v2H4v4H2V3h2zm16 16v-4h2v6h-6v-2h4zM4 19h4v2H2v-6h2v4z',
-              )}
+  {' '}
+  {fullscreen ? (
+            smartSvgIcon(
+              'fullscreen',
+              'M18 7h4v2h-6V3h2v4zM8 9H2V7h4V3h2v6zm10 8v4h-2v-6h6v2h-4zM8 15v6H6v-4H2v-2h6z'
+            )
+          ) : (
+            smartSvgIcon(
+              'fullscreen',
+              'M20 3h2v6h-2V5h-4V3h4zM4 3h4v2H4v4H2V3h2zm16 16v-4h2v6h-6v-2h4zM4 19h4v2H2v-6h2v4z'
+            )
+          )}
         </button>
         {display(this.props)}
       </div>
@@ -69,27 +67,27 @@ export default class Content extends Component {
 
 function display(props) {
   const { resource } = props;
-  if (resource.type_of === 'loading-user') {
-    return <div className="loading-user" />;
-  }
-  if (resource.type_of === 'article') {
-    return <Article resource={resource} />;
-  }
-  if (resource.type_of === 'channel-request') {
-    return (
-      <ChannelRequest
-        resource={resource.data}
-        handleJoiningRequest={resource.handleJoiningRequest}
-      />
-    );
-  }
-  if (resource.type_of === 'channel-request-manager') {
-    return (
-      <RequestManager
-        resource={resource.data}
-        handleRequestRejection={resource.handleRequestRejection}
-        handleRequestApproval={resource.handleRequestApproval}
-      />
-    );
+
+  switch(resource.type_of) {
+    case 'loading-user':
+      return <div className="loading-user" />
+    case 'article':
+      return <Article resource={resource} />;
+    case 'channel-request':
+      return <ChannelRequest resource={resource.data} handleJoiningRequest={resource.handleJoiningRequest} />;
+    case 'channel-request-manager': 
+      return (
+        <RequestManager
+          resource={resource.data}
+          handleRequestRejection={resource.handleRequestRejection}
+          handleRequestApproval={resource.handleRequestApproval}
+        />
+      )
+    case 'chat-channel-setting':
+      return (
+        <ChatChannelSettings resource={resource.data} activeMembershipId={resource.activeMembershipId} />
+      );
+    default:
+      return null;
   }
 }

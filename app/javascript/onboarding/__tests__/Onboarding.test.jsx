@@ -29,6 +29,8 @@ function initializeSlides(currentSlide, userData = null, mockData = null) {
     <Onboarding
       communityConfig={{
         communityName: 'Test',
+        communityLogo: '/x.png',
+        communityBackground: '/y.jpg',
         communityDescription: "Wouldn't you like to knoww..",
       }}
     />,

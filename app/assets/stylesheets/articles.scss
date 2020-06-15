@@ -145,6 +145,7 @@
   background: lighten($purple, 6%) !important;
   border: 1px solid darken($bold-blue, 5%) !important;
   box-shadow: 5px 6px 0px darken($bold-blue, 15%) !important;
+  margin: 0.8em 0;
   .cta-container {
     padding: calc(1vw + 7px) 9px;
     margin-bottom: 15px;

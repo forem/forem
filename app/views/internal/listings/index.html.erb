@@ -68,8 +68,13 @@
             <%= form_with url: internal_buffer_updates_path, html: { data: { action: "submit->buffer#highlightElement" } } do %>
               <input type="hidden" name="social_channel" value="listings_twitter" />
               <input type="hidden" name="listing_id" value="<%= listing.id %>" />
-              <textarea class="form-control" wrap="hard" name="tweet" maxlength="255" data-target="buffer.bodyText">📋 New <%= community_name %> Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013<% if listing.user.twitter_username? %>Posted by @<%= listing.user.twitter_username %><% end %></textarea>
-              <button class="btn btn-primary mt-2" data-action=>🐦 Tweet 🐦</button>
+              <textarea class="form-control" wrap="hard" name="tweet" maxlength="255" data-target="buffer.bodyText">
+                📋 New <%= community_name %> Listing!&#013&#013Category: <%= listing.category %>&#013&#013<%= listing.title %>&#013&#013
+                <% if listing.user.twitter_username? %>
+                  Posted by @<%= listing.user.twitter_username %>
+                <% end %>
+              </textarea>
+              <button class="btn btn-primary mt-2">🐦 Tweet 🐦</button>
             <% end %>
           </div>
         </td>

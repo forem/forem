@@ -115,7 +115,8 @@
     line-height: var(--lh-tight);
     margin-bottom: var(--su-2);
     font-size: var(--title-font-size);
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 
     a {
       color: inherit;
@@ -188,7 +189,8 @@
       color: var(--card-color);
       background: var(--accent-warning-lighter);
     }
-    overflow-wrap: break-word;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   &__headline {

@@ -28,6 +28,20 @@ RSpec.describe "Creating an article with the editor", type: :system do
     expect(page).to have_selector("header h1", text: "Sample Article")
   end
 
+  context "with an active announcement" do
+    before do
+      create(:announcement_broadcast)
+      get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
+      visit new_path
+    end
+
+    it "does not render the announcement broadcast", js: true do
+      expect(page).not_to have_css(".broadcast-wrapper")
+      expect(page).not_to have_selector(".broadcast-data")
+      expect(page).not_to have_text("Hello, World!")
+    end
+  end
+
   context "with Runkit tag", js: true do
     it "creates a new article with a Runkit tag" do
       visit new_path

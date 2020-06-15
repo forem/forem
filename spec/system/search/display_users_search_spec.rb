@@ -6,10 +6,6 @@ RSpec.describe "Display users search spec", type: :system, js: true, elasticsear
   let(:found_two_user) { create(:user, username: "doejane", name: "Doe Jane") }
   let(:not_found_user) { create(:user, username: "batman", name: "Batman") }
 
-  before do
-    stub_request(:post, "http://www.google-analytics.com/collect")
-  end
-
   it "returns correct results for name search" do
     users = [current_user, found_user, found_two_user, not_found_user]
     index_documents_for_search_class(users, Search::User)
