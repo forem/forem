@@ -16,7 +16,9 @@ describe('IntroSlide', () => {
       slidesCount={5}
       communityConfig={{
         communityName: 'Community Name',
-        communityDescription: 'Some community description',
+        communityLogo: '/x.png',
+        communityBackground: '/y.jpg',
+        communityDescription: "Some community description",
       }}
       previousLocation={null}
     />
@@ -35,11 +37,12 @@ describe('IntroSlide', () => {
     document.body.setAttribute('data-user', getUserData());
   });
 
-  it('should load the appropriate welcome text', () => {
-    const { getByTestId, getByText } = renderIntroSlide();
+  it('should load the appropriate text and images', () => {
+    const { getByTestId, getByText, getByAltText } = renderIntroSlide();
 
     expect(getByTestId('onboarding-introduction-title')).toHaveTextContent(/firstname lastname— welcome to Community Name!/i);
     getByText('Some community description');
+    expect(getByAltText('Community Name').getAttribute('src')).toEqual('/x.png');
   });
 
   it('should link to the code of conduct', () => {

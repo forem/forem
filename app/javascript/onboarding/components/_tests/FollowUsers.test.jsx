@@ -16,7 +16,9 @@ describe('FollowUsers', () => {
       slidesCount={5}
       communityConfig={{
         communityName: 'Community Name',
-        communityDescription: 'Some community description',
+        communityLogo: '/x.png',
+        communityBackground: '/y.jpg',
+        communityDescription: "Some community description",
       }}
       previousLocation={null}
     />
