@@ -1,6 +1,5 @@
 @import 'variables';
 @import 'mixins';
-@import 'config/import';
 
 // High level classes
 .chat-page-wrapper {
@@ -805,17 +804,14 @@
   }
 }
 
-.chatmessagebody__profileimage {
-  height: 25px;
-  width: 25px;
-  margin-right: 6px;
-  border-radius: 20px;
-  vertical-align: -3px;
+.chatmessage__profilepic {
+  margin-right: var(--su-2);
+}
 
-  @media screen and (min-width: 400px) {
-    height: 32px;
-    width: 32px;
-  }
+.chatmessagebody__profileimage {
+  height: var(--su-7);
+  width: var(--su-7);
+  border-radius: 100%;
 }
 
 .chatmessagebody__username--link {
@@ -1165,22 +1161,7 @@
     }
   }
 }
-.send-request {
-  .cta {
-    margin: 4px 6px 4px 0;
-    border-radius: 3px;
-    font-weight: 600px;
-    font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
-      'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
-      'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
-      'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
-      'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
-    font-size: 18px;
-    border: 0px;
-    height: 50px;
-    padding: 0 30px;
-  }
-}
+
 .loading-user {
   height: '210px';
   width: '210px';

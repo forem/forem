@@ -46,14 +46,14 @@ export default class Chat extends Component {
         <div class="composer-btn-group">
           <button
             type="button"
-            className="crayons-btn"
+            className="composer-submit__edit crayons-btn"
             onClick={handleSubmitOnClickEdit}
           >
             Save
           </button>
-          <button
-            type="button"
-            className="crayons-btn crayons-btn--secondary"
+          <div
+            role="button"
+            className="composer-close__edit crayons-btn crayons-btn--secondary"
             onClick={handleEditMessageClose}
             tabIndex="0"
             onKeyUp={e => {
@@ -61,7 +61,7 @@ export default class Chat extends Component {
             }}
           >
             Close
-          </button>
+          </div>
         </div>
       </div>
     );
