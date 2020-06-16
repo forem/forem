@@ -11,6 +11,7 @@ export default class Chat extends Component {
     handleKeyUp: PropTypes.func.isRequired,
     startEditing: PropTypes.bool.isRequired,
     markdownEdited: PropTypes.bool.isRequired,
+    editMessageHtml: PropTypes.string.isRequired,
     editMessageMarkdown: PropTypes.string.isRequired,
     handleEditMessageClose: PropTypes.func.isRequired,
   };
@@ -30,12 +31,35 @@ export default class Chat extends Component {
       handleEditMessageClose,
       handleMention,
       handleKeyUp,
+      editMessageHtml,
     } = this.props;
 
     return (
-      <div className="composer-container__edit">
+      <div className="messagecomposer">
+        <div className="messageToBeEdited">
+          <div className="message">
+            <span className="editHead">Edit Message</span>
+            <div
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{
+                __html: editMessageHtml,
+              }}
+            />
+          </div>
+          <div
+            className="closeEdit"
+            role="button"
+            onClick={handleEditMessageClose}
+            tabIndex="0"
+            onKeyUp={e => {
+              if (e.keyCode === 13) handleEditMessageClose();
+            }}
+          >
+            x
+          </div>
+        </div>
         <textarea
-          className="crayons-textfield composer-textarea composer-textarea__edit"
+          className="messagecomposer__input"
           id="messageform"
           placeholder="Let's connect"
           onKeyDown={handleKeyDownEdit}
@@ -43,26 +67,13 @@ export default class Chat extends Component {
           onKeyUp={handleKeyUp}
           maxLength="1000"
         />
-        <div className="composer-btn-group">
-          <button
-            type="button"
-            className="composer-submit composer-submit__edit crayons-btn"
-            onClick={handleSubmitOnClickEdit}
-          >
-            Save
-          </button>
-          <div
-            role="button"
-            className="composer-close__edit crayons-btn crayons-btn--secondary"
-            onClick={handleEditMessageClose}
-            tabIndex="0"
-            onKeyUp={(e) => {
-              if (e.keyCode === 13) handleEditMessageClose();
-            }}
-          >
-            Close
-          </div>
-        </div>
+        <button
+          type="button"
+          className="messagecomposer__submit cta"
+          onClick={handleSubmitOnClickEdit}
+        >
+          Save
+        </button>
       </div>
     );
   };
@@ -77,9 +88,9 @@ export default class Chat extends Component {
     return (
       <div className="messagecomposer">
         <textarea
-          className="crayons-textfield composer-textarea"
+          className="messagecomposer__input"
           id="messageform"
-          placeholder="Write message..."
+          placeholder="Let's connect"
           onKeyDown={handleKeyDown}
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
@@ -87,10 +98,10 @@ export default class Chat extends Component {
         />
         <button
           type="button"
-          className="crayons-btn composer-submit"
+          className="messagecomposer__submit cta"
           onClick={handleSubmitOnClick}
         >
-          Send
+          SEND
         </button>
       </div>
     );
