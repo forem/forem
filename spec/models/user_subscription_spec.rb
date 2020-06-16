@@ -23,7 +23,7 @@ RSpec.describe UserSubscription, type: :model do
       end
     end
 
-    context "when a reaction is destroyed" do
+    context "when a UserSubscription is destroyed" do
       it "decrements subscribed_to_user_subscriptions_count on user" do
         user_subscription = create(:user_subscription, subscriber: user)
         expect do
