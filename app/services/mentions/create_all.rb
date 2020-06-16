@@ -57,8 +57,7 @@ module Mentions
     end
 
     def user_has_comment_notifications?(user)
-      Notification.where(user_id: user.id,
-                         notifiable: @notifiable.id).count.positive?
+      user.notifications.exists?(notifiable_id: @notifiable.id)
     end
 
     def create_mention_for(user)
