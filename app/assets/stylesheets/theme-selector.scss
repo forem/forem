@@ -137,6 +137,22 @@
 .rich-selector--experience {
   cursor: pointer;
   position: relative;
+  .level_tag {
+    font-size: 1em;
+    text-align: center;
+  }
+
+  @media screen and (max-width: 1100px) {
+    .level_tag {
+      font-size: 0.8em;
+    }
+  }
+
+  @media screen and (max-width: 900px) {
+    .level_tag {
+      font-size: 0.5em;
+    }
+  }
 }
 
 .rich-selector-radio {
