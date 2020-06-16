@@ -240,37 +240,43 @@
   }
 }
 
-.activechatchannel__header {
-  @include themeable(
-    border-bottom,
-    theme-container-border,
-    1px solid $light-medium-gray
-  );
-  padding: 10px 12px;
-  font-weight: bold;
-  font-size: 17px;
+
+
+.active-channel__header {
+  align-items: center;
+  box-shadow: 0 0 0 1px var(--card-border);
+  box-sizing: border-box;
+  display: flex;
+  height: var(--header-height);
   position: relative;
+  padding: var(--su-4);
+  justify-content: space-between;
+}
 
-  a {
-    color: var(--body-color);
-  }
+.active-channel__title {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-base);
+  color: var(--body-color);
+}
 
-  .activechatchannel__channelconfig {
-    height: 17px;
-    position: absolute;
-    right: 15px;
-    top: 12px;
-    cursor: pointer;
-    @include themeable(filter, theme-social-icon-invert, invert(0));
-    img {
-      height: 100%;
-    }
+.active-channel__config-btn {
+  display: flex;
+  align-items: center;
+  border-radius: 100%;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  transition: all var(--transition-props);
+
+  &:hover {
+    background: var(--button-secondary-bg);
   }
 }
 
 .activechatchannel__messages {
-  font-size: calc(15px + 0.05vw);
-  padding: 10px 0px;
+  padding-top: var(--su-2);
+  padding-bottom: var(--su-2);
+  font-size: var(--fs-base);
   flex-grow: 1;
   height: 300px;
   overflow-y: scroll;
@@ -303,11 +309,7 @@
 
 .activechatchannel__form {
   width: 100%;
-  height: 73px;
   position: relative;
-  @media screen and (min-height: 1000px) {
-    height: 95px;
-  }
 }
 
 .activechatchannel__activecontent {
@@ -737,7 +739,7 @@
 
 // Chatmessage
 .chatmessage {
-  padding: 3px 10px;
+  padding: var(--su-2) var(--su-6);
   display: flex;
   max-width: 100%;
   @media not all and (pointer: coarse) {
@@ -764,21 +766,23 @@
   max-width: calc(100% - 37px);
 }
 
+.message__info {
+  display: flex;
+  align-items: center;
+}
+
 .chatmessagebody__username {
-  font-weight: 600;
+  font-size: var(--fs-base);
+  font-weight: var(--fw-medium);
+  margin-right: var(--su-2);
 }
 
 .chatmessage__timestamp {
-  font-size: 11px;
-  color: darken($light-medium-gray, 6%);
-  min-width: 85px;
-  text-align: right;
-  padding-left: 4px;
-  vertical-align: 1px;
+  font-size: var(--fs-s);
+  color: var(--base-60);
 }
 
 .chatmessage__bodytext {
-  margin: 3px 1px 4px;
   overflow-wrap: break-word;
   word-wrap: break-word;
   word-break: break-word;
@@ -800,17 +804,14 @@
   }
 }
 
-.chatmessagebody__profileimage {
-  height: 25px;
-  width: 25px;
-  margin-right: 6px;
-  border-radius: 20px;
-  vertical-align: -3px;
+.chatmessage__profilepic {
+  margin-right: var(--su-2);
+}
 
-  @media screen and (min-width: 400px) {
-    height: 31px;
-    width: 31px;
-  }
+.chatmessagebody__profileimage {
+  height: var(--su-7);
+  width: var(--su-7);
+  border-radius: 100%;
 }
 
 .chatmessagebody__username--link {
@@ -867,43 +868,11 @@
   height: inherit;
   align-items: stretch;
   position: relative;
-}
+  height: 40px;
+  padding: var(--su-4);
 
-.messagecomposer__input {
-  border-radius: 5px;
-  font-size: 16px;
-  margin: 0px 4px 4px 6px;
-  padding: 5px;
-  resize: none;
-  flex-grow: 1;
-  height: 54px;
-  background: var(--card-bg);
-  border: 1px solid var(--base-40);
-  color: var(--body-color);
-  @media screen and (min-width: 600px) {
-    height: 44px;
-  }
-  @media screen and (min-height: 1000px) {
-    height: 66px;
-  }
-}
-
-.messagecomposer__submit {
-  margin: 0px 6px 4px 0;
-  border-radius: 5px;
-  background: var(--accent-brand);
-  font-weight: 600px;
-  font-family: $helvetica-condensed;
-  color: white;
-  font-size: 18px;
-  border: 0px;
-
-  @media screen and (min-width: 500px) {
-    width: 80px;
-  }
-
-  @media screen and (min-width: 1500px) {
-    width: 100px;
+  textarea {
+    margin-right: var(--su-4);
   }
 }
 
@@ -997,7 +966,7 @@
 
 .message__actions span {
   margin-left: 7px;
-  font-size: 13px;
+  font-size: var(--fs-s);
   font-weight: bold;
   cursor: pointer;
 }
@@ -1065,90 +1034,40 @@
   }
 }
 
-.message__delete__modal {
-  position: fixed;
-  background-color: rgba(255, 255, 255, 0.25);
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 999;
-  display: block;
-  transition: all 0.3s;
+.delete-actions__container {
+  margin-top: var(--su-4);
 }
 
-.modal__content {
-  width: 400px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -webkit-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  padding: 1em;
-  border: 2px solid;
-  background: var(--body-bg);
-  color: var(--body-color);
-}
-
-.modal__content h3 {
-  margin: 20px 0;
-  text-align: center;
-}
-
-.delete__action__buttons {
-  display: flex !important;
-  justify-content: space-around;
-  margin: 40px 0px 20px 0;
-}
-
-.delete__action__buttons div {
-  border: 2px solid var(--body-color);
-  padding: 5px 20px;
-  cursor: pointer;
-  user-select: none;
+.message__delete__button {
+  margin-right: var(--su-2);
 }
 
 .message__delete__modal__hide {
   display: none;
 }
 
-.message__delete__button {
-  background: #ff0000;
-  color: white;
+.composer-container__edit {
+  height: auto;
+  padding: var(--su-4);
+  display: flex;
+  flex-direction: column;
 }
 
-.messageToBeEdited {
-  position: absolute;
-  display: grid;
-  grid-template-columns: 1fr 40px;
-  width: calc(100% - 14px);
-  top: -53px;
-  background: white;
-  padding: 0px 5px;
-  border: 1px solid var(--header-bg);
-  border-left: 3px solid var(--accent-brand);
-  height: 50px;
-  overflow: hidden;
-  p {
-    margin: 18px 0;
+.composer-textarea__edit {
+  height: 80px;
+  margin-bottom: var(--su-4);
+}
+
+.composer-btn-group {
+  button {
+    margin-right: var(--su-2);
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
 
-.closeEdit {
-  text-align: right;
-  user-select: none;
-  cursor: pointer;
-  padding: 2px 5px;
-  color: var(--accent-brand);
-  font-weight: bold;
-}
-
-.editHead {
-  position: absolute;
-  color: var(--accent-brand);
-  font-size: 14px;
-  font-weight: bold;
-}
 
 .mention__list {
   position: absolute;
@@ -1242,22 +1161,7 @@
     }
   }
 }
-.send-request {
-  .cta {
-    margin: 4px 6px 4px 0;
-    border-radius: 3px;
-    font-weight: 600px;
-    font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
-      'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
-      'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
-      'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
-      'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
-    font-size: 18px;
-    border: 0px;
-    height: 50px;
-    padding: 0 30px;
-  }
-}
+
 .loading-user {
   height: '210px';
   width: '210px';
