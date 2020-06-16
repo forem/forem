@@ -73,6 +73,7 @@ class User < ApplicationRecord
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
   has_many :identities, dependent: :destroy
+  has_many :identities_enabled, -> { enabled }, class_name: "Identity"
   has_many :mentions, dependent: :destroy
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
