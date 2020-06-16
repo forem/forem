@@ -941,7 +941,7 @@ export default class Chat extends Component {
         this.setActiveContent({
           data: {},
           type_of: 'chat-channel-setting',
-          activeMembershipId: activeChannel.id
+          activeMembershipId: activeChannel.id,
         });
       }
     }
@@ -1056,7 +1056,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the
+              abide by the 
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
@@ -1068,7 +1068,7 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined
+              You have joined 
               {' '}
               {activeChannel.channel_name}
               ! All interactions
@@ -1077,7 +1077,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the
+              abide by the 
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
@@ -1654,9 +1654,7 @@ export default class Chat extends Component {
       >
         <div className="crayons-modal__box">
           <div className="crayons-modal__box__body">
-            <h3>
-              Are you sure, you want to delete this message ?
-            </h3>
+            <h3>Are you sure, you want to delete this message ?</h3>
             <div className="delete-actions__container">
               <div
                 role="button"
@@ -1685,7 +1683,7 @@ export default class Chat extends Component {
             </div>
           </div>
         </div>
-        <div className="crayons-modal__overlay"></div>
+        <div className="crayons-modal__overlay" />
       </div>
     );
   };
@@ -1726,14 +1724,13 @@ export default class Chat extends Component {
     this.toggleSearchShowing();
   };
 
-
   renderChannelHeaderInner = () => {
     const { activeChannel } = this.state;
     if (activeChannel.channel_type === 'direct') {
       return (
         <a
           href={`/${activeChannel.channel_username}`}
-          class="active-channel__title"
+          className="active-channel__title"
           onClick={this.triggerActiveContent}
           data-content="sidecar-user"
         >
@@ -1743,7 +1740,7 @@ export default class Chat extends Component {
     }
     return (
       <a
-        href='#/'
+        href="#/"
         onClick={this.triggerActiveContent}
         data-content="chat_channel_setting"
       >
@@ -1766,7 +1763,6 @@ export default class Chat extends Component {
         ? 'sidecar-user'
         : `chat_channel_setting`;
 
-
     return (
       <a
         className="crayons-btn crayons-btn--icon-rounded crayons-btn--secondary"
@@ -1775,24 +1771,17 @@ export default class Chat extends Component {
           if (e.keyCode === 13) this.triggerActiveContent(e);
         }}
         tabIndex="0"
-        href='#/'
+        href="#/"
         data-content={dataContent}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 490 490"
-          className="crayons-icon"
+          viewBox="0 0 24 24"
           width="24"
           height="24"
-          alt="channel config"
-          data-content={dataContent}
+          className="crayons-icon"
         >
-          <path d="M245 490C109.9 490 0 380.1 0 245S109.9 0 245 0s245 109.9 245
-      245-109.9 245-245 245zm0-428C144.1 62 62 144.1 62 245s82.1 183 183 183
-      183-82.1 183-183S345.9 62 245 62z"/>
-          <circle cx="241.3" cy="159.2"
-          r="29.1"/> <path d="M285.1
-          359.9h-80.2V321h14.7v-66.2h-14.5v-38.9h65.3V321h14.7z"/>
+          <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM11 7h2v2h-2V7zm0 4h2v6h-2v-6z" />
         </svg>
       </a>
     );
