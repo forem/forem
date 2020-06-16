@@ -24,7 +24,8 @@ export default function initializeActionsPanel(user, path) {
 
   document.querySelector('.mod-actions-menu').innerHTML = modActionsMenuHTML;
   // eslint-disable-next-line no-restricted-globals
-  if (!top.document.location.pathname.endsWith('/mod')) {
+  if (!top.document.location.pathname.includes('/mod')) {
+    // don't show mod button in mod center page
     document.getElementById(
       'mod-actions-menu-btn-area',
     ).innerHTML = modActionsMenuIconHTML;

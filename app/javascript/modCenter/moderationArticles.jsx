@@ -22,6 +22,7 @@ export class ModerationArticles extends Component {
       <div className="moderation-articles-list">
         {articles.map((article) => {
           const {
+            id,
             title,
             path,
             cached_tag_list: cachedTagList,
@@ -30,6 +31,7 @@ export class ModerationArticles extends Component {
           } = article;
           return (
             <SingleArticle
+              id={id}
               title={title}
               path={path}
               cachedTagList={cachedTagList}
