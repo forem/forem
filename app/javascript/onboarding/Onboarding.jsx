@@ -68,13 +68,16 @@ export default class Onboarding extends Component {
 
   render() {
     const { currentSlide } = this.state;
-    return <main className="onboarding-body">{this.slides[currentSlide]}</main>;
+    const { communityConfig } = this.props;
+    return <main className="onboarding-body" style={{backgroundImage: `url(${communityConfig.communityBackground})`}}>{this.slides[currentSlide]}</main>;
   }
 }
 
 Onboarding.propTypes = {
   communityConfig: PropTypes.shape({
     communityName: PropTypes.string.isRequired,
+    communityBackground: PropTypes.string.isRequired,
+    communityLogo: PropTypes.string.isRequired,
     communityDescription: PropTypes.string.isRequired
-  })
+  }).isRequired
 };

@@ -24,7 +24,7 @@ class FeedbackMessagesController < ApplicationController
       @previous_message = feedback_message_params[:message]
 
       flash[:notice] = "Make sure the forms are filled 🤖"
-      render "pages/report-abuse"
+      render "pages/report_abuse"
     end
   end
 

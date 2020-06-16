@@ -1,6 +1,9 @@
 ENV["RAILS_ENV"] = "test"
+require "knapsack_pro"
+KnapsackPro::Adapters::RSpecAdapter.bind
 
 require "spec_helper"
+
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
@@ -49,6 +52,7 @@ allowed_sites = [
   "https://github.com/mozilla/geckodriver/releases",
   "https://selenium-release.storage.googleapis.com",
   "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
+  "api.knapsackpro.com",
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
@@ -92,6 +96,12 @@ RSpec.configure do |config|
   config.before do
     # Worker jobs shouldn't linger around between tests
     Sidekiq::Worker.clear_all
+  end
+
+  config.before(:each, stub_elasticsearch: true) do |_example|
+    stubbed_search_response = { "hits" => { "hits" => [] } }
+    allow(Search::Client).to receive(:search).and_return(stubbed_search_response)
+    allow(Search::Client).to receive(:index).and_return({ "_source" => {} })
   end
 
   config.around(:each, elasticsearch_reset: true) do |example|
@@ -159,6 +169,19 @@ RSpec.configure do |config|
     # Prevent Percy.snapshot from trying to hit the agent while not in use
 
     allow(Percy).to receive(:snapshot)
+  end
+
+  config.after do
+    Timecop.return
+  end
+
+  config.after(:suite) do
+    WebMock.disable_net_connect!(
+      allow_localhost: true,
+      allow: [
+        "api.knapsackpro.com",
+      ],
+    )
   end
 
   OmniAuth.config.test_mode = true

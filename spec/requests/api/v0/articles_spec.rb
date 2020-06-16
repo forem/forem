@@ -442,8 +442,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "POST /api/articles" do
-    let_it_be(:api_secret) { create(:api_secret) }
-    let_it_be(:user) { api_secret.user }
+    let(:api_secret) { create(:api_secret) }
+    let(:user) { api_secret.user }
 
     context "when unauthorized" do
       it "fails with no api key" do

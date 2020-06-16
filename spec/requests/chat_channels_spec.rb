@@ -184,7 +184,7 @@ RSpec.describe "ChatChannels", type: :request do
       patch "/chat_channels/update_channel/#{chat_channel.id}", params: {
         chat_channel: {
           channel_name: "Hello Channel",
-          slug: "hello-channelly",
+          slug: "hello-channelly"
         }
       }
 
@@ -209,9 +209,9 @@ RSpec.describe "ChatChannels", type: :request do
       membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
       membership.update(role: "mod")
       patch "/chat_channels/update_channel/#{chat_channel.id}", params: {
-          chat_channel: { channel_name:"Hello Channel", slug: invite_channel.slug }
-        }
-        expect(ChatChannel.last.slug).not_to eq("hello-channelly")
+        chat_channel: { channel_name: "Hello Channel", slug: invite_channel.slug }
+      }
+      expect(ChatChannel.last.slug).not_to eq("hello-channelly")
     end
   end
 

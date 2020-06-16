@@ -15,8 +15,8 @@ RSpec.describe "User visits a homepage", type: :system do
     it "shows the sign-in block" do
       visit "/"
       within ".signin-cta-widget" do
-        expect(page).to have_text("Sign In With Twitter")
-        expect(page).to have_text("Sign In With GitHub")
+        expect(page).to have_text("Sign In with Twitter")
+        expect(page).to have_text("Sign In with GitHub")
       end
     end
 
@@ -29,25 +29,6 @@ RSpec.describe "User visits a homepage", type: :system do
       end
 
       expect(page).to have_text("DESIGN YOUR EXPERIENCE")
-    end
-
-    context "when rendering broadcasts" do
-      let!(:broadcast) { create(:announcement_broadcast) }
-
-      it "renders the broadcast if active", js: true do
-        get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
-        visit "/"
-        within ".broadcast-wrapper" do
-          expect(page).to have_text("Hello, World!")
-        end
-      end
-
-      it "does not render a broadcast if inactive", js: true do
-        broadcast.update!(active: false)
-        get "/async_info/base_data" # Explicitly ensure broadcast data is loaded before doing any checks
-        visit "/"
-        expect(page).not_to have_css(".broadcast-wrapper")
-      end
     end
 
     describe "link tags" do

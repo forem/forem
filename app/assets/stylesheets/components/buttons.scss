@@ -1,5 +1,19 @@
 @import '../config/import';
 
+:root {
+  --brand-apple-bg: #000;
+  --brand-apple-color: #fff;
+  --brand-apple-bg-hover: #1b1b1b;
+
+  --brand-twitter-bg: #1da1f2;
+  --brand-twitter-color: #fff;
+  --brand-twitter-bg-hover: #0096f2;
+
+  --brand-github-bg: #24292e;
+  --brand-github-color: #fff;
+  --brand-github-bg-hover: #000;
+}
+
 // Basic styling
 .crayons-btn {
   // Setup
@@ -198,6 +212,39 @@
     --color-inverted: var(--accent-danger);
     --color-inverted-hover: var(--accent-danger-lighter);
   }
+}
+
+.crayons-btn--brand-apple {
+  --bg: var(--brand-apple-bg);
+  --bg-hover: var(--brand-apple-bg-hover);
+  --color: var(--brand-apple-color);
+  --color-hover: var(--brand-apple-color);
+  --bg-inverted: var(--brand-apple-bg);
+  --bg-inverted-hover: var(--brand-apple-bg-hover);
+  --color-inverted: var(--brand-apple-color);
+  --color-inverted-hover: var(--brand-apple-color);
+}
+
+.crayons-btn--brand-twitter {
+  --bg: var(--brand-twitter-bg);
+  --bg-hover: var(--brand-twitter-bg-hover);
+  --color: var(--brand-twitter-color);
+  --color-hover: var(--brand-twitter-color);
+  --bg-inverted: var(--brand-twitter-bg);
+  --bg-inverted-hover: var(--brand-twitter-bg-hover);
+  --color-inverted: var(--brand-twitter-color);
+  --color-inverted-hover: var(--brand-twitter-color);
+}
+
+.crayons-btn--brand-github {
+  --bg: var(--brand-github-bg);
+  --bg-hover: var(--brand-github-bg-hover);
+  --color: var(--brand-github-color);
+  --color-hover: var(--brand-github-color);
+  --bg-inverted: var(--brand-github-bg);
+  --bg-inverted-hover: var(--brand-github-bg-hover);
+  --color-inverted: var(--brand-github-color);
+  --color-inverted-hover: var(--brand-github-color);
 }
 
 // Icon alone

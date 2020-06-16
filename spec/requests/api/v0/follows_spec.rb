@@ -8,8 +8,8 @@ RSpec.describe "Api::V0::FollowsController", type: :request do
     end
 
     context "when user is authorized" do
-      let_it_be(:user) { create(:user) }
-      let_it_be(:users_hash) { [{ id: create(:user).id }, { id: create(:user).id }] }
+      let(:user) { create(:user) }
+      let(:users_hash) { [{ id: create(:user).id }, { id: create(:user).id }] }
 
       before do
         sign_in user
