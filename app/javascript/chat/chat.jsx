@@ -1758,6 +1758,11 @@ export default class Chat extends Component {
       return '';
     }
 
+    const path =
+      activeChannel.channel_type === 'direct'
+        ? `/${activeChannel.channel_username}`
+        : `#`;
+
     const dataContent =
       activeChannel.channel_type === 'direct'
         ? 'sidecar-user'

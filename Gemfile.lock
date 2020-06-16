@@ -570,7 +570,7 @@ GEM
       jwt (~> 2.1, >= 2.1.0)
       rest-client (~> 2.0, >= 2.0.2)
     pusher-signature (0.1.8)
-    rack (2.2.2)
+    rack (2.2.3)
     rack-attack (6.3.1)
       rack (>= 1.0, < 3)
     rack-cors (1.1.1)

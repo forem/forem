@@ -38,9 +38,9 @@ RSpec.describe "User visits articles by tag", type: :system do
 
       it "shows the correct articles" do
         within("#articles-list") do
-          expect(page).to have_text(article.title)
-          expect(page).to have_text(article3.title)
-          expect(page).not_to have_text(article2.title)
+          expect(page).to have_text(CGI.escapeHTML(article.title))
+          expect(page).to have_text(CGI.escapeHTML(article3.title))
+          expect(page).not_to have_text(CGI.escapeHTML(article2.title))
         end
       end
 
@@ -48,9 +48,9 @@ RSpec.describe "User visits articles by tag", type: :system do
         click_on "WEEK"
 
         within("#articles-list") do
-          expect(page).to have_text(article.title)
-          expect(page).not_to have_text(article3.title)
-          expect(page).not_to have_text(article2.title)
+          expect(page).to have_text(CGI.escapeHTML(article.title))
+          expect(page).not_to have_text(CGI.escapeHTML(article3.title))
+          expect(page).not_to have_text(CGI.escapeHTML(article2.title))
         end
       end
     end
