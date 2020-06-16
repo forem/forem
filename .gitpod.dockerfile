@@ -7,7 +7,7 @@ RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --def
 
 # Install Node
 ENV NODE_VERSION=12.16.3
-RUN bash -lc ". .nvm/nvm.sh && nvm install $NODE_VERSION"
+RUN bash -lc ". ~/.nvm/nvm.sh && nvm install $NODE_VERSION && nvm alias default $NODE_VERSION && nvm use $NODE_VERSION"
 
 # Install Redis.
 RUN sudo apt-get update \
