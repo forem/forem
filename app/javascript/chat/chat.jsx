@@ -1433,7 +1433,6 @@ export default class Chat extends Component {
               activeChannelId={state.activeChannelId}
               startEditing={state.startEditing}
               markdownEdited={state.markdownEdited}
-              editMessageHtml={state.activeEditMessage.message}
               editMessageMarkdown={state.activeEditMessage.markdown}
               handleEditMessageClose={this.handleEditMessageClose}
             />
@@ -1649,40 +1648,44 @@ export default class Chat extends Component {
         id="message"
         className={
           showDeleteModal
-            ? 'message__delete__modal'
-            : 'message__delete__modal message__delete__modal__hide'
+            ? 'message__delete__modal crayons-modal crayons-modal--s absolute'
+            : 'message__delete__modal message__delete__modal__hide crayons-modal crayons-modal--s absolute'
         }
       >
-        <div className="modal__content">
-          <h3> Are you sure, you want to delete this message ?</h3>
-
-          <div className="delete__action__buttons">
-            <div
-              role="button"
-              className="message__cancel__button"
-              onClick={this.handleCloseDeleteModal}
-              tabIndex="0"
-              onKeyUp={(e) => {
-                if (e.keyCode === 13) this.handleCloseDeleteModal();
-              }}
-            >
-              {' '}
-              Cancel
-            </div>
-            <div
-              role="button"
-              className="message__delete__button"
-              onClick={this.handleMessageDelete}
-              tabIndex="0"
-              onKeyUp={(e) => {
-                if (e.keyCode === 13) this.handleMessageDelete();
-              }}
-            >
-              {' '}
-              Delete
+        <div className="crayons-modal__box">
+          <div className="crayons-modal__box__body">
+            <h3>
+              Are you sure, you want to delete this message ?
+            </h3>
+            <div className="delete-actions__container">
+              <div
+                role="button"
+                className="crayons-btn crayons-btn--danger message__delete__button"
+                onClick={this.handleMessageDelete}
+                tabIndex="0"
+                onKeyUp={(e) => {
+                  if (e.keyCode === 13) this.handleMessageDelete();
+                }}
+              >
+                {' '}
+                Delete
+              </div>
+              <div
+                role="button"
+                className="crayons-btn crayons-btn--secondary message__cancel__button"
+                onClick={this.handleCloseDeleteModal}
+                tabIndex="0"
+                onKeyUp={(e) => {
+                  if (e.keyCode === 13) this.handleCloseDeleteModal();
+                }}
+              >
+                {' '}
+                Cancel
+              </div>
             </div>
           </div>
         </div>
+        <div className="crayons-modal__overlay"></div>
       </div>
     );
   };
@@ -1729,6 +1732,7 @@ export default class Chat extends Component {
       return (
         <a
           href={`/${activeChannel.channel_username}`}
+          class="active-channel__title"
           onClick={this.triggerActiveContent}
           data-content="sidecar-user"
         >
@@ -1768,7 +1772,7 @@ export default class Chat extends Component {
 
     return (
       <a
-        className="activechatchannel__channelconfig"
+        className="crayons-btn crayons-btn--icon-rounded crayons-btn--secondary"
         onClick={this.triggerActiveContent}
         onKeyUp={(e) => {
           if (e.keyCode === 13) this.triggerActiveContent(e);
@@ -1777,11 +1781,22 @@ export default class Chat extends Component {
         href={path}
         data-content={dataContent}
       >
-        <img
-          src={ConfigImage}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 490 490"
+          className="crayons-icon"
+          width="24"
+          height="24"
           alt="channel config"
           data-content={dataContent}
-        />
+        >
+          <path d="M245 490C109.9 490 0 380.1 0 245S109.9 0 245 0s245 109.9 245
+      245-109.9 245-245 245zm0-428C144.1 62 62 144.1 62 245s82.1 183 183 183
+      183-82.1 183-183S345.9 62 245 62z"/>
+          <circle cx="241.3" cy="159.2"
+          r="29.1"/> <path d="M285.1
+          359.9h-80.2V321h14.7v-66.2h-14.5v-38.9h65.3V321h14.7z"/>
+        </svg>
       </a>
     );
   };
@@ -1793,10 +1808,10 @@ export default class Chat extends Component {
       !navigator.userAgent.match('CriOS')
         ? ' chat--iossafari'
         : '';
-    let channelHeader = <div className="activechatchannel__header">&nbsp;</div>;
+    let channelHeader = <div className="active-channel__header">&nbsp;</div>;
     if (state.activeChannel) {
       channelHeader = (
-        <div className="activechatchannel__header">
+        <div className="active-channel__header">
           {this.renderChannelHeaderInner()}
           {this.renderChannelConfigImage()}
         </div>
