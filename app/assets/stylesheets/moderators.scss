@@ -2,7 +2,6 @@
 @import 'mixins';
 @import 'config/import';
 
-
 .mod-index-footer {
   text-align: center;
   padding: 30px 10px;
@@ -43,6 +42,9 @@
     }
     .moderation-articles-list {
       .moderation-single-article {
+        width: 100%;
+        background-color: var(--base-inverted);
+        text-align: left;
         padding: var(--su-4);
         border: 1px solid var(--base-10);
         display: grid;
@@ -77,6 +79,21 @@
           font-weight: var(--fw-bold);
           color: var(--base-90);
           padding-left: var(--su-6);
+        }
+        .article-iframes-container {
+          margin-top: var(--su-3);
+          grid-column-start: 1;
+          grid-column-end: 4;
+          width: 100%;
+          display: flex;
+          .article-iframe {
+            width: 100%;
+            height: 650px;
+          }
+          .actions-panel-iframe {
+            width: 60%;
+            height: 650px;
+          }
         }
       }
     }

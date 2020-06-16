@@ -2,7 +2,7 @@ class ModerationsController < ApplicationController
   after_action :verify_authorized
 
   JSON_OPTIONS = {
-    only: %i[title published_at cached_tag_list path],
+    only: %i[id title published_at cached_tag_list path],
     include: {
       user: { only: %i[username name path articles_count] }
     }

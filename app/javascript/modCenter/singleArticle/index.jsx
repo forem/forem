@@ -2,11 +2,13 @@ import PropTypes from 'prop-types';
 import { h } from 'preact';
 
 const SingleArticle = ({
+  id,
   title,
-  // path,
+  path,
   cachedTagList,
   publishedAt,
   user,
+  toggleArticle,
 }) => {
   const tags = cachedTagList.split(', ').map((tag) => {
     return (
@@ -61,7 +63,11 @@ const SingleArticle = ({
   };
 
   return (
-    <div className="moderation-single-article">
+    <button
+      type="button"
+      className="moderation-single-article"
+      onClick={(e) => toggleArticle(e, id, path)}
+    >
       <span className="article-title">
         <header>
           <h3>{title}</h3>
@@ -73,16 +79,19 @@ const SingleArticle = ({
         {user.name}
       </span>
       <span className="article-published-at">{formatDate(publishedAt)}</span>
-    </div>
+      <div className="article-iframes-container" id={`article-iframe-${id}`} />
+    </button>
   );
 };
 
 SingleArticle.propTypes = {
+  id: PropTypes.number.isRequired,
   title: PropTypes.string.isRequired,
-  // path: PropTypes.string.isRequired,
+  path: PropTypes.string.isRequired,
   publishedAt: PropTypes.string.isRequired,
   cachedTagList: PropTypes.isRequired,
   user: PropTypes.isRequired,
+  toggleArticle: PropTypes.func.isRequired,
 };
 
 export default SingleArticle;
