@@ -1776,7 +1776,7 @@ export default class Chat extends Component {
           if (e.keyCode === 13) this.triggerActiveContent(e);
         }}
         tabIndex="0"
-        href="#/"
+        href={path}
         data-content={dataContent}
       >
         <svg
