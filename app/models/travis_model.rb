@@ -1,0 +1,2 @@
+class TravisModel < ApplicationRecord
+end
