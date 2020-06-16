@@ -1,6 +1,7 @@
 <% title "Dashboard" %>
 
-<div class="dashboard-container" id="user-dashboard">
+<main class="dashboard-container" id="user-dashboard">
+  <h1 class="visually-hidden-header">User Dashboard</h1>
   <%= render "actions" %>
   <% if @organizations && @organizations.size > 0 && (params[:which].blank? || params[:which] == "organization") %>
     <h1>
@@ -26,7 +27,7 @@
         <a class="video-upload-cta cta" href="/listings/dashboard" data-no-instant>
           Create/Manage Listings
         </a>
-      <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]) %>
+      <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]), 'aria-label': 'Sort By' %>
       <% if @articles.any? {|article| article.archived } %>
         <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink" %>
       <% end %>
@@ -52,4 +53,4 @@
       <h3>Also check out the <a href="/welcome" data-no-instant>Welcome Thread</a> to introduce yourself!</h3>
     </div>
   <% end %>
-</div>
+</main>
