@@ -423,7 +423,6 @@
               <div class="alert alert-info"> Special cute mascot image used in the footer. </div>
             </div>
 
-
             <div class="form-group">
               <%= f.label :mascot_image_description %>
               <%= f.text_field :mascot_image_description,
@@ -685,6 +684,26 @@
                                value: SiteConfig.sidebar_tags.join(","),
                                placeholder: "List of valid tags: comma separated, letters only e.g. help,discuss,explainlikeimfive,meta" %>
               <div class="alert alert-info">Determines which tags are shown on the homepage righthand sidebar</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
+                       header: "User Experience",
+                       state: "collapse",
+                       target: "uxBodyContainer",
+                       expanded: "false"
+                     } %>
+          <div id="uxBodyContainer" class="card-body collapse hide" aria-labelledby="uxBodyContainer">
+            <div class="form-group">
+              <%= f.label :feed_style %>
+              <%= f.text_field :feed_style,
+                               class: "form-control",
+                               value: SiteConfig.feed_style,
+                               placeholder: "basic, rich, or compact" %>
+              <div class="alert alert-info">Determines which default feed the users sees (rich content, more minimal, etc.)</div>
             </div>
           </div>
         </div>

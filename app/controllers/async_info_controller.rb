@@ -71,6 +71,7 @@ class AsyncInfoController < ApplicationController
         moderator_for_tags: @user.moderator_for_tags,
         config_body_class: @user.config_body_class,
         pro: @user.pro?,
+        feed_style: SiteConfig.feed_style,
         created_at: @user.created_at
       }
     end.to_json

@@ -4,7 +4,6 @@ exports[`<Article /> component should render a featured article 1`] = `
 <article
   class="crayons-story cursor-pointer crayons-story--featured"
   data-content-user-id={23289}
-  data-featured-article="articles-62407"
   id="featured-story-marker"
 >
   <div
@@ -198,7 +197,6 @@ exports[`<Article /> component should render a featured article for a video post
 <article
   class="crayons-story cursor-pointer crayons-story--featured"
   data-content-user-id={27683}
-  data-featured-article="articles-49020"
   id="featured-story-marker"
 >
   <div
@@ -388,7 +386,6 @@ exports[`<Article /> component should render a featured article for an organizat
 <article
   class="crayons-story cursor-pointer crayons-story--featured"
   data-content-user-id={23289}
-  data-featured-article="articles-62407"
   id="featured-story-marker"
 >
   <div
@@ -651,7 +648,6 @@ exports[`<Article /> component should render a podcast episode 1`] = `
 <article
   class="crayons-story cursor-pointer false"
   data-content-user-id={27683}
-  data-featured-article={false}
   id={false}
 >
   <div
@@ -820,11 +816,203 @@ exports[`<Article /> component should render a podcast episode 1`] = `
 </article>
 `;
 
+exports[`<Article /> component should render a rich feed 1`] = `
+<article
+  class="crayons-story cursor-pointer crayons-story--featured"
+  data-content-user-id={23289}
+  id="featured-story-marker"
+>
+  <div
+    onClick={[Function]}
+    role="presentation"
+  >
+    <a
+      class="crayons-story__cover"
+      href="/some-post/path"
+      title="Unbranded Home Loan Account"
+    >
+      <div
+        class="crayons-story__cover__image"
+        loading="lazy"
+        style={
+          Object {
+            "backgroundImage": "url(/images/10.png)",
+          }
+        }
+      />
+    </a>
+    <div
+      class="crayons-story__body"
+    >
+      <div
+        class="crayons-story__top"
+      >
+        <div
+          class="crayons-story__meta"
+        >
+          <div
+            class="crayons-story__author-pic"
+          >
+            <a
+              class="crayons-avatar crayons-avatar--l"
+              href="/Emil99"
+            >
+              <img
+                alt="Emil99 profile"
+                class="crayons-avatar__image"
+                loading="lazy"
+                src="/images/10.png"
+              />
+            </a>
+          </div>
+          <div>
+            <p>
+              <a
+                class="crayons-story__secondary fw-medium"
+                href="/Emil99"
+              >
+                Stella Macejkovic
+              </a>
+            </p>
+            <a
+              class="crayons-story__tertiary fs-xs"
+              href="/some-post/path"
+            >
+              <time
+                dateTime={null}
+              >
+                February 18 (just now)
+              </time>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="crayons-story__indention"
+      >
+        <h2
+          class="crayons-story__title"
+        >
+          <a
+            href="/some-post/path"
+            id="article-link-62407"
+          >
+            <span
+              class="crayons-story__flare-tag"
+              style={
+                Object {
+                  "background": "#000000",
+                  "color": "#ffffff",
+                }
+              }
+            >
+              #javascript
+            </span>
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Unbranded Home Loan Account",
+                }
+              }
+            />
+          </a>
+        </h2>
+        <div
+          class="crayons-story__tags"
+        >
+          <a
+            class="crayons-tag"
+            href="/t/javascript"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/ruby"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            ruby
+          </a>
+          <a
+            class="crayons-tag"
+            href="/t/go"
+          >
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            go
+          </a>
+        </div>
+        <div
+          class="crayons-story__bottom"
+        >
+          <div
+            class="crayons-story__details"
+          >
+            <a
+              class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+              href="/some-post/path"
+            >
+              <svg
+                class="crayons-icon"
+                height="24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                />
+              </svg>
+              0
+              <span
+                class="hidden s:inline"
+              >
+                 reactions
+              </span>
+            </a>
+          </div>
+          <div
+            class="crayons-story__save"
+          >
+            <small
+              class="crayons-story__tertiary mr-2"
+            >
+              undefined min read
+            </small>
+            <button
+              class="crayons-btn crayons-btn--s crayons-btn--secondary"
+              data-initial-feed={true}
+              data-reactable-id={62407}
+              onBlur={[Function]}
+              onClick={[Function]}
+              onFocus={[Function]}
+              onMouseOver={[Function]}
+              onMouseout={[Function]}
+              type="button"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</article>
+`;
+
 exports[`<Article /> component should render a standard article 1`] = `
 <article
   class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
-  data-featured-article={false}
   id={false}
 >
   <div
@@ -1003,7 +1191,6 @@ exports[`<Article /> component should render a user article 1`] = `
 <article
   class="crayons-story cursor-pointer false"
   data-content-user-id={7955}
-  data-featured-article={false}
   id={false}
 >
   <div
@@ -1118,7 +1305,6 @@ exports[`<Article /> component should render a video article 1`] = `
 <article
   class="crayons-story cursor-pointer false"
   data-content-user-id={27683}
-  data-featured-article={false}
   id={false}
 >
   <div
@@ -1308,7 +1494,6 @@ exports[`<Article /> component should render a video article with a flare tag 1`
 <article
   class="crayons-story cursor-pointer false"
   data-content-user-id={27683}
-  data-featured-article={false}
   id={false}
 >
   <div
@@ -1498,7 +1683,6 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
 <article
   class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
-  data-featured-article={false}
   id={false}
 >
   <div
@@ -1758,7 +1942,6 @@ exports[`<Article /> component should render with a flare tag 1`] = `
 <article
   class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
-  data-featured-article={false}
   id={false}
 >
   <div
@@ -1937,7 +2120,6 @@ exports[`<Article /> component should render with a snippet result 1`] = `
 <article
   class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
-  data-featured-article={false}
   id={false}
 >
   <div
@@ -2123,7 +2305,6 @@ exports[`<Article /> component should render with an organization 1`] = `
 <article
   class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
-  data-featured-article={false}
   id={false}
 >
   <div
@@ -2326,7 +2507,6 @@ exports[`<Article /> component should render with comments 1`] = `
 <article
   class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
-  data-featured-article={false}
   id={false}
 >
   <div
@@ -2586,7 +2766,6 @@ exports[`<Article /> component should render with reactions 1`] = `
 <article
   class="crayons-story cursor-pointer false"
   data-content-user-id={23289}
-  data-featured-article={false}
   id={false}
 >
   <div
