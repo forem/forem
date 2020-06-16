@@ -45,6 +45,11 @@ module RateLimitCheckerHelper
       placeholder: 5,
       description: "The number of emails we send to a user within 2 minutes"
     },
+    rate_limit_email_signup_creation: {
+      min: 0,
+      placeholder: 3,
+      description: "The number of email signups a user can submit within 30 seconds"
+    },
     rate_limit_organization_creation: {
       min: 1,
       placeholder: 1,
