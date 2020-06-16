@@ -206,7 +206,7 @@
               <div class="alert alert-info">Default (set via DEFAULT_EMAIL environment variable)</div>
              </div>
              <%= f.fields_for :email_addresses do |email_field| %>
-               <% SiteConfig.email_addresses.each do |type, address| %>
+               <% SiteConfig.email_addresses.except(:default).each do |type, address| %>
                  <div>
                    <%= email_field.label type %>
                    <%= email_field.text_field type,

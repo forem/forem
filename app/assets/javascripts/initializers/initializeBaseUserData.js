@@ -67,9 +67,10 @@ function addRelevantButtonsToComments(user) {
     for (let i = 0; i < settingsButts.length; i += 1) {
       let butt = settingsButts[i];
       const { action, commentableUserId, userId } = butt.dataset;
-
-      if (parseInt(userId, 10) === user.id) {
+      if (parseInt(userId, 10) === user.id && action === 'settings-button') {
+        butt.innerHTML = '<a href="'+butt.dataset.path+'" rel="nofollow" style="color:#0a0a0a;" data-no-instant>Settings</a>'
         butt.style.display = 'inline-block';
+        butt.classList.remove('hidden');
       }
 
       if (
@@ -85,6 +86,9 @@ function addRelevantButtonsToComments(user) {
       var modButts = document.getElementsByClassName('mod-actions');
       for (let i = 0; i < modButts.length; i += 1) {
         let butt = modButts[i];
+        if (butt.classList.contains('mod-actions-comment-button')) {
+          butt.innerHTML = '<a href="'+butt.dataset.path+'" rel="nofollow">Moderate</a>'
+        }
         butt.className = 'mod-actions';
         butt.style.display = 'inline-block';
       }

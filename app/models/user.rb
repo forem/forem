@@ -67,6 +67,8 @@ class User < ApplicationRecord
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
+  has_many :user_subscriptions, foreign_key: :author_id, inverse_of: :author, dependent: :destroy
+  has_many :subscribers, through: :user_subscriptions, dependent: :destroy
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
@@ -90,8 +92,6 @@ class User < ApplicationRecord
   has_many :response_templates, foreign_key: :user_id, inverse_of: :user, dependent: :destroy
   has_many :tweets, dependent: :destroy
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
-
-  has_one :counters, class_name: "UserCounter", dependent: :destroy
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -146,15 +146,6 @@ class User < ApplicationRecord
   alias_attribute :public_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
 
-  scope :with_this_week_comments, lambda { |number|
-    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
-  }
-  scope :with_previous_week_comments, lambda { |number|
-    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_prior_7_days')::int >= ?", number)
-  }
-  scope :top_commenters, lambda { |number = 10|
-    includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
-  }
   scope :eager_load_serialized_data, -> { includes(:roles) }
 
   after_save :bust_cache
