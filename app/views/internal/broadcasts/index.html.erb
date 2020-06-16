@@ -31,6 +31,7 @@
           <p>
             <%= broadcast.processed_html %>
           </p>
+          <h3>Last Active On: <%= broadcast.active_status_updated_at&.strftime("%b %d, %Y %H:%M UTC") %></h3>
           <h3>Status:</h3>
           <h3>
             <span class="badge badge-<%= broadcast.active? ? "success" : "warning" %>">
