@@ -1,4 +1,4 @@
-module UxHelper
+module SettingsHelper
   def user_experience_labels
     %w[Novice Beginner Mid-level Advanced Expert]
   end
