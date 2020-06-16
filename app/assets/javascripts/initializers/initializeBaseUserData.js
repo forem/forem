@@ -68,17 +68,20 @@ function addRelevantButtonsToComments(user) {
       let butt = settingsButts[i];
       const { action, commentableUserId, userId } = butt.dataset;
       if (parseInt(userId, 10) === user.id && action === 'settings-button') {
-        butt.innerHTML = '<a href="'+butt.dataset.path+'" rel="nofollow" style="color:#0a0a0a;" data-no-instant>Settings</a>'
-        butt.style.display = 'inline-block';
+        butt.innerHTML =
+          '<a href="' +
+          butt.dataset.path +
+          '" rel="nofollow" class="crayons-link crayons-link--block" data-no-instant>Settings</a>';
         butt.classList.remove('hidden');
+        butt.classList.add('block');
       }
 
       if (
         action === 'hide-button' &&
         parseInt(commentableUserId, 10) === user.id
       ) {
-        butt.style.display = 'inline-block';
         butt.classList.remove('hidden');
+        butt.classList.add('block');
       }
     }
 
@@ -87,10 +90,14 @@ function addRelevantButtonsToComments(user) {
       for (let i = 0; i < modButts.length; i += 1) {
         let butt = modButts[i];
         if (butt.classList.contains('mod-actions-comment-button')) {
-          butt.innerHTML = '<a href="'+butt.dataset.path+'" rel="nofollow">Moderate</a>'
+          butt.innerHTML =
+            '<a href="' +
+            butt.dataset.path +
+            '" rel="nofollow" class="crayons-link crayons-link--block">Moderate</a>';
         }
         butt.className = 'mod-actions';
-        butt.style.display = 'inline-block';
+        butt.classList.remove('hidden');
+        butt.classList.add('block');
       }
     }
   }
