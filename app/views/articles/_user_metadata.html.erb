@@ -1,8 +1,8 @@
-<style>
+<%# <style>
   .user-metadata-details-inner a {
-    color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.95) %>
+    color: var(--body-color);
   }
-</style>
+</style> %>
 
 <div class="user-metadata-details">
   <div class="user-metadata-details-inner">
