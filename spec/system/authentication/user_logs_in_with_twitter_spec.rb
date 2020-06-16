@@ -163,7 +163,7 @@ RSpec.describe "Authenticating with Twitter" do
     context "when using valid credentials" do
       it "logs in" do
         visit root_path
-        click_link sign_in_link
+        click_link(sign_in_link, match: :first)
 
         expect(page).to have_current_path("/dashboard?signin=true")
       end
