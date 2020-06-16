@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe ApplicationDecorator, type: :decorator do
-  let(:article) { create(:article) }
-
   describe "#object" do
     it "exposes the decorated object" do
       obj = Object.new
