@@ -4,8 +4,10 @@
 class UserSubscription < ApplicationRecord
   ALLOWED_TYPES = %w[Article].freeze
 
-  belongs_to :author, class_name: "User", inverse_of: :user_subscriptions
-  belongs_to :subscriber, class_name: "User", inverse_of: :user_subscriptions
+  counter_culture :subscriber, column_name: "subscribed_to_user_subscriptions_count"
+
+  belongs_to :author, class_name: "User", inverse_of: :authored_user_subscriptions
+  belongs_to :subscriber, class_name: "User", inverse_of: :subscribed_to_user_subscriptions
   belongs_to :user_subscription_sourceable, polymorphic: true
 
   validates :author_id, presence: true

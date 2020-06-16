@@ -67,8 +67,9 @@ class User < ApplicationRecord
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
-  has_many :user_subscriptions, foreign_key: :author_id, inverse_of: :author, dependent: :destroy
-  has_many :subscribers, through: :user_subscriptions, dependent: :destroy
+  has_many :authored_user_subscriptions, class_name: "UserSubscription", foreign_key: :author_id, inverse_of: :author, dependent: :destroy
+  has_many :subscribers, through: :authored_user_subscriptions, dependent: :destroy
+  has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription", foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
@@ -221,6 +222,16 @@ class User < ApplicationRecord
     cache_key = "user-#{id}-#{last_followed_at}/following_podcasts_ids"
     Rails.cache.fetch(cache_key, expires_in: 12.hours) do
       Follow.follower_podcast(id).pluck(:followable_id)
+    end
+  end
+
+  # TODO: (Alex Smith) - Adjust TTL and limit query size post Codeland
+  def cached_subscription_source_article_ids
+    cache_key = "user-#{id}-#{subscribed_to_user_subscriptions_count}/subscription_source_article_ids"
+    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
+      subscribed_to_user_subscriptions.
+        where(user_subscription_sourceable_type: "Article").
+        pluck(:user_subscription_sourceable_id)
     end
   end
 
