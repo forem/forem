@@ -45,6 +45,8 @@ function initializeCommentsPage() {
                   var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
                   if (userActionsEl && buttEl) {
                     userActionsEl.className = 'current-user-actions';
+                    userActionsEl.innerHTML = '<a data-no-instant href="' + userActionsEl.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
+                                                <a href="' + userActionsEl.parentNode.dataset.path + '/edit">EDIT</a>'
                     userActionsEl.style.display = 'inline-block';
                     document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
                   }

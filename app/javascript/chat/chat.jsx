@@ -941,7 +941,7 @@ export default class Chat extends Component {
         this.setActiveContent({
           data: {},
           type_of: 'chat-channel-setting',
-          activeMembershipId: activeChannel.id
+          activeMembershipId: activeChannel.id,
         });
       }
     }
@@ -1056,7 +1056,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the
+              abide by the 
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
@@ -1068,7 +1068,7 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined
+              You have joined 
               {' '}
               {activeChannel.channel_name}
               ! All interactions
@@ -1077,7 +1077,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the
+              abide by the 
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
@@ -1723,7 +1723,6 @@ export default class Chat extends Component {
     this.toggleSearchShowing();
   };
 
-
   renderChannelHeaderInner = () => {
     const { activeChannel } = this.state;
     if (activeChannel.channel_type === 'direct') {
@@ -1739,7 +1738,7 @@ export default class Chat extends Component {
     }
     return (
       <a
-        href='#/'
+        href="#/"
         onClick={this.triggerActiveContent}
         data-content="chat_channel_setting"
       >
@@ -1757,11 +1756,15 @@ export default class Chat extends Component {
       return '';
     }
 
+    const path =
+      activeChannel.channel_type === 'direct'
+        ? `/${activeChannel.channel_username}`
+        : `#`;
+
     const dataContent =
       activeChannel.channel_type === 'direct'
         ? 'sidecar-user'
         : `chat_channel_setting`;
-
 
     return (
       <a
@@ -1771,7 +1774,7 @@ export default class Chat extends Component {
           if (e.keyCode === 13) this.triggerActiveContent(e);
         }}
         tabIndex="0"
-        href='#/'
+        href={path}
         data-content={dataContent}
       >
         <img

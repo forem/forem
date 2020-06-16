@@ -106,6 +106,7 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.email_addresses[:privacy]).to eq("privacy@example.com")
           expect(SiteConfig.email_addresses[:business]).to eq("partners@example.com")
           expect(SiteConfig.email_addresses[:members]).to eq("members@example.com")
+          expect(SiteConfig.email_addresses[:default]).to eq(ApplicationConfig["DEFAULT_EMAIL"])
         end
       end
 

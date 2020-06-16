@@ -1,8 +1,9 @@
 <% authentication_enabled_providers.each do |provider| %>
   <a
     href="<%= provider.sign_in_path(state: "navbar_basic") %>"
-    class="crayons-btn crayons-btn--l"
+    class="crayons-btn crayons-btn--l crayons-btn--brand-<%= provider.provider_name %> crayons-btn--icon-left"
     data-no-instant>
-    Sign In With <%= provider.official_name %>
+    <%= inline_svg_tag("#{provider.provider_name}.svg", aria: true, class: "crayons-icon", title: provider.provider_name) %>
+    Sign In with <%= provider.official_name %>
   </a>
 <% end %>
