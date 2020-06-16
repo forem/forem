@@ -1,2 +1,0 @@
-class TravisModel < ApplicationRecord
-end
