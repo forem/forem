@@ -28,7 +28,11 @@ module WebMentions
     private
 
     def send_webmention(webmention_url)
-      RestClient.post(webmention_url, { source: @article_url, target: @canonical_url })
+      begin
+        RestClient.post(webmention_url, { "source": @article_url, "target": @canonical_url })
+      rescue RestClient::ExceptionWithResponse => e
+        Rails.logger.error("SendWebmentionException: #{e.response}")
+      end
     end
   end
 end
