@@ -267,6 +267,7 @@ ActiveRecord::Schema.define(version: 2020_06_15_213003) do
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
     t.boolean "active", default: false
+    t.datetime "active_status_updated_at"
     t.string "banner_style"
     t.text "body_markdown"
     t.datetime "created_at"
