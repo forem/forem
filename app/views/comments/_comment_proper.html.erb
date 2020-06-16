@@ -25,10 +25,10 @@
       <% end %>
 
       <div class="details <%= "low-quality-comment" if decorated_comment.low_quality %>">
-        <a href="/<%= comment.user.username %>">
+        <a href="/<%= comment.user.username %>" class="u-author h-card">
           <img class="profile-pic" src="<%= Images::Profile.call(comment.user.profile_image_url, length: 50) %>" alt="<%= comment.user.username %> profile image" />
           <span class="comment-username">
-            <span class="comment-username-inner">
+            <span class="comment-username-inner p-name">
               <%= comment.user.name %>
             </span>
           </span>
@@ -66,7 +66,7 @@
         </div>
       </div>
       <div class="body <%= "low-quality-comment" if decorated_comment.low_quality %>">
-        <%= comment.safe_processed_html %>
+        <div class="e-content"> <%= comment.safe_processed_html %> </div>
         <button class="reaction-button" id="button-for-comment-<%= comment.id %>" data-comment-id="<%= comment.id %>" title="heart">
           <%= image_tag("favorite-heart-outline-button.svg", alt: "Favorite heart outline button") %>
           <img class="voted-heart" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />

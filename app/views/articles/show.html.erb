@@ -48,12 +48,12 @@
 <% end %>
 
 <% if internal_navigation? %>
-  <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
+  <a rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" class="u-in-reply-to"/>
   <meta name="description" content="<%= @article.description_and_tags %>">
   <%= meta_keywords_article(@article.cached_tag_list) %>
 <% else %>
   <%= content_for :page_meta do %>
-    <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
+    <a rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" class="u-in-reply-to"/>
     <meta name="description" content="<%= @article.description_and_tags %>">
     <%= meta_keywords_article(@article.cached_tag_list) %>
 
