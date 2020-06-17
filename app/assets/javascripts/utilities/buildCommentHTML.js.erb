@@ -54,14 +54,14 @@ function buildCommentHTML(comment) {
                 <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Toggle dropdown menu") %>\
               </button>\
               <div class="dropdown">\
-                  <div class="dropdown-content">\
-                    <a href="'+comment.url+'">\
+                  <div class="crayons-dropdown p-1 z-30 right-1 left-1 s:right-0 s:left-auto fs-base">\
+                    <a href="'+comment.url+'" class="crayons-link crayons-link--block">\
                       Permalink\
                     </a>\
-                    <a href="'+comment.url+'/settings">\
+                    <a href="'+comment.url+'/settings" class="crayons-link crayons-link--block">\
                       Settings\
                     </a>\
-                    <a href="/report-abuse?url=<%= URL.url %>'+comment.url+'">Report Abuse</a>\
+                    <a href="/report-abuse?url=<%= URL.url %>'+comment.url+'" class="crayons-link crayons-link--block">Report Abuse</a>\
                   </div>\
               </div>\
             </div>\

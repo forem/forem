@@ -123,13 +123,16 @@
 }
 
 .crayons-layout--article {
+  --layout-gap: 0;
   @media (min-width: $breakpoint-m) {
+    --layout-gap: var(--su-2);
     --layout-sidebar-left-width: var(--su-9);
     --layout: var(--layout-sidebar-left-width) 1fr;
     --layout-sidebar-left-row-end: span 2;
   }
 
   @media (min-width: $breakpoint-l) {
+    --layout-gap: var(--su-4);
     --layout-sidebar-right-width: 3fr;
     --layout-sidebar-left-row-end: initial;
     --layout-content-width: 7fr;

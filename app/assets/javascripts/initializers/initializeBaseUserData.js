@@ -42,16 +42,16 @@ function addRelevantButtonsToArticle(user) {
   if (articleContainer) {
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
       let actions = [
-        `<a href="${articleContainer.dataset.path}/edit" rel="nofollow">EDIT</a>`,
+        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
       ];
       if (JSON.parse(articleContainer.dataset.published) === true) {
         actions.push(
-          `<a href="${articleContainer.dataset.path}/manage" rel="nofollow">MANAGE</a>`,
+          `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,
         );
       }
       if (user.pro) {
         actions.push(
-          `<a href="${articleContainer.dataset.path}/stats" rel="nofollow">STATS</a>`,
+          `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
         );
       }
       document.getElementById('action-space').innerHTML = actions.join('');
@@ -71,17 +71,17 @@ function addRelevantButtonsToComments(user) {
         butt.innerHTML =
           '<a href="' +
           butt.dataset.path +
-          '" rel="nofollow" style="color:#0a0a0a;" data-no-instant>Settings</a>';
-        butt.style.display = 'inline-block';
+          '" rel="nofollow" class="crayons-link crayons-link--block" data-no-instant>Settings</a>';
         butt.classList.remove('hidden');
+        butt.classList.add('block');
       }
 
       if (
         action === 'hide-button' &&
         parseInt(commentableUserId, 10) === user.id
       ) {
-        butt.style.display = 'inline-block';
         butt.classList.remove('hidden');
+        butt.classList.add('block');
       }
     }
 
@@ -91,10 +91,13 @@ function addRelevantButtonsToComments(user) {
         let butt = modButts[i];
         if (butt.classList.contains('mod-actions-comment-button')) {
           butt.innerHTML =
-            '<a href="' + butt.dataset.path + '" rel="nofollow">Moderate</a>';
+            '<a href="' +
+            butt.dataset.path +
+            '" rel="nofollow" class="crayons-link crayons-link--block">Moderate</a>';
         }
         butt.className = 'mod-actions';
-        butt.style.display = 'inline-block';
+        butt.classList.remove('hidden');
+        butt.classList.add('block');
       }
     }
   }

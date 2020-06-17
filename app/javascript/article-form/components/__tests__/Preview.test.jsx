@@ -97,7 +97,7 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(container.find('.crayons-article__tags').text()).toEqual(
+    expect(container.find('.spec-article__tags').text()).toEqual(
       '#javascript#career',
     );
   });
