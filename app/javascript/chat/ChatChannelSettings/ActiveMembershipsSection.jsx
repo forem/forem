@@ -8,17 +8,21 @@ const ActiveMembershipSection = ({
   currentMembershipRole,
 }) => {
   return (
-    <div className="p-4 grid gap-2 crayons-card mb-4">
+    <div
+      data-testid="active-memberships"
+      className="p-4 grid gap-2 crayons-card mb-4"
+      data-active-count={activeMemberships ? activeMemberships.length : 0}
+    >
       <h3 className="mb-2 active_members">Members</h3>
       {activeMemberships && activeMemberships.length > 0
         ? activeMemberships.map((pendingMembership) => (
-          <Membership
-            membership={pendingMembership}
-            removeMembership={removeMembership}
-            membershipType="active"
-            currentMembershipRole={currentMembershipRole}
-            className="active-member"
-          />
+            <Membership
+              membership={pendingMembership}
+              removeMembership={removeMembership}
+              membershipType="active"
+              currentMembershipRole={currentMembershipRole}
+              className="active-member"
+            />
           ))
         : null}
     </div>

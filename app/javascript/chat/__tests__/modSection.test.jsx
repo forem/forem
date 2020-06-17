@@ -1,36 +1,21 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import ModSection from '../ChatChannelSettings/ModSection';
 
-const modUser = {
-  currentMembershipRole: 'mod',
-};
-
-const memberUser = {
-  currentMembershipRole: 'member',
-};
-
-const getModSection = (resource) => {
-  return <ModSection currentMembershipRole={resource.currentMembershipRole} />;
-};
-
 describe('<ModSection />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getModSection(modUser));
+  it('should have no a11y violations', async () => {
+    const { container } = render(<ModSection currentMembershipRole="mod" />);
+    const results = await axe(container);
 
-    expect(tree).toMatchSnapshot();
+    expect(results).toHaveNoViolations();
   });
 
-  it('should render the the component', () => {
-    const context = shallow(getModSection(modUser));
+  it('should render if the membership role is a moderator', () => {
+    const { getByTestId } = render(<ModSection currentMembershipRole="mod" />);
 
-    expect(context.find('.mod-section').exists()).toEqual(true);
-  });
-
-  it('should not render the the component', () => {
-    const context = shallow(getModSection(memberUser));
-
-    expect(context.find('.mod-section').exists()).toEqual(false);
+    // the <InviteForm /> and <SettingsForm /> have their own tests.
+    getByTestId('invite-form');
+    getByTestId('settings-form');
   });
 });
