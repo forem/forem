@@ -947,7 +947,7 @@ export default class Chat extends Component {
         this.setActiveContent({
           data: {},
           type_of: 'chat-channel-setting',
-          activeMembershipId: activeChannel.id
+          activeMembershipId: activeChannel.id,
         });
       }
     }
@@ -1251,6 +1251,7 @@ export default class Chat extends Component {
                 onKeyUp={this.debouncedChannelFilter}
                 id="chatchannelsearchbar"
                 className="crayons-textfield"
+                aria-label="Search Channels"
               />
             ) : (
               ''
@@ -1443,7 +1444,6 @@ export default class Chat extends Component {
               activeChannelId={state.activeChannelId}
               startEditing={state.startEditing}
               markdownEdited={state.markdownEdited}
-              editMessageHtml={state.activeEditMessage.message}
               editMessageMarkdown={state.activeEditMessage.markdown}
               handleEditMessageClose={this.handleEditMessageClose}
             />
@@ -1608,6 +1608,7 @@ export default class Chat extends Component {
               .filter((user) => user.username.match(filterRegx))
               .map((user) => (
                 <div
+                  key={user.username}
                   className="mention__user"
                   role="button"
                   onClick={this.addUserName}
@@ -1657,42 +1658,44 @@ export default class Chat extends Component {
         id="message"
         className={
           showDeleteModal
-            ? 'message__delete__modal'
-            : 'message__delete__modal message__delete__modal__hide'
+            ? 'message__delete__modal crayons-modal crayons-modal--s absolute'
+            : 'message__delete__modal message__delete__modal__hide crayons-modal crayons-modal--s absolute'
         }
         aria-hidden={showDeleteModal}
         role="dialog"
       >
-        <div className="modal__content">
-          <h3>Are you sure, you want to delete this message ?</h3>
-
-          <div className="delete__action__buttons">
-            <div
-              role="button"
-              className="message__cancel__button"
-              onClick={this.handleCloseDeleteModal}
-              tabIndex="0"
-              onKeyUp={(e) => {
-                if (e.keyCode === 13) this.handleCloseDeleteModal();
-              }}
-            >
-              {' '}
-              Cancel
-            </div>
-            <div
-              role="button"
-              className="message__delete__button"
-              onClick={this.handleMessageDelete}
-              tabIndex="0"
-              onKeyUp={(e) => {
-                if (e.keyCode === 13) this.handleMessageDelete();
-              }}
-            >
-              {' '}
-              Delete
+        <div className="crayons-modal__box">
+          <div className="crayons-modal__box__body">
+            <h3>Are you sure, you want to delete this message ?</h3>
+            <div className="delete-actions__container">
+              <div
+                role="button"
+                className="crayons-btn crayons-btn--danger message__delete__button"
+                onClick={this.handleMessageDelete}
+                tabIndex="0"
+                onKeyUp={(e) => {
+                  if (e.keyCode === 13) this.handleMessageDelete();
+                }}
+              >
+                {' '}
+                Delete
+              </div>
+              <div
+                role="button"
+                className="crayons-btn crayons-btn--secondary message__cancel__button"
+                onClick={this.handleCloseDeleteModal}
+                tabIndex="0"
+                onKeyUp={(e) => {
+                  if (e.keyCode === 13) this.handleCloseDeleteModal();
+                }}
+              >
+                {' '}
+                Cancel
+              </div>
             </div>
           </div>
         </div>
+        <div className="crayons-modal__overlay" />
       </div>
     );
   };
@@ -1733,13 +1736,13 @@ export default class Chat extends Component {
     this.toggleSearchShowing();
   };
 
-
   renderChannelHeaderInner = () => {
     const { activeChannel } = this.state;
     if (activeChannel.channel_type === 'direct') {
       return (
         <a
           href={`/${activeChannel.channel_username}`}
+          className="active-channel__title"
           onClick={this.triggerActiveContent}
           data-content="sidecar-user"
         >
@@ -1749,7 +1752,7 @@ export default class Chat extends Component {
     }
     return (
       <a
-        href='#/'
+        href="#/"
         onClick={this.triggerActiveContent}
         data-content="chat_channel_setting"
       >
@@ -1767,28 +1770,36 @@ export default class Chat extends Component {
       return '';
     }
 
+    const path =
+      activeChannel.channel_type === 'direct'
+        ? `/${activeChannel.channel_username}`
+        : `#`;
+
     const dataContent =
       activeChannel.channel_type === 'direct'
         ? 'sidecar-user'
         : `chat_channel_setting`;
 
-
     return (
       <a
-        className="activechatchannel__channelconfig"
+        className="crayons-btn crayons-btn--icon-rounded crayons-btn--secondary"
         onClick={this.triggerActiveContent}
         onKeyUp={(e) => {
           if (e.keyCode === 13) this.triggerActiveContent(e);
         }}
         tabIndex="0"
-        href='#/'
+        href={path}
         data-content={dataContent}
       >
-        <img
-          src={ConfigImage}
-          alt="channel config"
-          data-content={dataContent}
-        />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="24"
+          height="24"
+          className="crayons-icon"
+        >
+          <path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm0-2a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM11 7h2v2h-2V7zm0 4h2v6h-2v-6z" />
+        </svg>
       </a>
     );
   };
@@ -1800,10 +1811,10 @@ export default class Chat extends Component {
       !navigator.userAgent.match('CriOS')
         ? ' chat--iossafari'
         : '';
-    let channelHeader = <div className="activechatchannel__header">&nbsp;</div>;
+    let channelHeader = <div className="active-channel__header">&nbsp;</div>;
     if (state.activeChannel) {
       channelHeader = (
-        <div className="activechatchannel__header">
+        <div className="active-channel__header">
           {this.renderChannelHeaderInner()}
           {this.renderChannelConfigImage()}
         </div>

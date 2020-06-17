@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :broadcast do
     active { true }
+    active_status_updated_at { 2.days.ago }
 
     factory :set_up_profile_broadcast do
       title          { "Welcome Notification: set_up_profile" }

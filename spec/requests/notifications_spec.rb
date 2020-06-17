@@ -600,7 +600,6 @@ RSpec.describe "NotificationsIndex", type: :request do
         expect(response.body).to include("Like")
         expect(response.body).not_to include("Thumbsdown")
       end
-
     end
 
     context "when a user has a new welcome notification" do

@@ -67,8 +67,8 @@ describe('<Compose />', () => {
   describe('behavior with no message', () => {
     it('should click submit', () => {
       const { getByText } = render(getCompose(false));
-      const button = getByText('SEND');
-
+      const button = getByText(/Send/i);
+      
       button.click();
       expect(submitNoMessage).toEqual(true);
       expect(submitWithMessage).toEqual(false);
@@ -102,16 +102,16 @@ describe('<Compose />', () => {
 
       expect(input.textContent).toEqual('');
       expect(input.getAttribute('maxLength')).toEqual('1000');
-      expect(input.getAttribute('placeholder')).toEqual("Let's connect");
+      expect(input.getAttribute('placeholder')).toEqual('Write message...');
 
       // Ensure send button is pressent
-      getByText('SEND');
+      getByText(/send/i);
     });
 
     it('should click submit and check for empty textarea', () => {
       const { getByLabelText, getByText } = render(getCompose(true));
       const input = getByLabelText('Compose a message');
-      const sendButton = getByText('SEND');
+      const sendButton = getByText(/send/i);
 
       fireEvent.keyDown(input, { keyCode: 69 });
       expect(textfieldIsEmpty).toEqual(false);
