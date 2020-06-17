@@ -112,7 +112,7 @@ group :development do
   gem "better_errors", "~> 2.7" # Provides a better error page for Rails and other Rack apps
   gem "binding_of_caller", "~> 0.8" # Retrieve the binding of a method's caller
   gem "brakeman", "~> 4.8", require: false # Brakeman detects security vulnerabilities in Ruby on Rails applications via static analysis
-  gem "bundler-audit", "~> 0.6" # bundler-audit provides patch-level verification for Bundled apps
+  gem "bundler-audit", "~> 0.7" # bundler-audit provides patch-level verification for Bundled apps
   gem "derailed_benchmarks", "~> 1.7", require: false # A series of things you can use to benchmark a Rails or Ruby app
   gem "erb_lint", "~> 0.0.33", require: false # ERB Linter tool
   gem "fix-db-schema-conflicts", "~> 3.0" # Ensures consistent output of db/schema.rb despite local differences in the database
@@ -130,7 +130,7 @@ group :development do
 end
 
 group :development, :test do
-  gem "amazing_print", "~> 1.1" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
+  gem "amazing_print", "~> 1.2" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
   gem "capybara", "~> 3.32" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 2.12" # A library for generating fake data such as names, addresses, and phone numbers
@@ -139,8 +139,8 @@ group :development, :test do
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
   gem "rubocop", "~> 0.85.1", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.6", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
-  gem "rubocop-rails", "~> 2.5", require: false # Automatic Rails code style checking tool
-  gem "rubocop-rspec", "~> 1.39", require: false # Code style checking for RSpec files
+  gem "rubocop-rails", "~> 2.6", require: false # Automatic Rails code style checking tool
+  gem "rubocop-rspec", "~> 1.40", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster
   gem "spring-commands-rspec", "~> 1.0" # rspec command for spring
 end
