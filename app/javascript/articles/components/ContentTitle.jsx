@@ -26,7 +26,7 @@ export const ContentTitle = ({ article }) => (
           person
         </span>
       )}
-      {filterXSS(article.title)}
+      <span dangerouslySetInnerHTML={{ __html: filterXSS(article.title) }} />
     </a>
   </h2>
 );
