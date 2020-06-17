@@ -1,11 +1,7 @@
-<div class="crayons-card__header">
-  <h2 class="crayons-card__headline">Authentication</h2>
-</div>
-
-<div class="crayons-card__body">
-  <div class="authentication-connect">
+<% unless @user.authenticated_with_all_providers? %>
+  <div class="crayons-card mb-6 p-5">
     <% authentication_enabled_providers.each do |provider| %>
-      <% unless @user.identities.exists?(provider: provider.provider_name) %>
+      <% unless @user.authenticated_through?(provider.provider_name) %>
         <a
           href="<%= provider.sign_in_path(state: "profile") %>"
           class="crayons-btn crayons-btn--icon-left crayons-btn--brand-<%= provider.provider_name %> m-1"
@@ -21,21 +17,4 @@
       <% end %>
     <% end %>
   </div>
-
-  <div class="authentication-emails">
-    <ul class="list-none">
-      <li class="mb-2">
-        <span class="color-base-60 fw-bold">Primary email</span>
-        <span><%= @user.email %></span>
-      </li>
-
-      <% @user.identities_enabled.each do |identity| %>
-        <% provider = authentication_provider(identity.provider) %>
-        <li class="mb-2">
-          <span class="color-base-60 fw-bold"><%= provider.official_name %> email</span>
-          <span><%= identity.email %></span>
-        </li>
-      <% end %>
-    </ul>
-  </div>
-</div>
+<% end %>
