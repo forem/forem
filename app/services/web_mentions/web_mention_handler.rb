@@ -18,7 +18,7 @@ module WebMentions
       document = Nokogiri::HTML.parse(URI.open(@canonical_url)).at_css("link[rel='webmention']")
       if document
         @webmention_url = document["href"]
-        return true
+        return true  unless Addressable::URI.parse(webmention_url).absolute?
       end
       false
     rescue StandardError => e
