@@ -10,11 +10,15 @@ RSpec.describe "Visits Mod Center", type: :system do
       visit "/mod"
     end
 
-    it "shows the 'All topics' view", js: true, percy: true do
-      Percy.snapshot(page, name: "Moderators: Visits Mod Center")
-
+    it "shows the 'All topics' view initially", js: true do
       expect(page).to have_content("Mod Center")
       expect(page).to have_content("All topics")
+    end
+
+    it "shows the tag view when its link is clicked", js: true do
+      find(".inbox-tags", match: :first).click
+
+      expect(page).to have_content("#discuss")
     end
   end
 
