@@ -3,8 +3,8 @@ class ArticleSuggester
     @article = article
   end
 
-  def articles(max: 4)
-    if article.tag_list.any?
+  def articles(max: 4, user_signed_in: false)
+    if article.cached_tag_list_array.any?
       # avoid loading more data if we don't need to
       tagged_suggestions = suggestions_by_tag(max: max)
       return tagged_suggestions if tagged_suggestions.size == max
@@ -15,10 +15,11 @@ class ArticleSuggester
       other_articles = other_suggestions(
         max: num_remaining_needed,
         ids_to_ignore: tagged_suggestions.pluck(:id),
+        user_signed_in: user_signed_in,
       )
       tagged_suggestions.union(other_articles)
     else
-      other_suggestions(max: max)
+      other_suggestions(max: max, user_signed_in: user_signed_in)
     end
   end
 
@@ -26,26 +27,25 @@ class ArticleSuggester
 
   attr_reader :article
 
-  def other_suggestions(max: 4, ids_to_ignore: [])
+  def other_suggestions(max: 4, ids_to_ignore: [], user_signed_in: false)
     ids_to_ignore << article.id
-    Article.published.where(featured: true).
-      where.not(id: ids_to_ignore).
+    Article.published.
+      where.not(id: ids_to_ignore, user_id: article.user_id).
       order("hotness_score DESC").
-      includes(:user).
-      offset(rand(0..offsets[1])).
+      offset(rand(0..offset)).
       first(max)
   end
 
-  def suggestions_by_tag(max: 4)
-    Article.published.tagged_with(article.tag_list, any: true).
-      where.not(id: article.id).
+  def suggestions_by_tag(max: 4, user_signed_in: false)
+    Article.published.tagged_with(article.cached_tag_list_array, any: true).
+      where.not(user_id: article.user_id).
+      where("organic_page_views_past_month_count > 5").
       order("hotness_score DESC").
-      includes(:user).
-      offset(rand(0..offsets[0])).
+      offset(rand(0..offset)).
       first(max)
   end
 
-  def offsets
-    Rails.env.production? ? [10, 120] : [0, 0]
+  def offset
+    Rails.env.production? ? 200 : 0
   end
 end
