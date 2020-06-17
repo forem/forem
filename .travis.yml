@@ -33,9 +33,18 @@ env:
     - SECRET_KEY_BASE=dummydummydummy
     - GITHUB_KEY=dummy
     - GITHUB_SECRET=dummy
-# branches:
-#   only:
-#     - master
+    - KNAPSACK_PRO_FIXED_QUEUE_SPLIT=true
+    - KNAPSACK_PRO_LOG_LEVEL=info
+    - KNAPSACK_PRO_TEST_FILE_EXCLUDE_PATTERN="spec/services/rss_reader_spec.rb"
+    - KNAPSACK_PRO_CI_NODE_TOTAL=3
+    - COVERAGE_REPORTS_TOTAL=4
+  jobs:
+    - KNAPSACK_PRO_CI_NODE_INDEX=0
+    - KNAPSACK_PRO_CI_NODE_INDEX=1
+    - KNAPSACK_PRO_CI_NODE_INDEX=2
+branches:
+  only:
+    - master
 script:
   - date --rfc-3339=seconds
   - nvm install
@@ -56,8 +65,8 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - './scripts/copy_spec.sh'
-  - bundle exec rspec -t flaky
+  - './scripts/copy_specs.sh'
+  - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json; fi
