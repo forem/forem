@@ -7,16 +7,13 @@
 }
 
 .mod-index-container {
-  .mod-index-header-new {
+  .mod-index-header {
     background-color: var(--base-inverted);
     border-radius: var(--radius) var(--radius) 0 0;
     padding: var(--su-6) var(--su-4);
 
     .tag-view {
-      font-size: var(--fs-3xl);
-      font-weight: var(--fw-bold);
       color: var(--base-90);
-      line-height: var(--lh-base);
     }
   }
   main.mod-index-list {
@@ -27,12 +24,9 @@
       display: grid;
       grid-template-columns: 4fr 2fr 1fr;
       background-color: var(--base-0);
-      line-height: var(--lh-tight);
       h2 {
         padding: var(--su-2) var(--su-4);
         color: var(--base-50);
-        font-size: var(--fs-xs);
-        font-weight: var(--fw-medium);
       }
     }
     .moderation-articles-list {
@@ -44,34 +38,18 @@
         border: 1px solid var(--base-10);
         display: grid;
         grid-template-columns: 4fr 2fr 1fr;
-        .article-title {
-          header > h3 {
-            line-height: var(--lh-tight);
-            font-size: var(--fs-base);
-            font-weight: var(--fw-bold);
-          }
-        }
         .mod-article-tag {
-          line-height: var(--lh-base);
-          font-size: var(--fs-s);
           color: var(--base-80);
-          font-family: var(--ff-accent);
           padding-right: var(--su-2);
           .article-hash-tag {
             color: var(--base-40);
           }
         }
         .article-author {
-          line-height: var(--lh-tight);
-          font-size: var(--fs-s);
-          font-weight: var(--fw-medium);
           color: var(--base-80);
           padding-left: var(--su-4);
         }
         .article-published-at {
-          line-height: var(--lh-tight);
-          font-size: var(--fs-s);
-          font-weight: var(--fw-bold);
           color: var(--base-90);
           padding-left: var(--su-6);
         }
@@ -83,11 +61,11 @@
           display: flex;
           .article-iframe {
             width: 100%;
-            height: 650px;
+            height: 650px; // height is arbitrary, will be removed for modal-esque view
           }
           .actions-panel-iframe {
             width: 60%;
-            height: 650px;
+            height: 650px; // height is arbitrary, will be removed for modal-esque view
           }
         }
       }
