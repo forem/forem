@@ -100,12 +100,12 @@ class AnalyticsService
   def calculate_reactions_totals
     # NOTE: the order of the keys needs to be the same as the one of the counts
     keys = %i[total like readinglist unicorn]
-    counts = reaction_data.pluck(
+    counts = reaction_data.pick(
       Arel.sql("COUNT(*)"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'like')"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'readinglist')"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'unicorn')"),
-    ).first
+    )
 
     # this transforms the counts, eg. [1, 0, 1, 0]
     # in a hash, eg. {total: 1, like: 0, readinglist: 1, unicorn: 0}

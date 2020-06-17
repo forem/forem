@@ -4,14 +4,16 @@
   <div class="dashboard-analytics-header">
     <span><%= number_with_delimiter(@articles.sum(&:public_reactions_count), delimeter: ",") %></span>
     <div class="dashboard-analytics-sub-indicator">
-      <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" /><img src="<%= asset_path "emoji/emoji-one-unicorn.png" %>" /><img src="<%= asset_path "emoji/emoji-one-bookmark.png" %>" />
+      <img src="<%= asset_path "emoji/emoji-one-heart.png" %>" alt="heart" />
+      <img src="<%= asset_path "emoji/emoji-one-unicorn.png" %>" alt="unicorn" />
+      <img src="<%= asset_path "emoji/emoji-one-bookmark.png" %>" alt="bookmark" />
       Total Post Reactions
     </div>
   </div>
   <div class="dashboard-analytics-header" id="dashboard-analytics-header">
     <span><%= num_views > 500 ? number_with_delimiter(num_views, delimeter: ",") : "under 500" %></span>
     <div class="dashboard-analytics-sub-indicator">
-      <img id="dashboard-analytics-image" src="<%= asset_path "emoji/apple-eyes.png" %>" />
+      <img id="dashboard-analytics-image" src="<%= asset_path "emoji/apple-eyes.png" %>" alt="eyes" />
       Total Post Views
     </div>
   </div>

@@ -14,7 +14,7 @@ export const Meta = ({
   switchHelpContext,
 }) => {
   return (
-    <div>
+    <div className="text-padding">
       <ArticleCoverImage
         mainImage={mainImage}
         onMainImageUrlChange={onMainImageUrlChange}

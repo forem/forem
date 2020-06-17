@@ -1,3 +1,6 @@
+# Patches Liquid::Raw to change `FullTokenPossiblyInvalid` regexp
+# see https://github.com/Shopify/liquid/blob/master/lib/liquid/tags/raw.rb
+
 module Liquid
   class Raw < Block
     remove_const(:FullTokenPossiblyInvalid) if defined?(FullTokenPossiblyInvalid)

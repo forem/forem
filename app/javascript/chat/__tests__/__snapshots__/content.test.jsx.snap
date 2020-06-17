@@ -4,10 +4,13 @@ exports[`<Content /> as channel-request should render and test snapshot 1`] = `
 <div
   class="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
   id="chat_activecontent"
+  role="button"
+  tabIndex="0"
 >
   <button
     class="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
     data-content="exit"
+    type="button"
   >
     <svg
       data-content="exit"
@@ -35,6 +38,7 @@ exports[`<Content /> as channel-request should render and test snapshot 1`] = `
         "left": "39px",
       }
     }
+    type="button"
   >
      
     <svg
@@ -62,10 +66,13 @@ exports[`<Content /> as loading-user should render and test snapshot 1`] = `
 <div
   class="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
   id="chat_activecontent"
+  role="button"
+  tabIndex="0"
 >
   <button
     class="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
     data-content="exit"
+    type="button"
   >
     <svg
       data-content="exit"
@@ -93,6 +100,7 @@ exports[`<Content /> as loading-user should render and test snapshot 1`] = `
         "left": "39px",
       }
     }
+    type="button"
   >
      
     <svg

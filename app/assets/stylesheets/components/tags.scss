@@ -18,7 +18,7 @@
     opacity: 0.5;
   }
 
-  &:hover {
+  &[href]:hover {
     color: var(--tag-color-hover);
   }
 }
