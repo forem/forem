@@ -37,13 +37,13 @@
   <% if @community_mod_channel %>
     <div class="fs-s mod-feedback">
       <span class="fw-medium">Have feedback to improve your Mod experience?</span>
-      <span>Please let us know in your
+      <span>Please share in
         <a
           class="mod-feedback-link"
           href="/connect/<%= @community_mod_channel.slug %>"
           target="_blank"
           rel="noopener noreferrer nofollow">
-          Mods Connect Channel</a>.
+          <%= @community_mod_channel.channel_name %></a>.
       </span>
     </div>
   <% end %>
