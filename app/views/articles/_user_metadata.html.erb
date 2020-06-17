@@ -1,75 +1,57 @@
-<%# <style>
-  .user-metadata-details-inner a {
-    color: var(--body-color);
-  }
-</style> %>
-
 <div class="user-metadata-details">
-  <div class="user-metadata-details-inner">
-    <% if @organization %>
-      <% if @organization.location.present? %>
-        <div class="row">
-          <div class="key">
-            headquarters
-          </div>
-          <div class="value">
-            <%= sanitize @organization.location %>
-          </div>
-        </div>
-      <% end %>
-      <% if @organization.company_size.present? %>
-        <div class="row">
-          <div class="key">
-            employees
-          </div>
-          <div class="value">
-            <%= @organization.company_size %>
-          </div>
-        </div>
-      <% end %>
-      <% if @organization.email.present? %>
-        <div class="row">
-          <div class="key">
-            support_email
-          </div>
-          <div class="value">
-            <a href="mailto:<%= sanitize @organization.email %>"><%= sanitize @organization.email %></a>
-          </div>
-        </div>
-      <% end %>
-    <% else %>
+  <ul class="user-metadata-details-inner">
+      <% if @organization %>
+        <% if @organization.location.present? %>
+          <li>
+            <div class="key">
+              Headquarters
+            </div>
+            <div class="value">
+              <%= sanitize @organization.location %>
+            </div>
+          </li>
+        <% end %>
+        <% if @organization.company_size.present? %>
+          <li>
+            <div class="key">
+              Employees
+            </div>
+            <div class="value">
+              <%= @organization.company_size %>
+            </div>
+          </li>
+        <% end %>
+        <% if @organization.email.present? %>
+          <li>
+            <div class="key">
+              Support email
+            </div>
+            <div class="value">
+              <a href="mailto:<%= sanitize @organization.email %>"><%= sanitize @organization.email %></a>
+            </div>
+          </li>
+        <% end %>
+      <% else %>
 
-      <% if @user.email_public &&
-          @user.employer_name.present? &&
-          @user.location.present? &&
-          @user.education.present? &&
-          @user.education.size > 25 &&
-          @user.summary.to_s.size < 145 %>
-        <style>
-          .user-profile-header {
-            min-height: 398px;
-          }
-        </style>
-      <% end %>
       <% if @user.email_public && context != "sidebar" %>
-        <div class="row">
+        <li>
           <div class="key">
-            email
+            Email
           </div>
           <div class="value">
             <a href="mailto:<%= @user.email %>"><%= @user.email %></a>
           </div>
-        </div>
+        </li>
       <% end %>
       <% if @user.employment_title.present? %>
-        <div class="row">
+        <li>
           <div class="key">
-            work
+            Work
           </div>
           <div class="value">
-            <span><%= @user.employment_title %></span>
+            <%= @user.employment_title %>
             <% if @user.employer_name.present? %>
-              <span> at </span>
+              <span class="opacity-50"> at </span>
               <% if @user.employer_url.present? %>
                 <a href="<%= @user.employer_url %>" target="_blank" rel="noopener"><%= @user.employer_name %></a>
               <% else %>
@@ -77,46 +59,46 @@
               <% end %>
             <% end %>
           </div>
-        </div>
+        </li>
       <% end %>
       <% if @user.location.present? %>
-        <div class="row">
+        <li>
           <div class="key">
-            location
+            Location
           </div>
           <div class="value">
             <%= @user.location %>
           </div>
-        </div>
+        </li>
       <% end %>
       <% if @user.looking_for_work_publicly == true && @user.looking_for_work == true %>
-        <div class="row">
+        <li>
           <div class="key">
-            work_status
+            Work status
           </div>
           <div class="value">
             I'm looking for work!
           </div>
-        </div>
+        </li>
       <% end %>
       <% if @user.education.present? %>
-        <div class="row">
+        <li>
           <div class="key">
-            education
+            Education
           </div>
-          <div class="value">
+          <ul class="value">
             <%= @user.education %>
-          </div>
-        </div>
+          </ul>
+        </li>
       <% end %>
     <% end %>
-    <div class="row">
+    <li>
       <div class="key">
-        joined
+        Joined
       </div>
       <div class="value">
         <%= @user.created_at.strftime("%b %e, %Y") %>
       </div>
-    </div>
-  </div>
+    </li>
+  </ul>
 </div>

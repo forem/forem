@@ -34,91 +34,99 @@
   }
 </style>
 
-<div class="primary-sticky-nav" id="article-show-primary-sticky-nav">
-  <div class="primary-sticky-nav-element primary-sticky-nav-author">
-    <a href="<%= @actor.path %>"><img src="<%= ProfileImage.new(@actor).get(width: 90) %>" class="primary-sticky-nav-author-top-profile-image" alt="<%= @actor.name %> profile image"></a>
-    <div style="display:inline-block">
-      <div class="primary-sticky-nav-author-name">
-        <a href="<%= @actor.path %>">
-          <%= @actor.name %>
-        </a>
-      </div>
-      <div class="primary-sticky-nav-author-username">
-        <a href="<%= @actor.path %>">
-          @<%= @actor.username %>
-        </a>
-      </div>
+<style>
+  .crayons-card--branded {
+    border-top: 32px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %>;
+  }
+</style>
+
+<div class="crayons-article-sticky grid gap-4" id="article-show-primary-sticky-nav">
+  <div class="crayons-card crayons-card--secondary crayons-card--branded p-4 pt-0 hidden l:grid gap-4">
+    <div class="-mt-4">
+      <a href="<%= @actor.path %>" class="flex items-end">
+        <span class="<% if @actor.class.name == "User" %>crayons-avatar crayons-avatar--xl<% elsif @actor.class.name == "Organization" %>crayons-logo crayons-logo--xl<% end %>  mr-2">
+          <img src="<%= ProfileImage.new(@actor).get(width: 90) %>" class="<% if @actor.class.name == "User" %>crayons-avatar__image<% elsif @actor.class.name == "Organization" %>crayons-logo__image<% end %>" alt="<%= @actor.name %> profile image">
+        </span>
+        <span class="crayons-link fs-l fw-bold"><%= @actor.name %></span>
+      </a>
     </div>
-    <div class="primary-sticky-nav-author-summary">
-      <% if @actor.tag_line.present? %>
+    <% if @actor.tag_line.present? %>
+      <div class="color-base-70">
         <%= truncate (@actor.tag_line || @actor.summary || "Posts in this tag"), length: 200 %>
-      <% end %>
+      </div>
+    <% end %>
+
+    <div>
+      <%= follow_button(@actor, style = "", classes = "w-100") %>&nbsp;
     </div>
-    <div class="primary-sticky-nav-author-follow">
-      <%= follow_button(@actor) %>
-    </div>
+
     <% if @actor.class.name == "User" %>
       <%= render "articles/user_metadata", context: "sidebar" %>
     <% elsif @actor.class.name == "Organization" && @actor.approved_and_filled_out_cta? %>
-      <div class="primary-sticky-nav-org-summary">
+      <div>
         <%= sanitize_rendered_markdown(@actor.cta_processed_html) %>
-        <div class="primary-sticky-nav-org-cta-link-wrapper">
-          <% if @actor.cta_button_text.present? && @actor.cta_button_url.present? %>
-            <a href="<%= @actor.cta_button_url || "LEARN MORE" %>" class="primary-sticky-nav-org-cta-link">
-              <%= @actor.cta_button_text %>
+      </div>
+      <% if @actor.cta_button_text.present? && @actor.cta_button_url.present? %>
+        <div>
+          <a href="<%= @actor.cta_button_url || "Learn more" %>" class="crayons-btn crayons-btn--outlined w-100">
+            <%= @actor.cta_button_text %>
+          </a>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <% cache("article-sticky-nav-articles-0-#{@article.id}-#{@actor.last_article_at}", expires_in: 48.hours) do %>
+    <% @sticky_collection = StickyArticleCollection.new(@article, @organization || @user) %>
+    <% @sticky_articles = @sticky_collection.suggested_stickies %>
+    <% @user_stickies = @sticky_collection.user_stickies %>
+
+    <% if @user_stickies.present? %>
+      <div class="crayons-card crayons-card--secondary">
+        <header class="crayons-card__header">
+          <h3 class="crayons-card__header__headline">
+            More from <a href="<%= @actor.path %>"><%= @actor.name %></a>
+          </h3>
+        </header>
+        <div>
+          <% @user_stickies.each_with_index do |article, index| %>
+            <a class="crayons-link crayons-link--contentful" href="<%= article.path %>">
+              <%= article.title %>
+              <div class="crayons-link__secondary -ml-1">
+                <% article.decorate.cached_tag_list_array.each do |tag| %>
+                  <span class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></span>
+                <% end %>
+              </div>
             </a>
           <% end %>
         </div>
       </div>
-    <% end %>
-  </div>
-  <% cache("article-sticky-nav-articles-#{@article.id}-#{@actor.last_article_at}", expires_in: 48.hours) do %>
-    <% @sticky_collection = StickyArticleCollection.new(@article, @organization || @user) %>
-    <% @sticky_articles = @sticky_collection.suggested_stickies %>
-    <% @user_stickies = @sticky_collection.user_stickies %>
-    <% if @user_stickies.any? %>
-      <% @user_stickies.each_with_index do |article, index| %>
-        <div class="primary-sticky-nav-element-wrapper">
-          <% if index == 0 %>
-            <div class="primary-sticky-nav-title">
-              <% if @actor.username.size < 18 %>
-                More from <a href="<%= @actor.path %>">@<%= @actor.username %></a>
-              <% else %>
-                More from<br /><a href="<%= @actor.path %>">@<%= @actor.username %></a>
-              <% end %>
-            </div>
+    <% elsif @sticky_articles.present? %>
+      <div class="crayons-card crayons-card--secondary">
+        <header class="crayons-card__header">
+          <h3 class="crayons-card__header__headline">
+            Trending on <a href="<%= app_url %>"><%= community_name %></a>
+            <%= inline_svg_tag("twemoji/fire.svg", aria: true, class: "crayons-icon crayons-icon--default", title: "Hot") %>
+          </h3>
+        </header>
+        <div>
+          <% @sticky_articles.each_with_index do |article, index| %>
+            <a class="crayons-link crayons-link--contentful flex" href="<%= article.path %>">
+              <span class="crayons-avatar mr-2 shrink-0">
+                <img src="<%= ProfileImage.new(article.user).get(width: 90) %>" class="crayons-avatar__image" loading="lazy" alt="<%= article.user.name %> profile image">
+              </span>
+              <div>
+                <%= article.title %>
+                <div class="crayons-link__secondary -ml-1">
+                  <% article.decorate.cached_tag_list_array.each do |tag| %>
+                    <span class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></span>
+                  <% end %>
+                </div>
+              </div>
+            </a>
           <% end %>
-          <a class="primary-sticky-nav-element primary-sticky-nav-author-element" href="<%= article.path %>">
-            <img src="<%= ProfileImage.new(article.user).get(width: 90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
-            <%= article.title %>
-            <div class="primary-sticky-nav-element-details">
-              <% article.decorate.cached_tag_list_array.each do |tag| %>
-                <span>#<%= tag %></span>
-              <% end %>
-            </div>
-          </a>
         </div>
-      <% end %>
-    <% end %>
-    <% if @sticky_articles %>
-      <% @sticky_articles.each_with_index do |article, index| %>
-        <div class="primary-sticky-nav-element-wrapper">
-          <% if index == 0 %>
-            <div class="primary-sticky-nav-title">
-              <img src="<%= asset_path "emoji/apple-fire.png" %>" alt="Fire emoji" loading="lazy"> Trending on <a href="<%= app_url %>"><%= community_name %></a>
-            </div>
-          <% end %>
-          <a class="primary-sticky-nav-element" href="<%= article.path %>">
-            <img src="<%= ProfileImage.new(article.user).get(width: 90) %>" class="primary-sticky-nav-profile-image" loading="lazy" alt="<%= article.user.name %> profile image">
-            <%= article.title %>
-            <div class="primary-sticky-nav-element-details">
-              <% article.decorate.cached_tag_list_array.each do |tag| %>
-                <span>#<%= tag %></span>
-              <% end %>
-            </div>
-          </a>
-        </div>
-      <% end %>
+      </div>
     <% end %>
   <% end %>
 </div>

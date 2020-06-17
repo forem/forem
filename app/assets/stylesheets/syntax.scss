@@ -4,7 +4,7 @@ div.highlight pre.highlight code {
 }
 
 div.inner-comment div.body div.highlight pre.highlight {
-  background: #29292e;
+  background: #08090a;
   code {
     font-size: inherit;
     white-space: inherit;
@@ -13,7 +13,7 @@ div.inner-comment div.body div.highlight pre.highlight {
   }
 }
 
-$code-highlight-background-color: #29292e;
+$code-highlight-background-color: #08090a;
 $code-highlight-text-color: #f8f8f2;
 $code-highlight-comment-color: #808080;
 $code-highlight-declaration-color: #f39c12;

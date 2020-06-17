@@ -1,103 +1,86 @@
-<div class="article-actions" id="article-reaction-actions">
+<div class="crayons-article-actions">
   <% if @article.published? %>
+
     <%= render partial: "articles/reaction_button",
                locals: {
                  category: :like,
-                 description: "heart",
-                 image_path: "emoji/emoji-one-heart.png"
+                 description: "Heart",
+                 image_path: "heart.svg",
+                 image_active_path: "heart-filled.svg"
                } %>
     <%= render partial: "articles/reaction_button",
                locals: {
                  category: :unicorn,
-                 description: "unicorn",
-                 image_path: "emoji/emoji-one-unicorn.png"
+                 description: "Unicorn",
+                 image_path: "unicorn.svg",
+                 image_active_path: "unicorn-filled.svg"
                } %>
     <%= render partial: "articles/reaction_button",
                locals: {
                  category: :readinglist,
-                 description: "reading list",
-                 image_path: "emoji/emoji-one-bookmark.png"
+                 description: "Reading list",
+                 image_path: "save.svg",
+                 image_active_path: "save-filled.svg"
                } %>
-
-    <% display_name = @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %>
-    <a
-      class="article-actions-tweet-button"
-      rel="noopener"
-      target="_blank"
-      href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= display_name %> <%= u SiteConfig.twitter_hashtag %> <%= article_url(@article) %>'>
-      <img src="<%= asset_path("twitter.svg") %>" alt="twitter logo">
-    </a>
   <% end %>
-  <a class="article-actions-comments-count" href="#comments" id="jump-to-comments">
-    DISCUSS
-    <% if @article.comments_count.positive? %>
-      <span class="article-actions-comments-count-number">(<%= @article.comments_count %>)</span>
-    <% else %>
-    <% end %>
-  </a>
-  <div class="article-share-action-block">
-    <button id="article-show-more-button" class="dropbtn" aria-label="Toggle dropdown menu">
-      <img src="<%= asset_path("three-dots.svg") %>" class="dropdown-icon" alt="dropdown menu icon">
+
+  <div class="align-center m:relative">
+    <button id="article-show-more-button" class="dropbtn crayons-btn crayons-btn--ghost crayons-btn--icon-rounded" aria-label="Toggle dropdown menu">
+      <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "dropdown-icon crayons-icon", title: "More...") %>
     </button>
-    <div class="dropdown-content">
-      <div>
-        <div class="dropdown-link-row">
-          <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer">
-            <input type="text" id="article-copy-link-input" value="<%= article_url(@article) %>" readonly />
-            <img id="article-copy-icon" src="<%= asset_path("content-copy.svg") %>" alt="Copy to Clipboard" />
-            <span id="article-copy-link-announcer" role="alert" hidden>Copied to Clipboard</span>
-          </clipboard-copy>
+    <div class="crayons-dropdown p-1 z-30 right-1 left-1 s:left-auto bottom-100 m:bottom-auto m:right-auto m:left-100 m:top-0 fs-base">
+      <clipboard-copy for="article-copy-link-input" aria-live="polite" aria-controls="article-copy-link-announcer" class="dropdown-link-row">
+        <div class="flex items-center">
+          <input type="text" id="article-copy-link-input" value="<%= article_url(@article) %>" class="crayons-textfield" readonly />
+          <%= inline_svg_tag("copy.svg", aria: true, id: "article-copy-icon", class: "crayons-icon mx-2 shrink-0", title: "Notifications") %>
         </div>
-        <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetext="<%= @article.title %>" template="web-share-button">
-          <div class="dropdown-link-row">
-            <a
-              target="_blank"
-              rel="noopener"
-              href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> <%= u SiteConfig.twitter_hashtag %> <%= article_url(@article) %>'>
-              Share to Twitter
-            </a>
-          </div>
-          <div class="dropdown-link-row">
-            <a
-              target="_blank"
-              rel="noopener"
-              href="https://www.linkedin.com/shareArticle?mini=true&url=<%= article_url(@article) %>&title=<%= @article.title %>&summary=<%= @article.description %>&source=<%= community_name %>">
-              Share to LinkedIn
-            </a>
-          </div>
-          <div class="dropdown-link-row">
-            <a
-              target="_blank"
-              rel="noopener"
-              href="https://www.reddit.com/submit?url=<%= article_url(@article) %>&title=<%= @article.title %>">
-              Share to Reddit
-            </a>
-          </div>
-          <div class="dropdown-link-row">
-            <a
-              target="_blank"
-              rel="noopener"
-              href="https://news.ycombinator.com/submitlink?u=<%= article_url(@article) %>&t=<%= @article.title %>">
-              Share to Hacker News
-            </a>
-          </div>
-          <div class="dropdown-link-row">
-            <a
-              target="_blank"
-              rel="noopener"
-              href="https://www.facebook.com/sharer.php?u=<%= article_url(@article) %>">
-              Share to Facebook
-            </a>
-          </div>
-        </web-share-wrapper>
-        <template id="web-share-button">
-          <div class="dropdown-link-row"><a href="#">Share Post</a></div>
-        </template>
-        <div class="dropdown-link-row"><a href="/report-abuse">Report Abuse</a></div>
-      </div>
+        <div id="article-copy-link-announcer" role="alert" class="crayons-notice crayons-notice--success my-2 p-1" hidden>Copied to Clipboard</div>
+      </clipboard-copy>
+      <web-share-wrapper shareurl="<%= article_url(@article) %>" sharetext="<%= @article.title %>" template="web-share-button">
+        <a
+          target="_blank"
+          class="dropdown-link-row crayons-link crayons-link--block"
+          rel="noopener"
+          href='https://twitter.com/intent/tweet?text="<%= u @article.title.strip %>" by <%= @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %> <%= u SiteConfig.twitter_hashtag %> <%= article_url(@article) %>'>
+          Share to Twitter
+        </a>
+        <a
+          target="_blank"
+          class="dropdown-link-row crayons-link crayons-link--block"
+          rel="noopener"
+          href="https://www.linkedin.com/shareArticle?mini=true&url=<%= article_url(@article) %>&title=<%= @article.title %>&summary=<%= @article.description %>&source=<%= community_name %>">
+          Share to LinkedIn
+        </a>
+        <a
+          target="_blank"
+          class="dropdown-link-row crayons-link crayons-link--block"
+          rel="noopener"
+          href="https://www.reddit.com/submit?url=<%= article_url(@article) %>&title=<%= @article.title %>">
+          Share to Reddit
+        </a>
+        <a
+          target="_blank"
+          class="dropdown-link-row crayons-link crayons-link--block"
+          rel="noopener"
+          href="https://news.ycombinator.com/submitlink?u=<%= article_url(@article) %>&t=<%= @article.title %>">
+          Share to Hacker News
+        </a>
+        <a
+          target="_blank"
+          class="dropdown-link-row crayons-link crayons-link--block"
+          rel="noopener"
+          href="https://www.facebook.com/sharer.php?u=<%= article_url(@article) %>">
+          Share to Facebook
+        </a>
+      </web-share-wrapper>
+      <template id="web-share-button">
+        <a href="#" class="dropdown-link-row crayons-link crayons-link--block">Share Post</a>
+      </template>
+      <a href="/report-abuse" class="dropdown-link-row crayons-link crayons-link--block">Report Abuse</a>
     </div>
   </div>
 </div>
+
 <% if !user_signed_in? && @article.body_markdown.size > 900 %>
   <% cache("below-article-html-variant-#{rand(20)}", expires_in: 8.hours) do %>
     <% @html_variant = HtmlVariant.find_for_test(@article.cached_tag_list_array, "article_show_below_article_cta") %>
