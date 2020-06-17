@@ -36,18 +36,23 @@ function titleArea(previewResponse, articleState, errors) {
     <header className="crayons-article__header">
       {coverImage.length > 0 && (
         <div className="crayons-article__cover">
-          <div
+          <img
             className="crayons-article__cover__image"
-            style={{ backgroundImage: `url(${coverImage})` }}
+            src={coverImage}
+            width="1000"
+            height="420"
+            alt=""
           />
         </div>
       )}
-      {errors && <ErrorList errors={errors} />}
-      <h1 className="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title">
-        {previewTitle}
-      </h1>
+      <div className="crayons-article__header__meta">
+        {errors && <ErrorList errors={errors} />}
+        <h1 className="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title">
+          {previewTitle}
+        </h1>
 
-      <div className="crayons-article__tags">{tags}</div>
+        <div className="spec-article__tags">{tags}</div>
+      </div>
     </header>
   );
 }

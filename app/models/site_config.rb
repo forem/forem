@@ -63,6 +63,7 @@ class SiteConfig < RailsSettings::Base
   # Mascot
   field :mascot_user_id, type: :integer, default: 1
   field :mascot_image_url, type: :string, default: "https://dev-to-uploads.s3.amazonaws.com/i/y5767q6brm62skiyywvc.png"
+  field :mascot_footer_image_url, type: :string, default: "https://dev-to-uploads.s3.amazonaws.com/i/wmv3mtusjwb3r13d5h2f.png"
   field :mascot_image_description, type: :string, default: "Sloan, the sloth mascot"
 
   # Meta keywords

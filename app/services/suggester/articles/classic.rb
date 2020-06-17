@@ -14,20 +14,18 @@ module Suggester
         articles = if rand(8) == 1
                      random_high_quality_articles(num)
                    else
-                     qualifying_ids = qualifying_articles(random_supported_tag_names)
+                     qualifying_ids = qualifying_article_ids(random_supported_tag_names)
                      lookup_ids = qualifying_ids - not_ids
-                     Article.where(id: lookup_ids).limit(num)
+                     Article.includes(:user).limited_column_select.where(id: lookup_ids).limit(num)
                    end
         articles = random_high_quality_articles(num) if articles.empty?
         articles
       end
 
-      def qualifying_articles(tag_names)
+      def qualifying_article_ids(tag_names)
         tag_name = tag_names.sample
         Rails.cache.fetch("classic-article-ids-for-tag-#{tag_name}", expires_in: 90.minutes) do
           Article.published.cached_tagged_with(tag_name).
-            includes(:user).
-            limited_column_select.
             where(featured: true).
             where("public_reactions_count > ?", MIN_REACTION_COUNT).
             where("published_at > ?", 10.months.ago).

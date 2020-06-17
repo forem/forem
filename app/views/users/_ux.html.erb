@@ -47,8 +47,8 @@
     <div class="crayons-field">
       <%= f.label :experience_level, "What is your approximate coding experience level (1-5)?", class: "crayons-field__label" %>
       <div class="theme-selector-field grid grid-cols-5">
-        <% %w[1 3 5 8 10].each_with_index do |exp, i| %>
-          <%= render partial: "experience_selector", locals: { f: f, exp: exp, i: i } %>
+        <% user_experience_levels.each_with_index do |exp, i| %>
+          <%= render partial: "experience_selector", locals: { f: f, exp: exp, i: i, label: user_experience_labels } %>
         <% end %>
       </div>
       <p>This will not be displayed on your profile or anywhere publicly. It helps gently determine what content you are shown along with tags you follow etc.</p>

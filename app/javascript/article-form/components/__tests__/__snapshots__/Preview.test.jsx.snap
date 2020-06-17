@@ -13,43 +13,46 @@ exports[`<Preview /> renders properly 1`] = `
       <div
         class="crayons-article__cover"
       >
-        <div
+        <img
+          alt=""
           class="crayons-article__cover__image"
-          style={
-            Object {
-              "backgroundImage": "url(/i/9ca8kb1cu34mobypm5yx.png)",
-            }
-          }
+          height="420"
+          src="/i/9ca8kb1cu34mobypm5yx.png"
+          width="1000"
         />
       </div>
-      <h1
-        class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title"
-      >
-        My Awesome Post
-      </h1>
       <div
-        class="crayons-article__tags"
+        class="crayons-article__header__meta"
       >
-        <span
-          class="crayons-tag mr-2"
+        <h1
+          class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-6 spec-article__title"
+        >
+          My Awesome Post
+        </h1>
+        <div
+          class="spec-article__tags"
         >
           <span
-            class="crayons-tag__prefix"
+            class="crayons-tag mr-2"
           >
-            #
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            javascript
           </span>
-          javascript
-        </span>
-        <span
-          class="crayons-tag mr-2"
-        >
           <span
-            class="crayons-tag__prefix"
+            class="crayons-tag mr-2"
           >
-            #
+            <span
+              class="crayons-tag__prefix"
+            >
+              #
+            </span>
+            career
           </span>
-          career
-        </span>
+        </div>
       </div>
     </header>
     <div

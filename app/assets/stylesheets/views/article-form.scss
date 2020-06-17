@@ -75,7 +75,6 @@
     display: flex;
     flex-direction: column;
     height: 100%;
-    padding: var(--article-padding-y) var(--article-padding-x);
     overflow: auto;
     height: calc(
       100vh - var(--header-height) - var(--article-form-actions-height)
@@ -162,7 +161,7 @@
 
   &__toolbar {
     position: sticky;
-    top: calc(var(--article-padding-y) * -1);
+    top: 0;
     background: var(--base-0);
     padding: var(--su-2) var(--article-padding-x);
     margin: calc(var(--article-padding-y) * -1)
@@ -207,7 +206,6 @@
 
   &__tagsfield {
     position: relative;
-    margin-bottom: calc(var(--article-padding-y) * 2);
   }
 
   &__help {
