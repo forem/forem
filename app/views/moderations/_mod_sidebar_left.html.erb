@@ -21,12 +21,14 @@
   </div>
   <div class="fw-bold fs-s mod-center-section-title resources">RESOURCES</div>
   <div id="mod-center-other-options">
-    <a href="/connect/<%= @community_mod_channel.slug %>" target="_blank" rel="noopener noreferrer nofollow" class="crayons-link crayons-link--block">
-      Connect Channel
-      <span class="crayons-icon">
-        <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
-      </span>
-    </a>
+    <% if @community_mod_channel %>
+      <a href="/connect/<%= @community_mod_channel.slug %>" target="_blank" rel="noopener noreferrer nofollow" class="crayons-link crayons-link--block">
+        Connect Channel
+        <span class="crayons-icon">
+          <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
+        </span>
+      </a>
+    <% end %>
     <a href="<%= URL.url %>/community-moderation" class="crayons-link crayons-link--block">
       Moderator Guide
       <span class="crayons-icon">
