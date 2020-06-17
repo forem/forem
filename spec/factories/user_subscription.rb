@@ -3,6 +3,7 @@ FactoryBot.define do
     association :subscriber, factory: :user, strategy: :create
     association :user_subscription_sourceable, factory: :article
 
-    author { user_subscription_sourceable.user }
+    author           { user_subscription_sourceable.user }
+    subscriber_email { subscriber.email }
   end
 end
