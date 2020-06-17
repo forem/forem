@@ -65,7 +65,11 @@ RSpec.describe "EmailSignups", type: :request do
       # Create the UserSubscription directly so it results in a
       # duplicate/invalid record and returns an error. This mimics a user
       # trying to subscribe to the same user via the same source, twice.
-      UserSubscription.create(subscriber: user, author: article.user, user_subscription_sourceable: article)
+      create(:user_subscription,
+             subscriber_id: user.id,
+             subscriber_email: user.email,
+             author_id: article.user.id,
+             user_subscription_sourceable: article)
 
       invalid_source_attributes = { source_type: article.class_name, source_id: article.id }
 

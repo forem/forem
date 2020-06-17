@@ -15,7 +15,8 @@ class EmailSignupsController < ApplicationController
 
     @user_subscription = UserSubscription.new(
       user_subscription_sourceable: user_subscription_sourceable,
-      subscriber: current_user,
+      subscriber_id: current_user.id,
+      subscriber_email: current_user.email,
       author_id: user_subscription_sourceable.user_id,
     )
 
