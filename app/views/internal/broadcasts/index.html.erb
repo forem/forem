@@ -24,7 +24,7 @@
     <div class="alert alert-warning"><strong>Note: You must ensure that your Broadcast is active in order for it to be sent to users!<strong></div>
     <div class="list-group-flush w-100">
       <% @broadcasts.each do |broadcast| %>
-        <a class="list-group-item list-group-item-action flex-column align-items-start" href="/internal/broadcasts/<%= broadcast.id %>/edit">
+        <a class="list-group-item list-group-item-action flex-column align-items-start" href="/internal/broadcasts/<%= broadcast.id %>">
           <h3 class="mb-2">Title: <%= broadcast.title %></h3>
           <h3>Broadcast Type: <%= broadcast.type_of %></h3>
           <h3>Content:</h3>
