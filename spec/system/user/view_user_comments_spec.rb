@@ -15,7 +15,7 @@ RSpec.describe "User comments", type: :system do
       end
     end
 
-    it "shows user's comments", js: true, percy: true, elasticsearch: "FeedContent" do
+    it "shows user's comments", js: true, percy: true, stub_elasticsearch: true do
       Percy.snapshot(page, name: "Comments: /:user_id/comments renders")
 
       within("#substories div.index-comments") do

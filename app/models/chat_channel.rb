@@ -103,9 +103,16 @@ class ChatChannel < ApplicationRecord
   end
 
   def add_users(users)
-    Array(users).each do |user|
-      ChatChannelMembership.find_or_create_by!(user_id: user.id, chat_channel_id: id)
+    now = Time.current
+    users_params = Array.wrap(users).map do |user|
+      { user_id: user.id, chat_channel_id: id, created_at: now, updated_at: now }
     end
+
+    # memberships that are not unique are automatically skipped
+    ChatChannelMembership.insert_all(
+      users_params,
+      unique_by: :index_chat_channel_memberships_on_chat_channel_id_and_user_id,
+    )
   end
 
   def invite_users(users:, membership_role: "member", inviter: nil)

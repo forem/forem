@@ -19,12 +19,7 @@
     .night-theme .widget header {
       color: #cedae2;
     }
-    .user-profile-header .user-profile-header-container .profile-details h1{
-      color: <%= HexComparer.new([user_colors(@user)[:bg], user_colors(@user)[:text]]).brightness(0.78) %> !important;
-    }
-    .night-theme .user-profile-header .user-profile-header-container .profile-details h1{
-      color: white !important;
-    }
+
     <% if user_colors(@user)[:bg].downcase.start_with?("#fff") %>
     .user-profile-follow-button {
       border: 1px solid <%= user_colors(@user)[:text] %> !important;

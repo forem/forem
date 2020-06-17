@@ -61,8 +61,7 @@
             <a href="<%= comment.path %>">
               Permalink
             </a>
-            <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" style="display: none;">
-              <a href="<%= comment.path %>/settings" rel="nofollow" style="color:#0a0a0a;" data-no-instant>Settings</a>
+            <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" style="display: none;" data-action="settings-button" data-path="<%= comment.path %>/settings">
             </span>
             <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
             <span class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>" style="display: none; width: 100%;">
@@ -70,8 +69,7 @@
                 <%= action %>
               </button>
             </span>
-            <span class="mod-actions hidden" style="display: none;">
-              <a href="<%= comment.path %>/mod" rel="nofollow" style="color:#0a0a0a">Moderate</a>
+            <span class="mod-actions hidden mod-actions-comment-button" style="display: none;" data-path="<%= comment.path %>/mod">
             </span>
             <a href="/report-abuse?url=<%= comment_url(comment) %>">Report Abuse</a>
           </div>
@@ -86,8 +84,6 @@
       </div>
       <div class="actions" data-comment-id="<%= comment.id %>" data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>">
         <span class="current-user-actions hidden" style="display:none">
-          <a data-no-instant href="<%= commentable.path %>/comments/<%= comment.id_code_generated %>/delete_confirm" class="edit-butt" rel="nofollow">DELETE</a>
-          <a href="<%= commentable.path %>/comments/<%= comment.id_code_generated %>/edit" class="edit-butt" rel="nofollow">EDIT</a>
         </span>
         <% if comment.depth < 2 || is_childless %>
           <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form" rel="nofollow">REPLY</a>

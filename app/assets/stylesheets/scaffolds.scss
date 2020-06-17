@@ -65,6 +65,15 @@ body {
   font-size: 18px;
 }
 
+/* Hide headers for screen readers */
+.visually-hidden-header {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 a {
   color: var(--link-brand-color);
   text-decoration: none;

@@ -35,7 +35,7 @@ class ReactionsController < ApplicationController
 
       reactions = if session_current_user_id
                     comment_ids = reaction_counts.map { |rc| rc[:id] }
-                    Reaction.where(id: cached_user_public_reaction_ids(current_user), reactable_id: comment_ids)
+                    cached_user_public_comment_reactions(current_user, comment_ids)
                   else
                     Reaction.none
                   end
@@ -102,13 +102,16 @@ class ReactionsController < ApplicationController
     render json: { result: result, category: category }
   end
 
-  private
-
-  def cached_user_public_reaction_ids(user)
-    Rails.cache.fetch("cached-user-#{user.id}-reaction-ids-#{user.public_reactions_count}", expires_in: 24.hours) do
-      user.reactions.public_category.pluck(:id)
+  def cached_user_public_comment_reactions(user, comment_ids)
+    cache = Rails.cache.fetch("cached-user-#{user.id}-reaction-ids-#{user.public_reactions_count}", expires_in: 24.hours) do
+      user.reactions.public_category.where(reactable_type: "Comment").each_with_object({}) do |r, h|
+        h[r.reactable_id] = r.attributes
+      end
     end
+    cache.slice(*comment_ids).values
   end
+
+  private
 
   def build_reaction(category)
     create_params = {

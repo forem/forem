@@ -23,9 +23,10 @@
   margin: 0.95em 0 1.2em;
   position: relative;
   overflow: hidden;
+  width: auto;
   @media screen and (min-width: 760px) {
     margin: 0.95em auto;
-    width: 620px;
+    max-width: 620px;
   }
   .ltag__user__pic {
     display: inline-block;

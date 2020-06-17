@@ -106,6 +106,7 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.email_addresses[:privacy]).to eq("privacy@example.com")
           expect(SiteConfig.email_addresses[:business]).to eq("partners@example.com")
           expect(SiteConfig.email_addresses[:members]).to eq("members@example.com")
+          expect(SiteConfig.email_addresses[:default]).to eq(ApplicationConfig["DEFAULT_EMAIL"])
         end
       end
 
@@ -200,6 +201,12 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
         end
 
+        it "updates mascot_footer_image_url" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { mascot_footer_image_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_footer_image_url).to eq(expected_image_url)
+        end
+
         it "updates mascot_image_description" do
           description = "Hey hey #{rand(100)}"
           post "/internal/config", params: { site_config: { mascot_image_description: description }, confirmation: confirmation_message }
@@ -283,6 +290,18 @@ RSpec.describe "/internal/config", type: :request do
           expected_image_url = "https://dummyimage.com/300x300"
           post "/internal/config", params: { site_config: { onboarding_taskcard_image: expected_image_url }, confirmation: confirmation_message }
           expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
+        end
+
+        it "updates onboarding_logo_image" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { onboarding_logo_image: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.onboarding_logo_image).to eq(expected_image_url)
+        end
+
+        it "updates onboarding_background_image" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { onboarding_background_image: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.onboarding_background_image).to eq(expected_image_url)
         end
 
         it "removes space suggested_tags" do

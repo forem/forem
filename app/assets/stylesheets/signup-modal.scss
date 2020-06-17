@@ -55,19 +55,6 @@
       text-align: center;
       margin: auto;
     }
-    a {
-      display: inline-block;
-      margin: calc(2vw + 5px) 10px;
-      border-radius: 100px;
-      padding: calc(0.5vw + 4px) calc(1.5vw + 10px);
-      background: $purple;
-      color: $bold-blue;
-      img {
-        width: calc(1vw + 18px);
-        height: calc(1vw + 18px);
-        vertical-align: calc(-0.1em - 2px);
-      }
-    }
     .mascot-image {
       height: calc(7vw + 80px);
       margin-top: calc(6vh - 10px);
