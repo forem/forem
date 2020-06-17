@@ -727,5 +727,10 @@
 }
 
 #mod-center-other-options svg {
-  width: 12px;
+  width: var(--su-3);
+}
+
+.mod-feedback {
+  margin-top: var(--su-6);
+  margin-left: var(--su-3);
 }
