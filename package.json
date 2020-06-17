@@ -128,6 +128,7 @@
     "@babel/preset-env": "^7.9.6",
     "@github/clipboard-copy-element": "^1.1.2",
     "@rails/webpacker": "5.1.1",
+    "ahoy.js": "^0.3.6",
     "babel-preset-preact": "^2.0.0",
     "chart.js": "^2.9.3",
     "clipboard-polyfill": "^2.8.6",
