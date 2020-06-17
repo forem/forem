@@ -9,6 +9,10 @@ class Internal::BroadcastsController < Internal::ApplicationController
                   end.order(title: :asc)
   end
 
+  def show
+    @broadcast = Broadcast.find(params[:id])
+  end
+
   def new
     @broadcast = Broadcast.new
   end
