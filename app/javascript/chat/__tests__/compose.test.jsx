@@ -68,7 +68,7 @@ describe('<Compose />', () => {
     it('should click submit', () => {
       const { getByText } = render(getCompose(false));
       const button = getByText(/Send/i);
-
+      
       button.click();
       expect(submitNoMessage).toEqual(true);
       expect(submitWithMessage).toEqual(false);
