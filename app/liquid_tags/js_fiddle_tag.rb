@@ -1,4 +1,4 @@
-class JSFiddleTag < LiquidTagBase
+class JsFiddleTag < LiquidTagBase
   PARTIAL = "liquids/jsfiddle".freeze
   OPTION_REGEXP = /\A(js|html|css|result|,)*\z/.freeze
   LINK_REGEXP = /\A(http|https):\/\/(jsfiddle\.net)\/[a-zA-Z0-9\-\/]*\z/.freeze
@@ -51,4 +51,4 @@ class JSFiddleTag < LiquidTagBase
   end
 end
 
-Liquid::Template.register_tag("jsfiddle", JSFiddleTag)
+Liquid::Template.register_tag("jsfiddle", JsFiddleTag)
