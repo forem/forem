@@ -17,7 +17,7 @@ VCR.configure do |config|
   )
 
   # ignore all requests to Elasticsearch
-  c.ignore_request do |request|
+  config.ignore_request do |request|
     URI(request.uri).port == 9200
   end
 
