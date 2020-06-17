@@ -928,8 +928,12 @@ a.header-link {
     .dropdown {
       position: absolute;
       top: 40px;
-      right: 10px;
+      right: 200px;
       display: inline-block;
+
+      @media screen and (min-width: 580px) {
+        right: 10px;
+      }
 
       .dropdown-content {
         display: none;
