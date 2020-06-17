@@ -16,7 +16,8 @@
 <div id="js-article-form"
   data-article="<%= article.to_json(only: %i[id title cached_tag_list published body_markdown main_image organization_id canonical_url updated_at], methods: %i[series all_series]) %>"
   data-organizations="<%= organizations&.to_json(only: %i[id name bg_color_hex text_color_hex], methods: [:profile_image_90]) %>"
-  data-version="<%= version %>">
+  data-version="<%= version %>"
+  data-logo-svg='<%= logo_svg %>'>
   <form class="crayons-article-form crayons-article-form--<%= version %>">
 
     <div class="crayons-article-form__header">
