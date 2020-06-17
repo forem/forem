@@ -8,13 +8,13 @@ class AddSubscriberEmailIndexToUserSubscriptions < ActiveRecord::Migration[6.0]
                    algorithm: :concurrently
     end
 
-    if !index_exists?(:user_subscriptions, :subscriber_email)
+    unless index_exists?:user_subscriptions, :subscriber_email)
       add_index :user_subscriptions,
                 :subscriber_email,
                 algorithm: :concurrently
     end
 
-    if !index_exists?(:user_subscriptions, %i[subscriber_id subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id])
+    unless index_exists?:user_subscriptions, %i[subscriber_id subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id])
       add_index :user_subscriptions,
                 %i[subscriber_id subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id],
                 name: "index_subscriber_id_and_email_with_user_subscription_source",
@@ -24,7 +24,7 @@ class AddSubscriberEmailIndexToUserSubscriptions < ActiveRecord::Migration[6.0]
   end
 
   def down
-    if !index_exists?(:user_subscriptions, %i[subscriber_id user_subscription_sourceable_id user_subscription_sourceable_type])
+    unless index_exists?:user_subscriptions, %i[subscriber_id user_subscription_sourceable_id user_subscription_sourceable_type])
       add_index :user_subscriptions,
                 %i[subscriber_id user_subscription_sourceable_id user_subscription_sourceable_type],
                 unique: true,
