@@ -2,7 +2,7 @@ class Podcast < ApplicationRecord
   resourcify
 
   has_many :podcast_episodes
-  belongs_to :creator, class_name: "User", inverse_of: :created_podcasts, foreign_key: :creator_id, optional: true
+  belongs_to :creator, class_name: "User", inverse_of: :created_podcasts, optional: true
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :pattern_image, ProfileImageUploader

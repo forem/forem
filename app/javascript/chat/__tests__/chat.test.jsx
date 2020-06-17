@@ -10,7 +10,7 @@ global.fetch = fetch;
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
 global.document = doc;
 global.document.body.innerHTML =
-  '<div class="chat chat--expanded" data-no-instant={true}><div class="chat__activechat"><div class="activechatchannel"><div class="activechatchannel__conversation"><div class="activechatchannel__header"></div><div class="activechatchannel__messages" id="messagelist"><div class="messagelist__sentinel" id="messagelist__sentinel"/></div><div class="activechatchannel__alerts"><div class="chatalert__default chatalert__default--hidden">More new messages below</div></div><div class="activechatchannel__form"><div class="messagecomposer"><textarea class="messagecomposer__input" id="messageform" maxLength="1000" onKeyDown={[Function]} placeholder="Message goes here" /><button class="messagecomposer__submit" onClick={[Function]}>SEND</button></div></div></div></div></div></div>';
+  '<div class="chat chat--expanded" data-no-instant={true}><div class="chat__activechat"><div class="activechatchannel"><div class="activechatchannel__conversation"><div class="active-channel__header"></div><div class="activechatchannel__messages" id="messagelist"><div class="messagelist__sentinel" id="messagelist__sentinel"/></div><div class="activechatchannel__alerts"><div class="chatalert__default chatalert__default--hidden">More new messages below</div></div><div class="activechatchannel__form"><div class="messagecomposer"><textarea class="composer-textarea__edit" id="messageform" maxLength="1000" onKeyDown={[Function]} placeholder="Message goes here" /><button class="composer-submit__edit" onClick={[Function]}>SEND</button></div></div></div></div></div></div>';
 global.window = doc.defaultView;
 
 // mock observer and user ID
@@ -113,7 +113,7 @@ describe('<Chat />', () => {
     expect(context.find('.activechatchannel__conversation').exists()).toEqual(
       true,
     );
-    expect(context.find('.activechatchannel__header').exists()).toEqual(true);
+    expect(context.find('.active-channel__header').exists()).toEqual(true);
     expect(context.find('.activechatchannel__messages').exists()).toEqual(true);
     expect(context.find('.activechatchannel__alerts').exists()).toEqual(true); // div that wraps Alert
     expect(context.find('.activechatchannel__form').exists()).toEqual(true); // div that wraps Compose

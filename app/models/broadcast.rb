@@ -10,6 +10,8 @@ class Broadcast < ApplicationRecord
   validates :banner_style, inclusion: { in: VALID_BANNER_STYLES }, allow_blank: true
   validate  :single_active_announcement_broadcast
 
+  before_save :update_active_status_updated_at, if: :will_save_change_to_active?
+
   scope :active, -> { where(active: true) }
   scope :announcement, -> { where(type_of: "Announcement") }
   scope :welcome, -> { where(type_of: "Welcome") }
@@ -31,5 +33,9 @@ class Broadcast < ApplicationRecord
       ![nil, id].include?(first_broadcast.pick(:id))
 
     errors.add(:base, "You can only have one active announcement broadcast")
+  end
+
+  def update_active_status_updated_at
+    self.active_status_updated_at = Time.current
   end
 end

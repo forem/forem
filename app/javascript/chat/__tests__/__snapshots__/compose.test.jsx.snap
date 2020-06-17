@@ -8,18 +8,18 @@ exports[`<Compose /> behavior with message should render and test snapshot 1`] =
     class="messagecomposer"
   >
     <textarea
-      class="messagecomposer__input"
+      class="crayons-textfield composer-textarea"
       id="messageform"
       maxLength="1000"
       onKeyDown={[Function]}
-      placeholder="Let's connect"
+      placeholder="Write message..."
     />
     <button
-      class="messagecomposer__submit cta"
+      class="crayons-btn composer-submit"
       onClick={[Function]}
       type="button"
     >
-      SEND
+      Send
     </button>
   </div>
 </div>

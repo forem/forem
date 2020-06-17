@@ -19,7 +19,7 @@ const handleSubmitFake = () => {
   textfieldIsEmpty = true;
 };
 
-const handleKeyDownFake = e => {
+const handleKeyDownFake = (e) => {
   const enterPressed = e.keyCode === 13;
   if (!enterPressed) {
     textfieldIsEmpty = false;
@@ -30,7 +30,7 @@ const handleKeyDownFake = e => {
   }
 };
 
-const getCompose = tf => {
+const getCompose = (tf) => {
   // true -> not empty, false -> empty
   if (tf) {
     return (
@@ -60,7 +60,7 @@ describe('<Compose />', () => {
   describe('behavior with no message', () => {
     it('should click submit', () => {
       const context = shallow(getCompose(false));
-      const btn = context.find('.messagecomposer__submit');
+      const btn = context.find('.composer-submit');
 
       expect(btn.simulate('click'));
 
@@ -71,7 +71,7 @@ describe('<Compose />', () => {
 
     it('should press enter', () => {
       const context = shallow(getCompose(false));
-      const input = context.find('.messagecomposer__input');
+      const input = context.find('.composer-textarea');
 
       const enter = { keyCode: 13 };
       expect(input.simulate('keyDown', enter));
@@ -92,21 +92,21 @@ describe('<Compose />', () => {
       const context = shallow(getCompose(true));
       expect(context.find('.messagecomposer').exists()).toEqual(true);
 
-      const input = context.find('.messagecomposer__input');
+      const input = context.find('.composer-textarea');
       expect(input.exists()).toEqual(true);
       expect(input.text()).toEqual('');
       expect(input.attr('maxLength')).toEqual('1000');
-      expect(input.attr('placeholder')).toEqual("Let's connect");
+      expect(input.attr('placeholder')).toEqual('Write message...');
 
-      const btn = context.find('.messagecomposer__submit');
+      const btn = context.find('.composer-submit');
       expect(btn.exists()).toEqual(true);
-      expect(btn.text()).toEqual('SEND');
+      expect(btn.text()).toEqual('Send');
     });
 
     it('should click submit and check for empty textarea', () => {
       const context = shallow(getCompose(true));
-      const input = context.find('.messagecomposer__input');
-      const btn = context.find('.messagecomposer__submit');
+      const input = context.find('.composer-textarea');
+      const btn = context.find('.composer-submit');
 
       const someletter = { keyCode: 69 };
 
@@ -122,7 +122,7 @@ describe('<Compose />', () => {
 
     it('should press enter and check for empty textarea', () => {
       const context = shallow(getCompose(true));
-      const input = context.find('.messagecomposer__input');
+      const input = context.find('.composer-textarea');
 
       const someletter = { keyCode: 69 };
       expect(input.simulate('keyDown', someletter));
