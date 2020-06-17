@@ -37,15 +37,15 @@ body {
 
 .zen-mode {
   .top-bar,
-  .primary-sticky-nav,
-  .article-actions {
-    display: none !important;
+  .crayons-article-sticky,
+  .crayons-article-actions {
+    display: none;
   }
 }
 
 @media print {
   .top-bar,
-  .article-actions {
+  .crayons-article-sticky {
     display: none;
   }
 }
@@ -59,7 +59,6 @@ body {
 }
 
 .universal-page-content-wrapper {
-  overflow: hidden;
   min-height: 88vh;
   visibility: visible;
   font-size: 18px;
@@ -145,7 +144,6 @@ body.night-theme,
 body.ten-x-hacker-theme {
   .on-page-nav-butt img,
   .icon-img,
-  .dropdown-icon,
   .reaction-button:not(.reacted) img,
   .image-upload-button button,
   .icon-image,

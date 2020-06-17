@@ -78,7 +78,9 @@ exports[`<ArticleForm /> renders properly 1`] = `
   <div
     class="crayons-article-form__content crayons-card"
   >
-    <div>
+    <div
+      class="text-padding"
+    >
       <div
         class="crayons-article-form__cover"
         role="presentation"
@@ -154,7 +156,7 @@ exports[`<ArticleForm /> renders properly 1`] = `
       </div>
     </div>
     <div
-      class="crayons-article-form__body"
+      class="crayons-article-form__body text-padding"
     >
       <div
         class="crayons-article-form__toolbar false"

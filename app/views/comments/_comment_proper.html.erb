@@ -57,11 +57,9 @@
           <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Dropdown menu") %>
         </button>
         <div class="dropdown">
-          <div class="dropdown-content">
-            <a href="<%= comment.path %>">
-              Permalink
-            </a>
-            <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" style="display: none;" data-action="settings-button" data-path="<%= comment.path %>/settings">
+          <div class="crayons-dropdown p-1 z-30 right-1 left-1 s:right-0 s:left-auto fs-base">
+            <a href="<%= comment.path %>" class="crayons-link crayons-link--block">Permalink</a>
+            <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= comment.path %>/settings">
             </span>
             <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
             <span class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>" style="display: none; width: 100%;">
@@ -69,9 +67,8 @@
                 <%= action %>
               </button>
             </span>
-            <span class="mod-actions hidden mod-actions-comment-button" style="display: none;" data-path="<%= comment.path %>/mod">
-            </span>
-            <a href="/report-abuse?url=<%= comment_url(comment) %>">Report Abuse</a>
+            <span class="mod-actions hidden mod-actions-comment-button" data-path="<%= comment.path %>/mod"></span>
+            <a href="/report-abuse?url=<%= comment_url(comment) %>" class="crayons-link crayons-link--block">Report Abuse</a>
           </div>
         </div>
       </div>
