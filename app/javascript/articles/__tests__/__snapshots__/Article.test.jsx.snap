@@ -93,7 +93,13 @@ exports[`<Article /> component should render a featured article 1`] = `
             >
               #javascript
             </span>
-            Unbranded Home Loan Account
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Unbranded Home Loan Account",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -277,7 +283,13 @@ exports[`<Article /> component should render a featured article for a video post
             >
               #javascript
             </span>
-            monitor recontextualize
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "monitor recontextualize",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -489,7 +501,13 @@ exports[`<Article /> component should render a featured article for an organizat
             >
               #javascript
             </span>
-            Unbranded Home Loan Account
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Unbranded Home Loan Account",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -712,7 +730,13 @@ exports[`<Article /> component should render a podcast episode 1`] = `
             >
               podcast
             </span>
-            monitor recontextualize
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "monitor recontextualize",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -874,7 +898,13 @@ exports[`<Article /> component should render a standard article 1`] = `
             >
               #javascript
             </span>
-            Unbranded Home Loan Account
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Unbranded Home Loan Account",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -1045,7 +1075,13 @@ exports[`<Article /> component should render a user article 1`] = `
             >
               person
             </span>
-            Phyllis Armstrong
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Phyllis Armstrong",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -1167,7 +1203,13 @@ exports[`<Article /> component should render a video article 1`] = `
             >
               #javascript
             </span>
-            monitor recontextualize
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "monitor recontextualize",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -1351,7 +1393,13 @@ exports[`<Article /> component should render a video article with a flare tag 1`
             >
               #javascript
             </span>
-            monitor recontextualize
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "monitor recontextualize",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -1524,7 +1572,13 @@ exports[`<Article /> component should render as saved on reading list 1`] = `
             >
               #javascript
             </span>
-            Unbranded Home Loan Account
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Unbranded Home Loan Account",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -1778,7 +1832,13 @@ exports[`<Article /> component should render with a flare tag 1`] = `
             >
               #javascript
             </span>
-            Unbranded Home Loan Account
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Unbranded Home Loan Account",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -1951,7 +2011,13 @@ exports[`<Article /> component should render with a snippet result 1`] = `
             >
               #javascript
             </span>
-            Unbranded Home Loan Account
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Unbranded Home Loan Account",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -2155,7 +2221,13 @@ exports[`<Article /> component should render with an organization 1`] = `
             >
               #javascript
             </span>
-            Unbranded Home Loan Account
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Unbranded Home Loan Account",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -2328,7 +2400,13 @@ exports[`<Article /> component should render with comments 1`] = `
             >
               #javascript
             </span>
-            Unbranded Home Loan Account
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Unbranded Home Loan Account",
+                }
+              }
+            />
           </a>
         </h2>
         <div
@@ -2582,7 +2660,13 @@ exports[`<Article /> component should render with reactions 1`] = `
             >
               #javascript
             </span>
-            Unbranded Home Loan Account
+            <span
+              dangerouslySetInnerHTML={
+                Object {
+                  "__html": "Unbranded Home Loan Account",
+                }
+              }
+            />
           </a>
         </h2>
         <div

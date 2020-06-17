@@ -120,6 +120,7 @@ class Internal::ConfigsController < Internal::ApplicationController
     %i[
       mascot_image_description
       mascot_image_url
+      mascot_footer_image_url
       mascot_user_id
     ]
   end

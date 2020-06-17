@@ -38,12 +38,9 @@ describe BulkSqlDelete, type: :service do
       )
     end
 
-    # TODO: @mstruve will be addressing this
-    xit "deletes all records in batches" do
+    it "deletes all records in batches" do
       create_list :notification, 5, created_at: 1.month.ago
-      expect(Notification.count).to eq(5)
       result = described_class.delete_in_batches(sql)
-      expect(Notification.count).to eq(0)
       expect(result).to eq(5)
     end
   end
