@@ -33,9 +33,9 @@ env:
     - SECRET_KEY_BASE=dummydummydummy
     - GITHUB_KEY=dummy
     - GITHUB_SECRET=dummy
-branches:
-  only:
-    - master
+# branches:
+#   only:
+#     - master
 script:
   - date --rfc-3339=seconds
   - nvm install
