@@ -65,7 +65,7 @@ script:
   - bundle exec rails webpacker:compile
   - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
-  - './scripts/copy_specs.sh'
+  - './scripts/copy_spec.sh'
   - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
