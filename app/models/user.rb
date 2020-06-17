@@ -45,8 +45,8 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_many :authored_user_subscriptions, class_name: "UserSubscription", foreign_key: :author_id, inverse_of: :author, dependent: :destroy
-  has_many :subscribers, through: :authored_user_subscriptions, dependent: :destroy
+  has_many :source_authored_user_subscriptions, class_name: "UserSubscription", foreign_key: :author_id, inverse_of: :author, dependent: :destroy
+  has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
   has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription", foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
 
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
