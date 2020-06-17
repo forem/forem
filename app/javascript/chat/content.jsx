@@ -41,7 +41,7 @@ export default class Content extends Component {
     const Display = () => {
       switch (resource.type_of) {
         case 'loading-user':
-          return <div className="loading-user" />;
+          return <div className="loading-user" title="Loading user" />;
         case 'article':
           return <Article resource={resource} />;
         case 'channel-request':
@@ -84,6 +84,7 @@ export default class Content extends Component {
           className="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
           data-content="exit"
           type="button"
+          title="exit"
         >
           {smartSvgIcon(
             'exit',
@@ -95,6 +96,7 @@ export default class Content extends Component {
           data-content="fullscreen"
           style={{ left: '39px' }}
           type="button"
+          title="fullscreen"
         >
           {' '}
           {fullscreen
