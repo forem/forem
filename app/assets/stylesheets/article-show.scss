@@ -869,6 +869,7 @@ article {
   .html-variant-wrapper {
     width: 88%;
     margin: 0 auto 25px;
+    display: none;
 
     @media screen and (min-width: 500px) {
       width: 82%;
