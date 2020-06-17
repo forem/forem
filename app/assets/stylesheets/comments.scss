@@ -407,6 +407,7 @@ a.header-link {
       cursor: text;
       background: var(--form-bg);
       color: var(--body-color);
+      box-sizing: border-box;
       &::placeholder {
         color: var(--form-placeholder);
       }
@@ -1146,7 +1147,6 @@ a.header-link {
     z-index: 5;
     font-family: $helvetica-condensed;
     font-stretch: condensed;
-    width: calc(100% - 74px);
     margin-left: 58px;
     a.thread-indication {
       color: lighten($medium-gray, 22%);
