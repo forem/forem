@@ -16,6 +16,11 @@ VCR.configure do |config|
     "api.knapsackpro.com", "localhost", "127.0.0.1", "0.0.0.0"
   )
 
+  # ignore all requests to Elasticsearch
+  c.ignore_request do |request|
+    URI(request.uri).port == 9200
+  end
+
   # Removes all private data (Basic Auth, Set-Cookie headers...)
   config.before_record do |i|
     # Twitter embeds the Bearer access token in the JSON HTTP response
