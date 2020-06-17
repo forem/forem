@@ -102,6 +102,10 @@ pre {
   @media screen and (min-width: 380px) {
     font-size: 15px;
   }
+  @media screen and (min-width: 807px) {
+    max-width: 807px;
+  }
+
   code {
     background: #29292e;
     color: #eff0f9;
