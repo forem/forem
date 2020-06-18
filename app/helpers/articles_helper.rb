@@ -41,11 +41,12 @@ module ArticlesHelper
   end
 
   def should_show_crossposted_on?(article)
-    article.crossposted_at &&
+    article.canonical_url ||
+      (article.crossposted_at &&
       article.published_from_feed &&
       article.published &&
       article.published_at &&
-      article.feed_source_url.present?
+      article.feed_source_url.present?)
   end
 
   def get_host_without_www(url)

@@ -240,8 +240,6 @@
   }
 }
 
-
-
 .active-channel__header {
   align-items: center;
   box-shadow: 0 0 0 1px var(--card-border);
@@ -257,20 +255,6 @@
   font-weight: var(--fw-bold);
   font-size: var(--fs-base);
   color: var(--body-color);
-}
-
-.active-channel__config-btn {
-  display: flex;
-  align-items: center;
-  border-radius: 100%;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  transition: all var(--transition-props);
-
-  &:hover {
-    background: var(--button-secondary-bg);
-  }
 }
 
 .activechatchannel__messages {
@@ -1067,7 +1051,6 @@
     }
   }
 }
-
 
 .mention__list {
   position: absolute;

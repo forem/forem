@@ -23,12 +23,8 @@ export class GithubRepos extends Component {
         throw new Error(response.statusText);
       }
     } catch (error) {
-      this.setState({ error: true, errorMessage: error.toString() });
-
       Honeybadger.notify(error);
-
-      // will remove this, need it temporarily to properly debug
-      console.error(error); // eslint-disable-line no-console
+      this.setState({ error: true, errorMessage: error.toString() });
     }
   }
 
@@ -36,10 +32,8 @@ export class GithubRepos extends Component {
     const { repos, error, errorMessage } = this.state;
     if (error) {
       return (
-        <div className="github-repos github-repos-errored">
-          An error occurred: 
-          {' '}
-          {errorMessage}
+        <div className="github-repos github-repos-errored" role="alert">
+          An error occurred: {errorMessage}
         </div>
       );
     }
@@ -54,9 +48,18 @@ export class GithubRepos extends Component {
     ));
 
     if (allRepos.length > 0) {
-      return <div className="github-repos">{allRepos}</div>;
+      return (
+        <div className="github-repos" data-testid="github-repos-list">
+          {allRepos}
+        </div>
+      );
     }
-    return <div className="github-repos loading-repos" />;
+    return (
+      <div
+        title="Loading GitHub repositories"
+        className="github-repos loading-repos"
+      />
+    );
   }
 }
 

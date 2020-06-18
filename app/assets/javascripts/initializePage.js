@@ -4,7 +4,7 @@
   initializeBaseTracking, initializeTouchDevice, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeCommentDropdown, initializeSettings,
-  initializeFooterMod, initializeCommentPreview, initializeAdditionalContentBoxes,
+  initializeCommentPreview, initializeAdditionalContentBoxes,
   initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
   initializeEllipsisMenu, initializeArchivedPostFilter, initializeCreditsPage,
   initializeUserProfilePage, initializePodcastPlayback, initializeDrawerSliders,
@@ -48,7 +48,6 @@ function callInitializers() {
   initializeCommentDate();
   initializeCommentDropdown();
   initializeSettings();
-  initializeFooterMod();
   initializeCommentPreview();
   initializeAdditionalContentBoxes();
   initializeTimeFixer();

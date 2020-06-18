@@ -1,6 +1,8 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import Modal from '../components/Modal';
+
 
 describe('<Modal />', () => {
   const idFromMessageModal = 'listings-message-form';
@@ -46,23 +48,29 @@ describe('<Modal />', () => {
   });
 
   const renderModal = (listing) =>
-    deep(<Modal {...getProps()} listing={listing} />);
+    render(<Modal {...getProps()} listing={listing} />);
 
-  it('Should render the MessageModal component when the listing.contact_via_connect is true', () => {
+  it('should have no a11y violations', async () => {
+    const { container } = renderModal({...getDefaultListing()});
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
+
+  it('should render the MessageModal component when the listing.contact_via_connect is true', () => {
     const listingWithContactViaConnectTrue = {
       ...getDefaultListing(),
       contact_via_connect: true,
     };
-    const context = renderModal(listingWithContactViaConnectTrue);
-    expect(context.find(`#${idFromMessageModal}`).exists()).toBe(true);
+    const { getByTestId } = renderModal(listingWithContactViaConnectTrue);
+    getByTestId('listings-message-modal');
   });
 
-  it('Should not render the MessageModal when the listing.contact_via_connect is false', () => {
+  it('should not render the MessageModal when the listing.contact_via_connect is false', () => {
     const listingWithContactViaConnectFalse = {
       ...getDefaultListing(),
       contact_via_connect: false,
     };
-    const context = renderModal(listingWithContactViaConnectFalse);
-    expect(context.find(`#${idFromMessageModal}`).exists()).toBe(false);
+    const { queryByTestId } = renderModal(listingWithContactViaConnectFalse);
+    expect(queryByTestId('listings-message-modal')).toBeNull();
   });
 });

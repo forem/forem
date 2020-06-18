@@ -1,63 +1,111 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import ActiveMembershipsSection from '../ChatChannelSettings/ActiveMembershipsSection';
 
-const data = {
-  activeMemberships: [],
-  currentMembershipRole: 'mod',
-};
+function getEmptyMembershipData() {
+  return {
+    activeMemberships: [],
+    currentMembershipRole: 'mod',
+  };
+}
 
-const membership = {
-  activeMemberships: [
-    {
-      name: 'test user',
-      username: 'testusername',
-      user_id: '1',
-      membership_id: '2',
-      role: 'mod',
-      status: 'active',
-      image: '',
-    },
-  ],
-  membershipType: 'active',
-  currentMembershipRole: 'mod',
-};
-
-const getActiveMembershipsSection = (membershipData) => (
-  <ActiveMembershipsSection
-    activeMemberships={membershipData.activeMemberships}
-    currentMembershipRole={membershipData.currentMembershipRole}
-  />
-);
+function getMembershipData() {
+  return {
+    activeMemberships: [
+      {
+        name: 'test user',
+        username: 'testusername',
+        user_id: '1',
+        membership_id: '2',
+        role: 'mod',
+        status: 'active',
+        image: '',
+      },
+    ],
+    membershipType: 'active',
+    currentMembershipRole: 'mod',
+  };
+}
 
 describe('<ActiveMembershipsSection />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getActiveMembershipsSection(data));
-    expect(tree).toMatchSnapshot();
+  it('should have no a11y violations when there are no members', async () => {
+    const {
+      activeMemberships,
+      currentMembershipRole,
+    } = getEmptyMembershipData();
+    const { container } = render(
+      <ActiveMembershipsSection
+        activeMemberships={activeMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
-  it('should have the elements', () => {
-    const context = shallow(getActiveMembershipsSection(data));
+  it('should have no a11y violations when there are members', async () => {
+    const { activeMemberships, currentMembershipRole } = getMembershipData();
+    const { container } = render(
+      <ActiveMembershipsSection
+        activeMemberships={activeMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
+    const results = await axe(container);
 
-    expect(context.find('.active_members').exists()).toEqual(true);
+    expect(results).toHaveNoViolations();
   });
 
-  it('should have title', () => {
-    const context = shallow(getActiveMembershipsSection(data));
+  it('should have a title', () => {
+    const {
+      activeMemberships,
+      currentMembershipRole,
+    } = getEmptyMembershipData();
+    const { getByText } = render(
+      <ActiveMembershipsSection
+        activeMemberships={activeMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
 
-    expect(context.find('.active_members').text()).toEqual('Members');
+    getByText('Members');
   });
 
   it('should not render the membership list', () => {
-    const context = shallow(getActiveMembershipsSection(data));
+    const {
+      activeMemberships,
+      currentMembershipRole,
+    } = getEmptyMembershipData();
+    const { getByTestId } = render(
+      <ActiveMembershipsSection
+        activeMemberships={activeMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
 
-    expect(context.find('.items-center').exists()).toEqual(false);
+    // no users to be found
+    const activeMembershipsWrapper = getByTestId('active-memberships');
+
+    expect(Number(activeMembershipsWrapper.dataset.activeCount)).toEqual(0);
   });
 
   it('should render the membership list', () => {
-    const context = shallow(getActiveMembershipsSection(membership));
+    const { activeMemberships, currentMembershipRole } = getMembershipData();
+    const { getByTestId } = render(
+      <ActiveMembershipsSection
+        activeMemberships={activeMemberships}
+        currentMembershipRole={currentMembershipRole}
+      />,
+    );
 
-    expect(context.find('.active-member').exists()).toEqual(true);
+    // the other fields aren't necessary to test as this is handled in the
+    // <Membership /> tests.
+    const activeMembershipsWrapper = getByTestId('active-memberships');
+
+    expect(
+      Number(activeMembershipsWrapper.dataset.activeCount),
+    ).toBeGreaterThanOrEqual(1);
   });
 });

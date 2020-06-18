@@ -1,5 +1,6 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import ListingFiltersTags from '../components/ListingFiltersTags';
 
 describe('<ListingFilterTags />', () => {
@@ -7,68 +8,62 @@ describe('<ListingFilterTags />', () => {
 
   const getProps = () => ({
     message: 'Some message',
-    onKeyUp: () => {
-      return 'onKeyUp';
-    },
-    onClearQuery: () => {
-      return 'onClearQuery';
-    },
-    onRemoveTag: () => {
-      return 'onRemoveTag';
-    },
-    onKeyPress: () => {
-      return 'onKeyPress';
-    },
+    onKeyUp: jest.fn(),
+    onClearQuery: jest.fn(),
+    onRemoveTag: jest.fn(),
+    onKeyPress: jest.fn(),
     query: 'some-string&this=1',
     tags: getTags(),
   });
 
   const renderListingFilterTags = (props = getProps()) =>
-    deep(<ListingFiltersTags {...props} />);
+    render(<ListingFiltersTags {...props} />);
 
-  describe('Should render a search field', () => {
-    const context = renderListingFilterTags();
-    const searchField = context.find('#listings-search');
+  it('should have no a11y violations', async () => {
+    const { container } = renderListingFilterTags();
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
+  });
 
-    it('Should have "search" as placeholder', () => {
-      expect(searchField.attr('placeholder')).toBe('search');
+  describe('should render a search field', () => {
+    it('should have "search" as placeholder', () => {
+      const { getByPlaceholderText } = renderListingFilterTags();
+      getByPlaceholderText(/search/i);
     });
 
-    it(`Should have "${getProps().message}" as default value`, () => {
-      expect(searchField.attr('defaultValue')).toBe(getProps().message);
+    it(`should have "${getProps().message}" as default value`, () => {
+      const { getByDisplayValue } = renderListingFilterTags();
+      getByDisplayValue(getProps().message);
     });
 
-    it('Should have auto-complete as off', () => {
-      expect(searchField.attr('autoComplete')).toBe('off');
+    it('should have auto-complete as off', () => {
+      const { getByPlaceholderText } = renderListingFilterTags();
+      const input = getByPlaceholderText(/search/i);
+      expect(input.getAttribute('autoComplete')).toBe('off');
     });
   });
 
   describe('<ClearQueryButton />', () => {
-    const context = renderListingFilterTags();
-
-    it('Should render the clear query button', () => {
-      expect(context.find('#clear-query-button').exists()).toBe(true);
+    it('should render the clear query button', () => {
+      const { getByTestId } = renderListingFilterTags();
+      getByTestId('clear-query-button');
     });
 
-    it('Should not render the clear query button', () => {
+    it('should not render the clear query button', () => {
       const propsWithoutQuery = { ...getProps(), query: '' };
-      const contextWithAnotherProps = renderListingFilterTags(
+      const { queryByTestId } = renderListingFilterTags(
         propsWithoutQuery,
       );
-
-      expect(contextWithAnotherProps.find('#clearQueryButton').exists()).toBe(
-        false,
-      );
+      expect(queryByTestId('clear-query-button')).toBeNull();
     });
   });
 
-  it('Should render the selected Tags', () => {
-    const context = renderListingFilterTags();
-    getTags().forEach((tag) => {
-      const selectedTag = context.find(`#selected-tag-${tag}`);
-
-      expect(selectedTag.text()).toEqual(expect.stringContaining(tag));
-      expect(selectedTag.text()).toEqual(expect.stringContaining('×'));
+  describe('<SelectedTags />', () => {
+    it('should render the selected Tags', () => {
+      const { getByText } = renderListingFilterTags();
+      getTags().forEach((tag) => {
+        getByText(`${tag}`);
+      });
     });
   });
 });

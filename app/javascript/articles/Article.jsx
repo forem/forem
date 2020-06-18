@@ -49,6 +49,7 @@ export const Article = ({
       }`}
       id={isFeatured && 'featured-story-marker'}
       data-content-user-id={article.user_id}
+      data-testid={isFeatured ? 'featured-article' : `article-${article.id}`}
     >
       <div
         role="presentation"

@@ -4,7 +4,7 @@ import listingPropTypes from './listingPropTypes';
 
 const LocationText = ({ location }) => {
   return location ? (
-    <a href={`/listings/?q=${location}`}>
+    <a data-testid="single-listing-location" href={`/listings/?q=${location}`}>
       {'・'}
       {location}
     </a>

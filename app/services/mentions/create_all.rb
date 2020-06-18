@@ -56,7 +56,13 @@ module Mentions
       Notification.remove_all(notifiable_ids: mentions.pluck(:id), notifiable_type: "Mention") if mentions.present?
     end
 
+    def user_has_comment_notifications?(user)
+      user.notifications.exists?(notifiable_id: @notifiable.id)
+    end
+
     def create_mention_for(user)
+      return if user_has_comment_notifications?(user)
+
       mention = Mention.create(user_id: user.id, mentionable_id: @notifiable.id, mentionable_type: @notifiable.class.name)
       # mentionable_type = model that created the mention, user = user to be mentioned
       Notification.send_mention_notification(mention)

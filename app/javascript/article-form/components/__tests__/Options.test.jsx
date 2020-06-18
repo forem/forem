@@ -1,6 +1,5 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
 import { Options } from '../Options';
 
 let passedData;
@@ -54,15 +53,10 @@ describe('<Options />', () => {
     }
   });
 
-  it('renders properly', () => {
-    const tree = render(getOptions(passedData));
-    expect(tree).toMatchSnapshot();
-  });
 
   it('shows the danger zone once an article is published', ()=> {
     passedData.published = true;
-    const container = shallow(getOptions(passedData));
-    expect(container.find('.spec__options-danger-zone').exists()).toEqual(true,)
-
+    const { getByTestId } = render(getOptions(passedData));
+    getByTestId('options__danger-zone');
   });
 });
