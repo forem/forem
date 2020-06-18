@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-unresolved
-import ConfigImage from 'images/three-dots.svg';
+import ConfigImage from 'images/overflow-horizontal.svg';
 import ChannelButton from './components/channelButton';
 import { channelSorter } from './util';
 

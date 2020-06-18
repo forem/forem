@@ -73,7 +73,7 @@ class GithubTag
       uri.query = nil
 
       # remove leading forward slash in the path
-      path = uri.path.sub(%r{\A/}, "")
+      path = uri.path.delete_prefix("/")
 
       URI.parse(API_BASE_ENDPOINT).merge(path).to_s
     end

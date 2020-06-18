@@ -1,34 +1,44 @@
-<div class="about-the-author" id="about-the-author">
-  <div class="left-column">
-    <a href="/<%= @user.username %>">
-      <img class="profile-pic" src="<%= ProfileImage.new(@user).get(width: 180) %>" alt="<%= @user.username %> profile" />
+<div>
+  <p class="mb-4 color-base-60 fs-s">Posted on <%= published %> by:</p>
+
+  <div class="flex">
+    <a href="/<%= @user.username %>" class="crayons-avatar crayons-avatar--2xl shrink-0 mr-4">
+      <img class="crayons-avatar__image" src="<%= ProfileImage.new(@user).get(width: 180) %>" alt="<%= @user.username %> profile" />
     </a>
-  </div>
-  <div class="main-content">
-    <h4><a href="/<%= @user.username %>"><%= @user.name %></a><%= follow_button(@user) %></h4>
-    <p><%= @user.summary %></p>
-    <p class="social">
-      <a href="/<%= @user.username %>">
-        @<%= @user.username %>
-      </a>
-      <% if @user.twitter_username.present? %>
-        <a href="http://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener">
-          <%= inline_svg_tag("twitter.svg", aria: true, class: "crayons-icon", width: 24, height: 24, title: "Twitter") %>
-          <%= @user.twitter_username %>
+    <div>
+      <h3 class="fs-l s:fs-xl m:fs-2xl l:fs-3xl fw-medium"><a href="/<%= @user.username %>" class="crayons-link"><%= @user.name %></a></h3>
+      <p class="fw-medium mb-2">
+        <a href="/<%= @user.username %>" class="crayons-link crayons-link--secondary">
+          @<%= @user.username %>
         </a>
+      </p>
+      <% if @user.summary %>
+        <p class="color-base-70 mb-4"><%= @user.summary %></p>
       <% end %>
-      <% if @user.github_username.present? %>
-        <a href="http://github.com/<%= @user.github_username %>" target="_blank" rel="noopener">
-          <%= inline_svg_tag("github.svg", aria: true, class: "crayons-icon", width: 24, height: 24, title: "GitHub") %>
-          <%= @user.github_username %>
-        </a>
-      <% end %>
-      <% if @user.website_url.present? %>
-        <a href="<%= @user.website_url %>" target="_blank" rel="noopener">
-          <%= inline_svg_tag("link-external.svg", aria: true, class: "crayons-icon", width: 24, height: 24, title: "Website") %>
-          <%= beautified_url(@user.website_url) %>
-        </a>
-      <% end %>
-    </p>
+
+      <div class="flex items-center">
+        <div><%= follow_button(@user) %>&nbsp;</div>
+
+        <% if @user.twitter_username.present? || @user.github_username.present? || @user.website_url.present? %>
+          <div class="flex items-center fs-s">
+            <% if @user.twitter_username.present? %>
+              <a href="http://twitter.com/<%= @user.twitter_username %>" target="_blank" rel="noopener" class="crayons-link crayons-link--secondary ml-4">
+                <%= inline_svg_tag("twitter.svg", aria: true, class: "crayons-icon", width: 24, height: 24, title: "Twitter") %>
+              </a>
+            <% end %>
+            <% if @user.github_username.present? %>
+              <a href="http://github.com/<%= @user.github_username %>" target="_blank" rel="noopener" class="crayons-link crayons-link--secondary ml-4">
+                <%= inline_svg_tag("github.svg", aria: true, class: "crayons-icon", width: 24, height: 24, title: "GitHub") %>
+              </a>
+            <% end %>
+            <% if @user.website_url.present? %>
+              <a href="<%= @user.website_url %>" target="_blank" rel="noopener" class="crayons-link crayons-link--secondary ml-4">
+                <%= inline_svg_tag("link-external.svg", aria: true, class: "crayons-icon", width: 24, height: 24, title: "Website") %>
+              </a>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>
