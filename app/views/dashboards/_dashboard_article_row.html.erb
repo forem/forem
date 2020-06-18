@@ -1,6 +1,6 @@
 <tr class="js-dashboard-story <%= "story-unpublished" unless article.published %> <%= "js-dashboard-story story-archived hidden" if article.archived %>">
   <td>
-    <h3 class="fs-base">
+    <h3 class="fs-l">
       <a href="<%= article.current_state_path %>" class="flex items-center">
         <% if article.organization_id %>
           <span class="crayons-logo crayons-logo--s mr-2"><img class="crayons-logo__image" src="<%= article.organization&.profile_image_90 %>" alt="<%= article.organization&.name %>" width="24" height="24"></span>
@@ -57,7 +57,7 @@
           0
         <% end %>
       </span>
-      
+
       <% if false %>
         <span class="flex items-center p-1 ml-1" title="Data">
           <%= inline_svg_tag("small-data.svg", aria: true, class: "crayons-icon mr-1", title: "Data") %>
@@ -102,7 +102,7 @@
     <% if @current_user_pro %>
       <a href="<%= article.path %>/stats" class="crayons-btn crayons-btn--ghost crayons-btn--s">Stats</a>
     <% end %>
-    
+
     <div class="js-dashboard-row-more relative inline-block">
       <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon js-dashboard-row-more-trigger">
         <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More...") %>
@@ -111,7 +111,7 @@
       <div class="crayons-dropdown top-100 right-0 z-10 align-left js-dashboard-row-more-dropdown">
         <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "js-archive-toggle" }) do |f| %>
           <%= f.hidden_field :archived, value: !article.archived %>
-          
+
           <button type="submit" class="crayons-link crayons-link--block w-100 border-0 bg-transparent">
             <%= article.archived ? "Unarchive post" : "Archive post" %>
           </button>
@@ -122,7 +122,7 @@
             <input type="hidden" name="destination" value="/dashboard/organization/<%= organization.id %>" />
             <div class="crayons-field mb-4">
               <label for="user_id" class="crayons-field__label">Author</label>
-              <%= f.select :user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id), {}, {class: "crayons-select"} %>
+              <%= f.select :user_id, options_for_select(organization.users.pluck(:name, :id), article.user_id), {}, { class: "crayons-select" } %>
 
             </div>
             <button type="submit" class="crayons-btn">Save</button>
