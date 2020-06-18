@@ -9,7 +9,9 @@ Rails.application.reloader.to_prepare do
                  # Fake Aws::Lambda::Client
                  Class.new do
                    def invoke(*)
-                     Struct.new(payload: [{ body: { message: 0 }.to_json }.to_json])
+                     # rubocop:disable Performance/OpenStruct
+                     OpenStruct.new(payload: [{ body: { message: 0 }.to_json }.to_json])
+                     # rubocop:enable Performance/OpenStruct
                    end
                  end.new
                end
