@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-import InviteForm from './InviateForm';
-import SettingsFrom from './SettingsForm';
+import InviteForm from './InviteForm';
+import SettingsForm from './SettingsForm';
 
 const ModSection = ({
   handleChatChannelInvitations,
@@ -13,12 +13,7 @@ const ModSection = ({
   channelDiscoverable,
   handleChannelDiscoverableStatus,
   handleChannelDescriptionChanges,
-  currentMembershipRole,
 }) => {
-  if (currentMembershipRole !== 'mod') {
-    return null;
-  }
-
   return (
     <div className="mod-section">
       <InviteForm
@@ -26,7 +21,7 @@ const ModSection = ({
         invitationUsernames={invitationUsernames}
         handleChatChannelInvitations={handleChatChannelInvitations}
       />
-      <SettingsFrom
+      <SettingsForm
         channelDescription={channelDescription}
         handleDescriptionChange={handleDescriptionChange}
         channelDiscoverable={channelDiscoverable}
@@ -46,7 +41,6 @@ ModSection.propTypes = {
   handleChannelDiscoverableStatus: PropTypes.func.isRequired,
   handleChannelDescriptionChanges: PropTypes.func.isRequired,
   channelDiscoverable: PropTypes.bool.isRequired,
-  currentMembershipRole: PropTypes.string.isRequired,
 };
 
 export default ModSection;

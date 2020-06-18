@@ -1,11 +1,12 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import { render, fireEvent } from '@testing-library/preact';
 import { JSDOM } from 'jsdom';
+import { axe } from 'jest-axe';
 import { ListingDashboard } from '../listingDashboard';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
 global.document = doc;
-const l = [
+const listingsForDataAttribute = [
   {
     id: 23,
     bumped_at: '2019-06-11T16:45:37.229Z',
@@ -25,12 +26,12 @@ const l = [
   },
   {
     id: 24,
-    bumped_at: '2019-06-11T16:59:16.312Z',
+    bumped_at: '2019-05-11T16:59:16.312Z',
     category: 'events',
     organization_id: 2,
     slug: 'yoyoyoyoyoooooooo-4jcb',
     title: 'YOYOYOYOYOOOOOOOO',
-    updated_at: '2019-06-11T16:59:16.316Z',
+    updated_at: '2019-05-11T16:59:16.316Z',
     user_id: 11,
     tag_list: ['computerscience', 'conference', 'career'],
     author: {
@@ -42,12 +43,12 @@ const l = [
   },
   {
     id: 25,
-    bumped_at: '2019-06-11T17:01:25.143Z',
+    bumped_at: '2019-04-11T17:01:25.143Z',
     category: 'cfp',
     organization_id: 3,
     slug: 'hehhehe-5hld',
     title: 'hehhehe',
-    updated_at: '2019-06-11T17:01:25.169Z',
+    updated_at: '2019-04-11T17:01:25.169Z',
     user_id: 11,
     tag_list: [],
     author: {
@@ -59,7 +60,7 @@ const l = [
   },
 ];
 global.document.body.innerHTML = `<div id="listings-dashboard" data-listings=${JSON.stringify(
-  l,
+  listingsForDataAttribute,
 )} data-usercredits="3" data-orglistings=${JSON.stringify([
   {
     id: 24,
@@ -101,7 +102,7 @@ global.document.body.innerHTML = `<div id="listings-dashboard" data-listings=${J
 ])} ></div>`;
 global.window = doc.defaultView;
 
-const listingState = {
+const listings = {
   listings: [
     {
       id: 23,
@@ -180,60 +181,163 @@ const listingState = {
 };
 
 describe('<ListingDashboard />', () => {
-  it('should load listing dashboard', () => {
-    const tree = deep(<ListingDashboard />);
-    expect(tree).toMatchSnapshot();
+  it('should have no a11y violations', async () => {
+    const { container } = render(<ListingDashboard />);
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
-  describe('should load the proper elements', () => {
-    const context = deep(<ListingDashboard />);
-    expect(context.component()).toBeInstanceOf(ListingDashboard);
-    context.setState(listingState);
+  it('should render for user and org buttons', () => {
+    const { getByText } = render(<ListingDashboard />);
 
-    it('for user and org buttons', () => {
-      expect(context.find('.rounded-btn').at(0).text()).toEqual('Personal');
-      expect(context.find('.rounded-btn').at(1).text()).toEqual(
-        listingState.orgs[0].name,
-      );
-      expect(context.find('.rounded-btn').at(2).text()).toEqual(
-        listingState.orgs[1].name,
-      );
-
-      context.find('.rounded-btn').at(1).simulate('click');
-      expect(context.find('.rounded-btn').at(1).attr('className')).toEqual(
-        'rounded-btn active',
-      );
-      expect(context.state('selectedListings')).toEqual(
-        listingState.orgs[0].id,
-      );
+    getByText('Personal', { selector: '[role="button"]' });
+    const org1 = getByText(listings.orgs[0].name, {
+      selector: '[role="button"]',
     });
+    getByText(listings.orgs[1].name, { selector: '[role="button"]' });
 
-    it('for listing and credits header', () => {
-      expect(
-        context.find('.dashboard-listings-header-wrapper').exists(),
-      ).toEqual(true);
-      expect(context.find('.dashboard-listings-header').exists()).toEqual(true);
+    fireEvent.click(org1);
 
-      expect(
-        context.find('.dashboard-listings-header').at(0).childAt(0).text(),
-      ).toEqual('Listings');
-      expect(
-        context.find('.dashboard-listings-header').at(0).childAt(2).text(),
-      ).toEqual('Create a Listing');
+    expect(org1.classList.contains('active')).toEqual(true);
+  });
 
-      expect(
-        context.find('.dashboard-listings-header').at(1).childAt(0).text(),
-      ).toEqual('Credits');
-      expect(
-        context.find('.dashboard-listings-header').at(1).childAt(2).text(),
-      ).toEqual('Buy Credits');
-    });
+  it('should render for listing and credits header', () => {
+    const { getByText } = render(<ListingDashboard />);
 
-    it('for listingRow view', () => {
-      expect(context.find('.dashboard-listings-view').exists()).toEqual(true);
-      expect(
-        context.find('.dashboard-listings-view').children().text(),
-      ).toEqual(context.find('ListingRow').text());
-    });
+    getByText('Listings', { selector: 'h3' });
+
+    const createListing = getByText('Create a Listing', { selector: 'a' });
+
+    expect(createListing.getAttribute('href')).toEqual('/listings/new');
+
+    getByText('Credits', { selector: 'h3' });
+
+    const buyCredits = getByText('Buy Credits', { selector: 'a' });
+
+    expect(buyCredits.getAttribute('href')).toEqual('/credits/purchase');
+  });
+
+  it('should render for listingRow view', () => {
+    const { getByText } = render(<ListingDashboard />);
+
+    // 1st listing
+    const listing1GetByTextOptions = {
+      selector: '[data-listing-id="23"] *',
+    };
+
+    getByText('asdfasdf (expired)', listing1GetByTextOptions);
+    getByText('Jun 11', listing1GetByTextOptions);
+
+    // listing category
+    const listing1CfpCategory = getByText('cfp', listing1GetByTextOptions);
+
+    expect(listing1CfpCategory.getAttribute('href')).toEqual('/listings/cfp/');
+
+    // tags
+    const listing1ComputerScienceTag = getByText(
+      '#computerscience',
+      listing1GetByTextOptions,
+    );
+
+    expect(listing1ComputerScienceTag.getAttribute('href')).toEqual(
+      '/listings?t=computerscience',
+    );
+
+    const careerTag = getByText('#career', listing1GetByTextOptions);
+
+    expect(careerTag.getAttribute('href')).toEqual('/listings?t=career');
+
+    // edit and delete buttons
+    const editButton = getByText('EDIT', listing1GetByTextOptions);
+
+    expect(editButton.getAttribute('href')).toEqual('/listings/23/edit');
+
+    const deleteButton = getByText('DELETE', listing1GetByTextOptions);
+
+    expect(deleteButton.getAttribute('href')).toEqual(
+      '/listings/cfp/asdfasdf-2ea8/delete_confirm',
+    );
+
+    // 2nd listing
+    const listing2GetByTextOptions = {
+      selector: '[data-listing-id="24"] *',
+    };
+
+    getByText('YOYOYOYOYOOOOOOOO (expired)', listing2GetByTextOptions);
+    getByText('May 11', listing2GetByTextOptions);
+
+    // listing category
+    const listing2EventsCategory = getByText(
+      'events',
+      listing2GetByTextOptions,
+    );
+
+    expect(listing2EventsCategory.getAttribute('href')).toEqual(
+      '/listings/events/',
+    );
+
+    // tags
+    const listing2ComputerScienceTag = getByText(
+      '#computerscience',
+      listing2GetByTextOptions,
+    );
+
+    expect(listing2ComputerScienceTag.getAttribute('href')).toEqual(
+      '/listings?t=computerscience',
+    );
+
+    const listing2careerTag = getByText('#career', listing2GetByTextOptions);
+
+    expect(listing2careerTag.getAttribute('href')).toEqual(
+      '/listings?t=career',
+    );
+
+    const conferenceTag = getByText('#conference', listing2GetByTextOptions);
+
+    expect(conferenceTag.getAttribute('href')).toEqual(
+      '/listings?t=conference',
+    );
+
+    // edit and delete buttons
+    const listing2EditButton = getByText('EDIT', listing2GetByTextOptions);
+
+    expect(listing2EditButton.getAttribute('href')).toEqual(
+      '/listings/24/edit',
+    );
+
+    const listing2DeleteButton = getByText('DELETE', listing2GetByTextOptions);
+
+    expect(listing2DeleteButton.getAttribute('href')).toEqual(
+      '/listings/events/yoyoyoyoyoooooooo-4jcb/delete_confirm',
+    );
+
+    // 3rd listing
+    const listing3GetByTextOptions = {
+      selector: '[data-listing-id="25"] *',
+    };
+
+    getByText('hehhehe (expired)', listing3GetByTextOptions);
+    getByText('Apr 11', listing3GetByTextOptions);
+
+    // listing category
+    const listing3CfpCategory = getByText('cfp', listing3GetByTextOptions);
+
+    expect(listing3CfpCategory.getAttribute('href')).toEqual('/listings/cfp/');
+
+    // has no tags
+
+    //     // edit and delete buttons
+    const listing3EditButton = getByText('EDIT', listing3GetByTextOptions);
+
+    expect(listing3EditButton.getAttribute('href')).toEqual(
+      '/listings/25/edit',
+    );
+
+    const listing3DeleteButton = getByText('DELETE', listing3GetByTextOptions);
+
+    expect(listing3DeleteButton.getAttribute('href')).toEqual(
+      '/listings/cfp/hehhehe-5hld/delete_confirm',
+    );
   });
 });

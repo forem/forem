@@ -264,7 +264,13 @@ export default class Chat extends Component {
       channels.filter(this.channelTypeFilterFn('invite_only')),
       (channel) => `presence-channel-${channel.chat_channel_id}`,
     );
-    document.getElementById('chatchannels__channelslist').scrollTop = 0;
+    const chatChannelsList = document.getElementById(
+      'chatchannels__channelslist',
+    );
+
+    if (chatChannelsList) {
+      chatChannelsList.scrollTop = 0;
+    }
   };
 
   markUnopenedChannelIds = (ids) => {
@@ -1056,7 +1062,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the 
+              abide by the
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
@@ -1068,7 +1074,7 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
+              You have joined
               {' '}
               {activeChannel.channel_name}
               ! All interactions
@@ -1077,7 +1083,7 @@ export default class Chat extends Component {
                 <b>must</b>
               </em>
               {' '}
-              abide by the 
+              abide by the
               {' '}
               <a href="/code-of-conduct">code of conduct</a>
               .
@@ -1235,6 +1241,7 @@ export default class Chat extends Component {
               className="chat__channelstogglebutt"
               onClick={this.toggleExpand}
               type="button"
+              title="Collapse channels"
             >
               {'<'}
             </button>
@@ -1244,6 +1251,7 @@ export default class Chat extends Component {
                 onKeyUp={this.debouncedChannelFilter}
                 id="chatchannelsearchbar"
                 className="crayons-textfield"
+                aria-label="Search Channels"
               />
             ) : (
               ''
@@ -1254,6 +1262,7 @@ export default class Chat extends Component {
               <button
                 className="chat__channelssearchtoggle"
                 onClick={this.toggleSearchShowing}
+                aria-label="Toggle channel search"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1289,6 +1298,7 @@ export default class Chat extends Component {
               channelsLoaded={state.channelsLoaded}
               filterQuery={state.filterQuery}
               expanded={state.expanded}
+              aria-expanded={state.expanded}
               currentUserId={state.currentUserId}
               triggerActiveContent={this.triggerActiveContent}
             />
@@ -1304,6 +1314,7 @@ export default class Chat extends Component {
             onClick={this.toggleExpand}
             style={{ width: '100%' }}
             type="button"
+            title="Expand channels"
           >
             {'>'}
           </button>
@@ -1441,9 +1452,7 @@ export default class Chat extends Component {
         <Content
           onTriggerContent={this.triggerActiveContent}
           resource={state.activeContent[state.activeChannelId]}
-          activeChannelId={state.activeChannelId}
           activeChannel={state.activeChannel}
-          pusherKey={props.pusherKey}
           githubToken={props.githubToken}
           fullscreen={state.fullscreenContent === 'sidecar'}
         />
@@ -1599,6 +1608,7 @@ export default class Chat extends Component {
               .filter((user) => user.username.match(filterRegx))
               .map((user) => (
                 <div
+                  key={user.username}
                   className="mention__user"
                   role="button"
                   onClick={this.addUserName}
@@ -1651,6 +1661,8 @@ export default class Chat extends Component {
             ? 'message__delete__modal crayons-modal crayons-modal--s absolute'
             : 'message__delete__modal message__delete__modal__hide crayons-modal crayons-modal--s absolute'
         }
+        aria-hidden={showDeleteModal}
+        role="dialog"
       >
         <div className="crayons-modal__box">
           <div className="crayons-modal__box__body">
@@ -1816,6 +1828,7 @@ export default class Chat extends Component {
     }
     return (
       <div
+        data-testid="chat"
         className={`chat chat--${
           state.expanded ? 'expanded' : 'contracted'
         }${detectIOSSafariClass} chat--${
@@ -1826,9 +1839,10 @@ export default class Chat extends Component {
             : 'content-not-visible'
         } ${fullscreenMode}`}
         data-no-instant
+        aria-expanded={state.expanded}
       >
         {this.renderChatChannels()}
-        <div className="chat__activechat">
+        <div data-testid="active-chat" className="chat__activechat">
           {this.renderActiveChatChannel(channelHeader)}
         </div>
       </div>
