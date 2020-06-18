@@ -2550,6 +2550,13 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
+ahoy.js@^0.3.6:
+  version "0.3.6"
+  resolved "https://registry.yarnpkg.com/ahoy.js/-/ahoy.js-0.3.6.tgz#ca27cb816a1de1f537616e4ea3213950259cd821"
+  integrity sha512-9X1g5xJioXk+AY5ti1LIlHExZ+8SjhuQOzAAXkNAZrZ6lmp88lFW7IeHADfii1/p5Cf3azg9hF2dk8Zsu4OfWA==
+  dependencies:
+    object-to-formdata ">=3.0.0"
+
 airbnb-js-shims@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/airbnb-js-shims/-/airbnb-js-shims-2.2.1.tgz#db481102d682b98ed1daa4c5baa697a05ce5c040"
@@ -10056,6 +10063,11 @@ object-keys@^1.0.11, object-keys@^1.0.12, object-keys@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.1.1.tgz#1c47f272df277f3b1daf061677d9c82e2322c60e"
   integrity sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==
+
+object-to-formdata@>=3.0.0:
+  version "3.0.9"
+  resolved "https://registry.yarnpkg.com/object-to-formdata/-/object-to-formdata-3.0.9.tgz#40e3314522345789259738811c0222b7d6e556e9"
+  integrity sha512-1JDHRFSpk6wzhPBAAqdVncdvbjZ+bjB0tioruNdKn8UyudBBXiBxRa7PJyvYqp4ioEKX98dEOX9Fw1RxA+vLzg==
 
 object-visit@^1.0.0:
   version "1.0.1"
