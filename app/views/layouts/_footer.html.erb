@@ -43,7 +43,9 @@
       </div>
     </nav>
 
-    <img src="<%= asset_path("footer-sloan.png") %>" alt="" width="52" height="120" class="crayons-footer__mascot">
+    <% if SiteConfig.mascot_footer_image_url %>
+      <img src="<%= SiteConfig.mascot_footer_image_url %>" alt="<% if SiteConfig.mascot_image_description %><%= SiteConfig.mascot_image_description %><% end %>" width="52" height="120" class="crayons-footer__mascot">
+    <% end %>
   </div>
 </footer>
 <div id="snack-zone"></div>
