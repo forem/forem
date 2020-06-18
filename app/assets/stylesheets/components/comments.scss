@@ -17,28 +17,34 @@
     margin-top: calc(var(--su-1) * -1);
     padding-left: var(--su-7);
     padding-bottom: var(--su-2);
-    max-height:310px;
+    max-height: 310px;
     overflow: hidden;
 
     a:hover {
       text-decoration: underline; //todo: default for all in-content links
     }
 
-    p, div.highlight {
-      margin: 6px auto;
+    p,
+    div.highlight {
+      margin: var(--su-1) auto;
+    }
+
+    .highlight {
+      display: grid;
+      overflow: auto;
+
+      code {
+        overflow: auto;
+      }
     }
 
     * {
-      overflow: hidden;
       max-width: 100%;
     }
+
     div {
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      max-width: 100%;
       width: auto;
-      object-fit: contain; 
+      object-fit: contain;
     }
   }
 

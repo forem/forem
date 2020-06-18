@@ -75,7 +75,7 @@ RSpec.describe "Search", type: :request, proper_status: true do
       )
 
       get "/search/feed_content"
-      expect(response.parsed_body).to eq("result" => mock_documents)
+      expect(response.parsed_body["result"]).to eq(mock_documents)
     end
 
     it "queries only the user index if class_name=User" do

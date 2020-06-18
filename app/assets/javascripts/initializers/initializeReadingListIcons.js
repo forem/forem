@@ -48,9 +48,7 @@ function reactToReadingListButtonClick(event) {
   var userStatus;
   event.preventDefault();
   sendHapticMessage('medium');
-  userStatus = document
-    .getElementsByTagName('body')[0]
-    .getAttribute('data-user-status');
+  userStatus = document.body.getAttribute('data-user-status');
   if (userStatus === 'logged-out') {
     showModal('add-to-readinglist-from-index');
     return;

@@ -249,7 +249,7 @@
     padding: 5px 15px;
     @include dev-card;
     position: relative;
-
+    overflow: auto;
     &.single-article-unpublished {
       background: lighten($yellow, 20%);
       @include themeable(
@@ -427,6 +427,7 @@
       margin-top: 8px;
       font-size: 22px;
       overflow: auto;
+      display: inline-block;
 
       @media screen and (min-width: 800px) {
         font-size: 34px;
@@ -464,12 +465,25 @@
           theme-dashboard-followers-follow-color,
           $black
         );
-        float: right;
         font-size: 15.9px;
         padding: 2px 10px;
-        margin: 10px 5px;
         @media screen and (min-width: 520px) {
           font-size: 20px;
+        }
+        &.follow-tag {
+          @media screen and (min-width: 750px) {
+            margin: 8px 0px 8px 10px;
+          }
+        }
+        &.follow-user {
+          float: right;
+          margin-top: 8px;
+        }
+      }
+
+      .follow-tag-actions {
+        @media screen and (min-width: 750px) {
+          float: right;
         }
       }
 
@@ -485,7 +499,6 @@
 
         @media screen and (min-width: 750px) {
           display: inline-block;
-          float: right;
         }
 
         input {

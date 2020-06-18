@@ -42,6 +42,9 @@
   <a href="https://app.honeybadger.io/project/Pl5JzZB5ax">
     <img src="https://img.shields.io/badge/honeybadger-active-informational" alt="Honeybadger badge">
   </a>
+  <a href="https://knapsackpro.com/dashboard/organizations/1142/projects/1022/test_suites/1434/builds">
+    <img src="https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20dev.to-%230074ff" alt="Knapsack Pro Parallel CI builds for dev.to" style="max-width:100%;">
+  </a>
 </p>
 
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
@@ -112,7 +115,6 @@ A more complete overview of our stack is available in
 **OS X**
 
 - [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/install/)
-
 
 ### Installation Documentation
 

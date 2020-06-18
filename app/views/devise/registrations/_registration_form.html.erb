@@ -74,9 +74,11 @@
     <h1>Great to have you</h1>
   <% end %>
   <div class="links">
-    <%= render partial: "shared/authentication/providers_registration_form" %>
+    <div class="flex flex-col m:flex-row justify-center">
+      <%= render partial: "shared/authentication/providers_registration_form" %>
+    </div>
 
-    <p><em>We require social login to prevent abuse.</em></p>
+    <p class="pt-4"><em>We require social login to prevent abuse.</em></p>
   </div>
   <p>Open Source 😇</p>
   <p>Free Forever ❤️</p>

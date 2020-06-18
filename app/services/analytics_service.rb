@@ -100,12 +100,12 @@ class AnalyticsService
   def calculate_reactions_totals
     # NOTE: the order of the keys needs to be the same as the one of the counts
     keys = %i[total like readinglist unicorn]
-    counts = reaction_data.pluck(
+    counts = reaction_data.pick(
       Arel.sql("COUNT(*)"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'like')"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'readinglist')"),
       Arel.sql("COUNT(*) FILTER (WHERE category = 'unicorn')"),
-    ).first
+    )
 
     # this transforms the counts, eg. [1, 0, 1, 0]
     # in a hash, eg. {total: 1, like: 0, readinglist: 1, unicorn: 0}
@@ -115,7 +115,7 @@ class AnalyticsService
   def calculate_page_views_totals
     total_views = article_data.sum(:page_views_count)
     logged_in_page_view_data = page_view_data.where.not(user_id: nil)
-    average = logged_in_page_view_data.pluck(Arel.sql("AVG(time_tracked_in_seconds)")).first
+    average = logged_in_page_view_data.pick(Arel.sql("AVG(time_tracked_in_seconds)"))
     average_read_time_in_seconds = (average || 0).round # average is a BigDecimal
 
     {

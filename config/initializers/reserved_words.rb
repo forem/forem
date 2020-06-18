@@ -41,6 +41,7 @@ class ReservedWords
     computer
     connect
     contact
+    crayons
     csv_exports
     daily
     dash

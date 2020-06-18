@@ -9,6 +9,7 @@ const getArticleForm = () => (
   <ArticleForm
     version="v2"
     article={`{ "id": null, "body_markdown": null, "cached_tag_list": null, "main_image": null, "published": false, "title": null, "updated_at": "${dummyArticleUpdatedAt}"}`}
+    logoSvg="PLACEHOLDER"
   />
 );
 

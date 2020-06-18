@@ -78,7 +78,7 @@
           </span>
         <% else %>
           <% number_of_pages = @num_published_articles / @number_of_articles %>
-          <% range = (number_of_pages < 10 || @page < 4) ? 1..[number_of_pages, 9].min : [@page - 3, 1].max..[@page + 5, number_of_pages].min %>
+          <% range = number_of_pages < 10 || @page < 4 ? 1..[number_of_pages, 9].min : [@page - 3, 1].max..[@page + 5, number_of_pages].min %>
           <% if number_of_pages > 1 %>
             <hr />
             <div class="olderposts-header">Older #<%= @tag %> posts</div>
