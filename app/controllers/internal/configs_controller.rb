@@ -45,8 +45,10 @@ class Internal::ConfigsController < Internal::ApplicationController
       rate_limit_params |
       mascot_params |
       image_params |
-      onboarding_params
+      onboarding_params |
+      job_params
 
+    params[:site_config][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if params[:site_config][:email_addresses].present?
     params.require(:site_config).permit(
       allowed_params,
       authentication_providers: [],
@@ -118,6 +120,7 @@ class Internal::ConfigsController < Internal::ApplicationController
     %i[
       mascot_image_description
       mascot_image_url
+      mascot_footer_image_url
       mascot_user_id
     ]
   end
@@ -134,9 +137,18 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def onboarding_params
     %i[
+      onboarding_logo_image
+      onboarding_background_image
       onboarding_taskcard_image
       suggested_tags
       suggested_users
+    ]
+  end
+
+  def job_params
+    %i[
+      jobs_url
+      display_jobs_banner
     ]
   end
 end

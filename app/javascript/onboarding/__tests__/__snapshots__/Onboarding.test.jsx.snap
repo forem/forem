@@ -3,7 +3,10 @@
 exports[`<Onboarding /> EmailPreferencesForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<main class="onboarding-body">
+<main
+  class="onboarding-body"
+  style="background-image: url(/y.jpg);"
+>
   <div class="onboarding-main crayons-modal">
     <div class="crayons-modal__box">
       <nav class="onboarding-navigation">
@@ -89,7 +92,10 @@ preact-render-spy (1 nodes)
 exports[`<Onboarding /> FollowTags renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<main class="onboarding-body">
+<main
+  class="onboarding-body"
+  style="background-image: url(/y.jpg);"
+>
   <div class="onboarding-main crayons-modal">
     <div class="crayons-modal__box overflow-auto">
       <nav class="onboarding-navigation">
@@ -146,7 +152,7 @@ preact-render-spy (1 nodes)
                   class="onboarding-tags__button false"
                   style="background-color: #000000; color: #ffffff;"
                 >
-                  + Follow
+                  Follow
                 </button>
               </div>
             </div>
@@ -162,7 +168,7 @@ preact-render-spy (1 nodes)
                   class="onboarding-tags__button false"
                   style="background-color: #f7df1e; color: #000000;"
                 >
-                  + Follow
+                  Follow
                 </button>
               </div>
             </div>
@@ -178,7 +184,7 @@ preact-render-spy (1 nodes)
                   class="onboarding-tags__button false"
                   style="background-color: #2a2566; color: #ffffff;"
                 >
-                  + Follow
+                  Follow
                 </button>
               </div>
             </div>
@@ -199,7 +205,10 @@ preact-render-spy (1 nodes)
 exports[`<Onboarding /> FollowUsers renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<main class="onboarding-body">
+<main
+  class="onboarding-body"
+  style="background-image: url(/y.jpg);"
+>
   <div class="onboarding-main crayons-modal">
     <div class="crayons-modal__box overflow-auto">
       <nav class="onboarding-navigation">
@@ -252,7 +261,7 @@ preact-render-spy (1 nodes)
             <figure class="user-avatar-container">
               <img
                 class="user-avatar"
-                src="ben.jpg"
+                src="apple-icon.png"
                 alt="profile"
                />
             </figure>
@@ -337,15 +346,18 @@ preact-render-spy (1 nodes)
 exports[`<Onboarding /> IntroSlide renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<main class="onboarding-body">
+<main
+  class="onboarding-body"
+  style="background-image: url(/y.jpg);"
+>
   <div class="onboarding-main introduction crayons-modal crayons-modal--m">
     <div class="crayons-modal__box overflow-auto">
       <div class="onboarding-content">
         <figure>
           <img
-            src="/assets/purple-dev-logo.png"
+            src="/x.png"
             class="sticker-logo"
-            alt="DEV"
+            alt="Test"
            />
         </figure>
         <h1 class="introduction-title">firstname lastname— welcome to Test!</h1>
@@ -420,7 +432,10 @@ preact-render-spy (1 nodes)
 exports[`<Onboarding /> ProfileForm renders properly 1`] = `
 preact-render-spy (1 nodes)
 -------
-<main class="onboarding-body">
+<main
+  class="onboarding-body"
+  style="background-image: url(/y.jpg);"
+>
   <div class="onboarding-main crayons-modal">
     <div class="crayons-modal__box">
       <nav class="onboarding-navigation">

@@ -93,7 +93,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/apple-icon.png"),
       visible: :hidden,
     )
 
@@ -109,7 +109,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/onboarding-background.png"),
       visible: :hidden,
     )
 
@@ -118,7 +118,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
     expect(page).to have_css("div.file-upload-error")
     expect(page).to have_css(
       "div.file-upload-error",
-      text: "File size too large (0.29 MB). The limit is 0 MB.",
+      text: "File size too large (0.07 MB). The limit is 0 MB.",
     )
   end
 
@@ -131,7 +131,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/apple-icon.png"),
       visible: :hidden,
     )
 
@@ -151,7 +151,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/apple-icon.png"),
       visible: :hidden,
     )
 

@@ -15,14 +15,10 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
     id="sidebar-element-javascript"
   >
     <a
-      class="sidebar-nav-link sidebar-nav-link-tag"
+      class="crayons-link crayons-link--block spec__tag-link"
       href="/t/javascript"
     >
-      <span
-        class="sidebar-nav-tag-text"
-      >
-        #javascript
-      </span>
+      #javascript
     </a>
   </div>
   <div
@@ -30,14 +26,10 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
     id="sidebar-element-webdev"
   >
     <a
-      class="sidebar-nav-link sidebar-nav-link-tag"
+      class="crayons-link crayons-link--block spec__tag-link"
       href="/t/webdev"
     >
-      <span
-        class="sidebar-nav-tag-text"
-      >
-        #webdev
-      </span>
+      #webdev
     </a>
   </div>
   <div
@@ -45,14 +37,10 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
     id="sidebar-element-react"
   >
     <a
-      class="sidebar-nav-link sidebar-nav-link-tag"
+      class="crayons-link crayons-link--block spec__tag-link"
       href="/t/react"
     >
-      <span
-        class="sidebar-nav-tag-text"
-      >
-        #react
-      </span>
+      #react
     </a>
   </div>
   <div
@@ -60,14 +48,10 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
     id="sidebar-element-discuss"
   >
     <a
-      class="sidebar-nav-link sidebar-nav-link-tag"
+      class="crayons-link crayons-link--block spec__tag-link"
       href="/t/discuss"
     >
-      <span
-        class="sidebar-nav-tag-text"
-      >
-        #discuss
-      </span>
+      #discuss
     </a>
   </div>
   <div
@@ -75,14 +59,10 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
     id="sidebar-element-productivity"
   >
     <a
-      class="sidebar-nav-link sidebar-nav-link-tag"
+      class="crayons-link crayons-link--block spec__tag-link"
       href="/t/productivity"
     >
-      <span
-        class="sidebar-nav-tag-text"
-      >
-        #productivity
-      </span>
+      #productivity
     </a>
   </div>
   <div
@@ -90,14 +70,10 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
     id="sidebar-element-career"
   >
     <a
-      class="sidebar-nav-link sidebar-nav-link-tag"
+      class="crayons-link crayons-link--block spec__tag-link"
       href="/t/career"
     >
-      <span
-        class="sidebar-nav-tag-text"
-      >
-        #career
-      </span>
+      #career
     </a>
   </div>
   <div
@@ -105,14 +81,10 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
     id="sidebar-element-node"
   >
     <a
-      class="sidebar-nav-link sidebar-nav-link-tag"
+      class="crayons-link crayons-link--block spec__tag-link"
       href="/t/node"
     >
-      <span
-        class="sidebar-nav-tag-text"
-      >
-        #node
-      </span>
+      #node
     </a>
   </div>
   <div
@@ -120,14 +92,10 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
     id="sidebar-element-css"
   >
     <a
-      class="sidebar-nav-link sidebar-nav-link-tag"
+      class="crayons-link crayons-link--block spec__tag-link"
       href="/t/css"
     >
-      <span
-        class="sidebar-nav-tag-text"
-      >
-        #css
-      </span>
+      #css
     </a>
   </div>
   <div
@@ -135,14 +103,10 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
     id="sidebar-element-html"
   >
     <a
-      class="sidebar-nav-link sidebar-nav-link-tag"
+      class="crayons-link crayons-link--block spec__tag-link"
       href="/t/html"
     >
-      <span
-        class="sidebar-nav-tag-text"
-      >
-        #html
-      </span>
+      #html
     </a>
   </div>
   <div
@@ -150,14 +114,10 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
     id="sidebar-element-typescript"
   >
     <a
-      class="sidebar-nav-link sidebar-nav-link-tag"
+      class="crayons-link crayons-link--block spec__tag-link"
       href="/t/typescript"
     >
-      <span
-        class="sidebar-nav-tag-text"
-      >
-        #typescript
-      </span>
+      #typescript
     </a>
   </div>
   <div
@@ -165,14 +125,10 @@ exports[`<TagsFollowed /> should render the tags followed when tags are passed i
     id="sidebar-element-opensource"
   >
     <a
-      class="sidebar-nav-link sidebar-nav-link-tag"
+      class="crayons-link crayons-link--block spec__tag-link"
       href="/t/opensource"
     >
-      <span
-        class="sidebar-nav-tag-text"
-      >
-        #opensource
-      </span>
+      #opensource
     </a>
   </div>
 </div>

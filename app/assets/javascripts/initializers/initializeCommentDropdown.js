@@ -95,7 +95,7 @@ function initializeCommentDropdown() {
       event.target.matches('.dropbtn') ||
       event.target.matches('clipboard-copy') ||
       event.target.matches('clipboard-copy input') ||
-      event.target.matches('clipboard-copy img') ||
+      event.target.matches('clipboard-copy svg') ||
       event.target.parentElement.classList.contains('dropdown-link-row')
     );
   }
@@ -117,7 +117,7 @@ function initializeCommentDropdown() {
   }
 
   function removeAllShowing() {
-    getAllByClassName('showing').forEach(removeClass('showing'));
+    getAllByClassName('crayons-dropdown').forEach(removeClass('block'));
   }
 
   function outsideClickListener(event) {
@@ -131,16 +131,16 @@ function initializeCommentDropdown() {
   function dropdownFunction(e) {
     var button = e.target.parentElement;
     var dropdownContent = button.parentElement.getElementsByClassName(
-      'dropdown-content',
+      'crayons-dropdown',
     )[0];
-    if (dropdownContent.classList.contains('showing')) {
-      dropdownContent.classList.remove('showing');
+    if (dropdownContent.classList.contains('block')) {
+      dropdownContent.classList.remove('block');
       removeClickListener();
       removeCopyListener();
       hideAnnouncer();
     } else {
       removeAllShowing();
-      dropdownContent.classList.add('showing');
+      dropdownContent.classList.add('block');
       const clipboardCopyElement = document.getElementsByTagName(
         'clipboard-copy',
       )[0];

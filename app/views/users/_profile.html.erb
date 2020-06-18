@@ -1,10 +1,14 @@
 <%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", defer: true %>
 
-<%= render "users/additional_authentication" %>
+<% if @user.identities.size < Authentication::Providers.enabled.size %>
+  <div class="crayons-card mb-6 p-5">
+    <%= render "users/additional_authentication" %>
+  </div>
+<% end %>
 
 <div class="crayons-card mb-6 p-6 grid gap-6">
   <div class="flex items-center">
-    <a href="<%= user_url(current_user) || '#' %>" aria-label="Go to your profile page" class="mr-2">
+    <a href="<%= user_url(current_user) || "#" %>" aria-label="Go to your profile page" class="mr-2">
       <img src="https://d2fltix0v2e0sb.cloudfront.net/dev-badge.svg" alt="<%= community_name %> badge" height="32" width="32" class="dev-badge crayons-icon" />
     </a>
     <p>Add the <%= community_name %> badge to your personal site. <a href="/p/badges">Click here for the code</a>.</p>

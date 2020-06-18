@@ -100,7 +100,7 @@ module ApplicationHelper
   end
 
   def beautified_url(url)
-    url.sub(/\A((http[s]?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
+    url.sub(/\A((https?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError
     url
   end
@@ -119,11 +119,11 @@ module ApplicationHelper
                                             tags: %w[p b i em strike strong u br]
   end
 
-  def follow_button(followable, style = "full")
+  def follow_button(followable, style = "full", classes = "")
     return if followable == DELETED_USER
 
     tag :button, # Yikes
-        class: "cta follow-action-button",
+        class: "crayons-btn follow-action-button " + classes,
         data: {
           :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true

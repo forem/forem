@@ -60,9 +60,7 @@ function reactToArticle(articleId, reaction) {
       setReactionCount(reaction, currentNum + 1);
     }
   }
-  var userStatus = document
-    .getElementsByTagName('body')[0]
-    .getAttribute('data-user-status');
+  var userStatus = document.body.getAttribute('data-user-status');
   sendHapticMessage('medium');
   if (userStatus === 'logged-out') {
     showModal('react-to-article');
@@ -147,23 +145,11 @@ function requestReactionCounts(articleId) {
   ajaxReq.send();
 }
 
-function jumpToComments() {
-  document.getElementById('jump-to-comments').onclick = (e) => {
-    e.preventDefault();
-    document.getElementById('comments').scrollIntoView({
-      behavior: 'instant',
-      block: 'start',
-    });
-  };
-}
-
 function initializeArticleReactions() {
   setCollectionFunctionality();
 
   setTimeout(() => {
-    var reactionButts = document.getElementsByClassName(
-      'article-reaction-butt',
-    );
+    var reactionButts = document.getElementsByClassName('crayons-reaction');
 
     // we wait for the article to appear,
     // we also check that reaction buttons are there as draft articles don't have them
@@ -177,10 +163,6 @@ function initializeArticleReactions() {
           reactToArticle(articleId, this.dataset.category);
         };
       }
-    }
-
-    if (document.getElementById('jump-to-comments')) {
-      jumpToComments();
     }
   }, 3);
 }

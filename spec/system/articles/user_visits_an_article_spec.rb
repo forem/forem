@@ -70,7 +70,8 @@ RSpec.describe "Views an article", type: :system do
       let(:crossposted_article) { create(:article) }
       let(:article2) { create(:article) }
 
-      it "renders the articles in ascending order considering crossposted_at", js: true, percy: true do
+      # TODO: Uncomment this spec when we decide to use percy again
+      xit "renders the articles in ascending order considering crossposted_at", js: true, percy: true do
         visit article1.path
         Percy.snapshot(page, name: "Articles: renders crossposted articles")
       end

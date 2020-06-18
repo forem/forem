@@ -26,7 +26,7 @@ exports[`<SidebarUser /> renders properly 1`] = `
       onClick={[Function]}
       type="button"
     >
-      + FOLLOW
+      Follow
     </button>
   </div>
 </div>
