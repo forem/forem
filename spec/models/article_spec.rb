@@ -11,6 +11,7 @@ RSpec.describe Article, type: :model do
   let!(:article) { create(:article, user: user) }
 
   include_examples "#sync_reactions_count", :article
+  it_behaves_like "UserSubscriptionSourceable"
 
   describe "validations" do
     it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }

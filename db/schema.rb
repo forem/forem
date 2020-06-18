@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_16_200005) do
+ActiveRecord::Schema.define(version: 2020_06_17_014509) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1134,12 +1134,14 @@ ActiveRecord::Schema.define(version: 2020_06_16_200005) do
   create_table "user_subscriptions", force: :cascade do |t|
     t.bigint "author_id", null: false
     t.datetime "created_at", precision: 6, null: false
+    t.string "subscriber_email", null: false
     t.bigint "subscriber_id", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_subscription_sourceable_id", null: false
     t.string "user_subscription_sourceable_type", null: false
     t.index ["author_id"], name: "index_user_subscriptions_on_author_id"
-    t.index ["subscriber_id", "user_subscription_sourceable_id", "user_subscription_sourceable_type"], name: "index_on_subscriber_id_user_subscription_sourceable_type_and_id", unique: true
+    t.index ["subscriber_email"], name: "index_user_subscriptions_on_subscriber_email"
+    t.index ["subscriber_id", "subscriber_email", "user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_subscriber_id_and_email_with_user_subscription_source", unique: true
     t.index ["subscriber_id"], name: "index_user_subscriptions_on_subscriber_id"
     t.index ["user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_on_user_subscription_sourcebable_type_and_id"
   end
