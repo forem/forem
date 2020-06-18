@@ -35,6 +35,7 @@
         text-align: left;
         padding: var(--su-4);
         border: 1px solid var(--base-10);
+        border-style: solid none solid none;
         display: grid;
         grid-template-columns: 4fr 2fr 1fr;
         .mod-article-tag {
