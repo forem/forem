@@ -26,7 +26,7 @@ class Internal::BroadcastsController < Internal::ApplicationController
 
     if @broadcast.save
       flash[:success] = "Broadcast has been created!"
-      redirect_to internal_broadcasts_path
+      redirect_to internal_broadcast_path(@broadcast)
     else
       flash[:danger] = @broadcast.errors.full_messages.to_sentence
       render new_internal_broadcast_path
@@ -38,7 +38,7 @@ class Internal::BroadcastsController < Internal::ApplicationController
 
     if @broadcast.update(broadcast_params)
       flash[:success] = "Broadcast has been updated!"
-      redirect_to internal_broadcasts_path
+      redirect_to internal_broadcast_path(@broadcast)
     else
       flash[:danger] = @broadcast.errors.full_messages.to_sentence
       render :edit
