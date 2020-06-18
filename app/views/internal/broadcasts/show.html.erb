@@ -30,9 +30,8 @@
         <div>
       <% end %>
       <hr>
-       <div class="row justify-content-end">
-        <%= link_to "Edit Broadcast", edit_internal_broadcast_path, class: "btn btn-primary" %>
-      </div>
+       <%= link_to "Destroy Broadcast", url_for(action: :destroy, id: @broadcast.id), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+       <%= link_to "Edit Broadcast", edit_internal_broadcast_path, class: "btn btn-primary float-right" %>
     </div>
   </div>
 </div>
