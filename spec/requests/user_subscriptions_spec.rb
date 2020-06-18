@@ -83,4 +83,32 @@ RSpec.describe "UserSubscriptions", type: :request do
       expect(response.parsed_body["error"]).to include("Subscriber has already been taken")
     end
   end
+
+  context "when rate limiting" do
+    let(:rate_limiter) { RateLimitChecker.new(user) }
+    let(:article) { create(:article, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}") }
+    let(:valid_attributes) { { source_type: article.class_name, source_id: article.id } }
+
+    before { allow(RateLimitChecker).to receive(:new).and_return(rate_limiter) }
+
+    it "increments rate limit for user_subscription_creation" do
+      allow(rate_limiter).to receive(:track_limit_by_action)
+      post user_subscriptions_path,
+           headers: { "Content-Type" => "application/json" },
+           params: { user_subscription: valid_attributes }.to_json
+
+      expect(rate_limiter).to have_received(:track_limit_by_action).with(:user_subscription_creation)
+    end
+
+    it "returns a 429 status when rate limit is reached" do
+      allow(rate_limiter).to receive(:limit_by_action).and_return(true)
+      post user_subscriptions_path,
+           headers: { "Content-Type" => "application/json" },
+           params: { user_subscription: valid_attributes }.to_json
+
+      expect(response).to have_http_status(:too_many_requests)
+      expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:user_subscription_creation, :retry_after)
+      expect(response.headers["Retry-After"]).to eq(expected_retry_after)
+    end
+  end
 end

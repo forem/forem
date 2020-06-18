@@ -2,6 +2,8 @@ class UserSubscriptionsController < ApplicationController
   before_action :authenticate_user!
 
   def create
+    rate_limit!(:user_subscription_creation)
+
     source_type = user_subscription_params[:source_type]
     return invalid_type_error unless UserSubscription::ALLOWED_TYPES.include?(source_type)
 
@@ -14,6 +16,7 @@ class UserSubscriptionsController < ApplicationController
     @user_subscription = user_subscription_source.build_user_subscription(current_user)
 
     if @user_subscription.save
+      rate_limiter.track_limit_by_action(:user_subscription_creation)
       render json: { message: "success", status: 200 }, status: :ok
     else
       render json: {
