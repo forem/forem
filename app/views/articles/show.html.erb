@@ -215,16 +215,7 @@
 
     <%= render "articles/full_comment_area" %>
 
-    <% cache("article-bottom-content-#{@article.id}", expires_in: 18.hours) do %>
-      <% @classic_article = Suggester::Articles::Classic.new(@article, not_ids: [@article.id]).get.first %>
-      <% if @classic_article %>
-        <%= render "additional_content_boxes/article_box",
-                   article: @classic_article,
-                   classification: "classic",
-                   classification_text: "Classic #{community_name} Post from #{@classic_article.readable_publish_date}",
-                   follow_cue: "Follow <a href='#{@classic_article.user.path}'>@#{@classic_article.user.username}</a> to see more of their posts in your feed." %>
-      <% end %>
-      <aside id="additional-content-area" class="gap-4" data-article-id="<%= @article.id %>,<%= @classic_article&.id %>"></aside>
+    <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}", expires_in: 18.hours) do %>
       <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
       <%= render "articles/bottom_content", articles: suggested_articles %>
     <% end %>
