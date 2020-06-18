@@ -48,12 +48,12 @@
 <% end %>
 
 <% if internal_navigation? %>
-  <a rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" class="u-in-reply-to"/>
+  <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
   <meta name="description" content="<%= @article.description_and_tags %>">
   <%= meta_keywords_article(@article.cached_tag_list) %>
 <% else %>
   <%= content_for :page_meta do %>
-    <a rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" class="u-in-reply-to"/>
+    <link rel="canonical" href="<%= @article.canonical_url.presence || app_url(@article.path) %>" />
     <meta name="description" content="<%= @article.description_and_tags %>">
     <%= meta_keywords_article(@article.cached_tag_list) %>
 
@@ -164,7 +164,7 @@
                 <% elsif should_show_crossposted_on?(@article) %>
                   <em>
                     Originally published at
-                    <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
+                    <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8" class="u-in-reply-to"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
                     <% if @article.crossposted_at %>
                       on
                       <time datetime="<%= (@article.originally_published_at || @article.published_at)&.utc&.iso8601 %>"><%= (@article.originally_published_at || @article.published_at)&.strftime("%b %d, %Y") %></time>
