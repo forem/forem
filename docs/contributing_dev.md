@@ -42,6 +42,15 @@ all are up for grabs.
 
 - [good first issue](https://github.com/thepracticaldev/dev.to/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+)
   are issues meant for newer developers.
+- [difficulty: easy](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+easy%22)
+  issues are usually confined to isolated areas of existing code.
+- [difficulty: medium](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+medium%22)
+  issues are usually can sometimes entail new features and might affect a
+  significant area of the codebase, but aren't overly complex.
+- [difficulty: hard](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+hard%22)
+  issues will typically be far-reaching, and might require architecture
+  decisions during implementation. This label might also denote highly complex
+  issues.
 
 While PRs without an associated `ready for dev` or `type: bug` labeled issue may
 still be merged, please note that the core team will prioritize PRs that solve
