@@ -73,6 +73,7 @@ class User < ApplicationRecord
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
   has_many :identities, dependent: :destroy
+  has_many :identities_enabled, -> { enabled }, class_name: "Identity", inverse_of: false
   has_many :mentions, dependent: :destroy
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
@@ -446,7 +447,11 @@ class User < ApplicationRecord
     return false unless Authentication::Providers.available?(provider_name)
     return false unless Authentication::Providers.enabled?(provider_name)
 
-    identities.exists?(provider: provider_name)
+    identities_enabled.exists?(provider: provider_name)
+  end
+
+  def authenticated_with_all_providers?
+    identities_enabled.pluck(:provider).map(&:to_sym) == Authentication::Providers.enabled
   end
 
   def rate_limiter
