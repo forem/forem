@@ -13,7 +13,7 @@ class UserSubscriptionsController < ApplicationController
 
     return user_subscription_tag_not_enabled unless user_subscription_tag_enabled?(user_subscription_source)
 
-    return stale_user_email if user_email_stale?
+    return stale_subscriber_email if subscriber_email_stale?
 
     @user_subscription = user_subscription_source.build_user_subscription(current_user)
 
@@ -49,9 +49,9 @@ class UserSubscriptionsController < ApplicationController
     }, status: :unprocessable_entity
   end
 
-  def stale_user_email
+  def stale_subscriber_email
     render json: {
-      error: "user email mismatch",
+      error: "subscriber email mismatch",
       status: 422
     }, status: :unprocessable_entity
   end
@@ -73,12 +73,12 @@ class UserSubscriptionsController < ApplicationController
   # their email address in a new/separate tab and then tries to subscribe on
   # the old/stale tab without refreshing. In that case, the user would have
   # consented to share their old email address instead of the current one.
-  def user_email_stale?
-    current_user&.email != user_subscription_params[:user_email]
+  def subscriber_email_stale?
+    current_user&.email != user_subscription_params[:subscriber_email]
   end
 
   def user_subscription_params
-    accessible = %i[source_type source_id user_email]
+    accessible = %i[source_type source_id subscriber_email]
     params.require(:user_subscription).permit(accessible)
   end
 end
