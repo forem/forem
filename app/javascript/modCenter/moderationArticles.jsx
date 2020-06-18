@@ -3,16 +3,10 @@ import SingleArticle from './singleArticle';
 
 export class ModerationArticles extends Component {
   state = {
-    articles: [],
+    articles: JSON.parse(
+      document.getElementById('mod-index-list').dataset.articles,
+    ),
   };
-
-  componentWillMount() {
-    const container = document.getElementById('mod-index-list');
-    const articles = JSON.parse(container.dataset.articles);
-    this.setState({
-      articles,
-    });
-  }
 
   render() {
     const { articles } = this.state;
