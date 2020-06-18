@@ -16,19 +16,18 @@
       color: var(--base-90);
     }
   }
-  main.mod-index-list {
-    border: 1px solid var(--base-10);
+  .mod-index-list-header {
+    display: grid;
+    grid-template-columns: 4fr 2fr 1fr;
+    background-color: var(--base-0);
+    h2 {
+      padding: var(--su-2) var(--su-4);
+      color: var(--base-50);
+    }
+  }
+  .mod-index-list {
     margin: 0;
     width: 100%;
-    .mod-index-list-header {
-      display: grid;
-      grid-template-columns: 4fr 2fr 1fr;
-      background-color: var(--base-0);
-      h2 {
-        padding: var(--su-2) var(--su-4);
-        color: var(--base-50);
-      }
-    }
     .moderation-articles-list {
       .moderation-single-article {
         width: 100%;

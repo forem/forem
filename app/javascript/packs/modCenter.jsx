@@ -7,7 +7,7 @@ let elementLoaded = false;
 function loadElement() {
   const root = document.getElementById('mod-index-list');
   if (root) {
-    render(<ModerationArticles />, root, root.secondElementChild);
+    render(<ModerationArticles />, root);
   }
 }
 
