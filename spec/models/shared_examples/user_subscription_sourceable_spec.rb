@@ -3,7 +3,7 @@ RSpec.shared_examples "UserSubscriptionSourceable" do
   let(:source) { create(model.to_s.underscore.to_sym) }
   let(:subscriber) { create(:user) }
 
-  describe "#new_user_subscription" do
+  describe "#build_user_subscription" do
     it "returns a new UserSubcription with the correct attributes" do
       new_user_subscription = UserSubscription.new(
         user_subscription_sourceable: source,
@@ -12,7 +12,7 @@ RSpec.shared_examples "UserSubscriptionSourceable" do
         subscriber_email: subscriber.email,
       )
 
-      factory_user_subscription = source.new_user_subscription(subscriber)
+      factory_user_subscription = source.build_user_subscription(subscriber)
 
       factory_user_subscription.attributes.each do |name, val|
         expect(new_user_subscription[name]).to eq val

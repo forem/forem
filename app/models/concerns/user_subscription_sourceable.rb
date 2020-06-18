@@ -12,7 +12,7 @@ module UserSubscriptionSourceable
              foreign_key: :user_id
   end
 
-  def new_user_subscription(subscriber)
+  def build_user_subscription(subscriber)
     UserSubscription.new(user_subscription_attributes(subscriber))
   end
 
