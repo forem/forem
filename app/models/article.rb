@@ -351,6 +351,22 @@ class Article < ApplicationRecord
                    spaminess_rating: BlackBox.calculate_spaminess(self))
   end
 
+  def liquid_tags_used(section = nil)
+    content =
+      case section
+      when :body
+        body_markdown
+      when :comments
+        comments_blob
+      else
+        "#{body_markdown}#{comments_blob}"
+      end
+
+    MarkdownParser.new(content).tags_used
+  rescue StandardError
+    []
+  end
+
   private
 
   def search_score
@@ -432,12 +448,6 @@ class Article < ApplicationRecord
     end
   rescue StandardError => e
     Rails.logger.error(e)
-  end
-
-  def liquid_tags_used
-    MarkdownParser.new("#{body_markdown}#{comments_blob}").tags_used
-  rescue StandardError
-    []
   end
 
   def update_notifications
