@@ -1,27 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<FormField /> component should render 1`] = `
-<div
-  class="crayons-field"
-/>
-`;
+exports[`<FormField /> component should render 1`] = `"<div class=\\"crayons-field\\"></div>"`;
 
-exports[`<FormField /> component should render with contents 1`] = `
-<div
-  class="crayons-field"
->
-  <input
-    checked={false}
-    class="crayons-radio"
-    id="some-id"
-    name="some-name"
-    type="radio"
-    value="some-value"
-  />
-  <label
-    htmlFor="some-id"
-  >
-    Some Label
-  </label>
-</div>
-`;
+exports[`<FormField /> component should render with content 1`] = `"<div class=\\"crayons-field\\"><input id=\\"some-id\\" name=\\"some-name\\" class=\\"crayons-radio\\" type=\\"radio\\" value=\\"some-value\\"><label for=\\"some-id\\">Some Label</label></div>"`;

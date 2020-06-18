@@ -41,7 +41,7 @@ export class Help extends Component {
 
   renderArticleFormTitleHelp = () => {
     return (
-      <div className="spec__title-help crayons-article-form__help crayons-article-form__help--title">
+      <div data-testid="title-help" className="crayons-article-form__help crayons-article-form__help--title">
         <h4 className="mb-2 fs-l">Writing a Great Post Title</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
@@ -60,7 +60,7 @@ export class Help extends Component {
 
   renderTagInputHelp = () => {
     return (
-      <div className="spec__basic-tag-input-help crayons-article-form__help crayons-article-form__help--tags">
+      <div data-testid="basic-tag-input-help" className="crayons-article-form__help crayons-article-form__help--tags">
         <h4 className="mb-2 fs-l">Tagging Guidelines</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>Tags help people find your post.</li>
@@ -84,13 +84,13 @@ export class Help extends Component {
 
   renderBasicEditorHelp = () => {
     return (
-      <div className="spec__basic-editor-help crayons-card crayons-card--secondary p-4 mb-6">
+      <div data-testid="basic-editor-help" className="crayons-card crayons-card--secondary p-4 mb-6">
         You are currently using the basic markdown editor that uses
         {' '}
         <a href="#frontmatter" onClick={this.toggleModal('frontmatterShowing')}>
           Jekyll front matter
         </a>
-        . You can also use the 
+        . You can also use the
         {' '}
         <em>rich+markdown</em>
         {' '}
@@ -120,7 +120,7 @@ export class Help extends Component {
 
   renderFormatHelp = () => {
     return (
-      <div className="spec__format-help crayons-article-form__help crayons-article-form__help--body">
+      <div data-testid="format-help" className="crayons-article-form__help crayons-article-form__help--body">
         <h4 className="mb-2 fs-l">Editor Basics</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
@@ -173,6 +173,7 @@ export class Help extends Component {
       <div className="crayons-article-form__aside">
         {!previewShowing && (
           <div
+            data-testid="article-form__help-section"
             className="sticky"
             style={{ top: version === 'v1' ? '56px' : helpPosition }}
           >

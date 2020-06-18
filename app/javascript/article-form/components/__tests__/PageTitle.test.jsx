@@ -1,8 +1,8 @@
 import { h } from 'preact';
-import { shallow } from 'preact-render-spy';
+import { render, queryByAttribute } from '@testing-library/preact';
 import { PageTitle } from '../PageTitle';
 
-let organizations; let organizationId; let onToggle;
+let organizations, organizationId, onToggle;
 
 describe('<PageTitle/>', () => {
   beforeEach(() => {
@@ -22,27 +22,30 @@ describe('<PageTitle/>', () => {
   });
 
   it('shows the picker if there is more than one organisation', () => {
-    const container = shallow(
+    const getById = queryByAttribute.bind(null, 'id');
+    const dom = render(
       <PageTitle
         organizations={organizations}
         organizationId={organizationId}
         onToggle={onToggle}
       />,
     );
-    expect(container.find('#article_publish_under_org').exists()).toEqual(true);
+
+    const organizationPicker = getById(dom.container, 'article_publish_under_org');
+    expect(organizationPicker).toBeTruthy();
   });
 
   it('does not show the picker if there is no organisations', () => {
-    organizations = [];
-    const container = shallow(
+    const getById = queryByAttribute.bind(null, 'id');
+    const dom = render(
       <PageTitle
-        organizations={organizations}
+        organizations={[]}
         organizationId={organizationId}
         onToggle={onToggle}
       />,
     );
-    expect(container.find('#article_publish_under_org').exists()).toEqual(
-      false,
-    );
+
+    const organizationPicker = getById(dom.container, 'article_publish_under_org');
+    expect(organizationPicker).toBeNull();
   });
 });

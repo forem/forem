@@ -129,7 +129,7 @@
           <% end %>
           <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 <%= @article.title_length_classification %>">
             <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
-              <span class="article-title-preamble"><%= @article.search_optimized_title_preamble %></span>
+              <span class="fs-xl color-base-70 block"><%= @article.search_optimized_title_preamble %></span>
             <% end %>
             <%= sanitize_and_decode @article.title %>
           </h1>
@@ -166,8 +166,8 @@
                 <em>
                   Originally published at
                   <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
-                  on
                   <% if @article.crossposted_at %>
+                    on
                     <time datetime="<%= (@article.originally_published_at || @article.published_at)&.utc&.iso8601 %>"><%= (@article.originally_published_at || @article.published_at)&.strftime("%b %d, %Y") %></time>
                   <% end %>
                 </em>

@@ -100,7 +100,7 @@ class FollowTags extends Component {
     const canSkip = selectedTags.length === 0;
 
     return (
-      <div className="onboarding-main crayons-modal">
+      <div data-testid="onboarding-follow-tags" className="onboarding-main crayons-modal">
         <div className="crayons-modal__box overflow-auto">
           <Navigation
             prev={prev}
@@ -115,7 +115,7 @@ class FollowTags extends Component {
               <h2 className="subtitle">Follow tags to customize your feed</h2>
             </header>
             <div className="onboarding-modal-scroll-container">
-              <div className="onboarding-tags">
+              <div data-testid="onboarding-tags" className="onboarding-tags">
                 {allTags.map((tag) => (
                   <div
                     className={`onboarding-tags__item ${

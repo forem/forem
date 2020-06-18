@@ -1,10 +1,56 @@
-<footer class="clear">
-  <div id="footer-container" class="clear container <%= "centered-footer" unless current_page.include?("stories-show") %>">
-    <div class="inner-footer-container">
-      <a href="/">Home</a> <a href="/about">About</a> <a href="/privacy">Privacy Policy</a>
-      <a href="/terms">Terms of Use</a> <a href="/contact">Contact</a> <a href="/code-of-conduct">Code of Conduct</a><br />
-      <%= community_qualified_name %> copyright <%= copyright_notice %>&nbsp; 🔥
+<footer class="crayons-footer">
+  <div id="footer-container" class="crayons-layout crayons-footer__container">
+    <div class="crayons-footer__info">
+      <div><a href="/" class="crayons-footer__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a></div>
+      <p><%= SiteConfig.community_description %></p>
+      <div><%= render partial: "layouts/social_media" %></div>
+      <p class="fs-xs color-base-60"><%= community_qualified_name %> copyright <%= copyright_notice %></p>
     </div>
+
+    <nav class="crayons-footer__nav">
+      <div>
+        <a href="/" class="crayons-link crayons-link--block">Home</a>
+        <% if user_signed_in? %>
+          <a href="<%= readinglist_path %>" class="crayons-link crayons-link--block">Reading list</a>
+        <% end %>
+        <a href="<%= listings_path %>" class="crayons-link crayons-link--block">Listings</a>
+        <a href="<%= pod_path %>" class="crayons-link crayons-link--block">Podcasts</a>
+        <a href="<%= videos_path %>" class="crayons-link crayons-link--block">Videos</a>
+        <a href="<%= tags_path %>" class="crayons-link crayons-link--block">Tags</a>
+        <% unless user_signed_in? %>
+          <a href="/enter" class="crayons-link crayons-link--block fw-bold">
+            Sign In/Up
+          </a>
+        <% else %>
+          <a href="/new" class="crayons-link crayons-link--block fw-bold">Write a post</a>
+        <% end %>
+      </div>
+
+      <div>
+        <a href="/code-of-conduct" class="crayons-link crayons-link--block">Code of Conduct</a>
+        <a href="/faq" class="crayons-link crayons-link--block">FAQ</a>
+        <a href="/about" class="crayons-link crayons-link--block">About</a>
+        <a href="/privacy" class="crayons-link crayons-link--block">Privacy policy</a>
+        <a href="/terms" class="crayons-link crayons-link--block">Terms of use</a>
+        <a href="/contact" class="crayons-link crayons-link--block">Contact</a>
+      </div>
+
+      <div>
+        <a href="/sponsors" class="crayons-link crayons-link--block">Sponsors</a>
+        <% if SiteConfig.shop_url.present? %>
+          <a href="<%= SiteConfig.shop_url %>" class="crayons-link crayons-link--block"><%= community_name %> Shop</a>
+        <% end %>
+      </div>
+    </nav>
+
+    <% if SiteConfig.mascot_footer_image_url.present? %>
+      <%= image_tag(SiteConfig.mascot_footer_image_url,
+                    class: "crayons-footer__mascot",
+                    alt: SiteConfig.mascot_image_description,
+                    width: 52,
+                    height: 120,
+                    loading: "lazy") %>
+    <% end %>
   </div>
 </footer>
 <div id="snack-zone"></div>

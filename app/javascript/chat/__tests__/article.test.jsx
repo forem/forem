@@ -1,61 +1,30 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { deep } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
+import { axe } from 'jest-axe';
 import Article from '../article';
 
 global.fetch = fetch;
 
-function flushPromises() {
-  return new Promise(resolve => setImmediate(resolve));
-}
-
-const sampleResponse = JSON.stringify({
-  current_user: { id: 10000 },
-  article_reaction_counts: [
-    { category: 'like', count: 150 },
-    { category: 'readinglist', count: 17 },
-    { category: 'unicorn', count: 48 },
-  ],
-  reactions: [
-    {
-      id: 10000,
-      user_id: 10000,
-      reactable_id: 10000,
-      reactable_type: 'Article',
-      category: 'like',
-      points: 1.0,
-      created_at: '2018-10-30T20:34:01.503Z',
-      updated_at: '2018-10-30T20:34:01.503Z',
-    },
-  ],
-});
-
-const userArticle = {
-  type_of: 'article',
-  path: '/princesscarolyn/your-approval-means-nothing-to-me-42640',
+const getArticle = () => {
+  return {
+    title: 'Your approval means nothing to me',
+    type_of: 'article',
+    path: '/princesscarolyn/your-approval-means-nothing-to-me-42640',
+  };
 };
 
-const getArticle = () => <Article resource={userArticle} />;
-
 describe('<Article />', () => {
-  it('should load article', async () => {
-    const tree = render(getArticle());
-    await flushPromises();
-    expect(tree).toMatchSnapshot();
+  it('should not have any a11y violations', async () => {
+    const { container } = render(<Article resource={getArticle()} />);
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
-  it('should have the proper elements, attributes and values', async () => {
-    await fetch.mockResponseOnce(sampleResponse);
-    const context = deep(getArticle(), { depth: 2 });
-    await flushPromises();
+  it('should render', async () => {
+    const { getByTitle } = render(<Article resource={getArticle()} />);
 
-    // checks that article details are placed at their appropriate elements
-    expect(context.find('.activechatchannel__activeArticle').exists()).toEqual(
-      true,
-    );
-    expect(
-      context.find('iframe').exists(),
-    ).toEqual(true);
+    getByTitle('Your approval means nothing to me');
   });
 });

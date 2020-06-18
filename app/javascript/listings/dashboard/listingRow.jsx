@@ -30,6 +30,7 @@ export const ListingRow = ({ listing }) => {
       className={`dashboard-listing-row ${isDraft ? 'draft' : ''} ${
         isExpired ? 'expired' : ''
       }`}
+      data-listing-id={listing.id}
     >
       {listing.organization_id && (
         <span className="listing-org">{listing.author.name}</span>

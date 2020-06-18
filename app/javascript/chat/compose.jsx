@@ -42,6 +42,7 @@ export default class Chat extends Component {
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
           maxLength="1000"
+          aria-label="Let's connect"
         />
         <div className="composer-btn-group">
           <button
@@ -84,6 +85,7 @@ export default class Chat extends Component {
           onKeyPress={handleMention}
           onKeyUp={handleKeyUp}
           maxLength="1000"
+          aria-label="Compose a message"
         />
         <button
           type="button"
