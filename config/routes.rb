@@ -46,7 +46,7 @@ Rails.application.routes.draw do
     end
 
     resources :articles, only: %i[index show update]
-    resources :broadcasts, only: %i[index new create edit update destroy]
+    resources :broadcasts
     resources :buffer_updates, only: %i[create update]
     resources :listings, only: %i[index edit update destroy]
     resources :comments, only: [:index]
