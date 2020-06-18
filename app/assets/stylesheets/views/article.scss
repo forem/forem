@@ -341,7 +341,7 @@
   right: 0;
   bottom: 0;
   padding: var(--su-2);
-  @supports (padding-button: constant(safe-area-inset-bottom)) {
+  @supports (padding-bottom: constant(safe-area-inset-bottom)) {
     padding-bottom: env(safe-area-inset-bottom);
   }
   display: flex;
@@ -360,9 +360,6 @@
     box-shadow: none;
     justify-content: stretch;
     top: calc(var(--header-height) + var(--layout-padding) + 6vh);
-    .static-navbar-config & {
-      top: var(--layout-padding);
-    }
   }
 }
 
@@ -423,24 +420,24 @@
   &--like {
     &:hover,
     &.user-activated {
-      --reaction-color: var(--accent-danger);
-      --reaction-bg: var(--accent-danger-a10);
+      --reaction-color: var(--reaction-like-color);
+      --reaction-bg: var(--reaction-like-bg);
     }
   }
 
   &--unicorn {
     &:hover,
     &.user-activated {
-      --reaction-color: var(--accent-success-darker);
-      --reaction-bg: var(--accent-success-a10);
+      --reaction-color: var(--reaction-custom-color);
+      --reaction-bg: var(--reaction-custom-bg);
     }
   }
 
   &--readinglist {
     &:hover,
     &.user-activated {
-      --reaction-color: var(--accent-brand);
-      --reaction-bg: var(--accent-brand-a10);
+      --reaction-color: var(--reaction-save-color);
+      --reaction-bg: var(--reaction-save-bg);
     }
   }
 }

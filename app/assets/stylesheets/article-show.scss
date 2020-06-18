@@ -36,18 +36,22 @@
   top: var(--header-height);
   right: 0;
   height: calc(100vh - var(--header-height));
-  z-index: 200;
+  z-index: 100;
   transform: translateX(360px);
   transition: var(--transition-props);
-  &.showing {
-    transform: initial;
-  }
 
   iframe {
     height: 100%;
     border: none;
-    box-shadow: -4px 0px 15px rgba(0, 0, 0, 0.1);
     width: 360px;
+  }
+
+  &.showing {
+    transform: initial;
+
+    iframe {
+      box-shadow: -4px 0px 15px rgba(0, 0, 0, 0.1);
+    }
   }
 }
 
@@ -71,17 +75,8 @@
   }
 }
 
-.actions-menu-svg {
-  color: white;
-}
-
-.mod-actions-menu-btn,
-.actions-menu-svg {
+.mod-actions-menu-btn {
   transition: 0.3s all ease;
-}
-
-.actions-menu-svg:hover {
-  color: white;
 }
 
 .flag-user-modal {

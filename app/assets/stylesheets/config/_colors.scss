@@ -211,4 +211,12 @@
 
   // Select icon
   --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjMDgwOTBBIi8+Cjwvc3ZnPg==);
+
+  // Reactions
+  --reaction-like-color: var(--accent-danger);
+  --reaction-like-bg: var(--accent-danger-a10);
+  --reaction-custom-color: var(--accent-success);
+  --reaction-custom-bg: var(--accent-success-a10);
+  --reaction-save-color: var(--accent-brand);
+  --reaction-save-bg: var(--accent-brand-a10);
 }
