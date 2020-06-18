@@ -1,4 +1,4 @@
-Rails.application.reloader.to_prepare do
+Rails.application.config.to_prepare do
   Dir.glob(Rails.root.join("lib/sidekiq/*.rb")).sort.each do |filename|
     require_dependency filename
   end
