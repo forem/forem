@@ -85,4 +85,58 @@ RSpec.describe "Notifications page", type: :system, js: true do
       validate_reply(comment.id)
     end
   end
+
+  context "with welcome notifications" do
+    let(:mascot_account) { create(:user) }
+
+    before do
+      allow(Notification).to receive(:send_welcome_notification).and_call_original
+      allow(User).to receive(:mascot_account).and_return(mascot_account)
+      SiteConfig.staff_user_id = mascot_account.id
+      alex.update!(created_at: 1.day.ago)
+    end
+
+    after do
+      SiteConfig.staff_user_id = 1
+    end
+
+    context "without tracking enabled" do
+      before do
+        create(:welcome_broadcast)
+        Broadcasts::WelcomeNotification::Generator.call(alex.id)
+        sidekiq_perform_enqueued_jobs
+      end
+
+      it "renders the notification" do
+        visit "/notifications"
+
+        expect(page).to have_css(".broadcast-content")
+        expect(page).to have_css("#welcome_notification_welcome_thread")
+      end
+
+      it "does not track events" do
+        visit "/notifications"
+        click_link("the welcome thread")
+
+        expect(page).to have_current_path("/welcome")
+        expect(Ahoy::Event.count).to eq(0)
+      end
+    end
+
+    context "with tracking enabled" do
+      before do
+        create(:welcome_broadcast, :with_tracking)
+        Broadcasts::WelcomeNotification::Generator.call(alex.id)
+        sidekiq_perform_enqueued_jobs
+      end
+
+      it "tracks events" do
+        visit "/notifications"
+        click_link("the welcome thread")
+
+        expect(page).to have_current_path("/welcome")
+        expect(Ahoy::Event.count).to eq(1)
+      end
+    end
+  end
 end

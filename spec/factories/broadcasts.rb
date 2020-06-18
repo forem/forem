@@ -13,6 +13,10 @@ FactoryBot.define do
       title          { "Welcome Notification: welcome_thread" }
       type_of        { "Welcome" }
       processed_html { "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!" }
+
+      trait :with_tracking do
+        processed_html { "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome' onclick='trackNotification(event)'>the welcome thread</a>!" }
+      end
     end
 
     factory :twitter_connect_broadcast do
