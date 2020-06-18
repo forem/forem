@@ -10,6 +10,7 @@
   .mod-index-header {
     background-color: var(--base-inverted);
     border-radius: var(--radius) var(--radius) 0 0;
+    border-bottom: 1px solid var(--base-10);
     padding: var(--su-6) var(--su-4);
 
     .tag-view {
@@ -20,6 +21,8 @@
     display: grid;
     grid-template-columns: 4fr 2fr 1fr;
     background-color: var(--base-0);
+    border: solid var(--base-10);
+    border-width: 1px 0;
     h2 {
       padding: var(--su-2) var(--su-4);
       color: var(--base-50);
