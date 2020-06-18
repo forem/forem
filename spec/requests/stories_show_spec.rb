@@ -54,19 +54,19 @@ RSpec.describe "StoriesShow", type: :request do
     it "renders title preamble with search_optimized_title_preamble if set and not signed in" do
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.reload.path
-      expect(response.body).to include "<span class=\"article-title-preamble\">Hey this is a test</span>"
+      expect(response.body).to include "<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>"
     end
 
     it "does not render preamble with search_optimized_title_preamble if set and signed in" do
       sign_in user
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.path
-      expect(response.body).not_to include "<span class=\"article-title-preamble\">Hey this is a test</span>"
+      expect(response.body).not_to include "<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>"
     end
 
     it "does not render title tag with search_optimized_title_preamble not signed in but search_optimized_title_preamble not set" do
       get article.path
-      expect(response.body).not_to include "<span class=\"article-title-preamble\">Hey this is a test</span>"
+      expect(response.body).not_to include "<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>"
     end
 
     it "renders user payment pointer if set" do
