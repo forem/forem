@@ -1,3 +1,5 @@
+require "carrierwave/orm/activerecord"
+
 CarrierWave.configure do |config|
   if Rails.env.test?
     config.storage = :file

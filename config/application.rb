@@ -22,22 +22,18 @@ module PracticalDeveloper
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 5.1 # NOTE: [Rails 6] we should at least work towards updating this to 5.2
 
+    # [Rails 6] Zeitwerk is the new autoloader
+    # As we don't have `load_defaults 6.0` yet, it has to be enabled manually
+    # See <https://guides.rubyonrails.org/autoloading_and_reloading_constants.html>
+    config.autoloader = :zeitwerk
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
-    config.autoload_paths += Dir["#{config.root}/app/labor/"]
-    config.autoload_paths += Dir["#{config.root}/app/decorators/"]
-    config.autoload_paths += Dir["#{config.root}/app/services/"]
-    config.autoload_paths += Dir["#{config.root}/app/presenters/"]
-    config.autoload_paths += Dir["#{config.root}/app/liquid_tags/"]
-    config.autoload_paths += Dir["#{config.root}/app/black_box/"]
-    config.autoload_paths += Dir["#{config.root}/app/sanitizers"]
-    config.autoload_paths += Dir["#{config.root}/app/facades"]
-    config.autoload_paths += Dir["#{config.root}/app/errors"]
-    config.autoload_paths += Dir["#{config.root}/app/view_objects"]
-    config.autoload_paths += Dir["#{config.root}/lib/"]
+    config.autoload_paths += Dir["#{config.root}/lib"]
+    config.eager_load_paths += Dir["#{config.root}/lib"]
 
     config.active_job.queue_adapter = :sidekiq
 
