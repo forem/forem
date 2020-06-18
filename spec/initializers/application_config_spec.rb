@@ -29,8 +29,11 @@ describe ApplicationConfig do
     private
 
     def setup_app_domain(app_domain)
-      expect(ApplicationConfig).to have_received(:[]).with("APP_DOMAIN").
+      # No #and_return for #have_received.
+      # rubocop:disable RSpec/MessageSpies
+      expect(ApplicationConfig).to receive(:[]).with("APP_DOMAIN").
         and_return(app_domain)
+      # rubocop:enable RSpec/MessageSpies
     end
   end
 end
