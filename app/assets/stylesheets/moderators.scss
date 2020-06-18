@@ -34,8 +34,8 @@
         background-color: var(--base-inverted);
         text-align: left;
         padding: var(--su-4);
-        border: 1px solid var(--base-10);
-        border-style: solid none solid none;
+        border: solid var(--base-10);
+        border-width: 1px 0;
         display: grid;
         grid-template-columns: 4fr 2fr 1fr;
         .mod-article-tag {
