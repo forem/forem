@@ -16,9 +16,10 @@ module WebMentions
 
     def accepts_webmention?
       document = Nokogiri::HTML.parse(URI.open(@canonical_url)).at_css("link[rel='webmention']")
+
       if document
         @webmention_url = document["href"]
-        return true  unless Addressable::URI.parse(webmention_url).absolute?
+        return true unless Addressable::URI.parse(@webmention_url).relative?
       end
       false
     rescue StandardError => e
@@ -28,11 +29,9 @@ module WebMentions
     private
 
     def send_webmention(webmention_url)
-      begin
-        RestClient.post(webmention_url, { "source": @article_url, "target": @canonical_url })
-      rescue RestClient::ExceptionWithResponse => e
-        Rails.logger.error("SendWebmentionException: #{e.response}")
-      end
+      RestClient.post(webmention_url, { "source": @article_url, "target": @canonical_url })
+    rescue RestClient::ExceptionWithResponse => e
+      Rails.logger.error("SendWebmentionException: #{e.response}")
     end
   end
 end
