@@ -1,5 +1,4 @@
 import { h, Component } from 'preact';
-// import { request } from "../utilities/http"
 import SingleArticle from './singleArticle';
 
 export class ModerationArticles extends Component {
