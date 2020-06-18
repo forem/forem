@@ -1,7 +1,7 @@
 /* eslint-disable consistent-return,no-unused-vars,react/destructuring-assignment,react/no-access-state-in-setstate,react/button-has-type */
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import ConfigImage from '../../assets/images/three-dots.svg';
+import ConfigImage from '../../assets/images/overflow-horizontal.svg';
 import {
   conductModeration,
   getAllMessages,
