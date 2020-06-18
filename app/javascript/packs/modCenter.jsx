@@ -1,6 +1,5 @@
 import { h, render } from 'preact';
 import { ModerationArticles } from '../modCenter/moderationArticles';
-import { initializeModCenterFunctions } from '../modCenter/modCenter';
 
 let elementLoaded = false;
 
@@ -20,6 +19,5 @@ window.InstantClick.on('change', () => {
 
 if (!elementLoaded) {
   loadElement();
-  initializeModCenterFunctions();
   elementLoaded = true;
 }

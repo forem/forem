@@ -10,11 +10,7 @@
     <div class="mod-index-container articles-list crayons-layout__content">
       <header class="mod-index-header">
         <span class="tag-view fs-3xl fw-bold lh-base">
-          <% if @tag %>
-          #<%= @tag %>
-          <% else %>
-          All topics
-          <% end %>
+          <%= @tag ? "##{@tag.name}" : "All topics" %>
         </span>
       </header>
       <header class="mod-index-list-header lh-tight">
