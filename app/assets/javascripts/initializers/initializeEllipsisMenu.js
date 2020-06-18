@@ -23,9 +23,9 @@ function getFormValues(form) {
 
 function toggleArchived(article, needsArchived) {
   if (needsArchived === 'true') {
-    article.classList.add('single-article-archived', 'hidden');
+    article.classList.add('story-archived', 'hidden');
   } else {
-    article.classList.remove('single-article-archived');
+    article.classList.remove('story-archived');
   }
 }
 
@@ -47,7 +47,7 @@ function onXhrSuccess(form, article, values) {
     toggleNotifications(submit, submitValue);
   }
 
-  article.querySelector('ul.ellipsis-menu').classList.add('hidden');
+  article.querySelector('.js-dashboard-row-more').classList.add('hidden');
 }
 
 function handleFormSubmit(e) {
@@ -84,7 +84,7 @@ function handleFormSubmit(e) {
 }
 
 function initializeFormSubmit() {
-  var forms = document.querySelectorAll('ul.ellipsis-menu > li > form');
+  var forms = document.querySelectorAll('.js-dashboard-row-more-dropdown .archive-toggle');
 
   for (var i = 0; i < forms.length; i += 1) {
     forms[i].addEventListener('submit', handleFormSubmit);
@@ -94,19 +94,19 @@ function initializeFormSubmit() {
 // TOGGLING MENU //
 
 function getMenu(el) {
-  var parentDiv = el.closest('div.ellipsis-menu');
-  var menu = parentDiv.querySelector('ul.ellipsis-menu');
+  var parentDiv = el.closest('.js-dashboard-row-more');
+  var menu = parentDiv.querySelector('.js-dashboard-row-more-dropdown');
   return menu;
 }
 
 function hideIfNotAlreadyHidden(menu) {
-  if (!menu.classList.contains('hidden')) {
-    menu.classList.add('hidden');
+  if (menu.classList.contains('block')) {
+    menu.classList.remove('block');
   }
 }
 
 function hideAllEllipsisMenusExcept(menu) {
-  var menus = document.querySelectorAll('ul.ellipsis-menu');
+  var menus = document.querySelectorAll('.js-dashboard-row-more-dropdown');
 
   for (var i = 0; i < menus.length; i += 1) {
     if (menus[i] !== menu) {
@@ -116,8 +116,8 @@ function hideAllEllipsisMenusExcept(menu) {
 }
 
 function hideEllipsisMenus(e) {
-  if (!e.target.closest('div.ellipsis-menu')) {
-    var menus = document.querySelectorAll('ul.ellipsis-menu');
+  if (!e.target.closest('.js-dashboard-row-more')) {
+    var menus = document.querySelectorAll('.js-dashboard-row-more-dropdown');
 
     for (var i = 0; i < menus.length; i += 1) {
       hideIfNotAlreadyHidden(menus[i]);
@@ -132,15 +132,15 @@ function toggleEllipsisMenu(e) {
   // is opened
   hideAllEllipsisMenusExcept(menu);
 
-  if (menu.classList.contains('hidden')) {
-    menu.classList.remove('hidden');
+  if (menu.classList.contains('block')) {
+    menu.classList.remove('block');
   } else {
-    menu.classList.add('hidden');
+    menu.classList.add('block');
   }
 }
 
 function initializeEllipsisMenuToggle() {
-  var buttons = document.getElementsByClassName('ellipsis-menu-btn');
+  var buttons = document.getElementsByClassName('js-dashboard-row-more-trigger');
 
   for (var i = 0; i < buttons.length; i += 1) {
     buttons[i].addEventListener('click', toggleEllipsisMenu);
