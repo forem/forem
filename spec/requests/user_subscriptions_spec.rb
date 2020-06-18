@@ -8,7 +8,7 @@ RSpec.describe "UserSubscriptions", type: :request do
   describe "POST /user_subscriptions - UserSubscriptions#create" do
     it "creates a UserSubscription" do
       article = create(:article, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
-      valid_attributes = { source_type: article.class_name, source_id: article.id }
+      valid_attributes = { source_type: article.class_name, source_id: article.id, user_email: user.email }
       expect do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
@@ -23,7 +23,7 @@ RSpec.describe "UserSubscriptions", type: :request do
     end
 
     it "returns an error for an invalid source_type" do
-      invalid_source_type_attributes = { source_type: "NonExistentSourceType", source_id: "1" }
+      invalid_source_type_attributes = { source_type: "NonExistentSourceType", source_id: "1", user_email: user.email }
       expect do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
@@ -48,7 +48,7 @@ RSpec.describe "UserSubscriptions", type: :request do
 
     it "returns an error for a source that doesn't have the UserSubscription liquid tag enabled" do
       article = create(:article)
-      invalid_source_attributes = { source_type: article.class_name, source_id: article.id }
+      invalid_source_attributes = { source_type: article.class_name, source_id: article.id, user_email: user.email }
       expect do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
@@ -71,7 +71,7 @@ RSpec.describe "UserSubscriptions", type: :request do
              author_id: article.user.id,
              user_subscription_sourceable: article)
 
-      invalid_source_attributes = { source_type: article.class_name, source_id: article.id }
+      invalid_source_attributes = { source_type: article.class_name, source_id: article.id, user_email: user.email }
 
       expect do
         post user_subscriptions_path,
@@ -82,12 +82,27 @@ RSpec.describe "UserSubscriptions", type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error"]).to include("Subscriber has already been taken")
     end
+
+    it "returns an error for an email mismatch" do
+      article = create(:article, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
+
+      invalid_source_attributes = { source_type: article.class_name, source_id: article.id, user_email: "old_email@test.com" }
+
+      expect do
+        post user_subscriptions_path,
+             headers: { "Content-Type" => "application/json" },
+             params: { user_subscription: invalid_source_attributes }.to_json
+      end.to change(UserSubscription, :count).by(0)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to include("user email mismatch")
+    end
   end
 
   context "when rate limiting" do
     let(:rate_limiter) { RateLimitChecker.new(user) }
     let(:article) { create(:article, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}") }
-    let(:valid_attributes) { { source_type: article.class_name, source_id: article.id } }
+    let(:valid_attributes) { { source_type: article.class_name, source_id: article.id, user_email: user.email } }
 
     before { allow(RateLimitChecker).to receive(:new).and_return(rate_limiter) }
 
