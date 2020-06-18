@@ -111,7 +111,7 @@ class CommentsController < ApplicationController
   # for details as to why this is necessary
   rescue Pundit::NotAuthorizedError, RateLimitChecker::LimitReached
     raise
-  rescue StandardError => e
+  rescue StandardError, ApplicationError => e
     skip_authorization
 
     Rails.logger.error(e)
@@ -143,7 +143,7 @@ class CommentsController < ApplicationController
     else
       render json: { status: @comment&.errors&.full_messages&.to_sentence }, status: :unprocessable_entity
     end
-  rescue StandardError => e
+  rescue StandardError, ApplicationError => e
     skip_authorization
 
     Rails.logger.error(e)
@@ -162,7 +162,7 @@ class CommentsController < ApplicationController
       @commentable = @comment.commentable
       render :edit
     end
-  rescue StandardError => e
+  rescue StandardError, ApplicationError => e
     @commentable = @comment.commentable
     flash.now[:error] = "There was an error in your markdown: #{e}"
     render :edit
@@ -196,7 +196,7 @@ class CommentsController < ApplicationController
       fixed_body_markdown = MarkdownFixer.fix_for_preview(permitted_body_markdown)
       parsed_markdown = MarkdownParser.new(fixed_body_markdown)
       processed_html = parsed_markdown.finalize
-    rescue StandardError => e
+    rescue StandardError, ApplicationError => e
       processed_html = "<p>😔 There was an error in your markdown</p><hr><p>#{e}</p>"
     end
     respond_to do |format|

@@ -89,7 +89,7 @@ class ArticlesController < ApplicationController
       parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
       parsed_markdown = MarkdownParser.new(parsed.content)
       processed_html = parsed_markdown.finalize
-    rescue StandardError => e
+    rescue StandardError, ApplicationError => e
       @article = Article.new(body_markdown: params[:article_body])
       @article.errors[:base] << ErrorMessageCleaner.new(e.message).clean
     end

@@ -15,7 +15,7 @@ class Internal::ToolsController < Internal::ApplicationController
                         "Article ##{params[:bust_article]} was successfully busted"
                       end
     redirect_to "/internal/tools"
-  rescue StandardError => e
+  rescue StandardError, ApplicationError => e
     flash[:danger] = e.message
     redirect_to "/internal/tools"
   end

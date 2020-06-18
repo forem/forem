@@ -39,7 +39,7 @@ class Internal::UsersController < Internal::ApplicationController
     begin
       Moderator::ManageActivityAndRoles.handle_user_roles(admin: current_user, user: @user, user_params: user_params)
       flash[:success] = "User has been updated"
-    rescue StandardError => e
+    rescue StandardError, ApplicationError => e
       flash[:danger] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"
@@ -56,7 +56,7 @@ class Internal::UsersController < Internal::ApplicationController
     begin
       Moderator::DeleteUser.call(admin: current_user, user: @user, user_params: user_params)
       flash[:success] = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
-    rescue StandardError => e
+    rescue StandardError, ApplicationError => e
       flash[:danger] = e.message
     end
     redirect_to "/internal/users"
@@ -66,7 +66,7 @@ class Internal::UsersController < Internal::ApplicationController
     @user = User.find(params[:id])
     begin
       Moderator::MergeUser.call(admin: current_user, keep_user: @user, delete_user_id: user_params["merge_user_id"])
-    rescue StandardError => e
+    rescue StandardError, ApplicationError => e
       flash[:danger] = e.message
     end
 
@@ -81,7 +81,7 @@ class Internal::UsersController < Internal::ApplicationController
       identity.delete
       @user.update("#{identity.provider}_username" => nil)
       flash[:success] = "The #{identity.provider.capitalize} identity was successfully deleted and backed up."
-    rescue StandardError => e
+    rescue StandardError, ApplicationError => e
       flash[:danger] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"
@@ -93,7 +93,7 @@ class Internal::UsersController < Internal::ApplicationController
     begin
       identity = backup.recover!
       flash[:success] = "The #{identity.provider} identity was successfully recovered, and the backup was removed."
-    rescue StandardError => e
+    rescue StandardError, ApplicationError => e
       flash[:danger] = e.message
     end
     redirect_to "/internal/users/#{@user.id}/edit"

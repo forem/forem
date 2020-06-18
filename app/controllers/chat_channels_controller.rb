@@ -117,7 +117,7 @@ class ChatChannelsController < ApplicationController
     else
       render json: { status: "error", message: "not allowed!" }, status: :bad_request
     end
-  rescue StandardError => e
+  rescue StandardError, ApplicationError => e
     render json: { status: "error", message: e.message }, status: :bad_request
   end
 

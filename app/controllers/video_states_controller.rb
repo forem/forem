@@ -12,7 +12,7 @@ class VideoStatesController < ApplicationController
       logger.info "VIDEO STATES: #{params}"
       request_json = JSON.parse(request.raw_post, symbolize_names: true)
       logger.info "VIDEO STATES: #{request_json}"
-    rescue StandardError => e
+    rescue StandardError, ApplicationError => e
       Rails.logger.warn(e)
     end
     request_json = JSON.parse(request.raw_post, symbolize_names: true)
