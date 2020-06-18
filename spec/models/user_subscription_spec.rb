@@ -16,7 +16,7 @@ RSpec.describe UserSubscription, type: :model do
     it { is_expected.to validate_uniqueness_of(:subscriber_id).scoped_to(%i[subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id]) }
   end
 
-  describe "#make_new" do
+  describe "#build" do
     it "returns a new UserSubcription with the correct attributes" do
       new_user_subscription = described_class.new(
         user_subscription_sourceable: source,
@@ -25,7 +25,7 @@ RSpec.describe UserSubscription, type: :model do
         subscriber_email: subscriber.email,
       )
 
-      factory_user_subscription = described_class.make_new(source: source, subscriber: subscriber)
+      factory_user_subscription = described_class.build(source: source, subscriber: subscriber)
 
       factory_user_subscription.attributes.each do |name, val|
         expect(new_user_subscription[name]).to eq val

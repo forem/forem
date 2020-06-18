@@ -14,7 +14,7 @@ class UserSubscription < ApplicationRecord
   validates :user_subscription_sourceable_id, presence: true
   validates :user_subscription_sourceable_type, presence: true, inclusion: { in: ALLOWED_TYPES }
 
-  def self.make_new(source:, subscriber:)
+  def self.build(source:, subscriber:)
     new(build_attributes(source, subscriber))
   end
 
