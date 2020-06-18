@@ -25,7 +25,7 @@ RSpec.describe WebMentions::SendWebMention, type: :worker do
         article.update(canonical_url: canonical_url, support_webmentions: true)
 
         allow(RestClient).to receive(:post)
-        webmention_url
+        webmention
         worker.perform(comment.id)
         expect(RestClient).to have_received(:post).
           with(webmention_url, { "source": article_url, "target": canonical_url })
