@@ -92,12 +92,8 @@ RSpec.describe "Notifications page", type: :system, js: true do
     before do
       allow(Notification).to receive(:send_welcome_notification).and_call_original
       allow(User).to receive(:mascot_account).and_return(mascot_account)
-      SiteConfig.staff_user_id = mascot_account.id
+      allow(SiteConfig).to receive(:staff_user_id).and_return(mascot_account.id)
       alex.update!(created_at: 1.day.ago)
-    end
-
-    after do
-      SiteConfig.staff_user_id = 1
     end
 
     context "without tracking enabled" do
