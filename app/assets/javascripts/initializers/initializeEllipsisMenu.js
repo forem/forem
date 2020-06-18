@@ -41,7 +41,7 @@ function onXhrSuccess(form, article, values) {
   if (values.article.archived) {
     toggleArchived(article, values.article.archived);
   } else {
-    var submit = form.querySelector('input[type="submit"]');
+    var submit = form.querySelector('[type="submit"]');
     var submitValue = submit.getAttribute('value');
 
     toggleNotifications(submit, submitValue);
@@ -67,7 +67,7 @@ function handleFormSubmit(e) {
   xhr.send(data);
 
   xhr.onload = function onload() {
-    var article = form.closest('div.single-article');
+    var article = form.closest('.js-dashboard-story');
 
     if (xhr.status === 200) {
       onXhrSuccess(form, article, values);
@@ -75,16 +75,18 @@ function handleFormSubmit(e) {
         values.commit === 'Mute Notifications'
           ? 'Notifications Muted'
           : 'Notifications Restored';
-      article.querySelector('.dashboard-meta-details').innerHTML = message;
+      article.querySelector('.js-dashboard-story-details').innerHTML = message;
     } else {
-      article.querySelector('.dashboard-meta-details').innerHTML =
+      article.querySelector('.js-dashboard-story-details').innerHTML =
         'Failed to update article.';
     }
   };
 }
 
 function initializeFormSubmit() {
-  var forms = document.querySelectorAll('.js-dashboard-row-more-dropdown .archive-toggle');
+  var forms = document.querySelectorAll(
+    '.js-dashboard-row-more-dropdown .js-archive-toggle',
+  );
 
   for (var i = 0; i < forms.length; i += 1) {
     forms[i].addEventListener('submit', handleFormSubmit);
@@ -140,7 +142,9 @@ function toggleEllipsisMenu(e) {
 }
 
 function initializeEllipsisMenuToggle() {
-  var buttons = document.getElementsByClassName('js-dashboard-row-more-trigger');
+  var buttons = document.getElementsByClassName(
+    'js-dashboard-row-more-trigger',
+  );
 
   for (var i = 0; i < buttons.length; i += 1) {
     buttons[i].addEventListener('click', toggleEllipsisMenu);
