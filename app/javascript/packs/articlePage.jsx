@@ -48,7 +48,6 @@ const userDataIntervalID = setInterval(async () => {
           onUnsubscribe={subscriptionRequestHandler}
         />,
         root,
-        root.firstElementChild,
       );
     } catch (e) {
       document.querySelector('#comment-subscription').innerHTML =
