@@ -43,8 +43,13 @@
       </div>
     </nav>
 
-    <% if SiteConfig.mascot_footer_image_url %>
-      <img src="<%= SiteConfig.mascot_footer_image_url %>" alt="<% if SiteConfig.mascot_image_description %><%= SiteConfig.mascot_image_description %><% end %>" width="52" height="120" class="crayons-footer__mascot">
+    <% if SiteConfig.mascot_footer_image_url.present? %>
+      <%= image_tag(SiteConfig.mascot_footer_image_url,
+                    class: "crayons-footer__mascot",
+                    alt: SiteConfig.mascot_image_description,
+                    width: 52,
+                    height: 120,
+                    loading: "lazy") %>
     <% end %>
   </div>
 </footer>
