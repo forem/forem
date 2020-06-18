@@ -28,10 +28,10 @@ export default class SingleArticle extends Component {
   };
 
   render() {
-    const { id, title, publishedAt, cachedTagList, user } = this.props;
+    const { id, title, publishedAt, cachedTagList, user, key } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
       return (
-        <span className="mod-article-tag fs-s ff-accent lh-base">
+        <span className="mod-article-tag fs-s ff-accent lh-base" key={key}>
           <span className="article-hash-tag">#</span>
           {tag}
         </span>
@@ -75,4 +75,5 @@ SingleArticle.propTypes = {
   publishedAt: PropTypes.string.isRequired,
   cachedTagList: PropTypes.isRequired,
   user: PropTypes.isRequired,
+  key: PropTypes.number.isRequired,
 };

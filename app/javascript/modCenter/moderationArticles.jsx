@@ -28,6 +28,7 @@ export class ModerationArticles extends Component {
               title={title}
               path={path}
               cachedTagList={cachedTagList}
+              key={id}
               publishedAt={publishedAt}
               user={user}
             />
