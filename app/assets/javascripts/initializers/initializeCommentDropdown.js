@@ -1,25 +1,24 @@
-'use strict';
+
 
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
 
   function isClipboardSupported() {
     return (
-      typeof navigator.clipboard !== "undefined" &&
-      navigator.clipboard !== null
+      typeof navigator.clipboard !== 'undefined' && navigator.clipboard !== null
     );
   }
 
   function isNativeAndroidDevice() {
     return (
       navigator.userAgent === 'DEV-Native-android' &&
-      typeof AndroidBridge !== "undefined" &&
+      typeof AndroidBridge !== 'undefined' &&
       AndroidBridge !== null
     );
   }
 
   function removeClass(className) {
-    return element => element.classList.remove(className);
+    return (element) => element.classList.remove(className);
   }
 
   function getAllByClassName(className) {
@@ -53,7 +52,8 @@ function initializeCommentDropdown() {
         AndroidBridge.copyToClipboard(text);
         resolve();
       } else if (isClipboardSupported()) {
-        navigator.clipboard.writeText(text)
+        navigator.clipboard
+          .writeText(text)
           .then(() => {
             resolve();
           })
@@ -67,14 +67,13 @@ function initializeCommentDropdown() {
   }
 
   function copyPermalink(event) {
-    var origin = window.location.origin;
-    var permalink = origin + event.target.getAttribute("data-permalink");
+    event.preventDefault();
+    const permalink = event.target.href;
 
-    copyText(permalink)
-      .catch(err => {
-        event.clipboardData.setData("text/plain", permalink);
-        execCopyText();
-      });
+    copyText(permalink).catch((err) => {
+      event.clipboardData.setData('text/plain', permalink);
+      execCopyText();
+    });
   }
 
   function copyArticleLink() {
@@ -84,7 +83,7 @@ function initializeCommentDropdown() {
       .then(() => {
         showAnnouncer();
       })
-      .catch(err => {
+      .catch((err) => {
         showAnnouncer();
         execCopyText();
       });
