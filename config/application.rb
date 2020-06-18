@@ -27,6 +27,13 @@ module PracticalDeveloper
     # See <https://guides.rubyonrails.org/autoloading_and_reloading_constants.html>
     config.autoloader = :zeitwerk
 
+    # Disable auto adding of default load paths to $LOAD_PATH
+    # Setting this to false saves Ruby from checking these directories when
+    # resolving require calls with relative paths, and saves Bootsnap work and
+    # RAM, since it does not need to build an index for them.
+    # see https://github.com/rails/rails/blob/6-0-stable/railties/CHANGELOG.md#rails-600rc2-july-22-2019
+    config.add_autoload_paths_to_load_path = false
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
