@@ -1,7 +1,6 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
 import { JSDOM } from 'jsdom';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
 import { Preview } from '../Preview';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
@@ -63,19 +62,8 @@ describe('<Preview />', () => {
     errors = null;
   });
 
-  it('renders properly', () => {
-    const tree = render(
-      <Preview
-        previewResponse={previewResponse}
-        articleState={articleState}
-        errors={errors}
-      />,
-    );
-    expect(tree).toMatchSnapshot();
-  });
-
   it('shows the correct title', () => {
-    const container = shallow(
+    const { getByText } = render(
       <Preview
         previewResponse={previewResponse}
         articleState={articleState}
@@ -83,13 +71,11 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(container.find('.spec-article__title').text()).toEqual(
-      previewResponse.title,
-    );
+    getByText(previewResponse.title);
   });
 
   it('shows the correct tags', () => {
-    const container = shallow(
+    const { getByText } = render(
       <Preview
         previewResponse={previewResponse}
         articleState={articleState}
@@ -97,13 +83,12 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(container.find('.spec-article__tags').text()).toEqual(
-      '#javascript#career',
-    );
+    getByText(`javascript`);
+    getByText(`career`);
   });
 
   it('shows a cover image in the preview if one exists', () => {
-    const container = shallow(
+    const { getByTestId } = render(
       <Preview
         previewResponse={previewResponse}
         articleState={articleState}
@@ -111,16 +96,14 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(container.find('.crayons-article__cover__image').exists()).toEqual(
-      true,
-    );
+    getByTestId('article-form__cover');
   });
 
-  it('does not show a cover image in the preview if one does not exists', () => {
+  it('does not show a cover image in the preview if one does not exist', () => {
     previewResponse.cover_image = null;
     articleState.mainImage = null;
 
-    const container = shallow(
+    const { queryByTestId } = render(
       <Preview
         previewResponse={previewResponse}
         articleState={articleState}
@@ -128,9 +111,7 @@ describe('<Preview />', () => {
       />,
     );
 
-    expect(container.find('.crayons-article__cover__image').exists()).toEqual(
-      false,
-    );
+    expect(queryByTestId('article-form__cover')).toBeNull();
   });
 
   // TODO: need to write a test for the cover image for v1

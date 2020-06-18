@@ -140,7 +140,7 @@ class FollowUsers extends Component {
     const canSkip = selectedUsers.length === 0;
 
     return (
-      <div className="onboarding-main crayons-modal">
+      <div data-testid="onboarding-follow-users" className="onboarding-main crayons-modal">
         <div className="crayons-modal__box overflow-auto">
           <Navigation
             prev={prev}
@@ -155,9 +155,10 @@ class FollowUsers extends Component {
               <h2 className="subtitle">Let&apos;s review a few things first</h2>
             </header>
 
-            <div className="onboarding-modal-scroll-container">
+            <div data-testid="onboarding-users" className="onboarding-modal-scroll-container">
               {users.map((user) => (
                 <button
+                  data-testid="onboarding-user-button"
                   type="button"
                   onClick={() => this.handleClick(user)}
                   onKeyDown={() => this.handleKeyDown(user)}
@@ -180,7 +181,7 @@ class FollowUsers extends Component {
                       {he.unescape(user.summary || '')}
                     </p>
                   </div>
-                  <button type="button" className="user-following-status">
+                  <button data-testid="onboarding-user-following-status" type="button" className="user-following-status">
                     {selectedUsers.includes(user) ? 'Following' : 'Follow'}
                   </button>
                 </button>

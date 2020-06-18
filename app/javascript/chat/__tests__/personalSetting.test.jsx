@@ -1,30 +1,31 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import PersonalSettng from '../ChatChannelSettings/PersonalSetting';
 
-const data = {
-  showGlobalBadgeNotification: true,
-};
-
-const getPersonalSettng = (channelDetails) => {
-  return (
-    <PersonalSettng
-      showGlobalBadgeNotification={channelDetails.showGlobalBadgeNotification}
-    />
-  );
-};
-
 describe('<PersonalSettng />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getPersonalSettng(data));
+  it('should have no a11y violations', async () => {
+    const { container } = render(
+      <PersonalSettng showGlobalBadgeNotification />,
+    );
+    const results = await axe(container);
 
-    expect(tree).toMatchSnapshot();
+    expect(results).toHaveNoViolations();
   });
 
   it('should render the the component', () => {
-    const context = shallow(getPersonalSettng(data));
+    const { getByText, getByLabelText } = render(
+      <PersonalSettng showGlobalBadgeNotification />,
+    );
 
-    expect(context.find('.personl-settings').exists()).toEqual(true);
+    // get the section header
+    getByText('Personal Settings');
+
+    // get the subsection header
+    getByText('Notifications');
+
+    // form fields
+    getByLabelText('Receive Notifications for New Messages');
+    getByText('Submit', { selector: 'button' });
   });
 });

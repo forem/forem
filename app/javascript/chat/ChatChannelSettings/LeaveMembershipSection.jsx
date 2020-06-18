@@ -1,14 +1,7 @@
 import { h } from 'preact';
 import PropsType from 'prop-types';
 
-const LeaveMembershipSection = ({
-  currentMembershipRole,
-  handleleaveChatChannelMembership,
-}) => {
-  if (currentMembershipRole !== 'member') {
-    return null;
-  }
-
+const LeaveMembershipSection = ({ handleleaveChatChannelMembership }) => {
   return (
     <div className="crayons-card p-4 grid gap-2 mb-4 leave_membership_section">
       <h3>Danger Zone</h3>
@@ -26,7 +19,6 @@ const LeaveMembershipSection = ({
 };
 
 LeaveMembershipSection.propTypes = {
-  currentMembershipRole: PropsType.string.isRequired,
   handleleaveChatChannelMembership: PropsType.func.isRequired,
 };
 

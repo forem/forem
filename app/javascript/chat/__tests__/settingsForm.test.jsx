@@ -1,6 +1,6 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import SettingsForm from '../ChatChannelSettings/SettingsForm';
 
 const data = {
@@ -17,14 +17,26 @@ const getSettingsForm = (channelDetails) => {
 };
 
 describe('<SettingsForm />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getSettingsForm(data));
-    expect(tree).toMatchSnapshot();
+  it('should have no a11y violations', async () => {
+    const { container } = render(getSettingsForm(data));
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
   it('should render the the component', () => {
-    const context = shallow(getSettingsForm(data));
+    const { getByText, getByLabelText } = render(getSettingsForm(data));
 
-    expect(context.find('.settings-section').exists()).toEqual(true);
+    // title
+    getByText('Channel Settings');
+
+    // description of channel
+    getByLabelText('Description');
+
+    // whether or not the channel is discoverable
+    getByLabelText('Channel Discoverable');
+
+    // submit buttton
+    getByText('Submit');
   });
 });

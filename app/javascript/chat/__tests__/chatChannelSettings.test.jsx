@@ -1,28 +1,26 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import ChatChannelSettings from '../ChatChannelSettings/ChatChannelSettings';
 
-const channelDetails = {
-  data: {},
-  activeMembershipId: 12,
-};
-
-const getChatChannelSettinsg = (resource) => (
-  <ChatChannelSettings
-    resource={resource.data}
-    activeMembershipId={resource.activeMembershipId}
-  />
-);
-
+// TODO: These tests are imcomplete, but currently
+// this is simply a migration to preact-testing-library.
+// More tests should be added here.
 describe('<ChatChannelSettings />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getChatChannelSettinsg(channelDetails));
-    expect(tree).toMatchSnapshot();
+  it('should have no a11y violations', async () => {
+    const { container } = render(
+      <ChatChannelSettings activeMembershipId={12} />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
-  it('should not render if not channel', () => {
-    const context = shallow(getChatChannelSettinsg(channelDetails));
-    expect(context.find('.channel_settings').exists()).toEqual(false);
+  it('should render if there are no channels', () => {
+    const { container } = render(
+      <ChatChannelSettings activeMembershipId={12} />,
+    );
+
+    expect(container.firstElementChild).toBeNull();
   });
 });

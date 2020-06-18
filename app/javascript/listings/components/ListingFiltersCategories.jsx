@@ -8,6 +8,7 @@ const ListingFiltersCategories = ({ categories, category, onClick }) => (
       id="listings-link"
       href="/listings"
       className={category === '' ? 'selected' : ''}
+      data-testid={category === '' ? 'selected' : ''}
       onClick={onClick}
       data-no-instant
     >

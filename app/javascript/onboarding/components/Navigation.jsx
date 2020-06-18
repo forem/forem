@@ -24,7 +24,7 @@ class Navigation extends Component {
 
       stepsList.push(<span className={`dot ${active ? 'active' : ''}`} />);
     }
-    return <div className="stepper">{stepsList}</div>;
+    return <div data-testid="stepper" className="stepper">{stepsList}</div>;
   }
 
   /**
@@ -70,7 +70,7 @@ class Navigation extends Component {
         >
           {!hidePrev && (
             <div className="back-button-container">
-              <button onClick={prev} className="back-button" type="button">
+              <button onClick={prev} data-testid="back-button" className="back-button" type="button">
                 <svg
                   width="24"
                   height="24"
