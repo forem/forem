@@ -25,7 +25,7 @@ module UserSubscriptionSourceable
   def user_subscription_attributes(subscriber)
     {
       user_subscription_sourceable: self,
-      author_id: self&.user_id,
+      author_id: user_id,
       subscriber_id: subscriber&.id,
       subscriber_email: subscriber&.email
     }
