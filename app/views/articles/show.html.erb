@@ -216,7 +216,7 @@
     <%= render "articles/full_comment_area" %>
 
     <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}", expires_in: 18.hours) do %>
-      <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4, user_signed_in: user_signed_in?) %>
+      <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
       <%= render "articles/bottom_content", articles: suggested_articles %>
     <% end %>
   </div>
