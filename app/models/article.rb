@@ -546,8 +546,7 @@ class Article < ApplicationRecord
     errors.add(:canonical_url, "must not have spaces") if canonical_url.to_s.match?(/[[:space:]]/)
   end
 
-  # TODO: (Alex Smith) remove UserSubscriptionTag from subscription when ready to
-  # release or when permission-based liquid tags are implemented.
+  # TODO: (Alex Smith) refactor liquid tag permissions
   #
   # Admin only beta tags etc.
   def validate_liquid_tag_permissions
