@@ -9,7 +9,7 @@ class Article < ApplicationRecord
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
   DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
-  RESTRICTED_TAGS = [PollTag, UserSubscriptionTag].freeze
+  RESTRICTED_LIQUID_TAGS = [PollTag, UserSubscriptionTag].freeze
 
   acts_as_taggable_on :tags
   resourcify
@@ -551,7 +551,7 @@ class Article < ApplicationRecord
   #
   # Admin only beta tags etc.
   def validate_liquid_tag_permissions
-    errors.add(:body_markdown, "must only use permitted tags") if (liquid_tags_used & RESTRICTED_TAGS).any? && !(user.has_role?(:super_admin) || user.has_role?(:admin))
+    errors.add(:body_markdown, "must only use permitted tags") if (liquid_tags_used & RESTRICTED_LIQUID_TAGS).any? && !(user.has_role?(:super_admin) || user.has_role?(:admin))
   end
 
   def create_slug
