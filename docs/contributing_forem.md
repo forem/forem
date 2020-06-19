@@ -1,8 +1,8 @@
 ---
-title: Contributing to DEV
+title: Contributing to Forem
 ---
 
-# Contributing to dev.to
+# Contributing to Forem
 
 - [Contributing](#contributing)
   - [Where to contribute](#where-to-contribute)
@@ -45,8 +45,8 @@ all are up for grabs.
 - [difficulty: easy](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+easy%22)
   issues are usually confined to isolated areas of existing code.
 - [difficulty: medium](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+medium%22)
-  issues are usually can sometimes entail new features and might affect a
-  significant area of the codebase, but aren't overly complex.
+  issues can sometimes entail new features and might affect a significant area
+  of the codebase, but aren't overly complex.
 - [difficulty: hard](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+hard%22)
   issues will typically be far-reaching, and might require architecture
   decisions during implementation. This label might also denote highly complex
@@ -66,10 +66,10 @@ maintaining quality documentation is one of our most important jobs. You can
 find more information about contributing to the documentation in the
 [docs/ directory](https://github.com/thepracticaldev/dev.to/blob/master/docs/contributing.md)!
 
-**Refactoring** code, or improving the code without modifying the behaviour, is
+**Refactoring** code, or improving the code without modifying the behavior, is
 an area that can probably be done based on intuition and may not require much
 communication to be merged. Generally speaking, you can rely on existing tests
-to ensure that your refactoring doesn't introduce any unexpected behaviour.
+to ensure that your refactoring doesn't introduce any unexpected behavior.
 However, you might be asked to write a regression test if the area you've
 refactored isn't well covered. As refactoring can span many files it's always
 encouraged to proceed in steps if possible by submitting multiple smaller PRs.
