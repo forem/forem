@@ -5,7 +5,7 @@ class UserSubscriptionsController < ApplicationController
     rate_limit!(:user_subscription_creation)
 
     source_type = user_subscription_params[:source_type]
-    return error_response("invalid type") unless UserSubscription::ALLOWED_TYPES.include?(source_type)
+    return error_response("invalid source_type") unless UserSubscription::ALLOWED_TYPES.include?(source_type)
 
     source_id = user_subscription_params[:source_id]
     user_subscription_source = source_type.safe_constantize.find_by(id: source_id)

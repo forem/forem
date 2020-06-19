@@ -33,7 +33,7 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to eq("invalid type")
+      expect(response.parsed_body["error"]).to eq("invalid source_type")
     end
 
     it "returns an error for a source that can't be found" do
