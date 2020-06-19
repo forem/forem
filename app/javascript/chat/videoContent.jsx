@@ -1,8 +1,17 @@
+/* eslint-disable jsx-a11y/iframe-has-title */
 import { h, Component } from 'preact';
+import PropTypes from 'prop-types';
 
 export default class VideoContent extends Component {
+  static propTypes = {
+    fullscreen: PropTypes.string.isRequired,
+    videoPath: PropTypes.string.isRequired,
+    onTriggerVideoContent: PropTypes.func.isRequired,
+  };
+
   render() {
-    if (!this.props.videoPath) {
+    const { fullscreen, videoPath, onTriggerVideoContent } = this.props;
+    if (!videoPath) {
       return '';
     }
 
@@ -19,14 +28,18 @@ export default class VideoContent extends Component {
       </svg>
     );
     return (
+      // eslint-disable-next-line jsx-a11y/click-events-have-key-events
       <div
         className="activechatchannel__activecontent activechatchannel__activecontent--video"
         id="chat_activecontent_video"
-        onClick={this.props.onTriggerVideoContent}
+        onClick={onTriggerVideoContent}
+        role="button"
+        tabIndex="0"
       >
         <button
           className="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
           data-content="exit"
+          type="button"
         >
           {smartSvgIcon(
             'exit',
@@ -37,6 +50,7 @@ export default class VideoContent extends Component {
           className="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
           data-content="fullscreen"
           style={{ left: '39px' }}
+          type="button"
         >
           {fullscreen
             ? smartSvgIcon(
@@ -48,7 +62,7 @@ export default class VideoContent extends Component {
                 'M20 3h2v6h-2V5h-4V3h4zM4 3h4v2H4v4H2V3h2zm16 16v-4h2v6h-6v-2h4zM4 19h4v2H2v-6h2v4z',
               )}
         </button>
-        <iframe src={this.props.videoPath} />
+        <iframe src={videoPath} />
       </div>
     );
   }
