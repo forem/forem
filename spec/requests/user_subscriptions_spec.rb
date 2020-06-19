@@ -1,13 +1,15 @@
 require "rails_helper"
 
 RSpec.describe "UserSubscriptions", type: :request do
+  # TODO: (Alex Smith) remove super_admin restriction before final release
+  let(:super_admin_user) { create(:user, :super_admin) }
   let(:user) { create(:user) }
 
   before { sign_in user }
 
   describe "POST /user_subscriptions - UserSubscriptions#create" do
     it "creates a UserSubscription" do
-      article = create(:article, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
+      article = create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
       valid_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: user.email }
       expect do
         post user_subscriptions_path,
@@ -60,7 +62,7 @@ RSpec.describe "UserSubscriptions", type: :request do
     end
 
     it "returns an error for an invalid UserSubscription" do
-      article = create(:article, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
+      article = create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
 
       # Create the UserSubscription directly so it results in a
       # duplicate/invalid record and returns an error. This mimics a user
@@ -84,7 +86,7 @@ RSpec.describe "UserSubscriptions", type: :request do
     end
 
     it "returns an error for an email mismatch" do
-      article = create(:article, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
+      article = create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
 
       invalid_source_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: "old_email@test.com" }
 
@@ -101,7 +103,7 @@ RSpec.describe "UserSubscriptions", type: :request do
 
   context "when rate limiting" do
     let(:rate_limiter) { RateLimitChecker.new(user) }
-    let(:article) { create(:article, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}") }
+    let(:article) { create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}") }
     let(:valid_attributes) { { source_type: article.class_name, source_id: article.id, subscriber_email: user.email } }
 
     before { allow(RateLimitChecker).to receive(:new).and_return(rate_limiter) }
