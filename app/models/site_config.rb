@@ -35,9 +35,9 @@ class SiteConfig < RailsSettings::Base
   # Emails
   field :email_addresses, type: :hash, default: {
     default: ApplicationConfig["DEFAULT_EMAIL"],
-    business: "partners@dev.to",
-    privacy: "privacy@dev.to",
-    members: "members@dev.to"
+    business:  ApplicationConfig["DEFAULT_EMAIL"],
+    privacy:  ApplicationConfig["DEFAULT_EMAIL"],
+    members:  ApplicationConfig["DEFAULT_EMAIL"]
   }
 
   # Email digest frequency
