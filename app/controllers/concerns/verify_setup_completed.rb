@@ -5,6 +5,7 @@ module VerifySetupCompleted
     community_description
     community_member_description
     community_action
+    main_social_image
     tag_url
 
     main_social_image
