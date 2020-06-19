@@ -11,6 +11,10 @@ module VerifySetupCompleted
     favicon_url
     logo_png
     primary_sticker_image_url
+
+    mascot_user_id
+    mascot_image_url
+
   ].freeze
   private_constant :MANDATORY_CONFIGS
 
