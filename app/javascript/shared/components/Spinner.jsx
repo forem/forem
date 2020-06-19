@@ -2,7 +2,7 @@ import { h } from 'preact';
 
 export const Spinner = () => (
   <svg
-    className="crayons-spinner"
+    className="crayons-icon crayons-spinner"
     width="18px"
     height="18px"
     viewBox="0 0 18 18"
