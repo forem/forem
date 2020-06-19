@@ -5,15 +5,17 @@ class UserSubscriptionsController < ApplicationController
     rate_limit!(:user_subscription_creation)
 
     source_type = user_subscription_params[:source_type]
-    return invalid_type_error unless UserSubscription::ALLOWED_TYPES.include?(source_type)
+    return error_response("invalid type") unless UserSubscription::ALLOWED_TYPES.include?(source_type)
 
     source_id = user_subscription_params[:source_id]
     user_subscription_source = source_type.safe_constantize.find_by(id: source_id)
-    return user_subscription_source_not_found unless user_subscription_source
+    return error_response("source not found") unless user_subscription_source
 
-    return user_subscription_tag_not_enabled unless user_subscription_tag_enabled?(user_subscription_source)
+    unless user_subscription_tag_enabled?(user_subscription_source)
+      return error_response("user subscriptions are not enabled for the requested source")
+    end
 
-    return stale_subscriber_email if subscriber_email_stale?
+    return error_response("subscriber email mismatch") if subscriber_email_stale?
 
     @user_subscription = user_subscription_source.build_user_subscription(current_user)
 
@@ -21,40 +23,11 @@ class UserSubscriptionsController < ApplicationController
       rate_limiter.track_limit_by_action(:user_subscription_creation)
       render json: { message: "success", status: 200 }, status: :ok
     else
-      render json: {
-        error: @user_subscription.errors.full_messages.to_sentence,
-        status: 422
-      }, status: :unprocessable_entity
+      error_response(@user_subscription.errors.full_messages.to_sentence)
     end
   end
 
   private
-
-  def invalid_type_error
-    render json: {
-      error: "invalid type - only #{UserSubscription::ALLOWED_TYPES.join(', ')} are permitted",
-      status: 422
-    }, status: :unprocessable_entity
-  end
-
-  def user_subscription_source_not_found
-    render json: { error: "source not found", status: 422 },
-           status: :unprocessable_entity
-  end
-
-  def user_subscription_tag_not_enabled
-    render json: {
-      error: "user subscriptions are not enabled for the requested source",
-      status: 422
-    }, status: :unprocessable_entity
-  end
-
-  def stale_subscriber_email
-    render json: {
-      error: "subscriber email mismatch",
-      status: 422
-    }, status: :unprocessable_entity
-  end
 
   def user_subscription_tag_enabled?(user_subscription_source)
     liquid_tags =
@@ -66,6 +39,10 @@ class UserSubscriptionsController < ApplicationController
       end
 
     liquid_tags.include?(UserSubscriptionTag)
+  end
+
+  def error_response(msg)
+    render json: { error: msg, status: 422 }, status: :unprocessable_entity
   end
 
   # This checks if the email address the user saw/consented to share is the

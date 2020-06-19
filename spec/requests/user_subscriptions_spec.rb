@@ -33,7 +33,7 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to include("invalid type")
+      expect(response.parsed_body["error"]).to eq("invalid type")
     end
 
     it "returns an error for a source that can't be found" do
@@ -45,7 +45,7 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to include("source not found")
+      expect(response.parsed_body["error"]).to eq("source not found")
     end
 
     it "returns an error for a source that doesn't have the UserSubscription liquid tag enabled" do
@@ -58,7 +58,7 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to include("user subscriptions are not enabled for the requested source")
+      expect(response.parsed_body["error"]).to eq("user subscriptions are not enabled for the requested source")
     end
 
     it "returns an error for an invalid UserSubscription" do
@@ -82,7 +82,7 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to include("Subscriber has already been taken")
+      expect(response.parsed_body["error"]).to eq("Subscriber has already been taken")
     end
 
     it "returns an error for an email mismatch" do
@@ -97,7 +97,7 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to include("subscriber email mismatch")
+      expect(response.parsed_body["error"]).to eq("subscriber email mismatch")
     end
   end
 
