@@ -55,10 +55,10 @@ class SiteConfig < RailsSettings::Base
 
   # Images
   field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
-  field :favicon_url, type: :string, default: "favicon.ico"
-  field :logo_png, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
-  field :logo_svg, type: :string, default: ""
-  field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
+  field :favicon_url, type: :string
+  field :logo_png, type: :string
+  field :logo_svg, type: :string
+  field :primary_sticker_image_url, type: :string
 
   # Mascot
   field :mascot_user_id, type: :integer, default: 1

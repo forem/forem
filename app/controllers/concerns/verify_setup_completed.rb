@@ -6,6 +6,11 @@ module VerifySetupCompleted
     community_member_description
     community_action
     tag_url
+
+    main_social_image
+    favicon_url
+    logo_png
+    primary_sticker_image_url
   ].freeze
   private_constant :MANDATORY_CONFIGS
 
