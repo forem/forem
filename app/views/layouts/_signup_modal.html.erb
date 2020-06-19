@@ -12,7 +12,7 @@
 
     <h1>Join our <%= community_qualified_name %> :)</h1>
 
-    <% if SiteConfig.tagline %>
+    <% if SiteConfig.tagline.present? %>
       <p><%= SiteConfig.tagline %></p>
     <% end %>
 
