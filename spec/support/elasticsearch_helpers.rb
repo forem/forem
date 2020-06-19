@@ -10,6 +10,7 @@ module ElasticsearchHelpers
   end
 
   def clear_elasticsearch_data(search_class)
+    search_class.refresh_index
     Search::Client.delete_by_query(
       index: search_class::INDEX_ALIAS, body: { query: { match_all: {} } },
     )

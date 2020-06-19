@@ -72,6 +72,8 @@
   --card-secondary-bg: var(--base-inverted);
   --card-secondary-color: var(--base-90);
   --card-headline-color: var(--accent-brand-lighter);
+  --card-border: rgba(255, 255, 255, 0.2);
+  --card-secondary-border: rgba(255, 255, 255, 0.2);
 
   // Header
   --header-bg: var(--base-10);
@@ -199,8 +201,15 @@
 
   // Story
   --story-comments-bg: #0d0d0d;
-  --story-border: rgba(255, 255, 255, 0.2);
 
   // Select icon
   --select-icon: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDE2TDYgMTBIMThMMTIgMTZaIiBmaWxsPSIjMkVGRjdCIi8+Cjwvc3ZnPg==);
+
+  // Reactions
+  --reaction-like-color: var(--accent-danger);
+  --reaction-like-bg: var(--accent-danger-a10);
+  --reaction-custom-color: var(--accent-success);
+  --reaction-custom-bg: var(--accent-success-a10);
+  --reaction-save-color: var(--accent-warning);
+  --reaction-save-bg: var(--accent-warning-a10);
 }

@@ -9,5 +9,5 @@ if Rails.env.development? && File.file?("/.dockerenv")
     BetterErrors::Middleware.allow_ip!(host_ip)
   end
 
-  Rails.application.config.web_console.whitelisted_ips << host_ip
+  Rails.application.config.web_console.permissions = host_ip
 end

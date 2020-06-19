@@ -10,9 +10,8 @@
   <h2><a href="<%= @moderatable.path %>" rel="nofollow"><%= @moderatable.title %></a></h2>
   <h3><a href="<%= @moderatable.user.path %>">@<%= @moderatable.user.username %></a></h3>
   <% if @moderatable.class.name == "Article" &&
-       (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? && 
-       (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) })
-  %>
+       (Tag.where(requires_approval: true).pluck(:name) & @moderatable.decorate.cached_tag_list_array).any? &&
+       (current_user.any_admin? || @tag_moderator_tags.any? { |tag| @moderatable.tag_list.include?(tag.name) }) %>
     <%= form_tag "/article_approvals", method: "post" do %>
       <%= hidden_field_tag(:id, @moderatable.id) %>
       <% if @moderatable.approved %>
@@ -26,20 +25,42 @@
     <hr />
   <% end %>
 
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
+  <div style="display: flex; justify-content: space-around;">
+  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsup") ? "reacted" : "" %>"
           data-reactable-id="<%= @moderatable.id %>"
-          data-category="thumbsdown"
+          data-category="thumbsup"
           data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
+    <div class="reaction-button-circle">
+      <%= image_tag("emoji/emoji-one-thumbs-up-gray.png", alt: "Thumbs up emoji", class: "emoji-grey") %>
+      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-up.png") %>" alt="Thumbs up emoji" />
+      <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+    </div>
+    <span class="vote-text">High Quality</span>
   </button>
-  <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
-          data-reactable-id="<%= @moderatable.id %>"
-          data-category="vomit"
-          data-reactable-type="<%= @moderatable.class.name %>">
-    <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
-    <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
-  </button>
+    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "thumbsdown") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.id %>"
+            data-category="thumbsdown"
+            data-reactable-type="<%= @moderatable.class.name %>">
+      <div class="reaction-button-circle">
+        <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji", class: "emoji-grey") %>
+        <img class="reacted-emoji downvote" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji" />
+        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+      </div>
+      <span class="vote-text">Low Quality</span>
+    </button>
+    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
+            data-reactable-id="<%= @moderatable.id %>"
+            data-category="vomit"
+            data-reactable-type="<%= @moderatable.class.name %>">
+      <div class="reaction-button-circle">
+        <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
+        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+      </div>
+      <span class="vote-text">Mark As Spam</span>
+    </button>
+  </div>
+
   <% if current_user.has_role?(:super_admin) && @moderatable.class.name == "Article" %>
     <h3> <a href="<%= @moderatable.path %>/edit">Edit Post</a> |
       <a href="/internal/articles/<%= @moderatable.id %>" data-no-instant>Internal:Article</a> |
@@ -49,22 +70,27 @@
       <a href="/admin/users/<%= @moderatable.user_id %>" data-no-instant>Admin:User</a></h3>
   <% end %>
   <p>
-    <b style="font-size:1.3em">All negative reactions are private.</b>
+    <b style="font-size:1em">All negative reactions are private.</b>
   </p>
   <p>
-    Use <b>thumbsdown</b> to move this content "down" for any reason (quality, usefulness, etc.).
+    Use <b>High Quality</b> to move this content "up" for any reason (quality, usefulness, etc.).
+    <br />
+    Use <b>Low Quality</b> to move this content "down" for any reason (quality, usefulness, etc.).
+    <br />
+    Use <b>Mark As Spam</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
   </p>
-  <p>
-    Use <b>vomit</b> for code of conduct violations (harassment, being a jerk, spam, etc.).
-  </p>
-  <div class="tag-mod-form">
+  <div class="tag-mod-form" style="display: flex; flex-direction: column; align-items: center;">
     <h2>Flag <a href="<%= @moderatable.user.path %>"><%= @moderatable.user.username %></a> as Abusive</h2>
-    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable.user, current_user, "vomit") ? "reacted" : "" %>"
+    <button class="reaction-button <%= Reaction.cached_any_reactions_for?(@moderatable, current_user, "vomit") ? "reacted" : "" %>"
             data-reactable-id="<%= @moderatable.user.id %>"
             data-category="vomit"
             data-reactable-type="<%= @moderatable.user.class.name %>">
-      <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
-      <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+      <div class="reaction-button-circle">
+        <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji", class: "emoji-grey") %>
+        <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea down emoji" />
+        <%= inline_svg_tag("checkmark.svg", aria: true, class: "crayons-icon reaction-checkmark", title: "Checkmark") %>
+      </div>
+      <span class="vote-text">Flag As Abusive</span>
     </button>
     <p>
       This is the equivalent of vomiting on <b>all</b> of this user's articles.
@@ -136,20 +162,25 @@
   <% if @moderatable.class.name == "Article" %>
     <div class="tag-mod-form">
       <% @rating_vote = RatingVote.where(article_id: @moderatable.id, user_id: current_user.id).first %>
-      <%= form_for(RatingVote.new) do |f| %>
-        <h2>Experience Level of Post</h2>
-        <%= f.hidden_field :article_id, value: @moderatable.id %>
-        <%= f.hidden_field :group, value: "experience_level" %>
-        <button value="1" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 1.0 %>">1</button>
-        <button value="2" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 2.0 %>">2</button>
-        <button value="3" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 3.0 %>">3</button>
-        <button value="4" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 4.0 %>">4</button>
-        <button value="5" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 5.0 %>">5</button>
-        <button value="6" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 6.0 %>">6</button>
-        <button value="7" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 7.0 %>">7</button>
-        <button value="8" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 8.0 %>">8</button>
-        <button value="9" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 9.0 %>">9</button>
-        <button value="10" name="rating_vote[rating]" class="level-rating-button <%= "selected" if @rating_vote&.rating == 10.0 %>">10</button>
+      <% rating_hash = { "Novice" => 1, "Beginner" => 2, "Mid-level" => 3, "Advanced" => 4, "Expert" => 5 } %>
+
+      <h2>Experience Level of Post</h2>
+
+      <% rating_hash.each do |rating_name, rating_level| %>
+      <button
+        value="<%= rating_level %>"
+        name="rating_vote_<%= rating_level %>"
+        id="js__rating__vote__<%= rating_level %>"
+        class="level-rating-button article-mod-page <%= "selected" if @rating_vote&.rating == rating_level.to_f %>"
+        data-user-id="<%= current_user.id %>"
+        data-article-id="<%= @moderatable.id %>"
+        data-group="experience_level"
+        style="margin: 0.5rem 0;">
+        <div class="level-rating-content">
+          <span class="level-rating-number"><%= rating_level %> - </span>
+          <span class="level-rating-text"><%= rating_name %></span>
+        </div>
+      </button>
       <% end %>
       <p>
         Who <em>might</em> find this post most valuable, based on overall experience level?
@@ -170,12 +201,25 @@
 
 <script defer>
   setTimeout(function () {
-    var butts = document.getElementsByClassName('reaction-button');
+    var butts = document.querySelectorAll('.reaction-button, .reaction-vomit-button');
+    function applyReactedClass(category) {
+      const upVote = document.querySelector("[data-category='thumbsup']");
+      const downVote = document.querySelector("[data-category='thumbsdown']");
+      const vomitVote = document.querySelector("[data-category='vomit']");
+
+      if (category === 'thumbsup') {
+        downVote.classList.remove('reacted');
+        vomitVote.classList.remove('reacted');
+      } else {
+        upVote.classList.remove('reacted');
+      }
+    }
     for (var i = 0; i < butts.length; i++) {
       var butt = butts[i];
       butt.onclick = function (event) {
         event.preventDefault();
         var thisButt = this;
+        applyReactedClass(thisButt.dataset.category);
         thisButt.classList.add('reacted');
 
         function successCb(response) {
@@ -200,5 +244,59 @@
           });
       };
     }
+
+    // Experience-Level JS
+    function clearExpLevels() {
+      Array.from(
+        document.getElementsByClassName('level-rating-button selected'),
+      ).forEach((el) => {
+        el.classList.remove('selected');
+      });
+    }
+
+    async function updateExperienceLevel(currentUserId, articleId, rating, group) {
+      try {
+        const response = await fetch('/rating_votes', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'X-CSRF-Token': window.csrfToken,
+            'Content-Type': 'application/json',
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify({
+            user_id: currentUserId,
+            article_id: articleId,
+            rating,
+            group,
+          }),
+        });
+
+        const outcome = await response.json();
+
+        if (outcome.result === 'Success') {
+          clearExpLevels();
+          document
+            .getElementById(`js__rating__vote__${rating}`)
+            .classList.add('selected');
+        } else {
+          // eslint-disable-next-line no-alert
+          alert(outcome.error);
+        }
+      } catch (error) {
+        // eslint-disable-next-line no-alert
+        alert(error);
+      }
+    }
+    document.querySelectorAll('.level-rating-button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        updateExperienceLevel(
+          btn.dataset.userId,
+          btn.dataset.articleId,
+          btn.value,
+          btn.dataset.group,
+        );
+      });
+    });
   }, 200)
 </script>

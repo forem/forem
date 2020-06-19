@@ -63,11 +63,11 @@ class CommentsController < ApplicationController
       checked_code_of_conduct = params[:checked_code_of_conduct].present? && !current_user.checked_code_of_conduct
       current_user.update(checked_code_of_conduct: true) if checked_code_of_conduct
 
-      Mention.create_all(@comment)
       NotificationSubscription.create(
         user: current_user, notifiable_id: @comment.id, notifiable_type: "Comment", config: "all_comments",
       )
       Notification.send_new_comment_notifications_without_delay(@comment)
+      Mention.create_all(@comment)
 
       if @comment.invalid?
         @comment.destroy
@@ -104,7 +104,7 @@ class CommentsController < ApplicationController
       comment.destroy
       render json: { error: "comment already exists" }, status: :unprocessable_entity
     else
-      message = @comment.errors.full_messages.to_sentence
+      message = @comment.errors_as_sentence
       render json: { error: message }, status: :unprocessable_entity
     end
   # See https://github.com/thepracticaldev/dev.to/pull/5485#discussion_r366056925
@@ -132,8 +132,8 @@ class CommentsController < ApplicationController
     authorize @comment
 
     if @comment.save
-      Mention.create_all(@comment)
       Notification.send_new_comment_notifications_without_delay(@comment)
+      Mention.create_all(@comment)
 
       render json: { status: "created", path: @comment.path }
     elsif (@comment = Comment.where(body_markdown: @comment.body_markdown,
@@ -224,7 +224,7 @@ class CommentsController < ApplicationController
     if @comment.save
       render json: { hidden: "true" }, status: :ok
     else
-      render json: { errors: @comment.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+      render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity
     end
   end
 
@@ -237,7 +237,7 @@ class CommentsController < ApplicationController
       @commentable&.update_column(:any_comments_hidden, @commentable.comments.pluck(:hidden_by_commentable_user).include?(true))
       render json: { hidden: "false" }, status: :ok
     else
-      render json: { errors: @comment.errors.full_messages.join(", "), status: 422 }, status: :unprocessable_entity
+      render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity
     end
   end
 

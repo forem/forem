@@ -24,11 +24,14 @@
             <a href="/t/<%= tag.name %>">
               <%= tag.name %>
             </a>
-            <%= form_for(follow) do |f| %>
-              <%= f.label(:points, "Follow Weight:") %>
-              <%= f.number_field(:points, step: :any, required: true) %>
-              <%= f.submit "Submit" %>
-            <% end %>
+            <div class="follow-tag-actions">
+              <%= form_for(follow) do |f| %>
+                <%= f.label(:points, "Follow Weight:") %>
+                <%= f.number_field(:points, step: :any, required: true) %>
+                <%= f.submit "Submit" %>
+              <% end %>
+              <button class="cta follow-action-button dashboard-follow follow-tag" data-info='{"id":<%= tag.id %>,"className":"Tag"}'>&nbsp;</button>
+            </div>
           </h2>
         </div>
       <% end %>

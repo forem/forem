@@ -11,7 +11,8 @@ RSpec.describe "User uses response templates settings", type: :system do
     end
 
     context "when user has a response template already" do
-      it "renders the page", js: true, percy: true do
+      # TODO: Uncomment this spec when we decide to use percy again
+      xit "renders the page", js: true, percy: true do
         visit "/settings/response-templates"
 
         Percy.snapshot(page, name: "Settings: /response-templates renders")
@@ -28,7 +29,8 @@ RSpec.describe "User uses response templates settings", type: :system do
         expect(page).to have_current_path "/settings/response-templates/#{response_template.id}", ignore_query: true
       end
 
-      it "renders the page when deleting a response template", js: true, percy: true do
+      # TODO: Uncomment this spec when we decide to use percy again
+      xit "renders the page when deleting a response template", js: true, percy: true do
         visit "/settings/response-templates"
         accept_confirm { click_button "Remove" }
 

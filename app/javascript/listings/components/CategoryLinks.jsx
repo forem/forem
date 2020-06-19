@@ -4,17 +4,25 @@ import PropTypes from 'prop-types';
 const CategoryLinks = ({ categories, onClick, selectedCategory }) => {
   return (
     <section>
-      {categories.map((category) => (
-        <a
-          href={`/listings/${category.slug}`}
-          id={`category-link-${category.slug}`}
-          className={category.slug === selectedCategory ? 'selected' : ''}
-          onClick={(e) => onClick(e, category.slug)}
-          data-no-instant
-        >
-          {category.name}
-        </a>
-      ))}
+      {categories.map((category) => {
+        const dataTestIdProp =
+          category.slug === selectedCategory
+            ? { 'data-testid': 'selected-category' }
+            : {};
+
+        return (
+          <a
+            href={`/listings/${category.slug}`}
+            id={`category-link-${category.slug}`}
+            className={category.slug === selectedCategory ? 'selected' : ''}
+            onClick={(e) => onClick(e, category.slug)}
+            data-no-instant
+            {...dataTestIdProp}
+          >
+            {category.name}
+          </a>
+        );
+      })}
     </section>
   );
 };

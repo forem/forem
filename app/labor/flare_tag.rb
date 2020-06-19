@@ -19,11 +19,9 @@ class FlareTag
   end
 
   def tag
-    @tag ||= Rails.cache.fetch("article_flare_tag-#{article.id}-#{article.updated_at}", expires_in: 12.hours) do
-      # Take the first flare tag to show up in the array
-      flare = FLARE_TAGS.detect { |tag| article.cached_tag_list_array.include?(tag) }
-      flare && flare != except_tag ? Tag.select(%i[name bg_color_hex text_color_hex]).find_by(name: flare) : nil
-    end
+    @tag ||= if cached_tag_id
+               Tag.select(%i[name bg_color_hex text_color_hex]).find_by(id: cached_tag_id)
+             end
   end
 
   def tag_hash
@@ -37,4 +35,13 @@ class FlareTag
   private
 
   attr_reader :article, :except_tag
+
+  def cached_tag_id
+    Rails.cache.fetch("article-#{article.id}_flare_tag_id-#{article.updated_at}", expires_in: 12.hours) do
+      flare = FLARE_TAGS.detect { |tag| article.cached_tag_list_array.include?(tag) }
+      if flare && flare != except_tag
+        Tag.find_by(name: flare).id
+      end
+    end
+  end
 end

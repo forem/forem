@@ -19,6 +19,7 @@ FactoryBot.define do
     saw_onboarding               { true }
     checked_code_of_conduct      { true }
     checked_terms_and_conditions { true }
+    display_announcements        { true }
     signup_cta_variant           { "navbar_basic" }
     email_digest_periodic        { false }
     bg_color_hex                 { Faker::Color.hex_color }
@@ -71,10 +72,6 @@ FactoryBot.define do
 
     trait :banned do
       after(:build) { |user| user.add_role(:banned) }
-    end
-
-    trait :video_permission do
-      after(:build) { |user| user.created_at = 3.weeks.ago }
     end
 
     trait :ignore_mailchimp_subscribe_callback do

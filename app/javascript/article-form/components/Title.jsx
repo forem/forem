@@ -4,7 +4,7 @@ import Textarea from 'preact-textarea-autosize';
 
 export const Title = ({ onChange, defaultValue, switchHelpContext }) => {
   return (
-    <div className="crayons-article-form__title">
+    <div data-testid="article-form__title" className="crayons-article-form__title">
       <Textarea
         className="crayons-textfield crayons-textfield--ghost fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight"
         type="text"

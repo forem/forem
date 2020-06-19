@@ -21,79 +21,55 @@ RSpec.describe Notification, type: :model do
   end
 
   describe "when trying to create duplicate notifications" do
-    # Duplicate notifications are not allowed even when validations are skipped
-    it "doesn't allow to create a duplicate notification via import" do
-      create(:notification, user: user, notifiable: article, action: "Reaction")
-      duplicate_notification = build(:notification, user: user, notifiable: article, action: "Reaction")
-      expect do
-        described_class.import([duplicate_notification],
-                               on_duplicate_key_update: {
-                                 conflict_target: %i[notifiable_id notifiable_type user_id action],
-                                 index_predicate: "action IS NOT NULL",
-                                 columns: %i[json_data notified_at read]
-                               })
-      end.not_to change(described_class, :count)
-    end
+    describe "when notifiable is an Article" do
+      it "doesn't allow to create duplicated article reaction notifications for a user" do
+        reaction = create(:reaction, reactable: article, user: user2)
 
-    it "updates when trying to create a duplicate notification via import" do
-      notification = create(
-        :notification, user: user, notifiable: article, action: "Reaction", json_data: { "user_id" => 1 }
-      )
-      duplicate_notification = build(
-        :notification, user: user, notifiable: article, action: "Reaction", json_data: { "user_id" => 2 }
-      )
-      described_class.import([duplicate_notification],
-                             on_duplicate_key_update: {
-                               conflict_target: %i[notifiable_id notifiable_type user_id action],
-                               index_predicate: "action IS NOT NULL",
-                               columns: %i[json_data notified_at read]
-                             })
-      notification.reload
-      expect(notification.json_data["user_id"]).to eq(2)
-    end
+        described_class.send_reaction_notification_without_delay(reaction, article.user)
+        expect(article.user.notifications.count).to eq(1)
 
-    it "doesn't allow to create a duplicate organization notification via import" do
-      create(:notification, organization: organization, notifiable: article, action: "Reaction")
-      duplicate_notification = build(:notification, organization: organization, notifiable: article, action: "Reaction")
-      expect do
-        described_class.import([duplicate_notification],
-                               on_duplicate_key_update: {
-                                 conflict_target: %i[notifiable_id notifiable_type organization_id action],
-                                 index_predicate: "action IS NOT NULL",
-                                 columns: %i[json_data notified_at read]
-                               })
-      end.not_to change(described_class, :count)
+        expect do
+          described_class.send_reaction_notification_without_delay(reaction, article.user)
+        end.not_to change(article.user.notifications, :count)
+      end
+
+      it "doesn't allow to create duplicated article reaction notifications for an organization" do
+        article = create(:article, organization: organization)
+        reaction = create(:reaction, reactable: article, user: user2)
+
+        described_class.send_reaction_notification_without_delay(reaction, article.organization)
+        expect(article.organization.notifications.count).to eq(1)
+
+        expect do
+          described_class.send_reaction_notification_without_delay(reaction, article.organization)
+        end.not_to change(article.organization.notifications, :count)
+      end
     end
 
     describe "when notifiable is a Comment" do
-      let!(:comment) { create(:comment, commentable: article) }
+      it "doesn't allow to create duplicated comment reaction notifications for a user" do
+        comment = create(:comment, commentable: article)
+        reaction = create(:reaction, reactable: comment, user: user2)
 
-      it "doesn't allow to create a duplicate user notification via import when action is nil" do
-        notification_attributes = { user: user, notifiable: comment, action: nil }
-        create(:notification, notification_attributes)
-        duplicate_notification = build(:notification, notification_attributes)
+        described_class.send_reaction_notification_without_delay(reaction, comment.user)
+        expect(comment.user.notifications.count).to eq(1)
+
         expect do
-          described_class.import([duplicate_notification],
-                                 on_duplicate_key_update: {
-                                   conflict_target: %i[notifiable_id notifiable_type user_id],
-                                   index_predicate: "action IS NULL",
-                                   columns: %i[json_data notified_at read]
-                                 })
-        end.not_to change(described_class, :count)
+          described_class.send_reaction_notification_without_delay(reaction, comment.user)
+        end.not_to change(comment.user.notifications, :count)
       end
 
-      it "doesn't allow to create a duplicate org notification via import when action is nil" do
-        notification_attributes = { organization: organization, notifiable: comment, action: nil }
-        create(:notification, notification_attributes)
-        duplicate_notification = build(:notification, notification_attributes)
+      it "doesn't allow to create duplicated comment reaction notifications for an organization" do
+        article = create(:article, organization: organization)
+        comment = create(:comment, commentable: article)
+        reaction = create(:reaction, reactable: comment, user: user2)
+
+        described_class.send_reaction_notification_without_delay(reaction, article.organization)
+        expect(article.organization.notifications.count).to eq(1)
+
         expect do
-          described_class.import([duplicate_notification],
-                                 on_duplicate_key_update: {
-                                   conflict_target: %i[notifiable_id notifiable_type organization_id],
-                                   index_predicate: "action IS NULL",
-                                   columns: %i[json_data notified_at read]
-                                 })
-        end.not_to change(described_class, :count)
+          described_class.send_reaction_notification_without_delay(reaction, article.organization)
+        end.not_to change(article.organization.notifications, :count)
       end
     end
   end

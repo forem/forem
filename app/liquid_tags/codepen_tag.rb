@@ -22,7 +22,7 @@ class CodepenTag < LiquidTagBase
   private
 
   def valid_option(option)
-    option.match(/(default-tab\=\w+(\,\w+)?)/)
+    option.match(/(default-tab=\w+(,\w+)?)/)
   end
 
   def parse_options(input)

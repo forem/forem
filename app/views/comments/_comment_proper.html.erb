@@ -12,7 +12,7 @@
 
       <% if decorated_comment.low_quality %>
         <div class="low-quality-comment-marker">
-          <%= image_tag(cl_image_path(asset_path("/assets/sloan.png"),
+          <%= image_tag(cl_image_path(SiteConfig.mascot_image_url,
                                       type: "fetch",
                                       width: 50,
                                       height: 50,
@@ -54,15 +54,12 @@
         <% end %>
         <%= render "comments/comment_date", decorated_comment: decorated_comment %>
         <button class="dropbtn" aria-label="Toggle dropdown menu">
-          <%= image_tag("three-dots.svg", class: "dropdown-icon", alt: "Dropdown menu") %>
+          <%= image_tag("overflow-horizontal.svg", class: "dropdown-icon", alt: "Dropdown menu") %>
         </button>
         <div class="dropdown">
-          <div class="dropdown-content">
-            <a href="<%= comment.path %>">
-              Permalink
-            </a>
-            <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" style="display: none;">
-              <a href="<%= comment.path %>/settings" rel="nofollow" style="color:#0a0a0a;" data-no-instant>Settings</a>
+          <div class="crayons-dropdown p-1 z-30 right-1 left-1 s:right-0 s:left-auto fs-base">
+            <a href="<%= comment.path %>" class="crayons-link crayons-link--block">Permalink</a>
+            <span class="comment-actions hidden" data-user-id="<%= comment.user_id %>" data-action="settings-button" data-path="<%= comment.path %>/settings">
             </span>
             <% action = comment.hidden_by_commentable_user ? "Unhide" : "Hide" %>
             <span class="comment-actions hidden" data-action="hide-button" data-commentable-user-id="<%= commentable.user_id %>" data-user-id="<%= comment.user_id %>" style="display: none; width: 100%;">
@@ -70,10 +67,8 @@
                 <%= action %>
               </button>
             </span>
-            <span class="mod-actions hidden" style="display: none;">
-              <a href="<%= comment.path %>/mod" rel="nofollow" style="color:#0a0a0a">Moderate</a>
-            </span>
-            <a href="/report-abuse?url=<%= comment_url(comment) %>">Report Abuse</a>
+            <span class="mod-actions hidden mod-actions-comment-button" data-path="<%= comment.path %>/mod"></span>
+            <a href="/report-abuse?url=<%= comment_url(comment) %>" class="crayons-link crayons-link--block">Report Abuse</a>
           </div>
         </div>
       </div>
@@ -86,8 +81,6 @@
       </div>
       <div class="actions" data-comment-id="<%= comment.id %>" data-path="<%= commentable.path %>/comments/<%= comment.id_code_generated %>">
         <span class="current-user-actions hidden" style="display:none">
-          <a data-no-instant href="<%= commentable.path %>/comments/<%= comment.id_code_generated %>/delete_confirm" class="edit-butt" rel="nofollow">DELETE</a>
-          <a href="<%= commentable.path %>/comments/<%= comment.id_code_generated %>/edit" class="edit-butt" rel="nofollow">EDIT</a>
         </span>
         <% if comment.depth < 2 || is_childless %>
           <a href="#<%= commentable.path %>/comments/new/<%= comment.id_code_generated %>" class="toggle-reply-form" rel="nofollow">REPLY</a>

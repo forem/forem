@@ -33,6 +33,7 @@ class StoriesController < ApplicationController
   def search
     @query = "...searching"
     @article_index = true
+    @current_ordering = current_search_results_ordering
     set_surrogate_key_header "articles-page-with-query"
     render template: "articles/search"
   end
@@ -136,7 +137,7 @@ class StoriesController < ApplicationController
     @num_published_articles = if @tag_model.requires_approval?
                                 Article.published.cached_tagged_by_approval_with(@tag).size
                               else
-                                Article.published.cached_tagged_with(@tag).where("score > 2").size
+                                cached_tagged_count
                               end
     @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
     @stories = Articles::Feed.new(number_of_articles: @number_of_articles, tag: @tag, page: @page).
@@ -157,7 +158,12 @@ class StoriesController < ApplicationController
   def handle_page_display
     @story_show = true
     set_surrogate_key_header "show-page-#{params[:username]}"
-    render template: "pages/show"
+
+    if @page.template == "json"
+      render json: @page.body_json
+    else
+      render template: "pages/show"
+    end
   end
 
   def handle_base_index
@@ -396,7 +402,7 @@ class StoriesController < ApplicationController
         "logo": {
           "@context": "http://schema.org",
           "@type": "ImageObject",
-          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, "png"),
+          "url": ApplicationController.helpers.cloudinary(SiteConfig.logo_png, 192, 80, "png"),
           "width": "192",
           "height": "192"
         }
@@ -474,5 +480,17 @@ class StoriesController < ApplicationController
       @user.twitch_username,
       @user.website_url,
     ].reject(&:blank?)
+  end
+
+  def current_search_results_ordering
+    return :relevance unless params[:sort_by] == "published_at" && params[:sort_direction].present?
+
+    params[:sort_direction] == "desc" ? :newest : :oldest
+  end
+
+  def cached_tagged_count
+    Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
+      Article.published.cached_tagged_with(@tag).where("score > 2").size
+    end
   end
 end

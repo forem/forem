@@ -32,10 +32,22 @@ export default class ArticleForm extends Component {
     activateRunkitTags();
   }
 
+  // Scripts inserted via innerHTML won't execute, so we use this handler to
+  // make the Asciinema player work in previews.
+  static handleAsciinemaPreview() {
+    const els = document.getElementsByClassName('ltag_asciinema');
+    for (let i = 0; i < els.length; i += 1) {
+      const el = els[i];
+      const script = el.removeChild(el.firstElementChild);
+      postscribe(el, script.outerHTML);
+    }
+  }
+
   static propTypes = {
     version: PropTypes.string.isRequired,
     article: PropTypes.string.isRequired,
     organizations: PropTypes.string,
+    logoSvg: PropTypes.string.isRequired,
   };
 
   static defaultProps = {
@@ -44,11 +56,10 @@ export default class ArticleForm extends Component {
 
   constructor(props) {
     super(props);
-    const { article, version } = this.props;
+    const { article, version, logoSvg } = this.props;
     let { organizations } = this.props;
     this.article = JSON.parse(article);
     organizations = organizations ? JSON.parse(organizations) : null;
-
     this.url = window.location.href;
     this.state = {
       id: this.article.id || null, // eslint-disable-line react/no-unused-state
@@ -71,6 +82,7 @@ export default class ArticleForm extends Component {
       edited: false,
       updatedAt: this.article.updated_at,
       version,
+      logoSvg,
       helpFor: null,
       helpPosition: null,
     };
@@ -103,6 +115,7 @@ export default class ArticleForm extends Component {
     if (previewResponse) {
       this.constructor.handleGistPreview();
       this.constructor.handleRunkitPreview();
+      this.constructor.handleAsciinemaPreview();
     }
   }
 
@@ -280,6 +293,7 @@ export default class ArticleForm extends Component {
       version,
       helpFor,
       helpPosition,
+      logoSvg,
     } = this.state;
 
     return (
@@ -295,39 +309,38 @@ export default class ArticleForm extends Component {
           organizations={organizations}
           organizationId={organizationId}
           onToggle={this.handleOrgIdChange}
+          logoSvg={logoSvg}
         />
 
-        <div className="crayons-article-form__main">
-          {previewShowing ? (
-            <Preview
-              previewResponse={previewResponse}
-              articleState={this.state}
-              errors={errors}
-            />
-          ) : (
-            <Form
-              titleDefaultValue={title}
-              titleOnChange={linkState(this, 'title')}
-              tagsDefaultValue={tagList}
-              tagsOnInput={linkState(this, 'tagList')}
-              bodyDefaultValue={bodyMarkdown}
-              bodyOnChange={linkState(this, 'bodyMarkdown')}
-              bodyHasFocus={false}
-              version={version}
-              mainImage={mainImage}
-              onMainImageUrlChange={this.handleMainImageUrlChange}
-              errors={errors}
-              switchHelpContext={this.switchHelpContext}
-            />
-          )}
-
-          <Help
-            previewShowing={previewShowing}
-            helpFor={helpFor}
-            helpPosition={helpPosition}
-            version={version}
+        {previewShowing ? (
+          <Preview
+            previewResponse={previewResponse}
+            articleState={this.state}
+            errors={errors}
           />
-        </div>
+        ) : (
+          <Form
+            titleDefaultValue={title}
+            titleOnChange={linkState(this, 'title')}
+            tagsDefaultValue={tagList}
+            tagsOnInput={linkState(this, 'tagList')}
+            bodyDefaultValue={bodyMarkdown}
+            bodyOnChange={linkState(this, 'bodyMarkdown')}
+            bodyHasFocus={false}
+            version={version}
+            mainImage={mainImage}
+            onMainImageUrlChange={this.handleMainImageUrlChange}
+            errors={errors}
+            switchHelpContext={this.switchHelpContext}
+          />
+        )}
+
+        <Help
+          previewShowing={previewShowing}
+          helpFor={helpFor}
+          helpPosition={helpPosition}
+          version={version}
+        />
 
         <EditorActions
           published={published}

@@ -1,6 +1,6 @@
 class ChatChannelsController < ApplicationController
   before_action :authenticate_user!, only: %i[moderate]
-  before_action :set_channel, only: %i[show update open moderate]
+  before_action :set_channel, only: %i[show update update_channel open moderate]
   after_action :verify_authorized
 
   def index
@@ -33,19 +33,34 @@ class ChatChannelsController < ApplicationController
   end
 
   def update
-    if ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
-      if !chat_channel_params[:discoverable].to_i.zero?
-        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: @chat_channel.id, role: "member", status: "active")
+    chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_params)
+    if chat_channel.errors.any?
+      flash[:error] = chat_channel.errors.full_messages.to_sentence
+    else
+      if chat_channel_params[:discoverable].to_i.zero?
+        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id, role: "member", status: "active")
       else
         ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
       end
       flash[:settings_notice] = "Channel settings updated."
-    else
-      default_error_message = "Channel settings updation failed. Try again later."
-      flash[:error] = @chat_channel.errors.full_messages.to_sentence.presence || default_error_message
     end
     current_user_membership = @chat_channel.mod_memberships.find_by!(user: current_user)
+
     redirect_to edit_chat_channel_membership_path(current_user_membership)
+  end
+
+  def update_channel
+    chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_params)
+    if chat_channel.errors.any?
+      render json: { success: false, errors: chat_channel.errors.full_messages, message: "Channel settings updation failed. Try again later." }, success: :bad_request
+    else
+      if chat_channel_params[:discoverable]
+        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id, role: "member", status: "active")
+      else
+        ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
+      end
+      render json: { success: true, message: "Channel settings updated.", data: {} }, success: :ok
+    end
   end
 
   def open
@@ -147,7 +162,7 @@ class ChatChannelsController < ApplicationController
 
   def render_unopened_json_response
     @chat_channels_memberships = if session_current_user_id
-                                   ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
+                                   ChatChannelMembership.where(user_id: session_current_user_id).includes(%i[chat_channel user]).
                                      where(has_unopened_messages: true).
                                      where(show_global_badge_notification: true).
                                      where.not(status: %w[removed_from_channel left_channel]).
@@ -177,9 +192,11 @@ class ChatChannelsController < ApplicationController
   end
 
   def render_joining_request_json_response
-    requested_memberships = current_user.chat_channel_memberships.includes(:chat_channel).
-      where(chat_channels: { discoverable: true }, role: "mod").pluck(:chat_channel_id).map { |membership_id| ChatChannel.find_by(id: membership_id).requested_memberships }
-    render json: { joining_requests: requested_memberships.flatten }
+    requested_memberships_id = current_user.chat_channel_memberships.includes(:chat_channel).
+      where(chat_channels: { discoverable: true }, role: "mod").pluck(:chat_channel_id).map { |membership_id| ChatChannel.find_by(id: membership_id).requested_memberships }.flatten.map(&:id)
+    @chat_channels_memberships = ChatChannelMembership.includes(%i[user chat_channel]).where(id: requested_memberships_id)
+
+    render "index.json"
   end
 
   def render_channels_html

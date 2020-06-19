@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :broadcast do
     active { true }
+    active_status_updated_at { 2.days.ago }
 
     factory :set_up_profile_broadcast do
       title          { "Welcome Notification: set_up_profile" }
@@ -65,7 +66,11 @@ FactoryBot.define do
     factory :announcement_broadcast do
       title          { "A Very Important Announcement" }
       type_of        { "Announcement" }
-      processed_html { "Hello, World!" }
+      processed_html { "<p>Hello, World!</p>" }
+    end
+
+    trait :with_tracking do
+      processed_html { "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome' onclick='trackNotification(event)'>the welcome thread</a>!" }
     end
   end
 end

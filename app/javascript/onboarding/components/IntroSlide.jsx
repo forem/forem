@@ -102,19 +102,19 @@ class IntroSlide extends Component {
     }
 
     return (
-      <div className="onboarding-main introduction crayons-modal crayons-modal--m">
+      <div data-testid="onboarding-intro-slide" className="onboarding-main introduction crayons-modal crayons-modal--m">
         <div className="crayons-modal__box overflow-auto">
           <div className="onboarding-content">
             <figure>
               <img
-                src="/assets/purple-dev-logo.png"
+                src={communityConfig.communityLogo}
                 className="sticker-logo"
-                alt="DEV"
+                alt={communityConfig.communityName}
               />
             </figure>
-            <h1 className="introduction-title">
+            <h1 data-testid="onboarding-introduction-title" className="introduction-title">
               {this.user.name}
-              &mdash; welcome to 
+              &mdash; welcome to
               {' '}
               {communityConfig.communityName}
               !
@@ -129,7 +129,7 @@ class IntroSlide extends Component {
               <fieldset>
                 <ul>
                   <li className="checkbox-item">
-                    <label htmlFor="checked_code_of_conduct">
+                    <label data-testid="checked-code-of-conduct" htmlFor="checked_code_of_conduct">
                       <input
                         type="checkbox"
                         id="checked_code_of_conduct"
@@ -151,7 +151,7 @@ class IntroSlide extends Component {
                   </li>
 
                   <li className="checkbox-item">
-                    <label htmlFor="checked_terms_and_conditions">
+                    <label data-testid="checked-terms-and-conditions" htmlFor="checked_terms_and_conditions">
                       <input
                         type="checkbox"
                         id="checked_terms_and_conditions"
@@ -196,9 +196,10 @@ IntroSlide.propTypes = {
   slidesCount: PropTypes.number.isRequired,
   currentSlideIndex: PropTypes.func.isRequired,
   communityConfig: PropTypes.shape({
+    communityLogo: PropTypes.string.isRequired,
     communityName: PropTypes.string.isRequired,
     communityDescription: PropTypes.string.isRequired
-  }),
+  }).isRequired,
 };
 
 export default IntroSlide;

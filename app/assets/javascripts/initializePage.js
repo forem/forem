@@ -4,13 +4,13 @@
   initializeBaseTracking, initializeTouchDevice, initializeCommentsPage,
   initializeArticleDate, initializeArticleReactions, initNotifications,
   initializeCommentDate, initializeCommentDropdown, initializeSettings,
-  initializeFooterMod, initializeCommentPreview, initializeAdditionalContentBoxes,
+  initializeCommentPreview, initializeAdditionalContentBoxes,
   initializeTimeFixer, initializeDashboardSort, initializePWAFunctionality,
   initializeEllipsisMenu, initializeArchivedPostFilter, initializeCreditsPage,
   initializeUserProfilePage, initializePodcastPlayback, initializeDrawerSliders,
   initializeHeroBannerClose, initializeOnboardingTaskCard, initScrolling,
   nextPage:writable, fetching:writable, done:writable, adClicked:writable,
-  initializeSpecialNavigationFunctionality
+  initializePaymentPointers, initializeSpecialNavigationFunctionality, initializeBroadcast
 */
 
 function callInitializers() {
@@ -25,6 +25,7 @@ function callInitializers() {
         initializeAllChatButtons();
         initializeAllTagEditButtons();
       }
+      initializeBroadcast();
       initializeAllFollowButts();
       initializeUserFollowButts();
       initializeReadingListIcons();
@@ -37,6 +38,7 @@ function callInitializers() {
 
   initializeSpecialNavigationFunctionality();
   initializeBaseTracking();
+  initializePaymentPointers();
   initializeTouchDevice();
   initializeCommentsPage();
   initializeArticleDate();
@@ -46,7 +48,6 @@ function callInitializers() {
   initializeCommentDate();
   initializeCommentDropdown();
   initializeSettings();
-  initializeFooterMod();
   initializeCommentPreview();
   initializeAdditionalContentBoxes();
   initializeTimeFixer();

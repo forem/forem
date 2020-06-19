@@ -11,6 +11,7 @@ RSpec.describe Article, type: :model do
   let!(:article) { create(:article, user: user) }
 
   include_examples "#sync_reactions_count", :article
+  it_behaves_like "UserSubscriptionSourceable"
 
   describe "validations" do
     it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }
@@ -240,6 +241,16 @@ RSpec.describe Article, type: :model do
       it "rejects tags with length > 30" do
         tags = "'testing tag length with more than 30 chars', tag"
         expect(build(:article, tags: tags).valid?).to be(false)
+      end
+
+      it "rejects tag with non-alphanumerics" do
+        expect { build(:article, tags: "c++").validate! }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "always downcase tags" do
+        tags = "UPPERCASE, CAPITALIZE"
+        article = create(:article, tags: tags)
+        expect(article.tag_list).to eq(tags.downcase.split(", "))
       end
 
       it "parses tags when description is empty" do

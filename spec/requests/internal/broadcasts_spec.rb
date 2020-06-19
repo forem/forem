@@ -47,6 +47,31 @@ RSpec.describe "/internal/broadcasts", type: :request do
         end.to change { Broadcast.all.count }.by(1)
       end
     end
+
+    describe "PUT /internal/broadcasts" do
+      let!(:broadcast) { create(:welcome_broadcast, active: false) }
+
+      it "updates the Broadcast's active_status_updated_at timestamp" do
+        old_time = broadcast.active_status_updated_at
+        Timecop.freeze(Time.current) do
+          expect do
+            put "/internal/broadcasts/#{broadcast.id}", params: params
+          end.to change { broadcast.reload.active }.from(false).to(true)
+          expect(broadcast.active_status_updated_at).not_to eq(old_time)
+        end
+      end
+    end
+
+    describe "DELETE /internal/broadcasts/:id" do
+      let!(:broadcast) { create(:welcome_broadcast) }
+
+      it "deletes the broadcast" do
+        expect do
+          delete "/internal/broadcasts/#{broadcast.id}"
+        end.to change { Broadcast.all.count }.by(-1)
+        expect(response.body).to redirect_to "/internal/broadcasts"
+      end
+    end
   end
 
   context "when the user is a single resource admin" do
@@ -66,6 +91,17 @@ RSpec.describe "/internal/broadcasts", type: :request do
         expect do
           post_resource
         end.to change { Broadcast.all.count }.by(1)
+      end
+    end
+
+    describe "DELETE /internal/broadcasts/:id" do
+      let!(:broadcast) { create(:welcome_broadcast) }
+
+      it "deletes the broadcast" do
+        expect do
+          delete "/internal/broadcasts/#{broadcast.id}"
+        end.to change { Broadcast.all.count }.by(-1)
+        expect(response.body).to redirect_to "/internal/broadcasts"
       end
     end
   end
@@ -110,6 +146,21 @@ RSpec.describe "/internal/broadcasts", type: :request do
           post_resource
         end.to change { Broadcast.all.count }.by(1)
       end
+    end
+  end
+
+  context "with the same title and the same type_of" do
+    let(:super_admin) { create(:user, :super_admin) }
+    let(:params) { { title: "Hello!", processed_html: "<p>Hello!</p>", type_of: "Announcement" } }
+
+    before { sign_in super_admin }
+
+    it "does not allow for a second broadcast to be created" do
+      expect do
+        2.times do
+          post_resource
+        end
+      end.to change { Broadcast.all.count }.by(1)
     end
   end
 end

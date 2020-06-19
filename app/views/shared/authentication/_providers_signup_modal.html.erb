@@ -1,11 +1,9 @@
 <% authentication_enabled_providers.each do |provider| %>
   <a
     href="<%= provider.sign_in_path(state: "signup-modal") %>"
-    class="sign-up-link cta"
+    class="crayons-btn crayons-btn--xl crayons-btn--brand-<%= provider.provider_name %> crayons-btn--icon-left m-1"
     data-no-instant>
-    <img
-      src="<%= asset_path("#{provider.provider_name}-logo.svg") %>"
-      class="icon-img"
-      alt="<%= provider.official_name %> logo" /> Sign In With <%= provider.official_name %>
+    <%= inline_svg_tag("#{provider.provider_name}.svg", aria: true, class: "crayons-icon", title: provider.provider_name) %>
+    Sign In with <%= provider.official_name %>
   </a>
 <% end %>
