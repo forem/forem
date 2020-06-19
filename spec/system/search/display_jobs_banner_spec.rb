@@ -29,5 +29,13 @@ RSpec.describe "Display Jobs Banner spec", type: :system, js: true, stub_elastic
 
       expect(page).not_to have_content("Interested in joining our team?")
     end
+
+    it "does not show jobs banner when there's no jobs_url set" do
+      allow(SiteConfig).to receive(:jobs_url).and_return(nil)
+
+      visit "/search?q=jobs"
+
+      expect(page).not_to have_content("Interested in joining our team?")
+    end
   end
 end
