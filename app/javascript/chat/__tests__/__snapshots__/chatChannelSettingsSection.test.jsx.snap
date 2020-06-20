@@ -1,0 +1,286 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ChatChannelSettingsSection /> should render & test snapshot 1`] = `
+<div>
+  <div
+    class="p-4 grid gap-2 crayons-card mb-4 channel_details"
+  >
+    <h1
+      class="mb-1 channel_title"
+    >
+      dummy-channel
+    </h1>
+    <p>
+      dummy-description
+    </p>
+    <p
+      class="fw-bold"
+    >
+      You are a channel mod
+    </p>
+  </div>
+  <div
+    class="membership-list"
+  >
+    <div
+      class="p-4 grid gap-2 crayons-card mb-4"
+    >
+      <h3
+        class="mb-2 active_members"
+      >
+        Members
+      </h3>
+      <div
+        class="flex items-center"
+      >
+        <a
+          href="/testusername"
+        >
+          <span
+            class="crayons-avatar crayons-avatar--l mr-3"
+          >
+            <img
+              alt="test user profile"
+              class="crayons-avatar__image align-middle"
+              role="presentation"
+              src=""
+            />
+          </span>
+          <span
+            class="mr-2 user_name"
+          >
+            test user
+          </span>
+        </a>
+      </div>
+      <div
+        class="row view-membership-btn"
+      >
+        <button
+          class="crayons-btn align-center crayons-btn--s view-all-memberships"
+          onClick={[Function]}
+          type="button"
+        >
+          View All
+        </button>
+      </div>
+    </div>
+    <div
+      class="p-4 grid gap-2 crayons-card mb-4 pending_memberships"
+    >
+      <h3
+        class="mb-2"
+      >
+        Pending Invitations
+      </h3>
+      <div
+        class="flex items-center"
+      >
+        <a
+          href="/testusername"
+        >
+          <span
+            class="crayons-avatar crayons-avatar--l mr-3"
+          >
+            <img
+              alt="test user profile"
+              class="crayons-avatar__image align-middle"
+              role="presentation"
+              src=""
+            />
+          </span>
+          <span
+            class="mr-2 user_name"
+          >
+            test user
+          </span>
+        </a>
+        <button
+          class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost remove-membership"
+          data-membership-id="2"
+          data-membership-status="pending"
+          type="button"
+        >
+          x
+        </button>
+      </div>
+    </div>
+    <div
+      class="p-4 grid gap-2 crayons-card mb-4"
+    >
+      <h3
+        class="mb-2 requested_memberships"
+      >
+        Joining Request
+      </h3>
+      <div
+        class="flex items-center"
+      >
+        <a
+          href="/testusername"
+        >
+          <span
+            class="crayons-avatar crayons-avatar--l mr-3"
+          >
+            <img
+              alt="test user profile"
+              class="crayons-avatar__image align-middle"
+              role="presentation"
+              src=""
+            />
+          </span>
+          <span
+            class="mr-2 user_name"
+          >
+            test user
+          </span>
+        </a>
+        <button
+          class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost add-membership"
+          data-membership-id="2"
+          type="button"
+        >
+          +
+        </button>
+        <button
+          class="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost remove-membership"
+          data-membership-id="2"
+          data-membership-status="requested"
+          type="button"
+        >
+          x
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mod-section"
+  >
+    <div
+      class="crayons-card p-4 grid gap-2 mb-4"
+    >
+      <div
+        class="crayons-field"
+      >
+        <label
+          class="crayons-field__label invitation_form_title"
+          htmlFor="chat_channel_membership_Usernames to Invite"
+        >
+          Usernames to invite
+        </label>
+        <input
+          class="crayons-textfield"
+          id="chat_channel_membership_invitation_usernames"
+          name="chat_channel_membership[invitation_usernames]"
+          placeholder="Comma separated"
+          type="text"
+        />
+      </div>
+      <div>
+        <button
+          class="crayons-btn"
+          type="submit"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+    <div
+      class="crayons-card p-4 grid gap-2 mb-4 settings-section"
+    >
+      <h3>
+        Channel Settings
+      </h3>
+      <div
+        class="crayons-field"
+      >
+        <label
+          class="crayons-field__label"
+          htmlFor="chat_channel_description"
+        >
+          Description
+        </label>
+        <textarea
+          class="crayons-textfield"
+          id="chat_channel_description"
+          name="description"
+        />
+      </div>
+      <div
+        class="crayons-field crayons-field--checkbox"
+      >
+        <input
+          checked={true}
+          class="crayons-checkbox"
+          id="c2"
+          type="checkbox"
+        />
+        <label
+          class="crayons-field__label"
+          htmlFor="c2"
+        >
+          Channel Discoverable
+        </label>
+      </div>
+      <div>
+        <button
+          class="crayons-btn"
+          type="submit"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    class="crayons-card p-4 grid gap-2 mb-4 personl-settings"
+  >
+    <h3>
+      Personal Settings
+    </h3>
+    <h4>
+      Notifications
+    </h4>
+    <div
+      class="crayons-field crayons-field--checkbox"
+    >
+      <input
+        class="crayons-checkbox"
+        id="c3"
+        type="checkbox"
+      />
+      <label
+        class="crayons-field__label"
+        htmlFor="c3"
+      >
+        Receive Notifications for New Messages
+      </label>
+    </div>
+    <div>
+      <button
+        class="crayons-btn"
+        type="submit"
+      >
+        Submit
+      </button>
+    </div>
+  </div>
+  <div
+    class="crayons-card grid gap-2 p-4 faq-section"
+  >
+    <p
+      class="contact-details"
+    >
+      Questions about Connect Channel moderation? Contact
+      <a
+        class="mx-2 url-link"
+        href="mailto:yo@dev.to"
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        yo@dev.to
+      </a>
+    </p>
+  </div>
+</div>
+`;

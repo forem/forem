@@ -60,4 +60,10 @@ describe('<ActiveMembershipsSection />', () => {
 
     expect(context.find('.active-member').exists()).toEqual(true);
   });
+
+  it('should render the view all membership list button', () => {
+    const context = shallow(getActiveMembershipsSection(membership));
+
+    expect(context.find('.view-all-memberships').exists()).toEqual(true);
+  });
 });

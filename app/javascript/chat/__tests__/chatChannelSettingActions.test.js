@@ -7,6 +7,7 @@ import {
   updateChatChannelDescription,
   sendChatChannelInvitation,
   leaveChatChannelMembership,
+  updateMembershipRole,
 } from '../actions/chat_channel_setting_actions';
 
 /* global globalThis */
@@ -197,6 +198,28 @@ describe('Chat cahnnel API requestes', () => {
       fetch.mockResponse(JSON.stringify(response));
 
       const result = await leaveChatChannelMembership('');
+      expect(result).toEqual(response);
+    });
+  });
+
+  describe('Update the membership role', () => {
+    it('should have the success response', async () => {
+      const response = { success: true, message: 'user membership is updated' };
+      fetch.mockResponse(JSON.stringify(response));
+
+      const result = await updateMembershipRole(
+        chanChannelMembershipId,
+        channelId,
+        'mod',
+      );
+      expect(result).toEqual(response);
+    });
+
+    it('should return the not found', async () => {
+      const response = { success: false, message: 'not found' };
+      fetch.mockResponse(JSON.stringify(response));
+
+      const result = await updateMembershipRole('', '', 'mod');
       expect(result).toEqual(response);
     });
   });

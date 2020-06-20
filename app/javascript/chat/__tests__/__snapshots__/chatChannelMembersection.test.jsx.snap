@@ -12,6 +12,17 @@ exports[`<ChatChannelMembershipSection /> should render and test snapshot 1`] = 
     >
       Members
     </h3>
+    <div
+      class="row view-membership-btn"
+    >
+      <button
+        class="crayons-btn align-center crayons-btn--s view-all-memberships"
+        onClick={[Function]}
+        type="button"
+      >
+        View All
+      </button>
+    </div>
   </div>
 </div>
 `;
