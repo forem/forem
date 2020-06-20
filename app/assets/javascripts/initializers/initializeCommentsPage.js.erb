@@ -1,140 +1,156 @@
+function updateAllCommentableButtonsAndReactionCountsAndStuff(commentableType, commentableIdList) {
+  commentableIdList.forEach((_, i) => {
+    updateButtonsAndReactionCountsAndStuff(commentableType, commentableIdList,
+      i);
+  })
+};
+
+function updateButtonsAndReactionCountsAndStuff(commentableType, commentableIdList, i) {
+  var ajaxReq;
+  if (window.XMLHttpRequest) {
+    ajaxReq = new XMLHttpRequest();
+  } else {
+    ajaxReq = new ActiveXObject('Microsoft.XMLHTTP');
+  }
+  ajaxReq.onreadystatechange = function () {
+    if (ajaxReq.readyState === XMLHttpRequest.DONE) {
+      var responseObj = JSON.parse(ajaxReq.response);
+      var reactions = responseObj.reactions;
+      var allNodes = document.getElementsByClassName('single-comment-node');
+      var publicReactionCounts = responseObj.public_reaction_counts;
+      for (var i = 0; i < reactions.length; i++) {
+        var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
+        if (buttForComment) {
+          buttForComment.classList.add('reacted');
+        }
+      }
+      for (var i = 0; i < publicReactionCounts.length; i++) {
+        var buttForComment = document.getElementById('button-for-comment-' + publicReactionCounts[i].id);
+        if (buttForComment) {
+          if (publicReactionCounts[i].count > 0) {
+            if (!document.getElementById('reactions-count-' + publicReactionCounts[i].id)) {
+              buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + publicReactionCounts[i].id + "'>" + publicReactionCounts[i].count + '</span>';
+            } else {
+              document.getElementById('reactions-count-' + publicReactionCounts[i].id).innerHTML = publicReactionCounts[i].count;
+            }
+          }
+        }
+      }
+
+      for (var i = 0; i < allNodes.length; i++) {
+        if (allNodes[i].dataset.commentAuthorId == responseObj.current_user.id) {
+          allNodes[i].dataset.currentUserComment = "true";
+          var userActionsEl = allNodes[i].children[0].children[2].children[0];
+          var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
+          if (userActionsEl && buttEl) {
+            userActionsEl.className = 'current-user-actions';
+	    userActionsEl.innerHTML = '<a data-no-instant href="' + userActionsEl.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
+	    <a href="' + userActionsEl.parentNode.dataset.path + '/edit">EDIT</a>'
+            userActionsEl.style.display = 'inline-block';
+            document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
+          }
+        }
+      }
+    }
+  };
+
+  ajaxReq.open("GET", "/reactions?commentable_id=" + commentableIdList[i] + "&commentable_type=" + commentableType, true);
+  ajaxReq.send();
+}
+
+function updateReactionCountsAndStuff() {
+  var butts = document.getElementsByClassName('reaction-button');
+  for (var i = 0; i < butts.length; i++) {
+    var butt = butts[i];
+    butt.onclick = function (event) {
+      var thisButt = this;
+      event.preventDefault();
+      sendHapticMessage('medium');
+      var userStatus = document.body.getAttribute('data-user-status');
+      if (userStatus === 'logged-out') {
+        showModal('react-to-comment');
+        return;
+      }
+
+      thisButt.classList.add('reacted');
+      thisButt.disabled = true;
+
+      function successCb(response) {
+        var reactionCountSpan = thisButt.children[2];
+        if (response.result === 'create') {
+          thisButt.classList.add('reacted');
+          if (reactionCountSpan) {
+            reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) + 1;
+          }
+        } else {
+          thisButt.classList.remove('reacted');
+          if (reactionCountSpan) {
+            reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) - 1;
+          }
+        }
+      }
+      var formData = new FormData();
+      formData.append('reactable_type', 'Comment');
+      formData.append('reactable_id', thisButt.dataset.commentId);
+      getCsrfToken()
+        .then(sendFetch('reaction-creation', formData))
+        .then(function (response) {
+          thisButt.disabled = false;
+          if (response.status === 200) {
+            response.json().then(successCb);
+          }
+        });
+    };
+  }
+}
+
+function setupCommentReplyButtonHandler(commentableId, commentableType) {
+  var replyButts = document.getElementsByClassName('toggle-reply-form');
+  for (var i = 0; i < replyButts.length; i++) {
+    var butt = replyButts[i];
+
+    function commentReplyButtonHandler(event) {
+      event.preventDefault();
+      if (event.target.classList.contains("thread-indication")) {
+        return false;
+      } else {
+	var userStatus = document.body.getAttribute('data-user-status');
+        if (userStatus == 'logged-out') {
+          showModal('reply-to-comment');
+          return;
+        }
+        var actionNode = event.target.parentNode;
+        var parentId = actionNode.dataset.commentId;
+        document.getElementById("button-for-comment-" + actionNode.dataset.commentId).style.zIndex = "5";
+        var waitingOnCSRF = setInterval(function () {
+          var metaTag = document.querySelector("meta[name='csrf-token']");
+          if (metaTag) {
+            clearInterval(waitingOnCSRF);
+            actionNode.innerHTML = buildCommentFormHTML(commentableId, commentableType, parentId);
+            setTimeout(function () {
+              actionNode.getElementsByTagName('textarea')[0].focus();
+            }, 30);
+          }
+        }, 1);
+        // document.getElementById('textarea-for-'+parentId).focus();
+      };
+      return false;
+    }
+
+    butt.onclick = commentReplyButtonHandler
+  }
+}
+
 function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
     toggleCodeOfConduct();
     var commentableId = document.getElementById('comments-container').dataset.commentableId;
     var commentableType = document.getElementById('comments-container').dataset.commentableType;
     commentableIdList = commentableId.split(",");
-    var f = (function() {
-      for (var i = 0; i < commentableIdList.length; i++) {
-        (function(i){
-          var ajaxReq;
-          if (window.XMLHttpRequest) {
-            ajaxReq = new XMLHttpRequest();
-          } else {
-            ajaxReq = new ActiveXObject('Microsoft.XMLHTTP');
-          }
-          ajaxReq.onreadystatechange = function () {
-            if (ajaxReq.readyState === XMLHttpRequest.DONE) {
-              var responseObj = JSON.parse(ajaxReq.response);
-              var reactions = responseObj.reactions;
-              var allNodes = document.getElementsByClassName('single-comment-node');
-              var publicReactionCounts = responseObj.public_reaction_counts;
-              for (var i = 0; i < reactions.length; i++) {
-                var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
-                if (buttForComment) {
-                  buttForComment.classList.add('reacted');
-                }
-              }
-              for (var i = 0; i < publicReactionCounts.length; i++) {
-                var buttForComment = document.getElementById('button-for-comment-' + publicReactionCounts[i].id);
-                if (buttForComment) {
-                  if (publicReactionCounts[i].count > 0) {
-                    if (!document.getElementById('reactions-count-' + publicReactionCounts[i].id)) {
-                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + publicReactionCounts[i].id + "'>" + publicReactionCounts[i].count + '</span>';
-                    } else {
-                      document.getElementById('reactions-count-' + publicReactionCounts[i].id).innerHTML = publicReactionCounts[i].count;
-                    }
-                  }
-                }
-              }
+    updateAllCommentableButtonsAndReactionCountsAndStuff(commentableType, commentableIdList);
+    updateReactionCountsAndStuff();
+    setupCommentReplyButtonHandler(commentableId, commentableType);
 
-              for (var i = 0; i < allNodes.length; i++) {
-                if (allNodes[i].dataset.commentAuthorId == responseObj.current_user.id) {
-                  allNodes[i].dataset.currentUserComment = "true";
-                  var userActionsEl = allNodes[i].children[0].children[2].children[0];
-                  var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
-                  if (userActionsEl && buttEl) {
-                    userActionsEl.className = 'current-user-actions';
-                    userActionsEl.innerHTML = '<a data-no-instant href="' + userActionsEl.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
-                                                <a href="' + userActionsEl.parentNode.dataset.path + '/edit">EDIT</a>'
-                    userActionsEl.style.display = 'inline-block';
-                    document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
-                  }
-                }
-              }
-            }
-          };
-
-          ajaxReq.open("GET", "/reactions?commentable_id=" + commentableIdList[i] + "&commentable_type=" + commentableType, true);
-          ajaxReq.send();
-        })(i);
-      }
-    })();
-
-    var butts = document.getElementsByClassName('reaction-button');
-    for (var i = 0; i < butts.length; i++) {
-      var butt = butts[i];
-      butt.onclick = function (event) {
-        var thisButt = this;
-        event.preventDefault();
-        sendHapticMessage('medium');
-        var userStatus = document.body.getAttribute('data-user-status');
-        if (userStatus === 'logged-out') {
-          showModal('react-to-comment');
-          return;
-        }
-
-        thisButt.classList.add('reacted');
-        thisButt.disabled = true;
-
-        function successCb(response) {
-          var reactionCountSpan = thisButt.children[2];
-          if (response.result === 'create') {
-            thisButt.classList.add('reacted');
-            if (reactionCountSpan) {
-              reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) + 1;
-            }
-          } else {
-            thisButt.classList.remove('reacted');
-            if (reactionCountSpan) {
-              reactionCountSpan.innerHTML = parseInt(reactionCountSpan.innerHTML) - 1;
-            }
-          }
-        }
-        var formData = new FormData();
-        formData.append('reactable_type', 'Comment');
-        formData.append('reactable_id', thisButt.dataset.commentId);
-        getCsrfToken()
-          .then(sendFetch('reaction-creation', formData))
-          .then(function (response) {
-            thisButt.disabled = false;
-            if (response.status === 200) {
-              response.json().then(successCb);
-            }
-          });
-      };
-    }
-    var replyButts = document.getElementsByClassName('toggle-reply-form');
-    for (var i = 0; i < replyButts.length; i++) {
-      var butt = replyButts[i];
-      butt.onclick = function (event) {
-        event.preventDefault();
-        if (event.target.classList.contains("thread-indication")) {
-          return false;
-        } else {
-          var userStatus = document.body.getAttribute('data-user-status');
-          if (userStatus == 'logged-out') {
-            showModal('reply-to-comment');
-            return;
-          }
-          var actionNode = event.target.parentNode;
-          var parentId = actionNode.dataset.commentId;
-          document.getElementById("button-for-comment-" + actionNode.dataset.commentId).style.zIndex = "5";
-          var waitingOnCSRF = setInterval(function () {
-            var metaTag = document.querySelector("meta[name='csrf-token']");
-            if (metaTag) {
-              clearInterval(waitingOnCSRF);
-              actionNode.innerHTML = buildCommentFormHTML(commentableId, commentableType, parentId);
-              setTimeout(function () {
-                actionNode.getElementsByTagName('textarea')[0].focus();
-              }, 30);
-            }
-          }, 1);
-          // document.getElementById('textarea-for-'+parentId).focus();
-        };
-        return false;
-      }
-    }
     var editButts = document.getElementsByClassName('edit-butt');
     for (var i = 0; i < editButts.length; i++) {
       var butt = editButts[i];
