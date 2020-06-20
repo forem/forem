@@ -3,8 +3,8 @@ import { h } from 'preact';
 export const Spinner = () => (
   <svg
     className="crayons-icon crayons-spinner"
-    width="24"
-    height="24"
+    width="18px"
+    height="18px"
     viewBox="0 0 18 18"
     aria-hidden="true"
     fill="none"
