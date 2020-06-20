@@ -465,6 +465,14 @@
   bottom: 0;
 }
 
+.activechatchannel__active-membershp-management {
+  position: absolute;
+  top: 0px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
 .activechatchannel__activeArticle iframe {
   position: absolute;
   top: 0;
@@ -1277,4 +1285,56 @@
 
 .channel_details {
   margin-top: 30px;
+}
+
+.view-membership-btn {
+  text-align: center;
+}
+
+.chat_channel-member-list {
+  height: 300px;
+  overflow-y: scroll;
+}
+
+.member-list-item {
+  justify-content: space-between;
+}
+
+.membership-actions {
+  .membership-management__dropdown-memu {
+    display: none;
+    position: absolute;
+    background-color: var(--theme-container-background, #fff);
+    border-style: solid;
+    border-color: var(--theme-color, #0a0a0a);
+    border-radius: 5px;
+    border-width: 1px;
+    margin-top: 0px;
+    margin-left: -6.6em;
+    z-index: 30;
+
+    button {
+      width: 100%;
+      text-align: left;
+    }
+
+    &:hover {
+      display: block;
+    }
+  }
+
+  .membership-management__dropdown-button {
+    height: 17px;
+    cursor: pointer;
+    color: var(--theme-color, #0a0a0a);
+
+    &:hover + .membership-management__dropdown-memu {
+      display: block;
+    }
+
+    img {
+      height: 100%;
+      opacity: 0.6;
+    }
+  }
 }
