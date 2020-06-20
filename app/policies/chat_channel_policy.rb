@@ -39,6 +39,14 @@ class ChatChannelPolicy < ApplicationPolicy
     user_can_edit_channel
   end
 
+  def join_channel_invitation?
+    record.present? && user.id && record.discoverable
+  end
+
+  def set_channel?
+    user_can_edit_channel
+  end
+
   private
 
   def user_can_edit_channel

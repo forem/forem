@@ -22,7 +22,8 @@ class ChatChannelDetailPresenter
         pending: membership_users(chat_channel.pending_memberships),
         requested: membership_users(chat_channel.requested_memberships)
       },
-      current_membership: current_membership
+      current_membership: current_membership,
+      invitation_link: inviation_link(chat_channel)
     }
   end
 
@@ -38,5 +39,10 @@ class ChatChannelDetailPresenter
         image: ProfileImage.new(membership.user).get(width: 90)
       }
     end
+  end
+
+  def inviation_link(chat_channel)
+    host = Rails.application.config.app_domain || "localhost:3000"
+    "#{host}/chat_channel_memberships/join_channel_invitation/#{chat_channel.slug}"
   end
 end

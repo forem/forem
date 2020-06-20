@@ -63,6 +63,9 @@ Rails.application.configure do
   # Debug is the default log_level, but can be changed per environment.
   config.log_level = :debug
 
+  # App domain
+  config.app_domain = "localhost:3000"
+
   # enable Bullet in testing mode only if requested
   config.after_initialize do
     Bullet.enable = true

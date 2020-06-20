@@ -30,9 +30,9 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def create_membership_request
-    chat_channel = ChatChannel.find_by(id: channel_membership_request_params[:chat_channel_id])
+    chat_channel = ChatChannel.find_by(id: channel_membership_params[:chat_channel_id])
     authorize chat_channel, :update?
-    usernames = channel_membership_request_params[:invitation_usernames].split(",").map { |username| username.strip.delete("@") }
+    usernames = channel_membership_params[:invitation_usernames].split(",").map { |username| username.strip.delete("@") }
     users = User.where(username: usernames)
     invitations_sent = chat_channel.invite_users(users: users, membership_role: "member", inviter: current_user)
     message = if invitations_sent.zero?
@@ -115,14 +115,44 @@ class ChatChannelMembershipsController < ApplicationController
     end
   end
 
+  def update_membership_role
+    @chat_channel = ChatChannel.find_by(id: params[:id])
+    authorize @chat_channel, :update?
+    membership = ChatChannelMembership.find_by(id: channel_membership_params[:membership_id], chat_channel_id: @chat_channel.id)
+
+    result = UpdateChatChannelMembershipService.perform(@chat_channel, membership, { role: channel_membership_params[:role] })
+    if result.errors.any?
+      render json: { success: false, message: "Failed to update membership", errors: chat_channel_membership.errors.full_messages }, status: :bad_request
+    else
+      render json: { success: true, message: "User Membership is updated" }, status: :ok
+    end
+  end
+
+  def join_channel_invitation
+    chat_channel = ChatChannel.find_by(slug: params[:channel_slug])
+    authorize chat_channel
+    membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: chat_channel.id)
+    result = if membership
+               UpdateChatChannelMembershipService.perform(chat_channel, membership, { role: "member", status: "active" })
+             else
+               CreateChatChannelMembershipService.perform(chat_channel, current_user)
+             end
+    if result.errors.any?
+      flash[:settings_notice] = "There is some error"
+      redirect_to root_path
+    end
+
+    redirect_to connect_path(chat_channel.slug)
+  end
+
   private
 
   def permitted_params
     params.require(:chat_channel_membership).permit(:user_action, :show_global_badge_notification)
   end
 
-  def channel_membership_request_params
-    params.require(:chat_channel_membership).permit(:chat_channel_id, :invitation_usernames)
+  def channel_membership_params
+    params.require(:chat_channel_membership).permit(:chat_channel_id, :invitation_usernames, :membership_id, :role)
   end
 
   def respond_to_invitation(previous_status)
