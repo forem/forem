@@ -6,14 +6,21 @@ const ActiveMembershipSection = ({
   activeMemberships,
   removeMembership,
   currentMembershipRole,
+  toggelScreens,
 }) => {
+  const RenderActiveMembershipManager = () => {
+    toggelScreens();
+  };
+
+  const activeMembershipList = activeMemberships.slice(0, 2);
+
   return (
     <div className="p-4 grid gap-2 crayons-card mb-4">
       <h3 className="mb-2 active_members">Members</h3>
-      {activeMemberships && activeMemberships.length > 0
-        ? activeMemberships.map((pendingMembership) => (
+      {activeMembershipList && activeMembershipList.length > 0
+        ? activeMembershipList.map((activeMembership) => (
           <Membership
-            membership={pendingMembership}
+            membership={activeMembership}
             removeMembership={removeMembership}
             membershipType="active"
             currentMembershipRole={currentMembershipRole}
@@ -21,6 +28,15 @@ const ActiveMembershipSection = ({
           />
           ))
         : null}
+      <div className="row view-membership-btn">
+        <button
+          className="crayons-btn align-center crayons-btn--s view-all-memberships"
+          onClick={() => RenderActiveMembershipManager()}
+          type="button"
+        >
+          View All
+        </button>
+      </div>
     </div>
   );
 };
@@ -39,6 +55,7 @@ ActiveMembershipSection.propTypes = {
   ).isRequired,
   removeMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.string.isRequired,
+  toggelScreens: PropTypes.func.isRequired,
 };
 
 export default ActiveMembershipSection;

@@ -9,15 +9,12 @@ import {
   updateChatChannelDescription,
   sendChatChannelInvitation,
   leaveChatChannelMembership,
+  updateMembershipRole,
 } from '../actions/chat_channel_setting_actions';
 
 import { Snackbar, addSnackbarItem } from '../../Snackbar';
-import ModSection from './ModSection';
-import PersonalSettings from './PersonalSetting';
-import LeaveMembershipSection from './LeaveMembershipSection';
-import ModFaqSection from './ModFaqSection';
-import ChannelDescriptionSection from './ChannelDescriptionSection';
-import ChatChannelMembershipSection from './ChatChannelMembershipSection';
+import ManageActiveMembership from './MembershipManager/ManageActiveMembership';
+import ChatChannelSettingsSection from './ChatChannelSettingsSection';
 
 const snackZone = document.getElementById('snack-zone');
 
@@ -39,16 +36,19 @@ export default class ChatChannelSettings extends Component {
       requestedMemberships: [],
       chatChannel: null,
       currentMembership: null,
-      activeMembershipId: props.activeMembershipId,
+      activeMembershipId: null,
       channelDescription: null,
       channelDiscoverable: null,
       invitationUsernames: null,
       showGlobalBadgeNotification: null,
+      displaySettings: true,
+      displayMembershipManager: false,
+      invitationLink: null,
     };
   }
 
   componentDidMount() {
-    const { activeMembershipId } = this.state;
+    const { activeMembershipId } = this.props;
 
     getChannelDetails(activeMembershipId)
       .then((response) => {
@@ -64,6 +64,7 @@ export default class ChatChannelSettings extends Component {
             channelDiscoverable: result.chat_channel.discoverable,
             showGlobalBadgeNotification:
               result.current_membership.show_global_badge_notification,
+            invitationLink: result.invitation_link,
           });
         } else {
           this.setState({
@@ -78,6 +79,13 @@ export default class ChatChannelSettings extends Component {
           errorMessages: error.message,
         });
       });
+  }
+
+  componentWillReceiveProps() {
+    const { activeMembershipId } = this.props;
+    this.setState({
+      activeMembershipId,
+    });
   }
 
   handleDescriptionChange = (e) => {
@@ -153,6 +161,7 @@ export default class ChatChannelSettings extends Component {
 
   updateMemberships = (membershipId, response, membershipStatus) => {
     if (response.success) {
+      this.componentDidMount();
       this.setState((prevState) => {
         return {
           errorMessages: null,
@@ -309,6 +318,54 @@ export default class ChatChannelSettings extends Component {
     }
   };
 
+  toggelScreens = () => {
+    const { displaySettings, displayMembershipManager } = this.state;
+
+    this.setState({
+      displaySettings: !displaySettings,
+      displayMembershipManager: !displayMembershipManager,
+    });
+  };
+
+  handleUpdateMembershipRole = async (e) => {
+    const { membershipId, role } = e.target.dataset;
+    const { chatChannel } = this.state;
+    const response = await updateMembershipRole(
+      membershipId,
+      chatChannel.id,
+      role,
+    );
+    const { message } = response;
+    if (response.success) {
+      this.componentDidMount();
+      this.setState((prevState) => {
+        const { activeMemberships } = prevState;
+        const updatedActiveMemberships = activeMemberships.map(
+          (activeMembership) => {
+            if (activeMembership.membership_id === Number(membershipId)) {
+              // eslint-disable-next-line no-param-reassign
+              activeMembership.role = role;
+            }
+            return activeMembership;
+          },
+        );
+        return {
+          ...prevState,
+          activeMemberships: updatedActiveMemberships,
+          errorMessages: null,
+          successMessages: response.message,
+        };
+      });
+    } else {
+      this.setState({
+        successMessages: null,
+        errorMessages: response.message,
+      });
+    }
+
+    addSnackbarItem({ message });
+  };
+
   render() {
     const {
       chatChannel,
@@ -320,6 +377,8 @@ export default class ChatChannelSettings extends Component {
       channelDiscoverable,
       invitationUsernames,
       showGlobalBadgeNotification,
+      displaySettings,
+      invitationLink,
     } = this.state;
 
     if (!chatChannel) {
@@ -329,48 +388,49 @@ export default class ChatChannelSettings extends Component {
     return (
       <div className="activechatchannel__activeArticle channel_settings">
         <div className="p-4">
-          <ChannelDescriptionSection
-            channelName={chatChannel.name}
-            channelDescription={chatChannel.description}
-            currentMembershipRole={currentMembership.role}
-          />
-          <ChatChannelMembershipSection
-            currentMembershipRole={currentMembership.role}
-            activeMemberships={activeMemberships}
-            removeMembership={this.removeMembership}
-            pendingMemberships={pendingMemberships}
-            requestedMemberships={requestedMemberships}
-            chatChannelAcceptMembership={this.chatChannelAcceptMembership}
-          />
-          <ModSection
-            invitationUsernames={invitationUsernames}
-            handleInvitationUsernames={this.handleInvitationUsernames}
-            handleChatChannelInvitations={this.handleChatChannelInvitations}
-            channelDescription={channelDescription}
-            handleDescriptionChange={this.handleDescriptionChange}
-            channelDiscoverable={channelDiscoverable}
-            handleChannelDiscoverableStatus={
-              this.handleChannelDiscoverableStatus
-            }
-            handleChannelDescriptionChanges={
-              this.handleChannelDescriptionChanges
-            }
-            currentMembershipRole={currentMembership.role}
-          />
-          <PersonalSettings
-            updateCurrentMembershipNotificationSettings={
-              this.updateCurrentMembershipNotificationSettings
-            }
-            showGlobalBadgeNotification={showGlobalBadgeNotification}
-            handlePersonChatChennelSetting={this.handlePersonChatChennelSetting}
-          />
-          <LeaveMembershipSection
-            currentMembershipRole={currentMembership.role}
-            handleleaveChatChannelMembership={
-              this.handleleaveChatChannelMembership
-            }
-          />
-          <ModFaqSection currentMembershipRole={currentMembership.role} />
+          {displaySettings ? (
+            <ChatChannelSettingsSection
+              channelDiscoverable={channelDiscoverable}
+              updateCurrentMembershipNotificationSettings={
+                this.updateCurrentMembershipNotificationSettings
+              }
+              handleleaveChatChannelMembership={
+                this.handleleaveChatChannelMembership
+              }
+              handlePersonChatChennelSetting={
+                this.handleleaveChatChannelMembership
+              }
+              handleChannelDescriptionChanges={
+                this.handleChannelDescriptionChanges
+              }
+              handleChannelDiscoverableStatus={
+                this.handleChannelDiscoverableStatus
+              }
+              handleDescriptionChange={this.handleDescriptionChange}
+              handleChatChannelInvitations={this.handleChatChannelInvitations}
+              handleInvitationUsernames={this.handleInvitationUsernames}
+              toggelScreens={this.toggelScreens}
+              removeMembership={this.removeMembership}
+              chatChannelAcceptMembership={this.chatChannelAcceptMembership}
+              channelDescription={channelDescription}
+              chatChannel={chatChannel}
+              currentMembership={currentMembership}
+              activeMemberships={activeMemberships}
+              pendingMemberships={pendingMemberships}
+              requestedMemberships={requestedMemberships}
+              invitationUsernames={invitationUsernames}
+              showGlobalBadgeNotification={showGlobalBadgeNotification}
+            />
+          ) : (
+            <ManageActiveMembership
+              activeMemberships={activeMemberships}
+              currentMembership={currentMembership}
+              chatChannel={chatChannel}
+              invitationLink={invitationLink}
+              removeMembership={this.removeMembership}
+              handleUpdateMembershipRole={this.handleUpdateMembershipRole}
+            />
+          )}
         </div>
       </div>
     );
