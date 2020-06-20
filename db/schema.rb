@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_09_191943) do
+ActiveRecord::Schema.define(version: 2020_06_17_183058) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ahoy_events", force: :cascade do |t|
+    t.string "name"
+    t.jsonb "properties"
+    t.datetime "time"
+    t.bigint "user_id"
+    t.bigint "visit_id"
+    t.index ["name", "time"], name: "index_ahoy_events_on_name_and_time"
+    t.index ["properties"], name: "index_ahoy_events_on_properties", opclass: :jsonb_path_ops, using: :gin
+    t.index ["user_id"], name: "index_ahoy_events_on_user_id"
+    t.index ["visit_id"], name: "index_ahoy_events_on_visit_id"
+  end
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
     t.datetime "clicked_at"
@@ -35,6 +47,15 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.index ["to"], name: "index_ahoy_messages_on_to"
     t.index ["token"], name: "index_ahoy_messages_on_token"
     t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
+  end
+
+  create_table "ahoy_visits", force: :cascade do |t|
+    t.datetime "started_at"
+    t.bigint "user_id"
+    t.string "visit_token"
+    t.string "visitor_token"
+    t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
+    t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
   end
 
   create_table "api_secrets", force: :cascade do |t|
@@ -128,6 +149,7 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.index ["feed_source_url"], name: "index_articles_on_feed_source_url"
     t.index ["hotness_score"], name: "index_articles_on_hotness_score"
     t.index ["path"], name: "index_articles_on_path"
+    t.index ["public_reactions_count"], name: "index_articles_on_public_reactions_count", order: :desc
     t.index ["published"], name: "index_articles_on_published"
     t.index ["published_at"], name: "index_articles_on_published_at"
     t.index ["slug"], name: "index_articles_on_slug"
@@ -267,6 +289,7 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
 
   create_table "broadcasts", id: :serial, force: :cascade do |t|
     t.boolean "active", default: false
+    t.datetime "active_status_updated_at"
     t.string "banner_style"
     t.text "body_markdown"
     t.datetime "created_at"
@@ -676,7 +699,6 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.index ["created_at"], name: "index_notifications_on_created_at"
     t.index ["json_data"], name: "index_notifications_on_json_data", using: :gin
     t.index ["notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_notifiable_id_notifiable_type_and_action"
-    t.index ["notifiable_id"], name: "index_notifications_on_notifiable_id"
     t.index ["notifiable_type"], name: "index_notifications_on_notifiable_type"
     t.index ["notified_at"], name: "index_notifications_on_notified_at"
     t.index ["organization_id", "notifiable_id", "notifiable_type", "action"], name: "index_notifications_on_org_notifiable_and_action_not_null", unique: true, where: "(action IS NOT NULL)"
@@ -791,7 +813,6 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.bigint "user_id"
     t.index ["article_id"], name: "index_page_views_on_article_id"
     t.index ["created_at"], name: "index_page_views_on_created_at"
-    t.index ["domain"], name: "index_page_views_on_domain"
     t.index ["user_id"], name: "index_page_views_on_user_id"
   end
 
@@ -1121,15 +1142,6 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.index ["blocked_id", "blocker_id"], name: "index_user_blocks_on_blocked_id_and_blocker_id", unique: true
   end
 
-  create_table "user_counters", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.jsonb "data", default: {}, null: false
-    t.datetime "updated_at", null: false
-    t.bigint "user_id"
-    t.index ["data"], name: "index_user_counters_on_data", using: :gin
-    t.index ["user_id"], name: "index_user_counters_on_user_id", unique: true
-  end
-
   create_table "user_optional_fields", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "label", null: false
@@ -1138,6 +1150,21 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.string "value", null: false
     t.index ["label", "user_id"], name: "index_user_optional_fields_on_label_and_user_id", unique: true
     t.index ["user_id"], name: "index_user_optional_fields_on_user_id"
+  end
+
+  create_table "user_subscriptions", force: :cascade do |t|
+    t.bigint "author_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.string "subscriber_email", null: false
+    t.bigint "subscriber_id", null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_subscription_sourceable_id", null: false
+    t.string "user_subscription_sourceable_type", null: false
+    t.index ["author_id"], name: "index_user_subscriptions_on_author_id"
+    t.index ["subscriber_email"], name: "index_user_subscriptions_on_subscriber_email"
+    t.index ["subscriber_id", "subscriber_email", "user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_subscriber_id_and_email_with_user_subscription_source", unique: true
+    t.index ["subscriber_id"], name: "index_user_subscriptions_on_subscriber_id"
+    t.index ["user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_on_user_subscription_sourcebable_type_and_id"
   end
 
   create_table "users", id: :serial, force: :cascade do |t|
@@ -1271,7 +1298,6 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
-    t.index ["old_username"], name: "index_users_on_old_username"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["twitter_username"], name: "index_users_on_twitter_username", unique: true
     t.index ["username"], name: "index_users_on_username", unique: true
@@ -1324,8 +1350,9 @@ ActiveRecord::Schema.define(version: 2020_06_09_191943) do
   add_foreign_key "tag_adjustments", "users", on_delete: :cascade
   add_foreign_key "user_blocks", "users", column: "blocked_id"
   add_foreign_key "user_blocks", "users", column: "blocker_id"
-  add_foreign_key "user_counters", "users", on_delete: :cascade
   add_foreign_key "user_optional_fields", "users"
+  add_foreign_key "user_subscriptions", "users", column: "author_id"
+  add_foreign_key "user_subscriptions", "users", column: "subscriber_id"
   add_foreign_key "users_roles", "users", on_delete: :cascade
   add_foreign_key "webhook_endpoints", "oauth_applications"
   add_foreign_key "webhook_endpoints", "users"

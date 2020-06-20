@@ -106,6 +106,7 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.email_addresses[:privacy]).to eq("privacy@example.com")
           expect(SiteConfig.email_addresses[:business]).to eq("partners@example.com")
           expect(SiteConfig.email_addresses[:members]).to eq("members@example.com")
+          expect(SiteConfig.email_addresses[:default]).to eq(ApplicationConfig["DEFAULT_EMAIL"])
         end
       end
 
@@ -198,6 +199,12 @@ RSpec.describe "/internal/config", type: :request do
           expected_image_url = "https://dummyimage.com/300x300"
           post "/internal/config", params: { site_config: { mascot_image_url: expected_image_url }, confirmation: confirmation_message }
           expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
+        end
+
+        it "updates mascot_footer_image_url" do
+          expected_image_url = "https://dummyimage.com/300x300"
+          post "/internal/config", params: { site_config: { mascot_footer_image_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.mascot_footer_image_url).to eq(expected_image_url)
         end
 
         it "updates mascot_image_description" do

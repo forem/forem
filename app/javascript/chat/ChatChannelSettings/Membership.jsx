@@ -10,11 +10,10 @@ const Membership = ({
 }) => {
   return (
     <div className="flex items-center">
-      <a href={`/${membership.username}`}>
+      <a href={`/${membership.username}`} title={`${membership.name} profile`}>
         <span className="crayons-avatar crayons-avatar--l mr-3">
           <img
             className="crayons-avatar__image align-middle"
-            role="presentation"
             src={membership.image}
             alt={`${membership.name} profile`}
           />

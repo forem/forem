@@ -102,4 +102,18 @@ RSpec.describe Identity, type: :model do
       end
     end
   end
+
+  describe "#email" do
+    let(:auth_payload) { OmniAuth.config.mock_auth[:github] }
+    let(:provider) { Authentication::Providers::Github.new(auth_payload) }
+
+    before do
+      omniauth_mock_providers_payload
+    end
+
+    it "returns the email associated with the identity" do
+      identity = described_class.build_from_omniauth(provider)
+      expect(identity.email).to eq(identity.auth_data_dump.info.email)
+    end
+  end
 end

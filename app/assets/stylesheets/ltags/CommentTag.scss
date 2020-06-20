@@ -9,9 +9,10 @@
   border: 1px solid var(--card-color-tertiary);
   box-shadow: $shadow;
   border-radius: 3px;
+  width: auto;
   @media screen and (min-width: 760px) {
     margin: 0.95em auto;
-    width: 620px;
+    max-width: 620px;
   }
 
   .details {

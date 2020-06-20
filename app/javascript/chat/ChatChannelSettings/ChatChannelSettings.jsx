@@ -1,4 +1,4 @@
-import { h, Component, render } from 'preact';
+import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import {
@@ -11,17 +11,13 @@ import {
   leaveChatChannelMembership,
 } from '../actions/chat_channel_setting_actions';
 
-import { Snackbar, addSnackbarItem } from '../../Snackbar';
+import { addSnackbarItem } from '../../Snackbar';
 import ModSection from './ModSection';
 import PersonalSettings from './PersonalSetting';
 import LeaveMembershipSection from './LeaveMembershipSection';
 import ModFaqSection from './ModFaqSection';
 import ChannelDescriptionSection from './ChannelDescriptionSection';
 import ChatChannelMembershipSection from './ChatChannelMembershipSection';
-
-const snackZone = document.getElementById('snack-zone');
-
-render(<Snackbar lifespan="3" />, snackZone, null);
 
 export default class ChatChannelSettings extends Component {
   static propTypes = {
@@ -342,21 +338,23 @@ export default class ChatChannelSettings extends Component {
             requestedMemberships={requestedMemberships}
             chatChannelAcceptMembership={this.chatChannelAcceptMembership}
           />
-          <ModSection
-            invitationUsernames={invitationUsernames}
-            handleInvitationUsernames={this.handleInvitationUsernames}
-            handleChatChannelInvitations={this.handleChatChannelInvitations}
-            channelDescription={channelDescription}
-            handleDescriptionChange={this.handleDescriptionChange}
-            channelDiscoverable={channelDiscoverable}
-            handleChannelDiscoverableStatus={
-              this.handleChannelDiscoverableStatus
-            }
-            handleChannelDescriptionChanges={
-              this.handleChannelDescriptionChanges
-            }
-            currentMembershipRole={currentMembership.role}
-          />
+          {currentMembership.role === 'mod' && (
+            <ModSection
+              invitationUsernames={invitationUsernames}
+              handleInvitationUsernames={this.handleInvitationUsernames}
+              handleChatChannelInvitations={this.handleChatChannelInvitations}
+              channelDescription={channelDescription}
+              handleDescriptionChange={this.handleDescriptionChange}
+              channelDiscoverable={channelDiscoverable}
+              handleChannelDiscoverableStatus={
+                this.handleChannelDiscoverableStatus
+              }
+              handleChannelDescriptionChanges={
+                this.handleChannelDescriptionChanges
+              }
+              currentMembershipRole={currentMembership.role}
+            />
+          )}
           <PersonalSettings
             updateCurrentMembershipNotificationSettings={
               this.updateCurrentMembershipNotificationSettings
@@ -364,13 +362,17 @@ export default class ChatChannelSettings extends Component {
             showGlobalBadgeNotification={showGlobalBadgeNotification}
             handlePersonChatChennelSetting={this.handlePersonChatChennelSetting}
           />
-          <LeaveMembershipSection
-            currentMembershipRole={currentMembership.role}
-            handleleaveChatChannelMembership={
-              this.handleleaveChatChannelMembership
-            }
-          />
-          <ModFaqSection currentMembershipRole={currentMembership.role} />
+          {currentMembership.role === 'member' && (
+            <LeaveMembershipSection
+              currentMembershipRole={currentMembership.role}
+              handleleaveChatChannelMembership={
+                this.handleleaveChatChannelMembership
+              }
+            />
+          )}
+          {currentMembership.role === 'mod' && (
+            <ModFaqSection email="yo@dev.to" />
+          )}
         </div>
       </div>
     );

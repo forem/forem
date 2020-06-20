@@ -210,13 +210,9 @@
       color: var(--base-70);
     }
     button.close-actions-panel {
-      border: none;
-      width: 40px;
-      height: 40px;
       position: absolute;
       right: var(--su-4);
       top: var(--su-4);
-      background-color: var(--base-10);
     }
   }
   .reactions-container {

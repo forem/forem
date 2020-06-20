@@ -1,65 +1,70 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow, deep } from 'preact-render-spy';
+import { render, fireEvent, waitForElement } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { ImageUploader } from '../ImageUploader';
+import fetch from 'jest-fetch-mock';
+import '@testing-library/jest-dom';
+
+global.fetch = fetch;
 
 describe('<ImageUploader />', () => {
-  it('renders correctly without an image', () => {
-    const tree = render(<ImageUploader />);
-    expect(tree).toMatchSnapshot();
+  const fakeLinksResponse = JSON.stringify({
+    "links": [
+      "/i/fake-link.jpg"
+    ]
   });
 
-  it('displays text to copy', () => {
-    const context = deep(<ImageUploader />);
-    expect(context.component()).toBeInstanceOf(ImageUploader);
-    context.setState({
-      insertionImageUrls: ['/i/jxuopxlscfy6wkfbbkvb.png'],
-      uploadError: false,
-      uploadErrorMessage: null,
-    });
+  const fakeErrorMessage = {
+    message: "Some Fake Error"
+  };
 
-    expect(context.find('#image-markdown-copy-link-input').exists()).toEqual(
-      true,
-    );
+  it('should have no a11y violations', async () => {
+    const { container } = render(<ImageUploader />);
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
-  it('displays Copied! when clicking on the icon', () => {
-    const context = deep(<ImageUploader />);
-    expect(context.component()).toBeInstanceOf(ImageUploader);
-    context.setState({
-      insertionImageUrls: ['/i/jxuopxlscfy6wkfbbkvb.png'],
-      uploadError: false,
-      uploadErrorMessage: null,
-    });
-
-    document.getElementById = jest.fn(() => {
-      return {
-        value: 'some copied text',
-        setSelectionRange: () => {},
-      };
-    });
-
-    document.execCommand = jest.fn();
-
-    context.find('clipboard-copy').simulate('click');
-
-    expect(context.find('ClipboardButton').attrs().showCopyMessage).toEqual(
-      true,
-    );
-    expect(context.find('#image-markdown-copy-link-announcer').text()).toEqual(
-      'Copied!',
-    );
+  it('displays an upload input', () => {
+    const { getByTestId, getByLabelText } = render(<ImageUploader />);
+    const uploadInput = getByLabelText(/Upload an image/i);
+    expect(uploadInput.getAttribute('type')).toEqual('file');
   });
 
-  it('displays an error when one occurs', () => {
+  it('displays text to copy after upload', async () => {
+    const { getByTitle, getByTestId, getByDisplayValue, getByLabelText } = render(<ImageUploader />)
+    const inputEl = getByLabelText(/Upload an image/i);
+
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+      type: 'image/png',
+    })
+
+    fetch.mockResponse(fakeLinksResponse);
+    fireEvent.change(inputEl, {target: {files: [file]}});
+    expect(inputEl.files[0]).toEqual(file);
+    expect(inputEl.files).toHaveLength(1);
+
+    await waitForElement(() =>
+      getByTitle(/copy markdown for image/i),
+    );
+    getByDisplayValue(/fake-link.jpg/i);
+  });
+
+  // TODO: 'Copied!' is always in the DOM, and so we cannot test that the visual implications of the copy when clicking on the copy icon
+
+  it('displays an error when one occurs', async () => {
     const error = 'Some error message';
-    const context = shallow(<ImageUploader />);
-    expect(context.component()).toBeInstanceOf(ImageUploader);
-    context.setState({
-      insertionImageUrls: [],
-      uploadError: true,
-      uploadErrorMessage: error,
+    const { getByTitle, getByTestId, getByDisplayValue, getByText, getByLabelText } = render(<ImageUploader />)
+    const inputEl = getByLabelText(/Upload an image/i);
+
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+      type: 'image/png',
     });
-    expect(context.find('.color-accent-danger').text()).toEqual(error);
+
+    fetch.mockReject(fakeErrorMessage);
+    fireEvent.change(inputEl, {target: {files: [file]}});
+
+    await waitForElement(() =>
+      getByText(/some fake error/i)
+    );
   });
 });

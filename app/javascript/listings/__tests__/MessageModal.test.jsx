@@ -1,5 +1,6 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import MessageModal from '../components/MessageModal';
 
 const getDefaultListing = () => ({
@@ -23,21 +24,18 @@ const getDefaultListing = () => ({
 const getProps = () => ({
   currentUserId: 1,
   message: 'Something',
-  onChangeDraftingMessage: () => {
-    return 'onChangeDraftingMessage';
-  },
-  onSubmit: () => {
-    return 'onSubmit;';
-  },
+  onChangeDraftingMessage: jest.fn(),
+  onSubmit: jest.fn()
 });
 
-const renderMessageModal = (listing) =>
-  deep(<MessageModal {...getProps()} listing={listing} />);
+const renderMessageModal = (listing) => render(
+  <MessageModal {...getProps()} listing={listing} />
+);
 
 describe('<MessageModal />', () => {
-  it('Should render a text-area', () => {
-    const context = renderMessageModal(getDefaultListing());
-    expect(context.find('#new-message').exists()).toBe(true);
+  it('should render a text-area', () => {
+    const { getByTestId } = renderMessageModal(getDefaultListing());
+    getByTestId('listing-new-message');
   });
 
   describe('When the current user is the author', () => {
@@ -45,21 +43,15 @@ describe('<MessageModal />', () => {
       ...getDefaultListing(),
       user_id: 1,
     };
-    const context = renderMessageModal(listingWithCurrentUserId);
-    const idFromPersonalMessageContact = 'personal-contact-message';
-    const idFromPersonalMessageAboutInteractions =
-      'personal-message-about-interactions';
 
-    it('Should show the information about contact with the current user', () => {
-      expect(context.find(`#${idFromPersonalMessageContact}`).text()).toEqual(
-        'This is your active listing. Any member can contact you via this form.',
-      );
+    it('should show the information about contact with the current user', () => {
+      const { getByText } = renderMessageModal(listingWithCurrentUserId);
+      getByText('This is your active listing. Any member can contact you via this form.')
     });
 
-    it('Should show the personalized message about the interactions', () => {
-      expect(
-        context.find(`#${idFromPersonalMessageAboutInteractions}`).text(),
-      ).toEqual('All private interactions must abide by the code of conduct');
+    it('should show the personalized message about the interactions', () => {
+      const { getByTestId } = renderMessageModal(listingWithCurrentUserId);
+      expect(getByTestId('personal-message-about-interactions').textContent).toEqual('All private interactions must abide by the code of conduct')
     });
   });
 
@@ -68,22 +60,17 @@ describe('<MessageModal />', () => {
       ...getDefaultListing(),
       user_id: 111,
     };
-    const context = renderMessageModal(listingWithDifferentCurrentUserId);
-    const idFromGenericMessageContact = 'generic-contact-message';
-    const idFromGenericMessageAboutInteractions =
-      'generic-message-about-interactions';
 
-    it('Should show the message to contact the author', () => {
-      expect(context.find(`#${idFromGenericMessageContact}`).text()).toEqual(
-        `Contact ${listingWithDifferentCurrentUserId.author.name} via DEV Connect`,
-      );
+    it('should show the message to contact the author', () => {
+      const { getByText } = renderMessageModal(listingWithDifferentCurrentUserId);
+
+      getByText(`Contact ${listingWithDifferentCurrentUserId.author.name} via DEV Connect`);
     });
 
-    it('Should show a generic message about the interactions', () => {
-      expect(
-        context.find(`#${idFromGenericMessageAboutInteractions}`).text(),
-      ).toEqual(
-        'Message must be relevant and on-topic with the listing. All private interactions must abide by the code of conduct',
+    it('should show a generic message about the interactions', () => {
+      const { getByTestId } = renderMessageModal(listingWithDifferentCurrentUserId);
+      expect(getByTestId('generic-message-about-interactions').textContent).toEqual(
+        'Message must be relevant and on-topic with the listing. All private interactions must abide by the code of conduct'
       );
     });
   });

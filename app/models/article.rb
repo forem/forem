@@ -4,6 +4,7 @@ class Article < ApplicationRecord
   include Storext.model
   include Reactable
   include Searchable
+  include UserSubscriptionSourceable
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent

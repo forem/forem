@@ -1,15 +1,15 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render } from '@testing-library/preact';
 import { ItemListLoadMoreButton } from '../ItemListLoadMoreButton';
 
 describe('<ItemListLoadMoreButton />', () => {
-  it('renders properly', () => {
-    const tree = render(<ItemListLoadMoreButton show />);
-    expect(tree).toMatchSnapshot();
+  it('renders nothing when not required', () => {
+    const { queryByText } = render(<ItemListLoadMoreButton show={false}  />);
+    expect(queryByText(/load more/i)).toBeNull();
   });
 
-  it('renders nothing if not required', () => {
-    const tree = render(<ItemListLoadMoreButton show={false} />);
-    expect(tree).toMatchSnapshot();
+  it('renders a button when required', () => {
+    const { getByText } = render(<ItemListLoadMoreButton show={true} />);
+    getByText(/load more/i);
   });
 });
