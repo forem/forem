@@ -111,7 +111,7 @@ GEM
       nokogiri (~> 1.6)
       thor (~> 0.18)
     ast (2.4.1)
-    autoprefixer-rails (9.7.6)
+    autoprefixer-rails (9.8.1)
       execjs
     aws-eventstream (1.1.0)
     aws-partitions (1.322.0)
@@ -887,7 +887,7 @@ DEPENDENCIES
   amazing_print (~> 1.2)
   ancestry (~> 3.0)
   approvals (~> 0.0)
-  autoprefixer-rails (~> 9.7)
+  autoprefixer-rails (~> 9.8)
   aws-sdk-lambda (~> 1.42)
   better_errors (~> 2.7)
   binding_of_caller (~> 0.8)
