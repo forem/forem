@@ -199,7 +199,7 @@ GEM
     childprocess (3.0.0)
     cld (0.8.0)
       ffi
-    cloudinary (1.14.0)
+    cloudinary (1.15.0)
       aws_cf_signer
       rest-client
     coderay (1.1.2)
@@ -901,7 +901,7 @@ DEPENDENCIES
   carrierwave (~> 2.0)
   carrierwave-bombshelter (~> 0.2)
   cld (~> 0.8)
-  cloudinary (~> 1.14)
+  cloudinary (~> 1.15)
   counter_culture (~> 2.5)
   ddtrace (~> 0.36.0)
   derailed_benchmarks (~> 1.7)
