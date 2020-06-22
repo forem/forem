@@ -348,7 +348,7 @@
   align-items: center;
   background: var(--body-bg);
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.1);
-  z-index: 200;
+  z-index: 100;
   justify-content: space-around;
 
   @media (min-width: $breakpoint-m) {
@@ -360,7 +360,6 @@
     box-shadow: none;
     justify-content: stretch;
     top: calc(var(--header-height) + var(--layout-padding) + 6vh);
-    z-index: unset;
   }
 }
 
