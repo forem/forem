@@ -76,7 +76,7 @@ RSpec.describe "Dashboards", type: :request do
         article.update(organization_id: organization.id)
         sign_in user
         get "/dashboard/organization/#{organization.id}"
-        expect(response.body).to include "dashboard-collection-org-details"
+        expect(response.body).to include "crayons-logo"
       end
 
       it "does not render the delete button for other org member's drafts" do
