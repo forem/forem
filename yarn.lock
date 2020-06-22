@@ -9064,10 +9064,10 @@ linkstate@^1.1.1:
   resolved "https://registry.yarnpkg.com/linkstate/-/linkstate-1.1.1.tgz#cb9c29189baa7552295898f78f82b4055d6be108"
   integrity sha512-5SICdxQG9FpWk44wSEoM2WOCUNuYfClp10t51XAIV5E7vUILF/dTYxf0vJw6bW2dUd2wcQon+LkNtRijpNLrig==
 
-lint-staged@^10.2.10:
-  version "10.2.10"
-  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-10.2.10.tgz#f0f78bf8786bbe90e1775a0dc540f7f12b6a79b2"
-  integrity sha512-dgelFaNH6puUGAcU+OVMgbfpKSerNYsPSn6+nlbRDjovL0KigpsVpCu0PFZG6BJxX8gnHJqaZlR9krZamQsb0w==
+lint-staged@^10.2.11:
+  version "10.2.11"
+  resolved "https://registry.yarnpkg.com/lint-staged/-/lint-staged-10.2.11.tgz#713c80877f2dc8b609b05bc59020234e766c9720"
+  integrity sha512-LRRrSogzbixYaZItE2APaS4l2eJMjjf5MbclRZpLJtcQJShcvUzKXsNeZgsLIZ0H0+fg2tL4B59fU9wHIHtFIA==
   dependencies:
     chalk "^4.0.0"
     cli-truncate "2.1.0"
