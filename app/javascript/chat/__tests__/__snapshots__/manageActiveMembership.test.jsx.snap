@@ -51,6 +51,15 @@ exports[`<ManageActiveMembership /> should render & test snapshot 1`] = `
             >
               test user
             </span>
+            <span>
+              <img
+                alt="admin emoji"
+                class="admin-emoji"
+                data-content="admin emoji"
+                src=""
+                title="MOD"
+              />
+            </span>
           </a>
           <div
             class="membership-actions"
@@ -58,30 +67,12 @@ exports[`<ManageActiveMembership /> should render & test snapshot 1`] = `
             <span
               class="membership-management__dropdown-button"
             >
-              <button
-                class="crayons-btn crayons-btn--outlined crayons-btn--icon"
-                disabled={false}
-                onClick={[Function]}
-                type="button"
-              >
-                <svg
-                  aria-labelledby="ai2ols8ka2ohfp0z568lj68ic2du21s"
-                  class="crayons-icon"
-                  height="24"
-                  role="img"
-                  width="24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <title
-                    id="ai2ols8ka2ohfp0z568lj68ic2du21s"
-                  >
-                    Preferences
-                  </title>
-                  <path
-                    d="M12 1l9.5 5.5v11L12 23l-9.5-5.5v-11L12 1zm0 2.311L4.5 7.653v8.694l7.5 4.342 7.5-4.342V7.653L12 3.311zM12 16a4 4 0 110-8 4 4 0 010 8zm0-2a2 2 0 100-4 2 2 0 000 4z"
-                  />
-                </svg>
-              </button>
+              <img
+                alt="channel config"
+                class="w-25"
+                data-content="drop-down-image"
+                src=""
+              />
             </span>
             <div
               class="membership-management__dropdown-memu"
