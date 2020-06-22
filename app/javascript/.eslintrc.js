@@ -2,9 +2,17 @@ const path = require('path');
 
 module.exports = {
   parser: 'babel-eslint',
-  extends: ['airbnb', 'plugin:jsx-a11y/recommended', 'prettier'],
+  extends: [
+    'eslint:recommended',
+    'preact',
+    'plugin:jsx-a11y/recommended',
+    'prettier',
+  ],
   parserOptions: {
-    ecmaVersion: 2017,
+    ecmaVersion: 2018,
+    ecmaFeatures: {
+      jsx: true,
+    },
   },
   settings: {
     react: {
@@ -28,14 +36,8 @@ module.exports = {
     jest: true,
     browser: true,
   },
-  plugins: ['import', 'jsx-a11y'],
+  plugins: ['import', 'react', 'jsx-a11y'],
   rules: {
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        devDependencies: ['**/*.test.js', '**/*.test.jsx', '**/*.stories.jsx'],
-      },
-    ],
     'import/prefer-default-export': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'jsx-a11y/label-has-associated-control': [
