@@ -52,28 +52,33 @@ class AsyncInfoController < ApplicationController
 
   def user_data
     Rails.cache.fetch(user_cache_key, expires_in: 15.minutes) do
-      {
-        blocked_user_ids: @user.all_blocking.pluck(:blocked_id),
-        checked_code_of_conduct: @user.checked_code_of_conduct,
-        checked_terms_and_conditions: @user.checked_terms_and_conditions,
-        config_body_class: @user.config_body_class,
-        created_at: @user.created_at,
-        display_announcements: @user.display_announcements,
-        display_sponsors: @user.display_sponsors,
-        email: @user.email,
-        followed_podcast_ids: @user.cached_following_podcasts_ids,
-        followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score], methods: [:points]),
-        followed_user_ids: @user.cached_following_users_ids,
-        id: @user.id,
-        moderator_for_tags: @user.moderator_for_tags,
-        name: @user.name,
-        pro: @user.pro?,
-        profile_image_90: ProfileImage.new(@user).get(width: 90),
-        reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
-        saw_onboarding: @user.saw_onboarding,
-        trusted: @user.trusted,
-        username: @user.username
-      }
+      data =
+        {
+          blocked_user_ids: @user.all_blocking.pluck(:blocked_id),
+          checked_code_of_conduct: @user.checked_code_of_conduct,
+          checked_terms_and_conditions: @user.checked_terms_and_conditions,
+          config_body_class: @user.config_body_class,
+          created_at: @user.created_at,
+          display_announcements: @user.display_announcements,
+          display_sponsors: @user.display_sponsors,
+          followed_podcast_ids: @user.cached_following_podcasts_ids,
+          followed_tags: @user.cached_followed_tags.to_json(only: %i[id name bg_color_hex text_color_hex hotness_score], methods: [:points]),
+          followed_user_ids: @user.cached_following_users_ids,
+          id: @user.id,
+          moderator_for_tags: @user.moderator_for_tags,
+          name: @user.name,
+          pro: @user.pro?,
+          profile_image_90: ProfileImage.new(@user).get(width: 90),
+          reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
+          saw_onboarding: @user.saw_onboarding,
+          trusted: @user.trusted,
+          username: @user.username
+        }
+
+      # TODO: (Alex Smith) remove this when ready
+      data[:email] = @user.email if @user.has_role?(:super_admin) || @user.has_role?(:admin)
+
+      data
     end.to_json
   end
 
