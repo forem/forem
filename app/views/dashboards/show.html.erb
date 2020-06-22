@@ -1,7 +1,8 @@
 <% title "Dashboard" %>
 
-<main class="dashboard-container" id="user-dashboard">
+<main class="dashboard-container crayons-layout" id="user-dashboard">
   <h1 class="visually-hidden-header">User Dashboard</h1>
+
   <%= render "actions" %>
   <% if @organizations && @organizations.size > 0 && (params[:which].blank? || params[:which] == "organization") %>
     <h1>
@@ -13,9 +14,23 @@
   <% end %>
   <% if params[:which] == "organization" %>
     <%= render "analytics" %>
-    <% @articles.each do |article| %>
-      <%= render "dashboard_article", article: article, organization: article.organization, org_admin: true, manage_view: false %>
-    <% end %>
+
+    <table class="crayons-table mb-6" width="100%" border="0" cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Post</th>
+          <th>Engagement</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody class="crayons-card">
+        <% @articles.each do |article| %>
+          <%= render "dashboard_article_row", article: article, organization: article.organization, org_admin: true, manage_view: false %>
+        <% end %>
+      </tbody>
+    </table>
   <% elsif @articles.any? %>
     <%= render "analytics" %>
     <div class="actions-secondary">
@@ -32,9 +47,24 @@
         <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink" %>
       <% end %>
     </div>
-    <% @articles.each do |article| %>
-      <%= render "dashboard_article", article: article, organization: nil, org_admin: false, manage_view: false %>
-    <% end %>
+
+    <table class="crayons-table mb-6" width="100%" border="0" cellpadding="0" cellspacing="0">
+      <thead>
+        <tr>
+          <th>Post</th>
+          <th>Engagement</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+
+      <tbody class="crayons-card">
+        <% @articles.each do |article| %>
+          <%= render "dashboard_article_row", article: article, organization: nil, org_admin: false, manage_view: false %>
+        <% end %>
+      </tbody>
+    </table>
+
   <% else %>
     <div class="no-articles">
       <h3>This is where you can manage your posts, but you haven't written anything yet.</h3>

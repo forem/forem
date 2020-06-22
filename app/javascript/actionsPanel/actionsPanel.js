@@ -201,7 +201,7 @@ async function adjustTag(el) {
         el.remove();
       } else {
         adjustedTagName = el.value;
-        // eslint-disable-next-line no-param-reassign
+        // eslint-disable-next-line no-param-reassign, require-atomic-updates
         el.value = '';
       }
 

@@ -183,9 +183,6 @@ body.ten-x-hacker-theme {
   text-align: center;
   padding: 0;
   min-height: 45px;
-
-  // TODO: [@thepracticaldev/delightful]: Remove these styles once
-  // https://github.com/thepracticaldev/dev.to/pull/8234 is merged.
   z-index: 101; // Must be higher than the z-index of the sticky-nav.
   position: fixed;
 }

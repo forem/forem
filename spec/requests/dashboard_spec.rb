@@ -29,13 +29,13 @@ RSpec.describe "Dashboards", type: :request do
 
       it 'does not show "STATS" for articles' do
         get "/dashboard"
-        expect(response.body).not_to include("STATS")
+        expect(response.body).not_to include("Stats")
       end
 
       it "renders the delete button for drafts" do
         unpublished_article
         get "/dashboard"
-        expect(response.body).to include "DELETE"
+        expect(response.body).to include "Delete"
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe "Dashboards", type: :request do
         article = create(:article, user: pro_user)
         sign_in pro_user
         get "/dashboard"
-        expect(response.body).to include("STATS")
+        expect(response.body).to include("Stats")
         expect(response.body).to include("#{article.path}/stats")
       end
     end
@@ -76,7 +76,7 @@ RSpec.describe "Dashboards", type: :request do
         article.update(organization_id: organization.id)
         sign_in user
         get "/dashboard/organization/#{organization.id}"
-        expect(response.body).to include "dashboard-collection-org-details"
+        expect(response.body).to include "crayons-logo"
       end
 
       it "does not render the delete button for other org member's drafts" do
@@ -85,7 +85,7 @@ RSpec.describe "Dashboards", type: :request do
         unpublished_article.update(organization_id: organization.id)
         sign_in second_user
         get "/dashboard/organization/#{organization.id}"
-        expect(response.body).not_to include("DELETE")
+        expect(response.body).not_to include("Delete")
         expect(response.body).to include(ERB::Util.html_escape(unpublished_article.title))
       end
     end
