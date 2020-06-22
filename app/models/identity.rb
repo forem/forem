@@ -34,4 +34,8 @@ class Identity < ApplicationRecord
 
     identity
   end
+
+  def email
+    auth_data_dump.info.email
+  end
 end

@@ -1,39 +1,33 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import ChannelDescriptionSection from '../ChatChannelSettings/ChannelDescriptionSection';
 
-const data = {
-  channelName: "some name",
-  channelDescription: "some description",
-  currentMembershipRole: "mod"
-}
-
-const getChannelDescriptionSection = (channelDetails) => {
-  return (
-    <ChannelDescriptionSection
-      channelName={channelDetails.channelName}
-      channelDescription={channelDetails.channelDescription}
-      currentMembershipRole={channelDetails.currentMembershipRole} 
-    />
-  )
-}
-
 describe('<ChannelDescriptionSection />', () => {
-  it ('should render and test snapshot', () => {
-    const tree = render(getChannelDescriptionSection(data));
-    
-    expect(tree).toMatchSnapshot();
-  })
+  it('should have no a11y violations', async () => {
+    const { container } = render(
+      <ChannelDescriptionSection
+        channelName="some name"
+        channelDescription="some description"
+        currentMembershipRole="mod"
+      />,
+    );
+    const results = await axe(container);
 
-  it ("should render the the component", () => {
-    const context = shallow(getChannelDescriptionSection(data));
-    
-    expect(context.find('.channel_details').exists()).toEqual(true);
-  })
+    expect(results).toHaveNoViolations();
+  });
 
-  it ("should render the same header", () => {
-    const context = shallow(getChannelDescriptionSection(data));
-    expect(context.find('.channel_title').text()).toEqual(data.channelName)
-  })
-})
+  it('should render', () => {
+    const { getByText } = render(
+      <ChannelDescriptionSection
+        channelName="some name"
+        channelDescription="some description"
+        currentMembershipRole="member"
+      />,
+    );
+
+    getByText('some name');
+    getByText('some description');
+    getByText('You are a channel member');
+  });
+});

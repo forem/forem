@@ -24,10 +24,12 @@ export const ReactionsCount = ({ article }) => {
       icon={reactionsSVG}
       tagName="a"
     >
-      {totalReactions}
-      <span className="hidden s:inline">
-        &nbsp;reaction
-        {totalReactions !== 1 ? 's' : ''}
+      <span title="Number of reactions">
+        {totalReactions}
+        <span className="hidden s:inline">
+          &nbsp;
+          {`${totalReactions > 1 ? 'reactions' : 'reaction'}`}
+        </span>
       </span>
     </Button>
   );

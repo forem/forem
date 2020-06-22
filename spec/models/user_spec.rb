@@ -1147,4 +1147,27 @@ RSpec.describe User, type: :model do
       expect(user.authenticated_through?(provider)).to be(true)
     end
   end
+
+  describe "#authenticated_with_all_providers?" do
+    let(:provider) { Authentication::Providers.available.first }
+
+    it "returns false if the user has no related identity" do
+      expect(user.authenticated_with_all_providers?).to be(false)
+    end
+
+    it "returns false if the user is missing any of the identities" do
+      providers = Authentication::Providers.available - [provider]
+      user = create(:user, :with_identity, identities: providers)
+
+      expect(user.authenticated_with_all_providers?).to be(false)
+    end
+
+    it "returns true if the user has all the enabled providers" do
+      allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+
+      user = create(:user, :with_identity)
+
+      expect(user.authenticated_with_all_providers?).to be(true)
+    end
+  end
 end

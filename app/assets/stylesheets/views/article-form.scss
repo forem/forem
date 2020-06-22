@@ -72,9 +72,6 @@
   }
 
   &__content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
     overflow: auto;
     height: calc(
       100vh - var(--header-height) - var(--article-form-actions-height)

@@ -6,6 +6,7 @@ module.exports = {
     '@storybook/addon-knobs',
     '@storybook/addon-actions',
     '@storybook/addon-links',
+    '@storybook/addon-a11y/register',
   ],
   webpackFinal: async (config, { configType }) => {
     config.module.rules.push({
@@ -31,8 +32,6 @@ module.exports = {
       extensions: [...config.resolve.extensions, '.scss'],
       alias: {
         ...config.resolve.alias,
-        react: 'preact-compat',
-        'react-dom': 'preact-compat',
         '@crayons': path.resolve(__dirname, '../crayons'),
       },
     };
