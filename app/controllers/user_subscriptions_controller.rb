@@ -8,7 +8,7 @@ class UserSubscriptionsController < ApplicationController
     return error_response("invalid source_type") unless UserSubscription::ALLOWED_TYPES.include?(source_type)
 
     source_id = user_subscription_params[:source_id]
-    user_subscription_source = source_type.safe_constantize.find_by(id: source_id)
+    user_subscription_source = source_type.constantize.find_by(id: source_id)
     return error_response("source not found") unless user_subscription_source
 
     unless user_subscription_tag_enabled?(user_subscription_source)
