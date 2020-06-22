@@ -2,7 +2,12 @@ const path = require('path');
 
 module.exports = {
   parser: 'babel-eslint',
-  extends: ['eslint:recommended', 'plugin:jsx-a11y/recommended', 'prettier'],
+  extends: [
+    'eslint:recommended',
+    'preact',
+    'plugin:jsx-a11y/recommended',
+    'prettier',
+  ],
   parserOptions: {
     ecmaVersion: 2018,
   },
