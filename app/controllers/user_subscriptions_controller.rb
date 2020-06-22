@@ -10,6 +10,7 @@ class UserSubscriptionsController < ApplicationController
 
     render json: {
       is_subscribed: is_subscribed,
+      current_email: current_user&.email, # TODO: (Alex Smith) move this to /async_info/base_data
       status: 200
     }, status: :ok
   end
