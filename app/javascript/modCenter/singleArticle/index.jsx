@@ -28,6 +28,7 @@ export default class SingleArticle extends Component {
   };
 
   render() {
+    const { articleOpened } = this.state;
     const { id, title, publishedAt, cachedTagList, user, key } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
       return (
@@ -60,7 +61,9 @@ export default class SingleArticle extends Component {
           {formatDate(publishedAt)}
         </span>
         <div
-          className="article-iframes-container"
+          className={`article-iframes-container ${
+            articleOpened ? 'opened' : ''
+          }`}
           id={`article-iframe-${id}`}
         />
       </button>
