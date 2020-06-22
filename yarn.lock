@@ -81,13 +81,13 @@
     "@babel/helper-module-imports" "^7.10.1"
     "@babel/types" "^7.10.1"
 
-"@babel/helper-builder-react-jsx@^7.10.1":
-  version "7.10.1"
-  resolved "https://registry.yarnpkg.com/@babel/helper-builder-react-jsx/-/helper-builder-react-jsx-7.10.1.tgz#a327f0cf983af5554701b1215de54a019f09b532"
-  integrity sha512-KXzzpyWhXgzjXIlJU1ZjIXzUPdej1suE6vzqgImZ/cpAsR/CC8gUcX4EWRmDfWz/cs6HOCPMBIJ3nKoXt3BFuw==
+"@babel/helper-builder-react-jsx@^7.10.3":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-builder-react-jsx/-/helper-builder-react-jsx-7.10.3.tgz#62c4b7bb381153a0a5f8d83189b94b9fb5384fc5"
+  integrity sha512-vkxmuFvmovtqTZknyMGj9+uQAZzz5Z9mrbnkJnPkaYGfKTaSsYcjQdXP0lgrWLVh8wU6bCjOmXOpx+kqUi+S5Q==
   dependencies:
     "@babel/helper-annotate-as-pure" "^7.10.1"
-    "@babel/types" "^7.10.1"
+    "@babel/types" "^7.10.3"
 
 "@babel/helper-compilation-targets@^7.10.2":
   version "7.10.2"
@@ -211,10 +211,10 @@
   dependencies:
     "@babel/types" "^7.10.1"
 
-"@babel/helper-plugin-utils@^7.0.0", "@babel/helper-plugin-utils@^7.10.1", "@babel/helper-plugin-utils@^7.8.0":
-  version "7.10.1"
-  resolved "https://registry.yarnpkg.com/@babel/helper-plugin-utils/-/helper-plugin-utils-7.10.1.tgz#ec5a5cf0eec925b66c60580328b122c01230a127"
-  integrity sha512-fvoGeXt0bJc7VMWZGCAEBEMo/HAjW2mP8apF5eXK0wSqwLAVHAISCWRoLMBMUs2kqeaG77jltVqu4Hn8Egl3nA==
+"@babel/helper-plugin-utils@^7.0.0", "@babel/helper-plugin-utils@^7.10.1", "@babel/helper-plugin-utils@^7.10.3", "@babel/helper-plugin-utils@^7.8.0":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/helper-plugin-utils/-/helper-plugin-utils-7.10.3.tgz#aac45cccf8bc1873b99a85f34bceef3beb5d3244"
+  integrity sha512-j/+j8NAWUTxOtx4LKHybpSClxHoq6I91DQ/mKgAXn5oNUPIUiGppjPIX3TDtJWPrdfP9Kfl7e4fgVMiQR9VE/g==
 
 "@babel/helper-regex@^7.10.1":
   version "7.10.1"
@@ -684,14 +684,14 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.10.1"
 
-"@babel/plugin-transform-react-jsx@^7.10.1", "@babel/plugin-transform-react-jsx@^7.3.0":
-  version "7.10.1"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-jsx/-/plugin-transform-react-jsx-7.10.1.tgz#91f544248ba131486decb5d9806da6a6e19a2896"
-  integrity sha512-MBVworWiSRBap3Vs39eHt+6pJuLUAaK4oxGc8g+wY+vuSJvLiEQjW1LSTqKb8OUPtDvHCkdPhk7d6sjC19xyFw==
+"@babel/plugin-transform-react-jsx@^7.10.3", "@babel/plugin-transform-react-jsx@^7.3.0":
+  version "7.10.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-jsx/-/plugin-transform-react-jsx-7.10.3.tgz#c07ad86b7c159287c89b643f201f59536231048e"
+  integrity sha512-Y21E3rZmWICRJnvbGVmDLDZ8HfNDIwjGF3DXYHx1le0v0mIHCs0Gv5SavyW5Z/jgAHLaAoJPiwt+Dr7/zZKcOQ==
   dependencies:
-    "@babel/helper-builder-react-jsx" "^7.10.1"
+    "@babel/helper-builder-react-jsx" "^7.10.3"
     "@babel/helper-builder-react-jsx-experimental" "^7.10.1"
-    "@babel/helper-plugin-utils" "^7.10.1"
+    "@babel/helper-plugin-utils" "^7.10.3"
     "@babel/plugin-syntax-jsx" "^7.10.1"
 
 "@babel/plugin-transform-regenerator@^7.10.1", "@babel/plugin-transform-regenerator@^7.8.7":
