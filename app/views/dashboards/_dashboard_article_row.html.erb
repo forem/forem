@@ -1,4 +1,4 @@
-<tr class="js-dashboard-story <%= "story-unpublished" unless article.published %> <%= "js-dashboard-story story-archived hidden" if article.archived %>">
+<tr class="js-dashboard-story spec__dashboard-story <%= "story-unpublished" unless article.published %> <%= "js-dashboard-story story-archived hidden" if article.archived %>">
   <td>
     <h3 class="fs-l">
       <a href="<%= article.current_state_path %>" class="flex items-center">
@@ -42,7 +42,9 @@
 
       <span class="flex items-center p-1 ml-1" title="Comments">
         <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon mr-1", title: "Comments") %>
-        <%= article.comments_count %>
+        <span class="spec__comments-count">
+          <%= article.comments_count %>
+        </span>
       </span>
 
       <span class="flex items-center p-1 ml-1" title="Views">
@@ -80,7 +82,6 @@
   </td>
 
   <td class="align-right">
-    <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s">Edit</a>
     <% if manage_view %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
 
@@ -102,6 +103,8 @@
     <% if @current_user_pro %>
       <a href="<%= article.path %>/stats" class="crayons-btn crayons-btn--ghost crayons-btn--s">Stats</a>
     <% end %>
+
+    <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s">Edit</a>
 
     <div class="js-dashboard-row-more relative inline-block">
       <button class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon js-dashboard-row-more-trigger">
