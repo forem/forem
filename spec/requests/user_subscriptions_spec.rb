@@ -35,14 +35,6 @@ RSpec.describe "UserSubscriptions", type: :request do
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)["is_subscribed"]).to eq false
     end
-
-    it "returns current_email" do
-      valid_params = { source_type: "Article", source_id: 999 }
-      get subscribed_user_subscriptions_path, params: valid_params
-
-      expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)["current_email"]).to eq user.email
-    end
   end
 
   describe "POST /user_subscriptions - UserSubscriptions#create" do
