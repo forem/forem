@@ -104,7 +104,7 @@ GEM
       device_detector
       geocoder (>= 1.4.5)
       safely_block (>= 0.2.1)
-    amazing_print (1.2.0)
+    amazing_print (1.2.1)
     ancestry (3.0.7)
       activerecord (>= 3.2.0)
     approvals (0.0.24)
