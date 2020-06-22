@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import { render, fireEvent } from '@testing-library/preact';
 import Tags from '../tags';
 
 describe('<Tags />', () => {
@@ -9,35 +9,30 @@ describe('<Tags />', () => {
     document.body.appendChild(environment);
   });
 
-  let tags;
-
-  beforeEach(() => {
-    tags = deep(<Tags defaultValue="defaultValue" listing />);
-  });
-
   describe('handleKeyDown', () => {
-    const preventDefaultMock = jest.fn();
-    const createKeyDown = (key) => ({
-      key,
-      preventDefault: preventDefaultMock,
-    });
-
-    beforeEach(() => {
-      preventDefaultMock.mockClear();
-    });
-
     it('calls preventDefault on unused keyCode', () => {
-      tags.find('#tag-input').simulate('keydown', createKeyDown('§'));
-      tags.find('#tag-input').simulate('keydown', createKeyDown('\\'));
-      expect(preventDefaultMock).toHaveBeenCalledTimes(2);
+      const { getAllByTestId } = render(<Tags defaultValue="defaultValue" listing />);
+
+      // https://stackoverflow.com/questions/60455119/react-jest-test-preventdefault-action
+      const isPrevented = fireEvent.keyDown(getAllByTestId('tag-input')[0], { key: '§', code: '192'});
+      expect(isPrevented).toEqual(false);
     });
 
     it('does not call preventDefault on used keyCode', () => {
-      tags.find('#tag-input').simulate('keypress', createKeyDown('a'));
-      tags.find('#tag-input').simulate('keydown', createKeyDown('1'));
-      tags.find('#tag-input').simulate('keypress', createKeyDown(','));
-      tags.find('#tag-input').simulate('keypress', createKeyDown('Enter'));
-      expect(preventDefaultMock).not.toHaveBeenCalled();
+      const { getAllByTestId } = render(<Tags defaultValue="defaultValue" listing />);
+
+      // https://stackoverflow.com/questions/60455119/react-jest-test-preventdefault-action
+      const tests = [
+        { key: 'a', code: '65'},
+        { key: '1', code: '49'},
+        { key: ',', code: '188'},
+        { key: 'Enter', code: '13'}
+      ]
+
+      tests.forEach((obj) => {
+        const isPrevented = fireEvent.keyDown(getAllByTestId('tag-input')[0], obj);
+        expect(isPrevented).toEqual(true);
+      });
     });
   });
 });

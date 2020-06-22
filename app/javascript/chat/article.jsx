@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 
 const Article = ({ resource: article }) => (
   <div className="activechatchannel__activeArticle">
-    <iframe id="activecontent-iframe" src={article.path} title={article.title} />
+    <iframe
+      id="activecontent-iframe"
+      src={article.path}
+      title={article.title}
+    />
   </div>
 );
 

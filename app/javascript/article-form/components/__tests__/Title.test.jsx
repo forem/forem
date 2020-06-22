@@ -1,16 +1,16 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render } from '@testing-library/preact';
 import { Title } from '../Title';
 
 describe('<Title />', () => {
-  it('renders properly', () => {
-    const tree = render(
+  it('renders the textarea', () => {
+    const { getByPlaceholderText } = render(
       <Title
         defaultValue="Test title"
         onChange={null}
         switchHelpContext={null}
       />,
     );
-    expect(tree).toMatchSnapshot();
+    expect(getByPlaceholderText(/post title/i, { selector: 'textarea'})).not.toBeNull();
   });
 });

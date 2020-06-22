@@ -1,25 +1,35 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
 import { Tabs } from '../Tabs';
 
 describe('<Tabs />', () => {
-  it('renders properly', () => {
-    const tree = render(<Tabs onPreview={null} previewShowing={false} />);
-    expect(tree).toMatchSnapshot();
+  it('renders two buttons', () => {
+    const { getByText } = render(
+      <Tabs onPreview={null} previewShowing={false} />
+    );
+    getByText(/preview/i, { selector: 'button' });
+    getByText(/edit/i, { selector: 'button' });
   });
 
-  it('highlights the current tab', () => {
-    const container1 = shallow(<Tabs onPreview={null} previewShowing />);
-    expect(container1.find('.crayons-tabs__item--current').text()).toEqual(
-      'Preview',
-    );
+  describe('highlights the current tab', () => {
 
-    const container2 = shallow(
-      <Tabs onPreview={null} previewShowing={false} />,
-    );
-    expect(container2.find('.crayons-tabs__item--current').text()).toEqual(
-      'Edit',
-    );
+    it('when preview is selected', () => {
+      const { getByText } = render(
+        <Tabs onPreview={null} previewShowing={true} />
+      );
+
+      expect(getByText(/preview/i, { selector: 'button' }).classList.contains(`crayons-tabs__item--current`)).toBe(true);
+      expect(getByText(/edit/i, { selector: 'button' }).classList.contains(`crayons-tabs__item--current`)).toBe(false);
+    });
+
+    it('when edit is selected', () => {
+      const { getByText } = render(
+        <Tabs onPreview={null} previewShowing={false} />
+      );
+
+      expect(getByText(/edit/i, { selector: 'button' }).classList.contains(`crayons-tabs__item--current`)).toBe(true);
+      expect(getByText(/preview/i, { selector: 'button' }).classList.contains(`crayons-tabs__item--current`)).toBe(false);
+    });
+
   });
 });

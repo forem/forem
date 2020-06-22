@@ -1,6 +1,5 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
 import { ItemListItem } from '../ItemListItem';
 import '../../../../assets/javascripts/lib/xss';
 
@@ -20,45 +19,60 @@ const item = {
 };
 
 describe('<ItemListItem />', () => {
-  it('renders properly with a readinglist item', () => {
-    const tree = render(<ItemListItem item={item} />);
-    expect(tree).toMatchSnapshot();
+  it('renders the title', () => {
+    const { getByText } = render(<ItemListItem item={item} />);
+    getByText(/Title/i);
+  });
+
+  it('renders the path', () => {
+    const { getByText } = render(<ItemListItem item={item} />);
+    expect(getByText(/Title/i).closest('a').getAttribute("href")).toBe("/article");
+  });
+
+  it('renders a published date', () => {
+    const { getByText } = render(<ItemListItem item={item} />);
+    getByText(/Jun 29/i);
+  });
+
+  it('renders a profile_image', () => {
+    const { getByAltText } = render(<ItemListItem item={item} />);
+    expect(getByAltText(/Profile Pic/i).getAttribute("src")).toBe("https://dummyimage.com/90x90");
   });
 
   it('renders with readingtime of 1 min if reading time is less than 1 min.', () => {
     item.reactable.reading_time = 0.5;
-    const wrapper = shallow(<ItemListItem item={item} />);
-    expect(wrapper.find('.item-user').text()).toContain('1 min read');
+    const { getByText } = render(<ItemListItem item={item} />);
+    getByText(/1 min read/i);
   });
 
   it('renders with readingtime of 1 min if reading time is null.', () => {
     item.reactable.reading_time = null;
-    const wrapper = shallow(<ItemListItem item={item} />);
-    expect(wrapper.find('.item-user').text()).toContain('1 min read');
+    const { getByText } = render(<ItemListItem item={item} />);
+    getByText(/1 min read/i);
   });
 
   it('renders correct readingtime.', () => {
     item.reactable.reading_time = 10;
-    const wrapper = shallow(<ItemListItem item={item} />);
-    expect(wrapper.find('.item-user').text()).toContain('10 min read');
+    const { getByText } = render(<ItemListItem item={item} />);
+    getByText(/10 min read/i);
   });
 
   it('renders without any tags if the tags array is empty.', () => {
     item.reactable.tags = [];
-    const wrapper = shallow(<ItemListItem item={item} />);
-    expect(wrapper.find('.item-tags').exists()).toEqual(false);
+    const { queryByTestId } = render(<ItemListItem item={item} />);
+    expect(queryByTestId('item-tags')).toBeNull();
   });
 
   it('renders tags with links if present.', () => {
     item.reactable.tags = [{ name: 'discuss' }];
-    const wrapper = shallow(<ItemListItem item={item} />);
-    expect(wrapper.find('.item-tag')[0].attributes.href).toEqual('/t/discuss');
-    expect(wrapper.find('.item-tag').text()).toContain('discuss');
+    const { queryByTestId, getByText } = render(<ItemListItem item={item} />);
+    getByText('#discuss');
+    expect(getByText('#discuss').closest('a').getAttribute("href")).toBe("/t/discuss");
   });
 
   it('renders user information', () => {
-    const wrapper = shallow(<ItemListItem item={item} />);
-    expect(wrapper.find('.item-user')[0].attributes.href).toEqual('/bob');
-    expect(wrapper.find('.item-user').text()).toContain('Bob');
+    const { getByText } = render(<ItemListItem item={item} />);
+    getByText(/Bob/i);
+    expect(getByText(/Bob/i).closest('a').getAttribute("href")).toBe("/bob");
   });
 });

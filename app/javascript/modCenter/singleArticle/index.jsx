@@ -28,10 +28,10 @@ export default class SingleArticle extends Component {
   };
 
   render() {
-    const { id, title, publishedAt, cachedTagList, user } = this.props;
+    const { id, title, publishedAt, cachedTagList, user, key } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
       return (
-        <span className="mod-article-tag">
+        <span className="mod-article-tag fs-s ff-accent lh-base" key={key}>
           <span className="article-hash-tag">#</span>
           {tag}
         </span>
@@ -48,15 +48,17 @@ export default class SingleArticle extends Component {
       >
         <span className="article-title">
           <header>
-            <h3>{title}</h3>
+            <h3 className="fs-base fw-bold lh-tight">{title}</h3>
           </header>
           {tags}
         </span>
-        <span className="article-author">
+        <span className="article-author fs-s lw-medium lh-tight">
           {newAuthorNotification}
           {user.name}
         </span>
-        <span className="article-published-at">{formatDate(publishedAt)}</span>
+        <span className="article-published-at fs-s fw-bold lh-tight">
+          {formatDate(publishedAt)}
+        </span>
         <div
           className="article-iframes-container"
           id={`article-iframe-${id}`}
@@ -73,4 +75,5 @@ SingleArticle.propTypes = {
   publishedAt: PropTypes.string.isRequired,
   cachedTagList: PropTypes.isRequired,
   user: PropTypes.isRequired,
+  key: PropTypes.number.isRequired,
 };

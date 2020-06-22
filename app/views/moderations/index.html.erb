@@ -1,40 +1,36 @@
-<% title "Moderate" %>
+<% title "Mod Center" %>
 
 <%= javascript_packs_with_chunks_tag "modCenter", defer: true %>
 
 <div id="moderation-page"></div>
+
 <% if current_user&.trusted %>
   <div class="crayons-layout crayons-layout--2-cols" id="mod-center">
     <%= render "moderations/mod_sidebar_left" %>
     <div class="mod-index-container articles-list crayons-layout__content">
-      <header class="mod-index-header-new">
-        <span class="tag-view">
-          <% if @tag %>
-            #<%= @tag %>
-          <% else %>
-            All topics
-          <% end %>
+      <header class="mod-index-header">
+        <span class="tag-view fs-3xl fw-bold lh-base">
+          <%= @tag ? "##{@tag.name}" : "All topics" %>
         </span>
       </header>
+      <header class="mod-index-list-header lh-tight">
+        <h2 class="fs-xs fw-medium">Post</h2>
+        <h2 class="fs-xs fw-medium">Author</h2>
+        <h2 class="fs-xs fw-medium">Date</h2>
+      </header>
       <main class="mod-index-list" id="mod-index-list" data-articles="<%= @articles %>">
-        <header class="mod-index-list-header">
-          <h2>Post</h2>
-          <h2>Author</h2>
-          <%# <h2>Status</h2> %>
-          <h2>Date</h2>
-        </header>
       </main>
     </div>
   </div>
 <% else %>
-<div class="container" style="margin-top: 90px;">
-  <h1 style="text-align: center"><%= community_name %> Mods</h1>
-  <div class="body">
-    <p>We periodically award some <%= community_name %> members with heightened privileges to help moderate the community.</p>
-    <p>Email <%= email_link %> if you'd like to be considered right away.</p>
-    <% unless user_signed_in? %>
-    <p><em>P.S. You are not currently signed in.</em></p>
-    <% end %>
+  <div class="container" style="margin-top: 90px;">
+    <h1 style="text-align: center"><%= community_name %> Mods</h1>
+    <div class="body">
+      <p>We periodically award some <%= community_name %> members with heightened privileges to help moderate the community.</p>
+      <p>Email <%= email_link %> if you'd like to be considered right away.</p>
+      <% unless user_signed_in? %>
+      <p><em>P.S. You are not currently signed in.</em></p>
+      <% end %>
+    </div>
   </div>
-</div>
 <% end %>
