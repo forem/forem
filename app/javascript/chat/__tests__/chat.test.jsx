@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement, fireEvent } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import { JSDOM } from 'jsdom';
 import { axe } from 'jest-axe';
@@ -176,19 +176,14 @@ describe('<Chat />', () => {
 
   it('should render expanded', () => {
     fetch.mockResponse(getMockResponse());
-    const {
-      getByTestId,
-      getByText,
-      getByLabelText,
-      getByRole,
-      getByTitle,
-    } = render(<Chat {...getRootData()} />);
+    const { getByTestId, getByText, getByLabelText, getByRole } = render(
+      <Chat {...getRootData()} />,
+    );
     const chat = getByTestId('chat');
 
     expect(chat.getAttribute('aria-expanded')).toEqual('true');
 
     // renderChatChannels
-    getByTitle('Collapse channels');
     getByLabelText('Toggle channel search');
 
     // chat filtering
@@ -214,22 +209,9 @@ describe('<Chat />', () => {
 
   it('should collapse and expand chat channels properly', async () => {
     fetch.mockResponse(getMockResponse());
-    const { getByText, getByLabelText, getByTitle } = render(
-      <Chat {...getRootData()} />,
-    );
-
-    // collapse chat channels
-    const closeToggleButton = getByTitle('Collapse channels');
-    fireEvent.click(closeToggleButton);
-
-    // re-expand chat channel
-    const openToggleButton = await waitForElement(() =>
-      getByTitle('Expand channels'),
-    );
-    fireEvent.click(openToggleButton);
+    const { getByText, getByLabelText } = render(<Chat {...getRootData()} />);
 
     // // chat channels
-    getByTitle('Collapse channels');
     getByLabelText('Toggle channel search');
     getByText('all', {
       selector: 'button',
