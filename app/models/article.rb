@@ -4,6 +4,7 @@ class Article < ApplicationRecord
   include Storext.model
   include Reactable
   include Searchable
+  include UserSubscriptionSourceable
 
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
@@ -28,8 +29,6 @@ class Article < ApplicationRecord
   counter_culture :organization
 
   has_many :comments, as: :commentable, inverse_of: :commentable
-  has_many :user_subscriptions, as: :user_subscription_sourceable
-  has_many :sourced_subscribers, class_name: "User", through: :user_subscriptions, source: :subscriber, foreign_key: :user_id
   has_many :top_comments,
            -> { where("comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE", 10).order("comments.score DESC") },
            as: :commentable,

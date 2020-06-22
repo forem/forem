@@ -54,7 +54,7 @@
             <%= link_to "Modify flag here", "/internal/feature_flags/features/#{@page.feature_flag_name}" %>
           <% else %>
             Everyone has access. Optionally guard access to this page by creating feature <code><%= @page.feature_flag_name %></code>
-            <%= link_to "here", "/internal/feature_flags/features/" %>
+            <%= link_to "here", "/internal/feature_flags/features" %>
           <% end %>
           </br>
         </p>

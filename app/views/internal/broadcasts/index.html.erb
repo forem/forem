@@ -19,30 +19,29 @@
   </div>
 </div>
 
-<div class="row my-3">
-  <div class="col">
-    <div class="alert alert-warning"><strong>Note: You must ensure that your Broadcast is active in order for it to be sent to users!<strong></div>
-    <div class="list-group-flush w-100">
-      <% @broadcasts.each do |broadcast| %>
-        <a class="list-group-item list-group-item-action flex-column align-items-start" href="/internal/broadcasts/<%= broadcast.id %>/edit">
-          <h3 class="mb-2">Title: <%= broadcast.title %></h3>
-          <h3>Broadcast Type: <%= broadcast.type_of %></h3>
-          <h3>Content:</h3>
-          <p>
-            <%= broadcast.processed_html %>
-          </p>
-          <h3>Last Active On: <%= broadcast.active_status_updated_at&.strftime("%b %d, %Y %H:%M UTC") %></h3>
-          <h3>Status:</h3>
-          <h3>
-            <span class="badge badge-<%= broadcast.active? ? "success" : "warning" %>">
+<div class="alert alert-warning"><strong>Note: You must ensure that your Broadcast is active in order for it to be sent to users!</strong></div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @broadcasts.each do |broadcast| %>
+      <tr>
+        <td><%= link_to broadcast.title, internal_broadcast_path(broadcast.id) %></td>
+        <td class="justify-content-center">
+          <h5>
+            <div class="badge badge-<%= broadcast.active? ? "success" : "warning" %>">
               <%= broadcast.active? ? "Active" : "Inactive" %>
-            </span>
-            <span class="sr-only">Broadcast Status</span>
-          </h3>
-        </a>
-      <% end %>
-    </div>
-  </div>
-</div>
+            </div>
+          </h5>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
 
 <%= csrf_meta_tags %>

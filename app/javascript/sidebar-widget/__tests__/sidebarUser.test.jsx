@@ -6,12 +6,12 @@ const user = {
   id: 1234,
   username: 'john_doe',
   name: 'Jon Doe',
-  profile_image_url: 'www.profile.com'
+  profile_image_url: 'www.profile.com',
 };
 
 const followUser = jest.fn();
 
-const renderedSideBar = props =>
+const renderedSideBar = (props) =>
   render(
     <SidebarUser
       key={user.id}
@@ -26,16 +26,20 @@ describe('<SidebarUser />', () => {
   it('renders properly', () => {
     const { getByTestId, getByText, getByAltText } = renderedSideBar();
 
-    expect(getByTestId('widget-avatar').getAttribute('href')).toEqual('/john_doe');
+    expect(getByTestId('widget-avatar').getAttribute('href')).toEqual(
+      '/john_doe',
+    );
     getByAltText('Jon Doe');
-    expect(getByAltText('Jon Doe').getAttribute('src')).toEqual('www.profile.com');
+    expect(getByAltText('Jon Doe').getAttribute('src')).toEqual(
+      'www.profile.com',
+    );
 
     getByText('Jon Doe');
     expect(getByText('Jon Doe').getAttribute('href')).toEqual('/john_doe');
   });
 
   it('triggers the onClick', () => {
-    const { getByTestId, getByText, getByAltText } = renderedSideBar();
+    const { getByTestId } = renderedSideBar();
     getByTestId('widget-follow-button').click();
 
     expect(followUser).toHaveBeenCalled();
@@ -51,6 +55,5 @@ describe('<SidebarUser />', () => {
       const { getByText } = renderedSideBar({ user: { following: false } });
       getByText(/follow/i);
     });
-
   });
 });

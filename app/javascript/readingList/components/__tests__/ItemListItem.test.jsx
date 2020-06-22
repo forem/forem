@@ -26,7 +26,9 @@ describe('<ItemListItem />', () => {
 
   it('renders the path', () => {
     const { getByText } = render(<ItemListItem item={item} />);
-    expect(getByText(/Title/i).closest('a').getAttribute("href")).toBe("/article");
+    expect(getByText(/Title/i).closest('a').getAttribute('href')).toBe(
+      '/article',
+    );
   });
 
   it('renders a published date', () => {
@@ -36,7 +38,9 @@ describe('<ItemListItem />', () => {
 
   it('renders a profile_image', () => {
     const { getByAltText } = render(<ItemListItem item={item} />);
-    expect(getByAltText(/Profile Pic/i).getAttribute("src")).toBe("https://dummyimage.com/90x90");
+    expect(getByAltText(/Profile Pic/i).getAttribute('src')).toBe(
+      'https://dummyimage.com/90x90',
+    );
   });
 
   it('renders with readingtime of 1 min if reading time is less than 1 min.', () => {
@@ -65,14 +69,16 @@ describe('<ItemListItem />', () => {
 
   it('renders tags with links if present.', () => {
     item.reactable.tags = [{ name: 'discuss' }];
-    const { queryByTestId, getByText } = render(<ItemListItem item={item} />);
+    const { getByText } = render(<ItemListItem item={item} />);
     getByText('#discuss');
-    expect(getByText('#discuss').closest('a').getAttribute("href")).toBe("/t/discuss");
+    expect(getByText('#discuss').closest('a').getAttribute('href')).toBe(
+      '/t/discuss',
+    );
   });
 
   it('renders user information', () => {
     const { getByText } = render(<ItemListItem item={item} />);
     getByText(/Bob/i);
-    expect(getByText(/Bob/i).closest('a').getAttribute("href")).toBe("/bob");
+    expect(getByText(/Bob/i).closest('a').getAttribute('href')).toBe('/bob');
   });
 });

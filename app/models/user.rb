@@ -45,6 +45,10 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
+  has_many :source_authored_user_subscriptions, class_name: "UserSubscription", foreign_key: :author_id, inverse_of: :author, dependent: :destroy
+  has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
+  has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription", foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
+
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
@@ -67,8 +71,6 @@ class User < ApplicationRecord
   has_many :display_ad_events, dependent: :destroy
   has_many :email_authorizations, dependent: :delete_all
   has_many :email_messages, class_name: "Ahoy::Message", dependent: :destroy
-  has_many :user_subscriptions, foreign_key: :author_id, inverse_of: :author, dependent: :destroy
-  has_many :subscribers, through: :user_subscriptions, dependent: :destroy
   has_many :field_test_memberships, class_name: "FieldTest::Membership", as: :participant, dependent: :destroy
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
