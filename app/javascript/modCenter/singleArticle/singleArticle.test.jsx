@@ -1,6 +1,6 @@
 import { h } from 'preact';
 import { axe } from 'jest-axe';
-import { render, getNodeText } from '@testing-library/preact';
+import { render, getNodeText, fireEvent } from '@testing-library/preact';
 
 import SingleArticle from './index';
 
@@ -79,5 +79,25 @@ describe('<SingleArticle />', () => {
     expect(actionPanelIframe.src).toContain(
       `${testArticle.path}/actions_panel`,
     );
+  });
+  it('adds the opened class when opening an article', () => {
+    const toggleArticle = jest.fn();
+    const { container } = render(
+      <SingleArticle
+        id={testArticle.title}
+        title={testArticle.title}
+        path={testArticle.path}
+        publishedAt={testArticle.publishedAt} // renders as Jun 28
+        cachedTagList={testArticle.cachedTagList}
+        user={testArticle.user}
+        toggleArticle={toggleArticle}
+      />,
+    );
+    fireEvent.click(
+      container.querySelector('button.moderation-single-article'),
+    );
+    expect(
+      container.querySelector('.article-iframes-container').classList,
+    ).toContain('opened');
   });
 });
