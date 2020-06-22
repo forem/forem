@@ -82,6 +82,7 @@
   "devDependencies": {
     "@percy/agent": "^0.26.9",
     "@stoplight/spectral": "5.4.0",
+    "@storybook/addon-a11y": "^5.3.19",
     "@storybook/addon-actions": "^5.3.19",
     "@storybook/addon-knobs": "^5.3.19",
     "@storybook/addon-links": "^5.3.19",
@@ -98,6 +99,7 @@
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-config-prettier": "^6.11.0",
+    "eslint-import-resolver-webpack": "^0.12.2",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.21.2",
@@ -128,6 +130,7 @@
     "@babel/preset-env": "^7.9.6",
     "@github/clipboard-copy-element": "^1.1.2",
     "@rails/webpacker": "5.1.1",
+    "ahoy.js": "^0.3.6",
     "babel-preset-preact": "^2.0.0",
     "chart.js": "^2.9.3",
     "clipboard-polyfill": "^2.8.6",

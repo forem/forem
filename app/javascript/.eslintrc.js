@@ -1,12 +1,27 @@
+const path = require('path');
+
 module.exports = {
   parser: 'babel-eslint',
-  extends: ['airbnb', 'prettier', 'plugin:jsx-a11y/recommended'],
+  extends: ['airbnb', 'plugin:jsx-a11y/recommended', 'prettier'],
   parserOptions: {
     ecmaVersion: 2017,
   },
   settings: {
     react: {
       pragma: 'h',
+    },
+    'import/resolver': {
+      webpack: {
+        config: {
+          resolve: {
+            alias: {
+              '@crayons': path.join(__dirname, './crayons'),
+              '@utilities': path.join(__dirname, './utilities'),
+            },
+            extensions: ['.js', '.jsx'],
+          },
+        },
+      },
     },
   },
   env: {
@@ -32,12 +47,6 @@ module.exports = {
       },
     ],
     'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
-    'import/no-unresolved': [
-      'error',
-      {
-        ignore: ['@crayons', '@utilities'],
-      },
-    ],
   },
   globals: {
     getCsrfToken: false,

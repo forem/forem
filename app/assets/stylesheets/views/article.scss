@@ -360,6 +360,7 @@
     box-shadow: none;
     justify-content: stretch;
     top: calc(var(--header-height) + var(--layout-padding) + 6vh);
+    z-index: unset;
   }
 }
 

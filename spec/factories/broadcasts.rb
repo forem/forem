@@ -68,5 +68,9 @@ FactoryBot.define do
       type_of        { "Announcement" }
       processed_html { "<p>Hello, World!</p>" }
     end
+
+    trait :with_tracking do
+      processed_html { "Sloan here again! 👋 DEV is a friendly community. Why not introduce yourself by leaving a comment in <a href='/welcome' onclick='trackNotification(event)'>the welcome thread</a>!" }
+    end
   end
 end
