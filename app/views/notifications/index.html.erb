@@ -17,6 +17,20 @@
   <meta name="twitter:description" content="Notifications inbox for <%= community_name %>">
 <% end %>
 
+<script>
+  /**
+   * A script that tracks clicks for welcome notifications.
+   * The notification must have `trackNotification` as its onclick event
+   * in order for this to be triggered.
+   *
+   * @param {Event} The click event on the notification.
+   */
+  function trackNotification(e) {
+    let title = e.target.parentElement.id
+    ahoy.track("Clicked Welcome Notification", { title });
+  }
+</script>
+
 <% if user_signed_in? %>
   <div class="home" id="notifications-container">
     <div class="side-bar">

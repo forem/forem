@@ -11,6 +11,6 @@ describe('<Title />', () => {
         switchHelpContext={null}
       />,
     );
-    expect(getByPlaceholderText(/post title/i, { selector: 'textarea'})).not.toBeNull();
+    getByPlaceholderText(/post title/i, { selector: 'textarea' });
   });
 });

@@ -46,7 +46,7 @@ Rails.application.routes.draw do
     end
 
     resources :articles, only: %i[index show update]
-    resources :broadcasts, only: %i[index new create edit update destroy]
+    resources :broadcasts
     resources :buffer_updates, only: %i[create update]
     resources :listings, only: %i[index edit update destroy]
     resources :comments, only: [:index]
@@ -210,7 +210,6 @@ Rails.application.routes.draw do
   end
   resources :buffered_articles, only: [:index]
   resources :events, only: %i[index show]
-  resources :additional_content_boxes, only: [:index]
   resources :videos, only: %i[index create new]
   resources :video_states, only: [:create]
   resources :twilio_tokens, only: [:show]

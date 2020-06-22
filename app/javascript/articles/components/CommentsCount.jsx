@@ -24,8 +24,12 @@ export const CommentsCount = ({ count, articlePath }) => {
         icon={commentsSVG}
         tagName="a"
       >
-        <span title="Number of comments" className="hidden s:inline">
-          {`${count} ${count > 1 ? 'comments' : 'comment'}`}
+        <span title="Number of comments">
+          {count} 
+          <span className="hidden s:inline">
+            &nbsp;
+            {`${count > 1 ? 'comments' : 'comment'}`}
+          </span>
         </span>
       </Button>
     );

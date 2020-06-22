@@ -16,8 +16,9 @@ gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "mas
 gem "addressable", "~> 2.7" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "administrate", "~> 0.13" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
+gem "ahoy_matey", "~> 3.0" # Tracking analytics for Rails
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
-gem "autoprefixer-rails", "~> 9.7" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
+gem "autoprefixer-rails", "~> 9.8" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
 gem "aws-sdk-lambda", "~> 1.42" # Official AWS Ruby gem for AWS Lambda
 gem "blazer", "~> 2.2.5" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
@@ -25,14 +26,14 @@ gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
 gem "carrierwave", "~> 2.0" # Upload files in your Ruby applications, map them to a range of ORMs, store them on different backends
 gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bombs
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
-gem "cloudinary", "~> 1.14" # Client library for easily using the Cloudinary service
+gem "cloudinary", "~> 1.15" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.5" # counter_culture provides turbo-charged counter caches that are kept up-to-date
 gem "ddtrace", "~> 0.36.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.4" # Oauth 2 provider
 gem "dry-struct", "~> 1.2" # Typed structs and value objects
-gem "elasticsearch", "~> 7.7" # Powers DEVs core search functionality
+gem "elasticsearch", "~> 7.8" # Powers DEVs core search functionality
 gem "email_validator", "~> 2.0" # Email validator for Rails and ActiveModel
 gem "emoji_regex", "~> 3.0" # A pair of Ruby regular expressions for matching Unicode Emoji symbols
 gem "envied", "~> 0.9" # Ensure presence and type of your app's ENV-variables
@@ -148,7 +149,7 @@ end
 group :test do
   gem "approvals", "~> 0.0" # A library to make it easier to do golden-master style testing in Ruby
   gem "exifr", ">= 1.3.6" # EXIF Reader is a module to read EXIF from JPEG and TIFF images
-  gem "factory_bot_rails", "~> 5.2" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
+  gem "factory_bot_rails", "~> 6.0" # factory_bot is a fixtures replacement with a straightforward definition syntax, support for multiple build strategies
   gem "launchy", "~> 2.5" # Launchy is helper class for launching cross-platform applications in a fire and forget manner.
   gem "percy-capybara", "~> 4.2.0" # A tool for visual testing
   gem "pundit-matchers", "~> 1.6" # A set of RSpec matchers for testing Pundit authorisation policies

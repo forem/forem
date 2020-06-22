@@ -4,24 +4,26 @@ import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
 import ProfileForm from '../ProfileForm';
+
 global.fetch = fetch;
 
 describe('ProfileForm', () => {
-  const renderProfileForm = () => render(
-    <ProfileForm
-      next={jest.fn()}
-      prev={jest.fn()}
-      currentSlideIndex={2}
-      slidesCount={5}
-      communityConfig={{
-        communityName: 'Community Name',
-        communityLogo: '/x.png',
-        communityBackground: '/y.jpg',
-        communityDescription: "Some community description",
-      }}
-      previousLocation={null}
-    />
-  );
+  const renderProfileForm = () =>
+    render(
+      <ProfileForm
+        next={jest.fn()}
+        prev={jest.fn()}
+        currentSlideIndex={2}
+        slidesCount={5}
+        communityConfig={{
+          communityName: 'Community Name',
+          communityLogo: '/x.png',
+          communityBackground: '/y.jpg',
+          communityDescription: 'Some community description',
+        }}
+        previousLocation={null}
+      />,
+    );
 
   const getUserData = () =>
     JSON.stringify({
@@ -32,14 +34,18 @@ describe('ProfileForm', () => {
     });
 
   beforeAll(() => {
-    document.head.innerHTML = '<meta name="csrf-token" content="some-csrf-token" />';
+    document.head.innerHTML =
+      '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
   });
 
   it('should load the appropriate title and subtitle', () => {
     const { getByTestId, getByText } = renderProfileForm();
-    expect(getByText(/Build your profile/i));
-    expect(getByTestId('onboarding-profile-subtitle')).toHaveTextContent(/Tell us a little bit about yourself — this is how others will see you on Community Name. You’ll always be able to edit this later in your Settings./i);
+
+    getByText(/Build your profile/i);
+    expect(getByTestId('onboarding-profile-subtitle')).toHaveTextContent(
+      /Tell us a little bit about yourself — this is how others will see you on Community Name. You’ll always be able to edit this later in your Settings./i,
+    );
   });
 
   it('should show the correct name and username', () => {
@@ -59,21 +65,29 @@ describe('ProfileForm', () => {
     const { getByLabelText } = renderProfileForm();
 
     const bioInput = getByLabelText(/Bio/i);
-    expect(bioInput.getAttribute('placeholder')).toEqual('Tell us about yourself');
+    expect(bioInput.getAttribute('placeholder')).toEqual(
+      'Tell us about yourself',
+    );
 
     const locationInput = getByLabelText(/Where are you located/i);
-    expect(locationInput.getAttribute('type')).toEqual('text')
-    expect(locationInput.getAttribute('placeholder')).toEqual('e.g. New York, NY');
+    expect(locationInput.getAttribute('type')).toEqual('text');
+    expect(locationInput.getAttribute('placeholder')).toEqual(
+      'e.g. New York, NY',
+    );
     expect(locationInput.getAttribute('maxLength')).toEqual('60');
 
     const employmentInput = getByLabelText(/What is your title/i);
-    expect(employmentInput.getAttribute('type')).toEqual('text')
-    expect(employmentInput.getAttribute('placeholder')).toEqual('e.g. Software Engineer');
+    expect(employmentInput.getAttribute('type')).toEqual('text');
+    expect(employmentInput.getAttribute('placeholder')).toEqual(
+      'e.g. Software Engineer',
+    );
     expect(employmentInput.getAttribute('maxLength')).toEqual('60');
 
     const employerName = getByLabelText(/Where do you work/i);
-    expect(employerName.getAttribute('type')).toEqual('text')
-    expect(employerName.getAttribute('placeholder')).toEqual('e.g. Company name, self-employed, etc.');
+    expect(employerName.getAttribute('type')).toEqual('text');
+    expect(employerName.getAttribute('placeholder')).toEqual(
+      'e.g. Company name, self-employed, etc.',
+    );
     expect(employerName.getAttribute('maxLength')).toEqual('60');
   });
 
@@ -115,9 +129,11 @@ describe('ProfileForm', () => {
       target: { value: 'Some location' },
     });
 
-    locationInput = await waitForElement(() => getByLabelText(/Where are you located/i),);
+    locationInput = await waitForElement(() =>
+      getByLabelText(/Where are you located/i),
+    );
 
-    expect(locationInput.value).toEqual('Some location')
+    expect(locationInput.value).toEqual('Some location');
 
     // TODO: test that the button changes to continue
     // await waitForElement(() => getByText(/continue/i));
