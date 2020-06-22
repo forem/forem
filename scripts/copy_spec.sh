@@ -3,7 +3,7 @@
 specs=(
 spec/system/dashboards/user_scrolls_down_dashboard_follows
 )
-num_copies=50
+num_copies=100
 
 for spec in ${specs[*]}; do
   for i in $(seq 1 $num_copies); do
