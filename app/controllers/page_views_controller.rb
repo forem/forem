@@ -46,7 +46,7 @@ class PageViewsController < ApplicationMetalController
   def update_organic_page_views
     return if Rails.env.production? && rand(100) != 1 # We need to do this operation only once in a while.
 
-    page_views_from_google_com = @article.page_views.where(referrer: "https://www.google.com")
+    page_views_from_google_com = @article.page_views.where(referrer: "https://www.google.com/")
 
     organic_count = page_views_from_google_com.sum(:counts_for_number_of_views)
     @article.update_column(:organic_page_views_count, organic_count) if organic_count > @article.organic_page_views_count

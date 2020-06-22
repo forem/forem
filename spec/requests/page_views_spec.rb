@@ -70,12 +70,12 @@ RSpec.describe "PageViews", type: :request do
       end
 
       it "stores aggregate organic page views" do
-        post "/page_views", params: { article_id: article.id, referrer: "https://www.google.com" }
+        post "/page_views", params: { article_id: article.id, referrer: "https://www.google.com/" }
         post "/page_views", params: { article_id: article.id }
         expect(article.reload.organic_page_views_count).to eq(10)
         expect(article.reload.organic_page_views_past_week_count).to eq(10)
         expect(article.reload.organic_page_views_past_month_count).to eq(10)
-        post "/page_views", params: { article_id: article.id, referrer: "https://www.google.com" }
+        post "/page_views", params: { article_id: article.id, referrer: "https://www.google.com/" }
         expect(article.reload.organic_page_views_count).to eq(20)
         post "/page_views", params: { article_id: article.id }
         expect(article.reload.organic_page_views_count).to eq(20)
