@@ -41,7 +41,7 @@ export const Options = ({
 
   if (published) {
     publishedField = (
-      <div className="spec__options-danger-zone crayons-field mb-6">
+      <div data-testid="options__danger-zone" className="crayons-field mb-6">
         <div className="crayons-field__label color-accent-danger">
           Danger Zone
         </div>

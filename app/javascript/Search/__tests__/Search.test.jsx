@@ -1,18 +1,78 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render, waitForElement, fireEvent } from '@testing-library/preact';
+
+import { axe } from 'jest-axe';
 import { Search } from '../Search';
 
 describe('<Search />', () => {
   beforeEach(() => {
-    global.filterXSS = (x) => x;
+    global.filterXSS = jest.fn();
+    global.InstantClick = jest.fn(() => ({
+      on: jest.fn(),
+      preload: jest.fn(),
+      display: jest.fn(),
+    }))();
+    global.instantClick = jest.fn(() => ({}))();
   });
 
-  afterEach(() => {
-    global.filterXSS = undefined;
+  it('should have no a11y violations', async () => {
+    const { container } = render(<Search />);
+
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
-  it('renders properly', () => {
-    const tree = render(<Search />);
-    expect(tree).toMatchSnapshot();
+  it('should have a search textbox', () => {
+    const { getByLabelText } = render(<Search />);
+
+    getByLabelText(/search/i);
+  });
+
+  it('should contain text the user entered in the search textbox', async () => {
+    const { getByLabelText } = render(<Search />);
+
+    let searchInput = getByLabelText(/search/i);
+
+    expect(searchInput.value).toEqual('');
+
+    // user.type doesn't work in the case of
+    // search as the current implementation is relying on keydown
+    // events
+    fireEvent.keyDown(searchInput, {
+      key: 'Enter',
+      keyCode: 13,
+      which: 13,
+      target: { value: 'hello' },
+    });
+
+    searchInput = await waitForElement(() => getByLabelText(/search/i));
+
+    expect(searchInput.value).toEqual('hello');
+  });
+
+  it('should submit the search form', async () => {
+    jest.spyOn(Search.prototype, 'search');
+
+    const { getByLabelText } = render(<Search />);
+
+    let searchInput = getByLabelText(/search/i);
+
+    expect(searchInput.value).toEqual('');
+
+    // user.type doesn't work in the case of
+    // search as the current implementation is relying on keydown
+    // events
+    fireEvent.keyDown(searchInput, {
+      key: 'Enter',
+      keyCode: 13,
+      which: 13,
+      target: { value: 'hello' },
+    });
+
+    searchInput = await waitForElement(() => getByLabelText(/search/i));
+
+    expect(searchInput.value).toEqual('hello');
+    expect(Search.prototype.search).toHaveBeenCalledWith('Enter', 'hello');
   });
 });

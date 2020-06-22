@@ -53,7 +53,7 @@ class EmailPreferencesForm extends Component {
     const { email_newsletter, email_digest_periodic } = this.state;
     const { prev, slidesCount, currentSlideIndex } = this.props;
     return (
-      <div className="onboarding-main crayons-modal">
+      <div data-testid="onboarding-email-preferences-form" className="onboarding-main crayons-modal">
         <div className="crayons-modal__box">
           <Navigation
             prev={prev}

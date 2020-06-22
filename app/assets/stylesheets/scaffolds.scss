@@ -12,6 +12,8 @@ body {
   margin: 0;
   overflow-y: scroll;
   padding-top: var(--header-height);
+  display: flex;
+  flex-direction: column;
 }
 
 #audiocontent {
@@ -59,7 +61,7 @@ body {
 }
 
 .universal-page-content-wrapper {
-  min-height: 88vh;
+  flex: 1 auto;
   visibility: visible;
   font-size: 18px;
 }
@@ -98,7 +100,6 @@ pre {
   color: #eff0f9;
   line-height: 1.42em;
   font-size: 13px;
-  // width: calc(100% - 25px);
   @media screen and (min-width: 380px) {
     font-size: 15px;
   }

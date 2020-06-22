@@ -1,11 +1,11 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render } from '@testing-library/preact';
 import { LoadingArticle } from '..';
 
 describe('<LoadingArticle />', () => {
   it('should render', () => {
-    const tree = render(<LoadingArticle />);
+    const { getByTitle } = render(<LoadingArticle />);
 
-    expect(tree).toMatchSnapshot();
+    getByTitle('Loading posts...');
   });
 });

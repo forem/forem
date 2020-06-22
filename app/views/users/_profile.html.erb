@@ -1,10 +1,6 @@
 <%= javascript_packs_with_chunks_tag "colorPreview", "validateFileInputs", defer: true %>
 
-<% if @user.identities.size < Authentication::Providers.enabled.size %>
-  <div class="crayons-card mb-6 p-5">
-    <%= render "users/additional_authentication" %>
-  </div>
-<% end %>
+<%= render "users/additional_authentication" %>
 
 <div class="crayons-card mb-6 p-6 grid gap-6">
   <div class="flex items-center">

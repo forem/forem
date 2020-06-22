@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_16_200005) do
+ActiveRecord::Schema.define(version: 2020_06_17_183058) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ahoy_events", force: :cascade do |t|
+    t.string "name"
+    t.jsonb "properties"
+    t.datetime "time"
+    t.bigint "user_id"
+    t.bigint "visit_id"
+    t.index ["name", "time"], name: "index_ahoy_events_on_name_and_time"
+    t.index ["properties"], name: "index_ahoy_events_on_properties", opclass: :jsonb_path_ops, using: :gin
+    t.index ["user_id"], name: "index_ahoy_events_on_user_id"
+    t.index ["visit_id"], name: "index_ahoy_events_on_visit_id"
+  end
 
   create_table "ahoy_messages", id: :serial, force: :cascade do |t|
     t.datetime "clicked_at"
@@ -35,6 +47,15 @@ ActiveRecord::Schema.define(version: 2020_06_16_200005) do
     t.index ["to"], name: "index_ahoy_messages_on_to"
     t.index ["token"], name: "index_ahoy_messages_on_token"
     t.index ["user_id", "user_type"], name: "index_ahoy_messages_on_user_id_and_user_type"
+  end
+
+  create_table "ahoy_visits", force: :cascade do |t|
+    t.datetime "started_at"
+    t.bigint "user_id"
+    t.string "visit_token"
+    t.string "visitor_token"
+    t.index ["user_id"], name: "index_ahoy_visits_on_user_id"
+    t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
   end
 
   create_table "api_secrets", force: :cascade do |t|
@@ -1134,12 +1155,14 @@ ActiveRecord::Schema.define(version: 2020_06_16_200005) do
   create_table "user_subscriptions", force: :cascade do |t|
     t.bigint "author_id", null: false
     t.datetime "created_at", precision: 6, null: false
+    t.string "subscriber_email", null: false
     t.bigint "subscriber_id", null: false
     t.datetime "updated_at", precision: 6, null: false
     t.bigint "user_subscription_sourceable_id", null: false
     t.string "user_subscription_sourceable_type", null: false
     t.index ["author_id"], name: "index_user_subscriptions_on_author_id"
-    t.index ["subscriber_id", "user_subscription_sourceable_id", "user_subscription_sourceable_type"], name: "index_on_subscriber_id_user_subscription_sourceable_type_and_id", unique: true
+    t.index ["subscriber_email"], name: "index_user_subscriptions_on_subscriber_email"
+    t.index ["subscriber_id", "subscriber_email", "user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_subscriber_id_and_email_with_user_subscription_source", unique: true
     t.index ["subscriber_id"], name: "index_user_subscriptions_on_subscriber_id"
     t.index ["user_subscription_sourceable_type", "user_subscription_sourceable_id"], name: "index_on_user_subscription_sourcebable_type_and_id"
   end

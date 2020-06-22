@@ -4,7 +4,9 @@ import { Snackbar, addSnackbarItem } from '../Snackbar';
 // The Snackbar for the article page
 const snackZone = document.getElementById('snack-zone');
 
-render(<Snackbar lifespan="3" />, snackZone, snackZone.firstElementChild);
+if (snackZone) {
+  render(<Snackbar lifespan="3" />, snackZone);
+}
 
 // eslint-disable-next-line no-restricted-globals
 top.addSnackbarItem = addSnackbarItem;
@@ -48,7 +50,6 @@ const userDataIntervalID = setInterval(async () => {
           onUnsubscribe={subscriptionRequestHandler}
         />,
         root,
-        root.firstElementChild,
       );
     } catch (e) {
       document.querySelector('#comment-subscription').innerHTML =

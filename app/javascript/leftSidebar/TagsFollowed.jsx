@@ -5,7 +5,7 @@ import { tagPropTypes } from '../common-prop-types';
 export const TagsFollowed = ({ tags = [] }) => {
   // TODO: Once we're using Preact X >, we can replace the containing <div /> with a Fragment, <></>
   return (
-    <div id="followed-tags-wrapper">
+    <div id="followed-tags-wrapper" data-testid="followed-tags">
       {tags.map((tag) => (
         <div
           key={tag.id}
@@ -13,6 +13,7 @@ export const TagsFollowed = ({ tags = [] }) => {
           id={`sidebar-element-${tag.name}`}
         >
           <a
+            title={`${tag.name} tag`}
             className="crayons-link crayons-link--block spec__tag-link"
             href={`/t/${tag.name}`}
           >
