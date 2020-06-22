@@ -4,7 +4,7 @@ module.exports = {
   parser: 'babel-eslint',
   extends: ['eslint:recommended', 'plugin:jsx-a11y/recommended', 'prettier'],
   parserOptions: {
-    ecmaVersion: 2017,
+    ecmaVersion: 2018,
   },
   settings: {
     react: {
