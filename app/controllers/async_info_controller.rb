@@ -71,7 +71,6 @@ class AsyncInfoController < ApplicationController
         profile_image_90: ProfileImage.new(@user).get(width: 90),
         reading_list_ids: ReadingList.new(@user).cached_ids_of_articles,
         saw_onboarding: @user.saw_onboarding,
-        subscription_source_article_ids: @user.cached_subscription_source_article_ids,
         trusted: @user.trusted,
         username: @user.username
       }

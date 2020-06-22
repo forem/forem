@@ -1,6 +1,19 @@
 class UserSubscriptionsController < ApplicationController
   before_action :authenticate_user!
 
+  def subscribed
+    params.require(%i[source_type source_id])
+    source_type = params[:source_type]
+    source_id = params[:source_id]
+
+    is_subscribed = UserSubscriptions::CacheChecker.new(current_user, source_type, source_id).cached_subscription_check
+
+    render json: {
+      is_subscribed: is_subscribed,
+      status: 200
+    }, status: :ok
+  end
+
   def create
     rate_limit!(:user_subscription_creation)
 

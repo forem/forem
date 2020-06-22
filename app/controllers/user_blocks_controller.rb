@@ -52,6 +52,6 @@ class UserBlocksController < ApplicationController
     return if current_user
 
     skip_authorization
-    render json: { result: "not-logged-in", status: 401 }, status: :unauthorized
+    render json: { error: "not-logged-in", status: 401 }, status: :unauthorized
   end
 end

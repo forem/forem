@@ -227,16 +227,6 @@ class User < ApplicationRecord
     end
   end
 
-  # TODO: (Alex Smith) - Adjust TTL and limit query size post Codeland
-  def cached_subscription_source_article_ids
-    cache_key = "user-#{id}-#{subscribed_to_user_subscriptions_count}/subscription_source_article_ids"
-    Rails.cache.fetch(cache_key, expires_in: 12.hours) do
-      subscribed_to_user_subscriptions.
-        where(user_subscription_sourceable_type: "Article").
-        pluck(:user_subscription_sourceable_id)
-    end
-  end
-
   # handles both old (prefer_language_*) and new (Array of language codes) formats
   def preferred_languages_array
     return @preferred_languages_array if defined?(@preferred_languages_array)

@@ -7,6 +7,36 @@ RSpec.describe "UserSubscriptions", type: :request do
 
   before { sign_in user }
 
+  describe "GET /user_subscriptions/subscribed - UserSubscriptions#subscribed" do
+    it "raises an error for missing params" do
+      expect { get subscribed_user_subscriptions_path, params: {} }.to raise_error(ActionController::ParameterMissing)
+    end
+
+    it "returns true if a user is already subscribed" do
+      article = create(:article)
+
+      create(:user_subscription,
+             subscriber_id: user.id,
+             subscriber_email: user.email,
+             author_id: article.user_id,
+             user_subscription_sourceable: article)
+
+      valid_params = { source_type: article.class_name, source_id: article.id }
+      get subscribed_user_subscriptions_path, params: valid_params
+
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)["is_subscribed"]).to eq true
+    end
+
+    it "returns false if a user is not already subscribed" do
+      valid_params = { source_type: "Article", source_id: 999 }
+      get subscribed_user_subscriptions_path, params: valid_params
+
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)["is_subscribed"]).to eq false
+    end
+  end
+
   describe "POST /user_subscriptions - UserSubscriptions#create" do
     it "creates a UserSubscription" do
       article = create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
