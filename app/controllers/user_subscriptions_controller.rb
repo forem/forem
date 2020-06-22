@@ -9,9 +9,9 @@ class UserSubscriptionsController < ApplicationController
 
     source_id = user_subscription_params[:source_id]
     user_subscription_source = source_type.constantize.find_by(id: source_id)
-    return error_response("source not found") unless user_subscription_source
+    return error_response("source not found") unless active_source?(source_type, user_subscription_source)
 
-    unless user_subscription_tag_enabled?(user_subscription_source)
+    unless user_subscription_tag_enabled?(source_type, user_subscription_source)
       return error_response("user subscriptions are not enabled for the requested source")
     end
 
@@ -29,9 +29,9 @@ class UserSubscriptionsController < ApplicationController
 
   private
 
-  def user_subscription_tag_enabled?(user_subscription_source)
+  def user_subscription_tag_enabled?(source_type, user_subscription_source)
     liquid_tags =
-      case user_subscription_params[:source_type]
+      case source_type
       when "Article"
         user_subscription_source.liquid_tags_used(:body)
       else
@@ -39,6 +39,19 @@ class UserSubscriptionsController < ApplicationController
       end
 
     liquid_tags.include?(UserSubscriptionTag)
+  end
+
+  def active_source?(source_type, user_subscription_source)
+    return false unless user_subscription_source
+
+    # Don't create new user subscriptions for inactive sources
+    # (i.e. unpublished Articles, deleted Comments, etc.)
+    case source_type
+    when "Article"
+      user_subscription_source.published?
+    else
+      false
+    end
   end
 
   def error_response(msg)

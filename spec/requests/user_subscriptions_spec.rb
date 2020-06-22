@@ -48,6 +48,19 @@ RSpec.describe "UserSubscriptions", type: :request do
       expect(response.parsed_body["error"]).to eq("source not found")
     end
 
+    it "returns an error for an inactive source" do
+      unpublished_article = create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: false\n---\n\n{% user_subscription 'CTA text' %}")
+      invalid_source_attributes = { source_type: unpublished_article.class_name, source_id: unpublished_article.id, subscriber_email: user.email }
+      expect do
+        post user_subscriptions_path,
+             headers: { "Content-Type" => "application/json" },
+             params: { user_subscription: invalid_source_attributes }.to_json
+      end.to change(UserSubscription, :count).by(0)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to eq("source not found")
+    end
+
     it "returns an error for a source that doesn't have the UserSubscription liquid tag enabled" do
       article = create(:article)
       invalid_source_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: user.email }
