@@ -35,12 +35,6 @@ module.exports = {
   },
   plugins: ['import', 'jsx-a11y'],
   rules: {
-    'import/no-extraneous-dependencies': [
-      'error',
-      {
-        devDependencies: ['**/*.test.js', '**/*.test.jsx', '**/*.stories.jsx'],
-      },
-    ],
     'import/prefer-default-export': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'jsx-a11y/label-has-associated-control': [
