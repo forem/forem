@@ -317,7 +317,7 @@ export class Listings extends Component {
           <Modal
             currentUserId={currentUserId}
             onAddTag={this.addTag}
-            onChange={this.handleDraftingMessage}
+            onChangeDraftingMessage={this.handleDraftingMessage}
             onClick={this.handleCloseModal}
             onChangeCategory={this.selectCategory}
             onOpenModal={this.handleOpenModal}
