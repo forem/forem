@@ -232,7 +232,7 @@ describe('<ListingDashboard />', () => {
     // listing category
     const listing1CfpCategory = getByText('cfp', listing1GetByTextOptions);
 
-    expect(listing1CfpCategory.getAttribute('href')).toEqual('/listings/cfp/');
+    expect(listing1CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
 
     // tags
     const listing1ComputerScienceTag = getByText(
@@ -274,7 +274,7 @@ describe('<ListingDashboard />', () => {
     );
 
     expect(listing2EventsCategory.getAttribute('href')).toEqual(
-      '/listings/events/',
+      '/listings/events',
     );
 
     // tags
@@ -323,7 +323,7 @@ describe('<ListingDashboard />', () => {
     // listing category
     const listing3CfpCategory = getByText('cfp', listing3GetByTextOptions);
 
-    expect(listing3CfpCategory.getAttribute('href')).toEqual('/listings/cfp/');
+    expect(listing3CfpCategory.getAttribute('href')).toEqual('/listings/cfp');
 
     // has no tags
 
