@@ -7,7 +7,7 @@ RSpec.describe "Deleting Article", type: :system do
     sign_in article.user
     visit "/dashboard"
     click_on "Manage"
-    click_on "Delete"
+    click_on "DELETE"
   end
 
   # TODO: Uncomment this spec when we decide to use percy again
@@ -17,7 +17,7 @@ RSpec.describe "Deleting Article", type: :system do
   end
 
   it "author of article deletes own article", js: true do
-    click_on "Delete" # This is for confirming deletion
+    click_on "DELETE" # This is for confirming deletion
     expect(page).to have_text("Write your first post now")
   end
 end
