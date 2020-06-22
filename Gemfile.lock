@@ -301,7 +301,7 @@ GEM
       thor (~> 0.15)
     environs (1.1.0)
     equalizer (0.0.11)
-    erb_lint (0.0.33)
+    erb_lint (0.0.34)
       activesupport
       better_html (~> 1.0.7)
       html_tokenizer
@@ -545,9 +545,9 @@ GEM
       omniauth-oauth (~> 1.1)
       rack
     orm_adapter (0.5.0)
-    parallel (1.19.1)
-    parser (2.7.1.3)
-      ast (~> 2.4.0)
+    parallel (1.19.2)
+    parser (2.7.1.4)
+      ast (~> 2.4.1)
     patron (0.13.3)
     percy-capybara (4.2.0)
     pg (1.2.3)
@@ -913,7 +913,7 @@ DEPENDENCIES
   email_validator (~> 2.0)
   emoji_regex (~> 3.0)
   envied (~> 0.9)
-  erb_lint (~> 0.0.33)
+  erb_lint (~> 0.0.34)
   exifr (>= 1.3.6)
   factory_bot_rails (~> 6.0)
   faker (~> 2.12)
