@@ -6,7 +6,7 @@ import MessageModal from './MessageModal';
 const Modal = ({
   currentUserId,
   onAddTag,
-  onChange,
+  onChangeDraftingMessage,
   onClick,
   onChangeCategory,
   onOpenModal,
@@ -37,7 +37,7 @@ const Modal = ({
         {shouldRenderMessageModal && (
           <MessageModal
             onSubmit={onSubmit}
-            onChange={onChange}
+            onChangeDraftingMessage={onChangeDraftingMessage}
             message={message}
             listing={listing}
           />
@@ -54,7 +54,7 @@ const Modal = ({
 Modal.propTypes = {
   listing: PropTypes.isRequired,
   onAddTag: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onChangeDraftingMessage: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   onChangeCategory: PropTypes.func.isRequired,
   onOpenModal: PropTypes.func.isRequired,
