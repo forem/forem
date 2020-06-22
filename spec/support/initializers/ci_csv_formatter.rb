@@ -7,7 +7,7 @@ require "singleton"
 class CSVFormatter
   RSpec::Core::Formatters.register self, :example_passed, :example_failed, :example_pending, :close
   HEADERS = ["Description", "File", "Status", "Start Date", "Start Time", "Run Time", "Exception",
-             "Backtrace", "Retry #", "Suite Status", "Suite Run Time", "Travis URL"].freeze
+             "Backtrace", "Retry #", "Suite Status", "Suite Run Time", "Travis URL", "Travis Branch"].freeze
 
   def initialize(_output)
     @rows = []
@@ -66,7 +66,7 @@ class CSVFormatter
     with_headers = { write_headers: true, headers: HEADERS }
     CSV.open(csv_filename, "w", with_headers) do |csv|
       (@rows + RSpecRetryFormatterHelper.instance.rows).each do |row|
-        row += [@suite_status, suite_runtime, ENV["TRAVIS_BUILD_WEB_URL"]]
+        row += [@suite_status, suite_runtime, ENV["TRAVIS_BUILD_WEB_URL"], ENV["TRAVIS_BRANCH"]]
         csv << row
       end
     end
