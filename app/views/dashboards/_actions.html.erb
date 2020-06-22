@@ -1,19 +1,19 @@
-<div class="actions">
-  <a class="action <%= "active" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>" href="/dashboard">
-    <span>POSTS</span>
-    <span>(<%= @user.articles_count %>)</span>
+<nav>
+  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>" href="/dashboard">
+    Posts
+    <span class="crayons-indicator"><%= @user.articles_count %></span>
   </a>
-  <a class="action <%= "active" if params[:action] == "followers" %>" href="/dashboard/user_followers">
-    <span>FOLLOWERS</span>
-    <span>(<%= @user.followers_count %>)</span>
+  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "followers" %>" href="/dashboard/user_followers">
+    Followers
+    <span class="crayons-indicator"><%= @user.followers_count %></span>
   </a>
-  <a class="action <%= "active" if params[:action] == "following" || params[:action].include?("following") %>" href="/dashboard/following">
-    <span>FOLLOWING</span>
-    <span>(<%= @user.following_users_count + @user.following_tags_count + @user.following_organizations_count + @user.following_podcasts_count %>)</span>
+  <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "following" || params[:action].include?("following") %>" href="/dashboard/following">
+    Following
+    <span class="crayons-indicator"><%= @user.following_users_count + @user.following_tags_count + @user.following_organizations_count + @user.following_podcasts_count %></span>
   </a>
   <% if @user.has_role? :pro %>
-    <a class="action" href="/dashboard/pro">
-      <span>PRO ANALYTICS</span>
+    <a class="crayons-link crayons-link--block" href="/dashboard/pro">
+      Pro Analytics
     </a>
   <% end %>
-</div>
+</nav>
