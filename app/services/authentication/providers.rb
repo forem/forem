@@ -1,10 +1,3 @@
-# We require all authentication modules to make sure providers
-# are correctly preloaded both in development and in production and
-# ready to be used when needed at runtime
-Dir[Rails.root.join("app/services/authentication/**/*.rb")].each do |f|
-  require_dependency(f)
-end
-
 module Authentication
   module Providers
     # Retrieves a provider that is both available and enabled
