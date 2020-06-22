@@ -98,6 +98,7 @@
     "eslint-config-airbnb": "^17.1.1",
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-config-prettier": "^6.11.0",
+    "eslint-import-resolver-webpack": "^0.12.2",
     "eslint-plugin-babel": "^5.3.0",
     "eslint-plugin-ignore-erb": "^0.1.1",
     "eslint-plugin-import": "^2.21.2",
