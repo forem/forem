@@ -4,7 +4,7 @@ import { axe } from 'jest-axe';
 import { Help } from '../Help';
 
 describe('<Help />', () => {
-  it('should not have any a11y violations', async () => {
+  it('should have no a11y violations', async () => {
     const { container } = render(
       <Help
         previewShowing={false}
