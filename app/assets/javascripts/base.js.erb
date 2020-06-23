@@ -685,9 +685,11 @@ var instantClick
   });
 
 // INITIALIZE AHOY TRACKING
-// Setting cookies to false matches what we do in ahoy's initializer
+// Setting cookies to false matches what we do in ahoy's initializer.
+// Setting trackVisits to false prevents ahoy from creating a visit on the server-side.
   ahoy.configure({
-    cookies: false
+    cookies: false,
+    trackVisits: false
   });
 
 // Start BaseApp for Page
