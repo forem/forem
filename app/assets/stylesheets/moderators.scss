@@ -2,161 +2,85 @@
 @import 'mixins';
 @import 'config/import';
 
-.mod-index-hero {
-  margin: 0 auto;
-  padding: var(--su-7) var(--su-1);
-  text-align: center;
-  background: var(--body-bg);
-  h1 {
-    font-size: calc(1.8em + 2vw);
-  }
-  h2 {
-    font-size: calc(0.9em + 1vw);
-  }
-  a {
-    text-decoration: underline;
-  }
-  .mod-index-hero-data-pod {
-    display: inline-block;
-    margin: 10px;
-    width: 90%;
-    font-weight: bold;
-    border: 3px solid var(--body-color);
-    padding: 20px 0px;
-    .mod-index-hero-data-pod-number {
-      font-size: 2.8em;
-    }
-    @media screen and (min-width: 960px) {
-      width: calc(190px + 11vw);
-      padding: 80px 0px;
-      margin: 15px 2px;
-      .mod-index-hero-data-pod-number {
-        font-size: calc(2.7em + 0.2vw);
-      }
-    }
-    @media screen and (min-width: 1300px) {
-      width: calc(260px + 8vw);
-      padding: 80px 0px;
-      margin: 30px;
-      .mod-index-hero-data-pod-number {
-        font-size: calc(2.8em + 0.5vw);
-      }
-    }
-  }
-  .mod-index-hero-sub {
-    font-size: 0.9em;
-  }
+.mod-center-heading {
+  margin-bottom: var(--su-6);
 }
 
-.mod-index-header {
-  margin: 50px auto 30px;
-  width: 96%;
-  max-width: 1600px;
-  padding-left: 20px;
-  .mod-index-header-top-filters {
-    padding: 10px 0px 25px;
-    a {
-      color: var(--body-color);
-      font-size: 0.86em;
-      padding: 3px 18px;
-      border-radius: 100px;
-      border: 1px solid transparent;
-      &.mod-index-top-filter-link--active {
-        border: 1px solid var(--body-color);
-      }
-    }
-  }
-  a.mod-index-header-link {
-    color: $black;
-    padding: 5px 15px;
-    border-radius: 3px;
-    font-size: 1.5em;
-    font-weight: bold;
-    border: 1px solid transparent;
-  }
-  a.mod-index-header-link--active {
-    @include themeable(border, theme-border, 1px solid $black);
-  }
-}
+.mod-index-container {
+  .mod-index-header {
+    background-color: var(--base-inverted);
+    border-radius: var(--radius) var(--radius) 0 0;
+    border-bottom: 1px solid var(--base-10);
+    padding: var(--su-6) var(--su-4);
 
-.mod-index-list {
-  margin: 5px auto;
-  width: 96%;
-  max-width: 1600px;
-  border-radius: 3px;
-  border: 1px solid var(--card-color-tertiary);
-  background: var(--card-bg);
-
-  .mod-index-row {
-    padding: 10px;
-    @include themeable(
-      border-bottom,
-      theme-border,
-      1px solid $light-medium-gray
-    );
-    a.mod-index-article-title {
-      font-size: calc(1.2em + 0.3vw);
-      font-weight: bold;
-      margin-right: 6px;
-      display: inline-block;
-      color: var(--body-color);
+    .tag-view {
+      color: var(--base-90);
     }
-    .mod-index-article-tagslist {
-      display: inline-block;
+  }
+  .mod-index-list-header {
+    display: grid;
+    grid-template-columns: 4fr 2fr 1fr;
+    background-color: var(--base-0);
+    border: solid var(--base-10);
+    border-width: 1px 0;
+    h2 {
+      padding: var(--su-2) var(--su-4);
+      color: var(--base-50);
     }
-    a.mod-index-article-tag {
-      font-size: 0.9em;
-      padding: 3px 8px;
-      border-radius: 3px;
-      background: $light-gray;
-      color: $black;
-      vertical-align: 0.2em;
-    }
-    .mod-index-actions-and-details {
-      img {
-        height: 1.4em;
-        width: 1.4em;
-        border-radius: 100px;
-        margin-right: 5px;
-        display: inline-block;
-        vertical-align: -0.3em;
-      }
-      a {
-        font-weight: 500;
-        color: var(--card-color-tertiary);
-      }
-    }
-    .quick-mod-button {
-      font-size: 0.95em;
-      padding: 5px 18px;
-      border-radius: 100px;
-      @include themeable(border, theme-border, 1px solid $medium-gray);
-      display: inline-block;
-      margin: 10px 0px 5px;
-      margin-right: 5px;
-      background: transparent;
-      color: var(--body-color);
-    }
-    .mod-index-row-iframes {
-      padding: 5px 0px;
-      display: flex;
-      iframe {
-        height: calc(100vh - 100px);
-        max-height: 800px;
+  }
+  .mod-index-list {
+    margin: 0;
+    width: 100%;
+    .moderation-articles-list {
+      .moderation-single-article {
         width: 100%;
-        border: 0px;
-        display: inline-block;
-      }
-      .actions-panel {
-        width: 36%;
+        background-color: var(--base-inverted);
+        text-align: left;
+        padding: var(--su-4);
+        border: solid var(--base-10);
+        border-width: 1px 0;
+        display: grid;
+        grid-template-columns: 4fr 2fr 1fr;
+        .mod-article-tag {
+          color: var(--base-80);
+          padding-right: var(--su-2);
+          .article-hash-tag {
+            color: var(--base-40);
+          }
+        }
+        .article-author {
+          color: var(--base-80);
+          padding-left: var(--su-4);
+        }
+        .article-published-at {
+          color: var(--base-90);
+          padding-left: var(--su-6);
+        }
+        .article-iframes-container {
+          border-radius: var(--radius);
+          margin-top: var(--su-3);
+          grid-column-start: 1;
+          grid-column-end: 4;
+          width: 100%;
+          display: flex;
+          &.opened {
+            border: 1px solid var(--base-20);
+          }
+          iframe {
+            border: none;
+          }
+          .article-iframe {
+            width: 100%;
+            height: 650px; // height is arbitrary, will be removed for modal-esque view
+          }
+          .actions-panel-iframe {
+            width: 60%;
+            height: 650px; // height is arbitrary, will be removed for modal-esque view
+          }
+        }
       }
     }
   }
-}
-
-.mod-index-footer {
-  text-align: center;
-  padding: 30px 10px;
 }
 
 // these styles are to correct height and margin issues in the iframe
@@ -762,4 +686,30 @@
   font-size: 1.3em;
   padding: 3px 8px;
   border-radius: 3px;
+}
+
+.mod-center-section-title {
+  padding: var(--su-2);
+
+  &.resources {
+    margin-top: var(--su-7);
+  }
+}
+
+.mod-center-inbox {
+  .inbox-tags {
+    display: flex;
+    justify-content: space-between;
+    padding-left: var(--su-3);
+    padding-right: var(--su-3);
+  }
+}
+
+#mod-center-other-options svg {
+  width: var(--su-3);
+}
+
+.mod-feedback {
+  margin-top: var(--su-6);
+  margin-left: var(--su-3);
 }
