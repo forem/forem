@@ -20,11 +20,14 @@ class UserSubscriptionsController < ApplicationController
     is_subscribed = UserSubscriptions::SubscriptionCacheChecker.call(current_user, params[:source_type], params[:source_id])
     author = source.user
 
+    # TODO: (Alex Smith) remove this when ready
+    subscriber_email = current_user.email if current_user.any_admin?
+
     render json: {
       success: true,
       subscriber: {
         is_subscribed: is_subscribed,
-        email: current_user.email
+        email: subscriber_email # TODO: (Alex Smith) change to current_user.email
       },
       author: {
         username: author.username,
