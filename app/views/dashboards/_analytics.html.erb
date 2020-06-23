@@ -1,5 +1,29 @@
 <% num_views = @articles.sum(&:page_views_count) %>
 
+<div class="grid grid-cols-4 gap-4">
+  <div class="crayons-card crayons-card--secondary p-6">
+    <strong class="fs-3xl lh-tight color-base-90">447</strong>
+    <span class="color-base-60 block">Total post reactions</span>
+  </div>
+
+  <div class="crayons-card crayons-card--secondary p-6">
+    <strong class="fs-3xl lh-tight color-base-90">447</strong>
+    <span class="color-base-60 block">Total post views</span>
+  </div>
+
+  <div class="crayons-card crayons-card--secondary p-6">
+    <strong class="fs-3xl lh-tight color-base-90">447</strong>
+    <span class="color-base-60 block">Listings created</span>
+  </div>
+
+  <div class="crayons-card crayons-card--secondary p-6">
+    <strong class="fs-3xl lh-tight color-base-90">447</strong>
+    <span class="color-base-60 block">Credits available</span>
+  </div>
+</div>
+
+
+
 <div class="dashboard-analytics-header-wrapper">
   <div class="dashboard-analytics-header">
     <span><%= number_with_delimiter(@articles.sum(&:public_reactions_count), delimeter: ",") %></span>
