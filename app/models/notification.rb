@@ -81,6 +81,7 @@ class Notification < ApplicationRecord
 
     def send_moderation_notification(notifiable)
       # TODO: make this work for articles in the future. only works for comments right now
+      return unless notifiable.commentable
       return if UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
 
       Notifications::ModerationNotificationWorker.perform_async(notifiable.id)

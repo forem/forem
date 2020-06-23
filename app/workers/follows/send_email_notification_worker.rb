@@ -11,7 +11,7 @@ module Follows
         where("sent_at > ?", rand(15..35).hours.ago).
         where("subject LIKE ?", "%#{NotifyMailer::SUBJECTS[:new_follower_email]}").exists?
 
-      mailer.constantize.new_follower_email(follow).deliver
+      mailer.constantize.with(follow: follow).new_follower_email.deliver_now
     end
   end
 end

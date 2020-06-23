@@ -31,7 +31,7 @@ export const Warning = () => (
 );
 
 Warning.story = {
-  name: 'story',
+  name: 'warning',
 };
 
 export const Success = () => (

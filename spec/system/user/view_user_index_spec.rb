@@ -74,6 +74,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
     end
 
     it "shows organizations", js: true do
+      Capybara.current_session.driver.browser.manage.window.resize_to(1920, 1080)
       expect(page).to have_css("#sidebar-wrapper-right h4", text: "organizations")
     end
   end

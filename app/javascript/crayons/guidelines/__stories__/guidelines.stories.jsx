@@ -149,7 +149,7 @@ export const Components = () => (
       templates (*.html.erb files). We also build out parts of or sometimes
       complete views using
       {' '}
-      <a href="https://docs.dev.to/frontend/preact/">Preact</a>
+      <a href="https://docs.dev.to/frontend/preact">Preact</a>
       , typically for
       the logged on user experience. For example, the main page feed.
     </p>
@@ -161,7 +161,7 @@ export const Components = () => (
     <p>
       The entire design system uses the
       {' '}
-      <a href="http://getbem.com/naming/">BEM</a>
+      <a href="http://getbem.com/naming">BEM</a>
       {' '}
       methodology for naming CSS
       classes. Even Preact components under the hood use it.
@@ -179,15 +179,14 @@ export const Components = () => (
       and what
       <strong>IS NOT</strong>
       {' '}
-      a
-      Crayons component. It&#x27;s also practical because Crayons was
-      implemented when we already had tons of other frontend classes in the
-      codebase. It prevents overwriting styles by other CSS and it&#x27;s very
-      unlikely someone has ever created a
+      a Crayons component. It&#x27;s also practical
+      because Crayons was implemented when we already had tons of other frontend
+      classes in the codebase. It prevents overwriting styles by other CSS and
+      it&#x27;s very unlikely someone has ever created a
       <code>.crayons-btn</code>
       {' '}
-      style BUT
-      it&#x27;s very likely someone has created
+      style BUT it&#x27;s very likely someone has
+      created
       <code>.btn</code>
       {' '}
       style...

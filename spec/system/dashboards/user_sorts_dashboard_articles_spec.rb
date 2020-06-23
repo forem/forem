@@ -14,7 +14,7 @@ RSpec.describe "Sorting Dashboard Articles", type: :system, js: true do
   let(:test_article_order) do
     lambda do |url, expected_article_array|
       visit url
-      comments_counts_on_page = page.all(".single-article .comments-count span.value").map { |e| e.text.to_i }
+      comments_counts_on_page = page.all(".spec__dashboard-story .spec__comments-count").map { |e| e.text.to_i }
       articles_on_page = comments_counts_on_page.map do |count|
         article_with_comments_count_of.call(count)
       end

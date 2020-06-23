@@ -3,9 +3,7 @@ import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import Modal from '../components/Modal';
 
-
 describe('<Modal />', () => {
-  const idFromMessageModal = 'listings-message-form';
   const getDefaultListing = () => ({
     id: 22,
     category: 'misc',
@@ -29,8 +27,8 @@ describe('<Modal />', () => {
     onAddTag: () => {
       return 'onAddTag';
     },
-    onChange: () => {
-      return 'onChange';
+    onChangeDraftingMessage: () => {
+      return 'onChangeDraftingMessage';
     },
     onClick: () => {
       return 'OnClick';
@@ -51,7 +49,7 @@ describe('<Modal />', () => {
     render(<Modal {...getProps()} listing={listing} />);
 
   it('should have no a11y violations', async () => {
-    const { container } = renderModal({...getDefaultListing()});
+    const { container } = renderModal({ ...getDefaultListing() });
     const results = await axe(container);
     expect(results).toHaveNoViolations();
   });
