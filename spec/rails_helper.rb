@@ -80,6 +80,7 @@ RSpec.configure do |config|
   config.include OmniauthHelpers
   config.include SidekiqTestHelpers
   config.include ElasticsearchHelpers
+  config.include WaitHelper, type: :system
 
   config.after(:each, type: :system) do
     Warden::Manager._on_request.clear
