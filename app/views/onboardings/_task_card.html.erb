@@ -23,9 +23,11 @@
     </svg>
   </button>
 
-  <div>
-    <img alt="onboarding task card image" class="task-card-image" src="<%= SiteConfig.onboarding_taskcard_image %>" />
-  </div>
+  <% if SiteConfig.onboarding_taskcard_image.present? %>
+    <div>
+      <img alt="onboarding task card image" class="task-card-image" src="<%= SiteConfig.onboarding_taskcard_image %>" />
+    </div>
+  <% end %>
 
   <h1 class="task-card-title">You're now a part of the community!</h1>
   <p class="task-card-subtitle">SUGGESTED THINGS YOU CAN DO</p>

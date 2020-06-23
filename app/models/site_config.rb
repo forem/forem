@@ -89,8 +89,8 @@ class SiteConfig < RailsSettings::Base
   # Onboarding
   field :onboarding_logo_image, type: :string, default: "https://dev.to/assets/purple-dev-logo.png"
   field :onboarding_background_image, type: :string, default: "https://dev.to/assets/onboarding-background-white.png"
-  field :onboarding_taskcard_image, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/staggered-dev.svg"
-  field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
+  field :onboarding_taskcard_image, type: :string
+  field :suggested_tags, type: :array, default: %w[beginners]
   field :suggested_users, type: :array, default: %w[ben jess peter maestromac andy liana]
 
   # Rate limits
