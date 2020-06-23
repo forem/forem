@@ -13,8 +13,6 @@ module UserSubscriptions
     end
 
     def call
-      return false unless user
-
       cache_key = "user-#{user.id}-#{user.updated_at.rfc3339}-#{user.subscribed_to_user_subscriptions_count}/is_subscribed_#{source_type}_#{source_id}"
       Rails.cache.fetch(cache_key, expires_in: 24.hours) do
         UserSubscription.where(
