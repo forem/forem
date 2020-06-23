@@ -58,7 +58,7 @@ export default class SingleArticle extends Component {
           {user.name}
         </span>
         <span className="article-published-at fs-s fw-bold lh-tight">
-          {formatDate(publishedAt)}
+          <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
         </span>
         <div
           className={`article-iframes-container ${

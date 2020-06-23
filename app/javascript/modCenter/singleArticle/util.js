@@ -1,35 +1,20 @@
-const months = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-];
+const time_options = {
+  hour: 'numeric',
+  minute: 'numeric',
+};
 
-function get12HourTime(date) {
-  const minutes = date.getMinutes();
-  let hours = date.getHours();
-  const AmOrPm = hours >= 12 ? 'PM' : 'AM';
-  hours = hours % 12 || 12;
+const date_options = {
+  month: 'short',
+  day: 'numeric',
+};
 
-  return `${hours}:${minutes} ${AmOrPm}`;
-}
-
-export function formatDate(timestamp) {
+export const formatDate = (timestamp, currentLocale) => {
   const dateToday = new Date();
-  const origDatePublished = new Date(timestamp);
+  const articlePublished = new Date(timestamp);
+  const locale = currentLocale || 'default';
 
-  if (dateToday.toDateString() === origDatePublished.toDateString()) {
-    return get12HourTime(origDatePublished);
+  if (dateToday.toDateString() === articlePublished.toDateString()) {
+    return articlePublished.toLocaleString(locale, time_options);
   }
-  return `${
-    months[origDatePublished.getMonth()]
-  } ${origDatePublished.getDate()}`;
-}
+  return articlePublished.toLocaleString(locale, date_options);
+};
