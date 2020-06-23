@@ -69,7 +69,7 @@ export default class Onboarding extends Component {
   render() {
     const { currentSlide } = this.state;
     const { communityConfig } = this.props;
-    return <main className="onboarding-body" style={{backgroundImage: `url(${communityConfig.communityBackground})`}}>{this.slides[currentSlide]}</main>;
+    return <main className="onboarding-body" style={communityConfig.communityBackground && {backgroundImage: `url(${communityConfig.communityBackground})`}}>{this.slides[currentSlide]}</main>;
   }
 }
 

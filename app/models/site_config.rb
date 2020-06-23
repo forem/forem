@@ -88,7 +88,7 @@ class SiteConfig < RailsSettings::Base
 
   # Onboarding
   field :onboarding_logo_image, type: :string, default: "https://dev.to/assets/purple-dev-logo.png"
-  field :onboarding_background_image, type: :string, default: "https://dev.to/assets/onboarding-background-white.png"
+  field :onboarding_background_image, type: :string
   field :onboarding_taskcard_image, type: :string
   field :suggested_tags, type: :array, default: %w[beginners]
   field :suggested_users, type: :array, default: %w[ben jess peter maestromac andy liana]

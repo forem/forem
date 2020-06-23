@@ -114,7 +114,7 @@ class IntroSlide extends Component {
             </figure>
             <h1 className="introduction-title">
               {this.user.name}
-              &mdash; welcome to 
+              &mdash; welcome to
               {' '}
               {communityConfig.communityName}
               !
