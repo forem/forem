@@ -65,8 +65,8 @@ The `:stub_elasticsearch` flag will stub all index and search requests made to
 Elasticsearch and return an empty response. This will ensure that no unwanted
 data shows up on your spec's page.
 
-If you are debugging a `js: true` spec and want to see the browser run through
-the workflow, you can set `HEADLESS=false` before running a spec:
+If you are debugging a `js: true` spec and want to see the browser, you can set
+`HEADLESS=false` before running a spec:
 
 ```shell
 HEADLESS=false bundle exec rspec spec/app/system
