@@ -10,10 +10,7 @@ class UserSubscriptionsController < ApplicationController
 
     is_subscribed = UserSubscriptions::SubscriptionCacheChecker.call(current_user, source_type, source_id)
 
-    render json: {
-      is_subscribed: is_subscribed,
-      status: 200
-    }, status: :ok
+    render json: { is_subscribed: is_subscribed, success: true }, status: :ok
   end
 
   def create
