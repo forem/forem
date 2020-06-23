@@ -215,6 +215,6 @@ class Message < ApplicationRecord
       chat_channel.last_message_at > 30.minutes.ago ||
       recipient.email_connect_messages == false
 
-    NotifyMailer.with(user: self).new_message_email.deliver_now
+    NotifyMailer.with(message: self).new_message_email.deliver_now
   end
 end
