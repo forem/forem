@@ -42,7 +42,7 @@
         <a class="video-upload-cta cta" href="/listings/dashboard" data-no-instant>
           Create/Manage Listings
         </a>
-      <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]), 'aria-label': 'Sort By' %>
+      <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]), 'aria-label': "Sort By" %>
       <% if @articles.any? {|article| article.archived } %>
         <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink" %>
       <% end %>
@@ -64,7 +64,9 @@
         <% end %>
       </tbody>
     </table>
-
+    <div class="mb-4 pl-3">
+      <%= paginate @articles, params: { i: nil } %>
+    </div>
   <% else %>
     <div class="no-articles">
       <h3>This is where you can manage your posts, but you haven't written anything yet.</h3>
