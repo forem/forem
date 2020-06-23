@@ -33,13 +33,12 @@ class UserSubscriptionTag < LiquidTagBase
       addSignInClickEvent();
     }
 
+    // We need access to some DOM elements (i.e. csrf token, article id, etc.)
     document.addEventListener("DOMContentLoaded", function() {
       function fetchBaseData() {
         const articleId = document.getElementById('article-body').dataset.articleId;
-        const authorId = document.getElementById('article-show-container').dataset.authorId;
 
         const params = new URLSearchParams({
-          author_id: authorId,
           source_type: "Article",
           source_id: articleId
         }).toString();
@@ -65,8 +64,8 @@ class UserSubscriptionTag < LiquidTagBase
 
       function updateSubcriptionElements() {
         fetchBaseData().then(function(response) {
-          updateElements('.author-username', response.author.username);
-          updateElements('.subscriber-email', response.subscriber.email);
+          updateElementsInnerHTML('.author-username', response.author.username);
+          updateElementsInnerHTML('.subscriber-email', response.subscriber.email);
           // updateElements('.author-image', response.author.profile_image_90);
 
           // if (response.subscriber.is_subscribed) {
@@ -75,7 +74,7 @@ class UserSubscriptionTag < LiquidTagBase
         });
       }
 
-      function updateElements(identifier, value) {
+      function updateElementsInnerHTML(identifier, value) {
         const elements = document.querySelectorAll(identifier);
 
         elements.forEach(function(element) {
