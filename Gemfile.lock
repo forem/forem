@@ -222,6 +222,10 @@ GEM
       safe_yaml (~> 1.0.0)
     crass (1.0.6)
     dante (0.2.0)
+    database_cleaner (1.8.5)
+    database_cleaner-active_record (1.8.0)
+      activerecord
+      database_cleaner (~> 1.8.0)
     datetime_picker_rails (0.0.7)
       momentjs-rails (>= 2.8.1)
     ddtrace (0.36.0)
@@ -903,6 +907,7 @@ DEPENDENCIES
   cld (~> 0.8)
   cloudinary (~> 1.15)
   counter_culture (~> 2.5)
+  database_cleaner-active_record (~> 1.8.0)
   ddtrace (~> 0.36.0)
   derailed_benchmarks (~> 1.7)
   devise (~> 4.7)
