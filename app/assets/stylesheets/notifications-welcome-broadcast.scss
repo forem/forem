@@ -4,16 +4,65 @@
 .notifications-index {
   .home {
     .articles-list {
+      // position: relative;
+      // width: 676px;
+      // height: 239px;
+      // left: 173px;
+      // top: 61px;
       .single-article {
         .content {
           &.broadcast-content {
             .opt-out {
               padding-top: 24px;
-              font-size: 12px;
-              font-style: italic;
+              font-size: 14px;
+              line-height: 125%;
+              letter-spacing: -0.02em;
+              color: #506e8b;
+              align-self: center;
+            }
+            .settings__opt-out {
+              color: #3b49df;
+              font-weight: 500;
             }
           }
         }
+        .small-pic {
+          float: right;
+          width: 80px;
+          height: 114.85px;
+          left: 20px;
+          top: 0px;
+        }
+      }
+      .single-notification {
+        // position: relative;
+        // width: 516px;
+        // background: var(--card-bg);
+        // margin: 0 auto;
+        // border: var(--theme-container-border, none);
+        // vertical-align: top;
+        // border-radius: 3px;
+
+        padding-bottom: 18px;
+        line-height: 1.35em;
+        background: #ffffff;
+        border-radius: 3px;
+        // margin: 0 auto;
+        // position: relative;
+        // @include dev-card;
+        // vertical-align: top;
+        // overflow: hidden;
+
+        // padding-top: var(--header-height);
+        // display: flex;
+        // flex-direction: column;
+        // height: 148px;
+        // left: 0px;
+        // top: 52px;
+        // flex: none;
+        // order: 2;
+        // align-self: center;
+        // margin: 0px 2px;
       }
     }
   }
