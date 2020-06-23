@@ -19,7 +19,7 @@ const Membership = ({
         data-membership-id={membership.membership_id}
         data-role="mod"
       >
-        Add as Mode
+        Add as Mod
         <span>
           <img
             src={adminEmoji}
