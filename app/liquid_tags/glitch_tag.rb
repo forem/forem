@@ -1,5 +1,3 @@
-require "uri"
-
 class GlitchTag < LiquidTagBase
   attr_accessor :uri
 

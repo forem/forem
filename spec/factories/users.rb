@@ -148,7 +148,7 @@ FactoryBot.define do
       currently_hacking_on { "JSON-LD" }
       mastodon_url { "https://mastodon.social/@test" }
       facebook_url { "www.facebook.com/example" }
-      linkedin_url { "www.linkedin.com/company/example/" }
+      linkedin_url { "www.linkedin.com/company/example" }
       youtube_url { "https://youtube.com/example" }
       behance_url { "www.behance.net/#{username}" }
       stackoverflow_url { "www.stackoverflow.com/example" }
