@@ -12,7 +12,7 @@ const ActiveMembershipSection = ({
     toggelScreens();
   };
 
-  const activeMembershipList = activeMemberships.slice(0, 2);
+  const activeMembershipList = activeMemberships.slice(0, 4);
 
   return (
     <div className="p-4 grid gap-2 crayons-card mb-4">
