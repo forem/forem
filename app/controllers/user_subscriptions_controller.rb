@@ -36,7 +36,7 @@ class UserSubscriptionsController < ApplicationController
 
     if @user_subscription.save
       rate_limiter.track_limit_by_action(:user_subscription_creation)
-      render json: { message: "success", status: 200 }, status: :ok
+      render json: { message: "success", success: true }, status: :ok
     else
       error_response(@user_subscription.errors.full_messages.to_sentence)
     end
@@ -70,7 +70,7 @@ class UserSubscriptionsController < ApplicationController
   end
 
   def error_response(msg)
-    render json: { error: msg, status: 422 }, status: :unprocessable_entity
+    render json: { error: msg, success: false }, status: :unprocessable_entity
   end
 
   # This checks if the email address the user saw/consented to share is the
