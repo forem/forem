@@ -50,13 +50,9 @@ exec $SHELL
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 exec $SHELL
-
-rbenv install $(cat .ruby-version)
-rbenv global $(cat .ruby-version)
-ruby -v
 ```
 
-### Installing Rails
+### Installing Node
 
 As a pre-requisite to install Rails, we're going to need to install a JavaScript
 runtime like Node.js.
@@ -76,20 +72,6 @@ for further details.
 
 If `npm -v` gives `Syntax error: word unexpected (expecting "in")`, restart the
 terminal and try again.
-
-And now, for rails itself:
-
-```shell
-gem install rails -v 5.2.4.2
-```
-
-Then run `rbenv rehash` to make the Rails executable available. Check it out by
-using `rails -v` command
-
-```shell
-rbenv rehash
-rails -v
-```
 
 ### Yarn
 
@@ -159,6 +141,13 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
 1. Clone your forked repository, eg.
    `git clone https://github.com/<your-username>/dev.to.git`
+1. Open the cloned dev.to folder in terminal with `cd dev.to`. Next, install
+   ruby with the following commands.
+   ```shell
+   rbenv install $(cat .ruby-version)
+   rbenv global $(cat .ruby-version)
+   ruby -v
+   ```
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
