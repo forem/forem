@@ -238,6 +238,7 @@ Rails.application.routes.draw do
   resources :user_subscriptions, only: %i[create] do
     collection do
       get "/subscribed", action: "subscribed"
+      get "/base_data", action: "base_data"
     end
   end
   namespace :followings, defaults: { format: :json } do
