@@ -100,10 +100,6 @@
     <% elsif @user == article.user %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
     <% end %>
-    <% if @current_user_pro %>
-      <a href="<%= article.path %>/stats" class="crayons-btn crayons-btn--ghost crayons-btn--s">Stats</a>
-    <% end %>
-
     <a href="<%= article.path %>/edit" class="crayons-btn crayons-btn--ghost crayons-btn--s">Edit</a>
 
     <div class="js-dashboard-row-more relative inline-block">
@@ -112,6 +108,9 @@
       </button>
 
       <div class="crayons-dropdown top-100 right-0 z-10 align-left js-dashboard-row-more-dropdown">
+        <% if @current_user_pro %>
+          <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100 border-0 bg-transparent">Stats</a>
+        <% end %>
         <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "js-archive-toggle" }) do |f| %>
           <%= f.hidden_field :archived, value: !article.archived %>
 
