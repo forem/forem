@@ -316,6 +316,7 @@
   @include themeable(border, theme-border, 1px solid $outline-color);
   padding: 13px;
   min-width: 50%;
+  overflow-x: hidden;
   @media screen and (min-width: 1440px) {
     min-width: 45%;
   }
@@ -1308,8 +1309,7 @@
   }
 
   .membership-actions {
-    margin-right: -4em;
-
+    position: relative;
     .membership-management__dropdown-memu {
       display: none;
       position: absolute;
@@ -1318,9 +1318,10 @@
       border-color: var(--theme-color, #0a0a0a);
       border-radius: 5px;
       border-width: 1px;
-      margin-top: 0px;
-      margin-left: -6.6em;
-      z-index: 30;
+      z-index: 100;
+      width: 200px;
+      right: 78px;
+      top: 20px;
 
       button {
         width: 100%;

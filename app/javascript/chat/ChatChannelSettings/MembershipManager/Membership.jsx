@@ -80,7 +80,13 @@ const Membership = ({
 
   return (
     <div className="flex items-center my-3 member-list-item">
-      <a href={`/${membership.username}`}>
+      <a
+        href={`/${membership.username}`}
+        className="chatmessagebody__username--link"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-content="sidecar-user"
+      >
         <span className="crayons-avatar crayons-avatar--l mr-3">
           <img
             className="crayons-avatar__image align-middle"
