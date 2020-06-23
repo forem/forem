@@ -2,7 +2,7 @@ class UserSubscriptionsController < ApplicationController
   before_action :authenticate_user!
 
   USER_SUBSCRIPTION_PARAMS = %i[source_type source_id subscriber_email].freeze
-  BASE_DATA_PARAMS = %i[source_type source_id author_id].freeze
+  BASE_DATA_PARAMS = %i[source_type source_id].freeze
 
   def base_data
     params.require(BASE_DATA_PARAMS)
