@@ -65,10 +65,7 @@
       </tbody>
     </table>
     <div class="mb-4 pl-3">
-      <% current_internal_param = params[:i] # ?i=i is a special hidden param which should not be passed to paginate %>
-      <% params[:i] = nil %>
-        <%= paginate @articles %>
-      <% params[:i] = current_internal_param %>
+      <%= paginate @articles, params: { i: nil } %>
     </div>
   <% else %>
     <div class="no-articles">
