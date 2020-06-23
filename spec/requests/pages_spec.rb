@@ -28,7 +28,7 @@ RSpec.describe "Pages", type: :request do
       it "returns json data " do
         get "/page/#{page.slug}"
 
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response.body).to include(json_text)
       end
 
@@ -37,7 +37,7 @@ RSpec.describe "Pages", type: :request do
         page.save!
         get "/#{page.slug}"
 
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response.body).to include(json_text)
       end
     end
