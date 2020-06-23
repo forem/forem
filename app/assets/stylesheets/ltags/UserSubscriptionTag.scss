@@ -6,6 +6,18 @@
     box-shadow: 4px 4px 0 black;
   }
 
+  #profile-images {
+    text-align: center;
+
+    img {
+      border-radius: 50%;
+    }
+  }
+
+  .subscriber-profile-image {
+    display: none;
+  }
+
   .user-subscription-content {
     margin: 1rem auto;
   }

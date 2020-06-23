@@ -66,7 +66,8 @@ class UserSubscriptionTag < LiquidTagBase
         fetchBaseData().then(function(response) {
           updateElementsInnerHTML('.author-username', response.author.username);
           updateElementsInnerHTML('.subscriber-email', response.subscriber.email);
-          // updateElements('.author-image', response.author.profile_image_90);
+          updateProfileImages('.subscriber-profile-image', response.subscriber);
+          updateProfileImages('.author-profile-image', response.author);
 
           // if (response.subscriber.is_subscribed) {
             // showSubscribed();
@@ -79,6 +80,22 @@ class UserSubscriptionTag < LiquidTagBase
 
         elements.forEach(function(element) {
           element.innerHTML = value;
+        });
+      }
+
+      function updateProfileImages(identifier, user) {
+        const profileImages = document.querySelectorAll(`img${identifier}`);
+
+        profileImages.forEach(function(profileImage) {
+          profileImage.src = user.profile_image_90;
+          profileImage.alt = `${user.username} profile image`;
+          profileImage.style.display = 'block';
+        });
+
+        const profileImageWrappers = document.querySelectorAll(`span${identifier}`);
+
+        profileImageWrappers.forEach(function(profileImageWrapper) {
+          profileImageWrapper.style.display = 'inline-block';
         });
       }
 

@@ -26,8 +26,10 @@ class UserSubscriptionsController < ApplicationController
     render json: {
       success: true,
       subscriber: {
+        username: current_user.username,
         is_subscribed: is_subscribed,
-        email: subscriber_email # TODO: (Alex Smith) change to current_user.email
+        email: subscriber_email, # TODO: (Alex Smith) change to current_user.email
+        profile_image_90: ProfileImage.new(current_user).get(width: 90)
       },
       author: {
         username: author.username,
