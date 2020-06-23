@@ -1,17 +1,26 @@
 class ModerationsController < ApplicationController
   after_action :verify_authorized
 
+  JSON_OPTIONS = {
+    only: %i[id title published_at cached_tag_list path],
+    include: {
+      user: { only: %i[username name path articles_count] }
+    }
+  }.freeze
+
   def index
     skip_authorization
     return unless current_user&.trusted
 
-    @articles = Article.published.
+    articles = Article.published.
       where("score > -5 AND score < 5").
       order("published_at DESC").limit(70)
-    @articles = @articles.cached_tagged_with(params[:tag]) if params[:tag].present?
-    @articles = @articles.where("nth_published_by_author > 0 AND nth_published_by_author < 4 AND published_at > ?", 7.days.ago) if params[:state] == "new-authors"
-    @articles = @articles.decorate
+    articles = articles.cached_tagged_with(params[:tag]) if params[:tag].present?
+    articles = articles.where("nth_published_by_author > 0 AND nth_published_by_author < 4 AND published_at > ?", 7.days.ago) if params[:state] == "new-authors"
+    @articles = articles.includes(:user).to_json(JSON_OPTIONS)
     @tag = Tag.find_by(name: params[:tag]) || not_found if params[:tag].present?
+    @current_user_tags = current_user.moderator_for_tags
+    @community_mod_channel = current_user.chat_channels.find_by("channel_name LIKE ?", "Community Mods: Team%")
   end
 
   def article
