@@ -19,7 +19,7 @@
                  image_path: "emoji/emoji-one-bookmark.png"
                } %>
 
-    <% display_name = @article.user.twitter_username ? "@" + @article.user.twitter_username : @article.user.name %>
+    <% display_name = @article.user.twitter_username ? "@#{@article.user.twitter_username}" : @article.user.name %>
     <a
       class="article-actions-tweet-button"
       rel="noopener"

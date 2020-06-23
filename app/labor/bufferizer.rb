@@ -18,7 +18,9 @@ class Bufferizer
       next if tag.buffer_profile_id_code.blank?
 
       text = twitter_buffer_text
-      text = text.gsub(" #{SiteConfig.twitter_hashtag}", " #{SiteConfig.twitter_hashtag} ##{tag.name}") if text.length < 250
+      if text.length < 250 && SiteConfig.twitter_hashtag
+        text = text.gsub(" #{SiteConfig.twitter_hashtag}", " #{SiteConfig.twitter_hashtag} ##{tag.name}")
+      end
       BufferUpdate.buff!(@article.id, text, tag.buffer_profile_id_code, "twitter", tag.id, @admin_id)
     end
     @article.update(last_buffered: Time.current)

@@ -43,7 +43,12 @@ class BufferUpdate < ApplicationRecord
   end
 
   def self.twitter_default_text(article)
-    "#{article.title}\n\n#{"{ author: @#{article.user.twitter_username} } #{SiteConfig.twitter_hashtag}" if article.user.twitter_username?}".strip
+    [
+      article.title,
+      "\n\n",
+      ("{ author: @#{article.user.twitter_username} } " if article.user.twitter_username?),
+      SiteConfig.twitter_hashtag.presence,
+    ].compact.join.strip
   end
 
   private
