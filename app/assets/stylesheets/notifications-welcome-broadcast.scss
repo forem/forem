@@ -1,0 +1,20 @@
+// TODO[team-delightful]: Refactor nesting in this file
+// in addition to notifications.scss so that nesting is
+// not as deep
+.notifications-index {
+  .home {
+    .articles-list {
+      .single-article {
+        .content {
+          &.broadcast-content {
+            .opt-out {
+              padding-top: 24px;
+              font-size: 12px;
+              font-style: italic;
+            }
+          }
+        }
+      }
+    }
+  }
+}
