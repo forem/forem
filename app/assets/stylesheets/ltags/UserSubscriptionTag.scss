@@ -1,0 +1,62 @@
+.ltag__user-subscription {
+  .user-subscription-container {
+    display: flex;
+    justify-content: center;
+    border: 2px solid black;
+    box-shadow: 4px 4px 0 black;
+  }
+
+  .user-subscription-content {
+    margin: 1rem auto;
+  }
+
+  .user-subscription-cta-text {
+    text-align: center;
+  }
+
+  .user-subscription-signed-out {
+    text-align: center;
+  }
+
+  .user-subscription-response {
+    display: none;
+  }
+
+  #sign-in-btn {
+    width: max-content;
+  }
+
+  .user-subscription-signed-in {
+    text-align: center;
+    display: none;
+  }
+
+  #logged-in-text {
+    text-align: center;
+  }
+
+  #user-subscription-email {
+    font-weight: bold;
+  }
+
+  .user-subscription-confirmation-modal {
+    display: none;
+  }
+
+  .crayons-modal__overlay {
+    position: fixed;
+    z-index: 400;
+  }
+
+  .confirmation-buttons {
+    text-align: center;
+  }
+
+  #confirmation-button,
+  #cancel-button {
+    width: max-content;
+    display: inline-block;
+    margin-right: 8px;
+    margin-bottom: 1rem;
+  }
+}
