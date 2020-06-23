@@ -25,7 +25,7 @@ RSpec.describe "UserSubscriptions", type: :request do
       get subscribed_user_subscriptions_path, params: valid_params
 
       expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)["is_subscribed"]).to eq true
+      expect(response.parsed_body["is_subscribed"]).to eq true
     end
 
     it "returns false if a user is not already subscribed" do
@@ -33,7 +33,7 @@ RSpec.describe "UserSubscriptions", type: :request do
       get subscribed_user_subscriptions_path, params: valid_params
 
       expect(response).to have_http_status(:ok)
-      expect(JSON.parse(response.body)["is_subscribed"]).to eq false
+      expect(response.parsed_body["is_subscribed"]).to eq false
     end
   end
 
