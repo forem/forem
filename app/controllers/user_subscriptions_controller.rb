@@ -1,6 +1,8 @@
 class UserSubscriptionsController < ApplicationController
   before_action :authenticate_user!
 
+  USER_SUBSCRIPTION_PARAMS = %i[source_type source_id subscriber_email].freeze
+
   def subscribed
     params.require(%i[source_type source_id])
     source_type = params[:source_type]
@@ -81,7 +83,6 @@ class UserSubscriptionsController < ApplicationController
   end
 
   def user_subscription_params
-    accessible = %i[source_type source_id subscriber_email]
-    params.require(:user_subscription).permit(accessible)
+    params.require(:user_subscription).permit(USER_SUBSCRIPTION_PARAMS)
   end
 end
