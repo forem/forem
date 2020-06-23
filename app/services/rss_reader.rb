@@ -61,6 +61,7 @@ class RssReader
         error: e
       },
     )
+    []
   end
 
   def get_item_count_error(feed)
