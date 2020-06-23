@@ -82,6 +82,12 @@ class ApplicationController < ActionController::Base
   end
   helper_method :internal_navigation?
 
+  def feed_style_preference
+    # TODO: Future functionality will let current_user override this value with UX preferences.
+    SiteConfig.feed_style
+  end
+  helper_method :feed_style_preference?
+
   def set_no_cache_header
     response.headers["Cache-Control"] = "no-cache, no-store"
     response.headers["Pragma"] = "no-cache"

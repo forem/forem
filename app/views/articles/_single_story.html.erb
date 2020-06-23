@@ -2,7 +2,7 @@
   <% if featured == true %>
     <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
   <% end %>
-  <% if featured == true || (SiteConfig.feed_style == "rich" && story.main_image.present?) %>
+  <% if featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
     <a href="<%= story.path %>" class="crayons-story__cover" aria-label="article">
       <div style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);" class="crayons-story__cover__image"></div>
     </a>
