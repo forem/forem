@@ -1,10 +1,35 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { ItemListTags } from '../ItemListTags';
 
 describe('<ItemListTags />', () => {
+  it('should have no a11y violations with two different sets of tags', async () => {
+    const { container } = render(
+      <ItemListTags
+        availableTags={['discuss']}
+        selectedTags={['javascript']}
+      />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
+  it('should have no a11y violations with two some shared tags', async () => {
+    const { container } = render(
+      <ItemListTags
+        availableTags={['discuss', 'javascript']}
+        selectedTags={['javascript']}
+      />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
   it('renders properly with two different sets of tags', () => {
-      const { getByText, queryByText } = render(
+    const { getByText, queryByText } = render(
       <ItemListTags
         availableTags={['discuss']}
         selectedTags={['javascript']}

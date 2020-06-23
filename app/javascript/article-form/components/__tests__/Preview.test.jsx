@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import { JSDOM } from 'jsdom';
 import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { Preview } from '../Preview';
 
 const doc = new JSDOM('<!doctype html><html><body></body></html>');
@@ -60,6 +61,19 @@ describe('<Preview />', () => {
       helpPosition: null,
     };
     errors = null;
+  });
+
+  it('should have no a11y violations', async () => {
+    const { container } = render(
+      <Preview
+        previewResponse={previewResponse}
+        articleState={articleState}
+        errors={errors}
+      />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
   it('shows the correct title', () => {
