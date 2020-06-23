@@ -46,6 +46,7 @@ branches:
   only:
     - master
 script:
+  - './scripts/copy_spec.sh'
   - date --rfc-3339=seconds
   - nvm install
   - pkill -9 -f elasticsearch || true
