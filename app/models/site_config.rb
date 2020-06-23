@@ -54,7 +54,7 @@ class SiteConfig < RailsSettings::Base
   field :ga_fetch_rate, type: :integer, default: 25
 
   # Images
-  field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
+  field :main_social_image, type: :string
   field :favicon_url, type: :string
   field :logo_png, type: :string
   field :logo_svg, type: :string
