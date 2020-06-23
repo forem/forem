@@ -1,5 +1,5 @@
 <%= render "shell/top" %>
-<% if SiteConfig.payment_pointer %>
+<% if SiteConfig.payment_pointer.present? %>
   <div id="base-payment-pointer" data-payment-pointer="<%= SiteConfig.payment_pointer %>"></div>
 <% end %>
 <style>.app-shell-loader {display: none;}</style>
