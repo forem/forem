@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_17_183058) do
+ActiveRecord::Schema.define(version: 2020_06_18_212422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1276,6 +1276,7 @@ ActiveRecord::Schema.define(version: 2020_06_17_183058) do
     t.integer "spent_credits_count", default: 0, null: false
     t.string "stackoverflow_url"
     t.string "stripe_id_code"
+    t.integer "subscribed_to_user_subscriptions_count", default: 0, null: false
     t.text "summary"
     t.string "text_color_hex"
     t.string "twitch_url"

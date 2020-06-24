@@ -684,5 +684,11 @@ var instantClick
     revision: "<%= ApplicationConfig['HEROKU_SLUG_COMMIT'] %>"
   });
 
+// INITIALIZE AHOY TRACKING
+// Setting cookies to false matches what we do in ahoy's initializer
+  ahoy.configure({
+    cookies: false
+  });
+
 // Start BaseApp for Page
   initializeBaseApp()

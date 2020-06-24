@@ -50,4 +50,25 @@ RSpec.describe UserSubscription, type: :model do
       end
     end
   end
+
+  describe "counter_culture" do
+    let(:user) { create(:user) }
+
+    context "when a UserSubscription is created" do
+      it "increments subscribed_to_user_subscriptions_count on user" do
+        expect do
+          create(:user_subscription, subscriber: user)
+        end.to change { user.reload.subscribed_to_user_subscriptions_count }.by(1)
+      end
+    end
+
+    context "when a UserSubscription is destroyed" do
+      it "decrements subscribed_to_user_subscriptions_count on user" do
+        user_subscription = create(:user_subscription, subscriber: user)
+        expect do
+          user_subscription.destroy
+        end.to change { user.reload.subscribed_to_user_subscriptions_count }.by(-1)
+      end
+    end
+  end
 end
