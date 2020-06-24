@@ -1,7 +1,6 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-import ConfigImage from '../../../../assets/images/three-dots.svg';
 import adminEmoji from '../../../../assets/images/emoji/apple-fire.png';
 
 const Membership = ({
@@ -13,29 +12,20 @@ const Membership = ({
   const addAsModButton =
     membership.role === 'member' ? (
       <button
-        className="crayons-btn crayons-btn--ghost remove-membership p-2"
+        className="crayons-btn crayons-btn--s crayons-btn--ghost"
         type="button"
         onClick={handleUpdateMembershipRole}
         data-membership-id={membership.membership_id}
         data-role="mod"
       >
-        Add as Mod
-        <span>
-          <img
-            src={adminEmoji}
-            alt="admin emoji"
-            data-content="admin emoji"
-            className="admin-emoji-button mx-2"
-            title="MOD"
-          />
-        </span>
+        Permote as Mod
       </button>
     ) : null;
 
   const addAsMemberButton =
     membership.role === 'mod' ? (
       <button
-        className="crayons-btn crayons-btn--ghost remove-membership p-2"
+        className="crayons-btn crayons-btn--s crayons-btn--ghost"
         type="button"
         onClick={handleUpdateMembershipRole}
         data-membership-id={membership.membership_id}
@@ -48,39 +38,39 @@ const Membership = ({
   const removeMembershipButton =
     membership.role === 'member' ? (
       <button
-        className="crayons-btn crayons-btn--ghost  crayons-btn--ghost-danger remove-membership p-2"
+        className="crayons-btn crayons-btn--s crayons-btn--ghost-danger crayons-btn--ghost"
         type="button"
         onClick={removeMembership}
         data-membership-id={membership.membership_id}
         data-membership-status={membership.status}
       >
-        Remove
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 32.526 32.526"
+          width="18"
+          height="18"
+          className="crayons-icon"
+        >
+          <path
+            fill="#4f5458"
+            d="M32.526 2.828L29.698 0 16.263 13.435 2.828 0 0 2.828l13.435 13.435L0 29.698l2.828 2.828 13.435-13.435 13.435 13.435 2.828-2.828-13.435-13.435z"
+          />
+        </svg>
       </button>
     ) : null;
 
   const dropdown =
     currentMembership.role === 'mod' ? (
-      <div className="membership-actions">
-        <span className="membership-management__dropdown-button">
-          <img
-            src={ConfigImage}
-            alt="channel config"
-            data-content="drop-down-image"
-            className="w-25"
-          />
-        </span>
-
-        <div className="membership-management__dropdown-memu">
-          {addAsModButton}
-          {addAsMemberButton}
-          {removeMembershipButton}
-        </div>
-      </div>
+      <span className="membership-actions">
+        {addAsModButton}
+        {addAsMemberButton}
+        {removeMembershipButton}
+      </span>
     ) : null;
 
   return (
     <div className="flex items-center my-3 member-list-item justify-content-between">
-      <div className="w-100">
+      <div className="">
         <a
           href={`/${membership.username}`}
           className="chatmessagebody__username--link"
@@ -110,7 +100,7 @@ const Membership = ({
           </span>
         </a>
       </div>
-      <div className="flex-shrink-1">{dropdown}</div>
+      <div className="">{dropdown}</div>
     </div>
   );
 };

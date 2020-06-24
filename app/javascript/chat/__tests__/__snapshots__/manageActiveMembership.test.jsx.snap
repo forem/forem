@@ -35,9 +35,7 @@ exports[`<ManageActiveMembership /> should render & test snapshot 1`] = `
         <div
           class="flex items-center my-3 member-list-item justify-content-between"
         >
-          <div
-            class="w-100"
-          >
+          <div>
             <a
               class="chatmessagebody__username--link"
               data-content="sidecar-user"
@@ -71,35 +69,19 @@ exports[`<ManageActiveMembership /> should render & test snapshot 1`] = `
               </span>
             </a>
           </div>
-          <div
-            class="flex-shrink-1"
-          >
-            <div
+          <div>
+            <span
               class="membership-actions"
             >
-              <span
-                class="membership-management__dropdown-button"
+              <button
+                class="crayons-btn crayons-btn--s crayons-btn--ghost"
+                data-membership-id="2"
+                data-role="member"
+                type="button"
               >
-                <img
-                  alt="channel config"
-                  class="w-25"
-                  data-content="drop-down-image"
-                  src=""
-                />
-              </span>
-              <div
-                class="membership-management__dropdown-memu"
-              >
-                <button
-                  class="crayons-btn crayons-btn--ghost remove-membership p-2"
-                  data-membership-id="2"
-                  data-role="member"
-                  type="button"
-                >
-                  Add as Member
-                </button>
-              </div>
-            </div>
+                Add as Member
+              </button>
+            </span>
           </div>
         </div>
       </div>
