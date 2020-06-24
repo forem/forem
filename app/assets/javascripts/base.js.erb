@@ -256,12 +256,6 @@ var instantClick
       }
       display(a.href);
       e.preventDefault();
-      if (window.ga && ga.create) {
-        if (a.hasAttribute("data-featured-article")){
-          var data = a.dataset.featuredArticle;
-          ga('send', 'event', 'click', 'featured-feed-click', data, null);
-        }
-      }
     }
     catch(err){
       console.log(err);

@@ -1,0 +1,474 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Article /> component should render a rich feed 1`] = `
+Object {
+  "asFragment": [Function],
+  "baseElement": <body>
+    <div>
+      <article
+        class="crayons-story cursor-pointer crayons-story--featured"
+        data-content-user-id="23289"
+        data-testid="featured-article"
+        id="featured-story-marker"
+      >
+        <div
+          role="presentation"
+        >
+          <a
+            class="crayons-story__cover"
+            href="/some-post/path"
+            title="Unbranded Home Loan Account"
+          >
+            <div
+              class="crayons-story__cover__image"
+              style="background-image: url(/images/10.png);"
+            />
+          </a>
+          <div
+            class="crayons-story__body"
+          >
+            <div
+              class="crayons-story__top"
+            >
+              <div
+                class="crayons-story__meta"
+              >
+                <div
+                  class="crayons-story__author-pic"
+                >
+                  <a
+                    class="crayons-avatar crayons-avatar--l"
+                    href="/Emil99"
+                  >
+                    <img
+                      alt="Emil99 profile"
+                      class="crayons-avatar__image"
+                      loading="lazy"
+                      src="/images/10.png"
+                    />
+                  </a>
+                </div>
+                <div>
+                  <p>
+                    <a
+                      class="crayons-story__secondary fw-medium"
+                      href="/Emil99"
+                    >
+                      Stella Macejkovic
+                    </a>
+                  </p>
+                  <a
+                    class="crayons-story__tertiary fs-xs"
+                    href="/some-post/path"
+                  >
+                    <time
+                      datetime=""
+                    >
+                      February 18
+                       (just now)
+                    </time>
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div
+              class="crayons-story__indention"
+            >
+              <h2
+                class="crayons-story__title"
+              >
+                <a
+                  href="/some-post/path"
+                  id="article-link-62407"
+                >
+                  <span
+                    class="crayons-story__flare-tag"
+                    style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
+                  >
+                    #javascript
+                  </span>
+                  <span>
+                    Unbranded Home Loan Account
+                  </span>
+                </a>
+              </h2>
+              <div
+                class="crayons-story__tags"
+              >
+                <a
+                  class="crayons-tag"
+                  href="/t/javascript"
+                >
+                  <span
+                    class="crayons-tag__prefix"
+                  >
+                    #
+                  </span>
+                  javascript
+                </a>
+                <a
+                  class="crayons-tag"
+                  href="/t/ruby"
+                >
+                  <span
+                    class="crayons-tag__prefix"
+                  >
+                    #
+                  </span>
+                  ruby
+                </a>
+                <a
+                  class="crayons-tag"
+                  href="/t/go"
+                >
+                  <span
+                    class="crayons-tag__prefix"
+                  >
+                    #
+                  </span>
+                  go
+                </a>
+              </div>
+              <div
+                class="crayons-story__bottom"
+              >
+                <div
+                  class="crayons-story__details"
+                >
+                  <a
+                    class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+                    href="/some-post/path"
+                  >
+                    <svg
+                      class="crayons-icon"
+                      height="24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                      />
+                    </svg>
+                    <span
+                      title="Number of reactions"
+                    >
+                      0
+                      <span
+                        class="hidden s:inline"
+                      >
+                         
+                        reaction
+                      </span>
+                    </span>
+                  </a>
+                  <a
+                    class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+                    data-testid="add-a-comment"
+                    href="/some-post/path#comments"
+                  >
+                    <svg
+                      class="crayons-icon"
+                      height="24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"
+                      />
+                    </svg>
+                    <span
+                      class="inline s:hidden"
+                    >
+                      0
+                    </span>
+                    <span
+                      class="hidden s:inline"
+                    >
+                      Add comment
+                    </span>
+                  </a>
+                </div>
+                <div
+                  class="crayons-story__save"
+                >
+                  <small
+                    class="crayons-story__tertiary mr-2"
+                  >
+                    1 min read
+                  </small>
+                  <button
+                    class="crayons-btn crayons-btn--s crayons-btn--secondary"
+                    data-initial-feed="true"
+                    data-reactable-id="62407"
+                    type="button"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </body>,
+  "container": <div>
+    <article
+      class="crayons-story cursor-pointer crayons-story--featured"
+      data-content-user-id="23289"
+      data-testid="featured-article"
+      id="featured-story-marker"
+    >
+      <div
+        role="presentation"
+      >
+        <a
+          class="crayons-story__cover"
+          href="/some-post/path"
+          title="Unbranded Home Loan Account"
+        >
+          <div
+            class="crayons-story__cover__image"
+            style="background-image: url(/images/10.png);"
+          />
+        </a>
+        <div
+          class="crayons-story__body"
+        >
+          <div
+            class="crayons-story__top"
+          >
+            <div
+              class="crayons-story__meta"
+            >
+              <div
+                class="crayons-story__author-pic"
+              >
+                <a
+                  class="crayons-avatar crayons-avatar--l"
+                  href="/Emil99"
+                >
+                  <img
+                    alt="Emil99 profile"
+                    class="crayons-avatar__image"
+                    loading="lazy"
+                    src="/images/10.png"
+                  />
+                </a>
+              </div>
+              <div>
+                <p>
+                  <a
+                    class="crayons-story__secondary fw-medium"
+                    href="/Emil99"
+                  >
+                    Stella Macejkovic
+                  </a>
+                </p>
+                <a
+                  class="crayons-story__tertiary fs-xs"
+                  href="/some-post/path"
+                >
+                  <time
+                    datetime=""
+                  >
+                    February 18
+                     (just now)
+                  </time>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div
+            class="crayons-story__indention"
+          >
+            <h2
+              class="crayons-story__title"
+            >
+              <a
+                href="/some-post/path"
+                id="article-link-62407"
+              >
+                <span
+                  class="crayons-story__flare-tag"
+                  style="background: rgb(0, 0, 0); color: rgb(255, 255, 255);"
+                >
+                  #javascript
+                </span>
+                <span>
+                  Unbranded Home Loan Account
+                </span>
+              </a>
+            </h2>
+            <div
+              class="crayons-story__tags"
+            >
+              <a
+                class="crayons-tag"
+                href="/t/javascript"
+              >
+                <span
+                  class="crayons-tag__prefix"
+                >
+                  #
+                </span>
+                javascript
+              </a>
+              <a
+                class="crayons-tag"
+                href="/t/ruby"
+              >
+                <span
+                  class="crayons-tag__prefix"
+                >
+                  #
+                </span>
+                ruby
+              </a>
+              <a
+                class="crayons-tag"
+                href="/t/go"
+              >
+                <span
+                  class="crayons-tag__prefix"
+                >
+                  #
+                </span>
+                go
+              </a>
+            </div>
+            <div
+              class="crayons-story__bottom"
+            >
+              <div
+                class="crayons-story__details"
+              >
+                <a
+                  class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+                  href="/some-post/path"
+                >
+                  <svg
+                    class="crayons-icon"
+                    height="24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M18.884 12.595l.01.011L12 19.5l-6.894-6.894.01-.01A4.875 4.875 0 0112 5.73a4.875 4.875 0 016.884 6.865zM6.431 7.037a3.375 3.375 0 000 4.773L12 17.38l5.569-5.569a3.375 3.375 0 10-4.773-4.773L9.613 10.22l-1.06-1.062 2.371-2.372a3.375 3.375 0 00-4.492.25v.001z"
+                    />
+                  </svg>
+                  <span
+                    title="Number of reactions"
+                  >
+                    0
+                    <span
+                      class="hidden s:inline"
+                    >
+                       
+                      reaction
+                    </span>
+                  </span>
+                </a>
+                <a
+                  class="crayons-btn crayons-btn--ghost crayons-btn--s crayons-btn--icon-left"
+                  data-testid="add-a-comment"
+                  href="/some-post/path#comments"
+                >
+                  <svg
+                    class="crayons-icon"
+                    height="24"
+                    width="24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M10.5 5h3a6 6 0 110 12v2.625c-3.75-1.5-9-3.75-9-8.625a6 6 0 016-6zM12 15.5h1.5a4.501 4.501 0 001.722-8.657A4.5 4.5 0 0013.5 6.5h-3A4.5 4.5 0 006 11c0 2.707 1.846 4.475 6 6.36V15.5z"
+                    />
+                  </svg>
+                  <span
+                    class="inline s:hidden"
+                  >
+                    0
+                  </span>
+                  <span
+                    class="hidden s:inline"
+                  >
+                    Add comment
+                  </span>
+                </a>
+              </div>
+              <div
+                class="crayons-story__save"
+              >
+                <small
+                  class="crayons-story__tertiary mr-2"
+                >
+                  1 min read
+                </small>
+                <button
+                  class="crayons-btn crayons-btn--s crayons-btn--secondary"
+                  data-initial-feed="true"
+                  data-reactable-id="62407"
+                  type="button"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>,
+  "debug": [Function],
+  "findAllByAltText": [Function],
+  "findAllByDisplayValue": [Function],
+  "findAllByLabelText": [Function],
+  "findAllByPlaceholderText": [Function],
+  "findAllByRole": [Function],
+  "findAllByTestId": [Function],
+  "findAllByText": [Function],
+  "findAllByTitle": [Function],
+  "findByAltText": [Function],
+  "findByDisplayValue": [Function],
+  "findByLabelText": [Function],
+  "findByPlaceholderText": [Function],
+  "findByRole": [Function],
+  "findByTestId": [Function],
+  "findByText": [Function],
+  "findByTitle": [Function],
+  "getAllByAltText": [Function],
+  "getAllByDisplayValue": [Function],
+  "getAllByLabelText": [Function],
+  "getAllByPlaceholderText": [Function],
+  "getAllByRole": [Function],
+  "getAllByTestId": [Function],
+  "getAllByText": [Function],
+  "getAllByTitle": [Function],
+  "getByAltText": [Function],
+  "getByDisplayValue": [Function],
+  "getByLabelText": [Function],
+  "getByPlaceholderText": [Function],
+  "getByRole": [Function],
+  "getByTestId": [Function],
+  "getByText": [Function],
+  "getByTitle": [Function],
+  "queryAllByAltText": [Function],
+  "queryAllByDisplayValue": [Function],
+  "queryAllByLabelText": [Function],
+  "queryAllByPlaceholderText": [Function],
+  "queryAllByRole": [Function],
+  "queryAllByTestId": [Function],
+  "queryAllByText": [Function],
+  "queryAllByTitle": [Function],
+  "queryByAltText": [Function],
+  "queryByDisplayValue": [Function],
+  "queryByLabelText": [Function],
+  "queryByPlaceholderText": [Function],
+  "queryByRole": [Function],
+  "queryByTestId": [Function],
+  "queryByText": [Function],
+  "queryByTitle": [Function],
+  "rerender": [Function],
+  "unmount": [Function],
+}
+`;
