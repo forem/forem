@@ -164,12 +164,6 @@ variable :TWITCH_WEBHOOK_SECRET, :String, default: "Optional"
 # (https://api.stackexchange.com/docs)
 variable :STACK_EXCHANGE_APP_KEY, :String, default: ""
 
-# Vault for storing secrets
-# (https://learn.hashicorp.com/vault)
-variable :VAULT_ADDR, :String, default: "http://127.0.0.1:8200"
-variable :VAULT_TOKEN, :String, default: ""
-variable :VAULT_SSL_VERIFY, :Boolean, default: true
-
 group :production do
   variable :SECRET_KEY_BASE, :String
 
