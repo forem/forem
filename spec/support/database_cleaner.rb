@@ -1,5 +1,5 @@
 RSpec.configure do |config|
   config.after(:each, db_strategy: :truncation) do |_example|
-    DatabaseCleaner.clean_with(:truncation)
+    ActiveRecord::Tasks::DatabaseTasks.truncate_all
   end
 end
