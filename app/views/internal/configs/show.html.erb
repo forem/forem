@@ -359,14 +359,14 @@
                 <%= @logo_svg %>
               </div>
 
-              <%= f.label :primary_sticker_image_url %>
-              <%= f.text_field :primary_sticker_image_url,
+              <%= f.label :secondary_logo_url, "Secondary Logo" %>
+              <%= f.text_field :secondary_logo_url,
                                class: "form-control",
-                               value: SiteConfig.primary_sticker_image_url,
+                               value: SiteConfig.secondary_logo_url,
                                placeholder: "https://image.url" %>
               <div class="row mt-2">
                 <div class="col-12">
-                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.primary_sticker_image_url %>" />
+                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" />
                 </div>
                 <div class="col-12">
                   <div class="alert alert-info"> Used as the primary sticker image </div>

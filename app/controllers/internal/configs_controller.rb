@@ -130,7 +130,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       logo_png
       logo_svg
       main_social_image
-      primary_sticker_image_url
+      secondary_logo_url
     ]
   end
 

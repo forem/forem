@@ -58,7 +58,7 @@ class SiteConfig < RailsSettings::Base
   field :favicon_url, type: :string
   field :logo_png, type: :string
   field :logo_svg, type: :string
-  field :primary_sticker_image_url, type: :string
+  field :secondary_logo_url, type: :string
 
   # Mascot
   field :mascot_user_id, type: :integer, default: 1
