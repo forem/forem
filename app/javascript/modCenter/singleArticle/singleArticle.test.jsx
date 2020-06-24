@@ -1,10 +1,11 @@
+/* eslint-disable jest/expect-expect */
 import { h } from 'preact';
 import { axe } from 'jest-axe';
 import { render, getNodeText, fireEvent } from '@testing-library/preact';
 
 import SingleArticle from './index';
 
-const testArticle = {
+const testArticle1 = {
   id: 1,
   title: 'An article title',
   path: 'an-article-title-di3',
@@ -16,11 +17,28 @@ const testArticle = {
   },
 };
 
+const testArticle2 = {
+  id: 2,
+  title:
+    'An article title that is quite very actually rather extremely long with all things considered',
+  path:
+    'an-article-title-that-is-quite-very-actually-rather-extremely-long-with-all-things-considered-fi8',
+  publishedAt: '2019-06-24T09:32:10.590Z',
+  cachedTagList: '',
+  user: {
+    articles_count: 1,
+    name: 'howdy',
+  },
+};
+
+const truncatedTitle =
+  'An article title that is quite very actually rather extre...';
+
 describe('<SingleArticle />', () => {
-  const renderSingleArticle = (article = testArticle) =>
+  const renderSingleArticle = (article = testArticle1) =>
     render(
       <SingleArticle
-        id={article.title}
+        id={article.id}
         title={article.title}
         path={article.path}
         publishedAt={article.publishedAt} // renders as Jun 28
@@ -29,7 +47,19 @@ describe('<SingleArticle />', () => {
       />,
     );
 
-  it('should have no a11y  violations', async () => {
+  const renderSingleArticle2 = (article = testArticle2) =>
+    render(
+      <SingleArticle
+        id={article.id}
+        title={article.title}
+        path={article.path}
+        publishedAt={article.publishedAt}
+        cachedTagList={article.cachedTagList}
+        user={article.user}
+      />,
+    );
+
+  it('should have no a11y violations', async () => {
     const { container } = renderSingleArticle();
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -37,7 +67,12 @@ describe('<SingleArticle />', () => {
 
   it('renders the article title', () => {
     const { getByText } = renderSingleArticle();
-    getByText(testArticle.title);
+    getByText(testArticle1.title);
+  });
+
+  it('truncates the article title if longer than 60 characters', () => {
+    const { getByText } = renderSingleArticle2();
+    getByText(truncatedTitle);
   });
 
   it('renders the tags', () => {
@@ -46,28 +81,39 @@ describe('<SingleArticle />', () => {
     getByText('javascript');
     getByText('beginners');
   });
+
+  it('renders no tags or # symbol when article has no tags', () => {
+    const { container } = renderSingleArticle2();
+    const text = getNodeText(container.querySelector('.article-title'));
+    expect(text).not.toContain('#');
+  });
+
   it('renders the author name', () => {
     const { container } = renderSingleArticle();
     const text = getNodeText(container.querySelector('.article-author'));
-    expect(text).toContain(testArticle.user.name);
+    expect(text).toContain(testArticle1.user.name);
   });
+
   it('renders the hand wave emoji if the author has less than 3 articles ', () => {
     const { container } = renderSingleArticle();
     const text = getNodeText(container.querySelector('.article-author'));
     expect(text).toContain('👋');
   });
+
   it('renders the correct formatted published date', () => {
     const { getByText } = renderSingleArticle();
     getByText('Jun 22');
   });
+
   it('renders the correct formatted published date as a time if the date is the same day', () => {
     const today = new Date();
     today.setSeconds('00');
-    testArticle.publishedAt = today.toISOString();
-    const { getByText } = renderSingleArticle(testArticle);
+    testArticle1.publishedAt = today.toISOString();
+    const { getByText } = renderSingleArticle(testArticle1);
     const readableTime = today.toLocaleTimeString().replace(':00 ', ' '); // looks like 8:05 PM
     getByText(readableTime);
   });
+
   it('renders the iframes on click', () => {
     const { container } = renderSingleArticle();
     container.querySelector('button.moderation-single-article').click();
@@ -75,21 +121,21 @@ describe('<SingleArticle />', () => {
     expect(iframes.length).toEqual(2);
 
     const [articleIframe, actionPanelIframe] = iframes;
-    expect(articleIframe.src).toContain(testArticle.path);
+    expect(articleIframe.src).toContain(testArticle1.path);
     expect(actionPanelIframe.src).toContain(
-      `${testArticle.path}/actions_panel`,
+      `${testArticle1.path}/actions_panel`,
     );
   });
   it('adds the opened class when opening an article', () => {
     const toggleArticle = jest.fn();
     const { container } = render(
       <SingleArticle
-        id={testArticle.title}
-        title={testArticle.title}
-        path={testArticle.path}
-        publishedAt={testArticle.publishedAt} // renders as Jun 28
-        cachedTagList={testArticle.cachedTagList}
-        user={testArticle.user}
+        id={testArticle1.id}
+        title={testArticle1.title}
+        path={testArticle1.path}
+        publishedAt={testArticle1.publishedAt} // renders as Jun 28
+        cachedTagList={testArticle1.cachedTagList}
+        user={testArticle1.user}
         toggleArticle={toggleArticle}
       />,
     );
