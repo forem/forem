@@ -28,6 +28,8 @@
           }
         }
       }
+      // TODO: [@thepracticaldev/delightful]: Remove .signup-cue-advanced and .sloan
+      // from stylesheet since it does not appear to be used anywhere
       .signup-cue-advanced {
         text-align: left;
         padding: 30px 25px;
@@ -53,13 +55,6 @@
             a {
               color: $sky-blue;
               font-weight: 500;
-            }
-          }
-          &.broadcast-content {
-            .opt-out {
-              padding-top: 24px;
-              font-size: 12px;
-              font-style: italic;
             }
           }
           &.reaction-content {

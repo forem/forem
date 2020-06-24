@@ -361,6 +361,12 @@ RSpec.describe "/internal/config", type: :request do
             post "/internal/config", params: { site_config: { rate_limit_email_recipient: 3 }, confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_email_recipient).from(5).to(3)
         end
+
+        it "updates rate_limit_user_subscription_creation" do
+          expect do
+            post "/internal/config", params: { site_config: { rate_limit_user_subscription_creation: 1 }, confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_user_subscription_creation).from(3).to(1)
+        end
       end
 
       describe "Social Media" do
