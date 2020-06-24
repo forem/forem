@@ -43,10 +43,6 @@ export default class SingleArticle extends Component {
 
     const newAuthorNotification = user.articles_count <= 3 ? '👋 ' : '';
 
-    const truncateTitle = (title, limit) => {
-      return title.length <= limit ? title : `${title.slice(0, limit - 3)}...`;
-    };
-
     return (
       <button
         type="button"
@@ -55,9 +51,7 @@ export default class SingleArticle extends Component {
       >
         <span className="article-title">
           <header>
-            <h3 className="fs-base fw-bold lh-tight">
-              {truncateTitle(title, 60)}
-            </h3>
+            <h3 className="fs-base fw-bold lh-tight">{title}</h3>
           </header>
           {tags}
         </span>

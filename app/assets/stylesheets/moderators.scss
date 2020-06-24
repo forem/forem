@@ -43,6 +43,12 @@
         grid-template-columns: 4fr 2fr 1fr;
         .article-title {
           color: var(--base-90);
+          min-width: 0;
+          header > h3 {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+          }
         }
         .mod-article-tag {
           color: var(--base-80);

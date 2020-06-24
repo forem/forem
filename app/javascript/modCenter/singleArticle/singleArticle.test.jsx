@@ -55,13 +55,6 @@ describe('<SingleArticle />', () => {
     getByText(testArticle1.title);
   });
 
-  it('truncates the article title if longer than 60 characters', () => {
-    const { getByText } = renderSingleArticle(testArticle2);
-    const truncatedTitle =
-      'An article title that is quite very actually rather extre...';
-    getByText(truncatedTitle);
-  });
-
   it('renders the tags', () => {
     const { getByText } = renderSingleArticle();
     getByText('discuss');
