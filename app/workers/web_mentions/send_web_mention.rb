@@ -4,13 +4,13 @@ module WebMentions
     sidekiq_options queue: :low_priority, retry: 15, lock: :until_executing
 
     def perform(comment_id)
-      comment = Comment.find_by(id: comment_id)
-      return unless comment
+      commentable = Comment.find_by(id: comment_id)&.commentable
+      return unless commentable
 
-      return unless comment.commentable.support_webmentions
+      return unless commentable.support_webmentions
 
-      canonical_url = comment.commentable.canonical_url
-      article_url = ApplicationConfig["APP_DOMAIN"] + comment.commentable.path
+      canonical_url = commentable.canonical_url
+      article_url = ApplicationConfig["APP_DOMAIN"] + commentable.path
       WebMentions::WebMentionHandler.call(canonical_url, article_url)
     end
   end
