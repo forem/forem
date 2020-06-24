@@ -15,21 +15,23 @@ module WebMentions
     end
 
     def accepts_webmention?
+      webmention_url.blank? ? false : true
+    end
+
+    def webmention_url
       document = Nokogiri::HTML.parse(URI.open(@canonical_url)).at_css("link[rel='webmention']")
 
       if document
-        @webmention_url = if Addressable::URI.parse(@webmention_url).relative?
-                            Addressable::URI.parse(@webmention_url).origin + document["href"]
+        @webmention_url = if Addressable::URI.parse(document["href"]).relative?
+                            Addressable::URI.parse(@canonical_url).origin + document["href"]
                           else
                             document["href"]
                           end
-
-        true
       end
-      false
+      nil
     rescue StandardError => e
       Rails.logger.error("WebmentionsException: #{e}")
-      false
+      nil
     end
 
     private
