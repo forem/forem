@@ -638,7 +638,7 @@
   width: 100%;
   background: inherit;
   text-align: start;
-  border-radius: 3px;
+  border-radius: var(--radius);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
