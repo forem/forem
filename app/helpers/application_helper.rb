@@ -159,6 +159,14 @@ module ApplicationHelper
     end
   end
 
+  def secondary_logo
+    if SiteConfig.secondary_logo_url.present?
+      SiteConfig.secondary_logo_url
+    else
+      SiteConfig.logo_png
+    end
+  end
+
   def community_name
     @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
   end
