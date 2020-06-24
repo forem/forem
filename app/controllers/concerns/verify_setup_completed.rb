@@ -8,7 +8,6 @@ module VerifySetupCompleted
     tagline
 
     main_social_image
-    favicon_url
     logo_png
 
     mascot_user_id
