@@ -211,6 +211,7 @@ RSpec.describe "Reactions", type: :request do
 
     context "when creating thumbsup" do
       before do
+        user.add_role(:trusted)
         sign_in user
       end
 
@@ -230,6 +231,7 @@ RSpec.describe "Reactions", type: :request do
 
     context "when creating thumbsdown" do
       before do
+        user.add_role(:trusted)
         sign_in user
       end
 
