@@ -6,7 +6,8 @@ module Users
     sidekiq_options queue: :low_priority, retry: 10
 
     def perform(user_id, experiment, goal)
-      user = User.find(user_id)
+      user = User.find_by(id: user_id)
+      return unless user
 
       if goal == "user_views_article_four_days_in_week"
         determine_weekly_pageview_goal(user, experiment)
