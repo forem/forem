@@ -10,12 +10,13 @@ RSpec.describe AppSecrets, type: :lib do
     allow(described_class).to receive(:namespace).and_return(namespace)
     allow(Vault).to receive(:kv) { vault_stub }
     allow(ApplicationConfig).to receive(:[])
+    allow(ENV).to receive(:[])
   end
 
   describe "[]" do
     context "with VAULT_TOKEN present" do
       before do
-        allow(ApplicationConfig).to receive(:[]).with("VAULT_TOKEN").and_return("present")
+        allow(ENV).to receive(:[]).with("VAULT_TOKEN").and_return("present")
       end
 
       it "fetches keys from Vault" do
