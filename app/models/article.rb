@@ -90,7 +90,6 @@ class Article < ApplicationRecord
   before_save :calculate_base_scores
   before_save :fetch_video_duration
   before_save :set_caches
-  before_save :check_webmentions_support
   before_create :create_password
   before_destroy :before_destroy_actions, prepend: true
 
@@ -104,6 +103,7 @@ class Article < ApplicationRecord
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :remove_from_elasticsearch, on: [:destroy]
+  after_commit :check_webmentions_support, on: %i[create update]
 
   serialize :cached_user
   serialize :cached_organization
