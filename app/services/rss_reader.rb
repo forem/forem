@@ -121,8 +121,7 @@ class RssReader
     relation.where(title: title).or(relation.where(feed_source_url: feed_source_url)).exists?
   end
 
-  # TODO: [@thepracticaldev/oss]: How did the metadata argument to Rails.logger work before?
-  def log_error(error_msg, _metadata)
-    Rails.logger.error(error_msg)
+  def log_error(error_msg, metadata)
+    Rails.logger.error(error_msg, metadata)
   end
 end
