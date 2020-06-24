@@ -32,16 +32,22 @@ export const OrganizationPicker = ({
   organizations,
   organizationId,
   onToggle,
-  emptyLabel
+  emptyLabel,
 }) => (
-  <select name={name} id={id} className={className} onBlur={onToggle}>
+  <select
+    aria-label="Select an organization"
+    name={name}
+    id={id}
+    className={className}
+    onBlur={onToggle}
+  >
     {orgOptions(organizations, organizationId, emptyLabel)}
   </select>
 );
 
 OrganizationPicker.defaultProps = {
-  emptyLabel: "None"
-}
+  emptyLabel: 'None',
+};
 
 OrganizationPicker.propTypes = {
   name: PropTypes.string.isRequired,

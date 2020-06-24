@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import SidebarUser from '../sidebarUser';
 
 const user = {
@@ -23,6 +24,13 @@ const renderedSideBar = (props) =>
   );
 
 describe('<SidebarUser />', () => {
+  it('should have no a11y violations', async () => {
+    const { container } = render(renderedSideBar());
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
   it('renders properly', () => {
     const { getByTestId, getByText, getByAltText } = renderedSideBar();
 
