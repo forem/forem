@@ -53,16 +53,14 @@ environment.loaders.delete('nodeModules');
 
 environment.loaders.append('erb', erb);
 
-const revision = process.env.SOURCE_VERSION || 'master'
-
 environment.plugins.append(
   'HoneybadgerSourceMap',
   new HoneybadgerSourceMapPlugin({
     apiKey: process.env.HONEYBADGER_API_KEY,
-    assetsUrl: process.env.ASSETS_URL,
+    assetsUrl: `${process.env.APP_PROTOCOL}${process.env.APP_DOMAIN}/packs/js`,
     silent: false,
     ignoreErrors: false,
-    revision: revision
+    revision: process.env.SOURCE_VERSION || 'master'
   }))
 
 module.exports = environment;
