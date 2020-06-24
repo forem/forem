@@ -16,7 +16,7 @@ RSpec.describe WebMentions::WebMentionHandler, type: :service do
         </body>
       </html>')
   end
-  let(:url_with_webmention_support) do
+  let(:url_with_absolute_path) do
     stub_request(:get, canonical_url).
       to_return(status: 200, body:
       '<html lang="en">
@@ -37,13 +37,13 @@ RSpec.describe WebMentions::WebMentionHandler, type: :service do
         expect(described_class.new(canonical_url).accepts_webmention?).to be false
       end
 
-      it "returns false on urls with relative webmention url" do
+      it "returns true on urls with relative webmention url" do
         url_with_relative_path
-        expect(described_class.new(canonical_url).accepts_webmention?).to be false
+        expect(described_class.new(canonical_url).accepts_webmention?).to be true
       end
 
-      it "returns true on urls that supports webmention" do
-        url_with_webmention_support
+      it "returns true on urls with absolute webmention url" do
+        url_with_absolute_path
         expect(described_class.new(canonical_url).accepts_webmention?).to be true
       end
     end
@@ -52,7 +52,7 @@ RSpec.describe WebMentions::WebMentionHandler, type: :service do
       it "sends a post request to the webmention url" do
         allow(RestClient).to receive(:post)
 
-        described_class.new(canonical_url, article_url).send(:send_webmention, webmention_url)
+        described_class.new(canonical_url, article_url, webmention_url).send(:send_webmention)
         expect(RestClient).to have_received(:post).
           with(webmention_url, { "source": article_url, "target": canonical_url })
       end
