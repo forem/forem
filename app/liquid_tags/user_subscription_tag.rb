@@ -7,23 +7,16 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function showSignedIn() {
-      const subscriptionSignedIn = document.getElementById('subscription-signed-in');
-      subscriptionSignedIn.style.display = 'block';
-
-      const subscriptionSignedOut = document.getElementById('subscription-signed-out');
-      subscriptionSignedOut.style.display = 'none';
+      document.getElementById('subscription-signed-in').style.display = 'block';
+      document.getElementById('subscription-signed-out').style.display = 'none';
     }
 
     function addSignInClickEvent() {
-      const signInBtn = document.getElementById('sign-in-btn');
-
-      if (signInBtn !== null) {
-        signInBtn.addEventListener('click', function(e) {
-          if (typeof showModal !== "undefined") {
-            showModal('email_signup');
-          }
-        });
-      }
+      document.getElementById('sign-in-btn').addEventListener('click', function(e) {
+        if (typeof showModal !== "undefined") {
+          showModal('email_signup');
+        }
+      });
     }
 
     // The markup defaults to signed out UX
