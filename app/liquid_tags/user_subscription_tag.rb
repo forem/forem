@@ -66,7 +66,7 @@ class UserSubscriptionTag < LiquidTagBase
       }
 
       function updateSubscriberData() {
-        const subscriber = JSON.parse(document.body.dataset.user);
+        const subscriber = userData();
 
         if (subscriber) {
           updateElementsInnerHTML('.subscriber-email', subscriber.email);
