@@ -117,8 +117,9 @@ class SiteConfig < RailsSettings::Base
     twitch: nil
   }
   field :twitter_hashtag, type: :string
+
   # Tags
-  field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
+  field :sidebar_tags, type: :array
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
