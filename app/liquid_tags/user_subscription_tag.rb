@@ -99,8 +99,42 @@ class UserSubscriptionTag < LiquidTagBase
         });
       }
 
+      function showConfirmationModal() {
+        const confirmationModal = document.getElementById('user-subscription-confirmation-modal');
+        confirmationModal.style.display = 'block';
+      }
+
+      function hideConfirmationModal() {
+        const confirmationModal = document.getElementById('user-subscription-confirmation-modal');
+        confirmationModal.style.display = 'none';
+      }
+
+      function submitSubscription() {
+        // TODO hit API to create subscription
+        console.log("SUBSCRIBED");
+      }
+
+      function addClickEventListeners() {
+        document.getElementById('subscribe-btn').addEventListener("click", function() {
+          showConfirmationModal();
+        });
+
+        document.getElementById('cancel-btn').addEventListener("click", function() {
+          hideConfirmationModal();
+        });
+
+        document.getElementById('close-confirmation-modal').addEventListener("click", function() {
+          hideConfirmationModal();
+        });
+
+        document.getElementById('confirmation-btn').addEventListener("click", function() {
+          submitSubscription();
+        });
+      }
+
       if (isUserSignedIn()) {
         updateSubcriptionElements();
+        addClickEventListeners();
       }
     });
   JAVASCRIPT

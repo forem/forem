@@ -51,7 +51,7 @@
     font-weight: bold;
   }
 
-  .user-subscription-confirmation-modal {
+  #user-subscription-confirmation-modal {
     display: none;
   }
 
@@ -64,8 +64,8 @@
     text-align: center;
   }
 
-  #confirmation-button,
-  #cancel-button {
+  #confirmation-btn,
+  #cancel-btn {
     width: max-content;
     display: inline-block;
     margin-right: 8px;
