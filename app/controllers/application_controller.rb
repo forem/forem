@@ -87,7 +87,7 @@ class ApplicationController < ActionController::Base
     # if current_user exists and has a different preference.
     SiteConfig.feed_style
   end
-  helper_method :feed_style_preference?
+  helper_method :feed_style_preference
 
   def set_no_cache_header
     response.headers["Cache-Control"] = "no-cache, no-store"
