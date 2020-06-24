@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { ItemListItem } from '../ItemListItem';
 import '../../../../assets/javascripts/lib/xss';
 
@@ -19,6 +20,13 @@ const item = {
 };
 
 describe('<ItemListItem />', () => {
+  it('should have no a11y violations', async () => {
+    const { container } = render(<ItemListItem item={item} />);
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
   it('renders the title', () => {
     const { getByText } = render(<ItemListItem item={item} />);
     getByText(/Title/i);

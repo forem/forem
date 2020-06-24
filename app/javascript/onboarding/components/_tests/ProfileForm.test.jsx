@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { render, fireEvent, waitForElement } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
+import { axe } from 'jest-axe';
 
 import ProfileForm from '../ProfileForm';
 
@@ -37,6 +38,13 @@ describe('ProfileForm', () => {
     document.head.innerHTML =
       '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
+  });
+
+  it('should have no a11y violations', async () => {
+    const { container } = render(renderProfileForm());
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
   it('should load the appropriate title and subtitle', () => {

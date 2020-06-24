@@ -208,7 +208,7 @@ describe('<GithubRepos />', () => {
     global.Honeybadger = { notify: jest.fn() };
   });
 
-  it('should not have any a11y violations', async () => {
+  it('should have no a11y violations', async () => {
     fetch.mockResponse(JSON.stringify(getRepositories()));
 
     const { container } = render(<GithubRepos />);
