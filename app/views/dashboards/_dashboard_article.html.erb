@@ -1,4 +1,4 @@
-<div class="single-article <%= "single-article-unpublished" unless article.published %> <%= "single-article-archived hidden" if article.archived %>">
+<div class="js-dashboard-story single-article <%= "single-article-unpublished" unless article.published %> <%= "single-article-archived hidden" if article.archived %>">
   <div class="dashboard-collection-org-details">
     <% if article.organization_id %>
       <span class="dashboard-top-pill"><%= article.organization&.name %></span>
@@ -9,7 +9,7 @@
   </div>
 
   <div class="ellipsis-menu">
-    <button class="ellipsis-menu-btn"><img src="<%= asset_path("three-dots.svg") %>" class="dropdown-icon" alt="dropdown menu icon"></button>
+    <button class="ellipsis-menu-btn"><img src="<%= asset_path("overflow-horizontal.svg") %>" class="dropdown-icon" alt="dropdown menu icon"></button>
     <ul class="ellipsis-menu hidden">
       <hr />
       <li class="ellipsis-menu-item">

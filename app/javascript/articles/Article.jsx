@@ -45,16 +45,18 @@ export const Article = ({
       id={isFeatured && 'featured-story-marker'}
       data-featured-article={isFeatured && `articles-${article.id}`}
       data-content-user-id={article.user_id}
+      data-testid={isFeatured ? 'featured-article' : `article-${article.id}`}
     >
       <div
         role="presentation"
         onClick={(event) => {
           const { classList } = event.target;
           if (clickableClassList.includes(...classList)) {
-            if (event.which > 1 || event.metaKey || event.ctrlKey) { // Indicates should open in _blank
+            if (event.which > 1 || event.metaKey || event.ctrlKey) {
+              // Indicates should open in _blank
               window.open(article.path, '_blank');
             } else {
-              const fullUrl = window.location.origin + article.path // InstantClick deals with full urls
+              const fullUrl = window.location.origin + article.path; // InstantClick deals with full urls
               InstantClick.preload(fullUrl);
               InstantClick.display(fullUrl);
             }

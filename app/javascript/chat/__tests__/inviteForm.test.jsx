@@ -1,27 +1,32 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
-import InviteForm from '../ChatChannelSettings/InviateForm';
-
-const data = {
-  invitationUsernames: ''
-}
-
-const getInviteForm = (invitations) => (
-  <InviteForm 
-    invitationUsernames={invitations.invitationUsernames}
-  />
-)
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
+import InviteForm from '../ChatChannelSettings/InviteForm';
 
 describe('<InviteForm />', () => {
-  it("should render the test snapshot", () => {
-    const tree = render(getInviteForm(data))
-    expect(tree).toMatchSnapshot();
-  })
+  it('should have no a11y violations', async () => {
+    const { container } = render(<InviteForm invitationUsernames="" />);
+    const results = await axe(container);
 
-  it("should have the element", () => {
-    const context = shallow(getInviteForm(data));
+    expect(results).toHaveNoViolations();
+  });
 
-    expect(context.find('.invitation_form_title').exists()).toEqual(true)
-  })
-})
+  it('should render with no usernames', () => {
+    const { getByLabelText, getByText } = render(
+      <InviteForm invitationUsernames="" />,
+    );
+
+    getByLabelText('Usernames to invite');
+    getByText('Submit');
+  });
+
+  it('should render with usernames to invite', () => {
+    const { getByLabelText } = render(
+      <InviteForm invitationUsernames="@bobbytables, @xss, @owasp" />,
+    );
+
+    const input = getByLabelText('Usernames to invite');
+
+    expect(input.value).toEqual('@bobbytables, @xss, @owasp');
+  });
+});

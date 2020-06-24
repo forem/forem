@@ -146,7 +146,7 @@ class MarkdownParser
 
   def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
-    src.start_with?("https://camo.githubusercontent.com/")
+    src.start_with?("https://camo.githubusercontent.com")
   end
 
   def remove_nested_linebreak_in_list(html)

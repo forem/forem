@@ -20,6 +20,7 @@ const ListingFiltersTags = ({
         type="text"
         placeholder="search"
         id="listings-search"
+        aria-label="Search listings"
         autoComplete="off"
         defaultValue={message}
         onKeyUp={onKeyUp}

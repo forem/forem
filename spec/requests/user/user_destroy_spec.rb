@@ -59,24 +59,39 @@ RSpec.describe "UserDestroy", type: :request do
   end
 
   describe "POST /users/request_destroy" do
+    let(:mailer_class) { NotifyMailer }
+    let(:mailer) { double }
+    let(:message_delivery) { double }
+
     context "when user has an email" do
       before do
-        allow(Rails.cache).to receive(:write).and_call_original
-        allow(NotifyMailer).to receive(:account_deletion_requested_email).and_call_original
         sign_in user
-        post "/users/request_destroy"
       end
 
       it "sends an email" do
-        expect(NotifyMailer).to have_received(:account_deletion_requested_email).with(user, instance_of(String))
+        allow(mailer_class).to receive(:with).and_return(mailer)
+        allow(mailer).to receive(:account_deletion_requested_email).and_return(message_delivery)
+        allow(message_delivery).to receive(:deliver_now)
+
+        post user_request_destroy_path
+
+        expect(mailer_class).to have_received(:with).with(user: user, token: instance_of(String))
+        expect(mailer).to have_received(:account_deletion_requested_email)
+        expect(message_delivery).to have_received(:deliver_now)
       end
 
-      it "updates the destroy_token" do
+      it "updates the destroy_token in cache" do
+        allow(Rails.cache).to receive(:write).and_call_original
+
+        post user_request_destroy_path
+
         user.reload
         expect(Rails.cache).to have_received(:write).with("user-destroy-token-#{user.id}", any_args)
       end
 
       it "sets flash notice" do
+        post user_request_destroy_path
+
         expect(flash[:settings_notice]).to include("You have requested account deletion")
       end
     end
@@ -89,7 +104,8 @@ RSpec.describe "UserDestroy", type: :request do
       end
 
       it "redirects to account page" do
-        post "/users/request_destroy"
+        post user_request_destroy_path
+
         expect(response).to redirect_to("/settings/account")
         expect(flash[:settings_notice]).to include("provide an email")
       end
@@ -97,11 +113,14 @@ RSpec.describe "UserDestroy", type: :request do
 
     it "does not send an email if already requested" do
       allow(Rails.cache).to receive(:exist?).with("user-destroy-token-#{user.id}").and_return(true)
-      allow(NotifyMailer).to receive(:account_deletion_requested_email)
-      sign_in user
-      post "/users/request_destroy"
+      allow(mailer_class).to receive(:with).and_return(mailer)
+      allow(mailer).to receive(:account_deletion_requested_email).and_return(message_delivery)
+      allow(message_delivery).to receive(:deliver_now)
 
-      expect(NotifyMailer).not_to have_received(:account_deletion_requested_email)
+      sign_in user
+      post user_request_destroy_path
+
+      expect(mailer).not_to have_received(:account_deletion_requested_email)
       expect(flash[:settings_notice]).to include("You have already requested")
     end
   end

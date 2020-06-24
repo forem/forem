@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
+import { render } from '@testing-library/preact';
 import { OrganizationPicker } from '../OrganizationPicker';
 
 const commonProps = {
@@ -15,35 +15,43 @@ const organizations = [
 
 describe('<OrganizationPicker />', () => {
   it('renders with the given organization selected from the list of available organizations', () => {
-    const tree = render(
+    const { getByText } = render(
       <OrganizationPicker
         {...commonProps}
         organizationId={1}
         organizations={organizations}
       />,
     );
-    expect(tree).toMatchSnapshot();
+
+    getByText('Acme Org 1');
+    getByText('Acme Org 2');
+    expect(getByText('Acme Org 1').selected).toEqual(true);
   });
 
   it('renders with no organization selected when the organization ID is not set', () => {
-    const tree = render(
+    const { getByText } = render(
       <OrganizationPicker
         {...commonProps}
         organizationId={undefined}
         organizations={organizations}
       />,
     );
-    expect(tree).toMatchSnapshot();
+
+    getByText('Acme Org 1');
+    getByText('Acme Org 2');
+    expect(getByText('Acme Org 1').selected).toEqual(false);
+    expect(getByText('Acme Org 2').selected).toEqual(false);
   });
 
   it('renders an organization list with only "None" as an option when no organizations are passed in.', () => {
-    const tree = render(
+    const { getByText } = render(
       <OrganizationPicker
         {...commonProps}
         organizationId={undefined}
         organizations={[]}
       />,
     );
-    expect(tree).toMatchSnapshot();
+
+    getByText('None');
   });
 });

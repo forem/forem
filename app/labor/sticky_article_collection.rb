@@ -13,11 +13,11 @@ class StickyArticleCollection
       limited_column_select.
       tagged_with(article_tags, any: true).
       where.not(id: article.id).order("published_at DESC").
-      limit(2)
+      limit(3)
   end
 
   def suggested_stickies
-    (tag_articles.load + more_articles).sample(8)
+    (tag_articles.load + more_articles).sample(3)
   end
 
   def tag_articles
@@ -27,7 +27,7 @@ class StickyArticleCollection
       where.not(id: article.id).where.not(user_id: article.user_id).
       where("featured_number > ?", 5.days.ago.to_i).
       order(Arel.sql("RANDOM()")).
-      limit(8)
+      limit(3)
   end
 
   def more_articles

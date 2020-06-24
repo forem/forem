@@ -11,7 +11,6 @@ export const ArticleCoverImage = ({ article }) => {
       <div
         style={{ backgroundImage: `url(${article.main_image})` }}
         className="crayons-story__cover__image"
-        loading="lazy"
       />
     </a>
   );

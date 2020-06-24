@@ -1,5 +1,7 @@
 # rubocop:disable Rails/Output
 
+return if Rails.env.production?
+
 # NOTE: when adding new data, please use this class to ensure the seed tasks
 # stays idempotent.
 class Seeder
@@ -513,4 +515,5 @@ puts <<-ASCII
 
   All done!
 ASCII
+
 # rubocop:enable Rails/Output

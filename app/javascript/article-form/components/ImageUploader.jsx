@@ -141,6 +141,7 @@ export class ImageUploader extends Component {
             accept="image/*"
             data-max-file-size-mb="25"
             tabIndex="-1"
+            aria-label="Upload an image"
           />
         </Button>
 

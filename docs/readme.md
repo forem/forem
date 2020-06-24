@@ -11,6 +11,7 @@ items:
   - tests
   - contributing.md
   - contributing_api.md
+  - contributing_forem.md
   - faqs.md
   - troubleshooting.md
   - licensing.md

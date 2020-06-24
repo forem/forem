@@ -1,0 +1,84 @@
+@import '../config/import';
+
+.crayons-table {
+  margin: 0;
+  padding: 0;
+  border: none;
+  border-collapse: inherit;
+  border-spacing: 0;
+  border-color: inherit;
+  vertical-align: inherit;
+  text-align: left;
+  font-weight: inherit;
+  -webkit-border-horizontal-spacing: 0;
+  -webkit-border-vertical-spacing: 0;
+
+  td, th {
+    padding: var(--su-2);
+
+    @media (min-width: $breakpoint-m) {
+      padding: var(--su-3);
+    }
+
+    @media (min-width: $breakpoint-l) {
+      padding: var(--su-4);
+    }
+  }
+
+  td {
+    transition: background var(--transition-props);
+  }
+
+  th {
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-medium);
+    text-transform: uppercase;
+    color: var(--base-60);
+  }
+
+  tbody {
+    tr {
+      &:first-child {
+        td:first-child {
+          border-radius: var(--radius) 0 0 0;
+        }
+
+        td:last-child {
+          border-radius: 0 var(--radius) 0 0;
+        }
+      }
+
+      &:last-child {
+        td:first-child {
+          border-radius: 0 0 0 var(--radius);
+        }
+
+        td:last-child {
+          border-radius: 0 0 var(--radius) 0;
+        }
+      }
+
+      &:only-child {
+        td:first-child {
+          border-radius: var(--radius) 0 0 var(--radius);
+        }
+
+        td:last-child {
+          border-radius: 0 var(--radius) var(--radius) 0;
+        }
+      }
+
+      &:hover {
+        td {
+          background: var(--card-secondary-bg);
+        }
+      }
+    }
+    
+    tr:not(:last-child) {
+      td {
+        border-bottom: 1px solid var(--body-bg);
+      } 
+    }
+  }
+}

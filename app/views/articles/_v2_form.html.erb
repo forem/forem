@@ -45,7 +45,7 @@
 
     <div class="crayons-card crayons-article-form__content">
       <% if version == "v2" %>
-        <div>
+        <div class="text-padding">
           <div class="crayons-article-form__cover" role="presentation">
             <% if article.main_image.present? %>
               <img src="<%= article.main_image %>" width="250" height="105" alt="Post cover" class="crayons-article-form__cover__image">
@@ -65,7 +65,7 @@
           </div>
         </div>
       <% end %>
-      <div class="crayons-article-form__body">
+      <div class="crayons-article-form__body text-padding">
         <div class="crayons-article-form__toolbar">
           <button class="crayons-btn crayons-btn--ghost crayons-btn--icon-left fw-normal" type="button">
             <%= (inline_svg_tag("image.svg", aria: true, class: "crayons-icon", title: "Image") + "Upload image").delete!("\n").html_safe %>
@@ -75,6 +75,7 @@
         <textarea class="crayons-article-form__body__field crayons-textfield crayons-textfield--ghost" id="article_body_markdown" placeholder="Write your post content here..." name="body_markdown"><%= article.body_markdown %></textarea>
       </div>
     </div>
+    <div class="crayons-article-form__aside"></div>
 
     <div class="crayons-article-form__aside"></div>
 

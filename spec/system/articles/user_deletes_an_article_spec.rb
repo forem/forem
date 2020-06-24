@@ -6,7 +6,7 @@ RSpec.describe "Deleting Article", type: :system do
   before do
     sign_in article.user
     visit "/dashboard"
-    click_on "MANAGE"
+    click_on "Manage"
     click_on "DELETE"
   end
 
