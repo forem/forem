@@ -1,6 +1,6 @@
 class AppSecrets
   def self.[](key)
-    result = Vault.kv(namespace).read(key)&.data&.fetch(:value) if ApplicationConfig["VAULT_TOKEN"].present?
+    result = Vault.kv(namespace).read(key)&.data&.fetch(:value) if ENV["VAULT_TOKEN"].present?
     result ||= ApplicationConfig[key]
 
     result
