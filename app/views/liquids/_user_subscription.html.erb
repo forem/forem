@@ -1,31 +1,31 @@
-<div class="ltag__user-subscription" id="ltag__user-subscription" data-author-username=<%= author_username %>>
-  <div class="user-subscription-container">
-    <div class="user-subscription-content" id="content">
-      <div class="user-subscription-profile-images" id="profile-images">
-        <span class="crayons-avatar crayons-avatar--l mr-2 author-profile-image">
-          <img class="crayons-avatar__image author-profile-image" src=<%= author_profile_image %> <%= "#{author_username} profile image" %>>
+<div class="ltag__user-subscription-tag" id="user-subscription-tag" data-author-username=<%= author_username %>>
+  <div class="ltag__user-subscription-tag__container">
+    <div class="ltag__user-subscription-tag__content" id="content">
+      <div class="ltag__user-subscription__profile-images" id="profile-images">
+        <span class="crayons-avatar crayons-avatar--l mr-2 ltag__user-subscription-tag__author-profile-image">
+          <img class="crayons-avatar__image ltag__user-subscription-tag__author-profile-image" src=<%= author_profile_image %> <%= "#{author_username} profile image" %>>
         </span>
-        <span class="crayons-avatar crayons-avatar--l mr-2 subscriber-profile-image">
-          <img class="crayons-avatar__image subscriber-profile-image">
+        <span class="crayons-avatar crayons-avatar--l mr-2 ltag__user-subscription-tag__subscriber-profile-image">
+          <img class="crayons-avatar__image ltag__user-subscription-tag__subscriber-profile-image">
         </span>
       </div>
-      <div class="user-subscription-cta-text fs-3xl" id="user-subscription-cta-text"><%= cta_text %></div>
-      <div class="subscription-area" id="subscription-area">
-        <div class="user-subscription-signed-out" id="subscription-signed-out">
+      <div class="ltag__user-subscription-tag__cta-text fs-3xl" id="user-subscription-cta-text"><%= cta_text %></div>
+      <div class="ltag__user-subscription-tag__subscription-area" id="subscription-area">
+        <div class="ltag__user-subscription-tag__signed-out" id="subscription-signed-out">
           <div class="fs-base" id="logged-out-text">You must first sign in to DEV.</div>
           <button class="crayons-btn" id="sign-in-btn">Sign In</button>
         </div>
-        <div class="user-subscription-signed-in" id="subscription-signed-in">
+        <div class="ltag__user-subscription-tag__signed-in" id="subscription-signed-in">
           <button class="crayons-btn" id="subscribe-btn">Subscribe</button>
           <div class="fs-s" id="logged-in-text">
             You'll subscribe with
-            <span class="subscriber-email"></span>
+            <span class="ltag__user-subscription-tag__subscriber-email"></span>
             the email address associated with your DEV account. To use a
             different email address, you can
             <a href="/settings">update your email address in Settings</a>.
           </div>
         </div>
-        <div class="user-subscription-apple-auth fs-s" id="subscriber-apple-auth">
+        <div class="ltag__user-subscription-tag__apple-auth fs-s" id="subscriber-apple-auth">
           <button disabled class="crayons-btn" id="subscribe-btn">Subscribe</button>
           <div class="fs-s" id="apple-auth-message">
             Hey, there! It looks like when you created your DEV account you signed
@@ -35,7 +35,7 @@
             first to a different email address.
           </div>
         </div>
-        <div class="response-message" id="response-message"></div>
+        <div class="ltag__user-subscription-tag__response-message" id="response-message"></div>
       </div>
     </div>
     <div id="user-subscription-confirmation-modal">
@@ -52,12 +52,12 @@
           <div class="crayons-modal__box__body">
             <div id="confirmation-text">
               You'll share your email address
-              <span class="subscriber-email"></span>
+              <span class="ltag__user-subscription-tag__subscriber-email"></span>
               with
-              <span class="author-username"><%= author_username %></span>.
+              <span class="ltag__user-subscription-tag__author-username"><%= author_username %></span>.
               Once you do this, you cannot undo this.
             </div>
-            <div class="confirmation-buttons">
+            <div class="ltag__user-subscription-tag__confirmation-buttons">
               <button class="crayons-btn" id="confirmation-btn">Confirm subscription</button>
               <button class="crayons-btn--secondary" id="cancel-btn">Cancel</button>
             </div>

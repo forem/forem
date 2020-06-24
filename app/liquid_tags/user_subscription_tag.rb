@@ -37,7 +37,7 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function showSubscribed() {
-      const authorUsername = document.getElementById('ltag__user-subscription').dataset.authorUsername;
+      const authorUsername = document.getElementById('user-subscription-tag').dataset.authorUsername;
       const alreadySubscribedMsg = `You are already subscribed!`;
       showResponseMessage('success', alreadySubscribedMsg);
     }
@@ -56,8 +56,8 @@ class UserSubscriptionTag < LiquidTagBase
       const subscriber = userData();
 
       if (subscriber) {
-        updateElementsTextContent('.subscriber-email', subscriber.email);
-        updateProfileImages('.subscriber-profile-image', subscriber);
+        updateElementsTextContent('.ltag__user-subscription-tag__subscriber-email', subscriber.email);
+        updateProfileImages('.ltag__user-subscription-tag__subscriber-profile-image', subscriber);
       }
     }
 
@@ -176,7 +176,7 @@ class UserSubscriptionTag < LiquidTagBase
     function handleSubscription() {
       submitSubscription().then(function(response) {
         if (response.success) {
-          const authorUsername = document.getElementById('ltag__user-subscription').dataset.authorUsername;
+          const authorUsername = document.getElementById('user-subscription-tag').dataset.authorUsername;
           const successMsg = `You are now subscribed and may receive emails from ${authorUsername}`;
           showResponseMessage('success', successMsg);
         } else {

@@ -1,5 +1,5 @@
-.ltag__user-subscription {
-  .user-subscription-container {
+.ltag__user-subscription-tag {
+  .ltag__user-subscription-tag__container {
     display: flex;
     justify-content: center;
     border: 2px solid black;
@@ -14,23 +14,23 @@
     }
   }
 
-  .subscriber-profile-image {
+  .ltag__user-subscription-tag__subscriber-profile-image {
     display: none;
   }
 
-  .user-subscription-content {
+  .ltag__user-subscription-tag__content {
     margin: 1rem auto;
   }
 
-  .user-subscription-cta-text {
+  .ltag__user-subscription-tag__cta-text {
     text-align: center;
   }
 
-  .user-subscription-signed-out {
+  .ltag__user-subscription-tag__signed-out {
     text-align: center;
   }
 
-  .user-subscription-response {
+  .ltag__user-subscription-tag__response {
     display: none;
   }
 
@@ -38,7 +38,7 @@
     width: max-content;
   }
 
-  .user-subscription-signed-in {
+  .ltag__user-subscription-tag__signed-in {
     text-align: center;
     display: none;
   }
@@ -48,7 +48,7 @@
     text-align: center;
   }
 
-  .subscriber-email {
+  .ltag__user-subscription-tag__subscriber-email {
     font-weight: bold;
   }
 
@@ -65,7 +65,7 @@
     z-index: 400;
   }
 
-  .confirmation-buttons {
+  .ltag__user-subscriptino-tag__confirmation-buttons {
     text-align: center;
   }
 
