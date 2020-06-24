@@ -82,6 +82,20 @@ describe('<Article /> component', () => {
     getByAltText('Emil99 profile');
   });
 
+  it('should render a rich feed', () => {
+    const tree = render(
+      <Article
+        {...commonProps}
+        isBookmarked={false}
+        isFeatured
+        feedStyle="rich"
+        article={article}
+        currentTag="javascript"
+      />,
+    );
+    expect(tree).toMatchSnapshot();
+  });
+
   it('should render a featured article for an organization', () => {
     const { getByTestId, getByAltText } = render(
       <Article

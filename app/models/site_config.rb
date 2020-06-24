@@ -123,6 +123,10 @@ class SiteConfig < RailsSettings::Base
   # Tags
   field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
 
+  # User Experience
+  # These are the default UX settings, which can be overridded by individual user preferences.
+  field :feed_style, type: :string, default: "basic" # basic (current default), rich (cover image on all posts), compact (more minimal)
+
   # Broadcast
   field :welcome_notifications_live_at, type: :date
 end

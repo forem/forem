@@ -411,6 +411,14 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
         end
       end
+
+      describe "User Experience" do
+        it "updates the feed_style" do
+          feed_style = "basic"
+          post "/internal/config", params: { site_config: { mascot_user_id: feed_style }, confirmation: confirmation_message }
+          expect(SiteConfig.feed_style).to eq(feed_style)
+        end
+      end
     end
   end
   # rubocop:enable RSpec/NestedGroups

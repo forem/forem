@@ -1,9 +1,11 @@
 <div class="crayons-story <% if featured == true %>crayons-story--featured<% end %>" data-content-user-id="<%= story.user_id %>">
   <% if featured == true %>
-  <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
-  <a href="<%= story.path %>" class="crayons-story__cover" aria-label="featured article" data-featured-article="articles-<%= story.id %>">
-    <div style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);" class="crayons-story__cover__image"></div>
-  </a>
+    <div id="featured-story-marker" data-featured-article="articles-<%= story.id %>"></div>
+  <% end %>
+  <% if featured == true || (feed_style_preference == "rich" && story.main_image.present?) %>
+    <a href="<%= story.path %>" class="crayons-story__cover" aria-label="article">
+      <div style="background-color: <%= story.main_image_background_hex_color %>; background-image: url(<%= cloud_cover_url(story.main_image) %>);" class="crayons-story__cover__image"></div>
+    </a>
   <% end %>
 
   <% if story.video.present? && story.video_thumbnail_url.present? %>
