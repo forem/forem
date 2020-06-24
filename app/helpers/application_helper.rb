@@ -159,9 +159,9 @@ module ApplicationHelper
     end
   end
 
-  def secondary_logo
-    if SiteConfig.secondary_logo_url.present?
-      SiteConfig.secondary_logo_url
+  def show_logo logo
+    if logo.present?
+      logo
     else
       SiteConfig.logo_png
     end
