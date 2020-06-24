@@ -43,7 +43,8 @@
     display: none;
   }
 
-  #logged-in-text {
+  #logged-in-text,
+  #apple-auth-message {
     text-align: center;
   }
 
@@ -62,6 +63,12 @@
 
   .confirmation-buttons {
     text-align: center;
+  }
+
+  #sign-in-btn,
+  #subscribe-btn {
+    margin: 0 auto;
+    display: block;
   }
 
   #confirmation-btn,

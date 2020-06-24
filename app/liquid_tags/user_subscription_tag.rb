@@ -6,15 +6,22 @@ class UserSubscriptionTag < LiquidTagBase
       return document.head.querySelector('meta[name="user-signed-in"][content="true"]') !== null;
     }
 
-    function showSignedIn() {
-      document.getElementById('subscription-signed-in').style.display = 'block';
+    // Hiding/showing elements
+    // ***************************************
+    function clearSubscriptionArea() {
+      document.getElementById('subscription-signed-in').style.display = 'none';
       document.getElementById('subscription-signed-out').style.display = 'none';
       document.getElementById('response-message').style.display = 'none';
+      document.getElementById('subscriber-apple-auth').style.display = 'none';
+    }
+
+    function showSignedIn() {
+      clearSubscriptionArea();
+      document.getElementById('subscription-signed-in').style.display = 'block';
     }
 
     function showResponseMessage(noticeType, msg) {
-      document.getElementById('subscription-signed-in').style.display = 'none';
-      document.getElementById('subscription-signed-out').style.display = 'none';
+      clearSubscriptionArea();
 
       const responseMessage = document.getElementById('response-message')
       responseMessage.style.display = 'block';
@@ -24,12 +31,15 @@ class UserSubscriptionTag < LiquidTagBase
       hideConfirmationModal();
     }
 
-    function addSignInClickHandler() {
-      document.getElementById('sign-in-btn').addEventListener('click', function(e) {
-        if (typeof showModal !== "undefined") {
-          showModal('email_signup');
-        }
-      });
+    function showAppleAuthMessage() {
+      clearSubscriptionArea();
+      document.getElementById('subscriber-apple-auth').style.display = 'block';
+    }
+
+    function showSubscribed() {
+      const authorUsername = document.getElementById('ltag__user-subscription').dataset.authorUsername;
+      const alreadySubscribedMsg = `You are already subscribed!`;
+      showResponseMessage('success', alreadySubscribedMsg);
     }
 
     function showConfirmationModal() {
@@ -40,16 +50,71 @@ class UserSubscriptionTag < LiquidTagBase
       document.getElementById('user-subscription-confirmation-modal').style.display = 'none';
     }
 
-    function handleSubscription() {
-      submitSubscription().then(function(response) {
-        if (response.success) {
-           showResponseMessage('success', response.message);
-         } else {
-           showResponseMessage('danger', response.error);
-         }
+    // Updating DOM elements
+    // ***************************************
+    function updateSubscriberData() {
+      const subscriber = userData();
+
+      if (subscriber) {
+        updateElementsTextContent('.subscriber-email', subscriber.email);
+        updateProfileImages('.subscriber-profile-image', subscriber);
+      }
+    }
+
+    function updateElementsTextContent(identifier, value) {
+      const elements = document.querySelectorAll(identifier);
+
+      elements.forEach(function(element) {
+        element.textContent = value;
       });
     }
 
+    function updateProfileImages(identifier, subscriber) {
+      const profileImages = document.querySelectorAll(`img${identifier}`);
+
+      profileImages.forEach(function(profileImage) {
+        profileImage.src = subscriber.profile_image_90;
+        profileImage.alt = `${subscriber.username} profile image`;
+        profileImage.style.display = 'block';
+      });
+
+      const profileImageWrappers = document.querySelectorAll(`span${identifier}`);
+
+      profileImageWrappers.forEach(function(profileImageWrapper) {
+        profileImageWrapper.style.display = 'inline-block';
+      });
+    }
+
+    // Adding event listeners for 'click'
+    // ***************************************
+    function addSignInClickHandler() {
+      document.getElementById('sign-in-btn').addEventListener('click', function(e) {
+        if (typeof showModal !== "undefined") {
+          showModal('email_signup');
+        }
+      });
+    }
+
+    function addConfirmationModalClickHandlers() {
+      document.getElementById('subscribe-btn').addEventListener('click', function(e) {
+        showConfirmationModal();
+      });
+
+      document.getElementById('cancel-btn').addEventListener('click', function(e) {
+        hideConfirmationModal();
+      });
+
+      document.getElementById('close-confirmation-modal').addEventListener('click', function(e) {
+        hideConfirmationModal();
+      });
+
+      document.getElementById('confirmation-btn').addEventListener('click', function(e) {
+        handleSubscription();
+      });
+    }
+
+    // API calls
+    // ***************************************
     function submitSubscription() {
       const headers = {
         Accept: 'application/json',
@@ -76,24 +141,6 @@ class UserSubscriptionTag < LiquidTagBase
         body: body,
       }).then(function(response) {
         return response.json();
-      });
-    }
-
-    function addConfirmationModalClickHandlers() {
-      document.getElementById('subscribe-btn').addEventListener('click', function(e) {
-        showConfirmationModal();
-      });
-
-      document.getElementById('cancel-btn').addEventListener('click', function(e) {
-        hideConfirmationModal();
-      });
-
-      document.getElementById('close-confirmation-modal').addEventListener('click', function(e) {
-        hideConfirmationModal();
-      });
-
-      document.getElementById('confirmation-btn').addEventListener('click', function(e) {
-        handleSubscription();
       });
     }
 
@@ -124,52 +171,30 @@ class UserSubscriptionTag < LiquidTagBase
       });
     }
 
+    // Handle API responses
+    // ***************************************
+    function handleSubscription() {
+      submitSubscription().then(function(response) {
+        if (response.success) {
+           showResponseMessage('success', response.message);
+         } else {
+           showResponseMessage('danger', response.error);
+         }
+      });
+    }
+
     function checkIfSubscribed() {
       fetchIsSubscribed().then(function(response) {
+        const subscriber = userData();
+        const isSubscriberAuthedWithApple = subscriber.email.endsWith('@privaterelay.appleid.com');
+
         if (response.is_subscribed) {
           showSubscribed();
+        } else if (isSubscriberAuthedWithApple) {
+          showAppleAuthMessage();
         } else {
           updateSubscriberData();
         }
-      });
-    }
-
-    function showSubscribed() {
-      const authorUsername = document.getElementById('ltag__user-subscription').dataset.authorUsername;
-      const alreadySubscribedMsg = `You are already subscribed!`;
-      showResponseMessage('success', alreadySubscribedMsg);
-    }
-
-    function updateSubscriberData() {
-      const subscriber = userData();
-
-      if (subscriber) {
-        updateElementsInnerHTML('.subscriber-email', subscriber.email);
-        updateProfileImages('.subscriber-profile-image', subscriber);
-      }
-    }
-
-    function updateElementsInnerHTML(identifier, value) {
-      const elements = document.querySelectorAll(identifier);
-
-      elements.forEach(function(element) {
-        element.textContent = value;
-      });
-    }
-
-    function updateProfileImages(identifier, subscriber) {
-      const profileImages = document.querySelectorAll(`img${identifier}`);
-
-      profileImages.forEach(function(profileImage) {
-        profileImage.src = subscriber.profile_image_90;
-        profileImage.alt = `${subscriber.username} profile image`;
-        profileImage.style.display = 'block';
-      });
-
-      const profileImageWrappers = document.querySelectorAll(`span${identifier}`);
-
-      profileImageWrappers.forEach(function(profileImageWrapper) {
-        profileImageWrapper.style.display = 'inline-block';
       });
     }
 

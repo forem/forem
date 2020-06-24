@@ -16,13 +16,23 @@
           <button class="crayons-btn" id="sign-in-btn">Sign In</button>
         </div>
         <div class="user-subscription-signed-in" id="subscription-signed-in">
-          <a class="crayons-btn" id="subscribe-btn">Subscribe</a>
+          <button class="crayons-btn" id="subscribe-btn">Subscribe</button>
           <div class="fs-s" id="logged-in-text">
             You'll subscribe with
             <span class="subscriber-email"></span>
             the email address associated with your DEV account. To use a
             different email address, you can
             <a href="/settings">update your email address in Settings</a>.
+          </div>
+        </div>
+        <div class="user-subscription-apple-auth fs-s" id="subscriber-apple-auth">
+          <button disabled class="crayons-btn" id="subscribe-btn">Subscribe</button>
+          <div class="fs-s" id="apple-auth-message">
+            Hey, there! It looks like when you created your DEV account you signed
+            up with Apple using a private relay email address. If you'd like to
+            subscribe, please
+            <a href="/settings">update your email address in Settings</a>
+            first to a different email address.
           </div>
         </div>
         <div class="response-message" id="response-message"></div>
