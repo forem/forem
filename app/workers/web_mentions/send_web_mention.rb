@@ -10,7 +10,7 @@ module WebMentions
       return unless commentable.support_webmentions
 
       canonical_url = commentable.canonical_url
-      article_url = ApplicationConfig["APP_DOMAIN"] + commentable.path
+      article_url = URL.url(commentable.path)
       WebMentions::WebMentionHandler.call(canonical_url, article_url)
     end
   end
