@@ -61,7 +61,7 @@ if (process.env.HONEYBADGER_API_KEY) {
       assetsUrl: `${process.env.APP_PROTOCOL}${process.env.APP_DOMAIN}/packs/js`,
       silent: false,
       ignoreErrors: false,
-      revision: process.env.SOURCE_VERSION || 'master'
+      revision: process.env.HEROKU_SLUG_COMMIT || 'master'
     }))
 }
 
