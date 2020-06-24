@@ -24,6 +24,7 @@ module WebMentions
       false
     rescue StandardError => e
       Rails.logger.error("WebmentionsException: #{e}")
+      false
     end
 
     private
