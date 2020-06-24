@@ -21,7 +21,7 @@ RSpec.describe WebMentions::SendWebMention, type: :worker do
   describe "send webmention" do
     context "when there's a new comment" do
       it "sends webmention" do
-        article_url = ApplicationConfig["APP_DOMAIN"] + article.path
+        article_url = URL.url(article.path)
         article.update(canonical_url: canonical_url, support_webmentions: true)
 
         allow(RestClient).to receive(:post)
