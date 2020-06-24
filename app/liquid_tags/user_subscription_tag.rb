@@ -35,7 +35,7 @@ class UserSubscriptionTag < LiquidTagBase
 
     // We need access to some DOM elements (i.e. csrf token, article id, etc.)
     document.addEventListener("DOMContentLoaded", function() {
-      function fetchBaseData() {
+      function fetchIsSubscribed() {
         const articleId = document.getElementById('article-body').dataset.articleId;
 
         const params = new URLSearchParams({
@@ -62,17 +62,21 @@ class UserSubscriptionTag < LiquidTagBase
         });
       }
 
-      function updateSubcriptionElements() {
-        fetchBaseData().then(function(response) {
-          const subscriber = window.currentUser;
+      function checkIfSubscribed() {
+        fetchIsSubscribed().then(function(response) {
 
-          updateElementsInnerHTML('.subscriber-email', subscriber.email);
-          updateProfileImages('.subscriber-profile-image', subscriber);
-
-          // if (response.is_subscribed) {
+          if (response.is_subscribed) {
             // showSubscribed();
-          // }
+            console.log("ALREADY SUBSCRIBED");
+          }
         });
+      }
+
+      function updateSubscriberData() {
+        const subscriber = window.currentUser;
+
+        updateElementsInnerHTML('.subscriber-email', subscriber.email);
+        updateProfileImages('.subscriber-profile-image', subscriber);
       }
 
       function updateElementsInnerHTML(identifier, value) {
@@ -100,13 +104,11 @@ class UserSubscriptionTag < LiquidTagBase
       }
 
       function showConfirmationModal() {
-        const confirmationModal = document.getElementById('user-subscription-confirmation-modal');
-        confirmationModal.style.display = 'block';
+        document.getElementById('user-subscription-confirmation-modal').style.display = 'block';
       }
 
       function hideConfirmationModal() {
-        const confirmationModal = document.getElementById('user-subscription-confirmation-modal');
-        confirmationModal.style.display = 'none';
+        document.getElementById('user-subscription-confirmation-modal').style.display = 'none';
       }
 
       function submitSubscription() {
@@ -133,7 +135,8 @@ class UserSubscriptionTag < LiquidTagBase
       }
 
       if (isUserSignedIn()) {
-        updateSubcriptionElements();
+        updateSubscriberData();
+        checkIfSubscribed();
         addClickEventListeners();
       }
     });
