@@ -44,7 +44,7 @@ class Internal::FeedbackMessagesController < Internal::ApplicationController
   end
 
   def send_email
-    if NotifyMailer.feedback_message_resolution_email(params).deliver
+    if NotifyMailer.with(params).feedback_message_resolution_email.deliver_now
       render json: { outcome: "Success" }
     else
       render json: { outcome: "Failure" }

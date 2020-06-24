@@ -93,34 +93,4 @@
       }
     }
   }
-
-  &--responsive {
-    thead {
-      display: none;
-
-      @media (min-width: $breakpoint-s) {
-        display: table-header-group;
-      }
-    }
-
-    tbody {
-      tr {
-        display: block;
-
-        @media (min-width: $breakpoint-s) {
-          display: table-row;
-        }
-
-        td {
-          display: block;
-          border-bottom: none;
-
-          @media (min-width: $breakpoint-s) {
-            display: table-cell;
-            border-bottom: 1px solid var(--body-bg);
-          }
-        }
-      }
-    }
-  }
 }

@@ -14,20 +14,20 @@
 
     <div class="crayons-layout__content">
       <% if @articles.any? %>
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between mb-3">
           <h2 class="hidden m:block fs-l fw-heavy">Posts</h2>
 
-          <div class="flex items-center">
+          <div class="flex flex-wrap">
             <% if params[:which] != "organization" %>
               <% if @articles.any? {|article| article.archived } %>
-                <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink", class: "crayons-btn crayons-btn--outlined ml-2" %>
+                <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink", class: "crayons-btn crayons-btn--outlined ml-2 whitespace-nowrap my-1" %>
               <% end %>
 
-              <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]), "aria-label": "Sort By", class: "crayons-select w-auto ml-2" %>
+              <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]), "aria-label": "Sort By", class: "crayons-select w-auto ml-2 my-1" %>
             <% end %>
 
             <% if @organizations && @organizations.size > 0 && (params[:which].blank? || params[:which] == "organization") %>
-              <select id="dashboard_author" class="crayons-select w-auto ml-2">
+              <select id="dashboard_author" class="crayons-select w-auto ml-2 my-1">
                 <option value="/dashboard" <%= "selected" if params[:which].blank? %>>Personal</option>
                 <% @organizations.each do |org| %>
                   <option value="/dashboard/organization/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %> (<%= org.articles_count %>)</option>
@@ -37,25 +37,19 @@
           </div>
         </div>
 
-        <table class="crayons-table crayons-table--responsive crayons-card mb-6" width="100%" border="0" cellpadding="0" cellspacing="0">
-          <thead class="crayons-card crayons-card--secondary">
-            <tr>
-              <th>Post</th>
-              <th>Engagement</th>
-              <th></th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <% @articles.each do |article| %>
-              <% if params[:which] == "organization" %>
-                <%= render "dashboard_article_row", article: article, organization: article.organization, org_admin: true, manage_view: false %>
-              <% else %>
-                <%= render "dashboard_article_row", article: article, organization: nil, org_admin: false, manage_view: false %>
-              <% end %>
+        <div class="crayons-card mb-6">
+          <% @articles.each do |article| %>
+            <% if params[:which] == "organization" %>
+              <%= render "dashboard_article_row", article: article, organization: article.organization, org_admin: true, manage_view: false %>
+            <% else %>
+              <%= render "dashboard_article_row", article: article, organization: nil, org_admin: false, manage_view: false %>
             <% end %>
-          </tbody>
-        </table>
+          <% end %>
+        </div>
+
+        <div class="mb-4 pl-3">
+          <%= paginate @articles, params: { i: nil } %>
+        </div>
 
       <% else %>
         <div class="no-articles">
