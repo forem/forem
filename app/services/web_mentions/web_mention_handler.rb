@@ -11,7 +11,7 @@ module WebMentions
     end
 
     def call
-      accepts_webmention? ? send_webmention(@webmention_url) : Rails.logger.info("#{@canonical_url} doesn't support Webmentions")
+      accepts_webmention? ? send_webmention : Rails.logger.info("#{@canonical_url} doesn't support Webmentions")
     end
 
     def accepts_webmention?
@@ -29,8 +29,8 @@ module WebMentions
 
     private
 
-    def send_webmention(webmention_url)
-      RestClient.post(webmention_url, "source": @article_url, "target": @canonical_url)
+    def send_webmention
+      RestClient.post(@webmention_url, "source": @article_url, "target": @canonical_url)
     rescue RestClient::ExceptionWithResponse => e
       Rails.logger.error("SendWebmentionException: #{e.response}")
     end
