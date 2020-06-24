@@ -173,4 +173,14 @@ RSpec.describe RssReader, type: :service, vcr: true, db_strategy: :truncation do
       expect(rss_reader.valid_feed_url?(bad_link)).to be(false)
     end
   end
+
+  describe "feeds parsing and regressions" do
+    it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "rss_reader_dvirsegal" } do
+      user = create(:user, feed_url: "https://medium.com/feed/@dvirsegal")
+
+      expect do
+        rss_reader.fetch_user(user)
+      end.to change(user.articles, :count).by(10)
+    end
+  end
 end
