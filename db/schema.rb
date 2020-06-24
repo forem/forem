@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_18_212422) do
+ActiveRecord::Schema.define(version: 2020_06_24_193436) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -50,6 +50,9 @@ ActiveRecord::Schema.define(version: 2020_06_18_212422) do
   end
 
   create_table "ahoy_visits", force: :cascade do |t|
+    t.text "landing_page"
+    t.text "referrer"
+    t.string "referring_domain"
     t.datetime "started_at"
     t.bigint "user_id"
     t.string "visit_token"
