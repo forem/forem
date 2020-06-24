@@ -35,6 +35,15 @@ $input-width: 650px;
       background: $light-green;
       color: #0f0f0f;
     }
+    .github-repo-fork {
+      margin-left: 5px;
+      font-weight: 400;
+      background: $purple;
+      color: $bold-blue;
+      border-radius: 3px;
+      padding: 1px 6px;
+      font-size: 0.9em;
+    }
     .github-repo-row-name {
       font-weight: bold;
       form {
