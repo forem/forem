@@ -176,10 +176,12 @@ class UserSubscriptionTag < LiquidTagBase
     function handleSubscription() {
       submitSubscription().then(function(response) {
         if (response.success) {
-           showResponseMessage('success', response.message);
-         } else {
-           showResponseMessage('danger', response.error);
-         }
+          const authorUsername = document.getElementById('ltag__user-subscription').dataset.authorUsername;
+          const successMsg = `You are now subscribed and may receive emails from ${authorUsername}`;
+          showResponseMessage('success', successMsg);
+        } else {
+          showResponseMessage('danger', response.error);
+        }
       });
     }
 
