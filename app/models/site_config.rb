@@ -87,7 +87,7 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Onboarding
-  field :onboarding_logo_image, type: :string, default: "https://dev.to/assets/purple-dev-logo.png"
+  field :onboarding_logo_image, type: :string
   field :onboarding_background_image, type: :string
   field :onboarding_taskcard_image, type: :string
   field :suggested_tags, type: :array, default: %w[beginners]

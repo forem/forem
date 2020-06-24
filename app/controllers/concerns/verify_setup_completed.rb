@@ -10,7 +10,6 @@ module VerifySetupCompleted
     main_social_image
     favicon_url
     logo_png
-    secondary_logo_url
 
     mascot_user_id
     mascot_image_url

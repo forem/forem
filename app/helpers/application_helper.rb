@@ -160,11 +160,7 @@ module ApplicationHelper
   end
 
   def show_logo logo
-    if logo.present?
-      logo
-    else
-      SiteConfig.logo_png
-    end
+    logo.presence || SiteConfig.logo_png
   end
 
   def community_name
