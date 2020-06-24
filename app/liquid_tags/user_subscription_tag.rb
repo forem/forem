@@ -9,6 +9,19 @@ class UserSubscriptionTag < LiquidTagBase
     function showSignedIn() {
       document.getElementById('subscription-signed-in').style.display = 'block';
       document.getElementById('subscription-signed-out').style.display = 'none';
+      document.getElementById('response-message').style.display = 'none';
+    }
+
+    function showResponseMessage(noticeType, msg) {
+      document.getElementById('subscription-signed-in').style.display = 'none';
+      document.getElementById('subscription-signed-out').style.display = 'none';
+
+      const responseMessage = document.getElementById('response-message')
+      responseMessage.style.display = 'block';
+      responseMessage.classList.add(`crayons-notice--${noticeType}`);
+      responseMessage.textContent = msg;
+
+      hideConfirmationModal();
     }
 
     function addSignInClickHandler() {
@@ -27,9 +40,41 @@ class UserSubscriptionTag < LiquidTagBase
       document.getElementById('user-subscription-confirmation-modal').style.display = 'none';
     }
 
+    function handleSubscription() {
+      submitSubscription().then(function(response) {
+        if (response.success) {
+           showResponseMessage('success', response.message);
+         } else {
+           showReponseMessage('danger', response.error);
+         }
+      });
+    }
+
     function submitSubscription() {
-      // TODO hit API to create subscription
-      console.log("SUBSCRIBED");
+      const headers = {
+        Accept: 'application/json',
+        'X-CSRF-Token': window.csrfToken,
+        'Content-Type': 'application/json',
+      }
+
+      const articleId = document.getElementById('article-body').dataset.articleId;
+      const body = JSON.stringify(
+          {
+            user_subscription: {
+              source_type: "Article",
+              source_id: articleId
+            }
+          }
+        )
+
+      return fetch('/user_subscriptions', {
+        method: 'POST',
+        headers: headers,
+        credentials: 'same-origin',
+        body: body,
+      }).then(function(response) {
+        return response.json();
+      });
     }
 
     function addConfirmationModalClickHandlers() {
@@ -46,7 +91,7 @@ class UserSubscriptionTag < LiquidTagBase
       });
 
       document.getElementById('confirmation-btn').addEventListener('click', function(e) {
-        submitSubscription();
+        handleSubscription();
       });
     }
 
@@ -79,7 +124,6 @@ class UserSubscriptionTag < LiquidTagBase
 
     function checkIfSubscribed() {
       fetchIsSubscribed().then(function(response) {
-
         if (response.is_subscribed) {
           showSubscribed();
         } else {
@@ -105,7 +149,7 @@ class UserSubscriptionTag < LiquidTagBase
       const elements = document.querySelectorAll(identifier);
 
       elements.forEach(function(element) {
-        element.innerHTML = value;
+        element.textContent = value;
       });
     }
 
