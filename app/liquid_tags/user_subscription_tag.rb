@@ -66,10 +66,12 @@ class UserSubscriptionTag < LiquidTagBase
       }
 
       function updateSubscriberData() {
-        const subscriber = window.currentUser;
+        const subscriber = JSON.parse(document.body.dataset.user);
 
-        updateElementsInnerHTML('.subscriber-email', subscriber.email);
-        updateProfileImages('.subscriber-profile-image', subscriber);
+        if (subscriber) {
+          updateElementsInnerHTML('.subscriber-email', subscriber.email);
+          updateProfileImages('.subscriber-profile-image', subscriber);
+        }
       }
 
       function updateElementsInnerHTML(identifier, value) {
