@@ -96,10 +96,10 @@ class RssReader
         bq_with_p = bq.css("p")
         next if bq_with_p.empty?
 
-        second_content = bq_with_p.css("p")[1].css("a")[0].attributes["href"].value
-        if bq_with_p.length == 2 && second_content.include?("twitter.com")
+        if (tweet_link = bq_with_p.css("a[href*='twitter.com']"))
           bq.name = "p"
-          tweet_id = second_content.scan(/\/status\/(\d{10,})/).flatten.first
+          tweet_url = tweet_link.attribute("href").value
+          tweet_id = tweet_url.split("/status/").last
           bq.inner_html = "{% tweet #{tweet_id} %}"
         end
       end

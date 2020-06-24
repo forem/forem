@@ -40,7 +40,7 @@ class RssReader
       articles.append(article)
     rescue StandardError => e
       log_error(
-        "RssReaderError: occurred while creating article",
+        "RssReaderError: occurred while creating article #{item.url}",
         rss_reader_info: {
           user: user.username,
           feed_url: user.feed_url,
@@ -121,7 +121,8 @@ class RssReader
     relation.where(title: title).or(relation.where(feed_source_url: feed_source_url)).exists?
   end
 
-  def log_error(error_msg, metadata)
-    Rails.logger.error(error_msg, metadata)
+  # TODO: [@thepracticaldev/oss]: How did the metadata argument to Rails.logger work before?
+  def log_error(error_msg, _metadata)
+    Rails.logger.error(error_msg)
   end
 end
