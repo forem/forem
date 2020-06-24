@@ -45,7 +45,7 @@ class UserSubscriptionTag < LiquidTagBase
         if (response.success) {
            showResponseMessage('success', response.message);
          } else {
-           showReponseMessage('danger', response.error);
+           showResponseMessage('danger', response.error);
          }
       });
     }
@@ -58,11 +58,13 @@ class UserSubscriptionTag < LiquidTagBase
       }
 
       const articleId = document.getElementById('article-body').dataset.articleId;
+      const subscriber = userData();
       const body = JSON.stringify(
           {
             user_subscription: {
               source_type: "Article",
-              source_id: articleId
+              source_id: articleId,
+              subscriber_email: subscriber.email
             }
           }
         )
@@ -133,7 +135,9 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function showSubscribed() {
-      console.log("ALREADY SUBSCRIBED");
+      const authorUsername = document.getElementById('ltag__user-subscription').dataset.authorUsername;
+      const alreadySubscribedMsg = `You are already subscribed!`;
+      showResponseMessage('success', alreadySubscribedMsg);
     }
 
     function updateSubscriberData() {
