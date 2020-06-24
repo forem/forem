@@ -159,7 +159,7 @@ module ApplicationHelper
     end
   end
 
-  def show_logo logo
+  def show_logo(logo)
     logo.presence || SiteConfig.logo_png
   end
 
