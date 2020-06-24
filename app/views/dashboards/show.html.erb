@@ -23,7 +23,7 @@
                 <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink", class: "crayons-btn crayons-btn--outlined ml-2 whitespace-nowrap my-1" %>
               <% end %>
 
-              <%= select_tag "dashhboard_sort", options_for_select(sort_options, params[:sort]), "aria-label": "Sort By", class: "crayons-select w-auto ml-2 my-1" %>
+              <%= select_tag "dashboard_sort", options_for_select(sort_options, params[:sort]), 'aria-label': "Sort By", class: "crayons-select w-auto ml-2 my-1" %>
             <% end %>
 
             <% if @organizations && @organizations.size > 0 && (params[:which].blank? || params[:which] == "organization") %>

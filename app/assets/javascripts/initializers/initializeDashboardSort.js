@@ -3,7 +3,7 @@
 'use strict';
 
 function initializeDashboardSort() {
-  const sortSelector = document.getElementById('dashhboard_sort');
+  const sortSelector = document.getElementById('dashboard_sort');
   if (sortSelector) {
     sortSelector.addEventListener('change', (event) => {
       const url = event.target.value;
