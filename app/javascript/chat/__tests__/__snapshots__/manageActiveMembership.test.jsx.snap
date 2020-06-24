@@ -29,62 +29,76 @@ exports[`<ManageActiveMembership /> should render & test snapshot 1`] = `
       data-offset="5"
       data-spy="scroll"
     >
-      <div>
+      <div
+        class="membership-section"
+      >
         <div
-          class="flex items-center my-3 member-list-item"
+          class="flex items-center my-3 member-list-item justify-content-between"
         >
-          <a
-            href="/testusername"
-          >
-            <span
-              class="crayons-avatar crayons-avatar--l mr-3"
-            >
-              <img
-                alt="test user profile"
-                class="crayons-avatar__image align-middle"
-                role="presentation"
-                src=""
-              />
-            </span>
-            <span
-              class="mr-2 user_name"
-            >
-              test user
-            </span>
-            <span>
-              <img
-                alt="admin emoji"
-                class="admin-emoji"
-                data-content="admin emoji"
-                src=""
-                title="MOD"
-              />
-            </span>
-          </a>
           <div
-            class="membership-actions"
+            class="w-100"
           >
-            <span
-              class="membership-management__dropdown-button"
+            <a
+              class="chatmessagebody__username--link"
+              data-content="sidecar-user"
+              href="/testusername"
+              rel="noopener noreferrer"
+              target="_blank"
             >
-              <img
-                alt="channel config"
-                class="w-25"
-                data-content="drop-down-image"
-                src=""
-              />
-            </span>
-            <div
-              class="membership-management__dropdown-memu"
-            >
-              <button
-                class="crayons-btn crayons-btn--ghost remove-membership"
-                data-membership-id="2"
-                data-role="member"
-                type="button"
+              <span
+                class="crayons-avatar crayons-avatar--l mr-3"
               >
-                Add as Member
-              </button>
+                <img
+                  alt="test user profile"
+                  class="crayons-avatar__image align-middle"
+                  role="presentation"
+                  src=""
+                />
+              </span>
+              <span
+                class="mr-2 user_name"
+              >
+                test user
+              </span>
+              <span>
+                <img
+                  alt="admin emoji"
+                  class="admin-emoji"
+                  data-content="admin emoji"
+                  src=""
+                  title="MOD"
+                />
+              </span>
+            </a>
+          </div>
+          <div
+            class="flex-shrink-1"
+          >
+            <div
+              class="membership-actions"
+            >
+              <span
+                class="membership-management__dropdown-button"
+              >
+                <img
+                  alt="channel config"
+                  class="w-25"
+                  data-content="drop-down-image"
+                  src=""
+                />
+              </span>
+              <div
+                class="membership-management__dropdown-memu"
+              >
+                <button
+                  class="crayons-btn crayons-btn--ghost remove-membership p-2"
+                  data-membership-id="2"
+                  data-role="member"
+                  type="button"
+                >
+                  Add as Member
+                </button>
+              </div>
             </div>
           </div>
         </div>

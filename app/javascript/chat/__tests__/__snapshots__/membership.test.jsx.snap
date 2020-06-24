@@ -5,7 +5,11 @@ exports[`<Membership /> should render and test snapshot 1`] = `
   class="flex items-center"
 >
   <a
+    class="chatmessagebody__username--link"
+    data-content="sidecar-user"
     href="/testusername"
+    rel="noopener noreferrer"
+    target="_blank"
   >
     <span
       class="crayons-avatar crayons-avatar--l mr-3"

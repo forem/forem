@@ -13,7 +13,7 @@ const Membership = ({
   const addAsModButton =
     membership.role === 'member' ? (
       <button
-        className="crayons-btn crayons-btn--ghost remove-membership"
+        className="crayons-btn crayons-btn--ghost remove-membership p-2"
         type="button"
         onClick={handleUpdateMembershipRole}
         data-membership-id={membership.membership_id}
@@ -35,7 +35,7 @@ const Membership = ({
   const addAsMemberButton =
     membership.role === 'mod' ? (
       <button
-        className="crayons-btn crayons-btn--ghost remove-membership"
+        className="crayons-btn crayons-btn--ghost remove-membership p-2"
         type="button"
         onClick={handleUpdateMembershipRole}
         data-membership-id={membership.membership_id}
@@ -48,7 +48,7 @@ const Membership = ({
   const removeMembershipButton =
     membership.role === 'member' ? (
       <button
-        className="crayons-btn crayons-btn--ghost  crayons-btn--ghost-danger remove-membership"
+        className="crayons-btn crayons-btn--ghost  crayons-btn--ghost-danger remove-membership p-2"
         type="button"
         onClick={removeMembership}
         data-membership-id={membership.membership_id}
@@ -79,36 +79,38 @@ const Membership = ({
     ) : null;
 
   return (
-    <div className="flex items-center my-3 member-list-item">
-      <a
-        href={`/${membership.username}`}
-        className="chatmessagebody__username--link"
-        target="_blank"
-        rel="noopener noreferrer"
-        data-content="sidecar-user"
-      >
-        <span className="crayons-avatar crayons-avatar--l mr-3">
-          <img
-            className="crayons-avatar__image align-middle"
-            role="presentation"
-            src={membership.image}
-            alt={`${membership.name} profile`}
-          />
-        </span>
-        <span className="mr-2 user_name">{membership.name}</span>
-        <span>
-          {membership.role === 'mod' ? (
+    <div className="flex items-center my-3 member-list-item justify-content-between">
+      <div className="w-100">
+        <a
+          href={`/${membership.username}`}
+          className="chatmessagebody__username--link"
+          target="_blank"
+          rel="noopener noreferrer"
+          data-content="sidecar-user"
+        >
+          <span className="crayons-avatar crayons-avatar--l mr-3">
             <img
-              src={adminEmoji}
-              alt="admin emoji"
-              data-content="admin emoji"
-              className="admin-emoji"
-              title="MOD"
+              className="crayons-avatar__image align-middle"
+              role="presentation"
+              src={membership.image}
+              alt={`${membership.name} profile`}
             />
-          ) : null}
-        </span>
-      </a>
-      {dropdown}
+          </span>
+          <span className="mr-2 user_name">{membership.name}</span>
+          <span>
+            {membership.role === 'mod' ? (
+              <img
+                src={adminEmoji}
+                alt="admin emoji"
+                data-content="admin emoji"
+                className="admin-emoji"
+                title="MOD"
+              />
+            ) : null}
+          </span>
+        </a>
+      </div>
+      <div className="flex-shrink-1">{dropdown}</div>
     </div>
   );
 };

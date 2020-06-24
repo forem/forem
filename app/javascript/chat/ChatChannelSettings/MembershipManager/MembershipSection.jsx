@@ -14,7 +14,7 @@ const MembershipSection = ({
   }
 
   return (
-    <div>
+    <div className="membership-section">
       {memberships.map((activeMembership) => (
         <Membership
           membership={activeMembership}

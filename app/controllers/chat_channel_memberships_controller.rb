@@ -132,12 +132,18 @@ class ChatChannelMembershipsController < ApplicationController
     chat_channel = ChatChannel.find_by(slug: params[:channel_slug])
     authorize chat_channel
     membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: chat_channel.id)
-    result = if membership
-               UpdateChatChannelMembershipService.perform(chat_channel, membership, { role: "member", status: "active" })
-             else
-               CreateChatChannelMembershipService.perform(chat_channel, current_user)
-             end
-    if result.errors.any?
+
+    unless membership
+      result = CreateChatChannelMembershipService.perform(chat_channel, current_user)
+      send_chat_action_message("@#{result.user.username} join the channel", current_user, chat_channel.id, "joined") unless result&.errors&.any?
+    end
+
+    if membership && membership.status != "active"
+      result = UpdateChatChannelMembershipService.perform(chat_channel, membership, { role: "member", status: "active" })
+      send_chat_action_message("@#{membership.user.username} join the channel", current_user, membership.chat_channel_id, "joined")
+    end
+
+    if result&.errors&.any?
       flash[:settings_notice] = "There is some error"
       redirect_to root_path
     end

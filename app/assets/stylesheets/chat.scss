@@ -1307,9 +1307,14 @@
   .admin-emoji-button {
     width: 10%;
   }
+}
+
+.membership-section {
+  position: relative;
 
   .membership-actions {
     position: relative;
+
     .membership-management__dropdown-memu {
       display: none;
       position: absolute;
