@@ -89,7 +89,7 @@ class UserSubscriptionTag < LiquidTagBase
     // ***************************************
     function addSignInClickHandler() {
       document.getElementById('sign-in-btn').addEventListener('click', function(e) {
-        if (typeof showModal !== "undefined") {
+        if (typeof showModal !== 'undefined') {
           showModal('email_signup');
         }
       });
@@ -127,7 +127,7 @@ class UserSubscriptionTag < LiquidTagBase
       const body = JSON.stringify(
           {
             user_subscription: {
-              source_type: "Article",
+              source_type: 'Article',
               source_id: articleId,
               subscriber_email: subscriber.email
             }
@@ -206,7 +206,7 @@ class UserSubscriptionTag < LiquidTagBase
       addConfirmationModalClickHandlers();
 
       // We need access to some DOM elements (i.e. csrf token, article id, userData, etc.)
-      document.addEventListener("DOMContentLoaded", function() {
+      document.addEventListener('DOMContentLoaded', function() {
         checkIfSubscribed();
       });
     } else {
