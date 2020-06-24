@@ -13,6 +13,7 @@ class UserSubscriptionTag < LiquidTagBase
       document.getElementById('subscription-signed-out').style.display = 'none';
       document.getElementById('response-message').style.display = 'none';
       document.getElementById('subscriber-apple-auth').style.display = 'none';
+      hideConfirmationModal();
     }
 
     function showSignedIn() {
@@ -27,8 +28,6 @@ class UserSubscriptionTag < LiquidTagBase
       responseMessage.style.display = 'block';
       responseMessage.classList.add(`crayons-notice--${noticeType}`);
       responseMessage.textContent = msg;
-
-      hideConfirmationModal();
     }
 
     function showAppleAuthMessage() {
@@ -37,6 +36,7 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function showSubscribed() {
+      updateSubscriberData();
       const authorUsername = document.getElementById('user-subscription-tag').dataset.authorUsername;
       const alreadySubscribedMsg = `You are already subscribed!`;
       showResponseMessage('success', alreadySubscribedMsg);
