@@ -1,9 +1,9 @@
 module WebMentions
   class WebMentionHandler
-    def initialize(canonical_url, article_url = nil)
+    def initialize(canonical_url, article_url = nil, webmention_url = nil)
       @canonical_url = canonical_url
       @article_url = article_url
-      @webmention_url = ""
+      @webmention_url = webmention_url
     end
 
     def self.call(*args)
@@ -28,7 +28,6 @@ module WebMentions
                             document["href"]
                           end
       end
-      nil
     rescue StandardError => e
       Rails.logger.error("WebmentionsException: #{e}")
       nil
