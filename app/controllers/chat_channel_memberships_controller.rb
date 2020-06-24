@@ -130,12 +130,27 @@ class ChatChannelMembershipsController < ApplicationController
       @chat_channel_membership.update(status: "active")
       channel_name = @chat_channel_membership.chat_channel.channel_name
       if previous_status == "pending"
-        send_chat_action_message("@#{current_user.username} joined #{@chat_channel_membership.channel_name}", current_user, @chat_channel_membership.chat_channel_id, "joined")
-        flash[:settings_notice] = "Invitation to  #{channel_name} accepted. It may take a moment to show up in your list."
+        send_chat_action_message(
+          "@#{current_user.username} joined #{@chat_channel_membership.channel_name}",
+          current_user,
+          @chat_channel_membership.chat_channel_id,
+          "joined",
+        )
+        flash[:settings_notice] = "Invitation to #{channel_name} accepted. It may take a moment to show up in your list."
       else
-        send_chat_action_message("@#{current_user.username} added @#{@chat_channel_membership.user.username}", current_user, @chat_channel_membership.chat_channel_id, "joined")
-        NotifyMailer.channel_invite_email(@chat_channel_membership, @chat_channel_membership.user).deliver_later
-        flash[:settings_notice] = "Accepted request of #{@chat_channel_membership.user.username} to join  #{channel_name}."
+        send_chat_action_message(
+          "@#{current_user.username} added @#{@chat_channel_membership.user.username}",
+          current_user,
+          @chat_channel_membership.chat_channel_id,
+          "joined",
+        )
+
+        NotifyMailer.
+          with(membership: @chat_channel_membership, inviter: @chat_channel_membership.user).
+          channel_invite_email.
+          deliver_later
+
+        flash[:settings_notice] = "Accepted request of #{@chat_channel_membership.user.username} to join #{channel_name}."
       end
     else
       @chat_channel_membership.update(status: "rejected")
@@ -146,7 +161,14 @@ class ChatChannelMembershipsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to chat_channel_memberships_path }
-      format.json { render json: { status: "success", message: flash[:settings_notice], success: true, membership: membership_user }, status: :ok }
+      format.json do
+        render json: {
+          status: "success",
+          message: flash[:settings_notice],
+          success: true,
+          membership: membership_user
+        }, status: :ok
+      end
     end
   end
 

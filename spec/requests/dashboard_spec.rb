@@ -37,6 +37,18 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard"
         expect(response.body).to include "Delete"
       end
+
+      it "renders pagination if minimum amount of posts" do
+        create_list(:article, 52, user: user)
+        get "/dashboard"
+        expect(response.body).to include "pagination"
+      end
+
+      it "does not render pagination if less than one full page" do
+        create_list(:article, 3, user: user)
+        get "/dashboard"
+        expect(response.body).not_to include "pagination"
+      end
     end
 
     context "when logged in as a super admin" do

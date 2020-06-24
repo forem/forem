@@ -9,6 +9,7 @@ class Article < ApplicationRecord
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
   DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
+  RESTRICTED_LIQUID_TAGS = [PollTag, UserSubscriptionTag].freeze
 
   acts_as_taggable_on :tags
   resourcify
@@ -351,6 +352,22 @@ class Article < ApplicationRecord
                    spaminess_rating: BlackBox.calculate_spaminess(self))
   end
 
+  def liquid_tags_used(section = nil)
+    content =
+      case section
+      when :body
+        body_markdown
+      when :comments
+        comments_blob
+      else
+        "#{body_markdown}#{comments_blob}"
+      end
+
+    MarkdownParser.new(content).tags_used
+  rescue StandardError
+    []
+  end
+
   private
 
   def search_score
@@ -432,12 +449,6 @@ class Article < ApplicationRecord
     end
   rescue StandardError => e
     Rails.logger.error(e)
-  end
-
-  def liquid_tags_used
-    MarkdownParser.new("#{body_markdown}#{comments_blob}").tags_used
-  rescue StandardError
-    []
   end
 
   def update_notifications
@@ -535,9 +546,11 @@ class Article < ApplicationRecord
     errors.add(:canonical_url, "must not have spaces") if canonical_url.to_s.match?(/[[:space:]]/)
   end
 
+  # TODO: (Alex Smith) refactor liquid tag permissions
+  #
   # Admin only beta tags etc.
   def validate_liquid_tag_permissions
-    errors.add(:body_markdown, "must only use permitted tags") if liquid_tags_used.include?(PollTag) && !(user.has_role?(:super_admin) || user.has_role?(:admin))
+    errors.add(:body_markdown, "must only use permitted tags") if (liquid_tags_used & RESTRICTED_LIQUID_TAGS).any? && !(user.has_role?(:super_admin) || user.has_role?(:admin))
   end
 
   def create_slug

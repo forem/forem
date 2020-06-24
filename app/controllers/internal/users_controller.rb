@@ -100,15 +100,15 @@ class Internal::UsersController < Internal::ApplicationController
   end
 
   def send_email
-    if NotifyMailer.user_contact_email(params).deliver
-      redirect_back(fallback_location: "/users")
+    if NotifyMailer.with(params).user_contact_email.deliver_now
+      redirect_back(fallback_location: users_path)
     else
       flash[:danger] = "Email failed to send!"
     end
   end
 
   def verify_email_ownership
-    if VerificationMailer.account_ownership_verification_email(params).deliver
+    if VerificationMailer.with(user_id: params[:user_id]).account_ownership_verification_email.deliver_now
       flash[:success] = "Email Verification Mailer sent!"
       redirect_back(fallback_location: internal_users_path)
     else

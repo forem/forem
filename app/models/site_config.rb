@@ -45,7 +45,7 @@ class SiteConfig < RailsSettings::Base
   field :periodic_email_digest_min, type: :integer, default: 2
 
   # Jobs
-  field :jobs_url, type: :string, default: "https://jobs.dev.to/"
+  field :jobs_url, type: :string, default: "https://jobs.dev.to"
   field :display_jobs_banner, type: :boolean, default: false
 
   # Google Analytics Reporting API v4
@@ -107,6 +107,7 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_send_email_confirmation, type: :integer, default: 2
   field :rate_limit_feedback_message_creation, type: :integer, default: 5
   field :rate_limit_user_update, type: :integer, default: 5
+  field :rate_limit_user_subscription_creation, type: :integer, default: 3
 
   # Social Media
   field :staff_user_id, type: :integer, default: 1

@@ -55,7 +55,7 @@ module Exporter
 
     def send_exports_by_email(zipped_exports)
       zipped_exports.rewind
-      NotifyMailer.export_email(user, zipped_exports.read).deliver
+      NotifyMailer.with(user: user, attachment: zipped_exports.read).export_email.deliver_now
     end
 
     def update_user_export_fields

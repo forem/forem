@@ -21,7 +21,9 @@ class VideoStatesController < ApplicationController
 
     if @article
       @article.update(video_state: "COMPLETED") # Only is called on completion
-      NotifyMailer.video_upload_complete_email(@article).deliver
+
+      NotifyMailer.with(article: @article).video_upload_complete_email.deliver_now
+
       render json: { message: "Video state updated" }
     else
       render json: { message: "Related article not found" }, status: :not_found

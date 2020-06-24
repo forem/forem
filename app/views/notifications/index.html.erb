@@ -25,9 +25,13 @@
    *
    * @param {Event} The click event on the notification.
    */
-  function trackNotification(e) {
-    let title = e.target.parentElement.id
-    ahoy.track("Clicked Welcome Notification", { title });
+  function trackNotification(event) {
+    const { parentElement: { id: title }, text } = event.target;
+    if (!title) {
+      Honeybadger.notify(`Could not find parentElement.id when clicking on event target text: ${text}`);
+    }
+
+    ahoy.track("Clicked Welcome Notification", { title, text });
   }
 </script>
 
