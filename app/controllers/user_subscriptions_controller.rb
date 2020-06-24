@@ -2,41 +2,6 @@ class UserSubscriptionsController < ApplicationController
   before_action :authenticate_user!
 
   USER_SUBSCRIPTION_PARAMS = %i[source_type source_id subscriber_email].freeze
-  BASE_DATA_PARAMS = %i[source_type source_id].freeze
-
-  def base_data
-    params.require(BASE_DATA_PARAMS)
-    source_type = params[:source_type]
-    return error_response("invalid source_type") unless UserSubscription::ALLOWED_TYPES.include?(source_type)
-
-    source_id = params[:source_id]
-    source = source_type.constantize.includes(:user).find_by(id: source_id)
-    return error_response("source not found") unless active_source?(source_type, source)
-
-    unless user_subscription_tag_enabled?(source_type, source)
-      return error_response("user subscriptions are not enabled for the requested source")
-    end
-
-    is_subscribed = UserSubscriptions::SubscriptionCacheChecker.call(current_user, params[:source_type], params[:source_id])
-    author = source.user
-
-    # TODO: (Alex Smith) remove this when ready
-    subscriber_email = current_user.email if current_user.any_admin?
-
-    render json: {
-      success: true,
-      subscriber: {
-        username: current_user.username,
-        is_subscribed: is_subscribed,
-        email: subscriber_email, # TODO: (Alex Smith) change to current_user.email
-        profile_image_90: ProfileImage.new(current_user).get(width: 90)
-      },
-      author: {
-        username: author.username,
-        profile_image_90: ProfileImage.new(author).get(width: 90)
-      }
-    }, status: :ok
-  end
 
   def subscribed
     params.require(%i[source_type source_id])

@@ -49,7 +49,7 @@ class UserSubscriptionTag < LiquidTagBase
           'Content-Type': 'application/json',
         }
 
-        return fetch(`/user_subscriptions/base_data?${params}`, {
+        return fetch(`/user_subscriptions/subscribed?${params}`, {
           method: 'GET',
           headers: headers,
           credentials: 'same-origin',
@@ -64,12 +64,12 @@ class UserSubscriptionTag < LiquidTagBase
 
       function updateSubcriptionElements() {
         fetchBaseData().then(function(response) {
-          updateElementsInnerHTML('.author-username', response.author.username);
-          updateElementsInnerHTML('.subscriber-email', response.subscriber.email);
-          updateProfileImages('.subscriber-profile-image', response.subscriber);
-          updateProfileImages('.author-profile-image', response.author);
+          const subscriber = window.currentUser;
 
-          // if (response.subscriber.is_subscribed) {
+          updateElementsInnerHTML('.subscriber-email', subscriber.email);
+          updateProfileImages('.subscriber-profile-image', subscriber);
+
+          // if (response.is_subscribed) {
             // showSubscribed();
           // }
         });
@@ -83,12 +83,12 @@ class UserSubscriptionTag < LiquidTagBase
         });
       }
 
-      function updateProfileImages(identifier, user) {
+      function updateProfileImages(identifier, subscriber) {
         const profileImages = document.querySelectorAll(`img${identifier}`);
 
         profileImages.forEach(function(profileImage) {
-          profileImage.src = user.profile_image_90;
-          profileImage.alt = `${user.username} profile image`;
+          profileImage.src = subscriber.profile_image_90;
+          profileImage.alt = `${subscriber.username} profile image`;
           profileImage.style.display = 'block';
         });
 
@@ -109,11 +109,18 @@ class UserSubscriptionTag < LiquidTagBase
     @cta_text = cta_text.strip
   end
 
-  def render(_context)
+  def render(context)
+    source = detect_in_context(:source, context)
+    author = source&.user
+    author_profile_image = author&.profile_image_90
+    author_username = author&.username
+
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        cta_text: @cta_text
+        cta_text: @cta_text,
+        author_profile_image: author_profile_image,
+        author_username: author_username
       },
     )
   end

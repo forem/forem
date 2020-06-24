@@ -3,7 +3,7 @@
     <div class="user-subscription-content" id="content">
       <div class="user-subscription-profile-images" id="profile-images">
         <span class="crayons-avatar crayons-avatar--l mr-2 author-profile-image">
-          <img class="crayons-avatar__image author-profile-image">
+          <img class="crayons-avatar__image author-profile-image" src=<%= author_profile_image %> <%= "#{author_username} profile image" %>>
         </span>
         <span class="crayons-avatar crayons-avatar--l mr-2 subscriber-profile-image">
           <img class="crayons-avatar__image subscriber-profile-image">
@@ -46,7 +46,7 @@
               You'll share your email address
               <span class="subscriber-email"></span>
               with
-              <span class="author-username"></span>.
+              <span class="author-username"><%= author_username %></span>.
               Once you do this, you cannot undo this.
             </div>
             <div class="confirmation-buttons">
