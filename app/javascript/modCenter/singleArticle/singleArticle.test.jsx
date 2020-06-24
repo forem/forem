@@ -31,9 +31,6 @@ const testArticle2 = {
   },
 };
 
-const truncatedTitle =
-  'An article title that is quite very actually rather extre...';
-
 describe('<SingleArticle />', () => {
   const renderSingleArticle = (article = testArticle1) =>
     render(
@@ -42,18 +39,6 @@ describe('<SingleArticle />', () => {
         title={article.title}
         path={article.path}
         publishedAt={article.publishedAt} // renders as Jun 28
-        cachedTagList={article.cachedTagList}
-        user={article.user}
-      />,
-    );
-
-  const renderSingleArticle2 = (article = testArticle2) =>
-    render(
-      <SingleArticle
-        id={article.id}
-        title={article.title}
-        path={article.path}
-        publishedAt={article.publishedAt}
         cachedTagList={article.cachedTagList}
         user={article.user}
       />,
@@ -71,7 +56,9 @@ describe('<SingleArticle />', () => {
   });
 
   it('truncates the article title if longer than 60 characters', () => {
-    const { getByText } = renderSingleArticle2();
+    const { getByText } = renderSingleArticle(testArticle2);
+    const truncatedTitle =
+      'An article title that is quite very actually rather extre...';
     getByText(truncatedTitle);
   });
 
@@ -83,7 +70,7 @@ describe('<SingleArticle />', () => {
   });
 
   it('renders no tags or # symbol when article has no tags', () => {
-    const { container } = renderSingleArticle2();
+    const { container } = renderSingleArticle(testArticle2);
     const text = getNodeText(container.querySelector('.article-title'));
     expect(text).not.toContain('#');
   });
