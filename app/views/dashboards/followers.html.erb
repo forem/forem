@@ -13,13 +13,13 @@
       <%= render "actions" %>
     </aside>
 
-    <div class="crayons-layout__content">
+    <div class="crayons-layout__content" id="user-dashboard">
       <% if @follows.any? %>
         <div class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
           <% @follows.each do |follow| %>
             <% user = follow.follower %>
             <% if user %>
-              <div class="crayons-card p-4 m:p-6 flex s:grid" id="follows-<%= follow.id %>">
+              <div class="crayons-card p-4 m:p-6 flex s:grid single-article" id="follows-<%= follow.id %>">
                 <a href="<%= user.path %>" class="crayons-avatar crayons-avatar--2xl s:mb-2 s:mx-auto">
                   <img alt="<%= user.username %> profile image" class="crayons-avatar__image" src="<%= ProfileImage.new(user).get(width: 60) %>" />
                 </a>
