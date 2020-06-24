@@ -11,7 +11,7 @@ class UserSubscriptionTag < LiquidTagBase
       document.getElementById('subscription-signed-out').style.display = 'none';
     }
 
-    function addSignInClickEvent() {
+    function addSignInClickHandler() {
       document.getElementById('sign-in-btn').addEventListener('click', function(e) {
         if (typeof showModal !== "undefined") {
           showModal('email_signup');
@@ -32,20 +32,20 @@ class UserSubscriptionTag < LiquidTagBase
       console.log("SUBSCRIBED");
     }
 
-    function addClickEventListeners() {
-      document.getElementById('subscribe-btn').addEventListener("click", function() {
+    function addConfirmationModalClickHandlers() {
+      document.getElementById('subscribe-btn').addEventListener('click', function(e) {
         showConfirmationModal();
       });
 
-      document.getElementById('cancel-btn').addEventListener("click", function() {
+      document.getElementById('cancel-btn').addEventListener('click', function(e) {
         hideConfirmationModal();
       });
 
-      document.getElementById('close-confirmation-modal').addEventListener("click", function() {
+      document.getElementById('close-confirmation-modal').addEventListener('click', function(e) {
         hideConfirmationModal();
       });
 
-      document.getElementById('confirmation-btn').addEventListener("click", function() {
+      document.getElementById('confirmation-btn').addEventListener('click', function(e) {
         submitSubscription();
       });
     }
@@ -54,7 +54,7 @@ class UserSubscriptionTag < LiquidTagBase
       const articleId = document.getElementById('article-body').dataset.articleId;
 
       const params = new URLSearchParams({
-        source_type: "Article",
+        source_type: 'Article',
         source_id: articleId
       }).toString();
 
@@ -128,14 +128,14 @@ class UserSubscriptionTag < LiquidTagBase
     // The markup defaults to signed out UX
     if (isUserSignedIn()) {
       showSignedIn();
-      addClickEventListeners();
+      addConfirmationModalClickHandlers();
 
       // We need access to some DOM elements (i.e. csrf token, article id, userData, etc.)
       document.addEventListener("DOMContentLoaded", function() {
         checkIfSubscribed();
       });
     } else {
-      addSignInClickEvent();
+      addSignInClickHandler();
     }
   JAVASCRIPT
 
