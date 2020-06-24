@@ -19,7 +19,7 @@ class MarkdownParser
     sanitized_content = sanitize_rendered_markdown(html)
     begin
       parsed_liquid = Liquid::Template.parse(sanitized_content)
-      html = markdown.render(parsed_liquid.render({ source: @source }))
+      html = markdown.render(parsed_liquid.render(source: @source))
     rescue Liquid::SyntaxError => e
       html = e.message
     end
