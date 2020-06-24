@@ -1,4 +1,4 @@
-<nav>
+<nav class="hidden m:block">
   <a class="crayons-link crayons-link--block <%= "crayons-link--current" if params[:action] == "show" && (params[:which] == "organization" || params[:which].blank?) %>" href="/dashboard">
     Posts
     <span class="crayons-indicator"><%= @user.articles_count %></span>
@@ -11,9 +11,25 @@
     Following
     <span class="crayons-indicator"><%= @user.following_users_count + @user.following_tags_count + @user.following_organizations_count + @user.following_podcasts_count %></span>
   </a>
-  <% if @user.has_role? :pro %>
-    <a class="crayons-link crayons-link--block" href="/dashboard/pro">
-      Pro Analytics
+
+  <a class="crayons-link crayons-link--block" href="/listings/dashboard" data-no-instant>
+    Listings
+  </a>
+
+  <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
+    <% if @user.has_role? :pro %>
+      <a class="crayons-link crayons-link--block" href="/dashboard/pro">
+        Pro Analytics
+      </a>
+      <% @organizations.each do |org| %>
+        <a class="crayons-link crayons-link--block" href="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></a>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if current_user.created_at < 2.weeks.ago %>
+    <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="/videos/new" data-no-instant>
+      Upload a video
     </a>
   <% end %>
 </nav>
