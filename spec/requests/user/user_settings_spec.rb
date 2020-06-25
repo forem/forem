@@ -154,6 +154,30 @@ RSpec.describe "UserSettings", type: :request do
 
         expect(response.body).to include("Connect GitHub Account")
       end
+
+      it "does not render 'Connect with Apple' if :auth_apple feature flag is not enabled for the user" do
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user, :with_identity, identities: [:twitter])
+
+        sign_in user
+        get "/settings"
+
+        expect(response.body).not_to include("Connect Apple Account")
+      end
+
+      it "renders 'Connect with Apple' if :auth_apple feature flag is not enabled for the user" do
+        FeatureFlag.enable(:auth_apple, user)
+
+        allow(Authentication::Providers).to receive(:enabled).and_return(Authentication::Providers.available)
+        user = create(:user, :with_identity, identities: [:twitter])
+
+        sign_in user
+        get "/settings"
+
+        expect(response.body).not_to include("Connect Apple Account")
+
+        FeatureFlag.disable(:auth_apple, user)
+      end
     end
 
     describe ":integrations" do
