@@ -1,44 +1,63 @@
 <% title("Dashboard - #{community_name}") %>
 
-<div id="index-container"
+<main id="index-container"
     data-params="<%= params.to_json(only: %i[which per_page]) %>"
     data-which="followers">
-  <div class="dashboard-container crayons-layout" id="user-dashboard">
-    <%= render "actions" %>
-    <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
-      <h1>
-        <a href="/dashboard" class="rounded-btn <%= "active" if params[:which].blank? %>">Personal</a>
-        <% @organizations.each do |org| %>
-          <a href="/dashboard/organization/<%= org.id %>" class="rounded-btn <%= "active" if params[:org_id].to_i == org.id %>"><%= org.name %> (<%= org.articles.size %>)</a>
-        <% end %>
-        <% if @user.has_role? :pro %>
-        <br>
-          <a class="rounded-btn" href="/dashboard/pro">Pro Analytics</a>
-          <% @organizations.each do |org| %>
-            <a class="rounded-btn" href="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></a>
+  <header class="crayons-layout">
+    <h1 class="p-2 pb-0 m:p-0">Dashboard &raquo; Followers</h1>
+    <%= render "actions_mobile" %>
+  </header>
+
+  <div class="crayons-layout crayons-layout--2-cols">
+    <aside class="crayons-layout__sidebar-left">
+      <%= render "actions" %>
+    </aside>
+
+    <div class="crayons-layout__content" id="user-dashboard">
+      <% if @follows.any? %>
+        <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
+          <% @follows.each do |follow| %>
+            <% user = follow.follower %>
+            <% if user %>
+              <div class="crayons-card p-4 m:p-6 flex s:grid single-article" id="follows-<%= follow.id %>">
+                <a href="<%= user.path %>" class="crayons-avatar crayons-avatar--2xl s:mb-2 s:mx-auto">
+                  <img alt="<%= user.username %> profile image" class="crayons-avatar__image" src="<%= ProfileImage.new(user).get(width: 60) %>" />
+                </a>
+
+                <div class="pl-4 s:pl-0 self-center">
+                  <h3 class="s:mb-1 p-0">
+                    <a href="<%= user.path %>">
+                      <%= user.name %>
+                    </a>
+                  </h3>
+
+                  <p class="s:mb-4">
+                    <a href="<%= user.path %>" class="crayons-link crayons-link--secondary">
+                      @<%= user.username %>
+                    </a>
+                  </p>
+                </div>
+              </div>
+            <% end %>
           <% end %>
-        <% end %>
-      </h1>
-    <% end %>
-    <% @follows.each do |follow| %>
-      <% user = follow.follower %>
-      <% if user %>
-        <div id="follows-<%= follow.id %>" class="single-article">
-            <h2>
-              <a href="<%= user.path %>" class="block-link">
-                <img alt="<%= user.username %> profile image" src="<%= ProfileImage.new(user).get(width: 60) %>" />
-                <%= user.name %>
-                <span class="dashboard-username">@<%= user.username %></span>
-              </a>
-              <button class="cta follow-action-button dashboard-follow follow-user"
-                data-info='{"id":<%= user.id %>,"className":"<%= user.class.name %>","style":"follow-back"}'>
-                &nbsp;
-              </button>
-            </h2>
         </div>
+      <% else %>
+        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l">You don't have any followers yet...</div>
       <% end %>
+    </div>
+  <div>
+
+  <div class="dashboard-container crayons-layout" id="user-dashboard">
+
+    <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
+      <select id="dashboard_author" class="crayons-select w-auto ml-2">
+        <option value="/dashboard" <%= "selected" if params[:which].blank? %>>Personal</option>
+        <% @organizations.each do |org| %>
+          <option value="/dashboard/organization/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %> (<%= org.articles.size %>)</option>
+        <% end %>
+      </select>
     <% end %>
 
     <%= render "sublist" %>
   </div>
-</div>
+</main>
