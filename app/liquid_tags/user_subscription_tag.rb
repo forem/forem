@@ -219,7 +219,7 @@ class UserSubscriptionTag < LiquidTagBase
   end
 
   def render(context)
-    source = detect_in_context(:source, context)
+    source = context.registers[:source]
     author = source&.user
     author_profile_image = author&.profile_image_90
     author_username = author&.username
