@@ -55,13 +55,15 @@ describe('<SidebarUser />', () => {
 
   describe('following', () => {
     it('shows if the user is followed', () => {
-      const { getByText } = renderedSideBar({ user: { following: true } });
-      getByText(/Following/i);
+      const { queryByText } = renderedSideBar({ user: { following: true } });
+
+      expect(queryByText(/Following/i)).toBeDefined();
     });
 
     it('shows if the user can be followed', () => {
-      const { getByText } = renderedSideBar({ user: { following: false } });
-      getByText(/follow/i);
+      const { queryByText } = renderedSideBar({ user: { following: false } });
+
+      expect(queryByText(/follow/i)).toBeDefined();
     });
   });
 });

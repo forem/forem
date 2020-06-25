@@ -41,15 +41,15 @@ describe('<ItemListTags />', () => {
   });
 
   it('renders properly with some shared tags', () => {
-    const { getByText } = render(
+    const { queryByText } = render(
       <ItemListTags
         availableTags={['discuss', 'javascript']}
         selectedTags={['javascript']}
       />,
     );
 
-    getByText('#discuss');
-    getByText('#javascript');
+    expect(queryByText('#discuss')).toBeDefined();
+    expect(queryByText('#javascript')).toBeDefined();
   });
 
   it('triggers the onClick', () => {

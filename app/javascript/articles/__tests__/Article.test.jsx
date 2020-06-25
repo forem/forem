@@ -127,7 +127,7 @@ describe('<Article /> component', () => {
   });
 
   it('should render with an organization', () => {
-    const { getByAltText } = render(
+    const { queryByAltText } = render(
       <Article
         {...commonProps}
         isBookmarked={false}
@@ -136,20 +136,20 @@ describe('<Article /> component', () => {
       />,
     );
 
-    getByAltText('Web info-mediaries logo');
-    getByAltText('Emil99 profile');
+    expect(queryByAltText('Web info-mediaries logo')).toBeDefined();
+    expect(queryByAltText('Emil99 profile')).toBeDefined();
   });
 
   it('should render with a flare tag', () => {
-    const { getByText } = render(
+    const { queryByText } = render(
       <Article {...commonProps} isBookmarked={false} article={article} />,
     );
 
-    getByText('#javascript', { selector: 'span' });
+    expect(queryByText('#javascript', { selector: 'span' })).toBeDefined();
   });
 
   it('should render with a snippet result', () => {
-    const { getByText } = render(
+    const { queryByText } = render(
       <Article
         {...commonProps}
         isBookmarked={false}
@@ -157,9 +157,11 @@ describe('<Article /> component', () => {
       />,
     );
 
-    getByText(
-      '…copying Rest withdrawal Handcrafted multi-state Pre-emptive e-markets feed...overriding RSS Fantastic Plastic Gloves invoice productize systemic Monaco…',
-    );
+    expect(
+      queryByText(
+        '…copying Rest withdrawal Handcrafted multi-state Pre-emptive e-markets feed...overriding RSS Fantastic Plastic Gloves invoice productize systemic Monaco…',
+      ),
+    ).toBeDefined();
   });
 
   it('should render with reactions', () => {
