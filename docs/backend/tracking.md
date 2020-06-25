@@ -1,5 +1,5 @@
 ---
-title: Backend Tracking
+title: Tracking
 ---
 
 ## Visits & Events
