@@ -26,7 +26,7 @@ class WikipediaTag < LiquidTagBase
 
   def get_data(input)
     url = ActionController::Base.helpers.strip_tags(input).strip
-    raise StandardError, "Invalid Wikipedia URL" unless valid_url?(url)
+    raise ApplicationError, "Invalid Wikipedia URL" unless valid_url?(url)
 
     uri = URI.parse(url)
     lang = uri.host.split(".", 2).first
@@ -70,7 +70,7 @@ class WikipediaTag < LiquidTagBase
   def handle_response_error(response, input)
     return if response.code == 200
 
-    raise StandardError, "Couldn't find the Wikipedia article - #{input}: #{response['detail']}"
+    raise ApplicationError, "Couldn't find the Wikipedia article - #{input}: #{response['detail']}"
   end
 
   def get_section_contents(response, anchor, input)
@@ -84,7 +84,7 @@ class WikipediaTag < LiquidTagBase
 
     return [text, title] if title.present?
 
-    raise StandardError, "Couldn't find the section of the Wikipedia article - #{input}"
+    raise ApplicationError, "Couldn't find the section of the Wikipedia article - #{input}"
   end
 
   def text_clean_up(text)

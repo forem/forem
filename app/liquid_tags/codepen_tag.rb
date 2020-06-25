@@ -31,7 +31,7 @@ class CodepenTag < LiquidTagBase
 
     # Validation
     validated_options = options.map { |option| valid_option(option) }.reject(&:nil?)
-    raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
+    raise ApplicationError, "Invalid Options" unless options.empty? || !validated_options.empty?
 
     option = validated_options.join("&")
 
@@ -51,7 +51,7 @@ class CodepenTag < LiquidTagBase
   end
 
   def raise_error
-    raise StandardError, "Invalid CodePen URL"
+    raise ApplicationError, "Invalid CodePen URL"
   end
 end
 

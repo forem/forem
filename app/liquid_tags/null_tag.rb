@@ -1,6 +1,6 @@
 class NullTag < Liquid::Block
   def initialize(tag_name, _markup, _options)
-    raise StandardError, "Liquid##{tag_name} tag is disabled"
+    raise ApplicationError, "Liquid##{tag_name} tag is disabled"
   end
 end
 

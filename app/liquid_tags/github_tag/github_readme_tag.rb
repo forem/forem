@@ -51,7 +51,7 @@ class GithubTag
       return if options.all? { |o| VALID_OPTIONS.include?(o) }
 
       message = "GitHub tag: invalid options: #{options - VALID_OPTIONS} - supported options: #{VALID_OPTIONS}"
-      raise StandardError, message
+      raise ApplicationError, message
     end
 
     def show_readme?
@@ -73,7 +73,7 @@ class GithubTag
     end
 
     def raise_error
-      raise StandardError, "Invalid GitHub repository path or URL"
+      raise ApplicationError, "Invalid GitHub repository path or URL"
     end
 
     def clean_relative_path!(readme_html, url)

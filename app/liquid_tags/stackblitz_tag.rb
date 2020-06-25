@@ -32,7 +32,7 @@ class StackblitzTag < LiquidTagBase
 
   def parse_id(input)
     input_no_space = input.split(" ").first
-    raise StandardError, "Invalid Stackblitz Id" unless valid_id?(input_no_space)
+    raise ApplicationError, "Invalid Stackblitz Id" unless valid_id?(input_no_space)
 
     input_no_space
   end
@@ -42,7 +42,7 @@ class StackblitzTag < LiquidTagBase
 
     # Validation
     validated_views = inputs.map { |input_option| validator.call(input_option) }.reject(&:nil?)
-    raise StandardError, "Invalid Options" unless validated_views.length.between?(0, 1)
+    raise ApplicationError, "Invalid Options" unless validated_views.length.between?(0, 1)
 
     validated_views.length.zero? ? "" : validated_views.join("").to_s
   end

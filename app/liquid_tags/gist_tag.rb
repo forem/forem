@@ -33,7 +33,7 @@ class GistTag < LiquidTagBase
     if valid_link?(input_no_space)
       input_no_space
     else
-      raise StandardError,
+      raise ApplicationError,
             "Invalid Gist link: #{link} Links must follow this format: https://gist.github.com/username/gist_id"
     end
   end
@@ -42,7 +42,7 @@ class GistTag < LiquidTagBase
     option_no_space = option.strip
     return "?#{option_no_space}" if valid_option?(option_no_space)
 
-    raise StandardError, "Invalid Filename"
+    raise ApplicationError, "Invalid Filename"
   end
 
   def valid_link?(link)

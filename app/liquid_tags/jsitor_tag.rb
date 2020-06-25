@@ -33,7 +33,7 @@ class JsitorTag < LiquidTagBase
   end
 
   def jsitor_error
-    raise StandardError, "Invalid JSitor link. Please read the editor guide for more information"
+    raise ApplicationError, "Invalid JSitor link. Please read the editor guide for more information"
   end
 end
 

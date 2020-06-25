@@ -31,7 +31,7 @@ class GitPitchTag < LiquidTagBase
   end
 
   def raise_error
-    raise StandardError, "Invalid GitPitch URL"
+    raise ApplicationError, "Invalid GitPitch URL"
   end
 end
 

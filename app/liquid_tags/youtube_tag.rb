@@ -23,7 +23,7 @@ class YoutubeTag < LiquidTagBase
 
   def parse_id(input)
     input_no_space = input.delete(" ")
-    raise StandardError, "Invalid YouTube ID" unless valid_id?(input_no_space)
+    raise ApplicationError, "Invalid YouTube ID" unless valid_id?(input_no_space)
     return translate_start_time(input_no_space) if input_no_space.include?("?t=")
 
     input_no_space

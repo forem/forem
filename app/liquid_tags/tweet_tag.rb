@@ -51,7 +51,7 @@ class TweetTag < LiquidTagBase
 
   def parse_id(input)
     input_no_space = input.delete(" ")
-    raise StandardError, "Invalid Twitter Id" unless valid_id?(input_no_space)
+    raise ApplicationError, "Invalid Twitter Id" unless valid_id?(input_no_space)
 
     input_no_space
   end

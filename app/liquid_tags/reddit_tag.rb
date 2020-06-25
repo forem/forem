@@ -61,7 +61,7 @@ class RedditTag < LiquidTagBase
   def validate_url
     return true if valid_url?(@url.delete(" ")) && (@url =~ URL_REGEXP)&.zero?
 
-    raise StandardError, "Invalid Reddit link: #{@url}"
+    raise ApplicationError, "Invalid Reddit link: #{@url}"
   end
 
   def valid_url?(url)

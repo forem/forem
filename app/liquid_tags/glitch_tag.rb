@@ -29,7 +29,7 @@ class GlitchTag < LiquidTagBase
 
   def parse_id(input)
     id = input.split(" ").first
-    raise StandardError, "Invalid Glitch ID" unless valid_id?(id)
+    raise ApplicationError, "Invalid Glitch ID" unless valid_id?(id)
 
     id
   end
@@ -74,7 +74,7 @@ class GlitchTag < LiquidTagBase
 
     # Validation
     validated_options = options.map { |option| valid_option(option) }.reject(&:nil?)
-    raise StandardError, "Invalid Options" unless options.empty? || !validated_options.empty?
+    raise ApplicationError, "Invalid Options" unless options.empty? || !validated_options.empty?
 
     build_options(options)
   end
