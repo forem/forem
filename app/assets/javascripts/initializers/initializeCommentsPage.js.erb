@@ -14,6 +14,7 @@ class CommentInitializer {
     this.updateReactionCountsAndStuff();
     this.updateReactionCountsAndStuff();
     this.setupCommentReplyButtonHandler(this.commentableId, this.commentableType);
+    this.replaceEditButtonOnClickWithNoop();
 
   }
 
@@ -159,6 +160,17 @@ class CommentInitializer {
       };
     }
   }
+
+  replaceEditButtonOnClickWithNoop() {
+    var editButts = document.getElementsByClassName('edit-butt');
+    for (var i = 0; i < editButts.length; i++) {
+      var butt = editButts[i];
+      butt.onclick = function () {
+        // event.preventDefault();
+        // alert("edit clicked!")
+      };
+    }
+  }
 }
 
 function initializeCommentsPage() {
@@ -170,14 +182,6 @@ function initializeCommentsPage() {
 
     CommentInitializer.call();
 
-    var editButts = document.getElementsByClassName('edit-butt');
-    for (var i = 0; i < editButts.length; i++) {
-      var butt = editButts[i];
-      butt.onclick = function () {
-        // event.preventDefault();
-        // alert("edit clicked!")
-      };
-    }
     if (document.getElementById('new_comment')) {
       document.getElementById('new_comment').addEventListener('submit', handleCommentSubmit);
     }
