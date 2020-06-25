@@ -27,42 +27,45 @@ describe('<ListingFilterTags />', () => {
 
   describe('should render a search field', () => {
     it('should have "search" as placeholder', () => {
-      const { getByPlaceholderText } = renderListingFilterTags();
-      getByPlaceholderText(/search/i);
+      const { queryByPlaceholderText } = renderListingFilterTags();
+
+      expect(queryByPlaceholderText(/search/i)).toBeDefined();
     });
 
     it(`should have "${getProps().message}" as default value`, () => {
-      const { getByDisplayValue } = renderListingFilterTags();
-      getByDisplayValue(getProps().message);
+      const { queryByDisplayValue } = renderListingFilterTags();
+
+      expect(queryByDisplayValue(getProps().message)).toBeDefined();
     });
 
     it('should have auto-complete as off', () => {
       const { getByPlaceholderText } = renderListingFilterTags();
       const input = getByPlaceholderText(/search/i);
+
       expect(input.getAttribute('autoComplete')).toBe('off');
     });
   });
 
   describe('<ClearQueryButton />', () => {
     it('should render the clear query button', () => {
-      const { getByTestId } = renderListingFilterTags();
-      getByTestId('clear-query-button');
+      const { queryByTestId } = renderListingFilterTags();
+
+      expect(queryByTestId('clear-query-button')).toBeDefined();
     });
 
     it('should not render the clear query button', () => {
       const propsWithoutQuery = { ...getProps(), query: '' };
-      const { queryByTestId } = renderListingFilterTags(
-        propsWithoutQuery,
-      );
+      const { queryByTestId } = renderListingFilterTags(propsWithoutQuery);
       expect(queryByTestId('clear-query-button')).toBeNull();
     });
   });
 
   describe('<SelectedTags />', () => {
     it('should render the selected Tags', () => {
-      const { getByText } = renderListingFilterTags();
+      const { queryByText } = renderListingFilterTags();
+
       getTags().forEach((tag) => {
-        getByText(`${tag}`);
+        expect(queryByText(`${tag}`)).toBeDefined();
       });
     });
   });

@@ -25,17 +25,24 @@ const getProps = () => ({
   currentUserId: 1,
   message: 'Something',
   onChangeDraftingMessage: jest.fn(),
-  onSubmit: jest.fn()
+  onSubmit: jest.fn(),
 });
 
-const renderMessageModal = (listing) => render(
-  <MessageModal {...getProps()} listing={listing} />
-);
+const renderMessageModal = (listing) =>
+  render(<MessageModal {...getProps()} listing={listing} />);
 
 describe('<MessageModal />', () => {
+  it('should have no a11y violations', async () => {
+    const { container } = render(renderMessageModal(getDefaultListing()));
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
   it('should render a text-area', () => {
-    const { getByTestId } = renderMessageModal(getDefaultListing());
-    getByTestId('listing-new-message');
+    const { queryByTestId } = renderMessageModal(getDefaultListing());
+
+    expect(queryByTestId('listing-new-message')).toBeDefined();
   });
 
   describe('When the current user is the author', () => {
@@ -45,13 +52,20 @@ describe('<MessageModal />', () => {
     };
 
     it('should show the information about contact with the current user', () => {
-      const { getByText } = renderMessageModal(listingWithCurrentUserId);
-      getByText('This is your active listing. Any member can contact you via this form.')
+      const { queryByText } = renderMessageModal(listingWithCurrentUserId);
+
+      expect(
+        queryByText(
+          'This is your active listing. Any member can contact you via this form.',
+        ),
+      ).toBeDefined();
     });
 
     it('should show the personalized message about the interactions', () => {
       const { getByTestId } = renderMessageModal(listingWithCurrentUserId);
-      expect(getByTestId('personal-message-about-interactions').textContent).toEqual('All private interactions must abide by the code of conduct')
+      expect(
+        getByTestId('personal-message-about-interactions').textContent,
+      ).toEqual('All private interactions must abide by the code of conduct');
     });
   });
 
@@ -62,15 +76,25 @@ describe('<MessageModal />', () => {
     };
 
     it('should show the message to contact the author', () => {
-      const { getByText } = renderMessageModal(listingWithDifferentCurrentUserId);
+      const { queryByText } = renderMessageModal(
+        listingWithDifferentCurrentUserId,
+      );
 
-      getByText(`Contact ${listingWithDifferentCurrentUserId.author.name} via DEV Connect`);
+      expect(
+        queryByText(
+          `Contact ${listingWithDifferentCurrentUserId.author.name} via DEV Connect`,
+        ),
+      ).toBeDefined();
     });
 
     it('should show a generic message about the interactions', () => {
-      const { getByTestId } = renderMessageModal(listingWithDifferentCurrentUserId);
-      expect(getByTestId('generic-message-about-interactions').textContent).toEqual(
-        'Message must be relevant and on-topic with the listing. All private interactions must abide by the code of conduct'
+      const { getByTestId } = renderMessageModal(
+        listingWithDifferentCurrentUserId,
+      );
+      expect(
+        getByTestId('generic-message-about-interactions').textContent,
+      ).toEqual(
+        'Message must be relevant and on-topic with the listing. All private interactions must abide by the code of conduct',
       );
     });
   });
