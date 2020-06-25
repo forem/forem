@@ -298,6 +298,8 @@
     width: calc(100% - 16px);
     position: fixed;
     height: calc(100% - 86px);
+    margin-left: 0;
+    margin-top: 0;
   }
 
   @media screen and (min-width: 1000px) {
@@ -629,7 +631,7 @@
 
   .crayons-indicator {
     vertical-align: -1px;
-  margin-right: var(--su-1);
+    margin-right: var(--su-1);
   }
 }
 
