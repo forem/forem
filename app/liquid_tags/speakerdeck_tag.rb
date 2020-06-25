@@ -1,7 +1,7 @@
 class SpeakerdeckTag < LiquidTagBase
   PARTIAL = "liquids/speakerdeck".freeze
 
-  def initialize(tag_name, id, tokens)
+  def initialize(tag_name, id, parsed_context)
     super
     @id = parse_id(id)
   end

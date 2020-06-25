@@ -95,7 +95,7 @@ class PollTag < LiquidTagBase
     }
   JAVASCRIPT
 
-  def initialize(_tag_name, id_code, _tokens)
+  def initialize(_tag_name, id_code, _parsed_context)
     @poll = Poll.find(id_code)
   end
 

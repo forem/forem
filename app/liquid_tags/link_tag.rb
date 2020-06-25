@@ -2,7 +2,7 @@ class LinkTag < LiquidTagBase
   include ActionView::Helpers
   PARTIAL = "articles/liquid".freeze
 
-  def initialize(_tag_name, slug_or_path_or_url, _tokens)
+  def initialize(_tag_name, slug_or_path_or_url, _parsed_context)
     @article = get_article(slug_or_path_or_url)
     @title = @article.title if @article
   end
