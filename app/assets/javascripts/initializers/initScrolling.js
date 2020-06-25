@@ -54,7 +54,7 @@ function insertNext(params, buildCallback) {
     });
 
     var followList = document.getElementById('following-wrapper');
-    followList.innerHTML = followList.innerHTML + newFollowersHTML;
+    followList.insertAdjacentHTML('beforeend', newFollowersHTML);
     if (nextPage > 0) {
       fetching = false;
     }
