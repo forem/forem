@@ -90,7 +90,7 @@ class SiteConfig < RailsSettings::Base
   field :onboarding_logo_image, type: :string
   field :onboarding_background_image, type: :string
   field :onboarding_taskcard_image, type: :string
-  field :suggested_tags, type: :array, default: %w[beginners]
+  field :suggested_tags, type: :array
   field :suggested_users, type: :array
 
   # Rate limits
