@@ -8,8 +8,8 @@
     <option value="/dashboard/following_podcasts" <%= "selected" if params[:action] == "following_podcasts" %>>Following podcasts (<%= @user.following_podcasts_count %>)</option>
 
     <option value="/listings/dashboard">Listings</option>
-    <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
-      <% if @user.has_role? :pro %>
+    <% if @user.has_role? :pro %>
+      <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
         <option value="/dashboard/pro">Pro Analytics</option>
         <% @organizations.each do |org| %>
           <option value="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></option>

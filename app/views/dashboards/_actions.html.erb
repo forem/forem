@@ -34,8 +34,8 @@
     <%= inline_svg_tag("external-link.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
   </a>
 
-  <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
-    <% if @user.has_role? :pro %>
+  <% if @user.has_role? :pro %>
+    <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
       <a class="crayons-link crayons-link--block" href="/dashboard/pro">
         Pro Analytics
       </a>
