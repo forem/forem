@@ -22,18 +22,18 @@ class LiquidTagBase < Liquid::Tag
   private
 
   def validate_contexts(source)
-    raise LiquidTags::Errors::InvalidParseContext, "No source found" unless source
+    raise LiquidTags::Errors::InvalidParsedContext, "No source found" unless source
 
     is_valid_source = self.class::VALID_CONTEXTS.include? source.class_name
     invalid_source_error_msg = "Invalid context. This liquid tag can only be used in #{self.class::VALID_CONTEXTS.join(', ')}."
 
-    raise LiquidTags::Errors::InvalidParseContext, invalid_source_error_msg unless is_valid_source
+    raise LiquidTags::Errors::InvalidParsedContext, invalid_source_error_msg unless is_valid_source
   end
 
   def validate_user_permissions(user)
-    raise LiquidTags::Errors::InvalidParseContext, "No user found" unless user
+    raise LiquidTags::Errors::InvalidParsedContext, "No user found" unless user
 
-    raise LiquidTags::Errors::InvalidParseContext, "User is not permitted to use this liquid tag" unless user_permitted_to_use_liquid_tag?(user)
+    raise LiquidTags::Errors::InvalidParsedContext, "User is not permitted to use this liquid tag" unless user_permitted_to_use_liquid_tag?(user)
   end
 
   def user_permitted_to_use_liquid_tag?(user)
