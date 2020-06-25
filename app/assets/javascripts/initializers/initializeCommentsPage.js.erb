@@ -3,12 +3,6 @@ class CommentInitializer {
     new CommentInitializer().call()
   }
 
-  constructor() {
-    this.commentableId = document.getElementById('comments-container').dataset.commentableId;
-    this.commentableType = document.getElementById('comments-container').dataset.commentableType;
-    this.commentableIdList = this.commentableId.split(",");
-  }
-
   call() {
     if (!this.areCommentsPossibleOnPage()) {
       this.listenForDetailsToggle();
@@ -16,13 +10,19 @@ class CommentInitializer {
     }
 
     this.toggleCodeOfConduct();
+    this.fetchCommentDataFromDOM();
     this.updateAllCommentableButtonsAndReactionCountsAndStuff(this.commentableType, this.commentableIdList);
     this.updateReactionCountsAndStuff();
     this.updateReactionCountsAndStuff();
     this.setupCommentReplyButtonHandler(this.commentableId, this.commentableType);
     this.replaceEditButtonOnClickWithNoop();
     this.addNewCommentSubmitListener();
+  }
 
+  fetchCommentDataFromDOM() {
+    this.commentableId = document.getElementById('comments-container').dataset.commentableId;
+    this.commentableType = document.getElementById('comments-container').dataset.commentableType;
+    this.commentableIdList = this.commentableId.split(",");
   }
 
   areCommentsPossibleOnPage() {
