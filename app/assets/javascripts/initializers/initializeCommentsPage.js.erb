@@ -1,4 +1,8 @@
 class CommentInitializer {
+  static call() {
+    new CommentInitializer().call()
+  }
+
   constructor() {
     this.commentableId = document.getElementById('comments-container').dataset.commentableId;
     this.commentableType = document.getElementById('comments-container').dataset.commentableType;
@@ -164,7 +168,7 @@ function initializeCommentsPage() {
     var commentableType = document.getElementById('comments-container').dataset.commentableType;
     commentableIdList = commentableId.split(",");
 
-    new CommentInitializer().call();
+    CommentInitializer.call();
 
     var editButts = document.getElementsByClassName('edit-butt');
     for (var i = 0; i < editButts.length; i++) {
