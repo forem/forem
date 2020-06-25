@@ -28,6 +28,7 @@ class UserSubscriptionsController < ApplicationController
     end
 
     return error_response("subscriber email mismatch") if subscriber_email_stale?
+    return error_response("cannot subscribe with Apple private relay email") if subscriber_authed_with_apple?
 
     @user_subscription = user_subscription_source.build_user_subscription(current_user)
 
@@ -40,6 +41,10 @@ class UserSubscriptionsController < ApplicationController
   end
 
   private
+
+  def subscriber_authed_with_apple?
+    current_user.email.end_with?("@privaterelay.appleid.com")
+  end
 
   def user_subscription_tag_enabled?(source_type, user_subscription_source)
     liquid_tags =
