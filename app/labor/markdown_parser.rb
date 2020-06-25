@@ -4,7 +4,7 @@ class MarkdownParser
 
   WORDS_READ_PER_MINUTE = 275.0
 
-  def initialize(content, source: {}, user: nil)
+  def initialize(content, source: nil, user: nil)
     @content = content
     @source = source
     @user = user
