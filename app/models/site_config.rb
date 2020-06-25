@@ -27,7 +27,6 @@ class SiteConfig < RailsSettings::Base
 
   # Community Content
   field :community_description, type: :string
-  field :community_member_description, type: :string
   field :community_member_label, type: :string, default: "user"
   field :community_action, type: :string
   field :tagline, type: :string

@@ -89,7 +89,6 @@ class Internal::ConfigsController < Internal::ApplicationController
   def community_params
     %i[
       community_description
-      community_member_description
       community_member_label
       community_action
       tagline
