@@ -3,8 +3,8 @@ import { render, waitForElement } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
-import FollowUsers from '../FollowUsers';
 import { axe } from 'jest-axe';
+import FollowUsers from '../FollowUsers';
 
 global.fetch = fetch;
 
@@ -81,20 +81,22 @@ describe('FollowUsers', () => {
   });
 
   it('should render the correct navigation button on first load', () => {
-    const { getByText } = renderFollowUsers();
-    getByText(/skip for now/i);
+    const { queryByText } = renderFollowUsers();
+
+    expect(queryByText(/skip for now/i)).toBeDefined();
   });
 
   it('should update the navigation button text and follow status when you follow users', async () => {
     fetch.mockResponse(fakeUsersResponse);
-    const { getByText, findByText, findAllByTestId } = renderFollowUsers();
+
+    const { queryByText, findByText, findAllByTestId } = renderFollowUsers();
 
     const userButtons = await waitForElement(() =>
       findAllByTestId('onboarding-user-button'),
     );
 
-    getByText(/skip for now/i);
-    getByText("You're not following anyone");
+    expect(queryByText(/skip for now/i)).toBeDefined();
+    expect(queryByText("You're not following anyone")).toBeDefined();
 
     // follow the first user
     const firstUser = userButtons[0];
@@ -102,8 +104,8 @@ describe('FollowUsers', () => {
 
     await waitForElement(() => findByText('Following'));
 
-    getByText("You're following 1 person");
-    getByText(/continue/i);
+    expect(queryByText("You're following 1 person")).toBeDefined();
+    expect(queryByText(/continue/i)).toBeDefined();
 
     // follow the second user
     const secondUser = userButtons[1];
@@ -111,8 +113,8 @@ describe('FollowUsers', () => {
 
     await waitForElement(() => findByText('Following'));
 
-    getByText("You're following 2 people");
-    getByText(/continue/i);
+    expect(queryByText("You're following 2 people")).toBeDefined();
+    expect(queryByText(/continue/i)).toBeDefined();
   });
 
   it('should have a functioning de/select all toggle', async () => {
@@ -144,12 +146,14 @@ describe('FollowUsers', () => {
   });
 
   it('should render a stepper', () => {
-    const { getByTestId } = renderFollowUsers();
-    getByTestId('stepper');
+    const { queryByTestId } = renderFollowUsers();
+
+    expect(queryByTestId('stepper')).toBeDefined();
   });
 
   it('should render a back button', () => {
-    const { getByTestId } = renderFollowUsers();
-    getByTestId('back-button');
+    const { queryByTestId } = renderFollowUsers();
+
+    expect(queryByTestId('back-button')).toBeDefined();
   });
 });

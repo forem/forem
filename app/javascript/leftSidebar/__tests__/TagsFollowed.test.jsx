@@ -46,10 +46,10 @@ describe('<TagsFollowed />', () => {
   });
 
   it('should render the tags followed when tags are passed in', () => {
-    const { getByTitle } = render(<TagsFollowed tags={getTags()} />);
+    const { queryByTitle } = render(<TagsFollowed tags={getTags()} />);
 
-    getByTitle('javascript tag');
-    getByTitle('webdev tag');
-    getByTitle('react tag');
+    expect(queryByTitle('javascript tag')).toBeDefined();
+    expect(queryByTitle('webdev tag')).toBeDefined();
+    expect(queryByTitle('react tag')).toBeDefined();
   });
 });

@@ -1,8 +1,8 @@
 import { h } from 'preact';
 import { render, fireEvent, waitForElement } from '@testing-library/preact';
 import { axe } from 'jest-axe';
-import { ImageUploader } from '../ImageUploader';
 import fetch from 'jest-fetch-mock';
+import { ImageUploader } from '../ImageUploader';
 import '@testing-library/jest-dom';
 
 global.fetch = fetch;

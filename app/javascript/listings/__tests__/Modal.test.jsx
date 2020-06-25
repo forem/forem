@@ -59,8 +59,9 @@ describe('<Modal />', () => {
       ...getDefaultListing(),
       contact_via_connect: true,
     };
-    const { getByTestId } = renderModal(listingWithContactViaConnectTrue);
-    getByTestId('listings-message-modal');
+    const { queryByTestId } = renderModal(listingWithContactViaConnectTrue);
+
+    expect(queryByTestId('listings-message-modal')).toBeDefined();
   });
 
   it('should not render the MessageModal when the listing.contact_via_connect is false', () => {

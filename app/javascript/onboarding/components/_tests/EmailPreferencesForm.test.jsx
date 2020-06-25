@@ -47,31 +47,37 @@ describe('EmailPreferencesForm', () => {
   });
 
   it('should load the appropriate text', () => {
-    const { getByText } = renderEmailPreferencesForm();
+    const { queryByText } = renderEmailPreferencesForm();
 
-    getByText(/almost there!/i);
-    getByText(/review your email preferences before we continue./i);
-    getByText('Email preferences');
+    expect(queryByText(/almost there!/i)).toBeDefined();
+    expect(
+      queryByText(/review your email preferences before we continue./i),
+    ).toBeDefined();
+    expect(queryByText('Email preferences')).toBeDefined();
   });
 
   it('should show the two checkboxes', () => {
-    const { getByLabelText } = renderEmailPreferencesForm();
-    getByLabelText(/receive weekly newsletter/i);
-    getByLabelText(/receive a periodic digest/i);
+    const { queryByLabelText } = renderEmailPreferencesForm();
+
+    expect(queryByLabelText(/receive weekly newsletter/i)).toBeDefined();
+    expect(queryByLabelText(/receive a periodic digest/i)).toBeDefined();
   });
 
   it('should render a stepper', () => {
     const { queryByTestId } = renderEmailPreferencesForm();
-    queryByTestId('stepper');
+
+    expect(queryByTestId('stepper')).toBeDefined();
   });
 
   it('should render a back button', () => {
-    const { getByTestId } = renderEmailPreferencesForm();
-    getByTestId('back-button');
+    const { queryByTestId } = renderEmailPreferencesForm();
+
+    expect(queryByTestId('back-button')).toBeDefined();
   });
 
   it('should render a button that says Finish', () => {
-    const { getByText } = renderEmailPreferencesForm();
-    getByText('Finish');
+    const { queryByText } = renderEmailPreferencesForm();
+
+    expect(queryByText('Finish')).toBeDefined();
   });
 });
