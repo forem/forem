@@ -105,6 +105,11 @@ describe('<ArticleCoverImage />', () => {
       />,
     );
     const inputEl = getByLabelText('Change');
+
+    // Check the input validation settings
+    expect(inputEl.getAttribute('accept')).toEqual('image/*');
+    expect(Number(inputEl.dataset.maxFileSizeMb)).toEqual(25);
+
     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
       type: 'image/png',
     });

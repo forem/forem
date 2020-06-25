@@ -23,8 +23,8 @@ describe('<Article />', () => {
   });
 
   it('should render', async () => {
-    const { getByTitle } = render(<Article resource={getArticle()} />);
+    const { queryByTitle } = render(<Article resource={getArticle()} />);
 
-    getByTitle('Your approval means nothing to me');
+    expect(queryByTitle('Your approval means nothing to me')).toBeDefined();
   });
 });

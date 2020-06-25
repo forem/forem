@@ -54,7 +54,7 @@ describe('<Article /> component', () => {
   });
 
   it('should render a standard article', () => {
-    const { getByTestId, getByAltText } = render(
+    const { queryByTestId, queryByAltText } = render(
       <Article
         {...commonProps}
         isBookmarked={false}
@@ -63,12 +63,12 @@ describe('<Article /> component', () => {
       />,
     );
 
-    getByTestId('article-62407');
-    getByAltText('Emil99 profile');
+    expect(queryByTestId('article-62407')).toBeDefined();
+    expect(queryByAltText('Emil99 profile')).toBeDefined();
   });
 
   it('should render a featured article', () => {
-    const { getByTestId, getByAltText } = render(
+    const { queryByTestId, queryByAltText } = render(
       <Article
         {...commonProps}
         isBookmarked={false}
@@ -78,8 +78,8 @@ describe('<Article /> component', () => {
       />,
     );
 
-    getByTestId('featured-article');
-    getByAltText('Emil99 profile');
+    expect(queryByTestId('featured-article')).toBeDefined();
+    expect(queryByAltText('Emil99 profile')).toBeDefined();
   });
 
   it('should render a rich feed', () => {
@@ -97,7 +97,7 @@ describe('<Article /> component', () => {
   });
 
   it('should render a featured article for an organization', () => {
-    const { getByTestId, getByAltText } = render(
+    const { queryByTestId, queryByAltText } = render(
       <Article
         {...commonProps}
         isBookmarked={false}
@@ -107,13 +107,13 @@ describe('<Article /> component', () => {
       />,
     );
 
-    getByTestId('featured-article');
-    getByAltText('Web info-mediaries logo');
-    getByAltText('Emil99 profile');
+    expect(queryByTestId('featured-article')).toBeDefined();
+    expect(queryByAltText('Web info-mediaries logo')).toBeDefined();
+    expect(queryByAltText('Emil99 profile')).toBeDefined();
   });
 
   it('should render a featured article for a video post', () => {
-    const { getByTitle } = render(
+    const { queryByTitle } = render(
       <Article
         {...commonProps}
         isBookmarked={false}
@@ -123,7 +123,7 @@ describe('<Article /> component', () => {
       />,
     );
 
-    getByTitle(/video duration/i);
+    expect(queryByTitle(/video duration/i)).toBeDefined();
   });
 
   it('should render with an organization', () => {
@@ -191,31 +191,31 @@ describe('<Article /> component', () => {
   });
 
   it('should render with an add comment button when there are no comments', () => {
-    const { getByTestId } = render(
+    const { queryByTestId } = render(
       <Article {...commonProps} isBookmarked={false} article={article} />,
     );
 
-    getByTestId('add-a-comment');
+    expect(queryByTestId('add-a-comment')).toBeDefined();
   });
 
   it('should render as saved on reading list', () => {
-    const { getByText } = render(
+    const { queryByText } = render(
       <Article {...commonProps} isBookmarked article={articleWithComments} />,
     );
 
-    getByText('Saved', { selector: 'button' });
+    expect(queryByText('Saved', { selector: 'button' })).toBeDefined();
   });
 
   it('should render as not saved on reading list', () => {
-    const { getByText } = render(
+    const { queryByText } = render(
       <Article {...commonProps} isBookmarked={false} article={article} />,
     );
 
-    getByText('Save', { selector: 'button' });
+    expect(queryByText('Save', { selector: 'button' })).toBeDefined();
   });
 
   it('should render a video article', () => {
-    const { getByTitle } = render(
+    const { queryByTitle } = render(
       <Article
         {...commonProps}
         isBookmarked={false}
@@ -224,11 +224,11 @@ describe('<Article /> component', () => {
       />,
     );
 
-    getByTitle(/video duration/i);
+    expect(queryByTitle(/video duration/i)).toBeDefined();
   });
 
   it('should render a podcast article', () => {
-    const { getByAltText, getByText } = render(
+    const { queryByAltText, queryByText } = render(
       <Article
         {...commonProps}
         isBookmarked={false}
@@ -236,21 +236,21 @@ describe('<Article /> component', () => {
       />,
     );
 
-    getByAltText('Rubber local');
-    getByText('podcast', { selector: 'span' });
+    expect(queryByAltText('Rubber local')).toBeDefined();
+    expect(queryByText('podcast', { selector: 'span' })).toBeDefined();
   });
 
   it('should render a podcast episode', () => {
-    const { getByText } = render(
+    const { queryByText } = render(
       <Article isBookmarked={false} article={podcastEpisodeArticle} />,
     );
 
-    getByText('podcast', { selector: 'span' });
+    expect(queryByText('podcast', { selector: 'span' })).toBeDefined();
   });
 
   it('should render a user article', () => {
-    const { getByText } = render(<Article article={userArticle} />);
+    const { queryByText } = render(<Article article={userArticle} />);
 
-    getByText('person', { selector: 'span' });
+    expect(queryByText('person', { selector: 'span' })).toBeDefined();
   });
 });
