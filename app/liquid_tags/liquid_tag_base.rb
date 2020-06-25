@@ -5,7 +5,7 @@ class LiquidTagBase < Liquid::Tag
 
   def validate_data(parsed_context)
     validate_contexts(parsed_context) if context_restricted?
-    validate_user_permissions(parsed_context) if role_restricted?
+    validate_user_roles(parsed_context) if role_restricted?
   end
 
   def finalize_html(input)
@@ -35,7 +35,7 @@ class LiquidTagBase < Liquid::Tag
     raise LiquidTags::Errors::InvalidParsedContext, invalid_source_error_msg unless is_valid_source
   end
 
-  def validate_user_permissions(parsed_context)
+  def validate_user_roles(parsed_context)
     user = parsed_context.partial_options[:user]
     raise LiquidTags::Errors::InvalidParsedContext, "No user found" unless user
     raise LiquidTags::Errors::InvalidParsedContext, "User is not permitted to use this liquid tag" unless user_permitted_to_use_liquid_tag?(user)
