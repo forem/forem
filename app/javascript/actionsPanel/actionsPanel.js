@@ -159,13 +159,13 @@ function renderTagOnArticle(tagName, colors) {
       .getElementById('quick-mod-article')
       .contentDocument.getElementsByClassName('tags');
   } else {
-    [articleTagsContainer] = top.document.getElementsByClassName('tags');
+    [articleTagsContainer] = top.document.getElementsByClassName('spec__tags');
   }
   /* eslint-enable no-restricted-globals */
 
   const newTag = document.createElement('a');
   newTag.innerText = `#${tagName}`;
-  newTag.setAttribute('class', 'tag');
+  newTag.setAttribute('class', 'crayons-tag mr-1');
   newTag.setAttribute('href', `/t/${tagName}`);
   newTag.style = `background-color: ${colors.bg}; color: ${colors.text};`;
 
@@ -213,7 +213,7 @@ async function adjustTag(el) {
       } else {
         // eslint-disable-next-line no-restricted-globals
         const tagOnArticle = top.document.querySelector(
-          `.tag[href="/t/${adjustedTagName}"]`,
+          `.crayons-tag[href="/t/${adjustedTagName}"]`,
         );
         tagOnArticle.remove();
       }

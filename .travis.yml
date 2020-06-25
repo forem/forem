@@ -35,7 +35,6 @@ env:
     - GITHUB_SECRET=dummy
     - KNAPSACK_PRO_FIXED_QUEUE_SPLIT=true
     - KNAPSACK_PRO_LOG_LEVEL=info
-    - KNAPSACK_PRO_TEST_FILE_EXCLUDE_PATTERN="spec/services/rss_reader_spec.rb"
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     - COVERAGE_REPORTS_TOTAL=4
   jobs:
@@ -72,7 +71,6 @@ script:
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then bundle exec bundle-audit check --update --ignore CVE-2015-9284; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "1" ]; then yarn build-storybook; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bundle exec rails runner -e production 'puts "App booted successfully"'; fi
-  - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "2" ]; then bundle exec rspec spec/services/rss_reader_spec.rb; fi
 after_script:
   - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./coverage/spec/.resultset.json
   - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
