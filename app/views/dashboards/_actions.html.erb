@@ -35,13 +35,14 @@
   </a>
 
   <% if @user.has_role? :pro %>
-    <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
-      <a class="crayons-link crayons-link--block" href="/dashboard/pro">
-        Pro Analytics
-      </a>
-      <% @organizations.each do |org| %>
-        <a class="crayons-link crayons-link--block" href="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></a>
-      <% end %>
+    <a class="crayons-link crayons-link--block" href="/dashboard/pro">
+      Pro Analytics
+    </a>
+  <% end %>
+
+  <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
+    <% @organizations.each do |org| %>
+      <a class="crayons-link crayons-link--block" href="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></a>
     <% end %>
   <% end %>
 

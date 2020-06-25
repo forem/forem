@@ -9,13 +9,15 @@
 
     <option value="/listings/dashboard">Listings</option>
     <% if @user.has_role? :pro %>
-      <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
-        <option value="/dashboard/pro">Pro Analytics</option>
-        <% @organizations.each do |org| %>
-          <option value="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></option>
-        <% end %>
+      <option value="/dashboard/pro">Pro Analytics</option>
+    <% end %>
+
+    <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
+      <% @organizations.each do |org| %>
+        <option value="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></option>
       <% end %>
     <% end %>
+
     <% if current_user.created_at < 2.weeks.ago %>
       <option value="/videos/new">Upload a video</option>
     <% end %>
