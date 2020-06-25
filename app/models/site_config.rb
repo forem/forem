@@ -91,7 +91,7 @@ class SiteConfig < RailsSettings::Base
   field :onboarding_background_image, type: :string
   field :onboarding_taskcard_image, type: :string
   field :suggested_tags, type: :array, default: %w[beginners]
-  field :suggested_users, type: :array, default: %w[ben jess peter maestromac andy liana]
+  field :suggested_users, type: :array
 
   # Rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
