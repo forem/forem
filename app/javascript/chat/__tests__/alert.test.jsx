@@ -12,9 +12,9 @@ describe('<Alert />', () => {
   });
 
   it('should render an alert', () => {
-    const { getByRole } = render(<Alert showAlert />);
+    const { queryByRole } = render(<Alert showAlert />);
 
-    getByRole('alert');
+    expect(queryByRole('alert')).toBeDefined();
   });
 
   it('should not render an alert', () => {
