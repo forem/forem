@@ -14,7 +14,9 @@ module.exports = new Promise((resolve, reject) => {
 function fetchAppDomain() {
   const { execSync } = require('child_process');
 
-  return execSync('rails runner 'puts ApplicationConfig.app_domain_no_port'').toString().replace(/\s/g, '');
+  const appDomainGetCmd =
+    'rails runner "puts ApplicationConfig.app_domain_no_port"';
+  return execSync(appDomainGetCmd).toString().replace(/\s/g, '');
 }
 
 function setupHost(config) {
