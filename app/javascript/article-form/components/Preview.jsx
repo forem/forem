@@ -35,13 +35,16 @@ function titleArea(previewResponse, articleState, errors) {
   return (
     <header className="crayons-article__header">
       {coverImage.length > 0 && (
-        <div data-testid="article-form__cover" className="crayons-article__cover">
+        <div
+          data-testid="article-form__cover"
+          className="crayons-article__cover"
+        >
           <img
             className="crayons-article__cover__image"
             src={coverImage}
             width="1000"
             height="420"
-            alt=""
+            alt="Post preview cover"
           />
         </div>
       )}

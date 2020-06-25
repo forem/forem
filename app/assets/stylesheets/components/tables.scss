@@ -13,7 +13,8 @@
   -webkit-border-horizontal-spacing: 0;
   -webkit-border-vertical-spacing: 0;
 
-  td, th {
+  td,
+  th {
     padding: var(--su-2);
 
     @media (min-width: $breakpoint-m) {
@@ -27,6 +28,11 @@
 
   td {
     transition: background var(--transition-props);
+    border-bottom: 1px solid var(--body-bg);
+  }
+
+  thead {
+    border-radius: var(--radius) var(--radius) 0 0;
   }
 
   th {
@@ -34,6 +40,14 @@
     font-weight: var(--fw-medium);
     text-transform: uppercase;
     color: var(--base-60);
+
+    &:first-child {
+      border-radius: var(--radius) 0 0 0;
+    }
+
+    &:last-child {
+      border-radius: 0 var(--radius) 0 0;
+    }
   }
 
   tbody {
@@ -49,6 +63,10 @@
       }
 
       &:last-child {
+        td {
+          border-bottom: none;
+        }
+
         td:first-child {
           border-radius: 0 0 0 var(--radius);
         }
@@ -73,12 +91,6 @@
           background: var(--card-secondary-bg);
         }
       }
-    }
-    
-    tr:not(:last-child) {
-      td {
-        border-bottom: 1px solid var(--body-bg);
-      } 
     }
   }
 }

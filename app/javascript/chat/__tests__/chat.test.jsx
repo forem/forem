@@ -209,18 +209,25 @@ describe('<Chat />', () => {
 
   it('should collapse and expand chat channels properly', async () => {
     fetch.mockResponse(getMockResponse());
-    const { getByText, getByLabelText } = render(<Chat {...getRootData()} />);
+    const { queryByText } = render(
+      <Chat {...getRootData()} />,
+    );
 
     // // chat channels
-    getByLabelText('Toggle channel search');
-    getByText('all', {
-      selector: 'button',
-    });
-    getByText('direct', {
-      selector: 'button',
-    });
-    getByText('group', {
-      selector: 'button',
-    });
+    expect(
+      queryByText('all', {
+        selector: 'button',
+      }),
+    ).toBeDefined();
+    expect(
+      queryByText('direct', {
+        selector: 'button',
+      }),
+    ).toBeDefined();
+    expect(
+      queryByText('group', {
+        selector: 'button',
+      }),
+    ).toBeDefined();
   });
 });

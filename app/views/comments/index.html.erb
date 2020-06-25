@@ -84,7 +84,7 @@
         <% unless @root_comment.is_root? %>
           <a href="<%= @root_comment.root.path %>">TOP OF THREAD</a>
         <% end %>
-        <a href="<%= @commentable.path %>/comments">FULL DISCUSSION</a>
+        <a href="<%= @commentable.path %><%= user_signed_in? ? "/" : "#" %>comments">FULL DISCUSSION</a>
       </span>
     </div>
   <% else %>

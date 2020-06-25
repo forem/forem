@@ -21,4 +21,8 @@
   &[href]:hover {
     color: var(--tag-color-hover);
   }
+
+  &--l {
+    font-size: var(--fs-l);
+  }
 }

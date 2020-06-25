@@ -16,11 +16,15 @@ describe('<ContactViaConnect />', () => {
 
   it('should render a checked check box opting in to open DMs', () => {
     const onChange = jest.fn();
-    const { getByLabelText } = render(
+    const { queryByLabelText } = render(
       <ContactViaConnect onChange={onChange} checked />,
     );
 
-    getByLabelText('Allow Users to Message Me Via In-App Chat (DEV Connect)');
+    expect(
+      queryByLabelText(
+        'Allow Users to Message Me Via In-App Chat (DEV Connect)',
+      ),
+    ).toBeDefined();
   });
 
   it('should fire a change event when clicking the checkbox', () => {

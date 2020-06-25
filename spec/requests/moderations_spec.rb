@@ -61,14 +61,14 @@ RSpec.describe "Moderations", type: :request do
     it "grants access to /mod index with articles" do
       article = create(:article, published: true)
       get "/mod"
-      expect(response.body).to include(article.title)
+      expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
     it "grants access to /mod/:tag index with articles" do
       create(:article, published: true)
       get "/mod/#{article.tags.first}"
       expect(response.body).to include("#" + article.tags.first.name)
-      expect(response.body).to include(article.title)
+      expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
     it "returns not found for inappropriate tags" do
