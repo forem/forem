@@ -46,14 +46,14 @@ describe('<ArticleCoverImage />', () => {
     });
 
     it('shows the change and remove buttons', () => {
-      const { getByText } = render(
+      const { queryByText } = render(
         <ArticleCoverImage
           mainImage={'/some-fake-image.jpg'}
           onMainImageUrlChange={jest.fn()}
         />,
       );
-      getByText('Change');
-      getByText('Remove');
+      expect(queryByText('Change')).toBeDefined();
+      expect(queryByText('Remove')).toBeDefined();
     });
 
     it('allows trigger the correct function for removal', async () => {

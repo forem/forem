@@ -67,14 +67,14 @@ describe('<ReadingList />', () => {
   });
 
   it('renders all the elements', () => {
-    const { getByPlaceholderText, getByText } = render(
+    const { queryByPlaceholderText, queryByText } = render(
       <ReadingList availableTags={['discuss']} />,
     );
 
-    getByPlaceholderText('search your list');
-    getByText('#discuss');
-    getByText('View Archive');
-    getByText('Your Archive List is Lonely');
-    getByText('Reading List (empty)');
+    expect(queryByPlaceholderText('search your list')).toBeDefined();
+    expect(queryByText('#discuss')).toBeDefined();
+    expect(queryByText('View Archive')).toBeDefined();
+    expect(queryByText('Your Archive List is Lonely')).toBeDefined();
+    expect(queryByText('Reading List (empty)')).toBeDefined();
   });
 });
