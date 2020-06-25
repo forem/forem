@@ -1,5 +1,5 @@
 ---
-title: Frontend Tracking
+title: Tracking
 ---
 
 ## Ahoy.js
