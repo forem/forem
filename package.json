@@ -80,7 +80,6 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
-    "@honeybadger-io/webpack": "^1.2.0",
     "@percy/agent": "^0.26.9",
     "@stoplight/spectral": "5.4.0",
     "@storybook/addon-a11y": "^5.3.19",
@@ -129,6 +128,7 @@
     "@babel/plugin-transform-react-jsx": "^7.10.3",
     "@babel/preset-env": "^7.10.3",
     "@github/clipboard-copy-element": "^1.1.2",
+    "@honeybadger-io/webpack": "^1.2.0",
     "@rails/webpacker": "5.1.1",
     "ahoy.js": "^0.3.6",
     "babel-preset-preact": "^2.0.0",
