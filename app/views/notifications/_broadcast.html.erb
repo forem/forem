@@ -2,16 +2,16 @@
 <% mascot_user = User.find_by(id: json_data["user"]["id"]) %>
 <% cache "broadcast-html-#{notification.json_data['broadcast']['title']}" do %>
   <div class="broadcast-notification">
-    <div class="content notification-content broadcast-content" id="<%= sanitized_broadcast_id(json_data["broadcast"]["title"]) %>">
+    <div class="content notification-content broadcast-content fw-normal fs-base" id="<%= sanitized_broadcast_id(json_data["broadcast"]["title"]) %>">
       <%= json_data["broadcast"]["processed_html"].html_safe %>
 
       <% if notification.json_data['broadcast']['type_of'] == "Welcome" %>
-        <div class="opt-out fs-s lh-tight"><a href="<%= user_settings_path(tab: :notifications) %>" class="settings__opt-out crayons-link--branded">Visit your settings</a> to manage your notification settings</div>
+        <div class="opt-out fs-s lh-tight fw-normal --ff-default"><a href="<%= user_settings_path(tab: :notifications) %>" class="settings__opt-out crayons-link--branded">Visit your settings</a> to manage your notification settings</div>
       <% end %>
     </div>
     <a href="<%= json_data["user"]["path"] %>" class="small-pic-link-wrapper">
-      <div class="small-pic">
-        <img src="<%= ProfileImage.new(mascot_user).get %>" alt="link to <%= json_data["user"]["username"] %>'s profile">
+      <div class="small-pic --ff-accent">
+        <img src="<%= ProfileImage.new(mascot_user).get %>" alt="link to <%= json_data["user"]["username"] %>'s profile" class="--ff-accent">
       </div>
     </a>
   </div>
