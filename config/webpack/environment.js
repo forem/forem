@@ -58,7 +58,7 @@ if (process.env.HONEYBADGER_API_KEY) {
     'HoneybadgerSourceMap',
     new HoneybadgerSourceMapPlugin({
       apiKey: process.env.HONEYBADGER_API_KEY,
-      assetsUrl: `${process.env.APP_PROTOCOL}${process.env.APP_DOMAIN}/packs/js`,
+      assetsUrl: `${process.env.APP_PROTOCOL}${process.env.APP_DOMAIN}/packs`,
       silent: false,
       ignoreErrors: false,
       revision: process.env.HEROKU_SLUG_COMMIT || 'master'
