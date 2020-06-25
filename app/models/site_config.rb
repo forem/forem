@@ -90,8 +90,8 @@ class SiteConfig < RailsSettings::Base
   field :onboarding_logo_image, type: :string
   field :onboarding_background_image, type: :string
   field :onboarding_taskcard_image, type: :string
-  field :suggested_tags, type: :array
-  field :suggested_users, type: :array
+  field :suggested_tags, type: :array, default: %w[]
+  field :suggested_users, type: :array, default: %w[]
 
   # Rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
@@ -120,7 +120,7 @@ class SiteConfig < RailsSettings::Base
   field :twitter_hashtag, type: :string
 
   # Tags
-  field :sidebar_tags, type: :array
+  field :sidebar_tags, type: :array, default: %w[]
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date
