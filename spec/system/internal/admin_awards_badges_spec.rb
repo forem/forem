@@ -25,11 +25,6 @@ RSpec.describe "Admin awards badges", type: :system do
     visit "/internal/badges"
   end
 
-  # TODO: Uncomment this spec when we decide to use percy again
-  xit "renders the page", js: true, percy: true do
-    Percy.snapshot(page, name: "Admin: /internal/badges")
-  end
-
   it "loads the view" do
     expect(page).to have_content("Badges")
   end
@@ -58,10 +53,8 @@ RSpec.describe "Admin awards badges", type: :system do
     end
   end
 
-  it "does not award badges if no badge is selected", js: true, percy: true do
+  it "does not award badges if no badge is selected", js: true do
     expect { award_no_badges }.to change { user.badges.count }.by(0)
-
-    Percy.snapshot(page, name: "Admin: /internal/badges error")
 
     expect(page).to have_content("Please choose a badge to award")
   end
