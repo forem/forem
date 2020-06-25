@@ -96,7 +96,8 @@ class MarkdownParser
 
     cleaned_parsed = escape_liquid_tags_in_codeblock(@content)
     tags = []
-    Liquid::Template.parse(cleaned_parsed).root.nodelist.each do |node|
+    liquid_tag_options = { source: @source, user: @user }
+    Liquid::Template.parse(cleaned_parsed, liquid_tag_options).root.nodelist.each do |node|
       tags << node.class if node.class.superclass.to_s == LiquidTagBase.to_s
     end
     tags.uniq

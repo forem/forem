@@ -363,7 +363,7 @@ class Article < ApplicationRecord
         "#{body_markdown}#{comments_blob}"
       end
 
-    MarkdownParser.new(content).tags_used
+    MarkdownParser.new(content, source: self, user: user).tags_used
   rescue StandardError
     []
   end
