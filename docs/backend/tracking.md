@@ -11,8 +11,8 @@ events.
 We intentionally choose to limit what user data we track and persist, and have
 opted to follow the GDPR compliance standards
 [set by Ahoy](https://github.com/ankane/ahoy#gdpr-compliance-1). By default, we
-have configured the Ahoy library to mask IP addresses, have disabled geocode
-tracking, and do not track user cookies.
+have configured the Ahoy library to mask IP addresses, disable geocode tracking,
+and not track user cookies.
 
 ### Visits
 
@@ -35,7 +35,7 @@ while each visit to the site is marked with a unique `visit_token`.
 ### Events
 
 Ahoy creates an `Ahoy::Event` record for each event that it tracks. If no visit
-is recorded for a user when an event is tracked, Ahoy will simeltaneously create
+is recorded for a user when an event is tracked, Ahoy will simultaneously create
 an `Ahoy::Visit` for the event being tracked.
 
 Events can be tracked in a controller action on the backend, or with JavaScript
@@ -43,9 +43,8 @@ on the frontend. Learn more about tracking events with JavaScript in our
 [frontend tracking guide](../frontend/tracking.md).
 
 When an event is tracked, it should include a `name` and a `properties` hash.
-When adding new events, be sure that the name is unique per-event, and that the
-properties will help you differentiate the different events with enough
-granularity.
+When adding new events, be sure that the name is unique per-event. The
+properties will help you differentiate between events.
 
 In order to track a specific event in a controller, use the `ahoy.track` call:
 
