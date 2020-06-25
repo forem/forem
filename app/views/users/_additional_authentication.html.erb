@@ -1,8 +1,6 @@
 <% unless @user.authenticated_with_all_providers? %>
   <div class="crayons-card mb-6 p-5">
     <% authentication_enabled_providers.each do |provider| %>
-      <% next if provider.provider_name == :apple && !FeatureFlag.enabled?(:auth_apple, @user) %>
-
       <% unless @user.authenticated_through?(provider.provider_name) %>
         <a
           href="<%= provider.sign_in_path(state: "profile") %>"
