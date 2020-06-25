@@ -1,0 +1,48 @@
+@import '../config/import';
+
+.dashboard-story {
+  padding: var(--su-4);
+  align-items: center;
+  display: grid;
+  grid-gap: var(--su-1);
+  grid-template-rows: auto auto;
+
+  @media (min-width: $breakpoint-m) {
+    grid-template-columns: 4fr 2fr 2fr;
+    grid-template-rows: auto;
+    grid-gap: var(--su-2);
+  }
+
+  & + & {
+    border-top: 1px solid var(--base-10);
+  }
+
+  &:hover {
+    background: var(--base-0);
+  }
+
+  &__title {
+    grid-column-end: span 2;
+    @media (min-width: $breakpoint-m) {
+      grid-column-end: unset;
+    }
+  }
+
+  &__actions {
+    justify-self: end;
+    display: flex;
+  }
+}
+
+
+.grid-cell {
+  &__summary {
+    color: var(--base-60);
+    overflow: hidden;
+    line-height: var(--lh-tight);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;  
+    margin-bottom: var(--su-4);
+  }
+}

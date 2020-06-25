@@ -24,13 +24,11 @@ RSpec.describe "Link on tags for post in notifications", type: :system do
       sign_in article.user
     end
 
-    it "shows articles with tags", js: true, percy: true do
+    it "shows articles", js: true, percy: true do
       visit "/dashboard"
 
       Percy.snapshot(page, name: "Logged in user: dashboard")
       expect(page).to have_selector(".spec__dashboard-story", count: 1)
-      expect(page).to have_link("#ruby", href: "/t/ruby")
-      expect(page).to have_link("#javascript", href: "/t/javascript")
     end
   end
 end
