@@ -62,7 +62,7 @@ const ChannelButton = ({
         ) : (
           ''
         )}
-        {channel.channel_name}
+        <span class="chatchanneltab__name">{channel.channel_name}</span>
       </span>
     </button>
   );

@@ -7,6 +7,8 @@
   margin: 0px auto 0px;
   width: 100%;
   max-width: calc(1540px + 10vw);
+
+  --layout-chat-left-sidebar-width: 240px;
 }
 
 .live-chat {
@@ -43,8 +45,8 @@
   width: 100%;
 
   @media screen and (min-width: $breakpoint-m) {
-    min-width: var(--layout-sidebar-left-width);
-    max-width: var(--layout-sidebar-left-width);
+    min-width: var(--layout-chat-left-sidebar-width);
+    max-width: var(--layout-chat-left-sidebar-width);
   }
 }
 
@@ -296,8 +298,6 @@
     width: calc(100% - 16px);
     position: fixed;
     height: calc(100% - 86px);
-    margin-left: -48px;
-    margin-top: -1px;
   }
 
   @media screen and (min-width: 1000px) {
@@ -658,6 +658,12 @@
   }
 }
 
+.chatchanneltab__name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .chatchanneltab--new {
   border: 1px solid var(--accent-brand-darker);
   color: var(--accent-brand-darker);
@@ -673,6 +679,7 @@
   min-height: 0.3em;
   min-width: 0.3em;
   margin-right: 5px;
+  flex-shrink: 0;
 
   img {
     height: calc(22px + 0.3vw);
@@ -705,6 +712,7 @@
 .message__info {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .chatmessagebody__username {
