@@ -66,7 +66,7 @@ class RunkitTag < Liquid::Block
     activateRunkitTags();
   JAVASCRIPT
 
-  def initialize(tag_name, markup, parsed_context)
+  def initialize(tag_name, markup, tokens)
     super
     @preamble = sanitized_preamble(markup)
   end

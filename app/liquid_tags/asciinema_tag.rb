@@ -2,7 +2,7 @@ class AsciinemaTag < LiquidTagBase
   PARTIAL = "liquids/asciinema".freeze
   ASCIINEMA_URL_REGEX = %r{https://asciinema.org/a/(?<id>\d+)}.freeze
 
-  def initialize(tag_name, id, parsed_context)
+  def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
   end

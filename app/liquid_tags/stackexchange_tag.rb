@@ -13,7 +13,7 @@ class StackexchangeTag < LiquidTagBase
 
   attr_reader :site, :post_type
 
-  def initialize(tag_name, input, parsed_context)
+  def initialize(tag_name, input, tokens)
     super
 
     @site = parse_site(input.strip)

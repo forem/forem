@@ -1,7 +1,7 @@
 class GistTag < LiquidTagBase
   PARTIAL = "liquids/gist".freeze
 
-  def initialize(tag_name, link, parsed_context)
+  def initialize(tag_name, link, tokens)
     super
     @uri = build_uri(link)
   end

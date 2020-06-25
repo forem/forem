@@ -4,7 +4,7 @@ class RedditTag < LiquidTagBase
   PARTIAL = "liquids/reddit".freeze
   URL_REGEXP = /\Ahttps:\/\/(www.)?reddit.com/.freeze
 
-  def initialize(_tag_name, url, _parsed_context)
+  def initialize(_tag_name, url, _tokens)
     @url = ActionController::Base.helpers.strip_tags(url).strip
     @reddit_content = parse_url
   end

@@ -1,7 +1,7 @@
 class CommentTag < LiquidTagBase
   PARTIAL = "comments/liquid".freeze
 
-  def initialize(_tag_name, id_code, _parsed_context)
+  def initialize(_tag_name, id_code, _tokens)
     @comment = find_comment(id_code.strip)
   end
 

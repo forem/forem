@@ -19,8 +19,6 @@ class LiquidTagBase < Liquid::Tag
       html_safe
   end
 
-  class LiquidTagError < StandardError; end
-
   private
 
   def validate_contexts(source)
@@ -52,4 +50,7 @@ class LiquidTagBase < Liquid::Tag
       user.has_role? valid_role
     end
   end
+end
+
+class LiquidTagError < StandardError
 end

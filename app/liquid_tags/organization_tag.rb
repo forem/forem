@@ -3,7 +3,7 @@ class OrganizationTag < LiquidTagBase
   include ActionView::Helpers::TagHelper
   PARTIAL = "organizations/liquid".freeze
 
-  def initialize(_tag_name, organization, _parsed_context)
+  def initialize(_tag_name, organization, _tokens)
     @organization = parse_slug_to_organization(organization.delete(" "))
     @follow_button = follow_button(@organization)
     @organization_colors = user_colors(@organization)

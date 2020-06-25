@@ -1,7 +1,7 @@
 class YoutubeTag < LiquidTagBase
   PARTIAL = "liquids/youtube".freeze
 
-  def initialize(tag_name, id, parsed_context)
+  def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
     @width = 710

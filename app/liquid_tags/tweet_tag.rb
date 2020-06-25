@@ -25,7 +25,7 @@ class TweetTag < LiquidTagBase
     });
   JAVASCRIPT
 
-  def initialize(tag_name, id, parsed_context)
+  def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
     @tweet = Tweet.find_or_fetch(@id)

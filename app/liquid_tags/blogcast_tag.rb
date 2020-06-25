@@ -1,6 +1,6 @@
 class BlogcastTag < LiquidTagBase
   PARTIAL = "liquids/blogcast".freeze
-  def initialize(tag_name, id, parsed_context)
+  def initialize(tag_name, id, tokens)
     super
     @id = parse_id(id)
   end

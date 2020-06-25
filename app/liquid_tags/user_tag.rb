@@ -3,7 +3,7 @@ class UserTag < LiquidTagBase
   include ActionView::Helpers::TagHelper
   PARTIAL = "users/liquid".freeze
 
-  def initialize(_tag_name, user, _parsed_context)
+  def initialize(_tag_name, user, _tokens)
     @user = parse_username_to_user(user.delete(" "))
     @follow_button = follow_button(@user)
     @user_colors = user_colors(@user)

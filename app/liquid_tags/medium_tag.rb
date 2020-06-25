@@ -6,7 +6,7 @@ class MediumTag < LiquidTagBase
 
   PARTIAL = "liquids/medium".freeze
 
-  def initialize(_tag_name, url, _parsed_context)
+  def initialize(_tag_name, url, _tokens)
     @response = parse_url_for_medium_article(url)
   end
 
