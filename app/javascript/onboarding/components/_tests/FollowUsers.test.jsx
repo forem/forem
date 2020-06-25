@@ -4,25 +4,27 @@ import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
 import FollowUsers from '../FollowUsers';
+import { axe } from 'jest-axe';
 
 global.fetch = fetch;
 
 describe('FollowUsers', () => {
-  const renderFollowUsers = () => render(
-    <FollowUsers
-      next={jest.fn()}
-      prev={jest.fn()}
-      currentSlideIndex={3}
-      slidesCount={5}
-      communityConfig={{
-        communityName: 'Community Name',
-        communityLogo: '/x.png',
-        communityBackground: '/y.jpg',
-        communityDescription: "Some community description",
-      }}
-      previousLocation={null}
-    />
-  );
+  const renderFollowUsers = () =>
+    render(
+      <FollowUsers
+        next={jest.fn()}
+        prev={jest.fn()}
+        currentSlideIndex={3}
+        slidesCount={5}
+        communityConfig={{
+          communityName: 'Community Name',
+          communityLogo: '/x.png',
+          communityBackground: '/y.jpg',
+          communityDescription: 'Some community description',
+        }}
+        previousLocation={null}
+      />,
+    );
 
   const getUserData = () =>
     JSON.stringify({
@@ -51,14 +53,23 @@ describe('FollowUsers', () => {
   ]);
 
   beforeAll(() => {
-    document.head.innerHTML = '<meta name="csrf-token" content="some-csrf-token" />';
+    document.head.innerHTML =
+      '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
   });
 
+  it('should have no a11y violations when rendering users', async () => {
+    fetch.mockResponseOnce(fakeUsersResponse);
+
+    const { container } = renderFollowUsers();
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
 
   it('should render the correct users', async () => {
     fetch.mockResponseOnce(fakeUsersResponse);
-    const { findByText} = renderFollowUsers();
+    const { findByText } = renderFollowUsers();
 
     const user1 = await findByText(/Ben Halpern/i);
     const user2 = await findByText(/Krusty the Clown/i);
@@ -89,9 +100,7 @@ describe('FollowUsers', () => {
     const firstUser = userButtons[0];
     firstUser.click();
 
-    await waitForElement(() =>
-      findByText('Following'),
-    );
+    await waitForElement(() => findByText('Following'));
 
     getByText("You're following 1 person");
     getByText(/continue/i);
@@ -100,9 +109,7 @@ describe('FollowUsers', () => {
     const secondUser = userButtons[1];
     secondUser.click();
 
-    await waitForElement(() =>
-      findByText('Following'),
-    );
+    await waitForElement(() => findByText('Following'));
 
     getByText("You're following 2 people");
     getByText(/continue/i);
@@ -114,27 +121,23 @@ describe('FollowUsers', () => {
 
     // select all then test following count
     const followAllSelector = await waitForElement(() =>
-      getByText(/Select all 3 people/i)
+      getByText(/Select all 3 people/i),
     );
 
     followAllSelector.click();
 
-    await waitForElement(() =>
-      queryAllByText('Following')
-    );
+    await waitForElement(() => queryAllByText('Following'));
 
     expect(queryByText('Follow')).toBeNull();
     getByText("You're following 3 people (everyone)");
 
     // deselect all then test following count
     const deselecAllSelector = await waitForElement(() =>
-      getByText(/Deselect all/i)
+      getByText(/Deselect all/i),
     );
 
     deselecAllSelector.click();
-    const allFollow = await waitForElement(() =>
-      queryAllByText('Follow')
-    );
+    await waitForElement(() => queryAllByText('Follow'));
 
     expect(queryByText('Following')).toBeNull();
     getByText(/You're not following anyone/i);

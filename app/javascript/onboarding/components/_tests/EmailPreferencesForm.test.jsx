@@ -1,27 +1,29 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
+import { axe } from 'jest-axe';
 
 import EmailPreferencesForm from '../EmailPreferencesForm';
 
 global.fetch = fetch;
 
 describe('EmailPreferencesForm', () => {
-  const renderEmailPreferencesForm = () => render(
-    <EmailPreferencesForm
-      next={jest.fn()}
-      prev={jest.fn()}
-      currentSlideIndex={4}
-      slidesCount={5}
-      communityConfig={{
-        communityName: 'Community Name',
-        communityLogo: '/x.png',
-        communityBackground: '/y.jpg',
-        communityDescription: "Some community description",
-      }}
-      previousLocation={null}
-    />
-  );
+  const renderEmailPreferencesForm = () =>
+    render(
+      <EmailPreferencesForm
+        next={jest.fn()}
+        prev={jest.fn()}
+        currentSlideIndex={4}
+        slidesCount={5}
+        communityConfig={{
+          communityName: 'Community Name',
+          communityLogo: '/x.png',
+          communityBackground: '/y.jpg',
+          communityDescription: 'Some community description',
+        }}
+        previousLocation={null}
+      />,
+    );
 
   const getUserData = () =>
     JSON.stringify({
@@ -30,11 +32,18 @@ describe('EmailPreferencesForm', () => {
       name: 'firstname lastname',
       username: 'username',
     });
-  const { location } = window;
 
   beforeAll(() => {
-    document.head.innerHTML = '<meta name="csrf-token" content="some-csrf-token" />';
+    document.head.innerHTML =
+      '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
+  });
+
+  it('should have no a11y violations', async () => {
+    const { container } = render(renderEmailPreferencesForm());
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
   it('should load the appropriate text', () => {
@@ -53,7 +62,7 @@ describe('EmailPreferencesForm', () => {
 
   it('should render a stepper', () => {
     const { queryByTestId } = renderEmailPreferencesForm();
-    queryByTestId('stepper')
+    queryByTestId('stepper');
   });
 
   it('should render a back button', () => {
@@ -64,6 +73,5 @@ describe('EmailPreferencesForm', () => {
   it('should render a button that says Finish', () => {
     const { getByText } = renderEmailPreferencesForm();
     getByText('Finish');
-  })
-
+  });
 });

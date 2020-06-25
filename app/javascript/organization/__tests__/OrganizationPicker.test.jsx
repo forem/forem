@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { OrganizationPicker } from '../OrganizationPicker';
 
 const commonProps = {
@@ -14,6 +15,19 @@ const organizations = [
 ];
 
 describe('<OrganizationPicker />', () => {
+  it('should have no a11y violations', async () => {
+    const { container } = render(
+      <OrganizationPicker
+        {...commonProps}
+        organizationId={1}
+        organizations={organizations}
+      />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
   it('renders with the given organization selected from the list of available organizations', () => {
     const { getByText } = render(
       <OrganizationPicker

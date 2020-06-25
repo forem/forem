@@ -361,6 +361,12 @@ RSpec.describe "/internal/config", type: :request do
             post "/internal/config", params: { site_config: { rate_limit_email_recipient: 3 }, confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_email_recipient).from(5).to(3)
         end
+
+        it "updates rate_limit_user_subscription_creation" do
+          expect do
+            post "/internal/config", params: { site_config: { rate_limit_user_subscription_creation: 1 }, confirmation: confirmation_message }
+          end.to change(SiteConfig, :rate_limit_user_subscription_creation).from(3).to(1)
+        end
       end
 
       describe "Social Media" do
@@ -403,6 +409,14 @@ RSpec.describe "/internal/config", type: :request do
         it "downcases sidebar_tags" do
           post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
+        end
+      end
+
+      describe "User Experience" do
+        it "updates the feed_style" do
+          feed_style = "basic"
+          post "/internal/config", params: { site_config: { mascot_user_id: feed_style }, confirmation: confirmation_message }
+          expect(SiteConfig.feed_style).to eq(feed_style)
         end
       end
     end

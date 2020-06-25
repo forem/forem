@@ -1,5 +1,3 @@
-require "nokogiri"
-
 class GithubTag
   class GithubReadmeTag
     PARTIAL = "liquids/github_readme".freeze

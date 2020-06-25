@@ -81,6 +81,7 @@ export const renderFeed = (timeFrame) => {
         };
 
         const [featuredStory, ...subStories] = feedItems;
+        const feedStyle = JSON.parse(document.body.dataset.user).feed_style;
 
         sendFeaturedArticleAnalytics(featuredStory.id);
 
@@ -93,6 +94,7 @@ export const renderFeed = (timeFrame) => {
               {...commonProps}
               article={featuredStory}
               isFeatured
+              feedStyle={feedStyle}
               isBookmarked={bookmarkedFeedItems.has(featuredStory.id)}
             />
             {podcastEpisodes.length > 0 && (
@@ -102,6 +104,7 @@ export const renderFeed = (timeFrame) => {
               <Article
                 {...commonProps}
                 article={story}
+                feedStyle={feedStyle}
                 isBookmarked={bookmarkedFeedItems.has(story.id)}
               />
             ))}

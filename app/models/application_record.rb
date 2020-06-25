@@ -18,7 +18,7 @@ class ApplicationRecord < ActiveRecord::Base
     query = sanitize_sql_array([QUERY_ESTIMATED_COUNT, table_name, table_name])
     result = connection.execute(query)
 
-    count = result.first["count"]
+    count = result.max_by(&:values)["count"] # sometimes is an array of hashes, for ex. [{"count" => 0}, [{"count" => 1000}]
     result.clear # PG::Result is manually managed in memory, we need to release its resources
     count
   end
