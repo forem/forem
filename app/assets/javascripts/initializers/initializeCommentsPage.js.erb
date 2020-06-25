@@ -15,6 +15,7 @@ class CommentInitializer {
     this.updateReactionCountsAndStuff();
     this.setupCommentReplyButtonHandler(this.commentableId, this.commentableType);
     this.replaceEditButtonOnClickWithNoop();
+    this.addNewCommentSubmitListener();
 
   }
 
@@ -171,6 +172,12 @@ class CommentInitializer {
       };
     }
   }
+
+  addNewCommentSubmitListener() {
+    if (document.getElementById('new_comment')) {
+      document.getElementById('new_comment').addEventListener('submit', handleCommentSubmit);
+    }
+  }
 }
 
 function initializeCommentsPage() {
@@ -181,10 +188,6 @@ function initializeCommentsPage() {
     commentableIdList = commentableId.split(",");
 
     CommentInitializer.call();
-
-    if (document.getElementById('new_comment')) {
-      document.getElementById('new_comment').addEventListener('submit', handleCommentSubmit);
-    }
   }
   listenForDetailsToggle();
 }
