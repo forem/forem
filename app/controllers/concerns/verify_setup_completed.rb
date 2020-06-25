@@ -4,7 +4,6 @@ module VerifySetupCompleted
   MANDATORY_CONFIGS = %i[
     community_description
     community_action
-    main_social_image
     tagline
 
     main_social_image
