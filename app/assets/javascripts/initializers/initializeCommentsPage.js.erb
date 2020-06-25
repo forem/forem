@@ -10,6 +10,12 @@ class CommentInitializer {
   }
 
   call() {
+    if (!this.areCommentsPossibleOnPage()) {
+      this.listenForDetailsToggle();
+      return;
+    }
+
+    this.toggleCodeOfConduct();
     this.updateAllCommentableButtonsAndReactionCountsAndStuff(this.commentableType, this.commentableIdList);
     this.updateReactionCountsAndStuff();
     this.updateReactionCountsAndStuff();
@@ -17,6 +23,10 @@ class CommentInitializer {
     this.replaceEditButtonOnClickWithNoop();
     this.addNewCommentSubmitListener();
 
+  }
+
+  areCommentsPossibleOnPage() {
+    return document.getElementById('comments-container');
   }
 
   updateAllCommentableButtonsAndReactionCountsAndStuff() {
@@ -178,31 +188,45 @@ class CommentInitializer {
       document.getElementById('new_comment').addEventListener('submit', handleCommentSubmit);
     }
   }
+
+  listenForDetailsToggle() {
+    var detailItems = document.getElementsByTagName("DETAILS");
+    for (var i = 0; i < detailItems.length; i++) {
+      detailItems[i].addEventListener("toggle", event => {
+        var item = event.target
+        var itemSummaryContent = item.getElementsByTagName("SPAN")[0]
+        var usernames = item.getElementsByClassName("comment-username")
+        var number = "";
+        if (usernames.length > 1) {
+          number = " + " + (usernames.length - 1) + " replies"
+        }
+        var itemUsername = usernames[0].textContent + number
+        if (item.open) {
+          itemSummaryContent.innerHTML = "&nbsp;"
+        } else {
+          itemSummaryContent.innerHTML = itemUsername;
+        }
+        item.getElementsByTagName("SUMMARY")[0].blur();
+      });
+    }
+  }
+
+  toggleCodeOfConduct() {
+    var user = userData();
+    if (!user) {
+      return;
+    }
+    var codeOfConduct = user.checked_code_of_conduct
+    var checkboxWrapper = document.getElementById('toggle-code-of-conduct-checkbox');
+    if (checkboxWrapper && !codeOfConduct) {
+      checkboxWrapper.innerHTML = '<input type="checkbox" name="checked_code_of_conduct" class="checkbox" required/>\
+				    <label for="checked_code_of_conduct">I\'ve read the <a href="<%= URL.url('code-of-conduct') %>">code of conduct</a></label>'
+    }
+  }
 }
 
 function initializeCommentsPage() {
-  if (document.getElementById('comments-container')) {
-    toggleCodeOfConduct();
-    var commentableId = document.getElementById('comments-container').dataset.commentableId;
-    var commentableType = document.getElementById('comments-container').dataset.commentableType;
-    commentableIdList = commentableId.split(",");
-
-    CommentInitializer.call();
-  }
-  listenForDetailsToggle();
-}
-
-function toggleCodeOfConduct() {
-  var user = userData();
-  if (!user) {
-    return;
-  }
-  var codeOfConduct = user.checked_code_of_conduct
-  var checkboxWrapper = document.getElementById('toggle-code-of-conduct-checkbox');
-  if (checkboxWrapper && !codeOfConduct) {
-    checkboxWrapper.innerHTML = '<input type="checkbox" name="checked_code_of_conduct" class="checkbox" required/>\
-                                  <label for="checked_code_of_conduct">I\'ve read the <a href="<%= URL.url('code-of-conduct') %>">code of conduct</a></label>'
-  }
+  CommentInitializer.call();
 }
 
 function replaceActionButts(el) {
@@ -524,27 +548,5 @@ function handleImageUpload(event, randomIdNumber) {
           // there's currently no error handling
         })
     }
-  }
-}
-
-function listenForDetailsToggle() {
-  var detailItems = document.getElementsByTagName("DETAILS");
-  for (var i = 0; i < detailItems.length; i++) {
-    detailItems[i].addEventListener("toggle", event => {
-      var item = event.target
-      var itemSummaryContent = item.getElementsByTagName("SPAN")[0]
-      var usernames = item.getElementsByClassName("comment-username")
-      var number = "";
-      if (usernames.length > 1) {
-        number = " + " + (usernames.length - 1) + " replies"
-      }
-      var itemUsername = usernames[0].textContent + number
-      if (item.open) {
-        itemSummaryContent.innerHTML = "&nbsp;"
-      } else {
-        itemSummaryContent.innerHTML = itemUsername;
-      }
-      item.getElementsByTagName("SUMMARY")[0].blur();
-    });
   }
 }
