@@ -16,7 +16,7 @@
     <div class="crayons-layout__content" id="user-dashboard">
 
       <% if @followed_podcasts.any? %>
-        <div class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
+        <div id="following-wrapper" class="grid gap-0 s:gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 align-left s:align-center">
           <% @followed_podcasts.each do |follow| %>
             <% podcast = follow.followable %>
             <div class="crayons-card p-4 m:p-6 flex s:grid single-article" id="follows-<%= follow.id %>">

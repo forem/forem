@@ -53,15 +53,8 @@ function insertNext(params, buildCallback) {
       }
     });
 
-    var distanceFromBottom =
-      document.documentElement.scrollHeight - document.body.scrollTop;
-    var newNode = document.createElement('div');
-    newNode.innerHTML = newFollowersHTML;
-    var singleArticles = document.querySelectorAll(
-      '.single-article, .crayons-story',
-    );
-    var lastElement = singleArticles[singleArticles.length - 1];
-    insertAfter(newNode, lastElement);
+    var followList = document.getElementById('following-wrapper');
+    followList.innerHTML = followList.innerHTML + newFollowersHTML;
     if (nextPage > 0) {
       fetching = false;
     }
@@ -139,7 +132,7 @@ function buildTagsHTML(tag) {
     tag.token +
     '">' +
     '<label for="follow_points" class="fs-s flex-1 pr-2 color-base-60 align-right whitespace-nowrap">Follow weight:</label>' +
-    '<input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" value="' +
+    '<input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" style="max-width:90px" value="' +
     tag.points +
     '" name="follow[points]" id="follow_points">' +
     '<button type="submit" class="crayons-btn crayons-btn--ghost crayons-btn--s" name="commit">Save</button>' +

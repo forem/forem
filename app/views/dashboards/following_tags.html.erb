@@ -16,7 +16,7 @@
     <div class="crayons-layout__content" id="user-dashboard">
       <% if @followed_tags.any? %>
         <div class="crayons-card crayons-card--secondary p-4 px-6 fs-s mb-2 mx-2 m:mx-0">Adjust <strong>Follow Weight</strong> to make a tag show up less or more in your feed (default 1.0)</div>
-        <div class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
+        <div id="following-wrapper" class="grid gap-3 m:gap-4 s:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
           <% negative_follow_shown_once = false %>
           <% @followed_tags.each do |follow| %>
             <% tag = follow.followable %>
@@ -36,11 +36,9 @@
 
                 <%= form_for(follow, html: { class: "flex items-center flex-nowrap mb-4" }) do |f| %>
                   <%= f.label(:points, "Follow weight:", class: "fs-s flex-1 pr-2 color-base-60 align-right whitespace-nowrap") %>
-                  <%= f.number_field(:points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s") %>
+                  <%= f.number_field(:points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", style: "max-width:90px") %>
                   <button type="submit" class="crayons-btn crayons-btn--ghost crayons-btn--s" name="commit">Save</button>
                 <% end %>
-
-                <button class="crayons-btn crayons-btn--secondary follow-action-button follow-tag w-100 mt-auto" data-info='{"id":<%= tag.id %>,"className":"Tag"}'>Following</button>
               </div>
             <% end %>
           <% end %>
