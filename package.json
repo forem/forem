@@ -80,6 +80,7 @@
   },
   "homepage": "https://github.com/thepracticaldev/dev.to#readme",
   "devDependencies": {
+    "@honeybadger-io/webpack": "^1.2.0",
     "@percy/agent": "^0.26.9",
     "@stoplight/spectral": "5.4.0",
     "@storybook/addon-a11y": "^5.3.19",

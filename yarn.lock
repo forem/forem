@@ -885,7 +885,7 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.5.0", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.7.6", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7", "@babel/runtime@^7.9.2":
   version "7.10.3"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.3.tgz#670d002655a7c366540c67f6fd3342cd09500364"
   integrity sha512-RzGO0RLSdokm9Ipe/YD+7ww8X2Ro79qiXZF3HU9ljrM+qnJmH1Vqth+hbiQZy761LnMJTMitHDuKVYTk3k4dLw==
@@ -1049,6 +1049,19 @@
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@github/clipboard-copy-element/-/clipboard-copy-element-1.1.2.tgz#7a6e8042749471504d4e7cfcc47097a781db2bdb"
   integrity sha512-L6CMrcA5we0udafvoSuRCE/Ci/3xrLWKYRGup2IlhxF771bQYsQ2EB1of182pI8ZWM4oxgwzu37+igMeoZjN/A==
+
+"@honeybadger-io/webpack@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@honeybadger-io/webpack/-/webpack-1.2.0.tgz#d058f5bb87e8f69ca9c8721d4aa5cb226e8604e7"
+  integrity sha512-kPhoE41KncSw5V20uYn7xPhQWUvBChPIIPG/8/TkeXbse6LLQtLpHgvwsAcN8jMiULM+8DcLKfkdOubkvkYb0g==
+  dependencies:
+    "@babel/runtime" "^7.7.6"
+    async "^3.0.0"
+    lodash.find "^4.3.0"
+    lodash.foreach "^4.2.0"
+    lodash.reduce "^4.3.0"
+    request "^2.87.0"
+    verror "^1.6.1"
 
 "@icons/material@^0.2.4":
   version "0.2.4"
@@ -3053,6 +3066,11 @@ async@^2.6.1, async@^2.6.2:
   integrity sha512-zflvls11DCy+dQWzTW2dzuilv8Z5X/pjfmZOWba6TNIVDm+2UDaJmXSOXlasHKfNBs8oo3M0aT50fDEWfKZjXg==
   dependencies:
     lodash "^4.17.14"
+
+async@^3.0.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/async/-/async-3.2.0.tgz#b3a2685c5ebb641d3de02d161002c60fc9f85720"
+  integrity sha512-TR2mEZFVOj2pLStYxLht7TyfuRzaydfpxr3k9RpHIzMgw7A64dzsdqCxH1WJyQdoe8T10nDXd9wnEigmiuHIZw==
 
 asynckit@^0.4.0:
   version "0.4.0"
@@ -9289,6 +9307,16 @@ lodash.defaults@^4.2.0:
   resolved "https://registry.yarnpkg.com/lodash.defaults/-/lodash.defaults-4.2.0.tgz#d09178716ffea4dde9e5fb7b37f6f0802274580c"
   integrity sha1-0JF4cW/+pN3p5ft7N/bwgCJ0WAw=
 
+lodash.find@^4.3.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.find/-/lodash.find-4.6.0.tgz#cb0704d47ab71789ffa0de8b97dd926fb88b13b1"
+  integrity sha1-ywcE1Hq3F4n/oN6Ll92Sb7iLE7E=
+
+lodash.foreach@^4.2.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/lodash.foreach/-/lodash.foreach-4.5.0.tgz#1a6a35eace401280c7f06dddec35165ab27e3e53"
+  integrity sha1-Gmo16s5AEoDH8G3d7DUWWrJ+PlM=
+
 lodash.get@^4.0, lodash.get@^4.4.2:
   version "4.4.2"
   resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
@@ -9308,6 +9336,11 @@ lodash.merge@^4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/lodash.merge/-/lodash.merge-4.6.2.tgz#558aa53b43b661e1925a0afdfa36a9a1085fe57a"
   integrity sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==
+
+lodash.reduce@^4.3.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/lodash.reduce/-/lodash.reduce-4.6.0.tgz#f1ab6b839299ad48f784abbf476596f03b914d3b"
+  integrity sha1-8atrg5KZrUj3hKu/R2WW8DuRTTs=
 
 lodash.sortby@^4.7.0:
   version "4.7.0"
@@ -14803,7 +14836,7 @@ vendors@^1.0.0:
   resolved "https://registry.yarnpkg.com/vendors/-/vendors-1.0.4.tgz#e2b800a53e7a29b93506c3cf41100d16c4c4ad8e"
   integrity sha512-/juG65kTL4Cy2su4P8HjtkTxk6VmJDiOPBufWniqQ6wknac6jNiXS9vU+hO3wgusiyqWlzTbVHi0dyJqRONg3w==
 
-verror@1.10.0:
+verror@1.10.0, verror@^1.6.1:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/verror/-/verror-1.10.0.tgz#3a105ca17053af55d6e270c1f8288682e18da400"
   integrity sha1-OhBcoXBTr1XW4nDB+CiGguGNpAA=

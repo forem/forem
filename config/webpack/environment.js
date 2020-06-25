@@ -1,6 +1,7 @@
 /* global require module */
 const path = require('path');
 const { environment } = require('@rails/webpacker');
+const HoneybadgerSourceMapPlugin = require('@honeybadger-io/webpack')
 const erb = require('./loaders/erb');
 
 /*
@@ -51,5 +52,17 @@ environment.splitChunks((config) => {
 environment.loaders.delete('nodeModules');
 
 environment.loaders.append('erb', erb);
+
+if (process.env.HONEYBADGER_API_KEY) {
+  environment.plugins.append(
+    'HoneybadgerSourceMap',
+    new HoneybadgerSourceMapPlugin({
+      apiKey: process.env.HONEYBADGER_API_KEY,
+      assetsUrl: `${process.env.APP_PROTOCOL}${process.env.APP_DOMAIN}/packs/js`,
+      silent: false,
+      ignoreErrors: false,
+      revision: process.env.HEROKU_SLUG_COMMIT || 'master'
+    }))
+}
 
 module.exports = environment;
