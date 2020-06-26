@@ -19,11 +19,16 @@ export const ItemListItem = ({ item, children }) => {
       <a className="item" href={adaptedItem.path}>
         <div
           className="item-title"
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: filterXSS(adaptedItem.title) }}
         />
 
         <div className="item-details">
-          <a datatestid="item-user" className="item-user" href={`/${adaptedItem.user.username}`}>
+          <a
+            datatestid="item-user"
+            className="item-user"
+            href={`/${adaptedItem.user.username}`}
+          >
             <img src={adaptedItem.user.profile_image_90} alt="Profile Pic" />
             {`${adaptedItem.user.name}・`}
             {`${adaptedItem.publishedDate}・`}
