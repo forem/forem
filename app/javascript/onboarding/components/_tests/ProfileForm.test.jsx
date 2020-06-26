@@ -57,9 +57,10 @@ describe('ProfileForm', () => {
   });
 
   it('should show the correct name and username', () => {
-    const { getByText } = renderProfileForm();
-    getByText('username');
-    getByText('firstname lastname');
+    const { queryByText } = renderProfileForm();
+
+    expect(queryByText('username')).toBeDefined();
+    expect(queryByText('firstname lastname')).toBeDefined();
   });
 
   it('should show the correct profile picture', () => {
@@ -100,13 +101,15 @@ describe('ProfileForm', () => {
   });
 
   it('should render a stepper', () => {
-    const { getByTestId } = renderProfileForm();
-    getByTestId('stepper');
+    const { queryByTestId } = renderProfileForm();
+
+    expect(queryByTestId('stepper')).toBeDefined();
   });
 
   it('should show the back button', () => {
-    const { getByTestId } = renderProfileForm();
-    getByTestId('back-button');
+    const { queryByTestId } = renderProfileForm();
+
+    expect(queryByTestId('back-button')).toBeDefined();
   });
 
   it('should update the text on the forward button', async () => {

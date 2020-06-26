@@ -60,7 +60,7 @@ describe('<Options />', () => {
     const passedData = getPassedData();
     passedData.published = true;
 
-    const { getByTestId, getByText } = render(
+    const { queryByTestId, getByText } = render(
       <Options
         passedData={passedData}
         onConfigChange={null}
@@ -70,9 +70,10 @@ describe('<Options />', () => {
       />,
     );
 
-    getByTestId('options__danger-zone');
-    getByText(/danger zone/i);
-    getByText(/unpublish post/i);
+    expect(queryByTestId('options__danger-zone')).toBeDefined();
+    expect(getByText(/danger zone/i)).toBeDefined();
+    expect(getByText(/unpublish post/i)).toBeDefined();
+    expect(getByText(/done/i)).toBeDefined();
   });
 
   it('unpublishes an article when the unpublish post button is clicked', () => {

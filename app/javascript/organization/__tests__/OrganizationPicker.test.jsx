@@ -58,7 +58,7 @@ describe('<OrganizationPicker />', () => {
   });
 
   it('renders an organization list with only "None" as an option when no organizations are passed in.', () => {
-    const { getByText } = render(
+    const { queryByText } = render(
       <OrganizationPicker
         {...commonProps}
         organizationId={undefined}
@@ -66,6 +66,6 @@ describe('<OrganizationPicker />', () => {
       />,
     );
 
-    getByText('None');
+    expect(queryByText('None')).toBeDefined();
   });
 });

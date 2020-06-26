@@ -26,7 +26,10 @@ describe('<Search />', () => {
   it('should have a search textbox', () => {
     const { getByLabelText } = render(<Search />);
 
-    getByLabelText(/search/i);
+    const searchInput = getByLabelText(/search/i);
+
+    expect(searchInput.getAttribute('placeholder')).toEqual('Search...');
+    expect(searchInput.getAttribute('autocomplete')).toEqual('off');
   });
 
   it('should contain text the user entered in the search textbox', async () => {

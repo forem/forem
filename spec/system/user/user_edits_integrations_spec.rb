@@ -23,13 +23,6 @@ RSpec.describe "User edits their integrations", type: :system, js: true do
       visit "/settings"
     end
 
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page", percy: true do
-      click_link "Integrations"
-
-      Percy.snapshot(page, name: "Settings: /settings renders integrations")
-    end
-
     it "has connect-to-stackbit prompt" do
       click_link "Integrations"
 

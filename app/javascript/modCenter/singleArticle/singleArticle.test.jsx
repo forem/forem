@@ -36,38 +36,48 @@ describe('<SingleArticle />', () => {
   });
 
   it('renders the article title', () => {
-    const { getByText } = renderSingleArticle();
-    getByText(testArticle.title);
+    const { queryByText } = renderSingleArticle();
+
+    expect(queryByText(testArticle.title)).toBeDefined();
   });
 
   it('renders the tags', () => {
-    const { getByText } = renderSingleArticle();
-    getByText('discuss');
-    getByText('javascript');
-    getByText('beginners');
+    const { queryByText } = renderSingleArticle();
+
+    expect(queryByText('discuss')).toBeDefined();
+    expect(queryByText('javascript')).toBeDefined();
+    expect(queryByText('beginners')).toBeDefined();
   });
+
   it('renders the author name', () => {
     const { container } = renderSingleArticle();
     const text = getNodeText(container.querySelector('.article-author'));
     expect(text).toContain(testArticle.user.name);
   });
+
   it('renders the hand wave emoji if the author has less than 3 articles ', () => {
     const { container } = renderSingleArticle();
     const text = getNodeText(container.querySelector('.article-author'));
     expect(text).toContain('👋');
   });
+
   it('renders the correct formatted published date', () => {
-    const { getByText } = renderSingleArticle();
-    getByText('Jun 22');
+    const { queryByText } = renderSingleArticle();
+
+    expect(queryByText('Jun 22')).toBeDefined();
   });
+
   it('renders the correct formatted published date as a time if the date is the same day', () => {
     const today = new Date();
     today.setSeconds('00');
     testArticle.publishedAt = today.toISOString();
-    const { getByText } = renderSingleArticle(testArticle);
+
+    const { queryByText } = renderSingleArticle(testArticle);
     const readableTime = today.toLocaleTimeString().replace(':00 ', ' '); // looks like 8:05 PM
-    getByText(readableTime);
+
+    expect(queryByText(readableTime)).toBeDefined();
   });
+
   it('renders the iframes on click', () => {
     const { container } = renderSingleArticle();
     container.querySelector('button.moderation-single-article').click();
@@ -80,6 +90,7 @@ describe('<SingleArticle />', () => {
       `${testArticle.path}/actions_panel`,
     );
   });
+
   it('adds the opened class when opening an article', () => {
     const toggleArticle = jest.fn();
     const { container } = render(
@@ -96,6 +107,7 @@ describe('<SingleArticle />', () => {
     fireEvent.click(
       container.querySelector('button.moderation-single-article'),
     );
+
     expect(
       container.querySelector('.article-iframes-container').classList,
     ).toContain('opened');

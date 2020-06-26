@@ -18,7 +18,7 @@ describe('<ChannelDescriptionSection />', () => {
   });
 
   it('should render', () => {
-    const { getByText } = render(
+    const { queryByText } = render(
       <ChannelDescriptionSection
         channelName="some name"
         channelDescription="some description"
@@ -26,8 +26,8 @@ describe('<ChannelDescriptionSection />', () => {
       />,
     );
 
-    getByText('some name');
-    getByText('some description');
-    getByText('You are a channel member');
+    expect(queryByText('some name')).toBeDefined();
+    expect(queryByText('some description')).toBeDefined();
+    expect(queryByText('You are a channel member')).toBeDefined();
   });
 });
