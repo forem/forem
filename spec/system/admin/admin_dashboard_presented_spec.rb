@@ -8,17 +8,15 @@ RSpec.describe "Admin dashboard is presented", type: :system do
 
   after { Bullet.raise = true }
 
-  it "loads the admin dashboard articles view", js: true, percy: true do
+  it "loads the admin dashboard articles view", js: true do
     sign_in admin
     visit "/admin"
-    Percy.snapshot(page, name: "Admin dashboard: renders articles")
     expect(page).to have_content("Articles")
   end
 
-  it "loads the admin dashboard podcasts view", js: true, percy: true do
+  it "loads the admin dashboard podcasts view", js: true do
     sign_in admin
     visit "/admin/podcasts"
-    Percy.snapshot(page, name: "Admin dashboard: renders podcasts")
     expect(page).to have_content("Podcast Episodes")
   end
 

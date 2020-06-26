@@ -46,14 +46,14 @@ describe('<ArticleCoverImage />', () => {
     });
 
     it('shows the change and remove buttons', () => {
-      const { getByText } = render(
+      const { queryByText } = render(
         <ArticleCoverImage
           mainImage={'/some-fake-image.jpg'}
           onMainImageUrlChange={jest.fn()}
         />,
       );
-      getByText('Change');
-      getByText('Remove');
+      expect(queryByText('Change')).toBeDefined();
+      expect(queryByText('Remove')).toBeDefined();
     });
 
     it('allows trigger the correct function for removal', async () => {
@@ -105,6 +105,11 @@ describe('<ArticleCoverImage />', () => {
       />,
     );
     const inputEl = getByLabelText('Change');
+
+    // Check the input validation settings
+    expect(inputEl.getAttribute('accept')).toEqual('image/*');
+    expect(Number(inputEl.dataset.maxFileSizeMb)).toEqual(25);
+
     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
       type: 'image/png',
     });

@@ -53,12 +53,12 @@ environment.loaders.delete('nodeModules');
 
 environment.loaders.append('erb', erb);
 
-if (process.env.HONEYBADGER_API_KEY) {
+if (process.env.HONEYBADGER_API_KEY && process.env.ASSETS_URL) {
   environment.plugins.append(
     'HoneybadgerSourceMap',
     new HoneybadgerSourceMapPlugin({
       apiKey: process.env.HONEYBADGER_API_KEY,
-      assetsUrl: `${process.env.APP_PROTOCOL}${process.env.APP_DOMAIN}/packs/js`,
+      assetsUrl: process.env.ASSETS_URL,
       silent: false,
       ignoreErrors: false,
       revision: process.env.HEROKU_SLUG_COMMIT || 'master'

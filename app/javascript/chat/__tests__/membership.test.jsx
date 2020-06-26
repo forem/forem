@@ -146,18 +146,22 @@ describe('<Membership />', () => {
       membershipType,
       currentMembershipRole,
     } = getMemberUser();
-    const { getByText } = render(
+    const { queryByText } = render(
       <Membership
         membership={membership}
         membershipType={membershipType}
         currentMembershipRole={currentMembershipRole}
       />,
     );
-    getByText('+', {
-      selector: 'button',
-    });
-    getByText('x', {
-      selector: 'button',
-    });
+    expect(
+      queryByText('+', {
+        selector: 'button',
+      }),
+    ).toBeDefined();
+    expect(
+      queryByText('x', {
+        selector: 'button',
+      }),
+    ).toBeDefined();
   });
 });

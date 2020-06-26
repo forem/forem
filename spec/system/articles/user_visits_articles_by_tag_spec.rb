@@ -14,9 +14,7 @@ RSpec.describe "User visits articles by tag", type: :system do
     context "when 2 articles" do
       before { visit "/t/javascript" }
 
-      it "shows the header", js: true, percy: true, stub_elasticsearch: true do
-        Percy.snapshot(page, name: "Tags: logged out user")
-
+      it "shows the header", js: true, stub_elasticsearch: true do
         within("h1") { expect(page).to have_text("javascript") }
       end
 
@@ -73,7 +71,6 @@ RSpec.describe "User visits articles by tag", type: :system do
     end
 
     it "shows the following button", js: true, stub_elasticsearch: true do
-      # TODO: Add Percy snapshot?
       wait_for_javascript
 
       within("h1") { expect(page).to have_button("Following") }
