@@ -42,4 +42,36 @@ describe('<VideoContent />', () => {
     expect(queryByLabelText('Fullscreen')).toBeNull();
     expect(queryByLabelText('Leave fullscreen')).toBeDefined();
   });
+
+  it('should trigger video content when clicked', () => {
+    const onTriggerVideoContent = jest.fn();
+
+    const { getByTestId } = render(
+      <VideoContent
+        videoPath="/some-video-path"
+        fullscreen
+        onTriggerVideoContent={onTriggerVideoContent}
+      />,
+    );
+
+    getByTestId('connect-video').click();
+
+    expect(onTriggerVideoContent).toHaveBeenCalledTimes(1);
+  });
+
+  it('should load the given video', () => {
+    const onTriggerVideoContent = jest.fn();
+
+    const { getByTitle } = render(
+      <VideoContent
+        videoPath="/some-video-path"
+        fullscreen
+        onTriggerVideoContent={onTriggerVideoContent}
+      />,
+    );
+
+    const videoFrame = getByTitle('Video display');
+
+    expect(videoFrame.getAttribute('src')).toEqual('/some-video-path');
+  });
 });

@@ -31,6 +31,7 @@ export function VideoContent(props) {
 
   return (
     <div
+      data-testid="connect-video"
       role="presentation"
       className="activechatchannel__activecontent activechatchannel__activecontent--video"
       id="chat_activecontent_video"
