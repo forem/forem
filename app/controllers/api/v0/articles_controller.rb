@@ -19,11 +19,19 @@ module Api
       end
 
       def show
-        @article = Article.published.
+        article_attr = Article.published.
           includes(:user).
-          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION).
-          find(params[:id]).
-          decorate
+          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
+
+        @article = if params[:id].to_i != 0
+                     article_attr.
+                       find(params[:id]).
+                       decorate
+                   else
+                     article_attr.
+                       find_by!(slug: params[:id]).
+                       decorate
+                   end
 
         set_surrogate_key_header @article.record_key
       end
