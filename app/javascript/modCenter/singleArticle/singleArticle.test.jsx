@@ -51,15 +51,17 @@ describe('<SingleArticle />', () => {
   });
 
   it('renders the article title', () => {
-    const { getByText } = renderSingleArticle();
-    getByText(testArticle1.title);
+    const { queryByText } = renderSingleArticle();
+
+    expect(queryByText(testArticle1.title)).toBeDefined();
   });
 
   it('renders the tags', () => {
-    const { getByText } = renderSingleArticle();
-    getByText('discuss');
-    getByText('javascript');
-    getByText('beginners');
+    const { queryByText } = renderSingleArticle();
+
+    expect(queryByText('discuss')).toBeDefined();
+    expect(queryByText('javascript')).toBeDefined();
+    expect(queryByText('beginners')).toBeDefined();
   });
 
   it('renders no tags or # symbol when article has no tags', () => {
@@ -81,17 +83,20 @@ describe('<SingleArticle />', () => {
   });
 
   it('renders the correct formatted published date', () => {
-    const { getByText } = renderSingleArticle();
-    getByText('Jun 22');
+    const { queryByText } = renderSingleArticle();
+
+    expect(queryByText('Jun 22')).toBeDefined();
   });
 
   it('renders the correct formatted published date as a time if the date is the same day', () => {
     const today = new Date();
     today.setSeconds('00');
     testArticle1.publishedAt = today.toISOString();
-    const { getByText } = renderSingleArticle(testArticle1);
+
+    const { queryByText } = renderSingleArticle(testArticle1);
     const readableTime = today.toLocaleTimeString().replace(':00 ', ' '); // looks like 8:05 PM
-    getByText(readableTime);
+
+    expect(queryByText(readableTime)).toBeDefined();
   });
 
   it('renders the iframes on click', () => {
@@ -106,6 +111,7 @@ describe('<SingleArticle />', () => {
       `${testArticle1.path}/actions_panel`,
     );
   });
+
   it('adds the opened class when opening an article', () => {
     const toggleArticle = jest.fn();
     const { container } = render(
@@ -122,6 +128,7 @@ describe('<SingleArticle />', () => {
     fireEvent.click(
       container.querySelector('button.moderation-single-article'),
     );
+
     expect(
       container.querySelector('.article-iframes-container').classList,
     ).toContain('opened');

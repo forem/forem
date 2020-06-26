@@ -142,6 +142,22 @@ RSpec.describe "UserSubscriptions", type: :request do
       expect(response).to have_http_status(:unprocessable_entity)
       expect(response.parsed_body["error"]).to eq("subscriber email mismatch")
     end
+
+    it "returns an error for a subscriber that signed up with Apple" do
+      allow(user).to receive(:email).and_return("test@privaterelay.appleid.com")
+      article = create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
+
+      valid_source_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: user.email }
+
+      expect do
+        post user_subscriptions_path,
+             headers: { "Content-Type" => "application/json" },
+             params: { user_subscription: valid_source_attributes }.to_json
+      end.to change(UserSubscription, :count).by(0)
+
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response.parsed_body["error"]).to eq("cannot subscribe with Apple private relay email")
+    end
   end
 
   context "when rate limiting" do

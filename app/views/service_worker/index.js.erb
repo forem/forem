@@ -7,7 +7,10 @@
 
   self.addEventListener('install', event => {
     self.skipWaiting();
-
+    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent)) {
+       // iOS seems to have issues.
+       return;
+    }
     // Populate initial serviceworker cache.
     event.waitUntil(
       caches.open(staticCacheName)
@@ -86,8 +89,8 @@
 
   self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
-    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent) && event.request.referrer.includes('t.co')) {
-       // Twitter on iOS seems to cause problems
+    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent)) {
+       // iOS seems to have issues.
        return;
     }
     if (url.origin === location.origin) {

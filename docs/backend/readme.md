@@ -17,6 +17,7 @@ items:
   - notification.md
   - scheduled-jobs.md
   - metrics.md
+  - tracking.md
 ---
 
 # Backend Guide

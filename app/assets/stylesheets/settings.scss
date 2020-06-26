@@ -41,6 +41,9 @@ $input-width: 650px;
         display: block;
         float: right;
       }
+      .crayons-indicator {
+        margin-left: 5px;
+      }
       button,
       a[role='button'] {
         transition: all 0.4s ease;

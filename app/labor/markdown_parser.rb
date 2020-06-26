@@ -4,8 +4,9 @@ class MarkdownParser
 
   WORDS_READ_PER_MINUTE = 275.0
 
-  def initialize(content)
+  def initialize(content, source: {})
     @content = content
+    @source = source
   end
 
   def finalize(link_attributes: {})
@@ -18,7 +19,7 @@ class MarkdownParser
     sanitized_content = sanitize_rendered_markdown(html)
     begin
       parsed_liquid = Liquid::Template.parse(sanitized_content)
-      html = markdown.render(parsed_liquid.render)
+      html = markdown.render(parsed_liquid.render(nil, registers: { source: @source }))
     rescue Liquid::SyntaxError => e
       html = e.message
     end

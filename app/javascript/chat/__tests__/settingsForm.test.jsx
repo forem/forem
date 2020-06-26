@@ -25,18 +25,18 @@ describe('<SettingsForm />', () => {
   });
 
   it('should render the the component', () => {
-    const { getByText, getByLabelText } = render(getSettingsForm(data));
+    const { queryByText, queryByLabelText } = render(getSettingsForm(data));
 
     // title
-    getByText('Channel Settings');
+    expect(queryByText('Channel Settings')).toBeDefined();
 
     // description of channel
-    getByLabelText('Description');
+    expect(queryByLabelText('Description')).toBeDefined();
 
     // whether or not the channel is discoverable
-    getByLabelText('Channel Discoverable');
+    expect(queryByLabelText('Channel Discoverable')).toBeDefined();
 
     // submit buttton
-    getByText('Submit');
+    expect(queryByText('Submit')).toBeDefined();
   });
 });

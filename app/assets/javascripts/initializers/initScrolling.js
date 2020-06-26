@@ -53,15 +53,8 @@ function insertNext(params, buildCallback) {
       }
     });
 
-    var distanceFromBottom =
-      document.documentElement.scrollHeight - document.body.scrollTop;
-    var newNode = document.createElement('div');
-    newNode.innerHTML = newFollowersHTML;
-    var singleArticles = document.querySelectorAll(
-      '.single-article, .crayons-story',
-    );
-    var lastElement = singleArticles[singleArticles.length - 1];
-    insertAfter(newNode, lastElement);
+    var followList = document.getElementById('following-wrapper');
+    followList.insertAdjacentHTML('beforeend', newFollowersHTML);
     if (nextPage > 0) {
       fetching = false;
     }
@@ -70,71 +63,80 @@ function insertNext(params, buildCallback) {
 
 function buildFollowsHTML(follows) {
   return (
-    '<div id="follows-' +
+    '<div class="crayons-card p-4 m:p-6 flex s:grid single-article" id="follows-' +
     follows.id +
-    '" class="single-article">\n' +
-    '  <a href="' +
+    '">' +
+    '<a href="' +
     follows.path +
-    '" class="block-link">\n' +
-    '    <h2>\n' +
-    '      <img alt="' +
+    '" class="crayons-avatar crayons-avatar--2xl s:mb-2 s:mx-auto">' +
+    '<img alt="@' +
     follows.username +
-    ' profile image" src="' +
+    ' profile image" class="crayons-avatar__image" src="' +
     follows.profile_image +
-    '" />\n' +
-    '        ' +
+    '" />' +
+    '</a>' +
+    '<div class="pl-4 s:pl-0 self-center">' +
+    '<h3 class="s:mb-1 p-0">' +
+    '<a href="' +
+    follows.path +
+    '">' +
     follows.name +
-    '\n' +
-    '      <span class="dashboard-username">@' +
+    '</a>' +
+    '</h3>' +
+    '<p class="s:mb-4">' +
+    '<a href="' +
+    follows.path +
+    '" class="crayons-link crayons-link--secondary">' +
+    '@' +
     follows.username +
-    '</span>\n' +
-    '    </h2>\n' +
-    '  </a>\n' +
+    '</a>' +
+    '</p>' +
+    '</div>' +
     '</div>'
   );
 }
 
-var negativeFollow = -1;
 function buildTagsHTML(tag) {
-  var tagHTML = '';
-  if (tag.points < 0 && negativeFollow === -1) {
-    tagHTML += '<h2>Negative Tags (anti-follows)</h2>';
-    negativeFollow = 0;
+  var antifollow = '';
+  if (tag.points < 0) {
+    antifollow =
+      '<span class="crayons-indicator crayons-indicator--critical crayons-indicator--outlined" title="This tag has negative follow weight">Anti-follow</span>';
   }
+
   return (
-    tagHTML +
-    '<div id="follows-' +
+    '<div class="crayons-card p-4 m:p-6 flex flex-col single-article" id="follows-' +
     tag.id +
-    '" class="single-article" style="border: 1px solid ' +
+    '" style="border: 1px solid ' +
     tag.color +
-    ';box-shadow: 3px 3px 0px ' +
+    '; box-shadow: 3px 3px 0' +
     tag.color +
-    '">\n' +
-    '   <h2>\n' +
-    '     <a href="/t/' +
+    '">' +
+    '<h3 class="s:mb-1 p-0 fw-medium">' +
+    '<a href="/t/' +
     tag.name +
-    '">\n' +
-    '       ' +
+    '" class="crayons-tag crayons-tag--l">' +
+    '<span class="crayons-tag__prefix">#</span>' +
     tag.name +
-    '\n' +
-    '     </a>\n' +
-    '     <form class="edit_follow" id="edit_follow_' +
+    '</a>' +
+    antifollow +
+    '</h3>' +
+    '<p class="grid-cell__summary"></p>' +
+    '<form class="edit_follow flex items-center flex-nowrap mb-4" id="edit_follow_' +
     tag.id +
     '" action="/follows/' +
     tag.id +
-    '" accept-charset="UTF-8" method="post">\n' +
-    '       <input name="utf8" type="hidden" value="✓">\n' +
-    '       <input type="hidden" name="_method" value="patch">\n' +
-    '       <input type="hidden" name="authenticity_token" value="' +
+    '" accept-charset="UTF-8" method="post">' +
+    '<input name="utf8" type="hidden" value="✓">' +
+    '<input type="hidden" name="_method" value="patch">' +
+    '<input type="hidden" name="authenticity_token" value="' +
     tag.token +
-    '">\n' +
-    '       <label for="follow_points">Follow Weight:</label>\n' +
-    '       <input step="any" required="required" type="number" value="' +
+    '">' +
+    '<label for="follow_points" class="fs-s flex-1 pr-2 color-base-60 align-right whitespace-nowrap">Follow weight:</label>' +
+    '<input step="any" class="crayons-textfield flex-1 fs-s" required="required" type="number" style="max-width:90px" value="' +
     tag.points +
-    '" name="follow[points]" id="follow_points">\n' +
-    '       <input type="submit" name="commit" value="Submit">\n' +
-    '     </form>\n' +
-    '   </h2>\n' +
+    '" name="follow[points]" id="follow_points">' +
+    '<button type="submit" class="crayons-btn crayons-btn--ghost crayons-btn--s" name="commit">Save</button>' +
+    '</form>' +
     '</div>'
   );
 }
