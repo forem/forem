@@ -29,6 +29,43 @@ const LETTERS_NUMBERS = /[a-z0-9]/i;
 class Tags extends Component {
   constructor(props) {
     super(props);
+    const { listing } = props;
+
+    const listingState = listing
+      ? {
+          additionalTags: {
+            jobs: [
+              'remote',
+              'remoteoptional',
+              'lgbtbenefits',
+              'greencard',
+              'senior',
+              'junior',
+              'intermediate',
+              '401k',
+              'fulltime',
+              'contract',
+              'temp',
+            ],
+            forhire: [
+              'remote',
+              'remoteoptional',
+              'lgbtbenefits',
+              'greencard',
+              'senior',
+              'junior',
+              'intermediate',
+              '401k',
+              'fulltime',
+              'contract',
+              'temp',
+            ],
+            forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
+            events: ['conference', 'meetup'],
+            collabs: ['paid', 'temp'],
+          },
+        }
+      : null;
 
     this.state = {
       selectedIndex: -1,
@@ -37,46 +74,8 @@ class Tags extends Component {
       cursorIdx: 0,
       prevLen: 0,
       showingRulesForTag: null,
+      ...listingState,
     };
-  }
-
-  componentDidMount() {
-    const { listing } = this.props;
-    if (listing === true) {
-      this.setState({
-        additionalTags: {
-          jobs: [
-            'remote',
-            'remoteoptional',
-            'lgbtbenefits',
-            'greencard',
-            'senior',
-            'junior',
-            'intermediate',
-            '401k',
-            'fulltime',
-            'contract',
-            'temp',
-          ],
-          forhire: [
-            'remote',
-            'remoteoptional',
-            'lgbtbenefits',
-            'greencard',
-            'senior',
-            'junior',
-            'intermediate',
-            '401k',
-            'fulltime',
-            'contract',
-            'temp',
-          ],
-          forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
-          events: ['conference', 'meetup'],
-          collabs: ['paid', 'temp'],
-        },
-      });
-    }
   }
 
   componentDidUpdate() {
