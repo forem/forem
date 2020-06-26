@@ -4,19 +4,6 @@ title: Contributing to Forem
 
 # Contributing to Forem
 
-- [Contributing](#contributing)
-  - [Where to contribute](#where-to-contribute)
-  - [How to contribute](#how-to-contribute)
-  - [Contribution guideline](#contribution-guidelines)
-    - [Create an issue](#create-an-issue)
-    - [Please include tests](#please-include-tests)
-    - [Code quality](#code-quality)
-    - [Create a pull request](#create-a-pull-request)
-    - [Pull requests reviews and "force pushing"](#pull-requests-reviews-and-force-pushing)
-  - [The bottom line](#the-bottom-line)
-
-## Contributing
-
 We expect contributors to abide by our underlying
 [code of conduct](https://dev.to/code-of-conduct). All discussions about this
 project must be respectful and harassment-free.
