@@ -61,11 +61,9 @@ RSpec.describe "User visits articles by tag", type: :system do
     end
 
     it "shows time buttons" do
-      within("#on-page-nav-controls") do
-        expect(page).to have_link("Week", href: "/t/javascript/top/week")
-        expect(page).to have_link("Infinity", href: "/t/javascript/top/infinity")
-        expect(page).to have_link("Latest", href: "/t/javascript/latest")
-      end
+      expect(page).to have_link("Week", href: "/t/javascript/top/week")
+      expect(page).to have_link("Infinity", href: "/t/javascript/top/infinity")
+      expect(page).to have_link("Latest", href: "/t/javascript/latest")
     end
 
     it "when user clicks 'week'", js: true, stub_elasticsearch: true do
