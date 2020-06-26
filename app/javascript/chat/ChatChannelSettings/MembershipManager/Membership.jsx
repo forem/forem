@@ -12,7 +12,7 @@ const Membership = ({
   const addAsModButton =
     membership.role === 'member' ? (
       <button
-        className="crayons-btn crayons-btn--s crayons-btn--ghost"
+        className="crayons-btn crayons-btn--s"
         type="button"
         onClick={handleUpdateMembershipRole}
         data-membership-id={membership.membership_id}
@@ -25,7 +25,7 @@ const Membership = ({
   const addAsMemberButton =
     membership.role === 'mod' ? (
       <button
-        className="crayons-btn crayons-btn--s crayons-btn--ghost"
+        className="crayons-btn crayons-btn--s"
         type="button"
         onClick={handleUpdateMembershipRole}
         data-membership-id={membership.membership_id}
@@ -50,9 +50,13 @@ const Membership = ({
           width="18"
           height="18"
           className="crayons-icon"
+          data-membership-id={membership.membership_id}
+          data-membership-status={membership.status}
         >
           <path
             fill="#4f5458"
+            data-membership-id={membership.membership_id}
+            data-membership-status={membership.status}
             d="M32.526 2.828L29.698 0 16.263 13.435 2.828 0 0 2.828l13.435 13.435L0 29.698l2.828 2.828 13.435-13.435 13.435 13.435 2.828-2.828-13.435-13.435z"
           />
         </svg>
@@ -62,9 +66,9 @@ const Membership = ({
   const dropdown =
     currentMembership.role === 'mod' ? (
       <span className="membership-actions">
+        {removeMembershipButton}
         {addAsModButton}
         {addAsMemberButton}
-        {removeMembershipButton}
       </span>
     ) : null;
 
