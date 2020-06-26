@@ -74,7 +74,6 @@ export default class Content extends Component {
     return (
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events
       <div
-        role="presentation"
         className="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
         id="chat_activecontent"
         onClick={onTriggerContent}
