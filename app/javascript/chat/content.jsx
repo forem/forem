@@ -72,6 +72,8 @@ export default class Content extends Component {
     };
 
     return (
+      // TODO: A button (role="button") cannot contain other interactive elements, i.e. buttons.
+      // TODO: These should have key click events as well.
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events
       <div
         className="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
