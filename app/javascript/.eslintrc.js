@@ -40,7 +40,7 @@ module.exports = {
   },
   plugins: ['import', 'react', 'jsx-a11y'],
   rules: {
-    'import/export': ['warn'],
+    // 'import/export': ['warn'],
     'import/order': ['error'],
     'import/prefer-default-export': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
@@ -54,6 +54,14 @@ module.exports = {
     ],
     'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
   },
+  overrides: [
+    {
+      files: ['**/index.js'], // Or *.test.js
+      rules: {
+        'import/export': 'off',
+      },
+    },
+  ],
   globals: {
     getCsrfToken: false,
     sendFetch: false,
