@@ -79,14 +79,16 @@ describe('<RequestedMembershipSection />', () => {
 
   it('should render the membership list', () => {
     const { requestedMemberships, currentMembershipRole } = getMembershipData();
-    const { getByText } = render(
+    const { queryByText } = render(
       <RequestedMembershipSection
         requestedMemberships={requestedMemberships}
         currentMembershipRole={currentMembershipRole}
       />,
     );
 
-    getByText('Joining Request');
-    getByText('+', { selector: 'button[data-membership-id]' });
+    expect(queryByText('Joining Request')).toBeDefined();
+    expect(
+      queryByText('+', { selector: 'button[data-membership-id]' }),
+    ).toBeDefined();
   });
 });

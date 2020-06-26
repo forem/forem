@@ -192,6 +192,7 @@ export class ReadingList extends Component {
         <div className="side-bar">
           <div className="widget filters">
             <input
+              aria-label="Search your list"
               onKeyUp={this.onSearchBoxType}
               placeHolder="search your list"
             />

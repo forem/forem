@@ -208,7 +208,7 @@ describe('<GithubRepos />', () => {
     global.Honeybadger = { notify: jest.fn() };
   });
 
-  it('should not have any a11y violations', async () => {
+  it('should have no a11y violations', async () => {
     fetch.mockResponse(JSON.stringify(getRepositories()));
 
     const { container } = render(<GithubRepos />);
@@ -223,17 +223,20 @@ describe('<GithubRepos />', () => {
 
     getByTitle('Loading GitHub repositories');
 
-    await waitForElement(() => getByTestId('github-repos-list'));
+    const repoList = await waitForElement(() =>
+      getByTestId('github-repos-list'),
+    );
 
     // No need to test it's contents as this is the <SingleRepo /> component
     // which has it's own tests.
+    expect(repoList).toBeDefined();
   });
 
   it('should render with no repositories', () => {
     fetch.mockResponse('[]');
-    const { getByTitle } = render(<GithubRepos />);
+    const { queryByTitle } = render(<GithubRepos />);
 
-    getByTitle('Loading GitHub repositories');
+    expect(queryByTitle('Loading GitHub repositories')).toBeDefined();
   });
 
   it('should render error message when repositories cannot be loaded', async () => {

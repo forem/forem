@@ -108,6 +108,22 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
     end
 
+    it "shows only one cover if basic feed style" do
+      create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
+
+      SiteConfig.feed_style = "basic"
+      get "/"
+      expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be 1
+    end
+
+    it "shows multiple cover images if rich feed style" do
+      create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
+
+      SiteConfig.feed_style = "rich"
+      get "/"
+      expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be > 1
+    end
+
     context "with campaign hero" do
       let_it_be_readonly(:hero_html) do
         create(

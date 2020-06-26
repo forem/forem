@@ -341,15 +341,9 @@
   right: 0;
   bottom: 0;
   padding: var(--su-2);
-  @supports (padding-bottom: constant(safe-area-inset-bottom)) {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  display: flex;
-  align-items: center;
   background: var(--body-bg);
   box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.1);
   z-index: 100;
-  justify-content: space-around;
 
   @media (min-width: $breakpoint-m) {
     padding: 0;
@@ -360,6 +354,19 @@
     box-shadow: none;
     justify-content: stretch;
     top: calc(var(--header-height) + var(--layout-padding) + 6vh);
+  }
+
+  &__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: env(safe-area-inset-bottom);
+
+    @media (min-width: $breakpoint-m) {
+      display: grid;
+      gap: var(--su-6);
+      justify-content: stretch;
+    }
   }
 }
 
