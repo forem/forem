@@ -219,13 +219,13 @@ class UserSubscriptionTag < LiquidTagBase
     }
   JAVASCRIPT
 
-  def initialize(_tag_name, cta_text, parsed_context)
+  def initialize(_tag_name, cta_text, parse_context)
     super
-    validate_data(parsed_context)
+    validate_data(parse_context)
 
     @cta_text = cta_text.strip
-    @source = parsed_context.partial_options[:source]
-    @user = parsed_context.partial_options[:user]
+    @source = parse_context.partial_options[:source]
+    @user = parse_context.partial_options[:user]
   end
 
   def render(_context)

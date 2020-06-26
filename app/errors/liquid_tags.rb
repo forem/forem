@@ -5,7 +5,7 @@ module LiquidTags
 
     # ParseContexts are options passed to initialize on a LiquidTag.
     # An error is raised if any of those options are invalid.
-    class InvalidParsedContext < Error
+    class InvalidParseContext < Error
     end
   end
 end
