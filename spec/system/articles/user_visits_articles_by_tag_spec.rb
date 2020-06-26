@@ -13,7 +13,6 @@ RSpec.describe "User visits articles by tag", type: :system do
   context "when user hasn't logged in" do
     context "when 2 articles" do
       before do
-        sign_in author
         visit "/t/javascript"
       end
 
@@ -25,14 +24,6 @@ RSpec.describe "User visits articles by tag", type: :system do
         within("h1") { expect(page).to have_button("Follow") }
       end
 
-      it "shows time buttons" do
-        within("#on-page-nav-controls") do
-          expect(page).to have_link("WEEK", href: "/t/javascript/top/week")
-          expect(page).to have_link("INFINITY", href: "/t/javascript/top/infinity")
-          expect(page).to have_link("LATEST", href: "/t/javascript/latest")
-        end
-      end
-
       it "shows correct articles count" do
         expect(page).to have_selector(".crayons-story", count: 2)
       end
@@ -41,16 +32,6 @@ RSpec.describe "User visits articles by tag", type: :system do
         within("#articles-list") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(article3.title)
-          expect(page).not_to have_text(article2.title)
-        end
-      end
-
-      it "when user clicks 'week'", js: true, stub_elasticsearch: true do
-        click_on "WEEK"
-
-        within("#articles-list") do
-          expect(page).to have_text(article.title)
-          expect(page).not_to have_text(article3.title)
           expect(page).not_to have_text(article2.title)
         end
       end
@@ -77,6 +58,24 @@ RSpec.describe "User visits articles by tag", type: :system do
       wait_for_javascript
 
       within("h1") { expect(page).to have_button("Following") }
+    end
+
+    it "shows time buttons" do
+      within("#on-page-nav-controls") do
+        expect(page).to have_link("WEEK", href: "/t/javascript/top/week")
+        expect(page).to have_link("INFINITY", href: "/t/javascript/top/infinity")
+        expect(page).to have_link("LATEST", href: "/t/javascript/latest")
+      end
+    end
+
+    it "when user clicks 'week'", js: true, stub_elasticsearch: true do
+      click_on "WEEK"
+
+      within("#articles-list") do
+        expect(page).to have_text(article.title)
+        expect(page).not_to have_text(article3.title)
+        expect(page).not_to have_text(article2.title)
+      end
     end
   end
 end

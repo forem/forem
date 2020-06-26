@@ -381,7 +381,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "renders proper page title for page 1" do
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
-        get "/t/#{tag.name}/page/2"
+        get "/t/#{tag.name}/page/1"
         expect(response.body).to include("<title>#{tag.name.capitalize} - ")
       end
 
