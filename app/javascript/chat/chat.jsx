@@ -1,4 +1,9 @@
-/* eslint-disable consistent-return,no-unused-vars,react/destructuring-assignment,react/no-access-state-in-setstate,react/button-has-type */
+/*
+  eslint-disable
+  consistent-return, no-unused-vars, react/destructuring-assignment,
+  react/no-access-state-in-setstate, react/button-has-type
+*/
+
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import ConfigImage from '../../assets/images/overflow-horizontal.svg';
@@ -38,6 +43,9 @@ import ActionMessage from './actionMessage';
 import Content from './content';
 import { VideoContent } from './videoContent';
 
+const NARROW_WIDTH_LIMIT = 767;
+const WIDE_WIDTH_LIMIT = 1600;
+
 export default class Chat extends Component {
   static propTypes = {
     pusherKey: PropTypes.number.isRequired,
@@ -74,7 +82,7 @@ export default class Chat extends Component {
       activeContent: {},
       fullscreenContent: null,
       videoPath: null,
-      expanded: window.innerWidth > 767,
+      expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
       isMobileDevice: typeof window.orientation !== 'undefined',
       subscribedPusherChannels: [],
       inviteChannels: [],
@@ -614,7 +622,7 @@ export default class Chat extends Component {
       this.setActiveContentState(activeChannelId, null);
       this.setState({
         fullscreenContent: null,
-        expanded: window.innerWidth > 767,
+        expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
       });
     }
   };
@@ -937,14 +945,14 @@ export default class Chat extends Component {
         this.setActiveContentState(activeChannelId, null);
         this.setState({
           fullscreenContent: null,
-          expanded: window.innerWidth > 767,
+          expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
         });
       } else if (target.dataset.content === 'fullscreen') {
         const mode =
           this.state.fullscreenContent === 'sidecar' ? null : 'sidecar';
         this.setState({
           fullscreenContent: mode,
-          expanded: mode === null || window.innerWidth > 1600,
+          expanded: mode === null || window.innerWidth > WIDE_WIDTH_LIMIT,
         });
       } else if (target.dataset.content === 'chat_channel_setting') {
         this.setActiveContent({
@@ -1060,12 +1068,8 @@ export default class Chat extends Component {
               are connected because you both follow each other. All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-              .
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -1074,19 +1078,11 @@ export default class Chat extends Component {
         return (
           <div className="chatmessage" style={{ color: 'grey' }}>
             <div className="chatmessage__body">
-              You have joined 
-              {' '}
-              {activeChannel.channel_name}
-              ! All interactions
-              {' '}
+              You have joined {activeChannel.channel_name}! All interactions{' '}
               <em>
                 <b>must</b>
-              </em>
-              {' '}
-              abide by the 
-              {' '}
-              <a href="/code-of-conduct">code of conduct</a>
-              .
+              </em>{' '}
+              abide by the <a href="/code-of-conduct">code of conduct</a>.
             </div>
           </div>
         );
@@ -1445,7 +1441,7 @@ export default class Chat extends Component {
     } else {
       this.setState({
         fullscreenContent: 'video',
-        expanded: window.innerWidth > 1600,
+        expanded: window.innerWidth > WIDE_WIDTH_LIMIT,
       });
     }
   };
