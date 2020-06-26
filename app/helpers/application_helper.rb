@@ -243,10 +243,9 @@ module ApplicationHelper
     HTMLEntities.new.decode(sanitize(str).to_str)
   end
 
-  def internal_config_label(method, content)
-    if method.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-      content = "#{content}*"
-    end
-    label(method, content, for: "site_config_#{method}")
+  def internal_config_label(method, content = nil)
+    content ||= method.to_s.humanize
+    content << "*" if method.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+    label_tag("site_config_#{method}", content)
   end
 end

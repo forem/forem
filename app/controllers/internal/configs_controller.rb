@@ -3,10 +3,6 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   before_action :extra_authorization_and_confirmation, only: [:create]
 
-  def show
-    @logo_svg = SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
-  end
-
   def create
     clean_up_params
 
