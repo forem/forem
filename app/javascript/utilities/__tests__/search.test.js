@@ -243,14 +243,15 @@ describe('Search utilities', () => {
       expect(fetchSearch('tags', { name: 'jav' })).toBeInstanceOf(Promise);
     });
 
-    it.only('should return response formatted as JSON', async () => {
-      fetch.mockResponse(JSON.stringify('{ results: [] }'));
+    it('should return response formatted as JSON', async () => {
+      const expected = { results: [] };
+
+      fetch.mockResponse(JSON.stringify({ results: [] }));
 
       const response = await fetchSearch('tags', { name: 'jav' });
-      debugger;
 
       expect(response).toBeInstanceOf(Object);
-      expect(response).toMatchObject({ results: [] });
+      expect(response).toMatchObject(expected);
     });
   });
 
