@@ -2,12 +2,12 @@ module Api
   module V0
     class ArticlesController < ApiController
       before_action :authenticate!, only: %i[create update me]
-      before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
+      before_action -> { doorkeeper_authorize! :public }, only: %w[index show show_by_slug], if: -> { doorkeeper_token }
       before_action -> { doorkeeper_authorize! :write_articles }, only: %w[create update], if: -> { doorkeeper_token }
 
       before_action :validate_article_param_is_hash, only: %w[create update]
 
-      before_action :set_cache_control_headers, only: %i[index show]
+      before_action :set_cache_control_headers, only: %i[index show show_by_slug]
 
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
@@ -19,21 +19,23 @@ module Api
       end
 
       def show
-        article_attr = Article.published.
+        @article = Article.published.
           includes(:user).
-          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION)
-
-        @article = if params[:id].to_i != 0
-                     article_attr.
-                       find(params[:id]).
-                       decorate
-                   else
-                     article_attr.
-                       find_by!(slug: params[:id]).
-                       decorate
-                   end
+          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION).
+          find(params[:id]).
+          decorate
 
         set_surrogate_key_header @article.record_key
+      end
+
+      def show_by_slug
+        @article = Article.published.
+          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION).
+          find_by!(path: "/#{params[:username]}/#{params[:slug]}").
+          decorate
+
+        set_surrogate_key_header @article.record_key
+        render "show"
       end
 
       def create
