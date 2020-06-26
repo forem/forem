@@ -2,8 +2,8 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import he from 'he';
 
-import Navigation from './Navigation';
 import { getContentOfToken } from '../utilities';
+import Navigation from './Navigation';
 
 class FollowUsers extends Component {
   constructor(props) {
@@ -140,7 +140,10 @@ class FollowUsers extends Component {
     const canSkip = selectedUsers.length === 0;
 
     return (
-      <div data-testid="onboarding-follow-users" className="onboarding-main crayons-modal">
+      <div
+        data-testid="onboarding-follow-users"
+        className="onboarding-main crayons-modal"
+      >
         <div className="crayons-modal__box overflow-auto">
           <Navigation
             prev={prev}
@@ -155,7 +158,10 @@ class FollowUsers extends Component {
               <h2 className="subtitle">Let&apos;s review a few things first</h2>
             </header>
 
-            <div data-testid="onboarding-users" className="onboarding-modal-scroll-container">
+            <div
+              data-testid="onboarding-users"
+              className="onboarding-modal-scroll-container"
+            >
               {users.map((user) => (
                 <button
                   data-testid="onboarding-user-button"
@@ -181,7 +187,11 @@ class FollowUsers extends Component {
                       {he.unescape(user.summary || '')}
                     </p>
                   </div>
-                  <button data-testid="onboarding-user-following-status" type="button" className="user-following-status">
+                  <button
+                    data-testid="onboarding-user-following-status"
+                    type="button"
+                    className="user-following-status"
+                  >
                     {selectedUsers.includes(user) ? 'Following' : 'Follow'}
                   </button>
                 </button>
