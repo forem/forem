@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import Navigation from './Navigation';
 import { userData, getContentOfToken, updateOnboarding } from '../utilities';
+import Navigation from './Navigation';
 
 /* eslint-disable camelcase */
 class ProfileForm extends Component {
@@ -74,7 +74,10 @@ class ProfileForm extends Component {
     const { canSkip } = this.state;
 
     return (
-      <div data-testid="onboarding-profile-form" className="onboarding-main crayons-modal">
+      <div
+        data-testid="onboarding-profile-form"
+        className="onboarding-main crayons-modal"
+      >
         <div className="crayons-modal__box">
           <Navigation
             prev={prev}
@@ -86,12 +89,12 @@ class ProfileForm extends Component {
           <div className="onboarding-content about">
             <header className="onboarding-content-header">
               <h1 className="title">Build your profile</h1>
-              <h2 data-testid="onboarding-profile-subtitle" className="subtitle">
+              <h2
+                data-testid="onboarding-profile-subtitle"
+                className="subtitle"
+              >
                 Tell us a little bit about yourself — this is how others will
-                see you on
-                {' '}
-                {communityConfig.communityName}
-                . You’ll always be
+                see you on {communityConfig.communityName}. You’ll always be
                 able to edit this later in your Settings.
               </h2>
             </header>
@@ -166,7 +169,7 @@ ProfileForm.propTypes = {
   currentSlideIndex: PropTypes.func.isRequired,
   communityConfig: PropTypes.shape({
     communityName: PropTypes.string.isRequired,
-    communityDescription: PropTypes.string.isRequired
+    communityDescription: PropTypes.string.isRequired,
   }),
 };
 

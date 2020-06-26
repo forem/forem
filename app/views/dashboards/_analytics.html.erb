@@ -12,12 +12,12 @@
   </div>
 
   <div class="crayons-card crayons-card--secondary p-3 m:p-6">
-    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= @user.listings.count %></strong>
+    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= @user.listings.size %></strong>
     <span class="color-base-60 block">Listings created</span>
   </div>
 
   <div class="crayons-card crayons-card--secondary p-3 m:p-6">
-    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= @user.credits.count %></strong>
+    <strong class="fs-2xl m:fs-3xl lh-tight color-base-90"><%= @user.unspent_credits_count %></strong>
     <span class="color-base-60 block">Credits available</span>
   </div>
 </div>

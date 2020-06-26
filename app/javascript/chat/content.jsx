@@ -5,59 +5,6 @@ import ChannelRequest from './channelRequest';
 import RequestManager from './requestManager';
 import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
 
-function display(resource) {
-  switch (resource.type_of) {
-    case 'loading-user':
-      return <div title="Loading user" className="loading-user" />;
-
-    case 'article':
-      return <Article resource={resource} />;
-
-    case 'channel-request':
-      return (
-        <ChannelRequest
-          resource={resource.data}
-          handleJoiningRequest={resource.handleJoiningRequest}
-        />
-      );
-
-    case 'channel-request-manager':
-      return (
-        <RequestManager
-          resource={resource.data}
-          handleRequestRejection={resource.handleRequestRejection}
-          handleRequestApproval={resource.handleRequestApproval}
-        />
-      );
-
-    case 'chat-channel-setting':
-      return (
-        <ChatChannelSettings
-          resource={resource.data}
-          activeMembershipId={resource.activeMembershipId}
-        />
-      );
-
-    default:
-      return null;
-  }
-}
-
-function smartSvgIcon(content, d) {
-  return (
-    <svg
-      data-content={content}
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      width="24"
-      height="24"
-    >
-      <path data-content={content} fill="none" d="M0 0h24v24H0z" />
-      <path data-content={content} d={d} />
-    </svg>
-  );
-}
-
 export default class Content extends Component {
   static propTypes = {
     resource: PropTypes.shape({
@@ -138,7 +85,6 @@ export default class Content extends Component {
           type="button"
           className="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
           data-content="exit"
-          type="button"
           title="exit"
         >
           {smartSvgIcon(
@@ -151,7 +97,6 @@ export default class Content extends Component {
           className="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
           data-content="fullscreen"
           style={{ left: '39px' }}
-          type="button"
           title="fullscreen"
         >
           {' '}

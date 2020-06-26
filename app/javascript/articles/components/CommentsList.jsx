@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Button } from '@crayons';
 import { CommentListItem } from './CommentListItem';
+import { Button } from '@crayons';
 
 const numberOfCommentsToShow = 2;
 
