@@ -16,4 +16,17 @@ RSpec.describe "Admin manages configuration", type: :system do
       expect(find(selector).text).to end_with("*")
     end
   end
+
+  context "when mandatory options are missing" do
+    it "does not show the banner on the config page" do
+      allow(SiteConfig).to receive(:tagline).and_return(nil)
+      expect(page).not_to have_content("Setup not completed yet, please visit the configuration page.")
+    end
+
+    it "does show the banner on other pages" do
+      allow(SiteConfig).to receive(:tagline).and_return(nil)
+      visit root_path
+      expect(page).to have_content("Setup not completed yet, please visit the configuration page.")
+    end
+  end
 end
