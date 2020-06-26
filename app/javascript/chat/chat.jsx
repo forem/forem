@@ -36,7 +36,7 @@ import Compose from './compose';
 import Message from './message';
 import ActionMessage from './actionMessage';
 import Content from './content';
-import VideoContent from './videoContent';
+import { VideoContent } from './videoContent';
 
 export default class Chat extends Component {
   static propTypes = {
