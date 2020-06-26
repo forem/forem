@@ -14,7 +14,7 @@ const smartSvgIcon = (content, d) => (
 );
 
 /**
- * Disaplys video in Connect.
+ * Displays video in Connect.
  *
  * @param {string} props.videoPath The URL of a video
  * @param {function} props.onTriggerVideoContent Fires when a video is clicked on
