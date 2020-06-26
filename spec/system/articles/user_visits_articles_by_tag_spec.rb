@@ -12,7 +12,10 @@ RSpec.describe "User visits articles by tag", type: :system do
 
   context "when user hasn't logged in" do
     context "when 2 articles" do
-      before { visit "/t/javascript" }
+      before do
+        sign_in author
+        visit "/t/javascript"
+      end
 
       it "shows the header", js: true, stub_elasticsearch: true do
         within("h1") { expect(page).to have_text("javascript") }
