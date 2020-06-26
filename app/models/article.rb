@@ -40,6 +40,7 @@ class Article < ApplicationRecord
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
   has_many :rating_votes
+  has_many :review_items, as: :reviewable, inverse_of: :reviewable, dependent: :destroy
   has_many :page_views
 
   validates :slug, presence: { if: :published? }, format: /\A[0-9a-z\-_]*\z/,

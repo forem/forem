@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_18_212422) do
+ActiveRecord::Schema.define(version: 2020_06_24_185243) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -999,6 +999,20 @@ ActiveRecord::Schema.define(version: 2020_06_18_212422) do
     t.index ["user_id"], name: "index_response_templates_on_user_id"
   end
 
+  create_table "review_items", force: :cascade do |t|
+    t.string "action_taken"
+    t.datetime "created_at", precision: 6, null: false
+    t.boolean "read", default: false, null: false
+    t.bigint "reviewable_id", null: false
+    t.string "reviewable_type", null: false
+    t.boolean "reviewed", default: false, null: false
+    t.bigint "reviewer_id"
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["reviewable_type", "reviewable_id"], name: "index_on_reviewable_type_and_id"
+    t.index ["reviewer_id", "reviewable_id", "reviewable_type"], name: "index_on_reviewer_id_reviewable_type_and_id", unique: true
+    t.index ["reviewer_id"], name: "index_review_items_on_reviewer_id"
+  end
+
   create_table "roles", id: :serial, force: :cascade do |t|
     t.datetime "created_at"
     t.string "name"
@@ -1344,6 +1358,7 @@ ActiveRecord::Schema.define(version: 2020_06_18_212422) do
   add_foreign_key "page_views", "articles", on_delete: :cascade
   add_foreign_key "podcasts", "users", column: "creator_id"
   add_foreign_key "response_templates", "users"
+  add_foreign_key "review_items", "users", column: "reviewer_id"
   add_foreign_key "sponsorships", "organizations"
   add_foreign_key "sponsorships", "users"
   add_foreign_key "tag_adjustments", "articles", on_delete: :cascade

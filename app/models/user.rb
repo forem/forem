@@ -91,6 +91,7 @@ class User < ApplicationRecord
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
   has_many :rating_votes, dependent: :destroy
   has_many :reactions, dependent: :destroy
+  has_many :review_items, foreign_key: :reviewer_id, inverse_of: :reviewer, dependent: :nullify
   has_many :reporter_feedback_messages, class_name: "FeedbackMessage", inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
   has_many :response_templates, inverse_of: :user, dependent: :destroy
   has_many :tweets, dependent: :destroy
