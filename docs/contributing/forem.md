@@ -47,7 +47,8 @@ mentioning us on the issue.
 **Documentation** is almost always a great place to start contributing to a new
 project. DEV is an Open Source, community-driven project. Therefore, providing
 and maintaining quality documentation is one of our most important jobs. You can
-find more information in our [docs guide](https://docs.dev.to/contributing)!
+find more information in our
+[docs guide](https://docs.dev.to/contributing/docs)!
 
 **Refactoring** (improving the code without modifying behavior) is a great place
 to help out! Generally speaking, you can rely on existing tests to ensure that
