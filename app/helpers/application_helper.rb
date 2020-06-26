@@ -242,4 +242,11 @@ module ApplicationHelper
     # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)
   end
+
+  def internal_config_label(method, content)
+    if method.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+      content = "#{content}*"
+    end
+    label(method, content, for: "site_config_#{method}")
+  end
 end

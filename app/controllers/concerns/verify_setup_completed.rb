@@ -17,7 +17,6 @@ module VerifySetupCompleted
     suggested_tags
     suggested_users
   ].freeze
-  private_constant :MANDATORY_CONFIGS
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
