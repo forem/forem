@@ -310,16 +310,10 @@
                                class: "form-control",
                                value: SiteConfig.main_social_image,
                                placeholder: "https://image.url" %>
-              <div class="row mt-2">
-                <div class="col-12">
-                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" />
-                </div>
-                <div class="col-12">
-                  <div class="alert alert-info">
-                    <h5>Used as the main image in social networks and OpenGraph</h5>
-                  </div>
-                </div>
-              </div>
+              <div class="alert alert-info">Used as the main image in social networks and OpenGraph </div>
+              <% if SiteConfig.main_social_image.present? %>
+                <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" />
+              <% end %>
 
               <div class="form-group">
                 <%= internal_config_label :favicon_url, "Favicon URL" %>
@@ -337,7 +331,9 @@
                                  value: SiteConfig.logo_png,
                                  placeholder: "https://image.url/image.png" %>
                 <div class="alert alert-info">Minimum 1024px, used for PWA etc.</div>
-                <img class="preview" src="<%= SiteConfig.logo_png %>" />
+                <% if SiteConfig.logo_png.present? %>
+                  <img class="preview" src="<%= SiteConfig.logo_png %>" />
+                <% end %>
               </div>
               <div class="form-group">
                 <%= internal_config_label :logo_svg %>
@@ -357,14 +353,10 @@
                                class: "form-control",
                                value: SiteConfig.secondary_logo_url,
                                placeholder: "https://image.url" %>
-              <div class="row mt-2">
-                <div class="col-12">
-                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" />
-                </div>
-                <div class="col-12">
-                  <div class="alert alert-info"> Used as the primary sticker image </div>
-                </div>
-              </div>
+              <div class="alert alert-info">Used as the primary sticker image </div>
+              <% if SiteConfig.secondary_logo_url.present? %>
+                <img alt="secondary logo image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" />
+              <% end %>
             </div>
           </div>
         </div>
