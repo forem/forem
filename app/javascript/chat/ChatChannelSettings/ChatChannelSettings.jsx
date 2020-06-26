@@ -1,4 +1,4 @@
-import { h, Component, render } from 'preact';
+import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
 import {
@@ -12,13 +12,9 @@ import {
   updateMembershipRole,
 } from '../actions/chat_channel_setting_actions';
 
-import { Snackbar, addSnackbarItem } from '../../Snackbar';
+import { addSnackbarItem } from '../../Snackbar';
 import ManageActiveMembership from './MembershipManager/ManageActiveMembership';
 import ChatChannelSettingsSection from './ChatChannelSettingsSection';
-
-const snackZone = document.getElementById('snack-zone');
-
-render(<Snackbar lifespan="3" />, snackZone, null);
 
 export default class ChatChannelSettings extends Component {
   static propTypes = {

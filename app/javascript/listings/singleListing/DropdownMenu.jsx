@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { h, Component, createRef } from 'preact';
 // eslint-disable-next-line import/no-unresolved
-import ThreeDotsIcon from 'images/three-dots.svg';
+import ThreeDotsIcon from 'images/overflow-horizontal.svg';
 import listingPropTypes from './listingPropTypes';
 
 const MenuButton = ({ onClick }) => (

@@ -72,15 +72,13 @@
   }
 
   &__content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: var(--article-padding-y) var(--article-padding-x);
     overflow: auto;
     height: calc(
       100vh - var(--header-height) - var(--article-form-actions-height)
     );
     box-shadow: 0 0 0 1px var(--card-border);
+    display: flex;
+    flex-direction: column;
 
     @media (min-width: $breakpoint-m) {
       grid-column-end: span 2;
@@ -146,7 +144,7 @@
   }
 
   &__body {
-    flex: 1 auto;
+    flex: 1 0 auto;
     position: relative;
     outline: none;
     display: flex;
@@ -162,7 +160,7 @@
 
   &__toolbar {
     position: sticky;
-    top: calc(var(--article-padding-y) * -1);
+    top: 0;
     background: var(--base-0);
     padding: var(--su-2) var(--article-padding-x);
     margin: calc(var(--article-padding-y) * -1)
@@ -207,7 +205,6 @@
 
   &__tagsfield {
     position: relative;
-    margin-bottom: calc(var(--article-padding-y) * 2);
   }
 
   &__help {

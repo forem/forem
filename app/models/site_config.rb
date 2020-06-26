@@ -45,7 +45,7 @@ class SiteConfig < RailsSettings::Base
   field :periodic_email_digest_min, type: :integer, default: 2
 
   # Jobs
-  field :jobs_url, type: :string, default: "https://jobs.dev.to/"
+  field :jobs_url, type: :string, default: "https://jobs.dev.to"
   field :display_jobs_banner, type: :boolean, default: false
 
   # Google Analytics Reporting API v4
@@ -63,6 +63,7 @@ class SiteConfig < RailsSettings::Base
   # Mascot
   field :mascot_user_id, type: :integer, default: 1
   field :mascot_image_url, type: :string, default: "https://dev-to-uploads.s3.amazonaws.com/i/y5767q6brm62skiyywvc.png"
+  field :mascot_footer_image_url, type: :string, default: "https://dev-to-uploads.s3.amazonaws.com/i/wmv3mtusjwb3r13d5h2f.png"
   field :mascot_image_description, type: :string, default: "Sloan, the sloth mascot"
 
   # Meta keywords
@@ -106,6 +107,7 @@ class SiteConfig < RailsSettings::Base
   field :rate_limit_send_email_confirmation, type: :integer, default: 2
   field :rate_limit_feedback_message_creation, type: :integer, default: 5
   field :rate_limit_user_update, type: :integer, default: 5
+  field :rate_limit_user_subscription_creation, type: :integer, default: 3
 
   # Social Media
   field :staff_user_id, type: :integer, default: 1
@@ -120,6 +122,10 @@ class SiteConfig < RailsSettings::Base
 
   # Tags
   field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
+
+  # User Experience
+  # These are the default UX settings, which can be overridded by individual user preferences.
+  field :feed_style, type: :string, default: "basic" # basic (current default), rich (cover image on all posts), compact (more minimal)
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date

@@ -1,6 +1,6 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render, waitForElement } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import RequestManager from '../requestManager';
 
 const data = [
@@ -10,17 +10,57 @@ const data = [
   },
 ];
 
-const getRequestManager = (resource) => <RequestManager resource={resource} />;
-
 describe('<RequestManager />', () => {
-  it('should render and test snapshot', () => {
-    const tree = render(getRequestManager(data));
-    expect(tree).toMatchSnapshot();
+  it('should have no a11y violations', async () => {
+    const { container } = render(
+      <RequestManager
+        resource={data}
+        handleRequestRejection={jest.fn()}
+        handleRequestApproval={jest.fn()}
+      />,
+    );
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
-  it('should have the proper elements, attributes and values', () => {
-    const context = shallow(getRequestManager(data));
+  it('should have the proper elements', () => {
+    const { getByTestId, getByText } = render(
+      <RequestManager
+        resource={data}
+        handleRequestRejection={jest.fn()}
+        handleRequestApproval={jest.fn()}
+      />,
+    );
 
-    expect(context.find('.request_manager_header').exists()).toEqual(true);
+    getByText(/Joining Request/i);
+    getByText(/Manage request coming to all the channels/i);
+    const request = getByTestId('request');
+    expect(request.textContent).toContain('Reject');
+    expect(request.textContent).toContain('Accept');
+  });
+
+  it.skip('should call the relavant handlers when the buttons are clicked', async () => {
+    const handleRequestRejection = jest.fn();
+    const handleRequestApproval = jest.fn();
+
+    const { getByText } = render(
+      <RequestManager
+        resource={data}
+        handleRequestRejection={jest.fn()}
+        handleRequestApproval={jest.fn()}
+      />,
+    );
+    const rejectButton = getByText(/Reject/i);
+    const acceptButton = getByText(/Accept/i);
+
+    rejectButton.click();
+    await waitForElement(() =>
+      expect(handleRequestRejection).toHaveBeenCalledTimes(1),
+    );
+
+    acceptButton.click();
+    await waitForElement(() =>
+      expect(handleRequestApproval).toHaveBeenCalledTimes(1),
+    );
   });
 });

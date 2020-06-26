@@ -15,7 +15,11 @@ const ActiveMembershipSection = ({
   const activeMembershipList = activeMemberships.slice(0, 4);
 
   return (
-    <div className="p-4 grid gap-2 crayons-card mb-4">
+    <div
+      data-testid="active-memberships"
+      className="p-4 grid gap-2 crayons-card mb-4"
+      data-active-count={activeMemberships ? activeMemberships.length : 0}
+    >
       <h3 className="mb-2 active_members">Members</h3>
       {activeMembershipList && activeMembershipList.length > 0
         ? activeMembershipList.map((activeMembership) => (

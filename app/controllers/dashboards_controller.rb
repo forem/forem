@@ -22,7 +22,11 @@ class DashboardsController < ApplicationController
       @articles = target.articles.includes(:organization)
     end
 
+    @reactions_count = @articles.sum(&:public_reactions_count)
+    @page_views_count = @articles.sum(&:page_views_count)
+
     @articles = @articles.sorting(params[:sort]).decorate
+    @articles = Kaminari.paginate_array(@articles).page(params[:page]).per(50)
 
     # Updates analytics in background if appropriate
     update_analytics = @articles && SiteConfig.ga_fetch_rate < 50 # Rate limited, sometimes we throttle down

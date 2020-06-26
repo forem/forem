@@ -9,14 +9,21 @@ RSpec.describe "GithubRepos", type: :request do
     end
   end
   let(:user) { create(:user, :with_identity, identities: ["github"]) }
-  let(:repo) { build(:github_repo, user: user) }
+  # Using explicit name attributes soordering in controller is stable
+  let(:repo1) { build(:github_repo, user: user, name: "A", featured: false) }
+  let(:repo2) { build(:github_repo, user: user, name: "B", featured: true) }
   let(:stubbed_github_repos) do
-    repo_params = repo.attributes.merge(
-      id: repo.github_id_code,
+    repo1_params = repo1.attributes.merge(
+      id: repo1.github_id_code,
       html_url: Faker::Internet.url,
     )
 
-    [OpenStruct.new(repo_params)]
+    repo2_params = repo2.attributes.merge(
+      id: repo2.github_id_code,
+      html_url: Faker::Internet.url,
+    )
+
+    [OpenStruct.new(repo1_params), OpenStruct.new(repo2_params)]
   end
   let(:github_client) do
     instance_double(
@@ -76,10 +83,13 @@ RSpec.describe "GithubRepos", type: :request do
       it "returns repositories with the correct JSON representation" do
         get github_repos_path, headers: headers
 
-        response_repo = response.parsed_body.first
-        expect(response_repo["name"]).to eq(repo.name)
-        expect(response_repo["fork"]).to eq(repo.fork)
-        expect(response_repo["featured"]).to be(false)
+        response_repo1, response_repo2 = response.parsed_body
+        expect(response_repo1["name"]).to eq(repo1.name)
+        expect(response_repo1["fork"]).to eq(repo1.fork)
+        expect(response_repo1["featured"]).to be(false)
+        expect(response_repo2["name"]).to eq(repo2.name)
+        expect(response_repo2["fork"]).to eq(repo2.fork)
+        expect(response_repo2["featured"]).to be(true)
       end
 
       it "deletes repositories which are no longer publicly accessible" do

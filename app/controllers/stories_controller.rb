@@ -137,7 +137,7 @@ class StoriesController < ApplicationController
     @num_published_articles = if @tag_model.requires_approval?
                                 Article.published.cached_tagged_by_approval_with(@tag).size
                               else
-                                Article.published.cached_tagged_with(@tag).where("score > 2").size
+                                cached_tagged_count
                               end
     @number_of_articles = user_signed_in? ? 5 : SIGNED_OUT_RECORD_COUNT
     @stories = Articles::Feed.new(number_of_articles: @number_of_articles, tag: @tag, page: @page).
@@ -486,5 +486,11 @@ class StoriesController < ApplicationController
     return :relevance unless params[:sort_by] == "published_at" && params[:sort_direction].present?
 
     params[:sort_direction] == "desc" ? :newest : :oldest
+  end
+
+  def cached_tagged_count
+    Rails.cache.fetch("article-cached-tagged-count-#{@tag}", expires_in: 2.hours) do
+      Article.published.cached_tagged_with(@tag).where("score > 2").size
+    end
   end
 end

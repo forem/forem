@@ -1,0 +1,85 @@
+.ltag__user-subscription-tag {
+  .ltag__user-subscription-tag__container {
+    display: flex;
+    justify-content: center;
+    border: 2px solid black;
+    box-shadow: 4px 4px 0 black;
+  }
+
+  #profile-images {
+    text-align: center;
+
+    img {
+      border-radius: 50%;
+    }
+  }
+
+  .ltag__user-subscription-tag__subscriber-profile-image {
+    display: none;
+  }
+
+  .ltag__user-subscription-tag__content {
+    margin: 1rem auto;
+  }
+
+  .ltag__user-subscription-tag__cta-text {
+    text-align: center;
+  }
+
+  .ltag__user-subscription-tag__signed-out {
+    text-align: center;
+  }
+
+  .ltag__user-subscription-tag__response {
+    display: none;
+  }
+
+  #sign-in-btn {
+    width: max-content;
+  }
+
+  .ltag__user-subscription-tag__signed-in {
+    text-align: center;
+    display: none;
+  }
+
+  #logged-in-text,
+  #apple-auth-message {
+    text-align: center;
+  }
+
+  .ltag__user-subscription-tag__subscriber-email {
+    font-weight: bold;
+  }
+
+  #user-subscription-confirmation-modal {
+    display: none;
+  }
+
+  #subscriber-apple-auth {
+    display: none;
+  }
+
+  .crayons-modal__overlay {
+    position: fixed;
+    z-index: 400;
+  }
+
+  .ltag__user-subscriptino-tag__confirmation-buttons {
+    text-align: center;
+  }
+
+  #sign-in-btn,
+  #subscribe-btn {
+    margin: 0 auto;
+    display: block;
+  }
+
+  #confirmation-btn,
+  #cancel-btn {
+    width: max-content;
+    display: inline-block;
+    margin-right: 8px;
+    margin-bottom: 1rem;
+  }
+}

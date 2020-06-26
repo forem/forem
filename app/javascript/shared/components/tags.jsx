@@ -433,6 +433,8 @@ class Tags extends Component {
       <div className={`${classPrefix}__tagswrapper`}>
         {listing && <label htmlFor="Tags">Tags</label>}
         <input
+          data-testid="tag-input"
+          aria-label="Post Tags"
           id="tag-input"
           type="text"
           ref={(t) => {

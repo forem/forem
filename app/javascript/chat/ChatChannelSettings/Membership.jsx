@@ -20,7 +20,6 @@ const Membership = ({
         <span className="crayons-avatar crayons-avatar--l mr-3">
           <img
             className="crayons-avatar__image align-middle"
-            role="presentation"
             src={membership.image}
             alt={`${membership.name} profile`}
           />

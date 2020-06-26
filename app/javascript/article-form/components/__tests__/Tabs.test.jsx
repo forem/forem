@@ -1,25 +1,77 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { Tabs } from '../Tabs';
 
 describe('<Tabs />', () => {
-  it('renders properly', () => {
-    const tree = render(<Tabs onPreview={null} previewShowing={false} />);
-    expect(tree).toMatchSnapshot();
-  });
-
-  it('highlights the current tab', () => {
-    const container1 = shallow(<Tabs onPreview={null} previewShowing />);
-    expect(container1.find('.crayons-tabs__item--current').text()).toEqual(
-      'Preview',
-    );
-
-    const container2 = shallow(
+  it('should have no a11y violations', async () => {
+    const { container } = render(
       <Tabs onPreview={null} previewShowing={false} />,
     );
-    expect(container2.find('.crayons-tabs__item--current').text()).toEqual(
-      'Edit',
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
+  it('renders two buttons', () => {
+    const { queryByText } = render(
+      <Tabs onPreview={null} previewShowing={false} />,
     );
+
+    expect(queryByText(/preview/i, { selector: 'button' })).toBeDefined();
+    expect(queryByText(/edit/i, { selector: 'button' })).toBeDefined();
+  });
+
+  describe('highlights the current tab', () => {
+    it('when preview is selected', () => {
+      const { getByText } = render(
+        <Tabs onPreview={null} previewShowing={true} />,
+      );
+
+      expect(
+        getByText(/preview/i, { selector: 'button' }).classList.contains(
+          `crayons-tabs__item--current`,
+        ),
+      ).toEqual(true);
+      expect(
+        getByText(/edit/i, { selector: 'button' }).classList.contains(
+          `crayons-tabs__item--current`,
+        ),
+      ).toEqual(false);
+    });
+
+    it('should make the edit button the current button when not in preview mode', () => {
+      const { getByText } = render(
+        <Tabs onPreview={null} previewShowing={false} />,
+      );
+
+      expect(
+        getByText(/edit/i, { selector: 'button' }).classList.contains(
+          `crayons-tabs__item--current`,
+        ),
+      ).toEqual(true);
+      expect(
+        getByText(/preview/i, { selector: 'button' }).classList.contains(
+          `crayons-tabs__item--current`,
+        ),
+      ).toEqual(false);
+    });
+
+    it('should make the preview button the current button when in preview mode', () => {
+      const { getByText } = render(
+        <Tabs onPreview={null} previewShowing={true} />,
+      );
+
+      expect(
+        getByText(/edit/i, { selector: 'button' }).classList.contains(
+          `crayons-tabs__item--current`,
+        ),
+      ).toEqual(false);
+      expect(
+        getByText(/preview/i, { selector: 'button' }).classList.contains(
+          `crayons-tabs__item--current`,
+        ),
+      ).toEqual(true);
+    });
   });
 });

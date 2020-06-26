@@ -1,18 +1,20 @@
 import { h } from 'preact';
-import render from 'preact-render-to-json';
-import { shallow } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { Close } from '../Close';
 
 describe('<Close />', () => {
-  it('renders properly', () => {
-    const tree = render(<Close />);
-    expect(tree).toMatchSnapshot();
+  it('should have no a11y violations', async () => {
+    const { container } = render(<Close />);
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
-  it('shows the modal', () => {
-    const container = shallow(<Close />);
-    expect(container.find('.crayons-article-form__close').exists()).toEqual(
-      true,
-    );
+  it('renders the close button', () => {
+    const { getByTitle } = render(<Close />);
+    const icon = getByTitle(/Close the editor/i);
+
+    expect(icon.closest('a').getAttribute('href')).toEqual('/');
   });
 });

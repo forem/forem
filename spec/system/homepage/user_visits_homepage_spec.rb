@@ -6,17 +6,11 @@ RSpec.describe "User visits a homepage", type: :system do
   before { create(:tag, name: "webdev") }
 
   context "when user hasn't logged in" do
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page", js: true, percy: true do
-      visit "/"
-      Percy.snapshot(page, name: "Visits homepage: logged out user")
-    end
-
     it "shows the sign-in block" do
       visit "/"
       within ".signin-cta-widget" do
-        expect(page).to have_text("Sign In With Twitter")
-        expect(page).to have_text("Sign In With GitHub")
+        expect(page).to have_text("Sign In with Twitter")
+        expect(page).to have_text("Sign In with GitHub")
       end
     end
 
@@ -45,12 +39,6 @@ RSpec.describe "User visits a homepage", type: :system do
 
     before do
       sign_in(user)
-    end
-
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page", js: true, percy: true do
-      visit "/"
-      Percy.snapshot(page, name: "Visits homepage: logged in user")
     end
 
     it "offers to follow tags", js: true do

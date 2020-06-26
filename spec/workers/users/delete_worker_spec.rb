@@ -1,10 +1,14 @@
 require "rails_helper"
 
 RSpec.describe Users::DeleteWorker, type: :worker do
+  let(:worker) { subject }
+  let(:mailer_class) { NotifyMailer }
+  let(:mailer) { double }
+  let(:message_delivery) { double }
+
   describe "#perform" do
     let(:user) { create(:user) }
     let(:delete) { Users::Delete }
-    let(:worker) { subject }
 
     before do
       allow(delete).to receive(:call)
@@ -29,9 +33,15 @@ RSpec.describe Users::DeleteWorker, type: :worker do
       end
 
       it "sends the correct notification" do
-        allow(NotifyMailer).to receive(:account_deleted_email).and_call_original
+        allow(mailer_class).to receive(:with).and_return(mailer)
+        allow(mailer).to receive(:account_deleted_email).and_return(message_delivery)
+        allow(message_delivery).to receive(:deliver_now)
+
         worker.perform(user.id)
-        expect(NotifyMailer).to have_received(:account_deleted_email).with(user)
+
+        expect(mailer_class).to have_received(:with).with(user: user)
+        expect(mailer).to have_received(:account_deleted_email)
+        expect(message_delivery).to have_received(:deliver_now)
       end
     end
 

@@ -101,7 +101,7 @@ module Moderator
 
       user.add_role :trusted
       user.update(email_community_mod_newsletter: true)
-      NotifyMailer.trusted_role_email(user).deliver
+      NotifyMailer.with(user: user).trusted_role_email.deliver_now
       MailchimpBot.new(user).manage_community_moderator_list
     end
 

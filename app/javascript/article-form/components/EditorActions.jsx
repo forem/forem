@@ -1,7 +1,7 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { Button } from '@crayons';
 import { Options } from './Options';
+import { Button } from '@crayons';
 
 const Icon = () => (
   <svg
@@ -77,9 +77,7 @@ export class EditorActions extends Component {
             className="mr-2 whitespace-nowrap"
             onClick={onSaveDraft}
           >
-            Save 
-            {' '}
-            <span className="hidden s:inline">draft</span>
+            Save <span className="hidden s:inline">draft</span>
           </Button>
         )}
         {version === 'v2' && (
@@ -109,9 +107,7 @@ export class EditorActions extends Component {
             className="whitespace-nowrap fw-normal"
             size="s"
           >
-            Revert 
-            {' '}
-            <span className="hidden s:inline">new changes</span>
+            Revert <span className="hidden s:inline">new changes</span>
           </Button>
         )}
       </div>

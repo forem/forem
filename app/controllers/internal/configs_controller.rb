@@ -36,6 +36,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       shop_url
       payment_pointer
       health_check_token
+      feed_style
     ]
 
     allowed_params = allowed_params |
@@ -48,11 +49,12 @@ class Internal::ConfigsController < Internal::ApplicationController
       onboarding_params |
       job_params
 
+    params[:site_config][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if params[:site_config][:email_addresses].present?
     params.require(:site_config).permit(
       allowed_params,
       authentication_providers: [],
       social_media_handles: SiteConfig.social_media_handles.keys,
-      email_addresses: SiteConfig.email_addresses.except(:default).keys,
+      email_addresses: SiteConfig.email_addresses.keys,
       meta_keywords: SiteConfig.meta_keywords.keys,
     )
   end
@@ -112,6 +114,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       rate_limit_image_upload
       rate_limit_published_article_creation
       rate_limit_organization_creation
+      rate_limit_user_subscription_creation
     ]
   end
 
@@ -119,6 +122,7 @@ class Internal::ConfigsController < Internal::ApplicationController
     %i[
       mascot_image_description
       mascot_image_url
+      mascot_footer_image_url
       mascot_user_id
     ]
   end

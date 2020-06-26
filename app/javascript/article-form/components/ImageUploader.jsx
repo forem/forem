@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
-import { Button } from '@crayons';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { ClipboardButton } from './ClipboardButton';
+import { Button } from '@crayons';
 
 function isNativeAndroid() {
   return (
@@ -141,6 +141,7 @@ export class ImageUploader extends Component {
             accept="image/*"
             data-max-file-size-mb="25"
             tabIndex="-1"
+            aria-label="Upload an image"
           />
         </Button>
 

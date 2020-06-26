@@ -10,9 +10,9 @@ const RequestManager = ({
     <div className="activechatchannel__activeArticle activesendrequest">
       <div className="request_manager_header crayons-card mb-6 grid grid-flow-row gap-6 p-6">
         <h1>Joining Request</h1>
-        <h3>Manage request comming to all the channels</h3>
+        <h2>Manage request coming to all the channels</h2>
         {data.map((request) => (
-          <div className="crayons-field">
+          <div data-testid="request" className="crayons-field">
             <h1>{request.channel_name}</h1>
             <div className="request-card">
               <p>{request.member_name}</p>

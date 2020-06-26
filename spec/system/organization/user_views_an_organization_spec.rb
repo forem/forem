@@ -36,11 +36,9 @@ RSpec.describe "Organization index", type: :system do
     end
 
     context "when more articles" do
-      it "visits ok", js: true, percy: true, stub_elasticsearch: true do
+      it "visits ok", js: true, stub_elasticsearch: true do
         create_list(:article, 3, organization: organization)
         visit "/#{organization.slug}"
-
-        Percy.snapshot(page, name: "Organization: /:organization_slug renders when user is not following org")
       end
     end
   end

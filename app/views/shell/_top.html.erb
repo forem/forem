@@ -31,7 +31,7 @@
         <%= javascript_packs_with_chunks_tag "Search", "onboardingRedirectCheck", "contentDisplayPolicy", defer: true %>
       <% end %>
       <%= yield(:page_meta) %>
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
       <%= favicon_link_tag SiteConfig.favicon_url %>
       <link rel="apple-touch-icon" href="<%= cloudinary(SiteConfig.logo_png, 180, "png") %>">
       <link rel="apple-touch-icon" sizes="152x152" href="<%= cloudinary(SiteConfig.logo_png, 152, "png") %>">
