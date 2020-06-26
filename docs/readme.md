@@ -8,7 +8,6 @@ items:
   - frontend
   - internal
   - design
-  - deployment.md
   - tests
   - faqs.md
   - troubleshooting.md

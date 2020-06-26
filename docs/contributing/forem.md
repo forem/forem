@@ -141,12 +141,25 @@ encourages more thoughtful code!
 - Please fill out the PR Template when making a PR.
 - All commits in a pull request will be squashed when merged.
 
-When your PR is approved and passes our CI, it will be deployed to production!
-
 _Please note: a core team member may close your PR if it has gone stale or if we
 don't plan to merge the code._
 
-### Pull requests reviews and "force pushing"
+### Pull request reviews
+
+All community pull requests are reviewed by our core team.
+
+- All contributors must sign the CLA
+- All required checks are expected to pass on each PR
+  - In the case of flaky or unrelated test failures, a core team member will
+    restart CI
+- We require 2 approvals from core team members for each PR
+- Requested Changes must be resolved (with code or discussion) before merging
+- If you make changes to a PR, be sure to re-request a review
+- Style discussions are generally discouraged in PR reviews; make a PR to the
+  linter configurations instead
+- Your code will be deployed shortly after it is merged
+
+### A note on "force pushing"
 
 After you submit your Pull Request, one of the members of the core team will
 review your code.
