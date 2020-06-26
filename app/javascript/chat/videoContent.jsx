@@ -37,6 +37,7 @@ export function VideoContent(props) {
       onClick={onTriggerVideoContent}
     >
       <button
+        aria-label="Exit"
         className="activechatchannel__activecontentexitbutton crayons-btn crayons-btn--secondary"
         data-content="exit"
       >
@@ -46,6 +47,7 @@ export function VideoContent(props) {
         )}
       </button>
       <button
+        aria-label={fullscreen ? 'Fullscreen' : 'Leave fullscreen'}
         className="activechatchannel__activecontentexitbutton activechatchannel__activecontentexitbutton--fullscreen crayons-btn crayons-btn--secondary"
         data-content="fullscreen"
         style={{ left: '39px' }}
