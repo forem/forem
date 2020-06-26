@@ -44,20 +44,7 @@
       <% else %>
         <div class="p-9 crayons-card crayons-card--secondary align-center fs-l">You don't have any followers yet...</div>
       <% end %>
+      <%= render "sublist" %>
     </div>
   <div>
-
-  <div class="dashboard-container crayons-layout" id="user-dashboard">
-
-    <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
-      <select id="dashboard_author" class="crayons-select w-auto ml-2">
-        <option value="/dashboard" <%= "selected" if params[:which].blank? %>>Personal</option>
-        <% @organizations.each do |org| %>
-          <option value="/dashboard/organization/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %> (<%= org.articles.size %>)</option>
-        <% end %>
-      </select>
-    <% end %>
-
-    <%= render "sublist" %>
-  </div>
 </main>
