@@ -1,10 +1,10 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Button } from '@crayons';
 // eslint-disable-next-line import/no-unresolved
-import ThreeDotsIcon from 'images/three-dots.svg';
+import ThreeDotsIcon from 'images/overflow-horizontal.svg';
 import { adjustTimestamp } from './util';
 import ErrorMessage from './messages/errorMessage';
+import { Button } from '@crayons';
 
 const Message = ({
   currentUserId,
@@ -64,13 +64,13 @@ const Message = ({
           rel="noopener noreferrer"
           data-content="sidecar-user"
           onClick={onContentTrigger}
+          aria-label="View User Profile"
         >
           <img
             className="chatmessagebody__profileimage"
             src={profileImageUrl}
             alt={`${user} profile`}
             data-content="sidecar-user"
-            onClick={onContentTrigger}
           />
         </a>
       </div>
