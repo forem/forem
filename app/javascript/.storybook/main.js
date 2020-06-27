@@ -31,6 +31,19 @@ module.exports = {
     });
 
     config.module.rules.push({
+      test: /\.md$/,
+      use: [
+        {
+          loader: 'markdown-loader',
+          options: {
+            pedantic: true,
+            renderer,
+          },
+        },
+      ],
+    });
+
+    config.module.rules.push({
       test: /\.html$/,
       use: [
         {

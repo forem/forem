@@ -2,9 +2,9 @@ import { h } from 'preact';
 
 import '../../storybook-utilities/designSystem.scss';
 
-import guidelinesDocs from './guidelines.html';
-import componentDocs from './components.html';
-import stylingDocs from './styling.html';
+import guidelinesDocs from './guidelines.md';
+import componentDocs from './components.md';
+import stylingDocs from './styling.md';
 
 export default {
   title: '1_Guidelines',
