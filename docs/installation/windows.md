@@ -179,6 +179,19 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
      certain keys, so you may be able to add them as you go.
 
 1. Run `bin/setup`
+   > The `bin/setup` script is responsible for installing a varienty of
+   > dependencies. One can find it inside the `bin` folder by the name of
+   > `setup`.
+   >
+   > - Its first task is to install the `bundler` gem. Next, it will make
+   >   `bundler` install all the gems , including `Rails`, located in `Gemfile`
+   >   in the root of the repository. It also installs `foreman`.
+   > - It then installs javascript dependencies using the script in `bin/yarn`
+   >   file. These dependencies are located in `package.json` in the root of the
+   >   repository.
+   > - Next, it uses various Rake files located inside the `lib` folder to setup
+   >   ElasticSearch environment , PostgreSQL database creation and updation.
+   > - Finally it cleans up all the log files and restarts the Puma server.
 
 ### Possible error messages
 
