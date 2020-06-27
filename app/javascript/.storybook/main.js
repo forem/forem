@@ -43,15 +43,6 @@ module.exports = {
       ],
     });
 
-    config.module.rules.push({
-      test: /\.html$/,
-      use: [
-        {
-          loader: 'html-loader',
-        },
-      ],
-    });
-
     config.resolve = {
       ...config.resolve,
       extensions: [...config.resolve.extensions, '.scss'],
