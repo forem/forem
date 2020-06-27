@@ -1,9 +1,11 @@
 import { h } from 'preact';
 import { action } from '@storybook/addon-actions';
+import notes from '../../form-elements.md';
 import { FormField, RadioButton } from '@crayons';
 
 export default {
   title: '3_Components/Form Components/Form Field',
+  parameters: { notes },
 };
 
 export const RadioVariant = () => (
