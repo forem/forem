@@ -1,6 +1,6 @@
 # Components
 
-DEV is a Rails application. Most of what we build for views uses ERB templates
+Forem is a Rails application. Most of what we build for views uses ERB templates
 (\*.html.erb files). We also build out parts of or sometimes complete views
 using [Preact](https://docs.dev.to/frontend/preact), typically for the logged on
 user experience. For example, the main page feed.

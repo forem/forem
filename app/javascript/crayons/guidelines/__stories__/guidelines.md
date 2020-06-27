@@ -1,7 +1,7 @@
 # Crayons
 
-Crayons is the design system of DEV. It will provide you everything you need to
-quickly design, build, and ship coherent experience and style across DEV.
+Crayons is the design system of Forem. It will provide you everything you need
+to quickly design, build, and ship coherent experience and style across Forem.
 
 In other words - Crayons defines our design language and frontend approach.
 

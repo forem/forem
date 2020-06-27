@@ -25,7 +25,7 @@ when we use SCSS variables. It's just easier.
 
 ## Themes
 
-DEV support multiple themes so you should always test your work against all
+Forem support multiple themes so you should always test your work against all
 themes. We have a file with all color variables and each theme has its own too.
 
 - Default theme: `app/assets/stylesheets/config/_colors.scss`

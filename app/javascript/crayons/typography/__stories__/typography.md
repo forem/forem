@@ -5,7 +5,7 @@ bigger font sizes should be used carefully with respect to good visual rythm
 between elements.
 
 XS size should be used as little as possible in edge cases. Even though it’s
-readable we could consider it not meeting DEV’s standards. So keep it for like
+readable we could consider it not meeting Forem’s standards. So keep it for like
 “asterisk copy” etc.
 
 By default you should be using Regular font weight.

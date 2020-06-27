@@ -1,6 +1,6 @@
 ## Accent typography
 
-Its main purpose is to add a bit of flavor to DEV brand but it should never be
+Its main purpose is to add a bit of flavor to Forem brand but it should never be
 the main font.
 
 Please, do not overuse Accent typography.
