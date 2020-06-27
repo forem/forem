@@ -9,6 +9,7 @@ module.exports = {
     '@storybook/addon-actions',
     '@storybook/addon-links',
     '@storybook/addon-a11y/register',
+    '@storybook/addon-notes/register-panel',
   ],
   webpackFinal: async (config, { configType }) => {
     config.module.rules.push({
@@ -27,19 +28,6 @@ module.exports = {
         },
       ],
       include: path.resolve(__dirname, '../../'),
-    });
-
-    config.module.rules.push({
-      test: /\.md$/,
-      use: [
-        {
-          loader: 'markdown-loader',
-          options: {
-            pedantic: true,
-            renderer,
-          },
-        },
-      ],
     });
 
     config.module.rules.push({
