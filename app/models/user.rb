@@ -45,6 +45,10 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
+  has_many :source_authored_user_subscriptions, class_name: "UserSubscription", foreign_key: :author_id, inverse_of: :author, dependent: :destroy
+  has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
+  has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription", foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
+
   has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
   has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
@@ -59,7 +63,7 @@ class User < ApplicationRecord
   has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
-  has_many :classified_listings, dependent: :destroy
+  has_many :listings, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify
@@ -71,6 +75,7 @@ class User < ApplicationRecord
   has_many :github_repos, dependent: :destroy
   has_many :html_variants, dependent: :destroy
   has_many :identities, dependent: :destroy
+  has_many :identities_enabled, -> { enabled }, class_name: "Identity", inverse_of: false
   has_many :mentions, dependent: :destroy
   has_many :messages, dependent: :destroy
   has_many :notes, as: :noteable, inverse_of: :noteable
@@ -87,12 +92,9 @@ class User < ApplicationRecord
   has_many :rating_votes, dependent: :destroy
   has_many :reactions, dependent: :destroy
   has_many :reporter_feedback_messages, class_name: "FeedbackMessage", inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
-  has_many :response_templates, foreign_key: :user_id, inverse_of: :user, dependent: :destroy
+  has_many :response_templates, inverse_of: :user, dependent: :destroy
   has_many :tweets, dependent: :destroy
-  has_many :webhook_endpoints, class_name: "Webhook::Endpoint", foreign_key: :user_id, inverse_of: :user, dependent: :delete_all
-
-  has_one :counters, class_name: "UserCounter", dependent: :destroy
-  has_one :pro_membership, dependent: :destroy
+  has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
 
   mount_uploader :profile_image, ProfileImageUploader
 
@@ -144,19 +146,9 @@ class User < ApplicationRecord
   validate :can_send_confirmation_email
   validate :update_rate_limit
 
-  alias_attribute :positive_reactions_count, :reactions_count
   alias_attribute :public_reactions_count, :reactions_count
   alias_attribute :subscribed_to_welcome_notifications?, :welcome_notifications
 
-  scope :with_this_week_comments, lambda { |number|
-    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_these_7_days')::int >= ?", number)
-  }
-  scope :with_previous_week_comments, lambda { |number|
-    includes(:counters).joins(:counters).where("(user_counters.data -> 'comments_prior_7_days')::int >= ?", number)
-  }
-  scope :top_commenters, lambda { |number = 10|
-    includes(:counters).order(Arel.sql("user_counters.data -> 'comments_these_7_days' DESC")).limit(number)
-  }
   scope :eager_load_serialized_data, -> { includes(:roles) }
 
   after_save :bust_cache
@@ -303,7 +295,7 @@ class User < ApplicationRecord
   end
 
   def trusted
-    Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
+    @trusted ||= Rails.cache.fetch("user-#{id}/has_trusted_role", expires_in: 200.hours) do
       has_role? :trusted
     end
   end
@@ -457,11 +449,19 @@ class User < ApplicationRecord
     return false unless Authentication::Providers.available?(provider_name)
     return false unless Authentication::Providers.enabled?(provider_name)
 
-    identities.exists?(provider: provider_name)
+    identities_enabled.exists?(provider: provider_name)
+  end
+
+  def authenticated_with_all_providers?
+    identities_enabled.pluck(:provider).map(&:to_sym) == Authentication::Providers.enabled
   end
 
   def rate_limiter
     RateLimitChecker.new(self)
+  end
+
+  def flipper_id
+    "User:#{id}"
   end
 
   private

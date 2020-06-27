@@ -11,6 +11,8 @@ class Stories::FeedsController < ApplicationController
     "more_tag_weight_randomized_at_end_experiment" => :more_tag_weight_randomized_at_end_experiment,
     "more_experience_level_weight_randomized_at_end_experiment" => :more_experience_level_weight_randomized_at_end_experiment,
     "more_comments_randomized_at_end_experiment" => :more_comments_randomized_at_end_experiment,
+    "more_comments_medium_weight_randomized_at_end_experiment" => :more_comments_medium_weight_randomized_at_end_experiment,
+    "more_comments_minimal_weight_randomized_at_end_experiment" => :more_comments_minimal_weight_randomized_at_end_experiment,
     "mix_of_everything_experiment" => :mix_of_everything_experiment
   }.freeze
 

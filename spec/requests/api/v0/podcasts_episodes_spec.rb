@@ -7,7 +7,7 @@ RSpec.describe "Api::V0::PodcastEpisodes", type: :request do
     it "returns json response" do
       get api_podcast_episodes_path
 
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
     end
 
     it "does not return unreachable podcasts" do

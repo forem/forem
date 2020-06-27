@@ -10,9 +10,9 @@
 /app/controllers/notifications/                     @thepracticaldev/delightful
 /app/workers/notifications/                         @thepracticaldev/delightful
 /app/controllers/internal/broadcasts_controller.rb  @thepracticaldev/delightful
+/app/controllers/async_info_controller.rb           @thepracticaldev/sre
 /app/controllers/pages_controller.rb                @thepracticaldev/cool
 /app/controllers/stories_controller.rb              @thepracticaldev/hells-bells
-/app/jobs/                                          @thepracticaldev/sre
 /app/services/search/                               @thepracticaldev/sre
 /app/views/articles/                                @thepracticaldev/hells-bells
 /app/views/internal/                                @thepracticaldev/snackcase
@@ -26,9 +26,12 @@
 /docs/                                              @thepracticaldev/oss    @jacobherrington
 /lib/data_update_scripts/                           @thepracticaldev/sre
 /lib/sidekiq/                                       @thepracticaldev/sre
+/spec/rails_helper.rb                               @thepracticaldev/sre
 /spec/requests/internal/                            @thepracticaldev/snackcase
+/spec/support/                                      @thepracticaldev/sre
 /spec/system/internal/                              @thepracticaldev/snackcase
 Gemfile                                             @thepracticaldev/sre    @thepracticaldev/oss
 Gemfile.lock                                        @thepracticaldev/sre    @thepracticaldev/oss
 package.json                                        @thepracticaldev/oss    @nickytonline
 yarn.lock                                           @thepracticaldev/oss    @nickytonline
+.travis.yml                                         @thepracticaldev/sre

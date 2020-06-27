@@ -6,7 +6,7 @@ import MessageModal from './MessageModal';
 const Modal = ({
   currentUserId,
   onAddTag,
-  onChange,
+  onChangeDraftingMessage,
   onClick,
   onChangeCategory,
   onOpenModal,
@@ -17,10 +17,10 @@ const Modal = ({
   const shouldRenderMessageModal = listing && listing.contact_via_connect;
 
   return (
-    <div className="single-classified-listing-container">
+    <div className="single-listing-container">
       <div
-        id="single-classified-listing-container__inner"
-        className="single-classified-listing-container__inner"
+        id="single-listing-container__inner"
+        className="single-listing-container__inner"
         onClick={onClick}
         role="button"
         onKeyPress={onClick}
@@ -37,18 +37,15 @@ const Modal = ({
         {shouldRenderMessageModal && (
           <MessageModal
             onSubmit={onSubmit}
-            onChange={onChange}
+            onChangeDraftingMessage={onChangeDraftingMessage}
             message={message}
             listing={listing}
           />
         )}
-        <a
-          href="/about-listings"
-          className="single-classified-listing-info-link"
-        >
+        <a href="/about-listings" className="single-listing-info-link">
           About DEV Listings
         </a>
-        <div className="single-classified-listing-container__spacer" />
+        <div className="single-listing-container__spacer" />
       </div>
     </div>
   );
@@ -57,7 +54,7 @@ const Modal = ({
 Modal.propTypes = {
   listing: PropTypes.isRequired,
   onAddTag: PropTypes.func.isRequired,
-  onChange: PropTypes.func.isRequired,
+  onChangeDraftingMessage: PropTypes.func.isRequired,
   onClick: PropTypes.func.isRequired,
   onChangeCategory: PropTypes.func.isRequired,
   onOpenModal: PropTypes.func.isRequired,

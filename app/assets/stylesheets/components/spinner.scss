@@ -1,0 +1,13 @@
+@keyframes crayons-spinner {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.crayons-spinner {
+  color: var(--accent-brand);
+  animation: 1s linear infinite crayons-spinner;
+}

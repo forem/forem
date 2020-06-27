@@ -41,7 +41,7 @@ class YoutubeTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    id =~ /\A[a-zA-Z0-9_-]{11}((\?t\=)?(\d{1}h)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/
+    id =~ /\A[a-zA-Z0-9_-]{11}((\?t=)?(\d{1}h)?(\d{1,2}m)?(\d{1,2}s)?){5,11}?\Z/
   end
 end
 

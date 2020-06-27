@@ -1,13 +1,15 @@
 ENV["RAILS_ENV"] = "test"
+require "knapsack_pro"
+KnapsackPro::Adapters::RSpecAdapter.bind
 
 require "spec_helper"
+
 require File.expand_path("../config/environment", __dir__)
 require "rspec/rails"
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
-require "percy"
 require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
@@ -49,6 +51,7 @@ allowed_sites = [
   "https://github.com/mozilla/geckodriver/releases",
   "https://selenium-release.storage.googleapis.com",
   "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
+  "api.knapsackpro.com",
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
@@ -77,12 +80,27 @@ RSpec.configure do |config|
   config.include SidekiqTestHelpers
   config.include ElasticsearchHelpers
 
+  config.after(:each, type: :system) do
+    Warden::Manager._on_request.clear
+  end
+
+  config.after(:each, type: :request) do
+    Warden::Manager._on_request.clear
+  end
+
   config.before(:suite) do
     Search::Cluster.recreate_indexes
   end
 
   config.before do
-    Sidekiq::Worker.clear_all # worker jobs shouldn't linger around between tests
+    # Worker jobs shouldn't linger around between tests
+    Sidekiq::Worker.clear_all
+  end
+
+  config.before(:each, stub_elasticsearch: true) do |_example|
+    stubbed_search_response = { "hits" => { "hits" => [] } }
+    allow(Search::Client).to receive(:search).and_return(stubbed_search_response)
+    allow(Search::Client).to receive(:index).and_return({ "_source" => {} })
   end
 
   config.around(:each, elasticsearch_reset: true) do |example|
@@ -118,13 +136,6 @@ RSpec.configure do |config|
     end
   end
 
-  # Allow testing with Stripe's test server. BE CAREFUL
-  if config.filter_manager.inclusions.rules.include?(:live)
-    WebMock.allow_net_connect!
-    StripeMock.toggle_live(true)
-    Rails.logger.info("Running **live** tests against Stripe...")
-  end
-
   config.before do
     stub_request(:any, /res.cloudinary.com/).to_rack("dsdsdsds")
 
@@ -143,6 +154,30 @@ RSpec.configure do |config|
 
     stub_request(:any, /dummyimage.com/).
       to_return(status: 200, body: "", headers: {})
+
+    stub_request(:post, "http://www.google-analytics.com/collect").
+      to_return(status: 200, body: "", headers: {})
+
+    stub_request(:any, /robohash.org/).
+      with(headers:
+            {
+              "Accept" => "*/*",
+              "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+              "User-Agent" => "Ruby"
+            }).to_return(status: 200, body: "", headers: {})
+  end
+
+  config.after do
+    Timecop.return
+  end
+
+  config.after(:suite) do
+    WebMock.disable_net_connect!(
+      allow_localhost: true,
+      allow: [
+        "api.knapsackpro.com",
+      ],
+    )
   end
 
   OmniAuth.config.test_mode = true
@@ -154,16 +189,4 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-
-  # Explicitly set a seed and time to ensure deterministic Percy snapshots.
-  config.around(:each, percy: true) do |example|
-    Timecop.freeze("2020-05-13T10:00:00Z")
-    prev_random_seed = Faker::Config.random
-    Faker::Config.random = Random.new(42)
-
-    example.run
-
-    Faker::Config.random = prev_random_seed
-    Timecop.return
-  end
 end

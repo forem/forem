@@ -2,7 +2,7 @@
 
 .crayons-modal {
   --modal-max-width: 768px;
-  --modal-body-padding: var(--su-2);
+  --modal-body-padding: var(--su-3);
   --modal-header-padding: var(--su-2);
 
   @media (min-width: $breakpoint-s) {
@@ -11,8 +11,12 @@
   }
 
   @media (min-width: $breakpoint-m) {
-    --modal-body-padding: var(--su-7);
-    --modal-header-padding: var(--su-4) var(--su-4) var(--su-4) var(--su-7);
+    --modal-body-padding: var(--su-6);
+    --modal-header-padding: var(--su-4) var(--su-4) var(--su-4) var(--su-6);
+  }
+
+  @media (min-width: $breakpoint-l) {
+    --modal-body-padding: var(--su-7) var(--su-8);
   }
 
   position: fixed;

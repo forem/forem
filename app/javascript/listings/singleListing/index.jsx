@@ -15,13 +15,14 @@ const SingleListing = ({
   isOpen,
 }) => {
   const definedClass = isOpen
-    ? 'single-classified-listing single-classified-listing--opened'
-    : 'single-classified-listing';
+    ? 'single-listing single-listing--opened'
+    : 'single-listing';
 
   return (
     <div
       className={definedClass}
-      id={`single-classified-listing-${listing.id}`}
+      id={`single-listing-${listing.id}`}
+      data-testid={`single-listing-${listing.id}`}
     >
       <div className="listing-content">
         <Header
@@ -30,7 +31,7 @@ const SingleListing = ({
           onTitleClick={onOpenModal}
         />
         <div
-          className="single-classified-listing-body"
+          className="single-listing-body"
           dangerouslySetInnerHTML={{ __html: listing.processed_html }} // eslint-disable-line react/no-danger
         />
         <TagLinks tags={listing.tags} onClick={onAddTag} />

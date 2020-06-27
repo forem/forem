@@ -16,7 +16,6 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   end
 
   it "User fills out comment box normally" do
-    # TODO: Add Percy snapshot?
     visit article.path.to_s
     wait_for_javascript
 
@@ -93,14 +92,14 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/apple-icon.png"),
       visible: :hidden,
     )
 
     expect(page).to have_no_css("div.file-upload-error")
   end
 
-  it "User attaches a large image", percy: true do
+  it "User attaches a large image" do
     visit article.path.to_s
 
     reduce_max_file_size = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-size-mb", "0")'
@@ -109,16 +108,14 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/onboarding-background.png"),
       visible: :hidden,
     )
-
-    Percy.snapshot(page, name: "Image: upload error")
 
     expect(page).to have_css("div.file-upload-error")
     expect(page).to have_css(
       "div.file-upload-error",
-      text: "File size too large (0.29 MB). The limit is 0 MB.",
+      text: "File size too large (0.07 MB). The limit is 0 MB.",
     )
   end
 
@@ -131,7 +128,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/apple-icon.png"),
       visible: :hidden,
     )
 
@@ -151,7 +148,7 @@ RSpec.describe "Creating Comment", type: :system, js: true do
 
     attach_file(
       "image-upload-main",
-      Rails.root.join("app/assets/images/sloan.png"),
+      Rails.root.join("app/assets/images/apple-icon.png"),
       visible: :hidden,
     )
 

@@ -16,7 +16,12 @@ class Rack::Attack
   throttle("api_write_throttle", limit: 1, period: 1) do |request|
     if request.path.starts_with?("/api/") && (request.put? || request.post? || request.delete?)
       Honeycomb.add_field("user_api_key", request.env["HTTP_API_KEY"])
-      track_and_return_ip(request.env["HTTP_FASTLY_CLIENT_IP"])
+      ip_address = track_and_return_ip(request.env["HTTP_FASTLY_CLIENT_IP"])
+      if request.env["HTTP_API_KEY"].present?
+        "#{ip_address}-#{request.env['HTTP_API_KEY']}"
+      elsif ip_address.present?
+        ip_address
+      end
     end
   end
 

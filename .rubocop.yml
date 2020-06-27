@@ -14,6 +14,7 @@ AllCops:
     - db/migrate/*.rb
     - node_modules/**/*
     - tmp/**/*
+    - vendor/**/*
   DisplayStyleGuide: true
   ExtraDetails: true
   TargetRubyVersion: 2.7
@@ -121,11 +122,19 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - "spec/**/*"
 
+Lint/DeprecatedOpenSSLConstant:
+  Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
+  Enabled: true
+
 # Lint/HeredocMethodCallPosition:
 #   Description: >-
 #                  Checks for the ordering of a method call where
 #                  the receiver of the call is a HEREDOC.
 #   Enabled: false
+
+Lint/MixedRegexpCaptureTypes:
+  Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
+  Enabled: true
 
 # Lint/NumberConversion:
 #   Description: 'Checks unsafe usage of number conversion methods.'
@@ -313,6 +322,14 @@ Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
   StyleGuide: '#percent-r'
   Enabled: false
+
+Style/RedundantRegexpCharacterClass:
+  Description: 'Checks for unnecessary single-element Regexp character classes.'
+  Enabled: true
+
+Style/RedundantRegexpEscape:
+  Description: 'Checks for redundant escapes in Regexps.'
+  Enabled: true
 
 Style/ReturnNil:
   Description: 'Use return instead of return nil.'

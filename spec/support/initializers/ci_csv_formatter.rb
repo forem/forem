@@ -7,7 +7,7 @@ require "singleton"
 class CSVFormatter
   RSpec::Core::Formatters.register self, :example_passed, :example_failed, :example_pending, :close
   HEADERS = ["Description", "File", "Status", "Start Date", "Start Time", "Run Time", "Exception",
-             "Backtrace", "Retry #", "Suite Status", "Suite Run Time", "Travis URL"].freeze
+             "Backtrace", "Retry #", "Suite Status", "Suite Run Time", "Travis URL", "Travis Branch"].freeze
 
   def initialize(_output)
     @rows = []
@@ -21,7 +21,7 @@ class CSVFormatter
     status = :pending
     started_at = notification.example.metadata[:execution_result].started_at
     start_date = started_at.strftime("%m-%d-%Y")
-    start_time = started_at.strftime("%H:%M:%S.%3N")
+    start_time = started_at.strftime("%H-%M-%S.%3N")
     run_time = notification.example.metadata[:execution_result].run_time.round(3)
     @rows << [description, file, status, start_date, start_time, run_time, nil, nil, nil]
   end
@@ -32,7 +32,7 @@ class CSVFormatter
     status = :passed
     started_at = notification.example.metadata[:execution_result].started_at
     start_date = started_at.strftime("%m-%d-%Y")
-    start_time = started_at.strftime("%H:%M:%S.%3N")
+    start_time = started_at.strftime("%H-%M-%S.%3N")
     run_time = notification.example.metadata[:execution_result].run_time.round(3)
     retry_attempt = notification.example.metadata[:retry_attempts]
     @rows << [description, file, status, start_date, start_time, run_time, nil, nil, retry_attempt]
@@ -45,7 +45,7 @@ class CSVFormatter
     status = :failed
     started_at = notification.example.metadata[:execution_result].started_at
     start_date = started_at.strftime("%m-%d-%Y")
-    start_time = started_at.strftime("%H:%M:%S.%3N")
+    start_time = started_at.strftime("%H-%M-%S.%3N")
     run_time = notification.example.metadata[:execution_result].run_time.round(3)
     exception = notification.example.metadata[:execution_result].exception.inspect
     backtrace = notification.example.metadata[:execution_result].exception.backtrace
@@ -58,7 +58,7 @@ class CSVFormatter
     csvs_dir = File.join(Dir.pwd, "tmp", "csvs")
     FileUtils.mkdir_p(csvs_dir)
 
-    timestamp = Time.current.utc.iso8601
+    timestamp = Time.current.utc.iso8601.tr(":", "-")
     csv_filename = File.join(csvs_dir, "#{timestamp}.csv")
 
     suite_runtime = (Time.zone.now - @suite_start_time).round(3)
@@ -66,7 +66,7 @@ class CSVFormatter
     with_headers = { write_headers: true, headers: HEADERS }
     CSV.open(csv_filename, "w", with_headers) do |csv|
       (@rows + RSpecRetryFormatterHelper.instance.rows).each do |row|
-        row += [@suite_status, suite_runtime, ENV["TRAVIS_BUILD_WEB_URL"]]
+        row += [@suite_status, suite_runtime, ENV["TRAVIS_BUILD_WEB_URL"], ENV["TRAVIS_BRANCH"]]
         csv << row
       end
     end
@@ -100,7 +100,7 @@ RSpec.configure do |config|
     status = :failed
     started_at = ex.metadata[:execution_result].started_at
     start_date = started_at.strftime("%m-%d-%Y")
-    start_time = started_at.strftime("%H:%M:%S.%3N")
+    start_time = started_at.strftime("%H-%M-%S.%3N")
     run_time = (Time.zone.now - started_at).round(3)
     exception = ex.metadata[:retry_exceptions].last.inspect
     backtrace = ex.metadata[:retry_exceptions].last.backtrace

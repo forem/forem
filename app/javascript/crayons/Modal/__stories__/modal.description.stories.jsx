@@ -3,7 +3,7 @@ import { h } from 'preact';
 import '../../storybook-utilities/designSystem.scss';
 
 export default {
-  title: 'Components/Modals',
+  title: '3_Components/Modals',
 };
 
 export const Description = () => (

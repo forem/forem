@@ -39,25 +39,29 @@ function getAdditionalClassNames({
   return additionalClassNames;
 }
 
-export const Button = ({
-  children,
-  variant = 'primary',
-  tagName = 'button',
-  inverted,
-  contentType = 'text',
-  size = 'default',
-  className,
-  icon,
-  url,
-  buttonType,
-  disabled,
-  onClick,
-  onMouseOver,
-  onMouseOut,
-  onFocus,
-  onBlur,
-  tabIndex,
-}) => {
+export const Button = (props) => {
+  const {
+    children,
+    variant = 'primary',
+    tagName = 'button',
+    inverted,
+    contentType = 'text',
+    size = 'default',
+    className,
+    icon,
+    url,
+    buttonType,
+    disabled,
+    onClick,
+    onMouseOver,
+    onMouseOut,
+    onFocus,
+    onBlur,
+    tabIndex,
+    title,
+    ...restOfProps
+  } = props;
+
   const ComponentName = tagName;
   const Icon = icon;
   const otherProps =
@@ -83,7 +87,9 @@ export const Button = ({
       onFocus={onFocus}
       onBlur={onBlur}
       tabIndex={tabIndex}
+      title={title}
       {...otherProps}
+      {...restOfProps}
     >
       {contentType !== 'text' && contentType !== 'icon-right' && Icon && (
         <Icon />
@@ -114,6 +120,7 @@ Button.defaultProps = {
   onFocus: undefined,
   onBlur: undefined,
   tabIndex: undefined,
+  title: undefined,
 };
 
 Button.propTypes = {
@@ -150,4 +157,5 @@ Button.propTypes = {
   onFocus: PropTypes.func,
   onBlur: PropTypes.func,
   tabIndex: PropTypes.number,
+  title: PropTypes.string,
 };

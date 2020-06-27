@@ -42,21 +42,20 @@ Rails.application.routes.draw do
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
+      mount Flipper::UI.app(Flipper, { rack_protection: {} }), at: "feature_flags"
     end
 
     resources :articles, only: %i[index show update]
-    resources :broadcasts, only: %i[index new create edit update]
+    resources :broadcasts
     resources :buffer_updates, only: %i[create update]
-    # TODO: [mkohl] Change this to a single resource definition
-    resources :classified_listings, only: %i[index edit update destroy]
-    resources :listings, only: %i[index edit update destroy], controller: "classified_listings"
+    resources :listings, only: %i[index edit update destroy]
     resources :comments, only: [:index]
     resources :events, only: %i[index create update]
     resources :feedback_messages, only: %i[index show]
     resources :pages, only: %i[index new create edit update destroy]
     resources :mods, only: %i[index update]
     resources :moderator_actions, only: %i[index]
-    resources :negative_reactions, only: %i[index]
+    resources :privileged_reactions, only: %i[index]
     resources :permissions, only: %i[index]
     resources :podcasts, only: %i[index edit update destroy] do
       member do
@@ -106,6 +105,7 @@ Rails.application.routes.draw do
     resource :config
     resources :badges, only: :index
     post "badges/award_badges", to: "badges#award_badges"
+    resources :path_redirects, only: %i[new create index edit update destroy]
   end
 
   namespace :stories, defaults: { format: "json" } do
@@ -138,12 +138,21 @@ Rails.application.routes.draw do
       end
       resources :webhooks, only: %i[index create show destroy]
 
-      resources :classified_listings, path: :listings, only: %i[index show create update]
-      get "/listings/category/:category", to: "classified_listings#index", as: :classified_listings_category
+      resources :listings, only: %i[index show create update]
+      get "/listings/category/:category", to: "listings#index", as: :listings_category
       get "/analytics/totals", to: "analytics#totals"
       get "/analytics/historical", to: "analytics#historical"
       get "/analytics/past_day", to: "analytics#past_day"
       get "/analytics/referrers", to: "analytics#referrers"
+
+      resources :health_checks, only: [] do
+        collection do
+          get :app
+          get :search
+          get :database
+          get :cache
+        end
+      end
     end
   end
 
@@ -201,7 +210,6 @@ Rails.application.routes.draw do
   end
   resources :buffered_articles, only: [:index]
   resources :events, only: %i[index show]
-  resources :additional_content_boxes, only: [:index]
   resources :videos, only: %i[index create new]
   resources :video_states, only: [:create]
   resources :twilio_tokens, only: [:show]
@@ -211,7 +219,7 @@ Rails.application.routes.draw do
   resources :tag_adjustments, only: %i[create destroy]
   resources :rating_votes, only: [:create]
   resources :page_views, only: %i[create update]
-  resources :classified_listings, path: :listings, only: %i[index new create edit update destroy dashboard]
+  resources :listings, only: %i[index new create edit update destroy dashboard]
   resources :credits, only: %i[index new create] do
     get "purchase", on: :collection, to: "credits#new"
   end
@@ -227,6 +235,11 @@ Rails.application.routes.draw do
   resources :podcasts, only: %i[new create]
   resources :article_approvals, only: %i[create]
   resources :video_chats, only: %i[show]
+  resources :user_subscriptions, only: %i[create] do
+    collection do
+      get "/subscribed", action: "subscribed"
+    end
+  end
   namespace :followings, defaults: { format: :json } do
     get :users
     get :tags
@@ -239,18 +252,18 @@ Rails.application.routes.draw do
   get "/verify_email_ownership", to: "email_authorizations#verify", as: :verify_email_authorizations
   get "/search/tags" => "search#tags"
   get "/search/chat_channels" => "search#chat_channels"
-  get "/search/classified_listings" => "search#classified_listings"
+  get "/search/listings" => "search#listings"
   get "/search/users" => "search#users"
   get "/search/feed_content" => "search#feed_content"
   get "/search/reactions" => "search#reactions"
   get "/chat_channel_memberships/find_by_chat_channel_id" => "chat_channel_memberships#find_by_chat_channel_id"
-  get "/listings/dashboard" => "classified_listings#dashboard"
-  get "/listings/:category" => "classified_listings#index", :as => :classified_listing_category
-  get "/listings/:category/:slug" => "classified_listings#index", :as => :classified_listing_slug
-  get "/listings/:category/:slug/:view" => "classified_listings#index",
+  get "/listings/dashboard" => "listings#dashboard"
+  get "/listings/:category" => "listings#index", :as => :listing_category
+  get "/listings/:category/:slug" => "listings#index", :as => :listing_slug
+  get "/listings/:category/:slug/:view" => "listings#index",
       :constraints => { view: /moderate/ }
-  get "/listings/:category/:slug/delete_confirm" => "classified_listings#delete_confirm"
-  delete "/listings/:category/:slug" => "classified_listings#destroy"
+  get "/listings/:category/:slug/delete_confirm" => "listings#delete_confirm"
+  delete "/listings/:category/:slug" => "listings#destroy"
   get "/notifications/:filter" => "notifications#index"
   get "/notifications/:filter/:org_id" => "notifications#index"
   get "/notification_subscriptions/:notifiable_type/:notifiable_id" => "notification_subscriptions#show"
@@ -273,6 +286,15 @@ Rails.application.routes.draw do
   get "/live/:username" => "twitch_live_streams#show"
 
   post "/pusher/auth" => "pusher#auth"
+
+  # Chat channel
+  patch "/chat_channels/update_channel/:id" => "chat_channels#update_channel"
+
+  # Chat Channel Membership json response
+  get "/chat_channel_memberships/chat_channel_info/:id" => "chat_channel_memberships#chat_channel_info"
+  post "/chat_channel_memberships/create_membership_request" => "chat_channel_memberships#create_membership_request"
+  patch "/chat_channel_memberships/leave_membership/:id" => "chat_channel_memberships#leave_membership"
+  patch "/chat_channel_memberships/update_membership/:id" => "chat_channel_memberships#update_membership"
 
   get "/social_previews/article/:id" => "social_previews#article", :as => :article_social_preview
   get "/social_previews/user/:id" => "social_previews#user", :as => :user_social_preview
@@ -405,10 +427,8 @@ Rails.application.routes.draw do
   get "/readinglist/:view" => "reading_list_items#index", :constraints => { view: /archive/ }
 
   get "/feed" => "articles#feed", :as => "feed", :defaults => { format: "rss" }
-  get "/feed/tag/:tag" => "articles#feed",
-      :as => "tag_feed", :defaults => { format: "rss" }
-  get "/feed/:username" => "articles#feed",
-      :as => "user_feed", :defaults => { format: "rss" }
+  get "/feed/tag/:tag" => "articles#feed", :as => "tag_feed", :defaults => { format: "rss" }
+  get "/feed/:username" => "articles#feed", :as => "user_feed", :defaults => { format: "rss" }
   get "/rss" => "articles#feed", :defaults => { format: "rss" }
 
   get "/tag/:tag" => "stories#index"
@@ -443,6 +463,7 @@ Rails.application.routes.draw do
   get "/:username/:slug/:view" => "stories#show",
       :constraints => { view: /moderate/ }
   get "/:username/:slug/mod" => "moderations#article"
+  get "/:username/:slug/actions_panel" => "moderations#actions_panel"
   get "/:username/:slug/manage" => "articles#manage"
   get "/:username/:slug/edit" => "articles#edit"
   get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
@@ -451,7 +472,7 @@ Rails.application.routes.draw do
       :constraints => { view: /comments|moderate|admin/ }
   get "/:username/:slug" => "stories#show"
   get "/:sitemap" => "sitemaps#show",
-      :constraints => { format: /xml/, sitemap: /sitemap\-.+/ }
+      :constraints => { format: /xml/, sitemap: /sitemap-.+/ }
   get "/:username" => "stories#index"
 
   root "stories#index"

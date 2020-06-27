@@ -28,7 +28,7 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:badges).through(:badge_achievements) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
-      it { is_expected.to have_many(:classified_listings).dependent(:destroy) }
+      it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:collections).dependent(:destroy) }
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
@@ -129,7 +129,6 @@ RSpec.describe User, type: :model do
       it do
         expect(subject).to have_many(:webhook_endpoints).
           class_name("Webhook::Endpoint").
-          with_foreign_key(:user_id).
           dependent(:delete_all)
       end
       # rubocop:enable RSpec/NamedSubject
@@ -140,7 +139,6 @@ RSpec.describe User, type: :model do
         expect(fourth_field).not_to be_valid
       end
 
-      it { is_expected.to have_one(:counters).class_name("UserCounter").dependent(:destroy) }
       it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
       it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
       it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
@@ -1147,6 +1145,29 @@ RSpec.describe User, type: :model do
     it "returns true if the user has related identity" do
       user = create(:user, :with_identity, identities: [provider])
       expect(user.authenticated_through?(provider)).to be(true)
+    end
+  end
+
+  describe "#authenticated_with_all_providers?" do
+    let(:provider) { Authentication::Providers.available.first }
+
+    it "returns false if the user has no related identity" do
+      expect(user.authenticated_with_all_providers?).to be(false)
+    end
+
+    it "returns false if the user is missing any of the identities" do
+      providers = Authentication::Providers.available - [provider]
+      user = create(:user, :with_identity, identities: providers)
+
+      expect(user.authenticated_with_all_providers?).to be(false)
+    end
+
+    it "returns true if the user has all the enabled providers" do
+      allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+
+      user = create(:user, :with_identity)
+
+      expect(user.authenticated_with_all_providers?).to be(true)
     end
   end
 end

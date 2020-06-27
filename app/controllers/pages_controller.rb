@@ -4,7 +4,10 @@ class PagesController < ApplicationController
 
   def show
     @page = Page.find_by!(slug: params[:slug])
+    not_found unless FeatureFlag.accessible?(@page.feature_flag_name, current_user)
+
     set_surrogate_key_header "show-page-#{params[:slug]}"
+    render json: @page.body_json if @page.template == "json"
   end
 
   def about
@@ -61,7 +64,7 @@ class PagesController < ApplicationController
     @feedback_message = FeedbackMessage.new(
       reported_url: reported_url&.chomp("?i=i"),
     )
-    render "pages/report-abuse"
+    render "pages/report_abuse"
   end
 
   def robots

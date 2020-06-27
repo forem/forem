@@ -66,7 +66,6 @@ const Message = ({
           onClick={onContentTrigger}
         >
           <img
-            role="presentation"
             className="chatmessagebody__profileimage"
             src={profileImageUrl}
             alt={`${user} profile`}

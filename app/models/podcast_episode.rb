@@ -75,7 +75,6 @@ class PodcastEpisode < ApplicationRecord
   end
   alias hotness_score zero_method
   alias search_score zero_method
-  alias positive_reactions_count zero_method
   alias public_reactions_count zero_method
 
   def class_name

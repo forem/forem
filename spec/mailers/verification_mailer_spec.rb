@@ -5,13 +5,13 @@ RSpec.describe VerificationMailer, type: :mailer do
 
   describe "#account_ownership_verification_email" do
     it "works correctly" do
-      params = { user_id: user.id }
-      email = described_class.account_ownership_verification_email(params)
+      email = described_class.with(user_id: user.id).account_ownership_verification_email
 
       expect(email.subject).not_to be_nil
       expect(email.to).to eq([user.email])
       expect(email.from).to eq([SiteConfig.email_addresses[:default]])
-      expect(email["from"].value).to eq("#{ApplicationConfig['COMMUNITY_NAME']} Email Verification <#{SiteConfig.email_addresses[:default]}>")
+      from = "#{ApplicationConfig['COMMUNITY_NAME']} Email Verification <#{SiteConfig.email_addresses[:default]}>"
+      expect(email["from"].value).to eq(from)
     end
   end
 end

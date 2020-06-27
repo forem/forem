@@ -42,6 +42,9 @@
   <a href="https://app.honeybadger.io/project/Pl5JzZB5ax">
     <img src="https://img.shields.io/badge/honeybadger-active-informational" alt="Honeybadger badge">
   </a>
+  <a href="https://knapsackpro.com/dashboard/organizations/1142/projects/1022/test_suites/1434/builds">
+    <img src="https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20dev.to-%230074ff" alt="Knapsack Pro Parallel CI builds for dev.to" style="max-width:100%;">
+  </a>
 </p>
 
 Welcome to the [dev.to](https://dev.to) codebase. We are so excited to have you.
@@ -89,6 +92,8 @@ A more complete overview of our stack is available in
 
 ### Prerequisites
 
+#### Local
+
 - [Ruby](https://www.ruby-lang.org/en/): we recommend using
   [rbenv](https://github.com/rbenv/rbenv) to install the Ruby version listed on
   the badge.
@@ -99,6 +104,17 @@ A more complete overview of our stack is available in
   [installation instructions](https://imagemagick.org/script/download.php).
 - [Redis](https://redis.io/) 4 or higher.
 - [Elasticsearch](https://www.elastic.co) 7 or higher.
+
+#### Containers
+
+**Linux**
+
+- [Podman](https://github.com/containers/libpod) 1.9.2 or higher
+- [Podman Compose](https://github.com/containers/podman-compose) 0.1.5 or higher
+
+**OS X**
+
+- [Docker Desktop for Mac](https://docs.docker.com/docker-for-mac/install/)
 
 ### Installation Documentation
 
@@ -128,6 +144,7 @@ A more complete overview of our stack is available in
 - [@ridhwana](https://dev.to/ridhwana)
 - [@fdoxyz](https://dev.to/fdoxyz)
 - [@msarit](https://dev.to/msarit)
+- [@jdoss](https://dev.to/jdoss)
 
 ## Vulnerability disclosure
 

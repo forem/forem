@@ -76,6 +76,10 @@ class Tag < ActsAsTaggableOn::Tag
     tag.alias_for.presence || tag.name
   end
 
+  def self.find_preferred_alias_for(word)
+    find_by(name: word.downcase)&.alias_for.presence || word.downcase
+  end
+
   def validate_name
     errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
     errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/)

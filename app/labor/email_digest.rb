@@ -1,8 +1,3 @@
-# Usecase would be
-# EmailDigest.send_periodic_digest_email
-# OR
-# EmailDigets.send_periodic_digest_email(Users.first(4))
-
 class EmailDigest
   def self.send_periodic_digest_email(users = [])
     new(users).send_periodic_digest_email
@@ -19,7 +14,9 @@ class EmailDigest
 
       articles = user_email_heuristic.articles_to_send
       begin
-        DigestMailer.digest_email(user, articles).deliver if user.email_digest_periodic == true
+        next unless user.email_digest_periodic?
+
+        DigestMailer.with(user: user, articles: articles).digest_email.deliver_now
       rescue StandardError => e
         Rails.logger.error("Email issue: #{e}")
       end
