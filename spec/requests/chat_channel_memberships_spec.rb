@@ -396,6 +396,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
   describe "GET /join_channel_invitation" do
     context "when user is not member" do
       it "will create membership" do
+        allow(Pusher).to receive(:trigger).and_return(true)
         sign_in second_user
         chat_channel.update(discoverable: true)
 
