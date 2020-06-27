@@ -1,4 +1,6 @@
 const path = require('path');
+const marked = require('marked');
+const renderer = new marked.Renderer();
 
 module.exports = {
   stories: ['../**/__stories__/*.stories.jsx'],
@@ -25,6 +27,28 @@ module.exports = {
         },
       ],
       include: path.resolve(__dirname, '../../'),
+    });
+
+    config.module.rules.push({
+      test: /\.md$/,
+      use: [
+        {
+          loader: 'markdown-loader',
+          options: {
+            pedantic: true,
+            renderer,
+          },
+        },
+      ],
+    });
+
+    config.module.rules.push({
+      test: /\.html$/,
+      use: [
+        {
+          loader: 'html-loader',
+        },
+      ],
     });
 
     config.resolve = {
