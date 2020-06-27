@@ -29,16 +29,19 @@ Once you've got this installed and after rebooting,
 On your first run, the system will ask for username and password. Take note of
 both since it will be used for `sudo` commands.
 
-### Ruby on WSL
+### Installing rbenv
 
-First, install Ruby language dependencies:
+`rbenv` is a version manager for Ruby applications which allows one to garuntee
+that the Ruby version in development environment matches production. First,
+install Ruby language dependencies before installing `rbenv`:
 
 ```shell
 sudo apt-get update
 sudo apt-get install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
 ```
 
-For installing Ruby, we recommend using [rbenv](https://github.com/rbenv/rbenv):
+Now, we install [rbenv](https://github.com/rbenv/rbenv) using the following
+commands:
 
 ```shell
 cd
@@ -50,6 +53,13 @@ exec $SHELL
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 exec $SHELL
+```
+
+One can verify `rbenv` installation using the `rbenv-doctor` script with the
+following commands:
+
+```shell
+curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
 ```
 
 ### Installing Node
@@ -142,7 +152,7 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 1. Clone your forked repository, eg.
    `git clone https://github.com/<your-username>/dev.to.git`
 1. Open the cloned dev.to folder in terminal with `cd dev.to`. Next, install
-   ruby with the following commands.
+   Ruby with the following commands:
    ```shell
    rbenv install $(cat .ruby-version)
    rbenv global $(cat .ruby-version)
