@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import Membership from './Membership';

@@ -93,6 +93,7 @@ export default class ManageActiveMembership extends Component {
             value={searchMembers}
             name="search-members"
             onKeyUp={this.searchTheMembershipUser.bind(this)}
+            aria-label="search memberships"
           />
           <div
             data-spy="scroll"
