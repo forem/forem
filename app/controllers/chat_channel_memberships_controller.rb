@@ -134,7 +134,8 @@ class ChatChannelMembershipsController < ApplicationController
     membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: chat_channel.id)
 
     if !membership
-      membership = CreateChatChannelMembershipService.perform(chat_channel, current_user)
+      membership = ChatChannelMembership.new(user_id: current_user.id, chat_channel_id: chat_channel.id)
+      membership.save
       send_chat_action_message("@#{membership.user.username} join the channel", current_user, chat_channel.id, "joined") unless membership&.errors&.any?
     elsif membership.status != "active"
       membership.update(role: "member", status: "active")
