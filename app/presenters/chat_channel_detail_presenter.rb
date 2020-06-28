@@ -42,7 +42,7 @@ class ChatChannelDetailPresenter
   end
 
   def inviation_link(chat_channel)
-    host = Rails.application.config.app_domain || "localhost:3000"
+    host = Rails.application.config.app_domain
     "#{host}/chat_channel_memberships/join_channel_invitation/#{chat_channel.slug}"
   end
 end

@@ -120,8 +120,8 @@ class ChatChannelMembershipsController < ApplicationController
     authorize @chat_channel, :update?
     membership = ChatChannelMembership.find_by(id: channel_membership_params[:membership_id], chat_channel_id: @chat_channel.id)
 
-    result = UpdateChatChannelMembershipService.perform(@chat_channel, membership, { role: channel_membership_params[:role] })
-    if result.errors.any?
+    membership.update(role: channel_membership_params[:role])
+    if membership.errors.any?
       render json: { success: false, message: "Failed to update membership", errors: chat_channel_membership.errors.full_messages }, status: :bad_request
     else
       render json: { success: true, message: "User Membership is updated" }, status: :ok
@@ -133,18 +133,16 @@ class ChatChannelMembershipsController < ApplicationController
     authorize chat_channel
     membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: chat_channel.id)
 
-    unless membership
-      result = CreateChatChannelMembershipService.perform(chat_channel, current_user)
-      send_chat_action_message("@#{result.user.username} join the channel", current_user, chat_channel.id, "joined") unless result&.errors&.any?
-    end
-
-    if membership && membership.status != "active"
-      result = UpdateChatChannelMembershipService.perform(chat_channel, membership, { role: "member", status: "active" })
+    if !membership
+      membership = CreateChatChannelMembershipService.perform(chat_channel, current_user)
+      send_chat_action_message("@#{membership.user.username} join the channel", current_user, chat_channel.id, "joined") unless membership&.errors&.any?
+    elsif membership.status != "active"
+      membership.update(role: "member", status: "active")
       send_chat_action_message("@#{membership.user.username} join the channel", current_user, membership.chat_channel_id, "joined")
     end
 
-    if result&.errors&.any?
-      flash[:settings_notice] = "There is some error"
+    if membership&.errors&.any?
+      flash[:settings_notice] = membership.errors.full_messages
       redirect_to root_path
     end
 

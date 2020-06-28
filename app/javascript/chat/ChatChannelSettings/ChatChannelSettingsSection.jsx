@@ -74,6 +74,7 @@ const ChatChannelSettingsSection = ({
     />
     <ModFaqSection
       currentMembershipRole={currentMembership.role}
+      email="yo@dev.to"
       className="channel-mod-faq"
     />
   </div>

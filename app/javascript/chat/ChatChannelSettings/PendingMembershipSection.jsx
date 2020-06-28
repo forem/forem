@@ -7,6 +7,10 @@ const PendingMembershipSection = ({
   removeMembership,
   currentMembershipRole,
 }) => {
+  if (currentMembershipRole === 'member') {
+    return null;
+  }
+
   return (
     <div
       data-testid="pending-memberships"

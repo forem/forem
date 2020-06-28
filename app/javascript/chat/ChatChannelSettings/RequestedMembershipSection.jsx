@@ -8,7 +8,7 @@ const RequestedMembershipSection = ({
   chatChannelAcceptMembership,
   currentMembershipRole,
 }) => {
-  if (currentMembershipRole !== 'mod') {
+  if (currentMembershipRole === 'member') {
     return null;
   }
 

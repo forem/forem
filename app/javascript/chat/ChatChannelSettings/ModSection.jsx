@@ -13,7 +13,12 @@ const ModSection = ({
   channelDiscoverable,
   handleChannelDiscoverableStatus,
   handleChannelDescriptionChanges,
+  currentMembershipRole,
 }) => {
+  if (currentMembershipRole === 'member') {
+    return null;
+  }
+
   return (
     <div className="mod-section">
       <InviteForm
