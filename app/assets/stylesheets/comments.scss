@@ -128,6 +128,7 @@ a.header-link {
   margin: auto;
   margin-bottom: var(--su-4);
   text-align: left;
+  overflow-wrap: break-word;
   &.comments-dedicated-page-container {
     width: 800px;
     max-width: 96%;

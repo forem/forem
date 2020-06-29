@@ -82,6 +82,7 @@
     padding: 0 var(--article-padding-x) var(--article-padding-y)
       var(--article-padding-x);
     font-size: var(--article-font-size);
+    overflow-wrap: break-word;
 
     a {
       code {
