@@ -4,7 +4,7 @@ title: Configuration
 
 # Configuration
 
-We currently use three gems for configuring the application:
+We currently use the following gems for configuring the application:
 
 - [ENVied](https://github.com/eval/envied)
 - [rails-settings-cached](https://github.com/huacnlee/rails-settings-cached)
