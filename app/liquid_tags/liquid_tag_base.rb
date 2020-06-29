@@ -6,6 +6,7 @@ class LiquidTagBase < Liquid::Tag
   def initialize(_tag_name, _content, _parse_context)
     super
     validate_contexts
+    # This check issues DB queries so we keep it as the last one
     Pundit.authorize(
       parse_context.partial_options[:user],
       self,
