@@ -550,7 +550,13 @@ export default class Chat extends Component {
   };
 
   handleKeyDown = (e) => {
-    const { showMemberlist, activeContent, activeChannelId } = this.state;
+    const {
+      showMemberlist,
+      activeContent,
+      activeChannelId,
+      messages,
+      currentUserId,
+    } = this.state;
     const enterPressed = e.keyCode === 13;
     const leftPressed = e.keyCode === 37;
     const rightPressed = e.keyCode === 39;
@@ -558,6 +564,8 @@ export default class Chat extends Component {
     const targetValue = e.target.value;
     const messageIsEmpty = targetValue.length === 0;
     const shiftPressed = e.shiftKey;
+    const upArrowPressed = e.keyCode === 38;
+    const deletePressed = e.keyCode === 46;
 
     if (enterPressed) {
       if (showMemberlist) {
@@ -616,6 +624,21 @@ export default class Chat extends Component {
         fullscreenContent: null,
         expanded: window.innerWidth > 600,
       });
+    }
+    if (messageIsEmpty) {
+      const messagesByCurrentUser = messages[activeChannelId].filter(
+        (message) => message.user_id === currentUserId,
+      );
+      const lastMessage =
+        messagesByCurrentUser[messagesByCurrentUser.length - 1];
+
+      if (lastMessage) {
+        if (upArrowPressed) {
+          this.triggerEditMessage(lastMessage.id);
+        } else if (deletePressed) {
+          this.triggerDeleteMessage(lastMessage.id);
+        }
+      }
     }
   };
 
@@ -800,16 +823,16 @@ export default class Chat extends Component {
     }
   };
 
-  triggerDeleteMessage = (e) => {
-    this.setState({ messageDeleteId: e.target.dataset.content });
+  triggerDeleteMessage = (messageId) => {
+    this.setState({ messageDeleteId: messageId });
     this.setState({ showDeleteModal: true });
   };
 
-  triggerEditMessage = (e) => {
+  triggerEditMessage = (messageId) => {
     const { messages, activeChannelId } = this.state;
     this.setState({
       activeEditMessage: messages[activeChannelId].filter(
-        (message) => message.id === parseInt(e.target.dataset.content, 10),
+        (message) => message.id === messageId,
       )[0],
     });
     this.setState({ startEditing: true });

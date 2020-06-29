@@ -19,7 +19,7 @@ gem "ahoy_email", "~> 1.1" # Email analytics for Rails
 gem "ahoy_matey", "~> 3.0" # Tracking analytics for Rails
 gem "ancestry", "~> 3.0" # Ancestry allows the records of a ActiveRecord model to be organized in a tree structure
 gem "autoprefixer-rails", "~> 9.8" # Parse CSS and add vendor prefixes to CSS rules using values from the Can I Use website
-gem "aws-sdk-lambda", "~> 1.44" # Official AWS Ruby gem for AWS Lambda
+gem "aws-sdk-lambda", "~> 1.45" # Official AWS Ruby gem for AWS Lambda
 gem "blazer", "~> 2.2.5" # Allows admins to query data
 gem "bootsnap", ">= 1.1.0", require: false # Boot large ruby/rails apps faster
 gem "buffer", "~> 0.1" # Buffer is a Ruby Wrapper for the Buffer API
@@ -102,7 +102,7 @@ gem "stripe", "~> 5.22" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.6" # Catch unsafe migrations
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", github: "timberio/timber-ruby-rails", branch: "master" # Timber integration for Rails
-gem "twilio-ruby", "~> 5.37" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.38" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.2" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
@@ -139,7 +139,7 @@ group :development, :test do
   gem "knapsack_pro", "~> 1.22.2" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.85.1", require: false # Automatic Ruby code style checking tool
+  gem "rubocop", "~> 0.86.0", require: false # Automatic Ruby code style checking tool
   gem "rubocop-performance", "~> 1.6", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.6", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.40", require: false # Code style checking for RSpec files
