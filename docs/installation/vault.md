@@ -6,7 +6,7 @@ title: Vault
 
 To install Vault follow the
 [Vault installation](https://www.vaultproject.io/docs/install) instructions. If
-you have a Mac, you can install 
+you have a Mac, you can install
 [Vault using Homebrew](https://formulae.brew.sh/formula/vault). You can validate
 that you have it installed by running the following command.
 
@@ -106,8 +106,8 @@ VAULT_TOKEN: important-policy-token
 VAULT_SECRET_NAMESPACE: <your namespace from above>
 ```
 
-Restart your application to start using Vault. One easy way to see
-it in action is via the Rails console.
+Restart your application to start using Vault. One easy way to see it in action
+is via the Rails console.
 
 ```ruby
 # Enabled Example
@@ -132,6 +132,4 @@ or set the environment variable $VAULT_TOKEN to the token value:
     $ export VAULT_TOKEN="..."
 
 Please refer to the documentation for more examples.
-
-from /Users/mollystruve/.rvm/gems/ruby-2.7.1/gems/vault-0.14.0/lib/vault/client.rb:390:in `error'
 ```
