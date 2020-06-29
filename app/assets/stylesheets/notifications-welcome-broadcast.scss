@@ -9,6 +9,7 @@
         .broadcast-notification {
           .content {
             // Targets content container (text)
+            padding: var(--su-3) var(--su-4);
             &.notification-content {
               // Targets "Visit settings" link
               &.broadcast-content {
@@ -20,6 +21,7 @@
                   color: var(--link-brand-color);
                 }
                 .opt-out {
+                  padding-top: var(--su-4);
                   .settings__opt-out {
                     letter-spacing: -0.02em;
                     font-weight: normal;
@@ -33,8 +35,9 @@
             img {
               position: absolute;
               right: var(--su-2);
-              width: 60px;
-              height: 60px;
+              width: 80px;
+              height: 80px;
+              overflow: hidden;
               top: var(--su-2);
               display: block;
             }
