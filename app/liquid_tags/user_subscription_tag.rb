@@ -9,11 +9,18 @@ class UserSubscriptionTag < LiquidTagBase
     // Hiding/showing elements
     // ***************************************
     function clearSubscriptionArea() {
-      document.getElementById('subscription-signed-in').style.display = 'none';
-      document.getElementById('subscription-signed-out').style.display = 'none';
-      document.getElementById('response-message').style.display = 'none';
-      document.getElementById('subscriber-apple-auth').style.display = 'none';
+      changeDisplayStyleById('subscription-signed-in', 'none');
+      changeDisplayStyleById('response-message', 'none');
+      changeDisplayStyleById(''subscriber-apple-auth'', 'none');
+
       hideConfirmationModal();
+    }
+
+    function changeDisplayStyleById(id, style) {
+      var element = document.getElementById(id);
+      if (element) {
+        element.style.display = style;
+      }
     }
 
     function showSignedIn() {
@@ -88,7 +95,7 @@ class UserSubscriptionTag < LiquidTagBase
     // Adding event listeners for 'click'
     // ***************************************
     function addSignInClickHandler() {
-      document.getElementById('sign-in-btn').addEventListener('click', function(e) {
+      document.getElementById('sign-in-btn')?.addEventListener('click', function(e) {
         if (typeof showModal !== 'undefined') {
           showModal('email_signup');
         }
