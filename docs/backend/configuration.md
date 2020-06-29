@@ -45,7 +45,7 @@ object and viewed / modified via `/internal/config` (see
 ## Vault
 
 The vault Ruby gem allows us to interact with
-[HashiCorp's Vault](https://www.vaultproject.io/docs/what-is-vault). In a
+[Vault](https://www.vaultproject.io/docs/what-is-vault). In a
 nutshell, Vault is a tool for securely storing and accessing secrets. The way we
 have it configured, it is completely optional for running a Forem. To access it
 we use the wrapper `AppSecrets`.
@@ -72,12 +72,12 @@ class AppSecrets
 end
 ```
 
-As you can see in the code, we attempt to access a secret from Vault if it is
-enabled, ie the `VAULT_TOKEN` is present. If Vault is not enabled or we cannot
-find the secret in it, then we fallback on fetching the secret from the
+We attempt to access a secret from Vault if it is
+enabled, i.e. if the `VAULT_TOKEN` is present. If Vault is not enabled or if we cannot
+find the secret in it, then we fallback to fetching the secret from the
 `ApplicationConfig`.
 
-One advantage to using Vault with Forem is that it allows you to update your
+One advantage of using Vault with Forem is that it allows you to update your
 secrets easily through the application rather than having to mess with ENV
-files. If you would like to tryout Vault follow our
+files. If you would like to try out Vault, follow our
 [installation guide for setting it up locally](installation/vault).

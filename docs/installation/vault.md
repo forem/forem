@@ -6,15 +6,15 @@ title: Vault
 
 To install Vault follow the
 [Vault installation](https://www.vaultproject.io/docs/install) instructions. If
-you have a mac I would suggest installing
+you have a Mac, you can install 
 [Vault using Homebrew](https://formulae.brew.sh/formula/vault). You can validate
 that you have it installed by running the following command.
 
-```
+```bash
 vault -h
 ```
 
-After Vault has been installed, the next step is to startup a Vault server.
+After Vault has been installed, the next step is to start up a Vault server.
 
 ```
 vault server -dev
@@ -56,19 +56,19 @@ Development mode should NOT be used in production installations!
 ## Configuring
 
 Once Vault is installed and running, the next step is to configure it to work
-with your application. Since we want multiple applications(in production) to be
-able to use the same Vault infrastructure we control access by using
+with your application. Since we want multiple applications (in production) to be
+able to use the same Vault infrastructure, we control access with
 [Vault policies](https://www.vaultproject.io/docs/concepts/policies) and
 different
-[Key/Value secret paths](https://www.vaultproject.io/docs/secrets/kv/kv-v2#setup).
+[key/value secret paths](https://www.vaultproject.io/docs/secrets/kv/kv-v2#setup).
 In the following examples, `VAULT_SECRET_NAMESPACE` will be the secret path
-where your secrets are stored. This can be any string(except "secrets" since
+where your secrets are stored. This can be any string (except "secrets" since
 that exists by default) of your choosing, for example `local-secrets`.
 `VAULT_POLICY_NAME` will be the name of the policy that we use to control access
-to `VAULT_SECRET_NAMESPACE`. Once again, this should be a string, for example
+to `VAULT_SECRET_NAMESPACE`. Once again, this should be a string. For example,
 `local-policy`.
 
-To setup a policy and secret path run the following commands:
+To set up a policy and secret path run the following commands:
 
 ```
 vault secrets enable -path=<VAULT_SECRET_NAMESPACE>/ kv-v2
@@ -106,7 +106,7 @@ VAULT_TOKEN: important-policy-token
 VAULT_SECRET_NAMESPACE: <your namespace from above>
 ```
 
-Now restart your application and you can start using Vault. One easy way to see
+Restart your application to start using Vault. One easy way to see
 it in action is via the Rails console.
 
 ```ruby

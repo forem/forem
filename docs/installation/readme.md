@@ -27,9 +27,9 @@ Installing to your local machine can be troublesome for many reasons such as a
 conflicting database and runtime versions.
 
 Another way you can get a development environment up and running is with
-containers. Using containers will setup everything you need in an isolated
-environment, and you need not concern about the details of setting everything up
-locally. We have instructions for getting setup with
+containers. They will set up everything you need in an isolated
+environment, and you need not worry about the details of setting everything up
+locally. We have instructions for getting set up with
 [containers](/installation/containers) quickly.
 
 ## GitPod _- beginner friendly!_
