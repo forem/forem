@@ -121,7 +121,7 @@ triggering. We ask that contributors go the extra mile to submit code which is
 inclusive in nature.
 
 If you unintentionally use language deemed harmful, there is no shame. We will
-work together find a better alternative. Being thoughtful about language also
+work together to find a better alternative. Being thoughtful about language also
 encourages more thoughtful code!
 
 ### Create a pull request

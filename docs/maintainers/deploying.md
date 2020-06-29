@@ -11,9 +11,8 @@ occasionally.
 If the application needs to be deployed when the code is merged, appending
 `[deploy]` to the merge commit's message will trigger a deploy.
 
-We try to avoid deploying when the site is experiencing a log of traffic. When
-deploying complex code, be sure that other team members are around to help if
-something goes wrong.
+When deploying complex code, be sure that other team members are around to help
+if something goes wrong.
 
 Generally, it's a good idea to keep the SRE team in the loop on any deploys.
 However, deployments are our collective responsibility, so it's important to
@@ -55,7 +54,7 @@ are run.
 - Job 1 is where Travis builds Storybook to ensure its integrity, and where we
   check for any known vulnerabilities using `bundle-audit`.
 - Job 2 is where Travis fires up a Rails console to ensure the application loads
-  properly, and where specs with KnapsackPro are run.
+  properly.
 
 If all of the jobs pass then we move on to Stage 2 of the Travis CI process.
 

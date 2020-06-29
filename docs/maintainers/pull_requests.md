@@ -65,16 +65,3 @@ Once a PR is merged, it might need to be deployed. Deployment is a team
 responsibility, and everyone on the core team should be comfortable deploying
 code. For more information, read the
 [deployment guide](https://docs.dev.to/maintainers/deployment).
-
-# Skipping CI
-
-Some small PRs might seem like good candidates for skipping the CI suite. For
-example, a change that only touches documentation copy or a tiny CSS tweak.
-
-For the time being, we should avoid skipping CI in PRs because it causes some
-confusion during the review process. However, it does make sense to skip CI on
-merge commits that include extremely minor changes.
-
-You can skip CI by appending [ci skip] to merge commit's message.
-
-When in doubt, don't skip CI.
