@@ -3,7 +3,7 @@ import { h } from 'preact';
 import { axe } from 'jest-axe';
 import { render, getNodeText, fireEvent } from '@testing-library/preact';
 
-import SingleArticle from './index';
+import SingleArticle from '../index';
 
 const testArticle1 = {
   id: 1,
