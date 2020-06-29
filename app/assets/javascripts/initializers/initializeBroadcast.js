@@ -83,7 +83,7 @@ function renderBroadcast(broadcastElement, data) {
 
 /**
  * A function to determine if a broadcast should render.
- * Does not render a broadcast on the `/new` route or the mod tools panel.
+ * Does not render a broadcast on the `/new` route or in an iframe.
  * Does not render a broadcast if the current user has opted-out,
  * if the broadcast has already been inserted, or if the key for
  * the broadcast's title exists in localStorage.
@@ -94,12 +94,9 @@ function renderBroadcast(broadcastElement, data) {
  * @function initializeBroadcast
  */
 function initializeBroadcast() {
-  const pathname = window.location.pathname;
-  // The mod actions panel uses an iframe, which attempts to re-render the broadcast.
-  // By checking for `actions_panel` in the path, we can avoid this double render.
-  // TODO: [@thepracticaldev/delightful]: Refactor how we decide when to render the broadcast
-  // across the site given that this check will need to happen every time we use iframes.
-  if (pathname === '/new' || pathname.includes('actions_panel')) {
+  // Iframes will attempt to re-render a broadcast, so we want to explicitly
+  // avoid initializing one if we are within `window.frameElement`.
+  if (window.frameElement || window.location.pathname === '/new') {
     return;
   }
 
