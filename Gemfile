@@ -134,7 +134,7 @@ end
 group :development, :test do
   gem "amazing_print", "~> 1.2" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.32" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.33" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 2.12" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 1.22.2" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
