@@ -43,7 +43,7 @@ describe('<SingleArticle />', () => {
           cachedTagList={article.cachedTagList}
           user={article.user}
         />
-        {/* Div below needed for tests to pass & preserve FlagUserModal functionality */}
+        {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
         <div class="flag-user-modal-container hidden" />
       </div>,
     );
@@ -129,7 +129,7 @@ describe('<SingleArticle />', () => {
           user={testArticle1.user}
           toggleArticle={toggleArticle}
         />
-        {/* Div below needed for tests to pass & preserve FlagUserModal functionality */}
+        {/* Div below needed for this test to pass while preserving FlagUserModal functionality */}
         <div class="flag-user-modal-container hidden" />
       </div>,
     );
