@@ -5,6 +5,19 @@ import ChannelRequest from './channelRequest';
 import RequestManager from './requestManager';
 import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
 
+const smartSvgIcon = (content, d) => (
+  <svg
+    data-content={content}
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 24 24"
+    width="24"
+    height="24"
+  >
+    <path data-content={content} fill="none" d="M0 0h24v24H0z" />
+    <path data-content={content} d={d} />
+  </svg>
+);
+
 export default class Content extends Component {
   static propTypes = {
     resource: PropTypes.shape({
@@ -24,53 +37,6 @@ export default class Content extends Component {
     if (!resource) {
       return '';
     }
-
-    const smartSvgIcon = (content, d) => (
-      <svg
-        data-content={content}
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        width="24"
-        height="24"
-      >
-        <path data-content={content} fill="none" d="M0 0h24v24H0z" />
-        <path data-content={content} d={d} />
-      </svg>
-    );
-
-    const Display = () => {
-      switch (resource.type_of) {
-        case 'loading-user':
-          return <div className="loading-user" title="Loading user" />;
-        case 'article':
-          return <Article resource={resource} />;
-        case 'channel-request':
-          return (
-            <ChannelRequest
-              resource={resource.data}
-              handleJoiningRequest={resource.handleJoiningRequest}
-            />
-          );
-        case 'channel-request-manager':
-          return (
-            <RequestManager
-              resource={resource.data}
-              handleRequestRejection={resource.handleRequestRejection}
-              handleRequestApproval={resource.handleRequestApproval}
-            />
-          );
-        case 'chat-channel-setting':
-          return (
-            <ChatChannelSettings
-              resource={resource.data}
-              activeMembershipId={resource.activeMembershipId}
-            />
-          );
-        default:
-          return null;
-      }
-    };
-
     return (
       // TODO: A button (role="button") cannot contain other interactive elements, i.e. buttons.
       // TODO: These should have key click events as well.
@@ -116,3 +82,36 @@ export default class Content extends Component {
     );
   }
 }
+
+const Display = ({ resource }) => {
+  switch (resource.type_of) {
+    case 'loading-user':
+      return <div className="loading-user" title="Loading user" />;
+    case 'article':
+      return <Article resource={resource} />;
+    case 'channel-request':
+      return (
+        <ChannelRequest
+          resource={resource.data}
+          handleJoiningRequest={resource.handleJoiningRequest}
+        />
+      );
+    case 'channel-request-manager':
+      return (
+        <RequestManager
+          resource={resource.data}
+          handleRequestRejection={resource.handleRequestRejection}
+          handleRequestApproval={resource.handleRequestApproval}
+        />
+      );
+    case 'chat-channel-setting':
+      return (
+        <ChatChannelSettings
+          resource={resource.data}
+          activeMembershipId={resource.activeMembershipId}
+        />
+      );
+    default:
+      return null;
+  }
+};
