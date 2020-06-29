@@ -1,0 +1,53 @@
+# Components
+
+Forem is a Rails application. Most of what we build for views uses ERB templates
+(\*.html.erb files). We also build out parts of or sometimes complete views
+using [Preact](https://docs.dev.to/frontend/preact), typically for the logged on
+user experience. For example, the main page feed.
+
+Because of that, we components that are written in pure HTML & CSS as well as
+Preact.
+
+### BEM class naming
+
+The entire design system uses the [BEM](http://getbem.com/naming) methodology
+for naming CSS classes. Even Preact components under the hood use it.
+
+### crayons-\*
+
+Crayons is the name of our design system. All Crayons components use the
+`crayons-` prefix. It's useful because we can easily identify what **IS** and
+what **IS NOT** a Crayons component. It's also practical because Crayons was
+implemented when we already had tons of other frontend classes in the codebase.
+It prevents overwriting styles by other CSS and it's very unlikely someone has
+ever created a `.crayons-btn` style BUT it's very likely someone has created
+`.btn` style...
+
+## HTML & CSS Components
+
+You'll need to copy piece of html code responsible for rendering a component and
+that's it. Imagine a simple button component. The code below will render a
+**primary button** with specific styling:
+
+`<button class="crayons-btn">Hello</button>`
+
+Crayons offers different variants for a button. A button can be one of the
+following variants: primary, secondary, outlined, danger, ghost, with icon, and
+so on. All of the components and its variations are described in the Components
+section.
+
+Imagine you need a small (size **s** ), **secondary** type. In this case you
+will need to apply specific modifier class for that:
+
+`<button class="crayons-btn crayons-btn--secondary crayons-btn--s">Hello</button>`
+
+## Preact Components
+
+The same button above that was created with pure HTML using modifying classes is
+also a Preact component.
+
+`import { Button } from '@crayons'; //... <Button size="s" variant="secondary">Hello<Button>`
+
+To import a design system component, e.g. `<Button />`, import it from
+`@crayons`. Instead of modifying CSS classes, modify props, e.g.
+`variant="primary"`.
