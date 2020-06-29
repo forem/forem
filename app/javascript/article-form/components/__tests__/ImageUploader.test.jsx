@@ -1,5 +1,10 @@
 import { h } from 'preact';
-import { render, fireEvent, waitForElement } from '@testing-library/preact';
+import {
+  render,
+  fireEvent,
+  waitForElement,
+  waitForElementToBeRemoved,
+} from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
 import { ImageUploader } from '../ImageUploader';
@@ -8,13 +13,9 @@ import '@testing-library/jest-dom';
 global.fetch = fetch;
 
 describe('<ImageUploader />', () => {
-  const fakeLinksResponse = JSON.stringify({
-    links: ['/i/fake-link.jpg'],
-  });
-
-  const fakeErrorMessage = {
+  const fakeErrorMessage = Object.freeze({
     message: 'Some Fake Error',
-  };
+  });
 
   it('should have no a11y violations', async () => {
     const { container } = render(<ImageUploader />);
@@ -29,23 +30,61 @@ describe('<ImageUploader />', () => {
     expect(uploadInput.getAttribute('type')).toEqual('file');
   });
 
-  it('displays text to copy after upload', async () => {
-    const { getByTitle, getByDisplayValue, getByLabelText } = render(
-      <ImageUploader />,
+  it('displays the upload spinner during upload', async () => {
+    fetch.mockResponse(
+      JSON.stringify({
+        links: ['/i/fake-link.jpg'],
+      }),
     );
+
+    const { getByLabelText, queryByText } = render(<ImageUploader />);
+
+    const inputEl = getByLabelText(/Upload an image/i);
+    const file = new File(['(⌐□_□)'], 'chucknorris.png', {
+      type: 'image/png',
+    });
+
+    fireEvent.change(inputEl, { target: { files: [file] } });
+
+    const uploadingImage = await waitForElement(() =>
+      queryByText(/uploading.../i),
+    );
+
+    expect(uploadingImage).toBeDefined();
+  });
+
+  it('displays text to copy after upload', async () => {
+    fetch.mockResponse(
+      JSON.stringify({
+        links: ['/i/fake-link.jpg'],
+      }),
+    );
+
+    const {
+      getByTitle,
+      getByDisplayValue,
+      getByLabelText,
+      queryByText,
+    } = render(<ImageUploader />);
     const inputEl = getByLabelText(/Upload an image/i);
 
     const file = new File(['(⌐□_□)'], 'chucknorris.png', {
       type: 'image/png',
     });
 
-    fetch.mockResponse(fakeLinksResponse);
     fireEvent.change(inputEl, { target: { files: [file] } });
+    let uploadingImage = await waitForElement(() =>
+      queryByText(/uploading.../i),
+    );
+
+    expect(uploadingImage).toBeDefined();
 
     expect(inputEl.files[0]).toEqual(file);
     expect(inputEl.files).toHaveLength(1);
 
-    await waitForElement(() => getByTitle(/copy markdown for image/i));
+    await waitForElementToBeRemoved(() => queryByText(/uploading.../i));
+
+    getByTitle(/copy markdown for image/i);
     getByDisplayValue(/fake-link.jpg/i);
   });
 
