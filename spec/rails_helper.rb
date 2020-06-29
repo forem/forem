@@ -35,7 +35,6 @@ require "validate_url/rspec_matcher"
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/jobs/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/workers/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/initializers/shared_examples/**/*.rb")].sort.each { |f| require f }
 
@@ -48,13 +47,13 @@ ActiveRecord::Migration.maintain_test_schema!
 # see <https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock>
 allowed_sites = [
   "https://chromedriver.storage.googleapis.com",
-  "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_83.0.4103",
   "https://github.com/mozilla/geckodriver/releases",
   "https://selenium-release.storage.googleapis.com",
   "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
   "api.knapsackpro.com",
-]
-WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
+] + Webdrivers::Common.subclasses.map(&:base_url)
+
+WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites.uniq)
 
 RSpec::Matchers.define_negated_matcher :not_change, :change
 
