@@ -4,7 +4,10 @@
       <div><a href="/" class="crayons-footer__logo" aria-label="<%= community_name %> Home"><%= logo_svg %></a></div>
       <p><%= SiteConfig.community_description %></p>
       <div><%= render partial: "layouts/social_media" %></div>
+      <%# The following copy is necessary for compatability with the Forem AGPL licence which requires instances to link back to the source. %>
       <p class="fs-xs color-base-60"><%= community_qualified_name %> copyright <%= copyright_notice %></p>
+      <p class="fs-xs color-base-60">Built on <a href="https://www.forem.com">Forem</a> — the <a href="https://dev.to/t/opensource">open source</a> software that powers <a href="https://dev.to">DEV</a> and other inclusive communities.</p>
+      <p class="fs-xs color-base-60">Made with love and <a href="https://dev.to/t/rails">Ruby on Rails</a>.</p>
     </div>
 
     <nav class="crayons-footer__nav">

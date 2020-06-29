@@ -1,7 +1,7 @@
-/* global require module */
+/* global require module process */
 const path = require('path');
 const { environment } = require('@rails/webpacker');
-const HoneybadgerSourceMapPlugin = require('@honeybadger-io/webpack')
+const HoneybadgerSourceMapPlugin = require('@honeybadger-io/webpack');
 const erb = require('./loaders/erb');
 
 /*
@@ -61,8 +61,9 @@ if (process.env.HONEYBADGER_API_KEY && process.env.ASSETS_URL) {
       assetsUrl: process.env.ASSETS_URL,
       silent: false,
       ignoreErrors: false,
-      revision: process.env.HEROKU_SLUG_COMMIT || 'master'
-    }))
+      revision: process.env.HEROKU_SLUG_COMMIT || 'master',
+    }),
+  );
 }
 
 module.exports = environment;
