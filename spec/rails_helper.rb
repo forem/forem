@@ -42,19 +42,6 @@ Dir[Rails.root.join("spec/initializers/shared_examples/**/*.rb")].sort.each { |f
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
-# Disable internet connection with Webmock
-# allow browser websites, so that "webdrivers" can access their binaries
-# see <https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock>
-allowed_sites = [
-  "https://chromedriver.storage.googleapis.com",
-  "https://github.com/mozilla/geckodriver/releases",
-  "https://selenium-release.storage.googleapis.com",
-  "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
-  "api.knapsackpro.com",
-] + Webdrivers::Common.subclasses.map(&:base_url)
-
-WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites.uniq)
-
 RSpec::Matchers.define_negated_matcher :not_change, :change
 
 Rack::Attack.enabled = false

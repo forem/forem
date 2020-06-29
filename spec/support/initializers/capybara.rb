@@ -6,14 +6,27 @@ Webdrivers.cache_time = 86_400
 
 Capybara.default_max_wait_time = 10
 
+# Disable internet connection with Webmock
+# allow browser websites, so that "webdrivers" can access their binaries
+# see <https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock>
+allowed_sites = [
+  "https://chromedriver.storage.googleapis.com",
+  "https://github.com/mozilla/geckodriver/releases",
+  "https://selenium-release.storage.googleapis.com",
+  "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
+  "api.knapsackpro.com",
+] + Webdrivers::Common.subclasses.map(&:base_url).host
+
+WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites.uniq)
+
 RSpec.configure do |config|
   config.before(:each, type: :system) do
     driven_by :rack_test
   end
 
   config.before(:each, type: :system, js: true) do
-    stub_request(:get, /^https:\/\/chromedriver.storage.googleapis.com.*$/).
-      to_return(status: 200, body: "", headers: {})
+    # stub_request(:get, /^https:\/\/chromedriver.storage.googleapis.com.*$/).
+    #   to_return(status: 200, body: "", headers: {})
 
     if ENV["SELENIUM_URL"].present?
       # Support use of remote chrome testing.
