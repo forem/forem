@@ -108,12 +108,12 @@ etc.
 Here is an example of a good Liquid Tag pull request...
 https://github.com/thepracticaldev/dev.to/pull/3801
 
-### Restricting liquid tags by role
+### Restricting liquid tags by roles
 
 To only allow users with specific roles to use a liquid tag you need to define a
-`VALID_ROLES` constant on the liquid tag itself. It needs to be an Array of
+`VALID_ROLES` constant on the liquid tag itself. It needs to be an `Array` of
 valid roles. For [single admin resource roles](/internal), it needs to be an
-Array with the role and the resource. Here's an example:
+`Array` with the role and the resource. Here's an example:
 
 ```ruby
 class NewLiquidTag < LiquidTagBase
@@ -135,12 +135,12 @@ by default._
 
 Context, in terms of a liquid tag, are _where_ a liquid tag is being used (i.e.
 `Article`, `Comment`, etc.). In other words, if you want to make a liquid tag
-that can only be used in Articles, you need to restrict the liquid tag by
+that can only be used in articles, you need to restrict the liquid tag by
 context.
 
 To do this you need to add a `VALID_CONTEXTS` constant on the liquid tag itself.
-It needs to be an Array of class names that are valid. For example, to restrict
-a liquid tag to only be usable in Articles you would do:
+It needs to be an `Array` of class names that are valid. For example, to
+restrict a liquid tag to only be usable in articles you would do:
 
 ```ruby
 class NewLiquidTag < LiquidTagBase
