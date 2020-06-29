@@ -20,18 +20,36 @@
   }
 
   &__profile-images {
-    position: relative;
-    height: 80px;
-    width: 80px;
-    margin: 0 auto var(--su-4);
+
+    &.signed-in {
+      margin: 0 auto var(--su-4);
+      position: relative;
+      height: 80px;
+      width: 80px;
+    }
+
+    &.signed-out {
+      height: auto;
+      width: auto;
+      text-align: center;
+      margin: 0 auto;
+
+      .ltag__user-subscription-tag__author-profile-image {
+        margin: 0 auto var(--su-4);
+      }
+    }
 
     img {
       border-radius: 100%;
     }
   }
 
+  &__author-profile-image,
   &__subscriber-profile-image {
-    display: none;
+    display: block;
+  }
+
+  &__subscriber-profile-image {
     position: absolute;
     bottom: 0;
     right: 0;
@@ -41,7 +59,6 @@
 
 // modal styles overwrite crayons component WIP
 #user-subscription-confirmation-modal {
-
   .crayons-modal__box__header {
     padding: var(--su-3) var(--su-4);
   }

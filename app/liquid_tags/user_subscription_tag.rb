@@ -14,6 +14,8 @@ class UserSubscriptionTag < LiquidTagBase
     const responseMessage = document.getElementById('response-message');
     const subscriberAppleAuth = document.getElementById('subscriber-apple-auth');
     const confirmationModal = document.getElementById('user-subscription-confirmation-modal');
+    const profileImageContainer = document.getElementById('profile-images');
+    const subscriberImageContainer = document.querySelector('.ltag__user-subscription-tag__subscriber-profile-image');
 
     function clearSubscriptionArea() {
       subscriptionSignedIn.classList.add("hidden");
@@ -27,6 +29,11 @@ class UserSubscriptionTag < LiquidTagBase
     function showSignedIn() {
       clearSubscriptionArea();
       subscriptionSignedIn.classList.remove("hidden");
+    }
+
+    function showSignedOut() {
+      clearSubscriptionArea();
+      subscriptionSignedOut.classList.remove("hidden");
     }
 
     function showResponseMessage(noticeType, msg) {
@@ -45,7 +52,7 @@ class UserSubscriptionTag < LiquidTagBase
     function showSubscribed() {
       updateSubscriberData();
       const authorUsername = document.getElementById('user-subscription-tag').dataset.authorUsername;
-      const alreadySubscribedMsg = `You are already subscribed!`;
+      const alreadySubscribedMsg = `You are already subscribed.`;
       showResponseMessage('success', alreadySubscribedMsg);
     }
 
@@ -82,14 +89,16 @@ class UserSubscriptionTag < LiquidTagBase
       profileImages.forEach(function(profileImage) {
         profileImage.src = subscriber.profile_image_90;
         profileImage.alt = `${subscriber.username} profile image`;
-        profileImage.style.display = 'block';
       });
+    }
 
-      const profileImageWrappers = document.querySelectorAll(`span${identifier}`);
-
-      profileImageWrappers.forEach(function(profileImageWrapper) {
-        profileImageWrapper.style.display = 'inline-block';
-      });
+    if (isUserSignedIn()) {
+      profileImageContainer.classList.remove("signed-out");
+      profileImageContainer.classList.add("signed-in");
+    } else {
+      profileImageContainer.classList.remove("signed-in");
+      profileImageContainer.classList.add("signed-out");
+      subscriberImageContainer.classList.add("hidden");
     }
 
     // Adding event listeners for 'click'
@@ -217,6 +226,7 @@ class UserSubscriptionTag < LiquidTagBase
         checkIfSubscribed();
       });
     } else {
+      showSignedOut();
       addSignInClickHandler();
     }
   JAVASCRIPT
