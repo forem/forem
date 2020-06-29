@@ -1,11 +1,14 @@
 @import 'variables';
 @import 'mixins';
+@import 'config/import';
 
 // High level classes
 .chat-page-wrapper {
   margin: 0px auto 0px;
   width: 100%;
   max-width: calc(1540px + 10vw);
+
+  --layout-chat-left-sidebar-width: 240px;
 }
 
 .live-chat {
@@ -18,22 +21,42 @@
   overflow-y: hidden;
 }
 
-//chat
+.live-chat {
+  padding: 0;
+  width: 100%;
+}
+
 .chat {
   display: flex;
-  height: calc(100vh - 56px);
+  height: calc(100vh - var(--header-height));
+  position: relative;
+  overflow-x: hidden;
 
   &.chat--iossafari {
     height: calc(100vh - 201px);
   }
 }
 
-.chat--expanded {
-  min-width: 500px;
-  width: calc(100%-3px);
+.chat__channels {
+  box-sizing: border-box;
+  height: inherit;
+  padding: var(--su-3);
+  position: relative;
+  width: 100%;
 
-  @media screen and (min-width: 500px) {
-    min-width: 300px;
+  @media screen and (min-width: $breakpoint-m) {
+    min-width: var(--layout-chat-left-sidebar-width);
+    max-width: var(--layout-chat-left-sidebar-width);
+  }
+}
+
+.chat__channelssearchtoggle {
+  background: transparent;
+  border: 0;
+  margin-left: 2px;
+  svg {
+    vertical-align: -5px;
+    fill: var(--indicator-default-color);
   }
 }
 
@@ -60,100 +83,32 @@
   }
 }
 
-.chat__channels {
-  width: 45px;
-  min-width: 45px;
-  height: inherit;
-  position: relative;
-  overflow: hidden;
-  padding-top: 5px;
-
-  .chat__channelssearchtoggle {
-    background: transparent;
-    border: 0px;
-    margin-left: 2px;
-    svg {
-      vertical-align: -5px;
-      fill: var(--indicator-default-color);
-    }
+.chat__channels--placeholder {
+  .chat__channelstogglebutt--placeholderunexpanded {
+    display: none;
   }
-  input {
-    outline: 0;
-  }
-}
 
-.chat__channels--expanded {
-  width: 219px;
-  min-width: 219px;
+  @media screen and (max-width: 599px) {
+    width: 45px;
+    min-width: 45px;
 
-  @media screen and (min-width: 1000px) {
-    width: 200px;
-    min-width: 200px;
-
-    .chat__channelstogglebutt {
+    input {
       display: none;
     }
-  }
 
-  @media screen and (min-width: 1300px) {
-    width: calc(220px + 3vw);
-    min-width: 220px;
-  }
-
-  &.chat__channels--placeholder {
     .chat__channelstogglebutt--placeholderunexpanded {
-      display: none;
-    }
-
-    @media screen and (max-width: 599px) {
-      width: 45px;
-      min-width: 45px;
-
-      input {
-        display: none;
-      }
-
-      .chat__channelstogglebutt {
-        display: none;
-      }
-
-      .chat__channelstogglebutt--placeholderunexpanded {
-        display: block;
-        width: 100%;
-      }
+      display: block;
+      width: 100%;
     }
   }
-}
-
-.chat__channelstogglebutt {
-  width: 26px;
-  height: 38px;
-  background: transparent;
-  border: 0px;
-  -webkit-appearance: none;
-  font-size: 18px;
-  font-weight: bold;
 }
 
 .chat__channels input {
-  width: calc(100% - 43px);
-  border-radius: 3px;
-  border: 1px solid $light-medium-gray;
-  box-sizing: border-box;
-  padding: 8px;
-  font-size: 14px;
-  -webkit-appearance: none;
-  background: var(--card-bg);
-  color: var(--body-color);
-
-  @media screen and (min-width: 1000px) {
-    width: 98%;
-  }
+  width: 100%;
 }
 
 .chat__channeltypefilter {
-  padding: 4px 0px 0px;
-  width: calc(100% - 5px);
+  width: 100%;
 }
 
 .chat__channeltypefilterbutton {
@@ -190,13 +145,35 @@
   display: none;
 }
 
+.active-channel__back-btn {
+  display: inherit;
+
+  @media screen and (min-width: $breakpoint-m) {
+    display: none;
+  }
+}
+
 .chat__activechat {
   height: inherit;
-  width: calc(100% - 45px);
-  max-width: calc(100% - 45px);
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateX(0);
+  transition: transform 0.35s linear;
 
-  @media screen and (min-width: 1300px) {
-    min-width: calc(100% - calc(280px + 3vw));
+  @media screen and (min-width: $breakpoint-m) {
+    position: inherit;
+  }
+}
+
+.chat__activechat--hidden {
+  transform: translateX(100%);
+
+  @media screen and (min-width: $breakpoint-m) {
+    transform: translateX(0);
   }
 }
 
@@ -209,11 +186,13 @@
   background: var(--card-bg);
   flex-flow: row nowrap;
   position: relative;
+
   @include themeable(
     border-left,
     theme-container-border,
     1px solid $outline-color
   );
+
   @media screen and (min-width: 1540px) {
     @include themeable(
       border,
@@ -263,7 +242,7 @@
   font-size: var(--fs-base);
   flex-grow: 1;
   height: 300px;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   text-align: left;
   overscroll-behavior-y: contain;
@@ -319,8 +298,8 @@
     width: calc(100% - 16px);
     position: fixed;
     height: calc(100% - 86px);
-    margin-left: -48px;
-    margin-top: -1px;
+    margin-left: 0;
+    margin-top: 0;
   }
 
   @media screen and (min-width: 1000px) {
@@ -517,141 +496,21 @@
   }
 }
 
-.chat__channelinvitationsindicator a,
-.chat__channelinvitationsindicator button {
-  background: linear-gradient(10deg, darken($green, 25%), darken($green, 15%));
-  text-align: center;
-  padding: 30px 0px;
-  display: block;
-  border-radius: 3px;
-  margin: 3px 0px;
-  border: 0px;
-  width: 94%;
-  color: white;
-  font-size: 1.1em;
-  font-weight: 700;
-  -webkit-appearance: unset;
-}
-
 .chatchannels {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  height: auto;
   justify-content: space-between;
-  height: inherit;
-  width: 99%;
-}
-
-.chatchanneltabbutton {
-  width: calc(100% - 2px);
-  border: none;
-  background: transparent;
-  padding: 2px 0px;
-  margin-bottom: -12px;
-  box-sizing: border-box;
-  color: var(--body-color);
-  display: block;
-  position: relative;
-  .crayons-indicator {
-    vertical-align: -1px;
-    margin-right: 4px;
-  }
-}
-
-.chatchanneltab {
-  display: inline-block;
   width: 100%;
-  margin-bottom: 5px;
-  background: inherit;
-  text-align: start;
-  font-size: 11px;
-  font-weight: 500;
-  padding: 5px 4px;
-  border-radius: 3px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  box-sizing: border-box;
-  border: 1px solid transparent;
-  font-size: 13px;
-  padding: 8px;
-}
-
-.chatchanneltab--active {
-  border: 1px solid var(--base-30);
-  background: var(--base-10);
-  img {
-    border: 1px solid var(--base-30);
-  }
-}
-
-.chatchanneltab--new {
-  border: 1px solid var(--accent-brand-darker);
-  color: var(--accent-brand-darker);
-}
-
-.chatchanneltab--video {
-  background: lighten($green, 10%);
-  animation: small-pulser 0.5s linear infinite;
-}
-
-.chatchanneltabindicator {
-  display: inline-block;
-  min-height: 0.3em;
-  min-width: 0.3em;
-  margin-right: 5px;
-
-  img {
-    height: calc(22px + 0.3vw);
-    width: calc(22px + 0.3vw);
-    vertical-align: calc(-6px - 0.14vw);
-    border-radius: 100px;
-    border: 1px solid var(--base-30);
-    background: white;
-  }
-
-  .chatchanneltabgroupicon {
-    display: inline-block;
-    margin-left: calc(20px + 0.3vw);
-  }
-}
-
-.chat--contracted {
-  .chatchannels {
-    width: 45px;
-  }
-  .chatchanneltabbutton {
-    margin-left: 1px;
-  }
-  .chatchanneltab {
-    padding: 6px 1px;
-    img {
-      height: 36px;
-      width: 36px;
-    }
-  }
-  .chatchanneltab--active {
-    background: var(--base-20);
-  }
-  .chatchanneltab--new {
-    background: var(--accent-brand-darker);
-    color: white;
-  }
-}
-
-.chatchanneltabindicator .chatchanneltabindicatorgroupimage {
-  border-radius: 3px;
-}
-
-.chatchanneltabindicator--new img {
-  border: 1px solid var(--accent-brand);
 }
 
 .chatchannels__channelslist {
-  padding: 3px 0 10px;
   flex-grow: 1;
-  overflow: scroll;
-  padding-bottom: 9vw;
+  overflow-y: auto;
   overflow-x: hidden;
+  margin: var(--su-4) auto;
+  width: 100%;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -676,14 +535,13 @@
 
 .chatchannels__config {
   position: absolute;
-  bottom: -14px;
+  bottom: 0;
   left: 0;
   right: 0;
   background: var(--body-bg);
   border-top: 1px solid $light-medium-gray;
-  padding: 8px 10px 20px;
+  padding: var(--su-3);
   font-weight: bold;
-  padding-left: 16px;
   cursor: pointer;
 
   img {
@@ -745,6 +603,109 @@
   }
 }
 
+.chat__channelinvitationsindicator a,
+.chat__channelinvitationsindicator button {
+  background: linear-gradient(10deg, darken($green, 25%), darken($green, 15%));
+  text-align: center;
+  padding: 30px 0px;
+  display: block;
+  border-radius: var(--radius);
+  margin: 3px 0px;
+  border: 0px;
+  width: 94%;
+  color: white;
+  font-size: 1.1em;
+  font-weight: var(--fw-bold);
+  -webkit-appearance: unset;
+}
+
+.chatchanneltabbutton {
+  border: none;
+  width: 100%;
+  background: transparent;
+  box-sizing: border-box;
+  color: var(--body-color);
+  display: block;
+  position: relative;
+  padding: 0;
+
+  .crayons-indicator {
+    vertical-align: -1px;
+    margin-right: var(--su-1);
+  }
+}
+
+.chatchanneltab {
+  display: inline-block;
+  width: 100%;
+  background: inherit;
+  text-align: start;
+  border-radius: var(--radius);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  font-size: 13px;
+  padding: var(--su-3);
+  display: flex;
+  align-items: center;
+}
+
+.chatchanneltab--active {
+  border: 1px solid var(--base-30);
+  background: var(--base-10);
+  img {
+    border: 1px solid var(--base-30);
+  }
+}
+
+.chatchanneltab__name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chatchanneltab--new {
+  border: 1px solid var(--accent-brand-darker);
+  color: var(--accent-brand-darker);
+}
+
+.chatchanneltab--video {
+  background: lighten($green, 10%);
+  animation: small-pulser 0.5s linear infinite;
+}
+
+.chatchanneltabindicator {
+  display: inline-block;
+  min-height: 0.3em;
+  min-width: 0.3em;
+  margin-right: 5px;
+  flex-shrink: 0;
+
+  img {
+    height: calc(22px + 0.3vw);
+    width: calc(22px + 0.3vw);
+    vertical-align: calc(-6px - 0.14vw);
+    border-radius: 100px;
+    border: 1px solid var(--base-30);
+    background: white;
+  }
+
+  .chatchanneltabgroupicon {
+    display: inline-block;
+    margin-left: calc(20px + 0.3vw);
+  }
+}
+
+.chatchanneltabindicator .chatchanneltabindicatorgroupimage {
+  border-radius: var(--radius);
+}
+
+.chatchanneltabindicator--new img {
+  border: 1px solid var(--accent-brand);
+}
+
 .chatmessage__body {
   flex-grow: 1;
   max-width: calc(100% - 37px);
@@ -753,6 +714,7 @@
 .message__info {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .chatmessagebody__username {
@@ -1105,6 +1067,7 @@
 }
 .compose__outer__container {
   position: relative;
+  box-shadow: 0 0 0 1px var(--card-border);
 }
 .mention__user__image {
   height: 25px;
