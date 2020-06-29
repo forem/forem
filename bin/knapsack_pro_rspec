@@ -4,5 +4,5 @@ if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC" = "" ]; then
     KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC=disabled-for-fork \
     bundle exec rake knapsack_pro:rspec # use Regular Mode here always
 else
-  bundle exec rake knapsack_pro:queue:rspec
+  bundle exec rake knapsack_pro:rspec
 fi
