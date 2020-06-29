@@ -5,7 +5,7 @@ title: Contributing to Forem
 # Contributing to Forem
 
 We expect contributors to abide by our underlying
-[code of conduct](https://dev.to/code-of-conduct). All discussions about this
+[Code of Conduct](https://dev.to/code-of-conduct). All discussions about this
 project must be respectful and harassment-free.
 
 Remember that communication is the lifeblood of any Open Source project. We are
@@ -30,10 +30,10 @@ are up for grabs.
 - [difficulty: easy](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+easy%22)
   issues are usually confined to isolated areas of existing code.
 - [difficulty: medium](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+medium%22)
-  issues can sometimes entail new features and might affect a significant area
-  of the codebase, but aren't overly complex.
+  issues sometimes entail new features and might affect a significant area of
+  the codebase, but aren't overly complex.
 - [difficulty: hard](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+hard%22)
-  issues will typically be far-reaching, and might need architecture decisions
+  issues are typically far-reaching, and might need architecture decisions
   during implementation. This label might also denote highly complex issues.
 
 PRs without an associated issue may still be merged, but the core team will
@@ -45,17 +45,17 @@ When in doubt, ask a
 mentioning us on the issue.
 
 **Documentation** is almost always a great place to start contributing to a new
-project. DEV is an Open Source, community-driven project. Therefore, providing
+project. Forem is an Open Source, community-driven project. Therefore, providing
 and maintaining quality documentation is one of our most important jobs. You can
 find more information in our
 [docs guide](https://docs.dev.to/contributing/docs)!
 
-**Refactoring** (improving the code without modifying behavior) is a great place
-to help out! Generally speaking, you can rely on existing tests to ensure that
-your refactor doesn't introduce any unexpected behavior. If an area isn't well
-tested, you might be asked to include a regression test with your refactoring
-PR. Refactors can touch many files, so we encourage breaking big changes into
-small PRs.
+**Refactoring**, which involves improving the code without modifying behavior,
+is a great place to help out! Generally speaking, you can rely on existing tests
+to ensure that your refactor doesn't introduce any unexpected behavior. If an
+area isn't well tested, you might be asked to include a regression test with
+your refactoring PR. Refactors can touch many files, so we encourage breaking
+big changes into small PRs.
 
 **Fixing bugs** is a super fast way to improve the experience for our users!
 When you're fixing bugs, we appreciate communication in a GitHub issue. If an
@@ -104,18 +104,19 @@ always include test coverage. Please give our
 
 ### Code quality
 
-We use [CodeClimate](https://codeclimate.com/) to find code smells. If a pull
+We use [Code Climate](https://codeclimate.com/) to find code smells. If a pull
 request contains code smells, we might recommend a refactor before merging. We
 like readable code, and encourage DRY when it's reasonable!
 
 More importantly, we avoid
 [wrong abstractions](https://www.sandimetz.com/blog/2016/1/20/the-wrong-abstraction).
-Code quality tools are not perfect, so don't obsess over your CodeClimate score.
+Code quality tools are not perfect, so don't obsess over your Code Climate
+score.
 
 ### Please use inclusive language
 
 Inclusion and respect are core tenets of our
-[code of conduct](https://dev.to/code-of-conduct). We expect thoughtful language
+[Code of Conduct](https://dev.to/code-of-conduct). We expect thoughtful language
 all the way down to the code. Some technical metaphors are alienating or
 triggering. We ask that contributors go the extra mile to submit code which is
 inclusive in nature.
@@ -128,7 +129,7 @@ encourages more thoughtful code!
 
 - Try to keep the pull requests small. A pull request should try its very best
   to address only a single concern.
-- For work in progress Pull Requests, please use the
+- For work in progress pull requests, please use the
   [Draft PR](https://github.blog/2019-02-14-introducing-draft-pull-requests/)
   feature.
 - Make sure all tests pass and add additional tests for the code you submit.
@@ -148,20 +149,20 @@ don't plan to merge the code._
 
 All community pull requests are reviewed by our core team.
 
-- All contributors must sign the CLA
-- All required checks are expected to pass on each PR
+- All contributors must sign the CLA.
+- All required checks are expected to pass on each PR.
   - In the case of flaky or unrelated test failures, a core team member will
-    restart CI
-- We require 2 approvals from core team members for each PR
-- Requested Changes must be resolved (with code or discussion) before merging
-- If you make changes to a PR, be sure to re-request a review
+    restart CI.
+- We require 2 approvals from core team members for each PR.
+- Requested Changes must be resolved (with code or discussion) before merging.
+- If you make changes to a PR, be sure to re-request a review.
 - Style discussions are generally discouraged in PR reviews; make a PR to the
-  linter configurations instead
-- Your code will be deployed shortly after it is merged
+  linter configurations instead.
+- Your code will be deployed shortly after it is merged.
 
 ### A note on "force pushing"
 
-After you submit your Pull Request, one of the members of the core team will
+After you submit your pull request, one of the members of the core team will
 review your code.
 
 Please avoid force pushing unless you need to rebase with the master branch.

@@ -33,10 +33,11 @@ thoughts.
 - We require 2 approvals from core team members for each PR:
   - One from the same team because they have context and are working towards the
     same goal as you.
-  - One from outside your team for the following reasons: - A different
-    perspective from someone who has less context - To leverage our different
-    strengths and garner additional insights spreading knowledge and code
-    exposure throughout the team - To avoid overloading individuals
+  - One from outside your team for the following reasons:
+    - A different perspective from someone who has less context
+    - To leverage our different strengths and garner additional insights
+      spreading knowledge and code exposure throughout the team
+    - To avoid overloading individuals
 - Tag people that you’d like to review your PR using GitHub’s ‘Reviewers’
   function.
 - Be kind! The goal here is to work together on shipping good code, not to judge
@@ -59,7 +60,7 @@ thoughts.
 At the time of writing, we tend to prefer squashing PRs into a single commit and
 merging them. This is easily (and safely) achieved using the GitHub UI.
 
-All required checks such as CI and CodeClimate should be green.
+All required checks such as CI and Code Climate should be green.
 
 Once a PR is merged, it might need to be deployed. Deployment is a team
 responsibility, and everyone on the core team should be comfortable deploying
