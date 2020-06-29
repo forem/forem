@@ -1,4 +1,9 @@
-/* eslint-disable consistent-return,no-unused-vars,react/destructuring-assignment,react/no-access-state-in-setstate,react/button-has-type */
+/*
+  eslint-disable
+  consistent-return, no-unused-vars, react/destructuring-assignment,
+  react/no-access-state-in-setstate, react/button-has-type
+*/
+
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import ConfigImage from '../../assets/images/overflow-horizontal.svg';
@@ -38,6 +43,9 @@ import ActionMessage from './actionMessage';
 import Content from './content';
 import { VideoContent } from './videoContent';
 
+const NARROW_WIDTH_LIMIT = 767;
+const WIDE_WIDTH_LIMIT = 1600;
+
 export default class Chat extends Component {
   static propTypes = {
     pusherKey: PropTypes.number.isRequired,
@@ -74,7 +82,7 @@ export default class Chat extends Component {
       activeContent: {},
       fullscreenContent: null,
       videoPath: null,
-      expanded: window.innerWidth > 600,
+      expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
       isMobileDevice: typeof window.orientation !== 'undefined',
       subscribedPusherChannels: [],
       inviteChannels: [],
@@ -622,7 +630,7 @@ export default class Chat extends Component {
       this.setActiveContentState(activeChannelId, null);
       this.setState({
         fullscreenContent: null,
-        expanded: window.innerWidth > 600,
+        expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
       });
     }
     if (messageIsEmpty) {
@@ -747,6 +755,10 @@ export default class Chat extends Component {
   handleSwitchChannel = (e) => {
     e.preventDefault();
     let { target } = e;
+
+    const chatContainer = document.querySelector('.chat__activechat');
+    chatContainer.classList.remove('chat__activechat--hidden');
+
     if (!target.dataset.channelId) {
       target = target.parentElement;
     }
@@ -956,14 +968,14 @@ export default class Chat extends Component {
         this.setActiveContentState(activeChannelId, null);
         this.setState({
           fullscreenContent: null,
-          expanded: window.innerWidth > 600,
+          expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
         });
       } else if (target.dataset.content === 'fullscreen') {
         const mode =
           this.state.fullscreenContent === 'sidecar' ? null : 'sidecar';
         this.setState({
           fullscreenContent: mode,
-          expanded: mode === null || window.innerWidth > 1600,
+          expanded: mode === null || window.innerWidth > WIDE_WIDTH_LIMIT,
         });
       } else if (target.dataset.content === 'chat_channel_setting') {
         this.setActiveContent({
@@ -1238,91 +1250,54 @@ export default class Chat extends Component {
           </div>
         );
       }
-      if (state.expanded) {
-        return (
-          <div className="chat__channels chat__channels--expanded">
-            {notificationsButton}
-            <button
-              className="chat__channelstogglebutt"
-              onClick={this.toggleExpand}
-              type="button"
-              title="Collapse channels"
-            >
-              {'<'}
-            </button>
-            {state.searchShowing ? (
-              <input
-                placeholder="Search Channels"
-                onKeyUp={this.debouncedChannelFilter}
-                id="chatchannelsearchbar"
-                className="crayons-textfield"
-                aria-label="Search Channels"
-              />
-            ) : (
-              ''
-            )}
-            {invitesButton}
-            {joiningRequestButton}
-            <div className="chat__channeltypefilter">
-              <button
-                className="chat__channelssearchtoggle"
-                onClick={this.toggleSearchShowing}
-                aria-label="Toggle channel search"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  width="17"
-                  height="17"
-                >
-                  <path fill="none" d="M0 0h24v24H0z" />
-                  <path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
-                </svg>
-              </button>
-              {this.renderChannelFilterButton(
-                'all',
-                'all',
-                state.channelTypeFilter,
-              )}
-              {this.renderChannelFilterButton(
-                'direct',
-                'direct',
-                state.channelTypeFilter,
-              )}
-              {this.renderChannelFilterButton(
-                'invite_only',
-                'group',
-                state.channelTypeFilter,
-              )}
-            </div>
-            <Channels
-              activeChannelId={state.activeChannelId}
-              chatChannels={state.chatChannels}
-              unopenedChannelIds={state.unopenedChannelIds}
-              handleSwitchChannel={this.handleSwitchChannel}
-              channelsLoaded={state.channelsLoaded}
-              filterQuery={state.filterQuery}
-              expanded={state.expanded}
-              aria-expanded={state.expanded}
-              currentUserId={state.currentUserId}
-              triggerActiveContent={this.triggerActiveContent}
-            />
-            {notificationsState}
-          </div>
-        );
-      }
       return (
         <div className="chat__channels">
           {notificationsButton}
-          <button
-            className="chat__channelstogglebutt"
-            onClick={this.toggleExpand}
-            style={{ width: '100%' }}
-            type="button"
-            title="Expand channels"
-          >
-            {'>'}
-          </button>
+          {state.searchShowing ? (
+            <input
+              placeholder="Search Channels"
+              onKeyUp={this.debouncedChannelFilter}
+              id="chatchannelsearchbar"
+              className="crayons-textfield"
+              aria-label="Search Channels"
+            />
+          ) : (
+            ''
+          )}
+          {invitesButton}
+          {joiningRequestButton}
+          <div className="chat__channeltypefilter">
+            <button
+              className="chat__channelssearchtoggle"
+              onClick={this.toggleSearchShowing}
+              aria-label="Toggle channel search"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="17"
+                height="17"
+              >
+                <path fill="none" d="M0 0h24v24H0z" />
+                <path d="M18.031 16.617l4.283 4.282-1.415 1.415-4.282-4.283A8.96 8.96 0 0 1 11 20c-4.968 0-9-4.032-9-9s4.032-9 9-9 9 4.032 9 9a8.96 8.96 0 0 1-1.969 5.617zm-2.006-.742A6.977 6.977 0 0 0 18 11c0-3.868-3.133-7-7-7-3.868 0-7 3.132-7 7 0 3.867 3.132 7 7 7a6.977 6.977 0 0 0 4.875-1.975l.15-.15z" />
+              </svg>
+            </button>
+            {this.renderChannelFilterButton(
+              'all',
+              'all',
+              state.channelTypeFilter,
+            )}
+            {this.renderChannelFilterButton(
+              'direct',
+              'direct',
+              state.channelTypeFilter,
+            )}
+            {this.renderChannelFilterButton(
+              'invite_only',
+              'group',
+              state.channelTypeFilter,
+            )}
+          </div>
           <Channels
             activeChannelId={state.activeChannelId}
             chatChannels={state.chatChannels}
@@ -1331,6 +1306,7 @@ export default class Chat extends Component {
             channelsLoaded={state.channelsLoaded}
             filterQuery={state.filterQuery}
             expanded={state.expanded}
+            aria-expanded={state.expanded}
             currentUserId={state.currentUserId}
             triggerActiveContent={this.triggerActiveContent}
           />
@@ -1339,6 +1315,12 @@ export default class Chat extends Component {
       );
     }
     return '';
+  };
+
+  navigateToChannelsList = () => {
+    const chatContainer = document.querySelector('.chat__activechat');
+
+    chatContainer.classList.add('chat__activechat--hidden');
   };
 
   handleMessageScroll = () => {
@@ -1482,7 +1464,7 @@ export default class Chat extends Component {
     } else {
       this.setState({
         fullscreenContent: 'video',
-        expanded: window.innerWidth > 1600,
+        expanded: window.innerWidth > WIDE_WIDTH_LIMIT,
       });
     }
   };
@@ -1741,6 +1723,29 @@ export default class Chat extends Component {
     this.toggleSearchShowing();
   };
 
+  renderChannelBackNav = () => {
+    return (
+      <button
+        className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost active-channel__back-btn"
+        onClick={this.navigateToChannelsList}
+        onKeyUp={(e) => {
+          if (e.keyCode === 13) this.navigateToChannelsList(e);
+        }}
+        tabIndex="0"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          width="24"
+          height="24"
+          className="crayons-icon"
+        >
+          <path d="M10.828 12l4.95 4.95-1.414 1.414L8 12l6.364-6.364 1.414 1.414z" />
+        </svg>
+      </button>
+    );
+  };
+
   renderChannelHeaderInner = () => {
     const { activeChannel } = this.state;
     if (activeChannel.channel_type === 'direct') {
@@ -1787,7 +1792,7 @@ export default class Chat extends Component {
 
     return (
       <a
-        className="crayons-btn crayons-btn--icon-rounded crayons-btn--secondary"
+        className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost"
         onClick={this.triggerActiveContent}
         onKeyUp={(e) => {
           if (e.keyCode === 13) this.triggerActiveContent(e);
@@ -1820,6 +1825,7 @@ export default class Chat extends Component {
     if (state.activeChannel) {
       channelHeader = (
         <div className="active-channel__header">
+          {this.renderChannelBackNav()}
           {this.renderChannelHeaderInner()}
           {this.renderChannelConfigImage()}
         </div>
@@ -1834,9 +1840,8 @@ export default class Chat extends Component {
     return (
       <div
         data-testid="chat"
-        className={`chat chat--${
-          state.expanded ? 'expanded' : 'contracted'
-        }${detectIOSSafariClass} chat--${
+        className={`chat chat--expanded
+        ${detectIOSSafariClass} chat--${
           state.videoPath ? 'video-visible' : 'video-not-visible'
         } chat--${
           state.activeContent[state.activeChannelId]
