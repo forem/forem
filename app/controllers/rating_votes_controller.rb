@@ -12,6 +12,7 @@ class RatingVotesController < ApplicationController
     rating_vote.rating = rating_vote_params[:rating].to_f
     rating_vote.group = rating_vote_params[:group]
     if rating_vote.save
+      ReviewItem.mark_as_reviewed(rating_vote.article, rating_vote.user)
       respond_to do |format|
         format.json { render json: { result: "Success" } }
         format.html { redirect_back(fallback_location: "/mod") }

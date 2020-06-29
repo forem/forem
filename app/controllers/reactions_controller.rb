@@ -85,6 +85,7 @@ class ReactionsController < ApplicationController
         Notification.send_reaction_notification(reaction, reaction.target_user)
         Notification.send_reaction_notification(reaction, reaction.reactable.organization) if reaction.reaction_on_organization_article?
 
+        ReviewItem.mark_as_reviewed(reaction.reactable, reaction.user) if reaction.category.in?(MODERATION_CATEGORIES)
         result = "create"
 
         if category == "readinglist" && current_user.experience_level

@@ -17,6 +17,7 @@ class TagAdjustmentsController < ApplicationController
     article = service.article
     if tag_adjustment.save
       service.update_tags_and_notify
+      ReviewItem.mark_as_reviewed(tag_adjustment.article, tag_adjustment.user)
       tag = tag_adjustment.tag
       respond_to do |format|
         format.json { render json: { status: "Success", result: tag_adjustment.adjustment_type, colors: { bg: tag.bg_color_hex, text: tag.text_color_hex } } }
