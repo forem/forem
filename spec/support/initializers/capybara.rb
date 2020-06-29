@@ -12,7 +12,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each, type: :system, js: true) do
-    stub_request(:get, "https://chromedriver.storage.googleapis.com").
+    stub_request(:get, /^https:\/\/chromedriver.storage.googleapis.com.*$/).
       to_return(status: 200, body: "", headers: {})
 
     if ENV["SELENIUM_URL"].present?
