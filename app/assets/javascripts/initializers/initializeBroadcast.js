@@ -83,9 +83,10 @@ function renderBroadcast(broadcastElement, data) {
 
 /**
  * A function to determine if a broadcast should render.
- * Does not render a broadcast on the `/new` route, if the current user
- * has opted-out, if the broadcast has already been inserted, or
- * if the key for the broadcast's title exists in localStorage.
+ * Does not render a broadcast on the `/new` route or in an iframe.
+ * Does not render a broadcast if the current user has opted-out,
+ * if the broadcast has already been inserted, or if the key for
+ * the broadcast's title exists in localStorage.
  *
  * If the broadcast exists in the DOM but was hidden by the articleForm,
  * the function will re-display it again by adding a class.
@@ -93,7 +94,9 @@ function renderBroadcast(broadcastElement, data) {
  * @function initializeBroadcast
  */
 function initializeBroadcast() {
-  if (window.location.pathname === '/new') {
+  // Iframes will attempt to re-render a broadcast, so we want to explicitly
+  // avoid initializing one if we are within `window.frameElement`.
+  if (window.frameElement || window.location.pathname === '/new') {
     return;
   }
 
