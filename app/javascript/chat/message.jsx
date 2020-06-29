@@ -57,7 +57,7 @@ const Message = ({
         onClick={onContentTrigger}
       >
         <div className="message__info__actions">
-          <div className="message__info">
+          <div className="message__info d-flex flex-wrap">
             <span
               className="chatmessagebody__username not-dark-theme-text-compatible"
               style={spanStyle}
