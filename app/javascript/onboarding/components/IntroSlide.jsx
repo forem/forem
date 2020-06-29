@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import Navigation from './Navigation';
 import { getContentOfToken, userData, updateOnboarding } from '../utilities';
+import Navigation from './Navigation';
 
 /* eslint-disable camelcase */
 class IntroSlide extends Component {
@@ -102,7 +102,10 @@ class IntroSlide extends Component {
     }
 
     return (
-      <div data-testid="onboarding-intro-slide" className="onboarding-main introduction crayons-modal crayons-modal--m">
+      <div
+        data-testid="onboarding-intro-slide"
+        className="onboarding-main introduction crayons-modal crayons-modal--m"
+      >
         <div className="crayons-modal__box overflow-auto">
           <div className="onboarding-content">
             <figure>
@@ -112,12 +115,12 @@ class IntroSlide extends Component {
                 alt={communityConfig.communityName}
               />
             </figure>
-            <h1 data-testid="onboarding-introduction-title" className="introduction-title">
+            <h1
+              data-testid="onboarding-introduction-title"
+              className="introduction-title"
+            >
               {this.user.name}
-              &mdash; welcome to
-              {' '}
-              {communityConfig.communityName}
-              !
+              &mdash; welcome to {communityConfig.communityName}!
             </h1>
             <h2 className="introduction-subtitle">
               {communityConfig.communityDescription}
@@ -129,7 +132,10 @@ class IntroSlide extends Component {
               <fieldset>
                 <ul>
                   <li className="checkbox-item">
-                    <label data-testid="checked-code-of-conduct" htmlFor="checked_code_of_conduct">
+                    <label
+                      data-testid="checked-code-of-conduct"
+                      htmlFor="checked_code_of_conduct"
+                    >
                       <input
                         type="checkbox"
                         id="checked_code_of_conduct"
@@ -137,8 +143,7 @@ class IntroSlide extends Component {
                         checked={checked_code_of_conduct}
                         onChange={this.handleChange}
                       />
-                      You agree to uphold our
-                      {' '}
+                      You agree to uphold our{' '}
                       <a
                         href="/code-of-conduct"
                         data-no-instant
@@ -151,7 +156,10 @@ class IntroSlide extends Component {
                   </li>
 
                   <li className="checkbox-item">
-                    <label data-testid="checked-terms-and-conditions" htmlFor="checked_terms_and_conditions">
+                    <label
+                      data-testid="checked-terms-and-conditions"
+                      htmlFor="checked_terms_and_conditions"
+                    >
                       <input
                         type="checkbox"
                         id="checked_terms_and_conditions"
@@ -159,8 +167,7 @@ class IntroSlide extends Component {
                         checked={checked_terms_and_conditions}
                         onChange={this.handleChange}
                       />
-                      You agree to our
-                      {' '}
+                      You agree to our{' '}
                       <a
                         href="/terms"
                         data-no-instant
@@ -198,7 +205,7 @@ IntroSlide.propTypes = {
   communityConfig: PropTypes.shape({
     communityLogo: PropTypes.string.isRequired,
     communityName: PropTypes.string.isRequired,
-    communityDescription: PropTypes.string.isRequired
+    communityDescription: PropTypes.string.isRequired,
   }).isRequired,
 };
 

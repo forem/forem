@@ -331,6 +331,11 @@ RSpec.describe "StoriesIndex", type: :request do
         sign_in user
       end
 
+      it "shows tags to signed-in users" do
+        get "/t/#{tag.name}"
+        expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+      end
+
       it "has mod-action-button" do
         get "/t/#{tag.name}"
         expect(response.body).to include('<a class="cta mod-action-button"')
@@ -351,6 +356,12 @@ RSpec.describe "StoriesIndex", type: :request do
     context "without user signed in" do
       let(:tag) { create(:tag) }
 
+      it "shows sign-in notice to non-signed-in users" do
+        get "/t/#{tag.name}"
+        expect(response.body).not_to include("crayons-tabs__item crayons-tabs__item--current")
+        expect(response.body).to include("for the ability sort posts by")
+      end
+
       it "does not render pagination" do
         get "/t/#{tag.name}"
         expect(response.body).not_to include('<span class="olderposts-pagenumber">')
@@ -366,6 +377,18 @@ RSpec.describe "StoriesIndex", type: :request do
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}/page/2"
         expect(response.body).not_to include('<div id="sidebar-wrapper-right"')
+      end
+
+      it "renders proper page title for page 1" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}/page/1"
+        expect(response.body).to include("<title>#{tag.name.capitalize} - ")
+      end
+
+      it "renders proper page title for page 2" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}/page/2"
+        expect(response.body).to include("<title>#{tag.name.capitalize} Page 2 - ")
       end
 
       it "does not include current page link" do
