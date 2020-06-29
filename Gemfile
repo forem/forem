@@ -28,7 +28,7 @@ gem "carrierwave-bombshelter", "~> 0.2" # Protect your carrierwave from image bo
 gem "cld", "~> 0.8" # Compact Language Detection for Ruby
 gem "cloudinary", "~> 1.15" # Client library for easily using the Cloudinary service
 gem "counter_culture", "~> 2.5" # counter_culture provides turbo-charged counter caches that are kept up-to-date
-gem "ddtrace", "~> 0.36.0" # ddtrace is Datadog’s tracing client for Ruby.
+gem "ddtrace", "~> 0.37.0" # ddtrace is Datadog’s tracing client for Ruby.
 gem "devise", "~> 4.7" # Flexible authentication solution for Rails
 gem "dogstatsd-ruby", "~> 4.8" # A client for DogStatsD, an extension of the StatsD metric server for Datadog
 gem "doorkeeper", "~> 5.4" # Oauth 2 provider
@@ -74,7 +74,7 @@ gem "pg", "~> 1.2" # Pg is the Ruby interface to the PostgreSQL RDBMS
 gem "puma", "~> 4.3" # Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server
 gem "pundit", "~> 2.1" # Object oriented authorization for Rails applications
 gem "pusher", "~> 1.3" # Ruby library for Pusher Channels HTTP API
-gem "pusher-push-notifications", "~> 1.1" # Pusher Push Notifications Ruby server SDK
+gem "pusher-push-notifications", "~> 1.2" # Pusher Push Notifications Ruby server SDK
 gem "rack-attack", "~> 6.3.1" # Used to throttle requests to prevent brute force attacks
 gem "rack-cors", "~> 1.1" # Middleware that will make Rack-based apps CORS compatible
 gem "rack-timeout", "~> 0.6" # Rack middleware which aborts requests that have been running for longer than a specified timeout
@@ -134,7 +134,7 @@ end
 group :development, :test do
   gem "amazing_print", "~> 1.2" # Great Ruby debugging companion: pretty print Ruby objects to visualize their structure
   gem "bullet", "~> 6.1" # help to kill N+1 queries and unused eager loading
-  gem "capybara", "~> 3.32" # Capybara is an integration testing tool for rack based web applications
+  gem "capybara", "~> 3.33" # Capybara is an integration testing tool for rack based web applications
   gem "faker", "~> 2.12" # A library for generating fake data such as names, addresses, and phone numbers
   gem "knapsack_pro", "~> 1.22.2" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
