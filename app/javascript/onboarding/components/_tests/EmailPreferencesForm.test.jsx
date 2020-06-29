@@ -1,27 +1,29 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
+import { axe } from 'jest-axe';
 
 import EmailPreferencesForm from '../EmailPreferencesForm';
 
 global.fetch = fetch;
 
 describe('EmailPreferencesForm', () => {
-  const renderEmailPreferencesForm = () => render(
-    <EmailPreferencesForm
-      next={jest.fn()}
-      prev={jest.fn()}
-      currentSlideIndex={4}
-      slidesCount={5}
-      communityConfig={{
-        communityName: 'Community Name',
-        communityLogo: '/x.png',
-        communityBackground: '/y.jpg',
-        communityDescription: "Some community description",
-      }}
-      previousLocation={null}
-    />
-  );
+  const renderEmailPreferencesForm = () =>
+    render(
+      <EmailPreferencesForm
+        next={jest.fn()}
+        prev={jest.fn()}
+        currentSlideIndex={4}
+        slidesCount={5}
+        communityConfig={{
+          communityName: 'Community Name',
+          communityLogo: '/x.png',
+          communityBackground: '/y.jpg',
+          communityDescription: 'Some community description',
+        }}
+        previousLocation={null}
+      />,
+    );
 
   const getUserData = () =>
     JSON.stringify({
@@ -30,40 +32,52 @@ describe('EmailPreferencesForm', () => {
       name: 'firstname lastname',
       username: 'username',
     });
-  const { location } = window;
 
   beforeAll(() => {
-    document.head.innerHTML = '<meta name="csrf-token" content="some-csrf-token" />';
+    document.head.innerHTML =
+      '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
   });
 
-  it('should load the appropriate text', () => {
-    const { getByText } = renderEmailPreferencesForm();
+  it('should have no a11y violations', async () => {
+    const { container } = render(renderEmailPreferencesForm());
+    const results = await axe(container);
 
-    getByText(/almost there!/i);
-    getByText(/review your email preferences before we continue./i);
-    getByText('Email preferences');
+    expect(results).toHaveNoViolations();
+  });
+
+  it('should load the appropriate text', () => {
+    const { queryByText } = renderEmailPreferencesForm();
+
+    expect(queryByText(/almost there!/i)).toBeDefined();
+    expect(
+      queryByText(/review your email preferences before we continue./i),
+    ).toBeDefined();
+    expect(queryByText('Email preferences')).toBeDefined();
   });
 
   it('should show the two checkboxes', () => {
-    const { getByLabelText } = renderEmailPreferencesForm();
-    getByLabelText(/receive weekly newsletter/i);
-    getByLabelText(/receive a periodic digest/i);
+    const { queryByLabelText } = renderEmailPreferencesForm();
+
+    expect(queryByLabelText(/receive weekly newsletter/i)).toBeDefined();
+    expect(queryByLabelText(/receive a periodic digest/i)).toBeDefined();
   });
 
   it('should render a stepper', () => {
     const { queryByTestId } = renderEmailPreferencesForm();
-    queryByTestId('stepper')
+
+    expect(queryByTestId('stepper')).toBeDefined();
   });
 
   it('should render a back button', () => {
-    const { getByTestId } = renderEmailPreferencesForm();
-    getByTestId('back-button');
+    const { queryByTestId } = renderEmailPreferencesForm();
+
+    expect(queryByTestId('back-button')).toBeDefined();
   });
 
   it('should render a button that says Finish', () => {
-    const { getByText } = renderEmailPreferencesForm();
-    getByText('Finish');
-  })
+    const { queryByText } = renderEmailPreferencesForm();
 
+    expect(queryByText('Finish')).toBeDefined();
+  });
 });

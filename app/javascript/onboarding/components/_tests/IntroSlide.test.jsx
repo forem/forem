@@ -2,27 +2,29 @@ import { h } from 'preact';
 import { render, waitForElement } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
+import { axe } from 'jest-axe';
 
 import IntroSlide from '../IntroSlide';
 
 global.fetch = fetch;
 
 describe('IntroSlide', () => {
-  const renderIntroSlide = () => render(
-    <IntroSlide
-      next={jest.fn()}
-      prev={jest.fn()}
-      currentSlideIndex={0}
-      slidesCount={5}
-      communityConfig={{
-        communityName: 'Community Name',
-        communityLogo: '/x.png',
-        communityBackground: '/y.jpg',
-        communityDescription: "Some community description",
-      }}
-      previousLocation={null}
-    />
-  );
+  const renderIntroSlide = () =>
+    render(
+      <IntroSlide
+        next={jest.fn()}
+        prev={jest.fn()}
+        currentSlideIndex={0}
+        slidesCount={5}
+        communityConfig={{
+          communityName: 'Community Name',
+          communityLogo: '/x.png',
+          communityBackground: '/y.jpg',
+          communityDescription: 'Some community description',
+        }}
+        previousLocation={null}
+      />,
+    );
 
   const getUserData = () =>
     JSON.stringify({
@@ -33,28 +35,44 @@ describe('IntroSlide', () => {
     });
 
   beforeAll(() => {
-    document.head.innerHTML = '<meta name="csrf-token" content="some-csrf-token" />';
+    document.head.innerHTML =
+      '<meta name="csrf-token" content="some-csrf-token" />';
     document.body.setAttribute('data-user', getUserData());
+  });
+
+  it('should have no a11y violations', async () => {
+    const { container } = render(renderIntroSlide());
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
   });
 
   it('should load the appropriate text and images', () => {
     const { getByTestId, getByText, getByAltText } = renderIntroSlide();
 
-    expect(getByTestId('onboarding-introduction-title')).toHaveTextContent(/firstname lastname— welcome to Community Name!/i);
+    expect(getByTestId('onboarding-introduction-title')).toHaveTextContent(
+      /firstname lastname— welcome to Community Name!/i,
+    );
     getByText('Some community description');
-    expect(getByAltText('Community Name').getAttribute('src')).toEqual('/x.png');
+    expect(getByAltText('Community Name').getAttribute('src')).toEqual(
+      '/x.png',
+    );
   });
 
   it('should link to the code of conduct', () => {
     const { getByText } = renderIntroSlide();
     expect(getByText(/code of conduct/i)).toHaveAttribute('href');
-    expect(getByText(/code of conduct/i).getAttribute('href')).toContain('/code-of-conduct');
+    expect(getByText(/code of conduct/i).getAttribute('href')).toContain(
+      '/code-of-conduct',
+    );
   });
 
   it('should link to the terms and conditions', () => {
     const { getByText } = renderIntroSlide();
     expect(getByText(/terms and conditions/i)).toHaveAttribute('href');
-    expect(getByText(/terms and conditions/i).getAttribute('href')).toContain('/terms');
+    expect(getByText(/terms and conditions/i).getAttribute('href')).toContain(
+      '/terms',
+    );
   });
 
   it('should not render a stepper', () => {
@@ -73,14 +91,12 @@ describe('IntroSlide', () => {
     expect(getByText(/continue/i)).toBeDisabled();
 
     const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
-    codeOfConductCheckbox.click()
+    codeOfConductCheckbox.click();
 
     const termsCheckbox = getByTestId('checked-terms-and-conditions');
     termsCheckbox.click();
 
-    const nextButton = await waitForElement(() =>
-      getByText(/continue/i),
-    );
+    const nextButton = await waitForElement(() => getByText(/continue/i));
     expect(nextButton).not.toBeDisabled();
   });
 });

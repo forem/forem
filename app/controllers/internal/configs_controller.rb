@@ -32,6 +32,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       shop_url
       payment_pointer
       health_check_token
+      feed_style
     ]
 
     allowed_params = allowed_params |

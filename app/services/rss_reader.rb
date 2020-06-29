@@ -40,7 +40,7 @@ class RssReader
       articles.append(article)
     rescue StandardError => e
       log_error(
-        "RssReaderError: occurred while creating article",
+        "RssReaderError: occurred while creating article #{item.url}",
         rss_reader_info: {
           user: user.username,
           feed_url: user.feed_url,

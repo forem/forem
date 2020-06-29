@@ -20,15 +20,16 @@ describe('<SelectedTags />', () => {
   });
 
   it('should render all the selected tags', () => {
-    const { getByText } = renderSelectedTags();
-    tags.forEach(tag => {
-      getByText(tag); 
+    const { queryByText } = renderSelectedTags();
+
+    tags.forEach((tag) => {
+      expect(queryByText(tag)).toBeDefined();
     });
   });
 
   it('should show the relevant links for each tag', () => {
     const { getByText } = renderSelectedTags();
-    tags.forEach(tag => {
+    tags.forEach((tag) => {
       expect(getByText(tag).closest('a').href).toContain(`/listings?t=${tag}`);
     });
   });
@@ -36,10 +37,17 @@ describe('<SelectedTags />', () => {
   it('should remove a tag', async () => {
     const onRemoveTag = jest.fn();
     const onKeyPress = jest.fn();
-    const { getAllByText, queryByText, debug } = render(<SelectedTags tags={tags} onKeyPress={onKeyPress} onRemoveTag={onRemoveTag} />);
+    const { getAllByText } = render(
+      <SelectedTags
+        tags={tags}
+        onKeyPress={onKeyPress}
+        onRemoveTag={onRemoveTag}
+      />,
+    );
 
     const firstTagX = getAllByText('×')[0];
     firstTagX.click();
+
     expect(onRemoveTag).toHaveBeenCalledTimes(1);
   });
 });

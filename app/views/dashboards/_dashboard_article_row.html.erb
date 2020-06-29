@@ -1,23 +1,18 @@
-<tr class="js-dashboard-story spec__dashboard-story <%= "story-unpublished" unless article.published %> <%= "js-dashboard-story story-archived hidden" if article.archived %>">
-  <td>
-    <h3 class="fs-l">
-      <a href="<%= article.current_state_path %>" class="flex items-center">
+<div class="dashboard-story js-dashboard-story spec__dashboard-story single-article <%= "story-unpublished" unless article.published %> <%= "js-dashboard-story story-archived hidden" if article.archived %>">
+  <div class="dashboard-story__title">
+    <h3 class="flex items-center">
+      <% if article.archived %>
+        <span class="crayons-indicator crayons-indicator--critical mr-2 fw-normal">Archived</span>
+      <% end %>
+      <a href="<%= article.current_state_path %>" class="inline-flex items-center">
         <% if article.organization_id %>
-          <span class="crayons-logo crayons-logo--s mr-2"><img class="crayons-logo__image" src="<%= article.organization&.profile_image_90 %>" alt="<%= article.organization&.name %>" width="24" height="24"></span>
+          <span class="crayons-logo crayons-logo--s mr-2 shrink-0"><img class="crayons-logo__image align-top" src="<%= article.organization&.profile_image_90 %>" alt="<%= article.organization&.name %>" width="24" height="24"></span>
         <% end %>
         <%= sanitize_and_decode article.title %>
       </a>
     </h3>
     <% if article.published %>
-      <% if article.cached_tag_list_array.any? %>
-        <div class="-ml-1">
-          <% article.cached_tag_list_array.each do |tag| %>
-            <a href="/t/<%= tag %>" class="crayons-tag"><span class="crayons-tag__prefix">#</span><%= tag %></a>
-          <% end %>
-        </div>
-      <% end %>
-
-      <p class="fs-s color-base-70 js-dashboard-story-details">
+      <p class="fs-s color-base-60 js-dashboard-story-details">
         <strong class="fw-medium">Published:</strong> <time datetime="<%= article.published_timestamp %>"><%= article.readable_publish_date %></time>
         <% if article.edited? %>
           <strong class="fw-medium pl-2">Edited:</strong> <time datetime="<%= article.edited_at.utc.iso8601 %>"><%= article.readable_edit_date %></time>
@@ -27,61 +22,53 @@
         <% end %>
       </p>
     <% end %>
-  </td>
+  </div>
 
-  <td class="fs-s color-base-70">
-    <div class="flex flex-wrap <%= "opacity-25" unless article.published %>" data-analytics-pageviews data-article-id="<%= article.id %>">
-      <span class="flex items-center p-1" title="Reactions">
-        <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon mr-1", title: "Reactions") %>
-        <% if article.published %>
-          <%= article.public_reactions_count %>
-        <% else %>
-          0
-        <% end %>
-      </span>
-
-      <span class="flex items-center p-1 ml-1" title="Comments">
-        <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon mr-1", title: "Comments") %>
-        <span class="spec__comments-count">
-          <%= article.comments_count %>
-        </span>
-      </span>
-
-      <span class="flex items-center p-1 ml-1" title="Views">
-        <%= inline_svg_tag("small-eye.svg", aria: true, class: "crayons-icon mr-1", title: "Views") %>
-        <% if article.published %>
-          <% if article.page_views_count > 25 %>
-            <%= article.page_views_count %>
-          <% else %>
-            &lt; 25
-          <% end %>
-        <% else %>
-          0
-        <% end %>
-      </span>
-
-      <% if false %>
-        <span class="flex items-center p-1 ml-1" title="Data">
-          <%= inline_svg_tag("small-data.svg", aria: true, class: "crayons-icon mr-1", title: "Data") %>
-          4
-        </span>
-      <% end %>
-    </div>
-  </td>
-
-  <td>
-    <% if article.archived %>
-      <span class="crayons-indicator crayons-indicator--critical">Archived</span>
+  <div class="fs-s color-base-70">
+    <% if !article.published? %>
+      <a href="<%= article.path %>/edit" class="crayons-indicator crayons-indicator--accent">Draft</a>
     <% else %>
-      <% if article.published %>
-        <span class="crayons-indicator">Published</span>
-      <% else %>
-        <a href="<%= article.path %>/edit" class="crayons-indicator crayons-indicator--accent">Draft</a>
-      <% end %>
-    <% end %>
-  </td>
+      <div class="flex flex-nowrap whitespace-nowrap" data-analytics-pageviews data-article-id="<%= article.id %>">
+        <span class="flex items-center p-1" title="Reactions">
+          <%= inline_svg_tag("small-heart.svg", aria: true, class: "crayons-icon mr-1", title: "Reactions") %>
+          <% if article.published %>
+            <%= article.public_reactions_count %>
+          <% else %>
+            0
+          <% end %>
+        </span>
 
-  <td class="align-right">
+        <span class="flex items-center p-1 ml-1" title="Comments">
+          <%= inline_svg_tag("small-comment.svg", aria: true, class: "crayons-icon mr-1", title: "Comments") %>
+          <span class="spec__comments-count">
+            <%= article.comments_count %>
+          </span>
+        </span>
+
+        <span class="flex items-center p-1 ml-1" title="Views">
+          <%= inline_svg_tag("small-eye.svg", aria: true, class: "crayons-icon mr-1", title: "Views") %>
+          <% if article.published %>
+            <% if article.page_views_count > 25 %>
+              <%= article.page_views_count %>
+            <% else %>
+              &lt; 25
+            <% end %>
+          <% else %>
+            0
+          <% end %>
+        </span>
+
+        <% if false %>
+          <span class="flex items-center p-1 ml-1" title="Data">
+            <%= inline_svg_tag("small-data.svg", aria: true, class: "crayons-icon mr-1", title: "Data") %>
+            4
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="dashboard-story__actions">
     <% if manage_view %>
       <a href="<%= article.path %>/delete_confirm" data-no-instant class="crayons-btn crayons-btn--ghost-danger crayons-btn--s">Delete</a>
 
@@ -132,5 +119,5 @@
         <% end %>
       </div>
     </div>
-  </td>
-</tr>
+  </div>
+</div>

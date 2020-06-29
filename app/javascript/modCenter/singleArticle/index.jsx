@@ -31,12 +31,14 @@ export default class SingleArticle extends Component {
     const { articleOpened } = this.state;
     const { id, title, publishedAt, cachedTagList, user, key } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
-      return (
-        <span className="mod-article-tag fs-s ff-accent lh-base" key={key}>
-          <span className="article-hash-tag">#</span>
-          {tag}
-        </span>
-      );
+      if (tag) {
+        return (
+          <span className="crayons-tag" key={key}>
+            <span className="crayons-tag__prefix">#</span>
+            {tag}
+          </span>
+        );
+      }
     });
 
     const newAuthorNotification = user.articles_count <= 3 ? '👋 ' : '';

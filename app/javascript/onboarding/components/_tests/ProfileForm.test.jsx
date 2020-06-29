@@ -2,6 +2,7 @@ import { h } from 'preact';
 import { render, fireEvent, waitForElement } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
+import { axe } from 'jest-axe';
 
 import ProfileForm from '../ProfileForm';
 
@@ -39,6 +40,13 @@ describe('ProfileForm', () => {
     document.body.setAttribute('data-user', getUserData());
   });
 
+  it('should have no a11y violations', async () => {
+    const { container } = render(renderProfileForm());
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
   it('should load the appropriate title and subtitle', () => {
     const { getByTestId, getByText } = renderProfileForm();
 
@@ -49,9 +57,10 @@ describe('ProfileForm', () => {
   });
 
   it('should show the correct name and username', () => {
-    const { getByText } = renderProfileForm();
-    getByText('username');
-    getByText('firstname lastname');
+    const { queryByText } = renderProfileForm();
+
+    expect(queryByText('username')).toBeDefined();
+    expect(queryByText('firstname lastname')).toBeDefined();
   });
 
   it('should show the correct profile picture', () => {
@@ -92,13 +101,15 @@ describe('ProfileForm', () => {
   });
 
   it('should render a stepper', () => {
-    const { getByTestId } = renderProfileForm();
-    getByTestId('stepper');
+    const { queryByTestId } = renderProfileForm();
+
+    expect(queryByTestId('stepper')).toBeDefined();
   });
 
   it('should show the back button', () => {
-    const { getByTestId } = renderProfileForm();
-    getByTestId('back-button');
+    const { queryByTestId } = renderProfileForm();
+
+    expect(queryByTestId('back-button')).toBeDefined();
   });
 
   it('should update the text on the forward button', async () => {

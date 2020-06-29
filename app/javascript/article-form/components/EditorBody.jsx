@@ -10,12 +10,16 @@ export const EditorBody = ({
   version,
 }) => {
   return (
-    <div data-testid="article-form__body" className="crayons-article-form__body text-padding">
+    <div
+      data-testid="article-form__body"
+      className="crayons-article-form__body text-padding"
+    >
       <Toolbar version={version} />
 
       <Textarea
         className="crayons-textfield crayons-textfield--ghost crayons-article-form__body__field"
         id="article_body_markdown"
+        aria-label="Post Content"
         placeholder="Write your post content here..."
         value={defaultValue}
         onInput={onChange}

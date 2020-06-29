@@ -3,7 +3,9 @@ require "rss"
 
 default_logger = Rails.logger
 
-RSpec.describe RssReader, type: :service, vcr: true do
+RSpec.describe RssReader, type: :service, vcr: true, db_strategy: :truncation do
+  self.use_transactional_tests = false
+
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
@@ -169,6 +171,16 @@ RSpec.describe RssReader, type: :service, vcr: true do
     it "returns false on invalid feed url" do
       bad_link = "www.google.com"
       expect(rss_reader.valid_feed_url?(bad_link)).to be(false)
+    end
+  end
+
+  describe "feeds parsing and regressions" do
+    it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "rss_reader_dvirsegal" } do
+      user = create(:user, feed_url: "https://medium.com/feed/@dvirsegal")
+
+      expect do
+        rss_reader.fetch_user(user)
+      end.to change(user.articles, :count).by(10)
     end
   end
 end

@@ -142,7 +142,7 @@ class ReactionsController < ApplicationController
 
   def clear_moderator_reactions(id, type, mod, category)
     reactions = if category == "thumbsup"
-                  Reaction.where(reactable_id: id, reactable_type: type, user: mod).where.not(category: category)
+                  Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: NEGATIVE_CATEGORIES)
                 elsif category.in?(NEGATIVE_CATEGORIES)
                   Reaction.where(reactable_id: id, reactable_type: type, user: mod, category: "thumbsup")
                 end
