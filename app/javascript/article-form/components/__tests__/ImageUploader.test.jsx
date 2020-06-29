@@ -13,10 +13,6 @@ import '@testing-library/jest-dom';
 global.fetch = fetch;
 
 describe('<ImageUploader />', () => {
-  const fakeErrorMessage = Object.freeze({
-    message: 'Some Fake Error',
-  });
-
   it('should have no a11y violations', async () => {
     const { container } = render(<ImageUploader />);
     const results = await axe(container);
@@ -102,7 +98,10 @@ describe('<ImageUploader />', () => {
       type: 'image/png',
     });
 
-    fetch.mockReject(fakeErrorMessage);
+    fetch.mockReject({
+      message: 'Some Fake Error',
+    });
+
     fireEvent.change(inputEl, {
       target: {
         files: [file],
