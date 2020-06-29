@@ -41,7 +41,6 @@
 
 // modal styles overwrite crayons component WIP
 #user-subscription-confirmation-modal {
-  display: none;
 
   .crayons-modal__box__header {
     padding: var(--su-3) var(--su-4);
@@ -50,59 +49,9 @@
   .crayons-modal__box__body {
     padding: var(--su-6);
   }
-}
-
-.ltag__user-subscription-tag {
-
-  .ltag__user-subscription-tag__signed-out {
-    text-align: center;
-  }
-
-  .ltag__user-subscription-tag__response {
-    display: none;
-  }
-
-  #sign-in-btn {
-    width: max-content;
-  }
-
-  .ltag__user-subscription-tag__signed-in {
-    text-align: center;
-    display: none;
-  }
-
-  #logged-in-text,
-  #apple-auth-message {
-    text-align: center;
-  }
-
-  .ltag__user-subscription-tag__subscriber-email {
-    font-weight: bold;
-  }
-
-  #subscriber-apple-auth {
-    display: none;
-  }
 
   .crayons-modal__overlay {
     position: fixed;
     z-index: 400;
-  }
-
-  .ltag__user-subscriptino-tag__confirmation-buttons {
-    text-align: center;
-  }
-
-  #sign-in-btn,
-  #subscribe-btn {
-    margin: 0 auto;
-    display: block;
-  }
-
-  #confirmation-btn,
-  #cancel-btn {
-    width: max-content;
-    display: inline-block;
-    margin-right: 8px;
   }
 }

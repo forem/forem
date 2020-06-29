@@ -29,7 +29,7 @@
           </button>
         </div>
 
-        <div class="ltag__user-subscription-tag__signed-in align-center" id="subscription-signed-in">
+        <div class="ltag__user-subscription-tag__signed-in" id="subscription-signed-in">
           <button class="crayons-btn mb-4" id="subscribe-btn">
             Subscribe
           </button>
@@ -74,12 +74,16 @@
               You'll share your email address
               <span class="ltag__user-subscription-tag__subscriber-email"></span>
               with
-              <span class="ltag__user-subscription-tag__author-username"><%= author_username %></span>.
+              <span class="ltag__user-subscription-tag__author-username fw-medium"><%= author_username %></span>.
               Once you do this, you cannot undo this.
             <p>
             <div class="ltag__user-subscription-tag__confirmation-buttons">
-              <button class="crayons-btn" id="confirmation-btn">Confirm subscription</button>
-              <button class="crayons-btn crayons-btn--secondary" id="cancel-btn">Cancel</button>
+              <button class="crayons-btn mr-1" id="confirmation-btn">
+                Confirm subscription
+              </button>
+              <button class="crayons-btn crayons-btn--secondary" id="cancel-btn">
+                Cancel
+              </button>
             </div>
           </div>
         </div>

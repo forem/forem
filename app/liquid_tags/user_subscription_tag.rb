@@ -11,32 +11,35 @@ class UserSubscriptionTag < LiquidTagBase
 
     const subscriptionSignedIn = document.getElementById('subscription-signed-in');
     const subscriptionSignedOut = document.getElementById('subscription-signed-out');
+    const responseMessage = document.getElementById('response-message');
+    const subscriberAppleAuth = document.getElementById('subscriber-apple-auth');
+    const confirmationModal = document.getElementById('user-subscription-confirmation-modal');
 
     function clearSubscriptionArea() {
-      document.getElementById('subscription-signed-in').style.display = 'none';
-      document.getElementById('subscription-signed-out').style.display = 'none';
-      document.getElementById('response-message').style.display = 'none';
-      document.getElementById('subscriber-apple-auth').style.display = 'none';
+      subscriptionSignedIn.classList.add("hidden");
+      subscriptionSignedOut.classList.add("hidden");
+      responseMessage.classList.add("hidden");
+      subscriberAppleAuth.classList.add("hidden");
+
       hideConfirmationModal();
     }
 
     function showSignedIn() {
       clearSubscriptionArea();
-      document.getElementById('subscription-signed-in').style.display = 'block';
+      subscriptionSignedIn.classList.remove("hidden");
     }
 
     function showResponseMessage(noticeType, msg) {
       clearSubscriptionArea();
 
-      const responseMessage = document.getElementById('response-message')
-      responseMessage.style.display = 'block';
+      responseMessage.classList.remove("hidden");
       responseMessage.classList.add(`crayons-notice--${noticeType}`);
       responseMessage.textContent = msg;
     }
 
     function showAppleAuthMessage() {
       clearSubscriptionArea();
-      document.getElementById('subscriber-apple-auth').style.display = 'block';
+      subscriberAppleAuth.classList.remove("hidden");
     }
 
     function showSubscribed() {
@@ -47,11 +50,11 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function showConfirmationModal() {
-      document.getElementById('user-subscription-confirmation-modal').style.display = 'block';
+      confirmationModal.classList.remove("hidden");
     }
 
     function hideConfirmationModal() {
-      document.getElementById('user-subscription-confirmation-modal').style.display = 'none';
+      confirmationModal.classList.add("hidden");
     }
 
     // Updating DOM elements
