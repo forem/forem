@@ -238,7 +238,7 @@ RSpec.describe "/internal/config", type: :request do
           end
 
           it "sets shop_url to nil" do
-            previous_shop_url = SiteConfig.shop_url
+            previous_shop_url = "some-shop-url"
             post "/internal/config", params: { site_config: { shop_url: "" }, confirmation: confirmation_message }
             expect(SiteConfig.shop_url).to eq("")
             get "/privacy"
