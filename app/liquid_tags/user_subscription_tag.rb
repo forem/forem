@@ -8,6 +8,10 @@ class UserSubscriptionTag < LiquidTagBase
 
     // Hiding/showing elements
     // ***************************************
+
+    const subscriptionSignedIn = document.getElementById('subscription-signed-in');
+    const subscriptionSignedOut = document.getElementById('subscription-signed-out');
+
     function clearSubscriptionArea() {
       document.getElementById('subscription-signed-in').style.display = 'none';
       document.getElementById('subscription-signed-out').style.display = 'none';
