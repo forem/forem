@@ -1,6 +1,10 @@
 @import '../variables';
 @import '../config/import';
 
+.articles-list {
+  min-width: 0;
+}
+
 .crayons-story {
   background: var(--card-bg);
   font-size: var(--fs-base); // Todo: remove when ready.
