@@ -1440,7 +1440,6 @@ export default class Chat extends Component {
           onTriggerContent={this.triggerActiveContent}
           resource={state.activeContent[state.activeChannelId]}
           activeChannel={state.activeChannel}
-          githubToken={props.githubToken}
           fullscreen={state.fullscreenContent === 'sidecar'}
         />
         <VideoContent
