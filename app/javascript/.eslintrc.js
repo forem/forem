@@ -55,7 +55,8 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/index.js'], // Or *.test.js
+      // Turn this rule off for barrel files
+      files: ['**/index.js'],
       rules: {
         'import/export': 'off',
       },
