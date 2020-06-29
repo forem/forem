@@ -31,8 +31,10 @@ class LiquidTagBase < Liquid::Tag
     raise LiquidTags::Errors::InvalidParseContext, "No source found" unless source
 
     is_valid_source = self.class::VALID_CONTEXTS.include? source.class.name
+    return if is_valid_source
+
     valid_contexts = self.class::VALID_CONTEXTS.map(&:pluralize).join(", ")
     invalid_source_error_msg = "Invalid context. This liquid tag can only be used in #{valid_contexts}."
-    raise LiquidTags::Errors::InvalidParseContext, invalid_source_error_msg unless is_valid_source
+    raise LiquidTags::Errors::InvalidParseContext, invalid_source_error_msg
   end
 end
