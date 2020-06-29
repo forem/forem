@@ -28,6 +28,9 @@ const Channels = ({
           channel={channel}
           discoverableChannel
           triggerActiveContent={triggerActiveContent}
+          isActiveChannel={
+            parseInt(activeChannelId, 10) === channel.chat_channel_id
+          }
         />
       );
     },
