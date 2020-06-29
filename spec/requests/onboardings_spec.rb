@@ -9,7 +9,7 @@ RSpec.describe "Onboardings", type: :request do
       expect(response).to redirect_to("/enter")
     end
 
-    it "return 200 when authentidated" do
+    it "return 200 when authenticated" do
       sign_in user
       get onboarding_url
       expect(response).to have_http_status(:ok)

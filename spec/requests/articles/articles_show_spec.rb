@@ -10,6 +10,7 @@ RSpec.describe "ArticlesShow", type: :request do
 
   describe "GET /:slug (articles)" do
     before do
+      allow(SiteConfig).to receive(:logo_png).and_return("logo.png")
       get article.path
     end
 
