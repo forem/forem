@@ -10,10 +10,12 @@ Capybara.default_max_wait_time = 10
 # allow browser websites, so that "webdrivers" can access their binaries
 # see <https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock>
 allowed_sites = [
-  "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
+  "chromedriver.storage.googleapis.com",
+  "github.com/mozilla/geckodriver/releases",
+  "selenium-release.storage.googleapis.com",
+  "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
   "api.knapsackpro.com",
-  "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_83.0.4103",
-] + Webdrivers::Common.subclasses.map(&:base_url)
+]
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
 
