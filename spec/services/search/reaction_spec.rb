@@ -112,9 +112,10 @@ RSpec.describe Search::Reaction, type: :service do
     end
 
     context "with default sorting" do
-      # TODO: molly struve is working on fixing this
-      xit "sorts by id" do
+      it "sorts by id" do
         index_documents([reaction1, reaction2])
+        puts "*"*100
+        puts query_params
 
         reaction_docs = described_class.search_documents(params: query_params)["reactions"]
         doc_ids = reaction_docs.map { |t| t.dig("id") }

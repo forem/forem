@@ -13,6 +13,7 @@ module Search
 
         results = search(body: query_hash)
         hits = results.dig("hits", "hits").map { |hit| prepare_doc(hit) }
+        puts results if hits&.count == 2
         {
           "reactions" => paginate_hits(hits, params),
           "total" => results.dig("hits", "total", "value")
