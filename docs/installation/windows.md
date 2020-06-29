@@ -31,7 +31,7 @@ both since it will be used for `sudo` commands.
 
 ### Installing rbenv
 
-`rbenv` is a version manager for Ruby applications which allows one to garuntee
+`rbenv` is a version manager for Ruby applications which allows one to guarantee
 that the Ruby version in development environment matches production. First,
 install Ruby language dependencies before installing `rbenv`:
 
@@ -194,13 +194,13 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
    > `setup`.
    >
    > - Its first task is to install the `bundler` gem. Next, it will make
-   >   `bundler` install all the gems , including `Rails`, located in `Gemfile`
+   >   `bundler` install all the gems, including `Rails`, located in `Gemfile`
    >   in the root of the repository. It also installs `foreman`.
    > - It then installs javascript dependencies using the script in `bin/yarn`
    >   file. These dependencies are located in `package.json` in the root of the
    >   repository.
    > - Next, it uses various Rake files located inside the `lib` folder to setup
-   >   ElasticSearch environment , PostgreSQL database creation and updation.
+   >   ElasticSearch environment, PostgreSQL database creation and updation.
    > - Finally it cleans up all the log files and restarts the Puma server.
 
 ### Possible error messages
