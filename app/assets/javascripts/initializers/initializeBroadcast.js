@@ -97,6 +97,8 @@ function initializeBroadcast() {
   const pathname = window.location.pathname;
   // The mod actions panel uses an iframe, which attempts to re-render the broadcast.
   // By checking for `actions_panel` in the path, we can avoid this double render.
+  // TODO: [@thepracticaldev/delightful]: Refactor how we decide when to render the broadcast
+  // across the site given that this check will need to happen every time we use iframes.
   if (pathname === '/new' || pathname.includes('actions_panel')) {
     return;
   }
