@@ -1,30 +1,58 @@
+@import 'config/import';
+
 .ltag__user-subscription-tag {
-  .ltag__user-subscription-tag__container {
+  &__container {
+    border-radius: var(--radius);
+    border: 2px solid var(--body-color);
+    box-shadow: 4px 4px 0 var(--body-color);
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
-    border: 2px solid black;
-    box-shadow: 4px 4px 0 black;
-  }
+    padding: var(--su-4);
 
-  #profile-images {
-    text-align: center;
-
-    img {
-      border-radius: 50%;
+    @media screen and (min-width: $breakpoint-m) {
+      padding: var(--su-6);
     }
   }
 
-  .ltag__user-subscription-tag__subscriber-profile-image {
+  &__signed-in {
+    color: var(--base-70);
+  }
+
+  &__profile-images {
+    position: relative;
+    height: 80px;
+    width: 80px;
+    margin: 0 auto var(--su-4);
+
+    img {
+      border-radius: 100%;
+    }
+  }
+
+  &__subscriber-profile-image {
     display: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    box-shadow: 0 0 0 4px var(--body-color-inverted);
+  }
+}
+
+// modal styles overwrite crayons component WIP
+#user-subscription-confirmation-modal {
+  display: none;
+
+  .crayons-modal__box__header {
+    padding: var(--su-3) var(--su-4);
   }
 
-  .ltag__user-subscription-tag__content {
-    margin: 1rem auto;
+  .crayons-modal__box__body {
+    padding: var(--su-6);
   }
+}
 
-  .ltag__user-subscription-tag__cta-text {
-    text-align: center;
-  }
+.ltag__user-subscription-tag {
 
   .ltag__user-subscription-tag__signed-out {
     text-align: center;
@@ -52,10 +80,6 @@
     font-weight: bold;
   }
 
-  #user-subscription-confirmation-modal {
-    display: none;
-  }
-
   #subscriber-apple-auth {
     display: none;
   }
@@ -80,6 +104,5 @@
     width: max-content;
     display: inline-block;
     margin-right: 8px;
-    margin-bottom: 1rem;
   }
 }
