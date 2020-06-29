@@ -83,9 +83,10 @@ function renderBroadcast(broadcastElement, data) {
 
 /**
  * A function to determine if a broadcast should render.
- * Does not render a broadcast on the `/new` route, if the current user
- * has opted-out, if the broadcast has already been inserted, or
- * if the key for the broadcast's title exists in localStorage.
+ * Does not render a broadcast on the `/new` route or the mod tools panel.
+ * Does not render a broadcast if the current user has opted-out,
+ * if the broadcast has already been inserted, or if the key for
+ * the broadcast's title exists in localStorage.
  *
  * If the broadcast exists in the DOM but was hidden by the articleForm,
  * the function will re-display it again by adding a class.
@@ -93,7 +94,10 @@ function renderBroadcast(broadcastElement, data) {
  * @function initializeBroadcast
  */
 function initializeBroadcast() {
-  if (window.location.pathname === '/new') {
+  const pathname = window.location.pathname;
+  // The mod actions panel uses an iframe, which attempts to re-render the broadcast.
+  // By checking for `actions_panel` in the path, we can avoid this double render.
+  if (pathname === '/new' || pathname.includes('actions_panel')) {
     return;
   }
 
