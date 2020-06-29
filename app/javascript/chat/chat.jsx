@@ -146,6 +146,9 @@ export default class Chat extends Component {
         searchType: '',
         paginationNumber: channelPaginationNum,
       };
+      if (activeChannelId !== null) {
+        searchParams.searchType = 'discoverable';
+      }
       getChannels(searchParams, filters, this.loadChannels);
       getUnopenedChannelIds(this.markUnopenedChannelIds);
     }
