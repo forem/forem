@@ -10,8 +10,9 @@ class UserSubscriptionTag < LiquidTagBase
     // ***************************************
     function clearSubscriptionArea() {
       changeDisplayStyleById('subscription-signed-in', 'none');
+      changeDisplayStyleById('subscription-signed-out', 'none');
       changeDisplayStyleById('response-message', 'none');
-      changeDisplayStyleById(''subscriber-apple-auth'', 'none');
+      changeDisplayStyleById('subscriber-apple-auth', 'none');
 
       hideConfirmationModal();
     }
