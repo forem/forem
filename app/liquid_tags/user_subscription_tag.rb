@@ -26,7 +26,7 @@ class UserSubscriptionTag < LiquidTagBase
 
     function showSignedIn() {
       clearSubscriptionArea();
-      document.getElementById('subscription-signed-in').style.display = 'block';
+      changeDisplayStyleById('subscription-signed-in', 'block');
     }
 
     function showResponseMessage(noticeType, msg) {
@@ -55,7 +55,7 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function hideConfirmationModal() {
-      document.getElementById('user-subscription-confirmation-modal').style.display = 'none';
+      changeDisplayStyleById('user-subscription-confirmation-modal', 'none');
     }
 
     // Updating DOM elements
@@ -104,19 +104,19 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function addConfirmationModalClickHandlers() {
-      document.getElementById('subscribe-btn').addEventListener('click', function(e) {
+      document.getElementById('subscribe-btn')?.addEventListener('click', function(e) {
         showConfirmationModal();
       });
 
-      document.getElementById('cancel-btn').addEventListener('click', function(e) {
+      document.getElementById('cancel-btn')?.addEventListener('click', function(e) {
         hideConfirmationModal();
       });
 
-      document.getElementById('close-confirmation-modal').addEventListener('click', function(e) {
+      document.getElementById('close-confirmation-modal')?.addEventListener('click', function(e) {
         hideConfirmationModal();
       });
 
-      document.getElementById('confirmation-btn').addEventListener('click', function(e) {
+      document.getElementById('confirmation-btn')?.addEventListener('click', function(e) {
         handleSubscription();
       });
     }
