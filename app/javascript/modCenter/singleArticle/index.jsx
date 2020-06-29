@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { h, Component } from 'preact';
+import initializeFlagUserModal from '../../packs/flagUserModal';
 import { formatDate } from './util';
 
 export default class SingleArticle extends Component {
@@ -14,7 +15,7 @@ export default class SingleArticle extends Component {
   toggleArticle = (e) => {
     e.preventDefault();
 
-    const { id, path } = this.props;
+    const { id, path, user } = this.props;
     const { articleOpened } = this.state;
     if (articleOpened) {
       this.setState({ articleOpened: false });
@@ -23,7 +24,8 @@ export default class SingleArticle extends Component {
       this.setState({ articleOpened: true });
       document.getElementById(
         `article-iframe-${id}`,
-      ).innerHTML = `<iframe class="article-iframe" src="${path}"></iframe><iframe class="actions-panel-iframe" src="${path}/actions_panel"></iframe>`;
+      ).innerHTML = `<iframe class="article-iframe" src="${path}"></iframe><iframe class="actions-panel-iframe" id="mod-container" src="${path}/actions_panel"></iframe>`;
+      initializeFlagUserModal(user.id, path);
     }
   };
 

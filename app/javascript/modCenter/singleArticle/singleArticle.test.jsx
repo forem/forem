@@ -34,14 +34,17 @@ const testArticle2 = {
 describe('<SingleArticle />', () => {
   const renderSingleArticle = (article = testArticle1) =>
     render(
-      <SingleArticle
-        id={article.id}
-        title={article.title}
-        path={article.path}
-        publishedAt={article.publishedAt} // renders as Jun 28
-        cachedTagList={article.cachedTagList}
-        user={article.user}
-      />,
+      <div>
+        <SingleArticle
+          id={article.id}
+          title={article.title}
+          path={article.path}
+          publishedAt={article.publishedAt} // renders as Jun 28
+          cachedTagList={article.cachedTagList}
+          user={article.user}
+        />
+        <div class="flag-user-modal-container hidden" />
+      </div>,
     );
 
   it('should have no a11y violations', async () => {
@@ -115,15 +118,18 @@ describe('<SingleArticle />', () => {
   it('adds the opened class when opening an article', () => {
     const toggleArticle = jest.fn();
     const { container } = render(
-      <SingleArticle
-        id={testArticle1.id}
-        title={testArticle1.title}
-        path={testArticle1.path}
-        publishedAt={testArticle1.publishedAt} // renders as Jun 28
-        cachedTagList={testArticle1.cachedTagList}
-        user={testArticle1.user}
-        toggleArticle={toggleArticle}
-      />,
+      <div>
+        <SingleArticle
+          id={testArticle1.id}
+          title={testArticle1.title}
+          path={testArticle1.path}
+          publishedAt={testArticle1.publishedAt} // renders as Jun 28
+          cachedTagList={testArticle1.cachedTagList}
+          user={testArticle1.user}
+          toggleArticle={toggleArticle}
+        />
+        <div class="flag-user-modal-container hidden" />
+      </div>,
     );
     fireEvent.click(
       container.querySelector('button.moderation-single-article'),

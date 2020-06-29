@@ -1,6 +1,9 @@
 import { request } from '../utilities/http';
 
-export default function initializeFlagUserModal(articleAuthorId) {
+export default function initializeFlagUserModal(
+  articleAuthorId,
+  modCenterArticleUrl = null,
+) {
   const flagUserModalHTML = `
 <div class="crayons-modal crayons-modal--s absolute flag-user-modal">
   <div class="crayons-modal__box">
@@ -33,7 +36,11 @@ export default function initializeFlagUserModal(articleAuthorId) {
             </p>
           </label>
         </div>
-        <a href="/report-abuse?url=${document.location}" class="fs-base abuse-report-link">Report other inappropriate conduct</a>
+        <a href="/report-abuse?url=${
+          modCenterArticleUrl
+            ? `${document.location.origin}${modCenterArticleUrl}`
+            : document.location
+        }" class="fs-base abuse-report-link">Report other inappropriate conduct</a>
       </div>
       <div class="buttons-container">
         <a href="#" class="crayons-btn crayons-btn--danger" id="confirm-flag-user-action">Confirm action</a>
