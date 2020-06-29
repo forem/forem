@@ -1,17 +1,21 @@
 class FlareTag
-  FLARE_TAGS = %w[explainlikeimfive
-                  jokes
-                  watercooler
-                  ama
-                  techtalks
-                  todayilearned
-                  help
-                  news
-                  healthydebate
-                  showdev
-                  challenge
-                  anonymous
-                  discuss].freeze
+  FLARE_TAG_NAMES = %w[explainlikeimfive
+                       jokes
+                       watercooler
+                       ama
+                       techtalks
+                       todayilearned
+                       help
+                       news
+                       healthydebate
+                       showdev
+                       challenge
+                       anonymous
+                       discuss].freeze
+
+  FLARE_TAG_IDS_HASH = Tag.where(name: FLARE_TAG_NAMES).each_with_object({}) do |tag, h|
+    h[tag.name] = tag.id
+  end.freeze
 
   def initialize(article, except_tag = nil)
     @article = article.decorate
@@ -19,8 +23,8 @@ class FlareTag
   end
 
   def tag
-    @tag ||= if cached_tag_id
-               Tag.select(%i[name bg_color_hex text_color_hex]).find_by(id: cached_tag_id)
+    @tag ||= if tag_id
+               Tag.select(%i[name bg_color_hex text_color_hex]).find_by(id: tag_id)
              end
   end
 
@@ -36,12 +40,8 @@ class FlareTag
 
   attr_reader :article, :except_tag
 
-  def cached_tag_id
-    Rails.cache.fetch("article-#{article.id}_flare_tag_id-#{article.updated_at}", expires_in: 12.hours) do
-      flare = FLARE_TAGS.detect { |tag| article.cached_tag_list_array.include?(tag) }
-      if flare && flare != except_tag
-        Tag.find_by(name: flare).id
-      end
-    end
+  def tag_id
+    tag_name, tag_id = FLARE_TAG_IDS_HASH.slice(*article.cached_tag_list_array).first
+    tag_id if tag_name && tag_name != except_tag
   end
 end
