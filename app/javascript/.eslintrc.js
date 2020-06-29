@@ -53,6 +53,14 @@ module.exports = {
     ],
     'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
   },
+  overrides: [
+    {
+      files: ['**/index.js'], // Or *.test.js
+      rules: {
+        'import/export': 'off',
+      },
+    },
+  ],
   globals: {
     getCsrfToken: false,
     sendFetch: false,
