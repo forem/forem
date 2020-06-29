@@ -12,7 +12,7 @@ const ChatChannelMembershipSection = ({
   activeMemberships,
   removeMembership,
   currentMembershipRole,
-  toggelScreens,
+  toggleScreens,
 }) => {
   return (
     <div className="membership-list">
@@ -20,7 +20,7 @@ const ChatChannelMembershipSection = ({
         activeMemberships={activeMemberships}
         removeMembership={removeMembership}
         currentMembershipRole={currentMembershipRole}
-        toggelScreens={toggelScreens}
+        toggleScreens={toggleScreens}
       />
       <PendingMembershipSection
         pendingMemberships={pendingMemberships}
@@ -72,7 +72,7 @@ ChatChannelMembershipSection.propTypes = {
   removeMembership: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,
   currentMembershipRole: PropTypes.string.isRequired,
-  toggelScreens: PropTypes.func.isRequired,
+  toggleScreens: PropTypes.func.isRequired,
 };
 
 export default ChatChannelMembershipSection;

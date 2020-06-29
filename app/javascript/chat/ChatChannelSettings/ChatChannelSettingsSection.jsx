@@ -18,7 +18,7 @@ const ChatChannelSettingsSection = ({
   handleDescriptionChange,
   handleChatChannelInvitations,
   handleInvitationUsernames,
-  toggelScreens,
+  toggleScreens,
   removeMembership,
   chatChannelAcceptMembership,
   channelDescription,
@@ -44,7 +44,7 @@ const ChatChannelSettingsSection = ({
       pendingMemberships={pendingMemberships}
       requestedMemberships={requestedMemberships}
       chatChannelAcceptMembership={chatChannelAcceptMembership}
-      toggelScreens={toggelScreens}
+      toggleScreens={toggleScreens}
       className="channel-membership-sections"
     />
     <ModSection
@@ -93,7 +93,7 @@ ChatChannelSettingsSection.propTypes = {
   handleleaveChatChannelMembership: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,
   removeMembership: PropTypes.func.isRequired,
-  toggelScreens: PropTypes.func.isRequired,
+  toggleScreens: PropTypes.func.isRequired,
   handleInvitationUsernames: PropTypes.func.isRequired,
   handleChatChannelInvitations: PropTypes.func.isRequired,
   handleDescriptionChange: PropTypes.func.isRequired,

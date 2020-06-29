@@ -314,7 +314,7 @@ export default class ChatChannelSettings extends Component {
     }
   };
 
-  toggelScreens = () => {
+  toggleScreens = () => {
     const { displaySettings, displayMembershipManager } = this.state;
 
     this.setState({
@@ -405,7 +405,7 @@ export default class ChatChannelSettings extends Component {
               handleDescriptionChange={this.handleDescriptionChange}
               handleChatChannelInvitations={this.handleChatChannelInvitations}
               handleInvitationUsernames={this.handleInvitationUsernames}
-              toggelScreens={this.toggelScreens}
+              toggleScreens={this.toggleScreens}
               removeMembership={this.removeMembership}
               chatChannelAcceptMembership={this.chatChannelAcceptMembership}
               channelDescription={channelDescription}
