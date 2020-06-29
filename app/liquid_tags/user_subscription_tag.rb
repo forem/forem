@@ -221,8 +221,6 @@ class UserSubscriptionTag < LiquidTagBase
 
   def initialize(_tag_name, cta_text, parse_context)
     super
-    validate_data(parse_context)
-
     @cta_text = cta_text.strip
     @source = parse_context.partial_options[:source]
     @user = parse_context.partial_options[:user]
