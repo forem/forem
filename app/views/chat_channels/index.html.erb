@@ -16,9 +16,7 @@
       data-chat-channels="<%= [] %>"
       data-chat-options="<%= { showChannelsList: true, showTimestamp: true, activeChannelId: @active_channel&.id, currentUserId: current_user.id }.to_json %>">
       <div class="chat" id="chat_placeholder">
-        <div class="chat__channels chat__channels--expanded chat__channels--placeholder">
-          <button class="chat__channelstogglebutt" onClick={this.toggleExpand}>&lt;</button>
-          <button class="chat__channelstogglebutt chat__channelstogglebutt--placeholderunexpanded">&gt;</button>
+        <div class="chat__channels chat__channels--placeholder">
         </div>
         <div class="chat__activechat">
           <div class="activechatchannel">
