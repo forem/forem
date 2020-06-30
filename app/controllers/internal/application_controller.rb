@@ -28,6 +28,7 @@ class Internal::ApplicationController < ApplicationController
     { name: "tags",               controller: "tags" },
     { name: "tools",              controller: "tools" },
     { name: "users",              controller: "users" },
+    { name: "vault secrets",      controller: "secrets" },
     { name: "webhooks",           controller: "webhook_endpoints" },
     { name: "welcome",            controller: "welcome" },
   ].sort_by { |menu_item| menu_item[:name] }.freeze

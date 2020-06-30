@@ -29,16 +29,19 @@ Once you've got this installed and after rebooting,
 On your first run, the system will ask for username and password. Take note of
 both since it will be used for `sudo` commands.
 
-### Ruby on WSL
+### Installing rbenv
 
-First, install Ruby language dependencies:
+`rbenv` is a version manager for Ruby applications which allows one to guarantee
+that the Ruby version in development environment matches production. First,
+install Ruby language dependencies before installing `rbenv`:
 
 ```shell
 sudo apt-get update
 sudo apt-get install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
 ```
 
-For installing Ruby, we recommend using [rbenv](https://github.com/rbenv/rbenv):
+Now, we install [rbenv](https://github.com/rbenv/rbenv) using the following
+commands:
 
 ```shell
 cd
@@ -50,13 +53,16 @@ exec $SHELL
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 exec $SHELL
-
-rbenv install $(cat .ruby-version)
-rbenv global $(cat .ruby-version)
-ruby -v
 ```
 
-### Installing Rails
+One can verify `rbenv` installation using the `rbenv-doctor` script with the
+following commands:
+
+```shell
+curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
+```
+
+### Installing Node
 
 As a pre-requisite to install Rails, we're going to need to install a JavaScript
 runtime like Node.js.
@@ -76,20 +82,6 @@ for further details.
 
 If `npm -v` gives `Syntax error: word unexpected (expecting "in")`, restart the
 terminal and try again.
-
-And now, for rails itself:
-
-```shell
-gem install rails -v 5.2.4.2
-```
-
-Then run `rbenv rehash` to make the Rails executable available. Check it out by
-using `rails -v` command
-
-```shell
-rbenv rehash
-rails -v
-```
 
 ### Yarn
 
@@ -159,6 +151,13 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
 1. Clone your forked repository, eg.
    `git clone https://github.com/<your-username>/dev.to.git`
+1. Open the cloned dev.to folder in terminal with `cd dev.to`. Next, install
+   Ruby with the following commands:
+   ```shell
+   rbenv install $(cat .ruby-version)
+   rbenv global $(cat .ruby-version)
+   ruby -v
+   ```
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
@@ -190,6 +189,19 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
      certain keys, so you may be able to add them as you go.
 
 1. Run `bin/setup`
+   > The `bin/setup` script is responsible for installing a varienty of
+   > dependencies. One can find it inside the `bin` folder by the name of
+   > `setup`.
+   >
+   > - Its first task is to install the `bundler` gem. Next, it will make
+   >   `bundler` install all the gems, including `Rails`, located in `Gemfile`
+   >   in the root of the repository. It also installs `foreman`.
+   > - It then installs javascript dependencies using the script in `bin/yarn`
+   >   file. These dependencies are located in `package.json` in the root of the
+   >   repository.
+   > - Next, it uses various Rake files located inside the `lib` folder to setup
+   >   ElasticSearch environment, PostgreSQL database creation and updation.
+   > - Finally it cleans up all the log files and restarts the Puma server.
 
 ### Possible error messages
 

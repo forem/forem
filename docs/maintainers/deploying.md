@@ -1,6 +1,24 @@
 ---
-title: Deployment and CI/CD Process
+title: Deployment Guide
 ---
+
+# Deploying DEV
+
+Anyone with the ability to merge PRs on GitHub can deploy the application.
+Remember that this is a shared responsibility, so everyone should deploy code
+occasionally.
+
+If the application needs to be deployed when the code is merged, appending
+`[deploy]` to the merge commit's message will trigger a deploy.
+
+When deploying complex code, be sure that other team members are around to help
+if something goes wrong.
+
+Generally, it's a good idea to keep the SRE team in the loop on any deploys.
+However, deployments are our collective responsibility, so it's important to
+monitor your deploys. You can see deployment status on Travis-ci.com and in the
+#deployment-pipeline channel on Slack. Be prepared to rollback or push a fix for
+any deployment!
 
 # Deployment and CI/CD Process
 
@@ -33,8 +51,10 @@ up between the different jobs. Here is a list of those additional checks that
 are run.
 
 - Job 0 is where we run Javascript tests, Preact tests, and coverage checks.
-- Job 1 is where Travis builds Storybook to ensure its integrity, and where we check for any known vulnerabilities using `bundle-audit`.
-- Job 2 is where Travis fires up a Rails console to ensure the application loads properly, and where specs with KnapsackPro are run.
+- Job 1 is where Travis builds Storybook to ensure its integrity, and where we
+  check for any known vulnerabilities using `bundle-audit`.
+- Job 2 is where Travis fires up a Rails console to ensure the application loads
+  properly.
 
 If all of the jobs pass then we move on to Stage 2 of the Travis CI process.
 
