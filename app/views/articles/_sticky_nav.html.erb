@@ -1,40 +1,5 @@
 <% @actor = @article.organization || @article.user %>
 <style>
-  .primary-sticky-nav-author, .primary-sticky-nav-author-element {
-    border: 1px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
-    box-shadow: 1px 1px 0px <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
-  }
-
-  .primary-sticky-nav-author button {
-    background-color: <%= user_colors(@actor)[:bg] %> !important;
-    color: <%= user_colors(@actor)[:text] %> !important;
-  <% if user_colors(@actor)[:bg].downcase == "#ffffff" %>
-    border: 1px solid <%= user_colors(@actor)[:text] %> !important;
-  <% end %>
-  }
-
-  .primary-sticky-nav-author button a {
-    background-color: <%= user_colors(@actor)[:bg] %> !important;
-    color: <%= user_colors(@actor)[:text] %> !important;
-  <% if user_colors(@actor)[:bg].downcase == "#ffffff" %>
-    border: 1px solid <%= user_colors(@actor)[:text] %> !important;
-  <% end %>
-  }
-
-  .sticky-box-connector {
-    background: <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
-  }
-
-  .primary-sticky-nav-org-cta-link {
-    background-color: <%= user_colors(@actor)[:text] %> !important;
-    color: <%= user_colors(@actor)[:bg] %> !important;
-  <% if user_colors(@actor)[:text].downcase == "#ffffff" %>
-    border: 2px solid <%= user_colors(@actor)[:bg] %> !important;
-  <% end %>
-  }
-</style>
-
-<style>
   .crayons-card--branded {
     border-top: 32px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %>;
   }
