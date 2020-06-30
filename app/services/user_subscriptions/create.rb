@@ -1,6 +1,6 @@
 module UserSubscriptions
   class Create
-    attr_accessor :user, :source_type, :source_id, :subscriber_email
+    attr_accessor :user, :source_type, :source_id, :subscriber_email, :response, :source
 
     def self.call(*args)
       new(*args).call
@@ -10,30 +10,20 @@ module UserSubscriptions
       @user = user
       @source_type = user_subscription_params[:source_type]
       @source_id = user_subscription_params[:source_id]
+      @response = new_response
 
       # TODO: [@thepracticaldev/delightful]: uncomment this once email confirmation is re-enabled
       # @subscriber_email = user_subscription_params[:subscriber_email]
     end
 
     def call
-      response = new_response
+      return response if invalid_source_type?
+      return response if invalid_source?
 
-      response.error = "Invalid source_type." unless UserSubscription::ALLOWED_TYPES.include?(source_type)
-      return response if response.error
-
-      source = source_type.constantize.find_by(id: source_id)
-      response.error = "Source not found." unless source
-      return response if response.error
-
-      # This checks if the email address the user saw/consented to share is the
-      # same as their current email address. A mismatch occurs if a user updates
-      # their email address in a new/separate tab and then tries to subscribe on
-      # the old/stale tab without refreshing. In that case, the user would have
-      # consented to share their old email address instead of the current one.
       # TODO: [@thepracticaldev/delightful]: uncomment this once email confirmation is re-enabled
-      # response.error = "Subscriber email mismatch." unless user.email == subscriber_email
-      # return response if response.error
+      # return response if subscriber_email_mismatch?
 
+      # source is establied in invalid_source? check
       user_subscription = source.build_user_subscription(user)
       if user_subscription.save
         response.success = true
@@ -50,6 +40,33 @@ module UserSubscriptions
     def new_response
       response_struct = Struct.new(:success, :data, :error, keyword_init: true)
       response_struct.new(success: false, data: nil, error: nil)
+    end
+
+    def invalid_source_type?
+      return false if UserSubscription::ALLOWED_TYPES.include?(source_type)
+
+      response.error = "Invalid source_type."
+      true
+    end
+
+    def invalid_source?
+      @source = source_type.constantize.find_by(id: source_id)
+      return false if source
+
+      response.error = "Source not found."
+      true
+    end
+
+    def subscriber_email_mismatch?
+      # This checks if the email address the user saw/consented to share is the
+      # same as their current email address. A mismatch occurs if a user updates
+      # their email address in a new/separate tab and then tries to subscribe on
+      # the old/stale tab without refreshing. In that case, the user would have
+      # consented to share their old email address instead of the current one.
+      return false if user.email == subscriber_email
+
+      response.error = "Subscriber email mismatch."
+      true
     end
   end
 end
