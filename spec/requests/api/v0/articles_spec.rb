@@ -353,16 +353,10 @@ RSpec.describe "Api::V0::Articles", type: :request do
       expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
     end
 
-    it "returns correct tag list" do
-      get slug_api_articles_path(username: article.username, slug: article.slug)
-
-      expect(response.parsed_body["tag_list"]).to be_a_kind_of String
-    end
-
     it "returns correct tags" do
       get slug_api_articles_path(username: article.username, slug: article.slug)
-
-      expect(response.parsed_body["tags"]).to be_a_kind_of Array
+      expect(response.parsed_body["tags"]).to eq(article.tag_list)
+      expect(response.parsed_body["tag_list"]).to eq(article.tags[0].name)
     end
 
     it "returns proper article" do
