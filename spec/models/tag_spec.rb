@@ -47,13 +47,20 @@ RSpec.describe Tag, type: :model do
         expect(tag).not_to be_valid
       end
 
-      it "fails validations if name uses diacritics" do
-        tag.name = "łookatmé"
+      it "fails validations if name uses non-ASCII characters" do
+        tag.name = "مرحبا"
         expect(tag).not_to be_valid
-      end
 
-      it "fails validations if name uses non-latin characters" do
-        tag.name = "火"
+        tag.name = "你好"
+        expect(tag).not_to be_valid
+
+        tag.name = "Cześć"
+        expect(tag).not_to be_valid
+
+        tag.name = "♩ ♪ ♫ ♬ ♭ ♮ ♯"
+        expect(tag).not_to be_valid
+
+        tag.name = "Test™"
         expect(tag).not_to be_valid
       end
     end
