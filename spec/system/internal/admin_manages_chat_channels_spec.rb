@@ -29,8 +29,8 @@ RSpec.describe "Admin manages chat channels", type: :system do
   end
 
   context "when searching for chat channels" do
-    let(:chat_channel1) { build_stubbed(:chat_channel, channel_name: "Interesting chat", channel_type: "invite_only") }
-    let(:chat_channel2) { build_stubbed(:chat_channel, channel_name: "Boring chat", channel_type: "invite_only") }
+    let(:chat_channel1) { create(:chat_channel, channel_name: "Interesting chat", channel_type: "invite_only") }
+    let(:chat_channel2) { create(:chat_channel, channel_name: "Boring chat", channel_type: "invite_only") }
 
     before do
       clear_search_box
