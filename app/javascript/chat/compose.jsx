@@ -1,5 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
+import Textarea from 'preact-textarea-autosize';
 
 export default class Chat extends Component {
   static propTypes = {
@@ -34,7 +35,7 @@ export default class Chat extends Component {
 
     return (
       <div className="composer-container__edit">
-        <textarea
+        <Textarea
           className="crayons-textfield composer-textarea composer-textarea__edit"
           id="messageform"
           placeholder="Let's connect"
@@ -75,9 +76,10 @@ export default class Chat extends Component {
       handleMention,
       handleKeyUp,
     } = this.props;
+    console.log(handleSubmitOnClick, 'handleSubmitOnClick');
     return (
       <div className="messagecomposer">
-        <textarea
+        <Textarea
           className="crayons-textfield composer-textarea"
           id="messageform"
           placeholder="Write message..."
