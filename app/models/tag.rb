@@ -82,10 +82,10 @@ class Tag < ActsAsTaggableOn::Tag
 
   def validate_name
     errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
-    # [:alnum] is not used here because it supports diacritical characters.
+    # [:alnum:] is not used here because it supports diacritical characters.
     # If we decide to allow diacritics in the future, we should replace the
-    # following regex with [:alnum].
-    errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[a-z0-9]]+\z/i)
+    # following regex with [:alnum:].
+    errors.add(:name, "contains non-ASCII characters") unless name.match?(/\A[[a-z0-9]]+\z/i)
   end
 
   def mod_chat_channel
