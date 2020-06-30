@@ -25,7 +25,7 @@ describe('Search utilities', () => {
 
   describe('getInitialSearchTerm', () => {
     describe(`When the querystring key 'q' has a value`, () => {
-      test(`should return the querystring key q's value`, () => {
+      it(`should return the querystring key q's value`, () => {
         const expected = 'hello';
         const querystring = `?q=${expected}`;
         const actual = getInitialSearchTerm(querystring);
@@ -34,7 +34,7 @@ describe('Search utilities', () => {
     });
 
     describe(`When the querystring key 'q' has a + character representing a space`, () => {
-      test(`should return the querystring key q's decoded value with + characters replaced by a space`, () => {
+      it(`should return the querystring key q's decoded value with + characters replaced by a space`, () => {
         const expected = `my visual studio setup`;
         const querystring = `?q=my+visual+studio+setup`;
         const actual = getInitialSearchTerm(querystring);
@@ -43,7 +43,7 @@ describe('Search utilities', () => {
     });
 
     describe(`When the querystring key 'q' has an encoded value with markup`, () => {
-      test(`should return the querystring key q's decoded value`, () => {
+      it(`should return the querystring key q's decoded value`, () => {
         const expected = `<script>alert('XSS!');</script>`;
         const querystring = `?q=<script>alert(%27XSS!%27);</script>`;
         const actual = getInitialSearchTerm(querystring);
@@ -52,7 +52,7 @@ describe('Search utilities', () => {
     });
 
     describe(`When the querystring key 'q' has no value`, () => {
-      test(`should return an empty string`, () => {
+      it(`should return an empty string`, () => {
         const expected = '';
         const querystring = `?q=`;
         const actual = getInitialSearchTerm(querystring);
@@ -61,7 +61,7 @@ describe('Search utilities', () => {
     });
 
     describe(`When the querystring key 'q' does not exist`, () => {
-      test(`should return an empty string`, () => {
+      it(`should return an empty string`, () => {
         const expected = '';
         const querystring = '?';
         const actual = getInitialSearchTerm(querystring);
@@ -83,7 +83,7 @@ describe('Search utilities', () => {
       delete global.InstantClick;
     });
 
-    test('should call InstantClick.preLoad', () => {
+    it('should call InstantClick.preLoad', () => {
       const location = {
         origin: 'http://localhost',
         href: 'http://localhost',
@@ -97,7 +97,7 @@ describe('Search utilities', () => {
     });
 
     describe('When a search term is passed in', () => {
-      test('should call InstantClick.preLoad with the search term value in the URL', () => {
+      it('should call InstantClick.preLoad with the search term value in the URL', () => {
         const location = {
           origin: 'http://localhost',
           href: 'http://localhost',
@@ -110,7 +110,7 @@ describe('Search utilities', () => {
         expect(InstantClick.preload).toBeCalledWith(expected);
       });
 
-      test('should call InstantClick.preLoad with the encoded value for the search term', () => {
+      it('should call InstantClick.preLoad with the encoded value for the search term', () => {
         const location = {
           origin: 'http://localhost',
           href: 'http://localhost',
@@ -124,7 +124,7 @@ describe('Search utilities', () => {
         expect(InstantClick.preload).toBeCalledWith(expected);
       });
 
-      test('should call InstantClick.preLoad if the search term is empty', () => {
+      it('should call InstantClick.preLoad if the search term is empty', () => {
         const location = {
           origin: 'http://localhost',
           href: 'http://localhost',
@@ -140,7 +140,7 @@ describe('Search utilities', () => {
 
   describe('hasInstantClick', () => {
     describe('When instant click exists', () => {
-      test('should return true', () => {
+      it('should return true', () => {
         global.instantClick = {};
         expect(hasInstantClick()).toEqual(true);
         delete global.instantClick;
@@ -148,7 +148,7 @@ describe('Search utilities', () => {
     });
 
     describe('When instant click does not exist', () => {
-      test('should return false', () => {
+      it('should return false', () => {
         expect(hasInstantClick()).toEqual(false);
       });
     });
@@ -167,19 +167,19 @@ describe('Search utilities', () => {
       delete global.InstantClick;
     });
 
-    test('should call InstantClick.display if search term is empty', () => {
+    it('should call InstantClick.display if search term is empty', () => {
       displaySearchResults({ searchTerm: '', location: { href: '' } });
 
       expect(InstantClick.display).toHaveBeenCalledTimes(1);
     });
 
-    test('should call InstantClick.display once', () => {
+    it('should call InstantClick.display once', () => {
       displaySearchResults({ searchTerm: 'hello', location: { href: '' } });
 
       expect(InstantClick.display).toHaveBeenCalledTimes(1);
     });
 
-    test('should call InstantClick.display with the correct search URL', () => {
+    it('should call InstantClick.display with the correct search URL', () => {
       const searchTerm = 'hello';
       const location = {
         origin: 'http://localhost',
@@ -192,7 +192,7 @@ describe('Search utilities', () => {
       );
     });
 
-    test('should call InstantClick.display with an encoded search term', () => {
+    it('should call InstantClick.display with an encoded search term', () => {
       const searchTerm = '#hello%';
       const sanitizedSearchTerm = '%23hello%25';
       const location = {
@@ -206,7 +206,7 @@ describe('Search utilities', () => {
       );
     });
 
-    test('should call InstantClick.display with filters, if present', () => {
+    it('should call InstantClick.display with filters, if present', () => {
       const searchTerm = '#hello%';
       const sanitizedSearchTerm = '%23hello%25';
       const filterParameters = 'class_name:Article';
@@ -222,7 +222,7 @@ describe('Search utilities', () => {
       );
     });
 
-    test('should not call InstantClick.display with filters, if filter querystring key is present, but has no value', () => {
+    it('should not call InstantClick.display with filters, if filter querystring key is present, but has no value', () => {
       const searchTerm = '#hello%';
       const sanitizedSearchTerm = '%23hello%25';
       const location = {
@@ -239,32 +239,27 @@ describe('Search utilities', () => {
   });
 
   describe('fetchSearch', () => {
-    let responsePromise;
-    let dataHash;
-
-    beforeEach(() => {
-      fetch.resetMocks();
-      fetch.once({});
-      dataHash = { name: 'jav' };
-      responsePromise = fetchSearch('tags', dataHash);
+    it('should return a Promise', () => {
+      expect(fetchSearch('tags', { name: 'jav' })).toBeInstanceOf(Promise);
     });
 
-    test('should return a Promise', () => {
-      expect(responsePromise).toBeInstanceOf(Promise);
-    });
+    it('should return response formatted as JSON', async () => {
+      const expected = { results: [] };
 
-    test('should return response formatted as JSON', () => {
-      responsePromise.then((response) => {
-        expect(response).toBeInstanceOf(Object);
-        expect(response).toMatchObject({ results: expect.any(Array) });
-      });
+      fetch.mockResponse(JSON.stringify({ results: [] }));
+
+      const response = await fetchSearch('tags', { name: 'jav' });
+
+      expect(response).toBeInstanceOf(Object);
+      expect(response).toMatchObject(expected);
     });
   });
 
   describe('createSearchUrl', () => {
-    test('should return a url string', () => {
+    it('should return a url string', () => {
       const dataHash = { name: 'jav', tags: ['one', 'two'] };
       const responseString = createSearchUrl(dataHash);
+
       expect(responseString).toEqual('name=jav&tags%5B%5D=one&tags%5B%5D=two');
     });
   });

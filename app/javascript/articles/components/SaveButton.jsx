@@ -3,9 +3,12 @@ import PropTypes from 'prop-types';
 import { articlePropTypes } from '../../common-prop-types';
 
 export class SaveButton extends Component {
-  componentDidMount() {
-    const { isBookmarked } = this.props;
-    this.setState({ buttonText: isBookmarked ? 'Saved' : 'Save' });
+  constructor(props) {
+    super(props);
+
+    const { isBookmarked } = props;
+
+    this.state = { buttonText: isBookmarked ? 'Saved' : 'Save' };
   }
 
   render() {

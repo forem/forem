@@ -10,13 +10,12 @@ RSpec.describe AppSecrets, type: :lib do
     allow(described_class).to receive(:namespace).and_return(namespace)
     allow(Vault).to receive(:kv) { vault_stub }
     allow(ApplicationConfig).to receive(:[])
-    allow(ENV).to receive(:[])
   end
 
   describe "[]" do
-    context "with VAULT_TOKEN present" do
+    context "with vault_enabled" do
       before do
-        allow(ENV).to receive(:[]).with("VAULT_TOKEN").and_return("present")
+        allow(described_class).to receive(:vault_enabled?).and_return(true)
       end
 
       it "fetches keys from Vault" do
@@ -40,8 +39,8 @@ RSpec.describe AppSecrets, type: :lib do
       end
     end
 
-    context "without VAULT_TOKEN present" do
-      before { allow(ApplicationConfig).to receive(:[]).with("VAULT_TOKEN").and_return("") }
+    context "without vault_enabled" do
+      before { allow(described_class).to receive(:vault_enabled?).and_return(false) }
 
       it "fetches keys from ApplicationConfig" do
         allow(Vault).to receive(:kv) { instance_double("Vault::Kv", read: nil) }
@@ -60,6 +59,20 @@ RSpec.describe AppSecrets, type: :lib do
 
       described_class[key] = "secret-value"
       expect(write_stub).to have_received(:write).with(key, value: "secret-value")
+    end
+  end
+
+  describe "#vault_enabled?" do
+    before { allow(ENV).to receive(:[]) }
+
+    it "returns true if VAULT_TOKEN present" do
+      allow(ENV).to receive(:[]).with("VAULT_TOKEN").and_return("present")
+      expect(described_class.vault_enabled?).to be(true)
+    end
+
+    it "returns false if VAULT_TOKEN is missing" do
+      allow(ENV).to receive(:[]).with("VAULT_TOKEN").and_return("")
+      expect(described_class.vault_enabled?).to be(false)
     end
   end
 end
