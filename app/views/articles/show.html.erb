@@ -93,132 +93,134 @@
   </aside>
 
   <main class="crayons-layout__content grid gap-4">
-    <% if !@article.published %>
-      <div class="crayons-notice crayons-notice--danger">
-        <strong>Unpublished Post.</strong> This URL is public but secret, so share at your own discretion.
-        <a href="<%= @article.path %>/edit" class="fw-bold">Click to edit</a>.
-      </div>
-    <% end %>
+    <div class="article-wrapper">
+      <% if !@article.published %>
+        <div class="crayons-notice crayons-notice--danger mb-4">
+          <strong>Unpublished Post.</strong> This URL is public but secret, so share at your own discretion.
+          <a href="<%= @article.path %>/edit" class="fw-bold">Click to edit</a>.
+        </div>
+      <% end %>
 
-    <% if @article.video_state == "PROGRESSING" %>
-      <div class="crayons-notice crayons-notice--warning">⏳ Video Transcoding In Progress ⏳</div>
-    <% end %>
+      <% if @article.video_state == "PROGRESSING" %>
+        <div class="crayons-notice crayons-notice--warning mb-4">⏳ Video Transcoding In Progress ⏳</div>
+      <% end %>
 
-    <article class="crayons-card crayons-article overflow-hidden w-auto"
-      id="article-show-container"
-      data-author-id="<%= @article.user_id %>"
-      data-path="<%= @article.path %>"
-      data-published="<%= @article.published? %>">
-      <header class="crayons-article__header" id="main-title">
-        <% if @article.video.present? %>
-          <%= render "articles/video_player", meta_tags: true, article: @article %>
-        <% elsif @article.main_image.present? %>
-          <div class="crayons-article__cover">
-            <img src="<%= cloud_cover_url(@article.main_image) %>" width="1000" height="420" style="background-color:<%= @article.main_image_background_hex_color %>;" class="crayons-article__cover__image" alt="Cover image for <%= sanitize_and_decode @article.title %>">
-          </div>
-        <% end %>
-
-        <div class="crayons-article__header__meta">
-          <% if @organization %>
-            <a href="<%= @organization.path %>" class="flex items-center mb-4 fs-l fw-medium crayons-link">
-              <span class="crayons-logo crayons-logo--l mr-3">
-                <img src="<%= ProfileImage.new(@organization).get(width: 50) %>" class="crayons-logo__image" alt="<%= @organization.name %> profile image">
-              </span>
-              <%= @organization.name %>
-            </a>
-          <% end %>
-          <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 <%= @article.title_length_classification %>">
-            <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
-              <span class="fs-xl color-base-70 block"><%= @article.search_optimized_title_preamble %></span>
-            <% end %>
-            <%= sanitize_and_decode @article.title %>
-          </h1>
-
-          <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
-            <div class="mb-4 spec__tags">
-              <% @article.cached_tag_list_array.each do |tag| %>
-                <% tag_hash = tag_colors(tag) %>
-                <a class="crayons-tag mr-1" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
-              <% end %>
+      <article class="crayons-card crayons-article mb-4"
+        id="article-show-container"
+        data-author-id="<%= @article.user_id %>"
+        data-path="<%= @article.path %>"
+        data-published="<%= @article.published? %>">
+        <header class="crayons-article__header" id="main-title">
+          <% if @article.video.present? %>
+            <%= render "articles/video_player", meta_tags: true, article: @article %>
+          <% elsif @article.main_image.present? %>
+            <div class="crayons-article__cover">
+              <img src="<%= cloud_cover_url(@article.main_image) %>" width="1000" height="420" style="background-color:<%= @article.main_image_background_hex_color %>;" class="crayons-article__cover__image" alt="Cover image for <%= sanitize_and_decode @article.title %>">
             </div>
           <% end %>
 
-          <div class="crayons-article__subheader">
-            <a href="/<%= @user.username %>" class="flex items-center mr-4 fw-medium crayons-link">
-              <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" /></span>
-              <%= @user.name %>
-            </a>
+          <div class="crayons-article__header__meta">
+            <% if @organization %>
+              <a href="<%= @organization.path %>" class="flex items-center mb-4 fs-l fw-medium crayons-link">
+                <span class="crayons-logo crayons-logo--l mr-3">
+                  <img src="<%= ProfileImage.new(@organization).get(width: 50) %>" class="crayons-logo__image" alt="<%= @organization.name %> profile image">
+                </span>
+                <%= @organization.name %>
+              </a>
+            <% end %>
+            <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 <%= @article.title_length_classification %>">
+              <% if @article.search_optimized_title_preamble.present? && !user_signed_in? %>
+                <span class="fs-xl color-base-70 block"><%= @article.search_optimized_title_preamble %></span>
+              <% end %>
+              <%= sanitize_and_decode @article.title %>
+            </h1>
 
-            <span class="fs-s">
-              <% if @article.published_timestamp.present? %>
-                <time datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
-              <% end %>
-              <% if @second_user.present? %>
-                <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
-              <% end %>
-              <% if @third_user.present? %>
-                <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
-              <% end %>
+            <% cache("main-article-tags-#{@article.cached_tag_list}", expires_in: 30.hours) do %>
+              <div class="mb-4 spec__tags">
+                <% @article.cached_tag_list_array.each do |tag| %>
+                  <% tag_hash = tag_colors(tag) %>
+                  <a class="crayons-tag mr-1" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>"><span class="crayons-tag__prefix">#</span><%= tag %></a>
+                <% end %>
+              </div>
+            <% end %>
 
-              <% if should_show_updated_on?(@article) %>
-                <em>Updated on <time datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em>
-              <% elsif should_show_crossposted_on?(@article) %>
-                <em>
-                  Originally published at
-                  <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
-                  <% if @article.crossposted_at %>
-                    on
-                    <time datetime="<%= (@article.originally_published_at || @article.published_at)&.utc&.iso8601 %>"><%= (@article.originally_published_at || @article.published_at)&.strftime("%b %d, %Y") %></time>
-                  <% end %>
-                </em>
-              <% end %>
+            <div class="crayons-article__subheader">
+              <a href="/<%= @user.username %>" class="flex items-center mr-4 fw-medium crayons-link">
+                <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" /></span>
+                <%= @user.name %>
+              </a>
 
-              <span class="mr-2">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
-            </span>
-            <span id="action-space"></span>
+              <span class="fs-s">
+                <% if @article.published_timestamp.present? %>
+                  <time datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
+                <% end %>
+                <% if @second_user.present? %>
+                  <em>with <b><a href="<%= @second_user.path %>"><%= @second_user.name %></a></b></em>
+                <% end %>
+                <% if @third_user.present? %>
+                  <em> and <b><a href="<%= @third_user.path %>"><%= @third_user.name %></a></b></em>
+                <% end %>
+
+                <% if should_show_updated_on?(@article) %>
+                  <em>Updated on <time datetime="<%= @article.edited_at&.utc&.iso8601 %>"><%= @article.edited_at&.strftime("%b %d, %Y") %></time></em>
+                <% elsif should_show_crossposted_on?(@article) %>
+                  <em>
+                    Originally published at
+                    <a href="<%= @article.canonical_url || @article.feed_source_url %>" style="color:#1395b8"><%= get_host_without_www(@article.canonical_url || @article.feed_source_url) %></a>
+                    <% if @article.crossposted_at %>
+                      on
+                      <time datetime="<%= (@article.originally_published_at || @article.published_at)&.utc&.iso8601 %>"><%= (@article.originally_published_at || @article.published_at)&.strftime("%b %d, %Y") %></time>
+                    <% end %>
+                  </em>
+                <% end %>
+
+                <span class="mr-2">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
+              </span>
+              <span id="action-space"></span>
+            </div>
+
           </div>
+        </header>
 
-        </div>
-      </header>
-
-      <% if @collection %>
-        <%= render "articles/collection",
-                   rendered_article: @article,
-                   collection: @collection,
-                   articles: @collection_articles,
-                   position: :top %>
-      <% end %>
-
-      <div class="crayons-article__body spec__body" data-article-id="<%= @article.id %>" id="article-body">
-        <%= @article.processed_html.html_safe %>
-      </div>
-
-      <% if has_long_markdown && @collection %>
-        <%= render "articles/collection",
-                   rendered_article: @article,
-                   collection: @collection,
-                   articles: @collection_articles,
-                   position: :bottom %>
-      <% end %>
-    </article>
-
-    <% if has_long_markdown || @organization %>
-      <section class="crayons-card crayons-card--secondary text-padding">
-        <% if has_long_markdown %>
-          <% cache("article-about-author-#{@user.id}-#{@user.updated_at}", expires_in: 100.hours) do %>
-            <%= render "articles/about_author", published: @article.readable_publish_date %>
-          <% end %>
+        <% if @collection %>
+          <%= render "articles/collection",
+                     rendered_article: @article,
+                     collection: @collection,
+                     articles: @collection_articles,
+                     position: :top %>
         <% end %>
-        <%= render "articles/org_branding", organization: @organization, author: has_long_markdown %>
-      </section>
-    <% end %>
 
-    <%= render "articles/full_comment_area" %>
+        <div class="crayons-article__body spec__body" data-article-id="<%= @article.id %>" id="article-body">
+          <%= @article.processed_html.html_safe %>
+        </div>
 
-    <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}", expires_in: 18.hours) do %>
-      <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
-      <%= render "articles/bottom_content", articles: suggested_articles %>
-    <% end %>
+        <% if has_long_markdown && @collection %>
+          <%= render "articles/collection",
+                     rendered_article: @article,
+                     collection: @collection,
+                     articles: @collection_articles,
+                     position: :bottom %>
+        <% end %>
+      </article>
+
+      <% if has_long_markdown || @organization %>
+        <section class="crayons-card crayons-card--secondary text-padding mb-4">
+          <% if has_long_markdown %>
+            <% cache("article-about-author-#{@user.id}-#{@user.updated_at}", expires_in: 100.hours) do %>
+              <%= render "articles/about_author", published: @article.readable_publish_date %>
+            <% end %>
+          <% end %>
+          <%= render "articles/org_branding", organization: @organization, author: has_long_markdown %>
+        </section>
+      <% end %>
+
+      <%= render "articles/full_comment_area" %>
+
+      <% cache("article-bottom-content-#{@article.id}-#{user_signed_in?}", expires_in: 18.hours) do %>
+        <% suggested_articles = ArticleSuggester.new(@article).articles(max: 4) %>
+        <%= render "articles/bottom_content", articles: suggested_articles %>
+      <% end %>
+    </div>
   </main>
 
   <aside class="crayons-layout__sidebar-right" aria-label="Right sidebar navigation">
