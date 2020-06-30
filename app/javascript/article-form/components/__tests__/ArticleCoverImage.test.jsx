@@ -1,5 +1,10 @@
 import { h } from 'preact';
-import { render, fireEvent, waitForElement } from '@testing-library/preact';
+import {
+  render,
+  fireEvent,
+  waitForElement,
+  waitForElementToBeRemoved,
+} from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
@@ -8,12 +13,6 @@ import { ArticleCoverImage } from '../ArticleCoverImage';
 global.fetch = fetch;
 
 describe('<ArticleCoverImage />', () => {
-  const fakeLinksResponse = JSON.stringify({
-    image: ['/i/changed-fake-link.jpg'],
-  });
-  const fakeErrorMessage = {
-    message: 'Some Fake Error',
-  };
   it('should have no a11y violations', async () => {
     const { container } = render(
       <ArticleCoverImage
@@ -70,29 +69,45 @@ describe('<ArticleCoverImage />', () => {
       // we can't test that the image is no longer there as it doesn't get removed in this component
     });
 
-    it.skip('allows a user to change the image', async () => {
+    it('allows a user to change the image', async () => {
+      fetch.mockResponse(
+        JSON.stringify({
+          image: ['/i/changed-fake-link.jpg'],
+        }),
+      );
+
       const onMainImageUrlChange = jest.fn();
-      const { getByLabelText } = render(
+      const { getByLabelText, queryByLabelText, queryByText } = render(
         <ArticleCoverImage
           mainImage={'/some-fake-image.jpg'}
           onMainImageUrlChange={onMainImageUrlChange}
         />,
       );
-      const inputEl = getByLabelText('Change');
 
+      expect(queryByLabelText('Post cover')).toBeDefined();
+      expect(queryByLabelText(/remove/i)).toBeDefined();
+
+      const inputEl = getByLabelText('Change');
       const file = new File(['(⌐□_□)'], 'chucknorris.png', {
         type: 'image/png',
       });
 
-      fetch.mockResponse(fakeLinksResponse);
       fireEvent.change(inputEl, { target: { files: [file] } });
       expect(inputEl.files[0]).toEqual(file);
       expect(inputEl.files).toHaveLength(1);
-      expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
 
-      // await waitForElement(() =>
-      //   expect(onMainImageUrlChange).toHaveBeenCalledTimes(1),
-      // );
+      expect(queryByText(/uploading.../i)).toBeDefined();
+      expect(queryByLabelText('Post cover')).toBeNull();
+      expect(queryByLabelText('Change')).toBeNull();
+      expect(queryByLabelText(/remove/i)).toBeNull();
+
+      await waitForElementToBeRemoved(() => queryByText(/uploading.../i));
+
+      expect(queryByLabelText('Post cover')).toBeDefined();
+      expect(queryByLabelText('Change')).toBeDefined();
+      expect(queryByLabelText(/remove/i)).toBeDefined();
+
+      expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -114,7 +129,9 @@ describe('<ArticleCoverImage />', () => {
       type: 'image/png',
     });
 
-    fetch.mockReject(fakeErrorMessage);
+    fetch.mockReject({
+      message: 'Some Fake Error',
+    });
     fireEvent.change(inputEl, { target: { files: [file] } });
 
     await waitForElement(() => getByText(/some fake error/i));
