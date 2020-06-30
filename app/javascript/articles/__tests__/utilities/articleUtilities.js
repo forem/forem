@@ -127,7 +127,7 @@ export const articleWithReactions = {
   published_at: '2020-03-19T10:04:15-05:00',
   readable_publish_date: 'February 18',
   top_comments: [],
-  positive_reactions_count: 232,
+  public_reactions_count: 232,
 };
 
 export const articleWithComments = {
@@ -169,7 +169,7 @@ export const articleWithComments = {
       profile_image_90: '/images/7.png',
     },
   ],
-  positive_reactions_count: 428,
+  public_reactions_count: 428,
   comments_count: 213,
 };
 
@@ -229,7 +229,7 @@ export const videoArticle = {
   published_timestamp: 'Tue, 18 Feb 2020 15:11:02 GMT',
   published_at: '2020-02-18T14:59:24Z',
   readable_publish_date: 'February 18',
-  cloudinary_video_url: '/images/onboarding-background.png',
+  cloudinary_video_url: '/images/apple-icon.png',
   main_image: '/images/10.png',
   video_duration_in_minutes: 10,
 };
@@ -266,6 +266,7 @@ export const podcastArticle = {
     image_url: '/images/16.png',
     image_90: '/images/16.png',
   },
+  slug: 'episode-slug'
 };
 
 export const podcastEpisodeArticle = {
@@ -311,7 +312,7 @@ export const userArticle = {
 export const featuredArticle = {
   ...article,
   main_image: '/images/onboarding-background.png',
-  positive_reactions_count: 428,
+  public_reactions_count: 428,
   comments_count: 213,
 };
 

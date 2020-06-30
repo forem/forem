@@ -54,19 +54,31 @@ RSpec.describe "StoriesShow", type: :request do
     it "renders title preamble with search_optimized_title_preamble if set and not signed in" do
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.reload.path
-      expect(response.body).to include "<span class=\"article-title-preamble\">Hey this is a test</span>"
+      expect(response.body).to include "<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>"
     end
 
     it "does not render preamble with search_optimized_title_preamble if set and signed in" do
       sign_in user
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.path
-      expect(response.body).not_to include "<span class=\"article-title-preamble\">Hey this is a test</span>"
+      expect(response.body).not_to include "<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>"
     end
 
     it "does not render title tag with search_optimized_title_preamble not signed in but search_optimized_title_preamble not set" do
       get article.path
-      expect(response.body).not_to include "<span class=\"article-title-preamble\">Hey this is a test</span>"
+      expect(response.body).not_to include "<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>"
+    end
+
+    it "renders user payment pointer if set" do
+      article.user.update_column(:payment_pointer, "this-is-a-pointer")
+      get article.path
+      expect(response.body).to include "author-payment-pointer"
+      expect(response.body).to include "this-is-a-pointer"
+    end
+
+    it "does not render payment pointer if not set" do
+      get article.path
+      expect(response.body).not_to include "author-payment-pointer"
     end
 
     it "renders second and third users if present" do
@@ -75,54 +87,6 @@ RSpec.describe "StoriesShow", type: :request do
       article.update(second_user_id: user2.id)
       get article.path
       expect(response.body).to include "<em>with <b><a href=\"#{user2.path}\">"
-    end
-
-    # sidebar HTML variant
-    it "renders html variant" do
-      html_variant = create(:html_variant, published: true, approved: true)
-      get article.path + "?variant_version=1"
-      expect(response.body).to include html_variant.html
-    end
-
-    it "does not render variant when no variants published" do
-      html_variant = create(:html_variant, published: false, approved: true)
-      get article.path + "?variant_version=1"
-      expect(response.body).not_to include html_variant.html
-    end
-
-    it "does not render html variant when user logged in" do
-      html_variant = create(:html_variant, published: true, approved: true)
-      sign_in user
-      get article.path
-      expect(response.body).not_to include html_variant.html
-    end
-
-    # Below article HTML variant
-    it "renders below article html variant" do
-      html_variant = create(:html_variant, published: true, approved: true, group: "article_show_below_article_cta")
-      article.update_column(:body_markdown, rand(36**1000).to_s(36).to_s) # min length for article
-      get article.path + "?variant_version=0"
-      expect(response.body).to include html_variant.html
-    end
-
-    it "does not render below article html variant for short article" do
-      html_variant = create(:html_variant, published: true, approved: true, group: "article_show_below_article_cta")
-      article.update_column(:body_markdown, rand(36**100).to_s(36).to_s) # ensure too short
-      get article.path + "?variant_version=0"
-      expect(response.body).not_to include html_variant.html
-    end
-
-    it "does not render below article variant when no variants published" do
-      html_variant = create(:html_variant, published: false, approved: true, group: "article_show_below_article_cta")
-      get article.path + "?variant_version=0"
-      expect(response.body).not_to include html_variant.html
-    end
-
-    it "does not render below article html variant when user logged in" do
-      html_variant = create(:html_variant, published: true, approved: true, group: "article_show_below_article_cta")
-      sign_in user
-      get article.path + "?variant_version=0"
-      expect(response.body).not_to include html_variant.html
     end
 
     it "renders articles of long length without breaking" do

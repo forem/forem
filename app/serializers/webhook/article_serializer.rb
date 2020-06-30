@@ -4,7 +4,7 @@ module Webhook
 
     set_type :article
     attributes :title, :description, :readable_publish_date, :cached_tag_list, :cached_tag_list_array,
-               :slug, :path, :url, :comments_count, :positive_reactions_count, :body_markdown
+               :slug, :path, :url, :comments_count, :public_reactions_count, :body_markdown
 
     attribute :canonical_url, &:processed_canonical_url
     attribute :body_html, &:processed_html

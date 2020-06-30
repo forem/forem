@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::Base
+  skip_before_action :track_ahoy_visit
   protect_from_forgery with: :exception, prepend: true
 
   include SessionCurrentUser
@@ -36,7 +37,10 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user!
-    return if current_user
+    if current_user
+      Honeycomb.add_field("current_user_id", current_user.id)
+      return
+    end
 
     respond_to do |format|
       format.html { redirect_to "/enter" }
@@ -78,14 +82,17 @@ class ApplicationController < ActionController::Base
   end
   helper_method :internal_navigation?
 
+  def feed_style_preference
+    # TODO: Future functionality will let current_user override this value with UX preferences
+    # if current_user exists and has a different preference.
+    SiteConfig.feed_style
+  end
+  helper_method :feed_style_preference
+
   def set_no_cache_header
     response.headers["Cache-Control"] = "no-cache, no-store"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
-  end
-
-  def touch_current_user
-    current_user.touch
   end
 
   def rate_limit!(action)

@@ -1,10 +1,18 @@
 @import '../variables';
 @import '../config/import';
 
+.articles-list {
+  // Hack preventing content exceeding its container - it works for scenarios where we have
+  // `pre` tag having wide (overflowing) text. And the container itself is part of a layout
+  // built using CSS `grid`. Without this, the grid layout wouldn't stick to its defined
+  // widths...
+  min-width: 0;
+}
+
 .crayons-story {
   background: var(--card-bg);
   font-size: var(--fs-base); // Todo: remove when ready.
-  box-shadow: $bold-shadow, 0 0 0 1px var(--story-border); // we will kill it at some point, don't worry. just not yet.
+  box-shadow: 0 0 0 1px var(--card-border);
 
   @media (min-width: $breakpoint-m) {
     border-radius: var(--radius);
@@ -115,6 +123,8 @@
     line-height: var(--lh-tight);
     margin-bottom: var(--su-2);
     font-size: var(--title-font-size);
+    overflow-wrap: anywhere;
+    word-break: break-word;
 
     a {
       color: inherit;
@@ -187,6 +197,8 @@
       color: var(--card-color);
       background: var(--accent-warning-lighter);
     }
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   &__headline {

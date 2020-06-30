@@ -29,6 +29,43 @@ const LETTERS_NUMBERS = /[a-z0-9]/i;
 class Tags extends Component {
   constructor(props) {
     super(props);
+    const { listing } = props;
+
+    const listingState = listing
+      ? {
+          additionalTags: {
+            jobs: [
+              'remote',
+              'remoteoptional',
+              'lgbtbenefits',
+              'greencard',
+              'senior',
+              'junior',
+              'intermediate',
+              '401k',
+              'fulltime',
+              'contract',
+              'temp',
+            ],
+            forhire: [
+              'remote',
+              'remoteoptional',
+              'lgbtbenefits',
+              'greencard',
+              'senior',
+              'junior',
+              'intermediate',
+              '401k',
+              'fulltime',
+              'contract',
+              'temp',
+            ],
+            forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
+            events: ['conference', 'meetup'],
+            collabs: ['paid', 'temp'],
+          },
+        }
+      : null;
 
     this.state = {
       selectedIndex: -1,
@@ -37,46 +74,8 @@ class Tags extends Component {
       cursorIdx: 0,
       prevLen: 0,
       showingRulesForTag: null,
+      ...listingState,
     };
-  }
-
-  componentDidMount() {
-    const { listing } = this.props;
-    if (listing === true) {
-      this.setState({
-        additionalTags: {
-          jobs: [
-            'remote',
-            'remoteoptional',
-            'lgbtbenefits',
-            'greencard',
-            'senior',
-            'junior',
-            'intermediate',
-            '401k',
-            'fulltime',
-            'contract',
-            'temp',
-          ],
-          forhire: [
-            'remote',
-            'remoteoptional',
-            'lgbtbenefits',
-            'greencard',
-            'senior',
-            'junior',
-            'intermediate',
-            '401k',
-            'fulltime',
-            'contract',
-            'temp',
-          ],
-          forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
-          events: ['conference', 'meetup'],
-          collabs: ['paid', 'temp'],
-        },
-      });
-    }
   }
 
   componentDidUpdate() {
@@ -368,7 +367,14 @@ class Tags extends Component {
   render() {
     let searchResultsHTML = '';
     const { searchResults, selectedIndex, showingRulesForTag } = this.state;
-    const { classPrefix, defaultValue, maxTags, listing } = this.props;
+    const {
+      classPrefix,
+      defaultValue,
+      maxTags,
+      listing,
+      fieldClassName,
+      onFocus,
+    } = this.props;
     const { activeElement } = document;
     const searchResultsRows = searchResults.map((tag, index) => (
       <div
@@ -381,7 +387,7 @@ class Tags extends Component {
         onKeyDown={this.handleTagEnter}
         data-content={tag.name}
       >
-        {tag.name}
+        <span className={`${classPrefix}__tagname`}>{tag.name}</span>
         {tag.rules_html && tag.rules_html.length > 0 ? (
           <button
             type="button"
@@ -426,21 +432,23 @@ class Tags extends Component {
       <div className={`${classPrefix}__tagswrapper`}>
         {listing && <label htmlFor="Tags">Tags</label>}
         <input
+          data-testid="tag-input"
+          aria-label="Post Tags"
           id="tag-input"
           type="text"
           ref={(t) => {
             this.textArea = t;
             return this.textArea;
           }}
-          className={`${classPrefix}__tags`}
-          name="classified_listing[tag_list]"
-          placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
+          className={`${`${fieldClassName} ${classPrefix}`}__tags`}
+          name="listing[tag_list]"
+          placeholder={`Add up to ${maxTags} tags...`}
           autoComplete="off"
           value={defaultValue}
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
-          onFocus={this.handleFocusChange}
+          onFocus={onFocus}
         />
         {searchResultsHTML}
       </div>
@@ -453,8 +461,10 @@ Tags.propTypes = {
   onInput: PropTypes.func.isRequired,
   maxTags: PropTypes.number.isRequired,
   classPrefix: PropTypes.string.isRequired,
+  fieldClassName: PropTypes.string.isRequired,
   listing: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
+  onFocus: PropTypes.func.isRequired,
 };
 
 export default Tags;

@@ -7,7 +7,10 @@
 
   self.addEventListener('install', event => {
     self.skipWaiting();
-
+    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent)) {
+       // iOS seems to have issues.
+       return;
+    }
     // Populate initial serviceworker cache.
     event.waitUntil(
       caches.open(staticCacheName)
@@ -86,14 +89,16 @@
 
   self.addEventListener('fetch', event => {
     const url = new URL(event.request.url);
-    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent) && event.request.referrer.includes('t.co')) {
-       // Twitter on iOS seems to cause problems
+    if (/iPhone|CriOS|iPad/i.test(navigator.userAgent)) {
+       // iOS seems to have issues.
        return;
     }
     if (url.origin === location.origin) {
       if (event.clientId === "" && // Not fetched via AJAX after page load.
         event.request.method == "GET" && // Don't fetch on POST, DELETE, etc.
         !event.request.referrer.includes('/signout_confirm') && // If this is the referrer, we instead want to flush.
+
+        url.pathname !== '/new' && // We have no shell for /new
 
         !url.href.includes('i=i') && // Parameter representing "internal" navigation.
         !url.href.includes('.css') && // Don't run on CSS.
@@ -105,6 +110,7 @@
         !url.href.includes('/api/') && // Don't run on API endpoints.
         !url.href.includes('/embed/') && // Don't fetch for embeded content.
         !url.href.includes('/feed') && // Skip the RSS feed
+        !url.href.includes('/rss') && // Skip the RSS feed alternative path
         !url.href.includes('/future') && // Skip for /future.
         !url.href.includes('/internal') && // Don't fetch for internal dashboard.
         !url.href.includes('/oauth/') && // Skip oauth apps
@@ -125,7 +131,7 @@
         // Don't run on search endpoints
         !url.href.includes('/search/tags') &&
         !url.href.includes('/search/chat_channels') &&
-        !url.href.includes('/search/classified_listings') &&
+        !url.href.includes('/search/listings') &&
         !url.href.includes('/search/reactions') &&
         !url.href.includes('/search/feed_content') &&
         !url.href.includes('/search/users') &&

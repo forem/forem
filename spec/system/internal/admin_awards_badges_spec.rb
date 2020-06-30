@@ -53,8 +53,9 @@ RSpec.describe "Admin awards badges", type: :system do
     end
   end
 
-  it "does not award badges if no badge is selected" do
+  it "does not award badges if no badge is selected", js: true do
     expect { award_no_badges }.to change { user.badges.count }.by(0)
+
     expect(page).to have_content("Please choose a badge to award")
   end
 end

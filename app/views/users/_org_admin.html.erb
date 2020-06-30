@@ -99,7 +99,7 @@
               <img alt="<%= @organization.name %> profile image" src="<%= cloudinary(@organization.profile_image_url, 50) %>" class="crayons-logo__image" />
             <% end %>
           </span>
-          <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1" %>
+          <%= f.file_field :profile_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
     </div>
 
@@ -109,7 +109,7 @@
         <% if @organization.nav_image_url.present? %>
           <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= cloudinary(@organization.nav_image_url, 50) %>" />
         <% end %>
-        <%= f.file_field :nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1" %>
+        <%= f.file_field :nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
     </div>
 
@@ -119,7 +119,7 @@
         <% if @organization.dark_nav_image_url.present? %>
           <img alt="<%= @organization.name %> profile image" class="max-w-50 h-auto" src="<%= cloudinary(@organization.dark_nav_image_url, 50) %>" />
         <% end %>
-        <%= f.file_field :dark_nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1" %>
+        <%= f.file_field :dark_nav_image, accept: "image/*", class: "crayons-card crayons-card--secondary p-3 flex items-center flex-1 w-100" %>
       </div>
     </div>
 

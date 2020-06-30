@@ -45,7 +45,7 @@ RSpec.describe Metrics::RecordDataCountsWorker, type: :worker do
 
       expect(
         DatadogStatsClient,
-      ).to have_received(:gauge).with("elasticsearch.document_count", 0, tags: Array).at_least(1)
+      ).to have_received(:gauge).with("elasticsearch.document_count", Integer, tags: Array).at_least(1)
     end
   end
 end

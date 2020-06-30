@@ -28,32 +28,28 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def config_params
     allowed_params = %i[
-      favicon_url
       ga_view_id ga_fetch_rate
-      logo_png
-      logo_svg
-      main_social_image
-      mascot_image_description
-      mascot_image_url
-      mascot_user_id
-      onboarding_taskcard_image
       periodic_email_digest_max
       periodic_email_digest_min
-      primary_sticker_image_url
-      shop_url
       sidebar_tags
-      suggested_tags
       twitter_hashtag
-      suggested_users
-      tagline
+      shop_url
+      payment_pointer
+      health_check_token
+      feed_style
     ]
 
     allowed_params = allowed_params |
       campaign_params |
       community_params |
-      mailchimp_params |
-      rate_limit_params
+      newsletter_params |
+      rate_limit_params |
+      mascot_params |
+      image_params |
+      onboarding_params |
+      job_params
 
+    params[:site_config][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if params[:site_config][:email_addresses].present?
     params.require(:site_config).permit(
       allowed_params,
       authentication_providers: [],
@@ -86,6 +82,8 @@ class Internal::ConfigsController < Internal::ApplicationController
       campaign_hero_html_variant_name
       campaign_sidebar_enabled
       campaign_sidebar_image
+      campaign_url
+      campaign_articles_require_approval
     ]
   end
 
@@ -94,10 +92,12 @@ class Internal::ConfigsController < Internal::ApplicationController
       community_description
       community_member_description
       community_member_label
+      community_action
+      tagline
     ]
   end
 
-  def mailchimp_params
+  def newsletter_params
     %i[
       mailchimp_community_moderators_id
       mailchimp_newsletter_id
@@ -114,6 +114,43 @@ class Internal::ConfigsController < Internal::ApplicationController
       rate_limit_image_upload
       rate_limit_published_article_creation
       rate_limit_organization_creation
+      rate_limit_user_subscription_creation
+    ]
+  end
+
+  def mascot_params
+    %i[
+      mascot_image_description
+      mascot_image_url
+      mascot_footer_image_url
+      mascot_user_id
+    ]
+  end
+
+  def image_params
+    %i[
+      favicon_url
+      logo_png
+      logo_svg
+      main_social_image
+      primary_sticker_image_url
+    ]
+  end
+
+  def onboarding_params
+    %i[
+      onboarding_logo_image
+      onboarding_background_image
+      onboarding_taskcard_image
+      suggested_tags
+      suggested_users
+    ]
+  end
+
+  def job_params
+    %i[
+      jobs_url
+      display_jobs_banner
     ]
   end
 end

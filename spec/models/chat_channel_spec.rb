@@ -5,10 +5,22 @@ RSpec.describe ChatChannel, type: :model do
 
   let_it_be(:users) { create_list(:user, 2) }
 
-  it { is_expected.to have_many(:messages).dependent(:destroy) }
-  it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
-  it { is_expected.to have_many(:users) }
-  it { is_expected.to validate_presence_of(:channel_type) }
+  describe "validations" do
+    describe "builtin validations" do
+      subject { chat_channel }
+
+      it { is_expected.to have_many(:messages).dependent(:destroy) }
+      it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
+      it { is_expected.to have_many(:users).through(:chat_channel_memberships) }
+
+      it { is_expected.to validate_inclusion_of(:channel_type).in_array(%w[open invite_only direct]) }
+      it { is_expected.to validate_inclusion_of(:status).in_array(%w[active inactive blocked]) }
+      it { is_expected.to validate_length_of(:description).is_at_most(200) }
+      it { is_expected.to validate_presence_of(:channel_type) }
+      it { is_expected.to validate_presence_of(:status) }
+      it { is_expected.to validate_uniqueness_of(:slug) }
+    end
+  end
 
   describe "#clear_channel" do
     before { allow(Pusher).to receive(:trigger) }
@@ -57,6 +69,21 @@ RSpec.describe ChatChannel, type: :model do
       ChatChannelMembership.last.update(status: "left_channel")
       expect(chat_channel.active_users.size).to eq(users.size - 1)
       expect(chat_channel.channel_users.size).to eq(users.size - 1)
+    end
+  end
+
+  describe "#add_users" do
+    it "adds users" do
+      expect do
+        chat_channel.add_users(users)
+      end.to change(chat_channel.users, :count).by(users.size)
+    end
+
+    it "does not add users twice" do
+      expect do
+        chat_channel.add_users(users)
+        chat_channel.add_users(users)
+      end.to change(chat_channel.users, :count).by(users.size)
     end
   end
 

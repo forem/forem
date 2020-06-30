@@ -57,8 +57,7 @@ RSpec.describe "ChatChannels", type: :request do
       membership.chat_channel.update(discoverable: true)
       sign_in user
       get "/chat_channels?state=joining_request"
-      expect(response.body).to include("\"status\":\"joining_request\"")
-      expect(response.body).to include("joining_requests")
+      expect(response.body).to include("\"member_name\":\"#{membership.user.username}\"")
     end
   end
 
@@ -174,6 +173,45 @@ RSpec.describe "ChatChannels", type: :request do
           params: { chat_channel: { channel_name: "HEy hey hoho", slug: invite_channel.slug } },
           headers: { HTTP_ACCEPT: "application/json" }
       expect(response).to(redirect_to(edit_chat_channel_membership_path(membership.id)))
+    end
+  end
+
+  describe "PATCH /chat_channels/update_channel/:id" do
+    it "updates chat channel for valid user" do
+      user.add_role(:super_admin)
+      membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
+      membership.update(role: "mod")
+      patch "/chat_channels/update_channel/#{chat_channel.id}", params: {
+        chat_channel: {
+          channel_name: "Hello Channel",
+          slug: "hello-channelly"
+        }
+      }
+
+      expect(response.status).to eq(200)
+      expect(ChatChannel.last.slug).to eq("hello-channelly")
+    end
+
+    it "un-authorized users" do
+      expect do
+        patch "/chat_channels/update_channel/#{chat_channel.id}", params: {
+          chat_channel: {
+            channel_name: "Hello Channel",
+            slug: "hello-channelly"
+          }
+        }
+      end.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "returns errors if channel is invalid" do
+      # slug should be taken
+      user.add_role(:super_admin)
+      membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
+      membership.update(role: "mod")
+      patch "/chat_channels/update_channel/#{chat_channel.id}", params: {
+        chat_channel: { channel_name: "Hello Channel", slug: invite_channel.slug }
+      }
+      expect(ChatChannel.last.slug).not_to eq("hello-channelly")
     end
   end
 

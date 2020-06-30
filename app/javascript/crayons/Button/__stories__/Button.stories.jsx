@@ -7,8 +7,8 @@ import {
   select,
 } from '@storybook/addon-knobs/react';
 import { action } from '@storybook/addon-actions';
+import notes from './buttons.md';
 import { Button } from '@crayons';
-
 import '../../storybook-utilities/designSystem.scss';
 
 const commonProps = {
@@ -20,8 +20,11 @@ const commonProps = {
 };
 
 export default {
-  title: 'Components/Buttons',
+  title: '3_Components/Buttons',
   decorator: [withKnobs],
+  parameters: {
+    notes,
+  },
 };
 
 export const Default = () => (

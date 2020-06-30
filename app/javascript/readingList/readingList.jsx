@@ -1,5 +1,5 @@
 import { h, Component } from 'preact';
-import { PropTypes } from 'preact-compat';
+import PropTypes from 'prop-types';
 import debounceAction from '../utilities/debounceAction';
 
 import {
@@ -130,9 +130,9 @@ export class ReadingList extends Component {
           />
           <h3>
             Hit the
-            <span className="highlight">SAVE</span>
+            <span className="btn--highlight">SAVE</span>
             or
-            <span className="highlight">
+            <span className="btn--highlight">
               Bookmark
               <span role="img" aria-label="Bookmark">
                 🔖
@@ -192,6 +192,7 @@ export class ReadingList extends Component {
         <div className="side-bar">
           <div className="widget filters">
             <input
+              aria-label="Search your list"
               onKeyUp={this.onSearchBoxType}
               placeHolder="search your list"
             />

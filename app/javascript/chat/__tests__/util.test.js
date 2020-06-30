@@ -30,7 +30,7 @@ describe('Chat utilities', () => {
       );
     });
 
-    test('should resolve if user and csrf token found.', () => {
+    test('should resolve if user and csrf token found.', async () => {
       const csrfToken = 'some-csrf-token';
       const currentUser = {
         id: 41,
@@ -40,59 +40,16 @@ describe('Chat utilities', () => {
           '/uploads/user/profile_image/41/0841dbe2-208c-4daa-b498-b2f01f3d37b2.png',
         followed_tag_names: [],
         followed_tags: '[]',
-        followed_user_ids: [
-          2,
-          31,
-          7,
-          38,
-          22,
-          37,
-          14,
-          26,
-          20,
-          24,
-          11,
-          27,
-          29,
-          3,
-          6,
-          28,
-          4,
-          39,
-          8,
-          40,
-          25,
-          30,
-          35,
-          34,
-          5,
-          12,
-          33,
-          36,
-          21,
-          18,
-          23,
-          1,
-          32,
-          19,
-          15,
-          13,
-          16,
-          9,
-          10,
-          17,
-        ],
         reading_list_ids: [48, 49, 34, 51, 64, 56],
         saw_onboarding: true,
         checked_code_of_conduct: false,
-        number_of_comments: 0,
         display_sponsors: true,
         trusted: false,
       };
       document.head.innerHTML = `<meta name="csrf-token" content="${csrfToken}" />`;
       document.body.setAttribute('data-user', JSON.stringify(currentUser));
 
-      expect(getUserDataAndCsrfToken(document)).resolves.toEqual({
+      expect(await getUserDataAndCsrfToken(document)).toEqual({
         currentUser,
         csrfToken,
       });

@@ -59,7 +59,12 @@ The docs are a collection of [Markdown files][markdown] that also utilize
 For more information on how to use GitDocs read the [GitDocs
 guide][gitdocs_guide].
 
-# Regarding style
+# Regarding language & style
+
+We ask that you avoid trivializing terms when contributing to documentation.
+This includes words like "just", "simply", "easy", "obvious", and
+"straightforward". You can learn more about why we want to avoid this kind of
+language in [this blog post](https://jessitron.com/2020/06/26/just-dont).
 
 Generally speaking, the documentation hosted on this site is informal. There is
 no need to make things more complicated by writing these articles like a

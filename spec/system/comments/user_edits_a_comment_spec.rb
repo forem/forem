@@ -25,7 +25,6 @@ RSpec.describe "Editing A Comment", type: :system, js: true do
   context "when user edits comment on the bottom of the article" do
     it "updates" do
       visit article.path.to_s
-
       wait_for_javascript
 
       click_link("EDIT")

@@ -4,6 +4,7 @@
 
 .onboarding-task-card {
   background: var(--accent-brand);
+  position: relative;
   border-radius: var(--radius);
   padding: var(--su-7) var(--su-8) var(--su-8) var(--su-8);
   display: none;

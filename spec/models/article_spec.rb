@@ -11,6 +11,7 @@ RSpec.describe Article, type: :model do
   let!(:article) { create(:article, user: user) }
 
   include_examples "#sync_reactions_count", :article
+  it_behaves_like "UserSubscriptionSourceable"
 
   describe "validations" do
     it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }
@@ -178,7 +179,7 @@ RSpec.describe Article, type: :model do
       end
 
       it "is valid with valid liquid tags", :vcr do
-        VCR.use_cassette("twitter_fetch_status") do
+        VCR.use_cassette("twitter_client_status_extended") do
           article = build_and_validate_article(with_tweet_tag: true)
           expect(article).to be_valid
         end
@@ -240,6 +241,16 @@ RSpec.describe Article, type: :model do
       it "rejects tags with length > 30" do
         tags = "'testing tag length with more than 30 chars', tag"
         expect(build(:article, tags: tags).valid?).to be(false)
+      end
+
+      it "rejects tag with non-alphanumerics" do
+        expect { build(:article, tags: "c++").validate! }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "always downcase tags" do
+        tags = "UPPERCASE, CAPITALIZE"
+        article = create(:article, tags: tags)
+        expect(article.tag_list).to eq(tags.downcase.split(", "))
       end
 
       it "parses tags when description is empty" do
@@ -644,6 +655,41 @@ RSpec.describe Article, type: :model do
     end
   end
 
+  describe ".search_optimized_title_preamble" do
+    let!(:top_article) do
+      create(:article, search_optimized_title_preamble: "Hello #{rand(1000)}", tags: "good, greatalicious")
+    end
+
+    it "returns article with title preamble" do
+      articles = described_class.search_optimized
+      expect(articles.first[0]).to eq(top_article.path)
+      expect(articles.first[1]).to eq(top_article.search_optimized_title_preamble)
+    end
+
+    it "does not return article without preamble" do
+      articles = described_class.search_optimized
+      new_article = create(:article)
+      expect(articles.flatten).not_to include(new_article.path)
+    end
+
+    it "does return multiple articles with preamble ordered by updated_at" do
+      new_article = create(:article, search_optimized_title_preamble: "Testerino")
+      articles = described_class.search_optimized
+      expect(articles.first[1]).to eq(new_article.search_optimized_title_preamble)
+      expect(articles.second[1]).to eq(top_article.search_optimized_title_preamble)
+    end
+
+    it "returns articles ordered by organic_page_views_count by tag" do
+      articles = described_class.search_optimized("greatalicious")
+      expect(articles.first[0]).to eq(top_article.path)
+    end
+
+    it "returns nothing if no tagged articles" do
+      articles = described_class.search_optimized("godsdsdsdsgoo")
+      expect(articles).to be_empty
+    end
+  end
+
   context "when callbacks are triggered before save" do
     it "assigns path on save" do
       expect(article.path).to eq("/#{article.username}/#{article.slug}")
@@ -663,7 +709,6 @@ RSpec.describe Article, type: :model do
       expect(article.cached_user.slug).to eq(article.user.username)
       expect(article.cached_user.profile_image_90).to eq(article.user.profile_image_90)
       expect(article.cached_user.profile_image_url).to eq(article.user.profile_image_url)
-      expect(article.cached_user.pro).to eq(article.user.pro?)
     end
 
     it "assigns cached_organization on save" do
@@ -673,7 +718,6 @@ RSpec.describe Article, type: :model do
       expect(article.cached_organization.slug).to eq(article.organization.slug)
       expect(article.cached_organization.profile_image_90).to eq(article.organization.profile_image_90)
       expect(article.cached_organization.profile_image_url).to eq(article.organization.profile_image_url)
-      expect(article.cached_organization.pro).to be(false)
     end
   end
 
@@ -779,7 +823,7 @@ RSpec.describe Article, type: :model do
     it "returns records with a subset of attributes" do
       feed_article = described_class.feed.first
 
-      fields = %w[id tag_list published_at processed_html user_id organization_id title path]
+      fields = %w[id tag_list published_at processed_html user_id organization_id title path cached_tag_list]
       expect(feed_article.attributes.keys).to match_array(fields)
     end
   end
@@ -829,6 +873,32 @@ RSpec.describe Article, type: :model do
       sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, article.id]) do
         article.touch_by_reaction
       end
+    end
+  end
+
+  describe "#liquid_tags_used" do
+    let(:user_liquid_tag) { "{% user #{user.username} %}" }
+    let(:article_body_markdown) { "---\ntitle: Tag Liquid Tag#{rand(1000)}\npublished: true\n---\n\n#{user_liquid_tag}" }
+    let(:article_with_user_liquid_tag) { create(:article, body_markdown: article_body_markdown) }
+    let(:tag) { create(:tag) }
+    let(:tag_liquid_tag) { "{% tag #{tag.name} %}" }
+    let(:comment_with_tag_liquid_tag) { create(:comment, body_markdown: tag_liquid_tag, commentable: article_with_user_liquid_tag, score: 20) }
+
+    before do
+      comment_with_tag_liquid_tag
+      article_with_user_liquid_tag.reload
+    end
+
+    it "returns liquid tags from both the body and comments by default" do
+      expect(article_with_user_liquid_tag.liquid_tags_used).to match_array([TagTag, UserTag])
+    end
+
+    it "returns liquid tags from only the body of the Article" do
+      expect(article_with_user_liquid_tag.liquid_tags_used(:body)).to match_array([UserTag])
+    end
+
+    it "returns liquid tags from only the comments of the Article" do
+      expect(article_with_user_liquid_tag.liquid_tags_used(:comments)).to match_array([TagTag])
     end
   end
 end

@@ -4,7 +4,7 @@ import listingPropTypes from './listingPropTypes';
 
 const LocationText = ({ location }) => {
   return location ? (
-    <a href={`/listings/?q=${location}`}>
+    <a data-testid="single-listing-location" href={`/listings/?q=${location}`}>
       {'・'}
       {location}
     </a>
@@ -25,17 +25,15 @@ const AuthorInfo = ({ listing, onCategoryClick }) => {
   const { category, location, author = {} } = listing;
   const { username, name } = author;
   return (
-    <div className="single-classified-listing-author-info">
+    <div className="single-listing-author-info">
       <a
         href={`/listings/${category}`}
-        onClick={e => onCategoryClick(e, category)}
+        onClick={(e) => onCategoryClick(e, category)}
         data-no-instant
       >
         {category}
       </a>
-      <LocationText location={location} />
-      ・
-      <a href={`/${username}`}>{name}</a>
+      <LocationText location={location} />・<a href={`/${username}`}>{name}</a>
     </div>
   );
 };

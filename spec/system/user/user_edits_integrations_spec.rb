@@ -25,6 +25,7 @@ RSpec.describe "User edits their integrations", type: :system, js: true do
 
     it "has connect-to-stackbit prompt" do
       click_link "Integrations"
+
       expect(page).to have_text("Connect to Stackbit")
     end
 

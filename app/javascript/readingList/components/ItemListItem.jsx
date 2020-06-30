@@ -1,6 +1,6 @@
 // Item list item
 import { h } from 'preact';
-import { PropTypes } from 'preact-compat';
+import PropTypes from 'prop-types';
 
 export const ItemListItem = ({ item, children }) => {
   const adaptedItem = {
@@ -19,11 +19,16 @@ export const ItemListItem = ({ item, children }) => {
       <a className="item" href={adaptedItem.path}>
         <div
           className="item-title"
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: filterXSS(adaptedItem.title) }}
         />
 
         <div className="item-details">
-          <a className="item-user" href={`/${adaptedItem.user.username}`}>
+          <a
+            datatestid="item-user"
+            className="item-user"
+            href={`/${adaptedItem.user.username}`}
+          >
             <img src={adaptedItem.user.profile_image_90} alt="Profile Pic" />
             {`${adaptedItem.user.name}・`}
             {`${adaptedItem.publishedDate}・`}
@@ -31,7 +36,7 @@ export const ItemListItem = ({ item, children }) => {
           </a>
 
           {adaptedItem.tags.length > 0 ? (
-            <span className="item-tags">
+            <span datatestid="item-tags" className="item-tags">
               {adaptedItem.tags.map((tag) => (
                 <a className="item-tag" href={`/t/${tag.name}`}>
                   {`#${tag.name}`}

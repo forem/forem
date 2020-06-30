@@ -2,7 +2,7 @@ module Search
   class Cluster
     SEARCH_CLASSES = [
       Search::ChatChannelMembership,
-      Search::ClassifiedListing,
+      Search::Listing,
       Search::FeedContent,
       Search::Reaction,
       Search::Tag,

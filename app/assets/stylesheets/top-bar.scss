@@ -1,6 +1,4 @@
 @import 'config/import';
-@import 'variables';
-@import 'mixins';
 
 .top-bar {
   --indicator-outline: var(--header-bg);
@@ -10,7 +8,7 @@
   top: 0px;
   left: 0px;
   right: 0px;
-  z-index: 101;
+  z-index: 102; // Must be higher than the z-index of the broadcast-wrapper.
   height: var(--header-height);
   background: var(--header-bg);
   box-shadow: 0 1px 1px var(--header-shadow);
@@ -25,11 +23,17 @@
   }
 
   &__container {
-    max-width: $max-width;
+    max-width: var(--site-width);
+    padding-left: var(--su-2);
+    padding-right: var(--layout-padding);
     margin: auto;
     display: flex;
     align-items: center;
     position: relative;
+
+    @media (min-width: $breakpoint-m) {
+      padding-left: var(--layout-padding);
+    }
   }
 
   .crayons-indicator {
@@ -43,10 +47,6 @@
 // Logo
 .top-bar--logo {
   display: flex;
-  margin-left: var(--su-2);
-  @media (min-width: $breakpoint-m) {
-    margin-left: var(--su-4);
-  }
 
   .logo {
     width: 50px;
@@ -100,7 +100,10 @@
     --indicator-outline: var(--header-bg-current);
 
     color: var(--header-icons-color-hover);
-    background: var(--header-bg-current);
+    background: var(--header-bg-current) !important;
+    .crayons-indicator {
+      display: none;
+    }
   }
 }
 

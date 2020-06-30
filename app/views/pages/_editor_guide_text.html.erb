@@ -51,7 +51,7 @@
     <pre>&lt;!-- This won't show up in the content! --&gt;</pre>
     <h2 style="font-size:2.8em" id="liquidtags"><strong>🌊 Liquid Tags</strong></h2>
     <p>We support native
-      <a href="https://shopify.github.io/liquid/" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:
+      <a href="https://shopify.github.io/liquid" target="_blank" rel="noopener">Liquid tags</a> in our editor, but have created our own custom tags listed below:
     </p>
     <h3><strong><%= community_name %> Article/Post Embed</strong></h3>
     <p>All you need is the full link of the article:</p>
@@ -72,7 +72,7 @@
     <p>All you need is the
       <code>ID</code> at the end of a comment URL. To get the comment link, click either the timestamp or the menu button in the top right corner on a comment and then click "Permalink". Here's an example:
     </p>
-    <code>{% devcomment 2d1a %}</code>
+    <code>{% comment 2d1a %}</code>
     <h3><strong><%= community_name %> Podcast Episode Embed</strong></h3>
     <p>All you need is the full link of the podcast episode:</p>
     <code>{% podcast https://dev.to/basecspodcast/s2e2--queues-irl %}</code>
@@ -90,7 +90,7 @@
     <p>All you need is the Glitch project slug</p>
     <code>{% glitch earthy-course %}</code>
     <p>There are several
-      <a href="https://glitch.com/help/how-can-i-customize-a-glitch-app-embed/">optional attributes</a> you can use in your tag, just add them after the id, separated by spaces.
+      <a href="https://glitch.com/help/how-can-i-customize-a-glitch-app-embed">optional attributes</a> you can use in your tag, just add them after the id, separated by spaces.
     </p>
     <dl>
       <dt><code>app</code></dt>
@@ -277,7 +277,7 @@
         <h3><strong>Next Tech Embed</strong></h3>
         <p>All you need is the share URL for your sandbox. You can get the share URL by clicking
         the "Share" button in the top right when the sandbox is open.</p>
-        <p><img src="https://thepracticaldev.s3.amazonaws.com/i/r449xp8cay3383i139qv.png" /></p>
+        <p><img src="https://thepracticaldev.s3.amazonaws.com/i/r449xp8cay3383i139qv.png" alt="Share Replit sandbox" /></p>
         <code>{% nexttech https://nt.dev/s/6ba1fffbd09e %}</code>
         <h3><strong>Instagram Embed</strong></h3>
         <p>All you need is the Instagram post <code>id</code> from the URL:</p>
@@ -340,8 +340,16 @@
           <code>{% wikipedia https://en.wikipedia.org/wiki/Wikipedia#Diversity %}</code>
         </p>
         <h3><strong>Asciinema Embed</strong></h3>
-        <p>All you need is the Asciinema id:</p>
+        <p>All you need is an Asciinema id or URL:</p>
         <code>{% asciinema 239367 %}</code>
+        <code>{% asciinema https://asciinema.org/a/239367 %}</code>
+
+        <h3><strong>Reddit Tag</strong></h3>
+        <p>Enter the full URL of the post you want to embed</p>
+        <pre>
+{% reddit https://www.reddit.com/r/aww/comments/ag3s4b/ive_waited_28_years_to_finally_havr_my_first_pet %}
+        </pre>
+
         <h3><strong>Parsing Liquid Tags as a Code Example</strong></h3>
         <p>To parse Liquid tags as code, simply wrap it with a single backtick or triple backticks.</p>
         <p><code>`{% mytag %}{{ site.SOMETHING }}{% endmytag %}`</code></p>

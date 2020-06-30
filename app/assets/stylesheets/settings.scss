@@ -16,6 +16,8 @@ $input-width: 650px;
   }
   &.github-repos-errored {
     height: 400px;
+    color: $red;
+    padding: 2rem;
   }
   .github-repo-row {
     background: var(--card-bg);
@@ -38,6 +40,9 @@ $input-width: 650px;
       form {
         display: block;
         float: right;
+      }
+      .crayons-indicator {
+        margin-left: 5px;
       }
       button,
       a[role='button'] {

@@ -6,11 +6,11 @@
         <h1>
           <img src="<%= ActionController::Base.helpers.asset_path(logo_to_use) %>" alt="">
             <a href="<%= post_url %>" target="_blank" rel="noopener noreferrer">
-              <%= post_type == "question" ? "" : "<span class='title-flare'>answer</span> re: ".html_safe %> <%= CGI::unescapeHTML title %>
+              <%= post_type == "question" ? "" : "<span class='title-flare'>answer</span> re: ".html_safe %> <%= CGI.unescapeHTML title %>
             </a>
         </h1>
         <div class="ltag__stackexchange--post-metadata">
-          <span><%= Time.at(created_at).strftime("%b %e '%y") %></span>
+          <span><%= Time.zone.at(created_at).strftime("%b %e '%y") %></span>
           <% if post_type == "question" %>
             <span>Comments: <%= comment_count %></span>
             <span>Answers: <%= answer_count %></span>

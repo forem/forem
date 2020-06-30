@@ -135,7 +135,7 @@ RSpec.describe "SocialPreviews", type: :request do
   end
 
   describe "GET /social_previews/listing/:id" do
-    let(:listing) { create(:classified_listing, user_id: user.id) }
+    let(:listing) { create(:listing, user_id: user.id) }
 
     it "renders pretty category name" do
       get "/social_previews/listing/#{listing.id}"

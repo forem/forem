@@ -61,22 +61,6 @@ export class Search extends Component {
     return event.altKey || event.ctrlKey || event.metaKey || event.shiftKey;
   };
 
-  search = (event) => {
-    const {
-      key,
-      target: { value },
-    } = event;
-
-    this.enableSearchPageChecker = false;
-
-    if (hasInstantClick() && key === ENTER_KEY) {
-      this.setState({ searchTerm: value }, () => {
-        const { searchTerm } = this.state;
-        preloadSearchResults({ searchTerm });
-      });
-    }
-  };
-
   submit = (event) => {
     if (hasInstantClick) {
       event.preventDefault();
@@ -85,6 +69,17 @@ export class Search extends Component {
       displaySearchResults({ searchTerm });
     }
   };
+
+  search(key, value) {
+    this.enableSearchPageChecker = false;
+
+    if (hasInstantClick() && key === ENTER_KEY) {
+      this.setState({ searchTerm: value }, () => {
+        const { searchTerm } = this.state;
+        preloadSearchResults({ searchTerm });
+      });
+    }
+  }
 
   componentDidUnmount() {
     document.removeEventListener('keydown', this.globalKeysListener);
@@ -110,7 +105,7 @@ export class Search extends Component {
 
       if (event.key === GLOBAL_SEARCH_KEY) {
         event.preventDefault();
-        document.getElementsByTagName('body')[0].classList.remove('zen-mode');
+        document.body.classList.remove('zen-mode');
         searchBox.focus();
         searchBox.select();
       } else if (
@@ -118,7 +113,7 @@ export class Search extends Component {
         !this.hasKeyModifiers(event)
       ) {
         event.preventDefault();
-        document.getElementsByTagName('body')[0].classList.toggle('zen-mode');
+        document.body.classList.toggle('zen-mode');
       }
     };
 
@@ -129,7 +124,13 @@ export class Search extends Component {
     return (
       <SearchForm
         searchTerm={searchTerm}
-        onSearch={this.search}
+        onSearch={(event) => {
+          const {
+            key,
+            target: { value },
+          } = event;
+          this.search(key, value);
+        }}
         onSubmitSearch={this.submit}
         searchBoxId={searchBoxId}
       />

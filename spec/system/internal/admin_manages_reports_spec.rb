@@ -33,6 +33,7 @@ RSpec.describe "Admin manages reports", type: :system do
     it "searches reports" do
       fill_in "q_reporter_username_cont", with: user.username.to_s
       click_on "Search"
+
       expect(page).to have_css("#edit_feedback_message_#{feedback_message.id}")
       expect(page).not_to have_css("#edit_feedback_message_#{feedback_message3.id}")
 
@@ -46,6 +47,7 @@ RSpec.describe "Admin manages reports", type: :system do
     it "filters by reports by status" do
       select "Invalid", from: "q[status_eq]"
       click_on "Search"
+
       expect(page).not_to have_css("#edit_feedback_message_#{feedback_message.id}")
       expect(page).not_to have_css("#edit_feedback_message_#{feedback_message3.id}")
       expect(page).to have_css("#edit_feedback_message_#{feedback_message2.id}")

@@ -73,8 +73,7 @@ RSpec.describe TagAdjustment, type: :model do
 
   describe "validates article tag_list" do
     it "does not allow addition on articles with 4 tags" do
-      article_tags_maxed = create(:article)
-      allow(article_tags_maxed).to receive(:tag_list).and_return([1, 2, 3, 4])
+      article_tags_maxed = create(:article, tags: "ruby, javascript, html, css")
       tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article_tags_maxed.id, tag_id: tag.id, tag_name: tag.name)
       expect(tag_adjustment).to be_invalid
     end
@@ -83,6 +82,13 @@ RSpec.describe TagAdjustment, type: :model do
       article = create(:article, tags: tag.name)
       tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article.id, adjustment_type: "removal")
       expect(tag_adjustment).to be_invalid
+    end
+
+    it "ignores case when checking tag_list" do
+      news_tag = create(:tag, name: "news", pretty_name: "News")
+      article = create(:article, tags: news_tag.name)
+      tag_adjustment = build(:tag_adjustment, user_id: admin_user.id, article_id: article.id, adjustment_type: "removal", tag_id: news_tag.id, tag_name: news_tag.pretty_name)
+      expect(tag_adjustment).to be_valid
     end
   end
 end

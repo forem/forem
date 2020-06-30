@@ -1,12 +1,18 @@
 import { h } from 'preact';
 import { withKnobs, text, boolean, select } from '@storybook/addon-knobs/react';
+import { action } from '@storybook/addon-actions';
+import notes from './modals.md';
 import { Modal, Button } from '@crayons';
-
 import '../../storybook-utilities/designSystem.scss';
 
 export default {
-  title: 'Components/Modals',
+  title: '3_Components/Modals',
   decorator: [withKnobs],
+  parameters: { notes },
+};
+
+const commonProps = {
+  onClose: action('close fired'),
 };
 
 export const Default = () => (
@@ -26,12 +32,12 @@ export const Default = () => (
       className={text('className')}
       title={text('title', 'This is my Modal title')}
       overlay={boolean('overlay', true)}
+      {...commonProps}
     >
       <p>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
         odio est, ultricies vel euismod ut, fringilla quis tellus. Sed at dui
-        mi. Fusce cursus nibh lectus, vitae lobortis orci volutpat quis.
-        {' '}
+        mi. Fusce cursus nibh lectus, vitae lobortis orci volutpat quis.{' '}
       </p>
     </Modal>
   </div>

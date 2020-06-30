@@ -80,12 +80,12 @@
         var metaTag = document.querySelector("meta[name='csrf-token']");
         meta.name = "csrf-param";
         meta.content = json.param;
-        document.getElementsByTagName('head')[0].appendChild(meta);
+        document.head.appendChild(meta);
         var meta = document.createElement('meta');
         meta.name = "csrf-token";
         meta.content = json.token;
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        document.getElementsByTagName('body')[0].dataset.loaded = "true";
+        document.head.appendChild(meta);
+        document.body.dataset.loaded = "true";
       }
     };
 

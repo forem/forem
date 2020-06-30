@@ -20,23 +20,27 @@ Bundler.require(*Rails.groups)
 module PracticalDeveloper
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 5.1
+    config.load_defaults 5.1 # NOTE: [Rails 6] we should at least work towards updating this to 5.2
+
+    # [Rails 6] Zeitwerk is the new autoloader
+    # As we don't have `load_defaults 6.0` yet, it has to be enabled manually
+    # See <https://guides.rubyonrails.org/autoloading_and_reloading_constants.html>
+    config.autoloader = :zeitwerk
+
+    # Disable auto adding of default load paths to $LOAD_PATH
+    # Setting this to false saves Ruby from checking these directories when
+    # resolving require calls with relative paths, and saves Bootsnap work and
+    # RAM, since it does not need to build an index for them.
+    # see https://github.com/rails/rails/blob/6-0-stable/railties/CHANGELOG.md#rails-600rc2-july-22-2019
+    config.add_autoload_paths_to_load_path = false
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
-    config.autoload_paths += Dir["#{config.root}/app/labor/"]
-    config.autoload_paths += Dir["#{config.root}/app/decorators/"]
-    config.autoload_paths += Dir["#{config.root}/app/services/"]
-    config.autoload_paths += Dir["#{config.root}/app/liquid_tags/"]
-    config.autoload_paths += Dir["#{config.root}/app/black_box/"]
-    config.autoload_paths += Dir["#{config.root}/app/sanitizers"]
-    config.autoload_paths += Dir["#{config.root}/app/facades"]
-    config.autoload_paths += Dir["#{config.root}/app/errors"]
-    config.autoload_paths += Dir["#{config.root}/app/view_objects"]
-    config.autoload_paths += Dir["#{config.root}/lib/"]
+    config.autoload_paths += Dir["#{config.root}/lib"]
+    config.eager_load_paths += Dir["#{config.root}/lib"]
 
     config.active_job.queue_adapter = :sidekiq
 
@@ -50,24 +54,9 @@ module PracticalDeveloper
     # Therefore we disable "per_form_csrf_tokens" for the time being.
     config.action_controller.per_form_csrf_tokens = false
 
-    # Enable CORS for API v0
-    # (logging is only activated when debug is enabled)
-    debug_cors = ENV["DEBUG_CORS"].present? ? true : false
-    config.middleware.insert_before 0, Rack::Cors, debug: debug_cors, logger: (-> { Rails.logger }) do
-      allow do
-        origins do |source, _env|
-          source # echo back the client's `Origin` header instead of using `*`
-        end
-
-        # allowed public APIs
-        %w[articles comments listings podcast_episodes tags users videos].each do |resource_name|
-          # allow read operations, disallow custom headers (eg. api-key) and enable preflight caching
-          # NOTE: Chrome caps preflight caching at 2 hours, Firefox at 24 hours
-          # see https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Max-Age#Directives
-          resource "/api/#{resource_name}/*", methods: %i[head get options], headers: [], max_age: 2.hours.to_i
-        end
-      end
-    end
+    # NOTE: [Rails 6]
+    # To improve security, Rails embeds the purpose and expiry metadata inside encrypted or signed cookies value.
+    config.action_dispatch.use_cookies_with_metadata = false
 
     # After-initialize checker to add routes to reserved words
     config.after_initialize do

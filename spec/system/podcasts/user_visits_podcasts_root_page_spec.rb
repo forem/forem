@@ -11,7 +11,7 @@ RSpec.describe "User visits /pod page", type: :system do
 
   before { visit "/pod" }
 
-  it "displays the podcasts" do
+  it "displays the podcasts", js: true do
     within "#articles-list" do
       expect(page).to have_link(nil, href: podcast_episode1.path)
       expect(page).to have_link(nil, href: podcast_episode2.path)
