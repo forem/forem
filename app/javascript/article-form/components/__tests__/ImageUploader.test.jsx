@@ -87,7 +87,13 @@ describe('<ImageUploader />', () => {
   // TODO: 'Copied!' is always in the DOM, and so we cannot test that the visual implications of the copy when clicking on the copy icon
 
   it('displays an error when one occurs', async () => {
-    const { getByText, getByLabelText } = render(<ImageUploader />);
+    fetch.mockReject({
+      message: 'Some Fake Error',
+    });
+
+    const { getByText, getByLabelText, queryByText } = render(
+      <ImageUploader />,
+    );
     const inputEl = getByLabelText(/Upload an image/i);
 
     // Check the input validation settings
@@ -98,16 +104,19 @@ describe('<ImageUploader />', () => {
       type: 'image/png',
     });
 
-    fetch.mockReject({
-      message: 'Some Fake Error',
-    });
-
     fireEvent.change(inputEl, {
       target: {
         files: [file],
       },
     });
 
+    let uploadingImage = await waitForElement(() =>
+      queryByText(/uploading.../i),
+    );
+
+    expect(uploadingImage).toBeDefined();
+
+    await waitForElementToBeRemoved(() => queryByText(/uploading.../i));
     await waitForElement(() => getByText(/some fake error/i));
   });
 });
