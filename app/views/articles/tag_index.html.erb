@@ -37,25 +37,6 @@
       data-articles-since="<%= Timeframer.new(params[:timeframe]).datetime&.iso8601 %>">
     <%= render "articles/tags/sidebar" %>
     <div class="articles-list" id="articles-list">
-      <% if @tag_model && @tag_model.supported %>
-        <style>
-          .nav-chronofiter-link.selected, .nav-chronofiter-link:hover {
-            background: <%= @tag_model.bg_color_hex %> !important;
-            color: <%= @tag_model.text_color_hex %> !important;
-            box-shadow: 3px 4px 0px <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;
-            border: 1px solid <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;
-          }
-
-          .narrow-nav-menu a.selected {
-            color: <%= @tag_model.text_color_hex %> !important;
-            background: <%= @tag_model.bg_color_hex %> !important;
-          }
-
-          .on-page-nav-controls .separator {
-            border-color: <%= HexComparer.new([@tag_model.bg_color_hex || "#ffffff"], 4).accent %> !important;
-          }
-        </style>
-      <% end %>
       <header class="flex items-center p-2 m:p-0 m:pb-2" id="on-page-nav-controls">
         <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon mr-2 inline-block m:hidden" id="on-page-nav-butt-left" aria-label="nav-button-left">
           <%= inline_svg_tag("stack.svg", aria: true, width: 24, height: 24, class: "crayons-icon", title: "Left sidebar") %>
