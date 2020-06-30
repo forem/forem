@@ -24,8 +24,8 @@ export default class SingleArticle extends Component {
       this.setState({ articleOpened: true });
       document.getElementById(
         `article-iframe-${id}`,
-      ).innerHTML = `<iframe class="article-iframe" src="${path}"></iframe><iframe class="actions-panel-iframe" id="mod-container" src="${path}/actions_panel"></iframe>`;
-      initializeFlagUserModal(user.id, path);
+      ).innerHTML = `<iframe class="article-iframe" src="${path}"></iframe><iframe class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>`;
+      initializeFlagUserModal(user.id, path, id);
     }
   };
 

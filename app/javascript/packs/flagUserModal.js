@@ -3,6 +3,7 @@ import { request } from '../utilities/http';
 export default function initializeFlagUserModal(
   articleAuthorId,
   modCenterArticleUrl = null,
+  articleId = null,
 ) {
   const flagUserModalHTML = `
 <div class="crayons-modal crayons-modal--s absolute flag-user-modal">
@@ -66,7 +67,10 @@ export default function initializeFlagUserModal(
     }
   };
 
-  const modContainer = document.getElementById('mod-container');
+  // Check whether context is ModCenter or Friday-Night-Mode
+  const modContainer = articleId
+    ? document.getElementById(`mod-iframe-${articleId}`)
+    : document.getElementById('mod-container');
   document.querySelector(
     '.flag-user-modal-container',
   ).innerHTML = flagUserModalHTML;
