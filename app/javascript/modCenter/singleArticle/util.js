@@ -1,20 +1,23 @@
-const time_options = {
+const timeOptions = {
   hour: 'numeric',
   minute: 'numeric',
 };
 
-const date_options = {
+const dateOptions = {
   month: 'short',
   day: 'numeric',
 };
 
-export const formatDate = (timestamp, currentLocale) => {
+const currentLocale = window.navigator.languages
+  ? window.navigator.languages[0]
+  : window.navigator.userLanguage || window.navigator.language;
+
+export const formatDate = (timestamp) => {
   const dateToday = new Date();
   const articlePublished = new Date(timestamp);
-  const locale = currentLocale || 'default';
 
   if (dateToday.toDateString() === articlePublished.toDateString()) {
-    return articlePublished.toLocaleString(locale, time_options);
+    return articlePublished.toLocaleString(currentLocale, timeOptions);
   }
-  return articlePublished.toLocaleString(locale, date_options);
+  return articlePublished.toLocaleString(currentLocale, dateOptions);
 };
