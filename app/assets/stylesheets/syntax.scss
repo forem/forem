@@ -13,6 +13,7 @@
 
 pre:not(.highlight),
 div.highlight {
+  position: relative;
   background: var(--syntax-background-color);
   color: var(--syntax-text-color);
   font-size: 80%;
@@ -22,6 +23,14 @@ div.highlight {
   white-space: pre;
   overflow-x: scroll;
   -webkit-overflow-scrolling: touch;
+  &.crayons-fullscreen {
+    position: fixed;
+    top: calc(50px + 3vh);
+    left: calc(5px + 3vw);
+    bottom: 3vh;
+    right: calc(5px + 3vh);
+    z-index: 150;
+  }
 
   code {
     font-size: 100%;
@@ -31,6 +40,30 @@ div.highlight {
   @media (min-width: $breakpoint-m) {
     padding: var(--su-6);
   }
+
+  button {
+    right: 4px;
+    top: 4px;
+    height: 19px;
+    display: none;
+    position: absolute;
+  }
+  &:hover {
+    button {
+      display: block;
+    }
+  }
+}
+
+// *Definitely* doesn't belong here, just tossed it here and probably should be the fully-reusable modal bg.
+.crayons-fullscreenbg {
+  background: rgba(0,0,0,0.8);
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  z-index: 149;
 }
 
 code {
