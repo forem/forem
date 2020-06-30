@@ -1,8 +1,17 @@
 require "rails_helper"
 
 RSpec.describe FlareTag, type: :labor do
+  let(:ama_tag) { create(:tag, name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc") }
+  let(:explainlikeimfive_tag) { create(:tag, name: "explainlikeimfive") }
   let(:user) { create(:user) }
   let(:article) { create(:article, user_id: user.id) }
+
+  before do
+    stub_const(
+      "FlareTag::FLARE_TAG_IDS_HASH",
+      { "ama" => ama_tag.id, "explainlikeimfive" => explainlikeimfive_tag.id },
+    )
+  end
 
   describe "#flare_tag" do
     it "returns nil if there is no flare tag" do
@@ -19,15 +28,14 @@ RSpec.describe FlareTag, type: :labor do
       expect(described_class.new(valid_article, "explainlikeimfive").tag).to eq(nil)
     end
 
-    it "returns a flare tag if there are 2 flare tags in the list" do
+    it "returns first found flare tag if there are 2 flare tags in the list" do
       valid_article = create(:article, tags: %w[ama explainlikeimfive])
-      expect(described_class.new(valid_article).tag.name).to eq("explainlikeimfive")
+      expect(described_class.new(valid_article).tag.name).to eq("ama")
     end
   end
 
-  describe "#flare_tag_hash" do
-    let(:tag) { create(:tag, name: "ama", bg_color_hex: "#f3f3f3", text_color_hex: "#cccccc") }
-    let(:valid_article) { create(:article, tags: tag.name) }
+  describe "#tag_hash" do
+    let(:valid_article) { create(:article, tags: ama_tag.name) }
 
     it "returns nil if an article doesn't have a flare tag" do
       expect(described_class.new(article).tag_hash).to be nil

@@ -43,9 +43,9 @@ gem "fastly", "~> 2.5" # Client library for the Fastly acceleration system
 gem "feedjira", "~> 3.1" # A feed fetching and parsing library
 gem "field_test", "~> 0.3" # A/B testing
 gem "figaro", "~> 1.2" # Simple, Heroku-friendly Rails app configuration using ENV and a single YAML file
-gem "flipper", "~> 0.17.2" # Feature flipping / flags for Ruby
-gem "flipper-active_record", "~> 0.17.2" # Store Flipper flags in ActiveRecord
-gem "flipper-ui", "~> 0.17.2"
+gem "flipper", "~> 0.18.0" # Feature flipping / flags for Ruby
+gem "flipper-active_record", "~> 0.18.0" # Store Flipper flags in ActiveRecord
+gem "flipper-ui", "~> 0.18.0"
 gem "fog-aws", "~> 3.6" # 'fog' gem to support Amazon Web Services
 gem "front_matter_parser", "~> 0.2" # Parse a front matter from syntactically correct strings or files
 gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard and custom emoji
