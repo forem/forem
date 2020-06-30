@@ -21,6 +21,7 @@ export class ModerationArticles extends Component {
             cached_tag_list: cachedTagList,
             published_at: publishedAt,
             user,
+            review_items: reviewItems,
           } = article;
           return (
             <SingleArticle
@@ -31,6 +32,7 @@ export class ModerationArticles extends Component {
               key={id}
               publishedAt={publishedAt}
               user={user}
+              reviewItems={reviewItems}
             />
           );
         })}

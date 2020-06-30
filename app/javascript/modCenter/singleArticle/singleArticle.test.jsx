@@ -14,6 +14,13 @@ const testArticle = {
     articles_count: 1,
     name: 'hello',
   },
+  reviewItems: [
+    {
+      reviewer_id: 1,
+      reviewed: false,
+      read: false,
+    },
+  ],
 };
 
 describe('<SingleArticle />', () => {
@@ -26,10 +33,19 @@ describe('<SingleArticle />', () => {
         publishedAt={article.publishedAt} // renders as Jun 28
         cachedTagList={article.cachedTagList}
         user={article.user}
+        reviewItems={article.reviewItems}
       />,
     );
+  const getUserData = () =>
+    JSON.stringify({
+      id: 1,
+    });
 
-  it('should have no a11y  violations', async () => {
+  beforeAll(() => {
+    document.body.setAttribute('data-user', getUserData());
+  });
+
+  it('should have no a11y violations', async () => {
     const { container } = renderSingleArticle();
     const results = await axe(container);
     expect(results).toHaveNoViolations();
@@ -90,6 +106,7 @@ describe('<SingleArticle />', () => {
         publishedAt={testArticle.publishedAt} // renders as Jun 28
         cachedTagList={testArticle.cachedTagList}
         user={testArticle.user}
+        reviewItems={testArticle.reviewItems}
         toggleArticle={toggleArticle}
       />,
     );

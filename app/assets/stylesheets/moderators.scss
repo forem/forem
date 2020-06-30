@@ -19,7 +19,7 @@
   }
   .mod-index-list-header {
     display: grid;
-    grid-template-columns: 4fr 2fr 1fr;
+    grid-template-columns: 4fr 2fr 1fr 1fr;
     background-color: var(--base-0);
     border: solid var(--base-10);
     border-width: 1px 0;
@@ -40,7 +40,7 @@
         border: solid var(--base-10);
         border-width: 1px 0;
         display: grid;
-        grid-template-columns: 4fr 2fr 1fr;
+        grid-template-columns: 4fr 2fr 1fr 1fr;
         .mod-article-tag {
           color: var(--base-80);
           padding-right: var(--su-2);
@@ -56,11 +56,23 @@
           color: var(--base-90);
           padding-left: var(--su-6);
         }
+        .article-status {
+          width: max-content;
+          height: max-content;
+          padding: var(--su-1);
+          border-radius: var(--radius);
+          color: var(--base-inverted);
+          background-color: var(--accent-brand);
+          &.reviewed {
+            color: var(--base-80);
+            background-color: var(--accent-success);
+          }
+        }
         .article-iframes-container {
           border-radius: var(--radius);
           margin-top: var(--su-3);
           grid-column-start: 1;
-          grid-column-end: 4;
+          grid-column-end: 5;
           width: 100%;
           display: flex;
           &.opened {

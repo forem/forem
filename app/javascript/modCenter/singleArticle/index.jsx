@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { h, Component } from 'preact';
 import { formatDate } from './util';
+import { userData } from '../../onboarding/utilities';
 
 export default class SingleArticle extends Component {
   constructor(props) {
@@ -29,7 +30,15 @@ export default class SingleArticle extends Component {
 
   render() {
     const { articleOpened } = this.state;
-    const { id, title, publishedAt, cachedTagList, user, key } = this.props;
+    const {
+      id,
+      title,
+      publishedAt,
+      cachedTagList,
+      user,
+      key,
+      reviewItems,
+    } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
       return (
         <span className="mod-article-tag fs-s ff-accent lh-base" key={key}>
@@ -38,6 +47,12 @@ export default class SingleArticle extends Component {
         </span>
       );
     });
+
+    const { id: moderatorId } = userData();
+    const reviewedByModerator =
+      reviewItems.filter(
+        (item) => item.reviewed && item.reviewer_id === moderatorId,
+      ).length === 1;
 
     const newAuthorNotification = user.articles_count <= 3 ? '👋 ' : '';
 
@@ -56,6 +71,13 @@ export default class SingleArticle extends Component {
         <span className="article-author fs-s lw-medium lh-tight">
           {newAuthorNotification}
           {user.name}
+        </span>
+        <span
+          className={`article-status fs-xs ff-accent${
+            reviewedByModerator ? ' reviewed' : ''
+          }`}
+        >
+          {reviewedByModerator ? 'Reviewed' : 'Not Reviewed'}
         </span>
         <span className="article-published-at fs-s fw-bold lh-tight">
           <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
