@@ -70,7 +70,7 @@ class KotlinTag < LiquidTagBase
 ```
 
 Each liquid tag contains an `initialize` method which takes arguments and calls
-super. It also has a `render` method which calls the appropriate view.
+`super`. It also has a `render` method which calls the appropriate view.
 
 ```ruby
   def initialize(_tag_name, link, _parse_context)
@@ -110,8 +110,8 @@ https://github.com/thepracticaldev/dev.to/pull/3801
 
 ### Restricting liquid tags by roles
 
-To only allow users with specific roles to use a liquid tag you need to define a
-`VALID_ROLES` constant on the liquid tag itself. It needs to be an `Array` of
+To only allow users with specific roles to use a liquid tag, you need to define
+a `VALID_ROLES` constant on the liquid tag itself. It needs to be an `Array` of
 valid roles. For [single admin resource roles](/internal), it needs to be an
 `Array` with the role and the resource. Here's an example:
 
@@ -128,12 +128,12 @@ Here we are saying that the `NewLiquidTag` is only usable by users with the
 `admin` role or with a role of `:single_resource_admin` and a specified resource
 of `NewLiquidTag`.
 
-_If you do not define this constant, the liquid tag will be usable by all users
-by default._
+**REMINDER: if you do not define a `VALID_ROLES` constant, the liquid tag will
+be usable by all users by default.**
 
 ### Restricting liquid tags by context
 
-Context, in terms of a liquid tag, are _where_ a liquid tag is being used (i.e.
+Context, in terms of a liquid tag, is _where_ a liquid tag is being used (i.e.
 `Article`, `Comment`, etc.). In other words, if you want to make a liquid tag
 that can only be used in articles, you need to restrict the liquid tag by
 context.
@@ -148,5 +148,5 @@ class NewLiquidTag < LiquidTagBase
 end
 ```
 
-_If you do not define this constant the liquid tag will be usable in all
-contexts by default._
+**REMINDER: if you do not define a `VALID_CONTEXTS` constant the liquid tag will
+be usable in all contexts by default.**
