@@ -55,18 +55,27 @@ describe('<ArticleCoverImage />', () => {
       expect(queryByText('Remove')).toBeDefined();
     });
 
-    it('allows trigger the correct function for removal', async () => {
+    it('removes an existing cover image', async () => {
       const onMainImageUrlChange = jest.fn();
-      const { getByText } = render(
+      const { getByText, queryByLabelText, queryByText } = render(
         <ArticleCoverImage
           mainImage={'/some-fake-image.jpg'}
           onMainImageUrlChange={onMainImageUrlChange}
         />,
       );
+
+      expect(queryByText(/uploading.../i)).toBeNull();
+      expect(queryByLabelText('Add a cover image')).toBeNull();
+      expect(queryByLabelText('Post cover')).toBeDefined();
+      expect(queryByLabelText('Change')).toBeDefined();
+
       const removeButton = getByText('Remove');
       removeButton.click();
+
       expect(onMainImageUrlChange).toHaveBeenCalledTimes(1);
+
       // we can't test that the image is no longer there as it doesn't get removed in this component
+      // This is handled in the article <Form /> component.
     });
 
     it('allows a user to change the image', async () => {
