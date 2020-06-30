@@ -4,6 +4,8 @@ module.exports = {
   parser: 'babel-eslint',
   extends: [
     'eslint:recommended',
+    'plugin:import/errors',
+    'plugin:import/warnings',
     'preact',
     'plugin:jsx-a11y/recommended',
     'prettier',
@@ -38,6 +40,7 @@ module.exports = {
   },
   plugins: ['import', 'react', 'jsx-a11y'],
   rules: {
+    'import/order': ['error'],
     'import/prefer-default-export': 'off',
     'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'jsx-a11y/label-has-associated-control': [
@@ -50,6 +53,15 @@ module.exports = {
     ],
     'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
   },
+  overrides: [
+    {
+      // Turn this rule off for barrel files
+      files: ['**/index.js'],
+      rules: {
+        'import/export': 'off',
+      },
+    },
+  ],
   globals: {
     getCsrfToken: false,
     sendFetch: false,

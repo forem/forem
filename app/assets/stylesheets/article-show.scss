@@ -2,31 +2,6 @@
 @import 'mixins';
 @import 'config/import';
 
-.unpublished {
-  background: $red;
-  display: block;
-  text-align: center;
-  position: relative;
-  padding: calc(10px + 1.3vw) 10px;
-  color: white;
-  font-family: var(--ff-default);
-
-  @media screen and (min-width: 380px) {
-    font-size: 1.2em;
-    line-height: 1.5em;
-  }
-
-  &:hover {
-    opacity: 0.92;
-    color: white;
-  }
-
-  em {
-    display: inline-block;
-    font-weight: bold;
-  }
-}
-
 .blank-space {
   height: 10px;
 }
@@ -777,90 +752,6 @@ article {
     }
   }
 
-  .about-the-author {
-    margin: auto;
-    width: calc(100% - 5px);
-    position: relative;
-    overflow: hidden;
-    padding: 0px 0px 5px;
-    background: var(--card-bg);
-    font-family: var(--ff-default);
-
-    a {
-      color: var(--body-color);
-    }
-
-    @media screen and (min-width: 520px) {
-      width: 82%;
-    }
-
-    .left-column {
-      text-align: center;
-      float: left;
-      width: 90px;
-      padding-top: 8px;
-
-      .profile-pic {
-        width: 70px;
-        height: 70px;
-        border-radius: 100px;
-        display: inline-block;
-        background: no-repeat center center;
-        background-size: cover;
-        margin-right: 2px;
-        margin-bottom: 12px;
-      }
-    }
-
-    .main-content {
-      margin: auto;
-      width: calc(100% - 92px);
-      float: left;
-
-      h4 {
-        margin: 13px 0 0;
-        font-size: 28px;
-        text-align: left;
-        font-weight: 400;
-
-        button {
-          background: $green;
-          color: $black;
-          font-family: $helvetica-condensed;
-          font-stretch: condensed;
-          border: 0;
-          font-size: 15px;
-          border-radius: 5px;
-          vertical-align: 2px;
-          padding: 4px 7px;
-          display: none;
-          margin-left: 6px;
-
-          &.showing {
-            display: inline-block;
-          }
-        }
-      }
-
-      p {
-        margin: 2px 0;
-        padding-left: 0;
-        line-height: 22px;
-        font-size: 0.88em;
-      }
-
-      .social {
-        font-size: 0.85em;
-
-        a {
-          color: var(--card-color-tertiary);
-          margin-right: 6px;
-          display: inline-block;
-        }
-      }
-    }
-  }
-
   .html-variant-wrapper {
     width: 88%;
     margin: 0 auto 25px;
@@ -872,41 +763,6 @@ article {
   }
 }
 
-.showpage-reaction-cta {
-  width: 390px;
-  max-width: 78%;
-  margin: 30px auto;
-  padding: 20px 10px;
-  position: relative;
-  box-shadow: 3px 4px 0 darken($green, 25%);
-  display: none;
-
-  .down-arrow {
-    position: absolute;
-    bottom: -20px;
-    left: 30px;
-    width: 0;
-    height: 0;
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-top: 27px solid $green;
-  }
-}
-
-.show-comments-header {
-  // width: 800px;
-  // max-width: 90%;
-  margin: auto;
-  margin-bottom: -50px;
-  text-align: center;
-  font-family: var(--ff-default);
-}
-.primary-sticky-nav {
-  display: none;
-}
-.article-actions {
-  display: none;
-}
 .show-comments-footer {
   // width: 800px;
   // max-width: 98%;
@@ -935,90 +791,6 @@ article {
   }
 }
 
-.org-branding {
-  font-family: var(--ff-default);
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 0;
-  padding-bottom: 20px;
-
-  a {
-    color: var(--body-color);
-  }
-
-  .inner {
-    width: 800px;
-    max-width: calc(100% - 40px);
-    overflow: hidden;
-    padding: 24px 20px 0;
-    margin: auto;
-  }
-
-  .content {
-    font-size: calc(0.45vw + 16px);
-
-    @media screen and (min-width: 520px) {
-      float: left;
-      width: calc(100% - 150px);
-      text-align: left;
-    }
-
-    .name {
-      font-size: 2.2em;
-      font-weight: 500;
-    }
-
-    .summary {
-      padding-top: 5px;
-      padding-right: 10px;
-      padding-bottom: 8px;
-      font-weight: 400;
-      font-size: 0.9em;
-
-      @media screen and (min-width: 520px) {
-        font-size: 17px;
-      }
-    }
-
-    .social {
-      font-size: 0.9em;
-      margin: 4px 0;
-
-      @media screen and (min-width: 520px) {
-        font-size: 18px;
-      }
-
-      a {
-        margin-right: 10px;
-        opacity: 0.85;
-
-        &:hover {
-          opacity: 1;
-        }
-      }
-    }
-  }
-
-  .profile-image {
-    text-align: center;
-    width: 100%;
-    float: left;
-    padding-top: 6px;
-
-    @media screen and (min-width: 520px) {
-      width: 150px;
-    }
-
-    img {
-      height: 100px;
-      width: 100px;
-      border-radius: 5px;
-      border-radius: 140px;
-      border: 3px solid $light-gray;
-      background: $light-gray;
-    }
-  }
-}
 
 .comments-container-container {
   padding-bottom: 20px;

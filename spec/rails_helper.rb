@@ -10,7 +10,6 @@ abort("The Rails environment is running in production mode!") if Rails.env.produ
 
 # Add additional requires below this line. Rails is not loaded until this point!
 
-require "percy"
 require "pundit/matchers"
 require "pundit/rspec"
 require "webmock/rspec"
@@ -36,7 +35,6 @@ require "validate_url/rspec_matcher"
 Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/system/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/models/shared_examples/**/*.rb")].sort.each { |f| require f }
-Dir[Rails.root.join("spec/jobs/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/workers/shared_examples/**/*.rb")].sort.each { |f| require f }
 Dir[Rails.root.join("spec/initializers/shared_examples/**/*.rb")].sort.each { |f| require f }
 
@@ -48,10 +46,10 @@ ActiveRecord::Migration.maintain_test_schema!
 # allow browser websites, so that "webdrivers" can access their binaries
 # see <https://github.com/titusfortner/webdrivers/wiki/Using-with-VCR-or-WebMock>
 allowed_sites = [
-  "https://chromedriver.storage.googleapis.com",
-  "https://github.com/mozilla/geckodriver/releases",
-  "https://selenium-release.storage.googleapis.com",
-  "https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
+  "chromedriver.storage.googleapis.com",
+  "github.com/mozilla/geckodriver/releases",
+  "selenium-release.storage.googleapis.com",
+  "developer.microsoft.com/en-us/microsoft-edge/tools/webdriver",
   "api.knapsackpro.com",
 ]
 WebMock.disable_net_connect!(allow_localhost: true, allow: allowed_sites)
@@ -166,9 +164,6 @@ RSpec.configure do |config|
               "Accept-Encoding" => "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
               "User-Agent" => "Ruby"
             }).to_return(status: 200, body: "", headers: {})
-    # Prevent Percy.snapshot from trying to hit the agent while not in use
-
-    allow(Percy).to receive(:snapshot)
   end
 
   config.after do
@@ -193,16 +188,4 @@ RSpec.configure do |config|
   config.filter_rails_from_backtrace!
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
-
-  # Explicitly set a seed and time to ensure deterministic Percy snapshots.
-  # config.around(:each, percy: true) do |example|
-  #   Timecop.freeze("2020-05-13T10:00:00Z")
-  #   prev_random_seed = Faker::Config.random
-  #   Faker::Config.random = Random.new(42)
-
-  #   example.run
-
-  #   Faker::Config.random = prev_random_seed
-  #   Timecop.return
-  # end
 end

@@ -11,7 +11,11 @@ export class SingleRepo extends Component {
   forkLabel = () => {
     const { fork } = this.props;
     if (fork) {
-      return <span className="github-repo-fork">fork</span>;
+      return (
+        <span className="crayons-indicator crayons-indicator--accent">
+          fork
+        </span>
+      );
     }
     return null;
   };

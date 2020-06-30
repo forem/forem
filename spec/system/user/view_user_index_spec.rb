@@ -11,9 +11,7 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
     context "when 1 article" do
       before { visit "/user3000" }
 
-      it "shows the header", js: true, percy: true do
-        Percy.snapshot(page, name: "User: /:user_id renders")
-
+      it "shows the header", js: true do
         within("h1") { expect(page).to have_content(user.name) }
         within(".profile-details") do
           expect(page).to have_button("Follow")
@@ -68,11 +66,6 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
       visit "/user3000"
     end
 
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page", js: true, percy: true do
-      Percy.snapshot(page, name: "User: /:user_id renders with organization membership")
-    end
-
     it "shows organizations", js: true do
       Capybara.current_session.driver.browser.manage.window.resize_to(1920, 1080)
       expect(page).to have_css("#sidebar-wrapper-right h4", text: "organizations")
@@ -83,11 +76,6 @@ RSpec.describe "User index", type: :system, stub_elasticsearch: true do
     before do
       sign_in user
       visit "/user3000"
-    end
-
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page", js: true, percy: true do
-      Percy.snapshot(page, name: "User: /:user_id for logged in user's own profile")
     end
 
     it "shows the header", js: true do

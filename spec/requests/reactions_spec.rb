@@ -209,6 +209,48 @@ RSpec.describe "Reactions", type: :request do
       end
     end
 
+    context "when creating thumbsup" do
+      before do
+        user.add_role(:trusted)
+        sign_in user
+      end
+
+      it "clears thumbsdown comments but not like" do
+        create(:reaction, reactable: article, user: user, points: 1, category: "like")
+        create(:reaction, reactable: article, user: user, points: 1, category: "thumbsdown")
+        post "/reactions", params: {
+          reactable_id: article.id,
+          reactable_type: "Article",
+          category: "thumbsup"
+        }
+        expect(Reaction.where(category: "thumbsup").size).to be 1
+        expect(Reaction.where(category: "thumbsdown").size).to be 0
+        expect(Reaction.where(category: "like").size).to be 1
+      end
+    end
+
+    context "when creating thumbsdown" do
+      before do
+        user.add_role(:trusted)
+        sign_in user
+      end
+
+      it "clears thumbsup comments but not vomit or like" do
+        create(:reaction, reactable: article, user: user, points: 1, category: "vomit")
+        create(:reaction, reactable: article, user: user, points: 1, category: "thumbsup")
+        create(:reaction, reactable: article, user: user, points: 1, category: "like")
+        post "/reactions", params: {
+          reactable_id: article.id,
+          reactable_type: "Article",
+          category: "thumbsdown"
+        }
+        expect(Reaction.where(category: "thumbsdown").size).to be 1
+        expect(Reaction.where(category: "thumbsup").size).to be 0
+        expect(Reaction.where(category: "like").size).to be 1
+        expect(Reaction.where(category: "vomit").size).to be 1
+      end
+    end
+
     context "when vomiting on a user" do
       before do
         sign_in trusted_user

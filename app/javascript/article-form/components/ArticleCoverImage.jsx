@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { Button } from '@crayons';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
+import { Button } from '@crayons';
 
 export class ArticleCoverImage extends Component {
   constructor(props) {
@@ -54,14 +54,14 @@ export class ArticleCoverImage extends Component {
     const { uploadError, uploadErrorMessage } = this.state;
     const uploadLabel = mainImage ? 'Change' : 'Add a cover image';
     return (
-      <div data-testid="article-form__cover" className="crayons-article-form__cover" role="presentation">
+      <div className="crayons-article-form__cover" role="presentation">
         {mainImage && (
           <img
             src={mainImage}
             className="crayons-article-form__cover__image"
             width="250"
             height="105"
-            alt="Post cover image"
+            alt="Post cover"
           />
         )}
         <div className="flex items-center">

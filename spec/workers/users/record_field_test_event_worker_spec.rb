@@ -79,5 +79,13 @@ RSpec.describe Users::RecordFieldTestEventWorker, type: :worker do
         expect(FieldTest::Event.all.size).to be(0)
       end
     end
+
+    context "without a user" do
+      it "does not raise an error" do
+        expect do
+          worker.perform(user.id + 1000, "user_home_feed", "user_creates_reaction")
+        end.not_to raise_error
+      end
+    end
   end
 end

@@ -206,8 +206,8 @@
   width: 0%;
   &.showing {
     display: block;
-    width: 140%;
-    animation: grow-width 3200ms ease-out, pulsate 1.4s infinite ease-in-out;
+    width: 100%;
+    animation: grow-width 3200ms ease-out;
   }
 }
 
@@ -216,7 +216,7 @@
     width: 0%;
   }
   100% {
-    width: 140%;
+    width: 100%;
   }
 }
 

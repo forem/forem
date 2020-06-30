@@ -91,29 +91,6 @@ div {
   display: none;
 }
 
-pre {
-  background: #29292e;
-  border-radius: 2px;
-  overflow-x: scroll;
-  font-size: 11px;
-  padding: 10px;
-  color: #eff0f9;
-  line-height: 1.42em;
-  font-size: 13px;
-  @media screen and (min-width: 380px) {
-    font-size: 15px;
-  }
-  @media screen and (min-width: 807px) {
-    max-width: 807px;
-  }
-
-  code {
-    background: #29292e;
-    color: #eff0f9;
-    white-space: pre;
-  }
-}
-
 .cta {
   color: $black;
   background: $green;
@@ -154,6 +131,7 @@ body.ten-x-hacker-theme {
   .icon-image,
   .dev-badge,
   .chatchannels__config img,
+  .message__actions img,
   .external-link-img,
   .group-img,
   .user-profile-header .social a {

@@ -120,7 +120,7 @@ RSpec.describe "Dashboards", type: :request do
       end
 
       it "renders followed users count" do
-        expect(response.body).to include "users (1)"
+        expect(response.body).to include "Following users (1)"
       end
 
       it "lists followed users" do
@@ -139,7 +139,7 @@ RSpec.describe "Dashboards", type: :request do
       end
 
       it "renders followed tags count" do
-        expect(response.body).to include "tags (1)"
+        expect(response.body).to include "Following tags (1)"
       end
 
       it "lists followed tags" do
@@ -158,7 +158,7 @@ RSpec.describe "Dashboards", type: :request do
       end
 
       it "renders followed organizations count" do
-        expect(response.body).to include "organizations (1)"
+        expect(response.body).to include "Following organizations (1)"
       end
 
       it "lists followed organizations" do
@@ -177,7 +177,7 @@ RSpec.describe "Dashboards", type: :request do
       end
 
       it "renders followed podcast count" do
-        expect(response.body).to include "podcasts (1)"
+        expect(response.body).to include "Following podcasts (1)"
       end
 
       it "lists followed podcasts" do
