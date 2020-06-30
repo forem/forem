@@ -24,11 +24,16 @@ RSpec.describe "Onboardings", type: :request do
       expect(response.body).to include("data-community-name")
     end
 
-    it "contains proper data attribute values" do
+    it "contains proper data attribute values if the onboarding config is present" do
+      allow(SiteConfig).to receive(:onboarding_logo_image).and_return("onboarding_logo_image.png")
+      allow(SiteConfig).to receive(:onboarding_background_image).and_return("onboarding_background_image.png")
+      allow(SiteConfig).to receive(:community_description).and_return("Some description")
+
       sign_in user
       get onboarding_url
+
       expect(response.body).to include(SiteConfig.community_description)
-      expect(response.body).to include(SiteConfig.onboarding_logo_image)
+      expect(response.body).to include(show_logo(SiteConfig.onboarding_logo_image))
       expect(response.body).to include(SiteConfig.onboarding_background_image)
     end
   end
