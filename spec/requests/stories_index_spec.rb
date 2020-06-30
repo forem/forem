@@ -16,11 +16,11 @@ RSpec.describe "StoriesIndex", type: :request do
       article = create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
     it "renders proper description" do
+      allow(SiteConfig).to receive(:community_description).and_return("Some description")
       get "/"
       expect(response.body).to include(SiteConfig.community_description)
     end
@@ -29,7 +29,6 @@ RSpec.describe "StoriesIndex", type: :request do
       create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include("min read")
     end
 
