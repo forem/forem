@@ -13,6 +13,7 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("Preview")
+    wait_for_javascript
     expect(page).to have_text("Yooo")
   end
 
@@ -20,6 +21,7 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
     click_button("Save changes")
+    wait_for_javascript
     expect(page).to have_text("Yooo")
   end
 
@@ -27,6 +29,7 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("true", "false")
     click_button("Save changes")
+    wait_for_javascript
     expect(page).to have_text("Unpublished Post.")
   end
 end
