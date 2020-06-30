@@ -6,10 +6,10 @@ module UserSubscriptions
       new(*args).call
     end
 
-    def initialize(user, source_type, source_id)
+    def initialize(user, params)
       @user = user
-      @source_type = source_type
-      @source_id = source_id
+      @source_type = params[:source_type]
+      @source_id = params[:source_id]
     end
 
     def call
