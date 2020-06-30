@@ -53,6 +53,15 @@ module.exports = {
     ],
     'react/jsx-no-target-blank': [2, { enforceDynamicLinks: 'always' }],
   },
+  overrides: [
+    {
+      // Turn this rule off for barrel files
+      files: ['**/index.js'],
+      rules: {
+        'import/export': 'off',
+      },
+    },
+  ],
   globals: {
     getCsrfToken: false,
     sendFetch: false,

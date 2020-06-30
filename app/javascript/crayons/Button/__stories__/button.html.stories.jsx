@@ -1,19 +1,22 @@
 import { h } from 'preact';
-
 import '../../storybook-utilities/designSystem.scss';
+import notes from './buttons.md';
 
 export default {
   title: '3_Components/Buttons/HTML',
+  parameters: {
+    notes,
+  },
 };
 
-export const Default = () => (
+export const Primary = () => (
   <button type="button" className="crayons-btn">
     Button label
   </button>
 );
 
-Default.story = {
-  name: 'Default',
+Primary.story = {
+  name: 'primary',
 };
 
 export const Secondary = () => (

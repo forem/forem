@@ -1,9 +1,10 @@
 import { h } from 'preact';
-
 import '../../storybook-utilities/designSystem.scss';
+import notes from './dropdowns.md';
 
 export default {
   title: '3_Components/Dropdowns/HTML',
+  parameters: { notes },
 };
 
 export const Default = () => (

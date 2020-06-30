@@ -211,12 +211,6 @@ class ChatChannelsController < ApplicationController
     @active_channel.current_user = current_user if @active_channel
   end
 
-  def generate_github_token
-    Rails.cache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
-      Identity.where(user_id: current_user.id, provider: "github").first&.token
-    end
-  end
-
   def render_chat_channel
     if @chat_channel.valid?
       render json: { status: "success",
