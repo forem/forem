@@ -23,6 +23,14 @@
   }
 }
 
+.article-wrapper {
+  // Hack preventing content exceeding its container - it works for scenarios where we have
+  // `pre` tag having wide (overflowing) text. And the container itself is part of a layout
+  // built using CSS `grid`. Without this, the grid layout wouldn't stick to its defined
+  // widths...
+  min-width: 0;
+}
+
 .crayons-article {
   &__cover {
     position: relative;
@@ -74,6 +82,7 @@
     padding: 0 var(--article-padding-x) var(--article-padding-y)
       var(--article-padding-x);
     font-size: var(--article-font-size);
+    overflow-wrap: break-word;
 
     a {
       code {
@@ -216,18 +225,6 @@
       }
     }
 
-    code {
-      margin: auto;
-      background: rgba(0, 0, 0, 0.1);
-      padding: 0.1em 0.3em 0;
-      border-radius: 2px;
-      font-size: 0.84em;
-      vertical-align: 0;
-      max-width: 100%;
-      line-height: 1.6em;
-      word-break: break-all;
-    }
-
     kbd {
       display: inline-block;
       padding: 3px 5px;
@@ -242,38 +239,9 @@
       box-shadow: inset 0 -1px 0 #959da5;
     }
 
-    pre {
-      background: #08090a;
-      overflow-x: auto;
-      color: #eff0f9;
-      padding: var(--article-padding-y) var(--article-padding-x);
+    pre:not(.highlight),
+    div.highlight {
       margin: var(--article-rythm) 0;
-      margin-left: calc(var(--article-padding-x) * -1);
-      margin-right: calc(var(--article-padding-x) * -1);
-      width: calc(100% + var(--article-padding-x) + var(--article-padding-x));
-      overflow-wrap: normal;
-      border-radius: 0;
-
-      code {
-        background: #08090a;
-        color: #eff0f9;
-        white-space: pre;
-      }
-    }
-
-    .highlight {
-      display: grid;
-      justify-content: stretch;
-      margin-left: calc(var(--article-padding-x) * -1);
-      margin-right: calc(var(--article-padding-x) * -1);
-
-      pre.highlight {
-        display: block;
-        margin: 0;
-        margin-left: 0;
-        margin-right: 0;
-        width: 100%;
-      }
     }
 
     img {
