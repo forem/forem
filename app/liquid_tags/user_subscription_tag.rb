@@ -28,7 +28,9 @@ class UserSubscriptionTag < LiquidTagBase
 
     function showSignedIn() {
       clearSubscriptionArea();
+
       subscriptionSignedIn.classList.remove("hidden");
+      profileImageContainer.classList.remove("signed-out");
     }
 
     function showSignedOut() {
@@ -90,15 +92,6 @@ class UserSubscriptionTag < LiquidTagBase
         profileImage.src = subscriber.profile_image_90;
         profileImage.alt = `${subscriber.username} profile image`;
       });
-    }
-
-    if (isUserSignedIn()) {
-      profileImageContainer.classList.remove("signed-out");
-      profileImageContainer.classList.add("signed-in");
-    } else {
-      profileImageContainer.classList.remove("signed-in");
-      profileImageContainer.classList.add("signed-out");
-      subscriberImageContainer.classList.add("hidden");
     }
 
     // Adding event listeners for 'click'
@@ -220,6 +213,8 @@ class UserSubscriptionTag < LiquidTagBase
     if (isUserSignedIn()) {
       showSignedIn();
       addConfirmationModalClickHandlers();
+      profileImageContainer.classList.remove("signed-out");
+      profileImageContainer.classList.add("signed-in");
 
       // We need access to some DOM elements (i.e. csrf token, article id, userData, etc.)
       document.addEventListener('DOMContentLoaded', function() {
@@ -228,6 +223,9 @@ class UserSubscriptionTag < LiquidTagBase
     } else {
       showSignedOut();
       addSignInClickHandler();
+      profileImageContainer.classList.remove("signed-in");
+      profileImageContainer.classList.add("signed-out");
+      subscriberImageContainer.classList.add("hidden");
     }
   JAVASCRIPT
 
