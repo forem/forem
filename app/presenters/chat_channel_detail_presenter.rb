@@ -23,7 +23,7 @@ class ChatChannelDetailPresenter
         requested: membership_users(chat_channel.requested_memberships)
       },
       current_membership: current_membership,
-      invitation_link: inviation_link(chat_channel)
+      invitation_link: invitation_link(chat_channel)
     }
   end
 
@@ -41,7 +41,7 @@ class ChatChannelDetailPresenter
     end
   end
 
-  def inviation_link(chat_channel)
+  def invitation_link(chat_channel)
     host = Rails.application.config.app_domain
     "#{host}/chat_channel_memberships/join_channel_invitation/#{chat_channel.slug}"
   end
