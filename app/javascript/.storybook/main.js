@@ -1,4 +1,6 @@
 const path = require('path');
+const marked = require('marked');
+const renderer = new marked.Renderer();
 
 module.exports = {
   stories: ['../**/__stories__/*.stories.jsx'],
@@ -7,6 +9,7 @@ module.exports = {
     '@storybook/addon-actions',
     '@storybook/addon-links',
     '@storybook/addon-a11y/register',
+    '@storybook/addon-notes/register-panel',
   ],
   webpackFinal: async (config, { configType }) => {
     config.module.rules.push({
@@ -25,6 +28,19 @@ module.exports = {
         },
       ],
       include: path.resolve(__dirname, '../../'),
+    });
+
+    config.module.rules.push({
+      test: /\.md$/,
+      use: [
+        {
+          loader: 'markdown-loader',
+          options: {
+            pedantic: true,
+            renderer,
+          },
+        },
+      ],
     });
 
     config.resolve = {

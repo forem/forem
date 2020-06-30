@@ -4,11 +4,16 @@ import PropTypes from 'prop-types';
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
 
 export class Feed extends Component {
-  componentDidMount() {
-    const { timeFrame } = this.props;
+  constructor(props) {
+    super(props);
+
     const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
 
-    this.setState({ bookmarkedFeedItems: new Set(reading_list_ids) });
+    this.state = { bookmarkedFeedItems: new Set(reading_list_ids) };
+  }
+
+  componentDidMount() {
+    const { timeFrame } = this.props;
 
     Feed.getFeedItems(timeFrame).then((feedItems) => {
       // Ensure first article is one with a main_image
@@ -20,6 +25,7 @@ export class Feed extends Component {
       feedItems.splice(index, 1);
       const subStories = feedItems;
       const organizedFeedItems = [featuredStory, subStories].flat();
+
       this.setState({
         feedItems: organizedFeedItems,
         podcastEpisodes: Feed.getPodcastEpisodes(),
