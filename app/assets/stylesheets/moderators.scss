@@ -41,6 +41,15 @@
         border-width: 1px 0;
         display: grid;
         grid-template-columns: 4fr 2fr 1fr;
+        .article-title {
+          color: var(--base-90);
+          min-width: 0;
+          header > h3 {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+          }
+        }
         .mod-article-tag {
           color: var(--base-80);
           padding-right: var(--su-2);
@@ -707,6 +716,10 @@
 
 #mod-center-other-options svg {
   width: var(--su-3);
+  height: var(--su-3);
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .mod-feedback {

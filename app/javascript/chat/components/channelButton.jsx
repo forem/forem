@@ -62,7 +62,16 @@ const ChannelButton = ({
         ) : (
           ''
         )}
-        {channel.channel_name}
+        <span
+          data-channel-slug={channel.channel_modified_slug}
+          className="chatchanneltab__name"
+          data-channel-id={channel.chat_channel_id}
+          data-channel-status={channel.status}
+          data-channel-name={channel.channel_name}
+          data-content="sidecar-channel-request"
+        >
+          {channel.channel_name}
+        </span>
       </span>
     </button>
   );

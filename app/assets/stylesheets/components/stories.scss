@@ -1,6 +1,14 @@
 @import '../variables';
 @import '../config/import';
 
+.articles-list {
+  // Hack preventing content exceeding its container - it works for scenarios where we have
+  // `pre` tag having wide (overflowing) text. And the container itself is part of a layout
+  // built using CSS `grid`. Without this, the grid layout wouldn't stick to its defined
+  // widths...
+  min-width: 0;
+}
+
 .crayons-story {
   background: var(--card-bg);
   font-size: var(--fs-base); // Todo: remove when ready.

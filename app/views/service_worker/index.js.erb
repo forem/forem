@@ -110,6 +110,7 @@
         !url.href.includes('/api/') && // Don't run on API endpoints.
         !url.href.includes('/embed/') && // Don't fetch for embeded content.
         !url.href.includes('/feed') && // Skip the RSS feed
+        !url.href.includes('/rss') && // Skip the RSS feed alternative path
         !url.href.includes('/future') && // Skip for /future.
         !url.href.includes('/internal') && // Don't fetch for internal dashboard.
         !url.href.includes('/oauth/') && // Skip oauth apps
