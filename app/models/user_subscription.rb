@@ -16,12 +16,9 @@ class UserSubscription < ApplicationRecord
   validates :user_subscription_sourceable_id, presence: true
   validates :user_subscription_sourceable_type, presence: true, inclusion: { in: ALLOWED_TYPES }
 
-  validate :active_user_subscription_source
   validate :tag_enabled
   validate :non_apple_auth_subscriber
-
-  # TODO: [@thepracticaldev/delightful]: uncomment this once email confirmation is re-enabled
-  # validate :subscriber_email_is_current
+  validate :active_user_subscription_source
 
   def self.build(source:, subscriber:, subscriber_email: nil)
     new(build_attributes(source, subscriber, subscriber_email))
@@ -41,26 +38,6 @@ class UserSubscription < ApplicationRecord
   end
 
   private
-
-  def active_user_subscription_source
-    return unless user_subscription_sourceable
-
-    source_active =
-      # Don't create new user subscriptions for inactive sources
-      # (i.e. unpublished Articles, deleted Comments, etc.)
-      case user_subscription_sourceable_type
-      when "Article"
-        user_subscription_sourceable.published?
-      when "Comment"
-        !user_subscription_sourceable.deleted?
-      else
-        false
-      end
-
-    return if source_active
-
-    errors.add(:base, "Inactive source.")
-  end
 
   def tag_enabled
     return unless user_subscription_sourceable
@@ -84,14 +61,23 @@ class UserSubscription < ApplicationRecord
     errors.add(:subscriber_email, "Can't subscribe with an Apple private relay. Please update email.")
   end
 
-  # This checks if the email address the user saw/consented to share is the
-  # same as their current email address. A mismatch occurs if a user updates
-  # their email address in a new/separate tab and then tries to subscribe on
-  # the old/stale tab without refreshing. In that case, the user would have
-  # consented to share their old email address instead of the current one.
-  def subscriber_email_is_current
-    return if user_subscription_sourceable&.user&.email == subscriber_email
+  def active_user_subscription_source
+    return unless user_subscription_sourceable
 
-    errors.add(:subscriber_email, "Subscriber email mismatch.")
+    source_active =
+      # Don't create new user subscriptions for inactive sources
+      # (i.e. unpublished Articles, deleted Comments, etc.)
+      case user_subscription_sourceable_type
+      when "Article"
+        user_subscription_sourceable.published?
+      when "Comment"
+        !user_subscription_sourceable.deleted?
+      else
+        false
+      end
+
+    return if source_active
+
+    errors.add(:base, "Source not found.")
   end
 end

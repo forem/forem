@@ -17,11 +17,14 @@ class UserSubscriptionsController < ApplicationController
     rate_limit!(:user_subscription_creation)
 
     source_type = user_subscription_params[:source_type]
-    return error_response("invalid source_type") unless UserSubscription::ALLOWED_TYPES.include?(source_type)
+    return error_response("Invalid source_type.") unless UserSubscription::ALLOWED_TYPES.include?(source_type)
 
     source_id = user_subscription_params[:source_id]
     source = source_type.constantize.find_by(id: source_id)
-    return error_response("source not found") unless source
+    return error_response("Source not found.") unless source
+
+    # TODO: [@thepracticaldev/delightful]: uncomment this once email confirmation is re-enabled
+    # return error_response("Subscriber email mismatch.") unless subscriber_email_is_current
 
     user_subscription = source.build_user_subscription(current_user)
 
@@ -34,6 +37,15 @@ class UserSubscriptionsController < ApplicationController
   end
 
   private
+
+  # This checks if the email address the user saw/consented to share is the
+  # same as their current email address. A mismatch occurs if a user updates
+  # their email address in a new/separate tab and then tries to subscribe on
+  # the old/stale tab without refreshing. In that case, the user would have
+  # consented to share their old email address instead of the current one.
+  def subscriber_email_is_current
+    current_user.email == user_subscription_params[:subscriber_email]
+  end
 
   def error_response(msg)
     render json: { error: msg, success: false }, status: :unprocessable_entity

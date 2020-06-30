@@ -4,9 +4,8 @@ RSpec.describe UserSubscription, type: :model do
   subject { build(:user_subscription) }
 
   # TODO: (Alex Smith) - update roles before release
-  let(:author) { create(:user, :super_admin) }
   let(:subscriber) { create(:user) }
-  let(:source) { create(:article, user: author, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}") }
+  let(:source) { create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true) }
 
   describe "validations" do
     it { is_expected.to validate_presence_of(:user_subscription_sourceable_id) }
@@ -18,14 +17,14 @@ RSpec.describe UserSubscription, type: :model do
     it { is_expected.to validate_uniqueness_of(:subscriber_id).scoped_to(%i[subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id]) }
 
     it "validates the source is active" do
-      unpublished_source = create(:article, user: author, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: false\n---\n\n{% user_subscription 'CTA text' %}")
+      unpublished_source = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true, published: false)
       user_subscription = described_class.build(source: unpublished_source, subscriber: subscriber)
       expect(user_subscription).not_to be_valid
-      expect(user_subscription.errors[:base]).to include "Inactive source."
+      expect(user_subscription.errors[:base]).to include "Source not found."
     end
 
     it "validates the tag is enabled in the source" do
-      source_without_tag = create(:article, user: author, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: false\n---\n\n{% user #{author.username} %}")
+      source_without_tag = create(:article, :with_user_subscription_tag_role_user)
       user_subscription = described_class.build(source: source_without_tag, subscriber: subscriber)
       expect(user_subscription).not_to be_valid
       expect(user_subscription.errors[:base]).to include "User subscriptions are not enabled for the source."
@@ -36,13 +35,6 @@ RSpec.describe UserSubscription, type: :model do
       user_subscription = described_class.build(source: source, subscriber: subscriber_with_apple_relay)
       expect(user_subscription).not_to be_valid
       expect(user_subscription.errors[:subscriber_email]).to include "Can't subscribe with an Apple private relay. Please update email."
-    end
-
-    # TODO: [@thepracticaldev/delightful]: re-enable this once email confirmation is re-enabled
-    xit "validates the subscriber's email address is current" do
-      user_subscription = described_class.new(user_subscription_sourceable: source, author: author, subscriber_id: subscriber.id, subscriber_email: "#{subscriber.email}-stale")
-      expect(user_subscription).not_to be_valid
-      expect(user_subscription.errors[:subscriber_email]).to include "Subscriber email mismatch."
     end
   end
 
