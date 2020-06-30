@@ -12,6 +12,32 @@ class ChannelButton extends Component {
     }
   }
 
+  renderChannelImage = () => {
+    const { channel, newMessagesIndicator, discoverableChannel } = this.props;
+
+    return (
+      <span
+        data-channel-slug={channel.channel_modified_slug}
+        className={
+          discoverableChannel
+            ? 'chatchanneltabindicator'
+            : `chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicator}`
+        }
+        data-channel-id={channel.chat_channel_id}
+      >
+        <img
+          src={channel.channel_image}
+          alt="pic"
+          className={
+            channel.channel_type === 'direct'
+              ? 'chatchanneltabindicatordirectimage'
+              : 'chatchanneltabindicatordirectimage invert-channel-image'
+          }
+        />
+      </span>
+    );
+  };
+
   render() {
     const {
       channel,
@@ -54,25 +80,7 @@ class ChannelButton extends Component {
             boxShadow: `3px 3px 0px ${channel.channel_color}`,
           }}
         >
-          <span
-            data-channel-slug={channel.channel_modified_slug}
-            className={
-              discoverableChannel
-                ? 'chatchanneltabindicator'
-                : `chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicator}`
-            }
-            data-channel-id={channel.chat_channel_id}
-          >
-            <img
-              src={channel.channel_image}
-              alt="pic"
-              className={
-                channel.channel_type === 'direct'
-                  ? 'chatchanneltabindicatordirectimage'
-                  : 'chatchanneltabindicatordirectimage invert-channel-image'
-              }
-            />
-          </span>
+          {this.renderChannelImage()}
           {isUnopened ? (
             <span className="crayons-indicator crayons-indicator--accent crayons-indicator--bullet" />
           ) : (
