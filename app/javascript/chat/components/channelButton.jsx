@@ -1,81 +1,97 @@
-import { h } from 'preact';
+import { h, Component, createRef } from 'preact';
 import PropTypes from 'prop-types';
 
-const ChannelButton = ({
-  channel,
-  handleSwitchChannel,
-  otherClassname,
-  newMessagesIndicator,
-  isUnopened,
-  discoverableChannel,
-  triggerActiveContent,
-}) => {
-  return (
-    <button
-      type="button"
-      key={channel.id}
-      className="chatchanneltabbutton"
-      onClick={discoverableChannel ? triggerActiveContent : handleSwitchChannel}
-      data-content="sidecar-channel-request"
-      data-channel-id={channel.chat_channel_id}
-      data-channel-slug={channel.channel_modified_slug}
-      data-channel-status={channel.status}
-      data-channel-name={channel.channel_name}
-    >
+class ChannelButton extends Component {
+  buttonRef = createRef();
+
+  componentDidMount() {
+    const { isActiveChannel = false } = this.props;
+
+    if (isActiveChannel) {
+      this.buttonRef.current.click();
+    }
+  }
+
+  renderChannelImage = () => {
+    const { channel, newMessagesIndicator, discoverableChannel } = this.props;
+
+    return (
       <span
+        data-channel-slug={channel.channel_modified_slug}
         className={
           discoverableChannel
-            ? 'chatchanneltab chatchanneltab--inactive'
-            : `chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator}`
+            ? 'chatchanneltabindicator'
+            : `chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicator}`
         }
         data-channel-id={channel.chat_channel_id}
+      >
+        <img
+          src={channel.channel_image}
+          alt="pic"
+          className={
+            channel.channel_type === 'direct'
+              ? 'chatchanneltabindicatordirectimage'
+              : 'chatchanneltabindicatordirectimage invert-channel-image'
+          }
+        />
+      </span>
+    );
+  };
+
+  render() {
+    const {
+      channel,
+      handleSwitchChannel,
+      otherClassname,
+      newMessagesIndicator,
+      isUnopened,
+      discoverableChannel,
+      triggerActiveContent,
+    } = this.props;
+
+    return (
+      <button
+        type="button"
+        ref={this.buttonRef}
+        key={channel.id}
+        className="chatchanneltabbutton"
+        onClick={
+          discoverableChannel ? triggerActiveContent : handleSwitchChannel
+        }
         data-content="sidecar-channel-request"
+        data-channel-id={channel.chat_channel_id}
         data-channel-slug={channel.channel_modified_slug}
         data-channel-status={channel.status}
         data-channel-name={channel.channel_name}
-        style={{
-          border: `1px solid ${channel.channel_color}`,
-          boxShadow: `3px 3px 0px ${channel.channel_color}`,
-        }}
       >
         <span
-          data-channel-slug={channel.channel_modified_slug}
           className={
             discoverableChannel
-              ? 'chatchanneltabindicator'
-              : `chatchanneltabindicator chatchanneltabindicator--${newMessagesIndicator}`
+              ? 'chatchanneltab chatchanneltab--inactive'
+              : `chatchanneltab ${otherClassname} chatchanneltab--${newMessagesIndicator}`
           }
           data-channel-id={channel.chat_channel_id}
-        >
-          <img
-            src={channel.channel_image}
-            alt="pic"
-            className={
-              channel.channel_type === 'direct'
-                ? 'chatchanneltabindicatordirectimage'
-                : 'chatchanneltabindicatordirectimage invert-channel-image'
-            }
-          />
-        </span>
-        {isUnopened ? (
-          <span className="crayons-indicator crayons-indicator--accent crayons-indicator--bullet" />
-        ) : (
-          ''
-        )}
-        <span
+          data-content="sidecar-channel-request"
           data-channel-slug={channel.channel_modified_slug}
-          className="chatchanneltab__name"
-          data-channel-id={channel.chat_channel_id}
           data-channel-status={channel.status}
           data-channel-name={channel.channel_name}
-          data-content="sidecar-channel-request"
+          style={{
+            border: `1px solid ${channel.channel_color}`,
+            boxShadow: `3px 3px 0px ${channel.channel_color}`,
+          }}
         >
+          {this.renderChannelImage()}
+          {isUnopened ? (
+            <span className="crayons-indicator crayons-indicator--accent crayons-indicator--bullet" />
+          ) : (
+            ''
+          )}
           {channel.channel_name}
         </span>
-      </span>
-    </button>
-  );
-};
+      </button>
+    );
+  }
+}
 
 ChannelButton.propTypes = {
   channel: PropTypes.shape({
