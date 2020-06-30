@@ -3,7 +3,7 @@ class LiquidTagBase < Liquid::Tag
     ""
   end
 
-  def initialize(_tag_name, _content, _parse_context)
+  def initialize(_tag_name, _content, parse_context)
     super
     validate_contexts
     # This check issues DB queries so we keep it as the last one
