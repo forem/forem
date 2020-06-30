@@ -10,7 +10,7 @@ class LiquidTagPolicy
 
   def initialize?
     return true unless record.class.const_defined?("VALID_ROLES")
-    raise Pundit::NotAuthorizedError, "No user found" if record.class.const_defined?("VALID_ROLES") && user.nil?
+    raise Pundit::NotAuthorizedError, "No user found" unless user
     # Manually raise error to use a custom error message
     raise Pundit::NotAuthorizedError, "User is not permitted to use this liquid tag" unless user_permitted_to_use_liquid_tag?
 
