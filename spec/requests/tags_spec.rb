@@ -16,7 +16,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
     let(:super_admin)          { create(:user, :super_admin) }
 
     before do
-      allow(SiteConfig).to receive(:suggested_tags).and_return(%w[beginners, javascript, career])
+      allow(SiteConfig).to receive(:suggested_tags).and_return(%w[beginners javascript career])
     end
 
     it "does not allow not logged-in users" do
@@ -117,6 +117,10 @@ RSpec.describe "Tags", type: :request, proper_status: true do
         Accept: "application/json",
         "Content-Type": "application/json"
       }
+    end
+
+    before do
+      allow(SiteConfig).to receive(:suggested_tags).and_return(%w[beginners javascript career])
     end
 
     it "returns tags" do
