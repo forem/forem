@@ -46,6 +46,16 @@ RSpec.describe Tag, type: :model do
         tag.name = nil
         expect(tag).not_to be_valid
       end
+
+      it "fails validations if name uses diacritics" do
+        tag.name = "łookatmé"
+        expect(tag).not_to be_valid
+      end
+
+      it "fails validations if name uses non-latin characters" do
+        tag.name = "火"
+        expect(tag).not_to be_valid
+      end
     end
 
     describe "alias_for" do
