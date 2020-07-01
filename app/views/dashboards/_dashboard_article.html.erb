@@ -64,6 +64,7 @@
     <% if @current_user_pro %>
       <a href="<%= article.path %>/stats" data-no-instant class="cta pill blue">STATS</a>
     <% end %>
+    <a href="<%= article.path %>/subscriptions" data-no-instant class="cta pill">SUBSCRIPTIONS</a>
 
     <% if article.published %>
       <span id="pageviews-<%= article.id %>" class="cta pill dashboard-pageviews-indicator" data-analytics-pageviews data-article-id="<%= article.id %>">
