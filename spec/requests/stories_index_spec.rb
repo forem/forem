@@ -20,7 +20,6 @@ RSpec.describe "StoriesIndex", type: :request do
     end
 
     it "renders proper description" do
-      allow(SiteConfig).to receive(:community_description).and_return("Some description")
       get "/"
       expect(response.body).to include(SiteConfig.community_description)
     end
