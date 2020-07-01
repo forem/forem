@@ -146,6 +146,9 @@ export default class Chat extends Component {
         searchType: '',
         paginationNumber: channelPaginationNum,
       };
+      if (activeChannelId !== null) {
+        searchParams.searchType = 'discoverable';
+      }
       getChannels(searchParams, filters, this.loadChannels);
       getUnopenedChannelIds(this.markUnopenedChannelIds);
     }
@@ -255,10 +258,11 @@ export default class Chat extends Component {
         filterQuery: query || '',
         scrolled: false,
       });
-      const channel = channels[0];
+
       this.triggerSwitchChannel(
-        channel.chat_channel_id,
-        channel.channel_modified_slug,
+        channels[0].chat_channel_id,
+        channels[0].channel_modified_slug,
+        channels,
       );
     } else {
       this.setState({ channelsLoaded: true });
@@ -768,7 +772,7 @@ export default class Chat extends Component {
     );
   };
 
-  triggerSwitchChannel = (id, slug) => {
+  triggerSwitchChannel = (id, slug, channels) => {
     const {
       chatChannels,
       isMobileDevice,
@@ -776,6 +780,7 @@ export default class Chat extends Component {
       activeChannelId,
       currentUserId,
     } = this.state;
+    const channelList = channels || chatChannels;
     const newUnopenedChannelIds = unopenedChannelIds;
     const index = newUnopenedChannelIds.indexOf(id);
     if (index > -1) {
@@ -783,7 +788,7 @@ export default class Chat extends Component {
     }
     this.setState({
       activeChannel: this.filterForActiveChannel(
-        chatChannels,
+        channelList,
         id,
         currentUserId,
       ),
