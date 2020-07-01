@@ -12,25 +12,22 @@ module UserSubscriptionSourceable
              foreign_key: :user_id
   end
 
-  def build_user_subscription(subscriber, subscriber_email: nil)
-    UserSubscription.new(user_subscription_attributes(subscriber, subscriber_email))
+  def build_user_subscription(subscriber)
+    UserSubscription.new(user_subscription_attributes(subscriber))
   end
 
-  def create_user_subscription(subscriber, subscriber_email: nil)
-    UserSubscription.create(user_subscription_attributes(subscriber, subscriber_email))
+  def create_user_subscription(subscriber)
+    UserSubscription.create(user_subscription_attributes(subscriber))
   end
 
   private
 
-  # We explicitly pass in a subscriber_email when creating subscriptions from
-  # the front end to ensure the email matches the subscriber's current email
-  # address. See UserSubscriptions::Create for more.
-  def user_subscription_attributes(subscriber, subscriber_email)
+  def user_subscription_attributes(subscriber)
     {
       user_subscription_sourceable: self,
       author_id: user_id,
       subscriber_id: subscriber&.id,
-      subscriber_email: subscriber_email || subscriber&.email
+      subscriber_email: subscriber&.email
     }
   end
 end

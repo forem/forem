@@ -20,23 +20,20 @@ class UserSubscription < ApplicationRecord
   validate :non_apple_auth_subscriber
   validate :active_user_subscription_source
 
-  def self.build(source:, subscriber:, subscriber_email: nil)
-    new(build_attributes(source, subscriber, subscriber_email))
+  def self.build(source:, subscriber:)
+    new(build_attributes(source, subscriber))
   end
 
-  def self.make(source:, subscriber:, subscriber_email: nil)
-    create(build_attributes(source, subscriber, subscriber_email))
+  def self.make(source:, subscriber:)
+    create(build_attributes(source, subscriber))
   end
 
-  # We explicitly pass in a subscriber_email when creating subscriptions from
-  # the front end to ensure the email matches the subscriber's current email
-  # address. See UserSubscriptions::Create for more.
-  def self.build_attributes(source, subscriber, subscriber_email)
+  def self.build_attributes(source, subscriber)
     {
       user_subscription_sourceable: source,
       author_id: source&.user_id,
       subscriber_id: subscriber&.id,
-      subscriber_email: subscriber_email || subscriber&.email
+      subscriber_email: subscriber&.email
     }
   end
 
