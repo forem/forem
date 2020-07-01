@@ -23,10 +23,10 @@ class UserSubscriptionTag < LiquidTagBase
     const subscriberImageContainer = document.querySelector('.ltag__user-subscription-tag__subscriber-profile-image');
 
     function clearSubscriptionArea() {
-      subscriptionSignedIn.classList.add("hidden");
-      subscriptionSignedOut.classList.add("hidden");
-      responseMessage.classList.add("hidden");
-      subscriberAppleAuth.classList.add("hidden");
+      subscriptionSignedIn?.classList.add("hidden");
+      subscriptionSignedOut?.classList.add("hidden");
+      responseMessage?.classList.add("hidden");
+      subscriberAppleAuth?.classList.add("hidden");
 
       hideConfirmationModal();
     }
@@ -34,41 +34,47 @@ class UserSubscriptionTag < LiquidTagBase
     function showSignedIn() {
       clearSubscriptionArea();
 
-      subscriptionSignedIn.classList.remove("hidden");
-      profileImageContainer.classList.remove("signed-out");
+      subscriptionSignedIn?.classList.remove("hidden");
+      profileImageContainer?.classList.remove("signed-out");
+      profileImageContainer?.classList.add("signed-in");
     }
 
     function showSignedOut() {
       clearSubscriptionArea();
-      subscriptionSignedOut.classList.remove("hidden");
+      subscriptionSignedOut?.classList.remove("hidden");
+      profileImageContainer?.classList.remove("signed-in");
+      profileImageContainer?.classList.add("signed-out");
+      subscriberImageContainer?.classList.add("hidden");
     }
 
     function showResponseMessage(noticeType, msg) {
       clearSubscriptionArea();
 
-      responseMessage.classList.remove("hidden");
-      responseMessage.classList.add(`crayons-notice--${noticeType}`);
-      responseMessage.textContent = msg;
+      if (responseMessage) {
+        responseMessage.classList.remove("hidden");
+        responseMessage.classList.add(`crayons-notice--${noticeType}`);
+        responseMessage.textContent = msg;
+      }
     }
 
     function showAppleAuthMessage() {
       clearSubscriptionArea();
-      subscriberAppleAuth.classList.remove("hidden");
+      subscriberAppleAuth?.classList.remove("hidden");
     }
 
     function showSubscribed() {
       updateSubscriberData();
-      const authorUsername = document.getElementById('user-subscription-tag').dataset.authorUsername;
+      const authorUsername = document.getElementById('user-subscription-tag')?.dataset.authorUsername;
       const alreadySubscribedMsg = `You are already subscribed.`;
       showResponseMessage('success', alreadySubscribedMsg);
     }
 
     function showConfirmationModal() {
-      confirmationModal.classList.remove("hidden");
+      confirmationModal?.classList.remove("hidden");
     }
 
     function hideConfirmationModal() {
-      confirmationModal.classList.add("hidden");
+      confirmationModal?.classList.add("hidden");
     }
 
     // Updating DOM elements
@@ -76,10 +82,11 @@ class UserSubscriptionTag < LiquidTagBase
     function updateSubscriberData() {
       const subscriber = userData();
 
-      if (subscriber) {
+      if (subscriber.email) {
         updateElementsTextContent('.ltag__user-subscription-tag__subscriber-email', subscriber.email);
-        updateProfileImages('.ltag__user-subscription-tag__subscriber-profile-image', subscriber);
       }
+
+      updateProfileImages('.ltag__user-subscription-tag__subscriber-profile-image', subscriber);
     }
 
     function updateElementsTextContent(identifier, value) {
@@ -102,7 +109,7 @@ class UserSubscriptionTag < LiquidTagBase
     // Adding event listeners for 'click'
     // ***************************************
     function addSignInClickHandler() {
-      document.getElementById('sign-in-btn').addEventListener('click', function(e) {
+      document.getElementById('sign-in-btn')?.addEventListener('click', function(e) {
         if (typeof showModal !== 'undefined') {
           showModal('email_signup');
         }
@@ -110,19 +117,19 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function addConfirmationModalClickHandlers() {
-      document.getElementById('subscribe-btn').addEventListener('click', function(e) {
+      document.getElementById('subscribe-btn')?.addEventListener('click', function(e) {
         showConfirmationModal();
       });
 
-      document.getElementById('cancel-btn').addEventListener('click', function(e) {
+      document.getElementById('cancel-btn')?.addEventListener('click', function(e) {
         hideConfirmationModal();
       });
 
-      document.getElementById('close-confirmation-modal').addEventListener('click', function(e) {
+      document.getElementById('close-confirmation-modal')?.addEventListener('click', function(e) {
         hideConfirmationModal();
       });
 
-      document.getElementById('confirmation-btn').addEventListener('click', function(e) {
+      document.getElementById('confirmation-btn')?.addEventListener('click', function(e) {
         handleSubscription();
       });
     }
@@ -136,7 +143,7 @@ class UserSubscriptionTag < LiquidTagBase
         'Content-Type': 'application/json',
       }
 
-      const articleId = document.getElementById('article-body').dataset.articleId;
+      const articleId = document.getElementById('article-body')?.dataset.articleId;
       const subscriber = userData();
       const body = JSON.stringify(
           {
@@ -159,7 +166,7 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function fetchIsSubscribed() {
-      const articleId = document.getElementById('article-body').dataset.articleId;
+      const articleId = document.getElementById('article-body')?.dataset.articleId;
 
       const params = new URLSearchParams({
         source_type: 'Article',
@@ -190,7 +197,7 @@ class UserSubscriptionTag < LiquidTagBase
     function handleSubscription() {
       submitSubscription().then(function(response) {
         if (response.success) {
-          const authorUsername = document.getElementById('user-subscription-tag').dataset.authorUsername;
+          const authorUsername = document.getElementById('user-subscription-tag')?.dataset.authorUsername;
           const successMsg = `You are now subscribed and may receive emails from ${authorUsername}`;
           showResponseMessage('success', successMsg);
         } else {
@@ -202,7 +209,7 @@ class UserSubscriptionTag < LiquidTagBase
     function checkIfSubscribed() {
       fetchIsSubscribed().then(function(response) {
         const subscriber = userData();
-        const isSubscriberAuthedWithApple = subscriber.email.endsWith('@privaterelay.appleid.com');
+        const isSubscriberAuthedWithApple = subscriber.email?.endsWith('@privaterelay.appleid.com');
 
         if (response.is_subscribed) {
           showSubscribed();
@@ -218,8 +225,6 @@ class UserSubscriptionTag < LiquidTagBase
     if (isUserSignedIn()) {
       showSignedIn();
       addConfirmationModalClickHandlers();
-      profileImageContainer.classList.remove("signed-out");
-      profileImageContainer.classList.add("signed-in");
 
       // We need access to some DOM elements (i.e. csrf token, article id, userData, etc.)
       document.addEventListener('DOMContentLoaded', function() {
@@ -228,9 +233,6 @@ class UserSubscriptionTag < LiquidTagBase
     } else {
       showSignedOut();
       addSignInClickHandler();
-      profileImageContainer.classList.remove("signed-in");
-      profileImageContainer.classList.add("signed-out");
-      subscriberImageContainer.classList.add("hidden");
     }
   JAVASCRIPT
 
