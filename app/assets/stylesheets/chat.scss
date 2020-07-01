@@ -31,6 +31,7 @@
   height: calc(100vh - var(--header-height));
   position: relative;
   overflow-x: hidden;
+  overflow-y: hidden;
 
   &.chat--iossafari {
     height: calc(100vh - 201px);
@@ -43,7 +44,7 @@
   padding: var(--su-3);
   position: relative;
   width: 100%;
-
+  overflow-y: auto;
   @media screen and (min-width: $breakpoint-m) {
     min-width: var(--layout-chat-left-sidebar-width);
     max-width: var(--layout-chat-left-sidebar-width);

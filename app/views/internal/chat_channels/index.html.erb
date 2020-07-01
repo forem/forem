@@ -14,13 +14,26 @@
 </div>
 
 <h2>Group Connect Channels</h2>
+<div class="row m-3">
+  <div class="col">
+  </div>
+  <div class="col">
+    <%= search_form_for @q, url: internal_chat_channels_path, class: "form-inline justify-content-end" do |f| %>
+
+      <%= f.label :channel_name_cont, "Channel Name", class: "sr-only" %>
+      <%= f.search_field :channel_name_cont, placeholder: "Channel Name", class: "form-control mx-3" %>
+
+      <%= f.submit "Search", class: "btn btn-secondary" %>
+    <% end %>
+  </div>
+</div>
 
 <%= paginate @group_chat_channels %>
 
 <table class="table">
   <thead>
     <tr>
-      <th scope="col">Name</th>
+      <th scope="col">Channel Name</th>
       <th scope="col">Users</th>
       <th scope="col">Add Users</th>
     </tr>

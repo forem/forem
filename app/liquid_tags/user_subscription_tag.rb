@@ -1,5 +1,10 @@
 class UserSubscriptionTag < LiquidTagBase
   PARTIAL = "liquids/user_subscription".freeze
+  VALID_CONTEXTS = %w[Article].freeze
+  VALID_ROLES = %i[
+    admin
+    super_admin
+  ].freeze
 
   SCRIPT = <<~JAVASCRIPT.freeze
     function isUserSignedIn() {
@@ -214,22 +219,20 @@ class UserSubscriptionTag < LiquidTagBase
     }
   JAVASCRIPT
 
-  def initialize(_tag_name, cta_text, _tokens)
+  def initialize(_tag_name, cta_text, parse_context)
+    super
     @cta_text = cta_text.strip
+    @source = parse_context.partial_options[:source]
+    @user = parse_context.partial_options[:user]
   end
 
-  def render(context)
-    source = context.registers[:source]
-    author = source&.user
-    author_profile_image = author&.profile_image_90
-    author_username = author&.username
-
+  def render(_context)
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
         cta_text: @cta_text,
-        author_profile_image: author_profile_image,
-        author_username: author_username
+        author_profile_image: @user&.profile_image_90,
+        author_username: @user&.username
       },
     )
   end

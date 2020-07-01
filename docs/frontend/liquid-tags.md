@@ -24,7 +24,8 @@ Develop them with that mindset in terms of naming things. They should be
 documented but also intuitive. They should also be fairly flexible in the
 arguments they take. Currently, this could use improvements.
 
-_Note: Liquid tags are "compiled" when an article is saved. So you will need to re-save articles to see HTML changes._
+_Note: Liquid tags are "compiled" when an article is saved. So you will need to
+re-save articles to see HTML changes._
 
 Here is a bunch of liquid tags supported on DEV:
 
@@ -68,11 +69,11 @@ base, like so...
 class KotlinTag < LiquidTagBase
 ```
 
-Each liquid tag contains an `initialize` method which takes arguments and a
-`render` method which calls the appropriate view.
+Each liquid tag contains an `initialize` method which takes arguments and calls
+`super`. It also has a `render` method which calls the appropriate view.
 
 ```ruby
-  def initialize(tag_name, link, tokens)
+  def initialize(_tag_name, link, _parse_context)
     super
     stripped_link = ActionController::Base.helpers.strip_tags(link)
     the_link = stripped_link.split(" ").first
@@ -106,3 +107,46 @@ etc.
 
 Here is an example of a good Liquid Tag pull request...
 https://github.com/thepracticaldev/dev.to/pull/3801
+
+### Restricting liquid tags by roles
+
+To only allow users with specific roles to use a liquid tag, you need to define
+a `VALID_ROLES` constant on the liquid tag itself. It needs to be an `Array` of
+valid roles. For [single admin resource roles](/internal), it needs to be an
+`Array` with the role and the resource. Here's an example:
+
+```ruby
+class NewLiquidTag < LiquidTagBase
+  VALID_ROLES = [
+    :admin,
+    [:single_resource_admin, NewLiquidTag]
+  ].freeze
+end
+```
+
+Here we are saying that the `NewLiquidTag` is only usable by users with the
+`admin` role or with a role of `:single_resource_admin` and a specified resource
+of `NewLiquidTag`.
+
+**REMINDER: if you do not define a `VALID_ROLES` constant, the liquid tag will
+be usable by all users by default.**
+
+### Restricting liquid tags by context
+
+Context, in terms of a liquid tag, is _where_ a liquid tag is being used (i.e.
+`Article`, `Comment`, etc.). In other words, if you want to make a liquid tag
+that can only be used in articles, you need to restrict the liquid tag by
+context.
+
+To do this you need to add a `VALID_CONTEXTS` constant on the liquid tag itself.
+It needs to be an `Array` of class names that are valid. For example, to
+restrict a liquid tag to only be usable in articles you would do:
+
+```ruby
+class NewLiquidTag < LiquidTagBase
+  VALID_CONTEXTS = %w[Article].freeze
+end
+```
+
+**REMINDER: if you do not define a `VALID_CONTEXTS` constant the liquid tag will
+be usable in all contexts by default.**
