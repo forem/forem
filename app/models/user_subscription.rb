@@ -30,8 +30,7 @@ class UserSubscription < ApplicationRecord
 
   # We explicitly pass in a subscriber_email when creating subscriptions from
   # the front end to ensure the email matches the subscriber's current email
-  # address. See #subscriber_email_mismatch? validation on the UserSubscription
-  # model.
+  # address. See UserSubscriptions::Create for more.
   def self.build_attributes(source, subscriber, subscriber_email)
     {
       user_subscription_sourceable: source,
