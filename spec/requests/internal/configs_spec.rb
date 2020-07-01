@@ -182,6 +182,18 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.primary_sticker_image_url).to eq(expected_image_url)
         end
 
+        it "updates navbar_left_icon_svg" do
+          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' stroke='black' stroke-width='3'/></svg>"
+          post "/internal/config", params: { site_config: { navbar_left_icon_svg: expected_svg }, confirmation: confirmation_message }
+          expect(SiteConfig.navbar_left_icon_svg).to eq(expected_svg)
+        end
+
+        it "updates navbar_right_icon_svg" do
+          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' stroke='black' stroke-width='1'/></svg>"
+          post "/internal/config", params: { site_config: { navbar_right_icon_svg: expected_svg }, confirmation: confirmation_message }
+          expect(SiteConfig.navbar_right_icon_svg).to eq(expected_svg)
+        end
+
         it "rejects update without proper confirmation" do
           expected_image_url = "https://dummyimage.com/300x300"
           expect { post "/internal/config", params: { site_config: { logo_svg: expected_image_url }, confirmation: "Incorrect yo!" } }.to raise_error Pundit::NotAuthorizedError
