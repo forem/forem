@@ -28,6 +28,6 @@ class ReadingList
   end
 
   def reaction_criteria
-    { user_id: user.id, reactable_type: "Article", category: "readinglist" }
+    { user_id: user.id, reactable_type: "Article", category: "readinglist", status: "valid" }
   end
 end
