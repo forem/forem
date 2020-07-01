@@ -5,7 +5,7 @@ class UserSubscriptionsController < ApplicationController
 
   def subscribed
     params.require(%i[source_type source_id])
-    is_subscribed = UserSubscriptions::SubscriptionCacheChecker.call(current_user, params)
+    is_subscribed = UserSubscriptions::IsSubscribedCacheChecker.call(current_user, params)
 
     render json: { is_subscribed: is_subscribed, success: true }, status: :ok
   end

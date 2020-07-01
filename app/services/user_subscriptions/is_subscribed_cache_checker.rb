@@ -1,5 +1,7 @@
 module UserSubscriptions
-  class SubscriptionCacheChecker
+  # This checks if the provided user is subscribed to the provided source
+  # (returns boolean).
+  class IsSubscribedCacheChecker
     attr_accessor :user, :source_type, :source_id
 
     def self.call(*args)

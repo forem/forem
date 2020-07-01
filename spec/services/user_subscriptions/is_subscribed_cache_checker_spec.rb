@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe UserSubscriptions::SubscriptionCacheChecker, type: :service do
+RSpec.describe UserSubscriptions::IsSubscribedCacheChecker, type: :service do
   let(:user) { create(:user) }
   let(:article) { create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true) }
   let(:params) { { source_type: article.class_name, source_id: article.id } }
