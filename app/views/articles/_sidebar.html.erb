@@ -3,22 +3,22 @@
   <aside class="side-bar" aria-label="Primary sidebar">
     <% cache(cache_key_heroku_slug("main-sidebar-nav--#{user_signed_in?}"), expires_in: 15.minutes) do %>
       <%= render "articles/sidebar_nav" %>
-      <div class="<%= "hidden" if user_signed_in? %> px-1" id="sponsorship-widget">
-        <h4 class="flex align-center fs-s ff-accent fw-bold tt-uppercase mb-4">
-          Community Sponsors
-          <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default ml-1", title: "Love") %>
-        </h4>
-        <% @sponsorships = Sponsorship.gold.live.includes(:organization).order(featured_number: :asc) %>
-        <%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
-        <% if @sponsorships.present? %>
-          <div class="grid grid-cols-1 gap-6">
-            <% @sponsorships.each do |sponsorship| %>
-              <%= render "articles/single_sponsor", sponsorship: sponsorship %>
-            <% end %>
-            <a href="/sponsorships" class="crayons-btn crayons-btn--secondary fs-s">Become a sponsor</a>
-          </div>
-        <% end %>
-      </div>
+      <% @sponsorships = Sponsorship.gold.live.includes(:organization).order(featured_number: :asc) %>
+      <%# the pattern .present?/.each has the advantage of issuing only a single SQL query to load objects in memory %>
+      <% if @sponsorships.present? %>
+        <div class="<%= "hidden" if user_signed_in? %> px-1" id="sponsorship-widget">
+          <h4 class="flex align-center fs-s ff-accent fw-bold tt-uppercase mb-4">
+            Community Sponsors
+            <%= inline_svg_tag("twemoji/heart.svg", aria: true, class: "crayons-icon crayons-icon--default ml-1", title: "Love") %>
+          </h4>
+            <div class="grid grid-cols-1 gap-6">
+              <% @sponsorships.each do |sponsorship| %>
+                <%= render "articles/single_sponsor", sponsorship: sponsorship %>
+              <% end %>
+              <a href="/sponsorships" class="crayons-btn crayons-btn--secondary fs-s">Become a sponsor</a>
+            </div>
+        </div>
+      <% end %>
     <% end %>
     <% cache("display-area-left-#{rand(5)}", expires_in: 5.minutes) do %>
       <% @left_sidebar_ad = DisplayAd.for_display("sidebar_left") %>

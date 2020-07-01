@@ -46,6 +46,23 @@ RSpec.describe Tag, type: :model do
         tag.name = nil
         expect(tag).not_to be_valid
       end
+
+      it "fails validations if name uses non-ASCII characters" do
+        tag.name = "مرحبا"
+        expect(tag).not_to be_valid
+
+        tag.name = "你好"
+        expect(tag).not_to be_valid
+
+        tag.name = "Cześć"
+        expect(tag).not_to be_valid
+
+        tag.name = "♩ ♪ ♫ ♬ ♭ ♮ ♯"
+        expect(tag).not_to be_valid
+
+        tag.name = "Test™"
+        expect(tag).not_to be_valid
+      end
     end
 
     describe "alias_for" do

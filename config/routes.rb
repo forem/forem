@@ -122,6 +122,7 @@ Rails.application.routes.draw do
       resources :articles, only: %i[index show create update] do
         collection do
           get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
+          get "/:username/:slug", to: "articles#show_by_slug", as: :slug
         end
       end
       resources :comments, only: %i[index show]

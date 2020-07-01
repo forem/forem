@@ -157,7 +157,7 @@ Object {
                         class="hidden s:inline"
                       >
                          
-                        reaction
+                        reactions
                       </span>
                     </span>
                   </a>
@@ -365,7 +365,7 @@ Object {
                       class="hidden s:inline"
                     >
                        
-                      reaction
+                      reactions
                     </span>
                   </span>
                 </a>
