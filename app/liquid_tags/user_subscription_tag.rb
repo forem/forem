@@ -13,43 +13,33 @@ class UserSubscriptionTag < LiquidTagBase
 
     // Hiding/showing elements
     // ***************************************
-
-    const subscriptionSignedIn = document.getElementById('subscription-signed-in');
-    const subscriptionSignedOut = document.getElementById('subscription-signed-out');
-    const responseMessage = document.getElementById('response-message');
-    const subscriberAppleAuth = document.getElementById('subscriber-apple-auth');
-    const confirmationModal = document.getElementById('user-subscription-confirmation-modal');
-    const profileImageContainer = document.getElementById('profile-images');
-    const subscriberImageContainer = document.querySelector('.ltag__user-subscription-tag__subscriber-profile-image');
-
     function clearSubscriptionArea() {
-      subscriptionSignedIn?.classList.add("hidden");
-      subscriptionSignedOut?.classList.add("hidden");
-      responseMessage?.classList.add("hidden");
-      subscriberAppleAuth?.classList.add("hidden");
+      document.getElementById('subscription-signed-in')?.classList.add("hidden");
+      document.getElementById('subscription-signed-out')?.classList.add("hidden");
+      document.getElementById('response-message')?.classList.add("hidden");
+      document.getElementById('subscriber-apple-auth')?.classList.add("hidden");
 
       hideConfirmationModal();
     }
 
     function showSignedIn() {
       clearSubscriptionArea();
-
-      subscriptionSignedIn?.classList.remove("hidden");
-      profileImageContainer?.classList.remove("signed-out");
-      profileImageContainer?.classList.add("signed-in");
+      document.getElementById('subscription-signed-in')?.classList.remove("hidden");
+      document.getElementById('profile-images')?.classList.remove("signed-out");
+      document.getElementById('profile-images')?.classList.add("signed-in");
     }
 
     function showSignedOut() {
       clearSubscriptionArea();
-      subscriptionSignedOut?.classList.remove("hidden");
-      profileImageContainer?.classList.remove("signed-in");
-      profileImageContainer?.classList.add("signed-out");
-      subscriberImageContainer?.classList.add("hidden");
+      document.getElementById('subscription-signed-out')?.classList.remove("hidden");
+      document.getElementById('profile-images')?.classList.remove("signed-in");
+      document.getElementById('profile-images')?.classList.add("signed-out");
+      document.querySelector('.ltag__user-subscription-tag__subscriber-profile-image')?.classList.add("hidden");
     }
 
     function showResponseMessage(noticeType, msg) {
       clearSubscriptionArea();
-
+      const responseMessage = document.getElementById('response-message');
       if (responseMessage) {
         responseMessage.classList.remove("hidden");
         responseMessage.classList.add(`crayons-notice--${noticeType}`);
@@ -59,7 +49,7 @@ class UserSubscriptionTag < LiquidTagBase
 
     function showAppleAuthMessage() {
       clearSubscriptionArea();
-      subscriberAppleAuth?.classList.remove("hidden");
+      document.getElementById('subscriber-apple-auth')?.classList.remove("hidden");
     }
 
     function showSubscribed() {
@@ -70,11 +60,11 @@ class UserSubscriptionTag < LiquidTagBase
     }
 
     function showConfirmationModal() {
-      confirmationModal?.classList.remove("hidden");
+      document.getElementById('user-subscription-confirmation-modal')?.classList.remove("hidden");
     }
 
     function hideConfirmationModal() {
-      confirmationModal?.classList.add("hidden");
+      document.getElementById('user-subscription-confirmation-modal')?.classList.add("hidden");
     }
 
     // Updating DOM elements
