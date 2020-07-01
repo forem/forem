@@ -12,22 +12,22 @@ module UserSubscriptionSourceable
              foreign_key: :user_id
   end
 
-  def build_user_subscription(subscriber)
-    UserSubscription.new(user_subscription_attributes(subscriber))
+  def build_user_subscription(subscriber, subscriber_email: nil)
+    UserSubscription.new(user_subscription_attributes(subscriber, subscriber_email))
   end
 
-  def create_user_subscription(subscriber)
-    UserSubscription.create(user_subscription_attributes(subscriber))
+  def create_user_subscription(subscriber, subscriber_email: nil)
+    UserSubscription.create(user_subscription_attributes(subscriber, subscriber_email))
   end
 
   private
 
-  def user_subscription_attributes(subscriber)
+  def user_subscription_attributes(subscriber, subscriber_email)
     {
       user_subscription_sourceable: self,
       author_id: user_id,
       subscriber_id: subscriber&.id,
-      subscriber_email: subscriber&.email
+      subscriber_email: subscriber_email || subscriber&.email
     }
   end
 end

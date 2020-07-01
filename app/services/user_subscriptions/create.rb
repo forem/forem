@@ -24,6 +24,7 @@ module UserSubscriptions
 
       # TODO: [@thepracticaldev/delightful]: uncomment this once email confirmation is re-enabled
       # return response if subscriber_email_mismatch?
+      # user_subscription = source.build_user_subscription(user, subscriber_email: subscriber_email)
 
       user_subscription = source.build_user_subscription(user)
       if user_subscription.save
