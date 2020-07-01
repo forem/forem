@@ -110,6 +110,7 @@ function initializeCommentDropdown() {
     var dropdownContent = button.parentElement.getElementsByClassName(
       'crayons-dropdown',
     )[0];
+    finalizeAbuseReportLink(dropdownContent);
     if (dropdownContent.classList.contains('block')) {
       dropdownContent.classList.remove('block');
       removeClickListener();
@@ -127,6 +128,12 @@ function initializeCommentDropdown() {
         clipboardCopyElement.addEventListener('click', copyText);
       }
     }
+  }
+
+  function finalizeAbuseReportLink(dropdownContent) {
+    // Add actual link location (SEO doesn't like these "useless" links, so adding in here instead of in HTML)
+    var reportAbuseLink = dropdownContent.querySelector('.report-abuse-link-wrapper');
+    reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`
   }
 
   function addDropdownListener(dropdown) {
