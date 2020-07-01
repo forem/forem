@@ -26,7 +26,6 @@ class StackeryTag < LiquidTagBase
     ref = items[2] || "master"
 
     validate_items(owner, repo)
-    get_repo_contents(owner, repo, ref)
 
     {
       owner: owner,
@@ -38,16 +37,7 @@ class StackeryTag < LiquidTagBase
   def validate_items(owner, repo)
     return unless owner.blank? || repo.blank?
 
-    raise StandardError, "Missing owner and/or repository"
-  end
-
-  def get_repo_contents(owner, repo, ref)
-    url = "https://api.github.com/repos/#{owner}/#{repo}/contents/template.yaml?ref=#{ref}"
-    response = HTTParty.get(url)
-
-    return if response.code == 200
-
-    raise StandardError, "Couldn't find remote repository. Ensure it is a public Github repository"
+    raise StandardError, "Stackery - Missing owner and/or repository name arguments"
   end
 end
 
