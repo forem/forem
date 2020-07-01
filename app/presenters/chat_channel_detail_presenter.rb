@@ -42,7 +42,6 @@ class ChatChannelDetailPresenter
   end
 
   def invitation_link(chat_channel)
-    host = Rails.application.config.app_domain
-    "#{host}/chat_channel_memberships/join_channel_invitation/#{chat_channel.slug}"
+    URL.url("/chat_channel_memberships/join_channel_invitation/#{chat_channel.slug}")
   end
 end

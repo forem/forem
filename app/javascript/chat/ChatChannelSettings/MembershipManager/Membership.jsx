@@ -18,7 +18,7 @@ const Membership = ({
         data-membership-id={membership.membership_id}
         data-role="mod"
       >
-        Permote as Mod
+        Promote to Mod
       </button>
     ) : null;
 
@@ -31,7 +31,7 @@ const Membership = ({
         data-membership-id={membership.membership_id}
         data-role="member"
       >
-        Add as Member
+        Remove Mod
       </button>
     ) : null;
 
