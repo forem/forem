@@ -1,6 +1,6 @@
 module UserSubscriptions
   class Create
-    attr_accessor :user, :source_type, :source_id, :subscriber_email, :response, :source
+    attr_accessor :user, :source_type, :source_id, :subscriber_email, :response
 
     def self.call(*args)
       new(*args).call
@@ -18,12 +18,13 @@ module UserSubscriptions
 
     def call
       return response if invalid_source_type?
-      return response if invalid_source?
+
+      source = source_type.constantize.find_by(id: source_id)
+      return response if invalid_source?(source)
 
       # TODO: [@thepracticaldev/delightful]: uncomment this once email confirmation is re-enabled
       # return response if subscriber_email_mismatch?
 
-      # source is establied in invalid_source? check
       user_subscription = source.build_user_subscription(user)
       if user_subscription.save
         response.success = true
@@ -49,8 +50,7 @@ module UserSubscriptions
       true
     end
 
-    def invalid_source?
-      @source = source_type.constantize.find_by(id: source_id)
+    def invalid_source?(source)
       return false if source
 
       response.error = "Source not found."
