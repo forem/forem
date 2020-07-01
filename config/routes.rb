@@ -391,6 +391,7 @@ Rails.application.routes.draw do
   get "/settings/:tab/:id" => "users#edit", :constraints => { tab: /response-templates/ }
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
+  get "/dashboard/series" => "dashboards#series"
   get "/dashboard/pro" => "dashboards#pro"
   get "dashboard/pro/org/:org_id" => "dashboards#pro"
   get "dashboard/following" => "dashboards#following_tags"
