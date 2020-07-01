@@ -1,44 +1,53 @@
 class StackeryTag < LiquidTagBase
   PARTIAL = "liquids/stackery".freeze
 
-  def initialize(tag_name, options, tokens)
+  def initialize(tag_name, input, tokens)
     super
-    @owner = parse_owner(options)
-    @repo = parse_repo(options)
-    @ref = parse_ref(options)
+    @data = get_data(input.strip)
   end
 
   def render(_context)
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        owner: @owner,
-        repo: @repo,
-        ref: @ref
+        owner: @data[:owner],
+        repo: @data[:repo],
+        ref: @data[:ref]
       },
     )
   end
 
   private
 
-  def parse_owner(input)
-    id = input.split(" ").first
-    raise StandardError, "Missing owner" if id.blank?
+  def get_data(input)
+    items = input.split(" ")
+    owner = items.first
+    repo = items[1]
+    ref = items[2] || "master"
 
-    id
+    validate_items(owner, repo)
+    get_repo_contents(owner, repo, ref)
+
+    {
+      owner: owner,
+      repo: repo,
+      ref: ref
+    }
   end
 
-  def parse_repo(input)
-    repo = input.split(" ")[1]
-    raise StandardError, "Missing repo" if repo.blank?
+  def validate_items(owner, repo)
+    return unless owner.blank? || repo.blank?
 
-    repo
+    raise StandardError, "Missing owner and/or repository"
   end
 
-  def parse_ref(input)
-    ref = input.split(" ")[2] || "master"
+  def get_repo_contents(owner, repo, ref)
+    url = "https://api.github.com/repos/#{owner}/#{repo}/contents/template.yaml?ref=#{ref}"
+    response = HTTParty.get(url)
 
-    ref
+    return if response.code == 200
+
+    raise StandardError, "Couldn't find remote repository. Ensure it is a public Github repository"
   end
 end
 
