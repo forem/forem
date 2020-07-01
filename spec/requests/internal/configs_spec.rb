@@ -64,6 +64,7 @@ RSpec.describe "/internal/config", type: :request do
 
       describe "Community Content" do
         it "updates the community_description" do
+          allow(SiteConfig).to receive(:community_description).and_call_original
           description = "Hey hey #{rand(100)}"
           post "/internal/config", params: { site_config: { community_description: description }, confirmation: confirmation_message }
           expect(SiteConfig.community_description).to eq(description)
