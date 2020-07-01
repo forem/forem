@@ -99,7 +99,7 @@
           <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100 border-0 bg-transparent">Stats</a>
         <% end %>
         <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "js-archive-toggle" }) do |f| %>
-          <%= f.hidden_field :archived, value: !article.archived %>
+          <%= f.hidden_field :archived, value: !article.archived, id: "article_archived_#{article.id}" %>
 
           <button type="submit" class="crayons-link crayons-link--block w-100 border-0 bg-transparent">
             <%= article.archived ? "Unarchive post" : "Archive post" %>

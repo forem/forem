@@ -471,7 +471,7 @@ GEM
     kaminari-core (1.2.1)
     katex (0.6.0)
       execjs (~> 2.7)
-    knapsack_pro (1.22.2)
+    knapsack_pro (2.0.0)
       rake
     launchy (2.5.0)
       addressable (~> 2.7)
@@ -951,7 +951,7 @@ DEPENDENCIES
   jquery-rails (~> 4.4)
   kaminari (~> 1.2)
   katex (~> 0.6.0)
-  knapsack_pro (~> 1.22.2)
+  knapsack_pro (~> 2.0.0)
   launchy (~> 2.5)
   liquid (~> 4.0)
   listen (~> 3.2)

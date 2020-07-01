@@ -730,5 +730,17 @@
     true,
     null
   ),
-  (null, 'all', ('reset': unset), (), false, null)
+  (null, 'all', ('reset': unset), (), false, null),
+  (
+    'break',
+    'word-break',
+    (
+      'normal': normal,
+      'all': break-all,
+      'word': break-word,
+      'initial': initial
+    ),
+    (),
+    true
+  )
 );
