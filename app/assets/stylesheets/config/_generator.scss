@@ -626,7 +626,7 @@
   (
     'text',
     'text-decoration',
-    ('underline': underline, 'none': none),
+    ('underline': underline, 'none': none, 'strike': line-through),
     (),
     false
   ),
