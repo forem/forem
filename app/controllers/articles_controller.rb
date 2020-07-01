@@ -2,7 +2,7 @@ class ArticlesController < ApplicationController
   include ApplicationHelper
 
   before_action :authenticate_user!, except: %i[feed new]
-  before_action :set_article, only: %i[edit manage update destroy stats]
+  before_action :set_article, only: %i[edit manage update destroy stats subscriptions]
   before_action :raise_suspended, only: %i[new create update]
   before_action :set_cache_control_headers, only: %i[feed]
   after_action :verify_authorized
@@ -79,6 +79,13 @@ class ArticlesController < ApplicationController
     @organizations = @user&.organizations
     # TODO: fix this for multi orgs
     @org_members = @organization.users.pluck(:name, :id) if @organization
+  end
+
+  def subscriptions
+    authorize @article
+
+    @article = @article.decorate
+    @user = @article.user
   end
 
   def preview

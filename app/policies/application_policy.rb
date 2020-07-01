@@ -36,6 +36,10 @@ class ApplicationPolicy
     update? && record.published
   end
 
+  def subscriptions?
+    true
+  end
+
   def destroy?
     false
   end

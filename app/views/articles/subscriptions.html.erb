@@ -1,0 +1,65 @@
+<% title "Subscriptions #{@article.title}" %>
+
+<% data = [
+     {
+       name: "John Smith",
+       email: "john.smith@example.com",
+       timestamp: "Just now"
+     },
+     {
+       name: "Bradley Cooper",
+       email: "b.cooper_1292@yahoo.com",
+       timestamp: "1 h ago"
+     },
+     {
+       name: "Louis von Honderhoffen",
+       email: "luigi.funky.one@hey.com",
+       timestamp: "Yesterday"
+     },
+     {
+       name: "Paweł Ludwiczak",
+       email: "ludwiczakpawel@hey.com",
+       timestamp: "Last week"
+     },
+     {
+       name: "Lisa Sy",
+       email: "lisa@sy.com",
+       timestamp: "Last month"
+     },
+     {
+       name: "Bill Clinton",
+       email: "billy.c@gov.com",
+       timestamp: "3 years ago"
+     },
+   ] %>
+
+<div class="crayons-layout crayons-layout--1-col">
+  <header class="flex items-center justify-between p-2 m:p-0">
+    <div>
+      <h1 class="fs-2xl s:fs-3xl">Subscriptions</h1>
+      <h2 class="fs-base s:fs-xl fw-medium">
+        <em class="fs-italic fw-normal color-base-60">for</em>
+        <a href="#"><%= @article.title %></a>
+      </h2>
+    </div>
+    <button type="button" class="crayons-btn crayons-btn--secondary">Export CSV</button>
+  </header>
+
+  <main>
+      <table class="crayons-table w-100">
+        <tbody class="crayons-card">
+          <% data.each do |item| %>
+            <tr>
+              <td class="fw-medium"><a href="#" title="<%= item[:name] %> DEV profile"><%= item[:name] %></a></td>
+              <td><a href="mailto:<%= item[:email] %>"><%= item[:email] %></a></td>
+              <td class="fs-s color-base-60"><%= item[:timestamp] %></td>
+              <td class="align-right">
+                <button type="button" class="crayons-btn crayons-btn--ghost">Remove</button>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+  </main>
+
+</div>

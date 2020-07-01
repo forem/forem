@@ -467,6 +467,7 @@ Rails.application.routes.draw do
   get "/:username/:slug/mod" => "moderations#article"
   get "/:username/:slug/actions_panel" => "moderations#actions_panel"
   get "/:username/:slug/manage" => "articles#manage"
+  get "/:username/:slug/subscriptions" => "articles#subscriptions"
   get "/:username/:slug/edit" => "articles#edit"
   get "/:username/:slug/delete_confirm" => "articles#delete_confirm"
   get "/:username/:slug/stats" => "articles#stats"
