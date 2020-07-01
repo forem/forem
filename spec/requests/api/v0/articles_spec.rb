@@ -2,7 +2,9 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::Articles", type: :request do
   let_it_be_readonly(:organization) { create(:organization) } # not used by every spec but lower times overall
+  let_it_be_readonly(:tag) { create(:tag, name: "discuss") }
   let_it_be_changeable(:article) { create(:article, featured: true, tags: "discuss") }
+  before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
   describe "GET /api/articles" do
     it "returns CORS headers" do
