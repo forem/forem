@@ -22,6 +22,10 @@ module UserSubscriptionSourceable
 
   private
 
+  # We explicitly pass in a subscriber_email when creating subscriptions from
+  # the front end to ensure the email matches the subscriber's current email
+  # address. See #subscriber_email_mismatch? validation on the UserSubscription
+  # model.
   def user_subscription_attributes(subscriber, subscriber_email)
     {
       user_subscription_sourceable: self,
