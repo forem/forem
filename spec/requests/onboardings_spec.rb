@@ -33,7 +33,7 @@ RSpec.describe "Onboardings", type: :request do
       get onboarding_url
 
       expect(response.body).to include(SiteConfig.community_description)
-      expect(response.body).to include(show_logo(SiteConfig.onboarding_logo_image))
+      expect(response.body).to include(safe_logo_url(SiteConfig.onboarding_logo_image))
       expect(response.body).to include(SiteConfig.onboarding_background_image)
     end
   end
