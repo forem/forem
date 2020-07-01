@@ -24,7 +24,8 @@ Develop them with that mindset in terms of naming things. They should be
 documented but also intuitive. They should also be fairly flexible in the
 arguments they take. Currently, this could use improvements.
 
-_Note: Liquid tags are "compiled" when an article is saved. So you will need to re-save articles to see HTML changes._
+_Note: Liquid tags are "compiled" when an article is saved. So you will need to
+re-save articles to see HTML changes._
 
 Here is a bunch of liquid tags supported on DEV:
 
@@ -45,6 +46,7 @@ Here is a bunch of liquid tags supported on DEV:
 {% codesandbox ppxnl191zx %}
 {% jsfiddle https://jsfiddle.net/link2twenty/v2kx9jcd %}
 {% replit @WigWog/PositiveFineOpensource %}
+{% stackery deeheber lambda-layer-example layer-resource %}
 {% nexttech https://nt.dev/s/6ba1fffbd09e %}
 {% instagram BXgGcAUjM39 %}
 {% speakerdeck 7e9f8c0fa0c949bd8025457181913fd0 %}
