@@ -19,8 +19,7 @@ tasks:
   - init: cp config/sample_application.yml config/application.yml
     command: >
       gem install solargraph;
-      bin/setup &&
-      bin/startup
+      nvm use default && bin/setup && bin/startup
 github:
   prebuilds:
     # enable for the master/default branch (defaults to true)
