@@ -4,6 +4,7 @@ class OrganizationTag < LiquidTagBase
   PARTIAL = "organizations/liquid".freeze
 
   def initialize(_tag_name, organization, _parse_context)
+    super
     @organization = parse_slug_to_organization(organization.delete(" "))
     @follow_button = follow_button(@organization)
     @organization_colors = user_colors(@organization)

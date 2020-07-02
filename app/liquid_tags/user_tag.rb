@@ -4,6 +4,7 @@ class UserTag < LiquidTagBase
   PARTIAL = "users/liquid".freeze
 
   def initialize(_tag_name, user, _parse_context)
+    super
     @user = parse_username_to_user(user.delete(" "))
     @follow_button = follow_button(@user)
     @user_colors = user_colors(@user)

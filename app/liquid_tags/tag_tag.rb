@@ -4,6 +4,7 @@ class TagTag < LiquidTagBase
   PARTIAL = "tags/liquid".freeze
 
   def initialize(_tag_name, tag, _parse_context)
+    super
     @tag = parse_tag_name_to_tag(tag.delete(" "))
     @follow_btn = follow_button(@tag)
     @dark_color = dark_color(@tag)

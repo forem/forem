@@ -1,7 +1,7 @@
 class SoundcloudTag < LiquidTagBase
   PARTIAL = "liquids/soundcloud".freeze
 
-  def initialize(tag_name, link, parse_context)
+  def initialize(_tag_name, link, _parse_context)
     super
     @link = parse_link(link)
   end
