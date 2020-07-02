@@ -1,7 +1,7 @@
 class StackeryTag < LiquidTagBase
   PARTIAL = "liquids/stackery".freeze
 
-  def initialize(tag_name, input, tokens)
+  def initialize(tag_name, input, parse_context)
     super
     @data = get_data(input.strip)
   end

@@ -1,7 +1,7 @@
 class InstagramTag < LiquidTagBase
   PARTIAL = "liquids/instagram".freeze
 
-  def initialize(tag_name, id, tokens)
+  def initialize(tag_name, id, parse_context)
     super
     @id = parse_id(id)
   end

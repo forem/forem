@@ -1,9 +1,9 @@
 class GithubTag < LiquidTagBase
-  def initialize(tag_name, link, tokens)
+  def initialize(tag_name, link, parse_context)
     super
     @tag_name = tag_name
     @link = link
-    @tokens = tokens
+    @parse_context = parse_context
     @rendered = pre_render
   end
 

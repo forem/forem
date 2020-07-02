@@ -2,7 +2,7 @@ class KatexTag < Liquid::Block
   PARTIAL = "liquids/katex".freeze
   KATEX_EXISTED = "katex_existed".freeze
 
-  def initialize(tag_name, markup, tokens)
+  def initialize(tag_name, markup, parse_context)
     super
   end
 

@@ -1,7 +1,7 @@
 class VimeoTag < LiquidTagBase
   PARTIAL = "liquids/vimeo".freeze
 
-  def initialize(tag_name, token, tokens)
+  def initialize(tag_name, token, parse_context)
     super
     @id     = id_for(token)
     @width  = 710
