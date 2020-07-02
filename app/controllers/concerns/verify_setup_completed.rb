@@ -27,7 +27,7 @@ module VerifySetupCompleted
   private
 
   def verify_setup_completed
-    return if setup_completed? || config_path?
+    return if config_path? || setup_completed?
 
     link = helpers.link_to("the configuration page", internal_config_path)
     # rubocop:disable Rails/OutputSafety
