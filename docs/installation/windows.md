@@ -69,12 +69,12 @@ runtime like Node.js. [nvm](https://github.com/nvm-sh/nvm) is a Node.js version
 manager that helps a developer select a specific Node.js version for
 development.
 
-To install `nvm`, run the `curl` or `wget` command outlined under
-[Install & Update Script - nvm](https://github.com/nvm-sh/nvm#install--update-script).
+To install `nvm`, follow the instructions outlined in the [official nvm documentation](https://github.com/nvm-sh/nvm#install--update-script).
+
 Be sure to reload the shell with the command `exec $SHELL` after the
 installation is complete.
 
-Run the following command to verify `nvm` installation:
+Run the following command to verify that `nvm` is installed:
 
 ```shell
 command -v nvm
