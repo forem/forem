@@ -42,6 +42,15 @@
         </section>
       <% end %>
 
+      <div class="crayons-card crayons-card--secondary">
+        <header class="crayons-card__header">
+          <h3 class="crayons-card__header__headline">Explore</h3>
+          <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon">
+            <%= inline_svg_tag("refresh.svg", aria: true, class: "crayons-icon", title: "Refresh") %>
+          </button>
+        </header>
+      </div>
+
       <% SiteConfig.sidebar_tags.each do |tag| %>
         <section class="crayons-card crayons-card--secondary">
           <header class="crayons-card__header">
