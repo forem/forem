@@ -11,8 +11,8 @@ JavaScript (mostly ES5+) being served using
 [Sprockets](https://github.com/rails/sprockets-rails) which packages static
 assets.
 
-Webpacker manages the other one, and you can read more about
-[in its own guide](/frontend/webpacker).
+Webpacker manages the other one,
+[which you can read more about in this guide](/frontend/webpacker).
 
 This source code is not transpiled, only packaged and minified, and will be
 limited to whatever flavor of JavaScript can run on the user's web browser.
