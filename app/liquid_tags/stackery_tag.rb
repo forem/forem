@@ -22,8 +22,8 @@ class StackeryTag < LiquidTagBase
   def get_data(input)
     items = input.split(" ")
     owner = items.first
-    repo = items[1]
-    ref = items[2] || "master"
+    repo = items.second
+    ref = items.third || "master"
 
     validate_items(owner, repo)
 
