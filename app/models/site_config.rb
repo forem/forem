@@ -59,6 +59,7 @@ class SiteConfig < RailsSettings::Base
   field :logo_png, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
   field :logo_svg, type: :string, default: ""
   field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
+  field :secondary_logo_url, type: :string
 
   # Mascot
   field :mascot_user_id, type: :integer, default: 1
