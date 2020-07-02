@@ -13,46 +13,62 @@ class UserSubscriptionTag < LiquidTagBase
 
     // Hiding/showing elements
     // ***************************************
+
+    const subscriptionSignedIn = document.getElementById('subscription-signed-in');
+    const subscriptionSignedOut = document.getElementById('subscription-signed-out');
+    const responseMessage = document.getElementById('response-message');
+    const subscriberAppleAuth = document.getElementById('subscriber-apple-auth');
+    const confirmationModal = document.getElementById('user-subscription-confirmation-modal');
+    const profileImageContainer = document.getElementById('profile-images');
+    const subscriberImageContainer = document.querySelector('.ltag__user-subscription-tag__subscriber-profile-image');
+
     function clearSubscriptionArea() {
-      document.getElementById('subscription-signed-in').style.display = 'none';
-      document.getElementById('subscription-signed-out').style.display = 'none';
-      document.getElementById('response-message').style.display = 'none';
-      document.getElementById('subscriber-apple-auth').style.display = 'none';
+      subscriptionSignedIn.classList.add("hidden");
+      subscriptionSignedOut.classList.add("hidden");
+      responseMessage.classList.add("hidden");
+      subscriberAppleAuth.classList.add("hidden");
+
       hideConfirmationModal();
     }
 
     function showSignedIn() {
       clearSubscriptionArea();
-      document.getElementById('subscription-signed-in').style.display = 'block';
+
+      subscriptionSignedIn.classList.remove("hidden");
+      profileImageContainer.classList.remove("signed-out");
+    }
+
+    function showSignedOut() {
+      clearSubscriptionArea();
+      subscriptionSignedOut.classList.remove("hidden");
     }
 
     function showResponseMessage(noticeType, msg) {
       clearSubscriptionArea();
 
-      const responseMessage = document.getElementById('response-message')
-      responseMessage.style.display = 'block';
+      responseMessage.classList.remove("hidden");
       responseMessage.classList.add(`crayons-notice--${noticeType}`);
       responseMessage.textContent = msg;
     }
 
     function showAppleAuthMessage() {
       clearSubscriptionArea();
-      document.getElementById('subscriber-apple-auth').style.display = 'block';
+      subscriberAppleAuth.classList.remove("hidden");
     }
 
     function showSubscribed() {
       updateSubscriberData();
       const authorUsername = document.getElementById('user-subscription-tag').dataset.authorUsername;
-      const alreadySubscribedMsg = `You are already subscribed!`;
+      const alreadySubscribedMsg = `You are already subscribed.`;
       showResponseMessage('success', alreadySubscribedMsg);
     }
 
     function showConfirmationModal() {
-      document.getElementById('user-subscription-confirmation-modal').style.display = 'block';
+      confirmationModal.classList.remove("hidden");
     }
 
     function hideConfirmationModal() {
-      document.getElementById('user-subscription-confirmation-modal').style.display = 'none';
+      confirmationModal.classList.add("hidden");
     }
 
     // Updating DOM elements
@@ -80,13 +96,6 @@ class UserSubscriptionTag < LiquidTagBase
       profileImages.forEach(function(profileImage) {
         profileImage.src = subscriber.profile_image_90;
         profileImage.alt = `${subscriber.username} profile image`;
-        profileImage.style.display = 'block';
-      });
-
-      const profileImageWrappers = document.querySelectorAll(`span${identifier}`);
-
-      profileImageWrappers.forEach(function(profileImageWrapper) {
-        profileImageWrapper.style.display = 'inline-block';
       });
     }
 
@@ -209,13 +218,19 @@ class UserSubscriptionTag < LiquidTagBase
     if (isUserSignedIn()) {
       showSignedIn();
       addConfirmationModalClickHandlers();
+      profileImageContainer.classList.remove("signed-out");
+      profileImageContainer.classList.add("signed-in");
 
       // We need access to some DOM elements (i.e. csrf token, article id, userData, etc.)
       document.addEventListener('DOMContentLoaded', function() {
         checkIfSubscribed();
       });
     } else {
+      showSignedOut();
       addSignInClickHandler();
+      profileImageContainer.classList.remove("signed-in");
+      profileImageContainer.classList.add("signed-out");
+      subscriberImageContainer.classList.add("hidden");
     }
   JAVASCRIPT
 
