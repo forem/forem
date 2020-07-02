@@ -52,7 +52,7 @@ class UserSubscription < ApplicationRecord
       source: user_subscription_sourceable,
       user: user_subscription_sourceable.user,
     ).tags_used
-  rescue StandardError
+  rescue StandardError # Can occur during parsing for improper tags
     []
   end
 
