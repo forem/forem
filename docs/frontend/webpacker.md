@@ -4,9 +4,9 @@ title: Webpacker
 
 # Webpacker
 
-DEV has two Javascript codebases.
+DEV has two JavaScript codebases.
 
-One contains plain Javascript, you can read about it
+One contains plain JavaScript, you can read about it
 [in its own guide](/frontend/plain-js).
 
 The other one is managed by [Webpacker](https://github.com/rails/webpacker), and

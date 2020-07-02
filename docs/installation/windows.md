@@ -197,7 +197,7 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
    > - Its first task is to install the `bundler` gem. Next, it will make
    >   `bundler` install all the gems, including `Rails`, located in `Gemfile`
    >   in the root of the repository. It also installs `foreman`.
-   > - It then installs javascript dependencies using the script in `bin/yarn`
+   > - It then installs JavaScript dependencies using the script in `bin/yarn`
    >   file. These dependencies are located in `package.json` in the root of the
    >   repository.
    > - Next, it uses various Rake files located inside the `lib` folder to setup
