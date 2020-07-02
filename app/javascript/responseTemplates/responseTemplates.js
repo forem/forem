@@ -277,10 +277,9 @@ function observeForReplyClick() {
 }
 
 function handleLoggedOut() {
-  const toggleButton = document.querySelector('.response-templates-button');
   // global method from app/assets/javascripts/utilities/showModal.js
   /* eslint-disable-next-line no-undef */
-  toggleButton.addEventListener('click', showModal);
+  document.querySelector('.response-templates-button')?.addEventListener('click', showModal);
 }
 /* eslint-enable no-alert */
 /* eslint-enable no-restricted-globals */
