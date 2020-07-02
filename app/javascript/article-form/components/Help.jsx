@@ -41,7 +41,10 @@ export class Help extends Component {
 
   renderArticleFormTitleHelp = () => {
     return (
-      <div data-testid="title-help" className="crayons-article-form__help crayons-article-form__help--title">
+      <div
+        data-testid="title-help"
+        className="crayons-article-form__help crayons-article-form__help--title"
+      >
         <h4 className="mb-2 fs-l">Writing a Great Post Title</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
@@ -60,7 +63,10 @@ export class Help extends Component {
 
   renderTagInputHelp = () => {
     return (
-      <div data-testid="basic-tag-input-help" className="crayons-article-form__help crayons-article-form__help--tags">
+      <div
+        data-testid="basic-tag-input-help"
+        className="crayons-article-form__help crayons-article-form__help--tags"
+      >
         <h4 className="mb-2 fs-l">Tagging Guidelines</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>Tags help people find your post.</li>
@@ -84,18 +90,15 @@ export class Help extends Component {
 
   renderBasicEditorHelp = () => {
     return (
-      <div data-testid="basic-editor-help" className="crayons-card crayons-card--secondary p-4 mb-6">
-        You are currently using the basic markdown editor that uses
-        {' '}
+      <div
+        data-testid="basic-editor-help"
+        className="crayons-card crayons-card--secondary p-4 mb-6"
+      >
+        You are currently using the basic markdown editor that uses{' '}
         <a href="#frontmatter" onClick={this.toggleModal('frontmatterShowing')}>
           Jekyll front matter
         </a>
-        . You can also use the
-        {' '}
-        <em>rich+markdown</em>
-        {' '}
-        editor you can find in
-        {' '}
+        . You can also use the <em>rich+markdown</em> editor you can find in{' '}
         <a href="/settings/ux">
           UX settings
           <svg
@@ -120,25 +123,116 @@ export class Help extends Component {
 
   renderFormatHelp = () => {
     return (
-      <div data-testid="format-help" className="crayons-article-form__help crayons-article-form__help--body">
+      <div
+        data-testid="format-help"
+        className="crayons-article-form__help crayons-article-form__help--body"
+      >
         <h4 className="mb-2 fs-l">Editor Basics</h4>
         <ul className="list-disc pl-6 color-base-70">
           <li>
-            Use
-            {' '}
+            Use{' '}
             <a href="#markdown" onClick={this.toggleModal('markdownShowing')}>
               Markdown
-            </a>
-            {' '}
+            </a>{' '}
             to write and format posts.
+            <details className="fs-s my-1">
+              <summary class="cursor-pointer">Commonly used syntax</summary>
+              <table className="crayons-card crayons-card--secondary crayons-table crayons-table--compact w-100 mt-2 mb-4 lh-tight">
+                <tbody>
+                  <tr>
+                    <td className="ff-accent">
+                      # Header
+                      <br />
+                      ...
+                      <br />
+                      ###### Header
+                    </td>
+                    <td>
+                      H1 Header
+                      <br />
+                      ...
+                      <br />
+                      H6 Header
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="ff-accent">*italics* or _italics_</td>
+                    <td>
+                      <em>italics</em>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="ff-accent">**bold**</td>
+                    <td>
+                      <strong>bold</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="ff-accent">[Link][https://...]</td>
+                    <td>
+                      <a href="https://forem.com">Link</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="ff-accent">
+                      * item 1<br />* item 2
+                    </td>
+                    <td>
+                      <ul class="list-disc ml-5">
+                        <li>item 1</li>
+                        <li>item 2</li>
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="ff-accent">
+                      1. item 1<br />
+                      2. item 2
+                    </td>
+                    <td>
+                      <ul class="list-decimal ml-5">
+                        <li>item 1</li>
+                        <li>item 2</li>
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="ff-accent">&gt; quoted text</td>
+                    <td>
+                      <span className="pl-2 border-0 border-solid border-l-4 border-base-50">
+                        quoted text
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="ff-accent">`inline code`</td>
+                    <td>
+                      <code>inline code</code>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="ff-accent">
+                      <span class="fs-xs">```</span>
+                      <br />
+                      code block
+                      <br />
+                      <span class="fs-xs">```</span>
+                    </td>
+                    <td>
+                      <div class="highlight p-2">
+                        <code>code block</code>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </details>
           </li>
           <li>
-            You can use
-            {' '}
+            You can use{' '}
             <a href="#liquid" onClick={this.toggleModal('liquidShowing')}>
               Liquid tags
-            </a>
-            {' '}
+            </a>{' '}
             to add rich content such as Tweets, YouTube videos, etc.
           </li>
         </ul>
