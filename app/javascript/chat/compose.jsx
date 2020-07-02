@@ -76,11 +76,10 @@ export default class Chat extends Component {
       handleMention,
       handleKeyUp,
     } = this.props;
-    console.log(handleSubmitOnClick, 'handleSubmitOnClick');
     return (
       <div className="messagecomposer">
         <Textarea
-          className="crayons-textfield composer-textarea"
+          className="crayons-textfield composer-textarea__edit"
           id="messageform"
           placeholder="Write message..."
           onKeyDown={handleKeyDown}
