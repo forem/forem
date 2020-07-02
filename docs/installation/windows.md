@@ -62,26 +62,27 @@ following commands:
 curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
 ```
 
-### Installing Node
+### Installing nvm
 
-As a pre-requisite to install Rails, we're going to need to install a JavaScript
-runtime like Node.js.
+As a pre-requisite to install Rails, Node.js needs to be installed.
+[nvm](https://github.com/nvm-sh/nvm) is a Node.js version manager that helps a
+developer select a specific Node.js version for development.
 
-To install Node.js, we're going to add it using the official repository:
+To install `nvm`, follow the instructions outlined in the
+[official nvm documentation](https://github.com/nvm-sh/nvm#install--update-script).
+
+Be sure to reload the shell with the command `exec $SHELL` after the
+installation is complete.
+
+Run the following command to verify that `nvm` is installed:
 
 ```shell
-curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-sudo apt-get install -y nodejs
-node -v
-npm -v
+command -v nvm
 ```
 
-Please refer to
-[NodeSource installation instructions](https://github.com/nodesource/distributions#installation-instructions)
-for further details.
-
-If `npm -v` gives `Syntax error: word unexpected (expecting "in")`, restart the
-terminal and try again.
+If the shell outputs `nvm`, the installation is successful. Installation of the
+correct Node.js version will be done in a later part of the installation
+process.
 
 ### Yarn
 
@@ -93,13 +94,17 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 ```
 
-Then you can simply issue:
+Since we do not have Node.js installed yet, we will be installing Yarn without
+the default Node.js with the following command:
 
 ```shell
-sudo apt-get update && sudo apt-get install yarn
+sudo apt update && sudo apt install --no-install-recommends yarn
 ```
 
-Make sure that Yarn is installed with `yarn -v`
+To verify Yarn's installation, run the command `yarn -v`. It should print
+`Yarn requires Node.js 4.0 or higher to be installed.`. This indicates that the
+Yarn installation succeeded but Node.js still needs to be installed for it to
+work fully. We install Node.js later on in the installation process.
 
 ### PostgreSQL
 
@@ -153,11 +158,22 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
    `git clone https://github.com/<your-username>/dev.to.git`
 1. Open the cloned dev.to folder in terminal with `cd dev.to`. Next, install
    Ruby with the following commands:
+
    ```shell
    rbenv install $(cat .ruby-version)
    rbenv global $(cat .ruby-version)
    ruby -v
    ```
+
+1. Install Node.js with the following set of commands:
+
+   ```shell
+   nvm install $(cat .nvmrc)
+   nvm use $(cat .nvmrc)
+   node -v
+   yarn -v
+   ```
+
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
