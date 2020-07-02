@@ -102,7 +102,7 @@ RSpec.configure do |config|
     until Time.current > start + wait
       tags = Tag.all.map { |t| "ID: #{t.id} NAME: '#{t.name}'" }
       puts "------------------"
-      puts "Parallel Process: #{ENV['KNAPSACK_PRO_CI_NODE_INDEX']} count: #{Tags.all.count} tags: #{tags.join(' ')}"
+      puts "Parallel Process: #{ENV['KNAPSACK_PRO_CI_NODE_INDEX']} count: #{Tag.all.count} tags: #{tags.join(' ')}"
       sleep 5
     end
     puts "Parallel Process: #{ENV['KNAPSACK_PRO_CI_NODE_INDEX']} Done with tags"
