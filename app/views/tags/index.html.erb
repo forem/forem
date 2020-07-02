@@ -17,23 +17,23 @@
   <meta name="twitter:title" content="About <%= community_name %>">
   <meta name="twitter:description" content="<%= community_qualified_name %> is great!">
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
-
-  <style>
-    .tag-card:not(:hover) {
-      box-shadow: 0 0 0 1px var(--card-border) !important;
-      border: 2px solid transparent !important;
-    }
-
-    .tag-card:not(:hover) .crayons-btn--secondary.follow-action-button {
-      background: var(--button-secondary-bg) !important;
-      color: var(--button-secodnary-color) !important;
-    }
-  </style>
 <% end %>
+
+<style>
+  .tag-card:not(:hover) {
+    box-shadow: 0 0 0 1px var(--card-border) !important;
+    border: 2px solid transparent !important;
+  }
+
+  .tag-card:not(:hover) .crayons-btn--secondary.follow-action-button {
+    background: var(--button-secondary-bg) !important;
+    color: var(--button-secodnary-color) !important;
+  }
+</style>
 
 <div class="crayons-layout crayons-layout--1-col">
   <header class="px-2 m:px-0">
-    <h1>Tags</h1>
+    <h1>Top 100 Tags</h1>
   </header>
 
   <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
@@ -67,21 +67,4 @@
       </div>
     <% end %>
   </div>
-</div>
-
-<div class="home tag-home hidden">
-  <div class="side-bar"></div>
-  <div class="articles-list" id="articles-list">
-    <% @tags.each do |tag| %>
-      <div class="tag-list-container" style="background:<%= tag.bg_color_hex %>;">
-        <a class="tag-show-link" href="/t/<%= tag.name %>" style="color:<%= tag.text_color_hex || "#fff" %>;">
-          <h2>#<%= tag.name %></h2>
-          <% if tag.sponsorship && tag.sponsorship.status == "live" && tag.sponsorship.expires_at > Time.current %>
-            <h4>Sponsored by <%= tag.sponsorship.organization.name %> ❤️</h4>
-          <% end %>
-        </a>
-      </div>
-    <% end %>
-  </div>
-  <div class="side-bar sidebar-additional"></div>
 </div>

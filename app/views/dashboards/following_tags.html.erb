@@ -32,7 +32,7 @@
                   <% end %>
                 </h3>
 
-                <p class="grid-cell__summary"><%= tag.short_summary %></p>
+                <p class="grid-cell__summary truncate-at-3"><%= tag.short_summary %></p>
 
                 <%= form_for(follow, html: { class: "flex items-center flex-nowrap mb-4" }) do |f| %>
                   <%= f.label(:points, "Follow weight:", class: "fs-s flex-1 pr-2 color-base-60 align-right whitespace-nowrap") %>
