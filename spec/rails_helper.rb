@@ -98,6 +98,7 @@ RSpec.configure do |config|
     Tag.create!(name: Faker::Artist.name.delete(" "))
 
     wait = 30
+    start = Time.current
     until Time.current > start + wait
       tags = Tag.all.map { |t| "ID: #{t.id} NAME: '#{t.name}'" }
       puts "------------------"
