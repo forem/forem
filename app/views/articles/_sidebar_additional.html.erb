@@ -43,12 +43,31 @@
       <% end %>
 
       <div class="crayons-card crayons-card--secondary">
-        <header class="crayons-card__header">
+        <header class="crayons-card__header py-2">
           <h3 class="crayons-card__header__headline">Explore</h3>
-          <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon">
+          <button type="button" class="crayons-btn crayons-btn--ghost crayons-btn--icon -mr-2">
             <%= inline_svg_tag("refresh.svg", aria: true, class: "crayons-icon", title: "Refresh") %>
           </button>
         </header>
+
+        <div class="p-4 grid gap-2">
+          <% if true %>
+            <h4>
+              <a href="#" class="crayons-tag crayons-tag--m -ml-1"><span class="crayons-tag__prefix">#</span>javascript</a>
+            </h4>
+            <p class="fs-s lh-tight color-base-70 mb-2">Productivity includes tips on how to use tools and software, process optimization, useful references, experience, and mindstate optimization.</p>
+            <div>
+              <button type="submit" class="crayons-btn crayons-btn--secondary">Follow</button>
+            </div>
+          <% else %>
+            <a href="#" class="crayons-avatar crayons-avatar--xl"><img src="https://placehold.it/96" width="48" height="48" class="crayons-avatar__image" alt="Ben" /></a>
+            <h4 class="fs-l"><a href="#" class="crayons-link">Ben Halpern</a></h4>
+            <p class="fs-s lh-tight color-base-70 mb-2">Sharing artful coding skills that fuel the life you want to live.</p>
+            <div>
+              <button type="submit" class="crayons-btn crayons-btn--secondary">Follow</button>
+            </div>
+          <% end %>
+        </div>
       </div>
 
       <% SiteConfig.sidebar_tags.each do |tag| %>
