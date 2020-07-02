@@ -96,9 +96,11 @@ RSpec.configure do |config|
     end
 
     Tag.create!(name: Faker::Artist.name.delete(" "))
-
     wait = 30
     start = Time.current
+    dbs = ActiveRecord::Base.connection.execute("SELECT * FROM pg_database;").to_set
+    dbs.filter! { |d| d["datname"].include?("PracticalDeveloper_test") }
+    puts "Parallel Process: #{ENV['KNAPSACK_PRO_CI_NODE_INDEX']} DBs: #{dbs}"
     until Time.current > start + wait
       tags = Tag.all.map { |t| "ID: #{t.id} NAME: '#{t.name}'" }
       puts "------------------"
