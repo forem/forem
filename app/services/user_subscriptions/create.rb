@@ -1,6 +1,6 @@
 module UserSubscriptions
   class Create
-    attr_accessor :user, :source_type, :source_id, :subscriber_email, :response
+    attr_reader :user, :source_type, :source_id, :subscriber_email, :response
 
     def self.call(*args)
       new(*args).call
