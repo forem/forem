@@ -16,6 +16,10 @@ class UserSubscription < ApplicationRecord
   validates :user_subscription_sourceable_id, presence: true
   validates :user_subscription_sourceable_type, presence: true, inclusion: { in: ALLOWED_TYPES }
 
+  validate :tag_enabled
+  validate :non_apple_auth_subscriber
+  validate :active_user_subscription_source
+
   def self.build(source:, subscriber:)
     new(build_attributes(source, subscriber))
   end
@@ -31,5 +35,49 @@ class UserSubscription < ApplicationRecord
       subscriber_id: subscriber&.id,
       subscriber_email: subscriber&.email
     }
+  end
+
+  private
+
+  def tag_enabled
+    return unless user_subscription_sourceable
+
+    liquid_tags =
+      case user_subscription_sourceable_type
+      when "Article"
+        user_subscription_sourceable.liquid_tags_used(:body)
+      else
+        user_subscription_sourceable.liquid_tags_used
+      end
+
+    return if liquid_tags.include?(UserSubscriptionTag)
+
+    errors.add(:base, "User subscriptions are not enabled for the source.")
+  end
+
+  def non_apple_auth_subscriber
+    return unless subscriber_email&.end_with?("@privaterelay.appleid.com")
+
+    errors.add(:subscriber_email, "Can't subscribe with an Apple private relay. Please update email.")
+  end
+
+  def active_user_subscription_source
+    return unless user_subscription_sourceable
+
+    source_active =
+      # Don't create new user subscriptions for inactive sources
+      # (i.e. unpublished Articles, deleted Comments, etc.)
+      case user_subscription_sourceable_type
+      when "Article"
+        user_subscription_sourceable.published?
+      when "Comment"
+        !user_subscription_sourceable.deleted?
+      else
+        false
+      end
+
+    return if source_active
+
+    errors.add(:base, "Source not found.")
   end
 end

@@ -1,6 +1,6 @@
 RSpec.shared_examples "UserSubscriptionSourceable" do
   let(:model) { described_class }
-  let(:source) { create(model.to_s.underscore.to_sym) }
+  let(:source) { create(model.to_s.underscore.to_sym, :with_user_subscription_tag_role_user, with_user_subscription_tag: true) }
   let(:subscriber) { create(:user) }
 
   describe "#build_user_subscription" do
