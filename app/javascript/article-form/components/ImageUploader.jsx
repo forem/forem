@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import { generateMainImage } from '../actions';
 import { validateFileInputs } from '../../packs/validateFileInputs';
 import { ClipboardButton } from './ClipboardButton';
-import { Button } from '@crayons';
+import { Button, Spinner } from '@crayons';
 
 function isNativeAndroid() {
   return (
@@ -41,6 +41,7 @@ export class ImageUploader extends Component {
     uploadError: false,
     uploadErrorMessage: null,
     showImageCopiedMessage: false,
+    uploadingImage: false,
   };
 
   onUploadError = (error) => {
@@ -48,6 +49,7 @@ export class ImageUploader extends Component {
       insertionImageUrls: [],
       uploadError: true,
       uploadErrorMessage: error.message,
+      uploadingImage: false,
     });
   };
 
@@ -76,13 +78,16 @@ export class ImageUploader extends Component {
   handleInsertionImageUpload = (e) => {
     const { files } = e.target;
 
-    this.clearUploadError();
-    const validFileInputs = validateFileInputs();
-
-    if (validFileInputs && files.length > 0) {
+    if (files.length > 0 && validateFileInputs()) {
       const payload = { image: files };
 
-      this.setState({ showImageCopiedMessage: false });
+      this.setState({
+        uploadError: false,
+        uploadErrorMessage: null,
+        uploadingImage: true,
+        insertionImageUrls: [],
+        showImageCopiedMessage: false,
+      });
 
       generateMainImage(
         payload,
@@ -94,6 +99,7 @@ export class ImageUploader extends Component {
 
   handleInsertImageUploadSuccess = (response) => {
     this.setState({
+      uploadingImage: false,
       insertionImageUrls: response.links,
     });
   };
@@ -107,43 +113,43 @@ export class ImageUploader extends Component {
     this.setState({ showImageCopiedMessage: true });
   }
 
-  clearUploadError() {
-    this.setState({
-      uploadError: false,
-      uploadErrorMessage: null,
-    });
-  }
-
   render() {
     const {
       insertionImageUrls,
       uploadError,
       uploadErrorMessage,
       showImageCopiedMessage,
+      uploadingImage,
     } = this.state;
 
     return (
       <div className="flex items-center">
-        <Button
-          className="mr-2 fw-normal"
-          variant="ghost"
-          contentType="icon-left"
-          icon={ImageIcon}
-          tabIndex="-1"
-        >
-          Upload image
-          <input
-            type="file"
-            id="image-upload-field"
-            onChange={this.handleInsertionImageUpload}
-            className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
-            multiple
-            accept="image/*"
-            data-max-file-size-mb="25"
+        {uploadingImage ? (
+          <span class="lh-base pl-3 border-0 py-2 inline-block">
+            <Spinner /> Uploading...
+          </span>
+        ) : (
+          <Button
+            className="mr-2 fw-normal"
+            variant="ghost"
+            contentType="icon-left"
+            icon={ImageIcon}
             tabIndex="-1"
-            aria-label="Upload an image"
-          />
-        </Button>
+          >
+            Upload image
+            <input
+              type="file"
+              id="image-upload-field"
+              onChange={this.handleInsertionImageUpload}
+              className="w-100 h-100 absolute left-0 right-0 top-0 bottom-0 overflow-hidden opacity-0 cursor-pointer"
+              multiple
+              accept="image/*"
+              data-max-file-size-mb="25"
+              tabIndex="-1"
+              aria-label="Upload an image"
+            />
+          </Button>
+        )}
 
         {insertionImageUrls.length > 0 && (
           <ClipboardButton

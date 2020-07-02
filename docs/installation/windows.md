@@ -188,7 +188,8 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-1. Run `bin/setup`
+1. Run `bin/setup`.
+
    > The `bin/setup` script is responsible for installing a varienty of
    > dependencies. One can find it inside the `bin` folder by the name of
    > `setup`.
