@@ -18,7 +18,7 @@
 
         <div class="flex flex-wrap">
           <% if params[:which] != "organization" %>
-            <% if @articles.any?(:archived) %>
+            <% if @articles.any?(&:archived) %>
               <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink", class: "crayons-btn crayons-btn--outlined ml-2 whitespace-nowrap my-1" %>
             <% end %>
             <% if @articles.any? %>
