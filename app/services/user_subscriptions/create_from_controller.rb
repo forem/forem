@@ -32,7 +32,7 @@ module UserSubscriptions
         response.success = true
         response.data = user_subscription
       else
-        response.error = user_subscription.errors.full_messages.to_sentence
+        response.error = user_subscription.errors_as_sentence
       end
 
       response
