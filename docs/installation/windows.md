@@ -69,7 +69,8 @@ runtime like Node.js. [nvm](https://github.com/nvm-sh/nvm) is a Node.js version
 manager that helps a developer select a specific Node.js version for
 development.
 
-To install `nvm`, follow the instructions outlined in the [official nvm documentation](https://github.com/nvm-sh/nvm#install--update-script).
+To install `nvm`, follow the instructions outlined in the
+[official nvm documentation](https://github.com/nvm-sh/nvm#install--update-script).
 
 Be sure to reload the shell with the command `exec $SHELL` after the
 installation is complete.
@@ -81,7 +82,7 @@ command -v nvm
 ```
 
 If the shell outputs `nvm`, the installation is successful. Installation of the
-correct `Node.js` version will be done in a later part of the installation
+correct Node.js version will be done in a later part of the installation
 process.
 
 ### Yarn
@@ -94,8 +95,8 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 ```
 
-Since we do not have `Node.js` installed yet, we will be installing Yarn without
-the default `Node.js` with the following command:
+Since we do not have Node.js installed yet, we will be installing Yarn without
+the default Node.js with the following command:
 
 ```shell
 sudo apt update && sudo apt install --no-install-recommends yarn
@@ -164,7 +165,7 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
    ruby -v
    ```
 
-1. Install `Node.js` with the following set of commands:
+1. Install Node.js with the following set of commands:
 
    ```shell
    nvm install $(cat .nvmrc)
