@@ -89,6 +89,22 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     Search::Cluster.recreate_indexes
+    begin
+      Tag.create!(name: "same")
+    rescue StandardError => e
+      puts "Tried to create Tag 'name' but errored: #{e}"
+    end
+
+    Tag.create!(name: Faker::Artist.name.delete(" "))
+
+    wait = 30
+    until Time.current > start + wait
+      tags = Tag.all.map { |t| "ID: #{t.id} NAME: '#{t.name}'" }
+      puts "------------------"
+      puts "Parallel Process: #{ENV['KNAPSACK_PRO_CI_NODE_INDEX']} count: #{Tags.all.count} tags: #{tags.join(' ')}"
+      sleep 5
+    end
+    puts "Parallel Process: #{ENV['KNAPSACK_PRO_CI_NODE_INDEX']} Done with tags"
   end
 
   config.before do
