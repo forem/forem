@@ -40,7 +40,7 @@ module UserSubscriptions
 
     def new_response
       response_struct = Struct.new(:success, :data, :error, keyword_init: true)
-      response_struct.new(success: false, data: nil, error: nil)
+      response_struct.new(success: false)
     end
 
     def invalid_source_type?
