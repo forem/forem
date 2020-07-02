@@ -1,7 +1,7 @@
 module UserSubscriptions
   # When creating a UserSubscription from a controller/user interation on the
   # frontend, we need to do some extra validations and logic.
-  class CreateFromController
+  class CreateFromControllerParams
     attr_reader :user, :source_type, :source_id, :subscriber_email, :response
 
     def self.call(*args)

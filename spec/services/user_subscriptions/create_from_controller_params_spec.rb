@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe UserSubscriptions::CreateFromController, type: :service do
+RSpec.describe UserSubscriptions::CreateFromControllerParams, type: :service do
   let(:subscriber) { create(:user) }
 
   it "returns an error for an invalid source type" do

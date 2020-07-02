@@ -13,7 +13,7 @@ class UserSubscriptionsController < ApplicationController
   def create
     rate_limit!(:user_subscription_creation)
 
-    user_subscription = UserSubscriptions::CreateFromController.call(current_user, user_subscription_params)
+    user_subscription = UserSubscriptions::CreateFromControllerParams.call(current_user, user_subscription_params)
 
     if user_subscription.success
       rate_limiter.track_limit_by_action(:user_subscription_creation)
