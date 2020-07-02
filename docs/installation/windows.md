@@ -64,10 +64,9 @@ curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor 
 
 ### Installing nvm
 
-As a pre-requisite to install Rails, we're going to need to install a JavaScript
-runtime like Node.js. [nvm](https://github.com/nvm-sh/nvm) is a Node.js version
-manager that helps a developer select a specific Node.js version for
-development.
+As a pre-requisite to install Rails, Node.js needs to be installed.
+[nvm](https://github.com/nvm-sh/nvm) is a Node.js version manager that helps a
+developer select a specific Node.js version for development.
 
 To install `nvm`, follow the instructions outlined in the
 [official nvm documentation](https://github.com/nvm-sh/nvm#install--update-script).
@@ -102,9 +101,10 @@ the default Node.js with the following command:
 sudo apt update && sudo apt install --no-install-recommends yarn
 ```
 
-Make sure that Yarn is installed with the command `yarn -v`. It should print
-`Yarn requires Node.js 4.0 or higher to be installed.` on getting installed
-correctly.
+To verify Yarn's installation, run the command `yarn -v`. It should print
+`Yarn requires Node.js 4.0 or higher to be installed.`. This indicates that the
+Yarn installation succeeded but Node.js still needs to be installed for it to
+work fully. We install Node.js later on in the installation process.
 
 ### PostgreSQL
 
