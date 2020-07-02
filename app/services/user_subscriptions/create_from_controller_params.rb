@@ -4,6 +4,8 @@ module UserSubscriptions
   class CreateFromControllerParams
     attr_reader :user, :source_type, :source_id, :subscriber_email, :response
 
+    Response = Struct.new(:success, :data, :error, keyword_init: true)
+
     def self.call(*args)
       new(*args).call
     end
@@ -12,7 +14,7 @@ module UserSubscriptions
       @user = user
       @source_type = user_subscription_params[:source_type]
       @source_id = user_subscription_params[:source_id]
-      @response = new_response
+      @response = Response.new(success: false)
 
       # TODO: [@thepracticaldev/delightful]: uncomment this once email confirmation is re-enabled
       # @subscriber_email = user_subscription_params[:subscriber_email]
@@ -39,11 +41,6 @@ module UserSubscriptions
     end
 
     private
-
-    def new_response
-      response_struct = Struct.new(:success, :data, :error, keyword_init: true)
-      response_struct.new(success: false)
-    end
 
     def invalid_source_type?
       return false if UserSubscription::ALLOWED_TYPES.include?(source_type)
