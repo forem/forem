@@ -1,4 +1,9 @@
-# https://github.com/marketplace/actions/automatic-rebase  (https://github.com/cirrus-actions/rebase)
+# This workflow allows an organization member or owner to kickoff an automated
+# rebase by commenting on a pull request with "/rebase". In order for the
+# workflow to run, organization membership must be set to public!
+
+# https://github.com/marketplace/actions/automatic-rebase (https://github.com/cirrus-actions/rebase)
+
 on:
   issue_comment:
     types: [created]
