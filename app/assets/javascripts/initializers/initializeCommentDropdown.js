@@ -1,5 +1,3 @@
-
-
 function initializeCommentDropdown() {
   const announcer = document.getElementById('article-copy-link-announcer');
 
@@ -106,11 +104,19 @@ function initializeCommentDropdown() {
   }
 
   function dropdownFunction(e) {
-    var button = e.target.parentElement;
-    var dropdownContent = button.parentElement.getElementsByClassName(
+    const button = e.currentTarget;
+    const [dropdownContent] = button.parentElement.getElementsByClassName(
       'crayons-dropdown',
-    )[0];
-    finalizeAbuseReportLink(dropdownContent);
+    );
+
+    if (!dropdownContent) {
+      return;
+    }
+
+    finalizeAbuseReportLink(
+      dropdownContent.querySelector('.report-abuse-link-wrapper'),
+    );
+
     if (dropdownContent.classList.contains('block')) {
       dropdownContent.classList.remove('block');
       removeClickListener();
@@ -130,10 +136,13 @@ function initializeCommentDropdown() {
     }
   }
 
-  function finalizeAbuseReportLink(dropdownContent) {
+  function finalizeAbuseReportLink(reportAbuseLink) {
     // Add actual link location (SEO doesn't like these "useless" links, so adding in here instead of in HTML)
-    var reportAbuseLink = dropdownContent.querySelector('.report-abuse-link-wrapper');
-    reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`
+    if (!reportAbuseLink) {
+      return;
+    }
+
+    reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
   }
 
   function addDropdownListener(dropdown) {
