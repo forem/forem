@@ -17,7 +17,9 @@ function initializeUserProfilePage() {
 
           // Add actual link location (SEO doesn't like these "useless" links, so adding in here instead of in HTML)
           var reportAbuseLink = profileDropdownDiv.querySelector('.report-abuse-link-wrapper');
-          reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`      
+          if (reportAbuseLink) {
+            reportAbuseLink.innerHTML = `<a href="${reportAbuseLink.dataset.path}" class="crayons-link crayons-link--block">Report Abuse</a>`;
+          }      
         });
       }
     }
