@@ -1,4 +1,4 @@
-/* global slideSidebar */
+/* global slideSidebar, swipeState: true */
 'use strict';
 
 function slideContent(d) {
