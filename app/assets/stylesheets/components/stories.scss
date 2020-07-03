@@ -193,9 +193,11 @@
     color: var(--card-secondary-color);
     font-size: inherit;
     em {
-      font-weight: var(--fw-medium);
-      color: var(--card-color);
-      background: var(--accent-warning-lighter);
+      font-style: normal;
+      // Intentionally not using our CSS variables for `color` and `background`
+      // so this is inline with <mark>'s browser default styling.
+      color: black;
+      background: yellow;
     }
     overflow-wrap: anywhere;
     word-break: break-word;
