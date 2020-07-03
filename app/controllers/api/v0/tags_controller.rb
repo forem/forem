@@ -2,6 +2,7 @@ module Api
   module V0
     class TagsController < ApiController
       before_action :set_cache_control_headers, only: %i[index]
+      before_action :authenticate_with_api_key_or_current_user!, only: %i[me]
 
       def index
         page = params[:page]
@@ -13,6 +14,13 @@ module Api
           page(page).per(num)
 
         set_surrogate_key_header Tag.table_key, @tags.map(&:record_key)
+      end
+
+      def me
+        @tags = @user.follows_by_type("ActsAsTaggableOn::Tag").
+          order("points DESC").includes([:followable]).limit(@follows_limit)
+
+        render json: @tags
       end
 
       ATTRIBUTES_FOR_SERIALIZATION = %i[id name bg_color_hex text_color_hex].freeze

@@ -130,7 +130,11 @@ Rails.application.routes.draw do
           get :me
         end
       end
-      resources :tags, only: [:index]
+      resources :tags, only: [:index] do
+        collection do
+          get :me
+        end
+      end
       resources :follows, only: [:create]
       namespace :followers do
         get :users

@@ -52,4 +52,31 @@ RSpec.describe "Api::V0::Tags", type: :request do
       expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
     end
   end
+
+  describe "GET /api/tags/me" do
+    let(:tags) { create_list(:tag, 5) }
+    let(:user) { create(:user) }
+    let(:api_token) { create(:api_secret, user: user) }
+
+    before do
+      followed_tags = tags.first(3)
+      followed_tags.each { |tag| user.follow(tag) }
+    end
+
+    context "with invalid authentication" do
+      it "returns unauthorized" do
+        get me_api_tags_path, headers: { "api-key" => "askjdfhlk" }
+
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context "with valid authentication" do
+      it "returns only the tags followed by the user" do
+        get me_api_tags_path, headers: { "api-key" => api_token.secret }
+
+        expect(response.body).to eq tags.first(3).to_json
+      end
+    end
+  end
 end
