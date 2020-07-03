@@ -1,19 +1,21 @@
+/* global showModal */
+
 function initializeAllFollowButts() {
   var followButts = document.getElementsByClassName('follow-action-button');
   for (var i = 0; i < followButts.length; i++) {
-    if (!followButts[i].className.includes("follow-user")) {
+    if (!followButts[i].className.includes('follow-user')) {
       initializeFollowButt(followButts[i]);
-    };
+    }
   }
 }
 
 function fetchUserFollowStatuses(idButtonHash) {
-  const url = new URL("/follows/bulk_show", document.location);
+  const url = new URL('/follows/bulk_show', document.location);
   const searchParams = new URLSearchParams();
   Object.keys(idButtonHash).forEach((id) => {
-    searchParams.append("ids[]", id);
+    searchParams.append('ids[]', id);
   });
-  searchParams.append("followable_type", "User");
+  searchParams.append('followable_type', 'User');
   url.search = searchParams;
 
   fetch(url, {
@@ -24,11 +26,12 @@ function fetchUserFollowStatuses(idButtonHash) {
       'Content-Type': 'application/json',
     },
     credentials: 'same-origin',
-  }).then((response) => response.json())
+  })
+    .then((response) => response.json())
     .then((idStatuses) => {
-      Object.keys(idStatuses).forEach(function(id) {
+      Object.keys(idStatuses).forEach(function (id) {
         addButtClickHandle(idStatuses[id], idButtonHash[id]);
-      })
+      });
     });
 }
 
@@ -40,17 +43,21 @@ function initializeUserFollowButtons(buttons) {
       if (userStatus === 'logged-out') {
         addModalEventListener(buttons[i]);
       } else {
-        var userId = JSON.parse(buttons[i].dataset.info).id
+        var userId = JSON.parse(buttons[i].dataset.info).id;
         userIds[userId] = buttons[i];
       }
     }
 
-    if (Object.keys(userIds).length > 0) { fetchUserFollowStatuses(userIds); }
+    if (Object.keys(userIds).length > 0) {
+      fetchUserFollowStatuses(userIds);
+    }
   }
 }
 
 function initializeUserFollowButts() {
-  var buttons = document.getElementsByClassName('follow-action-button follow-user');
+  var buttons = document.getElementsByClassName(
+    'follow-action-button follow-user',
+  );
   initializeUserFollowButtons(buttons);
 }
 
@@ -79,7 +86,7 @@ function initializeFollowButt(butt) {
 
 function addModalEventListener(butt) {
   assignState(butt, 'login');
-  butt.onclick = function(e) {
+  butt.onclick = function (e) {
     e.preventDefault();
     showModal('follow-button');
     return;
@@ -94,7 +101,7 @@ function fetchButt(butt, buttInfo) {
   } else {
     dataRequester = new ActiveXObject('Microsoft.XMLHTTP');
   }
-  dataRequester.onreadystatechange = function() {
+  dataRequester.onreadystatechange = function () {
     if (
       dataRequester.readyState === XMLHttpRequest.DONE &&
       dataRequester.status === 200
@@ -114,7 +121,7 @@ function addButtClickHandle(response, butt) {
   // currently lacking error handling
   var buttInfo = JSON.parse(butt.dataset.info);
   assignInitialButtResponse(response, butt);
-  butt.onclick = function(e) {
+  butt.onclick = function (e) {
     e.preventDefault();
     handleOptimisticButtRender(butt);
   };
@@ -123,13 +130,13 @@ function addButtClickHandle(response, butt) {
 function handleTagButtAssignment(user, butt, buttInfo) {
   var buttAssignmentBoolean =
     JSON.parse(user.followed_tags)
-      .map(function(a) {
+      .map(function (a) {
         return a.id;
       })
       .indexOf(buttInfo.id) !== -1;
+
   var buttAssignmentBoolText = buttAssignmentBoolean ? 'true' : 'false';
   addButtClickHandle(buttAssignmentBoolText, butt);
-  shouldNotFetch = true;
 }
 
 function assignInitialButtResponse(response, butt) {
@@ -159,22 +166,24 @@ function handleOptimisticButtRender(butt) {
       var evFabUserId = JSON.parse(butt.dataset.info).id;
       var requestVerb = butt.dataset.verb;
       //now for all follow action buttons
-      document.querySelectorAll('.follow-action-button').forEach(function(fab) {
-        try {
-          //lets check they have info data attributes
-          if (fab.dataset.info) {
-            //and attempt to parse those, to grab that buttons info user id
-            var fabUserId = JSON.parse(fab.dataset.info).id;
-            //now does that user id match our event buttons user id?
-            if (fabUserId && fabUserId === evFabUserId) {
-              //yes - time to assign the same state!
-              assignState(fab, requestVerb);
+      document
+        .querySelectorAll('.follow-action-button')
+        .forEach(function (fab) {
+          try {
+            //lets check they have info data attributes
+            if (fab.dataset.info) {
+              //and attempt to parse those, to grab that buttons info user id
+              var fabUserId = JSON.parse(fab.dataset.info).id;
+              //now does that user id match our event buttons user id?
+              if (fabUserId && fabUserId === evFabUserId) {
+                //yes - time to assign the same state!
+                assignState(fab, requestVerb);
+              }
             }
+          } catch (err) {
+            return;
           }
-        } catch (err) {
-          return;
-        }
-      });
+        });
     } catch (err) {
       return;
     }
