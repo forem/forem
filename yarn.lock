@@ -4297,7 +4297,7 @@ clone-deep@^4.0.1:
   integrity sha512-neHB9xuzh/wk0dIHweyAXv2aPGZIVk3pLMe+/RNzINf17fe0OG96QroktYAUm7SM1PBnzTabaLboqqxDyMU+SQ==
   dependencies:
     is-plain-object "^2.0.4"
-    kind-of "^6.0.2"
+    kind-of "^6.0.3"
     shallow-clone "^3.0.0"
 
 clone@^1.0.2:
@@ -6871,7 +6871,7 @@ global-prefix@^3.0.0:
   integrity sha512-awConJSVCHVGND6x3tmMaKcQvwXLhjdkmomy2W+Goaui8YPgYgXJZewhg3fWC+DlfqqQuWg8AwqjGTD2nAPVWg==
   dependencies:
     ini "^1.3.5"
-    kind-of "^6.0.2"
+    kind-of "^6.0.3"
     which "^1.3.1"
 
 global@^4.3.2, global@^4.4.0:
@@ -7667,7 +7667,7 @@ is-accessor-descriptor@^1.0.0:
   resolved "https://registry.yarnpkg.com/is-accessor-descriptor/-/is-accessor-descriptor-1.0.0.tgz#169c2f6d3df1f992618072365c9b0ea1f6878656"
   integrity sha512-m5hnHTkcVsPfqx3AKlyttIPb7J+XykHvJP2B9bZDjlhLIoEq4XoK64Vg7boZlVWYK6LUY94dYPEE7Lh0ZkZKcQ==
   dependencies:
-    kind-of "^6.0.0"
+    kind-of "^6.0.3"
 
 is-alphabetical@^1.0.0:
   version "1.0.4"
@@ -7759,7 +7759,7 @@ is-data-descriptor@^1.0.0:
   resolved "https://registry.yarnpkg.com/is-data-descriptor/-/is-data-descriptor-1.0.0.tgz#d84876321d0e7add03990406abbbbd36ba9268c7"
   integrity sha512-jbRXy1FmtAoCjQkVmIVYwuuqDFUbaOeDjmed1tOGPrsMhtJA4rD9tkgA0F1qJ3gRFRXcHYVkdeaP50Q5rE/jLQ==
   dependencies:
-    kind-of "^6.0.0"
+    kind-of "^6.0.3"
 
 is-date-object@^1.0.1:
   version "1.0.2"
@@ -7787,7 +7787,7 @@ is-descriptor@^1.0.0, is-descriptor@^1.0.2:
   dependencies:
     is-accessor-descriptor "^1.0.0"
     is-data-descriptor "^1.0.0"
-    kind-of "^6.0.2"
+    kind-of "^6.0.3"
 
 is-directory@^0.3.1:
   version "0.3.1"
@@ -9681,7 +9681,7 @@ micromatch@^3.0.4, micromatch@^3.1.10, micromatch@^3.1.4:
     extend-shallow "^3.0.2"
     extglob "^2.0.4"
     fragment-cache "^0.2.1"
-    kind-of "^6.0.2"
+    kind-of "^6.0.3"
     nanomatch "^1.2.9"
     object.pick "^1.3.0"
     regex-not "^1.0.0"
@@ -9932,7 +9932,7 @@ nanomatch@^1.2.9:
     extend-shallow "^3.0.2"
     fragment-cache "^0.2.1"
     is-windows "^1.0.2"
-    kind-of "^6.0.2"
+    kind-of "^6.0.3"
     object.pick "^1.3.0"
     regex-not "^1.0.0"
     snapdragon "^0.8.1"
@@ -13111,7 +13111,7 @@ shallow-clone@^3.0.0:
   resolved "https://registry.yarnpkg.com/shallow-clone/-/shallow-clone-3.0.1.tgz#8f2981ad92531f55035b01fb230769a40e02efa3"
   integrity sha512-/6KqX+GVUdqPuPPd2LxDDxzX6CAbjJehAAOKlNpqqUpAqPM6HeL8f+o3a+JsyGjn2lv0WY8UsTgUJjU9Ok55NA==
   dependencies:
-    kind-of "^6.0.2"
+    kind-of "^6.0.3"
 
 shallow-equal@^1.1.0:
   version "1.2.1"
