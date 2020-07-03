@@ -19,37 +19,25 @@
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
 
-<style>
-  .tag-card:not(:hover) {
-    box-shadow: 0 0 0 1px var(--card-border) !important;
-    border: 2px solid transparent !important;
-  }
-
-  .tag-card:not(:hover) .crayons-btn--secondary.follow-action-button {
-    background: var(--button-secondary-bg) !important;
-    color: var(--button-secodnary-color) !important;
-  }
-</style>
-
 <div class="crayons-layout crayons-layout--1-col">
   <header class="px-2 m:px-0">
-    <h1>Top 100 Tags</h1>
+    <h1>Top tags</h1>
   </header>
 
   <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
     <% @tags.each do |tag| %>
       <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-      <div class="tag-card crayons-card p-4 m:p-6  flex flex-col relative" style="border: 2px solid <%= color %>; box-shadow: 2px 2px 0 <%= color %>;">
+      <div class="tag-card crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative" style="border-top-color: <%= color %>; ">
         <h3 class="crayons-tag crayons-tag--l mb-2">
           <a href="/t/<%= tag.name %>" class="crayons-link">
             <span class="crayons-tag__prefix">#</span><%= tag.name %>
           </a>
         </h3>
         <% if tag.short_summary.present? %>
-          <p class="mb-2 truncate-at-3"><%= sanitize tag.short_summary %></p>
+          <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
         <% end %>
         <p class="mb-3 fs-s color-base-50">
-          <%= pluralize @num_published_articles, "post" %> published
+          <%= pluralize tag.taggings_count, "post" %> published
           <% if tag.sponsorship && tag.sponsorship.status == "live" && tag.sponsorship.expires_at > Time.current %>
           | Sponsored by <%= tag.sponsorship.organization.name %> ❤️
           <% end %>
@@ -57,7 +45,7 @@
 
         <% if tag %>
           <div class="mt-auto">
-            <button id="user-follow-butt" class=" crayons-btn crayons-btn--secondary follow-action-button" data-info='{"id":<%= tag.id %>,"className":"Tag"}' style="color: <%= tag.text_color_hex %>; background: <%= tag.bg_color_hex %>; ">&nbsp;</button>
+            <button id="user-follow-butt" class=" crayons-btn crayons-btn--secondary follow-action-button" data-info='{"id":<%= tag.id %>,"className":"Tag", "followStyle":"secondary"}'>Follow</button>
           </div>
         <% end %>
 
