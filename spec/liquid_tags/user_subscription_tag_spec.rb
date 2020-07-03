@@ -110,15 +110,17 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
     end
   end
 
-  # TODO: [@thepracticaldev/delightful]: re-enable this once email confirmation is re-enabled
+  # TODO: [@thepracticaldev/delightful]: re-enable this once email confirmation
+  # is re-enabled and confirm it isn't flaky.
   xcontext "when a user has an Apple private relay email address", type: :system, js: true do
     it "prompts the user to update their email address" do
-      subscriber_with_apple_relay = create(:user, email: "test@privaterelay.appleid.com")
-      sign_in subscriber_with_apple_relay
+      allow(subscriber).to receive(:email).and_return("test@privaterelay.appleid.com")
+      sign_in subscriber
       visit article_with_user_subscription_tag.path
 
       expect(page).to have_css("#subscription-signed-out", visible: :hidden)
       expect(page).to have_css("#subscription-signed-in", visible: :hidden)
+      expect(page).to have_css("#response-message", visible: :hidden)
       expect(page).to have_css("#subscriber-apple-auth", visible: :visible)
 
       within "#subscriber-apple-auth" do
