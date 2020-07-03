@@ -9,7 +9,6 @@ class Article < ApplicationRecord
   SEARCH_SERIALIZER = Search::ArticleSerializer
   SEARCH_CLASS = Search::FeedContent
   DATA_SYNC_CLASS = DataSync::Elasticsearch::Article
-  RESTRICTED_LIQUID_TAGS = [PollTag, UserSubscriptionTag].freeze
 
   acts_as_taggable_on :tags
   resourcify
@@ -55,7 +54,6 @@ class Article < ApplicationRecord
   validate :validate_tag
   validate :validate_video
   validate :validate_collection_permission
-  validate :validate_liquid_tag_permissions
   validate :past_or_present_date
   validate :canonical_url_must_not_have_spaces
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
@@ -352,22 +350,6 @@ class Article < ApplicationRecord
                    spaminess_rating: BlackBox.calculate_spaminess(self))
   end
 
-  def liquid_tags_used(section = nil)
-    content =
-      case section
-      when :body
-        body_markdown
-      when :comments
-        comments_blob
-      else
-        "#{body_markdown}#{comments_blob}"
-      end
-
-    MarkdownParser.new(content, source: self, user: user).tags_used
-  rescue StandardError
-    []
-  end
-
   private
 
   def search_score
@@ -544,13 +526,6 @@ class Article < ApplicationRecord
 
   def canonical_url_must_not_have_spaces
     errors.add(:canonical_url, "must not have spaces") if canonical_url.to_s.match?(/[[:space:]]/)
-  end
-
-  # TODO: (Alex Smith) refactor liquid tag permissions
-  #
-  # Admin only beta tags etc.
-  def validate_liquid_tag_permissions
-    errors.add(:body_markdown, "must only use permitted tags") if (liquid_tags_used & RESTRICTED_LIQUID_TAGS).any? && !(user.has_role?(:super_admin) || user.has_role?(:admin))
   end
 
   def create_slug
