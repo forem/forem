@@ -1,0 +1,24 @@
+# This workflow welcomes new contributors with a message!
+
+# https://github.com/marketplace/actions/first-interaction (https://github.com/actions/first-interaction)
+
+name: "Welcome New Contributor"
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/first-interaction@v1.0.0
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          pr-message: |-
+            Congrats on making your first Pull Request to Forem! 🎉
+
+            Our core team will review your proposal as soon as possible. Our [code review process is publicly documented](https://docs.dev.to/maintainers/pull_requests/), so you'll know exactly what to expect.
+
+            If you haven't had a chance, give our [Contributing Guide](https://docs.dev.to/contributing/forem/) a read.
+
+            Thanks for taking the time to improve our platform and our community! ❤️
