@@ -64,6 +64,7 @@ class User < ApplicationRecord
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :listings, dependent: :destroy
+  has_many :listing_endorsements, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :comments, dependent: :destroy
   has_many :created_podcasts, class_name: "Podcast", foreign_key: :creator_id, inverse_of: :creator, dependent: :nullify

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_18_212422) do
+ActiveRecord::Schema.define(version: 2020_07_03_161150) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -640,6 +640,17 @@ ActiveRecord::Schema.define(version: 2020_06_18_212422) do
     t.integer "user_id"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
+  end
+
+  create_table "listing_endorsements", force: :cascade do |t|
+    t.boolean "approved"
+    t.bigint "classified_listing_id"
+    t.string "content"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "user_id"
+    t.index ["classified_listing_id"], name: "index_listing_endorsements_on_classified_listing_id"
+    t.index ["user_id"], name: "index_listing_endorsements_on_user_id"
   end
 
   create_table "mentions", id: :serial, force: :cascade do |t|
@@ -1334,6 +1345,8 @@ ActiveRecord::Schema.define(version: 2020_06_18_212422) do
   add_foreign_key "classified_listings", "users", on_delete: :cascade
   add_foreign_key "email_authorizations", "users", on_delete: :cascade
   add_foreign_key "identities", "users", on_delete: :cascade
+  add_foreign_key "listing_endorsements", "classified_listings"
+  add_foreign_key "listing_endorsements", "users"
   add_foreign_key "messages", "chat_channels"
   add_foreign_key "messages", "users"
   add_foreign_key "notification_subscriptions", "users", on_delete: :cascade
