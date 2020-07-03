@@ -105,9 +105,9 @@ function initializeCommentDropdown() {
 
   function dropdownFunction(e) {
     const button = e.currentTarget;
-    const [dropdownContent] = button.parentElement.getElementsByClassName(
+    const dropdownContent = button.parentElement.getElementsByClassName(
       'crayons-dropdown',
-    );
+    )[0];
 
     if (!dropdownContent) {
       return;
