@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
@@ -83,7 +83,7 @@ describe('FollowTags', () => {
     fetch.mockResponse(fakeTagsResponse);
 
     const { queryByText, findByText, findAllByText } = renderFollowTags();
-    const followButtons = await waitForElement(() => findAllByText('Follow'));
+    const followButtons = await findAllByText('Follow');
 
     findByText(/skip for now/);
 
@@ -92,7 +92,7 @@ describe('FollowTags', () => {
     button.click();
 
     // it should change to Following and update the count
-    await waitForElement(() => findByText(/Following/i));
+    await findByText(/Following/i);
 
     expect(queryByText(/1 tag selected/i)).toBeDefined();
     expect(queryByText(/continue/i)).toBeDefined();

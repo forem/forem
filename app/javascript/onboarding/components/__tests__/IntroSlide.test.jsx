@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 import { axe } from 'jest-axe';
@@ -86,7 +86,7 @@ describe('IntroSlide', () => {
   });
 
   it('should enable the button if required boxes are checked', async () => {
-    const { getByTestId, getByText } = renderIntroSlide();
+    const { getByTestId, getByText, findByText } = renderIntroSlide();
     fetch.mockResponseOnce({});
     expect(getByText(/continue/i)).toBeDisabled();
 
@@ -96,7 +96,7 @@ describe('IntroSlide', () => {
     const termsCheckbox = getByTestId('checked-terms-and-conditions');
     termsCheckbox.click();
 
-    const nextButton = await waitForElement(() => getByText(/continue/i));
+    const nextButton = await findByText(/continue/i);
     expect(nextButton).not.toBeDisabled();
   });
 });
