@@ -454,6 +454,13 @@ class Article < ApplicationRecord
     self.title = front_matter["title"] if front_matter["title"].present?
     set_tag_list(front_matter["tags"]) if front_matter["tags"].present?
     self.published = front_matter["published"] if %w[true false].include?(front_matter["published"].to_s)
+    if front_matter["slug"].present? && self.slug.blank? && self.title.present?
+      if self.published
+        self.slug = front_matter["slug"]
+      else
+        self.slug = front_matter["slug"] + "-temp-slug-#{rand(10_000_000)}"
+      end
+    end
     self.published_at = parse_date(front_matter["date"]) if published
     self.main_image = determine_image(front_matter)
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
