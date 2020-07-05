@@ -20,6 +20,8 @@
     "postbuild-storybook": "npm run generate-themes-storybook",
     "prestorybook": "npm run generate-themes-storybook",
     "storybook": "start-storybook -p 6006 -c app/javascript/.storybook -s app/assets,app/javascript/storybook-static",
+    "lint:frontend": "eslint app/assets/javascripts/**/*.js app/javascript/**/*.jsx app/javascript/**/*.js",
+    "pretest": "npm run lint:frontend",
     "test": "jest app/javascript/ --coverage",
     "test:watch": "jest app/javascript/ --watch"
   },
