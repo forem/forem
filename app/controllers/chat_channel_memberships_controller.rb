@@ -24,14 +24,14 @@ class ChatChannelMembershipsController < ApplicationController
     @membership = ChatChannelMembership.find(params[:id])
     authorize @membership
     @channel = @membership.chat_channel
-    invitation_link = @channel.chat_channel_invitation_links.last
+    invitation_link = @channel.invitation_links.last
     if !invitation_link
-      invitation_link = CreateChatChannelInvitationLink.perform(@channel)
-    elsif invitation_link && (invitation_link.expiry_time < DateTime.now || invitation_link.expired?)
+      invitation_link = ChatChannels::CreateInvitationLink.call(@channel)
+    elsif invitation_link && (invitation_link.expiry_at.before?(Time.current) || invitation_link.expired?)
       invitation_link.update(status: "expired") if invitation_link.active?
-      invitation_link = CreateChatChannelInvitationLink.perform(@channel)
+      invitation_link = ChatChannels::CreateInvitationLink.call(@channel)
     end
-    if invitation_link&.errors&.any?
+    if invitation_link.errors&.any?
       render json: { success: false, message: "Failed to build invitation link", errors: invitation_link.errors.full_messages }, status: :bad_request
     else
       data = ChatChannelDetailPresenter.new(@channel, @membership, invitation_link).as_json
@@ -140,7 +140,7 @@ class ChatChannelMembershipsController < ApplicationController
 
   def join_channel_invitation
     @chat_channel = ChatChannel.find_by(slug: params[:channel_slug])
-    @invitation_link = @chat_channel.chat_channel_invitation_links.find_by(slug: params[:invitation_slug])
+    @invitation_link = @chat_channel.invitation_links.find_by(slug: params[:invitation_slug])
     authorize @chat_channel
     existing_membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: @chat_channel.id)
     redirect_to connect_path(@chat_channel.slug) if existing_membership && existing_membership.status == "active"

@@ -47,6 +47,8 @@ export default class Content extends Component {
         className="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
         id="chat_activecontent"
         onClick={onTriggerContent}
+        role="button"
+        tabIndex="0"
       >
         <button
           type="button"

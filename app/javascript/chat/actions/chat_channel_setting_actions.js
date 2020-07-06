@@ -150,7 +150,7 @@ export async function leaveChatChannelMembership(membershipId) {
 }
 
 /**
- * This function is used to update the membnership role
+ * This function is used to update the membership role
  *  @param {number} membershipId selected User Chat channel membership id
  *  @param {number} chatChannelId Current chat chaneel id
  *  @param {string} role updated role for the membership

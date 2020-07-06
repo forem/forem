@@ -24,7 +24,7 @@ class ChatChannelDetailPresenter
         requested: membership_users(chat_channel.requested_memberships)
       },
       current_membership: current_membership,
-      invitation_link: URL.url(invitation_link.url)
+      invitation_link: URL.url(invitation_link.path)
     }
   end
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_02_010952) do
+ActiveRecord::Schema.define(version: 2020_07_06_133151) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -313,20 +313,6 @@ ActiveRecord::Schema.define(version: 2020_07_02_010952) do
     t.string "status", default: "pending"
     t.integer "tag_id"
     t.datetime "updated_at", null: false
-  end
-
-  create_table "chat_channel_invitation_links", force: :cascade do |t|
-    t.bigint "chat_channel_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "expiry_time"
-    t.string "slug"
-    t.string "status"
-    t.datetime "updated_at", precision: 6, null: false
-    t.string "url"
-    t.integer "use_count"
-    t.index ["chat_channel_id"], name: "index_chat_channel_invitation_links_on_chat_channel_id"
-    t.index ["slug"], name: "index_chat_channel_invitation_links_on_slug", unique: true
-    t.index ["url"], name: "index_chat_channel_invitation_links_on_url", unique: true
   end
 
   create_table "chat_channel_memberships", force: :cascade do |t|
@@ -654,6 +640,18 @@ ActiveRecord::Schema.define(version: 2020_07_02_010952) do
     t.integer "user_id"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
+  end
+
+  create_table "invitation_links", force: :cascade do |t|
+    t.bigint "chat_channel_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "expiry_at"
+    t.string "path"
+    t.string "slug"
+    t.integer "status"
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["chat_channel_id"], name: "index_invitation_links_on_chat_channel_id"
+    t.index ["slug"], name: "index_invitation_links_on_slug", unique: true
   end
 
   create_table "mentions", id: :serial, force: :cascade do |t|
