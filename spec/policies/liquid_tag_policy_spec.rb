@@ -41,8 +41,10 @@ RSpec.describe LiquidTagPolicy, type: :policy do
 
     it "handles single resource roles" do
       user = create(:user)
+      # Stub roles because adding them normally can cause flaky specs
       single_resource_role = [:restricted_liquid_tag, LiquidTags::UserSubscriptionTag]
-      user.add_role(*single_resource_role)
+      allow(user).to receive(:has_role?).and_call_original
+      allow(user).to receive(:has_role?).with(*single_resource_role).and_return(true)
       parse_context = { source: article, user: user }
 
       allow(liquid_tag).to receive(:parse_context).and_return(parse_context)

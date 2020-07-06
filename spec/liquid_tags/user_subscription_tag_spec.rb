@@ -4,8 +4,14 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
   setup { Liquid::Template.register_tag("user_subscription", described_class) }
 
   let(:subscriber) { create(:user) }
-  let(:author) { create(:user, :restricted_liquid_tag, resource: LiquidTags::UserSubscriptionTag) }
+  let(:author) { create(:user) }
   let(:article_with_user_subscription_tag) { create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true) }
+
+  # Stub roles because adding them normally can cause flaky specs
+  before do
+    allow(author).to receive(:has_role?).and_call_original
+    allow(author).to receive(:has_role?).with(:restricted_liquid_tag, LiquidTags::UserSubscriptionTag).and_return(true)
+  end
 
   context "when rendering" do
     it "renders default data correctly" do
