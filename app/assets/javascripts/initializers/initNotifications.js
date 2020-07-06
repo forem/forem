@@ -1,3 +1,5 @@
+/* global checkUserLoggedIn, instantClick, InstantClick, sendHapticMessage */
+
 function initNotifications() {
   fetchNotificationsCount();
   markNotificationsAsRead();
@@ -9,7 +11,7 @@ function initNotifications() {
 }
 
 function markNotificationsAsRead() {
-  setTimeout(function() {
+  setTimeout(function () {
     if (document.getElementById('notifications-container')) {
       var xmlhttp;
       var locationAsArray = window.location.pathname.split('/');
@@ -24,7 +26,7 @@ function markNotificationsAsRead() {
       } else {
         xmlhttp = new ActiveXObject('Microsoft.XMLHTTP');
       }
-      xmlhttp.onreadystatechange = function() {};
+      xmlhttp.onreadystatechange = function () {};
 
       var csrfToken = document.querySelector("meta[name='csrf-token']").content;
 
@@ -51,7 +53,7 @@ function fetchNotificationsCount() {
     // Prefetch notifications page
     if (instantClick) {
       InstantClick.removeExpiredKeys('force');
-      setTimeout(function() {
+      setTimeout(function () {
         InstantClick.preload(
           document.getElementById('notifications-link').href,
           'force',
@@ -62,12 +64,13 @@ function fetchNotificationsCount() {
 }
 
 function initReactions() {
-  setTimeout(function() {
+  setTimeout(function () {
     if (document.getElementById('notifications-container')) {
       var butts = document.getElementsByClassName('reaction-button');
+
       for (var i = 0; i < butts.length; i++) {
         var butt = butts[i];
-        butt.onclick = function(event) {
+        butt.onclick = function (event) {
           event.preventDefault();
           sendHapticMessage('medium');
           var thisButt = this;
@@ -88,24 +91,27 @@ function initReactions() {
 
           getCsrfToken()
             .then(sendFetch('reaction-creation', formData))
-            .then(function(response) {
+            .then(function (response) {
               if (response.status === 200) {
                 response.json().then(successCb);
               }
             });
         };
       }
-      var butts = document.getElementsByClassName('toggle-reply-form');
-      for (var i = 0; i < butts.length; i++) {
-        var butt = butts[i];
-        butt.onclick = function(event) {
+
+      butts = document.getElementsByClassName('toggle-reply-form');
+
+      for (let i = 0; i < butts.length; i++) {
+        const butt = butts[i];
+
+        butt.onclick = function (event) {
           event.preventDefault();
           var thisButt = this;
           document
             .getElementById('comment-form-for-' + thisButt.dataset.reactableId)
             .classList.add('showing');
           thisButt.innerHTML = '';
-          setTimeout(function() {
+          setTimeout(function () {
             document
               .getElementById(
                 'comment-textarea-for-' + thisButt.dataset.reactableId,
@@ -119,11 +125,9 @@ function initReactions() {
 }
 
 function listenForNotificationsBellClick() {
-  setTimeout(function() {
-    document.getElementById('notifications-link').onclick = function() {
-      document
-        .getElementById('notifications-number')
-        .classList.add('hidden');
+  setTimeout(function () {
+    document.getElementById('notifications-link').onclick = function () {
+      document.getElementById('notifications-number').classList.add('hidden');
     };
   }, 180);
 }
@@ -152,9 +156,9 @@ function initPagination() {
           method: 'GET',
           credentials: 'same-origin',
         })
-        .then(function(response) {
+        .then(function (response) {
           if (response.status === 200) {
-            response.text().then(function(html) {
+            response.text().then(function (html) {
               const markup = html.trim();
 
               if (markup) {

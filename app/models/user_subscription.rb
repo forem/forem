@@ -41,18 +41,19 @@ class UserSubscription < ApplicationRecord
 
   def tag_enabled
     return unless user_subscription_sourceable
-
-    liquid_tags =
-      case user_subscription_sourceable_type
-      when "Article"
-        user_subscription_sourceable.liquid_tags_used(:body)
-      else
-        user_subscription_sourceable.liquid_tags_used
-      end
-
-    return if liquid_tags.include?(UserSubscriptionTag)
+    return if liquid_tags_used.include?(UserSubscriptionTag)
 
     errors.add(:base, "User subscriptions are not enabled for the source.")
+  end
+
+  def liquid_tags_used
+    MarkdownParser.new(
+      user_subscription_sourceable.body_markdown,
+      source: user_subscription_sourceable,
+      user: user_subscription_sourceable.user,
+    ).tags_used
+  rescue StandardError # Can occur during parsing for improper tags or bad args
+    []
   end
 
   def non_apple_auth_subscriber
