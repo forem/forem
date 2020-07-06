@@ -45,7 +45,11 @@
 
         <% if tag %>
           <div class="mt-auto">
-            <button id="user-follow-butt" class=" crayons-btn crayons-btn--secondary follow-action-button" data-info='{"id":<%= tag.id %>,"className":"Tag", "followStyle":"secondary"}'>Follow</button>
+            <button
+              class="crayons-btn crayons-btn--secondary follow-action-button"
+              data-info='{"id":<%= tag.id %>,"className":"Tag", "followStyle":"secondary"}'>
+              Follow
+            </button>
           </div>
         <% end %>
 
