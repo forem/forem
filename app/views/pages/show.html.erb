@@ -19,14 +19,9 @@
 <% end %>
 
 <% if @page.template == "contained" %>
-  <div class="blank-space"></div>
-  <div class="container article">
-    <div class="title">
-      <h1>
-        <%= @page.title %>
-      </h1>
-    </div>
-    <div class="body">
+  <div class="crayons-layout crayons-layout--limited crayons-article">
+    <div class="crayons-card crayons-article__body">
+      <h1><%= @page.title %></h1>
       <%= @page.processed_html.html_safe %>
     </div>
   </div>
