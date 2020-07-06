@@ -206,9 +206,7 @@
       <% if has_long_markdown || @organization %>
         <section class="crayons-card crayons-card--secondary text-padding mb-4">
           <% if has_long_markdown %>
-            <% cache("article-about-author-#{@user.id}-#{@user.updated_at}", expires_in: 100.hours) do %>
-              <%= render "articles/about_author", published: @article.readable_publish_date %>
-            <% end %>
+            <%= render "articles/about_author", published: @article.readable_publish_date %>
           <% end %>
           <%= render "articles/org_branding", organization: @organization, author: has_long_markdown %>
         </section>
