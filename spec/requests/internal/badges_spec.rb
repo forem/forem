@@ -1,6 +1,11 @@
 require "rails_helper"
+require "requests/shared_examples/internal_policy_dependant_request"
 
 RSpec.describe "/internal/badges", type: :request do
+  it_behaves_like "an InternalPolicy dependant request", Badge do
+    let(:request) { get "/internal/badges" }
+  end
+
   describe "POST /internal/badges/award_badges" do
     let(:admin) { create(:user, :super_admin) }
     let(:user) { create(:user) }

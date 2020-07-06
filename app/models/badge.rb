@@ -1,5 +1,6 @@
 class Badge < ApplicationRecord
   mount_uploader :badge_image, BadgeUploader
+  resourcify
 
   has_many :badge_achievements
   has_many :tags
