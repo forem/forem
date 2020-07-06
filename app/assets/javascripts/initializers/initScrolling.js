@@ -120,7 +120,7 @@ function buildTagsHTML(tag) {
     '</a>' +
     antifollow +
     '</h3>' +
-    '<p class="grid-cell__summary"></p>' +
+    '<p class="grid-cell__summary truncate-at-3"></p>' +
     '<form class="edit_follow flex items-center flex-nowrap mb-4" id="edit_follow_' +
     tag.id +
     '" action="/follows/' +

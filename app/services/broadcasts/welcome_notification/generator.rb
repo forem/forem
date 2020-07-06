@@ -28,7 +28,7 @@ module Broadcasts
       attr_reader :user, :notification_enqueued
 
       def send_welcome_notification
-        return if received_notification?(welcome_broadcast) || commented_on_welcome_thread? || user.created_at > 3.hours.ago
+        return if user.created_at > 3.hours.ago || received_notification?(welcome_broadcast) || commented_on_welcome_thread?
 
         Notification.send_welcome_notification(user.id, welcome_broadcast.id)
         # Setting @notification_enqueued here prevents us from sending a user two welcome notifications in one day.
@@ -36,35 +36,35 @@ module Broadcasts
       end
 
       def send_authentication_notification
-        return if authenticated_with_all_providers? || received_notification?(authentication_broadcast) || user.created_at > 1.day.ago
+        return if user.created_at > 1.day.ago || authenticated_with_all_providers? || received_notification?(authentication_broadcast)
 
         Notification.send_welcome_notification(user.id, authentication_broadcast.id)
         @notification_enqueued = true
       end
 
       def send_feed_customization_notification
-        return if user_is_following_tags? || received_notification?(customize_feed_broadcast) || user.created_at > 3.days.ago
+        return if user.created_at > 3.days.ago || user_is_following_tags? || received_notification?(customize_feed_broadcast)
 
         Notification.send_welcome_notification(user.id, customize_feed_broadcast.id)
         @notification_enqueued = true
       end
 
       def send_ux_customization_notification
-        return if received_notification?(customize_ux_broadcast) || user.created_at > 5.days.ago
+        return if user.created_at > 5.days.ago || received_notification?(customize_ux_broadcast)
 
         Notification.send_welcome_notification(user.id, customize_ux_broadcast.id)
         @notification_enqueued = true
       end
 
       def send_discuss_and_ask_notification
-        return if (asked_a_question && started_a_discussion) || received_notification?(discuss_and_ask_broadcast) || user.created_at > 6.days.ago
+        return if user.created_at > 6.days.ago || (asked_a_question && started_a_discussion) || received_notification?(discuss_and_ask_broadcast)
 
         Notification.send_welcome_notification(user.id, discuss_and_ask_broadcast.id)
         @notification_enqueued = true
       end
 
       def send_download_app_notification
-        return if received_notification?(download_app_broadcast) || user.created_at > 7.days.ago
+        return if user.created_at > 7.days.ago || received_notification?(download_app_broadcast)
 
         Notification.send_welcome_notification(user.id, download_app_broadcast.id)
         @notification_enqueued = true

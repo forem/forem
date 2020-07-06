@@ -449,6 +449,7 @@ class Tags extends Component {
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
           onFocus={onFocus}
+          pattern={`${LETTERS_NUMBERS}`}
         />
         {searchResultsHTML}
       </div>

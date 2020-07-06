@@ -2,7 +2,8 @@ class Internal::ChatChannelsController < Internal::ApplicationController
   layout "internal"
 
   def index
-    @group_chat_channels = ChatChannel.where(channel_type: "invite_only").includes(:users).page(params[:page]).per(50)
+    @q = ChatChannel.where(channel_type: "invite_only").includes(:users).ransack(params[:q])
+    @group_chat_channels = @q.result.page(params[:page]).per(50)
   end
 
   def create

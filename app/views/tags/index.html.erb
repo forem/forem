@@ -19,25 +19,44 @@
   <meta name="twitter:image:src" content="<%= SiteConfig.main_social_image %>">
 <% end %>
 
-<div class="user-profile-header tag-header bg-transparent">
-  <div class="tag-or-query-header-container">
-    <h1>Top 100 Tags</h1>
-  </div>
-</div>
+<div class="crayons-layout crayons-layout--1-col">
+  <header class="px-2 m:px-0">
+    <h1>Top tags</h1>
+  </header>
 
-<div class="home tag-home">
-  <div class="side-bar"></div>
-  <div class="articles-list" id="articles-list">
+  <div class="grid gap-2 m:gap-4 l:gap-6 m:grid-cols-2 l:grid-cols-3 px-2 m:px-0">
     <% @tags.each do |tag| %>
-      <div class="tag-list-container" style="background:<%= tag.bg_color_hex %>;">
-        <a class="tag-show-link" href="/t/<%= tag.name %>" style="color:<%= tag.text_color_hex || "#fff" %>;">
-          <h2>#<%= tag.name %></h2>
+      <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
+      <div class="tag-card crayons-card branded-4 p-4 m:p-6 m:pt-4 flex flex-col relative" style="border-top-color: <%= color %>; ">
+        <h3 class="crayons-tag crayons-tag--l mb-2">
+          <a href="/t/<%= tag.name %>" class="crayons-link">
+            <span class="crayons-tag__prefix">#</span><%= tag.name %>
+          </a>
+        </h3>
+        <% if tag.short_summary.present? %>
+          <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
+        <% end %>
+        <p class="mb-3 fs-s color-base-60">
+          <%= pluralize tag.taggings_count, "post" %> published
           <% if tag.sponsorship && tag.sponsorship.status == "live" && tag.sponsorship.expires_at > Time.current %>
-            <h4>Sponsored by <%= tag.sponsorship.organization.name %> ❤️</h4>
+          | Sponsored by <%= tag.sponsorship.organization.name %> ❤️
           <% end %>
-        </a>
+        </p>
+
+        <% if tag %>
+          <div class="mt-auto">
+            <button
+              class="crayons-btn crayons-btn--secondary follow-action-button"
+              data-info='{"id":<%= tag.id %>,"className":"Tag", "followStyle":"secondary"}'>
+              Follow
+            </button>
+          </div>
+        <% end %>
+
+        <% if tag.badge_id && tag.badge %>
+          <img src="<%= cloudinary tag.badge.badge_image_url, 180 %>" style="width: 64px; height: 64px; transform: rotate(<%= -25 + (tag.id.digits.first * 5) %>deg" class="right-1 bottom-1 absolute" />
+        <% end %>
       </div>
     <% end %>
   </div>
-  <div class="side-bar sidebar-additional"></div>
 </div>

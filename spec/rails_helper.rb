@@ -173,9 +173,7 @@ RSpec.configure do |config|
   config.after(:suite) do
     WebMock.disable_net_connect!(
       allow_localhost: true,
-      allow: [
-        "api.knapsackpro.com",
-      ],
+      allow: allowed_sites,
     )
   end
 

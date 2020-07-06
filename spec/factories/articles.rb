@@ -14,6 +14,7 @@ FactoryBot.define do
       with_tags { true }
       with_hr_issue { false }
       with_tweet_tag { false }
+      with_user_subscription_tag { false }
       with_title { true }
       with_collection { nil }
     end
@@ -35,6 +36,7 @@ FactoryBot.define do
 
         #{Faker::Hipster.paragraph(sentence_count: 2)}
         #{'{% tweet 1018911886862057472 %}' if with_tweet_tag}
+        #{'{% user_subscription CTA text %}' if with_user_subscription_tag}
         #{Faker::Hipster.paragraph(sentence_count: 1)}
         #{"\n\n---\n\n something \n\n---\n funky in the code? \n---\n That's nice" if with_hr_issue}
       HEREDOC
@@ -52,5 +54,10 @@ FactoryBot.define do
     after(:create) do |article|
       create(:notification_subscription, user_id: article.user_id, notifiable: article)
     end
+  end
+
+  # TODO: (Alex Smith) - update roles before release
+  trait :with_user_subscription_tag_role_user do
+    after(:build) { |article| article.user.add_role(:super_admin) }
   end
 end
