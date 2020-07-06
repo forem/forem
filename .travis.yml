@@ -45,6 +45,9 @@ branches:
     - master
 script:
   - date --rfc-3339=seconds
+  - curl -O https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-0.6.1-linux-x86-64.tar.gz
+  - tar xvfz libwebp-0.6.1-linux-x86-64.tar.gz
+  - sudo cp libwebp-0.6.1-linux-x86-64/bin/* /usr/local/bin
   - nvm install
   - pkill -9 -f elasticsearch || true
   - curl -s -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.5.2-amd64.deb
