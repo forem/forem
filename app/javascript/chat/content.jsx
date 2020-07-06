@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import Article from './article';
@@ -41,6 +42,7 @@ export default class Content extends Component {
       // TODO: A button (role="button") cannot contain other interactive elements, i.e. buttons.
       // TODO: These should have key click events as well.
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
       <div
         className="activechatchannel__activecontent activechatchannel__activecontent--sidecar"
         id="chat_activecontent"
