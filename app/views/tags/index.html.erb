@@ -36,7 +36,7 @@
         <% if tag.short_summary.present? %>
           <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
         <% end %>
-        <p class="mb-3 fs-s color-base-50">
+        <p class="mb-3 fs-s color-base-60">
           <%= pluralize tag.taggings_count, "post" %> published
           <% if tag.sponsorship && tag.sponsorship.status == "live" && tag.sponsorship.expires_at > Time.current %>
           | Sponsored by <%= tag.sponsorship.organization.name %> ❤️
