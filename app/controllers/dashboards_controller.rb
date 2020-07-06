@@ -23,8 +23,6 @@ class DashboardsController < ApplicationController
       @articles = target.articles.includes(:organization)
     end
 
-    @articles = @articles.includes(:user_subscriptions)
-
     @reactions_count = @articles.sum(&:public_reactions_count)
     @page_views_count = @articles.sum(&:page_views_count)
 
