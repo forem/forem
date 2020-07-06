@@ -189,6 +189,7 @@ class ArticlesController < ApplicationController
     @organizations = @user&.organizations
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
+    @user_approved_liquid_tags = @user ? @user.roles.where(name: "restricted_liquid_tag").pluck(:resource_type) : []
   end
 
   def handle_user_or_organization_feed
