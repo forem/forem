@@ -4,34 +4,17 @@ import initializeFlagUserModal from '../../packs/flagUserModal';
 import { formatDate } from './util';
 
 export default class SingleArticle extends Component {
-  constructor(props) {
-    super(props);
 
-    this.state = {
-      articleOpened: false,
-    };
-  }
-
-  toggleArticle = (e) => {
+  activateToggle = (e) => {
     e.preventDefault();
 
-    const { id, path, user } = this.props;
-    const { articleOpened } = this.state;
-    if (articleOpened) {
-      this.setState({ articleOpened: false });
-      document.getElementById(`article-iframe-${id}`).innerHTML = '';
-    } else {
-      this.setState({ articleOpened: true });
-      document.getElementById(
-        `article-iframe-${id}`,
-      ).innerHTML = `<iframe class="article-iframe" src="${path}"></iframe><iframe class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>`;
-      initializeFlagUserModal(user.id, path, id);
-    }
+    const { id, path, user, toggleArticle } = this.props;
+    toggleArticle(id, path);
+    initializeFlagUserModal(user.id, path, id);
   };
 
   render() {
-    const { articleOpened } = this.state;
-    const { id, title, publishedAt, cachedTagList, user, key } = this.props;
+    const { id, title, publishedAt, cachedTagList, user, key, articleOpened } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
       if (tag) {
         return (
@@ -45,11 +28,13 @@ export default class SingleArticle extends Component {
 
     const newAuthorNotification = user.articles_count <= 3 ? '👋 ' : '';
 
+    console.log(`Current State of articleOpened: ${articleOpened}`);
+
     return (
       <button
         type="button"
         className="moderation-single-article"
-        onClick={this.toggleArticle}
+        onClick={this.activateToggle}
       >
         <span className="article-title">
           <header>
