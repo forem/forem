@@ -54,11 +54,7 @@ class ArticlesController < ApplicationController
 
     @article, needs_authorization = Articles::Builder.new(@user, @tag, @prefill).build
 
-    if needs_authorization
-      authorize Article
-    else
-      skip_authorization
-    end
+    needs_authorization ? authorize(Article) : skip_authorization
   end
 
   def edit
