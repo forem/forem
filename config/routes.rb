@@ -122,6 +122,7 @@ Rails.application.routes.draw do
       resources :articles, only: %i[index show create update] do
         collection do
           get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
+          get "/:username/:slug", to: "articles#show_by_slug", as: :slug
         end
       end
       resources :comments, only: %i[index show]
@@ -394,8 +395,8 @@ Rails.application.routes.draw do
   get "/settings/:tab/:id" => "users#edit", :constraints => { tab: /response-templates/ }
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
-  get "/dashboard/pro" => "dashboards#pro"
-  get "dashboard/pro/org/:org_id" => "dashboards#pro"
+  get "/dashboard/pro", to: "dashboards#pro"
+  get "dashboard/pro/org/:org_id", to: "dashboards#pro", as: :dashboard_pro_org
   get "dashboard/following" => "dashboards#following_tags"
   get "dashboard/following_tags" => "dashboards#following_tags"
   get "dashboard/following_users" => "dashboards#following_users"

@@ -344,6 +344,65 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
   end
 
+  describe "GET /api/articles/:username/:slug" do
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get slug_api_articles_path(article.username, article.slug), headers: { "origin": origin }
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
+    it "returns correct tags" do
+      get slug_api_articles_path(username: article.username, slug: article.slug)
+      expect(response.parsed_body["tags"]).to eq(article.tag_list)
+      expect(response.parsed_body["tag_list"]).to eq(article.tags[0].name)
+    end
+
+    it "returns proper article" do
+      get slug_api_articles_path(username: article.username, slug: article.slug)
+      expect(response.parsed_body).to include(
+        "title" => article.title,
+        "body_markdown" => article.body_markdown,
+        "tags" => article.decorate.cached_tag_list_array,
+      )
+    end
+
+    it "returns all the relevant datetimes" do
+      article.update_columns(
+        edited_at: 1.minute.from_now, crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago,
+      )
+      get slug_api_articles_path(username: article.username, slug: article.slug)
+      expect(response.parsed_body).to include(
+        "created_at" => article.created_at.utc.iso8601,
+        "edited_at" => article.edited_at.utc.iso8601,
+        "crossposted_at" => article.crossposted_at.utc.iso8601,
+        "published_at" => article.published_at.utc.iso8601,
+        "last_comment_at" => article.last_comment_at.utc.iso8601,
+      )
+    end
+
+    it "fails with an unpublished article" do
+      article.update_columns(published: false)
+      get slug_api_articles_path(username: article.username, slug: article.slug)
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "fails with an unknown article path" do
+      get slug_api_articles_path(username: "chris evan", slug: article.slug)
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "sets the correct edge caching surrogate key" do
+      get slug_api_articles_path(username: article.username, slug: article.slug)
+
+      expected_key = [article.record_key].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+    end
+  end
+
   describe "GET /api/articles/me(/:status)" do
     context "when request is unauthenticated" do
       let(:user) { create(:user) }

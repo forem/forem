@@ -53,11 +53,11 @@ There are two ways to do this:
 
 ### `js: true` Flag
 
-`js: true` indicates that we want the javascript on the page to be executed when
+`js: true` indicates that we want the JavaScript on the page to be executed when
 the page is rendered, and a headless chrome instance will be initialized to do
 so (instead of the default
 [rack_test](https://github.com/teamcapybara/capybara#racktest) driver). One side
-effect of running our javascript in our specs is that a lot of pages will hit
+effect of running our JavaScript in our specs is that a lot of pages will hit
 Elasticsearch. Since we don't clean out Elasticsearch between every single spec
 (because it is very costly) this can lead to unexpected data being loaded for a
 spec. To prevent this from happening, we can use the `:stub_elasticsearch` flag.

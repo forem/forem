@@ -32,6 +32,7 @@ module Constants
     "mastodon.cloud",
     "mastodon.gamedev.place",
     "mastodon.host",
+    "mastodon.online",
     "mastodon.sdf.org",
     "mastodon.social",
     "mastodon.technology",
