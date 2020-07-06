@@ -22,8 +22,8 @@
             <% tag = follow.followable %>
             <% if tag %>
               <% color = HexComparer.new([tag.bg_color_hex || "#0000000", tag.text_color_hex || "#ffffff"]).brightness(0.8) %>
-              <div class="crayons-card p-4 m:p-6 flex flex-col single-article <% if follow.points < 0 %>opacity-75<% end %>" style="border: 1px solid <%= color %>;box-shadow: 3px 3px 0px <%= color %>" id="follows-<%= follow.id %>">
-                <h3 class="s:mb-1 p-0 fw-medium">
+              <div class="crayons-card branded-2 p-4 m:p-6 m:pt-4 flex flex-col single-article <% if follow.points < 0 %>opacity-75<% end %>" style="border-top-color: <%= color %>;" id="follows-<%= follow.id %>">
+                <h3 class="s:mb-1 -ml-1 p-0 fw-medium">
                   <a href="/t/<%= tag.name %>" class="crayons-tag crayons-tag--l">
                     <span class="crayons-tag__prefix">#</span><%= tag.name %>
                   </a>
@@ -32,9 +32,9 @@
                   <% end %>
                 </h3>
 
-                <p class="grid-cell__summary"><%= tag.short_summary %></p>
+                <p class="grid-cell__summary truncate-at-3 mb-4 fs-s"><%= tag.short_summary %></p>
 
-                <%= form_for(follow, html: { class: "flex items-center flex-nowrap mb-4" }) do |f| %>
+                <%= form_for(follow, html: { class: "flex items-center flex-nowrap" }) do |f| %>
                   <%= f.label(:points, "Follow weight:", class: "fs-s flex-1 pr-2 color-base-60 align-right whitespace-nowrap") %>
                   <%= f.number_field(:points, step: :any, required: true, class: "crayons-textfield flex-1 fs-s", style: "max-width:90px") %>
                   <button type="submit" class="crayons-btn crayons-btn--ghost crayons-btn--s" name="commit">Save</button>
