@@ -34,6 +34,10 @@ class ArticlePolicy < ApplicationPolicy
        archived]
   end
 
+  def subscriptions?
+    user_is_author? || user_admin?
+  end
+
   private
 
   def user_is_author?
