@@ -40,12 +40,13 @@ RSpec.describe LiquidTagPolicy, type: :policy do
     end
 
     it "handles single resource roles" do
-      # TODO: (Alex Smith) - update roles to new liquid tag role for more relevant example/use
-      user = create(:user, :single_resource_admin, resource: Article)
+      user = create(:user)
+      single_resource_role = [:restricted_liquid_tag, LiquidTags::UserSubscriptionTag]
+      user.add_role(*single_resource_role)
       parse_context = { source: article, user: user }
 
       allow(liquid_tag).to receive(:parse_context).and_return(parse_context)
-      stub_const("#{liquid_tag.class}::VALID_ROLES", [[:single_resource_admin, Article]])
+      stub_const("#{liquid_tag.class}::VALID_ROLES", [single_resource_role])
       expect do
         Pundit.authorize(user, liquid_tag, action, policy_class: described_class)
       end.not_to raise_error

@@ -4,10 +4,8 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
   setup { Liquid::Template.register_tag("user_subscription", described_class) }
 
   let(:subscriber) { create(:user) }
-  let(:author) { create(:user, :super_admin) } # TODO: (Alex Smith) - update roles before release
-  let(:article_with_user_subscription_tag) do
-    create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
-  end
+  let(:author) { create(:user, :restricted_liquid_tag, resource: LiquidTags::UserSubscriptionTag) }
+  let(:article_with_user_subscription_tag) { create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true) }
 
   context "when rendering" do
     it "renders default data correctly" do
