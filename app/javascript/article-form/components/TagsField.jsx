@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Tags from '../../shared/components/tags';
 
 export const TagsField = ({ defaultValue, onInput, switchHelpContext }) => {
+  const TAG_FORMAT = '[0-9A-Za-z, ]+';
+
   return (
     <div className="crayons-article-form__tagsfield">
       <Tags
@@ -12,6 +14,7 @@ export const TagsField = ({ defaultValue, onInput, switchHelpContext }) => {
         onFocus={switchHelpContext}
         classPrefix="crayons-article-form"
         fieldClassName="crayons-textfield crayons-textfield--ghost ff-accent"
+        pattern={TAG_FORMAT}
       />
     </div>
   );
