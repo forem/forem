@@ -24,9 +24,19 @@ class ChatChannelMembershipsController < ApplicationController
     @membership = ChatChannelMembership.find(params[:id])
     authorize @membership
     @channel = @membership.chat_channel
-    data = ChatChannelDetailPresenter.new(@channel, @membership).as_json
-
-    render json: { success: true, result: data, message: "" }, success: :ok
+    invitation_link = @channel.chat_channel_invitation_links.last
+    if !invitation_link
+      invitation_link = CreateChatChannelInvitationLink.perform(@channel)
+    elsif invitation_link && (invitation_link.expiry_time < DateTime.now || invitation_link.expired?)
+      invitation_link.update(status: "expired") if invitation_link.active?
+      invitation_link = CreateChatChannelInvitationLink.perform(@channel)
+    end
+    if invitation_link&.errors&.any?
+      render json: { success: false, message: "Failed to build invitation link", errors: invitation_link.errors.full_messages }, status: :bad_request
+    else
+      data = ChatChannelDetailPresenter.new(@channel, @membership, invitation_link).as_json
+      render json: { success: true, result: data, message: "success" }, success: :ok
+    end
   end
 
   def create_membership_request
@@ -129,25 +139,36 @@ class ChatChannelMembershipsController < ApplicationController
   end
 
   def join_channel_invitation
-    chat_channel = ChatChannel.find_by(slug: params[:channel_slug])
+    @chat_channel = ChatChannel.find_by(slug: params[:channel_slug])
+    @invitation_link = @chat_channel.chat_channel_invitation_links.find_by(slug: params[:invitation_slug])
+    authorize @chat_channel
+    existing_membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: @chat_channel.id)
+    redirect_to connect_path(@chat_channel.slug) if existing_membership && existing_membership.status == "active"
+  end
+
+  def joining_invitation_response
+    chat_channel = ChatChannel.find_by(id: params[:chat_channel_id])
     authorize chat_channel
-    membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: chat_channel.id)
+    if params[:user_action] == "accept"
+      membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: chat_channel.id)
+      if !membership
+        membership = ChatChannelMembership.new(user_id: current_user.id, chat_channel_id: chat_channel.id)
+        membership.save
+        send_chat_action_message("@#{membership.user.username} join the channel", current_user, chat_channel.id, "joined") unless membership&.errors&.any?
+      elsif membership.status != "active"
+        membership.update(role: "member", status: "active")
+        send_chat_action_message("@#{membership.user.username} join the channel", current_user, membership.chat_channel_id, "joined")
+      end
 
-    if !membership
-      membership = ChatChannelMembership.new(user_id: current_user.id, chat_channel_id: chat_channel.id)
-      membership.save
-      send_chat_action_message("@#{membership.user.username} join the channel", current_user, chat_channel.id, "joined") unless membership&.errors&.any?
-    elsif membership.status != "active"
-      membership.update(role: "member", status: "active")
-      send_chat_action_message("@#{membership.user.username} join the channel", current_user, membership.chat_channel_id, "joined")
-    end
+      if membership&.errors&.any?
+        flash[:settings_notice] = membership.errors.full_messages
+        redirect_to root_path
+      end
 
-    if membership&.errors&.any?
-      flash[:settings_notice] = membership.errors.full_messages
+      redirect_to connect_path(chat_channel.slug)
+    else
       redirect_to root_path
     end
-
-    redirect_to connect_path(chat_channel.slug)
   end
 
   private

@@ -395,18 +395,14 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
   describe "GET /join_channel_invitation" do
     context "when user is not member" do
-      it "will create membership" do
+      it "render the page" do
         allow(Pusher).to receive(:trigger).and_return(true)
         sign_in second_user
         chat_channel.update(discoverable: true)
 
         get "/chat_channel_memberships/join_channel_invitation/#{chat_channel.slug}"
-        membership = ChatChannelMembership.last
 
-        expect(response.status).to eq(302)
-        expect(membership.user_id).to eq(second_user.id)
-        expect(membership.status).to eq("active")
-        expect(membership.role).to eq("member")
+        expect(response.status).to eq(200)
       end
     end
 
@@ -416,6 +412,41 @@ RSpec.describe "ChatChannelMemberships", type: :request do
 
         get "/chat_channel_memberships/join_channel_invitation/#{chat_channel.slug}"
         expect(response.status).to eq(401)
+      end
+    end
+  end
+
+  describe "POST /joining_invitation_response" do
+    context "when user accept the request" do
+      it "will create membership" do
+        allow(Pusher).to receive(:trigger).and_return(true)
+        sign_in second_user
+        chat_channel.update(discoverable: true)
+
+        post "/joining_invitation_response", params: {
+          user_action: "accept",
+          chat_channel_id: chat_channel.id
+        }
+        membership = ChatChannelMembership.last
+
+        expect(response.status).to eq(302)
+        expect(membership.user_id).to eq(second_user.id)
+      end
+    end
+
+    context "when user decline the request" do
+      it "will not create the membership" do
+        sign_in second_user
+        chat_channel.update(discoverable: true)
+
+        post "/joining_invitation_response", params: {
+          user_action: "decline",
+          chat_channel_id: chat_channel.id
+        }
+        membership = ChatChannelMembership.last
+
+        expect(response.status).to eq(302)
+        expect(membership.user_id).not_to eq(second_user.id)
       end
     end
   end

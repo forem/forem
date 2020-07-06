@@ -1,10 +1,11 @@
 class ChatChannelDetailPresenter
-  def initialize(chat_channel, current_membership)
+  def initialize(chat_channel, current_membership, invitation_link)
     @chat_channel = chat_channel
     @current_membership = current_membership
+    @invitation_link = invitation_link
   end
 
-  attr_accessor :chat_channel, :current_membership
+  attr_accessor :chat_channel, :current_membership, :invitation_link
 
   def as_json
     {
@@ -23,7 +24,7 @@ class ChatChannelDetailPresenter
         requested: membership_users(chat_channel.requested_memberships)
       },
       current_membership: current_membership,
-      invitation_link: invitation_link(chat_channel)
+      invitation_link: URL.url(invitation_link.url)
     }
   end
 
@@ -39,9 +40,5 @@ class ChatChannelDetailPresenter
         image: ProfileImage.new(membership.user).get(width: 90)
       }
     end
-  end
-
-  def invitation_link(chat_channel)
-    URL.url("/chat_channel_memberships/join_channel_invitation/#{chat_channel.slug}")
   end
 end
