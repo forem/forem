@@ -564,6 +564,7 @@ ActiveRecord::Schema.define(version: 2020_07_06_133151) do
     t.string "subscription_status", default: "all_articles", null: false
     t.datetime "updated_at"
     t.index ["created_at"], name: "index_follows_on_created_at"
+    t.index ["followable_id", "followable_type", "follower_id", "follower_type"], name: "index_follows_on_followable_and_follower", unique: true
     t.index ["followable_id", "followable_type"], name: "fk_followables"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
   end

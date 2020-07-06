@@ -12,31 +12,32 @@
       <%= render "actions" %>
     </aside>
 
-    <div class="crayons-layout__content">
-      <% if @articles.any? %>
-        <div class="flex items-center justify-between mb-3">
-          <h2 class="hidden m:block fs-l fw-heavy">Posts</h2>
+    <div class="crayons-layout__content flex flex-col">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="hidden m:block fs-l fw-heavy">Posts</h2>
 
-          <div class="flex flex-wrap">
-            <% if params[:which] != "organization" %>
-              <% if @articles.any? {|article| article.archived } %>
-                <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink", class: "crayons-btn crayons-btn--outlined ml-2 whitespace-nowrap my-1" %>
-              <% end %>
-
+        <div class="flex flex-wrap">
+          <% if params[:which] != "organization" %>
+            <% if @articles.any?(&:archived) %>
+              <%= link_to "Show archived", "javascript:;", id: "toggleArchivedLink", class: "crayons-btn crayons-btn--outlined ml-2 whitespace-nowrap my-1" %>
+            <% end %>
+            <% if @articles.any? %>
               <%= select_tag "dashboard_sort", options_for_select(sort_options, params[:sort]), 'aria-label': "Sort By", class: "crayons-select w-auto ml-2 my-1" %>
             <% end %>
+          <% end %>
 
-            <% if @organizations && @organizations.size > 0 && (params[:which].blank? || params[:which] == "organization") %>
-              <select id="dashboard_author" class="crayons-select w-auto ml-2 my-1">
-                <option value="/dashboard" <%= "selected" if params[:which].blank? %>>Personal</option>
-                <% @organizations.each do |org| %>
-                  <option value="/dashboard/organization/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %> (<%= org.articles_count %>)</option>
-                <% end %>
-              </select>
-            <% end %>
-          </div>
+          <% if @organizations && @organizations.size > 0 && (params[:which].blank? || params[:which] == "organization") %>
+            <select id="dashboard_author" class="crayons-select w-auto ml-2 my-1">
+              <option value="/dashboard" <%= "selected" if params[:which].blank? %>>Personal</option>
+              <% @organizations.each do |org| %>
+                <option value="/dashboard/organization/<%= org.id %>" <%= "selected" if params[:org_id].to_i == org.id %>><%= org.name %> (<%= org.articles_count %>)</option>
+              <% end %>
+            </select>
+          <% end %>
         </div>
+      </div>
 
+      <% if @articles.any? %>
         <div class="crayons-card mb-6">
           <% @articles.each do |article| %>
             <% if params[:which] == "organization" %>
@@ -52,7 +53,7 @@
         </div>
 
       <% else %>
-        <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">
+        <div class="p-6 m:p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center flex-1">
           <div>
             <%= image_tag(cl_image_path(SiteConfig.mascot_image_url,
                                         type: "fetch",

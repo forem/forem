@@ -1,7 +1,7 @@
 class SlideshareTag < LiquidTagBase
   PARTIAL = "liquids/slideshare".freeze
 
-  def initialize(tag_name, key, tokens)
+  def initialize(_tag_name, key, _parse_context)
     super
     @key = validate(key.strip)
   end

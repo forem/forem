@@ -10,6 +10,6 @@ RSpec.describe "Display articles search spec", type: :system, js: true, elastics
     visit "/search?q=#{url_encoded_query}&filters=class_name:Comment"
 
     expect(page.find(".crayons-story__snippet")["innerHTML"]).
-      to eq("…&lt;<em>marquee</em>='<em>alert</em>(<em>document.cookie</em>)'&gt;<em>XSS</em>…")
+      to eq("…&lt;<mark>marquee</mark>='<mark>alert</mark>(<mark>document.cookie</mark>)'&gt;<mark>XSS</mark>…")
   end
 end
