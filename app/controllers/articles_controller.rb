@@ -63,6 +63,7 @@ class ArticlesController < ApplicationController
     @version = @article.has_frontmatter? ? "v1" : "v2"
     @user = @article.user
     @organizations = @user&.organizations
+    set_user_approved_liquid_tags
   end
 
   def manage
@@ -189,6 +190,10 @@ class ArticlesController < ApplicationController
     @organizations = @user&.organizations
     @tag = Tag.find_by(name: params[:template])
     @prefill = params[:prefill].to_s.gsub("\\n ", "\n").gsub("\\n", "\n")
+    set_user_approved_liquid_tags
+  end
+
+  def set_user_approved_liquid_tags
     @user_approved_liquid_tags = @user ? @user.roles.where(name: "restricted_liquid_tag").pluck(:resource_type) : []
   end
 
