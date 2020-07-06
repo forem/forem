@@ -368,7 +368,7 @@ RSpec.describe "Dashboards", type: :request do
       user.add_role(:admin)
       article_with_user_subscription_tag = create(:article, user: user, with_user_subscription_tag: true)
       create_list(:user_subscription,
-                  102,
+                  102, # Current pagination limit is 100
                   author: user,
                   user_subscription_sourceable: article_with_user_subscription_tag)
       get "/dashboard/subscriptions", params: { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
