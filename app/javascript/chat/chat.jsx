@@ -1657,7 +1657,7 @@ export default class Chat extends Component {
       >
         <div className="crayons-modal__box">
           <div className="crayons-modal__box__body">
-            <h3>Are you sure, you want to delete this message ?</h3>
+            <h3>Are you sure, you want to delete this message?</h3>
             <div className="delete-actions__container">
               <div
                 role="button"

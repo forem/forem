@@ -73,7 +73,7 @@ export const Preview = ({ previewResponse, articleState, errors }) => {
       <article className="crayons-article">
         {titleArea(previewResponse, articleState, errors)}
         <div
-          className="crayons-article__body"
+          className="crayons-article__body text-styles"
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: previewResponse.processed_html }}
         />

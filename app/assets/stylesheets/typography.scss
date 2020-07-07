@@ -4,7 +4,7 @@
 // Alternate base fonts
 body.sans-serif-article-body {
   .body,
-  .crayons-article__body {
+  .text-styles {
     font-family: var(--ff-default);
   }
   .body p {
@@ -15,7 +15,7 @@ body.sans-serif-article-body {
 
 body.comic-sans-article-body {
   .body,
-  .crayons-article__body {
+  .text-styles {
     font-family: 'Comic Sans MS', cursive, sans-serif;
   }
   .body p {
@@ -26,7 +26,7 @@ body.comic-sans-article-body {
 
 body.open-dyslexic-article-body {
   .body,
-  .crayons-article__body {
+  text-styles {
     font-display: swap;
     font-family: OpenDyslexic, sans-serif;
   }
@@ -37,15 +37,15 @@ body.open-dyslexic-article-body {
   }
   .body b,
   .body strong,
-  .crayons-article__body b,
-  .crayons-article__body strong {
+  .text-styles b,
+  .text-styles strong {
     font-family: OpenDyslexic-Bold, sans-serif;
   }
 
   .body i,
   .body em,
-  .crayons-article__body i,
-  .crayons-article__body em {
+  .text-styles i,
+  .text-styles em {
     font-family: OpenDyslexic-Italic, sans-serif;
   }
 
@@ -57,21 +57,21 @@ body.open-dyslexic-article-body {
   .body em > b,
   .body i > strong,
   .body em > strong,
-  .crayons-article__body b > i,
-  .crayons-article__body b > em,
-  .crayons-article__body strong > i,
-  .crayons-article__body strong > em,
-  .crayons-article__body i > b,
-  .crayons-article__body em > b,
-  .crayons-article__body i > strong,
-  .crayons-article__body em > strong {
+  .text-styles b > i,
+  .text-styles b > em,
+  .text-styles strong > i,
+  .text-styles strong > em,
+  .text-styles i > b,
+  .text-styles em > b,
+  .text-styles i > strong,
+  .text-styles em > strong {
     font-family: OpenDyslexic-Bolditalic;
   }
 }
 
 body.monospace-article-body {
   .body,
-  .crayons-article__body {
+  .text-styles {
     font-family: var(--ff-accent);
   }
   .body p {
