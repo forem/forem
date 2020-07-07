@@ -64,8 +64,8 @@ class SiteConfig < RailsSettings::Base
   field :logo_svg, type: :string, default: ""
   field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
 
-  field :navbar_left_icon_svg, type: :string, default: STACK_ICON
-  field :navbar_right_icon_svg, type: :string, default: LIGHTNING_ICON
+  field :left_navbar_svg_icon, type: :string, default: STACK_ICON
+  field :right_navbar_svg_icon, type: :string, default: LIGHTNING_ICON
 
   # Mascot
   field :mascot_user_id, type: :integer, default: 1

@@ -378,25 +378,25 @@
               </div>
 
               <div class="form-group">
-                <%= f.label :navbar_left_icon_svg %>
-                <%= f.text_area :navbar_left_icon_svg,
+                <%= f.label :left_navbar_svg_icon %>
+                <%= f.text_area :left_navbar_svg_icon,
                                 class: "form-control",
-                                value: SiteConfig.navbar_left_icon_svg,
+                                value: SiteConfig.left_navbar_svg_icon,
                                 rows: 6,
                                 placeholder: "<svg ...></svg>" %>
                 <div class="alert alert-info">The SVG icon to bring out the left navbar navigation menu</div>
-                <%= @navbar_left_icon_svg %>
+                <%= @left_navbar_svg_icon %>
               </div>
 
               <div class="form-group">
-                <%= f.label :navbar_right_icon_svg %>
-                <%= f.text_area :navbar_right_icon_svg,
+                <%= f.label :right_navbar_svg_icon %>
+                <%= f.text_area :right_navbar_svg_icon,
                                 class: "form-control",
-                                value: SiteConfig.navbar_right_icon_svg,
+                                value: SiteConfig.right_navbar_svg_icon,
                                 rows: 6,
                                 placeholder: "<svg ...></svg>" %>
                 <div class="alert alert-info">The SVG icon to bring out the right navbar navigation menu</div>
-                <%= @navbar_right_icon_svg %>
+                <%= @right_navbar_svg_icon %>
               </div>
             </div>
           </div>

@@ -5,8 +5,8 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def show
     @logo_svg = SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
-    @navbar_left_icon_svg = SiteConfig.navbar_left_icon_svg.html_safe # rubocop:disable Rails/OutputSafety
-    @navbar_right_icon_svg = SiteConfig.navbar_right_icon_svg.html_safe # rubocop:disable Rails/OutputSafety
+    @left_navbar_svg_icon = SiteConfig.left_navbar_svg_icon.html_safe # rubocop:disable Rails/OutputSafety
+    @right_navbar_svg_icon = SiteConfig.right_navbar_svg_icon.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def create
@@ -136,8 +136,8 @@ class Internal::ConfigsController < Internal::ApplicationController
       logo_svg
       main_social_image
       primary_sticker_image_url
-      navbar_left_icon_svg
-      navbar_right_icon_svg
+      left_navbar_svg_icon
+      right_navbar_svg_icon
     ]
   end
 
