@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/thepracticaldev/acts_as_follower.git
-  revision: 288690cd99bc470eaee493fce5bfa9fe23157692
+  revision: 06393d3693a1a3d4b390aec4976c8b8f3a81cf01
   branch: master
   specs:
     acts_as_follower (0.2.1)
