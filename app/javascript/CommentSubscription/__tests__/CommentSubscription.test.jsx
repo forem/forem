@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import {
   CommentSubscription,
@@ -80,16 +80,14 @@ describe('<CommentSubscription />', () => {
 
   it('should hide subscription options when the Done button is clicked', async () => {
     const onSubscribe = jest.fn();
-    const { getByTestId, getByText } = render(
+    const { getByTestId, getByText, findByTestId } = render(
       <CommentSubscription
         onSubscribe={onSubscribe}
         subscriptionType={COMMENT_SUBSCRIPTION_TYPE.AUTHOR}
       />,
     );
 
-    let subscriptionPanel = await waitForElement(() =>
-      getByTestId('subscriptions-panel'),
-    );
+    let subscriptionPanel = await findByTestId('subscriptions-panel');
 
     // Panel is hidden
     expect(subscriptionPanel.getAttribute('aria-hidden')).toEqual('true');
@@ -97,18 +95,14 @@ describe('<CommentSubscription />', () => {
     const cogButton = getByTestId('subscription-settings');
     cogButton.click();
 
-    subscriptionPanel = await waitForElement(() =>
-      getByTestId('subscriptions-panel'),
-    );
+    subscriptionPanel = await findByTestId('subscriptions-panel');
 
     expect(subscriptionPanel.getAttribute('aria-hidden')).toEqual('false');
 
     const doneButton = getByText(/done/i);
     doneButton.click();
 
-    subscriptionPanel = await waitForElement(() =>
-      getByTestId('subscriptions-panel'),
-    );
+    subscriptionPanel = await findByTestId('subscriptions-panel');
 
     expect(subscriptionPanel.getAttribute('aria-hidden')).toEqual('true');
   });

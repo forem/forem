@@ -1,7 +1,7 @@
 class NextTechTag < LiquidTagBase
   PARTIAL = "liquids/nexttech".freeze
 
-  def initialize(tag_name, share_url, tokens)
+  def initialize(_tag_name, share_url, _parse_context)
     super
     @token = parse_share_url(share_url)
   end

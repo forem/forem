@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import { axe } from 'jest-axe';
 import RequestManager from '../requestManager';
 
@@ -39,28 +39,26 @@ describe('<RequestManager />', () => {
     expect(request.textContent).toContain('Accept');
   });
 
-  it.skip('should call the relavant handlers when the buttons are clicked', async () => {
+  it('should call the relavant handlers when the buttons are clicked', async () => {
     const handleRequestRejection = jest.fn();
     const handleRequestApproval = jest.fn();
 
     const { getByText } = render(
       <RequestManager
         resource={data}
-        handleRequestRejection={jest.fn()}
-        handleRequestApproval={jest.fn()}
+        handleRequestRejection={handleRequestRejection}
+        handleRequestApproval={handleRequestApproval}
       />,
     );
-    const rejectButton = getByText(/Reject/i);
-    const acceptButton = getByText(/Accept/i);
+    const rejectButton = getByText(/reject/i);
+    const acceptButton = getByText(/accept/i);
 
     rejectButton.click();
-    await waitForElement(() =>
-      expect(handleRequestRejection).toHaveBeenCalledTimes(1),
-    );
+
+    expect(handleRequestRejection).toHaveBeenCalledTimes(1);
 
     acceptButton.click();
-    await waitForElement(() =>
-      expect(handleRequestApproval).toHaveBeenCalledTimes(1),
-    );
+
+    expect(handleRequestApproval).toHaveBeenCalledTimes(1);
   });
 });

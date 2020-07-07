@@ -50,7 +50,7 @@ tests, we then run a series of other checks. These additional checks are split
 up between the different jobs. Here is a list of those additional checks that
 are run.
 
-- Job 0 is where we run Javascript tests, Preact tests, and coverage checks.
+- Job 0 is where we run JavaScript tests, Preact tests, and coverage checks.
 - Job 1 is where Travis builds Storybook to ensure its integrity, and where we
   check for any known vulnerabilities using `bundle-audit`.
 - Job 2 is where Travis fires up a Rails console to ensure the application loads

@@ -194,7 +194,7 @@ class CommentsController < ApplicationController
     begin
       permitted_body_markdown = permitted_attributes(Comment)[:body_markdown]
       fixed_body_markdown = MarkdownFixer.fix_for_preview(permitted_body_markdown)
-      parsed_markdown = MarkdownParser.new(fixed_body_markdown)
+      parsed_markdown = MarkdownParser.new(fixed_body_markdown, source: Comment.new, user: current_user)
       processed_html = parsed_markdown.finalize
     rescue StandardError => e
       processed_html = "<p>😔 There was an error in your markdown</p><hr><p>#{e}</p>"
@@ -221,6 +221,11 @@ class CommentsController < ApplicationController
     authorize @comment
     @comment.hidden_by_commentable_user = true
     @comment&.commentable&.update_column(:any_comments_hidden, true)
+
+    Notification.destroy_by(user_id: current_user.id,
+                            notifiable_type: "Comment",
+                            notifiable_id: params[:comment_id])
+
     if @comment.save
       render json: { hidden: "true" }, status: :ok
     else

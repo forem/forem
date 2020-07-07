@@ -4,7 +4,7 @@ RSpec.describe "Tags", type: :request, proper_status: true do
   describe "GET /tags" do
     it "returns proper page" do
       get "/tags"
-      expect(response.body).to include("Top 100 Tags")
+      expect(response.body).to include("Top tags")
     end
   end
 

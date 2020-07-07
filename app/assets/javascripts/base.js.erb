@@ -675,7 +675,8 @@ var instantClick
   Honeybadger.configure({
     apiKey: "<%= ApplicationConfig['HONEYBADGER_JS_API_KEY'] %>",
     environment: "<%= Rails.env %>",
-    revision: "<%= ApplicationConfig['HEROKU_SLUG_COMMIT'] %>"
+    revision: "<%= ApplicationConfig['HEROKU_SLUG_COMMIT'] %>",
+    ignorePatterns: [/ResizeObserver/i],
   });
 
 // INITIALIZE AHOY TRACKING
