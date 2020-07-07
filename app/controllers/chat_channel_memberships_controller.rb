@@ -24,19 +24,15 @@ class ChatChannelMembershipsController < ApplicationController
     @membership = ChatChannelMembership.find(params[:id])
     authorize @membership
     @channel = @membership.chat_channel
-    invitation_link = @channel.invitation_links.last
-    if !invitation_link
-      invitation_link = ChatChannels::CreateInvitationLink.call(@channel)
-    elsif invitation_link && (invitation_link.expiry_at.before?(Time.current) || invitation_link.expired?)
-      invitation_link.update(status: "expired") if invitation_link.active?
-      invitation_link = ChatChannels::CreateInvitationLink.call(@channel)
+    @invitation_link = @channel.invitation_links.last
+    if !@invitation_link
+      @invitation_link = ChatChannels::CreateInvitationLink.call(@channel)
+    elsif @invitation_link && (@invitation_link.expiry_at.before?(Time.current) || @invitation_link.expired?)
+      @invitation_link.update(status: "expired") if @invitation_link.active?
+      @invitation_link = ChatChannels::CreateInvitationLink.call(@channel)
     end
-    if invitation_link.errors&.any?
-      render json: { success: false, message: "Failed to build invitation link", errors: invitation_link.errors.full_messages }, status: :bad_request
-    else
-      data = ChatChannelDetailPresenter.new(@channel, @membership, invitation_link).as_json
-      render json: { success: true, result: data, message: "success" }, success: :ok
-    end
+
+    render json: { success: false, message: "Failed to build invitation link", errors: @invitation_link.errors.full_messages }, status: :bad_request if @invitation_link.errors&.any?
   end
 
   def create_membership_request
@@ -213,7 +209,15 @@ class ChatChannelMembershipsController < ApplicationController
       flash[:settings_notice] = "Invitation rejected."
     end
 
-    membership_user = MembershipUserPresenter.new(@chat_channel_membership).as_json
+    membership_user = {
+      name: @chat_channel_membership.user.name,
+      username: @chat_channel_membership.user.username,
+      user_id: @chat_channel_membership.user.id,
+      membership_id: @chat_channel_membership.id,
+      role: @chat_channel_membership.role,
+      status: @chat_channel_membership.status,
+      image: ProfileImage.new(@chat_channel_membership.user).get(width: 90)
+    }
 
     respond_to do |format|
       format.html { redirect_to chat_channel_memberships_path }

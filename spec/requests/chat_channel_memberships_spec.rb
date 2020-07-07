@@ -16,7 +16,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         user.add_role(:super_admin)
 
         membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: user.id)
-        get "/chat_channel_memberships/chat_channel_info/#{membership.id}"
+        get "/chat_channel_memberships/chat_channel_info/#{membership.id}", as: :json
       end
 
       it "return all details of chat channel" do
@@ -31,7 +31,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
         chat_channel.add_users([second_user])
 
         membership = ChatChannelMembership.find_by(chat_channel_id: chat_channel.id, user_id: second_user.id)
-        get "/chat_channel_memberships/chat_channel_info/#{membership.id}"
+        get "/chat_channel_memberships/chat_channel_info/#{membership.id}", as: :json
       end
 
       it "return only channel info and current membership" do
