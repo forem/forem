@@ -168,7 +168,7 @@ export class Help extends Component {
                     </td>
                   </tr>
                   <tr>
-                    <td className="ff-accent">[Link][https://...]</td>
+                    <td className="ff-accent">[Link](https://...)</td>
                     <td>
                       <a href="https://forem.com">Link</a>
                     </td>
