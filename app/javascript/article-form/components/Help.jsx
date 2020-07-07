@@ -219,7 +219,7 @@ export class Help extends Component {
                       <span class="fs-xs">```</span>
                     </td>
                     <td>
-                      <div class="highlight p-2">
+                      <div class="highlight p-2 overflow-hidden">
                         <code>code block</code>
                       </div>
                     </td>
