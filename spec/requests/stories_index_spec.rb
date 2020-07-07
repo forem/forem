@@ -16,7 +16,6 @@ RSpec.describe "StoriesIndex", type: :request do
       article = create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
@@ -29,7 +28,6 @@ RSpec.describe "StoriesIndex", type: :request do
       create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include("min read")
     end
 

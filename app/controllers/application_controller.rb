@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   include Pundit
   include FastlyHeaders
   include ImageUploads
+  include VerifySetupCompleted
 
   rescue_from ActionView::MissingTemplate, with: :routing_error
 

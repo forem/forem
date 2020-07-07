@@ -26,18 +26,17 @@ class SiteConfig < RailsSettings::Base
   field :campaign_articles_require_approval, type: :boolean, default: 0
 
   # Community Content
-  field :community_description, type: :string, default: "A constructive and inclusive social network. Open source and radically transparent."
-  field :community_member_description, type: :string, default: "amazing humans who code."
+  field :community_description, type: :string
   field :community_member_label, type: :string, default: "user"
-  field :community_action, type: :string, default: "coding"
-  field :tagline, type: :string, default: "We're a place where coders share, stay up-to-date and grow their careers."
+  field :community_action, type: :string
+  field :tagline, type: :string
 
   # Emails
   field :email_addresses, type: :hash, default: {
     default: ApplicationConfig["DEFAULT_EMAIL"],
-    business: "partners@dev.to",
-    privacy: "privacy@dev.to",
-    members: "members@dev.to"
+    business: ApplicationConfig["DEFAULT_EMAIL"],
+    privacy: ApplicationConfig["DEFAULT_EMAIL"],
+    members: ApplicationConfig["DEFAULT_EMAIL"]
   }
 
   # Email digest frequency
@@ -45,7 +44,7 @@ class SiteConfig < RailsSettings::Base
   field :periodic_email_digest_min, type: :integer, default: 2
 
   # Jobs
-  field :jobs_url, type: :string, default: "https://jobs.dev.to"
+  field :jobs_url, type: :string
   field :display_jobs_banner, type: :boolean, default: false
 
   # Google Analytics Reporting API v4
@@ -54,18 +53,17 @@ class SiteConfig < RailsSettings::Base
   field :ga_fetch_rate, type: :integer, default: 25
 
   # Images
-  field :main_social_image, type: :string, default: "https://thepracticaldev.s3.amazonaws.com/i/6hqmcjaxbgbon8ydw93z.png"
+  field :main_social_image, type: :string
   field :favicon_url, type: :string, default: "favicon.ico"
-  field :logo_png, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/devlogo-pwa-512.png"
-  field :logo_svg, type: :string, default: ""
-  field :primary_sticker_image_url, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/rainbowdev.svg"
+  field :logo_png, type: :string
+  field :logo_svg, type: :string
   field :secondary_logo_url, type: :string
 
   # Mascot
   field :mascot_user_id, type: :integer, default: 1
-  field :mascot_image_url, type: :string, default: "https://dev-to-uploads.s3.amazonaws.com/i/y5767q6brm62skiyywvc.png"
-  field :mascot_footer_image_url, type: :string, default: "https://dev-to-uploads.s3.amazonaws.com/i/wmv3mtusjwb3r13d5h2f.png"
-  field :mascot_image_description, type: :string, default: "Sloan, the sloth mascot"
+  field :mascot_image_url, type: :string
+  field :mascot_image_description, type: :string, default: "The community mascot"
+  field :mascot_footer_image_url, type: :string
 
   # Meta keywords
   field :meta_keywords, type: :hash, default: {
@@ -75,8 +73,8 @@ class SiteConfig < RailsSettings::Base
   }
 
   # Monetization
-  field :payment_pointer, type: :string, default: "$ilp.uphold.com/24HhrUGG7ekn" # Experimental
-  field :shop_url, type: :string, default: "https://shop.dev.to"
+  field :payment_pointer, type: :string # Experimental
+  field :shop_url, type: :string
 
   # Newsletter
   # <https://mailchimp.com/developer/>
@@ -89,11 +87,11 @@ class SiteConfig < RailsSettings::Base
   field :mailchimp_incoming_webhook_secret, type: :string, default: ""
 
   # Onboarding
-  field :onboarding_logo_image, type: :string, default: "https://dev.to/assets/purple-dev-logo.png"
-  field :onboarding_background_image, type: :string, default: "https://dev.to/assets/onboarding-background-white.png"
-  field :onboarding_taskcard_image, type: :string, default: "https://practicaldev-herokuapp-com.freetls.fastly.net/assets/staggered-dev.svg"
-  field :suggested_tags, type: :array, default: %w[beginners career computerscience javascript security ruby rails swift kotlin]
-  field :suggested_users, type: :array, default: %w[ben jess peter maestromac andy liana]
+  field :onboarding_logo_image, type: :string
+  field :onboarding_background_image, type: :string
+  field :onboarding_taskcard_image, type: :string
+  field :suggested_tags, type: :array, default: %w[]
+  field :suggested_users, type: :array, default: %w[]
 
   # Rate limits
   field :rate_limit_follow_count_daily, type: :integer, default: 500
@@ -119,10 +117,10 @@ class SiteConfig < RailsSettings::Base
     instagram: nil,
     twitch: nil
   }
-  field :twitter_hashtag, type: :string, default: "#DEVCommunity"
+  field :twitter_hashtag, type: :string
 
   # Tags
-  field :sidebar_tags, type: :array, default: %w[help challenge discuss explainlikeimfive meta watercooler]
+  field :sidebar_tags, type: :array, default: %w[]
 
   # User Experience
   # These are the default UX settings, which can be overridded by individual user preferences.

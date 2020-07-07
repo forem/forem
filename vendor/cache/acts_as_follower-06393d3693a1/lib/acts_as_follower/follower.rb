@@ -30,7 +30,7 @@ module ActsAsFollower #:nodoc:
       def follow(followable)
         if self != followable
           params = {followable_id: followable.id, followable_type: parent_class_name(followable)}
-          self.follows.where(params).first_or_create!
+          self.follows.create_or_find_by!(params)
         end
       end
 

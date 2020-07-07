@@ -6,3 +6,6 @@ memory
 .rvmrc
 Gemfile.lock
 log
+.bundle
+vendor
+
