@@ -90,8 +90,11 @@ module Articles
     end
 
     def user_editor_v1
+      body = "---\ntitle: \npublished: false\ndescription: " \
+        "\ntags: \n//cover_image: https://direct_url_to_image.jpg\n---\n\n"
+
       Article.new(
-        body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n//cover_image: https://direct_url_to_image.jpg\n---\n\n",
+        body_markdown: body,
         processed_html: "",
         user_id: @user&.id,
       )

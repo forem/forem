@@ -18,7 +18,8 @@ class HtmlVariant < ApplicationRecord
   scope :relevant, -> { where(approved: true, published: true) }
 
   def calculate_success_rate!
-    self.success_rate = html_variant_successes.size.to_f / (html_variant_trials.size * 10.0) # x10 because we only capture every 10th
+    # x10 because we only capture every 10th
+    self.success_rate = html_variant_successes.size.to_f / (html_variant_trials.size * 10.0)
     save!
   end
 

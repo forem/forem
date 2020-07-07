@@ -27,7 +27,8 @@ class TagAdjustmentCreationService
       article.update!(tag_list: article.tag_list.remove(removed_tags))
     end
 
-    article.update!(tag_list: article.tag_list.add(@tag_adjustment.tag_name)) if @tag_adjustment.adjustment_type == "addition"
+    update_tag_list = @tag_adjustment.adjustment_type == "addition"
+    article.update!(tag_list: article.tag_list.add(@tag_adjustment.tag_name)) if update_tag_list
   end
 
   def creation_args

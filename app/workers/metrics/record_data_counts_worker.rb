@@ -22,7 +22,8 @@ module Metrics
                          else
                            model::SEARCH_CLASS.document_count
                          end
-        DatadogStatsClient.gauge("elasticsearch.document_count", document_count, tags: ["table_name:#{model.table_name}"])
+        DatadogStatsClient.gauge("elasticsearch.document_count", document_count,
+                                 tags: ["table_name:#{model.table_name}"])
       end
     end
   end

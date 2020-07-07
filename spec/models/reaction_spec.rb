@@ -106,7 +106,8 @@ RSpec.describe Reaction, type: :model do
       it "on destroy enqueues job to delete reaction from elasticsearch" do
         reaction.category = "readinglist"
         reaction.save
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, reaction.id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                     args: [described_class::SEARCH_CLASS.to_s, reaction.id]) do
           reaction.destroy
         end
       end

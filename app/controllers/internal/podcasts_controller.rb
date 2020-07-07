@@ -9,7 +9,10 @@ class Internal::PodcastsController < Internal::ApplicationController
       select("podcasts.*, count(podcast_episodes) as episodes_count").
       group("podcasts.id").order("podcasts.created_at DESC").
       page(params[:page]).per(50)
-    @podcasts = @podcasts.where("podcasts.title ILIKE :search", search: "%#{params[:search]}%") if params[:search].present?
+
+    return if params[:search].blank?
+
+    @podcasts = @podcasts.where("podcasts.title ILIKE :search", search: "%#{params[:search]}%")
   end
 
   def edit; end

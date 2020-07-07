@@ -61,9 +61,10 @@ RSpec.describe "internal/users", type: :request do
       )
       verification_link = app_url(path)
 
-      expect(ActionMailer::Base.deliveries.count).to eq(1)
-      expect(ActionMailer::Base.deliveries.first.subject).to eq("Verify Your #{ApplicationConfig['COMMUNITY_NAME']} Account Ownership")
-      expect(ActionMailer::Base.deliveries.first.text_part.body).to include(verification_link)
+      deliveries = ActionMailer::Base.deliveries
+      expect(deliveries.count).to eq(1)
+      expect(deliveries.first.subject).to eq("Verify Your #{ApplicationConfig['COMMUNITY_NAME']} Account Ownership")
+      expect(deliveries.first.text_part.body).to include(verification_link)
 
       sign_in(user)
       get verification_link

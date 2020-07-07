@@ -45,7 +45,8 @@ RSpec.describe FastlyConfig::Snippets, type: :service do
 
       snippets_config.update(fastly_version)
 
-      tags = hash_including(tags: array_including("snippet_update_type:update", "snippet_name:test", "new_version:#{fastly_version.number}"))
+      tags = hash_including(tags: array_including("snippet_update_type:update", "snippet_name:test",
+                                                  "new_version:#{fastly_version.number}"))
 
       expect(DatadogStatsClient).to have_received(:increment).with("fastly.snippets", tags).at_least(:once)
     end

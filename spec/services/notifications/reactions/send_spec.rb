@@ -64,7 +64,9 @@ RSpec.describe Notifications::Reactions::Send, type: :service do
       expect(notification.json_data["user"]["name"]).to eq(user2.name)
       expect(notification.json_data["reaction"]["reactable_id"]).to eq(article.id)
       expect(notification.json_data["reaction"]["aggregated_siblings"].size).to eq(2)
-      expect(notification.json_data["reaction"]["aggregated_siblings"].map { |s| s["user"]["id"] }.sort).to eq([user2.id, user3.id].sort)
+      expect(notification.json_data["reaction"]["aggregated_siblings"].map do |s|
+               s["user"]["id"]
+             end.sort).to eq([user2.id, user3.id].sort)
     end
 
     context "when notification exists" do

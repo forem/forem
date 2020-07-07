@@ -5,7 +5,8 @@ RSpec.describe UserBlocks::ChannelHandler, type: :service do
     create_list(:user, 2)
     blocker = User.first
     blocked = User.second
-    chat_channel = create(:chat_channel, channel_type: "direct", status: "active", slug: "#{blocker.username}/#{blocked.username}")
+    chat_channel = create(:chat_channel, channel_type: "direct", status: "active",
+                                         slug: "#{blocker.username}/#{blocked.username}")
     create(:chat_channel_membership, user: blocker, chat_channel: chat_channel)
     create(:chat_channel_membership, user: blocked, chat_channel: chat_channel)
     create(:user_block, blocker: blocker, blocked: blocked)

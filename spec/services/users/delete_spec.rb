@@ -88,7 +88,8 @@ RSpec.describe Users::Delete, type: :service do
     end.to change(FieldTest::Membership, :count).by(-1)
   end
 
-  # check that all the associated records are being destroyed, except for those that are kept explicitly (kept_associations)
+  # check that all the associated records are being destroyed,
+  # except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
     let(:kept_association_names) do
       %i[
@@ -96,7 +97,11 @@ RSpec.describe Users::Delete, type: :service do
         offender_feedback_messages reporter_feedback_messages
       ]
     end
-    let(:direct_associations) { User.reflect_on_all_associations.reject { |a| a.options.key?(:join_table) || a.options.key?(:through) } }
+    let(:direct_associations) do
+      User.reflect_on_all_associations.reject do |a|
+        a.options.key?(:join_table) || a.options.key?(:through)
+      end
+    end
     let!(:user_associations) do
       create_associations(direct_associations.reject { |a| kept_association_names.include?(a.name) })
     end
