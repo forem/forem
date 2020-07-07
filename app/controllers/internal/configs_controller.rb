@@ -3,10 +3,6 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   before_action :extra_authorization_and_confirmation, only: [:create]
 
-  def show
-    @logo_svg = SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
-  end
-
   def create
     clean_up_params
 
@@ -90,7 +86,6 @@ class Internal::ConfigsController < Internal::ApplicationController
   def community_params
     %i[
       community_description
-      community_member_description
       community_member_label
       community_action
       tagline
@@ -133,7 +128,7 @@ class Internal::ConfigsController < Internal::ApplicationController
       logo_png
       logo_svg
       main_social_image
-      primary_sticker_image_url
+      secondary_logo_url
     ]
   end
 

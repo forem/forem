@@ -33,7 +33,7 @@
                      } %>
           <div id="apiBodyContainer" class="card-body collapse hide" aria-labelledby="apiBodyContainer">
             <div class="form-group">
-              <%= f.label :health_check_token, "Health Check Token" %>
+              <%= internal_config_label :health_check_token %>
               <%= f.text_field :health_check_token,
                                class: "form-control",
                                value: SiteConfig.health_check_token,
@@ -53,7 +53,7 @@
                      } %>
           <div id="authenticationBodyContainer" class="card-body collapse hide" aria-labelledby="authenticationBodyContainer">
             <div class="form-group">
-              <%= f.label :authentication_providers, "Authentication providers" %>
+              <%= internal_config_label :authentication_providers %>
               <%= select_tag "site_config[authentication_providers]",
                              options_from_collection_for_select(
                                authentication_available_providers,
@@ -78,7 +78,7 @@
                      } %>
           <div id="campaignBodyContainer" class="card-body collapse hide" aria-labelledby="campaignBodyContainer">
             <div class="form-group">
-              <%= f.label :campaign_hero_html_variant_name %>
+              <%= internal_config_label :campaign_hero_html_variant_name, "Campaign hero HTML variant name" %>
               <%= f.text_field :campaign_hero_html_variant_name,
                                class: "form-control",
                                value: SiteConfig.campaign_hero_html_variant_name,
@@ -87,19 +87,19 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :campaign_articles_require_approval %>
+              <%= internal_config_label :campaign_articles_require_approval %>
               <%= f.check_box :campaign_articles_require_approval, checked: SiteConfig.campaign_articles_require_approval %>
               <div class="alert alert-info">Campaign stories show up on sidebar with approval?</div>
             </div>
 
             <div class="form-group">
-              <%= f.label :campaign_sidebar_enabled %>
+              <%= internal_config_label :campaign_sidebar_enabled %>
               <%= f.check_box :campaign_sidebar_enabled, checked: SiteConfig.campaign_sidebar_enabled %>
               <div class="alert alert-info">Campaign sidebar enabled or not</div>
             </div>
 
             <div class="form-group">
-              <%= f.label :campaign_sidebar_image %>
+              <%= internal_config_label :campaign_sidebar_image %>
               <% if SiteConfig.campaign_sidebar_image.present? %>
                 <div class="row mt-2">
                   <div class="col-12">
@@ -115,7 +115,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :campaign_url %>
+              <%= internal_config_label :campaign_url, "Campaign URL" %>
               <%= f.text_field :campaign_url,
                                class: "form-control",
                                value: SiteConfig.campaign_url,
@@ -124,7 +124,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :campaign_featured_tags %>
+              <%= internal_config_label :campaign_featured_tags %>
               <%= f.text_field :campaign_featured_tags,
                                class: "form-control",
                                value: SiteConfig.campaign_featured_tags.join(","),
@@ -144,7 +144,7 @@
                      } %>
           <div id="contentBodyContainer" class="card-body collapse hide" aria-labelledby="contentBodyContainer">
             <div class="form-group">
-              <%= f.label :community_description, "Community description" %>
+              <%= internal_config_label :community_description %>
               <%= f.text_field :community_description,
                                class: "form-control",
                                value: SiteConfig.community_description,
@@ -153,16 +153,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :community_member_description, "Community member description" %>
-              <%= f.text_field :community_member_description,
-                               class: "form-control",
-                               value: SiteConfig.community_member_description,
-                               placeholder: "amazing humans who code." %>
-              <div class="alert alert-info">Used in pre-login banners.</div>
-            </div>
-
-            <div class="form-group">
-              <%= f.label :community_member_label, "Community member label" %>
+              <%= internal_config_label :community_member_label %>
               <%= f.text_field :community_member_label,
                                class: "form-control",
                                value: SiteConfig.community_member_label,
@@ -171,7 +162,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :community_action, "Community action" %>
+              <%= internal_config_label :community_action %>
               <%= f.text_field :community_action,
                                class: "form-control",
                                value: SiteConfig.community_action,
@@ -180,7 +171,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :tagline, "Tagline" %>
+              <%= internal_config_label :tagline %>
               <%= f.text_field :tagline,
                                class: "form-control",
                                value: SiteConfig.tagline,
@@ -231,7 +222,7 @@
                      } %>
           <div id="emailDigestBodyContainer" class="card-body collapse hide" aria-labelledby="emailDigestBodyContainer">
             <div class="form-group">
-              <%= f.label :periodic_email_digest_max %>
+              <%= internal_config_label :periodic_email_digest_max %>
               <%= f.number_field :periodic_email_digest_max,
                                  class: "form-control",
                                  value: SiteConfig.periodic_email_digest_max,
@@ -240,7 +231,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :periodic_email_digest_min %>
+              <%= internal_config_label :periodic_email_digest_min %>
               <%= f.number_field :periodic_email_digest_min,
                                  class: "form-control",
                                  value: SiteConfig.periodic_email_digest_min,
@@ -260,7 +251,7 @@
                      } %>
           <div id="jobsBodyContainer" class="card-body collapse hide" aria-labelledby="jobsBodyContainer">
             <div class="form-group">
-              <%= f.label :jobs_url %>
+              <%= internal_config_label :jobs_url, "Jobs URL" %>
               <%= f.text_field :jobs_url,
                                class: "form-control",
                                value: SiteConfig.jobs_url,
@@ -268,7 +259,7 @@
               <div class="alert alert-info">URL of the website where open positions are posted.</div>
 
             <div class="form-group">
-              <%= f.label :display_jobs_banner %>
+              <%= internal_config_label :display_jobs_banner %>
               <%= f.check_box :display_jobs_banner, checked: SiteConfig.display_jobs_banner %>
               <div class="alert alert-info">Display a jobs banner that points users to the <%= community_name %> jobs page when they type "job" or "jobs" in the search box</div>
             </div>
@@ -285,7 +276,7 @@
                      } %>
           <div id="gaBodyContainer" class="card-body collapse hide" aria-labelledby="gaBodyContainer">
             <div class="form-group">
-              <%= f.label :ga_view_id, "View ID" %>
+              <%= internal_config_label :ga_view_id, "View ID" %>
               <%= f.text_field :ga_view_id,
                                class: "form-control",
                                value: SiteConfig.ga_view_id %>
@@ -293,7 +284,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :ga_fetch_rate, "Fetch rate" %>
+              <%= internal_config_label :ga_fetch_rate, "Fetch rate" %>
               <%= f.number_field :ga_fetch_rate,
                                  class: "form-control",
                                  value: SiteConfig.ga_fetch_rate,
@@ -314,24 +305,18 @@
                      } %>
           <div id="imagesBodyContainer" class="card-body collapse hide" aria-labelledby="imagesBodyContainer">
             <div class="form-group">
-              <%= f.label :main_social_image %>
+              <%= internal_config_label :main_social_image %>
               <%= f.text_field :main_social_image,
                                class: "form-control",
                                value: SiteConfig.main_social_image,
                                placeholder: "https://image.url" %>
-              <div class="row mt-2">
-                <div class="col-12">
-                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" />
-                </div>
-                <div class="col-12">
-                  <div class="alert alert-info">
-                    <h5>Used as the main image in social networks and OpenGraph</h5>
-                  </div>
-                </div>
-              </div>
+              <div class="alert alert-info">Used as the main image in social networks and OpenGraph </div>
+              <% if SiteConfig.main_social_image.present? %>
+                <img alt="main social image" class="img-fluid" src="<%= SiteConfig.main_social_image %>" />
+              <% end %>
 
               <div class="form-group">
-                <%= f.label :favicon_url %>
+                <%= internal_config_label :favicon_url, "Favicon URL" %>
                 <%= f.text_field :favicon_url,
                                  class: "form-control",
                                  value: SiteConfig.favicon_url,
@@ -340,38 +325,38 @@
                 <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
               </div>
               <div class="form-group">
-                <%= f.label :logo_png %>
+                <%= internal_config_label :logo_png %>
                 <%= f.text_field :logo_png,
                                  class: "form-control",
                                  value: SiteConfig.logo_png,
                                  placeholder: "https://image.url/image.png" %>
                 <div class="alert alert-info">Minimum 1024px, used for PWA etc.</div>
-                <img alt="favicon" class="preview" src="<%= SiteConfig.logo_png %>" />
+                <% if SiteConfig.logo_png.present? %>
+                  <img class="preview" src="<%= SiteConfig.logo_png %>" />
+                <% end %>
               </div>
               <div class="form-group">
-                <%= f.label :logo_svg %>
+                <%= internal_config_label :logo_svg %>
                 <%= f.text_area :logo_svg,
                                 class: "form-control",
                                 value: SiteConfig.logo_svg,
                                 rows: 6,
                                 placeholder: "<svg ...></svg>" %>
                 <div class="alert alert-info">Used as the SVG logo of the community</div>
-                <%= @logo_svg %>
+                <% if SiteConfig.logo_svg.present? %>
+                  <%= SiteConfig.logo_svg.html_safe %>
+                <% end %>
               </div>
 
-              <%= f.label :primary_sticker_image_url %>
-              <%= f.text_field :primary_sticker_image_url,
+              <%= internal_config_label :secondary_logo_url %>
+              <%= f.text_field :secondary_logo_url,
                                class: "form-control",
-                               value: SiteConfig.primary_sticker_image_url,
+                               value: SiteConfig.secondary_logo_url,
                                placeholder: "https://image.url" %>
-              <div class="row mt-2">
-                <div class="col-12">
-                  <img alt="main social image" class="img-fluid" src="<%= SiteConfig.primary_sticker_image_url %>" />
-                </div>
-                <div class="col-12">
-                  <div class="alert alert-info"> Used as the primary sticker image </div>
-                </div>
-              </div>
+              <div class="alert alert-info">Used as the primary sticker image </div>
+              <% if SiteConfig.secondary_logo_url.present? %>
+                <img alt="secondary logo image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" />
+              <% end %>
             </div>
           </div>
         </div>
@@ -386,7 +371,7 @@
                      } %>
           <div id="mascotBodyContainer" class="card-body collapse hide" aria-labelledby="mascotBodyContainer">
             <div class="form-group">
-              <%= f.label :mascot_user_id, "Mascot user ID" %>
+              <%= internal_config_label :mascot_user_id, "Mascot user ID" %>
               <%= f.text_field :mascot_user_id,
                                class: "form-control",
                                value: SiteConfig.mascot_user_id,
@@ -396,7 +381,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :mascot_image_url %>
+              <%= internal_config_label :mascot_image_url, "Mascot Image URL" %>
               <%= f.text_field :mascot_image_url,
                                class: "form-control",
                                value: SiteConfig.mascot_image_url,
@@ -410,7 +395,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :mascot_footer_image_url %>
+              <%= internal_config_label :mascot_footer_image_url %>
               <%= f.text_field :mascot_footer_image_url,
                                class: "form-control",
                                value: SiteConfig.mascot_footer_image_url,
@@ -424,7 +409,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :mascot_image_description %>
+              <%= internal_config_label :mascot_image_description %>
               <%= f.text_field :mascot_image_description,
                                class: "form-control",
                                value: SiteConfig.mascot_image_description %>
@@ -447,7 +432,7 @@
               <%= f.fields_for :meta_keywords do |meta_keywords_field| %>
                 <% SiteConfig.meta_keywords.each do |area, keywords| %>
                   <div>
-                    <%= meta_keywords_field.label area %>
+                    <%= meta_keywords_field.label "#{area}*" %>
                     <%= meta_keywords_field.text_field area,
                                                        class: "form-control",
                                                        value: SiteConfig.meta_keywords[area],
@@ -470,7 +455,7 @@
                      } %>
           <div id="monetizationBodyContainer" class="card-body collapse hide" aria-labelledby="monetizationBodyContainer">
             <div class="form-group">
-              <%= f.label :shop_url %>
+              <%= internal_config_label :shop_url %>
               <%= f.text_field :shop_url,
                                class: "form-control",
                                value: SiteConfig.shop_url,
@@ -479,7 +464,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :payment_pointer %>
+              <%= internal_config_label :payment_pointer %>
               <%= f.text_field :payment_pointer,
                                class: "form-control",
                                value: SiteConfig.payment_pointer,
@@ -499,7 +484,7 @@
                      } %>
           <div id="newsletterBodyContainer" class="card-body collapse hide" aria-labelledby="newsletterBodyContainer">
             <div class="form-group">
-              <%= f.label :mailchimp_newsletter_id, "Main Newsletter" %>
+              <%= internal_config_label :mailchimp_newsletter_id, "Main Newsletter" %>
               <%= f.text_field :mailchimp_newsletter_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_newsletter_id %>
@@ -507,7 +492,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
+              <%= internal_config_label :mailchimp_sustaining_members_id, "Sustaining Members Newsletter" %>
               <%= f.text_field :mailchimp_sustaining_members_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_sustaining_members_id %>
@@ -515,7 +500,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
+              <%= internal_config_label :mailchimp_tag_moderators_id, "Tag Moderators Newsletter" %>
               <%= f.text_field :mailchimp_tag_moderators_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_tag_moderators_id %>
@@ -523,7 +508,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
+              <%= internal_config_label :mailchimp_community_moderators_id, "Community Moderators Newsletter" %>
               <%= f.text_field :mailchimp_community_moderators_id,
                                class: "form-control",
                                value: SiteConfig.mailchimp_community_moderators_id %>
@@ -542,7 +527,7 @@
                      } %>
           <div id="onboardingBodyContainer" class="card-body collapse hide" aria-labelledby="onboardingBodyContainer">
             <div class="form-group">
-              <%= f.label :onboarding_logo_image %>
+              <%= internal_config_label :onboarding_logo_image %>
               <%= f.text_field :onboarding_logo_image,
                                class: "form-control",
                                value: SiteConfig.onboarding_logo_image,
@@ -558,7 +543,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :onboarding_background_image %>
+              <%= internal_config_label :onboarding_background_image %>
               <%= f.text_field :onboarding_background_image,
                                class: "form-control",
                                value: SiteConfig.onboarding_background_image,
@@ -574,7 +559,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :onboarding_taskcard_image %>
+              <%= internal_config_label :onboarding_taskcard_image %>
               <%= f.text_field :onboarding_taskcard_image,
                                class: "form-control",
                                value: SiteConfig.onboarding_taskcard_image,
@@ -590,7 +575,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :suggested_users %>
+              <%= internal_config_label :suggested_users %>
               <%= f.text_field :suggested_users,
                                class: "form-control",
                                value: SiteConfig.suggested_users.join(","),
@@ -600,7 +585,7 @@
             </div>
 
             <div class="form-group">
-              <%= f.label :suggested_tags %>
+              <%= internal_config_label :suggested_tags %>
               <%= f.text_field :suggested_tags,
                                class: "form-control",
                                value: SiteConfig.suggested_tags.join(","),
@@ -622,7 +607,7 @@
           <div id="rateLimitsBodyContainer" class="card-body collapse hide" aria-labelledby="rateLimitsBodyContainer">
             <% configurable_rate_limits.each do |key, field_hash| %>
               <div class="form-group">
-                <%= f.label key %>
+                <%= internal_config_label key %>
                 <%= f.number_field key,
                                    class: "form-control",
                                    value: SiteConfig.send(key),
@@ -644,7 +629,7 @@
                      } %>
           <div id="socialMediaBodyContainer" class="card-body collapse hide" aria-labelledby="socialMediaBodyContainer">
             <div class="form-group">
-              <%= f.label :twitter_hashtag %>
+              <%= internal_config_label :twitter_hashtag %>
               <%= f.text_field :twitter_hashtag,
                                class: "form-control",
                                value: SiteConfig.twitter_hashtag.to_s,
@@ -678,7 +663,7 @@
                      } %>
           <div id="tagsBodyContainer" class="card-body collapse hide" aria-labelledby="tagsBodyContainer">
             <div class="form-group">
-              <%= f.label :sidebar_tags %>
+              <%= internal_config_label :sidebar_tags %>
               <%= f.text_field :sidebar_tags,
                                class: "form-control",
                                value: SiteConfig.sidebar_tags.join(","),
