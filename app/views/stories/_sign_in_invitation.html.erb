@@ -1,11 +1,11 @@
 <div class="single-article single-article-small-pic feed-cta" id="in-feed-cta">
   <div class="cta-container" id="cta-content">
-    <img class="primary-sticker-image" src="<%= cloudinary(SiteConfig.primary_sticker_image_url, 190) %>"
-         alt="Primary <%= community_qualified_name %> logo" />
+    <img class="secondary-logo" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
+         alt="Secondary <%= community_name %> logo" />
 
     <h2>
       <a href="/"><%= community_name %></a> is a community of <br />
-      <%= number_with_delimiter User.estimated_count %> <%= SiteConfig.community_member_description %>
+      <%= number_with_delimiter User.estimated_count %> amazing <%= community_members_label %>
     </h2>
 
     <h3>

@@ -64,15 +64,10 @@ RSpec.describe "/internal/config", type: :request do
 
       describe "Community Content" do
         it "updates the community_description" do
+          allow(SiteConfig).to receive(:community_description).and_call_original
           description = "Hey hey #{rand(100)}"
           post "/internal/config", params: { site_config: { community_description: description }, confirmation: confirmation_message }
           expect(SiteConfig.community_description).to eq(description)
-        end
-
-        it "updates the community_member_description" do
-          description = "Hey hey #{rand(100)}"
-          post "/internal/config", params: { site_config: { community_member_description: description }, confirmation: confirmation_message }
-          expect(SiteConfig.community_member_description).to eq(description)
         end
 
         it "updates the community_member_label" do
@@ -176,10 +171,10 @@ RSpec.describe "/internal/config", type: :request do
           expect(SiteConfig.logo_svg).to eq(expected_image_url)
         end
 
-        it "updates primary_sticker_image_url" do
+        it "updates secondary_logo_url" do
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { primary_sticker_image_url: expected_image_url }, confirmation: confirmation_message }
-          expect(SiteConfig.primary_sticker_image_url).to eq(expected_image_url)
+          post "/internal/config", params: { site_config: { secondary_logo_url: expected_image_url }, confirmation: confirmation_message }
+          expect(SiteConfig.secondary_logo_url).to eq(expected_image_url)
         end
 
         it "rejects update without proper confirmation" do
@@ -244,7 +239,7 @@ RSpec.describe "/internal/config", type: :request do
           end
 
           it "sets shop_url to nil" do
-            previous_shop_url = SiteConfig.shop_url
+            previous_shop_url = "some-shop-url"
             post "/internal/config", params: { site_config: { shop_url: "" }, confirmation: confirmation_message }
             expect(SiteConfig.shop_url).to eq("")
             get "/privacy"
