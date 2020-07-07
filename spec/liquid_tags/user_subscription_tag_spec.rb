@@ -108,6 +108,12 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
       expect(page).to have_css("#subscriber-apple-auth", visible: :hidden)
       expect(page).to have_css("#subscription-signed-out", visible: :visible)
     end
+
+    it "allows a user to sign in", type: :system, js: true do
+      expect(page).to have_css("#global-signup-modal", visible: :hidden)
+      click_button("Sign In", id: "sign-in-btn")
+      expect(page).to have_css("#global-signup-modal", visible: :visible)
+    end
   end
 
   # TODO: [@thepracticaldev/delightful]: re-enable this once email confirmation
