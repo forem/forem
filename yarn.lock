@@ -11704,10 +11704,10 @@ preact-textarea-autosize@^4.0.7:
   resolved "https://registry.yarnpkg.com/preact-textarea-autosize/-/preact-textarea-autosize-4.0.7.tgz#aa654ce1a0ed57027dca21e4710a78cb6f007457"
   integrity sha1-qmVM4aDtVwJ9yiHkcQp4y28AdFc=
 
-preact@^10.4.4:
-  version "10.4.4"
-  resolved "https://registry.yarnpkg.com/preact/-/preact-10.4.4.tgz#0bd6d759ec2f8684aaf8c63c7f076191e46528cf"
-  integrity sha512-EaTJrerceyAPatQ+vfnadoopsMBZAOY7ak9ogVdUi5xbpR8SoHgtLryXnW+4mQOwt21icqoVR1brkU2dq7pEBA==
+preact@^10.4.5:
+  version "10.4.5"
+  resolved "https://registry.yarnpkg.com/preact/-/preact-10.4.5.tgz#457fe034d558595864d0663574c2850f0b43d28e"
+  integrity sha512-/GyQOM44xNbM1nx1NWWdEO9RFjOVl3Ji6HTnEP+y9OkfyvJDHXnWJPQnuknrslzu5lZfAtFavS8gka91fbFAPg==
 
 precond@0.2:
   version "0.2.3"
