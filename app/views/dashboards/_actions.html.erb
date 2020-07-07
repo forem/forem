@@ -34,21 +34,20 @@
     <%= inline_svg_tag("external-link.svg", aria: true, class: "crayons-icon", title: "Moderation") %>
   </a>
 
-  <% if @user.has_role? :pro %>
-    <a class="crayons-link crayons-link--block" href="/dashboard/pro">
+  <% if @current_user_pro %>
+    <a class="crayons-link crayons-link--block" href="<%= dashboard_pro_path %>">
       Pro Analytics
     </a>
-  <% end %>
 
-  <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
-    <% @organizations.each do |org| %>
-      <a class="crayons-link crayons-link--block" href="/dashboard/pro/org/<%= org.id %>">Pro Analytics for <%= org.name %></a>
+    <% if @organizations && (params[:which].blank? || params[:which] == "organization") %>
+      <% @organizations.each do |org| %>
+        <a class="crayons-link crayons-link--block" href="<%= dashboard_pro_org_path(org.id) %>">Pro Analytics for <%= org.name %></a>
+      <% end %>
     <% end %>
   <% end %>
 
-  <% if current_user.created_at < 2.weeks.ago %>
-    <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="/videos/new" data-no-instant>
-      Upload a video
+  <% if policy(:video).new? %>
+    <a class="crayons-btn crayons-btn--secondary w-100 mt-4" href="<%= new_video_path %>" data-no-instant> Upload a video
     </a>
   <% end %>
 </nav>

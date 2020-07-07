@@ -13,9 +13,7 @@ class FlareTag
                        anonymous
                        discuss].freeze
 
-  FLARE_TAG_IDS_HASH = Tag.where(name: FLARE_TAG_NAMES).each_with_object({}) do |tag, h|
-    h[tag.name] = tag.id
-  end.freeze
+  FLARE_TAG_IDS_HASH = Tag.where(name: FLARE_TAG_NAMES).pluck(:name, :id).to_h.freeze
 
   def initialize(article, except_tag = nil)
     @article = article.decorate
@@ -29,11 +27,7 @@ class FlareTag
   end
 
   def tag_hash
-    return unless tag
-
-    { name: tag.name,
-      bg_color_hex: tag.bg_color_hex,
-      text_color_hex: tag.text_color_hex }
+    tag&.slice(:name, :bg_color_hex, :text_color_hex)
   end
 
   private

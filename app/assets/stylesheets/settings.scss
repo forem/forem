@@ -7,7 +7,6 @@ $input-width: 650px;
   max-height: 400px;
   overflow-y: auto;
   background: var(--card-bg);
-  box-shadow: $shadow;
   &.loading-repos {
     height: 400px;
     background: white url(image-src('loading-ellipsis.svg')) no-repeat center
