@@ -20,7 +20,7 @@ div.highlight {
   border-radius: var(--radius);
   margin: 0;
   white-space: pre;
-  overflow-x: scroll;
+  overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 
   code {
