@@ -20,7 +20,7 @@
           <% @subscriptions.each do |subscription| %>
             <% subscriber = subscription.subscriber %>
             <tr>
-              <td class="fw-medium"><a href=<%= "/#{subscriber.username}" %> <%= "#{subscriber.name} DEV profile" %>><%= subscriber.name %></a></td>
+              <td class="fw-medium"><a href=<%= user_profile_path(subscriber.username) %> <%= "#{subscriber.name} DEV profile" %>><%= subscriber.name %></a></td>
               <td><a href="<%= "mailto: #{subscription.subscriber_email}" %>"><%= subscription.subscriber_email %></a></td>
               <td class="fs-s color-base-60"><%= "#{time_ago_in_words(subscription.created_at)} ago" %></td>
             </tr>

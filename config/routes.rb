@@ -477,7 +477,7 @@ Rails.application.routes.draw do
   get "/:username/:slug" => "stories#show"
   get "/:sitemap" => "sitemaps#show",
       :constraints => { format: /xml/, sitemap: /sitemap-.+/ }
-  get "/:username" => "stories#index"
+  get "/:username" => "stories#index", :as => "user_profile"
 
   root "stories#index"
 end
