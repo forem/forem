@@ -58,6 +58,12 @@ ActiveRecord::Schema.define(version: 2020_07_07_173524) do
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
   end
 
+  create_table "announcements", force: :cascade do |t|
+    t.string "banner_style"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "api_secrets", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "description", null: false
@@ -1326,6 +1332,11 @@ ActiveRecord::Schema.define(version: 2020_07_07_173524) do
     t.index ["oauth_application_id"], name: "index_webhook_endpoints_on_oauth_application_id"
     t.index ["target_url"], name: "index_webhook_endpoints_on_target_url", unique: true
     t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
+  end
+
+  create_table "welcome_notifications", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "api_secrets", "users", on_delete: :cascade
