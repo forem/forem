@@ -147,9 +147,11 @@ class UserSubscriptionTag < LiquidTagBase
     // ***************************************
     function addSignInClickHandler() {
       const signInBtn = document.getElementById('sign-in-btn');
-      if (signInBtn && typeof showModal !== 'undefined') {
+      if (signInBtn) {
         signInBtn.addEventListener('click', function(e) {
-          showModal('email_signup');
+          if (typeof showModal !== 'undefined') {
+            showModal('user_subscription');
+          }
         });
       }
     }
