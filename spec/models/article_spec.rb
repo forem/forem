@@ -875,30 +875,4 @@ RSpec.describe Article, type: :model do
       end
     end
   end
-
-  describe "#liquid_tags_used" do
-    let(:user_liquid_tag) { "{% user #{user.username} %}" }
-    let(:article_body_markdown) { "---\ntitle: Tag Liquid Tag#{rand(1000)}\npublished: true\n---\n\n#{user_liquid_tag}" }
-    let(:article_with_user_liquid_tag) { create(:article, body_markdown: article_body_markdown) }
-    let(:tag) { create(:tag) }
-    let(:tag_liquid_tag) { "{% tag #{tag.name} %}" }
-    let(:comment_with_tag_liquid_tag) { create(:comment, body_markdown: tag_liquid_tag, commentable: article_with_user_liquid_tag, score: 20) }
-
-    before do
-      comment_with_tag_liquid_tag
-      article_with_user_liquid_tag.reload
-    end
-
-    it "returns liquid tags from both the body and comments by default" do
-      expect(article_with_user_liquid_tag.liquid_tags_used).to match_array([TagTag, UserTag])
-    end
-
-    it "returns liquid tags from only the body of the Article" do
-      expect(article_with_user_liquid_tag.liquid_tags_used(:body)).to match_array([UserTag])
-    end
-
-    it "returns liquid tags from only the comments of the Article" do
-      expect(article_with_user_liquid_tag.liquid_tags_used(:comments)).to match_array([TagTag])
-    end
-  end
 end

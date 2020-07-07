@@ -26,6 +26,21 @@
     }
   }
 
+  &--compact {
+    td,
+    th {
+      padding: var(--su-2);
+
+      @media (min-width: $breakpoint-m) {
+        padding: var(--su-2);
+      }
+
+      @media (min-width: $breakpoint-l) {
+        padding: var(--su-2);
+      }
+    }
+  }
+
   td {
     transition: background var(--transition-props);
     border-bottom: 1px solid var(--body-bg);

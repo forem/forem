@@ -1,5 +1,5 @@
-@import 'variables';
-@import 'mixins';
+@import '../variables';
+@import '../mixins';
 @import 'components/buttons';
 @import 'components/forms';
 @import 'config/import';
@@ -81,7 +81,6 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    background-image: url('/assets/onboarding-background-white.png');
   }
 
   &:before {

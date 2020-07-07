@@ -2,7 +2,7 @@ class WikipediaTag < LiquidTagBase
   PARTIAL = "liquids/wikipedia".freeze
   WIKI_REGEXP = %r{\Ahttps?://([a-z-]+)\.wikipedia.org/wiki/(\S+)\z}.freeze
 
-  def initialize(tag_name, input, tokens)
+  def initialize(_tag_name, input, _parse_context)
     super
     @data = get_data(input.strip)
   end

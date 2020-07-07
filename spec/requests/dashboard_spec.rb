@@ -7,6 +7,7 @@ RSpec.describe "Dashboards", type: :request do
   let(:pro_user)      { create(:user, :pro) }
   let(:article)       { create(:article, user: user) }
   let(:unpublished_article) { create(:article, user: user, published: false) }
+  let(:organization) { create(:organization) }
 
   describe "GET /dashboard" do
     context "when not logged in" do
@@ -49,6 +50,26 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard"
         expect(response.body).not_to include "pagination"
       end
+
+      it "does not render a link to pro analytics" do
+        get dashboard_path
+
+        expect(response.body).not_to include("Pro Analytics")
+      end
+
+      it "does not render a link to pro analytics for the org" do
+        create(:organization_membership, type_of_user: :admin, organization: organization, user: user)
+
+        get dashboard_path
+
+        expect(response.body).not_to include("Pro Analytics for #{organization.name}")
+      end
+
+      it "does not render a link to upload a video" do
+        get dashboard_path
+
+        expect(response.body).not_to include("Upload a video")
+      end
     end
 
     context "when logged in as a super admin" do
@@ -68,6 +89,35 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard"
         expect(response.body).to include("Stats")
         expect(response.body).to include("#{article.path}/stats")
+      end
+
+      it "renders a link to pro analytics" do
+        sign_in pro_user
+        get dashboard_path
+
+        expect(response.body).to include("Pro Analytics")
+      end
+
+      it "renders a link to pro analytics for the org" do
+        create(:organization_membership, type_of_user: :admin, organization: organization, user: pro_user)
+
+        sign_in pro_user
+        get dashboard_path
+
+        expect(response.body).to include("Pro Analytics for #{organization.name}")
+      end
+    end
+
+    context "when logged in as a non recent user" do
+      it "renders a link to upload a video" do
+        Timecop.freeze(Time.current) do
+          user.update!(created_at: 3.weeks.ago)
+
+          sign_in user
+          get dashboard_path
+
+          expect(response.body).to include("Upload a video")
+        end
       end
     end
   end

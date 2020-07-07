@@ -34,15 +34,9 @@
   }
 }
 
-
 .grid-cell {
   &__summary {
     color: var(--base-60);
-    overflow: hidden;
     line-height: var(--lh-tight);
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;  
-    margin-bottom: var(--su-4);
   }
 }

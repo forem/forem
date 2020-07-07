@@ -22,7 +22,8 @@ class PodcastTag < LiquidTagBase
     rss: "https://temenos.com/globalassets/img/marketplace/temenos/rss/rss.png"
   }.freeze
 
-  def initialize(_tag_name, link, _tokens)
+  def initialize(_tag_name, link, _parse_context)
+    super
     @episode = fetch_podcast(link)
     @podcast ||= Podcast.new
     @podcast_links = [["iTunes", @podcast.itunes_url, cloudinary(IMAGE_LINK["iTunes".downcase.to_sym], 40, 90, "png")],

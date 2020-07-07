@@ -13,6 +13,7 @@ class Page < ApplicationRecord
   before_validation :set_default_template
 
   mount_uploader :social_image, ProfileImageUploader
+  resourcify
 
   def path
     is_top_level_path ? "/#{slug}" : "/page/#{slug}"

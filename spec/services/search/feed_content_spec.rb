@@ -28,7 +28,7 @@ RSpec.describe Search::FeedContent, type: :service do
       feed_docs = described_class.search_documents(params: query_params)
       expect(feed_docs.count).to eq(2)
       doc_highlights = feed_docs.map { |t| t.dig("highlight", "body_text") }.flatten
-      expect(doc_highlights).to include("I <em>love</em> <em>ruby</em>", "<em>Ruby</em> Tuesday is <em>love</em>")
+      expect(doc_highlights).to include("I <mark>love</mark> <mark>ruby</mark>", "<mark>Ruby</mark> Tuesday is <mark>love</mark>")
     end
 
     it "returns fields necessary for the view" do

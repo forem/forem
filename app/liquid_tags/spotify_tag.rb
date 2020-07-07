@@ -12,7 +12,7 @@ class SpotifyTag < LiquidTagBase
     show: 232
   }.freeze
 
-  def initialize(tag_name, uri, tokens)
+  def initialize(_tag_name, uri, _parse_context)
     super
     @parsed_uri = parse_uri(uri)
     @embed_link = generate_embed_link(@parsed_uri)

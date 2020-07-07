@@ -1,8 +1,6 @@
 require "rails_helper"
 
 RSpec.describe "UserSubscriptions", type: :request do
-  # TODO: (Alex Smith) remove super_admin restriction before final release
-  let(:super_admin_user) { create(:user, :super_admin) }
   let(:user) { create(:user) }
 
   before { sign_in user }
@@ -13,7 +11,7 @@ RSpec.describe "UserSubscriptions", type: :request do
     end
 
     it "returns true if a user is already subscribed" do
-      article = create(:article)
+      article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
 
       create(:user_subscription,
              subscriber_id: user.id,
@@ -39,7 +37,7 @@ RSpec.describe "UserSubscriptions", type: :request do
 
   describe "POST /user_subscriptions - UserSubscriptions#create" do
     it "creates a UserSubscription" do
-      article = create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
+      article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
       valid_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: user.email }
       expect do
         post user_subscriptions_path,
@@ -63,7 +61,7 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to eq("invalid source_type")
+      expect(response.parsed_body["error"]).to include("Invalid source_type.")
     end
 
     it "returns an error for a source that can't be found" do
@@ -75,11 +73,11 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to eq("source not found")
+      expect(response.parsed_body["error"]).to include("Source not found.")
     end
 
     it "returns an error for an inactive source" do
-      unpublished_article = create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: false\n---\n\n{% user_subscription 'CTA text' %}")
+      unpublished_article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true, published: false)
       invalid_source_attributes = { source_type: unpublished_article.class_name, source_id: unpublished_article.id, subscriber_email: user.email }
       expect do
         post user_subscriptions_path,
@@ -88,11 +86,11 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to eq("source not found")
+      expect(response.parsed_body["error"]).to include("Source not found.")
     end
 
     it "returns an error for a source that doesn't have the UserSubscription liquid tag enabled" do
-      article = create(:article)
+      article = create(:article, :with_user_subscription_tag_role_user)
       invalid_source_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: user.email }
       expect do
         post user_subscriptions_path,
@@ -101,12 +99,11 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to eq("user subscriptions are not enabled for the requested source")
+      expect(response.parsed_body["error"]).to include("User subscriptions are not enabled for the source.")
     end
 
     it "returns an error for an invalid UserSubscription" do
-      article = create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
-
+      article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
       # Create the UserSubscription directly so it results in a
       # duplicate/invalid record and returns an error. This mimics a user
       # trying to subscribe to the same user via the same source, twice.
@@ -125,12 +122,12 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to eq("Subscriber has already been taken")
+      expect(response.parsed_body["error"]).to include("Subscriber has already been taken")
     end
 
-    it "returns an error for an email mismatch" do
-      article = create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
-
+    # TODO: [@thepracticaldev/delightful]: re-enable this once email confirmation is re-enabled
+    xit "returns an error for an email mismatch" do
+      article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
       invalid_source_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: "old_email@test.com" }
 
       expect do
@@ -140,13 +137,12 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to eq("subscriber email mismatch")
+      expect(response.parsed_body["error"]).to include("Subscriber email mismatch.")
     end
 
     it "returns an error for a subscriber that signed up with Apple" do
       allow(user).to receive(:email).and_return("test@privaterelay.appleid.com")
-      article = create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}")
-
+      article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
       valid_source_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: user.email }
 
       expect do
@@ -156,13 +152,13 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to eq("cannot subscribe with Apple private relay email")
+      expect(response.parsed_body["error"]).to include("Subscriber email Can't subscribe with an Apple private relay. Please update email.")
     end
   end
 
   context "when rate limiting" do
     let(:rate_limiter) { RateLimitChecker.new(user) }
-    let(:article) { create(:article, user: super_admin_user, body_markdown: "---\ntitle: User Subscription#{rand(1000)}\npublished: true\n---\n\n{% user_subscription 'CTA text' %}") }
+    let(:article) { create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true) }
     let(:valid_attributes) { { source_type: article.class_name, source_id: article.id, subscriber_email: user.email } }
 
     before { allow(RateLimitChecker).to receive(:new).and_return(rate_limiter) }
