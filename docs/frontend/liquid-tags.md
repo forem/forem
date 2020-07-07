@@ -129,8 +129,8 @@ Here we are saying that the `UserSubscriptionTag` is only usable by users with
 the `admin` role or with a role of `:restricted_liquid_tag` and a specified
 resource of `LiquidTags::UserSubscriptionTag`.
 
-`LiquidTags::UserSubscriptionTag` is simply a resource model to play nicely with
-the [Rolify][rolify] gem. See [/internal](/internal) for more information.
+`LiquidTags::UserSubscriptionTag` is a resource model to play nicely with the
+[Rolify][rolify] gem. See [/internal](/internal) for more information.
 
 **REMINDER: if you do not define a `VALID_ROLES` constant, the liquid tag will
 be usable by all users by default.**
