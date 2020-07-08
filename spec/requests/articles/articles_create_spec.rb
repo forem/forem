@@ -88,7 +88,8 @@ RSpec.describe "ArticlesCreate", type: :request do
     end
 
     it "schedules a dispatching event job (published)" do
-      article_params[:article][:body_markdown] = "---\ntitle: hey hey hahuu\npublished: true\nseries: helloyo\n---\nYo ho ho#{rand(100)}"
+      body_markdown = "---\ntitle: hey hey hahuu\npublished: true\nseries: helloyo\n---\nYo ho ho#{rand(100)}"
+      article_params[:article][:body_markdown] = body_markdown
       sidekiq_assert_enqueued_jobs(1, only: Webhook::DispatchEventWorker) do
         post "/articles", params: article_params
       end

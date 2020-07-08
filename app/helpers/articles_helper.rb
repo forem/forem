@@ -12,7 +12,9 @@ module ArticlesHelper
   def has_vid?(article)
     return if article.processed_html.blank?
 
-    article.processed_html.include?("youtube.com/embed/") || article.processed_html.include?("player.vimeo.com") || article.comments_blob.include?("youtube")
+    article.processed_html.include?("youtube.com/embed/") ||
+      article.processed_html.include?("player.vimeo.com") ||
+      article.comments_blob.include?("youtube")
   end
 
   def collection_link_class(current_article, linked_article)

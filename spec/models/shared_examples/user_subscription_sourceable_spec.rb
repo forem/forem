@@ -1,6 +1,8 @@
 RSpec.shared_examples "UserSubscriptionSourceable" do
   let(:model) { described_class }
-  let(:source) { create(model.to_s.underscore.to_sym, :with_user_subscription_tag_role_user, with_user_subscription_tag: true) }
+  let(:source) do
+    create(model.to_s.underscore.to_sym, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
+  end
   let(:subscriber) { create(:user) }
 
   describe "#build_user_subscription" do
@@ -22,7 +24,8 @@ RSpec.shared_examples "UserSubscriptionSourceable" do
 
   describe "#create_user_subscription" do
     it "returns a created UserSubcription with the correct attributes" do
-      user_subscription_fields = %w[author_id subsciber_id subscriber_email user_subscription_sourceable_id user_susbcription_sourceable_type]
+      user_subscription_fields = %w[author_id subsciber_id subscriber_email user_subscription_sourceable_id
+                                    user_susbcription_sourceable_type]
 
       user_subscription = create(
         :user_subscription,

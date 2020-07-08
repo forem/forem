@@ -4,7 +4,9 @@ RSpec.describe "/internal/config", type: :request do
   let_it_be(:user) { create(:user) }
   let_it_be(:admin) { create(:user, :super_admin) }
   let_it_be(:admin_plus_config) { create(:user, :super_plus_single_resource_admin, resource: Config) }
-  let_it_be(:confirmation_message) { "My username is @#{admin_plus_config.username} and this action is 100% safe and appropriate." }
+  let_it_be(:confirmation_message) do
+    "My username is @#{admin_plus_config.username} and this action is 100% safe and appropriate."
+  end
 
   describe "POST internal/events as a user" do
     before do
@@ -25,12 +27,18 @@ RSpec.describe "/internal/config", type: :request do
 
       it "does not allow user to update config if they have proper confirmation" do
         expected_image_url = "https://dummyimage.com/300x300"
-        expect { post "/internal/config", params: { site_config: { favicon_url: expected_image_url }, confirmation: confirmation_message } }.to raise_error Pundit::NotAuthorizedError
+        expect do
+          post "/internal/config", params: { site_config: { favicon_url: expected_image_url },
+                                             confirmation: confirmation_message }
+        end.to raise_error Pundit::NotAuthorizedError
       end
 
       it "does not allow user to update config if they do not have proper confirmation" do
         expected_image_url = "https://dummyimage.com/300x300"
-        expect { post "/internal/config", params: { site_config: { favicon_url: expected_image_url }, confirmation: "Not proper" } }.to raise_error Pundit::NotAuthorizedError
+        expect do
+          post "/internal/config", params: { site_config: { favicon_url: expected_image_url },
+                                             confirmation: "Not proper" }
+        end.to raise_error Pundit::NotAuthorizedError
       end
     end
 
@@ -42,7 +50,8 @@ RSpec.describe "/internal/config", type: :request do
       describe "API tokens" do
         it "updates the health_check_token" do
           token = rand(20).to_s
-          post "/internal/config", params: { site_config: { health_check_token: token }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { health_check_token: token },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.health_check_token).to eq token
         end
       end
@@ -50,14 +59,16 @@ RSpec.describe "/internal/config", type: :request do
       describe "Authentication" do
         it "updates enabled authentication providers" do
           enabled = Array.wrap(Authentication::Providers.available.first.to_s)
-          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { authentication_providers: enabled },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to eq(enabled)
         end
 
         it "strips empty elements" do
           provider = Authentication::Providers.available.first.to_s
           enabled = [provider, "", nil]
-          post "/internal/config", params: { site_config: { authentication_providers: enabled }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { authentication_providers: enabled },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.authentication_providers).to eq([provider])
         end
       end
@@ -66,19 +77,22 @@ RSpec.describe "/internal/config", type: :request do
         it "updates the community_description" do
           allow(SiteConfig).to receive(:community_description).and_call_original
           description = "Hey hey #{rand(100)}"
-          post "/internal/config", params: { site_config: { community_description: description }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { community_description: description },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.community_description).to eq(description)
         end
 
         it "updates the community_member_label" do
           name = "developer"
-          post "/internal/config", params: { site_config: { community_member_label: name }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { community_member_label: name },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.community_member_label).to eq(name)
         end
 
         it "updates the community_action" do
           action = "reading"
-          post "/internal/config", params: { site_config: { community_member_label: action }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { community_member_label: action },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.community_member_label).to eq(action)
         end
 
@@ -107,29 +121,36 @@ RSpec.describe "/internal/config", type: :request do
 
       describe "Email digest frequency" do
         it "updates periodic_email_digest_max" do
-          post "/internal/config", params: { site_config: { periodic_email_digest_max: 1 }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { periodic_email_digest_max: 1 },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.periodic_email_digest_max).to eq(1)
         end
 
         it "updates periodic_email_digest_min" do
-          post "/internal/config", params: { site_config: { periodic_email_digest_min: 3 }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { periodic_email_digest_min: 3 },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.periodic_email_digest_min).to eq(3)
         end
 
         it "rejects update without proper confirmation" do
-          expect { post "/internal/config", params: { site_config: { periodic_email_digest_min: 6 }, confirmation: "Incorrect yo!" } }.to raise_error Pundit::NotAuthorizedError
+          expect do
+            post "/internal/config", params: { site_config: { periodic_email_digest_min: 6 },
+                                               confirmation: "Incorrect yo!" }
+          end.to raise_error Pundit::NotAuthorizedError
           expect(SiteConfig.periodic_email_digest_min).not_to eq(6)
         end
       end
 
       describe "Jobs" do
         it "updates jobs_url" do
-          post "/internal/config", params: { site_config: { jobs_url: "www.jobs.com" }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { jobs_url: "www.jobs.com" },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.jobs_url).to eq("www.jobs.com")
         end
 
         it "updates display_jobs_banner" do
-          post "/internal/config", params: { site_config: { display_jobs_banner: true }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { display_jobs_banner: true },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.display_jobs_banner).to eq(true)
         end
       end
@@ -149,62 +170,74 @@ RSpec.describe "/internal/config", type: :request do
       describe "Images" do
         it "updates main_social_image" do
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { main_social_image: expected_image_url }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { main_social_image: expected_image_url },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.main_social_image).to eq(expected_image_url)
         end
 
         it "updates favicon_url" do
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { favicon_url: expected_image_url }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { favicon_url: expected_image_url },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.favicon_url).to eq(expected_image_url)
         end
 
         it "updates logo_png" do
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { logo_png: expected_image_url }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { logo_png: expected_image_url },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.logo_png).to eq(expected_image_url)
         end
 
         it "updates logo_svg" do
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { logo_svg: expected_image_url }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { logo_svg: expected_image_url },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.logo_svg).to eq(expected_image_url)
         end
 
         it "updates secondary_logo_url" do
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { secondary_logo_url: expected_image_url }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { secondary_logo_url: expected_image_url },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.secondary_logo_url).to eq(expected_image_url)
         end
 
         it "rejects update without proper confirmation" do
           expected_image_url = "https://dummyimage.com/300x300"
-          expect { post "/internal/config", params: { site_config: { logo_svg: expected_image_url }, confirmation: "Incorrect yo!" } }.to raise_error Pundit::NotAuthorizedError
+          expect do
+            post "/internal/config", params: { site_config: { logo_svg: expected_image_url },
+                                               confirmation: "Incorrect yo!" }
+          end.to raise_error Pundit::NotAuthorizedError
         end
       end
 
       describe "Mascot" do
         it "updates the mascot_user_id" do
           expected_mascot_user_id = 2
-          post "/internal/config", params: { site_config: { mascot_user_id: expected_mascot_user_id }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { mascot_user_id: expected_mascot_user_id },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.mascot_user_id).to eq(expected_mascot_user_id)
         end
 
         it "updates mascot_image_url" do
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { mascot_image_url: expected_image_url }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { mascot_image_url: expected_image_url },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.mascot_image_url).to eq(expected_image_url)
         end
 
         it "updates mascot_footer_image_url" do
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { mascot_footer_image_url: expected_image_url }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { mascot_footer_image_url: expected_image_url },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.mascot_footer_image_url).to eq(expected_image_url)
         end
 
         it "updates mascot_image_description" do
           description = "Hey hey #{rand(100)}"
-          post "/internal/config", params: { site_config: { mascot_image_description: description }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { mascot_image_description: description },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.mascot_image_description).to eq(description)
         end
       end
@@ -222,7 +255,8 @@ RSpec.describe "/internal/config", type: :request do
 
       describe "Monetization" do
         it "updates payment pointer" do
-          post "/internal/config", params: { site_config: { payment_pointer: "$pay.yo" }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { payment_pointer: "$pay.yo" },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.payment_pointer).to eq("$pay.yo")
         end
 
@@ -249,7 +283,8 @@ RSpec.describe "/internal/config", type: :request do
 
           it "updates shop url" do
             expected_shop_url = "https://qshop.dev.to"
-            post "/internal/config", params: { site_config: { shop_url: expected_shop_url }, confirmation: confirmation_message }
+            post "/internal/config", params: { site_config: { shop_url: expected_shop_url },
+                                               confirmation: confirmation_message }
             expect(SiteConfig.shop_url).to eq(expected_shop_url)
             get "/privacy"
             expect(response.body).to include(expected_shop_url)
@@ -260,22 +295,26 @@ RSpec.describe "/internal/config", type: :request do
 
       describe "Newsletter" do
         it "updates mailchimp_newsletter_id" do
-          post "/internal/config", params: { site_config: { mailchimp_newsletter_id: "abc" }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { mailchimp_newsletter_id: "abc" },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.mailchimp_newsletter_id).to eq("abc")
         end
 
         it "updates mailchimp_sustaining_members_id" do
-          post "/internal/config", params: { site_config: { mailchimp_sustaining_members_id: "abc" }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { mailchimp_sustaining_members_id: "abc" },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.mailchimp_sustaining_members_id).to eq("abc")
         end
 
         it "updates mailchimp_tag_moderators_id" do
-          post "/internal/config", params: { site_config: { mailchimp_tag_moderators_id: "abc" }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { mailchimp_tag_moderators_id: "abc" },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.mailchimp_tag_moderators_id).to eq("abc")
         end
 
         it "updates mailchimp_community_moderators_id" do
-          post "/internal/config", params: { site_config: { mailchimp_community_moderators_id: "abc" }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { mailchimp_community_moderators_id: "abc" },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.mailchimp_community_moderators_id).to eq("abc")
         end
       end
@@ -283,39 +322,50 @@ RSpec.describe "/internal/config", type: :request do
       describe "Onboarding" do
         it "updates onboarding_taskcard_image" do
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { onboarding_taskcard_image: expected_image_url }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { onboarding_taskcard_image: expected_image_url },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.onboarding_taskcard_image).to eq(expected_image_url)
         end
 
         it "updates onboarding_logo_image" do
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { onboarding_logo_image: expected_image_url }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { onboarding_logo_image: expected_image_url },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.onboarding_logo_image).to eq(expected_image_url)
         end
 
         it "updates onboarding_background_image" do
           expected_image_url = "https://dummyimage.com/300x300"
-          post "/internal/config", params: { site_config: { onboarding_background_image: expected_image_url }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { onboarding_background_image: expected_image_url },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.onboarding_background_image).to eq(expected_image_url)
         end
 
         it "removes space suggested_tags" do
-          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoho, bobo fofo" },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
         end
 
         it "downcases suggested_tags" do
-          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { suggested_tags: "hey, haha,hoHo, Bobo Fofo" },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.suggested_tags).to eq(%w[hey haha hoho bobofofo])
         end
 
         it "removes space suggested_users" do
-          post "/internal/config", params: { site_config: { suggested_users: "piglet, tigger,eeyore, Christopher Robin, kanga,roo" }, confirmation: confirmation_message }
+          post "/internal/config", params: {
+            site_config: { suggested_users: "piglet, tigger,eeyore, Christopher Robin, kanga,roo" },
+            confirmation: confirmation_message
+          }
           expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
         end
 
         it "downcases suggested_users" do
-          post "/internal/config", params: { site_config: { suggested_users: "piglet, tigger,EEYORE, Christopher Robin, KANGA,RoO" }, confirmation: confirmation_message }
+          post "/internal/config", params: {
+            site_config: { suggested_users: "piglet, tigger,EEYORE, Christopher Robin, KANGA,RoO" },
+            confirmation: confirmation_message
+          }
           expect(SiteConfig.suggested_users).to eq(%w[piglet tigger eeyore christopherrobin kanga roo])
         end
       end
@@ -323,43 +373,50 @@ RSpec.describe "/internal/config", type: :request do
       describe "Rate Limits" do
         it "updates rate_limit_follow_count_daily" do
           expect do
-            post "/internal/config", params: { site_config: { rate_limit_follow_count_daily: 3 }, confirmation: confirmation_message }
+            post "/internal/config", params: { site_config: { rate_limit_follow_count_daily: 3 },
+                                               confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_follow_count_daily).from(500).to(3)
         end
 
         it "updates rate_limit_comment_creation" do
           expect do
-            post "/internal/config", params: { site_config: { rate_limit_comment_creation: 3 }, confirmation: confirmation_message }
+            post "/internal/config", params: { site_config: { rate_limit_comment_creation: 3 },
+                                               confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_comment_creation).from(9).to(3)
         end
 
         it "updates rate_limit_published_article_creation" do
           expect do
-            post "/internal/config", params: { site_config: { rate_limit_published_article_creation: 3 }, confirmation: confirmation_message }
+            post "/internal/config", params: { site_config: { rate_limit_published_article_creation: 3 },
+                                               confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_published_article_creation).from(9).to(3)
         end
 
         it "updates rate_limit_organization_creation" do
           expect do
-            post "/internal/config", params: { site_config: { rate_limit_organization_creation: 3 }, confirmation: confirmation_message }
+            post "/internal/config", params: { site_config: { rate_limit_organization_creation: 3 },
+                                               confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_organization_creation).from(1).to(3)
         end
 
         it "updates rate_limit_image_upload" do
           expect do
-            post "/internal/config", params: { site_config: { rate_limit_image_upload: 3 }, confirmation: confirmation_message }
+            post "/internal/config", params: { site_config: { rate_limit_image_upload: 3 },
+                                               confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_image_upload).from(9).to(3)
         end
 
         it "updates rate_limit_email_recipient" do
           expect do
-            post "/internal/config", params: { site_config: { rate_limit_email_recipient: 3 }, confirmation: confirmation_message }
+            post "/internal/config", params: { site_config: { rate_limit_email_recipient: 3 },
+                                               confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_email_recipient).from(5).to(3)
         end
 
         it "updates rate_limit_user_subscription_creation" do
           expect do
-            post "/internal/config", params: { site_config: { rate_limit_user_subscription_creation: 1 }, confirmation: confirmation_message }
+            post "/internal/config", params: { site_config: { rate_limit_user_subscription_creation: 1 },
+                                               confirmation: confirmation_message }
           end.to change(SiteConfig, :rate_limit_user_subscription_creation).from(3).to(1)
         end
       end
@@ -397,12 +454,14 @@ RSpec.describe "/internal/config", type: :request do
 
       describe "Tags" do
         it "removes space sidebar_tags" do
-          post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoho, bobo fofo" }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoho, bobo fofo" },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
         end
 
         it "downcases sidebar_tags" do
-          post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoHo, Bobo Fofo" }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoHo, Bobo Fofo" },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.sidebar_tags).to eq(%w[hey haha hoho bobofofo])
         end
       end
@@ -410,7 +469,8 @@ RSpec.describe "/internal/config", type: :request do
       describe "User Experience" do
         it "updates the feed_style" do
           feed_style = "basic"
-          post "/internal/config", params: { site_config: { mascot_user_id: feed_style }, confirmation: confirmation_message }
+          post "/internal/config", params: { site_config: { mascot_user_id: feed_style },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.feed_style).to eq(feed_style)
         end
       end

@@ -48,7 +48,8 @@ RSpec.describe "PageViews", type: :request do
           article_id: article.id,
           referrer: "test"
         }
-        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_views_article_four_days_in_week")
+        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).
+          with(user.id, :user_home_feed, "user_views_article_four_days_in_week")
       end
     end
 

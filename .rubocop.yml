@@ -69,6 +69,12 @@ Layout/EmptyLinesAroundAttributeAccessor:
 #   Enabled: false
 #   StyleGuide: '#heredoc-argument-closing-parentheses'
 
+Layout/LineLength:
+  Description: 'Checks that line length does not exceed the configured limit.'
+  AutoCorrect: true # this is false by default
+  Exclude:
+    - docs/Gemfile
+    - Gemfile
 
 # Layout/MultilineArrayLineBreaks:
 #   Description: >-

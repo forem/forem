@@ -53,7 +53,8 @@ RSpec.describe "UserSubscriptions", type: :request do
     end
 
     it "returns an error for an invalid source_type" do
-      invalid_source_type_attributes = { source_type: "NonExistentSourceType", source_id: "1", subscriber_email: user.email }
+      invalid_source_type_attributes = { source_type: "NonExistentSourceType", source_id: "1",
+                                         subscriber_email: user.email }
       expect do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
@@ -77,8 +78,10 @@ RSpec.describe "UserSubscriptions", type: :request do
     end
 
     it "returns an error for an inactive source" do
-      unpublished_article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true, published: false)
-      invalid_source_attributes = { source_type: unpublished_article.class_name, source_id: unpublished_article.id, subscriber_email: user.email }
+      unpublished_article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true,
+                                                                                    published: false)
+      invalid_source_attributes = { source_type: unpublished_article.class_name, source_id: unpublished_article.id,
+                                    subscriber_email: user.email }
       expect do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
@@ -91,7 +94,8 @@ RSpec.describe "UserSubscriptions", type: :request do
 
     it "returns an error for a source that doesn't have the UserSubscription liquid tag enabled" do
       article = create(:article, :with_user_subscription_tag_role_user)
-      invalid_source_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: user.email }
+      invalid_source_attributes = { source_type: article.class_name, source_id: article.id,
+                                    subscriber_email: user.email }
       expect do
         post user_subscriptions_path,
              headers: { "Content-Type" => "application/json" },
@@ -113,7 +117,8 @@ RSpec.describe "UserSubscriptions", type: :request do
              author_id: article.user.id,
              user_subscription_sourceable: article)
 
-      invalid_source_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: user.email }
+      invalid_source_attributes = { source_type: article.class_name, source_id: article.id,
+                                    subscriber_email: user.email }
 
       expect do
         post user_subscriptions_path,
@@ -128,7 +133,8 @@ RSpec.describe "UserSubscriptions", type: :request do
     # TODO: [@thepracticaldev/delightful]: re-enable this once email confirmation is re-enabled
     xit "returns an error for an email mismatch" do
       article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
-      invalid_source_attributes = { source_type: article.class_name, source_id: article.id, subscriber_email: "old_email@test.com" }
+      invalid_source_attributes = { source_type: article.class_name, source_id: article.id,
+                                    subscriber_email: "old_email@test.com" }
 
       expect do
         post user_subscriptions_path,
@@ -152,7 +158,8 @@ RSpec.describe "UserSubscriptions", type: :request do
       end.to change(UserSubscription, :count).by(0)
 
       expect(response).to have_http_status(:unprocessable_entity)
-      expect(response.parsed_body["error"]).to include("Subscriber email Can't subscribe with an Apple private relay. Please update email.")
+      error_message = "Subscriber email Can't subscribe with an Apple private relay. Please update email."
+      expect(response.parsed_body["error"]).to include(error_message)
     end
   end
 

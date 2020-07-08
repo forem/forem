@@ -27,13 +27,15 @@ class Bufferizer
   end
 
   def main_tweet!
-    BufferUpdate.buff!(@article.id, twitter_buffer_text, ApplicationConfig["BUFFER_TWITTER_ID"], "twitter", nil, @admin_id)
+    BufferUpdate.buff!(@article.id, twitter_buffer_text, ApplicationConfig["BUFFER_TWITTER_ID"], "twitter", nil,
+                       @admin_id)
     @article.update(last_buffered: Time.current)
   end
 
   def facebook_post!
     BufferUpdate.buff!(@article.id, fb_buffer_text, ApplicationConfig["BUFFER_FACEBOOK_ID"], "facebook", nil, @admin_id)
-    BufferUpdate.buff!(@article.id, fb_buffer_text + social_tags, ApplicationConfig["BUFFER_LINKEDIN_ID"], "linkedin", nil, @admin_id)
+    BufferUpdate.buff!(@article.id, fb_buffer_text + social_tags, ApplicationConfig["BUFFER_LINKEDIN_ID"], "linkedin",
+                       nil, @admin_id)
     @article.update(facebook_last_buffered: Time.current)
   end
 

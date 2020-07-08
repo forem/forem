@@ -22,7 +22,10 @@ RSpec.describe MailchimpBot, type: :labor do
   let(:user) { create(:user, :ignore_mailchimp_subscribe_callback) }
   let(:article) { create(:article, user_id: user.id) }
   let(:my_gibbon_client) { instance_double(FakeGibbonRequest) }
-  let(:tag) { create(:tag, name: "tagname", bg_color_hex: Faker::Color.hex_color, text_color_hex: Faker::Color.hex_color, supported: true) }
+  let(:tag) do
+    create(:tag, name: "tagname", bg_color_hex: Faker::Color.hex_color, text_color_hex: Faker::Color.hex_color,
+                 supported: true)
+  end
 
   before do
     allow(Gibbon::Request).to receive(:new) { my_gibbon_client }

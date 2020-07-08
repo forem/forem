@@ -178,7 +178,8 @@ RSpec.describe ArticleDecorator, type: :decorator do
     it "returns search_optimized_description_replacement if it is present" do
       body_markdown = "---\ntitle: Title\npublished: false\ndescription:\ntags: heytag\n---\n\nHey this is the article"
       search_optimized_description_replacement = "Hey this is the expected result"
-      expect(create_article(body_markdown: body_markdown, search_optimized_description_replacement: search_optimized_description_replacement).
+      expect(create_article(body_markdown: body_markdown,
+                            search_optimized_description_replacement: search_optimized_description_replacement).
         description_and_tags).to eq(search_optimized_description_replacement)
     end
   end

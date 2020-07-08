@@ -81,7 +81,10 @@ class Listing < ApplicationRecord
 
   def restrict_markdown_input
     markdown_string = body_markdown.to_s
-    errors.add(:body_markdown, "has too many linebreaks. No more than 12 allowed.") if markdown_string.scan(/(?=\n)/).count > 12
+    if markdown_string.scan(/(?=\n)/).count > 12
+      errors.add(:body_markdown,
+                 "has too many linebreaks. No more than 12 allowed.")
+    end
     errors.add(:body_markdown, "is not allowed to include images.") if markdown_string.include?("![")
     errors.add(:body_markdown, "is not allowed to include liquid tags.") if markdown_string.include?("{% ")
   end

@@ -93,11 +93,13 @@ class UsersController < ApplicationController
     set_tabs("account")
 
     if destroy_request_in_progress?
-      flash[:settings_notice] = "You have already requested account deletion. Please, check your email for further instructions."
+      notice = "You have already requested account deletion. Please, check your email for further instructions."
+      flash[:settings_notice] = notice
       redirect_to user_settings_path(@tab)
     elsif @user.email?
       Users::RequestDestroy.call(@user)
-      flash[:settings_notice] = "You have requested account deletion. Please, check your email for further instructions."
+      notice = "You have requested account deletion. Please, check your email for further instructions."
+      flash[:settings_notice] = notice
       redirect_to user_settings_path(@tab)
     else
       flash[:settings_notice] = "Please, provide an email to delete your account."
@@ -204,7 +206,8 @@ class UsersController < ApplicationController
     adminable = User.find(params[:user_id])
     org = Organization.find_by(id: params[:organization_id])
 
-    not_authorized unless current_user.org_admin?(org) && OrganizationMembership.exists?(user: adminable, organization: org)
+    not_authorized unless current_user.org_admin?(org) && OrganizationMembership.exists?(user: adminable,
+                                                                                         organization: org)
 
     OrganizationMembership.find_by(user_id: adminable.id, organization_id: org.id).update(type_of_user: "admin")
     flash[:settings_notice] = "#{adminable.name} is now an admin."
@@ -306,7 +309,8 @@ class UsersController < ApplicationController
       authorize @organization, :part_of_org?
 
       @org_organization_memberships = @organization.organization_memberships.includes(:user)
-      @organization_membership = OrganizationMembership.find_by(user_id: current_user.id, organization_id: @organization.id)
+      @organization_membership = OrganizationMembership.find_by(user_id: current_user.id,
+                                                                organization_id: @organization.id)
     end
   end
 

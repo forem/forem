@@ -29,7 +29,9 @@ Honeybadger.configure do |config|
   config.before_notify do |notice|
     notice.fingerprint = if notice.error_message&.include?("SIGTERM") && notice.component&.include?("fetch_all_rss")
                            notice.error_message
-                         elsif (msg_key = MESSAGE_FINGERPRINTS.keys.detect { |k, _v| notice.error_message&.include?(k) })
+                         elsif (msg_key = MESSAGE_FINGERPRINTS.keys.detect do |k, _v|
+                                  notice.error_message&.include?(k)
+                                end)
                            MESSAGE_FINGERPRINTS[msg_key]
                          elsif (cmp_key = COMPONENT_FINGERPRINTS.keys.detect { |k, _v| notice.component&.include?(k) })
                            COMPONENT_FINGERPRINTS[cmp_key]
