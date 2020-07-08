@@ -117,14 +117,12 @@ export default function initializeFlagUserModal(
 
           if (outcome.result === 'create') {
             // eslint-disable-next-line no-restricted-globals
-            alert(vomitAllOption.dataset.reactableId);
             top.addSnackbarItem({
               message: 'All posts by this author will be less visible.',
               addCloseButton: true,
             });
           } else if (outcome.result === null) {
             // eslint-disable-next-line no-restricted-globals
-            alert(vomitAllOption.dataset.reactableId);
             top.addSnackbarItem({
               message:
                 "It seems you've already reduced the vibilsity of this author's posts.",
@@ -132,7 +130,6 @@ export default function initializeFlagUserModal(
             });
           } else {
             // eslint-disable-next-line no-restricted-globals
-            alert(vomitAllOption.dataset.reactableId);
             top.addSnackbarItem({
               message: `Response from server: ${JSON.stringify(outcome)}`,
               addCloseButton: true,
@@ -140,7 +137,6 @@ export default function initializeFlagUserModal(
           }
         } catch (error) {
           // eslint-disable-next-line no-restricted-globals
-          alert(vomitAllOption.dataset.reactableId);
           top.addSnackbarItem({ message: error, addCloseButton: true });
         }
       } else {
