@@ -4,7 +4,6 @@ import initializeFlagUserModal from '../../packs/flagUserModal';
 import { formatDate } from './util';
 
 export default class SingleArticle extends Component {
-
   activateToggle = (e) => {
     e.preventDefault();
     const { id, path, user, toggleArticle } = this.props;
@@ -14,7 +13,15 @@ export default class SingleArticle extends Component {
   };
 
   render() {
-    const { id, title, publishedAt, cachedTagList, user, key, articleOpened } = this.props;
+    const {
+      id,
+      title,
+      publishedAt,
+      cachedTagList,
+      user,
+      key,
+      articleOpened,
+    } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
       if (tag) {
         return (
@@ -30,6 +37,7 @@ export default class SingleArticle extends Component {
 
     return (
       <button
+        data-testid={`mod-article-${id}`}
         type="button"
         className="moderation-single-article"
         onClick={this.activateToggle}
