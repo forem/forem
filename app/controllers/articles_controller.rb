@@ -112,7 +112,8 @@ class ArticlesController < ApplicationController
   def create
     authorize Article
 
-    article = Articles::Creator.call(current_user, article_params_json)
+    @user = current_user
+    article = Articles::Creator.call(@user, article_params_json)
 
     render json: if article.persisted?
                    { id: article.id, current_state_path: article.decorate.current_state_path }.to_json

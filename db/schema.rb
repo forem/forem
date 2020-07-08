@@ -374,6 +374,7 @@ ActiveRecord::Schema.define(version: 2020_07_26_215928) do
     t.string "description"
     t.string "main_image"
     t.bigint "organization_id"
+    t.string "path"
     t.boolean "published", default: false
     t.string "slug"
     t.string "social_image"
@@ -381,6 +382,7 @@ ActiveRecord::Schema.define(version: 2020_07_26_215928) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.index ["organization_id"], name: "index_collections_on_organization_id"
+    t.index ["path"], name: "index_collections_on_path"
     t.index ["slug", "user_id"], name: "index_collections_on_slug_and_user_id", unique: true
     t.index ["user_id"], name: "index_collections_on_user_id"
   end
