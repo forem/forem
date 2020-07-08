@@ -122,8 +122,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   it "User attaches an invalid file type" do
     visit article.path.to_s
 
-    allow_only_videos = 'document.querySelector("#image-upload-main").setAttribute("data-permitted-file-types", "[\"video\"]")'
-    page.execute_script(allow_only_videos)
+    allow_vids = 'document.querySelector("#image-upload-main").setAttribute("data-permitted-file-types", "[\"video\"]")'
+    page.execute_script(allow_vids)
     expect(page).to have_selector('input[data-permitted-file-types="[\"video\"]"]', visible: :hidden)
 
     attach_file(
@@ -142,8 +142,8 @@ RSpec.describe "Creating Comment", type: :system, js: true do
   it "User attaches a file with too long of a name" do
     visit article.path.to_s
 
-    limit_file_name_length = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-name-length", "5")'
-    page.execute_script(limit_file_name_length)
+    limit_length = 'document.querySelector("#image-upload-main").setAttribute("data-max-file-name-length", "5")'
+    page.execute_script(limit_length)
     expect(page).to have_selector('input[data-max-file-name-length="5"]', visible: :hidden)
 
     attach_file(

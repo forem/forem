@@ -239,7 +239,9 @@ class CommentsController < ApplicationController
     @comment.hidden_by_commentable_user = false
     if @comment.save
       @commentable = @comment&.commentable
-      @commentable&.update_column(:any_comments_hidden, @commentable.comments.pluck(:hidden_by_commentable_user).include?(true))
+      @commentable&.update_columns(
+        any_comments_hidden: @commentable.comments.pluck(:hidden_by_commentable_user).include?(true),
+      )
       render json: { hidden: "false" }, status: :ok
     else
       render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity

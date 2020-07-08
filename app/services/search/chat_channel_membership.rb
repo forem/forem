@@ -2,7 +2,8 @@ module Search
   class ChatChannelMembership < Base
     INDEX_NAME = "chat_channel_memberships_#{Rails.env}".freeze
     INDEX_ALIAS = "chat_channel_memberships_#{Rails.env}_alias".freeze
-    MAPPINGS = JSON.parse(File.read("config/elasticsearch/mappings/chat_channel_memberships.json"), symbolize_names: true).freeze
+    MAPPINGS = JSON.parse(File.read("config/elasticsearch/mappings/chat_channel_memberships.json"),
+                          symbolize_names: true).freeze
     DEFAULT_PAGE = 0
     DEFAULT_PER_PAGE = 30
 

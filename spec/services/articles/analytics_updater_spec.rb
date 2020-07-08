@@ -19,7 +19,9 @@ RSpec.describe Articles::AnalyticsUpdater, type: :service do
     end
 
     context "when public_reactions_count is HIGHER than previous_public_reactions_count" do
-      let(:article) { build_stubbed(:article, public_reactions_count: 5, previous_public_reactions_count: 3, user: user) }
+      let(:article) do
+        build_stubbed(:article, public_reactions_count: 5, previous_public_reactions_count: 3, user: user)
+      end
       let(:pageview) { {} }
       let(:counts) { 1000 }
       let(:user_articles) { double }
@@ -40,7 +42,8 @@ RSpec.describe Articles::AnalyticsUpdater, type: :service do
       end
 
       it "updates appropriate column" do
-        expect(article).to have_received(:update_columns).with(previous_public_reactions_count: article.public_reactions_count)
+        count = article.public_reactions_count
+        expect(article).to have_received(:update_columns).with(previous_public_reactions_count: count)
       end
     end
   end

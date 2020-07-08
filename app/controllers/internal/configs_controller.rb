@@ -45,7 +45,8 @@ class Internal::ConfigsController < Internal::ApplicationController
       onboarding_params |
       job_params
 
-    params[:site_config][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if params[:site_config][:email_addresses].present?
+    has_emails = params[:site_config][:email_addresses].present?
+    params[:site_config][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if has_emails
     params.require(:site_config).permit(
       allowed_params,
       authentication_providers: [],
@@ -57,7 +58,8 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def extra_authorization_and_confirmation
     not_authorized unless current_user.has_role?(:single_resource_admin, Config) # Special additional permission
-    not_authorized if params[:confirmation] != "My username is @#{current_user.username} and this action is 100% safe and appropriate."
+    confirmation_message = "My username is @#{current_user.username} and this action is 100% safe and appropriate."
+    not_authorized if params[:confirmation] != confirmation_message
   end
 
   def clean_up_params

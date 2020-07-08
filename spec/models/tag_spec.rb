@@ -116,7 +116,8 @@ RSpec.describe Tag, type: :model do
 
     it "on destroy enqueues job to delete tag from elasticsearch" do
       tag.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, tag.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                   args: [described_class::SEARCH_CLASS.to_s, tag.id]) do
         tag.destroy
       end
     end

@@ -11,7 +11,8 @@ module BadgeRewarder
 
   def self.award_yearly_club_badges
     (1..3).each do |i|
-      message = "Happy #{ApplicationConfig['COMMUNITY_NAME']} birthday! Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
+      message = "Happy #{ApplicationConfig['COMMUNITY_NAME']} birthday! " \
+        "Can you believe it's been #{i} #{'year'.pluralize(i)} already?!"
       badge = Badge.find_by!(slug: "#{YEARS[i]}-year-club")
       User.where("created_at < ? AND created_at > ?", i.year.ago, i.year.ago - 2.days).find_each do |user|
         achievement = BadgeAchievement.create(
@@ -62,13 +63,16 @@ module BadgeRewarder
         award_badges(
           [winning_article.user.username],
           tag.badge.slug,
-          "Congratulations on posting the most beloved [##{tag.name}](#{URL.tag(tag)}) post from the past seven days! Your winning post was [#{winning_article.title}](#{URL.article(winning_article)}). (You can only win once per badge-eligible tag)",
+          "Congratulations on posting the most beloved [##{tag.name}](#{URL.tag(tag)}) post " \
+          "from the past seven days! " \
+          "Your winning post was [#{winning_article.title}](#{URL.article(winning_article)}). " \
+          "(You can only win once per badge-eligible tag)",
         )
       end
     end
   end
 
-  def self.award_contributor_badges_from_github(since = 1.day.ago, message_markdown = "Thank you so much for your contributions!")
+  def self.award_contributor_badges_from_github(since = 1.day.ago, msg = "Thank you so much for your contributions!")
     badge = Badge.find_by!(slug: "dev-contributor")
 
     REPOSITORIES.each do |repo|
@@ -77,7 +81,7 @@ module BadgeRewarder
       authors_uids = commits.map { |commit| commit.author.id }
       Identity.github.where(uid: authors_uids).find_each do |i|
         BadgeAchievement.where(user_id: i.user_id, badge_id: badge.id).first_or_create(
-          rewarding_context_message_markdown: message_markdown,
+          rewarding_context_message_markdown: msg,
         )
       end
     end
@@ -85,11 +89,14 @@ module BadgeRewarder
 
   def self.award_streak_badge(num_weeks)
     # No credit for super low quality
-    article_user_ids = Article.published.where("published_at > ? AND score > ?", 1.week.ago, MINIMUM_QUALITY).pluck(:user_id)
+    article_user_ids = Article.published.
+      where("published_at > ? AND score > ?", 1.week.ago, MINIMUM_QUALITY).
+      pluck(:user_id)
     message = if num_weeks == LONGEST_STREAK_WEEKS
                 LONGEST_STREAK_MESSAGE
               else
-                "Congrats on achieving this streak! Consistent writing is hard. The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
+                "Congrats on achieving this streak! Consistent writing is hard. " \
+                "The next streak badge you can get is the #{num_weeks * 2} Week Badge. 😉"
               end
     users = User.where(id: article_user_ids).where("articles_count >= ?", num_weeks)
     usernames = []
@@ -97,7 +104,8 @@ module BadgeRewarder
       count = 0
       num_weeks.times do |i|
         num = i + 1
-        count += 1 if user.articles.published.where("published_at > ? AND published_at < ?", num.weeks.ago, (num - 1).weeks.ago).any?
+        count += 1 if user.articles.published.where("published_at > ? AND published_at < ?", num.weeks.ago,
+                                                    (num - 1).weeks.ago).any?
       end
       usernames << user.username if count >= num_weeks
     end

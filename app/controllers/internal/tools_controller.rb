@@ -39,7 +39,10 @@ class Internal::ToolsController < Internal::ApplicationController
   end
 
   def bust_link(link)
-    link.sub!("https://#{ApplicationConfig['APP_DOMAIN']}", "") if link.starts_with?("https://#{ApplicationConfig['APP_DOMAIN']}")
+    if link.starts_with?("https://#{ApplicationConfig['APP_DOMAIN']}")
+      link.sub!("https://#{ApplicationConfig['APP_DOMAIN']}",
+                "")
+    end
     CacheBuster.bust(link)
     CacheBuster.bust("#{link}/")
     CacheBuster.bust("#{link}?i=i")

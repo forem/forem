@@ -135,7 +135,8 @@ RSpec.describe User, type: :model do
 
       it "has at most three optional fields" do
         expect(user_with_user_optional_fields).to have_many(:user_optional_fields).dependent(:destroy)
-        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field", value: "some value")
+        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field",
+                                                                                  value: "some value")
         expect(fourth_field).not_to be_valid
       end
 
@@ -241,7 +242,8 @@ RSpec.describe User, type: :model do
 
     it "on destroy enqueues job to delete user from elasticsearch" do
       user.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                   args: [described_class::SEARCH_CLASS.to_s, user.id]) do
         user.destroy
       end
     end
@@ -972,7 +974,8 @@ RSpec.describe User, type: :model do
 
   describe "theming properties" do
     it "creates proper body class with defaults" do
-      expect(user.decorate.config_body_class).to eq("default default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+      classes = "default default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "determines dark theme if night theme" do
@@ -992,22 +995,30 @@ RSpec.describe User, type: :model do
 
     it "creates proper body class with sans serif config" do
       user.config_font = "sans_serif"
-      expect(user.decorate.config_body_class).to eq("default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.config_font = "open_dyslexic"
-      expect(user.decorate.config_body_class).to eq("default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with night theme" do
       user.config_theme = "night_theme"
-      expect(user.decorate.config_body_class).to eq("night-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "night-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with pink theme" do
       user.config_theme = "pink_theme"
-      expect(user.decorate.config_body_class).to eq("pink-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "pink-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
   end
 
