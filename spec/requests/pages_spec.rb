@@ -116,13 +116,6 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
-  describe "GET /rly" do
-    it "has proper headline" do
-      get "/rly"
-      expect(response.body).to include("O RLY Cover Generator")
-    end
-  end
-
   describe "GET /welcome" do
     it "redirects to the latest welcome thread" do
       user = create(:user, id: 1)
