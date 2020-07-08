@@ -399,8 +399,8 @@ RSpec.describe "UserSettings", type: :request do
         delete "/users/remove_identity", params: { provider: provider }
         expect(response).to redirect_to("/settings/account")
 
-        expected_error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
-        expect(flash[:error]).to eq(expected_error)
+        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        expect(flash[:error]).to eq(error)
       end
 
       it "does not show the 'Remove OAuth' section afterwards if only one identity remains" do
@@ -423,8 +423,8 @@ RSpec.describe "UserSettings", type: :request do
       it "sets the proper flash error message" do
         delete "/users/remove_identity", params: { provider: provider }
 
-        expected_error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
-        expect(flash[:error]).to eq(expected_error)
+        error = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
+        expect(flash[:error]).to eq(error)
       end
 
       it "does not delete any identities" do

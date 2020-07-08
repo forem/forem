@@ -56,7 +56,9 @@ RSpec.describe Podcasts::CreateEpisode, type: :service do
   context "when item has an http media url" do
     let(:rss_item) { RSS::Parser.parse("spec/support/fixtures/podcasts/awayfromthekeyboard.rss", false).items.first }
     let!(:item) { Podcasts::EpisodeRssItem.from_item(rss_item) }
-    let(:https_url) { "https://awayfromthekeyboard.com/wp-content/uploads/2018/02/Episode_075_Lara_Hogan_Demystifies_Public_Speaking.mp3" }
+    let(:https_url) do
+      "https://awayfromthekeyboard.com/wp-content/uploads/2018/02/Episode_075_Lara_Hogan_Demystifies_Public_Speaking.mp3"
+    end
 
     it "sets media_url to https version when it is available" do
       stub_request(:head, https_url).to_return(status: 200)

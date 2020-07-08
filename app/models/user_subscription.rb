@@ -13,7 +13,8 @@ class UserSubscription < ApplicationRecord
 
   validates :author_id, presence: true
   validates :subscriber_email, presence: true
-  validates :subscriber_id, presence: true, uniqueness: { scope: %i[subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id] }
+  validates :subscriber_id, presence: true, uniqueness: { scope: %i[subscriber_email user_subscription_sourceable_type
+                                                                    user_subscription_sourceable_id] }
   validates :user_subscription_sourceable_id, presence: true
   validates :user_subscription_sourceable_type, presence: true, inclusion: { in: ALLOWED_TYPES }
 

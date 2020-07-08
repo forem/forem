@@ -27,7 +27,8 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
     end
 
     it "sets reachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast",
+                                            httparty_options).and_raise(Errno::ECONNREFUSED)
       described_class.new(unpodcast).get_episodes(limit: 2)
       unpodcast.reload
       expect(unpodcast.reachable).to be false
@@ -35,14 +36,17 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
     end
 
     it "sets reachable when there redirection is too deep" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(HTTParty::RedirectionTooDeep, "too deep")
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(
+        HTTParty::RedirectionTooDeep, "too deep"
+      )
       described_class.new(unpodcast).get_episodes(limit: 2)
       unpodcast.reload
       expect(unpodcast.reachable).to be false
     end
 
     it "schedules the update url jobs when setting as unreachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast",
+                                            httparty_options).and_raise(Errno::ECONNREFUSED)
       create_list(:podcast_episode, 2, podcast: unpodcast)
 
       expect do
@@ -51,8 +55,10 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
     end
 
     it "re-checks episodes urls when setting as unreachable" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
-      episode = create(:podcast_episode, podcast: unpodcast, reachable: true, media_url: "http://podcast.example.com/ep1.mp3")
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast",
+                                            httparty_options).and_raise(Errno::ECONNREFUSED)
+      episode = create(:podcast_episode, podcast: unpodcast, reachable: true,
+                                         media_url: "http://podcast.example.com/ep1.mp3")
       allow(HTTParty).to receive(:head).with("http://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
       allow(HTTParty).to receive(:head).with("https://podcast.example.com/ep1.mp3").and_raise(Errno::ECONNREFUSED)
 
@@ -66,7 +72,8 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
 
     it "doesn't re-check episodes reachable if the podcast was unreachable" do
       unpodcast.update_column(:reachable, false)
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(Errno::ECONNREFUSED)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast",
+                                            httparty_options).and_raise(Errno::ECONNREFUSED)
       create_list(:podcast_episode, 2, podcast: unpodcast)
       expect do
         described_class.new(unpodcast).get_episodes(limit: 2)
@@ -79,7 +86,8 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
     let(:unpodcast) { create(:podcast, feed_url: un_feed_url) }
 
     it "sets ssl_failed" do
-      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast", httparty_options).and_raise(OpenSSL::SSL::SSLError)
+      allow(HTTParty).to receive(:get).with("http://podcast.example.com/podcast",
+                                            httparty_options).and_raise(OpenSSL::SSL::SSLError)
       described_class.new(unpodcast).get_episodes(limit: 2)
       unpodcast.reload
       expect(unpodcast.reachable).to be false
@@ -106,14 +114,22 @@ RSpec.describe Podcasts::Feed, type: :service, vcr: vcr_option do
         described_class.new(podcast).get_episodes(limit: 2)
       end
       episodes = podcast.podcast_episodes
-      expect(episodes.pluck(:title).sort).to eq(["Analyse Asia with Bernard Leong", "IFTTT Architecture with Nicky Leach"])
-      expect(episodes.pluck(:media_url).sort).to eq(%w[https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3 https://traffic.libsyn.com/sedaily/IFTTT.mp3])
+      expect(episodes.pluck(:title).sort).to eq(["Analyse Asia with Bernard Leong",
+                                                 "IFTTT Architecture with Nicky Leach"])
+      expect(episodes.pluck(:media_url).sort).to eq(%w[https://traffic.libsyn.com/sedaily/AnalyseAsia.mp3
+                                                       https://traffic.libsyn.com/sedaily/IFTTT.mp3])
     end
   end
 
   context "when updating" do
-    let!(:episode) { create(:podcast_episode, media_url: "http://traffic.libsyn.com/sedaily/AnalyseAsia.mp3", title: "Old Title", published_at: nil) }
-    let!(:episode2) { create(:podcast_episode, media_url: "http://traffic.libsyn.com/sedaily/IFTTT.mp3", title: "SuperPodcast", published_at: nil) }
+    let!(:episode) do
+      create(:podcast_episode, media_url: "http://traffic.libsyn.com/sedaily/AnalyseAsia.mp3", title: "Old Title",
+                               published_at: nil)
+    end
+    let!(:episode2) do
+      create(:podcast_episode, media_url: "http://traffic.libsyn.com/sedaily/IFTTT.mp3", title: "SuperPodcast",
+                               published_at: nil)
+    end
 
     it "does not refetch already fetched episodes" do
       expect do

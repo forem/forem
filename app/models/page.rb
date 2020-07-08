@@ -39,12 +39,21 @@ class Page < ApplicationRecord
   end
 
   def body_present
-    errors.add(:body_markdown, "must exist if body_html or body_json doesn't exist.") if body_markdown.blank? && body_html.blank? && body_json.blank?
+    return unless body_markdown.blank? && body_html.blank? && body_json.blank?
+
+    errors.add(:body_markdown, "must exist if body_html or body_json doesn't exist.")
   end
 
   def unique_slug_including_users_and_orgs
-    slug_exists = User.exists?(username: slug) || Organization.exists?(slug: slug) || Podcast.exists?(slug: slug) || slug.include?("sitemap-")
-    errors.add(:slug, "is taken.") if slug_exists
+    slug_exists = (
+      User.exists?(username: slug) ||
+      Organization.exists?(slug: slug) ||
+      Podcast.exists?(slug: slug) ||
+      slug.include?("sitemap-")
+    )
+    return unless slug_exists
+
+    errors.add(:slug, "is taken.")
   end
 
   def bust_cache
