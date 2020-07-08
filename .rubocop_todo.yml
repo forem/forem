@@ -97,6 +97,6 @@ Style/ClassAndModuleChildren:
 # Offense count: 3
 # Configuration parameters: Methods.
 # Methods: {"reduce"=>["acc", "elem"]}, {"inject"=>["acc", "elem"]}
-Style/SingleLineBlockParams:
-  Exclude:
-    - 'app/labor/markdown_fixer.rb'
+# Style/SingleLineBlockParams:
+#   Exclude:
+#     - 'app/labor/markdown_fixer.rb'
