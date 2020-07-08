@@ -58,11 +58,11 @@
           <% end %>
         </span>
 
-        <% if false %>
-          <span class="flex items-center p-1 ml-1" title="Data">
+        <% if article.user_subscriptions_count > 0 %>
+          <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="flex items-center crayons-btn crayons-btn--ghost crayons-btn--s fw-normal color-base-70" title="Subscriptions">
             <%= inline_svg_tag("small-data.svg", aria: true, class: "crayons-icon mr-1", title: "Data") %>
-            4
-          </span>
+            <%= article.user_subscriptions_count %>
+          </a>
         <% end %>
       </div>
     <% end %>
@@ -94,9 +94,12 @@
         <%= inline_svg_tag("overflow-horizontal.svg", aria: true, class: "crayons-icon", title: "More...") %>
       </button>
 
-      <div class="crayons-dropdown top-100 right-0 z-10 align-left js-dashboard-row-more-dropdown">
+      <div class="crayons-dropdown top-100 right-0 z-10 align-left js-dashboard-row-more-dropdown p-1">
+        <% if article.user_subscriptions_count > 0 %>
+          <a href="<%= dashboard_subscriptions_path(source_type: "Article", source_id: article.id) %>" class="crayons-link crayons-link--block w-100"><%= "Subscriptions (#{article.user_subscriptions_count})" %></a>
+        <% end %>
         <% if @current_user_pro %>
-          <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100 border-0 bg-transparent">Stats</a>
+          <a href="<%= article.path %>/stats" class="crayons-link crayons-link--block w-100">Stats</a>
         <% end %>
         <%= form_for(article, method: :patch, remote: true, authenticity_token: true, html: { "data-type": "json", class: "js-archive-toggle" }) do |f| %>
           <%= f.hidden_field :archived, value: !article.archived, id: "article_archived_#{article.id}" %>

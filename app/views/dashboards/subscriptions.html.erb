@@ -1,0 +1,39 @@
+<% title "Subscriptions #{@source.title}" %>
+
+<div class="crayons-layout crayons-layout--1-col">
+  <header class="flex items-center justify-between p-2 m:p-0">
+    <div>
+      <h1 class="fs-2xl s:fs-3xl">Subscriptions</h1>
+      <h2 class="fs-base s:fs-xl fw-medium">
+        <em class="fs-italic fw-normal color-base-60">for</em>
+        <a href=<%= @source.path %>><%= @source.title %></a>
+      </h2>
+    </div>
+    <%#TODO: [@thepracticaldev/delightful]: uncomment this when ready to implement CSV exports%>
+    <%#<button type="button" class="crayons-btn crayons-btn--secondary">Export CSV</button>%>
+  </header>
+
+  <main>
+    <% if @subscriptions.any? %>
+      <table class="crayons-table w-100">
+        <tbody class="crayons-card">
+          <% @subscriptions.each do |subscription| %>
+            <% subscriber = subscription.subscriber %>
+            <tr>
+              <td class="fw-medium"><a href=<%= user_profile_path(subscriber.username) %> <%= "#{subscriber.name} DEV profile" %>><%= subscriber.name %></a></td>
+              <td><a href="<%= "mailto: #{subscription.subscriber_email}" %>"><%= subscription.subscriber_email %></a></td>
+              <td class="fs-s color-base-60"><%= "#{time_ago_in_words(subscription.created_at)} ago" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <div class="my-4 pl-3">
+        <%= paginate @subscriptions, params: { i: nil } %>
+      </div>
+    <% else %>
+      <div class="p-9 crayons-card crayons-card--secondary align-center fs-l h-100 flex items-center justify-center">
+        You don't have any subscribers for this <%= @source.class.name.downcase %> yet...
+      </div>
+    <% end %>
+  </main>
+</div>
