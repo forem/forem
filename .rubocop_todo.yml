@@ -46,10 +46,6 @@ RSpec/ExampleLength:
     - 'spec/models/comment_spec.rb'
     - 'spec/requests/display_ad_events_spec.rb'
 
-# Offense count: 930
-RSpec/MultipleExpectations:
-  Max: 12
-
 # Offense count: 1
 RSpec/SubjectStub:
   Exclude:
@@ -93,10 +89,3 @@ Rails/UniqueValidationWithoutIndex:
 # SupportedStyles: nested, compact
 Style/ClassAndModuleChildren:
   Enabled: false
-
-# Offense count: 3
-# Configuration parameters: Methods.
-# Methods: {"reduce"=>["acc", "elem"]}, {"inject"=>["acc", "elem"]}
-# Style/SingleLineBlockParams:
-#   Exclude:
-#     - 'app/labor/markdown_fixer.rb'

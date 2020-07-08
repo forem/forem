@@ -381,6 +381,10 @@ RSpec.describe "Dashboards", type: :request do
                   102, # Current pagination limit is 100
                   author: author,
                   user_subscription_sourceable: article_with_user_subscription_tag)
+      params = {
+        source_type: article_with_user_subscription_tag.class.name,
+        source_id: article_with_user_subscription_tag.id
+      }
       get "/dashboard/subscriptions", params: params
       expect(response.body).to include "pagination"
     end
