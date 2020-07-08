@@ -23,7 +23,7 @@ module.exports = {
             // The injected environment variable is so that SASS mixins/functions can handle
             // generating correct CSS for Sprockets or webpack when in Storybook.
             // an example of it's usage can be found in /app/assets/stylesheets/_mixins.scss
-            prependData: '$environment: "storybook";',
+            additionalData: '$environment: "storybook";',
           },
         },
       ],

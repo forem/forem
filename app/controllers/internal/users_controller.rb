@@ -24,7 +24,9 @@ class Internal::UsersController < Internal::ApplicationController
       joins(:organization).
       order("organizations.name ASC").
       includes(:organization)
-    @last_email_verification_date = @user.email_authorizations.where.not(verified_at: nil).order("created_at DESC").first&.verified_at || "Never"
+    @last_email_verification_date = @user.email_authorizations.
+      where.not(verified_at: nil).
+      order("created_at DESC").first&.verified_at || "Never"
   end
 
   def update
@@ -55,7 +57,10 @@ class Internal::UsersController < Internal::ApplicationController
     @user = User.find(params[:id])
     begin
       Moderator::DeleteUser.call(admin: current_user, user: @user, user_params: user_params)
-      flash[:success] = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) has been fully deleted. If requested, old content may have been ghostified. If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
+      message = "@#{@user.username} (email: #{@user.email.presence || 'no email'}, user_id: #{@user.id}) " \
+        "has been fully deleted. If requested, old content may have been ghostified. " \
+        "If this is a GDPR delete, delete them from Mailchimp & Google Analytics."
+      flash[:success] = message
     rescue StandardError => e
       flash[:danger] = e.message
     end

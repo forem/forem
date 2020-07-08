@@ -44,8 +44,12 @@ module Articles
 
       # remove related notifications if unpublished
       if article.saved_changes["published"] == [true, false]
-        Notification.remove_all_by_action_without_delay(notifiable_ids: article.id, notifiable_type: "Article", action: "Published")
-        Notification.remove_all(notifiable_ids: article.comments.pluck(:id), notifiable_type: "Comment") if article.comments.exists?
+        Notification.remove_all_by_action_without_delay(notifiable_ids: article.id, notifiable_type: "Article",
+                                                        action: "Published")
+        if article.comments.exists?
+          Notification.remove_all(notifiable_ids: article.comments.pluck(:id),
+                                  notifiable_type: "Comment")
+        end
       end
       # don't send only if article keeps being unpublished
       dispatch_event(article) if article.published || was_published

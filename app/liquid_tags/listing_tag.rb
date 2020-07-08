@@ -1,7 +1,8 @@
 class ListingTag < LiquidTagBase
   PARTIAL = "listings/liquid".freeze
 
-  def initialize(_tag_name, slug_path_url, _tokens)
+  def initialize(_tag_name, slug_path_url, _parse_context)
+    super
     stripped_path = ActionController::Base.helpers.strip_tags(slug_path_url).strip
     @listing = get_listing(stripped_path)
   end

@@ -39,7 +39,8 @@ RSpec.describe PodcastEpisode, type: :model do
 
     it "on destroy enqueues job to delete podcast_episode from elasticsearch" do
       podcast_episode.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, podcast_episode.search_id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                   args: [described_class::SEARCH_CLASS.to_s, podcast_episode.search_id]) do
         podcast_episode.destroy
       end
     end
@@ -132,7 +133,8 @@ RSpec.describe PodcastEpisode, type: :model do
 
   context "when callbacks are triggered after save" do
     it "triggers cache busting on save" do
-      sidekiq_assert_enqueued_with(job: PodcastEpisodes::BustCacheWorker, args: [podcast_episode.id, podcast_episode.path, podcast_episode.podcast_slug]) do
+      sidekiq_assert_enqueued_with(job: PodcastEpisodes::BustCacheWorker,
+                                   args: [podcast_episode.id, podcast_episode.path, podcast_episode.podcast_slug]) do
         podcast_episode.save
       end
     end

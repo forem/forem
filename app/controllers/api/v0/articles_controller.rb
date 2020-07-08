@@ -117,8 +117,10 @@ module Api
 
       def allowed_to_change_org_id?
         potential_user = @article&.user || @user
-        if @article.nil? || OrganizationMembership.exists?(user: potential_user, organization_id: params.dig("article", "organization_id"))
-          OrganizationMembership.exists?(user: potential_user, organization_id: params.dig("article", "organization_id"))
+        if @article.nil? || OrganizationMembership.exists?(user: potential_user,
+                                                           organization_id: params.dig("article", "organization_id"))
+          OrganizationMembership.exists?(user: potential_user,
+                                         organization_id: params.dig("article", "organization_id"))
         elsif potential_user == @user
           potential_user.org_admin?(params.dig("article", "organization_id")) ||
             @user.any_admin?

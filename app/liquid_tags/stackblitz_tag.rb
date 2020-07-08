@@ -4,7 +4,7 @@ class StackblitzTag < LiquidTagBase
   VIEW_OPTION_REGEXP = /\Aview=(preview|editor|both)\z/.freeze
   FILE_OPTION_REGEXP = /\Afile=(.*)\z/.freeze
 
-  def initialize(tag_name, id, tokens)
+  def initialize(_tag_name, id, _parse_context)
     super
     @id = parse_id(id)
     @view = parse_input(id, method(:valid_view?))

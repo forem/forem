@@ -23,7 +23,11 @@ class ChatChannelsController < ApplicationController
   end
 
   def show
-    @chat_messages = @chat_channel.messages.includes(:user).order("created_at DESC").offset(params[:message_offset]).limit(50)
+    @chat_messages = @chat_channel.messages.
+      includes(:user).
+      order(created_at: :desc).
+      offset(params[:message_offset]).
+      limit(50)
   end
 
   def create
@@ -38,7 +42,8 @@ class ChatChannelsController < ApplicationController
       flash[:error] = chat_channel.errors.full_messages.to_sentence
     else
       if chat_channel_params[:discoverable].to_i.zero?
-        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id, role: "member", status: "active")
+        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id,
+                                     role: "member", status: "active")
       else
         ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
       end
@@ -52,10 +57,12 @@ class ChatChannelsController < ApplicationController
   def update_channel
     chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_params)
     if chat_channel.errors.any?
-      render json: { success: false, errors: chat_channel.errors.full_messages, message: "Channel settings updation failed. Try again later." }, success: :bad_request
+      render json: { success: false, errors: chat_channel.errors.full_messages,
+                     message: "Channel settings updation failed. Try again later." }, success: :bad_request
     else
       if chat_channel_params[:discoverable]
-        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id, role: "member", status: "active")
+        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id,
+                                     role: "member", status: "active")
       else
         ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
       end
@@ -162,10 +169,11 @@ class ChatChannelsController < ApplicationController
 
   def render_unopened_json_response
     @chat_channels_memberships = if session_current_user_id
-                                   ChatChannelMembership.where(user_id: session_current_user_id).includes(%i[chat_channel user]).
+                                   ChatChannelMembership.where(user_id: session_current_user_id).
                                      where(has_unopened_messages: true).
                                      where(show_global_badge_notification: true).
                                      where.not(status: %w[removed_from_channel left_channel]).
+                                     includes(%i[chat_channel user]).
                                      order("chat_channel_memberships.updated_at DESC")
                                  else
                                    []
@@ -187,14 +195,24 @@ class ChatChannelsController < ApplicationController
 
   def render_unopened_ids_response
     @unopened_ids = ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
-      where(has_unopened_messages: true).where.not(status: %w[removed_from_channel left_channel]).pluck(:chat_channel_id)
+      where(has_unopened_messages: true).where.not(status: %w[removed_from_channel
+                                                              left_channel]).pluck(:chat_channel_id)
     render json: { unopened_ids: @unopened_ids }
   end
 
   def render_joining_request_json_response
-    requested_memberships_id = current_user.chat_channel_memberships.includes(:chat_channel).
-      where(chat_channels: { discoverable: true }, role: "mod").pluck(:chat_channel_id).map { |membership_id| ChatChannel.find_by(id: membership_id).requested_memberships }.flatten.map(&:id)
-    @chat_channels_memberships = ChatChannelMembership.includes(%i[user chat_channel]).where(id: requested_memberships_id)
+    requested_memberships_id = current_user.
+      chat_channel_memberships.
+      includes(:chat_channel).
+      where(chat_channels: { discoverable: true }, role: "mod").
+      pluck(:chat_channel_id).
+      map { |membership_id| ChatChannel.find_by(id: membership_id).requested_memberships }.
+      flatten.
+      map(&:id)
+
+    @chat_channels_memberships = ChatChannelMembership.
+      includes(%i[user chat_channel]).
+      where(id: requested_memberships_id)
 
     render "index.json"
   end
@@ -227,6 +245,7 @@ class ChatChannelsController < ApplicationController
                     else
                       @chat_channel.adjusted_slug(current_user)
                     end
-    Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened", { channel_type: @chat_channel.channel_type, adjusted_slug: adjusted_slug }.to_json)
+    Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened",
+                   { channel_type: @chat_channel.channel_type, adjusted_slug: adjusted_slug }.to_json)
   end
 end

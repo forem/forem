@@ -83,7 +83,10 @@ class ReactionsController < ApplicationController
         Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
 
         Notification.send_reaction_notification(reaction, reaction.target_user)
-        Notification.send_reaction_notification(reaction, reaction.reactable.organization) if reaction.reaction_on_organization_article?
+        if reaction.reaction_on_organization_article?
+          Notification.send_reaction_notification(reaction,
+                                                  reaction.reactable.organization)
+        end
 
         result = "create"
 
@@ -103,7 +106,8 @@ class ReactionsController < ApplicationController
   end
 
   def cached_user_public_comment_reactions(user, comment_ids)
-    cache = Rails.cache.fetch("cached-user-#{user.id}-reaction-ids-#{user.public_reactions_count}", expires_in: 24.hours) do
+    cache = Rails.cache.fetch("cached-user-#{user.id}-reaction-ids-#{user.public_reactions_count}",
+                              expires_in: 24.hours) do
       user.reactions.public_category.where(reactable_type: "Comment").each_with_object({}) do |r, h|
         h[r.reactable_id] = r.attributes
       end
@@ -128,7 +132,10 @@ class ReactionsController < ApplicationController
     reaction.destroy
     Moderator::SinkArticles.call(reaction.reactable_id) if reaction.vomit_on_user?
     Notification.send_reaction_notification_without_delay(reaction, reaction.target_user)
-    Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) if reaction.reaction_on_organization_article?
+    if reaction.reaction_on_organization_article?
+      Notification.send_reaction_notification_without_delay(reaction,
+                                                            reaction.reactable.organization)
+    end
     "destroy"
   end
 

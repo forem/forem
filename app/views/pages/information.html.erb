@@ -32,15 +32,11 @@
   }
 </style>
 
-<div class="blank-space"></div>
-<div class="container article">
-  <div class="title">
-    <h1>
-      More information about <%= community_name %> 👋
-    </h1>
-  </div>
-  <div class="body">
-    <ul class="key-links">
+<div class="crayons-layout crayons-layout--limited">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-4 mt-0">More information about <%= community_name %> 👋</h1>
+
+    <ul>
       <li><a href="/">Home</a></li>
       <li><a href="/about">About</a></li>
       <% if SiteConfig.shop_url.present? %>
@@ -55,8 +51,7 @@
       <li><a href="/code-of-conduct">Code of Conduct</a></li>
       <li><a href="/downloads">Get the mobile app</a></li>
     </ul>
-  </div>
-  <div class="social-links flex justify-center p-4 mt-4">
+
     <%= render partial: "layouts/social_media" %>
   </div>
 </div>

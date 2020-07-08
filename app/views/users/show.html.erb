@@ -161,7 +161,7 @@
         <% if user_signed_in? %>
           <%= javascript_packs_with_chunks_tag "profileDropdown", defer: true %>
         <% end %>
-        <a href="/report-abuse?url=<%= user_url(@user) %>">Report Abuse</a>
+        <span class="report-abuse-link-wrapper" data-path="/report-abuse?url=<%= user_url(@user) %>"></span>
       </div>
     </div>
   </div>

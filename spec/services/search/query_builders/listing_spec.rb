@@ -28,7 +28,8 @@ RSpec.describe Search::QueryBuilders::Listing, type: :service do
     end
 
     it "applies TERM_KEYS from params with boolean mode" do
-      params = { category: "cfp", tags: %w[beginner intermediate professional], contact_via_connect: false, tag_boolean_mode: "all" }
+      params = { category: "cfp", tags: %w[beginner intermediate professional], contact_via_connect: false,
+                 tag_boolean_mode: "all" }
       filter = described_class.new(params: params)
       expected_filters = [
         { "terms" => { "category" => ["cfp"] } },
@@ -73,7 +74,8 @@ RSpec.describe Search::QueryBuilders::Listing, type: :service do
         params = { classified_listing_search: "test", bumped_at: Time.current, category: "cfp" }
         filter = described_class.new(params: params)
         expected_query = [{
-          "simple_query_string" => { "query" => "test*", "fields" => [:classified_listing_search], "lenient" => true, "analyze_wildcard" => true }
+          "simple_query_string" => { "query" => "test*", "fields" => [:classified_listing_search], "lenient" => true,
+                                     "analyze_wildcard" => true }
         }]
         expected_filters = [
           { "range" => { "bumped_at" => Time.current } },

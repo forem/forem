@@ -98,6 +98,7 @@ class Message < ApplicationRecord
     html
   end
 
+  # rubocop:disable Layout/LineLength
   def append_rich_links(html)
     doc = Nokogiri::HTML(html)
     doc.css("a").each do |anchor|
@@ -143,6 +144,7 @@ class Message < ApplicationRecord
     end
     html
   end
+  # rubocop:enable Layout/LineLength
 
   def handle_slash_command(html)
     response = if html.to_s.strip == "<p>/call</p>"
@@ -195,15 +197,21 @@ class Message < ApplicationRecord
   end
 
   def rich_link_article(link)
-    Article.find_by(slug: link["href"].split("/")[4].split("?")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+
+    Article.find_by(slug: link["href"].split("/")[4].split("?")[0])
   end
 
   def rich_link_tag(link)
-    Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/t/")
+    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/t/")
+
+    Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0])
   end
 
   def rich_user_link(link)
-    User.find_by(username: link["href"].split("/")[3].split("/")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/")
+    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/")
+
+    User.find_by(username: link["href"].split("/")[3].split("/")[0])
   end
 
   def send_email_if_appropriate

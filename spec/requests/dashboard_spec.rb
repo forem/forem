@@ -7,6 +7,7 @@ RSpec.describe "Dashboards", type: :request do
   let(:pro_user)      { create(:user, :pro) }
   let(:article)       { create(:article, user: user) }
   let(:unpublished_article) { create(:article, user: user, published: false) }
+  let(:organization) { create(:organization) }
 
   describe "GET /dashboard" do
     context "when not logged in" do
@@ -38,6 +39,19 @@ RSpec.describe "Dashboards", type: :request do
         expect(response.body).to include "Delete"
       end
 
+      it "renders subscriptions for articles with subscriptions" do
+        user.add_role(:admin) # TODO: (Alex Smith) - update roles before release
+        article_with_user_subscription_tag = create(:article, user: user, with_user_subscription_tag: true)
+        create(:user_subscription,
+               subscriber_id: second_user.id,
+               subscriber_email: second_user.email,
+               author_id: article_with_user_subscription_tag.user_id,
+               user_subscription_sourceable: article_with_user_subscription_tag)
+
+        get "/dashboard"
+        expect(response.body).to include "Subscriptions"
+      end
+
       it "renders pagination if minimum amount of posts" do
         create_list(:article, 52, user: user)
         get "/dashboard"
@@ -48,6 +62,26 @@ RSpec.describe "Dashboards", type: :request do
         create_list(:article, 3, user: user)
         get "/dashboard"
         expect(response.body).not_to include "pagination"
+      end
+
+      it "does not render a link to pro analytics" do
+        get dashboard_path
+
+        expect(response.body).not_to include("Pro Analytics")
+      end
+
+      it "does not render a link to pro analytics for the org" do
+        create(:organization_membership, type_of_user: :admin, organization: organization, user: user)
+
+        get dashboard_path
+
+        expect(response.body).not_to include("Pro Analytics for #{organization.name}")
+      end
+
+      it "does not render a link to upload a video" do
+        get dashboard_path
+
+        expect(response.body).not_to include("Upload a video")
       end
     end
 
@@ -68,6 +102,35 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard"
         expect(response.body).to include("Stats")
         expect(response.body).to include("#{article.path}/stats")
+      end
+
+      it "renders a link to pro analytics" do
+        sign_in pro_user
+        get dashboard_path
+
+        expect(response.body).to include("Pro Analytics")
+      end
+
+      it "renders a link to pro analytics for the org" do
+        create(:organization_membership, type_of_user: :admin, organization: organization, user: pro_user)
+
+        sign_in pro_user
+        get dashboard_path
+
+        expect(response.body).to include("Pro Analytics for #{organization.name}")
+      end
+    end
+
+    context "when logged in as a non recent user" do
+      it "renders a link to upload a video" do
+        Timecop.freeze(Time.current) do
+          user.update!(created_at: 3.weeks.ago)
+
+          sign_in user
+          get dashboard_path
+
+          expect(response.body).to include("Upload a video")
+        end
       end
     end
   end
@@ -248,6 +311,79 @@ RSpec.describe "Dashboards", type: :request do
         get "/dashboard/pro/org/#{org.id}"
         expect(response.body).to include("pro")
       end
+    end
+  end
+
+  # TODO: (Alex Smith) - update roles before release
+  describe "GET /dashboard/subscriptions" do
+    before do
+      sign_in user
+    end
+
+    it "renders subscriptions" do
+      user.add_role(:admin)
+      article_with_user_subscription_tag = create(:article, user: user, with_user_subscription_tag: true)
+      user_subscription = create(:user_subscription,
+                                 subscriber_id: second_user.id,
+                                 subscriber_email: second_user.email,
+                                 author_id: article_with_user_subscription_tag.user_id,
+                                 user_subscription_sourceable: article_with_user_subscription_tag)
+
+      get "/dashboard/subscriptions", params: { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
+      expect(response.body).to include(user_subscription.subscriber_email)
+    end
+
+    it "displays a message if no subscriptions are found" do
+      get "/dashboard/subscriptions", params: { source_type: article.class.name, source_id: article.id }
+      expect(response.body).to include("You don't have any subscribers for this")
+    end
+
+    it "raises unauthorized when trying to access a source the user doesn't own" do
+      user.add_role(:admin)
+      article_with_user_subscription_tag = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
+      create(:user_subscription,
+             subscriber_id: second_user.id,
+             subscriber_email: second_user.email,
+             author_id: article_with_user_subscription_tag.user_id,
+             user_subscription_sourceable: article_with_user_subscription_tag)
+
+      expect do
+        get "/dashboard/subscriptions", params: { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
+      end.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "raises an error for disallowed source_types" do
+      expect do
+        get "/dashboard/subscriptions", params: { source_type: "Comment", source_id: 1 }
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "raises an error when the source can't be found" do
+      expect do
+        get "/dashboard/subscriptions", params: { source_type: article.class.name, source_id: article.id + 999 }
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it "renders pagination if minimum amount of subscriptions" do
+      user.add_role(:admin)
+      article_with_user_subscription_tag = create(:article, user: user, with_user_subscription_tag: true)
+      create_list(:user_subscription,
+                  102, # Current pagination limit is 100
+                  author: user,
+                  user_subscription_sourceable: article_with_user_subscription_tag)
+      get "/dashboard/subscriptions", params: { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
+      expect(response.body).to include "pagination"
+    end
+
+    it "does not render pagination if less than one full page" do
+      user.add_role(:admin)
+      article_with_user_subscription_tag = create(:article, user: user, with_user_subscription_tag: true)
+      create_list(:user_subscription,
+                  5,
+                  author: user,
+                  user_subscription_sourceable: article_with_user_subscription_tag)
+      get "/dashboard/subscriptions", params: { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
+      expect(response.body).not_to include "pagination"
     end
   end
 end
