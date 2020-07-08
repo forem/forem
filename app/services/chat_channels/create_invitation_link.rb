@@ -1,22 +1,15 @@
 module ChatChannels
-  class CreateInvitationLink
-    def initialize(chat_channel)
-      @chat_channel = chat_channel
-    end
+  module CreateInvitationLink
+    module_function
 
-    def self.call(*args)
-      new(*args).call
-    end
-
-    attr_accessor :chat_channel
-
-    def call
-      slug = "invitation-link-#{SecureRandom.hex(3)}"
-      path = "/chat_channel_memberships/join_channel_invitation/#{chat_channel.slug}?invitation_slug=#{slug}"
-      expiry_at = 1.day.from_now
-      invitation_link = chat_channel.invitation_links.new(status: "active", path: path, expiry_at: expiry_at, slug: slug)
-      invitation_link.save
-      invitation_link
+    def call(chat_channel)
+      invitation_slug = "invitation-link-#{SecureRandom.hex(3)}"
+      chat_channel.update(invitation_slug: invitation_slug)
+      unless chat_channel.errors.any?
+        path = "/chat_channel_memberships/join_channel_invitation/#{chat_channel.slug}?invitation_slug=#{invitation_slug}"
+        Rails.cache.write(invitation_slug, path, expires_in: 12.hours)
+      end
+      chat_channel
     end
   end
 end

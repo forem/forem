@@ -9,7 +9,6 @@ class ChatChannel < ApplicationRecord
   has_many :messages, dependent: :destroy
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :users, through: :chat_channel_memberships
-  has_many :invitation_links, dependent: :destroy
 
   has_many :active_memberships, -> { where status: "active" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :pending_memberships, -> { where status: "pending" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel

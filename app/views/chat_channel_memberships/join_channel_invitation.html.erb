@@ -1,9 +1,7 @@
 <div class="grid gap-6 p-6 join-invitation-channel">
   <% if !@invitation_link %>
-    <h1>Invitation link invalid</h1>
-  <% elsif @invitation_link.expired? %>
     <h1>This Invitation link is expired. Please contact the channel mod for new Invitation link</h1>
-<% else %>
+  <% else %>
     <h1 class="mt-5">Would you like to join the <%= @chat_channel.channel_name %> channel</h1>
     <%= form_with(url: joining_invitation_response_url, html: { class: "align-center" }) do |f| %>
       <%= f.hidden_field :user_action, value: "accept" %>

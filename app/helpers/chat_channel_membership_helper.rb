@@ -13,7 +13,7 @@ module ChatChannelMembershipHelper
     end
   end
 
-  def membership_user
+  def format_membership(membership)
     {
       name: membership.user.name,
       username: membership.user.username,

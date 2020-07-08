@@ -16,5 +16,5 @@ json.result do
     json.requested membership_users(@channel.requested_memberships)
   end
   json.current_membership @membership
-  json.invitation_link URL.url(@invitation_link.path)
+  json.invitation_link URL.url(@invitation_link)
 end
