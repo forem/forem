@@ -1,9 +1,10 @@
 class UserSubscriptionTag < LiquidTagBase
   PARTIAL = "liquids/user_subscription".freeze
   VALID_CONTEXTS = %w[Article].freeze
-  VALID_ROLES = %i[
-    admin
-    super_admin
+  VALID_ROLES = [
+    :admin,
+    [:restricted_liquid_tag, LiquidTags::UserSubscriptionTag],
+    :super_admin,
   ].freeze
 
   SCRIPT = <<~JAVASCRIPT.freeze

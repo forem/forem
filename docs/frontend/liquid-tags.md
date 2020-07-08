@@ -113,21 +113,24 @@ https://github.com/thepracticaldev/dev.to/pull/3801
 
 To only allow users with specific roles to use a liquid tag, you need to define
 a `VALID_ROLES` constant on the liquid tag itself. It needs to be an `Array` of
-valid roles. For [single admin resource roles](/internal), it needs to be an
-`Array` with the role and the resource. Here's an example:
+valid roles. For [single resource roles](/internal), it needs to be an `Array`
+with the role and the resource. Here's an example:
 
 ```ruby
 class NewLiquidTag < LiquidTagBase
   VALID_ROLES = [
     :admin,
-    [:single_resource_admin, NewLiquidTag]
+    [:restricted_liquid_tag, LiquidTags::UserSubscriptionTag]
   ].freeze
 end
 ```
 
-Here we are saying that the `NewLiquidTag` is only usable by users with the
-`admin` role or with a role of `:single_resource_admin` and a specified resource
-of `NewLiquidTag`.
+Here we are saying that the `UserSubscriptionTag` is only usable by users with
+the `admin` role or with a role of `:restricted_liquid_tag` and a specified
+resource of `LiquidTags::UserSubscriptionTag`.
+
+`LiquidTags::UserSubscriptionTag` is a resource model so we that can play nicely
+with the [Rolify][rolify] gem. See [/internal](/internal) for more information.
 
 **REMINDER: if you do not define a `VALID_ROLES` constant, the liquid tag will
 be usable by all users by default.**
@@ -151,3 +154,5 @@ end
 
 **REMINDER: if you do not define a `VALID_CONTEXTS` constant the liquid tag will
 be usable in all contexts by default.**
+
+[rolify]: https://github.com/RolifyCommunity/rolify
