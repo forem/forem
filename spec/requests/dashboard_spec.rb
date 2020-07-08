@@ -40,7 +40,9 @@ RSpec.describe "Dashboards", type: :request do
       end
 
       it "renders subscriptions for articles with subscriptions" do
-        user.add_role(:admin) # TODO: (Alex Smith) - update roles before release
+        allow(user).to receive(:has_role?).and_call_original
+        allow(user).to receive(:has_role?).with(:restricted_liquid_tag,
+                                                LiquidTags::UserSubscriptionTag).and_return(true)
         article_with_user_subscription_tag = create(:article, user: user, with_user_subscription_tag: true)
         create(:user_subscription,
                subscriber_id: second_user.id,
@@ -314,75 +316,81 @@ RSpec.describe "Dashboards", type: :request do
     end
   end
 
-  # TODO: (Alex Smith) - update roles before release
   describe "GET /dashboard/subscriptions" do
+    let(:author) { create(:user) }
+    let(:article_with_user_subscription_tag) { create(:article, user: author, with_user_subscription_tag: true) }
+    let(:params) do
+      { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
+    end
+
     before do
-      sign_in user
+      # Stub roles because adding them normally can cause flaky specs
+      allow(author).to receive(:has_role?).and_call_original
+      allow(author).to receive(:has_role?).with(:restricted_liquid_tag,
+                                                LiquidTags::UserSubscriptionTag).and_return(true)
+
+      sign_in author
     end
 
     it "renders subscriptions" do
-      user.add_role(:admin)
-      article_with_user_subscription_tag = create(:article, user: user, with_user_subscription_tag: true)
       user_subscription = create(:user_subscription,
                                  subscriber_id: second_user.id,
                                  subscriber_email: second_user.email,
                                  author_id: article_with_user_subscription_tag.user_id,
                                  user_subscription_sourceable: article_with_user_subscription_tag)
 
-      get "/dashboard/subscriptions", params: { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
+      get "/dashboard/subscriptions", params: params
       expect(response.body).to include(user_subscription.subscriber_email)
     end
 
     it "displays a message if no subscriptions are found" do
-      get "/dashboard/subscriptions", params: { source_type: article.class.name, source_id: article.id }
+      get "/dashboard/subscriptions", params: params
       expect(response.body).to include("You don't have any subscribers for this")
     end
 
     it "raises unauthorized when trying to access a source the user doesn't own" do
-      user.add_role(:admin)
-      article_with_user_subscription_tag = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
+      unauthorized_article = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
       create(:user_subscription,
              subscriber_id: second_user.id,
              subscriber_email: second_user.email,
-             author_id: article_with_user_subscription_tag.user_id,
-             user_subscription_sourceable: article_with_user_subscription_tag)
+             author_id: unauthorized_article.user_id,
+             user_subscription_sourceable: unauthorized_article)
+      unauthorized_article_params = { source_type: unauthorized_article.class.name, source_id: unauthorized_article.id }
 
       expect do
-        get "/dashboard/subscriptions", params: { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
+        get "/dashboard/subscriptions", params: unauthorized_article_params
       end.to raise_error(Pundit::NotAuthorizedError)
     end
 
     it "raises an error for disallowed source_types" do
+      invalid_source_type_params = { source_type: "Comment", source_id: 1 }
       expect do
-        get "/dashboard/subscriptions", params: { source_type: "Comment", source_id: 1 }
+        get "/dashboard/subscriptions", params: invalid_source_type_params
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "raises an error when the source can't be found" do
+      nonexistant_article_params = { source_type: article.class.name, source_id: article.id + 999 }
       expect do
-        get "/dashboard/subscriptions", params: { source_type: article.class.name, source_id: article.id + 999 }
+        get "/dashboard/subscriptions", params: nonexistant_article_params
       end.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it "renders pagination if minimum amount of subscriptions" do
-      user.add_role(:admin)
-      article_with_user_subscription_tag = create(:article, user: user, with_user_subscription_tag: true)
       create_list(:user_subscription,
                   102, # Current pagination limit is 100
-                  author: user,
+                  author: author,
                   user_subscription_sourceable: article_with_user_subscription_tag)
-      get "/dashboard/subscriptions", params: { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
+      get "/dashboard/subscriptions", params: params
       expect(response.body).to include "pagination"
     end
 
     it "does not render pagination if less than one full page" do
-      user.add_role(:admin)
-      article_with_user_subscription_tag = create(:article, user: user, with_user_subscription_tag: true)
       create_list(:user_subscription,
                   5,
-                  author: user,
+                  author: author,
                   user_subscription_sourceable: article_with_user_subscription_tag)
-      get "/dashboard/subscriptions", params: { source_type: article_with_user_subscription_tag.class.name, source_id: article_with_user_subscription_tag.id }
+      get "/dashboard/subscriptions", params: params
       expect(response.body).not_to include "pagination"
     end
   end
