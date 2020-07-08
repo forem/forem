@@ -12,7 +12,6 @@ class SiteConfig < RailsSettings::Base
   cache_prefix { "v1" }
 
   STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
-
   LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
 
   # API Tokens
