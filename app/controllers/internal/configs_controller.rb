@@ -131,6 +131,8 @@ class Internal::ConfigsController < Internal::ApplicationController
       logo_svg
       main_social_image
       secondary_logo_url
+      left_navbar_svg_icon
+      right_navbar_svg_icon
     ]
   end
 
