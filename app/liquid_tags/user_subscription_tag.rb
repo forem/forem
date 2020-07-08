@@ -277,18 +277,22 @@ class UserSubscriptionTag < LiquidTagBase
       });
     }
 
-    // The markup defaults to signed out UX
-    if (isUserSignedIn()) {
-      showSignedIn();
-      addConfirmationModalClickHandlers();
+    // We load this JS on every Article. This is to only run it on Articles
+    // where the UserSubscription liquid tag is present
+    if (document.getElementById('user-subscription-tag')) {
+      // The markup defaults to signed out UX
+      if (isUserSignedIn()) {
+        showSignedIn();
+        addConfirmationModalClickHandlers();
 
-      // We need access to some DOM elements (i.e. csrf token, article id, userData, etc.)
-      document.addEventListener('DOMContentLoaded', function() {
-        checkIfSubscribed();
-      });
-    } else {
-      showSignedOut();
-      addSignInClickHandler();
+        // We need access to some DOM elements (i.e. csrf token, article id, userData, etc.)
+        document.addEventListener('DOMContentLoaded', function() {
+          checkIfSubscribed();
+        });
+      } else {
+        showSignedOut();
+        addSignInClickHandler();
+      }
     }
   JAVASCRIPT
 
