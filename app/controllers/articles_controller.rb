@@ -18,6 +18,8 @@ class ArticlesController < ApplicationController
     rowspan size span src start strong title value width
   ].freeze
 
+  RESTRICTED_LIQUID_TAGS = [UserSubscriptionTag].freeze
+
   def feed
     skip_authorization
 
@@ -194,7 +196,14 @@ class ArticlesController < ApplicationController
   end
 
   def set_user_approved_liquid_tags
-    @user_approved_liquid_tags = @user ? @user.roles.where(name: "restricted_liquid_tag").pluck(:resource_type) : []
+    @user_approved_liquid_tags =
+      if @user
+        RESTRICTED_LIQUID_TAGS.filter_map do |liquid_tag|
+          liquid_tag if liquid_tag::VALID_ROLES.any? { |role| @user.has_role?(*Array(role)) }
+        end
+      else
+        []
+      end
   end
 
   def handle_user_or_organization_feed

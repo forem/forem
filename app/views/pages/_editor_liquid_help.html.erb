@@ -21,7 +21,7 @@
       <code>ID</code> at the end of a comment URL. To get the comment link, click either the timestamp or the menu button in the top right corner on a comment and then click "Permalink". Here's an example:
     </p>
     <code>{% devcomment 2d1a %}</code>
-    <% if @user_approved_liquid_tags.include? "LiquidTags::UserSubscriptionTag" %>
+    <% if @user_approved_liquid_tags.include? UserSubscriptionTag %>
       <h3><%= community_name %> User Subscriptions</h3>
       <p class="fs-s fw-bold">This tag can only be used in articles.</p>
       <p>You can add call-to-action text that will show above the subscribe button:</p>
