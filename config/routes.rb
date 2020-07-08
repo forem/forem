@@ -336,11 +336,6 @@ Rails.application.routes.draw do
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
   get "/contact" => "pages#contact"
-  get "/rlygenerator" => "pages#generator"
-  get "/orlygenerator" => "pages#generator"
-  get "/rlyslack" => "pages#generator"
-  get "/rlyweb" => "pages#rlyweb"
-  get "/rly" => "pages#rlyweb"
   get "/code-of-conduct" => "pages#code_of_conduct"
   get "/report-abuse" => "pages#report_abuse"
   get "/welcome" => "pages#welcome"
@@ -373,8 +368,6 @@ Rails.application.routes.draw do
   get "/mod" => "moderations#index", :as => :mod
   get "/mod/:tag" => "moderations#index"
   get "/page/crayons" => "pages#crayons"
-
-  get "/p/rlyweb", to: redirect("/rlyweb")
 
   post "/fallback_activity_recorder" => "ga_events#create"
 
