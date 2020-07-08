@@ -11,9 +11,9 @@ class SiteConfig < RailsSettings::Base
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
 
-  STACK_ICON = File.read("app/assets/images/stack.svg").freeze
+  STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
 
-  LIGHTNING_ICON = File.read("app/assets/images/lightning.svg").freeze
+  LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
 
   # API Tokens
   field :health_check_token, type: :string
