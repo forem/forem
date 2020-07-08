@@ -32,6 +32,7 @@
 }
 
 .crayons-article {
+  overflow: hidden;
   &__cover {
     position: relative;
     width: 100%;
@@ -559,8 +560,8 @@
         overflow: hidden;
         text-overflow: ellipsis;
         &:last-child {
-          border-bottom-left-radius: 5px;
-          border-bottom-right-radius: 5px;
+          border-bottom-left-radius: 2px;
+          border-bottom-right-radius: 2px;
         }
 
         &.current-article {
