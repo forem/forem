@@ -7,8 +7,8 @@ export default class SingleArticle extends Component {
 
   activateToggle = (e) => {
     e.preventDefault();
-
     const { id, path, user, toggleArticle } = this.props;
+
     toggleArticle(id, path);
     initializeFlagUserModal(user.id, path, id);
   };
@@ -27,8 +27,6 @@ export default class SingleArticle extends Component {
     });
 
     const newAuthorNotification = user.articles_count <= 3 ? '👋 ' : '';
-
-    console.log(`Current State of articleOpened: ${articleOpened}`);
 
     return (
       <button

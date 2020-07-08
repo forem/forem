@@ -75,11 +75,13 @@ export default function initializeFlagUserModal(
     document.querySelector(
       '.flag-user-modal-container',
     ).innerHTML = flagUserModalHTML;
-  modContainer.addEventListener('load', () => {
-    modContainer.contentWindow.document
-      .getElementById('open-flag-user-modal')
-      .addEventListener('click', toggleFlagUserModal);
-  });
+  if (modContainer) {
+    modContainer.addEventListener('load', () => {
+      modContainer.contentWindow.document
+        .getElementById('open-flag-user-modal')
+        .addEventListener('click', toggleFlagUserModal);
+    });
+  }
 
   // Event listeners to Close the Modal
   const closeModalElements = Array.from(

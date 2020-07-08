@@ -11,8 +11,8 @@ export class ModerationArticles extends Component {
   };
 
   toggleArticle = (id, path) => {
-    debugger;
     const { prevSelectedArticleId } = this.state;
+    const selectedArticle = document.getElementById(`article-iframe-${id}`);
 
     if (prevSelectedArticleId > 0) {
       document.getElementById(`article-iframe-${prevSelectedArticleId}`).innerHTML = '';
@@ -21,13 +21,12 @@ export class ModerationArticles extends Component {
     this.setState({ selectedArticleId: id, prevSelectedArticleId: id });
 
     if ((id === prevSelectedArticleId) && (document.querySelectorAll('.opened').length > 0)) {
-      document.getElementById(`article-iframe-${id}`).classList.remove('opened');
+      selectedArticle.classList.remove('opened');
       return;
     }
 
-    document.getElementById(
-      `article-iframe-${id}`,
-    ).innerHTML = `<iframe class="article-iframe" src="${path}"></iframe><iframe class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>`;
+    selectedArticle.classList.add('opened');
+    selectedArticle.innerHTML = `<iframe class="article-iframe" src="${path}"></iframe><iframe class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>`;
   };
 
   render() {
