@@ -6,30 +6,19 @@
   <meta name="keywords" content="<%= SiteConfig.meta_keywords[:default] %>">
 <% end %>
 
-<div class="blank-space"></div>
-
 <style>
-  .container .body h4 img {
-    top: 10px;
-    display: inline;
-    left: 0;
-  }
   .sponsor-level-headline {
     padding:5px 18px;
     border-radius: 3px;
   }
 </style>
 
-<div class="container article">
-  <div class="title" style="height:20px;">
-  </div>
-  <div class="body" style="text-align:center;">
-    <h1 style="font-size:3em;font-weight:600;margin-bottom:5px;">
-      THANK YOU
-    </h1>
-    <p style="margin:5px 5px;"><em>for supporting our community</em></p>
+<div class="crayons-layout crayons-layout--limited">
+  <div class="crayons-card text-styles text-padding">
+    <h1 class="fs-3xl s:fs-4xl l:fs-5xl fw-bold s:fw-heavy lh-tight mb-0 mt-0">Thank you! ♥️</h1>
+    <h2 class="fs-2xl s:fs-3xl l:fs-4xl fw-medium s:fw-bold lh-tight mb-4 mt-0">for supporting our community</h2>
 
-    <h4>
+        <h4>
       <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
       <span class="sponsor-level-headline" style="background-color: #fefa87;">Gold Sponsors</span>
       <img src="<%= cloudinary("https://thepracticaldev.s3.amazonaws.com/i/2zmukvll98je8qsdyewq.png", 30) %>" alt="golden badge">
@@ -71,6 +60,8 @@
       <% end %>
     </div>
 
-    <h5>Interested in sponsoring <%= community_name %>? Check out our <a href="<%= app_url("/sponsorships") %>">sponsorships</a> page.</h5>
+    <div class="crayons-notice">
+      <p>Interested in sponsoring <%= community_name %>? Check out our <a href="<%= app_url("/sponsorships") %>">sponsorships</a> page.</p>
+    </div>
   </div>
 </div>

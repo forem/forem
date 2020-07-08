@@ -13,6 +13,7 @@ COMPONENT_FINGERPRINTS = {
 }.freeze
 
 Honeybadger.configure do |config|
+  config.env = "#{ApplicationConfig['APP_DOMAIN']}-#{Rails.env}"
   config.api_key = ApplicationConfig["HONEYBADGER_API_KEY"]
   config.revision = ApplicationConfig["HEROKU_SLUG_COMMIT"]
   config.exceptions.ignore += [

@@ -202,16 +202,14 @@ describe('<Chat />', () => {
     getByRole('dialog', {
       selector: '[aria-hidden="false"]',
     });
-    getByText('Are you sure, you want to delete this message ?');
+    getByText('Are you sure, you want to delete this message?');
     getByText('Cancel', { selector: '[role="button"]' });
     getByText('Delete', { selector: '[role="button"]' });
   });
 
   it('should collapse and expand chat channels properly', async () => {
     fetch.mockResponse(getMockResponse());
-    const { queryByText } = render(
-      <Chat {...getRootData()} />,
-    );
+    const { queryByText } = render(<Chat {...getRootData()} />);
 
     // // chat channels
     expect(

@@ -159,6 +159,10 @@ module ApplicationHelper
     end
   end
 
+  def safe_logo_url(logo)
+    logo.presence || SiteConfig.logo_png
+  end
+
   def community_name
     @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
   end
@@ -237,5 +241,11 @@ module ApplicationHelper
   def sanitize_and_decode(str)
     # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)
+  end
+
+  def internal_config_label(method, content = nil)
+    content ||= method.to_s.humanize
+    content << "*" if method.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+    label_tag("site_config_#{method}", content)
   end
 end

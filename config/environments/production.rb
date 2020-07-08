@@ -31,7 +31,7 @@ Rails.application.configure do
   }
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = Uglifier.new(harmony: true)
+  config.assets.js_compressor = :uglify_with_source_maps
   # config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -83,6 +83,15 @@ Rails.application.configure do
 
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
+
+  # Filter sensitive information from production logs
+  config.filter_parameters += %i[
+    auth_data_dump email encrypted
+    encrypted_password message_html message_markdown
+    password previous_refresh_token refresh_token secret
+    token current_sign_in_ip last_sign_in_ip
+    reset_password_token remember_token unconfirmed_email
+  ]
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
   # config.log_formatter = ::Logger::Formatter.new
