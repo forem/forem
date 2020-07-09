@@ -67,7 +67,8 @@ class PageViewsController < ApplicationMetalController
   end
 
   def update_pageviews_milestone
-    return if Rails.env.production? && @article.page_views_count > 1024 && rand(20) != 1 # We need to do this operation only once in a while.
+    # We need to do this operation only once in a while.
+    return if Rails.env.production? && @article.page_views_count > 1024 && rand(20) != 1
 
     Notification.send_milestone_notification(type: "View", article_id: @article.id)
   end

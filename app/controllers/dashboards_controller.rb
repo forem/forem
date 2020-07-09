@@ -28,7 +28,6 @@ class DashboardsController < ApplicationController
 
     @articles = @articles.sorting(params[:sort]).decorate
     @articles = Kaminari.paginate_array(@articles).page(params[:page]).per(50)
-
   end
 
   def following_tags
