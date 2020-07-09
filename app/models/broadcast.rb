@@ -2,8 +2,9 @@ class Broadcast < ApplicationRecord
   VALID_BANNER_STYLES = %w[default brand success warning error].freeze
   resourcify
 
-  has_one :announcements, as: :broadcastable
-  has_one :welcome_notifications, as: :broadcastable
+  belongs_to :broadcastable, polymorphic: true
+  belongs_to :announcement, class_name: "Announcement", optional: true
+  belongs_to :welcome_notification, class_name: "WelcomeNotification", optional: true
 
   validates :title, uniqueness: { scope: :type_of }, presence: true
   validates :type_of, :processed_html, presence: true

@@ -1,4 +1,4 @@
 class WelcomeNotification < ApplicationRecord
-  belongs_to :broadcastable, polymorphic: true
+  has_one :broadcast, as: :broadcastable
   has_many :notifications, as: :notifiable, inverse_of: :notifiable
 end
