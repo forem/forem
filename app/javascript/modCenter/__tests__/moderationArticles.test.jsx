@@ -45,10 +45,13 @@ describe('<ModerationArticles />', () => {
         <div class="flag-user-modal-container hidden" />
       </div>,
     );
-    render(<ModerationArticles />, document.getElementById('mod-index-list'));
   });
 
   it('renders a list of 2 articles', () => {
+    render(<ModerationArticles />, document.getElementById('mod-index-list'));
+
+    // Use of 'document.querySelectAll' is bad pratice
+    // but was unable to find a Preact way to test # of articles in grid
     const listOfArticles = document.querySelectorAll(
       'button.moderation-single-article',
     );
@@ -56,18 +59,22 @@ describe('<ModerationArticles />', () => {
   });
 
   it('renders the iframes on click', () => {
-    const singleArticle = document.querySelector(
-      'button.moderation-single-article',
+    const { getByTestId } = render(
+      <ModerationArticles />,
+      document.getElementById('mod-index-list'),
     );
+    const singleArticle = getByTestId('mod-article-1');
     singleArticle.click();
     const iframes = singleArticle.querySelectorAll('iframe');
     expect(iframes.length).toEqual(2);
   });
 
   it('toggles the "opened" class when opening or closing an article', () => {
-    const singleArticle = document.querySelector(
-      'button.moderation-single-article',
+    const { getByTestId } = render(
+      <ModerationArticles />,
+      document.getElementById('mod-index-list'),
     );
+    const singleArticle = getByTestId('mod-article-2');
 
     fireEvent.click(singleArticle);
     expect(
@@ -83,11 +90,17 @@ describe('<ModerationArticles />', () => {
   it('adds the FlagUser Modal HTML associated with author when article opened', () => {
     expect(document.querySelector('.flag-user-modal')).toBeNull();
 
-    document.querySelector('button[data-testid="mod-article-1"]').click();
+    const { getByTestId } = render(
+      <ModerationArticles />,
+      document.getElementById('mod-index-list'),
+    );
+    const singleArticle = getByTestId('mod-article-2');
+
+    singleArticle.click();
     expect(document.querySelector('.flag-user-modal')).toBeTruthy();
 
     expect(
       document.querySelector('.flag-user-modal input').dataset.reactableId,
-    ).toEqual('1');
+    ).toEqual('2');
   });
 });
