@@ -7,49 +7,29 @@ describe DataUpdateScripts::ReIndexFeedContentAndUsersToElasticsearch do
     Search::User.refresh_index
   end
 
-  it "indexes feed(articles) to Elasticsearch" do
+  # rubocop:disable RSpec/ExampleLength
+  it "indexes feed content(articles, comments, podcast episodes) and users to Elasticsearch", :aggregate_failures do
     article = create(:article)
-
-    expect { article.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-
-    sidekiq_perform_enqueued_jobs { described_class.new.run }
-
-    expect(article.elasticsearch_doc).not_to be_nil
-    expect(article.elasticsearch_doc["_source"].keys).to include("public_reactions_count")
-  end
-
-  it "indexes feed(podcast episodes) to Elasticsearch" do
     podcast_episode = create(:podcast_episode)
-
-    expect { podcast_episode.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-
-    sidekiq_perform_enqueued_jobs { described_class.new.run }
-
-    expect(podcast_episode.elasticsearch_doc).not_to be_nil
-    expect(podcast_episode.elasticsearch_doc["_source"].keys).to include("public_reactions_count")
-  end
-
-  it "indexes feed(comments) to Elasticsearch" do
     comment = create(:comment)
-
-    expect { comment.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
-
-    sidekiq_perform_enqueued_jobs { described_class.new.run }
-
-    expect(comment.elasticsearch_doc).not_to be_nil
-
-    expect(comment.elasticsearch_doc["_source"].keys).to include("public_reactions_count")
-  end
-
-  it "indexes users to Elasticsearch" do
     user = create(:user)
 
+    expect { article.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+    expect { podcast_episode.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+    expect { comment.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
     expect { user.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
 
     sidekiq_perform_enqueued_jobs { described_class.new.run }
 
+    expect(article.elasticsearch_doc).not_to be_nil
+    expect(podcast_episode.elasticsearch_doc).not_to be_nil
+    expect(comment.elasticsearch_doc).not_to be_nil
     expect(user.elasticsearch_doc).not_to be_nil
 
-    expect(user.elasticsearch_doc["_source"].keys).to include("public_reactions_count")
+    expect(article.elasticsearch_doc["_source"].keys).to include "public_reactions_count"
+    expect(podcast_episode.elasticsearch_doc["_source"].keys).to include "public_reactions_count"
+    expect(comment.elasticsearch_doc["_source"].keys).to include "public_reactions_count"
+    expect(user.elasticsearch_doc["_source"].keys).to include "public_reactions_count"
   end
+  # rubocop:enable RSpec/ExampleLength
 end
