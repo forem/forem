@@ -2,7 +2,6 @@ import { h } from 'preact';
 import {
   render,
   fireEvent,
-  waitForElement,
   waitForElementToBeRemoved,
 } from '@testing-library/preact';
 import { axe } from 'jest-axe';
@@ -65,6 +64,7 @@ describe('<ArticleCoverImage />', () => {
       );
 
       expect(queryByText(/uploading.../i)).toBeNull();
+
       expect(queryByLabelText('Add a cover image')).toBeNull();
       expect(queryByLabelText('Post cover')).toBeDefined();
       expect(queryByLabelText('Change')).toBeDefined();
@@ -122,7 +122,7 @@ describe('<ArticleCoverImage />', () => {
 
   it('displays an upload error when necessary', async () => {
     const onMainImageUrlChange = jest.fn();
-    const { getByText, getByLabelText } = render(
+    const { getByLabelText, findByText } = render(
       <ArticleCoverImage
         mainImage={'/some-fake-image.jpg'}
         onMainImageUrlChange={onMainImageUrlChange}
@@ -143,6 +143,6 @@ describe('<ArticleCoverImage />', () => {
     });
     fireEvent.change(inputEl, { target: { files: [file] } });
 
-    await waitForElement(() => getByText(/some fake error/i));
+    await findByText(/some fake error/i);
   });
 });

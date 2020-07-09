@@ -34,7 +34,9 @@ RSpec.describe "UserOrganization", type: :request do
 
     before do
       sign_in user
-      org_params["profile_image"] = Rack::Test::UploadedFile.new(Rails.root.join("app/assets/images/android-icon-36x36.png"), "image/jpeg")
+      org_params["profile_image"] = Rack::Test::UploadedFile.new(
+        Rails.root.join("app/assets/images/android-icon-36x36.png"), "image/jpeg"
+      )
       allow(RateLimitChecker).to receive(:new).and_return(rate_limiter)
       allow(rate_limiter).to receive(:limit_by_action).and_return(false)
     end

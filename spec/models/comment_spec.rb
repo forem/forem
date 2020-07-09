@@ -47,7 +47,8 @@ RSpec.describe Comment, type: :model do
       it "on destroy enqueues job to delete comment from elasticsearch" do
         comment = create(:comment)
 
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, comment.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                     args: [described_class::SEARCH_CLASS.to_s, comment.search_id]) do
           comment.destroy
         end
       end

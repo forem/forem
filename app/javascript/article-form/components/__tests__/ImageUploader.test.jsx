@@ -2,7 +2,6 @@ import { h } from 'preact';
 import {
   render,
   fireEvent,
-  waitForElement,
   waitForElementToBeRemoved,
 } from '@testing-library/preact';
 import { axe } from 'jest-axe';
@@ -42,9 +41,7 @@ describe('<ImageUploader />', () => {
 
     fireEvent.change(inputEl, { target: { files: [file] } });
 
-    const uploadingImage = await waitForElement(() =>
-      queryByText(/uploading.../i),
-    );
+    const uploadingImage = queryByText(/uploading.../i);
 
     expect(uploadingImage).toBeDefined();
   });
@@ -57,7 +54,7 @@ describe('<ImageUploader />', () => {
     );
 
     const {
-      getByTitle,
+      findByTitle,
       getByDisplayValue,
       getByLabelText,
       queryByText,
@@ -69,18 +66,17 @@ describe('<ImageUploader />', () => {
     });
 
     fireEvent.change(inputEl, { target: { files: [file] } });
-    let uploadingImage = await waitForElement(() =>
-      queryByText(/uploading.../i),
-    );
+    let uploadingImage = queryByText(/uploading.../i);
 
     expect(uploadingImage).toBeDefined();
 
     expect(inputEl.files[0]).toEqual(file);
     expect(inputEl.files).toHaveLength(1);
 
-    await waitForElementToBeRemoved(() => queryByText(/uploading.../i));
+    waitForElementToBeRemoved(() => queryByText(/uploading.../i));
 
-    getByTitle(/copy markdown for image/i);
+    expect(await findByTitle(/copy markdown for image/i)).toBeDefined();
+
     getByDisplayValue(/fake-link.jpg/i);
   });
 
@@ -91,7 +87,7 @@ describe('<ImageUploader />', () => {
       message: 'Some Fake Error',
     });
 
-    const { getByText, getByLabelText, queryByText } = render(
+    const { getByLabelText, findByText, queryByText } = render(
       <ImageUploader />,
     );
     const inputEl = getByLabelText(/Upload an image/i);
@@ -110,13 +106,10 @@ describe('<ImageUploader />', () => {
       },
     });
 
-    let uploadingImage = await waitForElement(() =>
-      queryByText(/uploading.../i),
-    );
+    expect(await findByText(/uploading.../i)).toBeDefined();
 
-    expect(uploadingImage).toBeDefined();
+    waitForElementToBeRemoved(() => queryByText(/uploading.../i));
 
-    await waitForElementToBeRemoved(() => queryByText(/uploading.../i));
-    await waitForElement(() => getByText(/some fake error/i));
+    await findByText(/some fake error/i);
   });
 });

@@ -3,10 +3,6 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   before_action :extra_authorization_and_confirmation, only: [:create]
 
-  def show
-    @logo_svg = SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
-  end
-
   def create
     clean_up_params
 
@@ -49,7 +45,8 @@ class Internal::ConfigsController < Internal::ApplicationController
       onboarding_params |
       job_params
 
-    params[:site_config][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if params[:site_config][:email_addresses].present?
+    has_emails = params[:site_config][:email_addresses].present?
+    params[:site_config][:email_addresses][:default] = ApplicationConfig["DEFAULT_EMAIL"] if has_emails
     params.require(:site_config).permit(
       allowed_params,
       authentication_providers: [],
@@ -61,7 +58,8 @@ class Internal::ConfigsController < Internal::ApplicationController
 
   def extra_authorization_and_confirmation
     not_authorized unless current_user.has_role?(:single_resource_admin, Config) # Special additional permission
-    not_authorized if params[:confirmation] != "My username is @#{current_user.username} and this action is 100% safe and appropriate."
+    confirmation_message = "My username is @#{current_user.username} and this action is 100% safe and appropriate."
+    not_authorized if params[:confirmation] != confirmation_message
   end
 
   def clean_up_params
@@ -90,7 +88,6 @@ class Internal::ConfigsController < Internal::ApplicationController
   def community_params
     %i[
       community_description
-      community_member_description
       community_member_label
       community_action
       tagline
@@ -133,7 +130,9 @@ class Internal::ConfigsController < Internal::ApplicationController
       logo_png
       logo_svg
       main_social_image
-      primary_sticker_image_url
+      secondary_logo_url
+      left_navbar_svg_icon
+      right_navbar_svg_icon
     ]
   end
 

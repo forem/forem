@@ -299,7 +299,7 @@ Rails.application.routes.draw do
   patch "/chat_channel_memberships/leave_membership/:id" => "chat_channel_memberships#leave_membership"
   patch "/chat_channel_memberships/update_membership/:id" => "chat_channel_memberships#update_membership"
   patch "/chat_channel_memberships/update_membership_role/:id" => "chat_channel_memberships#update_membership_role"
-  get "/chat_channel_memberships/join_channel_invitation/:channel_slug" => "chat_channel_memberships#join_channel_invitation"
+  get "/join_channel_invitation/:channel_slug" => "chat_channel_memberships#join_channel_invitation"
   post "/joining_invitation_response" => "chat_channel_memberships#joining_invitation_response"
 
   get "/social_previews/article/:id" => "social_previews#article", :as => :article_social_preview
@@ -339,11 +339,6 @@ Rails.application.routes.draw do
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
   get "/contact" => "pages#contact"
-  get "/rlygenerator" => "pages#generator"
-  get "/orlygenerator" => "pages#generator"
-  get "/rlyslack" => "pages#generator"
-  get "/rlyweb" => "pages#rlyweb"
-  get "/rly" => "pages#rlyweb"
   get "/code-of-conduct" => "pages#code_of_conduct"
   get "/report-abuse" => "pages#report_abuse"
   get "/welcome" => "pages#welcome"
@@ -377,8 +372,6 @@ Rails.application.routes.draw do
   get "/mod/:tag" => "moderations#index"
   get "/page/crayons" => "pages#crayons"
 
-  get "/p/rlyweb", to: redirect("/rlyweb")
-
   post "/fallback_activity_recorder" => "ga_events#create"
 
   get "/page/:slug" => "pages#show"
@@ -402,6 +395,7 @@ Rails.application.routes.draw do
   get "dashboard/following_users" => "dashboards#following_users"
   get "dashboard/following_organizations" => "dashboards#following_organizations"
   get "dashboard/following_podcasts" => "dashboards#following_podcasts"
+  get "/dashboard/subscriptions" => "dashboards#subscriptions"
   get "/dashboard/:which" => "dashboards#followers", :constraints => { which: /user_followers/ }
   get "/dashboard/:which/:org_id" => "dashboards#show",
       :constraints => {
@@ -479,7 +473,7 @@ Rails.application.routes.draw do
   get "/:username/:slug" => "stories#show"
   get "/:sitemap" => "sitemaps#show",
       :constraints => { format: /xml/, sitemap: /sitemap-.+/ }
-  get "/:username" => "stories#index"
+  get "/:username" => "stories#index", :as => "user_profile"
 
   root "stories#index"
 end

@@ -19,24 +19,27 @@ describe('<Tags />', () => {
 
   describe('handleKeyDown', () => {
     it('calls preventDefault on unused keyCode', () => {
-      const { getAllByTestId } = render(
+      const { getByTestId } = render(
         <Tags defaultValue="defaultValue" listing />,
       );
 
-      // https://stackoverflow.com/questions/60455119/react-jest-test-preventdefault-action
-      const isPrevented = fireEvent.keyDown(getAllByTestId('tag-input')[0], {
+      Event.prototype.preventDefault = jest.fn();
+
+      fireEvent.keyDown(getByTestId('tag-input'), {
         key: '§',
         code: '192',
       });
-      expect(isPrevented).toEqual(false);
+
+      expect(Event.prototype.preventDefault).toHaveBeenCalledTimes(1);
     });
 
     it('does not call preventDefault on used keyCode', () => {
-      const { getAllByTestId } = render(
+      const { getByTestId } = render(
         <Tags defaultValue="defaultValue" listing />,
       );
 
-      // https://stackoverflow.com/questions/60455119/react-jest-test-preventdefault-action
+      Event.prototype.preventDefault = jest.fn();
+
       const tests = [
         { key: 'a', code: '65' },
         { key: '1', code: '49' },
@@ -44,13 +47,11 @@ describe('<Tags />', () => {
         { key: 'Enter', code: '13' },
       ];
 
-      tests.forEach((obj) => {
-        const isPrevented = fireEvent.keyDown(
-          getAllByTestId('tag-input')[0],
-          obj,
-        );
-        expect(isPrevented).toEqual(true);
+      tests.forEach((eventPayload) => {
+        fireEvent.keyDown(getByTestId('tag-input'), eventPayload);
       });
+
+      expect(Event.prototype.preventDefault).not.toHaveBeenCalled();
     });
   });
 });

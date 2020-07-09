@@ -55,6 +55,14 @@ FactoryBot.define do
       after(:build) { |user, options| user.add_role(:single_resource_admin, options.resource) }
     end
 
+    trait :restricted_liquid_tag do
+      transient do
+        resource { nil }
+      end
+
+      after(:build) { |user, options| user.add_role(:restricted_liquid_tag, options.resource) }
+    end
+
     trait :super_plus_single_resource_admin do
       transient do
         resource { nil }

@@ -136,6 +136,7 @@ ActiveRecord::Schema.define(version: 2020_07_08_054720) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.integer "user_subscriptions_count", default: 0, null: false
     t.string "video"
     t.string "video_closed_caption_track_url"
     t.string "video_code"
@@ -642,18 +643,6 @@ ActiveRecord::Schema.define(version: 2020_07_08_054720) do
     t.integer "user_id"
     t.index ["provider", "uid"], name: "index_identities_on_provider_and_uid", unique: true
     t.index ["provider", "user_id"], name: "index_identities_on_provider_and_user_id", unique: true
-  end
-
-  create_table "invitation_links", force: :cascade do |t|
-    t.bigint "chat_channel_id"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "expiry_at"
-    t.string "path"
-    t.string "slug"
-    t.integer "status"
-    t.datetime "updated_at", precision: 6, null: false
-    t.index ["chat_channel_id"], name: "index_invitation_links_on_chat_channel_id"
-    t.index ["slug"], name: "index_invitation_links_on_slug", unique: true
   end
 
   create_table "mentions", id: :serial, force: :cascade do |t|

@@ -13,7 +13,8 @@ RSpec.describe "User visits articles by timeframe", type: :system do
   end
 
   def shows_correct_articles_count_via_xpath(count)
-    expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: count)
+    expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]",
+                               count: count)
   end
 
   def shows_main_article
