@@ -17,10 +17,10 @@ task resave_supported_tags: :environment do
 end
 
 task expire_old_listings: :environment do
-  ClassifiedListing.where("bumped_at < ?", 30.days.ago).each do |listing|
+  Listing.where("bumped_at < ?", 30.days.ago).each do |listing|
     listing.update(published: false)
   end
-  ClassifiedListing.where("expires_at = ?", Time.zone.today).each do |listing|
+  Listing.where("expires_at = ?", Time.zone.today).each do |listing|
     listing.update(published: false)
   end
 end
@@ -47,8 +47,8 @@ task prune_old_field_tests: :environment do
 end
 
 task remove_old_html_variant_data: :environment do
-  HtmlVariantTrial.where("created_at < ?", 2.weeks.ago).destroy_all
-  HtmlVariantSuccess.where("created_at < ?", 2.weeks.ago).destroy_all
+  HtmlVariantTrial.destroy_by("created_at < ?", 2.weeks.ago)
+  HtmlVariantSuccess.destroy_by("created_at < ?", 2.weeks.ago)
   HtmlVariant.find_each do |html_variant|
     html_variant.calculate_success_rate! if html_variant.html_variant_successes.any?
   end

@@ -1,246 +1,6 @@
 @import 'variables';
 @import 'mixins';
 .dashboard-container {
-  width: 800px;
-  max-width: 96%;
-  margin: auto;
-
-  h1 {
-    font-size: calc(15px + 0.2vw);
-    font-family: $helvetica-condensed;
-    font-stretch: condensed;
-    padding-bottom: 0px;
-    text-align: center;
-    margin-bottom: 0px;
-    @media screen and (min-width: 600px) {
-      text-align: left;
-    }
-
-    &.pro-header {
-      text-align: center;
-      font-size: 3em;
-      padding: 5px;
-      margin: 0px;
-    }
-  }
-
-  .rounded-btn {
-    font-size: calc(15px + 0.2vw);
-    font-family: $helvetica-condensed;
-    font-stretch: condensed;
-    padding: 4px 20px;
-    border-radius: 100px;
-    margin-right: 5px;
-    display: inline-block;
-    width: fit-content;
-    margin-bottom: 10px;
-    color: var(--body-color);
-    @include themeable(
-      background,
-      theme-container-background,
-      lighten($light-medium-gray, 5%)
-    );
-    &:hover {
-      @include themeable(
-        background,
-        theme-container-background-hover,
-        $light-medium-gray
-      );
-    }
-
-    &.active {
-      @include themeable(background, theme-secondary-color, $dark-gray);
-      @include themeable(color, theme-container-background, white);
-    }
-
-    &.back-nav {
-      left: 2vw;
-    }
-    &.rounded-btn--transparent {
-      background: transparent;
-      font-size: calc(15px + 0.2vw);
-      &:hover {
-        @include themeable(
-          background,
-          theme-container-accent-background,
-          lighten($light-medium-gray, 10%)
-        );
-      }
-    }
-  }
-
-  .actions {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2% 0;
-
-    /* about .dashboard-container's left / right margin */
-    @media screen and (min-width: 600px) {
-      flex-direction: row;
-    }
-
-    .action {
-      flex-basis: 0;
-      flex-grow: 1;
-      flex-shrink: 0;
-      width: 100%;
-      color: var(--body-color);
-      padding: 10px 0px;
-      border-radius: 3px;
-      min-width: 115px;
-      transition: background-color 250ms ease, opacity 250ms ease;
-      font-family: $helvetica-condensed;
-      font-stretch: condensed;
-      font-size: 0.95em;
-      text-align: center;
-
-      &.active {
-        @include themeable(
-          background,
-          theme-container-accent-background,
-          $purple
-        );
-        color: var(--card-color);
-      }
-
-      &:not(.active):hover {
-        background: $light-medium-purple;
-        @include themeable(
-          background,
-          theme-container-background-hover,
-          $light-medium-purple
-        );
-        color: var(--card-color);
-      }
-
-      &:not(:last-child) {
-        /* gap between actions */
-        margin-bottom: 8px;
-
-        @media screen and (min-width: 600px) {
-          margin-bottom: 0;
-          margin-right: 8px;
-        }
-      }
-
-      span {
-        display: inline-block;
-
-        @media screen and (min-width: 600px) and (max-width: 800px) {
-          display: block;
-        }
-      }
-    }
-  }
-
-  .actions-secondary {
-    padding-bottom: 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    @media screen and (max-width: 600px) {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    a.video-upload-cta {
-      display: inline-block;
-      padding: 14px;
-
-      @media screen and (max-width: 600px) {
-        margin-bottom: 15px;
-        text-align: center;
-      }
-    }
-
-    select {
-      display: block;
-      font-size: 19px;
-      padding: 12px;
-      border: 1px solid rgb(222, 230, 233);
-      border-radius: 3px;
-      background-color: white;
-      outline: none;
-      font-weight: bold;
-      color: #333333;
-      font-family: 'HelveticaNeue-CondensedBold', 'HelveticaNeueBoldCondensed',
-        'HelveticaNeue-Bold-Condensed', 'Helvetica Neue Bold Condensed',
-        'HelveticaNeueBold', 'HelveticaNeue-Bold', 'Helvetica Neue Bold',
-        'HelveticaNeue', 'Helvetica Neue', 'TeXGyreHerosCnBold', 'Helvetica',
-        'Tahoma', 'Geneva', 'Arial Narrow', 'Arial', sans-serif;
-
-      @media screen and (max-width: 426px) {
-        text-align-last: center;
-        text-align: center;
-        -ms-text-align-last: center;
-        -moz-text-align-last: center;
-        text-align-last: center;
-      }
-    }
-  }
-
-  .dashboard-analytics-header-wrapper {
-    text-align: center;
-    margin-bottom: 15px;
-    background: $dark-gray;
-    @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
-    padding: 15px 0px;
-  }
-
-  .dashboard-analytics-header {
-    color: white;
-    margin: 5px auto;
-    font-size: calc(1.1em + 0.1vw);
-    padding: 18px 0px 7px;
-    padding-left: 10px;
-    text-align: left;
-    font-family: $monospace;
-    border: 1px solid $light-gray;
-    display: inline-block;
-    width: 90%;
-    text-align: center;
-    margin: 1.1%;
-
-    @media screen and (min-width: 800px) {
-      width: 43%;
-      margin: 1.2%;
-    }
-
-    span {
-      font-size: 1.8em;
-      font-weight: bold;
-      margin-left: 8px;
-      display: inline-block;
-    }
-
-    img {
-      width: calc(1.2em + 0.2vw);
-      height: calc(1.2em + 0.2vw);
-      margin-left: 0.4em;
-      vertical-align: calc(-0.2vw - 0.3em);
-      background: $sky-blue;
-      border-radius: 100px;
-      border: 2px solid darken($light-gray, 7%);
-    }
-
-    .dashboard-analytics-sub-indicator {
-      color: darken($light-gray, 7%);
-      padding: 10px 0px;
-      font-weight: bold;
-      font-size: 0.66em;
-    }
-  }
-
-  .video-upload-cta {
-    display: inline-block;
-    background: #0045ff;
-    padding: 5px 12px;
-    border-radius: 3px;
-    color: white;
-  }
   .manage-header {
     background: $bold-blue;
   }
@@ -249,22 +9,7 @@
     padding: 5px 15px;
     @include dev-card;
     position: relative;
-
-    &.single-article-unpublished {
-      background: lighten($yellow, 20%);
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        lighten($yellow, 20%)
-      );
-    }
-    &.single-article-archived {
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        lighten($yellow, 10%)
-      );
-    }
+    overflow: auto;
     &.thanks-for-suggesting-a-tweet {
       background: lighten($green, 20%);
       padding: 30px 0px;
@@ -426,12 +171,18 @@
       margin-bottom: 10px;
       margin-top: 8px;
       font-size: 22px;
+      overflow: auto;
+      display: inline-block;
 
       @media screen and (min-width: 800px) {
         font-size: 34px;
       }
 
       width: 100%;
+
+      .block-link {
+        display: inline;
+      }
 
       img {
         height: 40px;
@@ -446,6 +197,41 @@
         vertical-align: 0.16em;
       }
 
+      .dashboard-follow {
+        @include themeable(
+          background,
+          theme-dashboard-followers-follow-background,
+          $green
+        );
+        border: 0;
+        border-radius: 5px;
+        @include themeable(
+          color,
+          theme-dashboard-followers-follow-color,
+          $black
+        );
+        font-size: 15.9px;
+        padding: 2px 10px;
+        @media screen and (min-width: 520px) {
+          font-size: 20px;
+        }
+        &.follow-tag {
+          @media screen and (min-width: 750px) {
+            margin: 8px 0px 8px 10px;
+          }
+        }
+        &.follow-user {
+          float: right;
+          margin-top: 8px;
+        }
+      }
+
+      .follow-tag-actions {
+        @media screen and (min-width: 750px) {
+          float: right;
+        }
+      }
+
       form {
         @include themeable(
           background,
@@ -458,7 +244,6 @@
 
         @media screen and (min-width: 750px) {
           display: inline-block;
-          float: right;
         }
 
         input {
@@ -548,7 +333,7 @@
 
     .dashboard-pageviews-indicator {
       display: inline-block;
-      font-family: $monospace;
+      font-family: var(--ff-accent);
       color: $dark-gray;
       background: white;
       text-align: center;
@@ -584,37 +369,6 @@
       }
     }
   }
-
-  .no-articles {
-    text-align: center;
-    @include themeable(background, theme-container-accent-background, #fff);
-    padding: 2vw 3vw 6vw;
-    box-shadow: $shadow;
-    border-radius: 3px;
-    min-height: 620px;
-
-    h3 {
-      font-size: 28px;
-      font-weight: 400;
-    }
-
-    a.big {
-      display: block;
-      border: 3px solid $black;
-      font-size: 2.2em;
-      padding: 0.4em 0.2em;
-      border-radius: 3px;
-      width: 90%;
-      max-width: 500px;
-      margin: auto;
-    }
-
-    img {
-      margin-top: 30px;
-      width: 90%;
-      max-width: 270px;
-    }
-  }
 }
 
 .charts-container {
@@ -623,13 +377,9 @@
   margin: 0 auto;
 }
 
-.recent-reactors-container {
-  height: 400px;
-  overflow: scroll;
-}
-
 .pro-container {
   width: 1400px;
+  margin: 0 auto;
 }
 
 .summary-stats {

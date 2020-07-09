@@ -6,7 +6,7 @@
       <div class="card">
         <div class="card-header">
           <% if comment.commentable %>
-            <a href="<%= comment.commentable.path %>">re: <%= comment.commentable.title %></a> (<%= comment.positive_reactions_count %> ❤️)
+            <a href="<%= comment.commentable.path %>">re: <%= comment.commentable.title %></a> (<%= comment.public_reactions_count %> ❤️)
           <% end %>
         </div>
         <div class="card-body">

@@ -1,4 +1,3 @@
-require "pusher"
 require "pusher/push_notifications"
 
 Pusher.app_id = ApplicationConfig["PUSHER_APP_ID"]

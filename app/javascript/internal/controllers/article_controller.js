@@ -6,7 +6,7 @@ export default class ArticleController extends Controller {
   increaseFeaturedNumber() {
     // Increases the article's chances of being seen
     const seconds = new Date().getTime() / 1000;
-    this.featuredNumberTarget.value = Math.round(seconds);
+    this.featuredNumberTarget.value = (Math.round(seconds) + 300);
   }
 
   decreaseFeaturedNumber() {

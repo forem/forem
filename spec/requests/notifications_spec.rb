@@ -172,7 +172,9 @@ RSpec.describe "NotificationsIndex", type: :request do
             category: categories.sample,
           )
         end
-        reactions.each { |reaction| Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user) }
+        reactions.each do |reaction|
+          Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.user)
+        end
       end
 
       it "renders the correct user for a single reaction" do
@@ -244,7 +246,9 @@ RSpec.describe "NotificationsIndex", type: :request do
         reactions = users.map do |user|
           create(:reaction, user: user, reactable: reactable, category: categories.sample)
         end
-        reactions.each { |reaction| Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization) }
+        reactions.each do |reaction|
+          Notification.send_reaction_notification_without_delay(reaction, reaction.reactable.organization)
+        end
 
         users
       end
@@ -478,8 +482,14 @@ RSpec.describe "NotificationsIndex", type: :request do
       let(:user2)    { create(:user) }
       let(:article)  { create(:article, :with_notification_subscription, user_id: user.id) }
       let(:comment)  { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article") }
-      let(:second_comment) { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: comment.id) }
-      let(:third_comment) { create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article", parent_id: second_comment.id) }
+      let(:second_comment) do
+        create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article",
+                         parent_id: comment.id)
+      end
+      let(:third_comment) do
+        create(:comment, user_id: user2.id, commentable_id: article.id, commentable_type: "Article",
+                         parent_id: second_comment.id)
+      end
 
       before do
         sign_in user
@@ -582,12 +592,23 @@ RSpec.describe "NotificationsIndex", type: :request do
     context "when user is trusted" do
       let(:user) { create(:user, :trusted) }
       let(:reaction) { create(:thumbsdown_reaction, user: user) }
+      let(:like_reaction) { create(:reaction, user: user) }
 
       it "allow sees thumbsdown category" do
         sign_in user
         Notification.send_reaction_notification_without_delay(reaction, user)
         get "/notifications"
         expect(response.body).to include("Notifications")
+      end
+
+      it "does not show notification" do
+        other_user = create(:user)
+        sign_in other_user
+        Notification.send_reaction_notification_without_delay(reaction, other_user)
+        Notification.send_reaction_notification_without_delay(like_reaction, other_user)
+        get "/notifications"
+        expect(response.body).to include("Like")
+        expect(response.body).not_to include("Thumbsdown")
       end
     end
 

@@ -20,11 +20,11 @@ module Search
 
       def initialize(params:)
         @params = params.deep_symbolize_keys
-        @params[:viewable_by] = params[:user_id]
+        @params[:viewable_by] = @params[:user_id]
 
         # TODO: @mstruve: When we want to allow people like admins to
         # search ALL memberships this will need to change
-        @params[:status] = "active"
+        @params[:status] = %w[active joining_request]
 
         build_body
       end
@@ -41,7 +41,11 @@ module Search
         FILTER_KEYS.map do |filter_key|
           next if @params[filter_key].blank? || @params[filter_key] == "all"
 
-          { term: { filter_key => @params[filter_key] } }
+          if %i[viewable_by status].include? filter_key
+            { terms: { filter_key => @params[filter_key] } }
+          else
+            { term: { filter_key => @params[filter_key] } }
+          end
         end.compact
       end
     end

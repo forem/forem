@@ -48,7 +48,8 @@ RSpec.describe "PageViews", type: :request do
           article_id: article.id,
           referrer: "test"
         }
-        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_views_article_four_days_in_week")
+        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).
+          with(user.id, :user_home_feed, "user_views_article_four_days_in_week")
       end
     end
 
@@ -107,13 +108,15 @@ RSpec.describe "PageViews", type: :request do
 
       it "updates a new page view time on page by 15" do
         post "/page_views", params: { article_id: article.id }
-        put "/page_views/" + article.id.to_s
+
+        put "/page_views/#{article.id}"
+
         expect(PageView.last.time_tracked_in_seconds).to eq(30)
       end
 
       it "does not update an invalid page view" do
         invalid_id = article.id + 100
-        expect { put "/page_views/" + invalid_id.to_s }.not_to raise_error
+        expect { put "/page_views/#{invalid_id}" }.not_to raise_error
       end
     end
 
@@ -122,7 +125,7 @@ RSpec.describe "PageViews", type: :request do
         post "/page_views", params: {
           article_id: article.id
         }
-        put "/page_views/" + article.id.to_s
+        put "/page_views/#{article.id}"
         expect(PageView.last.time_tracked_in_seconds).to eq(15)
       end
     end

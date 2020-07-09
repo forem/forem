@@ -1,7 +1,13 @@
 class CodesandboxTag < LiquidTagBase
   PARTIAL = "liquids/codesandbox".freeze
+  OPTIONS_REGEXP =
+    /\A(initialpath=([a-zA-Z0-9\-_\/.@%])+)\Z|
+      \A(module=([a-zA-Z0-9\-_\/.@%])+)\Z|
+      \A(runonclick=((0|1){1}))\Z|
+      \Aview=(editor|split|preview)\Z/x.
+      freeze
 
-  def initialize(tag_name, id, tokens)
+  def initialize(_tag_name, id, _parse_context)
     super
     @id = parse_id(id)
     @query = parse_options(id)
@@ -48,7 +54,7 @@ class CodesandboxTag < LiquidTagBase
   # composed of letters, numbers, dashes, underscores, forward slashes, @ signs, periods/dots,
   # and % symbols.  Invalid options will raise an exception
   def valid_option(option)
-    raise StandardError, "CodeSandbox Error: Invalid options" unless (option =~ /\A(initialpath=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z|\A(module=([a-zA-Z0-9\-\_\/\.\@\%])+)\Z|\A(runonclick=((0|1){1}))\Z/)&.zero?
+    raise StandardError, "CodeSandbox Error: Invalid options" unless (option =~ OPTIONS_REGEXP)&.zero?
 
     option
   end

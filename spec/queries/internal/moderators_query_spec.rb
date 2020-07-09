@@ -13,26 +13,26 @@ RSpec.describe Internal::ModeratorsQuery, type: :query do
   describe ".call" do
     context "when no arguments are given" do
       it "returns all moderators" do
-        expect(described_class.call).to eq([user, user2, user5])
+        expect(described_class.call).to match_array([user, user2, user5])
       end
     end
 
     context "when search is set" do
       let(:options) { { search: "greg" } }
 
-      it { is_expected.to eq([user, user2]) }
+      it { is_expected.to match_array([user, user2]) }
     end
 
     context "when state is tag_moderator" do
       let(:options) { { state: "tag_moderator" } }
 
-      it { is_expected.to eq([user3]) }
+      it { is_expected.to match_array([user3]) }
     end
 
     context "when state is potential" do
       let(:options) { { state: "potential" } }
 
-      it { is_expected.to eq([user4, user6, user3]) }
+      it { is_expected.to match_array([user4, user6, user3]) }
     end
 
     context "when state does not exist" do

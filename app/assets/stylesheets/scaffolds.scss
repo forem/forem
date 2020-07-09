@@ -7,11 +7,13 @@
 body {
   background: var(--body-bg);
   color: var(--body-color);
-  font-family: $ff-default;
+  font-family: var(--ff-default);
   padding: 0;
   margin: 0;
   overflow-y: scroll;
-  padding-top: $header-height;
+  padding-top: var(--header-height);
+  display: flex;
+  flex-direction: column;
 }
 
 #audiocontent {
@@ -37,15 +39,15 @@ body {
 
 .zen-mode {
   .top-bar,
-  .primary-sticky-nav,
-  .article-actions {
-    display: none !important;
+  .crayons-article-sticky,
+  .crayons-article-actions {
+    display: none;
   }
 }
 
 @media print {
   .top-bar,
-  .article-actions {
+  .crayons-article-sticky {
     display: none;
   }
 }
@@ -59,14 +61,22 @@ body {
 }
 
 .universal-page-content-wrapper {
-  overflow: hidden;
-  min-height: 88vh;
+  flex: 1 auto;
   visibility: visible;
   font-size: 18px;
 }
 
+/* Hide headers for screen readers */
+.visually-hidden-header {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
 a {
-  color: var(--link-branded-color);
+  color: var(--link-brand-color);
   text-decoration: none;
 }
 
@@ -79,26 +89,6 @@ div {
 
 #instantclick {
   display: none;
-}
-
-pre {
-  background: #29292e;
-  border-radius: 2px;
-  overflow-x: scroll;
-  font-size: 11px;
-  padding: 10px;
-  color: #eff0f9;
-  line-height: 1.42em;
-  font-size: 13px;
-  width: calc(100% - 25px);
-  @media screen and (min-width: 380px) {
-    font-size: 15px;
-  }
-  code {
-    background: #29292e;
-    color: #eff0f9;
-    white-space: pre;
-  }
 }
 
 .cta {
@@ -136,12 +126,12 @@ body.night-theme,
 body.ten-x-hacker-theme {
   .on-page-nav-butt img,
   .icon-img,
-  .dropdown-icon,
   .reaction-button:not(.reacted) img,
   .image-upload-button button,
   .icon-image,
   .dev-badge,
   .chatchannels__config img,
+  .message__actions img,
   .external-link-img,
   .group-img,
   .user-profile-header .social a {
@@ -164,10 +154,39 @@ body.ten-x-hacker-theme {
   }
 }
 
+.broadcast-wrapper {
+  display: none;
+  width: 100%;
+  font-size: 20px;
+  text-align: center;
+  padding: 0;
+  min-height: 45px;
+  z-index: 101; // Must be higher than the z-index of the sticky-nav.
+  position: fixed;
+}
+
+.broadcast-visible {
+  display: flex;
+}
+
+.broadcast-data {
+  flex-grow: 1;
+  padding: var(--su-2);
+}
+
+.close-announcement-button {
+  background-color: transparent;
+  border: none;
+}
+
 body.static-navbar-config {
   padding-top: 0;
   .top-bar {
     position: relative !important;
+  }
+
+  .broadcast-wrapper {
+    position: relative; // Unset fixed position for static navbar config.
   }
 }
 
@@ -188,12 +207,12 @@ body.hidden-shell {
     margin-top: 0px;
   }
   .universal-page-content-wrapper {
-    margin-top: -$header-height !important;
+    margin-top: calc(var(--header-height) * -1) !important;
     margin-bottom: 30px;
   }
 }
 
-// Remove post confirmaiton
+// Remove post confirmation
 .delete-confirm.container {
   padding: 150px 10px;
   min-height: 300px;

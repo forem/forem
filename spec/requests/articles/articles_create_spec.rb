@@ -16,6 +16,14 @@ RSpec.describe "ArticlesCreate", type: :request do
     expect(Article.last.user_id).to eq(user.id)
   end
 
+  it "properly downcase tags" do
+    new_title = "NEW TITLE #{rand(100)}"
+    post "/articles", params: {
+      article: { title: new_title, body_markdown: "Yo ho ho#{rand(100)}", tag_list: "What" }
+    }
+    expect(Article.last.tags.map(&:name)).to eq(["what"])
+  end
+
   it "creates article with front matter params" do
     post "/articles", params: {
       article: {
@@ -80,7 +88,8 @@ RSpec.describe "ArticlesCreate", type: :request do
     end
 
     it "schedules a dispatching event job (published)" do
-      article_params[:article][:body_markdown] = "---\ntitle: hey hey hahuu\npublished: true\nseries: helloyo\n---\nYo ho ho#{rand(100)}"
+      body_markdown = "---\ntitle: hey hey hahuu\npublished: true\nseries: helloyo\n---\nYo ho ho#{rand(100)}"
+      article_params[:article][:body_markdown] = body_markdown
       sidekiq_assert_enqueued_jobs(1, only: Webhook::DispatchEventWorker) do
         post "/articles", params: article_params
       end
@@ -91,6 +100,20 @@ RSpec.describe "ArticlesCreate", type: :request do
       sidekiq_perform_enqueued_jobs do
         post "/articles", params: article_params
       end
+    end
+  end
+
+  context "when creation limit is reached" do
+    it "returns a too_many_requests response if rate limit is reached" do
+      rate_limit_checker = RateLimitChecker.new(user)
+      allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+      allow(rate_limit_checker).to receive(:limit_by_action).and_return(true)
+
+      post articles_path, params: { article: { body_markdown: "123" } }
+
+      expect(response).to have_http_status(:too_many_requests)
+      expected_retry_after = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)
+      expect(response.headers["Retry-After"]).to eq(expected_retry_after)
     end
   end
 end

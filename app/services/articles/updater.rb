@@ -11,10 +11,8 @@ module Articles
       new(*args).call
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
     def call
-      rate_limiter = RateLimitChecker.new(user)
-      raise if rate_limiter.limit_by_action("article_update")
+      user.rate_limiter.check_limit!(:article_update)
 
       article = load_article
       was_published = article.published
@@ -38,7 +36,7 @@ module Articles
       article_params[:edited_at] = Time.current if update_edited_at
 
       article.update!(article_params)
-      rate_limiter.track_article_updates
+      user.rate_limiter.track_limit_by_action(:article_update)
 
       # send notification only the first time an article is published
       send_notification = article.published && article.saved_change_to_published_at.present?
@@ -46,15 +44,18 @@ module Articles
 
       # remove related notifications if unpublished
       if article.saved_changes["published"] == [true, false]
-        Notification.remove_all_by_action_without_delay(notifiable_ids: article.id, notifiable_type: "Article", action: "Published")
-        Notification.remove_all(notifiable_ids: article.comments.pluck(:id), notifiable_type: "Comment") if article.comments.exists?
+        Notification.remove_all_by_action_without_delay(notifiable_ids: article.id, notifiable_type: "Article",
+                                                        action: "Published")
+        if article.comments.exists?
+          Notification.remove_all(notifiable_ids: article.comments.pluck(:id),
+                                  notifiable_type: "Comment")
+        end
       end
       # don't send only if article keeps being unpublished
       dispatch_event(article) if article.published || was_published
 
       article.decorate
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
 
     private
 

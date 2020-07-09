@@ -1,7 +1,7 @@
 import { getUserDataAndCsrfToken } from '../chat/util';
-import getUnopenedChannels from '../src/utils/getUnopenedChannels';
+import { getUnopenedChannels } from '../utilities/connect';
 
-HTMLDocument.prototype.ready = new Promise(resolve => {
+HTMLDocument.prototype.ready = new Promise((resolve) => {
   if (document.readyState !== 'loading') {
     return resolve();
   }
@@ -36,7 +36,7 @@ document.ready.then(
         window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line no-console
       console.error('Error getting user and CSRF Token', error);
     }),
@@ -53,7 +53,7 @@ window.InstantClick.on('change', () => {
         window.location = `${window.location.origin}/onboarding?referrer=${window.location}`;
       }
     })
-    .catch(error => {
+    .catch((error) => {
       // eslint-disable-next-line no-console
       console.error('Error getting user and CSRF Token', error);
     });

@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
-  describe "::intialize" do
+  describe "::initialize" do
     it "sets params" do
       filter_params = { foo: "bar" }
       filter = described_class.new(params: filter_params)
@@ -11,6 +11,11 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
     it "builds query body" do
       filter = described_class.new(params: {})
       expect(filter.body).not_to be_nil
+    end
+
+    it "builds query body with html encoder" do
+      filter = described_class.new(params: {})
+      expect(filter.body).to include("highlight" => hash_including("encoder" => "html"))
     end
 
     it "sets published to true" do
@@ -25,7 +30,7 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
     it "applies QUERY_KEYS from params" do
       params = { search_fields: "test" }
       filter = described_class.new(params: params)
-      exepcted_query = [{
+      expected_query = [{
         "simple_query_string" => {
           "query" => "test",
           "fields" => query_fields,
@@ -34,31 +39,31 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
           "minimum_should_match" => 2
         }
       }]
-      expect(search_bool_clause(filter)["must"]).to match_array(exepcted_query)
+      expect(search_bool_clause(filter)["must"]).to match_array(expected_query)
     end
 
     it "applies TERM_KEYS from params" do
       params = { approved: true, tag_names: "beginner", user_id: 777, class_name: "Article" }
       filter = described_class.new(params: params)
-      exepcted_filters = [
+      expected_filters = [
         { "terms" => { "approved" => [true] } },
         { "terms" => { "tags.name" => ["beginner"] } },
         { "terms" => { "user.id" => [777] } },
         { "terms" => { "class_name" => ["Article"] } },
         { "terms" => { "published" => [true] } },
       ]
-      expect(search_bool_clause(filter)["filter"]).to match_array(exepcted_filters)
+      expect(search_bool_clause(filter)["filter"]).to match_array(expected_filters)
     end
 
     it "applies RANGE_KEYS from params" do
       Timecop.freeze(Time.current) do
         params = { published_at: { lte: Time.current } }
         filter = described_class.new(params: params)
-        exepcted_filters = [
+        expected_filters = [
           { "range" => { "published_at" => { lte: Time.current } } },
           { "terms" => { "published" => [true] } },
         ]
-        expect(search_bool_clause(filter)["filter"]).to match_array(exepcted_filters)
+        expect(search_bool_clause(filter)["filter"]).to match_array(expected_filters)
       end
     end
 
@@ -66,28 +71,30 @@ RSpec.describe Search::QueryBuilders::FeedContent, type: :service do
       Timecop.freeze(Time.current) do
         params = { search_fields: "ruby", published_at: { lte: Time.current }, tag_names: "cfp" }
         filter = described_class.new(params: params)
-        exepcted_query = [{
-          "simple_query_string" => { "query" => "ruby", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true, "minimum_should_match" => 2 }
+        expected_query = [{
+          "simple_query_string" => { "query" => "ruby", "fields" => query_fields, "lenient" => true,
+                                     "analyze_wildcard" => true, "minimum_should_match" => 2 }
         }]
-        exepcted_filters = [
+        expected_filters = [
           { "range" => { "published_at" => { lte: Time.current } } },
           { "terms" => { "tags.name" => ["cfp"] } },
           { "terms" => { "published" => [true] } },
         ]
-        expect(search_bool_clause(filter)["must"]).to match_array(exepcted_query)
-        expect(search_bool_clause(filter)["filter"]).to match_array(exepcted_filters)
+        expect(search_bool_clause(filter)["must"]).to match_array(expected_query)
+        expect(search_bool_clause(filter)["filter"]).to match_array(expected_filters)
       end
     end
 
     it "ignores params we don't support" do
       params = { not_supported: "trash", search_fields: "cfp" }
       filter = described_class.new(params: params)
-      exepcted_query = [{
+      expected_query = [{
         "simple_query_string" => {
-          "query" => "cfp", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true, "minimum_should_match" => 2
+          "query" => "cfp", "fields" => query_fields, "lenient" => true,
+          "analyze_wildcard" => true, "minimum_should_match" => 2
         }
       }]
-      expect(search_bool_clause(filter)["must"]).to match_array(exepcted_query)
+      expect(search_bool_clause(filter)["must"]).to match_array(expected_query)
     end
 
     it "allows default params to be overriden" do

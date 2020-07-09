@@ -11,7 +11,7 @@ RSpec.describe "Views an article", type: :system do
     sign_in user
   end
 
-  it "shows an article" do
+  it "shows an article", js: true do
     visit article.path
     expect(page).to have_content(article.title)
   end
@@ -20,7 +20,7 @@ RSpec.describe "Views an article", type: :system do
     create_list(:comment, 3, commentable: article)
 
     visit article.path
-    expect(page).to have_selector(".single-comment-node", visible: true, count: 3)
+    expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
   end
 
   it "stops a user from moderating an article" do
@@ -64,12 +64,12 @@ RSpec.describe "Views an article", type: :system do
     end
 
     context "when a crossposted article is between two regular articles" do
+      let(:article1) { create(:article) }
+      let(:crossposted_article) { create(:article) }
+      let(:article2) { create(:article) }
+
       # rubocop:disable RSpec/ExampleLength
       it "lists the articles in ascending order considering crossposted_at" do
-        article1 = create(:article)
-        crossposted_article = create(:article)
-        article2 = create(:article)
-
         article1.update_columns(
           collection_id: collection.id,
           published_at: Time.zone.parse("2020-03-15T13:50:09Z"),

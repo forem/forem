@@ -12,17 +12,21 @@ experiments:
       - more_tag_weight_randomized_at_end_experiment
       - more_experience_level_weight_randomized_at_end_experiment
       - more_comments_randomized_at_end_experiment
+      - more_comments_medium_weight_randomized_at_end_experiment
+      - more_comments_minimal_weight_randomized_at_end_experiment
     weights:
+      - 5
+      - 5
+      - 5
+      - 10
+      - 5
+      - 5
+      - 5
+      - 10
+      - 10
+      - 5
       - 25
       - 5
-      - 10
-      - 5
-      - 5
-      - 10
-      - 10
-      - 10
-      - 5
-      - 10
       - 5
     goals:
       - user_creates_comment
@@ -35,6 +39,6 @@ exclude:
 # Dashboard performance
 cache: true
 
-# For logged-in users we'll explicitely pass participant. 
+# For logged-in users we'll explicitely pass participant.
 # If we experiment on non-logged in, we don't want to collect cookies anyway.
 cookies: false

@@ -1,0 +1,75 @@
+@import 'variables';
+@import 'mixins';
+@import 'config/import';
+
+.onboarding-task-card {
+  background: var(--accent-brand);
+  position: relative;
+  border-radius: var(--radius);
+  padding: var(--su-7) var(--su-8) var(--su-8) var(--su-8);
+  display: none;
+
+  .task-card-title {
+    font-weight: var(--fw-heavy);
+    font-size: var(--fs-4xl);
+    line-height: var(--lh-tight);
+    color: var(--base-inverted);
+  }
+
+  .task-card-subtitle {
+    color: var(--base-inverted);
+    opacity: 0.7;
+    font-weight: var(--fw-medium);
+    font-size: var(--fs-s);
+    line-height: var(--lh-tight);
+    letter-spacing: -0.02em;
+  }
+
+  .task-card-action {
+    border-radius: var(--radius);
+    // Can't use hex + opacity because it will affect text.
+    background-color: rgba(255, 255, 255, 0.2);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  a.task-card-link {
+    display: block;
+    border-radius: var(--radius);
+    padding: var(--su-5) var(--su-5);
+    margin-top: var(--su-4);
+    font-weight: var(--fw-bold);
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
+    letter-spacing: -0.02em;
+    color: var(--base-inverted);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &:hover {
+      cursor: pointer;
+    }
+
+    .emoji {
+      margin-right: var(--su-2);
+    }
+  }
+
+  .task-card-image {
+    width: 100px;
+    height: 100px;
+  }
+
+  .close {
+    // Overide standard button layout
+    background: none;
+    border: none;
+
+    position: absolute;
+    top: var(--su-6);
+    right: var(--su-6);
+  }
+}

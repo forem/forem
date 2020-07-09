@@ -1,0 +1,76 @@
+@import '../config/import';
+
+.ltag__user-subscription-tag {
+  &__container {
+    @include generate-box(
+      $level: 1,
+      $bg: var(--card-bg),
+      $border: var(--card-color),
+      $color: var(--card-color)
+    );
+
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    padding: var(--su-4);
+
+    @media screen and (min-width: $breakpoint-m) {
+      padding: var(--su-6);
+    }
+  }
+
+  &__signed-in {
+    color: var(--base-70);
+  }
+
+  &__profile-images {
+    &.signed-in {
+      margin: 0 auto var(--su-4);
+      position: relative;
+      height: 80px;
+      width: 80px;
+
+      .ltag__user-subscription-tag__author-profile-image,
+      .ltag__user-subscription-tag__subscriber-profile-image {
+        display: block;
+      }
+    }
+
+    &.signed-out {
+      height: auto;
+      width: auto;
+      text-align: center;
+      margin: 0 auto;
+
+      .ltag__user-subscription-tag__author-profile-image {
+        margin: 0 auto var(--su-4);
+      }
+
+      .ltag__user-subscription-tag__subscriber-profile-image {
+        display: none;
+      }
+    }
+
+    img {
+      border-radius: 100%;
+    }
+  }
+
+  &__subscriber-profile-image {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    box-shadow: 0 0 0 4px var(--body-color-inverted);
+  }
+}
+
+// modal styles overwrite crayons component WIP
+#user-subscription-confirmation-modal {
+  .crayons-modal__box__header {
+    padding: var(--su-2) var(--su-4);
+  }
+
+  .crayons-modal__box__body {
+    padding: var(--su-6);
+  }
+}

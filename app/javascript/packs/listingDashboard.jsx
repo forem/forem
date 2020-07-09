@@ -2,9 +2,9 @@ import { h, render } from 'preact';
 import { ListingDashboard } from '../listings/listingDashboard';
 
 function loadElement() {
-  const root = document.getElementById('classifieds-listings-dashboard');
+  const root = document.getElementById('listings-dashboard');
   if (root) {
-    render(<ListingDashboard />, root, root.firstElementChild);
+    render(<ListingDashboard />, root);
   }
 }
 

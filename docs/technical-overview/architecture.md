@@ -68,9 +68,9 @@ Rails][fastly_rails] docs, but we bust specific URLs via `CacheBuster`.
 
 The home feed is based on a combination of recent collective posts that are
 cached and delivered the same to everyone in the HTML, and additional articles
-fetched from an Algolia index after page load. To determine which posts a user
-sees, they are ranked based on the user's followed tags, followed users, and
-relative weights for each tag. Additional fetched articles also follow this
+fetched from an Elasticsearch index after page load. To determine which posts a
+user sees, they are ranked based on the user's followed tags, followed users,
+and relative weights for each tag. Additional fetched articles also follow this
 general pattern.
 
 Currently, the top post on the home feed, which must have a cover image, is
@@ -84,7 +84,7 @@ making full-page requests. This approach is similar to the one used by the Rails
 gem `Turbolinks`, but our approach is more lightweight. The library is modified
 to work specifically with this Rails app and does not swap out reused elements
 like the navigation bar or the footer. The code for this functionality is
-viewable in `app/assets/javascripb/base.js.erb`.
+viewable in `app/assets/javascripts/base.js.erb`.
 
 There are a few caveats regarding this approach. Using our approach means a
 non-trivial amount of functionality is reloaded on page change. A similar amount
@@ -135,11 +135,11 @@ Some tags behave as "flare," highlighting certain articles when viewed from the
 index page. Tags that act as "flare" are defined in the `FlareTag` object. In
 cases of multiple flare tags, the tag displayed is determined by its hierarchy.
 
-## ClassifiedListings (or listings)
+## Listings
 
-Classified listings are similar to posts in some ways, but with more
-limitations. They are designed to be categorized into market areas. They also
-make use of tags.
+Listings are classified ads. They are similar to posts in some ways, but with
+ore limitations. They are designed to be categorized into market areas. They
+also make use of tags.
 
 ## Credits
 
@@ -178,6 +178,20 @@ organization could be a company or perhaps just a publication on-site.
 
 Notes are an internal tool admins can use to leave information about things.
 Example: "This user was warned for spammy content".
+
+## Pages
+
+`Pages` in the [internal dashboard](/internal/) represent static pages to be
+served on the site. Admins are in full control to create and customize them to
+their needs using markdown or custom HTML. Pages are configured with a `slug`
+and they will be served on either the `/page/slug` or `/slug` path.
+
+In order to ease development of custom HTML Pages in local environments the rake
+task `pages:sync` is available. It will listen to changes made to a local HTML
+file and sync its contents to an existing Page in the database with the matching
+`slug`.
+
+Example: `rake pages:sync[slug,/absolute/path/to/file.html]`
 
 ---
 

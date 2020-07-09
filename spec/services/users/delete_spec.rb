@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Users::Delete, type: :service do
-  before { mock_github }
+  before { omniauth_mock_github_payload }
 
   let(:user) { create(:user, :with_identity, identities: ["github"]) }
 
@@ -56,7 +56,40 @@ RSpec.describe Users::Delete, type: :service do
     expect { user.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
   end
 
-  # check that all the associated records are being destroyed, except for those that are kept explicitly (kept_associations)
+  it "removes articles from Elasticsearch" do
+    article = create(:article, user: user)
+    sidekiq_perform_enqueued_jobs
+    expect(article.elasticsearch_doc).not_to be_nil
+    sidekiq_perform_enqueued_jobs do
+      described_class.call(user)
+    end
+    expect { article.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+  end
+
+  it "removes reactions from Elasticsearch" do
+    article = create(:article, user: user)
+    reaction = create(:reaction, category: "readinglist", reactable: article)
+    user_reaction = create(:reaction, user_id: user.id, category: "readinglist")
+    sidekiq_perform_enqueued_jobs
+    expect(reaction.elasticsearch_doc).not_to be_nil
+    expect(user_reaction.elasticsearch_doc).not_to be_nil
+    sidekiq_perform_enqueued_jobs do
+      described_class.call(user)
+    end
+    expect { reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+    expect { user_reaction.elasticsearch_doc }.to raise_error(Search::Errors::Transport::NotFound)
+  end
+
+  it "deletes field tests memberships" do
+    create(:field_test_membership, participant_id: user.id)
+
+    expect do
+      described_class.call(user)
+    end.to change(FieldTest::Membership, :count).by(-1)
+  end
+
+  # check that all the associated records are being destroyed,
+  # except for those that are kept explicitly (kept_associations)
   describe "deleting associations" do
     let(:kept_association_names) do
       %i[
@@ -64,7 +97,11 @@ RSpec.describe Users::Delete, type: :service do
         offender_feedback_messages reporter_feedback_messages
       ]
     end
-    let(:direct_associations) { User.reflect_on_all_associations.reject { |a| a.options.key?(:join_table) || a.options.key?(:through) } }
+    let(:direct_associations) do
+      User.reflect_on_all_associations.reject do |a|
+        a.options.key?(:join_table) || a.options.key?(:through)
+      end
+    end
     let!(:user_associations) do
       create_associations(direct_associations.reject { |a| kept_association_names.include?(a.name) })
     end
@@ -74,6 +111,7 @@ RSpec.describe Users::Delete, type: :service do
 
     def create_associations(names)
       associations = []
+
       names.each do |association|
         if user.public_send(association.name).present?
           associations.push(*user.public_send(association.name))
@@ -82,10 +120,20 @@ RSpec.describe Users::Delete, type: :service do
           class_name = association.options[:class_name] || singular_name
           possible_factory_name = class_name.underscore.tr("/", "_")
           inverse_of = association.options[:inverse_of] || association.options[:as] || :user
+
+          # as we can't be automatically sure that the other side of the relation
+          # has defined a `has_one` relation we need to guard against third party
+          # models that don't have them defined
+          model = class_name.safe_constantize
+          if model && !model.reflect_on_association(inverse_of)
+            next
+          end
+
           record = create(possible_factory_name, inverse_of => user)
-          associations.push record
+          associations.push(record)
         end
       end
+
       associations
     end
 

@@ -1,6 +1,3 @@
-require "ddtrace"
-require "datadog/statsd"
-
 Datadog.configure do |c|
   c.tracer env: Rails.env
   c.tracer enabled: Rails.env.production?

@@ -25,7 +25,7 @@ module Slack
           organization: organization.username,
         )
 
-        SlackBotPingWorker.perform_async(
+        Slack::Messengers::Worker.perform_async(
           message: message,
           channel: "incoming-partners",
           username: "media_sponsor",

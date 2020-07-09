@@ -21,7 +21,8 @@ module Search
         approved: "approved",
         user_id: "user.id",
         class_name: "class_name",
-        published: "published"
+        published: "published",
+        organization_id: "organization.id"
       }.freeze
 
       RANGE_KEYS = %i[
@@ -50,14 +51,17 @@ module Search
         flare_tag_hash
         main_image
         path
-        positive_reactions_count
+        public_reactions_count
         published_at
         readable_publish_date_string
         reading_time
         slug
         tags
         title
+        video_duration_in_minutes
+        video_duration_string
         user
+        organization
       ].freeze
 
       attr_accessor :params, :body
@@ -81,7 +85,7 @@ module Search
       end
 
       def add_highlight_fields
-        highlight_fields = { fields: {} }
+        highlight_fields = { encoder: "html", pre_tags: "<mark>", post_tags: "</mark>", fields: {} }
         HIGHLIGHT_FIELDS.each do |field_name|
           # This hash can be filled with options to further customize our highlighting
           # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html#request-body-search-highlighting
@@ -140,7 +144,7 @@ module Search
       def query_hash(key, fields)
         {
           simple_query_string: {
-            query: key,
+            query: key.downcase,
             fields: fields,
             lenient: true,
             analyze_wildcard: true,

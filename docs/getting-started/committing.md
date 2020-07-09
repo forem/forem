@@ -18,11 +18,11 @@ using [Rubocop](https://github.com/bbatsov/rubocop) along with
 If you have Rubocop installed with your text editor of choice, you should be up
 and running.
 
-For Javascript, we follow
-[Airbnb's JS Style Guide](https://github.com/airbnb/javascript), using
-[ESLint](https://eslint.org) and
-[prettier](https://github.com/prettier/prettier). If you have ESLint installed
-with your text editor of choice, you should be up and running.
+For the frontend, [ESLint](https://eslint.org) and
+[prettier](https://github.com/prettier/prettier) are used. ESLint's recommended
+rules along with Preact's recommended rules are used for code-quality.
+Formatting is handled by prettier. If you have ESLint installed with your text
+editor of choice, you should be up and running.
 
 ## Husky hooks
 

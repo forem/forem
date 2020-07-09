@@ -12,12 +12,15 @@ end
 RSpec.describe User, type: :model do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
+  let(:user_with_user_optional_fields) { create(:user, :with_user_optional_fields) }
   let(:org) { create(:organization) }
 
-  before { mock_auth_hash }
+  before { omniauth_mock_providers_payload }
 
   describe "validations" do
     describe "builtin validations" do
+      subject { user }
+
       it { is_expected.to have_many(:api_secrets).dependent(:destroy) }
       it { is_expected.to have_many(:articles).dependent(:destroy) }
       it { is_expected.to have_many(:audit_logs).dependent(:nullify) }
@@ -25,13 +28,14 @@ RSpec.describe User, type: :model do
       it { is_expected.to have_many(:badges).through(:badge_achievements) }
       it { is_expected.to have_many(:chat_channel_memberships).dependent(:destroy) }
       it { is_expected.to have_many(:chat_channels).through(:chat_channel_memberships) }
-      it { is_expected.to have_many(:classified_listings).dependent(:destroy) }
+      it { is_expected.to have_many(:listings).dependent(:destroy) }
       it { is_expected.to have_many(:collections).dependent(:destroy) }
       it { is_expected.to have_many(:comments).dependent(:destroy) }
       it { is_expected.to have_many(:credits).dependent(:destroy) }
       it { is_expected.to have_many(:display_ad_events).dependent(:destroy) }
       it { is_expected.to have_many(:email_authorizations).dependent(:delete_all) }
       it { is_expected.to have_many(:email_messages).class_name("Ahoy::Message").dependent(:destroy) }
+      it { is_expected.to have_many(:field_test_memberships).class_name("FieldTest::Membership").dependent(:destroy) }
       it { is_expected.to have_many(:github_repos).dependent(:destroy) }
       it { is_expected.to have_many(:html_variants).dependent(:destroy) }
       it { is_expected.to have_many(:identities).dependent(:destroy) }
@@ -125,55 +129,107 @@ RSpec.describe User, type: :model do
       it do
         expect(subject).to have_many(:webhook_endpoints).
           class_name("Webhook::Endpoint").
-          with_foreign_key(:user_id).
           dependent(:delete_all)
       end
       # rubocop:enable RSpec/NamedSubject
 
-      it { is_expected.to have_one(:counters).class_name("UserCounter").dependent(:destroy) }
-      it { is_expected.to have_one(:pro_membership).dependent(:destroy) }
+      it "has at most three optional fields" do
+        expect(user_with_user_optional_fields).to have_many(:user_optional_fields).dependent(:destroy)
+        fourth_field = user_with_user_optional_fields.user_optional_fields.create(label: "some field",
+                                                                                  value: "some value")
+        expect(fourth_field).not_to be_valid
+      end
 
-      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+      it { is_expected.not_to allow_value("#xyz").for(:bg_color_hex) }
+      it { is_expected.not_to allow_value("#xyz").for(:text_color_hex) }
+      it { is_expected.not_to allow_value("AcMe_1%").for(:username) }
+      it { is_expected.to allow_value("#aabbcc").for(:bg_color_hex) }
+      it { is_expected.to allow_value("#aabbcc").for(:text_color_hex) }
+      it { is_expected.to allow_value("#abc").for(:bg_color_hex) }
+      it { is_expected.to allow_value("#abc").for(:text_color_hex) }
+      it { is_expected.to allow_value("AcMe_1").for(:username) }
+
+      it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+      it { is_expected.to validate_length_of(:available_for).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:behance_url).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:currently_hacking_on).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:currently_learning).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:education).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:email).is_at_most(50).allow_nil }
+      it { is_expected.to validate_length_of(:employer_name).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:employer_url).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:employment_title).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:inbox_guidelines).is_at_most(250).allow_nil }
+      it { is_expected.to validate_length_of(:location).is_at_most(100).allow_nil }
+      it { is_expected.to validate_length_of(:mostly_work_with).is_at_most(500).allow_nil }
+      it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
+      it { is_expected.to validate_length_of(:summary).is_at_most(1300).allow_nil }
+      it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
       it { is_expected.to validate_uniqueness_of(:github_username).allow_nil }
       it { is_expected.to validate_uniqueness_of(:twitter_username).allow_nil }
-      it { is_expected.to validate_presence_of(:username) }
-      it { is_expected.to validate_length_of(:username).is_at_most(30).is_at_least(2) }
-      it { is_expected.to validate_length_of(:name).is_at_most(100).is_at_least(1) }
-      it { is_expected.to validate_inclusion_of(:inbox_type).in_array(%w[open private]) }
+      it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+      it { is_expected.to validate_url_of(:employer_url) }
+      it { is_expected.to validate_url_of(:website_url) }
     end
 
     it "validates username against reserved words" do
       user = build(:user, username: "readinglist")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("reserved")).to be true
+      expect(user.errors[:username].to_s).to include("reserved")
     end
 
     it "takes organization slug into account" do
       create(:organization, slug: "lightalloy")
       user = build(:user, username: "lightalloy")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("taken")).to be true
+      expect(user.errors[:username].to_s).to include("taken")
     end
 
     it "takes podcast slug into account" do
       create(:podcast, slug: "lightpodcast")
       user = build(:user, username: "lightpodcast")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("taken")).to be true
+      expect(user.errors[:username].to_s).to include("taken")
     end
 
     it "takes page slug into account" do
       create(:page, slug: "page_yo")
       user = build(:user, username: "page_yo")
       expect(user).not_to be_valid
-      expect(user.errors[:username].to_s.include?("taken")).to be true
+      expect(user.errors[:username].to_s).to include("taken")
+    end
+
+    it "validates can_send_confirmation_email for existing user" do
+      user = create(:user)
+      limiter = RateLimitChecker.new(user)
+      allow(user).to receive(:rate_limiter).and_return(limiter)
+      allow(limiter).to receive(:limit_by_action).and_return(true)
+      allow(limiter).to receive(:track_limit_by_action)
+      user.update(email: "new_email@yo.com")
+
+      expect(user).not_to be_valid
+      expect(user.errors[:email].to_s).to include("confirmation could not be sent. Rate limit reached")
+      expect(limiter).to have_received(:track_limit_by_action).with(:send_email_confirmation).twice
+    end
+
+    it "validates update_rate_limit for existing user" do
+      user = create(:user)
+      limiter = RateLimitChecker.new(user)
+      allow(user).to receive(:rate_limiter).and_return(limiter)
+      allow(limiter).to receive(:limit_by_action).and_return(true)
+      allow(limiter).to receive(:track_limit_by_action)
+      user.update(articles_count: 5)
+
+      expect(user).not_to be_valid
+      expect(user.errors[:base].to_s).to include("could not be saved. Rate limit reached")
+      expect(limiter).to have_received(:track_limit_by_action).with(:user_update).twice
     end
   end
 
   describe "#after_commit" do
     it "on update enqueues job to index user to elasticsearch" do
       user.save
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, user.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, user.id]) do
         user.save
       end
     end
@@ -186,7 +242,8 @@ RSpec.describe User, type: :model do
 
     it "on destroy enqueues job to delete user from elasticsearch" do
       user.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, user.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                   args: [described_class::SEARCH_CLASS.to_s, user.id]) do
         user.destroy
       end
     end
@@ -299,6 +356,20 @@ RSpec.describe User, type: :model do
 
       it "does not accept invalid facebook url" do
         user.facebook_url = "ben.com"
+        expect(user).not_to be_valid
+      end
+    end
+
+    describe "#youtube_url" do
+      it "accepts valid https youtube url", :aggregate_failures do
+        %w[thepracticaldev thepracticaldev/ the.practical.dev].each do |username|
+          user.youtube_url = "https://youtube.com/#{username}"
+          expect(user).to be_valid
+        end
+      end
+
+      it "does not accept invalid youtube url" do
+        user.youtube_url = "ben.com"
         expect(user).not_to be_valid
       end
     end
@@ -764,26 +835,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  context "when indexing and deindexing" do
-    it "triggers background auto-indexing when user is saved" do
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["User", user.id]) do
-        user.save
-      end
-    end
-
-    it "doesn't enqueue a job on destroy" do
-      user = build(:user)
-
-      sidekiq_perform_enqueued_jobs do
-        user.save
-      end
-
-      sidekiq_assert_no_enqueued_jobs(only: Search::IndexWorker) do
-        user.destroy
-      end
-    end
-  end
-
   describe "user registration" do
     let(:user) { create(:user) }
 
@@ -816,7 +867,7 @@ RSpec.describe User, type: :model do
     end
 
     it "does not assign signup_cta_variant to non-new users" do
-      returning_user = build(:user, signup_cta_variant: nil)
+      returning_user = create(:user, signup_cta_variant: nil)
       new_user = user_from_authorization_service(:twitter, returning_user, "hey-hey-hey")
       expect(new_user.signup_cta_variant).to eq(nil)
     end
@@ -828,9 +879,9 @@ RSpec.describe User, type: :model do
     end
 
     it "assigns modified username if invalid" do
-      OmniAuth.config.mock_auth[:twitter].info.nickname = "invalid.username"
+      OmniAuth.config.mock_auth[:twitter].info.nickname = "invalid.user"
       new_user = user_from_authorization_service(:twitter, nil, "navbar_basic")
-      expect(new_user.username).to eq("invalidusername")
+      expect(new_user.username).to eq("invaliduser")
     end
 
     it "assigns an identity to user" do
@@ -923,7 +974,8 @@ RSpec.describe User, type: :model do
 
   describe "theming properties" do
     it "creates proper body class with defaults" do
-      expect(user.decorate.config_body_class).to eq("default default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+      classes = "default default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "determines dark theme if night theme" do
@@ -943,22 +995,30 @@ RSpec.describe User, type: :model do
 
     it "creates proper body class with sans serif config" do
       user.config_font = "sans_serif"
-      expect(user.decorate.config_body_class).to eq("default sans-serif-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "default sans-serif-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with open dyslexic config" do
       user.config_font = "open_dyslexic"
-      expect(user.decorate.config_body_class).to eq("default open-dyslexic-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "default open-dyslexic-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with night theme" do
       user.config_theme = "night_theme"
-      expect(user.decorate.config_body_class).to eq("night-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "night-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
 
     it "creates proper body class with pink theme" do
       user.config_theme = "pink_theme"
-      expect(user.decorate.config_body_class).to eq("pink-theme default-article-body pro-status-#{user.pro?} trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config")
+
+      classes = "pink-theme default-article-body trusted-status-#{user.trusted} #{user.config_navbar}-navbar-config"
+      expect(user.decorate.config_body_class).to eq(classes)
     end
   end
 
@@ -1016,19 +1076,6 @@ RSpec.describe User, type: :model do
       user.add_role(:pro)
       expect(user.pro?).to be(true)
     end
-
-    it "returns true if the user has an active pro membership" do
-      user.pro_membership = build(:pro_membership, status: "active")
-      expect(user.pro?).to be(true)
-    end
-
-    it "returns false if the user has an expired pro membership" do
-      Timecop.freeze(Time.current) do
-        membership = create(:pro_membership, user: user)
-        membership.expire!
-        expect(user.pro?).to be(false)
-      end
-    end
   end
 
   describe "#enough_credits?" do
@@ -1085,6 +1132,53 @@ RSpec.describe User, type: :model do
       allow(SiteConfig).to receive(:mascot_user_id).and_return(user.id)
 
       expect(described_class.mascot_account).to eq(user)
+    end
+  end
+
+  describe "#authenticated_through?" do
+    let(:provider) { Authentication::Providers.available.first }
+
+    it "returns false if provider is not known" do
+      expect(user.authenticated_through?(:unknown)).to be(false)
+    end
+
+    it "returns false if provider is not enabled" do
+      providers = Authentication::Providers.available - [provider]
+      allow(Authentication::Providers).to receive(:enabled).and_return(providers)
+
+      expect(user.authenticated_through?(provider)).to be(false)
+    end
+
+    it "returns false if the user has no related identity" do
+      expect(user.authenticated_through?(provider)).to be(false)
+    end
+
+    it "returns true if the user has related identity" do
+      user = create(:user, :with_identity, identities: [provider])
+      expect(user.authenticated_through?(provider)).to be(true)
+    end
+  end
+
+  describe "#authenticated_with_all_providers?" do
+    let(:provider) { Authentication::Providers.available.first }
+
+    it "returns false if the user has no related identity" do
+      expect(user.authenticated_with_all_providers?).to be(false)
+    end
+
+    it "returns false if the user is missing any of the identities" do
+      providers = Authentication::Providers.available - [provider]
+      user = create(:user, :with_identity, identities: providers)
+
+      expect(user.authenticated_with_all_providers?).to be(false)
+    end
+
+    it "returns true if the user has all the enabled providers" do
+      allow(SiteConfig).to receive(:authentication_providers).and_return(Authentication::Providers.available)
+
+      user = create(:user, :with_identity)
+
+      expect(user.authenticated_with_all_providers?).to be(true)
     end
   end
 end

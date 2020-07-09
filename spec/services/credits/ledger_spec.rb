@@ -3,8 +3,8 @@ require "rails_helper"
 RSpec.describe Credits::Ledger, type: :service do
   let(:user) { create(:user) }
   let(:org) { create(:organization) }
-  let(:user_listing) { create(:classified_listing, user: user) }
-  let(:org_listing) { create(:classified_listing, organization: org) }
+  let(:user_listing) { create(:listing, user: user) }
+  let(:org_listing) { create(:listing, organization: org) }
   let(:sponsorship) { create(:sponsorship, user: user, organization: org) }
 
   def buy(purchaser, purchase, cost)
@@ -28,7 +28,7 @@ RSpec.describe Credits::Ledger, type: :service do
       expect(items.length).to be(1)
 
       item = items.first
-      expect(item.purchase.is_a?(ClassifiedListing)).to be(true)
+      expect(item.purchase.is_a?(Listing)).to be(true)
       expect(item.cost).to eq(3)
       expect(item.purchased_at.to_i >= start.to_i).to eq(true)
     end

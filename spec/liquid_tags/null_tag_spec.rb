@@ -2,7 +2,7 @@ require "rails_helper"
 
 RSpec.describe NullTag, type: :liquid_tag do
   describe "#initialize" do
-    tags = %w[assign capture case comment cycle for if ifchanged include unless]
+    tags = %w[assign capture case cycle for if ifchanged include unless]
 
     setup { tags.each { |tag| Liquid::Template.register_tag(tag, described_class) } }
 

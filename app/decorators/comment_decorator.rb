@@ -10,4 +10,8 @@ class CommentDecorator < ApplicationDecorator
 
     created_at.utc.iso8601
   end
+
+  def published_at_int
+    created_at.to_i
+  end
 end

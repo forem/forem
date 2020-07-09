@@ -27,7 +27,9 @@ module Articles
     end
 
     def published_articles_by_tag
-      articles = Article.published.limited_column_select.includes(top_comments: :user).page(@page).per(@number_of_articles)
+      articles = Article.published.limited_column_select.
+        includes(top_comments: :user).
+        page(@page).per(@number_of_articles)
       articles = articles.cached_tagged_with(@tag) if @tag.present? # More efficient than tagged_with
       articles
     end
@@ -93,6 +95,20 @@ module Articles
       stories
     end
 
+    # Test variation: the more comments a post has, the higher it's rated!
+    def more_comments_medium_weight_experiment
+      @comment_weight = 0.5
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
+      stories
+    end
+
+    # Test variation: the more comments a post has, the higher it's rated!
+    def more_comments_minimal_weight_experiment
+      @comment_weight = 0.2
+      _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
+      stories
+    end
+
     def more_experience_level_weight_experiment
       @experience_level_weight = 3
       _featured_story, stories = default_home_feed_and_featured_story(user_signed_in: true)
@@ -100,7 +116,7 @@ module Articles
     end
 
     def mix_of_everything_experiment
-      case rand(10)
+      case rand(12)
       when 0
         default_home_feed(user_signed_in: true)
       when 1
@@ -121,6 +137,10 @@ module Articles
         more_experience_level_weight_randomized_at_end_experiment
       when 9
         more_comments_randomized_at_end_experiment
+      when 10
+        more_comments_medium_weight_randomized_at_end_experiment
+      when 11
+        more_comments_minimal_weight_randomized_at_end_experiment
       else
         default_home_feed(user_signed_in: true)
       end
@@ -146,6 +166,18 @@ module Articles
     def more_comments_randomized_at_end_experiment
       @randomness = 0
       results = more_comments_experiment
+      first_half(results).shuffle + last_half(results)
+    end
+
+    def more_comments_medium_weight_randomized_at_end_experiment
+      @randomness = 0
+      results = more_comments_medium_weight_experiment
+      first_half(results).shuffle + last_half(results)
+    end
+
+    def more_comments_minimal_weight_randomized_at_end_experiment
+      @randomness = 0
+      results = more_comments_minimal_weight_experiment
       first_half(results).shuffle + last_half(results)
     end
 
@@ -209,7 +241,10 @@ module Articles
         order("hotness_score DESC")
       featured_story = hot_stories.where.not(main_image: nil).first
       if user_signed_in
-        offset = RANDOM_OFFSET_VALUES.select { |i| i < hot_stories.count }.sample # random offset, weighted more towards zero
+        hot_story_count = hot_stories.count
+        offset = RANDOM_OFFSET_VALUES.select do |i|
+          i < hot_story_count
+        end.sample # random offset, weighted more towards zero
         hot_stories = hot_stories.offset(offset)
         new_stories = Article.published.
           where("score > ?", -15).

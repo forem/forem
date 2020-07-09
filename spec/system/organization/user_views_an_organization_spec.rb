@@ -8,19 +8,19 @@ RSpec.describe "Organization index", type: :system do
     create_list(:article, 2, organization: organization)
   end
 
-  context "when user is unauthorized" do
+  context "when user does not follow organization" do
     context "when 2 articles" do
       before { visit "/#{organization.slug}" }
 
-      it "shows the header", js: true do
+      it "shows the header", js: true, stub_elasticsearch: true do
         within("h1") { expect(page).to have_content(organization.name) }
         within("div.profile-details") do
-          expect(page).to have_button("+ FOLLOW")
+          expect(page).to have_button("Follow")
         end
       end
 
       it "shows articles" do
-        expect(page).to have_selector("div.single-article", count: 2)
+        expect(page).to have_selector("div.crayons-story", count: 2)
       end
 
       it "shows the sidebar" do
@@ -31,12 +31,12 @@ RSpec.describe "Organization index", type: :system do
       end
 
       it "shows the proper title tag" do
-        expect(page).to have_title("#{organization.name} - #{ApplicationConfig['COMMUNITY_NAME']} Community 👩‍💻👨‍💻")
+        expect(page).to have_title("#{organization.name} - #{ApplicationConfig['COMMUNITY_NAME']}")
       end
     end
 
     context "when more articles" do
-      it "visits ok" do
+      it "visits ok", js: true, stub_elasticsearch: true do
         create_list(:article, 3, organization: organization)
         visit "/#{organization.slug}"
       end
@@ -51,10 +51,11 @@ RSpec.describe "Organization index", type: :system do
       user.follows.create(followable: organization)
     end
 
-    it "shows the correct button", js: true do
+    it "shows the correct button", js: true, stub_elasticsearch: true do
       visit "/#{organization.slug}"
+
       within(".profile-details") do
-        expect(page).to have_button("✓ FOLLOWING")
+        expect(page).to have_button("Following")
       end
     end
   end

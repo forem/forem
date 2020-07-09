@@ -26,7 +26,7 @@ module Exporter
         edited_at
         id_code
         markdown_character_count
-        positive_reactions_count
+        public_reactions_count
         processed_html
         receive_notifications
       ]

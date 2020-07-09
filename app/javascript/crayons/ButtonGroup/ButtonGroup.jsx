@@ -1,8 +1,10 @@
 import { h } from 'preact';
-import { defaultChildrenPropTypes } from '../../src/components/common-prop-types';
+import { defaultChildrenPropTypes } from '../../common-prop-types';
 
 export const ButtonGroup = ({ children }) => (
-  <div className="crayons-btn-group">{children}</div>
+  <div role="presentation" className="crayons-btn-group">
+    {children}
+  </div>
 );
 
 ButtonGroup.displayName = 'ButtonGroup';

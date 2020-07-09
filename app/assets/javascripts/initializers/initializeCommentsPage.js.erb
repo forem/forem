@@ -1,5 +1,3 @@
-
-
 function initializeCommentsPage() {
   if (document.getElementById('comments-container')) {
     toggleCodeOfConduct();
@@ -20,21 +18,21 @@ function initializeCommentsPage() {
               var responseObj = JSON.parse(ajaxReq.response);
               var reactions = responseObj.reactions;
               var allNodes = document.getElementsByClassName('single-comment-node');
-              var positiveReactionCounts = responseObj.positive_reaction_counts;
+              var publicReactionCounts = responseObj.public_reaction_counts;
               for (var i = 0; i < reactions.length; i++) {
                 var buttForComment = document.getElementById('button-for-comment-' + reactions[i].reactable_id);
                 if (buttForComment) {
                   buttForComment.classList.add('reacted');
                 }
               }
-              for (var i = 0; i < positiveReactionCounts.length; i++) {
-                var buttForComment = document.getElementById('button-for-comment-' + positiveReactionCounts[i].id);
+              for (var i = 0; i < publicReactionCounts.length; i++) {
+                var buttForComment = document.getElementById('button-for-comment-' + publicReactionCounts[i].id);
                 if (buttForComment) {
-                  if (positiveReactionCounts[i].count > 0) {
-                    if (!document.getElementById('reactions-count-' + positiveReactionCounts[i].id)) {
-                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + positiveReactionCounts[i].id + "'>" + positiveReactionCounts[i].count + '</span>';
+                  if (publicReactionCounts[i].count > 0) {
+                    if (!document.getElementById('reactions-count-' + publicReactionCounts[i].id)) {
+                      buttForComment.innerHTML = buttForComment.innerHTML + "<span class='reactions-count' id='reactions-count-" + publicReactionCounts[i].id + "'>" + publicReactionCounts[i].count + '</span>';
                     } else {
-                      document.getElementById('reactions-count-' + positiveReactionCounts[i].id).innerHTML = positiveReactionCounts[i].count;
+                      document.getElementById('reactions-count-' + publicReactionCounts[i].id).innerHTML = publicReactionCounts[i].count;
                     }
                   }
                 }
@@ -47,6 +45,8 @@ function initializeCommentsPage() {
                   var buttEl = document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId);
                   if (userActionsEl && buttEl) {
                     userActionsEl.className = 'current-user-actions';
+                    userActionsEl.innerHTML = '<a data-no-instant href="' + userActionsEl.parentNode.dataset.path + '/delete_confirm" class="edit-butt">DELETE</a>\
+                                                <a href="' + userActionsEl.parentNode.dataset.path + '/edit">EDIT</a>'
                     userActionsEl.style.display = 'inline-block';
                     document.getElementById('button-for-comment-' + allNodes[i].dataset.commentId).classList.add('reacted');
                   }
@@ -68,7 +68,7 @@ function initializeCommentsPage() {
         var thisButt = this;
         event.preventDefault();
         sendHapticMessage('medium');
-        var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+        var userStatus = document.body.getAttribute('data-user-status');
         if (userStatus === 'logged-out') {
           showModal('react-to-comment');
           return;
@@ -112,7 +112,7 @@ function initializeCommentsPage() {
         if (event.target.classList.contains("thread-indication")) {
           return false;
         } else {
-          var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+          var userStatus = document.body.getAttribute('data-user-status');
           if (userStatus == 'logged-out') {
             showModal('reply-to-comment');
             return;
@@ -156,11 +156,10 @@ function toggleCodeOfConduct() {
     return;
   }
   var codeOfConduct = user.checked_code_of_conduct
-  var commentCount = user.number_of_comments
-  var checkboxWrapper = document.getElementById('toggle-code-of-conduct-checkbox')
-  if (checkboxWrapper && !codeOfConduct && commentCount < 1) {
+  var checkboxWrapper = document.getElementById('toggle-code-of-conduct-checkbox');
+  if (checkboxWrapper && !codeOfConduct) {
     checkboxWrapper.innerHTML = '<input type="checkbox" name="checked_code_of_conduct" class="checkbox" required/>\
-                                  <label for="checked_code_of_conduct"/>I\'ve read the <a href="https://dev.to/code-of-conduct">code of conduct</a></label>'
+                                  <label for="checked_code_of_conduct">I\'ve read the <a href="<%= URL.url('code-of-conduct') %>">code of conduct</a></label>'
   }
 }
 
@@ -175,6 +174,8 @@ function replaceActionButts(el) {
 }
 
 function warmNewCommentsArea() {
+  // Ignore when comment is created on /notifications.
+  if (window.location.pathname === "/notifications") { return }
   var path = '/stories/warm_comments'+ window.location.pathname
   window.fetch(path)
 }
@@ -200,15 +201,8 @@ function handleCommentSubmit(event) {
       if (response.status === 200) {
         response.json().then(function (newComment) {
           var newNode = document.createElement('div');
-          if (newComment.status == "comment already exists") {
-            return false;
-          }
-          if (newComment.status == "errors") {
-            alert("There was a problem submitting this comment.")
-            return false;
-          }
           newNode.innerHTML = buildCommentHTML(newComment);
-          var docBody = document.getElementsByTagName('body')[0]
+          var docBody = document.body
 
           var userData = JSON.parse(docBody.getAttribute('data-user'))
           userData.checked_code_of_conduct = true;
@@ -254,6 +248,7 @@ function handleCommentSubmit(event) {
           initializeCommentsPage();
           initializeCommentDate();
           initializeCommentDropdown();
+          activateRunkitTags();
         })
       } else {
         response.json().then(function parseError(errorReponse) {
@@ -268,7 +263,7 @@ function handleCommentSubmit(event) {
 }
 
 function handleFocus(event) {
-  var userStatus = document.getElementsByTagName('body')[0].getAttribute('data-user-status');
+  var userStatus = document.body.getAttribute('data-user-status');
   var area = event.target;
   if (userStatus == 'logged-out') {
     event.preventDefault();
@@ -304,18 +299,8 @@ function handleSubmit(event) {
     return;
   }
 
-  var commentCount = user.number_of_comments;
-
-  // var codeOfConduct = user.checked_code_of_conduct;
-  // Code of conduct is false the first time even if the user has accepted it
-  // so we are not using it in the check below
-  // It also seems unnecessary if comment count >= 1 indicates that
-  // it was previously accepted
-
-  // Ensure that user has commented at least once
-  // and we have a non-empty comment to post
-  if (commentCount >= 1 &&
-    event.target.value.trim() !== '') {
+  var codeOfConduct = user.checked_code_of_conduct;
+  if (codeOfConduct && event.target.value.trim() !== '') {
     // get a reference to the submit button for the text area (first level comment vs. reply comment)
     var parentFormId = event.target.parentElement.parentElement.id || event.target.parentElement.id;
     var submitButton = document.querySelector('#' + parentFormId + ' input[type="submit"].comment-action-button');
@@ -480,7 +465,7 @@ function handleImageUpload(event, randomIdNumber) {
                 var uploadedMessage = 'Uploaded! Paste into editor';
                 messageContainer.innerHTML = uploadedMessage;
                 messageContainer.style.color = '#00c673';
-                messageContainer.style.position = "relative"
+                messageContainer.style.position = "relative";
                 messageContainer.style.top = "5px";
               }
             );

@@ -1,0 +1,15 @@
+<p>
+Hey <%= @user.username %>!
+</p>
+
+<p>
+We're sending this email to verify that you've got access to this email address.
+</p>
+
+<p>
+If you have no idea why you're getting this email, please ignore it!
+</p>
+
+<p>
+  Otherwise, <strong><%= link_to "click here", app_url(verify_email_authorizations_path(confirmation_token: @confirmation_token, username: @user.username)) %></strong> to verify that you still have access to this email address.
+</p>

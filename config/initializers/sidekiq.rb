@@ -1,21 +1,8 @@
-# Monkey patch `stringify_keys` to make rack 2.1.1 compatible with Sidekiq UI Admin panel.
-# Should be removed when 2.1.2 is released.
-# https://github.com/rack/rack/pull/1428
-module Rack
-  module Session
-    module Abstract
-      class SessionHash
-        private
-
-        def stringify_keys(other)
-          other.to_hash.transform_keys(&:to_s)
-        end
-      end
-    end
+Rails.application.config.to_prepare do
+  Dir.glob(Rails.root.join("lib/sidekiq/*.rb")).sort.each do |filename|
+    require_dependency filename
   end
 end
-
-require Rails.root.join("lib/sidekiq/worker_retries_exhausted_reporter")
 
 Sidekiq.configure_server do |config|
   sidekiq_url = ApplicationConfig["REDIS_SIDEKIQ_URL"] || ApplicationConfig["REDIS_URL"]

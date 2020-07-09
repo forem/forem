@@ -76,9 +76,16 @@ class Tag < ActsAsTaggableOn::Tag
     tag.alias_for.presence || tag.name
   end
 
+  def self.find_preferred_alias_for(word)
+    find_by(name: word.downcase)&.alias_for.presence || word.downcase
+  end
+
   def validate_name
     errors.add(:name, "is too long (maximum is 30 characters)") if name.length > 30
-    errors.add(:name, "contains non-alphanumeric characters") unless name.match?(/\A[[:alnum:]]+\z/)
+    # [:alnum:] is not used here because it supports diacritical characters.
+    # If we decide to allow diacritics in the future, we should replace the
+    # following regex with [:alnum:].
+    errors.add(:name, "contains non-ASCII characters") unless name.match?(/\A[[a-z0-9]]+\z/i)
   end
 
   def mod_chat_channel

@@ -17,7 +17,7 @@ RSpec.describe Sponsorship, type: :model do
   describe "constants" do
     it "has the correct values for constants" do
       expect(Sponsorship::LEVELS).to eq(%w[gold silver bronze tag media devrel])
-      expect(Sponsorship::LEVELS_WITH_EXPIRATION).to eq(%w[gold silver bronze])
+      expect(Sponsorship::METAL_LEVELS).to eq(%w[gold silver bronze])
       expect(Sponsorship::STATUSES).to eq(%w[none pending live])
       expected_credits = { gold: 6000, silver: 500, bronze: 100, tag: 300, devrel: 500 }.with_indifferent_access
       expect(Sponsorship::CREDITS).to eq(expected_credits)

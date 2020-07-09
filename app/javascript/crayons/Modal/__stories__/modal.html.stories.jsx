@@ -1,9 +1,10 @@
 import { h } from 'preact';
-
-import '../../storybook-utiltiies/designSystem.scss';
+import '../../storybook-utilities/designSystem.scss';
+import notes from './modals.md';
 
 export default {
-  title: 'Components/Modals/HTML',
+  title: '3_Components/Modals/HTML',
+  parameters: { notes },
 };
 
 export const Default = () => (

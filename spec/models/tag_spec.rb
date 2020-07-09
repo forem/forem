@@ -46,6 +46,23 @@ RSpec.describe Tag, type: :model do
         tag.name = nil
         expect(tag).not_to be_valid
       end
+
+      it "fails validations if name uses non-ASCII characters" do
+        tag.name = "مرحبا"
+        expect(tag).not_to be_valid
+
+        tag.name = "你好"
+        expect(tag).not_to be_valid
+
+        tag.name = "Cześć"
+        expect(tag).not_to be_valid
+
+        tag.name = "♩ ♪ ♫ ♬ ♭ ♮ ♯"
+        expect(tag).not_to be_valid
+
+        tag.name = "Test™"
+        expect(tag).not_to be_valid
+      end
     end
 
     describe "alias_for" do
@@ -92,14 +109,15 @@ RSpec.describe Tag, type: :model do
   describe "#after_commit" do
     it "on update enqueues job to index tag to elasticsearch" do
       tag.save
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, tag.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, tag.id]) do
         tag.save
       end
     end
 
     it "on destroy enqueues job to delete tag from elasticsearch" do
       tag.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, tag.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                   args: [described_class::SEARCH_CLASS.to_s, tag.id]) do
         tag.destroy
       end
     end
@@ -120,6 +138,35 @@ RSpec.describe Tag, type: :model do
         reaction.elasticsearch_doc.dig("_source", "reactable", "tags").flat_map { |t| t["keywords_for_search"] },
       ).to include(new_keywords)
       expect(collect_keywords(podcast_episode)).to include(new_keywords)
+    end
+  end
+
+  describe "::aliased_name" do
+    it "returns the preferred alias tag" do
+      preferred_tag = create(:tag, name: "rails")
+      bad_tag = create(:tag, name: "ror", alias_for: "rails")
+      expect(described_class.aliased_name(bad_tag.name)).to eq(preferred_tag.name)
+    end
+
+    it "returns self if there's no preferred alias" do
+      tag = create(:tag, name: "ror")
+      expect(described_class.aliased_name(tag.name)).to eq(tag.name)
+    end
+
+    it "returns nil for non-existing tag" do
+      expect(described_class.aliased_name("faketag")).to be_nil
+    end
+  end
+
+  describe "::find_preferred_alias_for" do
+    it "returns preferred tag" do
+      preferred_tag = create(:tag, name: "rails")
+      tag = create(:tag, name: "ror", alias_for: "rails")
+      expect(described_class.find_preferred_alias_for(tag.name)).to eq(preferred_tag.name)
+    end
+
+    it "returns self if there's no preferred tag" do
+      expect(described_class.find_preferred_alias_for("something")).to eq("something")
     end
   end
 

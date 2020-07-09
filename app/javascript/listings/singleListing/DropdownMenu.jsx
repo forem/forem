@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { h, Component, createRef } from 'preact';
 // eslint-disable-next-line import/no-unresolved
-import ThreeDotsIcon from 'images/three-dots.svg';
+import ThreeDotsIcon from 'images/overflow-horizontal.svg';
 import listingPropTypes from './listingPropTypes';
 
 const MenuButton = ({ onClick }) => (
@@ -51,7 +51,7 @@ class DropdownMenu extends Component {
       : document.removeEventListener('mousedown', this.handleClickOutside);
   };
 
-  handleClickOutside = e => {
+  handleClickOutside = (e) => {
     if (
       this.componentRef.current &&
       !this.componentRef.current.contains(e.target)
@@ -75,7 +75,7 @@ class DropdownMenu extends Component {
             className={['dropdown-content', isOpen ? 'showing' : ''].join(' ')}
           >
             {isOwner ? (
-              <a href={editUrl} className="classified-listing-edit-button">
+              <a href={editUrl} className="listing-edit-button">
                 Edit
               </a>
             ) : (

@@ -2,21 +2,11 @@ module Search
   class IndexWorker
     include Sidekiq::Worker
 
-    sidekiq_options queue: :medium_priority, retry: 10
+    sidekiq_options queue: :high_priority, lock: :until_executing
 
-    VALID_RECORD_TYPES = %w[Article User].freeze
-
-    def perform(record_type, record_id)
-      unless VALID_RECORD_TYPES.include?(record_type)
-        raise InvalidRecordType, "Invalid class: #{record_type}. Valid and indexable classes are #{VALID_RECORD_TYPES.join(', ')}"
-      end
-
-      record = record_type.constantize.find_by(id: record_id)
-      return unless record
-
-      record.index!
+    def perform(object_class, id)
+      object = object_class.constantize.find_by(id: id)
+      object&.index_to_elasticsearch_inline
     end
   end
-
-  class InvalidRecordType < StandardError; end
 end

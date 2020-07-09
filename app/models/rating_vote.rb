@@ -20,6 +20,8 @@ class RatingVote < ApplicationRecord
   private
 
   def permissions
-    errors.add(:user_id, "is not permitted to take this action.") if context == "explicit" && !user&.trusted && user_id != article&.user_id
+    return unless context == "explicit" && !user&.trusted && user_id != article&.user_id
+
+    errors.add(:user_id, "is not permitted to take this action.")
   end
 end

@@ -51,7 +51,7 @@
     <p>Removing a social account identity can solve certain sign in issues, for example:</p>
     <ul>
       <li>
-        They created an account on dev.to, but deleted their original social account and recreated it with the same Twitter/GitHub username.
+        They created an account on <%= community_name %>, but deleted their original social account and recreated it with the same Twitter/GitHub username.
         This will be true if their Twitter/GitHub account's UID does not match their identity's UID. You can use the following third party tools to check:
         <ul>
           <li>
@@ -66,7 +66,7 @@
           <li>Click one of the links to check their social account's UID.</li>
           <li>Confirm whether or not it matches with the identity's UID.</li>
           <li>If it doesn't match, delete the respective identity.</li>
-          <li>Ask the user to reauthorize their social account via https://dev.to/settings/account</li>
+          <li>Ask the user to reauthorize their social account via <%= app_url(user_settings_path(:account)) %></li>
         </ol>
       </li>
       <% @user.identities.each do |identity| %>

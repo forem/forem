@@ -1,0 +1,12 @@
+source 'https://rubygems.org'
+
+gem 'rails', '~> 4.0.0'
+
+gem 'timber'
+gem 'timber-rack'
+
+if RUBY_PLATFORM == "java"
+  gem 'mime-types', '2.6.2'
+end
+
+gemspec :path => '../'

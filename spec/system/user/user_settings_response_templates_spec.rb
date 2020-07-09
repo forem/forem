@@ -11,16 +11,17 @@ RSpec.describe "User uses response templates settings", type: :system do
     end
 
     context "when user has a response template already" do
-      it "can go to the edit page of the response template" do
+      it "can go to the edit page of the response template", js: true do
         visit "/settings/response-templates"
-        click_link "EDIT"
+        click_link "Edit"
+
         expect(page).to have_current_path "/settings/response-templates/#{response_template.id}", ignore_query: true
       end
 
       it "shows the proper message when deleting a reponse template", js: true do
         visit "/settings/response-templates"
-        # page.driver.browser.switch_to.alert.accept
-        accept_confirm { click_button "DELETE" }
+        accept_confirm { click_button "Remove" }
+
         expect(page).to have_text "was deleted."
       end
     end

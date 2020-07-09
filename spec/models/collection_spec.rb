@@ -34,21 +34,18 @@ RSpec.describe Collection, type: :model do
     end
   end
 
-  describe "#touch_articles" do
+  context "when callbacks are triggered after touch" do
     it "touches all articles in the collection" do
-      Timecop.freeze(DateTime.parse("2019/10/24")) do
-        allow(collection.articles).to receive(:update_all)
-        collection.touch_articles
-        expect(collection.articles).to have_received(:update_all).with(updated_at: Time.current)
-      end
-    end
-  end
+      before_times = collection.articles.order(updated_at: :desc).pluck(:updated_at).map(&:to_i)
 
-  describe "when the collection is touched" do
-    it "touches each article in the collection" do
-      allow(collection).to receive(:touch_articles)
-      collection.touch
-      expect(collection).to have_received(:touch_articles)
+      Timecop.freeze(1.month.from_now) do
+        collection.touch
+      end
+
+      after_times = collection.reload.articles.order(updated_at: :desc).pluck(:updated_at).map(&:to_i)
+
+      all_before = after_times.each_with_index.map { |v, i| v > before_times[i] }
+      expect(all_before.all?).to be(true)
     end
   end
 end

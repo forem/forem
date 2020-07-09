@@ -29,16 +29,19 @@ Once you've got this installed and after rebooting,
 On your first run, the system will ask for username and password. Take note of
 both since it will be used for `sudo` commands.
 
-### Ruby on WSL
+### Installing rbenv
 
-First, install Ruby language dependencies:
+`rbenv` is a version manager for Ruby applications which allows one to guarantee
+that the Ruby version in development environment matches production. First,
+install Ruby language dependencies before installing `rbenv`:
 
 ```shell
 sudo apt-get update
 sudo apt-get install git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev software-properties-common libffi-dev
 ```
 
-For installing Ruby, we recommend using [rbenv](https://github.com/rbenv/rbenv):
+Now, we install [rbenv](https://github.com/rbenv/rbenv) using the following
+commands:
 
 ```shell
 cd
@@ -50,45 +53,36 @@ exec $SHELL
 git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 exec $SHELL
-
-rbenv install $(cat .ruby-version)
-rbenv global $(cat .ruby-version)
-ruby -v
 ```
 
-### Installing Rails
-
-Since Rails ships with so many dependencies these days, we're going to need to
-install a JavaScript runtime like NodeJS. This lets you use CoffeeScript and the
-Asset Pipeline in Rails which combines and minifies your JavaScript to provide a
-faster production environment.
-
-To install NodeJS, we're going to add it using the official repository:
+One can verify `rbenv` installation using the `rbenv-doctor` script with the
+following commands:
 
 ```shell
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-sudo apt-get install -y nodejs
-node -v
-npm -v
+curl -fsSL https://github.com/rbenv/rbenv-installer/raw/master/bin/rbenv-doctor | bash
 ```
 
-If `npm -v` gives `Syntax error: word unexpected (expecting "in")`, restart the
-terminal and try again.
+### Installing nvm
 
-And now, for rails itself:
+As a pre-requisite to install Rails, Node.js needs to be installed.
+[nvm](https://github.com/nvm-sh/nvm) is a Node.js version manager that helps a
+developer select a specific Node.js version for development.
+
+To install `nvm`, follow the instructions outlined in the
+[official nvm documentation](https://github.com/nvm-sh/nvm#install--update-script).
+
+Be sure to reload the shell with the command `exec $SHELL` after the
+installation is complete.
+
+Run the following command to verify that `nvm` is installed:
 
 ```shell
-gem install rails -v 5.2.3
+command -v nvm
 ```
 
-Then run `rbenv rehash` to make the Rails executable available. Check it out by
-using `rails -v` command
-
-```shell
-rbenv rehash
-rails -v
-# Rails 5.2.3
-```
+If the shell outputs `nvm`, the installation is successful. Installation of the
+correct Node.js version will be done in a later part of the installation
+process.
 
 ### Yarn
 
@@ -100,13 +94,17 @@ curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
 ```
 
-Then you can simply issue:
+Since we do not have Node.js installed yet, we will be installing Yarn without
+the default Node.js with the following command:
 
 ```shell
-sudo apt-get update && sudo apt-get install yarn
+sudo apt update && sudo apt install --no-install-recommends yarn
 ```
 
-Make sure that Yarn is installed with `yarn -v`
+To verify Yarn's installation, run the command `yarn -v`. It should print
+`Yarn requires Node.js 4.0 or higher to be installed.`. This indicates that the
+Yarn installation succeeded but Node.js still needs to be installed for it to
+work fully. We install Node.js later on in the installation process.
 
 ### PostgreSQL
 
@@ -158,13 +156,31 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
 1. Clone your forked repository, eg.
    `git clone https://github.com/<your-username>/dev.to.git`
+1. Open the cloned dev.to folder in terminal with `cd dev.to`. Next, install
+   Ruby with the following commands:
+
+   ```shell
+   rbenv install $(cat .ruby-version)
+   rbenv global $(cat .ruby-version)
+   ruby -v
+   ```
+
+1. Install Node.js with the following set of commands:
+
+   ```shell
+   nvm install $(cat .nvmrc)
+   nvm use $(cat .nvmrc)
+   node -v
+   yarn -v
+   ```
+
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
    - Take a look at `Envfile`. This file lists all the `ENV` variables we use
-     and provides a fake default for any missing keys. You'll need to get your
-     own free [Algolia credentials](/backend/algolia) to get your development
-     environment running.
+     and provides a fake default for any missing keys.
+   - If you use a remote computer as dev env, you need to set `APP_DOMAIN`
+     variable to the remote computer's domain name.
    - The [backend guide](/backend) will show you how to get free API keys for
      additional services that may be required to run certain parts of the app.
    - For any key that you wish to enter/replace:
@@ -188,7 +204,21 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-1. Run `bin/setup`
+1. Run `bin/setup`.
+
+   > The `bin/setup` script is responsible for installing a varienty of
+   > dependencies. One can find it inside the `bin` folder by the name of
+   > `setup`.
+   >
+   > - Its first task is to install the `bundler` gem. Next, it will make
+   >   `bundler` install all the gems, including `Rails`, located in `Gemfile`
+   >   in the root of the repository. It also installs `foreman`.
+   > - It then installs JavaScript dependencies using the script in `bin/yarn`
+   >   file. These dependencies are located in `package.json` in the root of the
+   >   repository.
+   > - Next, it uses various Rake files located inside the `lib` folder to setup
+   >   ElasticSearch environment, PostgreSQL database creation and updation.
+   > - Finally it cleans up all the log files and restarts the Puma server.
 
 ### Possible error messages
 
@@ -219,6 +249,22 @@ cd automake-1.10/
 ./configure --prefix=/usr/local
 make
 ```
+
+### WSL2 and System test
+
+In WSL2, hostname/IP address are no longer shared between Windows and Linux.
+There are currently two work-arounds.
+
+1. Use dockerized selenium, ie docker-selenium. You will need docker for the
+   following steps
+
+   1. `docker run -d --name selenium-hub -p 4444:4444 selenium/hub:3.141.59-20200409`
+   2. `CH=$(docker run --rm --name=ch --link selenium-hub:hub -v /dev/shm:/dev/shm selenium/node-chrome:3.141.59-20200409)`
+   3. Add `SELENIUM_URL: "http://localhost:4444/wd/hub"` to your
+      `application.yml`
+   4. Run your System test!
+
+2. Port forward with `socats` (more info needed).
 
 > If you encountered any errors that you subsequently resolved, **please
 > consider updating this section** with your errors and their solutions.

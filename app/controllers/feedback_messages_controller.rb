@@ -4,6 +4,7 @@ class FeedbackMessagesController < ApplicationController
 
   def create
     flash.clear
+    rate_limit!(:feedback_message_creation)
 
     params = feedback_message_params.merge(reporter_id: current_user&.id)
     @feedback_message = FeedbackMessage.new(params)
@@ -16,13 +17,14 @@ class FeedbackMessagesController < ApplicationController
         reported_url: feedback_message_params[:reported_url],
         message: feedback_message_params[:message],
       )
+      rate_limiter.track_limit_by_action(:feedback_message_creation)
 
       redirect_to feedback_messages_path
     else
       @previous_message = feedback_message_params[:message]
 
       flash[:notice] = "Make sure the forms are filled 🤖"
-      render "pages/report-abuse"
+      render "pages/report_abuse"
     end
   end
 

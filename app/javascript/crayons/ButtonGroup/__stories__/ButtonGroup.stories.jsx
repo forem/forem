@@ -1,13 +1,26 @@
 import { h } from 'preact';
 import { Button, ButtonGroup } from '@crayons';
 
-import '../../storybook-utiltiies/designSystem.scss';
+import '../../storybook-utilities/designSystem.scss';
 
 export default {
-  title: 'Components/ButtonGroup',
+  title: '3_Components/ButtonGroup',
 };
 
 export const Default = () => {
+  return (
+    <ButtonGroup>
+      <Button variant="outlined">Action 1</Button>
+      <Button variant="outlined">Action 2</Button>
+    </ButtonGroup>
+  );
+};
+
+Default.story = {
+  name: 'Text buttons',
+};
+
+export const TextIcon = () => {
   const Icon = () => (
     <svg
       width="24"
@@ -21,8 +34,12 @@ export const Default = () => {
 
   return (
     <ButtonGroup>
-      <Button>Hello World!</Button>
-      <Button icon={Icon} />
+      <Button variant="secondary">Action 1</Button>
+      <Button variant="secondary" icon={Icon} contentType="icon" />
     </ButtonGroup>
   );
+};
+
+TextIcon.story = {
+  name: 'Text button + Icon',
 };

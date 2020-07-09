@@ -15,7 +15,7 @@ module DataUpdateScripts
 
     def index_docs(ids, doc_type)
       ids.each do |id|
-        Search::IndexToElasticsearchWorker.set(queue: :low_priority).perform_async(
+        Search::IndexWorker.set(queue: :low_priority).perform_async(
           doc_type, id
         )
       end

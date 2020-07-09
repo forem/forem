@@ -1,4 +1,4 @@
-<div class="single-article <%= "single-article-unpublished" unless article.published %> <%= "single-article-archived hidden" if article.archived %>">
+<div class="js-dashboard-story single-article <%= "single-article-unpublished" unless article.published %> <%= "single-article-archived hidden" if article.archived %>">
   <div class="dashboard-collection-org-details">
     <% if article.organization_id %>
       <span class="dashboard-top-pill"><%= article.organization&.name %></span>
@@ -9,7 +9,7 @@
   </div>
 
   <div class="ellipsis-menu">
-    <button class="ellipsis-menu-btn"><img src="<%= asset_path("three-dots.svg") %>" class="dropdown-icon" alt="dropdown menu icon"></button>
+    <button class="ellipsis-menu-btn"><img src="<%= asset_path("overflow-horizontal.svg") %>" class="dropdown-icon" alt="dropdown menu icon"></button>
     <ul class="ellipsis-menu hidden">
       <hr />
       <li class="ellipsis-menu-item">
@@ -21,7 +21,7 @@
     </ul>
   </div>
 
-  <a href="<%= article.current_state_path %>"><h2><%= "[Archived] " if article.archived %><%= article.title %></h2></a>
+  <a href="<%= article.current_state_path %>"><h2><%= "[Archived] " if article.archived %><%= sanitize_and_decode article.title %></h2></a>
   <div class="dashboard-meta-details">
     <% if article.published %>
       <span>
@@ -80,9 +80,9 @@
         //
         <span class="reactions-count">
           <span class="value">
-            <%= article.positive_reactions_count %>
+            <%= article.public_reactions_count %>
           </span>
-          <%= "reaction".pluralize(count: article.positive_reactions_count) %>
+          <%= "reaction".pluralize(count: article.public_reactions_count) %>
         </span>
         //
         <span class="comments-count">

@@ -32,4 +32,4 @@ helping to ensure your patch fixes the bug.
 
 [acceptance_tests]: /tests/acceptance-tests/
 [integration_tests]: /tests/integration-tests/
-[ci]: /deployment/
+[ci]: /maintainers/deploying/

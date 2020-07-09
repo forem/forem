@@ -1,7 +1,7 @@
 'use strict';
 
 function archivedPosts() {
-  return document.getElementsByClassName('single-article-archived');
+  return document.getElementsByClassName('story-archived');
 }
 
 function showArchivedPosts() {
@@ -21,13 +21,14 @@ function hideArchivedPosts() {
 }
 
 function toggleArchivedPosts(e) {
+  e.preventDefault();
   var link = e.target;
 
   if (link.innerHTML.match(/Show/)) {
-    link.innerHTML = 'Hide Archived';
+    link.innerHTML = 'Hide archived';
     showArchivedPosts();
   } else {
-    link.innerHTML = 'Show Archived';
+    link.innerHTML = 'Show archived';
     hideArchivedPosts();
   }
 }

@@ -49,7 +49,7 @@
   <% end %>
 
   <% if NotificationSubscription.where(user_id: current_user, notifiable_type: "Article", notifiable_id: @comment.commentable_id, config: "all_comments").any? %>
-    <br/><br/>
+    <br /><br />
     <p><em>You are still subscribed to all comments in the broader thread, which will mean you will still receive notifications for replies to this comment.</em></p>
     <%= form_for(@notification_subscription, url: "/notification_subscriptions/Article/#{@comment.commentable_id}", method: "post", html: { class: "mute-form" }) do |f| %>
       <input type="hidden" name="config" value="not_subscribed">

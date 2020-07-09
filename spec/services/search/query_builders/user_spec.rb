@@ -18,12 +18,12 @@ RSpec.describe Search::QueryBuilders::User, type: :service do
     it "applies QUERY_KEYS from params" do
       params = { search_fields: "test" }
       filter = described_class.new(params: params)
-      exepcted_query = [{
+      expected_query = [{
         "simple_query_string" => {
           "query" => "test*", "fields" => [:search_fields], "lenient" => true, "analyze_wildcard" => true
         }
       }]
-      expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
+      expect(filter.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
     end
 
     it "applies EXCLUDED_TERM_KEYS by default" do
@@ -52,12 +52,12 @@ RSpec.describe Search::QueryBuilders::User, type: :service do
     it "ignores params we don't support" do
       params = { not_supported: "trash", search_fields: "cfp" }
       filter = described_class.new(params: params)
-      exepcted_query = [{
+      expected_query = [{
         "simple_query_string" => {
           "query" => "cfp*", "fields" => [:search_fields], "lenient" => true, "analyze_wildcard" => true
         }
       }]
-      expect(filter.as_hash.dig("query", "bool", "must")).to match_array(exepcted_query)
+      expect(filter.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
     end
 
     it "allows default params to be overriden" do

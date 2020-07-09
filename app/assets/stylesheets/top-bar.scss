@@ -1,6 +1,4 @@
 @import 'config/import';
-@import 'variables';
-@import 'mixins';
 
 .top-bar {
   --indicator-outline: var(--header-bg);
@@ -10,8 +8,8 @@
   top: 0px;
   left: 0px;
   right: 0px;
-  z-index: 101;
-  height: $header-height;
+  z-index: 102; // Must be higher than the z-index of the broadcast-wrapper.
+  height: var(--header-height);
   background: var(--header-bg);
   box-shadow: 0 1px 1px var(--header-shadow);
 
@@ -25,16 +23,22 @@
   }
 
   &__container {
-    max-width: $max-width;
+    max-width: var(--site-width);
+    padding-left: var(--su-2);
+    padding-right: var(--layout-padding);
     margin: auto;
     display: flex;
     align-items: center;
     position: relative;
+
+    @media (min-width: $breakpoint-m) {
+      padding-left: var(--layout-padding);
+    }
   }
 
   .crayons-indicator {
     position: absolute;
-    top: -$su-1;
+    top: calc(var(--su-1) * -1);
     right: 0;
     box-shadow: 0 0 0 2px var(--indicator-outline);
   }
@@ -43,10 +47,6 @@
 // Logo
 .top-bar--logo {
   display: flex;
-  margin-left: $su-2;
-  @media (min-width: $breakpoint-m) {
-    margin-left: $su-4;
-  }
 
   .logo {
     width: 50px;
@@ -54,7 +54,7 @@
     padding: 0 7px 0 9px; // TODO: we have to fix SVG for logo a little...
     background: var(--logo-bg);
     fill: var(--logo-color);
-    border-radius: $br-default;
+    border-radius: var(--radius);
   }
 }
 
@@ -62,16 +62,16 @@
 .top-bar--search {
   max-width: 420px;
   flex: 1 auto;
-  margin: 0 $su-2;
+  margin: 0 var(--su-2);
 
   @media (min-width: $breakpoint-s) {
-    margin: 0 $su-4;
+    margin: 0 var(--su-4);
   }
 }
 
 // Actions on right side...
 .top-bar__links {
-  height: $header-height;
+  height: var(--header-height);
   display: flex;
   align-items: center;
   margin-left: auto;
@@ -80,13 +80,13 @@
 .top-bar__link {
   position: relative;
   display: flex;
-  padding: $su-2;
-  margin: 0 $su-1;
+  padding: var(--su-2);
+  margin: 0 var(--su-1);
   border-radius: 50%;
   align-items: center;
   color: var(--header-icons-color);
   outline: 0;
-  transition: background $transition-props;
+  transition: background var(--transition-props);
 
   &:hover,
   &:focus {
@@ -100,7 +100,10 @@
     --indicator-outline: var(--header-bg-current);
 
     color: var(--header-icons-color-hover);
-    background: var(--header-bg-current);
+    background: var(--header-bg-current) !important;
+    .crayons-indicator {
+      display: none;
+    }
   }
 }
 
@@ -112,8 +115,8 @@
   z-index: 20;
   &__trigger {
     all: unset;
-    padding: $su-1;
-    margin: 0 $su-1;
+    padding: var(--su-1);
+    margin: 0 var(--su-1);
     border-radius: 50%;
     color: var(--header-icons-color);
     cursor: pointer;
@@ -121,7 +124,7 @@
 
   &__dropdown {
     display: var(--dropdown-display);
-    top: $header-height;
+    top: var(--header-height);
   }
 
   &.showing,
@@ -144,26 +147,26 @@
   background: var(--body-color);
   color: var(--body-color-inverted);
   z-index: 9999;
-  padding: $su-4;
+  padding: var(--su-4);
   pointer-events: none;
   opacity: 0;
-  border-radius: $br-default;
+  border-radius: var(--radius);
   outline: 0;
 
   &:focus {
     pointer-events: auto;
     opacity: 1;
-    transform: translate(-50%, $header-height/2);
+    transform: translate(-50%, var(--header-height) / 2);
   }
 }
 
 .pwa-nav-buttons {
   height: 100%;
   display: none;
-  padding-left: $su-2;
+  padding-left: var(--su-2);
   button {
     all: unset;
-    padding: 0 $su-2;
+    padding: 0 var(--su-2);
     color: var(--header-icons-color);
 
     &:hover {

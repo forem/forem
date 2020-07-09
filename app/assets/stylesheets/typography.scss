@@ -3,17 +3,19 @@
 
 // Alternate base fonts
 body.sans-serif-article-body {
-  .body {
-    font-family: $helvetica;
+  .body,
+  .text-styles {
+    font-family: var(--ff-default);
   }
   .body p {
-    font-family: $helvetica;
+    font-family: var(--ff-default);
     font-size: 0.98em;
   }
 }
 
 body.comic-sans-article-body {
-  .body {
+  .body,
+  .text-styles {
     font-family: 'Comic Sans MS', cursive, sans-serif;
   }
   .body p {
@@ -23,7 +25,8 @@ body.comic-sans-article-body {
 }
 
 body.open-dyslexic-article-body {
-  .body {
+  .body,
+  text-styles {
     font-display: swap;
     font-family: OpenDyslexic, sans-serif;
   }
@@ -33,12 +36,16 @@ body.open-dyslexic-article-body {
     font-size: 0.9em;
   }
   .body b,
-  .body strong {
+  .body strong,
+  .text-styles b,
+  .text-styles strong {
     font-family: OpenDyslexic-Bold, sans-serif;
   }
 
   .body i,
-  .body em {
+  .body em,
+  .text-styles i,
+  .text-styles em {
     font-family: OpenDyslexic-Italic, sans-serif;
   }
 
@@ -49,17 +56,26 @@ body.open-dyslexic-article-body {
   .body i > b,
   .body em > b,
   .body i > strong,
-  .body em > strong {
+  .body em > strong,
+  .text-styles b > i,
+  .text-styles b > em,
+  .text-styles strong > i,
+  .text-styles strong > em,
+  .text-styles i > b,
+  .text-styles em > b,
+  .text-styles i > strong,
+  .text-styles em > strong {
     font-family: OpenDyslexic-Bolditalic;
   }
 }
 
 body.monospace-article-body {
-  .body {
-    font-family: $monospace;
+  .body,
+  .text-styles {
+    font-family: var(--ff-accent);
   }
   .body p {
-    font-family: $monospace;
+    font-family: var(--ff-accent);
     font-size: 0.9em;
   }
 }

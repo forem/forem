@@ -4,8 +4,10 @@ class MarkdownParser
 
   WORDS_READ_PER_MINUTE = 275.0
 
-  def initialize(content)
+  def initialize(content, source: nil, user: nil)
     @content = content
+    @source = source
+    @user = user
   end
 
   def finalize(link_attributes: {})
@@ -17,7 +19,8 @@ class MarkdownParser
     html = markdown.render(escaped_content)
     sanitized_content = sanitize_rendered_markdown(html)
     begin
-      parsed_liquid = Liquid::Template.parse(sanitized_content)
+      liquid_tag_options = { source: @source, user: @user }
+      parsed_liquid = Liquid::Template.parse(sanitized_content, liquid_tag_options)
       html = markdown.render(parsed_liquid.render)
     rescue Liquid::SyntaxError => e
       html = e.message
@@ -93,7 +96,8 @@ class MarkdownParser
 
     cleaned_parsed = escape_liquid_tags_in_codeblock(@content)
     tags = []
-    Liquid::Template.parse(cleaned_parsed).root.nodelist.each do |node|
+    liquid_tag_options = { source: @source, user: @user }
+    Liquid::Template.parse(cleaned_parsed, liquid_tag_options).root.nodelist.each do |node|
       tags << node.class if node.class.superclass.to_s == LiquidTagBase.to_s
     end
     tags.uniq
@@ -146,7 +150,7 @@ class MarkdownParser
 
   def allowed_image_host?(src)
     # GitHub camo image won't parse but should be safe to host direct
-    src.start_with?("https://camo.githubusercontent.com/")
+    src.start_with?("https://camo.githubusercontent.com")
   end
 
   def remove_nested_linebreak_in_list(html)
@@ -269,7 +273,9 @@ class MarkdownParser
   def wrap_all_images_in_links(html)
     doc = Nokogiri::HTML.fragment(html)
     doc.search("p img").each do |image|
-      image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>") unless image.parent.name == "a"
+      next if image.parent.name == "a"
+
+      image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>")
     end
     doc.to_html
   end

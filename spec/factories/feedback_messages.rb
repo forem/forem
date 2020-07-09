@@ -21,6 +21,6 @@ FactoryBot.define do
   trait :bug_report do
     feedback_type { "bug-reports" }
     message { "i clicked something and this happened" }
-    category { "bugs" }
+    category { "bug" }
   end
 end

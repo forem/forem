@@ -1,11 +1,11 @@
 class Reaction < ApplicationRecord
-  include AlgoliaSearch
   include Searchable
 
   SEARCH_SERIALIZER = Search::ReactionSerializer
   SEARCH_CLASS = Search::Reaction
 
-  CATEGORIES = %w[like readinglist unicorn thinking hands thumbsdown vomit].freeze
+  CATEGORIES = %w[like readinglist unicorn thinking hands thumbsup thumbsdown vomit].freeze
+  PUBLIC_CATEGORIES = %w[like readinglist unicorn thinking hands].freeze
   REACTABLE_TYPES = %w[Comment Article User].freeze
   STATUSES = %w[valid invalid confirmed archived].freeze
 
@@ -14,12 +14,13 @@ class Reaction < ApplicationRecord
 
   counter_culture :reactable,
                   column_name: proc { |model|
-                    model.points.positive? ? "positive_reactions_count" : "reactions_count"
+                    PUBLIC_CATEGORIES.include?(model.category) ? "public_reactions_count" : "reactions_count"
                   }
   counter_culture :user
 
-  scope :positive, -> { where("points > ?", 0) }
+  scope :public_category, -> { where(category: PUBLIC_CATEGORIES) }
   scope :readinglist, -> { where(category: "readinglist") }
+  scope :for_articles, ->(ids) { where(reactable_type: "Article", reactable_id: ids) }
   scope :eager_load_serialized_data, -> { includes(:reactable, :user) }
 
   validates :category, inclusion: { in: CATEGORIES }
@@ -31,34 +32,17 @@ class Reaction < ApplicationRecord
   after_create :notify_slack_channel_about_vomit_reaction, if: -> { category == "vomit" }
   before_save :assign_points
   after_create_commit :record_field_test_event
-  after_commit :async_bust, :bust_reactable_cache, :update_reactable
+  after_commit :async_bust
+  after_commit :bust_reactable_cache, :update_reactable, on: %i[create update]
   after_commit :index_to_elasticsearch, if: :indexable?, on: %i[create update]
   after_commit :remove_from_elasticsearch, if: :indexable?, on: [:destroy]
-  after_save :index_to_algolia
-  after_save :touch_user
+
   before_destroy :update_reactable_without_delay, unless: :destroyed_by_association
   before_destroy :bust_reactable_cache_without_delay
-  before_destroy :remove_algolia
-
-  algoliasearch index_name: "SecuredReactions_#{Rails.env}", auto_index: false, auto_remove: false do
-    attribute :id, :reactable_user, :searchable_reactable_title, :searchable_reactable_path, :status, :reading_time,
-              :searchable_reactable_text, :searchable_reactable_tags, :viewable_by, :reactable_tags, :reactable_published_date
-    searchableAttributes %i[searchable_reactable_title searchable_reactable_text
-                            searchable_reactable_tags reactable_user]
-    tags do
-      reactable_tags
-    end
-    attributesForFaceting ["filterOnly(viewable_by)", "filterOnly(status)"]
-    customRanking ["desc(id)"]
-  end
-
-  def index_to_algolia
-    index! if category == "readinglist" && reactable && reactable.published
-  end
 
   class << self
     def count_for_article(id)
-      Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 1.hour) do
+      Rails.cache.fetch("count_for_reactable-Article-#{id}", expires_in: 10.hours) do
         reactions = Reaction.where(reactable_id: id, reactable_type: "Article")
         counts = reactions.group(:category).count
 
@@ -70,7 +54,8 @@ class Reaction < ApplicationRecord
 
     def cached_any_reactions_for?(reactable, user, category)
       class_name = reactable.class.name == "ArticleDecorator" ? "Article" : reactable.class.name
-      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-#{user.updated_at&.rfc3339}-#{category}"
+      cache_name = "any_reactions_for-#{class_name}-#{reactable.id}-" \
+        "#{user.reactions_count}-#{user.public_reactions_count}-#{category}"
       Rails.cache.fetch(cache_name, expires_in: 24.hours) do
         Reaction.where(reactable_id: reactable.id, reactable_type: class_name, user: user, category: category).any?
       end
@@ -113,10 +98,6 @@ class Reaction < ApplicationRecord
     category == "readinglist" && reactable && reactable.published
   end
 
-  def touch_user
-    user.touch
-  end
-
   def update_reactable
     Reactions::UpdateReactableWorker.perform_async(id)
   end
@@ -139,10 +120,6 @@ class Reaction < ApplicationRecord
 
   def reading_time
     reactable.reading_time if category == "readinglist"
-  end
-
-  def remove_from_index
-    remove_from_index!
   end
 
   def reactable_user
@@ -185,6 +162,7 @@ class Reaction < ApplicationRecord
 
   BASE_POINTS = {
     "vomit" => -50.0,
+    "thumbsup" => 5.0,
     "thumbsdown" => -10.0
   }.freeze
 
@@ -206,10 +184,6 @@ class Reaction < ApplicationRecord
     return if user&.any_admin?
 
     negative? && !user.trusted
-  end
-
-  def remove_algolia
-    remove_from_index!
   end
 
   def record_field_test_event

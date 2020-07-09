@@ -2,10 +2,11 @@ require "rails_helper"
 
 RSpec.describe Page, type: :model do
   describe "#validations" do
-    it "requires either body_markdown or body_html" do
+    it "requires either body_markdown, body_html, or body_json" do
       page = build(:page)
       page.body_html = nil
       page.body_markdown = nil
+      page.body_json = nil
       expect(page).not_to be_valid
     end
 

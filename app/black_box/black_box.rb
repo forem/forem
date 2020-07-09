@@ -15,9 +15,16 @@ class BlackBox
       if article.decorate.cached_tag_list_array.include?("watercooler")
         reaction_points = (reaction_points * 0.8).to_i # watercooler posts shouldn't get as much love in feed
       end
-      function_caller.call("blackbox-production-articleHotness",
-                           { article: article, user: article.user }.to_json).to_i +
-        reaction_points + recency_bonus + super_recent_bonus + super_super_recent_bonus + today_bonus + two_day_bonus + four_day_bonus
+
+      article_hotness = function_caller.call(
+        "blackbox-production-articleHotness",
+        { article: article, user: article.user }.to_json,
+      ).to_i
+
+      (
+        article_hotness + reaction_points + recency_bonus + super_recent_bonus +
+        super_super_recent_bonus + today_bonus + two_day_bonus + four_day_bonus
+      )
     end
 
     def comment_quality_score(comment)

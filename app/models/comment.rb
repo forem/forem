@@ -1,14 +1,17 @@
 class Comment < ApplicationRecord
-  TITLE_DELETED = "[deleted]".freeze
-  TITLE_HIDDEN = "[hidden by post author]".freeze
-
   has_ancestry
   resourcify
+
   include Reactable
   include Searchable
 
   SEARCH_SERIALIZER = Search::CommentSerializer
   SEARCH_CLASS = Search::FeedContent
+
+  BODY_MARKDOWN_SIZE_RANGE = (1..25_000).freeze
+  COMMENTABLE_TYPES = %w[Article PodcastEpisode].freeze
+  TITLE_DELETED = "[deleted]".freeze
+  TITLE_HIDDEN = "[hidden by post author]".freeze
 
   belongs_to :commentable, polymorphic: true, optional: true
   counter_culture :commentable
@@ -18,35 +21,37 @@ class Comment < ApplicationRecord
   has_many :notifications, as: :notifiable, inverse_of: :notifiable, dependent: :delete_all
   has_many :notification_subscriptions, as: :notifiable, inverse_of: :notifiable, dependent: :destroy
 
-  validates :body_markdown, presence: true, length: { in: 1..25_000 },
-                            uniqueness: { scope: %i[user_id
-                                                    ancestry
-                                                    commentable_id
-                                                    commentable_type] }
+  before_validation :evaluate_markdown, if: -> { body_markdown }
+  validate :permissions, if: :commentable
+  validates :body_markdown, presence: true, length: { in: BODY_MARKDOWN_SIZE_RANGE }
+  validates :body_markdown, uniqueness: { scope: %i[user_id ancestry commentable_id commentable_type] }
   validates :commentable_id, presence: true
-  validates :commentable_type, inclusion: { in: %w[Article PodcastEpisode] }
+  validates :commentable_type, inclusion: { in: COMMENTABLE_TYPES }
   validates :user_id, presence: true
+
+  before_create :adjust_comment_parent_based_on_depth
+  before_save :set_markdown_character_count, if: :body_markdown
 
   after_create :notify_slack_channel_about_warned_users
   after_create :after_create_checks
   after_create_commit :record_field_test_event
-  after_commit :calculate_score
-  after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
-  after_save     :bust_cache
-  after_save     :synchronous_bust
-  after_destroy  :after_destroy_actions
-  before_destroy :before_destroy_actions
   after_create_commit :send_email_notification, if: :should_send_email_notification?
   after_create_commit :create_first_reaction
   after_create_commit :send_to_moderator
+
+  after_commit :calculate_score, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
+
+  after_save :bust_cache
+  after_save :synchronous_bust
+
+  after_update :remove_notifications, if: :deleted
+  after_update :update_descendant_notifications, if: :deleted
+  after_update_commit :update_notifications, if: proc { |comment| comment.saved_changes.include? "body_markdown" }
+
+  after_destroy  :after_destroy_actions
+  before_destroy :before_destroy_actions
   after_commit :remove_from_elasticsearch, on: [:destroy]
-  before_save    :set_markdown_character_count, if: :body_markdown
-  before_create  :adjust_comment_parent_based_on_depth
-  after_update   :remove_notifications, if: :deleted
-  after_update   :update_descendant_notifications, if: :deleted
-  before_validation :evaluate_markdown, if: -> { body_markdown }
-  validate :permissions, if: :commentable
 
   scope :eager_load_serialized_data, -> { includes(:user, :commentable) }
 
@@ -147,7 +152,7 @@ class Comment < ApplicationRecord
 
   def evaluate_markdown
     fixed_body_markdown = MarkdownFixer.fix_for_comment(body_markdown)
-    parsed_markdown = MarkdownParser.new(fixed_body_markdown)
+    parsed_markdown = MarkdownParser.new(fixed_body_markdown, source: self, user: user)
     self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
@@ -160,11 +165,13 @@ class Comment < ApplicationRecord
   def wrap_timestamps_if_video_present!
     return unless commentable_type != "PodcastEpisode" && commentable.video.present?
 
-    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) { |string| "<a href='#{commentable.path}?t=#{string}'>#{string}</a>" }
+    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) do |string|
+      "<a href='#{commentable.path}?t=#{string}'>#{string}</a>"
+    end
   end
 
   def shorten_urls!
-    doc = Nokogiri::HTML.parse(processed_html)
+    doc = Nokogiri::HTML.fragment(processed_html)
     doc.css("a").each do |anchor|
       unless anchor.to_s.include?("<img") || anchor.attr("class")&.include?("ltag")
         anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img")

@@ -1,0 +1,21 @@
+<% repositories.each do |repo| %>
+  <a class="widget" href="<%= repo.url %>" target="_blank" rel="noopener">
+    <header>
+      <h4><span class="emoji"><img src="<%= asset_path("github-logo.svg") %>" alt="github logo"></span><%= repo.name %></h4>
+    </header>
+    <div class="widget-body">
+      <% if repo.description.present? %>
+        <%= EmojiConverter.call(repo.description) %>
+      <% end %>
+      <div class="widget-footer">
+        <% if repo.fork %>
+          <span class="widget-accent">fork</span>
+        <% end %>
+        <%= repo.language %>
+        <% if repo.stargazers_count.to_i > 0 %>
+          <img src="<%= asset_path("star.svg") %>" alt="star icon"> <%= repo.stargazers_count %>
+        <% end %>
+      </div>
+    </div>
+  </a>
+<% end %>

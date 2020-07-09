@@ -16,12 +16,67 @@ RSpec.describe "Pages", type: :request do
       expect(response.body).not_to include("/page/#{page.slug}")
       expect(response.body).to include("stories-show")
     end
+
+    context "when json template" do
+      let_it_be(:json_text) { "{\"foo\": \"bar\"}" }
+      let_it_be(:page) do
+        create(:page, title: "sample_data", template: "json", body_json: json_text, body_html: nil, body_markdown: nil)
+      end
+
+      before do
+        page.save! # Trigger processing of page.body_html
+      end
+
+      it "returns json data " do
+        get "/page/#{page.slug}"
+
+        expect(response.media_type).to eq("application/json")
+        expect(response.body).to include(json_text)
+      end
+
+      it "returns json data for top level template" do
+        page.is_top_level_path = true
+        page.save!
+        get "/#{page.slug}"
+
+        expect(response.media_type).to eq("application/json")
+        expect(response.body).to include(json_text)
+      end
+    end
   end
 
   describe "GET /about" do
     it "has proper headline" do
       get "/about"
       expect(response.body).to include("About")
+    end
+  end
+
+  describe "GET /about-listings" do
+    it "has proper headline" do
+      get "/about-listings"
+      expect(response.body).to include("About #{ApplicationConfig['COMMUNITY_NAME']} Listings")
+    end
+  end
+
+  describe "GET /community-moderation" do
+    it "has proper headline" do
+      get "/community-moderation"
+      expect(response.body).to include("Community Moderation Guide")
+    end
+  end
+
+  describe "GET /tag-moderation" do
+    it "has proper headline" do
+      get "/tag-moderation"
+      expect(response.body).to include("Tag Moderation Guide")
+    end
+  end
+
+  describe "GET /page/post-a-job" do
+    it "has proper headline" do
+      get "/page/post-a-job"
+      expect(response.body).to include("Posting a Job on #{ApplicationConfig['COMMUNITY_NAME']} Listings")
     end
   end
 
@@ -34,6 +89,7 @@ RSpec.describe "Pages", type: :request do
 
   describe "GET /privacy" do
     it "has proper headline" do
+      allow(SiteConfig).to receive(:shop_url).and_return("some-shop-url")
       get "/privacy"
       expect(response.body).to include("Privacy Policy")
       expect(response.body).to include(SiteConfig.shop_url)
@@ -59,13 +115,6 @@ RSpec.describe "Pages", type: :request do
     it "has proper headline" do
       get "/code-of-conduct"
       expect(response.body).to include("Code of Conduct")
-    end
-  end
-
-  describe "GET /rly" do
-    it "has proper headline" do
-      get "/rly"
-      expect(response.body).to include("O RLY Cover Generator")
     end
   end
 
@@ -123,7 +172,9 @@ RSpec.describe "Pages", type: :request do
   describe "GET /robots.txt" do
     it "has proper text" do
       get "/robots.txt"
-      expect(response.body).to include("Sitemap: https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/sitemaps/sitemap.xml.gz")
+
+      text = "Sitemap: https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/sitemaps/sitemap.xml.gz"
+      expect(response.body).to include(text)
     end
   end
 

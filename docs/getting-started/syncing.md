@@ -81,6 +81,9 @@ Push the changes back to your origin feature branch:
 git push origin <feature-branch-name>
 ```
 
+After you've fetched new commits from upstream, run `./bin/setup`, and it will
+install new gems, npm packages, update database, and restart Rails server.
+
 ## Additional resources
 
 - [Syncing a fork](https://help.github.com/articles/syncing-a-fork/)

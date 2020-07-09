@@ -19,16 +19,15 @@ class UserDecorator < ApplicationDecorator
   ].freeze
 
   def cached_followed_tags
-    Rails.cache.fetch("user-#{id}-#{updated_at}/followed_tags_11-30", expires_in: 20.hours) do
-      follows = Follow.follower_tag(id).pluck(:followable_id, :points)
-      follows_map = follows.to_h
-
-      tags = Tag.where(id: follows_map.keys).order(hotness_score: :desc)
-      tags.each do |tag|
-        tag.points = follows_map[tag.id]
-      end
-      tags
+    follows_map = Rails.cache.fetch("user-#{id}-#{last_followed_at&.rfc3339}/followed_tags", expires_in: 20.hours) do
+      Follow.follower_tag(id).pluck(:followable_id, :points).to_h
     end
+
+    tags = Tag.where(id: follows_map.keys).order(hotness_score: :desc)
+    tags.each do |tag|
+      tag.points = follows_map[tag.id]
+    end
+    tags
   end
 
   def darker_color(adjustment = 0.88)
@@ -53,7 +52,6 @@ class UserDecorator < ApplicationDecorator
     body_class = [
       config_theme.tr("_", "-"),
       "#{config_font.tr('_', '-')}-article-body",
-      "pro-status-#{pro?}",
       "trusted-status-#{trusted}",
       "#{config_navbar.tr('_', '-')}-navbar-config",
     ]
@@ -92,7 +90,7 @@ class UserDecorator < ApplicationDecorator
       },
     ]
     colors |= WHITE_TEXT_COLORS
-    colors[id % 10]
+    colors[(id || rand(100)) % 10]
   end
 
   # returns true if the user has been suspended and has no content

@@ -3,25 +3,24 @@
 .more-articles {
   padding: 20px 0px;
   vertical-align: top;
-  text-align: center;
-  font-family: $helvetica;
-  margin: 0 auto 32px;
+  text-align: left;
+  font-family: var(--ff-default);
 
   a {
     color: var(--body-color);
   }
+  h1 {
+    width: 94%;
+    max-width: 690px;
+    margin: auto;
+  }
   .single-other-article {
     width: 94%;
-    @media screen and (min-width: 680px) {
-      width: calc(50% - 40px);
-      margin-bottom: 24px;
-    }
-    display: inline-block;
-    max-width: 94%;
     margin: auto;
     padding: 10px;
     vertical-align: top;
     text-align: left;
+    max-width: 690px;
     &:hover {
       @include themeable(
         background,
@@ -93,8 +92,7 @@
 
 .show-page-content-display {
   vertical-align: top;
-  font-family: $helvetica;
-  margin: 0 auto 32px;
+  font-family: var(--ff-default);
   position: relative;
   overflow: hidden;
 

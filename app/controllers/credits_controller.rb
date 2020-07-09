@@ -26,16 +26,24 @@ class CreditsController < ApplicationController
 
     return unless make_payment
 
-    credit_objects = Array.new(@number_to_purchase) do
+    credits_attributes = Array.new(@number_to_purchase) do
+      # unfortunately Rails requires the timestamps to be present and doesn't add them automatically
+      # see <https://github.com/rails/rails/issues/35493>
+      now = Time.current
+      attrs = { created_at: now, updated_at: now, cost: cost_per_credit / 100.0 }
+
       if params[:organization_id].present?
         @purchaser = Organization.find(params[:organization_id])
-        Credit.new(organization_id: params[:organization_id], cost: cost_per_credit / 100.0)
+        attrs[:organization_id] = params[:organization_id]
       else
         @purchaser = current_user
-        Credit.new(user_id: current_user.id, cost: cost_per_credit / 100.0)
+        attrs[:user_id] = current_user.id
       end
+
+      attrs
     end
-    Credit.import credit_objects
+    Credit.insert_all(credits_attributes)
+
     @purchaser.credits_count = @purchaser.credits.size
     @purchaser.spent_credits_count = @purchaser.credits.spent.size
     @purchaser.unspent_credits_count = @purchaser.credits.unspent.size

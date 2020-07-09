@@ -1,9 +1,12 @@
 @import 'variables';
 @import 'mixins';
 @import 'functions';
+@import 'config/import';
 
 .notifications-index {
   .home {
+    overflow: initial;
+
     .articles-list {
       .signup-cue {
         padding: 30px 25px;
@@ -25,6 +28,8 @@
           }
         }
       }
+      // TODO: [@thepracticaldev/delightful]: Remove .signup-cue-advanced and .sloan
+      // from stylesheet since it does not appear to be used anywhere
       .signup-cue-advanced {
         text-align: left;
         padding: 30px 25px;
@@ -50,13 +55,6 @@
             a {
               color: $sky-blue;
               font-weight: 500;
-            }
-          }
-          &.broadcast-content {
-            .opt-out {
-              padding-top: 24px;
-              font-size: 12px;
-              font-style: italic;
             }
           }
           &.reaction-content {
@@ -243,6 +241,11 @@
             max-width: 100%;
             max-height: 400px;
           }
+          blockquote {
+            border-left: calc(0.2vw + 2px) solid $dark-gray;
+            padding: 0.1% 6% 0.1% 2%;
+            margin-left: 0.5rem;
+          }
         }
         .comment-actions {
           position: relative;
@@ -426,5 +429,152 @@
     clear: both;
 
     @include load-more;
+  }
+}
+
+.notifications-filter__list {
+  li {
+    margin-bottom: var(--su-1);
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &--item {
+    align-items: center;
+    border-radius: var(--radius);
+    box-sizing: border-box;
+    color: var(--card-color);
+    display: inline-flex;
+    font-weight: var(--fw-medium);
+    justify-content: space-between;
+    padding: var(--su-2);
+    width: 100%;
+
+    &:hover {
+      background: var(--base-10);
+    }
+
+    &.selected {
+      background: var(--base-10);
+
+      .notifications-filter__icon {
+        visibility: visible;
+      }
+    }
+  }
+}
+
+.notifications-filter__dropdown {
+  display: none;
+
+  @media screen and (max-width: 950px) {
+    display: block;
+  }
+
+  &__menu-overlay {
+    display: none;
+
+    &.showing {
+      display: flex;
+    }
+
+    &:before {
+      content: '';
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 499;
+    }
+  }
+
+  &__header {
+    padding: var(--su-3) var(--su-4);
+  }
+
+  &__title {
+    font-weight: var(--fw-bold);
+  }
+
+  &__menu {
+    display: flex;
+    background: var(--base-inverted);
+    flex-direction: column;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    right: 0;
+    z-index: 500;
+  }
+
+  &__select {
+    appearance: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    padding: var(--su-4);
+    justify-content: center;
+    font-weight: var(--fw-bold);
+    width: 100%;
+    font-family: var(--ff-default);
+
+    &:hover &:active {
+      background-color: var(--base-10);
+    }
+  }
+
+  &__icon {
+    visibility: hidden;
+  }
+
+  &__option {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    padding: var(--su-3) var(--su-4);
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: var(--base-10);
+    }
+
+    &.selected {
+    }
+  }
+
+  &__label {
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+  }
+
+  &__label--title {
+    font-weight: var(--fw-medium);
+    font-size: var(--fs-base);
+  }
+
+  &__label--subtitle {
+    color: var(--base-60);
+    font-size: var(--fs-s);
+  }
+}
+
+.notifications-filter__list,
+.notifications-filter__dropdown {
+  .notifications-filter__icon {
+    visibility: hidden;
+  }
+
+  .selected {
+    .notifications-filter__icon {
+      visibility: visible;
+    }
   }
 }

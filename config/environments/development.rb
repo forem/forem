@@ -3,12 +3,6 @@
 $VERBOSE = nil
 
 Rails.application.configure do
-  # Verifies that versions and hashed value of the package contents in the project's package.json
-  # As the integrity check is currently broken under Docker with webpacker,
-  # we can't enable this flag by default
-  # see <https://github.com/thepracticaldev/dev.to/pull/296#discussion_r210635685>
-  config.webpacker.check_yarn_integrity = ENV.fetch("YARN_INTEGRITY_ENABLED", "true") == "true"
-
   # Settings specified here will take precedence over those in config/application.rb.
 
   # In the development environment your application's code is reloaded on
@@ -80,6 +74,10 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
 
+  config.hosts << ENV["APP_DOMAIN"] unless ENV["APP_DOMAIN"].nil?
+  if (gitpod_workspace_url = ENV["GITPOD_WORKSPACE_URL"])
+    config.hosts << /.*#{URI.parse(gitpod_workspace_url).host}/
+  end
   config.app_domain = "localhost:3000"
 
   config.action_mailer.default_url_options = { host: "localhost:3000" }
@@ -134,7 +132,9 @@ Rails.application.configure do
     # Check if there are any data update scripts to run during startup
     if %w[c console runner s server].include?(ENV["COMMAND"])
       if DataUpdateScript.scripts_to_run?
-        raise "Data update scripts need to be run before you can start the application. Please run 'rails data_updates:run'"
+        message = "Data update scripts need to be run before you can start the application. " \
+          "Please run 'rails data_updates:run'"
+        raise message
       end
     end
   end

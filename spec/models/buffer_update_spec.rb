@@ -42,4 +42,13 @@ RSpec.describe BufferUpdate, type: :model do
     described_class.buff!(create(:article).id, "twitter_buffer_text", "CODE", "twitter", 1)
     expect(described_class.all.size).to eq(2)
   end
+
+  it "does not allow more than 3 suggestions" do
+    Array.new(3) do |i|
+      described_class.buff!(article.id, "twitter_buffer_text_#{i}", "CODE", "twitter")
+    end
+    invalid_buffer = described_class.buff!(article.id, "twitter_buffer_text_4", "CODE", "twitter")
+    expect(described_class.all.size).to eq(3)
+    expect(invalid_buffer.errors.full_messages.first).to include("already has multiple suggestions")
+  end
 end

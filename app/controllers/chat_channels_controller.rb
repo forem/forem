@@ -1,6 +1,6 @@
 class ChatChannelsController < ApplicationController
   before_action :authenticate_user!, only: %i[moderate]
-  before_action :set_channel, only: %i[show update open moderate]
+  before_action :set_channel, only: %i[show update update_channel open moderate]
   after_action :verify_authorized
 
   def index
@@ -13,6 +13,9 @@ class ChatChannelsController < ApplicationController
     elsif params[:state] == "pending"
       authorize ChatChannel
       render_pending_json_response
+    elsif params[:state] == "joining_request"
+      authorize ChatChannel
+      render_joining_request_json_response
     else
       skip_authorization
       render_channels_html
@@ -20,7 +23,11 @@ class ChatChannelsController < ApplicationController
   end
 
   def show
-    @chat_messages = @chat_channel.messages.includes(:user).order("created_at DESC").offset(params[:message_offset]).limit(50)
+    @chat_messages = @chat_channel.messages.
+      includes(:user).
+      order(created_at: :desc).
+      offset(params[:message_offset]).
+      limit(50)
   end
 
   def create
@@ -30,14 +37,37 @@ class ChatChannelsController < ApplicationController
   end
 
   def update
-    if ChatChannelUpdateService.new(@chat_channel, chat_channel_params).update
-      flash[:settings_notice] = "Channel settings updated."
+    chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_params)
+    if chat_channel.errors.any?
+      flash[:error] = chat_channel.errors.full_messages.to_sentence
     else
-      default_error_message = "Channel settings updation failed. Try again later."
-      flash[:error] = @chat_channel.errors.full_messages.to_sentence.presence || default_error_message
+      if chat_channel_params[:discoverable].to_i.zero?
+        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id,
+                                     role: "member", status: "active")
+      else
+        ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
+      end
+      flash[:settings_notice] = "Channel settings updated."
     end
     current_user_membership = @chat_channel.mod_memberships.find_by!(user: current_user)
+
     redirect_to edit_chat_channel_membership_path(current_user_membership)
+  end
+
+  def update_channel
+    chat_channel = ChatChannelUpdateService.perform(@chat_channel, chat_channel_params)
+    if chat_channel.errors.any?
+      render json: { success: false, errors: chat_channel.errors.full_messages,
+                     message: "Channel settings updation failed. Try again later." }, success: :bad_request
+    else
+      if chat_channel_params[:discoverable]
+        ChatChannelMembership.create(user_id: SiteConfig.mascot_user_id, chat_channel_id: chat_channel.id,
+                                     role: "member", status: "active")
+      else
+        ChatChannelMembership.find_by(user_id: SiteConfig.mascot_user_id)&.destroy
+      end
+      render json: { success: true, message: "Channel settings updated.", data: {} }, success: :ok
+    end
   end
 
   def open
@@ -78,8 +108,9 @@ class ChatChannelsController < ApplicationController
 
   def create_chat
     chat_recipient = User.find(params[:user_id])
-    valid_listing = ClassifiedListing.where(user_id: params[:user_id], contact_via_connect: true).limit(1)
+    valid_listing = Listing.where(user_id: params[:user_id], contact_via_connect: true).limit(1)
     authorize ChatChannel
+
     if chat_recipient.inbox_type == "open" || valid_listing.length == 1
       chat = ChatChannel.create_with_users(users: [current_user, chat_recipient], channel_type: "direct")
       message_markdown = params[:message]
@@ -93,6 +124,8 @@ class ChatChannelsController < ApplicationController
     else
       render json: { status: "error", message: "not allowed!" }, status: :bad_request
     end
+  rescue StandardError => e
+    render json: { status: "error", message: e.message }, status: :bad_request
   end
 
   def block_chat
@@ -136,10 +169,11 @@ class ChatChannelsController < ApplicationController
 
   def render_unopened_json_response
     @chat_channels_memberships = if session_current_user_id
-                                   ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
-                                     where("has_unopened_messages = ? OR status = ?",
-                                           true, "pending").
+                                   ChatChannelMembership.where(user_id: session_current_user_id).
+                                     where(has_unopened_messages: true).
                                      where(show_global_badge_notification: true).
+                                     where.not(status: %w[removed_from_channel left_channel]).
+                                     includes(%i[chat_channel user]).
                                      order("chat_channel_memberships.updated_at DESC")
                                  else
                                    []
@@ -161,8 +195,26 @@ class ChatChannelsController < ApplicationController
 
   def render_unopened_ids_response
     @unopened_ids = ChatChannelMembership.where(user_id: session_current_user_id).includes(:chat_channel).
-      where(has_unopened_messages: true).pluck(:chat_channel_id)
+      where(has_unopened_messages: true).where.not(status: %w[removed_from_channel
+                                                              left_channel]).pluck(:chat_channel_id)
     render json: { unopened_ids: @unopened_ids }
+  end
+
+  def render_joining_request_json_response
+    requested_memberships_id = current_user.
+      chat_channel_memberships.
+      includes(:chat_channel).
+      where(chat_channels: { discoverable: true }, role: "mod").
+      pluck(:chat_channel_id).
+      map { |membership_id| ChatChannel.find_by(id: membership_id).requested_memberships }.
+      flatten.
+      map(&:id)
+
+    @chat_channels_memberships = ChatChannelMembership.
+      includes(%i[user chat_channel]).
+      where(id: requested_memberships_id)
+
+    render "index.json"
   end
 
   def render_channels_html
@@ -175,12 +227,6 @@ class ChatChannelsController < ApplicationController
            end
     @active_channel = ChatChannel.find_by(slug: slug)
     @active_channel.current_user = current_user if @active_channel
-  end
-
-  def generate_github_token
-    Rails.cache.fetch("user-github-token-#{current_user.id}", expires_in: 48.hours) do
-      Identity.where(user_id: current_user.id, provider: "github").first&.token
-    end
   end
 
   def render_chat_channel
@@ -199,6 +245,7 @@ class ChatChannelsController < ApplicationController
                     else
                       @chat_channel.adjusted_slug(current_user)
                     end
-    Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened", { channel_type: @chat_channel.channel_type, adjusted_slug: adjusted_slug }.to_json)
+    Pusher.trigger("private-message-notifications-#{session_current_user_id}", "message-opened",
+                   { channel_type: @chat_channel.channel_type, adjusted_slug: adjusted_slug }.to_json)
   end
 end

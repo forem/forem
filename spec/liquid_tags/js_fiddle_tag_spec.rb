@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe JSFiddleTag, type: :liquid_tag do
+RSpec.describe JsFiddleTag, type: :liquid_tag do
   describe "#link" do
     let(:jsfiddle_link) { "http://jsfiddle.net/link2twenty/v2kx9jcd" }
     let(:jsfiddle_link_with_custom_tabs) { "http://jsfiddle.net/link2twenty/v2kx9jcd result,html,css" }
@@ -12,7 +12,7 @@ RSpec.describe JSFiddleTag, type: :liquid_tag do
     )
 
     def generate_new_liquid(link)
-      Liquid::Template.register_tag("jsfiddle", JSFiddleTag)
+      Liquid::Template.register_tag("jsfiddle", JsFiddleTag)
       Liquid::Template.parse("{% jsfiddle #{link} %}")
     end
 

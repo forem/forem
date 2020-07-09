@@ -10,9 +10,10 @@ module ValidRequest
     return if Rails.env.test?
 
     if request.referer.present?
-      request.referer.start_with?(ApplicationConfig["APP_PROTOCOL"].to_s + ApplicationConfig["APP_DOMAIN"].to_s)
+      request.referer.start_with?(URL.url)
     else
-      raise ::ActionController::InvalidAuthenticityToken, ::ApplicationController::NULL_ORIGIN_MESSAGE if request.origin == "null"
+      null_origin = request.origin == "null"
+      raise ::ActionController::InvalidAuthenticityToken, ::ApplicationController::NULL_ORIGIN_MESSAGE if null_origin
 
       request.origin.nil? || request.origin.gsub("https", "http") == request.base_url.gsub("https", "http")
     end
@@ -22,12 +23,12 @@ module ValidRequest
     case options
     # Yet another monkeypatch required to send proper protocol out.
     # In this case we make sure the redirect ends in the app protocol.
-    # This is the same as the base Rails method except ApplicationConfig["APP_PROTOCOL"]
+    # This is the same as the base Rails method except URL.protocol
     # is used instead of request.protocol.
-    when /\A([a-z][a-z\d\-+\.]*:|\/\/).*/i
+    when /\A([a-z][a-z\d\-+.]*:|\/\/).*/i
       options
     when String
-      (ApplicationConfig["APP_PROTOCOL"] || request.protocol) + request.host_with_port + options
+      "#{(URL.protocol || request.protocol)}#{request.host_with_port}#{options}"
     when Proc
       _compute_redirect_to_location request, instance_eval(&options)
     else

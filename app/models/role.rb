@@ -6,6 +6,7 @@ class Role < ApplicationRecord
     comment_banned
     podcast_admin
     pro
+    restricted_liquid_tag
     single_resource_admin
     super_admin
     tag_moderator
@@ -16,7 +17,7 @@ class Role < ApplicationRecord
     workshop_pass
   ].freeze
 
-  has_and_belongs_to_many :users, join_table: :users_roles
+  has_and_belongs_to_many :users, join_table: :users_roles # rubocop:disable Rails/HasAndBelongsToMany
 
   belongs_to :resource,
              polymorphic: true, optional: true

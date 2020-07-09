@@ -36,7 +36,7 @@
       padding: 10px 5px;
       .filters-header-text {
         font-size: 0.9em;
-        font-family: $monospace;
+        font-family: var(--ff-accent);
         text-decoration: underline;
         color: var(--card-color-tertiary);
       }
@@ -186,7 +186,7 @@
         text-align: center;
         padding: 100px 0px;
 
-        span.highlight {
+        .btn--highlight {
           background: $bold-blue;
           border-radius: 3px;
           padding: 3px 8px;

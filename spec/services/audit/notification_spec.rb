@@ -16,6 +16,7 @@ RSpec.describe Audit::Notification, type: :service do
     described_class.notify(listener) do |payload|
       payload.user_id = user.id
       payload.roles = user.roles.pluck(:name)
+      payload.data = build(:activesupport_event)
     end
   end
 

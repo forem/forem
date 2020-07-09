@@ -19,7 +19,7 @@ module Slack
           url: URL.user(user),
         )
 
-        SlackBotPingWorker.perform_async(
+        Slack::Messengers::Worker.perform_async(
           message: message,
           channel: "potential-spam",
           username: "spam_account_checker_bot",

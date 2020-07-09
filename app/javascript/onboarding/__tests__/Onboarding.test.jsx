@@ -1,76 +1,26 @@
 import { h } from 'preact';
-import { deep } from 'preact-render-spy';
+import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import fetch from 'jest-fetch-mock';
-import { axe, toHaveNoViolations } from 'jest-axe';
+import '@testing-library/jest-dom';
 
 import Onboarding from '../Onboarding';
-import ProfileForm from '../components/ProfileForm';
-import FollowTags from '../components/FollowTags';
-import FollowUsers from '../components/FollowUsers';
-
 global.fetch = fetch;
-function flushPromises() {
-  return new Promise((resolve) => setImmediate(resolve));
-}
 
-function initializeSlides(currentSlide, userData = null, mockData = null) {
-  document.body.setAttribute('data-user', userData);
-  const onboardingSlides = deep(<Onboarding />);
-
-  if (mockData) {
-    fetch.once(mockData);
-  }
-
-  onboardingSlides.setState({ currentSlide });
-
-  return onboardingSlides;
-}
+// NOTE: the navigation and behaviour per component is tested in each components unit test. This file simply tests the ability to move forward and backward in a modal, and can probably be replaced by an end to end test at some point.
 
 describe('<Onboarding />', () => {
-  beforeAll(() => {
-    expect.extend(toHaveNoViolations);
-  });
-  beforeEach(() => {
-    fetch.resetMocks();
-  });
-
-  const fakeTagsResponse = JSON.stringify([
-    {
-      bg_color_hex: '#000000',
-      id: 715,
-      name: 'discuss',
-      text_color_hex: '#ffffff',
-    },
-    {
-      bg_color_hex: '#f7df1e',
-      id: 6,
-      name: 'javascript',
-      text_color_hex: '#000000',
-    },
-    {
-      bg_color_hex: '#2a2566',
-      id: 630,
-      name: 'career',
-      text_color_hex: '#ffffff',
-    },
-  ]);
-  const fakeUsersResponse = JSON.stringify([
-    {
-      id: 1,
-      name: 'Ben Halpern',
-      profile_image_url: 'ben.jpg',
-    },
-    {
-      id: 2,
-      name: 'Krusty the Clown',
-      profile_image_url: 'clown.jpg',
-    },
-    {
-      id: 3,
-      name: 'dev.to staff',
-      profile_image_url: 'dev.jpg',
-    },
-  ]);
+  const renderOnboarding = () =>
+    render(
+      <Onboarding
+        communityConfig={{
+          communityName: 'Community Name',
+          communityLogo: '/x.png',
+          communityBackground: '/y.jpg',
+          communityDescription: 'Some community description',
+        }}
+      />,
+    );
   const getUserData = () =>
     JSON.stringify({
       followed_tag_names: ['javascript'],
@@ -78,243 +28,153 @@ describe('<Onboarding />', () => {
       name: 'firstname lastname',
       username: 'username',
     });
+  const fakeEmptyResponse = JSON.stringify([]);
 
-  describe('IntroSlide', () => {
-    let onboardingSlides;
-    const codeOfConductCheckEvent = {
-      target: {
-        value: 'checked_code_of_conduct',
-        name: 'checked_code_of_conduct',
-      },
-    };
-    const termsAndConditionsCheckEvent = {
-      target: {
-        value: 'checked_terms_and_conditions',
-        name: 'checked_terms_and_conditions',
-      },
-    };
-
-    const updateCodeOfConduct = () => {
-      onboardingSlides
-        .find('#checked_code_of_conduct')
-        .simulate('change', codeOfConductCheckEvent);
-    };
-    const updateTermsAndConditions = () => {
-      onboardingSlides
-        .find('#checked_terms_and_conditions')
-        .simulate('change', termsAndConditionsCheckEvent);
-    };
-
-    beforeEach(() => {
-      onboardingSlides = initializeSlides(0, getUserData());
-    });
-
-    test('renders properly', () => {
-      expect(onboardingSlides).toMatchSnapshot();
-    });
-
-    test('should advance if required boxes are checked', async () => {
-      fetch.once({});
-      expect(onboardingSlides.state().currentSlide).toBe(0);
-
-      updateCodeOfConduct();
-      updateTermsAndConditions();
-
-      onboardingSlides.find('.next-button').simulate('click');
-      await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(1);
-    });
-
-    test('should not have basic a11y violations', async () => {
-      const results = await axe(onboardingSlides.toString());
-
-      expect(results).toHaveNoViolations();
-    });
+  beforeAll(() => {
+    document.head.innerHTML =
+      '<meta name="csrf-token" content="some-csrf-token" />';
+    document.body.setAttribute('data-user', getUserData());
   });
 
-  describe('ProfileForm', () => {
-    let onboardingSlides;
-    const meta = document.createElement('meta');
-
-    meta.setAttribute('name', 'csrf-token');
-    document.body.appendChild(meta);
-
-    beforeEach(() => {
-      onboardingSlides = initializeSlides(1, getUserData());
-    });
-
-    test('renders properly', () => {
-      expect(onboardingSlides).toMatchSnapshot();
-    });
-
-    test('should allow user to fill forms and advance', async () => {
-      fetch.once({});
-      const profileForm = onboardingSlides.find(<ProfileForm />);
-      const summaryEvent = { target: { value: 'my bio', name: 'summary' } };
-      const locationEvent = {
-        target: { value: 'my location', name: 'location' },
-      };
-      const titleEvent = {
-        target: { value: 'my title', name: 'employment_title' },
-      };
-      const employerEvent = {
-        target: { value: 'my employer name', name: 'employer_name' },
-      };
-
-      onboardingSlides.find('textarea').simulate('change', summaryEvent);
-      onboardingSlides.find('#location').simulate('change', locationEvent);
-      onboardingSlides.find('#employment_title').simulate('change', titleEvent);
-      onboardingSlides.find('#employer_name').simulate('change', employerEvent);
-
-      expect(profileForm.state('summary')).toBe(summaryEvent.target.value);
-      expect(profileForm.state('location')).toBe(locationEvent.target.value);
-      expect(profileForm.state('employment_title')).toBe(
-        titleEvent.target.value,
-      );
-      expect(profileForm.state('employer_name')).toBe(
-        employerEvent.target.value,
-      );
-
-      profileForm.find('.next-button').simulate('click');
-      fetch.once(fakeTagsResponse);
-      await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(2);
-    });
-
-    it('should step backward', () => {
-      onboardingSlides.find('.back-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(0);
-    });
+  it('should have no a11y violations', async () => {
+    const { container } = renderOnboarding();
+    const results = await axe(container);
+    expect(results).toHaveNoViolations();
   });
 
-  describe('FollowTags', () => {
-    let onboardingSlides;
+  it('should render the IntroSlide first', () => {
+    const { queryByTestId } = renderOnboarding();
 
-    beforeEach(async () => {
-      onboardingSlides = initializeSlides(2, getUserData(), fakeTagsResponse);
-      await flushPromises();
-    });
-
-    test('renders properly', () => {
-      expect(onboardingSlides).toMatchSnapshot();
-    });
-
-    test('should render three tags', async () => {
-      expect(onboardingSlides.find('.onboarding-tags__item').length).toBe(3);
-    });
-
-    test('should allow a user to add a tag and advance', async () => {
-      fetch.once({});
-      const followTags = onboardingSlides.find(<FollowTags />);
-      const firstButton = onboardingSlides
-        .find('.onboarding-tags__button')
-        .first();
-
-      firstButton.simulate('click');
-      expect(followTags.state('selectedTags').length).toBe(1);
-
-      onboardingSlides.find('.next-button').simulate('click');
-      fetch.once(fakeUsersResponse);
-      await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(3);
-    });
-
-    it('should step backward', () => {
-      onboardingSlides.find('.back-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(1);
-    });
+    expect(queryByTestId('onboarding-intro-slide')).toBeDefined();
   });
 
-  describe('FollowUsers', () => {
-    let onboardingSlides;
+  it('should allow the modal to move forward and backward a step where relevant', async () => {
+    // combined back and forward into one test to avoid a long test running time
+    const { getByTestId, findByText, findByTestId } = renderOnboarding();
 
-    beforeEach(async () => {
-      onboardingSlides = initializeSlides(3, getUserData(), fakeUsersResponse);
-      await flushPromises();
-    });
+    getByTestId('onboarding-intro-slide');
 
-    test('renders properly', () => {
-      expect(onboardingSlides).toMatchSnapshot();
-    });
+    fetch.mockResponseOnce({});
+    const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
+    codeOfConductCheckbox.click();
+    const termsCheckbox = getByTestId('checked-terms-and-conditions');
+    termsCheckbox.click();
 
-    test('should render three users', async () => {
-      expect(onboardingSlides.find('.user').length).toBe(3);
-    });
+    // click to next step
+    const nextButton = await findByText(/continue/i);
 
-    test('should allow a user to select and advance', async () => {
-      fetch.once({});
-      const followUsers = onboardingSlides.find(<FollowUsers />);
+    fetch.mockResponse(fakeEmptyResponse);
+    nextButton.click();
 
-      onboardingSlides.find('.user').first().simulate('click');
-      expect(onboardingSlides.find('p').last().text()).toBe(
-        "You're following 1 person",
-      );
-      onboardingSlides.find('.user').last().simulate('click');
-      expect(onboardingSlides.find('p').last().text()).toBe(
-        "You're following 2 people",
-      );
-      expect(followUsers.state('selectedUsers').length).toBe(2);
-      onboardingSlides.find('.next-button').simulate('click');
-      await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(4);
-    });
+    // we should be on the Follow tags step
+    await findByTestId('onboarding-follow-tags');
 
-    test('should have a functioning select-all toggle', async () => {
-      fetch.once({});
-      const followUsers = onboardingSlides.find(<FollowUsers />);
+    // click a step back
+    const backButton = getByTestId('back-button');
+    backButton.click();
 
-      expect(onboardingSlides.find('button').last().text()).toBe(
-        'Select all 3 people',
-      );
-      onboardingSlides.find('button').last().simulate('click');
-      expect(onboardingSlides.find('button').last().text()).toBe(
-        'Deselect all',
-      );
-      expect(followUsers.state('selectedUsers').length).toBe(3);
-    });
+    // we should be on the Intro Slide step
+    const introSlide = await findByTestId('onboarding-intro-slide');
 
-    it('should step backward', async () => {
-      fetch.once(fakeTagsResponse);
-      onboardingSlides.find('.back-button').simulate('click');
-      await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(2);
-    });
+    expect(introSlide).toBeDefined();
   });
 
-  describe('EmailPreferencesForm', () => {
-    let onboardingSlides;
+  it("should skip the step when 'Skip for now' is clicked", async () => {
+    const {
+      getByTestId,
+      getByText,
+      findByText,
+      findByTestId,
+    } = renderOnboarding();
+    getByTestId('onboarding-intro-slide');
 
-    beforeEach(() => {
-      onboardingSlides = initializeSlides(4, getUserData());
-    });
+    fetch.mockResponseOnce({});
+    const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
+    codeOfConductCheckbox.click();
+    const termsCheckbox = getByTestId('checked-terms-and-conditions');
+    termsCheckbox.click();
 
-    test('renders properly', () => {
-      expect(onboardingSlides).toMatchSnapshot();
-    });
+    // click to next step
+    const nextButton = await findByText(/continue/i);
 
-    test('should allow user to advance', async () => {
-      fetch.once({});
+    fetch.mockResponse(fakeEmptyResponse);
+    nextButton.click();
 
-      onboardingSlides.find('.next-button').simulate('click');
-      await flushPromises();
-      expect(onboardingSlides.state().currentSlide).toBe(5);
-    });
+    // we should be on the Follow tags step
+    const followTagsStep = await findByTestId('onboarding-follow-tags');
 
-    it('should step backward', () => {
-      onboardingSlides.find('.back-button').simulate('click');
-      expect(onboardingSlides.state().currentSlide).toBe(3);
-    });
+    expect(followTagsStep).toBeDefined();
+
+    // click on skip for now
+    const skipButton = getByText(/Skip for now/i);
+    skipButton.click();
+
+    // we should be on the Profile Form step
+    const profileStep = await findByTestId('onboarding-profile-form');
+
+    expect(profileStep).toBeDefined();
   });
 
-  describe('ClosingSlide', () => {
-    let onboardingSlides;
+  it('should redirect the users to the correct steps every time', async () => {
+    const {
+      getByTestId,
+      getByText,
+      findByText,
+      findByTestId,
+    } = renderOnboarding();
+    getByTestId('onboarding-intro-slide');
 
-    beforeEach(() => {
-      onboardingSlides = initializeSlides(5, getUserData());
+    fetch.mockResponseOnce({});
+    const codeOfConductCheckbox = getByTestId('checked-code-of-conduct');
+    codeOfConductCheckbox.click();
+    const termsCheckbox = getByTestId('checked-terms-and-conditions');
+    termsCheckbox.click();
+
+    // click to next step
+    const nextButton = await findByText(/continue/i);
+
+    fetch.mockResponse(fakeEmptyResponse);
+    nextButton.click();
+
+    // we should be on the Follow tags step
+    await findByTestId('onboarding-follow-tags');
+
+    // click on skip for now
+    let skipButton = getByText(/Skip for now/i);
+    skipButton.click();
+
+    // we should be on the Profile Form step
+    await findByTestId('onboarding-profile-form');
+
+    // click on skip for now
+    skipButton = getByText(/Skip for now/i);
+    fetch.mockResponse(fakeEmptyResponse);
+    skipButton.click();
+
+    // we should be on the Follow Users step
+    await findByTestId('onboarding-follow-users');
+
+    // click on skip for now
+    skipButton = getByText(/Skip for now/i);
+    skipButton.click();
+
+    // we should be on the Onboarding Email Preferences Form step
+    await findByTestId('onboarding-email-preferences-form');
+
+    fetch.once({});
+    // Setup: Enable window.location to be writable.
+    const url = 'https://dummy.com/onboarding';
+    Object.defineProperty(window, 'location', {
+      value: { href: url },
+      writable: true,
     });
 
-    test('renders properly', () => {
-      expect(onboardingSlides).toMatchSnapshot();
-    });
+    // click on finish
+    const finishButton = getByText(/Finish/i);
+    finishButton.click();
+
+    const { href } = window.location;
+
+    expect(href).toEqual(url);
   });
 });

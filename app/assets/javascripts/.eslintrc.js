@@ -1,5 +1,5 @@
 module.exports = {
-  extends: ['airbnb-base/legacy', 'prettier'],
+  extends: ['eslint:recommended', 'prettier'],
   parserOptions: {
     ecmaVersion: 2018,
   },
@@ -25,5 +25,6 @@ module.exports = {
     initializeAllFollowButts: false,
     initializeSponsorshipVisibility: false,
     ActiveXObject: false,
+    AndroidBridge: false,
   },
 };

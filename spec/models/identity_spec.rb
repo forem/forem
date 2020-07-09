@@ -1,26 +1,33 @@
 require "rails_helper"
 
 RSpec.describe Identity, type: :model do
-  it { is_expected.to belong_to(:user) }
-  it { is_expected.to validate_presence_of(:uid) }
-  it { is_expected.to validate_presence_of(:provider) }
-  it { is_expected.to validate_uniqueness_of(:uid).scoped_to(:provider) }
+  let(:identity) { create(:identity, user: create(:user), uid: SecureRandom.hex) }
 
-  it do
-    # rubocop:disable RSpec/NamedSubject
-    subject.user = build(:user)
-    expect(subject).to validate_uniqueness_of(:user_id).scoped_to(:provider)
-    # rubocop:enable RSpec/NamedSubject
+  describe "validations" do
+    describe "builtin validations" do
+      subject { identity }
+
+      it { is_expected.to belong_to(:user) }
+
+      it { is_expected.to have_many(:backup_data).class_name("BackupData").dependent(:destroy) }
+
+      it { is_expected.to validate_presence_of(:provider) }
+      it { is_expected.to validate_presence_of(:uid) }
+      it { is_expected.to validate_presence_of(:user_id) }
+      it { is_expected.to validate_uniqueness_of(:uid).scoped_to(:provider) }
+      it { is_expected.to validate_uniqueness_of(:user_id).scoped_to(:provider) }
+
+      it { is_expected.to validate_inclusion_of(:provider).in_array(%w[github twitter]) }
+
+      it { is_expected.to serialize(:auth_data_dump) }
+    end
   end
-
-  it { is_expected.to validate_inclusion_of(:provider).in_array(%w[github twitter]) }
-  it { is_expected.to serialize(:auth_data_dump) }
 
   describe ".build_build_from_omniauth" do
     let(:user) { create(:user) }
 
     before do
-      mock_auth_hash
+      omniauth_mock_providers_payload
     end
 
     context "with Github payload" do
@@ -93,6 +100,20 @@ RSpec.describe Identity, type: :model do
 
         expect(identity.auth_data_dump.extra.access_token).to be_nil
       end
+    end
+  end
+
+  describe "#email" do
+    let(:auth_payload) { OmniAuth.config.mock_auth[:github] }
+    let(:provider) { Authentication::Providers::Github.new(auth_payload) }
+
+    before do
+      omniauth_mock_providers_payload
+    end
+
+    it "returns the email associated with the identity" do
+      identity = described_class.build_from_omniauth(provider)
+      expect(identity.email).to eq(identity.auth_data_dump.info.email)
     end
   end
 end

@@ -182,7 +182,7 @@ class MailchimpBot
 
   def report_error(exception)
     Rails.logger.error(exception)
-    DatadogStatsClient.increment("mailchimp.errors", tags: [action: "failed", user_id: user.id, source: "gibbon-gem"])
+    DatadogStatsClient.increment("mailchimp.errors", tags: ["action:failed", "user_id:#{user.id}", "source:gibbon-gem"])
   end
 
   def target_md5_email

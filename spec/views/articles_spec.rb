@@ -32,19 +32,26 @@ RSpec.describe "articles/show", type: :view do
 
   it "shows user tags" do
     render
-    expect(rendered).to have_css "div.tags"
+    expect(rendered).to have_css ".spec__tags"
     article1.tags.all? { |tag| expect(rendered).to have_text(tag.name) }
   end
 
   it "shows user content of the article" do
     render
     expect(rendered).to have_text(Nokogiri::HTML(article1.processed_html).text)
-    expect(rendered).to have_css "div.body"
+    expect(rendered).to have_css ".spec__body"
   end
 
   it "shows user new comment box" do
     render
     expect(rendered).to have_css("form#new_comment")
     expect(rendered).to have_css("input#submit-button")
+  end
+
+  it "shows a note about the canonical URL" do
+    allow(article1).to receive(:canonical_url).and_return("https://example.com/lamas")
+    render
+    expect(rendered).to have_text("Originally published at")
+    expect(rendered).to have_text("example.com")
   end
 end

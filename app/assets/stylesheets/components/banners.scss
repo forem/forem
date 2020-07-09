@@ -1,0 +1,31 @@
+@import '../config/import';
+
+.crayons-banner {
+  padding: var(--su-4);
+  border-bottom: 1px solid;
+  text-align: center;
+  font-size: var(--fs-base);
+  background: var(--base-90);
+  color: var(--base-0);
+
+  &--brand {
+    background: var(--accent-brand);
+    border-bottom-color: var(--accent-brand-darker);
+  }
+
+  &--success {
+    background: var(--accent-success);
+    border-bottom-color: var(--accent-success-darker);
+  }
+
+  &--warning {
+    background: var(--accent-warning);
+    border-bottom-color: var(--accent-warning-darker);
+  }
+
+  &--error {
+    background: var(--accent-danger);
+    border-bottom-color: var(--accent-danger-darker);
+    color: var(--body-color-inverted);
+  }
+}

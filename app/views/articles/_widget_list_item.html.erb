@@ -1,11 +1,11 @@
-<a href="<%= plucked_article[0] %>" class="widget-link-list__item">
+<a class="crayons-link crayons-link--contentful" href="<%= plucked_article[0] %>">
   <%= plucked_article[1] %>
   <% if show_comment_count %>
-    <div class="discuss-list-comment-count">
+    <div class="crayons-link__secondary">
       <% if plucked_article[2] > 0 %>
-        <img src="<%= asset_path("comments-bubble.svg") %>" alt="Comments" /> <%= plucked_article[2] %>
+        Comments: <%= plucked_article[2] %>
       <% else %>
-        <span class="discuss-list-comment-count discuss-list-comment-count-brand-new">fresh</span>
+        <span class="crayons-indicator crayons-indicator--accent">New</span>
       <% end %>
     </div>
   <% end %>

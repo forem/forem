@@ -32,9 +32,12 @@ RSpec.describe "all routes", type: :routing do
   context "when redirected routes" do
     include RSpec::Rails::RequestExampleGroup
 
-    it "redirects /shop to shop.dev.to" do
-      get "/shop"
-      expect(response).to redirect_to("https://shop.dev.to/")
+    it "redirects /shop to the default shop_url" do
+      # TODO: the hardcoded shop url needs to be removed from the routes in favor of a dynamic one.
+      allow(SiteConfig).to receive(:shop_url).and_return("https://shop.dev.to")
+      get shop_path
+
+      expect(response).to redirect_to(SiteConfig.shop_url)
     end
   end
 end

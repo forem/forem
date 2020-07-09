@@ -1,24 +1,31 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { FEED_ICONS } from '../packs/feedIcons.js.erb';
 
 /* global userData sendHapticMessage showModal buttonFormData renderNewSidebarCount */
 
 export class Feed extends Component {
-  componentDidMount() {
-    const { timeFrame } = this.props;
+  constructor(props) {
+    super(props);
+
     const { reading_list_ids = [] } = userData(); // eslint-disable-line camelcase
 
-    this.setState({ bookmarkedFeedItems: new Set(reading_list_ids) });
+    this.state = { bookmarkedFeedItems: new Set(reading_list_ids) };
+  }
 
-    Feed.getFeedItems(timeFrame).then(feedItems => {
+  componentDidMount() {
+    const { timeFrame } = this.props;
+
+    Feed.getFeedItems(timeFrame).then((feedItems) => {
       // Ensure first article is one with a main_image
-      const featuredStory = feedItems.find(story => story.main_image !== null);
+      const featuredStory = feedItems.find(
+        (story) => story.main_image !== null,
+      );
       // Remove that first one from the array.
       const index = feedItems.indexOf(featuredStory);
       feedItems.splice(index, 1);
       const subStories = feedItems;
       const organizedFeedItems = [featuredStory, subStories].flat();
+
       this.setState({
         feedItems: organizedFeedItems,
         podcastEpisodes: Feed.getPodcastEpisodes(),
@@ -30,8 +37,8 @@ export class Feed extends Component {
     const { timeFrame } = this.props;
     if (prevProps.timeFrame !== timeFrame) {
       // The feed timeframe has changed. Get new feed data.
-      Feed.getFeedItems(timeFrame).then(feedItems => {
-        this.setState(_prevState => ({ feedItems }));
+      Feed.getFeedItems(timeFrame).then((feedItems) => {
+        this.setState((_prevState) => ({ feedItems }));
       });
     }
   }
@@ -52,7 +59,7 @@ export class Feed extends Component {
         'Content-Type': 'application/json',
       },
       credentials: 'same-origin',
-    }).then(response => response.json());
+    }).then((response) => response.json());
   }
 
   static getPodcastEpisodes() {
@@ -65,7 +72,7 @@ export class Feed extends Component {
       user.followed_podcast_ids.length > 0
     ) {
       const data = JSON.parse(el.dataset.episodes);
-      data.forEach(episode => {
+      data.forEach((episode) => {
         if (user.followed_podcast_ids.indexOf(episode.podcast.id) > -1) {
           episodes.push(episode);
         }
@@ -79,7 +86,7 @@ export class Feed extends Component {
    *
    * @param {Event} event
    */
-  bookmarkClick = event => {
+  bookmarkClick = (event) => {
     // The assumption is that the user is logged on at this point.
     const { userStatus } = document.body;
     event.preventDefault();
@@ -96,12 +103,12 @@ export class Feed extends Component {
     getCsrfToken()
       .then(sendFetch('reaction-creation', data))
       // eslint-disable-next-line consistent-return
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
-          return response.json().then(json => {
+          return response.json().then((json) => {
             const articleId = Number(button.dataset.reactableId);
 
-            this.setState(previousState => {
+            this.setState((previousState) => {
               const { bookmarkedFeedItems } = previousState;
 
               const { result } = json;
@@ -139,13 +146,12 @@ export class Feed extends Component {
 
     return (
       <div
-        ref={element => {
+        ref={(element) => {
           this.feedContainer = element;
         }}
       >
         {renderFeed({
           feedItems,
-          feedIcons: FEED_ICONS,
           podcastEpisodes,
           bookmarkedFeedItems,
           bookmarkClick: this.bookmarkClick,

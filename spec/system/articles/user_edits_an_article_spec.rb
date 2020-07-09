@@ -12,22 +12,21 @@ RSpec.describe "Editing with an editor", type: :system, js: true do
   it "user previews their changes" do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
-    click_button("PREVIEW")
+    click_button("Preview")
     expect(page).to have_text("Yooo")
-    expect(find(".active").text).to have_text("EDIT")
   end
 
   it "user updates their post" do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("Suspendisse", "Yooo")
-    click_button("SAVE CHANGES")
+    click_button("Save changes")
     expect(page).to have_text("Yooo")
   end
 
   it "user unpublishes their post" do
     visit "/#{user.username}/#{article.slug}/edit"
     fill_in "article_body_markdown", with: template.gsub("true", "false")
-    click_button("SAVE CHANGES")
+    click_button("Save changes")
     expect(page).to have_text("Unpublished Post.")
   end
 end

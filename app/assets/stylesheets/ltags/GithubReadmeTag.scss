@@ -1,4 +1,4 @@
-@import 'variables';
+@import '../variables';
 .ltag-github-readme-tag {
   border: 1px solid $light-medium-gray;
   border-radius: 3px;
@@ -9,7 +9,7 @@
   overflow: hidden;
   max-width: 620px;
   a {
-    color: var(--link-branded-color) !important;
+    color: var(--link-brand-color) !important;
   }
   .readme-overview {
     padding: 0.8em 0.5em;

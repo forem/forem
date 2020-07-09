@@ -7,7 +7,7 @@ describe BulkSqlDelete, type: :service do
       WHERE notifications.id IN (
         SELECT notifications.id
         FROM notifications
-        WHERE created_at < '#{Time.zone.now}'
+        WHERE created_at < '#{Time.current}'
         LIMIT 1
       )
     SQL
@@ -29,7 +29,8 @@ describe BulkSqlDelete, type: :service do
     it "logs errors that occur" do
       allow(logger).to receive(:error)
       # rubocop:disable RSpec/AnyInstance
-      allow_any_instance_of(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter).to receive(:exec_delete).and_raise("broken")
+      allow_any_instance_of(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter).
+        to(receive(:exec_delete)).and_raise("broken")
       # rubocop:enable RSpec/AnyInstance
 
       expect { described_class.delete_in_batches(sql) }.to raise_error("broken")
@@ -40,7 +41,8 @@ describe BulkSqlDelete, type: :service do
 
     it "deletes all records in batches" do
       create_list :notification, 5, created_at: 1.month.ago
-      expect { described_class.delete_in_batches(sql) }.to change(Notification, :count).from(5).to(0)
+      result = described_class.delete_in_batches(sql)
+      expect(result).to eq(5)
     end
   end
 end

@@ -14,6 +14,7 @@ AllCops:
     - db/migrate/*.rb
     - node_modules/**/*
     - tmp/**/*
+    - vendor/**/*
   DisplayStyleGuide: true
   ExtraDetails: true
   TargetRubyVersion: 2.7
@@ -30,6 +31,12 @@ Layout/DotPosition:
   StyleGuide: '#consistent-multi-line-chains'
   # TODO: [@thepracticaldev/oss] enable leading?
   EnforcedStyle: trailing
+
+
+Layout/EmptyLinesAroundAttributeAccessor:
+  Description: "Keep blank lines around attribute accessors."
+  StyleGuide: '#empty-lines-around-attribute-accessor'
+  Enabled: true
 
 # Layout/FirstArrayElementLineBreak:
 #   Description: >-
@@ -62,6 +69,12 @@ Layout/DotPosition:
 #   Enabled: false
 #   StyleGuide: '#heredoc-argument-closing-parentheses'
 
+Layout/LineLength:
+  Description: 'Checks that line length does not exceed the configured limit.'
+  AutoCorrect: true # this is false by default
+  Exclude:
+    - docs/Gemfile
+    - Gemfile
 
 # Layout/MultilineArrayLineBreaks:
 #   Description: >-
@@ -100,6 +113,10 @@ Layout/MultilineMethodCallIndentation:
   Enabled: true
   EnforcedStyle: indented
 
+Layout/SpaceAroundMethodCallOperator:
+  Description: 'Checks method call operators to not have spaces around them.'
+  Enabled: true
+
 #################### Lint ##################################
 
 Lint/AmbiguousBlockAssociation:
@@ -111,11 +128,23 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - "spec/**/*"
 
+Lint/ConstantResolution:
+  Description: 'Check that constants are fully qualified with `::`.'
+  Enabled: false
+
+Lint/DeprecatedOpenSSLConstant:
+  Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
+  Enabled: true
+
 # Lint/HeredocMethodCallPosition:
 #   Description: >-
 #                  Checks for the ordering of a method call where
 #                  the receiver of the call is a HEREDOC.
 #   Enabled: false
+
+Lint/MixedRegexpCaptureTypes:
+  Description: 'Do not mix named captures and numbered captures in a Regexp literal.'
+  Enabled: true
 
 # Lint/NumberConversion:
 #   Description: 'Checks unsafe usage of number conversion methods.'
@@ -223,6 +252,12 @@ Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
   Enabled: false
 
+Style/ExponentialNotation:
+  Description: 'When using exponential notation, favor a mantissa between 1 (inclusive) and 10 (exclusive).'
+  StyleGuide: '#exponential-notation'
+  Enabled: true
+  EnforcedStyle: scientific
+
 Style/FrozenStringLiteralComment:
   Description: >-
                  Add the frozen_string_literal comment to the top of files
@@ -284,6 +319,12 @@ Style/IfUnlessModifier:
 #   StyleGuide: '#single-line-blocks'
 #   Enabled: false
 
+Style/ClassAndModuleChildren:
+  Description: 'Checks style of children classes and modules.'
+  StyleGuide: '#namespace-definition'
+  Enabled: true
+  SafeAutoCorrect: true
+
 # Style/OptionHash:
 #   Description: "Don't use option hashes when you can use keyword arguments."
 #   Enabled: false
@@ -292,6 +333,21 @@ Style/Next:
   Description: 'Use `next` to skip iteration instead of a condition at the end.'
   StyleGuide: '#no-nested-conditionals'
   Enabled: false
+
+Style/RedundantFetchBlock:
+  Description: >-
+    Use `fetch(key, value)` instead of `fetch(key) { value }`
+    when value has Numeric, Rational, Complex, Symbol or String type, `false`, `true`, `nil` or is a constant.
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#hashfetch-with-argument-vs-hashfetch--block-code'
+  Enabled: true
+
+Style/RedundantRegexpCharacterClass:
+  Description: 'Checks for unnecessary single-element Regexp character classes.'
+  Enabled: true
+
+Style/RedundantRegexpEscape:
+  Description: 'Checks for redundant escapes in Regexps.'
+  Enabled: true
 
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
@@ -309,6 +365,10 @@ Style/ReturnNil:
 
 Style/SingleLineBlockParams:
   Description: 'Enforces the names of some block params.'
+  Enabled: true
+
+Style/SlicingWithRange:
+  Description: 'Checks array slicing is done with endless ranges when suitable.'
   Enabled: true
 
 Style/StringLiterals:
@@ -383,7 +443,9 @@ RSpec/DescribeClass:
   Enabled: true
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/DescribeClass
   Exclude:
+    - 'spec/requests/**/*'
     - 'spec/system/**/*'
+    - 'spec/tasks/**/*'
 
 RSpec/ExampleLength:
   Description: Checks for long examples.

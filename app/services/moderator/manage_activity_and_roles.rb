@@ -25,7 +25,6 @@ module Moderator
     end
 
     def remove_privileges
-      @user.remove_role :video_permission
       @user.remove_role :workshop_pass
       @user.remove_role :pro
       remove_mod_roles
@@ -102,7 +101,7 @@ module Moderator
 
       user.add_role :trusted
       user.update(email_community_mod_newsletter: true)
-      NotifyMailer.trusted_role_email(user).deliver
+      NotifyMailer.with(user: user).trusted_role_email.deliver_now
       MailchimpBot.new(user).manage_community_moderator_list
     end
 

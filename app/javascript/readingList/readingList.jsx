@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
-import { PropTypes } from 'preact-compat';
-import debounceAction from '../src/utils/debounceAction';
+import PropTypes from 'prop-types';
+import debounceAction from '../utilities/debounceAction';
 
 import {
   defaultState,
@@ -11,12 +11,12 @@ import {
   toggleTag,
   clearSelectedTags,
 } from '../searchableItemList/searchableItemList';
-import { ItemListItem } from '../src/components/ItemList/ItemListItem';
-import { ItemListItemArchiveButton } from '../src/components/ItemList/ItemListItemArchiveButton';
-import { ItemListLoadMoreButton } from '../src/components/ItemList/ItemListLoadMoreButton';
-import { ItemListTags } from '../src/components/ItemList/ItemListTags';
+import { ItemListItem } from './components/ItemListItem';
+import { ItemListItemArchiveButton } from './components/ItemListItemArchiveButton';
+import { ItemListLoadMoreButton } from './components/ItemListLoadMoreButton';
+import { ItemListTags } from './components/ItemListTags';
 
-const STATUS_VIEW_VALID = 'valid';
+const STATUS_VIEW_VALID = 'valid,confirmed';
 const STATUS_VIEW_ARCHIVED = 'archived';
 const READING_LIST_ARCHIVE_PATH = '/readinglist/archive';
 const READING_LIST_PATH = '/readinglist';
@@ -50,19 +50,14 @@ export class ReadingList extends Component {
   }
 
   componentDidMount() {
-    const { hitsPerPage, statusView } = this.state;
+    const { statusView } = this.state;
 
     this.performInitialSearch({
-      containerId: 'reading-list',
-      indexName: 'SecuredReactions',
-      searchOptions: {
-        hitsPerPage,
-        filters: `status:${statusView}`,
-      },
+      searchOptions: { status: `${statusView}` },
     });
   }
 
-  toggleStatusView = event => {
+  toggleStatusView = (event) => {
     event.preventDefault();
 
     const { query, selectedTags } = this.state;
@@ -135,9 +130,9 @@ export class ReadingList extends Component {
           />
           <h3>
             Hit the
-            <span className="highlight">SAVE</span>
+            <span className="btn--highlight">SAVE</span>
             or
-            <span className="highlight">
+            <span className="btn--highlight">
               Bookmark
               <span role="img" aria-label="Bookmark">
                 🔖
@@ -174,12 +169,12 @@ export class ReadingList extends Component {
     const isStatusViewValid = this.statusViewValid();
 
     const archiveButtonLabel = isStatusViewValid ? 'archive' : 'unarchive';
-    const itemsToRender = items.map(item => {
+    const itemsToRender = items.map((item) => {
       return (
         <ItemListItem item={item}>
           <ItemListItemArchiveButton
             text={archiveButtonLabel}
-            onClick={e => this.toggleArchiveStatus(e, item)}
+            onClick={(e) => this.toggleArchiveStatus(e, item)}
           />
         </ItemListItem>
       );
@@ -197,6 +192,7 @@ export class ReadingList extends Component {
         <div className="side-bar">
           <div className="widget filters">
             <input
+              aria-label="Search your list"
               onKeyUp={this.onSearchBoxType}
               placeHolder="search your list"
             />
@@ -226,7 +222,7 @@ export class ReadingList extends Component {
             <div className="status-view-toggle">
               <a
                 href={READING_LIST_ARCHIVE_PATH}
-                onClick={e => this.toggleStatusView(e)}
+                onClick={(e) => this.toggleStatusView(e)}
                 data-no-instant
               >
                 {isStatusViewValid ? 'View Archive' : 'View Reading List'}

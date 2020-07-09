@@ -7,3 +7,4 @@
 // = link administrate/application.css
 // = link administrate/application.js
 // = link katex.css
+// = link search.xml

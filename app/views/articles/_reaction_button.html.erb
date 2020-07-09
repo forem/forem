@@ -1,12 +1,14 @@
 <button
   role="checkbox"
   id="reaction-butt-<%= category %>"
-  class="article-reaction-butt <%= category %>-reaction-button"
+  class="crayons-reaction crayons-reaction--<%= category %>"
   data-category="<%= category %>"
-  alt="<%= description %>"
   title="<%= description %>">
-  <img
-    alt="<%= description %>"
-    src="<%= asset_path(image_path) %>" />
-  <span class="reaction-number" id="reaction-number-<%= category %>" alt="count"></span>
+  <span class="crayons-reaction__icon crayons-reaction__icon--inactive">
+    <%= inline_svg_tag(image_path, aria: true, class: "crayons-icon", title: description) %>
+  </span>
+  <span class="crayons-reaction__icon crayons-reaction__icon--active">
+    <%= inline_svg_tag(image_active_path, aria: true, class: "crayons-icon", title: description) %>
+  </span>
+  <span class="crayons-reaction__count" id="reaction-number-<%= category %>" alt="count"><span class="bg-base-40 opacity-25 p-2 inline-block radius-default"></span></span>
 </button>

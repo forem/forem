@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { fetchSearch } from '../../src/utils/search';
+import { fetchSearch } from '../../utilities/search';
 
 const KEYS = {
   UP: 'ArrowUp',
@@ -29,6 +29,43 @@ const LETTERS_NUMBERS = /[a-z0-9]/i;
 class Tags extends Component {
   constructor(props) {
     super(props);
+    const { listing } = props;
+
+    const listingState = listing
+      ? {
+          additionalTags: {
+            jobs: [
+              'remote',
+              'remoteoptional',
+              'lgbtbenefits',
+              'greencard',
+              'senior',
+              'junior',
+              'intermediate',
+              '401k',
+              'fulltime',
+              'contract',
+              'temp',
+            ],
+            forhire: [
+              'remote',
+              'remoteoptional',
+              'lgbtbenefits',
+              'greencard',
+              'senior',
+              'junior',
+              'intermediate',
+              '401k',
+              'fulltime',
+              'contract',
+              'temp',
+            ],
+            forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
+            events: ['conference', 'meetup'],
+            collabs: ['paid', 'temp'],
+          },
+        }
+      : null;
 
     this.state = {
       selectedIndex: -1,
@@ -37,46 +74,8 @@ class Tags extends Component {
       cursorIdx: 0,
       prevLen: 0,
       showingRulesForTag: null,
+      ...listingState,
     };
-  }
-
-  componentDidMount() {
-    const { listing } = this.props;
-    if (listing === true) {
-      this.setState({
-        additionalTags: {
-          jobs: [
-            'remote',
-            'remoteoptional',
-            'lgbtbenefits',
-            'greencard',
-            'senior',
-            'junior',
-            'intermediate',
-            '401k',
-            'fulltime',
-            'contract',
-            'temp',
-          ],
-          forhire: [
-            'remote',
-            'remoteoptional',
-            'lgbtbenefits',
-            'greencard',
-            'senior',
-            'junior',
-            'intermediate',
-            '401k',
-            'fulltime',
-            'contract',
-            'temp',
-          ],
-          forsale: ['laptop', 'desktopcomputer', 'new', 'used'],
-          events: ['conference', 'meetup'],
-          collabs: ['paid', 'temp'],
-        },
-      });
-    }
   }
 
   componentDidUpdate() {
@@ -95,8 +94,8 @@ class Tags extends Component {
     const { defaultValue } = this.props;
     return defaultValue
       .split(',')
-      .map(item => item !== undefined && item.trim())
-      .filter(item => item.length > 0);
+      .map((item) => item !== undefined && item.trim())
+      .filter((item) => item.length > 0);
   }
 
   get isTopOfSearchResults() {
@@ -159,7 +158,7 @@ class Tags extends Component {
     return [start, end];
   };
 
-  handleKeyDown = e => {
+  handleKeyDown = (e) => {
     const component = this;
     const { maxTags } = this.props;
     if (component.selected.length === maxTags && e.key === KEYS.COMMA) {
@@ -205,7 +204,7 @@ class Tags extends Component {
     }
   };
 
-  handleRulesClick = e => {
+  handleRulesClick = (e) => {
     e.preventDefault();
     const { showingRulesForTag } = this.state;
     if (showingRulesForTag === e.target.dataset.content) {
@@ -215,7 +214,7 @@ class Tags extends Component {
     }
   };
 
-  handleTagClick = e => {
+  handleTagClick = (e) => {
     if (e.target.className === 'articleform__tagsoptionrulesbutton') {
       return;
     }
@@ -229,7 +228,7 @@ class Tags extends Component {
     this.insertTag(e.currentTarget.dataset.content);
   };
 
-  handleInput = e => {
+  handleInput = (e) => {
     let { value } = e.target;
     // If we start typing immediately after a comma, add a space
     // before what we typed.
@@ -277,7 +276,7 @@ class Tags extends Component {
     return `${value.slice(0, position)} ${value.slice(position, value.length)}`;
   };
 
-  handleTagEnter = e => {
+  handleTagEnter = (e) => {
     if (e.key === KEYS.RETURN) {
       this.handleTagClick();
     }
@@ -307,7 +306,7 @@ class Tags extends Component {
 
   search(query) {
     if (query === '') {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(() => {
           this.resetSearchResults();
           resolve();
@@ -319,15 +318,15 @@ class Tags extends Component {
     const dataHash = { name: query };
     const responsePromise = fetchSearch('tags', dataHash);
 
-    return responsePromise.then(response => {
+    return responsePromise.then((response) => {
       if (listing === true) {
         const { additionalTags } = this.state;
         const { category } = this.props;
-        const additionalItems = (additionalTags[category] || []).filter(t =>
+        const additionalItems = (additionalTags[category] || []).filter((t) =>
           t.includes(query),
         );
         const resultsArray = response.result;
-        additionalItems.forEach(t => {
+        additionalItems.forEach((t) => {
           if (!resultsArray.includes(t)) {
             resultsArray.push({ name: t });
           }
@@ -348,13 +347,13 @@ class Tags extends Component {
   }
 
   moveUpInSearchResults() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       selectedIndex: prevState.selectedIndex - 1,
     }));
   }
 
   moveDownInSearchResults() {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       selectedIndex: prevState.selectedIndex + 1,
     }));
   }
@@ -368,7 +367,14 @@ class Tags extends Component {
   render() {
     let searchResultsHTML = '';
     const { searchResults, selectedIndex, showingRulesForTag } = this.state;
-    const { classPrefix, defaultValue, maxTags, listing } = this.props;
+    const {
+      classPrefix,
+      defaultValue,
+      maxTags,
+      listing,
+      fieldClassName,
+      onFocus,
+    } = this.props;
     const { activeElement } = document;
     const searchResultsRows = searchResults.map((tag, index) => (
       <div
@@ -381,7 +387,7 @@ class Tags extends Component {
         onKeyDown={this.handleTagEnter}
         data-content={tag.name}
       >
-        {tag.name}
+        <span className={`${classPrefix}__tagname`}>{tag.name}</span>
         {tag.rules_html && tag.rules_html.length > 0 ? (
           <button
             type="button"
@@ -398,6 +404,7 @@ class Tags extends Component {
           className={`${classPrefix}__tagrules--${
             showingRulesForTag === tag.name ? 'active' : 'inactive'
           }`}
+          // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: tag.rules_html }}
         />
       </div>
@@ -425,21 +432,24 @@ class Tags extends Component {
       <div className={`${classPrefix}__tagswrapper`}>
         {listing && <label htmlFor="Tags">Tags</label>}
         <input
+          data-testid="tag-input"
+          aria-label="Post Tags"
           id="tag-input"
           type="text"
-          ref={t => {
+          ref={(t) => {
             this.textArea = t;
             return this.textArea;
           }}
-          className={`${classPrefix}__tags`}
-          name="classified_listing[tag_list]"
-          placeholder={`${maxTags} tags max, comma separated, no spaces or special characters`}
+          className={`${`${fieldClassName} ${classPrefix}`}__tags`}
+          name="listing[tag_list]"
+          placeholder={`Add up to ${maxTags} tags...`}
           autoComplete="off"
           value={defaultValue}
           onInput={this.handleInput}
           onKeyDown={this.handleKeyDown}
           onBlur={this.handleFocusChange}
-          onFocus={this.handleFocusChange}
+          onFocus={onFocus}
+          pattern={`${LETTERS_NUMBERS}`}
         />
         {searchResultsHTML}
       </div>
@@ -452,8 +462,10 @@ Tags.propTypes = {
   onInput: PropTypes.func.isRequired,
   maxTags: PropTypes.number.isRequired,
   classPrefix: PropTypes.string.isRequired,
+  fieldClassName: PropTypes.string.isRequired,
   listing: PropTypes.string.isRequired,
   category: PropTypes.string.isRequired,
+  onFocus: PropTypes.func.isRequired,
 };
 
 export default Tags;

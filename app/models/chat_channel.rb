@@ -1,21 +1,35 @@
 class ChatChannel < ApplicationRecord
   attr_accessor :current_user, :usernames_string
 
+  resourcify
+
+  CHANNEL_TYPES = %w[open invite_only direct].freeze
+  STATUSES = %w[active inactive blocked].freeze
+
   has_many :messages, dependent: :destroy
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :users, through: :chat_channel_memberships
 
-  has_many :active_memberships, -> { where status: "active" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
-  has_many :pending_memberships, -> { where status: "pending" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
-  has_many :rejected_memberships, -> { where status: "rejected" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :active_memberships, lambda {
+                                  where status: "active"
+                                }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :pending_memberships, lambda {
+                                   where status: "pending"
+                                 }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :rejected_memberships, lambda {
+                                    where status: "rejected"
+                                  }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :mod_memberships, -> { where role: "mod" }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
+  has_many :requested_memberships, lambda {
+                                     where status: "joining_request"
+                                   }, class_name: "ChatChannelMembership", inverse_of: :chat_channel
   has_many :active_users, through: :active_memberships, class_name: "User", source: :user
   has_many :pending_users, through: :pending_memberships, class_name: "User", source: :user
   has_many :rejected_users, through: :rejected_memberships, class_name: "User", source: :user
   has_many :mod_users, through: :mod_memberships, class_name: "User", source: :user
 
-  validates :channel_type, presence: true, inclusion: { in: %w[open invite_only direct] }
-  validates :status, presence: true, inclusion: { in: %w[active inactive blocked] }
+  validates :channel_type, presence: true, inclusion: { in: CHANNEL_TYPES }
+  validates :status, presence: true, inclusion: { in: STATUSES }
   validates :slug, uniqueness: true, presence: true
   validates :description, length: { maximum: 200 }, allow_blank: true
 
@@ -35,6 +49,10 @@ class ChatChannel < ApplicationRecord
     channel_type != "direct"
   end
 
+  def private_org_channel?
+    channel_name.to_s.ends_with?(" private group chat") # e.g. @devteam private group chat
+  end
+
   def clear_channel
     messages.destroy_all
     Pusher.trigger(pusher_channels, "channel-cleared", { chat_channel_id: id }.to_json)
@@ -49,15 +67,20 @@ class ChatChannel < ApplicationRecord
 
   def last_opened_at(user = nil)
     user ||= current_user
-    chat_channel_memberships.where(user_id: user.id).pluck(:last_opened_at).first
+    chat_channel_memberships.where(user_id: user.id).pick(:last_opened_at)
   end
 
   class << self
     def create_with_users(users:, channel_type: "direct", contrived_name: "New Channel", membership_role: "member")
-      raise "Invalid direct channel" if users.size != 2 && channel_type == "direct"
+      raise "Invalid direct channel" if invalid_direct_channel?(users, channel_type)
 
       usernames = users.map(&:username).sort
-      slug = channel_type == "direct" ? usernames.join("/") : contrived_name.to_s.parameterize + "-" + rand(100_000).to_s(26)
+      slug = if channel_type == "direct"
+               usernames.join("/")
+             else
+               "#{contrived_name.to_s.parameterize}-#{rand(100_000).to_s(26)}"
+             end
+
       contrived_name = "Direct chat between " + usernames.join(" and ") if channel_type == "direct"
       channel = find_or_create_chat_channel(channel_type, slug, contrived_name)
       if channel_type == "direct"
@@ -67,8 +90,6 @@ class ChatChannel < ApplicationRecord
       end
       channel
     end
-
-    private
 
     def find_or_create_chat_channel(channel_type, slug, contrived_name)
       channel = ChatChannel.find_by(slug: slug)
@@ -88,12 +109,23 @@ class ChatChannel < ApplicationRecord
       end
       channel
     end
+
+    def invalid_direct_channel?(users, channel_type)
+      (users.size != 2 || users.map(&:id).uniq.count < 2) && channel_type == "direct"
+    end
   end
 
   def add_users(users)
-    Array(users).each do |user|
-      ChatChannelMembership.find_or_create_by!(user_id: user.id, chat_channel_id: id)
+    now = Time.current
+    users_params = Array.wrap(users).map do |user|
+      { user_id: user.id, chat_channel_id: id, created_at: now, updated_at: now }
     end
+
+    # memberships that are not unique are automatically skipped
+    ChatChannelMembership.insert_all(
+      users_params,
+      unique_by: :index_chat_channel_memberships_on_chat_channel_id_and_user_id,
+    )
   end
 
   def invite_users(users:, membership_role: "member", inviter: nil)
@@ -102,13 +134,14 @@ class ChatChannel < ApplicationRecord
       existing_membership = ChatChannelMembership.find_by(user_id: user.id, chat_channel_id: id)
       if existing_membership.present? && %w[active pending].exclude?(existing_membership.status)
         if existing_membership.update(status: "pending", role: membership_role)
-          NotifyMailer.channel_invite_email(existing_membership, inviter).deliver_later
+          NotifyMailer.with(membership: existing_membership, inviter: inviter).channel_invite_email.deliver_later
           invitation_sent += 1
         end
       else
-        membership = ChatChannelMembership.create(user_id: user.id, chat_channel_id: id, role: membership_role, status: "pending")
+        membership = ChatChannelMembership.create(user_id: user.id, chat_channel_id: id, role: membership_role,
+                                                  status: "pending")
         if membership.persisted?
-          NotifyMailer.channel_invite_email(membership, inviter).deliver_later
+          NotifyMailer.with(membership: membership, inviter: inviter).channel_invite_email.deliver_later
           invitation_sent += 1
         end
       end
@@ -117,7 +150,7 @@ class ChatChannel < ApplicationRecord
   end
 
   def remove_user(user)
-    chat_channel_memberships.where(user: user).destroy_all
+    chat_channel_memberships.destroy_by(user: user)
   end
 
   def pusher_channels

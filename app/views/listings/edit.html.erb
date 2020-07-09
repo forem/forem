@@ -1,0 +1,82 @@
+<% title "Edit Listing" %>
+
+<div class="listings-container listings-form-container">
+  <%= form_for(@listing) do |f| %>
+    <header>
+      <a href="/listings/dashboard" class="listings-back-button">&lt; return to listings dashboard</a>
+      <h2>You can only edit title/body/tags of drafts or within the first 24 hours of listing or bumping</h2>
+    </header>
+    <div class="listings-form-inner">
+      <%= render partial: "form_errors", locals: { listing: @listing } %>
+
+      <% if (@listing.bumped_at && @listing.bumped_at > 24.hours.ago) || @listing.updated_at && !@listing.published %>
+        <div class="field">
+          <%= f.label "title", "Title" %>
+          <%= f.text_field "title", maxlength: 128, placeholder: "128 characters max, plain text" %>
+        </div>
+        <div class="field">
+          <%= f.label "body_markdown", "Body Markdown" %>
+          <%= f.text_area "body_markdown", maxlength: 400, placeholder: "400 characters max, 12 line break max, no images allowed" %>
+        </div>
+        <div class="field">
+          <%= f.label "tag_list", "Tags" %>
+          <%= f.text_field "tag_list", value: @listing.cached_tag_list, placeholder: "8 tags max, comma separated, no spaces or special characters" %>
+        </div>
+        <div class="field">
+          <%= f.label "location", "Location" %>
+          <%= f.text_field "location", maxlength: 32, placeholder: "32 characters max, plain text" %>
+        </div>
+        <div class="field">
+          <%= f.label "expires_at", "Custom Expire Date" %>
+          <%= f.date_field "expires_at", min: Date.tomorrow, max: @listing.natural_expiration_date %>
+        </div>
+        <div class="field">
+          <%= f.label "contact_via_connect", "Allow Users to Message Me Via In-App Chat (#{community_name} Connect)" %>
+          <%= f.check_box "contact_via_connect" %>
+        </div>
+        <% if @listing.published %>
+          <%= f.submit "Update Listings Info", class: "cta cta-main-listing-form" %>
+        <% else %>
+          <%= f.submit "Update Draft", class: "cta cta-main-listing-form cta-draft" %>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+  <% if @listing.bumped_at %>
+    <%= form_for(@listing) do |f| %>
+      <header>
+        <a href="<%= @listing.path %>" class="listings-back-button" style="font-size: 1.1em;">Last Published/Bumped: <%= time_ago_in_words @listing.bumped_at %> ago</a>
+        <h2>You can bump your listing for the same price as the original listing</h2>
+      </header>
+      <div class="listing-form-inner">
+        <% if (@listing.natural_expiration_date) < Date.today %>
+          <h4>
+            (Expired <%= time_ago_in_words @listing.natural_expiration_date %> ago)
+          </h4>
+        <% else %>
+          <h4>
+            (Expires in <%= time_ago_in_words @listing.natural_expiration_date %>)
+          </h4>
+        <% end %>
+        <input type="hidden" name="listing[action]" value="bump" />
+        <%= f.submit "Bump Listing", class: "cta cta-main-listing-form" %>
+      </div>
+    <% end %>
+  <% end %>
+  <%= form_for(@listing) do |f| %>
+    <div class="listing-form-inner">
+      <% unless @listing.published %>
+        <h2 style="text-align: center; margin-top: 15px;">
+          This listing is not published
+        </h2>
+      <% end %>
+      <% if @listing.published == false %>
+        <input type="hidden" name="listing[action]" value="publish" />
+        <%= f.submit "Publish Listing", class: "cta listings-publish cta-main-listing-form" %>
+      <% else %>
+        <input type="hidden" name="listing[action]" value="unpublish" />
+        <%= f.submit "Unpublish Listing", class: "cta listings-unpublish cta-main-listing-form" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

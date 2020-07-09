@@ -6,7 +6,7 @@ RSpec.describe CacheBuster, type: :labor do
   let(:article) { create(:article, user_id: user.id) }
   let(:comment) { create(:comment, user_id: user.id, commentable: article) }
   let(:organization) { create(:organization) }
-  let(:listing) { create(:classified_listing, user_id: user.id, category: "cfp") }
+  let(:listing) { create(:listing, user_id: user.id) }
   let(:podcast) { create(:podcast) }
   let(:podcast_episode) { create(:podcast_episode, podcast_id: podcast.id) }
   let(:tag) { create(:tag) }
@@ -86,9 +86,9 @@ RSpec.describe CacheBuster, type: :labor do
     end
   end
 
-  describe "#bust_classified_listings" do
-    it "busts classified listings" do
-      expect { cache_buster.bust_classified_listings(listing) }.not_to raise_error
+  describe "#bust_listings" do
+    it "busts listings" do
+      expect { cache_buster.bust_listings(listing) }.not_to raise_error
     end
   end
 
@@ -96,9 +96,9 @@ RSpec.describe CacheBuster, type: :labor do
     it "busts a user" do
       allow(cache_buster).to receive(:bust)
       cache_buster.bust_user(user)
-      expect(cache_buster).to have_received(:bust).with("/" + user.username.to_s)
-      expect(cache_buster).to have_received(:bust).with("/" + user.username.to_s + "/comments?i=i")
-      expect(cache_buster).to have_received(:bust).with("/feed/" + user.username.to_s)
+      expect(cache_buster).to have_received(:bust).with("/#{user.username}")
+      expect(cache_buster).to have_received(:bust).with("/#{user.username}/comments?i=i")
+      expect(cache_buster).to have_received(:bust).with("/feed/#{user.username}")
     end
   end
 end

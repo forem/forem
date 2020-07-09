@@ -21,7 +21,7 @@ module Redcarpet
         @options[:link_attributes]&.each do |attribute, value|
           link_attributes += %( #{attribute}="#{value}")
         end
-        if (/https?:\/\/[\S]+/.match? link) || link.nil?
+        if (/https?:\/\/\S+/.match? link) || link.nil?
           %(<a href="#{link}"#{link_attributes}>#{content}</a>)
         elsif /\.{1}/.match? link
           %(<a href="//#{link}"#{link_attributes}>#{content}</a>)

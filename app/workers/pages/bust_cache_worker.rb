@@ -1,9 +1,5 @@
 module Pages
-  class BustCacheWorker
-    include Sidekiq::Worker
-
-    sidekiq_options queue: :high_priority, retry: 10
-
+  class BustCacheWorker < BustCacheBaseWorker
     def perform(slug, cache_buster = "CacheBuster")
       return if slug.blank?
 

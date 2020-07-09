@@ -7,7 +7,6 @@ import {
   podcastEpisodeArticle,
   assetPath,
 } from '../__tests__/utilities/articleUtilities';
-import { articleDecorator } from './articleDecorator';
 
 import '../../../assets/stylesheets/articles.scss';
 
@@ -22,8 +21,8 @@ const commonProps = {
 };
 
 export default {
-  title: 'App Components/Article/Podcast',
-  decorators: [withKnobs, articleDecorator],
+  title: '4_App Components/Article/Podcast',
+  decorators: [withKnobs],
 };
 
 export const Podcast = () => (

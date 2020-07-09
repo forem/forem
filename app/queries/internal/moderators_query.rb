@@ -14,7 +14,7 @@ module Internal
                      role_id_for(:trusted),
                    ).order("users.comments_count DESC")
                  else
-                   relation.joins(:users_roles).
+                   relation.joins(:roles).
                      where(users_roles: { role_id: role_id_for(state) })
                  end
 

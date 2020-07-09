@@ -1,18 +1,49 @@
-class Internal::OrganizationsController < Internal::ApplicationController
-  layout "internal"
+module Internal
+  class OrganizationsController < Internal::ApplicationController
+    layout "internal"
 
-  def index
-    @organizations = Organization.order("name DESC").page(params[:page]).per(50)
+    CREDIT_ACTIONS = {
+      add: :add_to,
+      remove: :remove_from
+    }.with_indifferent_access.freeze
 
-    return if params[:search].blank?
+    def index
+      @organizations = Organization.order(name: :desc).page(params[:page]).per(50)
 
-    @organizations = @organizations.where(
-      "name ILIKE ?",
-      "%#{params[:search].strip}%",
-    )
-  end
+      return if params[:search].blank?
 
-  def show
-    @organization = Organization.find(params[:id])
+      @organizations = @organizations.where(
+        "name ILIKE ?",
+        "%#{params[:search].strip}%",
+      )
+    end
+
+    def show
+      @organization = Organization.find(params[:id])
+    end
+
+    def update_org_credits
+      org = Organization.find(params[:id])
+      amount = params[:credits].to_i
+      update_action = CREDIT_ACTIONS.fetch(params[:credit_action])
+
+      Credit.public_send(update_action, org, amount)
+      add_note(org)
+
+      flash[:notice] = "Sucessfully updated credits"
+      redirect_to internal_organization_path(org)
+    end
+
+    private
+
+    def add_note(org)
+      Note.create(
+        author_id: current_user.id,
+        noteable_id: org.id,
+        noteable_type: "Organization",
+        reason: "misc_note",
+        content: params[:note],
+      )
+    end
   end
 end

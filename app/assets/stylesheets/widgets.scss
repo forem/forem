@@ -7,7 +7,8 @@
 .sidebar-profile {
   @include sidebar-link;
   margin: 0;
-  margin-bottom: $su-2;
+  margin-bottom: var(--su-2);
+  padding: var(--su-2);
   display: flex;
   align-items: center;
 
@@ -106,6 +107,8 @@
       padding-bottom: 10px;
     }
     .podcast-pic {
+      display: flex;
+      align-items: center;
       position: relative;
       padding: 5px 0px;
       border-top-left-radius: 100px;
@@ -128,6 +131,7 @@
           font-size: 14px;
           line-height: 15px;
           display: block;
+          padding-left: 2px;
         }
       }
       &:hover {
@@ -286,7 +290,7 @@
       color: $medium-gray;
     }
     .widget-listing-title {
-      font-family: $helvetica;
+      font-family: var(--ff-default);
       font-weight: 500;
       margin-bottom: 8px;
     }
@@ -418,23 +422,29 @@
   }
 }
 
+.query-filter-button {
+  box-sizing: border-box;
+  display: inline-block;
+  padding: var(--su-2) 0;
+  width: 100%;
+}
+
 // Sidebar sponsors
 .sidebar-sponsor {
   color: var(--card-color-tertiary);
   img {
     width: 100%;
     max-width: 140px;
-    margin-bottom: $su-2;
+    margin-bottom: var(--su-2);
   }
 }
 
 // Left Side bar navigation links
 // Pulling this out of context because Nick says so: https://github.com/thepracticaldev/dev.to/pull/5918/commits/f1642e62accbdaff72dc7762e1e1ffd4e40027b0
 .sidebar-nav-element {
-  color: $black;
   display: block;
   position: relative;
-  @media screen and (min-width: 950px) {
+  @media screen and (min-width: $breakpoint-m) {
     .sidebar-nav-link-follow {
       display: none;
     }
@@ -468,15 +478,9 @@
   }
   a.sidebar-nav-link-follow {
     position: absolute;
-    color: $black;
     right: 5px;
     top: 50%;
     transform: translateY(-50%);
-    text-align: center;
-    border-radius: 3px;
-    font-weight: 900;
-    font-size: 0.8em;
-    padding: 2px 8px;
   }
 }
 
@@ -499,5 +503,15 @@
     @include sidebar-link;
     font-size: 0.9em;
     color: var(--link-color-secondary);
+  }
+}
+
+.crayons-sponsorship-widget {
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    display: inline-block;
+    vertical-align: middle;
   }
 }

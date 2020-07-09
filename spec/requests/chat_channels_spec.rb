@@ -51,6 +51,17 @@ RSpec.describe "ChatChannels", type: :request do
     end
   end
 
+  describe "get /chat_channels?state=joining_request" do
+    it "returns joining request channels" do
+      membership = ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id,
+                                                status: "joining_request", role: "mod")
+      membership.chat_channel.update(discoverable: true)
+      sign_in user
+      get "/chat_channels?state=joining_request"
+      expect(response.body).to include("\"member_name\":\"#{membership.user.username}\"")
+    end
+  end
+
   describe "get /chat_channels?state=unopened_ids" do
     it "returns unopened chat channel ids" do
       direct_channel.add_users [user]
@@ -166,6 +177,45 @@ RSpec.describe "ChatChannels", type: :request do
     end
   end
 
+  describe "PATCH /chat_channels/update_channel/:id" do
+    it "updates chat channel for valid user" do
+      user.add_role(:super_admin)
+      membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
+      membership.update(role: "mod")
+      patch "/chat_channels/update_channel/#{chat_channel.id}", params: {
+        chat_channel: {
+          channel_name: "Hello Channel",
+          slug: "hello-channelly"
+        }
+      }
+
+      expect(response.status).to eq(200)
+      expect(ChatChannel.last.slug).to eq("hello-channelly")
+    end
+
+    it "un-authorized users" do
+      expect do
+        patch "/chat_channels/update_channel/#{chat_channel.id}", params: {
+          chat_channel: {
+            channel_name: "Hello Channel",
+            slug: "hello-channelly"
+          }
+        }
+      end.to raise_error(Pundit::NotAuthorizedError)
+    end
+
+    it "returns errors if channel is invalid" do
+      # slug should be taken
+      user.add_role(:super_admin)
+      membership = chat_channel.chat_channel_memberships.where(user_id: user.id).last
+      membership.update(role: "mod")
+      patch "/chat_channels/update_channel/#{chat_channel.id}", params: {
+        chat_channel: { channel_name: "Hello Channel", slug: invite_channel.slug }
+      }
+      expect(ChatChannel.last.slug).not_to eq("hello-channelly")
+    end
+  end
+
   describe "POST /chat_channels/:id/moderate" do
     it "raises NotAuthorizedError if user is not logged in" do
       expect do
@@ -236,6 +286,13 @@ RSpec.describe "ChatChannels", type: :request do
       post "/chat_channels/create_chat",
            params: { user_id: user_open_inbox.id }
       expect(user_open_inbox.chat_channel_memberships.size).to eq(1)
+    end
+
+    it "returns error message if create_with_users fails" do
+      allow(ChatChannel).to receive(:create_with_users).and_raise(StandardError.new("Blocked"))
+      post "/chat_channels/create_chat",
+           params: { user_id: user_open_inbox.id }
+      expect(response.parsed_body["message"]).to eq("Blocked")
     end
   end
 

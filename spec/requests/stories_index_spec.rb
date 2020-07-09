@@ -1,12 +1,21 @@
 require "rails_helper"
 
+RSpec.shared_examples "redirects to the lowercase route" do
+  context "when a path contains uppercase characters" do
+    it "redirects to the lowercase route" do
+      get path
+      expect(response).to have_http_status(:moved_permanently)
+      expect(response).to redirect_to(path.downcase)
+    end
+  end
+end
+
 RSpec.describe "StoriesIndex", type: :request do
   describe "GET stories index" do
     it "renders page with article list" do
       article = create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
@@ -19,7 +28,6 @@ RSpec.describe "StoriesIndex", type: :request do
       create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include("min read")
     end
 
@@ -79,7 +87,7 @@ RSpec.describe "StoriesIndex", type: :request do
 
     it "shows listings" do
       user = create(:user)
-      listing = create(:classified_listing, user_id: user.id)
+      listing = create(:listing, user_id: user.id)
       get "/"
       expect(response.body).to include(CGI.escapeHTML(listing.title))
     end
@@ -90,6 +98,28 @@ RSpec.describe "StoriesIndex", type: :request do
 
       expected_surrogate_key_headers = %w[main_app_home_page]
       expect(response.headers["Surrogate-Key"].split(", ")).to match_array(expected_surrogate_key_headers)
+    end
+
+    it "shows default meta keywords" do
+      SiteConfig.meta_keywords = { default: "cool developers, civil engineers" }
+      get "/"
+      expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
+    end
+
+    it "shows only one cover if basic feed style" do
+      create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
+
+      SiteConfig.feed_style = "basic"
+      get "/"
+      expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be 1
+    end
+
+    it "shows multiple cover images if rich feed style" do
+      create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
+
+      SiteConfig.feed_style = "rich"
+      get "/"
+      expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be > 1
     end
 
     context "with campaign hero" do
@@ -132,9 +162,9 @@ RSpec.describe "StoriesIndex", type: :request do
         SiteConfig.campaign_featured_tags = "shecoded,theycoded"
 
         a_body = "---\ntitle: Super-sheep#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
-        create(:article, approved: true, body_markdown: a_body)
+        create(:article, approved: true, body_markdown: a_body, score: 1)
         u_body = "---\ntitle: Unapproved-post#{rand(1000)}\npublished: true\ntags: heyheyhey,shecoded\n---\n\nHello"
-        create(:article, approved: false, body_markdown: u_body)
+        create(:article, approved: false, body_markdown: u_body, score: 1)
       end
 
       it "doesn't display posts with the campaign tags when sidebar is disabled" do
@@ -143,16 +173,46 @@ RSpec.describe "StoriesIndex", type: :request do
         expect(response.body).not_to include(CGI.escapeHTML("Super-sheep"))
       end
 
-      it "displays posts with the campaign tags when sidebar is enabled" do
+      it "doesn't display low-score posts" do
         SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_articles_require_approval = true
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
+      end
+
+      it "doesn't display unapproved posts" do
+        SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_articles_require_approval = true
+        Article.last.update_column(:score, -2)
+        get "/"
+        expect(response.body).not_to include(CGI.escapeHTML("Unapproved-post"))
+      end
+
+      it "displays unapproved post if approval is not required" do
+        SiteConfig.campaign_sidebar_enabled = true
+        get "/"
+        expect(response.body).to include(CGI.escapeHTML("Unapproved-post"))
       end
 
       it "displays only approved posts with the campaign tags" do
         SiteConfig.campaign_sidebar_enabled = false
         get "/"
         expect(response.body).not_to include(CGI.escapeHTML("Super-puper"))
+      end
+
+      it "displays sidebar url if campaign_url is set" do
+        SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_url = "https://campaign-lander.com"
+        SiteConfig.campaign_sidebar_image = "https://example.com/image.png"
+        get "/"
+        expect(response.body).to include('<a href="https://campaign-lander.com"')
+      end
+
+      it "does not display sidebar url if image is not present is set" do
+        SiteConfig.campaign_sidebar_enabled = true
+        SiteConfig.campaign_url = "https://campaign-lander.com"
+        get "/"
+        expect(response.body).not_to include('<a href="https://campaign-lander.com"')
       end
     end
   end
@@ -165,6 +225,10 @@ RSpec.describe "StoriesIndex", type: :request do
   end
 
   describe "GET podcast index" do
+    include_examples "redirects to the lowercase route" do
+      let(:path) { "/#{build(:podcast).slug.upcase}" }
+    end
+
     it "renders page with proper header" do
       podcast = create(:podcast)
       create(:podcast_episode, podcast: podcast)
@@ -234,6 +298,7 @@ RSpec.describe "StoriesIndex", type: :request do
       tag2 = create(:tag, alias_for: tag.name)
       get "/t/#{tag2.name}"
       expect(response.body).to redirect_to "/t/#{tag.name}"
+      expect(response).to have_http_status(:moved_permanently)
     end
 
     it "does not render sponsor if not live" do
@@ -253,9 +318,20 @@ RSpec.describe "StoriesIndex", type: :request do
       expect(response.body).to include(sponsorship.blurb_html)
     end
 
+    it "shows meta keywords" do
+      SiteConfig.meta_keywords = { tag: "software engineering, ruby" }
+      get "/t/#{tag.name}"
+      expect(response.body).to include("<meta name=\"keywords\" content=\"software engineering, ruby, #{tag.name}\">")
+    end
+
     context "with user signed in" do
       before do
         sign_in user
+      end
+
+      it "shows tags to signed-in users" do
+        get "/t/#{tag.name}"
+        expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
       end
 
       it "has mod-action-button" do
@@ -278,6 +354,12 @@ RSpec.describe "StoriesIndex", type: :request do
     context "without user signed in" do
       let(:tag) { create(:tag) }
 
+      it "shows sign-in notice to non-signed-in users" do
+        get "/t/#{tag.name}"
+        expect(response.body).not_to include("crayons-tabs__item crayons-tabs__item--current")
+        expect(response.body).to include("for the ability sort posts by")
+      end
+
       it "does not render pagination" do
         get "/t/#{tag.name}"
         expect(response.body).not_to include('<span class="olderposts-pagenumber">')
@@ -293,6 +375,18 @@ RSpec.describe "StoriesIndex", type: :request do
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}/page/2"
         expect(response.body).not_to include('<div id="sidebar-wrapper-right"')
+      end
+
+      it "renders proper page title for page 1" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}/page/1"
+        expect(response.body).to include("<title>#{tag.name.capitalize} - ")
+      end
+
+      it "renders proper page title for page 2" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}/page/2"
+        expect(response.body).to include("<title>#{tag.name.capitalize} Page 2 - ")
       end
 
       it "does not include current page link" do
@@ -313,8 +407,22 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "renders proper canonical url for page 2" do
         get "/t/#{tag.name}/page/2"
-        expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />")
+
+        expected_tag = "<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />"
+        expect(response.body).to include(expected_tag)
       end
+    end
+  end
+
+  describe "GET user_path" do
+    include_examples "redirects to the lowercase route" do
+      let(:path) { "/#{build(:user).username.upcase}" }
+    end
+  end
+
+  describe "GET organization_path" do
+    include_examples "redirects to the lowercase route" do
+      let(:path) { "/#{build(:organization).slug.upcase}" }
     end
   end
 end

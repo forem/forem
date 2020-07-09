@@ -1,9 +1,10 @@
 import { h } from 'preact';
-
-import '../../../storybook-utiltiies/designSystem.scss';
+import '../../../storybook-utilities/designSystem.scss';
+import notes from './main-navigation.md';
 
 export default {
-  title: 'Components/Navigation/Main Navigation/HTML',
+  title: '3_Components/Navigation/Main Navigation/HTML',
+  parameters: { notes },
 };
 
 export const Default = () => (

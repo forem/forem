@@ -8,7 +8,7 @@ module BadgeAchievements
       badge_achievement = BadgeAchievement.find_by(id: badge_achievement_id)
       return unless badge_achievement
 
-      NotifyMailer.new_badge_email(badge_achievement).deliver_now
+      NotifyMailer.with(badge_achievement: badge_achievement).new_badge_email.deliver_now
     end
   end
 end

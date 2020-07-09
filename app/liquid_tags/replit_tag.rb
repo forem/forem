@@ -1,6 +1,6 @@
 class ReplitTag < LiquidTagBase
   PARTIAL = "liquids/replit".freeze
-  def initialize(tag_name, id, tokens)
+  def initialize(_tag_name, id, _parse_context)
     super
     @id = parse_id(id)
   end
@@ -24,7 +24,7 @@ class ReplitTag < LiquidTagBase
   end
 
   def valid_id?(id)
-    id =~ /\A\@[\w]{2,15}\/[a-zA-Z0-9\-]{0,60}\Z/
+    id =~ /\A@\w{2,15}\/[a-zA-Z0-9\-]{0,60}\Z/
   end
 end
 

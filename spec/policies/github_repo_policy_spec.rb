@@ -3,37 +3,35 @@ require "rails_helper"
 RSpec.describe GithubRepoPolicy, type: :policy do
   subject { described_class.new(user, github_repo) }
 
-  let_it_be(:github_repo) { create(:github_repo) }
-  let(:valid_attributes) { %i[github_id_code] }
-
   context "when user is not signed in" do
     let(:user) { nil }
+    let(:github_repo) { build(:github_repo, user: user) }
 
     it { within_block_is_expected.to raise_error(Pundit::NotAuthorizedError) }
   end
 
-  context "when user is not the owner" do
-    let!(:user) { create(:user) }
+  context "when the user is not authenticated through GitHub" do
+    let(:user) { build(:user) }
+    let(:github_repo) { build(:github_repo, user: user) }
 
-    it { is_expected.to permit_actions(%i[create]) }
-    it { is_expected.to forbid_actions(%i[update]) }
-
-    context "when user is banned" do
-      before { user.add_role(:banned) }
-
-      it { is_expected.to forbid_actions(%i[create update]) }
-    end
+    it { is_expected.to forbid_actions(%i[index update_or_create]) }
   end
 
-  context "when user is the owner" do
-    let(:user) { github_repo.user }
+  context "when the user is authenticated through GitHub" do
+    let(:user) { create(:user, :with_identity, identities: %i[github]) }
+    let(:github_repo) { build(:github_repo, user: user) }
 
-    it { is_expected.to permit_actions(%i[create update]) }
-
-    context "when user is banned" do
-      let(:user) { build(:user, :banned) }
-
-      it { is_expected.to forbid_actions(%i[create update]) }
+    before do
+      omniauth_mock_github_payload
     end
+
+    it { is_expected.to permit_actions(%i[index update_or_create]) }
+  end
+
+  context "when user is banned" do
+    let(:user) { build(:user, :banned) }
+    let(:github_repo) { build(:github_repo, user: user) }
+
+    it { is_expected.to forbid_actions(%i[index update_or_create]) }
   end
 end

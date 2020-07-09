@@ -11,7 +11,7 @@ class ApiSecretsController < ApplicationController
     if @secret.save
       flash[:notice] = "Your API Key has been generated: #{@secret.secret}"
     else
-      flash[:error] = @secret.errors.full_messages.to_sentence
+      flash[:error] = @secret.errors_as_sentence
     end
 
     redirect_back(fallback_location: root_path)
@@ -23,7 +23,7 @@ class ApiSecretsController < ApplicationController
     if @secret.destroy
       flash[:notice] = "Your API Key has been revoked."
     else
-      flash[:error] = "An error occurred. Please try again or send an email to: #{SiteConfig.default_site_email}"
+      flash[:error] = "An error occurred. Please try again or send an email to: #{SiteConfig.email_addresses[:default]}"
     end
 
     redirect_back(fallback_location: root_path)

@@ -1,10 +1,19 @@
 require "rails_helper"
 
 RSpec.describe Comments::SendEmailNotificationWorker, type: :worker do
+  let(:worker) { subject }
+  let(:mailer_class) { NotifyMailer }
+  let(:mailer) { double }
+  let(:message_delivery) { double }
+
   include_examples "#enqueues_on_correct_queue", "mailers", 1
 
-  describe "#perform" do
-    let(:worker) { subject }
+  describe "#perform_now" do
+    before do
+      allow(mailer_class).to receive(:with).and_return(mailer)
+      allow(mailer).to receive(:new_reply_email).and_return(message_delivery)
+      allow(message_delivery).to receive(:deliver_now)
+    end
 
     context "with comment" do
       let_it_be(:comment) { double }
@@ -14,14 +23,11 @@ RSpec.describe Comments::SendEmailNotificationWorker, type: :worker do
       end
 
       it "sends reply email" do
-        mailer = double
-        allow(mailer).to receive(:deliver_now)
-        allow(NotifyMailer).to receive(:new_reply_email).and_return(mailer)
-
         worker.perform(1)
 
-        expect(NotifyMailer).to have_received(:new_reply_email).with(comment)
-        expect(mailer).to have_received(:deliver_now)
+        expect(mailer_class).to have_received(:with).with(comment: comment)
+        expect(mailer).to have_received(:new_reply_email)
+        expect(message_delivery).to have_received(:deliver_now)
       end
     end
 
@@ -31,11 +37,9 @@ RSpec.describe Comments::SendEmailNotificationWorker, type: :worker do
       end
 
       it "does not call NotifyMailer" do
-        allow(NotifyMailer).to receive(:new_reply_email)
-
         worker.perform(nil)
 
-        expect(NotifyMailer).not_to have_received(:new_reply_email)
+        expect(mailer).not_to have_received(:new_reply_email)
       end
     end
   end

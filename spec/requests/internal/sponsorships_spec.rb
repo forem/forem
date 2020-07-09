@@ -23,8 +23,11 @@ RSpec.describe "/internal/sponsorships", type: :request do
   end
 
   describe "GET /internal/sponsorships/:id/edit" do
-    let(:ruby) { create(:tag, name: "ruby") }
-    let!(:sponsorship) { create(:sponsorship, organization: org, level: :tag, sponsorable: ruby, status: "pending", expires_at: Time.current) }
+    let(:ruby) { build_stubbed(:tag, name: "ruby") }
+    let!(:sponsorship) do
+      create(:sponsorship, organization: org, level: :tag, sponsorable: ruby, status: "pending",
+                           expires_at: Time.current)
+    end
 
     before do
       sign_in admin
@@ -37,8 +40,11 @@ RSpec.describe "/internal/sponsorships", type: :request do
   end
 
   describe "PUT /internal/sponsorships/:id" do
-    let(:ruby) { create(:tag, name: "ruby") }
-    let!(:sponsorship) { create(:sponsorship, organization: org, level: :tag, sponsorable: ruby, status: "pending", expires_at: Time.current) }
+    let(:ruby) { build_stubbed(:tag, name: "ruby") }
+    let!(:sponsorship) do
+      create(:sponsorship, organization: org, level: :tag, sponsorable: ruby, status: "pending",
+                           expires_at: Time.current)
+    end
     let(:valid_attributes) { { status: "live", expires_at: 1.month.from_now, blurb_html: Faker::Book.title } }
     let(:invalid_attributes) { { status: "super-live", expires_at: 1.month.from_now } }
 
@@ -72,7 +78,9 @@ RSpec.describe "/internal/sponsorships", type: :request do
   end
 
   describe "DELETE /internal/sponsorships/:id" do
-    let!(:sponsorship) { create(:sponsorship, organization: org, level: :silver, status: "live", expires_at: Time.current) }
+    let!(:sponsorship) do
+      create(:sponsorship, organization: org, level: :silver, status: "live", expires_at: Time.current)
+    end
 
     it "destroys a sponsorship" do
       sign_in admin

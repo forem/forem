@@ -2,6 +2,14 @@
 title: Admin Panel
 ---
 
+# What is the admin panel?
+
+The admin panel is a CRUD interface generated via the
+[Administrate gem](https://github.com/thoughtbot/administrate). In production,
+this is generally not used often and will be deprecated in favor of the internal
+panel (`http://localhost:3000/internal/*`). For more details, see
+[the internal guide](/internal).
+
 # Accessing the admin panel
 
 There is an admin panel located at <http://localhost:3000/admin>.
@@ -26,5 +34,5 @@ Loading development environment (Rails 5.2.3)
 [3] pry(main)> user.save!
 ```
 
-Now you'll be able to access the [administration
-panel](http://localhost:3000/admin).
+Now you'll be able to access the
+[administration panel](http://localhost:3000/admin).

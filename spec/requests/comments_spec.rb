@@ -24,6 +24,18 @@ RSpec.describe "Comments", type: :request do
       expect(response.body).to include("FULL DISCUSSION")
     end
 
+    it "renders user payment pointer if set" do
+      article.user.update_column(:payment_pointer, "test-pointer-for-comments")
+      get "#{article.path}/comments"
+      expect(response.body).to include "author-payment-pointer"
+      expect(response.body).to include "test-pointer-for-comments"
+    end
+
+    it "does not render payment pointer if not set" do
+      get "#{article.path}/comments"
+      expect(response.body).not_to include "author-payment-pointer"
+    end
+
     context "when the comment is a root" do
       it "does not display top of thread button" do
         get comment.path
@@ -286,7 +298,7 @@ RSpec.describe "Comments", type: :request do
       end
 
       it "returns json" do
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
     end
   end
@@ -320,6 +332,23 @@ RSpec.describe "Comments", type: :request do
 
   describe "PATCH /comments/:comment_id/hide" do
     include_examples "PATCH /comments/:comment_id/hide or unhide", path: "hide", hidden: "true"
+
+    context "with notifications" do
+      let(:user2) { create(:user) }
+      let(:article)  { create(:article, :with_notification_subscription, user: user) }
+      let(:comment)  { create(:comment, commentable: article, user: user2) }
+
+      before do
+        sign_in user
+        Notification.send_new_comment_notifications_without_delay(comment)
+      end
+
+      it "Delete notification when comment is hidden" do
+        notification = user.notifications.last
+        patch "/comments/#{comment.id}/hide", headers: { HTTP_ACCEPT: "application/json" }
+        expect(Notification.exists?(id: notification.id)).to eq(false)
+      end
+    end
   end
 
   describe "PATCH /comments/:comment_id/unhide" do

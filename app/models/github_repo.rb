@@ -2,27 +2,39 @@ class GithubRepo < ApplicationRecord
   belongs_to :user
 
   serialize :info_hash, Hash
+
   validates :name, :url, :github_id_code, presence: true
-  validates :url, uniqueness: true
+  validates :url, url: true, uniqueness: true
   validates :github_id_code, uniqueness: true
+
+  scope :featured, -> { where(featured: true) }
 
   after_save :clear_caches
   before_destroy :clear_caches
 
-  def self.find_or_create(params)
-    repo = where(github_id_code: params[:github_id_code]).
+  # Update existing repository or create a new one with given params.
+  # Repository is searched by either GitHub ID or URL.
+  def self.upsert(user, **params)
+    repo = user.github_repos.
+      where(github_id_code: params[:github_id_code]).
       or(where(url: params[:url])).
-      first_or_initialize
+      first
+    repo ||= new(params.merge(user_id: user.id))
+
     repo.update(params)
+
     repo
   end
 
   def self.update_to_latest
     where("updated_at < ?", 1.day.ago).find_each do |repo|
-      user_token = User.find_by(id: repo.user_id).identities.where(provider: "github").last.token
-      client = Octokit::Client.new(access_token: user_token)
+      user = User.find_by(id: repo.user_id)
+      next unless user
+
+      client = Github::OauthClient.for_user(user)
       begin
-        fetched_repo = client.repo(repo.info_hash[:full_name])
+        fetched_repo = client.repository(repo.info_hash[:full_name])
+
         repo.update!(
           github_id_code: fetched_repo.id,
           name: fetched_repo.name,
@@ -35,8 +47,10 @@ class GithubRepo < ApplicationRecord
           info_hash: fetched_repo.to_hash,
         )
         repo.user&.touch(:github_repos_updated_at)
-      rescue StandardError => e
-        repo.destroy if e.message.include?("404 - Not Found")
+      rescue Github::Errors::NotFound
+        repo.destroy
+      rescue StandardError
+        next
       end
     end
   end

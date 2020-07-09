@@ -2,29 +2,101 @@ version: "3"
 services:
   web:
     build: .
+    image: devto-web:latest
+    container_name: dev_web
     ports:
       - "3000:3000"
     depends_on:
+      - bundle
       - db
-      - redis
       - elasticsearch
+      - redis
+      - yarn
     environment:
       RAILS_ENV: development
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
-      YARN_INTEGRITY_ENABLED: "false"
       ELASTICSEARCH_URL: http://elasticsearch:9200
       REDIS_URL: redis://redis:6379
       REDIS_SESSIONS_URL: redis://redis:6379
+      RACK_TIMEOUT_WAIT_TIMEOUT: 10000
+      RACK_TIMEOUT_SERVICE_TIMEOUT: 10000
+      STATEMENT_TIMEOUT: 10000
     volumes:
-      - .:/usr/src/app
-    command: bundle exec rails server -b 0.0.0.0 -p 3000
+      - .:/opt/apps/devto:delegated
+      - ./.gems:/opt/apps/bundle:delegated
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "file:///opt/apps/bundle/bundle_finished", "-timeout", "2700s", "./scripts/entrypoint.sh"]
+    command: ["bundle", "exec", "rails","server","-b","0.0.0.0","-p","3000"]
+
+  bundle:
+    image: devto-web:latest
+    container_name: dev_bundle
+    environment:
+      RAILS_ENV: development
+      REDIS_SIDEKIQ_URL: redis://redis:6379
+      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    volumes:
+      - .:/opt/apps/devto:delegated
+      - ./.gems:/opt/apps/bundle:delegated
+    entrypoint: ["bash"]
+    command: ["./scripts/bundle.sh"]
+
+  yarn:
+    image: devto-web:latest
+    container_name: dev_yarn
+    environment:
+      RAILS_ENV: development
+      REDIS_SIDEKIQ_URL: redis://redis:6379
+      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    volumes:
+      - .:/opt/apps/devto:delegated
+    entrypoint: ["bash", "-c"]
+    command: ["yarn install --dev"]
+
   webpacker:
-    build: .
-    command: ./bin/webpack-dev-server
-  sidekiq:
-    build: .
-    command: bundle exec sidekiq -c 2
+    image: devto-web:latest
+    container_name: dev_webpacker
     depends_on:
+      - web
+      - yarn
+    environment:
+      RAILS_ENV: development
+      REDIS_SIDEKIQ_URL: redis://redis:6379
+      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    volumes:
+      - .:/opt/apps/devto:delegated
+      - ./.gems:/opt/apps/bundle:delegated
+    entrypoint: ["dockerize", "-wait", "file:///opt/apps/devto/node_modules/.bin/webpack-dev-server", "-timeout", "2700s"]
+    command: ["./bin/webpack-dev-server"]
+
+  seed:
+    image: devto-web:latest
+    container_name: dev_seed
+    depends_on:
+      - web
+      - redis
+      - db
+      - elasticsearch
+    environment:
+      RAILS_ENV: development
+      REDIS_SIDEKIQ_URL: redis://redis:6379
+      REDIS_URL: redis://redis:6379
+      REDIS_SESSIONS_URL: redis://redis:6379
+      DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    volumes:
+      - .:/opt/apps/devto:delegated
+      - ./.gems:/opt/apps/bundle:delegated
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://web:3000", "-timeout", "2700s"]
+    command: ["bundle", "exec", "rake","db:seed"]
+
+  sidekiq:
+    image: devto-web:latest
+    container_name: dev_sidekiq
+    depends_on:
+      - web
       - redis
       - db
       - elasticsearch
@@ -33,23 +105,35 @@ services:
       REDIS_SIDEKIQ_URL: redis://redis:6379
       DATABASE_URL: postgresql://devto:devto@db:5432/PracticalDeveloper_development
       ELASTICSEARCH_URL: http://elasticsearch:9200
+    volumes:
+      - .:/opt/apps/devto:delegated
+      - ./.gems:/opt/apps/bundle:delegated
+    entrypoint: ["dockerize", "-wait", "tcp://db:5432", "-wait", "http://elasticsearch:9200", "-wait", "tcp://redis:6379", "-wait", "http://web:3000", "-timeout", "2700s"]
+    command: ["bundle", "exec", "sidekiq","-c","2"]
+
   db:
-    image: postgres:${POSTGRES_VERSION:-9.6.15-alpine}
+    image: postgres:9.6.15-alpine
+    container_name: dev_postgresql
     environment:
       POSTGRES_USER: devto
       POSTGRES_PASSWORD: devto
       POSTGRES_DB: PracticalDeveloper_development
     ports:
       - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data:delegated
+
   redis:
     image: "redis"
+    container_name: dev_redis
     ports:
       - "6379:6379"
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
-    container_name: elasticsearch
+    container_name: dev_elasticsearch
     environment:
-      - cluster.name=docker-cluster
+      - cluster.name=devto
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
       - "discovery.type=single-node"
@@ -57,11 +141,16 @@ services:
       - xpack.monitoring.enabled=false
       - xpack.graph.enabled=false
       - xpack.watcher.enabled=false
+    volumes:
+      - es_data:/usr/share/elasticsearch/data:delegated
+    ports:
+      - "9200:9200"
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-        - ./docker_data/elasticsearch/data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
+
+volumes:
+  db_data:
+  es_data:
+

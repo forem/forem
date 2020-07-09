@@ -82,7 +82,7 @@ class MarkdownFixer
           if match.empty?
             # Double quotes that aren't already escaped will get esacped.
             # Then the whole text get warped in double quotes.
-            parsed_text = captured_text.gsub(/(?<![\\])["]/, "\\\"")
+            parsed_text = captured_text.gsub(/(?<!\\)"/, "\\\"")
             "#{section}: \"#{parsed_text}\"\n"
           else
             # if the text comes pre-warped in either single or double quotes,

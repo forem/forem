@@ -20,7 +20,7 @@
         <% end %>
           <td>
             <% if item.purchase %>
-              <%= item.purchase.class.name == "ClassifiedListing" ? "Listing" : item.purchase.class.name.titleize %>
+              <%= item.purchase.class.name == "Listing" ? "Listing" : item.purchase.class.name.titleize %>
             <% end %>
           </td>
           <td>

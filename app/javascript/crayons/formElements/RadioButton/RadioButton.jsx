@@ -1,14 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 
-export const RadioButton = ({
-  id,
-  value,
-  name,
-  className,
-  checked,
-  onClick,
-}) => {
+export const RadioButton = (props) => {
+  const { id, value, name, className, checked, onClick, ...otherProps } = props;
+
   return (
     <input
       id={id}
@@ -20,6 +15,7 @@ export const RadioButton = ({
       checked={checked}
       onClick={onClick}
       type="radio"
+      {...otherProps}
     />
   );
 };

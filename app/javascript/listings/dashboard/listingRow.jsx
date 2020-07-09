@@ -30,6 +30,7 @@ export const ListingRow = ({ listing }) => {
       className={`dashboard-listing-row ${isDraft ? 'draft' : ''} ${
         isExpired ? 'expired' : ''
       }`}
+      data-listing-id={listing.id}
     >
       {listing.organization_id && (
         <span className="listing-org">{listing.author.name}</span>
@@ -44,7 +45,7 @@ export const ListingRow = ({ listing }) => {
       {listingExpiry}
       {listing.location && <Location location={listing.location} />}
       <span className="dashboard-listing-category">
-        <a href={`/listings/${listing.category}/`}>{listing.category}</a>
+        <a href={`/listings/${listing.category}`}>{listing.category}</a>
       </span>
       <Tags tagList={listing.tag_list} />
       <ActionButtons

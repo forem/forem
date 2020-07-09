@@ -2,7 +2,7 @@ class Podcast < ApplicationRecord
   resourcify
 
   has_many :podcast_episodes
-  belongs_to :creator, class_name: "User", inverse_of: :created_podcasts, foreign_key: :creator_id, optional: true
+  belongs_to :creator, class_name: "User", inverse_of: :created_podcasts, optional: true
 
   mount_uploader :image, ProfileImageUploader
   mount_uploader :pattern_image, ProfileImageUploader
@@ -32,7 +32,9 @@ class Podcast < ApplicationRecord
     episode = PodcastEpisode.where(media_url: item.enclosure_url).
       or(PodcastEpisode.where(title: item.title)).
       or(PodcastEpisode.where(guid: item.guid.to_s)).presence
-    episode ||= PodcastEpisode.where(website_url: item.link).presence if unique_website_url?
+    # if unique_website_url? is set to true (the default value), we try to find an episode by website_url as well
+    # if unique_website_url? is set to false it usually means that website_url is the same for different episodes
+    episode ||= PodcastEpisode.where(website_url: item.link).presence if item.link.present? && unique_website_url?
     episode.to_a.first
   end
 

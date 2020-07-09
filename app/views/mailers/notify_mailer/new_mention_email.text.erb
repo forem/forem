@@ -2,4 +2,4 @@
 
 <%= ActionController::Base.helpers.strip_tags(@mentionable.processed_html.html_safe) %>
 
-View now: https://dev.to<%= @mention.mentionable.path %>
+View now: <%= app_url(@mention.mentionable.path) %>

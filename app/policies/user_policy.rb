@@ -9,6 +9,7 @@ class UserPolicy < ApplicationPolicy
     contact_consent
     currently_hacking_on
     currently_learning
+    display_announcements
     display_sponsors dribbble_url
     editor_version education email
     email_badge_notifications
@@ -28,6 +29,7 @@ class UserPolicy < ApplicationPolicy
     experience_level
     export_requested
     facebook_url
+    youtube_url
     feed_admin_publish_permission
     feed_mark_canonical
     feed_referential_link
@@ -49,6 +51,7 @@ class UserPolicy < ApplicationPolicy
     name
     password
     password_confirmation
+    payment_pointer
     permit_adjacent_sponsors
     profile_image
     stackoverflow_url
@@ -108,7 +111,7 @@ class UserPolicy < ApplicationPolicy
     OrganizationMembership.exists?(user_id: user.id, organization_id: record.id)
   end
 
-  def remove_association?
+  def remove_identity?
     current_user?
   end
 
@@ -121,7 +124,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def moderation_routes?
-    user.has_role?(:trusted) && !user.banned
+    (user.has_role?(:trusted) || minimal_admin?) && !user.banned
   end
 
   def permitted_attributes

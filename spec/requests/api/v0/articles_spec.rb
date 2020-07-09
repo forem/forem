@@ -2,7 +2,9 @@ require "rails_helper"
 
 RSpec.describe "Api::V0::Articles", type: :request do
   let_it_be_readonly(:organization) { create(:organization) } # not used by every spec but lower times overall
+  let_it_be_readonly(:tag) { create(:tag, name: "discuss") }
   let_it_be_changeable(:article) { create(:article, featured: true, tags: "discuss") }
+  before { stub_const("FlareTag::FLARE_TAG_IDS_HASH", { "discuss" => tag.id }) }
 
   describe "GET /api/articles" do
     it "returns CORS headers" do
@@ -22,7 +24,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       index_keys = %w[
         type_of id title description cover_image readable_publish_date social_image
-        tag_list tags slug path url canonical_url comments_count positive_reactions_count
+        tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp user organization flare_tag
       ]
@@ -45,7 +47,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     context "without params" do
       it "returns json response" do
         get api_articles_path
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
 
       it "returns nothing if params state=all is not found" do
@@ -215,14 +217,14 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
     context "with state param" do
       it "returns fresh articles" do
-        article.update_columns(positive_reactions_count: 1, score: 1)
+        article.update_columns(public_reactions_count: 1, score: 1)
 
         get api_articles_path(state: "fresh")
         expect(response.parsed_body.size).to eq(1)
       end
 
       it "returns rising articles" do
-        article.update_columns(positive_reactions_count: 32, score: 1, featured_number: 2.days.ago.to_i)
+        article.update_columns(public_reactions_count: 32, score: 1, featured_number: 2.days.ago.to_i)
 
         get api_articles_path(state: "rising")
         expect(response.parsed_body.size).to eq(1)
@@ -235,7 +237,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "supports pagination" do
-        create_list(:article, 2, tags: "discuss", positive_reactions_count: 1, score: 1)
+        create_list(:article, 2, tags: "discuss", public_reactions_count: 1, score: 1)
 
         get api_articles_path(state: "fresh"), params: { page: 1, per_page: 2 }
         expect(response.parsed_body.length).to eq(2)
@@ -244,7 +246,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
       end
 
       it "sets the correct edge caching surrogate key" do
-        article.update_columns(positive_reactions_count: 1, score: 1)
+        article.update_columns(public_reactions_count: 1, score: 1)
 
         get api_articles_path(state: "fresh")
         expected_key = ["articles", article.record_key].to_set
@@ -280,7 +282,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
 
       show_keys = %w[
         type_of id title description cover_image readable_publish_date social_image
-        tag_list tags slug path url canonical_url comments_count positive_reactions_count
+        tag_list tags slug path url canonical_url comments_count public_reactions_count positive_reactions_count
         collection_id created_at edited_at crossposted_at published_at last_comment_at
         published_timestamp body_html body_markdown user organization flare_tag
       ]
@@ -342,6 +344,65 @@ RSpec.describe "Api::V0::Articles", type: :request do
     end
   end
 
+  describe "GET /api/articles/:username/:slug" do
+    it "returns CORS headers" do
+      origin = "http://example.com"
+      get slug_api_articles_path(article.username, article.slug), headers: { "origin": origin }
+      expect(response).to have_http_status(:ok)
+      expect(response.headers["Access-Control-Allow-Origin"]).to eq(origin)
+      expect(response.headers["Access-Control-Allow-Methods"]).to eq("HEAD, GET, OPTIONS")
+      expect(response.headers["Access-Control-Expose-Headers"]).to be_empty
+      expect(response.headers["Access-Control-Max-Age"]).to eq(2.hours.to_i.to_s)
+    end
+
+    it "returns correct tags" do
+      get slug_api_articles_path(username: article.username, slug: article.slug)
+      expect(response.parsed_body["tags"]).to eq(article.tag_list)
+      expect(response.parsed_body["tag_list"]).to eq(article.tags[0].name)
+    end
+
+    it "returns proper article" do
+      get slug_api_articles_path(username: article.username, slug: article.slug)
+      expect(response.parsed_body).to include(
+        "title" => article.title,
+        "body_markdown" => article.body_markdown,
+        "tags" => article.decorate.cached_tag_list_array,
+      )
+    end
+
+    it "returns all the relevant datetimes" do
+      article.update_columns(
+        edited_at: 1.minute.from_now, crossposted_at: 2.minutes.ago, last_comment_at: 30.seconds.ago,
+      )
+      get slug_api_articles_path(username: article.username, slug: article.slug)
+      expect(response.parsed_body).to include(
+        "created_at" => article.created_at.utc.iso8601,
+        "edited_at" => article.edited_at.utc.iso8601,
+        "crossposted_at" => article.crossposted_at.utc.iso8601,
+        "published_at" => article.published_at.utc.iso8601,
+        "last_comment_at" => article.last_comment_at.utc.iso8601,
+      )
+    end
+
+    it "fails with an unpublished article" do
+      article.update_columns(published: false)
+      get slug_api_articles_path(username: article.username, slug: article.slug)
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "fails with an unknown article path" do
+      get slug_api_articles_path(username: "chris evan", slug: article.slug)
+      expect(response).to have_http_status(:not_found)
+    end
+
+    it "sets the correct edge caching surrogate key" do
+      get slug_api_articles_path(username: article.username, slug: article.slug)
+
+      expected_key = [article.record_key].to_set
+      expect(response.headers["surrogate-key"].split.to_set).to eq(expected_key)
+    end
+  end
+
   describe "GET /api/articles/me(/:status)" do
     context "when request is unauthenticated" do
       let(:user) { create(:user) }
@@ -371,20 +432,20 @@ RSpec.describe "Api::V0::Articles", type: :request do
         headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
 
         get me_api_articles_path, headers: headers
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
       it "returns proper response specification" do
         get me_api_articles_path, params: { access_token: access_token.token }
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
       it "returns success when requesting publiched articles with public token" do
         public_token = create(:doorkeeper_access_token, resource_owner: user, scopes: "public")
         get me_api_articles_path(status: :published), params: { access_token: public_token.token }
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
         expect(response).to have_http_status(:ok)
       end
 
@@ -442,8 +503,8 @@ RSpec.describe "Api::V0::Articles", type: :request do
   end
 
   describe "POST /api/articles" do
-    let_it_be(:api_secret) { create(:api_secret) }
-    let_it_be(:user) { api_secret.user }
+    let(:api_secret) { create(:api_secret) }
+    let(:user) { api_secret.user }
 
     context "when unauthorized" do
       it "fails with no api key" do
@@ -462,14 +523,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
         post api_articles_path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
-
-      it "fails when oauth's access_token" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        post api_articles_path, params: { article: { title: Faker::Book.title } }.to_json, headers: headers
-        expect(response).to have_http_status(:unauthorized)
-      end
     end
 
     describe "when authorized" do
@@ -479,6 +532,36 @@ RSpec.describe "Api::V0::Articles", type: :request do
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         params = default_params.merge params
         post api_articles_path, params: { article: params }.to_json, headers: headers
+      end
+
+      it "returns a 403 if :write_articles scope is missing (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "public")
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        post api_articles_path, params: { article: { title: Faker::Book.title } }.to_json, headers: headers
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "returns a 201 if :write_articles scope is provided (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "write_articles")
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        post api_articles_path, params: { article: { title: Faker::Book.title,
+                                                     body_markdown: "" } }.to_json, headers: headers
+        expect(response).to have_http_status(:created)
+      end
+
+      it "returns a 429 status code if the rate limit is reached" do
+        rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:published_article_creation, :retry_after)
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
+
+        post_article
+
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
       end
 
       it "fails if no params are given" do
@@ -732,7 +815,7 @@ RSpec.describe "Api::V0::Articles", type: :request do
     let!(:api_secret)   { create(:api_secret) }
     let!(:user)         { api_secret.user }
     let(:article)       { create(:article, user: user, published: false) }
-    let(:path)          { "/api/articles/#{article.id}" }
+    let(:path)          { api_article_path(article.id) }
     let!(:organization) { create(:organization) }
 
     describe "when unauthorized" do
@@ -752,17 +835,6 @@ RSpec.describe "Api::V0::Articles", type: :request do
         put path, headers: { "api-key" => api_secret.secret, "content-type" => "application/json" }
         expect(response).to have_http_status(:unauthorized)
       end
-
-      it "fails with oauth's access_token" do
-        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
-        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
-
-        title = Faker::Book.title
-        body_markdown = "foobar"
-        params = { title: title, body_markdown: body_markdown }
-        put path, params: { article: params }.to_json, headers: headers
-        expect(response).to have_http_status(:unauthorized)
-      end
     end
 
     describe "when authorized" do
@@ -771,6 +843,41 @@ RSpec.describe "Api::V0::Articles", type: :request do
       def put_article(**params)
         headers = { "api-key" => api_secret.secret, "content-type" => "application/json" }
         put path, params: { article: params }.to_json, headers: headers
+      end
+
+      it "returns a 403 if :write_articles scope is missing (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id)
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        title = Faker::Book.title
+        body_markdown = "foobar"
+        params = { title: title, body_markdown: body_markdown }
+        put path, params: { article: params }.to_json, headers: headers
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it "returns a 200 if :write_articles scope is provided (oauth)" do
+        access_token = create(:doorkeeper_access_token, resource_owner_id: user.id, scopes: "write_articles")
+        headers = { "authorization" => "Bearer #{access_token.token}", "content-type" => "application/json" }
+
+        title = Faker::Book.title
+        body_markdown = "foobar"
+        params = { title: title, body_markdown: body_markdown }
+        put path, params: { article: params }.to_json, headers: headers
+        expect(response).to have_http_status(:ok)
+      end
+
+      it "returns a 429 status code if the rate limit is reached" do
+        rate_limit_checker = instance_double(RateLimitChecker)
+        retry_after_val = RateLimitChecker::ACTION_LIMITERS.dig(:article_update, :retry_after)
+        rate_limit_error = RateLimitChecker::LimitReached.new(retry_after_val)
+        allow(RateLimitChecker).to receive(:new).and_return(rate_limit_checker)
+        allow(rate_limit_checker).to receive(:check_limit!).and_raise(rate_limit_error)
+
+        put_article(title: Faker::Book.title, body_markdown: "foobar")
+
+        expect(response).to have_http_status(:too_many_requests)
+        expect(response.headers["retry-after"]).to eq(retry_after_val)
       end
 
       it "returns not found if the article does not belong to the user" do

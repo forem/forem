@@ -1,13 +1,13 @@
 module Api
   module V0
     class ArticlesController < ApiController
-      before_action :authenticate_with_api_key_or_current_user!, only: %i[create update]
-      before_action :authenticate!, only: :me
-      before_action -> { doorkeeper_authorize! :public }, only: %w[index show], if: -> { doorkeeper_token }
+      before_action :authenticate!, only: %i[create update me]
+      before_action -> { doorkeeper_authorize! :public }, only: %w[index show show_by_slug], if: -> { doorkeeper_token }
+      before_action -> { doorkeeper_authorize! :write_articles }, only: %w[create update], if: -> { doorkeeper_token }
 
       before_action :validate_article_param_is_hash, only: %w[create update]
 
-      before_action :set_cache_control_headers, only: %i[index show]
+      before_action :set_cache_control_headers, only: %i[index show show_by_slug]
 
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
@@ -28,19 +28,30 @@ module Api
         set_surrogate_key_header @article.record_key
       end
 
+      def show_by_slug
+        @article = Article.published.
+          select(SHOW_ATTRIBUTES_FOR_SERIALIZATION).
+          find_by!(path: "/#{params[:username]}/#{params[:slug]}").
+          decorate
+
+        set_surrogate_key_header @article.record_key
+        render "show"
+      end
+
       def create
         @article = Articles::Creator.call(@user, article_params).decorate
 
         if @article.persisted?
           render "show", status: :created, location: @article.url
         else
-          message = @article.errors.full_messages.join(", ")
+          message = @article.errors_as_sentence
           render json: { error: message, status: 422 }, status: :unprocessable_entity
         end
       end
 
       def update
         @article = Articles::Updater.call(@user, params[:id], article_params)
+
         render "show", status: :ok
       end
 
@@ -75,7 +86,7 @@ module Api
         id user_id organization_id collection_id
         title description main_image published_at crossposted_at social_image
         cached_tag_list slug path canonical_url comments_count
-        positive_reactions_count created_at edited_at last_comment_at published
+        public_reactions_count created_at edited_at last_comment_at published
         updated_at video_thumbnail_url
       ].freeze
       private_constant :INDEX_ATTRIBUTES_FOR_SERIALIZATION
@@ -88,7 +99,7 @@ module Api
       ME_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id user_id organization_id
         title description main_image published published_at cached_tag_list
-        slug path canonical_url comments_count positive_reactions_count
+        slug path canonical_url comments_count public_reactions_count
         page_views_count crossposted_at body_markdown updated_at
       ].freeze
       private_constant :ME_ATTRIBUTES_FOR_SERIALIZATION
@@ -106,8 +117,10 @@ module Api
 
       def allowed_to_change_org_id?
         potential_user = @article&.user || @user
-        if @article.nil? || OrganizationMembership.exists?(user: potential_user, organization_id: params.dig("article", "organization_id"))
-          OrganizationMembership.exists?(user: potential_user, organization_id: params.dig("article", "organization_id"))
+        if @article.nil? || OrganizationMembership.exists?(user: potential_user,
+                                                           organization_id: params.dig("article", "organization_id"))
+          OrganizationMembership.exists?(user: potential_user,
+                                         organization_id: params.dig("article", "organization_id"))
         elsif potential_user == @user
           potential_user.org_admin?(params.dig("article", "organization_id")) ||
             @user.any_admin?

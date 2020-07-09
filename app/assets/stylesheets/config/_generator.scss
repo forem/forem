@@ -57,7 +57,7 @@
   (
     'radius',
     'border-radius',
-    ('default': $br-default, '0': 0, 'full': 9999px),
+    ('default': var(--radius), '0': 0, 'full': 9999px),
     (),
     true
   ),
@@ -170,7 +170,8 @@
       'center': center,
       'end': flex-end,
       'between': space-between,
-      'around': space-around
+      'around': space-around,
+      'stretch': stretch
     ),
     (),
     true
@@ -205,7 +206,7 @@
   ),
   (
     'grid-rows',
-    'grid-template-columns',
+    'grid-template-rows',
     (
       'none': none,
       '1': repeat(1, minmax(0, 1fr)),
@@ -225,6 +226,13 @@
       'row-dense': row dense,
       'col-dense': column dense
     ),
+    (),
+    true
+  ),
+  (
+    'grid-items',
+    'justify-items',
+    ('start': start, 'end': end, 'center': center, 'stretch': stretch),
     (),
     true
   ),
@@ -292,10 +300,11 @@
       'auto': auto,
       'unset': unset,
       '0': 0,
-      '1': $su-1,
-      '2': $su-2,
-      '3': $su-3,
-      '4': $su-4
+      '1': var(--su-1),
+      '2': var(--su-2),
+      '3': var(--su-3),
+      '4': var(--su-4),
+      '100': 100%
     ),
     (),
     true
@@ -303,7 +312,13 @@
   (
     '-top',
     'top',
-    ('1': -$su-1, '2': -$su-2, '3': -$su-3, '4': -$su-4),
+    (
+      '1': calc(var(--su-1) * -1),
+      '2': calc(var(--su-2) * -1),
+      '3': calc(var(--su-3) * -1),
+      '4': calc(var(--su-4) * -1),
+      '100': -100%
+    ),
     (),
     true
   ),
@@ -314,10 +329,11 @@
       'auto': auto,
       'unset': unset,
       '0': 0,
-      '1': $su-1,
-      '2': $su-2,
-      '3': $su-3,
-      '4': $su-4
+      '1': var(--su-1),
+      '2': var(--su-2),
+      '3': var(--su-3),
+      '4': var(--su-4),
+      '100': 100%
     ),
     (),
     true
@@ -325,7 +341,13 @@
   (
     '-bottom',
     'bottom',
-    ('1': -$su-1, '2': -$su-2, '3': -$su-3, '4': -$su-4),
+    (
+      '1': calc(var(--su-1) * -1),
+      '2': calc(var(--su-2) * -1),
+      '3': calc(var(--su-3) * -1),
+      '4': calc(var(--su-4) * -1),
+      '100': -100%
+    ),
     (),
     true
   ),
@@ -336,10 +358,11 @@
       'auto': auto,
       'unset': unset,
       '0': 0,
-      '1': $su-1,
-      '2': $su-2,
-      '3': $su-3,
-      '4': $su-4
+      '1': var(--su-1),
+      '2': var(--su-2),
+      '3': var(--su-3),
+      '4': var(--su-4),
+      '100': 100%
     ),
     (),
     true
@@ -347,7 +370,13 @@
   (
     '-left',
     'left',
-    ('1': -$su-1, '2': -$su-2, '3': -$su-3, '4': -$su-4),
+    (
+      '1': calc(var(--su-1) * -1),
+      '2': calc(var(--su-2) * -1),
+      '3': calc(var(--su-3) * -1),
+      '4': calc(var(--su-4) * -1),
+      '100': -100%
+    ),
     (),
     true
   ),
@@ -358,10 +387,11 @@
       'auto': auto,
       'unset': unset,
       '0': 0,
-      '1': $su-1,
-      '2': $su-2,
-      '3': $su-3,
-      '4': $su-4
+      '1': var(--su-1),
+      '2': var(--su-2),
+      '3': var(--su-3),
+      '4': var(--su-4),
+      '100': 100%
     ),
     (),
     true
@@ -369,7 +399,13 @@
   (
     '-right',
     'right',
-    ('1': -$su-1, '2': -$su-2, '3': -$su-3, '4': -$su-4),
+    (
+      '1': calc(var(--su-1) * -1),
+      '2': calc(var(--su-2) * -1),
+      '3': calc(var(--su-3) * -1),
+      '4': calc(var(--su-4) * -1),
+      '100': -100%
+    ),
     (),
     true
   ),
@@ -413,20 +449,57 @@
   (
     'w',
     'width',
-    ('0': 0, '25': 25%, '50': 50%, '100': 100%, 'auto': auto, 'full': 100vw),
+    (
+      '0': 0,
+      '25': 25%,
+      '50': 50%,
+      '75': 75%,
+      '100': 100%,
+      'auto': auto,
+      'full': 100vw,
+      'max': max-content
+    ),
     (),
     true
   ),
-  ('min-w', 'min-width', ('0': 0, '100': 100%), (), true),
+  ('min-w', 'min-width', ('0': 0, '100': 100%, 'unset': unset), (), true),
   (
     'h',
     'height',
-    ('0': 0, '25': 25%, '50': 50%, '100': 100%, 'auto': auto, 'full': 100vh),
+    (
+      '0': 0,
+      '25': 25%,
+      '50': 50%,
+      '75': 75%,
+      '100': 100%,
+      'auto': auto,
+      'full': 100vh,
+      'unset': unset
+    ),
     (),
     true
   ),
-  ('min-h', 'min-height', ('0': 0, '100': 100%, 'full': 100vh), (), true),
-  ('max-h', 'max-height', ('0': 0, '100': 100%, 'full': 100vh), (), true),
+  (
+    'min-h',
+    'min-height',
+    ('0': 0, '100': 100%, 'full': 100vh, 'unset': unset),
+    (),
+    true
+  ),
+  (
+    'max-h',
+    'max-height',
+    ('0': 0, '100': 100%, 'full': 100vh, 'unset': unset),
+    (),
+    true
+  ),
+  (
+    'max-w',
+    'max-width',
+    ('0': 0, '25': 25%, '50': 50%, '75': 75%, '100': 100%, 'unset': unset),
+    (),
+    true
+  ),
   ('m', 'margin', ('auto': auto, 'unset': unset, '0': 0), $spacing-units, true),
   ('-m', 'margin', $negative-spacing-units, (), true),
   (
@@ -499,7 +572,11 @@
   (
     'ff',
     'font-family',
-    ('default': $ff-default, 'accent': $ff-accent),
+    (
+      'default': var(--ff-default),
+      'accent': var(--ff-accent),
+      'serif': var(--ff-serif)
+    ),
     (),
     false
   ),
@@ -507,31 +584,37 @@
     'fs',
     'font-size',
     (
-      'xs': $fs-xs,
-      's': $fs-s,
-      'base': $fs-base,
-      'l': $fs-l,
-      'xl': $fs-xl,
-      '2xl': $fs-2xl,
-      '3xl': $fs-3xl,
-      '4xl': $fs-4xl,
-      '5xl': $fs-5xl
+      'xs': var(--fs-xs),
+      's': var(--fs-s),
+      'base': var(--fs-base),
+      'l': var(--fs-l),
+      'xl': var(--fs-xl),
+      '2xl': var(--fs-2xl),
+      '3xl': var(--fs-3xl),
+      '4xl': var(--fs-4xl),
+      '5xl': var(--fs-5xl)
     ),
     (),
     true
   ),
-  ('lh', 'line-height', ('tight': $lh-tight, 'base': $lh-base), (), true),
+  (
+    'lh',
+    'line-height',
+    ('tight': var(--lh-tight), 'base': var(--lh-base)),
+    (),
+    true
+  ),
   (
     'fw',
     'font-weight',
     (
-      'normal': $fw-normal,
-      'medium': $fw-medium,
-      'bold': $fw-bold,
-      'heavy': $fw-heavy
+      'normal': var(--fw-normal),
+      'medium': var(--fw-medium),
+      'bold': var(--fw-bold),
+      'heavy': var(--fw-heavy)
     ),
     (),
-    false
+    true
   ),
   (
     'list',
@@ -543,7 +626,7 @@
   (
     'text',
     'text-decoration',
-    ('underline': underline, 'none': none),
+    ('underline': underline, 'none': none, 'strike': line-through),
     (),
     false
   ),
@@ -562,7 +645,13 @@
   (
     'align',
     'text-align',
-    ('left': left, 'center': center, 'right': right, 'justify': justify),
+    (
+      'left': left,
+      'center': center,
+      'right': right,
+      'justify': justify,
+      'unset': unset
+    ),
     (),
     true
   ),
@@ -583,9 +672,22 @@
   (
     'whitespace',
     'white-space',
-    ('normal': normal, 'nowrap': nowrap, 'pre': pre),
+    (
+      'normal': normal,
+      'nowrap': nowrap,
+      'pre': pre,
+      'prewrap': pre-wrap,
+      'unset': unset
+    ),
     (),
     true
+  ),
+  (
+    'scrolling',
+    '-webkit-overflow-scrolling',
+    ('touch': touch, 'auto': auto),
+    (),
+    false
   ),
   ('shadow', 'box-shadow', ('none': none), (), true),
   ('outline', 'outline', ('none': none), (), false),
@@ -627,5 +729,18 @@
     (),
     true,
     null
+  ),
+  (null, 'all', ('reset': unset), (), false, null),
+  (
+    'break',
+    'word-break',
+    (
+      'normal': normal,
+      'all': break-all,
+      'word': break-word,
+      'initial': initial
+    ),
+    (),
+    true
   )
 );

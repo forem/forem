@@ -3,9 +3,11 @@ class MediumTag < LiquidTagBase
   include ActionView::Helpers::TagHelper
   include InlineSvg::ActionView::Helpers
   attr_reader :response
+
   PARTIAL = "liquids/medium".freeze
 
-  def initialize(_tag_name, url, _tokens)
+  def initialize(_tag_name, url, _parse_context)
+    super
     @response = parse_url_for_medium_article(url)
   end
 

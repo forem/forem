@@ -11,7 +11,7 @@ RSpec.describe "BufferedArticles", type: :request do
     it "responds with json" do
       get buffered_articles_path
 
-      expect(response.content_type).to eq("application/json")
+      expect(response.media_type).to eq("application/json")
     end
 
     it "responds with at least one url" do

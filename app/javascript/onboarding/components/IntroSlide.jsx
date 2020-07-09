@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import Navigation from './Navigation';
 import { getContentOfToken, userData, updateOnboarding } from '../utilities';
+import Navigation from './Navigation';
 
 /* eslint-disable camelcase */
 class IntroSlide extends Component {
@@ -66,7 +66,12 @@ class IntroSlide extends Component {
   }
 
   render() {
-    const { prev } = this.props;
+    const {
+      slidesCount,
+      currentSlideIndex,
+      prev,
+      communityConfig,
+    } = this.props;
     const {
       checked_code_of_conduct,
       checked_terms_and_conditions,
@@ -75,99 +80,117 @@ class IntroSlide extends Component {
 
     if (text) {
       return (
-        <div className="onboarding-main">
-          <div className="onboarding-content terms-and-conditions-wrapper">
-            <button type="button" onClick={() => this.setState({ text: null })}>
-              Back
-            </button>
-            <div
-              className="terms-and-conditions-content"
-              /* eslint-disable react/no-danger */
-              dangerouslySetInnerHTML={{ __html: text }}
-              /* eslint-enable react/no-danger */
-            />
+        <div className="onboarding-main crayons-modal crayons-modal--m">
+          <div className="crayons-modal__box overflow-auto">
+            <div className="onboarding-content terms-and-conditions-wrapper">
+              <button
+                type="button"
+                onClick={() => this.setState({ text: null })}
+              >
+                Back
+              </button>
+              <div
+                className="terms-and-conditions-content"
+                /* eslint-disable react/no-danger */
+                dangerouslySetInnerHTML={{ __html: text }}
+                /* eslint-enable react/no-danger */
+              />
+            </div>
           </div>
         </div>
       );
     }
 
     return (
-      <div className="onboarding-main introduction">
-        <div className="onboarding-content">
-          <figure>
-            <img
-              src="/assets/purple-dev-logo.png"
-              className="sticker-logo"
-              alt="DEV"
+      <div
+        data-testid="onboarding-intro-slide"
+        className="onboarding-main introduction crayons-modal crayons-modal--m"
+      >
+        <div className="crayons-modal__box overflow-auto">
+          <div className="onboarding-content">
+            <figure>
+              <img
+                src={communityConfig.communityLogo}
+                className="sticker-logo"
+                alt={communityConfig.communityName}
+              />
+            </figure>
+            <h1
+              data-testid="onboarding-introduction-title"
+              className="introduction-title"
+            >
+              {this.user.name}
+              &mdash; welcome to {communityConfig.communityName}!
+            </h1>
+            <h2 className="introduction-subtitle">
+              {communityConfig.communityDescription}
+            </h2>
+          </div>
+
+          <div className="checkbox-form-wrapper">
+            <form className="checkbox-form">
+              <fieldset>
+                <ul>
+                  <li className="checkbox-item">
+                    <label
+                      data-testid="checked-code-of-conduct"
+                      htmlFor="checked_code_of_conduct"
+                    >
+                      <input
+                        type="checkbox"
+                        id="checked_code_of_conduct"
+                        name="checked_code_of_conduct"
+                        checked={checked_code_of_conduct}
+                        onChange={this.handleChange}
+                      />
+                      You agree to uphold our{' '}
+                      <a
+                        href="/code-of-conduct"
+                        data-no-instant
+                        onClick={(e) => this.handleShowText(e, 'coc')}
+                      >
+                        Code of Conduct
+                      </a>
+                      .
+                    </label>
+                  </li>
+
+                  <li className="checkbox-item">
+                    <label
+                      data-testid="checked-terms-and-conditions"
+                      htmlFor="checked_terms_and_conditions"
+                    >
+                      <input
+                        type="checkbox"
+                        id="checked_terms_and_conditions"
+                        name="checked_terms_and_conditions"
+                        checked={checked_terms_and_conditions}
+                        onChange={this.handleChange}
+                      />
+                      You agree to our{' '}
+                      <a
+                        href="/terms"
+                        data-no-instant
+                        onClick={(e) => this.handleShowText(e, 'terms')}
+                      >
+                        Terms and Conditions
+                      </a>
+                      .
+                    </label>
+                  </li>
+                </ul>
+              </fieldset>
+            </form>
+            <Navigation
+              disabled={this.isButtonDisabled()}
+              className="intro-slide"
+              prev={prev}
+              slidesCount={slidesCount}
+              currentSlideIndex={currentSlideIndex}
+              next={this.onSubmit}
+              hidePrev
             />
-          </figure>
-          <h1 className="introduction-title">
-            {this.user.name}
-            {' '}
-            &mdash; welcome to DEV!
-          </h1>
-          <h2 className="introduction-subtitle">
-            DEV is where programmers share ideas and help each other grow.
-          </h2>
-        </div>
-
-        <div className="checkbox-form-wrapper">
-          <form className="checkbox-form">
-            <fieldset>
-              <ul>
-                <li className="checkbox-item">
-                  <label htmlFor="checked_code_of_conduct">
-                    <input
-                      type="checkbox"
-                      id="checked_code_of_conduct"
-                      name="checked_code_of_conduct"
-                      checked={checked_code_of_conduct}
-                      onChange={this.handleChange}
-                    />
-                    You agree to uphold our
-                    {' '}
-                    <a
-                      href="/code-of-conduct"
-                      data-no-instant
-                      onClick={(e) => this.handleShowText(e, 'coc')}
-                    >
-                      Code of Conduct
-                    </a>
-                    .
-                  </label>
-                </li>
-
-                <li className="checkbox-item">
-                  <label htmlFor="checked_terms_and_conditions">
-                    <input
-                      type="checkbox"
-                      id="checked_terms_and_conditions"
-                      name="checked_terms_and_conditions"
-                      checked={checked_terms_and_conditions}
-                      onChange={this.handleChange}
-                    />
-                    You agree to our
-                    {' '}
-                    <a
-                      href="/terms"
-                      data-no-instant
-                      onClick={(e) => this.handleShowText(e, 'terms')}
-                    >
-                      Terms and Conditions
-                    </a>
-                    .
-                  </label>
-                </li>
-              </ul>
-            </fieldset>
-          </form>
-          <Navigation
-            disabled={this.isButtonDisabled()}
-            className="intro-slide"
-            prev={prev}
-            next={this.onSubmit}
-            hidePrev
-          />
+          </div>
         </div>
       </div>
     );
@@ -176,7 +199,14 @@ class IntroSlide extends Component {
 
 IntroSlide.propTypes = {
   prev: PropTypes.func.isRequired,
-  next: PropTypes.string.isRequired,
+  next: PropTypes.func.isRequired,
+  slidesCount: PropTypes.number.isRequired,
+  currentSlideIndex: PropTypes.func.isRequired,
+  communityConfig: PropTypes.shape({
+    communityLogo: PropTypes.string.isRequired,
+    communityName: PropTypes.string.isRequired,
+    communityDescription: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default IntroSlide;

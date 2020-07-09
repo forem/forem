@@ -1,4 +1,16 @@
 module ApplicationHelper
+  # rubocop:disable Performance/OpenStruct
+  DELETED_USER = OpenStruct.new(
+    id: nil,
+    darker_color: HexComparer.new(bg: "#19063A", text: "#dce9f3").brightness,
+    username: "[deleted user]",
+    name: "[Deleted User]",
+    summary: nil,
+    twitter_username: nil,
+    github_username: nil,
+  )
+  # rubocop:enable Performance/OpenStruct
+
   def user_logged_in_status
     user_signed_in? ? "logged-in" : "logged-out"
   end
@@ -7,6 +19,7 @@ module ApplicationHelper
     "#{controller_name}-#{controller.action_name}"
   end
 
+  # rubocop:disable Rails/HelperInstanceVariable
   def view_class
     if @podcast_episode_show # custom due to edge cases
       "stories stories-show podcast_episodes-show"
@@ -16,12 +29,15 @@ module ApplicationHelper
       "#{controller_name} #{controller_name}-#{controller.action_name}"
     end
   end
+  # rubocop:enable Rails/HelperInstanceVariable
 
   def title(page_title)
     derived_title = if page_title.include?(community_name)
                       page_title
-                    else
+                    elsif user_signed_in?
                       "#{page_title} - #{community_qualified_name} 👩‍💻👨‍💻"
+                    else
+                      "#{page_title} - #{community_name}"
                     end
     content_for(:title) { derived_title }
     derived_title
@@ -60,20 +76,15 @@ module ApplicationHelper
     "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/upload/#{postfix}"
   end
 
-  def cloudinary(url, width = nil, _quality = 80, _format = "jpg")
-    return url if Rails.env.development? && (url.blank? || url.exclude?("http"))
-
-    service_path = "https://res.cloudinary.com/#{ApplicationConfig['CLOUDINARY_CLOUD_NAME']}/image/fetch"
-
-    if url&.size&.positive?
-      if width
-        "#{service_path}/c_scale,fl_progressive,q_auto,w_#{width}/f_auto/#{url}"
-      else
-        "#{service_path}/c_scale,fl_progressive,q_auto/f_auto/#{url}"
-      end
-    else
-      "#{service_path}/c_scale,fl_progressive,q_1/f_auto/https://pbs.twimg.com/profile_images/481625927911092224/iAVNQXjn_normal.jpeg"
-    end
+  def cloudinary(url, width = "500", quality = 80, format = "auto")
+    cl_image_path(url || asset_path("#{rand(1..40)}.png"),
+                  type: "fetch",
+                  width: width,
+                  crop: "limit",
+                  quality: quality,
+                  flags: "progressive",
+                  fetch_format: format,
+                  sign_url: true)
   end
 
   def cloud_cover_url(url)
@@ -91,7 +102,7 @@ module ApplicationHelper
   end
 
   def beautified_url(url)
-    url.sub(/\A((http[s]?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
+    url.sub(/\A((https?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError
     url
   end
@@ -110,9 +121,11 @@ module ApplicationHelper
                                             tags: %w[p b i em strike strong u br]
   end
 
-  def follow_button(followable, style = "full")
+  def follow_button(followable, style = "full", classes = "")
+    return if followable == DELETED_USER
+
     tag :button, # Yikes
-        class: "cta follow-action-button",
+        class: "crayons-btn follow-action-button " + classes,
         data: {
           :info => { id: followable.id, className: followable.class.name, style: style }.to_json,
           "follow-action-button" => true
@@ -125,6 +138,8 @@ module ApplicationHelper
   end
 
   def user_colors(user)
+    return { bg: "#19063A", text: "#dce9f3" } if user == DELETED_USER
+
     user.decorate.enriched_colors
   end
 
@@ -146,8 +161,12 @@ module ApplicationHelper
     end
   end
 
+  def safe_logo_url(logo)
+    logo.presence || SiteConfig.logo_png
+  end
+
   def community_name
-    @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
+    @community_name ||= ApplicationConfig["COMMUNITY_NAME"] # rubocop:disable Rails/HelperInstanceVariable
   end
 
   def community_qualified_name
@@ -168,6 +187,17 @@ module ApplicationHelper
     return current_year if start_year.strip.length.zero?
 
     "#{start_year} - #{current_year}"
+  end
+
+  def email_link(type = :default, text: nil, additional_info: nil)
+    # The allowed types for type is :default, :business, :privacy, and members.
+    # These options can be found in field :email_addresses of models/site_config.rb
+    email = SiteConfig.email_addresses[type] || SiteConfig.email_addresses[:default]
+    mail_to email, text || email, additional_info
+  end
+
+  def community_members_label
+    SiteConfig.community_member_label.pluralize
   end
 
   # Creates an app internal URL
@@ -194,7 +224,7 @@ module ApplicationHelper
     URL.reaction(reaction)
   end
 
-  def tag_url(tag, page)
+  def tag_url(tag, page = 1)
     URL.tag(tag, page)
   end
 
@@ -202,7 +232,22 @@ module ApplicationHelper
     URL.user(user)
   end
 
+  def organization_url(organization)
+    URL.organization(organization)
+  end
+
   def sanitized_referer(referer)
     URL.sanitized_referer(referer)
+  end
+
+  def sanitize_and_decode(str)
+    # using to_str instead of to_s to prevent removal of html entity code
+    HTMLEntities.new.decode(sanitize(str).to_str)
+  end
+
+  def internal_config_label(method, content = nil)
+    content ||= method.to_s.humanize
+    content << "*" if method.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+    label_tag("site_config_#{method}", content)
   end
 end

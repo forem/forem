@@ -1,12 +1,11 @@
-require "uri"
-
 class GlitchTag < LiquidTagBase
   attr_accessor :uri
+
   PARTIAL = "liquids/glitch".freeze
   ID_REGEXP = /\A[a-zA-Z0-9\-]{1,110}\z/.freeze
-  OPTION_REGEXP = /(app|code|no-files|preview-first|no-attribution|file\=\w(\.\w)?)/.freeze
+  OPTION_REGEXP = /(app|code|no-files|preview-first|no-attribution|file=\w(\.\w)?)/.freeze
 
-  def initialize(tag_name, id, tokens)
+  def initialize(_tag_name, id, _parse_context)
     super
     @query = parse_options(id)
     @id = parse_id(id)

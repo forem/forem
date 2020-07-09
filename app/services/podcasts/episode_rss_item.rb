@@ -25,8 +25,8 @@ module Podcasts
     end
 
     def to_h
-      ATTRIBUTES.each_with_object({}) do |key, hash|
-        hash[key] = instance_variable_get("@#{key}")
+      ATTRIBUTES.index_with do |key|
+        instance_variable_get("@#{key}")
       end
     end
   end

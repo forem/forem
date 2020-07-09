@@ -11,6 +11,7 @@ RSpec.describe Article, type: :model do
   let!(:article) { create(:article, user: user) }
 
   include_examples "#sync_reactions_count", :article
+  it_behaves_like "UserSubscriptionSourceable"
 
   describe "validations" do
     it { is_expected.to validate_uniqueness_of(:canonical_url).allow_blank }
@@ -32,7 +33,7 @@ RSpec.describe Article, type: :model do
     describe "#after_commit" do
       it "on update enqueues job to index article to elasticsearch" do
         article.save
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, article.id]) do
           article.save
         end
       end
@@ -40,7 +41,8 @@ RSpec.describe Article, type: :model do
       it "on destroy enqueues job to delete article from elasticsearch" do
         article = create(:article)
 
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                     args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
         end
       end
@@ -83,7 +85,7 @@ RSpec.describe Article, type: :model do
         allow(article).to receive(:index_to_elasticsearch)
         allow(article.user).to receive(:index_to_elasticsearch)
 
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: ["Reaction", reaction.id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Reaction", reaction.id]) do
           article.update(body_markdown: "---\ntitle: NEW TITLE#{rand(1000)}\n")
         end
       end
@@ -92,7 +94,7 @@ RSpec.describe Article, type: :model do
     context "when published" do
       before do
         # rubocop:disable RSpec/NamedSubject
-        allow(subject).to receive(:published?).and_return(true)
+        allow(subject).to receive(:published?).and_return(true) # rubocop:disable RSpec/SubjectStub
         # rubocop:enable RSpec/NamedSubject
       end
 
@@ -127,10 +129,10 @@ RSpec.describe Article, type: :model do
       it "is not valid with spaces" do
         invalid_url = "https://www.positronx.io/angular radio-buttons-example/"
         article.canonical_url = invalid_url
-        messages = ["must not have spaces"]
+        message = "must not have spaces"
 
         expect(article).not_to be_valid
-        expect(article.errors.messages[:canonical_url]).to eq messages
+        expect(article.errors.messages[:canonical_url]).to include(message)
       end
     end
 
@@ -174,11 +176,11 @@ RSpec.describe Article, type: :model do
         body = "{% github /thepracticaldev/dev.to %}"
         article = build(:article, body_markdown: body)
         expect(article).not_to be_valid
-        expect(article.errors[:base]).to eq(["Invalid Github Repo link"])
+        expect(article.errors[:base].first).to match(/Invalid GitHub/)
       end
 
       it "is valid with valid liquid tags", :vcr do
-        VCR.use_cassette("twitter_fetch_status") do
+        VCR.use_cassette("twitter_client_status_extended") do
           article = build_and_validate_article(with_tweet_tag: true)
           expect(article).to be_valid
         end
@@ -240,6 +242,16 @@ RSpec.describe Article, type: :model do
       it "rejects tags with length > 30" do
         tags = "'testing tag length with more than 30 chars', tag"
         expect(build(:article, tags: tags).valid?).to be(false)
+      end
+
+      it "rejects tag with non-alphanumerics" do
+        expect { build(:article, tags: "c++").validate! }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it "always downcase tags" do
+        tags = "UPPERCASE, CAPITALIZE"
+        article = create(:article, tags: tags)
+        expect(article.tag_list).to eq(tags.downcase.split(", "))
       end
 
       it "parses tags when description is empty" do
@@ -613,13 +625,6 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  describe "#index_id" do
-    it "is equal to articles-ID" do
-      # NOTE: we shouldn't test private things but cheating a bit for Algolia here
-      expect(article.send(:index_id)).to eq("articles-#{article.id}")
-    end
-  end
-
   describe ".seo_boostable" do
     let!(:top_article) do
       create(:article, organic_page_views_past_month_count: 20, score: 30, tags: "good, greatalicious", user: user)
@@ -651,57 +656,38 @@ RSpec.describe Article, type: :model do
     end
   end
 
-  context "when indexing and deindexing" do
-    it "deindexes unpublished article from Article index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, article.id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n")
-      end
+  describe ".search_optimized_title_preamble" do
+    let!(:top_article) do
+      create(:article, search_optimized_title_preamble: "Hello #{rand(1000)}", tags: "good, greatalicious")
     end
 
-    it "deindexes unpublished article from searchables index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["searchables_#{Rails.env}", article.index_id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n")
-      end
+    it "returns article with title preamble" do
+      articles = described_class.search_optimized
+      expect(articles.first[0]).to eq(top_article.path)
+      expect(articles.first[1]).to eq(top_article.search_optimized_title_preamble)
     end
 
-    it "deindexes unpublished article from ordered_articles index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["ordered_articles_#{Rails.env}", article.index_id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: false\ndescription:\ntags: one\n---\n\n")
-      end
+    it "does not return article without preamble" do
+      articles = described_class.search_optimized
+      new_article = create(:article)
+      expect(articles.flatten).not_to include(new_article.path)
     end
 
-    it "deindexes hiring article from Article index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class.algolia_index_name, article.id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: true\ndescription:\ntags: hiring\n---\n\n")
-      end
+    it "does return multiple articles with preamble ordered by updated_at" do
+      new_article = create(:article, search_optimized_title_preamble: "Testerino")
+      articles = described_class.search_optimized
+      expect(articles.first[1]).to eq(new_article.search_optimized_title_preamble)
+      expect(articles.second[1]).to eq(top_article.search_optimized_title_preamble)
     end
 
-    it "deindexes hiring article from searchables index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["searchables_#{Rails.env}", article.index_id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: true\ndescription:\ntags: hiring\n---\n\n")
-      end
+    it "returns articles ordered by organic_page_views_count by tag" do
+      articles = described_class.search_optimized("greatalicious")
+      expect(articles.first[0]).to eq(top_article.path)
     end
 
-    it "deindexes hiring article from ordered_articles index" do
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: ["ordered_articles_#{Rails.env}", article.index_id]) do
-        article.update(body_markdown: "---\ntitle: Title\npublished: true\ndescription:\ntags: hiring\n---\n\n")
-      end
-    end
-
-    it "indexes published non-hiring article" do
-      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: ["Article", article.id]) do
-        article.update(published: false)
-      end
-    end
-
-    it "triggers auto removal from index on destroy" do
-      article = create(:article)
-
-      allow(article).to receive(:remove_from_index!)
-      allow(article).to receive(:delete_related_objects)
-      article.destroy
-      expect(article).to have_received(:remove_from_index!)
-      expect(article).to have_received(:delete_related_objects)
+    it "returns nothing if no tagged articles" do
+      articles = described_class.search_optimized("godsdsdsdsgoo")
+      expect(articles).to be_empty
     end
   end
 
@@ -724,7 +710,6 @@ RSpec.describe Article, type: :model do
       expect(article.cached_user.slug).to eq(article.user.username)
       expect(article.cached_user.profile_image_90).to eq(article.user.profile_image_90)
       expect(article.cached_user.profile_image_url).to eq(article.user.profile_image_url)
-      expect(article.cached_user.pro).to eq(article.user.pro?)
     end
 
     it "assigns cached_organization on save" do
@@ -734,7 +719,6 @@ RSpec.describe Article, type: :model do
       expect(article.cached_organization.slug).to eq(article.organization.slug)
       expect(article.cached_organization.profile_image_90).to eq(article.organization.profile_image_90)
       expect(article.cached_organization.profile_image_url).to eq(article.organization.profile_image_url)
-      expect(article.cached_organization.pro).to be(false)
     end
   end
 
@@ -802,32 +786,32 @@ RSpec.describe Article, type: :model do
     describe "slack messages" do
       before do
         # making sure there are no other enqueued jobs from other tests
-        sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
+        sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
       end
 
       it "queues a slack message to be sent" do
-        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           article.update(published: true, published_at: Time.current)
         end
       end
 
       it "does not queue a message for an article published more than 30 seconds ago" do
         Timecop.freeze(Time.current) do
-          sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+          sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
             article.update(published: true, published_at: 31.seconds.ago)
           end
         end
       end
 
       it "does not queue a message for a draft article" do
-        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
           article.update(body_markdown: "foobar", published: false)
         end
       end
 
       it "queues a message for a draft article that gets published" do
         Timecop.freeze(Time.current) do
-          sidekiq_assert_enqueued_with(job: SlackBotPingWorker) do
+          sidekiq_assert_enqueued_with(job: Slack::Messengers::Worker) do
             article.update_columns(published: false)
             article.update(published: true, published_at: Time.current)
           end
@@ -840,7 +824,7 @@ RSpec.describe Article, type: :model do
     it "returns records with a subset of attributes" do
       feed_article = described_class.feed.first
 
-      fields = %w[id tag_list published_at processed_html user_id organization_id title path]
+      fields = %w[id tag_list published_at processed_html user_id organization_id title path cached_tag_list]
       expect(feed_article.attributes.keys).to match_array(fields)
     end
   end
@@ -887,7 +871,7 @@ RSpec.describe Article, type: :model do
 
   describe "#touch_by_reaction" do
     it "reindexes elasticsearch doc" do
-      sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, article.id]) do
+      sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, article.id]) do
         article.touch_by_reaction
       end
     end

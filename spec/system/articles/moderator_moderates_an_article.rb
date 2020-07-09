@@ -11,13 +11,15 @@ RSpec.describe "Views an article", type: :system do
     visit "/#{user.username}/#{article.slug}/mod"
   end
 
-  it "shows an article" do
+  it "shows an article", js: true do
     visit "/#{user.username}/#{article.slug}"
+
     expect(page).to have_content(article.title)
   end
 
-  it "lets moderators visit /mod" do
+  it "lets moderators visit /mod", js: true do
     visit "/#{user.username}/#{article.slug}/mod"
+
     expect(page).to have_content("Moderate: #{article.title}")
     expect(page).to have_selector('button[data-category="thumbsdown"][data-reactable-type="Article"]')
     expect(page).to have_selector('button[data-category="vomit"][data-reactable-type="Article"]')

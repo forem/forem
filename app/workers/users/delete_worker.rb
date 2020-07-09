@@ -11,10 +11,11 @@ module Users
       Users::Delete.call(user)
       return if admin_delete || user.email.blank?
 
-      NotifyMailer.account_deleted_email(user).deliver
+      NotifyMailer.with(user: user).account_deleted_email.deliver_now
     rescue StandardError => e
       DatadogStatsClient.count("users.delete", 1, tags: ["action:failed", "user_id:#{user.id}"])
-      Rails.logger.error("Error while deleting user: #{e}")
+      Honeybadger.context({ user_id: user.id })
+      Honeybadger.notify(e)
     end
   end
 end

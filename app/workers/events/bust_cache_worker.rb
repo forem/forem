@@ -1,7 +1,6 @@
 module Events
-  class BustCacheWorker
-    include Sidekiq::Worker
-    sidekiq_options queue: :low_priority, retry: 10
+  class BustCacheWorker < BustCacheBaseWorker
+    sidekiq_options queue: :low_priority
 
     def perform
       CacheBuster.bust_events

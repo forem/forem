@@ -1,15 +1,15 @@
-'use strict';
-
 /* global filterXSS */
 
 function initializeUserProfileContent(user) {
-  document.getElementById('sidebar-profile--avatar').src = user.profile_image_90;
+  document.getElementById('sidebar-profile--avatar').src =
+    user.profile_image_90;
   document.getElementById('sidebar-profile--avatar').alt = user.username;
 
   document.getElementById('sidebar-profile--name').innerHTML = filterXSS(
     user.name,
   );
-  document.getElementById('sidebar-profile--username').innerHTML = '@' + user.username;
+  document.getElementById('sidebar-profile--username').innerHTML =
+    '@' + user.username;
   document.getElementById('sidebar-profile').href = '/' + user.username;
 }
 
@@ -20,10 +20,10 @@ function initializeUserSidebar(user) {
   let followedTags = JSON.parse(user.followed_tags);
   const tagSeparatorLabel =
     followedTags.length === 0
-      ? 'Follow tags to improve your feed'
-      : 'Other Popular Tags';
+      ? 'FOLLOW TAGS TO IMPROVE YOUR FEED'
+      : 'OTHER POPULAR TAGS';
 
-  followedTags.forEach(tag => {
+  followedTags.forEach((tag) => {
     const element = document.getElementById(
       'default-sidebar-element-' + tag.name,
     );
@@ -42,24 +42,19 @@ function addRelevantButtonsToArticle(user) {
   if (articleContainer) {
     if (parseInt(articleContainer.dataset.authorId, 10) === user.id) {
       let actions = [
-        `<a href="${articleContainer.dataset.path}/edit" rel="nofollow">EDIT</a>`,
+        `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/edit" rel="nofollow">Edit</a>`,
       ];
       if (JSON.parse(articleContainer.dataset.published) === true) {
         actions.push(
-          `<a href="${articleContainer.dataset.path}/manage" rel="nofollow">MANAGE</a>`,
+          `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/manage" rel="nofollow">Manage</a>`,
         );
       }
       if (user.pro) {
         actions.push(
-          `<a href="${articleContainer.dataset.path}/stats" rel="nofollow">STATS</a>`,
+          `<a class="crayons-btn crayons-btn--s crayons-btn--secondary ml-1" href="${articleContainer.dataset.path}/stats" rel="nofollow">Stats</a>`,
         );
       }
       document.getElementById('action-space').innerHTML = actions.join('');
-    } else if (user.trusted) {
-      document.getElementById('action-space').innerHTML =
-        '<a href="' +
-        articleContainer.dataset.path +
-        '/mod" rel="nofollow">MODERATE <span class="post-word">POST</span></a>';
     }
   }
 }
@@ -72,17 +67,21 @@ function addRelevantButtonsToComments(user) {
     for (let i = 0; i < settingsButts.length; i += 1) {
       let butt = settingsButts[i];
       const { action, commentableUserId, userId } = butt.dataset;
-
-      if (parseInt(userId, 10) === user.id) {
-        butt.style.display = 'inline-block';
+      if (parseInt(userId, 10) === user.id && action === 'settings-button') {
+        butt.innerHTML =
+          '<a href="' +
+          butt.dataset.path +
+          '" rel="nofollow" class="crayons-link crayons-link--block" data-no-instant>Settings</a>';
+        butt.classList.remove('hidden');
+        butt.classList.add('block');
       }
 
       if (
         action === 'hide-button' &&
         parseInt(commentableUserId, 10) === user.id
       ) {
-        butt.style.display = 'inline-block';
         butt.classList.remove('hidden');
+        butt.classList.add('block');
       }
     }
 
@@ -90,8 +89,15 @@ function addRelevantButtonsToComments(user) {
       var modButts = document.getElementsByClassName('mod-actions');
       for (let i = 0; i < modButts.length; i += 1) {
         let butt = modButts[i];
+        if (butt.classList.contains('mod-actions-comment-button')) {
+          butt.innerHTML =
+            '<a href="' +
+            butt.dataset.path +
+            '" rel="nofollow" class="crayons-link crayons-link--block">Moderate</a>';
+        }
         butt.className = 'mod-actions';
-        butt.style.display = 'inline-block';
+        butt.classList.remove('hidden');
+        butt.classList.add('block');
       }
     }
   }
@@ -100,14 +106,25 @@ function addRelevantButtonsToComments(user) {
 function initializeBaseUserData() {
   const user = userData();
   const userProfileLinkHTML =
-    '<a href="/' + user.username + '" id="first-nav-link" class="crayons-link crayons-link--block"><div>' +
-    '<span class="fw-medium block">' + user.name +'</span>' +
-    '<small class="fs-s color-base-50">@' + user.username + '</small>' +
+    '<a href="/' +
+    user.username +
+    '" id="first-nav-link" class="crayons-link crayons-link--block"><div>' +
+    '<span class="fw-medium block">' +
+    user.name +
+    '</span>' +
+    '<small class="fs-s color-base-50">@' +
+    user.username +
+    '</small>' +
     '</div></a>';
   document.getElementById(
     'user-profile-link-placeholder',
   ).innerHTML = userProfileLinkHTML;
+  const userNavLink = document.getElementById('first-nav-link');
+  userNavLink.href = `/${user.username}`;
+  userNavLink.querySelector('span').textContent = user.name;
+  userNavLink.querySelector('small').textContent = `@${user.username}`;
   document.getElementById('nav-profile-image').src = user.profile_image_90;
+
   initializeUserSidebar(user);
   addRelevantButtonsToArticle(user);
   addRelevantButtonsToComments(user);

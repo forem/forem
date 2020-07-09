@@ -1,4 +1,4 @@
-import handleFetchAPIErrors from '../src/utils/errors';
+import { handleFetchAPIErrors } from '../utilities/http';
 
 function callAnalyticsAPI(path, date, { organizationId, articleId }, callback) {
   let url = `${path}?start=${date.toISOString().split('T')[0]}`;
@@ -12,10 +12,10 @@ function callAnalyticsAPI(path, date, { organizationId, articleId }, callback) {
 
   fetch(url)
     .then(handleFetchAPIErrors)
-    .then(response => response.json())
+    .then((response) => response.json())
     .then(callback)
     // eslint-disable-next-line no-console
-    .catch(error => console.error(error)); // we should come up with better error handling
+    .catch((error) => console.error(error)); // we should come up with better error handling
 }
 
 export function callHistoricalAPI(

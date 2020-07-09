@@ -48,9 +48,7 @@ function reactToReadingListButtonClick(event) {
   var userStatus;
   event.preventDefault();
   sendHapticMessage('medium');
-  userStatus = document
-    .getElementsByTagName('body')[0]
-    .getAttribute('data-user-status');
+  userStatus = document.body.getAttribute('data-user-status');
   if (userStatus === 'logged-out') {
     showModal('add-to-readinglist-from-index');
     return;
@@ -131,11 +129,11 @@ function addHoverEffectToReadingListButtons() {
     // `this` local variable
     container.addEventListener(
       'mouseover',
-      readingListButtonMouseHandler.bind('UNSAVE'),
+      readingListButtonMouseHandler.bind('Unsave'),
     );
     container.addEventListener(
       'mouseout',
-      readingListButtonMouseHandler.bind('SAVED'),
+      readingListButtonMouseHandler.bind('Saved'),
     );
   });
 }

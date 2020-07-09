@@ -29,6 +29,7 @@ class UserDashboard < Administrate::BaseDashboard
     text_color_hex: Field::String,
     feed_url: Field::String,
     facebook_url: Field::String,
+    youtube_url: Field::String,
     behance_url: Field::String,
     dribbble_url: Field::String,
     medium_url: Field::String,
@@ -74,6 +75,7 @@ class UserDashboard < Administrate::BaseDashboard
     summary
     website_url
     facebook_url
+    youtube_url
     behance_url
     dribbble_url
     medium_url

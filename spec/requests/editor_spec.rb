@@ -48,7 +48,7 @@ RSpec.describe "Editor", type: :request do
       it "returns json" do
         sign_in user
         post "/articles/preview", headers: headers
-        expect(response.content_type).to eq("application/json")
+        expect(response.media_type).to eq("application/json")
       end
     end
   end

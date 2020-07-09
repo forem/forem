@@ -7,6 +7,18 @@ module Search
     DEFAULT_PER_PAGE = 80
 
     class << self
+      def search_documents(params:)
+        set_query_size(params)
+        query_hash = "Search::QueryBuilders::#{name.demodulize}".safe_constantize.new(params: params).as_hash
+
+        results = search(body: query_hash)
+        hits = results.dig("hits", "hits").map { |hit| prepare_doc(hit) }
+        {
+          "reactions" => paginate_hits(hits, params),
+          "total" => results.dig("hits", "total", "value")
+        }
+      end
+
       private
 
       def index_settings

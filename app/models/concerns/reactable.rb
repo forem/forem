@@ -6,6 +6,6 @@ module Reactable
   end
 
   def sync_reactions_count
-    update_column(:positive_reactions_count, reactions.positive.size)
+    update_column(:public_reactions_count, reactions.public_category.size)
   end
 end

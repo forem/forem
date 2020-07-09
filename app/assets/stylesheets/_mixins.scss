@@ -51,8 +51,8 @@
   @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
 
   @media screen and (min-width: 950px) {
-    border-radius: 3px;
-    margin-bottom: 12px;
+    border-radius: var(--radius);
+    margin-bottom: var(--su-2);
   }
 }
 

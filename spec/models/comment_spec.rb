@@ -39,7 +39,7 @@ RSpec.describe Comment, type: :model do
 
     describe "#after_commit" do
       it "on update enqueues job to index comment to elasticsearch" do
-        sidekiq_assert_enqueued_with(job: Search::IndexToElasticsearchWorker, args: [described_class.to_s, comment.id]) do
+        sidekiq_assert_enqueued_with(job: Search::IndexWorker, args: [described_class.to_s, comment.id]) do
           comment.save
         end
       end
@@ -47,7 +47,8 @@ RSpec.describe Comment, type: :model do
       it "on destroy enqueues job to delete comment from elasticsearch" do
         comment = create(:comment)
 
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromElasticsearchIndexWorker, args: [described_class::SEARCH_CLASS.to_s, comment.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                     args: [described_class::SEARCH_CLASS.to_s, comment.search_id]) do
           comment.destroy
         end
       end
@@ -121,6 +122,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.size < 450).to be(true)
       end
 
+      # rubocop:disable RSpec/ExampleLength
       it "adds timestamp url if commentable has video and timestamp", :aggregate_failures do
         article.video = "https://example.com"
 
@@ -145,6 +147,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.include?(">1:52:30</a>")).to eq(true)
         expect(comment.processed_html.include?(">1:20</a>")).to eq(true)
       end
+      # rubocop:enable RSpec/ExampleLength
 
       it "does not add timestamp if commentable does not have video" do
         article.video = nil
@@ -152,6 +155,13 @@ RSpec.describe Comment, type: :model do
         comment.body_markdown = "I like the part at 1:52:30 and 1:20"
         comment.validate!
         expect(comment.processed_html.include?(">1:52:30</a>")).to eq(false)
+      end
+
+      it "does not add DOCTYPE and html body to processed html" do
+        comment.body_markdown = "Hello https://longurl.com/#{'x' * 100}?#{'y' * 100}"
+        comment.validate!
+        expect(comment.processed_html).not_to include("<!DOCTYPE")
+        expect(comment.processed_html).not_to include("<html><body>")
       end
     end
   end
@@ -317,19 +327,19 @@ RSpec.describe Comment, type: :model do
 
       before do
         # making sure there are no other enqueued jobs from other tests
-        sidekiq_perform_enqueued_jobs(only: SlackBotPingWorker)
+        sidekiq_perform_enqueued_jobs(only: Slack::Messengers::Worker)
       end
 
       it "queues a slack message when a warned user leaves a comment" do
         user.add_role(:warned)
 
-        sidekiq_assert_enqueued_jobs(1, only: SlackBotPingWorker) do
+        sidekiq_assert_enqueued_jobs(1, only: Slack::Messengers::Worker) do
           create(:comment, user: user, commentable: article)
         end
       end
 
       it "does not send notification if a regular user leaves a comment" do
-        sidekiq_assert_no_enqueued_jobs(only: SlackBotPingWorker) do
+        sidekiq_assert_no_enqueued_jobs(only: Slack::Messengers::Worker) do
           create(:comment, commentable: article, user: user)
         end
       end

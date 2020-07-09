@@ -1,5 +1,5 @@
-@import 'variables';
-@import 'mixins';
+@import '../variables';
+@import '../mixins';
 
 .articleformcontainer {
   padding: 24px 0 96px;
@@ -12,7 +12,7 @@
   max-width: 880px;
   .article-form-video-image-url {
     padding-top: 15px;
-    font-family: $monospace;
+    font-family: var(--ff-accent);
     input {
       padding: 3px;
       font-size: 1em;
@@ -152,7 +152,7 @@
   color: var(--body-color);
   resize: none;
   background: transparent;
-  font-family: $monospace;
+  font-family: var(--ff-accent);
   @media screen and (min-width: 600px) {
     font-size: 29px;
     height: 50px;
@@ -218,7 +218,7 @@
   resize: none;
   border: 0;
   font-size: 16px;
-  font-family: $monospace;
+  font-family: var(--ff-accent);
   font-weight: bold;
   background: var(--form-bg);
   color: var(--body-color);
@@ -236,7 +236,7 @@
   }
   background: var(--card-bg);
   border: 1px solid var(--body-color);
-  font-family: $monospace;
+  font-family: var(--ff-accent);
   z-index: 20;
 }
 .articleform__tagoptionrow {
@@ -361,21 +361,19 @@
 }
 
 .articleform__body {
-  min-height: calc(80vh - 370px);
+  height: calc(80vh - 265px);
   width: 98%;
   border: 0;
   font-size: 15px;
   resize: none;
   padding: 20px 6px;
-  font-family: $monospace;
-  // scrollbars not needed because the preact-textarea-autosize package
-  // automatically resizes the article form
-  overflow: hidden;
+  font-family: var(--ff-accent);
   background: var(--card-bg);
   color: var(--card-color);
+  overflow-y: auto;
   @media screen and (min-width: 600px) {
     font-size: 18px;
-    min-height: calc(85vh - 280px);
+    height: calc(82vh - 200px);
   }
   &::placeholder {
     color: var(--form-placeholder-color);
@@ -386,7 +384,7 @@
     min-height: calc(90vh - 370px);
     @media screen and (min-width: 600px) {
       font-size: 18px;
-      min-height: calc(95vh - 280px);
+      height: calc(95vh - 280px);
     }
   }
 }

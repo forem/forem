@@ -1,18 +1,21 @@
 require "rails_helper"
 
 RSpec.describe "Admin dashboard is presented", type: :system do
-  let(:admin) { create(:user, :super_admin) }
-  let(:user) { create(:user) }
+  let(:admin) { build(:user, :super_admin) }
+  let(:user) { build_stubbed(:user) }
 
   before { Bullet.raise = false }
 
   after { Bullet.raise = true }
 
-  it "loads the admin dashboard view" do
+  it "loads the admin dashboard articles view", js: true do
     sign_in admin
     visit "/admin"
     expect(page).to have_content("Articles")
+  end
 
+  it "loads the admin dashboard podcasts view", js: true do
+    sign_in admin
     visit "/admin/podcasts"
     expect(page).to have_content("Podcast Episodes")
   end

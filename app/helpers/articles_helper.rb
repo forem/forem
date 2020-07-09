@@ -12,7 +12,9 @@ module ArticlesHelper
   def has_vid?(article)
     return if article.processed_html.blank?
 
-    article.processed_html.include?("youtube.com/embed/") || article.processed_html.include?("player.vimeo.com") || article.comments_blob.include?("youtube")
+    article.processed_html.include?("youtube.com/embed/") ||
+      article.processed_html.include?("player.vimeo.com") ||
+      article.comments_blob.include?("youtube")
   end
 
   def collection_link_class(current_article, linked_article)
@@ -41,11 +43,12 @@ module ArticlesHelper
   end
 
   def should_show_crossposted_on?(article)
-    article.crossposted_at &&
+    article.canonical_url ||
+      (article.crossposted_at &&
       article.published_from_feed &&
       article.published &&
       article.published_at &&
-      article.feed_source_url.present?
+      article.feed_source_url.present?)
   end
 
   def get_host_without_www(url)
@@ -53,5 +56,9 @@ module ArticlesHelper
     host = URI.parse(url).host.downcase
     host.gsub!("medium.com", "Medium")
     host.delete_prefix("www.")
+  end
+
+  def utc_iso_timestamp(timestamp)
+    timestamp&.utc&.iso8601
   end
 end

@@ -22,6 +22,7 @@ en:
     scopes:
       public: 'Access public profile data and published articles'
       read_articles: 'Access all articles including drafts'
+      write_articles: 'Access to creating and updating articles'
 
     applications:
       confirmations:

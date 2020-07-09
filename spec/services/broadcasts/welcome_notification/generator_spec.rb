@@ -11,21 +11,17 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
   let_it_be_readonly(:customize_feed_broadcast)  { create(:customize_feed_broadcast) }
   let_it_be_readonly(:discuss_and_ask_broadcast) { create(:discuss_and_ask_broadcast) }
   let_it_be_readonly(:customize_ux_broadcast)    { create(:customize_ux_broadcast) }
+  let_it_be_readonly(:download_app_broadcast)    { create(:download_app_broadcast) }
 
   before do
-    mock_auth_hash
+    omniauth_mock_providers_payload
     allow(Notification).to receive(:send_welcome_notification).and_call_original
     allow(User).to receive(:mascot_account).and_return(mascot_account)
-    SiteConfig.staff_user_id = mascot_account.id
-  end
-
-  after do
-    # SiteConfig.clear_cache should work here but for some reason it isn't
-    SiteConfig.staff_user_id = 1
+    allow(SiteConfig).to receive(:staff_user_id).and_return(mascot_account.id)
   end
 
   it "requires a valid user id" do
-    expect { described_class.call(1) }.to raise_error(ActiveRecord::RecordNotFound)
+    expect { described_class.call(User.last.id + 100) }.to raise_error(ActiveRecord::RecordNotFound)
   end
 
   describe "::call" do
@@ -38,7 +34,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       end.to not_change(user.notifications, :count)
     end
 
-    it "does not send a notification and if no active broadcast exists" do
+    it "does not send a notification if no active broadcast exists" do
       welcome_broadcast.update!(active: false)
       expect do
         sidekiq_perform_enqueued_jobs { described_class.call(user.id) }
@@ -49,24 +45,52 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     it "sends only 1 notification at a time, in the correct order" do
       user.update!(created_at: 1.day.ago)
 
-      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(welcome_broadcast)
 
       Timecop.travel(1.day.since)
-      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(twitter_connect_broadcast)
 
       Timecop.travel(1.day.since)
-      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(customize_feed_broadcast)
 
       Timecop.travel(2.days.since)
-      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(customize_ux_broadcast)
 
       Timecop.travel(1.day.since)
-      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(discuss_and_ask_broadcast)
+
+      Timecop.travel(1.day.since)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
+      expect(user.notifications.last.notifiable).to eq(download_app_broadcast)
       Timecop.return
     end
     # rubocop:enable RSpec/ExampleLength
@@ -143,7 +167,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
 
   describe "#send_feed_customization_notification" do
     let!(:user) do
-      mock_auth_hash
+      omniauth_mock_providers_payload
       create(:user, :with_identity, identities: %w[twitter github], created_at: 3.days.ago)
     end
 
@@ -251,6 +275,29 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
         sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_discuss_and_ask_notification) }
       end
       expect(user.notifications.count).to eq(1)
+    end
+
+    describe "#send_download_app_notification" do
+      let!(:user) { create(:user, :with_identity, identities: %w[twitter github], created_at: 7.days.ago) }
+
+      it "does not send a notification to a newly-created user" do
+        user.update!(created_at: Time.zone.now)
+        sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_download_app_notification) }
+        expect(Notification).not_to have_received(:send_welcome_notification)
+      end
+
+      it "generates the correct broadcast type and sends the notification to the user" do
+        sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_download_app_notification) }
+        expect(user.notifications.count).to eq(1)
+        expect(user.notifications.first.notifiable).to eq(download_app_broadcast)
+      end
+
+      it "does not send duplicate notifications" do
+        2.times do
+          sidekiq_perform_enqueued_jobs { described_class.new(user.id).send(:send_download_app_notification) }
+        end
+        expect(user.notifications.count).to eq(1)
+      end
     end
   end
 end

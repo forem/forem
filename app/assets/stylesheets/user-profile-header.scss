@@ -3,7 +3,7 @@
 
 .user-profile-header {
   padding: calc(1.4vw + 8px) 0px;
-  font-family: $helvetica;
+  font-family: var(--ff-default);
   position: relative;
   overflow: hidden;
   width: 1216px;
@@ -52,11 +52,17 @@
         width: 100%;
         padding: 15px 0px;
         @media screen and (min-width: 950px) {
-          vertical-align: 3px;
+          vertical-align: 5px;
           display: inline-block;
-          font-size: calc(1.9vw + 8px);
+          font-size: calc(1.5vw + 8px);
           width: 280px;
           padding: 3px 0px;
+        }
+      }
+      @media screen and (min-width: 1600px) {
+        font-size: 55px;
+        .follow-action-button {
+          font-size: 32px;
         }
       }
     }
@@ -74,37 +80,6 @@
         width: calc(2.4vw + 50px);
         display: inline-block;
         vertical-align: calc(-1vw - 15px);
-      }
-    }
-    .subscribe-buttons {
-      text-align: center;
-      margin-top: 35px;
-      z-index: 10;
-      position: relative;
-      a {
-        padding: 5px;
-        background-color: rgb(47, 61, 73);
-        color: white;
-        border-radius: 3px;
-        margin: 6px;
-        font-size: 14px;
-        display: inline-block;
-        width: 40%;
-        border: 1px solid rgb(60, 81, 99);
-        box-shadow: inset 1px 1px 0 rgb(72, 95, 116);
-        transition: background-color 250ms ease;
-        @media screen and (min-width: 590px) {
-          width: 112px;
-        }
-        &:hover {
-          background-color: rgb(41, 46, 52);
-        }
-        img {
-          width: 20px;
-          height: 20px;
-          vertical-align: -4px;
-          margin-right: 4px;
-        }
       }
     }
   }
@@ -164,7 +139,6 @@
       h1 {
         margin: 5px auto 1vw;
         font-weight: bold;
-        color: rgb(27, 27, 28);
         font-size: 25px;
         padding: 0;
         padding-right: 15px;
@@ -240,8 +214,6 @@
     }
   }
   .user-metadata-details {
-    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
-      monospace;
     width: 97%;
     overflow-y: auto;
     @media screen and (min-width: 1100px) {
@@ -262,7 +234,6 @@
         position: absolute;
         top: 45%;
         transform: translateY(-45%);
-        border-left: 3px solid $outline-color;
         padding: 15px 0px;
       }
       .row {

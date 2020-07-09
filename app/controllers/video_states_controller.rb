@@ -9,19 +9,18 @@ class VideoStatesController < ApplicationController
       return
     end
     begin
-      logger.info "VIDEO STATES: #{params}"
       request_json = JSON.parse(request.raw_post, symbolize_names: true)
-      logger.info "VIDEO STATES: #{request_json}"
     rescue StandardError => e
-      Rails.logger.warn(e)
+      Honeybadger.notify(e)
     end
-    request_json = JSON.parse(request.raw_post, symbolize_names: true)
     message_json = JSON.parse(request_json[:Message], symbolize_names: true)
     @article = Article.find_by(video_code: message_json[:input][:key])
 
     if @article
       @article.update(video_state: "COMPLETED") # Only is called on completion
-      NotifyMailer.video_upload_complete_email(@article).deliver
+
+      NotifyMailer.with(article: @article).video_upload_complete_email.deliver_now
+
       render json: { message: "Video state updated" }
     else
       render json: { message: "Related article not found" }, status: :not_found

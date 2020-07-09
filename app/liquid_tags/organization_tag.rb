@@ -3,7 +3,8 @@ class OrganizationTag < LiquidTagBase
   include ActionView::Helpers::TagHelper
   PARTIAL = "organizations/liquid".freeze
 
-  def initialize(_tag_name, organization, _tokens)
+  def initialize(_tag_name, organization, _parse_context)
+    super
     @organization = parse_slug_to_organization(organization.delete(" "))
     @follow_button = follow_button(@organization)
     @organization_colors = user_colors(@organization)
@@ -13,7 +14,7 @@ class OrganizationTag < LiquidTagBase
     ActionController::Base.new.render_to_string(
       partial: PARTIAL,
       locals: {
-        organization: @organization,
+        organization: @organization.decorate,
         follow_button: @follow_button,
         organization_colors: @organization_colors
       },

@@ -32,7 +32,9 @@ RSpec.describe "OrganizationsUpdate", type: :request do
   end
 
   it "updates nav_image" do
-    put "/organizations/#{org_id}", params: { organization: { id: org_id, nav_image: fixture_file_upload("files/podcast.png", "image/png") } }
+    put "/organizations/#{org_id}", params: { organization: { id: org_id,
+                                                              nav_image: fixture_file_upload("files/podcast.png",
+                                                                                             "image/png") } }
     expect(Organization.find(org_id).nav_image_url).to be_present
   end
 
@@ -43,18 +45,24 @@ RSpec.describe "OrganizationsUpdate", type: :request do
     end.to raise_error(ActiveRecord::RecordNotFound)
   end
 
-  it "catches error if image file name is too long" do
+  it "returns error if profile image file name is too long" do
     organization = user.organizations.first
     allow(Organization).to receive(:find_by).and_return(organization)
-    allow(organization).to receive(:update).and_raise(Errno::ENAMETOOLONG)
-    allow(DatadogStatsClient).to receive(:increment)
+    image = fixture_file_upload("files/800x600.png", "image/png")
+    allow(image).to receive(:original_filename).and_return("#{'a_very_long_filename' * 15}.png")
 
-    expect do
-      put "/organizations/#{org_id}", params: { organization: { id: org_id, profile_image: fixture_file_upload("files/800x600.png", "image/png") } }
-    end.to raise_error(Errno::ENAMETOOLONG)
+    put "/organizations/#{org_id}", params: { organization: { id: org_id, profile_image: image } }
 
-    tags = hash_including(tags: instance_of(Array))
+    expect(response.body).to include("filename too long")
+  end
 
-    expect(DatadogStatsClient).to have_received(:increment).with("image_upload_error", tags)
+  it "returns error if profile image is not a file" do
+    organization = user.organizations.first
+    allow(Organization).to receive(:find_by).and_return(organization)
+    image = "A String"
+
+    put "/organizations/#{org_id}", params: { organization: { id: org_id, profile_image: image } }
+
+    expect(response.body).to include("invalid file type")
   end
 end

@@ -4,11 +4,12 @@ import { ReadingList } from '../readingList/readingList';
 
 function loadElement() {
   getUserDataAndCsrfToken().then(({ currentUser }) => {
+    const followedTagNames = JSON.parse(currentUser.followed_tags).map(t => t.name);
     const root = document.getElementById('reading-list');
     if (root) {
       render(
         <ReadingList
-          availableTags={currentUser.followed_tag_names}
+          availableTags={followedTagNames}
           statusView={root.dataset.view}
         />,
         root,

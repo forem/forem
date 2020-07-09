@@ -43,7 +43,7 @@ class Message < ApplicationRecord
     html = target_blank_links(html)
     html = append_rich_links(html)
     html = wrap_mentions_with_links(html)
-    html = handle_call(html)
+    html = handle_slash_command(html)
     self.message_html = html
   end
 
@@ -84,7 +84,7 @@ class Message < ApplicationRecord
       HTML
     elsif username == "all" && chat_channel.channel_type == "invite_only"
       <<~HTML
-        <a class='comment-mentioned-user comment-mentioned-all' data-content="sidecar_all" href="#">@#{username}</a>
+        <a class='comment-mentioned-user comment-mentioned-all' data-content="chat_channel_setting" href="#">@#{username}</a>
       HTML
     else
       mention
@@ -98,6 +98,7 @@ class Message < ApplicationRecord
     html
   end
 
+  # rubocop:disable Layout/LineLength
   def append_rich_links(html)
     doc = Nokogiri::HTML(html)
     doc.css("a").each do |anchor|
@@ -143,17 +144,28 @@ class Message < ApplicationRecord
     end
     html
   end
+  # rubocop:enable Layout/LineLength
 
-  def handle_call(html)
-    return html if html.to_s.exclude?("<p>/call</p>")
-
-    "<a href='/video_chats/#{chat_channel_id}'
-        class='chatchannels__richlink chatchannels__richlink--base'
-        target='_blank' rel='noopener' data-content='sidecar-video'>
-        <h1 data-content='sidecar-video'>
-          Let's video chat 😄
-        </h1>
-        </a>".html_safe
+  def handle_slash_command(html)
+    response = if html.to_s.strip == "<p>/call</p>"
+                 "<a href='/video_chats/#{chat_channel_id}'
+                    class='chatchannels__richlink chatchannels__richlink--base'
+                    target='_blank' rel='noopener' data-content='sidecar-video'>
+                    <h1 data-content='sidecar-video'>
+                      Let's video chat 😄
+                    </h1>
+                    </a>".html_safe
+               elsif html.to_s.strip == "<p>/play codenames</p>" # proof of concept
+                 "<a href='https://www.horsepaste.com/connect-channel-#{rand(1_000_000_000)}'
+                    class='chatchannels__richlink chatchannels__richlink--base'
+                    target='_blank' rel='noopener' data-content='sidecar-content-plus-video'>
+                    <h1 data-content='sidecar-content-plus-video'>
+                      Let's play codenames 🤐
+                    </h1>
+                    </a>".html_safe
+               end
+    html = response if response
+    html
   end
 
   def cl_path(img_src)
@@ -185,15 +197,21 @@ class Message < ApplicationRecord
   end
 
   def rich_link_article(link)
-    Article.find_by(slug: link["href"].split("/")[4].split("?")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/") && link["href"].split("/")[4]
+
+    Article.find_by(slug: link["href"].split("/")[4].split("?")[0])
   end
 
   def rich_link_tag(link)
-    Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/t/")
+    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/t/")
+
+    Tag.find_by(name: link["href"].split("/t/")[1].split("/")[0])
   end
 
   def rich_user_link(link)
-    User.find_by(username: link["href"].split("/")[3].split("/")[0]) if link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/")
+    return unless link["href"].include?("//#{ApplicationConfig['APP_DOMAIN']}/")
+
+    User.find_by(username: link["href"].split("/")[3].split("/")[0])
   end
 
   def send_email_if_appropriate
@@ -205,6 +223,6 @@ class Message < ApplicationRecord
       chat_channel.last_message_at > 30.minutes.ago ||
       recipient.email_connect_messages == false
 
-    NotifyMailer.new_message_email(self).deliver
+    NotifyMailer.with(message: self).new_message_email.deliver_now
   end
 end

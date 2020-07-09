@@ -15,11 +15,21 @@
         <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-heart.png") %>" alt="Favorite heart button" />
       </button>
       <% if context == "moderation" && current_user.has_role?(:trusted) %>
-        <button class="reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "thumbsdown") ? "reacted" : "" %>" data-reactable-id="<%= json_data["comment"]["id"] %>" data-category="thumbsdown" data-reactable-type="Comment">
+        <button
+          class="reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "thumbsdown") ? "reacted" : "" %>"
+          data-reactable-id="<%= json_data["comment"]["id"] %>"
+          data-category="thumbsdown"
+          data-reactable-type="Comment"
+          title="thumbsdown">
           <%= image_tag("emoji/emoji-one-thumbs-down-gray.png", alt: "Thumbs down emoji") %>
           <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-thumbs-down.png") %>" alt="Thumbs down emoji">
         </button>
-        <button class="reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "vomit") ? "reacted" : "" %>" data-reactable-id="<%= json_data["comment"]["id"] %>" data-category="vomit" data-reactable-type="Comment">
+        <button
+          class="reaction-button <%= Reaction.cached_any_reactions_for?(notification.mocked_object("comment"), current_user, "vomit") ? "reacted" : "" %>"
+          data-reactable-id="<%= json_data["comment"]["id"] %>"
+          data-category="vomit"
+          data-reactable-type="Comment"
+          title="vomit">
           <%= image_tag("emoji/emoji-one-nausea-face-gray.png", alt: "Nausea face emoji") %>
           <img class="reacted-emoji" src="<%= asset_path("emoji/emoji-one-nausea-face.png") %>" alt="Nausea face emoji">
         </button>

@@ -3,6 +3,7 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 @import 'variables';
 @import '_mixins';
+@import 'config/import';
 
 .home {
   position: relative;
@@ -84,26 +85,12 @@
     }
 
     .sidebar-nav {
-      margin-bottom: 16px;
       .sidebar-nav-block {
-        @media screen and (min-width: 950px) {
-          .sidebar-nav-block-inner {
-            height: 420px;
-            overflow-y: scroll;
-            overflow-x: hidden;
-            -webkit-overflow-scrolling: touch;
-            padding: 0 16px;
-            margin: 0 -16px 8px -16px;
-          }
-        }
         .sidebar-nav-default-tags {
           display: none;
           &.showing {
             display: block;
           }
-        }
-        .sidebar-main-nav {
-          margin-bottom: 24px;
         }
       }
     }
@@ -122,6 +109,10 @@
       }
     }
   }
+}
+
+.sidebar-tags-browser {
+  max-height: 420px;
 }
 
 @keyframes fade-in {
@@ -154,6 +145,7 @@
   background: lighten($purple, 6%) !important;
   border: 1px solid darken($bold-blue, 5%) !important;
   box-shadow: 5px 6px 0px darken($bold-blue, 15%) !important;
+  margin: 0.8em 0;
   .cta-container {
     padding: calc(1vw + 7px) 9px;
     margin-bottom: 15px;
@@ -176,7 +168,7 @@
     margin-right: 9px;
     padding-right: 9px;
   }
-  img.primary-sticker-image {
+  img.secondary-logo {
     width: 190px;
     height: 190px;
     margin: 18px auto 35px;
@@ -339,6 +331,11 @@
   }
 }
 
+.nav-icon {
+  width: 24px;
+  height: 24px;
+}
+
 //  Loading // TODO
 .loading {
   padding: calc(3vw + 15px) 0px 60px;
@@ -355,36 +352,8 @@
   display: none;
 }
 
-//  More loading  // TODO
-.single-article-loading {
-  border-radius: 3px;
-  animation-duration: 1.25s;
-  animation-fill-mode: forwards;
-  animation-iteration-count: infinite;
-  animation-name: placeHolderShimmer;
-  animation-timing-function: linear;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.1) 10%,
-    rgba(0, 0, 0, 0.05) 25%,
-    rgba(255, 255, 255, 0.1) 40%
-  );
-  box-shadow: inset 0 0 0 200px rgba(0, 0, 0, 0.025);
-  background-size: 800px 104px;
-  position: relative;
-}
-
-@keyframes placeHolderShimmer {
-  0% {
-    background-position: -468px 0;
-  }
-  100% {
-    background-position: 468px 0;
-  }
-}
-
 // Generally Feed...
-.articles-list {
+.articles-list:not(.crayons-layout__content) {
   margin: auto;
   max-width: 100%;
   position: relative;
@@ -413,10 +382,6 @@
       display: flex;
       align-items: center;
     }
-  }
-
-  a {
-    color: var(--card-color);
   }
 
   .placeholder-div {
@@ -562,11 +527,12 @@
       padding: 16px 16px 100px 16px; // TODO: my, oh my...
       h3 {
         margin: 0px;
-        font-size: 20px;
+        font-size: var(--fs-xl);
         font-weight: 700;
         line-height: 28px;
         padding: 0px;
         word-break: break-word;
+        color: var(--card-color);
         .tag-identifier {
           font-size: 14px;
           background: $blue;
@@ -582,11 +548,18 @@
             background: $black;
           }
         }
+        a {
+          color: inherit;
+
+          &:hover {
+            color: var(--link-color-hover);
+          }
+        }
       }
-      @media screen and (min-width: 450px) {
+      @media (min-width: $breakpoint-s) {
         h3 {
-          font-size: 27px;
           line-height: 32px;
+          font-size: var(--fs-2xl);
           .tag-identifier {
             font-size: 15px;
             padding: 2px 6px 3px;
@@ -655,21 +628,7 @@
         }
       }
     }
-    .search-snippet {
-      font-size: 15px;
-      padding: 6px 0px 2px;
-      color: lighten($dark-gray, 8%);
-      line-height: 21px;
-      span {
-        background: darken($light-gray, 2%);
-        padding: 1px;
-      }
-      em {
-        font-weight: 600;
-        color: darken($dark-gray, 6%);
-        font-style: normal;
-      }
-    }
+
     p {
       margin: 6px auto;
       line-height: 20px;
@@ -917,52 +876,4 @@
   @include dev-card;
   padding: 48px 24px;
   text-align: center;
-}
-
-// Notifications filtering on mobile.
-.notifications-mobile-filters {
-  @media screen and (min-width: 950px) {
-    display: none;
-  }
-  .organization-name {
-    font-size: 15px;
-    font-weight: bold;
-    border: 0px;
-    display: inline-block;
-    width: 27%;
-    padding: 9px 0px;
-    text-align: center;
-    color: var(--card-color-tertiary);
-    margin: 1%;
-  }
-  .query-filter-button {
-    font-size: 12px;
-    font-weight: bold;
-    background: transparent;
-    border: 0px;
-    display: inline-block;
-    width: 27%;
-    padding: 9px 0px;
-    text-align: left;
-    border-radius: 100px;
-    color: var(--card-color);
-    text-align: center;
-    margin: 1%;
-
-    &:hover {
-      @include themeable(
-        background,
-        theme-container-background-hover,
-        lighten($bold-blue, 38%)
-      );
-    }
-    &.selected {
-      @include themeable(
-        background,
-        theme-container-accent-background,
-        lighten($bold-blue, 8%)
-      );
-      @include themeable(color, theme-color, white);
-    }
-  }
 }

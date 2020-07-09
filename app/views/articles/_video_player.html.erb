@@ -1,8 +1,8 @@
-<div class="video-player-header">
+<div class="crayons-article__video">
   <% minutes, seconds = article.video_duration_in_minutes.split(":") %>
   <div id="video-player-source" data-source="<%= article.video_source_url %>"></div>
   <script src="//content.jwplatform.com/libraries/b1zWy2iv.js" async></script>
-  <div id="video-player-<%= article.id %>" class="video-player"></div>
+  <div id="video-player-<%= article.id %>" class="crayons-article__video__player"></div>
   <% unless internal_navigation? || user_signed_in? %>
     <script type="application/ld+json">
       {
