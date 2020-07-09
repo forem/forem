@@ -122,6 +122,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.size < 450).to be(true)
       end
 
+      # rubocop:disable RSpec/ExampleLength
       it "adds timestamp url if commentable has video and timestamp", :aggregate_failures do
         article.video = "https://example.com"
 
@@ -146,6 +147,7 @@ RSpec.describe Comment, type: :model do
         expect(comment.processed_html.include?(">1:52:30</a>")).to eq(true)
         expect(comment.processed_html.include?(">1:20</a>")).to eq(true)
       end
+      # rubocop:enable RSpec/ExampleLength
 
       it "does not add timestamp if commentable does not have video" do
         article.video = nil
