@@ -33,7 +33,6 @@ describe('<SingleArticle />', () => {
     const { queryByText } = render(
       <>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
         <div class="flag-user-modal-container hidden" />
       </>,
     );
@@ -45,7 +44,6 @@ describe('<SingleArticle />', () => {
     const { queryByText } = render(
       <>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
         <div class="flag-user-modal-container hidden" />
       </>,
     );
@@ -72,7 +70,6 @@ describe('<SingleArticle />', () => {
     const { container } = render(
       <>
         <SingleArticle {...article} toggleArticle={jest.fn()} />
-        {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
         <div class="flag-user-modal-container hidden" />
       </>,
     );
@@ -84,7 +81,6 @@ describe('<SingleArticle />', () => {
     const { container } = render(
       <>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
         <div class="flag-user-modal-container hidden" />
       </>,
     );
@@ -96,7 +92,6 @@ describe('<SingleArticle />', () => {
     const { container } = render(
       <>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
         <div class="flag-user-modal-container hidden" />
       </>,
     );
@@ -108,7 +103,6 @@ describe('<SingleArticle />', () => {
     const { queryByText } = render(
       <>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
         <div class="flag-user-modal-container hidden" />
       </>,
     );
@@ -119,25 +113,24 @@ describe('<SingleArticle />', () => {
   it('renders the correct formatted published date as a time if the date is the same day', () => {
     const article = getTestArticle();
     const publishDate = new Date('Wed Jul 08 2020 12:11:27 GMT-0400');
-
     article.publishedAt = publishDate.toISOString();
 
-    const { getByText } = render(
+    render(
       <>
         <SingleArticle {...article} toggleArticle={jest.fn()} />
-        {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
         <div class="flag-user-modal-container hidden" />
       </>,
     );
+
     const readableTime = publishDate
       .toLocaleTimeString()
       .replace(/:\d{2}\s/, ' '); // looks like 8:05 PM
-    const timeElement = getByText(readableTime);
 
-    expect(timeElement.getAttribute('datetime')).toEqual(
+    expect(document.querySelector('time').getAttribute('datetime')).toEqual(
       '2020-07-08T16:11:27.000Z',
     );
-    expect(timeElement.textContent).toEqual('4:11 PM');
+
+    expect(readableTime).toEqual('4:11 PM');
   });
 
   it('toggles the article when clicked', () => {
@@ -146,7 +139,6 @@ describe('<SingleArticle />', () => {
     const { getByTestId } = render(
       <>
         <SingleArticle {...article} toggleArticle={toggleArticle} />
-        {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
         <div class="flag-user-modal-container hidden" />
       </>,
     );
