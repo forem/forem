@@ -87,13 +87,6 @@ Rails/UniqueValidationWithoutIndex:
   Exclude:
     - 'app/models/article.rb'
 
-# Offense count: 38
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect, EnforcedStyle.
-# SupportedStyles: nested, compact
-# Style/ClassAndModuleChildren:
-#   Enabled: false
-
 # Offense count: 3
 # Configuration parameters: Methods.
 # Methods: {"reduce"=>["acc", "elem"]}, {"inject"=>["acc", "elem"]}
