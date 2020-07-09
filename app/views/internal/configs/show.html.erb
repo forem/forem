@@ -282,16 +282,6 @@
                                value: SiteConfig.ga_view_id %>
               <div class="alert alert-info">Google Analytics Reporting API v4 - View ID</div>
             </div>
-
-            <div class="form-group">
-              <%= internal_config_label :ga_fetch_rate, "Fetch rate" %>
-              <%= f.number_field :ga_fetch_rate,
-                                 class: "form-control",
-                                 value: SiteConfig.ga_fetch_rate,
-                                 min: 1,
-                                 placeholder: 1 %>
-              <div class="alert alert-info">Determines how often the site updates its Google Analytics stats</div>
-            </div>
           </div>
         </div>
 
@@ -488,6 +478,7 @@
                                placeholder: "Shop url" %>
               <div class="alert alert-info">Used as the shop url of the community</div>
             </div>
+
             <div class="form-group">
               <%= internal_config_label :payment_pointer %>
               <%= f.text_field :payment_pointer,
