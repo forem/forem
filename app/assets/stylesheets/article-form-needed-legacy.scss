@@ -482,8 +482,8 @@
   margin: auto;
   text-align: center;
 
-  .registration-rainbow {
-    .rainbow-logo {
+  .registration__logo-container {
+    .logo {
       height: calc(170px + 1vw);
       width: calc(170px + 1vw);
       transform: rotate(6deg);
@@ -498,7 +498,7 @@
     padding: 10px 0px;
     border: 3px solid $yellow;
 
-    .rainbow-logo {
+    .logo {
       height: calc(100px + 1vw);
       width: calc(100px + 1vw);
       margin-top: 26px;

@@ -319,6 +319,12 @@ Style/IfUnlessModifier:
 #   StyleGuide: '#single-line-blocks'
 #   Enabled: false
 
+Style/ClassAndModuleChildren:
+  Description: 'Checks style of children classes and modules.'
+  StyleGuide: '#namespace-definition'
+  Enabled: true
+  SafeAutoCorrect: true
+
 # Style/OptionHash:
 #   Description: "Don't use option hashes when you can use keyword arguments."
 #   Enabled: false

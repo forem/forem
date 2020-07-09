@@ -19,6 +19,7 @@ module ApplicationHelper
     "#{controller_name}-#{controller.action_name}"
   end
 
+  # rubocop:disable Rails/HelperInstanceVariable
   def view_class
     if @podcast_episode_show # custom due to edge cases
       "stories stories-show podcast_episodes-show"
@@ -28,6 +29,7 @@ module ApplicationHelper
       "#{controller_name} #{controller_name}-#{controller.action_name}"
     end
   end
+  # rubocop:enable Rails/HelperInstanceVariable
 
   def title(page_title)
     derived_title = if page_title.include?(community_name)
@@ -164,7 +166,7 @@ module ApplicationHelper
   end
 
   def community_name
-    @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
+    @community_name ||= ApplicationConfig["COMMUNITY_NAME"] # rubocop:disable Rails/HelperInstanceVariable
   end
 
   def community_qualified_name
