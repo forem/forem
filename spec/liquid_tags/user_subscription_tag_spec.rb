@@ -5,7 +5,9 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
 
   let(:subscriber) { create(:user) }
   let(:author) { create(:user) }
-  let(:article_with_user_subscription_tag) { create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true) }
+  let(:article_with_user_subscription_tag) do
+    create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
+  end
 
   # Stub roles because adding them normally can cause flaky specs
   before do
@@ -76,6 +78,7 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
       end
     end
 
+    # rubocop:disable RSpec/ExampleLength
     it "displays errors when there's an error creating a subscription" do
       # Create a subscription so it causes an error by already being subscribed
       create(
@@ -98,6 +101,7 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
         expect(page).to have_text("Subscriber has already been taken")
       end
     end
+    # rubocop:enable RSpec/ExampleLength
 
     it "tells the user they're already subscribed by default if they're already subscribed" do
       create(

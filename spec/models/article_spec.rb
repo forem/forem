@@ -94,7 +94,7 @@ RSpec.describe Article, type: :model do
     context "when published" do
       before do
         # rubocop:disable RSpec/NamedSubject
-        allow(subject).to receive(:published?).and_return(true)
+        allow(subject).to receive(:published?).and_return(true) # rubocop:disable RSpec/SubjectStub
         # rubocop:enable RSpec/NamedSubject
       end
 
