@@ -4,7 +4,7 @@
     <%= form_for [:internal, ChatChannel.new], html: { class: "inline-form" } do |f| %>
       <div class="form-row">
         <div class="form-group">
-          <%= f.text_field :channel_name, placeholder: "Channel Name" %>
+          <%= f.text_field :channel_name, placeholder: "Channel Name", required: true %>
           <%= f.text_field :usernames_string, placeholder: "Usernames to add" %>
           <%= f.submit %>
         </div>
@@ -46,9 +46,9 @@
             <% end %>
           </td>
           <td>
-            <%= form_for [:internal, channel] do |f| %>
+            <%= form_with model: [:internal, channel], method: :delete, local: true do |f| %>
               <%= f.text_field :usernames_string, placeholder: "Usernames to remove" %>
-              <%= f.submit %>
+              <%= f.submit "Remove From channel", data: { confirm: "Are you sure you want to remove this user?" } %>
             <% end %>
           </td>
         </tr>
