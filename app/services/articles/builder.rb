@@ -8,27 +8,34 @@ module Articles
       @prefill = prefill
     end
 
-    def build
-      if @tag.present? && @user&.editor_version == "v2"
+    def self.call(*args)
+      new(*args).call
+    end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
+    def call
+      if @tag.present? && @user&.editor_version == "v2"
         [tag_user_editor_v2, needs_authorization]
       elsif @tag&.submission_template.present? && @user
-
         [tag_user, needs_authorization]
       elsif @prefill.present? && @user&.editor_version == "v2"
-
         [prefill_user_editor_v2, needs_authorization]
       elsif @prefill.present? && @user
-
         [prefill_user, needs_authorization]
       elsif @tag.present?
-
         [tag, does_not_need_authorization]
+      elsif @user&.editor_version == "v2"
+        [user_editor_v2, does_not_need_authorization]
       else
-        return [user_editor_v2, does_not_need_authorization] if @user&.editor_version == "v2"
-
         [user_editor_v1, does_not_need_authorization]
       end
+    end
+    # rubocop:enable Metrics/CyclomaticComplexity
+
+    private
+
+    def editor_version_2?
+      @user&.editor_version == "v2"
     end
 
     def needs_authorization
