@@ -204,14 +204,18 @@ RSpec.describe "/internal/config", type: :request do
         end
 
         it "updates left_navbar_svg_icon" do
-          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' stroke='black' stroke-width='3'/></svg>"
-          post "/internal/config", params: { site_config: { left_navbar_svg_icon: expected_svg }, confirmation: confirmation_message }
+          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' " \
+            "stroke='black' stroke-width='3'/></svg>"
+          post "/internal/config", params: { site_config: { left_navbar_svg_icon: expected_svg },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.left_navbar_svg_icon).to eq(expected_svg)
         end
 
         it "updates right_navbar_svg_icon" do
-          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' stroke='black' stroke-width='1'/></svg>"
-          post "/internal/config", params: { site_config: { right_navbar_svg_icon: expected_svg }, confirmation: confirmation_message }
+          expected_svg = "<svg height='100' width='100'><circle cx='50' cy='50' r='40' " \
+            "stroke='black' stroke-width='1'/></svg>"
+          post "/internal/config", params: { site_config: { right_navbar_svg_icon: expected_svg },
+                                             confirmation: confirmation_message }
           expect(SiteConfig.right_navbar_svg_icon).to eq(expected_svg)
         end
 

@@ -5,7 +5,9 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
 
   let(:subscriber) { create(:user) }
   let(:author) { create(:user) }
-  let(:article_with_user_subscription_tag) { create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true) }
+  let(:article_with_user_subscription_tag) do
+    create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true)
+  end
 
   # Stub roles because adding them normally can cause flaky specs
   before do
