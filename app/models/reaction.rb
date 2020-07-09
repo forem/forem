@@ -76,6 +76,10 @@ class Reaction < ApplicationRecord
     reactable_type == "User" && category == "vomit"
   end
 
+  def reaction_on_article?
+    reactable_type == "Article"
+  end
+
   def reaction_on_organization_article?
     reactable_type == "Article" && reactable.organization.present?
   end
