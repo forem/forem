@@ -43,32 +43,79 @@
     }
   }
 
-  var waitingOnJWP<%= article.id %> = setInterval(function () {
-    if (typeof jwplayer !== 'undefined') {
-      clearInterval(waitingOnJWP<%= article.id %>);
-      var playerInstance = jwplayer("video-player-<%= article.id %>");
-      playerInstance.setup({
-        file: "<%= article.video_source_url %>",
-        mediaid: "<%= article.video_code %>",
-        autostart: <%= internal_navigation? %>,
-        image: "<%= cloudinary(article.video_thumbnail_url, 880) %>",
-        playbackRateControls: true,
-        tracks: [{
-          file: "<%= article.video_closed_caption_track_url %>",
-          label: "English",
-          kind: "captions",
-          "default": false
-        }]
-      });
-      var time = getParameterByName('t')
-      if (time) {
-        jwplayer().on('ready', function (event) {
-          jwplayer().play();
+  function initWebPlayer(seconds) {
+    var waitingOnJWP<%= article.id %> = setInterval(function () {
+      if (typeof jwplayer !== 'undefined') {
+        clearInterval(waitingOnJWP<%= article.id %>);
+        var playerInstance = jwplayer("video-player-<%= article.id %>");
+        playerInstance.setup({
+          file: "<%= article.video_source_url %>",
+          mediaid: "<%= article.video_code %>",
+          autostart: <%= internal_navigation? %>,
+          image: "<%= cloudinary(article.video_thumbnail_url, 880) %>",
+          playbackRateControls: true,
+          tracks: [{
+            file: "<%= article.video_closed_caption_track_url %>",
+            label: "English",
+            kind: "captions",
+            "default": false
+          }]
         });
-        jwplayer().on('firstFrame', function () {
-          jwplayer().seek(timeToSeconds(time))
-        });
+        if (seconds) {
+          jwplayer().on('ready', function (event) {
+            jwplayer().play();
+          });
+          jwplayer().on('firstFrame', function () {
+            jwplayer().seek(timeToSeconds(seconds))
+          });
+        }
       }
+    }, 2);
+  }
+
+  function isNativeIOS() {
+    return (
+      navigator.userAgent === 'DEV-Native-ios' &&
+      window &&
+      window.webkit &&
+      window.webkit.messageHandlers &&
+      window.webkit.messageHandlers.video
+    );
+  }
+
+  function isNativeAndroid() {
+    return (
+      navigator.userAgent === 'DEV-Native-android' &&
+      typeof AndroidBridge !== 'undefined' &&
+      AndroidBridge !== null &&
+      AndroidBridge.videoMessage !== undefined
+    );
+  }
+
+  function isNativePlayer() {
+    return isNativeIOS() || isNativeAndroid();
+  }
+
+  function sendNativeMessage(message) {
+    try {
+      if (isNativeIOS()) {
+        window.webkit.messageHandlers.video.postMessage(message);
+      } else if (isNativeAndroid()) {
+        AndroidBridge.videoMessage(JSON.stringify(message));
+      }
+    } catch (err) {
+      console.log(err.message); // eslint-disable-line no-console
     }
-  }, 2)
+  }
+
+  var seconds = getParameterByName('t') || '0';
+  if (isNativePlayer()) {
+    sendNativeMessage({
+      action: 'play',
+      url: "<%= article.video_source_url %>",
+      seconds: seconds,
+    });
+  } else {
+    initWebPlayer(seconds);
+  }
 </script>
