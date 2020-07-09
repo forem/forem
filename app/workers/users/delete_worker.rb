@@ -14,7 +14,8 @@ module Users
       NotifyMailer.with(user: user).account_deleted_email.deliver_now
     rescue StandardError => e
       DatadogStatsClient.count("users.delete", 1, tags: ["action:failed", "user_id:#{user.id}"])
-      Rails.logger.error("Error while deleting user: #{e}")
+      Honeybadger.context({ user_id: user.id })
+      Honeybadger.notify(e)
     end
   end
 end
