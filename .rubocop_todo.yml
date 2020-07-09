@@ -50,24 +50,12 @@ RSpec/ExampleLength:
 RSpec/MultipleExpectations:
   Max: 12
 
-# Offense count: 1
-RSpec/SubjectStub:
-  Exclude:
-    - 'spec/models/article_spec.rb'
-
-# Offense count: 1
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/HasAndBelongsToMany:
-  Exclude:
-    - 'app/models/role.rb'
-
 # Offense count: 3
 # Configuration parameters: Include.
 # Include: app/helpers/**/*.rb
-Rails/HelperInstanceVariable:
-  Exclude:
-    - 'app/helpers/application_helper.rb'
+# Rails/HelperInstanceVariable:
+#   Exclude:
+#     - 'app/helpers/application_helper.rb'
 
 # Offense count: 16
 Rails/OutputSafety:
