@@ -50,10 +50,8 @@ describe('<ModerationArticles />', () => {
   it('renders a list of 2 articles', () => {
     render(<ModerationArticles />, document.getElementById('mod-index-list'));
 
-    // Use of 'document.querySelectAll' is bad pratice
-    // but was unable to find a Preact way to test # of articles in grid
     const listOfArticles = document.querySelectorAll(
-      'button.moderation-single-article',
+      '[data-testid^="mod-article-"]',
     );
     expect(listOfArticles.length).toEqual(2);
   });
