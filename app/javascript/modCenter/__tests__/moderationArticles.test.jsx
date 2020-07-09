@@ -1,4 +1,3 @@
-/* eslint-disable jest/expect-expect */
 import { h } from 'preact';
 import { render, fireEvent } from '@testing-library/preact';
 import { ModerationArticles } from '../moderationArticles';
@@ -82,9 +81,13 @@ describe('<ModerationArticles />', () => {
   });
 
   it('adds the FlagUser Modal HTML associated with author when article opened', () => {
-    // check that there is no element with class 'flag user modal'
-    // click open an article
-    // check that there is an element with class 'flag user modal'
-    // check that the data-reactable-id attribute equates to the user id
+    expect(document.querySelector('.flag-user-modal')).toBeNull();
+
+    document.querySelector('button[data-testid="mod-article-1"]').click();
+    expect(document.querySelector('.flag-user-modal')).toBeTruthy();
+
+    expect(
+      document.querySelector('.flag-user-modal input').dataset.reactableId,
+    ).toEqual('1');
   });
 });
