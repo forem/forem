@@ -35,7 +35,7 @@ class MessagesController < ApplicationController
       begin
         Pusher.trigger(@message.chat_channel.pusher_channels, "message-deleted", @message.to_json)
       rescue Pusher::Error => e
-        logger.info "PUSHER ERROR: #{e.message}"
+        Honeybadger.notify(e)
       end
     end
 
@@ -62,7 +62,7 @@ class MessagesController < ApplicationController
           message_json = create_pusher_payload(@message, "")
           Pusher.trigger(@message.chat_channel.pusher_channels, "message-edited", message_json)
         rescue Pusher::Error => e
-          logger.info "PUSHER ERROR: #{e.message}"
+          Honeybadger.notify(e)
         end
       end
       render json: { status: "success", message: "Message was edited" }

@@ -17,7 +17,8 @@ class OrganizationsController < ApplicationController
     authorize @organization
     if @organization.save
       rate_limiter.track_limit_by_action(:organization_creation)
-      @organization_membership = OrganizationMembership.create!(organization_id: @organization.id, user_id: current_user.id, type_of_user: "admin")
+      @organization_membership = OrganizationMembership.create!(organization_id: @organization.id,
+                                                                user_id: current_user.id, type_of_user: "admin")
       flash[:settings_notice] = "Your organization was successfully created and you are an admin."
       redirect_to "/settings/organization/#{@organization.id}"
     else
@@ -41,7 +42,8 @@ class OrganizationsController < ApplicationController
       redirect_to "/settings/organization"
     else
       @org_organization_memberships = @organization.organization_memberships.includes(:user)
-      @organization_membership = OrganizationMembership.find_by(user_id: current_user.id, organization_id: @organization.id)
+      @organization_membership = OrganizationMembership.find_by(user_id: current_user.id,
+                                                                organization_id: @organization.id)
 
       render template: "users/edit"
     end

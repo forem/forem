@@ -13,7 +13,8 @@ module Streams
       end
 
       def call
-        user_resp = HTTParty.get("https://api.twitch.tv/helix/users", query: { login: user.twitch_username }, headers: authentication_request_headers)
+        user_resp = HTTParty.get("https://api.twitch.tv/helix/users", query: { login: user.twitch_username },
+                                                                      headers: authentication_request_headers)
 
         # user_resp["data"].first["id"]
         twitch_user_id = user_resp.try(:[], "data").to_a.first.try(:[], "id")
@@ -45,7 +46,8 @@ module Streams
       end
 
       def twitch_stream_updates_url_for_user(user)
-        Rails.application.routes.url_helpers.user_twitch_stream_updates_url(user_id: user.id, host: ApplicationConfig["APP_DOMAIN"])
+        Rails.application.routes.url_helpers.user_twitch_stream_updates_url(user_id: user.id,
+                                                                            host: ApplicationConfig["APP_DOMAIN"])
       end
     end
   end

@@ -1,9 +1,10 @@
 class UserSubscriptionTag < LiquidTagBase
   PARTIAL = "liquids/user_subscription".freeze
   VALID_CONTEXTS = %w[Article].freeze
-  VALID_ROLES = %i[
-    admin
-    super_admin
+  VALID_ROLES = [
+    :admin,
+    [:restricted_liquid_tag, LiquidTags::UserSubscriptionTag],
+    :super_admin,
   ].freeze
 
   SCRIPT = <<~JAVASCRIPT.freeze
@@ -277,18 +278,22 @@ class UserSubscriptionTag < LiquidTagBase
       });
     }
 
-    // The markup defaults to signed out UX
-    if (isUserSignedIn()) {
-      showSignedIn();
-      addConfirmationModalClickHandlers();
+    // We load this JS on every Article. This is to only run it on Articles
+    // where the UserSubscription liquid tag is present
+    if (document.getElementById('user-subscription-tag')) {
+      // The markup defaults to signed out UX
+      if (isUserSignedIn()) {
+        showSignedIn();
+        addConfirmationModalClickHandlers();
 
-      // We need access to some DOM elements (i.e. csrf token, article id, userData, etc.)
-      document.addEventListener('DOMContentLoaded', function() {
-        checkIfSubscribed();
-      });
-    } else {
-      showSignedOut();
-      addSignInClickHandler();
+        // We need access to some DOM elements (i.e. csrf token, article id, userData, etc.)
+        document.addEventListener('DOMContentLoaded', function() {
+          checkIfSubscribed();
+        });
+      } else {
+        showSignedOut();
+        addSignInClickHandler();
+      }
     }
   JAVASCRIPT
 

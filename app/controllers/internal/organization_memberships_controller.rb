@@ -17,7 +17,8 @@ class Internal::OrganizationMembershipsController < Internal::ApplicationControl
     if organization && organization_membership.save
       flash[:success] = "User was successfully added to #{organization.name}"
     elsif organization.blank?
-      flash[:danger] = "Organization ##{organization_membership_params[:organization_id]} does not exist. Perhaps a typo?"
+      message = "Organization ##{organization_membership_params[:organization_id]} does not exist. Perhaps a typo?"
+      flash[:danger] = message
     else
       flash[:danger] = organization_membership.errors.full_messages
     end
@@ -29,7 +30,8 @@ class Internal::OrganizationMembershipsController < Internal::ApplicationControl
     if organization_membership.destroy
       flash[:success] = "User was successfully removed from org ##{organization_membership.organization_id}"
     else
-      flash[:danger] = "Something went wrong with removing the user from org ##{organization_membership.organization_id}"
+      message = "Something went wrong with removing the user from org ##{organization_membership.organization_id}"
+      flash[:danger] = message
     end
     redirect_to internal_user_path(organization_membership.user_id)
   end
