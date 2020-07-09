@@ -71,7 +71,7 @@ module Payments
         DatadogStatsClient.increment("stripe.errors", tags: ["error:CardError"])
         raise CardError, e.message
       rescue Stripe::StripeError => e
-        Rails.logger.error(e)
+        Honeybadger.notify(e)
         DatadogStatsClient.increment("stripe.errors", tags: ["error:StripeError"])
         raise PaymentsError, e.message
       end
