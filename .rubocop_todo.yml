@@ -37,25 +37,9 @@ Performance/OpenStruct:
     - 'spec/models/github_repo_spec.rb'
     - 'spec/requests/github_repos_spec.rb'
 
-# Offense count: 4
-# Configuration parameters: Max.
-RSpec/ExampleLength:
-  Exclude:
-    - 'spec/initializers/rack/attack_spec.rb'
-    - 'spec/liquid_tags/user_subscription_tag_spec.rb'
-    - 'spec/models/comment_spec.rb'
-    - 'spec/requests/display_ad_events_spec.rb'
-
 # Offense count: 930
 RSpec/MultipleExpectations:
   Max: 12
-
-# Offense count: 3
-# Configuration parameters: Include.
-# Include: app/helpers/**/*.rb
-# Rails/HelperInstanceVariable:
-#   Exclude:
-#     - 'app/helpers/application_helper.rb'
 
 # Offense count: 16
 Rails/OutputSafety:

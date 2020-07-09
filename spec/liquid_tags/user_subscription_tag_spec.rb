@@ -78,6 +78,7 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
       end
     end
 
+    # rubocop:disable RSpec/ExampleLength
     it "displays errors when there's an error creating a subscription" do
       # Create a subscription so it causes an error by already being subscribed
       create(
@@ -100,6 +101,7 @@ RSpec.describe UserSubscriptionTag, type: :liquid_tag do
         expect(page).to have_text("Subscriber has already been taken")
       end
     end
+    # rubocop:enable RSpec/ExampleLength
 
     it "tells the user they're already subscribed by default if they're already subscribed" do
       create(
