@@ -23,6 +23,14 @@ module Internal
       redirect_back(fallback_location: "/internal/chat_channels")
     end
 
+    def destroy
+      @chat_channel = ChatChannel.find(params[:id])
+      @chat_channel.remove_user(user)
+
+      flash.notice = "User has been remove"
+      redirect_back(fallback_location: "/internal/chat_channels")
+    end
+
     private
 
     def users_by_param
