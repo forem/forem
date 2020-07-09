@@ -273,7 +273,9 @@ class MarkdownParser
   def wrap_all_images_in_links(html)
     doc = Nokogiri::HTML.fragment(html)
     doc.search("p img").each do |image|
-      image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>") unless image.parent.name == "a"
+      next if image.parent.name == "a"
+
+      image.swap("<a href='#{image.attr('src')}' class='article-body-image-wrapper'>#{image}</a>")
     end
     doc.to_html
   end

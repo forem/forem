@@ -50,8 +50,10 @@ describe Rack::Attack, type: :request, throttle: true do
     let(:another_api_secret) { create(:api_secret) }
 
     it "throttles api write endpoints based on IP and API key" do
-      headers = { "api-key" => api_secret.secret, "content-type" => "application/json", "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
-      dif_headers = { "api-key" => another_api_secret.secret, "content-type" => "application/json", "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+      headers = { "api-key" => api_secret.secret, "content-type" => "application/json",
+                  "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
+      dif_headers = { "api-key" => another_api_secret.secret, "content-type" => "application/json",
+                      "HTTP_FASTLY_CLIENT_IP" => "5.6.7.8" }
       params = { article: { body_markdown: "", title: Faker::Book.title } }.to_json
 
       Timecop.freeze do

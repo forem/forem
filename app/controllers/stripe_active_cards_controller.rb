@@ -7,12 +7,10 @@ class StripeActiveCardsController < ApplicationController
     customer = find_or_create_customer
 
     if Payments::Customer.create_source(customer.id, stripe_params[:stripe_token])
-      Rails.logger.info("Stripe Add New Card Success - #{current_user.username}")
       flash[:settings_notice] = "Your billing information has been updated"
     else
       DatadogStatsClient.increment("stripe.errors", tags: ["action:create_card", "user_id:#{current_user.id}"])
 
-      Rails.logger.error("Stripe Add New Card Failure - #{current_user.username}")
       flash[:error] = "There was a problem updating your billing info."
     end
     redirect_to user_settings_path(:billing)
@@ -30,12 +28,9 @@ class StripeActiveCardsController < ApplicationController
     customer.default_source = card.id
 
     if Payments::Customer.save(customer)
-      Rails.logger.info("Stripe Card Update Success - #{current_user.username}")
       flash[:settings_notice] = "Your billing information has been updated"
     else
       DatadogStatsClient.increment("stripe.errors", tags: ["action:update_card", "user_id:#{current_user.id}"])
-
-      Rails.logger.error("Stripe Card Update Failure - #{current_user.username}")
       flash[:error] = "There was a problem updating your billing info."
     end
 

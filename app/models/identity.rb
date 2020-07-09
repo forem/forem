@@ -10,9 +10,13 @@ class Identity < ApplicationRecord
 
   validates :provider, inclusion: { in: Authentication::Providers.available.map(&:to_s) }
   validates :uid, :provider, presence: true
-  validates :uid, uniqueness: { scope: :provider }, if: proc { |identity| identity.uid_changed? || identity.provider_changed? }
+  validates :uid, uniqueness: { scope: :provider }, if: proc { |identity|
+                                                          identity.uid_changed? || identity.provider_changed?
+                                                        }
   validates :user_id, presence: true
-  validates :user_id, uniqueness: { scope: :provider }, if: proc { |identity| identity.user_id_changed? || identity.provider_changed? }
+  validates :user_id, uniqueness: { scope: :provider }, if: proc { |identity|
+                                                              identity.user_id_changed? || identity.provider_changed?
+                                                            }
 
   # TODO: [thepracticaldev/oss] should this be transitioned to JSON?
   serialize :auth_data_dump

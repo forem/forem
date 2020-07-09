@@ -91,7 +91,7 @@ RSpec.describe Tweet, type: :model, vcr: true do
       end
     end
 
-    context "when retrieving a non existent tweet", vcr: { cassette_name: "twitter_client_status_not_found_extended" } do
+    context "when retrieving non existent tweet", vcr: { cassette_name: "twitter_client_status_not_found_extended" } do
       it "raises an error if the tweet does not exist" do
         expect { described_class.find_or_fetch("0") }.to raise_error(TwitterClient::Errors::NotFound)
       end

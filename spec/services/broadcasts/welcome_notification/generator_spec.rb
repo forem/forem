@@ -45,27 +45,51 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     it "sends only 1 notification at a time, in the correct order" do
       user.update!(created_at: 1.day.ago)
 
-      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(welcome_broadcast)
 
       Timecop.travel(1.day.since)
-      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(twitter_connect_broadcast)
 
       Timecop.travel(1.day.since)
-      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(customize_feed_broadcast)
 
       Timecop.travel(2.days.since)
-      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(customize_ux_broadcast)
 
       Timecop.travel(1.day.since)
-      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(discuss_and_ask_broadcast)
 
       Timecop.travel(1.day.since)
-      expect { sidekiq_perform_enqueued_jobs { described_class.call(user.id) } }.to change(user.notifications, :count).by(1)
+      expect do
+        sidekiq_perform_enqueued_jobs do
+          described_class.call(user.id)
+        end
+      end.to change(user.notifications, :count).by(1)
       expect(user.notifications.last.notifiable).to eq(download_app_broadcast)
       Timecop.return
     end

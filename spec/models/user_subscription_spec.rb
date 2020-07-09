@@ -13,10 +13,17 @@ RSpec.describe UserSubscription, type: :model do
     it { is_expected.to validate_presence_of(:subscriber_email) }
     it { is_expected.to validate_presence_of(:author_id) }
     it { is_expected.to validate_inclusion_of(:user_subscription_sourceable_type).in_array(%w[Article]) }
-    it { is_expected.to validate_uniqueness_of(:subscriber_id).scoped_to(%i[subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id]) }
+
+    # rubocop:disable RSpec/NamedSubject
+    it {
+      expect(subject).to validate_uniqueness_of(:subscriber_id).
+        scoped_to(%i[subscriber_email user_subscription_sourceable_type user_subscription_sourceable_id])
+    }
+    # rubocop:enable RSpec/NamedSubject
 
     it "validates the source is active" do
-      unpublished_source = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true, published: false)
+      unpublished_source = create(:article, :with_user_subscription_tag_role_user, with_user_subscription_tag: true,
+                                                                                   published: false)
       user_subscription = described_class.build(source: unpublished_source, subscriber: subscriber)
       expect(user_subscription).not_to be_valid
       expect(user_subscription.errors[:base]).to include "Source not found."
@@ -33,7 +40,9 @@ RSpec.describe UserSubscription, type: :model do
       subscriber_with_apple_relay = create(:user, email: "test@privaterelay.appleid.com")
       user_subscription = described_class.build(source: source, subscriber: subscriber_with_apple_relay)
       expect(user_subscription).not_to be_valid
-      expect(user_subscription.errors[:subscriber_email]).to include "Can't subscribe with an Apple private relay. Please update email."
+
+      error = "Can't subscribe with an Apple private relay. Please update email."
+      expect(user_subscription.errors[:subscriber_email]).to include(error)
     end
   end
 

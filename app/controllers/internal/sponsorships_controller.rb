@@ -33,6 +33,7 @@ class Internal::SponsorshipsController < Internal::ApplicationController
   private
 
   def sponsorship_params
-    params.require(:sponsorship).permit(%i[status expires_at tagline url blurb_html featured_number instructions instructions_updated_at])
+    params.require(:sponsorship).permit(%i[status expires_at tagline url blurb_html featured_number instructions
+                                           instructions_updated_at])
   end
 end

@@ -46,7 +46,11 @@ RSpec.describe Search::QueryBuilders::ChatChannelMembership, type: :service do
           "query" => "a_name*", "fields" => [:channel_text], "lenient" => true, "analyze_wildcard" => true
         }
       }]
-      expected_filters = [{ "term" => { "channel_status" => "active" } }, { "terms" => { "status" => %w[active joining_request] } }, { "terms" => { "viewable_by" => 1 } }]
+      expected_filters = [
+        { "term" => { "channel_status" => "active" } },
+        { "terms" => { "status" => %w[active joining_request] } },
+        { "terms" => { "viewable_by" => 1 } },
+      ]
       expect(query.as_hash.dig("query", "bool", "must")).to match_array(expected_query)
       expect(query.as_hash.dig("query", "bool", "filter")).to match_array(expected_filters)
     end
