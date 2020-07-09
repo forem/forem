@@ -34,7 +34,6 @@ class Follow < ApplicationRecord
   after_create_commit :create_chat_channel
   before_destroy :modify_chat_channel_status
 
-  validates :followable_id, uniqueness: { scope: %i[followable_type follower_id follower_type] }
   validates :subscription_status, inclusion: { in: %w[all_articles none] }
 
   def self.need_new_follower_notification_for?(followable_type)
