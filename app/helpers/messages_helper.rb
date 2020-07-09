@@ -35,7 +35,7 @@ module MessagesHelper
         Pusher.trigger(message.chat_channel.pusher_channels, "message-created", message_json)
       end
     rescue Pusher::Error => e
-      logger.info "PUSHER ERROR: #{e.message}"
+      Honeybadger.notify(e)
     end
   end
 end

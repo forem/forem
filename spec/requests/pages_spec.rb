@@ -19,7 +19,9 @@ RSpec.describe "Pages", type: :request do
 
     context "when json template" do
       let_it_be(:json_text) { "{\"foo\": \"bar\"}" }
-      let_it_be(:page) { create(:page, title: "sample_data", template: "json", body_json: json_text, body_html: nil, body_markdown: nil) }
+      let_it_be(:page) do
+        create(:page, title: "sample_data", template: "json", body_json: json_text, body_html: nil, body_markdown: nil)
+      end
 
       before do
         page.save! # Trigger processing of page.body_html
@@ -116,13 +118,6 @@ RSpec.describe "Pages", type: :request do
     end
   end
 
-  describe "GET /rly" do
-    it "has proper headline" do
-      get "/rly"
-      expect(response.body).to include("O RLY Cover Generator")
-    end
-  end
-
   describe "GET /welcome" do
     it "redirects to the latest welcome thread" do
       user = create(:user, id: 1)
@@ -177,7 +172,9 @@ RSpec.describe "Pages", type: :request do
   describe "GET /robots.txt" do
     it "has proper text" do
       get "/robots.txt"
-      expect(response.body).to include("Sitemap: https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/sitemaps/sitemap.xml.gz")
+
+      text = "Sitemap: https://#{ApplicationConfig['AWS_BUCKET_NAME']}.s3.amazonaws.com/sitemaps/sitemap.xml.gz"
+      expect(response.body).to include(text)
     end
   end
 

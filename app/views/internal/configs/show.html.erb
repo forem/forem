@@ -324,6 +324,7 @@
                 <div class="alert alert-info">Used as the site favicon</div>
                 <img alt="favicon" class="preview" src="<%= SiteConfig.favicon_url %>" />
               </div>
+
               <div class="form-group">
                 <%= internal_config_label :logo_png %>
                 <%= f.text_field :logo_png,
@@ -335,6 +336,7 @@
                   <img class="preview" src="<%= SiteConfig.logo_png %>" />
                 <% end %>
               </div>
+
               <div class="form-group">
                 <%= internal_config_label :logo_svg %>
                 <%= f.text_area :logo_svg,
@@ -348,15 +350,39 @@
                 <% end %>
               </div>
 
-              <%= internal_config_label :secondary_logo_url %>
-              <%= f.text_field :secondary_logo_url,
-                               class: "form-control",
-                               value: SiteConfig.secondary_logo_url,
-                               placeholder: "https://image.url" %>
-              <div class="alert alert-info">Used as the primary sticker image </div>
-              <% if SiteConfig.secondary_logo_url.present? %>
-                <img alt="secondary logo image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" />
-              <% end %>
+              <div class="form-group">
+                <%= internal_config_label :secondary_logo_url %>
+                <%= f.text_field :secondary_logo_url,
+                                 class: "form-control",
+                                 value: SiteConfig.secondary_logo_url,
+                                 placeholder: "https://image.url" %>
+                <div class="alert alert-info">Used as the secondary logo </div>
+                <% if SiteConfig.secondary_logo_url.present? %>
+                  <img alt="secondary logo image" class="img-fluid" src="<%= SiteConfig.secondary_logo_url %>" />
+                <% end %>
+              </div>
+
+              <div class="form-group">
+                <%= internal_config_label :left_navbar_svg_icon %>
+                <%= f.text_area :left_navbar_svg_icon,
+                                class: "form-control",
+                                value: SiteConfig.left_navbar_svg_icon,
+                                rows: 6,
+                                placeholder: "<svg ...></svg>" %>
+                <div class="alert alert-info">The SVG icon used to expand the left navbar navigation menu. Should be a max of 24x24px.</div>
+                <%= SiteConfig.left_navbar_svg_icon.html_safe %>
+              </div>
+
+              <div class="form-group">
+                <%= internal_config_label :right_navbar_svg_icon %>
+                <%= f.text_area :right_navbar_svg_icon,
+                                class: "form-control",
+                                value: SiteConfig.right_navbar_svg_icon,
+                                rows: 6,
+                                placeholder: "<svg ...></svg>" %>
+                <div class="alert alert-info">The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.</div>
+                <%= SiteConfig.right_navbar_svg_icon.html_safe %>
+              </div>
             </div>
           </div>
         </div>

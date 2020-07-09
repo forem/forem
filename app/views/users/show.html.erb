@@ -185,7 +185,9 @@
   <div class="articles-list" id="articles-list">
     <div class="on-page-nav-controls user-nav-controls" id="on-page-nav-controls">
       <button class="on-page-nav-butt on-page-nav-butt-left" id="on-page-nav-butt-left" aria-label="nav-button-left">
-        <img src="<%= asset_path "stack.svg" %>" alt="left-sidebar-nav">
+        <div class="crayons-icon nav-icon">
+          <%= SiteConfig.left_navbar_svg_icon.html_safe %>
+        </div>
       </button>
       <button class="on-page-nav-butt on-page-nav-butt-right" style="margin-top:-1px;" id="on-page-nav-butt-right" aria-label="nav-button-right">
         <img style="height:28px;width:28px;" src="<%= asset_path "ribbon.svg" %>" alt="right-sidebar-nav">

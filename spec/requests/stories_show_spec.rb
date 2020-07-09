@@ -23,7 +23,9 @@ RSpec.describe "StoriesShow", type: :request do
     it "renders signed-in title tag for signed-in user" do
       sign_in user
       get article.path
-      expect(response.body).to include "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
+
+      expected_title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
+      expect(response.body).to include(expected_title)
     end
 
     it "renders signed-out title tag for signed-out user" do
@@ -36,37 +38,41 @@ RSpec.describe "StoriesShow", type: :request do
     it "renders title tag with search_optimized_title_preamble if set and not signed in" do
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.reload.path
-      expect(response.body).to include "<title>Hey this is a test: #{CGI.escapeHTML(article.title)} - #{community_name}</title>"
+
+      expected_title = "<title>Hey this is a test: #{CGI.escapeHTML(article.title)} - #{community_name}</title>"
+      expect(response.body).to include(expected_title)
     end
 
     it "does not render title tag with search_optimized_title_preamble if set and not signed in" do
       sign_in user
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.path
-      expect(response.body).to include "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
+
+      expected_title = "<title>#{CGI.escapeHTML(article.title)} - #{community_qualified_name} 👩‍💻👨‍💻</title>"
+      expect(response.body).to include(expected_title)
     end
 
-    it "does not render preamble with search_optimized_title_preamble not signed in but search_optimized_title_preamble not set" do
+    it "does not render preamble with search_optimized_title_preamble not signed in but not set" do
       get article.path
-      expect(response.body).to include "#{CGI.escapeHTML(article.title)} - #{community_name}</title>"
+      expect(response.body).to include("#{CGI.escapeHTML(article.title)} - #{community_name}</title>")
     end
 
     it "renders title preamble with search_optimized_title_preamble if set and not signed in" do
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.reload.path
-      expect(response.body).to include "<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>"
+      expect(response.body).to include("<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>")
     end
 
     it "does not render preamble with search_optimized_title_preamble if set and signed in" do
       sign_in user
       article.update_column(:search_optimized_title_preamble, "Hey this is a test")
       get article.path
-      expect(response.body).not_to include "<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>"
+      expect(response.body).not_to include("<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>")
     end
 
-    it "does not render title tag with search_optimized_title_preamble not signed in but search_optimized_title_preamble not set" do
+    it "does not render title tag with search_optimized_title_preamble not signed in but not set" do
       get article.path
-      expect(response.body).not_to include "<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>"
+      expect(response.body).not_to include("<span class=\"fs-xl color-base-70 block\">Hey this is a test</span>")
     end
 
     it "renders user payment pointer if set" do

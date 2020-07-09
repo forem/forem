@@ -4,7 +4,8 @@ class BackupData < ApplicationRecord
   validates :instance_id, :instance_type, :json_data, presence: true
 
   def self.backup!(instance)
-    BackupData.create!(instance_type: instance.class.name, instance_id: instance.id, instance_user_id: instance.user_id, json_data: instance.attributes)
+    BackupData.create!(instance_type: instance.class.name, instance_id: instance.id,
+                       instance_user_id: instance.user_id, json_data: instance.attributes)
   end
 
   def recover!

@@ -5,7 +5,9 @@ class BufferUpdate < ApplicationRecord
   validate :validate_body_text_recent_uniqueness, :validate_suggestion_limit
   validates :status, inclusion: { in: %w[pending sent_direct confirmed dismissed] }
 
-  def self.buff!(article_id, text, buffer_profile_id_code, social_service_name = "twitter", tag_id = nil, admin_id = nil)
+  def self.buff!(
+    article_id, text, buffer_profile_id_code, social_service_name = "twitter", tag_id = nil, admin_id = nil
+  )
     buffer_response = send_to_buffer(text, buffer_profile_id_code)
     create(
       article_id: article_id,
@@ -23,7 +25,8 @@ class BufferUpdate < ApplicationRecord
     buffer_update = BufferUpdate.find(buffer_update_id)
     if status == "confirmed"
       buffer_response = send_to_buffer(body_text, buffer_update.buffer_profile_id_code)
-      buffer_update.update!(buffer_response: buffer_response, status: status, approver_user_id: admin_id, body_text: body_text)
+      buffer_update.update!(buffer_response: buffer_response, status: status, approver_user_id: admin_id,
+                            body_text: body_text)
     else
       buffer_update.update!(status: status, approver_user_id: admin_id)
     end
@@ -56,14 +59,18 @@ class BufferUpdate < ApplicationRecord
   def validate_body_text_recent_uniqueness
     return if persisted?
 
-    if BufferUpdate.where(body_text: body_text, article_id: article_id, tag_id: tag_id, social_service_name: social_service_name).
-        where("created_at > ?", 2.minutes.ago).any?
-      errors.add(:body_text, "\"#{body_text}\" has already been submitted very recently")
-    end
+    relation = BufferUpdate.
+      where(body_text: body_text, article_id: article_id, tag_id: tag_id, social_service_name: social_service_name).
+      where("created_at > ?", 2.minutes.ago)
+
+    return unless relation.any?
+
+    errors.add(:body_text, "\"#{body_text}\" has already been submitted very recently")
   end
 
   def validate_suggestion_limit
-    return unless BufferUpdate.where(article_id: article_id, tag_id: tag_id, social_service_name: social_service_name).count > 2
+    return unless BufferUpdate.where(article_id: article_id, tag_id: tag_id,
+                                     social_service_name: social_service_name).count > 2
 
     errors.add(:article_id, "already has multiple suggestions for #{social_service_name}")
   end

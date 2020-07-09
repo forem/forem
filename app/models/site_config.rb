@@ -11,6 +11,9 @@ class SiteConfig < RailsSettings::Base
   # the cache, or call SiteConfig.clear_cache
   cache_prefix { "v1" }
 
+  STACK_ICON = File.read(Rails.root.join("app/assets/images/stack.svg")).freeze
+  LIGHTNING_ICON = File.read(Rails.root.join("app/assets/images/lightning.svg")).freeze
+
   # API Tokens
   field :health_check_token, type: :string
 
@@ -58,6 +61,9 @@ class SiteConfig < RailsSettings::Base
   field :logo_png, type: :string
   field :logo_svg, type: :string
   field :secondary_logo_url, type: :string
+
+  field :left_navbar_svg_icon, type: :string, default: STACK_ICON
+  field :right_navbar_svg_icon, type: :string, default: LIGHTNING_ICON
 
   # Mascot
   field :mascot_user_id, type: :integer, default: 1
@@ -124,7 +130,8 @@ class SiteConfig < RailsSettings::Base
 
   # User Experience
   # These are the default UX settings, which can be overridded by individual user preferences.
-  field :feed_style, type: :string, default: "basic" # basic (current default), rich (cover image on all posts), compact (more minimal)
+  # basic (current default), rich (cover image on all posts), compact (more minimal)
+  field :feed_style, type: :string, default: "basic"
 
   # Broadcast
   field :welcome_notifications_live_at, type: :date

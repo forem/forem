@@ -24,7 +24,6 @@ class GaEventsController < ApplicationController
       cache_buster: rand(100_000_000_000).to_s,
       data_source: "web",
     )
-    logger.info("Server-Side Google Analytics Tracking - #{client_id}")
     render body: nil
   end
 
