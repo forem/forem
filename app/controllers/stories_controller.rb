@@ -72,7 +72,10 @@ class StoriesController < ApplicationController
     campaign_articles_scope = Article.tagged_with(SiteConfig.campaign_featured_tags, any: true).
       where("published_at > ? AND score > ?", 4.weeks.ago, 0).
       order("hotness_score DESC")
-    campaign_articles_scope = campaign_articles_scope.where(approved: true) if SiteConfig.campaign_articles_require_approval?
+
+    requires_approval = SiteConfig.campaign_articles_require_approval?
+    campaign_articles_scope = campaign_articles_scope.where(approved: true) if requires_approval
+
     @campaign_articles_count = campaign_articles_scope.count
     @latest_campaign_articles = campaign_articles_scope.limit(5).pluck(:path, :title, :comments_count, :created_at)
   end

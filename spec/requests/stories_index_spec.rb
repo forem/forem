@@ -16,7 +16,6 @@ RSpec.describe "StoriesIndex", type: :request do
       article = create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
@@ -29,7 +28,6 @@ RSpec.describe "StoriesIndex", type: :request do
       create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include("min read")
     end
 
@@ -409,7 +407,9 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "renders proper canonical url for page 2" do
         get "/t/#{tag.name}/page/2"
-        expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />")
+
+        expected_tag = "<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />"
+        expect(response.body).to include(expected_tag)
       end
     end
   end

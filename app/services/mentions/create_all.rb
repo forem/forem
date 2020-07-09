@@ -63,7 +63,8 @@ module Mentions
     def create_mention_for(user)
       return if user_has_comment_notifications?(user)
 
-      mention = Mention.create(user_id: user.id, mentionable_id: @notifiable.id, mentionable_type: @notifiable.class.name)
+      mention = Mention.create(user_id: user.id, mentionable_id: @notifiable.id,
+                               mentionable_type: @notifiable.class.name)
       # mentionable_type = model that created the mention, user = user to be mentioned
       Notification.send_mention_notification(mention)
       mention

@@ -13,11 +13,15 @@ class User < ApplicationRecord
   FONTS = %w[default sans_serif monospace comic_sans open_dyslexic].freeze
   GITLAB_URL_REGEXP = /\A(http(s)?:\/\/)?(www.gitlab.com|gitlab.com)\/.*\z/.freeze
   INBOXES = %w[open private].freeze
-  INSTAGRAM_URL_REGEXP = /\A(http(s)?:\/\/)?(?:www.)?instagram.com\/(?=.{1,30}\/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+\/?\z/.freeze
+  INSTAGRAM_URL_REGEXP =
+    /\A(http(s)?:\/\/)?(?:www.)?instagram.com\/(?=.{1,30}\/?$)([a-zA-Z\d_]\.?)*[a-zA-Z\d_]+\/?\z/.freeze
+
   LINKEDIN_URL_REGEXP = /\A(http(s)?:\/\/)?(www.linkedin.com|linkedin.com|[A-Za-z]{2}.linkedin.com)\/.*\z/.freeze
   MEDIUM_URL_REGEXP = /\A(http(s)?:\/\/)?(www.medium.com|medium.com)\/.*\z/.freeze
   NAVBARS = %w[default static].freeze
-  STACKOVERFLOW_URL_REGEXP = /\A(http(s)?:\/\/)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)\/.*\z/.freeze
+  STACKOVERFLOW_URL_REGEXP =
+    /\A(http(s)?:\/\/)?(((www|pt|ru|es|ja).)?stackoverflow.com|(www.)?stackexchange.com)\/.*\z/.freeze
+
   YOUTUBE_URL_REGEXP = /\A(http(s)?:\/\/)?(www.youtube.com|youtube.com)\/.*\z/.freeze
   STREAMING_PLATFORMS = %w[twitch].freeze
   THEMES = %w[default night_theme pink_theme minimal_light_theme ten_x_hacker_theme].freeze
@@ -45,22 +49,30 @@ class User < ApplicationRecord
   acts_as_followable
   acts_as_follower
 
-  has_many :source_authored_user_subscriptions, class_name: "UserSubscription", foreign_key: :author_id, inverse_of: :author, dependent: :destroy
+  has_many :source_authored_user_subscriptions, class_name: "UserSubscription",
+                                                foreign_key: :author_id, inverse_of: :author, dependent: :destroy
   has_many :subscribers, through: :source_authored_user_subscriptions, dependent: :destroy
-  has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription", foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
+  has_many :subscribed_to_user_subscriptions, class_name: "UserSubscription",
+                                              foreign_key: :subscriber_id, inverse_of: :subscriber, dependent: :destroy
 
-  has_many :access_grants, class_name: "Doorkeeper::AccessGrant", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
-  has_many :access_tokens, class_name: "Doorkeeper::AccessToken", foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
-  has_many :affected_feedback_messages, class_name: "FeedbackMessage", inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
+  has_many :access_grants, class_name: "Doorkeeper::AccessGrant",
+                           foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :access_tokens, class_name: "Doorkeeper::AccessToken",
+                           foreign_key: :resource_owner_id, inverse_of: :resource_owner, dependent: :delete_all
+  has_many :affected_feedback_messages, class_name: "FeedbackMessage",
+                                        inverse_of: :affected, foreign_key: :affected_id, dependent: :nullify
   has_many :api_secrets, dependent: :destroy
   has_many :articles, dependent: :destroy
   has_many :audit_logs, dependent: :nullify
   has_many :authored_notes, inverse_of: :author, class_name: "Note", foreign_key: :author_id, dependent: :delete_all
-  has_many :backup_data, foreign_key: "instance_user_id", inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
+  has_many :backup_data, foreign_key: "instance_user_id",
+                         inverse_of: :instance_user, class_name: "BackupData", dependent: :delete_all
   has_many :badge_achievements, dependent: :destroy
   has_many :badges, through: :badge_achievements
-  has_many :blocked_blocks, class_name: "UserBlock", foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
-  has_many :blocker_blocks, class_name: "UserBlock", foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
+  has_many :blocked_blocks, class_name: "UserBlock",
+                            foreign_key: :blocked_id, inverse_of: :blocked, dependent: :delete_all
+  has_many :blocker_blocks, class_name: "UserBlock",
+                            foreign_key: :blocker_id, inverse_of: :blocker, dependent: :delete_all
   has_many :chat_channel_memberships, dependent: :destroy
   has_many :chat_channels, through: :chat_channel_memberships
   has_many :listings, dependent: :destroy
@@ -82,7 +94,8 @@ class User < ApplicationRecord
   has_many :notification_subscriptions, dependent: :destroy
   has_many :user_optional_fields, dependent: :destroy
   has_many :notifications, dependent: :destroy
-  has_many :offender_feedback_messages, class_name: "FeedbackMessage", inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
+  has_many :offender_feedback_messages, class_name: "FeedbackMessage",
+                                        inverse_of: :offender, foreign_key: :offender_id, dependent: :nullify
   has_many :organization_memberships, dependent: :destroy
   has_many :organizations, through: :organization_memberships
   has_many :page_views, dependent: :destroy
@@ -91,7 +104,8 @@ class User < ApplicationRecord
   has_many :profile_pins, as: :profile, inverse_of: :profile, dependent: :delete_all
   has_many :rating_votes, dependent: :destroy
   has_many :reactions, dependent: :destroy
-  has_many :reporter_feedback_messages, class_name: "FeedbackMessage", inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
+  has_many :reporter_feedback_messages, class_name: "FeedbackMessage",
+                                        inverse_of: :reporter, foreign_key: :reporter_id, dependent: :nullify
   has_many :response_templates, inverse_of: :user, dependent: :destroy
   has_many :tweets, dependent: :destroy
   has_many :webhook_endpoints, class_name: "Webhook::Endpoint", inverse_of: :user, dependent: :delete_all
@@ -236,7 +250,8 @@ class User < ApplicationRecord
     else
       languages = []
       language_settings.each_key do |setting|
-        languages << setting.split("prefer_language_")[1] if language_settings[setting] && setting.include?("prefer_language_")
+        to_split = language_settings[setting] && setting.include?("prefer_language_")
+        languages << setting.split("prefer_language_")[1] if to_split
       end
       @preferred_languages_array = languages
     end

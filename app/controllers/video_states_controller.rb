@@ -9,13 +9,10 @@ class VideoStatesController < ApplicationController
       return
     end
     begin
-      logger.info "VIDEO STATES: #{params}"
       request_json = JSON.parse(request.raw_post, symbolize_names: true)
-      logger.info "VIDEO STATES: #{request_json}"
     rescue StandardError => e
-      Rails.logger.warn(e)
+      Honeybadger.notify(e)
     end
-    request_json = JSON.parse(request.raw_post, symbolize_names: true)
     message_json = JSON.parse(request_json[:Message], symbolize_names: true)
     @article = Article.find_by(video_code: message_json[:input][:key])
 

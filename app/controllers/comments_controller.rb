@@ -9,6 +9,7 @@ class CommentsController < ApplicationController
 
   # GET /comments
   # GET /comments.json
+  # rubocop:disable Metrics/CyclomaticComplexity
   def index
     skip_authorization
     @on_comments_page = true
@@ -37,6 +38,7 @@ class CommentsController < ApplicationController
 
     render :deleted_commentable_comment unless @commentable
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   # GET /comments/1
   # GET /comments/1.json
@@ -114,7 +116,6 @@ class CommentsController < ApplicationController
   rescue StandardError => e
     skip_authorization
 
-    Rails.logger.error(e)
     message = "There was an error in your markdown: #{e}"
     render json: { error: message }, status: :unprocessable_entity
   end
@@ -146,7 +147,6 @@ class CommentsController < ApplicationController
   rescue StandardError => e
     skip_authorization
 
-    Rails.logger.error(e)
     message = "There was an error in your markdown: #{e}"
     render json: { error: "error", status: message }, status: :unprocessable_entity
   end
@@ -239,7 +239,9 @@ class CommentsController < ApplicationController
     @comment.hidden_by_commentable_user = false
     if @comment.save
       @commentable = @comment&.commentable
-      @commentable&.update_column(:any_comments_hidden, @commentable.comments.pluck(:hidden_by_commentable_user).include?(true))
+      @commentable&.update_columns(
+        any_comments_hidden: @commentable.comments.pluck(:hidden_by_commentable_user).include?(true),
+      )
       render json: { hidden: "false" }, status: :ok
     else
       render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity

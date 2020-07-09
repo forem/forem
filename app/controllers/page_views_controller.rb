@@ -1,5 +1,6 @@
 class PageViewsController < ApplicationMetalController
-  # ApplicationMetalController because we do not need all bells and whistles of ApplicationController, so should help performance.
+  # ApplicationMetalController because we do not need all bells and whistles of ApplicationController.
+  # It should help performance.
   include ActionController::Head
 
   def create
@@ -18,7 +19,8 @@ class PageViewsController < ApplicationMetalController
 
   def update
     if session_current_user_id
-      page_view = PageView.order("created_at DESC").find_or_create_by(article_id: params[:id], user_id: session_current_user_id)
+      page_view = PageView.order("created_at DESC").find_or_create_by(article_id: params[:id],
+                                                                      user_id: session_current_user_id)
       unless page_view.new_record?
         page_view.update_column(:time_tracked_in_seconds, page_view.time_tracked_in_seconds + 15)
       end
@@ -49,7 +51,10 @@ class PageViewsController < ApplicationMetalController
     page_views_from_google_com = @article.page_views.where(referrer: "https://www.google.com/")
 
     organic_count = page_views_from_google_com.sum(:counts_for_number_of_views)
-    @article.update_column(:organic_page_views_count, organic_count) if organic_count > @article.organic_page_views_count
+    if organic_count > @article.organic_page_views_count
+      @article.update_column(:organic_page_views_count,
+                             organic_count)
+    end
 
     organic_count_past_week_count = page_views_from_google_com.
       where("created_at > ?", 1.week.ago).sum(:counts_for_number_of_views)

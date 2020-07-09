@@ -29,7 +29,8 @@ describe BulkSqlDelete, type: :service do
     it "logs errors that occur" do
       allow(logger).to receive(:error)
       # rubocop:disable RSpec/AnyInstance
-      allow_any_instance_of(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter).to receive(:exec_delete).and_raise("broken")
+      allow_any_instance_of(ActiveRecord::ConnectionAdapters::PostgreSQLAdapter).
+        to(receive(:exec_delete)).and_raise("broken")
       # rubocop:enable RSpec/AnyInstance
 
       expect { described_class.delete_in_batches(sql) }.to raise_error("broken")

@@ -21,7 +21,9 @@ RSpec.describe ChatChannelMembershipPolicy, type: :policy do
 
   context "when user does not belong to membership" do
     let(:other_user) { build_stubbed(:user) }
-    let(:chat_channel_membership) { build_stubbed(:chat_channel_membership, user: other_user, chat_channel: chat_channel) }
+    let(:chat_channel_membership) do
+      build_stubbed(:chat_channel_membership, user: other_user, chat_channel: chat_channel)
+    end
 
     it { is_expected.to forbid_actions(%i[update destroy]) }
   end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_18_212422) do
+ActiveRecord::Schema.define(version: 2020_07_06_184804) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,6 +136,7 @@ ActiveRecord::Schema.define(version: 2020_06_18_212422) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.integer "user_id"
+    t.integer "user_subscriptions_count", default: 0, null: false
     t.string "video"
     t.string "video_closed_caption_track_url"
     t.string "video_code"
@@ -564,6 +565,7 @@ ActiveRecord::Schema.define(version: 2020_06_18_212422) do
     t.string "subscription_status", default: "all_articles", null: false
     t.datetime "updated_at"
     t.index ["created_at"], name: "index_follows_on_created_at"
+    t.index ["followable_id", "followable_type", "follower_id", "follower_type"], name: "index_follows_on_followable_and_follower", unique: true
     t.index ["followable_id", "followable_type"], name: "fk_followables"
     t.index ["follower_id", "follower_type"], name: "fk_follows"
   end

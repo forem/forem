@@ -128,8 +128,11 @@ RSpec.describe Articles::Builder, type: :service do
 
     context "when user_editor_v1" do
       let(:correct_attributes) do
+        body = "---\ntitle: \npublished: false\ndescription: \ntags: " \
+          "\n//cover_image: https://direct_url_to_image.jpg\n---\n\n"
+
         {
-          body_markdown: "---\ntitle: \npublished: false\ndescription: \ntags: \n//cover_image: https://direct_url_to_image.jpg\n---\n\n",
+          body_markdown: body,
           processed_html: "",
           user_id: user.id
         }
