@@ -243,7 +243,7 @@ class UsersController < ApplicationController
     return unless user.looking_for_work?
 
     hiring_tag = Tag.find_by(name: "hiring")
-    return if user.following?(hiring_tag)
+    return if !hiring_tag || user.following?(hiring_tag)
 
     Users::FollowWorker.perform_async(user.id, hiring_tag.id, "Tag")
   end
