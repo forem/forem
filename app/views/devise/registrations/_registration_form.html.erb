@@ -1,7 +1,7 @@
 <div class="new-article-pitch">
   <% if @new_article_not_logged_in %>
     <div class="prefill-non-logged-in-message">
-      <div class="registration-rainbow">
+      <div class="registration__logo-container">
         <img class="secondary-logo" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
              alt="Secondary <%= community_name %> logo" />
       </div>
@@ -13,7 +13,7 @@
       </p>
     </div>
   <% else %>
-    <div class="registration-rainbow">
+    <div class="registration__logo-container">
       <img class="secondary-logo" src="<%= cloudinary(safe_logo_url(SiteConfig.secondary_logo_url), 190) %>"
            alt="Secondary <%= community_name %> logo" />
     </div>
