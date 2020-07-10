@@ -147,12 +147,12 @@ RSpec.describe "Authenticating with Apple", vcr: { cassette_name: "fastly_sloan"
       end
 
       it "logs errors" do
-        allow(Rails.logger).to receive(:error)
+        allow(Honeybadger).to receive(:notify)
 
         visit root_path
         click_link(sign_in_link, match: :first)
 
-        expect(Rails.logger).to have_received(:error).at_least(3).times
+        expect(Honeybadger).to have_received(:notify).once
       end
     end
   end
