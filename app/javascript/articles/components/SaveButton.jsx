@@ -20,7 +20,7 @@ export class SaveButton extends Component {
     const { article, isBookmarked, onClick } = this.props;
 
     const mouseOver = (_e) => {
-      this.setState({ hovering: true });
+      this.setState({ buttonText: isBookmarked ? 'Unsave' : 'Save' });
     };
 
     const mouseOut = (_e) => {
