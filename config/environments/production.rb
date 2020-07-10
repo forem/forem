@@ -105,7 +105,9 @@ Rails.application.configure do
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
-  elsif (ENV["SEND_LOGS_TO_TIMBER"] || "true") == "true"
+  end
+
+  if (ENV["SEND_LOGS_TO_TIMBER"] || "true") == "true"
     # Timber.io logger
     log_device = Timber::LogDevices::HTTP.new(ENV["TIMBER"])
     logger = Timber::Logger.new(log_device)
