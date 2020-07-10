@@ -171,6 +171,8 @@ Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
   Exclude:
+    - 'db/seeds.rb'
+    - 'Guardfile'
     - 'spec/**/*'
 
 Metrics/ClassLength:

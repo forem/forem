@@ -6,22 +6,24 @@ else
   honeycomb_api_key = ApplicationConfig["HONEYCOMB_API_KEY"]
 
   # Honeycomb automatic Rails integration
+  notification_events = %w[
+    sql.active_record
+    render_template.action_view
+    render_partial.action_view
+    render_collection.action_view
+    process_action.action_controller
+    send_file.action_controller
+    send_data.action_controller
+    deliver.action_mailer
+  ].freeze
+
   Honeycomb.configure do |config|
     config.write_key = honeycomb_api_key
     if ENV["HONEYCOMB_DISABLE_AUTOCONFIGURE"]
       config.dataset = "background-work"
     else
       config.dataset = "rails"
-      config.notification_events = %w[
-        sql.active_record
-        render_template.action_view
-        render_partial.action_view
-        render_collection.action_view
-        process_action.action_controller
-        send_file.action_controller
-        send_data.action_controller
-        deliver.action_mailer
-      ].freeze
+      config.notification_events = notification_events
 
       # Scrub unused data to save space in Honeycomb
       config.presend_hook do |fields|

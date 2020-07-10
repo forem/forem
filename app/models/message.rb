@@ -99,6 +99,7 @@ class Message < ApplicationRecord
   end
 
   # rubocop:disable Layout/LineLength
+  # rubocop:disable Metrics/BlockLength
   def append_rich_links(html)
     doc = Nokogiri::HTML(html)
     doc.css("a").each do |anchor|
@@ -144,6 +145,7 @@ class Message < ApplicationRecord
     end
     html
   end
+  # rubocop:enable Metrics/BlockLength
   # rubocop:enable Layout/LineLength
 
   def handle_slash_command(html)
