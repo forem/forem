@@ -37,10 +37,6 @@ Performance/OpenStruct:
     - 'spec/models/github_repo_spec.rb'
     - 'spec/requests/github_repos_spec.rb'
 
-# Offense count: 930
-RSpec/MultipleExpectations:
-  Max: 12
-
 # Offense count: 16
 Rails/OutputSafety:
   Exclude:
@@ -58,10 +54,3 @@ Rails/OutputSafety:
 Rails/UniqueValidationWithoutIndex:
   Exclude:
     - 'app/models/article.rb'
-
-# Offense count: 3
-# Configuration parameters: Methods.
-# Methods: {"reduce"=>["acc", "elem"]}, {"inject"=>["acc", "elem"]}
-Style/SingleLineBlockParams:
-  Exclude:
-    - 'app/labor/markdown_fixer.rb'

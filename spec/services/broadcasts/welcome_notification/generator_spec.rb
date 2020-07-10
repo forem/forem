@@ -42,6 +42,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
     end
 
     # rubocop:disable RSpec/ExampleLength
+    # rubocop:disable RSpec/MultipleExpectations
     it "sends only 1 notification at a time, in the correct order" do
       user.update!(created_at: 1.day.ago)
 
@@ -93,6 +94,7 @@ RSpec.describe Broadcasts::WelcomeNotification::Generator, type: :service do
       expect(user.notifications.last.notifiable).to eq(download_app_broadcast)
       Timecop.return
     end
+    # rubocop:enable RSpec/MultipleExpectations
     # rubocop:enable RSpec/ExampleLength
   end
 
