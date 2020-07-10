@@ -77,26 +77,8 @@ class CommentsController < ApplicationController
         return
       end
 
-      render json: {
-        status: "created",
-        css: @comment.custom_css,
-        depth: @comment.depth,
-        url: @comment.path,
-        readable_publish_date: @comment.readable_publish_date,
-        published_timestamp: @comment.decorate.published_timestamp,
-        body_html: @comment.processed_html,
-        id: @comment.id,
-        id_code: @comment.id_code_generated,
-        newly_created: true,
-        user: {
-          id: current_user.id,
-          username: current_user.username,
-          name: current_user.name,
-          profile_pic: ProfileImage.new(current_user).get(width: 50),
-          twitter_username: current_user.twitter_username,
-          github_username: current_user.github_username
-        }
-      }
+      render partial: "comments/comment.json"
+
     elsif (comment = Comment.where(
       body_markdown: @comment.body_markdown,
       commentable_id: @comment.commentable.id,
