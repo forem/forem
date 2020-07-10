@@ -37,7 +37,7 @@
           <p class="mb-2 color-base-70 truncate-at-3"><%= sanitize tag.short_summary %></p>
         <% end %>
         <p class="mb-3 fs-s color-base-60">
-          <%= pluralize(number_with_delimiter(tag.taggings_count), "post") %> published
+          <%= pluralize tag.taggings_count, "post" %> published
           <% if tag.sponsorship && tag.sponsorship.status == "live" && tag.sponsorship.expires_at > Time.current %>
           | Sponsored by <%= tag.sponsorship.organization.name %> ❤️
           <% end %>
