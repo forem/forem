@@ -35,8 +35,8 @@ module Metrics
       )
 
       # Total negative reactions in the past 24 hours
-      nagative_reactions_past_24h = Reaction.where("points < 0").where("created_at > ?", 1.day.ago).size
-      DatadogStatsClient.count("reactions.negative_past_24h", nagative_reactions_past_24h, tags: ["resource:reactions"])
+      negative_reactions_past_24h = Reaction.where("points < 0").where("created_at > ?", 1.day.ago).size
+      DatadogStatsClient.count("reactions.negative_past_24h", negative_reactions_past_24h, tags: ["resource:reactions"])
 
       # Total abuse (etc.) reports in the past 24 hours
       categories = ["spam", "other", "rude or vulgar", "harassment"]

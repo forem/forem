@@ -54,7 +54,7 @@ class ArticlesController < ApplicationController
   def new
     base_editor_assigments
 
-    @article, needs_authorization = Articles::Builder.new(@user, @tag, @prefill).build
+    @article, needs_authorization = Articles::Builder.call(@user, @tag, @prefill)
 
     needs_authorization ? authorize(Article) : skip_authorization
   end
