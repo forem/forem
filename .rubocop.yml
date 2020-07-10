@@ -161,6 +161,12 @@ Lint/StructNewOverride:
 
 #################### Metrics ###############################
 
+Metrics/AbcSize:
+  Description: >-
+                 A calculated magnitude based on number of assignments,
+                 branches, and conditions.
+  Enabled: false
+
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
