@@ -12,21 +12,11 @@ require:
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 278
-# Configuration parameters: IgnoredMethods.
-Metrics/AbcSize:
-  Max: 62
-
 # Offense count: 14
 # Configuration parameters: CountComments, ExcludedMethods.
 # ExcludedMethods: refine
 Metrics/BlockLength:
   Max: 61
-
-# Offense count: 3
-# Configuration parameters: IgnoredMethods.
-Metrics/CyclomaticComplexity:
-  Max: 15
 
 # Offense count: 8
 Performance/OpenStruct:
