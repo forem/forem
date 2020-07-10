@@ -24,7 +24,7 @@ export class SaveButton extends Component {
     };
 
     const mouseOut = (_e) => {
-      this.setState({ hovering: false });
+      this.setState({ buttonText: isBookmarked ? 'Saved' : 'Save' });
     };
 
     const handleClick = (_e) => {
