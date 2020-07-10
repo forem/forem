@@ -8,4 +8,5 @@ end
 
 task log_daily_usage_measurables: :environment do
   Metrics::RecordDailyUsageWorker.perform_async
+  Metrics::RecordDailyNotificationsWorker.perform_async
 end
