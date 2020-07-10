@@ -468,6 +468,15 @@ RSpec.describe "/internal/config", type: :request do
         end
       end
 
+      describe "Sponsors" do
+        it "updates the sponsor_headline" do
+          headline = "basic"
+          post "/internal/config", params: { site_config: { mascot_user_id: sponsor_headline },
+                                             confirmation: confirmation_message }
+          expect(SiteConfig.sponsor_headline).to eq(headline)
+        end
+      end
+
       describe "Tags" do
         it "removes space sidebar_tags" do
           post "/internal/config", params: { site_config: { sidebar_tags: "hey, haha,hoho, bobo fofo" },
