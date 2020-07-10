@@ -66,7 +66,11 @@ Rails.application.routes.draw do
     end
     resources :reactions, only: [:update]
     resources :response_templates, only: %i[index new edit create update destroy]
-    resources :chat_channels, only: %i[index create update destroy]
+    resources :chat_channels, only: %i[index create update destroy] do
+      member do
+        delete :remove_user
+      end
+    end
     resources :reports, only: %i[index show], controller: "feedback_messages" do
       collection do
         post "send_email"

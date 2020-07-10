@@ -23,7 +23,7 @@ module Internal
       redirect_back(fallback_location: "/internal/chat_channels")
     end
 
-    def destroy
+    def remove_user
       @chat_channel = ChatChannel.find(params[:id])
       @chat_channel.remove_user(users_by_param)
 
