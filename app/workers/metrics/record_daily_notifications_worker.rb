@@ -24,9 +24,9 @@ module Metrics
           where("properties->>'title' = ?", title)
 
         DatadogStatsClient.count(
-          "ahoy_events.#{title}",
+          "ahoy_events",
           event.size,
-          resource: "ahoy_events",
+          tags: ["title:#{title}"],
         )
       end
     end

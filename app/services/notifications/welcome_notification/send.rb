@@ -41,7 +41,7 @@ module Notifications
       def log_to_datadog
         DatadogStatsClient.increment(
           "notifications.welcome",
-          tags: ["user:#{receiver_id}", "title:#{welcome_broadcast.title}"],
+          tags: ["user_id:#{receiver_id}", "title:#{welcome_broadcast.title}"],
         )
       end
     end

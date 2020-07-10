@@ -19,7 +19,7 @@ RSpec.describe Metrics::RecordDailyNotificationsWorker, type: :worker do
       expect(
         DatadogStatsClient,
       ).to have_received(:count).
-        with("ahoy_events.welcome_notification_welcome_thread", 1, resource: "ahoy_events").
+        with("ahoy_events", 1, { tags: ["title:welcome_notification_welcome_thread"] }).
         at_least(1)
     end
   end

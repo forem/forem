@@ -24,7 +24,7 @@ RSpec.describe Notifications::WelcomeNotification::Send, type: :service do
     it "logs to DataDog" do
       described_class.call(create(:user).id, welcome_broadcast)
       welcome_notification = Notification.find_by(notifiable_id: welcome_broadcast.id)
-      tags = ["user:#{welcome_notification.user_id}", "title:#{welcome_notification.notifiable.title}"]
+      tags = ["user_id:#{welcome_notification.user_id}", "title:#{welcome_notification.notifiable.title}"]
 
       expect(DatadogStatsClient).to have_received(:increment).with("notifications.welcome", tags: tags)
     end
