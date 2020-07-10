@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -137,6 +138,7 @@ Rails.application.configure do
                           ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
   end
 end
+# rubocop:enable Metrics/BlockLength
 
 Rails.application.routes.default_url_options = {
   host: Rails.application.config.app_domain,
