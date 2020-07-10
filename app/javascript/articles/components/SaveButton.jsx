@@ -47,13 +47,7 @@ export class SaveButton extends Component {
           onMouseout={mouseOut}
           onBlur={mouseOut}
         >
-          {this.state.hovering
-            ? isBookmarked
-              ? 'Unsave'
-              : 'Save'
-            : isBookmarked
-            ? 'Saved'
-            : 'Save'}
+          {buttonText}
         </button>
       );
     }
