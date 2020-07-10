@@ -94,25 +94,23 @@ Rails.application.configure do
   ]
 
   # Use default logging formatter so that PID and timestamp are not suppressed.
-  # config.log_formatter = ::Logger::Formatter.new
   config.log_formatter = ::Logger::Formatter.new
 
-  # Use a different logger for distributed setups.
-  # require 'syslog/logger'
-  # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
-
   if ENV["RAILS_LOG_TO_STDOUT"].present?
+    # Use a different logger for distributed setups.
+    # require 'syslog/logger'
+    # config.logger = ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
+
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
+  elsif (ENV["SEND_LOGS_TO_TIMBER"] || "true") == "true"
+    # Timber.io logger
+    log_device = Timber::LogDevices::HTTP.new(ENV["TIMBER"])
+    logger = Timber::Logger.new(log_device)
+    logger.level = config.log_level
+    config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
-
-  # Timber.io logger
-  send_logs_to_timber = ENV["SEND_LOGS_TO_TIMBER"] || "true" # <---- production should send timber logs by default
-  log_device = send_logs_to_timber == "true" ? Timber::LogDevices::HTTP.new(ENV["TIMBER"]) : STDOUT
-  logger = Timber::Logger.new(log_device)
-  logger.level = config.log_level
-  config.logger = ActiveSupport::TaggedLogging.new(logger)
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
