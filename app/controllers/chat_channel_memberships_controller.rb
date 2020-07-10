@@ -25,12 +25,11 @@ class ChatChannelMembershipsController < ApplicationController
     @membership = ChatChannelMembership.find(params[:id])
     authorize @membership
     @channel = @membership.chat_channel
-    @invitation_link = @channel.invitation_slug ? Rails.cache.read(@channel.invitation_slug) : ""
-    result = ChatChannels::CreateInvitationLink.call(@channel) if @invitation_link.blank?
-    if result&.errors&.any?
-      render json: { success: false, errors: result.errors.full_messages }, status: :bad_request
+    invite_cache_key = "chat-channel-invite-#{@channel.id}"
+    invitation_slug = Rails.cache.fetch(invite_cache_key, expires_in: 12.hours) do
+      "invitation-link-#{SecureRandom.hex(3)}"
     end
-    @invitation_link = Rails.cache.read(@channel.invitation_slug)
+    @invitation_link = "/join_channel_invitation/#{@channel.slug}?invitation_slug=#{invitation_slug}"
   end
 
   def create_membership_request
@@ -157,9 +156,11 @@ class ChatChannelMembershipsController < ApplicationController
   def join_channel_invitation
     @chat_channel = ChatChannel.find_by(slug: params[:channel_slug])
     authorize @chat_channel
-    @invitation_link = Rails.cache.read(params[:invitation_slug])
+    invite_cache_key = "chat-channel-invite-#{@chat_channel.id}"
+    invitation_slug = Rails.cache.read(invite_cache_key)
     existing_membership = ChatChannelMembership.find_by(user_id: current_user.id, chat_channel_id: @chat_channel.id)
     redirect_to connect_path(@chat_channel.slug) if existing_membership && existing_membership.status == "active"
+    @link_expired = true if invitation_slug != params[:invitation_slug]
   end
 
   def joining_invitation_response
