@@ -15,18 +15,23 @@ export class ModerationArticles extends Component {
     const selectedArticle = document.getElementById(`article-iframe-${id}`);
 
     if (prevSelectedArticleId > 0) {
-      document.getElementById(`article-iframe-${prevSelectedArticleId}`).innerHTML = '';
+      document.getElementById(
+        `article-iframe-${prevSelectedArticleId}`,
+      ).innerHTML = '';
     }
 
     this.setState({ selectedArticleId: id, prevSelectedArticleId: id });
 
-    if ((id === prevSelectedArticleId) && (document.querySelectorAll('.opened').length > 0)) {
+    if (
+      id === prevSelectedArticleId &&
+      document.querySelectorAll('.opened').length > 0
+    ) {
       selectedArticle.classList.remove('opened');
       return;
     }
 
     selectedArticle.classList.add('opened');
-    selectedArticle.innerHTML = `<iframe class="article-iframe" src="${path}"></iframe><iframe class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>`;
+    selectedArticle.innerHTML = `<iframe class="article-iframe" src="${path}"></iframe><iframe data-testid="mod-iframe-${id}" class="actions-panel-iframe" id="mod-iframe-${id}" src="${path}/actions_panel"></iframe>`;
   };
 
   render() {

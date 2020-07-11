@@ -113,7 +113,10 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
   const [isConfirmButtonEnabled, enableConfirmButton] = useState(false);
 
   return (
-    <div class="crayons-modal crayons-modal--s absolute flag-user-modal">
+    <div
+      data-testid="flag-user-modal"
+      class="crayons-modal crayons-modal--s absolute flag-user-modal"
+    >
       <div class="crayons-modal__box">
         <header class="crayons-modal__box__header flag-user-modal-header">
           <h2>Flag User</h2>
