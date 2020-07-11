@@ -42,7 +42,10 @@ describe('<ModerationArticles />', () => {
         id="mod-index-list"
         data-articles={getTestArticles()}
       >
-        <div class="flag-user-modal-container hidden" />
+        <div
+          data-testid="flag-user-modal-container"
+          class="flag-user-modal-container hidden"
+        />
       </div>,
     );
   });
