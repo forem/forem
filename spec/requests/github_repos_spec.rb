@@ -23,7 +23,9 @@ RSpec.describe "GithubRepos", type: :request do
       html_url: Faker::Internet.url,
     )
 
+    # rubocop:disable Performance/OpenStruct
     [OpenStruct.new(repo1_params), OpenStruct.new(repo2_params)]
+    # rubocop:enable Performance/OpenStruct
   end
   let(:github_client) do
     instance_double(

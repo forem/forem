@@ -12,15 +12,6 @@ require:
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 8
-Performance/OpenStruct:
-  Exclude:
-    - 'app/models/article.rb'
-    - 'app/models/organization.rb'
-    - 'app/services/notifications/reactions/send.rb'
-    - 'spec/models/github_repo_spec.rb'
-    - 'spec/requests/github_repos_spec.rb'
-
 # Offense count: 16
 Rails/OutputSafety:
   Exclude:
