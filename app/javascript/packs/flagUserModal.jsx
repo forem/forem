@@ -1,62 +1,52 @@
 import { h, render } from 'preact';
-import { useState } from 'preact/hooks';
+import { useState, useRef } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { request } from '../utilities/http';
 import { Button } from '@crayons/Button/Button';
 
-async function confirmFlagUser(e) {
-  e.preventDefault();
-  const vomitAllOption = document.getElementById('vomit-all');
+async function confirmFlagUser({ reactableType, category, reactableId }) {
+  const body = JSON.stringify({
+    reactable_type: reactableType,
+    category,
+    reactable_id: reactableId,
+  });
 
-  if (vomitAllOption.checked) {
-    const body = JSON.stringify({
-      reactable_type: vomitAllOption.dataset.reactableType,
-      category: vomitAllOption.dataset.category,
-      reactable_id: vomitAllOption.dataset.reactableId,
+  try {
+    const response = await request('/reactions', {
+      method: 'POST',
+      body,
     });
 
-    try {
-      const response = await request('/reactions', {
-        method: 'POST',
-        body,
-      });
+    const outcome = await response.json();
 
-      const outcome = await response.json();
-
-      if (outcome.result === 'create') {
-        // eslint-disable-next-line no-restricted-globals
-        top.addSnackbarItem({
-          message: 'All posts by this author will be less visible.',
-          addCloseButton: true,
-        });
-      } else if (outcome.result === null) {
-        // eslint-disable-next-line no-restricted-globals
-        top.addSnackbarItem({
-          message:
-            "It seems you've already reduced the vibilsity of this author's posts.",
-          addCloseButton: true,
-        });
-      } else {
-        // eslint-disable-next-line no-restricted-globals
-        top.addSnackbarItem({
-          message: `Response from server: ${JSON.stringify(outcome)}`,
-          addCloseButton: true,
-        });
-      }
-    } catch (error) {
+    if (outcome.result === 'create') {
       // eslint-disable-next-line no-restricted-globals
       top.addSnackbarItem({
-        message: error,
+        message: 'All posts by this author will be less visible.',
+        addCloseButton: true,
+      });
+    } else if (outcome.result === null) {
+      // eslint-disable-next-line no-restricted-globals
+      top.addSnackbarItem({
+        message:
+          "It seems you've already reduced the visibility of this author's posts.",
+        addCloseButton: true,
+      });
+    } else {
+      // eslint-disable-next-line no-restricted-globals
+      top.addSnackbarItem({
+        message: `Response from server: ${JSON.stringify(outcome)}`,
         addCloseButton: true,
       });
     }
-  } else {
+  } catch (error) {
     // eslint-disable-next-line no-restricted-globals
     top.addSnackbarItem({
-      message: 'No selection made!',
+      message: error,
       addCloseButton: true,
     });
   }
+
   toggleFlagUserModal();
 }
 
@@ -111,6 +101,7 @@ export function initializeFlagUserModal(authorId) {
  */
 export function FlagUserModal({ modCenterArticleUrl, authorId }) {
   const [isConfirmButtonEnabled, enableConfirmButton] = useState(false);
+  const vomitallRef = useRef(null);
 
   return (
     <div
@@ -146,6 +137,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
               <input
                 type="radio"
                 id="vomit-all"
+                ref={vomitallRef}
                 name="flag-user"
                 class="crayons-radio"
                 data-reactable-id={authorId}
@@ -181,8 +173,12 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
             <Button
               class="crayons-btn crayons-btn--danger mr-2"
               id="confirm-flag-user-action"
-              onClick={(event) => {
-                confirmFlagUser(event);
+              onClick={(_event) => {
+                const {
+                  current: { dataset: adminVomitReaction },
+                } = vomitallRef;
+
+                confirmFlagUser(adminVomitReaction);
                 enableConfirmButton(false);
               }}
               disabled={!isConfirmButtonEnabled}
