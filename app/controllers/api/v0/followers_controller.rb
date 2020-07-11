@@ -5,12 +5,12 @@ module Api
       before_action -> { limit_per_page(default: 80, max: 1000) }
 
       def users
-        @follows = Follow.followable_user(@user.id).
-          includes(:follower).
-          select(USERS_ATTRIBUTES_FOR_SERIALIZATION).
-          order(created_at: :desc).
-          page(params[:page]).
-          per(@follows_limit)
+        @follows = Follow.followable_user(@user.id)
+          .includes(:follower)
+          .select(USERS_ATTRIBUTES_FOR_SERIALIZATION)
+          .order(created_at: :desc)
+          .page(params[:page])
+          .per(@follows_limit)
       end
 
       USERS_ATTRIBUTES_FOR_SERIALIZATION = %i[

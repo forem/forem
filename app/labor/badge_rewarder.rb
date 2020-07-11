@@ -53,12 +53,12 @@ module BadgeRewarder
   def self.award_tag_badges
     Tag.where.not(badge_id: nil).find_each do |tag|
       past_winner_user_ids = BadgeAchievement.where(badge_id: tag.badge_id).pluck(:user_id)
-      winning_article = Article.where("score > 100").
-        published.
-        where.not(user_id: past_winner_user_ids).
-        order(score: :desc).
-        where("published_at > ?", 7.5.days.ago). # More than seven days, to have some wiggle room.
-        cached_tagged_with(tag).first
+      winning_article = Article.where("score > 100")
+        .published
+        .where.not(user_id: past_winner_user_ids)
+        .order(score: :desc)
+        .where("published_at > ?", 7.5.days.ago) # More than seven days, to have some wiggle room.
+        .cached_tagged_with(tag).first
       if winning_article
         award_badges(
           [winning_article.user.username],
@@ -89,9 +89,9 @@ module BadgeRewarder
 
   def self.award_streak_badge(num_weeks)
     # No credit for super low quality
-    article_user_ids = Article.published.
-      where("published_at > ? AND score > ?", 1.week.ago, MINIMUM_QUALITY).
-      pluck(:user_id)
+    article_user_ids = Article.published
+      .where("published_at > ? AND score > ?", 1.week.ago, MINIMUM_QUALITY)
+      .pluck(:user_id)
     message = if num_weeks == LONGEST_STREAK_WEEKS
                 LONGEST_STREAK_MESSAGE
               else

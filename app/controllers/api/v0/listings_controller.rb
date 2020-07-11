@@ -14,9 +14,9 @@ module Api
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
       def index
-        @listings = Listing.published.
-          select(ATTRIBUTES_FOR_SERIALIZATION).
-          includes(:user, :organization, :taggings, :listing_category)
+        @listings = Listing.published
+          .select(ATTRIBUTES_FOR_SERIALIZATION)
+          .includes(:user, :organization, :taggings, :listing_category)
 
         if params[:category].present?
           @listings = @listings.in_category(params[:category])

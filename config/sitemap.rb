@@ -15,8 +15,8 @@ end
 SitemapGenerator::Sitemap.default_host = "#{ApplicationConfig['APP_PROTOCOL']}#{ApplicationConfig['APP_DOMAIN']}"
 
 SitemapGenerator::Sitemap.create do
-  Article.published.where("score > ? OR featured = ?", 12, true).
-    limit(38_000).find_each do |article|
+  Article.published.where("score > ? OR featured = ?", 12, true)
+    .limit(38_000).find_each do |article|
     add article.path, lastmod: article.last_comment_at, changefreq: "daily"
   end
 

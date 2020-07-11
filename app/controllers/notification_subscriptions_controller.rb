@@ -2,8 +2,8 @@ class NotificationSubscriptionsController < ApplicationController
   def show
     result = if current_user
                NotificationSubscription.where(user_id: current_user.id, notifiable_id: params[:notifiable_id],
-                                              notifiable_type: params[:notifiable_type]).
-                 first&.to_json(only: %i[config]) || { config: "not_subscribed" }
+                                              notifiable_type: params[:notifiable_type])
+                 .first&.to_json(only: %i[config]) || { config: "not_subscribed" }
              end
     respond_to do |format|
       format.json { render json: result }

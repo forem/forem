@@ -25,8 +25,8 @@ RSpec.describe UserBlocks::ChannelHandler, type: :service do
     end
 
     it "removes the related chat channel memberships" do
-      expect { described_class.new(UserBlock.first).block_chat_channel }.
-        to change(ChatChannelMembership.where(status: "active"), :count).to 0
+      expect { described_class.new(UserBlock.first).block_chat_channel }
+        .to change(ChatChannelMembership.where(status: "active"), :count).to 0
     end
   end
 
@@ -38,8 +38,8 @@ RSpec.describe UserBlocks::ChannelHandler, type: :service do
 
     it "updates the related chat channel memberships" do
       ChatChannelMembership.update_all(status: "left-channel")
-      expect { described_class.new(UserBlock.first).unblock_chat_channel }.
-        to change(ChatChannelMembership.where(status: "left-channel"), :count).to 0
+      expect { described_class.new(UserBlock.first).unblock_chat_channel }
+        .to change(ChatChannelMembership.where(status: "left-channel"), :count).to 0
     end
   end
 end

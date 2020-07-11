@@ -100,17 +100,17 @@ class Article < ApplicationRecord
   scope :unpublished, -> { where(published: false) }
 
   scope :admin_published_with, lambda { |tag_name|
-    published.
-      where(user_id: SiteConfig.staff_user_id).
-      order(published_at: :desc).
-      tagged_with(tag_name)
+    published
+      .where(user_id: SiteConfig.staff_user_id)
+      .order(published_at: :desc)
+      .tagged_with(tag_name)
   }
 
   scope :user_published_with, lambda { |user_id, tag_name|
-    published.
-      where(user_id: user_id).
-      order(published_at: :desc).
-      tagged_with(tag_name)
+    published
+      .where(user_id: user_id)
+      .order(published_at: :desc)
+      .tagged_with(tag_name)
   }
 
   scope :cached_tagged_with, ->(tag) { where("cached_tag_list ~* ?", "^#{tag},| #{tag},|, #{tag}$|^#{tag}$") }
@@ -118,10 +118,10 @@ class Article < ApplicationRecord
   scope :cached_tagged_by_approval_with, ->(tag) { cached_tagged_with(tag).where(approved: true) }
 
   scope :active_help, lambda {
-    published.
-      cached_tagged_with("help").
-      order(created_at: :desc).
-      where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
+    published
+      .cached_tagged_with("help")
+      .order(created_at: :desc)
+      .where("published_at > ? AND comments_count < ? AND score > ?", 12.hours.ago, 6, -4)
   }
 
   scope :limited_column_select, lambda {
@@ -175,17 +175,17 @@ class Article < ApplicationRecord
   }
 
   scope :feed, lambda {
-                 published.includes(:taggings).
-                   select(
+                 published.includes(:taggings)
+                   .select(
                      :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list
                    )
                }
 
   scope :with_video, lambda {
-                       published.
-                         where.not(video: [nil, ""]).
-                         where.not(video_thumbnail_url: [nil, ""]).
-                         where("score > ?", -4)
+                       published
+                         .where.not(video: [nil, ""])
+                         .where.not(video_thumbnail_url: [nil, ""])
+                         .where("score > ?", -4)
                      }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
@@ -201,11 +201,11 @@ class Article < ApplicationRecord
     stories = if time_ago == "latest"
                 stories.order("published_at DESC").where("score > ?", -5)
               elsif time_ago
-                stories.order("comments_count DESC").
-                  where("published_at > ? AND score > ?", time_ago, -5)
+                stories.order("comments_count DESC")
+                  .where("published_at > ? AND score > ?", time_ago, -5)
               else
-                stories.order("last_comment_at DESC").
-                  where("published_at > ? AND score > ?", (tags.present? ? 5 : 2).days.ago, -5)
+                stories.order("last_comment_at DESC")
+                  .where("published_at > ? AND score > ?", (tags.present? ? 5 : 2).days.ago, -5)
               end
     stories = tags.size == 1 ? stories.cached_tagged_with(tags.first) : stories.tagged_with(tags)
     stories.pluck(:path, :title, :comments_count, :created_at)
@@ -218,11 +218,11 @@ class Article < ApplicationRecord
     # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
     time_ago = 75.days.ago if time_ago.nil?
 
-    relation = Article.published.
-      order(organic_page_views_past_month_count: :desc).
-      where("score > ?", 8).
-      where("published_at > ?", time_ago).
-      limit(20)
+    relation = Article.published
+      .order(organic_page_views_past_month_count: :desc)
+      .where("score > ?", 8)
+      .where("published_at > ?", time_ago)
+      .limit(20)
 
     fields = %i[path title comments_count created_at]
     if tag
@@ -233,10 +233,10 @@ class Article < ApplicationRecord
   end
 
   def self.search_optimized(tag = nil)
-    relation = Article.published.
-      order(updated_at: :desc).
-      where.not(search_optimized_title_preamble: nil).
-      limit(20)
+    relation = Article.published
+      .order(updated_at: :desc)
+      .where.not(search_optimized_title_preamble: nil)
+      .limit(20)
 
     fields = %i[path search_optimized_title_preamble comments_count created_at]
     if tag

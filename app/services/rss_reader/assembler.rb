@@ -41,10 +41,10 @@ class RssReader
       cleaned_content = HtmlCleaner.new.clean_html(get_content)
       cleaned_content = thorough_parsing(cleaned_content, @feed.url)
 
-      content = ReverseMarkdown.
-        convert(cleaned_content, github_flavored: true).
-        gsub("```\n\n```", "").
-        gsub(/&nbsp;|\u00A0/, " ")
+      content = ReverseMarkdown
+        .convert(cleaned_content, github_flavored: true)
+        .gsub("```\n\n```", "")
+        .gsub(/&nbsp;|\u00A0/, " ")
 
       content.gsub!(/{%\syoutube\s(.{11,18})\s%}/) do |tag|
         tag.gsub("\\_", "_")
