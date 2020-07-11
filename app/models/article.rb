@@ -584,23 +584,19 @@ class Article < ApplicationRecord
   end
 
   def update_cached_user
-    if organization
-      self.cached_organization = OpenStruct.new(set_cached_object(organization))
-    end
-
-    return unless user
-
-    self.cached_user = OpenStruct.new(set_cached_object(user))
+    self.cached_organization = set_cached_object(organization) if organization
+    self.cached_user = set_cached_object(user) if user
   end
 
+  # TODO: [thepracticaldev/oss] this should eventually be moved to JSON, to avoid storing a native Ruby object in the DB
   def set_cached_object(object)
-    {
-      name: object.name,
-      username: object.username,
-      slug: object == organization ? object.slug : object.username,
-      profile_image_90: object.profile_image_90,
-      profile_image_url: object.profile_image_url
-    }
+    Struct.new(:name, :username, :slug, :profile_image_90, :profile_image_url).new.tap do |struct|
+      struct.name = object.name
+      struct.username = object.username
+      struct.slug = object.respond_to?(:slug) ? object.slug : object.username
+      struct.profile_image_90 = object.profile_image_90
+      struct.profile_image_url = object.profile_image_url
+    end
   end
 
   def set_all_dates

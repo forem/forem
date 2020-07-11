@@ -145,12 +145,12 @@
             <% end %>
 
             <div class="crayons-article__subheader">
-              <a href="/<%= @user.username %>" class="flex items-center mr-4 fw-medium crayons-link">
+              <a href="/<%= @user.username %>" class="flex items-center mr-4 mb-4 s:mb-0 fw-medium crayons-link">
                 <span class="crayons-avatar crayons-avatar--l mr-2"><img class="crayons-avatar__image" src="<%= ProfileImage.new(@user).get(width: 50) %>" alt="<%= @user.username %> profile image" /></span>
                 <%= @user.name %>
               </a>
 
-              <span class="fs-s">
+              <span class="fs-s mb-4 s:mb-0">
                 <% if @article.published_timestamp.present? %>
                   <time datetime="<%= @article.published_timestamp %>"><%= @article.readable_publish_date %></time>
                 <% end %>
@@ -174,9 +174,9 @@
                   </em>
                 <% end %>
 
-                <span class="mr-2">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
+                <span class="mr-4">・<%= @article.reading_time < 1 ? 1 : @article.reading_time %> min read</span>
               </span>
-              <span id="action-space"></span>
+              <span id="action-space" class="mb-4 s:mb-0"></span>
             </div>
 
           </div>

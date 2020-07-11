@@ -32,7 +32,7 @@ class DisplayAd < ApplicationRecord
     # stripped_html = ActionController::Base.helpers.sanitize initial_html,
     #                                                         tags: %w[a em i b u br img h1 h2 h3 h4 div style],
     #                                                         attributes: %w[href target src height width style]
-    stripped_html = initial_html.html_safe
+    stripped_html = initial_html.html_safe # rubocop:disable Rails/OutputSafety
     html = stripped_html.delete("\n")
     self.processed_html = MarkdownParser.new(html).prefix_all_images(html, 350)
   end

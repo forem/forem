@@ -1,6 +1,7 @@
 # Silence all Ruby 2.7 deprecation warnings
 $VERBOSE = nil
 
+# rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -76,5 +77,6 @@ Rails.application.configure do
     Bullet.add_whitelist(type: :unused_eager_loading, class_name: "Comment", association: :user)
   end
 end
+# rubocop:enable Metrics/BlockLength
 
 Rails.application.routes.default_url_options = { host: "test.host" }
