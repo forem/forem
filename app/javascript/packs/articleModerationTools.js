@@ -9,6 +9,7 @@ const initializeModerationsTools = async () => {
   const { default: initializeActionsPanel } = await import(
     '../actionsPanel/initializeActionsPanelToggle'
   );
+  const { initializeFlagUserModal } = await import('./flagUserModal');
 
   // article show page
   if (
@@ -17,9 +18,11 @@ const initializeModerationsTools = async () => {
     !top.document.location.pathname.endsWith('/mod')
   ) {
     initializeActionsPanel(user, path);
+    initializeFlagUserModal(articleAuthorId);
     // dev.to/mod
   } else if (user.trusted && top.document.location.pathname.endsWith('/mod')) {
     initializeActionsPanel(user, path);
+    initializeFlagUserModal(articleAuthorId);
   }
 };
 

@@ -1,4 +1,4 @@
-import { h } from 'preact';
+import { h, render } from 'preact';
 import PropTypes from 'prop-types';
 import { request } from '../utilities/http';
 import { Button } from '@crayons/Button/Button';
@@ -73,6 +73,26 @@ async function confirmFlagUser(e) {
   toggleFlagUserModal();
 }
 
+export function initializeFlagUserModal(authorId) {
+  // Check whether context is ModCenter or Friday-Night-Mode
+  const modContainer = document.getElementById('mod-container');
+
+  if (!modContainer) {
+    return;
+  }
+
+  render(
+    <FlagUserModal authorId={authorId} />,
+    document.querySelector('.flag-user-modal-container'),
+  );
+
+  modContainer.addEventListener('load', () => {
+    modContainer.contentWindow.document
+      .getElementById('open-flag-user-modal')
+      .addEventListener('click', toggleFlagUserModal);
+  });
+}
+
 export function FlagUserModal({ modCenterArticleUrl, authorId }) {
   return (
     <div class="crayons-modal crayons-modal--s absolute flag-user-modal">
@@ -82,6 +102,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
           <button
             type="button"
             class="crayons-btn crayons-btn--icon crayons-btn--ghost modal-header-close-icon"
+            onClick={toggleFlagUserModal}
           >
             <svg
               width="24"
