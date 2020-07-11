@@ -1,6 +1,8 @@
 # send notifications about the new reaction
 module Notifications
   module Reactions
+    SendResult = Struct.new(:action, :notification_id)
+
     class Send
       # @param reaction_data [Hash]
       #   * :reactable_id [Integer] - article or comment id
@@ -18,7 +20,7 @@ module Notifications
         new(*args).call
       end
 
-      # @return [OpenStruct, #action, #notification_id]
+      # @return [Struct, #action, #notification_id]
       def call
         return unless receiver.is_a?(User) || receiver.is_a?(Organization)
 
@@ -45,7 +47,8 @@ module Notifications
 
         if aggregated_reaction_siblings.size.zero?
           Notification.where(notification_params).delete_all
-          OpenStruct.new(action: :deleted)
+
+          SendResult.new(:deleted, nil)
         else
           recent_reaction = reaction_siblings.first
 
@@ -63,7 +66,7 @@ module Notifications
 
           notification_id = save_notification(notification_params, notification)
 
-          OpenStruct.new(action: :saved, notification_id: notification_id)
+          SendResult.new(:saved, notification_id)
         end
       end
 
