@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
@@ -55,7 +56,7 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :debug
+  config.log_level = :info
 
   # Prepend all log lines with the following tags.
   config.log_tags = [:request_id]
@@ -104,7 +105,9 @@ Rails.application.configure do
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
-  elsif (ENV["SEND_LOGS_TO_TIMBER"] || "true") == "true"
+  end
+
+  if (ENV["SEND_LOGS_TO_TIMBER"] || "true") == "true"
     # Timber.io logger
     log_device = Timber::LogDevices::HTTP.new(ENV["TIMBER"])
     logger = Timber::Logger.new(log_device)
@@ -135,6 +138,7 @@ Rails.application.configure do
                           ENV["HEROKU_APP_URL"] => ENV["APP_DOMAIN"]
   end
 end
+# rubocop:enable Metrics/BlockLength
 
 Rails.application.routes.default_url_options = {
   host: Rails.application.config.app_domain,

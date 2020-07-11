@@ -47,6 +47,9 @@
     "{app,spec,config,lib}/**/*.rb": [
       "bundle exec rubocop --require rubocop-rspec --safe-auto-correct"
     ],
+    "app/views/**/*.jbuilder": [
+      "bundle exec rubocop --require rubocop-rspec --safe-auto-correct"
+    ],
     "Gemfile": [
       "bundle exec rubocop --require rubocop-rspec --safe-auto-correct"
     ],
