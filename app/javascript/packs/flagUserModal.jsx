@@ -1,4 +1,5 @@
 import { h, render } from 'preact';
+import { useState } from 'preact/hooks';
 import PropTypes from 'prop-types';
 import { request } from '../utilities/http';
 import { Button } from '@crayons/Button/Button';
@@ -109,6 +110,8 @@ export function initializeFlagUserModal(authorId) {
  * @param {number} props.authorId The author ID associated to the content being moderated.
  */
 export function FlagUserModal({ modCenterArticleUrl, authorId }) {
+  const [isConfirmButtonEnabled, enableConfirmButton] = useState(false);
+
   return (
     <div class="crayons-modal crayons-modal--s absolute flag-user-modal">
       <div class="crayons-modal__box">
@@ -145,6 +148,12 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
                 data-reactable-id={authorId}
                 data-category="vomit"
                 data-reactable-type="User"
+                checked={isConfirmButtonEnabled}
+                onClick={(event) => {
+                  const { target } = event;
+
+                  enableConfirmButton(target.checked);
+                }}
               />
               <label htmlFor="vomit-all" class="crayons-field__label">
                 Make all posts by this author less visible
@@ -169,7 +178,11 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
             <Button
               class="crayons-btn crayons-btn--danger mr-2"
               id="confirm-flag-user-action"
-              onClick={confirmFlagUser}
+              onClick={(event) => {
+                confirmFlagUser(event);
+                enableConfirmButton(false);
+              }}
+              disabled={!isConfirmButtonEnabled}
             >
               Confirm action
             </Button>
