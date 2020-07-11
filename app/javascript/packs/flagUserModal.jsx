@@ -3,20 +3,6 @@ import PropTypes from 'prop-types';
 import { request } from '../utilities/http';
 import { Button } from '@crayons/Button/Button';
 
-export function toggleFlagUserModal() {
-  const modalContainer = document.querySelector('.flag-user-modal-container');
-  modalContainer.classList.toggle('hidden');
-
-  if (!modalContainer.classList.contains('hidden')) {
-    window.scrollTo(0, 0);
-    document.querySelector('body').style.height = '100vh';
-    document.querySelector('body').style.overflowY = 'hidden';
-  } else {
-    document.querySelector('body').style.height = 'inherit';
-    document.querySelector('body').style.overflowY = 'inherit';
-  }
-}
-
 async function confirmFlagUser(e) {
   e.preventDefault();
   const vomitAllOption = document.getElementById('vomit-all');
@@ -73,6 +59,28 @@ async function confirmFlagUser(e) {
   toggleFlagUserModal();
 }
 
+/**
+ * Shows or hides the flag user modal.
+ */
+export function toggleFlagUserModal() {
+  const modalContainer = document.querySelector('.flag-user-modal-container');
+  modalContainer.classList.toggle('hidden');
+
+  if (!modalContainer.classList.contains('hidden')) {
+    window.scrollTo(0, 0);
+    document.body.style.height = '100vh';
+    document.body.style.overflowY = 'hidden';
+  } else {
+    document.body.style.height = 'inherit';
+    document.body.style.overflowY = 'inherit';
+  }
+}
+
+/**
+ * Initializes the flag user modal for the given author ID.
+ *
+ * @param {number} authorId
+ */
 export function initializeFlagUserModal(authorId) {
   // Check whether context is ModCenter or Friday-Night-Mode
   const modContainer = document.getElementById('mod-container');
@@ -93,6 +101,13 @@ export function initializeFlagUserModal(authorId) {
   });
 }
 
+/**
+ * A modal for flagging a user and their content. This can be used in the moderation
+ * or on an article page.
+ *
+ * @param {string} props.modCenterUrl (optional) The article URL loaded when in the moderation center.
+ * @param {number} props.authorId The author ID associated to the content being moderated.
+ */
 export function FlagUserModal({ modCenterArticleUrl, authorId }) {
   return (
     <div class="crayons-modal crayons-modal--s absolute flag-user-modal">
@@ -180,5 +195,6 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
 
 FlagUserModal.displayName = 'FlagUserModal';
 FlagUserModal.propTypes = {
-  moderationUrl: PropTypes.string.isRequired,
+  moderationUrl: PropTypes.string,
+  authorId: PropTypes.number.isRequired,
 };
