@@ -42,13 +42,17 @@ describe('<ModerationArticles />', () => {
         id="mod-index-list"
         data-articles={getTestArticles()}
       >
-        <div class="flag-user-modal-container hidden" />
+        {/* Mimics the markup generated in articles/show.html.erb */}
+        <div
+          data-testid="flag-user-modal-container"
+          class="flag-user-modal-container hidden"
+        />
       </div>,
     );
   });
 
   it('renders a list of 2 articles', () => {
-    render(<ModerationArticles />, document.getElementById('mod-index-list'));
+    render(<   />, document.getElementById('mod-index-list'));
 
     const listOfArticles = document.querySelectorAll(
       '[data-testid^="mod-article-"]',
@@ -85,17 +89,18 @@ describe('<ModerationArticles />', () => {
     ).not.toContain('opened');
   });
 
-  it('adds the FlagUser Modal HTML associated with author when article opened', () => {
-    expect(document.querySelector('.flag-user-modal')).toBeNull();
-
-    const { getByTestId } = render(
+  it('adds the FlagUser Modal HTML associated with author when article opened', async () => {
+    const { getByTestId, queryByTestId, findByTestId } = render(
       <ModerationArticles />,
       document.getElementById('mod-index-list'),
     );
-    const singleArticle = getByTestId('mod-article-2');
 
+    expect(queryByTestId('flag-user-modal')).toBeNull();
+
+    const singleArticle = getByTestId('mod-article-2');
     singleArticle.click();
-    expect(document.querySelector('.flag-user-modal')).toBeTruthy();
+
+    expect(await findByTestId('flag-user-modal')).toBeDefined();
 
     expect(
       document.querySelector('.flag-user-modal input').dataset.reactableId,
