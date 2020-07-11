@@ -16,22 +16,13 @@ const getTestArticle = () => ({
   },
 });
 
-function TestFlagModalUserContainer() {
-  // Mimics the markup generated in articles/show.html.erb
-  return (
-    <div
-      data-testid="flag-user-modal"
-      class="flag-user-modal-container hidden"
-    />
-  );
-}
-
 describe('<SingleArticle />', () => {
   it('should have no a11y violations', async () => {
     const { container } = render(
       <>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        <TestFlagModalUserContainer />
+        {/* Div below needed for this test to pass while preserve FlagUserModal functionality */}
+        <div class="flag-user-modal-container hidden" />
       </>,
     );
     const results = await axe(container);
@@ -42,7 +33,7 @@ describe('<SingleArticle />', () => {
     const { queryByText } = render(
       <>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        <TestFlagModalUserContainer />
+        <div class="flag-user-modal-container hidden" />
       </>,
     );
 
@@ -53,7 +44,7 @@ describe('<SingleArticle />', () => {
     const { queryByText } = render(
       <>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        <TestFlagModalUserContainer />
+        <div class="flag-user-modal-container hidden" />
       </>,
     );
 
@@ -79,7 +70,7 @@ describe('<SingleArticle />', () => {
     const { container } = render(
       <>
         <SingleArticle {...article} toggleArticle={jest.fn()} />
-        <TestFlagModalUserContainer />
+        <div class="flag-user-modal-container hidden" />
       </>,
     );
     const text = getNodeText(container.querySelector('.article-title'));
@@ -90,7 +81,7 @@ describe('<SingleArticle />', () => {
     const { container } = render(
       <>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        <TestFlagModalUserContainer />
+        <div class="flag-user-modal-container hidden" />
       </>,
     );
     const text = getNodeText(container.querySelector('.article-author'));
@@ -101,7 +92,7 @@ describe('<SingleArticle />', () => {
     const { container } = render(
       <>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        <TestFlagModalUserContainer />
+        <div class="flag-user-modal-container hidden" />
       </>,
     );
     const text = getNodeText(container.querySelector('.article-author'));
@@ -112,7 +103,7 @@ describe('<SingleArticle />', () => {
     const { queryByText } = render(
       <>
         <SingleArticle {...getTestArticle()} toggleArticle={jest.fn()} />
-        <TestFlagModalUserContainer />
+        <div class="flag-user-modal-container hidden" />
       </>,
     );
 
@@ -127,7 +118,7 @@ describe('<SingleArticle />', () => {
     render(
       <>
         <SingleArticle {...article} toggleArticle={jest.fn()} />
-        <TestFlagModalUserContainer />
+        <div class="flag-user-modal-container hidden" />
       </>,
     );
 
@@ -148,7 +139,7 @@ describe('<SingleArticle />', () => {
     const { getByTestId } = render(
       <>
         <SingleArticle {...article} toggleArticle={toggleArticle} />
-        <TestFlagModalUserContainer />
+        <div class="flag-user-modal-container hidden" />
       </>,
     );
 
