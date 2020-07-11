@@ -12,17 +12,6 @@ require:
 # Note that changes in the inspected code, or installation of new
 # versions of RuboCop, may require this file to be generated again.
 
-# Offense count: 16
-Rails/OutputSafety:
-  Exclude:
-    - 'app/helpers/application_helper.rb'
-    - 'app/helpers/comments_helper.rb'
-    - 'app/liquid_tags/github_tag/github_issue_tag.rb'
-    - 'app/liquid_tags/liquid_tag_base.rb'
-    - 'app/models/comment.rb'
-    - 'app/models/display_ad.rb'
-    - 'app/models/message.rb'
-
 # Offense count: 4
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb
