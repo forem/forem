@@ -111,7 +111,7 @@ GEM
       nokogiri (~> 1.6)
       thor (~> 0.18)
     ast (2.4.1)
-    autoprefixer-rails (9.8.4)
+    autoprefixer-rails (9.8.5)
       execjs
     aws-eventstream (1.1.0)
     aws-partitions (1.338.0)
