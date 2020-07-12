@@ -5,9 +5,14 @@ ENV RUBY_VERSION=2.7.1
 RUN rm /home/gitpod/.rvmrc && touch /home/gitpod/.rvmrc && echo "rvm_gems_path=/home/gitpod/.rvm" > /home/gitpod/.rvmrc
 RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --default"
 
-# Install Node
+# Install Node and Yarn
 COPY ./.nvmrc "${APP_HOME}"/.nvmrc
-RUN bash -lc ". .nvm/nvm.sh && nvm install && nvm unalias default && nvm alias default $(cat /.nvmrc) && nvm use default && nvm uninstall $NODE_VERSION"
+RUN bash -lc ". .nvm/nvm.sh && nvm install \
+              && nvm unalias default \
+              && nvm alias default $(cat /.nvmrc) \
+              && nvm use default \
+              && nvm uninstall $NODE_VERSION \
+              && npm install -g yarn"
 
 # Install Redis.
 RUN sudo apt-get update \
