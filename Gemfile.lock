@@ -199,7 +199,7 @@ GEM
     childprocess (3.0.0)
     cld (0.8.0)
       ffi
-    cloudinary (1.16.0)
+    cloudinary (1.16.1)
       aws_cf_signer
       rest-client
     coderay (1.1.2)
