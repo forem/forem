@@ -1,13 +1,12 @@
 class CollectionsController < ApplicationController
   def index
-    if (@user = User.find_by(username: params[:username]))
-      @collections = Collection.where(user_id: @user.id)
-    elsif (@user = Organization.find_by(slug: params[:username]))
-      @collections = Collection.where(organization_id: @user.id)
-    end
+    @user = User.find_by!(username: params[:username])
+    @collections = @user.collections.order(created_at: :desc)
   end
 
   def show
-    @collection = Collection.includes(%i[user articles]).find_by(path: "/#{params[:username].downcase}/series/#{params[:slug]}")
+    @user = User.find_by!(username: params[:username])
+    @collection = @user.collections.find_by!(slug: params[:slug])
+    @articles = @collection.articles.published.order(Arel.sql("COALESCE(crossposted_at, published_at) ASC"))
   end
 end

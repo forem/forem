@@ -9,7 +9,11 @@ class Collection < ApplicationRecord
   after_touch :touch_articles
 
   def self.find_series(slug, user)
-    Collection.create_with(path: "/#{user.username}/series/#{slug.parameterize}").find_or_create_by(slug: slug, user: user)
+    Collection.find_or_create_by(slug: slug, user: user)
+  end
+
+  def path
+    "/#{user.username}/series/#{slug}"
   end
 
   private
