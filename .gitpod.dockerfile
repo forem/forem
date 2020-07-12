@@ -7,7 +7,7 @@ RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --def
 
 # Install Node
 COPY ./.nvmrc "${APP_HOME}"/.nvmrc
-RUN bash -lc ". .nvm/nvm.sh && nvm install && nvm alias default $(cat .nvmrc) && nvm use default && nvm uninstall $NODE_VERSION && nvm use default"
+RUN bash -lc ". .nvm/nvm.sh && nvm install && nvm unalias default && nvm alias default $(cat /.nvmrc) && nvm use default && nvm uninstall $NODE_VERSION"
 
 # Install Redis.
 RUN sudo apt-get update \
