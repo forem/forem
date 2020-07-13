@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_26_215928) do
+ActiveRecord::Schema.define(version: 2020_07_13_203232) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -284,10 +284,9 @@ ActiveRecord::Schema.define(version: 2020_07_26_215928) do
     t.datetime "created_at"
     t.text "processed_html"
     t.string "title"
-    t.string "type_of"
     t.datetime "updated_at"
     t.index ["broadcastable_type", "broadcastable_id"], name: "index_broadcasts_on_broadcastable_type_and_broadcastable_id", unique: true
-    t.index ["title", "type_of"], name: "index_broadcasts_on_title_and_type_of", unique: true
+    t.index ["title", "broadcastable_type"], name: "index_broadcasts_on_title_and_broadcastable_type", unique: true
   end
 
   create_table "buffer_updates", force: :cascade do |t|
