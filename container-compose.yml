@@ -112,7 +112,7 @@ services:
     command: ["bundle", "exec", "sidekiq","-c","2"]
 
   db:
-    image: postgres:9.6.15-alpine
+    image: postgres:11-alpine
     container_name: dev_postgresql
     environment:
       POSTGRES_USER: devto
