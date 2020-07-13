@@ -19,9 +19,8 @@ RSpec.describe "User uses response templates settings", type: :system do
       end
 
       it "shows the proper message when deleting a reponse template", js: true do
-        wait_for_assertion { ResponseTemplate.find_by(user: user.id) }
         visit "/settings/response-templates"
-        accept_confirm { click_button "Remove" }
+        accept_confirm { ensure_modal_opens { click_button("Remove", wait: 5) } }
 
         expect(page).to have_text "was deleted."
       end
