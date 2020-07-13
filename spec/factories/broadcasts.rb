@@ -4,8 +4,8 @@ FactoryBot.define do
     active_status_updated_at { 2.days.ago }
 
     factory :set_up_profile_broadcast do
-      title          { "Welcome Notification: set_up_profile" }
-      type_of        { "Welcome" }
+      title { "Welcome Notification: set_up_profile" }
+      broadcastable_type { "Welcome" }
       processed_html do
         "Welcome to DEV! 👋 I'm <a href='https://dev.to/sloan'>Sloan</a>, " \
         "the community mascot and I'm here to help get you started. " \
@@ -14,8 +14,8 @@ FactoryBot.define do
     end
 
     factory :welcome_broadcast do
-      title          { "Welcome Notification: welcome_thread" }
-      type_of        { "Welcome" }
+      title { "Welcome Notification: welcome_thread" }
+      broadcastable_type { "Welcome" }
       processed_html do
         "Sloan here again! 👋 DEV is a friendly community. " \
         "Why not introduce yourself by leaving a comment in <a href='/welcome'>the welcome thread</a>!"
@@ -23,8 +23,8 @@ FactoryBot.define do
     end
 
     factory :twitter_connect_broadcast do
-      title          { "Welcome Notification: twitter_connect" }
-      type_of        { "Welcome" }
+      title { "Welcome Notification: twitter_connect" }
+      broadcastable_type { "Welcome" }
       processed_html do
         "You're on a roll! 🎉 Do you have a Twitter account? Consider " \
         "<a href='/settings'>connecting it</a> so we can @mention you if we share " \
@@ -33,8 +33,8 @@ FactoryBot.define do
     end
 
     factory :github_connect_broadcast do
-      title          { "Welcome Notification: github_connect" }
-      type_of        { "Welcome" }
+      title { "Welcome Notification: github_connect" }
+      broadcastable_type { "Welcome" }
       processed_html do
         "You're on a roll! 🎉  Do you have a GitHub account? Consider " \
         "<a href='/settings'>connecting it</a> so you can pin any of your repos to your profile."
@@ -42,8 +42,8 @@ FactoryBot.define do
     end
 
     factory :customize_ux_broadcast do
-      title          { "Welcome Notification: customize_experience" }
-      type_of        { "Welcome" }
+      title { "Welcome Notification: customize_experience" }
+      broadcastable_type { "Welcome" }
       processed_html do
         "Sloan here! 👋 Did you know that that you can customize your DEV experience? " \
         "Try changing <a href='settings/ux'>your font and theme</a> and find the best style for you!"
@@ -51,8 +51,8 @@ FactoryBot.define do
     end
 
     factory :customize_feed_broadcast do
-      title          { "Welcome Notification: customize_feed" }
-      type_of        { "Welcome" }
+      title { "Welcome Notification: customize_feed" }
+      broadcastable_type { "Welcome" }
       processed_html do
         "Hi, it's me again! 👋 Now that you're a part of the DEV community, " \
         "let's focus on personalizing your content. You can start by " \
@@ -61,8 +61,8 @@ FactoryBot.define do
     end
 
     factory :start_discussion_broadcast do
-      title          { "Welcome Notification: start_discussion" }
-      type_of        { "Welcome" }
+      title { "Welcome Notification: start_discussion" }
+      broadcastable_type { "Welcome" }
       processed_html do
         "Sloan here! 👋 I noticed that you haven't " \
         "<a href='https://dev.to/t/discuss'>started a discussion</a> yet. " \
@@ -72,8 +72,8 @@ FactoryBot.define do
     end
 
     factory :ask_question_broadcast do
-      title          { "Welcome Notification: ask_question" }
-      type_of        { "Welcome" }
+      title { "Welcome Notification: ask_question" }
+      broadcastable_type { "Welcome" }
       processed_html do
         "Sloan here! 👋 I noticed that you haven't " \
         "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> yet. " \
@@ -82,8 +82,8 @@ FactoryBot.define do
     end
 
     factory :discuss_and_ask_broadcast do
-      title          { "Welcome Notification: discuss_and_ask" }
-      type_of        { "Welcome" }
+      title { "Welcome Notification: discuss_and_ask" }
+      broadcastable_type { "Welcome" }
       processed_html do
         "Sloan here! 👋 I noticed that you haven't " \
         "<a href='https://dev.to/t/explainlikeimfive'>asked a question</a> or " \
@@ -93,8 +93,8 @@ FactoryBot.define do
     end
 
     factory :download_app_broadcast do
-      title          { "Welcome Notification: download_app" }
-      type_of        { "Welcome" }
+      title { "Welcome Notification: download_app" }
+      broadcastable_type { "Welcome" }
       processed_html do
         "Sloan here, with one last tip! 👋 Have you downloaded the DEV mobile " \
         "app yet? Consider <a href='https://dev.to/downloads'>downloading</a> it " \
@@ -103,8 +103,8 @@ FactoryBot.define do
     end
 
     factory :announcement_broadcast do
-      title          { "A Very Important Announcement" }
-      type_of        { "Announcement" }
+      title { "A Very Important Announcement" }
+      broadcastable_type { "Announcement" }
       processed_html { "<p>Hello, World!</p>" }
     end
 
