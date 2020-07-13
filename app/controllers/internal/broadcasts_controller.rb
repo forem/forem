@@ -3,8 +3,8 @@ module Internal
     layout "internal"
 
     def index
-      @broadcasts = if params[:type_of]
-                      Broadcast.where(type_of: params[:type_of].capitalize)
+      @broadcasts = if params[:broadcastable_type]
+                      Broadcast.where(broadcastable_type: params[:broadcastable_type].capitalize)
                     else
                       Broadcast.all
                     end.order(title: :asc)
@@ -61,7 +61,7 @@ module Internal
     private
 
     def broadcast_params
-      params.permit(:title, :processed_html, :type_of, :banner_style, :active)
+      params.permit(:title, :processed_html, :broadcastable_type, :banner_style, :active)
     end
 
     def authorize_admin

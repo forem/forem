@@ -2,7 +2,7 @@ module DataUpdateScripts
   class BackfillBroadcastableForBroadcasts
     def run
       Broadcast.find_each do |cast|
-        case cast.type_of
+        case cast.broadcastable_type
         when "Welcome"
           broadcastable = WelcomeNotification.create
           cast.update!(broadcastable: broadcastable)

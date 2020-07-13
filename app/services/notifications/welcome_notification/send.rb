@@ -20,14 +20,14 @@ module Notifications
           broadcast: {
             title: welcome_broadcast.title,
             processed_html: welcome_broadcast.processed_html,
-            type_of: welcome_broadcast.type_of
+            broadcastable_type: welcome_broadcast.broadcastable_type
           }
         }
         Notification.create!(
           user_id: receiver_id,
           notifiable_id: welcome_broadcast.id,
           notifiable_type: "Broadcast",
-          action: welcome_broadcast.type_of,
+          action: welcome_broadcast.broadcastable_type,
           json_data: json_data,
         )
 
