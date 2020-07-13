@@ -2,8 +2,8 @@
   <h1 class="fw-heavy fs-3xl mod-center-heading">
     Mod Center
   </h1>
-  <nav class="mod-center--navigation">
-    <h3 class="fw-bold fs-s mod-center--navigation__title">
+  <nav class="mod-center--nav">
+    <h3 class="fw-bold fs-s mod-center--nav__title">
       Inbox
     </h3>
     <div id="mod-center-inbox" class="mod-center-inbox">
@@ -23,30 +23,24 @@
       </a>
     </div>
   </nav>
-  <nav class="mod-center--navigation">
-    <h3 class="fw-bold fs-s mod-center--navigation__title">
+  <nav class="mod-center--nav">
+    <h3 class="fw-bold fs-s mod-center--nav__title">
       Resources
     </h3>
     <div id="mod-center-other-options">
       <% if @community_mod_channel %>
-        <a href="/connect/<%= @community_mod_channel.slug %>" target="_blank" rel="noopener noreferrer nofollow" class="crayons-link crayons-link--block">
+        <a href="/connect/<%= @community_mod_channel.slug %>" target="_blank" rel="noopener noreferrer nofollow" class="crayons-link crayons-link--block mod-center--nav__item">
           Connect Channel
-          <span class="crayons-icon">
-            <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
-          </span>
+          <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
         </a>
       <% end %>
-      <a href="<%= URL.url %>/community-moderation" class="crayons-link crayons-link--block">
+      <a href="<%= URL.url %>/community-moderation" class="crayons-link crayons-link--block mod-center--nav__item">
         Moderator Guide
-        <span class="crayons-icon">
-          <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
-        </span>
+        <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
       </a>
-      <a href="<%= URL.url %>/terms" class="crayons-link crayons-link--block">
+      <a href="<%= URL.url %>/terms" class="crayons-link crayons-link--block mod-center--nav__item">
         Terms Of Conduct
-        <span class="crayons-icon">
-          <%= inline_svg_tag("external-link-logo.svg", aria: true, title: "External link") %>
-        </span>
+        <%= inline_svg_tag("link-external.svg", aria: true, title: "External link", class: "crayons-icon") %>
       </a>
     </div>
   </nav>
