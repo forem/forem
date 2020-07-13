@@ -2069,10 +2069,10 @@
   dependencies:
     "@testing-library/dom" "^7.16.2"
 
-"@twilio/webrtc@4.3.0":
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-4.3.0.tgz#403ab32269441d96af35b97976c49aacd467405d"
-  integrity sha512-a0ieFb0XUc5HQIMGBypwvTFVxyBEpPvTgnz2E08KxyZvM72igYlAFjZyooq/5BDctu3cJmT9H3coNaUX82l8yw==
+"@twilio/webrtc@4.3.1":
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@twilio/webrtc/-/webrtc-4.3.1.tgz#35acd0bda1ce65424d9617defb0b6d9b333c77c7"
+  integrity sha512-T9Slk8TyKrKqjc4PH4aPknjmEozny/M1TzVyfRRyEQSt548hXXhLYrSp3nUcK49bfzVrgbYuRj6ojExYh2qLqw==
 
 "@types/anymatch@*":
   version "1.3.1"
@@ -2639,12 +2639,12 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
-ahoy.js@^0.3.6:
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/ahoy.js/-/ahoy.js-0.3.6.tgz#ca27cb816a1de1f537616e4ea3213950259cd821"
-  integrity sha512-9X1g5xJioXk+AY5ti1LIlHExZ+8SjhuQOzAAXkNAZrZ6lmp88lFW7IeHADfii1/p5Cf3azg9hF2dk8Zsu4OfWA==
+ahoy.js@^0.3.7:
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/ahoy.js/-/ahoy.js-0.3.7.tgz#545256a915ab0dc038ebeb3e8b6a65496dc9c2c6"
+  integrity sha512-3IGJdqMK1C8vzaIAv/BgdPepRw0zoYZo1QiMjJM0f/PlhRJDr8CfAy0QpvroNoz0vxWin2vyM9i7v3/0nTE5gw==
   dependencies:
-    object-to-formdata ">=3.0.0"
+    object-to-formdata "^4.0.0"
 
 airbnb-js-shims@^2.2.1:
   version "2.2.1"
@@ -10177,10 +10177,10 @@ object-keys@^1.0.11, object-keys@^1.0.12, object-keys@^1.1.1:
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.1.1.tgz#1c47f272df277f3b1daf061677d9c82e2322c60e"
   integrity sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==
 
-object-to-formdata@>=3.0.0:
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/object-to-formdata/-/object-to-formdata-3.0.9.tgz#40e3314522345789259738811c0222b7d6e556e9"
-  integrity sha512-1JDHRFSpk6wzhPBAAqdVncdvbjZ+bjB0tioruNdKn8UyudBBXiBxRa7PJyvYqp4ioEKX98dEOX9Fw1RxA+vLzg==
+object-to-formdata@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/object-to-formdata/-/object-to-formdata-4.0.1.tgz#37457ac856c10580ec16bedfded56b0c09ccb0c8"
+  integrity sha512-6PSHCYTVZkY2mTjW1y0baOuUpopFp0h3jjN65x+DFP3pYHfhHRnvkAzHUc9xZK2SeYDVu9Ej9P3hHWyglUznrg==
 
 object-visit@^1.0.0:
   version "1.0.1"
@@ -12804,10 +12804,10 @@ sass-loader@^8.0.2:
     schema-utils "^2.6.1"
     semver "^6.3.0"
 
-sass-loader@^9.0.1:
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-9.0.1.tgz#8ae96ebb0e9debc3748064d32e43596719814c40"
-  integrity sha512-wXFo2VAAzAUsUApOXr5PkGXDa1ad20RYhdJTubopY04i+Suk8b8g3Vtobu3kfMk48S0n5rQyAQeGBdg8WzL8gA==
+sass-loader@^9.0.2:
+  version "9.0.2"
+  resolved "https://registry.yarnpkg.com/sass-loader/-/sass-loader-9.0.2.tgz#847c9b4c95328ddc8c7d35cf28c9d6e54e59a90b"
+  integrity sha512-nphcum3jNI442njnrZ5wJgSNX5lfEOHOKHCLf+PrTIaleploKqAMUuT9CVKjf+lyi6c2MCGPHh1vb9nGsjnZJA==
   dependencies:
     klona "^1.1.1"
     loader-utils "^2.0.0"
@@ -14243,12 +14243,12 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
-twilio-video@^2.6.0:
-  version "2.6.0"
-  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-2.6.0.tgz#956f01541317d08a0dac62ead43105018fe86f03"
-  integrity sha512-Q/IR7UUc5PTU1uDEzZQuSaeaQH3OOTyw5Xklmq6oqomymVqYDZ6CEuEMHsqxtDajoIOSaflalWYDIQoSE+hS3Q==
+twilio-video@^2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/twilio-video/-/twilio-video-2.7.0.tgz#29d20d9cd08a903e13b9f004214be3312bd086f4"
+  integrity sha512-juAMupRjBGh1pqVvE9CwpMGoGyJOlmJbzG2C3TstK1bAcHDLFUvFkBlNwL+ubIUTipX0nrrxzVfcQrEI3wWHqA==
   dependencies:
-    "@twilio/webrtc" "4.3.0"
+    "@twilio/webrtc" "4.3.1"
     backoff "^2.5.0"
     ws "^3.3.1"
     xmlhttprequest "^1.8.0"
