@@ -25,7 +25,7 @@
       <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
 
         <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
-          <!-- we need to list the config as seperate fields if the data structure is a Hash -->
+          <!-- we need to list the config as separate fields if the data structure is a Hash -->
           <% if SiteConfig.send(config_key).is_a?(Hash) %>
             <%= internal_config_label "#{config_key.to_s}" %>
             <div class="form-group">
