@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_13_203232) do
+ActiveRecord::Schema.define(version: 2020_07_13_215731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -282,7 +282,12 @@ ActiveRecord::Schema.define(version: 2020_07_13_203232) do
     t.integer "broadcastable_id"
     t.string "broadcastable_type"
     t.datetime "created_at"
+    t.string "cta_text"
+    t.string "cta_url"
+    t.string "headline"
     t.text "processed_html"
+    t.string "secondary_cta_text"
+    t.string "secondary_cta_url"
     t.string "title"
     t.datetime "updated_at"
     t.index ["broadcastable_type", "broadcastable_id"], name: "index_broadcasts_on_broadcastable_type_and_broadcastable_id", unique: true
