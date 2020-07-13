@@ -1,5 +1,5 @@
 module DataUpdateScripts
-  class BackfillBroadcastableForBroadcasts
+  class UpdateBroadcastableForBroadcasts
     def run
       Broadcast.find_each do |cast|
         case cast.broadcastable_type
