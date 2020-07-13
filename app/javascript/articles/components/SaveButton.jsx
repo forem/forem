@@ -10,16 +10,14 @@ export class SaveButton extends Component {
 
     this.state = {
       buttonText: isBookmarked ? 'Saved' : 'Save',
-      hovering: false,
     };
   }
 
   render() {
-    //const { hovering } = this.state.hovering;
-
+    const { buttonText } = this.state;
     const { article, isBookmarked, onClick } = this.props;
 
-    const mouseOver = (_e) => {
+    const mouseMove = (_e) => {
       this.setState({ buttonText: isBookmarked ? 'Unsave' : 'Save' });
     };
 
@@ -29,7 +27,10 @@ export class SaveButton extends Component {
 
     const handleClick = (_e) => {
       onClick(_e);
-      this.setState({ buttonText: isBookmarked ? 'Unsave' : 'Saved' });
+      this.setState({
+        buttonText: isBookmarked ? 'Save' : 'Saved',
+        isBookmarked: !isBookmarked,
+      });
     };
 
     if (article.class_name === 'Article') {
@@ -42,8 +43,8 @@ export class SaveButton extends Component {
           data-initial-feed
           data-reactable-id={article.id}
           onClick={handleClick}
-          onMouseOver={mouseOver}
-          onFocus={mouseOver}
+          onMouseMove={mouseMove}
+          onFocus={mouseMove}
           onMouseout={mouseOut}
           onBlur={mouseOut}
         >
