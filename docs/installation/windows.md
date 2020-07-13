@@ -108,7 +108,7 @@ work fully. We install Node.js later on in the installation process.
 
 ### PostgreSQL
 
-DEV requires PostgreSQL version 9.5 or higher.
+DEV requires PostgreSQL version 11 or higher.
 
 If you don't have PostgreSQL installed on your Windows system, you can do so
 right now. WSL is able to connect to a PostgreSQL instance on your Windows
