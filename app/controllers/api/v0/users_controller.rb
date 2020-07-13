@@ -12,6 +12,7 @@ module Api
                 else
                   relation.find(params[:id])
                 end
+        not_found unless @user.registered
       end
 
       def me

@@ -1,6 +1,6 @@
 module Internal
   class UsersQuery
-    def self.call(relation: User.all, options: {})
+    def self.call(relation: User.registered, options: {})
       role, search = options.values_at(:role, :search)
 
       relation = relation.with_role(role, :any) if role.presence

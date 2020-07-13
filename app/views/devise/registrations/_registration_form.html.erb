@@ -23,10 +23,43 @@
     <div class="flex flex-col m:flex-row justify-center">
       <%= render partial: "shared/authentication/providers_registration_form" %>
     </div>
+    <p class="pt-6">We require social authemtication <em>for registration</em> to prevent abuse.</p>
 
-    <p class="pt-4"><em>We require social login to prevent abuse.</em></p>
+    <p class="pt-6">Do you have email/password sign-in set up for an existing account? <a href="#" id="show-password-sign-in">Click here</a>.</p>
+
+    <div id="sign-in-password-form" class="m-4 mt-8 crayons-card p-7 align-left" style="display:none">
+      <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <div class="crayons-field">
+          <%= f.label :email, class: "crayons-field__label" %>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "crayons-textfield" %>
+        </div>
+
+        <div class="field">
+          <%= f.label :password, class: "crayons-field__label" %>
+          <%= f.password_field :password, autocomplete: "current-password", class: "crayons-textfield" %>
+        </div>
+
+        <% if devise_mapping.rememberable? %>
+          <div class="field">
+            <%= f.check_box :remember_me %>
+            <%= f.label :remember_me %>
+          </div>
+        <% end %>
+
+        <div class="actions">
+          <%= f.submit "Log in", class: "crayons-btn" %>
+        </div>
+      <% end %>
+    </div>
   </div>
   <p>Open Source 😇</p>
   <p>Free Forever ❤️</p>
   <div style="height:300px" />
 </div>
+
+<script>
+  document.getElementById('show-password-sign-in').onclick = function(e) {
+    e.preventDefault();
+    document.getElementById('sign-in-password-form').style.display = 'block';
+  }
+</script>

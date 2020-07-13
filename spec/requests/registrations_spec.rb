@@ -9,6 +9,11 @@ RSpec.describe "Registrations", type: :request do
         get "/enter"
         expect(response.body).to include "Great to have you"
       end
+
+      it "shows the sign in text" do
+        get "/enter"
+        expect(response.body).to include "Do you have email"
+      end
     end
 
     context "when logged in" do
