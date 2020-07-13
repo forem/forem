@@ -42,13 +42,16 @@ describe('<ModerationArticles />', () => {
         id="mod-index-list"
         data-articles={getTestArticles()}
       >
-        <div class="flag-user-modal-container hidden" />
+        <div
+          data-testid="flag-user-modal-container"
+          class="flag-user-modal-container hidden"
+        />
       </div>,
     );
   });
 
   it('renders a list of 2 articles', () => {
-    render(<ModerationArticles />, document.getElementById('mod-index-list'));
+    render(<ModerationArticles />);
 
     const listOfArticles = document.querySelectorAll(
       '[data-testid^="mod-article-"]',
@@ -57,10 +60,7 @@ describe('<ModerationArticles />', () => {
   });
 
   it('renders the iframes on click', () => {
-    const { getByTestId } = render(
-      <ModerationArticles />,
-      document.getElementById('mod-index-list'),
-    );
+    const { getByTestId } = render(<ModerationArticles />);
     const singleArticle = getByTestId('mod-article-1');
     singleArticle.click();
     const iframes = singleArticle.querySelectorAll('iframe');
@@ -68,10 +68,7 @@ describe('<ModerationArticles />', () => {
   });
 
   it('toggles the "opened" class when opening or closing an article', () => {
-    const { getByTestId } = render(
-      <ModerationArticles />,
-      document.getElementById('mod-index-list'),
-    );
+    const { getByTestId } = render(<ModerationArticles />);
     const singleArticle = getByTestId('mod-article-2');
 
     fireEvent.click(singleArticle);
@@ -85,20 +82,31 @@ describe('<ModerationArticles />', () => {
     ).not.toContain('opened');
   });
 
-  it('adds the FlagUser Modal HTML associated with author when article opened', () => {
-    expect(document.querySelector('.flag-user-modal')).toBeNull();
-
-    const { getByTestId } = render(
-      <ModerationArticles />,
-      document.getElementById('mod-index-list'),
-    );
-    const singleArticle = getByTestId('mod-article-2');
-
-    singleArticle.click();
-    expect(document.querySelector('.flag-user-modal')).toBeTruthy();
+  it('adds the FlagUser Modal HTML associated with author when article opened', async () => {
+    const { getByTestId, findByTestId } = render(<ModerationArticles />);
+    const expectedArticleId = 2;
 
     expect(
-      document.querySelector('.flag-user-modal input').dataset.reactableId,
-    ).toEqual('2');
+      document.querySelector('[data-testid="flag-user-modal"]'),
+    ).toBeNull();
+
+    const singleArticle = getByTestId(`mod-article-${expectedArticleId}`);
+
+    singleArticle.click();
+
+    // We need the iframe to load first before checking for the modal having been loaded.
+    await findByTestId(`mod-iframe-${expectedArticleId}`);
+
+    const flagUserModal = document.querySelector(
+      '[data-testid="flag-user-modal"]',
+    );
+
+    expect(flagUserModal).not.toBeNull();
+
+    const actualArticleId = Number(
+      flagUserModal.querySelector('input').dataset.reactableId,
+    );
+
+    expect(actualArticleId).toEqual(expectedArticleId);
   });
 });
