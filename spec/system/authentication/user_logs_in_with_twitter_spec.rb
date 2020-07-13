@@ -141,13 +141,13 @@ RSpec.describe "Authenticating with Twitter" do
         expect(page).to have_current_path("/users/sign_up")
       end
 
-      it "logs errors" do
-        allow(Rails.logger).to receive(:error)
+      it "reports errors" do
+        allow(Honeybadger).to receive(:notify)
 
         visit root_path
         click_link(sign_in_link, match: :first)
 
-        expect(Rails.logger).to have_received(:error).at_least(3).times
+        expect(Honeybadger).to have_received(:notify)
       end
     end
   end

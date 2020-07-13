@@ -2,8 +2,9 @@ class EmailAuthorization < ApplicationRecord
   before_create :generate_confirmation_token
   belongs_to :user
 
+  # uuid_issue is a specific case where a user deletes their old auth account and recreates it,
+  # leaving us with the incorrect uuid
   TYPES = %w[merge_request account_lockout uuid_issue account_ownership].freeze
-  # uuid_issue is a specific case where a user deletes their old auth account and recreates it, leaving us with the incorrect uuid
 
   validates :type_of, presence: true
   validates :type_of, inclusion: { in: TYPES }

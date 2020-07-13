@@ -28,7 +28,8 @@ RSpec.describe BlackBox, type: :black_box do
     end
 
     it "returns the lower correct value if article tagged with watercooler" do
-      article = build_stubbed(:article, score: 99, cached_tag_list: "hello, discuss, watercooler", published_at: Time.current)
+      article = build_stubbed(:article, score: 99, cached_tag_list: "hello, discuss, watercooler",
+                                        published_at: Time.current)
       allow(function_caller).to receive(:call).and_return(5)
       # recent bonuses (28 + 31 + 80 + 395 + 330 + 330 = 1194)
       # + score (99)

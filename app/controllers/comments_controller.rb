@@ -9,6 +9,7 @@ class CommentsController < ApplicationController
 
   # GET /comments
   # GET /comments.json
+  # rubocop:disable Metrics/CyclomaticComplexity
   def index
     skip_authorization
     @on_comments_page = true
@@ -37,6 +38,7 @@ class CommentsController < ApplicationController
 
     render :deleted_commentable_comment unless @commentable
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
 
   # GET /comments/1
   # GET /comments/1.json
@@ -75,26 +77,8 @@ class CommentsController < ApplicationController
         return
       end
 
-      render json: {
-        status: "created",
-        css: @comment.custom_css,
-        depth: @comment.depth,
-        url: @comment.path,
-        readable_publish_date: @comment.readable_publish_date,
-        published_timestamp: @comment.decorate.published_timestamp,
-        body_html: @comment.processed_html,
-        id: @comment.id,
-        id_code: @comment.id_code_generated,
-        newly_created: true,
-        user: {
-          id: current_user.id,
-          username: current_user.username,
-          name: current_user.name,
-          profile_pic: ProfileImage.new(current_user).get(width: 50),
-          twitter_username: current_user.twitter_username,
-          github_username: current_user.github_username
-        }
-      }
+      render partial: "comments/comment.json"
+
     elsif (comment = Comment.where(
       body_markdown: @comment.body_markdown,
       commentable_id: @comment.commentable.id,
@@ -114,7 +98,6 @@ class CommentsController < ApplicationController
   rescue StandardError => e
     skip_authorization
 
-    Rails.logger.error(e)
     message = "There was an error in your markdown: #{e}"
     render json: { error: message }, status: :unprocessable_entity
   end
@@ -146,7 +129,6 @@ class CommentsController < ApplicationController
   rescue StandardError => e
     skip_authorization
 
-    Rails.logger.error(e)
     message = "There was an error in your markdown: #{e}"
     render json: { error: "error", status: message }, status: :unprocessable_entity
   end
@@ -239,7 +221,9 @@ class CommentsController < ApplicationController
     @comment.hidden_by_commentable_user = false
     if @comment.save
       @commentable = @comment&.commentable
-      @commentable&.update_column(:any_comments_hidden, @commentable.comments.pluck(:hidden_by_commentable_user).include?(true))
+      @commentable&.update_columns(
+        any_comments_hidden: @commentable.comments.pluck(:hidden_by_commentable_user).include?(true),
+      )
       render json: { hidden: "false" }, status: :ok
     else
       render json: { errors: @comment.errors_as_sentence, status: 422 }, status: :unprocessable_entity

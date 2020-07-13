@@ -300,7 +300,8 @@ RSpec.describe "Reactions", type: :request do
 
       it "converts field test" do
         post "/reactions", params: article_params
-        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed, "user_creates_reaction")
+        expect(Users::RecordFieldTestEventWorker).to have_received(:perform_async).with(user.id, :user_home_feed,
+                                                                                        "user_creates_reaction")
       end
     end
 

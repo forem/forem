@@ -56,8 +56,7 @@ FactoryBot.define do
     end
   end
 
-  # TODO: (Alex Smith) - update roles before release
   trait :with_user_subscription_tag_role_user do
-    after(:build) { |article| article.user.add_role(:super_admin) }
+    after(:build) { |article| article.user.add_role(:restricted_liquid_tag, LiquidTags::UserSubscriptionTag) }
   end
 end

@@ -5,7 +5,9 @@ class PathRedirect < ApplicationRecord
   validates :new_path, presence: true
 
   # Validate old_path != new_path
-  validates :old_path, exclusion: { in: ->(path_redirect) { [path_redirect.new_path] }, message: "the old_path cannot be the same as the new_path" }
+  validates :old_path, exclusion: { in: lambda { |path_redirect|
+                                          [path_redirect.new_path]
+                                        }, message: "the old_path cannot be the same as the new_path" }
 
   validates :source, inclusion: { in: SOURCES }, allow_blank: true
 

@@ -41,7 +41,8 @@ RSpec.describe Article, type: :model do
       it "on destroy enqueues job to delete article from elasticsearch" do
         article = create(:article)
 
-        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
+        sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                     args: [described_class::SEARCH_CLASS.to_s, article.search_id]) do
           article.destroy
         end
       end
@@ -93,7 +94,7 @@ RSpec.describe Article, type: :model do
     context "when published" do
       before do
         # rubocop:disable RSpec/NamedSubject
-        allow(subject).to receive(:published?).and_return(true)
+        allow(subject).to receive(:published?).and_return(true) # rubocop:disable RSpec/SubjectStub
         # rubocop:enable RSpec/NamedSubject
       end
 

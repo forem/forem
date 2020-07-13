@@ -12,9 +12,9 @@
 
     <h1>Join our <%= community_qualified_name %> :)</h1>
 
-    <p>
-      <%= SiteConfig.tagline %>
-    </p>
+    <% if SiteConfig.tagline.present? %>
+      <p><%= SiteConfig.tagline %></p>
+    <% end %>
 
     <div class="flex flex-col l:flex-row justify-center">
       <%= render partial: "shared/authentication/providers_signup_modal" %>

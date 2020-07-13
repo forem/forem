@@ -69,6 +69,12 @@ Layout/EmptyLinesAroundAttributeAccessor:
 #   Enabled: false
 #   StyleGuide: '#heredoc-argument-closing-parentheses'
 
+Layout/LineLength:
+  Description: 'Checks that line length does not exceed the configured limit.'
+  AutoCorrect: true # this is false by default
+  Exclude:
+    - docs/Gemfile
+    - Gemfile
 
 # Layout/MultilineArrayLineBreaks:
 #   Description: >-
@@ -155,10 +161,18 @@ Lint/StructNewOverride:
 
 #################### Metrics ###############################
 
+Metrics/AbcSize:
+  Description: >-
+                 A calculated magnitude based on number of assignments,
+                 branches, and conditions.
+  Enabled: false
+
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
   Exclude:
+    - 'db/seeds.rb'
+    - 'Guardfile'
     - 'spec/**/*'
 
 Metrics/ClassLength:
@@ -313,6 +327,12 @@ Style/IfUnlessModifier:
 #   StyleGuide: '#single-line-blocks'
 #   Enabled: false
 
+Style/ClassAndModuleChildren:
+  Description: 'Checks style of children classes and modules.'
+  StyleGuide: '#namespace-definition'
+  Enabled: true
+  SafeAutoCorrect: true
+
 # Style/OptionHash:
 #   Description: "Don't use option hashes when you can use keyword arguments."
 #   Enabled: false
@@ -440,3 +460,9 @@ RSpec/ExampleLength:
   Enabled: true
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
+
+RSpec/MultipleExpectations:
+  Description: Checks if examples contain too many `expect` calls.
+  Enabled: true
+  Max: 8
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleExpectations

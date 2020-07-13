@@ -12,7 +12,8 @@ module ValidRequest
     if request.referer.present?
       request.referer.start_with?(URL.url)
     else
-      raise ::ActionController::InvalidAuthenticityToken, ::ApplicationController::NULL_ORIGIN_MESSAGE if request.origin == "null"
+      null_origin = request.origin == "null"
+      raise ::ActionController::InvalidAuthenticityToken, ::ApplicationController::NULL_ORIGIN_MESSAGE if null_origin
 
       request.origin.nil? || request.origin.gsub("https", "http") == request.base_url.gsub("https", "http")
     end

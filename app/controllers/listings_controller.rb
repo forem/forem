@@ -13,7 +13,8 @@ class ListingsController < ApplicationController
 
   DASHBOARD_JSON_OPTIONS = {
     only: %i[
-      title tag_list created_at expires_at bumped_at updated_at category id user_id slug organization_id location published
+      title tag_list created_at expires_at bumped_at updated_at category id
+      user_id slug organization_id location published
     ],
     include: {
       author: { only: %i[username name], methods: %i[username profile_image_90] }

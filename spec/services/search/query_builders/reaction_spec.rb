@@ -54,7 +54,8 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
         params = { search_fields: "ruby", tag_names: "cfp" }
         filter = described_class.new(params: params)
         expected_query = [{
-          "simple_query_string" => { "query" => "ruby", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true, "minimum_should_match" => 2 }
+          "simple_query_string" => { "query" => "ruby", "fields" => query_fields, "lenient" => true,
+                                     "analyze_wildcard" => true, "minimum_should_match" => 2 }
         }]
         expected_filters = [
           { "terms" => { "reactable.tags.name" => ["cfp"] } },
@@ -70,7 +71,8 @@ RSpec.describe Search::QueryBuilders::Reaction, type: :service do
       filter = described_class.new(params: params)
       expected_query = [{
         "simple_query_string" => {
-          "query" => "cfp", "fields" => query_fields, "lenient" => true, "analyze_wildcard" => true, "minimum_should_match" => 2
+          "query" => "cfp", "fields" => query_fields, "lenient" => true,
+          "analyze_wildcard" => true, "minimum_should_match" => 2
         }
       }]
       expect(search_bool_clause(filter)["must"]).to match_array(expected_query)

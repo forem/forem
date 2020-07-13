@@ -8,7 +8,6 @@ RSpec.describe Follow, type: :model do
     subject { user.follow(user_2) }
 
     it { is_expected.to validate_inclusion_of(:subscription_status).in_array(%w[all_articles none]) }
-    it { is_expected.to validate_uniqueness_of(:followable_id).scoped_to(%i[followable_type follower_id follower_type]) }
   end
 
   it "follows user" do

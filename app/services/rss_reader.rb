@@ -39,26 +39,26 @@ class RssReader
       article = make_from_rss_item(item, user, feed)
       articles.append(article)
     rescue StandardError => e
-      log_error(
-        "RssReaderError: occurred while creating article #{item.url}",
+      report_error(
+        e,
         rss_reader_info: {
-          user: user.username,
+          username: user.username,
           feed_url: user.feed_url,
           item_count: get_item_count_error(feed),
-          error: e
+          error: "RssReaderError: occurred while creating article #{item.url}"
         },
       )
     end
 
     articles
   rescue StandardError => e
-    log_error(
-      "RssReaderError: occurred while fetching feed",
+    report_error(
+      e,
       rss_reader_info: {
-        user: user.username,
+        username: user.username,
         feed_url: user.feed_url,
         item_count: get_item_count_error(feed),
-        error: e
+        error_message: "RssReaderError: occurred while fetching feed"
       },
     )
     []
@@ -121,7 +121,8 @@ class RssReader
     relation.where(title: title).or(relation.where(feed_source_url: feed_source_url)).exists?
   end
 
-  def log_error(error_msg, metadata)
-    Rails.logger.error(error_msg, metadata)
+  def report_error(error, metadata)
+    Honeybadger.context(metadata)
+    Honeybadger.notify(error)
   end
 end
