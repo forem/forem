@@ -12,10 +12,12 @@ describe('<ModSection />', () => {
   });
 
   it('should render if the membership role is a moderator', () => {
-    const { getByTestId } = render(<ModSection currentMembershipRole="mod" />);
+    const { queryByTestId } = render(
+      <ModSection currentMembershipRole="mod" />,
+    );
 
     // the <InviteForm /> and <SettingsForm /> have their own tests.
-    getByTestId('invite-form');
-    getByTestId('settings-form');
+    expect(queryByTestId('invite-form')).toBeDefined();
+    expect(queryByTestId('settings-form')).toBeDefined();
   });
 });

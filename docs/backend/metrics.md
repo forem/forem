@@ -1,5 +1,5 @@
 ---
-title: Tracking Metrics
+title: Metrics
 ---
 
 ## Time series data

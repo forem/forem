@@ -3,12 +3,15 @@ class ApplicationRecord < ActiveRecord::Base
 
   include Purgeable
 
+  # see <https://www.postgresql.org/docs/11/catalog-pg-class.html> for details
+  # on the `pg_class` table
   QUERY_ESTIMATED_COUNT = <<~SQL.squish.freeze
     SELECT (
       (reltuples / GREATEST(relpages, 1)) *
       (pg_relation_size(?) / (GREATEST(current_setting('block_size')::integer, 1)))
     )::bigint AS count
-    FROM pg_class WHERE relname = ?;
+    FROM pg_class
+    WHERE relname = ? AND relkind = 'r';
   SQL
 
   # Computes an estimated count of the number of rows using stats collected by VACUUM

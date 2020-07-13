@@ -256,12 +256,6 @@ var instantClick
       }
       display(a.href);
       e.preventDefault();
-      if (window.ga && ga.create) {
-        if (a.hasAttribute("data-featured-article")){
-          var data = a.dataset.featuredArticle;
-          ga('send', 'event', 'click', 'featured-feed-click', data, null);
-        }
-      }
     }
     catch(err){
       console.log(err);
@@ -403,7 +397,15 @@ var instantClick
         parentNode = script.parentNode
         nextSibling = script.nextSibling
         parentNode.removeChild(script)
-        parentNode.insertBefore(copy, nextSibling)
+        try {
+          parentNode.insertBefore(copy, nextSibling)
+        } catch(err) {
+          Honeybadger.notify(err, {
+            component: 'instantClick',
+            params: { copy: copy, nextSibling: nextSibling }
+          })
+          throw(err)
+        }
       }
     }
   }
@@ -681,7 +683,16 @@ var instantClick
   Honeybadger.configure({
     apiKey: "<%= ApplicationConfig['HONEYBADGER_JS_API_KEY'] %>",
     environment: "<%= Rails.env %>",
-    revision: "<%= ApplicationConfig['HEROKU_SLUG_COMMIT'] %>"
+    revision: "<%= ApplicationConfig['HEROKU_SLUG_COMMIT'] %>",
+    ignorePatterns: [/ResizeObserver/i, /MetaMask detected another web3/i],
+  });
+
+// INITIALIZE AHOY TRACKING
+// Setting cookies to false matches what we do in ahoy's initializer.
+// Setting trackVisits to false prevents ahoy from creating a visit on the server-side.
+  ahoy.configure({
+    cookies: false,
+    trackVisits: false
   });
 
 // Start BaseApp for Page

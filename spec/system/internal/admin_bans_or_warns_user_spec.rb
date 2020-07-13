@@ -38,11 +38,6 @@ RSpec.describe "Admin bans user", type: :system do
     expect(page).to have_content("User has been updated")
   end
 
-  # TODO: Uncomment this spec when we decide to use percy again
-  xit "renders the page", js: true, percy: true do
-    Percy.snapshot(page, name: "Admin: /internal/users/:user_id/edit")
-  end
-
   it "checks that the user is warned, has a note, and privileges are removed" do
     user.add_role :trusted
     add_tag_moderator_role

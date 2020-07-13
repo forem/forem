@@ -69,6 +69,12 @@ Layout/EmptyLinesAroundAttributeAccessor:
 #   Enabled: false
 #   StyleGuide: '#heredoc-argument-closing-parentheses'
 
+Layout/LineLength:
+  Description: 'Checks that line length does not exceed the configured limit.'
+  AutoCorrect: true # this is false by default
+  Exclude:
+    - docs/Gemfile
+    - Gemfile
 
 # Layout/MultilineArrayLineBreaks:
 #   Description: >-
@@ -122,6 +128,10 @@ Lint/AmbiguousBlockAssociation:
   Exclude:
     - "spec/**/*"
 
+Lint/ConstantResolution:
+  Description: 'Check that constants are fully qualified with `::`.'
+  Enabled: false
+
 Lint/DeprecatedOpenSSLConstant:
   Description: "Don't use algorithm constants for `OpenSSL::Cipher` and `OpenSSL::Digest`."
   Enabled: true
@@ -151,10 +161,18 @@ Lint/StructNewOverride:
 
 #################### Metrics ###############################
 
+Metrics/AbcSize:
+  Description: >-
+                 A calculated magnitude based on number of assignments,
+                 branches, and conditions.
+  Enabled: false
+
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
   Enabled: true
   Exclude:
+    - 'db/seeds.rb'
+    - 'Guardfile'
     - 'spec/**/*'
 
 Metrics/ClassLength:
@@ -309,6 +327,12 @@ Style/IfUnlessModifier:
 #   StyleGuide: '#single-line-blocks'
 #   Enabled: false
 
+Style/ClassAndModuleChildren:
+  Description: 'Checks style of children classes and modules.'
+  StyleGuide: '#namespace-definition'
+  Enabled: true
+  SafeAutoCorrect: true
+
 # Style/OptionHash:
 #   Description: "Don't use option hashes when you can use keyword arguments."
 #   Enabled: false
@@ -318,10 +342,12 @@ Style/Next:
   StyleGuide: '#no-nested-conditionals'
   Enabled: false
 
-Style/RegexpLiteral:
-  Description: 'Use / or %r around regular expressions.'
-  StyleGuide: '#percent-r'
-  Enabled: false
+Style/RedundantFetchBlock:
+  Description: >-
+    Use `fetch(key, value)` instead of `fetch(key) { value }`
+    when value has Numeric, Rational, Complex, Symbol or String type, `false`, `true`, `nil` or is a constant.
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#hashfetch-with-argument-vs-hashfetch--block-code'
+  Enabled: true
 
 Style/RedundantRegexpCharacterClass:
   Description: 'Checks for unnecessary single-element Regexp character classes.'
@@ -330,6 +356,11 @@ Style/RedundantRegexpCharacterClass:
 Style/RedundantRegexpEscape:
   Description: 'Checks for redundant escapes in Regexps.'
   Enabled: true
+
+Style/RegexpLiteral:
+  Description: 'Use / or %r around regular expressions.'
+  StyleGuide: '#percent-r'
+  Enabled: false
 
 Style/ReturnNil:
   Description: 'Use return instead of return nil.'
@@ -429,3 +460,9 @@ RSpec/ExampleLength:
   Enabled: true
   Max: 15
   StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/ExampleLength
+
+RSpec/MultipleExpectations:
+  Description: Checks if examples contain too many `expect` calls.
+  Enabled: true
+  Max: 8
+  StyleGuide: https://www.rubydoc.info/gems/rubocop-rspec/RuboCop/Cop/RSpec/MultipleExpectations

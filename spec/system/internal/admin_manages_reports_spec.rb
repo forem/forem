@@ -14,11 +14,6 @@ RSpec.describe "Admin manages reports", type: :system do
     visit internal_feedback_messages_path
   end
 
-  # TODO: Uncomment this spec when we decide to use percy again
-  xit "renders the page", js: true, percy: true do
-    Percy.snapshot(page, name: "Admin: /internal/feedback_messages")
-  end
-
   it "loads the view" do
     expect(page).to have_content("Feedback Messages")
     expect(page).to have_content("Suspicious Activity")
@@ -27,20 +22,16 @@ RSpec.describe "Admin manages reports", type: :system do
   context "when searching for reports" do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
-    let!(:feedback_message) { create(:feedback_message, :abuse_report, reporter_id: user.id, reported_url: "zzzzzzz999") }
+    let!(:feedback_message) do
+      create(:feedback_message, :abuse_report, reporter_id: user.id, reported_url: "zzzzzzz999")
+    end
     let!(:feedback_message2) { create(:feedback_message, :abuse_report, reporter_id: user.id, status: "Invalid") }
-    let!(:feedback_message3) { create(:feedback_message, :abuse_report, reporter_id: user2.id, reported_url: "https://obscure-example-1984.net") }
+    let!(:feedback_message3) do
+      create(:feedback_message, :abuse_report, reporter_id: user2.id, reported_url: "https://obscure-example-1984.net")
+    end
 
     before do
       clear_search_boxes
-    end
-
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page when searching reports", js: true, percy: true do
-      fill_in "q_reporter_username_cont", with: user.username.to_s
-      click_on "Search"
-
-      Percy.snapshot(page, name: "Admin: /internal/feedback_messages search")
     end
 
     it "searches reports" do
@@ -55,14 +46,6 @@ RSpec.describe "Admin manages reports", type: :system do
       fill_in "q_reported_url_cont", with: feedback_message3.reported_url.to_s
       click_on "Search"
       expect(page).to have_css("#edit_feedback_message_#{feedback_message3.id}")
-    end
-
-    # TODO: Uncomment this spec when we decide to use percy again
-    xit "renders the page when filtering", js: true, percy: true do
-      select "Invalid", from: "q[status_eq]"
-      click_on "Search"
-
-      Percy.snapshot(page, name: "Admin: /internal/feedback_messages filter")
     end
 
     it "filters by reports by status" do

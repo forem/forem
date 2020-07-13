@@ -7,9 +7,3 @@ Flipper.configure do |config|
     Flipper.new(adapter)
   end
 end
-
-Flipper::UI.configure do |config|
-  # Provide guidance on format for user ids
-  config.actors.title = "Actor (ex: User:123)"
-  config.actors.description = "ex: User:123"
-end

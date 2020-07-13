@@ -24,18 +24,8 @@
       text-decoration: underline; //todo: default for all in-content links
     }
 
-    p,
-    div.highlight {
+    p {
       margin: var(--su-1) auto;
-    }
-
-    .highlight {
-      display: grid;
-      overflow: auto;
-
-      code {
-        overflow: auto;
-      }
     }
 
     * {
@@ -45,6 +35,12 @@
     div {
       width: auto;
       object-fit: contain;
+    }
+
+    pre:not(.highlight),
+    div.highlight {
+      margin: var(--su-1) auto;
+      font-size: 90%; // little adjustment for feed comments since default monospace font looks really tiny there.
     }
   }
 

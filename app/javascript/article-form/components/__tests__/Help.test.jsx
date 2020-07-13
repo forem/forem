@@ -1,20 +1,11 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { Help } from '../Help';
 
 describe('<Help />', () => {
-  it('does not render help if we are in preview mode', () => {
-    const { queryByTestId } = render(<Help
-      previewShowing
-      helpFor={null}
-      helpPosition={null}
-      version="v1"
-    />);
-    expect(queryByTestId('article-form__help-section')).toBeNull();
-  });
-
-  it('shows some help in edit mode', () => {
-    const { getByTestId } = render(
+  it('should have no a11y violations', async () => {
+    const { container } = render(
       <Help
         previewShowing={false}
         helpFor={null}
@@ -22,7 +13,43 @@ describe('<Help />', () => {
         version="v1"
       />,
     );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
+  it('does not render help if we are in preview mode', () => {
+    const { queryByTestId } = render(
+      <Help previewShowing helpFor={null} helpPosition={null} version="v1" />,
+    );
+    expect(queryByTestId('article-form__help-section')).toBeNull();
+  });
+
+  it('shows help for the given section when in edit mode', () => {
+    const { getByTestId, getByText } = render(
+      <Help
+        previewShowing={false}
+        helpFor="article-form-title"
+        helpPosition={null}
+        version="v1"
+      />,
+    );
+    const titleHelp = getByTestId('title-help');
+
     getByTestId('article-form__help-section');
+    getByText(/writing a great post title/i);
+
+    expect(
+      titleHelp.textContent.includes(
+        'Think of your post title as a super short (but compelling!) description — like an overview of the actual post in one short sentence.',
+      ),
+    ).toEqual(true);
+
+    expect(
+      titleHelp.textContent.includes(
+        'Use keywords where appropriate to help ensure people can find your post by search.',
+      ),
+    ).toEqual(true);
   });
 
   it('shows the correct help for v1', () => {
@@ -43,7 +70,6 @@ describe('<Help />', () => {
   });
 
   describe('with the appropriate v2 help sections', () => {
-
     it('shows the article-form-title', () => {
       const { queryByTestId } = render(
         <Help
@@ -62,7 +88,7 @@ describe('<Help />', () => {
     });
 
     it('shows the article_body_markdown', () => {
-      const {queryByTestId} = render(
+      const { queryByTestId } = render(
         <Help
           previewShowing={false}
           helpFor="article_body_markdown"
@@ -94,9 +120,7 @@ describe('<Help />', () => {
       expect(queryByTestId('title-help')).toBeNull();
       queryByTestId('basic-tag-input-help');
     });
-
   });
 
   // TODO: test the modals
-
 });

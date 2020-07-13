@@ -8,28 +8,22 @@ RSpec.describe "User visits articles by tag", type: :system do
   let(:author) { create(:user, profile_image: nil) }
   let!(:article) { create(:article, tags: "javascript, IoT", user: author, published_at: 2.days.ago, score: 5) }
   let!(:article2) { create(:article, tags: "functional", user: author, published_at: Time.current, score: 5) }
-  let!(:article3) { create(:article, tags: "functional, javascript", user: author, published_at: 2.weeks.ago, score: 5) }
+  let!(:article3) do
+    create(:article, tags: "functional, javascript", user: author, published_at: 2.weeks.ago, score: 5)
+  end
 
   context "when user hasn't logged in" do
     context "when 2 articles" do
-      before { visit "/t/javascript" }
+      before do
+        visit "/t/javascript"
+      end
 
-      it "shows the header", js: true, percy: true, stub_elasticsearch: true do
-        Percy.snapshot(page, name: "Tags: logged out user")
-
+      it "shows the header", js: true, stub_elasticsearch: true do
         within("h1") { expect(page).to have_text("javascript") }
       end
 
       it "shows the follow button", js: true, stub_elasticsearch: true do
         within("h1") { expect(page).to have_button("Follow") }
-      end
-
-      it "shows time buttons" do
-        within("#on-page-nav-controls") do
-          expect(page).to have_link("WEEK", href: "/t/javascript/top/week")
-          expect(page).to have_link("INFINITY", href: "/t/javascript/top/infinity")
-          expect(page).to have_link("LATEST", href: "/t/javascript/latest")
-        end
       end
 
       it "shows correct articles count" do
@@ -40,16 +34,6 @@ RSpec.describe "User visits articles by tag", type: :system do
         within("#articles-list") do
           expect(page).to have_text(article.title)
           expect(page).to have_text(article3.title)
-          expect(page).not_to have_text(article2.title)
-        end
-      end
-
-      it "when user clicks 'week'", js: true, stub_elasticsearch: true do
-        click_on "WEEK"
-
-        within("#articles-list") do
-          expect(page).to have_text(article.title)
-          expect(page).not_to have_text(article3.title)
           expect(page).not_to have_text(article2.title)
         end
       end
@@ -73,10 +57,17 @@ RSpec.describe "User visits articles by tag", type: :system do
     end
 
     it "shows the following button", js: true, stub_elasticsearch: true do
-      # TODO: Add Percy snapshot?
       wait_for_javascript
 
       within("h1") { expect(page).to have_button("Following") }
+    end
+
+    it "shows time buttons" do
+      within("#on-page-nav-controls") do
+        expect(page).to have_link("Week", href: "/t/functional/top/week")
+        expect(page).to have_link("Infinity", href: "/t/functional/top/infinity")
+        expect(page).to have_link("Latest", href: "/t/functional/latest")
+      end
     end
   end
 end

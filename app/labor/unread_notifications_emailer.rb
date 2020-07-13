@@ -30,7 +30,7 @@ class UnreadNotificationsEmailer
   end
 
   def send_email
-    NotifyMailer.unread_notifications_email(user).deliver
+    NotifyMailer.with(user: user).unread_notifications_email.deliver_now
   end
 
   private

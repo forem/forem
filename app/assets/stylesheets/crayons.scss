@@ -3,6 +3,7 @@
 @import 'config/generator';
 
 @import 'base/reset';
+@import 'base/helpers';
 @import 'base/icons';
 @import 'base/layout';
 
@@ -27,3 +28,4 @@
 
 @import 'views/article';
 @import 'views/article-form';
+@import 'views/dashboard';

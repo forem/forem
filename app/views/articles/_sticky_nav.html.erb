@@ -1,47 +1,6 @@
 <% @actor = @article.organization || @article.user %>
-<style>
-  .primary-sticky-nav-author, .primary-sticky-nav-author-element {
-    border: 1px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
-    box-shadow: 1px 1px 0px <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
-  }
-
-  .primary-sticky-nav-author button {
-    background-color: <%= user_colors(@actor)[:bg] %> !important;
-    color: <%= user_colors(@actor)[:text] %> !important;
-  <% if user_colors(@actor)[:bg].downcase == "#ffffff" %>
-    border: 1px solid <%= user_colors(@actor)[:text] %> !important;
-  <% end %>
-  }
-
-  .primary-sticky-nav-author button a {
-    background-color: <%= user_colors(@actor)[:bg] %> !important;
-    color: <%= user_colors(@actor)[:text] %> !important;
-  <% if user_colors(@actor)[:bg].downcase == "#ffffff" %>
-    border: 1px solid <%= user_colors(@actor)[:text] %> !important;
-  <% end %>
-  }
-
-  .sticky-box-connector {
-    background: <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %> !important;
-  }
-
-  .primary-sticky-nav-org-cta-link {
-    background-color: <%= user_colors(@actor)[:text] %> !important;
-    color: <%= user_colors(@actor)[:bg] %> !important;
-  <% if user_colors(@actor)[:text].downcase == "#ffffff" %>
-    border: 2px solid <%= user_colors(@actor)[:bg] %> !important;
-  <% end %>
-  }
-</style>
-
-<style>
-  .crayons-card--branded {
-    border-top: 32px solid <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %>;
-  }
-</style>
-
-<div class="crayons-article-sticky grid gap-4" id="article-show-primary-sticky-nav">
-  <div class="crayons-card crayons-card--secondary crayons-card--branded p-4 pt-0 hidden l:grid gap-4">
+<div class="crayons-article-sticky grid gap-4 break-word" id="article-show-primary-sticky-nav">
+  <div class="crayons-card crayons-card--secondary branded-7 p-4 pt-0 hidden l:grid gap-4" style="border-top-color: <%= HexComparer.new([user_colors(@actor)[:bg], user_colors(@actor)[:text]]).brightness(0.88) %>;">
     <div class="-mt-4">
       <a href="<%= @actor.path %>" class="flex">
         <span class="<% if @actor.class.name == "User" %>crayons-avatar crayons-avatar--xl<% elsif @actor.class.name == "Organization" %>crayons-logo crayons-logo--xl<% end %>  mr-2 shrink-0">

@@ -68,7 +68,7 @@ describe('<CommentsList />', () => {
   });
 
   it('should render "See all comments" button when there are two top comments and more than two total', () => {
-    const { getByTestId } = render(
+    const { queryByTestId } = render(
       <CommentsList
         comments={[singleComment, singleComment]}
         articlePath=""
@@ -76,6 +76,6 @@ describe('<CommentsList />', () => {
       />,
     );
 
-    getByTestId('see-all-comments');
+    expect(queryByTestId('see-all-comments')).toBeDefined();
   });
 });

@@ -20,7 +20,6 @@ const SingleListing = ({
 
   return (
     <div
-      data-testid="single-listing"
       className={definedClass}
       id={`single-listing-${listing.id}`}
       data-testid={`single-listing-${listing.id}`}

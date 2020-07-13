@@ -40,7 +40,7 @@ RSpec.describe "/listings", type: :request do
 
     it "returns text/html and has status 200" do
       get "/listings"
-      expect(response.content_type).to eq("text/html")
+      expect(response.media_type).to eq("text/html")
       expect(response).to have_http_status(:ok)
     end
 

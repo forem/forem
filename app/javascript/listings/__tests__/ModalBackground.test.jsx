@@ -17,8 +17,9 @@ describe('<ModalBackground />', () => {
   });
 
   it('should render', () => {
-    const { getByTestId } = render(<ModalBackground {...defaultProps} />);
-    getByTestId('listings-modal-background');
+    const { queryByTestId } = render(<ModalBackground {...defaultProps} />);
+
+    expect(queryByTestId('listings-modal-background')).toBeDefined();
   });
 
   it('should call the onClick handler', () => {

@@ -1,8 +1,10 @@
 import { h } from 'preact';
 import { render } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { Form } from '../Form';
 
-let bodyMarkdown; let mainImage;
+let bodyMarkdown;
+let mainImage;
 
 describe('<Form />', () => {
   describe('v1', () => {
@@ -13,8 +15,30 @@ describe('<Form />', () => {
         'https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/3/13d3b32a-d381-4549-b95e-ec665768ce8f.png';
     });
 
-    it('displays the correct elements', () => {
-      const { queryByTestId } = render(
+    it('should have no a11y violations', async () => {
+      const { container } = render(
+        <Form
+          titleDefaultValue="Test Title v1"
+          titleOnChange={null}
+          tagsDefaultValue="javascript, career"
+          tagsOnInput={null}
+          bodyDefaultValue={bodyMarkdown}
+          bodyOnChange={null}
+          bodyHasFocus={false}
+          version="v1"
+          mainImage={mainImage}
+          onMainImageUrlChange={null}
+          errors={null}
+          switchHelpContext={null}
+        />,
+      );
+      const results = await axe(container);
+
+      expect(results).toHaveNoViolations();
+    });
+
+    it('renders the v1 form', () => {
+      const { queryByTestId, queryByLabelText, queryByAltText } = render(
         <Form
           titleDefaultValue="Test Title v1"
           titleOnChange={null}
@@ -31,10 +55,11 @@ describe('<Form />', () => {
         />,
       );
 
-      expect(queryByTestId('article-form__cover')).toBeNull();
-      expect(queryByTestId('article-form__title')).toBeNull();
-      expect(queryByTestId('article-form__tagsfield')).toBeNull();
       queryByTestId('article-form__body');
+
+      expect(queryByAltText(/post cover/i)).toBeNull();
+      expect(queryByTestId('article-form__title')).toBeNull();
+      expect(queryByLabelText('Post Tags')).toBeNull();
     });
   });
 
@@ -46,8 +71,30 @@ describe('<Form />', () => {
         'https://dev-to-uploads.s3.amazonaws.com/uploads/badge/badge_image/12/8_week_streak-Shadow.png';
     });
 
-    it('displays the correct elements', () => {
-      const { queryByTestId } = render(
+    it('should have no a11y violations', async () => {
+      const { container } = render(
+        <Form
+          titleDefaultValue="Test Title v2"
+          titleOnChange={null}
+          tagsDefaultValue="javascript, career"
+          tagsOnInput={null}
+          bodyDefaultValue={bodyMarkdown}
+          bodyOnChange={null}
+          bodyHasFocus={false}
+          version="v2"
+          mainImage={mainImage}
+          onMainImageUrlChange={null}
+          errors={null}
+          switchHelpContext={null}
+        />,
+      );
+      const results = await axe(container);
+
+      expect(results).toHaveNoViolations();
+    });
+
+    it('renders the v2 form', () => {
+      const { queryByTestId, getByLabelText, getByAltText } = render(
         <Form
           titleDefaultValue="Test Title v2"
           titleOnChange={null}
@@ -64,10 +111,18 @@ describe('<Form />', () => {
         />,
       );
 
-      queryByTestId('article-form__cover');
+      getByAltText(/post cover/i);
       queryByTestId('article-form__title');
-      queryByTestId('article-form__tagsfield');
+      getByLabelText('Post Tags');
       queryByTestId('article-form__body');
+
+      const coverImageInput = getByLabelText('Change');
+
+      // Allow any image format
+      expect(coverImageInput.getAttribute('accept')).toEqual('image/*');
+
+      // Ensure max file size
+      expect(Number(coverImageInput.dataset.maxFileSizeMb)).toEqual(25);
     });
   });
 

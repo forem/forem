@@ -11,7 +11,7 @@ RSpec.describe "Followers Dashboard", type: :system, js: true do
   end
 
   context "when /dashboard/user_followers is visited" do
-    it "displays correct following buttons" do
+    xit "displays correct following buttons" do
       following_user.follow(user)
       followed_user.follow(user)
       user.follow(followed_user)

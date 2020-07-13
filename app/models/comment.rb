@@ -123,7 +123,7 @@ class Comment < ApplicationRecord
   end
 
   def safe_processed_html
-    processed_html.html_safe
+    processed_html.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def root_exists?
@@ -152,7 +152,7 @@ class Comment < ApplicationRecord
 
   def evaluate_markdown
     fixed_body_markdown = MarkdownFixer.fix_for_comment(body_markdown)
-    parsed_markdown = MarkdownParser.new(fixed_body_markdown)
+    parsed_markdown = MarkdownParser.new(fixed_body_markdown, source: self, user: user)
     self.processed_html = parsed_markdown.finalize(link_attributes: { rel: "nofollow" })
     wrap_timestamps_if_video_present! if commentable
     shorten_urls!
@@ -165,7 +165,9 @@ class Comment < ApplicationRecord
   def wrap_timestamps_if_video_present!
     return unless commentable_type != "PodcastEpisode" && commentable.video.present?
 
-    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) { |string| "<a href='#{commentable.path}?t=#{string}'>#{string}</a>" }
+    self.processed_html = processed_html.gsub(/(([0-9]:)?)(([0-5][0-9]|[0-9])?):[0-5][0-9]/) do |string|
+      "<a href='#{commentable.path}?t=#{string}'>#{string}</a>"
+    end
   end
 
   def shorten_urls!
@@ -175,7 +177,7 @@ class Comment < ApplicationRecord
         anchor.content = strip_url(anchor.content) unless anchor.to_s.include?("<img")
       end
     end
-    self.processed_html = doc.to_html.html_safe
+    self.processed_html = doc.to_html.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def calculate_score

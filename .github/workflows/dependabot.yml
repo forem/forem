@@ -21,6 +21,7 @@ jobs:
           ruby-version: 2.7.1
       - name: Installing additional dependencies
         run: |
+          sudo apt-get update
           sudo apt-get install postgresql-client libpq-dev libcurl4-openssl-dev
       - name: Bundle install
         run: |

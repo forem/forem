@@ -1,63 +1,26 @@
-<% title "Moderate" %>
+<% title "Mod Center" %>
+
+<%= javascript_packs_with_chunks_tag "modCenter", defer: true %>
 
 <div id="moderation-page"></div>
+
 <% if current_user&.trusted %>
-  <% if @tag %>
-  <style>
-    .mod-index-hero, .mod-index-header-link--active {
-      background: <%= @tag.bg_color_hex %> !important;
-      color: <%= @tag.text_color_hex %> !important;
-    }
-    .mod-index-hero .mod-index-hero-data-pod {
-      border-color: <%= @tag.text_color_hex %> !important;
-    }
-  </style>
-  <% end %>
-  <% cache("mod-data-header-#{params[:tag]}", expires_in: 6.hours) do %>
-    <div class="mod-index-hero">
-      <h1><%= "#" + @tag.name.titleize if @tag %> Moderators</h1>
-      <h2>We build the <%= community_qualified_name %></h2>
+  <div class="crayons-layout crayons-layout--2-cols" id="mod-center">
+    <%= render "moderations/mod_sidebar_left" %>
+    <div class="mod-index-container articles-list crayons-layout__content">
+      <header class="mod-index-header">
+        <span class="tag-view fs-3xl fw-bold lh-base">
+          <%= @tag ? "##{@tag.name}" : "All topics" %>
+        </span>
+      </header>
+      <header class="mod-index-list-header lh-tight">
+        <h2 class="fs-xs fw-medium">Post</h2>
+        <h2 class="fs-xs fw-medium">Author</h2>
+        <h2 class="fs-xs fw-medium">Date</h2>
+      </header>
+      <main class="mod-index-list" id="mod-index-list" data-articles="<%= @articles %>">
+      </main>
     </div>
-  <% end %>
-  <div class="mod-index-header">
-    <div class="mod-index-header-top-filters">
-      <a href="<%= request.path %>" class="<%= "mod-index-top-filter-link--active" if params[:state].blank? %>">Base Feed</a>
-      <a href="<%= request.path %>?state=new-authors" class="<%= "mod-index-top-filter-link--active" if params[:state] == "new-authors" %>">New Authors Only</a>
-    </div>
-    <% if current_user.moderator_for_tags.any? %>
-      <a href="/mod<%= "?state=new-authors" if params[:state] == "new-authors" %>" class="mod-index-header-link mod-index-header-link--<%= "active" if params[:tag].blank? %>">Site Wide</a>
-      <% current_user.moderator_for_tags.each do |tag| %>
-        <a href="/mod/<%= tag %><%= "?state=new-authors" if params[:state] == "new-authors" %>" class="mod-index-header-link mod-index-header-link--<%= "active" if params[:tag] == tag %>">#<%= tag %></a>
-      <% end %>
-    <% end %>
-    </div>
-  <div class="mod-index-list">
-    <% @articles.each_with_index do |article, i| %>
-      <div class="mod-index-row">
-        <a href="<%= article.path %>" class="mod-index-article-title"><%= article.title %></a>
-        <div class="mod-index-article-tagslist">
-          <% article.cached_tag_list_array.each do |tag| %>
-            <% tag_hash = tag_colors(tag) %>
-            <a class="mod-index-article-tag" href="/t/<%= tag %>" style="background-color:<%= tag_hash[:background] %>;color:<%= tag_hash[:color] %>">#<%= tag %></a>
-          <% end %>
-        </div>
-        <div class="mod-index-actions-and-details">
-          <button class="quick-mod-button cta" data-path="<%= article.path %>">Quick Mod</button>
-          <a href="/<%= article.cached_user.username %>"><img src="<%= ProfileImage.new(article.cached_user).get(width: 90) %>" /><%= article.cached_user.name %></a>
-          ・ <%= article.readable_publish_date %>
-          <% if article.nth_published_by_author > 0 && article.nth_published_by_author < 4 %>
-            ・ 👋 <strong><%= article.nth_published_by_author.ordinalize %> post by this user</strong>
-          <% end %>
-        </div>
-        <div class="mod-index-quick-mod" id="quick-mod-<%= i %>"></div>
-      </div>
-    <% end %>
-  </div>
-  <div class="mod-index-footer">
-    <a href="/community-moderation" class="mod-link">Community Moderation Guide</a>
-    <% if current_user.moderator_for_tags.any? %>
-      ・ <a href="<%= tag_moderation_url %>" class="mod-link">Tag Moderation Guide</a>
-    <% end %>
   </div>
 <% else %>
   <div class="container" style="margin-top: 90px;">
@@ -66,24 +29,8 @@
       <p>We periodically award some <%= community_name %> members with heightened privileges to help moderate the community.</p>
       <p>Email <%= email_link %> if you'd like to be considered right away.</p>
       <% unless user_signed_in? %>
-        <p><em>P.S. You are not currently signed in.</em></p>
+      <p><em>P.S. You are not currently signed in.</em></p>
       <% end %>
     </div>
   </div>
 <% end %>
-
-<script>
-  var els = document.getElementsByClassName('quick-mod-button');
-  for (let i = 0; i < els.length; i += 1) {
-    els[i].onclick = function(e) {
-      let path = e.target.dataset.path
-      let el = document.getElementById('quick-mod-' + i)
-      // if iframe is opened/loaded, clear the innerHTML
-      if (el.innerHTML.length > 10) {
-        el.innerHTML = ''
-      } else {
-        el.innerHTML = '<div class="mod-index-row-iframes"><iframe id="quick-mod-article" src="' + path + '"></iframe><iframe class="actions-panel" src="' + path + '/actions_panel"></iframe></div>'
-      }
-    }
-  }
-</script>

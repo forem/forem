@@ -1,9 +1,12 @@
 import { h } from 'preact';
-
 import '../../storybook-utilities/designSystem.scss';
+import notes from './indicators.md';
 
 export default {
   title: '3_Components/Indicators/HTML',
+  parameters: {
+    notes,
+  },
 };
 
 export const Default = () => <span className="crayons-indicator">Label</span>;

@@ -83,7 +83,8 @@ RSpec.describe Listing, type: :model do
 
     it "on destroy enqueues job to delete listing from elasticsearch" do
       listing.save
-      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker, args: [described_class::SEARCH_CLASS.to_s, listing.id]) do
+      sidekiq_assert_enqueued_with(job: Search::RemoveFromIndexWorker,
+                                   args: [described_class::SEARCH_CLASS.to_s, listing.id]) do
         listing.destroy
       end
     end

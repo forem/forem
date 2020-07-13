@@ -1,13 +1,13 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import linkState from 'linkstate';
+import Tags from '../shared/components/tags';
+import { OrganizationPicker } from '../organization/OrganizationPicker';
 import Title from './components/Title';
 import BodyMarkdown from './components/BodyMarkdown';
 import Categories from './components/Categories';
 import ContactViaConnect from './components/ContactViaConnect';
 import ExpireDate from './components/ExpireDate';
-import Tags from '../shared/components/tags';
-import { OrganizationPicker } from '../organization/OrganizationPicker';
 
 export default class ListingForm extends Component {
   constructor(props) {

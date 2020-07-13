@@ -16,7 +16,6 @@ RSpec.describe "StoriesIndex", type: :request do
       article = create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
@@ -29,7 +28,6 @@ RSpec.describe "StoriesIndex", type: :request do
       create(:article, featured: true)
 
       get "/"
-
       expect(response.body).to include("min read")
     end
 
@@ -106,6 +104,22 @@ RSpec.describe "StoriesIndex", type: :request do
       SiteConfig.meta_keywords = { default: "cool developers, civil engineers" }
       get "/"
       expect(response.body).to include("<meta name=\"keywords\" content=\"cool developers, civil engineers\">")
+    end
+
+    it "shows only one cover if basic feed style" do
+      create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
+
+      SiteConfig.feed_style = "basic"
+      get "/"
+      expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be 1
+    end
+
+    it "shows multiple cover images if rich feed style" do
+      create_list(:article, 3, featured: true, score: 20, main_image: "https://example.com/image.jpg")
+
+      SiteConfig.feed_style = "rich"
+      get "/"
+      expect(response.body.scan(/(?=class="crayons-story__cover__image)/).count).to be > 1
     end
 
     context "with campaign hero" do
@@ -315,6 +329,11 @@ RSpec.describe "StoriesIndex", type: :request do
         sign_in user
       end
 
+      it "shows tags to signed-in users" do
+        get "/t/#{tag.name}"
+        expect(response.body).to include("crayons-tabs__item crayons-tabs__item--current")
+      end
+
       it "has mod-action-button" do
         get "/t/#{tag.name}"
         expect(response.body).to include('<a class="cta mod-action-button"')
@@ -335,6 +354,12 @@ RSpec.describe "StoriesIndex", type: :request do
     context "without user signed in" do
       let(:tag) { create(:tag) }
 
+      it "shows sign-in notice to non-signed-in users" do
+        get "/t/#{tag.name}"
+        expect(response.body).not_to include("crayons-tabs__item crayons-tabs__item--current")
+        expect(response.body).to include("for the ability sort posts by")
+      end
+
       it "does not render pagination" do
         get "/t/#{tag.name}"
         expect(response.body).not_to include('<span class="olderposts-pagenumber">')
@@ -350,6 +375,18 @@ RSpec.describe "StoriesIndex", type: :request do
         create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
         get "/t/#{tag.name}/page/2"
         expect(response.body).not_to include('<div id="sidebar-wrapper-right"')
+      end
+
+      it "renders proper page title for page 1" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}/page/1"
+        expect(response.body).to include("<title>#{tag.name.capitalize} - ")
+      end
+
+      it "renders proper page title for page 2" do
+        create_list(:article, 20, user: user, featured: true, tags: [tag.name], score: 20)
+        get "/t/#{tag.name}/page/2"
+        expect(response.body).to include("<title>#{tag.name.capitalize} Page 2 - ")
       end
 
       it "does not include current page link" do
@@ -370,7 +407,9 @@ RSpec.describe "StoriesIndex", type: :request do
 
       it "renders proper canonical url for page 2" do
         get "/t/#{tag.name}/page/2"
-        expect(response.body).to include("<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />")
+
+        expected_tag = "<link rel=\"canonical\" href=\"http://localhost:3000/t/#{tag.name}/page/2\" />"
+        expect(response.body).to include(expected_tag)
       end
     end
   end

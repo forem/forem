@@ -26,26 +26,15 @@
   <meta name="twitter:card" content="summary_large_image">
 <% end %>
 
-<div class="home">
-  <div class="listings-container" id="listings-index-container"
-    data-category="<%= params[:category] %>" data-listings="<%= @listings_json %>"
-    data-allcategories="<%= categories_for_display.to_json %>"
-    <% if @displayed_listing %>
-      data-displayedlisting="<%= @displayed_listing_json %> "
-    <% end %>>
-
-    <div class="listing-filters">
-    <div class="listing-filters-categories">
-      <a href="<%= listings_path %>" class="<%= "selected" if params[:category].blank? %> data-no-instant=" true ">all</a>
-      <% categories_for_display.each do |cat| %>
-        <a href="<%= listing_category_path(category: cat[:slug]) %> " class="<%= "selected" if params[:category] == cat[:slug] %> data-no-instant="true"><%= cat[:name] %></a>
-      <% end %>
-      <a href="<%= new_listing_path %>" class='listing-create-link'>Create a Listing</a>
-      <% if @displayed_listing %>
-        <div class="listing-listings-modal-background" role='presentation'></div>
-      <% end %>
-    </div>
-  </div>
-</div>
+<main class="home">
+  <h1 class="visually-hidden-header">Listings</h1>
+  <section class="listings-container" id="listings-index-container"
+           data-category="<%= params[:category] %>" data-listings="<%= @listings_json %>"
+           data-allcategories="<%= categories_for_display.to_json %>"
+           <% if @displayed_listing %>
+           data-displayedlisting="<%= @displayed_listing_json %> "
+           <% end %>>
+  </section>
+</main>
 
 <%= javascript_packs_with_chunks_tag "listings", defer: true %>

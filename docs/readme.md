@@ -3,15 +3,12 @@ items:
   - technical-overview
   - installation
   - getting-started
+  - contributing
   - backend
   - frontend
   - internal
   - design
-  - deployment.md
   - tests
-  - contributing.md
-  - contributing_api.md
-  - contributing_forem.md
   - faqs.md
   - troubleshooting.md
   - licensing.md
@@ -68,7 +65,7 @@ for those changes to take effect.
 # Contributing to the docs
 
 If you're looking for more information on contributing, check out the
-[Contributing article][contributing].
+[Contributing guide][contributing].
 
 [installation]: /installation/
 [architecture]: /technical-overview/architecture/

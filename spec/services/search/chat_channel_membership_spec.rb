@@ -128,7 +128,8 @@ RSpec.describe Search::ChatChannelMembership, type: :service do
       chat_channel_membership_docs = described_class.search_documents(params: first_page_params)
       expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership1.id)
 
-      second_page_params = { page: 1, per_page: 1, sort_by: "channel_last_message_at", order: "dsc", user_id: [user.id] }
+      second_page_params = { page: 1, per_page: 1, sort_by: "channel_last_message_at", order: "dsc",
+                             user_id: [user.id] }
 
       chat_channel_membership_docs = described_class.search_documents(params: second_page_params)
       expect(chat_channel_membership_docs.first["id"]).to eq(chat_channel_membership2.id)

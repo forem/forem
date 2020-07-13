@@ -27,11 +27,9 @@ We use the following testing tools:
   for testing Preact components
 - [**SimpleCov**](https://github.com/colszowka/simplecov) for tracking overall
   test coverage on the backend
-- [**Percy**](https://percy.io/) for visual regression testing. Currently
-  inactive.
 
 We strive to provide tests for each pull request that adds new features or fixes
-a bug. Ideally, we test the functionality of the frontend and the backed.
+a bug. Ideally, we test the functionality of the frontend and the backend.
 
 If you'd like to help us improve our test coverage, we recommend checking out
 our total coverage and writing tests for selected files based on SimpleCov's
@@ -73,5 +71,5 @@ entire build to pass.
 
 Please note that you will need to have Elasticsearch installed and running for
 certain tests in our test suite. You can find instructions on how to install and
-run Elasticsearch specific your environment in the
+run Elasticsearch specific to your environment in the
 [Installation Guide](/installation).

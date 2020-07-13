@@ -8,7 +8,7 @@ import '../../assets/javascripts/lib/xss';
 import '../../assets/javascripts/utilities/timeAgo';
 import './storybook.scss';
 
-function addStylesheet(theme) {
+function addStylesheet(theme = '') {
   if (theme === '') {
     return; // default theme
   }
@@ -18,37 +18,52 @@ function addStylesheet(theme) {
 
   link.type = 'text/css';
   link.rel = 'stylesheet';
-  link.href = `themes/${event.target.value}.css`;
+  link.href = `themes/${theme}.css`;
   link.id = 'dev-theme';
 
   head.appendChild(link);
 }
 
-const themeSwitcher = (event) => {
-  const currentTheme = document.getElementById('dev-theme');
+function themeSwitcher(event) {
+  const themeNode = document.getElementById('dev-theme');
+  const theme = event.target.value;
 
-  if (currentTheme) {
-    currentTheme.parentElement.removeChild(currentTheme);
+  if (themeNode) {
+    themeNode.parentElement.removeChild(themeNode);
   }
 
-  addStylesheet(event.target.value);
-};
+  localStorage.setItem('storybook-crayons-theme', theme);
 
-const themeSwitcherDecorator = (storyFn) => (
-  <div>
-    <label style={{ position: 'absolute', top: 0, left: 0, margin: '1rem' }}>
-      Theme{' '}
-      <select onChange={themeSwitcher}>
-        <option value="">Default</option>
-        <option value="night">Night</option>
-        <option value="minimal">Minimal</option>
-        <option value="pink">Pink</option>
-        <option value="hacker">Hacker</option>
-      </select>
-    </label>
-    {storyFn()}
-  </div>
-);
+  addStylesheet(theme);
+}
+
+const THEMES = Object.freeze(['default', 'night', 'minimal', 'pink', 'hacker']);
+
+const themeSwitcherDecorator = (storyFn) => {
+  const lastThemeUsed = localStorage.getItem('storybook-crayons-theme') || '';
+
+  addStylesheet(lastThemeUsed);
+
+  return (
+    <div>
+      <label style={{ position: 'absolute', top: 0, left: 0, margin: '1rem' }}>
+        theme{' '}
+        <select onChange={themeSwitcher}>
+          {THEMES.map((theme) => (
+            <option
+              selected={lastThemeUsed === theme}
+              value={theme}
+              key={theme}
+            >
+              {theme}
+            </option>
+          ))}
+        </select>
+      </label>
+      {storyFn()}
+    </div>
+  );
+};
 
 addDecorator(themeSwitcherDecorator);
 addDecorator(withA11y);

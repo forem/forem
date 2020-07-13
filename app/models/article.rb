@@ -30,7 +30,12 @@ class Article < ApplicationRecord
 
   has_many :comments, as: :commentable, inverse_of: :commentable
   has_many :top_comments,
-           -> { where("comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE", 10).order("comments.score DESC") },
+           lambda {
+             where(
+               "comments.score > ? AND ancestry IS NULL and hidden_by_commentable_user is FALSE and deleted is FALSE",
+               10,
+             ).order("comments.score DESC")
+           },
            as: :commentable,
            inverse_of: :commentable,
            class_name: "Comment"
@@ -54,7 +59,6 @@ class Article < ApplicationRecord
   validate :validate_tag
   validate :validate_video
   validate :validate_collection_permission
-  validate :validate_liquid_tag_permissions
   validate :past_or_present_date
   validate :canonical_url_must_not_have_spaces
   validates :video_state, inclusion: { in: %w[PROGRESSING COMPLETED] }, allow_nil: true
@@ -79,7 +83,9 @@ class Article < ApplicationRecord
   after_save :bust_cache, :detect_human_language
   after_save :notify_slack_channel_about_publication
 
-  after_update_commit :update_notifications, if: proc { |article| article.notifications.any? && !article.saved_changes.empty? }
+  after_update_commit :update_notifications, if: proc { |article|
+                                                   article.notifications.any? && !article.saved_changes.empty?
+                                                 }
   after_commit :async_score_calc, :update_main_image_background_hex, :touch_collection, on: %i[create update]
   after_commit :index_to_elasticsearch, on: %i[create update]
   after_commit :sync_related_elasticsearch_docs, on: %i[create update]
@@ -168,9 +174,19 @@ class Article < ApplicationRecord
     order(column => dir.to_sym)
   }
 
-  scope :feed, -> { published.includes(:taggings).select(:id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list) }
+  scope :feed, lambda {
+                 published.includes(:taggings).
+                   select(
+                     :id, :published_at, :processed_html, :user_id, :organization_id, :title, :path, :cached_tag_list
+                   )
+               }
 
-  scope :with_video, -> { published.where.not(video: [nil, ""]).where.not(video_thumbnail_url: [nil, ""]).where("score > ?", -4) }
+  scope :with_video, lambda {
+                       published.
+                         where.not(video: [nil, ""]).
+                         where.not(video_thumbnail_url: [nil, ""]).
+                         where("score > ?", -4)
+                     }
 
   scope :eager_load_serialized_data, -> { includes(:user, :organization, :tags) }
 
@@ -196,8 +212,11 @@ class Article < ApplicationRecord
   end
 
   def self.seo_boostable(tag = nil, time_ago = 18.days.ago)
-    time_ago = 5.days.ago if time_ago == "latest" # Time ago sometimes returns this phrase instead of a date
-    time_ago = 75.days.ago if time_ago.nil? # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
+    # Time ago sometimes returns this phrase instead of a date
+    time_ago = 5.days.ago if time_ago == "latest"
+
+    # Time ago sometimes is given as nil and should then be the default. I know, sloppy.
+    time_ago = 75.days.ago if time_ago.nil?
 
     relation = Article.published.
       order(organic_page_views_past_month_count: :desc).
@@ -354,7 +373,9 @@ class Article < ApplicationRecord
   private
 
   def search_score
-    calculated_score = hotness_score.to_i + ((comments_count * 3).to_i + public_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
+    comments_score = (comments_count * 3).to_i
+    partial_score = (comments_score + public_reactions_count.to_i * 300 * user.reputation_modifier * score.to_i)
+    calculated_score = hotness_score.to_i + partial_score
     calculated_score.to_i
   end
 
@@ -381,7 +402,7 @@ class Article < ApplicationRecord
   def evaluate_markdown
     fixed_body_markdown = MarkdownFixer.fix_all(body_markdown || "")
     parsed = FrontMatterParser::Parser.new(:md).call(fixed_body_markdown)
-    parsed_markdown = MarkdownParser.new(parsed.content)
+    parsed_markdown = MarkdownParser.new(parsed.content, source: self, user: user)
     self.reading_time = parsed_markdown.calculate_reading_time
     self.processed_html = parsed_markdown.finalize
 
@@ -434,12 +455,6 @@ class Article < ApplicationRecord
     Rails.logger.error(e)
   end
 
-  def liquid_tags_used
-    MarkdownParser.new("#{body_markdown}#{comments_blob}").tags_used
-  rescue StandardError
-    []
-  end
-
   def update_notifications
     Notification.update_notifications(self, "Published")
   end
@@ -464,7 +479,10 @@ class Article < ApplicationRecord
     self.published_at = parse_date(front_matter["date"]) if published
     self.main_image = determine_image(front_matter)
     self.canonical_url = front_matter["canonical_url"] if front_matter["canonical_url"].present?
-    self.description = front_matter["description"] if front_matter["description"].present? || front_matter["title"].present? # Do this if frontmatte exists at all
+
+    update_description = front_matter["description"].present? || front_matter["title"].present?
+    self.description = front_matter["description"] if update_description
+
     self.collection_id = nil if front_matter["title"].present?
     self.collection_id = Collection.find_series(front_matter["series"], user).id if front_matter["series"].present?
   end
@@ -504,7 +522,8 @@ class Article < ApplicationRecord
   end
 
   def remove_tag_adjustments_from_tag_list
-    tags_to_remove = TagAdjustment.where(article_id: id, adjustment_type: "removal", status: "committed").pluck(:tag_name)
+    tags_to_remove = TagAdjustment.where(article_id: id, adjustment_type: "removal",
+                                         status: "committed").pluck(:tag_name)
     tag_list.remove(tags_to_remove, parse: true) if tags_to_remove.present?
   end
 
@@ -517,12 +536,20 @@ class Article < ApplicationRecord
   end
 
   def validate_video
-    return errors.add(:published, "cannot be set to true if video is still processing") if published && video_state == "PROGRESSING"
-    return errors.add(:video, "cannot be added by member without permission") if video.present? && user.created_at > 2.weeks.ago
+    if published && video_state == "PROGRESSING"
+      return errors.add(:published,
+                        "cannot be set to true if video is still processing")
+    end
+
+    return unless video.present? && user.created_at > 2.weeks.ago
+
+    errors.add(:video, "cannot be added by member without permission")
   end
 
   def validate_collection_permission
-    errors.add(:collection_id, "must be one you have permission to post to") if collection && collection.user_id != user_id
+    return unless collection && collection.user_id != user_id
+
+    errors.add(:collection_id, "must be one you have permission to post to")
   end
 
   def past_or_present_date
@@ -532,12 +559,9 @@ class Article < ApplicationRecord
   end
 
   def canonical_url_must_not_have_spaces
-    errors.add(:canonical_url, "must not have spaces") if canonical_url.to_s.match?(/[[:space:]]/)
-  end
+    return unless canonical_url.to_s.match?(/[[:space:]]/)
 
-  # Admin only beta tags etc.
-  def validate_liquid_tag_permissions
-    errors.add(:body_markdown, "must only use permitted tags") if liquid_tags_used.include?(PollTag) && !(user.has_role?(:super_admin) || user.has_role?(:admin))
+    errors.add(:canonical_url, "must not have spaces")
   end
 
   def create_slug
@@ -560,23 +584,19 @@ class Article < ApplicationRecord
   end
 
   def update_cached_user
-    if organization
-      self.cached_organization = OpenStruct.new(set_cached_object(organization))
-    end
-
-    return unless user
-
-    self.cached_user = OpenStruct.new(set_cached_object(user))
+    self.cached_organization = set_cached_object(organization) if organization
+    self.cached_user = set_cached_object(user) if user
   end
 
+  # TODO: [thepracticaldev/oss] this should eventually be moved to JSON, to avoid storing a native Ruby object in the DB
   def set_cached_object(object)
-    {
-      name: object.name,
-      username: object.username,
-      slug: object == organization ? object.slug : object.username,
-      profile_image_90: object.profile_image_90,
-      profile_image_url: object.profile_image_url
-    }
+    Struct.new(:name, :username, :slug, :profile_image_90, :profile_image_url).new.tap do |struct|
+      struct.name = object.name
+      struct.username = object.username
+      struct.slug = object.respond_to?(:slug) ? object.slug : object.username
+      struct.profile_image_90 = object.profile_image_90
+      struct.profile_image_url = object.profile_image_url
+    end
   end
 
   def set_all_dates
@@ -608,9 +628,12 @@ class Article < ApplicationRecord
   end
 
   def set_nth_published_at
-    published_article_ids = user.articles.published.order("published_at ASC").pluck(:id)
+    return unless nth_published_by_author.zero? && published
+
+    published_article_ids = user.articles.published.order(published_at: :asc).pluck(:id)
     index = published_article_ids.index(id)
-    self.nth_published_by_author = (index || published_article_ids.size) + 1 if nth_published_by_author.zero? && published
+
+    self.nth_published_by_author = (index || published_article_ids.size) + 1
   end
 
   def title_to_slug

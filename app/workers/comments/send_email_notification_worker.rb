@@ -6,7 +6,7 @@ module Comments
 
     def perform(comment_id)
       comment = Comment.find_by(id: comment_id)
-      NotifyMailer.new_reply_email(comment).deliver_now if comment
+      NotifyMailer.with(comment: comment).new_reply_email.deliver_now if comment
     end
   end
 end

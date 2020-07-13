@@ -4,7 +4,7 @@ import Tags from '../../shared/components/tags';
 
 export const TagsField = ({ defaultValue, onInput, switchHelpContext }) => {
   return (
-    <div data-testid="article-form__tagsfield" className="crayons-article-form__tagsfield">
+    <div className="crayons-article-form__tagsfield">
       <Tags
         defaultValue={defaultValue}
         maxTags="4"

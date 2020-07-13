@@ -11,6 +11,7 @@ class RateLimitChecker
     published_article_creation: { retry_after: 30 },
     reaction_creation: { retry_after: 30 },
     send_email_confirmation: { retry_after: 120 },
+    user_subscription_creation: { retry_after: 30 },
     user_update: { retry_after: 30 }
   }.with_indifferent_access.freeze
 

@@ -9,11 +9,6 @@ RSpec.describe "Looking For Work", type: :system do
     visit "/settings"
   end
 
-  # TODO: Uncomment this spec when we decide to use percy again
-  xit "renders the page", js: true, percy: true do
-    Percy.snapshot(page, name: "Logged in user: settings page")
-  end
-
   it "user selects looking for work and autofollows hiring tag", js: true do
     page.check "Looking for work"
     sidekiq_perform_enqueued_jobs do

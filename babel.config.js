@@ -54,6 +54,7 @@ module.exports = function (api) {
         '@babel/plugin-transform-react-jsx',
         {
           pragma: 'h',
+          pragmaFrag: '"Fragment"',
         },
       ],
     ].filter(Boolean),

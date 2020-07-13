@@ -79,7 +79,6 @@ class ReservedWords
     gags
     getting-started
     gigs
-    github
     hack
     hackers
     haskell

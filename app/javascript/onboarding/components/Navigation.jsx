@@ -22,9 +22,13 @@ class Navigation extends Component {
     for (let i = 1; i < slidesCount; i += 1) {
       const active = i <= currentSlideIndex;
 
-      stepsList.push(<span className={`dot ${active ? 'active' : ''}`} />);
+      stepsList.push(<span class={`dot ${active ? 'active' : ''}`} />);
     }
-    return <div data-testid="stepper" className="stepper">{stepsList}</div>;
+    return (
+      <div data-testid="stepper" class="stepper">
+        {stepsList}
+      </div>
+    );
   }
 
   /**
@@ -59,23 +63,29 @@ class Navigation extends Component {
     } = this.props;
     return (
       <nav
-        className={`onboarding-navigation${
+        class={`onboarding-navigation${
           className && className.length > 0 ? ` ${className}` : ''
         }`}
       >
         <div
-          className={`navigation-content${
+          class={`navigation-content${
             className && className.length > 0 ? ` ${className}` : ''
           }`}
         >
           {!hidePrev && (
-            <div className="back-button-container">
-              <button onClick={prev} data-testid="back-button" className="back-button" type="button">
+            <div class="back-button-container">
+              <button
+                onClick={prev}
+                data-testid="back-button"
+                class="back-button"
+                type="button"
+                aria-label="Back to previous onboarding step"
+              >
                 <svg
                   width="24"
                   height="24"
                   fill="none"
-                  className="crayons-icon"
+                  class="crayons-icon"
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <path d="M7.828 11H20v2H7.828l5.364 5.364-1.414 1.414L4 12l7.778-7.778 1.414 1.414L7.828 11z" />
@@ -90,7 +100,7 @@ class Navigation extends Component {
             <button
               disabled={disabled}
               onClick={next}
-              className={`next-button${canSkip ? ' skip-for-now' : ''}`}
+              class={`next-button${canSkip ? ' skip-for-now' : ''}`}
               type="button"
             >
               {this.buttonText()}
@@ -105,7 +115,7 @@ class Navigation extends Component {
 Navigation.propTypes = {
   disabled: PropTypes.bool,
   canSkip: PropTypes.bool,
-  className: PropTypes.string,
+  class: PropTypes.string,
   prev: PropTypes.func.isRequired,
   next: PropTypes.string.isRequired,
   hideNext: PropTypes.bool,
@@ -119,7 +129,7 @@ Navigation.defaultProps = {
   canSkip: false,
   hideNext: false,
   hidePrev: false,
-  className: '',
+  class: '',
 };
 
 export default Navigation;

@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement } from '@testing-library/preact';
+import { render } from '@testing-library/preact';
 import fetch from 'jest-fetch-mock';
 import { axe } from 'jest-axe';
 import { GithubRepos } from '../githubRepos';
@@ -208,7 +208,7 @@ describe('<GithubRepos />', () => {
     global.Honeybadger = { notify: jest.fn() };
   });
 
-  it('should not have any a11y violations', async () => {
+  it('should have no a11y violations', async () => {
     fetch.mockResponse(JSON.stringify(getRepositories()));
 
     const { container } = render(<GithubRepos />);
@@ -219,28 +219,29 @@ describe('<GithubRepos />', () => {
 
   it('should render with repositories', async () => {
     fetch.mockResponse(JSON.stringify(getRepositories()));
-    const { getByTitle, getByTestId } = render(<GithubRepos />);
+    const { getByTitle, findByTestId } = render(<GithubRepos />);
 
     getByTitle('Loading GitHub repositories');
 
-    await waitForElement(() => getByTestId('github-repos-list'));
+    const repoList = await findByTestId('github-repos-list');
 
     // No need to test it's contents as this is the <SingleRepo /> component
     // which has it's own tests.
+    expect(repoList).toBeDefined();
   });
 
   it('should render with no repositories', () => {
     fetch.mockResponse('[]');
-    const { getByTitle } = render(<GithubRepos />);
+    const { queryByTitle } = render(<GithubRepos />);
 
-    getByTitle('Loading GitHub repositories');
+    expect(queryByTitle('Loading GitHub repositories')).toBeDefined();
   });
 
   it('should render error message when repositories cannot be loaded', async () => {
     fetch.mockReject('some error');
 
-    const { getByRole } = render(<GithubRepos />);
-    const errorAlert = await waitForElement(() => getByRole('alert'));
+    const { findByRole } = render(<GithubRepos />);
+    const errorAlert = await findByRole('alert');
 
     expect(errorAlert.textContent).toEqual('An error occurred: some error');
     expect(Honeybadger.notify).toHaveBeenCalledTimes(1);

@@ -1,8 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 
-import Navigation from './Navigation';
 import { getContentOfToken, updateOnboarding } from '../utilities';
+import Navigation from './Navigation';
 
 /* eslint-disable camelcase */
 class EmailPreferencesForm extends Component {
@@ -53,7 +53,10 @@ class EmailPreferencesForm extends Component {
     const { email_newsletter, email_digest_periodic } = this.state;
     const { prev, slidesCount, currentSlideIndex } = this.props;
     return (
-      <div data-testid="onboarding-email-preferences-form" className="onboarding-main crayons-modal">
+      <div
+        data-testid="onboarding-email-preferences-form"
+        className="onboarding-main crayons-modal"
+      >
         <div className="crayons-modal__box">
           <Navigation
             prev={prev}

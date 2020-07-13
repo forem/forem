@@ -29,7 +29,12 @@ class TagAdjustment < ApplicationRecord
   end
 
   def article_tag_list
-    errors.add(:tag_id, "selected for removal is not a current live tag.") if adjustment_type == "removal" && article.tag_list.none? { |tag| tag.casecmp(tag_name).zero? }
+    if adjustment_type == "removal" && article.tag_list.none? do |tag|
+         tag.casecmp(tag_name).zero?
+       end
+      errors.add(:tag_id,
+                 "selected for removal is not a current live tag.")
+    end
     errors.add(:base, "4 tags max per article.") if adjustment_type == "addition" && article.tag_list.count > 3
   end
 end

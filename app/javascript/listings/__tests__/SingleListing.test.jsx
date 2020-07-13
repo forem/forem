@@ -24,22 +24,23 @@ const listing = {
 };
 
 describe('<SingleListing />', () => {
-  const renderSingleListing = () => render(
-    <SingleListing
-      onAddTag={() => {
-        return 'onAddTag';
-      }}
-      onChangeCategory={() => {
-        return 'onChangeCategory';
-      }}
-      listing={listing}
-      currentUserId={1}
-      onOpenModal={() => {
-        return 'onOpenModal';
-      }}
-      isOpen={false}
-    />
-  );
+  const renderSingleListing = () =>
+    render(
+      <SingleListing
+        onAddTag={() => {
+          return 'onAddTag';
+        }}
+        onChangeCategory={() => {
+          return 'onChangeCategory';
+        }}
+        listing={listing}
+        currentUserId={1}
+        onOpenModal={() => {
+          return 'onOpenModal';
+        }}
+        isOpen={false}
+      />,
+    );
 
   it('should have no a11y violations', async () => {
     const { container } = renderSingleListing();
@@ -48,14 +49,15 @@ describe('<SingleListing />', () => {
   });
 
   it('shows a listing title', () => {
-    const { getByText } = renderSingleListing();
-    getByText('Illo iure quos perspiciatis.');
+    const { queryByText } = renderSingleListing();
+    expect(queryByText('Illo iure quos perspiciatis.')).toBeDefined();
   });
 
   it('shows a dropdown', () => {
-    const { getByLabelText, getByText } = renderSingleListing();
-    const dropdownButton = getByLabelText(/toggle dropdown menu/i);
-    getByText(/report abuse/i);
+    const { queryByLabelText, queryByText } = renderSingleListing();
+
+    expect(queryByLabelText(/toggle dropdown menu/i)).toBeDefined();
+    expect(queryByText(/report abuse/i)).toBeDefined();
   });
 
   it('shows a listing tags', () => {
@@ -73,11 +75,15 @@ describe('<SingleListing />', () => {
 
   it('shows a listing author', () => {
     const { getByText } = renderSingleListing();
-    expect(getByText('Mrs. Yoko Christiansen').href).toContain(`/mrschristiansenyoko`);
+    expect(getByText('Mrs. Yoko Christiansen').href).toContain(
+      `/mrschristiansenyoko`,
+    );
   });
 
   it('shows a listing location', () => {
     const { getByTestId } = renderSingleListing();
-    expect(getByTestId('single-listing-location').href).toContain(`/listings/?q=West%20Refugio`);
+    expect(getByTestId('single-listing-location').href).toContain(
+      `/listings/?q=West%20Refugio`,
+    );
   });
 });

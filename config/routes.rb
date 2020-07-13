@@ -106,6 +106,8 @@ Rails.application.routes.draw do
     resources :badges, only: :index
     post "badges/award_badges", to: "badges#award_badges"
     resources :path_redirects, only: %i[new create index edit update destroy]
+    resources :secrets, only: %i[index]
+    put "secrets", to: "secrets#update"
   end
 
   namespace :stories, defaults: { format: "json" } do
@@ -120,6 +122,7 @@ Rails.application.routes.draw do
       resources :articles, only: %i[index show create update] do
         collection do
           get "me(/:status)", to: "articles#me", as: :me, constraints: { status: /published|unpublished|all/ }
+          get "/:username/:slug", to: "articles#show_by_slug", as: :slug
         end
       end
       resources :comments, only: %i[index show]
@@ -235,6 +238,11 @@ Rails.application.routes.draw do
   resources :podcasts, only: %i[new create]
   resources :article_approvals, only: %i[create]
   resources :video_chats, only: %i[show]
+  resources :user_subscriptions, only: %i[create] do
+    collection do
+      get "/subscribed", action: "subscribed"
+    end
+  end
   namespace :followings, defaults: { format: :json } do
     get :users
     get :tags
@@ -328,11 +336,6 @@ Rails.application.routes.draw do
   get "/privacy" => "pages#privacy"
   get "/terms" => "pages#terms"
   get "/contact" => "pages#contact"
-  get "/rlygenerator" => "pages#generator"
-  get "/orlygenerator" => "pages#generator"
-  get "/rlyslack" => "pages#generator"
-  get "/rlyweb" => "pages#rlyweb"
-  get "/rly" => "pages#rlyweb"
   get "/code-of-conduct" => "pages#code_of_conduct"
   get "/report-abuse" => "pages#report_abuse"
   get "/welcome" => "pages#welcome"
@@ -366,8 +369,6 @@ Rails.application.routes.draw do
   get "/mod/:tag" => "moderations#index"
   get "/page/crayons" => "pages#crayons"
 
-  get "/p/rlyweb", to: redirect("/rlyweb")
-
   post "/fallback_activity_recorder" => "ga_events#create"
 
   get "/page/:slug" => "pages#show"
@@ -384,13 +385,14 @@ Rails.application.routes.draw do
   get "/settings/:tab/:id" => "users#edit", :constraints => { tab: /response-templates/ }
   get "/signout_confirm" => "users#signout_confirm"
   get "/dashboard" => "dashboards#show"
-  get "/dashboard/pro" => "dashboards#pro"
-  get "dashboard/pro/org/:org_id" => "dashboards#pro"
+  get "/dashboard/pro", to: "dashboards#pro"
+  get "dashboard/pro/org/:org_id", to: "dashboards#pro", as: :dashboard_pro_org
   get "dashboard/following" => "dashboards#following_tags"
   get "dashboard/following_tags" => "dashboards#following_tags"
   get "dashboard/following_users" => "dashboards#following_users"
   get "dashboard/following_organizations" => "dashboards#following_organizations"
   get "dashboard/following_podcasts" => "dashboards#following_podcasts"
+  get "/dashboard/subscriptions" => "dashboards#subscriptions"
   get "/dashboard/:which" => "dashboards#followers", :constraints => { which: /user_followers/ }
   get "/dashboard/:which/:org_id" => "dashboards#show",
       :constraints => {
@@ -468,7 +470,7 @@ Rails.application.routes.draw do
   get "/:username/:slug" => "stories#show"
   get "/:sitemap" => "sitemaps#show",
       :constraints => { format: /xml/, sitemap: /sitemap-.+/ }
-  get "/:username" => "stories#index"
+  get "/:username" => "stories#index", :as => "user_profile"
 
   root "stories#index"
 end

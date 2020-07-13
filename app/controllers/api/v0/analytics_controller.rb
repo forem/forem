@@ -63,7 +63,9 @@ module Api
 
       def validate_date_params
         raise ArgumentError, "Required 'start' parameter is missing" if analytics_params[:start].blank?
-        raise ArgumentError, "Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'" unless valid_date_params?
+
+        message = "Date parameters 'start' or 'end' must be in the format of 'yyyy-mm-dd'"
+        raise ArgumentError, message unless valid_date_params?
       end
 
       def analytics_params

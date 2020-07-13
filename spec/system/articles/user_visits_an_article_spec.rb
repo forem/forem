@@ -11,17 +11,15 @@ RSpec.describe "Views an article", type: :system do
     sign_in user
   end
 
-  it "shows an article", js: true, percy: true do
+  it "shows an article", js: true do
     visit article.path
-    Percy.snapshot(page, name: "Article: renders")
     expect(page).to have_content(article.title)
   end
 
-  it "shows comments", js: true, percy: true do
+  it "shows comments", js: true do
     create_list(:comment, 3, commentable: article)
 
     visit article.path
-    Percy.snapshot(page, name: "Article: shows comments")
     expect(page).to have_selector(".single-comment-node", visible: :visible, count: 3)
   end
 
@@ -69,12 +67,6 @@ RSpec.describe "Views an article", type: :system do
       let(:article1) { create(:article) }
       let(:crossposted_article) { create(:article) }
       let(:article2) { create(:article) }
-
-      # TODO: Uncomment this spec when we decide to use percy again
-      xit "renders the articles in ascending order considering crossposted_at", js: true, percy: true do
-        visit article1.path
-        Percy.snapshot(page, name: "Articles: renders crossposted articles")
-      end
 
       # rubocop:disable RSpec/ExampleLength
       it "lists the articles in ascending order considering crossposted_at" do

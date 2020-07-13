@@ -13,7 +13,8 @@ RSpec.describe "User visits articles by timeframe", type: :system do
   end
 
   def shows_correct_articles_count_via_xpath(count)
-    expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]", count: count)
+    expect(page).to have_xpath("//article[contains(@class, 'crayons-story') and contains(@class, 'false')]",
+                               count: count)
   end
 
   def shows_main_article
@@ -123,11 +124,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
     context "when viewing articles for month" do
       before { visit "/top/month" }
 
-      # TODO: Uncomment this spec when we decide to use percy again
-      xit "renders the page", percy: true do
-        Percy.snapshot(page, name: "Articles: /top/month")
-      end
-
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count_via_xpath(2)
         shows_main_article
@@ -175,11 +171,6 @@ RSpec.describe "User visits articles by timeframe", type: :system do
 
     context "when viewing articles for latest" do
       before { visit "/latest" }
-
-      # TODO: Uncomment this spec when we decide to use percy again
-      xit "renders the page", percy: true do
-        Percy.snapshot(page, name: "Articles: /latest")
-      end
 
       it "shows correct articles", :aggregate_failures do
         shows_correct_articles_count_via_xpath(4)

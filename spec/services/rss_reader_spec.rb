@@ -1,22 +1,14 @@
 require "rails_helper"
 require "rss"
 
-default_logger = Rails.logger
+RSpec.describe RssReader, type: :service, vcr: true, db_strategy: :truncation do
+  self.use_transactional_tests = false
 
-RSpec.describe RssReader, type: :service, vcr: true do
   let(:link) { "https://medium.com/feed/@vaidehijoshi" }
   let(:nonmedium_link) { "https://circleci.com/blog/feed.xml" }
   let(:nonpermanent_link) { "https://medium.com/feed/@macsiri/" }
   let(:rss_data) { RSS::Parser.parse(HTTParty.get(link).body, false) }
   let!(:rss_reader) { described_class.new }
-
-  # Override the default Rails logger as these tests require the Timber logger.
-  before do
-    timber_logger = Timber::Logger.new(nil)
-    Rails.logger = ActiveSupport::TaggedLogging.new(timber_logger)
-  end
-
-  after { Rails.logger = default_logger }
 
   describe "#get_all_articles" do
     before do
@@ -76,22 +68,22 @@ RSpec.describe RssReader, type: :service, vcr: true do
       end
     end
 
-    it "logs an article creation error" do
+    it "reports an article creation error" do
       allow(rss_reader).to receive(:make_from_rss_item).and_raise(StandardError)
-      allow(Rails.logger).to receive(:error)
+      allow(Honeybadger).to receive(:notify)
 
       rss_reader.get_all_articles
 
-      expect(Rails.logger).to have_received(:error).at_least(:once)
+      expect(Honeybadger).to have_received(:notify).at_least(:once)
     end
 
-    it "logs a fetching error" do
+    it "reports a fetching error" do
       allow(rss_reader).to receive(:fetch_rss).and_raise(StandardError)
-      allow(Rails.logger).to receive(:error)
+      allow(Honeybadger).to receive(:notify)
 
       rss_reader.get_all_articles
 
-      expect(Rails.logger).to have_received(:error).at_least(:once)
+      expect(Honeybadger).to have_received(:notify).at_least(:once)
     end
 
     it "queues as many slack messages as there are articles", vcr: { cassette_name: "rss_reader_fetch_articles" } do
@@ -136,22 +128,22 @@ RSpec.describe RssReader, type: :service, vcr: true do
       expect(user.articles.select(&:featured_number)).to be_empty
     end
 
-    it "logs an article creation error on the standard logger" do
+    it "reports an article creation error on the standard logger" do
       allow(rss_reader).to receive(:make_from_rss_item).and_raise(StandardError)
-      allow(Rails.logger).to receive(:error)
+      allow(Honeybadger).to receive(:notify)
 
       rss_reader.fetch_user(User.find_by(feed_url: link))
 
-      expect(Rails.logger).to have_received(:error).at_least(:once)
+      expect(Honeybadger).to have_received(:notify).at_least(:once)
     end
 
-    it "logs a fetching error on the standard logger" do
+    it "reports a fetching error on the standard logger" do
       allow(rss_reader).to receive(:fetch_rss).and_raise(StandardError)
-      allow(Rails.logger).to receive(:error)
+      allow(Honeybadger).to receive(:notify)
 
       rss_reader.fetch_user(User.find_by(feed_url: link))
 
-      expect(Rails.logger).to have_received(:error).at_least(:once)
+      expect(Honeybadger).to have_received(:notify).at_least(:once)
     end
 
     it "queues as many slack messages as there are user articles" do
@@ -169,6 +161,16 @@ RSpec.describe RssReader, type: :service, vcr: true do
     it "returns false on invalid feed url" do
       bad_link = "www.google.com"
       expect(rss_reader.valid_feed_url?(bad_link)).to be(false)
+    end
+  end
+
+  describe "feeds parsing and regressions" do
+    it "parses https://medium.com/feed/@dvirsegal correctly", vcr: { cassette_name: "rss_reader_dvirsegal" } do
+      user = create(:user, feed_url: "https://medium.com/feed/@dvirsegal")
+
+      expect do
+        rss_reader.fetch_user(user)
+      end.to change(user.articles, :count).by(10)
     end
   end
 end

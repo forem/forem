@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-import { Button } from '@crayons';
 import { defaultChildrenPropTypes } from '../../common-prop-types';
+import { Button } from '@crayons';
 
 function getAdditionalClassNames({ size, className }) {
   let additionalClassNames = '';

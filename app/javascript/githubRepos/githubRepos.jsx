@@ -1,6 +1,6 @@
 import { h, Component } from 'preact';
-import { request } from '@utilities/http';
 import { SingleRepo } from './singleRepo';
+import { request } from '@utilities/http';
 
 export class GithubRepos extends Component {
   state = {

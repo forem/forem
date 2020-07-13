@@ -46,10 +46,11 @@ describe('<ListingFiltersCategories />', () => {
 
     it('should be "selected" when there is no category selected', () => {
       const propsWithoutCategory = { ...getProps(), category: '' };
-      const { getByTestId } = renderListingFilterCategories(
+      const { queryByTestId } = renderListingFilterCategories(
         propsWithoutCategory,
       );
-      getByTestId('selected');
+
+      expect(queryByTestId('selected')).toBeDefined();
     });
 
     it('should render a create listing link', () => {
@@ -61,7 +62,9 @@ describe('<ListingFiltersCategories />', () => {
     it('should render a manage listings link', () => {
       const { getByText } = renderListingFilterCategories();
       const manageListing = getByText(/manage listings/i);
-      expect(manageListing.getAttribute('href')).toContain('/listings/dashboard');
+      expect(manageListing.getAttribute('href')).toContain(
+        '/listings/dashboard',
+      );
     });
   });
 
@@ -70,7 +73,9 @@ describe('<ListingFiltersCategories />', () => {
       const { getByText } = renderListingFilterCategories();
       categories.forEach((category) => {
         const categoryLink = getByText(`${category.name}`);
-        expect(categoryLink.getAttribute('href')).toEqual(`/listings/${category.slug}`);
+        expect(categoryLink.getAttribute('href')).toEqual(
+          `/listings/${category.slug}`,
+        );
         expect(categoryLink.textContent).toEqual(category.name);
       });
     });

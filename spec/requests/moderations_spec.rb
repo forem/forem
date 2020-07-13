@@ -59,15 +59,16 @@ RSpec.describe "Moderations", type: :request do
     end
 
     it "grants access to /mod index with articles" do
-      create(:article, published: true)
+      article = create(:article, published: true)
       get "/mod"
-      expect(response.body).to include("We build the")
+      expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
     it "grants access to /mod/:tag index with articles" do
       create(:article, published: true)
       get "/mod/#{article.tags.first}"
-      expect(response.body).to include("#" + article.tags.first.name.titleize)
+      expect(response.body).to include("#" + article.tags.first.name)
+      expect(response.body).to include(CGI.escapeHTML(article.title))
     end
 
     it "returns not found for inappropriate tags" do
@@ -75,7 +76,9 @@ RSpec.describe "Moderations", type: :request do
     end
 
     it "renders not_found when an article can't be found" do
-      expect { get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/" }.to raise_exception(ActiveRecord::RecordNotFound)
+      expect do
+        get "/#{trusted_user.username}/dsdsdsweweedsdseweww/mod/"
+      end.to raise_exception(ActiveRecord::RecordNotFound)
     end
   end
 

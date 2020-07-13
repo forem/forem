@@ -3,10 +3,6 @@
 .index-comments {
   text-align: left;
   padding-bottom: calc(0.6vw + 5px);
-  background: var(--card-bg);
-  border-radius: 3px;
-  @include themeable(border, theme-container-border, none);
-  @include themeable(box-shadow, theme-container-box-shadow, $bold-shadow);
   margin: auto;
   width: 100%;
   @media screen and (min-width: 950px) {

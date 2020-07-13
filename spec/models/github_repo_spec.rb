@@ -86,7 +86,9 @@ RSpec.describe GithubRepo, type: :model do
     end
 
     let(:stubbed_github_repo) do
+      # rubocop:disable Performance/OpenStruct
       OpenStruct.new(repo.attributes.merge(id: repo.github_id_code, html_url: repo.url))
+      # rubocop:enable Performance/OpenStruct
     end
     let(:github_client) { instance_double(fake_github_client, repository: stubbed_github_repo) }
 

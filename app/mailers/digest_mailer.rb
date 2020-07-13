@@ -1,10 +1,11 @@
 class DigestMailer < ApplicationMailer
   default from: -> { email_from("Digest") }
 
-  def digest_email(user, articles)
-    @user = user
-    @articles = articles.first(6)
+  def digest_email
+    @user = params[:user]
+    @articles = params[:articles].first(6)
     @unsubscribe = generate_unsubscribe_token(@user.id, :email_digest_periodic)
+
     subject = generate_title
     mail(to: @user.email, subject: subject)
   end

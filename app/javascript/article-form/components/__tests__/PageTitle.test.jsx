@@ -1,5 +1,6 @@
 import { h } from 'preact';
 import { render, queryByAttribute } from '@testing-library/preact';
+import { axe } from 'jest-axe';
 import { PageTitle } from '../PageTitle';
 
 let organizations, organizationId, onToggle;
@@ -21,6 +22,19 @@ describe('<PageTitle/>', () => {
     onToggle = null;
   });
 
+  it('should have no a11y violations', async () => {
+    const { container } = render(
+      <PageTitle
+        organizations={organizations}
+        organizationId={organizationId}
+        onToggle={onToggle}
+      />,
+    );
+    const results = await axe(container);
+
+    expect(results).toHaveNoViolations();
+  });
+
   it('shows the picker if there is more than one organisation', () => {
     const getById = queryByAttribute.bind(null, 'id');
     const dom = render(
@@ -31,7 +45,10 @@ describe('<PageTitle/>', () => {
       />,
     );
 
-    const organizationPicker = getById(dom.container, 'article_publish_under_org');
+    const organizationPicker = getById(
+      dom.container,
+      'article_publish_under_org',
+    );
     expect(organizationPicker).toBeTruthy();
   });
 
@@ -45,7 +62,10 @@ describe('<PageTitle/>', () => {
       />,
     );
 
-    const organizationPicker = getById(dom.container, 'article_publish_under_org');
+    const organizationPicker = getById(
+      dom.container,
+      'article_publish_under_org',
+    );
     expect(organizationPicker).toBeNull();
   });
 });

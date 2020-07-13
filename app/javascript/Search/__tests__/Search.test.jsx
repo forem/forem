@@ -1,5 +1,5 @@
 import { h } from 'preact';
-import { render, waitForElement, fireEvent } from '@testing-library/preact';
+import { render, fireEvent } from '@testing-library/preact';
 
 import { axe } from 'jest-axe';
 import { Search } from '../Search';
@@ -26,11 +26,14 @@ describe('<Search />', () => {
   it('should have a search textbox', () => {
     const { getByLabelText } = render(<Search />);
 
-    getByLabelText(/search/i);
+    const searchInput = getByLabelText(/search/i);
+
+    expect(searchInput.getAttribute('placeholder')).toEqual('Search...');
+    expect(searchInput.getAttribute('autocomplete')).toEqual('off');
   });
 
   it('should contain text the user entered in the search textbox', async () => {
-    const { getByLabelText } = render(<Search />);
+    const { getByLabelText, findByLabelText } = render(<Search />);
 
     let searchInput = getByLabelText(/search/i);
 
@@ -46,7 +49,7 @@ describe('<Search />', () => {
       target: { value: 'hello' },
     });
 
-    searchInput = await waitForElement(() => getByLabelText(/search/i));
+    searchInput = await findByLabelText(/search/i);
 
     expect(searchInput.value).toEqual('hello');
   });
@@ -54,7 +57,7 @@ describe('<Search />', () => {
   it('should submit the search form', async () => {
     jest.spyOn(Search.prototype, 'search');
 
-    const { getByLabelText } = render(<Search />);
+    const { getByLabelText, findByLabelText } = render(<Search />);
 
     let searchInput = getByLabelText(/search/i);
 
@@ -70,7 +73,7 @@ describe('<Search />', () => {
       target: { value: 'hello' },
     });
 
-    searchInput = await waitForElement(() => getByLabelText(/search/i));
+    searchInput = await findByLabelText(/search/i);
 
     expect(searchInput.value).toEqual('hello');
     expect(Search.prototype.search).toHaveBeenCalledWith('Enter', 'hello');

@@ -21,6 +21,7 @@ export const Article = ({
   isFeatured,
   isBookmarked,
   bookmarkClick,
+  feedStyle,
 }) => {
   if (article && article.type_of === 'podcast_episodes') {
     return <PodcastArticle article={article} />;
@@ -37,13 +38,16 @@ export const Article = ({
     'crayons-story__tertiary',
   ];
 
+  const showCover =
+    (isFeatured || (feedStyle === 'rich' && article.main_image)) &&
+    !article.cloudinary_video_url;
+
   return (
     <article
       className={`crayons-story cursor-pointer ${
         isFeatured && 'crayons-story--featured'
       }`}
       id={isFeatured && 'featured-story-marker'}
-      data-featured-article={isFeatured && `articles-${article.id}`}
       data-content-user-id={article.user_id}
       data-testid={isFeatured ? 'featured-article' : `article-${article.id}`}
     >
@@ -65,9 +69,7 @@ export const Article = ({
       >
         {article.cloudinary_video_url && <Video article={article} />}
 
-        {isFeatured && !article.cloudinary_video_url && (
-          <ArticleCoverImage article={article} />
-        )}
+        {showCover && <ArticleCoverImage article={article} />}
         <div className="crayons-story__body">
           <div className="crayons-story__top">
             <Meta article={article} organization={article.organization} />
@@ -121,11 +123,13 @@ export const Article = ({
 Article.defaultProps = {
   isBookmarked: false,
   isFeatured: false,
+  feedStyle: 'basic',
 };
 
 Article.propTypes = {
   article: articlePropTypes.isRequired,
   isBookmarked: PropTypes.bool,
   isFeatured: PropTypes.bool,
+  feedStyle: PropTypes.string,
   bookmarkClick: PropTypes.func.isRequired,
 };

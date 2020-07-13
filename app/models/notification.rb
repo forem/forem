@@ -81,6 +81,7 @@ class Notification < ApplicationRecord
 
     def send_moderation_notification(notifiable)
       # TODO: make this work for articles in the future. only works for comments right now
+      return unless notifiable.commentable
       return if UserBlock.blocking?(notifiable.commentable.user_id, notifiable.user_id)
 
       Notifications::ModerationNotificationWorker.perform_async(notifiable.id)
@@ -116,7 +117,7 @@ class Notification < ApplicationRecord
       Notifications::UpdateWorker.perform_async(notifiable.id, notifiable.class.name, action)
     end
 
-    def fast_destroy_old_notifications(destroy_before_timestamp = 4.months.ago)
+    def fast_destroy_old_notifications(destroy_before_timestamp = 3.months.ago)
       sql = <<-SQL
         DELETE FROM notifications
         WHERE notifications.id IN (
