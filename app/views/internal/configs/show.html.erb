@@ -27,17 +27,17 @@
         <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
           <!-- we need to list the config as seperate fields if the data structure is a Hash -->
           <% if SiteConfig.send(config_key).is_a?(Hash) %>
-            <label><%= config_key %></label>
+            <%= internal_config_label "#{config_key.to_s}" %>
             <div class="form-group">
               <%= f.fields_for config_key do |a_field| %>
-                <% SiteConfig.send(config_key).each do |area| %>
+                <% SiteConfig.send(config_key).each do |key, value| %>
                   <div>
-                    <%= a_field.label "#{area}*" %>
-                    <%= a_field.text_field area,
+                    <%= internal_config_label "#{key}" %>
+                    <%= a_field.text_field key,
                                            class: "form-control",
-                                           value: SiteConfig.send(config_key)[area],
+                                           value: SiteConfig.send(config_key)[key],
                                            placeholder: "" %>
-                    <div class="alert alert-info"><%= area %> <%= config_key %></div>
+                    <div class="alert alert-info"><%= key %> <%= config_key %></div>
                   </div>
                   <% end %>
               <% end %>
