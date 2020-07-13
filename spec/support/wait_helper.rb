@@ -14,7 +14,8 @@ module WaitHelper
       yield
       Capybara.current_session.driver.browser.switch_to.alert
       true
-    rescue Selenium::WebDriver::Error::NoAlertPresentError
+    rescue Selenium::WebDriver::Error::NoAlertPresentError, Capybara::ElementNotFound
+      sleep 1 # sleep for JS to be active so click that activates modal happens
       false
     end
   end
