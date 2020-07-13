@@ -99,7 +99,7 @@ A more complete overview of our stack is available in
   the badge.
 - [Yarn](https://yarnpkg.com/) 1.x: please refer to their
   [installation guide](https://classic.yarnpkg.com/en/docs/install).
-- [PostgreSQL](https://www.postgresql.org/) 9.5 or higher.
+- [PostgreSQL](https://www.postgresql.org/) 11 or higher.
 - [ImageMagick](https://imagemagick.org/): please refer to ImageMagick's
   [installation instructions](https://imagemagick.org/script/download.php).
 - [Redis](https://redis.io/) 4 or higher.
