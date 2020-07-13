@@ -6,13 +6,10 @@ RUN rm /home/gitpod/.rvmrc && touch /home/gitpod/.rvmrc && echo "rvm_gems_path=/
 RUN bash -lc "rvm install ruby-$RUBY_VERSION && rvm use ruby-$RUBY_VERSION --default"
 
 # Install Node and Yarn
-COPY ./.nvmrc "${APP_HOME}"/.nvmrc
-RUN bash -lc ". .nvm/nvm.sh && nvm install \
-              && nvm unalias default \
-              && nvm alias default $(cat /.nvmrc) \
-              && nvm use default \
-              && nvm uninstall $NODE_VERSION \
-              && npm install -g yarn"
+COPY ./.nvmrc /.nvmrc
+ARG nvmrc_node_version="$(cat /.nvmrc)"
+RUN bash -lc ". .nvm/nvm.sh && nvm install && nvm alias default ${nvmrc_node_version} && npm install -g yarn"
+ENV PATH=/home/gitpod/.nvm/versions/node/v${nvmrc_node_version}/bin:$PATH
 
 # Install Redis.
 RUN sudo apt-get update \
