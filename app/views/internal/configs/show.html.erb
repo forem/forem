@@ -1,7 +1,7 @@
 <div class="alert alert-warning" role="alert">
   <p>
     Only admins with explicit <strong>single resource admin</strong> role may make changes to site config. Even super admins require this permission.
-  <p>
+  </p>
   <h2>
     <% if current_user.has_role?(:single_resource_admin, Config) %>
       <div class="alert alert-primary">You have permission to make config changes. Do so with care.</div>
@@ -11,16 +11,74 @@
   </h2>
 </div>
 
+<div class="row my-3" id="getStarted">
+  <div class="card w-100">
+    <div class="card-header" id="getStartedHeader" data-toggle="collapse"
+      data-target="#getStartedBodyContainer" aria-expanded="true" aria-controls="getStartedBodyContainer">
+      <h2 class="d-inline">Get Started</h2>
+      <button class="btn btn-secondary float-right" type="button">
+        Toggle Get Started
+      </button>
+    </div>
+
+    <div id="getStartedBodyContainer" class="collapse show hide p-3" aria-labelledby="siteConfigHeader">
+      <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
+
+        <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
+          <!-- we need to list the config as seperate fields if the data structure is a Hash -->
+          <% if SiteConfig.send(config_key).is_a?(Hash) %>
+            <label><%= config_key %></label>
+            <div class="form-group">
+              <%= f.fields_for config_key do |a_field| %>
+                <% SiteConfig.send(config_key).each do |area| %>
+                  <div>
+                    <%= a_field.label "#{area}*" %>
+                    <%= a_field.text_field area,
+                                           class: "form-control",
+                                           value: SiteConfig.send(config_key)[area],
+                                           placeholder: "" %>
+                    <div class="alert alert-info"><%= area %> <%= config_key %></div>
+                  </div>
+                  <% end %>
+              <% end %>
+            </div>
+          <% else %>
+            <div class="form-group">
+              <%= internal_config_label config_key %>
+              <%= f.text_field config_key,
+                               class: "form-control",
+                               value: SiteConfig.send(config_key),
+                               placeholder: site_config_description[config_key][:placeholder] %>
+              <div class="alert alert-info"><%= site_config_description[config_key][:description] %></div>
+            </div>
+          <% end %>
+        <% end %>
+
+        <% if current_user.has_role?(:single_resource_admin, Config) %>
+              <div class="form-group">
+                <%= label_tag "Please type out the sentence below to submit:" %>
+                <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off" %>
+                <div class="alert alert-info">Type the sentence: My username is @your_username and this action is 100% safe and appropriate.</div>
+                <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
+              </div>
+
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+
 <div class="row my-3" id="siteConfig">
   <div class="card w-100">
     <div class="card-header" id="siteConfigHeader" data-toggle="collapse"
-      data-target="#siteConfigBodyContainer" aria-expanded="true" aria-controls="siteConfigBodyContainer">
-      <h2 class="d-inline">Site Configuration</h2>
+      data-target="#siteConfigBodyContainer" aria-expanded="false" aria-controls="siteConfigBodyContainer">
+      <h2 class="d-inline">All Site Configuration</h2>
       <button class="btn btn-secondary float-right" type="button">
         Toggle Site Configuration
       </button>
     </div>
-    <div id="siteConfigBodyContainer" class="collapse show hide p-3" aria-labelledby="siteConfigHeader">
+    <div id="siteConfigBodyContainer" class="collapse hide hide p-3" aria-labelledby="siteConfigHeader">
       <%= form_for(SiteConfig.new, url: internal_config_path) do |f| %>
 
         <div class="card mt-3">
@@ -726,7 +784,7 @@
               <div class="form-group">
                 <%= label_tag :confirmation %>
                 <%= text_field_tag :confirmation, nil, class: "form-control", placeholder: "Confirmation text", autocomplete: "off" %>
-                <div class="alert alert-info">Type: My username is @your_username and this action is 100% safe and appropriate.</div>
+                <div class="alert alert-info">Type the sentence: My username is @your_username and this action is 100% safe and appropriate.</div>
                 <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
               </div>
             </div>
@@ -735,6 +793,7 @@
       <% end %>
     </div>
   </div>
+</div>
 </div>
 
 <% if current_user.has_role?(:single_resource_admin, Config) && current_user.has_role?(:super_admin) %>
