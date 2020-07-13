@@ -2639,12 +2639,12 @@ aggregate-error@^3.0.0:
     clean-stack "^2.0.0"
     indent-string "^4.0.0"
 
-ahoy.js@^0.3.6:
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/ahoy.js/-/ahoy.js-0.3.6.tgz#ca27cb816a1de1f537616e4ea3213950259cd821"
-  integrity sha512-9X1g5xJioXk+AY5ti1LIlHExZ+8SjhuQOzAAXkNAZrZ6lmp88lFW7IeHADfii1/p5Cf3azg9hF2dk8Zsu4OfWA==
+ahoy.js@^0.3.7:
+  version "0.3.7"
+  resolved "https://registry.yarnpkg.com/ahoy.js/-/ahoy.js-0.3.7.tgz#545256a915ab0dc038ebeb3e8b6a65496dc9c2c6"
+  integrity sha512-3IGJdqMK1C8vzaIAv/BgdPepRw0zoYZo1QiMjJM0f/PlhRJDr8CfAy0QpvroNoz0vxWin2vyM9i7v3/0nTE5gw==
   dependencies:
-    object-to-formdata ">=3.0.0"
+    object-to-formdata "^4.0.0"
 
 airbnb-js-shims@^2.2.1:
   version "2.2.1"
@@ -10177,10 +10177,10 @@ object-keys@^1.0.11, object-keys@^1.0.12, object-keys@^1.1.1:
   resolved "https://registry.yarnpkg.com/object-keys/-/object-keys-1.1.1.tgz#1c47f272df277f3b1daf061677d9c82e2322c60e"
   integrity sha512-NuAESUOUMrlIXOfHKzD6bpPu3tYt3xvjNdRIQ+FeT0lNb4K8WR70CaDxhuNguS2XG+GjkyMwOzsN5ZktImfhLA==
 
-object-to-formdata@>=3.0.0:
-  version "3.0.9"
-  resolved "https://registry.yarnpkg.com/object-to-formdata/-/object-to-formdata-3.0.9.tgz#40e3314522345789259738811c0222b7d6e556e9"
-  integrity sha512-1JDHRFSpk6wzhPBAAqdVncdvbjZ+bjB0tioruNdKn8UyudBBXiBxRa7PJyvYqp4ioEKX98dEOX9Fw1RxA+vLzg==
+object-to-formdata@^4.0.0:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/object-to-formdata/-/object-to-formdata-4.0.1.tgz#37457ac856c10580ec16bedfded56b0c09ccb0c8"
+  integrity sha512-6PSHCYTVZkY2mTjW1y0baOuUpopFp0h3jjN65x+DFP3pYHfhHRnvkAzHUc9xZK2SeYDVu9Ej9P3hHWyglUznrg==
 
 object-visit@^1.0.0:
   version "1.0.1"
