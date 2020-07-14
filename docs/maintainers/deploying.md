@@ -2,7 +2,7 @@
 title: Deployment Guide
 ---
 
-# Deploying DEV
+# Deploying Forem
 
 Anyone with the ability to merge PRs on GitHub can deploy the application.
 Remember that this is a shared responsibility, so everyone should deploy code
@@ -24,7 +24,7 @@ any deployment!
 
 ## Overview
 
-DEV relies on GitHub and Travis to deploy continuously to Heroku. If a Pull
+Forem relies on GitHub and Travis to deploy continuously to Heroku. If a Pull
 Request is merged with a `[deploy]` in its title, it will be automatically
 deployed to production once the build steps complete successfully. The process
 currently takes about 20 minutes to complete and will need a few additional

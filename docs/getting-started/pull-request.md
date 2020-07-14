@@ -21,6 +21,6 @@ title: Preparing a Pull Request
 - All commits in a pull request will be squashed when merged, but when your PR
   is approved and passes our CI, it will eventually be live on production!
 
-If the pull request affects the public API in any way, a post on DEV from the
-DEV Team account should accompany it. This is the duty of the core team to carry
-out.
+If the pull request affects the public API in any way, a post on Forem from the
+Forem Team account should accompany it. This is the duty of the core team to
+carry out.

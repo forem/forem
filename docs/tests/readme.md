@@ -59,7 +59,7 @@ run into any issues. Strive to write good tests for the code you wish to
 contribute.
 
 Travis will deploy your pull request to production after CI passes and a member
-of the DEV team has approved it.
+of the Forem team has approved it.
 
 Our test suite is not perfect and sometimes a re-run is needed. If you encounter
 a "flaky spec" that fails intermittently please open an issue so we can address

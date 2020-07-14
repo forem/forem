@@ -2,7 +2,7 @@
 title: Containers
 ---
 
-# Installing DEV using Containers
+# Installing Forem using Containers
 
 If you encounter any errors with our Container setup, please kindly
 [report any issues](https://github.com/forem/forem/issues/new/choose)!
@@ -20,11 +20,11 @@ other Container Engines available, such as [Podman](https://podman.io/),
 [CRI-O](https://cri-o.io/), and
 [LXD](https://linuxcontainers.org/lxd/introduction/).
 
-DEV supports two Container Engines: Docker and Podman.
+Forem supports two Container Engines: Docker and Podman.
 
 ### Docker
 
-DEV can be setup with Docker and Docker Compose on macOS or Linux systems.
+Forem can be setup with Docker and Docker Compose on macOS or Linux systems.
 
 Docker is available for many different operating systems. You may use Docker as
 your Container Engine on both macOS and Linux workstations. As of right now
@@ -40,7 +40,7 @@ and you can install Docker Compose by following these
 
 ### Podman
 
-DEV can be setup with Podman and Podman Compose on Linux systems.
+Forem can be setup with Podman and Podman Compose on Linux systems.
 
 [Podman](https://podman.io/) is an FOSS project that provides a Container Engine
 that is daemonless which only runs on Linux systems. It can be run as the root
@@ -54,9 +54,9 @@ project under development that is implementing docker-compose like experience
 with Podman. You can install it by following these
 [instructions](https://github.com/containers/podman-compose#installation).
 
-## Setting up DEV
+## Setting up Forem
 
-1. Fork DEV's repository, e.g. <https://github.com/forem/forem/fork>
+1. Fork Forem's repository, e.g. <https://github.com/forem/forem/fork>
 1. Clone your forked repository, eg.
    `git clone https://github.com/<your-username>/forem.git`
 1. Set up your environment variables/secrets
@@ -82,7 +82,7 @@ with Podman. You can install it by following these
    - You do not need "real" keys for basic development. Some features require
      certain keys, so you may be able to add them as you go.
 
-## Running DEV with Docker via docker-compose
+## Running Forem with Docker via docker-compose
 
 1. Run `bin/container-setup`
 2. That's it! Navigate to <http://localhost:3000>
@@ -92,7 +92,7 @@ The script executes the following steps:
 1. `docker-compose build`
 2. `docker-compose up`
 
-## Running DEV with Podman via podman-compose
+## Running Forem with Podman via podman-compose
 
 1. Run `bin/container-setup`
 2. That's it! Navigate to <http://localhost:3000>

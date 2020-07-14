@@ -2,7 +2,7 @@
 title: Contributing to the Docs
 ---
 
-# Contributing to DEV's developer documentation
+# Contributing to Forem's developer documentation
 
 Contributions to the documentation are always appreciated! Thank you for making
 an effort to improve the developer experience of contributing to the DEV

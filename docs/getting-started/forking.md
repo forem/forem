@@ -9,7 +9,7 @@ The first step in contributing to any Open Source project on GitHub is
 you're not familiar with the idea of forking a repository, [GitHub has a super
 simple tutorial][forking_tutorial]!
 
-If you're ready to get started, [fork DEV's repository][fork_dev]!
+If you're ready to get started, [fork Forem's repository][fork_dev]!
 
 Once you've got a fork on GitHub, you can clone your fork to run the project
 locally:
@@ -19,7 +19,7 @@ git clone https://github.com/<your-username>/forem.git
 ```
 
 As time goes on, you may need to refresh your fork. If you have trouble with
-that, you can read about [keeping a fork caught up on DEV][refresh_your_fork]!
+that, you can read about [keeping a fork caught up on Forem][refresh_your_fork]!
 
 [forking]: https://help.github.com/en/articles/fork-a-repo
 [fork_dev]: https://github.com/forem/forem/fork

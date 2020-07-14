@@ -22,6 +22,6 @@ You can explore the
 for defining tasks and read through tasks we have implemented for busting cache,
 awarding badges, and more.
 
-In your Pull Request, communicate with a DEV Core Team Member to discuss at what
-frequency and ensure your task is scheduled on Heroku once your code is
+In your Pull Request, communicate with a Forem Core Team Member to discuss at
+what frequency and ensure your task is scheduled on Heroku once your code is
 reviewed, approved, and merged.
