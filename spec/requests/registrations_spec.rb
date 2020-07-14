@@ -12,7 +12,7 @@ RSpec.describe "Registrations", type: :request do
 
       it "shows the sign in text" do
         get "/enter"
-        expect(response.body).to include "Do you have email"
+        expect(response.body).to include "If you have an existing password"
       end
     end
 
