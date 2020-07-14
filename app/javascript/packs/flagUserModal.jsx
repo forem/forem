@@ -101,7 +101,7 @@ export function initializeFlagUserModal(authorId) {
  */
 export function FlagUserModal({ modCenterArticleUrl, authorId }) {
   const [isConfirmButtonEnabled, enableConfirmButton] = useState(false);
-  const vomitallRef = useRef(null);
+  const vomitAllRef = useRef(null);
 
   return (
     <div
@@ -137,7 +137,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
               <input
                 type="radio"
                 id="vomit-all"
-                ref={vomitallRef}
+                ref={vomitAllRef}
                 name="flag-user"
                 class="crayons-radio"
                 data-reactable-id={authorId}
@@ -176,7 +176,7 @@ export function FlagUserModal({ modCenterArticleUrl, authorId }) {
               onClick={(_event) => {
                 const {
                   current: { dataset: adminVomitReaction },
-                } = vomitallRef;
+                } = vomitAllRef;
 
                 confirmFlagUser(adminVomitReaction);
                 enableConfirmButton(false);
