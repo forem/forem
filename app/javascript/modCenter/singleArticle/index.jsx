@@ -29,7 +29,15 @@ export default class SingleArticle extends Component {
 
   render() {
     const { articleOpened } = this.state;
-    const { id, title, publishedAt, cachedTagList, user, key } = this.props;
+    const {
+      path,
+      id,
+      title,
+      publishedAt,
+      cachedTagList,
+      user,
+      key,
+    } = this.props;
     const tags = cachedTagList.split(', ').map((tag) => {
       if (tag) {
         return (
@@ -51,13 +59,16 @@ export default class SingleArticle extends Component {
       >
         <span className="article-title">
           <header>
-            <h3 className="fs-base fw-bold lh-tight">{title}</h3>
+            <h3 className="fs-base fw-bold lh-tight">
+              <a href={path}>{title}</a>
+            </h3>
           </header>
           {tags}
         </span>
         <span className="article-author fs-s lw-medium lh-tight">
           {newAuthorNotification}
           {user.name}
+          {/*<a href={user.username}>{user.name}</a> */}
         </span>
         <span className="article-published-at fs-s fw-bold lh-tight">
           <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
