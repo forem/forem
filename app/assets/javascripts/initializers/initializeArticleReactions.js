@@ -41,13 +41,10 @@ function hasUserReacted(reactionName) {
 
 function getNumReactions(reactionName) {
   const reactionEl = document.getElementById('reaction-number-' + reactionName);
-
-  if (!reactionEl) {
-    return;
-  }
-  if (reactionEl.textContent === '') {
+  if (!reactionEl || reactionEl.textContent === '') {
     return 0;
   }
+
   return parseInt(reactionEl.textContent, 10);
 }
 
