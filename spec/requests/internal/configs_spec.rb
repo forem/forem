@@ -471,7 +471,7 @@ RSpec.describe "/internal/config", type: :request do
       describe "Sponsors" do
         it "updates the sponsor_headline" do
           headline = "basic"
-          post "/internal/config", params: { site_config: { mascot_user_id: sponsor_headline },
+          post "/internal/config", params: { site_config: { sponsor_headline: healine },
                                              confirmation: confirmation_message }
           expect(SiteConfig.sponsor_headline).to eq(headline)
         end
