@@ -45,13 +45,13 @@
       "jest --findRelatedTests"
     ],
     "{app,spec,config,lib}/**/*.rb": [
-      "bundle exec rubocop --require rubocop-rspec --safe-auto-correct"
+      "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
     "app/views/**/*.jbuilder": [
-      "bundle exec rubocop --require rubocop-rspec --safe-auto-correct"
+      "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
     "Gemfile": [
-      "bundle exec rubocop --require rubocop-rspec --safe-auto-correct"
+      "bundle exec rubocop --require rubocop-rspec --auto-correct"
     ],
     "app/**/*.html.erb": [
       "bundle exec erblint --autocorrect"

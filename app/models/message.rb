@@ -94,8 +94,7 @@ class Message < ApplicationRecord
   def target_blank_links(html)
     return html if html.blank?
 
-    html = html.gsub("<a href", "<a target='_blank' rel='noopener nofollow' href")
-    html
+    html.gsub("<a href", "<a target='_blank' rel='noopener nofollow' href")
   end
 
   # rubocop:disable Layout/LineLength
