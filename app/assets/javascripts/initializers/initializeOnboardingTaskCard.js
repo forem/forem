@@ -11,10 +11,15 @@ function initializeOnboardingTaskCard() {
 
   var taskCard = document.getElementsByClassName('onboarding-task-card')[0];
   if (taskCard == null) {
-    return;
-  } // This guard against both null and undefined taskCard
+    return; // This guards against both a null and undefined taskCard.
+  }
 
-  var createdAt = new Date(userData().created_at);
+  const user = userData();
+  if (!user) {
+    return;
+  }
+
+  var createdAt = new Date(user.created_at);
   var now = new Date();
   var aWeekAgo = now.setDate(now.getDate() - 7);
 
