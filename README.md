@@ -14,11 +14,11 @@
   <a href="https://travis-ci.com/thepracticaldev/dev.to">
     <img src="https://travis-ci.com/thepracticaldev/dev.to.svg?branch=master" alt="Travis Status for thepracticaldev/dev.to">
   </a>
-  <a href="https://codeclimate.com/github/thepracticaldev/dev.to/maintainability">
-    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/maintainability" alt="Code Climate maintainability">
+  <a href="https://codeclimate.com/github/forem/forem/maintainability">
+    <img src="https://api.codeclimate.com/v1/badges/45d92efbfbed19088837/maintainability" alt="Code Climate maintainability">
   </a>
-  <a href="https://codeclimate.com/github/thepracticaldev/dev.to/test_coverage">
-    <img src="https://api.codeclimate.com/v1/badges/ce45bf63293073364bcb/test_coverage" alt="Code Climate test coverage">
+  <a href="https://codeclimate.com/github/forem/forem/test_coverage">
+    <img src="https://api.codeclimate.com/v1/badges/45d92efbfbed19088837/test_coverage" alt="Code Climate test coverage">
   </a>
   <a href="https://codeclimate.com/github/thepracticaldev/dev.to/trends/technical_debt">
     <img src="https://img.shields.io/codeclimate/tech-debt/thepracticaldev/dev.to" alt="Code Climate technical debt">
