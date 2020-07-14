@@ -19,6 +19,14 @@ AllCops:
   ExtraDetails: true
   TargetRubyVersion: 2.7
 
+#################### Bundler ###########################
+
+Bundler/OrderedGems:
+  Description: >-
+                 Gems within groups in the Gemfile should be alphabetically sorted.
+  Enabled: true
+  ConsiderPunctuation: true
+
 #################### Layout ###########################
 
 # Layout/ClassStructure:
@@ -230,9 +238,19 @@ Style/AsciiComments:
   StyleGuide: '#english-comments'
   Enabled: false
 
+Style/AccessorGrouping:
+  Description: 'Checks for grouping of accessors in `class` and `module` bodies.'
+  Enabled: true
+
 # Style/AutoResourceCleanup:
 #   Description: 'Suggests the usage of an auto resource cleanup version of a method (if available).'
 #   Enabled: false
+
+Style/BisectedAttrAccessor:
+  Description: >-
+                Checks for places where `attr_reader` and `attr_writer`
+                for the same method can be combined into single `attr_accessor`.
+  Enabled: true
 
 Style/CollectionMethods:
   Description: 'Preferred collection methods.'
@@ -342,6 +360,10 @@ Style/Next:
   StyleGuide: '#no-nested-conditionals'
   Enabled: false
 
+Style/RedundantAssignment:
+  Description: 'Checks for redundant assignment before returning.'
+  Enabled: true
+
 Style/RedundantFetchBlock:
   Description: >-
     Use `fetch(key, value)` instead of `fetch(key) { value }`
@@ -404,6 +426,15 @@ Style/TrailingCommaInArrayLiteral:
 
 # Performance cops from rubocop-performance
 # https://github.com/rubocop-hq/rubocop-performance/blob/master/config/default.yml
+Performance/AncestorsInclude:
+  Description: 'Use `A <= B` instead of `A.ancestors.include?(B)`.'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#ancestorsinclude-vs--code'
+  Enabled: true
+
+Performance/BigDecimalWithNumericArgument:
+  Description: 'Convert numeric argument to string before passing to BigDecimal.'
+  Enabled: true
+
 Performance/CaseWhenSplat:
   Description: >-
                  Reordering `when` conditions with a splat to the end
@@ -417,16 +448,47 @@ Performance/ChainArrayAllocation:
   Reference: 'https://twitter.com/schneems/status/1034123879978029057'
   Enabled: false
 
+Performance/IoReadlines:
+  Description: 'Use `IO.each_line` (`IO#each_line`) instead of `IO.readlines` (`IO#readlines`).'
+  Reference: 'https://docs.gitlab.com/ee/development/performance.html#reading-from-files-and-other-data-sources'
+  Enabled: true
+  VersionAdded: '1.7'
+
 Performance/OpenStruct:
   Description: 'Use `Struct` instead of `OpenStruct`.'
   Enabled: true
 
-Rails/FilePath:
-  EnforcedStyle: slashes
+Performance/RedundantSortBlock:
+  Description: 'Use `sort` instead of `sort { |a, b| a <=> b }`.'
+  Enabled: true
+
+Performance/RedundantStringChars:
+  Description: 'Checks for redundant `String#chars`.'
+  Enabled: true
+
+Performance/ReverseFirst:
+  Description: 'Use `last(n).reverse` instead of `reverse.first(n)`.'
+  Enabled: true
+
+Performance/SortReverse:
+  Description: 'Use `sort.reverse` instead of `sort { |a, b| b <=> a }`.'
+  Enabled: true
+
+Performance/Squeeze:
+  Description: "Use `squeeze('a')` instead of `gsub(/a+/, 'a')`."
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#remove-extra-spaces-or-other-contiguous-characters-code'
+  Enabled: true
+
+Performance/StringInclude:
+  Description: 'Use `String#include?` instead of a regex match with literal-only pattern.'
+  Enabled: true
 
 # Rails cops from rubocop-rails
 # https://github.com/rubocop-hq/rubocop-rails/blob/master/config/default.yml
 # TODO: [@thepracticaldev/oss] enable these Rails cops
+Rails/FilePath:
+  EnforcedStyle: slashes
+
 Rails/HasManyOrHasOneDependent:
   Description: 'Define the dependent option to the has_many and has_one associations.'
   StyleGuide: 'https://rails.rubystyle.guide#has_many-has_one-dependent-option'

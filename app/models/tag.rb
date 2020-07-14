@@ -1,14 +1,12 @@
 require_relative "../lib/acts_as_taggable_on/tag.rb"
 
 class Tag < ActsAsTaggableOn::Tag
-  attr_accessor :points
+  attr_accessor :points, :tag_moderator_id, :remove_moderator_id
 
   acts_as_followable
   resourcify
 
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
-
-  attr_accessor :tag_moderator_id, :remove_moderator_id
 
   belongs_to :badge, optional: true
   has_one :sponsorship, as: :sponsorable, inverse_of: :sponsorable, dependent: :destroy
