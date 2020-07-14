@@ -1,5 +1,10 @@
 class Reaction < ApplicationRecord
   include Searchable
+  BASE_POINTS = {
+    "vomit" => -50.0,
+    "thumbsup" => 5.0,
+    "thumbsdown" => -10.0
+  }.freeze
 
   SEARCH_SERIALIZER = Search::ReactionSerializer
   SEARCH_CLASS = Search::Reaction
@@ -159,12 +164,6 @@ class Reaction < ApplicationRecord
   def viewable_by
     user_id
   end
-
-  BASE_POINTS = {
-    "vomit" => -50.0,
-    "thumbsup" => 5.0,
-    "thumbsdown" => -10.0
-  }.freeze
 
   def assign_points
     base_points = BASE_POINTS.fetch(category, 1.0)

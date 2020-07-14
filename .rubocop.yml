@@ -29,10 +29,10 @@ Bundler/OrderedGems:
 
 #################### Layout ###########################
 
-# Layout/ClassStructure:
-#   Description: 'Enforces a configured order of definitions within a class body.'
-#   StyleGuide: '#consistent-classes'
-#   Enabled: false
+Layout/ClassStructure:
+  Description: 'Enforces a configured order of definitions within a class body.'
+  StyleGuide: '#consistent-classes'
+  Enabled: true
 
 Layout/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
