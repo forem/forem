@@ -1,5 +1,5 @@
 class ChatChannel < ApplicationRecord
-  attr_accessor :current_user, :usernames_string
+  attr_accessor :current_user, :usernames_string, :username_string
 
   resourcify
 
