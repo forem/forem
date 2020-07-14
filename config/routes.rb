@@ -42,7 +42,13 @@ Rails.application.routes.draw do
 
     authenticate :user, ->(user) { user.has_role?(:tech_admin) } do
       mount Blazer::Engine, at: "blazer"
-      mount Flipper::UI.app(Flipper, { rack_protection: {} }), at: "feature_flags"
+
+      flipper_ui = Flipper::UI.app(Flipper) do |builder|
+        builder.use Rack::Protection, origin_whitelist: ["https://dev.to"]
+        builder.use Rack::Session::Cookie,
+                    secret: Rails.application.secrets[:secret_key_base]
+      end
+      mount flipper_ui, at: "feature_flags"
     end
 
     resources :articles, only: %i[index show update]
