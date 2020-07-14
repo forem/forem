@@ -44,19 +44,19 @@
   status = 301
 [[redirects]]
   force = true
-  from = "http://devto.netlify.com"
+  from = "http://docsdevto.netlify.com"
   to = "https://docs.dev.to"
 [[redirects]]
   force = true
-  from = "http://devto.netlify.com/*"
+  from = "http://docsdevto.netlify.com/*"
   to = "https://docs.dev.to/:splat"
   status = 301
 [[redirects]]
   force = true
-  from = "https://devto.netlify.com"
+  from = "https://docsdevto.netlify.com"
   to = "https://docs.dev.to"
 [[redirects]]
   force = true
-  from = "https://devto.netlify.com/*"
+  from = "https://docsdevto.netlify.com/*"
   to = "https://docs.dev.to/:splat"
   status = 301
