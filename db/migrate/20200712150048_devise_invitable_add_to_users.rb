@@ -4,6 +4,7 @@ class DeviseInvitableAddToUsers < ActiveRecord::Migration[6.0]
       change_table :users do |t|
         t.string     :invitation_token
         t.boolean    :registered, default: true
+        t.datetime   :registered_at
         t.datetime   :invitation_created_at
         t.datetime   :invitation_sent_at
         t.datetime   :invitation_accepted_at

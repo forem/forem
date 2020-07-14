@@ -724,6 +724,12 @@ RSpec.describe User, type: :model do
         end
       end
 
+      it "does not enqueue with a non-registered user" do
+        sidekiq_assert_no_enqueued_jobs(only: Users::SubscribeToMailchimpNewsletterWorker) do
+          user.update(registered: false)
+        end
+      end
+
       it "does not enqueue when the email address or subscription status has not changed" do
         # The trait replaces the method with a dummy, but we need the actual method for this test.
         user = described_class.find(create(:user, :ignore_mailchimp_subscribe_callback).id)

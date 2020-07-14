@@ -1276,6 +1276,7 @@ ActiveRecord::Schema.define(version: 2020_07_12_150048) do
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
     t.boolean "registered", default: true
+    t.datetime "registered_at"
     t.datetime "remember_created_at"
     t.string "remember_token"
     t.float "reputation_modifier", default: 1.0
