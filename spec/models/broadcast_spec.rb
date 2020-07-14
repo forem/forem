@@ -2,13 +2,11 @@ require "rails_helper"
 
 RSpec.describe Broadcast, type: :model do
   it { is_expected.to validate_presence_of(:title) }
-  it { is_expected.to validate_presence_of(:type_of) }
+  it { is_expected.to validate_presence_of(:broadcastable_type) }
+  it { is_expected.to validate_presence_of(:broadcastable_id) }
   it { is_expected.to validate_presence_of(:processed_html) }
-  it { is_expected.to validate_inclusion_of(:type_of).in_array(%w[Announcement Welcome]) }
-  it { is_expected.to validate_inclusion_of(:banner_style).in_array(%w[default brand success warning error]) }
-  it { is_expected.to validate_uniqueness_of(:title).scoped_to(:type_of) }
-
-  it { is_expected.to have_many(:notifications) }
+  it { is_expected.to validate_inclusion_of(:broadcastable_type).in_array(%w[Announcement Welcome]) }
+  it { is_expected.to validate_uniqueness_of(:title).scoped_to(:broadcastable_type) }
 
   it "validates that only one Broadcast with a type_of Announcement can be active" do
     create(:announcement_broadcast)
