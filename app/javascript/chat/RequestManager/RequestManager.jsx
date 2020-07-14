@@ -134,6 +134,9 @@ export default class RequestManager extends Component {
       <div className="activechatchannel__activeArticle activesendrequest">
         <div className="p-4">
           <HeaderSection />
+          {channelJoiningRequests.length <= 0 && userInvitations.length <= 0 ? (
+            <p>You have no pending invitations/Joining Requests.</p>
+          ) : null}
           <ChannelRequestSection
             channelRequests={channelJoiningRequests}
             handleRequestRejection={this.handleRejectJoingRequest}
