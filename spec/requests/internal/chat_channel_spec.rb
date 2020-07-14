@@ -29,5 +29,6 @@ RSpec.describe "/internal/chat_channels", type: :request do
     end
 
     expect(user.chat_channel_memberships.count).to eq 0
+    expect(ChatChannel.last.pending_users).to include(user)
   end
 end
