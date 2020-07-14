@@ -3,7 +3,7 @@
     <div class="list-group-flush w-100">
     <a class="list-group-item flex-column align-items-start">
       <h3 class="mb-2">Title: <%= @broadcast.title %></h3>
-      <h3>Broadcast Type: <%= @broadcast.type_of %></h3>
+      <h3>Broadcast Type: <%= @broadcast.broadcastable_type %></h3>
       <h3>Content:</h3>
       <p>
         <%= @broadcast.processed_html %>

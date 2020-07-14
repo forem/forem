@@ -2,13 +2,13 @@
   <div class="col">
     <ul class="nav nav-pills">
       <li class="nav-item">
-        <%= link_to "All", internal_broadcasts_path, class: "nav-link #{'active' if params[:type_of].blank?}" %>
+        <%= link_to "All", internal_broadcasts_path, class: "nav-link #{'active' if params[:broadcastable_type].blank?}" %>
       </li>
       <li class="nav-item">
-        <%= link_to "Announcement", internal_broadcasts_path(type_of: :announcement), class: "nav-link #{'active' if params[:type_of] == 'announcement'}" %>
+        <%= link_to "Announcement", internal_broadcasts_path(broadcastable_type: :announcement), class: "nav-link #{'active' if params[:broadcastable_type] == 'announcement'}" %>
       </li>
       <li class="nav-item">
-        <%= link_to "Welcome", internal_broadcasts_path(type_of: :welcome), class: "nav-link #{'active' if params[:type_of] == 'welcome'}" %>
+        <%= link_to "Welcome", internal_broadcasts_path(broadcastable_type: :welcome), class: "nav-link #{'active' if params[:broadcastable_type] == 'welcome'}" %>
       </li>
     </ul>
   </div>
