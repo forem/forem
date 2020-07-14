@@ -26,30 +26,39 @@
 
         <% VerifySetupCompleted::MANDATORY_CONFIGS.each do |config_key| %>
           <!-- we need to list the config as separate fields if the data structure is a Hash -->
-          <% if SiteConfig.send(config_key).is_a?(Hash) %>
+          <% if SiteConfig.public_send(config_key).is_a?(Hash) %>
             <%= internal_config_label "#{config_key.to_s}" %>
             <div class="form-group">
               <%= f.fields_for config_key do |a_field| %>
-                <% SiteConfig.send(config_key).each do |key, value| %>
+                <% SiteConfig.public_send(config_key).each do |key, value| %>
                   <div>
                     <%= internal_config_label "#{key}" %>
                     <%= a_field.text_field key,
                                            class: "form-control",
-                                           value: SiteConfig.send(config_key)[key],
+                                           value: SiteConfig.public_send(config_key)[key],
                                            placeholder: "" %>
                     <div class="alert alert-info"><%= key %> <%= config_key %></div>
                   </div>
                   <% end %>
               <% end %>
             </div>
+          <% elsif SiteConfig.public_send(config_key).is_a?(Array) %>
+            <div class="form-group">
+              <%= internal_config_label config_key %>
+              <%= f.text_field config_key,
+                               class: "form-control",
+                               value: SiteConfig.public_send(config_key).join(","),
+                               placeholder: Constants::SITE_CONFIG_DETAILS[config_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[config_key][:description] %></div>
+            </div>
           <% else %>
             <div class="form-group">
               <%= internal_config_label config_key %>
               <%= f.text_field config_key,
                                class: "form-control",
-                               value: SiteConfig.send(config_key),
-                               placeholder: site_config_description[config_key][:placeholder] %>
-              <div class="alert alert-info"><%= site_config_description[config_key][:description] %></div>
+                               value: SiteConfig.public_send(config_key),
+                               placeholder: Constants::SITE_CONFIG_DETAILS[config_key][:placeholder] %>
+              <div class="alert alert-info"><%= Constants::SITE_CONFIG_DETAILS[config_key][:description] %></div>
             </div>
           <% end %>
         <% end %>
@@ -61,7 +70,6 @@
                 <div class="alert alert-info">Type the sentence: My username is @your_username and this action is 100% safe and appropriate.</div>
                 <%= f.submit "Update Site Configuration", class: "btn btn-danger btn-lg" %>
               </div>
-
         <% end %>
       <% end %>
     </div>
@@ -694,7 +702,7 @@
                 <%= internal_config_label key %>
                 <%= f.number_field key,
                                    class: "form-control",
-                                   value: SiteConfig.send(key),
+                                   value: SiteConfig.public_send(key),
                                    min: field_hash[:min],
                                    placeholder: field_hash[:placeholder] %>
                 <div class="alert alert-info"><%= field_hash[:description] %></div>
