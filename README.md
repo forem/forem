@@ -1,8 +1,7 @@
 <div align="center">
   <br>
-  <img alt="DEV" src="https://thepracticaldev.s3.amazonaws.com/i/ro3538by3b2fupbs63sr.png" width="500px">
-  <h1>DEV Community 👩‍💻👨‍💻</h1>
-  <strong>The Human Layer of the Stack</strong>
+  <h1>Forem 🌱</h1>
+  <strong>For Empowering Community</strong>
 </div>
 <br>
 <p align="center">
