@@ -58,6 +58,12 @@ ActiveRecord::Schema.define(version: 2020_07_12_150048) do
     t.index ["visit_token"], name: "index_ahoy_visits_on_visit_token", unique: true
   end
 
+  create_table "announcements", force: :cascade do |t|
+    t.string "banner_style"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "api_secrets", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "description", null: false
@@ -293,11 +299,14 @@ ActiveRecord::Schema.define(version: 2020_07_12_150048) do
     t.datetime "active_status_updated_at"
     t.string "banner_style"
     t.text "body_markdown"
+    t.integer "broadcastable_id"
+    t.string "broadcastable_type"
     t.datetime "created_at"
     t.text "processed_html"
     t.string "title"
     t.string "type_of"
     t.datetime "updated_at"
+    t.index ["broadcastable_type", "broadcastable_id"], name: "index_broadcasts_on_broadcastable_type_and_broadcastable_id", unique: true
     t.index ["title", "type_of"], name: "index_broadcasts_on_title_and_type_of", unique: true
   end
 
@@ -1340,6 +1349,11 @@ ActiveRecord::Schema.define(version: 2020_07_12_150048) do
     t.index ["oauth_application_id"], name: "index_webhook_endpoints_on_oauth_application_id"
     t.index ["target_url"], name: "index_webhook_endpoints_on_target_url", unique: true
     t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
+  end
+
+  create_table "welcome_notifications", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   add_foreign_key "api_secrets", "users", on_delete: :cascade

@@ -159,7 +159,9 @@
         }
 
         fetch('/async_info/shell_version').then(response => response.json()).then(json => {
-          caches.match('/async_info/shell_version').then(cachedResponse => cachedResponse.json()).then(cacheJson => {
+          caches.match('/async_info/shell_version')
+          .then(cachedResponse => (cachedResponse === undefined) ? {} : cachedResponse.json())
+          .then(cacheJson => {
             if (cacheJson['version'] != json['version']) {
               caches.open(staticCacheName)
               .then(cache => cache.addAll([
