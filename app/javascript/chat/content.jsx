@@ -30,6 +30,7 @@ export default class Content extends Component {
     }).isRequired,
     fullscreen: PropTypes.bool.isRequired,
     onTriggerContent: PropTypes.func.isRequired,
+    updateRequestCount: PropTypes.func.isRequired,
   };
 
   render() {
@@ -100,6 +101,7 @@ const Display = ({ resource }) => {
       return (
         <RequestManager
           resource={resource.data}
+          updateRequestCount={resource.updateRequestCount}
           handleRequestRejection={resource.handleRequestRejection}
           handleRequestApproval={resource.handleRequestApproval}
         />

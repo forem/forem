@@ -5,6 +5,8 @@ import { addSnackbarItem } from '../../Snackbar';
 import {
   getChannelRequestInfo,
   updateMembership,
+  acceptJoiningRequest,
+  rejectJoiningRequest,
 } from '../actions/requestActions';
 import HeaderSection from './HeaderSection';
 import ChannelRequestSection from './ChannelRequestSection';
@@ -18,6 +20,7 @@ export default class RequestManager extends Component {
     activeMembershipId: PropTypes.number.isRequired,
     handleRequestRejection: PropTypes.func.isRequired,
     handleRequestApproval: PropTypes.func.isRequired,
+    updateRequestCount: PropTypes.func.isRequired,
   };
 
   constructor(props) {
@@ -27,6 +30,7 @@ export default class RequestManager extends Component {
       requests: props.resource,
       handleRequestRejection: props.handleRequestRejection,
       handleRequestApproval: props.handleRequestApproval,
+      updateRequestCount: props.updateRequestCount,
       channelJoiningRequests: [],
       userInvitations: [],
     };
@@ -37,6 +41,7 @@ export default class RequestManager extends Component {
       requests: this.props.resource,
       handleRequestRejection: this.props.handleRequestRejection,
       handleRequestApproval: this.props.handleRequestApproval,
+      updateRequestCount: this.props.updateRequestCount,
     });
   }
 
@@ -55,7 +60,7 @@ export default class RequestManager extends Component {
     const { membershipId, userAction } = e.target.dataset;
     const response = await updateMembership(membershipId, userAction);
     const { success, membership, message } = response;
-
+    const { updateRequestCount } = this.state;
     if (success) {
       this.setState((prevState) => {
         const filteredUserInvitations = prevState.userInvitations.filter(
@@ -67,7 +72,55 @@ export default class RequestManager extends Component {
           userInvitations: filteredUserInvitations,
         };
       });
+      updateRequestCount();
+      addSnackbarItem({ message });
+    } else {
+      addSnackbarItem({ message });
+    }
+  };
 
+  handleAcceptJoingRequest = async (e) => {
+    const { membershipId, channelId } = e.target.dataset;
+    const response = await acceptJoiningRequest(channelId, membershipId);
+    const { success, message, membership } = response;
+    const { updateRequestCount } = this.state;
+
+    if (success) {
+      this.setState((prevState) => {
+        const formattedChannelJoiningRequests = prevState.channelJoiningRequests.filter(
+          (channelJoiningRequest) =>
+            channelJoiningRequest.membership_id !== membership.membership_id,
+        );
+        return {
+          channelJoiningRequests: formattedChannelJoiningRequests,
+        };
+      });
+
+      updateRequestCount();
+      addSnackbarItem({ message });
+    } else {
+      addSnackbarItem({ message });
+    }
+  };
+
+  handleRejectJoingRequest = async (e) => {
+    const { membershipId, channelId } = e.target.dataset;
+    const response = await rejectJoiningRequest(channelId, membershipId);
+    const { success, message } = response;
+    const { updateRequestCount } = this.state;
+
+    if (success) {
+      this.setState((prevState) => {
+        const formattedChannelJoiningRequests = prevState.channelJoiningRequests.filter(
+          (channelJoiningRequest) =>
+            channelJoiningRequest.membership_id !== Number(membershipId),
+        );
+        return {
+          channelJoiningRequests: formattedChannelJoiningRequests,
+        };
+      });
+
+      updateRequestCount();
       addSnackbarItem({ message });
     } else {
       addSnackbarItem({ message });
@@ -75,12 +128,7 @@ export default class RequestManager extends Component {
   };
 
   render() {
-    const {
-      handleRequestRejection,
-      handleRequestApproval,
-      channelJoiningRequests,
-      userInvitations,
-    } = this.state;
+    const { channelJoiningRequests, userInvitations } = this.state;
 
     return (
       <div className="activechatchannel__activeArticle activesendrequest">
@@ -88,8 +136,8 @@ export default class RequestManager extends Component {
           <HeaderSection />
           <ChannelRequestSection
             channelRequests={channelJoiningRequests}
-            handleRequestRejection={handleRequestRejection}
-            handleRequestApproval={handleRequestApproval}
+            handleRequestRejection={this.handleRejectJoingRequest}
+            handleRequestApproval={this.handleAcceptJoingRequest}
           />
           <PersonalInvitations
             userInvitations={userInvitations}

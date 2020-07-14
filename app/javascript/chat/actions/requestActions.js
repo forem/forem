@@ -1,32 +1,35 @@
 import { request } from '../../utilities/http';
 
-export function rejectJoiningRequest(
-  channelId,
-  membershipId,
-  successCb,
-  failureCb,
-) {
-  request(`/chat_channel_memberships/remove_membership`, {
-    method: 'POST',
-    body: {
-      status: 'pending',
-      chat_channel_id: channelId,
-      membership_id: membershipId,
+/**
+ *
+ * @param {channelId} channelId
+ * @param {membershipId} membershipId
+ */
+export async function rejectJoiningRequest(channelId, membershipId) {
+  const response = await request(
+    `/chat_channel_memberships/remove_membership`,
+    {
+      method: 'POST',
+      body: {
+        status: 'pending',
+        chat_channel_id: channelId,
+        membership_id: membershipId,
+      },
+      credentials: 'same-origin',
     },
-    credentials: 'same-origin',
-  })
-    .then((response) => response.json())
-    .then(successCb)
-    .catch(failureCb);
+  );
+
+  return response.json();
 }
 
-export function acceptJoiningRequest(
-  channelId,
-  membershipId,
-  successCb,
-  failureCb,
-) {
-  request(`/chat_channel_memberships/add_membership`, {
+/**
+ * This function is responsible for the Accept joining request for channel
+ * @param {number} channelId
+ * @param {number} membershipId
+ */
+
+export async function acceptJoiningRequest(channelId, membershipId) {
+  const response = await request(`/chat_channel_memberships/add_membership`, {
     method: 'POST',
     body: {
       chat_channel_id: channelId,
@@ -36,10 +39,9 @@ export function acceptJoiningRequest(
       },
     },
     credentials: 'same-origin',
-  })
-    .then((response) => response.json())
-    .then(successCb)
-    .catch(failureCb);
+  });
+
+  return response.json();
 }
 
 export function sendChannelRequest(id, successCb, failureCb) {
