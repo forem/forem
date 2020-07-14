@@ -15,7 +15,7 @@ the administrative overhead.
 Some bugs can only be seen for users with specific roles. You will need to
 change the role to reproduce a problem.
 
-## How do we implement roles in DEV.to?
+## How do we implement roles in Forem?
 
 Roles are implemented in this application using [Rolify][1]. The list of roles
 can be found in [app/models/role.rb][2] and you can search for [has_role in the
