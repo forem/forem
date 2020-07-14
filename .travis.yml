@@ -36,10 +36,6 @@ env:
     - KNAPSACK_PRO_LOG_LEVEL=info
     - KNAPSACK_PRO_CI_NODE_TOTAL=3
     - COVERAGE_REPORTS_TOTAL=4
-  jobs:
-    - KNAPSACK_PRO_CI_NODE_INDEX=0
-    - KNAPSACK_PRO_CI_NODE_INDEX=1
-    - KNAPSACK_PRO_CI_NODE_INDEX=2
 branches:
   only:
     - master
@@ -59,9 +55,8 @@ script:
   - bundle config set path 'vendor/bundle'
   - bundle install --local --jobs=2
   - yarn install --frozen-lockfile
-  - bundle exec rails db:create
+  - bundle exec rails db:create db:schema:load
   - bundle exec rails webpacker:compile
-  - bundle exec rails db:schema:load
   - './cc-test-reporter before-build'
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then yarn test --colors; fi
   - if [ "$KNAPSACK_PRO_CI_NODE_INDEX" == "0" ]; then ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json; fi
@@ -84,6 +79,21 @@ notifications:
 
 jobs:
   include:
+    - stage: Warm cache
+      workspaces:
+        create:
+          name: ws1
+    - stage: Test
+      workspaces:
+        use: ws1
+      name: "Node 0"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=0
+    - stage: Test
+      name: "Node 1"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=1
+    - stage: Test
+      name: "Node 2"
+      env: KNAPSACK_PRO_CI_NODE_INDEX=2
     - stage: Deploy
       if: type != pull_request
       script: skip
