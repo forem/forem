@@ -1,7 +1,7 @@
 {
   "name": "Forem Docs",
   "root": "./",
-  "logo": "devblacksquarelogo.svg",
+  "logo": "seedling.png",
   "host": "0.0.0.0",
   "header_links": [
     {
