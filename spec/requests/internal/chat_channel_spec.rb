@@ -24,7 +24,8 @@ RSpec.describe "/internal/chat_channels", type: :request do
 
   describe "DELETE /internal/chat_channels/:id/remove_user" do
     it "removes the user from the chat channel" do
-      delete "/internal/chat_channels/#{user.id}/remove_user"
+      delete "/internal/chat_channels/#{user.id}/remove_user",
+             params: { chat_channel: { usernames_string: user.username.to_s } }
     end
 
     expect(user.chat_channel_memberships.count).to eq 0
