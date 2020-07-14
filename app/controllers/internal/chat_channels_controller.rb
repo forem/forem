@@ -38,7 +38,7 @@ module Internal
     end
 
     def user_by_param
-      User.where(username: chat_channel_params[:username_string])
+      User.where(username: chat_channel_params[:usernames_string])
     end
 
     def chat_channel_params
