@@ -1,4 +1,4 @@
-module ChatChannelRequestManagerHelper
+module ChatChannelMembershipsHelper
   def formatted_membership_user(memberships)
     memberships.map do |membership|
       {

@@ -1,5 +1,7 @@
 class ChatChannelMembershipsController < ApplicationController
-  after_action :verify_authorized, except: :join_channel
+  before_action :authenticate_user!
+  after_action :verify_authorized, except: %w[join_channel request_details]
+
   include MessagesHelper
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
@@ -113,6 +115,13 @@ class ChatChannelMembershipsController < ApplicationController
     else
       render json: { success: true, message: message },  status: :ok
     end
+  end
+
+  def request_details
+    mod_memberships = ChatChannelMembership.where(user_id: current_user.id, role: "mod", status: "active")
+    user_chat_channels = mod_memberships.map(&:chat_channel)
+    @memberships = user_chat_channels.map(&:requested_memberships).flatten
+    @user_invitations = ChatChannelMembership.where(user_id: current_user.id, status: %w[pending]).order("created_at DESC")
   end
 
   private

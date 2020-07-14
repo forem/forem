@@ -298,9 +298,7 @@ Rails.application.routes.draw do
   post "/chat_channel_memberships/create_membership_request" => "chat_channel_memberships#create_membership_request"
   patch "/chat_channel_memberships/leave_membership/:id" => "chat_channel_memberships#leave_membership"
   patch "/chat_channel_memberships/update_membership/:id" => "chat_channel_memberships#update_membership"
-
-  # Chat channel Membership Request manager
-  get "/channel_request_info/" => "chat_channel_request_manager#request_details"
+  get "/channel_request_info/" => "chat_channel_memberships#request_details"
 
   get "/social_previews/article/:id" => "social_previews#article", :as => :article_social_preview
   get "/social_previews/user/:id" => "social_previews#user", :as => :user_social_preview

@@ -338,4 +338,26 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       end
     end
   end
+
+  describe "GET /request_details" do
+    context "when user signed in" do
+      it "return success" do
+        sign_in second_user
+        ChatChannelMembership.create(user_id: second_user.id, chat_channel_id: chat_channel.id, status: "pending")
+        get "/channel_request_info", as: :json
+
+        expect(response.status).to eq(200)
+        expect(response.parsed_body["result"].keys).to eq(%w[channel_joining_memberships user_joining_requests])
+      end
+    end
+
+    context "when user is logged out" do
+      it "return not authorized" do
+        sign_out second_user
+        get "/channel_request_info", as: :json
+
+        expect(response.status).to eq(401)
+      end
+    end
+  end
 end
