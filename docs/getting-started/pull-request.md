@@ -10,7 +10,7 @@ title: Preparing a Pull Request
   [Draft PR](https://github.blog/2019-02-14-introducing-draft-pull-requests/)
   feature.
 - Make sure all tests pass and add additional tests for the code you submit.
-  [More info here](https://docs.dev.to/tests/).
+  [More info here](https://docs.forem.com/tests/).
 - Document your reasoning behind the changes. Explain why you wrote the code in
   the way you did. The code should explain what it does.
 - If there's an existing issue related to the pull request, reference to it by

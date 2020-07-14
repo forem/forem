@@ -58,7 +58,7 @@ with Podman. You can install it by following these
 
 1. Fork DEV's repository, e.g. <https://github.com/forem/forem/fork>
 1. Clone your forked repository, eg.
-   `git clone https://github.com/<your-username>/dev.to.git`
+   `git clone https://github.com/<your-username>/forem.git`
 1. Set up your environment variables/secrets
 
    - Take a look at `Envfile`. This file lists all the `ENV` variables we use

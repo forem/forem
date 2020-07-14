@@ -49,7 +49,7 @@ Alternatively, you can use Yarn:
 yarn global add gitdocs
 ```
 
-Once installed, you should run `gitdocs serve` from the root of the dev.to
+Once installed, you should run `gitdocs serve` from the root of the `forem`
 project or from the `/docs` directory.
 
 ```shell

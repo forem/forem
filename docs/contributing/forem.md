@@ -48,7 +48,7 @@ on the issue.
 project. Forem is an Open Source, community-driven project. Therefore, providing
 and maintaining quality documentation is one of our most important jobs. You can
 find more information in our
-[docs guide](https://docs.dev.to/contributing/docs)!
+[docs guide](https://docs.forem.com/contributing/docs)!
 
 **Refactoring**, which involves improving the code without modifying behavior,
 is a great place to help out! Generally speaking, you can rely on existing tests
@@ -71,9 +71,9 @@ helpful. As always, when in doubt, ask!
 
 ### How to contribute
 
-1. [Fork the project](https://docs.dev.to/getting-started/forking/) and clone it
-   to your local machine. Follow the
-   [installation guide](https://docs.dev.to/installation/)!
+1. [Fork the project](https://docs.forem.com/getting-started/forking/) and clone
+   it to your local machine. Follow the
+   [installation guide](https://docs.forem.com/installation/)!
 2. Create a branch with your GitHub username and the ID of the
    [issue](https://github.com/forem/forem/issues), for example:
    `git checkout -b USERNAME/some-new-feature-1234`
@@ -81,7 +81,7 @@ helpful. As always, when in doubt, ask!
    [good commit message](https://chris.beams.io/posts/git-commit/):
    `git commit -m 'Add some feature'`
 4. Push to the branch: `git push -u origin USERNAME/some-new-feature-1234`
-5. [Create a pull request](https://docs.dev.to/getting-started/pull-request/)
+5. [Create a pull request](https://docs.forem.com/getting-started/pull-request/)
    for your branch. 🎉
 
 ## Contribution guidelines
@@ -100,7 +100,7 @@ discussion._
 
 Some areas of the project could use updated tests, and new features should
 always include test coverage. Please give our
-[testing guide](https://docs.dev.to/tests/) a read!
+[testing guide](https://docs.forem.com/tests/) a read!
 
 ### Code quality
 
@@ -133,7 +133,7 @@ encourages more thoughtful code!
   [Draft PR](https://github.blog/2019-02-14-introducing-draft-pull-requests/)
   feature.
 - Make sure all tests pass and add additional tests for the code you submit.
-  [More info here](https://docs.dev.to/tests/).
+  [More info here](https://docs.forem.com/tests/).
 - Document your reasoning behind the changes. Explain why you wrote the code in
   the way you did. The code should explain what it does.
 - If there's an existing issue, reference to it by adding something like

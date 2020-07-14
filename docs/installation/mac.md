@@ -197,8 +197,8 @@ your local Elasticsearch installation, for example:
 1. Fork DEV's repository, e.g. <https://github.com/forem/forem/fork>
 2. Clone your forked repository in one of two ways:
 
-   - e.g. with HTTPS: `git clone https://github.com/<your-username>/dev.to.git`
-   - e.g. with SSH: `git clone git@github.com:<your-username>/dev.to.git`
+   - e.g. with HTTPS: `git clone https://github.com/<your-username>/forem.git`
+   - e.g. with SSH: `git clone git@github.com:<your-username>/forem.git`
 
 3. Install bundler with `gem install bundler`
 4. Set up your environment variables/secrets

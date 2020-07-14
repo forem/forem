@@ -15,7 +15,7 @@ Once you've got a fork on GitHub, you can clone your fork to run the project
 locally:
 
 ```shell
-git clone https://github.com/<your-username>/dev.to.git
+git clone https://github.com/<your-username>/forem.git
 ```
 
 As time goes on, you may need to refresh your fork. If you have trouble with

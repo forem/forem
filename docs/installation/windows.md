@@ -155,9 +155,9 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
 1. Fork DEV's repository, eg. <https://github.com/forem/forem/fork>
 1. Clone your forked repository, eg.
-   `git clone https://github.com/<your-username>/dev.to.git`
-1. Open the cloned dev.to folder in terminal with `cd dev.to`. Next, install
-   Ruby with the following commands:
+   `git clone https://github.com/<your-username>/forem.git`
+1. Open the cloned forem folder in terminal with `cd forem`. Next, install Ruby
+   with the following commands:
 
    ```shell
    rbenv install $(cat .ruby-version)
