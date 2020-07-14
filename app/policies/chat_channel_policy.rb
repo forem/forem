@@ -40,7 +40,7 @@ class ChatChannelPolicy < ApplicationPolicy
   end
 
   def join_channel_invitation?
-    record.present? && user.id && record.discoverable
+    record.present? && user.id
   end
 
   def set_channel?
