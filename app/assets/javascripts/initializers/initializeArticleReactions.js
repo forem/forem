@@ -40,12 +40,12 @@ function hasUserReacted(reactionName) {
 }
 
 function getNumReactions(reactionName) {
-  var num = document.getElementById('reaction-number-' + reactionName)
-    .textContent;
-  if (num === '') {
+  const reactionEl = document.getElementById('reaction-number-' + reactionName);
+  if (!reactionEl || reactionEl.textContent === '') {
     return 0;
   }
-  return parseInt(num, 10);
+
+  return parseInt(reactionEl.textContent, 10);
 }
 
 function reactToArticle(articleId, reaction) {

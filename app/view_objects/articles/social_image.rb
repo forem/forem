@@ -3,13 +3,13 @@ module Articles
     include Rails.application.routes.url_helpers
     include CloudinaryHelper
 
+    SOCIAL_PREVIEW_MIGRATION_DATETIME = Time.zone.parse("2019-04-22T00:00:00Z")
+
     def initialize(article, **options)
       @article = article
       @height = options[:height] || 500
       @width = options[:width] || 1000
     end
-
-    SOCIAL_PREVIEW_MIGRATION_DATETIME = Time.zone.parse("2019-04-22T00:00:00Z")
 
     def url
       image = user_defined_image
