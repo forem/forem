@@ -355,7 +355,6 @@ RSpec.describe "ChatChannelMemberships", type: :request do
       it "return not authorized" do
         sign_out second_user
         get "/channel_request_info", as: :json
-
         expect(response.status).to eq(401)
       end
     end
