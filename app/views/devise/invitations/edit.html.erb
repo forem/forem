@@ -1,8 +1,11 @@
 <% title "Set your Password to Join" %>
-<div class="crayons-layout crayons-layout--limited">
-  <div class="m-4 mt-8 crayons-card p-7 align-left m-10">
+<div class="crayons-layout crayons-layout--limited mb-10" style="max-width:640px">
+  <div class="crayons-notice mt-4">
     <h1>Welcome to <%= community_name %></h1>
-    <h2><%= SiteConfig.tagline %>
+    <h3><%= SiteConfig.tagline %></h3>
+  </div>
+  <div class="mt-3 crayons-card p-7 align-left">
+    <h2>Set a password to access your account</h2>
 
     <%= form_for(resource, as: resource_name, url: invitation_path(resource_name), html: { method: :put }) do |f| %>
       <%= render "devise/shared/error_messages", resource: resource %>

@@ -20,18 +20,15 @@
     <h1>Great to have you</h1>
   <% end %>
   <div class="links">
-    <div class="flex flex-col m:flex-row justify-center">
-      <%= render partial: "shared/authentication/providers_registration_form" %>
-    </div>
-    <p class="pt-6">We require social authemtication <em>for registration</em> to prevent abuse.</p>
+    <%= render partial: "shared/authentication/providers_registration_form" %>
 
-    <p class="pt-6">Do you have email/password sign-in set up for an existing account? <a href="#" id="show-password-sign-in">Click here</a>.</p>
 
-    <div id="sign-in-password-form" class="m-4 mt-8 crayons-card p-7 align-left" style="display:none">
+    <div id="sign-in-password-form" class="mt-7 crayons-card p-7 align-left mx-auto" style="max-width:490px;">
+        <p class="pb-4 fw-bold">If you have an existing password set up...</p>
       <%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
         <div class="crayons-field">
           <%= f.label :email, class: "crayons-field__label" %>
-          <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "crayons-textfield" %>
+          <%= f.email_field :email, autocomplete: "email", class: "crayons-textfield" %>
         </div>
 
         <div class="field">
@@ -46,7 +43,7 @@
           </div>
         <% end %>
 
-        <div class="actions">
+        <div class="actions pt-3">
           <%= f.submit "Log in", class: "crayons-btn" %>
         </div>
       <% end %>
