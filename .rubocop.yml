@@ -19,6 +19,14 @@ AllCops:
   ExtraDetails: true
   TargetRubyVersion: 2.7
 
+#################### Bundler ###########################
+
+Bundler/OrderedGems:
+  Description: >-
+                 Gems within groups in the Gemfile should be alphabetically sorted.
+  Enabled: true
+  ConsiderPunctuation: true
+
 #################### Layout ###########################
 
 # Layout/ClassStructure:

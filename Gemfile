@@ -11,8 +11,8 @@ group :production do
 end
 
 gem "active_record_union", "~> 1.3" # Adds proper union and union_all methods to ActiveRecord::Relation
-gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "acts-as-taggable-on", "~> 6.5" # A tagging plugin for Rails applications that allows for custom tagging along dynamic contexts
+gem "acts_as_follower", github: "thepracticaldev/acts_as_follower", branch: "master" # Allow any model to follow any other model
 gem "addressable", "~> 2.7" # A replacement for the URI implementation that is part of Ruby's standard library
 gem "administrate", "~> 0.14" # A Rails engine that helps you put together a super-flexible admin dashboard
 gem "ahoy_email", "~> 1.1" # Email analytics for Rails
@@ -52,8 +52,8 @@ gem "gemoji", "~> 4.0.0.rc2" # Character information and metadata for standard a
 gem "gibbon", "~> 3.3" # API wrapper for MailChimp's API
 gem "honeybadger", "~> 4.7" # Used for tracking application errors
 gem "honeycomb-beeline", "~> 2.1.1" # Monitoring and Observability gem
-gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
 gem "html_truncator", "~> 0.4" # Truncate an HTML string properly
+gem "htmlentities", "~> 4.3", ">= 4.3.4" # A module for encoding and decoding (X)HTML entities
 gem "httparty", "~> 0.18" # Makes http fun! Also, makes consuming restful web services dead easy
 gem "inline_svg", "~> 1.7" # Embed SVG documents in your Rails views and style them with CSS
 gem "jbuilder", "~> 2.10" # Create JSON structures via a Builder-style DSL
