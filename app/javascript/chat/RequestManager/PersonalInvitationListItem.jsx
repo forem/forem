@@ -5,13 +5,13 @@ const RequestListItem = ({ request, updateMembership }) => {
   return (
     <div className="crayons-card mb-6">
       <div className="crayons-card__body channel-request-card">
-        <div className="requestMessage">
+        <div className="request-message d-flex flex-wrap">
           You got invitation to join <b>{request.chat_channel_name}</b>.
         </div>
-        <div className="action">
+        <div className="request-actions">
           <button
             type="button"
-            className="crayons-btn  crayons-btn--s crayons-btn--danger"
+            className="crayons-btn  crayons-btn--s crayons-btn--danger m-2"
             onClick={updateMembership}
             data-channel-id={request.chat_channel_id}
             data-membership-id={request.membership_id}
@@ -22,7 +22,7 @@ const RequestListItem = ({ request, updateMembership }) => {
           </button>
           <button
             type="button"
-            className="crayons-btn crayons-btn--s"
+            className="crayons-btn crayons-btn--s m-2"
             onClick={updateMembership}
             data-channel-id={request.chat_channel_id}
             data-membership-id={request.membership_id}
