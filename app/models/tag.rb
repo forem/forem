@@ -6,6 +6,9 @@ class Tag < ActsAsTaggableOn::Tag
   acts_as_followable
   resourcify
 
+  # This model doesn't inherit from ApplicationRecord so this has to be included
+  include Purgeable
+  include Searchable
   ALLOWED_CATEGORIES = %w[uncategorized language library tool site_mechanic location subcommunity].freeze
 
   belongs_to :badge, optional: true
@@ -36,13 +39,9 @@ class Tag < ActsAsTaggableOn::Tag
 
   scope :eager_load_serialized_data, -> {}
 
-  include Searchable
   SEARCH_SERIALIZER = Search::TagSerializer
   SEARCH_CLASS = Search::Tag
   DATA_SYNC_CLASS = DataSync::Elasticsearch::Tag
-
-  # This model doesn't inherit from ApplicationRecord so this has to be included
-  include Purgeable
 
   # possible social previews templates for articles with a particular tag
   def self.social_preview_templates

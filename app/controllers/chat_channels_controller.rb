@@ -3,6 +3,9 @@ class ChatChannelsController < ApplicationController
   before_action :set_channel, only: %i[show update update_channel open moderate]
   after_action :verify_authorized
 
+  CHANNEL_ATTRIBUTES_FOR_SERIALIZATION = %i[id description channel_name].freeze
+  private_constant :CHANNEL_ATTRIBUTES_FOR_SERIALIZATION
+
   def index
     if params[:state] == "unopened"
       authorize ChatChannel
@@ -152,9 +155,6 @@ class ChatChannelsController < ApplicationController
 
     render json: { error: "not found", status: 404 }, status: :not_found
   end
-
-  CHANNEL_ATTRIBUTES_FOR_SERIALIZATION = %i[id description channel_name].freeze
-  private_constant :CHANNEL_ATTRIBUTES_FOR_SERIALIZATION
 
   private
 
