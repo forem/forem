@@ -13,7 +13,9 @@ RSpec.describe PathRedirect, type: :model do
       same_paths_path_redirect = build(:path_redirect, old_path: "/the-same-path", new_path: "/the-same-path")
 
       expect(same_paths_path_redirect).not_to be_valid
-      expect(same_paths_path_redirect.errors.full_messages.join).to include("the old_path cannot be the same as the new_path")
+
+      expected_error_message = "the old_path cannot be the same as the new_path"
+      expect(same_paths_path_redirect.errors.full_messages.join).to include(expected_error_message)
     end
 
     it "validates new_path is not already being redirected" do

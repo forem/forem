@@ -1808,7 +1808,7 @@ paths:
         example: 150589
     get:
       operationId: getArticleById
-      summary: A published article
+      summary: A published article by ID
       description: |
         This endpoint allows the client to retrieve a single
         published article given its `id`.
@@ -1948,6 +1948,55 @@ paths:
               -H "api-key: API_KEY" \
               -d '{"article":{"title":"Title"}}' \
               https://dev.to/api/articles/{id}
+
+  /articles/{username}/{slug}:
+    parameters:
+      - name: username
+        in: path
+        required: true
+        description: User or organization username.
+        schema:
+          type: string
+        example: devteam
+      - name: slug
+        in: path
+        required: true
+        description: Slug of the article.
+        schema:
+          type: string
+        example: for-empowering-community-2k6h
+    get:
+      operationId: getArticleByPath
+      summary: A published article by path
+      description: |
+        This endpoint allows the client to retrieve a single
+        published article given its `path`.
+      tags:
+        - articles
+      responses:
+        "200":
+          description: An article
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ArticleShow"
+              examples:
+                article-success:
+                  $ref: "#/components/examples/ArticleShow"
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/APIError"
+              examples:
+                article-not-found:
+                  $ref: "#/components/examples/ErrorNotFound"
+      x-code-samples:
+        - lang: Shell
+          label: curl
+          source: |
+            curl https://dev.to/bytesized/byte-sized-episode-2-the-creation-of-graph-theory-34g1
 
   /articles/me:
     get:

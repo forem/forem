@@ -53,7 +53,8 @@ RSpec.describe "ChatChannels", type: :request do
 
   describe "get /chat_channels?state=joining_request" do
     it "returns joining request channels" do
-      membership = ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id, status: "joining_request", role: "mod")
+      membership = ChatChannelMembership.create(chat_channel_id: invite_channel.id, user_id: user.id,
+                                                status: "joining_request", role: "mod")
       membership.chat_channel.update(discoverable: true)
       sign_in user
       get "/chat_channels?state=joining_request"

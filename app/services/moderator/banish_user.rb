@@ -33,7 +33,8 @@ module Moderator
         new_name = "spam_#{rand(1_000_000)}"
         new_username = "spam_#{rand(1_000_000)}"
       end
-      user.update_columns(name: new_name, username: new_username, old_username: user.username, profile_updated_at: Time.current)
+      user.update_columns(name: new_name, username: new_username, old_username: user.username,
+                          profile_updated_at: Time.current)
       CacheBuster.bust("/#{user.old_username}")
     end
 
@@ -42,7 +43,8 @@ module Moderator
         twitter_username: nil, github_username: nil, website_url: "", summary: "",
         location: "", education: "", employer_name: "", employer_url: "", employment_title: "",
         mostly_work_with: "", currently_learning: "", currently_hacking_on: "", available_for: "",
-        email_public: false, facebook_url: nil, youtube_url: nil, dribbble_url: nil, medium_url: nil, stackoverflow_url: nil,
+        email_public: false, facebook_url: nil, youtube_url: nil, dribbble_url: nil,
+        medium_url: nil, stackoverflow_url: nil,
         behance_url: nil, linkedin_url: nil, gitlab_url: nil, instagram_url: nil, mastodon_url: nil,
         twitch_url: nil, feed_url: nil
       )

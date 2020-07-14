@@ -19,6 +19,7 @@ module ApplicationHelper
     "#{controller_name}-#{controller.action_name}"
   end
 
+  # rubocop:disable Rails/HelperInstanceVariable
   def view_class
     if @podcast_episode_show # custom due to edge cases
       "stories stories-show podcast_episodes-show"
@@ -28,6 +29,7 @@ module ApplicationHelper
       "#{controller_name} #{controller_name}-#{controller.action_name}"
     end
   end
+  # rubocop:enable Rails/HelperInstanceVariable
 
   def title(page_title)
     derived_title = if page_title.include?(community_name)
@@ -153,14 +155,18 @@ module ApplicationHelper
 
   def logo_svg
     if SiteConfig.logo_svg.present?
-      SiteConfig.logo_svg.html_safe
+      SiteConfig.logo_svg.html_safe # rubocop:disable Rails/OutputSafety
     else
       inline_svg_tag("devplain.svg", class: "logo", size: "20% * 20%", aria: true, title: "App logo")
     end
   end
 
+  def safe_logo_url(logo)
+    logo.presence || SiteConfig.logo_png
+  end
+
   def community_name
-    @community_name ||= ApplicationConfig["COMMUNITY_NAME"]
+    @community_name ||= ApplicationConfig["COMMUNITY_NAME"] # rubocop:disable Rails/HelperInstanceVariable
   end
 
   def community_qualified_name
@@ -237,5 +243,11 @@ module ApplicationHelper
   def sanitize_and_decode(str)
     # using to_str instead of to_s to prevent removal of html entity code
     HTMLEntities.new.decode(sanitize(str).to_str)
+  end
+
+  def internal_config_label(method, content = nil)
+    content ||= method.to_s.humanize
+    content << "*" if method.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
+    label_tag("site_config_#{method}", content)
   end
 end

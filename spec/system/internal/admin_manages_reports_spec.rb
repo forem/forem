@@ -22,9 +22,13 @@ RSpec.describe "Admin manages reports", type: :system do
   context "when searching for reports" do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
-    let!(:feedback_message) { create(:feedback_message, :abuse_report, reporter_id: user.id, reported_url: "zzzzzzz999") }
+    let!(:feedback_message) do
+      create(:feedback_message, :abuse_report, reporter_id: user.id, reported_url: "zzzzzzz999")
+    end
     let!(:feedback_message2) { create(:feedback_message, :abuse_report, reporter_id: user.id, status: "Invalid") }
-    let!(:feedback_message3) { create(:feedback_message, :abuse_report, reporter_id: user2.id, reported_url: "https://obscure-example-1984.net") }
+    let!(:feedback_message3) do
+      create(:feedback_message, :abuse_report, reporter_id: user2.id, reported_url: "https://obscure-example-1984.net")
+    end
 
     before do
       clear_search_boxes

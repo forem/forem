@@ -27,7 +27,10 @@ RSpec.describe "ResponseTemplate", type: :request do
       it "returns an array of all the user's response templates" do
         total_response_templates = 2
         create_list(:response_template, total_response_templates, user: user, type_of: "personal_comment")
-        get response_templates_path, params: { type_of: "personal_comment" }, headers: { HTTP_ACCEPT: "application/json" }
+
+        headers = { HTTP_ACCEPT: "application/json" }
+        get response_templates_path, params: { type_of: "personal_comment" }, headers: headers
+
         expect(response.parsed_body.class).to eq Array
         expect(response.parsed_body.length).to eq total_response_templates
       end
@@ -35,9 +38,12 @@ RSpec.describe "ResponseTemplate", type: :request do
       it "returns only the users' response templates" do
         create(:response_template, user: nil, type_of: "mod_comment")
         create_list(:response_template, 2, user: user, type_of: "personal_comment")
-        get response_templates_path, params: { type_of: "personal_comment" }, headers: { HTTP_ACCEPT: "application/json" }
-        user_ids = JSON.parse(response.body).map { |hash| hash["user_id"] }
-        expect(user_ids).to eq [user.id, user.id]
+
+        headers = { HTTP_ACCEPT: "application/json" }
+        get response_templates_path, params: { type_of: "personal_comment" }, headers: headers
+
+        user_ids = response.parsed_body.map { |hash| hash["user_id"] }
+        expect(user_ids).to eq([user.id, user.id])
       end
 
       it "raises an error if trying to view moderator response templates" do
@@ -128,7 +134,8 @@ RSpec.describe "ResponseTemplate", type: :request do
           content: attributes[:content]
         }
       }
-      expect(response.redirect_url).to include user_settings_path(tab: "response-templates", id: ResponseTemplate.last.id)
+      expect(response.redirect_url).to include user_settings_path(tab: "response-templates",
+                                                                  id: ResponseTemplate.last.id)
     end
   end
 
@@ -145,7 +152,8 @@ RSpec.describe "ResponseTemplate", type: :request do
 
     it "redirects back to the response template" do
       patch response_template_path(response_template.id), params: { response_template: { title: "something else" } }
-      expect(response.redirect_url).to include user_settings_path(tab: "response-templates", id: ResponseTemplate.first.id)
+      expect(response.redirect_url).to include user_settings_path(tab: "response-templates",
+                                                                  id: ResponseTemplate.first.id)
     end
 
     it "shows the previously written content on a failed submission" do
