@@ -61,7 +61,7 @@ module Internal
     private
 
     def broadcast_params
-      params.permit(:title, :processed_html, :broadcastable_type, :banner_style, :active)
+      params.permit(:title, :processed_html, :broadcastable_type, :broadcastable_id, :banner_style, :active)
     end
 
     def authorize_admin
