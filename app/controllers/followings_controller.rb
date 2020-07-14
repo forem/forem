@@ -2,6 +2,9 @@ class FollowingsController < ApplicationController
   before_action :authenticate_user!
   before_action -> { limit_per_page(default: 80, max: 1000) }
 
+  ATTRIBUTES_FOR_SERIALIZATION = %i[id followable_id followable_type].freeze
+  TAGS_ATTRIBUTES_FOR_SERIALIZATION = [*ATTRIBUTES_FOR_SERIALIZATION, :points].freeze
+
   def users
     relation = current_user.follows_by_type("User").
       select(ATTRIBUTES_FOR_SERIALIZATION).
@@ -30,10 +33,8 @@ class FollowingsController < ApplicationController
     @followed_podcasts = load_follows_and_paginate(relation)
   end
 
-  ATTRIBUTES_FOR_SERIALIZATION = %i[id followable_id followable_type].freeze
   private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
-  TAGS_ATTRIBUTES_FOR_SERIALIZATION = [*ATTRIBUTES_FOR_SERIALIZATION, :points].freeze
   private_constant :TAGS_ATTRIBUTES_FOR_SERIALIZATION
 
   private
