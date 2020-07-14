@@ -1,4 +1,4 @@
-<% SiteConfig.social_media_handles.compact.each do |social_media_type, handle| %>
+<% SiteConfig.social_media_handles.select { |_k, v| v.present? }.each do |social_media_type, handle| %>
   <a
     href="<%= "https://#{social_media_type}.com/#{handle}" %>"
     target="_blank"
