@@ -1,6 +1,6 @@
 module ChatChannelRequestManagerHelper
   def formatted_membership_user(memberships)
-    memberships.includes(:user).map do |membership|
+    memberships.map do |membership|
       {
         name: membership.user.name,
         username: membership.user.username,
@@ -8,7 +8,9 @@ module ChatChannelRequestManagerHelper
         membership_id: membership.id,
         role: membership.role,
         status: membership.status,
-        image: ProfileImage.new(membership.user).get(width: 90)
+        image: ProfileImage.new(membership.user).get(width: 90),
+        chat_channel_name: membership.chat_channel.channel_name,
+        chat_channel_id: membership.chat_channel.id
       }
     end
   end

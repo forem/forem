@@ -2,7 +2,7 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import Article from './article';
 import ChannelRequest from './channelRequest';
-import RequestManager from './requestManager';
+import RequestManager from './RequestManager/RequestManager';
 import ChatChannelSettings from './ChatChannelSettings/ChatChannelSettings';
 
 const smartSvgIcon = (content, d) => (
@@ -100,6 +100,7 @@ const Display = ({ resource }) => {
       return (
         <RequestManager
           resource={resource.data}
+          activeMembershipId={resource.activeMembershipId}
           handleRequestRejection={resource.handleRequestRejection}
           handleRequestApproval={resource.handleRequestApproval}
         />

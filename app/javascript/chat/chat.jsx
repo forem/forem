@@ -934,6 +934,7 @@ export default class Chat extends Component {
       } else if (content === 'sidecar-joining-request-manager') {
         this.setActiveContent({
           data: this.state.joiningRequests,
+          activeMembershipId: activeChannel.id,
           type_of: 'channel-request-manager',
           handleRequestRejection: this.handleRequestRejection,
           handleRequestApproval: this.handleRequestApproval,
@@ -1225,17 +1226,16 @@ export default class Chat extends Component {
       if (state.inviteChannels.length > 0) {
         invitesButton = (
           <div className="chat__channelinvitationsindicator">
-            <a
-              href="/chat_channel_memberships"
+            <button
               onClick={this.triggerActiveContent}
-              data-content="sidecar-chat_channel_memberships"
+              data-content="sidecar-joining-request-manager"
               type="button"
             >
               <span role="img" aria-label="emoji">
                 👋
               </span>{' '}
               New Invitations!
-            </a>
+            </button>
           </div>
         );
       }

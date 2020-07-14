@@ -1,14 +1,12 @@
 class ChatChannelRequestManagerController < ApplicationController
-  after_action :verify_authorized
-
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   def request_details
-    @membership = ChatChannelMembership.find_by(id: params[:membership_id], user_id: current_user.id)
-    authorize @membership
-    @channel = @membership.chat_channel
-    @user_joining_requests = ChatChannelMembership.where(user_id: current_user.id, status: %w[joining_request pending])
+    mod_memberships = ChatChannelMembership.where(user_id: current_user.id, role: "mod", status: "active")
+    user_chat_channels = mod_memberships.map(&:chat_channel)
+    @memberships = user_chat_channels.map(&:requested_memberships).flatten
+    @user_invitations = ChatChannelMembership.where(user_id: current_user.id, status: %w[pending]).order("created_at DESC")
   end
 
   private

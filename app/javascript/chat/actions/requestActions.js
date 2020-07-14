@@ -56,3 +56,38 @@ export function sendChannelRequest(id, successCb, failureCb) {
     .then(successCb)
     .catch(failureCb);
 }
+
+/**
+ * This function will get all the request realted to user and channel
+ * @param {number} membershipId
+ */
+
+export async function getChannelRequestInfo(membershipId) {
+  const response = await request(`/channel_request_info/${membershipId}`, {
+    method: 'GET',
+    credentials: 'same-origin',
+  });
+
+  return response.json();
+}
+
+/**
+ * This function handle user action on chat channel invitations
+ *
+ * @param {number} membershipId
+ * @param {string} userAction
+ */
+
+export async function updateMembership(membershipId, userAction) {
+  const response = await request(`/chat_channel_memberships/${membershipId}`, {
+    method: 'PUT',
+    credentials: 'same-origin',
+    body: {
+      chat_channel_membership: {
+        user_action: userAction,
+      },
+    },
+  });
+
+  return response.json();
+}
