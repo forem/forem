@@ -24,8 +24,4 @@ class Campaign
   def active?
     sidebar_enabled?
   end
-
-  def main_tag
-    featured_tags.first
-  end
 end

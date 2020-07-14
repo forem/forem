@@ -10,4 +10,8 @@ class CampaignDecorator < ApplicationDecorator
 
     img
   end
+
+  def main_tag
+    @main_tag ||= featured_tags.first
+  end
 end

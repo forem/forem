@@ -1,7 +1,8 @@
+<% campaign = CampaignDecorator.new(Campaign.current) %>
 <section class="crayons-card crayons-card--secondary">
-  <%= CampaignDecorator.new(Campaign.current).sidebar_image %>
+  <%= campaign.sidebar_image %>
   <header class="crayons-card__header">
-    <h3 class="crayons-card__header__headline"><%= link_to "Stories (#{@campaign_articles_count})", "/t/#{SiteConfig.campaign_featured_tags.first}" %></h3>
+    <h3 class="crayons-card__header__headline"><%= link_to "Stories (#{@campaign_articles_count})", "/t/#{campaign.main_tag}" %></h3>
   </header>
   <div>
     <% @latest_campaign_articles.each do |plucked_article| %>
@@ -9,7 +10,7 @@
     <% end %>
   </div>
   <div class="grid gap-2 p-4">
-    <%= link_to "Share your project", "/new/#{Campaign.current.main_tag}", class: "crayons-btn" %>
-    <%= link_to "See all posts", "/t/#{Campaign.current.main_tag}", class: "crayons-btn crayons-btn--secondary" %>
+    <%= link_to "Share your project", "/new/#{campaign.main_tag}", class: "crayons-btn" %>
+    <%= link_to "See all posts", "/t/#{campaign.main_tag}", class: "crayons-btn crayons-btn--secondary" %>
   </div>
 </section>
