@@ -25,7 +25,6 @@ export default class RequestManager extends Component {
 
     this.state = {
       requests: props.resource,
-      activeMembershipId: props.activeMembershipId,
       handleRequestRejection: props.handleRequestRejection,
       handleRequestApproval: props.handleRequestApproval,
       channelJoiningRequests: [],
@@ -38,14 +37,11 @@ export default class RequestManager extends Component {
       requests: this.props.resource,
       handleRequestRejection: this.props.handleRequestRejection,
       handleRequestApproval: this.props.handleRequestApproval,
-      activeMembershipId: this.props.activeMembershipId,
     });
   }
 
   componentDidMount() {
-    const { activeMembershipId } = this.props;
-
-    getChannelRequestInfo(activeMembershipId).then((response) => {
+    getChannelRequestInfo().then((response) => {
       const { result } = response;
       const { user_joining_requests, channel_joining_memberships } = result;
       this.setState({

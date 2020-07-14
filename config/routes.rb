@@ -300,7 +300,7 @@ Rails.application.routes.draw do
   patch "/chat_channel_memberships/update_membership/:id" => "chat_channel_memberships#update_membership"
 
   # Chat channel Membership Request manager
-  get "/channel_request_info/:membership_id" => "chat_channel_request_manager#request_details"
+  get "/channel_request_info/" => "chat_channel_request_manager#request_details"
 
   get "/social_previews/article/:id" => "social_previews#article", :as => :article_social_preview
   get "/social_previews/user/:id" => "social_previews#user", :as => :user_social_preview

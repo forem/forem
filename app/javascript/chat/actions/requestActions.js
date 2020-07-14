@@ -59,11 +59,10 @@ export function sendChannelRequest(id, successCb, failureCb) {
 
 /**
  * This function will get all the request realted to user and channel
- * @param {number} membershipId
  */
 
-export async function getChannelRequestInfo(membershipId) {
-  const response = await request(`/channel_request_info/${membershipId}`, {
+export async function getChannelRequestInfo() {
+  const response = await request(`/channel_request_info/`, {
     method: 'GET',
     credentials: 'same-origin',
   });

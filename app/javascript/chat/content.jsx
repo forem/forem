@@ -100,7 +100,6 @@ const Display = ({ resource }) => {
       return (
         <RequestManager
           resource={resource.data}
-          activeMembershipId={resource.activeMembershipId}
           handleRequestRejection={resource.handleRequestRejection}
           handleRequestApproval={resource.handleRequestApproval}
         />

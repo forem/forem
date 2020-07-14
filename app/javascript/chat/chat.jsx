@@ -934,7 +934,6 @@ export default class Chat extends Component {
       } else if (content === 'sidecar-joining-request-manager') {
         this.setActiveContent({
           data: this.state.joiningRequests,
-          activeMembershipId: activeChannel.id,
           type_of: 'channel-request-manager',
           handleRequestRejection: this.handleRequestRejection,
           handleRequestApproval: this.handleRequestApproval,
