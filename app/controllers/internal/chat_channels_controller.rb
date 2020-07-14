@@ -42,7 +42,7 @@ module Internal
     end
 
     def chat_channel_params
-      allowed_params = %i[usernames_string channel_name username_string]
+      allowed_params = %i[usernames_string channel_name]
       params.require(:chat_channel).permit(allowed_params)
     end
   end
