@@ -12,8 +12,9 @@ later version. Please see the
 repository for the full text.
 
 Like many open source projects, we require that contributors provide us with a
-Contributor License Agreement (CLA). By submitting code to the DEV project, you
-are granting us a right to use that code under the terms of the CLA.
+Contributor License Agreement (CLA). By submitting code to the Forem/DEV
+project, you are granting us a right to use that code under the terms of the
+CLA.
 
 Our version of the CLA was adapted from the Microsoft Contributor License
 Agreement, which they generously made available to the public domain under
@@ -26,7 +27,7 @@ Please refer to the official
 [FAQ page](https://www.gnu.org/licenses/gpl-faq.html) on
 [GNU.org](https://www.gnu.org) for full details regarding this license.
 
-## Why does DEV have a CLA?
+## Why does Forem have a CLA?
 
 The Contributor License Agreement (CLA) is a legal document in which you state
 that you are entitled to contribute your code to the DEV codebase, and are
@@ -38,7 +39,7 @@ permissions at a later date.
 
 ## Am I giving away the copyright of my contributions?
 
-No. You are granting DEV a license to use and distribute your contribution
+No. You are granting Forem a license to use and distribute your contribution
 without further restriction, not assigning the copyright.
 
 ## What if I have other questions?
