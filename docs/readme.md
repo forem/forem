@@ -70,5 +70,5 @@ If you're looking for more information on contributing, check out the
 [installation]: /installation/
 [architecture]: /technical-overview/architecture/
 [contributing]: /contributing/
-[docs]: https://github.com/thepracticaldev/dev.to/tree/master/docs/
+[docs]: https://github.com/forem/forem/tree/master/docs/
 [gitdocs]: https://www.npmjs.com/package/gitdocs/

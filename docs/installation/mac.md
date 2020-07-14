@@ -194,7 +194,7 @@ your local Elasticsearch installation, for example:
 
 ## Installing DEV
 
-1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
+1. Fork DEV's repository, e.g. <https://github.com/forem/forem/fork>
 2. Clone your forked repository in one of two ways:
 
    - e.g. with HTTPS: `git clone https://github.com/<your-username>/dev.to.git`

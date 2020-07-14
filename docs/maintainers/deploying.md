@@ -33,9 +33,9 @@ minutes before the change goes live.
 ## Travis Stages
 
 The following stages can be explored in our
-[.travis.yml](https://github.com/thepracticaldev/dev.to/blob/master/.travis.yml)
-and [Procfile](https://github.com/thepracticaldev/dev.to/blob/master/Procfile).
-Our Travis CI process consists of 2 stages.
+[.travis.yml](https://github.com/forem/forem/blob/master/.travis.yml) and
+[Procfile](https://github.com/forem/forem/blob/master/Procfile). Our Travis CI
+process consists of 2 stages.
 
 1. Running our test suite in 3 parallel jobs.
 2. Deploying the application if we have merged with the master branch and the

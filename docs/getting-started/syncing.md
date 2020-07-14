@@ -12,7 +12,7 @@ to keep it updated.
 Inside your DEV directory, add a remote to the official DEV repo:
 
 ```shell
-git remote add upstream https://github.com/thepracticaldev/dev.to.git
+git remote add upstream https://github.com/forem/forem.git
 ```
 
 ## Rebasing from upstream

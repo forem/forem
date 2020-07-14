@@ -19,20 +19,20 @@ contact the team with our [abuse report form](https://dev.to/report-abuse).
 
 ### Where to contribute
 
-All [issues](https://github.com/thepracticaldev/dev.to/issues) labeled
-[ready for dev](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22)
+All [issues](https://github.com/forem/forem/issues) labeled
+[ready for dev](https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22ready+for+dev%22)
 and
-[type: bug](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aissue+is%3Aopen+label%3A%22type%3A+bug%22)
+[type: bug](https://github.com/forem/forem/issues?q=is%3Aissue+is%3Aopen+label%3A%22type%3A+bug%22)
 are up for grabs.
 
-- [good first issue](https://github.com/thepracticaldev/dev.to/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+)
+- [good first issue](https://github.com/forem/forem/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22+)
   issues are meant for newer developers.
-- [difficulty: easy](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+easy%22)
+- [difficulty: easy](https://github.com/forem/forem/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+easy%22)
   issues are usually confined to isolated areas of existing code.
-- [difficulty: medium](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+medium%22)
+- [difficulty: medium](https://github.com/forem/forem/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+medium%22)
   issues sometimes entail new features and might affect a significant area of
   the codebase, but aren't overly complex.
-- [difficulty: hard](https://github.com/thepracticaldev/dev.to/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+hard%22)
+- [difficulty: hard](https://github.com/forem/forem/issues?q=is%3Aopen+is%3Aissue+label%3A%22difficulty%3A+hard%22)
   issues are typically far-reaching, and might need architecture decisions
   during implementation. This label might also denote highly complex issues.
 
@@ -41,8 +41,8 @@ focus on changes that solve existing issues. We strongly encourage creating an
 issue before working on a PR!
 
 When in doubt, ask a
-[core team member](https://github.com/thepracticaldev/dev.to/#core-team) by
-mentioning us on the issue.
+[core team member](https://github.com/forem/forem/#core-team) by mentioning us
+on the issue.
 
 **Documentation** is almost always a great place to start contributing to a new
 project. Forem is an Open Source, community-driven project. Therefore, providing
@@ -75,7 +75,7 @@ helpful. As always, when in doubt, ask!
    to your local machine. Follow the
    [installation guide](https://docs.dev.to/installation/)!
 2. Create a branch with your GitHub username and the ID of the
-   [issue](https://github.com/thepracticaldev/dev.to/issues), for example:
+   [issue](https://github.com/forem/forem/issues), for example:
    `git checkout -b USERNAME/some-new-feature-1234`
 3. Code and commit your changes. Bonus points if you write a
    [good commit message](https://chris.beams.io/posts/git-commit/):

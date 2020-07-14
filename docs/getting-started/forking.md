@@ -22,7 +22,8 @@ As time goes on, you may need to refresh your fork. If you have trouble with
 that, you can read about [keeping a fork caught up on DEV][refresh_your_fork]!
 
 [forking]: https://help.github.com/en/articles/fork-a-repo
-[fork_dev]: https://github.com/thepracticaldev/dev.to/fork
+[fork_dev]: https://github.com/forem/forem/fork
 [forking_tutorial]: https://guides.github.com/activities/forking/
 [pull_requests]: https://help.github.com/en/articles/about-pull-requests
-[refresh_your_fork]: https://dev.to/jacobherrington/a-fool-proof-way-to-keep-your-fork-caught-up-in-git-2e2e
+[refresh_your_fork]:
+  https://dev.to/jacobherrington/a-fool-proof-way-to-keep-your-fork-caught-up-in-git-2e2e

@@ -4,9 +4,8 @@ title: Code Climate
 
 # Code Climate
 
-We are using [Code
-Climate](https://codeclimate.com/github/thepracticaldev/dev.to) to track code
-quality and coverage.
+We are using [Code Climate](https://codeclimate.com/github/forem/forem) to track
+code quality and coverage.
 
 Code Climate offers metrics regarding code quality for each individual PR,
 however, it does not calculate these metrics for the entirety of the project. If

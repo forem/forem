@@ -5,7 +5,7 @@ title: Containers
 # Installing DEV using Containers
 
 If you encounter any errors with our Container setup, please kindly
-[report any issues](https://github.com/thepracticaldev/dev.to/issues/new/choose)!
+[report any issues](https://github.com/forem/forem/issues/new/choose)!
 
 ## Installing prerequisites
 
@@ -16,7 +16,9 @@ Docker or Podman._
 
 A container engine is software that runs and manages containers on a computer.
 One of the most widely known Container Engines is Docker, but there are many
-other Container Engines available, such as [Podman](https://podman.io/), [CRI-O](https://cri-o.io/), and [LXD](https://linuxcontainers.org/lxd/introduction/).
+other Container Engines available, such as [Podman](https://podman.io/),
+[CRI-O](https://cri-o.io/), and
+[LXD](https://linuxcontainers.org/lxd/introduction/).
 
 DEV supports two Container Engines: Docker and Podman.
 
@@ -24,12 +26,16 @@ DEV supports two Container Engines: Docker and Podman.
 
 DEV can be setup with Docker and Docker Compose on macOS or Linux systems.
 
-Docker is available for many different operating systems. You may use Docker as your Container Engine on both macOS and Linux workstations. As of right now Docker is the only Container Engine for macOS and we recommend you follow the [Docker Desktop on Mac](https://docs.docker.com/docker-for-mac/install/),
+Docker is available for many different operating systems. You may use Docker as
+your Container Engine on both macOS and Linux workstations. As of right now
+Docker is the only Container Engine for macOS and we recommend you follow the
+[Docker Desktop on Mac](https://docs.docker.com/docker-for-mac/install/),
 install instructions to get Docker and Docker Compose installed.
 
 Docker also works well on Linux distributions that have not moved to cgroup v2.
-You can install it by following their [Installation per distro](https://docs.docker.com/engine/install/)
-to get Docker and you can install Docker Compose by following these
+You can install it by following their
+[Installation per distro](https://docs.docker.com/engine/install/) to get Docker
+and you can install Docker Compose by following these
 [instructions](https://docs.docker.com/compose/install/).
 
 ### Podman
@@ -38,17 +44,19 @@ DEV can be setup with Podman and Podman Compose on Linux systems.
 
 [Podman](https://podman.io/) is an FOSS project that provides a Container Engine
 that is daemonless which only runs on Linux systems. It can be run as the root
-user or as a non-privileged user. It also provides a Docker-compatible
-command line interface. Podman is available on many different Linux distributions
-and it can be installed by following these [instructions](https://podman.io/getting-started/installation).
+user or as a non-privileged user. It also provides a Docker-compatible command
+line interface. Podman is available on many different Linux distributions and it
+can be installed by following these
+[instructions](https://podman.io/getting-started/installation).
 
 [Podman Compose](https://github.com/containers/podman-compose) is a an early
 project under development that is implementing docker-compose like experience
-with Podman. You can install it by following these [instructions](https://github.com/containers/podman-compose#installation).
+with Podman. You can install it by following these
+[instructions](https://github.com/containers/podman-compose#installation).
 
 ## Setting up DEV
 
-1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
+1. Fork DEV's repository, e.g. <https://github.com/forem/forem/fork>
 1. Clone your forked repository, eg.
    `git clone https://github.com/<your-username>/dev.to.git`
 1. Set up your environment variables/secrets

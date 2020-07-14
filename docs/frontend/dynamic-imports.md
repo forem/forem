@@ -11,16 +11,16 @@ Explorer which are both unsupported browsers for DEV. They allow you to import
 JavaScript dynamically instead of statically. Why is this important?
 Performance.
 
-Should you use them everywhere? No. They are a great tool when you need to load a
-JavaScript module on the fly for functionality that is not needed immediately
+Should you use them everywhere? No. They are a great tool when you need to load
+a JavaScript module on the fly for functionality that is not needed immediately
 for the page to be usable.
 
 Here are a couple of examples of dynamic import usage on DEV:
 
 - The
-  [Onboarding flow](https://github.com/thepracticaldev/dev.to/blob/master/app/javascript/packs/Onboarding.jsx#L28).
+  [Onboarding flow](https://github.com/forem/forem/blob/master/app/javascript/packs/Onboarding.jsx#L28).
 - In
-  [connect](https://github.com/thepracticaldev/dev.to/blob/master/app/javascript/chat/codeEditor.jsx#L11)
+  [connect](https://github.com/forem/forem/blob/master/app/javascript/chat/codeEditor.jsx#L11)
   (chat)
 
 DEV uses [webpacker](frontend/webpacker) (webpack), so what webpack will do is

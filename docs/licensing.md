@@ -8,8 +8,8 @@ This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU Affero General Public License as published by the Free
 Software Foundation, either version 3 of the License, or (at your option) any
 later version. Please see the
-[LICENSE](https://github.com/thepracticaldev/dev.to/blob/master/LICENSE.md) file
-in our repository for the full text.
+[LICENSE](https://github.com/forem/forem/blob/master/LICENSE.md) file in our
+repository for the full text.
 
 Like many open source projects, we require that contributors provide us with a
 Contributor License Agreement (CLA). By submitting code to the DEV project, you
@@ -21,9 +21,9 @@ Creative Commons CC0 1.0 Universal.
 
 ## Where can I learn more about the AGPL-3 license?
 
-Please refer to the official “[Why the Affero
-GPL](https://www.gnu.org/licenses/why-affero-gpl.html)” and the [FAQ
-page](https://www.gnu.org/licenses/gpl-faq.html) on
+Please refer to the official
+“[Why the Affero GPL](https://www.gnu.org/licenses/why-affero-gpl.html)” and the
+[FAQ page](https://www.gnu.org/licenses/gpl-faq.html) on
 [GNU.org](https://www.gnu.org) for full details regarding this license.
 
 ## Why does DEV have a CLA?

@@ -153,7 +153,7 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
 ## Installing DEV
 
-1. Fork DEV's repository, eg. <https://github.com/thepracticaldev/dev.to/fork>
+1. Fork DEV's repository, eg. <https://github.com/forem/forem/fork>
 1. Clone your forked repository, eg.
    `git clone https://github.com/<your-username>/dev.to.git`
 1. Open the cloned dev.to folder in terminal with `cd dev.to`. Next, install

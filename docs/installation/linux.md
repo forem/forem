@@ -82,9 +82,9 @@ NOTE: Make sure to download **the OSS version**, `elasticsearch-oss`.
 
 ## Installing DEV
 
-1. Fork DEV's repository, e.g. <https://github.com/thepracticaldev/dev.to/fork>
+1. Fork DEV's repository, e.g. <https://github.com/forem/forem/fork>
 1. Clone your forked repository, e.g.
-   `git clone https://github.com/<your-username>/dev.to.git`
+   `git clone https://github.com/<your-username>/forem.git`
 1. Install bundler with `gem install bundler`
 1. Set up your environment variables/secrets
 
