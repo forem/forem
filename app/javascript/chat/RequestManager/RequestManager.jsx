@@ -17,9 +17,6 @@ export default class RequestManager extends Component {
     resource: PropTypes.shape({
       data: PropTypes.object,
     }).isRequired,
-    activeMembershipId: PropTypes.number.isRequired,
-    handleRequestRejection: PropTypes.func.isRequired,
-    handleRequestApproval: PropTypes.func.isRequired,
     updateRequestCount: PropTypes.func.isRequired,
   };
 
@@ -27,9 +24,6 @@ export default class RequestManager extends Component {
     super(props);
 
     this.state = {
-      requests: props.resource,
-      handleRequestRejection: props.handleRequestRejection,
-      handleRequestApproval: props.handleRequestApproval,
       updateRequestCount: props.updateRequestCount,
       channelJoiningRequests: [],
       userInvitations: [],
@@ -38,9 +32,6 @@ export default class RequestManager extends Component {
 
   componentWillReceiveProps() {
     this.setState({
-      requests: this.props.resource,
-      handleRequestRejection: this.props.handleRequestRejection,
-      handleRequestApproval: this.props.handleRequestApproval,
       updateRequestCount: this.props.updateRequestCount,
     });
   }

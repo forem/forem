@@ -8,7 +8,10 @@ const PersonalInvitationSection = ({ userInvitations, updateMembership }) => {
   }
 
   return (
-    <div>
+    <div
+      data-testid="user-invitations"
+      data-active-count={userInvitations ? userInvitations.length : 0}
+    >
       {userInvitations &&
         userInvitations.map((userInvitation) => {
           return (

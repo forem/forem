@@ -82,8 +82,6 @@ export default class Chat extends Component {
       expanded: window.innerWidth > NARROW_WIDTH_LIMIT,
       isMobileDevice: typeof window.orientation !== 'undefined',
       subscribedPusherChannels: [],
-      inviteChannels: [],
-      joiningRequests: [],
       messageOffset: 0,
       showDeleteModal: false,
       messageDeleteId: null,
@@ -939,7 +937,7 @@ export default class Chat extends Component {
         });
       } else if (content === 'sidecar-joining-request-manager') {
         this.setActiveContent({
-          data: this.state.joiningRequests,
+          data: {},
           type_of: 'channel-request-manager',
           updateRequestCount: this.handleUpdateRequestCount,
           handleRequestRejection: this.handleRequestRejection,
@@ -1687,17 +1685,6 @@ export default class Chat extends Component {
       this.handleJoiningRequestSuccess,
       null,
     );
-  };
-
-  handleJoiningManagerSuccess = (membershipId) => {
-    const { activeChannelId } = this.state;
-    this.setState({
-      joiningRequests: this.state.joiningRequests.filter(
-        (req) => req.membership_id !== parseInt(membershipId, 10),
-      ),
-    });
-    this.setActiveContentState(activeChannelId, null);
-    this.setState({ fullscreenContent: null });
   };
 
   handleJoiningRequestSuccess = () => {

@@ -12,7 +12,10 @@ const ChannelRequestSection = ({
   }
 
   return (
-    <div>
+    <div
+      data-testid="chat-channel-joining-request"
+      data-active-count={channelRequests ? channelRequests.length : 0}
+    >
       {channelRequests &&
         channelRequests.map((channelPendingRequest) => {
           return (

@@ -102,8 +102,6 @@ const Display = ({ resource }) => {
         <RequestManager
           resource={resource.data}
           updateRequestCount={resource.updateRequestCount}
-          handleRequestRejection={resource.handleRequestRejection}
-          handleRequestApproval={resource.handleRequestApproval}
         />
       );
     case 'chat-channel-setting':
