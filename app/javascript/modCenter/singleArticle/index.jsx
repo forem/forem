@@ -68,7 +68,6 @@ export default class SingleArticle extends Component {
         <span className="article-author fs-s lw-medium lh-tight">
           {newAuthorNotification}
           {user.name}
-          {/* <a href={user.username}>{user.name}</a> */}
         </span>
         <span className="article-published-at fs-s fw-bold lh-tight">
           <time dateTime={publishedAt}>{formatDate(publishedAt)}</time>
