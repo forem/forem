@@ -25,7 +25,8 @@ RSpec.describe "/internal/invitations", type: :request do
 
   describe "POST /internal/invitations" do
     it "creates new invitation" do
-      post "/internal/invitations", params: {email: "hey#{rand(1000)}@email.co", name: "Roger #{1000}"}
+      post "/internal/invitations",
+           params: { user: { email: "hey#{rand(1000)}@email.co", name: "Roger #{rand(1000)}" } }
       expect(User.last.registered).to be false
     end
   end
