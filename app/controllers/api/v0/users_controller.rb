@@ -6,7 +6,7 @@ module Api
 
       SHOW_ATTRIBUTES_FOR_SERIALIZATION = %i[
         id username name summary twitter_username github_username website_url
-        location created_at profile_image
+        location created_at profile_image registered
       ].freeze
       private_constant :SHOW_ATTRIBUTES_FOR_SERIALIZATION
 
