@@ -102,7 +102,7 @@ gem "stripe", "~> 5.22" # Ruby library for the Stripe API
 gem "strong_migrations", "~> 0.6" # Catch unsafe migrations
 gem "timber", "~> 3.0" # Great Ruby logging made easy
 gem "timber-rails", github: "timberio/timber-ruby-rails", branch: "master" # Timber integration for Rails
-gem "twilio-ruby", "~> 5.38" # The official library for communicating with the Twilio REST API
+gem "twilio-ruby", "~> 5.39" # The official library for communicating with the Twilio REST API
 gem "twitter", "~> 7.0" # A Ruby interface to the Twitter API
 gem "uglifier", "~> 4.2" # Uglifier minifies JavaScript files
 gem "ulid", "~> 1.2" # Universally Unique Lexicographically Sortable Identifier implementation for Ruby
@@ -139,8 +139,8 @@ group :development, :test do
   gem "knapsack_pro", "~> 2.0.0" # Help parallelize Ruby spec builds
   gem "pry-byebug", "~> 3.8" # Combine 'pry' with 'byebug'. Adds 'step', 'next', 'finish', 'continue' and 'break' commands to control execution
   gem "rspec-rails", "~> 4.0" # rspec-rails is a testing framework for Rails 3+
-  gem "rubocop", "~> 0.86.0", require: false # Automatic Ruby code style checking tool
-  gem "rubocop-performance", "~> 1.6", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
+  gem "rubocop", "~> 0.87.1", require: false # Automatic Ruby code style checking tool
+  gem "rubocop-performance", "~> 1.7", require: false # A collection of RuboCop cops to check for performance optimizations in Ruby code
   gem "rubocop-rails", "~> 2.6", require: false # Automatic Rails code style checking tool
   gem "rubocop-rspec", "~> 1.41", require: false # Code style checking for RSpec files
   gem "spring", "~> 2.1" # Preloads your application so things like console, rake and tests run faster

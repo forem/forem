@@ -122,16 +122,14 @@ class Organization < ApplicationRecord
   def update_articles
     return unless saved_change_to_slug || saved_change_to_name || saved_change_to_profile_image
 
-    # TODO: [thepracticaldev/oss] this should eventually be moved to JSON,
-    # to avoid storing a native Ruby object in the DB
-    cached_org_object = Struct.new(:name, :username, :slug, :profile_image_90, :profile_image_url).new
-    cached_org_object.name = name
-    cached_org_object.username = username
-    cached_org_object.slug = slug
-    cached_org_object.profile_image_90 = profile_image_90
-    cached_org_object.profile_image_url = profile_image_url
-
-    articles.update(cached_organization: cached_org_object)
+    cached_org_object = {
+      name: name,
+      username: username,
+      slug: slug,
+      profile_image_90: profile_image_90,
+      profile_image_url: profile_image_url
+    }
+    articles.update(cached_organization: OpenStruct.new(cached_org_object))
   end
 
   def bust_cache
