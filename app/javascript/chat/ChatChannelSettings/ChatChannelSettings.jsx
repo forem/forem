@@ -91,7 +91,7 @@ export default class ChatChannelSettings extends Component {
     });
   };
 
-  handlePersonChatChennelSetting = (e) => {
+  handlePersonChannelSetting = (e) => {
     const status = e.target.checked;
     this.setState({
       showGlobalBadgeNotification: status,
@@ -274,7 +274,7 @@ export default class ChatChannelSettings extends Component {
     });
   };
 
-  handleChatChannelInvitations = async () => {
+  handleChannelInvitations = async () => {
     const { invitationUsernames, chatChannel } = this.state;
     const { id } = chatChannel;
     const response = await sendChatChannelInvitation(id, invitationUsernames);
@@ -295,7 +295,7 @@ export default class ChatChannelSettings extends Component {
     addSnackbarItem({ message });
   };
 
-  handleleaveChatChannelMembership = async () => {
+  handleleaveChannelMembership = async () => {
     // eslint-disable-next-line no-restricted-globals
     const actionStatus = confirm(
       'Are you absolutely sure you want to leave this channel? This action is permanent.',
@@ -339,8 +339,7 @@ export default class ChatChannelSettings extends Component {
         const updatedActiveMemberships = activeMemberships.map(
           (activeMembership) => {
             if (activeMembership.membership_id === Number(membershipId)) {
-              // eslint-disable-next-line no-param-reassign
-              activeMembership.role = role;
+              return { ...activeMembership, role };
             }
             return activeMembership;
           },
@@ -390,12 +389,8 @@ export default class ChatChannelSettings extends Component {
               updateCurrentMembershipNotificationSettings={
                 this.updateCurrentMembershipNotificationSettings
               }
-              handleleaveChatChannelMembership={
-                this.handleleaveChatChannelMembership
-              }
-              handlePersonChatChennelSetting={
-                this.handleleaveChatChannelMembership
-              }
+              handleleaveChannelMembership={this.handleleaveChannelMembership}
+              handlePersonChannelSetting={this.handlePersonChannelSetting}
               handleChannelDescriptionChanges={
                 this.handleChannelDescriptionChanges
               }
@@ -403,7 +398,7 @@ export default class ChatChannelSettings extends Component {
                 this.handleChannelDiscoverableStatus
               }
               handleDescriptionChange={this.handleDescriptionChange}
-              handleChatChannelInvitations={this.handleChatChannelInvitations}
+              handleChannelInvitations={this.handleChannelInvitations}
               handleInvitationUsernames={this.handleInvitationUsernames}
               toggleScreens={this.toggleScreens}
               removeMembership={this.removeMembership}

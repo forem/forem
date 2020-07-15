@@ -1,8 +1,9 @@
 import { h } from 'preact';
 import PropsType from 'prop-types';
+import { Button } from '@crayons';
 
 const LeaveMembershipSection = ({
-  handleleaveChatChannelMembership,
+  handleleaveChannelMembership,
   currentMembershipRole,
 }) => {
   if (currentMembershipRole === 'mod') {
@@ -13,20 +14,20 @@ const LeaveMembershipSection = ({
     <div className="crayons-card p-4 grid gap-2 mb-4 leave_membership_section">
       <h3>Danger Zone</h3>
       <div>
-        <button
+        <Button
           className="crayons-btn crayons-btn--danger leave_button"
           type="submit"
-          onClick={handleleaveChatChannelMembership}
+          onClick={handleleaveChannelMembership}
         >
           Leave Channel
-        </button>
+        </Button>
       </div>
     </div>
   );
 };
 
 LeaveMembershipSection.propTypes = {
-  handleleaveChatChannelMembership: PropsType.func.isRequired,
+  handleleaveChannelMembership: PropsType.func.isRequired,
 };
 
 export default LeaveMembershipSection;

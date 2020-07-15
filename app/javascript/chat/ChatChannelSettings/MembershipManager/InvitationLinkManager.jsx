@@ -1,14 +1,8 @@
 import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
-import { Button } from '@crayons';
+import { isNativeAndroid } from '../../../utilities/validateAndroidNative';
 
-function isNativeAndroid() {
-  return (
-    navigator.userAgent === 'DEV-Native-android' &&
-    typeof AndroidBridge !== 'undefined' &&
-    AndroidBridge !== null
-  );
-}
+import { Button } from '@crayons';
 
 function isClipboardSupported() {
   return (

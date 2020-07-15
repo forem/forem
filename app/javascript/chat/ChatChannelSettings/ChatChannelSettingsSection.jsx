@@ -11,12 +11,12 @@ import ChatChannelMembershipSection from './ChatChannelMembershipSection';
 const ChatChannelSettingsSection = ({
   channelDiscoverable,
   updateCurrentMembershipNotificationSettings,
-  handleleaveChatChannelMembership,
-  handlePersonChatChennelSetting,
+  handleleaveChannelMembership,
+  handlePersonChannelSetting,
   handleChannelDescriptionChanges,
   handleChannelDiscoverableStatus,
   handleDescriptionChange,
-  handleChatChannelInvitations,
+  handleChannelInvitations,
   handleInvitationUsernames,
   toggleScreens,
   removeMembership,
@@ -50,7 +50,7 @@ const ChatChannelSettingsSection = ({
     <ModSection
       invitationUsernames={invitationUsernames}
       handleInvitationUsernames={handleInvitationUsernames}
-      handleChatChannelInvitations={handleChatChannelInvitations}
+      handleChannelInvitations={handleChannelInvitations}
       channelDescription={channelDescription}
       handleDescriptionChange={handleDescriptionChange}
       channelDiscoverable={channelDiscoverable}
@@ -64,12 +64,12 @@ const ChatChannelSettingsSection = ({
         updateCurrentMembershipNotificationSettings
       }
       showGlobalBadgeNotification={showGlobalBadgeNotification}
-      handlePersonChatChennelSetting={handlePersonChatChennelSetting}
+      handlePersonChannelSetting={handlePersonChannelSetting}
       className="channel-personal-seeting"
     />
     <LeaveMembershipSection
       currentMembershipRole={currentMembership.role}
-      handleleaveChatChannelMembership={handleleaveChatChannelMembership}
+      handleleaveChannelMembership={handleleaveChannelMembership}
       className="channel-leave-membership-section"
     />
     <ModFaqSection
@@ -90,16 +90,16 @@ ChatChannelSettingsSection.propTypes = {
   channelDescription: PropTypes.string.isRequired,
   channelDiscoverable: PropTypes.bool.isRequired,
   showGlobalBadgeNotification: PropTypes.bool.isRequired,
-  handleleaveChatChannelMembership: PropTypes.func.isRequired,
+  handleleaveChannelMembership: PropTypes.func.isRequired,
   chatChannelAcceptMembership: PropTypes.func.isRequired,
   removeMembership: PropTypes.func.isRequired,
   toggleScreens: PropTypes.func.isRequired,
   handleInvitationUsernames: PropTypes.func.isRequired,
-  handleChatChannelInvitations: PropTypes.func.isRequired,
+  handleChannelInvitations: PropTypes.func.isRequired,
   handleDescriptionChange: PropTypes.func.isRequired,
   handleChannelDiscoverableStatus: PropTypes.func.isRequired,
   handleChannelDescriptionChanges: PropTypes.func.isRequired,
-  handlePersonChatChennelSetting: PropTypes.func.isRequired,
+  handlePersonChannelSetting: PropTypes.func.isRequired,
   updateCurrentMembershipNotificationSettings: PropTypes.func.isRequired,
 };
 

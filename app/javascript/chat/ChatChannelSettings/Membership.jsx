@@ -1,6 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
 import { defaulMembershipPropType } from '../../common-prop-types/membership-prop-type';
+import { Button } from '@crayons';
 
 const Membership = ({
   membership,
@@ -28,17 +29,17 @@ const Membership = ({
         <span className="mr-2 user_name">{membership.name}</span>
       </a>
       {membershipType === 'requested' ? (
-        <button
+        <Button
           className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost add-membership"
           type="button"
           onClick={chatChannelAcceptMembership}
           data-membership-id={membership.membership_id}
         >
           +
-        </button>
+        </Button>
       ) : null}
       {membership.role !== 'mod' && currentMembershipRole === 'mod' ? (
-        <button
+        <Button
           className="crayons-btn crayons-btn--icon-rounded crayons-btn--ghost remove-membership"
           type="button"
           onClick={removeMembership}
@@ -46,7 +47,7 @@ const Membership = ({
           data-membership-status={membership.status}
         >
           x
-        </button>
+        </Button>
       ) : null}
     </div>
   );

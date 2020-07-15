@@ -1,7 +1,7 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
-
 import adminEmoji from '../../../../assets/images/emoji/apple-fire.png';
+import { Button } from '@crayons';
 
 const Membership = ({
   membership,
@@ -11,7 +11,7 @@ const Membership = ({
 }) => {
   const addAsModButton =
     membership.role === 'member' ? (
-      <button
+      <Button
         className="crayons-btn crayons-btn--s"
         type="button"
         onClick={handleUpdateMembershipRole}
@@ -19,12 +19,12 @@ const Membership = ({
         data-role="mod"
       >
         Promote to Mod
-      </button>
+      </Button>
     ) : null;
 
   const addAsMemberButton =
     membership.role === 'mod' ? (
-      <button
+      <Button
         className="crayons-btn crayons-btn--s"
         type="button"
         onClick={handleUpdateMembershipRole}
@@ -32,12 +32,12 @@ const Membership = ({
         data-role="member"
       >
         Remove Mod
-      </button>
+      </Button>
     ) : null;
 
   const removeMembershipButton =
     membership.role === 'member' ? (
-      <button
+      <Button
         className="crayons-btn crayons-btn--s crayons-btn--ghost-danger crayons-btn--ghost"
         type="button"
         onClick={removeMembership}
@@ -60,7 +60,7 @@ const Membership = ({
             d="M32.526 2.828L29.698 0 16.263 13.435 2.828 0 0 2.828l13.435 13.435L0 29.698l2.828 2.828 13.435-13.435 13.435 13.435 2.828-2.828-13.435-13.435z"
           />
         </svg>
-      </button>
+      </Button>
     ) : null;
 
   const dropdown =

@@ -1,8 +1,9 @@
 import { h } from 'preact';
 import PropTypes from 'prop-types';
+import { Button } from '@crayons';
 
 const InviteForm = ({
-  handleChatChannelInvitations,
+  handleChannelInvitations,
   invitationUsernames,
   handleInvitationUsernames,
 }) => {
@@ -26,13 +27,13 @@ const InviteForm = ({
         />
       </div>
       <div>
-        <button
+        <Button
           className="crayons-btn"
           type="submit"
-          onClick={handleChatChannelInvitations}
+          onClick={handleChannelInvitations}
         >
           Submit
-        </button>
+        </Button>
       </div>
     </div>
   );
@@ -40,7 +41,7 @@ const InviteForm = ({
 
 InviteForm.propTypes = {
   handleInvitationUsernames: PropTypes.func.isRequired,
-  handleChatChannelInvitations: PropTypes.func.isRequired,
+  handleChannelInvitations: PropTypes.func.isRequired,
   invitationUsernames: PropTypes.func.isRequired,
 };
 
