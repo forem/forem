@@ -101,6 +101,10 @@ module ApplicationHelper
     end
   end
 
+  def any_selfserve_auth?
+    authentication_enabled_providers.any?
+  end
+
   def beautified_url(url)
     url.sub(/\A((https?|ftp):\/)?\//, "").sub(/\?.*/, "").chomp("/")
   rescue StandardError

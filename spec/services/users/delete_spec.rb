@@ -129,6 +129,8 @@ RSpec.describe Users::Delete, type: :service do
             next
           end
 
+          next if possible_factory_name == "invited_by"
+
           record = create(possible_factory_name, inverse_of => user)
           associations.push(record)
         end
