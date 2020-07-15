@@ -71,7 +71,7 @@ module Constants
   ].freeze
 
   SITE_CONFIG_DETAILS = {
-    authentication: {
+    authentication_providers: {
       description: "How can users sign in?",
       placeholder: ""
     },
@@ -90,6 +90,10 @@ module Constants
     campaign_sidebar_image: {
       description: "https://image.url",
       placeholder: "Used at the top of the campaign sidebar"
+    },
+    campaign_url: {
+      description: "https://url.com/lander",
+      placeholder: "URL campaign sidebar image will link to"
     },
     campaign_featured_tags: {
       description: "Posts with which tags will be featured in the campaign sidebar (comma separated, letters only)",
@@ -111,13 +115,61 @@ module Constants
       description: "Used in signup modal.",
       placeholder: "We're a place where coders share, stay up-to-date and grow their careers."
     },
+    email_addresses: {
+      description: "Email address",
+      placeholder: ""
+    },
+    periodic_email_digest_max: {
+      description: "Determines the maximum for the periodic email digest",
+      placeholder: 0
+    },
+    periodic_email_digest_min: {
+      description: "Determines the mininum for the periodic email digest",
+      placeholder: 2
+    },
+    jobs_url: {
+      description: "URL of the website where open positions are posted",
+      placeholder: "Jobs URL"
+    },
+    display_jobs_banner: {
+      description: "Display a jobs banner that points users to the jobs page when they type 'job' or 'jobs' in the search box",
+      placeholder: ""
+    },
+    ga_view_id: {
+      description: "Google Analytics Reporting API v4 - View ID",
+      placeholder: ""
+    },
+    ga_fetch_rate: {
+      description: "Determines how often the site updates its Google Analytics stats",
+      placeholder: 1
+    },
     main_social_image: {
       description: "Used as the main image in social networks and OpenGraph",
-      placeholder: ""
+      placeholder: "https://image.url"
+    },
+    favicon_url: {
+      description: "Used as the site favicon",
+      placeholder: "https://image.url"
     },
     logo_png: {
       description: "Minimum 1024px, used for PWA etc.",
       placeholder: "https://image.url/image.png"
+    },
+    logo_svg: {
+      description: "Used as the SVG logo of the community",
+      placeholder: "<svg ...></svg>"
+    },
+    secondary_logo_url: {
+      description: "Used as the secondary logo",
+      placeholder: "https://image.url"
+    },
+    left_navbar_svg_icon: {
+      description: "The SVG icon used to expand the left navbar navigation menu. Should be a max of 24x24px.",
+      placeholder: "<svg ...></svg>"
+    },
+    right_navbar_svg_icon: {
+      description: "The SVG icon used to expand the right navbar navigation menu. Should be a max of 24x24px.",
+      placeholder: "<svg ...></svg>"
     },
     mascot_user_id: {
       description: "User ID of the Mascot account",
@@ -127,7 +179,26 @@ module Constants
       description: "Used as the mascot image.",
       placeholder: "https://image.url"
     },
+    mascot_footer_image_url: {
+      description: "Special cute mascot image used in the footer.",
+      placeholder: "https://image.url"
+    },
+    mascot_image_description: {
+      description: "Used as the alt text for the mascot image",
+      placeholder: ""
+    },
     meta_keywords: {
+      description: "",
+      placeholder: "List of valid keywords: comma separated, letters only e.g. engineering, development"
+    },
+    shop_url: {
+      description: "Used as the shop url of the community",
+      placeholder: "https://shop.url"
+    },
+    payment_pointer: {
+      description: "Used for site-wide web monetization (<a href='https://github.com/thepracticaldev/dev.to/pull/6345'>experimental</a>)",
+      placeholder: "$pay.somethinglikethis.co/value"
+    },
       description: "",
       placeholder: ""
     },
