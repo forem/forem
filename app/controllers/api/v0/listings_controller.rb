@@ -13,6 +13,14 @@ module Api
 
       skip_before_action :verify_authenticity_token, only: %i[create update]
 
+      # Note: since this is used for selecting from the DB, we need to use the
+      # actual column name for the listing category, prefixed with classified_.
+      ATTRIBUTES_FOR_SERIALIZATION = %i[
+        id user_id organization_id title slug body_markdown cached_tag_list
+        classified_listing_category_id processed_html published
+      ].freeze
+      private_constant :ATTRIBUTES_FOR_SERIALIZATION
+
       def index
         @listings = Listing.published.
           select(ATTRIBUTES_FOR_SERIALIZATION).
@@ -50,14 +58,6 @@ module Api
       def update
         super
       end
-
-      # Note: since this is used for selecting from the DB, we need to use the
-      # actual column name for the listing category, prefixed with classified_.
-      ATTRIBUTES_FOR_SERIALIZATION = %i[
-        id user_id organization_id title slug body_markdown cached_tag_list
-        classified_listing_category_id processed_html published
-      ].freeze
-      private_constant :ATTRIBUTES_FOR_SERIALIZATION
 
       private
 

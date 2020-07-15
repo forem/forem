@@ -7,14 +7,13 @@ module Suggester
       end
 
       def suggest
-        users = if user.decorate.cached_followed_tag_names.any?
-                  (recent_producers(3) - [user]).
-                    sample(50).uniq
-                else
-                  (recent_commenters(4, 30) + recent_top_producers - [user]).
-                    uniq.sample(50)
-                end
-        users
+        if user.decorate.cached_followed_tag_names.any?
+          (recent_producers(3) - [user]).
+            sample(50).uniq
+        else
+          (recent_commenters(4, 30) + recent_top_producers - [user]).
+            uniq.sample(50)
+        end
       end
 
       private
