@@ -142,5 +142,4 @@ module Constants
       placeholder: "List of valid usernames: comma separated, letters only e.g. ben,jess,peter,maestromac,andy,liana"
     }
   }.freeze
-
 end

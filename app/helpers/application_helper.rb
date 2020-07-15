@@ -249,10 +249,9 @@ module ApplicationHelper
     content ||= raw("<span>#{method.to_s.humanize}</span>")
 
     if method.to_sym.in?(VerifySetupCompleted::MANDATORY_CONFIGS)
-       content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
+      content = safe_join([content, raw("<span class='site-config__required'>Required</span>")])
     end
 
-    content_tag(:label, content, class: 'site-config__label')
+    content_tag(:label, content, class: "site-config__label")
   end
-
 end
