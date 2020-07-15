@@ -9,9 +9,9 @@ module Internal
     def new; end
 
     def create
-      email = params[:user][:email]
-      name = params[:user][:name]
-      username = "#{name.downcase.tr(" ", "_")}#{rand(1000)}"
+      email = params.dig(:user, :email)
+      name = params.dig(:user, :name)
+      username = "#{name.downcase.tr(' ', '_').gsub(/[^0-9a-z ]/i, '')}_#{rand(1000)}"
       User.invite!(email: email,
                    name: name,
                    username: username,

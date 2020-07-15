@@ -1,7 +1,7 @@
 class DeviseInvitableAddToUsers < ActiveRecord::Migration[6.0]
   def up
     safety_assured do
-      change_table :users do |t|
+      change_table :users, bulk: true do |t|
         t.string     :invitation_token
         t.boolean    :registered, default: true
         t.datetime   :registered_at
@@ -25,7 +25,7 @@ class DeviseInvitableAddToUsers < ActiveRecord::Migration[6.0]
         t.remove :invitations_count, :invitation_limit,
                  :invitation_sent_at, :invitation_accepted_at,
                  :invitation_token, :invitation_created_at,
-                 :registered
+                 :registered, :registered_at
       end
     end
   end
