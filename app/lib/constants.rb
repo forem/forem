@@ -81,7 +81,7 @@ module Constants
     },
     campaign_articles_require_approval: {
       description: "",
-      placeholder: "Campaign stories show up on sidebar with approval?",
+      placeholder: "Campaign stories show up on sidebar with approval?"
     },
     campaign_sidebar_enabled: {
       description: "",
