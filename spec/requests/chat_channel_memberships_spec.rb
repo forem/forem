@@ -445,6 +445,7 @@ RSpec.describe "ChatChannelMemberships", type: :request do
           user_action: "decline",
           chat_channel_id: chat_channel.id
         }
+
         membership = ChatChannelMembership.last
 
         expect(response.status).to eq(302)
