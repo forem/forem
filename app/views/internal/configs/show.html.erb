@@ -682,6 +682,26 @@
         <div class="card mt-3">
           <%= render partial: "card_header",
                      locals: {
+                       header: "Sponsors",
+                       state: "collapse",
+                       target: "sponsorsContainer",
+                       expanded: "false"
+                     } %>
+          <div id="sponsorsContainer" class="card-body collapse hide" aria-labelledby="sponsorsContainer">
+            <div class="form-group">
+              <%= f.label :sponsor_headline %>
+              <%= f.text_field :sponsor_headline,
+                               class: "form-control",
+                               value: SiteConfig.sponsor_headline,
+                               placeholder: "Community Sponsors" %>
+              <div class="alert alert-info">Determines the heading text of the main sponsors sidebar above the list of sponsors.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card mt-3">
+          <%= render partial: "card_header",
+                     locals: {
                        header: "Tags",
                        state: "collapse",
                        target: "tagsBodyContainer",
