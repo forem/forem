@@ -55,14 +55,14 @@ install:
   - bundle config set path 'vendor/bundle'
   - bundle install --local --jobs=2
   - yarn install --frozen-lockfile
-script:
+before_script:
   - bundle exec rails db:create db:schema:load
   - bundle exec rails webpacker:compile
   - './cc-test-reporter before-build'
   - 'bin/knapsack_pro_rspec'
   - '[ ! -f .approvals ] || bundle exec approvals verify --ask false'
 after_script:
-  - ./cc-test-reporter format-coverage -t simplecov -o ./travis-coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./travis-coverage/spec/.resultset.json
+  - ./cc-test-reporter format-coverage -t simplecov -o ./coverage/codeclimate.$KNAPSACK_PRO_CI_NODE_INDEX.json ./travis-coverage/spec/.resultset.json
   - ./cc-test-reporter sum-coverage --output - --parts $COVERAGE_REPORTS_TOTAL travis-coverage/codeclimate.*.json | ./cc-test-reporter upload-coverage --input -
 notifications:
   slack:
@@ -82,7 +82,7 @@ jobs:
       workspaces:
         create:
           name: ws1
-          paths: /travis-coverage
+          paths: ./travis-coverage
 
     - stage: Test
       workspaces:
@@ -91,7 +91,7 @@ jobs:
       env: KNAPSACK_PRO_CI_NODE_INDEX=0
       script:
         - yarn test --colors
-        - ./cc-test-reporter format-coverage -t lcov -o travis-coverage/codeclimate.lcov.json
+        - ./cc-test-reporter format-coverage -t lcov -o coverage/codeclimate.lcov.json ./travis-coverage/codeclimate.lcov.json
 
     - stage: Test
       name: "Node 1"
