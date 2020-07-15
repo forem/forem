@@ -10,7 +10,7 @@ One contains plain JavaScript,
 [which you can read more about in this guide](/frontend/plain-js).
 
 The other one is managed by [Webpacker](https://github.com/rails/webpacker), and
-it's located inside `/app/javascripts`, written using ES6+.
+it's located inside `/app/javascript`, written using ES6+.
 
 Currently, it's mainly used for Preact components, served via `webpack` which is
 integrated into the Rails app using `Webpacker`.
@@ -27,8 +27,7 @@ For example:
 <%= javascript_packs_with_chunks_tag "webShare", defer: true %>
 ```
 
-The include statement corresponds to the pack
-`app/javascripts/packs/webShare.js`
+The include statement corresponds to the pack `app/javascript/packs/webShare.js`
 
 If you have more than one webpacker pack on the page, you need to include it in
 the same `javascript_packs_with_chunks_tag` call. The reason being is it avoids
