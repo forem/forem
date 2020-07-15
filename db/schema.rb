@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_07_10_174257) do
+ActiveRecord::Schema.define(version: 2020_07_12_150048) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -492,6 +492,7 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.datetime "verified_at"
+    t.index ["user_id"], name: "index_email_authorizations_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
@@ -1244,6 +1245,14 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.string "inbox_guidelines"
     t.string "inbox_type", default: "private"
     t.string "instagram_url"
+    t.datetime "invitation_accepted_at"
+    t.datetime "invitation_created_at"
+    t.integer "invitation_limit"
+    t.datetime "invitation_sent_at"
+    t.string "invitation_token"
+    t.integer "invitations_count", default: 0
+    t.bigint "invited_by_id"
+    t.string "invited_by_type"
     t.jsonb "language_settings", default: {}, null: false
     t.datetime "last_article_at", default: "2017-01-01 05:00:00"
     t.datetime "last_comment_at", default: "2017-01-01 05:00:00"
@@ -1274,6 +1283,8 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.datetime "profile_updated_at", default: "2017-01-01 05:00:00"
     t.integer "rating_votes_count", default: 0, null: false
     t.integer "reactions_count", default: 0, null: false
+    t.boolean "registered", default: true
+    t.datetime "registered_at"
     t.datetime "remember_created_at"
     t.string "remember_token"
     t.float "reputation_modifier", default: 1.0
@@ -1308,6 +1319,10 @@ ActiveRecord::Schema.define(version: 2020_07_10_174257) do
     t.index ["created_at"], name: "index_users_on_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["github_username"], name: "index_users_on_github_username", unique: true
+    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
+    t.index ["invitations_count"], name: "index_users_on_invitations_count"
+    t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
+    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by_type_and_invited_by_id"
     t.index ["language_settings"], name: "index_users_on_language_settings", using: :gin
     t.index ["old_old_username"], name: "index_users_on_old_old_username"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

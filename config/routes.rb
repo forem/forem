@@ -7,7 +7,8 @@ Rails.application.routes.draw do
 
   devise_for :users, controllers: {
     omniauth_callbacks: "omniauth_callbacks",
-    registrations: "registrations"
+    registrations: "registrations",
+    invitations: "invitations"
   }
 
   devise_scope :user do
@@ -52,6 +53,7 @@ Rails.application.routes.draw do
     resources :comments, only: [:index]
     resources :events, only: %i[index create update]
     resources :feedback_messages, only: %i[index show]
+    resources :invitations, only: %i[index new create]
     resources :pages, only: %i[index new create edit update destroy]
     resources :mods, only: %i[index update]
     resources :moderator_actions, only: %i[index]

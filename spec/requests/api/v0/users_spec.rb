@@ -15,6 +15,12 @@ RSpec.describe "Api::V0::Users", type: :request do
       expect(response).to have_http_status(:not_found)
     end
 
+    it "returns 404 if the user is not registered" do
+      user.update_column(:registered, false)
+      get api_user_path(user.id)
+      expect(response).to have_http_status(:not_found)
+    end
+
     it "returns 200 if the user username is found" do
       get api_user_path("by_username"), params: { url: user.username }
       expect(response).to have_http_status(:ok)
