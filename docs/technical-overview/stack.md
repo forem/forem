@@ -4,7 +4,7 @@ title: Stack
 
 ## 🔑 Key App tech/services
 
-For the Dev.to tech stack we use:
+For the Forem tech stack we use:
 
 - [_Puma_](https://github.com/puma/puma) as the web server
 - [_PostgreSQL_](https://www.postgresql.org/) as the primary database

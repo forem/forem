@@ -18,7 +18,7 @@ you debug your web application. Consider learning how to use them.
 [Visual Studio Code](https://code.visualstudio.com) (VS Code) is a popular
 editor that allows you to debug many languages including JavaScript. Thanks to
 remote debugging technologies, we can debug our frontend code in VS Code. When
-you clone the DEV repository and open the project in VS Code, you will be
+you clone the Forem repository and open the project in VS Code, you will be
 prompted to install recommended extensions which include the
 [Chrome Debugger](https://code.visualstudio.com/blogs/2016/02/23/introducing-chrome-debugger-for-vs-code)
 and the
@@ -28,8 +28,8 @@ Setup:
 
 - Refer to the respective debugger extension documentation above to ensure that
   your browser is running with remote debugging enabled.
-- Once you have your local installation of DEV running, you can attach to either
-  the Chrome or Edge Debugger.
+- Once you have your local installation of Forem running, you can attach to
+  either the Chrome or Edge Debugger.
 
   ![Launch menu for debugger in VS Code](/vscode_launch_debugger.png 'Launch
 menu for debugger in VS Code')
@@ -51,6 +51,6 @@ Preact has their
 of a browser extension. These tools are currently supported for Preact version
 10.x and up.
 
-DEV currently uses Preact 8.x so the Preact developer tools are not an option,
+Forem currently uses Preact 8.x so the Preact developer tools are not an option,
 however Preact 8.x+ is compatible with the React developer tools extension which
 is available for Chrome and Firefox.

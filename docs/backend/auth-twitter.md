@@ -4,7 +4,7 @@ title: Twitter Authentication
 
 # Twitter App and Authentication
 
-DEV allows you to authenticate using Twitter. In order to use this
+Forem allows you to authenticate using Twitter. In order to use this
 authentication method in local development, you will need to setup a Twitter App
 and retrieve its keys. Then you'll need to provide these keys to the Rails
 application.
@@ -29,7 +29,7 @@ application.
 
    ![twitter-up-3](https://user-images.githubusercontent.com/22895284/51078781-53ac3180-16bb-11e9-8cf4-005efbb92d8a.png)
 
-5. Write down the reasons that you want to use Twitter API. Mention DEV's
+5. Write down the reasons that you want to use Twitter API. Mention Forem's
    community and describe the issues and tests and things that you want to work
    on. Copy it, you might use it later ;)
 
@@ -58,7 +58,7 @@ application.
 
 4. Check the **Enable Sign in with Twitter** option and fill in the Callback URL
    `http://localhost:3000/users/auth/twitter/callback` (or whatever port you run
-   DEV on).
+   Forem on).
 
    ![twitter-3](https://user-images.githubusercontent.com/22895284/51078799-9a9a2700-16bb-11e9-8e88-0393260449c7.png)
 

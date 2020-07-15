@@ -28,11 +28,13 @@ platform.
 
 - Certain aspects of the app are currently hardcoded. For instance: logos,
   certain elements of content, etc. If you were to host the current version of
-  the app, you would be inadvertently impersonating the core dev.to project.
-- DEV has commercial licenses for certain design components as described in our
-  [Design License Info](https://docs.dev.to/design/branding/#design-license-info)
-  section. These licenses are specific to the dev.to project, and may not extend
-  to self-hosted versions.
+  the app, you would be inadvertently impersonating the core Forem/dev.to
+  project.
+- Forem/DEV has commercial licenses for certain design components as described
+  in our
+  [Design License Info](https://docs.forem.com/design/branding/#design-license-info)
+  section. These licenses are specific to the Forem/dev.to project, and may not
+  extend to self-hosted versions.
 
 ### I want to stand up my own entity using the Forem codebase, how can I help?
 
