@@ -77,7 +77,7 @@ jobs:
   include:
     - stage: Warm cache
       install: skip
-      script: skip
+      before_script: skip
       after_script: skip
       workspaces:
         create:
